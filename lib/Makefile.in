@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.194 2007-10-09 03:06:49 edwards Exp $
+# $Id: Makefile.in,v 3.195 2007-10-24 02:57:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -140,6 +140,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/invmr.cc actions/ferm/invert/invsumr.cc \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
+	actions/ferm/invert/inv_eigcg2.cc \
 	actions/ferm/invert/inv_rel_cg1.cc \
 	actions/ferm/invert/inv_rel_cg2.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
@@ -160,6 +161,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
+	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
@@ -174,6 +176,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
+	actions/ferm/invert/norm_gram_schm.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop.cc \
@@ -657,11 +660,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	invcg2_array.$(OBJEXT) invcg2_timing_hacks.$(OBJEXT) \
 	invmr.$(OBJEXT) invsumr.$(OBJEXT) \
 	inv_gmresr_cg_array.$(OBJEXT) inv_minres_array.$(OBJEXT) \
-	inv_rel_cg1.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
-	inv_rel_gmresr_cg.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
-	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) \
-	minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
-	minv_rel_sumr.$(OBJEXT) syssolver_linop_aggregate.$(OBJEXT) \
+	inv_eigcg2.$(OBJEXT) inv_rel_cg1.$(OBJEXT) \
+	inv_rel_cg2.$(OBJEXT) inv_rel_gmresr_cg.$(OBJEXT) \
+	inv_rel_gmresr_sumr.$(OBJEXT) inv_rel_sumr.$(OBJEXT) \
+	minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) minvsumr.$(OBJEXT) \
+	minv_rel_cg.$(OBJEXT) minv_rel_sumr.$(OBJEXT) \
+	syssolver_linop_aggregate.$(OBJEXT) \
 	syssolver_mdagm_aggregate.$(OBJEXT) \
 	syssolver_polyprec_aggregate.$(OBJEXT) \
 	syssolver_cg_params.$(OBJEXT) syssolver_mr_params.$(OBJEXT) \
@@ -669,7 +673,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	syssolver_eigcg_params.$(OBJEXT) syssolver_linop_cg.$(OBJEXT) \
 	syssolver_linop_cg_timing.$(OBJEXT) \
 	syssolver_linop_cg_array.$(OBJEXT) \
-	syssolver_mdagm_cg.$(OBJEXT) \
+	syssolver_linop_eigcg.$(OBJEXT) syssolver_mdagm_cg.$(OBJEXT) \
 	syssolver_mdagm_bicgstab.$(OBJEXT) \
 	syssolver_mdagm_cg_timing.$(OBJEXT) \
 	syssolver_mdagm_cg_array.$(OBJEXT) \
@@ -683,8 +687,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	multi_syssolver_mdagm_aggregate.$(OBJEXT) \
 	multi_syssolver_mdagm_cg.$(OBJEXT) \
 	multi_syssolver_mdagm_cg_array.$(OBJEXT) \
-	fermact_qprop.$(OBJEXT) fermact_qprop_array.$(OBJEXT) \
-	eoprec_fermact_qprop.$(OBJEXT) \
+	norm_gram_schm.$(OBJEXT) fermact_qprop.$(OBJEXT) \
+	fermact_qprop_array.$(OBJEXT) eoprec_fermact_qprop.$(OBJEXT) \
 	central_tprec_fermact_qprop_w.$(OBJEXT) \
 	eoprec_fermact_qprop_array.$(OBJEXT) staggered_qprop.$(OBJEXT) \
 	asqtad_qprop.$(OBJEXT) hisq_qprop.$(OBJEXT) \
@@ -1052,6 +1056,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
+	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h \
 	actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
@@ -1071,6 +1076,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/containers.h \
+	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
 	actions/ferm/invert/syssolver_linop_factory.h \
 	actions/ferm/invert/syssolver_linop_aggregate.h \
@@ -1087,6 +1093,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
+	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
@@ -1745,6 +1752,7 @@ QDPXX_ND = @QDPXX_ND@
 QDPXX_NS = @QDPXX_NS@
 QDPXX_PARALLEL_ARCH = @QDPXX_PARALLEL_ARCH@
 QDPXX_PRECISION = @QDPXX_PRECISION@
+QDP_LAPACK_DIR = @QDP_LAPACK_DIR@
 QMT_CXXFLAGS = @QMT_CXXFLAGS@
 QMT_LDFLAGS = @QMT_LDFLAGS@
 QMT_LIBS = @QMT_LIBS@
@@ -1838,6 +1846,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
+	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h \
 	actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
@@ -1857,6 +1866,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/containers.h \
+	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
 	actions/ferm/invert/syssolver_linop_factory.h \
 	actions/ferm/invert/syssolver_linop_aggregate.h \
@@ -1873,6 +1883,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
+	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
@@ -2436,8 +2447,11 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 # Any other compiler flags
 # 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ \
-	@BAGEL_WILSON_DSLASH_CXXFLAGS@ $(am__append_1) $(am__append_2) \
-	$(am__append_3) $(am__append_4) $(am__append_5)
+	@BAGEL_WILSON_DSLASH_CXXFLAGS@ \
+	-I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
+	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
+	$(am__append_1) $(am__append_2) $(am__append_3) \
+	$(am__append_4) $(am__append_5)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -2491,6 +2505,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/invmr.cc actions/ferm/invert/invsumr.cc \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
+	actions/ferm/invert/inv_eigcg2.cc \
 	actions/ferm/invert/inv_rel_cg1.cc \
 	actions/ferm/invert/inv_rel_cg2.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
@@ -2511,6 +2526,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
+	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
@@ -2525,6 +2541,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
+	actions/ferm/invert/norm_gram_schm.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop.cc \
@@ -3317,6 +3334,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_shared.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_borici_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_eigcg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_gmresr_cg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_minres_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inv_rel_cg1.Po@am__quote@
@@ -3415,6 +3433,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_spin_insertion.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/norm_gram_schm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npr_vertex_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial5d_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial_params_w.Po@am__quote@
@@ -3561,6 +3580,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_cg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_cg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_cg_timing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_eigcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_mr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_bicgstab.Po@am__quote@
@@ -3953,6 +3973,20 @@ inv_minres_array.obj: actions/ferm/invert/inv_minres_array.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inv_minres_array.obj `if test -f 'actions/ferm/invert/inv_minres_array.cc'; then $(CYGPATH_W) 'actions/ferm/invert/inv_minres_array.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/inv_minres_array.cc'; fi`
 
+inv_eigcg2.o: actions/ferm/invert/inv_eigcg2.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inv_eigcg2.o -MD -MP -MF "$(DEPDIR)/inv_eigcg2.Tpo" -c -o inv_eigcg2.o `test -f 'actions/ferm/invert/inv_eigcg2.cc' || echo '$(srcdir)/'`actions/ferm/invert/inv_eigcg2.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inv_eigcg2.Tpo" "$(DEPDIR)/inv_eigcg2.Po"; else rm -f "$(DEPDIR)/inv_eigcg2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/inv_eigcg2.cc' object='inv_eigcg2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inv_eigcg2.o `test -f 'actions/ferm/invert/inv_eigcg2.cc' || echo '$(srcdir)/'`actions/ferm/invert/inv_eigcg2.cc
+
+inv_eigcg2.obj: actions/ferm/invert/inv_eigcg2.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inv_eigcg2.obj -MD -MP -MF "$(DEPDIR)/inv_eigcg2.Tpo" -c -o inv_eigcg2.obj `if test -f 'actions/ferm/invert/inv_eigcg2.cc'; then $(CYGPATH_W) 'actions/ferm/invert/inv_eigcg2.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/inv_eigcg2.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inv_eigcg2.Tpo" "$(DEPDIR)/inv_eigcg2.Po"; else rm -f "$(DEPDIR)/inv_eigcg2.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/inv_eigcg2.cc' object='inv_eigcg2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inv_eigcg2.obj `if test -f 'actions/ferm/invert/inv_eigcg2.cc'; then $(CYGPATH_W) 'actions/ferm/invert/inv_eigcg2.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/inv_eigcg2.cc'; fi`
+
 inv_rel_cg1.o: actions/ferm/invert/inv_rel_cg1.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inv_rel_cg1.o -MD -MP -MF "$(DEPDIR)/inv_rel_cg1.Tpo" -c -o inv_rel_cg1.o `test -f 'actions/ferm/invert/inv_rel_cg1.cc' || echo '$(srcdir)/'`actions/ferm/invert/inv_rel_cg1.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inv_rel_cg1.Tpo" "$(DEPDIR)/inv_rel_cg1.Po"; else rm -f "$(DEPDIR)/inv_rel_cg1.Tpo"; exit 1; fi
@@ -4233,6 +4267,20 @@ syssolver_linop_cg_array.obj: actions/ferm/invert/syssolver_linop_cg_array.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_cg_array.obj `if test -f 'actions/ferm/invert/syssolver_linop_cg_array.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_cg_array.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_cg_array.cc'; fi`
 
+syssolver_linop_eigcg.o: actions/ferm/invert/syssolver_linop_eigcg.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_eigcg.o -MD -MP -MF "$(DEPDIR)/syssolver_linop_eigcg.Tpo" -c -o syssolver_linop_eigcg.o `test -f 'actions/ferm/invert/syssolver_linop_eigcg.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_eigcg.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_eigcg.Tpo" "$(DEPDIR)/syssolver_linop_eigcg.Po"; else rm -f "$(DEPDIR)/syssolver_linop_eigcg.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_eigcg.cc' object='syssolver_linop_eigcg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_eigcg.o `test -f 'actions/ferm/invert/syssolver_linop_eigcg.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_eigcg.cc
+
+syssolver_linop_eigcg.obj: actions/ferm/invert/syssolver_linop_eigcg.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_eigcg.obj -MD -MP -MF "$(DEPDIR)/syssolver_linop_eigcg.Tpo" -c -o syssolver_linop_eigcg.obj `if test -f 'actions/ferm/invert/syssolver_linop_eigcg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_eigcg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_eigcg.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_linop_eigcg.Tpo" "$(DEPDIR)/syssolver_linop_eigcg.Po"; else rm -f "$(DEPDIR)/syssolver_linop_eigcg.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_eigcg.cc' object='syssolver_linop_eigcg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_eigcg.obj `if test -f 'actions/ferm/invert/syssolver_linop_eigcg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_eigcg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_eigcg.cc'; fi`
+
 syssolver_mdagm_cg.o: actions/ferm/invert/syssolver_mdagm_cg.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_cg.o -MD -MP -MF "$(DEPDIR)/syssolver_mdagm_cg.Tpo" -c -o syssolver_mdagm_cg.o `test -f 'actions/ferm/invert/syssolver_mdagm_cg.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_cg.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/syssolver_mdagm_cg.Tpo" "$(DEPDIR)/syssolver_mdagm_cg.Po"; else rm -f "$(DEPDIR)/syssolver_mdagm_cg.Tpo"; exit 1; fi
@@ -4428,6 +4476,20 @@ multi_syssolver_mdagm_cg_array.obj: actions/ferm/invert/multi_syssolver_mdagm_cg
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc' object='multi_syssolver_mdagm_cg_array.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o multi_syssolver_mdagm_cg_array.obj `if test -f 'actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc'; then $(CYGPATH_W) 'actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc'; fi`
+
+norm_gram_schm.o: actions/ferm/invert/norm_gram_schm.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT norm_gram_schm.o -MD -MP -MF "$(DEPDIR)/norm_gram_schm.Tpo" -c -o norm_gram_schm.o `test -f 'actions/ferm/invert/norm_gram_schm.cc' || echo '$(srcdir)/'`actions/ferm/invert/norm_gram_schm.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/norm_gram_schm.Tpo" "$(DEPDIR)/norm_gram_schm.Po"; else rm -f "$(DEPDIR)/norm_gram_schm.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/norm_gram_schm.cc' object='norm_gram_schm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o norm_gram_schm.o `test -f 'actions/ferm/invert/norm_gram_schm.cc' || echo '$(srcdir)/'`actions/ferm/invert/norm_gram_schm.cc
+
+norm_gram_schm.obj: actions/ferm/invert/norm_gram_schm.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT norm_gram_schm.obj -MD -MP -MF "$(DEPDIR)/norm_gram_schm.Tpo" -c -o norm_gram_schm.obj `if test -f 'actions/ferm/invert/norm_gram_schm.cc'; then $(CYGPATH_W) 'actions/ferm/invert/norm_gram_schm.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/norm_gram_schm.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/norm_gram_schm.Tpo" "$(DEPDIR)/norm_gram_schm.Po"; else rm -f "$(DEPDIR)/norm_gram_schm.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/norm_gram_schm.cc' object='norm_gram_schm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o norm_gram_schm.obj `if test -f 'actions/ferm/invert/norm_gram_schm.cc'; then $(CYGPATH_W) 'actions/ferm/invert/norm_gram_schm.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/norm_gram_schm.cc'; fi`
 
 fermact_qprop.o: actions/ferm/qprop/fermact_qprop.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermact_qprop.o -MD -MP -MF "$(DEPDIR)/fermact_qprop.Tpo" -c -o fermact_qprop.o `test -f 'actions/ferm/qprop/fermact_qprop.cc' || echo '$(srcdir)/'`actions/ferm/qprop/fermact_qprop.cc; \

@@ -731,6 +731,7 @@ QDPXX_ND = @QDPXX_ND@
 QDPXX_NS = @QDPXX_NS@
 QDPXX_PARALLEL_ARCH = @QDPXX_PARALLEL_ARCH@
 QDPXX_PRECISION = @QDPXX_PRECISION@
+QDP_LAPACK_DIR = @QDP_LAPACK_DIR@
 QMT_CXXFLAGS = @QMT_CXXFLAGS@
 QMT_LDFLAGS = @QMT_LDFLAGS@
 QMT_LIBS = @QMT_LIBS@
@@ -796,11 +797,11 @@ AM_CXXFLAGS = $(INCFLAGS) @QDPXX_CXXFLAGS@ \
 	$(am__append_10)
 AM_LDFLAGS = -L$(BUILDDIR)/lib @QDPXX_LDFLAGS@ \
 	@BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@ \
-	$(am__append_2) $(am__append_5) $(am__append_8) \
-	$(am__append_11)
+	-L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib $(am__append_2) \
+	$(am__append_5) $(am__append_8) $(am__append_11)
 LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@ \
-	@LIBS@ $(am__append_3) $(am__append_6) $(am__append_9) \
-	$(am__append_12)
+	@LIBS@ -lqdp-lapack $(am__append_3) $(am__append_6) \
+	$(am__append_9) $(am__append_12)
 
 #
 # Local Headers
