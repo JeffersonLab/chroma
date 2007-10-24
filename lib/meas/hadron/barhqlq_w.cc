@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 3.2 2007-04-18 21:53:31 edwards Exp $
+// $Id: barhqlq_w.cc,v 3.3 2007-10-24 02:46:09 edwards Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -26,7 +26,7 @@ namespace Chroma
     }
 	      
 
-    //! Sigma 2-pt
+    //! Cascade 2-pt
     /*! \ingroup hadron */
     LatticeComplex xi2pt(const LatticePropagator& quark_propagator_1,
 			 const LatticePropagator& quark_propagator_2,
