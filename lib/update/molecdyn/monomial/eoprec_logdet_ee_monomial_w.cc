@@ -1,4 +1,4 @@
-// $Id: eoprec_logdet_ee_monomial_w.cc,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_logdet_ee_monomial_w.cc,v 3.2 2007-10-24 02:46:37 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */
@@ -12,7 +12,7 @@
 namespace Chroma 
 { 
 
-  namespace PrecLogDetEvenEvenMonomial4DEnv 
+  namespace EvenOddPrecLogDetEvenEvenMonomial4DEnv 
   {
     namespace
     {
@@ -22,7 +22,7 @@ namespace Chroma
       {
 	QDPIO::cout << "Create Monomial: " << name << endl;
 
-	return new PrecLogDetEvenEvenMonomial4D(PrecLogDetEvenEvenMonomialParams(xml, path));
+	return new EvenOddPrecLogDetEvenEvenMonomial4D(EvenOddPrecLogDetEvenEvenMonomialParams(xml, path));
       }
 
       //! Local registration flag
@@ -46,29 +46,29 @@ namespace Chroma
  
 
  
-  PrecLogDetEvenEvenMonomialParams::PrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path) 
+  EvenOddPrecLogDetEvenEvenMonomialParams::EvenOddPrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path) 
   {
     XMLReader paramtop(in, path);
     
     fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
     read(paramtop,"num_flavors", num_flavors);
 
-    QDPIO::cout << "PrecLogDetEvenEvenMonomialParams: read \n" << fermact.id << endl;
+    QDPIO::cout << "EvenOddPrecLogDetEvenEvenMonomialParams: read \n" << fermact.id << endl;
   }
 
-  void read(XMLReader& r, const std::string& path,  PrecLogDetEvenEvenMonomialParams& p) 
+  void read(XMLReader& r, const std::string& path,  EvenOddPrecLogDetEvenEvenMonomialParams& p) 
   {
-    PrecLogDetEvenEvenMonomialParams tmp(r, path);
+    EvenOddPrecLogDetEvenEvenMonomialParams tmp(r, path);
     p = tmp;
   }
 
-  void write(XMLWriter& xml, const std::string& path, const PrecLogDetEvenEvenMonomialParams& p)
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecLogDetEvenEvenMonomialParams& p)
   {
     // Not implemented
   }
 
 
-  PrecLogDetEvenEvenMonomial4D::PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomialParams& p) : 
+  EvenOddPrecLogDetEvenEvenMonomial4D::EvenOddPrecLogDetEvenEvenMonomial4D(const EvenOddPrecLogDetEvenEvenMonomialParams& p) : 
     num_flavors(p.num_flavors) 
   {
     START_CODE();
@@ -76,7 +76,7 @@ namespace Chroma
     // Grok the fermact out of the XML
     std::istringstream is(p.fermact.xml);
     XMLReader fermact_reader(is);
-    QDPIO::cout << "EvanOddPrecConstDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << endl;
+    QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << endl;
 
     WilsonTypeFermAct<T,P,Q>* tmp_act = 
       TheWilsonTypeFermActFactory::Instance().createObject(p.fermact.id, fermact_reader, p.fermact.path);
@@ -85,8 +85,10 @@ namespace Chroma
       dynamic_cast<EvenOddPrecLogDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
-    if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecWilsonTypeFermAct in EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial()" << endl;
+    if( downcast == 0x0 ) 
+    {
+      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecLogDetWilsonTypeFermAct in " 
+		  << __func__ << endl;
       QDP_abort(1);
     }
     

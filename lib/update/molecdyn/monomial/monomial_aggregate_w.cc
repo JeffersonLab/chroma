@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 3.5 2006-10-19 17:36:07 edwards Exp $
+// $Id: monomial_aggregate_w.cc,v 3.6 2007-10-24 02:46:37 edwards Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -70,22 +70,22 @@ namespace Chroma
 	success &= EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5DEnv::registerAll();
 
 	// Hasenbusch Monomials
-	success &=   UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registerAll();
-	success &=   EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registerAll();
+	success &= UnprecTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registerAll();
+	success &= EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomialEnv::registerAll();
     
 	// Polynomial preconditioning Monomials
-//      success &=   UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
-	success &=   EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
-//      success &=   UnprecTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registerAll();
-	success &=   EvenOddPrecConstDetTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registerAll();
+//      success &= UnprecTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
+	success &= EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::registerAll();
+//      success &= UnprecTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registerAll();
+	success &= EvenOddPrecConstDetTwoFlavorPolyPrecWilsonTypeFermMonomialEnv::registerAll();
 
 	// Even Even part of a logdet monomial
-	success &=  PrecLogDetEvenEvenMonomial4DEnv::registerAll();
+	success &= EvenOddPrecLogDetEvenEvenMonomial4DEnv::registerAll();
 
 	// 5D Hasenbusch Monomials
-	success &=  EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registerAll();
+	success &= EvenOddPrecConstDetTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registerAll();
 
-	success &=  UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registerAll();
+	success &= UnprecTwoFlavorHasenbuschWilsonTypeFermMonomial5DEnv::registerAll();
 
 	success &= FixedRandomFermMonomial4DEnv::registerAll();
 

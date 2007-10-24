@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: eoprec_logdet_ee_monomial_w.h,v 3.2 2007-03-22 17:39:23 bjoo Exp $
+// $Id: eoprec_logdet_ee_monomial_w.h,v 3.3 2007-10-24 02:46:37 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */
 
-#ifndef __prec_logdet_even_even_monomial_h__
-#define __prec_logdet_even_even_monomial_h__
+#ifndef __eoprec_logdet_even_even_monomial_h__
+#define __eoprec_logdet_even_even_monomial_h__
 
 #include "eoprec_logdet_wilstype_fermact_w.h"
 #include "update/molecdyn/field_state.h"
@@ -23,64 +23,64 @@ namespace Chroma
    * Monomial is expected to be the same for these fermacts
    */
   template<typename P, typename Q, typename Phi>
-  class PrecLogDetEvenEvenMonomial : public ExactMonomial<P,Q>    
+  class EvenOddPrecLogDetEvenEvenMonomial : public ExactMonomial<P,Q>    
   {
   public: 
-    virtual ~PrecLogDetEvenEvenMonomial() {}
+    virtual ~EvenOddPrecLogDetEvenEvenMonomial() {}
 
     void dsdq(P& F, const AbsFieldState<P,Q>& s) 
-    {
-      START_CODE();
+      {
+	START_CODE();
 
-      XMLWriter& xml_out = TheXMLLogWriter::Instance();
-      push(xml_out, "PrecLogDetEvenEvenMonomial");
+	XMLWriter& xml_out = TheXMLLogWriter::Instance();
+	push(xml_out, "EvenOddPrecLogDetEvenEvenMonomial");
 
-      // Create FermAct
-      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+	// Create FermAct
+	const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
-      // Create a state for linop
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+	// Create a state for linop
+	Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
-      //Create LinOp
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
+	//Create LinOp
+	Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
 
-      lin->derivLogDetEvenEvenLinOp(F, PLUS);
+	lin->derivLogDetEvenEvenLinOp(F, PLUS);
 
-      for(int mu=0; mu < Nd; mu++) { 
-	F[mu] *= Real(-getNumFlavors());	  
+	for(int mu=0; mu < Nd; mu++) { 
+	  F[mu] *= Real(-getNumFlavors());	  
+	}
+	
+	state->deriv(F);
+
+	monitorForces(xml_out, "Forces", F);
+	pop(xml_out);
+
+	END_CODE();
       }
-	
-      state->deriv(F);
-
-      monitorForces(xml_out, "Forces", F);
-      pop(xml_out);
-
-      END_CODE();
-    }
 
 
     //! Gauge action value
     Double S(const AbsFieldState<P,Q>& s)  
-    {
-      START_CODE();
+      {
+	START_CODE();
 
-      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+	XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
-      push(xml_out, "PrecLogDetEvenEvenMonomial");
-      const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
-      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
+	push(xml_out, "EvenOddPrecLogDetEvenEvenMonomial");
+	const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+	Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
-      // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
+	// Need way to get gauge state from AbsFieldState<P,Q>
+	Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
       
-      Double S_ee =(Double(-getNumFlavors())*lin->logDetEvenEvenLinOp());
-      write(xml_out, "S", S_ee);
-      pop(xml_out);
+	Double S_ee =(Double(-getNumFlavors())*lin->logDetEvenEvenLinOp());
+	write(xml_out, "S", S_ee);
+	pop(xml_out);
 
-      END_CODE();
+	END_CODE();
 
-      return S_ee;
-    }
+	return S_ee;
+      }
 	
 	
     void refreshInternalFields(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -100,7 +100,7 @@ namespace Chroma
 
 
   /*! @ingroup monomial */
-  namespace PrecLogDetEvenEvenMonomial4DEnv 
+  namespace EvenOddPrecLogDetEvenEvenMonomial4DEnv 
   {
     extern const std::string name;
     bool registerAll();
@@ -108,20 +108,22 @@ namespace Chroma
 
   // Parameter structure
   /*! @ingroup monomial */
-  struct PrecLogDetEvenEvenMonomialParams 
+  struct EvenOddPrecLogDetEvenEvenMonomialParams 
   {
     // Base Constructor
-    PrecLogDetEvenEvenMonomialParams();
+    EvenOddPrecLogDetEvenEvenMonomialParams();
 
     // Read monomial from some root path
-    PrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path);
+    EvenOddPrecLogDetEvenEvenMonomialParams(XMLReader& in, const std::string& path);
     GroupXML_t fermact;
     int num_flavors;
   };
 
-  void read(XMLReader& r, const std::string& path,  PrecLogDetEvenEvenMonomialParams& p);
+  /*! @ingroup monomial */
+  void read(XMLReader& r, const std::string& path,  EvenOddPrecLogDetEvenEvenMonomialParams& p);
 
-  void write(XMLWriter& xml, const std::string& path, const PrecLogDetEvenEvenMonomialParams& p);
+  /*! @ingroup monomial */
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecLogDetEvenEvenMonomialParams& p);
 
 
   //! A Monomial For Just the EvenEven part of EvenOddPrecLogDetWilsonTypeFermActs -- concretely a 4D one
@@ -129,10 +131,10 @@ namespace Chroma
    *
    * Monomial is expected to be the same for these fermacts
    */
-  class PrecLogDetEvenEvenMonomial4D : 
-    public PrecLogDetEvenEvenMonomial<multi1d<LatticeColorMatrix>, 
-                                      multi1d<LatticeColorMatrix>,
-                                      LatticeFermion> 
+  class EvenOddPrecLogDetEvenEvenMonomial4D : 
+    public EvenOddPrecLogDetEvenEvenMonomial<multi1d<LatticeColorMatrix>, 
+    multi1d<LatticeColorMatrix>,
+    LatticeFermion> 
   {
   public:
     // Typedefs to save typing
@@ -141,13 +143,13 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Construct from param struct
-    PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomialParams& p);
+    EvenOddPrecLogDetEvenEvenMonomial4D(const EvenOddPrecLogDetEvenEvenMonomialParams& p);
 
     //! Copy Constructor
-    PrecLogDetEvenEvenMonomial4D(const PrecLogDetEvenEvenMonomial4D& m) : num_flavors(m.num_flavors), fermact(m.fermact) {}
+    EvenOddPrecLogDetEvenEvenMonomial4D(const EvenOddPrecLogDetEvenEvenMonomial4D& m) : num_flavors(m.num_flavors), fermact(m.fermact) {}
 
     //! Destructor is automagic
-    ~PrecLogDetEvenEvenMonomial4D() {}
+    ~EvenOddPrecLogDetEvenEvenMonomial4D() {}
 
 
   protected:
