@@ -170,6 +170,7 @@ AC_SUBST(QDPXX_PRECISION, "`${QDPXX_CONFIG} --precision`")
 AC_MSG_NOTICE([QDP++ precision: ${QDPXX_PRECISION}])
 
 dnl Try to compile a QDP++ program to check the --with options
+dnl This function is defined in acinclude.m4
 AC_MSG_CHECKING([if we can compile/link a simple QDP++ program])
 PAC_QDPXX_LINK_CXX_FUNC(
   ${QDPXX_CXXFLAGS},
@@ -527,8 +528,15 @@ cobalt)
 	;;
 esac
 
-dnl This function is defined in acinclude.m4
-dnl it tries to try to compile the program 
+dnl
+dnl Always build qdp-lapack. If no --enable-lapack option is given,
+dnl it will build a dummy lib with stubs. If the enable option is
+dnl given, it will build something that can be used by chroma
+dnl and not fry when call
+dnl
+AC_MSG_NOTICE([Configuring qdp-lapack])
+AC_CONFIG_SUBDIRS(other_libs/qdp-lapack)
+AC_SUBST(QDP_LAPACK_DIR, [qdp-lapack])
 
 
 ##################################
