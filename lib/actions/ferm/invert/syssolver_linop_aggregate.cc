@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.6 2007-05-01 14:39:13 bjoo Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.7 2007-10-24 02:53:01 edwards Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -9,6 +9,7 @@
 #include "actions/ferm/invert/syssolver_linop_bicgstab.h"
 #include "actions/ferm/invert/syssolver_linop_mr.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
+#include "actions/ferm/invert/syssolver_linop_eigcg.h"
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
 
 namespace Chroma
@@ -31,6 +32,7 @@ namespace Chroma
 	success &= LinOpSysSolverBiCGStabEnv::registerAll();
 	success &= LinOpSysSolverMREnv::registerAll();
 	success &= LinOpSysSolverCGTimingEnv::registerAll();
+	success &= LinOpSysSolverEigCGEnv::registerAll();
 	registered = true;
       }
       return success;

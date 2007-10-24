@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.106 2007-10-09 03:06:49 edwards Exp $
+# $Id: Makefile.am,v 3.107 2007-10-24 02:53:00 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -41,6 +41,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
+	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
@@ -60,6 +61,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
         actions/ferm/invert/containers.h \
+	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
 	actions/ferm/invert/syssolver_linop_factory.h \
 	actions/ferm/invert/syssolver_linop_aggregate.h \
@@ -76,6 +78,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
+	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
@@ -745,6 +748,8 @@ INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 # 
 AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
 
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
+
 if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
 endif
@@ -794,6 +799,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/invsumr.cc \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
+	actions/ferm/invert/inv_eigcg2.cc \
 	actions/ferm/invert/inv_rel_cg1.cc \
 	actions/ferm/invert/inv_rel_cg2.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
@@ -814,6 +820,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
+	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
@@ -828,6 +835,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
+	actions/ferm/invert/norm_gram_schm.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop.cc \
