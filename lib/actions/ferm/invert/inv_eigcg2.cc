@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.7 2007-10-24 02:38:56 edwards Exp $
+// $Id: inv_eigcg2.cc,v 1.8 2007-10-24 03:53:15 edwards Exp $
 
 #include <qdp-lapack.h>
 //#include <octave_debug.h>
@@ -92,8 +92,8 @@ namespace Chroma
       Double r_norm2 = norm2(r,A.subset()) ;
 
 #if 1
-      QDPIO::cout << "StathoCG: Nevecs(input) = " << evec.size() << endl;
-      QDPIO::cout << "StathoCG: k = " << k << "  res^2 = " << r_norm2 << endl;
+      QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_norm2 << endl;
 #endif
       Real inorm(Real(1.0/sqrt(r_norm2)));
       bool FindEvals = (Neig>0);
@@ -348,7 +348,7 @@ namespace Chroma
 	  return res;
 	}
 #if 1
-	QDPIO::cout << "StathoCG: k = " << k << "  res^2 = " << r_norm2 ;
+	QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_norm2 ;
 	QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
 #endif
       }
