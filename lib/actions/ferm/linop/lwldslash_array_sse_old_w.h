@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_sse_w.h,v 3.1 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_array_sse_old_w.h,v 3.1 2007-10-25 16:10:11 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -9,12 +9,10 @@
 
 #include "actions/ferm/linop/lwldslash_base_array_w.h"
 #include "state.h"
-#include "sse_dslash_qdp_packer.h" 
-
-using namespace SSEDslash;
 
 namespace Chroma 
 { 
+  typedef PColorMatrix < RComplex <REAL>, Nc > PrimitiveSU3Matrix;
 
   //! General Wilson-Dirac dslash
   /*!

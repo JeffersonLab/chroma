@@ -1,16 +1,24 @@
-// $Id: lwldslash_w_sse.cc,v 3.2 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_w_sse_old.cc,v 3.1 2007-10-25 16:10:11 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
 
 #include "chromabase.h"
-#include "actions/ferm/linop/lwldslash_w_sse.h"
+#include "actions/ferm/linop/lwldslash_w_sse_old.h"
 #include <sse_config.h>
-#include "sse_dslash.h"
-#include "sse_dslash_qdp_packer.h"
+
+
+// This is in C++ so it comes outside the extern "C" {}
+extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<Chroma::PrimitiveSU3Matrix>& u_tmp);
 
 namespace Chroma 
 { 
+  extern "C" 
+  {
+    void init_sse_su3dslash(const int* latt_size);
+    void free_sse_su3dslash(void);
+    void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
+  }
 
   //! Initialization routine
   void SSEWilsonDslash::init()
@@ -95,7 +103,7 @@ namespace Chroma
     QDPIO::cout << "Calling pack_gauge_field..." << flush;
 #endif
 
-    SSEDslash::qdp_pack_gauge(u, packed_gauge);
+    qdp_pack_gauge(u, packed_gauge);
   
 #if 0
     QDPIO::cout << "Done" << endl << flush;

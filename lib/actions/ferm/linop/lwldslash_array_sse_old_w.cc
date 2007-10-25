@@ -1,20 +1,30 @@
-// $Id: lwldslash_w_sse.cc,v 3.2 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_array_sse_old_w.cc,v 3.1 2007-10-25 16:10:11 bjoo Exp $
 /*! \file
- *  \brief Wilson Dslash linear operator
+ *  \brief Wilson Dslash linear operator array
  */
 
 #include "chromabase.h"
-#include "actions/ferm/linop/lwldslash_w_sse.h"
+#include "actions/ferm/linop/lwldslash_array_sse_old_w.h"
 #include <sse_config.h>
-#include "sse_dslash.h"
-#include "sse_dslash_qdp_packer.h"
+
+
+// This is in C++ so it comes outside the extern "C" {}
+extern void qdp_pack_gauge(const multi1d<LatticeColorMatrix>&_u, multi1d<Chroma::PrimitiveSU3Matrix>& u_tmp);
 
 namespace Chroma 
 { 
+  extern "C" 
+  {
+    void init_sse_su3dslash(const int* latt_size);
+    void free_sse_su3dslash(void);
+    void sse_su3dslash_wilson(SSEREAL* u, SSEREAL *psi, SSEREAL *res, int isign, int cb);
+  }
 
   //! Initialization routine
-  void SSEWilsonDslash::init()
+  void SSEWilsonDslashArray::init()
   {
+    START_CODE();
+
     // Initialize internal structures for DSLASH
 #if 0
     QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
@@ -22,58 +32,65 @@ namespace Chroma
 
     // Initialize using the total problem size
     init_sse_su3dslash(Layout::lattSize().slice());
+
+    END_CODE();
   }
 
-
-  //! Empty constructor
-  SSEWilsonDslash::SSEWilsonDslash()
+  //! Empty constructor. Must use create later
+  SSEWilsonDslashArray::SSEWilsonDslashArray() 
   {
     init();
   }
-  
+
   //! Full constructor
-  SSEWilsonDslash::SSEWilsonDslash(Handle< FermState<T,P,Q> > state)
-  { 
-    init();
-    create(state);
-  }
-  
-  //! Full constructor with anisotropy
-  SSEWilsonDslash::SSEWilsonDslash(Handle< FermState<T,P,Q> > state,
-				   const AnisoParam_t& aniso_) 
+  SSEWilsonDslashArray::SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
+					     int N5_,
+					     const AnisoParam_t& aniso_)
   {
-    init();
-    create(state, aniso_);
+    init(); 
+    create(state,N5_,aniso_);
   }
+
+
+  //! Full constructor
+  SSEWilsonDslashArray::SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
+					     int N5_)
+  {
+    init(); 
+    create(state,N5_);
+  }
+
 
   //! Creation routine
-  void SSEWilsonDslash::create(Handle< FermState<T,P,Q> > state)
+  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
+				    int N5_)
   {
-    AnisoParam_t foo;
-    create(state, foo);
+    AnisoParam_t aniso;
+    create(state, N5_, aniso);
   }
 
-  //! Creation routine with anisotropy
-  void SSEWilsonDslash::create(Handle< FermState<T,P,Q> > state,
-			       const AnisoParam_t& aniso_) 
+
+  //! Creation routine
+  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
+				    int N5_, const AnisoParam_t& aniso)
   {
     START_CODE();
 
-    // Save a copy of the aniso params original fields and with aniso folded in
-    anisoParam = aniso_;
+    N5 = N5_;
+    anisoParam = aniso;
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
 
-    // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "SSEWilsonDslash: error: fbc is null" << endl;
+      QDPIO::cerr << "SSEWilsonDslashArray: error: fbc is null" << endl;
       QDP_abort(1);
     }
 
-    // Fold in anisotropy
+    // Temporary copy - not kept
     multi1d<LatticeColorMatrix> u = state->getLinks();
+
     Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
     if (anisoParam.anisoP)
@@ -95,17 +112,17 @@ namespace Chroma
     QDPIO::cout << "Calling pack_gauge_field..." << flush;
 #endif
 
-    SSEDslash::qdp_pack_gauge(u, packed_gauge);
+    qdp_pack_gauge(u, packed_gauge);
   
 #if 0
     QDPIO::cout << "Done" << endl << flush;
 #endif
-
+    
     END_CODE();
   }
 
 
-  SSEWilsonDslash::~SSEWilsonDslash() 
+  SSEWilsonDslashArray::~SSEWilsonDslashArray() 
   {
     START_CODE();
 
@@ -117,6 +134,34 @@ namespace Chroma
 
     END_CODE();
   }
+
+
+  //! General Wilson-Dirac dslash
+  /*! \ingroup linop
+   * Wilson dslash
+   *
+   * Arguments:
+   *
+   *  \param chi      Result				                (Write)
+   *  \param psi      Pseudofermion field				(Read)
+   *  \param isign    D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
+   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   */
+  void 
+  SSEWilsonDslashArray::apply (multi1d<LatticeFermion>& chi, 
+			       const multi1d<LatticeFermion>& psi, 
+			       enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    if( chi.size() != N5 ) chi.resize(N5);
+
+    for(int n=0; n < N5; ++n)
+      apply(chi[n], psi[n], isign, cb);
+
+    END_CODE();
+  }
+
 
   //! General Wilson-Dirac dslash
   /*! \ingroup linop
@@ -130,8 +175,8 @@ namespace Chroma
    *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
    */
   void
-  SSEWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign, int cb) const
+  SSEWilsonDslashArray::apply (LatticeFermion& chi, const LatticeFermion& psi, 
+			       enum PlusMinus isign, int cb) const
   {
     START_CODE();
 
@@ -151,16 +196,11 @@ namespace Chroma
      * cbs to support such flexibility.
      *
      */
-    int source_cb = 1 - cb;
-    int target_cb = cb;
-    int cbsites = QDP::Layout::sitesOnNode()/2;
-
     sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
 			 (SSEREAL *)&(psi.elem(0).elem(0).elem(0).real()),
 			 (SSEREAL *)&(chi.elem(0).elem(0).elem(0).real()),
-			 (int)isign, source_cb);
+			 (int)isign, (1-cb));
   
-
     getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();

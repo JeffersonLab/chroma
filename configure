@@ -273,10 +273,11 @@ PACKAGE_VERSION='3.25.0'
 PACKAGE_STRING='chroma 3.25.0'
 PACKAGE_BUGREPORT='edwards@jlab.org'
 
+ac_subdirs_all="$ac_subdirs_all other_libs/sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/intel_sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/cg-dwf"
 ac_subdirs_all="$ac_subdirs_all other_libs/qdp-lapack"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE CG_DWF_DIR CG_DWF_ENABLED BUILD_CG_DWF_TRUE BUILD_CG_DWF_FALSE BUILD_CG_DWF_SSE_TRUE BUILD_CG_DWF_SSE_FALSE BUILD_CG_DWF_BLUELIGHT_TRUE BUILD_CG_DWF_BLUELIGHT_FALSE BUILD_CG_DWF_ALTIVEC_TRUE BUILD_CG_DWF_ALTIVEC_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BAGEL_CLOVER_CONFIG BAGEL_CLOVER_DSLASH_CXXFLAGS BAGEL_CLOVER_DSLASH_LDFLAGS BAGEL_CLOVER_DSLASH_LIBS BAGEL_CLOVER_CXXFLAGS BAGEL_CLOVER_LDFLAGS BAGEL_CLOVER_LIBS BUILD_BAGEL_CLOVER_APPLY_TRUE BUILD_BAGEL_CLOVER_APPLY_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE QMT_CXXFLAGS QMT_LDFLAGS QMT_LIBS BUILD_QMT_TRUE BUILD_QMT_FALSE QDP_LAPACK_DIR LATEX DVIPS DVIPDF DOXYGEN XMLDIFF LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE BUILD_SSE_WILSON_DSLASH_OLD_TRUE BUILD_SSE_WILSON_DSLASH_OLD_FALSE CG_DWF_DIR CG_DWF_ENABLED BUILD_CG_DWF_TRUE BUILD_CG_DWF_FALSE BUILD_CG_DWF_SSE_TRUE BUILD_CG_DWF_SSE_FALSE BUILD_CG_DWF_BLUELIGHT_TRUE BUILD_CG_DWF_BLUELIGHT_FALSE BUILD_CG_DWF_ALTIVEC_TRUE BUILD_CG_DWF_ALTIVEC_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BAGEL_CLOVER_CONFIG BAGEL_CLOVER_DSLASH_CXXFLAGS BAGEL_CLOVER_DSLASH_LDFLAGS BAGEL_CLOVER_DSLASH_LIBS BAGEL_CLOVER_CXXFLAGS BAGEL_CLOVER_LDFLAGS BAGEL_CLOVER_LIBS BUILD_BAGEL_CLOVER_APPLY_TRUE BUILD_BAGEL_CLOVER_APPLY_FALSE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_CPS_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE QMT_CXXFLAGS QMT_LDFLAGS QMT_LIBS BUILD_QMT_TRUE BUILD_QMT_FALSE QDP_LAPACK_DIR LATEX DVIPS DVIPDF DOXYGEN XMLDIFF LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -957,7 +958,7 @@ esac
     else
       echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2
     fi
-    cd $ac_popdir
+    cd "$ac_popdir"
   done
 fi
 
@@ -2104,8 +2105,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2163,8 +2163,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2235,8 +2234,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2280,8 +2278,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2638,8 +2635,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2697,8 +2693,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2814,8 +2809,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2869,8 +2863,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2915,8 +2908,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -2960,8 +2952,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_c_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_c_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3290,6 +3281,12 @@ if test "${enable_sse_wilson_dslash+set}" = set; then
 
 fi;
 
+# Check whether --enable-sse_wilson_dslash_old or --disable-sse_wilson_dslash_old was given.
+if test "${enable_sse_wilson_dslash_old+set}" = set; then
+  enableval="$enable_sse_wilson_dslash_old"
+
+fi;
+
 # Check whether --enable-cg-dwf or --disable-cg-dwf was given.
 if test "${enable_cg_dwf+set}" = set; then
   enableval="$enable_cg_dwf"
@@ -3593,8 +3590,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -3652,9 +3648,9 @@ case "$enable_sse_wilson_dslash" in
 echo "$as_me: Configuring SSE Wilson Dslash  " >&6;}
 
 
-subdirs="$subdirs other_libs/intel_sse_wilson_dslash"
+subdirs="$subdirs other_libs/sse_wilson_dslash"
 
-	SSE_DSLASH_DIR=intel_sse_wilson_dslash
+	SSE_DSLASH_DIR=sse_wilson_dslash
 
 
 cat >>confdefs.h <<\_ACEOF
@@ -3681,6 +3677,48 @@ else
   BUILD_SSE_WILSON_DSLASH_FALSE=
 fi
 
+
+case "$enable_sse_wilson_dslash_old" in
+  yes)
+        if test "x${enable_sse_wilson_dslash}x" ="xyesx" ;
+        then
+           { { echo "$as_me:$LINENO: error: Cant have both OLD And New Dslash Enabled" >&5
+echo "$as_me: error: Cant have both OLD And New Dslash Enabled" >&2;}
+   { (exit 1); exit 1; }; }
+        fi
+
+        { echo "$as_me:$LINENO: Configuring OLD SSE Wilson Dslash  " >&5
+echo "$as_me: Configuring OLD SSE Wilson Dslash  " >&6;}
+
+
+subdirs="$subdirs other_libs/intel_sse_wilson_dslash"
+
+        SSE_DSLASH_DIR=intel_sse_wilson_dslash
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_SSE_WILSON_DSLASH_OLD
+_ACEOF
+
+        ;;
+  *)
+
+        { echo "$as_me:$LINENO: Not building LEGACY SSE Dslash  " >&5
+echo "$as_me: Not building LEGACY SSE Dslash  " >&6;}
+        ;;
+esac
+SSE_DSLASH_ENABLED=$enable_sse_wilson_dslash_old
+
+
+
+
+if test "x${enable_sse_wilson_dslash_old}x" = "xyesx" ; then
+  BUILD_SSE_WILSON_DSLASH_OLD_TRUE=
+  BUILD_SSE_WILSON_DSLASH_OLD_FALSE='#'
+else
+  BUILD_SSE_WILSON_DSLASH_OLD_TRUE='#'
+  BUILD_SSE_WILSON_DSLASH_OLD_FALSE=
+fi
 
 
 
@@ -3983,8 +4021,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4247,8 +4284,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4459,8 +4495,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   cat conftest.err >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } &&
-	 { ac_try='test -z "$ac_cxx_werror_flag"
-			 || test ! -s conftest.err'
+	 { ac_try='test -z "$ac_cxx_werror_flag"			 || test ! -s conftest.err'
   { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
@@ -4958,6 +4993,13 @@ if test -z "${BUILD_SSE_WILSON_DSLASH_TRUE}" && test -z "${BUILD_SSE_WILSON_DSLA
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_SSE_WILSON_DSLASH_OLD_TRUE}" && test -z "${BUILD_SSE_WILSON_DSLASH_OLD_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_WILSON_DSLASH_OLD\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH_OLD\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5638,6 +5680,8 @@ s,@SSE_DSLASH_DIR@,$SSE_DSLASH_DIR,;t t
 s,@SSE_DSLASH_ENABLED@,$SSE_DSLASH_ENABLED,;t t
 s,@BUILD_SSE_WILSON_DSLASH_TRUE@,$BUILD_SSE_WILSON_DSLASH_TRUE,;t t
 s,@BUILD_SSE_WILSON_DSLASH_FALSE@,$BUILD_SSE_WILSON_DSLASH_FALSE,;t t
+s,@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@,$BUILD_SSE_WILSON_DSLASH_OLD_TRUE,;t t
+s,@BUILD_SSE_WILSON_DSLASH_OLD_FALSE@,$BUILD_SSE_WILSON_DSLASH_OLD_FALSE,;t t
 s,@CG_DWF_DIR@,$CG_DWF_DIR,;t t
 s,@CG_DWF_ENABLED@,$CG_DWF_ENABLED,;t t
 s,@BUILD_CG_DWF_TRUE@,$BUILD_CG_DWF_TRUE,;t t
@@ -5851,11 +5895,6 @@ esac
   *) ac_INSTALL=$ac_top_builddir$INSTALL ;;
   esac
 
-  if test x"$ac_file" != x-; then
-    { echo "$as_me:$LINENO: creating $ac_file" >&5
-echo "$as_me: creating $ac_file" >&6;}
-    rm -f "$ac_file"
-  fi
   # Let's still pretend it is `configure' which instantiates (i.e., don't
   # use $as_me), people would be surprised to read:
   #    /* config.h.  Generated by config.status.  */
@@ -5894,6 +5933,12 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
 	 fi;;
       esac
     done` || { (exit 1); exit 1; }
+
+  if test x"$ac_file" != x-; then
+    { echo "$as_me:$LINENO: creating $ac_file" >&5
+echo "$as_me: creating $ac_file" >&6;}
+    rm -f "$ac_file"
+  fi
 _ACEOF
 cat >>$CONFIG_STATUS <<_ACEOF
   sed "$ac_vpsub
@@ -6574,7 +6619,7 @@ echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
    { (exit 1); exit 1; }; }
     fi
 
-    cd $ac_popdir
+    cd "$ac_popdir"
   done
 fi
 

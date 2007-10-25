@@ -1,20 +1,19 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_sse_w.h,v 3.1 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_w_sse_old.h,v 3.1 2007-10-25 16:10:11 bjoo Exp $
 /*! \file
- *  \brief Wilson Dslash linear operator array
+ *  \brief Wilson Dslash linear operator
  */
 
-#ifndef __lwldslash_array_sse_w_h__
-#define __lwldslash_array_sse_w_h__
+#ifndef __lwldslash_sse_h__
+#define __lwldslash_sse_h__
 
-#include "actions/ferm/linop/lwldslash_base_array_w.h"
+#include "actions/ferm/linop/lwldslash_base_w.h"
 #include "state.h"
-#include "sse_dslash_qdp_packer.h" 
 
-using namespace SSEDslash;
 
 namespace Chroma 
 { 
+  typedef PColorMatrix<RComplex<REAL>, Nc> PrimitiveSU3Matrix;
 
   //! General Wilson-Dirac dslash
   /*!
@@ -46,7 +45,7 @@ namespace Chroma
    *
    */
                                                                                 
-  class SSEWilsonDslashArray : public WilsonDslashBaseArray
+  class SSEWilsonDslash : public WilsonDslashBase
   {
   public:
     // Typedefs to save typing
@@ -55,31 +54,24 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Empty constructor. Must use create later
-    SSEWilsonDslashArray();
+    SSEWilsonDslash();
 
     //! Full constructor
-    SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
-			 int N5_);
+    SSEWilsonDslash(Handle< FermState<T,P,Q> > state);
 
-    //! Full constructor
-    SSEWilsonDslashArray(Handle< FermState<T,P,Q> > state,
-			 int N5_,
-			 const AnisoParam_t& aniso_);
+    //! Full constructor with anisotropy
+    SSEWilsonDslash(Handle< FermState<T,P,Q> > state,
+		    const AnisoParam_t& aniso_);
 
     //! Creation routine
-    void create(Handle< FermState<T,P,Q> > state,
-		int N5_);
+    void create(Handle< FermState<T,P,Q> > state);
 
-    //! Creation routine
-    void create(Handle< FermState<T,P,Q> > state,
-		int N5_,
+    //! Creation routine with anisotropy
+    void create(Handle< FermState<T,P,Q> > state, 
 		const AnisoParam_t& aniso_);
 
-    //! Expected length of array index
-    int size() const {return N5;}
-
     //! No real need for cleanup here
-    ~SSEWilsonDslashArray();
+    ~SSEWilsonDslash();
 
     /**
      * Apply a dslash
@@ -91,38 +83,22 @@ namespace Chroma
      *
      * \return The output of applying dslash on psi
      */
-    void apply (multi1d<LatticeFermion>& chi, 
-		const multi1d<LatticeFermion>& psi, 
-		enum PlusMinus isign, int cb) const;
+    void apply(LatticeFermion& chi, const LatticeFermion& psi, 
+	       enum PlusMinus isign, int cb) const;
 
-    /**
-     * Apply a dslash
-     *
-     * \param chi     result                                      (Write)
-     * \param psi     source                                      (Read)
-     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
-     *
-     * \return The output of applying dslash on psi
-     */
-    void apply (LatticeFermion& chi, 
-		const LatticeFermion& psi, 
-		enum PlusMinus isign, int cb) const;
-    
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
   protected:
-    //! Init internals
-    void init();
-
     //! Get the anisotropy parameters
     const AnisoParam_t& getAnisoParam() const {return anisoParam;}
 
+    //! Init internals
+    void init();
+
   private:
     AnisoParam_t  anisoParam;
-    multi1d<PrimitiveSU3Matrix> packed_gauge;
-    int N5;
+    multi1d<PrimitiveSU3Matrix> packed_gauge;  // fold in anisotropy
     Handle< FermBC<T,P,Q> > fbc;
   };
 

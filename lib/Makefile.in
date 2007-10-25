@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.195 2007-10-24 02:57:15 edwards Exp $
+# $Id: Makefile.in,v 3.196 2007-10-25 16:10:09 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -40,13 +40,14 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 @BUILD_GMP_REMEZ_TRUE@am__append_1 = @GMP_CXXFLAGS@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_2 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_CG_DWF_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
-@BUILD_QMT_TRUE@am__append_4 = @QMT_CXXFLAGS@
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_5 = @BAGEL_CLOVER_CXXFLAGS@
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_CG_DWF_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+@BUILD_QMT_TRUE@am__append_5 = @QMT_CXXFLAGS@
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_6 = @BAGEL_CLOVER_CXXFLAGS@
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
-@BUILD_GMP_REMEZ_TRUE@am__append_6 = update/molecdyn/monomial/remez_gmp.h
-@BUILD_GMP_REMEZ_TRUE@am__append_7 = update/molecdyn/monomial/remez_gmp.cc
+@BUILD_GMP_REMEZ_TRUE@am__append_7 = update/molecdyn/monomial/remez_gmp.h
+@BUILD_GMP_REMEZ_TRUE@am__append_8 = update/molecdyn/monomial/remez_gmp.cc
 
 # Taken out for now
 #	meas/inline/hadron/inline_spectrum_w.cc
@@ -56,15 +57,23 @@ POST_UNINSTALL = :
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_8 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_9 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_9 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_10 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.cc
 
-@BUILD_CG_DWF_TRUE@am__append_10 = \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@am__append_11 = \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@        actions/ferm/linop/lwldslash_w_sse_old.h \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@        actions/ferm/linop/lwldslash_array_sse_old_w.h
+
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@am__append_12 = \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@        actions/ferm/linop/lwldslash_w_sse_old.cc \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@        actions/ferm/linop/lwldslash_array_sse_old_w.cc
+
+@BUILD_CG_DWF_TRUE@am__append_13 = \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_inverter_interface.h \
@@ -74,29 +83,29 @@ POST_UNINSTALL = :
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bgld_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_altivecf_solver.h
 
-@BUILD_CG_DWF_TRUE@am__append_11 = actions/ferm/qprop/avp_inverter_interface.cc
-@BUILD_CG_DWF_SSE_TRUE@am__append_12 = actions/ferm/qprop/avp_ssef_solver.cc \
+@BUILD_CG_DWF_TRUE@am__append_14 = actions/ferm/qprop/avp_inverter_interface.cc
+@BUILD_CG_DWF_SSE_TRUE@am__append_15 = actions/ferm/qprop/avp_ssef_solver.cc \
 @BUILD_CG_DWF_SSE_TRUE@	actions/ferm/qprop/avp_ssed_solver.cc
 
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_13 = actions/ferm/qprop/avp_bglf_solver.cc \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_16 = actions/ferm/qprop/avp_bglf_solver.cc \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	actions/ferm/qprop/avp_bgld_solver.cc
 
-@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_14 = actions/ferm/qprop/avp_altivecf_solver.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_15 = actions/ferm/linop/lwldslash_w_pab.h \
+@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_17 = actions/ferm/qprop/avp_altivecf_solver.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_18 = actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	                  actions/ferm/linop/lwldslash_array_pab_w.h
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_16 = actions/ferm/linop/lwldslash_w_pab.cc \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_19 = actions/ferm/linop/lwldslash_w_pab.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@		       actions/ferm/linop/lwldslash_array_pab_w.cc
 
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_17 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_18 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_20 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_21 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_19 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_20 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_21 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_22 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_22 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__append_23 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_24 = actions/ferm/linop/clover_term_bagel_clover.h
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_25 = actions/ferm/linop/clover_term_bagel_clover.cc
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -587,6 +596,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/smear/inline_link_smear.cc \
 	actions/ferm/linop/lwldslash_w_sse.cc \
 	actions/ferm/linop/lwldslash_array_sse_w.cc \
+	actions/ferm/linop/lwldslash_w_sse_old.cc \
+	actions/ferm/linop/lwldslash_array_sse_old_w.cc \
 	actions/ferm/qprop/avp_inverter_interface.cc \
 	actions/ferm/qprop/avp_ssef_solver.cc \
 	actions/ferm/qprop/avp_ssed_solver.cc \
@@ -634,20 +645,22 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT) \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_array_sse_w.$(OBJEXT)
-@BUILD_CG_DWF_TRUE@am__objects_3 = avp_inverter_interface.$(OBJEXT)
-@BUILD_CG_DWF_SSE_TRUE@am__objects_4 = avp_ssef_solver.$(OBJEXT) \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@am__objects_3 = lwldslash_w_sse_old.$(OBJEXT) \
+@BUILD_SSE_WILSON_DSLASH_OLD_TRUE@	lwldslash_array_sse_old_w.$(OBJEXT)
+@BUILD_CG_DWF_TRUE@am__objects_4 = avp_inverter_interface.$(OBJEXT)
+@BUILD_CG_DWF_SSE_TRUE@am__objects_5 = avp_ssef_solver.$(OBJEXT) \
 @BUILD_CG_DWF_SSE_TRUE@	avp_ssed_solver.$(OBJEXT)
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__objects_5 =  \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__objects_6 =  \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	avp_bglf_solver.$(OBJEXT) \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	avp_bgld_solver.$(OBJEXT)
-@BUILD_CG_DWF_ALTIVEC_TRUE@am__objects_6 =  \
+@BUILD_CG_DWF_ALTIVEC_TRUE@am__objects_7 =  \
 @BUILD_CG_DWF_ALTIVEC_TRUE@	avp_altivecf_solver.$(OBJEXT)
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_7 =  \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_8 =  \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT) \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_array_pab_w.$(OBJEXT)
-@BUILD_OPT_CFZ_LINOP_TRUE@am__objects_8 = eoprec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
-@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_9 = asqtad_cps_wrapper_qprop.$(OBJEXT)
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_10 = clover_term_bagel_clover.$(OBJEXT)
+@BUILD_OPT_CFZ_LINOP_TRUE@am__objects_9 = eoprec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
+@BUILD_ASQTAD_CPS_INVERTER_WRAPPER_TRUE@am__objects_10 = asqtad_cps_wrapper_qprop.$(OBJEXT)
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_11 = clover_term_bagel_clover.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
@@ -998,7 +1011,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) fermacts_aggregate_s.$(OBJEXT) \
+	$(am__objects_8) $(am__objects_9) \
+	fermacts_aggregate_s.$(OBJEXT) \
 	asqtad_fermact_params_s.$(OBJEXT) asqtad_fermact_s.$(OBJEXT) \
 	hisq_fermact_params_s.$(OBJEXT) hisq_fermact_s.$(OBJEXT) \
 	klein_gordon_fermact_s.$(OBJEXT) fermbcs_reader_s.$(OBJEXT) \
@@ -1018,8 +1032,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	pseudoscalar_loops_s.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
-	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_9) \
-	$(am__objects_10) chroma_init.$(OBJEXT)
+	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_10) \
+	$(am__objects_11) chroma_init.$(OBJEXT)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -1641,6 +1655,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/linop/lwldslash_array_sse_w.h \
+	actions/ferm/linop/lwldslash_w_sse_old.h \
+	actions/ferm/linop/lwldslash_array_sse_old_w.h \
 	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h \
 	actions/ferm/qprop/avp_inverter_interface.h \
@@ -1702,6 +1718,8 @@ BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
 BUILD_QMT_FALSE = @BUILD_QMT_FALSE@
 BUILD_QMT_TRUE = @BUILD_QMT_TRUE@
 BUILD_SSE_WILSON_DSLASH_FALSE = @BUILD_SSE_WILSON_DSLASH_FALSE@
+BUILD_SSE_WILSON_DSLASH_OLD_FALSE = @BUILD_SSE_WILSON_DSLASH_OLD_FALSE@
+BUILD_SSE_WILSON_DSLASH_OLD_TRUE = @BUILD_SSE_WILSON_DSLASH_OLD_TRUE@
 BUILD_SSE_WILSON_DSLASH_TRUE = @BUILD_SSE_WILSON_DSLASH_TRUE@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
@@ -2427,9 +2445,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h $(am__append_6) \
-	$(am__append_8) $(am__append_10) $(am__append_15) \
-	$(am__append_17) $(am__append_19) $(am__append_21)
+	meas/inline/smear/inline_link_smear.h $(am__append_7) \
+	$(am__append_9) $(am__append_11) $(am__append_13) \
+	$(am__append_18) $(am__append_20) $(am__append_22) \
+	$(am__append_24)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -2451,7 +2470,7 @@ AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ \
 	-I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5)
+	$(am__append_4) $(am__append_5) $(am__append_6)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -2698,7 +2717,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
-	$(am__append_7) actions/ferm/fermacts/fermacts_aggregate_w.cc \
+	$(am__append_8) actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.cc \
@@ -2949,10 +2968,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc $(am__append_9) \
-	$(am__append_11) $(am__append_12) $(am__append_13) \
-	$(am__append_14) $(am__append_16) $(am__append_18) \
-	actions/ferm/fermacts/fermacts_aggregate_s.cc \
+	meas/inline/smear/inline_link_smear.cc $(am__append_10) \
+	$(am__append_12) $(am__append_14) $(am__append_15) \
+	$(am__append_16) $(am__append_17) $(am__append_19) \
+	$(am__append_21) actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermacts/hisq_fermact_params_s.cc \
@@ -2982,7 +3001,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_20) $(am__append_22) \
+	util/gauge/stag_phases_s.cc $(am__append_23) $(am__append_25) \
 	init/chroma_init.cc
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -3388,6 +3407,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lw_tree_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_pab_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_qdpopt_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_sse_old_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_sse_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_base_array_w.Po@am__quote@
@@ -3396,6 +3416,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse_old.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_xml_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mciter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mesQlPOT_w.Po@am__quote@
@@ -11434,6 +11455,34 @@ lwldslash_array_sse_w.obj: actions/ferm/linop/lwldslash_array_sse_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_sse_w.cc' object='lwldslash_array_sse_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_sse_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_sse_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_sse_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_sse_w.cc'; fi`
+
+lwldslash_w_sse_old.o: actions/ferm/linop/lwldslash_w_sse_old.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_w_sse_old.o -MD -MP -MF "$(DEPDIR)/lwldslash_w_sse_old.Tpo" -c -o lwldslash_w_sse_old.o `test -f 'actions/ferm/linop/lwldslash_w_sse_old.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_w_sse_old.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_w_sse_old.Tpo" "$(DEPDIR)/lwldslash_w_sse_old.Po"; else rm -f "$(DEPDIR)/lwldslash_w_sse_old.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_w_sse_old.cc' object='lwldslash_w_sse_old.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_w_sse_old.o `test -f 'actions/ferm/linop/lwldslash_w_sse_old.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_w_sse_old.cc
+
+lwldslash_w_sse_old.obj: actions/ferm/linop/lwldslash_w_sse_old.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_w_sse_old.obj -MD -MP -MF "$(DEPDIR)/lwldslash_w_sse_old.Tpo" -c -o lwldslash_w_sse_old.obj `if test -f 'actions/ferm/linop/lwldslash_w_sse_old.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_w_sse_old.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_w_sse_old.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_w_sse_old.Tpo" "$(DEPDIR)/lwldslash_w_sse_old.Po"; else rm -f "$(DEPDIR)/lwldslash_w_sse_old.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_w_sse_old.cc' object='lwldslash_w_sse_old.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_w_sse_old.obj `if test -f 'actions/ferm/linop/lwldslash_w_sse_old.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_w_sse_old.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_w_sse_old.cc'; fi`
+
+lwldslash_array_sse_old_w.o: actions/ferm/linop/lwldslash_array_sse_old_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_array_sse_old_w.o -MD -MP -MF "$(DEPDIR)/lwldslash_array_sse_old_w.Tpo" -c -o lwldslash_array_sse_old_w.o `test -f 'actions/ferm/linop/lwldslash_array_sse_old_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_array_sse_old_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_array_sse_old_w.Tpo" "$(DEPDIR)/lwldslash_array_sse_old_w.Po"; else rm -f "$(DEPDIR)/lwldslash_array_sse_old_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_sse_old_w.cc' object='lwldslash_array_sse_old_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_sse_old_w.o `test -f 'actions/ferm/linop/lwldslash_array_sse_old_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/lwldslash_array_sse_old_w.cc
+
+lwldslash_array_sse_old_w.obj: actions/ferm/linop/lwldslash_array_sse_old_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lwldslash_array_sse_old_w.obj -MD -MP -MF "$(DEPDIR)/lwldslash_array_sse_old_w.Tpo" -c -o lwldslash_array_sse_old_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_sse_old_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_sse_old_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_sse_old_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/lwldslash_array_sse_old_w.Tpo" "$(DEPDIR)/lwldslash_array_sse_old_w.Po"; else rm -f "$(DEPDIR)/lwldslash_array_sse_old_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/lwldslash_array_sse_old_w.cc' object='lwldslash_array_sse_old_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lwldslash_array_sse_old_w.obj `if test -f 'actions/ferm/linop/lwldslash_array_sse_old_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/lwldslash_array_sse_old_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/lwldslash_array_sse_old_w.cc'; fi`
 
 avp_inverter_interface.o: actions/ferm/qprop/avp_inverter_interface.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT avp_inverter_interface.o -MD -MP -MF "$(DEPDIR)/avp_inverter_interface.Tpo" -c -o avp_inverter_interface.o `test -f 'actions/ferm/qprop/avp_inverter_interface.cc' || echo '$(srcdir)/'`actions/ferm/qprop/avp_inverter_interface.cc; \

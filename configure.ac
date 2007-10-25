@@ -43,6 +43,12 @@ AC_ARG_ENABLE(sse_wilson_dslash,
     [Build and Use the SSE2 Wilson Dslash Library])
 )
 
+AC_ARG_ENABLE(sse_wilson_dslash_old,
+  AC_HELP_STRING(
+    [--enable-sse-wilson-dslash],
+    [Build and Use the SSE2 Wilson Dslash Library])
+)
+
 AC_ARG_ENABLE(cg-dwf,
 	AC_HELP_STRING([--enable-cg-dwf=<cpuarch> <cpuarch>=sse,bluelight,altivec]),
 	[cg_dwf_cpu_arch=${enableval}
@@ -193,8 +199,8 @@ dnl SSE Wilson Dslash stuff
 case "$enable_sse_wilson_dslash" in
   yes) 
         AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
-	AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
-	AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
+	AC_CONFIG_SUBDIRS(other_libs/sse_wilson_dslash)
+	AC_SUBST(SSE_DSLASH_DIR, [sse_wilson_dslash])
 	AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[ Build SSE Dslash Op ])
 	;;
   *)
@@ -207,6 +213,28 @@ AC_SUBST(SSE_DSLASH_ENABLED,[$enable_sse_wilson_dslash]	)
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
 
+dnl Legacy SSE Wilson Dslash stuff
+case "$enable_sse_wilson_dslash_old" in
+  yes)
+        if test "x${enable_sse_wilson_dslash}x" ="xyesx" ;
+        then 
+           AC_MSG_ERROR([Cant have both OLD And New Dslash Enabled])
+        fi
+
+        AC_MSG_NOTICE( [Configuring OLD SSE Wilson Dslash ] )
+        AC_CONFIG_SUBDIRS(other_libs/intel_sse_wilson_dslash)
+        AC_SUBST(SSE_DSLASH_DIR, [intel_sse_wilson_dslash])
+        AC_DEFINE([BUILD_SSE_WILSON_DSLASH_OLD],[],[ Build SSE Dslash Op ])
+        ;;
+  *)
+        AC_SUBST(SSE_DSLASH_DIR)
+        AC_MSG_NOTICE( [Not building LEGACY SSE Dslash ] )
+        ;;
+esac
+AC_SUBST(SSE_DSLASH_ENABLED,[$enable_sse_wilson_dslash_old] )
+
+AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH_OLD,
+  [test "x${enable_sse_wilson_dslash_old}x" = "xyesx" ])
 
 
 dnl CG DWF stuff

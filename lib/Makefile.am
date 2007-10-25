@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.107 2007-10-24 02:53:00 edwards Exp $
+# $Id: Makefile.am,v 3.108 2007-10-25 16:10:09 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -758,6 +758,10 @@ if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
 
+if BUILD_SSE_WILSON_DSLASH_OLD
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+endif
+
 if BUILD_CG_DWF
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
 endif
@@ -1334,6 +1338,15 @@ nobase_include_HEADERS += \
 libchroma_a_SOURCES += \
         actions/ferm/linop/lwldslash_w_sse.cc \
         actions/ferm/linop/lwldslash_array_sse_w.cc
+endif
+
+if BUILD_SSE_WILSON_DSLASH_OLD
+nobase_include_HEADERS += \
+        actions/ferm/linop/lwldslash_w_sse_old.h \
+        actions/ferm/linop/lwldslash_array_sse_old_w.h
+libchroma_a_SOURCES += \
+        actions/ferm/linop/lwldslash_w_sse_old.cc \
+        actions/ferm/linop/lwldslash_array_sse_old_w.cc
 endif
 
 if BUILD_CG_DWF

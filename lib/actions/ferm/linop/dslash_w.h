@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_w.h,v 3.1 2007-02-06 15:20:56 bjoo Exp $
+// $Id: dslash_w.h,v 3.2 2007-10-25 16:10:11 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -23,7 +23,14 @@
 #ifdef BUILD_SSE_WILSON_DSLASH
 // The lwldslash_w_sse.h defines the SSE Dslash class
 // The following typedef switches it in.
+
 # include "lwldslash_w_sse.h"
+namespace Chroma {
+typedef SSEWilsonDslash WilsonDslash;
+}  // end namespace Chroma
+
+#elif defined BUILD_SSE_WILSON_DSLASH_OLD
+# include "lwldslash_w_sse_old.h"
 namespace Chroma {
 typedef SSEWilsonDslash WilsonDslash;
 }  // end namespace Chroma
