@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg.h,v 1.8 2007-10-24 13:40:30 edwards Exp $
+// $Id: syssolver_linop_eigcg.h,v 1.9 2007-10-25 21:35:43 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -46,7 +46,7 @@ namespace Chroma
      */
     LinOpSysSolverEigCG(Handle< LinearOperator<T> > A_,
 			const SysSolverEigCGParams& invParam_) : 
-      MdagM(A_), A(A_), invParam(invParam_) 
+      MdagM(new MdagMLinOp<T>(A_)), A(A_), invParam(invParam_) 
       {
 	// NEED to grab the eignvectors from the named buffer here
 	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
