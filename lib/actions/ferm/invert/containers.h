@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.7 2007-10-09 18:07:14 edwards Exp $
+// $Id: containers.h,v 1.8 2007-10-26 03:31:28 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -93,16 +93,17 @@ namespace Chroma
       }
 
       // This will only add as many vectors as they fit
-      void AddVectors(const multi1d<T>& e,const multi1d<T>& v,const Subset& s){
+      void AddVectors(const multi1d<Double>& e,const multi1d<T>& v,const Subset& s){
 	for(int i(0);i<e.size();i++)
-	  AddVector(e[i],s) ;
+	  eval.AddVector(e[i],s) ;
 	for(int i(0);i<v.size();i++)
-	  AddVector(v[i],s) ;
+	  evec.AddVector(v[i],s) ;
 	if (eval.N != evec.N)
 	{
 	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
 	  QDP_abort(1);
 	}
+	Neig = evec.N ;
       }
     };
 

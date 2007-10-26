@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.7 2007-10-24 13:40:30 edwards Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.8 2007-10-26 03:31:28 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -99,14 +99,15 @@ namespace Chroma
 	res.n_count += n_CG ;
 	  
 	snoop.start();
-	GoodEvecs.evec.AddVectors(evec,  MdagM.subset());
-	GoodEvecs.eval.AddVectors(lambda,MdagM.subset());
+	//GoodEvecs.evec.AddVectors(evec,  MdagM.subset());
+	//GoodEvecs.eval.AddVectors(lambda,MdagM.subset());
+	GoodEvecs.AddVectors(lambda, evec, MdagM.subset());
 	snoop.stop();
 	double Time = snoop.getTimeInSeconds() ;
 	QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
 	  
 	snoop.start();
-//????	  normGramSchmidt(GoodEvecs.evec,GoodEvecs.Neig-invParam.Neig,GoodEvecs.Neig,MdagM.subset());
+        normGramSchmidt(GoodEvecs.evec.vec,GoodEvecs.Neig-invParam.Neig,GoodEvecs.Neig,MdagM.subset());
 	normGramSchmidt(GoodEvecs.evec.vec,GoodEvecs.Neig-invParam.Neig,GoodEvecs.Neig,MdagM.subset());
 	snoop.stop();
 	Time += snoop.getTimeInSeconds() ;
