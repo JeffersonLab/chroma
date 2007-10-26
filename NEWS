@@ -1,3 +1,14 @@
+10/26/2007 -- Balint Joo
+	Version 3.26.0 - New Dslash written in intrinsics with unit test suite and 
+        complete QMT harness (as opposed to just 32bit parscalar). 
+        --enable-sse-wilson-dslash now enables new dslash. However this may be 
+        slow on 32 bit systems and pentia (rather than opterons). So the old GCC 
+        Inline assembly dslash can be enabled instead with the --enable-sse-wilson-dslash-old 
+        configure switch. Both new and old dslashes cannot be in the same build. 
+        Its one or t'other. Code passed regressions on 7n and compiled and passed 
+        all regressions but the mres one in parscalar-single with the Intel compiler 
+        and the new dslash.
+
 10/24/2007 -- Robert Edwards
 	Version 3.25.0 - New qdp-lapack package included in other_libs. New
         system-solver routine "eigcg" that uses Kostas' eigenvector acceleration
