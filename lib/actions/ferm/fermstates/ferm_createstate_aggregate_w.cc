@@ -1,4 +1,4 @@
-// $Id: ferm_createstate_aggregate_w.cc,v 1.3 2006-09-21 19:42:07 edwards Exp $
+// $Id: ferm_createstate_aggregate_w.cc,v 1.4 2007-10-28 04:05:12 kostas Exp $
 /*! \file
  *  \brief All ferm create-state method
  */
@@ -11,6 +11,7 @@
 #include "actions/ferm/fermstates/periodic_fermstate_w.h"
 #include "actions/ferm/fermstates/simple_fermstate_w.h"
 #include "actions/ferm/fermstates/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/extfield_fermstate_w.h"
 
 namespace Chroma
 {
@@ -35,6 +36,7 @@ namespace Chroma
 	success &= CreateSimpleFermStateEnv::registerAll();
 	success &= CreateStoutFermStateEnv::registerAll();
 	success &= CreateSLICFermStateEnv::registerAll();
+	//success &= CreateExtFieldFermStateEnv::registerAll();
 
 	registered = true;
       }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_fermstate_w.h,v 1.1 2006-09-19 17:53:36 edwards Exp $
+// $Id: extfield_fermstate_w.h,v 1.2 2007-10-28 04:05:12 kostas Exp $
 /*! @file
  * @brief Fermion external field state and a creator
  */
@@ -16,6 +16,15 @@
 
 namespace Chroma
 {
+
+
+   /*! @ingroup fermstates */
+  namespace CreateExtFieldFermStateEnv 
+  { 
+    extern const std::string name;
+    bool registerAll();
+  }
+
   //! External field state
   /*! @ingroup fermstates
    *

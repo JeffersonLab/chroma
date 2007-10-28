@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermstates.h,v 1.1 2006-09-19 17:53:37 edwards Exp $
+// $Id: fermstates.h,v 1.2 2007-10-28 04:05:12 kostas Exp $
 
 /*! \file
  * \brief Fermion states
@@ -20,6 +20,7 @@
 #include "simple_fermstate.h"
 
 #include "stout_fermstate_w.h"
+#include "extfield_fermstate_w.h"
 
 #endif
 

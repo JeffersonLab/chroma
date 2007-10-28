@@ -1,4 +1,4 @@
-// $Id: extfield_fermstate_w.cc,v 1.2 2006-09-20 20:31:41 edwards Exp $
+// $Id: extfield_fermstate_w.cc,v 1.3 2007-10-28 04:05:12 kostas Exp $
 /*! \file
  *  \brief External field ferm state and a creator
  */
@@ -35,7 +35,7 @@ namespace Chroma
     //! Local registration flag
     static bool registered = false;
 
-    //! Register all the factories
+    //! Register all the factories 
     bool registerAll() 
     {
       bool success = true; 
