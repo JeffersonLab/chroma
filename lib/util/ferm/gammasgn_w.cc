@@ -1,4 +1,4 @@
-// $Id: gammasgn_w.cc,v 3.0 2006-04-03 04:59:11 edwards Exp $
+// $Id: gammasgn_w.cc,v 3.1 2007-10-29 05:04:08 edwards Exp $
 /*! \file
  *  \brief Compute gamma matrix multiplication table factors
  */
@@ -29,7 +29,7 @@ namespace Chroma
 
       if (Ns != 4)
       {
-	QDPIO::cerr << "gammasgn_init: only supports Ns=4 currently" << endl;
+	QDPIO::cerr << __func__ << ": only supports Ns=4 currently" << endl;
 	QDP_abort(1);
       }
 
