@@ -1,14 +1,15 @@
-// $Id: extfield_fermstate_w.cc,v 1.3 2007-10-28 04:05:12 kostas Exp $
+// $Id: extfield_fermstate_w.cc,v 1.4 2007-10-30 02:56:02 kostas Exp $
 /*! \file
  *  \brief External field ferm state and a creator
  */
 
-#if 0
+#if 1
 
-#error "TURNED OFF FOR THE MOMENT - NEED TO FIX CREATEEXTFIELDFermState CONSTRUCTOR CALL"
+//#error "TURNED OFF FOR THE MOMENT - NEED TO FIX CREATEEXTFIELDFermState CONSTRUCTOR CALL"
 
 
 #include "actions/ferm/fermstates/extfield_fermstate_w.h"
+#include "actions/ferm/fermstates/extfield_aggregate_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_factory_w.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
@@ -24,10 +25,11 @@ namespace Chroma
 		    multi1d<LatticeColorMatrix> >* createFerm(XMLReader& xml, 
 							      const std::string& path) 
     {
+      
       return new CreateExtFieldFermState< LatticeFermion,
 	multi1d<LatticeColorMatrix>, 
-	multi1d<LatticeColorMatrix> >(WilsonTypeFermBCEnv::reader(xml, 
-								  path));
+	multi1d<LatticeColorMatrix> >(WilsonTypeFermBCEnv::reader(xml, path),
+				      ExternalFieldEnv::reader(xml,path));
     }
 
     const std::string name = "EXTERNAL_FIELD_FERM_STATE";

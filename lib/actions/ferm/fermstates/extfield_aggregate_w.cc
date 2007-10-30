@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.3 2007-10-28 04:05:11 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.4 2007-10-30 02:56:02 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -8,24 +8,12 @@
 #include "actions/ferm/fermstates/extfield_factory_w.h"
 #include "actions/ferm/fermstates/extfield_aggregate_w.h"
 
+#include "state.h"
+#include "create_state.h"
+
+
 namespace Chroma 
 {
-
-#if 0
-  // Read parameters
-  void read(XMLReader& xml, const string& path, DerivQuarkDisplacementEnv::Params& param)
-  {
-    DerivQuarkDisplacementEnv::Params tmp(xml, path);
-    param = tmp;
-  }
-
-  // Writer
-  void write(XMLWriter& xml, const string& path, const DerivQuarkDisplacementEnv::Params& param)
-  {
-    param.writeXML(xml, path);
-  }
-#endif
-
 
   //! External fields
   /*! \ingroup fermstates */
@@ -49,7 +37,7 @@ namespace Chroma
 					  const std::string& path)
       {
 	ConstantMagneticParams p ;
-	read(xml_in,"ConstMagnetic",p);
+	read(xml_in,path,p);
 	return new ConstantMagneticExternalField(p);
       }
 
@@ -66,96 +54,6 @@ namespace Chroma
 
     
 
-#if 0
-    //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
-    {
-      XMLReader paramtop(xml, path);
-
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version) 
-      {
-      case 1:
-	break;
-
-      default:
-	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
-	QDP_abort(1);
-      }
-
-      read(paramtop, "DisplacementType",  displacement_type);
-      read(paramtop, "deriv_length", deriv_length);
-    }
-
-    // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
-    {
-      push(xml, path);
-
-      int version = 1;
-      QDP::write(xml, "version", version);
-
-      write(xml, "DisplacementType", displacement_type);
-      write(xml, "deriv_length", deriv_length);
-
-      pop(xml);
-    }
-
-
-    //! Initialize
-    ParamsDir::ParamsDir()
-    {
-      deriv_dir = -1;
-      deriv_length = 0;
-    }
-
-
-    //! Read parameters
-    ParamsDir::ParamsDir(XMLReader& xml, const string& path)
-    {
-      XMLReader paramtop(xml, path);
-
-      int version;
-      read(paramtop, "version", version);
-
-      switch (version) 
-      {
-      case 1:
-	break;
-
-      default:
-	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
-	QDP_abort(1);
-      }
-
-      read(paramtop, "DisplacementType",  displacement_type);
-
-      read(paramtop, "deriv_dir", deriv_dir);
-      read(paramtop, "deriv_length", deriv_length);
-    }
-
-
-    // Writer
-    void ParamsDir::writeXML(XMLWriter& xml, const string& path) const
-    {
-      push(xml, path);
-
-      int version = 1;
-      QDP::write(xml, "version", version);
-
-      write(xml, "DisplacementType", displacement_type);
-      write(xml, "deriv_dir", deriv_dir);
-      write(xml, "deriv_length", deriv_length);
-
-      pop(xml);
-    }
-#endif
-
-    
   //! Reader
   /*! @ingroup sources */
     void read(XMLReader& xml, const string& path, ExternalFieldEnv::ConstantMagneticParams& param){
@@ -196,6 +94,23 @@ namespace Chroma
     }
 
 
+    multi1d< Handle< ExternalField > > reader(XMLReader& xml, 
+					      const std::string& path){
+      multi1d< Handle< ExternalField > > ext_field(Nd) ;
+       XMLReader paramtop(xml, path);
+       string name ;
+       read(paramtop, "Name", name);
+       /**
+              Handle< ExternalField > ef = Chroma::TheExternalFieldFactory::Instance().createObject(paramtop,name) ;
+      for(int mu(0);mu<Nd;mu++){
+	ext_field[mu] = ef ;
+      }
+       **/
+       QDPIO::cout<<"Found external field: "<<name<<endl ;
+
+      return ext_field ;
+    }
+
     // Construct linear function
     LatticeComplex
     ZeroExternalField::operator()(int dir) const
@@ -208,7 +123,7 @@ namespace Chroma
       return d;
     }
 
-    // Construct linear function
+    // Construct constant magnetic field. Needs fix up...
     LatticeComplex
     ConstantMagneticExternalField::operator()(int mu) const
     {

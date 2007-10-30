@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.3 2007-10-28 04:05:12 kostas Exp $
+// $Id: extfield_aggregate_w.h,v 1.4 2007-10-30 02:56:02 kostas Exp $
 /*! \file
  *  \brief External field functions
  */
@@ -7,7 +7,9 @@
 #ifndef __extfield_functions_w_h__
 #define __extfield_functions_w_h__
 
+#include "handle.h"
 #include "actions/ferm/fermstates/extfield.h"
+
 
 namespace Chroma 
 {
@@ -66,6 +68,9 @@ namespace Chroma
       //! Return the field
       LatticeComplex operator()(int dummy) const;
     };
+
+    multi1d< Handle< ExternalField > > reader(XMLReader& xml, 
+					      const std::string& path) ;
 
   }  // end namespace
 
