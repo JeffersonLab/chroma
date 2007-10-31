@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: check_regres_runner.pl,v 1.2 2007-03-08 20:52:36 bjoo Exp $
+#  $Id: check_regres_runner.pl,v 1.3 2007-10-31 14:14:38 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -15,7 +15,7 @@
 #   Perhaps, this should be incorporated in the autoconf
 #   tool chain.
 
-die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir xmldiff\n" unless scalar(@ARGV) == 3;
+die "Usage: $0   top_srcdir  top_builddir xmldiff\n" unless scalar(@ARGV) == 3;
 
 use File::Basename;
 

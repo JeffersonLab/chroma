@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: strip_bar3ptfn.pl,v 3.0 2006-04-03 04:59:22 edwards Exp $
+# $Id: strip_bar3ptfn.pl,v 3.1 2007-10-31 14:14:38 edwards Exp $
 #
 # Strip out all data of bar3ptfn.m output
 #
@@ -12,7 +12,7 @@ $[ = 0;                        # set array base to 1
 $, = ' ';                # set output field separator
 $\ = "\n";                # set output record separator
 
-#die "Usage: strip_bar3ptfn.pl  temp_directory\n" unless scalar($@ARGV) == 1;
+#die "Usage: $0  temp_directory\n" unless scalar($@ARGV) == 1;
 
 $dir = $ARGV[0];
 

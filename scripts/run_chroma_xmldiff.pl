@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.4 2007-02-26 02:11:54 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.5 2007-10-31 14:14:38 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -15,7 +15,7 @@
 #   Perhaps, this should be incorporated in the autoconf
 #   tool chain.
 
-die "Usage: run_chroma_xmldiff.pl  top_srcdir  top_builddir xmldiff_location  run_command\n" unless scalar(@ARGV) == 4;
+die "Usage: $0  top_srcdir  top_builddir xmldiff_location  run_command\n" unless scalar(@ARGV) == 4;
 
 use File::Basename;
 

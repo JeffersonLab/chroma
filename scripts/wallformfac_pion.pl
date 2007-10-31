@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# $Id: wallformfac_pion.pl,v 3.0 2006-04-03 04:59:22 edwards Exp $
+# $Id: wallformfac_pion.pl,v 3.1 2007-10-31 14:14:38 edwards Exp $
 #
 # Usage
 #   formfact.pl
@@ -10,7 +10,7 @@ $[ = 0;			# set array base to 1
 $, = ' ';		# set output field separator
 $\ = "\n";		# set output record separator
 
-#die "Usage: formfact.pl\n" unless (scalar($@ARGV) == 1);
+#die "Usage: $0\n" unless (scalar($@ARGV) == 1);
 
 die "config.pl does not exist\n" unless -f "config.pl";
 

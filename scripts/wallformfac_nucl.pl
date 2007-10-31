@@ -9,7 +9,7 @@ $[ = 0;			# set array base to 1
 $, = ' ';		# set output field separator
 $\ = "\n";		# set output record separator
 
-#die "Usage: formfact.pl\n" unless scalar($@ARGV) == 1;
+#die "Usage: $0\n" unless scalar($@ARGV) == 1;
 
 die "config.pl does not exist\n" unless -f "config.pl";
 
