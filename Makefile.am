@@ -24,6 +24,6 @@ xcheck:
 
 report:
 	perl $(top_srcdir)/scripts/check_regres_runner.pl $(top_srcdir) $(top_builddir) @XMLDIFF@
-	xsltproc $(top_srcdir)/scripts/regres_report_to_html.pl $(top_builddir)/regres_report.xml > regres_report.html
+	xsltproc $(top_srcdir)/scripts/regres_report_to_html.xsl $(top_builddir)/regres_report.xml > regres_report.html
 
 
