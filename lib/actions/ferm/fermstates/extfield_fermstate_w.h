@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_fermstate_w.h,v 1.2 2007-10-28 04:05:12 kostas Exp $
+// $Id: extfield_fermstate_w.h,v 1.3 2007-11-01 20:56:48 kostas Exp $
 /*! @file
  * @brief Fermion external field state and a creator
  */
@@ -36,7 +36,7 @@ namespace Chroma
   public:
     //! Full constructor
     ExtFieldFermState(Handle< FermBC<T,P,Q> > fbc_, 
-		      multi1d< Handle< ExternalField > > ext_field,
+		      Handle< ExternalField >  ext_field,
 		      const Q& q_) : 
       fbc(fbc_)
       {
@@ -46,7 +46,7 @@ namespace Chroma
 	// Fold in U(1) fields
 	Q q_u1 = q_;
 	for(int mu=0; mu < q_u1.size(); ++mu)
-	  q_u1[mu] *= (*ext_field[mu])(mu);
+	  q_u1[mu] *= (*ext_field)(mu);
 
 	fs_u1 = new SimpleFermState<T,P,Q>(fbc, q_u1);
       }
@@ -92,7 +92,7 @@ namespace Chroma
   public:
     //! Full constructor
     CreateExtFieldFermState(Handle< FermBC<T,P,Q> > fbc_,
-			    multi1d< Handle< ExternalField > > ext_field_) : 
+			    Handle< ExternalField > ext_field_) : 
       fbc(fbc_), ext_field(ext_field_) {}
 
     //! Destructor
@@ -116,7 +116,7 @@ namespace Chroma
 
   private:
     Handle< FermBC<T,P,Q> >  fbc;
-    multi1d< Handle< ExternalField > > ext_field;
+    Handle< ExternalField > ext_field;
   };
 
 }

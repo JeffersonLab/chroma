@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.4 2007-10-30 02:56:02 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.5 2007-11-01 20:56:43 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -19,40 +19,17 @@ namespace Chroma
   /*! \ingroup fermstates */
   namespace ExternalFieldEnv
   { 
-    //! Anonymous namespace
-    namespace
-    {
 
-      //-------------------- callback functions ---------------------------------------
+        //construct the antisymmetric tensor
+    int epsilon(int i, int j, int k){
+      if( (i==j)||(j==k)|| (k==i) )
+	return 0 ;
+      if( ((i<j)&&(j<k)) || ((j<k)&&(k<i)) || ((k<i)&&(i<j)) )
+	return 1 ;
+      else 
+	return -1 ;
+    }
 
-      //! Construct zero
-      ExternalField* zeroFunc(XMLReader& xml_in,
-			      const std::string& path)
-      {
-	return new ZeroExternalField();
-      }
-
-      //! Construct constant magnetic field
-      ExternalField* ConstantMagneticFunc(XMLReader& xml_in,
-					  const std::string& path)
-      {
-	ConstantMagneticParams p ;
-	read(xml_in,path,p);
-	return new ConstantMagneticExternalField(p);
-      }
-
-#if 0
-      //! Construct linear term
-      ExternalField* linearFunc(XMLReader& xml_in,
-				const std::string& path)
-      {
-	return new LinearExternalField(LinearParams(xml_in, path));
-      }
-#endif
-      
-    } // end anonymous namespace
-
-    
 
   //! Reader
   /*! @ingroup sources */
@@ -94,21 +71,55 @@ namespace Chroma
     }
 
 
-    multi1d< Handle< ExternalField > > reader(XMLReader& xml, 
-					      const std::string& path){
-      multi1d< Handle< ExternalField > > ext_field(Nd) ;
-       XMLReader paramtop(xml, path);
+    //! Anonymous namespace
+    namespace
+    {
+
+      //-------------------- callback functions ---------------------------------------
+
+      //! Construct zero
+      ExternalField* zeroFunc(XMLReader& xml_in,
+			      const std::string& path)
+      {
+	return new ZeroExternalField();
+      }
+
+      //! Construct constant magnetic field
+      ExternalField* ConstantMagneticFunc(XMLReader& xml_in,
+					  const std::string& path)
+      {
+	ConstantMagneticParams p ;
+	ExternalFieldEnv::read(xml_in,path,p);
+	return new ConstantMagneticExternalField(p);
+      }
+
+#if 0
+      //! Construct linear term
+      ExternalField* linearFunc(XMLReader& xml_in,
+				const std::string& path)
+      {
+	return new LinearExternalField(LinearParams(xml_in, path));
+      }
+#endif
+      
+    } // end anonymous namespace
+
+    
+
+    Handle< ExternalField > reader(XMLReader& xml, 
+				   const std::string& path){
+      XMLReader paramtop(xml, path);
        string name ;
        read(paramtop, "Name", name);
-       /**
-              Handle< ExternalField > ef = Chroma::TheExternalFieldFactory::Instance().createObject(paramtop,name) ;
-      for(int mu(0);mu<Nd;mu++){
-	ext_field[mu] = ef ;
-      }
-       **/
+
+       Handle< ExternalField > ef ; // just to make the code compile
+
+      /* THE FOLLOWING BIT DOES NOT WORK... why??? NEED FIX*/
+       //Handle< ExternalField > ef(Chroma::TheExternalFieldFactory::Instance().createObject(paramtop,name)) ;
+       /**/
        QDPIO::cout<<"Found external field: "<<name<<endl ;
 
-      return ext_field ;
+      return ef ;
     }
 
     // Construct linear function

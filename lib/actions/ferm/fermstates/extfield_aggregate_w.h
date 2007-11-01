@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.4 2007-10-30 02:56:02 kostas Exp $
+// $Id: extfield_aggregate_w.h,v 1.5 2007-11-01 20:56:46 kostas Exp $
 /*! \file
  *  \brief External field functions
  */
@@ -19,16 +19,6 @@ namespace Chroma
   namespace ExternalFieldEnv
   {
     bool registerAll();
-
-    //construct the antisymmetric tensor
-    int epsilon(int i, int j, int k){
-      if( (i==j)||(j==k)|| (k==i) )
-	return 0 ;
-      if( ((i<j)&&(j<k)) || ((j<k)&&(k<i)) || ((k<i)&&(i<j)) )
-	return 1 ;
-      else 
-	return -1 ;
-    }
 
     //! Construct zero field
     /*!
@@ -69,8 +59,7 @@ namespace Chroma
       LatticeComplex operator()(int dummy) const;
     };
 
-    multi1d< Handle< ExternalField > > reader(XMLReader& xml, 
-					      const std::string& path) ;
+     Handle< ExternalField > reader(XMLReader& xml,  const std::string& path) ;
 
   }  // end namespace
 
