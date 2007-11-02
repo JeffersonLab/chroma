@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.5 2007-11-01 20:56:43 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.6 2007-11-02 03:52:36 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -109,15 +109,18 @@ namespace Chroma
     Handle< ExternalField > reader(XMLReader& xml, 
 				   const std::string& path){
       XMLReader paramtop(xml, path);
-       string name ;
-       read(paramtop, "Name", name);
+      
+      string name ;
+      string ext_field_path = "ExternalField";
+      
+      read(paramtop, ext_field_path+"/Name", name);
+      QDPIO::cout<<"Found external field: "<<name<<endl ;
 
-       Handle< ExternalField > ef ; // just to make the code compile
+      //Handle< ExternalField > ef ; // just to make the code compile
 
       /* THE FOLLOWING BIT DOES NOT WORK... why??? NEED FIX*/
-       //Handle< ExternalField > ef(Chroma::TheExternalFieldFactory::Instance().createObject(paramtop,name)) ;
+      Handle< ExternalField > ef(Chroma::TheExternalFieldFactory::Instance().createObject(name,paramtop,ext_field_path)) ;
        /**/
-       QDPIO::cout<<"Found external field: "<<name<<endl ;
 
       return ef ;
     }

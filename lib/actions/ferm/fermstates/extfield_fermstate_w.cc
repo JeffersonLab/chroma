@@ -1,4 +1,4 @@
-// $Id: extfield_fermstate_w.cc,v 1.4 2007-10-30 02:56:02 kostas Exp $
+// $Id: extfield_fermstate_w.cc,v 1.5 2007-11-02 03:52:36 kostas Exp $
 /*! \file
  *  \brief External field ferm state and a creator
  */
@@ -44,6 +44,9 @@ namespace Chroma
       if (! registered)
       {
 	success &= Chroma::TheCreateFermStateFactory::Instance().registerObject(name, createFerm);
+
+	success &= ExternalFieldEnv::registerAll();
+
 	registered = true;
       }
       return success;
