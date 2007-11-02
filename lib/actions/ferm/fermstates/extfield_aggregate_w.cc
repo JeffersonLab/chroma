@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.7 2007-11-02 16:34:31 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.8 2007-11-02 20:03:31 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -179,10 +179,10 @@ namespace Chroma
       {
 	//! Register all the factories
 	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("ZERO"), zeroFunc);
-	QDPIO::cerr<<"registered ZERO external field\n";
+	//QDPIO::cerr<<"registered ZERO external field\n";
 
 	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("CONSTANT_MAGNETIC"), ConstantMagneticFunc);
-	QDPIO::cerr<<"registered CONSTANT_MAGNETIC field\n";
+	//QDPIO::cerr<<"registered CONSTANT_MAGNETIC field\n";
 
 	registered = true;
       }
