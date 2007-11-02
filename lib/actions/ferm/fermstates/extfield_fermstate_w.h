@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_fermstate_w.h,v 1.3 2007-11-01 20:56:48 kostas Exp $
+// $Id: extfield_fermstate_w.h,v 1.4 2007-11-02 16:34:31 kostas Exp $
 /*! @file
  * @brief Fermion external field state and a creator
  */
@@ -55,7 +55,7 @@ namespace Chroma
     ~ExtFieldFermState() {}
 
     //! Return the link fields needed in constructing linear operators
-    const Q& getLinks() const {return fs->getLinks();}
+    const Q& getLinks() const {return fs_u1->getLinks();}
 
     //! Return the original field state
     const Handle< FermState<T,P,Q> > getOriginalState() const {return fs;}

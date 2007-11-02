@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.5 2007-11-01 20:56:46 kostas Exp $
+// $Id: extfield_aggregate_w.h,v 1.6 2007-11-02 16:34:31 kostas Exp $
 /*! \file
  *  \brief External field functions
  */
@@ -35,9 +35,10 @@ namespace Chroma
     };
 
     struct ConstantMagneticParams{
-      int time_dir ;
-      Real Bfield ;
-      int dir ;
+      int t_dir   ; // the time direction
+      int x_dir   ; // the direction which the A_mu is turn on
+      int b_dir   ; // the direction of the B field
+      Real Bfield ; // The value of the B field
     } ;
     
     //! Construct constant Magnetic field
@@ -46,14 +47,20 @@ namespace Chroma
      */
     class ConstantMagneticExternalField : public ExternalField
     {
-      int time_dir ;
+      int t_dir ;
+      int x_dir ;
+      int b_dir ;
       Real Bfield ;
-      int dir ;
     public:
       //! Full constructor
-      ConstantMagneticExternalField(ConstantMagneticParams p):time_dir(p.time_dir),Bfield(p.Bfield),dir(p.dir) {}
+      ConstantMagneticExternalField(ConstantMagneticParams p):t_dir(p.t_dir),
+							      x_dir(p.x_dir),
+							      b_dir(p.b_dir),
+							      Bfield(p.Bfield)
+      {}
       //! set time default to be Nd-1 and zero external field
-      ConstantMagneticExternalField():time_dir(Nd-1),Bfield(0.0),dir(0) {} 
+      ConstantMagneticExternalField():t_dir(Nd-1),x_dir(0),b_dir(2),Bfield(0.0)
+      {} 
 
       //! Return the field
       LatticeComplex operator()(int dummy) const;

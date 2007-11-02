@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.6 2007-11-02 03:52:36 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.7 2007-11-02 16:34:31 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -50,11 +50,10 @@ namespace Chroma
 		      << " unsupported." << endl;
 	  QDP_abort(1);
 	}
-
-      read(paramtop, "time_dir",  param.time_dir);
+      read(paramtop, "t_dir",  param.t_dir);
+      read(paramtop, "x_dir",  param.x_dir);
+      read(paramtop, "b_dir",  param.b_dir);
       read(paramtop, "Bfield", param.Bfield);
-      read(paramtop, "dir", param.dir);
-
     }
   
   //! Writer
@@ -64,9 +63,10 @@ namespace Chroma
       push(xml,path);
       int version;
       write(xml, "version", version);
-      write(xml, "time_dir",  param.time_dir);
+      write(xml, "t_dir",  param.t_dir);
+      write(xml, "x_dir",  param.x_dir);
+      write(xml, "b_dir",  param.b_dir);
       write(xml, "Bfield", param.Bfield);
-      write(xml, "dir", param.dir);
       pop(xml);
     }
 
@@ -143,23 +143,25 @@ namespace Chroma
     {
       START_CODE();
 
-      LatticeComplex U(1.0) ;
-      Real A(0.5*Bfield) ;
-      Complex C = cmplx(cos(A),sin(A));
-      if(Nd==4){
-	multi1d<int> dd(2) ;
-	for( int d(0);d<Nd;d++){
-	  if((d!=time_dir)&&(d!=dir)&&(d!=mu)){
-	    A *= epsilon(d,mu,dir) ;
-	    LatticeReal B = A*Layout::latticeCoordinate(mu) ; 
-	    U = cmplx(cos(B),sin(B));
-	    return U ;
+      LatticeComplex U ;
+      if(mu!=t_dir){
+	Real A;
+	if(Nd==4){
+	  for( int d(0);d<Nd;d++){
+	    if((d!=t_dir)&&(d!=x_dir)&&(d!=mu)){
+	      A = epsilon(d,mu,b_dir)*Bfield ;
+	      QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A<<endl ;
+	      LatticeReal B = A*Layout::latticeCoordinate(d) ; 
+	      U = cmplx(cos(B),sin(B));
+	      return U ;
+	    }
 	  }
 	}
+	else//do nothing
+	  QDPIO::cerr<<"OOOPS! don't know how to set up magnetic field in other than 4 dimenssions\n"; 
       }
-      else//do nothing
-	QDPIO::cerr<<"OOOPS! don't know how to set up magnetic field in other than 4 dimenssions\n"; 
-      
+      U = 1.0 ;
+      QDPIO::cout<<__func__<<" A_"<<mu<<"= 0"<<endl ;
       END_CODE();
       return U;
     }
