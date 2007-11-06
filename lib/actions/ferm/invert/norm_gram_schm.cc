@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: norm_gram_schm.cc,v 1.2 2007-10-24 02:38:56 edwards Exp $
+// $Id: norm_gram_schm.cc,v 1.3 2007-11-06 22:04:15 kostas Exp $
 /*! \file
  *  \brief Gram-Schmidt with normalization
  */
@@ -17,6 +17,7 @@ namespace Chroma
 			 int t,
 			 const Subset& sub)
   {
+    // this need not to be done... we assume 0..f vectors are normal already
     for(int i(0);i<f;i++){// normalize the first vectors...
       vec[i][sub] /= Real(sqrt(norm2(vec[i],sub))) ;
     }
@@ -30,7 +31,7 @@ namespace Chroma
       for(int k(0);k<i;k++){
 	DComplex dcc = innerProduct(vec[k], vec[i], sub);
 	Complex cc = dcc ;
-	//cout<<"GramS: "<<cc<<" "<<dcc<<endl;
+	//QDPIO::cout<<"GramS: "<<i<<" "<<k<<" "<<cc<<" "<<dcc<<endl;
 	vec[i][sub] = vec[i]  - cc*vec[k] ;
       }
       Double in = 1.0/sqrt(norm2(vec[i],sub)) ;

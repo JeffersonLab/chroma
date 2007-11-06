@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.8 2007-10-26 03:31:28 kostas Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.9 2007-11-06 22:04:15 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -12,6 +12,9 @@
 #include "actions/ferm/invert/inv_eigcg2.h"
 #include "actions/ferm/invert/norm_gram_schm.h"
 
+//for debugging
+//#include "octave.h"
+#define TEST_ALGORITHM
 namespace Chroma
 {
 
@@ -115,14 +118,16 @@ namespace Chroma
 	snoop.start();
 	LinAlg::Matrix<DComplex> Htmp(GoodEvecs.Neig) ;
 	InvEigCG2Env::SubSpaceMatrix(Htmp,MdagM,GoodEvecs.evec.vec,GoodEvecs.Neig);
-	//OctavePrintOut(Htmp.mat,Htmp.N,tag("H",i),"RayleighRich.m") ;
+	//Octave::PrintOut(Htmp.mat,Htmp.N,Octave::tag("H"),"RayleighRich.m") ;
 	char V = 'V' ; char U = 'U' ;
 	QDPLapack::zheev(V,U,Htmp.mat,lambda);
 	evec.resize(GoodEvecs.Neig) ;
-	//OctavePrintOut(Htmp.mat,Htmp.N,tag("Htmp",i),"RayleighRich.m") ;
+	//Octave::PrintOut(Htmp.mat,Htmp.N,Octave::tag("Hevec"),"RayleighRich.m") ;
+	//evec.resize(GoodEvecs.Neig);
 	for(int k(0);k<GoodEvecs.Neig;k++){
 	  GoodEvecs.eval[k] = lambda[k];
-	  GoodEvecs.evec[k][MdagM.subset()] = zero ;
+	  //GoodEvecs.evec[k][MdagM.subset()] = zero ;
+	  evec[k][MdagM.subset()] = zero ;
 	  //cout<<k<<endl ;
 	  for(int j(0);j<GoodEvecs.Neig;j++)
 	    evec[k][MdagM.subset()] += conj(Htmp(k,j))*GoodEvecs.evec[j] ;
@@ -145,8 +150,8 @@ namespace Chroma
 	  T Av ;
 	  for(int k(0);k<GoodEvecs.Neig;k++)
 	  {
-	    (A*)(Av,GoodEvecs.evec[k],PLUS) ;
-	    DComplex rq = innerProduct(GoodEvec[k],Av,MdagM.subset());
+	    MdagM(Av,GoodEvecs.evec[k],PLUS) ;
+	    DComplex rq = innerProduct(GoodEvecs.evec[k],Av,MdagM.subset());
 	    Av[MdagM.subset()] -= GoodEvecs.eval[k]*GoodEvecs.evec[k] ;
 	    Double tt = sqrt(norm2(Av,MdagM.subset()));
 	    QDPIO::cout<<"REFINE: error evec["<<k<<"] = "<<tt<<" " ;

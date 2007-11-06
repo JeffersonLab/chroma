@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.8 2007-10-24 03:53:15 edwards Exp $
+// $Id: inv_eigcg2.cc,v 1.9 2007-11-06 22:04:15 kostas Exp $
 
 #include <qdp-lapack.h>
 //#include <octave_debug.h>
@@ -103,11 +103,12 @@ namespace Chroma
       Vectors<T> vec(Nmax) ; // contains the vectors we use...
       //-------- Eigenvalue eigenvector finding code ------
       vec.AddVectors(evec,A.subset()) ;
+      //QDPIO::cout<<"vec.N="<<vec.N<<endl ;
       p[A.subset()] = inorm*r ; // this is not needed GramSchmidt will take care of it
       vec.AddOrReplaceVector(p,A.subset());
-
-      normGramSchmidt(vec.vec,vec.N,vec.N+1,A.subset());
-      normGramSchmidt(vec.vec,vec.N,vec.N+1,A.subset()); //call twice: need to improve...
+      //QDPIO::cout<<"vec.N="<<vec.N<<endl ;
+      normGramSchmidt(vec.vec,vec.N-1,vec.N,A.subset());
+      normGramSchmidt(vec.vec,vec.N-1,vec.N,A.subset()); //call twice: need to improve...
       SubSpaceMatrix(H,A,vec.vec,vec.N);
       from_restart = true ;
       tr = H.N - 1; // this is just a flag as far as I can tell  
