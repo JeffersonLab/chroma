@@ -1,4 +1,4 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.5 2007-09-21 05:08:05 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.6 2007-11-07 00:40:41 edwards Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -621,7 +621,7 @@ namespace Chroma
 	return new BarNuclDTCg5(Params(xml_in, path), BaryonSpinMats::Tmixed(), BaryonSpinMats::Cg5NR());
       }
 
-      //! \bar u O u" insertion in NR proton
+      //! "\bar u O u" insertion in negative parity NR proton
       /*!
        * \ingroup hadron
        * 
@@ -630,8 +630,8 @@ namespace Chroma
        * 
        * \f$C g_5 NR = (1/2)*C gamma_5 * ( 1 - g_4 )\f$
        * 
-       * $T = (1 + \Sigma_3)*(1 + gamma_4) / 2 
-       *   = (1 + Gamma(8) - i G(3) - i G(11)) / 2$
+       * \f$T = (1 + \Sigma_3)*(1 - gamma_4) / 2 
+       *      = (1 - Gamma(8) + i G(3) - i G(11)) / 2\f$
        */
       HadronSeqSource<LatticePropagator>* barNuclUMixedNRnegPar(XMLReader& xml_in,
 								const std::string& path)
@@ -640,7 +640,7 @@ namespace Chroma
 				BaryonSpinMats::TmixedNegPar(), BaryonSpinMats::Cg5NRnegPar());
       }
 
-      //! "\bar d O d" insertion in NR proton, ie. "(u C gamma_5 (1/2)(1 - gamma_4)  d) u"
+      //! "\bar d O d" insertion in negative parity NR proton
       /*!
        * \ingroup hadron
        * 
