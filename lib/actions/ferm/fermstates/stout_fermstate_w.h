@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.2 2006-09-20 20:31:41 edwards Exp $
+// $Id: stout_fermstate_w.h,v 1.3 2007-11-08 15:04:52 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -108,7 +108,7 @@ namespace Chroma
        and this thing can be pulled out into the dsdq methods.
        For now, the default behaviour is to recurse the force down 
        here but I am planning ahead to a refactor. */
-    void deriv(P& F) const 
+    virtual void deriv(P& F) const 
     {
       START_CODE();
       

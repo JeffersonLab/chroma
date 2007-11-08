@@ -1,4 +1,4 @@
-// $Id: stout_fermstate_params.cc,v 1.2 2007-08-09 02:30:10 edwards Exp $
+// $Id: stout_fermstate_params.cc,v 1.3 2007-11-08 15:04:52 bjoo Exp $
 /*! \file
  *  \brief Stout fermstate params
  */
@@ -52,7 +52,7 @@ namespace Chroma
 	smear_in_this_dirP.resize(Nd);
 	smear_in_this_dirP = true;
 
-	if (orthog_dir >= 0 || orthog_dir < Nd)
+	if (orthog_dir >= 0 && orthog_dir < Nd)
 	{
 	  smear_in_this_dirP[orthog_dir] = false;
 	}

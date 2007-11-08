@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_slrc_linop_w.h,v 3.2 2007-10-09 03:31:14 edwards Exp $
+// $Id: eoprec_slrc_linop_w.h,v 3.3 2007-11-08 15:04:52 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -14,7 +14,7 @@
 #include "state.h"
 #include "fermbc.h"
 #include "actions/ferm/fermstates/stout_fermstate_w.h"
-#include "actions/ferm/fermstates/simple_fermstate.h"
+#include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "eoprec_logdet_linop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"

@@ -1,4 +1,4 @@
-// $Id: eoprec_slrc_linop_w.cc,v 3.2 2007-10-09 03:31:14 edwards Exp $
+// $Id: eoprec_slrc_linop_w.cc,v 3.3 2007-11-08 15:04:52 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -28,7 +28,7 @@ namespace Chroma
 
     // Need to make sure that fs is a stout ferm state
     // We want to have Clover with thin links
-    thin_fs  = new SimpleFermState<T,P,Q>( fs->getFermBC(), (fs.cast<SLICFermState<T, P, Q> >())->getThinLinks());
+    thin_fs  = new PeriodicFermState<T,P,Q>( fs.cast< SLICFermState<T, P, Q> >()->getThinLinks());
     clov.create(thin_fs, param);
 
     invclov.create(thin_fs,param,clov);  // make a copy
@@ -155,10 +155,6 @@ namespace Chroma
     ds_u.resize(Nd);
     clov.deriv(ds_u, chi, psi, isign, 0);
 
-    //Clover is thin, so no fatForceToThin needed, only BCs have to be changed
-
-    // Undo ferm boundaries on ds_U
-    slrc_fs->getFermBC()->modify(ds_u);
     // But reinforce gauge boundaries
     slrc_fs->getFermBC()->zero(ds_u);
     
@@ -175,10 +171,6 @@ namespace Chroma
     ds_u.resize(Nd);
     invclov.derivTrLn(ds_u, isign, 0);
 
-    //Clover is thin, so no fatForceToThin needed, only BCs have to be changed
-
-    // Undo ferm boundaries on ds_U
-    slrc_fs->getFermBC()->modify(ds_u);
     // But reinforce gauge boundaries
     slrc_fs->getFermBC()->zero(ds_u);
     
@@ -247,10 +239,6 @@ namespace Chroma
     ds_u.resize(Nd);
     clov.deriv(ds_u, chi, psi, isign, 1);
 
-    //Clover is thin, so no fatForceToThin needed, only BCs have to be changed
-
-    // Undo ferm boundaries on ds_U
-    slrc_fs->getFermBC()->modify(ds_u);
     // But reinforce gauge boundaries
     slrc_fs->getFermBC()->zero(ds_u);
   
