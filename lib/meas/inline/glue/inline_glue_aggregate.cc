@@ -1,4 +1,4 @@
-// $Id: inline_glue_aggregate.cc,v 3.2 2006-09-21 18:43:27 edwards Exp $
+// $Id: inline_glue_aggregate.cc,v 3.3 2007-11-09 21:26:43 edwards Exp $
 /*! \file
  *  \brief Inline glue measurement aggregator
  */
@@ -9,6 +9,7 @@
 #include "meas/inline/glue/inline_wilslp.h"
 #include "meas/inline/glue/inline_fuzwilp.h"
 #include "meas/inline/glue/inline_apply_gaugestate.h"
+#include "meas/inline/glue/inline_random_transf_gauge.h"
 
 namespace Chroma
 {
@@ -32,6 +33,7 @@ namespace Chroma
 	success &= InlinePolyakovLoopEnv::registerAll();
 	success &= InlineWilsonLoopEnv::registerAll();
 	success &= InlineFuzzedWilsonLoopEnv::registerAll();
+	success &= InlineRandomTransfGaugeEnv::registerAll();
 	success &= InlineGaugeStateEnv::registerAll();
 
 	registered = true;
