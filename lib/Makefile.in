@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.202 2007-11-08 15:04:47 bjoo Exp $
+# $Id: Makefile.in,v 3.203 2007-11-09 21:26:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -524,8 +524,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
+	meas/inline/hadron/inline_gauge_transf_obj.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
@@ -959,8 +961,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_coulgauge.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
 	inline_apply_gaugestate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
 	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
-	inline_fuzwilp.$(OBJEXT) inline_hadron_aggregate.$(OBJEXT) \
+	inline_fuzwilp.$(OBJEXT) inline_random_transf_gauge.$(OBJEXT) \
+	inline_hadron_aggregate.$(OBJEXT) \
 	inline_hadron_contract.$(OBJEXT) \
+	inline_gauge_transf_obj.$(OBJEXT) \
 	inline_apply_fermstate_w.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) \
 	inline_make_source_ferm_w.$(OBJEXT) \
@@ -1585,9 +1589,12 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
-	meas/inline/glue/inline_fuzwilp.h meas/inline/hadron/hadron.h \
+	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_random_transf_gauge.h \
+	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
+	meas/inline/hadron/inline_gauge_transf_obj.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -2363,9 +2370,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/glue/inline_plaquette.h \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
-	meas/inline/glue/inline_fuzwilp.h meas/inline/hadron/hadron.h \
+	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_random_transf_gauge.h \
+	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
+	meas/inline/hadron/inline_gauge_transf_obj.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -2883,8 +2893,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
+	meas/inline/hadron/inline_gauge_transf_obj.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
@@ -3276,6 +3288,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigbnds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_erase_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_fuzwilp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_gauge_transf_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_gaussian_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_gfix_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_aggregate.Po@am__quote@
@@ -3312,6 +3325,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqqNucNuc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_diquark_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_random_transf_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ritz_H_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_schrfun_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_seqprop_test_w.Po@am__quote@
@@ -10484,6 +10498,20 @@ inline_fuzwilp.obj: meas/inline/glue/inline_fuzwilp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_fuzwilp.obj `if test -f 'meas/inline/glue/inline_fuzwilp.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_fuzwilp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_fuzwilp.cc'; fi`
 
+inline_random_transf_gauge.o: meas/inline/glue/inline_random_transf_gauge.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_random_transf_gauge.o -MD -MP -MF $(DEPDIR)/inline_random_transf_gauge.Tpo -c -o inline_random_transf_gauge.o `test -f 'meas/inline/glue/inline_random_transf_gauge.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_random_transf_gauge.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_random_transf_gauge.Tpo $(DEPDIR)/inline_random_transf_gauge.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_random_transf_gauge.cc' object='inline_random_transf_gauge.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_random_transf_gauge.o `test -f 'meas/inline/glue/inline_random_transf_gauge.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_random_transf_gauge.cc
+
+inline_random_transf_gauge.obj: meas/inline/glue/inline_random_transf_gauge.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_random_transf_gauge.obj -MD -MP -MF $(DEPDIR)/inline_random_transf_gauge.Tpo -c -o inline_random_transf_gauge.obj `if test -f 'meas/inline/glue/inline_random_transf_gauge.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_random_transf_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_random_transf_gauge.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_random_transf_gauge.Tpo $(DEPDIR)/inline_random_transf_gauge.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_random_transf_gauge.cc' object='inline_random_transf_gauge.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_random_transf_gauge.obj `if test -f 'meas/inline/glue/inline_random_transf_gauge.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_random_transf_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_random_transf_gauge.cc'; fi`
+
 inline_hadron_aggregate.o: meas/inline/hadron/inline_hadron_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_aggregate.o -MD -MP -MF $(DEPDIR)/inline_hadron_aggregate.Tpo -c -o inline_hadron_aggregate.o `test -f 'meas/inline/hadron/inline_hadron_aggregate.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadron_aggregate.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_hadron_aggregate.Tpo $(DEPDIR)/inline_hadron_aggregate.Po
@@ -10511,6 +10539,20 @@ inline_hadron_contract.obj: meas/inline/hadron/inline_hadron_contract.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_hadron_contract.cc' object='inline_hadron_contract.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_hadron_contract.obj `if test -f 'meas/inline/hadron/inline_hadron_contract.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_hadron_contract.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_hadron_contract.cc'; fi`
+
+inline_gauge_transf_obj.o: meas/inline/hadron/inline_gauge_transf_obj.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_gauge_transf_obj.o -MD -MP -MF $(DEPDIR)/inline_gauge_transf_obj.Tpo -c -o inline_gauge_transf_obj.o `test -f 'meas/inline/hadron/inline_gauge_transf_obj.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_gauge_transf_obj.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_gauge_transf_obj.Tpo $(DEPDIR)/inline_gauge_transf_obj.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_gauge_transf_obj.cc' object='inline_gauge_transf_obj.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_gauge_transf_obj.o `test -f 'meas/inline/hadron/inline_gauge_transf_obj.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_gauge_transf_obj.cc
+
+inline_gauge_transf_obj.obj: meas/inline/hadron/inline_gauge_transf_obj.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_gauge_transf_obj.obj -MD -MP -MF $(DEPDIR)/inline_gauge_transf_obj.Tpo -c -o inline_gauge_transf_obj.obj `if test -f 'meas/inline/hadron/inline_gauge_transf_obj.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_gauge_transf_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_gauge_transf_obj.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_gauge_transf_obj.Tpo $(DEPDIR)/inline_gauge_transf_obj.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_gauge_transf_obj.cc' object='inline_gauge_transf_obj.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_gauge_transf_obj.obj `if test -f 'meas/inline/hadron/inline_gauge_transf_obj.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_gauge_transf_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_gauge_transf_obj.cc'; fi`
 
 inline_apply_fermstate_w.o: meas/inline/hadron/inline_apply_fermstate_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_w.o -MD -MP -MF $(DEPDIR)/inline_apply_fermstate_w.Tpo -c -o inline_apply_fermstate_w.o `test -f 'meas/inline/hadron/inline_apply_fermstate_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_apply_fermstate_w.cc
