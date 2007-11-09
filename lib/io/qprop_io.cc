@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.17 2007-08-31 03:30:37 edwards Exp $
+// $Id: qprop_io.cc,v 3.18 2007-11-09 22:03:46 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -1023,6 +1023,29 @@ namespace Chroma
   }
 
 
+  //-------------- HACK ----------------//
+  // Fake gauge header reader. Need a proper solution
+  void readGaugeHeader(XMLReader& paramtop, const std::string& path, std::string& gauge_header)
+  {
+    // Need to fix this and get proper headers
+    if (paramtop.count("Config_info") > 0)
+    {
+      XMLReader xml_tmp(paramtop, "Config_info");
+      std::ostringstream os;
+      xml_tmp.printCurrentContext(os);
+      gauge_header = os.str();
+    }
+    else
+    {
+      XMLBufferWriter xml_tmp;
+      push(xml_tmp, "Config_info");
+      pop(xml_tmp);
+      gauge_header = xml_tmp.str();
+    }
+
+  }
+
+
   //=================================================================================
   // Propagator header readers and writers
 
@@ -1032,12 +1055,7 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     read(paramtop, "PropSource", param.source_header);
-    {
-      XMLReader xml_tmp(paramtop, "Config_info");
-      std::ostringstream os;
-      xml_tmp.printCurrentContext(os);
-      param.gauge_header = os.str();
-    }
+    readGaugeHeader(paramtop, "Config_info", param.gauge_header);
   }
 
 
@@ -1048,12 +1066,7 @@ namespace Chroma
 
     read(paramtop, "ForwardProp", param.prop_header);
     read(paramtop, "PropSource", param.source_header);
-    {
-      XMLReader xml_tmp(paramtop, "Config_info");
-      std::ostringstream os;
-      xml_tmp.printCurrentContext(os);
-      param.gauge_header = os.str();
-    }
+    readGaugeHeader(paramtop, "Config_info", param.gauge_header);
   }
 
 
@@ -1065,12 +1078,7 @@ namespace Chroma
     read(paramtop, "PropSink", param.sink_header);
     read(paramtop, "ForwardProp", param.prop_header);
     read(paramtop, "PropSource", param.source_header);
-    {
-      XMLReader xml_tmp(paramtop, "Config_info");
-      std::ostringstream os;
-      xml_tmp.printCurrentContext(os);
-      param.gauge_header = os.str();
-    }
+    readGaugeHeader(paramtop, "Config_info", param.gauge_header);
   }
 
 
@@ -1082,12 +1090,7 @@ namespace Chroma
     read(paramtop, "SeqSourceSinkSmear", param.sink_header);
     read(paramtop, "SeqSource", param.seqsource_header);
     read(paramtop, "ForwardProps", param.forward_props);
-    {
-      XMLReader xml_tmp(paramtop, "Config_info");
-      std::ostringstream os;
-      xml_tmp.printCurrentContext(os);
-      param.gauge_header = os.str();
-    }
+    readGaugeHeader(paramtop, "Config_info", param.gauge_header);
   }
 
 
@@ -1100,12 +1103,7 @@ namespace Chroma
     read(paramtop, "SeqSourceSinkSmear", param.sink_header);
     read(paramtop, "SeqSource", param.seqsource_header);
     read(paramtop, "ForwardProps", param.forward_props);
-    {
-      XMLReader xml_tmp(paramtop, "Config_info");
-      std::ostringstream os;
-      xml_tmp.printCurrentContext(os);
-      param.gauge_header = os.str();
-    }
+    readGaugeHeader(paramtop, "Config_info", param.gauge_header);
   }
 
 
