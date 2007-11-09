@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.20 2007-08-11 22:43:21 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.21 2007-11-09 21:26:56 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -36,6 +36,7 @@
 #include "meas/inline/hadron/inline_stoch_meson_w.h"
 #include "meas/inline/hadron/inline_stoch_baryon_w.h"
 #include "meas/inline/hadron/inline_stoch_group_baryon_w.h"
+#include "meas/inline/hadron/inline_gauge_transf_obj.h"
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -89,6 +90,7 @@ namespace Chroma
 //      success &= InlineMultipoleEnv::registerAll();  // not being used
 	success &= InlineNprVertexEnv::registerAll();
 	success &= InlineMresEnv::registerAll();
+	success &= InlineGaugeTransfNamedObjEnv::registerAll();
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
