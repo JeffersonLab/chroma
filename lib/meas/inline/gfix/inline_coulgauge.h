@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_coulgauge.h,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_coulgauge.h,v 3.2 2007-11-09 21:18:09 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -39,8 +39,9 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	std::string     gauge_id;  /*!< input gauge field */
-	std::string     gfix_id;   /*!< output gauge field */
+	std::string     gauge_id;      /*!< input gauge field */
+	std::string     gfix_id;       /*!< output gauge field */
+	std::string     gauge_rot_id;  /*!< gauge transformation fields */
       } named_obj;
 
     };

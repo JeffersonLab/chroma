@@ -1,4 +1,4 @@
-// $Id: inline_coulgauge.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_coulgauge.cc,v 3.3 2007-11-09 21:18:09 edwards Exp $
 /*! \file
  *  \brief Inline coulomb (and landau) gauge fixing loops
  */
@@ -62,6 +62,7 @@ namespace Chroma
 
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "gfix_id", input.gfix_id);
+    read(inputtop, "gauge_rot_id", input.gauge_rot_id);
   }
 
   // Reader for out gauge file
@@ -71,6 +72,7 @@ namespace Chroma
 
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "gfix_id", input.gfix_id);
+    write(xml, "gauge_rot_id", input.gauge_rot_id);
 
     pop(xml);
   }
@@ -190,8 +192,10 @@ namespace Chroma
       multi1d<LatticeColorMatrix> u_gfix(Nd);
       u_gfix = u;
 
+      LatticeColorMatrix g;  // the gauge rotation fields
+
       int n_gf;
-      coulGauge(u_gfix, n_gf, params.param.j_decay, params.param.GFAccu, params.param.GFMax,
+      coulGauge(u_gfix, g, n_gf, params.param.j_decay, params.param.GFAccu, params.param.GFMax,
 		params.param.OrDo, params.param. OrPara);
     
       // Write out what is done
@@ -220,6 +224,12 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gfix_id) = u_gfix;
 	TheNamedObjMap::Instance().get(params.named_obj.gfix_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.gfix_id).setRecordXML(record_xml);
+
+	// Store the gauge rotation fields
+	TheNamedObjMap::Instance().create< LatticeColorMatrix >(params.named_obj.gauge_rot_id);
+	TheNamedObjMap::Instance().getData< LatticeColorMatrix >(params.named_obj.gauge_rot_id) = g;
+	TheNamedObjMap::Instance().get(params.named_obj.gauge_rot_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.gauge_rot_id).setRecordXML(record_xml);
       }
 
       pop(xml_out);
