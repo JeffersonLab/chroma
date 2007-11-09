@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.3 2007-06-01 18:54:26 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.4 2007-11-09 21:28:01 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -9,6 +9,7 @@
 
 #include "meas/hadron/diquark_w.h"
 #include "util/ferm/eigeninfo.h"
+#include "actions/ferm/invert/containers.h"
 
 namespace Chroma
 {
@@ -141,7 +142,7 @@ namespace Chroma
 #endif
 
       //------------------------------------------------------------------------
-      //! Read a propagator
+      //! Read a gauge field in floating precision
       void QIOReadArrayLatColMat(const string& buffer_id,
 				 const string& file, 
 				 QDP_serialparallel_t serpar)
@@ -336,6 +337,55 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
 
 	// Done - That too was unnecessarily painful
+	close(to);
+      }
+
+      //------------------------------------------------------------------------
+      //! Write out an RitzPairs Type
+      void QIOReadRitzPairsLatticeFermion(const string& buffer_id,
+					  const string& file,
+					  QDP_serialparallel_t serpar)
+      {
+	// File XML
+	XMLReader file_xml;
+
+	// Open file
+	QDPFileReader to(file_xml,file,serpar);
+
+	// Create the named object
+	TheNamedObjMap::Instance().create< LinAlg::RitzPairs<LatticeFermion> >(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+
+	// A shorthand for the object
+	LinAlg::RitzPairs<LatticeFermion>& obj = 
+	  TheNamedObjMap::Instance().getData<LinAlg::RitzPairs< LatticeFermion> >(buffer_id);
+
+	XMLReader record_xml;
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+	
+	int Nmax;
+	read(file_xml, "/RitzPairs/Nmax", Nmax);
+	read(file_xml, "/RitzPairs/Neig", obj.Neig);
+
+	obj.evec.resize(Nmax);
+	obj.eval.resize(Nmax);
+
+	if (obj.Neig > Nmax)
+	{
+	  QDPIO::cerr << __func__ << ": error, found Neig > Nmax" << endl;
+	  QDP_abort(1);
+	}
+
+	// Read a record for each eigenvalue (in xml) and eigenvector
+	for(int i=0; i < obj.Neig; ++i)
+	{
+	  XMLReader record_xml;
+	  read(to, record_xml, obj.evec.vec[i]);
+
+	  read(record_xml, "/Eigenvector/eigenValue", obj.eval.vec[i]);
+	}
+
+	// Close
 	close(to);
       }
 

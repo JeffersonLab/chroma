@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.4 2007-10-09 05:29:05 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.5 2007-11-09 21:28:01 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -377,7 +377,9 @@ namespace Chroma
 					   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// A shorthand for the object
-	const LinAlg::RitzPairs<LatticeFermion>& obj=TheNamedObjMap::Instance().getData<LinAlg::RitzPairs< LatticeFermion> >(buffer_id);
+	const LinAlg::RitzPairs<LatticeFermion>& obj = 
+	  TheNamedObjMap::Instance().getData<LinAlg::RitzPairs< LatticeFermion> >(buffer_id);
+
 	// File XML
 	XMLBufferWriter file_xml;
 	push(file_xml, "RitzPairs");
@@ -385,13 +387,6 @@ namespace Chroma
 	write(file_xml, "Nmax", obj.evec.size());
 	write(file_xml, "Neig", obj.Neig);
 	pop(file_xml);
-
-//	TheNamedObjMap::Instance().get(invParam.eigen_id).setFileXML(file_xml);
-//	TheNamedObjMap::Instance().get(invParam.eigen_id).setRecordXML(record_xml);
-
-	// get the file XML and record XML out of the named buffer
-//	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
-//	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
 
 	// Open file
 	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
@@ -405,7 +400,7 @@ namespace Chroma
 	  write(record_xml, "eigenValue", obj.eval.vec[i]);
 	  pop(record_xml);
 
-	  write(to, record_xml, obj.eval.vec[i]);
+	  write(to, record_xml, obj.evec.vec[i]);
 	}
 
 	// Close
