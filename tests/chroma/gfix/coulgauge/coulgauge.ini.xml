@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: coulgauge.ini.xml,v 3.2 2006-09-21 19:45:55 edwards Exp $
+; $Id: coulgauge.ini.xml,v 3.3 2007-11-09 20:57:34 edwards Exp $
 ;
 ; Coulomb gauge fixing
 ;
@@ -23,6 +23,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <gfix_id>coul_cfg</gfix_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
       </NamedObject>
     </elem>
 

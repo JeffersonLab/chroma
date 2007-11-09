@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: coulgauge.out.xml,v 3.7 2007-08-23 23:27:08 edwards Exp $
+; $Id: coulgauge.out.xml,v 3.8 2007-11-09 20:57:34 edwards Exp $
 ;
 ; Coulomb gauge fixing
 ;
@@ -26,6 +26,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <gfix_id>coul_cfg</gfix_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
       </NamedObject>
     </elem>
 
@@ -57,10 +58,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.2</chroma>
-      <qdp>1.24.4</qdp>
+      <chroma>3.26.0</chroma>
+      <qdp>1.24.6</qdp>
     </code_version>
-    <run_date>23 Aug 07 17:41:28 EDT</run_date>
+    <run_date>09 Nov 07 15:56:58 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -82,32 +83,32 @@
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814463755</w_plaq>
-    <s_plaq>0.994800871962474</s_plaq>
-    <t_plaq>0.994728756965034</t_plaq>
-    <plane_01_plaq>0.994752408626179</plane_01_plaq>
-    <plane_02_plaq>0.995051671285182</plane_02_plaq>
-    <plane_12_plaq>0.994598535976062</plane_12_plaq>
-    <plane_03_plaq>0.994927926144252</plane_03_plaq>
-    <plane_13_plaq>0.994742138621708</plane_13_plaq>
-    <plane_23_plaq>0.994516206129144</plane_23_plaq>
+    <w_plaq>0.994764814696585</w_plaq>
+    <s_plaq>0.994800872195305</s_plaq>
+    <t_plaq>0.994728757197865</t_plaq>
+    <plane_01_plaq>0.994752409479891</plane_01_plaq>
+    <plane_02_plaq>0.995051670897131</plane_02_plaq>
+    <plane_12_plaq>0.994598536208893</plane_12_plaq>
+    <plane_03_plaq>0.994927927424821</plane_03_plaq>
+    <plane_13_plaq>0.994742139785861</plane_13_plaq>
+    <plane_23_plaq>0.994516204382914</plane_23_plaq>
     <link>0.379317688059624</link>
     <pollp>
       <elem>
         <re>0.967222581617534</re>
-        <im>-0.00121316458201666</im>
+        <im>-0.00121316459171794</im>
       </elem>
       <elem>
         <re>0.967032070310476</re>
-        <im>-0.00129617050743036</im>
+        <im>-0.00129617047105057</im>
       </elem>
       <elem>
-        <re>0.967467519299438</re>
-        <im>-0.00114548285447806</im>
+        <re>0.967467519260632</re>
+        <im>-0.0011454828290122</im>
       </elem>
       <elem>
-        <re>0.879538947173084</re>
-        <im>-0.0104402833220168</im>
+        <re>0.879538947211889</re>
+        <im>-0.01044028334627</im>
       </elem>
     </pollp>
   </Observables>
@@ -117,10 +118,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.26.0</chroma>
+            <qdp>1.24.6</qdp>
           </code_version>
-          <run_date>23 Aug 07 17:41:28 EDT</run_date>
+          <run_date>09 Nov 07 15:56:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -141,11 +142,11 @@
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <gfix_id>coul_cfg</gfix_id>
+            <gauge_rot_id>gauge_rot</gauge_rot_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
 </weak_field>
-
 
 
 
@@ -154,32 +155,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814463755</w_plaq>
-          <s_plaq>0.994800871962474</s_plaq>
-          <t_plaq>0.994728756965034</t_plaq>
-          <plane_01_plaq>0.994752408626179</plane_01_plaq>
-          <plane_02_plaq>0.995051671285182</plane_02_plaq>
-          <plane_12_plaq>0.994598535976062</plane_12_plaq>
-          <plane_03_plaq>0.994927926144252</plane_03_plaq>
-          <plane_13_plaq>0.994742138621708</plane_13_plaq>
-          <plane_23_plaq>0.994516206129144</plane_23_plaq>
+          <w_plaq>0.994764814696585</w_plaq>
+          <s_plaq>0.994800872195305</s_plaq>
+          <t_plaq>0.994728757197865</t_plaq>
+          <plane_01_plaq>0.994752409479891</plane_01_plaq>
+          <plane_02_plaq>0.995051670897131</plane_02_plaq>
+          <plane_12_plaq>0.994598536208893</plane_12_plaq>
+          <plane_03_plaq>0.994927927424821</plane_03_plaq>
+          <plane_13_plaq>0.994742139785861</plane_13_plaq>
+          <plane_23_plaq>0.994516204382914</plane_23_plaq>
           <link>0.379317688059624</link>
           <pollp>
             <elem>
               <re>0.967222581617534</re>
-              <im>-0.00121316458201666</im>
+              <im>-0.00121316459171794</im>
             </elem>
             <elem>
               <re>0.967032070310476</re>
-              <im>-0.00129617050743036</im>
+              <im>-0.00129617047105057</im>
             </elem>
             <elem>
-              <re>0.967467519299438</re>
-              <im>-0.00114548285447806</im>
+              <re>0.967467519260632</re>
+              <im>-0.0011454828290122</im>
             </elem>
             <elem>
-              <re>0.879538947173084</re>
-              <im>-0.0104402833220168</im>
+              <re>0.879538947211889</re>
+              <im>-0.01044028334627</im>
             </elem>
           </pollp>
         </Observables>
@@ -189,32 +190,32 @@
           <iterations>11</iterations>
         </Gauge_fixing_parameters>
         <Gfix_observables>
-          <w_plaq>0.994765256867848</w_plaq>
-          <s_plaq>0.994801313512855</s_plaq>
-          <t_plaq>0.99472920022284</t_plaq>
-          <plane_01_plaq>0.994752850693961</plane_01_plaq>
-          <plane_02_plaq>0.995052113508185</plane_02_plaq>
-          <plane_12_plaq>0.99459897633642</plane_12_plaq>
-          <plane_03_plaq>0.994928370695561</plane_03_plaq>
-          <plane_13_plaq>0.994742580379049</plane_13_plaq>
-          <plane_23_plaq>0.99451664959391</plane_23_plaq>
-          <link>0.795028591541874</link>
+          <w_plaq>0.994765230305752</w_plaq>
+          <s_plaq>0.994801287384083</s_plaq>
+          <t_plaq>0.99472917322742</t_plaq>
+          <plane_01_plaq>0.994752830360085</plane_01_plaq>
+          <plane_02_plaq>0.995052087858009</plane_02_plaq>
+          <plane_12_plaq>0.994598943934155</plane_12_plaq>
+          <plane_03_plaq>0.994928351487033</plane_03_plaq>
+          <plane_13_plaq>0.994742552555787</plane_13_plaq>
+          <plane_23_plaq>0.994516615639441</plane_23_plaq>
+          <link>0.795028587906321</link>
           <pollp>
             <elem>
-              <re>0.967223013169132</re>
-              <im>-0.0012131658086787</im>
+              <re>0.967222997763505</re>
+              <im>-0.00121316641786962</im>
             </elem>
             <elem>
-              <re>0.967032501396413</re>
-              <im>-0.00129617540505933</im>
+              <re>0.967032472874659</re>
+              <im>-0.00129617354377842</im>
             </elem>
             <elem>
-              <re>0.967467954653936</re>
-              <im>-0.00114548385785914</im>
+              <re>0.967467919418899</re>
+              <im>-0.00114548562523472</im>
             </elem>
             <elem>
-              <re>0.879539729406436</re>
-              <im>-0.0104402956920543</im>
+              <re>0.879539674186769</re>
+              <im>-0.0104402998194928</im>
             </elem>
           </pollp>
         </Gfix_observables>
