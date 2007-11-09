@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.108 2007-10-25 16:10:09 bjoo Exp $
+# $Id: Makefile.am,v 3.109 2007-11-09 21:26:06 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -667,9 +667,11 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
+	meas/inline/hadron/inline_gauge_transf_obj.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -1255,8 +1257,10 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
+	meas/inline/hadron/inline_gauge_transf_obj.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
