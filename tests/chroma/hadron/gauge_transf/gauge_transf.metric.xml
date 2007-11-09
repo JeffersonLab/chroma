@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<!-- This is only testing if the code actually ran to completion -->
+<assertion xpath="chroma/InlineObservables/elem[11]/gauge_transf_object/update_no" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

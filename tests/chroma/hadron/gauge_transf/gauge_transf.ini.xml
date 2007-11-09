@@ -1,0 +1,157 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: gauge_transf.ini.xml,v 1.1 2007-11-09 21:24:23 edwards Exp $
+;
+; Gauge transform a fermionic object.
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Random gauge transform the gauge field -->
+      <Name>RANDOM_GAUGE_TRANSF</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <rgauge_id>random_cfg</rgauge_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>gauge_rot</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Coulomb gauge fix -->
+      <Name>COULOMB_GAUGEFIX</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GFAccu>1.0e-5</GFAccu>
+        <GFMax>200</GFMax>
+        <OrDo>false</OrDo>
+        <OrPara>1.0</OrPara>
+        <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <gfix_id>coul_cfg</gfix_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a gaussian prop 
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>lattice_prop</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a gaussian object
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>lattice_ferm</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a gaussian staggered object 
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>lattice_stag_prop</object_id>
+        <object_type>LatticeStaggeredPropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a gaussian staggered object
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>lattice_stag_ferm</object_id>
+        <object_type>LatticeStaggeredFermion</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Gauge transform the object -->
+      <Name>GAUGE_TRANSFORM_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <input_id>lattice_prop</input_id>
+        <output_id>g_lattice_prop</output_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Gauge transform the object -->
+      <Name>GAUGE_TRANSFORM_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <input_id>lattice_ferm</input_id>
+        <output_id>g_lattice_ferm</output_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Gauge transform the object -->
+      <Name>GAUGE_TRANSFORM_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <input_id>lattice_stag_prop</input_id>
+        <output_id>g_lattice_stag_prop</output_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+        <object_type>LatticeStaggeredPropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Gauge transform the object -->
+      <Name>GAUGE_TRANSFORM_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <input_id>lattice_stag_ferm</input_id>
+        <output_id>g_lattice_stag_ferm</output_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+        <object_type>LatticeStaggeredFermion</object_type>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
