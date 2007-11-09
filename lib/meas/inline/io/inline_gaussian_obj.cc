@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.2 2007-11-09 21:27:25 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -37,9 +37,10 @@ namespace Chroma
 
 
       //! Init a propagator
-      void GaussianInitLatProp(const string& buffer_id)
+      template<typename T>
+      void gaussianInitObj(const string& buffer_id)
       {
-	TheNamedObjMap::Instance().create<LatticePropagator>(buffer_id);
+	TheNamedObjMap::Instance().create<T>(buffer_id);
 	XMLBufferWriter file_xml, record_xml;
 
 	push(file_xml,"FileXML");
@@ -48,13 +49,13 @@ namespace Chroma
 	push(record_xml,"RecordXML");
 	pop(record_xml);
 
-	gaussian(TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id));
+	gaussian(TheNamedObjMap::Instance().getData<T>(buffer_id));
 	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
       //! Init a propagator
-      void GaussianInitMulti1dLatColMat(const string& buffer_id)
+      void gaussianInitMulti1dLatColMat(const string& buffer_id)
       {
 	multi1d<LatticeColorMatrix> u(Nd);
 	for(int mu=0; mu < u.size(); ++mu)
@@ -87,9 +88,15 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
-									  GaussianInitLatProp);
+									  gaussianInitObj<LatticePropagator>);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+									  gaussianInitObj<LatticeFermion>);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+									  gaussianInitObj<LatticeStaggeredPropagator>);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
+									  gaussianInitObj<LatticeStaggeredFermion>);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-									  GaussianInitMulti1dLatColMat);
+									  gaussianInitMulti1dLatColMat);
 	registered = true;
       }
       return success;
@@ -198,7 +205,8 @@ namespace Chroma
     push(xml_out, "gaussian_init_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineGaussianInitNamedObjEnv::name << ": gaussian init" << endl;
+    QDPIO::cout << InlineGaussianInitNamedObjEnv::name << ": gaussian init an object of type " 
+		<< params.named_obj.object_type << endl;
 
     // Gaussian the object
     QDPIO::cout << "Attempt to list all object names" << endl;
