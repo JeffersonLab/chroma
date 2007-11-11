@@ -1,4 +1,4 @@
-// $Id: lwldslash_qdpopt_w.cc,v 3.4 2007-09-01 23:44:10 uid3790 Exp $
+// $Id: lwldslash_qdpopt_w.cc,v 3.5 2007-11-11 19:09:10 kostas Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -106,7 +106,7 @@ namespace Chroma
 			  enum PlusMinus isign, int cb) const
   {
     START_CODE();
-
+#if QDP_NC == 3
     /*     F 
      *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
      *     mu          mu                    mu
@@ -223,6 +223,10 @@ namespace Chroma
     }
 
     getFermBC().modifyF(chi, QDP::rb[cb]);
+#else
+    QDPIO::cerr<<"lwldshash_qdpopt_w: not implemented for NC!=3\n";
+    QDP_abort(13);
+#endif
 
     END_CODE();
   }
