@@ -1,9 +1,3 @@
-int hackhack(int x)
-{
-  x = 1 ; 
-  return x ;
-}
-
 #include "chromabase.h"
 
 #include "actions/ferm/qprop/asqtad_cps_wrapper_qprop.h"
@@ -26,8 +20,6 @@ extern "C" {
 #include <qla.h>
 #include <qla_complex.h>
 
-  // this is a hack
-  //  typedef QLA_F_Real QLA_Real;
 
 }
 
@@ -37,18 +29,10 @@ extern "C" {
 /**************************************/
 /** level 3 interface code  **/
 
-QLA_F_Real  plaq_hack ;
 
 //
 //  utility routines
 //
-
-//#if 0
-//#ifdef QDP_create_M
-//#error waring q_d_p_create  (second) is defined
-//#endif
-//#endif
-
 
 //
 //  from test_common.c
@@ -320,8 +304,9 @@ namespace Chroma
 static  QDP_ColorVector *out ;
 static  QDP_ColorVector *in ; 
 
-static  QOP_ColorVector *qopout, *qopin;
 
+  static   QOP_info_t info; // wot for ????
+static   QOP_FermionLinksAsqtad *fla ;  
 
   // -----------------------------------------------------
 
@@ -342,8 +327,42 @@ static  QOP_ColorVector *qopout, *qopin;
   out = QDP_create_V();
   in = QDP_create_V();
     
+  // gauge configuration convrsion
+    // Here is how to get at the gauge links:
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    // add staggered phases to the chroma gauge field
+    multi1d<LatticeColorMatrix> u_chroma(Nd);
+    // alpha comes from the StagPhases:: namespace
+    for(int i = 0; i < Nd; i++) {
+      u_chroma[i] = u[i] ; 
+      u_chroma[i] *= StagPhases::alpha(i);
+    }
+
+
+  // setup the qdp 
+  QOP_asqtad_coeffs_t coeffs;
+  load_qop_asqtad_coeffs(&coeffs, 1.0) ;
+  Real u0 = 1.0 ; 
+
+  // ---- create the fat links ---------
+  QDP_ColorMatrix **uqdp ;
+  uqdp = QDP_create_gauge_from_chroma (u_chroma) ;
+
+  QOP_GaugeField *gf;
+  gf = QOP_convert_G_from_qdp(uqdp);
+
+  // create the fat links 
+  fla = QOP_asqtad_create_L_from_G(&info, &coeffs, gf);
+
+  // clean up the memory use
+  QOP_destroy_G(gf) ;
+
+  const int ndim = 4 ;
+  for(int i=0; i<ndim; i++) QDP_destroy_M(uqdp[i]);
+  free(uqdp) ;
     
-  }
+
+}
 
   
   //! Destructor may not well be automatic
@@ -351,6 +370,9 @@ static  QOP_ColorVector *qopout, *qopin;
   {
     QDP_destroy_V(out);
     QDP_destroy_V(in);
+
+    QOP_asqtad_destroy_L(fla) ;
+
   }
 
 
@@ -358,41 +380,21 @@ static  QOP_ColorVector *qopout, *qopin;
   AsqtadCPSWrapperQprop::operator() (LatticeStaggeredFermion& psi, 
      const LatticeStaggeredFermion& q_source) const
   {
-    multi1d<LatticeColorMatrix>  u_chroma_in ;
-
     SystemSolverResults_t res;
 
     // Here is how to get a the mass
     QDPIO::cout << "Mass is " << Mass << endl;
 
-    // Here is how to get at the gauge links:
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
-    
-    // insert --insert --insert --insert --insert --
-
-
-  // add staggered phases to the chroma gauge field
-  multi1d<LatticeColorMatrix> u_chroma(Nd);
-  // alpha comes from the StagPhases:: namespace
-  for(int i = 0; i < Nd; i++) {
-    u_chroma[i] = u_chroma_in[i] ; 
-    u_chroma[i] *= StagPhases::alpha(i);
-  }
-
-  // Suspend communication of qdp++
-  // NOTE: this is not necessary for an extraction
-  //  QDP_suspend();
 
   // convert "q_source" to in (qdp format)
   convert_chroma_to_qdp(in,q_source) ;
-
-  //  QDP_V_eq_zero(out, QDP_all); 
   convert_chroma_to_qdp(out,psi) ;
 
+  QOP_ColorVector *qopout, *qopin;
   qopout = QOP_create_V_from_qdp(out);
   qopin = QOP_create_V_from_qdp(in);
 
-  QOP_info_t info;
+
   QOP_invert_arg_t inv_arg;
   QOP_resid_arg_t res_arg;
   res_arg.rsqmin = 1e-14;
@@ -400,40 +402,8 @@ static  QOP_ColorVector *qopout, *qopin;
   inv_arg.restart = 200;
   inv_arg.evenodd = QOP_EVEN;
 
-  QDP_ColorMatrix **uqdp ; 
-  uqdp = QDP_create_gauge_from_chroma (u_chroma) ;
 
-  // setup the qdp 
-  QOP_asqtad_coeffs_t coeffs;
-  load_qop_asqtad_coeffs(&coeffs, 1.0) ;
-
-  // 
-  QOP_GaugeField *gf;
-  gf = QOP_convert_G_from_qdp(uqdp);
-
-  // debug debug debug debug debug debug debug 
-  multi1d<LatticeColorMatrix> u_fat(Nd);
-  multi1d<LatticeColorMatrix> u_triple(Nd);
-
-  Real u0 = 1.0 ; 
-  //  Fat7_Links(u_chroma, u_fat, u0);
-  // Triple_Links(u_chroma, u_triple, u0);
-  u_fat = state->getFatLinks();
-  u_triple = state->getTripleLinks() ;
-
-  QDP_ColorMatrix **u_fat_qdp; 
-  u_fat_qdp = QDP_create_gauge_from_chroma (u_fat) ;
-  QDP_ColorMatrix **u_triple_qdp; 
-  u_triple_qdp = QDP_create_gauge_from_chroma (u_triple) ;
-
-
-  // debug debug debug debug debug debug debug 
-
-  QOP_FermionLinksAsqtad *fla ; 
-  fla = QOP_asqtad_create_L_from_G(&info, &coeffs, gf);
-  //  fla = QOP_asqtad_convert_L_from_qdp(u_fat_qdp,u_triple_qdp)  ;
-
-  QLA_Real mass = 0.03 ;
+  QLA_Real mass = toFloat(Mass) ;
 
   // invert
   QOP_asqtad_invert_all(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
@@ -441,53 +411,20 @@ static  QOP_ColorVector *qopout, *qopin;
   cout << "QOP Inversion results\n" ;
   printf("QOP iters = %d\n",res_arg.final_iter) ;
   printf("QOP ||r||^2 = %g\n",res_arg.final_rsq) ;
+  res.n_count = res_arg.final_iter ;
 
   // convert out to psi (qdp++ format)
   QOP_extract_V_to_qdp(out,qopout) ;
-  //  print_Colorvector(qopout->cv) ;
-
   convert_qdp_to_chroma(psi,out) ;
 
 
   QOP_destroy_V(qopout);
   QOP_destroy_V(qopin);
-  //   QOP_destroy_V(gf); // compiler no like
-
-  //  QDP_finalize();
-  const int ndim = 4 ; 
-  for(int i=0; i<ndim; i++) QDP_destroy_M(uqdp[i]);
-  free(uqdp) ; 
-
-  for(int i=0; i<ndim; i++) QDP_destroy_M(u_fat_qdp[i]);
-  free(u_fat_qdp) ; 
-
-
-  for(int i=0; i<ndim; i++) QDP_destroy_M(u_triple_qdp[i]);
-  free(u_triple_qdp) ; 
-
-
-    // insert --insert --insert --insert --insert --
-
-    
-    // Do what thou wouldst here
-    QDPIO::cout << "in Asqtad_CPS_qprop_wrapper::operator() stub" << endl;
-    QDPIO::cout << "Rewrite this bit please" << endl;
-
-    res.n_count = 0;
-    psi = q_source;
-    
     return res;
   }
 
 }
 
-
-
-//namespace Chroma
-//{
-
-
-//void setup_level3(multi1d<int> nrow, int *argc, char **argv[] )
 
 void setup_levelthree(multi1d<int> nrow, int *argc, char ***argv )
 {
@@ -517,11 +454,5 @@ void setup_levelthree(multi1d<int> nrow, int *argc, char ***argv )
   free(lattice_size) ;
 
 }
-
-
-
-
-// }  // end of namespace
-
 
 
