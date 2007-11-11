@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.7 2007-02-22 21:11:49 bjoo Exp $ 
+// $Id: barQll_w.cc,v 1.8 2007-11-11 14:48:47 kostas Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -45,7 +45,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 
   if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
     return;
-
+#if QDP_NC == 3
   int length = phases.numSubsets() ;
   int num_mom = phases.numMom();
   
@@ -117,7 +117,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
   write(xml, "SigmaQy", SQyprop[0]);
   write(xml, "SigmaQz", SQzprop[0]);
   pop(xml);
-
+#endif
   END_CODE();
 }
 
