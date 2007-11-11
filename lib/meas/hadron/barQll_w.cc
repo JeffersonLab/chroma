@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.8 2007-11-11 14:48:47 kostas Exp $ 
+// $Id: barQll_w.cc,v 1.9 2007-11-11 14:53:29 kostas Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -43,8 +43,10 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 {
   START_CODE();
 
-  if ( Ns != 4 || Nc != 3 )		/* Code is specific to Ns=4 and Nc=3. */
-    return;
+  if ( Ns != 4 || Nc != 3 ){	/* Code is specific to Ns=4 and Nc=3. */
+    QDPIO::cerr<<"Qll code only works for Nc=3 and Ns=4\n";
+    QDP_abort(111) ; 
+  }
 #if QDP_NC == 3
   int length = phases.numSubsets() ;
   int num_mom = phases.numMom();
