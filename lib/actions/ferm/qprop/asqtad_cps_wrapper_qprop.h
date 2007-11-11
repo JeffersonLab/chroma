@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.4 2007-02-22 21:11:47 bjoo Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.5 2007-11-11 14:52:01 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -12,12 +12,14 @@
 
 #include "chromabase.h"
 #include "handle.h"
-#include "invtype.h"
+//#include "invtype.h"
 #include "syssolver.h"
 #include "linearop.h"
 #include "fermact.h"
+#include "actions/ferm/invert/syssolver_cg_params.h"
 #include "state.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
+#include "stagtype_fermact_s.h"
 
 
 namespace Chroma
@@ -44,15 +46,16 @@ namespace Chroma
       // (are ignored) -- is there a nice way around this ? 
       // Perhaps not
      */
-    AsqtadCPSWrapperQprop(const EvenOddStaggeredTypeFermAct<T,P,Q>& S_,
-			  Handle< FermState<T,P,Q> > state, 
+    AsqtadCPSWrapperQprop(
+			  const EvenOddStaggeredTypeFermAct<T,P,Q>& S_,
+                          Handle< FermState<T,P,Q> > state,
 			  const SysSolverCGParams& invParam_);
     
     //! Destructor is automatic
     ~AsqtadCPSWrapperQprop();
 
     //! Return the subset on which the operator acts
-    const Subset& subset() const {return all;}
+    const OrderedSubset& subset() const {return all;}
 
     //! Solver the linear system
     /*!
@@ -60,7 +63,8 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return number of CG iterations
      */
-    SystemSolverResults_t operator() (LatticeStaggeredFermion& psi, const LatticeStaggeredFermion& chi) const;
+        SystemSolverResults_t operator() (LatticeStaggeredFermion& psi, const LatticeStaggeredFermion& chi) const;
+
 
   private:
     // Hide default constructor
