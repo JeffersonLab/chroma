@@ -1,6 +1,7 @@
 11/12/2007 -- Robert Edwards
 	Version 3.27.0 - First 3d SSE dslash. New SLIC-like and SLRC fermion actions.
-        Some new tasks. Working Eigenvalue accelerated CG code.
+        Some new tasks. Working Eigenvalue accelerated CG code. Changed prop readers
+        to allow an optional Config_info.
 
 10/26/2007 -- Balint Joo
 	Version 3.26.0 - New Dslash written in intrinsics with unit test suite and 
