@@ -5,6 +5,9 @@ Installation instructions for CHROMA
 ---------------- 
 
 CHROMA has been modified to use the GNU autoconf build system.
+You'll need at least  g++-4.X  or above. The code has been tested
+to work under gcc-4.X and Intel compiler (icc) version 9 and above.
+
 To configure you have to execute the command:
 
 ./configure <configuration options>
@@ -13,7 +16,8 @@ Some important options for CHROMA are
 
 	--with-qdp=DIR
         --enable-sse-wilson-dslash
-        --enable-sse-dwf-cg
+        --enable-dwf-cg
+        --with-qmp=DIR 
         --prefix=<installation directory>
 
 There must be a previously installed version of qdp++ with a path
@@ -29,7 +33,10 @@ The other individual switches:
 
  --enable-sse-wilson-dslash       enables the SSE Wilson dslash code
 
- --enable-sse-dwf-cg              enables the SSE DWF CG inverter code
+ --enable-dwf-cg                  enables the DWF CG inverter code on BG/L 
+                                  and SSE in both single and double precision.
+
+ --with-gmp=<dir>                 use the Gnu Multi-Precision lib in <dir>
 
 
 
@@ -55,6 +62,9 @@ with LDFLAGS and LIBS environment variables. These flags are used in
 addition to those used in the provided installation of qdp++.
 
 ./configure CXX=g++ CXXFLAGS="-O3" LIBS="-lm"
+
+You'll need at least  g++-4.X  or above. The code has been tested
+to work under gcc-4.X and Intel compiler (icc) version 9 and above.
 
 2) Building
 -----------

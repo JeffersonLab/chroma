@@ -10,7 +10,10 @@ with cvs tags labelled as
 
 Chroma version 3.23 or higher requires QDP++ 1.24.0 or higher and
 QMP 2.X or higher . The latter follows the version 2.X specification
-of the API. QDP++ and Chroma no longer support the 1.X QMP API
+of the API. QDP++ and Chroma no longer support the 1.X QMP API.
+
+As of these recent versions, both Chroma and QDP++ now require at 
+least g++-4.X or above.
 
 In JLab CVS module name and tag-ology, the current compatibility is
 

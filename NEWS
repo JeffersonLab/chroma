@@ -1,3 +1,7 @@
+11/12/2007 -- Robert Edwards
+	Version 3.27.0 - First 3d SSE dslash. New SLIC-like and SLRC fermion actions.
+        Some new tasks. Working Eigenvalue accelerated CG code.
+
 10/26/2007 -- Balint Joo
 	Version 3.26.0 - New Dslash written in intrinsics with unit test suite and 
         complete QMT harness (as opposed to just 32bit parscalar). 
@@ -16,7 +20,7 @@
         schemes.
 
 09/12/2007 -- Balint Joo
-        Version 3.24.3 - Lots of tydiups and fixes especially t SF related code.
+        Version 3.24.3 - Lots of tydiups and fixes especially to SF related code.
         5D solvers work with GCC-4. Additions for 7n related regression testing.
         CG-DWF problems hopefully fixed in the chroma-config script file.
 
