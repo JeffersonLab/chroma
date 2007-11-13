@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 3.2 2006-08-11 18:12:00 edwards Exp $
+//  $Id: stout_smear.cc,v 3.3 2007-11-13 21:10:29 bjoo Exp $
 /*! \file
  *  \brief Stout smear a gauge field
  */
@@ -52,7 +52,11 @@ namespace Chroma
     }
     
     // The proto smeared link
-    LatticeColorMatrix u_tmp = sm_fact * u_staple * adj(u[mu]);
+    Real msmear_fact=Real(-1);
+
+    // - sign goes in here, because taproj() works with 
+    // a minus sign relative to the stout paper.
+    LatticeColorMatrix u_tmp = msmear_fact * u_staple * adj(u[mu]);
 
     // Take the trace-less anti-hermitian projection of the staple
     taproj(u_tmp);
