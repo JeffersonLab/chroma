@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 3.3 2007-11-13 21:10:29 bjoo Exp $
+//  $Id: stout_smear.cc,v 3.4 2007-11-14 02:06:15 bjoo Exp $
 /*! \file
  *  \brief Stout smear a gauge field
  */
@@ -52,7 +52,7 @@ namespace Chroma
     }
     
     // The proto smeared link
-    Real msmear_fact=Real(-1);
+    Real msmear_fact=Real(-1)*sm_fact;
 
     // - sign goes in here, because taproj() works with 
     // a minus sign relative to the stout paper.
