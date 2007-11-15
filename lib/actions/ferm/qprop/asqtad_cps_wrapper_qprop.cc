@@ -316,7 +316,7 @@ static   QOP_FermionLinksAsqtad *fla ;
                   multi1d<LatticeColorMatrix> >& S_,
 	Handle< FermState<LatticeStaggeredFermion,P,Q> > state_,
 	  const SysSolverCGParams& invParam_) :
-          invParam(invParam_)
+    invParam(invParam_),Mass(S_.getQuarkMass())
   {
 
 
@@ -324,12 +324,14 @@ static   QOP_FermionLinksAsqtad *fla ;
     // XMLReader  paramtop(is); compiler no like
     // SysSolverCGParams params(paramtop, invParam.path);
 
-  out = QDP_create_V();
-  in = QDP_create_V();
     
   // gauge configuration convrsion
     // Here is how to get at the gauge links:
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+  //    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+  multi1d<LatticeColorMatrix> u(Nd) ;  // debug
+
+    u = 1;
+
     // add staggered phases to the chroma gauge field
     multi1d<LatticeColorMatrix> u_chroma(Nd);
     // alpha comes from the StagPhases:: namespace
@@ -357,9 +359,10 @@ static   QOP_FermionLinksAsqtad *fla ;
   // clean up the memory use
   QOP_destroy_G(gf) ;
 
-  const int ndim = 4 ;
-  for(int i=0; i<ndim; i++) QDP_destroy_M(uqdp[i]);
-  free(uqdp) ;
+  // memory leak
+  //  const int ndim = 4 ;
+  // for(int i=0; i<ndim; i++) QDP_destroy_M(uqdp[i]);
+  // free(uqdp) ;
     
 
 }
@@ -368,9 +371,6 @@ static   QOP_FermionLinksAsqtad *fla ;
   //! Destructor may not well be automatic
   AsqtadCPSWrapperQprop::~AsqtadCPSWrapperQprop() 
   {
-    QDP_destroy_V(out);
-    QDP_destroy_V(in);
-
     QOP_asqtad_destroy_L(fla) ;
 
   }
@@ -378,12 +378,14 @@ static   QOP_FermionLinksAsqtad *fla ;
 
   SystemSolverResults_t
   AsqtadCPSWrapperQprop::operator() (LatticeStaggeredFermion& psi, 
-     const LatticeStaggeredFermion& q_source) const
+				     const LatticeStaggeredFermion& q_source) const
   {
     SystemSolverResults_t res;
 
-    // Here is how to get a the mass
-    QDPIO::cout << "Mass is " << Mass << endl;
+    QDPIO::cout << "(Hardwired) Mass is " << Mass << endl;
+
+    out = QDP_create_V();
+    in = QDP_create_V();
 
 
   // convert "q_source" to in (qdp format)
@@ -394,16 +396,17 @@ static   QOP_FermionLinksAsqtad *fla ;
   qopout = QOP_create_V_from_qdp(out);
   qopin = QOP_create_V_from_qdp(in);
 
-
   QOP_invert_arg_t inv_arg;
   QOP_resid_arg_t res_arg;
-  res_arg.rsqmin = 1e-14;
-  inv_arg.max_iter = 600;
-  inv_arg.restart = 200;
+  res_arg.rsqmin = toFloat(invParam.RsdCG)*
+    toFloat(invParam.RsdCG);
+  inv_arg.max_iter = invParam.MaxCG;
+  inv_arg.restart = 1 ;
   inv_arg.evenodd = QOP_EVEN;
 
 
   QLA_Real mass = toFloat(Mass) ;
+  printf("level3 mass hardwired to be %f\n",mass) ; 
 
   // invert
   QOP_asqtad_invert_all(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
@@ -412,15 +415,21 @@ static   QOP_FermionLinksAsqtad *fla ;
   printf("QOP iters = %d\n",res_arg.final_iter) ;
   printf("QOP ||r||^2 = %g\n",res_arg.final_rsq) ;
   res.n_count = res_arg.final_iter ;
+  res.resid = res_arg.final_rsq; // check norm convention
 
   // convert out to psi (qdp++ format)
   QOP_extract_V_to_qdp(out,qopout) ;
   convert_qdp_to_chroma(psi,out) ;
 
 
+
   QOP_destroy_V(qopout);
   QOP_destroy_V(qopin);
-    return res;
+
+  QDP_destroy_V(out);
+  QDP_destroy_V(in);
+
+  return res;
   }
 
 }
@@ -431,11 +440,18 @@ void setup_levelthree(multi1d<int> nrow, int *argc, char ***argv )
   //  QDP_start(argc, argv);
   int tmp = ::QDP_initialize(argc,argv  ) ;
 
+  printf("Setting up the level 3 code\n");
+  printf("----------------------------\n");
+
   int ndim = 4;
   int *lattice_size;
   lattice_size = (int *) malloc(ndim*sizeof(int));
   for(int i=0 ; i < ndim ; ++i)
     lattice_size[i] = nrow[i] ;
+
+  printf("QDP/QOP lattice volume = %d %d %d %d\n",
+	 lattice_size[0],lattice_size[1],
+	 lattice_size[2],lattice_size[3] ) ; 
 
    QDP_set_latsize(ndim, lattice_size);
    QDP_create_layout();
