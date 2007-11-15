@@ -300,13 +300,13 @@ namespace Chroma
   // Perhaps not
   */
 
-    // internal variables to this class
+    // internal variables to this file
 static  QDP_ColorVector *out ;
 static  QDP_ColorVector *in ; 
 
 
   static   QOP_info_t info; // wot for ????
-static   QOP_FermionLinksAsqtad *fla ;  
+  static   QOP_FermionLinksAsqtad *fla ;  
 
   // -----------------------------------------------------
 
@@ -316,7 +316,7 @@ static   QOP_FermionLinksAsqtad *fla ;
                   multi1d<LatticeColorMatrix> >& S_,
 	Handle< FermState<LatticeStaggeredFermion,P,Q> > state_,
 	  const SysSolverCGParams& invParam_) :
-    invParam(invParam_),Mass(S_.getQuarkMass())
+    invParam(invParam_),Mass(S_.getQuarkMass()), state(state_)
   {
 
 
@@ -325,12 +325,12 @@ static   QOP_FermionLinksAsqtad *fla ;
     // SysSolverCGParams params(paramtop, invParam.path);
 
     
-  // gauge configuration convrsion
+    // gauge configuration conversion
     // Here is how to get at the gauge links:
-  //    const multi1d<LatticeColorMatrix>& u = state->getLinks();
-  multi1d<LatticeColorMatrix> u(Nd) ;  // debug
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+    //  multi1d<LatticeColorMatrix> u(Nd) ;  // debug
 
-    u = 1;
+    //    u = 1;
 
     // add staggered phases to the chroma gauge field
     multi1d<LatticeColorMatrix> u_chroma(Nd);
@@ -356,14 +356,11 @@ static   QOP_FermionLinksAsqtad *fla ;
   // create the fat links 
   fla = QOP_asqtad_create_L_from_G(&info, &coeffs, gf);
 
-  // clean up the memory use
+  // remove the space for the gauge configuration
+  // gf contains pointers to 4 components of uqdp,
+  // uqdp[i] do not need to be destroyed as well
   QOP_destroy_G(gf) ;
-
-  // memory leak
-  //  const int ndim = 4 ;
-  // for(int i=0; i<ndim; i++) QDP_destroy_M(uqdp[i]);
-  // free(uqdp) ;
-    
+  free(uqdp) ;
 
 }
 
@@ -406,7 +403,7 @@ static   QOP_FermionLinksAsqtad *fla ;
 
 
   QLA_Real mass = toFloat(Mass) ;
-  printf("level3 mass hardwired to be %f\n",mass) ; 
+  printf("level3 asqtad inverter mass = %f\n",mass) ; 
 
   // invert
   QOP_asqtad_invert_all(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
