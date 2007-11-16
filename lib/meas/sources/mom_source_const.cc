@@ -1,4 +1,4 @@
-// $Id: mom_source_const.cc,v 3.4 2006-11-21 19:45:53 edwards Exp $
+// $Id: mom_source_const.cc,v 3.5 2007-11-16 22:27:33 kostas Exp $
 /*! \file
  *  \brief Momentum (wall) source construction
  */
@@ -111,6 +111,8 @@ namespace Chroma
       }
 
       read(paramtop, "t_dir", t_dir);
+      read(paramtop, "t_srce", t_srce);
+
       read(paramtop, "mom", mom);
 
       if (mom.size() != Nd)
@@ -131,6 +133,8 @@ namespace Chroma
 
       write(xml, "mom", mom);
       write(xml, "t_dir", t_dir);
+      write(xml, "t_srce", t_srce);
+
       pop(xml);
     }
 
@@ -140,7 +144,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "MomWall source" << endl;
+      QDPIO::cout << "Volume Momentum Source" << endl;
 
       // Initialize the slow Fourier transform phases
       multi1d<int> mom3(Nd-1);
@@ -150,7 +154,7 @@ namespace Chroma
 	  mom3[j++] = params.mom[mu];
       }
       int mom2_max = norm2(mom3);
-      SftMom phases(mom2_max, true, params.t_dir);
+      SftMom phases(mom2_max, params.t_srce, true, params.t_dir);
       mom3 = phases.canonicalOrder(mom3);
 
       // Create the quark source

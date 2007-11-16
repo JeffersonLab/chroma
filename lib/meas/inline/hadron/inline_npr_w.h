@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_w.h,v 1.7 2007-05-03 22:41:53 kostas Exp $
+// $Id: inline_npr_w.h,v 1.8 2007-11-16 22:27:33 kostas Exp $
 /*! \file
  * \brief Inline construction of Landau gauge propagator
  *
@@ -37,6 +37,7 @@ namespace Chroma
     unsigned long     frequency;
 
     int max_mom2 ; // max p^2
+    std::string output_type ;
     std::string filename ;
 
     struct NamedObject_t

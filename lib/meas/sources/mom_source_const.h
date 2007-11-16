@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mom_source_const.h,v 3.1 2006-10-30 21:59:09 edwards Exp $
+// $Id: mom_source_const.h,v 3.2 2007-11-16 22:27:33 kostas Exp $
 /*! \file
  *  \brief Fixed momentum (wall) source construction
  */
@@ -30,6 +30,7 @@ namespace Chroma
     
       multi1d<int>     mom;                  /*<! prototype momentum */
       int              t_dir;                /*<! time direction */
+      multi1d<int>     t_srce;               /*<! the origin for the FT */
     };
 
 

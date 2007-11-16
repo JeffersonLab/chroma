@@ -1,4 +1,4 @@
-// $Id: inline_npr_w.cc,v 1.5 2007-05-03 22:41:53 kostas Exp $
+// $Id: inline_npr_w.cc,v 1.6 2007-11-16 22:27:33 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR propagator
  *
@@ -89,6 +89,9 @@ namespace Chroma
 
        // Read in the output npr/source configuration info
       read(paramtop, "max_mom2", max_mom2);
+      output_type = "LIME";
+      if(paramtop.count("output_type")==1) 
+	read(paramtop, "output_type", output_type);
 
       read(paramtop, "filename", filename);
 
@@ -116,6 +119,7 @@ namespace Chroma
     
     QDP::write(xml_out, "filename", filename);
     QDP::write(xml_out, "max_mom2", max_mom2);
+    QDP::write(xml_out, "output_type", output_type);
     Chroma::write(xml_out, "NamedObject", named_obj);
 
     pop(xml_out);
@@ -238,6 +242,7 @@ namespace Chroma
 
     write(file_xml, "Config_info", gauge_xml);
     write(file_xml, "Propagator_info", prop_xml);
+    pop(file_xml) ; //NPR_W
 
     // Calculate some gauge invariant observables just for info.
     MesPlq(xml_out, "Observables", u);
@@ -252,21 +257,29 @@ namespace Chroma
       tt = sumMulti(phases[m]*quark_propagator, phases.getSet()) ;
       FF[m] =  tt[0] ;
     }
-	      
-    push(xml_out,"FT_prop") ;
-    write(xml_out,"prop",FF);
-    pop(xml_out) ;
-     
-    pop(file_xml); //NPR_W
-    QDPFileWriter FFfile(file_xml, params.filename, QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
-    for(int p(0) ; p<phases.numMom();p++){
-      XMLBufferWriter record_xml;
-      push(record_xml, "prop_desc");//write out the momemtum of each bit
-      write(record_xml, "mom", phases.numToMom(p));
-      pop(record_xml);
-      write(FFfile,record_xml,FF[p]);
-    }
     
+    // Either write out prop as text or binary. The options are to set the option
+    if(params.output_type=="XML"){
+      push(xml_out,"FT_prop") ;
+      for(int p(0) ; p<phases.numMom();p++){
+	push(xml_out, "prop_desc");//write out the momemtum of each bit
+	write(xml_out, "mom", phases.numToMom(p));
+	pop(xml_out);//prop_desc
+	write(xml_out,"prop",FF[p]);
+      }
+      pop(xml_out);//FT_prop
+    }
+    else{//Default output is binary
+      QDPFileWriter FFfile(file_xml, params.filename, QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+      for(int p(0) ; p<phases.numMom();p++){
+	XMLBufferWriter record_xml;
+	push(record_xml, "prop_desc");//write out the momemtum of each bit
+	write(record_xml, "mom", phases.numToMom(p));
+	pop(record_xml);
+	write(FFfile,record_xml,FF[p]);
+      }
+    }
+
     // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
     {
       // Initialize the slow Fourier transform phases
