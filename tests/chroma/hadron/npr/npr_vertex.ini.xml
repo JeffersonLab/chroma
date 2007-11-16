@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: npr_vertex.ini.xml,v 1.1 2007-11-16 22:22:53 kostas Exp $
+;
+; Coulomb gauge fixing
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Coulomb gauge fix -->
+      <Name>COULOMB_GAUGEFIX</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GFAccu>1.0e-5</GFAccu>
+        <GFMax>200</GFMax>
+        <OrDo>false</OrDo>
+        <OrPara>1.0</OrPara>
+        <j_decay>-3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <gfix_id>landau_cfg</gfix_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>MOMENTUM_VOLUME_SOURCE</SourceType>
+          <t_dir>3</t_dir>
+          <j_decay>3</j_decay>
+          <mom> 1  0 0 0</mom>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>landau_cfg</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.12</Kappa>
+         <clovCoeff>1.17</clovCoeff>
+         <clovCoeffR>0.91</clovCoeffR>
+         <clovCoeffT>1.07</clovCoeffT>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-10</RsdCG>
+          <MaxCG>1000</MaxCG>
+          <Nmax>30</Nmax>
+          <Neig>10</Neig>
+          <Neig_max>120</Neig_max>
+          <eigen_id>linop_evs</eigen_id>
+          <cleanUpEvecs>false</cleanUpEvecs>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>landau_cfg</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+     <Name>NPR_VERTEX</Name>
+     <Frequency>1</Frequency>
+     <Param>
+       <version>1</version>
+       <links_max>2</links_max>
+       <file_name>npr-vertex</file_name>
+     </Param>
+     <NamedObject>
+        <gauge_id>landau_cfg</gauge_id>
+        <prop_id>sh_prop_0</prop_id>
+        <file_name>npr-vertex</file_name>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
