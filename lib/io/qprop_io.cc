@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.18 2007-11-09 22:03:46 edwards Exp $
+// $Id: qprop_io.cc,v 3.19 2007-11-27 23:01:26 kostas Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -132,6 +132,33 @@ namespace Chroma
       XMLReader  top(sourcetop, source.path);
 
       read(top, "t_srce", t_srce);
+    }
+    catch (const std::string& e) 
+    {
+      QDPIO::cerr << "Error reading source: " << e << endl;
+      throw e;
+    }
+
+    return t_srce;
+  }
+
+  // Given a prop source xml in string form, return the Momentum
+  // works with momentum sources
+  multi1d<int> PropSourceConst_t::getMom() const
+  {
+    //
+    // Initialize source xml
+    //
+    std::istringstream  xml_s(source.xml);
+    XMLReader  sourcetop(xml_s);
+
+    multi1d<int> t_srce;
+
+    try
+    {
+      XMLReader  top(sourcetop, source.path);
+
+      read(top, "mom", t_srce);
     }
     catch (const std::string& e) 
     {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qprop_io.h,v 3.10 2007-02-26 02:12:54 edwards Exp $
+// $Id: qprop_io.h,v 3.11 2007-11-27 23:01:26 kostas Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -29,6 +29,8 @@ namespace Chroma
     PropSourceConst_t();              /*!< default constructor */
 
     multi1d<int> getTSrce() const;    /*!< return 4D coords of source (may not exist) */
+
+    multi1d<int> getMom() const;    /*!< return the momentum of the source (may not exist) */
 
     GroupXML_t       source;          /*!< Holds source xml params*/
 
