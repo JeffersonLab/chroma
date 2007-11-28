@@ -1,4 +1,4 @@
-// $Id: inline_npr_vertex_w.cc,v 1.5 2007-11-28 04:05:37 kostas Exp $
+// $Id: inline_npr_vertex_w.cc,v 1.6 2007-11-28 17:13:45 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -70,12 +70,13 @@ namespace Chroma
     Real fact = twopi*Real(mom[t_dir])/Real(Layout::lattSize()[t_dir]);
     LatticeReal p_dot_t = cos(QDP::Layout::latticeCoordinate(t_dir)*fact);
     LatticeComplex p_dot_x ;
+    p_dot_x = p_dot_t ;
     for (int n(0); n < phases.numMom(); n++){
       multi1d<int> mm = phases.canonicalOrder(phases.numToMom(n));
 	if (mm == mom3)
 	  p_dot_x *= phases[n];
     }
-    return sum(prop*p_dot_x);
+    return sum(prop*p_dot_x)/Double(Layout::vol());
   }
 
   //! Param input
