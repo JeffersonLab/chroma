@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_npr_vertex_w.h,v 1.3 2007-04-18 02:32:26 edwards Exp $
+// $Id: inline_npr_vertex_w.h,v 1.4 2007-11-28 04:05:37 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -36,6 +36,7 @@ namespace Chroma
     struct Param_t
     {
       int          links_max;          /*!< maximum number of links */
+      std::string  file_name;          /*!< bb output file name pattern */
       GroupXML_t   cfs;                /*!< Fermion state */
     } param;
 
@@ -44,7 +45,6 @@ namespace Chroma
     {
       std::string       gauge_id;        /*!< Input Gauge id */
       std::string       prop_id;         /*!< Input forward prop */
-      std::string       file_name;    /*!< bb output file name pattern */
     } named_obj;
 
     std::string xml_file;  // Alternate XML file pattern

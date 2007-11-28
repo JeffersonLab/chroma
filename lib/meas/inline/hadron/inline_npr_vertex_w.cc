@@ -1,4 +1,4 @@
-// $Id: inline_npr_vertex_w.cc,v 1.4 2006-11-03 20:18:55 hwlin Exp $
+// $Id: inline_npr_vertex_w.cc,v 1.5 2007-11-28 04:05:37 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -52,6 +52,31 @@ namespace Chroma
     }
   }
 
+  DPropagator FTpropagator(const LatticePropagator& prop,
+			   const multi1d<int> mom,
+			   const multi1d<int> t_src,
+			   const int t_dir){
+    // Initialize the slow Fourier transform phases
+    multi1d<int> mom3(Nd-1);
+    for(int mu=0,j=0; mu < Nd; ++mu)
+      {
+        if (mu != t_dir)
+          mom3[j++] = mom[mu];
+      }
+    int mom2_max = norm2(mom3);
+    SftMom phases(mom2_max, t_src, true, t_dir);
+    mom3 = phases.canonicalOrder(mom3);
+    
+    Real fact = twopi*Real(mom[t_dir])/Real(Layout::lattSize()[t_dir]);
+    LatticeReal p_dot_t = cos(QDP::Layout::latticeCoordinate(t_dir)*fact);
+    LatticeComplex p_dot_x ;
+    for (int n(0); n < phases.numMom(); n++){
+      multi1d<int> mm = phases.canonicalOrder(phases.numToMom(n));
+	if (mm == mom3)
+	  p_dot_x *= phases[n];
+    }
+    return sum(prop*p_dot_x);
+  }
 
   //! Param input
   void read(XMLReader& xml, const string& path, InlineNprVertexParams::Param_t& input)
@@ -78,6 +103,7 @@ namespace Chroma
     }
     
     read(paramtop, "links_max", input.links_max);
+    read(paramtop, "file_name", input.file_name);
   }
 
 
@@ -89,6 +115,7 @@ namespace Chroma
     int version = 1;
     write(xml, "version", version);
     write(xml, "links_max", input.links_max);
+    write(xml, "file_name", input.file_name);    
     xml << input.cfs.xml;
 
     pop(xml);
@@ -101,7 +128,6 @@ namespace Chroma
 
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "prop_id", input.prop_id);
-    read(inputtop, "file_name", input.file_name);
   }
 
   //! Propagator output
@@ -111,7 +137,6 @@ namespace Chroma
 
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "prop_id", input.prop_id);
-    write(xml, "file_name", input.file_name);
 
     pop(xml);
   }
@@ -358,13 +383,28 @@ namespace Chroma
     QDPIO::cout << "Forward propagator successfully parsed" << endl;
 
 
+    // Get the momentum from the header
+
+    multi1d<int> mom  ;
+    multi1d<int> t_src ;
+    int       t_dir = source_header.j_decay ;
+
+    try{
+      mom = source_header.getMom() ;
+      t_src = source_header.getTSrce() ;
+    }
+    catch (const string& e){
+      QDPIO::cerr << InlineNprVertexEnv::name << ": propagator does not have a momentum source or t_src not present: error message: " << e << endl;
+      QDP_abort(1);
+    }
+
+
     //#################################################################################//
     // Construct Building Blocks                                                       //
     //#################################################################################//
     QDP::StopWatch swatch;
     swatch.reset();
-    QDPIO::cout << "calculating building blocks" << endl;
-
+    
     XMLBufferWriter file_xml;
     push(file_xml, "NprVertex");
     write(file_xml, "Param", params.param);
@@ -373,9 +413,30 @@ namespace Chroma
     write(file_xml, "Config", gauge_xml);
     pop(file_xml);
 
-    QDPFileWriter qio_file(file_xml, params.named_obj.file_name, QDPIO_SINGLEFILE, 
+    QDPFileWriter qio_file(file_xml, params.param.file_name,QDPIO_SINGLEFILE, 
 			   QDPIO_SERIAL, QDPIO_OPEN); 
 
+
+    //Fourier transform the propagator 
+    QDPIO::cout << "Fourier Transforming propagator" << endl;
+    swatch.start();
+    DPropagator FTprop(FTpropagator(F,mom,t_src,t_dir));
+    swatch.stop();
+    XMLBufferWriter prop_xml;
+    push(prop_xml,"QuarkPropagator");
+    write(prop_xml,"mom",mom);
+    write(prop_xml,"origin",t_src);
+    write(prop_xml,"t_dir",t_dir);
+    pop(prop_xml) ;
+    write(qio_file, prop_xml, FTprop);
+
+    QDPIO::cout << "finished Fourier Transforming propagator"
+                << "  time= "
+                << swatch.getTimeInSeconds()
+                << " secs" << endl;
+
+    QDPIO::cout << "Calculating building blocks" << endl;
+    swatch.reset();
     swatch.start();
     NprVertex(F, U, params.param.links_max, AllLinkPatterns, qio_file);
     swatch.stop();
