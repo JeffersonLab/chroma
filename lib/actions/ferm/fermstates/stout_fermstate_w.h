@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.3 2007-11-08 15:04:52 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.4 2007-11-28 20:50:33 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -266,17 +266,22 @@ namespace Chroma
     // Initialise the super
     SLICFermState(Handle< FermBC<T,P,Q> > fbc_, 
 		  const StoutFermStateParams& p_,
-		  const Q& u_) : StoutFermState<T,P,Q>(fbc_,p_, u_) {}
+		  const Q& u_) : StoutFermState<T,P,Q>(fbc_,p_, u_) {
+    }
 
     ~SLICFermState() {}
    
     void deriv(P& F) const {
-
+       P F_tmp = F;
+       Q thin_links = StoutFermState<T,P,Q>::getThinLinks();
+       StoutFermState<T,P,Q>::getBC().modify(thin_links);
+	
       // Multiply in by the final U term to close off the links
       for(int mu=0; mu < Nd; mu++) { 
-	F[mu] = StoutFermState<T,P,Q>::getThinLinks()[mu]*F[mu];
+	F[mu] = thin_links[mu]*F_tmp[mu];
       }
     }
+  private:
   };
 
   //! Create a SLIC ferm connection state
