@@ -1,4 +1,4 @@
-// $Id: eoprec_slrc_linop_w.cc,v 3.6 2007-11-28 20:50:33 bjoo Exp $
+// $Id: eoprec_slrc_linop_w.cc,v 3.7 2007-11-28 22:09:15 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -8,7 +8,8 @@
  */
 
 #include "actions/ferm/linop/eoprec_slrc_linop_w.h"
-
+#include "actions/ferm/fermstates/simple_fermstate.h"
+#include "actions/ferm/fermstates/periodic_fermstate.h"
 using namespace QDP::Hints;
 
 namespace Chroma 
@@ -28,9 +29,8 @@ namespace Chroma
 
     // Need to make sure that fs is a stout ferm state
     // We want to have Clover with thin links
-    thin_fs  = new SimpleFermState<T,P,Q>( 
-	fs->getFermBC(),
-	fs.cast< SLICFermState<T, P, Q> >()->getThinLinks());
+    thin_fs  = new PeriodicFermState<T,P,Q>( 
+					    	fs.cast< SLICFermState<T, P, Q> >()->getThinLinks());
 
     clov.create(thin_fs, param);
 

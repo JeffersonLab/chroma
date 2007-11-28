@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_slrc_fermact_w.h,v 1.1 2007-10-09 03:06:51 edwards Exp $
+// $Id: eoprec_slrc_fermact_w.h,v 1.2 2007-11-28 22:09:15 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion action (fat-relevant, thin-irrelevant terms)
  *
@@ -73,7 +73,10 @@ namespace Chroma
     const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
 
     //! Assignment
-    void operator=(const EvenOddPrecSLRCFermAct& a) {}
+    void operator=(const EvenOddPrecSLRCFermAct& a) {
+      cfs = a.cfs;
+      param = a.param;
+    }
 
   private:
     Handle< CreateFermState<T,P,Q> >  cfs;
