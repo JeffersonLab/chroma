@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: npr_vertex.ini.xml,v 1.1 2007-11-16 22:22:53 kostas Exp $
+; $Id: npr_vertex.ini.xml,v 1.2 2007-11-28 04:04:30 kostas Exp $
 ;
 ; Coulomb gauge fixing
 ;
@@ -86,9 +86,13 @@
            <xi_0>2.464</xi_0>
            <nu>0.95</nu>
          </AnisoParam>
+<annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 -1</boundary>
+           <boundary>1 1 1 1</boundary>
          </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -120,8 +124,7 @@
      <NamedObject>
         <gauge_id>landau_cfg</gauge_id>
         <prop_id>sh_prop_0</prop_id>
-        <file_name>npr-vertex</file_name>
-      </NamedObject>
+     </NamedObject>
     </elem>
 
   </InlineMeasurements>

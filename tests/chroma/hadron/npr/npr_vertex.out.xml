@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: npr_vertex.out.xml,v 1.1 2007-11-16 22:22:54 kostas Exp $
+; $Id: npr_vertex.out.xml,v 1.2 2007-11-28 04:04:30 kostas Exp $
 ;
 ; Coulomb gauge fixing
 ;
@@ -89,9 +89,13 @@
            <xi_0>2.464</xi_0>
            <nu>0.95</nu>
          </AnisoParam>
+<annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
-           <boundary>1 1 1 -1</boundary>
+           <boundary>1 1 1 1</boundary>
          </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -123,8 +127,7 @@
      <NamedObject>
         <gauge_id>landau_cfg</gauge_id>
         <prop_id>sh_prop_0</prop_id>
-        <file_name>npr-vertex</file_name>
-      </NamedObject>
+     </NamedObject>
     </elem>
 
   </InlineMeasurements>
@@ -139,10 +142,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.26.0</chroma>
+      <chroma>3.27.0</chroma>
       <qdp>1.25.0</qdp>
     </code_version>
-    <run_date>16 Nov 07 15:16:37 EST</run_date>
+    <run_date>27 Nov 07 23:03:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -199,10 +202,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.26.0</chroma>
+            <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>16 Nov 07 15:16:38 EST</run_date>
+          <run_date>27 Nov 07 23:03:01 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -223,6 +226,7 @@
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <gfix_id>landau_cfg</gfix_id>
+            <gauge_rot_id>gauge_rot</gauge_rot_id>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -306,10 +310,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.26.0</chroma>
+            <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>16 Nov 07 15:16:38 EST</run_date>
+          <run_date>27 Nov 07 23:03:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -409,10 +413,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.26.0</chroma>
+            <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>16 Nov 07 15:16:38 EST</run_date>
+          <run_date>27 Nov 07 23:03:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -437,9 +441,13 @@
         <xi_0>2.464</xi_0>
         <nu>0.95</nu>
       </AnisoParam>
+      <annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
+        <boundary>1 1 1 1</boundary>
       </FermionBC>
     </FermionAction>
 <InvertParam>
@@ -501,7 +509,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>253811798</id>
+      <id>254790182</id>
     </make_source>
 
         </Source_file_info>
@@ -550,81 +558,81 @@
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
-            <n_count>48</n_count>
-            <resid>4.912142e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.662262e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
-            <n_count>48</n_count>
-            <resid>4.99377e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.510283e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
-            <n_count>48</n_count>
-            <resid>4.556962e-07</resid>
+            <n_count>67</n_count>
+            <resid>6.156432e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
-            <n_count>48</n_count>
-            <resid>4.706786e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.73476e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
-            <n_count>48</n_count>
-            <resid>4.756273e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.585506e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
-            <n_count>48</n_count>
-            <resid>4.640545e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.405839e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
-            <n_count>48</n_count>
-            <resid>4.670163e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.663874e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
-            <n_count>48</n_count>
-            <resid>4.700718e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.710784e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
-            <n_count>48</n_count>
-            <resid>4.601876e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.414413e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
-            <n_count>48</n_count>
-            <resid>5.039441e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.507326e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
-            <n_count>48</n_count>
-            <resid>4.65929e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.46971e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
-            <n_count>48</n_count>
-            <resid>4.705837e-07</resid>
+            <n_count>67</n_count>
+            <resid>5.63162e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
-          <ncg_had>576</ncg_had>
+          <ncg_had>804</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>29.9014755548498 40.8666684958399 48.3507499233927 51.1767994806815 51.1650996958971 48.3469113087684 40.8521849986751 29.8875362055028</prop_corr>
+          <prop_corr>53.8368907421952 53.8609386680614 53.8691955769297 53.8932541968972 53.8803187154912 53.8628770410018 53.8462322125464 53.8439044855613</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -633,10 +641,10 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.26.0</chroma>
+            <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>16 Nov 07 15:16:39 EST</run_date>
+          <run_date>27 Nov 07 23:03:02 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -651,7 +659,8 @@
         <Input>
           <Param>
             <version>1</version>
-            <links_max>2</links_max><?xml version="1.0"?>
+            <links_max>2</links_max>
+            <file_name>npr-vertex</file_name><?xml version="1.0"?>
 
 
 <FermState>
@@ -661,7 +670,6 @@
           <NamedObject>
             <gauge_id>landau_cfg</gauge_id>
             <prop_id>sh_prop_0</prop_id>
-            <file_name>npr-vertex</file_name>
           </NamedObject>
           <xml_file></xml_file>
         </Input>
@@ -705,7 +713,7 @@
         </Observables>
         <ForwardProp>
           <PropXML><propagator>
-      <id>253811799</id>
+      <id>254790182</id>
     </propagator>
 
           </PropXML>
@@ -727,9 +735,13 @@
             <xi_0>2.464</xi_0>
             <nu>0.95</nu>
           </AnisoParam>
+          <annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
           <FermionBC>
             <FermBC>SIMPLE_FERMBC</FermBC>
-            <boundary>1 1 1 -1</boundary>
+            <boundary>1 1 1 1</boundary>
           </FermionBC>
         </FermionAction>
         <InvertParam>
@@ -779,7 +791,7 @@
     </Propagator>
 
           </PropRecordXML>
-          <PropCheck>29.9014755548498 40.8666684958399 48.3507499233927 51.1767994806815 51.1650996958971 48.3469113087684 40.8521849986751 29.8875362055028</PropCheck>
+          <PropCheck>53.8368907421952 53.8609386680614 53.8691955769297 53.8932541968972 53.8803187154912 53.8628770410018 53.8462322125464 53.8439044855613</PropCheck>
         </ForwardProp>
       </NprVertex>
     </elem>
