@@ -1,4 +1,4 @@
-// $Id: eoprec_slrc_linop_w.cc,v 3.4 2007-11-28 17:39:56 bjoo Exp $
+// $Id: eoprec_slrc_linop_w.cc,v 3.5 2007-11-28 19:50:08 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -28,7 +28,10 @@ namespace Chroma
 
     // Need to make sure that fs is a stout ferm state
     // We want to have Clover with thin links
-    thin_fs  = new PeriodicFermState<T,P,Q>( fs.cast< SLICFermState<T, P, Q> >()->getThinLinks());
+    thin_fs  = new SimpleFermState<T,P,Q>( 
+	fs->getFermBC(),
+	fs.cast< SLICFermState<T, P, Q> >()->getThinLinks());
+
     clov.create(thin_fs, param);
 
     invclov.create(thin_fs,param,clov);  // make a copy
@@ -156,7 +159,7 @@ namespace Chroma
     clov.deriv(ds_u, chi, psi, isign, 0);
 
     // But reinforce gauge boundaries
-    slrc_fs->getFermBC()->zero(ds_u);
+   // slrc_fs->getFermBC()->zero(ds_u);
 
     QDPIO::cout << "derivEE norm2= " ;
     for(int mu=0; mu < Nd; mu++) { 
@@ -174,11 +177,7 @@ namespace Chroma
   {
     START_CODE();
     
-    ds_u.resize(Nd);
     invclov.derivTrLn(ds_u, isign, 0);
-
-    // But reinforce gauge boundaries
-    slrc_fs->getFermBC()->zero(ds_u);
  
     QDPIO::cout << "derivLogDetEE norm2= " ;
     for(int mu=0; mu < Nd; mu++) { 
@@ -200,14 +199,16 @@ namespace Chroma
     //temp variable for the fat force
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     // Dslash will resize this.
-    // ds_u.resize(Nd);
+    ds_u.resize(Nd);
  
     D.deriv(ds_tmp, chi, psi, isign, 0);
 
     //WilsonDslash is thick, so need fatForceToThin here! (includes change of BCs)
-    SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slrc_fs);
-    sfs.fatForceToThin(ds_tmp,ds_u);
-
+    // SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slrc_fs);
+    // sfs.fatForceToThin(ds_tmp,ds_u);
+    for(int mu=0; mu < Nd; mu++) { 
+     ds_u[mu] = ds_tmp[mu];
+    } 
     // finally: WilsonDslash as implemented here comes with a weight factor of -1/2 in the action
     for(int mu=0; mu < Nd; mu++) { 
       ds_u[mu]  *= Real(-0.5);
@@ -237,9 +238,11 @@ namespace Chroma
     D.deriv(ds_tmp, chi, psi, isign, 1);
 
     //WilsonDslash is thick, so need fatForceToThin here! (includes change of BCs)
-    SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slrc_fs);
-    sfs.fatForceToThin(ds_tmp,ds_u);
-
+    //SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slrc_fs);
+    // sfs.fatForceToThin(ds_tmp,ds_u);
+    for(int mu=0; mu < Nd; mu++){  
+      ds_u[mu] = ds_tmp[mu];
+    }
     // finally: WilsonDslash as implemented here comes with a weight factor of -1/2 in the action
     for(int mu=0; mu < Nd; mu++) { 
       ds_u[mu]  *= Real(-0.5);

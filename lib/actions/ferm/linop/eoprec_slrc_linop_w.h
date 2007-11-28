@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_slrc_linop_w.h,v 3.3 2007-11-08 15:04:52 bjoo Exp $
+// $Id: eoprec_slrc_linop_w.h,v 3.4 2007-11-28 19:50:08 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -14,7 +14,7 @@
 #include "state.h"
 #include "fermbc.h"
 #include "actions/ferm/fermstates/stout_fermstate_w.h"
-#include "actions/ferm/fermstates/periodic_fermstate.h"
+#include "actions/ferm/fermstates/simple_fermstate.h"
 #include "eoprec_logdet_linop.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/dslash_w.h"
@@ -52,7 +52,7 @@ namespace Chroma
     ~EvenOddPrecSLRCLinOp() {}
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+    const FermBC<T,P,Q>& getFermBC() const {return *(slrc_fs->getFermBC());}
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,
