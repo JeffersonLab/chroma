@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_fermstate_w.h,v 1.4 2007-11-28 20:50:33 bjoo Exp $
+// $Id: stout_fermstate_w.h,v 1.5 2007-11-28 21:11:08 bjoo Exp $
 
 /*! @file 
  *  @brief Stout field state for stout links and a creator
@@ -274,7 +274,7 @@ namespace Chroma
     void deriv(P& F) const {
        P F_tmp = F;
        Q thin_links = StoutFermState<T,P,Q>::getThinLinks();
-       StoutFermState<T,P,Q>::getBC().modify(thin_links);
+       // StoutFermState<T,P,Q>::getBC().modify(thin_links);
 	
       // Multiply in by the final U term to close off the links
       for(int mu=0; mu < Nd; mu++) { 
