@@ -1,4 +1,4 @@
-// $Id: eoprec_slrc_linop_w.cc,v 3.3 2007-11-08 15:04:52 bjoo Exp $
+// $Id: eoprec_slrc_linop_w.cc,v 3.4 2007-11-28 17:39:56 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -152,11 +152,17 @@ namespace Chroma
   {
     START_CODE();
 
-    ds_u.resize(Nd);
+    //    ds_u.resize(Nd);
     clov.deriv(ds_u, chi, psi, isign, 0);
 
     // But reinforce gauge boundaries
     slrc_fs->getFermBC()->zero(ds_u);
+
+    QDPIO::cout << "derivEE norm2= " ;
+    for(int mu=0; mu < Nd; mu++) { 
+      QDPIO::cout << norm2(ds_u[mu]) << " ";
+    }
+    QDPIO::cout << endl;
     
     END_CODE();
   }
@@ -173,7 +179,13 @@ namespace Chroma
 
     // But reinforce gauge boundaries
     slrc_fs->getFermBC()->zero(ds_u);
-    
+ 
+    QDPIO::cout << "derivLogDetEE norm2= " ;
+    for(int mu=0; mu < Nd; mu++) { 
+      QDPIO::cout << norm2(ds_u[mu]) << " ";
+    }
+    QDPIO::cout << endl;
+   
     END_CODE();
   }
 
@@ -187,7 +199,8 @@ namespace Chroma
  
     //temp variable for the fat force
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
-    ds_u.resize(Nd);
+    // Dslash will resize this.
+    // ds_u.resize(Nd);
  
     D.deriv(ds_tmp, chi, psi, isign, 0);
 
@@ -199,6 +212,13 @@ namespace Chroma
     for(int mu=0; mu < Nd; mu++) { 
       ds_u[mu]  *= Real(-0.5);
     }
+
+    QDPIO::cout << "derivEO norm2= " ;
+    for(int mu=0; mu < Nd; mu++) { 
+      QDPIO::cout << norm2(ds_u[mu]) << " ";
+    }
+    QDPIO::cout << endl;
+
     END_CODE();
   }
  
@@ -224,6 +244,13 @@ namespace Chroma
     for(int mu=0; mu < Nd; mu++) { 
       ds_u[mu]  *= Real(-0.5);
     }
+
+    QDPIO::cout << "derivOE norm2= " ;
+    for(int mu=0; mu < Nd; mu++) { 
+      QDPIO::cout << norm2(ds_u[mu]) << " ";
+    }
+    QDPIO::cout << endl;
+
     END_CODE();
   }
 
@@ -241,6 +268,12 @@ namespace Chroma
 
     // But reinforce gauge boundaries
     slrc_fs->getFermBC()->zero(ds_u);
+
+    QDPIO::cout << "derivOO norm2= " ;
+    for(int mu=0; mu < Nd; mu++) { 
+      QDPIO::cout << norm2(ds_u[mu]) << " ";
+    }
+    QDPIO::cout << endl;
   
     END_CODE();
   }
