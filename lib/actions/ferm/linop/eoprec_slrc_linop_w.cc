@@ -1,4 +1,4 @@
-// $Id: eoprec_slrc_linop_w.cc,v 3.7 2007-11-28 22:09:15 bjoo Exp $
+// $Id: eoprec_slrc_linop_w.cc,v 3.8 2007-11-29 14:19:41 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover linear operator (fat-relevant, thin-irrelevant terms)
  *
@@ -155,17 +155,9 @@ namespace Chroma
   {
     START_CODE();
 
-    //    ds_u.resize(Nd);
     clov.deriv(ds_u, chi, psi, isign, 0);
+    getFermBC().zero(ds_u);
 
-   // slrc_fs->getFermBC()->zero(ds_u);
-
-    QDPIO::cout << "derivEE norm2= " ;
-    for(int mu=0; mu < Nd; mu++) { 
-      QDPIO::cout << norm2(ds_u[mu]) << " ";
-    }
-    QDPIO::cout << endl;
-    
     END_CODE();
   }
 
@@ -177,13 +169,8 @@ namespace Chroma
     START_CODE();
     
     invclov.derivTrLn(ds_u, isign, 0);
- 
-    QDPIO::cout << "derivLogDetEE norm2= " ;
-    for(int mu=0; mu < Nd; mu++) { 
-      QDPIO::cout << norm2(ds_u[mu]) << " ";
-    }
-    QDPIO::cout << endl;
-   
+    getFermBC().zero(ds_u);
+
     END_CODE();
   }
 
@@ -200,10 +187,6 @@ namespace Chroma
     // Dslash will resize this.
     ds_u.resize(Nd);
 
-    for(int mu=0; mu < Nd; mu++) { 
-	ds_u[mu]=zero;
-	ds_tmp[mu]=zero;
-    }
     
     D.deriv(ds_tmp, chi, psi, isign, 0);
     for(int mu=0; mu < Nd; mu++) {
@@ -213,12 +196,7 @@ namespace Chroma
     //WilsonDslash is thick, so need fatForceToThin here! (includes change of BCs)
     SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slrc_fs);
     sfs.fatForceToThin(ds_tmp,ds_u);
-
-    QDPIO::cout << "derivEO norm2= " ;
-    for(int mu=0; mu < Nd; mu++) { 
-      QDPIO::cout << norm2(ds_u[mu]) << " ";
-    }
-    QDPIO::cout << endl;
+    getFermBC().zero(ds_u);
 
     END_CODE();
   }
@@ -234,10 +212,6 @@ namespace Chroma
     //temp variable for the fat force
     multi1d<LatticeColorMatrix> ds_tmp(Nd);
     ds_u.resize(Nd);
-    for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] = zero;
-      ds_tmp[mu] = zero;
-    }
 
     D.deriv(ds_tmp, chi, psi, isign, 1);
     for(int mu=0; mu < Nd; mu++) {
@@ -246,12 +220,7 @@ namespace Chroma
 
     SLICFermState<T, P, Q>& sfs = dynamic_cast<SLICFermState<T,P,Q>& >(*slrc_fs);
     sfs.fatForceToThin(ds_tmp,ds_u);
-
-    QDPIO::cout << "derivOE norm2= " ;
-    for(int mu=0; mu < Nd; mu++) { 
-      QDPIO::cout << norm2(ds_u[mu]) << " ";
-    }
-    QDPIO::cout << endl;
+    getFermBC().zero(ds_u);
 
     END_CODE();
   }
@@ -267,15 +236,7 @@ namespace Chroma
 
     ds_u.resize(Nd);
     clov.deriv(ds_u, chi, psi, isign, 1);
-
-    // But reinforce gauge boundaries
-    // slrc_fs->getFermBC()->zero(ds_u);
-
-    QDPIO::cout << "derivOO norm2= " ;
-    for(int mu=0; mu < Nd; mu++) { 
-      QDPIO::cout << norm2(ds_u[mu]) << " ";
-    }
-    QDPIO::cout << endl;
+    getFermBC().zero(ds_u);
   
     END_CODE();
   }
