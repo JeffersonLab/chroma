@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mom_source_const.h,v 3.2 2007-11-16 22:27:33 kostas Exp $
+// $Id: mom_source_const.h,v 3.3 2007-11-29 04:13:07 kostas Exp $
 /*! \file
  *  \brief Fixed momentum (wall) source construction
  */
@@ -28,9 +28,10 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      multi1d<int>     mom;                  /*<! prototype momentum */
-      int              t_dir;                /*<! time direction */
-      multi1d<int>     t_srce;               /*<! the origin for the FT */
+      multi1d<int>     mom    ;              /*<! prototype momentum */
+      int              j_decay;              /*<! time direction */
+      multi1d<int>     t_srce ;              /*<! the origin for the FT */
+      bool             av_mom ;              /*<! average equivalent momenta */
     };
 
 

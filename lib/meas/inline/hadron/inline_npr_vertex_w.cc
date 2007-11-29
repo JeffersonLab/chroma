@@ -1,4 +1,4 @@
-// $Id: inline_npr_vertex_w.cc,v 1.6 2007-11-28 17:13:45 kostas Exp $
+// $Id: inline_npr_vertex_w.cc,v 1.7 2007-11-29 04:13:07 kostas Exp $
 /*! \file
  * \brief Inline construction of NPR vertices
  *
@@ -54,29 +54,14 @@ namespace Chroma
 
   DPropagator FTpropagator(const LatticePropagator& prop,
 			   const multi1d<int> mom,
-			   const multi1d<int> t_src,
-			   const int t_dir){
+			   const multi1d<int> t_src){
     // Initialize the slow Fourier transform phases
-    multi1d<int> mom3(Nd-1);
-    for(int mu=0,j=0; mu < Nd; ++mu)
-      {
-        if (mu != t_dir)
-          mom3[j++] = mom[mu];
-      }
-    int mom2_max = norm2(mom3);
-    SftMom phases(mom2_max, t_src, true, t_dir);
-    mom3 = phases.canonicalOrder(mom3);
-    
-    Real fact = twopi*Real(mom[t_dir])/Real(Layout::lattSize()[t_dir]);
-    LatticeReal p_dot_t = cos(QDP::Layout::latticeCoordinate(t_dir)*fact);
-    LatticeComplex p_dot_x ;
-    p_dot_x = p_dot_t ;
-    for (int n(0); n < phases.numMom(); n++){
-      multi1d<int> mm = phases.canonicalOrder(phases.numToMom(n));
-	if (mm == mom3)
-	  p_dot_x *= phases[n];
-    }
-    return sum(prop*p_dot_x)/Double(Layout::vol());
+    // Makes no sence to do momemtum average here...
+    SftMom phases(0, t_src, mom);
+    multi1d<int> mm = phases.numToMom(0);
+    QDPIO::cout<<"Sink momentum: " ;
+    QDPIO::cout<<mm[0]<<mm[1]<<mm[2]<<mm[3]<<endl;
+    return sum(prop*phases[0])/Double(Layout::vol());
   }
 
   //! Param input
@@ -421,7 +406,11 @@ namespace Chroma
     //Fourier transform the propagator 
     QDPIO::cout << "Fourier Transforming propagator" << endl;
     swatch.start();
-    DPropagator FTprop(FTpropagator(F,mom,t_src,t_dir));
+    multi1d<int> neg_mom(mom.size());
+    //need the oposit momentum on the sink
+    for(int i(0);i<mom.size();i++)
+      neg_mom[i] = -mom[i] ;
+    DPropagator FTprop(FTpropagator(F,neg_mom,t_src));
     swatch.stop();
     XMLBufferWriter prop_xml;
     push(prop_xml,"QuarkPropagator");

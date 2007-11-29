@@ -1,4 +1,4 @@
-// $Id: mom_source_const.cc,v 3.5 2007-11-16 22:27:33 kostas Exp $
+// $Id: mom_source_const.cc,v 3.6 2007-11-29 04:13:07 kostas Exp $
 /*! \file
  *  \brief Momentum (wall) source construction
  */
@@ -87,7 +87,8 @@ namespace Chroma
     //! Initialize
     Params::Params()
     {
-      t_dir = -1;
+      j_decay = -1;
+      av_mom = false ;
     }
 
 
@@ -110,9 +111,9 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      read(paramtop, "t_dir", t_dir);
+      read(paramtop, "j_decay", j_decay);
       read(paramtop, "t_srce", t_srce);
-
+      read(paramtop, "av_mom", av_mom) ;
       read(paramtop, "mom", mom);
 
       if (mom.size() != Nd)
@@ -132,7 +133,8 @@ namespace Chroma
       write(xml, "version", version);
 
       write(xml, "mom", mom);
-      write(xml, "t_dir", t_dir);
+      write(xml, "av_mom", av_mom) ;
+      write(xml, "j_decay", j_decay);
       write(xml, "t_srce", t_srce);
 
       pop(xml);
@@ -146,23 +148,40 @@ namespace Chroma
     {
       QDPIO::cout << "Volume Momentum Source" << endl;
 
+      LatticeComplex phase ;
       // Initialize the slow Fourier transform phases
-      multi1d<int> mom3(Nd-1);
-      for(int mu=0,j=0; mu < Nd; ++mu)
-      {
-	if (mu != params.t_dir)
-	  mom3[j++] = params.mom[mu];
+      if(params.av_mom){
+	multi1d<int> mom3(Nd-1);
+	for(int mu=0,j=0; mu < Nd; ++mu){
+	  if (mu != params.j_decay)
+	    mom3[j++] = params.mom[mu];
+	}
+	//just get one momentum. the one we want!
+	SftMom phases(0, params.t_srce, mom3, params.av_mom, params.j_decay);
+	mom3 = phases.canonicalOrder(mom3);
+	Real fact = twopi * Real(params.mom[params.j_decay]) / Real(Layout::lattSize()[params.j_decay]);
+	phase = cos(QDP::Layout::latticeCoordinate(params.j_decay)*fact) ;
+	/**
+	for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num){
+	  multi1d<int> mom = phases.canonicalOrder(phases.numToMom(sink_mom_num));
+	  if (mom == mom3)
+	    phase *= phases[sink_mom_num];
+        }**/
+	phase *= phases[0];
+	multi1d<int> mom = phases.canonicalOrder(phases.numToMom(0));
+	QDPIO::cout<<"Source momentum (averaged over equivalent momenta): " ;
+	QDPIO::cout<<mom[0]<<mom[1]<<mom[2]<<endl;
       }
-      int mom2_max = norm2(mom3);
-      SftMom phases(mom2_max, params.t_srce, true, params.t_dir);
-      mom3 = phases.canonicalOrder(mom3);
+      else{ // do not use momentum averaged sources
+	SftMom phases(0, params.t_srce, params.mom);
+	phase = phases[0] ;
+	multi1d<int> mom = phases.numToMom(0) ;
+	QDPIO::cout<<"Source momentum: " ;
+	QDPIO::cout<<mom[0]<<mom[1]<<mom[2]<<mom[3]<<endl;
+      }
 
       // Create the quark source
       LatticePropagator quark_source;
-
-      Real fact = twopi * Real(params.mom[params.t_dir]) / Real(Layout::lattSize()[params.t_dir]);
-      LatticeReal p_dot_t = cos(QDP::Layout::latticeCoordinate(params.t_dir) * fact);
-
       for(int color_source = 0; color_source < Nc; ++color_source)
       {
 	for(int spin_source = 0; spin_source < Ns; ++spin_source)
@@ -170,18 +189,8 @@ namespace Chroma
 	  // MomWall fill a fermion source. Insert it into the propagator source
 	  LatticeFermion chi;
 	  boxfil(chi, color_source, spin_source);
-
 	  // Multiply in the time direction phases (not handled in sftmom)
-	  chi *= p_dot_t;
-
-	  for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
-	  {
-	    multi1d<int> mom = phases.canonicalOrder(phases.numToMom(sink_mom_num));
-
-	    if (mom == mom3)
-	      chi *= phases[sink_mom_num];
-	  }
-
+	  chi *= phase;
 	  FermToProp(chi, quark_source, color_source, spin_source);
 	}
       }

@@ -35,12 +35,10 @@ NPR input
         <Source>
           <version>1</version>
           <SourceType>MOMENTUM_VOLUME_SOURCE</SourceType>
-          <t_dir>3</t_dir>
           <j_decay>3</j_decay>
-<anotation>
- averages over equivalent spatial momenta. The time direction is left allone
-</anotation>
           <mom> 0  1 0 0</mom>
+          <!-- no averaging over momenta is allowed for NPR -->
+	  <av_mom>false</av_mom>
           <t_srce>0 0 0 0</t_srce>
         </Source>
       </Param>
