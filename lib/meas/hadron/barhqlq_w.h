@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barhqlq_w.h,v 3.1 2006-11-28 19:28:10 edwards Exp $
+// $Id: barhqlq_w.h,v 3.2 2007-11-30 06:38:20 kostas Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -46,6 +46,14 @@ namespace Chroma
     LatticeComplex sigmast2pt(const LatticePropagator& quark_propagator_1,
 			      const LatticePropagator& quark_propagator_2,
 			      const SpinMatrix& T, const SpinMatrix& sp);
+
+    //! Delta 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigmast2pt(const LatticePropagator& quark_propagator_1,
+			      const LatticePropagator& quark_propagator_2,
+			      const SpinMatrix& T, 
+			      const SpinMatrix& spSRC, 
+			      const SpinMatrix& spSNK );
 
   }  // namespace  Baryon2PtContractions
 

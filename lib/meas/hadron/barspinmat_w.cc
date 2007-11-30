@@ -1,4 +1,4 @@
-// $Id: barspinmat_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $
+// $Id: barspinmat_w.cc,v 3.1 2007-11-30 06:38:20 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -155,6 +155,30 @@ namespace Chroma
     {
       return SpinMatrix(Cgm() * NR());
     }
+
+    //! C gamma_+ = Cgm = (C gamma_+)^T
+    SpinMatrix Cgp()
+    {
+      SpinMatrix g_one = 1.0;
+      SpinMatrix g_tmp1 = 0.5 * (timesI(Gamma(1) * g_one) - Gamma(2) * g_one);
+      return SpinMatrix(Gamma(10) * g_tmp1);
+    }
+
+    //! C gamma_4 gamma_+ = Cg4p
+    SpinMatrix Cg4p()
+    {
+      SpinMatrix g_one = 1.0;
+      SpinMatrix g_tmp1 = 0.5 * (timesI(Gamma(1) * g_one) - Gamma(2) * g_one );
+      return SpinMatrix(Gamma(10) * (Gamma(8) * g_tmp1));
+    }
+
+    //! C gamma_+ NR = CgpNR = C gamma_+ (1/2)(1 + gamma_4)
+    SpinMatrix CgpNR()
+    {
+      return SpinMatrix(Cgp() * NR());
+    }
+
+
 
 
     //! T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2

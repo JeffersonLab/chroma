@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barspinmat_w.h,v 3.1 2006-12-11 15:41:16 edwards Exp $
+// $Id: barspinmat_w.h,v 3.2 2007-11-30 06:38:20 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -57,6 +57,16 @@ namespace Chroma
 
     //! C gamma_- NR = CgmNR = C gamma_- (1/2)(1 + gamma_4)
     SpinMatrix CgmNR();
+
+   
+    //! C gamma_+ = Cgp = (C gamma_+)^T
+    SpinMatrix Cgp();
+
+    //! C gamma_4 gamma_+ = Cg4p
+    SpinMatrix Cg4p();
+
+    //! C gamma_+ NR = CgpNR = C gamma_+ (1/2)(1 + gamma_4)
+    SpinMatrix CgpNR();
 
 
     //! T = (1 + gamma_4) / 2 = (1 + Gamma(8)) / 2

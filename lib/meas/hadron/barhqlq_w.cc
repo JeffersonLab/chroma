@@ -1,4 +1,4 @@
-// $Id: barhqlq_w.cc,v 3.3 2007-10-24 02:46:09 edwards Exp $
+// $Id: barhqlq_w.cc,v 3.4 2007-11-30 06:38:20 kostas Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
@@ -93,6 +93,30 @@ namespace Chroma
       b_prop *= 2;
       b_prop += trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)));
 
+      return b_prop;
+    }
+
+    //! Delta 2-pt
+    /*! \ingroup hadron */
+    LatticeComplex sigmast2pt(const LatticePropagator& quark_propagator_1,
+			      const LatticePropagator& quark_propagator_2,
+			      const SpinMatrix& T, const SpinMatrix& spSRC,
+			      const SpinMatrix& spSNK) 
+    {
+      LatticePropagator di_quark = quarkContract13(quark_propagator_1 * spSRC, 
+						   spSNK * quark_propagator_2);
+      LatticeComplex b_prop = trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
+	+ trace(T * traceColor(quark_propagator_2 * di_quark));
+      
+      di_quark = quarkContract13(quark_propagator_2 * spSRC, 
+				 spSNK * quark_propagator_1);
+      b_prop += trace(T * traceColor(quark_propagator_2 * di_quark));
+      
+      di_quark = quarkContract13(quark_propagator_2 * spSRC, 
+				 spSNK * quark_propagator_2);
+      b_prop += trace(T * traceColor(quark_propagator_1 * di_quark));
+      b_prop *= 2;
+      b_prop += trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)));
       return b_prop;
     }
 
