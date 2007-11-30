@@ -1,4 +1,4 @@
-//  $Id: npr_vertex_w.cc,v 1.6 2006-11-21 19:36:59 edwards Exp $
+//  $Id: npr_vertex_w.cc,v 1.7 2007-11-30 05:06:14 kostas Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
@@ -57,7 +57,10 @@ namespace Chroma
       {
 	// assumes any Gamma5 matrices have already been absorbed into B
 	LatticePropagator tmp = B * Gamma(i) * F;
-	prop = sum(tmp);   // The site's worth of data of interest
+	// The site's worth of data of interest
+	prop = sum(tmp)/Double(Layout::vol()); // and normalize by the volume
+	//QDPIO::cout<<"  The 1/12*trace is: "<<trace(Gamma(i)*prop)/12.0;
+	//QDPIO::cout<<endl ;
       }
       
       pop(record_xml);
@@ -210,11 +213,10 @@ namespace Chroma
 
     const int NLinks = 0;
     multi1d< int > LinkDirs( 0 );
-    {
-      LatticePropagator B = Gamma(15)*adj(F)*Gamma(15);
 
-      BkwdFrwd(B, F, qio_file, GBB_NLinkPatterns, LinkDirs);
-    }
+    LatticePropagator B = Gamma(15)*adj(F)*Gamma(15);
+    BkwdFrwd(B, F, qio_file, GBB_NLinkPatterns, LinkDirs);
+    
 
     Timer.stop();
     QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdTr call) = "
@@ -226,7 +228,7 @@ namespace Chroma
 
     QDPIO::cout << __func__ << ": start AddLinks" << endl;
 
-    AddLinks(F, F, U, 
+    AddLinks(B, F, U, 
 	     LinkDirs, MaxNLinks, LinkPattern, 0, -1, 
 	     qio_file, GBB_NLinkPatterns);
 
