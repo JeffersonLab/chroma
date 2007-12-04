@@ -1,6 +1,11 @@
 #ifndef ILUPREC_S_CPREC_T_WILSON_FERMACT_W_H
 #define ILUPREC_S_CPREC_T_WILSON_FERMACT_W_H
 
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
+
 #include "actions/ferm/fermacts/wilson_fermact_params_w.h"
 #include "io/aniso_io.h"
 #include "iluprec_s_cprec_t_wilstype_fermact_w.h"
@@ -78,4 +83,8 @@ namespace Chroma {
 }
 
 
+#endif
+
+#endif
+#endif
 #endif

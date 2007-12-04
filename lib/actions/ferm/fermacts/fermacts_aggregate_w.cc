@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.15 2007-10-09 03:28:10 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.16 2007-12-04 16:25:02 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -100,11 +100,18 @@ namespace Chroma
 //      success &= UnprecW12FermActEnv::registerAll();
 
 	success &= PolyChebFermActEnv::registerAll();
+
+#if QDP_NS == 4
+#if QDP_NC == 3
+#if QDP_ND == 4
 	success &= UnprecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= ILUPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= ILUPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
 	success &= EO3DPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
 	success &= EO3DPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
+#endif
+#endif
+#endif
 	registered = true;
       }
       return success;

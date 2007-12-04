@@ -1,7 +1,11 @@
-// $Id: iluprec_s_cprec_t_wilson_fermact_w.cc,v 3.1 2007-02-16 22:52:23 bjoo Exp $
+// $Id: iluprec_s_cprec_t_wilson_fermact_w.cc,v 3.2 2007-12-04 16:25:02 bjoo Exp $
 /*! \file
  *  \brief ILUPreconditioned Wilson fermion action
  */
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h"
@@ -74,3 +78,7 @@ namespace Chroma
   }
 
 }
+
+#endif
+#endif
+#endif

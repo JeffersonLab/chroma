@@ -1,7 +1,12 @@
-// $Id: eo3dprec_s_cprec_t_clover_fermact_w.cc,v 3.1 2007-03-16 18:23:18 bjoo Exp $
+// $Id: eo3dprec_s_cprec_t_clover_fermact_w.cc,v 3.2 2007-12-04 16:25:02 bjoo Exp $
 /*! \file
  *  \brief EO3DPreconditioned Wilson fermion action
  */
+
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
 
 #include "chromabase.h"
 #include "actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h"
@@ -74,3 +79,7 @@ namespace Chroma
   }
 
 }
+
+#endif
+#endif
+#endif

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.110 2007-12-04 04:08:50 kostas Exp $
+# $Id: Makefile.am,v 3.111 2007-12-04 16:24:58 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -441,6 +441,8 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_base_array_w.h \
 	actions/ferm/linop/lwldslash_array_w.h \
 	actions/ferm/linop/lwldslash_array_qdpopt_w.h \
+	actions/ferm/linop/lwldslash_base_3d_w.h \
+	actions/ferm/linop/lwldslash_3d_qdp_w.h \
 	actions/ferm/linop/clover_term_w.h \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
@@ -514,7 +516,6 @@ nobase_include_HEADERS += \
 	meas/hadron/deriv_meson_seqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h \
 	meas/hadron/simple_meson_2pt_w.h \
-	meas/hadron/delta_2pt_w.h \
 	meas/hadron/stoch_cond_cont_w.h \
 	meas/hadron/mesons_w.h \
 	meas/hadron/mesons2_w.h \
@@ -1113,6 +1114,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/lwldslash_base_array_w.cc \
 	actions/ferm/linop/lwldslash_array_w.cc \
 	actions/ferm/linop/lwldslash_array_qdpopt_w.cc \
+	actions/ferm/linop/lwldslash_base_3d_w.cc \
+	actions/ferm/linop/lwldslash_3d_qdp_w.cc \
 	actions/ferm/linop/eoprec_dwf_linop_array_w.cc \
 	actions/ferm/linop/eoprec_nef_general_linop_array_w.cc \
 	actions/ferm/linop/eoprec_nef_linop_array_w.cc \
@@ -1180,7 +1183,6 @@ libchroma_a_SOURCES += \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
 	meas/hadron/simple_meson_2pt_w.cc \
-	meas/hadron/delta_2pt_w.cc \
 	meas/hadron/stoch_cond_cont_w.cc \
         meas/hadron/mesons_w.cc \
         meas/hadron/mesons2_w.cc \
@@ -1340,10 +1342,12 @@ libchroma_a_SOURCES += \
 if BUILD_SSE_WILSON_DSLASH
 nobase_include_HEADERS += \
         actions/ferm/linop/lwldslash_w_sse.h \
-        actions/ferm/linop/lwldslash_array_sse_w.h
+        actions/ferm/linop/lwldslash_array_sse_w.h \
+        actions/ferm/linop/lwldslash_3d_sse_w.h
 libchroma_a_SOURCES += \
         actions/ferm/linop/lwldslash_w_sse.cc \
-        actions/ferm/linop/lwldslash_array_sse_w.cc
+        actions/ferm/linop/lwldslash_array_sse_w.cc \
+	actions/ferm/linop/lwldslash_3d_sse_w.cc
 endif
 
 if BUILD_SSE_WILSON_DSLASH_OLD
