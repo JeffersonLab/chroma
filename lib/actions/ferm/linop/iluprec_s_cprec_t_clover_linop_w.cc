@@ -1,7 +1,13 @@
-// $Id: iluprec_s_cprec_t_clover_linop_w.cc,v 3.1 2007-02-18 18:50:58 bjoo Exp $
+// $Id: iluprec_s_cprec_t_clover_linop_w.cc,v 3.2 2007-12-04 16:04:42 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover linear operator
  */
+
+
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
 
 #include "chromabase.h"
 #include "actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h"
@@ -170,7 +176,8 @@ namespace Chroma
 
     // Create Clover term = A + factor (we don't want the diag mass bit)
     APlusFact.create(fs, param);
-    
+    Dw3D.create(fs_, param_.anisoParam);
+
     END_CODE();
   }
 
@@ -307,99 +314,9 @@ namespace Chroma
     chi[rb3[cb3d]] *= Real(0.5);
   }
 
-  //! Apply the the space block onto a source vector
-  // Apply -1/2 Dslash_s
-  // Scabbed this from dslash operator. Could consider
-  // using the level 3 one here.
-  void ILUPrecSCprecTCloverLinOp::spaceLinOp(T& chi, 
-					    const T& psi, 
-					    enum PlusMinus isign,
-					    int cb3d) const {
-
-    int otherCB = (cb3d == 0 ? 1 : 0);
-
-    switch (isign)
-    {
-    case PLUS: 
-      {
-
-
-	LatticeHalfFermion tmp;
-	LatticeHalfFermion tmp2;
-
-	tmp[rb3[otherCB]]  = spinProjectDir0Minus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, FORWARD, 0);
-	chi[rb3[cb3d]] = spinReconstructDir0Minus(u[0]*tmp2);
-	
-	
-	tmp[rb3[otherCB]]  = spinProjectDir1Minus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, FORWARD, 1);
-	chi[rb3[cb3d]] += spinReconstructDir1Minus(u[1]*tmp2);
-
-	tmp[rb3[otherCB]]  = spinProjectDir2Minus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, FORWARD, 2);
-	chi[rb3[cb3d]] += spinReconstructDir2Minus(u[2]*tmp2);
-	
-	
-	
-	tmp[rb3[otherCB]]  = adj(u[0])*spinProjectDir0Plus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, BACKWARD, 0);
-	chi[rb3[cb3d]] += spinReconstructDir0Plus(tmp2);
-	
-	tmp[rb3[otherCB]]  = adj(u[1])*spinProjectDir1Plus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, BACKWARD, 1);
-	chi[rb3[cb3d]] += spinReconstructDir1Plus(tmp2);
-	
-	tmp[rb3[otherCB]]  = adj(u[2])*spinProjectDir2Plus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, BACKWARD, 2);
-	chi[rb3[cb3d]] += spinReconstructDir2Plus(tmp2);
-
-	
-      }
-
-
-      break;
-
-    case MINUS:
-      {
-
-
-	LatticeHalfFermion tmp;
-	LatticeHalfFermion tmp2;
-
-	tmp[rb3[otherCB]]  = spinProjectDir0Plus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, FORWARD, 0);
-	chi[rb3[cb3d]] = spinReconstructDir0Plus(u[0]*tmp2);
-	
-	tmp[rb3[otherCB]]  = spinProjectDir1Plus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, FORWARD, 1);
-	chi[rb3[cb3d]] += spinReconstructDir1Plus(u[1]*tmp2);
-
-	tmp[rb3[otherCB]] = spinProjectDir2Plus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, FORWARD, 2);
-	chi[rb3[cb3d]] += spinReconstructDir2Plus(u[2]*tmp2);
-	
-	
-	tmp[rb3[otherCB]]  = adj(u[0])*spinProjectDir0Minus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, BACKWARD, 0);
-	chi[rb3[cb3d]] += spinReconstructDir0Minus(tmp2);
-	
-	tmp[rb3[otherCB]]  = adj(u[1])*spinProjectDir1Minus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, BACKWARD, 1);
-	chi[rb3[cb3d]] += spinReconstructDir1Minus(tmp2);
-	
-	tmp[rb3[otherCB]]  = adj(u[2])*spinProjectDir2Minus(psi);
-	tmp2[rb3[cb3d]] = shift(tmp, BACKWARD, 2);
-	chi[rb3[cb3d]] += spinReconstructDir2Minus(tmp2);
-
-	
-      }
-
-      break;
-    }
-    chi *= Real(-0.5);
-
-    END_CODE();
-  }
 
 } // End Namespace Chroma
+
+#endif
+#endif
+#endif

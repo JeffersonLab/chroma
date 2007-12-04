@@ -1,7 +1,14 @@
-// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.2 2007-02-15 22:40:18 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.3 2007-12-04 16:04:42 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
+
+
+#include "qdp_config.h"
+
+#if QDP_NS == 4
+#if QDP_NC == 3
+#if QDP_ND == 4
 
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h"
@@ -141,7 +148,9 @@ namespace Chroma
       tmp = one.elem() + P_mat_dag(site,Nt-1);
       CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(site), tmp);
     }
-    
+
+    Dw3D.create( fs_, anisoParam_);
+
     END_CODE();
   }
 
@@ -274,86 +283,9 @@ namespace Chroma
     chi *= Real(0.5);
   }
 
-  //! Apply the the space block onto a source vector
-  // Apply -1/2 Dslash_s
-  // Scabbed this from dslash operator. Could consider
-  // using the level 3 one here.
-  void UnprecSCprecTWilsonLinOp::spaceLinOp(T& chi, 
-					    const T& psi, 
-					    enum PlusMinus isign) const {
-
-
-    switch(isign) {
-    case PLUS:  
-      {
-	LatticeHalfFermion tmp;
-	LatticeHalfFermion tmp2;
-	
-	tmp  = spinProjectDir0Minus(psi);
-	tmp2 = shift(tmp, FORWARD, 0);
-	chi = spinReconstructDir0Minus(u[0]*tmp2);
-	
-	tmp   = spinProjectDir1Minus(psi);
-	tmp2  = shift(tmp, FORWARD, 1);
-	chi  += spinReconstructDir1Minus(u[1]*tmp2);
-	
-	tmp   = spinProjectDir2Minus(psi);
-	tmp2  = shift(tmp, FORWARD, 2);
-	chi  += spinReconstructDir2Minus(u[2]*tmp2);
-	
-	tmp  = adj(u[0])*spinProjectDir0Plus(psi);
-	tmp2 = shift(tmp, BACKWARD, 0);
-	chi += spinReconstructDir0Plus(tmp2);
-	
-	tmp  = adj(u[1])*spinProjectDir1Plus(psi);
-	tmp2 = shift(tmp, BACKWARD, 1);
-	chi += spinReconstructDir1Plus(tmp2);
-	
-	tmp  = adj(u[2])*spinProjectDir2Plus(psi);
-	tmp2 = shift(tmp, BACKWARD, 2);
-	chi += spinReconstructDir2Plus(tmp2);
-      }
-      break;
-      
-    case MINUS:
-      {
-	LatticeHalfFermion tmp;
-	LatticeHalfFermion tmp2;
-	
-	tmp  = spinProjectDir0Plus(psi);
-	tmp2 = shift(tmp, FORWARD, 0);
-	chi  = spinReconstructDir0Plus(u[0]*tmp2);
-	
-	tmp  = spinProjectDir1Plus(psi);
-	tmp2 = shift(tmp, FORWARD, 1);
-	chi += spinReconstructDir1Plus(u[1]*tmp2);
-
-	tmp = spinProjectDir2Plus(psi);
-	tmp2 = shift(tmp, FORWARD, 2);
-	chi += spinReconstructDir2Plus(u[2]*tmp2);
-	
-	tmp  = adj(u[0])*spinProjectDir0Minus(psi);
-	tmp2 = shift(tmp, BACKWARD, 0);
-	chi += spinReconstructDir0Minus(tmp2);
-	
-	tmp  = adj(u[1])*spinProjectDir1Minus(psi);
-	tmp2 = shift(tmp, BACKWARD, 1);
-	chi += spinReconstructDir1Minus(tmp2);
-	
-	tmp  = adj(u[2])*spinProjectDir2Minus(psi);
-	tmp2 = shift(tmp, BACKWARD, 2);
-	chi += spinReconstructDir2Minus(tmp2);
-	
-      }
-
-      break;
-  
-    default:
-	QDPIO::cerr << "unknown sign" << endl;
-	QDP_abort(1);
-    }
-
-    chi *= Real(-0.5);
-  }
 
 } // End Namespace Chroma
+
+#endif
+#endif
+#endif

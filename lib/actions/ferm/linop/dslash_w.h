@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_w.h,v 3.2 2007-10-25 16:10:11 bjoo Exp $
+// $Id: dslash_w.h,v 3.3 2007-12-04 16:04:42 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -50,6 +50,40 @@ typedef PABWilsonDslash WilsonDslash;
 namespace Chroma {
 typedef QDPWilsonDslashOpt WilsonDslash;
 }  // end namespace Chroma
+#endif
+
+
+// 3D Dslashes
+// These guards make sure 3D is only ever considered in the right situations
+
+
+#include "qdp_config.h"
+#if QDP_NS==4
+#if QDP_NC==3
+#if QDP_ND==4
+
+#include "lwldslash_3d_qdp_w.h"
+#ifdef BUILD_SSE_WILSON_DSLASH
+#include "lwldslash_3d_sse_w.h"
+
+// For now this is the naive Wilson Dslash but 
+// I put in this clause because 
+namespace Chroma {
+typedef SSEWilsonDslash3D WilsonDslash3D;
+}
+
+#else
+
+// Bottom line, if no optimised 3d Dslash-s exist then the naive QDP Dslash3D
+// becomes the WilsonDslash
+namespace Chroma {
+typedef QDPWilsonDslash3D WilsonDslash3D;
+}  // end namespace Chroma
+#endif
+
+
+#endif
+#endif
 #endif
 
 

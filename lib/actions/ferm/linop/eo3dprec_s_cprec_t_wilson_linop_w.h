@@ -1,6 +1,12 @@
 #ifndef EO3DPREC_S_CPREC_T_WILSON_LINOP_W_H
 #define EO3DPREC_S_CPREC_T_WILSON_LINOP_W_H
 
+#include "qdp_config.h"
+
+#if QDP_ND == 4
+#if QDP_NC == 3
+#if QDP_NS == 4
+
 #include "linearop.h"
 #include "central_tprec_linop.h"
 
@@ -196,7 +202,11 @@ namespace Chroma
     
     //! Apply the the space block onto a source vector
     //  cb3d is the 3d (rb3) checkerboard of the target
-    void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
+    void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const {
+      Real mhalf=Real(-0.5);
+      Dw3D.apply(chi, psi, isign, cb3d);
+      chi[ rb3[cb3d] ] *= mhalf;
+    }
 
 
   private:
@@ -216,9 +226,14 @@ namespace Chroma
     multi2d< CMat > Q_mat_inv;        // Just one matrix for each spatial site ( 1+P[t=0] )^{-1}
     multi2d< CMat > Q_mat_dag_inv;    // Just one matrix for each spatial site ( 1+P_dag[t=Nt-1])^{-1}
 
-
+    WilsonDslash3D Dw3D;
   };
 
 } // End Namespace Chroma
+
+
+#endif
+#endif
+#endif
 
 #endif

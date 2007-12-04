@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.3 2007-02-15 22:40:18 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.4 2007-12-04 16:04:42 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -7,9 +7,14 @@
 #ifndef UNPREC_S_CPREC_T_WILSON_LINOP_H
 #define UNPREC_S_CPREC_T_WILSON_LINOP_H
 
+#include "qdp_config.h"
+
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
+
 #include "linearop.h"
 #include "central_tprec_linop.h"
-
 #include "actions/ferm/linop/dslash_w.h"
 #include "actions/ferm/linop/central_tprec_nospin_utils.h"
 
@@ -88,14 +93,19 @@ namespace Chroma
 
 
     //! Apply the the space block onto a source vector
-    void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const;
+    void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const
+    {
+      Real mhalf=Real(-0.5);
+      Dw3D.apply(chi, psi, isign,0);
+      Dw3D.apply(chi, psi, isign,1);
+      chi *= mhalf;
+    }
 
         
     //! Apply dD_s/dU Y \outer X = Tr { X dD_s/dU Y } with X, Y fermion fields 
     void derivSpaceOp(P& ds_u, const T& X, const T& Y, 
 		      enum PlusMinus isign) const { 
-      QDPIO::cout << "Not Yet Implemented " << endl;
-      QDP_abort(1);
+      Dw3D.deriv(ds_u, X, Y, isign);
     }
 
     //! Apply d C_R /dU Y \outer X = Tr { X d C_R /dU Y } with X, Y fermion fields 
@@ -147,9 +157,15 @@ namespace Chroma
     multi1d< CMat > Q_mat_inv;        // Just one matrix for each spatial site ( 1+P[t=0] )^{-1}
     multi1d< CMat > Q_mat_dag_inv;    // Just one matrix for each spatial site ( 1+P_dag[t=Nt-1])^{-1}
 
+    WilsonDslash3D Dw3D;
+
   };
 
 } // End Namespace Chroma
 
+
+#endif
+#endif
+#endif
 
 #endif
