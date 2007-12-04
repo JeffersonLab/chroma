@@ -4,6 +4,7 @@
 #include "actions/ferm/invert/syssolver_cg_params.h"
 #include "util/gauge/stag_phases_s.h"
 
+
 extern "C" {
 
 #define QLA_Precision 'F'
@@ -316,21 +317,18 @@ static  QDP_ColorVector *in ;
                   multi1d<LatticeColorMatrix> >& S_,
 	Handle< FermState<LatticeStaggeredFermion,P,Q> > state_,
 	  const SysSolverCGParams& invParam_) :
-    invParam(invParam_),Mass(S_.getQuarkMass()), state(state_)
+    //    invParam(invParam_),Mass(S_.getQuarkMass()), state(state_)
+    invParam(invParam_),Mass(S_.getQuarkMass()), 
+state(state_.cast<AsqtadConnectStateBase>())
   {
-
-
-    //    std::istringstream  is(invParam.xml); compiler no like
-    // XMLReader  paramtop(is); compiler no like
-    // SysSolverCGParams params(paramtop, invParam.path);
-
-    
-    // gauge configuration conversion
-    // Here is how to get at the gauge links:
+    // Here is how to get at the gauge links: (Thanks Balint).
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
-    //  multi1d<LatticeColorMatrix> u(Nd) ;  // debug
+    const multi1d<LatticeColorMatrix>& u_fat = state->getFatLinks();
 
-    //    u = 1;
+#if 0
+    multi1d<LatticeColorMatrix> u_with_phases(Nd);
+    state.getFermBC().modify(u_with_phases);
+#endif
 
     // add staggered phases to the chroma gauge field
     multi1d<LatticeColorMatrix> u_chroma(Nd);
@@ -358,7 +356,7 @@ static  QDP_ColorVector *in ;
 
   // remove the space for the gauge configuration
   // gf contains pointers to 4 components of uqdp,
-  // uqdp[i] do not need to be destroyed as well
+  // so uqdp[i] do not need to be destroyed as well
   QOP_destroy_G(gf) ;
   free(uqdp) ;
 
@@ -371,7 +369,6 @@ static  QDP_ColorVector *in ;
     QOP_asqtad_destroy_L(fla) ;
 
   }
-
 
   SystemSolverResults_t
   AsqtadCPSWrapperQprop::operator() (LatticeStaggeredFermion& psi, 

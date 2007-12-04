@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.5 2007-11-11 14:52:01 mcneile Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.6 2007-12-04 20:37:19 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -20,7 +20,7 @@
 #include "state.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 #include "stagtype_fermact_s.h"
-
+#include "actions/ferm/fermstates/asqtad_state.h"
 
 namespace Chroma
 {
@@ -55,7 +55,7 @@ namespace Chroma
     ~AsqtadCPSWrapperQprop();
 
     //! Return the subset on which the operator acts
-    const OrderedSubset& subset() const {return all;}
+    const Subset& subset() const {return all;}
 
     //! Solver the linear system
     /*!
@@ -72,7 +72,10 @@ namespace Chroma
 
     Real Mass;
     SysSolverCGParams invParam;
-    Handle< FermState<T,P,Q> > state;
+    //    Handle< FermState<T,P,Q> > state;
+    Handle<AsqtadConnectStateBase> state;
+
+
   };
 
 } // End namespace
