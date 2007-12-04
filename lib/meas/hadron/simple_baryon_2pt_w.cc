@@ -1,4 +1,4 @@
-// $Id: simple_baryon_2pt_w.cc,v 1.2 2007-06-10 14:49:06 edwards Exp $
+// $Id: simple_baryon_2pt_w.cc,v 1.3 2007-12-04 02:59:05 kostas Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
@@ -42,6 +42,23 @@ namespace Chroma
     };
   }
 
+  namespace GeneralBaryonSeqSourceEnv
+  { 
+    //! The T and Spin struct
+    /*! \ingroup hadron */
+    struct SpinMatTsp_t
+    {
+      GroupXML_t  T_xml;          /*!< Holds source xml params*/
+      SpinMatrix  T;
+      
+      GroupXML_t  SRC_sp_xml;    /*!< Holds source xml params*/
+      SpinMatrix  SRC_sp;
+
+      GroupXML_t  SNK_sp_xml;    /*!< Holds source xml params*/
+      SpinMatrix  SNK_sp;
+    };
+  }
+
 
   //! Read a T and sp struct
   /*! \ingroup hadron */
@@ -65,6 +82,34 @@ namespace Chroma
 
     xml << param.T_xml.xml;
     xml << param.sp_xml.xml;
+
+    pop(xml);
+  }
+
+
+  //! Read a T and sp struct
+  /*! \ingroup hadron */
+  void read(XMLReader& xml, const string& path, GeneralBaryonSeqSourceEnv::SpinMatTsp_t& param)
+  {
+    XMLReader paramtop(xml, path);
+
+    param.T_xml   = readXMLGroup(paramtop, "Projector", "name");
+    param.SRC_sp_xml  = readXMLGroup(paramtop, "SrcDiquarkSpin", "name");
+    param.SRC_sp_xml  = readXMLGroup(paramtop, "SnkDiquarkSpin", "name");
+
+    param.T = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(param.T_xml.id, paramtop, param.T_xml.path);
+    param.SRC_sp = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(param.SRC_sp_xml.id, paramtop, param.SRC_sp_xml.path);
+    param.SNK_sp = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(param.SNK_sp_xml.id, paramtop, param.SNK_sp_xml.path);
+  }
+
+  // Writer
+  void write(XMLWriter& xml, const string& path, const SimpleBaryonSeqSourceEnv::SpinMatTsp_t& param)
+  {
+    push(xml, path);
+
+    xml << param.T_xml.xml;
+    xml << param.SRC_sp_xml.xml;
+    xml << param.SNK_sp_xml.xml;
 
     pop(xml);
   }
@@ -203,8 +248,7 @@ namespace Chroma
 
       END_CODE();
 
-      return projectBaryon(src_prop_tmp,
-			   forward_headers);
+      return projectBaryon(src_prop_tmp, forward_headers);
     }
 
     
