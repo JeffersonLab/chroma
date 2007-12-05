@@ -1,10 +1,12 @@
-// $Id: delta_2pt_w.cc,v 3.1 2007-12-04 04:08:53 kostas Exp $
+// $Id: delta_2pt_w.cc,v 3.2 2007-12-05 04:46:04 kostas Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
 
 #include "meas/hadron/delta_2pt_w.h"
+#include "meas/hadron/barhqlq_w.h"
 #include "meas/hadron/hadron_contract_factory.h"
+#include "barspinmat_w.h"
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -25,7 +27,7 @@ namespace Chroma
   }
 
 
-  //! Meson correlators
+  //! Delta correlators
   /*! 
    * \ingroup hadron 
    *
@@ -137,21 +139,49 @@ namespace Chroma
       sft_params.decay_dir     = decay_dir;
 
       std::list< Handle<Hadron2PtContract_t> > hadron;   // holds the contract lattice correlator
+      std::map<std::string,SpinMatrix> Projector ;
+      std::map<std::string,SpinMatrix> Parity ;
+      multi1d<SpinMatrix> DiQuark(Ns) ;
+      Parity["PosPar"] = BaryonSpinMats::Tunpol();
+      Parity["NegPar"] = BaryonSpinMats::TunpolNegPar();
+      Projector["OnePlusSigma3"] = BaryonSpinMats::TspinUp() ;
+      Projector["OneMinusSigma3"] = BaryonSpinMats::TspinDown() ;
+      Projector["SigmaPlus"] = BaryonSpinMats::T_ig5XpiY();
+      Projector["SigmaMinus"] = BaryonSpinMats::T_ig5XmiY();
 
-      for(int gamma_value=0; gamma_value < Ns*Ns; ++gamma_value)
-      {
-	Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+      for(int mu(0);mu<Ns ;mu++)
+	DiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
 
-	push(had->xml, xml_group);
-	write(had->xml, id_tag, "delta");
-	write(had->xml, "gamma_value", gamma_value);
-	write(had->xml, "PropHeaders", forward_headers);
-	pop(had->xml);
+      map<std::string,SpinMatrix>::iterator par;
+      map<std::string,SpinMatrix>::iterator proj;
+      for ( par=Parity.begin();par != Parity.end(); par++){
+	for ( proj=Projector.begin();proj != Projector.end(); proj++){
+	  SpinMatrix T = par->second * proj->second ;// the projector matrix
+	  QDPIO::cout<<" Parity: "<<par->first<<endl;
+	  QDPIO::cout<<" Projector: "<<proj->first<<endl;
+	  for( int src(0) ;src<Ns;src++)
+	    for( int snk(0) ;snk<Ns;snk++){
+	      QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+	      
+	      Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+	      had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
+							    quark_prop2,
+							    T,DiQuark[src],
+							    DiQuark[snk]);
+	      push(had->xml, xml_group);
+	      write(had->xml, id_tag, "delta");
+	      write(had->xml, "SrcDiQuark", src);
+	      write(had->xml, "SnkDiQuark", snk);
+	      write(had->xml, "Parity", par->first);
+	      write(had->xml, "Projector", proj->first);
+	      
+	      write(had->xml, "PropHeaders", forward_headers);
 
-	//here is where the contraction goes
-	//had->corr = mesXCorr(quark_prop1, quark_prop2, gamma_value);
-
-	hadron.push_back(had);  // push onto end of list
+	      pop(had->xml);
+	      
+	      hadron.push_back(had); 
+	    }
+	}
       }
 
       END_CODE();

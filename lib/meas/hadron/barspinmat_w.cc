@@ -1,4 +1,4 @@
-// $Id: barspinmat_w.cc,v 3.1 2007-11-30 06:38:20 kostas Exp $
+// $Id: barspinmat_w.cc,v 3.2 2007-12-05 04:46:04 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -66,6 +66,39 @@ namespace Chroma
 
       case 3:
 	gt = Gamma(14) * g_one;
+	break;
+
+      default:
+	gt = g_one;  // Make compiler happy
+	QDPIO::cerr << __func__ << ": invalid k=" << k << endl;
+	QDP_abort(1);
+      }
+      return gt;
+    }
+
+    //! C g_\mu = \gamma_4 \gamma_2 \gamma_\mu
+    SpinMatrix Cgmu(int k)
+    {
+      SpinMatrix g_one = 1.0;
+      SpinMatrix gt;
+ 
+      //signs have been checked...
+      switch (k)
+      {
+      case 1:
+	gt = Gamma(11) * g_one;
+	break;
+
+      case 2:
+	gt = Gamma(8) * g_one;
+	break;
+
+      case 3:
+	gt = -(Gamma(14) * g_one);
+	break;
+
+      case 4:
+	gt = -(Gamma(2) * g_one);
 	break;
 
       default:
@@ -225,6 +258,29 @@ namespace Chroma
       return SpinMatrix(0.5*(g_one - Gamma(8)*g_one + timesMinusI(Gamma(3)*g_one - Gamma(11)*g_one)));
     }
 
+    //! T = (1 + i \gamma_5 \gamma_3 )/2 = 1/2 *( 1  - iG(11) )
+    SpinMatrix TspinUp(){
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one + timesMinusI(Gamma(11)*g_one)));
+    }
+    //! T = (1 - i \gamma_5 \gamma_3 )/2 = 1/2 *( 1  + iG(11) )
+    SpinMatrix TspinDown(){
+      SpinMatrix g_one = 1.0;
+      return SpinMatrix(0.5*(g_one - timesMinusI(Gamma(11)*g_one)));
+    }
+    //! T = i \gamma_5 (\gamma_1 + i \gamma_2 )
+    SpinMatrix T_ig5XpiY(){
+      SpinMatrix g_one = 1.0;
+      SpinMatrix tt = (Gamma(1)*g_one - timesMinusI(Gamma(2)*g_one));
+      return SpinMatrix(-timesMinusI(Gamma(15)*tt));
+    }
+    //! T = i \gamma_5 (\gamma_1 - i \gamma_2 )
+    SpinMatrix T_ig5XmiY(){
+      SpinMatrix g_one = 1.0;
+      SpinMatrix tt = (Gamma(1)*g_one + timesMinusI(Gamma(2)*g_one));
+      return SpinMatrix(-timesMinusI(Gamma(15)*tt));
+    }
+    
   }
 
 } // end namespace

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barspinmat_w.h,v 3.2 2007-11-30 06:38:20 kostas Exp $
+// $Id: barspinmat_w.h,v 3.3 2007-12-05 04:46:04 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -33,6 +33,9 @@ namespace Chroma
 
     //! C g_k = C gamma_k
     SpinMatrix Cgk(int k);
+
+    //! C g_\mu = C gamma_\mu
+    SpinMatrix Cgmu(int k);
 
     //! C g4 g_k = C gamma_4 gamma_k
     SpinMatrix Cg4gk(int k);
@@ -88,6 +91,16 @@ namespace Chroma
     //! T = (1 - \Sigma_3)*(1 - gamma_4) / 2   = (1 - Gamma(8) - i G(3) + i G(11)) / 2
     // Need to flip the spin for time reversal
     SpinMatrix TmixedNegPar();
+    
+    //! T = (1 + i \gamma_5 \gamma_3 )/2 = 1/2 *( 1  - iG(11) )
+    SpinMatrix TspinUp() ;
+    //! T = (1 - i \gamma_5 \gamma_3 )/2 = 1/2 *( 1  + iG(11) )
+    SpinMatrix TspinDown() ;
+    //! T = i \gamma_5 (\gamma_1 + i \gamma_2 )
+    SpinMatrix T_ig5XpiY();
+    //! T = i \gamma_5 (\gamma_1 - i \gamma_2 )
+    SpinMatrix T_ig5XmiY() ;
+
   }
 
 }  // end namespace Chroma
