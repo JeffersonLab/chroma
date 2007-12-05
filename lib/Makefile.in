@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.208 2007-12-05 04:49:54 kostas Exp $
+# $Id: Makefile.in,v 3.209 2007-12-05 04:57:10 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -479,7 +479,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/simple_meson_seqsrc_w.cc \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
-	meas/hadron/simple_meson_2pt_w.cc \
+	meas/hadron/simple_meson_2pt_w.cc meas/hadron/delta_2pt_w.cc \
 	meas/hadron/stoch_cond_cont_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/mesons2_w.cc meas/hadron/qqq_w.cc \
 	meas/hadron/qqbar_w.cc \
@@ -929,9 +929,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	loops_w.$(OBJEXT) meson_seqsrc_w.$(OBJEXT) \
 	simple_meson_seqsrc_w.$(OBJEXT) deriv_meson_seqsrc_w.$(OBJEXT) \
 	photon_seqsrc_w.$(OBJEXT) simple_meson_2pt_w.$(OBJEXT) \
-	stoch_cond_cont_w.$(OBJEXT) mesons_w.$(OBJEXT) \
-	mesons2_w.$(OBJEXT) qqq_w.$(OBJEXT) qqbar_w.$(OBJEXT) \
-	baryon_operator_aggregate_w.$(OBJEXT) \
+	delta_2pt_w.$(OBJEXT) stoch_cond_cont_w.$(OBJEXT) \
+	mesons_w.$(OBJEXT) mesons2_w.$(OBJEXT) qqq_w.$(OBJEXT) \
+	qqbar_w.$(OBJEXT) baryon_operator_aggregate_w.$(OBJEXT) \
 	seqsource_aggregate_w.$(OBJEXT) seqpiontest_w.$(OBJEXT) \
 	simple_spin_insertion_w.$(OBJEXT) walldeltaff_w.$(OBJEXT) \
 	walldeltapff_w.$(OBJEXT) wallff_w.$(OBJEXT) \
@@ -1491,8 +1491,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/simple_meson_seqsrc_w.h \
 	meas/hadron/deriv_meson_seqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h meas/hadron/simple_meson_2pt_w.h \
-	meas/hadron/stoch_cond_cont_w.h meas/hadron/mesons_w.h \
-	meas/hadron/mesons2_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/delta_2pt_w.h meas/hadron/stoch_cond_cont_w.h \
+	meas/hadron/mesons_w.h meas/hadron/mesons2_w.h \
+	meas/hadron/seqpiontest_w.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
@@ -2291,8 +2292,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/simple_meson_seqsrc_w.h \
 	meas/hadron/deriv_meson_seqsrc_w.h \
 	meas/hadron/photon_seqsrc_w.h meas/hadron/simple_meson_2pt_w.h \
-	meas/hadron/stoch_cond_cont_w.h meas/hadron/mesons_w.h \
-	meas/hadron/mesons2_w.h meas/hadron/seqpiontest_w.h \
+	meas/hadron/delta_2pt_w.h meas/hadron/stoch_cond_cont_w.h \
+	meas/hadron/mesons_w.h meas/hadron/mesons2_w.h \
+	meas/hadron/seqpiontest_w.h \
 	meas/hadron/baryon_operator_aggregate_w.h \
 	meas/hadron/baryon_operator_factory_w.h \
 	meas/hadron/seqsource_aggregate_w.h \
@@ -2874,7 +2876,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/simple_meson_seqsrc_w.cc \
 	meas/hadron/deriv_meson_seqsrc_w.cc \
 	meas/hadron/photon_seqsrc_w.cc \
-	meas/hadron/simple_meson_2pt_w.cc \
+	meas/hadron/simple_meson_2pt_w.cc meas/hadron/delta_2pt_w.cc \
 	meas/hadron/stoch_cond_cont_w.cc meas/hadron/mesons_w.cc \
 	meas/hadron/mesons2_w.cc meas/hadron/qqq_w.cc \
 	meas/hadron/qqbar_w.cc \
@@ -3170,6 +3172,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor2_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/curcor3_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/default_gauge_field.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/delta_2pt_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_meson_seqsrc_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_w.Po@am__quote@
@@ -9638,6 +9641,20 @@ simple_meson_2pt_w.obj: meas/hadron/simple_meson_2pt_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/simple_meson_2pt_w.cc' object='simple_meson_2pt_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_meson_2pt_w.obj `if test -f 'meas/hadron/simple_meson_2pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/simple_meson_2pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/simple_meson_2pt_w.cc'; fi`
+
+delta_2pt_w.o: meas/hadron/delta_2pt_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT delta_2pt_w.o -MD -MP -MF "$(DEPDIR)/delta_2pt_w.Tpo" -c -o delta_2pt_w.o `test -f 'meas/hadron/delta_2pt_w.cc' || echo '$(srcdir)/'`meas/hadron/delta_2pt_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/delta_2pt_w.Tpo" "$(DEPDIR)/delta_2pt_w.Po"; else rm -f "$(DEPDIR)/delta_2pt_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/delta_2pt_w.cc' object='delta_2pt_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o delta_2pt_w.o `test -f 'meas/hadron/delta_2pt_w.cc' || echo '$(srcdir)/'`meas/hadron/delta_2pt_w.cc
+
+delta_2pt_w.obj: meas/hadron/delta_2pt_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT delta_2pt_w.obj -MD -MP -MF "$(DEPDIR)/delta_2pt_w.Tpo" -c -o delta_2pt_w.obj `if test -f 'meas/hadron/delta_2pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/delta_2pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/delta_2pt_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/delta_2pt_w.Tpo" "$(DEPDIR)/delta_2pt_w.Po"; else rm -f "$(DEPDIR)/delta_2pt_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/delta_2pt_w.cc' object='delta_2pt_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o delta_2pt_w.obj `if test -f 'meas/hadron/delta_2pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/delta_2pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/delta_2pt_w.cc'; fi`
 
 stoch_cond_cont_w.o: meas/hadron/stoch_cond_cont_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stoch_cond_cont_w.o -MD -MP -MF "$(DEPDIR)/stoch_cond_cont_w.Tpo" -c -o stoch_cond_cont_w.o `test -f 'meas/hadron/stoch_cond_cont_w.cc' || echo '$(srcdir)/'`meas/hadron/stoch_cond_cont_w.cc; \
