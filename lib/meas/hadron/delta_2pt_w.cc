@@ -1,4 +1,4 @@
-// $Id: delta_2pt_w.cc,v 3.2 2007-12-05 04:46:04 kostas Exp $
+// $Id: delta_2pt_w.cc,v 3.3 2007-12-06 05:12:04 kostas Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -149,6 +149,7 @@ namespace Chroma
       Projector["SigmaPlus"] = BaryonSpinMats::T_ig5XpiY();
       Projector["SigmaMinus"] = BaryonSpinMats::T_ig5XmiY();
 
+       
       for(int mu(0);mu<Ns ;mu++)
 	DiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
 
@@ -184,6 +185,39 @@ namespace Chroma
 	}
       }
 
+      //projector for the spin averaged correlator
+      //only works for zero momentum
+      SpinMatrix g_one = 1.0 ;
+      multi1d< multi1d<SpinMatrix> > ProjGmuGnu(Ns-1) ;
+      for(int s1(0);s1<Ns-1;s1++){
+	ProjGmuGnu[s1].resize(Ns-1) ;
+	for(int s2(0);s2<Ns-1;s2++)
+	  ProjGmuGnu[s1][s2] = Gamma(1<<s1) * (Gamma(1<<s2)*g_one) ;
+      }
+    
+      for ( par=Parity.begin();par != Parity.end(); par++){
+	Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+	had->corr = 0.0 ;
+	for( int src(0) ;src<Ns-1;src++)
+	  for( int snk(0) ;snk<Ns-1;snk++){
+	    QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+	    SpinMatrix T =  (- 1.0/3.0) * ProjGmuGnu[src][snk] ;
+	    if(src == snk ) T += g_one ;
+	    had->corr += Baryon2PtContractions::sigmast2pt(quark_prop1, 
+							   quark_prop2,
+							   T,DiQuark[src],
+							   DiQuark[snk]);
+	  }
+	push(had->xml, xml_group);
+	write(had->xml, id_tag, "delta");
+	write(had->xml, "Parity", par->first);
+	write(had->xml, "Projector", "SpinAveraged");
+	write(had->xml, "PropHeaders", forward_headers);
+	pop(had->xml);
+	      
+	hadron.push_back(had); 
+      }
+      
       END_CODE();
 
       return this->project(hadron, sft_params);
