@@ -154,7 +154,7 @@ QDP_ColorMatrix ** QDP_create_gauge_from_chroma (
   // convert to QOP format.
   QLA_Real plaq;
   plaq = get_plaq(u);
-  printf("plaquette = %g\n", plaq);
+  printf("QDP_create_gauge_from_chroma:: plaquette = %g\n", plaq);
 
   return u ;
 }
@@ -231,6 +231,12 @@ void convert_qdp_to_chroma(LatticeStaggeredFermion & out,
 	  Real zre_chroma , zim_chroma ;
 	  zre_chroma = (Real)  zre ;
 	  zim_chroma = (Real)  zim ;
+
+	  //	  zre_chroma *= (4 * 0.03) ; 
+	  //    zim_chroma *= (4 * 0.03) ; 
+
+	  zre_chroma /= 2.0 ;
+	  zim_chroma /= 2.0 ;
 
 	  out.elem(site).elem(0).elem(ic).real() = toFloat(zre_chroma) ;
 	  out.elem(site).elem(0).elem(ic).imag() = toFloat(zim_chroma) ;
@@ -319,17 +325,46 @@ static  QDP_ColorVector *in ;
 	  const SysSolverCGParams& invParam_) :
     //    invParam(invParam_),Mass(S_.getQuarkMass()), state(state_)
     invParam(invParam_),Mass(S_.getQuarkMass()), 
-state(state_.cast<AsqtadConnectStateBase>())
+    state(state_.cast<AsqtadConnectStateBase>()) , M(S_.linOp(state_))
   {
     // Here is how to get at the gauge links: (Thanks Balint).
+    // gauge not needed
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
     const multi1d<LatticeColorMatrix>& u_fat = state->getFatLinks();
+    const multi1d<LatticeColorMatrix>& u_triple = state->getTripleLinks();
+
+    multi1d<LatticeColorMatrix> u_chroma(Nd); // hack
+
+    QDP_ColorMatrix **u_fat_qdp;
+    u_chroma = u_fat ;
+    u_fat_qdp = QDP_create_gauge_from_chroma(u_chroma) ;
+    //    u_fat_qdp = QDP_create_gauge_from_chroma(u_fat) ;
+
+    QDP_ColorMatrix **u_triple_qdp;
+    u_chroma = u_triple ;
+    u_triple_qdp = QDP_create_gauge_from_chroma(u_chroma) ;
+    //    u_triple_qdp = QDP_create_gauge_from_chroma(u_triple) ;
+
+    fla = QOP_asqtad_convert_L_from_qdp(u_fat_qdp,u_triple_qdp)  ;
+
+#if 0
+    for(int i=0; i<Nd ; i++) QDP_destroy_M(u_fat_qdp[i]);
+    free(u_fat_qdp) ;
+
+
+    for(int i=0; i<Nd; i++) QDP_destroy_M(u_triple_qdp[i]);
+    free(u_triple_qdp) ;
+
+#endif
+
 
 #if 0
     multi1d<LatticeColorMatrix> u_with_phases(Nd);
     state.getFermBC().modify(u_with_phases);
 #endif
 
+#if 0
     // add staggered phases to the chroma gauge field
     multi1d<LatticeColorMatrix> u_chroma(Nd);
     // alpha comes from the StagPhases:: namespace
@@ -359,6 +394,8 @@ state(state_.cast<AsqtadConnectStateBase>())
   // so uqdp[i] do not need to be destroyed as well
   QOP_destroy_G(gf) ;
   free(uqdp) ;
+
+#endif
 
 }
 
@@ -392,22 +429,30 @@ state(state_.cast<AsqtadConnectStateBase>())
 
   QOP_invert_arg_t inv_arg;
   QOP_resid_arg_t res_arg;
+
   res_arg.rsqmin = toFloat(invParam.RsdCG)*
     toFloat(invParam.RsdCG);
+
   inv_arg.max_iter = invParam.MaxCG;
-  inv_arg.restart = 1 ;
-  inv_arg.evenodd = QOP_EVEN;
+  inv_arg.restart = 500 ;
+  inv_arg.max_restarts = 5;
+  inv_arg.evenodd = QOP_EVENODD ;
 
 
   QLA_Real mass = toFloat(Mass) ;
   printf("level3 asqtad inverter mass = %f\n",mass) ; 
 
   // invert
-  QOP_asqtad_invert_all(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
+  //   inv_arg.evenodd = QOP_EVEN;
+  //  QOP_asqtad_invert_all(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
+  //  QOP_verbose(QOP_VERB_HI);
+  QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
 
   cout << "QOP Inversion results\n" ;
   printf("QOP iters = %d\n",res_arg.final_iter) ;
+  printf("QOP restart = %d\n",res_arg.final_restart) ;
   printf("QOP ||r||^2 = %g\n",res_arg.final_rsq) ;
+  printf("QOP ||r|| = %g\n",sqrt(res_arg.final_rsq)) ;
   res.n_count = res_arg.final_iter ;
   res.resid = res_arg.final_rsq; // check norm convention
 
@@ -415,7 +460,24 @@ state(state_.cast<AsqtadConnectStateBase>())
   QOP_extract_V_to_qdp(out,qopout) ;
   convert_qdp_to_chroma(psi,out) ;
 
+  // unscale the norm
+#if 0 
+  exit(0) ; 
+  Real mass_scale = 4.0 * Mass ;
+  //  psi /= 4.0 * Mass ;
+    T  tt;
+    tt = psi ;
+  psi = tt / mass_scale ; 
+#endif
 
+  // Compute residual
+  {
+    T  r;
+    (*M)(r, psi, PLUS);
+    r -= q_source ;
+    res.resid = sqrt(norm2(r));
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual:  " << res.resid << endl; 
+  }
 
   QOP_destroy_V(qopout);
   QOP_destroy_V(qopin);
