@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.6 2007-06-21 19:18:55 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.7 2007-12-06 18:31:58 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -21,10 +21,11 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
+#include <sstream> 
 
 #include "meas/inline/io/named_objmap.h"
 
-#define STOCH_USE_ALL_TIME_SLICES 1
+//#define STOCH_USE_ALL_TIME_SLICES 1
 
 namespace Chroma 
 { 
@@ -299,7 +300,8 @@ namespace Chroma
 	};
 
 	multi1d<CoeffTerm_t> op;          /*!< Terms within a single operator */
-      };
+	std::string name;                 /*!< Name of the operator */
+			};
 
       multi1d<CoeffTerms_t>  ops;         /*!< All the operators within a file */
     };
@@ -481,8 +483,10 @@ namespace Chroma
       for(int n=0; n < coeffs.ops.size(); ++n)
       {
 	int num_terms;
-	reader >> num_terms;
+	std::string name; 
+	reader >> num_terms >> name;
 	coeffs.ops[n].op.resize(num_terms);
+	coeffs.ops[n].name = name;  
 	
 	for(int l=0; l < coeffs.ops[n].op.size(); ++l)
 	{
@@ -550,6 +554,8 @@ namespace Chroma
     {
       START_CODE();
 
+			StopWatch snoop;
+			
       cout << __func__ << ": entering" << endl;
 
       // Loop over all files of operators
@@ -604,7 +610,10 @@ namespace Chroma
 		// Modify the previous empty entry
 		SmearedDispColorVector_t& disp_q = disp_quarks.find(key)->second;
 		disp_q.quarks.resize(quarks.size());
-
+		
+		snoop.reset();
+		snoop.start();
+		
 		for(int n=0; n < disp_q.quarks.size(); ++n)
 		{
 		  disp_q.quarks[n].time_slices.resize(quarks[n].time_slices.size());
@@ -621,18 +630,28 @@ namespace Chroma
 
 		      SmearedDispColorVector_t::Quarks_t::TimeSlices_t::Dilutions_t& dil = 
 			disp_q.quarks[n].time_slices[t].dilutions[m];
+					
 
 		      // Pull out the appropriate spin component, then displace it
 		      dil.t0     = qq.t0;
 		      dil.source = peekSpin(qq.source, term_q.spin);
 		      dil.soln   = peekSpin(qq.soln,   term_q.spin);
 
-		      displacement(u_smr, dil.source, term_q.disp_len, term_q.disp_dir);
-		      displacement(u_smr, dil.soln,   term_q.disp_len, term_q.disp_dir);
-		    } // for t
-		  } // for m
+					
+					//if (dil.source != zero)
+					{
+		      	displacement(u_smr, dil.source, term_q.disp_len, term_q.disp_dir);
+		      	displacement(u_smr, dil.soln,   term_q.disp_len, term_q.disp_dir);
+		    	}
+
+					} // for m
+		  } // for t
 		} // for n
 		
+		snoop.stop();
+
+		QDPIO::cout << "Displaced Quarks: Spin = "<<key.spin<<" Disp = "<<
+			key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
 		// Insert
 		disp_quarks.insert(std::make_pair(key, disp_q));
 
@@ -725,8 +744,8 @@ namespace Chroma
       write(xml_out, "out_version", 1);
       pop(xml_out);
 
-      // First calculate some gauge invariant observables just for info.
-      // This is really cheap.
+      //First calculate some gauge invariant observables just for info.
+      //This is really cheap.
       MesPlq(xml_out, "Observables", u);
 
       // Save current seed
@@ -751,6 +770,8 @@ namespace Chroma
 	QDPIO::cout << "quarks.size= " << quarks.size() << endl;
 	for(int n=0; n < quarks.size(); ++n)
 	{
+		bool initq = false;
+
 	  QDPIO::cout << "Attempt to read solutions for source number= " << n << endl;
 	  quarks[n].time_slices.resize(params.named_obj.quarks[n].soln_files.size());
 
@@ -767,19 +788,42 @@ namespace Chroma
 	      QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
 		quarks[n].time_slices[t].dilutions[i];
 
-	      XMLReader file_xml, record_xml;
+	      XMLReader file_xml, record_xml, record_xml_source;
 
 	      QDPIO::cout << "reading file= " << dilution_file << endl;
 	      QDPFileReader from(file_xml, dilution_file, QDPIO_SERIAL);
-	      read(from, record_xml, qq.soln);
-	      close(from);
+
+				//For now, read both source and solution
+				read(from, record_xml, qq.soln);
+	    //  read(from, record_xml_source, qq.source);
+				close(from);
+
 	
-	      read(record_xml, "/Propagator/PropSource", qq.source_header);
+				read(record_xml, "/Propagator/PropSource", qq.source_header);
 	      read(record_xml, "/Propagator/ForwardProp", qq.prop_header);
+
+				//Get source from the named object map 
+				std::stringstream srcstrm;
+				srcstrm << 	"zN_source_q" << n + 1 << "_t" << 
+					qq.source_header.t_source;
+
+				std::string source_name = srcstrm.str();
+
+				qq.source = TheNamedObjMap::Instance().getData< LatticeFermion >(source_name);
+	    
+			
+				if (!initq)
+				{
+					read(record_xml, "/Propagator/PropSource/Source/ran_seed",
+					quarks[n].seed);
+					
+					initq = true;
+				}
 
 	      qq.t0 = qq.source_header.t_source;
 	      j_decay = qq.source_header.j_decay;
-	    }
+	   
+			}
 	  }
 	}
       }
@@ -859,17 +903,17 @@ namespace Chroma
       // Check for each quark source that the solutions have their diluted
       // on every site only once
       //
-      swatch.start();
+     // swatch.start();
 
-      try
+     /* try
       {
-	push(xml_out, "Norms");
+	push(xml_out, "Norms"); */
 	for(int n=0; n < quarks.size(); ++n)
 	{
-	  bool first = true;
+	 /* bool first = true;
 	  int  N;
 	  LatticeFermion quark_noise;      // noisy source on entire lattice
-
+*/
 	  // Sanity check - the number of time slices better match
 	  if (participating_time_slices.size() != quarks[n].time_slices.size())
 	  {
@@ -897,10 +941,10 @@ namespace Chroma
 			    << endl;
 		QDP_abort(1);
 	      }
-
+/*
 	      // Build source construction
-//	      QDPIO::cout << "Source_id = " << qq.source_header.source.id << endl;
-//	      QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << endl;
+	      QDPIO::cout << "Source_id = " << qq.source_header.source.id << endl;
+	      QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << endl;
 
 	      std::istringstream  xml_s(qq.source_header.source.xml);
 	      XMLReader  sourcetop(xml_s);
@@ -972,19 +1016,20 @@ namespace Chroma
 		write(xml_out, "soln_corr", soln_corr);
 		pop(xml_out);
 	      }
-#endif
-	    } // end for t
+#endif 
+*/
+			} // end for t
 	  } // end for i
-
+/*
 	  Double dcnt = norm2(quark_noise);
 	  if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
 	  {
 	    QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
 	    QDP_abort(1);
 	  }
-
+*/
 	} // end for n
-
+/*
 	pop(xml_out);  // norms
       } // end try
       catch(const std::string& e) 
@@ -998,7 +1043,7 @@ namespace Chroma
       QDPIO::cout << "Sources saturated: time= "
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
-
+*/
 
       //
       // Another sanity check. The seeds of all the quarks must be different
@@ -1011,7 +1056,6 @@ namespace Chroma
 	  QDP_abort(1);
 	}
       }
-
 
       //
       // Start the file writer
@@ -1026,8 +1070,8 @@ namespace Chroma
       write(file_xml, "Config_info", gauge_xml);
       pop(file_xml);
 
-      QDPFileWriter qdp_file(file_xml, params.named_obj.operator_file,     // are there one or two files???
-			     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+//      QDPFileWriter qdp_file(file_xml, params.named_obj.operator_file,     // are there one or two files???
+	//		     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
 
       //
       // Smear the gauge field if needed
@@ -1052,7 +1096,8 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-
+			
+      MesPlq(xml_out, "Smeared_Observables", u_smr);
       //
       // The spin basis matrix to goto Dirac
       //
@@ -1090,7 +1135,7 @@ namespace Chroma
 	  TheFermSmearingFactory::Instance().createObject(params.param.source_quark_smearing.id,
 							  smeartop,
 							  params.param.source_quark_smearing.path);
-
+	
 	// Source smear all the sources up front
 	// NOTE: the creation operator is non-zero on only 1 time slice; however,
 	// the smearing functions work on the entire lattice. Oh well.
@@ -1106,7 +1151,8 @@ namespace Chroma
 	      LatticeFermion src(quarks[n].time_slices[t].dilutions[i].source);
 	      (*sourceQuarkSmearing)(src, u_smr);
 
-	      quarks[n].time_slices[t].dilutions[i].source = rotate_mat * src;
+				//multiply by gamma_4 as well here
+	      quarks[n].time_slices[t].dilutions[i].source = rotate_mat * Gamma(1) * src;
 	    }
 	  }
 	}
@@ -1252,7 +1298,7 @@ namespace Chroma
       }
 
       // Creation operator
-      swatch.start();
+     // swatch.start();
       BaryonOperator_t  creat_oper;
       creat_oper.mom2_max    = params.param.mom2_max;
       creat_oper.decay_dir   = j_decay;
@@ -1263,21 +1309,39 @@ namespace Chroma
       creat_oper.perms       = perms;
       creat_oper.orderings.resize(num_orderings);
 
-      push(xml_out, "BaryonCreationOperator");
+			 // Annihilation operator
+     // swatch.start();
+      BaryonOperator_t  annih_oper;
+      annih_oper.mom2_max    = params.param.mom2_max;
+      annih_oper.decay_dir   = j_decay;
+      annih_oper.seed_l      = quarks[0].seed;
+      annih_oper.seed_m      = quarks[1].seed;
+      annih_oper.seed_r      = quarks[2].seed;
+      annih_oper.smearing    = params.param.sink_quark_smearing;
+      annih_oper.perms       = perms;
+      annih_oper.orderings.resize(num_orderings);
+
+     // push(xml_out, "BaryonCreationOperator");
 
       // Construct creation operator
-      QDPIO::cout << "Build creation operator" << endl;
+      QDPIO::cout << "Build operators" << endl;
 
       // Loop over all files of operators
       for(int f=0; f < coeffs.size(); ++f)
       {
 	// Set the id to be used in the analysis codes
-	creat_oper.id = params.named_obj.operator_coeff_files[f].id; 
+//	creat_oper.id = params.named_obj.operator_coeff_files[f].id; 
 
 	// Loop over each operator within a file
 	for(int c=0; c < coeffs[f].ops.size(); ++c)
 	{
 	  QDPIO::cout << "Creation operator: f=" << f << "  op= " << c << endl;
+
+    push(xml_out, "BaryonCreationOperator");
+
+		creat_oper.id = coeffs[f].ops[c].name;
+
+		write(xml_out, "Name", creat_oper.id);
 
 	  // The operator number. This is just the operator number within the 
 	  // coefficient file
@@ -1323,7 +1387,21 @@ namespace Chroma
 		    for(int l=0; l < coeffs[f].ops[c].op.size(); ++l)
 		    {
 		      const OperCoeffs_t::CoeffTerms_t::CoeffTerm_t& term_q = coeffs[f].ops[c].op[l];
-		      
+		     
+					KeySmearedDispColorVector_t key0;
+		      key0.displacement = term_q.quark[0].displacement;
+		      key0.spin         = term_q.quark[0].spin;
+	      
+		      KeySmearedDispColorVector_t key1;
+		      key1.displacement = term_q.quark[1].displacement;
+		      key1.spin         = term_q.quark[1].spin;
+	      
+		      KeySmearedDispColorVector_t key2;
+		      key2.displacement = term_q.quark[2].displacement;
+		      key2.spin         = term_q.quark[2].spin;
+
+
+					/* 
 		      KeySmearedDispColorVector_t key0;
 		      key0.displacement = term_q.quark[n0].displacement;
 		      key0.spin         = term_q.quark[n0].spin;
@@ -1335,7 +1413,7 @@ namespace Chroma
 		      KeySmearedDispColorVector_t key2;
 		      key2.displacement = term_q.quark[n2].displacement;
 		      key2.spin         = term_q.quark[n2].spin;
-	      
+	      */
 		      // Sanity check - this entry better be in the map or blow-up
 		      if (disp_quarks.find(key0) == disp_quarks.end())
 		      {
@@ -1385,6 +1463,8 @@ namespace Chroma
 	    } // end for t
 	  } // end for ord
 
+		
+
 	  swiss.stop();
 
 	  QDPIO::cout << "Creation operator construction: file= " << f 
@@ -1393,13 +1473,39 @@ namespace Chroma
 		      << swiss.getTimeInSeconds() 
 		      << " secs" << endl;
 
+for (int pr = 0 ; pr < 6 ; ++pr)
+{
+		QDPIO::cout<<"Source testval(p = " << pr << " ) = "<<creat_oper.orderings[pr].time_slices[0].dilutions(0,0,0).mom_projs[0].op[0]<<endl;
+	//	QDPIO::cout<<"Source SD testval = "<<baryon_ops_Source.ops[1].orderings[0].time_slices[6].dilutions(0,0,0).mom_projs[0].op[0]<<endl;
+}
+	//Hard code the elemental op name for now 
+			
+			std::stringstream cnvrt;
+
+			cnvrt << creat_oper.id << "_" << 
+				creat_oper.orderings[0].time_slices[0].t0 << ".lime";
+
+		
+			std::string filename;
+
+			filename = cnvrt.str(); 
+
+			QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
+			     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+
 	  // Write the meta-data and the binary for this operator
-	  swiss.start();
+	  swiss.reset();
+		swiss.start();
 	  {
-	    XMLBufferWriter     record_xml;
+	    XMLBufferWriter     record_xml, file_xml;
 	    BinaryBufferWriter  record_bin;
 
-	    write(record_xml, "BaryonCreationOperator", creat_oper);
+      push(file_xml, "BaryonOperator");
+      write(file_xml, "Params", params.param);
+      write(file_xml, "Config_info", gauge_xml);
+      pop(file_xml);
+
+		  write(record_xml, "BaryonCreationOperator", creat_oper);
 	    write(record_bin, creat_oper);
 
 	    write(qdp_file, record_xml, record_bin);
@@ -1411,20 +1517,30 @@ namespace Chroma
 		      << "  time= "
 		      << swiss.getTimeInSeconds() 
 		      << " secs" << endl;
-	} // end for c (operator within a coeff file)
-      } // end for f (coeff file)
+	
+	
+		pop(xml_out); // BaryonCreationOperator
 
-      pop(xml_out); // BaryonCreationOperator
+	
+	
+	
+	
+	
+	
+//	} // end for c (operator within a coeff file)
+  //    } // end for f (coeff file)
 
-      swatch.stop();
+    //  pop(xml_out); // BaryonCreationOperator
+
+     /* swatch.stop();
 
       QDPIO::cout << "Creation Operator computed: time= "
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
-
+*/
 
       // Annihilation operator
-      swatch.start();
+     /* swatch.start();
       BaryonOperator_t  annih_oper;
       annih_oper.mom2_max    = params.param.mom2_max;
       annih_oper.decay_dir   = j_decay;
@@ -1434,23 +1550,26 @@ namespace Chroma
       annih_oper.smearing    = params.param.sink_quark_smearing;
       annih_oper.perms       = perms;
       annih_oper.orderings.resize(num_orderings);
-
+*/
       push(xml_out, "BaryonAnnihilationOperator");
 
       // Construct annihilation operator
-      QDPIO::cout << "Build annihilation operator" << endl;
+  //    QDPIO::cout << "Build annihilation operator" << endl;
 
       // Loop over all files of operators
-      for(int f=0; f < coeffs.size(); ++f)
-      {
+   //   for(int f=0; f < coeffs.size(); ++f)
+     // {
 	// Set the id to be used in the analysis codes
-	annih_oper.id = params.named_obj.operator_coeff_files[f].id; 
+//	annih_oper.id = params.named_obj.operator_coeff_files[f].id; 
 
 	// Loop over each operator within a file
-	for(int c=0; c < coeffs[f].ops.size(); ++c)
-	{
+//	for(int c=0; c < coeffs[f].ops.size(); ++c)
+	//{
 	  QDPIO::cout << "Annihilation operator: f=" << f << "  op= " << c << endl;
+		 
+		annih_oper.id = coeffs[f].ops[c].name;
 
+		write(xml_out, "Name", annih_oper.id);
 	  // The operator number. This is just the operator number within the 
 	  // coefficient file
 	  annih_oper.operator_num = c;
@@ -1495,7 +1614,22 @@ namespace Chroma
 		    for(int l=0; l < coeffs[f].ops[c].op.size(); ++l)
 		    {
 		      const OperCoeffs_t::CoeffTerms_t::CoeffTerm_t& term_q = coeffs[f].ops[c].op[l];
+	     
+					
+					KeySmearedDispColorVector_t key0;
+		      key0.displacement = term_q.quark[0].displacement;
+		      key0.spin         = term_q.quark[0].spin;
 	      
+		      KeySmearedDispColorVector_t key1;
+		      key1.displacement = term_q.quark[1].displacement;
+		      key1.spin         = term_q.quark[1].spin;
+	      
+		      KeySmearedDispColorVector_t key2;
+		      key2.displacement = term_q.quark[2].displacement;
+		      key2.spin         = term_q.quark[2].spin;
+					
+					
+					/* 
 		      KeySmearedDispColorVector_t key0;
 		      key0.displacement = term_q.quark[n0].displacement;
 		      key0.spin         = term_q.quark[n0].spin;
@@ -1507,7 +1641,7 @@ namespace Chroma
 		      KeySmearedDispColorVector_t key2;
 		      key2.displacement = term_q.quark[n2].displacement;
 		      key2.spin         = term_q.quark[n2].spin;
-	      
+	      */
 		      // Sanity check - this entry better be in the map or blow-up
 		      if (disp_quarks.find(key0) == disp_quarks.end())
 		      {
@@ -1555,7 +1689,12 @@ namespace Chroma
 		      << swiss.getTimeInSeconds() 
 		      << " secs" << endl;
 
+					for (int pr = 0 ; pr < 6 ; ++pr )
+					{
+		QDPIO::cout<<"Sink testval = "<<annih_oper.orderings[pr].time_slices[0].dilutions(0,0,0).mom_projs[0].op[0]<<endl;
+					}
 	  // Write the meta-data and the binary for this operator
+	  swiss.reset();
 	  swiss.start();
 	  {
 	    XMLBufferWriter     record_xml;
@@ -1573,17 +1712,22 @@ namespace Chroma
 		      << "  time= "
 		      << swiss.getTimeInSeconds() 
 		      << " secs" << endl;
-	} // end for c (operator within a coeff file)
+	
+		
+		 pop(xml_out); // OperatorB
+
+
+		
+		
+		} // end for c (operator within a coeff file)
       } // end for f (coeff file)
 
-      pop(xml_out); // OperatorB
+          // swatch.stop();
 
-      swatch.stop();
-
-      QDPIO::cout << "Annihilation operator computed: time= "
+      /*QDPIO::cout << "Annihilation operator computed: time= "
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
-
+*/
 
       // Close the namelist output file XMLDAT
       pop(xml_out);     // StochBaryon

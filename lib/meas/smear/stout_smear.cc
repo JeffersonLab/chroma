@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 3.4 2007-11-14 02:06:15 bjoo Exp $
+//  $Id: stout_smear.cc,v 3.5 2007-12-06 18:31:58 jbulava Exp $
 /*! \file
  *  \brief Stout smear a gauge field
  */
@@ -52,7 +52,7 @@ namespace Chroma
     }
     
     // The proto smeared link
-    Real msmear_fact=Real(-1)*sm_fact;
+    Real msmear_fact=Real(-1) * sm_fact;
 
     // - sign goes in here, because taproj() works with 
     // a minus sign relative to the stout paper.
@@ -63,15 +63,15 @@ namespace Chroma
 
     // Make it Hermitian, traceless
     // u_tmp = Q in Morningstar/Peardon's paper (hep-lat/0311018)
-    // u_tmp = timesMinusI(u_tmp);
-    // BJ: Changed convention.
+		 //u_tmp = timesMinusI(u_tmp);
+		 // BJ: Changed convention.
     // eesu3 now takes iQ and multiplies by -i Internally so I can use it
     // for HMC too
 
 
     // Exactly exponentiate the Lie Algebra matrix
     // Now u_tmp = exp(iQ)
-    expmat(u_tmp,EXP_EXACT);
+		expmat(u_tmp,EXP_EXACT);
 
     // Undo the back link
     u_smear = u_tmp * u[mu];
