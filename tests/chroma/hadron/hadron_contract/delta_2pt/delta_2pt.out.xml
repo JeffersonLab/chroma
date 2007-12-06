@@ -194,7 +194,7 @@ Hadron spectrum input
       <chroma>3.27.0</chroma>
       <qdp>1.25.0</qdp>
     </code_version>
-    <run_date>04 Dec 07 23:43:37 EST</run_date>
+    <run_date>06 Dec 07 00:15:23 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -254,7 +254,7 @@ Hadron spectrum input
             <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>04 Dec 07 23:43:37 EST</run_date>
+          <run_date>06 Dec 07 00:15:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -353,7 +353,7 @@ Hadron spectrum input
             <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>04 Dec 07 23:43:37 EST</run_date>
+          <run_date>06 Dec 07 00:15:23 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -432,7 +432,7 @@ Hadron spectrum input
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>255397417</id>
+      <id>255485723</id>
     </make_source>
 
         </Source_file_info>
@@ -623,7 +623,7 @@ Hadron spectrum input
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>255397418</id>
+      <id>255485723</id>
     </propagator>
 
         </Prop_file_info>
@@ -767,7 +767,7 @@ Hadron spectrum input
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>255397418</id>
+      <id>255485723</id>
     </propagator>
 
         </Prop_file_info>
@@ -847,7 +847,7 @@ Hadron spectrum input
             <chroma>3.27.0</chroma>
             <qdp>1.25.0</qdp>
           </code_version>
-          <run_date>04 Dec 07 23:43:38 EST</run_date>
+          <run_date>06 Dec 07 00:15:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -27284,6 +27284,414 @@ Hadron spectrum input
     <elem>
       <re>-3.69184026405289e-09</re>
       <im>-7.34314579975415e-09</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>delta</ContractionType>
+  <Parity>NegPar</Parity>
+  <Projector>SpinAveraged</Projector>
+  <PropHeaders>
+    <elem>
+      <version>1</version>
+      <PropSink>
+        <version>5</version><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+        <j_decay>3</j_decay>
+      </PropSink>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
+      <PropSource>
+        <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info><weak_field>
+</weak_field>
+</Config_info>
+    </elem>
+    <elem>
+      <version>1</version>
+      <PropSink>
+        <version>5</version><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+        <j_decay>3</j_decay>
+      </PropSink>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
+      <PropSource>
+        <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info><weak_field>
+</weak_field>
+</Config_info>
+    </elem>
+  </PropHeaders>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.142289713362061</re>
+      <im>-3.86872872848443e-07</im>
+    </elem>
+    <elem>
+      <re>-0.00260073468734845</re>
+      <im>3.26249202142748e-06</im>
+    </elem>
+    <elem>
+      <re>-0.000530522550434398</re>
+      <im>-2.10121200439062e-08</im>
+    </elem>
+    <elem>
+      <re>-0.00012293586269152</re>
+      <im>-5.50717032865577e-07</im>
+    </elem>
+    <elem>
+      <re>-8.76512564551915e-08</re>
+      <im>-5.96041985545526e-07</im>
+    </elem>
+    <elem>
+      <re>0.00012263532516954</re>
+      <im>-5.29130746773632e-07</im>
+    </elem>
+    <elem>
+      <re>0.000529837482190487</re>
+      <im>6.55375581581907e-08</im>
+    </elem>
+    <elem>
+      <re>0.00259643267827414</re>
+      <im>3.37798136995637e-06</im>
+    </elem>
+  </ZeroMom>
+</Hadron2Pt>
+
+
+                </Diagnostic>
+              </elem>
+              <elem>
+                <RecordXML>
+<HadronContraction>
+  <ContractionType>delta</ContractionType>
+  <Parity>PosPar</Parity>
+  <Projector>SpinAveraged</Projector>
+  <PropHeaders>
+    <elem>
+      <version>1</version>
+      <PropSink>
+        <version>5</version><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+        <j_decay>3</j_decay>
+      </PropSink>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
+      <PropSource>
+        <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info><weak_field>
+</weak_field>
+</Config_info>
+    </elem>
+    <elem>
+      <version>1</version>
+      <PropSink>
+        <version>5</version><Sink>
+      <version>2</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Sink>
+
+        <j_decay>3</j_decay>
+      </PropSink>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</ForwardProp>
+      <PropSource>
+        <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info><weak_field>
+</weak_field>
+</Config_info>
+    </elem>
+  </PropHeaders>
+</HadronContraction>
+
+
+
+                </RecordXML>
+                <Diagnostic>
+<Hadron2Pt>
+  <ZeroMom>
+    <elem>
+      <re>-0.142289713362061</re>
+      <im>-3.86872872848443e-07</im>
+    </elem>
+    <elem>
+      <re>-0.00260073468734845</re>
+      <im>3.26249202142748e-06</im>
+    </elem>
+    <elem>
+      <re>-0.000530522550434398</re>
+      <im>-2.10121200439062e-08</im>
+    </elem>
+    <elem>
+      <re>-0.00012293586269152</re>
+      <im>-5.50717032865577e-07</im>
+    </elem>
+    <elem>
+      <re>-8.76512564551915e-08</re>
+      <im>-5.96041985545526e-07</im>
+    </elem>
+    <elem>
+      <re>0.00012263532516954</re>
+      <im>-5.29130746773632e-07</im>
+    </elem>
+    <elem>
+      <re>0.000529837482190487</re>
+      <im>6.55375581581907e-08</im>
+    </elem>
+    <elem>
+      <re>0.00259643267827414</re>
+      <im>3.37798136995637e-06</im>
     </elem>
   </ZeroMom>
 </Hadron2Pt>
