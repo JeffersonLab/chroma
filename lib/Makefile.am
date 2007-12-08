@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.112 2007-12-05 04:57:10 kostas Exp $
+# $Id: Makefile.am,v 3.113 2007-12-08 10:47:50 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -1448,10 +1448,24 @@ libchroma_a_SOURCES += \
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
 
 
-if BUILD_ASQTAD_CPS_INVERTER_WRAPPER
+
+if BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER
 nobase_include_HEADERS += actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc		
+libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+
+# level 3 libraries for asqtad
+
+# include files for scidac libaries
+AM_CXXFLAGS += -I@QDPC_DIR@/qmp/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qio/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qla/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qdp/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qopqdp/include
+
 endif
+
+
+
 
 if BUILD_BAGEL_CLOVER_APPLY
 nobase_include_HEADERS += actions/ferm/linop/clover_term_bagel_clover.h
