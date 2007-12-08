@@ -146,6 +146,13 @@ AC_ARG_WITH(asqtadlevel3,
   [QDPCVER_HOME="$with_asqtadlevel3"]
 )
 
+if test "X${QDPCVER_HOME}X" = "XX" ; then
+  AC_MSG_ERROR([QDPCVER_HOME variable not set.])
+else
+  AC_SUBST(QDPC_DIR, "${QDPCVER_HOME}")
+fi
+
+
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
 else
