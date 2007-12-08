@@ -14,6 +14,25 @@ AM_CXXFLAGS = $(INCFLAGS) @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_C
 AM_LDFLAGS = -L$(BUILDDIR)/lib  @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@
 LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@ @LIBS@ 
 
+if BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER
+
+AM_CXXFLAGS += -I@QDPC_DIR@/qmp/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qio/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qla/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qdp/include
+AM_CXXFLAGS += -I@QDPC_DIR@/qopqdp/include
+
+LDADD  += -L@QDPC_DIR@/qopqdp/lib -lqopqdp
+LDADD  += -L@QDPC_DIR@/qdp/lib
+LDADD  +=   -lqdp_d3  -lqdp_df3 -lqdp_f3 -lqdp_df -lqdp_d -lqdp_f -lqdp_int -lqdp_common
+LDADD += -L@QDPC_DIR@/qmp/lib -lqmp 
+LDADD += -L@QDPC_DIR@/qio/lib  -lqio -llime
+
+LDADD  += -L@QDPC_DIR@/qla/lib
+LDADD  += -lqla_c99 -lqla_cmath -lqla_d3 -lqla_d -lqla_df3 -lqla_df -lqla_dq3 -lqla_dq -lqla_f3 -lqla_f -lqla_int -lqla_q3 -lqla_q -lqla_random
+
+endif
+
 AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib
 LDADD += -lqdp-lapack
 
