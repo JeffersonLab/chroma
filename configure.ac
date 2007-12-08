@@ -69,6 +69,13 @@ AC_ARG_ENABLE(cg-solver-restart,
 	[cg_do_one_restart="no"]
 )
 
+AC_ARG_ENABLE(asqtad_level3_inverter,
+   AC_HELP_STRING(
+    [--enable-asqtad-level3-inverter],
+    [Wrap the level3 asqtad inverter])
+)
+
+
 AC_ARG_WITH(bagel_wilson_dslash,
   AC_HELP_STRING(
     [--with-bagel-wilson-dslash=DIR],
@@ -134,6 +141,15 @@ AC_ARG_WITH(qmt,
    [ qmt_enabled="no" ]
 )
 
+
+dnl level 3 libraries for asqtad inverter
+AC_ARG_WITH(asqtadlevel3,
+  AC_HELP_STRING(
+    [--with-asqtadlevel3=DIR],
+    [Build Chroma on top of the level3 asqtad libraries, where the libraries installed in DIR.]
+  ),
+  [QDPCVER_HOME="$with_asqtadlevel3"]
+)
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
   AC_PATH_PROG(QDPXX_CONFIG, [qdp++-config], [])
@@ -440,6 +456,21 @@ esac
 
 AM_CONDITIONAL(BUILD_ASQTAD_CPS_INVERTER_WRAPPER,
   [test "x${enable_asqtad_cps_inverter}x" = "xyesx" ])
+
+
+dnl level3 Asqtad Inverter stuff
+case "$enable_asqtad_level3_inverter" in
+ yes)
+        AC_MSG_NOTICE([Configuring Asqtad level3 Inverter Wrapper])
+	AC_DEFINE([BUILD_CPS_ASQTAD_INVERTER],[],[Build CPS ASQTAD INVERTER])
+	;;
+ *) 
+        AC_MSG_NOTICE([Not Configuring Asqtad level3 Inverter Wrapper])
+        ;;	
+esac
+
+AM_CONDITIONAL(BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER,
+  [test "x${enable_asqtad_level3_inverter}x" = "xyesx" ])
 
 
 dnl Generically optimized CFZ Linop
