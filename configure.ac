@@ -147,7 +147,7 @@ AC_ARG_WITH(asqtadlevel3,
 )
 
 if test "X${QDPCVER_HOME}X" = "XX" ; then
-  AC_MSG_ERROR([QDPCVER_HOME variable not set.])
+  AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
   AC_SUBST(QDPC_DIR, "${QDPCVER_HOME}")
 fi
