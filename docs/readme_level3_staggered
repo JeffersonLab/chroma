@@ -1,6 +1,6 @@
-$Id: readme_level3_staggered,v 1.1 2007-12-08 12:13:04 mcneile Exp $
-Staggered level3 and chroma
-----------------------------
+$Id: readme_level3_staggered,v 1.2 2007-12-08 13:42:13 mcneile Exp $
+Staggered level3 inverter into chroma
+--------------------------------------
 
 Some notes on using the level 3 asqtad
 inverter (http://usqcd.jlab.org/usqcd-docs/qopqdp/) from SciDac 
@@ -24,15 +24,28 @@ The libraries have to have the above structure.
 Implementation Notes
 --------------------
 
+The bulk of the code is in the routines:
+
+chroma/lib/actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+chroma/lib/actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+
+The main program needs to call the function  setup_levelthree
+#if defined(BUILD_CPS_ASQTAD_INVERTER)
+  setup_levelthree(input.param.nrow, &argc, &argv ) ;
+#endif
+
+
 Tips/tricks
 -------------
 
 1) If you want to test against the pure chroma
    asqtad inverter the easist thing is to 
-
-#if defined(BUILD_CPS_ASQTAD_INVERTER)
-in
+   define and undefine BUILD_CPS_ASQTAD_INVERTER)
+   in
 chroma/lib/actions/ferm/qprop/asqtad_qprop.h
+#if defined(BUILD_CPS_ASQTAD_INVERTER)
+
+    This doesn't force a huge compilation.
 
 2) If you want to get more verbose output from the 
    level 3 inverter, then use the QOP_verbose call.
@@ -40,12 +53,51 @@ chroma/lib/actions/ferm/qprop/asqtad_qprop.h
   //  QOP_verbose(QOP_VERB_HI);
   QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
 
+To DO
+------
+The configure script should check that a simple program
+can link against the qopqdp library.
 
 History
 -------
+
+A long - long time ago, Balint added hooks so that we
+call level 3 libraries. Zbyszek worked on
+a system to call the CPS inverter from qdp++/chroma.
 
 
 Compiling the level 3 libraries
 --------------------------------
 
+The versions of the scidac we used to get this to work is
 
+qdp-1.5.6.tar
+qio-2.1.6.tar
+qla-1.5.4.tar
+qmp-2.1.7.tar
+qopqdp-0.10.0.tar
+
+
+To simplify the level3 build structure 
+
+export TOP=/scratch/ikki/mcneile/codes/scidac
+
+# QMP
+cd qmp-2.1.7
+./configure  --prefix=${TOP}/install/qmp
+
+# QIO
+
+cd qio-2.1.6
+./configure --prefix=${TOP}/install/qio CFLAGS="-O3" --with-qmp=${TOP}/install/qmp --disable-qmp-route
+
+# QLA
+
+ ./configure --prefix=${TOP}/install/qla --enable-nc=3 CC=gcc CFLAGS="-O2 " LDFLAGS="-static"
+
+# QDP
+
+./configure --prefix=${TOP}/install/qdp --with-qmp=${TOP}/install/qmp --enable-nc=3  --with-qla=${TOP}/install/qla  --with-qio=${TOP}/install/qio CC=gcc CFLAGS="-O2 "
+
+#  qopqdp
+./configure --prefix=${TOP}/install/qopqdp --with-qdp=${TOP}/install/qdp --with-qla=${TOP}/install/qla --with-qio=${TOP}/install/qio --with-qmp=${TOP}/install/qmp CC=cc CFLAGS="-O2 "
