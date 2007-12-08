@@ -102,11 +102,6 @@ AC_ARG_WITH(bagel_clover,
      BAGEL_CLOVER_HOME="${with_bagel_clover}"]
 )
 
-AC_ARG_ENABLE(asqtad_cps_inverter,
-   AC_HELP_STRING(
-    [--enable-asqtad-cps-inverter],
-    [Wrap the CPS asqtad inverter])
-)
 
 AC_ARG_ENABLE(opt_cfz_linop,
   AC_HELP_STRING( 
@@ -442,20 +437,6 @@ fi
 
 AM_CONDITIONAL(BUILD_BAGEL_CLOVER_APPLY, [test "x${bagel_clover_enabled}x" = "xyesx" ])
 
-
-dnl QCDOC Asqtad Inverter stuff
-case "$enable_asqtad_cps_inverter" in
- yes)
-        AC_MSG_NOTICE([Configuring Asqtad CPS Inverter Wrapper])
-	AC_DEFINE([BUILD_CPS_ASQTAD_INVERTER],[],[Build CPS ASQTAD INVERTER])
-	;;
- *) 
-        AC_MSG_NOTICE([Not Configuring Asqtad CPS Inverter Wrapper])
-        ;;	
-esac
-
-AM_CONDITIONAL(BUILD_ASQTAD_CPS_INVERTER_WRAPPER,
-  [test "x${enable_asqtad_cps_inverter}x" = "xyesx" ])
 
 
 dnl level3 Asqtad Inverter stuff
