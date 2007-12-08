@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: asqtad_cps_wrapper_qprop.h,v 3.6 2007-12-04 20:37:19 mcneile Exp $
+// $Id: asqtad_cps_wrapper_qprop.h,v 3.7 2007-12-08 11:26:53 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -75,6 +75,7 @@ namespace Chroma
     //    Handle< FermState<T,P,Q> > state;
     Handle<AsqtadConnectStateBase> state;
 
+    Handle< EvenOddLinearOperator<T,P,Q> > M;
 
   };
 
