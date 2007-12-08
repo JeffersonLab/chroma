@@ -1,0 +1,51 @@
+$Id: readme_level3_staggered,v 1.1 2007-12-08 12:13:04 mcneile Exp $
+Staggered level3 and chroma
+----------------------------
+
+Some notes on using the level 3 asqtad
+inverter (http://usqcd.jlab.org/usqcd-docs/qopqdp/) from SciDac 
+with Chroma.
+
+Compilation
+-------------
+To include the level3 libraries you need the following options
+for the configure script.
+
+--enable-asqtad-level3-inverter
+--with-asqtadlevel3=directory_with_scidac_libs
+
+../chroma_level3/configure --with-qdp=${qdp_install} CXXFLAGS=" -g -finline-limit=50000" --prefix=${qdp_install}  --enable-asqtad-level3-inverter --with-asqtadlevel3=/scratch/ikki/mcneile/codes/scidac/install
+
+ls /scratch/ikki/mcneile/codes/scidac/install
+qdp/  qio/  qla/  qmp/  qopqdp/
+
+The libraries have to have the above structure.
+
+Implementation Notes
+--------------------
+
+Tips/tricks
+-------------
+
+1) If you want to test against the pure chroma
+   asqtad inverter the easist thing is to 
+
+#if defined(BUILD_CPS_ASQTAD_INVERTER)
+in
+chroma/lib/actions/ferm/qprop/asqtad_qprop.h
+
+2) If you want to get more verbose output from the 
+   level 3 inverter, then use the QOP_verbose call.
+
+  //  QOP_verbose(QOP_VERB_HI);
+  QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
+
+
+History
+-------
+
+
+Compiling the level 3 libraries
+--------------------------------
+
+
