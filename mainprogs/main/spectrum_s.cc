@@ -1,4 +1,4 @@
-// $Id: spectrum_s.cc,v 3.0 2006-04-03 04:59:14 edwards Exp $
+// $Id: spectrum_s.cc,v 3.1 2007-12-08 11:31:08 mcneile Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -7,6 +7,9 @@
 #include "meas/gfix/coulgauge.h"
 
 using namespace Chroma;
+
+void setup_levelthree(QDP::multi1d<int> nrow, int *argc, char ***argv ) ;
+
 
 //! Spectrum measurements
 /*! \defgroup spectrumain Spectrum measurements
@@ -45,6 +48,11 @@ int main(int argc, char **argv)
   // Specify lattice size, shape, etc.
   Layout::setLattSize(input.param.nrow);
   Layout::create();
+
+#if defined(BUILD_CPS_ASQTAD_INVERTER)
+  setup_levelthree(input.param.nrow, &argc, &argv ) ;
+#endif
+
 
   // Read gauge field info
   Cfg_t  cfg;
