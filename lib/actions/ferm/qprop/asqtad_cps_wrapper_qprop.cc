@@ -328,74 +328,40 @@ static  QDP_ColorVector *in ;
     state(state_.cast<AsqtadConnectStateBase>()) , M(S_.linOp(state_))
   {
     // Here is how to get at the gauge links: (Thanks Balint).
-    // gauge not needed
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
-
     const multi1d<LatticeColorMatrix>& u_fat = state->getFatLinks();
     const multi1d<LatticeColorMatrix>& u_triple = state->getTripleLinks();
+
+    // I have used the fat and triple links from pure chroma
+    // rather than use the level3 routines. I don't believe
+    // that creating the fat/triple links is a performance issue
 
     multi1d<LatticeColorMatrix> u_chroma(Nd); // hack
 
     QDP_ColorMatrix **u_fat_qdp;
-    u_chroma = u_fat ;
+    u_chroma = u_fat ; // needed because u_fat is const
     u_fat_qdp = QDP_create_gauge_from_chroma(u_chroma) ;
-    //    u_fat_qdp = QDP_create_gauge_from_chroma(u_fat) ;
+
 
     QDP_ColorMatrix **u_triple_qdp;
-    u_chroma = u_triple ;
+    u_chroma = u_triple ; // needed because u_triple is const
     u_triple_qdp = QDP_create_gauge_from_chroma(u_chroma) ;
-    //    u_triple_qdp = QDP_create_gauge_from_chroma(u_triple) ;
 
     fla = QOP_asqtad_convert_L_from_qdp(u_fat_qdp,u_triple_qdp)  ;
 
 #if 0
+    // the fla structure has pointers to u_fat_qdp and u_triple_qdp
+    // so they can't be destroyed here.
+    // I actually use the destroyer for fla. 
+
     for(int i=0; i<Nd ; i++) QDP_destroy_M(u_fat_qdp[i]);
     free(u_fat_qdp) ;
 
-
     for(int i=0; i<Nd; i++) QDP_destroy_M(u_triple_qdp[i]);
     free(u_triple_qdp) ;
-
 #endif
 
 
-#if 0
-    multi1d<LatticeColorMatrix> u_with_phases(Nd);
-    state.getFermBC().modify(u_with_phases);
-#endif
 
-#if 0
-    // add staggered phases to the chroma gauge field
-    multi1d<LatticeColorMatrix> u_chroma(Nd);
-    // alpha comes from the StagPhases:: namespace
-    for(int i = 0; i < Nd; i++) {
-      u_chroma[i] = u[i] ; 
-      u_chroma[i] *= StagPhases::alpha(i);
-    }
-
-
-  // setup the qdp 
-  QOP_asqtad_coeffs_t coeffs;
-  load_qop_asqtad_coeffs(&coeffs, 1.0) ;
-  Real u0 = 1.0 ; 
-
-  // ---- create the fat links ---------
-  QDP_ColorMatrix **uqdp ;
-  uqdp = QDP_create_gauge_from_chroma (u_chroma) ;
-
-  QOP_GaugeField *gf;
-  gf = QOP_convert_G_from_qdp(uqdp);
-
-  // create the fat links 
-  fla = QOP_asqtad_create_L_from_G(&info, &coeffs, gf);
-
-  // remove the space for the gauge configuration
-  // gf contains pointers to 4 components of uqdp,
-  // so uqdp[i] do not need to be destroyed as well
-  QOP_destroy_G(gf) ;
-  free(uqdp) ;
-
-#endif
 
 }
 
@@ -403,6 +369,7 @@ static  QDP_ColorVector *in ;
   //! Destructor may not well be automatic
   AsqtadCPSWrapperQprop::~AsqtadCPSWrapperQprop() 
   {
+    // note above about u_fat_qdp u_triple_qdp
     QOP_asqtad_destroy_L(fla) ;
 
   }
@@ -413,11 +380,8 @@ static  QDP_ColorVector *in ;
   {
     SystemSolverResults_t res;
 
-    QDPIO::cout << "(Hardwired) Mass is " << Mass << endl;
-
     out = QDP_create_V();
     in = QDP_create_V();
-
 
   // convert "q_source" to in (qdp format)
   convert_chroma_to_qdp(in,q_source) ;
@@ -443,9 +407,6 @@ static  QDP_ColorVector *in ;
   printf("level3 asqtad inverter mass = %f\n",mass) ; 
 
   // invert
-  //   inv_arg.evenodd = QOP_EVEN;
-  //  QOP_asqtad_invert_all(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
-  //  QOP_verbose(QOP_VERB_HI);
   QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
 
   cout << "QOP Inversion results\n" ;
@@ -476,7 +437,7 @@ static  QDP_ColorVector *in ;
     (*M)(r, psi, PLUS);
     r -= q_source ;
     res.resid = sqrt(norm2(r));
-    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual:  " << res.resid << endl; 
+    QDPIO::cout << "AsqtadCPSWrapperQprop: (pure chroma) true residual:  " << res.resid << endl; 
   }
 
   QOP_destroy_V(qopout);
