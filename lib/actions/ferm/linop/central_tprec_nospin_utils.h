@@ -1,12 +1,16 @@
 // -*- C++ -*-
-// $Id: central_tprec_nospin_utils.h,v 1.2 2007-10-06 15:33:09 edwards Exp $
+// $Id: central_tprec_nospin_utils.h,v 1.3 2007-12-12 21:42:58 bjoo Exp $
 /*! \file
  *  \brief Support for time preconditioning
  */
 
 #ifndef CENTRAL_TPREC_NOSPIN_UTILS_H
 #define CENTRAL_TPREC_NOSPIN_UTILS_H
+#include "qdp_config.h"
 
+#if QDP_NS == 4
+#if QDP_NC == 3
+#if QDP_ND == 4
 #include "chromabase.h"
 
 namespace Chroma 
@@ -18,8 +22,8 @@ namespace Chroma
    */
   namespace CentralTPrecNoSpinUtils 
   {
-    typedef PScalar<PColorMatrix<RComplex<REAL>, Nc> > CMat;              // Useful type: ColorMat with no Outer<>
-    typedef PSpinVector<PColorVector<RComplex<REAL>, Nc>, (Ns>>1) > HVec_site;   // Useful type: Half Vec with no Outer<>
+    typedef PScalar<PColorMatrix<RComplex<REAL>, 3> > CMat;              // Useful type: ColorMat with no Outer<>
+    typedef PSpinVector<PColorVector<RComplex<REAL>, 3>, 2 > HVec_site;   // Useful type: Half Vec with no Outer<>
 
     /*! \ingroup linop */
     inline 
@@ -361,9 +365,127 @@ namespace Chroma
       }
     }
 
+    inline
+    Double logDet(const CMat& M) {
+     // Possibly this is the Dumb way but it is only a small matrix
+     // This is to be done by the matrix of cofactors:
+     //
+     //   [  M_00  M_01  M_02  ]                  
+     //   [  M_10  M_11  M_12  ] 
+     //   [  M_20  M_21  M_22  ] 
+     // 
+     // I express by the top row so M_00 det( A ) - M_01 det(B) + M_02 det(C)
+     //
+     //       [ M_11 M_12 ]        [ M_10  M_12 ]        [ M_10  M_11 ]
+     //   A = [           ]   B =  [            ]    C = [            ]
+     //       { M_21 M_22 ]        [ M_20  M_22 ]        [ M_20  M_21 ]
+     //
+     //  and the 2 by 2 determinant is (eg for A) det(A)= M_11 M_22 - M_21 M_12
+     //
+     //  Since our Matrix M has to be of the form ( 1 + P_0 )^\dagger (1 + P_0) 
+     //  we KNOW that the determinant has to be real, so just take real part and return.
+
+     //PScalar< PScalar< PScalar< RComplex<REAL> > > > ret_val;
+     Complex ret_val;
+
+     ret_val.elem().elem().elem() = M.elem().elem(0,0)*( M.elem().elem(1,1)*M.elem().elem(2,2) - M.elem().elem(2,1)*M.elem().elem(1,2) );
+     ret_val.elem().elem().elem() -=  M.elem().elem(0,1)*( M.elem().elem(1,0)*M.elem().elem(2,2) - M.elem().elem(2,0)*M.elem().elem(1,2) );
+     ret_val.elem().elem().elem() +=  M.elem().elem(0,2)*( M.elem().elem(1,0)*M.elem().elem(2,1) - M.elem().elem(2,0)*M.elem().elem(1,1) );
+     
+     return Double(log(real(ret_val)));
+   }
+    
+
+    inline
+    void derivLogDet(multi1d<LatticeColorMatrix>& F, 
+		     const multi1d<LatticeColorMatrix>& U,
+		     const multi1d<CMat>& Q,
+		     const multi2d<int>& tsites,
+		     const int t_dir,
+		     const Real NdPlusM)
+    {
+
+      F.resize(Nd);
+      LatticeColorMatrix T1;
+      Real invmass = Real(1)/ NdPlusM;
+      Real factor;
+
+      // Work out factor
+      int Nspace=tsites.size2();
+      int Nt = tsites.size1();
+
+      factor=Real(2);
+      for(int t=0; t < Nt; t++) {
+	factor*=invmass;
+      }
+
+      // Initial setup. Zero out all the non-time directions
+      for(int mu=0; mu < Nd; mu++) {
+	if( mu != t_dir ) {
+	  F[mu] = zero;
+	}
+      }
+
+
+
+      for(int site=0; site < Nspace; site++) {
+
+	// Compute force for all timeslices T
+	for(int t=0; t < Nt; t++) { 
+
+	  // Initialize temporary
+	  CMat F_tmp;
+
+	  // This creates a unit matrix
+	  for(int r=0; r < 3; r++) { 
+	    for(int c=0; c < 3; c++) { 
+	      F_tmp.elem().elem(r,c).real() = 0;
+	      F_tmp.elem().elem(r,c).imag() = 0;
+	    }
+	  }
+	 
+	  for(int r=0; r < 3; r++) { 
+	    F_tmp.elem().elem(r,r).real() = 1;
+	    F_tmp.elem().elem(r,r).imag() = 0;
+	  }
+
+	  CMat F_tmp2;
+
+	  // Do the U-s from t+1 to Nt unless you already are Nt-1
+	  for(int j=t+1; j < Nt; j++)  {
+	    F_tmp2 = F_tmp;
+	    int s = tsites(site,j);
+	    F_tmp = F_tmp2 * U[t_dir].elem(s);
+	  }
+
+	  // Insert the Q
+	  F_tmp2 = F_tmp;
+	  F_tmp = F_tmp2 * Q[site];
+
+	  // Do the U-s from zero up to t-1
+	  for(int j=0; j < t; j++) { 
+	    F_tmp2 = F_tmp;
+	    int s = tsites(site,j);
+	    F_tmp = F_tmp2*U[t_dir].elem(s);
+	  }
+	  // Copy force to temporary
+	  T1.elem(tsites(site,t)) = F_tmp;
+
+	}
+      }
+
+      // Create the force
+      F[t_dir] = factor*T1;
+
+      
+    }
 
   } // Namespace 
   
 } // Namespace chroma
+
+#endif
+#endif
+#endif
 
 #endif

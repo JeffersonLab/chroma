@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.113 2007-12-08 10:47:50 mcneile Exp $
+# $Id: Makefile.am,v 3.114 2007-12-12 21:42:54 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -342,7 +342,7 @@ nodist_include_HEADERS=chroma_config_internal.h
 # Wilson specific headers
 nobase_include_HEADERS += \
         wilstype_polyfermact_w.h \
-        wilstype_fermact_w.h unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h \
+        wilstype_fermact_w.h unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h central_tprec_fermact_w.h \
         eoprec_constdet_wilstype_fermact_w.h eoprec_logdet_wilstype_fermact_w.h \
 	unprec_s_cprec_t_wilstype_fermact_w.h \
 	iluprec_s_cprec_t_wilstype_fermact_w.h \
@@ -572,6 +572,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
+	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
         util/ferm/gammasgn_w.h \
         util/ferm/gamma5_herm_w.h \
@@ -1226,6 +1227,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
+	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.cc \
 	util/ferm/staggered_operators_s.cc \
 	util/ferm/gammasgn_w.cc \
 	util/ferm/gamma5_herm_w.cc \

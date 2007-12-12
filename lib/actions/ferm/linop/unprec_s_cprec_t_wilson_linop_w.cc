@@ -1,4 +1,4 @@
-// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.3 2007-12-04 16:04:42 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.4 2007-12-12 21:42:58 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -113,6 +113,7 @@ namespace Chroma
     Q_mat_inv.resize(Nspace);
     Q_mat_dag_inv.resize(Nspace);
 
+    logDetTSq = zero;
     for(int site=0; site < Nspace; site++) { 
       Real minvfact = Real(-1)*invfact;
       
@@ -139,14 +140,19 @@ namespace Chroma
       // Compute Q = (1 + W^\dag P)^{-1}, W = [1, 0, 0, 0...] => (1 + P_{0})^{-1} eq: 43
       // NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
       Real one=Real(1);
-      CMat tmp = one.elem() + P_mat(site,0);
-      CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(site), tmp );
+      CMat one_plus_P0 = one.elem() + P_mat(site,0);
+      CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(site), one_plus_P0 );
       
       // Compute Q_dag = 1 + W^\dag P^\dag, W = [ 0, ..., 1 ]  = > Q_dag = P^\dag [Nt-1]
       // Similar to eq 43
       // NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
-      tmp = one.elem() + P_mat_dag(site,Nt-1);
-      CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(site), tmp);
+      CMat one_plus_P0_dag = one.elem() + P_mat_dag(site,Nt-1);
+      CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(site), one_plus_P0_dag);
+
+
+      CMat prod = one_plus_P0_dag*one_plus_P0;
+      logDetTSq += CentralTPrecNoSpinUtils::logDet(prod);
+
     }
 
     Dw3D.create( fs_, anisoParam_);
@@ -283,7 +289,27 @@ namespace Chroma
     chi *= Real(0.5);
   }
 
+  void 
+  UnprecSCprecTWilsonLinOp::derivLogDetTDagT(P& ds_u, 
+					     enum PlusMinus isign) const
+  {
 
+    // Derivative of a Hermitian quantity so ignore isign?
+    // Initial development -- set to 0
+    ds_u.resize(Nd);
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu] = zero;
+    }
+
+    CentralTPrecNoSpinUtils::derivLogDet(ds_u, 
+					 u,
+					 Q_mat_inv,
+					 tsite,
+					 tDir(),
+					 fact);
+		    
+  }
+  
 } // End Namespace Chroma
 
 #endif

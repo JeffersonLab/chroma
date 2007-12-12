@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilstype_fermact_w.h,v 3.2 2007-04-11 03:43:26 edwards Exp $
+// $Id: wilstype_fermact_w.h,v 3.3 2007-12-12 21:42:58 bjoo Exp $
 
 /*! @file
  * @brief Wilson-like fermion actions
@@ -166,7 +166,12 @@ namespace Chroma
 			   int& ncg_had) const;
   };
 
-}
 
+
+
+
+
+
+}
 
 #endif

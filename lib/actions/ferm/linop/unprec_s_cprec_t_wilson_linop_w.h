@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.4 2007-12-04 16:04:42 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.5 2007-12-12 21:42:58 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -101,36 +101,15 @@ namespace Chroma
       chi *= mhalf;
     }
 
-        
+
+#if 0        
     //! Apply dD_s/dU Y \outer X = Tr { X dD_s/dU Y } with X, Y fermion fields 
     void derivSpaceOp(P& ds_u, const T& X, const T& Y, 
 		      enum PlusMinus isign) const { 
       Dw3D.deriv(ds_u, X, Y, isign);
     }
 
-    //! Apply d C_R /dU Y \outer X = Tr { X d C_R /dU Y } with X, Y fermion fields 
-    void derivCROp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
-      QDPIO::cout << "Not Yet Implemented " << endl;
-      QDP_abort(1);
-    }
-    //! Apply d C_L /dU Y \outer X = Tr { X d C_L /dU Y } with X, Y fermion fields 
-    void derivCLOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const{
-      QDPIO::cout << "Not Yet Implemented " << endl;
-      QDP_abort(1);
-    }
-    
-    //! Apply d/dt ( log C_R ) = C_R^{-1} d/dt C_R
-    void derivLogCR(P& ds_u) const {
-      QDPIO::cout << "Not Yet Implemented " << endl;
-      QDP_abort(1);
-    }
-
-    //! Apply d/dt ( log C_L ) = C_L^{-1} d/dt C_L
-    void derivLogCL(P& ds_u) const
-    { 
-      QDPIO::cout << "Not Yet Implemented " << endl;
-      QDP_abort(1);
-    }
+#endif
     
     //! Flopcounter
     unsigned long nFlops() const 
@@ -140,6 +119,23 @@ namespace Chroma
     }
 
 
+
+    //! Apply the d/dt of the preconditioned linop
+    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
+
+      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDP_abort(1);
+
+    };
+    
+    //! Get log det ( T^\dag T )
+    Double logDetTDagT(void) const {
+      return logDetTSq;
+    }
+
+
+    //! Get the force due to the det T^\dag T bit
+    void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const;
 
   private:
 
@@ -159,6 +155,7 @@ namespace Chroma
 
     WilsonDslash3D Dw3D;
 
+    Double logDetTSq;
   };
 
 } // End Namespace Chroma

@@ -65,11 +65,6 @@ namespace Chroma
       return 3; 
     }
     
-    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
-      QDPIO::cout << "Not implemented " << endl;
-
-    }
-
     //! Apply inv (C_L)^{-1}
     void invCLeftLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
 
@@ -189,7 +184,27 @@ namespace Chroma
     }
 
 
+    //! Apply the d/dt of the preconditioned linop
+    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
 
+      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDP_abort(1);
+
+    }
+    
+    //! Get log det ( T^\dag T )
+    Double logDetTDagT(void) const {
+      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDP_abort(1);
+      return (double)0;
+    }
+
+
+    //! Get the force due to the det T^\dag T bit
+    void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const {
+      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDP_abort(1);
+    }
 
 
     unsigned long nFlops() const 

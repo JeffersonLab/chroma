@@ -64,10 +64,6 @@ namespace Chroma
       return 3; 
     }
     
-    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
-      QDPIO::cout << "Not implemented " << endl;
-
-    }
 
     //! Apply inv (C_L)^{-1}
     inline
@@ -290,6 +286,28 @@ namespace Chroma
     void invTMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
 
 
+
+    //! Apply the d/dt of the preconditioned linop
+    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
+
+      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDP_abort(1);
+
+    }
+    
+    //! Get log det ( T^\dag T )
+    Double logDetTDagT(void) const {
+      return logDetTSq;
+    }
+
+
+    //! Get the force due to the det T^\dag T bit
+    void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const {
+      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDP_abort(1);
+    }
+
+
   private:
 
     AnisoParam_t aniso;
@@ -308,7 +326,7 @@ namespace Chroma
     multi2d< CMat > Q_mat_dag_inv;    // Just one matrix for each spatial site ( 1+P_dag[t=Nt-1])^{-1}
     
     WilsonDslash3D Dw3D;
-
+    Double logDetTSq;
   };
 
 } // End Namespace Chroma

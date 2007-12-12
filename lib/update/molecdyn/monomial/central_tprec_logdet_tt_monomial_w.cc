@@ -1,0 +1,112 @@
+// $Id: central_tprec_logdet_tt_monomial_w.cc,v 3.1 2007-12-12 21:42:58 bjoo Exp $
+/*! \file
+ *  \brief Even-odd preconditioned log(det(T^\dag T ))
+ */
+
+#include "qdp_config.h"
+
+#if QDP_NS == 4
+#if QDP_NC == 3
+#if QDP_ND == 4
+
+#include "update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.h"
+#include "update/molecdyn/monomial/monomial_factory.h"
+
+#include "actions/ferm/fermacts/fermact_factory_w.h"
+#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
+
+namespace Chroma 
+{ 
+
+  namespace CentralTimePrecLogDetTTMonomial4DEnv 
+  {
+    namespace
+    {
+      //! Callback function for the factory
+      Monomial< multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+      {
+	QDPIO::cout << "Create Monomial: " << name << endl;
+
+	return new CentralTimePrecLogDetTTMonomial4D(CentralTimePrecLogDetTTMonomialParams(xml, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    const std::string name = std::string("N_FLAVOR_CENTRAL_TPREC_LOGDET_TT_FERM_MONOMIAL");
+ 
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheMonomialFactory::Instance().registerObject(name, createMonomial);
+	registered = true;
+      }
+      return success;
+    }
+  }
+ 
+
+ 
+  CentralTimePrecLogDetTTMonomialParams::CentralTimePrecLogDetTTMonomialParams(XMLReader& in, const std::string& path) 
+  {
+    XMLReader paramtop(in, path);
+    
+    fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
+    read(paramtop,"num_flavors", num_flavors);
+
+    QDPIO::cout << "CentralTimePrecLogDetTTMonomialParams: read \n" << fermact.id << endl;
+  }
+
+  void read(XMLReader& r, const std::string& path,  CentralTimePrecLogDetTTMonomialParams& p) 
+  {
+    CentralTimePrecLogDetTTMonomialParams tmp(r, path);
+    p = tmp;
+  }
+
+  void write(XMLWriter& xml, const std::string& path, const CentralTimePrecLogDetTTMonomialParams& p)
+  {
+    // Not implemented
+  }
+
+
+  CentralTimePrecLogDetTTMonomial4D::CentralTimePrecLogDetTTMonomial4D(const CentralTimePrecLogDetTTMonomialParams& p) : 
+    num_flavors(p.num_flavors) 
+  {
+    START_CODE();
+
+    // Grok the fermact out of the XML
+    std::istringstream is(p.fermact.xml);
+    XMLReader fermact_reader(is);
+    QDPIO::cout << " CentralTimePrecLogDetTTMonomial4D: construct " << p.fermact.id << endl;
+
+    WilsonTypeFermAct<T,P,Q>* tmp_act = 
+      TheWilsonTypeFermActFactory::Instance().createObject(p.fermact.id, fermact_reader, p.fermact.path);
+
+    CentralTimePrecFermAct<T,P,Q>* downcast = 
+      dynamic_cast<CentralTimePrecFermAct<T,P,Q>*>(tmp_act);
+
+    // Check success of the downcast 
+    if( downcast == 0x0 ) 
+    {
+      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecLogDetWilsonTypeFermAct in " 
+		  << __func__ << endl;
+      QDP_abort(1);
+    }
+    
+    fermact = downcast; 
+    
+    END_CODE();
+  }
+
+
+} // End namespace
+
+
+#endif
+#endif
+#endif

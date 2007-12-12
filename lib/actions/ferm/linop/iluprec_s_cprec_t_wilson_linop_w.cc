@@ -1,4 +1,4 @@
-// $Id: iluprec_s_cprec_t_wilson_linop_w.cc,v 1.2 2007-12-04 16:04:42 bjoo Exp $
+// $Id: iluprec_s_cprec_t_wilson_linop_w.cc,v 1.3 2007-12-12 21:42:58 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -132,6 +132,7 @@ namespace Chroma
     Q_mat_inv.resize(2,Nspaceby2);
     Q_mat_dag_inv.resize(2,Nspaceby2);
 
+    logDetTSq = zero;
     for(int cb3=0; cb3 < 2; cb3++) { 
       for(int site=0; site < Nspaceby2; site++) { 
 	
@@ -162,14 +163,17 @@ namespace Chroma
 	// Compute Q = (1 + W^\dag P)^{-1}, W = [1, 0, 0, 0...] => (1 + P_{0})^{-1} eq: 43
 	// NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
 	Real one=Real(1);
-	CMat tmp = one.elem() + P_mat(cb3, site,0);
-	CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(cb3, site), tmp );
+	CMat one_plus_P0 = one.elem() + P_mat(cb3, site,0);
+	CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(cb3, site), one_plus_P0 );
 	
 	// Compute Q_dag = 1 + W^\dag P^\dag, W = [ 0, ..., 1 ]  = > Q_dag = P^\dag [Nt-1]
 	// Similar to eq 43
 	// NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
-	tmp = one.elem() + P_mat_dag(cb3, site,Nt-1);
-	CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(cb3, site), tmp);
+	CMat one_plus_P0_dag = one.elem() + P_mat_dag(cb3, site,Nt-1);
+	CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(cb3, site), one_plus_P0_dag);
+
+	CMat prod = one_plus_P0_dag*one_plus_P0;
+	logDetTSq += CentralTPrecNoSpinUtils::logDet(prod);
       }
     }
 

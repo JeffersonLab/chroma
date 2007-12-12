@@ -1,4 +1,4 @@
-// $Id: monomial_aggregate_w.cc,v 3.6 2007-10-24 02:46:37 edwards Exp $
+// $Id: monomial_aggregate_w.cc,v 3.7 2007-12-12 21:42:58 bjoo Exp $
 /*! \file
  *  \brief Fermion monomial aggregator
  */
@@ -33,6 +33,7 @@
 #include "update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.h"
 
 #include "update/molecdyn/monomial/fixed_random_ferm_monomial.h"
+#include "update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.h"
 
 namespace Chroma
 {
@@ -89,6 +90,13 @@ namespace Chroma
 
 	success &= FixedRandomFermMonomial4DEnv::registerAll();
 
+#if QDP_NS == 4
+#if QDP_NC == 3
+#if QDP_ND == 4
+	success &=  CentralTimePrecLogDetTTMonomial4DEnv::registerAll();
+#endif
+#endif
+#endif
 	registered = true;
       }
       return success;

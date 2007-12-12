@@ -5,8 +5,7 @@
  * @brief Unpreconditioned spatial Preconditioned Temporal Wilson like fermion action
  */
 
-#include "wilstype_fermact_w.h"
-#include "central_tprec_linop.h" 
+#include "central_tprec_fermact_w.h"
 
 namespace Chroma {
  //-------------------------------------------------------------------------------------------
@@ -16,7 +15,7 @@ namespace Chroma {
    * Spatially Unpreconditioned, Centrally temporally preconditioned like Wilson-like fermion actions
    */
   template<typename T, typename P, typename Q>
-  class UnprecSpaceCentralPrecTimeWilsonTypeFermAct : public WilsonTypeFermAct<T,P,Q>
+  class UnprecSpaceCentralPrecTimeWilsonTypeFermAct : public CentralTimePrecFermAct<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup
