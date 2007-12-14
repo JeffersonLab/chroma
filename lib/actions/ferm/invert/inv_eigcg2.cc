@@ -1,8 +1,9 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.9 2007-11-06 22:04:15 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.10 2007-12-14 05:03:48 kostas Exp $
 
 #include <qdp-lapack.h>
-//#include <octave_debug.h>
+//#include "octave_debug.h"
+//#include "octave_debug.cc"
 
 #include "actions/ferm/invert/inv_eigcg2.h"
 
@@ -17,7 +18,7 @@
 namespace Chroma 
 {
   using namespace LinAlg ;
-//  using namespace Octave ;
+  //using namespace Octave ;
 
   namespace InvEigCG2Env
   {
@@ -54,9 +55,214 @@ namespace Chroma
 	}
       } 
     }
-   
+
+
     template<typename T>
     SystemSolverResults_t InvEigCG2_T(const LinearOperator<T>& A,
+				      T& x, 
+				      const T& b,
+				      multi1d<Double>& eval, 
+				      multi1d<T>& evec,
+				      int Neig,
+				      int Nmax,
+				      const Real& RsdCG, int MaxCG)
+    {
+      START_CODE();
+
+      FlopCounter flopcount;
+      flopcount.reset();
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+    
+      SystemSolverResults_t  res;
+    
+      T p ; 
+      T Ap; 
+      T r ;
+      //T z ;
+
+      Double rsd_sq = (RsdCG * RsdCG) * Real(norm2(b,A.subset()));
+      Double alphaprev, alpha,pAp;     
+      Real beta; 
+      Double betaprev  ;
+      Double r_dot_z, r_dot_z_old ;
+      //Complex r_dot_z, r_dot_z_old,beta ;
+      //Complex alpha,pAp ;
+
+      int k = 0 ;
+      A(Ap,x,PLUS) ;
+      r[A.subset()] = b - Ap ;
+      r_dot_z = norm2(r,A.subset()) ;
+
+#if 1
+      QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_dot_z << endl;
+#endif
+      int tr; // Don't know what this does...
+      Matrix<DComplex> H(Nmax+1) ; // square matrix containing the tridiagonal
+      Vectors<T> vec(Nmax) ; // contains the vectors we use...
+      
+
+      beta=0.0;
+      alpha = 1.0;
+      T Ap_prev ;
+      T tt ;
+
+      // Algorithm from page 529 of Golub and Van Loan
+      // Modified to match the m-code from A. Stathopoulos
+      while(toBool(r_dot_z>rsd_sq)){
+	/** preconditioning algorithm **/
+	//z[A.subset()]=r ; //preconditioning can be added here
+	//r_dot_z = innerProductReal(r,z,A.subset());
+	//****//
+	r_dot_z_old = r_dot_z ;
+	r_dot_z = norm2(r,A.subset());
+	Double inv_sqrt_r_dot_z = 1.0/sqrt(r_dot_z) ;
+	k++ ;
+	if(k==1){
+	  //p[A.subset()] = z ;	
+	  p[A.subset()] = r ;	
+	}
+	else{
+	  betaprev = beta ;
+	  beta = r_dot_z/r_dot_z_old ;
+	  //p[A.subset()] = z + beta*p ; 
+	  p[A.subset()] = r + beta*p ; 
+	}
+	//-------- Eigenvalue eigenvector finding code ------
+	if((Neig>0)&& (H.N == Nmax)) Ap_prev[A.subset()]=Ap ;
+	//---------------------------------------------------
+	A(Ap,p,PLUS) ;
+	
+	//-------- Eigenvalue eigenvector finding code ------
+	if(Neig>0){
+	  if(k>1)
+	    H(H.N-1,H.N-1) = 1/alpha + betaprev/alphaprev;
+	  if(vec.N==Nmax){
+	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
+#ifdef DEBUG
+	    {
+	      stringstream tag ;
+	      tag<<"H"<<k ;
+	      OctavePrintOut(H.mat,Nmax,tag.str(),"Hmatrix.m");
+	    }
+	    {
+	      Matrix<DComplex> tmp(Nmax) ; 
+	      SubSpaceMatrix(tmp,A,vec.vec,vec.N);
+	      stringstream tag ;
+	      tag<<"H"<<k<<"ex" ;
+	      OctavePrintOut(tmp.mat,Nmax,tag.str(),"Hmatrix.m");
+	    }
+#endif
+	    multi2d<DComplex> Hevecs(H.mat) ;
+	    multi1d<Double> Heval ;
+	    char V = 'V' ; char U = 'U' ;
+	    QDPLapack::zheev(V,U,Nmax,Hevecs,Heval);
+#ifdef DEBUG
+	    for(int i(0);i<Nmax;i++)
+	      QDPIO::cout<<" eignvalue: "<<Heval[i]<<endl ;
+#endif
+	    multi2d<DComplex> Hevecs_old(H.mat) ;
+	    multi1d<Double> Heval_old ;
+	    QDPLapack::zheev(V,U,Nmax-1,Hevecs_old,Heval_old);
+	    for(int i(0);i<Nmax;i++)	    
+	      Hevecs_old(i,Nmax-1) = Hevecs_old(Nmax-1,i) = 0.0 ;
+	    
+	    //Reduce to 2*Neig vectors
+	    H.N = Neig + Neig ; // Thickness of restart 2*Neig
+	    vec.N = 2*Neig ; // restart the vectors to keep
+
+	    for(int i(Neig);i<2*Neig;i++) 
+	      for(int j(0);j<Nmax;j++)	    
+		Hevecs(i,j) = Hevecs_old(i-Neig,j) ;
+
+	    // Orthogonalize the last Neig vecs (keep the first Neig fixed)
+	    // zgeqrf(Nmax, 2*Neig, Hevecs, Nmax,
+	    //  TAU_CMPLX_ofsize_2Neig, Workarr, 2*Neig*Lapackblocksize, info);
+	    multi1d<DComplex> TAU ;
+	    QDPLapack::zgeqrf(Nmax,2*Neig,Hevecs,TAU) ;
+	    char R = 'R' ; char L = 'L' ; char N ='N' ; char C = 'C' ;
+	    multi2d<DComplex> Htmp = H.mat ;
+	    QDPLapack::zunmqr(R,N,Nmax,Nmax,Hevecs,TAU,Htmp);
+	    QDPLapack::zunmqr(L,C,Nmax,2*Neig,Hevecs,TAU,Htmp);
+
+	    QDPLapack::zheev(V,U,2*Neig,Htmp,Heval);
+	    for(int i(Neig); i< 2*Neig;i++ ) // mhpws prepei na einai 1..2*Neig
+	      for(int j(2*Neig); j<Nmax; j++) 
+		Htmp(i,j) =0.0;
+
+	    QDPLapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
+	    // Here I need the restart_X bit
+	    // zgemm("N", "N", Ns*Nc*Vol/2, 2*Neig, Nmax, 1.0,
+	    //      vec.vec, Ns*Nc*Vol, Htmp, Nmax+1, 0.0, tt_vec, Ns*Nc*Vol);
+	    // copy apo tt_vec se vec.vec
+
+	    multi1d<T> tt_vec = vec.vec;
+	    for(int i(0);i<2*Neig;i++){
+	      vec[i][A.subset()] = zero ;
+	      for(int j(0);j<Nmax;j++)
+		vec[i][A.subset()] +=Htmp(i,j)*tt_vec[j] ; 
+	    }
+	    H.mat = 0.0 ; // zero out H 
+	    for (int i=0;i<2*Neig;i++) H(i,i) = Heval[i];
+
+	    tt = Ap - beta*Ap_prev ;
+	    for (int i=0;i<2*Neig;i++){
+	      H(i,2*Neig)=innerProduct(vec[i],tt,A.subset())*inv_sqrt_r_dot_z ;
+	      H(2*Neig,i)=conj(H(i,2*Neig)) ;
+	    }
+	  }//H.N==Nmax
+	  else{
+	    if(k>1)
+	      H(H.N-1,H.N) = H(H.N,H.N-1) = -sqrt(beta)/alpha;
+	  }
+	  H.N++ ;
+	  //vec.NormalizeAndAddVector(z,inv_sqrt_r_dot_z,A.subset()) ;
+	  vec.NormalizeAndAddVector(r,inv_sqrt_r_dot_z,A.subset()) ;
+	}
+
+	pAp = innerProductReal(p,Ap,A.subset());
+      	alphaprev = alpha ;// additional line for Eigenvalue eigenvector code
+	alpha = r_dot_z/pAp ;
+	x[A.subset()] += alpha*p ;
+	r[A.subset()] -= alpha*Ap ;
+	      
+	
+	//---------------------------------------------------
+	if(k>MaxCG){
+	  res.n_count = k;
+	  res.resid   = sqrt(r_dot_z);
+	  QDP_error_exit("too many CG iterations: count = %d", res.n_count);
+	  END_CODE();
+	  return res;
+	}
+#if 1
+	QDPIO::cout << "InvEigCG2: k = " << k  ;
+	QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
+#endif
+      }//end CG loop
+
+      evec.resize(Neig) ;
+      eval.resize(Neig);
+
+      for(int i(0);i<Neig;i++){
+	evec[i][A.subset()] = vec[i] ;
+	eval[i] = real(H(i,i)) ;
+      }
+
+      res.n_count = k ;
+      res.resid = sqrt(r_dot_z);
+      swatch.stop();
+      QDPIO::cout << "InvEigCG2: k = " << k << endl;
+      flopcount.report("InvEigCG2", swatch.getTimeInSeconds());
+      END_CODE();
+      return res;
+    }
+
+   
+    template<typename T>
+    SystemSolverResults_t old_InvEigCG2_T(const LinearOperator<T>& A,
 				      T& x, 
 				      const T& b,
 				      multi1d<Double>& eval, 
