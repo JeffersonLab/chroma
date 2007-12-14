@@ -1,4 +1,4 @@
-// $Id: delta_2pt_w.cc,v 3.4 2007-12-14 21:41:37 kostas Exp $
+// $Id: delta_2pt_w.cc,v 3.5 2007-12-14 21:47:38 kostas Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -203,6 +203,7 @@ namespace Chroma
 	    QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
 	    SpinMatrix T =  (- 1.0/3.0) * ProjGmuGnu[src][snk] ;
 	    if(src == snk ) T += g_one ;
+	    T = par->second * T ;
 	    had->corr += Baryon2PtContractions::sigmast2pt(quark_prop1, 
 							   quark_prop2,
 							   T,DiQuark[src],
