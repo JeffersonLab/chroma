@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.1 2007-12-14 06:53:42 edwards Exp $
+// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.2 2007-12-14 23:41:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -306,11 +306,11 @@ namespace Chroma
     //! Baryon operator
     struct BaryonOperator_t
     {
-      //! Quark orderings within a baryon operator
-      struct Orderings_t
+      //! Baryon operator time slices corresponding to location of operator source
+      struct TimeSlices_t
       {
-	//! Baryon operator time slices corresponding to location of operator source
-	struct TimeSlices_t
+	//! Quark orderings within a baryon operator
+	struct Orderings_t
 	{
 	  //! Baryon operator dilutions
 	  struct Dilutions_t
@@ -326,7 +326,7 @@ namespace Chroma
 	  };
 
 	  int                  t0;          /*!< Source time location */
-	  multi3d<Dilutions_t> dilutions;   /*!< Hybrid list indices */
+	  std::list<Dilutions_t> dilutions;   /*!< Hybrid list indices */
 	};
 	  
 	multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
@@ -706,11 +706,11 @@ namespace Chroma
 	    diltop,
 	    dil_xml.path);
 	}
-	catch(const std::string& e) 
-	{
-	  QDPIO::cerr << name << ": Caught Exception constructing dilution operator: " << e << endl;
-	  QDP_abort(1);
-	}
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << name << ": Caught Exception constructing dilution operator: " << e << endl;
+	QDP_abort(1);
       }
 
 
@@ -829,7 +829,10 @@ namespace Chroma
 	      dil_ptr != dilution.end(); 
 	      ++dil_ptr)
 	  {
-	    LatticeFermion src(dilution.dilutedSource(dil_ptr));
+	    if (dilution.zero(dil_ptr))
+	      continue;
+		
+	    LatticeFermion src = dilution.dilutedSource(dil_ptr);
 	    (*sourceQuarkSmearing)(src, u_smr);
 
 	    //multiply by gamma_4 as well here
@@ -881,6 +884,9 @@ namespace Chroma
 	      dil_ptr != dilution.end(); 
 	      ++dil_ptr)
 	  {
+	    if (dilution.zero(dil_ptr))
+	      continue;
+		
 	    LatticeFermion soln(dilution.dilutedSolution(dil_ptr));
 	    (*sinkQuarkSmearing)(soln, u_smr);
 
@@ -1090,72 +1096,40 @@ namespace Chroma
 	  const int n1 = perms[ord][1];
 	  const int n2 = perms[ord][2];
 
-	  // ***********NOTE: THIS NEEDS SOME MORE ABSTRACTION*************
-	  // Fetch the quarks
-	  const ThreeQuarkOps_t::ThreeQuarkOp_t& qqq_op = qqq_oplist.ops[l];
-		     
-	  KeySmearedDispColorVector_t key0;
-	  key0.displacement = qqq_op.quark[0].displacement;
-	  key0.spin         = qqq_op.quark[0].spin;
-	      
-	  KeySmearedDispColorVector_t key1;
-	  key1.displacement = qqq_op.quark[1].displacement;
-	  key1.spin         = qqq_op.quark[1].spin;
-	      
-	  KeySmearedDispColorVector_t key2;
-	  key2.displacement = qqq_op.quark[2].displacement;
-	  key2.spin         = qqq_op.quark[2].spin;
-
-	  // Sanity check - this entry better be in the map or blow-up
-	  if (disp_quarks.find(key0) == disp_quarks.end())
-	  {
-	    QDPIO::cerr << name 
-			<< ": internal error - map of displacements missing an entry" 
-			<< endl;
-	    QDP_abort(1);
-	  }
-		      
-	  // The location of the displaced quark
-	  const SmearedDispColorVector_t& disp_q0 = disp_quarks.find(key0)->second;
-	  const SmearedDispColorVector_t& disp_q1 = disp_quarks.find(key1)->second;
-	  const SmearedDispColorVector_t& disp_q2 = disp_quarks.find(key2)->second;
-		
-			
-	  // ****************************************************************
-
-
 	  // The operator must hold all the dilutions
 	  // We know that all time slices match. However, not all time slices of the
 	  // lattice maybe used
-	  for(int t=0; t < participating_time_sources.size(); ++t)
+	  for(std::list<int>::const_iterator t_ptr= participating_time_sources.begin(); 
+	      t_ptr != participating_time_sources.end(); 
+	      ++t_ptr)
 	  {
-	    int t0 = participating_time_sources[t];
+	    int t0 = *t_ptr;
 
 	    BaryonOperator_t::Orderings_t::TimeSources_t& cop = creat_oper.orderings[ord].time_sources[t];
 	    BaryonOperator_t::Orderings_t::TimeSources_t& aop = annih_oper.orderings[ord].time_sources[t];
 	    
-	    for(DilutionOperator<LatticeFermion>::iterator dil0= dilutions[0].begin(t0); 
-		dil0 != dilutions[0].end(); 
+	    for(DilutionOperator<LatticeFermion>::const_iterator dil0= dilutions[n0].begin(); 
+		dil0 != dilutions[n0].end(); 
 		++dil0)
 	    {
 	      // Skip if a zero entry
-	      if (dilutions[0]->zero(dil0))
+	      if (dilutions[n0]->zero(dil0,t0,quarkInfo[0]))
 		continue;
 
-	      for(DilutionOperator<LatticeFermion>::iterator dil1= dilutions[1].begin(t0); 
-		  dil1 != dilutions[1].end(); 
+	      for(DilutionOperator<LatticeFermion>::const_iterator dil1= dilutions[n1].begin(); 
+		  dil1 != dilutions[n1].end(); 
 		  ++dil1)
 	      {
 		// Skip if a zero entry
-		if (dilutions[1]->zero(dil1))
+		if (dilutions[n1]->zero(dil1,t0,quarkInfo[1]))
 		  continue;
 
-		for(DilutionOperator<LatticeFermion>::iterator dil2= dilutions[2].begin(t0); 
-		    dil2 != dilutions[2].end(); 
+		for(DilutionOperator<LatticeFermion>::const_iterator dil2= dilutions[n2].begin(); 
+		    dil2 != dilutions[n2].end(); 
 		    ++dil2)
 		{
 		  // Skip if a zero entry
-		  if (dilutions[2]->zero(dil02))
+		  if (dilutions[n2]->zero(dil2,t0,quarkInfo[2]))
 		    continue;
 
 		  // From now on we know the source operator is not zero
@@ -1179,28 +1153,34 @@ namespace Chroma
 		  LatticeComplex a_oper = 
 		    colorContract(dilutions[n0]->dilutedSolution(dil0),
 				  dilutions[n1]->dilutedSolution(dil1),
-				  dilutions[n2]->dilutedSolution(dil2));
+				  getColorVector(dilutions[n2]->dilutedSolution(dil2),keySmearedDispColorVector));
 		  
 		  // Slow fourier-transform
 		  // We can restrict what the FT routine requires to a subset.
-		  multi2d<DComplex> c_sum( phases.sft(c_oper, times[time]) );
+		  multi2d<DComplex> c_sum( phases.sft(c_oper, t0 ) );
 		  multi2d<DComplex> a_sum( phases.sft(a_oper) );
 
 		  // Unpack into separate momentum and correlator
-		  cop.spin.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-		  aop.spin.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-		    
+		  BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t cop_particular_dilution;
+		  BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t aop_particular_dilution;
+		  cop_particular_dilution.mom_projs.resize(phases.numMom());
+		  aop_particular_dilution.mom_projs.resize(phases.numMom());
+
 		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 		  {
-		    cop.spin.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
-		    aop.spin.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		    cop_particular_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		    aop_particular_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
 		      
-		    cop.spin.dilutions(i,j,k).mom_projs[mom_num].op[ time ] = c_sum[mom_num][ times[time] ];
-		    aop.spin.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
+		    cop_particular_dilution.mom_projs[mom_num].op.resize(1);
+		    cop_particular_dilution.mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
+		    aop_particular_dilution.mom_projs[mom_num].op = a_sum[mom_num];
 		  }
-		} // end for k
-	      } // end for j
-	    } // end for i
+
+		  cop.dilutions.push_back(cop_particular_dilution);
+		  aop.dilutions.push_back(aop_particular_dilution);
+		} // end for dil2
+	      } // end for dil1
+	    } // end for dil0
 	    
 	  } // end for t
 	} // end for ord
