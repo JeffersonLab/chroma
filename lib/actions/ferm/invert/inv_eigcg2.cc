@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.10 2007-12-14 05:03:48 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.11 2007-12-15 05:11:02 kostas Exp $
 
 #include <qdp-lapack.h>
 //#include "octave_debug.h"
@@ -87,8 +87,6 @@ namespace Chroma
       Real beta; 
       Double betaprev  ;
       Double r_dot_z, r_dot_z_old ;
-      //Complex r_dot_z, r_dot_z_old,beta ;
-      //Complex alpha,pAp ;
 
       int k = 0 ;
       A(Ap,x,PLUS) ;
@@ -99,8 +97,7 @@ namespace Chroma
       QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << endl;
       QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_dot_z << endl;
 #endif
-      int tr; // Don't know what this does...
-      Matrix<DComplex> H(Nmax+1) ; // square matrix containing the tridiagonal
+      Matrix<DComplex> H(Nmax) ; // square matrix containing the tridiagonal
       Vectors<T> vec(Nmax) ; // contains the vectors we use...
       
 
@@ -160,6 +157,11 @@ namespace Chroma
 	    char V = 'V' ; char U = 'U' ;
 	    QDPLapack::zheev(V,U,Nmax,Hevecs,Heval);
 #ifdef DEBUG
+	    {
+	      stringstream tag ;
+	      tag<<"Hevecs"<<k ;
+	      OctavePrintOut(Hevecs,Nmax,tag.str(),"Hmatrix.m");
+	    }
 	    for(int i(0);i<Nmax;i++)
 	      QDPIO::cout<<" eignvalue: "<<Heval[i]<<endl ;
 #endif
@@ -171,7 +173,6 @@ namespace Chroma
 	    
 	    //Reduce to 2*Neig vectors
 	    H.N = Neig + Neig ; // Thickness of restart 2*Neig
-	    vec.N = 2*Neig ; // restart the vectors to keep
 
 	    for(int i(Neig);i<2*Neig;i++) 
 	      for(int j(0);j<Nmax;j++)	    
@@ -188,29 +189,58 @@ namespace Chroma
 	    QDPLapack::zunmqr(L,C,Nmax,2*Neig,Hevecs,TAU,Htmp);
 
 	    QDPLapack::zheev(V,U,2*Neig,Htmp,Heval);
-	    for(int i(Neig); i< 2*Neig;i++ ) // mhpws prepei na einai 1..2*Neig
+#ifdef DEBUG
+	    {
+	      stringstream tag ;
+	      tag<<"Htmp"<<k ;
+	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
+	    }
+#endif
+	    for(int i(Neig); i< 2*Neig;i++ ) // mhpws prepei na einai 0..2*Neig
 	      for(int j(2*Neig); j<Nmax; j++) 
 		Htmp(i,j) =0.0;
 
+#ifdef DEBUG
+	    {
+	      stringstream tag ;
+	      tag<<"HtmpBeforeZUM"<<k ;
+	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
+	    }
+#endif
 	    QDPLapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
+#ifdef DEBUG
+	    {
+	      stringstream tag ;
+	      tag<<"HtmpAfeterZUM"<<k ;
+	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
+	    }
+#endif
 	    // Here I need the restart_X bit
 	    // zgemm("N", "N", Ns*Nc*Vol/2, 2*Neig, Nmax, 1.0,
 	    //      vec.vec, Ns*Nc*Vol, Htmp, Nmax+1, 0.0, tt_vec, Ns*Nc*Vol);
 	    // copy apo tt_vec se vec.vec
 
-	    multi1d<T> tt_vec = vec.vec;
+	    multi1d<T> tt_vec(2*Neig);
 	    for(int i(0);i<2*Neig;i++){
-	      vec[i][A.subset()] = zero ;
+	      tt_vec[i][A.subset()] = zero ;
 	      for(int j(0);j<Nmax;j++)
-		vec[i][A.subset()] +=Htmp(i,j)*tt_vec[j] ; 
+		tt_vec[i][A.subset()] +=Htmp(i,j)*vec[j] ; 
 	    }
+	    for(int i(0);i<2*Neig;i++)
+	      vec[i][A.subset()] = tt_vec[i] ;
+	    vec.N = 2*Neig ; // restart the vectors to keep
+
 	    H.mat = 0.0 ; // zero out H 
 	    for (int i=0;i<2*Neig;i++) H(i,i) = Heval[i];
 
-	    tt = Ap - beta*Ap_prev ;
+	    //A(tt,r,PLUS) ;
+	    tt = Ap - beta*Ap_prev ; //avoid the matvec
+	    
 	    for (int i=0;i<2*Neig;i++){
-	      H(i,2*Neig)=innerProduct(vec[i],tt,A.subset())*inv_sqrt_r_dot_z ;
-	      H(2*Neig,i)=conj(H(i,2*Neig)) ;
+	      H(2*Neig,i)=innerProduct(vec[i],tt,A.subset())*inv_sqrt_r_dot_z ;
+	      H(i,2*Neig)=conj(H(2*Neig,i)) ;
+	    //H(i,2*Neig)=innerProduct(vec[i],tt,A.subset())*inv_sqrt_r_dot_z ;
+	    //H(2*Neig,i)=conj(H(i,2*Neig)) ;
 	    }
 	  }//H.N==Nmax
 	  else{
@@ -243,14 +273,31 @@ namespace Chroma
 #endif
       }//end CG loop
 
-      evec.resize(Neig) ;
-      eval.resize(Neig);
-
-      for(int i(0);i<Neig;i++){
-	evec[i][A.subset()] = vec[i] ;
-	eval[i] = real(H(i,i)) ;
+      if(Neig>0){
+	evec.resize(Neig) ;
+	eval.resize(Neig);
+	
+#define  USE_LAST_VECTORS
+#ifdef USE_LAST_VECTORS
+	
+	multi2d<DComplex> Hevecs(H.mat) ;
+	multi1d<Double> Heval ;
+	char V = 'V' ; char U = 'U' ;
+	QDPLapack::zheev(V,U,H.N-1,Hevecs,Heval);
+	
+	for(int i(0);i<Neig;i++){
+	  evec[i][A.subset()] = zero ;
+	  eval[i] = Heval[i] ;
+	  for(int j(0);j<H.N-1;j++)
+	    evec[i][A.subset()] +=Hevecs(i,j)*vec[j] ;
+	}
+#else
+	for(int i(0);i<Neig;i++){
+	  evec[i][A.subset()] = vec[i] ;
+	  eval[i] = real(H(i,i)) ;
+	}
+#endif
       }
-
       res.n_count = k ;
       res.resid = sqrt(r_dot_z);
       swatch.stop();
