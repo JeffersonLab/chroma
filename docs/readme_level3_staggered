@@ -1,10 +1,14 @@
-$Id: readme_level3_staggered,v 1.2 2007-12-08 13:42:13 mcneile Exp $
+$Id: readme_level3_staggered,v 1.3 2007-12-16 11:43:33 mcneile Exp $
 Staggered level3 inverter into chroma
 --------------------------------------
 
 Some notes on using the level 3 asqtad
 inverter (http://usqcd.jlab.org/usqcd-docs/qopqdp/) from SciDac 
-with Chroma.
+with Chroma. Essentially Chroma calls the fast inverter
+for Asqtad fermions in the qopqdp library.
+
+This code has been tested on a PC and a 1024 node QCDOC.
+This should be viewed as an experimental release.
 
 Compilation
 -------------
@@ -34,6 +38,11 @@ The main program needs to call the function  setup_levelthree
   setup_levelthree(input.param.nrow, &argc, &argv ) ;
 #endif
 
+I have not used the fat link routines from
+the qopqdp library. I don't believe that the
+chroma fatlink routines were the performance bottleneck
+on the QCDOC. Also it wasn't obvious how to turn off
+the chroma fatlik routines.
 
 Tips/tricks
 -------------
@@ -53,10 +62,27 @@ chroma/lib/actions/ferm/qprop/asqtad_qprop.h
   //  QOP_verbose(QOP_VERB_HI);
   QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
 
+3) On the QCDOC we had problems (segmentation fault) with a 4**4 subvolume on
+   a 64 node machine.
+
+
 To DO
 ------
 The configure script should check that a simple program
 can link against the qopqdp library.
+
+Need to think about the precision issue.
+#define QLA_Precision 'F'
+
+Need to think about the restart stratergy
+  inv_arg.max_iter = invParam.MaxCG;
+  inv_arg.restart = 500 ;
+  inv_arg.max_restarts = 5;
+  inv_arg.evenodd = QOP_EVENODD ;
+
+The qopqdp inverter takes many more iterations than
+the pure chroma inverter, but is still a lot
+faster.
 
 History
 -------
@@ -77,6 +103,7 @@ qla-1.5.4.tar
 qmp-2.1.7.tar
 qopqdp-0.10.0.tar
 
+(http://usqcd.jlab.org/usqcd-software/)
 
 To simplify the level3 build structure 
 
