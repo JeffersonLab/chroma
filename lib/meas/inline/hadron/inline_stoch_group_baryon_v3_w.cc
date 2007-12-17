@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.2 2007-12-14 23:41:02 edwards Exp $
+// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.3 2007-12-17 22:44:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -167,7 +167,7 @@ namespace Chroma
     }
 
 
-
+    //----------------------------------------------------------------------------
     // Param stuff
     Params::Params()
     { 
@@ -223,7 +223,6 @@ namespace Chroma
 
 
     //--------------------------------------------------------------
-
     //! 3-quark operator structure
     struct ThreeQuarkOps_t
     {
@@ -232,77 +231,221 @@ namespace Chroma
 	struct QuarkInfo_t
 	{
 	  int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-	  int  spin;            /*!< 0-based spin index */
-	  int  disp_dir;        /*!< 0-based direction */
-	  int  disp_len;        /*!< 0-based length */
+	  int  spin;            /*!< 1-based spin index */
 	};
 
 	multi1d<QuarkInfo_t>  quark;    /*!< Displacement and spin for each quark */
-	std::string name;                 /*!< Name of the 3-quark operator */
+	std::string name;               /*!< Name of the 3-quark operator */
       };
 	
       multi1d<ThreeQuarkOp_t> ops; /*!< 3-quark ops within a file */
     };
 
 
+    //----------------------------------------------------------------------------
     // Structure holding structures
     //! The key for smeared and displaced color vectors
     struct KeySmearedDispColorVector_t
     {
+      int  t0;              /*!< Time of source */
       int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-      int  spin;            /*!< 0-based spin index */
+      int  spin;            /*!< 1-based spin index */
     };
 
 
     //! Support for the keys of smeared and displaced color vectors
     bool operator<(const KeySmearedDispColorVector_t& a, const KeySmearedDispColorVector_t& b)
     {
-      multi1d<int> lga(2);
+      multi1d<int> lga(3);
       lga[0] = a.displacement;
       lga[1] = a.spin;
+      lga[2] = a.t0;
 
-      multi1d<int> lgb(2);
+      multi1d<int> lgb(3);
       lgb[0] = b.displacement;
       lgb[1] = b.spin;
+      lgb[2] = b.t0;
 
       return (lga < lgb);
     }
 
 
-    //! The smeared and displaced color vectors
-    struct SmearedDispColorVector_t
+    //----------------------------------------------------------------------------
+    //! The smeared and displaced objects
+    class SmearedDispObjects
     {
-      struct Quarks_t
-      {
-	struct TimeDilutions_t
+    public:
+      //! Constructor from a quark smearing
+      SmearedDispObjects(int disp_length,
+			 multi1d< Handle< DilutionOperator<LatticeFermion> > > dils,
+			 Handle< QuarkSmearing<LatticeFermion> > src, 
+			 Handle< QuarkSmearing<LatticeFermion> > snk) :
+	displacement_length(disp_length), dilution_operators(dils), 
+	sourceQuarkSmearing(src), sinkQuarkSmearing(snk) 
 	{
-	  struct SpinDilutions_t
-	  {
-	    struct Dilutions_t
-	    {
-	      LatticeColorVector  source;
-	      LatticeColorVector  soln;
-	    };
+	  srce_vecs.resize(N_quarks);
+	  soln_vecs.resize(N_quarks);
+	}
 
-		
-	    multi1d<int> s0;	//Array of participating spins for this dilution element 
-	    multi1d<Dilutions_t> dilutions; //Additional dilutions   
-		
-	  };
+      //! Destructor
+      ~SmearedDispObjects() {}
 
-	  multi1d<int> t0;  //Array of participating timeslices for this dilution element
-	  SpinDilutions_t spin_dilutions;    //Only one spin dilution element needs to be calculated
-	};	
+      //! Accessor
+      virtual LatticeColorVector getDilutedSource(int quark_num, 
+						  int t0,
+						  DilutionOperator<LatticeFermion>::const_iterator dil, 
+						  const KeySmearedDispColorVector_t& key);
+
+      //! Accessor
+      virtual LatticeColorVector getDilutedSolution(int quark_num, 
+						    int t0,
+						    DilutionOperator<LatticeFermion>::const_iterator dil, 
+						    const KeySmearedDispColorVector_t& key);
+
+    protected:
+      //! Displace an object
+      virtual const LatticeColorVector&
+      displaceObject(map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark,
+		     const KeySmearedDispColorVector_t& key,
+		     const multi1d<LatticeColorMatrix>& u_smr,
+		     const LatticeFermion& ferm)
 	
-	multi1d<TimeDilutions_t> time_dilutions;
-      };
+    private:
+      //! Displacement length
+      int displacement_length;
 
-      multi1d<Quarks_t>  quarks;
+      //! Dilutions
+      multi1d< Handle< DilutionOperator > > dilution_operators;
+
+      //! Quark smearing
+      Handle< QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
+
+      //! Quark smearing
+      Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
+
+      //! The value of the map
+      struct SmearedDispColorVector_t
+      {
+	LatticeColorVector  vec;
+      }
+      multi1d< map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> > srce_vecs;
+      multi1d< map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> > soln_vecs;
     };
 
-//    map< KeySmearedDispColorVector_t, SmearedDispColorVector_t > quarks;
+
+    //! Accessor
+    LatticeColorVector 
+    SmearedDispObjects::getDilutedSource(int quark_num, 
+					 int t0,
+					 DilutionOperator<LatticeFermion>::const_iterator dil, 
+					 const KeySmearedDispColorVector_t& key,
+					 const multi1d<LatticeColorMatrix>& u_smr)
+    {
+      if (! dilution_operators[n]->hasTimeSupport(dil,t0))
+      {
+	QDPIO::cerr << __func__ << ": no time support" << endl;
+	QDP_abort(1);
+      }
+		
+      // NOTE: The smearing should be in another map as well
+      LatticeFermion src(dilution_operators[quark_num]->dilutedSource(dil_ptr,t0));
+      (*sourceQuarkSmearing)(src, u_smr);
+
+      //multiply by gamma_4 as well here
+      SpinMatrix mat = rotate_mat * Gamma(8);
+	    
+      return displaceObject(srce_vecs[quark_num],key,u_smr,LatticeFermion(mat * src));
+    }
+
+    //! Accessor
+    LatticeColorVector 
+    SmearedDispObjects::getDilutedSolution(int quark_num, 
+					   int t0,
+					   DilutionOperator<LatticeFermion>::const_iterator dil, 
+					   const KeySmearedDispColorVector_t& key,
+					   const multi1d<LatticeColorMatrix>& u_smr)
+    {
+      // NOTE: The smearing should be in another map as well
+      LatticeFermion soln(dilutio_operators[quark_num]->dilutedSolution(dil,t0));
+      (*sinkQuarkSmearing)(soln, u_smr);
+
+      return displaceObject(soln_vecs[quark_num],key,u_smr,LatticeFermion(rotate_mat * soln));
+    }
 
 
+    //! Accessor
+    const LatticeColorVector&
+    SmearedDispObjects::displaceObject()(map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark,
+					 const KeySmearedDispColorVector_t& key,
+					 const multi1d<LatticeColorMatrix>& u_smr,
+					 const LatticeFermion& ferm)
+    {
+      // If no entry, then create a displaced version of the quark
+      if (disp_quark.find(key) == disp_quark.end())
+      {
+//	      cout << __func__ 
+//		   << ": n=" << n
+//		   << " l=" << l
+//		   << " i=" << i 
+//		   << " disp=" << term.quark[i].displacement
+//		   << " len=" << term.quark[i].disp_len
+//		   << " dir=" << term.quark[i].disp_dir
+//		   << endl;
+
+	// Insert an empty entry and then modify it. This saves on
+	// copying the data around
+	{
+	  SmearedDispColorVector_t disp_empty;
+	  disp_quark.insert(std::make_pair(key, disp_empty));
+
+	  // Sanity check - the entry better be there
+	  if (disp_quark.find(key) == disp_quark.end())
+	  {
+	    QDPIO::cerr << __func__ 
+			<< ": internal error - could not insert empty key in map"
+			<< endl;
+	    QDP_abort(1);
+	  }		      
+	}
+
+	// Modify the previous empty entry
+	SmearedDispColorVector_t& disp_q = disp_quark.find(key)->second;
+	      
+	snoop.reset();
+	snoop.start();
+	
+	// Pull out the appropriate spin component, then displace it
+	disp_q.vec = peekSpin(ferm, key.spin-1);
+
+	if (key.displacement > 0)
+	{
+	  int disp_dir = key.displacement - 1;
+	  int disp_len = displacement_length;
+	  displacement(u_smr, vec, disp_len, disp_dir);
+	}
+	else if (key.displacement < 0)
+	{
+	  int disp_dir = -key.displacement - 1;
+	  int disp_len = -displacement_length;
+	  displacement(u_smr, vec, disp_len, disp_dir);
+	}
+	      
+	snoop.stop();
+
+	QDPIO::cout << "Displaced Quarks: Spin = "<<key.spin<<" Disp = "
+		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
+	// Insert
+	disp_quark.insert(std::make_pair(key, disp_q));
+      } // if find in map
+
+      // The key now must exist in the map, so return the vector
+      SmearedDispColorVector_t& disp_q = disp_quark.find(key)->second;
+
+      return disp_q.vec;
+    }
+
+
+    //----------------------------------------------------------------------------
     //! Baryon operator
     struct BaryonOperator_t
     {
@@ -326,11 +469,11 @@ namespace Chroma
 	  };
 
 	  int                  t0;          /*!< Source time location */
-	  std::list<Dilutions_t> dilutions;   /*!< Hybrid list indices */
+	  std::list<Dilutions_t> dilutions; /*!< Hybrid list indices */
 	};
 	  
 	multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
-	multi1d<TimeSlices_t> time_sources;  /*!< Time slices of the lattice that are used */
+	multi1d<TimeSlices_t> time_sources; /*!< Time slices of the lattice that are used */
       };
 
       multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
@@ -349,6 +492,7 @@ namespace Chroma
     };
 
 
+    //----------------------------------------------------------------------------
     //! BaryonOperator header writer
     void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
     {
@@ -412,8 +556,7 @@ namespace Chroma
 
     //! Read 3-quark operators file
     void readOps(ThreeQuarkOps_t& oplist, 
-		 const std::string& ops_file,
-		 int displacement_length)
+		 const std::string& ops_file)
     {
       START_CODE();
 
@@ -431,42 +574,21 @@ namespace Chroma
 	oplist.ops[n].name = name;  
 	
 	ThreeQuarkOps_t::ThreeQuarkOp_t& qqq = oplist.ops[n];
-	qqq.quark.resize(3);
+	qqq.quark.resize(N_quarks);
 
-	// Make spin index 0 based
+	// Read 1-based spin
+	multi1d<int> spin(N_quarks);
+	reader >> spin[0] >> spin[1] >> spin[2];
+
+	// Read 1-based displacement
+	multi1d<int> displacement(N_quarks);
+	reader >> displacement[0] >> displacement[1] >> displacement[2];
+
+	// Insert for each quark
+	for(int i=0; i < qqq.quark.size(); ++i)
 	{
-	  multi1d<int> spin(3);
-	  reader >> spin[0] >> spin[1] >> spin[2];
-
-	  for(int i=0; i < spin.size(); ++i)
-	    qqq.quark[i].spin = spin[i] - 1;
-	}
-
-	// Convert displacements to  disp_dir, disp_len
-	{
-	  multi1d<int> displacement(3);
-	  reader >> displacement[0] >> displacement[1] >> displacement[2];
-
-	  for(int i=0; i < displacement.size(); ++i)
-	  {
-	    qqq.quark[i].displacement = displacement[i];
-
-	    if (displacement[i] == 0)
-	    {
-	      qqq.quark[i].disp_dir = 0;
-	      qqq.quark[i].disp_len = 0;
-	    }
-	    else if (displacement[i] > 0)
-	    {
-	      qqq.quark[i].disp_dir = qqq.quark[i].displacement - 1;
-	      qqq.quark[i].disp_len = displacement_length;
-	    }
-	    else
-	    {
-	      qqq.quark[i].disp_dir = -qqq.quark[i].displacement - 1;
-	      qqq.quark[i].disp_len = -displacement_length;
-	    }
-	  } 
+	  qqq.quark[i].spin = spin[i];
+	  qqq.quark[i].displacement = displacement[i];
 	}
 
       } //n
@@ -474,125 +596,7 @@ namespace Chroma
       reader.close();
 
       END_CODE();
-    } //void
-
-
-    //! Construct array of maps of displacements
-    void displaceQuarks(map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quarks,
-			const multi1d<LatticeColorMatrix>& u_smr,
-			const ThreeQuarkOps_t&  oplist,
-			const multi1d<QuarkSourceSolutions_t> quarks)
-    {
-      START_CODE();
-
-      StopWatch snoop;
-			
-      cout << __func__ << ": entering" << endl;
-
-      // Loop over the ops
-      for(int l=0; l < oplist.ops.size(); ++l)
-      {
-	const ThreeQuarkOps_t::ThreeQuarkOp_t& qqq_op = oplist.ops[l];
-	    
-	//Loop over quark terms within the op
-	for(int i = 0; i < qqq_op.quark.size(); ++i)
-	{
-	  const ThreeQuarkOps_t::ThreeQuarkOp_t::QuarkInfo_t& q_info = qqq_op.quark[i];
-
-	  // Check if this displacement and spin are in the map,
-	  // if not, then *ALL* quarks and dilutions must be shifted
-	  KeySmearedDispColorVector_t key;
-	  key.displacement = q_info.displacement;
-	  key.spin         = q_info.spin;
-
-	  // If no entry, then create a displaced version of the quark
-	  if (disp_quarks.find(key) == disp_quarks.end())
-	  {
-//	      cout << __func__ 
-//		   << ": n=" << n
-//		   << " l=" << l
-//		   << " i=" << i 
-//		   << " disp=" << term.quark[i].displacement
-//		   << " len=" << term.quark[i].disp_len
-//		   << " dir=" << term.quark[i].disp_dir
-//		   << endl;
-
-	    // Insert an empty entry and then modify it. This saves on
-	    // copying the data around
-	    {
-	      SmearedDispColorVector_t disp_empty;
-	      disp_quarks.insert(std::make_pair(key, disp_empty));
-
-	      // Sanity check - the entry better be there
-	      if (disp_quarks.find(key) == disp_quarks.end())
-	      {
-		QDPIO::cerr << __func__ 
-			    << ": internal error - could not insert empty key in map"
-			    << endl;
-		QDP_abort(1);
-	      }		      
-	    }
-
-	    // Modify the previous empty entry
-	    SmearedDispColorVector_t& disp_q = disp_quarks.find(key)->second;
-	    disp_q.quarks.resize(quarks.size());
-		
-	    snoop.reset();
-	    snoop.start();
-	
-	    //Loop over all quarks 
-	    for(int n=0; n < disp_q.quarks.size(); ++n)
-	    {
-	      disp_q.quarks[n].time_dilutions.resize(quarks[n].time_dilutions.size());
-
-	      for(int t0 = 0; t0 < disp_q.quarks[n].time_dilutions.size(); ++t0)
-	      {
-			
-		//Denotes which dilution element contains the desired spin 
-		const int spin = quarks[n].time_dilutions[t0].findSpin( key.spin );
-						
-		disp_q.quarks[n].time_dilutions[t0].spin_dilutions.dilutions.resize(quarks[n].time_dilutions[t0].spin_dilutions[ spin ].dilutions.size());
-						
-		for(int m=0; m < disp_q.quarks[n].time_dilutions[t0].spin_dilutions.dilutions.size(); ++m)
-		{
-		      	
-		  // Short-hand
-		  const QuarkSourceSolutions_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t& qq = 
-		    quarks[n].time_dilutions[t0].spin_dilutions[ spin ].dilutions[ m ];
-
-		  SmearedDispColorVector_t::Quarks_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t& dil = 
-		    disp_q.quarks[n].time_dilutions[t0].spin_dilutions.dilutions[ m ];
-					
-					
-
-		  // Pull out the appropriate spin component, then displace it
-							
-		  dil.source = peekSpin(qq.source, q_info.spin);
-		  dil.soln   = peekSpin(qq.soln,   q_info.spin);
-					
-		  displacement(u_smr, dil.source, q_info.disp_len, q_info.disp_dir);
-		  displacement(u_smr, dil.soln,   q_info.disp_len, q_info.disp_dir);
-
-		} // for m
-	      } // for t0
-	    } // for n
-		
-	    snoop.stop();
-
-	    QDPIO::cout << "Displaced Quarks: Spin = "<<key.spin<<" Disp = "
-			<< key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
-	    // Insert
-	    disp_quarks.insert(std::make_pair(key, disp_q));
-
-	  } // if find in map
-	} // for i
-      } // for l
-	
-      cout << __func__ << ": exiting" << endl;
-
-      END_CODE();
-    }
-    
+    } //void readOps
 
 
     //-------------------------------------------------------------------------------
@@ -802,6 +806,8 @@ namespace Chroma
       // Smear all the quark sources up front, overwrite the originals to save space,
       // and rotate them to the Dirac spin basis
       //
+      Handle< QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
+
       try
       {
 	QDPIO::cout << "Smear all the quark sources up front" << endl;
@@ -814,34 +820,6 @@ namespace Chroma
 	  TheFermSmearingFactory::Instance().createObject(params.param.source_quark_smearing.id,
 							  smeartop,
 							  params.param.source_quark_smearing.path);
-	
-	// Source smear all the sources up front, multiply by gamma_4 and 
-	// go to the Dirac spin basis 
-	// NOTE: the creation operator is non-zero on only 1 time slice; however,
-	// the smearing functions work on the entire lattice. Oh well.
-	for(int n=0; n < dilutions.size(); ++n)
-	{
-	  QDPIO::cout << "Smearing sources for quark num = " << n << endl;
-
-	  Handle< DilutionOperator<LatticeFermion> >& dilution = dilutions[n];
-
-	  for(DilutionOperator<LatticeFermion>::iterator dil_ptr= dilution.begin(); 
-	      dil_ptr != dilution.end(); 
-	      ++dil_ptr)
-	  {
-	    if (dilution.zero(dil_ptr))
-	      continue;
-		
-	    LatticeFermion src = dilution.dilutedSource(dil_ptr);
-	    (*sourceQuarkSmearing)(src, u_smr);
-
-	    //multiply by gamma_4 as well here
-	    SpinMatrix mat = rotate_mat * Gamma(8);
-	    
-	    dilution.dilutedSource(dil_ptr) = mat * src;
-	  }
-	}
-	QDPIO::cout << "Source smearings done" << endl;
       }
       catch(const std::string& e) 
       {
@@ -860,6 +838,7 @@ namespace Chroma
       // Smear all the quark solutions up front, overwrite the originals to save space,
       // and rotate them to the Dirac spin basis
       //
+      Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
       try
       {
 	QDPIO::cout << "Smear all the quark solutions up front" << endl;
@@ -867,34 +846,10 @@ namespace Chroma
 	std::istringstream  xml_s(params.param.sink_quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
 	
-	Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
 	sinkQuarkSmearing = 
 	  TheFermSmearingFactory::Instance().createObject(params.param.sink_quark_smearing.id,
 							  smeartop,
 							  params.param.sink_quark_smearing.path);
-
-	// Smear the solutions up front
-	for(int n=0; n < dilutions.size(); ++n)
-	{
-	  QDPIO::cout << "Smearing sources for quark num = " << n << endl;
-
-	  Handle< DilutionOperator<LatticeFermion> >& dilution = dilutions[n];
-
-	  for(DilutionOperator<LatticeFermion>::iterator dil_ptr= dilution.begin(); 
-	      dil_ptr != dilution.end(); 
-	      ++dil_ptr)
-	  {
-	    if (dilution.zero(dil_ptr))
-	      continue;
-		
-	    LatticeFermion soln(dilution.dilutedSolution(dil_ptr));
-	    (*sinkQuarkSmearing)(soln, u_smr);
-
-	    dilution.dilutedSolution(dil_ptr) = rotate_mat * soln;
-	  }
-	}
-
-	QDPIO::cout << "Solution smearings done" << endl;
       }
       catch(const std::string& e) 
       {
@@ -922,13 +877,10 @@ namespace Chroma
       // space versus time trade-off.
       //
 
-      // The map of all the displaced spin components
-      map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> disp_quarks;
-
-      // The big displacement
-      //** NEEDS TO BE DONE AT LEVEL OF DILUTION OPERATORS **
-      displaceQuarks(disp_quarks, u_smr, qqq_oplist, quarks);
-
+      // The object holding the smeared and displaced spin components
+      SmearedDispObjects disp_quarks(params.param.displacement_length,
+				     dilution_operators,
+				     
 
       //
       // Baryon operators
@@ -951,11 +903,11 @@ namespace Chroma
 	{
 	  Handle< DilutionOperator<LatticeFermion> >& dilution = dilutions[n];
 
-	  for(DilutionOperator<LatticeFermion>::const_iterator dil_ptr= dilution.begin(t0); 
+	  for(DilutionOperator<LatticeFermion>::const_iterator dil_ptr= dilution.begin(); 
 	      dil_ptr != dilution.end(); 
 	      ++dil_ptr)
 	  {
-	    if (dilution->zero(dil_ptr))
+	    if (dilution->hasTimeSupport(dil_ptr,t0))
 	    {
 	      nonzero = false;
 	      break;
@@ -1069,7 +1021,7 @@ namespace Chroma
       // Loop over each operator 
       for(int l=0; l < qqq_oplist.ops.size(); ++l)
       {
-	//QDPIO::cout << "Creation operator: op = " << l << endl;
+	QDPIO::cout << "Elemental operator: op = " << l << endl;
 
 	push(xml_out, "BaryonOperator");
 
@@ -1105,23 +1057,23 @@ namespace Chroma
 	  {
 	    int t0 = *t_ptr;
 
+	    // Creation operator
 	    BaryonOperator_t::Orderings_t::TimeSources_t& cop = creat_oper.orderings[ord].time_sources[t];
-	    BaryonOperator_t::Orderings_t::TimeSources_t& aop = annih_oper.orderings[ord].time_sources[t];
 	    
 	    for(DilutionOperator<LatticeFermion>::const_iterator dil0= dilutions[n0].begin(); 
 		dil0 != dilutions[n0].end(); 
 		++dil0)
 	    {
 	      // Skip if a zero entry
-	      if (dilutions[n0]->zero(dil0,t0,quarkInfo[0]))
+	      if (dilutions[n0]->hasTimeSupport(dil0,t0))
 		continue;
 
 	      for(DilutionOperator<LatticeFermion>::const_iterator dil1= dilutions[n1].begin(); 
 		  dil1 != dilutions[n1].end(); 
 		  ++dil1)
 	      {
-		// Skip if a zero entry
-		if (dilutions[n1]->zero(dil1,t0,quarkInfo[1]))
+		// Skip if a zero entry		// Skip if a zero entry
+		if (dilutions[n1]->hasTimeSupport(dil1,t0))
 		  continue;
 
 		for(DilutionOperator<LatticeFermion>::const_iterator dil2= dilutions[n2].begin(); 
@@ -1129,13 +1081,21 @@ namespace Chroma
 		    ++dil2)
 		{
 		  // Skip if a zero entry
-		  if (dilutions[n2]->zero(dil2,t0,quarkInfo[2]))
+		  if (dilutions[n2]->hasTimeSupport(dil2,t0))
 		    continue;
 
 		  // From now on we know the source operator is not zero
 		  cop.t0 = t0;
-		  aop.t0 = t0;
 		  
+		  // The keys for the spin and displacements for this particular elemental operator
+		  multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quark);
+		  for(int n=0; n < N_quarks; ++n)
+		  {
+		    keySmearedDispColorVector[n].t0           = t0;
+		    keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+		    keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+		  }
+	  
 		  // Contract over color indices with antisym tensor.
 		  // There is a potential optimization here - the colorcontract of
 		  // the first two quarks could be pulled outside the innermost dilution
@@ -1145,39 +1105,98 @@ namespace Chroma
 				
 		  LatticeComplex c_oper;
 		  c_oper[phases.getSet()[t0]] =
-		    colorContract(dilutions[n0]->dilutedSource(dil0),
-				  dilutions[n1]->dilutedSource(dil1),
-				  dilutions[n2]->dilutedSource(dil2));
-		   
-		  //This operation will be performed too much for non-maximal time dilution 
-		  LatticeComplex a_oper = 
-		    colorContract(dilutions[n0]->dilutedSolution(dil0),
-				  dilutions[n1]->dilutedSolution(dil1),
-				  getColorVector(dilutions[n2]->dilutedSolution(dil2),keySmearedDispColorVector));
-		  
+		    colorContract(disp_quarks.dilutedSource(n0,dil0,keySmearedDispColorVector[0]),
+				  disp_quarks.dilutedSource(n1,dil1,keySmearedDispColorVector[1]),
+				  disp_quarks.dilutedSource(n2,dil2,keySmearedDispColorVector[2]));
+
 		  // Slow fourier-transform
 		  // We can restrict what the FT routine requires to a subset.
-		  multi2d<DComplex> c_sum( phases.sft(c_oper, t0 ) );
-		  multi2d<DComplex> a_sum( phases.sft(a_oper) );
+		  multi2d<DComplex> c_sum(phases.sft(c_oper, t0));
 
 		  // Unpack into separate momentum and correlator
 		  BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t cop_particular_dilution;
-		  BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t aop_particular_dilution;
 		  cop_particular_dilution.mom_projs.resize(phases.numMom());
-		  aop_particular_dilution.mom_projs.resize(phases.numMom());
 
 		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 		  {
 		    cop_particular_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
-		    aop_particular_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
 		      
 		    cop_particular_dilution.mom_projs[mom_num].op.resize(1);
 		    cop_particular_dilution.mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
-		    aop_particular_dilution.mom_projs[mom_num].op = a_sum[mom_num];
 		  }
 
 		  cop.dilutions.push_back(cop_particular_dilution);
-		  aop.dilutions.push_back(aop_particular_dilution);
+		} // end for dil2
+	      } // end for dil1
+	    } // end for dil0
+	    
+
+	    // Annihilation operator
+	    BaryonOperator_t::Orderings_t::TimeSources_t& aop = annih_oper.orderings[ord].time_sources[t];
+
+	    for(DilutionOperator<LatticeFermion>::const_iterator dil0= dilutions[n0].begin(); 
+		dil0 != dilutions[n0].end(); 
+		++dil0)
+	    {
+	      // Skip if a zero entry
+	      if (dilutions[n0]->hasTimeSupport(dil0,t0))
+		continue;
+
+	      for(DilutionOperator<LatticeFermion>::const_iterator dil1= dilutions[n1].begin(); 
+		  dil1 != dilutions[n1].end(); 
+		  ++dil1)
+	      {
+		// Skip if a zero entry		// Skip if a zero entry
+		if (dilutions[n1]->hasTimeSupport(dil1,t0))
+		  continue;
+
+		for(DilutionOperator<LatticeFermion>::const_iterator dil2= dilutions[n2].begin(); 
+		    dil2 != dilutions[n2].end(); 
+		    ++dil2)
+		{
+		  // Skip if a zero entry
+		  if (dilutions[n2]->hasTimeSupport(dil2,t0))
+		    continue;
+
+		  // From now on we know the source operator is not zero
+		  aop.t0 = t0;
+
+		  // The keys for the spin and displacements for this particular elemental operator
+		  multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quark);
+		  for(int n=0; n < N_quarks; ++n)
+		  {
+		    keySmearedDispColorVector[n].t0           = t0;
+		    keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+		    keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+		  }
+	  
+		  // Contract over color indices with antisym tensor.
+		  // There is a potential optimization here - the colorcontract of
+		  // the first two quarks could be pulled outside the innermost dilution
+		  // loop.
+		  LatticeComplex a_oper = 
+		    colorContract(disp_quarks.dilutedSolution(n0,dil0,keySmearedDispColorVector[0]),
+				  disp_quarks.dilutedSolution(n1,dil1,keySmearedDispColorVector[1]),
+				  disp_quarks.dilutedSolution(n2,dil2,keySmearedDispColorVector[2]));
+		  
+		  // Slow fourier-transform
+		  // We can restrict what the FT routine requires to a subset.
+		  multi2d<DComplex> a_sum(phases.sft(a_oper));
+
+		  // A new dilution holder for each iteration
+		  BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t aop_particular_dilution;
+		  BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t& aop_dilution = 
+		    aop.dilutions.push_back(aop_particular_dilution);	
+
+		  // Unpack into separate momentum and correlator
+		  aop_dilution.mom_projs.resize(phases.numMom());
+
+		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+		  {
+		    aop_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		    aop_dilution.mom_projs[mom_num].op = a_sum[mom_num];
+		  }
+
 		} // end for dil2
 	      } // end for dil1
 	    } // end for dil0
