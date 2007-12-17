@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.11 2007-12-15 05:11:02 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.12 2007-12-17 22:29:59 kostas Exp $
 
 #include <qdp-lapack.h>
 //#include "octave_debug.h"
@@ -215,11 +215,8 @@ namespace Chroma
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
-	    // Here I need the restart_X bit
-	    // zgemm("N", "N", Ns*Nc*Vol/2, 2*Neig, Nmax, 1.0,
-	    //      vec.vec, Ns*Nc*Vol, Htmp, Nmax+1, 0.0, tt_vec, Ns*Nc*Vol);
-	    // copy apo tt_vec se vec.vec
-
+	    
+#ifndef USE_BLAS_FOR_LATTICEFERMIONS
 	    multi1d<T> tt_vec(2*Neig);
 	    for(int i(0);i<2*Neig;i++){
 	      tt_vec[i][A.subset()] = zero ;
@@ -228,6 +225,13 @@ namespace Chroma
 	    }
 	    for(int i(0);i<2*Neig;i++)
 	      vec[i][A.subset()] = tt_vec[i] ;
+#else
+	    // Here I need the restart_X bit
+	    // zgemm("N", "N", Ns*Nc*Vol/2, 2*Neig, Nmax, 1.0,
+	    //      vec.vec, Ns*Nc*Vol, Htmp, Nmax+1, 0.0, tt_vec, Ns*Nc*Vol);
+	    // copy apo tt_vec se vec.vec
+
+#endif
 	    vec.N = 2*Neig ; // restart the vectors to keep
 
 	    H.mat = 0.0 ; // zero out H 
@@ -235,13 +239,22 @@ namespace Chroma
 
 	    //A(tt,r,PLUS) ;
 	    tt = Ap - beta*Ap_prev ; //avoid the matvec
-	    
+
+#ifndef USE_BLAS_FOR_LATTICEFERMIONS
 	    for (int i=0;i<2*Neig;i++){
 	      H(2*Neig,i)=innerProduct(vec[i],tt,A.subset())*inv_sqrt_r_dot_z ;
 	      H(i,2*Neig)=conj(H(2*Neig,i)) ;
 	    //H(i,2*Neig)=innerProduct(vec[i],tt,A.subset())*inv_sqrt_r_dot_z ;
 	    //H(2*Neig,i)=conj(H(i,2*Neig)) ;
 	    }
+#else  
+	    // Optimized code for creating the H matrix row and column
+	    // asume even-odd layout: Can I check if this is the case at 
+	    // compile time? or even at run time? This is a good test to 
+	    // have to avoid wrong results.
+	    
+	    
+#endif
 	  }//H.N==Nmax
 	  else{
 	    if(k>1)
