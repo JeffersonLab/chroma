@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.1 2007-12-14 06:53:42 edwards Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.2 2007-12-18 12:43:27 edwards Exp $
 /*! \file
  * \brief Dilution operator constructed from MAKE_SOURCE and PROPAGATOR calls
  */
@@ -48,10 +48,13 @@ namespace Chroma
     }; // struct Params
 
 
-    //! Dilutions constructed for propagator solutions over MAKE_SOURCE dilutions
+    //! Dilutions constructed from propagator solutions over MAKE_SOURCE dilutions
     class Dilute : public DilutionOperator<LatticeFermion>
     {
     public:
+      //! Virtual destructor to help with cleanup;
+      Dilute(const Params& p) : param(p) {}
+
       //! Virtual destructor to help with cleanup;
       ~Dilute() {}
 
@@ -68,18 +71,21 @@ namespace Chroma
       //! The seed identifies this quark
       const Seed& getSeed() const;
 
-      //! Is this element of the dilution zero?
-      bool zero(const_iterator iter) const;
+      //! Does this creation operator have support on times slice t0
+      bool hasTimeSupport(const_iterator iter, int t0) const = 0;
 
       //! Return the original source vector
       /*! NOTE: this might be slow */
       LatticeFermion source() const;
     
-      //! Return the original source vector
+      //! Return the diluted source vector
       LatticeFermion dilutedSource(const_iterator iter) const;
     
-      //! Return the original source vector
+      //! Return the solution vector corresponding to the diluted source
       LatticeFermion dilutedSolution(const_iterator iter) const;
+
+    private:
+      Params param;
     };
     
   } // namespace 
