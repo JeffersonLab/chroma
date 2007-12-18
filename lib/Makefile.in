@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.210 2007-12-12 21:42:54 bjoo Exp $
+# $Id: Makefile.in,v 3.211 2007-12-18 13:51:10 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -42,6 +42,8 @@ POST_UNINSTALL = :
 @BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_6 = @BAGEL_CLOVER_CXXFLAGS@
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
+
+#	meas/hadron/dilution_quark_source_const_w.cc
 @BUILD_GMP_REMEZ_TRUE@am__append_7 = update/molecdyn/monomial/remez_gmp.h
 @BUILD_GMP_REMEZ_TRUE@am__append_8 = update/molecdyn/monomial/remez_gmp.cc
 
@@ -264,6 +266,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/block.cc \
 	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/dilution_operator_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
@@ -766,19 +769,20 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
 	block.$(OBJEXT) fuzglue.$(OBJEXT) gluecor.$(OBJEXT) \
-	polycor.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
-	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
-	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) \
-	barQll_w.$(OBJEXT) spin_insertion_aggregate.$(OBJEXT) \
-	no_spin_insertion.$(OBJEXT) stoch_var.$(OBJEXT) \
-	pt_sink_smearing.$(OBJEXT) sh_sink_smearing.$(OBJEXT) \
-	wall_sink_smearing.$(OBJEXT) sink_smearing_aggregate.$(OBJEXT) \
-	ape_smear.$(OBJEXT) displace.$(OBJEXT) displacement.$(OBJEXT) \
-	fuzz_smear.$(OBJEXT) gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) \
-	hyp_smear3d.$(OBJEXT) laplacian.$(OBJEXT) \
-	stout_smear.$(OBJEXT) link_smearing_aggregate.$(OBJEXT) \
-	ape_link_smearing.$(OBJEXT) hyp_link_smearing.$(OBJEXT) \
-	no_link_smearing.$(OBJEXT) stout_link_smearing.$(OBJEXT) \
+	polycor.$(OBJEXT) dilution_operator_aggregate.$(OBJEXT) \
+	hadron_seqsource.$(OBJEXT) hadron_contract.$(OBJEXT) \
+	hadron_contract_aggregate.$(OBJEXT) hadron_2pt.$(OBJEXT) \
+	mesQl_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
+	spin_insertion_aggregate.$(OBJEXT) no_spin_insertion.$(OBJEXT) \
+	stoch_var.$(OBJEXT) pt_sink_smearing.$(OBJEXT) \
+	sh_sink_smearing.$(OBJEXT) wall_sink_smearing.$(OBJEXT) \
+	sink_smearing_aggregate.$(OBJEXT) ape_smear.$(OBJEXT) \
+	displace.$(OBJEXT) displacement.$(OBJEXT) fuzz_smear.$(OBJEXT) \
+	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
+	laplacian.$(OBJEXT) stout_smear.$(OBJEXT) \
+	link_smearing_aggregate.$(OBJEXT) ape_link_smearing.$(OBJEXT) \
+	hyp_link_smearing.$(OBJEXT) no_link_smearing.$(OBJEXT) \
+	stout_link_smearing.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) no_quark_smearing.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
@@ -1215,6 +1219,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/block.h \
 	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
 	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/dilution_operator.h \
+	meas/hadron/dilution_operator_aggregate.h \
+	meas/hadron/dilution_operator_factory.h \
+	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
@@ -2002,6 +2010,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/block.h \
 	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
 	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/dilution_operator.h \
+	meas/hadron/dilution_operator_aggregate.h \
+	meas/hadron/dilution_operator_factory.h \
+	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
@@ -2651,6 +2663,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
 	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/block.cc \
 	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/dilution_operator_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
@@ -3175,6 +3188,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilute_gauss_src_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilutezN_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilution_operator_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diquark_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/disordered_gauge_init.Po@am__quote@
@@ -5928,6 +5942,20 @@ polycor.obj: meas/glue/polycor.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/polycor.cc' object='polycor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o polycor.obj `if test -f 'meas/glue/polycor.cc'; then $(CYGPATH_W) 'meas/glue/polycor.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/polycor.cc'; fi`
+
+dilution_operator_aggregate.o: meas/hadron/dilution_operator_aggregate.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilution_operator_aggregate.o -MD -MP -MF $(DEPDIR)/dilution_operator_aggregate.Tpo -c -o dilution_operator_aggregate.o `test -f 'meas/hadron/dilution_operator_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/dilution_operator_aggregate.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/dilution_operator_aggregate.Tpo $(DEPDIR)/dilution_operator_aggregate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/dilution_operator_aggregate.cc' object='dilution_operator_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilution_operator_aggregate.o `test -f 'meas/hadron/dilution_operator_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/dilution_operator_aggregate.cc
+
+dilution_operator_aggregate.obj: meas/hadron/dilution_operator_aggregate.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilution_operator_aggregate.obj -MD -MP -MF $(DEPDIR)/dilution_operator_aggregate.Tpo -c -o dilution_operator_aggregate.obj `if test -f 'meas/hadron/dilution_operator_aggregate.cc'; then $(CYGPATH_W) 'meas/hadron/dilution_operator_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/dilution_operator_aggregate.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/dilution_operator_aggregate.Tpo $(DEPDIR)/dilution_operator_aggregate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/dilution_operator_aggregate.cc' object='dilution_operator_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilution_operator_aggregate.obj `if test -f 'meas/hadron/dilution_operator_aggregate.cc'; then $(CYGPATH_W) 'meas/hadron/dilution_operator_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/dilution_operator_aggregate.cc'; fi`
 
 hadron_seqsource.o: meas/hadron/hadron_seqsource.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hadron_seqsource.o -MD -MP -MF $(DEPDIR)/hadron_seqsource.Tpo -c -o hadron_seqsource.o `test -f 'meas/hadron/hadron_seqsource.cc' || echo '$(srcdir)/'`meas/hadron/hadron_seqsource.cc
