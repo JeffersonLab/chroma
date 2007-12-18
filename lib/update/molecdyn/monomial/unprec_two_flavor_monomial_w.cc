@@ -1,4 +1,4 @@
-// $Id: unprec_two_flavor_monomial_w.cc,v 3.3 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.cc,v 3.4 2007-12-18 21:06:47 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -63,11 +63,11 @@ namespace Chroma
     XMLReader fermact_reader(is);
     QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: construct " << param.fermact.id << endl;
 
-    WilsonTypeFermAct<T,P,Q>* tmp_act 
+    WilsonTypeFermAct<T,P,Q>* downcast
       = TheWilsonTypeFermActFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
 
-    UnprecWilsonTypeFermAct<T,P,Q>* downcast = 
-      dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+    //    UnprecWilsonTypeFermAct<T,P,Q>* downcast = 
+    //  dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
 
     // Check success of the downcast 

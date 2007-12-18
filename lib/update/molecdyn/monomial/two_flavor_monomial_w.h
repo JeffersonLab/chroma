@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.8 2007-03-22 17:39:23 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 3.9 2007-12-18 21:06:47 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -268,7 +268,7 @@ namespace Chroma
     virtual Phi& getPhi(void) = 0;    
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const GroupXML_t& getInvParams(void) const = 0;

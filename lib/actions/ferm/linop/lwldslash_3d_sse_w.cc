@@ -1,4 +1,4 @@
-// $Id: lwldslash_3d_sse_w.cc,v 3.1 2007-12-04 16:04:42 bjoo Exp $
+// $Id: lwldslash_3d_sse_w.cc,v 3.2 2007-12-18 21:06:47 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -77,11 +77,12 @@ namespace Chroma
 
     // Fold in anisotropy
     multi1d<LatticeColorMatrix> u = state->getLinks();
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+
   
     if (anisoParam.anisoP)
     {
       // Rescale the u fields by the anisotropy
+      Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
       for(int mu=0; mu < u.size(); ++mu)
       {
 	if (mu != anisoParam.t_dir)
@@ -155,7 +156,7 @@ namespace Chroma
 			    (int)isign, source_cb);
   
 
-    getFermBC().modifyF(chi, QDP::rb[cb]);
+    getFermBC().modifyF(chi, QDP::rb3[cb]);
 
     END_CODE();
   }

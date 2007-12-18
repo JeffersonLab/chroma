@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.7 2007-12-12 21:42:57 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.8 2007-12-18 21:06:47 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -181,11 +181,12 @@ namespace Chroma
       switch (isign)
       {
       case PLUS:
-	//  chi   = ( 1 + C_L D_s C_R ) psi
+	// chi   = ( 1 + C_L D_s C_R ) psi
 	cRightLinOp(tmp1, psi, isign);
 	spaceLinOp(tmp2, tmp1, isign);
 	cLeftLinOp(tmp1, tmp2, isign);
 	chi = psi + tmp1;
+
 	break;
 
       case MINUS:
@@ -194,7 +195,6 @@ namespace Chroma
 	spaceLinOp(tmp2, tmp1, isign);
 	cRightLinOp(tmp1, tmp2, isign);
 	chi = psi + tmp1;
-
 	break;
 
       default:

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.5 2007-12-12 21:42:58 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.6 2007-12-18 21:06:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -75,7 +75,6 @@ namespace Chroma
     //! The time direction
     
     int tDir() const { 
-      // Always 3 for now?
       return 3; 
     }
 
@@ -91,26 +90,19 @@ namespace Chroma
     //! Apply C_R
     void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const;
 
-
-    //! Apply the the space block onto a source vector
-    void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const
-    {
-      Real mhalf=Real(-0.5);
-      Dw3D.apply(chi, psi, isign,0);
-      Dw3D.apply(chi, psi, isign,1);
-      chi *= mhalf;
-    }
-
-
-#if 0        
-    //! Apply dD_s/dU Y \outer X = Tr { X dD_s/dU Y } with X, Y fermion fields 
-    void derivSpaceOp(P& ds_u, const T& X, const T& Y, 
-		      enum PlusMinus isign) const { 
-      Dw3D.deriv(ds_u, X, Y, isign);
-    }
-
-#endif
+    //! Spatial LinOp 
+    void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const;
     
+    void derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+
+    void derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+
+    void derivSpace(P& ds_u, const T& X, const T& Y, 
+		    enum PlusMinus isign) const;
+
+    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+
+
     //! Flopcounter
     unsigned long nFlops() const 
     { 
@@ -120,13 +112,6 @@ namespace Chroma
 
 
 
-    //! Apply the d/dt of the preconditioned linop
-    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
-
-      QDPIO::cerr << "Not Yet Implemented" << endl;
-      QDP_abort(1);
-
-    };
     
     //! Get log det ( T^\dag T )
     Double logDetTDagT(void) const {

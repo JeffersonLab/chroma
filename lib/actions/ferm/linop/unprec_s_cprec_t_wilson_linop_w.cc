@@ -1,4 +1,4 @@
-// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.4 2007-12-12 21:42:58 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.5 2007-12-18 21:06:47 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -57,15 +57,13 @@ namespace Chroma
     aniso = anisoParam_;
     Mass = Mass_;
 
-    // Work out aniso factors
-    Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
-    fact = 1 + (Nd-1)*ff + Mass;
-    invfact = Real(1)/fact;
     u = fs->getLinks();
-
-    // Incorporate into links
     if (aniso.anisoP)
     {
+      // Work out aniso factors
+      Real ff = where(aniso.anisoP, aniso.nu / aniso.xi_0, Real(1));
+      fact = 1 + (Nd-1)*ff + Mass;
+
       // Rescale the u fields by the anisotropy
       for(int mu=0; mu < u.size(); ++mu)
       {
@@ -73,7 +71,11 @@ namespace Chroma
 	  u[mu] *= ff;
       }
     }
+    else { 
+      fact = Nd + Mass;
+    }
 
+    invfact = Real(1)/fact;
     // These will be useful for controlling loops.
     int t_index=3;
     int Nx = QDP::Layout::subgridLattSize()[0];
@@ -161,14 +163,19 @@ namespace Chroma
   }
 
   //! Apply (C_L)^{-1}
+  // 
+  //   C_L^{-1} = P_{+} + P_{-} T
+  //
   void UnprecSCprecTWilsonLinOp::invCLeftLinOp(T& chi, 
 					       const T& psi, 
 					       enum PlusMinus isign) const
 
   {
+
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
     LatticeHalfFermion tmp_T;
+
 
     // This is just a way of doing P+ psi - decompose and reconstruct.
     // It may be more straightforward to just write a projector ... -- later
@@ -190,9 +197,14 @@ namespace Chroma
 
     chi += spinReconstructDir3Minus(tmp_T);
     chi *= Real(0.5);
+
+
   } 
 
   //! Apply (C_R)^{-1}
+  //
+  //     C_R^{-1} = P_{-} + P_{+} T^{\dagger} 
+  //
   void UnprecSCprecTWilsonLinOp::invCRightLinOp(T& chi, 
 						const T& psi, 
 						enum PlusMinus isign) const 
@@ -225,19 +237,26 @@ namespace Chroma
     chi += spinReconstructDir3Plus(tmp_T);
 
     chi *= Real(0.5); //The overall factor of 1/2
+
   } 
 
 
   //! Apply C_L
+  //
+  //    C_L = P_{+} + P_{-} T^{-1} 
+  //
   void UnprecSCprecTWilsonLinOp::cLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const
   {
+
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
     LatticeHalfFermion tmp_T;
 
+    //  2 P_{+} = ( 1 + gamma_3 )
     tmp_plus  = spinProjectDir3Plus(psi);
     chi = spinReconstructDir3Plus(tmp_plus);
 
+    // 2 P_{-} = (1 - gamma_3 )
     tmp_minus = spinProjectDir3Minus(psi);
 
     // Use shared routine to apply (T)^{-1} or  (T^\dagger)^{-1}.
@@ -253,22 +272,36 @@ namespace Chroma
 				     invfact,
 				     isign);
 
-
+    // Reconstruct
     chi += spinReconstructDir3Minus(tmp_T);
+
+    // Overall factor of 2 to turn (1 +/- gamma_3) into projector P_{+/-}
+    //  No sense to fold it into the half vector because it 
+    //  would also be needed for the half vector in the P_{+} piece
+    //  so overall cost is still 1 full vector of multiply
     chi *= Real(0.5);
+
+
   }
 
   //! Apply C_R
+  //
+  //    C_L = P_{-} + P_{+} [ T^{\dagger} ]^{-1}
+  //
   void UnprecSCprecTWilsonLinOp::cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const
   {
+
     enum PlusMinus other_sign = isign == PLUS ? MINUS : PLUS ;
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
     LatticeHalfFermion tmp_T;
 
+
+    // 2*P_{-} 
     tmp_minus  = spinProjectDir3Minus(psi);
     chi = spinReconstructDir3Minus(tmp_minus);
 
+    // 2*P_{+} 
     tmp_plus = spinProjectDir3Plus(psi);
 
     // Use shared routine to apply (T)^{-1} or  (T^\dagger)^{-1}.
@@ -284,11 +317,254 @@ namespace Chroma
 				     invfact,
 				     other_sign);
 
-
+    // Reconstruct to full vector
     chi += spinReconstructDir3Plus(tmp_T);
+
+    // Overall factor of 2 to turn (1 +/- gamma_3) into projector P_{+/-}
+    //  No sense to fold it into the half vector because it 
+    //  would also be needed for the half vector in the P_{+} piece
+    //  so overall cost is still 1 full vector of multiply
     chi *= Real(0.5);
   }
 
+  //! Apply the the space block onto a source vector
+  //  Call to 3D Dslash.  - overall factor of -0.5from -(1/2) Dslash
+  void 
+  UnprecSCprecTWilsonLinOp::spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const
+  {
+    
+    Real mhalf=Real(-0.5);
+    Dw3D.apply(chi, psi, isign,0);
+    Dw3D.apply(chi, psi, isign,1);
+    chi *= mhalf;
+  }
+
+  //! Derivative of the derivCLeft
+  // 
+  //    X^\dagger dC_l Y 
+  //    = X^\dagger d [  P_{-} T^{-1} ] Y 
+  //    = - X^\dagger  P{-} T^{-1} dT T^{-1} Y 
+  //    = - X^\dagger  P{-} P_{-} T^{-1} dT T^{-1} Y  since P_{-} P_{-} = P_{-}
+  //    = - X^\dagger  T^{-1} P_{-} dT P_{-} T^{-1} Y since Ps and Ts commute
+  //    = - L^\dagger dT R
+  // 
+  //   with R = P_{-} T^{-1} Y and L = P_{-} T^{-dagger} X
+  //
+  //   T contains only U terms (not U-dagger) and dT/dU R = -shift(R, FORWARD, t)
+  //   T^\dagger contains no U terms so           dT^\dagger / dU = zero
+  //
+  //   similarly to how we do dslash-es. dT/dU^\dagger terms contribute only to the 
+  //   hermitian conjugate terms which are automagically taken care of when we do the
+  //   TAProj() later on
+  void   
+  UnprecSCprecTWilsonLinOp::derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const
+  {
+    ds_u.resize(Nd);
+    for(int mu=0; mu < 3; mu++) { 
+      ds_u[mu] = zero;
+    }
+    
+    if (isign == PLUS) { 
+      
+      LatticeHalfFermion tmp1, tmp2;
+      T T1, T2; 
+      
+      tmp1=spinProjectDir3Minus(Y);
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite,
+				       P_mat,
+				       P_mat_dag,
+				       Q_mat_inv,
+				       Q_mat_dag_inv,
+				       invfact,
+				       PLUS);
+      
+      T1  = spinReconstructDir3Minus(tmp2);
+           
+      tmp1=spinProjectDir3Minus(X);
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite,
+				       P_mat,
+				       P_mat_dag,
+				       Q_mat_inv,
+				       Q_mat_dag_inv,
+				       invfact,
+				       MINUS);
+
+      // Two factors of 0.5 from the projectors.
+      // Most cost efficient to apply them together to the half vector...
+      tmp2 *= Real(0.25);
+
+      T2  = spinReconstructDir3Minus(tmp2);
+     
+      
+      LatticeFermion T3 = shift(T1, FORWARD, 3);
+      
+      // A minus from the fact that its dT^{-1}
+      // A minus from the fact that the shift has a -
+      // Makes  a + 
+      ds_u[3] = traceSpin(outerProduct(T3, T2));
+      
+    }
+    else {
+      ds_u[3] = zero;
+    }
+  }
+
+
+  //! Derivative of the derivCRight
+  // 
+  //    X^\dagger dC_R Y 
+  //    = X^\dagger d [  P_{+} T^{-\dagger} ] Y 
+  //    = - X^\dagger  P{+} T^{-\dagger} dT^\dagger T^{-\dagger} Y 
+  //    = - X^\dagger  P{+} P_{+} T^{-\dagger } dT^\dagger T^{-\dagger} Y  since P_{+} P_{+} = P_{+}
+  //    = - X^\dagger  T^{-\dagger} P_{+} dT^\dagger P_{+} T^{-\dagger} Y since Ps and Ts commute
+  //    = - L^\dagger dT R
+  // 
+  //   with R = P_{+} T^{-\dagger} Y and L = P_{+} T^{-1} X
+  //
+  //   T^\dagger contains only U-dagger terms and dT^\dagger/dU  = 0
+  //   T contains only U terms so  (dT^\dagger)^\dagger / dU R = dT/dU R = -shift(R, FORWARD, 1)
+  //
+  //   similarly to how we do dslash-es.
+  //   hermitian conjugate terms which are automagically taken care of when we do the
+  //   TAProj() later on  
+  // 
+  //   Actually this is just derivCLeft with PLUS --> MINUS in the Ifs
+  //  and P_{-} <-> P_{+}
+  // 
+  void   
+  UnprecSCprecTWilsonLinOp::derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const
+  {
+    ds_u.resize(Nd);
+    for(int mu=0; mu < 3; mu++) { 
+      ds_u[mu] = zero;
+    }
+    
+    if (isign == MINUS) { 
+      
+      LatticeHalfFermion tmp1, tmp2;
+      T T1, T2; 
+      
+      tmp1=spinProjectDir3Plus(Y);
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite,
+				       P_mat,
+				       P_mat_dag,
+				       Q_mat_inv,
+				       Q_mat_dag_inv,
+				       invfact,
+				       PLUS);
+      
+      T1  = spinReconstructDir3Plus(tmp2);
+      
+      tmp1=spinProjectDir3Plus(X);
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite,
+				       P_mat,
+				       P_mat_dag,
+				       Q_mat_inv,
+				       Q_mat_dag_inv,
+				       invfact,
+				       MINUS);
+
+      // Two factors of 0.5 from the projectors.
+      // Most cost efficient to apply them together to the half vector...
+      tmp2 *= Real(0.25);
+      
+      T2  = spinReconstructDir3Plus(tmp2);
+      
+      LatticeFermion T3 = shift(T1, FORWARD, 3);
+      
+      // A minus from the fact that its dT^{-1}
+      // A minus from the fact that the shift has a -
+      // Makes  a + 
+      ds_u[3] = traceSpin(outerProduct(T3, T2));
+      
+    }
+    else { 
+      ds_u[3]= zero;
+    }
+    
+  }
+
+  //! derivSpace
+  // 
+  //  Easy peasy... call the force in the dslash.
+  void   
+  UnprecSCprecTWilsonLinOp::derivSpace(P& ds_u, const T& X, const T& Y, 
+				       enum PlusMinus isign) const 
+  {
+    Real mhalf=Real(-0.5);
+    ds_u.resize(Nd);
+    
+    Dw3D.deriv(ds_u, X, Y, isign);
+    for(int mu = 0; mu < 3 ; mu++) {
+      ds_u[mu] *= mhalf;
+    }
+    
+    ds_u[3] = zero;
+  }
+  
+  //! Apply the d/dt of the preconditioned linop
+  //
+  //  derivative of  C_L D_s C_R is evaluated by the chain rule:
+  //
+  //              = dC_L D_s C_R
+  //              + C_L dD_s C_R
+  //              + C_L D_s dC_R
+  // 
+  //   but we know that dC_R/ dU = 0 since C_R contains only U^\dagger terms
+  //   so we can drop that term. Analogously in the daggered case we can drop
+  //   the term containing C_L^\dagger...
+  void   
+  UnprecSCprecTWilsonLinOp::deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const
+  {
+    T T1,T2,T3;
+    
+    P ds_tmp;
+    ds_tmp.resize(Nd);
+    
+    
+    if ( isign == PLUS ) { 
+      
+      // Derivative 
+      cRightLinOp(T3, Y, PLUS);  // T3 = C_r Y
+      spaceLinOp(T1, T3, PLUS);  // T1 = D_s C_r Y
+      derivCLeft(ds_u, X, T1, PLUS);  // X^\dag dC_l T1
+
+      // X^\dag dC_l D_s C_r Y
+      
+      cLeftLinOp(T2, X, MINUS);   // T2 = C_L^\dag X => T2^dag = X^\dag C_L
+      derivSpace(ds_tmp, T2, T3, PLUS);  // X^\dag C_l dD_s C_r Y
+      ds_u += ds_tmp;
+    }
+    else {
+      
+      
+      // Derivative of the daggered
+      cLeftLinOp(T3, Y, MINUS);   // T3 = C_l^\dag Y
+      spaceLinOp(T1, T3, MINUS);   // T1 = D_s^\dag C_l^\dag Y
+      derivCRight(ds_u, X, T1, MINUS); // X^\dag dC_r^\dag D_s^\dag C_l^\dag Y
+      
+      cRightLinOp(T2, X, PLUS);    // T2 = C_r X
+      derivSpace(ds_tmp, T2, T3, MINUS); // X^\dag C_r^\dag dD_s^\dag C_l^\dag Y
+      ds_u += ds_tmp;
+      
+    }
+
+  }
+
+
+  // Derivative of  trace log (T^\dagger T) -- Forward to central tprec utils
   void 
   UnprecSCprecTWilsonLinOp::derivLogDetTDagT(P& ds_u, 
 					     enum PlusMinus isign) const

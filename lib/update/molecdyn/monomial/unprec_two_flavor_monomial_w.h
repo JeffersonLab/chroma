@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial_w.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_two_flavor_monomial_w.h,v 3.3 2007-12-18 21:06:47 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -57,7 +57,7 @@ namespace Chroma
 	return phi;
       }
 
-      const UnprecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
+      const WilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -79,7 +79,7 @@ namespace Chroma
       LatticeFermion phi;
 
       // A handle for the UnprecWilsonFermAct
-      Handle<const UnprecWilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > fermact;
+      Handle<const WilsonTypeFermAct< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > fermact;
 
       // The parameters for the inversion
       GroupXML_t inv_param;

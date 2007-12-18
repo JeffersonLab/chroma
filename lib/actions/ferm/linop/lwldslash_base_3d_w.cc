@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_3d_w.cc,v 3.1 2007-12-04 16:04:42 bjoo Exp $
+// $Id: lwldslash_base_3d_w.cc,v 3.2 2007-12-18 21:06:47 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -51,6 +51,7 @@ namespace Chroma
     START_CODE();
 
     ds_u.resize(Nd);
+    ds_u[3] = zero;
 
     AnisoParam_t anisoParam = getAnisoParam();
     multi1d<Real> anisoWeights(Nd);
@@ -82,16 +83,16 @@ namespace Chroma
 
 	  switch(mu) { 
 	  case 0:
-	    tmp_h[rb[1-cb]] = spinProjectDir0Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir0Minus(tmp_h);
+	    tmp_h[rb3[1-cb]] = spinProjectDir0Minus(psi);
+	    temp_ferm1[rb3[1-cb]] = spinReconstructDir0Minus(tmp_h);
 	    break;
 	  case 1:
-	    tmp_h[rb[1-cb]] = spinProjectDir1Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir1Minus(tmp_h);
+	    tmp_h[rb3[1-cb]] = spinProjectDir1Minus(psi);
+	    temp_ferm1[rb3[1-cb]] = spinReconstructDir1Minus(tmp_h);
 	    break;
 	  case 2:
-	    tmp_h[rb[1-cb]] = spinProjectDir2Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir2Minus(tmp_h);
+	    tmp_h[rb3[1-cb]] = spinProjectDir2Minus(psi);
+	    temp_ferm1[rb3[1-cb]] = spinReconstructDir2Minus(tmp_h);
 	    break;
 	  default:
 	    break;
@@ -106,16 +107,16 @@ namespace Chroma
 	  LatticeHalfFermion tmp_h;
 	  switch(mu) { 
 	  case 0:
-	    tmp_h[rb[1-cb]] = spinProjectDir0Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir0Plus(tmp_h);
+	    tmp_h[rb3[1-cb]] = spinProjectDir0Plus(psi);
+	    temp_ferm1[rb3[1-cb]] = spinReconstructDir0Plus(tmp_h);
 	    break;
 	  case 1:
-	    tmp_h[rb[1-cb]] = spinProjectDir1Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir1Plus(tmp_h);
+	    tmp_h[rb3[1-cb]] = spinProjectDir1Plus(psi);
+	    temp_ferm1[rb3[1-cb]] = spinReconstructDir1Plus(tmp_h);
 	    break;
 	  case 2:
-	    tmp_h[rb[1-cb]] = spinProjectDir2Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir2Plus(tmp_h);
+	    tmp_h[rb3[1-cb]] = spinProjectDir2Plus(psi);
+	    temp_ferm1[rb3[1-cb]] = spinReconstructDir2Plus(tmp_h);
 	    break;
 	  default:
 	    break;
@@ -131,17 +132,15 @@ namespace Chroma
       LatticeColorMatrix temp_mat;
       
       // This step supposedly optimised in QDP++
-      temp_mat[rb[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
+      temp_mat[rb3[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
     
       // Just do the bit we need.
-      ds_u[mu][rb[cb]] = anisoWeights[mu] * temp_mat;
-      ds_u[mu][rb[1-cb]] = zero;    
+      ds_u[mu][rb3[cb]] = anisoWeights[mu] * temp_mat;
+      ds_u[mu][rb3[1-cb]] = zero;    
     }
 
     // Remaining directions?
-    for(int mu=3; mu < Nd; mu++) { 
-      ds_u[mu] = zero;
-    }
+    
 
     getFermBC().zero(ds_u);
 
