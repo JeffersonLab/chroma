@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.114 2007-12-12 21:42:54 bjoo Exp $
+# $Id: Makefile.am,v 3.115 2007-12-18 13:50:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -182,6 +182,10 @@ nobase_include_HEADERS = \
         meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
+	meas/hadron/dilution_operator.h \
+	meas/hadron/dilution_operator_aggregate.h \
+	meas/hadron/dilution_operator_factory.h \
+	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
@@ -922,6 +926,7 @@ libchroma_a_SOURCES = \
         meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/dilution_operator_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -1032,6 +1037,7 @@ libchroma_a_SOURCES = \
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
 
+#	meas/hadron/dilution_quark_source_const_w.cc
 
 if BUILD_GMP_REMEZ
 nobase_include_HEADERS += update/molecdyn/monomial/remez_gmp.h
