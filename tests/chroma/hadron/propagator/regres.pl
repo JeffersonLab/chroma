@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.7 2007-11-08 03:27:58 edwards Exp $
+#  $Id: regres.pl,v 3.8 2007-12-31 23:23:19 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -201,6 +201,14 @@
 	 output      => "unprec_wilson.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/unprec_wilson.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/unprec_wilson.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/unprec_graphene.ini.xml" , 
+	 output      => "unprec_graphene.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/unprec_graphene.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/unprec_graphene.out.xml" ,
      }
 # Commented these out so they don't break nightlies. They work but need
 # time to be local...  Will fix later by mucking with the run script
