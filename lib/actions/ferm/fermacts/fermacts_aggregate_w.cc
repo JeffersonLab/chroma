@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.16 2007-12-04 16:25:02 bjoo Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.17 2007-12-31 23:24:26 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -9,6 +9,7 @@
 #include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_graphene_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_dwftransf_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_w12_fermact_w.h"
@@ -84,6 +85,7 @@ namespace Chroma
 
 	// 4D actions
 	success &= EvenOddPrecWilsonFermActEnv::registerAll();
+	success &= UnprecGrapheneFermActEnv::registerAll();
 	success &= UnprecWilsonFermActEnv::registerAll();
 	success &= OvlapPartFrac4DFermActEnv::registerAll();
 	success &= EvenOddPrecParWilsonFermActEnv::registerAll();
