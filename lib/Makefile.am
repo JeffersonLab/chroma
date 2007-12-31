@@ -1,10 +1,9 @@
-# $Id: Makefile.am,v 3.115 2007-12-18 13:50:49 edwards Exp $
+# $Id: Makefile.am,v 3.116 2007-12-31 23:23:35 edwards Exp $
 #
 # Path for all files used in building the library
 
 TOPDIR=@top_srcdir@
 BUILDDIR=@top_builddir@
-VPATH = $(TOPDIR)/lib
 
 #
 # All the include files - avoid flattening of dirs by using nobase
@@ -378,6 +377,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.h \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.h \
+	actions/ferm/fermacts/unprec_graphene_fermact_w.h \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.h \
 	actions/ferm/fermacts/unprec_w12_fermact_w.h \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.h \
@@ -466,6 +466,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/unprec_ovdwf_linop_array_w.h \
 	actions/ferm/linop/unprec_nef_linop_array_w.h \
 	actions/ferm/linop/unprec_ovext_linop_array_w.h \
+	actions/ferm/linop/unprec_graphene_linop_w.h \
 	actions/ferm/linop/unprec_hamberwu_linop_w.h \
 	actions/ferm/linop/unprec_w12_linop_w.h \
 	actions/ferm/linop/unprec_wilson_linop_w.h \
@@ -1079,6 +1080,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_ovdwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
+	actions/ferm/fermacts/unprec_graphene_fermact_w.cc \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
 	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
@@ -1147,6 +1149,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_parwilson_linop_w.cc \
 	actions/ferm/linop/unprec_pdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
+	actions/ferm/linop/unprec_graphene_linop_w.cc \
 	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
 	actions/ferm/linop/unprec_w12_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
