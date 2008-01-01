@@ -44,7 +44,7 @@
       </monomial_ids>
     </Hamiltonian>
    <MDIntegrator>
-      <tau0>0.05</tau0>
+      <tau0>1.00</tau0>
       <Integrator>
 	<Name>LCM_STS_LEAPFROG</Name>
 	<n_steps>20</n_steps>
@@ -58,5 +58,5 @@
 	<cfg_type>UNIT</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
-   <nrow>4 4 4 4</nrow>
+   <nrow>2 2 2 2</nrow>
 </LeapfrogTest>
