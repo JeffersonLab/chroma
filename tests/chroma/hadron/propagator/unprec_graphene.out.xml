@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_graphene.out.xml,v 3.1 2007-12-31 23:23:19 edwards Exp $
+; $Id: unprec_graphene.out.xml,v 3.2 2008-01-01 22:19:47 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -116,7 +116,7 @@
       <chroma>3.27.0</chroma>
       <qdp>1.24.6</qdp>
     </code_version>
-    <run_date>31 Dec 07 18:18:20 EST</run_date>
+    <run_date>01 Jan 08 16:37:07 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -176,7 +176,7 @@
             <chroma>3.27.0</chroma>
             <qdp>1.24.6</qdp>
           </code_version>
-          <run_date>31 Dec 07 18:18:20 EST</run_date>
+          <run_date>01 Jan 08 16:37:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -275,7 +275,7 @@
             <chroma>3.27.0</chroma>
             <qdp>1.24.6</qdp>
           </code_version>
-          <run_date>31 Dec 07 18:18:21 EST</run_date>
+          <run_date>01 Jan 08 16:37:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -348,7 +348,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>257710700</id>
+      <id>257791028</id>
     </make_source>
 
         </Source_file_info>
