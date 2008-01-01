@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: unprec_graphene.ini.xml,v 3.2 2008-01-01 22:49:42 edwards Exp $
+; $Id: unprec_graphene.ini.xml,v 3.3 2008-01-01 23:09:33 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -56,7 +56,7 @@
         <numRetries>1</numRetries>
         <FermionAction>
 	 <FermAct>UNPRECONDITIONED_GRAPHENE</FermAct>
-         <Mass>0.1</Mass>
+         <Mass>0.001</Mass>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
            <boundary>1 1 1 -1</boundary>
