@@ -1,4 +1,4 @@
-// $Id: unprec_graphene_linop_w.cc,v 1.3 2008-01-01 22:38:26 edwards Exp $
+// $Id: unprec_graphene_linop_w.cc,v 1.4 2008-01-01 22:45:31 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Graphene fermion linear operator.
  *
@@ -40,6 +40,7 @@ namespace Chroma
   {
     START_CODE();
 
+    Mass = Mass_;
     anisoParam = aniso_;
     fbc = fs->getFermBC();
     u   = fs->getLinks();
