@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_graphene_linop_w.h,v 1.1 2007-12-31 23:24:26 edwards Exp $
+// $Id: unprec_graphene_linop_w.h,v 1.2 2008-01-01 22:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Graphene fermion linear operator.
  *
@@ -90,6 +90,13 @@ namespace Chroma
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
+
+  private:
+    //! Form  gamma_mu * psi
+    void gammaMults(multi1d<LatticeFermion>& tmp1, const LatticeFermion& psi) const;
+
+    //! Form  i*Gamma_mu * psi
+    void iGamMu(LatticeFermion& iGam, const multi1d<LatticeFermion>& gams, int mu) const;
 
   private:
     Real             Mass;

@@ -1,4 +1,4 @@
-// $Id: unprec_graphene_linop_w.cc,v 1.1 2007-12-31 23:24:26 edwards Exp $
+// $Id: unprec_graphene_linop_w.cc,v 1.2 2008-01-01 22:13:06 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Graphene fermion linear operator.
  *
@@ -103,6 +103,39 @@ namespace Chroma
   }
 
 
+  // Form  gamma_mu * psi
+  void UnprecGrapheneLinOp::gammaMults(multi1d<LatticeFermion>& gams, 
+				       const LatticeFermion& psi) const
+  {
+    gams.resize(Nd);   moveToFastMemoryHint(gams);
+
+    // Build gamma matrix multiplied pieces
+    gams[0] = GammaConst<Ns,1>()*psi;
+    gams[1] = GammaConst<Ns,2>()*psi;
+    gams[2] = GammaConst<Ns,4>()*psi;
+    gams[3] = GammaConst<Ns,8>()*psi;
+  }
+
+
+  // Hop terms
+  void UnprecGrapheneLinOp::iGamMu(LatticeFermion& iGam,
+				   const multi1d<LatticeFermion>& gams,
+				   int mu) const
+  {
+    LatticeFermion tmp2;   moveToFastMemoryHint(tmp2);
+
+    // The Gamma piece. This will be shift later. Unroll the loop.
+    // Flops could be saved here since some pieces are re-added again
+    // because of the similar sign structure of alpha.
+    tmp2 = Real(alpha(mu,0))*gams[0];
+    for(int nu=1; nu < Nd; ++nu)
+      tmp2 += Real(alpha(mu,nu))*gams[nu];
+
+    // i*Gamma_mu * psi
+    iGam = timesI(tmp2);
+  }
+
+  
   //! Apply unpreconditioned Graphene fermion linear operator
   /*!
    * \ingroup linop
@@ -121,49 +154,39 @@ namespace Chroma
     //
     //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
     //
-    multi1d<LatticeFermion> tmp1(Nd);   moveToFastMemoryHint(tmp1);
-    LatticeFermion tmp2;                moveToFastMemoryHint(tmp2);
-    LatticeFermion tmp3;                moveToFastMemoryHint(tmp3);
-    LatticeFermion tmp4;                moveToFastMemoryHint(tmp4);
+    multi1d<LatticeFermion> gams;
+    LatticeFermion tmp2;  moveToFastMemoryHint(tmp2);
+    LatticeFermion tmp3;  moveToFastMemoryHint(tmp3);
+    LatticeFermion iGam;  moveToFastMemoryHint(iGam);
     Real half = 0.5;
 
     chi = Mass*psi;
  
     // Build gamma matrix multiplied pieces
-    tmp1[0] = GammaConst<Ns,1>()*psi;
-    tmp1[1] = GammaConst<Ns,2>()*psi;
-    tmp1[2] = GammaConst<Ns,4>()*psi;
-    tmp1[3] = GammaConst<Ns,8>()*psi;
+    gammaMults(gams, psi);
 
     // Mass term piece. Unroll.
-    tmp2 = tmp1[0];
+    tmp2 = gams[0];
     for(int mu=1; mu < Nd; ++mu)
-      tmp2 += tmp1[mu];
+      tmp2 += gams[mu];
 
     chi += timesI(tmp2);
 
     // Hop pieces
     for(int mu=0; mu < Nd; ++mu)
     {
-      // The Gamma piece. This will be shift later. Unroll the loop.
-      // Flops could be saved here since some pieces are re-added again
-      // because of the similar sign structure of alpha.
-      tmp2 = Real(alpha(mu,0))*tmp1[0];
-      for(int nu=1; nu < Nd; ++nu)
-	tmp2 += Real(alpha(mu,nu))*tmp1[nu];
+      // Unshifted hop terms
+      iGamMu(iGam, gams, mu);
 
-      // NOTE: multiply by half here to keep multiply
-      // unit busy, otherwise it would sit idle till another pass for
-      // the multiply to be used.
       // Forward piece. 
-      tmp3 = timesI(tmp2) + tmp1[mu];
-      tmp4 = u[mu] * shift(tmp3, FORWARD, mu);
-      chi += half * tmp4;
+      tmp2 = iGam + gams[mu];
+      tmp3 = u[mu] * shift(tmp2, FORWARD, mu);
+      chi += half * tmp3;
 
       // Backward piece.
-      tmp3 = timesI(tmp2) - tmp1[mu];
-      tmp4 = adj(u[mu]) * tmp3;
-      chi += half * shift(tmp4, BACKWARD, mu);
+      tmp2 = iGam - gams[mu];
+      tmp3 = adj(u[mu]) * tmp2;
+      chi += half * shift(tmp3, BACKWARD, mu);
     }
     
     getFermBC().modifyF(chi);
@@ -189,8 +212,72 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cerr << "UnprecGraphene: deriv not implemented" << endl;
-    QDP_abort(1);
+    ds_u.resize(Nd);
+
+    // Fold in the 1/2 from the front of the hop terms here.
+    multi1d<Real> anisoWeights(Nd);
+    anisoWeights = 0.5;
+
+    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+
+    if (anisoParam.anisoP)
+    {
+      // Set the weights
+      for(int mu=0; mu < Nd; ++mu)
+      {
+	if (mu != anisoParam.t_dir)
+	  anisoWeights[mu] *= ff;
+      }
+    }
+
+    // Build gamma matrix multiplied pieces
+    multi1d<LatticeFermion> gams;
+    LatticeFermion tmp2;  moveToFastMemoryHint(tmp2);
+    LatticeFermion iGam;  moveToFastMemoryHint(iGam);
+ 
+    gammaMults(gams, psi);
+
+    for(int mu = 0; mu < Nd; ++mu) 
+    {
+      // Unshifted hop terms
+      iGamMu(iGam, gams, mu);
+
+      switch (isign) 
+      {
+      case PLUS:
+      {
+	// Forward piece. 
+	tmp2 = iGam + gams[mu];
+      }
+      break;
+
+      case MINUS:
+      {
+	// Backward piece.
+	// NOTE: This is confusing. There is no derivative of the U^dag, just the U.
+	// However, we take D^dag here so this is gamma_5*D*gamma_5. For the non-mass
+	// term, this is just -D. So, the derivative still picks up just for the forward
+	// term, but with a minus sign.
+	tmp2 = iGam + gams[mu];
+	tmp2 = -tmp2;
+      }
+      break;
+
+      default:
+	QDP_error_exit("unknown case");
+      }
+
+      // This is the forward piece
+      LatticeFermion tmp3 = shift(tmp2, FORWARD, mu);
+      
+      // This step supposedly optimised in QDP++
+      LatticeColorMatrix temp_mat = traceSpin(outerProduct(tmp3,chi));
+    
+      // Just do the bit we need.
+      ds_u[mu] = anisoWeights[mu] * temp_mat;
+    }
+
+    getFermBC().zero(ds_u);
 
     END_CODE();
   }
