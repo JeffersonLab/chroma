@@ -1,4 +1,4 @@
-// $Id: unprec_graphene_linop_w.cc,v 1.2 2008-01-01 22:13:06 edwards Exp $
+// $Id: unprec_graphene_linop_w.cc,v 1.3 2008-01-01 22:38:26 edwards Exp $
 /*! \file
  *  \brief Unpreconditioned Graphene fermion linear operator.
  *
@@ -160,8 +160,6 @@ namespace Chroma
     LatticeFermion iGam;  moveToFastMemoryHint(iGam);
     Real half = 0.5;
 
-    chi = Mass*psi;
- 
     // Build gamma matrix multiplied pieces
     gammaMults(gams, psi);
 
@@ -170,7 +168,7 @@ namespace Chroma
     for(int mu=1; mu < Nd; ++mu)
       tmp2 += gams[mu];
 
-    chi += timesI(tmp2);
+    chi = timesI(tmp2);
 
     // Hop pieces
     for(int mu=0; mu < Nd; ++mu)
@@ -189,6 +187,11 @@ namespace Chroma
       chi += half * shift(tmp3, BACKWARD, mu);
     }
     
+    if (isign == MINUS)
+      chi = -chi;
+
+    chi += Mass*psi;
+
     getFermBC().modifyF(chi);
   
     END_CODE();
