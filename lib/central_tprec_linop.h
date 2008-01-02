@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.8 2007-12-18 21:06:47 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.9 2008-01-02 17:05:54 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -378,8 +378,84 @@ namespace Chroma
 
     }
 
+    virtual void derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+    virtual void derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+    virtual void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+
     //! Apply the d/dt of the preconditioned linop
-    virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+    virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
+      P ds_tmp;
+      T T_1, T_2, T_3, T_4;
+
+      switch( isign ) { 
+      case PLUS : 
+	{
+	  // T_1 = C_R Y 
+	  cRightLinOp(T_1, Y, PLUS);
+	  
+	  // T_2 = C_L^\dag X => T_2^\dag = X^\dag C_L
+	  cLeftLinOp(T_2, X, MINUS);
+	  
+	  
+	  // T_3 = (A-1)^\dagger T_2
+	  AMinusOneOp(T_3, T_2, MINUS);
+	  
+	  // T_3 = (A-1)^\dagger T_2 + X => T_3^\dagger = X^\dagger 
+	  //                                           + T^2\dagger (A - 1)
+	  //                                      = X^\dagger [ 1 + C_L (A-1)]
+	  T_3 += X;
+
+	  // T_4 = (A-1) T_1 
+	  AMinusOneOp(T_4, T_1, PLUS);
+	  // T_4 = Y + (A-1) T_1 = Y + (A-1) C_R Y = [ 1 + (A-1)C_R ] Y
+	  T_4 += Y;
+
+
+	  // T_2^\dagger \dot( A-1 ) T_1
+	  derivAMinusOne(ds_u, T_2, T_1, PLUS);
+
+	  // T_3^\dagger dot(C_R) Y 
+	  derivCRight(ds_tmp, T_3, Y, PLUS);
+	  ds_u += ds_tmp;
+	  
+	  derivCLeft(ds_tmp, X, T_4, PLUS);
+	  ds_u += ds_tmp;
+      }
+	break;
+      case MINUS : 
+	{
+	  // T_1 = C_L^\dag Y 
+	  cLeftLinOp(T_1, Y, MINUS);
+
+	  // T_2 = C_R X
+	  cRightLinOp(T_2, X, PLUS);
+
+	  // T_3 = Y + (A-1)^\dag T_1
+	  AMinusOneOp(T_3, T_1, MINUS);
+	  T_3 += Y;
+
+	  // T_4 = X + (A-1) T_2
+	  AMinusOneOp(T_4, T_2, PLUS);
+	  T_4 += X;
+
+	  // T_2^\dagger dot(A)^\dagger T_1
+	  derivAMinusOne(ds_u, T_2, T_1, MINUS);
+
+	  // T_4^\dagger dot(C_L)^\dagger Y
+	  derivCLeft(ds_tmp, T_4, Y, MINUS);
+	  ds_u += ds_tmp;
+
+	  // X^\dagger dot(C_R)^\dagger T_3
+	  derivCRight(ds_tmp, X, T_3, MINUS);
+	  ds_u += ds_tmp;
+
+	}
+	break;
+      default:
+	QDPIO::cerr << "Bad Case: Should never get here" << endl;
+	QDP_abort(1);
+      }
+    }
     
     //! Get log det ( T^\dag T )
     virtual Double logDetTDagT(void) const = 0;

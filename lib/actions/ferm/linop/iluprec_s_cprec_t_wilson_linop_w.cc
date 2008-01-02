@@ -1,4 +1,4 @@
-// $Id: iluprec_s_cprec_t_wilson_linop_w.cc,v 1.3 2007-12-12 21:42:58 bjoo Exp $
+// $Id: iluprec_s_cprec_t_wilson_linop_w.cc,v 1.4 2008-01-02 17:05:54 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -314,6 +314,288 @@ namespace Chroma
     chi[rb3[cb3d]] *= Real(0.5);
   }
 
+  void  ILUPrecSCprecTWilsonLinOp::derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const 
+  {
+    T T_1, T_2, T_3, T_4;
+    switch(isign) {
+    case PLUS: 
+      {
+	// Simple Case: -T^o^\dagger_2 \dot(Dslash^oe_S) T^e_1
+	
+	// [ T^e_1 ]   [ (T-)^{-1}e  0 ] [ Y_e ]   [ (T-)^{-1}_e Y_e ]
+	// [       ] = [               ] [     ] = [                 ]
+	// { T^o_1 ]   [  0          1 ] [ Y_o ]   [   Y_o           ]
+	invTMinusOp(T_1, Y,  PLUS, 0);
+	T_1[ rb3[1] ] = Y;
+
+	// [ T^e_2 ]   [ 1           0   ] [ X_e ]  [   X_e             ]
+	// [       ] = [                 ] [     ] =[                   ]  
+	// [ T^o_2 ]   [ 0  (T-)^{-dag}o ] [ X_o ]  [ (T-)^{-dag}_o X_o ]
+	invTMinusOp(T_2, X, MINUS, 1);
+	T_2[ rb3[0] ] = X;
+
+	derivSpaceOp(ds_u, T_2, T_1, PLUS, 1);
+	for(int mu=0; mu < Nd; mu++) { 
+	  ds_u[mu] *= Real(-1);
+	}
+      }
+      break;
+    case MINUS:
+      {
+	// [ T^e_1 ]   [ 1           0   ] [ Y_e ]  [   Y_e             ]
+	// [       ] = [                 ] [     ] =[                   ]  
+	// [ T^o_1 ]   [ 0  (T-)^{-dag}o ] [ Y_o ]  [ (T-)^{-dag}_o Y_o ]
+	invTMinusOp(T_1, Y, MINUS, 1);
+	T_1[ rb3[0] ] = Y;
+
+
+	// [ T^e_2 ]   [ (T-)^{-1}e  0 ] [ X_e ]   [ (T-)^{-1}_e X_e ]
+	// [       ] = [               ] [     ] = [                 ]
+	// { T^o_2 ]   [  0          1 ] [ X_o ]   [   X_o           ]
+	invTMinusOp(T_2, X, PLUS, 0);
+	T_2[ rb3[1] ] = X;
+
+	// [ T^e_3 ]   [ 1   - D^{oe}^\dag_s ][ T^e_1 ]
+	// [       ] = [                     ][       ]
+	// [ T^o_3 ]   [ 0          1        ][ T^o_1 ]
+	// We only need the even part tho, and put Y_o in the bottom
+	T T_tmp;
+	spaceLinOp(T_tmp, T_1, MINUS, 0);
+	T_3[rb3[0]] = T_1 - T_tmp; // Mhalf from the (-1/2)dslash
+	T_3[rb3[1]] = Y;
+
+
+	// [ T^e_4 ]   [ 1           0  ][ T^e_2 ]
+	// [       ] = [                ][       ]
+	// [ T^o_4 ]   [ -D^{eo}_s   1  ][ T^o_2 ]
+	// We only need the odd part tho, and put X_o in the top
+	spaceLinOp(T_tmp, T_2, PLUS, 1);
+	T_4[rb3[1]] = T_2 - T_tmp;       // Mhalf from the (-1/2)dslash
+	T_4[rb3[0]] = X;
+
+
+	derivInvTMinusOp(ds_u, T_4, T_3, MINUS);
+
+	P ds_tmp;
+
+	derivSpaceOp(ds_tmp, T_2, T_1, MINUS, 0);
+	for(int mu=0; mu < Nd; mu++) {
+	  ds_u[mu] -= ds_tmp[mu];           
+	}
+
+      }
+      break;
+    default:
+      QDPIO::cerr << "Bad Case. Should never get here" << endl;
+      QDP_abort(1);
+    }
+  }
+
+  void  ILUPrecSCprecTWilsonLinOp::derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const
+  {
+    T T_1, T_2, T_3, T_4;
+
+    switch(isign) {
+    case PLUS: 
+      {
+	// [ T^e_1 ]   [ 1      0        ] [ Y_e ]  [   Y_e             ]
+	// [       ] = [                 ] [     ] =[                   ]  
+	// [ T^o_1 ]   [ 0   (T+)^{-1}_o ] [ Y_o ]  [ (T+)^{-1}_o Y_o   ]
+	invTPlusOp(T_1, Y, PLUS, 1);
+	T_1[ rb3[0] ] = Y;
+
+
+	// [ T^e_2 ]   [ (T+)^{-dag}e  0 ] [ X_e ]   [ (T+)^{-dag}_e X_e ]
+	// [       ] = [                 ] [     ] = [                   ]
+	// { T^o_2 ]   [  0            1 ] [ X_o ]   [   X_o             ]
+	invTPlusOp(T_2, X, MINUS, 0);
+	T_2[ rb3[1] ] = X;
+
+	// [ T^e_3 ]   [ 1   - D^{eo}_s ][ T^e_1 ]
+	// [       ] = [                ][       ]
+	// [ T^o_3 ]   [ 0          1   ][ T^o_1 ]
+	// We only need the even part tho, and put Y_o in the bottom
+	T T_tmp;
+	spaceLinOp(T_tmp, T_1, PLUS, 0);
+	T_3[rb3[0]] = T_1 - T_tmp;  // mhalf is from (-1/2)Dslash
+	T_3[rb3[1]] = Y;
+
+
+	// [ T^e_4 ]   [ 1                0  ][ T^e_2 ]
+	// [       ] = [                     ][       ]
+	// [ T^o_4 ]   [ -D^{oe \dag}_s   1  ][ T^o_2 ]
+	// We only need the odd part tho, and put X_o in the top
+	spaceLinOp(T_tmp, T_2, MINUS, 1);
+	T_4[rb3[1]] = T_2 - T_tmp; // mhalf is from (-1/2) Dslash
+	T_4[rb3[0]] = X;
+
+	P ds_tmp;
+	derivSpaceOp(ds_tmp, T_2, T_1, PLUS, 0);
+	derivInvTPlusOp(ds_u, T_4, T_3, PLUS);
+	for(int mu=0; mu < Nd; mu++) { 
+	  ds_u[mu] -= ds_tmp[mu];
+	}
+      }
+      break;
+
+    case MINUS:
+      {
+	// Simple Case: -T^o^\dagger_2 \dot(Dslash^oe_S) T^e_1
+	
+	// [ T^e_1 ]   [ (T+)^{-\dag}e  0 ] [ Y_e ]   [ (T+)^{-\dag}_e Y_e ]
+	// [       ] = [                  ] [     ] = [                 ]
+	// { T^o_1 ]   [  0             1 ] [ Y_o ]   [   Y_o           ]
+	invTPlusOp(T_1, Y,  MINUS, 0);
+	T_1[ rb3[1] ] = Y;
+
+	// [ T^e_2 ]   [ 1           0   ] [ X_e ]  [   X_e             ]
+	// [       ] = [                 ] [     ] =[                   ]  
+	// [ T^o_2 ]   [ 0  (T+)^{-1}o   ] [ X_o ]  [ (T+)^{-1}_o X_o ]
+	invTPlusOp(T_2, X, PLUS, 1);
+	T_2[ rb3[0] ] = X;
+
+	derivSpaceOp(ds_u, T_2, T_1, MINUS, 1);
+	for(int mu=0; mu < Nd; mu++) { 
+	  ds_u[mu] *= Real(-1);  // (Combinme factor of -1 and -(1/2)
+	}
+      }
+      break;
+    default:
+      QDPIO::cerr << "Bad Case. Should never get here" << endl;
+      QDP_abort(1);
+    }
+
+  }
+  
+  void ILUPrecSCprecTWilsonLinOp::derivInvTPlusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const 
+  
+  {
+  
+    // Same code as C_L in unprec case
+    ds_u.resize(Nd);
+    for(int mu=0; mu < 3; mu++) { 
+      ds_u[mu] = zero;
+    }
+    
+    if (isign == PLUS) { 
+      
+      LatticeHalfFermion tmp1, tmp2;
+      T T1, T2; 
+      
+      tmp1=spinProjectDir3Minus(Y);
+      for(int cb3d=0; cb3d < 2; cb3d++) { 
+	CentralTPrecNoSpinUtils::invTOp( tmp2,
+					 tmp1, 
+					 u,
+					 tsite[cb3d],
+					 P_mat[cb3d],
+					 P_mat_dag[cb3d],
+					 Q_mat_inv[cb3d],
+					 Q_mat_dag_inv[cb3d],
+					 invfact,
+					 PLUS);
+      }
+
+      T1  = spinReconstructDir3Minus(tmp2);
+           
+      tmp1=spinProjectDir3Minus(X);
+
+      for(int cb3d=0; cb3d < 2; cb3d++) { 
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite[cb3d],
+				       P_mat[cb3d],
+				       P_mat_dag[cb3d],
+				       Q_mat_inv[cb3d],
+				       Q_mat_dag_inv[cb3d],
+				       invfact,
+				       MINUS);
+      }
+
+      // Two factors of 0.5 from the projectors.
+      // Most cost efficient to apply them together to the half vector...
+      tmp2 *= Real(0.25);
+
+      T2  = spinReconstructDir3Minus(tmp2);
+     
+      
+      LatticeFermion T3 = shift(T1, FORWARD, 3);
+      
+      // A minus from the fact that its dT^{-1}
+      // A minus from the fact that the shift has a -
+      // Makes  a + 
+      ds_u[3] = traceSpin(outerProduct(T3, T2));
+      
+    }
+    else {
+      ds_u[3] = zero;
+    }
+
+  } 
+
+  void ILUPrecSCprecTWilsonLinOp::derivInvTMinusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const 
+  {
+    // Same code as derivC_R 
+    ds_u.resize(Nd);
+    for(int mu=0; mu < 3; mu++) { 
+      ds_u[mu] = zero;
+    }
+    
+    if (isign == MINUS) { 
+      
+      LatticeHalfFermion tmp1, tmp2;
+      T T1, T2; 
+      
+      tmp1=spinProjectDir3Plus(Y);
+      for(int cb3d=0; cb3d < 2; cb3d++) { 
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite[cb3d],
+				       P_mat[cb3d],
+				       P_mat_dag[cb3d],
+				       Q_mat_inv[cb3d],
+				       Q_mat_dag_inv[cb3d],
+				       invfact,
+				       PLUS);
+      }      
+      T1  = spinReconstructDir3Plus(tmp2);
+      
+      tmp1=spinProjectDir3Plus(X);
+      for(int cb3d=0; cb3d < 2; cb3d++) { 
+
+      CentralTPrecNoSpinUtils::invTOp( tmp2,
+				       tmp1, 
+				       u,
+				       tsite[cb3d],
+				       P_mat[cb3d],
+				       P_mat_dag[cb3d],
+				       Q_mat_inv[cb3d],
+				       Q_mat_dag_inv[cb3d],
+				       invfact,
+				       MINUS);
+      }
+      // Two factors of 0.5 from the projectors.
+      // Most cost efficient to apply them together to the half vector...
+      tmp2 *= Real(0.25);
+      
+      T2  = spinReconstructDir3Plus(tmp2);
+      
+      LatticeFermion T3 = shift(T1, FORWARD, 3);
+      
+      // A minus from the fact that its dT^{-1}
+      // A minus from the fact that the shift has a -
+      // Makes  a + 
+      ds_u[3] = traceSpin(outerProduct(T3, T2));
+      
+    }
+    else { 
+      ds_u[3]= zero;
+    }
+
+
+  }
 
 } // End Namespace Chroma
 

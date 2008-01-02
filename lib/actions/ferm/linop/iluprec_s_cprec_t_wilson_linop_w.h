@@ -200,7 +200,7 @@ namespace Chroma
       case PLUS: 
 	{
 	  //[ (T-)^{-1}_e                            0               ] 
-	  //[ -(T-)^{-1}_{o} D_s_oe^{-1} (T-)^{-1}_e (T-)^{-1}_o   ]      
+	  //[ -(T-)^{-1}_{o} D_s_oe^{-1}   (T-)^{-1}_e (T-)^{-1}_o   ]      
 
 	  // = [ 1     0       ] [ T-^{-1}_e              0 ] 
 	  //   [ 0   T-_o^{-1} ] [ -D_{oe}^\dag T-^{-1}_e  1 ]
@@ -277,6 +277,16 @@ namespace Chroma
       chi[ rb3[cb3d] ] *= mhalf;
     }
 
+    void derivSpaceOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign, int cb3d) const 
+    {
+      Real mhalf=Real(-0.5);
+      Dw3D.deriv(ds_u, X, Y, isign, cb3d);
+      for(int mu=0; mu < 3; mu++) { 
+	ds_u[mu]*= mhalf;
+      }
+      ds_u[3]=zero;
+    }
+
     void TPlusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
 
     void TMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
@@ -285,14 +295,18 @@ namespace Chroma
 
     void invTMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
 
+    void derivInvTPlusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+    void derivInvTMinusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
 
+    void derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+    void derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
 
-    //! Apply the d/dt of the preconditioned linop
-    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
-
-      QDPIO::cerr << "Not Yet Implemented" << endl;
-      QDP_abort(1);
-
+    void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
+      // Trivial for Wilson Case
+      ds_u.resize(Nd);
+      for(int mu = 0; mu < Nd; mu++) { 
+	ds_u[mu] = zero;
+      }
     }
     
     //! Get log det ( T^\dag T )

@@ -272,6 +272,7 @@ namespace Chroma
       // chi
       chi = tmp1 - ftmp*psi;
     }
+
     
     //! Flopcounter
     unsigned long nFlops() const 
@@ -279,6 +280,16 @@ namespace Chroma
       //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
       return 0;
     }
+
+    void derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+    void derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+
+    void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
+      APlusFact.deriv(ds_u, X, Y, isign);
+    }
+
+    void derivInvTPlusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
+    void derivInvTMinusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
     
   private:
     
@@ -290,6 +301,15 @@ namespace Chroma
       chi[ rb3[cb3d] ] *= mhalf;
     }
 
+    void derivSpaceOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign, int cb3d) const 
+    {
+      Real mhalf=Real(-0.5);
+      Dw3D.deriv(ds_u, X, Y, isign, cb3d);
+      for(int mu=0; mu < 3; mu++) { 
+	ds_u[mu]*= mhalf;
+      }
+      ds_u[3]=zero;
+    }
     void TPlusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
 
     void TMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
@@ -298,14 +318,6 @@ namespace Chroma
 
     void invTMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
 
-
-    //! Apply the d/dt of the preconditioned linop
-    void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
-
-      QDPIO::cerr << "Not Yet Implemented" << endl;
-      QDP_abort(1);
-
-    }
     
     //! Get log det ( T^\dag T )
     Double logDetTDagT(void) const {
