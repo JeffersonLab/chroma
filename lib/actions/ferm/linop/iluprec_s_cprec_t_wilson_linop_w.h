@@ -10,6 +10,8 @@
 #include "central_tprec_linop.h"
 
 #include "actions/ferm/linop/dslash_w.h"
+#include "actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h"
+
 #include "actions/ferm/linop/central_tprec_nospin_utils.h"
 
 namespace Chroma 
@@ -24,8 +26,7 @@ namespace Chroma
    */
   
   class ILUPrecSCprecTWilsonLinOp : 
-    public ILUPrecSpaceCentralPrecTimeLinearOperator<LatticeFermion, 
-    multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+    public ILUPrecSCprecTWilsonLikeLinOp 
   {
   public:
     // Typedefs to save typing
@@ -57,218 +58,6 @@ namespace Chroma
 		const AnisoParam_t& aniso_);
 
 
-    //! The time direction
-    
-    int tDir() const { 
-      // Always 3 for now?
-      return 3; 
-    }
-    
-
-    //! Apply inv (C_L)^{-1}
-    inline
-    void invCLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const { 
-
-      switch(isign) { 
-      case PLUS: 
-	{
-	  //[ T+   D_s ] = 
-	  //[ 0     T+ ] 
-	  T tmp1;
-	  TPlusOp(chi, psi, PLUS, 0);
-	  TPlusOp(chi, psi, PLUS, 1);
-	  spaceLinOp(tmp1, psi, PLUS, 0);
-	  chi[rb3[0]] += tmp1;
-	}
-	break;
-      case MINUS:
-	{
-	  //
-	  // Remember to dagger in Even Odd Space too.
-	  // [  (T+)^\dag   0         ] 
-	  // [    D_s^\dag  (T+)^\dag ]
-	  T tmp1;
-	  TPlusOp(chi, psi, MINUS, 0);
-	  TPlusOp(chi, psi, MINUS, 1);
-	  spaceLinOp(tmp1, psi, MINUS, 1);
-	  chi[rb3[1]] += tmp1;
-	}
-	break;
-      default:
-	QDPIO::cout << "Unknown sign " << endl;
-	QDP_abort(1);
-      }
-    }
-
-    //! Apply inv (C_R)^{-1}
-    inline
-    void invCRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const {
-      switch(isign) { 
-      case PLUS: 
-	{
-	  //[ T-      0  ] 
-	  //[ D_s     T- ]
-	  T tmp1;
-	  TMinusOp(chi, psi, PLUS, 0);
-	  TMinusOp(chi, psi, PLUS, 1);
-	  spaceLinOp(tmp1, psi, PLUS, 1);
-	  chi[rb3[1]] += tmp1;
-	}
-	break;
-      case MINUS:
-	{
-	  //
-	  // Remember to dagger in Even Odd Space too.
-	  // [  (T-)^\dag     D_s^\dag ] 
-	  // [       0       (T-)^\dag  ]
-	  T tmp1;
-	  TMinusOp(chi, psi, MINUS, 0);
-	  TMinusOp(chi, psi, MINUS, 1);
-	  spaceLinOp(tmp1, psi, MINUS, 0);
-	  chi[rb3[0]] += tmp1;
-	}
-	break;
-      default:
-	QDPIO::cout << "Unknown sign " << endl;
-	QDP_abort(1);
-      };
-    }
-
-    //! Apply C_L
-    inline
-    void cLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const { 
-      switch(isign) { 
-      case PLUS: 
-	{
-	  //[ (T+)^{-1}  -(T+)^{-1}_{e} D_s_eo (T+)^{-1}_o ] 
-	  //[ 0                          (T+)^{-1}_o       ] 
-	  T tmp1, tmp2;
-	  
-
-	  // tmp1_0 = (T+)^{-1}_{o} \psi_o
-	  invTPlusOp(tmp1, psi, PLUS, 1);
-
-	  // chi_o = (T+)^{-1}_{o} \psi_o
-	  chi[rb3[1]] = tmp1;
-
-	  // tmp2_e = D_s_eo (T+)^{-1}_{o} \psi_o
-	  spaceLinOp(tmp2, tmp1, PLUS, 0);
-
-	  // tmp1_e = \psi_e - D_s_eo (T+)^{-1}_{o} \psi_o
-	  tmp1[rb3[0]] = psi - tmp2;
-
-
-	  // chi_e = (T+)^{-1}_{e} ( \psi_e -  D_s_eo (T+)^{-1}_{o} \psi_o ) 
-	  invTPlusOp(chi, tmp1, PLUS, 0);
-
-	}
-	break;
-      case MINUS:
-	{
-	  //[ (T+)^{-\dag                                   0               ] 
-	  //[ -(T+)^{-\dag}_{o} D_s_oe^\dag (T+)^{-\dag}_e (T+)^{-\dag}_o   ]      
-
-	  // = [ 1     0          ] [ T+^{-\dag}              0 ] 
-	  //   [ 0   T+_o^{-\dag} ] [ -D_{oe}^\dag T+^{-\dag}  1 ]
-	  T tmp1, tmp2;
-	  
-	  // tmp1 = T+^{-dag}_{e} \psi_{e}
-	  invTPlusOp(tmp1, psi, MINUS, 0);
-
-	  // chi_e =  T+^{-dag}_{e} \psi_{e}
-	  chi[rb3[0]] = tmp1;
-
-	  // tmp2_o = D_{oe} T+^{-\dag} psi_e 
-	  spaceLinOp(tmp2, tmp1, MINUS, 1);
-
-	  // tmp1_o = psi_o -  D_{oe} T+^{-\dag} psi_e 
-	  tmp1[rb3[1]] = psi - tmp2;
-
-	  invTPlusOp(chi, tmp1, MINUS, 1);
-	}
-	break;
-      default:
-	QDPIO::cout << "Unknown sign " << endl;
-	QDP_abort(1);
-      };
-    }
-    
-    //! Apply C_R
-    inline
-    void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const {
-      switch(isign) { 
-      case PLUS: 
-	{
-	  //[ (T-)^{-1}_e                            0               ] 
-	  //[ -(T-)^{-1}_{o} D_s_oe^{-1}   (T-)^{-1}_e (T-)^{-1}_o   ]      
-
-	  // = [ 1     0       ] [ T-^{-1}_e              0 ] 
-	  //   [ 0   T-_o^{-1} ] [ -D_{oe}^\dag T-^{-1}_e  1 ]
-	  T tmp1, tmp2;
-	  
-	  // tmp1 = T+^{-dag}_{e} \psi_{e}
-	  invTMinusOp(tmp1, psi, PLUS, 0);
-
-	  // chi_e =  T+^{-dag}_{e} \psi_{e}
-	  chi[rb3[0]] = tmp1;
-
-	  // tmp2_o = D_{oe} T+^{-\dag} psi_e 
-	  spaceLinOp(tmp2, tmp1, PLUS, 1);
-
-	  // tmp1_o = psi_o -  D_{oe} T+^{-\dag} psi_e 
-	  tmp1[rb3[1]] = psi - tmp2;
-
-	  invTMinusOp(chi, tmp1, PLUS, 1);
-	}
-
-
-	break;
-      case MINUS:
-      	{
-	  //[ (T-)^{-dag}  -(T-)^{-\dag}_{e} D_s_eo^\dag (T-)^{-\dag}_o ] 
-	  //[ 0                          (T-)^{-\dag}_o                 ] 
-	  T tmp1, tmp2;
-	  
-
-	  // tmp1_0 = (T-)^{-\dag}_{o} \psi_o
-	  invTMinusOp(tmp1, psi, MINUS, 1);
-
-	  // chi_o = (T-)^{-\dag}_{o} \psi_o
-	  chi[rb3[1]] = tmp1;
-
-	  // tmp2_e = D_s_eo (T-)^{-1\dag_{o} \psi_o
-	  spaceLinOp(tmp2, tmp1, MINUS, 0);
-
-	  // tmp1_e = \psi_e - D_s_eo (T-)^{-\dag}_{o} \psi_o
-	  tmp1[rb3[0]] = psi - tmp2;
-
-
-	  // chi_e = (T-)^{-\dag}_{e} ( \psi_e -  D_s_eo (T-)^{-\dag}_{o} \psi_o ) 
-	  invTMinusOp(chi, tmp1, MINUS, 0);
-
-      }
-	break;
-      default:
-	QDPIO::cout << "Unknown sign " << endl;
-	QDP_abort(1);
-      };
-    }
-
-    // A = 0 so A-1 = -1 => (A-1) psi = -psi and also for the dagger.
-    inline
-    void AMinusOneOp(T& chi, const T& psi, enum PlusMinus isign) const { 
-      chi = Real(-1)*psi;
-    }
-    
-    //! Flopcounter
-    unsigned long nFlops() const 
-    { 
-      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
-      return 0;
-    }
-    
-  private:
-    
     //! Apply the the space block onto a source vector
     //  cb3d is the 3d (rb3) checkerboard of the target
     void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const {
@@ -287,20 +76,12 @@ namespace Chroma
       ds_u[3]=zero;
     }
 
-    void TPlusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
-
-    void TMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
-
-    void invTPlusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
-
-    void invTMinusOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const;
-
-    void derivInvTPlusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
-    void derivInvTMinusOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
-
-    void derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
-    void derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const;
-
+   // A = 0 so A-1 = -1 => (A-1) psi = -psi and also for the dagger.
+    inline
+    void AMinusOneOp(T& chi, const T& psi, enum PlusMinus isign) const { 
+      chi = Real(-1)*psi;
+    }
+ 
     void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
       // Trivial for Wilson Case
       ds_u.resize(Nd);
@@ -314,13 +95,44 @@ namespace Chroma
       return logDetTSq;
     }
 
-
-    //! Get the force due to the det T^\dag T bit
-    void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const {
-      QDPIO::cerr << "Not Yet Implemented" << endl;
-      QDP_abort(1);
+    const multi3d< int >&  getTsiteArray(void) const 
+    {
+      return tsite;
     }
 
+    const multi3d< CMat >& getPMatrixArray(void) const
+    {
+      return P_mat;
+    }
+
+    const multi3d< CMat >& getPMatrixDaggerArray(void) const 
+    {
+      return P_mat_dag;
+    }
+
+    const multi2d< CMat >& getQMatrixInvArray(void) const 
+    {
+      return Q_mat_inv;
+    }
+
+    const multi2d< CMat >& getQMatrixDaggerInvArray(void) const 
+    {
+      return Q_mat_dag_inv;
+    }
+
+    const Real& getFactor() const 
+    {
+      return fact;
+    }
+
+    const Real& getInvFactor() const 
+    {
+      return invfact;
+    }
+
+    const multi1d<LatticeColorMatrix>& getLinks(void) const { 
+      return u;
+    }
 
   private:
 

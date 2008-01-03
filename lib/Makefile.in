@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.212 2007-12-31 23:23:54 edwards Exp $
+# $Id: Makefile.in,v 3.213 2008-01-03 20:06:50 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1487,6 +1487,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/eoprec_slrc_linop_w.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \
@@ -2279,6 +2280,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/eoprec_slrc_linop_w.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \

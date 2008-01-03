@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.116 2007-12-31 23:23:35 edwards Exp $
+# $Id: Makefile.am,v 3.117 2008-01-03 20:06:50 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -485,6 +485,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/eoprec_slrc_linop_w.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \
