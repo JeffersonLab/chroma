@@ -396,15 +396,19 @@ static  QDP_ColorVector *in ;
 
   res_arg.rsqmin = toFloat(invParam.RsdCG)*
     toFloat(invParam.RsdCG);
+  if( invParam.MaxCGRestart > 0 ) 
+    inv_arg.max_restarts = invParam.MaxCGRestart ;
+  else
+    inv_arg.max_restarts = 1;
 
-  inv_arg.max_iter = invParam.MaxCG;
-  inv_arg.restart = 500 ;
-  inv_arg.max_restarts = 5;
+  inv_arg.restart = invParam.MaxCG  ;
+  inv_arg.max_iter = inv_arg.max_restarts * invParam.MaxCG;
   inv_arg.evenodd = QOP_EVENODD ;
 
 
   QLA_Real mass = toFloat(Mass) ;
-  printf("level3 asqtad inverter mass = %f\n",mass) ; 
+  printf("level3 asqtad inverter mass = %f, iters = %d, restarts=%d\n",
+	 mass,invParam.MaxCG,inv_arg.max_restarts) ; 
 
   // invert
   QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
@@ -438,6 +442,10 @@ static  QDP_ColorVector *in ;
     r -= q_source ;
     res.resid = sqrt(norm2(r));
     QDPIO::cout << "AsqtadCPSWrapperQprop: (pure chroma) true residual:  " << res.resid << endl; 
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  || q_source ||:  " << sqrt(norm2(q_source)) << endl; 
+
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual/source:  " << res.resid/ sqrt(norm2(q_source)) << endl; 
+
   }
 
   QOP_destroy_V(qopout);
