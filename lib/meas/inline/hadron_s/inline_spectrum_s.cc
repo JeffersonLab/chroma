@@ -274,6 +274,13 @@ namespace Chroma {
 //    input.invParam.invType = CG_INVERTER;   
     read(inputtop, "RsdCG", input.invParam.RsdCG);
     read(inputtop, "MaxCG", input.invParam.MaxCG);
+    if( inputtop.count("MaxCGRestart") > 0 ) {
+      read(inputtop, "MaxCGRestart", input.invParam.MaxCGRestart);
+    }
+    else {
+      input.invParam.MaxCGRestart = input.invParam.MaxCG;
+    }
+
 
   }
 
