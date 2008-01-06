@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_s.cc,v 1.1 2007-05-09 12:43:20 mcneile Exp $
+// $Id: hisq_fermact_s.cc,v 1.2 2008-01-06 11:13:17 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */
@@ -38,7 +38,11 @@ can be covered by modifying the coefficients here.
 #include "actions/ferm/fermacts/hisq_fermact_s.h"
 #include "util/gauge/stag_phases_s.h"
 #include "util/gauge/reunit.h"
+#include "util/gauge/sun_proj.h"
+#include "meas/gfix/polar_dec.h"
 
+// DEBUG
+#include "util/gauge/unit_check.h"
 
 namespace Chroma 
 { 
@@ -143,6 +147,8 @@ namespace Chroma
     multi1d<LatticeColorMatrix> u_fat_I(Nd);
     multi1d<LatticeColorMatrix> u_triple(Nd);
 
+    cout << "HISQ setting up the fat links\n"  ;
+
     // First put in the BC
     u_with_phases = u_;
     getFermBC().modify(u_with_phases);
@@ -154,31 +160,74 @@ namespace Chroma
       u_with_phases[i] *= StagPhases::alpha(i);
     }
 
-    // Create Fat7 links. This uses the same
-    // coefficients as Asqtad, but with zero
-    // Lepage term
+#if 0 
+    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
     fat7_param pp ; 
-
+    cout << "HISQ hacked to do ASQTAD" << endl ; 
     pp.c_1l = (Real)(5) / (Real)(8);
     pp.c_3l = (Real)(-1) / ((Real)(16));
     pp.c_5l = - pp.c_3l / ((Real)(4));
     pp.c_7l = - pp.c_5l / ((Real)(6));
     pp.c_Lepage = pp.c_3l ; 
+    Fat7_Links(u_with_phases, u_fat, pp);
+    Real one = (Real) 1.0 ; 
+    Triple_Links(u_with_phases, u_triple, one);
+    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
+#endif
+
+    // Create Fat7 links. This uses the same
+    // coefficients as Asqtad, but with zero
+    // Lepage term
+    fat7_param pp ; 
+
+    pp.c_1l = (Real)(1) / (Real)(8);   // lepage contributes here
+    pp.c_3l = (Real)(-1) / ((Real)(16));
+    pp.c_5l = - pp.c_3l / ((Real)(4));    // 1/64
+    pp.c_7l = - pp.c_5l / ((Real)(6));    // -1/384
+    //    pp.c_Lepage = pp.c_3l ; 
+    pp.c_Lepage =  0.0 ; 
 
     Fat7_Links(u_with_phases, u_fat_I, pp);
 
+     unitarityCheck(u_fat_I) ; // DEBUG
+
     // reunitarise (maybe need polar method instead)
+#if 0
    for(int i = 0; i < Nd; i++) { 
       reunit(u_fat_I[i]) ;
     }
+#endif
 
-    // with HISQ the three links are fat
+   Real BlkAccu = 0.00000001 ;
+   int BlkMax = 100 ; 
+   cout << "SU3 projection Accuracy " << BlkAccu << " max iters = " << BlkMax << endl;
+
+#if 0
+   for(int i = 0; i < Nd; i++) { 
+     LatticeColorMatrix  w ;
+     w = u_fat_I[i] ;
+     sun_proj(w,u_fat_I[i],BlkAccu,BlkMax);
+    }
+#endif
+   LatticeReal  alpha ; // complex phase (not needed here)
+   Real  JacAccu = 0.00000000001 ;
+   int JacMax = 100 ; 
+   LatticeColorMatrix  w ;
+   cout << "SU3 polar projection Accuracy " << JacAccu << " max iters = " <<  JacMax << endl;
+
+   for(int i = 0; i < Nd; i++) 
+     {
+       w = u_fat_I[i] ;
+       polar_dec(w, u_fat_I[i],alpha, JacAccu, JacMax) ;
+     }
+
+     // with HISQ the three links are fat
     Real one = (Real) 1.0 ; 
     Triple_Links(u_fat_I, u_triple, one);
  
     // fatten again with different coefficient of fat term
 
-    pp.c_1l = (Real)(5) / (Real)(8);
+    pp.c_1l = (Real)(8) / (Real)(8);
     pp.c_3l = (Real)(-1) / ((Real)(16));
     pp.c_5l = - pp.c_3l / ((Real)(4));
     pp.c_7l = - pp.c_5l / ((Real)(6));
