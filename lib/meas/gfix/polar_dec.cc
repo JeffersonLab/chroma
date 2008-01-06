@@ -1,4 +1,4 @@
-// $Id: polar_dec.cc,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: polar_dec.cc,v 3.1 2008-01-06 11:02:56 mcneile Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -223,8 +223,8 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
     for(int j=0; j < Nc; ++j)
       pokeColor(v, mat1[i][j], i, j);
 
-  v_tmp = v * adj(w_tmp);
-  v = w_tmp * v_tmp - u_tmp;
+  v_tmp = v * w_tmp ;
+  v = adj(w_tmp) * v_tmp - u_tmp;
   diff_sq = norm2(v) / Double(Layout::vol());
   off_d /= Double(Layout::vol());
   if (numbad > 0)
@@ -249,8 +249,8 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
     for(int j=0; j < Nc; ++j)
       pokeColor(v, mat1[i][j], i, j);
 
-  u_tmp = v * adj(w_tmp);
-  v = w_tmp * u_tmp;
+  u_tmp = v * w_tmp;
+  v = adj(w_tmp) * u_tmp;
   u_tmp = c * v;
 
   /* Constuct P in c */
@@ -265,6 +265,7 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
 
   v_tmp = c * adj(w_tmp);
   c = w_tmp * v_tmp;
+
 
   /* Check that that u_tmp^dagger * u_tmp = 1 */
   v_tmp = 1;
@@ -350,7 +351,17 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   write(xml_out, "numbad", numbad);
   pop(xml_out);
 #endif
-  
+
+#if 0 
+  // DEBUG DEBUG DEBUG
+  QDPIO::cout << "polar_dec::iter " <<  iter << "\n" ;
+  QDPIO::cout << "polar_dec::off_d " <<  off_d << "\n" ;
+  QDPIO::cout << "polar_dec::diff_sq " <<  diff_sq << "\n" ;
+  QDPIO::cout << "polar_dec::unit_test " <<  unit_test << "\n" ;
+  QDPIO::cout << "polar_dec::det_diff " <<  det_diff<< "\n" ;
+  QDPIO::cout << "polar_dec::numbad " <<   numbad<< "\n" ;
+#endif  
+
   END_CODE();
 }
 
