@@ -1,4 +1,4 @@
-// $Id: polar_dec.cc,v 3.1 2008-01-06 11:02:56 mcneile Exp $
+// $Id: polar_dec.cc,v 3.2 2008-01-06 15:15:52 mcneile Exp $
 /*! \file
  *  \brief Decompose a complex matrix as C = exp(i\alpha) V P
  */
@@ -263,9 +263,8 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
     for(int j=0; j < Nc; ++j)
       pokeColor(c, mat1[i][j], i, j);
 
-  v_tmp = c * adj(w_tmp);
-  c = w_tmp * v_tmp;
-
+  v_tmp = c * w_tmp;
+  c = adj(w_tmp) * v_tmp;
 
   /* Check that that u_tmp^dagger * u_tmp = 1 */
   v_tmp = 1;
@@ -352,7 +351,7 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   pop(xml_out);
 #endif
 
-#if 0 
+#if 0
   // DEBUG DEBUG DEBUG
   QDPIO::cout << "polar_dec::iter " <<  iter << "\n" ;
   QDPIO::cout << "polar_dec::off_d " <<  off_d << "\n" ;
