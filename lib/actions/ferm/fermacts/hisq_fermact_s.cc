@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_s.cc,v 1.2 2008-01-06 11:13:17 mcneile Exp $
+// $Id: hisq_fermact_s.cc,v 1.3 2008-01-06 11:19:17 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */
@@ -189,26 +189,7 @@ namespace Chroma
 
     Fat7_Links(u_with_phases, u_fat_I, pp);
 
-     unitarityCheck(u_fat_I) ; // DEBUG
-
-    // reunitarise (maybe need polar method instead)
-#if 0
-   for(int i = 0; i < Nd; i++) { 
-      reunit(u_fat_I[i]) ;
-    }
-#endif
-
-   Real BlkAccu = 0.00000001 ;
-   int BlkMax = 100 ; 
-   cout << "SU3 projection Accuracy " << BlkAccu << " max iters = " << BlkMax << endl;
-
-#if 0
-   for(int i = 0; i < Nd; i++) { 
-     LatticeColorMatrix  w ;
-     w = u_fat_I[i] ;
-     sun_proj(w,u_fat_I[i],BlkAccu,BlkMax);
-    }
-#endif
+    // reunitarise (using polar method)
    LatticeReal  alpha ; // complex phase (not needed here)
    Real  JacAccu = 0.00000000001 ;
    int JacMax = 100 ; 
