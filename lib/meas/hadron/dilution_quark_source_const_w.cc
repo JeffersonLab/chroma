@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.3 2008-01-07 15:19:43 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.4 2008-01-07 16:00:47 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -94,7 +94,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      read(paramtop, "Quark", quark);
+      read(paramtop, "QuarkFiles", quark_files);
     }
 
 
@@ -105,7 +105,7 @@ namespace Chroma
 
       int version = 1;
       write(xml, "version", version);
-      write(xml, "Quark", quark);
+      write(xml, "QuarkFiles", quark_files);
       pop(xml);
     }
 
@@ -174,44 +174,87 @@ namespace Chroma
       try
       {
 
-	bool initq = false;
+				bool initq = false;
 
-	QDPIO::cout << "Attempt to read solutions " << endl;
+				QDPIO::cout << "Attempt to read solutions " << endl;
 		
-	quark.dilutions.resize(params.quark.dilution_files.size());
+				quark.time_slices.resize( params.quark_files.timeslice_files.size() );
 
-	QDPIO::cout << "dilutions.size = " << quark.dilutions.size() << endl;
+				QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << endl;
+
+				for (int t0 = 0 ; t0 < quark.time_slices.size() ; ++t0 )
+				{
+
+					quark.time_slices[t0].dilutions.resize(
+							params.quark_files.timeslice_files[t0].dilution_files.size() );
+
+				
+					QDPIO::cout << "dilutions.size = " << 
+						quark.time_slices[t0].dilutions.size() << endl;
 	
-	for(int dil = 0; dil < quark.dilutions.size(); ++dil)
-	{
-			quark.dilutions[dil].soln_file = params.quark.dilution_files[dil];
+					
+					int time = 0;
+
+					for(int dil = 0; dil < quark.time_slices[t0].dilutions.size(); ++dil)
+					{
+			
+						
+						
+						quark.timne_slices[t0].dilutions[dil].soln_file =
+							params.quark.timeslice_files[t0].dilution_files[dil];
+
+	    			XMLReader file_xml, record_xml, record_xml_source;
+
+	    			QDPIO::cout << "reading file = " << 
+							quark.time_slices[t0].dilutions[dil].soln_file << endl;
+
+	    			QDPFileReader from(file_xml, quark.time_slices[t0].dilutions[dil].soln_file, QDPIO_SERIAL);
 
 			
-	    XMLReader file_xml, record_xml, record_xml_source;
+						//Read the record xml only
+						read(from, record_xml);
+	    			close(from);
 
-	    QDPIO::cout << "reading file = " << quark.dilutions[dil].soln_file << endl;
-	    QDPFileReader from(file_xml, quark.dilutions[dil].soln_file, QDPIO_SERIAL);
-
-			//Read the record xml only
-			read(from, record_xml);
-	    close(from);
-
-	    read(record_xml, "/Propagator/PropSource", quark.dilutions[dil].source_header);
-	    read(record_xml, "/Propagator/ForwardProp", quark.dilutions[dil].prop_header);
+	    			read(record_xml, "/Propagator/PropSource", quark.dilutions[dil].source_header);
+	    			read(record_xml, "/Propagator/ForwardProp", quark.dilutions[dil].prop_header);
 
 
-	    if (!initq)
-	    {
-	      read(record_xml, "/Propagator/PropSource/Source/ran_seed",
-		   quark.seed);
+	    			if (!initq)
+	    			{
+	      			read(record_xml, "/Propagator/PropSource/Source/ran_seed",
+		   				quark.seed);
 					
-	    	quark.dilutions[dil].decay_dir = quark.dilutions[dil].source_header.j_decay;
-	      initq = true;
-	    }
+	    				quark.decay_dir = 
+								quark.time_slices[t0].dilutions[dil].source_header.j_decay;
 
-	    quark.dilutions[dil].t0 = quark.dilutions[dil].source_header.t_source;
+	      			initq = true;
+	    			}
+
 	   
-	  }//dil
+						//Test that t0 is the same for all dilutions on this timeslice
+						//grab the first t0 to prime the process
+					
+						if (dil == 0)
+						{
+							time = quark.time_slices[t0].dilutions[dil].source_header.t0;
+						}
+
+						if (time != quark.time_slices[t0].dilutions[dil].source_header.t0)
+						{
+							QDPIO::cerr << "t0's DO NOT MATCH FOR ALL DILUTIONS ON TIME SLICE "
+							<< t0 << endl;
+
+							QDP_abort(1);
+						}
+
+					
+
+	  			}//dil
+					
+					quark.time_slices[t0].t0 = time;
+
+				}//t0
+
       } //try
       catch (const string& e) 
       {
@@ -220,7 +263,7 @@ namespace Chroma
       }
       swatch.stop();
 
-      QDPIO::cout << "Source and solution headers successfully read: time= "
+      QDPIO::cout << "Source and solution headers successfully read: time = "
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
 
@@ -230,14 +273,15 @@ namespace Chroma
 
 
 		
-		//create and return the dilution source
+		//Create and return the diluted source
 		//For gauge invariance testing reasons, this routine could be changed
 		//to get the source from the named object map
-		LatticeFermion ConstDilutionScheme::dilutedSource( int dil ) const 
+		LatticeFermion ConstDilutionScheme::dilutedSource(int t0, int dil ) const 
 		{
-			QuarkSourceSolutions_t::Dilutions_t & qq = quark.dilutions[dil];
+			QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t &qq = 
+				quark.time_slices[t0].dilutions[dil];
 
-			//Dummy gauge field to send to source construction;
+			//Dummy gauge field to send to the source construction routine;
 			multi1d<LatticeColorMatrix> dummy = zero;
 			
 
@@ -259,7 +303,7 @@ namespace Chroma
 							     qq.source_header.source.path);
 	    DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
       
-			QDP::RNG::setrn( quark[dil].seed );
+			QDP::RNG::setrn( quark.seed );
 
 			 
 			return srcConst(dummy);
@@ -267,17 +311,17 @@ namespace Chroma
 		} //dilutedSource		
 
 
-		LatticeFermion ConstDilutionScheme::dilutedSolution(int dil) const 
+		LatticeFermion ConstDilutionScheme::dilutedSolution(int t0, int dil) const 
 		{
 			
-			const std::string & filename = quark.dilutions[dil].soln_file;
+			const std::string & filename = quark.time_slices[t0].dilutions[dil].soln_file;
 
 			LatticeFermion soln; 
 
 		  XMLReader file_xml, record_xml, record_xml_source;
 
-	    QDPIO::cout << "reading file = " << quark.dilutions[dil].soln_file << endl;
-	    QDPFileReader from(file_xml, quark.dilutions[dil].soln_file, QDPIO_SERIAL);
+	    QDPIO::cout << "reading file = " << filename << endl;
+	    QDPFileReader from(file_xml, filename, QDPIO_SERIAL);
 
 			read(from, record_xml, soln);
 
