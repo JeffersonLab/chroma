@@ -1,9 +1,9 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.3 2007-12-18 13:40:25 edwards Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.4 2008-01-07 15:19:43 jbulava Exp $
 /*! \file
- * \brief Dilution operator constructed from pre-generated solutions.
+ * \brief Dilution scheme inferred from pre-generated solutions.
  * 
- * This dilution operator takes pre-generated LatticeFermion solutions built
+ * This dilution scheme takes pre-generated LatticeFermion solutions built
  * in the chain of MAKE_SOURCE and PROPAGATOR inline measurement calls
  */
 
@@ -12,7 +12,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "meas/hadron/dilution_operator.h"
+#include "meas/hadron/dilution_scheme.h"
 #include "io/qprop_io.h"
 
 namespace Chroma 
@@ -31,62 +31,60 @@ namespace Chroma
       Params(XMLReader& xml_in, const std::string& path);
       void writeXML(XMLWriter& xml_out, const std::string& path) const;
 
-      //! Solution files for each quark
-      struct QuarkFiles_t
+    		struct QuarkFiles_t
       {
-	//! Time dilution components  
-	struct TimeDilutions_t
-	{
-	  multi1d<std::string> dilution_files;  /*!< dilution files for this time dilution*/
-	};
-	
-	multi1d<TimeDilutions_t> time_files;
-      };
+	   		struct TimeSliceFiles_t 
+				{
+				
+					multi1d<std::string> dilution_files;  /*!< dilution files per timeslice*/		
+				};
 
-      QuarkFiles_t  quark;       /*!< All the solutions that are needed for a single quark */
+					
+				multi1d<TimeSliceFiles_t> timeslice_files; /*!< full time dilution is assumed*/ 
+			
+			};
+	
+      QuarkFiles_t  quark;       /*!< All the solutions for a single quark */
     }; // struct Params
 
-
-    //! Structure holding a source and its solutions
+  //! Structure holding a source and its solutions
     struct QuarkSourceSolutions_t
     {
-      //! Structure holding solutions
-      struct TimeDilutions_t
-      {
-	struct Dilutions_t
-	{
-	  LatticeFermion     source;
-	  LatticeFermion     soln;
-	  PropSourceConst_t  source_header;
-	  ChromaProp_t       prop_header;
-	};
+			struct TimeSlices_t
+			{
+
+
+				struct Dilutions_t
+				{
+				std::string        soln_file;  //Solution filename for this dilution 
+	  		PropSourceConst_t  source_header;
+	  		ChromaProp_t       prop_header;
+				};
 	
-	multi1d<int>       t0;  //Times included in this dilution
 				
-	multi1d<Dilutions_t>  dilutions; //dilutions per timeslice per spin
-      };
+				int       t0;      //time slice on which this diluted source 
+													 //has support. Full time dilution is assumed
+			
+				multi1d<Dilutions_t>  dilutions; 
+      
+			};
 				
-      int   decay_dir;
+			multi1d<TimeSlices_t> time_slices;
+
+			int   decay_dir;
       Seed  seed;
-      multi1d<TimeDilutions_t>  time_dilutions;
-    };
+    
+		};
+      
+		
 
-
-    //! Dilutions constructed from propagator solutions over MAKE_SOURCE dilutions
-    class Dilute : public DilutionOperator<LatticeFermion>
+    //! Dilution scheme constructed by propagator solutions over diluted MAKE_SOURCE calls 
+    class ConstDilutionScheme : public DilutionScheme<LatticeFermion>
     {
     public:
-      //! Construct from a parameters struct
-      Dilute(const Params& p) : params(p) {init();}
 
       //! Virtual destructor to help with cleanup;
-      ~Dilute() {}
-
-      //! Get an iterator for this dilution
-      const_iterator begin() const;
-
-      //! Get an iterator for this dilution
-      const_iterator end() const;
+      ~ConstDilutionScheme() {}
 
       //! The decay direction
       int getDecayDir() const {return quark.decay_dir;}
@@ -94,18 +92,15 @@ namespace Chroma
       //! The seed identifies this quark
       const Seed& getSeed() const {return quark.seed;}
 
-      //! Does this creation operator have support on times slice t0
-      bool hasTimeSupport(const_iterator iter, int t0) const;
+      //! Does the source have support on time slice t0 and dilution component
+			//dil?
+    //  bool hasSupport(int t0, int dil) const;
 
-      //! Return the original source vector
-      /*! NOTE: this might be slow */
-      LatticeFermion source() const;
-    
       //! Return the diluted source vector
-      LatticeFermion dilutedSource(const_iterator iter) const;
+      LatticeFermion dilutedSource(int t0, int dil) const;
     
       //! Return the solution vector corresponding to the diluted source
-      LatticeFermion dilutedSolution(const_iterator iter) const;
+      LatticeFermion dilutedSolution(int t0, int dil) const;
 
     protected:
       //! Initialize the object
@@ -113,7 +108,13 @@ namespace Chroma
 
     private:
       //! Hide default constructor
-      Dilute() {}
+      ConstDilutionScheme( const Params& p ) 
+			{ 
+				
+				params = p; 
+				init();
+
+			}
 
     private:
       Params params;

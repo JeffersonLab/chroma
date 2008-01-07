@@ -1,13 +1,14 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.2 2007-12-18 13:40:25 edwards Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.3 2008-01-07 15:19:43 jbulava Exp $
 /*! \file
- * \brief Inline measurement of stochastic group baryon operator
+ * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
  */
 
 #include "handle.h"
 #include "meas/hadron/dilution_quark_source_const_w.h"
-#include "meas/hadron/dilution_operator_factory.h"
+#include "meas/hadron/dilution_scheme_factory.h"
 #include "meas/inline/io/named_objmap.h"
+#include "meas/sources/dilutezN_source_const.h"
 
 namespace Chroma 
 { 
@@ -33,8 +34,16 @@ namespace Chroma
    */
   namespace DilutionQuarkSourceConstEnv
   { 
-    //Read time dilution files 
-    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeDilutions_t& input)
+    //Read Quark timeslice files 
+    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "timeslice_files", input.timeslice_files);
+    }
+
+		//Read Quark dilution files per timeslice
+    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -42,33 +51,21 @@ namespace Chroma
     }
 
 
-    //Write time dilution files 
-    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeDilutions_t& input)
+    //Write Quark time slice files 
+    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
+    {
+      push(xml, path);
+      write(xml, "timeslice_files", input.timeslice_files);
+      pop(xml);
+    }
+
+ //Write Quark dilution files 
+    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
       push(xml, path);
       write(xml, "dilution_files", input.dilution_files);
       pop(xml);
     }
-
-
-
-    //Read Quark dilution files 
-    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "time_files", input.time_files);
-    }
-
-
-    //Write Quark dilution files 
-    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
-    {
-      push(xml, path);
-      write(xml, "time_files", input.time_files);
-      pop(xml);
-    }
-
 
     //! Initialize
     Params::Params()
@@ -121,10 +118,10 @@ namespace Chroma
     // Anonymous namespace for registration
     namespace
     {
-      DilutionOperator<LatticeFermion>* createOperator(XMLReader& xml_in, 
+      DilutionScheme<LatticeFermion>* createScheme(XMLReader& xml_in, 
 						       const std::string& path) 
       {
-	return new Dilute(Params(xml_in, path));
+	return new ConstDilutionScheme(Params(xml_in, path));
       }
 
       //! Local registration flag
@@ -139,7 +136,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheFermDilutionOperatorFactory::Instance().registerObject(name, createOperator);
+	success &= TheFermDilutionSchemeFactory::Instance().registerObject(name, createScheme);
 	registered = true;
       }
       return success;
@@ -147,40 +144,19 @@ namespace Chroma
 
 
 
-    //--------------------------------------------------------------
-    //! Return the time dilution element to which a particular time belongs
-    bool Dilute::hasTimeSupport(const_iterator iter, int time) const
+    //-------------------------------------------------------------- 
+/*    bool ConstDilutionScheme::hasSupport(int t0, int dil) const
     {
-      int ret_t0 = 0;
-      bool stop = false; 
-				
-      for ( int t0 = 0 ; t0 < quark.time_dilutions.size() ;  ++t0 )
-      {
-	for ( int time0 = 0 ; time0 < quark.time_dilutions[t0].t0.size() ; ++time0 )
-	{
-	  if ( time == quark.time_dilutions[t0].t0[ time0 ] ) 
-	  {	
-	    ret_t0 = t0;	
-	    stop = true;
-	    break;
-	  }
-	}
-					
-	if (stop)
-	{
-	  break;
-	}
-				
-      }
-			
-      return ret_t0;
-    }			
-	
+    
+			return (quark.[dil].t0 == t0); 
+		
+		}			
+*/	
 
 
     //-------------------------------------------------------------------------------
     // Function call
-    void Dilute::init()
+    void ConstDilutionScheme::init()
     {
       START_CODE();
 
@@ -189,7 +165,7 @@ namespace Chroma
       snoop.start();
 
       //
-      // Read the source and solutions
+      // Read the soultion headers
       //
       StopWatch swatch;
       swatch.reset();
@@ -197,62 +173,45 @@ namespace Chroma
 
       try
       {
+
 	bool initq = false;
 
 	QDPIO::cout << "Attempt to read solutions " << endl;
 		
-	quark.time_dilutions.resize(params.quark.soln_files.size());
+	quark.dilutions.resize(params.quark.dilution_files.size());
 
-	QDPIO::cout << "time_dilutions.size= " << quark.time_dilutions.size() << endl;
-	for(int t=0; t < quark.time_dilutions.size(); ++t)
+	QDPIO::cout << "dilutions.size = " << quark.dilutions.size() << endl;
+	
+	for(int dil = 0; dil < quark.dilutions.size(); ++dil)
 	{
-	  quark.time_dilutions[t].dilutions.resize(params.quark.soln_files[t].dilution_files.size());
-	  QDPIO::cout << "dilutions.size= " << quark.time_dilutions[t].dilutions.size() << endl;
-	  for(int i=0; i < quark.time_dilutions[t].dilutions.size(); ++i)
-	  {
-	    // Short-hand
-	    const std::string& dilution_file = params.quark.soln_files[t].dilution_files[i];
+			quark.dilutions[dil].soln_file = params.quark.dilution_files[dil];
 
-	    QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
-	      quark.time_dilutions[t].dilutions[i];
-
+			
 	    XMLReader file_xml, record_xml, record_xml_source;
 
-	    QDPIO::cout << "reading file= " << dilution_file << endl;
-	    QDPFileReader from(file_xml, dilution_file, QDPIO_SERIAL);
+	    QDPIO::cout << "reading file = " << quark.dilutions[dil].soln_file << endl;
+	    QDPFileReader from(file_xml, quark.dilutions[dil].soln_file, QDPIO_SERIAL);
 
-	    //For now, read both source and solution
-	    read(from, record_xml, qq.soln);
-	    //  read(from, record_xml_source, qq.source);
+			//Read the record xml only
+			read(from, record_xml);
 	    close(from);
 
-	
-	    read(record_xml, "/Propagator/PropSource", qq.source_header);
-	    read(record_xml, "/Propagator/ForwardProp", qq.prop_header);
+	    read(record_xml, "/Propagator/PropSource", quark.dilutions[dil].source_header);
+	    read(record_xml, "/Propagator/ForwardProp", quark.dilutions[dil].prop_header);
 
-	    //Get source from the named object map 
-	    std::stringstream srcstrm;
-	    srcstrm << 	"zN_source_q" << n + 1 << "_t" << 
-	      qq.source_header.t_source;
 
-	    std::string source_name = srcstrm.str();
-
-	    qq.source = TheNamedObjMap::Instance().getData< LatticeFermion >(source_name);
-	    
-			
 	    if (!initq)
 	    {
 	      read(record_xml, "/Propagator/PropSource/Source/ran_seed",
 		   quark.seed);
 					
+	    	quark.dilutions[dil].decay_dir = quark.dilutions[dil].source_header.j_decay;
 	      initq = true;
 	    }
 
-	    qq.t0 = qq.source_header.t_source;
-	    j_decay = qq.source_header.j_decay;
+	    quark.dilutions[dil].t0 = quark.dilutions[dil].source_header.t_source;
 	   
-	  }
-	}
+	  }//dil
       } //try
       catch (const string& e) 
       {
@@ -261,7 +220,7 @@ namespace Chroma
       }
       swatch.stop();
 
-      QDPIO::cout << "Sources and solutions successfully read: time= "
+      QDPIO::cout << "Source and solution headers successfully read: time= "
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
 
@@ -269,8 +228,64 @@ namespace Chroma
       END_CODE();
     } // init
 
+
+		
+		//create and return the dilution source
+		//For gauge invariance testing reasons, this routine could be changed
+		//to get the source from the named object map
+		LatticeFermion ConstDilutionScheme::dilutedSource( int dil ) const 
+		{
+			QuarkSourceSolutions_t::Dilutions_t & qq = quark.dilutions[dil];
+
+			//Dummy gauge field to send to source construction;
+			multi1d<LatticeColorMatrix> dummy = zero;
+			
+
+			// Build source construction
+	    QDPIO::cout << "Source_id = " << qq.source_header.source.id << endl;
+	    QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << endl;
+
+	    std::istringstream  xml_s(qq.source_header.source.xml);
+	    XMLReader  sourcetop(xml_s);
+
+	    if (qq.source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
+	    {
+				QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+				QDP_abort(1);
+	    }
+
+	    // Manually create the params so I can peek into them and use the source constructor
+	    DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
+							     qq.source_header.source.path);
+	    DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
+      
+			QDP::RNG::setrn( quark[dil].seed );
+
+			 
+			return srcConst(dummy);
+	      
+		} //dilutedSource		
+
+
+		LatticeFermion ConstDilutionScheme::dilutedSolution(int dil) const 
+		{
+			
+			const std::string & filename = quark.dilutions[dil].soln_file;
+
+			LatticeFermion soln; 
+
+		  XMLReader file_xml, record_xml, record_xml_source;
+
+	    QDPIO::cout << "reading file = " << quark.dilutions[dil].soln_file << endl;
+	    QDPFileReader from(file_xml, quark.dilutions[dil].soln_file, QDPIO_SERIAL);
+
+			read(from, record_xml, soln);
+
+			return soln;
+		}
+
+
+	
   } // namespace DilutionQuarkSourceConstEnv
 
-  /*! @} */  // end of group hadron
 
-} // namespace Chroma
