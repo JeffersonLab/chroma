@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.4 2008-01-07 15:19:43 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.5 2008-01-08 19:06:12 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -44,7 +44,7 @@ namespace Chroma
 			
 			};
 	
-      QuarkFiles_t  quark;       /*!< All the solutions for a single quark */
+      QuarkFiles_t  quark_files;       /*!< All the solutions for a single quark */
     }; // struct Params
 
   //! Structure holding a source and its solutions
