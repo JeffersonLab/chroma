@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_v3_w.h,v 1.1 2007-12-14 06:53:42 edwards Exp $
+// $Id: inline_stoch_group_baryon_v3_w.h,v 1.2 2008-01-08 18:59:34 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -31,27 +31,30 @@ namespace Chroma
 
       struct Param_t
       {
-	int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
-	int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
-	GroupXML_t          source_quark_smearing; /*!< xml string holding smearing params */
-	GroupXML_t          sink_quark_smearing;   /*!< xml string holding smearing params */
-	GroupXML_t          link_smearing;         /*!< link smearing xml */
-	multi1d<GroupXML_t> dilutions;             /*!< Dilutions for each quark */
-      };
+				int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
+				int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
+				GroupXML_t          source_quark_smearing; /*!< xml string holding smearing params */
+				GroupXML_t          sink_quark_smearing;   /*!< xml string holding smearing params */
+				GroupXML_t          link_smearing;         /*!< link smearing xml */
+
+				multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
+      } param;
 
       struct NamedObject_t
       {
-	struct ThreeQuarkOpsFile_t
-	{
-	  std::string        ops_file;       /*!< Coefficient file name */
-	  std::string        id;             /*!< ID/tag used in analysis codes*/
-	};
+				struct ThreeQuarkOpsFile_t
+				{
+	  			std::string        ops_file;       /*!< Coefficient file name */
+	  			std::string        id;             /*!< ID/tag used in analysis codes*/
+				};
 
-	ThreeQuarkOpsFile_t  operators_file; /*!< Files holding 3-quark ops to make*/
+				ThreeQuarkOpsFile_t  operators_file; /*!< Files holding 3-quark ops to make*/
 
-	std::string          quark_ids;      /*!< 3 character string indicating which quarks are degenerate */
-	std::string          gauge_id;       /*!< Gauge field */
-      } named_obj;
+				std::string          quark_ids;      /*!< 3 character string indicating which quarks are degenerate */
+	
+				std::string          gauge_id;       /*!< Gauge field */
+      
+			} named_obj;
 
       std::string xml_file;  // Alternate XML file pattern
     };

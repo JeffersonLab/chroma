@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.7 2007-12-06 18:31:58 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.8 2008-01-08 18:59:34 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -13,8 +13,6 @@
 #include "meas/sources/source_smearing_factory.h"
 #include "meas/sinks/sink_smearing_aggregate.h"
 #include "meas/sinks/sink_smearing_factory.h"
-#include "meas/sources/dilutezN_source_const.h"
-#include "meas/sources/zN_src.h"
 #include "meas/glue/mesplq.h"
 #include "meas/smear/displacement.h"
 #include "util/ferm/diractodr.h"
@@ -24,8 +22,6 @@
 #include <sstream> 
 
 #include "meas/inline/io/named_objmap.h"
-
-//#define STOCH_USE_ALL_TIME_SLICES 1
 
 namespace Chroma 
 { 
@@ -66,7 +62,7 @@ namespace Chroma
     }
 
 
-    // Reader for input parameters
+    // Writer for input parameters
     void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
     {
       push(xml, path);
@@ -84,28 +80,28 @@ namespace Chroma
     }
 
 
-    // Coefficient files
-    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::CoeffFiles_t& input)
+    //Reader for 3-quark operator file
+    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::ThreeQuarkOpsFile_t& input)
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "coeff_file", input.coeff_file);
+      read(inputtop, "ops_file", input.ops_file);
       read(inputtop, "id", input.id);
     }
 
 
-    // Coefficient files
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::CoeffFiles_t& input)
+    // Writer for 3-quark operator file
+    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::ThreeQuarkOpsFile_t& input)
     {
       push(xml, path);
-      write(xml, "coeff_file", input.coeff_file);
+      write(xml, "ops_file", input.ops_file);
       write(xml, "id", input.id);
       pop(xml);
     }
 
 
-    // Dilutions for each time slice
-    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::Operator_t::TimeSlices_t& input)
+    //Read spin dilution files   
+    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::QuarkFiles_t::TimeDilutions_t::SpinDilutions_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -113,52 +109,69 @@ namespace Chroma
     }
 
 
-    // Dilutions for each time slice
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::Operator_t::TimeSlices_t& input)
+    //Write spin dilution files 
+    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::QuarkFiles_t::TimeDilutions_t::SpinDilutions_t& input)
     {
       push(xml, path);
       write(xml, "dilution_files", input.dilution_files);
       pop(xml);
     }
 
-
-    // Operator parameters
-    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::Operator_t& input)
+    //Read time dilution files 
+    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::QuarkFiles_t::TimeDilutions_t& input)
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "soln_files", input.soln_files);
-    }
+      read(inputtop, "spin_files", input.spin_files);
+		}
 
 
-    // Operator parameters
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::Operator_t& input)
+    //Write time dilution files 
+    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::QuarkFiles_t::TimeDilutions_t& input)
     {
       push(xml, path);
-      write(xml, "soln_files", input.soln_files);
+      write(xml, "spin_files", input.spin_files);
       pop(xml);
     }
 
 
-    //! Propagator parameters
+
+    //Read Quark dilution files 
+    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::QuarkFiles_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "time_files", input.time_files);
+    }
+
+
+    //Write Quark dilution files 
+    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::QuarkFiles_t& input)
+    {
+      push(xml, path);
+      write(xml, "time_files", input.time_files);
+      pop(xml);
+    }
+
+
+    //! Read named objects 
     void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
       read(inputtop, "gauge_id", input.gauge_id);
-      read(inputtop, "operator_file", input.operator_file);
-      read(inputtop, "operator_coeff_files", input.operator_coeff_files);
+      read(inputtop, "operators_file", input.operators_file);
       read(inputtop, "Quarks", input.quarks);
+      read(inputtop, "Quark_ids", input.quark_ids);
     }
 
-    //! Propagator parameters
+    //! Write named objects
     void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
       write(xml, "gauge_id", input.gauge_id);
-      write(xml, "operator_file", input.operator_file);
-      write(xml, "operator_coeff_files", input.operator_coeff_files);
+      write(xml, "operators_file", input.operators_file);
       write(xml, "Quarks", input.quarks);
 
       pop(xml);
@@ -259,52 +272,119 @@ namespace Chroma
     struct QuarkSourceSolutions_t
     {
       //! Structure holding solutions
-      struct TimeSlices_t
+      struct TimeDilutions_t
       {
-	struct Dilutions_t
-	{
-	  int                t0;
-	  LatticeFermion     source;
-	  LatticeFermion     soln;
-	  PropSourceConst_t  source_header;
-	  ChromaProp_t       prop_header;
-	};
+				struct SpinDilutions_t
+				{
+					struct Dilutions_t
+					{
+	  
+						
+						LatticeFermion     source;
+	  				LatticeFermion     soln;
+	  				PropSourceConst_t  source_header;
+	  				ChromaProp_t       prop_header;
+					};
 
-	multi1d<Dilutions_t>  dilutions;
-      };
+	  			multi1d<int>       s0;   //Spins included in this dilution
+					
+					multi1d<Dilutions_t>  dilutions; //dilutions per timeslice per spin
+				
+				};
+				
+	  		multi1d<int>       t0;  //Times included in this dilution
+				
+				multi1d<SpinDilutions_t> spin_dilutions;
+			
+				int findSpin (const int spin) const //return the spin dilution element to which 'spin' belongs
+				{
+					int ret_s0 = 0;
 
-      int   decay_dir;
-      Seed  seed;
-      multi1d<TimeSlices_t>  time_slices;
-    };
+					bool stop = false; 
 
+					for (int s0 = 0 ; s0 < spin_dilutions.size() ; ++s0)
+					{
+						for (int spin0 = 0 ; spin0 < spin_dilutions[s0].s0.size() ; ++spin0)
+						{
+							if (spin == spin_dilutions[s0].s0[spin0])
+							{
+								ret_s0 = s0;
+								stop = true; 
+								break;
+							}
+						}
+						
+						if (stop)
+						{
+							break; 
+						}
+							
+					}
 
-    //! Operator coefficient structure
-    struct OperCoeffs_t
-    {
-      struct CoeffTerms_t
-      {
-	struct CoeffTerm_t
-	{
-	  struct QuarkTerm_t
-	  {
-	    int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-
-	    int  spin;            /*!< 0-based spin index */
-	    int  disp_dir;        /*!< 0-based direction */
-	    int  disp_len;        /*!< 0-based length */
-	  };
-
-	  multi1d<QuarkTerm_t>  quark;    /*!< Displacement and spin for each quark */
-	  Complex               coeff;    /*!< Weight on color contraction */
-	};
-
-	multi1d<CoeffTerm_t> op;          /*!< Terms within a single operator */
-	std::string name;                 /*!< Name of the operator */
+					return ret_s0; 
+				
+				}
+			
 			};
 
-      multi1d<CoeffTerms_t>  ops;         /*!< All the operators within a file */
-    };
+      
+			int   decay_dir;
+      Seed  seed;
+     	multi1d<TimeDilutions_t>  time_dilutions;
+    
+			int findTime( const int time) const   //return the time dilution element to which a particular time 
+			{																						//belongs
+				
+				int ret_t0 = 0;
+				bool stop = false; 
+				
+				for ( int t0 = 0 ; t0 < time_dilutions.size() ;  ++t0 )
+				{
+					for ( int time0 = 0 ; time0 < time_dilutions[t0].t0.size() ; ++time0 )
+					{
+						if ( time == time_dilutions[t0].t0[ time0 ] ) 
+						{	
+							ret_t0 = t0;	
+							stop = true;
+							break;
+						}
+				
+					}
+					
+					if (stop)
+					{
+						break;
+					}
+				
+				}
+			
+				return ret_t0;
+			}			
+		
+		};
+
+
+    //! 3-quark operator structure
+	struct ThreeQuarkOps_t
+	{
+		
+		struct ThreeQuarkOp_t
+		{
+	  
+			struct QuarkInfo_t
+	  	{
+	    	int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
+	    	int  spin;            /*!< 0-based spin index */
+	    	int  disp_dir;        /*!< 0-based direction */
+	    	int  disp_len;        /*!< 0-based length */
+	  	};
+
+	  	multi1d<QuarkInfo_t>  quark;    /*!< Displacement and spin for each quark */
+	  	std::string name;                 /*!< Name of the 3-quark operator */
+		};
+	
+		multi1d<ThreeQuarkOp_t> ops; /*!< 3-quark ops within a file */
+	};
 
 
     //! Structure holding structures
@@ -337,19 +417,28 @@ namespace Chroma
     {
       struct Quarks_t
       {
-	struct TimeSlices_t
+	struct TimeDilutions_t
 	{
-	  struct Dilutions_t
-	  {
-	    int                 t0;
-	    LatticeColorVector  source;
-	    LatticeColorVector  soln;
-	  };
+		struct SpinDilutions_t
+		{
+			
+	  	struct Dilutions_t
+	  	{
+	    	LatticeColorVector  source;
+	    	LatticeColorVector  soln;
+	  	};
 
-	  multi1d<Dilutions_t> dilutions;
-	};
+		
+			multi1d<int> s0;	//Array of participating spins for this dilution element 
+	 		multi1d<Dilutions_t> dilutions; //Additional dilutions   
+		
+		};
 
-	multi1d<TimeSlices_t> time_slices;
+		multi1d<int> t0;  //Array of participating timeslices for this dilution element
+		SpinDilutions_t spin_dilutions;    //Only one spin dilution element needs to be calculated
+	};	
+	
+	multi1d<TimeDilutions_t> time_dilutions;
       };
 
       multi1d<Quarks_t>  quarks;
@@ -365,27 +454,42 @@ namespace Chroma
       struct Orderings_t
       {
 	//! Baryon operator time slices
-	struct TimeSlices_t
+	struct TimeDilutions_t
 	{
-	  //! Baryon operator dilutions
-	  struct Dilutions_t
-	  {
-	    //! Momentum projected correlator
-	    struct Mom_t
-	    {
-	      multi1d<int>       mom;       /*!< D-1 momentum of this operator */
-	      multi1d<DComplex>  op;        /*!< Momentum projected operator */
-	    };
+	  struct SpinDilutions_t               //A single set of 3 spin dilution indicies 
+		{
+			//! Baryon operator dilutions
+	  	struct Dilutions_t
+	  	{
+	    	//! Momentum projected correlator
+	    	struct Mom_t
+	    	{
+	      	multi1d<int>       mom;       /*!< D-1 momentum of this operator */
+	      	multi1d<DComplex>  op;        /*!< Momentum projected operator */
+	    	};
 
-	    multi1d<Mom_t> mom_projs;       /*!< Holds momentum projections of the operator */
-	  };
+	  		multi1d<Mom_t> mom_projs;       /*!< Holds momentum projections of the operator */
+	  
+			};
+	  	
+			multi1d<int> s0_l;  // participating spins for left quark
+			multi1d<int> s0_m;  // participating spins for middle quark
+			multi1d<int> s0_r;  // participating spins for right quark
+			
+			multi3d<Dilutions_t> dilutions;   /*!< Additional dilution indices  */
+		};
 
-	  int                  t0;          /*!< Source time location */
-	  multi3d<Dilutions_t> dilutions;   /*!< Hybrid list indices */
+	  multi1d<int>  t0_l;          /*!< Left quark participating time_slices for this dilution element */
+	  multi1d<int>  t0_m;          /*!< Middle quark participating time_slices for this dilution element */
+	  multi1d<int>  t0_r;          /*!< Right quark participating time_slices for this dilution element */
+	
+		SpinDilutions_t spin;        /*!< Only one combination of the 3 spin dilution elements needs to be calculated */
+		
 	};
 	  
 	multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
-	multi1d<TimeSlices_t> time_slices;  /*!< Time slices of the lattice that are used */
+	
+	multi1d<TimeDilutions_t> time_dilutions;  /*!< combination of time dilution elements for each quark */
       };
 
       multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
@@ -427,29 +531,43 @@ namespace Chroma
 
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t::Mom_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t::Mom_t& param)
     {
       write(bin, param.mom);
       write(bin, param.op);
     }
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t& param)
     {
       write(bin, param.mom_projs);
     }
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeSlices_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeDilutions_t::SpinDilutions_t& param)
     {
       write(bin, param.dilutions);
-    }
+    	
+			write(bin, param.s0_l);
+    	write(bin, param.s0_m);
+    	write(bin, param.s0_r);
+		}
+    
+		//! BaryonOperator binary writer
+    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeDilutions_t& param)
+    {
+      write(bin, param.spin);
+    	
+			write(bin, param.t0_l);
+    	write(bin, param.t0_m);
+    	write(bin, param.t0_r);
+		}
 
     //! BaryonOperator binary writer
     void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t& param)
     {
       write(bin, param.perm);
-      write(bin, param.time_slices);
+      write(bin, param.time_dilutions);
     }
 
     //! BaryonOperator binary writer
@@ -467,31 +585,28 @@ namespace Chroma
 
 
 
-    //! Read operator coefficient files
-    void readCoeffs(OperCoeffs_t& coeffs, 
-		    const std::string& operator_coeff_file,
+    //! Read 3-quark operators file
+    void readOps(ThreeQuarkOps_t& oplist, 
+		    const std::string& ops_file,
 		    int displacement_length)
     {
       START_CODE();
 
-      TextFileReader reader(operator_coeff_file);
+      TextFileReader reader(ops_file);
 
       int num_ops;
       reader >> num_ops;
-      coeffs.ops.resize(num_ops);
-
-      for(int n=0; n < coeffs.ops.size(); ++n)
+      oplist.ops.resize(num_ops);
+			
+			//Loop over ops within a file
+      for(int n=0; n < oplist.ops.size(); ++n)
       {
-	int num_terms;
-	std::string name; 
-	reader >> num_terms >> name;
-	coeffs.ops[n].op.resize(num_terms);
-	coeffs.ops[n].name = name;  
+				std::string name; 
+				reader >> name;
+				oplist.ops[n].name = name;  
 	
-	for(int l=0; l < coeffs.ops[n].op.size(); ++l)
-	{
-	  OperCoeffs_t::CoeffTerms_t::CoeffTerm_t& term = coeffs.ops[n].op[l];
-	  term.quark.resize(3);
+	  ThreeQuarkOps_t::ThreeQuarkOp_t& qqq = oplist.ops[n];
+	  qqq.quark.resize(3);
 
 	  // Make spin index 0 based
 	  {
@@ -499,7 +614,7 @@ namespace Chroma
 	    reader >> spin[0] >> spin[1] >> spin[2];
 
 	    for(int i=0; i < spin.size(); ++i)
-	      term.quark[i].spin = spin[i] - 1;
+	      qqq.quark[i].spin = spin[i] - 1;
 	  }
 
 	  // Convert displacements to  disp_dir, disp_len
@@ -509,47 +624,38 @@ namespace Chroma
 
 	    for(int i=0; i < displacement.size(); ++i)
 	    {
-	      term.quark[i].displacement = displacement[i];
+	      qqq.quark[i].displacement = displacement[i];
 
 	      if (displacement[i] == 0)
 	      {
-		term.quark[i].disp_dir = 0;
-		term.quark[i].disp_len = 0;
+		qqq.quark[i].disp_dir = 0;
+		qqq.quark[i].disp_len = 0;
 	      }
 	      else if (displacement[i] > 0)
 	      {
-		term.quark[i].disp_dir = term.quark[i].displacement - 1;
-		term.quark[i].disp_len = displacement_length;
+		qqq.quark[i].disp_dir = qqq.quark[i].displacement - 1;
+		qqq.quark[i].disp_len = displacement_length;
 	      }
 	      else
 	      {
-		term.quark[i].disp_dir = -term.quark[i].displacement - 1;
-		term.quark[i].disp_len = -displacement_length;
+		qqq.quark[i].disp_dir = -qqq.quark[i].displacement - 1;
+		qqq.quark[i].disp_len = -displacement_length;
 	      }
-	    }
+	    } 
 	  }
 
-	  // Read the garbage around a complex
-	  {
-	    Real re, im;
-	    char lparen, comma, rparen;
-
-	    reader >> lparen >> re >> comma >> im >> rparen;
-	    term.coeff = cmplx(re,im);
-	  }
-	}
-      }
+      } //n
 	
       reader.close();
 
       END_CODE();
-    }
+    } //void
 
 
     //! Construct array of maps of displacements
     void displaceQuarks(map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quarks,
 			const multi1d<LatticeColorMatrix>& u_smr,
-			const multi1d<OperCoeffs_t>&  coeffs,
+			const ThreeQuarkOps_t&  oplist,
 			const multi1d<QuarkSourceSolutions_t> quarks)
     {
       START_CODE();
@@ -558,26 +664,21 @@ namespace Chroma
 			
       cout << __func__ << ": entering" << endl;
 
-      // Loop over all files of operators
-      for(int f=0; f < coeffs.size(); ++f)
-      {
-	// Loop over each operator within a file
-	for(int c=0; c < coeffs[f].ops.size(); ++c)
-	{
-	  // Loop over the rows/terms within an operator
-	  for(int l=0; l < coeffs[f].ops[c].op.size(); ++l)
+	  // Loop over the ops
+	  for(int l=0; l < oplist.ops.size(); ++l)
 	  {
-	    const OperCoeffs_t::CoeffTerms_t::CoeffTerm_t& term = coeffs[f].ops[c].op[l];
+	    const ThreeQuarkOps_t::ThreeQuarkOp_t& qqq_op = oplist.ops[l];
 	    
-	    for(int i=0; i < term.quark.size(); ++i)
+	    //Loop over quark terms within the op
+			for(int i = 0; i < qqq_op.quark.size(); ++i)
 	    {
-	      const OperCoeffs_t::CoeffTerms_t::CoeffTerm_t::QuarkTerm_t& term_q = term.quark[i];
+	      const ThreeQuarkOps_t::ThreeQuarkOp_t::QuarkInfo_t& q_info = qqq_op.quark[i];
 
 	      // Check if this displacement and spin are in the map,
 	      // if not, then *ALL* quarks and dilutions must be shifted
 	      KeySmearedDispColorVector_t key;
-	      key.displacement = term_q.displacement;
-	      key.spin         = term_q.spin;
+	      key.displacement = q_info.displacement;
+	      key.spin         = q_info.spin;
 
 	      // If no entry, then create a displaced version of the quark
 	      if (disp_quarks.find(key) == disp_quarks.end())
@@ -613,39 +714,43 @@ namespace Chroma
 		
 		snoop.reset();
 		snoop.start();
-		
+	
+		//Loop over all quarks 
 		for(int n=0; n < disp_q.quarks.size(); ++n)
 		{
-		  disp_q.quarks[n].time_slices.resize(quarks[n].time_slices.size());
+		  disp_q.quarks[n].time_dilutions.resize(quarks[n].time_dilutions.size());
 
-		  for(int t=0; t < disp_q.quarks[n].time_slices.size(); ++t)
+		  for(int t0 = 0; t0 < disp_q.quarks[n].time_dilutions.size(); ++t0)
 		  {
-		    disp_q.quarks[n].time_slices[t].dilutions.resize(quarks[n].time_slices[t].dilutions.size());
+			
+					  //Denotes which dilution element contains the desired spin 
+						const int spin = quarks[n].time_dilutions[t0].findSpin( key.spin );
+						
+						disp_q.quarks[n].time_dilutions[t0].spin_dilutions.dilutions.resize(quarks[n].time_dilutions[t0].spin_dilutions[ spin ].dilutions.size());
+						
+						for(int m=0; m < disp_q.quarks[n].time_dilutions[t0].spin_dilutions.dilutions.size(); ++m)
+		    		{
+		      	
+							// Short-hand
+		      		const QuarkSourceSolutions_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t& qq = 
+			quarks[n].time_dilutions[t0].spin_dilutions[ spin ].dilutions[ m ];
 
-		    for(int m=0; m < disp_q.quarks[n].time_slices[t].dilutions.size(); ++m)
-		    {
-		      // Short-hand
-		      const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
-			quarks[n].time_slices[t].dilutions[m];
-
-		      SmearedDispColorVector_t::Quarks_t::TimeSlices_t::Dilutions_t& dil = 
-			disp_q.quarks[n].time_slices[t].dilutions[m];
+		      		SmearedDispColorVector_t::Quarks_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t& dil = 
+			disp_q.quarks[n].time_dilutions[t0].spin_dilutions.dilutions[ m ];
+					
 					
 
-		      // Pull out the appropriate spin component, then displace it
-		      dil.t0     = qq.t0;
-		      dil.source = peekSpin(qq.source, term_q.spin);
-		      dil.soln   = peekSpin(qq.soln,   term_q.spin);
+		      		// Pull out the appropriate spin component, then displace it
+							
+		      		dil.source = peekSpin(qq.source, q_info.spin);
+		      		dil.soln   = peekSpin(qq.soln,   q_info.spin);
 
 					
-					//if (dil.source != zero)
-					{
-		      	displacement(u_smr, dil.source, term_q.disp_len, term_q.disp_dir);
-		      	displacement(u_smr, dil.soln,   term_q.disp_len, term_q.disp_dir);
-		    	}
+		     			displacement(u_smr, dil.source, q_info.disp_len, q_info.disp_dir);
+		     			displacement(u_smr, dil.soln,   q_info.disp_len, q_info.disp_dir);
 
-					} // for m
-		  } // for t
+						} // for m
+					} // for t0
 		} // for n
 		
 		snoop.stop();
@@ -658,8 +763,6 @@ namespace Chroma
 	      } // if find in map
 	    } // for i
 	  } // for l
-	}  // for n
-      }  // for c
 	
       cout << __func__ << ": exiting" << endl;
 
@@ -760,73 +863,132 @@ namespace Chroma
       swatch.start();
 
       multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.quarks.size());
-      QDPIO::cout << "Number of quarks= " << params.named_obj.quarks.size() << endl;
+      QDPIO::cout << "Number of quarks = " << params.named_obj.quarks.size() << endl;
 
       // Grab the decay direction
       int j_decay;
 
       try
       {
-	QDPIO::cout << "quarks.size= " << quarks.size() << endl;
-	for(int n=0; n < quarks.size(); ++n)
+	QDPIO::cout << "quarks.size = " << quarks.size() << endl;
+	
+
+	
+	for(int n = 0; n < quarks.size(); ++n)
 	{
 		bool initq = false;
 
-	  QDPIO::cout << "Attempt to read solutions for source number= " << n << endl;
-	  quarks[n].time_slices.resize(params.named_obj.quarks[n].soln_files.size());
+	  QDPIO::cout << "Attempt to read solutions for source number " << n << endl;
+		
+		quarks[n].time_dilutions.resize(params.named_obj.quarks[n].time_files.size());
 
-	  QDPIO::cout << "time_slices.size= " << quarks[n].time_slices.size() << endl;
-	  for(int t=0; t < quarks[n].time_slices.size(); ++t)
+		//Ensure that each time dilution element contains the same number of spin dilutions
+		
+		int n_spin_dil = params.named_obj.quarks[n].time_files[0].spin_files.size();
+		
+		
+	  QDPIO::cout << "time_dilutions.size = " << quarks[n].time_dilutions.size() << endl;
+	  
+		for(int t0 = 0 ; t0 < quarks[n].time_dilutions.size() ; ++t0)
 	  {
-	    quarks[n].time_slices[t].dilutions.resize(params.named_obj.quarks[n].soln_files[t].dilution_files.size());
-	    QDPIO::cout << "dilutions.size= " << quarks[n].time_slices[t].dilutions.size() << endl;
-	    for(int i=0; i < quarks[n].time_slices[t].dilutions.size(); ++i)
-	    {
-	      // Short-hand
-	      const std::string& dilution_file = params.named_obj.quarks[n].soln_files[t].dilution_files[i];
+	    bool init_t = false;
+			
+			if ( n_spin_dil != params.named_obj.quarks[n].time_files[t0].spin_files.size() )
+			{
+				QDPIO::cerr << "Unequal number of spin dilutions for each time dilution : t0 = " 
+					<< t0 << endl; 
+				
+				QDP_abort(1);
 
-	      QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t& qq = 
-		quarks[n].time_slices[t].dilutions[i];
+			}
 
-	      XMLReader file_xml, record_xml, record_xml_source;
+			//Ensure that each additional dilution per spin contains the same number of elements
+			int n_dil = params.named_obj.quarks[n].time_files[t0].spin_files[0].dilution_files.size();
+		
+			
+			quarks[n].time_dilutions[t0].spin_dilutions.resize(params.named_obj.quarks[n].time_files[t0].spin_files.size());
+			
+	    QDPIO::cout << "spin_dilutions.size = " << quarks[n].time_dilutions[t0].spin_dilutions.size() << endl;
+	    
+			for( int s0 = 0 ; s0 < quarks[n].time_dilutions[t0].spin_dilutions.size() ; ++s0 )
+			{
+				bool init_s = false;
+				
+	    	if (n_dil != params.named_obj.quarks[n].time_files[t0].spin_files[s0].dilution_files.size())
+				{
+					QDPIO::cerr << "Unequal number of additional dilutions for each spin dilution : s0 = "
+						<< s0 << endl; 
+					
+					QDP_abort(1);
+				}
+				
+				quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions.resize(params.named_obj.quarks[n].time_files[t0].spin_files[s0].dilution_files.size());
+			
+	    	QDPIO::cout << "dilutions.size = " << quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions.size() << endl;
+			
+				for(int i = 0 ; i < quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions.size() ; ++i)
+	    	{
+	      	// Short-hand
+	      	const std::string& dilution_file = params.named_obj.quarks[n].time_files[t0].spin_files[s0].dilution_files[i];
 
-	      QDPIO::cout << "reading file= " << dilution_file << endl;
-	      QDPFileReader from(file_xml, dilution_file, QDPIO_SERIAL);
+	      	QuarkSourceSolutions_t::TimeDilutions_t::SpinDilutions_t::Dilutions_t& qq = 
+						quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions[i];
 
-				//For now, read both source and solution
-				read(from, record_xml, qq.soln);
-	    //  read(from, record_xml_source, qq.source);
-				close(from);
+	      	XMLReader file_xml, record_xml;
 
+	      	QDPIO::cout << "reading file= " << dilution_file << endl;
+	      	QDPFileReader from(file_xml, dilution_file, QDPIO_SERIAL);
+
+					read(from, record_xml, qq.soln);
+					close(from);
 	
-				read(record_xml, "/Propagator/PropSource", qq.source_header);
-	      read(record_xml, "/Propagator/ForwardProp", qq.prop_header);
+					read(record_xml, "/Propagator/PropSource", qq.source_header);
+	      	read(record_xml, "/Propagator/ForwardProp", qq.prop_header);
 
-				//Get source from the named object map 
-				std::stringstream srcstrm;
-				srcstrm << 	"zN_source_q" << n + 1 << "_t" << 
+					//Get source from the named object map 
+					std::stringstream srcstrm;
+					srcstrm << 	"zN_source_q" << n + 1 << "_t" << 
 					qq.source_header.t_source;
 
-				std::string source_name = srcstrm.str();
+					std::string source_name = srcstrm.str();
 
-				qq.source = TheNamedObjMap::Instance().getData< LatticeFermion >(source_name);
+					qq.source = TheNamedObjMap::Instance().getData< LatticeFermion >(source_name);
 	    
 			
-				if (!initq)
-				{
-					read(record_xml, "/Propagator/PropSource/Source/ran_seed",
-					quarks[n].seed);
+					if (!initq)
+					{
+						read(record_xml, "/Propagator/PropSource/Source/ran_seed",
+						quarks[n].seed);
 					
-					initq = true;
-				}
+	      		j_decay = qq.source_header.j_decay;
+						
+						initq = true;
+					}
 
-	      qq.t0 = qq.source_header.t_source;
-	      j_decay = qq.source_header.j_decay;
-	   
-			}
-	  }
-	}
-      }
+					if (!init_t)
+					{
+						//Must be fixed, assumes full time dilution
+						quarks[n].time_dilutions[t0].t0.resize(1);
+						quarks[n].time_dilutions[t0].t0[0] = qq.source_header.t_source;
+	   			
+						init_t = true;
+						
+					}	
+
+
+					if (!init_s)
+					{
+						read(record_xml, "/Propagator/PropSource/Source/spin_mask" , 
+								quarks[n].time_dilutions[t0].spin_dilutions[s0].s0 ) ;	
+					
+					
+						init_s = true;
+					}
+				} //i
+	  	} //s0
+		} //t0
+ 	}//n
+      } //try
       catch (const string& e) 
       {
 	QDPIO::cerr << "Error extracting headers: " << e << endl;
@@ -864,13 +1026,16 @@ namespace Chroma
       // To prime the work, grab a first chunk of time slices for the
       // rest of the checks
       //
-      multi1d<int> participating_time_slices(quarks[0].time_slices.size());
+/*
+			multi1d<int> participating_time_slices(quarks[0].time_slices.size());
       for(int t=0; t < quarks[0].time_slices.size(); ++t)
       {
 	participating_time_slices[t] = quarks[0].time_slices[t].dilutions[0].t0;
       }
-
+*/
+			
 //------------------------------------------------------      
+/*
 #if defined(STOCH_USE_ALL_TIME_SLICES)
       // Sanity check - this may be relaxed later
       // The time slices should be the entire length of the time axis
@@ -895,6 +1060,7 @@ namespace Chroma
 	}
       }
 #endif
+*/
 //------------------------------------------------------      
 
 
@@ -908,20 +1074,26 @@ namespace Chroma
      /* try
       {
 	push(xml_out, "Norms"); */
+	
+			
+	/*		
+			
 	for(int n=0; n < quarks.size(); ++n)
 	{
-	 /* bool first = true;
+	  
+		bool first = true;
 	  int  N;
 	  LatticeFermion quark_noise;      // noisy source on entire lattice
-*/
+		
 	  // Sanity check - the number of time slices better match
-	  if (participating_time_slices.size() != quarks[n].time_slices.size())
+	  
+		if (participating_time_slices.size() != quarks[n].time_slices.size())
 	  {
 	    QDPIO::cerr << name << ": incompatible number of time slices for quark_num= " << n
 			<< endl;
 	    QDP_abort(1);
 	  }
-
+		
 	  for(int t=0; t < quarks[n].time_slices.size(); ++t)
 	  {
 	    for(int i=0; i < quarks[n].time_slices[t].dilutions.size(); ++i)
@@ -941,7 +1113,7 @@ namespace Chroma
 			    << endl;
 		QDP_abort(1);
 	      }
-/*
+
 	      // Build source construction
 	      QDPIO::cout << "Source_id = " << qq.source_header.source.id << endl;
 	      QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << endl;
@@ -1017,19 +1189,19 @@ namespace Chroma
 		pop(xml_out);
 	      }
 #endif 
-*/
+
 			} // end for t
 	  } // end for i
-/*
+
 	  Double dcnt = norm2(quark_noise);
 	  if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
 	  {
 	    QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
 	    QDP_abort(1);
 	  }
-*/
+
 	} // end for n
-/*
+
 	pop(xml_out);  // norms
       } // end try
       catch(const std::string& e) 
@@ -1045,12 +1217,15 @@ namespace Chroma
 		  << " secs" << endl;
 */
 
+		
       //
       // Another sanity check. The seeds of all the quarks must be different
       //
+			//Fix this; what if quarks 1 and 2 are the same?
       for(int n=1; n < quarks.size(); ++n)
       {
-	if ( toBool(quarks[n].seed == quarks[0].seed) )
+		 
+	if ( toBool(quarks[n].seed == quarks[0].seed) ) 
 	{
 	  QDPIO::cerr << name << ": error, baryon op seeds are the same" << endl;
 	  QDP_abort(1);
@@ -1070,8 +1245,6 @@ namespace Chroma
       write(file_xml, "Config_info", gauge_xml);
       pop(file_xml);
 
-//      QDPFileWriter qdp_file(file_xml, params.named_obj.operator_file,     // are there one or two files???
-	//		     QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
 
       //
       // Smear the gauge field if needed
@@ -1107,16 +1280,14 @@ namespace Chroma
       //
       // Read operator coefficients
       //
-      QDPIO::cout << "Reading operator coefficient files" << endl;
-      multi1d<OperCoeffs_t>  coeffs(params.named_obj.operator_coeff_files.size());
+      QDPIO::cout << "Reading 3-quark operators" << endl;
+      ThreeQuarkOps_t qqq_oplist; 
 
-      for(int i=0; i < coeffs.size(); ++i)
-      {
-	const std::string& file = params.named_obj.operator_coeff_files[i].coeff_file;
-	QDPIO::cout << "Reading operator coefficient file = " << file << endl;
+	
+			const std::string& file = params.named_obj.operators_file.ops_file;
 
-	readCoeffs(coeffs[i], file, params.param.displacement_length);
-      }
+	
+			readOps(qqq_oplist, file, params.param.displacement_length);
 
 
       //
@@ -1136,27 +1307,33 @@ namespace Chroma
 							  smeartop,
 							  params.param.source_quark_smearing.path);
 	
-	// Source smear all the sources up front
+	// Source smear all the sources up front, multiply by gamma_4 and 
+	// go to the Dirac spin basis 
 	// NOTE: the creation operator is non-zero on only 1 time slice; however,
 	// the smearing functions work on the entire lattice. Oh well.
 	for(int n=0; n < quarks.size(); ++n)
 	{
-	  QDPIO::cout << "Smearing sources for quark[" << n << "]  over dilutions = " 
-		      << quarks[n].time_slices.size() << endl;
+	  QDPIO::cout << "Smearing sources for quark[" << n << "]  over time_dilutions = " 
+		      << quarks[n].time_dilutions.size() << endl;
 
-	  for(int t=0; t < quarks[n].time_slices.size(); ++t)
+	  for(int t0 = 0; t0 < quarks[n].time_dilutions.size(); ++t0)
 	  {
-	    for(int i=0; i < quarks[n].time_slices[t].dilutions.size(); ++i)
-	    {
-	      LatticeFermion src(quarks[n].time_slices[t].dilutions[i].source);
-	      (*sourceQuarkSmearing)(src, u_smr);
+			for ( int s0 = 0 ; s0 < quarks[n].time_dilutions[t0].spin_dilutions.size() ; ++s0)
+			{
+	    	for(int i = 0; i < quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions.size(); ++i)
+	    	{
+	      	LatticeFermion src(quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions[i].source);
+	      	(*sourceQuarkSmearing)(src, u_smr);
 
 				//multiply by gamma_4 as well here
-	      quarks[n].time_slices[t].dilutions[i].source = rotate_mat * Gamma(1) * src;
-	    }
-	  }
-	}
+				SpinMatrix mat = rotate_mat * Gamma(8);
 
+
+	      quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions[i].source = mat * src;
+	    	}
+	  	}
+		}
+	}
 	QDPIO::cout << "Source smearings done" << endl;
       }
       catch(const std::string& e) 
@@ -1192,19 +1369,22 @@ namespace Chroma
 	// Smear the solutions up front
 	for(int n=0; n < quarks.size(); ++n)
 	{
-	  QDPIO::cout << "Smearing solutions for quark[" << n << "]  over dilutions = " 
-		      << quarks[n].time_slices.size() << endl;
+	  QDPIO::cout << "Smearing solutions for quark[" << n << "]  over time_dilutions = " 
+		      << quarks[n].time_dilutions.size() << endl;
 
-	  for(int t=0; t < quarks[n].time_slices.size(); ++t)
+	  for(int t0 = 0 ; t0 < quarks[n].time_dilutions.size() ; ++t0)
 	  {
-	    for(int i=0; i < quarks[n].time_slices[t].dilutions.size(); ++i)
-	    {
-	      LatticeFermion soln(quarks[n].time_slices[t].dilutions[i].soln);
-	      (*sinkQuarkSmearing)(soln, u_smr);
+			for (int s0 = 0 ; s0 < quarks[n].time_dilutions[t0].spin_dilutions.size() ; ++s0)
+			{
+				for(int i = 0 ; i < quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions.size() ; ++i)
+	    	{
+	      	LatticeFermion soln(quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions[i].soln);
+	      	(*sinkQuarkSmearing)(soln, u_smr);
 
-	      quarks[n].time_slices[t].dilutions[i].soln = rotate_mat * soln;
-	    }
-	  }
+	      	quarks[n].time_dilutions[t0].spin_dilutions[s0].dilutions[i].soln = rotate_mat * soln;
+	    	}
+	  	}
+		}
 	}
 
 	QDPIO::cout << "Solution smearings done" << endl;
@@ -1239,7 +1419,7 @@ namespace Chroma
       map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> disp_quarks;
 
       // The big displacement
-      displaceQuarks(disp_quarks, u_smr, coeffs, quarks);
+      displaceQuarks(disp_quarks, u_smr, qqq_oplist, quarks);
 
 
 
@@ -1255,7 +1435,37 @@ namespace Chroma
       //
       // Permutations of quarks within an operator
       //
-      int num_orderings = 6;   // number of permutations of the numbers  0,1,2
+      
+			
+
+			const std::string& pstring = params.named_obj.quark_ids; 
+			int num_orderings = 1; 
+			
+			//Should think of a cleverer algorithm for n quarks 
+			if  (pstring.size() != 3)
+			{
+				QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 3 but is " << pstring.size() << endl;
+				QDP_abort(1);
+			}
+
+			//If 2 identical quarks, different one must be in the third position
+			if ( ( pstring[0] == pstring[2] ) && ( pstring[1] != pstring[2] ) )
+			{
+				QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries."
+					<< endl;
+				QDP_abort(1);
+			}
+			
+			if ( pstring[1] == pstring[2] )
+			{
+				num_orderings = 2;
+			}
+			
+			if  (pstring[0] == pstring[2]) 
+			{
+				num_orderings = 6;
+			}
+					
       multi1d< multi1d<int> >  perms(num_orderings);
       {
 	multi1d<int> p(3);
@@ -1298,7 +1508,6 @@ namespace Chroma
       }
 
       // Creation operator
-     // swatch.start();
       BaryonOperator_t  creat_oper;
       creat_oper.mom2_max    = params.param.mom2_max;
       creat_oper.decay_dir   = j_decay;
@@ -1310,7 +1519,6 @@ namespace Chroma
       creat_oper.orderings.resize(num_orderings);
 
 			 // Annihilation operator
-     // swatch.start();
       BaryonOperator_t  annih_oper;
       annih_oper.mom2_max    = params.param.mom2_max;
       annih_oper.decay_dir   = j_decay;
@@ -1321,169 +1529,231 @@ namespace Chroma
       annih_oper.perms       = perms;
       annih_oper.orderings.resize(num_orderings);
 
-     // push(xml_out, "BaryonCreationOperator");
 
       // Construct creation operator
       QDPIO::cout << "Build operators" << endl;
 
-      // Loop over all files of operators
-      for(int f=0; f < coeffs.size(); ++f)
-      {
-	// Set the id to be used in the analysis codes
-//	creat_oper.id = params.named_obj.operator_coeff_files[f].id; 
 
-	// Loop over each operator within a file
-	for(int c=0; c < coeffs[f].ops.size(); ++c)
+
+	//Who's the finest quark of them all?
+		int finest_num = 0, time_grid_size = Layout::lattSize()[j_decay]; 
+
+		for (int n = 0 ; n < quarks.size() ; ++n)
+		{
+			//assume each time dilution element contains the same # of timeslices
+			if (quarks[n].time_dilutions[0].t0.size() < time_grid_size)
+			{
+				time_grid_size = quarks[n].time_dilutions[0].t0.size();
+				finest_num = n; 
+			}
+
+		}
+
+		const QuarkSourceSolutions_t& finest_quark = quarks[finest_num];
+
+		
+			
+	// Loop over each operator 
+	for(int l=0; l < qqq_oplist.ops.size(); ++l)
 	{
-	  QDPIO::cout << "Creation operator: f=" << f << "  op= " << c << endl;
+	  //QDPIO::cout << "Creation operator: op = " << l << endl;
 
-    push(xml_out, "BaryonCreationOperator");
+    push(xml_out, "BaryonOperator");
 
-		creat_oper.id = coeffs[f].ops[c].name;
+		creat_oper.id = qqq_oplist.ops[l].name;
+		annih_oper.id = qqq_oplist.ops[l].name;
+	
 
 		write(xml_out, "Name", creat_oper.id);
 
 	  // The operator number. This is just the operator number within the 
 	  // coefficient file
-	  creat_oper.operator_num = c;
+	  creat_oper.operator_num = l;
+	  annih_oper.operator_num = l;
 
 	  // Loop over all orderings and build the operator
 	  swiss.reset();
 	  swiss.start();
 
-	  for(int ord=0; ord < creat_oper.orderings.size(); ++ord)
+	  for(int ord = 0; ord < creat_oper.orderings.size(); ++ord)
 	  {
-	    QDPIO::cout << "Creation operator: ordering = " << ord << endl;
+	    QDPIO::cout << "Ordering = " << ord << endl;
 
 	    creat_oper.orderings[ord].perm = perms[ord];
-	    creat_oper.orderings[ord].time_slices.resize(participating_time_slices.size());
+	    creat_oper.orderings[ord].time_dilutions.resize(finest_quark.time_dilutions.size());
+		
+	    annih_oper.orderings[ord].perm = perms[ord];
+	    annih_oper.orderings[ord].time_dilutions.resize(finest_quark.time_dilutions.size());
      
 	    const int n0 = perms[ord][0];
 	    const int n1 = perms[ord][1];
 	    const int n2 = perms[ord][2];
 
-	    // The operator must hold all the dilutions
-	    // We know that all time slices match. However, not all time slices of the
-	    // lattice maybe used
-	    for(int t=0; t < participating_time_slices.size(); ++t)
-	    {
-	      BaryonOperator_t::Orderings_t::TimeSlices_t& cop = creat_oper.orderings[ord].time_slices[t];
+	    
+			//Fetch the quarks
 
-	      cop.t0 = participating_time_slices[t];
-	      cop.dilutions.resize(quarks[n0].time_slices[t].dilutions.size(), 
-				   quarks[n1].time_slices[t].dilutions.size(), 
-				   quarks[n2].time_slices[t].dilutions.size());
-
-	      for(int i=0; i < quarks[n0].time_slices[t].dilutions.size(); ++i)
-	      {
-		for(int j=0; j < quarks[n1].time_slices[t].dilutions.size(); ++j)
-		{
-		  for(int k=0; k < quarks[n2].time_slices[t].dilutions.size(); ++k)
-		  {
-		    // The correlator
-		    LatticeComplex bar = zero;
-
-		    // Loop over the rows/terms within an operator
-		    for(int l=0; l < coeffs[f].ops[c].op.size(); ++l)
-		    {
-		      const OperCoeffs_t::CoeffTerms_t::CoeffTerm_t& term_q = coeffs[f].ops[c].op[l];
+		  const ThreeQuarkOps_t::ThreeQuarkOp_t& qqq_op = qqq_oplist.ops[l];
 		     
-					KeySmearedDispColorVector_t key0;
-		      key0.displacement = term_q.quark[0].displacement;
-		      key0.spin         = term_q.quark[0].spin;
+			KeySmearedDispColorVector_t key0;
+		  key0.displacement = qqq_op.quark[0].displacement;
+		  key0.spin         = qqq_op.quark[0].spin;
 	      
-		      KeySmearedDispColorVector_t key1;
-		      key1.displacement = term_q.quark[1].displacement;
-		      key1.spin         = term_q.quark[1].spin;
+		  KeySmearedDispColorVector_t key1;
+		  key1.displacement = qqq_op.quark[1].displacement;
+		  key1.spin         = qqq_op.quark[1].spin;
 	      
-		      KeySmearedDispColorVector_t key2;
-		      key2.displacement = term_q.quark[2].displacement;
-		      key2.spin         = term_q.quark[2].spin;
+		  KeySmearedDispColorVector_t key2;
+		  key2.displacement = qqq_op.quark[2].displacement;
+		  key2.spin         = qqq_op.quark[2].spin;
 
-
-					/* 
-		      KeySmearedDispColorVector_t key0;
-		      key0.displacement = term_q.quark[n0].displacement;
-		      key0.spin         = term_q.quark[n0].spin;
-	      
-		      KeySmearedDispColorVector_t key1;
-		      key1.displacement = term_q.quark[n1].displacement;
-		      key1.spin         = term_q.quark[n1].spin;
-	      
-		      KeySmearedDispColorVector_t key2;
-		      key2.displacement = term_q.quark[n2].displacement;
-		      key2.spin         = term_q.quark[n2].spin;
-	      */
-		      // Sanity check - this entry better be in the map or blow-up
-		      if (disp_quarks.find(key0) == disp_quarks.end())
-		      {
-			QDPIO::cerr << name 
+		  // Sanity check - this entry better be in the map or blow-up
+		  if (disp_quarks.find(key0) == disp_quarks.end())
+		  {
+				QDPIO::cerr << name 
 				    << ": internal error - map of displacements missing an entry" 
 				    << endl;
-			QDP_abort(1);
-		      }
+				QDP_abort(1);
+		  }
 		      
-		      // The location of the displaced quark
-		      const SmearedDispColorVector_t& disp_q0 = disp_quarks.find(key0)->second;
-		      const SmearedDispColorVector_t& disp_q1 = disp_quarks.find(key1)->second;
-		      const SmearedDispColorVector_t& disp_q2 = disp_quarks.find(key2)->second;
+		  // The location of the displaced quark
+		  const SmearedDispColorVector_t& disp_q0 = disp_quarks.find(key0)->second;
+		  const SmearedDispColorVector_t& disp_q1 = disp_quarks.find(key1)->second;
+		  const SmearedDispColorVector_t& disp_q2 = disp_quarks.find(key2)->second;
+		
+			
+			//Loop over the time dilutions included by every quark		
+	    for(int t0 = 0; t0 < finest_quark.time_dilutions.size(); ++t0)
+	    {
+				QDPIO::cout<<" evaluation of time dilution element : "<< t0 <<endl; 
+				
+				BaryonOperator_t::Orderings_t::TimeDilutions_t& cop = 
+					creat_oper.orderings[ord].time_dilutions[ t0 ];
+
+	      BaryonOperator_t::Orderings_t::TimeDilutions_t& aop = 
+					annih_oper.orderings[ord].time_dilutions[ t0 ];
+				
+
+				//time slices included in this dilution element for the finest quark
+				const multi1d<int>& times = finest_quark.time_dilutions[t0].t0;
+				
+				//Loop over the timeslices included in this dilution element
+				for (int time = 0 ; time < times.size() ; ++time)
+				{
+					QDPIO::cout << "time = " <<time << endl;
+					//Determine in which dilution element time0 occurs
+					const int timeDil0 = quarks[n0].findTime( times[ time ] );
+					const int timeDil1 = quarks[n1].findTime( times[ time ] );
+					const int timeDil2 = quarks[n2].findTime( times[ time ] );
+				
+
+					//Determine in which dilution elements the spins occur
+					const int spinDil0 = quarks[n0].time_dilutions[timeDil0].findSpin( key0.spin );
+					const int spinDil1 = quarks[n1].time_dilutions[timeDil1].findSpin( key1.spin );
+					const int spinDil2 = quarks[n2].time_dilutions[timeDil2].findSpin( key2.spin );
+				
+				
+					//Store which time_slices participate in this dilution element for each quark
+	      	cop.t0_l = quarks[n0].time_dilutions[ timeDil0 ].t0;
+	      	cop.t0_m = quarks[n1].time_dilutions[ timeDil1 ].t0;
+	      	cop.t0_r = quarks[n2].time_dilutions[ timeDil2 ].t0;
+				
+	      	aop.t0_l = quarks[n0].time_dilutions[ timeDil0 ].t0;
+	      	aop.t0_m = quarks[n1].time_dilutions[ timeDil1 ].t0;
+	      	aop.t0_r = quarks[n2].time_dilutions[ timeDil2 ].t0;
+				
+					//Store which spins participate in this dilution element for each quark
+			  	cop.spin.s0_l =	quarks[n0].time_dilutions[ timeDil0 ].spin_dilutions[ spinDil0 ].s0;
+				 	cop.spin.s0_m =	quarks[n1].time_dilutions[ timeDil1 ].spin_dilutions[ spinDil1 ].s0;
+			    cop.spin.s0_r = quarks[n2].time_dilutions[ timeDil2 ].spin_dilutions[ spinDil2 ].s0;
+
+			  	aop.spin.s0_l = quarks[n0].time_dilutions[ timeDil0 ].spin_dilutions[ spinDil0 ].s0;
+				 	aop.spin.s0_m = quarks[n1].time_dilutions[ timeDil1 ].spin_dilutions[ spinDil1 ].s0;
+			    aop.spin.s0_r = quarks[n2].time_dilutions[ timeDil2 ].spin_dilutions[ spinDil2 ].s0;
+
+				
+				
+					cop.spin.dilutions.resize(quarks[n0].time_dilutions[ timeDil0 ].spin_dilutions[ spinDil0 ].dilutions.size(), 
+				   	quarks[n1].time_dilutions[ timeDil1 ].spin_dilutions[ spinDil1 ].dilutions.size(), 
+				   	quarks[n2].time_dilutions[ timeDil2 ].spin_dilutions[ spinDil2 ].dilutions.size() );
+
+					aop.spin.dilutions.resize(quarks[n0].time_dilutions[ timeDil0 ].spin_dilutions[ spinDil0 ].dilutions.size(), 
+				   	quarks[n1].time_dilutions[ timeDil1 ].spin_dilutions[ spinDil1 ].dilutions.size(), 
+				   	quarks[n2].time_dilutions[ timeDil2 ].spin_dilutions[ spinDil2 ].dilutions.size() );
+
+				
+	      	for( int i = 0 ; i < cop.spin.dilutions.size1() ; ++i )
+	      	{
+			for( int j = 0 ; j < cop.spin.dilutions.size2() ; ++j )
+			{
+		  	for( int k = 0 ; k < cop.spin.dilutions.size3() ; ++k)
+		  	{
 
 		      // Contract over color indices with antisym tensor.
 		      // There is a potential optimization here - the colorcontract of
 		      // the first two quarks could be pulled outside the innermost dilution
 		      // loop.
-		      // NOTE: the creation operator only lives on 1 time slice, so restrict
+		      // NOTE: the creation operator only lives on a few time slice, so restrict
 		      // the operation to that time slice
-		      LatticeComplex b_oper;
-		      b_oper[phases.getSet()[cop.t0]] =
-			colorContract(disp_q0.quarks[n0].time_slices[t].dilutions[i].source,
-				      disp_q1.quarks[n1].time_slices[t].dilutions[j].source,
-				      disp_q2.quarks[n2].time_slices[t].dilutions[k].source);
+				
+					LatticeComplex c_oper;
+		      c_oper[phases.getSet()[ times[time] ] ] =
+			colorContract(disp_q0.quarks[n0].time_dilutions[ timeDil0 ].spin_dilutions.dilutions[i].source,
+				      disp_q1.quarks[n1].time_dilutions[ timeDil1 ].spin_dilutions.dilutions[j].source,
+				      disp_q2.quarks[n2].time_dilutions[ timeDil2 ].spin_dilutions.dilutions[k].source);
+		   
+					//This operation will be performed too much for non-maximal time dilution 
+					LatticeComplex a_oper = 
+						colorContract(disp_q0.quarks[n0].time_dilutions[ timeDil0 ].spin_dilutions.dilutions[i].soln,
+				      disp_q1.quarks[n1].time_dilutions[ timeDil1 ].spin_dilutions.dilutions[j].soln,
+				      disp_q2.quarks[n2].time_dilutions[ timeDil2 ].spin_dilutions.dilutions[k].soln);
+					
+		    	// Slow fourier-transform
+		    	// We can restrict what the FT routine requires to a subset.
 		    
-		      bar[phases.getSet()[cop.t0]] += term_q.coeff * b_oper;
-		    } // end for l
+					multi2d<DComplex> c_sum( phases.sft(c_oper, times[time]) );
+					multi2d<DComplex> a_sum( phases.sft(a_oper) );
 
-		    // Slow fourier-transform
-		    // We can restrict the FT routine requires to the t0 subset.
-		    multi2d<DComplex> hsum(phases.sft(bar, cop.t0));
-
-		    // Unpack into separate momentum and correlator
-		    // NOTE: because creation operator is only non-zero on 1 time slice, we only
-		    // keep that part
-		    cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-		    for(int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
-		    {
-		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].mom   = phases.numToMom(sink_mom_num);
-		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].op.resize(1);
-		      cop.dilutions(i,j,k).mom_projs[sink_mom_num].op[0] = hsum[sink_mom_num][cop.t0];
-		    }
-		  } // end for k
-		} // end for j
-	      } // end for i
-	    } // end for t
+		    	// Unpack into separate momentum and correlator
+		    	cop.spin.dilutions(i,j,k).mom_projs.resize(phases.numMom());
+		    	aop.spin.dilutions(i,j,k).mom_projs.resize(phases.numMom());
+		    
+					for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+		    	{
+		      	cop.spin.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		      	aop.spin.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		      
+						cop.spin.dilutions(i,j,k).mom_projs[mom_num].op[ time ] = c_sum[mom_num][ times[time] ];
+						aop.spin.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
+		    	}
+		  	} // end for k
+			} // end for j
+	      	} // end for i
+	    
+				} //time
+			} // end for t0
 	  } // end for ord
 
 		
 
 	  swiss.stop();
 
-	  QDPIO::cout << "Creation operator construction: file= " << f 
-		      << "  operator= " << c 
+		
+	  QDPIO::cout << "Operator construction: operator= " << l 
 		      << "  time= "
 		      << swiss.getTimeInSeconds() 
 		      << " secs" << endl;
-
+/*
 for (int pr = 0 ; pr < 6 ; ++pr)
 {
 		QDPIO::cout<<"Source testval(p = " << pr << " ) = "<<creat_oper.orderings[pr].time_slices[0].dilutions(0,0,0).mom_projs[0].op[0]<<endl;
 	//	QDPIO::cout<<"Source SD testval = "<<baryon_ops_Source.ops[1].orderings[0].time_slices[6].dilutions(0,0,0).mom_projs[0].op[0]<<endl;
 }
-	//Hard code the elemental op name for now 
+*/
+					//Hard code the elemental op name for now 
 			
 			std::stringstream cnvrt;
 
-			cnvrt << creat_oper.id << "_" << 
-				creat_oper.orderings[0].time_slices[0].t0 << ".lime";
+			cnvrt <<  creat_oper.id  << ".lime";
 
 		
 			std::string filename;
@@ -1497,237 +1767,40 @@ for (int pr = 0 ; pr < 6 ; ++pr)
 	  swiss.reset();
 		swiss.start();
 	  {
-	    XMLBufferWriter     record_xml, file_xml;
-	    BinaryBufferWriter  record_bin;
+	    XMLBufferWriter     src_record_xml, snk_record_xml, file_xml;
+	    BinaryBufferWriter  src_record_bin, snk_record_bin;
 
       push(file_xml, "BaryonOperator");
       write(file_xml, "Params", params.param);
       write(file_xml, "Config_info", gauge_xml);
       pop(file_xml);
 
-		  write(record_xml, "BaryonCreationOperator", creat_oper);
-	    write(record_bin, creat_oper);
+		  write(src_record_xml, "BaryonCreationOperator", creat_oper);
+	    write(src_record_bin, creat_oper);
 
-	    write(qdp_file, record_xml, record_bin);
-	  }
-	  swiss.stop();
-
-	  QDPIO::cout << "Creation operator writing: file= " << f 
-		      << "  operator= " << c 
-		      << "  time= "
-		      << swiss.getTimeInSeconds() 
-		      << " secs" << endl;
-	
-	
-		pop(xml_out); // BaryonCreationOperator
-
-	
-	
-	
-	
-	
-	
-//	} // end for c (operator within a coeff file)
-  //    } // end for f (coeff file)
-
-    //  pop(xml_out); // BaryonCreationOperator
-
-     /* swatch.stop();
-
-      QDPIO::cout << "Creation Operator computed: time= "
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
-*/
-
-      // Annihilation operator
-     /* swatch.start();
-      BaryonOperator_t  annih_oper;
-      annih_oper.mom2_max    = params.param.mom2_max;
-      annih_oper.decay_dir   = j_decay;
-      annih_oper.seed_l      = quarks[0].seed;
-      annih_oper.seed_m      = quarks[1].seed;
-      annih_oper.seed_r      = quarks[2].seed;
-      annih_oper.smearing    = params.param.sink_quark_smearing;
-      annih_oper.perms       = perms;
-      annih_oper.orderings.resize(num_orderings);
-*/
-      push(xml_out, "BaryonAnnihilationOperator");
-
-      // Construct annihilation operator
-  //    QDPIO::cout << "Build annihilation operator" << endl;
-
-      // Loop over all files of operators
-   //   for(int f=0; f < coeffs.size(); ++f)
-     // {
-	// Set the id to be used in the analysis codes
-//	annih_oper.id = params.named_obj.operator_coeff_files[f].id; 
-
-	// Loop over each operator within a file
-//	for(int c=0; c < coeffs[f].ops.size(); ++c)
-	//{
-	  QDPIO::cout << "Annihilation operator: f=" << f << "  op= " << c << endl;
-		 
-		annih_oper.id = coeffs[f].ops[c].name;
-
-		write(xml_out, "Name", annih_oper.id);
-	  // The operator number. This is just the operator number within the 
-	  // coefficient file
-	  annih_oper.operator_num = c;
-
-	  // Loop over all orderings and build the operator
-	  swiss.reset();
-	  swiss.start();
-
-	  for(int ord=0; ord < annih_oper.orderings.size(); ++ord)
-	  {
-	    QDPIO::cout << "Annihilation operator: ordering = " << ord << endl;
+	    write(qdp_file, src_record_xml, src_record_bin);
 	  
-	    annih_oper.orderings[ord].perm = perms[ord];
-	    annih_oper.orderings[ord].time_slices.resize(participating_time_slices.size());
-     
-	    const int n0 = perms[ord][0];
-	    const int n1 = perms[ord][1];
-	    const int n2 = perms[ord][2];
+	  
 
-	    // The operator must hold all the dilutions
-	    // We know that all time slices match. However, not all time slices of the
-	    // lattice maybe used
-	    for(int t=0; t < participating_time_slices.size(); ++t)
-	    {
-	      BaryonOperator_t::Orderings_t::TimeSlices_t& aop = annih_oper.orderings[ord].time_slices[t];
+	    write(snk_record_xml, "BaryonAnnihilationOperator", annih_oper);
+	    write(snk_record_bin, annih_oper);
 
-	      aop.t0 = participating_time_slices[t];
-	      aop.dilutions.resize(quarks[n0].time_slices[t].dilutions.size(), 
-				   quarks[n1].time_slices[t].dilutions.size(), 
-				   quarks[n2].time_slices[t].dilutions.size());
-
-	      for(int i=0; i < quarks[n0].time_slices[t].dilutions.size(); ++i)
-	      {
-		for(int j=0; j < quarks[n1].time_slices[t].dilutions.size(); ++j)
-		{
-		  for(int k=0; k < quarks[n2].time_slices[t].dilutions.size(); ++k)
-		  {
-		    // The correlator
-		    LatticeComplex bar = zero;
-
-		    // Loop over the rows/terms within an operator
-		    for(int l=0; l < coeffs[f].ops[c].op.size(); ++l)
-		    {
-		      const OperCoeffs_t::CoeffTerms_t::CoeffTerm_t& term_q = coeffs[f].ops[c].op[l];
-	     
-					
-					KeySmearedDispColorVector_t key0;
-		      key0.displacement = term_q.quark[0].displacement;
-		      key0.spin         = term_q.quark[0].spin;
-	      
-		      KeySmearedDispColorVector_t key1;
-		      key1.displacement = term_q.quark[1].displacement;
-		      key1.spin         = term_q.quark[1].spin;
-	      
-		      KeySmearedDispColorVector_t key2;
-		      key2.displacement = term_q.quark[2].displacement;
-		      key2.spin         = term_q.quark[2].spin;
-					
-					
-					/* 
-		      KeySmearedDispColorVector_t key0;
-		      key0.displacement = term_q.quark[n0].displacement;
-		      key0.spin         = term_q.quark[n0].spin;
-	      
-		      KeySmearedDispColorVector_t key1;
-		      key1.displacement = term_q.quark[n1].displacement;
-		      key1.spin         = term_q.quark[n1].spin;
-	      
-		      KeySmearedDispColorVector_t key2;
-		      key2.displacement = term_q.quark[n2].displacement;
-		      key2.spin         = term_q.quark[n2].spin;
-	      */
-		      // Sanity check - this entry better be in the map or blow-up
-		      if (disp_quarks.find(key0) == disp_quarks.end())
-		      {
-			QDPIO::cerr << name 
-				    << ": internal error - map of displacements missing an entry" 
-				    << endl;
-			QDP_abort(1);
-		      }
-
-		      // The location of the displaced quark
-		      const SmearedDispColorVector_t& disp_q0 = disp_quarks.find(key0)->second;
-		      const SmearedDispColorVector_t& disp_q1 = disp_quarks.find(key1)->second;
-		      const SmearedDispColorVector_t& disp_q2 = disp_quarks.find(key2)->second;
-
-		      // Contract over color indices with antisym tensor
-		      LatticeComplex b_oper =
-			colorContract(disp_q0.quarks[n0].time_slices[t].dilutions[i].soln,
-				      disp_q1.quarks[n1].time_slices[t].dilutions[j].soln,
-				      disp_q2.quarks[n2].time_slices[t].dilutions[k].soln);
-		      
-		      bar += term_q.coeff * b_oper;
-		    } // end for l
-
-		    // Slow fourier-transform
-		    multi2d<DComplex> hsum(phases.sft(bar));
-
-		    // Unpack into separate momentum and correlator
-		    aop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-		    for(int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num) 
-		    {
-		      aop.dilutions(i,j,k).mom_projs[sink_mom_num].mom  = phases.numToMom(sink_mom_num);
-		      aop.dilutions(i,j,k).mom_projs[sink_mom_num].op   = hsum[sink_mom_num];
-		    }
-		  } // end for k
-		} // end for j
-	      } // end for i
-	    } // end for t
-	  } // end for ord
-
-	  swiss.stop();
-
-	  QDPIO::cout << "Annihilation operator construction: file= " << f 
-		      << "  operator= " << c 
-		      << "  time= "
-		      << swiss.getTimeInSeconds() 
-		      << " secs" << endl;
-
-					for (int pr = 0 ; pr < 6 ; ++pr )
-					{
-		QDPIO::cout<<"Sink testval = "<<annih_oper.orderings[pr].time_slices[0].dilutions(0,0,0).mom_projs[0].op[0]<<endl;
-					}
-	  // Write the meta-data and the binary for this operator
-	  swiss.reset();
-	  swiss.start();
-	  {
-	    XMLBufferWriter     record_xml;
-	    BinaryBufferWriter  record_bin;
-
-	    write(record_xml, "BaryonAnnihilationOperator", annih_oper);
-	    write(record_bin, annih_oper);
-
-	    write(qdp_file, record_xml, record_bin);
+	    write(qdp_file, snk_record_xml, snk_record_bin);
 	  }
 	  swiss.stop();
 
-	  QDPIO::cout << "Annihilation operator writing: file= " << f 
-		      << "  operator= " << c 
+	  QDPIO::cout << "Operator writing: operator = " << l 
 		      << "  time= "
 		      << swiss.getTimeInSeconds() 
 		      << " secs" << endl;
 	
 		
-		 pop(xml_out); // OperatorB
-
+		 pop(xml_out); // Operator 
 
 		
-		
-		} // end for c (operator within a coeff file)
-      } // end for f (coeff file)
+  } // end for l (operator )
 
-          // swatch.stop();
 
-      /*QDPIO::cout << "Annihilation operator computed: time= "
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
-*/
 
       // Close the namelist output file XMLDAT
       pop(xml_out);     // StochBaryon

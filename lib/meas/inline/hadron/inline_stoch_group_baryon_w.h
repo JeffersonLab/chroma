@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.3 2007-06-21 16:06:32 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.h,v 1.4 2008-01-08 18:59:35 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -41,33 +41,41 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	struct CoeffFiles_t
+	struct ThreeQuarkOpsFile_t
 	{
-	  std::string          coeff_file;             /*!< Coefficient file name */
+	  std::string          ops_file;             /*!< Coefficient file name */
 	  std::string          id;                     /*!< ID/tag used in analysis codes*/
 	};
 
-	multi1d<CoeffFiles_t>  operator_coeff_files;   /*!< Files holding group coefficients */
+	ThreeQuarkOpsFile_t  operators_file;   /*!< Files holding 3-quark ops to make*/
 
 	//! Solution files for each quark
-	struct Operator_t
+	struct QuarkFiles_t
 	{
-	  //! Dilutions for each time slice
-	  struct TimeSlices_t
+	  //! Time dilution components  
+	  struct TimeDilutions_t
 	  {
-	    multi1d<std::string> dilution_files;
-	  };
+			struct SpinDilutions_t
+			{
+				
+	    	multi1d<std::string> dilution_files;  /*!< dilution files for this spin and time dilution*/
+	  	
+			};
 
-	  multi1d<TimeSlices_t> soln_files;
+			multi1d<SpinDilutions_t> spin_files;  /*!< Spin dilution files for this time dilution */
+		};
+
+	  multi1d<TimeDilutions_t> time_files;
 	};
 
-	multi1d<Operator_t>   quarks;                 /*!< All the quarks and their solutions that are needed */
+	std::string quark_ids;
+
+	multi1d<QuarkFiles_t>   quarks;                 /*!< All the quarks and their solutions that are needed */
 
 	std::string           gauge_id;
-	std::string           operator_file;
       } named_obj;
 
-      std::string xml_file;  // Alternate XML file pattern
+  std::string xml_file;  // Alternate XML file pattern
     };
 
 
