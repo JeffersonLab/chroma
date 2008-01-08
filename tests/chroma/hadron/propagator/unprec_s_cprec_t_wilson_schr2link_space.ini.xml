@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: unprec_s_cprec_t_wilson_schr2link_space.ini.xml,v 3.1 2008-01-08 17:52:08 bjoo Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>APPLY_FERM_STATE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <FermState>
+           <Name>SIMPLE_FERM_STATE</Name>
+           <FermionBC>
+             <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+             <SchrPhiMult>1.0</SchrPhiMult>
+             <loop_extent>2</loop_extent>
+             <decay_dir>2</decay_dir>
+             <theta>0 0 0</theta>
+           </FermionBC>
+        </FermState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <output_id>sf_gauge_field</output_id>
+      </NamedObject>
+    </elem>
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SF_POINT_SOURCE</SourceType>
+          <j_decay>2</j_decay>
+          <t_srce>0 0 1 0</t_srce>
+          <direction>PLUS</direction>
+
+          <FermionBC>
+            <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+            <SchrPhiMult>1.0</SchrPhiMult>
+            <decay_dir>2</decay_dir>
+            <loop_extent>2</loop_extent>
+            <theta>0 0 0</theta>
+          </FermionBC>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>sf_gauge_field</gauge_id>
+        <source_id>pt_source_f</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+	  <FermAct>UNPREC_SPACE_CPREC_TIME_WILSON</FermAct>
+	  <!--
+          <FermAct>WILSON</FermAct>
+	  -->
+
+         <Kappa>0.135</Kappa>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+	 <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+              <SchrPhiMult>1.0</SchrPhiMult>
+              <decay_dir>2</decay_dir>
+              <loop_extent>2</loop_extent>
+              <theta>0 0 0</theta>
+            </FermionBC>
+         </FermState>
+	</FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_f</source_id>
+        <prop_id>pt_prop_f</prop_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 8 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
