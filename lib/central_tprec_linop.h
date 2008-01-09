@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.9 2008-01-02 17:05:54 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.10 2008-01-09 19:05:40 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -14,6 +14,7 @@
 #if QDP_ND == 4
 
 #include "linearop.h"
+#include "actions/ferm/fermbcs/schroedinger_fermbc_w.h"
 
 namespace Chroma
 {
@@ -33,6 +34,35 @@ namespace Chroma
 
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
+
+    //! Do we have SchroedingerBCs in time?
+    //! Yucky but doable as a default
+    virtual bool schroedingerTP() const 
+    {
+
+      // Get the BCs
+      const FermBC<T,P,Q>& fbc=getFermBC();
+
+      // If they are nontrivial
+      if( fbc.nontrivialP() ) {
+
+	// Try and cast to a SchrFermBC base class
+	try { 
+	  const SchrFermBC& schrReference = dynamic_cast<const SchrFermBC&>(fbc);
+	  // Success -- check whether its dir is the same as my tDir
+	  return ( schrReference.getDir() == tDir() );
+	}
+	catch( std::bad_cast ) { 
+	  // Cast failed - so not Schroedinger(?)
+	  return false;
+	}
+      }
+
+      // Wasn't nontrivial to start with.
+      return false;
+    }
+
 
     //! The time direction
     virtual int tDir() const = 0;
@@ -98,6 +128,8 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      
+      getFermBC().modifyF(chi);
     }
     
     
@@ -154,6 +186,7 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
+
     //! The time direction
     virtual int tDir() const = 0;
 
@@ -185,7 +218,9 @@ namespace Chroma
 	cRightLinOp(tmp1, psi, isign);
 	spaceLinOp(tmp2, tmp1, isign);
 	cLeftLinOp(tmp1, tmp2, isign);
+
 	chi = psi + tmp1;
+
 
 	break;
 
@@ -194,13 +229,18 @@ namespace Chroma
 	cLeftLinOp(tmp1, psi, isign);
 	spaceLinOp(tmp2, tmp1, isign);
 	cRightLinOp(tmp1, tmp2, isign);
+	
 	chi = psi + tmp1;
+	
 	break;
 
       default:
 	QDPIO::cerr << "unknown sign" << endl;
 	QDP_abort(1);
       }
+      
+      getFermBC().modifyF(chi);
+      
     }
 
 
@@ -344,6 +384,8 @@ namespace Chroma
 	QDPIO::cerr << "unknown sign" << endl;
 	QDP_abort(1);
       }
+      getFermBC().modifyF(chi);
+
     }
 
     //! Apply the UNPRECONDITIONED operator onto a source vector
@@ -376,10 +418,13 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      getFermBC().modifyF(chi);
     }
 
     virtual void derivCLeft(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+
     virtual void derivCRight(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
+
     virtual void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const = 0;
 
     //! Apply the d/dt of the preconditioned linop
@@ -455,6 +500,8 @@ namespace Chroma
 	QDPIO::cerr << "Bad Case: Should never get here" << endl;
 	QDP_abort(1);
       }
+
+      getFermBC().zero(ds_u);
     }
     
     //! Get log det ( T^\dag T )
@@ -618,6 +665,8 @@ namespace Chroma
 	QDPIO::cerr << "unknown sign" << endl;
 	QDP_abort(1);
       }
+
+      getFermBC().modifyF(chi, rb3[1]);
     }
 
     //! Apply the UNPRECONDITIONED operator onto a source vector
@@ -702,6 +751,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      getFermBC().modifyF(chi);
     }
 
     //! Apply the d/dt of the preconditioned linop

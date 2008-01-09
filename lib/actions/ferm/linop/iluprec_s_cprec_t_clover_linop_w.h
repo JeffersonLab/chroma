@@ -62,6 +62,7 @@ namespace Chroma
       Real mhalf=Real(-0.5);
       Dw3D.apply(chi, psi, isign, cb3d);
       chi[ rb3[cb3d] ] *= mhalf;
+      getFermBC().modifyF(chi, rb3[cb3d]);
     }
 
     //! Derivative of the spatial operator
@@ -73,6 +74,7 @@ namespace Chroma
 	ds_u[mu]*= mhalf;
       }
       ds_u[3]=zero;
+      getFermBC().zero(ds_u);
     }
 
     //! Do chi = (A - 1) psi with A = -(c_sw/4) sigma_munu F_munu
@@ -94,11 +96,13 @@ namespace Chroma
 
       // chi
       chi = tmp1 - ftmp*psi;
+      getFermBC().modifyF(chi);
     }
 
     //! Derivative of clover term
     void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
       APlusFact.deriv(ds_u, X, Y, isign);
+      getFermBC().zero(ds_u);
     }
 
     //! Get log det ( T^\dag T )
@@ -106,12 +110,6 @@ namespace Chroma
       return logDetTSq;
     }
 
-
-    //! Get the force due to the det T^\dag T bit
-    void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const {
-      QDPIO::cerr << "Not Yet Implemented" << endl;
-      QDP_abort(1);
-    }
     
     //! Flopcounter
     unsigned long nFlops() const 
@@ -161,7 +159,7 @@ namespace Chroma
     }
 
   private:
-
+    bool schrTP;
 
     Real fact;  // tmp holding  Nd+Mass
     Real invfact;

@@ -181,6 +181,8 @@ namespace Chroma
 	QDPIO::cerr << "unknown sign" << endl;
 	QDP_abort(1);
       }
+
+      getFermBC().modifyF(chi, QDP::rb3[1]);
     }
 
 
@@ -221,6 +223,7 @@ namespace Chroma
       Real mhalf=Real(-0.5);
       Dw3D.apply(chi, psi, isign, cb3d);
       chi[ rb3[cb3d] ] *= mhalf;
+      getFermBC().modifyF(chi, rb3[cb3d]);
     }
 
 

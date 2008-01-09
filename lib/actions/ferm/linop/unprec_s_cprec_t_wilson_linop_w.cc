@@ -1,4 +1,4 @@
-// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.5 2007-12-18 21:06:47 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.6 2008-01-09 19:05:41 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -37,6 +37,7 @@ namespace Chroma
       QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) only works in 4D" << endl;
       QDP_abort(1);
     }
+
     
     // Check Aniso Direction -- has to be 3.
     if ( anisoParam_.t_dir != 3 ) { 
@@ -108,55 +109,83 @@ namespace Chroma
       }
     }
 
-    // P and P_mat dag are needed for the Woodbury 
-    // (P_mat for inverting T, P_mat_dag for inverting T_dag - NB P_mat_dag != (P_mat)^dagger
-    P_mat.resize(Nspace, Nt);
-    P_mat_dag.resize(Nspace, Nt);
-    Q_mat_inv.resize(Nspace);
-    Q_mat_dag_inv.resize(Nspace);
-
-    logDetTSq = zero;
-    for(int site=0; site < Nspace; site++) { 
-      Real minvfact = Real(-1)*invfact;
-      
-      // Compute P by backsubsitution - See Balint's notes eq 38-42
-      P_mat(site,Nt-1) = u[t_index].elem( tsite(site,Nt-1) );
-      P_mat(site,Nt-1) *= minvfact.elem();
-      
-      
-      for(int t=Nt-2; t >=0; t--) { 
-	P_mat(site,t) =  u[t_index].elem( tsite(site,t)  )  * P_mat(site,t+1);
-	P_mat(site,t) *= invfact.elem();
+    // Figure out whether we are Schroedinger in time:
+    const FermBC<T,P,Q>& fbc = getFermBC();
+    if( fbc.nontrivialP() ) {
+      try {
+	const SchrFermBC& schr_ref = dynamic_cast<const SchrFermBC&>(fbc);
+	schrTP = ( schr_ref.getDir() == tDir() );
       }
-      
-      // Compute the dagger. Opposite order (forward sub) similara to eq 38-42
-      // in notes
-      P_mat_dag(site,0) = adj( u[t_index].elem( tsite(site,Nt-1) ) );
-      P_mat_dag(site,0) *= minvfact.elem();
-      for(int t=1; t < Nt; t++) { 
-	P_mat_dag(site,t) = adj( u[t_index].elem(  tsite(site,t-1) ) )*P_mat_dag(site, t-1) ;
-	P_mat_dag(site,t) *= invfact.elem();
+      catch(std::bad_cast) { 
+	schrTP = false;
       }
-      
-      
-      // Compute Q = (1 + W^\dag P)^{-1}, W = [1, 0, 0, 0...] => (1 + P_{0})^{-1} eq: 43
-      // NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
-      Real one=Real(1);
-      CMat one_plus_P0 = one.elem() + P_mat(site,0);
-      CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(site), one_plus_P0 );
-      
-      // Compute Q_dag = 1 + W^\dag P^\dag, W = [ 0, ..., 1 ]  = > Q_dag = P^\dag [Nt-1]
-      // Similar to eq 43
-      // NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
-      CMat one_plus_P0_dag = one.elem() + P_mat_dag(site,Nt-1);
-      CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(site), one_plus_P0_dag);
-
-
-      CMat prod = one_plus_P0_dag*one_plus_P0;
-      logDetTSq += CentralTPrecNoSpinUtils::logDet(prod);
 
     }
+    else { 
+      // fbc are not nontrivial
+      schrTP = false;
+    }
 
+    logDetTSq = zero;
+    
+    if( !schrTP ) {
+      // P and P_mat dag are needed for the Woodbury 
+      // (P_mat for inverting T, P_mat_dag for inverting T_dag - NB P_mat_dag != (P_mat)^dagger
+      P_mat.resize(Nspace, Nt);
+      P_mat_dag.resize(Nspace, Nt);
+      Q_mat_inv.resize(Nspace);
+      Q_mat_dag_inv.resize(Nspace);
+      
+      
+      for(int site=0; site < Nspace; site++) { 
+	Real minvfact = Real(-1)*invfact;
+	
+	// Compute P by backsubsitution - See Balint's notes eq 38-42
+	P_mat(site,Nt-1) = u[t_index].elem( tsite(site,Nt-1) );
+	P_mat(site,Nt-1) *= minvfact.elem();
+	
+	
+	for(int t=Nt-2; t >=0; t--) { 
+	  P_mat(site,t) =  u[t_index].elem( tsite(site,t)  )  * P_mat(site,t+1);
+	  P_mat(site,t) *= invfact.elem();
+	}
+	
+	// Compute the dagger. Opposite order (forward sub) similara to eq 38-42
+	// in notes
+	P_mat_dag(site,0) = adj( u[t_index].elem( tsite(site,Nt-1) ) );
+	P_mat_dag(site,0) *= minvfact.elem();
+	for(int t=1; t < Nt; t++) { 
+	  P_mat_dag(site,t) = adj( u[t_index].elem(  tsite(site,t-1) ) )*P_mat_dag(site, t-1) ;
+	  P_mat_dag(site,t) *= invfact.elem();
+	}
+      
+      
+	// Compute Q = (1 + W^\dag P)^{-1}, W = [1, 0, 0, 0...] => (1 + P_{0})^{-1} eq: 43
+	// NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
+	Real one=Real(1);
+	CMat one_plus_P0 = one.elem() + P_mat(site,0);
+	CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(site), one_plus_P0 );
+	
+	// Compute Q_dag = 1 + W^\dag P^\dag, W = [ 0, ..., 1 ]  = > Q_dag = P^\dag [Nt-1]
+	// Similar to eq 43
+	// NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
+	CMat one_plus_P0_dag = one.elem() + P_mat_dag(site,Nt-1);
+	CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(site), one_plus_P0_dag);
+	
+	
+	CMat prod = one_plus_P0_dag*one_plus_P0;
+	logDetTSq += CentralTPrecNoSpinUtils::logDet(prod);
+      }
+    }
+    else { 
+      // Schroedinger Time Case. Matrix(dagger) is strictly upper(lower)
+      // bidiagonal - Determinant is therefore a product of the 
+      // diagonal elements which is just a factor independent
+      // of the gauge fields: (Nd + M)^{Nt}. Since this is a 
+      // constant it doesn't need to be simulated and we can
+      // happily return logDetTSq=0
+      logDetTSq = 0;
+    }
     Dw3D.create( fs_, anisoParam_);
 
     END_CODE();
@@ -174,7 +203,7 @@ namespace Chroma
 
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
-    LatticeHalfFermion tmp_T;
+    LatticeHalfFermion tmp_T=zero;
 
 
     // This is just a way of doing P+ psi - decompose and reconstruct.
@@ -193,11 +222,13 @@ namespace Chroma
 				 u,
 				 tsite,
 				 fact,
-				 isign);
+				 isign,
+				 schroedingerTP());
 
     chi += spinReconstructDir3Minus(tmp_T);
     chi *= Real(0.5);
 
+    getFermBC().modifyF(chi);
 
   } 
 
@@ -209,11 +240,13 @@ namespace Chroma
 						const T& psi, 
 						enum PlusMinus isign) const 
   {
+
     // Right op is P- + P+ T^{\dagger} so I need the other isign from what I am given
     enum PlusMinus other_sign = (isign == PLUS ? MINUS : PLUS) ;
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
-    LatticeHalfFermion tmp_T;
+    LatticeHalfFermion tmp_T=zero;
+
 
     // This does the P- modulo a factor of 1/2
     // Rather than spooling through 2 half vectors I could just do a 
@@ -232,12 +265,13 @@ namespace Chroma
 				 u,
 				 tsite,
 				 fact,
-				 other_sign);
+				 other_sign,
+				 schroedingerTP());
 
     chi += spinReconstructDir3Plus(tmp_T);
 
     chi *= Real(0.5); //The overall factor of 1/2
-
+    getFermBC().modifyF(chi);
   } 
 
 
@@ -250,7 +284,7 @@ namespace Chroma
 
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
-    LatticeHalfFermion tmp_T;
+    LatticeHalfFermion tmp_T=zero;
 
     //  2 P_{+} = ( 1 + gamma_3 )
     tmp_plus  = spinProjectDir3Plus(psi);
@@ -270,7 +304,8 @@ namespace Chroma
 				     Q_mat_inv,
 				     Q_mat_dag_inv,
 				     invfact,
-				     isign);
+				     isign,
+				     schroedingerTP());
 
     // Reconstruct
     chi += spinReconstructDir3Minus(tmp_T);
@@ -280,7 +315,7 @@ namespace Chroma
     //  would also be needed for the half vector in the P_{+} piece
     //  so overall cost is still 1 full vector of multiply
     chi *= Real(0.5);
-
+    getFermBC().modifyF(chi);
 
   }
 
@@ -294,7 +329,7 @@ namespace Chroma
     enum PlusMinus other_sign = isign == PLUS ? MINUS : PLUS ;
     LatticeHalfFermion tmp_minus;
     LatticeHalfFermion tmp_plus;
-    LatticeHalfFermion tmp_T;
+    LatticeHalfFermion tmp_T = zero;
 
 
     // 2*P_{-} 
@@ -315,7 +350,8 @@ namespace Chroma
 				     Q_mat_inv,
 				     Q_mat_dag_inv,
 				     invfact,
-				     other_sign);
+				     other_sign,
+				     schroedingerTP());
 
     // Reconstruct to full vector
     chi += spinReconstructDir3Plus(tmp_T);
@@ -325,6 +361,8 @@ namespace Chroma
     //  would also be needed for the half vector in the P_{+} piece
     //  so overall cost is still 1 full vector of multiply
     chi *= Real(0.5);
+    getFermBC().modifyF(chi);
+
   }
 
   //! Apply the the space block onto a source vector
@@ -332,11 +370,11 @@ namespace Chroma
   void 
   UnprecSCprecTWilsonLinOp::spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const
   {
-    
     Real mhalf=Real(-0.5);
     Dw3D.apply(chi, psi, isign,0);
     Dw3D.apply(chi, psi, isign,1);
     chi *= mhalf;
+    getFermBC().modifyF(chi);
   }
 
   //! Derivative of the derivCLeft
@@ -379,7 +417,8 @@ namespace Chroma
 				       Q_mat_inv,
 				       Q_mat_dag_inv,
 				       invfact,
-				       PLUS);
+				       PLUS,
+				       schroedingerTP());
       
       T1  = spinReconstructDir3Minus(tmp2);
            
@@ -393,7 +432,8 @@ namespace Chroma
 				       Q_mat_inv,
 				       Q_mat_dag_inv,
 				       invfact,
-				       MINUS);
+				       MINUS,
+				       schroedingerTP());
 
       // Two factors of 0.5 from the projectors.
       // Most cost efficient to apply them together to the half vector...
@@ -413,6 +453,8 @@ namespace Chroma
     else {
       ds_u[3] = zero;
     }
+    getFermBC().zero(ds_u);
+    
   }
 
 
@@ -460,7 +502,8 @@ namespace Chroma
 				       Q_mat_inv,
 				       Q_mat_dag_inv,
 				       invfact,
-				       PLUS);
+				       PLUS,
+				       schroedingerTP());
       
       T1  = spinReconstructDir3Plus(tmp2);
       
@@ -474,7 +517,8 @@ namespace Chroma
 				       Q_mat_inv,
 				       Q_mat_dag_inv,
 				       invfact,
-				       MINUS);
+				       MINUS,
+				       schroedingerTP());
 
       // Two factors of 0.5 from the projectors.
       // Most cost efficient to apply them together to the half vector...
@@ -492,8 +536,9 @@ namespace Chroma
     }
     else { 
       ds_u[3]= zero;
-    }
-    
+    }  
+    getFermBC().zero(ds_u);
+  
   }
 
   //! derivSpace
@@ -512,6 +557,7 @@ namespace Chroma
     }
     
     ds_u[3] = zero;
+    getFermBC().zero(ds_u);
   }
   
   //! Apply the d/dt of the preconditioned linop
@@ -560,7 +606,7 @@ namespace Chroma
       ds_u += ds_tmp;
       
     }
-
+    getFermBC().zero(ds_u);
   }
 
 
@@ -582,7 +628,9 @@ namespace Chroma
 					 Q_mat_inv,
 					 tsite,
 					 tDir(),
-					 fact);
+					 fact,
+					 schroedingerTP());
+    getFermBC().zero(ds_u);
 		    
   }
   

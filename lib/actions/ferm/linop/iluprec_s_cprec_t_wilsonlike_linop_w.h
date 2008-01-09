@@ -106,6 +106,9 @@ namespace Chroma
 	QDPIO::cout << "Unknown sign " << endl;
 	QDP_abort(1);
       }
+
+      getFermBC().modifyF(chi);
+
     }
 
     //! Apply inv (C_R)^{-1}
@@ -140,6 +143,7 @@ namespace Chroma
 	QDPIO::cout << "Unknown sign " << endl;
 	QDP_abort(1);
       };
+      getFermBC().modifyF(chi);
     }
 
     //! Apply C_L
@@ -200,6 +204,7 @@ namespace Chroma
 	QDPIO::cout << "Unknown sign " << endl;
 	QDP_abort(1);
       };
+      getFermBC().modifyF(chi);
     }
     
     //! Apply C_R
@@ -262,6 +267,8 @@ namespace Chroma
 	QDPIO::cout << "Unknown sign " << endl;
 	QDP_abort(1);
       };
+
+      getFermBC().modifyF(chi);
     }
 
     // A = 0 so A-1 = -1 => (A-1) psi = -psi and also for the dagger.
@@ -298,10 +305,14 @@ namespace Chroma
 				   getLinks(),
 				   getTsiteArray()[cb3d],
 				   getFactor(),
-				   isign);
+				   isign,
+				   schroedingerTP());
 
       chi[rb3[ cb3d ]]  += spinReconstructDir3Minus(tmp_T);
       chi[rb3[ cb3d ]]  *= Real(0.5);
+      //      getFermBC().modifyF(chi);
+
+
     } 
 
     virtual
@@ -329,11 +340,16 @@ namespace Chroma
 				   getLinks(),
 				   getTsiteArray()[cb3d],
 				   getFactor(),
-				   other_sign);
+				   other_sign,
+				   schroedingerTP());
 
       chi[rb3[cb3d]] += spinReconstructDir3Plus(tmp_T);
       
       chi[rb3[cb3d]] *= Real(0.5); //The overall factor of 1/2
+
+      //      getFermBC().modifyF(chi);
+
+
     }
 
     virtual
@@ -359,11 +375,15 @@ namespace Chroma
 				       getQMatrixInvArray()[cb3d],
 				       getQMatrixDaggerInvArray()[cb3d],
 				       getInvFactor(),
-				       isign);
+				       isign,
+				       schroedingerTP());
       
       
       chi[rb3[cb3d]] += spinReconstructDir3Minus(tmp_T);
       chi[rb3[cb3d]] *= Real(0.5);
+      //      getFermBC().modifyF(chi);
+
+
     }
 
     virtual
@@ -390,11 +410,15 @@ namespace Chroma
 				       getQMatrixInvArray()[cb3d],
 				       getQMatrixDaggerInvArray()[cb3d],
 				       getInvFactor(),	
-				       other_sign);
+				       other_sign,
+				       schroedingerTP());
 
       
       chi[rb3[cb3d]] += spinReconstructDir3Plus(tmp_T);
       chi[rb3[cb3d]] *= Real(0.5);
+      //      getFermBC().modifyF(chi);
+
+
     }
 
     virtual
@@ -414,6 +438,7 @@ namespace Chroma
 	
 	tmp1=spinProjectDir3Minus(Y);
 	for(int cb3d=0; cb3d < 2; cb3d++) { 
+	  
 	  CentralTPrecNoSpinUtils::invTOp( tmp2,
 					   tmp1, 
 					   getLinks(),
@@ -423,7 +448,8 @@ namespace Chroma
 					   getQMatrixInvArray()[cb3d],
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),	
-					   PLUS);
+					   PLUS,
+					   schroedingerTP());
 	}
 	
 	T1  = spinReconstructDir3Minus(tmp2);
@@ -431,6 +457,7 @@ namespace Chroma
 	tmp1=spinProjectDir3Minus(X);
 	
 	for(int cb3d=0; cb3d < 2; cb3d++) { 
+
 	  CentralTPrecNoSpinUtils::invTOp( tmp2,
 					   tmp1, 
 					   getLinks(),
@@ -440,7 +467,8 @@ namespace Chroma
 					   getQMatrixInvArray()[cb3d],
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),
-					   MINUS);
+					   MINUS, 
+					   schroedingerTP());
 	}
 	
 	// Two factors of 0.5 from the projectors.
@@ -461,6 +489,8 @@ namespace Chroma
       else {
 	ds_u[3] = zero;
       }
+
+      getFermBC().zero(ds_u);
     }
 
     virtual
@@ -488,7 +518,8 @@ namespace Chroma
 					   getQMatrixInvArray()[cb3d],
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),
-					   PLUS);
+					   PLUS,
+					   schroedingerTP());
 	}      
 	T1  = spinReconstructDir3Plus(tmp2);
 	
@@ -504,7 +535,8 @@ namespace Chroma
 					   getQMatrixInvArray()[cb3d],
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),
-					   MINUS);
+					   MINUS,
+					   schroedingerTP());
 	}
 	// Two factors of 0.5 from the projectors.
 	// Most cost efficient to apply them together to the half vector...
@@ -524,7 +556,7 @@ namespace Chroma
 	ds_u[3]= zero;
       }
       
-
+      getFermBC().zero(ds_u);
     }
     
     virtual
@@ -603,6 +635,7 @@ namespace Chroma
 	QDPIO::cerr << "Bad Case. Should never get here" << endl;
 	QDP_abort(1);
       }
+      getFermBC().zero(ds_u);
     }
 
     virtual 
@@ -679,7 +712,8 @@ namespace Chroma
 	QDPIO::cerr << "Bad Case. Should never get here" << endl;
 	QDP_abort(1);
       }
-      
+
+      getFermBC().zero(ds_u);      
     }
     
     //! Get the force due to the det T^\dag T bit
@@ -688,33 +722,32 @@ namespace Chroma
     {
       // Derivative of a Hermitian quantity so ignore isign?
       // Initial development -- set to 0
-      P ds_tmp;      
       ds_u.resize(Nd);
-      ds_tmp.resize(Nd);
+	
 
       for(int mu=0; mu < Nd; mu++) { 
 	ds_u[mu] = zero;
-	ds_tmp[mu] = zero;
       }
-      
-      // Force from even sites
-      CentralTPrecNoSpinUtils::derivLogDet(ds_u, 
-					   getLinks(),
-					   getQMatrixInvArray()[0],
-					   getTsiteArray()[0],
-					   tDir(),
-					   getFactor());
 
-      // Force from odd sites
-      CentralTPrecNoSpinUtils::derivLogDet(ds_tmp, 
-					   getLinks(),
-					   getQMatrixInvArray()[1],
-					   getTsiteArray()[1],
-					   tDir(),
-					   getFactor());
-      ds_u += ds_tmp;
+      if( !schroedingerTP() ) {
+
+	// Force from even sites
+	CentralTPrecNoSpinUtils::derivLogDet(ds_u, 
+					     getLinks(),
+					     getQMatrixInvArray(),
+					     getTsiteArray(),
+					     tDir(),
+					     getFactor(),
+					     schroedingerTP());
+	
+	
+	
+	getFermBC().zero(ds_u);
+      }
+      else {
+	ds_u[tDir()] = zero;
+      }
     }
-
 
   };
 

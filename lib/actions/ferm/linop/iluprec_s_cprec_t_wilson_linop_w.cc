@@ -1,4 +1,4 @@
-// $Id: iluprec_s_cprec_t_wilson_linop_w.cc,v 1.5 2008-01-03 20:06:55 bjoo Exp $
+// $Id: iluprec_s_cprec_t_wilson_linop_w.cc,v 1.6 2008-01-09 19:05:41 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -124,59 +124,81 @@ namespace Chroma
       }
     }
 
-    // P and P_mat dag are needed for the Woodbury 
-    // (P_mat for inverting T, P_mat_dag for inverting T_dag - NB P_mat_dag != (P_mat)^dagger
-    P_mat.resize(2, Nspaceby2, Nt);
-    P_mat_dag.resize(2, Nspaceby2, Nt);
-
-    Q_mat_inv.resize(2,Nspaceby2);
-    Q_mat_dag_inv.resize(2,Nspaceby2);
-
-    logDetTSq = zero;
-    for(int cb3=0; cb3 < 2; cb3++) { 
-      for(int site=0; site < Nspaceby2; site++) { 
-	
-	
-	Real minvfact = Real(-1)*invfact;
-	
-	// Compute P by backsubsitution - See Balint's notes eq 38-42
-	P_mat(cb3, site, Nt-1) = u[t_index].elem( tsite(cb3,site,Nt-1) );
-	P_mat(cb3, site, Nt-1) *= minvfact.elem();
-      
-      
-	for(int t=Nt-2; t >=0; t--) { 
-	  P_mat(cb3, site, t) =  u[t_index].elem( tsite(cb3, site,t)  )  * P_mat(cb3, site,t+1);
-	  P_mat(cb3, site, t) *= invfact.elem();
-	}
-	
-	// Compute the dagger. Opposite order (forward sub) similara to eq 38-42
-	// in notes
-	P_mat_dag(cb3, site, 0) = adj( u[t_index].elem( tsite(cb3, site, Nt-1) ) );
-	P_mat_dag(cb3, site, 0) *= minvfact.elem();
-
-	for(int t=1; t < Nt; t++) { 
-	  P_mat_dag(cb3, site,t) = adj( u[t_index].elem(  tsite(cb3, site, t-1) ) )*P_mat_dag(cb3,site, t-1) ;
-	  P_mat_dag(cb3, site,t) *= invfact.elem();
-	}
-      
-      
-	// Compute Q = (1 + W^\dag P)^{-1}, W = [1, 0, 0, 0...] => (1 + P_{0})^{-1} eq: 43
-	// NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
-	Real one=Real(1);
-	CMat one_plus_P0 = one.elem() + P_mat(cb3, site,0);
-	CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(cb3, site), one_plus_P0 );
-	
-	// Compute Q_dag = 1 + W^\dag P^\dag, W = [ 0, ..., 1 ]  = > Q_dag = P^\dag [Nt-1]
-	// Similar to eq 43
-	// NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
-	CMat one_plus_P0_dag = one.elem() + P_mat_dag(cb3, site,Nt-1);
-	CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(cb3, site), one_plus_P0_dag);
-
-	CMat prod = one_plus_P0_dag*one_plus_P0;
-	logDetTSq += CentralTPrecNoSpinUtils::logDet(prod);
+    // Figure out whether we are Schroedinger in time:
+    const FermBC<T,P,Q>& fbc = getFermBC();
+    if( fbc.nontrivialP() ) {
+      try {
+	const SchrFermBC& schr_ref = dynamic_cast<const SchrFermBC&>(fbc);
+	schrTP = ( schr_ref.getDir() == tDir() );
       }
+      catch(std::bad_cast) { 
+	schrTP = false;
+      }
+
+    }
+    else { 
+      // fbc are not nontrivial
+      schrTP = false;
     }
 
+    logDetTSq = zero;
+
+    if( !schrTP )  {
+      // P and P_mat dag are needed for the Woodbury 
+      // (P_mat for inverting T, P_mat_dag for inverting T_dag - NB P_mat_dag != (P_mat)^dagger
+      P_mat.resize(2, Nspaceby2, Nt);
+      P_mat_dag.resize(2, Nspaceby2, Nt);
+      
+      Q_mat_inv.resize(2,Nspaceby2);
+      Q_mat_dag_inv.resize(2,Nspaceby2);
+      
+      for(int cb3=0; cb3 < 2; cb3++) { 
+	for(int site=0; site < Nspaceby2; site++) { 
+	  
+	  
+	  Real minvfact = Real(-1)*invfact;
+	  
+	  // Compute P by backsubsitution - See Balint's notes eq 38-42
+	  P_mat(cb3, site, Nt-1) = u[t_index].elem( tsite(cb3,site,Nt-1) );
+	  P_mat(cb3, site, Nt-1) *= minvfact.elem();
+	  
+	  
+	  for(int t=Nt-2; t >=0; t--) { 
+	    P_mat(cb3, site, t) =  u[t_index].elem( tsite(cb3, site,t)  )  * P_mat(cb3, site,t+1);
+	    P_mat(cb3, site, t) *= invfact.elem();
+	  }
+	  
+	  // Compute the dagger. Opposite order (forward sub) similara to eq 38-42
+	  // in notes
+	  P_mat_dag(cb3, site, 0) = adj( u[t_index].elem( tsite(cb3, site, Nt-1) ) );
+	  P_mat_dag(cb3, site, 0) *= minvfact.elem();
+	  
+	  for(int t=1; t < Nt; t++) { 
+	    P_mat_dag(cb3, site,t) = adj( u[t_index].elem(  tsite(cb3, site, t-1) ) )*P_mat_dag(cb3,site, t-1) ;
+	    P_mat_dag(cb3, site,t) *= invfact.elem();
+	  }
+	  
+	  
+	  // Compute Q = (1 + W^\dag P)^{-1}, W = [1, 0, 0, 0...] => (1 + P_{0})^{-1} eq: 43
+	  // NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
+	  Real one=Real(1);
+	  CMat one_plus_P0 = one.elem() + P_mat(cb3, site,0);
+	  CentralTPrecNoSpinUtils::invert3by3( Q_mat_inv(cb3, site), one_plus_P0 );
+	  
+	  // Compute Q_dag = 1 + W^\dag P^\dag, W = [ 0, ..., 1 ]  = > Q_dag = P^\dag [Nt-1]
+	  // Similar to eq 43
+	  // NB: This is not necessarily SU(3) now, so we can't just take the dagger to get the inverse
+	  CMat one_plus_P0_dag = one.elem() + P_mat_dag(cb3, site,Nt-1);
+	  CentralTPrecNoSpinUtils::invert3by3( Q_mat_dag_inv(cb3, site), one_plus_P0_dag);
+	  
+	  CMat prod = one_plus_P0_dag*one_plus_P0;
+	  logDetTSq += CentralTPrecNoSpinUtils::logDet(prod);
+	}
+      }
+    }
+    else {
+      logDetTSq = 0;
+    }
     Dw3D.create(fs_, anisoParam_);    
     END_CODE();
   }

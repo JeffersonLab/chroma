@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.6 2007-12-18 21:06:47 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.7 2008-01-09 19:05:41 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -73,9 +73,14 @@ namespace Chroma
 
 
     //! The time direction
-    
     int tDir() const { 
       return 3; 
+    }
+
+    //! More efficient -- we discover it is Schroedinger in the
+    //  create routine and set the bool. This is just a lookup
+    inline bool schroedingerTP(void) const {
+      return schrTP;
     }
 
     //! Apply inv (C_L)^{-1}
@@ -141,6 +146,8 @@ namespace Chroma
     WilsonDslash3D Dw3D;
 
     Double logDetTSq;
+    bool schrTP;
+
   };
 
 } // End Namespace Chroma

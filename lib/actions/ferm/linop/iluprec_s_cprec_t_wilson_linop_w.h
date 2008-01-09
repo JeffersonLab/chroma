@@ -64,6 +64,8 @@ namespace Chroma
       Real mhalf=Real(-0.5);
       Dw3D.apply(chi, psi, isign, cb3d);
       chi[ rb3[cb3d] ] *= mhalf;
+      getFermBC().modifyF(chi);
+
     }
 
     void derivSpaceOp(P& ds_u, const T& X, const T& Y, enum PlusMinus isign, int cb3d) const 
@@ -74,20 +76,26 @@ namespace Chroma
 	ds_u[mu]*= mhalf;
       }
       ds_u[3]=zero;
+      getFermBC().zero(ds_u);
+
     }
 
    // A = 0 so A-1 = -1 => (A-1) psi = -psi and also for the dagger.
     inline
     void AMinusOneOp(T& chi, const T& psi, enum PlusMinus isign) const { 
       chi = Real(-1)*psi;
+      getFermBC().modifyF(chi);
     }
  
-    void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
+    inline
+    void derivAMinusOne(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const 
+    {
       // Trivial for Wilson Case
       ds_u.resize(Nd);
       for(int mu = 0; mu < Nd; mu++) { 
 	ds_u[mu] = zero;
       }
+      getFermBC().zero(ds_u);
     }
     
     //! Get log det ( T^\dag T )
@@ -134,8 +142,11 @@ namespace Chroma
       return u;
     }
 
+    inline bool schroedingerTP() const { 
+      return schrTP;
+    }
   private:
-
+    bool schrTP;
     AnisoParam_t aniso;
     Real fact;  // tmp holding  Nd+Mass
     Real invfact;

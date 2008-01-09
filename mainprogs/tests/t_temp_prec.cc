@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.7 2007-03-16 18:23:57 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.8 2008-01-09 19:05:41 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -64,6 +64,7 @@ int main(int argc, char **argv)
   xml_out.flush();  
   pop(xml_out);
 
+#if 0
   // Now need to create a SimpleFermState< LatticeFermion,  
   //                                       multi1d<LatticeColorMatrix>, 
   //                                       multi1d<LatticeColorMatrix> >
@@ -72,25 +73,61 @@ int main(int argc, char **argv)
   boundary[1] = 1;
   boundary[2] = 1;
   boundary[3] = -1;
+  
 
-  Handle< FermState< LatticeFermion, 
-                     multi1d<LatticeColorMatrix>, 
-                     multi1d<LatticeColorMatrix> > > fs( new SimpleFermState< LatticeFermion, 
-					                                      multi1d<LatticeColorMatrix>, 
-					                                      multi1d<LatticeColorMatrix> >(boundary, u) );
+#endif
 
-  AnisoParam_t aniso;
-  aniso.anisoP = true;
-  aniso.t_dir = 3;
-  aniso.xi_0 = 5;
-  aniso.nu =0.8;
+  XMLReader xml_in("./t_temp_prec.ini.xml");
+  
+  std::string fermact, prec_fermact, ilu_fermact;
+  read(xml_in, "/tempPrec/UnprecFermAct/FermAct", fermact);
+  read(xml_in, "/tempPrec/PrecFermAct/FermAct", prec_fermact);
+  read(xml_in, "/tempPrec/ILUPrecFermAct/FermAct", ilu_fermact);
+  // Typedefs to save typing
+  typedef LatticeFermion               T;
+  typedef multi1d<LatticeColorMatrix>  P;
+  typedef multi1d<LatticeColorMatrix>  Q;
+  
 
-  Real Mass = 0.02;
+  // Create unprec and Prec actions
+  Handle< FermionAction<T,P,Q> >
+    S_unprec(  TheFermionActionFactory::Instance().createObject(fermact,
+								xml_in,
+								"/tempPrec/UnprecFermAct")     );
+  
+  UnprecWilsonFermAct& S_un_wils = dynamic_cast< UnprecWilsonFermAct& >(*S_unprec);
+  
+  Handle< FermionAction<T,P,Q> >
+    S_prec(    TheFermionActionFactory::Instance().createObject(prec_fermact,
+								xml_in,
+								"/tempPrec/PrecFermAct") );
 
-  // Create the reference UnprecWilson LinOp
-  UnprecWilsonLinOp D_w( fs, Mass, aniso );
-  UnprecSCprecTWilsonLinOp D_temp_prec(fs, Mass, aniso );
+  UnprecSpaceCentralPrecTimeWilsonFermAct& S_unprec_s_cprec_t = 
+    dynamic_cast< UnprecSpaceCentralPrecTimeWilsonFermAct& >(*S_prec);
 
+
+  Handle< FermionAction<T,P,Q> >
+    S_iluprec_handle(    TheFermionActionFactory::Instance().createObject(ilu_fermact,
+									   xml_in,
+									   "/tempPrec/ILUPrecFermAct") );
+
+  ILUPrecSpaceCentralPrecTimeWilsonTypeFermAct<T,P,Q>& S_iluprec=
+    dynamic_cast<  ILUPrecSpaceCentralPrecTimeWilsonTypeFermAct<T,P,Q>& >(*S_iluprec_handle);
+
+  
+  
+  // Now create a FermState
+  Handle< FermState<T, P, Q> >  fs( S_un_wils.createState(u) );
+
+
+  Handle< UnprecSpaceCentralPrecTimeLinearOperator<T,P,Q> > D_temp_prec_handle( S_unprec_s_cprec_t.linOp( fs ) );
+  UnprecSCprecTWilsonLinOp& D_temp_prec = dynamic_cast<UnprecSCprecTWilsonLinOp&>(*D_temp_prec_handle);
+
+  Handle< UnprecLinearOperator<T,P,Q> > D_w_handle( S_un_wils.linOp(fs) );
+  UnprecWilsonLinOp& D_w = dynamic_cast< UnprecWilsonLinOp& >(*D_w_handle);
+
+  Handle< ILUPrecSpaceCentralPrecTimeLinearOperator<T,P,Q> > D_tprec2_handle(  S_iluprec.linOp(fs) );
+  ILUPrecSCprecTWilsonLinOp& D_temp_prec2 = dynamic_cast< ILUPrecSCprecTWilsonLinOp& >(*D_tprec2_handle);
 
   LatticeFermion chi;
   LatticeFermion psi1, psi2, tmp1, tmp2;
@@ -100,6 +137,7 @@ int main(int argc, char **argv)
   psi2 = zero;
   
   gaussian(chi);
+  D_temp_prec.getFermBC().modifyF(chi);
   
   // gamma_5 hermiticity:   psi1 = \gamma_5  C_R^{-1} \gamma_5 \chi
   tmp1 = Gamma(15)*chi;
@@ -204,6 +242,8 @@ int main(int argc, char **argv)
 
   // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
   gaussian(chi);
+  D_temp_prec.getFermBC().modifyF(chi);
+
   D_temp_prec.cLeftLinOp(psi1, chi, PLUS);
   D_temp_prec.invCLeftLinOp(tmp1, psi1, PLUS);
 
@@ -232,6 +272,7 @@ int main(int argc, char **argv)
 
   // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
   gaussian(chi);
+  D_temp_prec.getFermBC().modifyF(chi);
   D_temp_prec.cRightLinOp(psi1, chi, PLUS);
   D_temp_prec.invCRightLinOp(tmp1, psi1, PLUS);
 
@@ -275,7 +316,7 @@ int main(int argc, char **argv)
 
 
   QDPIO::cout << "ILU Prec Op: " << endl;
-  ILUPrecSCprecTWilsonLinOp D_temp_prec2(fs, Mass, aniso );
+  //  ILUPrecSCprecTWilsonLinOp D_temp_prec2(fs, Mass, aniso );
 
   tmp1 = Gamma(15)*chi;
   D_temp_prec2.invCRightLinOp(tmp2, tmp1, PLUS);
@@ -300,6 +341,7 @@ int main(int argc, char **argv)
 
   // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
   gaussian(chi);
+  D_temp_prec2.getFermBC().modifyF(chi);
   D_temp_prec2.cLeftLinOp(psi1, chi, PLUS);
   D_temp_prec2.invCLeftLinOp(tmp1, psi1, PLUS);
 
@@ -328,6 +370,7 @@ int main(int argc, char **argv)
 
   // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
   gaussian(chi);
+  D_temp_prec2.getFermBC().modifyF(chi);
   D_temp_prec2.cRightLinOp(psi1, chi, PLUS);
   D_temp_prec2.invCRightLinOp(tmp1, psi1, PLUS);
 
@@ -408,6 +451,7 @@ int main(int argc, char **argv)
 
   // Test LeftInverse is inverse of Left (Both orderings, PLUS and MINUS)
   gaussian(chi);
+  D_temp_prec_clover.getFermBC().modifyF(chi);
   D_temp_prec_clover.cLeftLinOp(psi1, chi, PLUS);
   D_temp_prec_clover.invCLeftLinOp(tmp1, psi1, PLUS);
 
@@ -436,6 +480,7 @@ int main(int argc, char **argv)
 
   // Test C_R is inverse of C_R_Inverse both orders, PLUS & Minus
   gaussian(chi);
+  D_temp_prec_clover.getFermBC().modifyF(chi);
   D_temp_prec_clover.cRightLinOp(psi1, chi, PLUS);
   D_temp_prec_clover.invCRightLinOp(tmp1, psi1, PLUS);
 
@@ -472,6 +517,7 @@ int main(int argc, char **argv)
   diff = psi2 - psi1;
   QDPIO::cout << " D_2 - = " << sqrt( norm2(diff) / norm2(psi1) ) << endl;
   
+#if 0
   // Schur Style preconditioning
   EO3DPrecSCprecTWilsonLinOp D_schur_tprec(fs, Mass, aniso);
 
@@ -647,7 +693,7 @@ int main(int argc, char **argv)
     diff[rb3[cb]] = psi2 - psi1;
     QDPIO::cout << "cb="<<cb<<" D- = " << sqrt(norm2(diff,rb3[cb])/norm2(chi,rb3[cb])) << endl;
   }
-
+#endif
   
   // Time to bolt
   Chroma::finalize();

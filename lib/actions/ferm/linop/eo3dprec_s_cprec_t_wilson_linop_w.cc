@@ -1,4 +1,4 @@
-// $Id: eo3dprec_s_cprec_t_wilson_linop_w.cc,v 1.2 2007-12-04 16:04:42 bjoo Exp $
+// $Id: eo3dprec_s_cprec_t_wilson_linop_w.cc,v 1.3 2008-01-09 19:05:41 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -210,6 +210,7 @@ namespace Chroma
 
     chi[rb3[ cb3d ]]  += spinReconstructDir3Minus(tmp_T);
     chi[rb3[ cb3d ]]  *= Real(0.5);
+    getFermBC().modifyF(chi, rb3[cb3d]);
   } 
 
   //! Apply (C_R)^{-1}
@@ -246,6 +247,7 @@ namespace Chroma
     chi[rb3[cb3d]] += spinReconstructDir3Plus(tmp_T);
 
     chi[rb3[cb3d]] *= Real(0.5); //The overall factor of 1/2
+    getFermBC().modifyF(chi, rb3[cb3d]);
   } 
 
 
@@ -278,6 +280,7 @@ namespace Chroma
 
     chi[rb3[cb3d]] += spinReconstructDir3Minus(tmp_T);
     chi[rb3[cb3d]] *= Real(0.5);
+    getFermBC().modifyF(chi, rb3[cb3d]);
   }
 
   //! Apply C_R
@@ -310,6 +313,7 @@ namespace Chroma
 
     chi[rb3[cb3d]] += spinReconstructDir3Plus(tmp_T);
     chi[rb3[cb3d]] *= Real(0.5);
+    getFermBC().modifyF(chi, rb3[cb3d]);
   }
 
 } // End Namespace Chroma

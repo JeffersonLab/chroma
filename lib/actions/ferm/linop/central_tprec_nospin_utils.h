@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_nospin_utils.h,v 1.4 2008-01-09 19:05:40 bjoo Exp $
+// $Id: central_tprec_nospin_utils.h,v 1.5 2008-01-09 19:07:08 bjoo Exp $
 /*! \file
  *  \brief Support for time preconditioning
  */
@@ -506,6 +506,8 @@ namespace Chroma
       }
     }
 
+
+    // For use by the checkerboarded version...
     inline
     void derivLogDet(multi1d<LatticeColorMatrix>& F, 
 		     const multi1d<LatticeColorMatrix>& U,
