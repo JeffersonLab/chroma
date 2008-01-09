@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_nospin_utils.h,v 1.3 2007-12-12 21:42:58 bjoo Exp $
+// $Id: central_tprec_nospin_utils.h,v 1.4 2008-01-09 19:05:40 bjoo Exp $
 /*! \file
  *  \brief Support for time preconditioning
  */
@@ -32,7 +32,8 @@ namespace Chroma
 	     const multi1d<LatticeColorMatrix>& u,
 	     const multi2d<int>& tsite,
 	     const Real& fact,
-	     enum PlusMinus isign) {
+	     enum PlusMinus isign, 
+	     const bool schroedingerTP=false) {
       const int t_index = 3; // Fixed
       int Nt = tsite.size1();
       
@@ -58,8 +59,10 @@ namespace Chroma
 	    
 	    // Last row
 	    chi.elem(tsite(site,Nt-1)) = fact.elem()*psi.elem( tsite(site,Nt-1) );
-	    chi.elem(tsite(site,Nt-1)) -= u[t_index].elem(tsite(site,Nt-1)) * psi.elem( tsite(site,0) );
-	    
+	    // If boundaries are not Schroedinger add the lower left piece
+	    if( ! schroedingerTP ) {
+	      chi.elem(tsite(site,Nt-1)) -= u[t_index].elem(tsite(site,Nt-1)) * psi.elem( tsite(site,0) );
+	    }
 	    // Rest of the rows
 	    for(int t=Nt-2; t >= 0; t--) { 
 	      chi.elem( tsite(site,t) )  = fact.elem()*psi.elem(tsite(site,t));
@@ -83,8 +86,12 @@ namespace Chroma
 	    // Last row
 	    
 	    chi.elem(tsite(site,0)) = fact.elem()*psi.elem(tsite(site,0));
-	    chi.elem(tsite(site,0)) -= adj( u[t_index].elem(tsite(site,Nt-1)) ) * psi.elem(tsite(site,Nt-1));
-	    
+
+	    // If not Schroedinger, then subtrac off upper right contribution
+	    if( !schroedingerTP ) {
+	      chi.elem(tsite(site,0)) -= adj( u[t_index].elem(tsite(site,Nt-1)) ) * psi.elem(tsite(site,Nt-1));
+	    }
+
 	    for(int t=1; t < Nt; t++) { 
 	      
 	      chi.elem(tsite(site,t)) = fact.elem() *psi.elem(tsite(site,t));
@@ -113,7 +120,8 @@ namespace Chroma
 		const multi1d<CMat>& Q_mat_inv,
 		const multi1d<CMat>& Q_mat_dag_inv,
 		const Real& invfact,
-		enum PlusMinus isign)
+		enum PlusMinus isign,
+		const bool schroedingerTP=false)
     {
       const int t_index=3;
       int Nt=tsite.size1();
@@ -152,21 +160,25 @@ namespace Chroma
 	      chi.elem( tsite(site,t) ) *= invfact.elem();
 	      
 	    }
-	    
-	    // Now  get  ( 1 - P Q W^\dag ) z  ( SMW Formula )
-	    // P and Q precomputed in constructor as P_mat and Q_mat_inv
-	    
-	    // Compute z - P Q W^\dag z
-	    // W^\dag = (1, 0, 0, ...) 
-	    // W^\dag z = z_0
-	    // Let x = Q z_0 = Q W z
-	    HVec_site x_site = Q_mat_inv(site) * chi.elem( tsite(site,0) );
-	    
-	    // Now ( 1 - P Q W z ) = z - P x 
-	    for(int t=0; t < Nt; t++) { 
-	      chi.elem( tsite(site,t) ) -= P_mat(site,t) * x_site;
+	
+	    // NB: For Schroedinger boundaries we don't need 
+	    // To do the Woodbury piece since the matrix is strictly
+	    // bidiagonal (no wraparound piece that needs Woodbury correction)
+	    if( !schroedingerTP ) { 
+	      // Now  get  ( 1 - P Q W^\dag ) z  ( SMW Formula )
+	      // P and Q precomputed in constructor as P_mat and Q_mat_inv
+	
+	      // Compute z - P Q W^\dag z
+	      // W^\dag = (1, 0, 0, ...) 
+	      // W^\dag z = z_0
+	      // Let x = Q z_0 = Q W z
+	      HVec_site x_site = Q_mat_inv(site) * chi.elem( tsite(site,0) );
+	      
+	      // Now ( 1 - P Q W z ) = z - P x 
+	      for(int t=0; t < Nt; t++) { 
+		chi.elem( tsite(site,t) ) -= P_mat(site,t) * x_site;
+	      }
 	    }
-	    
 	    // Done! Not as painful as I thought
 	  }
 	  break;
@@ -191,16 +203,21 @@ namespace Chroma
 	      chi.elem( tsite(site,t) ) += adj( u[t_index].elem(tsite(site,t-1) )  ) * chi.elem( tsite(site,t-1) );
 	      chi.elem( tsite(site,t) ) *= invfact.elem();
 	    }
-	    // Compute z - P^dag Q^dag W^dag z
-	    // W^\dag = ( 0, ...., 1) => \W^\dag z = z_Nt-1
-	    
-	    HVec_site x_site = Q_mat_dag_inv(site) * chi.elem( tsite(site,Nt-1) );
-	    
-	    // Now ( 1 - P Q W z) = z - P x 
-	    for(int t=0; t < Nt; t++) { 
-	      chi.elem( tsite(site,t) ) -= P_mat_dag(site,t)*x_site;
+
+	    // NB: For Schroedinger boundaries we don't need 
+	    // To do the Woodbury piece since the matrix is strictly
+	    // bidiagonal (no wraparound piece that needs Woodbury correction)
+	    if( !schroedingerTP ) { 
+	      // Compute z - P^dag Q^dag W^dag z
+	      // W^\dag = ( 0, ...., 1) => \W^\dag z = z_Nt-1
+	      
+	      HVec_site x_site = Q_mat_dag_inv(site) * chi.elem( tsite(site,Nt-1) );
+	      
+	      // Now ( 1 - P Q W z) = z - P x 
+	      for(int t=0; t < Nt; t++) { 
+		chi.elem( tsite(site,t) ) -= P_mat_dag(site,t)*x_site;
+	      }
 	    }
-	    
 	    // Done! Not as painful as I thought
 	  }
 	  break;
@@ -402,22 +419,12 @@ namespace Chroma
 		     const multi1d<CMat>& Q,
 		     const multi2d<int>& tsites,
 		     const int t_dir,
-		     const Real NdPlusM)
+		     const Real NdPlusM,
+		     const bool schroedingerTP=false)
     {
 
+
       F.resize(Nd);
-      LatticeColorMatrix T1;
-      Real invmass = Real(1)/ NdPlusM;
-      Real factor;
-
-      // Work out factor
-      int Nspace=tsites.size2();
-      int Nt = tsites.size1();
-
-      factor=Real(2);
-      for(int t=0; t < Nt; t++) {
-	factor*=invmass;
-      }
 
       // Initial setup. Zero out all the non-time directions
       for(int mu=0; mu < Nd; mu++) {
@@ -426,60 +433,172 @@ namespace Chroma
 	}
       }
 
-
-
-      for(int site=0; site < Nspace; site++) {
-
-	// Compute force for all timeslices T
-	for(int t=0; t < Nt; t++) { 
-
-	  // Initialize temporary
-	  CMat F_tmp;
-
-	  // This creates a unit matrix
-	  for(int r=0; r < 3; r++) { 
-	    for(int c=0; c < 3; c++) { 
-	      F_tmp.elem().elem(r,c).real() = 0;
-	      F_tmp.elem().elem(r,c).imag() = 0;
+      if( ! schroedingerTP ) { 
+	
+	LatticeColorMatrix T1;
+	Real invmass = Real(1)/ NdPlusM;
+	Real factor;
+	
+	// Work out factor
+	int Nspace=tsites.size2();
+	int Nt = tsites.size1();
+	
+	factor=Real(2);
+	for(int t=0; t < Nt; t++) {
+	  factor*=invmass;
+	}
+	
+	for(int site=0; site < Nspace; site++) {
+	  
+	  // Compute force for all timeslices T
+	  for(int t=0; t < Nt; t++) { 
+	    
+	    // Initialize temporary
+	    CMat F_tmp;
+	    
+	    // This creates a unit matrix
+	    for(int r=0; r < 3; r++) { 
+	      for(int c=0; c < 3; c++) { 
+		F_tmp.elem().elem(r,c).real() = 0;
+		F_tmp.elem().elem(r,c).imag() = 0;
+	      }
 	    }
-	  }
-	 
-	  for(int r=0; r < 3; r++) { 
-	    F_tmp.elem().elem(r,r).real() = 1;
-	    F_tmp.elem().elem(r,r).imag() = 0;
-	  }
-
-	  CMat F_tmp2;
-
-	  // Do the U-s from t+1 to Nt unless you already are Nt-1
-	  for(int j=t+1; j < Nt; j++)  {
+	    
+	    for(int r=0; r < 3; r++) { 
+	      F_tmp.elem().elem(r,r).real() = 1;
+	      F_tmp.elem().elem(r,r).imag() = 0;
+	    }
+	    
+	    CMat F_tmp2;
+	    
+	    // Do the U-s from t+1 to Nt unless you already are Nt-1
+	    for(int j=t+1; j < Nt; j++)  {
+	      F_tmp2 = F_tmp;
+	      int s = tsites(site,j);
+	      F_tmp = F_tmp2 * U[t_dir].elem(s);
+	    }
+	    
+	    // Insert the Q
 	    F_tmp2 = F_tmp;
-	    int s = tsites(site,j);
-	    F_tmp = F_tmp2 * U[t_dir].elem(s);
+	    F_tmp = F_tmp2 * Q[site];
+	    
+	    // Do the U-s from zero up to t-1
+	    for(int j=0; j < t; j++) { 
+	      F_tmp2 = F_tmp;
+	      int s = tsites(site,j);
+	      F_tmp = F_tmp2*U[t_dir].elem(s);
+	    }
+	    // Copy force to temporary
+	    T1.elem(tsites(site,t)) = F_tmp;
+	    
 	  }
+	}
+	
+	// Create the force
+	F[t_dir] = factor*T1;
+      }
+      else { 
+	// Schroedinger BC-s. Matrix is upper/lower bidiagonal
+	// and the determinant is a constant independent of the
+	// gauge fields.-In this case we ignore the constant
+	// and generate no_force
+	F[t_dir] = zero;
+      }
+    }
 
-	  // Insert the Q
-	  F_tmp2 = F_tmp;
-	  F_tmp = F_tmp2 * Q[site];
+    inline
+    void derivLogDet(multi1d<LatticeColorMatrix>& F, 
+		     const multi1d<LatticeColorMatrix>& U,
+		     const multi2d<CMat>& Q,
+		     const multi3d<int>& tsites,
+		     const int t_dir,
+		     const Real NdPlusM,
+		     const bool schroedingerTP=false)
+    {
 
-	  // Do the U-s from zero up to t-1
-	  for(int j=0; j < t; j++) { 
-	    F_tmp2 = F_tmp;
-	    int s = tsites(site,j);
-	    F_tmp = F_tmp2*U[t_dir].elem(s);
-	  }
-	  // Copy force to temporary
-	  T1.elem(tsites(site,t)) = F_tmp;
 
+      F.resize(Nd);
+
+      // Initial setup. Zero out all the non-time directions
+      for(int mu=0; mu < Nd; mu++) {
+	if( mu != t_dir ) {
+	  F[mu] = zero;
 	}
       }
 
-      // Create the force
-      F[t_dir] = factor*T1;
-
-      
+      if( ! schroedingerTP ) { 
+	
+	LatticeColorMatrix T1;
+	Real invmass = Real(1)/ NdPlusM;
+	Real factor;
+	
+	// Work out factor
+	int Nspace=tsites.size2();
+	int Nt = tsites.size1();
+	
+	factor=Real(2);
+	for(int t=0; t < Nt; t++) {
+	  factor*=invmass;
+	}
+	
+	for(int cb3=0; cb3 < 2; cb3++) { 
+	  for(int site=0; site < Nspace; site++) {
+	    
+	    // Compute force for all timeslices T
+	    for(int t=0; t < Nt; t++) { 
+	      
+	      // Initialize temporary
+	      CMat F_tmp;
+	      
+	      // This creates a unit matrix
+	      for(int r=0; r < 3; r++) { 
+		for(int c=0; c < 3; c++) { 
+		  F_tmp.elem().elem(r,c).real() = 0;
+		  F_tmp.elem().elem(r,c).imag() = 0;
+		}
+	      }
+	      
+	      for(int r=0; r < 3; r++) { 
+		F_tmp.elem().elem(r,r).real() = 1;
+		F_tmp.elem().elem(r,r).imag() = 0;
+	      }
+	      
+	      CMat F_tmp2;
+	      
+	      // Do the U-s from t+1 to Nt unless you already are Nt-1
+	      for(int j=t+1; j < Nt; j++)  {
+		F_tmp2 = F_tmp;
+		int s = tsites(cb3,site,j);
+		F_tmp = F_tmp2 * U[t_dir].elem(s);
+	      }
+	      
+	      // Insert the Q
+	      F_tmp2 = F_tmp;
+	      F_tmp = F_tmp2 * Q[cb3][site];
+	      
+	      // Do the U-s from zero up to t-1
+	      for(int j=0; j < t; j++) { 
+		F_tmp2 = F_tmp;
+		int s = tsites(cb3,site,j);
+		F_tmp = F_tmp2*U[t_dir].elem(s);
+	      }
+	      // Copy force to temporary
+	      T1.elem(tsites(cb3,site,t)) = F_tmp;
+	      
+	    }
+	  }
+	}
+	// Create the force
+	F[t_dir] = factor*T1;
+      }
+      else { 
+	// Schroedinger BC-s. Matrix is upper/lower bidiagonal
+	// and the determinant is a constant independent of the
+	// gauge fields.-In this case we ignore the constant
+	// and generate no_force
+	F[t_dir] = zero;
+      }
     }
-
   } // Namespace 
   
 } // Namespace chroma
