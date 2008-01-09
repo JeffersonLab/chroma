@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>N_FLAVOR_CENTRAL_TPREC_LOGDET_TT_FERM_MONOMIAL</Name>
+	<num_flavors>2</num_flavors>
+        <FermionAction>
+          <FermAct>UNPREC_SPACE_CPREC_TIME_WILSON</FermAct>
+	  <Kappa>0.12</Kappa>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 1</boundary>
+          </FermionBC>
+        </FermionAction>
+	<NamedObject>
+	  <monomial_id>wilson</monomial_id>
+	</NamedObject>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+      <monomial_ids><elem>wilson</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+      <tau0>1</tau0>
+      <Integrator>
+	<Name>LCM_STS_LEAPFROG</Name>
+	<n_steps>16</n_steps>
+        <monomial_ids><elem>wilson</elem></monomial_ids>
+      </Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 4</nrow>
+</LeapfrogTest>

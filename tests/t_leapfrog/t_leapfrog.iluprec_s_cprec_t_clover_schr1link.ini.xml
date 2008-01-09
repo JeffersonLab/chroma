@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_UNPREC_FERM_MONOMIAL</Name>
+	<FermionAction>
+          <FermAct>ILUPREC_SPACE_CPREC_TIME_CLOVER</FermAct>
+	  <Kappa>0.115</Kappa>
+          <clovCoeff>1.17</clovCoeff>
+          <clovCoeffR>0.91</clovCoeffR>
+          <clovCoeffT>1.07</clovCoeffT>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+	  <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+              <SchrPhiMult>1.0</SchrPhiMult>
+              <decay_dir>3</decay_dir>
+              <loop_extent>1</loop_extent>
+              <theta>0 0 0</theta>
+            </FermionBC>
+         </FermState>
+        </FermionAction>
+	<NamedObject>
+	  <monomial_id>wilson</monomial_id>
+	</NamedObject>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+      <monomial_ids><elem>wilson</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+      <tau0>1</tau0>
+      <Integrator>
+	<Name>LCM_STS_LEAPFROG</Name>
+	<n_steps>8</n_steps>
+        <monomial_ids><elem>wilson</elem></monomial_ids>
+      </Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 4</nrow>
+</LeapfrogTest>
