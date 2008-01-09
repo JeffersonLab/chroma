@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.19 2007-10-13 20:55:52 edwards Exp $
+// $Id: hmc.cc,v 3.20 2008-01-09 18:49:26 edwards Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -337,8 +337,6 @@ namespace Chroma
       
       QDPIO::cout << "MC Control: About to do " << to_do << " updates" << endl;
 
-      StopWatch swatch;
-
       // XML Output
       push(xml_out, "MCUpdates");
       push(xml_log, "MCUpdates");
@@ -618,12 +616,16 @@ xml */
 
 int main(int argc, char *argv[]) 
 {
-Chroma::initialize(&argc, &argv);
+  Chroma::initialize(&argc, &argv);
   
   START_CODE();
 
   // Chroma Init stuff -- Open DATA and XMLDAT
   QDPIO::cout << "Linkage = " << linkageHack() << endl;
+
+  StopWatch snoop;
+  snoop.reset();
+  snoop.start();
 
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   XMLFileWriter& xml_log = Chroma::getXMLLogInstance();
@@ -807,6 +809,11 @@ Chroma::initialize(&argc, &argv);
 
   pop(xml_log);  // hmc
   pop(xml_out);  // hmc
+
+  snoop.stop();
+  QDPIO::cout << "HMC: total time = "
+	      << snoop.getTimeInSeconds() 
+	      << " secs" << endl;
 
   END_CODE();
 
