@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.4 2008-01-07 16:00:47 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.5 2008-01-10 22:56:39 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -153,7 +153,43 @@ namespace Chroma
 		}			
 */	
 
+		bool operator!= (const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t & dilA,
+			const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t & dilB)
+		{
+			bool val = false;
 
+			//Check if the seeds are the same 
+			Seed seedA, seedB;
+			
+			read(dilA.source_header, "ran_seed" , seedA);
+			read(dilB.source_header, "ran_seed" , seedB);
+
+			val |= (seedA != seedB);
+
+			
+			//Check Spatial mask and spatial mask size
+			
+			multi1d<int> mask_sizeA, mask_sizeB, maskA, maskB;
+
+			read(dilA.source_header, "/spatial_mask_size" , mask_sizeA);
+			read(dilB.source_header, "/spatial_mask_size" , mask_sizeB);
+			val |= (mask_sizeA != mask_sizeB);
+
+			read(dilA.source_header, "/spatial_mask" , maskA);
+			read(dilB.source_header, "/spatial_mask" , maskB);
+			val |= (maskA != maskB);
+
+			read(dilA.source_header, "/color_mask" , maskA);
+			read(dilB.source_header, "/color_mask" , maskB);
+			val |= (maskA != maskB);
+
+			read(dilA.source_header, "/spin_mask" , maskA);
+			read(dilB.source_header, "/spin_mask" , maskB);
+			val |= (maskA != maskB);
+
+			return val;
+
+		}
     //-------------------------------------------------------------------------------
     // Function call
     void ConstDilutionScheme::init()
@@ -182,25 +218,20 @@ namespace Chroma
 
 				QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << endl;
 
+				
 				for (int t0 = 0 ; t0 < quark.time_slices.size() ; ++t0 )
 				{
-
 					quark.time_slices[t0].dilutions.resize(
 							params.quark_files.timeslice_files[t0].dilution_files.size() );
-
 				
 					QDPIO::cout << "dilutions.size = " << 
 						quark.time_slices[t0].dilutions.size() << endl;
-	
 					
 					int time = 0;
 
 					for(int dil = 0; dil < quark.time_slices[t0].dilutions.size(); ++dil)
-					{
-			
-						
-						
-						quark.timne_slices[t0].dilutions[dil].soln_file =
+					{				
+						quark.time_slices[t0].dilutions[dil].soln_file =
 							params.quark.timeslice_files[t0].dilution_files[dil];
 
 	    			XMLReader file_xml, record_xml, record_xml_source;
@@ -208,15 +239,18 @@ namespace Chroma
 	    			QDPIO::cout << "reading file = " << 
 							quark.time_slices[t0].dilutions[dil].soln_file << endl;
 
-	    			QDPFileReader from(file_xml, quark.time_slices[t0].dilutions[dil].soln_file, QDPIO_SERIAL);
+	    			QDPFileReader from(file_xml, 
+								quark.time_slices[t0].dilutions[dil].soln_file, QDPIO_SERIAL);
 
 			
 						//Read the record xml only
 						read(from, record_xml);
 	    			close(from);
 
-	    			read(record_xml, "/Propagator/PropSource", quark.dilutions[dil].source_header);
-	    			read(record_xml, "/Propagator/ForwardProp", quark.dilutions[dil].prop_header);
+	    			read(record_xml, "/Propagator/PropSource", 
+								quark.dilutions[dil].source_header);
+	    			read(record_xml, "/Propagator/ForwardProp", 
+								quark.dilutions[dil].prop_header);
 
 
 	    			if (!initq)
@@ -248,12 +282,25 @@ namespace Chroma
 						}
 
 					
+						//Test that each t0 has the same dilutions per timeslice 
+						if ( quark.time_slices[t0].dilutions[dil] != 
+								quark.time_slices[0].dilutions[dil] )
+						{
+							QDPIO::cerr << "Dilutions do not match on time slice " << 
+								t0 << endl;
+
+							QDP_abort(1);
+						}
 
 	  			}//dil
 					
 					quark.time_slices[t0].t0 = time;
 
+					
+
 				}//t0
+
+				
 
       } //try
       catch (const string& e) 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.5 2008-01-08 19:06:12 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.6 2008-01-10 22:56:39 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -91,6 +91,12 @@ namespace Chroma
 
       //! The seed identifies this quark
       const Seed& getSeed() const {return quark.seed;}
+
+      //! The seed identifies this quark
+      int getT0( int t0 ) const {return quark.timeslices[t0].t0;}
+
+      //! The seed identifies this quark
+      int getNumTimeSlices() const {return quark.timeslices.size();}
 
       //! Does the source have support on time slice t0 and dilution component
 			//dil?

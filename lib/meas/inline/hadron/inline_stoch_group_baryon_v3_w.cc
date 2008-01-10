@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.5 2008-01-09 21:15:49 jbulava Exp $
+// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.6 2008-01-10 22:56:39 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -862,14 +862,14 @@ namespace Chroma
 
       try
       {
-				// Loop over the 3 quark dilution operators
+				// Loop over the 3 quark dilutions
 				for(int n = 0; n < params.param.quark_dils.size(); ++n)
 				{
 	  			const GroupXML_t& dil_xml = params.param.quark_dils[n];
 
 	  			std::istringstream  xml_d(dil_xml.xml);
 	  			XMLReader  diltop(xml_d);
-	  			QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
+	  			QDPIO::cout << "Dilution type = XX" << dil_xml.id <<"XX"<< endl;
 	
 	  			diluted_quarks[n] = TheFermDilutionOperatorFactory::Instance().createObject(
 	    			dil_xml.id, diltop, dil_xml.path);
@@ -877,11 +877,44 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-				QDPIO::cerr << name << ": Caught Exception constructing dilution operator: " << e << endl;
+				QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << endl;
 				QDP_abort(1);
       }
+//------------------------------------------------------------------------
+//Sanity checks	
 
+			//The participating timeslices must match for each quark
+			//grab info from first quark to prime the work
 
+			multi1d<int> particpating_timeslices( diluted_quarks[0]->getNumTimeSlices() );
+
+			for (int t0 = 0 ; t0 < participating_timeslices->size() ; ++t0)
+			{
+				participating_timeslices[t0] = diluted_quarks[0]->getT0(t0);
+			}
+
+			for (int n = 1 ; n < N_quarks ; ++n)
+			{
+				if ( diluted_quarks[n]->getNumTimeSlices() != particpating_timeslices.size() )
+				{
+					QDPIO::cerr << name << " : Quarks do not contain the same number of dilution timeslices: Quark " 
+						<< n << endl; 
+
+					QDP_abort(1);
+				}
+
+				for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
+				{
+					if  ( diluted_quarks[n]->getT0(t0) != participating_timeslices[t0] )
+					{
+						QDPIO::cerr << name << " : Quarks do not contain the same participating timeslices: Quark "<<
+							n << " timeslice "<< t0 << endl;
+
+						QDP_abort(1);
+					}
+				}
+			}
+			
       //
       // Initialize the slow Fourier transform phases
       //
@@ -901,7 +934,7 @@ namespace Chroma
 		
       //
       // Another sanity check. The seeds of all the quarks must be different
-      //
+      // and thier decay directions must be the same 
       for(int n = 1 ; n < diluted_quarks.size(); ++n)
       {
 				if ( toBool( diluted_quarks[n]->getSeed() == diluted_quarks[0]->getSeed() ) ) 
@@ -909,6 +942,13 @@ namespace Chroma
 	  			QDPIO::cerr << name << ": error, quark seeds are the same" << endl;
 	  			QDP_abort(1);
 				}
+
+				if ( toBool( diluted_quarks[n]->getDecayDir() != diluted_quarks[0]->getDecayDir() ) )
+				{
+					QDPIO::cerr << name << ": error, quark decay dirs do not match" <<endl;
+					QDP_abort(1);
+				}
+
       }
 
       //
@@ -1018,7 +1058,7 @@ namespace Chroma
       }
 
       
-			// The object holding the smeared and displaced spin components
+			// The object holding the smeared and displaced color vector maps  
       SmearedDispObjects smrd_disp_quarks(params.param.displacement_length,
 				     diluted_quarks, sourceSmearing, sinkSmearing, u_smr )
 				     
@@ -1037,68 +1077,68 @@ namespace Chroma
       //Should think of a cleverer algorithm for n quarks 
       if  (pstring.size() != N_quarks)
       {
-	QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 3 but is " << pstring.size() << endl;
-	QDP_abort(1);
+				QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 3 but is " << pstring.size() << endl;
+				QDP_abort(1);
       }
 
       //If 2 identical quarks, different one must be in the third position
       if ( ( pstring[0] == pstring[2] ) && ( pstring[1] != pstring[2] ) )
       {
-	QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries."
-		    << endl;
-	QDP_abort(1);
+				QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries."
+					<< endl;
+				QDP_abort(1);
       }
 			
       if ( pstring[1] == pstring[2] )
       {
-	num_orderings = 2;
+				num_orderings = 2;
       }
 			
       if  (pstring[0] == pstring[2]) 
       {
-	num_orderings = 6;
+				num_orderings = 6;
       }
 					
       multi1d< multi1d<int> >  perms(num_orderings);
       {
-	multi1d<int> p(N_quarks);
+				multi1d<int> p(N_quarks);
 
-	if (num_orderings >= 1)
-	{
-	  p[0] = 0; p[1] = 1; p[2] = 2;
-	  perms[0] = p;
-	}
+				if (num_orderings >= 1)
+				{
+					p[0] = 0; p[1] = 1; p[2] = 2;
+					perms[0] = p;
+				}
 
-	if (num_orderings >= 2)
-	{
-	  p[0] = 0; p[1] = 2; p[2] = 1;
-	  perms[1] = p;
-	}
+				if (num_orderings >= 2)
+				{
+					p[0] = 0; p[1] = 2; p[2] = 1;
+					perms[1] = p;
+				}
 
-	if (num_orderings >= 3)
-	{
-	  p[0] = 1; p[1] = 0; p[2] = 2;
-	  perms[2] = p;
-	}
+				if (num_orderings >= 3)
+				{
+					p[0] = 1; p[1] = 0; p[2] = 2;
+					perms[2] = p;
+				}
 
-	if (num_orderings >= 4)
-	{
-	  p[0] = 1; p[1] = 2; p[2] = 0;
-	  perms[3] = p;
-	}
+				if (num_orderings >= 4)
+				{
+					p[0] = 1; p[1] = 2; p[2] = 0;
+					perms[3] = p;
+				}
 
-	if (num_orderings >= 5)
-	{
-	  p[0] = 2; p[1] = 1; p[2] = 0;
-	  perms[4] = p;
-	}
- 
-	if (num_orderings >= 6)
-	{
-	  p[0] = 2; p[1] = 0; p[2] = 1;
-	  perms[5] = p;
-	}
-      }
+				if (num_orderings >= 5)
+				{
+					p[0] = 2; p[1] = 1; p[2] = 0;
+					perms[4] = p;
+				}
+
+				if (num_orderings >= 6)
+				{
+					p[0] = 2; p[1] = 0; p[2] = 1;
+					perms[5] = p;
+				}
+			}
 
       // Creation operator
       BaryonOperator_t  creat_oper;
@@ -1141,7 +1181,16 @@ namespace Chroma
 				swiss.reset();
 				swiss.start();
 
-				for (int t0 = 0 ; t0 < diluted_quarks[0].getNTimeslices() ; ++t0)
+				// The keys for the spin and displacements for this particular elemental operator
+				multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
+
+				for(int n = 0 ; n < N_quarks ; ++n)
+				{
+					keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+					keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+				}
+
+				for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
 				{
 
 					for(int ord = 0; ord < creat_oper.orderings.size(); ++ord)
@@ -1170,23 +1219,18 @@ namespace Chroma
 						cop.dilutions.resize(diluted_quarks[n0].getDilSize(t0), diluted_quarks[n1].getDilSize(t0),
 							diluted_quarks[n2].getDilSize(t0) );
 
+						for (int n = 0 ; n < N_quarks ; ++n)
+						{
+							keySmearedDispColorVector[n].t0 = t0;
+						}
+						
 						for(int i = 0 ; i <  diluted_quarks[n0].getDilSize(t0) ; ++i)
 	    			{
 	      			for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      
 							{
 								for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
 								{
-		  
-		  						// The keys for the spin and displacements for this particular elemental operator
-		  						multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quark);
-		  
-									for(int n=0; n < N_quarks; ++n)
-		  						{
-		    						keySmearedDispColorVector[n].t0           = t0;
-		    						keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
-		    						keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
-		  						}
-	  
+		 	  
 									keySmearedDispColorVector[0].dil = i;
 									keySmearedDispColorVector[1].dil = j;
 									keySmearedDispColorVector[2].dil = k;
@@ -1232,11 +1276,11 @@ namespace Chroma
 	    			// Annihilation operator
 	    			BaryonOperator_t::TimeSlices_t& aop = annih_oper.orderings[ord].time_slices[t];
 
-	    for(DilutionOperator<LatticeFermion>::const_iterator dil0= dilutions[n0].begin(); 
-		dil0 != dilutions[n0].end(); 
-		++dil0)
-	    {
-	      // Skip if a zero entry
+						for(DilutionOperator<LatticeFermion>::const_iterator dil0= dilutions[n0].begin(); 
+								dil0 != dilutions[n0].end(); 
+								++dil0)
+						{
+							// Skip if a zero entry
 	      if (dilutions[n0]->hasTimeSupport(dil0,t0))
 		continue;
 
