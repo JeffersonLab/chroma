@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.20 2008-01-09 18:49:26 edwards Exp $
+// $Id: hmc.cc,v 3.21 2008-01-10 14:33:45 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -297,6 +297,7 @@ namespace Chroma
 	     multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
     START_CODE();
+    QDP::StopWatch swatch;
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
     XMLWriter& xml_log = TheXMLLogWriter::Instance();
