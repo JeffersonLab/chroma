@@ -1,4 +1,4 @@
-// $Id: delta_2pt_w.cc,v 3.5 2007-12-14 21:47:38 kostas Exp $
+// $Id: delta_2pt_w.cc,v 3.6 2008-01-11 18:14:18 kostas Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -141,7 +141,8 @@ namespace Chroma
       std::list< Handle<Hadron2PtContract_t> > hadron;   // holds the contract lattice correlator
       std::map<std::string,SpinMatrix> Projector ;
       std::map<std::string,SpinMatrix> Parity ;
-      multi1d<SpinMatrix> DiQuark(Ns) ;
+      multi1d<SpinMatrix> SrcDiQuark(Ns) ;
+      multi1d<SpinMatrix> SnkDiQuark(Ns) ;
       Parity["PosPar"] = BaryonSpinMats::Tunpol();
       Parity["NegPar"] = BaryonSpinMats::TunpolNegPar();
       Projector["OnePlusSigma3"] = BaryonSpinMats::TspinUp() ;
@@ -151,7 +152,9 @@ namespace Chroma
 
        
       for(int mu(0);mu<Ns ;mu++)
-	DiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
+	SnkDiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
+      for(int mu(0);mu<Ns ;mu++)
+	SrcDiQuark[mu] = BaryonSpinMats::CgmuTrans(mu+1);
 
       map<std::string,SpinMatrix>::iterator par;
       map<std::string,SpinMatrix>::iterator proj;
@@ -167,15 +170,34 @@ namespace Chroma
 	      Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
 	      had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
 							    quark_prop2,
-							    T,DiQuark[src],
-							    DiQuark[snk]);
+							    T,SrcDiQuark[src],
+							    SnkDiQuark[snk]);
+	      
+	      //SpinMatrix trans = transpose(DiQuark[snk]) - DiQuark[snk] ;
+	      
+	      /**
+	      for(int s1(0);s1<Ns;s1++){
+		cout<<"SRC_MATRIX ";
+		for(int s2(0);s2<Ns;s2++)
+		  cout<<peekSpin(SrcDiQuark[src],s1,s2)<<" ";
+		cout<<endl;
+	      }
+	      
+	     
+	      for(int s1(0);s1<Ns;s1++){
+		cout<<"SNK_MATRIX ";
+		for(int s2(0);s2<Ns;s2++)
+		  cout<<peekSpin(SnkDiQuark[snk],s1,s2)<<" ";
+		cout<<endl;
+	      }
+	      **/
+	      
 	      push(had->xml, xml_group);
 	      write(had->xml, id_tag, "delta");
 	      write(had->xml, "SrcDiQuark", src);
 	      write(had->xml, "SnkDiQuark", snk);
 	      write(had->xml, "Parity", par->first);
-	      write(had->xml, "Projector", proj->first);
-	      
+	      write(had->xml, "Projector", proj->first);	      
 	      write(had->xml, "PropHeaders", forward_headers);
 
 	      pop(had->xml);
@@ -206,8 +228,8 @@ namespace Chroma
 	    T = par->second * T ;
 	    had->corr += Baryon2PtContractions::sigmast2pt(quark_prop1, 
 							   quark_prop2,
-							   T,DiQuark[src],
-							   DiQuark[snk]);
+							   T,SrcDiQuark[src],
+							   SnkDiQuark[snk]);
 	  }
 	push(had->xml, xml_group);
 	write(had->xml, id_tag, "delta");

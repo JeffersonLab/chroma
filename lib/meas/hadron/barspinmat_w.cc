@@ -1,4 +1,4 @@
-// $Id: barspinmat_w.cc,v 3.2 2007-12-05 04:46:04 kostas Exp $
+// $Id: barspinmat_w.cc,v 3.3 2008-01-11 18:14:17 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -90,7 +90,7 @@ namespace Chroma
 	break;
 
       case 2:
-	gt = Gamma(8) * g_one;
+	gt = -(Gamma(8) * g_one);
 	break;
 
       case 3:
@@ -98,7 +98,7 @@ namespace Chroma
 	break;
 
       case 4:
-	gt = -(Gamma(2) * g_one);
+	gt = Gamma(2) * g_one;
 	break;
 
       default:
@@ -106,6 +106,22 @@ namespace Chroma
 	QDPIO::cerr << __func__ << ": invalid k=" << k << endl;
 	QDP_abort(1);
       }
+      return gt;
+    }
+
+    //! C g_\mu = \gamma_4 \gamma_2 transpose(\gamma_\mu)
+    SpinMatrix CgmuTrans(int k)
+    {
+      k--; //for compatibility with the Cgmu
+      SpinMatrix g_one = 1.0;
+      SpinMatrix gt;
+      //QDPIO::cout<<"CgmuTrans("<<k<<")"<<endl ;
+      SpinMatrix gmu = Gamma(1<<k)*g_one ;
+      
+      //signs have been checked...
+      // Gamma(10) = gamma_2 gamma_4
+      gt = Gamma(10)*transpose(gmu);
+
       return gt;
     }
 

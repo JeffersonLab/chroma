@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: barspinmat_w.h,v 3.3 2007-12-05 04:46:04 kostas Exp $
+// $Id: barspinmat_w.h,v 3.4 2008-01-11 18:14:18 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -36,6 +36,8 @@ namespace Chroma
 
     //! C g_\mu = C gamma_\mu
     SpinMatrix Cgmu(int k);
+    //! C g_\mu = C gamma_\mu
+    SpinMatrix CgmuTrans(int k);
 
     //! C g4 g_k = C gamma_4 gamma_k
     SpinMatrix Cg4gk(int k);
