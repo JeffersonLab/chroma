@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.6 2008-01-10 22:56:39 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.7 2008-01-11 15:36:59 kostas Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -69,7 +69,7 @@ namespace Chroma
       
 			};
 				
-			multi1d<TimeSlices_t> time_slices;
+			multi1d<TimeSlices_t> timeslices;
 
 			int   decay_dir;
       Seed  seed;
