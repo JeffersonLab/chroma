@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: norm_gram_schm.h,v 1.1 2007-10-11 19:00:09 edwards Exp $
+// $Id: norm_gram_schm.h,v 1.2 2008-01-13 21:08:14 edwards Exp $
 /*! \file
  *  \brief Gram-Schmidt with normalization
  */
@@ -16,6 +16,7 @@ namespace Chroma
   /*! \ingroup invert
    * @{
    */
+  // 4D versions
   void normGramSchmidt(multi1d<LatticeFermionF>& vec, 
 		       int f,
 		       int t,
@@ -32,6 +33,17 @@ namespace Chroma
 		       const Subset& sub);
 
   void normGramSchmidt(multi1d<LatticeStaggeredFermionD>& vec, 
+		       int f,
+		       int t,
+		       const Subset& sub);
+
+  // 5D versions
+  void normGramSchmidt(multi2d<LatticeFermionF>& vec, 
+		       int f,
+		       int t,
+		       const Subset& sub);
+
+  void normGramSchmidt(multi2d<LatticeFermionD>& vec, 
 		       int f,
 		       int t,
 		       const Subset& sub);

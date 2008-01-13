@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.8 2007-10-26 03:31:28 kostas Exp $
+// $Id: containers.h,v 1.9 2008-01-13 21:08:13 edwards Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -10,13 +10,14 @@ namespace Chroma
 {
   namespace LinAlg
   {
+    //------------------------------------------------------------------------------
     //! Hold vectors
     /*! \ingroup invert */
     template<class T> class Vectors
     {
     public:
-      multi1d<T> vec ;
-      int N ; // number of active vectors size of vec must be larger or equal to N
+      multi1d<T> vec;
+      int N; // number of active vectors size of vec must be larger or equal to N
 
       Vectors():N(0){} 
       Vectors(const multi1d<T>& v):vec(v),N(v.size()){} 
@@ -26,33 +27,33 @@ namespace Chroma
     
       void AddVector(const T& v,const Subset& s){
 	if(N<vec.size()){
-	  vec[N][s] = v ;
-	  N++ ;
+	  vec[N][s] = v;
+	  N++;
 	}
       }
 
       void NormalizeAndAddVector(const T& v,const Double& inorm, 
 				 const Subset& s){
 	if(N<vec.size()){// inorm is the inverse of the norm
-	  vec[N][s] = v  ;
-	  vec[N][s] *= inorm  ;
-	  N++ ;
+	  vec[N][s] = v;
+	  vec[N][s] *= inorm;
+	  N++;
 	}
       }
       void AddOrReplaceVector(const T& v,const Subset& s){
 	if(N<vec.size()){
-	  vec[N][s] = v ;
-	  N++ ;
+	  vec[N][s] = v;
+	  N++;
 	}
 	else{// replace the last vector
-	  vec[N-1] = v ;
+	  vec[N-1] = v;
 	}
       }
 
       // This will only add as many vectors as they fit
       void AddVectors(multi1d<T>& v,const Subset& s){
 	for(int i(0);i<v.size();i++)
-	  AddVector(v[i],s) ;
+	  AddVector(v[i],s);
       }
 
     
@@ -63,6 +64,7 @@ namespace Chroma
     };
 
 
+    //------------------------------------------------------------------------------
     //! Holds eigenvalues and eigenvectors
     /*! \ingroup invert */
     template<class T> class RitzPairs
@@ -95,25 +97,27 @@ namespace Chroma
       // This will only add as many vectors as they fit
       void AddVectors(const multi1d<Double>& e,const multi1d<T>& v,const Subset& s){
 	for(int i(0);i<e.size();i++)
-	  eval.AddVector(e[i],s) ;
+	  eval.AddVector(e[i],s);
 	for(int i(0);i<v.size();i++)
-	  evec.AddVector(v[i],s) ;
+	  evec.AddVector(v[i],s);
 	if (eval.N != evec.N)
 	{
 	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
 	  QDP_abort(1);
 	}
-	Neig = evec.N ;
+	Neig = evec.N;
       }
     };
 
+
+    //------------------------------------------------------------------------------
     //! This is a square matrix
     /*! \ingroup invert */
     template<class T> class Matrix
     {
     public:
-      multi2d<T> mat ;
-      int N ;  // active size 
+      multi2d<T> mat;
+      int N;  // active size 
 
       Matrix():N(0){} 
       Matrix(const multi2d<T>& v):mat(v),N(v.size1())
@@ -133,8 +137,144 @@ namespace Chroma
       T& operator()(int i,int j){ return mat(i,j);}
     };
   
-  }
 
-}
+    //------------------------------------------------------------------------------
+    //! Hold vectors
+    /*! \ingroup invert */
+    template<class T> class VectorArrays
+    {
+    public:
+      multi2d<T> vec;
+      int N;   // number of active vectors size of vec must be larger or equal to N
+      int Ls;  // size of 5D arrays
+
+      VectorArrays() : N(0) {} 
+      VectorArrays(const multi2d<T>& v) : vec(v),N(v.size2()),Ls(v.size1()) {} 
+      VectorArrays(int size2,int size1){resize(size2,size1);} 
+    
+      ~VectorArrays(){}
+    
+      void AddVector(const multi1d<T>& v,const Subset& s){
+	if(N<vec.size2())
+	{
+	  if (v.size() != Ls)
+	  {
+	    QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
+			<< "  v.size=" << v.size() << endl;
+	    QDP_abort(1);
+	  }
+	  for(int k=0; k < Ls; ++k)
+	    vec[N][k][s] = v[k];
+	  N++;
+	}
+      }
+
+      void NormalizeAndAddVector(const multi1d<T>& v,const Double& inorm, 
+				 const Subset& s){
+	if(N<vec.size2())
+	{
+	  // inorm is the inverse of the norm
+	  if (v.size() != Ls)
+	  {
+	    QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
+			<< "  v.size=" << v.size() << endl;
+	    QDP_abort(1);
+	  }
+	  for(int k=0; k < Ls; ++k)
+	  {
+	    vec[N][k][s] = v[k];
+	    vec[N][k][s] *= inorm;
+	  }
+	  N++;
+	}
+      }
+      void AddOrReplaceVector(const multi1d<T>& v,const Subset& s){
+	if(N<vec.size2())
+	{
+	  if (v.size() != Ls)
+	  {
+	    QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
+			<< "  v.size=" << v.size() << endl;
+	    QDP_abort(1);
+	  }
+	  for(int k=0; k < Ls; ++k)
+	    vec[N][k][s] = v[k];
+	  N++;
+	}
+	else{// replace the last vector
+	  for(int k=0; k < Ls; ++k)
+	    vec[N-1][k][s] = v[k];
+	}
+      }
+
+      // This will only add as many vectors as they fit
+      void AddVectors(multi2d<T>& v,const Subset& s){
+	if (v.size() != Ls)
+	{
+	  QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
+		      << "  v.size=" << v.size() << endl;
+	  QDP_abort(1);
+	}
+	for(int i(0);i<v.size2();i++)
+	  AddVector(v[i],s);
+      }
+
+    
+      void resize(int n2, int n1) {N=Ls=0;vec.resize(n2,n1);} 
+      int size() const { return vec.size2();}
+      int Nvecs() const { return N; } 
+      int N5d() const { return Ls; } 
+      multi1d<T> operator[](int i){ return vec[i];}
+    };
+
+
+    //------------------------------------------------------------------------------
+    //! Holds eigenvalues and arrays of eigenvectors for use in 5D work
+    /*! \ingroup invert */
+    template<class T> class RitzPairsArray
+    {
+    public:
+      Vectors<Double>   eval;
+      VectorArrays<T>   evec;
+      int Neig;
+
+      RitzPairsArray() {init(0);}
+      RitzPairsArray(int N, int Ls) {init(N,Ls);}
+
+      void init(int N, int Ls) {
+	eval.resize(N);
+	evec.resize(N,Ls);
+	Neig = 0;
+      }
+
+      void AddVector(const Double& e, const multi1d<T>& v,const Subset& s){
+	eval.AddVector(e,s);
+	evec.AddVector(v,s);
+	if (eval.N != evec.N)
+	{
+	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	  QDP_abort(1);
+	}
+	Neig = evec.N;
+      }
+
+      // This will only add as many vectors as they fit
+      void AddVectors(const multi1d<Double>& e,const multi2d<T>& v,const Subset& s){
+	for(int i(0);i<e.size();i++)
+	  eval.AddVector(e[i],s);
+	for(int i(0);i<v.size2();i++)
+	  evec.AddVector(v[i],s);
+	if (eval.N != evec.N)
+	{
+	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	  QDP_abort(1);
+	}
+	Neig = evec.N;
+      }
+    };
+
+  } // namespace LinAlg
+
+} // namespace Chroma
 
 #endif 
