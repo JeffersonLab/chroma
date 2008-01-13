@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2_array.cc,v 1.1 2008-01-13 21:08:13 edwards Exp $
+// $Id: inv_eigcg2_array.cc,v 1.2 2008-01-13 22:43:54 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -78,7 +78,7 @@ namespace Chroma
       swatch.reset();
       swatch.start();
     
-      int N = A.size();
+      const int Ls = A.size();
 
       SystemSolverResults_t  res;
     
@@ -95,8 +95,8 @@ namespace Chroma
 
       int k = 0;
       A(Ap,x,PLUS);
-      for(int s=0; s < N; ++s)
-	r[s][A.subset()] = b[s] - Ap[s];
+      for(int l=0; l < Ls; ++l)
+	r[l][A.subset()] = b[l] - Ap[l];
 
 
 #if 1
@@ -104,7 +104,7 @@ namespace Chroma
       QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_dot_z << endl;
 #endif
       Matrix<DComplex> H(Nmax); // square matrix containing the tridiagonal
-      Vectors<T> vec(Nmax); // contains the vectors we use...
+      VectorArrays<T> vec(Nmax,Ls); // contains the vectors we use...
       
 
       beta=0.0;
@@ -126,18 +126,20 @@ namespace Chroma
 	k++;
 	if(k==1){
 	  //p[A.subset()] = z;	
-	  for(int s=0; s < N; ++s)
-	    p[s][A.subset()] = r[s];	
+	  for(int l=0; l < Ls; ++l)
+	    p[l][A.subset()] = r[l];	
 	}
 	else{
 	  betaprev = beta;
 	  beta = r_dot_z/r_dot_z_old;
 	  //p[A.subset()] = z + beta*p; 
-	  for(int s=0; s < N; ++s)
-	    p[s][A.subset()] = r[s] + beta*p[s];
+	  for(int l=0; l < Ls; ++l)
+	    p[l][A.subset()] = r[l] + beta*p[l];
 	}
 	//-------- Eigenvalue eigenvector finding code ------
-	if((Neig>0)&& (H.N == Nmax)) Ap_prev[A.subset()]=Ap;
+	if((Neig>0)&& (H.N == Nmax)) 
+	  for(int l=0; l < Ls; ++l)
+	    Ap_prev[l][A.subset()] = Ap[l];
 	//---------------------------------------------------
 	A(Ap,p,PLUS);
 	
@@ -228,14 +230,17 @@ namespace Chroma
 #endif
 	    
 #ifndef USE_BLAS_FOR_LATTICEFERMIONS
-	    multi1d<T> tt_vec(2*Neig);
+	    multi2d<T> tt_vec(2*Neig,Ls);
 	    for(int i(0);i<2*Neig;i++){
-	      tt_vec[i][A.subset()] = zero;
+	      for(int l=0; l < Ls; ++l)
+		tt_vec[i][l][A.subset()] = zero;
 	      for(int j(0);j<Nmax;j++)
-		tt_vec[i][A.subset()] +=Htmp(i,j)*vec[j]; 
+		for(int l=0; l < Ls; ++l)
+		  tt_vec[i][l][A.subset()] +=Htmp(i,j)*vec[j][l]; 
 	    }
 	    for(int i(0);i<2*Neig;i++)
-	      vec[i][A.subset()] = tt_vec[i];
+	      for(int l=0; l < Ls; ++l)
+		vec[i][l][A.subset()] = tt_vec[i][l];
 #else
 	    // Here I need the restart_X bit
 	    // zgemm("N", "N", Ns*Nc*Vol/2, 2*Neig, Nmax, 1.0,
@@ -249,7 +254,8 @@ namespace Chroma
 	    for (int i=0;i<2*Neig;i++) H(i,i) = Heval[i];
 
 	    //A(tt,r,PLUS);
-	    tt = Ap - beta*Ap_prev; //avoid the matvec
+	    for(int l=0; l < Ls; ++l)
+	      tt[l] = Ap[l] - beta*Ap_prev[l]; //avoid the matvec
 
 #ifndef USE_BLAS_FOR_LATTICEFERMIONS
 	    for (int i=0;i<2*Neig;i++){
@@ -279,8 +285,10 @@ namespace Chroma
 	pAp = innerProductReal(p,Ap,A.subset());
       	alphaprev = alpha;// additional line for Eigenvalue eigenvector code
 	alpha = r_dot_z/pAp;
-	x[A.subset()] += alpha*p;
-	r[A.subset()] -= alpha*Ap;
+	for(int l=0; l < Ls; ++l)
+	  x[l][A.subset()] += alpha*p[l];
+	for(int l=0; l < Ls; ++l)
+	  r[l][A.subset()] -= alpha*Ap[l];
 	      
 	
 	//---------------------------------------------------
@@ -299,7 +307,7 @@ namespace Chroma
 
       if(Neig>0)
       {
-	evec.resize(Neig);
+	evec.resize(Neig,Ls);
 	eval.resize(Neig);
 	
 #define  USE_LAST_VECTORS
@@ -311,10 +319,12 @@ namespace Chroma
 	QDPLapack::zheev(V,U,H.N-1,Hevecs,Heval);
 	
 	for(int i(0);i<Neig;i++){
-	  evec[i][A.subset()] = zero;
+	  for(int l=0; l < Ls; ++l)
+	    evec[i][l][A.subset()] = zero;
 	  eval[i] = Heval[i];
 	  for(int j(0);j<H.N-1;j++)
-	    evec[i][A.subset()] +=Hevecs(i,j)*vec[j];
+	    for(int l=0; l < Ls; ++l)
+	      evec[i][l][A.subset()] +=Hevecs(i,j)*vec[j][l];
 	}
 #else
 	for(int i(0);i<Neig;i++){
@@ -350,6 +360,8 @@ namespace Chroma
       StopWatch swatch;
       swatch.reset();
       swatch.start();
+
+      const int Ls = A.size();
     
       SystemSolverResults_t  res;
     
@@ -378,7 +390,7 @@ namespace Chroma
       int tr; // Don't know what this does...
       bool from_restart;
       Matrix<DComplex> H(Nmax); // square matrix containing the tridiagonal
-      Vectors<T> vec(Nmax); // contains the vectors we use...
+      VectorArrays<T> vec(Nmax,Ls); // contains the vectors we use...
       //-------- Eigenvalue eigenvector finding code ------
       vec.AddVectors(evec,A.subset());
       //QDPIO::cout<<"vec.N="<<vec.N<<endl;
@@ -705,6 +717,8 @@ namespace Chroma
       swatch.reset();
       swatch.start();
 
+      const int Ls = A.size();
+
       if(endV>eval.size()){
 	QDP_error_exit("vPrecondCG: not enought evecs eval.size()=%d",eval.size());
       }
@@ -724,7 +738,8 @@ namespace Chroma
 
       int k = 0;
       A(Ap,x,PLUS);
-      r[A.subset()] = b - Ap;
+      for(int l=0; l < Ls; ++l)
+	r[l][A.subset()] = b[l] - Ap[l];
       Double r_norm2 = norm2(r,A.subset());
 
 #if 1
@@ -734,31 +749,37 @@ namespace Chroma
       // Algorithm from page 529 of Golub and Van Loan
       while(toBool(r_norm2>rsd_sq)){
 	/** preconditioning algorithm **/
-	z[A.subset()]=r; // not optimal but do it for now...
+	for(int l=0; l < Ls; ++l)
+	  z[l][A.subset()] = r[l]; // not optimal but do it for now...
 	/**/
 	for(int i(startV);i<endV;i++){
 	  DComplex d = innerProduct(evec[i],r,A.subset());
 	  //QDPIO::cout<<"vecPrecondCG: "<< d<<" "<<(1.0/eval[i]-1.0)<<endl;
-	  z[A.subset()] += (1.0/eval[i]-1.0)*d*evec[i];
+	  for(int l=0; l < Ls; ++l)
+	    z[l][A.subset()] += (1.0/eval[i]-1.0)*d*evec[i][l];
 	}
 	/**/
 	/**/
 	r_dot_z = innerProductReal(r,z,A.subset());
 	k++;
 	if(k==1){
-	  p[A.subset()] = z;	
+	  for(int l=0; l < Ls; ++l)
+	    p[l][A.subset()] = z[l];
 	}
 	else{
 	  beta = r_dot_z/r_dot_z_old;
-	  p[A.subset()] = z + beta*p; 
+	  for(int l=0; l < Ls; ++l)
+	    p[l][A.subset()] = z[l] + beta*p[l]; 
 	}
 	//Cheb.Qsq(Ap,p);
 	A(Ap,p,PLUS);
 	pAp = innerProductReal(p,Ap,A.subset());
       
 	alpha = r_dot_z/pAp;
-	x[A.subset()] += alpha*p;
-	r[A.subset()] -= alpha*Ap;
+	for(int l=0; l < Ls; ++l)
+	  x[l][A.subset()] += alpha*p[l];
+	for(int l=0; l < Ls; ++l)
+	  r[l][A.subset()] -= alpha*Ap[l];
 	r_norm2 =  norm2(r,A.subset());
 	r_dot_z_old = r_dot_z;
 
@@ -790,7 +811,7 @@ namespace Chroma
 		     const multi2d<T>& evec, 
 		     int& n_count)
     {
-      int N = evec.size();
+      int N = evec.size2();
       InitGuess(A,x,b,eval,evec,N,n_count);
     }
 
@@ -807,20 +828,22 @@ namespace Chroma
       multi1d<T> Ap; 
       multi1d<T> r;
 
+      const int Ls = A.size();
+
       StopWatch snoop;
       snoop.reset();
       snoop.start();
 
       A(Ap,x,PLUS);
-      for(int s=0; s < N; ++s)
-	r[s][A.subset()] = b[s] - Ap[s];
+      for(int l=0; l < Ls; ++l)
+	r[l][A.subset()] = b[l] - Ap[l];
       // Double r_norm2 = norm2(r,A.subset());
    
       for(int i(0);i<N;i++)
       {
 	DComplex d = innerProduct(evec[i],r,A.subset());
-	for(int s=0; s < N; ++s)
-	  x[s][A.subset()] += (d/eval[i])*evec[i];
+	for(int l=0; l < Ls; ++l)
+	  x[l][A.subset()] += (d/eval[i])*evec[i][l];
 	//QDPIO::cout<<"InitCG: "<<d<<" "<<eval[i]<<endl;
 
       }

@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.7 2007-10-24 02:53:01 edwards Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.8 2008-01-13 22:43:54 edwards Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -10,7 +10,9 @@
 #include "actions/ferm/invert/syssolver_linop_mr.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg.h"
+
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
+#include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
 
 namespace Chroma
 {
@@ -54,6 +56,7 @@ namespace Chroma
       {
 	// 5D system solvers
 	success &= LinOpSysSolverCGArrayEnv::registerAll();
+	success &= LinOpSysSolverEigCGArrayEnv::registerAll();
 	registered = true;
       }
       return success;
