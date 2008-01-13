@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg_array.h,v 1.2 2008-01-13 22:43:54 edwards Exp $
+// $Id: syssolver_linop_eigcg_array.h,v 1.3 2008-01-13 22:55:50 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -51,15 +51,15 @@ namespace Chroma
 	// NEED to grab the eignvectors from the named buffer here
 	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
 	{
-	  TheNamedObjMap::Instance().create< LinAlg::RitzPairs< multi1d<T> > >(invParam.eigen_id);
-	  LinAlg::RitzPairs< multi1d<T> >& GoodEvecs = 
-	    TheNamedObjMap::Instance().getData< LinAlg::RitzPairs< multi1d<T> > >(invParam.eigen_id);
+	  TheNamedObjMap::Instance().create< LinAlg::RitzPairsArray<T> >(invParam.eigen_id);
+	  LinAlg::RitzPairsArray<T>& GoodEvecs = 
+	    TheNamedObjMap::Instance().getData< LinAlg::RitzPairsArray<T> >(invParam.eigen_id);
 
 	  if(invParam.Neig_max>0 ){
-	    GoodEvecs.init(invParam.Neig_max);
+	    GoodEvecs.init(invParam.Neig_max,MdagM.size());
 	  }
 	  else{
-	    GoodEvecs.init(invParam.Neig);
+	    GoodEvecs.init(invParam.Neig,MdagM.size(););
 	  }
 	}
       }
