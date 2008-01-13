@@ -1,5 +1,8 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.12 2007-12-17 22:29:59 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.13 2008-01-13 20:59:28 edwards Exp $
+/*! \file
+ *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
+ */
 
 #include <qdp-lapack.h>
 //#include "octave_debug.h"
