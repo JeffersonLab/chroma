@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg_array.h,v 1.3 2008-01-13 22:55:50 edwards Exp $
+// $Id: syssolver_linop_eigcg_array.h,v 1.4 2008-01-13 22:59:19 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -56,10 +56,10 @@ namespace Chroma
 	    TheNamedObjMap::Instance().getData< LinAlg::RitzPairsArray<T> >(invParam.eigen_id);
 
 	  if(invParam.Neig_max>0 ){
-	    GoodEvecs.init(invParam.Neig_max,MdagM.size());
+	    GoodEvecs.init(invParam.Neig_max,MdagM->size());
 	  }
 	  else{
-	    GoodEvecs.init(invParam.Neig,MdagM.size(););
+	    GoodEvecs.init(invParam.Neig,MdagM->size());
 	  }
 	}
       }
