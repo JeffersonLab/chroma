@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.117 2008-01-03 20:06:50 bjoo Exp $
+# $Id: Makefile.am,v 3.118 2008-01-13 22:44:28 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -41,6 +41,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermstates/stout_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
+	actions/ferm/invert/inv_eigcg2_array.h \
 	actions/ferm/invert/inv_rel_cg1.h actions/ferm/invert/inv_rel_cg2.h \
 	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
@@ -78,6 +79,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
+	actions/ferm/invert/syssolver_linop_eigcg_array.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
@@ -816,6 +818,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
 	actions/ferm/invert/inv_eigcg2.cc \
+	actions/ferm/invert/inv_eigcg2_array.cc \
 	actions/ferm/invert/inv_rel_cg1.cc \
 	actions/ferm/invert/inv_rel_cg2.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
@@ -837,6 +840,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
 	actions/ferm/invert/syssolver_linop_eigcg.cc \
+	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
