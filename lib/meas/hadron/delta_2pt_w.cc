@@ -1,4 +1,4 @@
-// $Id: delta_2pt_w.cc,v 3.6 2008-01-11 18:14:18 kostas Exp $
+// $Id: delta_2pt_w.cc,v 3.7 2008-01-14 22:12:34 kostas Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -214,7 +214,7 @@ namespace Chroma
       for(int s1(0);s1<Ns-1;s1++){
 	ProjGmuGnu[s1].resize(Ns-1) ;
 	for(int s2(0);s2<Ns-1;s2++)
-	  ProjGmuGnu[s1][s2] = Gamma(1<<s2) * (Gamma(1<<s1)*g_one) ;
+	  ProjGmuGnu[s1][s2] = Gamma(1<<s1) * (Gamma(1<<s2)*g_one) ;
       }
     
       for ( par=Parity.begin();par != Parity.end(); par++){
