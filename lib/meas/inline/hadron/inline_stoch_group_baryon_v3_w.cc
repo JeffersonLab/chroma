@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.6 2008-01-10 22:56:39 jbulava Exp $
+// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.7 2008-01-14 21:56:55 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -1058,9 +1058,6 @@ namespace Chroma
       }
 
       
-			// The object holding the smeared and displaced color vector maps  
-      SmearedDispObjects smrd_disp_quarks(params.param.displacement_length,
-				     diluted_quarks, sourceSmearing, sinkSmearing, u_smr )
 				     
 
       //
@@ -1140,141 +1137,374 @@ namespace Chroma
 				}
 			}
 
-      // Creation operator
-      BaryonOperator_t  creat_oper;
-      creat_oper.mom2_max    = params.param.mom2_max;
-      creat_oper.decay_dir   = decay_dir;
-      creat_oper.seed_l      = diluted_quarks[0]->getSeed();
-      creat_oper.seed_m      = diluted_quarks[1]->getSeed();
-      creat_oper.seed_r      = diluted_quarks[2]->getSeed();
-      creat_oper.smearing    = params.param.source_quark_smearing;
-      creat_oper.perms       = perms;
-      creat_oper.orderings.resize(num_orderings);
+		  //We make all source operators before we make all sink operators to 
+			//save on memory. 
 
-      // Annihilation operator
-      BaryonOperator_t  annih_oper;
-      annih_oper.mom2_max    = params.param.mom2_max;
-      annih_oper.decay_dir   = decay_dir;
-      annih_oper.seed_l      = diluted_quarks[0]->getSeed();
-      annih_oper.seed_m      = diluted_quarks[1]->getSeed();
-      annih_oper.seed_r      = diluted_quarks[2]->getSeed();
-      annih_oper.smearing    = params.param.sink_quark_smearing;
-      annih_oper.perms       = perms;
-      annih_oper.orderings.resize(num_orderings);
-
-      // Construct creation operator
-      QDPIO::cout << "Build operators" << endl;
 			
-      // Loop over each operator 
-      for(int l=0; l < qqq_oplist.ops.size(); ++l)
-      {
-				QDPIO::cout << "Elemental operator: op = " << l << endl;
+			//Make the source operators 
+			{
 
-				push(xml_out, "BaryonOperator");
+				// The object holding the smeared and displaced color vector maps  
+				SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
+						diluted_quarks, sourceSmearing, sinkSmearing, u_smr )
 
-				creat_oper.id = qqq_oplist.ops[l].name;
-				annih_oper.id = qqq_oplist.ops[l].name;
 
-				write(xml_out, "Name", creat_oper.id);
+					// Creation operator
+					BaryonOperator_t  creat_oper;
+				creat_oper.mom2_max    = params.param.mom2_max;
+				creat_oper.decay_dir   = decay_dir;
+				creat_oper.seed_l      = diluted_quarks[0]->getSeed();
+				creat_oper.seed_m      = diluted_quarks[1]->getSeed();
+				creat_oper.seed_r      = diluted_quarks[2]->getSeed();
+				creat_oper.smearing    = params.param.source_quark_smearing;
+				creat_oper.perms       = perms;
+				creat_oper.orderings.resize(num_orderings);
 
-				// Loop over all orderings and build the operator
-				swiss.reset();
-				swiss.start();
 
-				// The keys for the spin and displacements for this particular elemental operator
-				multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
 
-				for(int n = 0 ; n < N_quarks ; ++n)
+				// Construct creation operator
+				QDPIO::cout << "Build operators" << endl;
+
+				// Loop over each operator 
+				for(int l=0; l < qqq_oplist.ops.size(); ++l)
 				{
-					keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
-					keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
-				}
+					QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-				for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
-				{
+					push(xml_out, "BaryonOperator");
 
-					for(int ord = 0; ord < creat_oper.orderings.size(); ++ord)
+					creat_oper.id = qqq_oplist.ops[l].name;
+					annih_oper.id = qqq_oplist.ops[l].name;
+
+					write(xml_out, "Name", creat_oper.id);
+
+					// Loop over all orderings and build the operator
+					swiss.reset();
+					swiss.start();
+
+					// The keys for the spin and displacements for this particular elemental operator
+					multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
+
+					for(int n = 0 ; n < N_quarks ; ++n)
 					{
-	  				QDPIO::cout << "Ordering = " << ord << endl;
+						keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+						keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+					}
 
-	  				creat_oper.orderings[ord].perm = perms[ord];
-	  				creat_oper.orderings[ord].time_sources.resize(participating_time_sources.size());
-		
-	  				annih_oper.orderings[ord].perm = perms[ord];
-	  				annih_oper.orderings[ord].time_sources.resize(participating_time_sources.size());
-     
-	  				const int n0 = perms[ord][0];
-	  				const int n1 = perms[ord][1];
-	  				const int n2 = perms[ord][2];
+					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
+					{
 
-	  				// The operator must hold all the dilutions
-	  				// We know that all time slices match. However, not all time slices of the
-	 					// lattice maybe used
-
-	    			// Creation operator
-	    			BaryonOperator_t::TimeSlices_t::Orderings_t& cop = creat_oper.time_slices[t0].orderings[ord];
-	    
-		  			cop.t0 = t0;
-	   
-						cop.dilutions.resize(diluted_quarks[n0].getDilSize(t0), diluted_quarks[n1].getDilSize(t0),
-							diluted_quarks[n2].getDilSize(t0) );
-
-						for (int n = 0 ; n < N_quarks ; ++n)
+						for(int ord = 0; ord < creat_oper.orderings.size(); ++ord)
 						{
-							keySmearedDispColorVector[n].t0 = t0;
-						}
-						
-						for(int i = 0 ; i <  diluted_quarks[n0].getDilSize(t0) ; ++i)
-	    			{
-	      			for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      
+							QDPIO::cout << "Ordering = " << ord << endl;
+
+							creat_oper.orderings[ord].perm = perms[ord];
+							creat_oper.orderings[ord].time_slices.resize(participating_time_sources.size());
+
+							annih_oper.orderings[ord].perm = perms[ord];
+							annih_oper.orderings[ord].time_slices.resize(participating_time_sources.size());
+
+							const int n0 = perms[ord][0];
+							const int n1 = perms[ord][1];
+							const int n2 = perms[ord][2];
+
+							// The operator must hold all the dilutions
+							// We know that all time slices match. However, not all time slices of the
+							// lattice maybe used
+
+							// Creation operator
+							BaryonOperator_t::TimeSlices_t::Orderings_t& cop = creat_oper.time_slices[t0].orderings[ord];
+
+							cop.t0 = t0;
+
+							cop.dilutions.resize(diluted_quarks[n0].getDilSize(t0), diluted_quarks[n1].getDilSize(t0),
+									diluted_quarks[n2].getDilSize(t0) );
+
+							for (int n = 0 ; n < N_quarks ; ++n)
 							{
-								for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
+								keySmearedDispColorVector[n].t0 = t0;
+							}
+
+							for(int i = 0 ; i <  diluted_quarks[n0].getDilSize(t0) ; ++i)
+							{
+								for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      
 								{
-		 	  
-									keySmearedDispColorVector[0].dil = i;
-									keySmearedDispColorVector[1].dil = j;
-									keySmearedDispColorVector[2].dil = k;
-										
-		  						// Contract over color indices with antisym tensor.
-		  						// There is a potential optimization here - the colorcontract of
-		  						// the first two quarks could be pulled outside the innermost dilution
-		 							// loop.
-		  						// NOTE: the creation operator only lives on a time slice, so restrict
-		  						// the operation to that time slice
+									for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
+									{
+
+										keySmearedDispColorVector[0].dil = i;
+										keySmearedDispColorVector[1].dil = j;
+										keySmearedDispColorVector[2].dil = k;
+
+										// Contract over color indices with antisym tensor.
+										// There is a potential optimization here - the colorcontract of
+										// the first two quarks could be pulled outside the innermost dilution
+										// loop.
+										// NOTE: the creation operator only lives on a time slice, so restrict
+										// the operation to that time slice
+
+										LatticeComplex c_oper;
+
+										c_oper[phases.getSet()[t0]] =
+											colorContract( smrd_disp_srcs.dilutedSource(n0,keySmearedDispColorVector[0]),
+													smrd_disp_srcs.dilutedSource(n1,keySmearedDispColorVector[1]),
+													smrd_disp_srcs.dilutedSource(n2,keySmearedDispColorVector[2]) );
+
+
+										// Slow fourier-transform
+										// We can restrict what the FT routine requires to a subset.
+										multi2d<DComplex> c_sum(phases.sft(c_oper, t0));
+
+										// Unpack into separate momentum and correlator
+										cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
+
+										for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+										{
+											cop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+
+											cop.dilutions(i,j,k).mom_projs[mom_num].op.resize(1);
+
+											cop.dilutions(i,j,k).mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
+										}
+
+									} // end for k
+								} // end for j
+							} // end for i
+						}//end ord 
+					}//end t0 
+
+					swiss.stop();
+
+
+					QDPIO::cout << "Source operator construction: operator= " << l 
+						<< "  time= "
+						<< swiss.getTimeInSeconds() 
+						<< " secs" << endl;
+
+					//Hard code the elemental op name for now 
+					std::stringstream cnvrt;
+					cnvrt <<  creat_oper.id  << ".lime";
+
+					std::string filename;
+
+					filename = cnvrt.str(); 
+
+					// Write the meta-data and the binary for this operator
+					swiss.reset();
+					swiss.start();
+					{
+						XMLBufferWriter     src_record_xml, file_xml;
+						BinaryBufferWriter  src_record_bin;
+
+						push(file_xml, "SourceBaryonOperator");
+						write(file_xml, "Params", params.param);
+						write(file_xml, "Config_info", gauge_xml);
+						pop(file_xml);
+
+						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
+								QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+
+
+						write(src_record_xml, "BaryonCreationOperator", creat_oper);
+						write(src_record_bin, creat_oper);
+
+						write(qdp_file, src_record_xml, src_record_bin);
+
+					}
+					swiss.stop();
+
+					QDPIO::cout << "Source Operator writing: operator = " << 
+						<< "  time= "
+						<< swiss.getTimeInSeconds() 
+						<< " secs" << endl;
+
+					pop(xml_out); // Operator 
+
+				} // end for l (operator )
+
+			} //End Make creation operator
+
+
+			
+			//Make Annilation Operator
+			{
+
+				// The object holding the smeared and displaced color vector maps  
+				SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
+						diluted_quarks, sourceSmearing, sinkSmearing, u_smr )
+
+
+				// Annihilation operator
+				BaryonOperator_t  annih_oper;
+				annih_oper.mom2_max    = params.param.mom2_max;
+				annih_oper.decay_dir   = decay_dir;
+				annih_oper.seed_l      = diluted_quarks[0]->getSeed();
+				annih_oper.seed_m      = diluted_quarks[1]->getSeed();
+				annih_oper.seed_r      = diluted_quarks[2]->getSeed();
+				annih_oper.smearing    = params.param.sink_quark_smearing;
+				annih_oper.perms       = perms;
+				annih_oper.orderings.resize(num_orderings);
+	    	
 				
-		  						LatticeComplex c_oper;
-		  
-									c_oper[phases.getSet()[t0]] =
-		    						colorContract( smrd_disp_quarks.dilutedSource(n0,keySmearedDispColorVector[0]),
-				  					smrd_disp_quarks.dilutedSource(n1,keySmearedDispColorVector[1]),
-				  					disp_quarks.dilutedSource(n2,keySmearedDispColorVector[2]) );
+				// Construct annihilation operator
+				QDPIO::cout << "Build Sink operators" << endl;
 
-		  
-									// Slow fourier-transform
-		  						// We can restrict what the FT routine requires to a subset.
-		  						multi2d<DComplex> c_sum(phases.sft(c_oper, t0));
+				// Loop over each operator 
+				for(int l=0; l < qqq_oplist.ops.size(); ++l)
+				{
+					QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-		  						// Unpack into separate momentum and correlator
-		  						cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-									
-									for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
-		  						{
-		    						cop_particular_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
-		      
-		    						cop_particular_dilution.mom_projs[mom_num].op.resize(1);
-		    
-										cop_particular_dilution.mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
-		  						}
+					push(xml_out, "BaryonAnnihilationOperator");
 
-		  						cop.dilutions.push_back(cop_particular_dilution);
-								
-								} // end for k
-	      			} // end for j
-	    			} // end for i
-	    
+					annih_oper.id = qqq_oplist.ops[l].name;
 
-	    			// Annihilation operator
-	    			BaryonOperator_t::TimeSlices_t& aop = annih_oper.orderings[ord].time_slices[t];
+					write(xml_out, "Name", annih_oper.id);
+
+					// Loop over all orderings and build the operator
+					swiss.reset();
+					swiss.start();
+
+					// The keys for the spin and displacements for this particular elemental operator
+					multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
+
+					for(int n = 0 ; n < N_quarks ; ++n)
+					{
+						keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+						keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+					}
+
+					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
+					{
+
+						for(int ord = 0; ord < annih_oper.orderings.size(); ++ord)
+						{
+							QDPIO::cout << "Ordering = " << ord << endl;
+
+							annih_oper.orderings[ord].perm = perms[ord];
+							annih_oper.orderings[ord].time_slices.resize(participating_time_sources.size());
+
+							const int n0 = perms[ord][0];
+							const int n1 = perms[ord][1];
+							const int n2 = perms[ord][2];
+
+							// The operator must hold all the dilutions
+							// We know that all time slices match. However, not all time slices of the
+							// lattice maybe used
+
+							// Creation operator
+							BaryonOperator_t::TimeSlices_t::Orderings_t& aop = annih_oper.time_slices[t0].orderings[ord];
+
+							aop.t0 = t0;
+
+							aop.dilutions.resize(diluted_quarks[n0].getDilSize(t0), diluted_quarks[n1].getDilSize(t0),
+									diluted_quarks[n2].getDilSize(t0) );
+
+							for (int n = 0 ; n < N_quarks ; ++n)
+							{
+								keySmearedDispColorVector[n].t0 = t0;
+							}
+
+							for(int i = 0 ; i <  diluted_quarks[n0].getDilSize(t0) ; ++i)
+							{
+								for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      
+								{
+									for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
+									{
+
+										keySmearedDispColorVector[0].dil = i;
+										keySmearedDispColorVector[1].dil = j;
+										keySmearedDispColorVector[2].dil = k;
+
+										// Contract over color indices with antisym tensor.
+										// There is a potential optimization here - the colorcontract of
+										// the first two quarks could be pulled outside the innermost dilution
+										// loop.
+										// NOTE: the creation operator only lives on a time slice, so restrict
+										// the operation to that time slice
+
+										LatticeComplex a_oper;
+
+										a_oper =
+											colorContract( smrd_disp_snks.dilutedSource(n0,keySmearedDispColorVector[0]),
+													smrd_disp_snks.dilutedSource(n1,keySmearedDispColorVector[1]),
+													smrd_disp_snks.dilutedSource(n2,keySmearedDispColorVector[2]) );
+
+
+										// Slow fourier-transform
+										multi2d<DComplex> a_sum( phases.sft(a_oper) );
+
+										// Unpack into separate momentum and correlator
+										aop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
+
+										for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+										{
+											aop_particular_dilution.mom_projs[mom_num].mom = phases.numToMom(mom_num);
+
+											cop_particular_dilution.mom_projs[mom_num].op.resize(1);
+
+											cop_particular_dilution.mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
+										}
+
+										cop.dilutions.push_back(cop_particular_dilution);
+
+									} // end for k
+								} // end for j
+							} // end for i
+						}//end ord 
+					}//end t0 
+
+					swiss.stop();
+
+
+					QDPIO::cout << "Source operator construction: operator= " << l 
+						<< "  time= "
+						<< swiss.getTimeInSeconds() 
+						<< " secs" << endl;
+
+					//Hard code the elemental op name for now 
+					std::stringstream cnvrt;
+					cnvrt <<  creat_oper.id  << ".lime";
+
+					std::string filename;
+
+					filename = cnvrt.str(); 
+
+					// Write the meta-data and the binary for this operator
+					swiss.reset();
+					swiss.start();
+					{
+						XMLBufferWriter     src_record_xml, file_xml;
+						BinaryBufferWriter  src_record_bin;
+
+						push(file_xml, "SourceBaryonOperator");
+						write(file_xml, "Params", params.param);
+						write(file_xml, "Config_info", gauge_xml);
+						pop(file_xml);
+
+						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
+								QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+
+
+						write(src_record_xml, "BaryonCreationOperator", creat_oper);
+						write(src_record_bin, creat_oper);
+
+						write(qdp_file, src_record_xml, src_record_bin);
+
+					}
+					swiss.stop();
+
+					QDPIO::cout << "Source Operator writing: operator = " << 
+						<< "  time= "
+						<< swiss.getTimeInSeconds() 
+						<< " secs" << endl;
+
+					pop(xml_out); // Operator 
+
+				} // end for l (operator )
+
+			} //End Make creation operator
+
+
+			BaryonOperator_t::TimeSlices_t& aop = annih_oper.orderings[ord].time_slices[t];
 
 						for(DilutionOperator<LatticeFermion>::const_iterator dil0= dilutions[n0].begin(); 
 								dil0 != dilutions[n0].end(); 
