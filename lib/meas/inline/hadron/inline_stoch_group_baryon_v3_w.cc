@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.8 2008-01-15 19:39:05 jbulava Exp $
+// $Id: inline_stoch_group_baryon_v3_w.cc,v 1.9 2008-01-15 20:40:36 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -88,7 +88,7 @@ namespace Chroma
       xml << param.link_smearing.xml;
 
       for(int i=0; i < param.quark_dils.size(); ++i)
-	xml << param.quark_dils[i].xml;
+				xml << param.quark_dils[i].xml;
 
       pop(xml);
     }
@@ -716,29 +716,29 @@ namespace Chroma
 
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t::Mom_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t::Mom_t& param)
     {
       write(bin, param.mom);
       write(bin, param.op);
     }
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeSlices_t::Dilutions_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t& param)
     {
       write(bin, param.mom_projs);
     }
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t::TimeSlices_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t& param)
     {
       write(bin, param.dilutions);
-    }
+    	write(bin, param.perm);
+		}
 
     //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::Orderings_t& param)
+    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t& param)
     {
-      write(bin, param.perm);
-      write(bin, param.time_sources);
+      write(bin, param.orderings);
     }
 
     //! BaryonOperator binary writer
@@ -750,79 +750,79 @@ namespace Chroma
       write(bin, param.mom2_max);
       write(bin, param.decay_dir);
       write(bin, param.perms);
-      write(bin, param.orderings);
+      write(bin, param.time_slices);
     }
 
 
-    //! Read 3-quark operators file
-    void readOps(ThreeQuarkOps_t& oplist, 
-		 const std::string& ops_file)
-    {
-      START_CODE();
+		//! Read 3-quark operators file
+		void readOps(ThreeQuarkOps_t& oplist, 
+				const std::string& ops_file)
+		{
+			START_CODE();
 
-      TextFileReader reader(ops_file);
+			TextFileReader reader(ops_file);
 
-      int num_ops;
-      reader >> num_ops;
-      oplist.ops.resize(num_ops);
-			
-      //Loop over ops within a file
-      for(int n=0; n < oplist.ops.size(); ++n)
-      {
-	std::string name; 
-	reader >> name;
-	oplist.ops[n].name = name;  
-	
-	ThreeQuarkOps_t::ThreeQuarkOp_t& qqq = oplist.ops[n];
-	qqq.quark.resize(N_quarks);
+			int num_ops;
+			reader >> num_ops;
+			oplist.ops.resize(num_ops);
 
-	// Read 1-based spin
-	multi1d<int> spin(N_quarks);
-	reader >> spin[0] >> spin[1] >> spin[2];
+			//Loop over ops within a file
+			for(int n=0; n < oplist.ops.size(); ++n)
+			{
+				std::string name; 
+				reader >> name;
+				oplist.ops[n].name = name;  
 
-	// Read 1-based displacement
-	multi1d<int> displacement(N_quarks);
-	reader >> displacement[0] >> displacement[1] >> displacement[2];
+				ThreeQuarkOps_t::ThreeQuarkOp_t& qqq = oplist.ops[n];
+				qqq.quark.resize(N_quarks);
 
-	// Insert for each quark
-	for(int i=0; i < qqq.quark.size(); ++i)
-	{
-	  qqq.quark[i].spin = spin[i];
-	  qqq.quark[i].displacement = displacement[i];
-	}
+				// Read 1-based spin
+				multi1d<int> spin(N_quarks);
+				reader >> spin[0] >> spin[1] >> spin[2];
 
-      } //n
-	
-      reader.close();
+				// Read 1-based displacement
+				multi1d<int> displacement(N_quarks);
+				reader >> displacement[0] >> displacement[1] >> displacement[2];
 
-      END_CODE();
-    } //void readOps
+				// Insert for each quark
+				for(int i=0; i < qqq.quark.size(); ++i)
+				{
+					qqq.quark[i].spin = spin[i];
+					qqq.quark[i].displacement = displacement[i];
+				}
+
+			} //n
+
+			reader.close();
+
+			END_CODE();
+		} //void readOps
 
 
-    //-------------------------------------------------------------------------------
-    // Function call
-    void 
-    InlineMeas::operator()(unsigned long update_no,
-			   XMLWriter& xml_out) 
-    {
-      // If xml file not empty, then use alternate
-      if (params.xml_file != "")
-      {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+		//-------------------------------------------------------------------------------
+		// Function call
+		void 
+			InlineMeas::operator()(unsigned long update_no,
+					XMLWriter& xml_out) 
+			{
+				// If xml file not empty, then use alternate
+				if (params.xml_file != "")
+				{
+					string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "stoch_baryon");
-	write(xml_out, "update_no", update_no);
-	write(xml_out, "xml_file", xml_file);
-	pop(xml_out);
+					push(xml_out, "stoch_baryon");
+					write(xml_out, "update_no", update_no);
+					write(xml_out, "xml_file", xml_file);
+					pop(xml_out);
 
-	XMLFileWriter xml(xml_file);
-	func(update_no, xml);
-      }
-      else
-      {
-	func(update_no, xml_out);
-      }
-    }
+					XMLFileWriter xml(xml_file);
+					func(update_no, xml);
+				}
+				else
+				{
+					func(update_no, xml_out);
+				}
+			}
 
 
     // Function call
@@ -955,15 +955,15 @@ namespace Chroma
       int decay_dir = dilution_operators[0]->getDecayDir();
 
       SftMom phases(params.param.mom2_max, false, decay_dir);
-    
-      // Sanity check - if this doesn't work we have serious problems
-      if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])
-      {
-	QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
-		    << QDP::Layout::lattSize()[decay_dir]
-		    << endl;
-	QDP_abort(1);
-      }
+
+			// Sanity check - if this doesn't work we have serious problems
+			if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])
+			{
+				QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
+					<< QDP::Layout::lattSize()[decay_dir]
+					<< endl;
+				QDP_abort(1);
+			}
 
 		
       //
@@ -992,14 +992,8 @@ namespace Chroma
       // Then, there are separate records for each creation operator
       // and each annihilation operator
       //
-      XMLBufferWriter file_xml;
-      push(file_xml, "BaryonOperator");
-      write(file_xml, "Params", params.param);
-      write(file_xml, "Config_info", gauge_xml);
-      pop(file_xml);
-
-
-      //
+      
+			//
       // Smear the gauge field if needed
       //
       multi1d<LatticeColorMatrix> u_smr = u;
@@ -1266,10 +1260,10 @@ namespace Chroma
 										//Form the di-quark to save on recalculating 
 										multi1d<LatticeComplex> diquark(Nc);
 										
-										const multi1d<LatticeComplex> &q0 = smrd_disp_srcs(n0, 
+										const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDilutedSource(n0, 
 												keySmearedDispColorVector[0]); 
 
-										const multi1d<LatticeComplex> &q1 = smrd_disp_srcs(n1, 
+										const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDilutedSource(n1, 
 												keySmearedDispColorVector[1]);
 
 										//For the source, restrict this operation to a subset
@@ -1286,7 +1280,7 @@ namespace Chroma
 
 										LatticeComplex c_oper;
 
-										const multi1d<LatticeComplex> &q2 = smrd_disp_srcs(n2, 
+										const multi1d<LatticeComplex> &q2 = smrd_disp_srcs.getDilutedSource(n2, 
 												keySmearedDispColorVector[2]);
 
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[t0] );
@@ -1443,11 +1437,24 @@ namespace Chroma
 							{
 								for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      
 								{
+									
+									keySmearedDispColorVector[0].dil = i;
+									keySmearedDispColorVector[1].dil = j;
+
+									//Form the di-quark to save on recalculating 
+									multi1d<LatticeComplex> diquark(Nc);
+
+									const multi1d<LatticeComplex> &q0 = smrd_disp_snks.getDilutedSolution(n0, 
+											keySmearedDispColorVector[0]); 
+
+									const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDilutedSolution(n1, 
+											keySmearedDispColorVector[1]);
+
+									makeDiquark( diquark, q0 , q1, all ); 
+
 									for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
 									{
 
-										keySmearedDispColorVector[0].dil = i;
-										keySmearedDispColorVector[1].dil = j;
 										keySmearedDispColorVector[2].dil = k;
 
 										// Contract over color indices with antisym tensor.
@@ -1459,11 +1466,10 @@ namespace Chroma
 
 										LatticeComplex a_oper;
 
-										a_oper =
-											colorContract( smrd_disp_snks.dilutedSource(n0,keySmearedDispColorVector[0]),
-													smrd_disp_snks.dilutedSource(n1,keySmearedDispColorVector[1]),
-													smrd_disp_snks.dilutedSource(n2,keySmearedDispColorVector[2]) );
+										const multi1d<LatticeComplex> &q2 = smrd_disp_snks.getDilutedSolution(n2, 
+												keySmearedDispColorVector[2]);
 
+										makeColorSinglet( a_oper, diquark, q2, all);
 
 										// Slow fourier-transform
 										multi2d<DComplex> a_sum( phases.sft(a_oper) );
@@ -1475,9 +1481,7 @@ namespace Chroma
 										{
 											aop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
 
-											aop.dilutions(i,j,k).mom_projs[mom_num].op.resize(1);
-
-											aop.dilutions(i,j,k).mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
+											aop.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
 										}
 
 									} // end for k
