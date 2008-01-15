@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.5 2008-01-10 22:56:39 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.6 2008-01-15 19:39:04 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -242,9 +242,9 @@ namespace Chroma
 	    			QDPFileReader from(file_xml, 
 								quark.time_slices[t0].dilutions[dil].soln_file, QDPIO_SERIAL);
 
-			
-						//Read the record xml only
-						read(from, record_xml);
+						//Use the record xml only, throw away the lattice fermion
+						LatticeFermion junk;
+						read(from, record_xml, junk);
 	    			close(from);
 
 	    			read(record_xml, "/Propagator/PropSource", 
