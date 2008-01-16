@@ -1,4 +1,4 @@
-// $Id: plaq_coarse_fine_gaugeact.cc,v 3.1 2008-01-16 19:01:13 edwards Exp $
+// $Id: plaq_coarse_fine_gaugeact.cc,v 3.2 2008-01-16 19:11:21 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action that supports 2x2 fine/coarse style anisotropy
  */
@@ -47,6 +47,7 @@ namespace Chroma
 
     try 
     {
+      read(paramtop, "coarseP", coarseP);
       read(paramtop, "coeff_cc", coeff_cc);
       read(paramtop, "coeff_ff", coeff_ff);
       read(paramtop, "coeff_cf", coeff_cf);
@@ -54,6 +55,12 @@ namespace Chroma
     catch( const std::string& e ) 
     {
       QDPIO::cerr << __func__ << ": Error reading XML: " <<  e << endl;
+      QDP_abort(1);
+    }
+
+    if (coarseP.size() != Nd)
+    {
+      QDPIO::cerr << __func__ << ": invalid size of coarseP" << endl;
       QDP_abort(1);
     }
   }
