@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.118 2008-01-13 22:44:28 edwards Exp $
+# $Id: Makefile.am,v 3.119 2008-01-16 19:02:20 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -123,6 +123,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -753,16 +754,12 @@ nobase_include_HEADERS += \
 #        meas/inline/hadron/inline_spectrumQll.h
 
 #
-# Include Path
-#
-INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
-
-#
-# Any other compiler flags
+# Include path and any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
-
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
+AM_CXXFLAGS  = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
+AM_CXXFLAGS += @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
+               -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
 if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
@@ -883,6 +880,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/periodic_gaugebc.cc \
 	actions/gauge/gaugebcs/simple_gaugebc.cc \
@@ -899,6 +897,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugestates/periodic_gaugestate.cc \
 	actions/gauge/gaugestates/simple_gaugestate.cc \
 	actions/gauge/gaugestates/stout_gaugestate.cc \
+	init/chroma_init.cc \
 	io/eigen_io.cc \
 	io/monomial_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
@@ -1488,6 +1487,4 @@ nobase_include_HEADERS += actions/ferm/linop/clover_term_bagel_clover.h
 libchroma_a_SOURCES += actions/ferm/linop/clover_term_bagel_clover.cc
 endif
 
-libchroma_a_SOURCES += \
-	init/chroma_init.cc
 
