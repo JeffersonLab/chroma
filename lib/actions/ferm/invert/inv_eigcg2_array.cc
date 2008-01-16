@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2_array.cc,v 1.2 2008-01-13 22:43:54 edwards Exp $
+// $Id: inv_eigcg2_array.cc,v 1.3 2008-01-16 19:03:57 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -659,7 +659,7 @@ namespace Chroma
 	char V = 'V'; char U = 'U';
 	multi1d<Double> tt_eval;
 	QDPLapack::zheev(V,U,Htmp.mat,tt_eval);
-	evec.resize(Neig);
+	evec.resize(Neig,Ls);
 	eval.resize(Neig);
 	for(int i(0);i<Neig;i++){
 	  evec[i][A.subset()] = zero;
