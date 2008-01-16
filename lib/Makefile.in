@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.214 2008-01-13 22:44:49 edwards Exp $
+# $Id: Makefile.in,v 3.215 2008-01-16 19:02:32 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -225,6 +225,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/periodic_gaugebc.cc \
 	actions/gauge/gaugebcs/simple_gaugebc.cc \
@@ -240,9 +241,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugestates/gauge_createstate_aggregate.cc \
 	actions/gauge/gaugestates/periodic_gaugestate.cc \
 	actions/gauge/gaugestates/simple_gaugestate.cc \
-	actions/gauge/gaugestates/stout_gaugestate.cc io/eigen_io.cc \
-	io/monomial_io.cc io/enum_io/enum_cfgtype_io.cc \
-	io/enum_io/enum_coeffs_io.cc \
+	actions/gauge/gaugestates/stout_gaugestate.cc \
+	init/chroma_init.cc io/eigen_io.cc io/monomial_io.cc \
+	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
@@ -660,8 +661,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
 	util/gauge/stag_phases_s.cc \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc \
-	actions/ferm/linop/clover_term_bagel_clover.cc \
-	init/chroma_init.cc
+	actions/ferm/linop/clover_term_bagel_clover.cc
 @BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_2 =  \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	lwldslash_w_sse.$(OBJEXT) \
@@ -742,20 +742,20 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	spatial_wilson_gaugeact.$(OBJEXT) \
 	temporal_wilson_gaugeact.$(OBJEXT) lw_tree_gaugeact.$(OBJEXT) \
 	lw_1loop_gaugeact.$(OBJEXT) rbc_gaugeact.$(OBJEXT) \
-	rg_gaugeact.$(OBJEXT) gaugebc_aggregate.$(OBJEXT) \
-	periodic_gaugebc.$(OBJEXT) simple_gaugebc.$(OBJEXT) \
-	schroedinger_gaugebc.$(OBJEXT) schr_gaugebc_params.$(OBJEXT) \
-	schr_sf_gaugebc.$(OBJEXT) schr_triv_gaugebc.$(OBJEXT) \
-	schr_sf_zero_gaugebc.$(OBJEXT) schr_nonpert_gaugebc.$(OBJEXT) \
-	schr_coupling_gaugebc.$(OBJEXT) \
+	rg_gaugeact.$(OBJEXT) plaq_coarse_fine_gaugeact.$(OBJEXT) \
+	gaugebc_aggregate.$(OBJEXT) periodic_gaugebc.$(OBJEXT) \
+	simple_gaugebc.$(OBJEXT) schroedinger_gaugebc.$(OBJEXT) \
+	schr_gaugebc_params.$(OBJEXT) schr_sf_gaugebc.$(OBJEXT) \
+	schr_triv_gaugebc.$(OBJEXT) schr_sf_zero_gaugebc.$(OBJEXT) \
+	schr_nonpert_gaugebc.$(OBJEXT) schr_coupling_gaugebc.$(OBJEXT) \
 	schr_chromomag_gaugebc.$(OBJEXT) schr_dirich_gaugebc.$(OBJEXT) \
 	gauge_createstate_aggregate.$(OBJEXT) \
 	periodic_gaugestate.$(OBJEXT) simple_gaugestate.$(OBJEXT) \
-	stout_gaugestate.$(OBJEXT) eigen_io.$(OBJEXT) \
-	monomial_io.$(OBJEXT) enum_cfgtype_io.$(OBJEXT) \
-	enum_coeffs_io.$(OBJEXT) enum_eigenvectype_io.$(OBJEXT) \
-	enum_fermtype_io.$(OBJEXT) enum_gaugeacttype_io.$(OBJEXT) \
-	enum_heatbathtype_io.$(OBJEXT) \
+	stout_gaugestate.$(OBJEXT) chroma_init.$(OBJEXT) \
+	eigen_io.$(OBJEXT) monomial_io.$(OBJEXT) \
+	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
+	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
+	enum_gaugeacttype_io.$(OBJEXT) enum_heatbathtype_io.$(OBJEXT) \
 	enum_inner_solver_type_io.$(OBJEXT) \
 	enum_plusminus_io.$(OBJEXT) \
 	enum_md_integrator_type_io.$(OBJEXT) \
@@ -1064,7 +1064,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
 	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_10) \
-	$(am__objects_11) chroma_init.$(OBJEXT)
+	$(am__objects_11)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -1182,6 +1182,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -1977,6 +1978,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
+	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -2506,15 +2508,10 @@ nodist_include_HEADERS = chroma_config_internal.h
 #        meas/inline/hadron/inline_spectrumQll.h
 
 #
-# Include Path
-#
-INCFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
-
-#
-# Any other compiler flags
+# Include path and any other compiler flags
 # 
-AM_CXXFLAGS = $(INCFLAGS) @CXXFLAGS@ @QDPXX_CXXFLAGS@ \
-	@BAGEL_WILSON_DSLASH_CXXFLAGS@ \
+AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
+	@QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ \
 	-I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
@@ -2639,6 +2636,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
+	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/periodic_gaugebc.cc \
 	actions/gauge/gaugebcs/simple_gaugebc.cc \
@@ -2654,9 +2652,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugestates/gauge_createstate_aggregate.cc \
 	actions/gauge/gaugestates/periodic_gaugestate.cc \
 	actions/gauge/gaugestates/simple_gaugestate.cc \
-	actions/gauge/gaugestates/stout_gaugestate.cc io/eigen_io.cc \
-	io/monomial_io.cc io/enum_io/enum_cfgtype_io.cc \
-	io/enum_io/enum_coeffs_io.cc \
+	actions/gauge/gaugestates/stout_gaugestate.cc \
+	init/chroma_init.cc io/eigen_io.cc io/monomial_io.cc \
+	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
@@ -3060,8 +3058,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_23) $(am__append_26) \
-	init/chroma_init.cc
+	util/gauge/stag_phases_s.cc $(am__append_23) $(am__append_26)
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -3547,6 +3544,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pion_local_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pion_sing_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_coarse_fine_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_plus_spatial_two_plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
@@ -4989,6 +4987,20 @@ rg_gaugeact.obj: actions/gauge/gaugeacts/rg_gaugeact.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rg_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/rg_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/rg_gaugeact.cc'; fi`
 
+plaq_coarse_fine_gaugeact.o: actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT plaq_coarse_fine_gaugeact.o -MD -MP -MF $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo -c -o plaq_coarse_fine_gaugeact.o `test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo $(DEPDIR)/plaq_coarse_fine_gaugeact.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' object='plaq_coarse_fine_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o plaq_coarse_fine_gaugeact.o `test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
+
+plaq_coarse_fine_gaugeact.obj: actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT plaq_coarse_fine_gaugeact.obj -MD -MP -MF $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo -c -o plaq_coarse_fine_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo $(DEPDIR)/plaq_coarse_fine_gaugeact.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' object='plaq_coarse_fine_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o plaq_coarse_fine_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; fi`
+
 gaugebc_aggregate.o: actions/gauge/gaugebcs/gaugebc_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_aggregate.o -MD -MP -MF $(DEPDIR)/gaugebc_aggregate.Tpo -c -o gaugebc_aggregate.o `test -f 'actions/gauge/gaugebcs/gaugebc_aggregate.cc' || echo '$(srcdir)/'`actions/gauge/gaugebcs/gaugebc_aggregate.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/gaugebc_aggregate.Tpo $(DEPDIR)/gaugebc_aggregate.Po
@@ -5212,6 +5224,20 @@ stout_gaugestate.obj: actions/gauge/gaugestates/stout_gaugestate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugestates/stout_gaugestate.cc' object='stout_gaugestate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_gaugestate.obj `if test -f 'actions/gauge/gaugestates/stout_gaugestate.cc'; then $(CYGPATH_W) 'actions/gauge/gaugestates/stout_gaugestate.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugestates/stout_gaugestate.cc'; fi`
+
+chroma_init.o: init/chroma_init.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.o -MD -MP -MF $(DEPDIR)/chroma_init.Tpo -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/chroma_init.Tpo $(DEPDIR)/chroma_init.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc
+
+chroma_init.obj: init/chroma_init.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.obj -MD -MP -MF $(DEPDIR)/chroma_init.Tpo -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/chroma_init.Tpo $(DEPDIR)/chroma_init.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`
 
 eigen_io.o: io/eigen_io.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eigen_io.o -MD -MP -MF $(DEPDIR)/eigen_io.Tpo -c -o eigen_io.o `test -f 'io/eigen_io.cc' || echo '$(srcdir)/'`io/eigen_io.cc
@@ -12408,20 +12434,6 @@ clover_term_bagel_clover.obj: actions/ferm/linop/clover_term_bagel_clover.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/clover_term_bagel_clover.cc' object='clover_term_bagel_clover.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o clover_term_bagel_clover.obj `if test -f 'actions/ferm/linop/clover_term_bagel_clover.cc'; then $(CYGPATH_W) 'actions/ferm/linop/clover_term_bagel_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/clover_term_bagel_clover.cc'; fi`
-
-chroma_init.o: init/chroma_init.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.o -MD -MP -MF $(DEPDIR)/chroma_init.Tpo -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/chroma_init.Tpo $(DEPDIR)/chroma_init.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.o `test -f 'init/chroma_init.cc' || echo '$(srcdir)/'`init/chroma_init.cc
-
-chroma_init.obj: init/chroma_init.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT chroma_init.obj -MD -MP -MF $(DEPDIR)/chroma_init.Tpo -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/chroma_init.Tpo $(DEPDIR)/chroma_init.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='init/chroma_init.cc' object='chroma_init.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o chroma_init.obj `if test -f 'init/chroma_init.cc'; then $(CYGPATH_W) 'init/chroma_init.cc'; else $(CYGPATH_W) '$(srcdir)/init/chroma_init.cc'; fi`
 install-nobase_includeHEADERS: $(nobase_include_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(includedir)" || $(MKDIR_P) "$(DESTDIR)$(includedir)"
