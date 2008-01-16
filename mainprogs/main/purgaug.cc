@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.8 2007-09-21 04:38:45 edwards Exp $
+// $Id: purgaug.cc,v 3.9 2008-01-16 20:12:28 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -659,15 +659,31 @@ int main(int argc, char *argv[])
   }
   catch(std::bad_cast) 
   {
-    QDPIO::cerr << "Caught dynamic cast error: this action must not be a WilsonGaugeAct" << endl;
+    QDPIO::cerr << "PURGAUG: caught cast error" << endl;
+    QDP_abort(1);
+  }
+  catch(std::bad_alloc) 
+  { 
+    // This might happen on any node, so report it
+    cerr << "PURGAUG: caught bad memory allocation" << endl;
     QDP_abort(1);
   }
   catch(const std::string& e) 
-  { 
-    QDPIO::cerr << "Caught exception while constructing action: " << e << endl;
+  {
+    QDPIO::cerr << "PURGAUG: Caught Exception: " << e << endl;
     QDP_abort(1);
   }
-
+  catch(std::exception& e) 
+  {
+    QDPIO::cerr << "PURGAUG: Caught standard library exception: " << e.what() << endl;
+    QDP_abort(1);
+  }
+  catch(...)
+  {
+    // This might happen on any node, so report it
+    cerr << "PURGAUG: caught generic exception during measurement" << endl;
+    QDP_abort(1);
+  }
 
 
   // Get the measurements
