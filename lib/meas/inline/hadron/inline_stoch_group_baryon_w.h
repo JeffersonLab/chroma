@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.4 2008-01-08 18:59:35 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.h,v 1.5 2008-01-17 15:09:26 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -9,7 +9,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/qprop_io.h"
 
 namespace Chroma 
 { 
@@ -32,50 +31,32 @@ namespace Chroma
 
       struct Param_t
       {
-	int              mom2_max;               /*!< (mom)^2 <= mom2_max */
-	int              displacement_length;    /*!< Displacement length for creat. and annih. ops */
-	GroupXML_t       source_quark_smearing;  /*!< xml string holding smearing params */
-	GroupXML_t       sink_quark_smearing;    /*!< xml string holding smearing params */
-	GroupXML_t       link_smearing;          /*!< link smearing xml */
+				int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
+				int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
+				GroupXML_t          source_quark_smearing; /*!< xml string holding smearing params */
+				GroupXML_t          sink_quark_smearing;   /*!< xml string holding smearing params */
+				GroupXML_t          link_smearing;         /*!< link smearing xml */
+
+				multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
       } param;
 
       struct NamedObject_t
       {
-	struct ThreeQuarkOpsFile_t
-	{
-	  std::string          ops_file;             /*!< Coefficient file name */
-	  std::string          id;                     /*!< ID/tag used in analysis codes*/
-	};
+				struct ThreeQuarkOpsFile_t
+				{
+	  			std::string        ops_file;       /*!< Coefficient file name */
+	  			std::string        id;             /*!< ID/tag used in analysis codes*/
+				};
 
-	ThreeQuarkOpsFile_t  operators_file;   /*!< Files holding 3-quark ops to make*/
+				ThreeQuarkOpsFile_t  operators_file; /*!< Files holding 3-quark ops to make*/
 
-	//! Solution files for each quark
-	struct QuarkFiles_t
-	{
-	  //! Time dilution components  
-	  struct TimeDilutions_t
-	  {
-			struct SpinDilutions_t
-			{
-				
-	    	multi1d<std::string> dilution_files;  /*!< dilution files for this spin and time dilution*/
-	  	
-			};
+				std::string          quark_ids;      /*!< 3 character string indicating which quarks are degenerate */
+	
+				std::string          gauge_id;       /*!< Gauge field */
+      
+			} named_obj;
 
-			multi1d<SpinDilutions_t> spin_files;  /*!< Spin dilution files for this time dilution */
-		};
-
-	  multi1d<TimeDilutions_t> time_files;
-	};
-
-	std::string quark_ids;
-
-	multi1d<QuarkFiles_t>   quarks;                 /*!< All the quarks and their solutions that are needed */
-
-	std::string           gauge_id;
-      } named_obj;
-
-  std::string xml_file;  // Alternate XML file pattern
+      std::string xml_file;  // Alternate XML file pattern
     };
 
 

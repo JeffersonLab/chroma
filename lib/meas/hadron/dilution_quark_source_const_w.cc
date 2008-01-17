@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.6 2008-01-15 19:39:04 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.7 2008-01-17 15:09:26 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -34,14 +34,6 @@ namespace Chroma
    */
   namespace DilutionQuarkSourceConstEnv
   { 
-    //Read Quark timeslice files 
-    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "timeslice_files", input.timeslice_files);
-    }
-
 		//Read Quark dilution files per timeslice
     void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
@@ -50,20 +42,28 @@ namespace Chroma
       read(inputtop, "dilution_files", input.dilution_files);
     }
 
-
-    //Write Quark time slice files 
-    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
+    //Read Quark timeslice files 
+    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
     {
-      push(xml, path);
-      write(xml, "timeslice_files", input.timeslice_files);
-      pop(xml);
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "timeslice_files", input.timeslice_files);
     }
+
 
  //Write Quark dilution files 
     void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
       push(xml, path);
       write(xml, "dilution_files", input.dilution_files);
+      pop(xml);
+    }
+
+    //Write Quark time slice files 
+    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
+    {
+      push(xml, path);
+      write(xml, "timeslice_files", input.timeslice_files);
       pop(xml);
     }
 
@@ -143,15 +143,6 @@ namespace Chroma
     }
 
 
-
-    //-------------------------------------------------------------- 
-/*    bool ConstDilutionScheme::hasSupport(int t0, int dil) const
-    {
-    
-			return (quark.[dil].t0 == t0); 
-		
-		}			
-*/	
 
 		bool operator!= (const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t & dilA,
 			const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t & dilB)
