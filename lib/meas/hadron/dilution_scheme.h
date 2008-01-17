@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.1 2008-01-07 15:21:26 jbulava Exp $
+// $Id: dilution_scheme.h,v 1.2 2008-01-17 21:49:11 jbulava Exp $
 /*! \file
  *  \brief Dilution Schemes
  */
@@ -33,16 +33,17 @@ namespace Chroma
     //! The seed identifies this quark
     virtual const Seed& getSeed() const = 0;
 
-    //! Does this element of the dilution scheme have support on timeslice t0?
-    virtual bool hasSupport(int dil, int t0) const = 0;
+		virtual int getT0(int t0) const = 0 ;
+
+		virtual int getNumTimeSlices() const = 0;
 
     //! Return the diluted source vector
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? PROBABLY NO */
-    virtual T dilutedSource( int dil ) const = 0;
+    virtual T dilutedSource(int t0, int dil ) const = 0;
     
     //! Return the solution vector corresponding to the diluted source
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? POSSIBLY YES */
-    virtual T dilutedSolution( int dil ) const = 0;
+    virtual T dilutedSolution(int t0, int dil ) const = 0;
 
   };
 

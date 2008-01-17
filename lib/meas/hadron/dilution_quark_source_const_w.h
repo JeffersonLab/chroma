@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.7 2008-01-11 15:36:59 kostas Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.8 2008-01-17 21:49:11 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -92,15 +92,11 @@ namespace Chroma
       //! The seed identifies this quark
       const Seed& getSeed() const {return quark.seed;}
 
-      //! The seed identifies this quark
+      //! The actual t0 corresponding to this time dilution element 
       int getT0( int t0 ) const {return quark.timeslices[t0].t0;}
 
-      //! The seed identifies this quark
+      //! The number of dilution timeslices included  
       int getNumTimeSlices() const {return quark.timeslices.size();}
-
-      //! Does the source have support on time slice t0 and dilution component
-			//dil?
-    //  bool hasSupport(int t0, int dil) const;
 
       //! Return the diluted source vector
       LatticeFermion dilutedSource(int t0, int dil) const;
