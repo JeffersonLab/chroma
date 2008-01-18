@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.2 2008-01-17 21:49:11 jbulava Exp $
+// $Id: dilution_scheme.h,v 1.3 2008-01-18 16:43:13 jbulava Exp $
 /*! \file
  *  \brief Dilution Schemes
  */
@@ -34,6 +34,8 @@ namespace Chroma
     virtual const Seed& getSeed() const = 0;
 
 		virtual int getT0(int t0) const = 0 ;
+		
+		virtual int getDilSize(int t0) const = 0 ;
 
 		virtual int getNumTimeSlices() const = 0;
 

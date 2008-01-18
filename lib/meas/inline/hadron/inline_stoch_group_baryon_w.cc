@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.9 2008-01-17 15:09:26 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.10 2008-01-18 16:43:13 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -270,10 +270,10 @@ namespace Chroma
     	}
 
 
-			struct SmearedQuark
+			struct SmearedQuark_t
 			{
 				LatticeFermion quark;
-			}
+			};
 
     //----------------------------------------------------------------------------
     //! The key for smeared and displaced color vectors
@@ -294,7 +294,7 @@ namespace Chroma
       lga[0] = a.displacement;
       lga[1] = a.spin;
       lga[2] = a.t0;
-			lga[3] = a.dil
+			lga[3] = a.dil;
 
       multi1d<int> lgb(4);
       lgb[0] = b.displacement;
@@ -364,7 +364,7 @@ namespace Chroma
 
     private:
      
-			multi1d< Handle< DilutionScheme<LatticeFermion> > > diluted_quarks,	
+			multi1d< Handle< DilutionScheme<LatticeFermion> > > diluted_quarks;	
 			
 			Handle < QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
 			Handle < QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
@@ -379,7 +379,7 @@ namespace Chroma
 			
 			//! Maps of smeared color vectors 
 			multi1d< map<KeySmearedQuark_t, SmearedQuark_t> > smeared_src_maps;
-			multi1d< map<KeySmearedQuark_t, SmearedQuark_t> > smeared_sol_maps;
+			multi1d< map<KeySmearedQuark_t, SmearedQuark_t> > smeared_soln_maps;
 
       
 			//!Maps of smeared displaced color vectors 
@@ -417,7 +417,9 @@ namespace Chroma
 
 				// Modify the previous empty entry
 				SmearedQuark_t& smrd_q = qmap.find(key)->second;
-	      
+	     
+				StopWatch snoop;
+
 				snoop.reset();
 				snoop.start();
 	
@@ -427,7 +429,7 @@ namespace Chroma
 
 				SpinMatrix mat = rotate_mat * Gamma(8);
 				
-				smrd_q.quark *= mat;
+				smrd_q.quark = mat * smrd_q.quark;
 	
 	      
 				snoop.stop();
@@ -452,7 +454,7 @@ namespace Chroma
 					 const KeySmearedQuark_t & key)
 		{
 
-			map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_sol_maps[qnum];
+			map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_soln_maps[qnum];
 
 
 			//If entry is not in map create it
@@ -477,7 +479,8 @@ namespace Chroma
 
 				// Modify the previous empty entry
 				SmearedQuark_t& smrd_q = qmap.find(key)->second;
-	      
+	     
+				StopWatch snoop;
 				snoop.reset();
 				snoop.start();
 	
@@ -485,7 +488,7 @@ namespace Chroma
 
 				(*sinkQuarkSmearing)(smrd_q.quark, u);
 
-				smrd_q.quark *= rotate_mat;
+				smrd_q.quark = rotate_mat * smrd_q.quark;
 	
 				snoop.stop();
 
@@ -509,11 +512,11 @@ namespace Chroma
     {
 		
 			//Get Smeared quark 
-			KeySmearedColorVector smr_key;
+			KeySmearedQuark_t smr_key;
 			smr_key.t0 = key.t0;
 			smr_key.dil = key.dil;
 
-			LatticeFermion& smrd_q = smearSource(quark_num, smr_key);
+			const LatticeFermion& smrd_q = smearSource(quark_num, smr_key);
 					
 			return displaceObject( disp_src_maps[quark_num] , key , smrd_q );
     }
@@ -525,11 +528,11 @@ namespace Chroma
     {
 	
 			//Get Smeared quark 
-			KeySmearedColorVector smr_key;
+			KeySmearedQuark_t smr_key;
 			smr_key.t0 = key.t0;
 			smr_key.dil = key.dil;
 
-			LatticeFermion& smrd_q = smearSolution(quark_num, smr_key);
+			const LatticeFermion& smrd_q = smearSolution(quark_num, smr_key);
 					
 			return displaceObject( disp_soln_maps[quark_num] , key , smrd_q);
 
@@ -576,23 +579,24 @@ namespace Chroma
 					// Modify the previous empty entry
 					SmearedDispColorVector_t& disp_q = disp_quark_map.find(key)->second;
 
+					StopWatch snoop;
 					snoop.reset();
 					snoop.start();
 
 					LatticeColorVector vec;
-					vec = peekSpin(smrd_vec, key.spin);
+					vec = peekSpin(smrd_q, key.spin);
 
 					if (key.displacement > 0)
 					{
 						int disp_dir = key.displacement - 1;
 						int disp_len = displacement_length;
-						displacement(u_smr, vec, disp_len, disp_dir);
+						displacement(u, vec, disp_len, disp_dir);
 					}
 					else if (key.displacement < 0)
 					{
 						int disp_dir = -key.displacement - 1;
 						int disp_len = -displacement_length;
-						displacement(u_smr, vec, disp_len, disp_dir);
+						displacement(u, vec, disp_len, disp_dir);
 					}
 
 					snoop.stop();
@@ -621,7 +625,7 @@ namespace Chroma
    	//Support for the diquarks
 	
 		void makeDiquark( multi1d<LatticeComplex> & diquark, const multi1d<LatticeComplex> & q0,
-				const multi1d<LatticeComplex> & q1, const Set & subset )
+				const multi1d<LatticeComplex> & q1, const Subset & subset )
 		{
 			
 			//The signs for the diquark are taken from 
@@ -635,7 +639,7 @@ namespace Chroma
 
 		
 		void makeColorSinglet (LatticeComplex & singlet, const multi1d<LatticeComplex> & diquark, 
-				const multi1d<LatticeComplex> & q2, const Set & subset)
+				const multi1d<LatticeComplex> & q2, const Subset & subset)
 		{
 			
 			singlet[subset] = diquark[0] * q2[2];
@@ -701,7 +705,6 @@ namespace Chroma
       int version = 1;
       write(xml, "version", version);
       write(xml, "id", param.id);
-      write(xml, "operator_num", param.operator_num);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "seed_l", param.seed_l);
@@ -754,7 +757,7 @@ namespace Chroma
     }
 
 
-		//! Read 3-quark operators file
+		//! Read 3-quark operators file, assign correct displacement length
 		void readOps(ThreeQuarkOps_t& oplist, 
 				const std::string& ops_file)
 		{
@@ -836,7 +839,10 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
-      // Test and grab a reference to the gauge field
+      
+			StopWatch swiss;
+			
+			// Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml;
       try
       {
@@ -892,7 +898,7 @@ namespace Chroma
 				QDP_abort(1);
       }
 
-      multi1d< Handle< DilutionScheme > > diluted_quarks(N_quarks);  /*!< Here is the big (dil) pickle */
+      multi1d< Handle< DilutionScheme<LatticeFermion> > > diluted_quarks(N_quarks);  /*!< Here is the big (dil) pickle */
 
       try
       {
@@ -905,7 +911,7 @@ namespace Chroma
 	  			XMLReader  diltop(xml_d);
 	  			QDPIO::cout << "Dilution type = XX" << dil_xml.id <<"XX"<< endl;
 	
-	  			diluted_quarks[n] = TheFermDilutionOperatorFactory::Instance().createObject(
+	  			diluted_quarks[n] = TheFermDilutionSchemeFactory::Instance().createObject(
 	    			dil_xml.id, diltop, dil_xml.path);
 				}
       }
@@ -920,16 +926,16 @@ namespace Chroma
 			//The participating timeslices must match for each quark
 			//grab info from first quark to prime the work
 
-			multi1d<int> particpating_timeslices( diluted_quarks[0]->getNumTimeSlices() );
+			multi1d<int> participating_timeslices( diluted_quarks[0]->getNumTimeSlices() );
 
-			for (int t0 = 0 ; t0 < participating_timeslices->size() ; ++t0)
+			for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
 			{
 				participating_timeslices[t0] = diluted_quarks[0]->getT0(t0);
 			}
 
 			for (int n = 1 ; n < N_quarks ; ++n)
 			{
-				if ( diluted_quarks[n]->getNumTimeSlices() != particpating_timeslices.size() )
+				if ( diluted_quarks[n]->getNumTimeSlices() != participating_timeslices.size() )
 				{
 					QDPIO::cerr << name << " : Quarks do not contain the same number of dilution timeslices: Quark " 
 						<< n << endl; 
@@ -952,7 +958,7 @@ namespace Chroma
       //
       // Initialize the slow Fourier transform phases
       //
-      int decay_dir = dilution_operators[0]->getDecayDir();
+      int decay_dir = diluted_quarks[0]->getDecayDir();
 
       SftMom phases(params.param.mom2_max, false, decay_dir);
 
@@ -1027,7 +1033,7 @@ namespace Chroma
       QDPIO::cout << "Reading 3-quark operators" << endl;
       ThreeQuarkOps_t qqq_oplist; 
 
-      readOps(qqq_oplist, params.named_obj.operators_file.ops_file, params.param.displacement_length);
+      readOps(qqq_oplist, params.named_obj.operators_file.ops_file);
 
 
       //
@@ -1043,7 +1049,7 @@ namespace Chroma
 				std::istringstream  xml_s(params.param.source_quark_smearing.xml);
 				XMLReader  smeartop(xml_s);
 	
-				Handle< QuarkSmearing<LatticeFermion> > sourceQuarkSmearing =
+				sourceQuarkSmearing =
 	  			TheFermSmearingFactory::Instance().createObject(params.param.source_quark_smearing.id,
 							  smeartop, params.param.source_quark_smearing.path);
 			
@@ -1174,11 +1180,11 @@ namespace Chroma
 
 				// The object holding the smeared and displaced color vector maps  
 				SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
-						diluted_quarks, sourceSmearing, sinkSmearing, u_smr )
+						diluted_quarks, sourceQuarkSmearing, sinkQuarkSmearing, u_smr );
 
 
 					// Creation operator
-					BaryonOperator_t  creat_oper;
+				BaryonOperator_t  creat_oper;
 				creat_oper.mom2_max    = params.param.mom2_max;
 				creat_oper.decay_dir   = decay_dir;
 				creat_oper.seed_l      = diluted_quarks[0]->getSeed();
@@ -1186,12 +1192,12 @@ namespace Chroma
 				creat_oper.seed_r      = diluted_quarks[2]->getSeed();
 				creat_oper.smearing    = params.param.source_quark_smearing;
 				creat_oper.perms       = perms;
-				creat_oper.orderings.resize(num_orderings);
+				creat_oper.time_slices.resize( participating_timeslices.size() );
 
 
 
 				// Construct creation operator
-				QDPIO::cout << "Build operators" << endl;
+				QDPIO::cout << "Build Creation operators" << endl;
 
 				// Loop over each operator 
 				for(int l=0; l < qqq_oplist.ops.size(); ++l)
@@ -1201,7 +1207,6 @@ namespace Chroma
 					push(xml_out, "BaryonOperator");
 
 					creat_oper.id = qqq_oplist.ops[l].name;
-					annih_oper.id = qqq_oplist.ops[l].name;
 
 					write(xml_out, "Name", creat_oper.id);
 
@@ -1221,37 +1226,34 @@ namespace Chroma
 					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
 					{
 
-						for(int ord = 0; ord < creat_oper.orderings.size(); ++ord)
+						creat_oper.time_slices[t0].orderings.resize(num_orderings);
+
+						for(int ord = 0; ord < num_orderings ; ++ord)
 						{
 							QDPIO::cout << "Ordering = " << ord << endl;
 
-							creat_oper.orderings[ord].perm = perms[ord];
-							creat_oper.orderings[ord].time_slices.resize(participating_time_sources.size());
+							creat_oper.time_slices[t0].orderings[ord].perm = perms[ord];
 
 							const int n0 = perms[ord][0];
 							const int n1 = perms[ord][1];
 							const int n2 = perms[ord][2];
 
 							// The operator must hold all the dilutions
-							// We know that all time slices match. However, not all time slices of the
-							// lattice maybe used
-
+							
 							// Creation operator
 							BaryonOperator_t::TimeSlices_t::Orderings_t& cop = creat_oper.time_slices[t0].orderings[ord];
 
-							cop.t0 = t0;
-
-							cop.dilutions.resize(diluted_quarks[n0].getDilSize(t0), diluted_quarks[n1].getDilSize(t0),
-									diluted_quarks[n2].getDilSize(t0) );
+							cop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0),
+									diluted_quarks[n2]->getDilSize(t0) );
 
 							for (int n = 0 ; n < N_quarks ; ++n)
 							{
 								keySmearedDispColorVector[n].t0 = t0;
 							}
 
-							for(int i = 0 ; i <  diluted_quarks[n0].getDilSize(t0) ; ++i)
+							for(int i = 0 ; i <  diluted_quarks[n0]->getDilSize(t0) ; ++i)
 							{
-								for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      						{
+								for(int j = 0 ; j < diluted_quarks[n1]->getDilSize(t0) ; ++j)	      						
 									{
 
 										keySmearedDispColorVector[0].dil = i;
@@ -1260,16 +1262,16 @@ namespace Chroma
 										//Form the di-quark to save on recalculating 
 										multi1d<LatticeComplex> diquark(Nc);
 										
-										const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDilutedSource(n0, 
+										const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDispSource(n0, 
 												keySmearedDispColorVector[0]); 
 
-										const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDilutedSource(n1, 
+										const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDispSource(n1, 
 												keySmearedDispColorVector[1]);
 
 										//For the source, restrict this operation to a subset
 										makeDiquark( diquark, q0 , q1, phases.getSet()[t0] ); 
 
-									for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
+									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
 									{
 
 										keySmearedDispColorVector[2].dil = k;
@@ -1280,7 +1282,7 @@ namespace Chroma
 
 										LatticeComplex c_oper;
 
-										const multi1d<LatticeComplex> &q2 = smrd_disp_srcs.getDilutedSource(n2, 
+										const multi1d<LatticeComplex> &q2 = smrd_disp_srcs.getDispSource(n2, 
 												keySmearedDispColorVector[2]);
 
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[t0] );
@@ -1365,7 +1367,7 @@ namespace Chroma
 
 				// The object holding the smeared and displaced color vector maps  
 				SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
-						diluted_quarks, sourceSmearing, sinkSmearing, u_smr )
+						diluted_quarks, sourceQuarkSmearing, sinkQuarkSmearing, u_smr );
 
 
 				// Annihilation operator
@@ -1377,7 +1379,7 @@ namespace Chroma
 				annih_oper.seed_r      = diluted_quarks[2]->getSeed();
 				annih_oper.smearing    = params.param.sink_quark_smearing;
 				annih_oper.perms       = perms;
-				annih_oper.orderings.resize(num_orderings);
+				annih_oper.time_slices.resize( participating_timeslices.size() );
 	    	
 				// Construct annihilation operator
 				QDPIO::cout << "Building Sink operators" << endl;
@@ -1405,12 +1407,13 @@ namespace Chroma
 					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
 					{
 
-						for(int ord = 0; ord < annih_oper.orderings.size(); ++ord)
+						annih_oper.time_slices[t0].orderings.resize(num_orderings);
+
+						for(int ord = 0 ; ord < num_orderings ; ++ord)
 						{
 							QDPIO::cout << "Ordering = " << ord << endl;
 
-							annih_oper.orderings[ord].perm = perms[ord];
-							annih_oper.orderings[ord].time_slices.resize(participating_time_sources.size());
+							annih_oper.time_slices[t0].orderings[ord].perm = perms[ord];
 
 							const int n0 = perms[ord][0];
 							const int n1 = perms[ord][1];
@@ -1423,19 +1426,17 @@ namespace Chroma
 							// Creation operator
 							BaryonOperator_t::TimeSlices_t::Orderings_t& aop = annih_oper.time_slices[t0].orderings[ord];
 
-							aop.t0 = t0;
-
-							aop.dilutions.resize(diluted_quarks[n0].getDilSize(t0), diluted_quarks[n1].getDilSize(t0),
-									diluted_quarks[n2].getDilSize(t0) );
+							aop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0),
+									diluted_quarks[n2]->getDilSize(t0) );
 
 							for (int n = 0 ; n < N_quarks ; ++n)
 							{
 								keySmearedDispColorVector[n].t0 = t0;
 							}
 
-							for(int i = 0 ; i <  diluted_quarks[n0].getDilSize(t0) ; ++i)
+							for(int i = 0 ; i <  diluted_quarks[n0]->getDilSize(t0) ; ++i)
 							{
-								for(int j = 0 ; j < diluted_quarks[n1].getDilSize(t0) ; ++j)	      
+								for(int j = 0 ; j < diluted_quarks[n1]->getDilSize(t0) ; ++j)	      
 								{
 									
 									keySmearedDispColorVector[0].dil = i;
@@ -1444,15 +1445,15 @@ namespace Chroma
 									//Form the di-quark to save on recalculating 
 									multi1d<LatticeComplex> diquark(Nc);
 
-									const multi1d<LatticeComplex> &q0 = smrd_disp_snks.getDilutedSolution(n0, 
+									const multi1d<LatticeComplex> &q0 = smrd_disp_snks.getDispSolution(n0, 
 											keySmearedDispColorVector[0]); 
 
-									const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDilutedSolution(n1, 
+									const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDispSolution(n1, 
 											keySmearedDispColorVector[1]);
 
 									makeDiquark( diquark, q0 , q1, all ); 
 
-									for(int k = 0 ; k < diluted_quarks[n2].getDilSize(t0) ; ++k)	
+									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
 									{
 
 										keySmearedDispColorVector[2].dil = k;
@@ -1466,7 +1467,7 @@ namespace Chroma
 
 										LatticeComplex a_oper;
 
-										const multi1d<LatticeComplex> &q2 = smrd_disp_snks.getDilutedSolution(n2, 
+										const multi1d<LatticeComplex> &q2 = smrd_disp_snks.getDispSolution(n2, 
 												keySmearedDispColorVector[2]);
 
 										makeColorSinglet( a_oper, diquark, q2, all);
@@ -1500,7 +1501,7 @@ namespace Chroma
 
 					//Hard code the elemental op name for now 
 					std::stringstream cnvrt;
-					cnvrt <<  creat_oper.id  << "_snk.lime";
+					cnvrt <<  annih_oper.id  << "_snk.lime";
 
 					std::string filename;
 
@@ -1530,10 +1531,8 @@ namespace Chroma
 					}
 					swiss.stop();
 
-					QDPIO::cout << "Sink Operator writing: operator = " << 
-						<< "  time= "
-						<< swiss.getTimeInSeconds() 
-						<< " secs" << endl;
+					QDPIO::cout << "Sink Operator writing: operator = " << l
+						<< "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
 
 					pop(xml_out); // Operator 
 

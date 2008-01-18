@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.5 2008-01-17 15:09:26 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.h,v 1.6 2008-01-18 16:43:13 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -8,6 +8,7 @@
 #define __inline_stoch_group_baryon_h__
 
 #include "chromabase.h"
+#include "chroma.h"
 #include "meas/inline/abs_inline_measurement.h"
 
 namespace Chroma 
