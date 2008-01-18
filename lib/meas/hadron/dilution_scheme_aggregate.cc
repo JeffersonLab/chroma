@@ -1,4 +1,4 @@
-// $Id: dilution_scheme_aggregate.cc,v 1.2 2008-01-18 16:43:13 jbulava Exp $
+// $Id: dilution_scheme_aggregate.cc,v 1.3 2008-01-18 18:50:05 jbulava Exp $
 /*! \file
  *  \brief All dilution scheme factories
  */
@@ -26,7 +26,7 @@ namespace Chroma
       if (! registered)
       {
 	// Hadron
-	success &= DilutionQuarkSourceConstEnv::registerAll();
+	success &= Chroma::DilutionQuarkSourceConstEnv::registerAll();
 
 	registered = true;
       }

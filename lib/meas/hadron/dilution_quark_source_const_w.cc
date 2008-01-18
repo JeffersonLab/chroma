@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.7 2008-01-17 15:09:26 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.8 2008-01-18 18:50:05 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -30,7 +30,7 @@ namespace Chroma
   /*!
    * \ingroup hadron
    *
-   * @{
+   * 
    */
   namespace DilutionQuarkSourceConstEnv
   { 
@@ -84,15 +84,15 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	/**************************************************************************/
-	break;
+				/**************************************************************************/
+				break;
 
-      default :
-	/**************************************************************************/
+			default :
+				/**************************************************************************/
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-	QDP_abort(1);
-      }
+				QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+				QDP_abort(1);
+			}
 
       read(paramtop, "QuarkFiles", quark_files);
     }
@@ -110,18 +110,18 @@ namespace Chroma
     }
 
 
-  }
+  //}
 
 
-  namespace DilutionQuarkSourceConstEnv 
-  { 
+  //namespace DilutionQuarkSourceConstEnv 
+  //{ 
     // Anonymous namespace for registration
     namespace
     {
       DilutionScheme<LatticeFermion>* createScheme(XMLReader& xml_in, 
 						       const std::string& path) 
       {
-	return new ConstDilutionScheme(Params(xml_in, path));
+				return new ConstDilutionScheme(Params(xml_in, path));
       }
 
       //! Local registration flag
@@ -130,17 +130,17 @@ namespace Chroma
 
     const std::string name = "DILUTION_QUARK_SOURCE_CONST_FERM";
 
-    //! Register all the factories
-    bool registerAll() 
-    {
-      bool success = true; 
-      if (! registered)
-      {
-	success &= TheFermDilutionSchemeFactory::Instance().registerObject(name, createScheme);
-	registered = true;
-      }
-      return success;
-    }
+		//! Register all the factories
+		bool registerAll() 
+		{
+			bool success = true; 
+			if (! registered)
+			{
+				success &= TheFermDilutionSchemeFactory::Instance().registerObject(name, createScheme);
+				registered = true;
+			}
+			return success;
+		}
 
 
 
@@ -370,4 +370,4 @@ namespace Chroma
 	
   } // namespace DilutionQuarkSourceConstEnv
 
-
+}// namespace Chroma 
