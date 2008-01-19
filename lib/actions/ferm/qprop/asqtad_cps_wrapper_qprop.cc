@@ -7,14 +7,34 @@
 
 extern "C" {
 
+// double precision (recommended)
+#define LEVEL3_PREC 2
+
+#if LEVEL3_PREC == 2
+// double precision
+#define QLA_Precision 'D'
+#define QOP_Precision 2
+#else
+// single precision
 #define QLA_Precision 'F'
+#define QOP_Precision 1
+#endif
+
+
 #define QLA_Colors 3
 
 #include <qdp.h>
 #include <qdp_types.h>
 #include <qdp_common.h>
+
+#if LEVEL3_PREC == 2
+#include <qdp_d3_generic.h>
+#include <qdp_d3.h>
+#else
 #include <qdp_f3_generic.h>
 #include <qdp_f3.h>
+#endif
+
 #include <qop_qdp.h>
 #include <qmp.h>
 
@@ -138,7 +158,7 @@ QDP_ColorMatrix ** QDP_create_gauge_from_chroma (
 		QLA_Complex z ; 
 		QLA_C_eq_R_plus_i_R(&z,&zre,&zim) ;
 
-		//		cout << "" << ic << " , " << jc << " = " << zre << " " << zim << endl ;
+		//		QDPIO::cout << "" << ic << " , " << jc << " = " << zre << " " << zim << endl ;
 		QLA_M_eq_elem_C(&tmp[site],&z,ic,jc) ; 
 	      }
 
@@ -154,7 +174,7 @@ QDP_ColorMatrix ** QDP_create_gauge_from_chroma (
   // convert to QOP format.
   QLA_Real plaq;
   plaq = get_plaq(u);
-  printf("QDP_create_gauge_from_chroma:: plaquette = %g\n", plaq);
+  QDPIO::cout << "QDP_create_gauge_from_chroma:: plaquette = " << plaq << "\n";
 
   return u ;
 }
@@ -187,7 +207,7 @@ const LatticeStaggeredFermion & in )
 
 	  QLA_V_eq_elem_C(&tmp[site],&z,ic) ; 
 
-	  //	  cout << "convert_chroma_to_qdp-DEBUG " << site << " " << ic << " " << zre << "  " <<  zim << "\n" ;
+	  //	  QDPIO::cout << "convert_chroma_to_qdp-DEBUG " << site << " " << ic << " " << zre << "  " <<  zim << "\n" ;
 	}
 
     } // loop over sites
@@ -242,7 +262,7 @@ void convert_qdp_to_chroma(LatticeStaggeredFermion & out,
 	  out.elem(site).elem(0).elem(ic).imag() = toFloat(zim_chroma) ;
 
 
-	  //	  cout << "convert_qdp_to_chroma-DEBUG " << site << " " << ic << " " << zre_chroma << " " << zim_chroma   << "\n" ;
+	  //	  QDPIO::cout << "convert_qdp_to_chroma-DEBUG " << site << " " << ic << " " << zre_chroma << " " << zim_chroma   << "\n" ;
 
 	} // loop over color
 
@@ -328,40 +348,74 @@ static  QDP_ColorVector *in ;
     state(state_.cast<AsqtadConnectStateBase>()) , M(S_.linOp(state_))
   {
     // Here is how to get at the gauge links: (Thanks Balint).
+    // gauge not needed
+    const multi1d<LatticeColorMatrix>& u = state->getLinks();
+
     const multi1d<LatticeColorMatrix>& u_fat = state->getFatLinks();
     const multi1d<LatticeColorMatrix>& u_triple = state->getTripleLinks();
-
-    // I have used the fat and triple links from pure chroma
-    // rather than use the level3 routines. I don't believe
-    // that creating the fat/triple links is a performance issue
 
     multi1d<LatticeColorMatrix> u_chroma(Nd); // hack
 
     QDP_ColorMatrix **u_fat_qdp;
-    u_chroma = u_fat ; // needed because u_fat is const
+    u_chroma = u_fat ;
     u_fat_qdp = QDP_create_gauge_from_chroma(u_chroma) ;
-
+    //    u_fat_qdp = QDP_create_gauge_from_chroma(u_fat) ;
 
     QDP_ColorMatrix **u_triple_qdp;
-    u_chroma = u_triple ; // needed because u_triple is const
+    u_chroma = u_triple ;
     u_triple_qdp = QDP_create_gauge_from_chroma(u_chroma) ;
+    //    u_triple_qdp = QDP_create_gauge_from_chroma(u_triple) ;
 
     fla = QOP_asqtad_convert_L_from_qdp(u_fat_qdp,u_triple_qdp)  ;
 
 #if 0
-    // the fla structure has pointers to u_fat_qdp and u_triple_qdp
-    // so they can't be destroyed here.
-    // I actually use the destroyer for fla. 
-
     for(int i=0; i<Nd ; i++) QDP_destroy_M(u_fat_qdp[i]);
     free(u_fat_qdp) ;
 
+
     for(int i=0; i<Nd; i++) QDP_destroy_M(u_triple_qdp[i]);
     free(u_triple_qdp) ;
+
 #endif
 
 
+#if 0
+    multi1d<LatticeColorMatrix> u_with_phases(Nd);
+    state.getFermBC().modify(u_with_phases);
+#endif
 
+#if 0
+    // add staggered phases to the chroma gauge field
+    multi1d<LatticeColorMatrix> u_chroma(Nd);
+    // alpha comes from the StagPhases:: namespace
+    for(int i = 0; i < Nd; i++) {
+      u_chroma[i] = u[i] ; 
+      u_chroma[i] *= StagPhases::alpha(i);
+    }
+
+
+  // setup the qdp 
+  QOP_asqtad_coeffs_t coeffs;
+  load_qop_asqtad_coeffs(&coeffs, 1.0) ;
+  Real u0 = 1.0 ; 
+
+  // ---- create the fat links ---------
+  QDP_ColorMatrix **uqdp ;
+  uqdp = QDP_create_gauge_from_chroma (u_chroma) ;
+
+  QOP_GaugeField *gf;
+  gf = QOP_convert_G_from_qdp(uqdp);
+
+  // create the fat links 
+  fla = QOP_asqtad_create_L_from_G(&info, &coeffs, gf);
+
+  // remove the space for the gauge configuration
+  // gf contains pointers to 4 components of uqdp,
+  // so uqdp[i] do not need to be destroyed as well
+  QOP_destroy_G(gf) ;
+  free(uqdp) ;
+
+#endif
 
 }
 
@@ -369,7 +423,6 @@ static  QDP_ColorVector *in ;
   //! Destructor may not well be automatic
   AsqtadCPSWrapperQprop::~AsqtadCPSWrapperQprop() 
   {
-    // note above about u_fat_qdp u_triple_qdp
     QOP_asqtad_destroy_L(fla) ;
 
   }
@@ -380,8 +433,10 @@ static  QDP_ColorVector *in ;
   {
     SystemSolverResults_t res;
 
+
     out = QDP_create_V();
     in = QDP_create_V();
+
 
   // convert "q_source" to in (qdp format)
   convert_chroma_to_qdp(in,q_source) ;
@@ -396,6 +451,8 @@ static  QDP_ColorVector *in ;
 
   res_arg.rsqmin = toFloat(invParam.RsdCG)*
     toFloat(invParam.RsdCG);
+
+
   if( invParam.MaxCGRestart > 0 ) 
     inv_arg.max_restarts = invParam.MaxCGRestart ;
   else
@@ -405,25 +462,28 @@ static  QDP_ColorVector *in ;
   inv_arg.max_iter = inv_arg.max_restarts * invParam.MaxCG;
   inv_arg.evenodd = QOP_EVENODD ;
 
-
   QLA_Real mass = toFloat(Mass) ;
-  printf("level3 asqtad inverter mass = %f, iters = %d, restarts=%d\n",
-	 mass,invParam.MaxCG,inv_arg.max_restarts) ; 
+
+  QDPIO::cout << "level3 asqtad inverter mass = " << Mass ;
+  QDPIO::cout << " iters = " << invParam.MaxCG << " restarts= " ; 
+  QDPIO::cout << inv_arg.max_restarts << "\n" ; 
 
   // invert
+  QOP_verbose(QOP_VERB_HI);
   QOP_asqtad_invert(&info, fla, &inv_arg, &res_arg, mass, qopout, qopin);
 
-  cout << "QOP Inversion results\n" ;
-  printf("QOP iters = %d\n",res_arg.final_iter) ;
-  printf("QOP restart = %d\n",res_arg.final_restart) ;
-  printf("QOP ||r||^2 = %g\n",res_arg.final_rsq) ;
-  printf("QOP ||r|| = %g\n",sqrt(res_arg.final_rsq)) ;
+  QDPIO::cout << "QOP Inversion results\n" ;
+  QDPIO::cout << "QOP iters = " << res_arg.final_iter << "\n" ; 
+  QDPIO::cout << "QOP final restart = " << res_arg.final_restart  << "\n" ;
+  QDPIO::cout << "QOP ||r||^2 = " << res_arg.final_rsq  << "\n" ;
+  QDPIO::cout << "QOP ||r|| = " << sqrt(res_arg.final_rsq) << "\n" ;
   res.n_count = res_arg.final_iter ;
   res.resid = res_arg.final_rsq; // check norm convention
 
   // convert out to psi (qdp++ format)
   QOP_extract_V_to_qdp(out,qopout) ;
   convert_qdp_to_chroma(psi,out) ;
+
 
   // unscale the norm
 #if 0 
@@ -441,7 +501,7 @@ static  QDP_ColorVector *in ;
     (*M)(r, psi, PLUS);
     r -= q_source ;
     res.resid = sqrt(norm2(r));
-    QDPIO::cout << "AsqtadCPSWrapperQprop: (pure chroma) true residual:  " << res.resid << endl; 
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual:  " << res.resid << endl; 
     QDPIO::cout << "AsqtadCPSWrapperQprop:  || q_source ||:  " << sqrt(norm2(q_source)) << endl; 
 
     QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual/source:  " << res.resid/ sqrt(norm2(q_source)) << endl; 
@@ -465,8 +525,8 @@ void setup_levelthree(multi1d<int> nrow, int *argc, char ***argv )
   //  QDP_start(argc, argv);
   int tmp = ::QDP_initialize(argc,argv  ) ;
 
-  printf("Setting up the level 3 code\n");
-  printf("----------------------------\n");
+  QDPIO::cout << "Setting up the level 3 code\n" ; 
+  QDPIO::cout << "----------------------------\n";
 
   int ndim = 4;
   int *lattice_size;
@@ -474,9 +534,17 @@ void setup_levelthree(multi1d<int> nrow, int *argc, char ***argv )
   for(int i=0 ; i < ndim ; ++i)
     lattice_size[i] = nrow[i] ;
 
-  printf("QDP/QOP lattice volume = %d %d %d %d\n",
-	 lattice_size[0],lattice_size[1],
-	 lattice_size[2],lattice_size[3] ) ; 
+  QDPIO::cout << "QDP/QOP lattice volume = " ; 
+  QDPIO::cout << lattice_size[0] << " " << lattice_size[1] << " " ;  
+  QDPIO::cout << lattice_size[2] << " " << lattice_size[3] << "\n" ;  
+
+#if LEVEL3_PREC == 2
+  QDPIO::cout << "DOUBLE PRECISION level3\n" ;
+#else
+  QDPIO::cout << "SINGLE PRECISION level3\n" ;
+#endif
+
+
 
    QDP_set_latsize(ndim, lattice_size);
    QDP_create_layout();
