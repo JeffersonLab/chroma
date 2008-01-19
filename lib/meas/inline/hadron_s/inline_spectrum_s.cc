@@ -278,7 +278,7 @@ namespace Chroma {
       read(inputtop, "MaxCGRestart", input.invParam.MaxCGRestart);
     }
     else {
-      input.invParam.MaxCGRestart = input.invParam.MaxCG;
+      input.invParam.MaxCGRestart = 0 ; 
     }
 
 
