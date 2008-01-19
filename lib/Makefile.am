@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.120 2008-01-18 16:43:09 jbulava Exp $
+# $Id: Makefile.am,v 3.121 2008-01-19 02:10:15 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -185,9 +185,9 @@ nobase_include_HEADERS = \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
 	meas/hadron/dilution_scheme.h \
+	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
-	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
@@ -1038,11 +1038,11 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
-	update/molecdyn/predictor/mre_extrap_predictor.cc
+	update/molecdyn/predictor/mre_extrap_predictor.cc \
+	meas/hadron/dilution_quark_source_const_w.cc
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
 
-#	meas/hadron/dilution_quark_source_const_w.cc
 
 if BUILD_GMP_REMEZ
 nobase_include_HEADERS += update/molecdyn/monomial/remez_gmp.h

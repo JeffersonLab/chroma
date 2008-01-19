@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.8 2008-01-18 18:50:05 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.9 2008-01-19 02:10:20 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -35,7 +35,7 @@ namespace Chroma
   namespace DilutionQuarkSourceConstEnv
   { 
 		//Read Quark dilution files per timeslice
-    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
+    void read(XMLReader& xml, const string& path, Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -109,12 +109,6 @@ namespace Chroma
       pop(xml);
     }
 
-
-  //}
-
-
-  //namespace DilutionQuarkSourceConstEnv 
-  //{ 
     // Anonymous namespace for registration
     namespace
     {
@@ -134,6 +128,7 @@ namespace Chroma
 		bool registerAll() 
 		{
 			bool success = true; 
+			
 			if (! registered)
 			{
 				success &= TheFermDilutionSchemeFactory::Instance().registerObject(name, createScheme);
@@ -151,32 +146,39 @@ namespace Chroma
 
 			//Check if the seeds are the same 
 			Seed seedA, seedB;
-			
-			read(dilA.source_header, "ran_seed" , seedA);
-			read(dilB.source_header, "ran_seed" , seedB);
+		
+	    std::istringstream  xml_a(dilA.source_header.source.xml);
+	    XMLReader  rdr_a(xml_a);
 
-			val |= (seedA != seedB);
+	    std::istringstream  xml_b(dilB.source_header.source.xml);
+	    XMLReader  rdr_b(xml_b);
+
+			
+			read(rdr_a, "ran_seed" , seedA);
+			read(rdr_b, "ran_seed" , seedB);
+
+			val |= toBool(seedA != seedB);
 
 			
 			//Check Spatial mask and spatial mask size
 			
 			multi1d<int> mask_sizeA, mask_sizeB, maskA, maskB;
 
-			read(dilA.source_header, "/spatial_mask_size" , mask_sizeA);
-			read(dilB.source_header, "/spatial_mask_size" , mask_sizeB);
-			val |= (mask_sizeA != mask_sizeB);
+			read(rdr_a, "/spatial_mask_size" , mask_sizeA);
+			read(rdr_b, "/spatial_mask_size" , mask_sizeB);
+			val |= toBool(mask_sizeA != mask_sizeB);
 
-			read(dilA.source_header, "/spatial_mask" , maskA);
-			read(dilB.source_header, "/spatial_mask" , maskB);
-			val |= (maskA != maskB);
+			read(rdr_a, "/spatial_mask" , maskA);
+			read(rdr_b, "/spatial_mask" , maskB);
+			val |= toBool(maskA != maskB);
 
-			read(dilA.source_header, "/color_mask" , maskA);
-			read(dilB.source_header, "/color_mask" , maskB);
-			val |= (maskA != maskB);
+			read(rdr_a, "/color_mask" , maskA);
+			read(rdr_b, "/color_mask" , maskB);
+			val |= toBool(maskA != maskB);
 
-			read(dilA.source_header, "/spin_mask" , maskA);
-			read(dilB.source_header, "/spin_mask" , maskB);
-			val |= (maskA != maskB);
+			read(rdr_a, "/spin_mask" , maskA);
+			read(rdr_b, "/spin_mask" , maskB);
+			val |= toBool(maskA != maskB);
 
 			return val;
 
@@ -223,7 +225,7 @@ namespace Chroma
 					for(int dil = 0; dil < quark.time_slices[t0].dilutions.size(); ++dil)
 					{				
 						quark.time_slices[t0].dilutions[dil].soln_file =
-							params.quark.timeslice_files[t0].dilution_files[dil];
+							params.quark_files.timeslice_files[t0].dilution_files[dil];
 
 	    			XMLReader file_xml, record_xml, record_xml_source;
 
@@ -239,9 +241,9 @@ namespace Chroma
 	    			close(from);
 
 	    			read(record_xml, "/Propagator/PropSource", 
-								quark.dilutions[dil].source_header);
+								quark.time_slices[t0].dilutions[dil].source_header);
 	    			read(record_xml, "/Propagator/ForwardProp", 
-								quark.dilutions[dil].prop_header);
+								quark.time_slices[t0].dilutions[dil].prop_header);
 
 
 	    			if (!initq)
@@ -261,10 +263,10 @@ namespace Chroma
 					
 						if (dil == 0)
 						{
-							time = quark.time_slices[t0].dilutions[dil].source_header.t0;
+							time = quark.time_slices[t0].dilutions[dil].source_header.t_source;
 						}
 
-						if (time != quark.time_slices[t0].dilutions[dil].source_header.t0)
+						if (time != quark.time_slices[t0].dilutions[dil].source_header.t_source)
 						{
 							QDPIO::cerr << "t0's DO NOT MATCH FOR ALL DILUTIONS ON TIME SLICE "
 							<< t0 << endl;
@@ -316,11 +318,11 @@ namespace Chroma
 		//to get the source from the named object map
 		LatticeFermion ConstDilutionScheme::dilutedSource(int t0, int dil ) const 
 		{
-			QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t &qq = 
+			const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t &qq = 
 				quark.time_slices[t0].dilutions[dil];
 
 			//Dummy gauge field to send to the source construction routine;
-			multi1d<LatticeColorMatrix> dummy = zero;
+			multi1d<LatticeColorMatrix> dummy;
 			
 
 			// Build source construction

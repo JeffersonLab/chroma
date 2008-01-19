@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.216 2008-01-18 16:43:09 jbulava Exp $
+# $Id: Makefile.in,v 3.217 2008-01-19 02:10:16 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -43,8 +43,6 @@ POST_UNINSTALL = :
 @BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_6 = @BAGEL_CLOVER_CXXFLAGS@
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
-
-#	meas/hadron/dilution_quark_source_const_w.cc
 @BUILD_GMP_REMEZ_TRUE@am__append_7 = update/molecdyn/monomial/remez_gmp.h
 @BUILD_GMP_REMEZ_TRUE@am__append_8 = update/molecdyn/monomial/remez_gmp.cc
 
@@ -356,6 +354,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
+	meas/hadron/dilution_quark_source_const_w.cc \
 	update/molecdyn/monomial/remez_gmp.cc \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
@@ -837,7 +836,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) lu_solve.$(OBJEXT) \
-	mre_extrap_predictor.$(OBJEXT) $(am__objects_1) \
+	mre_extrap_predictor.$(OBJEXT) \
+	dilution_quark_source_const_w.$(OBJEXT) $(am__objects_1) \
 	fermacts_aggregate_w.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
@@ -1232,9 +1232,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
 	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
 	meas/hadron/dilution_scheme.h \
+	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
-	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
@@ -2028,9 +2028,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
 	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
 	meas/hadron/dilution_scheme.h \
+	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
-	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
@@ -2767,7 +2767,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
-	$(am__append_8) actions/ferm/fermacts/fermacts_aggregate_w.cc \
+	meas/hadron/dilution_quark_source_const_w.cc $(am__append_8) \
+	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.cc \
@@ -3207,6 +3208,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/deriv_quark_displacement_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilute_gauss_src_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilutezN_source_const.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilution_quark_source_const_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dilution_scheme_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diquark_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diractodr.Po@am__quote@
@@ -7716,6 +7718,20 @@ mre_extrap_predictor.obj: update/molecdyn/predictor/mre_extrap_predictor.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/mre_extrap_predictor.cc' object='mre_extrap_predictor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mre_extrap_predictor.obj `if test -f 'update/molecdyn/predictor/mre_extrap_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/mre_extrap_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/mre_extrap_predictor.cc'; fi`
+
+dilution_quark_source_const_w.o: meas/hadron/dilution_quark_source_const_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilution_quark_source_const_w.o -MD -MP -MF $(DEPDIR)/dilution_quark_source_const_w.Tpo -c -o dilution_quark_source_const_w.o `test -f 'meas/hadron/dilution_quark_source_const_w.cc' || echo '$(srcdir)/'`meas/hadron/dilution_quark_source_const_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/dilution_quark_source_const_w.Tpo $(DEPDIR)/dilution_quark_source_const_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/dilution_quark_source_const_w.cc' object='dilution_quark_source_const_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilution_quark_source_const_w.o `test -f 'meas/hadron/dilution_quark_source_const_w.cc' || echo '$(srcdir)/'`meas/hadron/dilution_quark_source_const_w.cc
+
+dilution_quark_source_const_w.obj: meas/hadron/dilution_quark_source_const_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilution_quark_source_const_w.obj -MD -MP -MF $(DEPDIR)/dilution_quark_source_const_w.Tpo -c -o dilution_quark_source_const_w.obj `if test -f 'meas/hadron/dilution_quark_source_const_w.cc'; then $(CYGPATH_W) 'meas/hadron/dilution_quark_source_const_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/dilution_quark_source_const_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/dilution_quark_source_const_w.Tpo $(DEPDIR)/dilution_quark_source_const_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/dilution_quark_source_const_w.cc' object='dilution_quark_source_const_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilution_quark_source_const_w.obj `if test -f 'meas/hadron/dilution_quark_source_const_w.cc'; then $(CYGPATH_W) 'meas/hadron/dilution_quark_source_const_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/dilution_quark_source_const_w.cc'; fi`
 
 remez_gmp.o: update/molecdyn/monomial/remez_gmp.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.o -MD -MP -MF $(DEPDIR)/remez_gmp.Tpo -c -o remez_gmp.o `test -f 'update/molecdyn/monomial/remez_gmp.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/remez_gmp.cc

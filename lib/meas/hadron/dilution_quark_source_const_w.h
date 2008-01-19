@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.8 2008-01-17 21:49:11 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.9 2008-01-19 02:10:21 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -69,7 +69,7 @@ namespace Chroma
       
 			};
 				
-			multi1d<TimeSlices_t> timeslices;
+			multi1d<TimeSlices_t> time_slices;
 
 			int   decay_dir;
       Seed  seed;
@@ -85,6 +85,15 @@ namespace Chroma
 
       //! Virtual destructor to help with cleanup;
       ~ConstDilutionScheme() {}
+			
+			//! Default constructor
+			ConstDilutionScheme( const Params& p ) 
+			{ 
+
+				params = p; 
+				init();
+
+			}
 
       //! The decay direction
       int getDecayDir() const {return quark.decay_dir;}
@@ -93,10 +102,14 @@ namespace Chroma
       const Seed& getSeed() const {return quark.seed;}
 
       //! The actual t0 corresponding to this time dilution element 
-      int getT0( int t0 ) const {return quark.timeslices[t0].t0;}
+      int getT0( int t0 ) const {return quark.time_slices[t0].t0;}
+      
+			//! The number of dilutions per timeslice fo timeslice t0
+      int getDilSize( int t0 ) const {
+				return quark.time_slices[t0].dilutions.size();}
 
       //! The number of dilution timeslices included  
-      int getNumTimeSlices() const {return quark.timeslices.size();}
+      int getNumTimeSlices() const {return quark.time_slices.size();}
 
       //! Return the diluted source vector
       LatticeFermion dilutedSource(int t0, int dil) const;
@@ -104,23 +117,16 @@ namespace Chroma
       //! Return the solution vector corresponding to the diluted source
       LatticeFermion dilutedSolution(int t0, int dil) const;
 
-    protected:
-      //! Initialize the object
-      void init();
-
-    private:
-      //! Hide default constructor
-      ConstDilutionScheme( const Params& p ) 
-			{ 
-				
-				params = p; 
-				init();
-
-			}
-
-    private:
-      Params params;
-      QuarkSourceSolutions_t quark;
+		protected:
+			//! Initialize the object
+			void init();
+ 
+			//! Hide partial constructor
+			ConstDilutionScheme() {}
+			
+		private:
+			Params params;
+			QuarkSourceSolutions_t quark;
     };
     
   } // namespace DilutionQuarkSourceConstEnv

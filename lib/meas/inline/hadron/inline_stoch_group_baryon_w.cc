@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.11 2008-01-18 18:50:05 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.12 2008-01-19 02:10:21 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -163,7 +163,7 @@ namespace Chroma
       {
 				success &= QuarkSourceSmearingEnv::registerAll();
 				success &= QuarkSinkSmearingEnv::registerAll();
-				//success &= DilutionSchemeEnv::registerAll();
+				success &= DilutionSchemeEnv::registerAll();
 				success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 				registered = true;
 			}
