@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.218 2008-01-20 03:07:10 edwards Exp $
+# $Id: Makefile.in,v 3.219 2008-01-20 17:45:19 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -223,7 +223,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/periodic_gaugebc.cc \
 	actions/gauge/gaugebcs/simple_gaugebc.cc \
@@ -743,12 +742,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	spatial_wilson_gaugeact.$(OBJEXT) \
 	temporal_wilson_gaugeact.$(OBJEXT) lw_tree_gaugeact.$(OBJEXT) \
 	lw_1loop_gaugeact.$(OBJEXT) rbc_gaugeact.$(OBJEXT) \
-	rg_gaugeact.$(OBJEXT) plaq_coarse_fine_gaugeact.$(OBJEXT) \
-	gaugebc_aggregate.$(OBJEXT) periodic_gaugebc.$(OBJEXT) \
-	simple_gaugebc.$(OBJEXT) schroedinger_gaugebc.$(OBJEXT) \
-	schr_gaugebc_params.$(OBJEXT) schr_sf_gaugebc.$(OBJEXT) \
-	schr_triv_gaugebc.$(OBJEXT) schr_sf_zero_gaugebc.$(OBJEXT) \
-	schr_nonpert_gaugebc.$(OBJEXT) schr_coupling_gaugebc.$(OBJEXT) \
+	rg_gaugeact.$(OBJEXT) gaugebc_aggregate.$(OBJEXT) \
+	periodic_gaugebc.$(OBJEXT) simple_gaugebc.$(OBJEXT) \
+	schroedinger_gaugebc.$(OBJEXT) schr_gaugebc_params.$(OBJEXT) \
+	schr_sf_gaugebc.$(OBJEXT) schr_triv_gaugebc.$(OBJEXT) \
+	schr_sf_zero_gaugebc.$(OBJEXT) schr_nonpert_gaugebc.$(OBJEXT) \
+	schr_coupling_gaugebc.$(OBJEXT) \
 	schr_chromomag_gaugebc.$(OBJEXT) schr_dirich_gaugebc.$(OBJEXT) \
 	gauge_createstate_aggregate.$(OBJEXT) \
 	periodic_gaugestate.$(OBJEXT) simple_gaugestate.$(OBJEXT) \
@@ -1185,7 +1184,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
-	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -1983,7 +1981,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
 	actions/gauge/gaugeacts/rg_gaugeact.h \
-	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.h \
 	actions/gauge/gaugebcs/gaugebcs.h \
 	actions/gauge/gaugebcs/gaugebc_aggregate.h \
 	actions/gauge/gaugebcs/gaugebc_factory.h \
@@ -2643,7 +2640,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
 	actions/gauge/gaugeacts/rg_gaugeact.cc \
-	actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc \
 	actions/gauge/gaugebcs/gaugebc_aggregate.cc \
 	actions/gauge/gaugebcs/periodic_gaugebc.cc \
 	actions/gauge/gaugebcs/simple_gaugebc.cc \
@@ -3555,7 +3551,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pion_local_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pion_sing_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pions_s.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_coarse_fine_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/plaq_plus_spatial_two_plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/polar_dec.Po@am__quote@
@@ -4999,20 +4994,6 @@ rg_gaugeact.obj: actions/gauge/gaugeacts/rg_gaugeact.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/rg_gaugeact.cc' object='rg_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rg_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/rg_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/rg_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/rg_gaugeact.cc'; fi`
-
-plaq_coarse_fine_gaugeact.o: actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT plaq_coarse_fine_gaugeact.o -MD -MP -MF $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo -c -o plaq_coarse_fine_gaugeact.o `test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo $(DEPDIR)/plaq_coarse_fine_gaugeact.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' object='plaq_coarse_fine_gaugeact.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o plaq_coarse_fine_gaugeact.o `test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
-
-plaq_coarse_fine_gaugeact.obj: actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT plaq_coarse_fine_gaugeact.obj -MD -MP -MF $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo -c -o plaq_coarse_fine_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/plaq_coarse_fine_gaugeact.Tpo $(DEPDIR)/plaq_coarse_fine_gaugeact.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc' object='plaq_coarse_fine_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o plaq_coarse_fine_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/plaq_coarse_fine_gaugeact.cc'; fi`
 
 gaugebc_aggregate.o: actions/gauge/gaugebcs/gaugebc_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gaugebc_aggregate.o -MD -MP -MF $(DEPDIR)/gaugebc_aggregate.Tpo -c -o gaugebc_aggregate.o `test -f 'actions/gauge/gaugebcs/gaugebc_aggregate.cc' || echo '$(srcdir)/'`actions/gauge/gaugebcs/gaugebc_aggregate.cc
