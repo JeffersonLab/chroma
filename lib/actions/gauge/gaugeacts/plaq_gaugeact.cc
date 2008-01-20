@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.8 2007-03-23 16:01:00 bjoo Exp $
+// $Id: plaq_gaugeact.cc,v 3.9 2008-01-20 17:42:19 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -47,25 +47,25 @@ namespace Chroma
   {
     XMLReader paramtop(xml_in, path);
 
-    try {
+    try 
+    {
+      // Want a multi2d read here, but this is not supported currently in chroma. 
+      // I'll go ahead and hack by reading Nd rows or columns. Yuk, because I
+      // doubt anybody will use this part of the code.
+      coeffs.resize(Nd,Nd);
 
-      //  Read optional anisoParam.
-      if (paramtop.count("AnisoParam") != 0) { 
-	read(paramtop, "AnisoParam", aniso);
+      XMLReader coefftop(paramtop, "coeffs");
+      for(int i=0; i < Nd; ++i)
+      {
+	std::ostringstream os;
+	os << "elem[" << i+1 << "]";
+
+	multi1d<Real> cc;
+	read(coefftop, os.str(), cc);
+	coeffs[i] = cc;
       }
       
-      // Check if there is a coeff on its own 
-      // If yes, then assume coeff = coeff_s = coeff_t 
-      // This is for backward compatibility
-      if ( paramtop.count("coeff") != 0)  {
-	read(paramtop, "./coeff", coeff_s);
-	coeff_t = coeff_s;
-      }
-      else {
-	// Otherwise 
-	read(paramtop, "./coeff_s", coeff_s);
-	read(paramtop, "./coeff_t", coeff_t);
-      }
+//      read(paramtop, "coeffs", coeffs);
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
@@ -82,37 +82,84 @@ namespace Chroma
 
 
   // Internal initializer
-  void
-  PlaqGaugeAct::init()
+  void PlaqGaugeAct::init(const Real& coeff, const AnisoParam_t& aniso)
   {
     START_CODE();
 
-    coeffs.resize(Nd,Nd);
-    coeffs = zero;
+    param.coeffs.resize(Nd,Nd);
+    param.coeffs = zero;
+
+    int t_dir;
+    Real coeff_t = coeff;
+    Real coeff_s = coeff;
+
+    if (aniso.anisoP)
+    {
+      t_dir = aniso.t_dir;
+      coeff_t *= aniso.xi_0;
+      coeff_s /= aniso.xi_0;
+    }
+    else
+    {
+      t_dir = -1;
+    }
 
     for(int mu = 0; mu < Nd; ++mu)
     {
       for(int nu = mu+1; nu < Nd; ++nu) 
       { 
-	if( mu == tDir() || nu == tDir() ) {
-
+	if( mu == t_dir || nu == t_dir ) 
+	{
 	  // Temporal Plaquette in either mu or nu direction
-	  coeffs[mu][nu] = param.coeff_t;
-	  if( anisoP() ) {
-	    coeffs[mu][nu] *= param.aniso.xi_0;
+	  param.coeffs[mu][nu] = coeff_t;
+	}
+	else {
+	  // Spatial Plaquette
+	  param.coeffs[mu][nu] = coeff_s;
+	}
+
+	param.coeffs[nu][mu] = param.coeffs[mu][nu];
+      }
+    }
+    
+    END_CODE();
+  }
+
+
+  // Internal initializer
+  void PlaqGaugeAct::init(const Real& coeff_s, 
+			  const Real& coeff_t, 
+			  const AnisoParam_t& aniso)
+  {
+    START_CODE();
+
+    param.coeffs.resize(Nd,Nd);
+    param.coeffs = zero;
+
+    int t_dir = (aniso.anisoP) ? aniso.t_dir : -1;
+
+    for(int mu = 0; mu < Nd; ++mu)
+    {
+      for(int nu = mu+1; nu < Nd; ++nu) 
+      { 
+	if( mu == t_dir || nu == t_dir ) 
+	{
+	  // Temporal Plaquette in either mu or nu direction
+	  param.coeffs[mu][nu] = coeff_t;
+	  if( aniso.anisoP ) {
+	    param.coeffs[mu][nu] *= aniso.xi_0;
 	  }
 
 	}
 	else {
 	  // Spatial Plaquette
-	  coeffs[mu][nu] = param.coeff_s;
-	  if( anisoP() ) { 
-	    coeffs[mu][nu] /= param.aniso.xi_0;
+	  param.coeffs[mu][nu] = coeff_s;
+	  if( aniso.anisoP ) { 
+	    param.coeffs[mu][nu] /= aniso.xi_0;
 	  }
 	}
 
-
-	coeffs[nu][mu] = coeffs[mu][nu];
+	param.coeffs[nu][mu] = param.coeffs[mu][nu];
       }
     }
     
@@ -134,43 +181,37 @@ namespace Chroma
   {
     START_CODE();
 
-    // This bit of code was taken from  chroma/lib/update/heatbath/u_staple.cc
-    // Supposedly it works.
-
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
     
-    int t_dir   = tDir();
-    bool AnisoP = anisoP();
-    Double xi02 = anisoFactor() * anisoFactor();
-    
     u_mu_staple = zero;
-    for(int nu=0; nu<Nd; nu++) {
+    LatticeColorMatrix tmp1, tmp2;
+    LatticeColorMatrix u_nu_mu;
+
+    for(int nu=0; nu < Nd; ++nu) 
+    {
       if( nu == mu ) continue;
       
-      Real xi02_tmp;
-      if( AnisoP && (mu == t_dir || nu == t_dir) ) {
-	xi02_tmp = xi02;
-      }
-      else {
-	xi02_tmp = 1.0;
-      }
-      
-      // anisotropic lattice, time-like staple
+      u_nu_mu = shift(u[nu],FORWARD,mu);
+
       // +forward staple
-      u_mu_staple[rb[cb]]+=
-	shift(u[nu],FORWARD,mu)*
-	shift(adj(u[mu]),FORWARD,nu)*adj(u[nu])*
-	xi02_tmp;
+      tmp1[rb[cb]] = u_nu_mu * adj(shift(u[mu],FORWARD,nu));
+      tmp2[rb[cb]] = tmp1 * adj(u[nu]);
+
+      u_mu_staple[rb[cb]] += param.coeffs[mu][nu] * tmp2;
+
       // +backward staple
-      u_mu_staple[rb[cb]]+=
-	shift(shift(adj(u[nu]),FORWARD,mu),BACKWARD,nu)*
-	shift(adj(u[mu]),BACKWARD,nu)*
-	shift(u[nu],BACKWARD,nu)*
-	xi02_tmp;
+      tmp1[rb[cb]] = adj(shift(u_nu_mu,BACKWARD,nu)) * adj(shift(u[mu],BACKWARD,nu));
+      tmp2[rb[cb]] = tmp1 * shift(u[nu],BACKWARD,nu);
+
+      u_mu_staple[rb[cb]] += param.coeffs[mu][nu] * tmp2;
     }
-    
+
+    // NOTE: a heatbath code should be responsible for resetting links on
+    // a boundary. The staple is not really the correct place.
+
     END_CODE();
   }
+
 
   //! Compute staple
   /*!
@@ -186,40 +227,28 @@ namespace Chroma
   {
     START_CODE();
 
-
     u_mu_staple = zero;
     if( mu == t_dir ) return; // Short circuit. 
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
 
-    bool AnisoP = anisoP();
-    Double xi02 = anisoFactor() * anisoFactor();
-    
-    
-    for(int nu=0; nu<Nd; nu++) {
-      
-      if( (nu != mu)&&(nu != t_dir) ) {  // nu is spatial
-
-	Real xi02_tmp;
-	if( AnisoP && (mu == t_dir || nu == t_dir) ) {
-	  xi02_tmp = xi02;
-	}
-	else {
-	  xi02_tmp = 1.0;
-	}
-	
+    for(int nu=0; nu<Nd; nu++) 
+    {
+      if( (nu != mu) && (nu != t_dir) ) 
+      {
+	// nu is spatial
 	// anisotropic lattice, time-like staple
 	// +forward staple
 	u_mu_staple[rb[cb]]+=
 	  shift(u[nu],FORWARD,mu)*
 	  shift(adj(u[mu]),FORWARD,nu)*adj(u[nu])*
-	  xi02_tmp;
+	  param.coeffs[mu][nu];
 	// +backward staple
 	u_mu_staple[rb[cb]]+=
 	  shift(shift(adj(u[nu]),FORWARD,mu),BACKWARD,nu)*
 	  shift(adj(u[mu]),BACKWARD,nu)*
 	  shift(u[nu],BACKWARD,nu)*
-	  xi02_tmp;
+	  param.coeffs[mu][nu];
       }
     }
 
@@ -236,8 +265,8 @@ namespace Chroma
    */
   void
   PlaqGaugeAct::stapleTemporal(LatticeColorMatrix& u_mu_staple,
-			      const Handle< GaugeState<P,Q> >& state,
-			      int mu, int cb, int t_dir) const
+			       const Handle< GaugeState<P,Q> >& state,
+			       int mu, int cb, int t_dir) const
   {
     START_CODE();
 
@@ -246,41 +275,29 @@ namespace Chroma
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();
     u_mu_staple = zero;
-
-
-    bool AnisoP = anisoP();
-    Double xi02 = anisoFactor() * anisoFactor();
-
     
-    for(int nu=0; nu<Nd; nu++) {
+    for(int nu=0; nu<Nd; nu++) 
+    {
       bool doit_mu_is_time;
       bool doit_nu_is_time;
 
       doit_mu_is_time = ( mu == t_dir ) && (nu != t_dir); // true for ts plaquettes
       doit_nu_is_time = ( nu == t_dir ) && (mu != t_dir); // true for st plaquettes
 
-      if( doit_mu_is_time || doit_nu_is_time ) {
-
-	Real xi02_tmp;
-	if( AnisoP && (mu == t_dir || nu == t_dir) ) {
-	  xi02_tmp = xi02;
-	}
-	else {
-	  xi02_tmp = 1.0;
-	}
-      
+      if( doit_mu_is_time || doit_nu_is_time ) 
+      {
 	// anisotropic lattice, time-like staple
 	// +forward staple
 	u_mu_staple[rb[cb]]+=
 	  shift(u[nu],FORWARD,mu)*
 	  shift(adj(u[mu]),FORWARD,nu)*adj(u[nu])*
-	  xi02_tmp;
+	  param.coeffs[mu][nu];
 	// +backward staple
 	u_mu_staple[rb[cb]]+=
 	  shift(shift(adj(u[nu]),FORWARD,mu),BACKWARD,nu)*
 	  shift(adj(u[mu]),BACKWARD,nu)*
 	  shift(u[nu],BACKWARD,nu)*
-	  xi02_tmp;
+	  param.coeffs[mu][nu];
       }
     }
 
@@ -314,16 +331,14 @@ namespace Chroma
 
     ds_u = zero;
 
-
     for(int mu = 0; mu < Nd; mu++)
     {
       for(int nu=mu+1; nu < Nd; nu++) 
       {
-
 	for(int cb=0; cb < 2; cb++) 
 	{ 
 	  tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
-	  tmp_0[rb[cb]] *= coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
+	  tmp_0[rb[cb]] *= param.coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
 	  tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
 	  tmp_2[rb[cb]] = u[nu]*tmp_1;
 	  ds_u[nu][rb[cb]] += tmp_2;
@@ -403,15 +418,17 @@ namespace Chroma
 
     ds_u = zero;
     
-    for(int mu = 0; mu < Nd; mu++) {
-      for(int nu=mu+1; nu < Nd; nu++) {
-
+    for(int mu = 0; mu < Nd; mu++) 
+    {
+      for(int nu=mu+1; nu < Nd; nu++) 
+      {
 	// Pick out spatial plaquettes only
-	if( (mu != t_dir) && (nu != t_dir) ) {
-
-	  for(int cb=0; cb < 2; cb++) { 
+	if( (mu != t_dir) && (nu != t_dir) ) 
+	{
+	  for(int cb=0; cb < 2; cb++) 
+	  { 
 	    tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
-	    tmp_0[rb[cb]] *= coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
+	    tmp_0[rb[cb]] *= param.coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
 	    tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
 	    tmp_2[rb[cb]] = u[nu]*tmp_1;
 	    ds_u[nu][rb[cb]] += tmp_2;
@@ -455,15 +472,17 @@ namespace Chroma
 
     ds_u = zero;
 
-    for(int mu = 0; mu < Nd; mu++) {
-      for(int nu=mu+1; nu < Nd; nu++) {
-
+    for(int mu = 0; mu < Nd; mu++) 
+    {
+      for(int nu=mu+1; nu < Nd; nu++) 
+      {
 	// Pick out temporal plaquettes only
-	if( (mu == t_dir) || (nu == t_dir) ) {
-
-	  for(int cb=0; cb < 2; cb++) { 
+	if( (mu == t_dir) || (nu == t_dir) ) 
+	{
+	  for(int cb=0; cb < 2; cb++) 
+	  {
 	    tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
-	    tmp_0[rb[cb]] *= coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
+	    tmp_0[rb[cb]] *= param.coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
 	    tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
 	    tmp_2[rb[cb]] = u[nu]*tmp_1;
 	    ds_u[nu][rb[cb]] += tmp_2;
@@ -485,8 +504,6 @@ namespace Chroma
     getGaugeBC().zero(ds_u);
 
     END_CODE();
-
-
   }
 
 
@@ -525,7 +542,7 @@ namespace Chroma
 	Double tmp = 
 	  sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 
-	S_pg += tmp * Double(coeffs[mu][nu]);
+	S_pg += tmp * Double(param.coeffs[mu][nu]);
       }
     }
 
@@ -536,6 +553,7 @@ namespace Chroma
 
     return S_pg;
   } 
+
 
   //! Compute the spatial part of the action given a time direction
   Double PlaqGaugeAct::spatialS(const Handle< GaugeState<P,Q> >& state, int t_dir) const
@@ -556,11 +574,12 @@ namespace Chroma
 	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
 	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
 	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-	if( (nu != t_dir) && (mu != t_dir) ) {
+	if( (nu != t_dir) && (mu != t_dir) ) 
+	{
 	  Double tmp = 
 	    sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 	  
-	  S_pg += tmp * Double(coeffs[mu][nu]);
+	  S_pg += tmp * Double(param.coeffs[mu][nu]);
 	}
       }
     }
@@ -593,11 +612,12 @@ namespace Chroma
 	/* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
 	/* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
 	/* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-	if( (nu == t_dir) || (mu == t_dir) ) {
+	if( (nu == t_dir) || (mu == t_dir) ) 
+	{
 	  Double tmp = 
 	    sum(real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]))));
 	  
-	  S_pg += tmp * Double(coeffs[mu][nu]);
+	  S_pg += tmp * Double(param.coeffs[mu][nu]);
 	}
       }
     }
