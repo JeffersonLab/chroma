@@ -1,4 +1,4 @@
-// $Id: purgaug.cc,v 3.9 2008-01-16 20:12:28 edwards Exp $
+// $Id: purgaug.cc,v 3.10 2008-01-20 17:46:43 edwards Exp $
 /*! \file
  *  \brief Main code for pure gauge field generation
  */
@@ -385,7 +385,7 @@ namespace Chroma
   //--------------------------------------------------------------------------
   void doWarmUp(XMLWriter& xml_out,
 		multi1d<LatticeColorMatrix>& u,
-		const WilsonGaugeAct& S_g,
+		const LinearGaugeAction& S_g,
 		HBControl& hb_control,
 		const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
 		const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
@@ -435,7 +435,7 @@ namespace Chroma
   //--------------------------------------------------------------------------
   void doProd(XMLWriter& xml_out,
 	      multi1d<LatticeColorMatrix>& u,
-	      const WilsonGaugeAct& S_g,
+	      const LinearGaugeAction& S_g,
 	      HBControl& hb_control, 
 	      const multi1d< Handle< AbsInlineMeasurement > >& default_measurements,
 	      const multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
@@ -503,7 +503,7 @@ namespace Chroma
 
   //--------------------------------------------------------------------------
   void doHB(multi1d<LatticeColorMatrix>& u,
-	    const WilsonGaugeAct& S_g,
+	    const LinearGaugeAction& S_g,
 	    HBControl& hb_control, 
 	    multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
@@ -625,11 +625,11 @@ int main(int argc, char *argv[])
   
 
   // Create the gauge action
-  // This code is limited to solely the Wilson gauge action for the moment
-  // It should not take much to make it more general. The main point is
+  // This code is limited to only rb sets and subsets.
+  // The main point is
   // The number of subsets within the staples, etc. and to get the subsets
   // straight
-  Handle< WilsonGaugeAct > S_g;
+  Handle< LinearGaugeAction > S_g;
   try
   {
     std::istringstream is(hb_control.hbitr_params.hb_gaugeact.gauge_act);
@@ -654,8 +654,7 @@ int main(int argc, char *argv[])
       TheGaugeActFactory::Instance().createObject(gaugeact_string, 
 						  gaugeact_reader, 
 						  "/GaugeAction");
-
-    S_g = dynamic_cast<WilsonGaugeAct*>(gaugeact);
+    S_g = dynamic_cast<LinearGaugeAction*>(gaugeact);
   }
   catch(std::bad_cast) 
   {
