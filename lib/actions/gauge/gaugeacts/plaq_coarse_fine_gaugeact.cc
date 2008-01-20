@@ -1,4 +1,4 @@
-// $Id: plaq_coarse_fine_gaugeact.cc,v 3.2 2008-01-16 19:11:21 edwards Exp $
+// $Id: plaq_coarse_fine_gaugeact.cc,v 3.3 2008-01-20 16:11:43 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action that supports 2x2 fine/coarse style anisotropy
  */
@@ -140,14 +140,14 @@ namespace Chroma
       u_nu_mu = shift(u[nu],FORWARD,mu);
 
       // +forward staple
-      tmp1 = u_nu_mu * adj(shift(u[mu],FORWARD,nu));
-      tmp2 = tmp1 * adj(u[nu]);
+      tmp1[rb[cb]] = u_nu_mu * adj(shift(u[mu],FORWARD,nu));
+      tmp2[rb[cb]] = tmp1 * adj(u[nu]);
 
       u_mu_staple[rb[cb]] += coeffs[mu][nu] * tmp1;
 
       // +backward staple
-      tmp1 = adj(shift(u_nu_mu,BACKWARD,nu)) * adj(shift(u[mu],BACKWARD,nu));
-      tmp2 = tmp1 * shift(u[nu],BACKWARD,nu);
+      tmp1[rb[1-cb]] = adj(shift(u_nu_mu,BACKWARD,nu)) * adj(shift(u[mu],BACKWARD,nu));
+      tmp2[rb[cb]]   = tmp1 * shift(u[nu],BACKWARD,nu);
 
       u_mu_staple[rb[cb]] += coeffs[mu][nu] * tmp2;
     }
