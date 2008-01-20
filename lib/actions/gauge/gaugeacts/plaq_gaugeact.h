@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: plaq_gaugeact.h,v 3.6 2008-01-20 17:42:19 edwards Exp $
+// $Id: plaq_gaugeact.h,v 3.7 2008-01-20 19:47:24 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -36,6 +36,9 @@ namespace Chroma
   
   /*! @ingroup gaugeacts */
   void read(XMLReader& xml, const string& path, PlaqGaugeActParams& param);
+  
+//  /*! @ingroup gaugeacts */
+//  void write(XMLWriter& xml, const string& path, const PlaqGaugeActParams& param);
   
 
   //! Plaquette gauge action

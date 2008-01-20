@@ -1,4 +1,4 @@
-// $Id: plaq_gaugeact.cc,v 3.9 2008-01-20 17:42:19 edwards Exp $
+// $Id: plaq_gaugeact.cc,v 3.10 2008-01-20 19:47:24 edwards Exp $
 /*! \file
  *  \brief Plaquette gauge action
  */
@@ -79,6 +79,15 @@ namespace Chroma
     PlaqGaugeActParams tmp(xml, path);
     p=tmp;
   }
+
+
+// A multi2d xml write doesn't exist at this moment.
+//  void write(XMLWriter& xml, const string& path, const PlaqGaugeActParams& p) 
+//  {
+//    push(xml, path);
+//    write(xml, "coeffs", p.coeffs);
+//    pop(xml);
+//  }
 
 
   // Internal initializer
