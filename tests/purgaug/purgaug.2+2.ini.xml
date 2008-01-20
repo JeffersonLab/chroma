@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<purgaug> 
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
+  </Cfg>
+
+  <MCControl>
+    <RNG>
+      <Seed>	
+        <elem>11</elem>
+        <elem>0 </elem>
+        <elem>0 </elem>
+        <elem>0 </elem>
+      </Seed>
+    </RNG>
+
+    <StartUpdateNum>0</StartUpdateNum>
+    <NWarmUpUpdates>2</NWarmUpUpdates>  
+    <NProductionUpdates>1000</NProductionUpdates>
+    <NUpdatesThisRun>4</NUpdatesThisRun>
+    <SaveInterval>2</SaveInterval>
+    <SavePrefix>dummy_run</SavePrefix>
+    <SaveVolfmt>SINGLEFILE</SaveVolfmt>
+  </MCControl>
+
+  <InlineMeasurements>
+    <elem>
+      <Name>POLYAKOV_LOOP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WILSLP</Name>
+      <Frequency>2</Frequency>
+      <Param>
+        <version>3</version>
+        <kind>7</kind>
+        <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>PERIODIC_GAUGEBC</Name>
+          </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+  </InlineMeasurements>
+
+  <HBItr>
+    <GaugeAction>
+       <Name>WILSON_COARSE_FINE_GAUGEACT</Name>
+       <beta>6.0</beta>
+       <xi>3</xi>
+       <coeff_ff>0.2</coeff_ff>
+       <coeff_cc>0.3</coeff_cc>
+       <coarse_dirs>1 1 0 0</coarse_dirs>
+       <GaugeState>
+         <Name>SIMPLE_GAUGE_STATE</Name>
+         <GaugeBC>
+           <Name>PERIODIC_GAUGEBC</Name>
+         </GaugeBC>
+       </GaugeState>
+    </GaugeAction>
+    <HBParams>
+      <nOver>3</nOver>
+      <NmaxHB>1</NmaxHB>
+    </HBParams>
+    <nrow>4 4 8 8</nrow>
+  </HBItr>
+
+</purgaug>
+
+
