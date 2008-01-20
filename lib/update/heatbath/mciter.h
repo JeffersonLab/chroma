@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mciter.h,v 3.1 2006-04-19 02:28:04 edwards Exp $
+// $Id: mciter.h,v 3.2 2008-01-20 17:45:59 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -30,7 +30,7 @@ namespace Chroma
    */
 
   void mciter(multi1d<LatticeColorMatrix>& u, 
-	      const WilsonGaugeAct& S_g,
+	      const LinearGaugeAction& S_g,
 	      const HBParams& hbp);
 
 }  // end namespace Chroma

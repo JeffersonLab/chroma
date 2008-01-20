@@ -1,4 +1,4 @@
-// $Id: mciter.cc,v 3.1 2006-04-19 02:28:04 edwards Exp $
+// $Id: mciter.cc,v 3.2 2008-01-20 17:45:59 edwards Exp $
 /*! \file
  *  \brief One heatbath interation of updating the gauge field configuration
  */
@@ -29,7 +29,7 @@ namespace Chroma
    */
 
   void mciter(multi1d<LatticeColorMatrix>& u, 
-	      const WilsonGaugeAct& S_g,
+	      const LinearGaugeAction& S_g,
 	      const HBParams& hbp)
   {
     START_CODE();
@@ -38,9 +38,12 @@ namespace Chroma
     int ntrials = 0;
     int nfails = 0;
 
+    const Set& gauge_set = S_g.getSet();
+    const int num_subsets = gauge_set.numSubsets();
+
     for(int iter = 0; iter <= hbp.nOver; ++iter)
     {
-      for(int cb = 0; cb < 2; ++cb)
+      for(int cb = 0; cb < num_subsets; ++cb)
       {
 	for(int mu = 0; mu < Nd; ++mu)
 	{
@@ -60,7 +63,7 @@ namespace Chroma
 	    /* Do an overrelaxation step */
 	    /*# Loop over SU(2) subgroup index */
 	    for(int su2_index = 0; su2_index < Nc*(Nc-1)/2; ++su2_index)
-	      su3over(u[mu], u_mu_staple, su2_index, rb[cb]);
+	      su3over(u[mu], u_mu_staple, su2_index, gauge_set[cb]);
 	  }
 	  else
 	  {
@@ -72,11 +75,11 @@ namespace Chroma
 	      int nfail = 0;
 
 	      su2_hb_update(u[mu], u_mu_staple,
-			    Real((2.0/Nc*S_g.getBeta())/S_g.anisoFactor()),
-			    su2_index, rb[cb],
+			    Real(2.0/Nc),
+			    su2_index, gauge_set[cb],
 			    hbp.nmax());
 
-//	      su3hb(u[mu], u_mu_staple, su2_index, nheat, ntry, nfail, rb[cb]);
+//	      su3hb(u[mu], u_mu_staple, su2_index, nheat, ntry, nfail, gauge_set[cb]);
 	      ntrials += ntry;
 	      nfails += nfail;
 	    }
