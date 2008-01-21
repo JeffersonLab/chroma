@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_dwf.eigcg.out.xml,v 1.2 2008-01-21 19:57:00 edwards Exp $
+; $Id: prec_wilson.2+2.out.xml,v 3.1 2008-01-21 19:57:00 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -55,18 +55,18 @@
       <Param>
         <version>10</version>
         <quarkSpinType>FULL</quarkSpinType>
-        <obsvP>true</obsvP>
+        <obsvP>false</obsvP>
         <numRetries>1</numRetries>
         <FermionAction>
-         <FermAct>DWF</FermAct>
-         <OverMass>1.2</OverMass>
-         <Mass>0.4</Mass>
-         <N5>4</N5>
+         <FermAct>WILSON_COARSE_FINE</FermAct>
+         <Mass>-0.10</Mass>
+         <coarse_dirs>1 1 0 0</coarse_dirs>
+         <gamma_f>3.0</gamma_f>
          <AnisoParam>
            <anisoP>true</anisoP>
            <t_dir>3</t_dir>
            <xi_0>2.464</xi_0>
-           <nu>1.2</nu>
+           <nu>0.95</nu>
          </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
@@ -74,13 +74,9 @@
          </FermionBC>
         </FermionAction>
         <InvertParam>
-          <invType>EIG_CG_INVERTER</invType>
+          <invType>CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
-          <Nmax>10</Nmax>
-          <Neig>3</Neig>
-          <eigen_id>linop_evs</eigen_id>
-          <cleanUpEvecs>false</cleanUpEvecs>
         </InvertParam>
       </Param>
       <NamedObject>
@@ -88,6 +84,19 @@
         <source_id>sh_source_0</source_id>
         <prop_id>sh_prop_0</prop_id>
       </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
     </elem>
 
   </InlineMeasurements>
@@ -115,7 +124,7 @@
       <chroma>3.27.0</chroma>
       <qdp>1.24.6</qdp>
     </code_version>
-    <run_date>13 Jan 08 18:11:53 EST</run_date>
+    <run_date>21 Jan 08 14:51:47 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -175,7 +184,7 @@
             <chroma>3.27.0</chroma>
             <qdp>1.24.6</qdp>
           </code_version>
-          <run_date>13 Jan 08 18:11:53 EST</run_date>
+          <run_date>21 Jan 08 14:51:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -274,7 +283,7 @@
             <chroma>3.27.0</chroma>
             <qdp>1.24.6</qdp>
           </code_version>
-          <run_date>13 Jan 08 18:11:53 EST</run_date>
+          <run_date>21 Jan 08 14:51:47 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -287,16 +296,16 @@
           <Param>
             <version>9</version>
             <quarkSpinType>FULL</quarkSpinType>
-            <obsvP>true</obsvP><FermionAction>
-      <FermAct>DWF</FermAct>
-      <OverMass>1.2</OverMass>
-      <Mass>0.4</Mass>
-      <N5>4</N5>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON_COARSE_FINE</FermAct>
+      <Mass>-0.10</Mass>
+      <coarse_dirs>1 1 0 0</coarse_dirs>
+      <gamma_f>3.0</gamma_f>
       <AnisoParam>
         <anisoP>true</anisoP>
         <t_dir>3</t_dir>
         <xi_0>2.464</xi_0>
-        <nu>1.2</nu>
+        <nu>0.95</nu>
       </AnisoParam>
       <FermionBC>
         <FermBC>SIMPLE_FERMBC</FermBC>
@@ -304,13 +313,9 @@
       </FermionBC>
     </FermionAction>
 <InvertParam>
-      <invType>EIG_CG_INVERTER</invType>
+      <invType>CG_INVERTER</invType>
       <RsdCG>1.0e-8</RsdCG>
       <MaxCG>1000</MaxCG>
-      <Nmax>10</Nmax>
-      <Neig>3</Neig>
-      <eigen_id>linop_evs</eigen_id>
-      <cleanUpEvecs>false</cleanUpEvecs>
     </InvertParam>
 </Param>
           <NamedObject>
@@ -359,7 +364,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>258833513</id>
+      <id>259512707</id>
     </make_source>
 
         </Source_file_info>
@@ -402,4 +407,93 @@
         <Source_correlator>
           <source_corr>6.63399876808731 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
-        <DWF_QuarkProp4>
+        <QuarkProp4>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <n_count>43</n_count>
+            <resid>1.546949e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <n_count>43</n_count>
+            <resid>1.333587e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <n_count>43</n_count>
+            <resid>1.328719e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <n_count>43</n_count>
+            <resid>1.283442e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <n_count>43</n_count>
+            <resid>1.261212e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <n_count>43</n_count>
+            <resid>1.295257e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <n_count>43</n_count>
+            <resid>1.273992e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <n_count>43</n_count>
+            <resid>1.378054e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <n_count>43</n_count>
+            <resid>1.507824e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <n_count>43</n_count>
+            <resid>1.418614e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <n_count>43</n_count>
+            <resid>1.383572e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <n_count>43</n_count>
+            <resid>1.26615e-07</resid>
+          </Qprop>
+        </QuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>516</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.40793643226606 0.0711622891488388 0.0529426765404238 0.0480177234498861 0.0465899988216152 0.048022292235136 0.0529557790788014 0.0711695325101509</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>sh_prop_0</object_id>
+      </qio_write_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>
