@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.123 2008-01-20 17:45:01 edwards Exp $
+# $Id: Makefile.am,v 3.124 2008-01-21 20:40:01 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -119,6 +119,7 @@ nobase_include_HEADERS = \
 	actions/gauge/gaugeacts/wilson_gaugeact.h \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.h \
 	actions/gauge/gaugeacts/temporal_wilson_gaugeact.h \
+	actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.h \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
@@ -371,7 +372,9 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/eoprec_ovdwf_fermact_array_w.h \
 	actions/ferm/fermacts/eoprec_dwf_fermact_base_array_w.h \
 	actions/ferm/fermacts/wilson_fermact_params_w.h \
+	actions/ferm/fermacts/wilson_coarse_fine_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_wilson_fermact_w.h \
+	actions/ferm/fermacts/eoprec_wilson_coarse_fine_fermact_w.h \
 	actions/ferm/fermacts/eoprec_parwilson_fermact_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_nef_fermact_array_w.h \
@@ -877,6 +880,7 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugeacts/wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/temporal_wilson_gaugeact.cc \
+	actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
@@ -1068,7 +1072,9 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_ovlap_contfrac5d_fermact_array_w.cc \
 	actions/ferm/fermacts/eoprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/wilson_fermact_params_w.cc \
+	actions/ferm/fermacts/wilson_coarse_fine_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_wilson_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_wilson_coarse_fine_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
