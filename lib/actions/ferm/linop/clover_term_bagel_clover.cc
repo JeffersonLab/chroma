@@ -1,4 +1,4 @@
-// $Id: clover_term_bagel_clover.cc,v 1.5 2007-06-26 20:42:24 bjoo Exp $
+// $Id: clover_term_bagel_clover.cc,v 1.6 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -134,7 +134,7 @@ namespace Chroma
 
   //! Creation routine
   void BAGELCloverTerm::create(Handle< FermState<T,P,Q> > fs,
-			     const CloverFermActParams& param_)
+			       const CloverFermActParams& param_)
   {
     START_CODE();
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 3.1 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_w_sse.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -8,6 +8,7 @@
 #define __lwldslash_sse_h__
 
 #include "actions/ferm/linop/lwldslash_base_w.h"
+#include "io/aniso_io.h"
 #include "state.h"
 #include "sse_dslash_qdp_packer.h" 
 
@@ -63,12 +64,20 @@ namespace Chroma
     SSEWilsonDslash(Handle< FermState<T,P,Q> > state,
 		    const AnisoParam_t& aniso_);
 
+    //! Full constructor with general coefficients
+    SSEWilsonDslash(Handle< FermState<T,P,Q> > state,
+		    const multi1d<Real>& coeffs_);
+
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > state);
 
     //! Creation routine with anisotropy
     void create(Handle< FermState<T,P,Q> > state, 
 		const AnisoParam_t& aniso_);
+
+    //! Full constructor with general coefficients
+    void create(Handle< FermState<T,P,Q> > state, 
+		const multi1d<Real>& coeffs_);
 
     //! No real need for cleanup here
     ~SSEWilsonDslash();
@@ -91,13 +100,13 @@ namespace Chroma
 
   protected:
     //! Get the anisotropy parameters
-    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
+    const multi1d<Real>& getCoeffs() const {return coeffs;}
 
     //! Init internals
     void init();
 
   private:
-    AnisoParam_t  anisoParam;
+    multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     multi1d<PrimitiveSU3Matrix> packed_gauge;  // fold in anisotropy
     Handle< FermBC<T,P,Q> > fbc;
   };

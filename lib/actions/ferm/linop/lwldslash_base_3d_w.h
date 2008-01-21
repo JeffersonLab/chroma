@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_3d_w.h,v 3.1 2007-12-04 16:04:42 bjoo Exp $
+// $Id: lwldslash_base_3d_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief 3D Wilson Dslash linear operator
  */
@@ -95,7 +95,7 @@ namespace Chroma
 
   protected:
     //! Get the anisotropy parameters
-    virtual const AnisoParam_t& getAnisoParam() const = 0;
+    virtual const multi1d<Real>& getCoeffs() const = 0;
   };
 
 

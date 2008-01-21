@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_array_w.cc,v 3.2 2007-06-05 19:48:32 bjoo Exp $
+// $Id: lwldslash_base_array_w.cc,v 3.3 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -74,21 +74,7 @@ namespace Chroma
 
     ds_u.resize(Nd);
 
-    AnisoParam_t anisoParam = getAnisoParam();
-    multi1d<Real> anisoWeights(Nd);
-    anisoWeights = 1;
-
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-  
-    if (anisoParam.anisoP)
-    {
-      // Set the weights
-      for(int mu=0; mu < Nd; ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  anisoWeights[mu] *= ff;
-      }
-    }
+    const multi1d<Real>& anisoWeights = getCoeffs();
 
     // Carbon copy of the 4D case, so play the same tricks
     for(int mu = 0; mu < Nd; ++mu) {

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_base_array_w.h,v 3.2 2007-02-22 21:11:47 bjoo Exp $
+// $Id: lwldslash_base_array_w.h,v 3.3 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -136,7 +136,7 @@ namespace Chroma
 
   protected:
     //! Get the anisotropy parameters
-    virtual const AnisoParam_t& getAnisoParam() const = 0;
+    virtual const multi1d<Real>& getCoeffs() const = 0;
 
   };
 

@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_sse_w.cc,v 3.3 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_array_sse_w.cc,v 3.4 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -56,23 +56,36 @@ namespace Chroma
   void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
 				    int N5_)
   {
-    AnisoParam_t aniso;
-    create(state, N5_, aniso);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(state, N5_, cf);
   }
 
 
+  //! Creation routine with anisotropy
+  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_,
+				    const AnisoParam_t& anisoParam) 
+  {
+    START_CODE();
+
+    create(state, N5_, makeFermCoeffs(anisoParam));
+
+    END_CODE();
+  }
+
   //! Creation routine
-  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state,
-				    int N5_, const AnisoParam_t& aniso)
+  void SSEWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_,
+				    const multi1d<Real>& coeffs_)
   {
     START_CODE();
 
     N5 = N5_;
-    anisoParam = aniso;
+    coeffs = coeffs_;
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
 
+    // Sanity check
     if (fbc.operator->() == 0)
     {
       QDPIO::cerr << "SSEWilsonDslashArray: error: fbc is null" << endl;
@@ -81,17 +94,11 @@ namespace Chroma
 
     // Temporary copy - not kept
     multi1d<LatticeColorMatrix> u = state->getLinks();
-
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
-    if (anisoParam.anisoP)
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
     {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
+      u[mu] *= coeffs[mu];
     }
 
     // Pack the gauge fields

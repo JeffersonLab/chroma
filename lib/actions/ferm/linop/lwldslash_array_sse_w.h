@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_sse_w.h,v 3.1 2007-10-25 16:10:11 bjoo Exp $
+// $Id: lwldslash_array_sse_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -75,6 +75,11 @@ namespace Chroma
 		int N5_,
 		const AnisoParam_t& aniso_);
 
+    //! Creation routine
+    void create(Handle< FermState<T,P,Q> > state,
+		int N5_,
+		const multi1d<Real>& coeffs_);
+
     //! Expected length of array index
     int size() const {return N5;}
 
@@ -117,10 +122,10 @@ namespace Chroma
     void init();
 
     //! Get the anisotropy parameters
-    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
+    const multi1d<Real>& getCoeffs() const {return coeffs;}
 
   private:
-    AnisoParam_t  anisoParam;
+    multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     multi1d<PrimitiveSU3Matrix> packed_gauge;
     int N5;
     Handle< FermBC<T,P,Q> > fbc;

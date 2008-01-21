@@ -1,17 +1,14 @@
-// $Id: lwldslash_base_w.cc,v 3.3 2007-06-05 19:48:32 bjoo Exp $
+// $Id: lwldslash_base_w.cc,v 3.4 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/lwldslash_base_w.h"
-#include "io/aniso_io.h"
 
 
 namespace Chroma 
 { 
-
-
   //! Take deriv of D
   /*!
    * \param chi     left vector                                 (Read)
@@ -49,84 +46,72 @@ namespace Chroma
 
     ds_u.resize(Nd);
 
-    AnisoParam_t anisoParam = getAnisoParam();
-    multi1d<Real> anisoWeights(Nd);
-    anisoWeights = 1;
+    const multi1d<Real>& anisoWeights = getCoeffs();
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-
-    if (anisoParam.anisoP)
+    for(int mu = 0; mu < Nd; ++mu) 
     {
-      // Set the weights
-      for(int mu=0; mu < Nd; ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  anisoWeights[mu] *= ff;
-      }
-    }
-
-    for(int mu = 0; mu < Nd; ++mu) {
-
       // Break this up to use fewer expressions:
       LatticeFermion temp_ferm1;
       LatticeHalfFermion tmp_h;
 
-      switch (isign) {
-	
+      switch (isign) 
+      {
       case PLUS:
+      {
 	// Undaggered: Minus Projectors
-	{
-
-	  switch(mu) { 
-	  case 0:
-	    tmp_h[rb[1-cb]] = spinProjectDir0Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir0Minus(tmp_h);
-	    break;
-	  case 1:
-	    tmp_h[rb[1-cb]] = spinProjectDir1Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir1Minus(tmp_h);
-	    break;
-	  case 2:
-	    tmp_h[rb[1-cb]] = spinProjectDir2Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir2Minus(tmp_h);
-	    break;
-	  case 3:
-	    tmp_h[rb[1-cb]] = spinProjectDir3Minus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir3Minus(tmp_h);
-	    break;
-	  default:
-	    break;
-	  };
+	switch(mu) 
+	{ 
+	case 0:
+	  tmp_h[rb[1-cb]] = spinProjectDir0Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir0Minus(tmp_h);
+	  break;
+	case 1:
+	  tmp_h[rb[1-cb]] = spinProjectDir1Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir1Minus(tmp_h);
+	  break;
+	case 2:
+	  tmp_h[rb[1-cb]] = spinProjectDir2Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir2Minus(tmp_h);
+	  break;
+	case 3:
+	  tmp_h[rb[1-cb]] = spinProjectDir3Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir3Minus(tmp_h);
+	  break;
+	default:
+	  break;
+	};
 	
-	}
-	break;
+      }
+      break;
 
       case MINUS:
+      {
+	// Daggered: Plus Projectors
+	LatticeHalfFermion tmp_h;
+	switch(mu) 
 	{
-	  // Daggered: Plus Projectors
-	  LatticeHalfFermion tmp_h;
-	  switch(mu) { 
-	  case 0:
-	    tmp_h[rb[1-cb]] = spinProjectDir0Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir0Plus(tmp_h);
-	    break;
-	  case 1:
-	    tmp_h[rb[1-cb]] = spinProjectDir1Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir1Plus(tmp_h);
-	    break;
-	  case 2:
-	    tmp_h[rb[1-cb]] = spinProjectDir2Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir2Plus(tmp_h);
-	    break;
-	  case 3:
-	    tmp_h[rb[1-cb]] = spinProjectDir3Plus(psi);
-	    temp_ferm1[rb[1-cb]] = spinReconstructDir3Plus(tmp_h);
-	    break;
-	  default:
-	    break;
-	  };
-	}
+	case 0:
+	  tmp_h[rb[1-cb]] = spinProjectDir0Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir0Plus(tmp_h);
+	  break;
+	case 1:
+	  tmp_h[rb[1-cb]] = spinProjectDir1Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir1Plus(tmp_h);
+	  break;
+	case 2:
+	  tmp_h[rb[1-cb]] = spinProjectDir2Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir2Plus(tmp_h);
+	  break;
+	case 3:
+	  tmp_h[rb[1-cb]] = spinProjectDir3Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir3Plus(tmp_h);
+	  break;
+	default:
+	  break;
+	};
+      }
       break;
+
       default:
 	QDP_error_exit("unknown case");
       }

@@ -1,4 +1,4 @@
-// $Id: lwldslash_base_3d_w.cc,v 3.2 2007-12-18 21:06:47 bjoo Exp $
+// $Id: lwldslash_base_3d_w.cc,v 3.3 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -53,24 +53,10 @@ namespace Chroma
     ds_u.resize(Nd);
     ds_u[3] = zero;
 
-    AnisoParam_t anisoParam = getAnisoParam();
-    multi1d<Real> anisoWeights(Nd);
-    anisoWeights = 1;
+    const multi1d<Real>& anisoWeights = getCoeffs();
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-
-    if (anisoParam.anisoP)
+    for(int mu = 0; mu < 3; ++mu) 
     {
-      // Set the weights
-      for(int mu=0; mu < Nd; ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  anisoWeights[mu] *= ff;
-      }
-    }
-
-    for(int mu = 0; mu < 3; ++mu) {
-
       // Break this up to use fewer expressions:
       LatticeFermion temp_ferm1;
       LatticeHalfFermion tmp_h;
@@ -80,7 +66,6 @@ namespace Chroma
       case PLUS:
 	// Undaggered: Minus Projectors
 	{
-
 	  switch(mu) { 
 	  case 0:
 	    tmp_h[rb3[1-cb]] = spinProjectDir0Minus(psi);

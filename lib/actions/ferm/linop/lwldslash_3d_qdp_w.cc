@@ -1,4 +1,4 @@
-// $Id: lwldslash_3d_qdp_w.cc,v 3.1 2007-12-04 16:04:42 bjoo Exp $
+// $Id: lwldslash_3d_qdp_w.cc,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -52,7 +52,7 @@ namespace Chroma
   
   //! Full constructor with anisotropy
   QDPWilsonDslash3D::QDPWilsonDslash3D(Handle< FermState<T,P,Q> > state,
-				   const AnisoParam_t& aniso_) 
+				       const AnisoParam_t& aniso_) 
   {
     create(state, aniso_);
   }
@@ -60,15 +60,27 @@ namespace Chroma
   //! Creation routine
   void QDPWilsonDslash3D::create(Handle< FermState<T,P,Q> > state)
   {
-    AnisoParam_t foo;
-    create(state, foo);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(state, cf);
   }
 
   //! Creation routine with anisotropy
   void QDPWilsonDslash3D::create(Handle< FermState<T,P,Q> > state,
-			       const AnisoParam_t& aniso_) 
+				 const AnisoParam_t& anisoParam) 
   {
-    anisoParam = aniso_;
+    START_CODE();
+
+    create(state, makeFermCoeffs(anisoParam));
+
+    END_CODE();
+  }
+
+  //! Full constructor with general coefficients
+  void QDPWilsonDslash3D::create(Handle< FermState<T,P,Q> > state,
+				 const multi1d<Real>& coeffs_)
+  {
+    coeffs = coeffs_;
     fbc = state->getFermBC();
     u   = state->getLinks();
 
@@ -78,19 +90,12 @@ namespace Chroma
       QDPIO::cerr << "WilsonDslash3D: error: fbc is null" << endl;
       QDP_abort(1);
     }
-
-    if (anisoParam.anisoP)
-    {
-      Real ff = anisoParam.nu / anisoParam.xi_0;
   
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
+    {
+      u[mu] *= coeffs[mu];
     }
-
   }
 
 

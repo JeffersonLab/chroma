@@ -1,4 +1,4 @@
-// $Id: eoprec_wilson_linop_w.cc,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_wilson_linop_w.cc,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson linear operator
  */
@@ -10,20 +10,21 @@ namespace Chroma
 { 
   //! Creation routine
   /*!
-   * \param u_ 	  gauge field     	       (Read)
+   * \param fs 	    gauge state     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
    */
   void EvenOddPrecWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
 				      const Real& Mass_)
   {
-    AnisoParam_t anisoParam;
-    create(fs, Mass_, anisoParam);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(fs, Mass_, cf);
   }
 
 
   //! Creation routine with Anisotropy
   /*!
-   * \param u_ 	  gauge field     	       (Read)
+   * \param fs 	    gauge state     	       (Read)
    * \param Mass_   fermion kappa   	       (Read)
    * \param aniso   anisotropy struct   	       (Read)
    */
@@ -33,11 +34,41 @@ namespace Chroma
   {
     START_CODE();
 
-    D.create(fs,anisoParam);
+    create(fs, Mass_, makeFermCoeffs(anisoParam));
 
-    Mass = Mass_;
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-    fact = 1 + (Nd-1)*ff + Mass;
+    END_CODE();
+  }
+
+
+  //! Creation routine with general coefficients
+  /*!
+   * \param fs 	    gauge state     	       (Read)
+   * \param Mass_   fermion kappa   	       (Read)
+   * \param coeffs_ fermion coeffs 	       (Read)
+   */
+  void EvenOddPrecWilsonLinOp::create(Handle< FermState<T,P,Q> > fs,
+				      const Real& Mass_,
+				      const multi1d<Real>& coeffs_)
+  {
+    START_CODE();
+
+    Mass   = Mass_;
+    coeffs = coeffs_;
+
+    if (coeffs.size() != Nd)
+    {
+      QDPIO::cerr << "EvenOddPrecWilsonLinOp::create : coeffs not size Nd" << endl;
+      QDP_abort(1);
+    }
+
+    D.create(fs,coeffs);
+
+    // Fold in the diagonal parts of the laplacian. Here, we insist that
+    // the laplacian has the same scaling as the first deriv. term.
+    fact = Mass;
+    for(int mu=0; mu < Nd; ++mu)
+      fact += coeffs[mu];
+
     invfact = 1/fact;
     
     END_CODE();

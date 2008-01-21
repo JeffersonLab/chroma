@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_w.cc,v 3.5 2007-11-11 19:09:10 kostas Exp $
+// $Id: lwldslash_array_w.cc,v 3.6 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -41,19 +41,31 @@ namespace Chroma
   //! Creation routine
   void QDPWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_)
   {
-    AnisoParam_t aniso;
-    create(state,N5_,aniso);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(state, N5_, cf);
   }
 
 
+  //! Creation routine with anisotropy
+  void QDPWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_,
+				    const AnisoParam_t& anisoParam) 
+  {
+    START_CODE();
+
+    create(state, N5_, makeFermCoeffs(anisoParam));
+
+    END_CODE();
+  }
+
   //! Creation routine
   void QDPWilsonDslashArray::create(Handle< FermState<T,P,Q> > state, int N5_,
-				    const AnisoParam_t& aniso_)
+				    const multi1d<Real>& coeffs_)
   {
     START_CODE();
 
     N5 = N5_;
-    anisoParam = aniso_;
+    coeffs = coeffs_;
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
@@ -67,18 +79,11 @@ namespace Chroma
 
     // Get links
     u = state->getLinks();
-
-    // Fold in anisotropy
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
   
-    if (anisoParam.anisoP)
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
     {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
+      u[mu] *= coeffs[mu];
     }
 
     END_CODE();

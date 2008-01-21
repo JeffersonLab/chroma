@@ -1,4 +1,4 @@
-// $Id: lwldslash_w.cc,v 3.2 2007-11-11 19:09:10 kostas Exp $
+// $Id: lwldslash_w.cc,v 3.3 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -53,40 +53,57 @@ namespace Chroma
     create(state, aniso_);
   }
 
+  //! Full constructor with general coefficients
+  QDPWilsonDslash::QDPWilsonDslash(Handle< FermState<T,P,Q> > state,
+				   const multi1d<Real>& coeffs_)
+  {
+    create(state, coeffs_);
+  }
+
   //! Creation routine
   void QDPWilsonDslash::create(Handle< FermState<T,P,Q> > state)
   {
-    AnisoParam_t foo;
-    create(state, foo);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(state, cf);
   }
 
   //! Creation routine with anisotropy
   void QDPWilsonDslash::create(Handle< FermState<T,P,Q> > state,
-			       const AnisoParam_t& aniso_) 
+			       const AnisoParam_t& anisoParam) 
   {
-    anisoParam = aniso_;
+    START_CODE();
+
+    create(state, makeFermCoeffs(anisoParam));
+
+    END_CODE();
+  }
+
+  //! Full constructor with general coefficients
+  void QDPWilsonDslash::create(Handle< FermState<T,P,Q> > state,
+			       const multi1d<Real>& coeffs_)
+  {
+    // Save a copy of the aniso params original fields and with aniso folded in
+    coeffs = coeffs_;
+
+    // Save a copy of the fermbc
     fbc = state->getFermBC();
-    u   = state->getLinks();
 
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "WilsonDslash: error: fbc is null" << endl;
+      QDPIO::cerr << "QDPWilsonDslash: error: fbc is null" << endl;
       QDP_abort(1);
     }
 
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
+    // Fold in anisotropy
+    u = state->getLinks();
   
-    if (anisoParam.anisoP)
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
     {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
+      u[mu] *= coeffs[mu];
     }
-
   }
 
 

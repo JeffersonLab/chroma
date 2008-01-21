@@ -1,4 +1,4 @@
-// $Id: lwldslash_3d_sse_w.cc,v 3.2 2007-12-18 21:06:47 bjoo Exp $
+// $Id: lwldslash_3d_sse_w.cc,v 3.3 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -43,7 +43,7 @@ namespace Chroma
   
   //! Full constructor with anisotropy
   SSEWilsonDslash3D::SSEWilsonDslash3D(Handle< FermState<T,P,Q> > state,
-				   const AnisoParam_t& aniso_) 
+				       const AnisoParam_t& aniso_) 
   {
     init();
     create(state, aniso_);
@@ -52,18 +52,30 @@ namespace Chroma
   //! Creation routine
   void SSEWilsonDslash3D::create(Handle< FermState<T,P,Q> > state)
   {
-    AnisoParam_t foo;
-    create(state, foo);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(state, cf);
   }
 
   //! Creation routine with anisotropy
   void SSEWilsonDslash3D::create(Handle< FermState<T,P,Q> > state,
-			       const AnisoParam_t& aniso_) 
+				 const AnisoParam_t& anisoParam) 
+  {
+    START_CODE();
+
+    create(state, makeFermCoeffs(anisoParam));
+
+    END_CODE();
+  }
+
+  //! Full constructor with general coefficients
+  void SSEWilsonDslash3D::create(Handle< FermState<T,P,Q> > state,
+				 const multi1d<Real>& coeffs_)
   {
     START_CODE();
 
     // Save a copy of the aniso params original fields and with aniso folded in
-    anisoParam = aniso_;
+    coeffs = coeffs_;
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
@@ -77,24 +89,16 @@ namespace Chroma
 
     // Fold in anisotropy
     multi1d<LatticeColorMatrix> u = state->getLinks();
-
   
-    if (anisoParam.anisoP)
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
     {
-      // Rescale the u fields by the anisotropy
-      Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
+      u[mu] *= coeffs[mu];
     }
 
     // Pack the gauge fields
     packed_gauge.resize( 4 * Layout::sitesOnNode() );
     SSEDslash3D::qdp_pack_gauge_3d(u, packed_gauge);
-  
-
 
     END_CODE();
   }

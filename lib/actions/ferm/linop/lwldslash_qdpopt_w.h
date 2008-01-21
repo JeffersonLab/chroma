@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_qdpopt_w.h,v 3.1 2007-02-06 15:20:56 bjoo Exp $
+// $Id: lwldslash_qdpopt_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -60,7 +60,11 @@ namespace Chroma
 
     //! Full constructor with anisotropy
     QDPWilsonDslashOpt(Handle< FermState<T,P,Q> > state,
-		    const AnisoParam_t& aniso_);
+		       const AnisoParam_t& aniso_);
+
+    //! Full constructor with general coefficients
+    QDPWilsonDslashOpt(Handle< FermState<T,P,Q> > state,
+		       const multi1d<Real>& coeffs_);
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > state);
@@ -68,6 +72,10 @@ namespace Chroma
     //! Creation routine with anisotropy
     void create(Handle< FermState<T,P,Q> > state,
 		const AnisoParam_t& aniso_);
+
+    //! Full constructor with general coefficients
+    void create(Handle< FermState<T,P,Q> > state, 
+		const multi1d<Real>& coeffs_);
 
     //! No real need for cleanup here
     ~QDPWilsonDslashOpt() {}
@@ -89,10 +97,10 @@ namespace Chroma
 
   protected:
     //! Get the anisotropy parameters
-    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
+    const multi1d<Real>& getCoeffs() const {return coeffs;}
 
   private:
-    AnisoParam_t                  anisoParam;
+    multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     Handle< FermBC<T,P,Q> >  fbc;
     multi1d<LatticeColorMatrix>   u;
   };

@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_pab.cc,v 3.7 2007-03-08 14:18:07 bjoo Exp $
+// $Id: lwldslash_w_pab.cc,v 3.8 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -31,20 +31,43 @@ namespace Chroma
     create(state, aniso_);
   }
 
+  //! Full constructor with general coefficients
+  PABWilsonDslash::PABWilsonDslash(Handle< FermState<T,P,Q> > state,
+				   const multi1d<Real>& coeffs_)
+  {
+    create(state, coeffs_);
+  }
+
+
   //! Creation routine
   void PABWilsonDslash::create(Handle< FermState<T,P,Q> > state)
   {
-    AnisoParam_t foo;
-    create(state, foo);
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+    create(state, cf);
   }
 
   //! Creation routine with anisotropy
   void PABWilsonDslash::create(Handle< FermState<T,P,Q> > state,
-			       const AnisoParam_t& aniso_) 
+			       const AnisoParam_t& anisoParam) 
   {
     START_CODE();
 
-    anisoParam = aniso_;
+    create(state, makeFermCoeffs(anisoParam));
+
+    END_CODE();
+  }
+
+  //! Full constructor with general coefficients
+  void PABWilsonDslash::create(Handle< FermState<T,P,Q> > state,
+			       const multi1d<Real>& coeffs_)
+  {
+    START_CODE();
+
+    // Save a copy of the aniso params original fields and with aniso folded in
+    coeffs = coeffs_;
+
+    // Save a copy of the fermbc
     fbc = state->getFermBC();
 
     // Sanity check
@@ -56,16 +79,11 @@ namespace Chroma
 
     // Fold in anisotropy
     multi1d<LatticeColorMatrix> u = state->getLinks();
-    Real ff = where(anisoParam.anisoP, anisoParam.nu / anisoParam.xi_0, Real(1));
-  
-    if (anisoParam.anisoP)
+
+    // Rescale the u fields by the anisotropy
+    for(int mu=0; mu < u.size(); ++mu)
     {
-      // Rescale the u fields by the anisotropy
-      for(int mu=0; mu < u.size(); ++mu)
-      {
-	if (mu != anisoParam.t_dir)
-	  u[mu] *= ff;
-      }
+      u[mu] *= coeffs[mu];
     }
 
     // Rearrange the gauge

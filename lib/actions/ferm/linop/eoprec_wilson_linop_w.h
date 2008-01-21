@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: eoprec_wilson_linop_w.h,v 3.1 2006-10-19 16:01:30 edwards Exp $
+// $Id: eoprec_wilson_linop_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion linear operator
  */
 
-#ifndef __prec_wilson_linop_w_h__
-#define __prec_wilson_linop_w_h__
+#ifndef __eoprec_wilson_linop_w_h__
+#define __eoprec_wilson_linop_w_h__
 
 #include "eoprec_constdet_linop.h"
 #include "actions/ferm/linop/dslash_w.h"
@@ -48,6 +48,12 @@ namespace Chroma
 			   const AnisoParam_t& aniso)
     {create(fs,Mass_,aniso);}
 
+    //! Full constructor with array of coefficients
+    EvenOddPrecWilsonLinOp(Handle< FermState<T,P,Q> > fs,
+			   const Real& Mass_,
+			   const multi1d<Real>& coeffs_)
+    {create(fs,Mass_,coeffs_);}
+
     //! Destructor is automatic
     ~EvenOddPrecWilsonLinOp() {}
 
@@ -62,6 +68,11 @@ namespace Chroma
     void create(Handle< FermState<T,P,Q> > fs,
 		const Real& Mass_,
 		const AnisoParam_t& aniso);
+
+    //! Creation routine with general coefficients
+    void create(Handle< FermState<T,P,Q> > fs,
+		const Real& Mass_,
+		const multi1d<Real>& coeffs_);
 
     //! Apply the the even-even block onto a source vector
     inline
@@ -137,11 +148,13 @@ namespace Chroma
     unsigned long nFlops() const;
 
   private:
-    Real fact;  // tmp holding  Nd+Mass
-    Real invfact;  // tmp holding  1/(Nd+Mass)
+    Real          Mass;    /*!< yep, the mass */
+    multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
 
-    Real Mass;
-    WilsonDslash D;
+    Real          fact;    /*<! tmp holding  Nd+Mass */
+    Real          invfact; /*!< tmp holding  1/(Nd+Mass) */
+
+    WilsonDslash  D;       /*!< Wilson dslash term */
   };
 
 } // End Namespace Chroma

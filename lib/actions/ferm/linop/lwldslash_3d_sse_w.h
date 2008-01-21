@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_3d_sse_w.h,v 3.1 2007-12-04 16:04:42 bjoo Exp $
+// $Id: lwldslash_3d_sse_w.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -73,6 +73,10 @@ namespace Chroma
     void create(Handle< FermState<T,P,Q> > state, 
 		const AnisoParam_t& aniso_);
 
+    //! Full constructor with general coefficients
+    void create(Handle< FermState<T,P,Q> > state, 
+		const multi1d<Real>& coeffs_);
+
     //! No real need for cleanup here
     ~SSEWilsonDslash3D();
 
@@ -94,13 +98,13 @@ namespace Chroma
 
   protected:
     //! Get the anisotropy parameters
-    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
+    const multi1d<Real>& getCoeffs() const {return coeffs;}
 
     //! Init internals
     void init();
 
   private:
-    AnisoParam_t  anisoParam;
+    multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     multi1d<SSEDslash3D::PrimitiveSU3Matrix> packed_gauge;  // fold in anisotropy
     Handle< FermBC<T,P,Q> > fbc;
   };

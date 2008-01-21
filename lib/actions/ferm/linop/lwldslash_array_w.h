@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_array_w.h,v 3.0 2006-04-03 04:58:50 edwards Exp $
+// $Id: lwldslash_array_w.h,v 3.1 2008-01-21 20:18:50 edwards Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator over arrays
  */
@@ -74,6 +74,11 @@ namespace Chroma
 		int N5_,
 		const AnisoParam_t& aniso_);
 
+    //! Creation routine
+    void create(Handle< FermState<T,P,Q> > state,
+		int N5_,
+		const multi1d<Real>& coeffs_);
+
     //! Expected length of array index
     int size() const {return N5;}
 
@@ -113,11 +118,11 @@ namespace Chroma
 
   protected:
     //! Get the anisotropy parameters
-    const AnisoParam_t& getAnisoParam() const {return anisoParam;}
+    const multi1d<Real>& getCoeffs() const {return coeffs;}
 
   private:
     int N5;
-    AnisoParam_t  anisoParam;
+    multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     multi1d<LatticeColorMatrix> u;  // fold in anisotropy
     Handle< FermBC<T,P,Q> > fbc;
   };
