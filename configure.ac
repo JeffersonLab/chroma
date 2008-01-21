@@ -111,7 +111,7 @@ AC_ARG_ENABLE(opt_cfz_linop,
 
 AC_ARG_ENABLE(testcase-runner,
   AC_HELP_STRING([--enable-testcase-runner=script],
-    [Use <script> to run testcases: trivial|mpirun_rsh|cobalt|7n_mpirun_rsh]),
+    [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh]),
     [chroma_testcase_runner=${enable_testcase_runner}],
     [chroma_testcase_runner="trivial_runner.sh"]
 )
@@ -557,9 +557,9 @@ trivial)
 	AC_MSG_NOTICE([Using Trivial Testcase Runner: trivial_runner.sh])
 	chroma_testcase_runner_script="trivial_runner.sh"
 	;;
-mpirun_rsh)
-	AC_MSG_NOTICE([Using mpirun_rsh Testcase Runner: mpirun_rsh_runner.sh])
-	chroma_testcase_runner_script="mpirun_rsh_runner.sh"
+6n_mpirun_rsh)
+	AC_MSG_NOTICE([Using 6n_mpirun_rsh Testcase Runner: 6n_mpirun_rsh_runner.sh])
+	chroma_testcase_runner_script="6n_mpirun_rsh_runner.sh"
 	;;
 7n_mpirun_rsh)
 	AC_MSG_NOTICE([Using 7n_mpirun_rsh Testcase Runner: 7n_mpirun_rsh_runner.sh])
@@ -627,7 +627,7 @@ dnl them in the build directory. We can even potentially install them
 dnl if we want later. Also this allows us to configure complicated runners 
 dnl later with extre --enable options etc
 AC_CONFIG_FILES(scripts/test_runners/trivial_runner.sh)
-AC_CONFIG_FILES(scripts/test_runners/mpirun_rsh_runner.sh)
+AC_CONFIG_FILES(scripts/test_runners/6n_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/7n_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/cobalt_runner.sh)
 
