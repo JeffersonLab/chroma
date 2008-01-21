@@ -34,9 +34,9 @@ subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma-config.in \
 	$(top_srcdir)/configure \
+	$(top_srcdir)/scripts/test_runners/6n_mpirun_rsh_runner.sh.in \
 	$(top_srcdir)/scripts/test_runners/7n_mpirun_rsh_runner.sh.in \
 	$(top_srcdir)/scripts/test_runners/cobalt_runner.sh.in \
-	$(top_srcdir)/scripts/test_runners/mpirun_rsh_runner.sh.in \
 	$(top_srcdir)/scripts/test_runners/trivial_runner.sh.in \
 	./config/config.guess ./config/config.sub ./config/depcomp \
 	./config/install-sh ./config/missing ./config/mkinstalldirs \
@@ -52,7 +52,7 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/./config/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES = chroma-config \
 	scripts/test_runners/trivial_runner.sh \
-	scripts/test_runners/mpirun_rsh_runner.sh \
+	scripts/test_runners/6n_mpirun_rsh_runner.sh \
 	scripts/test_runners/7n_mpirun_rsh_runner.sh \
 	scripts/test_runners/cobalt_runner.sh
 am__installdirs = "$(DESTDIR)$(bindir)"
@@ -265,7 +265,7 @@ chroma-config: $(top_builddir)/config.status $(srcdir)/chroma-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 scripts/test_runners/trivial_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/trivial_runner.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-scripts/test_runners/mpirun_rsh_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/mpirun_rsh_runner.sh.in
+scripts/test_runners/6n_mpirun_rsh_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/6n_mpirun_rsh_runner.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 scripts/test_runners/7n_mpirun_rsh_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/7n_mpirun_rsh_runner.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
