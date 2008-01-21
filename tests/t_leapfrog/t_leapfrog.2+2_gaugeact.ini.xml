@@ -5,11 +5,12 @@
       <elem>
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
-          <Name>PLAQ_COARSE_FINE_GAUGEACT</Name>
-          <coarseP>1 1 0 0</coarseP>
-          <coeff_ff>2.0</coeff_ff>
-          <coeff_cf>2.0</coeff_cf>
-          <coeff_cc>3.0</coeff_cc>
+          <Name>WILSON_COARSE_FINE_GAUGEACT</Name>
+          <coarse_dirs>1 1 0 0</coarse_dirs>
+          <beta>6.0</beta>
+          <xi>3.0</xi>
+          <coeff_ff>0.1</coeff_ff>
+          <coeff_cc>0.2</coeff_cc>
           <GaugeState>
             <Name>SIMPLE_GAUGE_STATE</Name>
             <GaugeBC>

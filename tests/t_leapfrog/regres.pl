@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.18 2008-01-16 20:05:07 edwards Exp $
+#  $Id: regres.pl,v 3.19 2008-01-21 21:45:11 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -318,11 +318,9 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
-	 input       => "$test_dir/t_leapfrog/t_leapfrog.plaq_cf_gaugeact.ini.xml",
-	 log         => "t_leapfrog.plaq_cf_gaugeact.candidate.xml",
-	 metric      => "$test_dir/t_leapfrog/t_leapfrog.plaq_cf_gaugeact.metric.xml" ,
-	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.plaq_cf_gaugeact.log.xml" ,
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.2+2_gaugeact.ini.xml",
+	 log         => "t_leapfrog.2+2_gaugeact.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.2+2_gaugeact.metric.xml" ,
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.2+2_gaugeact.log.xml" ,
      }
-
-
      );
