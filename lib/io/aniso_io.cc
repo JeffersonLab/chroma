@@ -1,4 +1,4 @@
-// $Id: aniso_io.cc,v 3.1 2006-04-19 02:26:34 edwards Exp $
+// $Id: aniso_io.cc,v 3.2 2008-01-21 20:41:23 edwards Exp $
 /*! \file
  *  \brief Anisotropy parameters
  */
@@ -17,6 +17,7 @@ namespace Chroma
     nu     = 1;
   }
   
+
   //! Read a anisotropy param struct
   void read(XMLReader& xml, const string& path, AnisoParam_t& param)
   {
@@ -58,5 +59,27 @@ namespace Chroma
 
     pop(xml);
   }
+
+
+  // Make fermion coefficients
+  multi1d<Real> makeFermCoeffs(const AnisoParam_t& aniso)
+  {
+    multi1d<Real> cf(Nd);
+    cf = 1.0;
+
+    if (aniso.anisoP)
+    {
+      for(int mu=0; mu < cf.size(); ++mu)
+      {
+	if (mu != aniso.t_dir)
+	{
+	  cf[mu] = aniso.nu / aniso.xi_0;
+	}
+      }
+    }
+
+    return cf;
+  }
+
 
 }  // end namespace Chroma
