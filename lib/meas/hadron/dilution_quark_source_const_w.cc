@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.9 2008-01-19 02:10:20 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.10 2008-01-21 20:29:02 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -39,7 +39,7 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "dilution_files", input.dilution_files);
+      read(inputtop, "DilutionFiles", input.dilution_files);
     }
 
     //Read Quark timeslice files 
@@ -47,7 +47,7 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "timeslice_files", input.timeslice_files);
+      read(inputtop, "TimeSliceFiles", input.timeslice_files);
     }
 
 
@@ -154,31 +154,51 @@ namespace Chroma
 	    XMLReader  rdr_b(xml_b);
 
 			
-			read(rdr_a, "ran_seed" , seedA);
-			read(rdr_b, "ran_seed" , seedB);
+			read(rdr_a, "/Source/ran_seed" , seedA);
+			read(rdr_b, "/Source/ran_seed" , seedB);
 
 			val |= toBool(seedA != seedB);
-
+			if (val) 
+			{
+				QDPIO::cerr<< "random seeds are not the same." <<endl;
+			}
 			
 			//Check Spatial mask and spatial mask size
 			
-			multi1d<int> mask_sizeA, mask_sizeB, maskA, maskB;
+			multi1d<int> mask_sizeA, mask_sizeB, cmaskA, cmaskB, smaskA, smaskB;
+			multi1d< multi1d<int> > maskA, maskB;
 
-			read(rdr_a, "/spatial_mask_size" , mask_sizeA);
-			read(rdr_b, "/spatial_mask_size" , mask_sizeB);
+			read(rdr_a, "/Source/spatial_mask_size" , mask_sizeA);
+			read(rdr_b, "/Source/spatial_mask_size" , mask_sizeB);
 			val |= toBool(mask_sizeA != mask_sizeB);
+			if (val)
+			{
+				QDPIO::cerr<< "spatial mask sizes are not the same." <<endl;
+			}
 
-			read(rdr_a, "/spatial_mask" , maskA);
-			read(rdr_b, "/spatial_mask" , maskB);
+			read(rdr_a, "/Source/spatial_mask" , maskA);
+			read(rdr_b, "/Source/spatial_mask" , maskB);
 			val |= toBool(maskA != maskB);
+			if (val)
+			{
+				QDPIO::cerr<< "spatial masks are not the same." <<endl;
+			}
 
-			read(rdr_a, "/color_mask" , maskA);
-			read(rdr_b, "/color_mask" , maskB);
+			read(rdr_a, "/Source/color_mask" , cmaskA);
+			read(rdr_b, "/Source/color_mask" , cmaskB);
 			val |= toBool(maskA != maskB);
+			if (val)
+			{
+				QDPIO::cerr<< "color masks are not the same." <<endl;
+			}
 
-			read(rdr_a, "/spin_mask" , maskA);
-			read(rdr_b, "/spin_mask" , maskB);
+			read(rdr_a, "/Source/spin_mask" , smaskA);
+			read(rdr_b, "/Source/spin_mask" , smaskB);
 			val |= toBool(maskA != maskB);
+			if (val)
+			{
+				QDPIO::cerr<< "spin masks are not the same." <<endl;
+			}
 
 			return val;
 
@@ -204,6 +224,7 @@ namespace Chroma
       {
 
 				bool initq = false;
+				float kappa; 
 
 				QDPIO::cout << "Attempt to read solutions " << endl;
 		
@@ -212,6 +233,7 @@ namespace Chroma
 				QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << endl;
 
 				
+
 				for (int t0 = 0 ; t0 < quark.time_slices.size() ; ++t0 )
 				{
 					quark.time_slices[t0].dilutions.resize(
@@ -254,10 +276,31 @@ namespace Chroma
 	    				quark.decay_dir = 
 								quark.time_slices[t0].dilutions[dil].source_header.j_decay;
 
+							//Test that kappa is the same for all dilutions of this
+							//quark
+	    				std::istringstream  xml_k(
+									quark.time_slices[t0].dilutions[dil].prop_header.fermact.xml);
+							XMLReader  proptop(xml_k);
+							
+							read(proptop, "/FermionAction/Kappa", kappa);
 	      			initq = true;
 	    			}
 
-	   
+						float kappa2;
+	    			std::istringstream  xml_k2(
+								quark.time_slices[t0].dilutions[dil].prop_header.fermact.xml);
+						XMLReader  proptop2(xml_k2);
+							
+						read(proptop2, "/FermionAction/Kappa", kappa2);
+						
+						if (kappa != kappa2)
+						{
+							QDPIO::cerr << "Kappa is not the same for all dilutions: t0=" <<
+								t0 << " dil= "<< dil << " kappa2 = "<< kappa2 << endl;
+								
+	   					QDP_abort(1);
+						}
+
 						//Test that t0 is the same for all dilutions on this timeslice
 						//grab the first t0 to prime the process
 					

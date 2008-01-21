@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.12 2008-01-19 02:10:21 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.13 2008-01-21 20:29:02 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -583,8 +583,7 @@ namespace Chroma
 					snoop.reset();
 					snoop.start();
 
-					LatticeColorVector vec;
-					vec = peekSpin(smrd_q, key.spin);
+					LatticeColorVector vec = peekSpin(smrd_q, key.spin);
 
 					if (key.displacement > 0)
 					{
@@ -604,14 +603,13 @@ namespace Chroma
 					QDPIO::cout << "Displaced Quarks: Spin = "<<key.spin<<" Disp = "
 						<< key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
 
+					disp_q.vec.resize(Nc);
 
 					for(int i = 0 ; i < Nc ; ++i ) 
 					{
 						disp_q.vec[i] = peekColor(vec, i);
 					}
-
-					// Insert
-					disp_quark_map.insert(std::make_pair(key, disp_q));
+					
 				} // if find in map
 
 				// The key now must exist in the map, so return the vector
@@ -627,8 +625,9 @@ namespace Chroma
 		void makeDiquark( multi1d<LatticeComplex> & diquark, const multi1d<LatticeComplex> & q0,
 				const multi1d<LatticeComplex> & q1, const Subset & subset )
 		{
-			
-			//The signs for the diquark are taken from 
+		
+
+			//The signs for the diquark are taken from
 			//the colorContract function in qdp_primcolorvec.h
 			diquark[0][subset] =  q0[0]*q1[1] - q0[1]*q1[0];
 			diquark[1][subset] =  q0[1]*q1[2] - q0[2]*q1[1];
@@ -641,7 +640,7 @@ namespace Chroma
 		void makeColorSinglet (LatticeComplex & singlet, const multi1d<LatticeComplex> & diquark, 
 				const multi1d<LatticeComplex> & q2, const Subset & subset)
 		{
-			
+		
 			singlet[subset] = diquark[0] * q2[2];
 			singlet[subset] += diquark[1] * q2[0];  
 			singlet[subset] += diquark[2] * q2[1];  
@@ -909,7 +908,7 @@ namespace Chroma
 
 	  			std::istringstream  xml_d(dil_xml.xml);
 	  			XMLReader  diltop(xml_d);
-	  			QDPIO::cout << "Dilution type = XX" << dil_xml.id <<"XX"<< endl;
+	  			QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
 	
 	  			diluted_quarks[n] = TheFermDilutionSchemeFactory::Instance().createObject(
 	    			dil_xml.id, diltop, dil_xml.path);
@@ -1070,8 +1069,8 @@ namespace Chroma
       Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
       try
       {
-				QDPIO::cout << "Smear all the quark solutions up front" << endl;
-
+				QDPIO::cout << "Create sink smearing object" << endl;
+				
 				std::istringstream  xml_s(params.param.sink_quark_smearing.xml);
 				XMLReader  smeartop(xml_s);
 	
@@ -1112,23 +1111,44 @@ namespace Chroma
 				QDP_abort(1);
       }
 
-      //If 2 identical quarks, different one must be in the third position
-      if ( ( pstring[0] == pstring[2] ) && ( pstring[1] != pstring[2] ) )
+      //If 2 identical quarks, different one must be in the fisrt position
+      if (  ( (pstring[0] == pstring[2]) && (pstring[1] != pstring[2]) ) ||
+				( (pstring[0] == pstring[1]) && (pstring[1] != pstring[2]) ) )
       {
-				QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries."
-					<< endl;
+				QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries.: "
+					<< pstring << endl;
 				QDP_abort(1);
       }
 			
-      if ( pstring[1] == pstring[2] )
+			
+			//Check that the kappas of the supposed identical quarks are the same.
+
+      if ( (pstring[0] != pstring[1]) && (pstring[1] == pstring[2]) )
       {
 				num_orderings = 2;
-      }
+      
+				if ( (diluted_quarks[0]->getKappa() == diluted_quarks[1]->getKappa()) ||
+					(diluted_quarks[1]->getKappa() != diluted_quarks[2]->getKappa()) )
+				{
+					QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
+						<< endl;
+					QDP_abort(1);
+				}
+			}
 			
       if  (pstring[0] == pstring[2]) 
       {
 				num_orderings = 6;
-      }
+      
+				if ( (diluted_quarks[0]->getKappa() != diluted_quarks[1]->getKappa()) ||
+						(diluted_quarks[0]->getKappa() != diluted_quarks[2]->getKappa()) )
+				{
+					
+					QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
+						<< endl;
+					QDP_abort(1);
+				}
+			}
 					
       multi1d< multi1d<int> >  perms(num_orderings);
       {
@@ -1261,7 +1281,7 @@ namespace Chroma
 										
 										//Form the di-quark to save on recalculating 
 										multi1d<LatticeComplex> diquark(Nc);
-										
+									
 										const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDispSource(n0, 
 												keySmearedDispColorVector[0]); 
 
@@ -1269,7 +1289,8 @@ namespace Chroma
 												keySmearedDispColorVector[1]);
 
 										//For the source, restrict this operation to a subset
-										makeDiquark( diquark, q0 , q1, phases.getSet()[t0] ); 
+										makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
+
 
 									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
 									{
@@ -1285,11 +1306,13 @@ namespace Chroma
 										const multi1d<LatticeComplex> &q2 = smrd_disp_srcs.getDispSource(n2, 
 												keySmearedDispColorVector[2]);
 
-										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[t0] );
+										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
+												participating_timeslices[t0] ] );
 
 										// Slow fourier-transform
 										// We can restrict what the FT routine requires to a subset.
-										multi2d<DComplex> c_sum(phases.sft(c_oper, t0));
+										multi2d<DComplex> c_sum(phases.sft(c_oper, 
+													participating_timeslices[t0] ));
 
 										// Unpack into separate momentum and correlator
 										cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
@@ -1300,7 +1323,8 @@ namespace Chroma
 
 											cop.dilutions(i,j,k).mom_projs[mom_num].op.resize(1);
 
-											cop.dilutions(i,j,k).mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ t0 ];
+											cop.dilutions(i,j,k).mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ 
+												participating_timeslices[t0] ];
 										}
 
 									} // end for k
@@ -1533,8 +1557,6 @@ namespace Chroma
 
 					QDPIO::cout << "Sink Operator writing: operator = " << l
 						<< "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
-
-					pop(xml_out); // Operator 
 
 				} // end for l (operator )
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.9 2008-01-19 02:10:21 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.10 2008-01-21 20:29:02 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -111,7 +111,21 @@ namespace Chroma
       //! The number of dilution timeslices included  
       int getNumTimeSlices() const {return quark.time_slices.size();}
 
-      //! Return the diluted source vector
+      //! The kappa parameter in the wilson action 
+      float getKappa() const 
+			{
+				float kappa;
+				//Assume the kappa is the same for all dilutions
+				std::istringstream  xml_k(
+								quark.time_slices[0].dilutions[0].prop_header.fermact.xml);
+				
+				XMLReader  proptop(xml_k);
+				read(proptop, "/FermionAction/Kappa", kappa);
+
+				return kappa;
+			}
+      
+			//! Return the diluted source vector
       LatticeFermion dilutedSource(int t0, int dil) const;
     
       //! Return the solution vector corresponding to the diluted source
@@ -127,7 +141,7 @@ namespace Chroma
 		private:
 			Params params;
 			QuarkSourceSolutions_t quark;
-    };
+		};
     
   } // namespace DilutionQuarkSourceConstEnv
 

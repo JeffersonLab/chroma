@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.3 2008-01-18 16:43:13 jbulava Exp $
+// $Id: dilution_scheme.h,v 1.4 2008-01-21 20:29:02 jbulava Exp $
 /*! \file
  *  \brief Dilution Schemes
  */
@@ -38,6 +38,8 @@ namespace Chroma
 		virtual int getDilSize(int t0) const = 0 ;
 
 		virtual int getNumTimeSlices() const = 0;
+	
+		virtual float getKappa() const = 0;
 
     //! Return the diluted source vector
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? PROBABLY NO */
