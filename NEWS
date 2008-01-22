@@ -1,3 +1,9 @@
+01/21/2007 -- Robert Edwards
+	Version 3.28.0 - Overhauled plaq_gaugeact and lwldslash classes to now
+        use a general form of anistropy coeffients - on all plaqs or links. Now
+        have support for 2+2 anisotropy. New time-prec. ILU Clover hmc. New NPR
+        code. New HISQ code. Some new measurements for hadron_contract for deltas.
+
 11/12/2007 -- Robert Edwards
 	Version 3.27.0 - First 3d SSE dslash. New SLIC-like and SLRC fermion actions.
         Some new tasks. Working Eigenvalue accelerated CG code. Changed prop readers
