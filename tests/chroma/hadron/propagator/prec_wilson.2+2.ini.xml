@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_wilson.2+2.ini.xml,v 3.1 2008-01-21 19:57:00 edwards Exp $
+; $Id: prec_wilson.2+2.ini.xml,v 3.2 2008-01-22 16:43:28 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -59,12 +59,6 @@
          <Mass>-0.10</Mass>
          <coarse_dirs>1 1 0 0</coarse_dirs>
          <gamma_f>3.0</gamma_f>
-         <AnisoParam>
-           <anisoP>true</anisoP>
-           <t_dir>3</t_dir>
-           <xi_0>2.464</xi_0>
-           <nu>0.95</nu>
-         </AnisoParam>
          <FermionBC>
            <FermBC>SIMPLE_FERMBC</FermBC>
            <boundary>1 1 1 -1</boundary>
