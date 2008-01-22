@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.13 2008-01-21 20:29:02 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.14 2008-01-22 21:23:01 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -36,7 +36,8 @@ namespace Chroma
   { 
     //! Number of quarks to be used in this construction
     const int N_quarks = 3;
-
+	
+	
     //
     // The spin basis matrix to goto Dirac
     //
@@ -484,7 +485,7 @@ namespace Chroma
 				snoop.reset();
 				snoop.start();
 	
-				smrd_q.quark = diluted_quarks[qnum]->dilutedSource(key.t0, key.dil);
+				smrd_q.quark = diluted_quarks[qnum]->dilutedSolution(key.t0, key.dil);
 
 				(*sinkQuarkSmearing)(smrd_q.quark, u);
 
@@ -583,7 +584,8 @@ namespace Chroma
 					snoop.reset();
 					snoop.start();
 
-					LatticeColorVector vec = peekSpin(smrd_q, key.spin);
+					//Chroma uses a zero-based spin convention
+					LatticeColorVector vec = peekSpin(smrd_q,  key.spin - 1);
 
 					if (key.displacement > 0)
 					{
@@ -1025,6 +1027,17 @@ namespace Chroma
 			
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
+			
+		
+			
+		//Used for testing purposes 	
+			multi1d<int> orig(4);
+			for (int ind = 0 ; ind < 4 ; ++ind)
+			{
+				orig[ind] = 0;
+			}
+
+
 
       //
       // Read operator coefficients
@@ -1287,6 +1300,14 @@ namespace Chroma
 
 										const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDispSource(n1, 
 												keySmearedDispColorVector[1]);
+	
+										/*QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
+											<< endl; 
+
+										QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
+											<< endl; 
+
+										*/
 
 										//For the source, restrict this operation to a subset
 										makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
@@ -1306,9 +1327,15 @@ namespace Chroma
 										const multi1d<LatticeComplex> &q2 = smrd_disp_srcs.getDispSource(n2, 
 												keySmearedDispColorVector[2]);
 
+										/*QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
+											<< endl; 
+										*/
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
 												participating_timeslices[t0] ] );
 
+										/*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
+											<< endl;
+										*/
 										// Slow fourier-transform
 										// We can restrict what the FT routine requires to a subset.
 										multi2d<DComplex> c_sum(phases.sft(c_oper, 
@@ -1393,8 +1420,8 @@ namespace Chroma
 				SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
 						diluted_quarks, sourceQuarkSmearing, sinkQuarkSmearing, u_smr );
 
-
-				// Annihilation operator
+					
+							// Annihilation operator
 				BaryonOperator_t  annih_oper;
 				annih_oper.mom2_max    = params.param.mom2_max;
 				annih_oper.decay_dir   = decay_dir;
@@ -1475,6 +1502,13 @@ namespace Chroma
 									const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDispSolution(n1, 
 											keySmearedDispColorVector[1]);
 
+									
+									//QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
+									//	<< endl; 
+
+									//QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
+									//	<< endl; 
+
 									makeDiquark( diquark, q0 , q1, all ); 
 
 									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
@@ -1494,7 +1528,15 @@ namespace Chroma
 										const multi1d<LatticeComplex> &q2 = smrd_disp_snks.getDispSolution(n2, 
 												keySmearedDispColorVector[2]);
 
+										//QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
+										//<< endl;
+
 										makeColorSinglet( a_oper, diquark, q2, all);
+
+										
+										/*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
+											<< endl;
+										*/
 
 										// Slow fourier-transform
 										multi2d<DComplex> a_sum( phases.sft(a_oper) );
@@ -1507,6 +1549,7 @@ namespace Chroma
 											aop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
 
 											aop.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
+										
 										}
 
 									} // end for k

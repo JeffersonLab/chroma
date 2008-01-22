@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.10 2008-01-21 20:29:02 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.11 2008-01-22 21:23:01 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -388,8 +388,21 @@ namespace Chroma
       
 			QDP::RNG::setrn( quark.seed );
 
-			 
-			return srcConst(dummy);
+			LatticeFermion sour = srcConst(dummy);
+/*
+			multi1d<int> orig(4);
+			for (int i = 0 ; i < 4 ; ++i)
+			{
+				orig=0;
+			}
+
+			LatticeColorVector vtr = peekSpin(sour, 2);
+			LatticeComplex comp = peekColor( vtr , 0 );
+			QDPIO::cout<< "Sourceval = "<< 
+				peekSite( comp, orig ) << endl;
+*/
+
+			return sour;
 	      
 		} //dilutedSource		
 
@@ -408,6 +421,19 @@ namespace Chroma
 
 			read(from, record_xml, soln);
 
+/*
+			multi1d<int> orig(4);
+			for (int i = 0 ; i < 4 ; ++i)
+			{
+				orig=0;
+			}
+
+			LatticeColorVector vtr = peekSpin(soln, 2);
+			LatticeComplex comp = peekColor( vtr , 0 );
+			QDPIO::cout<< "Sinkval = "<< 
+				peekSite( comp, orig ) << endl;
+
+*/
 			return soln;
 		}
 
