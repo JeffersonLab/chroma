@@ -1,4 +1,4 @@
-//  $Id: stout_smear.cc,v 3.5 2007-12-06 18:31:58 jbulava Exp $
+//  $Id: stout_smear.cc,v 3.6 2008-01-23 19:04:19 bjoo Exp $
 /*! \file
  *  \brief Stout smear a gauge field
  */
@@ -52,11 +52,11 @@ namespace Chroma
     }
     
     // The proto smeared link
-    Real msmear_fact=Real(-1) * sm_fact;
+    // Real msmear_fact=Real(-1) * sm_fact;
 
     // - sign goes in here, because taproj() works with 
     // a minus sign relative to the stout paper.
-    LatticeColorMatrix u_tmp = msmear_fact * u_staple * adj(u[mu]);
+    LatticeColorMatrix u_tmp = sm_fact * u_staple * adj(u[mu]);
 
     // Take the trace-less anti-hermitian projection of the staple
     taproj(u_tmp);
@@ -64,10 +64,7 @@ namespace Chroma
     // Make it Hermitian, traceless
     // u_tmp = Q in Morningstar/Peardon's paper (hep-lat/0311018)
 		 //u_tmp = timesMinusI(u_tmp);
-		 // BJ: Changed convention.
-    // eesu3 now takes iQ and multiplies by -i Internally so I can use it
-    // for HMC too
-
+    // Changed back convention ... as previous was buggy
 
     // Exactly exponentiate the Lie Algebra matrix
     // Now u_tmp = exp(iQ)
