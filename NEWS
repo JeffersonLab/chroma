@@ -4,6 +4,10 @@
         have support for 2+2 anisotropy. New time-prec. ILU Clover hmc. New NPR
         code. New HISQ code. Some new measurements for hadron_contract for deltas.
 
+11/29/2007 -- Robert Edwards
+	Version 3.27.1 - Bug fix in stout_smear. This appeared in the link_smearing
+        but not in the fermion action smearing (the fermstate codes).
+
 11/12/2007 -- Robert Edwards
 	Version 3.27.0 - First 3d SSE dslash. New SLIC-like and SLRC fermion actions.
         Some new tasks. Working Eigenvalue accelerated CG code. Changed prop readers
