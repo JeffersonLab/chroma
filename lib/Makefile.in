@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.222 2008-01-21 22:25:01 edwards Exp $
+# $Id: Makefile.in,v 3.223 2008-01-23 15:35:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -220,6 +220,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/temporal_wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc \
+	actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
@@ -745,6 +746,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	spatial_wilson_gaugeact.$(OBJEXT) \
 	temporal_wilson_gaugeact.$(OBJEXT) \
 	wilson_coarse_fine_gaugeact.$(OBJEXT) \
+	wilson_coarse_fine_1loop_gaugeact.$(OBJEXT) \
 	lw_tree_gaugeact.$(OBJEXT) lw_1loop_gaugeact.$(OBJEXT) \
 	rbc_gaugeact.$(OBJEXT) rg_gaugeact.$(OBJEXT) \
 	gaugebc_aggregate.$(OBJEXT) periodic_gaugebc.$(OBJEXT) \
@@ -1187,6 +1189,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.h \
 	actions/gauge/gaugeacts/temporal_wilson_gaugeact.h \
 	actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.h \
+	actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
@@ -1987,6 +1990,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.h \
 	actions/gauge/gaugeacts/temporal_wilson_gaugeact.h \
 	actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.h \
+	actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.h \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.h \
 	actions/gauge/gaugeacts/rbc_gaugeact.h \
@@ -2649,6 +2653,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/spatial_wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/temporal_wilson_gaugeact.cc \
 	actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc \
+	actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_tree_gaugeact.cc \
 	actions/gauge/gaugeacts/lw_1loop_gaugeact.cc \
 	actions/gauge/gaugeacts/rbc_gaugeact.cc \
@@ -3780,6 +3785,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/weak_field.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/weak_gauge_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilslp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_coarse_fine_fermact_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_coarse_fine_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_fermact_params_w.Po@am__quote@
@@ -4970,6 +4976,20 @@ wilson_coarse_fine_gaugeact.obj: actions/gauge/gaugeacts/wilson_coarse_fine_gaug
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc' object='wilson_coarse_fine_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_coarse_fine_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.cc'; fi`
+
+wilson_coarse_fine_1loop_gaugeact.o: actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_coarse_fine_1loop_gaugeact.o -MD -MP -MF $(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Tpo -c -o wilson_coarse_fine_1loop_gaugeact.o `test -f 'actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Tpo $(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc' object='wilson_coarse_fine_1loop_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_coarse_fine_1loop_gaugeact.o `test -f 'actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc
+
+wilson_coarse_fine_1loop_gaugeact.obj: actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wilson_coarse_fine_1loop_gaugeact.obj -MD -MP -MF $(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Tpo -c -o wilson_coarse_fine_1loop_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Tpo $(DEPDIR)/wilson_coarse_fine_1loop_gaugeact.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc' object='wilson_coarse_fine_1loop_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilson_coarse_fine_1loop_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.cc'; fi`
 
 lw_tree_gaugeact.o: actions/gauge/gaugeacts/lw_tree_gaugeact.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lw_tree_gaugeact.o -MD -MP -MF $(DEPDIR)/lw_tree_gaugeact.Tpo -c -o lw_tree_gaugeact.o `test -f 'actions/gauge/gaugeacts/lw_tree_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/lw_tree_gaugeact.cc
