@@ -1,4 +1,4 @@
-// $Id: gaugeacts_aggregate.cc,v 3.14 2008-01-20 19:46:53 edwards Exp $
+// $Id: gaugeacts_aggregate.cc,v 3.15 2008-01-23 15:41:51 edwards Exp $
 /*! \file
  *  \brief Generic gauge action wrapper
  */
@@ -16,6 +16,7 @@
 #include "actions/gauge/gaugeacts/spatial_wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/temporal_wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/wilson_coarse_fine_gaugeact.h"
+#include "actions/gauge/gaugeacts/wilson_coarse_fine_1loop_gaugeact.h"
 #include "actions/gauge/gaugeacts/lw_tree_gaugeact.h"
 #include "actions/gauge/gaugeacts/lw_1loop_gaugeact.h"
 #include "actions/gauge/gaugeacts/rg_gaugeact.h"
@@ -57,6 +58,7 @@ namespace Chroma
 	success &= SpatialWilsonGaugeActEnv::registerAll();
 	success &= TemporalWilsonGaugeActEnv::registerAll();
 	success &= WilsonCoarseFineGaugeActEnv::registerAll();
+	success &= WilsonCoarseFine1LoopGaugeActEnv::registerAll();
 	success &= LWTreeGaugeActEnv::registerAll();
 	success &= LW1LoopGaugeActEnv::registerAll();
 	success &= RGGaugeActEnv::registerAll();
