@@ -1,14 +1,15 @@
 // -*- C++ -*-
-// $Id: wilson_coarse_fine_gaugeact.h,v 3.2 2008-01-23 15:36:11 edwards Exp $
+// $Id: wilson_coarse_fine_1loop_gaugeact.h,v 3.1 2008-01-23 15:36:11 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action supporting 2+2 anisotropy.
  *
  * Wilson gauge action on a 2+2 lattice.
- * Follows the conventions of  hep-lat/0303005 (TrinLat)
+ * Follows the conventions of  hep-lat/0303005 (TrinLat).
+ * Here, coefficients are for 1-loop.
  */
 
-#ifndef __wilson_coarse_fine_gaugeact_h__
-#define __wilson_coarse_fine_gaugeact_h__
+#ifndef __wilson_coarse_fine_1loop_gaugeact_h__
+#define __wilson_coarse_fine_1loop_gaugeact_h__
 
 #include "gaugeact.h"
 #include "gaugebc.h"
@@ -18,7 +19,7 @@ namespace Chroma
 {
 
   /*! @ingroup gaugeacts */
-  namespace WilsonCoarseFineGaugeActEnv 
+  namespace WilsonCoarseFine1LoopGaugeActEnv 
   { 
     extern const string name;
     bool registerAll();
@@ -26,22 +27,24 @@ namespace Chroma
 
   //! Parameter structure
   /*! @ingroup gaugeacts */
-  struct WilsonCoarseFineGaugeActParams 
+  struct WilsonCoarseFine1LoopGaugeActParams 
   {
     //! Base Constructor
-    WilsonCoarseFineGaugeActParams() {}
+    WilsonCoarseFine1LoopGaugeActParams() {}
     
     //! Read params from some root path
-    WilsonCoarseFineGaugeActParams(XMLReader& xml_in, const std::string& path);
+    WilsonCoarseFine1LoopGaugeActParams(XMLReader& xml_in, const std::string& path);
+
+    Real  beta;      /*!< Yep, it's beta - the coefficient in front of the action */
 
     multi1d<int> coarse_dirs;  /*!< Directions for coarse lattice */
-    Real  coeff_ff;            /*!< General coefficient of fine-fine plaquette */
-    Real  coeff_cf;            /*!< General coefficient of coarse-fine plaquette */
-    Real  coeff_cc;            /*!< General coefficient of coarse-coare plaquette */
+    Real  xi;                  /*!< Coefficient of fine-fine plaquette */
+    Real  coeff_ff;            /*!< 1-loop coefficient of fine-fine plaquette = eta_ff-eta_cf */
+    Real  coeff_cc;            /*!< 1-loop coefficient of coarse-coare plaquette = eta_cc-eta_cf */
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, WilsonCoarseFineGaugeActParams& param);
+  void read(XMLReader& xml, const string& path, WilsonCoarseFine1LoopGaugeActParams& param);
   
 
   //! WilsonCoarseFine gauge action
@@ -51,12 +54,12 @@ namespace Chroma
    * Follows the conventions of  hep-lat/0303005 (TrinLat)
    */
 
-  class WilsonCoarseFineGaugeAct : public LinearGaugeAction
+  class WilsonCoarseFine1LoopGaugeAct : public LinearGaugeAction
   {
   public:
     //! Read beta from a param struct
-    WilsonCoarseFineGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
-			     const WilsonCoarseFineGaugeActParams& p);
+    WilsonCoarseFine1LoopGaugeAct(Handle< CreateGaugeState<P,Q> > cgs_, 
+				  const WilsonCoarseFine1LoopGaugeActParams& p);
 
     //! Return the set on which the gauge action is defined
     /*! Defined on the even-off (red/black) set */
@@ -85,7 +88,7 @@ namespace Chroma
     }
 
     //! Destructor is automatic
-    ~WilsonCoarseFineGaugeAct() {}
+    ~WilsonCoarseFine1LoopGaugeAct() {}
 
     //! Produce a gauge create state object
     const CreateGaugeState<P,Q>& getCreateState() const {return plaq->getCreateState();}
@@ -95,13 +98,13 @@ namespace Chroma
     void init(Handle< CreateGaugeState<P,Q> > cgs);
 
     //! Partial constructor
-    WilsonCoarseFineGaugeAct() {}
+    WilsonCoarseFine1LoopGaugeAct() {}
     //! Hide assignment
-    void operator=(const WilsonCoarseFineGaugeAct& a) {}
+    void operator=(const WilsonCoarseFine1LoopGaugeAct& a) {}
 
   private:
     Handle<PlaqGaugeAct> plaq;             /*!< Hold a plaquette gaugeact */
-    WilsonCoarseFineGaugeActParams param;  /*!< parameters */
+    WilsonCoarseFine1LoopGaugeActParams param;  /*!< parameters */
   };
 
 } // end namespace Chroma
