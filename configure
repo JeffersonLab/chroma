@@ -676,8 +676,6 @@ SSE_DSLASH_DIR
 SSE_DSLASH_ENABLED
 BUILD_SSE_WILSON_DSLASH_TRUE
 BUILD_SSE_WILSON_DSLASH_FALSE
-BUILD_SSE_WILSON_DSLASH_OLD_TRUE
-BUILD_SSE_WILSON_DSLASH_OLD_FALSE
 CG_DWF_DIR
 CG_DWF_ENABLED
 BUILD_CG_DWF_TRUE
@@ -738,7 +736,6 @@ CCC
 CC
 CFLAGS'
 ac_subdirs_all='other_libs/sse_wilson_dslash
-other_libs/intel_sse_wilson_dslash
 other_libs/cg-dwf
 other_libs/qdp-lapack'
 
@@ -3864,12 +3861,6 @@ if test "${enable_sse_wilson_dslash+set}" = set; then
 fi
 
 
-# Check whether --enable-sse_wilson_dslash_old was given.
-if test "${enable_sse_wilson_dslash_old+set}" = set; then
-  enableval=$enable_sse_wilson_dslash_old;
-fi
-
-
 # Check whether --enable-cg-dwf was given.
 if test "${enable_cg_dwf+set}" = set; then
   enableval=$enable_cg_dwf; cg_dwf_cpu_arch=${enableval}
@@ -4273,46 +4264,6 @@ else
   BUILD_SSE_WILSON_DSLASH_TRUE='#'
   BUILD_SSE_WILSON_DSLASH_FALSE=
 fi
-
-
-case "$enable_sse_wilson_dslash_old" in
-  yes)
-        if test "x${enable_sse_wilson_dslash}x" ="xyesx" ;
-        then
-           { { echo "$as_me:$LINENO: error: Cant have both OLD And New Dslash Enabled" >&5
-echo "$as_me: error: Cant have both OLD And New Dslash Enabled" >&2;}
-   { (exit 1); exit 1; }; }
-        fi
-
-        { echo "$as_me:$LINENO: Configuring OLD SSE Wilson Dslash  " >&5
-echo "$as_me: Configuring OLD SSE Wilson Dslash  " >&6;}
-        subdirs="$subdirs other_libs/intel_sse_wilson_dslash"
-
-        SSE_DSLASH_DIR=intel_sse_wilson_dslash
-
-
-cat >>confdefs.h <<\_ACEOF
-#define BUILD_SSE_WILSON_DSLASH_OLD
-_ACEOF
-
-        ;;
-  *)
-
-        { echo "$as_me:$LINENO: Not building LEGACY SSE Dslash  " >&5
-echo "$as_me: Not building LEGACY SSE Dslash  " >&6;}
-        ;;
-esac
-SSE_DSLASH_ENABLED=$enable_sse_wilson_dslash_old
-
-
- if test "x${enable_sse_wilson_dslash_old}x" = "xyesx" ; then
-  BUILD_SSE_WILSON_DSLASH_OLD_TRUE=
-  BUILD_SSE_WILSON_DSLASH_OLD_FALSE='#'
-else
-  BUILD_SSE_WILSON_DSLASH_OLD_TRUE='#'
-  BUILD_SSE_WILSON_DSLASH_OLD_FALSE=
-fi
-
 
 
 if  test "x${build_cg_dwf}x" = "xyesx" ;
@@ -5575,13 +5526,6 @@ echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${BUILD_SSE_WILSON_DSLASH_OLD_TRUE}" && test -z "${BUILD_SSE_WILSON_DSLASH_OLD_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_WILSON_DSLASH_OLD\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH_OLD\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
 if test -z "${BUILD_CG_DWF_TRUE}" && test -z "${BUILD_CG_DWF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_CG_DWF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -6336,8 +6280,6 @@ ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
 BUILD_SSE_WILSON_DSLASH_FALSE!$BUILD_SSE_WILSON_DSLASH_FALSE$ac_delim
-BUILD_SSE_WILSON_DSLASH_OLD_TRUE!$BUILD_SSE_WILSON_DSLASH_OLD_TRUE$ac_delim
-BUILD_SSE_WILSON_DSLASH_OLD_FALSE!$BUILD_SSE_WILSON_DSLASH_OLD_FALSE$ac_delim
 CG_DWF_DIR!$CG_DWF_DIR$ac_delim
 CG_DWF_ENABLED!$CG_DWF_ENABLED$ac_delim
 BUILD_CG_DWF_TRUE!$BUILD_CG_DWF_TRUE$ac_delim
@@ -6387,7 +6329,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 50; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 48; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
