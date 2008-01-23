@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.7 2007-04-17 03:13:04 edwards Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.8 2008-01-23 18:23:36 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -371,7 +371,7 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
     virtual const GroupXML_t& getInvParams(void) const = 0;

@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_rat_monomial_w.cc,v 3.3 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.cc,v 3.4 2008-01-23 18:23:36 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -67,15 +67,16 @@ namespace Chroma
 							   fermact_reader, 
 							   param.fermact.path);
 
-    UnprecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+    // WilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
     // Check success of the downcast 
-    if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecOneFlavorWilsonTypeFermRatMonomial()" << endl;
-      QDP_abort(1);
-    }
+    // if( downcast == 0x0 ) {
+    //  QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecOneFlavorWilsonTypeFermRatMonomial()" << endl;
+    //  QDP_abort(1);
+    //}
 
-    fermact = downcast;    
+    //fermact = downcast;    
+    fermact = tmp_act;
 
     //*********************************************************************
     // Remez approx

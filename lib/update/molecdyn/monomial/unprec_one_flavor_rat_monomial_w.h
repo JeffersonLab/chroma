@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial_w.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial_w.h,v 3.3 2008-01-23 18:23:36 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -52,7 +52,7 @@ namespace Chroma
       multi1d<T>& getPhi(void) {return phi;}
       const multi1d<T>& getPhi(void) const {return phi;}
 
-      const UnprecWilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
+      const WilsonTypeFermAct<T,P,Q>& getFermAct(void) const { 
 	return *fermact;
       }
 
@@ -82,7 +82,7 @@ namespace Chroma
       multi1d<T> phi;
 
       // A handle for the UnprecWilsonFermAct
-      Handle<const UnprecWilsonTypeFermAct<T,P,Q> > fermact;
+      Handle<const WilsonTypeFermAct<T,P,Q> > fermact;
 
       // The parameters for the inversion
       GroupXML_t inv_param;
