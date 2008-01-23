@@ -1,4 +1,4 @@
-// $Id: wilson_coarse_fine_gaugeact.cc,v 3.2 2008-01-23 15:36:11 edwards Exp $
+// $Id: wilson_coarse_fine_gaugeact.cc,v 3.3 2008-01-23 15:39:00 edwards Exp $
 /*! \file
  *  \brief Wilson gauge action supporting 2+2 anisotropy
  */
@@ -71,10 +71,9 @@ namespace Chroma
     int version = 1;
 
     write(xml, "version", version);
-    write(xml, "beta", p.beta);
     write(xml, "coarse_dirs", p.coarse_dirs);
-    write(xml, "xi", p.xi);
     write(xml, "coeff_ff", p.coeff_ff);
+    write(xml, "coeff_cf", p.coeff_cf);
     write(xml, "coeff_cc", p.coeff_cc);
 
     pop(xml);
