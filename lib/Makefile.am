@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.126 2008-01-23 22:19:03 edwards Exp $
+# $Id: Makefile.am,v 3.127 2008-01-24 14:50:25 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -217,8 +217,6 @@ nobase_include_HEADERS = \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
-	meas/smear/stout_smear.h \
-	meas/smear/stout_smear_old.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
 	meas/smear/link_smearing_factory.h \
@@ -226,7 +224,6 @@ nobase_include_HEADERS = \
 	meas/smear/hyp_link_smearing.h \
 	meas/smear/no_link_smearing.h \
 	meas/smear/stout_link_smearing.h \
-	meas/smear/stout_link_smearing_old.h \
 	meas/smear/quark_displacement.h \
 	meas/smear/quark_displacement_factory.h \
         meas/smear/quark_displacement_aggregate.h \
@@ -954,14 +951,11 @@ libchroma_a_SOURCES = \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
 	meas/smear/laplacian.cc \
-	meas/smear/stout_smear.cc \
-	meas/smear/stout_smear_old.cc \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc \
 	meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
-	meas/smear/stout_link_smearing_old.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \

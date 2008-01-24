@@ -1,4 +1,4 @@
-// $Id: link_smearing_aggregate.cc,v 3.7 2008-01-20 03:07:51 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 3.8 2008-01-24 14:50:53 edwards Exp $
 /*! \file
  *  \brief All link smearing applicators
  */
@@ -9,7 +9,6 @@
 #include "meas/smear/hyp_link_smearing.h"
 #include "meas/smear/no_link_smearing.h"
 #include "meas/smear/stout_link_smearing.h"
-#include "meas/smear/stout_link_smearing_old.h"
 
 namespace Chroma
 {
@@ -31,7 +30,6 @@ namespace Chroma
 	success &= HypLinkSmearingEnv::registerAll();
 	success &= NoLinkSmearingEnv::registerAll();
 	success &= StoutLinkSmearingEnv::registerAll();
-	success &= StoutLinkSmearingOldEnv::registerAll();
 
 	registered = true;
       }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: smear.h,v 3.1 2006-12-10 02:04:57 edwards Exp $
+// $Id: smear.h,v 3.2 2008-01-24 14:50:53 edwards Exp $
 
 /*! \file
  * \brief Smearing routines
@@ -18,7 +18,6 @@
 
 #include "gaus_smear.h"
 #include "laplacian.h"
-#include "stout_smear.h"
 #include "hyp_smear.h"
 #include "hyp_smear3d.h"
 #include "ape_smear.h"

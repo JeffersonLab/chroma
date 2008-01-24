@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_link_smearing.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: stout_link_smearing.h,v 3.3 2008-01-24 14:50:53 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -27,9 +27,11 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      Real link_smear_fact;		/*!< Smearing parameters */
-      int  link_smear_num;              /*!< Number of smearing hits */
-      multi1d<bool> smear_dirs;         /*!< Only allow smearing and staples in these directions */
+      Real           link_smear_fact;    /*!< Smearing parameters */
+      int            link_smear_num;     /*!< Number of smearing hits */
+      multi1d<bool>  smear_dirs;         /*!< Only allow smearing and staples in these directions */
+
+      multi2d<Real>  rho;                /*!< Parameters actually used by stout::smear_links */
     };
 
 

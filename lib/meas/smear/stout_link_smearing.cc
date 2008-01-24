@@ -1,4 +1,4 @@
-// $Id: stout_link_smearing.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: stout_link_smearing.cc,v 3.3 2008-01-24 14:50:53 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -7,9 +7,7 @@
 
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/smear/stout_link_smearing.h"
-#include "meas/smear/stout_smear.h"
-
-#include "meas/glue/mesplq.h"
+#include "util/gauge/stout_utils.h"
 
 namespace Chroma
 {
@@ -90,6 +88,40 @@ namespace Chroma
 
       read(paramtop, "link_smear_num", link_smear_num);
       read(paramtop, "link_smear_fact", link_smear_fact);
+
+      // For each (mu,nu) set sm_fact_array(mu,nu)=sm_fact
+      // (Isotropy). Since mu != nu ever, we set those
+      // to zero for safety
+      rho.resize(Nd,Nd);
+
+      for(int mu=0; mu < Nd; mu++) 
+      {
+	for(int nu=0; nu < Nd; nu++) 
+	{
+	  if( mu != nu )
+	  {
+	    rho[mu][nu] = link_smear_fact;
+	  }
+	  else
+	  {
+	    // Set the rho to 0 if mu==nu
+	    rho[mu][nu] = 0;
+	  }
+	}
+      }
+
+      // Zero out any directions that are not smeared
+      for(int mu=0; mu < Nd; mu++) 
+      {
+	if( ! smear_dirs[mu] )
+	{
+	  for(int nu=0; nu < Nd; nu++)
+	  {
+	    rho[mu][nu] = 0;
+	    rho[nu][mu] = 0;
+	  }
+	}
+      }
     }
 
 
@@ -114,8 +146,8 @@ namespace Chroma
     LinkSmear::operator()(multi1d<LatticeColorMatrix>& u) const
     {
       // Now stout smear
-      multi1d<LatticeColorMatrix> u_stout(Nd);
-      u_stout = u;
+      multi1d<LatticeColorMatrix> u_stout = u;
+      multi1d<LatticeColorMatrix> u_tmp(Nd);
 
       if (params.link_smear_num > 0)
       {
@@ -123,15 +155,9 @@ namespace Chroma
 
 	for(int i=0; i < params.link_smear_num; ++i)
 	{
-	  multi1d<LatticeColorMatrix> u_tmp(Nd);
-
-	  for(int mu = 0; mu < Nd; ++mu)
-	    if ( params.smear_dirs[mu] )
-	      stout_smear(u_tmp[mu], u_stout, mu,
-			  params.link_smear_fact,
-			  params.smear_dirs);
-	    else
-	      u_tmp[mu] = u_stout[mu];
+	  Stouting::smear_links(u_stout, u_tmp,
+				params.smear_dirs,
+				params.rho);
 
 	  u_stout = u_tmp;
 	}
