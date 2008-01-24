@@ -99,38 +99,6 @@ Stout smear task
       </NamedObject>
     </elem>
 
-    <elem>
-      <Name>LINK_SMEAR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>3</version>
-        <LinkSmearingType>STOUT_SMEAR_OLD</LinkSmearingType>
-        <link_smear_fact>0.15625</link_smear_fact>
-        <link_smear_num>16</link_smear_num>
-        <smear_dirs>1 1 1 0</smear_dirs>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <linksmear_id>stout3</linksmear_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <Name>LINK_SMEAR</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <version>3</version>
-        <LinkSmearingType>STOUT_SMEAR_OLD</LinkSmearingType>
-        <link_smear_fact>0.15625</link_smear_fact>
-        <link_smear_num>16</link_smear_num>
-        <smear_dirs>1 1 0 0</smear_dirs>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <linksmear_id>stout4</linksmear_id>
-      </NamedObject>
-    </elem>
-
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -143,10 +111,10 @@ Stout smear task
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.27.0</chroma>
+      <chroma>3.28.0</chroma>
       <qdp>1.24.6</qdp>
     </code_version>
-    <run_date>19 Jan 08 22:00:55 EST</run_date>
+    <run_date>24 Jan 08 09:50:38 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -525,28 +493,28 @@ Stout smear task
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>-0.0497091251002075</w_plaq>
-          <s_plaq>-0.428325449063777</s_plaq>
-          <t_plaq>0.328907198863362</t_plaq>
-          <plane_01_plaq>-0.428525457466094</plane_01_plaq>
-          <plane_02_plaq>-0.430371293891464</plane_02_plaq>
-          <plane_12_plaq>-0.426079595833774</plane_12_plaq>
-          <plane_03_plaq>0.330537683865411</plane_03_plaq>
-          <plane_13_plaq>0.306997389741506</plane_13_plaq>
-          <plane_23_plaq>0.34918652298317</plane_23_plaq>
-          <link>0.26039989094761</link>
+          <w_plaq>0.998190899689992</w_plaq>
+          <s_plaq>0.999997422215529</s_plaq>
+          <t_plaq>0.996384377164456</t_plaq>
+          <plane_01_plaq>0.999997533314551</plane_01_plaq>
+          <plane_02_plaq>0.999997320080486</plane_02_plaq>
+          <plane_12_plaq>0.999997413251549</plane_12_plaq>
+          <plane_03_plaq>0.996365392774654</plane_03_plaq>
+          <plane_13_plaq>0.996496774295034</plane_13_plaq>
+          <plane_23_plaq>0.996290964423679</plane_23_plaq>
+          <link>0.379497395617364</link>
           <pollp>
             <elem>
-              <re>0.373718924698854</re>
-              <im>0.00391303350473512</im>
+              <re>0.971853028750047</re>
+              <im>-0.00117130927204319</im>
             </elem>
             <elem>
-              <re>0.371059875750386</re>
-              <im>0.0102439637071257</im>
+              <re>0.971490098551537</re>
+              <im>-0.00124694528070298</im>
             </elem>
             <elem>
-              <re>0.327322715359211</re>
-              <im>0.000699865214604264</im>
+              <re>0.971965435077436</re>
+              <im>-0.0011243003408102</im>
             </elem>
             <elem>
               <re>0.879538947211889</re>
@@ -612,198 +580,24 @@ Stout smear task
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.426385274930327</w_plaq>
-          <s_plaq>0.191978689771481</s_plaq>
-          <t_plaq>0.660791860089173</t_plaq>
-          <plane_01_plaq>-0.463478042170512</plane_01_plaq>
-          <plane_02_plaq>0.518534928087471</plane_02_plaq>
-          <plane_12_plaq>0.520879183397483</plane_12_plaq>
-          <plane_03_plaq>0.490263563196398</plane_03_plaq>
-          <plane_13_plaq>0.497595812688208</plane_13_plaq>
+          <w_plaq>0.99643683823524</w_plaq>
+          <s_plaq>0.997343576733126</s_plaq>
+          <t_plaq>0.995530099737354</t_plaq>
+          <plane_01_plaq>0.999998324317858</plane_01_plaq>
+          <plane_02_plaq>0.996132839742737</plane_02_plaq>
+          <plane_12_plaq>0.995899566138784</plane_12_plaq>
+          <plane_03_plaq>0.99603927298449</plane_03_plaq>
+          <plane_13_plaq>0.99603482184466</plane_13_plaq>
           <plane_23_plaq>0.994516204382914</plane_23_plaq>
-          <link>0.324169127190099</link>
+          <link>0.379397426324431</link>
           <pollp>
             <elem>
-              <re>0.662372949242126</re>
-              <im>0.0086923945439897</im>
+              <re>0.970974952060108</re>
+              <im>-0.0011784072315398</im>
             </elem>
             <elem>
-              <re>0.693833916404401</re>
-              <im>-0.00826001800063144</im>
-            </elem>
-            <elem>
-              <re>0.967467519260632</re>
-              <im>-0.0011454828290122</im>
-            </elem>
-            <elem>
-              <re>0.879538947211889</re>
-              <im>-0.01044028334627</im>
-            </elem>
-          </pollp>
-        </Link_observables>
-      </linksmear>
-    </elem>
-    <elem>
-      <linksmear>
-        <update_no>0</update_no>
-        <Input><Param>
-      <version>3</version>
-      <LinkSmearingType>STOUT_SMEAR_OLD</LinkSmearingType>
-      <link_smear_fact>0.15625</link_smear_fact>
-      <link_smear_num>16</link_smear_num>
-      <smear_dirs>1 1 1 0</smear_dirs>
-    </Param>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <linksmear_id>stout3</linksmear_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994764814696585</w_plaq>
-          <s_plaq>0.994800872195305</s_plaq>
-          <t_plaq>0.994728757197865</t_plaq>
-          <plane_01_plaq>0.994752409479891</plane_01_plaq>
-          <plane_02_plaq>0.995051670897131</plane_02_plaq>
-          <plane_12_plaq>0.994598536208893</plane_12_plaq>
-          <plane_03_plaq>0.994927927424821</plane_03_plaq>
-          <plane_13_plaq>0.994742139785861</plane_13_plaq>
-          <plane_23_plaq>0.994516204382914</plane_23_plaq>
-          <link>0.379317688059624</link>
-          <pollp>
-            <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316459171794</im>
-            </elem>
-            <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617047105057</im>
-            </elem>
-            <elem>
-              <re>0.967467519260632</re>
-              <im>-0.0011454828290122</im>
-            </elem>
-            <elem>
-              <re>0.879538947211889</re>
-              <im>-0.01044028334627</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Link_observables>
-          <w_plaq>0.998190836036681</w_plaq>
-          <s_plaq>0.999997336779618</s_plaq>
-          <t_plaq>0.996384335293745</t_plaq>
-          <plane_01_plaq>0.999997451086529</plane_01_plaq>
-          <plane_02_plaq>0.999997230324273</plane_02_plaq>
-          <plane_12_plaq>0.999997328928051</plane_12_plaq>
-          <plane_03_plaq>0.996365352300927</plane_03_plaq>
-          <plane_13_plaq>0.996496732812375</plane_13_plaq>
-          <plane_23_plaq>0.996290920767933</plane_23_plaq>
-          <link>0.37949739122511</link>
-          <pollp>
-            <elem>
-              <re>0.971852949160772</re>
-              <im>-0.00117131076160604</im>
-            </elem>
-            <elem>
-              <re>0.971490024356171</re>
-              <im>-0.00124694735859521</im>
-            </elem>
-            <elem>
-              <re>0.971965344545121</re>
-              <im>-0.00112429518837113</im>
-            </elem>
-            <elem>
-              <re>0.879538947211889</re>
-              <im>-0.01044028334627</im>
-            </elem>
-          </pollp>
-        </Link_observables>
-      </linksmear>
-    </elem>
-    <elem>
-      <linksmear>
-        <update_no>0</update_no>
-        <Input><Param>
-      <version>3</version>
-      <LinkSmearingType>STOUT_SMEAR_OLD</LinkSmearingType>
-      <link_smear_fact>0.15625</link_smear_fact>
-      <link_smear_num>16</link_smear_num>
-      <smear_dirs>1 1 0 0</smear_dirs>
-    </Param>
-
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <linksmear_id>stout4</linksmear_id>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994764814696585</w_plaq>
-          <s_plaq>0.994800872195305</s_plaq>
-          <t_plaq>0.994728757197865</t_plaq>
-          <plane_01_plaq>0.994752409479891</plane_01_plaq>
-          <plane_02_plaq>0.995051670897131</plane_02_plaq>
-          <plane_12_plaq>0.994598536208893</plane_12_plaq>
-          <plane_03_plaq>0.994927927424821</plane_03_plaq>
-          <plane_13_plaq>0.994742139785861</plane_13_plaq>
-          <plane_23_plaq>0.994516204382914</plane_23_plaq>
-          <link>0.379317688059624</link>
-          <pollp>
-            <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316459171794</im>
-            </elem>
-            <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617047105057</im>
-            </elem>
-            <elem>
-              <re>0.967467519260632</re>
-              <im>-0.0011454828290122</im>
-            </elem>
-            <elem>
-              <re>0.879538947211889</re>
-              <im>-0.01044028334627</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Link_observables>
-          <w_plaq>0.996436816575523</w_plaq>
-          <s_plaq>0.997343547292985</s_plaq>
-          <t_plaq>0.995530085858061</t_plaq>
-          <plane_01_plaq>0.999998280080035</plane_01_plaq>
-          <plane_02_plaq>0.99613281696414</plane_02_plaq>
-          <plane_12_plaq>0.99589954483478</plane_12_plaq>
-          <plane_03_plaq>0.996039253620741</plane_03_plaq>
-          <plane_13_plaq>0.996034799570528</plane_13_plaq>
-          <plane_23_plaq>0.994516204382914</plane_23_plaq>
-          <link>0.37939742388456</link>
-          <pollp>
-            <elem>
-              <re>0.970974916747461</re>
-              <im>-0.00117840727655979</im>
-            </elem>
-            <elem>
-              <re>0.970710197851683</re>
-              <im>-0.0012580781313621</im>
+              <re>0.970710241041767</re>
+              <im>-0.0012580787808929</im>
             </elem>
             <elem>
               <re>0.967467519260632</re>
