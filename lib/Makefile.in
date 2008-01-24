@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.224 2008-01-23 22:26:26 edwards Exp $
+# $Id: Makefile.in,v 3.225 2008-01-24 14:50:36 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -273,13 +273,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/displace.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
-	meas/smear/laplacian.cc meas/smear/stout_smear.cc \
-	meas/smear/stout_smear_old.cc \
-	meas/smear/link_smearing_aggregate.cc \
+	meas/smear/laplacian.cc meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
-	meas/smear/stout_link_smearing_old.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \
@@ -779,11 +776,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	sink_smearing_aggregate.$(OBJEXT) ape_smear.$(OBJEXT) \
 	displace.$(OBJEXT) displacement.$(OBJEXT) fuzz_smear.$(OBJEXT) \
 	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
-	laplacian.$(OBJEXT) stout_smear.$(OBJEXT) \
-	stout_smear_old.$(OBJEXT) link_smearing_aggregate.$(OBJEXT) \
+	laplacian.$(OBJEXT) link_smearing_aggregate.$(OBJEXT) \
 	ape_link_smearing.$(OBJEXT) hyp_link_smearing.$(OBJEXT) \
 	no_link_smearing.$(OBJEXT) stout_link_smearing.$(OBJEXT) \
-	stout_link_smearing_old.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) no_quark_smearing.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
@@ -1249,13 +1244,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/smear/fuzz_smear.h meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
-	meas/smear/stout_smear.h meas/smear/stout_smear_old.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
 	meas/smear/link_smearing_factory.h \
 	meas/smear/ape_link_smearing.h meas/smear/hyp_link_smearing.h \
 	meas/smear/no_link_smearing.h meas/smear/stout_link_smearing.h \
-	meas/smear/stout_link_smearing_old.h \
 	meas/smear/quark_displacement.h \
 	meas/smear/quark_displacement_factory.h \
 	meas/smear/quark_displacement_aggregate.h \
@@ -2048,13 +2041,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/smear/fuzz_smear.h meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
-	meas/smear/stout_smear.h meas/smear/stout_smear_old.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
 	meas/smear/link_smearing_factory.h \
 	meas/smear/ape_link_smearing.h meas/smear/hyp_link_smearing.h \
 	meas/smear/no_link_smearing.h meas/smear/stout_link_smearing.h \
-	meas/smear/stout_link_smearing_old.h \
 	meas/smear/quark_displacement.h \
 	meas/smear/quark_displacement_factory.h \
 	meas/smear/quark_displacement_aggregate.h \
@@ -2697,13 +2688,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/displace.cc meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
-	meas/smear/laplacian.cc meas/smear/stout_smear.cc \
-	meas/smear/stout_smear_old.cc \
-	meas/smear/link_smearing_aggregate.cc \
+	meas/smear/laplacian.cc meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
-	meas/smear/stout_link_smearing_old.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \
@@ -3657,9 +3645,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_fermstate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_gaugestate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_link_smearing.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_link_smearing_old.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_smear_old.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2_hb_update.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
@@ -6371,34 +6356,6 @@ laplacian.obj: meas/smear/laplacian.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o laplacian.obj `if test -f 'meas/smear/laplacian.cc'; then $(CYGPATH_W) 'meas/smear/laplacian.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/laplacian.cc'; fi`
 
-stout_smear.o: meas/smear/stout_smear.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_smear.o -MD -MP -MF $(DEPDIR)/stout_smear.Tpo -c -o stout_smear.o `test -f 'meas/smear/stout_smear.cc' || echo '$(srcdir)/'`meas/smear/stout_smear.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/stout_smear.Tpo $(DEPDIR)/stout_smear.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_smear.cc' object='stout_smear.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_smear.o `test -f 'meas/smear/stout_smear.cc' || echo '$(srcdir)/'`meas/smear/stout_smear.cc
-
-stout_smear.obj: meas/smear/stout_smear.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_smear.obj -MD -MP -MF $(DEPDIR)/stout_smear.Tpo -c -o stout_smear.obj `if test -f 'meas/smear/stout_smear.cc'; then $(CYGPATH_W) 'meas/smear/stout_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_smear.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/stout_smear.Tpo $(DEPDIR)/stout_smear.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_smear.cc' object='stout_smear.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_smear.obj `if test -f 'meas/smear/stout_smear.cc'; then $(CYGPATH_W) 'meas/smear/stout_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_smear.cc'; fi`
-
-stout_smear_old.o: meas/smear/stout_smear_old.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_smear_old.o -MD -MP -MF $(DEPDIR)/stout_smear_old.Tpo -c -o stout_smear_old.o `test -f 'meas/smear/stout_smear_old.cc' || echo '$(srcdir)/'`meas/smear/stout_smear_old.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/stout_smear_old.Tpo $(DEPDIR)/stout_smear_old.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_smear_old.cc' object='stout_smear_old.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_smear_old.o `test -f 'meas/smear/stout_smear_old.cc' || echo '$(srcdir)/'`meas/smear/stout_smear_old.cc
-
-stout_smear_old.obj: meas/smear/stout_smear_old.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_smear_old.obj -MD -MP -MF $(DEPDIR)/stout_smear_old.Tpo -c -o stout_smear_old.obj `if test -f 'meas/smear/stout_smear_old.cc'; then $(CYGPATH_W) 'meas/smear/stout_smear_old.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_smear_old.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/stout_smear_old.Tpo $(DEPDIR)/stout_smear_old.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_smear_old.cc' object='stout_smear_old.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_smear_old.obj `if test -f 'meas/smear/stout_smear_old.cc'; then $(CYGPATH_W) 'meas/smear/stout_smear_old.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_smear_old.cc'; fi`
-
 link_smearing_aggregate.o: meas/smear/link_smearing_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT link_smearing_aggregate.o -MD -MP -MF $(DEPDIR)/link_smearing_aggregate.Tpo -c -o link_smearing_aggregate.o `test -f 'meas/smear/link_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/smear/link_smearing_aggregate.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/link_smearing_aggregate.Tpo $(DEPDIR)/link_smearing_aggregate.Po
@@ -6468,20 +6425,6 @@ stout_link_smearing.obj: meas/smear/stout_link_smearing.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_link_smearing.cc' object='stout_link_smearing.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_link_smearing.obj `if test -f 'meas/smear/stout_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/stout_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_link_smearing.cc'; fi`
-
-stout_link_smearing_old.o: meas/smear/stout_link_smearing_old.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_link_smearing_old.o -MD -MP -MF $(DEPDIR)/stout_link_smearing_old.Tpo -c -o stout_link_smearing_old.o `test -f 'meas/smear/stout_link_smearing_old.cc' || echo '$(srcdir)/'`meas/smear/stout_link_smearing_old.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/stout_link_smearing_old.Tpo $(DEPDIR)/stout_link_smearing_old.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_link_smearing_old.cc' object='stout_link_smearing_old.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_link_smearing_old.o `test -f 'meas/smear/stout_link_smearing_old.cc' || echo '$(srcdir)/'`meas/smear/stout_link_smearing_old.cc
-
-stout_link_smearing_old.obj: meas/smear/stout_link_smearing_old.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stout_link_smearing_old.obj -MD -MP -MF $(DEPDIR)/stout_link_smearing_old.Tpo -c -o stout_link_smearing_old.obj `if test -f 'meas/smear/stout_link_smearing_old.cc'; then $(CYGPATH_W) 'meas/smear/stout_link_smearing_old.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_link_smearing_old.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/stout_link_smearing_old.Tpo $(DEPDIR)/stout_link_smearing_old.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/stout_link_smearing_old.cc' object='stout_link_smearing_old.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_link_smearing_old.obj `if test -f 'meas/smear/stout_link_smearing_old.cc'; then $(CYGPATH_W) 'meas/smear/stout_link_smearing_old.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/stout_link_smearing_old.cc'; fi`
 
 quark_smearing_aggregate.o: meas/smear/quark_smearing_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_smearing_aggregate.o -MD -MP -MF $(DEPDIR)/quark_smearing_aggregate.Tpo -c -o quark_smearing_aggregate.o `test -f 'meas/smear/quark_smearing_aggregate.cc' || echo '$(srcdir)/'`meas/smear/quark_smearing_aggregate.cc
