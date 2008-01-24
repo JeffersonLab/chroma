@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_w.h,v 3.3 2007-12-04 16:04:42 bjoo Exp $
+// $Id: dslash_w.h,v 3.4 2008-01-24 15:18:53 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -28,13 +28,6 @@
 namespace Chroma {
 typedef SSEWilsonDslash WilsonDslash;
 }  // end namespace Chroma
-
-#elif defined BUILD_SSE_WILSON_DSLASH_OLD
-# include "lwldslash_w_sse_old.h"
-namespace Chroma {
-typedef SSEWilsonDslash WilsonDslash;
-}  // end namespace Chroma
-
 
 // Many #elif clauses could come in here for other opotimised Dslash-es
 #elif defined BUILD_PAB_WILSON_DSLASH

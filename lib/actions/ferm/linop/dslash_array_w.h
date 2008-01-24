@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_array_w.h,v 3.2 2007-10-25 16:10:11 bjoo Exp $
+// $Id: dslash_array_w.h,v 3.3 2008-01-24 15:18:53 edwards Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -29,14 +29,6 @@ namespace Chroma {
 typedef SSEWilsonDslashArray WilsonDslashArray;
 }  // end namespace Chroma
 
-#elif defined BUILD_SSE_WILSON_DSLASH_OLD
-// The lwldslash_w_sse.h defines the SSE Dslash class
-// The following typedef switches it in.
-#include "lwldslash_array_sse_old_w.h"
-namespace Chroma {
- typedef SSEWilsonDslashArray WilsonDslashArray;
-}  // end namespace Chroma
-//
 // Many #elif clauses could come in here for other opotimised Dslash-es
 #elif defined BUILD_PAB_WILSON_DSLASH
 # include "lwldslash_array_pab_w.h"
