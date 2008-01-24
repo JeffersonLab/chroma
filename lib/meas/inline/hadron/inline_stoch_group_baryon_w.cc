@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.14 2008-01-22 21:23:01 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.15 2008-01-24 20:47:19 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -955,7 +955,21 @@ namespace Chroma
 					}
 				}
 			}
-			
+		
+			//Another Sanity check, the three quarks must all be 
+			//inverted on the same cfg
+			for (int n = 1 ; n < N_quarks ; ++n)
+			{
+				if (diluted_quarks[0]->getCfgInfo() != diluted_quarks[n]->getCfgInfo())
+				{
+					QDPIO::cerr << name 
+						<< " : Quarks do not contain the same cfg info, quark "<< n << endl;
+	
+					QDP_abort(1);
+				}
+			}
+
+
       //
       // Initialize the slow Fourier transform phases
       //
@@ -1333,9 +1347,9 @@ namespace Chroma
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
 												participating_timeslices[t0] ] );
 
-										/*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
+										QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
 											<< endl;
-										*/
+										
 										// Slow fourier-transform
 										// We can restrict what the FT routine requires to a subset.
 										multi2d<DComplex> c_sum(phases.sft(c_oper, 
@@ -1534,9 +1548,9 @@ namespace Chroma
 										makeColorSinglet( a_oper, diquark, q2, all);
 
 										
-										/*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
+										QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
 											<< endl;
-										*/
+										
 
 										// Slow fourier-transform
 										multi2d<DComplex> a_sum( phases.sft(a_oper) );

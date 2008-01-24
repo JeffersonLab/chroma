@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.10 2008-01-21 20:29:02 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.11 2008-01-24 20:47:18 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -124,7 +124,14 @@ namespace Chroma
 
 				return kappa;
 			}
-      
+     
+			//! The info from the cfg on which the inversions were performed
+			virtual std::string getCfgInfo() const
+			{
+				return cfgInfo;
+			}
+
+
 			//! Return the diluted source vector
       LatticeFermion dilutedSource(int t0, int dil) const;
     
@@ -141,6 +148,7 @@ namespace Chroma
 		private:
 			Params params;
 			QuarkSourceSolutions_t quark;
+			std::string cfgInfo;
 		};
     
   } // namespace DilutionQuarkSourceConstEnv

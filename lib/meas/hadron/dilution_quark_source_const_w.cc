@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.11 2008-01-22 21:23:01 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.12 2008-01-24 20:47:18 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -227,12 +227,10 @@ namespace Chroma
 				float kappa; 
 
 				QDPIO::cout << "Attempt to read solutions " << endl;
-		
-				quark.time_slices.resize( params.quark_files.timeslice_files.size() );
-
-				QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << endl;
-
 				
+				quark.time_slices.resize( params.quark_files.timeslice_files.size() );
+				
+				QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << endl;
 
 				for (int t0 = 0 ; t0 < quark.time_slices.size() ; ++t0 )
 				{
@@ -242,7 +240,7 @@ namespace Chroma
 					QDPIO::cout << "dilutions.size = " << 
 						quark.time_slices[t0].dilutions.size() << endl;
 					
-					int time = 0;
+					int time;
 
 					for(int dil = 0; dil < quark.time_slices[t0].dilutions.size(); ++dil)
 					{				
@@ -283,8 +281,16 @@ namespace Chroma
 							XMLReader  proptop(xml_k);
 							
 							read(proptop, "/FermionAction/Kappa", kappa);
-	      			initq = true;
-	    			}
+	      		
+							//Test that config is the same for every dilution 
+							XMLReader xml_tmp(record_xml, "/Propagator/Config_info");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							cfgInfo = os.str();
+
+							initq = true;
+						}
 
 						float kappa2;
 	    			std::istringstream  xml_k2(
@@ -323,16 +329,32 @@ namespace Chroma
 								quark.time_slices[0].dilutions[dil] )
 						{
 							QDPIO::cerr << "Dilutions do not match on time slice " << 
-								t0 << endl;
+								t0 << " dil = "<< dil<< endl;
 
 							QDP_abort(1);
 						}
 
-	  			}//dil
+	  				//Test that this dilution element was created on correct cfg
+						std::string currCfgInfo;
+						{
+							XMLReader xml_tmp(record_xml, "/Propagator/Config_info");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							currCfgInfo = os.str();
+						}
+
+						if (cfgInfo != currCfgInfo)
+						{
+							QDPIO::cerr << "Cfgs do not match on time slice " << 
+								t0 << " dil = "<< dil<< endl;
+
+							QDP_abort(1);
+						}
+					
+					}//dil
 					
 					quark.time_slices[t0].t0 = time;
-
-					
 
 				}//t0
 
@@ -362,8 +384,28 @@ namespace Chroma
 		LatticeFermion ConstDilutionScheme::dilutedSource(int t0, int dil ) const 
 		{
 			const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t &qq = 
-				quark.time_slices[t0].dilutions[dil];
+			quark.time_slices[t0].dilutions[dil];
 
+/*
+			//For now read the source 
+			LatticeFermion sour;
+
+			std::string filename = 
+				params.quark_files.timeslice_files[t0].dilution_files[dil];
+
+			filename.erase(0,9);
+
+			std::string source_filename = "zN_source" + filename;
+
+			XMLReader file_xml, record_xml;
+
+	    QDPIO::cout << "reading file = " << source_filename << endl;
+	    QDPFileReader from(file_xml, source_filename, QDPIO_SERIAL);
+
+			read(from, record_xml, sour);
+*/
+
+			
 			//Dummy gauge field to send to the source construction routine;
 			multi1d<LatticeColorMatrix> dummy;
 			
@@ -389,7 +431,9 @@ namespace Chroma
 			QDP::RNG::setrn( quark.seed );
 
 			LatticeFermion sour = srcConst(dummy);
-/*
+			
+			
+			/*
 			multi1d<int> orig(4);
 			for (int i = 0 ; i < 4 ; ++i)
 			{
@@ -414,7 +458,7 @@ namespace Chroma
 
 			LatticeFermion soln; 
 
-		  XMLReader file_xml, record_xml, record_xml_source;
+		  XMLReader file_xml, record_xml;
 
 	    QDPIO::cout << "reading file = " << filename << endl;
 	    QDPFileReader from(file_xml, filename, QDPIO_SERIAL);
