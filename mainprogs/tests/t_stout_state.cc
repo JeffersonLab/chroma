@@ -1,4 +1,4 @@
-// $Id: t_stout_state.cc,v 3.10 2007-08-09 13:38:36 edwards Exp $
+// $Id: t_stout_state.cc,v 3.11 2008-01-25 22:23:24 edwards Exp $
 
 #include <iostream>
 #include <cstdio>
@@ -79,14 +79,23 @@ int main(int argc, char *argv[])
   multi1d<LatticeColorMatrix> u_smear(Nd);
   multi1d<LatticeColorMatrix> u_tmp(Nd);
 
-  multi1d<bool> smear_dirs(Nd);
-  for(int mu=0; mu < Nd; mu++) {
-    if( mu == orthog_dir ) { 
-      smear_dirs[mu] = false;
+  // Setup stout state smearing params.
+  StoutFermStateParams s_p;
+  s_p.n_smear = n_smear;
+  s_p.rho.resize(Nd, Nd);
+  s_p.smear_in_this_dirP.resize(Nd);
+
+  for(int mu=0; mu < Nd; mu++) { 
+    for(int nu=0; nu < Nd; nu++) {
+      if( mu != nu) { 
+	s_p.rho(mu,nu) = rho;
+      }
+      else {
+	s_p.rho(mu,nu) = 0;
+      }
     }
-    else {
-      smear_dirs[mu] = true;
-    }
+
+    s_p.smear_in_this_dirP[mu] = ( mu == orthog_dir ) ? false : true;
   }
 
   // Get the unsmeared fields into u_tmp
@@ -94,7 +103,7 @@ int main(int argc, char *argv[])
   for(int i=0; i < n_smear; i++) {
     for(int mu=0; mu < Nd; mu++){
       if( mu != orthog_dir) { 
-	stout_smear(u_smear[mu], u_tmp, mu, rho, smear_dirs);
+	Stouting::stout_smear(u_smear[mu], u_tmp, mu, s_p.smear_in_this_dirP, s_p.rho);
       }
       else {
 	u_smear[mu] = u_tmp[mu];
@@ -124,25 +133,7 @@ int main(int argc, char *argv[])
   rgauge(u_rg,g);
 
 
-  // Setup stout state smearing params.
-  StoutFermStateParams s_p;
-  s_p.n_smear = n_smear;
-  s_p.rho.resize(Nd, Nd);
-  s_p.smear_in_this_dirP.resize(Nd);
-
-  
-  for(int mu=0; mu < Nd; mu++) { 
-    for(int nu=0; nu < Nd; nu++) {
-      if( mu != nu) { 
-	s_p.rho(mu,nu) = rho;
-      }
-      else {
-	s_p.rho(mu,nu) = 0;
-      }
-    }
-    s_p.smear_in_this_dirP[mu] = true;
-  }
-
+  // Create the stout ferm states
   typedef LatticeFermion T;
   typedef multi1d<LatticeColorMatrix> P;
   typedef multi1d<LatticeColorMatrix> Q;
@@ -208,9 +199,9 @@ int main(int argc, char *argv[])
 		<< norm2(rg_stout_link- s_state2->getLinks()[mu]) << endl;
 
     LatticeColorMatrix stout_smeared;
-    stout_smear(stout_smeared, u, mu, rho, smear_dirs);
+    Stouting::stout_smear(stout_smeared, u, mu, s_p.smear_in_this_dirP, s_p.rho);
     LatticeColorMatrix rg_stout_smeared;
-    stout_smear(rg_stout_smeared, u_rg, mu, rho, smear_dirs);
+    Stouting::stout_smear(rg_stout_smeared, u_rg, mu, s_p.smear_in_this_dirP, s_p.rho);
 
     QDPIO::cout << "NonStateStoutSmear - StateStoutSmear: " << norm2(stout_smeared - s_state->getLinks()[mu]) << endl;
     QDPIO::cout << "RG: NOnStateStoutSmeared -StateStoutSmeared: " <<norm2( rg_stout_smeared - s_state2->getLinks()[mu]) << endl;
