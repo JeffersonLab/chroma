@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_utils.cc,v 1.3 2007-10-06 15:24:22 edwards Exp $
+// $Id: stout_utils.cc,v 1.4 2008-01-25 22:22:39 edwards Exp $
 /*! \file
  *  \brief Stout utilities
  */
@@ -33,6 +33,22 @@ namespace Chroma
   /*! \ingroup gauge */
   namespace Stouting 
   {
+
+    /*! \ingroup gauge */
+    void getQs(const multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& Q, 
+	       LatticeColorMatrix& QQ,
+	       int mu,
+	       const multi1d<bool>& smear_in_this_dirP,
+	       const multi2d<Real>& rho)
+    {
+      START_CODE();
+      
+      LatticeColorMatrix C;
+      getQsandCs(u, Q, QQ, C, mu, smear_in_this_dirP,rho);
+
+      END_CODE();
+    }
+
 
     /*! \ingroup gauge */
     void getQsandCs(const multi1d<LatticeColorMatrix>& u, LatticeColorMatrix& Q, 
@@ -312,6 +328,24 @@ namespace Chroma
       END_CODE();
     }
      
+    /*! \ingroup gauge */
+    void getFs(const LatticeColorMatrix& Q,
+	       const LatticeColorMatrix& QQ,
+	       multi1d<LatticeComplex>& f)
+    {
+      START_CODE();
+
+      // Now compute the f's -- use the same function as for computing the fs, bs etc in derivative
+      // but don't compute the b-'s
+      multi1d<LatticeComplex> b_1; // Dummy - not used      -- throwaway -- won't even get resized
+      multi1d<LatticeComplex> b_2; // Dummy - not used here -- throwaway -- won't even get resized
+	  
+      getFsAndBs(Q,QQ,f,b_1,b_2,false);   // This routine computes the f-s
+
+      END_CODE();
+    }
+
+
     /*! \ingroup gauge */
     void getFsAndBs(const LatticeColorMatrix& Q,
 		    const LatticeColorMatrix& QQ,
@@ -794,19 +828,13 @@ namespace Chroma
 	if( smear_in_this_dirP[mu] ) 
 	{
 	  LatticeColorMatrix Q, QQ;
-	  LatticeColorMatrix C; // Dummy - not used here
 	  
 	  // Q contains the staple term. C is a throwaway
-	  getQsandCs(current, Q, QQ, C, mu, smear_in_this_dirP, rho);
+	  getQs(current, Q, QQ, mu, smear_in_this_dirP, rho);
 	  
-	  // Now compute the f's -- use the same function as for computing the fs, bs etc in derivative
-	  // but don't compute the b-'s
+	  // Now compute the f's
 	  multi1d<LatticeComplex> f;   // routine will resize these
-	  multi1d<LatticeComplex> b_1; // Dummy - not used      -- throwaway -- won't even get resized
-	  multi1d<LatticeComplex> b_2; // Dummy - not used here -- throwaway -- won't even get resized
-	  
-	  
-	  getFsAndBs(Q,QQ,f,b_1,b_2,false);   // This routine computes the f-s
+	  getFs(Q,QQ,f);   // This routine computes the f-s
 	  
 	  // Assemble the stout links exp(iQ)U_{mu} 
 	  next[mu]=(f[0] + f[1]*Q + f[2]*QQ)*current[mu];      
@@ -816,6 +844,31 @@ namespace Chroma
 	}
 	
       }
+      
+      END_CODE();
+    }
+    
+
+    /*! \ingroup gauge */
+    void stout_smear(LatticeColorMatrix& next,
+		     const multi1d<LatticeColorMatrix>& current, 
+		     int mu,
+		     const multi1d<bool>& smear_in_this_dirP,
+		     const multi2d<Real>& rho)
+    {
+      START_CODE();
+      
+      LatticeColorMatrix Q, QQ;
+	  
+      // Q contains the staple term. C is a throwaway
+      getQs(current, Q, QQ, mu, smear_in_this_dirP, rho);
+	  
+      // Now compute the f's
+      multi1d<LatticeComplex> f;   // routine will resize these
+      getFs(Q,QQ,f);   // This routine computes the f-s
+	  
+      // Assemble the stout links exp(iQ)U_{mu} 
+      next = (f[0] + f[1]*Q + f[2]*QQ)*current[mu];      
       
       END_CODE();
     }

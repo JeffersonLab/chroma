@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: gauge.h,v 3.2 2007-02-04 22:06:42 edwards Exp $
+// $Id: gauge.h,v 3.3 2008-01-25 22:22:39 edwards Exp $
 
 /*! \file
  * \brief Include all gauge utility routines
@@ -23,6 +23,8 @@
 #include "szinqio_gauge_init.h"
 
 #include "gauge_startup.h"   // deprecated
+
+#include "stout_utils.h"
 
 #include "conjgauge.h"
 #include "constgauge.h"

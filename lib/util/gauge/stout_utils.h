@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_utils.h,v 1.2 2006-12-10 01:56:26 edwards Exp $
+// $Id: stout_utils.h,v 1.3 2008-01-25 22:22:39 edwards Exp $
 /*! \file
  *  \brief Stout utilities
  */
@@ -30,6 +30,14 @@ namespace Chroma
   /*! \ingroup gauge */
   namespace Stouting 
   {
+    //! Given field U, form Q and Q^2
+    void getQs(const multi1d<LatticeColorMatrix>& u, 
+	       LatticeColorMatrix& Q, 
+	       LatticeColorMatrix& QQ,
+	       int mu,
+	       const multi1d<bool>& smear_in_this_dirP,
+	       const multi2d<Real>& rho);
+
     //! Given field U, construct the staples into C, form Q and Q^2 and compute  c0 and c1
     void getQsandCs(const multi1d<LatticeColorMatrix>& u, 
 		    LatticeColorMatrix& Q, 
@@ -40,6 +48,12 @@ namespace Chroma
 		    const multi2d<Real>& rho);
 
     //! Given c0 and c1 compute the f-s and b-s
+    /*! \ingroup gauge */
+    void getFs(const LatticeColorMatrix& Q,
+	       const LatticeColorMatrix& QQ,
+	       multi1d<LatticeComplex>& f);
+
+    //! Given c0 and c1 compute the f-s and b-s
     /*! Only compute b-s if do_bs is set to true (default) */
     void getFsAndBs(const LatticeColorMatrix& Q,
 		    const LatticeColorMatrix& QQ,
@@ -48,6 +62,13 @@ namespace Chroma
 		    multi1d<LatticeComplex>& b2,
 		    bool do_bs=true);
     
+    //! Stout smear in a specific link direction
+    void stout_smear(LatticeColorMatrix& next,
+		     const multi1d<LatticeColorMatrix>& current, 
+		     int mu,
+		     const multi1d<bool>& smear_in_this_dirP,
+		     const multi2d<Real>& rho);
+
     //! Do the smearing from level i to level i+1
     void smear_links(const multi1d<LatticeColorMatrix>& current,
 		     multi1d<LatticeColorMatrix>& next, 

@@ -21,9 +21,6 @@
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
 
-/* Build SSE Dslash Op */
-#undef BUILD_SSE_WILSON_DSLASH_OLD
-
 /* Enable Restart in linop syssolvers */
 #undef CHROMA_DO_ONE_CG_RESTART
 
