@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.15 2008-01-24 20:47:19 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.16 2008-01-28 22:55:06 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -245,7 +245,35 @@ namespace Chroma
 	
       multi1d<ThreeQuarkOp_t> ops; /*!< 3-quark ops within a file */
     };
-//---------------------------------------------------------------------------
+
+		//! Write quark 
+		void write(XMLWriter& xml, const string& path, 
+				const ThreeQuarkOps_t::ThreeQuarkOp_t::QuarkInfo_t& input)
+		{
+			push(xml, path);
+
+			write(xml, "Displacement", input.displacement);
+			write(xml, "Spin", input.spin);
+
+			pop(xml);
+		}
+
+		//! Write three quark op 
+		void write(XMLWriter& xml, const string& path, 
+				const ThreeQuarkOps_t::ThreeQuarkOp_t& input)
+		{
+			push(xml, path);
+
+			write(xml, "Quarks", input.quark);
+			write(xml, "Name", input.name);
+
+			pop(xml);
+		}
+	
+
+
+	//---------------------------------------------------------------------------
+
 
 	//! The key for smeared quarks 
 			struct KeySmearedQuark_t
@@ -669,7 +697,8 @@ namespace Chroma
 	    			};
 
 	    			multi1d<Mom_t> mom_projs;         /*!< Holds momentum projections of the operator */
-	  			};
+	  			
+					};
 
 					multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
 	  	
@@ -688,7 +717,12 @@ namespace Chroma
       Seed          seed_m;            /*!< Id of middle quark */
       Seed          seed_r;            /*!< Id of right quark */
 
-      std::string   id;                /*!< Tag/ID used in analysis codes */
+			
+			GroupXML_t    dilution_l;        /*!< Dilution scheme of left quark */ 
+			GroupXML_t    dilution_m;        /*!< Dilution scheme of middle quark */ 
+			GroupXML_t    dilution_r;        /*!< Dilution scheme of right quark */ 
+			
+			std::string   id;                /*!< Tag/ID used in analysis codes */
 
       int           mom2_max;          /*!< |\vec{p}|^2 */
       int           decay_dir;         /*!< Direction of decay */
@@ -711,10 +745,21 @@ namespace Chroma
       write(xml, "seed_l", param.seed_l);
       write(xml, "seed_m", param.seed_m);
       write(xml, "seed_r", param.seed_r);
-      write(xml, "perms", param.perms);
-      xml <<  param.smearing.xml;
-
+			write(xml, "perms", param.perms);
+      
+			push(xml, "dilution_l");
+			xml << param.dilution_l.xml; 
       pop(xml);
+			
+      push(xml, "dilution_m");
+			xml << param.dilution_m.xml; 
+      pop(xml);
+      push(xml, "dilution_r");
+      xml << param.dilution_r.xml; 
+      pop(xml);
+			
+			xml <<  param.smearing.xml;
+
     }
 
 
@@ -967,15 +1012,41 @@ namespace Chroma
 	
 					QDP_abort(1);
 				}
+			
 			}
 
+			//Also ensure that the cfg on which the inversions were performed 
+			//is the same as the cfg that we are using
+			{	
+				std::string cfgInfo; 
 
-      //
-      // Initialize the slow Fourier transform phases
-      //
-      int decay_dir = diluted_quarks[0]->getDecayDir();
+				//Really ugly way of doing this(Robert Heeeelp!!)
+				XMLBufferWriter top;
+				write(top, "Config_info", gauge_xml);
+				XMLReader from(top);
+				XMLReader from2(from, "/Config_info");
+				std::ostringstream os;
+				from2.print(os);
 
-      SftMom phases(params.param.mom2_max, false, decay_dir);
+				cfgInfo = os.str();
+
+				if (cfgInfo != diluted_quarks[0]->getCfgInfo())
+				{
+					QDPIO::cerr << name 
+						<< " : Quarks do not contain the same cfg info as the gauge field."
+						<< "gauge: XX"<<cfgInfo<<"XX quarks: XX"<<diluted_quarks[0]->getCfgInfo()<<"XX"<<  endl;
+
+
+					QDP_abort(1);
+				}
+			}
+
+			//
+			// Initialize the slow Fourier transform phases
+			//
+			int decay_dir = diluted_quarks[0]->getDecayDir();
+
+			SftMom phases(params.param.mom2_max, false, decay_dir);
 
 			// Sanity check - if this doesn't work we have serious problems
 			if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])
@@ -987,7 +1058,6 @@ namespace Chroma
 			}
 
 		
-      //
       // Another sanity check. The seeds of all the quarks must be different
       // and thier decay directions must be the same 
       for(int n = 1 ; n < diluted_quarks.size(); ++n)
@@ -1006,14 +1076,6 @@ namespace Chroma
 
       }
 
-      //
-      // Start the file writer
-      //
-      // There is a file XML
-      // Then, there are separate records for each creation operator
-      // and each annihilation operator
-      //
-      
 			//
       // Smear the gauge field if needed
       //
@@ -1038,20 +1100,14 @@ namespace Chroma
 				QDP_abort(1);
       }
 
-			
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
-			
-		
-			
-		//Used for testing purposes 	
+			//Used for testing purposes 	
 			multi1d<int> orig(4);
 			for (int ind = 0 ; ind < 4 ; ++ind)
 			{
 				orig[ind] = 0;
 			}
-
-
 
       //
       // Read operator coefficients
@@ -1060,7 +1116,6 @@ namespace Chroma
       ThreeQuarkOps_t qqq_oplist; 
 
       readOps(qqq_oplist, params.named_obj.operators_file.ops_file);
-
 
       //
       // Create the source and sink smearing factories 
@@ -1091,8 +1146,6 @@ namespace Chroma
 				QDP_abort(1);
       }
 
-
-
       Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
       try
       {
@@ -1117,13 +1170,9 @@ namespace Chroma
 				QDP_abort(1);
       }
 
-      
-				     
-
       //
       // Baryon operators
       //
-
 
       //
       // Permutations of quarks within an operator
@@ -1147,9 +1196,7 @@ namespace Chroma
 				QDP_abort(1);
       }
 			
-			
 			//Check that the kappas of the supposed identical quarks are the same.
-
       if ( (pstring[0] != pstring[1]) && (pstring[1] == pstring[2]) )
       {
 				num_orderings = 2;
@@ -1221,7 +1268,6 @@ namespace Chroma
 		  //We make all source operators before we make all sink operators to 
 			//save on memory. 
 
-			
 			//Make the source operators 
 			{
 
@@ -1229,23 +1275,21 @@ namespace Chroma
 				SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
 						diluted_quarks, sourceQuarkSmearing, sinkQuarkSmearing, u_smr );
 
-
-					// Creation operator
+				// Creation operator
 				BaryonOperator_t  creat_oper;
 				creat_oper.mom2_max    = params.param.mom2_max;
 				creat_oper.decay_dir   = decay_dir;
 				creat_oper.seed_l      = diluted_quarks[0]->getSeed();
 				creat_oper.seed_m      = diluted_quarks[1]->getSeed();
 				creat_oper.seed_r      = diluted_quarks[2]->getSeed();
+				creat_oper.dilution_l  = params.param.quark_dils[0];
+				creat_oper.dilution_m  = params.param.quark_dils[1];
+				creat_oper.dilution_r  = params.param.quark_dils[2];
 				creat_oper.smearing    = params.param.source_quark_smearing;
 				creat_oper.perms       = perms;
 				creat_oper.time_slices.resize( participating_timeslices.size() );
 
-
-
 				// Construct creation operator
-				QDPIO::cout << "Build Creation operators" << endl;
-
 				// Loop over each operator 
 				for(int l=0; l < qqq_oplist.ops.size(); ++l)
 				{
@@ -1347,9 +1391,9 @@ namespace Chroma
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
 												participating_timeslices[t0] ] );
 
-										QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
+										/*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
 											<< endl;
-										
+											*/	
 										// Slow fourier-transform
 										// We can restrict what the FT routine requires to a subset.
 										multi2d<DComplex> c_sum(phases.sft(c_oper, 
@@ -1400,7 +1444,66 @@ namespace Chroma
 						push(file_xml, "SourceBaryonOperator");
 						write(file_xml, "Params", params.param);
 						write(file_xml, "Config_info", gauge_xml);
-						pop(file_xml);
+						write(file_xml, "Op_Info",qqq_oplist.ops[l]);
+
+						push(file_xml, "QuarkSources");
+						
+						push(file_xml, "Quark_l");
+						push(file_xml, "TimeSlices");
+						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						{
+							push(file_xml, "elem");
+							push(file_xml, "Dilutions");
+							for (int dil = 0; dil < diluted_quarks[0]->getDilSize(t0) ; ++dil)
+							{
+								write( file_xml, "elem", 
+										diluted_quarks[0]->getSourceHeader(t0, dil) );
+							
+							//	QDPIO::cout<< "t0 = " << t0 << " dil = "<< dil <<
+								//	" srdhdr = XX"<<diluted_quarks[0]->getSourceHeader(t0,dil) << endl;
+							}
+							pop(file_xml); //dilutions 
+							pop(file_xml); //elem
+						}
+						pop(file_xml); //TimeSlices
+						pop(file_xml); //Quark_l
+
+						push(file_xml, "Quark_m");
+						push(file_xml, "TimeSlices");
+						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						{
+							push(file_xml, "elem");
+							push(file_xml, "Dilutions");
+							for (int dil = 0; dil < diluted_quarks[1]->getDilSize(t0) ; ++dil)
+							{
+								write( file_xml, "elem", 
+										diluted_quarks[1]->getSourceHeader(t0, dil) );
+							}
+							pop(file_xml); //dilutions 
+							pop(file_xml); //elem
+						}
+						pop(file_xml); //TimeSlices
+						pop(file_xml); //Quark_m
+						
+						push(file_xml, "Quark_r");
+						push(file_xml, "TimeSlices");
+						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						{
+							push(file_xml, "elem");
+							push(file_xml, "Dilutions");
+							for (int dil = 0; dil < diluted_quarks[2]->getDilSize(t0) ; ++dil)
+							{
+								write( file_xml, "elem", 
+										diluted_quarks[2]->getSourceHeader(t0, dil) );
+							}
+							pop(file_xml); //dilutions 
+							pop(file_xml); //elem
+						}
+						pop(file_xml); //TimeSlices
+						pop(file_xml); //Quark_r
+
+						pop(file_xml);//QuarkSources
+						pop(file_xml);//SourceBaryonOp
 
 						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
 								QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
@@ -1442,6 +1545,9 @@ namespace Chroma
 				annih_oper.seed_l      = diluted_quarks[0]->getSeed();
 				annih_oper.seed_m      = diluted_quarks[1]->getSeed();
 				annih_oper.seed_r      = diluted_quarks[2]->getSeed();
+				annih_oper.dilution_l  = params.param.quark_dils[0];
+				annih_oper.dilution_m  = params.param.quark_dils[1];
+				annih_oper.dilution_r  = params.param.quark_dils[2];
 				annih_oper.smearing    = params.param.sink_quark_smearing;
 				annih_oper.perms       = perms;
 				annih_oper.time_slices.resize( participating_timeslices.size() );
@@ -1598,6 +1704,61 @@ namespace Chroma
 						push(file_xml, "SinkBaryonOperator");
 						write(file_xml, "Params", params.param);
 						write(file_xml, "Config_info", gauge_xml);
+						write(file_xml, "Op_Info",qqq_oplist.ops[l]);
+						push(file_xml, "QuarkSources");
+						
+						push(file_xml, "Quark_l");
+						push(file_xml, "TimeSlices");
+						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						{
+							push(file_xml, "elem");
+							push(file_xml, "Dilutions");
+							for (int dil = 0; dil < diluted_quarks[0]->getDilSize(t0) ; ++dil)
+							{
+								write( file_xml, "elem", 
+										diluted_quarks[0]->getSourceHeader(t0, dil) );
+							}
+							pop(file_xml); //dilutions 
+							pop(file_xml); //elem
+						}
+						pop(file_xml); //TimeSlices
+						pop(file_xml); //Quark_l
+
+						push(file_xml, "Quark_m");
+						push(file_xml, "TimeSlices");
+						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						{
+							push(file_xml, "elem");
+							push(file_xml, "Dilutions");
+							for (int dil = 0; dil < diluted_quarks[1]->getDilSize(t0) ; ++dil)
+							{
+								write( file_xml, "elem", 
+										diluted_quarks[1]->getSourceHeader(t0, dil) );
+							}
+							pop(file_xml); //dilutions 
+							pop(file_xml); //elem
+						}
+						pop(file_xml); //TimeSlices
+						pop(file_xml); //Quark_m
+						
+						push(file_xml, "Quark_r");
+						push(file_xml, "TimeSlices");
+						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						{
+							push(file_xml, "elem");
+							push(file_xml, "Dilutions");
+							for (int dil = 0; dil < diluted_quarks[2]->getDilSize(t0) ; ++dil)
+							{
+								write( file_xml, "elem", 
+										diluted_quarks[2]->getSourceHeader(t0, dil) );
+							}
+							pop(file_xml); //dilutions 
+							pop(file_xml); //elem
+						}
+						pop(file_xml); //TimeSlices
+						pop(file_xml); //Quark_r
+
+						pop(file_xml);//QuarkSources
 						pop(file_xml);
 
 						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???

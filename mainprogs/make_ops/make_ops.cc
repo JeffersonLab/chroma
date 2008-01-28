@@ -230,6 +230,10 @@ struct BaryonOperator_t
 	Seed          seed_m;            /*!< Id of middle quark */
 	Seed          seed_r;            /*!< Id of right quark */
 
+	GroupXML_t    dilution_l;        /*!< Dilution scheme of left quark */ 
+	GroupXML_t    dilution_m;        /*!< Dilution scheme of middle quark */ 
+	GroupXML_t    dilution_r;        /*!< Dilution scheme of right quark */ 
+
 	std::string   id;                /*!< Tag/ID used in analysis codes */
 
 	int           mom2_max;          /*!< |\vec{p}|^2 */
@@ -238,20 +242,21 @@ struct BaryonOperator_t
 	multi1d<TimeSlices_t> time_slices; /*!< Time slices of the lattice that are used */
 };
 
+struct ThreeQuarkOp_t
+{
+	struct QuarkInfo_t
+	{
+		int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
+		int  spin;            /*!< 1-based spin index */
+	};
+
+	multi1d<QuarkInfo_t> quarks;
+};
+
 struct GroupBaryonOperator_t
 {
 	struct Term_t
 	{ 
-		struct ThreeQuarkOp_t
-		{
-			struct QuarkInfo_t
-			{
-				int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-				int  spin;            /*!< 1-based spin index */
-			};
-
-			multi1d<QuarkInfo_t> quarks;
-		};
 
 		ThreeQuarkOp_t op;
 		DComplex coeff;
@@ -279,6 +284,9 @@ void read(XMLReader& xml, const string& path, BaryonOperator_t& param)
       read(paramtop, "seed_l", param.seed_l);
       read(paramtop, "seed_m", param.seed_m);
       read(paramtop, "seed_r", param.seed_r);
+      read(paramtop, "dilution_l", param.dilution_l);
+      read(paramtop, "dilution_m", param.dilution_m);
+      read(paramtop, "dilution_r", param.dilution_r);
       read(paramtop, "perms", param.perms);
   
 			//read the smearing??!!
@@ -304,6 +312,9 @@ void write(XMLWriter& xml, const string& path, BaryonOperator_t& param)
       write(xml, "seed_l", param.seed_l);
       write(xml, "seed_m", param.seed_m);
       write(xml, "seed_r", param.seed_r);
+      write(xml, "dilution_l", param.dilution_l);
+      write(xml, "dilution_m", param.dilution_m);
+      write(xml, "dilution_r", param.dilution_r);
       write(xml, "perms", param.perms);
   
 			//write the smearing??
@@ -528,6 +539,9 @@ void initOp (BaryonOperator_t &oper , const BaryonOperator_t &elem_oper )
 	oper.seed_l = elem_oper.seed_l;
 	oper.seed_m = elem_oper.seed_m;
 	oper.seed_r = elem_oper.seed_r;
+	oper.dilution_l = elem_oper.dilution_l;
+	oper.dilution_m = elem_oper.dilution_m;
+	oper.dilution_r = elem_oper.dilution_r;
 	oper.perms = elem_oper.perms;	
 
 	int Nord = elem_oper.perms.size();
@@ -616,49 +630,318 @@ void addTo(BaryonOperator_t &oper, const BaryonOperator_t &elem_oper,
 } //void
 
 //Test if all elemental ops have the same configs, dilution schemes, seeds, decay_dirs 
-//Will also return true for inconsistentcies within opB
-bool opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops) 
+//Will also return true for similiar inconsistentcies within an op 
+void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops) 
 {
-	bool error = false;
 
 	//Tests
-	{
-		Nbins = ops[0].cgs.size();
+		
+	//Grab info from first op 
+		int Nbins = ops[0].cfgs.size();
+		int Nt = ops[0].cfgs[0].timeslices.size();
+		int Ndil = ops[0].cfgs[0].timeslices[0].dilutions.size();
 
-		//first check that all the ops have the same number of configs 
   	for (int i = 0 ; i < ops.size() ; ++i )  	
 		{
 
-			notEqual |= toBool(ops[i].cfgs.size() = opB.cfgs.size());
+			//Grab info from the current op  
+			int currNbins = ops[i].cfgs.size();
+			int currNt = ops[i].cfgs[0].timeslices.size();
+			int currNdil = ops[i].cfgs[0].timeslices[0].dilutions.size();
+			
+			//first check that this op has same info as first op
+			if ( toBool( currNbins != Nbins ) )
+			{
+				QDPIO::cerr<< "Inconsistent(with first op) number of configs: op"
+					<< i << endl; 
+				QDP_abort(1);
+			}
+
+			if (currNt != Nt )
+			{
+				QDPIO::cerr<< "Inconsistent(with first op) number of timeslices: op"
+					<< i << endl; 
+				QDP_abort(1);
+			}
+
+			if (Ndil != currNdil)
+			{
+				QDPIO::cerr<< "Inconsistent(with first op) number of dilutions per timeslice: op"
+					<< i << endl; 
+				QDP_abort(1);
+			}
+
+			for (int n = 0 ; n < Nbins ; ++n )
+			{
+
+				//check that all cfgs have same info within the op
+				if ( ops[i].cfgs[n].timeslices.size() != currNt )
+				{
+					QDPIO::cerr<< "Inconsistent number of timeslices: op"
+						<< i << " cfg " << n << endl; 
+					QDP_abort(1);
+				}
+				
+				//Grab cfgInfo from first op 
+				std::string cfgInfo; 
+				{
+					XMLReader file_xml, record_xml;
+					LatticeFermion sol;
+
+					const std::string & filename = 
+						ops[0].cfgs[n].time_slices[0].dilutions[0].src_file;
+
+					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+					read(rdr, record_xml, sol);
+	
+					XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/Config_info");
+					std::ostringstream os;
+					xml_tmp.print(os);
+
+					cfgInfo = os.str();
+						
+					rdr.close();
+				}
+					
+				//Grab cfgInfo from current op
+				std::string currCfgInfo; 
+				{
+					XMLReader file_xml, record_xml;
+					BinaryReader sol;
+
+					const std::string & filename = 
+						ops[i].cfgs[n].time_slices[0].dilutions[0].src_file;
+
+					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+					read(rdr, record_xml, sol);
+	
+					XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/ConfigInfo");
+					std::ostringstream os;
+					xml_tmp.print(os);
+
+					currCfgInfo = os.str();
+						
+					rdr.close();
+				}
+
+				if (cfgInfo != currCfgInfo)
+				{
+					QDPIO::cerr<<"Configs do not match for all ops: op "<<
+						i << endl;
+					QDP_abort(1);
+				}
+
+				for (int t0 = 0 ; t0 < Nt ; ++t0)
+				{
+
+					//check that all files for this op have same info
+					if ( ops[i].cfgs[n].timeslices[t0].dilutions.size() != Ndil ) 
+					{
+						QDPIO::cerr<< "Inconsistent number of dilutions: op"
+							<< i << " cfg " << n << "timeslice " << t0 << endl; 
+						QDP_abort(1);
+					}
+
+					for (int dil = 0 ; dil < Ndil ; ++dil)
+					{
+						//Open the current op files 
+						XMLReader srcFileXML, srcRecordXML;
+						XMLReader snkFileXML, snkRecordXML;
+
+						{
+							BinaryBufferReader dummy;	
+							const std::string & filename = 
+								ops[i].cfgs[n].time_slices[t0].dilutions[dil].src_file;
+
+							QDPFileReader rdr(srcFileXml, filename, QPIO_SERIAL);
+							read(rdr, srcRecordXml, sol);
+						}	
+						
+						{
+							BinaryBufferReader dummy;	
+							const std::string & filename = 
+								ops[i].cfgs[n].time_slices[t0].dilutions[dil].snk_file;
+
+							QDPFileReader rdr(snkFileXml, filename, QPIO_SERIAL);
+							read(rdr, snkRecordXml, dummy);
+						}	
+						
+					//Open first op files	
+					//Note: all time slices must match as well as src and snk 
+						XMLReader firstFileXML, firstRecordXML;
+						{
+							BinaryBufferReader dummy;	
+							const std::string & filename = 
+								ops[0].cfgs[0].time_slices[0].dilutions[dil].src_file;
+
+							QDPFileReader rdr(firstFileXml, filename, QPIO_SERIAL);
+							read(rdr, firstRecordXml, dummy);
+						}	
+						
+						//Now check stuff for each file	
+
+						//Do the cfgs match?
+						std::string srcCfgInfo, snkCfgInfo; 
+
+						{
+							XMLReader xml_tmp(srcRecordXml, "/SourceBaryonOperator/ConfigInfo");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							srcCfgInfo = os.str();
+						}
+
+						{
+							XMLReader xml_tmp(snkRecordXml, "/SourceBaryonOperator/ConfigInfo");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							snkCfgInfo = os.str();
+						}
+						
+						if (snkCfgInfo != cfgInfo)	
+						{
+							QDPIO::cout<<"Sink cfgInfo is inconsistent. : cfg = "<<n << " t0 = "<<
+								t0 << " dil = "<<dil<<endll;
+
+							QDP_abort(1);
+						}
+
+						if (srcCfgInfo != cfgInfo)	
+						{
+							QDPIO::cout<<"Source cfgInfo is inconsistent. : cfg = "<<n << " t0 = "<<
+								t0 << " dil = "<<dil<<endll;
+
+							QDP_abort(1);
+						}
+
+
+						//Do the dilutions match?
+						std::string firstDil, srcDil, sinkDil;
+						{
+							XMLReader xml_tmp(snkFileXml, "/SourceBaryonOperator/QuarkSources");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							snkDil = os.str();
+						}
+					
+						{
+							XMLReader xml_tmp(srcFileXml, "/SourceBaryonOperator/QuarkSources");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							srcDil = os.str();
+						}
+					
+						{
+							XMLReader xml_tmp(firstFileXml, "/SourceBaryonOperator/QuarkSources");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							firstDil = os.str();
+						}
+					
+						if (firstDil != snkDil) 
+						{
+							QDPIO::cerr<< "Dilution scheme does not match: snkOp = " <<i<<
+								" cfg = "<< n << " t0 = " << t0 << " dil = " << dil <<endl;
+							
+							QDP_abort(1);
+						}
+
+						if (firstDil != srcDil) 
+						{
+							QDPIO::cerr<< "Dilution scheme does not match: srcOp = " <<i<<
+								" cfg = "<< n << " t0 = " << t0 << " dil = " << dil <<endl;
+							
+							QDP_abort(1);
+						}
+
+					}//dil		
+
+				}//t0
+
+			}//Nbins 
+
+		}//Nops 
+
+}//opsError
+
+//Elemental Operator Maps 
+struct ElementalOpKey_t
+{
+	int cfg; 
+	ThreeQuarkOp_t op; 
+}
+
+//support for elOpmap
+
+bool operator<(const ElementalOpKey_t& keyOpA, const ElementalOpKey_t& keyOpB) 
+{
+	multi1d<int> lga(7); 
+	lga[0] = keyOpA.cfg;
+	lga[1] = keyOpA.op.quarks[0].displacement;
+	lga[2] = keyOpA.op.quarks[0].spin;
+	lga[3] = keyOpA.op.quarks[1].displacement;
+	lga[4] = keyOpA.op.quarks[1].spin;
+	lga[5] = keyOpA.op.quarks[2].displacement;
+	lga[6] = keyOpA.op.quarks[2].spin;
+
+	multi1d<int> lgb(7); 
+	lgb[0] = keyOpB.cfg;
+	lgb[1] = keyOpB.op.quarks[0].displacement;
+	lgb[2] = keyOpB.op.quarks[0].spin;
+	lgb[3] = keyOpB.op.quarks[1].displacement;
+	lgb[4] = keyOpB.op.quarks[1].spin;
+	lgb[5] = keyOpB.op.quarks[2].displacement;
+	lgb[6] = keyOpB.op.quarks[2].spin;
+
+	return (lga < lgb);
+}
+
+class ElementalOpMaps
+{
+	public:
+		//Constructor
+		ElementalOpMaps(const multi1d<InputFiles_t::ElementalOpFiles_t>& elOpFiles);
 		
-		if (notEqual)
-		{
-			QDPIO::cerr<< "Invalid number of configs"<<endl; 
-			break;
-		}
+		//Destructor
+		~ElementalOpMaps() {}
 
-		//Now check that the configs are the same for the two ops as well as for 
-		for (int n = 0 ; n = 
+		//Acessors		
+		BaryonOperator_t getSourceOp(const ElementalOpKey_t& opKey) const;	
+		
+		BaryonOperator_t getSourceOp(const ElementalOpKey_t& opKey) const;	
 
+	private:
+		map<ElementalOpKey_t, InputFiles_t::ElementalOpFiles_t> srcMap; 
+		map<ElementalOpKey_t, InputFiles_t::ElementalOpFiles_t> snkMap; 
+};	
 
+//Constructor
+ElementalOpMaps::ElementalOpMaps(
+		const multi1d<InputFiles::ElementalOpFiles_t>& elOpFiles)
+{
+	}
 
 int main(int argc, char **argv)
 {
 
 	// Put the machine into a known state
-  Chroma::initialize(&argc, &argv);
-  //  linkageHack();
+	Chroma::initialize(&argc, &argv);
+	//  linkageHack();
 
-  // Put this in to enable profiling etc.
-  START_CODE();
+	// Put this in to enable profiling etc.
+	START_CODE();
 
 	//Read Input params from xml
 	MakeOpsInput_t input;
 
 	XMLReader xml_in;
-	
+
 	StopWatch swatch, snoop;
-	
+
 	swatch.reset();
 	swatch.start();
 
@@ -719,16 +1002,9 @@ int main(int argc, char **argv)
 		QDP_abort(1);
 	}
 
-	//Does each input op contain the same configs, dilution scheme, quarks, time dir?
-	for (int l = 1 ; l < Nelem ; ++l)
-	{
-		//I'm afraid of overloading the != operator here 
-		if ( input.input_files.elem_op_files[l] != input.input_files.elem_op_files[0])
-		{
-			QDPIO::cerr << "Inconsistent configs, dilution scheme, or quark seeds: Elemental Op "<< l <<endl;
-			QDP_abort(1);
-		}
-	}
+
+	//Check consistencies with cfgs, dilutions for all elemental ops
+	opsError();
 
 	//-------------------------------------------------------------
 
@@ -738,7 +1014,7 @@ int main(int argc, char **argv)
 	QDPIO::cout << " MAKE_OPS: construct baryon operators" << endl;
 
 	//Elemental Operator maps 
-	ElemetentalOpMaps el_op_maps(input.input_files.elem_op_files);
+	ElementalOpMaps el_op_maps(input.input_files.elem_op_files);
 		
 	//loop over configurations
 	for (int i = 0 ; i < Nbins ; ++i)

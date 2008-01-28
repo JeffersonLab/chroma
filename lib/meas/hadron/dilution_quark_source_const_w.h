@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.11 2008-01-24 20:47:18 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.12 2008-01-28 22:55:06 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -126,11 +126,22 @@ namespace Chroma
 			}
      
 			//! The info from the cfg on which the inversions were performed
-			virtual std::string getCfgInfo() const
+			std::string getCfgInfo() const
 			{
 				return cfgInfo;
 			}
 
+			//! returns the prop header for a given dilution
+			std::string getPropHeader(int t0, int dil) const 
+			{
+				return quark.time_slices[t0].dilutions[dil].prop_header.fermact.xml;
+			}
+
+			//! returns the source header for a given dilution
+			std::string getSourceHeader(int t0, int dil) const 
+			{
+				return quark.time_slices[t0].dilutions[dil].source_header.source.xml;
+			}
 
 			//! Return the diluted source vector
       LatticeFermion dilutedSource(int t0, int dil) const;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.5 2008-01-24 20:47:18 jbulava Exp $
+// $Id: dilution_scheme.h,v 1.6 2008-01-28 22:55:06 jbulava Exp $
 /*! \file
  *  \brief Dilution Schemes
  */
@@ -43,7 +43,11 @@ namespace Chroma
 
 		virtual std::string getCfgInfo() const = 0;
 
-    //! Return the diluted source vector
+		virtual	std::string getPropHeader(int t0, int dil) const = 0; 
+    
+		virtual	std::string getSourceHeader(int t0, int dil) const = 0; 
+
+		//! Return the diluted source vector
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? PROBABLY NO */
     virtual T dilutedSource(int t0, int dil ) const = 0;
     
