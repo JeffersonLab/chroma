@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.16 2008-01-28 22:55:06 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.17 2008-01-29 23:09:49 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -707,6 +707,7 @@ namespace Chroma
 	  
       	multi1d<Orderings_t> orderings;  			/*!< Array is over quark orderings */
       
+				int t0; 														/*!< Actual time corresponding to this timeslice */
 			};
 
       multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
@@ -788,7 +789,8 @@ namespace Chroma
     void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t& param)
     {
       write(bin, param.orderings);
-    }
+    	write(bin, param.t0);
+		}
 
     //! BaryonOperator binary writer
     void write(BinaryWriter& bin, const BaryonOperator_t& param)
@@ -1317,6 +1319,7 @@ namespace Chroma
 					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
 					{
 
+						creat_oper.time_slices[t0].t0 = participating_timeslices[t0];
 						creat_oper.time_slices[t0].orderings.resize(num_orderings);
 
 						for(int ord = 0; ord < num_orderings ; ++ord)
@@ -1577,7 +1580,7 @@ namespace Chroma
 
 					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
 					{
-
+						annih_oper.time_slices[t0].t0 = participating_timeslices[t0];
 						annih_oper.time_slices[t0].orderings.resize(num_orderings);
 
 						for(int ord = 0 ; ord < num_orderings ; ++ord)

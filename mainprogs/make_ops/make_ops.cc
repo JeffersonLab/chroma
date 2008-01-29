@@ -34,14 +34,8 @@ struct InputFiles_t
 		{
 			struct TimeSlices_t 
 			{
-				struct Dilutions_t
-				{
 						std::string src_file;  /*!< File containing the source operator */
 						std::string snk_file;  /*!< File containing the sink operator */
-				};
-				
-				multi1d<Dilutions_t> dilutions; /*!< Different dilution elements(per timeslice) may be in different files	*/
-				
 			};
 			
 			multi1d<TimeSlices_t> time_slices; /*!< Different dilution timeslices (most likely) will be in different files */
@@ -121,22 +115,14 @@ void read(XMLReader& xml, const string& path, OutputInfo_t& input)
 	read(inputtop, "CfgOutputPaths", input.cfg_paths);
 }
 
-//! Reader for a single dilution (per timeslice) of elemental op files  
+//! Reader for a timeslice of elemental op files  
 void read(XMLReader& xml, const string& path, 
-		InputFiles_t::ElementalOpFiles_t::Config_t::TimeSlices_t::Dilutions_t & input)
+		InputFiles_t::ElementalOpFiles_t::Config_t::TimeSlices_t& input)
 {
 	XMLReader inputtop(xml, path);
 
 	read(inputtop, "CreationOperatorFile", input.src_file);
 	read(inputtop, "AnnihilationOperatorFile", input.snk_file);
-}
-
-//! Reader for a single dilution timeslice of elemental op files 
-void read(XMLReader& xml, const string& path, InputFiles_t::ElementalOpFiles_t::Config_t::TimeSlices_t & input)
-{
-	XMLReader inputtop(xml, path);
-
-	read(inputtop, "DilutionsPerTimeSlice", input.dilutions);
 }
 
 //! Reader for a single config of elemental operator files 
@@ -639,16 +625,36 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 	//Grab info from first op 
 		int Nbins = ops[0].cfgs.size();
 		int Nt = ops[0].cfgs[0].timeslices.size();
-		int Ndil = ops[0].cfgs[0].timeslices[0].dilutions.size();
 
+		//Grab opInfo from first op
   	for (int i = 0 ; i < ops.size() ; ++i )  	
 		{
 
 			//Grab info from the current op  
 			int currNbins = ops[i].cfgs.size();
 			int currNt = ops[i].cfgs[0].timeslices.size();
-			int currNdil = ops[i].cfgs[0].timeslices[0].dilutions.size();
-			
+
+			//Grab opInfo from current op 
+				std::string opInfo; 
+				{
+					XMLReader file_xml, record_xml;
+					BinaryBufferReader dummy;
+
+					const std::string & filename = 
+						ops[i].cfgs[0].time_slices[0].src_file;
+
+					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+					read(rdr, record_xml, dummy);
+	
+					XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/Op_Info");
+					std::ostringstream os;
+					xml_tmp.print(os);
+
+					opInfo = os.str();
+						
+					rdr.close();
+				}
+
 			//first check that this op has same info as first op
 			if ( toBool( currNbins != Nbins ) )
 			{
@@ -660,13 +666,6 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 			if (currNt != Nt )
 			{
 				QDPIO::cerr<< "Inconsistent(with first op) number of timeslices: op"
-					<< i << endl; 
-				QDP_abort(1);
-			}
-
-			if (Ndil != currNdil)
-			{
-				QDPIO::cerr<< "Inconsistent(with first op) number of dilutions per timeslice: op"
 					<< i << endl; 
 				QDP_abort(1);
 			}
@@ -689,7 +688,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 					LatticeFermion sol;
 
 					const std::string & filename = 
-						ops[0].cfgs[n].time_slices[0].dilutions[0].src_file;
+						ops[0].cfgs[n].time_slices[0].src_file;
 
 					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
 					read(rdr, record_xml, sol);
@@ -710,7 +709,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 					BinaryReader sol;
 
 					const std::string & filename = 
-						ops[i].cfgs[n].time_slices[0].dilutions[0].src_file;
+						ops[i].cfgs[n].time_slices[0].src_file;
 
 					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
 					read(rdr, record_xml, sol);
@@ -734,16 +733,6 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 				for (int t0 = 0 ; t0 < Nt ; ++t0)
 				{
 
-					//check that all files for this op have same info
-					if ( ops[i].cfgs[n].timeslices[t0].dilutions.size() != Ndil ) 
-					{
-						QDPIO::cerr<< "Inconsistent number of dilutions: op"
-							<< i << " cfg " << n << "timeslice " << t0 << endl; 
-						QDP_abort(1);
-					}
-
-					for (int dil = 0 ; dil < Ndil ; ++dil)
-					{
 						//Open the current op files 
 						XMLReader srcFileXML, srcRecordXML;
 						XMLReader snkFileXML, snkRecordXML;
@@ -751,7 +740,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 						{
 							BinaryBufferReader dummy;	
 							const std::string & filename = 
-								ops[i].cfgs[n].time_slices[t0].dilutions[dil].src_file;
+								ops[i].cfgs[n].time_slices[t0].src_file;
 
 							QDPFileReader rdr(srcFileXml, filename, QPIO_SERIAL);
 							read(rdr, srcRecordXml, sol);
@@ -760,7 +749,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 						{
 							BinaryBufferReader dummy;	
 							const std::string & filename = 
-								ops[i].cfgs[n].time_slices[t0].dilutions[dil].snk_file;
+								ops[i].cfgs[n].time_slices[t0].snk_file;
 
 							QDPFileReader rdr(snkFileXml, filename, QPIO_SERIAL);
 							read(rdr, snkRecordXml, dummy);
@@ -772,7 +761,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 						{
 							BinaryBufferReader dummy;	
 							const std::string & filename = 
-								ops[0].cfgs[0].time_slices[0].dilutions[dil].src_file;
+								ops[0].cfgs[0].time_slices[0].src_file;
 
 							QDPFileReader rdr(firstFileXml, filename, QPIO_SERIAL);
 							read(rdr, firstRecordXml, dummy);
@@ -845,7 +834,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 						if (firstDil != snkDil) 
 						{
 							QDPIO::cerr<< "Dilution scheme does not match: snkOp = " <<i<<
-								" cfg = "<< n << " t0 = " << t0 << " dil = " << dil <<endl;
+								" cfg = "<< n << " t0 = " << t0 <<endl;
 							
 							QDP_abort(1);
 						}
@@ -853,12 +842,70 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 						if (firstDil != srcDil) 
 						{
 							QDPIO::cerr<< "Dilution scheme does not match: srcOp = " <<i<<
-								" cfg = "<< n << " t0 = " << t0 << " dil = " << dil <<endl;
+								" cfg = "<< n << " t0 = " << t0 << endl;
 							
 							QDP_abort(1);
 						}
 
-					}//dil		
+					
+						//Check that all files for a single op indeed belong to the same op
+
+						//Grab opInfo from current op 
+						std::string srcOpInfo; 
+						{
+							XMLReader file_xml, record_xml;
+							BinaryBufferReader dummy;
+
+							const std::string & filename = 
+								ops[i].cfgs[n].time_slices[t0].src_file;
+
+							QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+							read(rdr, record_xml, dummy);
+
+							XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/Op_Info");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							opInfo = os.str();
+
+							rdr.close();
+						}
+
+						std::string snkOpInfo; 
+						{
+							XMLReader file_xml, record_xml;
+							BinaryBufferReader dummy;
+
+							const std::string & filename = 
+								ops[i].cfgs[n].time_slices[t0].snk_file;
+
+							QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+							read(rdr, record_xml, dummy);
+
+							XMLReader xml_tmp(record_xml, "/SinkBaryonOperator/Op_Info");
+							std::ostringstream os;
+							xml_tmp.print(os);
+
+							opInfo = os.str();
+
+							rdr.close();
+						}
+
+						if ( opInfo != srcOpInfo)
+						{
+							QDPIO::cerr<< "Src Op not the same: op = "<< i << " cfg = "
+								<< n << " t0 = " << t0 << endl;
+
+							QDP_abort(1);
+						}
+						
+						if ( opInfo != snkOpInfo)
+						{
+							QDPIO::cerr<< "Snk Op not the same: op = "<< i << " cfg = "
+								<< n << " t0 = " << t0 << endl;
+
+							QDP_abort(1);
+						}
 
 				}//t0
 
@@ -871,59 +918,250 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 //Elemental Operator Maps 
 struct ElementalOpKey_t
 {
-	int cfg; 
 	ThreeQuarkOp_t op; 
-}
+};
+
+struct ElementalOpEntry_t
+{
+	InputFiles_t::ElementalOpFiles_t opFiles;
+};
 
 //support for elOpmap
 
 bool operator<(const ElementalOpKey_t& keyOpA, const ElementalOpKey_t& keyOpB) 
 {
-	multi1d<int> lga(7); 
-	lga[0] = keyOpA.cfg;
-	lga[1] = keyOpA.op.quarks[0].displacement;
-	lga[2] = keyOpA.op.quarks[0].spin;
-	lga[3] = keyOpA.op.quarks[1].displacement;
-	lga[4] = keyOpA.op.quarks[1].spin;
-	lga[5] = keyOpA.op.quarks[2].displacement;
-	lga[6] = keyOpA.op.quarks[2].spin;
+	multi1d<int> lga(6); 
+	lga[0] = keyOpA.op.quarks[0].displacement;
+	lga[1] = keyOpA.op.quarks[0].spin;
+	lga[2] = keyOpA.op.quarks[1].displacement;
+	lga[3] = keyOpA.op.quarks[1].spin;
+	lga[4] = keyOpA.op.quarks[2].displacement;
+	lga[5] = keyOpA.op.quarks[2].spin;
 
-	multi1d<int> lgb(7); 
-	lgb[0] = keyOpB.cfg;
-	lgb[1] = keyOpB.op.quarks[0].displacement;
-	lgb[2] = keyOpB.op.quarks[0].spin;
-	lgb[3] = keyOpB.op.quarks[1].displacement;
-	lgb[4] = keyOpB.op.quarks[1].spin;
-	lgb[5] = keyOpB.op.quarks[2].displacement;
-	lgb[6] = keyOpB.op.quarks[2].spin;
+	multi1d<int> lgb(6); 
+	lgb[0] = keyOpB.op.quarks[0].displacement;
+	lgb[1] = keyOpB.op.quarks[0].spin;
+	lgb[2] = keyOpB.op.quarks[1].displacement;
+	lgb[3] = keyOpB.op.quarks[1].spin;
+	lgb[4] = keyOpB.op.quarks[2].displacement;
+	lgb[5] = keyOpB.op.quarks[2].spin;
 
 	return (lga < lgb);
 }
 
-class ElementalOpMaps
+class ElementalOpMap
 {
 	public:
 		//Constructor
-		ElementalOpMaps(const multi1d<InputFiles_t::ElementalOpFiles_t>& elOpFiles);
+		ElementalOpMap(const multi1d<InputFiles_t::ElementalOpFiles_t>& elOpFiles);
 		
 		//Destructor
-		~ElementalOpMaps() {}
+		~ElementalOpMap() {}
 
 		//Acessors		
-		BaryonOperator_t getSourceOp(const ElementalOpKey_t& opKey) const;	
+		BaryonOperator_t getSourceOp(const ElementalOpKey_t& opKey, int cfg) const;	
 		
-		BaryonOperator_t getSourceOp(const ElementalOpKey_t& opKey) const;	
+		BaryonOperator_t getSinkOp(const ElementalOpKey_t& opKey, int cfg) const;	
 
 	private:
-		map<ElementalOpKey_t, InputFiles_t::ElementalOpFiles_t> srcMap; 
-		map<ElementalOpKey_t, InputFiles_t::ElementalOpFiles_t> snkMap; 
+		map<ElementalOpKey_t, ElementalOpEntry_t> elemMap; 
 };	
 
 //Constructor
-ElementalOpMaps::ElementalOpMaps(
+ElementalOpMap::ElementalOpMap(
 		const multi1d<InputFiles::ElementalOpFiles_t>& elOpFiles)
 {
-	}
+
+	int Nelem = elOpFiles.size();
+
+	for( int i = 0 ; i < Nelem ; ++i )
+	{
+			//grab op info from src
+			ElementalOpKey_t key;
+			{
+				XMLReader file_xml, record_xml;
+				BinaryBufferReader dummy;
+
+				const std::string & filename = 
+					elOpFiles[i].cfgs[0].time_slices[0].src_file;
+
+				QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+				read(rdr, record_xml, dummy);
+				
+				read(record_xml, "/SourceBaryonOperator/Op_Info", key.op); 
+				rdr.close();
+			}
+
+			//If entry is not in map create it
+			if ( elemMap.find(key) == elemMap.end() )
+			{
+			
+				// Insert empty entries and then modify them. This saves on
+			  // copying the data around
+			  {
+					ElementalOpEntry_t empty;
+			    elemMap.insert(std::make_pair(key, empty));
+
+					// Sanity check - the entry better be there
+			    if ( elemMap.find(key) == elemMap.end() )
+			    {
+				    QDPIO::cerr << __func__
+			       << ": internal error - could not insert empty key in map"
+			       << endl;
+			
+						QDP_abort(1);
+					}	
+			
+					// Modify the previous empty entry
+			
+					ElementalOpEntry_t& elem = elemMap.find(key)->second;
+
+					elem.opFiles = elOpFiles[i]; 
+		
+				}
+
+			}
+			else
+			{
+				QDPIO::cerr<< "Multiple copies of the same op in input: Op = "<< i << endl;
+				QDP_abort(1);
+			}
+
+	} //i 
+
+}
+
+BaryonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t opKey, int cfg) const
+{
+
+	BaryonOperator_t source;
+
+	bool init = false; 
+
+	if (elemMap.find(key) != elemMap.end() )
+	{
+		const ElementalOpEntry_t & opFiles = elemMap.find(opKey)->second;
+
+		int Nt = opFiles.cfg[cfg].timeslices.size();
+
+		for (int t0 = 0 ; t0 < Nt ; ++t0)
+		{
+				BaryonOperator_t currOp; 
+
+				std::string srcFile = opFiles.cfg[cfg].timeslices[t0].srcFile;
+
+				XMLReader file_xml, record_xml;
+				BinaryBufferReader dummy;
+
+				QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+				read(rdr, record_xml, dummy);
+				
+				read(dummy, currOp); 
+				
+				rdr.close();
+
+				if (!init)
+				{
+					source.mom2_max= currOp.mom2_max;
+					source.decay_dir = currOp.decay_dir;
+					source.seed_l = currOp.seed_l;
+					source.seed_m = currOp.seed_m;
+					source.seed_r = currOp.seed_r;
+					source.dilution_l = currOp.dilution_l;
+					source.dilution_m = currOp.dilution_m;
+					source.dilution_r = currOp.dilution_r;
+					source.perms = currOp.perms;	
+
+					source.time_slices.resize(Nt);
+					
+					init = true; 
+				}
+
+				//Assume each elem. Op file contains only one timeslice
+				if ( currOp.time_slices.size() != 1)
+				{
+					QDPIO::cerr << "ERROR: each elemental op file must contain a single timeslice" << endl;
+					QDP_abort(1); 
+				}
+
+				source.time_slices[t0] = currOp.time_slices[0] ; 
+
+			} //t0
+		} //if in map
+		else
+		{
+			QDPIO::cerr<< " Elemental operator not found in map."<<endl;
+			QDP_abort(1);
+		}
+
+		return source;
+} //getSourceOP
+
+BaryonOperator_t ElementalOpMap::getSinkOp(const ElementalOpKey_t opKey, int cfg) const
+{
+
+	BaryonOperator_t sink;
+
+	bool init = false; 
+
+	if (elemMap.find(key) != elemMap.end() )
+	{
+		const ElementalOpEntry_t & opFiles = elemMap.find(opKey)->second;
+
+		int Nt = opFiles.cfg[cfg].timeslices.size();
+
+		for (int t0 = 0 ; t0 < Nt ; ++t0)
+		{
+				BaryonOperator_t currOp; 
+
+				std::string snkFile = opFiles.cfg[cfg].timeslices[t0].snkFile;
+
+				XMLReader file_xml, record_xml;
+				BinaryBufferReader dummy;
+
+				QDPFileReader rdr(file_xml, snkFile, QPIO_SERIAL);
+				read(rdr, record_xml, dummy);
+				
+				read(dummy, currOp); 
+				
+				rdr.close();
+
+				if (!init)
+				{
+					sink.mom2_max= currOp.mom2_max;
+					sink.decay_dir = currOp.decay_dir;
+					sink.seed_l = currOp.seed_l;
+					sink.seed_m = currOp.seed_m;
+					sink.seed_r = currOp.seed_r;
+					sink.dilution_l = currOp.dilution_l;
+					sink.dilution_m = currOp.dilution_m;
+					sink.dilution_r = currOp.dilution_r;
+					sink.perms = currOp.perms;	
+
+					sink.time_slices.resize(Nt);
+					
+					init = true; 
+				}
+
+				//Assume each elem. Op file contains only one timeslice
+				if ( currOp.time_slices.size() != 1)
+				{
+					QDPIO::cerr << "ERROR: each elemental op file must contain a single timeslice" << endl;
+					QDP_abort(1); 
+				}
+
+				sink.time_slices[t0] = currOp.time_slices[0] ; 
+
+			} //t0
+		} //if in map
+		else
+		{
+			QDPIO::cerr<< " Elemental operator not found in map."<<endl;
+			QDP_abort(1);
+		}
+
+		return sink;
+} //getSinkOp
 
 int main(int argc, char **argv)
 {
@@ -946,42 +1184,42 @@ int main(int argc, char **argv)
 	swatch.start();
 
 	try
-  {
-    xml_in.open(Chroma::getXMLInputFileName());
-    read(xml_in, "/MakeOps", input);
-  }
-  catch(const std::string& e) 
-  {
-    QDPIO::cerr << "MAKEOPS: Caught Exception reading XML: " << e << endl;
-    QDP_abort(1);
-  }
-  catch(std::exception& e) 
-  {
-    QDPIO::cerr << "MAKEOPS: Caught standard library exception: " << e.what() << endl;
-    QDP_abort(1);
-  }
-  catch(...)
-  {
-    QDPIO::cerr << "MAKEOPS: caught generic exception reading XML" << endl;
-    QDP_abort(1);
-  }
+	{
+		xml_in.open(Chroma::getXMLInputFileName());
+		read(xml_in, "/MakeOps", input);
+	}
+	catch(const std::string& e) 
+	{
+		QDPIO::cerr << "MAKEOPS: Caught Exception reading XML: " << e << endl;
+		QDP_abort(1);
+	}
+	catch(std::exception& e) 
+	{
+		QDPIO::cerr << "MAKEOPS: Caught standard library exception: " << e.what() << endl;
+		QDP_abort(1);
+	}
+	catch(...)
+	{
+		QDPIO::cerr << "MAKEOPS: caught generic exception reading XML" << endl;
+		QDP_abort(1);
+	}
 
-  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
-  push(xml_out, "MakeOps");
+	XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
+	push(xml_out, "MakeOps");
 
-  // Write out the input
-  write(xml_out, "Input", xml_in);
+	// Write out the input
+	write(xml_out, "Input", xml_in);
 
-  Layout::setLattSize(input.param.layout);
-  Layout::create();   // Setup the layout
-	
+	Layout::setLattSize(input.param.layout);
+	Layout::create();   // Setup the layout
+
 	multi1d<GroupBaryonOperator_t> final_ops;
 
 	QDPIO::cout<< "Reading Coeff Files" << endl;
 
 	//Read coeff files 
 	readCoeffFiles(final_ops, input.files.coeff_files);
-	
+
 
 	int time_dir = input.param.decay_dir;
 	int Nt = input.param.layout[time_dir]; 
@@ -994,7 +1232,7 @@ int main(int argc, char **argv)
 
 	//-------------------------------------------------------------
 	//Sanity Checks
-		
+
 	//Does the number of configs to ouput agree with input?
 	if ( input.output_info.cfg_paths.size() != Nbins )
 	{
@@ -1015,7 +1253,7 @@ int main(int argc, char **argv)
 
 	//Elemental Operator maps 
 	ElementalOpMaps el_op_maps(input.input_files.elem_op_files);
-		
+
 	//loop over configurations
 	for (int i = 0 ; i < Nbins ; ++i)
 	{
@@ -1023,7 +1261,7 @@ int main(int argc, char **argv)
 
 		for (int l = 0 ; l < Nops ; ++l)
 		{
-		 	
+
 			//Make Source
 			{	
 				BaryonOperator_t source;
