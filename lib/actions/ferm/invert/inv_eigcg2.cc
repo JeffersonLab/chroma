@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.13 2008-01-13 20:59:28 edwards Exp $
+// $Id: inv_eigcg2.cc,v 1.14 2008-01-30 07:24:34 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -59,9 +59,9 @@ namespace Chroma
       } 
     }
 
-
+    //The new code
     template<typename T>
-    SystemSolverResults_t InvEigCG2_T(const LinearOperator<T>& A,
+    SystemSolverResults_t new_InvEigCG2_T(const LinearOperator<T>& A,
 				      T& x, 
 				      const T& b,
 				      multi1d<Double>& eval, 
@@ -241,7 +241,7 @@ namespace Chroma
 	    for (int i=0;i<2*Neig;i++) H(i,i) = Heval[i];
 
 	    //A(tt,r,PLUS) ;
-	    tt = Ap - beta*Ap_prev ; //avoid the matvec
+	    tt[A.subset()] = Ap - beta*Ap_prev ; //avoid the matvec
 
 #ifndef USE_BLAS_FOR_LATTICEFERMIONS
 	    for (int i=0;i<2*Neig;i++){
@@ -323,9 +323,9 @@ namespace Chroma
       return res;
     }
 
-   
+    //Th old code
     template<typename T>
-    SystemSolverResults_t old_InvEigCG2_T(const LinearOperator<T>& A,
+    SystemSolverResults_t InvEigCG2_T(const LinearOperator<T>& A,
 				      T& x, 
 				      const T& b,
 				      multi1d<Double>& eval, 
