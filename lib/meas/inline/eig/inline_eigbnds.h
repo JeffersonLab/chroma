@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.h,v 3.3 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_eigbnds.h,v 3.4 2008-01-30 18:29:07 bjoo Exp $
 
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
@@ -42,6 +42,8 @@ namespace Chroma
     {
       Real RsdR;
       Real RsdA;
+      Real RsdRHi;
+      Real RsdAHi;
       Real RsdZero;
       bool ProjApsiP;
       int  Nmin;

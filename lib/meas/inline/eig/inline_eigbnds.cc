@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigbnds.cc,v 3.9 2007-10-13 21:04:39 edwards Exp $
+// $Id: inline_eigbnds.cc,v 3.10 2008-01-30 18:29:07 bjoo Exp $
 /*! \file
  * \brief Inline measurements for eigenvalue bounds
  *
@@ -58,6 +58,18 @@ namespace Chroma
     
     read(paramtop, "RsdR", param.RsdR);
     read(paramtop, "RsdA", param.RsdA);
+    if( paramtop.count("RsdRHi") == 0 ) { 
+	param.RsdRHi = param.RsdR;
+    }
+    else { 
+      read(paramtop, "RsdRHi", param.RsdRHi);
+    }
+    if( paramtop.count("RsdAHi") == 0 ) {
+        param.RsdAHi = param.RsdA;
+    } 
+    else { 
+       read(paramtop, "RsdAHi", param.RsdAHi);
+    } 
     read(paramtop, "RsdZero", param.RsdZero);
     read(paramtop, "ProjApsiP", param.ProjApsiP);
     read(paramtop, "Nmin", param.Nmin);
@@ -72,7 +84,9 @@ namespace Chroma
     push(xml, path);
     
     write(xml, "RsdR", param.RsdR);
+    write(xml, "RsdRHi", param.RsdRHi);
     write(xml, "RsdA", param.RsdA);
+    write(xml, "RsdAHi", param.RsdAHi);
     write(xml, "RsdZero", param.RsdZero);
     write(xml, "ProjApsiP", param.ProjApsiP);
     write(xml, "Nmin", param.Nmin);
@@ -234,8 +248,8 @@ namespace Chroma
 		  params.ritz.Nrenorm,
 		  params.ritz.Nmin,
 		  params.ritz.MaxCG,
-		  params.ritz.RsdR,
-		  params.ritz.RsdA,
+		  params.ritz.RsdRHi,
+		  params.ritz.RsdAHi,
 		  params.ritz.RsdZero,
 		  params.ritz.ProjApsiP,
 		  n_CG_count,
@@ -322,8 +336,8 @@ namespace Chroma
 		  params.ritz.Nrenorm,
 		  params.ritz.Nmin,
 		  params.ritz.MaxCG,
-		  params.ritz.RsdR,
-		  params.ritz.RsdA,
+		  params.ritz.RsdRHi,
+		  params.ritz.RsdAHi,
 		  params.ritz.RsdZero,
 		  params.ritz.ProjApsiP,
 		  n_CG_count,
