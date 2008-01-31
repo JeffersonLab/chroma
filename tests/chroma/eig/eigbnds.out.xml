@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: eigbnds.out.xml,v 3.4 2007-08-23 23:27:08 edwards Exp $
+; $Id: eigbnds.out.xml,v 3.5 2008-01-31 14:49:06 edwards Exp $
 ;
 ; Test input file for chroma program
 ;
@@ -184,10 +184,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.2</chroma>
-      <qdp>1.24.4</qdp>
+      <chroma>3.28.0</chroma>
+      <qdp>1.25.1</qdp>
     </code_version>
-    <run_date>23 Aug 07 17:41:01 EDT</run_date>
+    <run_date>31 Jan 08 09:48:26 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -209,32 +209,32 @@
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814463755</w_plaq>
-    <s_plaq>0.994800871962474</s_plaq>
-    <t_plaq>0.994728756965034</t_plaq>
-    <plane_01_plaq>0.994752408626179</plane_01_plaq>
-    <plane_02_plaq>0.995051671285182</plane_02_plaq>
-    <plane_12_plaq>0.994598535976062</plane_12_plaq>
-    <plane_03_plaq>0.994927926144252</plane_03_plaq>
-    <plane_13_plaq>0.994742138621708</plane_13_plaq>
-    <plane_23_plaq>0.994516206129144</plane_23_plaq>
-    <link>0.379317688059624</link>
+    <w_plaq>0.994764811229996</w_plaq>
+    <s_plaq>0.994800868133704</s_plaq>
+    <t_plaq>0.994728754326287</t_plaq>
+    <plane_01_plaq>0.994752410954485</plane_01_plaq>
+    <plane_02_plaq>0.995051669888198</plane_02_plaq>
+    <plane_12_plaq>0.994598523558428</plane_12_plaq>
+    <plane_03_plaq>0.994927932818731</plane_03_plaq>
+    <plane_13_plaq>0.994742131947229</plane_13_plaq>
+    <plane_23_plaq>0.994516198212902</plane_23_plaq>
+    <link>0.379317688096004</link>
     <pollp>
       <elem>
-        <re>0.967222581617534</re>
-        <im>-0.00121316458201666</im>
+        <re>0.96722258736069</re>
+        <im>-0.00121316528187284</im>
       </elem>
       <elem>
-        <re>0.967032070310476</re>
-        <im>-0.00129617050743036</im>
+        <re>0.967032058009257</re>
+        <im>-0.00129616999978073</im>
       </elem>
       <elem>
-        <re>0.967467519299438</re>
-        <im>-0.00114548285447806</im>
+        <re>0.96746751650547</re>
+        <im>-0.00114548282635951</im>
       </elem>
       <elem>
-        <re>0.879538947173084</re>
-        <im>-0.0104402833220168</im>
+        <re>0.879538941662759</re>
+        <im>-0.0104402848846803</im>
       </elem>
     </pollp>
   </Observables>
@@ -252,7 +252,9 @@
 
           <Ritz>
             <RsdR>0.01</RsdR>
+            <RsdRHi>0.01</RsdRHi>
             <RsdA>0.001</RsdA>
+            <RsdAHi>0.001</RsdAHi>
             <RsdZero>5e-06</RsdZero>
             <ProjApsiP>false</ProjApsiP>
             <Nmin>5</Nmin>
@@ -302,7 +304,9 @@
 
           <Ritz>
             <RsdR>0.01</RsdR>
+            <RsdRHi>0.01</RsdRHi>
             <RsdA>0.001</RsdA>
+            <RsdAHi>0.001</RsdAHi>
             <RsdZero>5e-06</RsdZero>
             <ProjApsiP>false</ProjApsiP>
             <Nmin>5</Nmin>
@@ -324,9 +328,9 @@
             <n_cg_tot>71</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.611784099790286 0.0758370033142348 0.00947774733734709 0.00487684031191763 0.0328488592237137 0.265175532681979</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.00131696936815516 8.80185879851144e-05 0.000477091723981115 0.00396069925360761 0.0328171520821511 0.263901416165344</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.610467130422131 0.0757489847262497 0.00900065561336597 0.000916141058310019 3.17071415626132e-05 0.00127411651663504</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.611783976219098 0.0758369893096519 0.00947774585286065 0.00487684148163948 0.0328488710411183 0.265175627830348</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.00131696884355776 8.8018587512765e-05 0.000477091912482636 0.00396070071459525 0.0328171638994179 0.263901511105429</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.61046700737554 0.0757489707221391 0.00900065394037801 0.000916140767044234 3.17071417003981e-05 0.00127411672491903</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
@@ -355,7 +359,9 @@
 
           <Ritz>
             <RsdR>0.01</RsdR>
+            <RsdRHi>0.01</RsdRHi>
             <RsdA>0.001</RsdA>
+            <RsdAHi>0.001</RsdAHi>
             <RsdZero>5e-06</RsdZero>
             <ProjApsiP>false</ProjApsiP>
             <Nmin>5</Nmin>
@@ -377,9 +383,9 @@
             <n_cg_tot>68</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.17001374168341 0.173843022649427 0.170576646068934 0.163550191588744 0.159427764384418 0.162588698976204</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.0671321456617771 0.0339847327226606 0.0313689026665584 0.0616882197798308 0.0946451284197892 0.0974606947548393</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.102881596021633 0.139858289926767 0.139207743402376 0.101861971808913 0.0647826359646291 0.0651280042213649</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.170013735140851 0.173843019044982 0.170576634625139 0.163550173470246 0.159427743968591 0.162588683054979</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.067132212557697 0.0339848244004902 0.0313689710404011 0.0616882416875004 0.0946451266027499 0.0974607145084218</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.102881522583154 0.139858194644492 0.139207663584738 0.101861931782746 0.0647826173658409 0.0651279685465577</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
@@ -408,7 +414,9 @@
 
           <Ritz>
             <RsdR>0.01</RsdR>
+            <RsdRHi>0.01</RsdRHi>
             <RsdA>0.001</RsdA>
+            <RsdAHi>0.001</RsdAHi>
             <RsdZero>5e-06</RsdZero>
             <ProjApsiP>false</ProjApsiP>
             <Nmin>5</Nmin>
@@ -430,9 +438,9 @@
             <n_cg_tot>67</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.204800306439028 0.269853759446021 0.231821188673685 0.128519390617396 0.0633397085935877 0.101665744173119</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.131801460885795 0.144407159828518 0.109938843582632 0.0625556434752305 0.0500333685052985 0.0848764928286332</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.0729988455532333 0.125446599617503 0.121882345091053 0.0659637471421657 0.0133063400882892 0.0167892513444854</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.204800297691991 0.269853774397311 0.231821196815591 0.128519371601321 0.0633396637272444 0.101665702701238</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.131801457492232 0.144407186351782 0.109938863331262 0.0625556255484241 0.0500333130792635 0.0848764435717196</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.0729988401997589 0.125446588045529 0.12188233348433 0.0659637460528965 0.0133063506479809 0.0167892591295188</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
@@ -458,14 +466,16 @@
       <RatPolyDeg>6</RatPolyDeg>
       <OverMass>1.4</OverMass>
       <boundary>1 1 1 -1</boundary>
-<!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
+      <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
       <ApproxMin>0.66</ApproxMin>
       <ApproxMax>6.46357</ApproxMax>
     </FermionAction>
 
           <Ritz>
             <RsdR>0.01</RsdR>
+            <RsdRHi>0.01</RsdRHi>
             <RsdA>0.001</RsdA>
+            <RsdAHi>0.001</RsdAHi>
             <RsdZero>5e-06</RsdZero>
             <ProjApsiP>false</ProjApsiP>
             <Nmin>5</Nmin>
@@ -482,21 +492,21 @@
               <n_count>137</n_count>
             </eval1>
             <eValues>
-              <lambda>0.009373656</lambda>
+              <lambda>0.009373655</lambda>
             </eValues>
             <n_cg_tot>137</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.0127825294942839 0.10268246078302 0.208646509245825 0.265392852987953 0.175014063465707 0.0738367972335793 0.161644885834237</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.00364586493146454 0.0221932175612135 0.0585057052451452 0.0581293458255803 0.0472513888565388 0.0168840472019824 0.042661910335519</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.00913666456281936 0.0804892432218061 0.15014080400068 0.207263507162373 0.127762674609168 0.0569527500315969 0.118982975498718</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.0127825249925797 0.102682458417446 0.208646493603858 0.265392826239574 0.175014053441492 0.073836792462949 0.161644876649158</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.00364586147462907 0.0221932088696861 0.0585056662322585 0.0581293198301989 0.0472513616448327 0.0168840398813125 0.0426618854556152</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.0091366635179506 0.0804892495477597 0.1501408273716 0.207263506409375 0.127762691796659 0.0569527525816365 0.118982991193543</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
               <n_count>18</n_count>
             </eval1>
             <eValues>
-              <lambda>-6.494353</lambda>
+              <lambda>-6.494354</lambda>
             </eValues>
             <n_cg_tot>18</n_cg_tot>
           </EigSpecRitzCG>
@@ -515,14 +525,16 @@
       <RatPolyDeg>6</RatPolyDeg>
       <OverMass>1.4</OverMass>
       <boundary>1 1 1 -1</boundary>
-<!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
+      <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
       <ApproxMin>0.66</ApproxMin>
       <ApproxMax>6.46357</ApproxMax>
     </FermionAction>
 
           <Ritz>
             <RsdR>0.01</RsdR>
+            <RsdRHi>0.01</RsdRHi>
             <RsdA>0.001</RsdA>
+            <RsdAHi>0.001</RsdAHi>
             <RsdZero>5e-06</RsdZero>
             <ProjApsiP>false</ProjApsiP>
             <Nmin>5</Nmin>
@@ -544,9 +556,9 @@
             <n_cg_tot>113</n_cg_tot>
           </EigSpecRitzCG>
         </LowestEv>
-        <EigenVectorProfile>0.380087838356818 0.445407551241297 0.00621032778259429 0.145463959944877 3.15003654549146e-05 0.0227987646709808 4.53890640294712e-08</EigenVectorProfile>
-        <EigenVectorProfilePlus>0.191089854829733 0.20786886764073 0.00312093143463474 0.0678848213021858 1.5827993004325e-05 0.0106396313946157 2.31971434583443e-08</EigenVectorProfilePlus>
-        <EigenVectorProfileMinus>0.188997983527085 0.237538683600567 0.00308939634795955 0.077579138642691 1.56723724505896e-05 0.0121591332763652 2.21919205711269e-08</EigenVectorProfileMinus>
+        <EigenVectorProfile>0.380087757831176 0.445407596614438 0.00621032643168937 0.145463974970741 3.15003607178502e-05 0.0227987668132353 4.538953444779e-08</EigenVectorProfile>
+        <EigenVectorProfilePlus>0.191089682652435 0.207868857996031 0.00312092859005238 0.0678848189907901 1.58279807718223e-05 0.0106396305442744 2.3197367855059e-08</EigenVectorProfilePlus>
+        <EigenVectorProfileMinus>0.188998075178741 0.237538738618408 0.00308939784163698 0.0775791559799514 1.56723799460279e-05 0.0121591362689609 2.21921665927311e-08</EigenVectorProfileMinus>
         <HighestEv>
           <EigSpecRitzCG>
             <eval1>
