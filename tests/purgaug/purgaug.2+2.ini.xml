@@ -60,9 +60,9 @@
   <HBItr>
     <GaugeAction>
        <Name>WILSON_COARSE_FINE_GAUGEACT</Name>
-       <coeff_ff>2.0</coeff_ff>
-       <coeff_cf>1.0</coeff_cf>
-       <coeff_cc>0.3</coeff_cc>
+       <coeff_ff>20.0</coeff_ff>
+       <coeff_cf>10.0</coeff_cf>
+       <coeff_cc>25.0</coeff_cc>
        <coarse_dirs>1 1 0 0</coarse_dirs>
        <GaugeState>
          <Name>SIMPLE_GAUGE_STATE</Name>
