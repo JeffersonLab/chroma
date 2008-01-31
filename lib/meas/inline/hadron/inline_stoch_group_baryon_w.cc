@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.17 2008-01-29 23:09:49 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.18 2008-01-31 04:31:38 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -465,7 +465,7 @@ namespace Chroma
 
 				QDPIO::cout << " Smeared Sources: Quark = "<< qnum <<" t0 = "
 		    	<< key.t0 <<" dil = "<< key.dil << " Time = "<< snoop.getTimeInSeconds() <<" sec"<<endl;
-	
+
 				// Insert
 				qmap.insert(std::make_pair(key, smrd_q));
       
@@ -575,6 +575,8 @@ namespace Chroma
 					const KeySmearedDispColorVector_t& key,
 					const LatticeFermion& smrd_q)
 			{
+				StopWatch snoop;
+
 				// If no entry, then create a displaced version of the quark
 				if (disp_quark_map.find(key) == disp_quark_map.end())
 				{
@@ -593,7 +595,15 @@ namespace Chroma
 					// copying the data around
 					{
 						SmearedDispColorVector_t disp_empty;
+
+						snoop.reset();
+						snoop.start();
+
 						disp_quark_map.insert(std::make_pair(key, disp_empty));
+
+						snoop.stop();
+
+						QDPIO::cout<<"Inserted key in map: time = "<< snoop.getTimeInSeconds() << "secs"<<endl;
 
 						// Sanity check - the entry better be there
 						if (disp_quark_map.find(key) == disp_quark_map.end())
@@ -608,7 +618,6 @@ namespace Chroma
 					// Modify the previous empty entry
 					SmearedDispColorVector_t& disp_q = disp_quark_map.find(key)->second;
 
-					StopWatch snoop;
 					snoop.reset();
 					snoop.start();
 
@@ -639,31 +648,38 @@ namespace Chroma
 					{
 						disp_q.vec[i] = peekColor(vec, i);
 					}
-					
+
 				} // if find in map
+
+				snoop.reset();
+				snoop.start();
 
 				// The key now must exist in the map, so return the vector
 				SmearedDispColorVector_t& disp_q = disp_quark_map.find(key)->second;
+
+				snoop.stop(); 
+
+				QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
 
 				return disp_q.vec;
 			}
 
 
-    //----------------------------------------------------------------------------
-   	//Support for the diquarks
-	
+		//----------------------------------------------------------------------------
+		//Support for the diquarks
+
 		void makeDiquark( multi1d<LatticeComplex> & diquark, const multi1d<LatticeComplex> & q0,
 				const multi1d<LatticeComplex> & q1, const Subset & subset )
 		{
-		
+
 
 			//The signs for the diquark are taken from
 			//the colorContract function in qdp_primcolorvec.h
 			diquark[0][subset] =  q0[0]*q1[1] - q0[1]*q1[0];
 			diquark[1][subset] =  q0[1]*q1[2] - q0[2]*q1[1];
 			diquark[2][subset] =  q0[2]*q1[0] - q0[0]*q1[2];
-		
-	
+
+
 		}
 
 		
@@ -755,13 +771,15 @@ namespace Chroma
       push(xml, "dilution_m");
 			xml << param.dilution_m.xml; 
       pop(xml);
-      push(xml, "dilution_r");
+      
+			push(xml, "dilution_r");
       xml << param.dilution_r.xml; 
       pop(xml);
 			
 			xml <<  param.smearing.xml;
 
-    }
+    	pop(xml);
+		}
 
 
 
@@ -1270,6 +1288,7 @@ namespace Chroma
 		  //We make all source operators before we make all sink operators to 
 			//save on memory. 
 
+			StopWatch watch;
 			//Make the source operators 
 			{
 
@@ -1370,8 +1389,14 @@ namespace Chroma
 
 										*/
 
+										watch.reset();
+										watch.start();
 										//For the source, restrict this operation to a subset
 										makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
+										watch.stop();
+
+										QDPIO::cout<< " Made diquark : time = " << 
+											watch.getTimeInSeconds() << "secs" << endl;
 
 
 									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
@@ -1391,16 +1416,32 @@ namespace Chroma
 										/*QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
 											<< endl; 
 										*/
+										watch.reset();
+										watch.start();
+										
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
 												participating_timeslices[t0] ] );
+										
+										watch.stop();
+
+										QDPIO::cout<< "Made Color singlet : time =  " <<  
+											watch.getTimeInSeconds() << "secs" << endl;
 
 										/*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
 											<< endl;
 											*/	
 										// Slow fourier-transform
 										// We can restrict what the FT routine requires to a subset.
+										watch.reset();
+										watch.start();
+
 										multi2d<DComplex> c_sum(phases.sft(c_oper, 
 													participating_timeslices[t0] ));
+
+										watch.stop();
+
+										QDPIO::cout << " Spatial sums completed: time = " << 
+											watch.getTimeInSeconds() << "secs " << endl;
 
 										// Unpack into separate momentum and correlator
 										cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
@@ -1632,7 +1673,16 @@ namespace Chroma
 									//QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
 									//	<< endl; 
 
+									
+									watch.reset();
+									watch.start();
+									
 									makeDiquark( diquark, q0 , q1, all ); 
+
+									watch.stop();
+									QDPIO::cout << "Made diquark: time = " << 
+										watch.getTimeInSeconds() << "secs " << endl;
+
 
 									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
 									{
@@ -1654,15 +1704,30 @@ namespace Chroma
 										//QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
 										//<< endl;
 
+										watch.reset();
+										watch.start();
+										
 										makeColorSinglet( a_oper, diquark, q2, all);
 
-										
-										QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
-											<< endl;
-										
+										watch.stop();
 
+										QDPIO::cout <<	"Made Color Singlet: time = " <<
+											watch.getTimeInSeconds() << "secs" << endl;
+										
+										/*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
+											<< endl;
+										*/
+
+										watch.reset();
+										watch.start();
+										
 										// Slow fourier-transform
 										multi2d<DComplex> a_sum( phases.sft(a_oper) );
+										
+										watch.stop();
+
+										QDPIO::cout << "Spatial Sums completed: time " << 
+											watch.getTimeInSeconds() << "secs" << endl;
 
 										// Unpack into separate momentum and correlator
 										aop.dilutions(i,j,k).mom_projs.resize(phases.numMom());

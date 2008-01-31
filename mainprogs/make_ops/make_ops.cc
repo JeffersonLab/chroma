@@ -32,13 +32,13 @@ struct InputFiles_t
 	{
 		struct Config_t
 		{
-			struct TimeSlices_t 
+			struct TimeFiles_t 
 			{
 						std::string src_file;  /*!< File containing the source operator */
 						std::string snk_file;  /*!< File containing the sink operator */
 			};
 			
-			multi1d<TimeSlices_t> time_slices; /*!< Different dilution timeslices (most likely) will be in different files */
+			multi1d<TimeFiles_t> time_files; /*!< Different dilution timeslices (most likely) will be in different files */
 
 		};
 
@@ -117,7 +117,7 @@ void read(XMLReader& xml, const string& path, OutputInfo_t& input)
 
 //! Reader for a timeslice of elemental op files  
 void read(XMLReader& xml, const string& path, 
-		InputFiles_t::ElementalOpFiles_t::Config_t::TimeSlices_t& input)
+		InputFiles_t::ElementalOpFiles_t::Config_t::TimeFiles_t& input)
 {
 	XMLReader inputtop(xml, path);
 
@@ -130,7 +130,7 @@ void read(XMLReader& xml, const string& path, InputFiles_t::ElementalOpFiles_t::
 {
 	XMLReader inputtop(xml, path);
 
-	read(inputtop, "DilutionTimeSlices", input.time_slices);
+	read(inputtop, "DilutionTimeSlices", input.time_files);
 }
 
 //! Reader for elemental operator files 
@@ -206,6 +206,7 @@ struct BaryonOperator_t
 
 		multi1d<Orderings_t> orderings;  			/*!< Array is over quark orderings */
 
+		int t0;                               /*!< Acutal time corresponding to dilution timeslice */
 	};
 
 	multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
@@ -270,9 +271,9 @@ void read(XMLReader& xml, const string& path, BaryonOperator_t& param)
       read(paramtop, "seed_l", param.seed_l);
       read(paramtop, "seed_m", param.seed_m);
       read(paramtop, "seed_r", param.seed_r);
-      read(paramtop, "dilution_l", param.dilution_l);
-      read(paramtop, "dilution_m", param.dilution_m);
-      read(paramtop, "dilution_r", param.dilution_r);
+      param.dilution_l = readXMLGroup(paramtop, "dilution_l", "DilutionType");
+      param.dilution_m = readXMLGroup(paramtop, "dilution_m", "DilutionType");
+      param.dilution_r = readXMLGroup(paramtop, "dilution_r", "DilutionType");
       read(paramtop, "perms", param.perms);
   
 			//read the smearing??!!
@@ -298,10 +299,18 @@ void write(XMLWriter& xml, const string& path, BaryonOperator_t& param)
       write(xml, "seed_l", param.seed_l);
       write(xml, "seed_m", param.seed_m);
       write(xml, "seed_r", param.seed_r);
-      write(xml, "dilution_l", param.dilution_l);
-      write(xml, "dilution_m", param.dilution_m);
-      write(xml, "dilution_r", param.dilution_r);
-      write(xml, "perms", param.perms);
+     	
+			push(xml , "dilution_l");
+			xml << param.dilution_l.xml;
+			pop(xml);
+     	push(xml , "dilution_m");
+			xml << param.dilution_m.xml;
+			pop(xml);
+     	push(xml , "dilution_r");
+			xml << param.dilution_r.xml;
+			pop(xml);
+      
+			write(xml, "perms", param.perms);
   
 			//write the smearing??
 	}
@@ -316,8 +325,8 @@ void write(XMLWriter& xml, const string& path, BaryonOperator_t& param)
 }
 
 //GroupBaryonOperator Writer
-void write(XMLWriter &xml, const std::string &path, 
-		const GroupBaryonOperator_t::Term_t::ThreeQuarkOperator_t::QuarkInfo_t &param)
+void write(XMLWriter &xml, const std::string &path,
+		const ThreeQuarkOp_t::QuarkInfo_t &param)
 {
 	push(xml, path);
 
@@ -329,13 +338,33 @@ void write(XMLWriter &xml, const std::string &path,
 }
 
 //GroupBaryonOperator Writer
-void write(XMLWriter &xml, const std::string &path, const GroupBaryonOperator_t::Term_t::ThreeQuarkOperator_t &param)
+void write(XMLWriter &xml, const std::string &path, const ThreeQuarkOp_t &param)
 {
 	push(xml, path);
 
 	write(xml, "Quarks" , param.quarks);
 
 	pop(xml);
+
+}
+
+//ThreeQuarkOp Reader
+void read(XMLReader &xml, const std::string &path,
+		ThreeQuarkOp_t::QuarkInfo_t &param)
+{
+	XMLReader top(xml, path);
+
+	read(top, "Spin" , param.spin);
+	read(top, "Displacement" , param.displacement);
+
+}
+
+//Three Quark Op Reader
+void read(XMLReader &xml, const std::string &path, ThreeQuarkOp_t &param)
+{
+	XMLReader top(xml, path);
+
+	read(top, "Quarks" , param.quarks);
 
 }
 
@@ -363,81 +392,81 @@ void write(XMLWriter &xml, const std::string &path, const GroupBaryonOperator_t 
 
 }	
 //! BaryonOperator binary reader
-    void write(BinaryReader& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t::Mom_t& param)
-    {
-      read(bin, param.mom);
-      read(bin, param.op);
-    }
+void read(BinaryReader& bin, BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t::Mom_t& param)
+{
+	read(bin, param.mom);
+	read(bin, param.op);
+}
 
-    //! BaryonOperator binary reader 
-    void write(BinaryReader& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t& param)
-    {
-      read(bin, param.mom_projs);
-    }
+//! BaryonOperator binary reader 
+void read(BinaryReader& bin, BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t& param)
+{
+	read(bin, param.mom_projs);
+}
 
-    //! BaryonOperator binary reader 
-    void read(BinaryReader& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t& param)
-    {
-      read(bin, param.dilutions);
-    	read(bin, param.perm);
-		}
+//! BaryonOperator binary reader 
+void read(BinaryReader& bin, BaryonOperator_t::TimeSlices_t::Orderings_t& param)
+{
+	read(bin, param.dilutions);
+	read(bin, param.perm);
+}
 
-    //! BaryonOperator binary reader 
-    void write(BinaryReader& bin, const BaryonOperator_t::TimeSlices_t& param)
-    {
-      read(bin, param.orderings);
-    }
+//! BaryonOperator binary reader 
+void read(BinaryReader& bin, BaryonOperator_t::TimeSlices_t& param)
+{
+	read(bin, param.orderings);
+}
 
-    //! BaryonOperator binary reader 
-    void read(BinaryReader& bin, const BaryonOperator_t& param)
-    {
-      read(bin, param.seed_l);
-      read(bin, param.seed_m);
-      read(bin, param.seed_r);
-      read(bin, param.mom2_max);
-      read(bin, param.decay_dir);
-      read(bin, param.perms);
-      read(bin, param.time_slices);
-    }
+//! BaryonOperator binary reader 
+void read(BinaryReader& bin, BaryonOperator_t& param)
+{
+	read(bin, param.seed_l);
+	read(bin, param.seed_m);
+	read(bin, param.seed_r);
+	read(bin, param.mom2_max);
+	read(bin, param.decay_dir);
+	read(bin, param.perms);
+	read(bin, param.time_slices);
+}
 
 
 //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t::Mom_t& param)
-    {
-      write(bin, param.mom);
-      write(bin, param.op);
-    }
+void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t::Mom_t& param)
+{
+	write(bin, param.mom);
+	write(bin, param.op);
+}
 
-    //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t& param)
-    {
-      write(bin, param.mom_projs);
-    }
+//! BaryonOperator binary writer
+void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t& param)
+{
+	write(bin, param.mom_projs);
+}
 
-    //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t& param)
-    {
-      write(bin, param.dilutions);
-    	write(bin, param.perm);
-		}
+//! BaryonOperator binary writer
+void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t& param)
+{
+	write(bin, param.dilutions);
+	write(bin, param.perm);
+}
 
-    //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t& param)
-    {
-      write(bin, param.orderings);
-    }
+//! BaryonOperator binary writer
+void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t& param)
+{
+	write(bin, param.orderings);
+}
 
-    //! BaryonOperator binary writer
-    void write(BinaryWriter& bin, const BaryonOperator_t& param)
-    {
-      write(bin, param.seed_l);
-      write(bin, param.seed_m);
-      write(bin, param.seed_r);
-      write(bin, param.mom2_max);
-      write(bin, param.decay_dir);
-      write(bin, param.perms);
-      write(bin, param.time_slices);
-    }
+//! BaryonOperator binary writer
+void write(BinaryWriter& bin, const BaryonOperator_t& param)
+{
+	write(bin, param.seed_l);
+	write(bin, param.seed_m);
+	write(bin, param.seed_r);
+	write(bin, param.mom2_max);
+	write(bin, param.decay_dir);
+	write(bin, param.perms);
+	write(bin, param.time_slices);
+}
 
 //This routine goes through (possibly several) coeff files and fills 
 //the operator array
@@ -459,8 +488,8 @@ void readCoeffFiles(multi1d<GroupBaryonOperator_t> &ops, const multi1d<std::stri
 		reader.close();
 
 		nops += op; 
-		
-	//	QDPIO::cout<< "Nops = "<<nops<<endl;
+
+			QDPIO::cout<< "Nops = "<<nops<<endl;
 
 	}
 
@@ -496,13 +525,15 @@ void readCoeffFiles(multi1d<GroupBaryonOperator_t> &ops, const multi1d<std::stri
 
 				ops[ i + l].term[m].coeff = cmplx( re, im );
 
-				ops[ i + l].quarks[0].spin = a;
-				ops[ i + l].quarks[1].spin = b;
-				ops[ i + l].quarks[2].spin = c;
+				ops[i+l].term[m].op.quarks.resize(3);
 
-				ops[ i + l].quarks[0].displacement = i;
-				ops[ i + l].quarks[0].displacement = j;
-				ops[ i + l].quarks[0].displacement = k;
+				ops[ i + l].term[m].op.quarks[0].spin = a;
+				ops[ i + l].term[m].op.quarks[1].spin = b;
+				ops[ i + l].term[m].op.quarks[2].spin = c;
+
+				ops[ i + l].term[m].op.quarks[0].displacement = i;
+				ops[ i + l].term[m].op.quarks[1].displacement = j;
+				ops[ i + l].term[m].op.quarks[2].displacement = k;
 
 			} //m
 			
@@ -531,7 +562,7 @@ void initOp (BaryonOperator_t &oper , const BaryonOperator_t &elem_oper )
 	oper.perms = elem_oper.perms;	
 
 	int Nord = elem_oper.perms.size();
-	int Nt = elem_oper.orderings[0].time_slices.size();
+	int Nt = elem_oper.time_slices.size();
 
 	oper.time_slices.resize(Nt);
 
@@ -572,7 +603,7 @@ void initOp (BaryonOperator_t &oper , const BaryonOperator_t &elem_oper )
 
 							for (int t = 0 ; t < Lop ; ++t)
 							{
-								oper.orderings[p].time_slices[t_0].dilutions(i,j,k).mom_projs[m].op[t] = zero;
+								oper.time_slices[t0].orderings[p].dilutions(i,j,k).mom_projs[m].op[t] = zero;
 							}
 
 						} //m
@@ -600,8 +631,8 @@ void addTo(BaryonOperator_t &oper, const BaryonOperator_t &elem_oper,
 		{
 			
 			for(int i = 0 ; i < elem_oper.time_slices[t0].orderings[p].dilutions.size1() ; ++i)   	
-				for(int i = 0 ; i < elem_oper.time_slices[t0].orderings[p].dilutions.size1() ; ++i)   	
-					for(int i = 0 ; i < elem_oper.time_slices[t0].orderings[p].dilutions.size1() ; ++i)   	
+				for(int j = 0 ; j < elem_oper.time_slices[t0].orderings[p].dilutions.size2() ; ++j)   	
+					for(int k = 0 ; k < elem_oper.time_slices[t0].orderings[p].dilutions.size3() ; ++k)   	
 					{
 						
 						for (int m = 0 ; m < elem_oper.time_slices[t0].orderings[p].dilutions(i,j,k).mom_projs.size() ; ++m)
@@ -623,295 +654,267 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 	//Tests
 		
 	//Grab info from first op 
-		int Nbins = ops[0].cfgs.size();
-		int Nt = ops[0].cfgs[0].timeslices.size();
+	int Nbins = ops[0].cfgs.size();
+	int Nt = ops[0].cfgs[0].time_files.size();
 
-		//Grab opInfo from first op
-  	for (int i = 0 ; i < ops.size() ; ++i )  	
+	for (int i = 0 ; i < ops.size() ; ++i )  	
+	{
+		//Grab info from the current op  
+		int currNbins = ops[i].cfgs.size();
+
+		std::string opInfo; 
+		{
+			XMLReader file_xml, record_xml;
+			BinaryBufferReader dummy;
+
+			const std::string & filename = 
+				ops[i].cfgs[0].time_files[0].src_file;
+
+			QDPFileReader rdr(file_xml, filename, QDPIO_SERIAL);
+
+			XMLReader xml_tmp(file_xml, "/SourceBaryonOperator/Op_Info");
+			std::ostringstream os;
+			xml_tmp.print(os);
+
+			opInfo = os.str();
+
+			rdr.close();
+		}
+
+
+		if ( toBool( currNbins != Nbins ) )
+		{
+			QDPIO::cerr<< "Inconsistent(with first op) number of configs: op"
+				<< i << endl; 
+			QDP_abort(1);
+		}
+
+		for (int n = 0 ; n < Nbins ; ++n )
 		{
 
-			//Grab info from the current op  
-			int currNbins = ops[i].cfgs.size();
-			int currNt = ops[i].cfgs[0].timeslices.size();
-
-			//Grab opInfo from current op 
-				std::string opInfo; 
-				{
-					XMLReader file_xml, record_xml;
-					BinaryBufferReader dummy;
-
-					const std::string & filename = 
-						ops[i].cfgs[0].time_slices[0].src_file;
-
-					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
-					read(rdr, record_xml, dummy);
-	
-					XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/Op_Info");
-					std::ostringstream os;
-					xml_tmp.print(os);
-
-					opInfo = os.str();
-						
-					rdr.close();
-				}
-
-			//first check that this op has same info as first op
-			if ( toBool( currNbins != Nbins ) )
+			//check that all cfgs have same info within the op
+			if ( ops[i].cfgs[n].time_files.size() != Nt )
 			{
-				QDPIO::cerr<< "Inconsistent(with first op) number of configs: op"
-					<< i << endl; 
+				QDPIO::cerr<< "Inconsistent number of timeslices: op"
+					<< i << " cfg " << n << endl; 
 				QDP_abort(1);
 			}
 
-			if (currNt != Nt )
+			//Grab cfgInfo from first op 
+			std::string cfgInfo; 
 			{
-				QDPIO::cerr<< "Inconsistent(with first op) number of timeslices: op"
-					<< i << endl; 
+				XMLReader file_xml;
+				const std::string & filename = 
+					ops[0].cfgs[n].time_files[0].src_file;
+
+				QDPFileReader rdr(file_xml, filename, QDPIO_SERIAL);
+
+				XMLReader xml_tmp(file_xml, "/SourceBaryonOperator/Config_info");
+				std::ostringstream os;
+				xml_tmp.print(os);
+
+				cfgInfo = os.str();
+
+				rdr.close();
+			}
+
+
+			//Grab cfgInfo from current op
+			std::string currCfgInfo; 
+			{
+				XMLReader file_xml;
+
+				const std::string & filename = 
+					ops[i].cfgs[n].time_files[0].src_file;
+
+				QDPFileReader rdr(file_xml, filename, QDPIO_SERIAL);
+
+				XMLReader xml_tmp(file_xml, "/SourceBaryonOperator/Config_info");
+				std::ostringstream os;
+				xml_tmp.print(os);
+
+				currCfgInfo = os.str();
+
+				rdr.close();
+			}
+
+			if (cfgInfo != currCfgInfo)
+			{
+				QDPIO::cerr<<"Configs do not match for all ops: op "<<
+					i << endl;
 				QDP_abort(1);
 			}
 
-			for (int n = 0 ; n < Nbins ; ++n )
+			for (int t0 = 0 ; t0 < Nt ; ++t0)
 			{
-
-				//check that all cfgs have same info within the op
-				if ( ops[i].cfgs[n].timeslices.size() != currNt )
+				//Open first op files	
+				//Note: all time slices must match as well as src and snk 
+				XMLReader firstFileXML;
 				{
-					QDPIO::cerr<< "Inconsistent number of timeslices: op"
-						<< i << " cfg " << n << endl; 
-					QDP_abort(1);
-				}
-				
-				//Grab cfgInfo from first op 
-				std::string cfgInfo; 
-				{
-					XMLReader file_xml, record_xml;
-					LatticeFermion sol;
-
 					const std::string & filename = 
-						ops[0].cfgs[n].time_slices[0].src_file;
+						ops[0].cfgs[0].time_files[t0].src_file;
 
-					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
-					read(rdr, record_xml, sol);
-	
-					XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/Config_info");
+					QDPFileReader rdr(firstFileXML, filename, QDPIO_SERIAL);
+				}	
+
+				//Open the current op files 
+				XMLReader srcFileXML;
+				XMLReader snkFileXML;
+				{
+					const std::string & filename = 
+						ops[i].cfgs[n].time_files[t0].src_file;
+
+					QDPFileReader rdr(srcFileXML, filename, QDPIO_SERIAL);
+				}	
+
+				{
+					const std::string & filename = 
+						ops[i].cfgs[n].time_files[t0].snk_file;
+
+					QDPFileReader rdr(snkFileXML, filename, QDPIO_SERIAL);
+				}	
+
+				//Now check stuff for each file	
+		
+				//Do the cfgs match?
+				std::string srcCfgInfo, snkCfgInfo; 
+				{
+					XMLReader xml_tmp(srcFileXML, "/SourceBaryonOperator/Config_info");
 					std::ostringstream os;
 					xml_tmp.print(os);
 
-					cfgInfo = os.str();
-						
-					rdr.close();
+					srcCfgInfo = os.str();
 				}
-					
-				//Grab cfgInfo from current op
-				std::string currCfgInfo; 
+
 				{
-					XMLReader file_xml, record_xml;
-					BinaryReader sol;
-
-					const std::string & filename = 
-						ops[i].cfgs[n].time_slices[0].src_file;
-
-					QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
-					read(rdr, record_xml, sol);
-	
-					XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/ConfigInfo");
+					XMLReader xml_tmp(snkFileXML, "/SinkBaryonOperator/Config_info");
 					std::ostringstream os;
 					xml_tmp.print(os);
 
-					currCfgInfo = os.str();
-						
-					rdr.close();
+					snkCfgInfo = os.str();
 				}
 
-				if (cfgInfo != currCfgInfo)
+				if (snkCfgInfo != cfgInfo)	
 				{
-					QDPIO::cerr<<"Configs do not match for all ops: op "<<
-						i << endl;
+					QDPIO::cout<<"Sink cfgInfo is inconsistent. : cfg = "<<n << " t0 = "<<
+						t0 << endl;
+
 					QDP_abort(1);
 				}
 
-				for (int t0 = 0 ; t0 < Nt ; ++t0)
+				if (srcCfgInfo != cfgInfo)	
 				{
+					QDPIO::cout<<"Source cfgInfo is inconsistent. : cfg = "<<n << " t0 = "<<
+						t0 << endl;
 
-						//Open the current op files 
-						XMLReader srcFileXML, srcRecordXML;
-						XMLReader snkFileXML, snkRecordXML;
+					QDP_abort(1);
+				}
 
-						{
-							BinaryBufferReader dummy;	
-							const std::string & filename = 
-								ops[i].cfgs[n].time_slices[t0].src_file;
+				//Do the dilutions match?
+				std::string firstDil, srcDil, sinkDil;
+				{
+					XMLReader xml_tmp(snkFileXML, "/SinkBaryonOperator/QuarkSources");
+					std::ostringstream os;
+					xml_tmp.print(os);
 
-							QDPFileReader rdr(srcFileXml, filename, QPIO_SERIAL);
-							read(rdr, srcRecordXml, sol);
-						}	
-						
-						{
-							BinaryBufferReader dummy;	
-							const std::string & filename = 
-								ops[i].cfgs[n].time_slices[t0].snk_file;
+					sinkDil = os.str();
+				}
 
-							QDPFileReader rdr(snkFileXml, filename, QPIO_SERIAL);
-							read(rdr, snkRecordXml, dummy);
-						}	
-						
-					//Open first op files	
-					//Note: all time slices must match as well as src and snk 
-						XMLReader firstFileXML, firstRecordXML;
-						{
-							BinaryBufferReader dummy;	
-							const std::string & filename = 
-								ops[0].cfgs[0].time_slices[0].src_file;
+				{
+					XMLReader xml_tmp(srcFileXML, "/SourceBaryonOperator/QuarkSources");
+					std::ostringstream os;
+					xml_tmp.print(os);
 
-							QDPFileReader rdr(firstFileXml, filename, QPIO_SERIAL);
-							read(rdr, firstRecordXml, dummy);
-						}	
-						
-						//Now check stuff for each file	
+					srcDil = os.str();
+				}
 
-						//Do the cfgs match?
-						std::string srcCfgInfo, snkCfgInfo; 
+				{
+					XMLReader xml_tmp(firstFileXML, "/SourceBaryonOperator/QuarkSources");
+					std::ostringstream os;
+					xml_tmp.print(os);
 
-						{
-							XMLReader xml_tmp(srcRecordXml, "/SourceBaryonOperator/ConfigInfo");
-							std::ostringstream os;
-							xml_tmp.print(os);
+					firstDil = os.str();
+				}
 
-							srcCfgInfo = os.str();
-						}
+				if (firstDil != sinkDil) 
+				{
+					QDPIO::cerr<< "Dilution scheme does not match: snkOp = " <<i<<
+						" cfg = "<< n << " t0 = " << t0 <<endl;
 
-						{
-							XMLReader xml_tmp(snkRecordXml, "/SourceBaryonOperator/ConfigInfo");
-							std::ostringstream os;
-							xml_tmp.print(os);
+					QDP_abort(1);
+				}
 
-							snkCfgInfo = os.str();
-						}
-						
-						if (snkCfgInfo != cfgInfo)	
-						{
-							QDPIO::cout<<"Sink cfgInfo is inconsistent. : cfg = "<<n << " t0 = "<<
-								t0 << " dil = "<<dil<<endll;
+				if (firstDil != srcDil) 
+				{
+					QDPIO::cerr<< "Dilution scheme does not match: srcOp = " <<i<<
+						" cfg = "<< n << " t0 = " << t0 << endl;
 
-							QDP_abort(1);
-						}
+					QDP_abort(1);
+				}
 
-						if (srcCfgInfo != cfgInfo)	
-						{
-							QDPIO::cout<<"Source cfgInfo is inconsistent. : cfg = "<<n << " t0 = "<<
-								t0 << " dil = "<<dil<<endll;
+				//Furthermore, check that each timeslice has the same dilutions for all ops	
+				//--Add this-- 	
 
-							QDP_abort(1);
-						}
+				//Check that all files for a single op indeed belong to the same op
 
+				//Grab opInfo from current op 
+				std::string srcOpInfo; 
+				{
+					XMLReader file_xml;
 
-						//Do the dilutions match?
-						std::string firstDil, srcDil, sinkDil;
-						{
-							XMLReader xml_tmp(snkFileXml, "/SourceBaryonOperator/QuarkSources");
-							std::ostringstream os;
-							xml_tmp.print(os);
+					const std::string & filename = 
+						ops[i].cfgs[n].time_files[t0].src_file;
 
-							snkDil = os.str();
-						}
-					
-						{
-							XMLReader xml_tmp(srcFileXml, "/SourceBaryonOperator/QuarkSources");
-							std::ostringstream os;
-							xml_tmp.print(os);
+					QDPFileReader rdr(file_xml, filename, QDPIO_SERIAL);
 
-							srcDil = os.str();
-						}
-					
-						{
-							XMLReader xml_tmp(firstFileXml, "/SourceBaryonOperator/QuarkSources");
-							std::ostringstream os;
-							xml_tmp.print(os);
+					XMLReader xml_tmp(file_xml, "/SourceBaryonOperator/Op_Info");
+					std::ostringstream os;
+					xml_tmp.print(os);
 
-							firstDil = os.str();
-						}
-					
-						if (firstDil != snkDil) 
-						{
-							QDPIO::cerr<< "Dilution scheme does not match: snkOp = " <<i<<
-								" cfg = "<< n << " t0 = " << t0 <<endl;
-							
-							QDP_abort(1);
-						}
+					srcOpInfo = os.str();
 
-						if (firstDil != srcDil) 
-						{
-							QDPIO::cerr<< "Dilution scheme does not match: srcOp = " <<i<<
-								" cfg = "<< n << " t0 = " << t0 << endl;
-							
-							QDP_abort(1);
-						}
+					rdr.close();
+				}
 
-					
-						//Check that all files for a single op indeed belong to the same op
+				std::string snkOpInfo; 
+				{
+					XMLReader file_xml;
 
-						//Grab opInfo from current op 
-						std::string srcOpInfo; 
-						{
-							XMLReader file_xml, record_xml;
-							BinaryBufferReader dummy;
+					const std::string & filename = 
+						ops[i].cfgs[n].time_files[t0].snk_file;
 
-							const std::string & filename = 
-								ops[i].cfgs[n].time_slices[t0].src_file;
+					QDPFileReader rdr(file_xml, filename, QDPIO_SERIAL);
 
-							QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
-							read(rdr, record_xml, dummy);
+					XMLReader xml_tmp(file_xml, "/SinkBaryonOperator/Op_Info");
+					std::ostringstream os;
+					xml_tmp.print(os);
 
-							XMLReader xml_tmp(record_xml, "/SourceBaryonOperator/Op_Info");
-							std::ostringstream os;
-							xml_tmp.print(os);
+					snkOpInfo = os.str();
 
-							opInfo = os.str();
+					rdr.close();
+				}
 
-							rdr.close();
-						}
+				if ( opInfo != srcOpInfo)
+				{
+					QDPIO::cerr<< "Src Op not the same: op = "<< i << " cfg = "
+						<< n << " t0 = " << t0 << "opInfo = XX"<< opInfo<<
+						"XX srcOpInfo = XX"<<srcOpInfo<<"XX"<<endl;
+					QDP_abort(1);
+				}
 
-						std::string snkOpInfo; 
-						{
-							XMLReader file_xml, record_xml;
-							BinaryBufferReader dummy;
+				if ( opInfo != snkOpInfo)
+				{
+					QDPIO::cerr<< "Snk Op not the same: op = "<< i << " cfg = "
+						<< n << " t0 = " << t0 << endl;
 
-							const std::string & filename = 
-								ops[i].cfgs[n].time_slices[t0].snk_file;
+					QDP_abort(1);
+				}
 
-							QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
-							read(rdr, record_xml, dummy);
+			}//t0
 
-							XMLReader xml_tmp(record_xml, "/SinkBaryonOperator/Op_Info");
-							std::ostringstream os;
-							xml_tmp.print(os);
+		}//Nbins 
 
-							opInfo = os.str();
-
-							rdr.close();
-						}
-
-						if ( opInfo != srcOpInfo)
-						{
-							QDPIO::cerr<< "Src Op not the same: op = "<< i << " cfg = "
-								<< n << " t0 = " << t0 << endl;
-
-							QDP_abort(1);
-						}
-						
-						if ( opInfo != snkOpInfo)
-						{
-							QDPIO::cerr<< "Snk Op not the same: op = "<< i << " cfg = "
-								<< n << " t0 = " << t0 << endl;
-
-							QDP_abort(1);
-						}
-
-				}//t0
-
-			}//Nbins 
-
-		}//Nops 
+	}//Nops 
 
 }//opsError
 
@@ -969,7 +972,7 @@ class ElementalOpMap
 
 //Constructor
 ElementalOpMap::ElementalOpMap(
-		const multi1d<InputFiles::ElementalOpFiles_t>& elOpFiles)
+		const multi1d<InputFiles_t::ElementalOpFiles_t>& elOpFiles)
 {
 
 	int Nelem = elOpFiles.size();
@@ -979,16 +982,14 @@ ElementalOpMap::ElementalOpMap(
 			//grab op info from src
 			ElementalOpKey_t key;
 			{
-				XMLReader file_xml, record_xml;
-				BinaryBufferReader dummy;
+				XMLReader file_xml;
 
 				const std::string & filename = 
-					elOpFiles[i].cfgs[0].time_slices[0].src_file;
+					elOpFiles[i].cfgs[0].time_files[0].src_file;
 
-				QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
-				read(rdr, record_xml, dummy);
+				QDPFileReader rdr(file_xml, filename, QDPIO_SERIAL);
 				
-				read(record_xml, "/SourceBaryonOperator/Op_Info", key.op); 
+				read(file_xml, "/SourceBaryonOperator/Op_Info", key.op); 
 				rdr.close();
 			}
 
@@ -1031,34 +1032,38 @@ ElementalOpMap::ElementalOpMap(
 
 }
 
-BaryonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t opKey, int cfg) const
+BaryonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t& opKey, int cfg) const	
 {
 
 	BaryonOperator_t source;
 
 	bool init = false; 
 
-	if (elemMap.find(key) != elemMap.end() )
+	if (elemMap.find(opKey) != elemMap.end() )
 	{
-		const ElementalOpEntry_t & opFiles = elemMap.find(opKey)->second;
+		const InputFiles_t::ElementalOpFiles_t& opFiles = elemMap.find(opKey)->second.opFiles;
 
-		int Nt = opFiles.cfg[cfg].timeslices.size();
-
-		for (int t0 = 0 ; t0 < Nt ; ++t0)
+		//The number of timeslice files included 
+		int Nt_files = opFiles.cfgs[cfg].time_files.size();
+		
+		for (int tf = 0 ;  tf < Nt_files ; ++tf)
 		{
 				BaryonOperator_t currOp; 
 
-				std::string srcFile = opFiles.cfg[cfg].timeslices[t0].srcFile;
+				std::string srcFile = opFiles.cfgs[cfg].time_files[tf].src_file;
 
 				XMLReader file_xml, record_xml;
 				BinaryBufferReader dummy;
 
-				QDPFileReader rdr(file_xml, filename, QPIO_SERIAL);
+				QDPFileReader rdr(file_xml, srcFile, QDPIO_SERIAL);
 				read(rdr, record_xml, dummy);
 				
 				read(dummy, currOp); 
-				
+			
 				rdr.close();
+
+				//Assume every opfile contains the same number of timeslices
+				int Nt_curr = currOp.time_slices.size();
 
 				if (!init)
 				{
@@ -1072,7 +1077,7 @@ BaryonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t opKey, int c
 					source.dilution_r = currOp.dilution_r;
 					source.perms = currOp.perms;	
 
-					source.time_slices.resize(Nt);
+					source.time_slices.resize(Nt_files * Nt_curr);
 					
 					init = true; 
 				}
@@ -1084,9 +1089,12 @@ BaryonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t opKey, int c
 					QDP_abort(1); 
 				}
 
-				source.time_slices[t0] = currOp.time_slices[0] ; 
+				for (int t0 = 0 ; t0 < Nt_curr ; ++t0)
+				{
+					source.time_slices[ tf * Nt_curr + t0] = currOp.time_slices[t0] ; 
+				}
 
-			} //t0
+			} //tf
 		} //if in map
 		else
 		{
@@ -1097,34 +1105,38 @@ BaryonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t opKey, int c
 		return source;
 } //getSourceOP
 
-BaryonOperator_t ElementalOpMap::getSinkOp(const ElementalOpKey_t opKey, int cfg) const
+BaryonOperator_t ElementalOpMap::getSinkOp(const ElementalOpKey_t& opKey, int cfg) const	
 {
 
 	BaryonOperator_t sink;
 
 	bool init = false; 
 
-	if (elemMap.find(key) != elemMap.end() )
+	if (elemMap.find(opKey) != elemMap.end() )
 	{
-		const ElementalOpEntry_t & opFiles = elemMap.find(opKey)->second;
+		const InputFiles_t::ElementalOpFiles_t & opFiles = elemMap.find(opKey)->second.opFiles;
 
-		int Nt = opFiles.cfg[cfg].timeslices.size();
+		//The number of timeslice files included 
+		int Nt_files = opFiles.cfgs[cfg].time_files.size();
 
-		for (int t0 = 0 ; t0 < Nt ; ++t0)
+		for (int tf = 0 ;  tf < Nt_files ; ++tf)
 		{
 				BaryonOperator_t currOp; 
 
-				std::string snkFile = opFiles.cfg[cfg].timeslices[t0].snkFile;
+				std::string snkFile = opFiles.cfgs[cfg].time_files[tf].snk_file;
 
 				XMLReader file_xml, record_xml;
 				BinaryBufferReader dummy;
 
-				QDPFileReader rdr(file_xml, snkFile, QPIO_SERIAL);
+				QDPFileReader rdr(file_xml, snkFile, QDPIO_SERIAL);
 				read(rdr, record_xml, dummy);
 				
 				read(dummy, currOp); 
 				
 				rdr.close();
+
+				//Assume every opfile contains the same number of timeslices
+				int Nt_curr = currOp.time_slices.size();
 
 				if (!init)
 				{
@@ -1138,7 +1150,7 @@ BaryonOperator_t ElementalOpMap::getSinkOp(const ElementalOpKey_t opKey, int cfg
 					sink.dilution_r = currOp.dilution_r;
 					sink.perms = currOp.perms;	
 
-					sink.time_slices.resize(Nt);
+					sink.time_slices.resize(Nt_files * Nt_curr);
 					
 					init = true; 
 				}
@@ -1150,9 +1162,12 @@ BaryonOperator_t ElementalOpMap::getSinkOp(const ElementalOpKey_t opKey, int cfg
 					QDP_abort(1); 
 				}
 
-				sink.time_slices[t0] = currOp.time_slices[0] ; 
+				for (int t0 = 0 ; t0 < Nt_curr ; ++t0)
+				{
+					sink.time_slices[ tf * Nt_curr + t0] = currOp.time_slices[t0] ; 
+				}
 
-			} //t0
+			} //tf
 		} //if in map
 		else
 		{
@@ -1218,7 +1233,7 @@ int main(int argc, char **argv)
 	QDPIO::cout<< "Reading Coeff Files" << endl;
 
 	//Read coeff files 
-	readCoeffFiles(final_ops, input.files.coeff_files);
+	readCoeffFiles(final_ops, input.input_files.coeff_files);
 
 
 	int time_dir = input.param.decay_dir;
@@ -1226,9 +1241,6 @@ int main(int argc, char **argv)
 	int Nops = final_ops.size();
 	int Nelem = input.input_files.elem_op_files.size();
 	int Nbins = input.input_files.elem_op_files[0].cfgs.size();
-
-	multi1d<int> participating_timeslices = getParticipatingTimes(
-			input.input_files.elem_op_files[0].cfg[0]);
 
 	//-------------------------------------------------------------
 	//Sanity Checks
@@ -1242,7 +1254,7 @@ int main(int argc, char **argv)
 
 
 	//Check consistencies with cfgs, dilutions for all elemental ops
-	opsError();
+	opsError(input.input_files.elem_op_files);
 
 	//-------------------------------------------------------------
 
@@ -1252,7 +1264,7 @@ int main(int argc, char **argv)
 	QDPIO::cout << " MAKE_OPS: construct baryon operators" << endl;
 
 	//Elemental Operator maps 
-	ElementalOpMaps el_op_maps(input.input_files.elem_op_files);
+	ElementalOpMap el_op_maps(input.input_files.elem_op_files);
 
 	//loop over configurations
 	for (int i = 0 ; i < Nbins ; ++i)
@@ -1281,10 +1293,9 @@ int main(int argc, char **argv)
 				
 					ElementalOpKey_t elOpKey;
 
-					elOpKey.cfg = i;
 					elOpKey.op = final_ops[l].term[m].op;
 				
-					BaryonOperator_t elem_source = el_op_maps.getSourceOp(elOpKey);
+					BaryonOperator_t elem_source = el_op_maps.getSourceOp(elOpKey, i );
 
 					if (!init)
 					{
@@ -1323,9 +1334,9 @@ int main(int argc, char **argv)
 
 				BinaryBufferWriter source_bin; 
 
-				std::string filename = input.output_info.cfg_paths[i] + op[l].name + "_src.lime";
+				std::string filename = input.output_info.cfg_paths[i].src_path + final_ops[l].name + "_src.lime";
 
-				QDPIO::cout<<"Source Filename = "<<srcfilename<<endl;
+				QDPIO::cout<<"Source Filename = "<<filename<<endl;
 
 				QDPFileWriter srcout(file_xml, filename, QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
 
@@ -1361,10 +1372,9 @@ int main(int argc, char **argv)
 				
 					ElementalOpKey_t elOpKey;
 
-					elOpKey.cfg = i;
 					elOpKey.op = final_ops[l].term[m].op;
 				
-					BaryonOperator_t elem_sink = el_op_maps.getSinkOp(elOpKey);
+					BaryonOperator_t elem_sink = el_op_maps.getSinkOp(elOpKey, i);
 
 					if (!init)
 					{
@@ -1394,7 +1404,7 @@ int main(int argc, char **argv)
 
 				BinaryBufferWriter sink_bin; 
 
-				std::string filename = input.output_info.cfg_paths[i] + op[l].name + "_snk.lime";
+				std::string filename = input.output_info.cfg_paths[i].snk_path + final_ops[l].name + "_snk.lime";
 
 				QDPIO::cout<<"Sink Filename = "<<filename<<endl;
 
@@ -1422,7 +1432,7 @@ int main(int argc, char **argv)
 
 	swatch.stop();
 
-	QDIO::cout<<"MakeOps ran sucessfully: total time = "<< swatch.getTimeInSeconds() << "sec" << endl;
+	QDPIO::cout<<"MakeOps ran sucessfully: total time = "<< swatch.getTimeInSeconds() << "sec" << endl;
 
 
 	// Clean up QDP++
