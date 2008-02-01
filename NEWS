@@ -1,4 +1,10 @@
 01/21/2007 -- Robert Edwards
+	Version 3.28.1 - Cleaned out old intel_sse_dslash code. Removed all
+        stand-alone stout_smear routines. Changed task version to go through
+        stout_utils package. Some new versions of 2+2 gaugeacts. Some more
+        control over eigbounds.
+
+01/21/2007 -- Robert Edwards
 	Version 3.28.0 - Overhauled plaq_gaugeact and lwldslash classes to now
         use a general form of anistropy coeffients - on all plaqs or links. Now
         have support for 2+2 anisotropy. New time-prec. ILU Clover hmc. New NPR
