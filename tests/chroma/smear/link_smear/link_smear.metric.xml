@@ -41,22 +41,4 @@
 
 <assertion xpath="chroma/InlineObservables/elem[5]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
 
-
-<!-- stout smear old -->
-<assertion xpath="chroma/InlineObservables/elem[6]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
-
-<assertion xpath="chroma/InlineObservables/elem[6]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
-
-<assertion xpath="chroma/InlineObservables/elem[6]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
-
-
-<!-- 3d stout smear old -->
-<assertion xpath="chroma/InlineObservables/elem[7]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
-
-<assertion xpath="chroma/InlineObservables/elem[7]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
-
-<assertion xpath="chroma/InlineObservables/elem[7]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
-
-
-
 </assertions>
