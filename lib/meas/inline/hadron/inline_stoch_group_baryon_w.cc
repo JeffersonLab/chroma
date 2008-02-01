@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.18 2008-01-31 04:31:38 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.19 2008-02-01 23:10:55 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -88,8 +88,12 @@ namespace Chroma
       xml << param.sink_quark_smearing.xml;
       xml << param.link_smearing.xml;
 
+			push(xml, "QuarkDilutions");
+
       for(int i=0; i < param.quark_dils.size(); ++i)
 				xml << param.quark_dils[i].xml;
+
+			pop(xml);
 
       pop(xml);
     }
@@ -1547,6 +1551,21 @@ namespace Chroma
 						pop(file_xml); //Quark_r
 
 						pop(file_xml);//QuarkSources
+						push(file_xml, "QuarkSinks");
+
+						push(file_xml, "Quark_l");
+						write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
+						pop(file_xml);
+
+						push(file_xml, "Quark_m");
+						write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
+						pop(file_xml);
+					
+						push(file_xml, "Quark_r");
+						write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
+						pop(file_xml);
+					
+						pop(file_xml); //Quark Sinks  
 						pop(file_xml);//SourceBaryonOp
 
 						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
@@ -1827,7 +1846,22 @@ namespace Chroma
 						pop(file_xml); //Quark_r
 
 						pop(file_xml);//QuarkSources
+						push(file_xml, "QuarkSinks");
+
+						push(file_xml, "Quark_l");
+						write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
 						pop(file_xml);
+
+						push(file_xml, "Quark_m");
+						write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
+						pop(file_xml);
+					
+						push(file_xml, "Quark_r");
+						write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
+						pop(file_xml);
+					
+						pop(file_xml);//QuarkSinks 
+						pop(file_xml);//SinkBaryonOperator
 
 						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
 								QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
