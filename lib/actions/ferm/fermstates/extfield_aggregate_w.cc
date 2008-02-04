@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.8 2007-11-02 20:03:31 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.9 2008-02-04 19:23:31 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -71,6 +71,44 @@ namespace Chroma
     }
 
 
+    //! Reader
+    /*! @ingroup sources */
+    void read(XMLReader& xml, const string& path, ExternalFieldEnv::LinearElectricParams& param){
+      
+      XMLReader paramtop(xml, path);
+      
+      int version;
+      read(paramtop, "version", version);
+
+      switch (version) 
+	{
+	case 1:
+	  break;
+	  
+	default:
+	  QDPIO::cerr << __func__ << ": parameter version " << version 
+		      << " unsupported." << endl;
+	  QDP_abort(1);
+	}
+      read(paramtop, "t_dir",  param.t_dir);
+      read(paramtop, "x_dir",  param.x_dir);
+      read(paramtop, "Efield", param.Efield);
+    }
+  
+  //! Writer
+  /*! @ingroup sources */
+    void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::LinearElectricParams& param){
+ 
+      push(xml,path);
+      int version;
+      write(xml, "version", version);
+      write(xml, "t_dir",  param.t_dir);
+      write(xml, "x_dir",  param.x_dir);
+      write(xml, "Efield", param.Efield);
+      pop(xml);
+    }
+
+
     //! Anonymous namespace
     namespace
     {
@@ -93,14 +131,16 @@ namespace Chroma
 	return new ConstantMagneticExternalField(p);
       }
 
-#if 0
-      //! Construct linear term
-      ExternalField* linearFunc(XMLReader& xml_in,
-				const std::string& path)
+      
+      //! Construct linear electric field
+      ExternalField* LinearElectricFunc(XMLReader& xml_in,
+					const std::string& path)
       {
-	return new LinearExternalField(LinearParams(xml_in, path));
+	LinearElectricParams p ;
+	ExternalFieldEnv::read(xml_in,path,p);
+	return new LinearElectricExternalField(p);
       }
-#endif
+	  
       
     } // end anonymous namespace
 
@@ -167,7 +207,29 @@ namespace Chroma
     }
 
 
+     // Construct linear Electric field. Needs fix up...
+    LatticeComplex
+    LinearElectricExternalField::operator()(int mu) const
+    {
+      START_CODE();
+	  
+      LatticeComplex U ;
+      if(mu==t_dir){
+	Real A0;
+	A0 = -(0.5)*Efield;
+	QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A0<<endl ;
+	LatticeReal E = A0*(Layout::latticeCoordinate(x_dir))*(Layout::latticeCoordinate(x_dir)) ; 
+	U = cmplx(cos(E),sin(E));
+	return U ;
+      }
 
+      U = 1.0 ;
+      QDPIO::cout<<__func__<<" A_"<<mu<<"= 0"<<endl ;
+      END_CODE();
+      return U;
+    }
+	
+	
     //! Local registration flag
     static bool registered = false;
 
@@ -183,6 +245,9 @@ namespace Chroma
 
 	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("CONSTANT_MAGNETIC"), ConstantMagneticFunc);
 	//QDPIO::cerr<<"registered CONSTANT_MAGNETIC field\n";
+
+	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("LINEAR_ELECTRIC"), LinearElectricFunc);
+	//QDPIO::cerr<<"registered LINEAR_ELECTRIC field\n";
 
 	registered = true;
       }

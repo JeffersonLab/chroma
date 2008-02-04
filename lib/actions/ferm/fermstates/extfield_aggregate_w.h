@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.6 2007-11-02 16:34:31 kostas Exp $
+// $Id: extfield_aggregate_w.h,v 1.7 2008-02-04 19:23:31 kostas Exp $
 /*! \file
  *  \brief External field functions
  */
@@ -66,7 +66,38 @@ namespace Chroma
       LatticeComplex operator()(int dummy) const;
     };
 
-     Handle< ExternalField > reader(XMLReader& xml,  const std::string& path) ;
+    
+    struct LinearElectricParams{
+      int t_dir   ; // the time direction
+      int x_dir   ; // the direction which Phi is turned on, also the dir of E
+      Real Efield ; // The E field is E = (Efield)*x, so
+	  //this is the e field divided by the distance.
+    } ;
+    //! Construct Linear Electric field (E = epsilon*x)
+    /*!
+     * \ingroup fermstates
+     */
+    class LinearElectricExternalField : public ExternalField
+    {
+      int t_dir ;
+      int x_dir ;
+      Real Efield ;
+    public:
+      //! Full constructor
+      LinearElectricExternalField(LinearElectricParams p):t_dir(p.t_dir),
+							      x_dir(p.x_dir),
+							      Efield(p.Efield)
+      {}
+      //! set time default to be Nd-1 and zero external field
+      LinearElectricExternalField():t_dir(Nd-1),x_dir(0),Efield(0.0)
+      {} 
+
+      //! Return the field
+      LatticeComplex operator()(int dummy) const;
+    };
+    
+    
+    Handle< ExternalField > reader(XMLReader& xml,  const std::string& path) ;
 
   }  // end namespace
 
@@ -80,17 +111,12 @@ namespace Chroma
   void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::ConstantMagneticParams& param);
 
 
-
-
-#if 0
-  //! Reader
-  /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, DerivQuarkDisplacementEnv::Params& param);
-
+  void read(XMLReader& xml, const string& path, ExternalFieldEnv::LinearElectricParams& param);
+  
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const DerivQuarkDisplacementEnv::Params& param);
-#endif
+  void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::LinearElectricParams& param);
+
 
 }  // end namespace Chroma
 
