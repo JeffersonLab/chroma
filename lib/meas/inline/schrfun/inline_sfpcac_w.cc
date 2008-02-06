@@ -1,4 +1,4 @@
-// $Id: inline_sfpcac_w.cc,v 1.5 2007-10-13 20:46:29 edwards Exp $
+// $Id: inline_sfpcac_w.cc,v 1.6 2008-02-06 18:55:18 edwards Exp $
 /*! \file
  * \brief Inline Schroedinger functional measurements
  */
@@ -155,7 +155,7 @@ namespace Chroma
       {
 	string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "propagator");
+	push(xml_out, "SFpcac");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
