@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_s.cc,v 1.3 2008-01-06 11:19:17 mcneile Exp $
+// $Id: hisq_fermact_s.cc,v 1.4 2008-02-16 16:21:40 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */
@@ -43,6 +43,8 @@ can be covered by modifying the coefficients here.
 
 // DEBUG
 #include "util/gauge/unit_check.h"
+#include "meas/glue/mesplq.h"
+#include "dum_dumper.h"
 
 namespace Chroma 
 { 
@@ -153,12 +155,22 @@ namespace Chroma
     u_with_phases = u_;
     getFermBC().modify(u_with_phases);
 
+    Double w_plaq, s_plaq, t_plaq,  link ; // DEBUG 
+    MesPlq(u_with_phases,w_plaq,s_plaq,t_plaq,link); 
+    cout << "Gauge w_plaq= " << w_plaq << endl ; 
+
+    cout << "================== Gauge links" << endl ; 
+    dum_dump(u_with_phases) ; 
+    cout << "----------------------------------------\n" ; 
+
+
     // Now multiply in phases
     //
     // alpha comes from the StagPhases:: namespace
     for(int i = 0; i < Nd; i++) { 
-      u_with_phases[i] *= StagPhases::alpha(i);
+      //  u_with_phases[i] *= StagPhases::alpha(i);
     }
+
 
 #if 0 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
@@ -180,14 +192,26 @@ namespace Chroma
     // Lepage term
     fat7_param pp ; 
 
+#if 0 
     pp.c_1l = (Real)(1) / (Real)(8);   // lepage contributes here
     pp.c_3l = (Real)(-1) / ((Real)(16));
     pp.c_5l = - pp.c_3l / ((Real)(4));    // 1/64
     pp.c_7l = - pp.c_5l / ((Real)(6));    // -1/384
     //    pp.c_Lepage = pp.c_3l ; 
     pp.c_Lepage =  0.0 ; 
+#endif
+    pp.c_1l = (Real)(1) / (Real)(8);   // lepage contributes here
+    pp.c_3l = (Real)(1) / ((Real)(16));
+    pp.c_5l = pp.c_3l / ((Real)(4));    // 1/64
+    pp.c_7l = pp.c_5l / ((Real)(6));    // -1/384
+    //    pp.c_Lepage = pp.c_3l ; 
+    pp.c_Lepage =  0.0 ; 
+
 
     Fat7_Links(u_with_phases, u_fat_I, pp);
+
+    MesPlq(u_fat_I,w_plaq,s_plaq,t_plaq,link); 
+    cout << "Fat7_Links w_plaq= " << w_plaq << endl ; 
 
     // reunitarise (using polar method)
    LatticeReal  alpha ; // complex phase (not needed here)
@@ -198,23 +222,86 @@ namespace Chroma
 
    for(int i = 0; i < Nd; i++) 
      {
+       LatticeColorMatrix  w_store , t1, t2 , t3 ;
        w = u_fat_I[i] ;
+             w_store = w ;
        polar_dec(w, u_fat_I[i],alpha, JacAccu, JacMax) ;
+       //       u_fat_I[i]  *= StagPhases::alpha(i);
+
+#if 0
+       LatticeComplex phas ;
+       phas = cmplx( cos(alpha) ,sin(alpha)) ;
+       t1 =  u_fat_I[i] * w ; 
+       t2 = phas * t1 ;
+       t3 = w_store - t2 ; 
+
+       dum_dump(t3) ; 
+       exit(0) ;
+
+       //       dum_dump(alpha) ; 
+       // exit(0) ;
+#endif
+
+
      }
 
      // with HISQ the three links are fat
     Real one = (Real) 1.0 ; 
     Triple_Links(u_fat_I, u_triple, one);
+    cout << "================== Triple links" << endl ; 
+    Real ss = -24.0 ;
+    dum_dump(u_triple,ss) ; 
+    cout << "----------------------------------------\n" ; 
+    //    MesPlq(u_triple,w_plaq,s_plaq,t_plaq,link);  // DEBUG
+    //cout << "Triple_Links w_plaq= " << w_plaq << " link= " << link << endl ; 
  
     // fatten again with different coefficient of fat term
 
-    pp.c_1l = (Real)(8) / (Real)(8);
-    pp.c_3l = (Real)(-1) / ((Real)(16));
-    pp.c_5l = - pp.c_3l / ((Real)(4));
-    pp.c_7l = - pp.c_5l / ((Real)(6));
-    pp.c_Lepage = 2.0 * pp.c_3l ;  // double Lepage term
+#if 0 
+    pp.c_1l = (Real)(1)  ; 
+    //    pp.c_1l = (Real)(8) / (Real)(8);
+    pp.c_3l = (Real)(-1) / ((Real)(16)); //  -0.0625 or -1/16
+    pp.c_5l = - pp.c_3l / ((Real)(4));   //   0.01562500 or 1/64
+    pp.c_7l = - pp.c_5l / ((Real)(6));   // .00260416666 or 1/384
+    pp.c_Lepage = 2.0 * pp.c_3l ;  // double Lepage term  -1/8
+#endif
+    pp.c_1l = (Real)(1)  ; 
+    pp.c_3l = (Real)(1) / ((Real)(16)); //  -0.0625 or -1/16
+    pp.c_5l = pp.c_3l / ((Real)(4));   //   0.01562500 or 1/64
+    pp.c_7l = pp.c_5l / ((Real)(6));   // .00260416666 or 1/384
+    pp.c_Lepage = -2.0 * pp.c_3l ;  // double Lepage term  -1/8
 
+
+    cout << "(II) pp.c_1l   = "  << pp.c_1l << endl ; 
+    cout << "(II) pp.c_3l  = "  << pp.c_3l << endl ; 
+    cout << "(II) pp.c_5l  = "  << pp.c_5l << endl ; 
+    cout << "(II) pp.c_7l  = "  << pp.c_7l << endl ; 
+    cout << "(II) pp.c_Lepage   = "  << pp.c_Lepage << endl ; 
+
+    MesPlq(u_fat_I,w_plaq,s_plaq,t_plaq,link);  // DEBUG
+    cout << "Fat7_Links(reunit) w_plaq= " << w_plaq << endl ; 
+
+    //    Fat7_Links(u_fat_I, u_fat, pp);
     Fat7_Links(u_fat_I, u_fat, pp);
+
+    MesPlq(u_fat,w_plaq,s_plaq,t_plaq,link);  // DEBUG   
+    cout << "Fat7_Links(again) w_plaq= " << w_plaq << endl ; 
+
+    cout << "================== First Fat links" << endl ; 
+    dum_dump(u_fat_I) ; 
+    cout << "----------------------------------------\n" ; 
+
+    cout << "================== Final Fat links" << endl ; 
+    dum_dump(u_fat) ; 
+    cout << "----------------------------------------\n" ; 
+
+
+
+   for(int i = 0; i < Nd; i++) 
+     {
+        u_fat[i]     *= StagPhases::alpha(i);
+        u_triple[i]  *= StagPhases::alpha(i);
+     }
 
     // ---------------------------------------------------
 
