@@ -1,0 +1,31 @@
+Dear Alan,
+         We have to decide exactly what 
+is required for the HISQ coding effort. This will be 
+done after we have consulted MILC. I wrote,
+but didn't fully debug a HISQ inverter
+in chroma. The details are below. This may be 
+useful to focus your chroma efforts, although
+we were not planning to use chroma for the 
+generation of configurations.
+
+The wrapper to the HISQ inverter in chroma
+is in:
+
+chroma/mainprogs/tests/t_propagator_s.cc
+
+
+  HisqFermActParams hisq_param;
+  hisq_param.Mass = input.param.Mass;
+  hisq_param.u0   = input.param.u0;
+  HisqFermAct S_f(cfs, hisq_param);
+
+I believe that the main code is in
+
+chroma/lib/actions/ferm/fermacts
+hisq_fermact_params_s.cc
+hisq_fermact_params_s.h
+hisq_fermact_s.cc
+hisq_fermact_s.h
+
+Craig
+
