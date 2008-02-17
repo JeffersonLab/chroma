@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_s.cc,v 1.5 2008-02-16 16:51:12 mcneile Exp $
+// $Id: hisq_fermact_s.cc,v 1.6 2008-02-17 11:42:16 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */
@@ -44,7 +44,6 @@ can be covered by modifying the coefficients here.
 // DEBUG
 #include "util/gauge/unit_check.h"
 #include "meas/glue/mesplq.h"
-#include "dum_dumper.h"
 
 namespace Chroma 
 { 
