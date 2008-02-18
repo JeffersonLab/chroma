@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.9 2008-02-04 19:23:31 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.10 2008-02-18 20:45:17 kostas Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -51,9 +51,13 @@ namespace Chroma
 	  QDP_abort(1);
 	}
       read(paramtop, "t_dir",  param.t_dir);
-      read(paramtop, "x_dir",  param.x_dir);
+      read(paramtop, "y_dir",  param.y_dir);
       read(paramtop, "b_dir",  param.b_dir);
       read(paramtop, "Bfield", param.Bfield);
+      if(paramtop.count("patch") !=0 )
+	read(paramtop, "patch", param.patch);
+      else
+	param.patch = false ;
     }
   
   //! Writer
@@ -64,9 +68,10 @@ namespace Chroma
       int version;
       write(xml, "version", version);
       write(xml, "t_dir",  param.t_dir);
-      write(xml, "x_dir",  param.x_dir);
+      write(xml, "y_dir",  param.y_dir);
       write(xml, "b_dir",  param.b_dir);
       write(xml, "Bfield", param.Bfield);
+      write(xml, "patch", param.patch);
       pop(xml);
     }
 
@@ -92,6 +97,7 @@ namespace Chroma
 	}
       read(paramtop, "t_dir",  param.t_dir);
       read(paramtop, "x_dir",  param.x_dir);
+      read(paramtop, "x_src",  param.x_src);
       read(paramtop, "Efield", param.Efield);
     }
   
@@ -104,6 +110,7 @@ namespace Chroma
       write(xml, "version", version);
       write(xml, "t_dir",  param.t_dir);
       write(xml, "x_dir",  param.x_dir);
+      write(xml, "x_src",  param.x_src);
       write(xml, "Efield", param.Efield);
       pop(xml);
     }
@@ -187,14 +194,21 @@ namespace Chroma
       if(mu!=t_dir){
 	Real A;
 	if(Nd==4){
-	  for( int d(0);d<Nd;d++){
-	    if((d!=t_dir)&&(d!=x_dir)&&(d!=mu)){
-	      A = epsilon(d,mu,b_dir)*Bfield ;
-	      QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A<<endl ;
-	      LatticeReal B = A*Layout::latticeCoordinate(d) ; 
-	      U = cmplx(cos(B),sin(B));
-	      return U ;
-	    }
+	  if(mu==y_dir){
+	    A = epsilon(x_dir,y_dir,b_dir)*Bfield ;
+	    QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A<<endl ;
+	    LatticeReal B = A*Layout::latticeCoordinate(x_dir) ; 
+	    U = cmplx(cos(B),sin(B));
+	    return U ;
+	  }
+	  if((mu==x_dir)&&(patch)){// do the patch 
+	    LatticeBoolean XX = (Layout::latticeCoordinate(x_dir)==
+				(Layout::lattSize()[x_dir] - 1) )  ;
+	    LatticeReal B = -Bfield*XX*Layout::lattSize()[y_dir]*
+	      Layout::latticeCoordinate(y_dir)  ;
+	    
+	    U = cmplx(cos(B),sin(B));
+	    return U ;
 	  }
 	}
 	else//do nothing
@@ -218,7 +232,7 @@ namespace Chroma
 	Real A0;
 	A0 = -(0.5)*Efield;
 	QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A0<<endl ;
-	LatticeReal E = A0*(Layout::latticeCoordinate(x_dir))*(Layout::latticeCoordinate(x_dir)) ; 
+	LatticeReal E = A0*(Layout::latticeCoordinate(x_dir)-x_src)*(Layout::latticeCoordinate(x_dir)-x_src) ; 
 	U = cmplx(cos(E),sin(E));
 	return U ;
       }
