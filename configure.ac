@@ -214,13 +214,15 @@ case "$enable_sse_wilson_dslash" in
 	AC_CONFIG_SUBDIRS(other_libs/sse_wilson_dslash)
 	AC_SUBST(SSE_DSLASH_DIR, [sse_wilson_dslash])
 	AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[ Build SSE Dslash Op ])
+        AC_SUBST(SSE_DSLASH_ENABLED,[yes]	)	  
 	;;
   *)
 	AC_SUBST(SSE_DSLASH_DIR)
 	AC_MSG_NOTICE( [Not building SSE Dslash ] )
+        AC_SUBST(SSE_DSLASH_ENABLED,[no]	)
         ;;
 esac 
-AC_SUBST(SSE_DSLASH_ENABLED,[$enable_sse_wilson_dslash]	)	
+
 
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])

@@ -21,7 +21,7 @@ exec_prefix_set=no
 
 version="@VERSION@"
 
-extra_libs=""
+extra_libs="-lqdp-lapack"
 sse_dslash_enabled="@SSE_DSLASH_ENABLED@"
 case $sse_dslash_enabled in
 yes)

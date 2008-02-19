@@ -4247,14 +4247,17 @@ cat >>confdefs.h <<\_ACEOF
 #define BUILD_SSE_WILSON_DSLASH
 _ACEOF
 
+        SSE_DSLASH_ENABLED=yes
+
 	;;
   *)
 
 	{ echo "$as_me:$LINENO: Not building SSE Dslash  " >&5
 echo "$as_me: Not building SSE Dslash  " >&6;}
+        SSE_DSLASH_ENABLED=no
+
         ;;
 esac
-SSE_DSLASH_ENABLED=$enable_sse_wilson_dslash
 
 
  if test "x${enable_sse_wilson_dslash}x" = "xyesx" ; then
