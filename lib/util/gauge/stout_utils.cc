@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_utils.cc,v 1.4 2008-01-25 22:22:39 edwards Exp $
+// $Id: stout_utils.cc,v 1.5 2008-02-19 16:21:59 bjoo Exp $
 /*! \file
  *  \brief Stout utilities
  */
@@ -458,42 +458,42 @@ namespace Chroma
 	  //  differences to be zero. At this point in time maple seems happy.
 	  //  ==================================================================================
 	  
-	  f[0].elem(site).elem().elem().real() = 1-c0*c0/720;
-	  f[0].elem(site).elem().elem().imag() =  -(c0/6)*(1-(c1/20)*(1-(c1/42))) ;
+	  f[0].elem(site).elem().elem().real() = 1.0-c0*c0/720.0;
+	  f[0].elem(site).elem().elem().imag() =  -(c0/6.0)*(1.0-(c1/20.0)*(1.0-(c1/42.0))) ;
 	  
-	  f[1].elem(site).elem().elem().real() =  c0/24*(1.0-c1/15*(1-3*c1/112)) ;
-	  f[1].elem(site).elem().elem().imag() =  1-c1/6*(1-c1/20*(1-c1/42))-c0*c0/5040 ;
+	  f[1].elem(site).elem().elem().real() =  c0/24.0*(1.0-c1/15.0*(1.0-3.0*c1/112.0)) ;
+	  f[1].elem(site).elem().elem().imag() =  1.0-c1/6.0*(1.0-c1/20.0*(1.0-c1/42.0))-c0*c0/5040.0 ;
 	  
-	  f[2].elem(site).elem().elem().real() = 0.5*(-1+c1/12*(1-c1/30*(1-c1/56))+c0*c0/20160);
-	  f[2].elem(site).elem().elem().imag() = 0.5*(c0/60*(1-c1/21*(1-c1/48)));
+	  f[2].elem(site).elem().elem().real() = 0.5*(-1.0+c1/12.0*(1.0-c1/30.0*(1.0-c1/56.0))+c0*c0/20160.0);
+	  f[2].elem(site).elem().elem().imag() = 0.5*(c0/60.0*(1.0-c1/21.0*(1.0-c1/48.0)));
 	  
 	  if( dobs == true ) {
 	    //  partial f0/ partial c0
-	    b2[0].elem(site).elem().elem().real() = -c0/360;
-	    b2[0].elem(site).elem().elem().imag() =  -(1/6)*(1-(c1/20)*(1-c1/42));
+	    b2[0].elem(site).elem().elem().real() = -c0/360.0;
+	    b2[0].elem(site).elem().elem().imag() =  -(1.0/6.0)*(1.0-(c1/20.0)*(1.0-c1/42.0));
 	    
 	    // partial f0 / partial c1
 	    //
 	    b1[0].elem(site).elem().elem().real() = 0;
-	    b1[0].elem(site).elem().elem().imag() = (c0/120)*(1-c1/21);
+	    b1[0].elem(site).elem().elem().imag() = (c0/120.0)*(1.0-c1/21.0);
 	    
 	    // partial f1 / partial c0
 	    //
-	    b2[1].elem(site).elem().elem().real() = (1/24)*(1-c1/15*(1-3*c1/112));
-	    b2[1].elem(site).elem().elem().imag() = -c0/2520;
+	    b2[1].elem(site).elem().elem().real() = (1.0/24.0)*(1.0-c1/15.0*(1.0-3.0*c1/112.0));
+	    b2[1].elem(site).elem().elem().imag() = -c0/2520.0;
 	    
 	    
 	    // partial f1 / partial c1
-	    b1[1].elem(site).elem().elem().real() = -c0/360*(1 - 3*c1/56 );
-	    b1[1].elem(site).elem().elem().imag() = -1/6*(1-c1/10*(1-c1/28));
+	    b1[1].elem(site).elem().elem().real() = -c0/360.0*(1.0 - 3.0*c1/56.0 );
+	    b1[1].elem(site).elem().elem().imag() = -1.0/6.0*(1.0-c1/10.0*(1.0-c1/28.0));
 	    
 	    // partial f2/ partial c0
-	    b2[2].elem(site).elem().elem().real() = 0.5*c0/10080;
-	    b2[2].elem(site).elem().elem().imag() = 0.5*(  1/60*(1-c1/21*(1-c1/48)) );
+	    b2[2].elem(site).elem().elem().real() = 0.5*c0/10080.0;
+	    b2[2].elem(site).elem().elem().imag() = 0.5*(  1.0/60.0*(1.0-c1/21.0*(1.0-c1/48.0)) );
 	    
 	    // partial f2/ partial c1
-	    b1[2].elem(site).elem().elem().real() = 0.5*(  1/12*(1-(2*c1/30)*(1-3*c1/112)) ); 
-	    b1[2].elem(site).elem().elem().imag() = 0.5*( -c0/1260*(1-c1/24) );
+	    b1[2].elem(site).elem().elem().real() = 0.5*(  1.0/12.0*(1.0-(2.0*c1/30.0)*(1.0-3.0*c1/112.0)) ); 
+	    b1[2].elem(site).elem().elem().imag() = 0.5*( -c0/1260.0*(1.0-c1/24.0) );
 	    
 #if 0
 	    {
@@ -562,7 +562,7 @@ namespace Chroma
 	    // ===============================================================================
 	    REAL sqtwo = sqrt((REAL)2);
 	    
-	    theta = sqtwo*sqrt(eps)*( 1 + ( (1/(REAL)12) + ( (3/(REAL)160) + ( (5/(REAL)896) + ( (35/(REAL)18432) + (63/(REAL)90112)*eps ) *eps) *eps) *eps) *eps);
+	    theta = sqtwo*sqrt(eps)*( 1.0 + ( (1/(REAL)12) + ( (3/(REAL)160) + ( (5/(REAL)896) + ( (35/(REAL)18432) + (63/(REAL)90112)*eps ) *eps) *eps) *eps) *eps);
 	    
 	  } 
 	  else {  
