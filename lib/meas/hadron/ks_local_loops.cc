@@ -1,5 +1,5 @@
 /* + */
-/* $Id: ks_local_loops.cc,v 3.4 2007-05-17 15:30:38 egregory Exp $ ($Date: 2007-05-17 15:30:38 $) */
+/* $Id: ks_local_loops.cc,v 3.5 2008-02-24 11:29:36 mcneile Exp $ ($Date: 2008-02-24 11:29:36 $) */
 
 
 #include "fermact.h"
@@ -688,6 +688,8 @@ void ks_fuzz_loops_X(
   /**********************************************************************/
 
 //  fuzz the loops
+//  HACK
+
 
 void ks_fuzz_loops(
 		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
@@ -708,7 +710,8 @@ void ks_fuzz_loops(
 		 VolSrc_type volume_source,
 		 int fuzz_width, 
 		 int src_seperation,
-		 int j_decay){
+		 int j_decay, bool binary_loop_checkpoint,
+                 std::string binary_name){
 
   int src_tslice=0;
   int src_color_ind = 0;
@@ -802,10 +805,23 @@ void ks_fuzz_loops(
 					     &src_color_ind, &src_parity_ind,
 					     &src_corner_ind, src_seperation,
 					     j_decay);
+      SystemSolverResults_t res  ;
+      {
+        StopWatch swatch;
+        swatch.start();
 
       // Compute the solution vector for the particular source
-      SystemSolverResults_t res = (*qprop)(psi, q_source);
+      res = (*qprop)(psi, q_source);
       
+        swatch.stop();
+        double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "ks_fuzz_loops::PROF INVERTER  [" << i << "] " << time_in_sec << " sec" << endl;
+
+
+
+      }
+
+
       push(xml_out,"Qprop_noise");
       write(xml_out, "Noise_number" , i);
       write(xml_out, "RsdCG" , RsdCG);
@@ -813,7 +829,22 @@ void ks_fuzz_loops(
       write(xml_out, "Seed" , seed);
       pop(xml_out);
 
+      {
+        StopWatch swatch;
+        swatch.start();
+
       fuzz_smear(u_smr, psi,psi_fuzz, fuzz_width, j_decay) ;
+
+        swatch.stop();
+        double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "ks_fuzz_loops::PROF fuzz_smear  [" << i << "] " << time_in_sec << " sec" << endl;
+
+
+      }
+
+      {
+        StopWatch swatch;
+        swatch.start();
 
 
       // compute the un-fuzzed operators
@@ -832,9 +863,18 @@ void ks_fuzz_loops(
       eta4_kilcup_loop_fuzz.compute(psi_fuzz,psi,i, Mass);
 
 
+        swatch.stop();
+        double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "ks_fuzz_loops::PROF compute  [" << i << "] " << time_in_sec << " sec" << endl;
+
+
+      }
 
 
       if(loop_checkpoint){
+        StopWatch swatch;
+        swatch.start();
+
         //write each measurement to the XML file
 
 	scalar_one_loop.dump(xml_out,i) ;
@@ -849,12 +889,22 @@ void ks_fuzz_loops(
 	eta3_loop_fuzz.dump(xml_out,i) ;
 	eta4_loop_fuzz.dump(xml_out,i) ;
 	eta4_kilcup_loop_fuzz.dump(xml_out,i) ;
+
+        swatch.stop();
+        double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "ks_fuzz_loops::PROF CHECKPOINT  [" << i << "] " << time_in_sec << " sec" << endl;
+
+
       }
     
     
     } // Nsamples
 
     // write output from the loop calc
+    {
+      StopWatch swatch;
+      swatch.start();
+
   scalar_one_loop.dump(xml_out) ;
   scalar_two_loop.dump(xml_out) ;
   eta3_loop.dump(xml_out) ;
@@ -868,6 +918,39 @@ void ks_fuzz_loops(
   eta3_loop_fuzz.dump(xml_out) ;
   eta4_loop_fuzz.dump(xml_out) ;
   eta4_kilcup_loop_fuzz.dump(xml_out) ;
+
+
+  swatch.stop();
+  double time_in_sec  = swatch.getTimeInSeconds();
+  QDPIO::cout << "ks_fuzz_loops::FINAL IO  " << time_in_sec << " sec" << endl;
+
+    }
+
+    if(binary_loop_checkpoint )
+    {
+      // BINARY DUMP 
+      StopWatch swatch;
+      swatch.start();
+
+      scalar_one_loop.binary_dump(binary_name) ;
+      scalar_two_loop.binary_dump(binary_name) ;
+      eta3_loop.binary_dump(binary_name) ;
+      eta4_loop.binary_dump(binary_name) ;
+      eta4_kilcup_loop.binary_dump(binary_name) ;
+      eta0_loop.binary_dump(binary_name) ;
+
+      scalar_one_loop_fuzz.binary_dump(binary_name) ;
+      scalar_two_loop_fuzz.binary_dump(binary_name) ;
+      eta3_loop_fuzz.binary_dump(binary_name) ;
+      eta4_loop_fuzz.binary_dump(binary_name) ;
+      eta4_kilcup_loop_fuzz.binary_dump(binary_name) ;
+
+      swatch.stop();
+      double time_in_sec  = swatch.getTimeInSeconds();
+      QDPIO::cout << "ks_fuzz_loops::BINARY IO  " << time_in_sec << " sec" << endl;
+
+    }
+
 
   // end of this section
   pop(xml_out);

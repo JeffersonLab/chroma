@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: ks_local_loops.h,v 3.1 2007-05-14 13:39:14 egregory Exp $
+// $Id: ks_local_loops.h,v 3.2 2008-02-24 11:29:36 mcneile Exp $
 /*! \file
  *  \brief Wrapper routines for computing loops with staggeref fermions
  */        
@@ -58,7 +58,7 @@ void ks_fuzz_loops(
 		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
 		 LatticeStaggeredFermion & q_source, 
 		 LatticeStaggeredFermion & psi ,
-		 LatticeStaggeredFermion & psi_fuzz,
+		 LatticeStaggeredFermion & psi_fuzz ,
 		 const multi1d<LatticeColorMatrix> & u,
 		 const multi1d<LatticeColorMatrix> & u_smr,
 		 XMLWriter & xml_out, 
@@ -73,8 +73,9 @@ void ks_fuzz_loops(
 		 VolSrc_type volume_source,
 		 int fuzz_width, 
 		 int src_seperation,
-		 int j_decay
-		 )  ;
+		 int j_decay, bool binary_loop_checkpoint,
+                 std::string binary_name) ; 
+
 
 void ks_local_loops_and_stoch_conn(
 		 Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,

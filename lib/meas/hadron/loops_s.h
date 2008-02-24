@@ -1,4 +1,4 @@
-// $Id: loops_s.h,v 3.1 2007-04-11 15:06:52 egregory Exp $
+// $Id: loops_s.h,v 3.2 2008-02-24 11:29:35 mcneile Exp $
 
 #ifndef LOOP_S_H
 #define LOOP_S_H
@@ -151,6 +151,25 @@ namespace Chroma {
        return zero;   // make compiler happy
     }
 
+
+    // write the data in binary format 
+    void binary_dump(std::string start_name)
+      {
+
+	string filename ; 
+	filename = start_name + outer_tag + inner_tag ; 
+	const int magic_number = 66618 ; 
+
+	BinaryFileWriter speedy ;
+	speedy.open(filename);
+	write(speedy,magic_number) ;
+	write(speedy,t_length) ;
+	write(speedy,no_sample) ;
+	write(speedy,corr_fn) ;
+	write(speedy,corr) ;
+	speedy.close();
+
+      }
 
 
   protected:
