@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.5 2007-05-10 17:46:29 edwards Exp $
+// $Id: inline_spectrum_s.h,v 3.6 2008-02-24 11:34:17 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -60,6 +60,8 @@ namespace Chroma
       bool gauge_invar_oper ; 
       bool sym_shift_oper ; 
       bool loop_checkpoint ; 
+      bool binary_loop_checkpoint ; 
+      std::string binary_name ; 
 
       int fuzz_width ; 
 
