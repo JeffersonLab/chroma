@@ -206,6 +206,17 @@ namespace Chroma {
     read(paramtop, "gauge_invar_oper", param.gauge_invar_oper);
     read(paramtop, "loop_checkpoint", param.loop_checkpoint);
 
+    param.binary_name = "dump_"  ; 
+    param.binary_loop_checkpoint = false ;
+    if (paramtop.count("binary_loop_checkpoint") == 1){
+      read(paramtop, "binary_loop_checkpoint", param.binary_loop_checkpoint) ;
+      if( param.binary_loop_checkpoint )
+	{
+	  read(paramtop, "binary_name", param.binary_name) ;
+	}
+    }
+
+
     read(paramtop, "src_seperation", param.src_seperation);
 
     if( !param.gauge_invar_oper ){
@@ -853,10 +864,17 @@ namespace Chroma {
     if (((  do_local_disc_loops ) && (do_stoch_conn_corr )) && 
     	(!do_fuzzed_disc_loops)){
       push(xml_out, "disconnected_loops");
+
+      StopWatch swatch;
+      swatch.start();
       ks_local_loops_and_stoch_conn(qprop, q_source, psi , u, xml_out, 
 				    gauge_shift, sym_shift, loop_checkpoint,
 				    t_length, Mass, Nsamp, RsdCG, CFGNO, 
 				    volume_source, src_seperation, j_decay);
+      swatch.stop();
+      double time_in_sec  = swatch.getTimeInSeconds();
+      QDPIO::cout << "PROF1:ks_local_loops_and_stoch_conn" << time_in_sec << " sec" << endl;
+
       pop(xml_out);
 
       done_local_disc_loops = true;
@@ -867,10 +885,16 @@ namespace Chroma {
        (!do_fuzzed_disc_loops)){
       push(xml_out, "disconnected_loops");
 
+      StopWatch swatch;
+      swatch.start();
       ks_local_loops(qprop, q_source, psi , u, xml_out, 
 		     gauge_shift, sym_shift, loop_checkpoint,
 		     t_length, Mass, Nsamp, RsdCG, CFGNO, volume_source, 
 		     src_seperation, j_decay);
+
+      swatch.stop();
+      double time_in_sec  = swatch.getTimeInSeconds();
+      QDPIO::cout << "PROF2:ks_local_loops " << time_in_sec << " sec" << endl;
 
       done_local_disc_loops = true;
 
@@ -884,16 +908,28 @@ namespace Chroma {
 
       multi1d<LatticeStaggeredPropagator> stag_prop(8);
 
+      StopWatch swatch;
+      swatch.start();
       ncg_had += build_basic_8_props(stag_prop, type_of_src, gauge_shift,
 				     sym_shift, u, qprop, xml_out, RsdCG,  
 				     Mass, j_decay);
+      swatch.stop();
+      double time_in_sec  = swatch.getTimeInSeconds();
+      QDPIO::cout << "PROF3:build_basic_8_props " << time_in_sec << " sec" << endl;
+
 
       // put the spectrum calls here 
       if(do_8_pions){
 	// do pion stuff
 
+	StopWatch swatch;
+	swatch.start();
 	compute_8_pions( stag_prop, u , gauge_shift, sym_shift,
 			 xml_out, j_decay, t_length, t_source);
+	swatch.stop();
+	double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "PROF4:compute_8_pions " << time_in_sec << " sec" << endl;
+
       }
       if(do_8_scalars){
 	// do scalar stuff
@@ -914,14 +950,21 @@ namespace Chroma {
 	//only do the non-fuzzed ps singlet if we are not doing the fuzzed 
 	// ps singlet connected, as the latter does both
 
-	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+	StopWatch swatch;
+	swatch.start();
 
+	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
 	ncg_had += 
 	  compute_singlet_ps(psi,stag_prop[0], type_of_src, gauge_shift, 
 			     sym_shift, u, qprop, xml_out, RsdCG,Mass,
 			     j_decay, t_source, t_length);
 
 	done_ps4_singlet = true;
+	swatch.stop();
+	double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "PROF5:compute_singlet_ps " << time_in_sec << " sec" << endl;
+
+
       }
 
 
@@ -957,8 +1000,15 @@ namespace Chroma {
       multi1d<LatticeColorMatrix> u_smr(Nd);
 
       u_smr = u ;
-      DoFuzzing(u, u_smr, j_decay);
-    
+
+      {
+	StopWatch swatch;
+	swatch.start();
+	DoFuzzing(u, u_smr, j_decay);
+	swatch.stop();
+	double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "PROF6: DoFuzzing " << time_in_sec << " sec" << endl;
+      }
 
       if ( do_variational_spectra ){
 
@@ -968,8 +1018,11 @@ namespace Chroma {
 	LatticeStaggeredPropagator quark_propagator_Lsink_Fsrc ;
 	LatticeStaggeredPropagator quark_propagator_Fsink_Fsrc ;
 
+	{
+	  StopWatch swatch;
+	  swatch.start();
 
-	ncg_had+=  MakeFuzzedCornerProp(psi, fuzz_width, gauge_shift, 
+	  ncg_had+=  MakeFuzzedCornerProp(psi, fuzz_width, gauge_shift, 
 					sym_shift, u, u_smr, qprop, 
 					xml_out, RsdCG, Mass, j_decay,
 					do_fuzzing, psi_fuzz,
@@ -977,7 +1030,11 @@ namespace Chroma {
 					quark_propagator_Fsink_Lsrc,
 					quark_propagator_Lsink_Fsrc,
 					quark_propagator_Fsink_Fsrc );
+	  swatch.stop();
+	  double time_in_sec  = swatch.getTimeInSeconds();
+	  QDPIO::cout << "PROF7:MakeFuzzedCornerProp " << time_in_sec << " sec" << endl;
 
+	}
 
 
 	  {
@@ -1111,10 +1168,19 @@ namespace Chroma {
       if(( do_fuzzed_disc_loops  )&&(!done_fuzzed_disc_loops)) {
 	push(xml_out, "disconnected_loops");
 
+	StopWatch swatch;
+	swatch.start();
+
 	ks_fuzz_loops(qprop,q_source, psi ,psi_fuzz , u, u_smr,xml_out, 
 		      gauge_shift, sym_shift, loop_checkpoint, t_length, Mass, 
 		      Nsamp, RsdCG, CFGNO, volume_source, fuzz_width, 
-		      src_seperation, j_decay);
+		      src_seperation, j_decay, 
+		      params.param.binary_loop_checkpoint,
+		      params.param.binary_name);
+	swatch.stop();
+	double time_in_sec  = swatch.getTimeInSeconds();
+	QDPIO::cout << "PROF9:ks_fuzz_loops " << time_in_sec << " sec" << endl;
+
 
 /* for testing
 
