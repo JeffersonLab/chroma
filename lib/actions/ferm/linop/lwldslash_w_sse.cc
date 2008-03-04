@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 3.3 2008-01-21 20:18:50 edwards Exp $
+// $Id: lwldslash_w_sse.cc,v 3.4 2008-03-04 22:38:08 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -21,7 +21,10 @@ namespace Chroma
 #endif
 
     // Initialize using the total problem size
-    init_sse_su3dslash(Layout::lattSize().slice());
+    init_sse_su3dslash(Layout::lattSize().slice(),
+			Layout::QDPXX_getSiteCoords,
+                        Layout::QDPXX_getLinearSiteIndex,
+                        Layout::QDPXX_nodeNumber);
   }
 
 
