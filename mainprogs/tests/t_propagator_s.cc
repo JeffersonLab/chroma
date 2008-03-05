@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.7 2008-03-05 21:12:19 bjoo Exp $
+// $Id: t_propagator_s.cc,v 3.8 2008-03-05 21:50:01 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -185,12 +185,15 @@ switch (input.param.FermTypeP) {
        // This is a Group XML structure which has 2 members 
        // One is the 'id' which will  be found in the "FermAct" sub-tag
        // One is the root tag of the Group in this case "FermionAction"
-       param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
+#if 0						\
+ 
+       input.param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
+#else
 
-
-       // read(paramtop, "Mass", input.param.Mass);
-       // read(paramtop, "u0" , input.param.u0);
+       read(paramtop, "Mass", input.param.Mass);
+       read(paramtop, "u0" , input.param.u0);
+#endif
 
  #if 0
        for (int i=0; i < input.param.numKappa; ++i) {
@@ -255,6 +258,18 @@ switch (input.param.FermTypeP) {
    }
  }
 
+
+ bool linkageHack(void)
+{
+  bool foo = true;
+
+  // Inline Measurements
+  foo &= StaggeredTypeFermActsEnv::registerAll();
+  foo &= InlineAggregateEnv::registerAll();
+  foo &= GaugeInitEnv::registerAll();
+
+  return foo;
+}
 // ! Propagator generation
  /*! \defgroup t_propagator_s Propagator generation
   *  \ingroup testsmain
@@ -267,6 +282,9 @@ switch (input.param.FermTypeP) {
    // Put the machine into a known state
    Chroma::initialize(&argc, &argv);
 
+#if 0
+   linkageHack();
+#endif
    // Input parameter structure
    Propagator_input_t  input;
 
@@ -351,6 +369,7 @@ switch (input.param.FermTypeP) {
   // Initialize fermion action
   //
 
+#if 1
   // I know this is an ugly hack from my youth
 #if defined(ASQTAD_OPTION)
   QDPIO::cout << "Using ASQTAD inverter " <<  endl;
@@ -373,6 +392,7 @@ switch (input.param.FermTypeP) {
 #endif
 
 #endif
+#else
 
   // Make a memory 'input stream' out of the XML, so we can open an
   // XML Reader on it.
@@ -381,15 +401,10 @@ switch (input.param.FermTypeP) {
   // Open a reader on the memory stream.
   XMLReader fermact_reader(is);
 
-  Handle< StaggeredTypeFermAct< LatticeStaggeredFermion, 
-     multi1d<LatticeColorMatrix>,
-     multi1d<LatticeColorMatrix> > > fermact(TheStagTypeFermActFactory::Instance().createObject(input.param.fermact.id, fermact_reader, input.param.fermact.path));
-
+  Handle< StaggeredTypeFermAct< T,P,Q> > fermact(TheStagTypeFermActFactory::Instance().createObject(input.param.fermact.id, fermact_reader, input.param.fermact.path));
   // Cast of a pointer to a reference?
-  StaggeredTypeFermAct< LatticeStaggeredFermion, 
-     multi1d<LatticeColorMatrix>,
-     multi1d<LatticeColorMatrix> >& S_f= *(fermact);
-
+  StaggeredTypeFermAct<T,P,Q>& S_f= *(fermact);
+#endif
   // Set up a state for the current u,
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
