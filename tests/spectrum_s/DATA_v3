@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<propagator>
+  <IO_version>
+    <version>2</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>STAGGERED</FermTypeP>
+    <!-- 
+    <FermionAction>
+       <FermAct>ASQTAD</FermAct>
+        <Mass>0.1</Mass>
+        <u0>0.95</u0>
+        <FermState>
+          <Name>SIMPLE_FERM_STATE</Name>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+      </FermState>
+    </FermionAction>
+    -->
+    <Mass>0.1</Mass>
+    <u0>1.0</u0>
+    <prop_type>SZIN</prop_type>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>1000</MaxCG>
+    <GFAccu>2.0e-6</GFAccu>
+    <GFMax>10000</GFMax>
+    <OrPara>1.8</OrPara>
+    <nrow>4 4 4 8</nrow>
+    <boundary>1 1 1 1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+  </param>
+  <Cfg>
+    <cfg_type>MILC</cfg_type>
+    <cfg_file>./4448</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+</propagator>
+
