@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.6 2008-01-04 15:09:52 mcneile Exp $
+// $Id: t_propagator_s.cc,v 3.7 2008-03-05 21:12:19 bjoo Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -23,6 +23,8 @@
 #include "actions/ferm/fermacts/hisq_fermact_params_s.h"
 #include "actions/ferm/fermacts/hisq_fermact_s.h"
 #include "actions/ferm/qprop/hisq_qprop.h"
+
+#include "io/xml_group_reader.h"
 
 /*
  *  Here we have various temporary definitions
@@ -69,6 +71,8 @@ struct Param_t
   PropType prop_type;      // storage order for stored propagator
 
   SysSolverCGParams  invParam;
+  
+   GroupXML_t fermact;
 
   Real GFAccu, OrPara;    // Gauge fixing tolerance and over-relaxation param
   int GFMax;              // Maximum gauge fixing iterations
@@ -177,9 +181,16 @@ switch (input.param.FermTypeP) {
      case FERM_TYPE_STAGGERED :
 
        QDPIO::cout << " PROPAGATOR: Propagator for Staggered fermions" << endl;
+       
+       // This is a Group XML structure which has 2 members 
+       // One is the 'id' which will  be found in the "FermAct" sub-tag
+       // One is the root tag of the Group in this case "FermionAction"
+       param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
-       read(paramtop, "Mass", input.param.Mass);
-       read(paramtop, "u0" , input.param.u0);
+
+
+       // read(paramtop, "Mass", input.param.Mass);
+       // read(paramtop, "u0" , input.param.u0);
 
  #if 0
        for (int i=0; i < input.param.numKappa; ++i) {
@@ -235,6 +246,7 @@ switch (input.param.FermTypeP) {
    {
      read(inputtop, "Cfg", input.cfg);
      read(inputtop, "Prop", input.prop);
+     
    }
    catch (const string& e) 
    {
@@ -361,6 +373,22 @@ switch (input.param.FermTypeP) {
 #endif
 
 #endif
+
+  // Make a memory 'input stream' out of the XML, so we can open an
+  // XML Reader on it.
+  std::istringstream is(input.param.fermact.xml);
+
+  // Open a reader on the memory stream.
+  XMLReader fermact_reader(is);
+
+  Handle< StaggeredTypeFermAct< LatticeStaggeredFermion, 
+     multi1d<LatticeColorMatrix>,
+     multi1d<LatticeColorMatrix> > > fermact(TheStagTypeFermActFactory::Instance().createObject(input.param.fermact.id, fermact_reader, input.param.fermact.path));
+
+  // Cast of a pointer to a reference?
+  StaggeredTypeFermAct< LatticeStaggeredFermion, 
+     multi1d<LatticeColorMatrix>,
+     multi1d<LatticeColorMatrix> >& S_f= *(fermact);
 
   // Set up a state for the current u,
   // (compute fat & triple links)
