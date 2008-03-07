@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_quark_source_const_w.h,v 1.12 2008-01-28 22:55:06 jbulava Exp $
+// $Id: dilution_quark_source_const_w.h,v 1.13 2008-03-07 16:47:11 jbulava Exp $
 /*! \file
  * \brief Dilution scheme inferred from pre-generated solutions.
  * 
@@ -14,6 +14,7 @@
 #include "meas/inline/abs_inline_measurement.h"
 #include "meas/hadron/dilution_scheme.h"
 #include "io/qprop_io.h"
+#include "io/param_io.h"
 
 namespace Chroma 
 { 
@@ -112,15 +113,24 @@ namespace Chroma
       int getNumTimeSlices() const {return quark.time_slices.size();}
 
       //! The kappa parameter in the wilson action 
-      float getKappa() const 
+      Real getKappa() const 
 			{
-				float kappa;
+				Real kappa;
 				//Assume the kappa is the same for all dilutions
 				std::istringstream  xml_k(
 								quark.time_slices[0].dilutions[0].prop_header.fermact.xml);
 				
 				XMLReader  proptop(xml_k);
-				read(proptop, "/FermionAction/Kappa", kappa);
+				if ( toBool(proptop.count("/FermionAction/Kappa") != 0) )
+				{
+					read(proptop, "/FermionAction/Kappa", kappa);
+				}
+				else 
+				{
+					Real mass; 
+					read(proptop, "/FermionAction/Mass", mass);
+					kappa = massToKappa(mass);
+				}
 
 				return kappa;
 			}

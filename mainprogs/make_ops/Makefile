@@ -1,4 +1,4 @@
-CHROMA=/home/jbulava/usqcd_soft/install/chroma_scalar_single
+CHROMA=/home/jbulava/usqcd_soft/install/chroma_scalar_double
 CONFIG=$(CHROMA)/bin/chroma-config
 CXX=$(shell $(CONFIG) --cxx)
 CXXFLAGS=$(shell $(CONFIG) --cxxflags) #-I.

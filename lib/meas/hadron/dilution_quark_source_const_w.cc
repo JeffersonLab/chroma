@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.12 2008-01-24 20:47:18 jbulava Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.13 2008-03-07 16:47:11 jbulava Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -9,6 +9,10 @@
 #include "meas/hadron/dilution_scheme_factory.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/sources/dilutezN_source_const.h"
+#include "meas/sources/zN_src.h"
+#include "util/ft/sftmom.h"
+
+
 
 namespace Chroma 
 { 
@@ -220,11 +224,14 @@ namespace Chroma
       swatch.reset();
       swatch.start();
 
+			//zN source N
+			int N; 
+
       try
       {
 
 				bool initq = false;
-				float kappa; 
+				Real kappa; 
 
 				QDPIO::cout << "Attempt to read solutions " << endl;
 				
@@ -265,12 +272,16 @@ namespace Chroma
 	    			read(record_xml, "/Propagator/ForwardProp", 
 								quark.time_slices[t0].dilutions[dil].prop_header);
 
+						//read the current N 
+						int currN; 
+						read(record_xml, "/Propagator/PropSource/Source/N", currN);
 
 	    			if (!initq)
 	    			{
 	      			read(record_xml, "/Propagator/PropSource/Source/ran_seed",
 		   				quark.seed);
-					
+				
+							read(record_xml, "/Propagator/PropSource/Source/N", N);
 	    				quark.decay_dir = 
 								quark.time_slices[t0].dilutions[dil].source_header.j_decay;
 
@@ -279,8 +290,17 @@ namespace Chroma
 	    				std::istringstream  xml_k(
 									quark.time_slices[t0].dilutions[dil].prop_header.fermact.xml);
 							XMLReader  proptop(xml_k);
-							
-							read(proptop, "/FermionAction/Kappa", kappa);
+								
+							if ( toBool(proptop.count("/FermionAction/Kappa") != 0) )
+							{
+								read(proptop, "/FermionAction/Kappa", kappa);
+							}
+							else 
+							{
+								Real mass; 
+								read(proptop, "/FermionAction/Mass", mass);
+								kappa = massToKappa(mass);
+							}
 	      		
 							//Test that config is the same for every dilution 
 							XMLReader xml_tmp(record_xml, "/Propagator/Config_info");
@@ -292,19 +312,35 @@ namespace Chroma
 							initq = true;
 						}
 
-						float kappa2;
+						Real kappa2;
 	    			std::istringstream  xml_k2(
 								quark.time_slices[t0].dilutions[dil].prop_header.fermact.xml);
 						XMLReader  proptop2(xml_k2);
-							
-						read(proptop2, "/FermionAction/Kappa", kappa2);
 						
-						if (kappa != kappa2)
+	
+						if ( toBool(proptop2.count("/FermionAction/Kappa") != 0) )
+						{
+							read(proptop2, "/FermionAction/Kappa", kappa2);
+						}
+						else 
+						{
+							Real mass; 
+							read(proptop2, "/FermionAction/Mass", mass);
+							kappa2 = massToKappa(mass);
+						}
+						
+						if ( toBool(kappa != kappa2) )
 						{
 							QDPIO::cerr << "Kappa is not the same for all dilutions: t0=" <<
 								t0 << " dil= "<< dil << " kappa2 = "<< kappa2 << endl;
 								
 	   					QDP_abort(1);
+						}
+
+						if (currN != N)
+						{
+							QDPIO::cerr << "N is not the same for all dilutions: t0 = " <<
+								t0 << " dil = " << dil << endl;
 						}
 
 						//Test that t0 is the same for all dilutions on this timeslice
@@ -358,8 +394,36 @@ namespace Chroma
 
 				}//t0
 
-				
+			
+				//Ensure that the given dilutions form a full dilution scheme per 
+				//timeslice. Only need to check a single timeslice as 
+				//we have guaranteed the same dilutions per timeslice
+			
+				LatticeFermion quark_noise;      // noisy source on entire lattice
+				QDP::RNG::setrn(quark.seed);
+				zN_src(quark_noise, N);
 
+			
+				for (int dil = 0 ; dil < quark.time_slices[0].dilutions.size() ; ++dil)
+				{
+					LatticeFermion source = dilutedSource(0, dil);
+					quark_noise -= source; 
+				}
+	
+				SftMom phases_nomom(0, true, 
+						quark.time_slices[0].dilutions[0].source_header.j_decay);
+
+				Double dcnt = norm2(quark_noise, 
+						phases_nomom.getSet()[quark.time_slices[0].t0] );
+
+				if (toDouble(dcnt) != 0.0)
+				{
+					QDPIO::cerr << "Not a complete dilution scheme per timeslice" <<
+						endl;
+
+					QDP_abort(1);
+				}
+				
       } //try
       catch (const string& e) 
       {

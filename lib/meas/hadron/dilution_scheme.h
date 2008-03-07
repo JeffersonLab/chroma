@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.6 2008-01-28 22:55:06 jbulava Exp $
+// $Id: dilution_scheme.h,v 1.7 2008-03-07 16:47:11 jbulava Exp $
 /*! \file
  *  \brief Dilution Schemes
  */
@@ -39,7 +39,7 @@ namespace Chroma
 
 		virtual int getNumTimeSlices() const = 0;
 	
-		virtual float getKappa() const = 0;
+		virtual Real getKappa() const = 0;
 
 		virtual std::string getCfgInfo() const = 0;
 

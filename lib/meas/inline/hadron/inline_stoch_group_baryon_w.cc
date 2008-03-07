@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.19 2008-02-01 23:10:55 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.20 2008-03-07 16:47:11 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -67,8 +67,7 @@ namespace Chroma
       read(paramtop, "mom2_max", param.mom2_max);
       read(paramtop, "displacement_length", param.displacement_length);
 
-      param.source_quark_smearing = readXMLGroup(paramtop, "CreationOperatorSmearing", "wvf_kind");
-      param.sink_quark_smearing   = readXMLGroup(paramtop, "AnnihilationOperatorSmearing", "wvf_kind");
+      param.quark_smearing = readXMLGroup(paramtop, "QuarkSmearing", "wvf_kind");
       param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
       param.quark_dils             = readXMLArrayGroup(paramtop, "QuarkDilutions", "DilutionType");
     }
@@ -84,8 +83,7 @@ namespace Chroma
       write(xml, "version", version);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "displacement_length", param.displacement_length);
-      xml << param.source_quark_smearing.xml;
-      xml << param.sink_quark_smearing.xml;
+      xml << param.quark_smearing.xml;
       xml << param.link_smearing.xml;
 
 			push(xml, "QuarkDilutions");
@@ -354,11 +352,10 @@ namespace Chroma
       //! Constructor from smeared map 
       SmearedDispObjects(int disp_length,
 				multi1d< Handle< DilutionScheme<LatticeFermion> > > dil_quarks,	
-				Handle< QuarkSmearing<LatticeFermion> > src,
-				Handle< QuarkSmearing<LatticeFermion> > snk,
+				Handle< QuarkSmearing<LatticeFermion> > qsmr,
 				const multi1d<LatticeColorMatrix> & u_smr) :
 				displacement_length(disp_length),diluted_quarks(dil_quarks),
-				sourceQuarkSmearing(src), sinkQuarkSmearing(snk), u(u_smr)
+				quarkSmearing(qsmr), u(u_smr)
 			{
 	  		smeared_src_maps.resize(N_quarks);
 	  		smeared_soln_maps.resize(N_quarks);
@@ -399,8 +396,7 @@ namespace Chroma
      
 			multi1d< Handle< DilutionScheme<LatticeFermion> > > diluted_quarks;	
 			
-			Handle < QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
-			Handle < QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
+			Handle < QuarkSmearing<LatticeFermion> > quarkSmearing;
 
 		
 			//!Gauge field 
@@ -458,7 +454,7 @@ namespace Chroma
 	
 				smrd_q.quark = diluted_quarks[qnum]->dilutedSource(key.t0, key.dil);
 
-				(*sourceQuarkSmearing)(smrd_q.quark, u);
+				(*quarkSmearing)(smrd_q.quark, u);
 
 				SpinMatrix mat = rotate_mat * Gamma(8);
 				
@@ -519,7 +515,7 @@ namespace Chroma
 	
 				smrd_q.quark = diluted_quarks[qnum]->dilutedSolution(key.t0, key.dil);
 
-				(*sinkQuarkSmearing)(smrd_q.quark, u);
+				(*quarkSmearing)(smrd_q.quark, u);
 
 				smrd_q.quark = rotate_mat * smrd_q.quark;
 	
@@ -551,7 +547,25 @@ namespace Chroma
 
 			const LatticeFermion& smrd_q = smearSource(quark_num, smr_key);
 					
-			return displaceObject( disp_src_maps[quark_num] , key , smrd_q );
+			multi1d<LatticeComplex> vec;
+
+			//Check if any displacement is needed
+			if (displacement_length == 0) 
+			{
+				vec.resize(Nc);
+				LatticeColorVector colvec = peekSpin( smrd_q, key.spin - 1);
+
+				for (int c = 0 ; c < Nc ; ++c)
+					vec[c] = peekColor( colvec, c);
+
+			}
+			else
+			{
+				vec = displaceObject( disp_src_maps[quark_num] , key , smrd_q);
+			}
+
+			return vec;
+		
     }
 
     //! Accessor
@@ -566,10 +580,26 @@ namespace Chroma
 			smr_key.dil = key.dil;
 
 			const LatticeFermion& smrd_q = smearSolution(quark_num, smr_key);
-					
-			return displaceObject( disp_soln_maps[quark_num] , key , smrd_q);
+				
+			multi1d<LatticeComplex> vec;
 
-    }
+			//Check if any displacement is needed
+			if (displacement_length == 0) 
+			{
+				vec.resize(Nc);
+				LatticeColorVector colvec = peekSpin( smrd_q, key.spin - 1);
+
+				for (int c = 0 ; c < Nc ; ++c)
+					vec[c] = peekColor( colvec, c);
+
+			}
+			else
+			{
+				vec = displaceObject( disp_soln_maps[quark_num] , key , smrd_q);
+			}
+
+			return vec;
+		}
 
 
 		//! Accessor
@@ -579,6 +609,7 @@ namespace Chroma
 					const KeySmearedDispColorVector_t& key,
 					const LatticeFermion& smrd_q)
 			{
+
 				StopWatch snoop;
 
 				// If no entry, then create a displaced version of the quark
@@ -686,11 +717,11 @@ namespace Chroma
 
 		}
 
-		
+
 		void makeColorSinglet (LatticeComplex & singlet, const multi1d<LatticeComplex> & diquark, 
 				const multi1d<LatticeComplex> & q2, const Subset & subset)
 		{
-		
+
 			singlet[subset] = diquark[0] * q2[2];
 			singlet[subset] += diquark[1] * q2[0];  
 			singlet[subset] += diquark[2] * q2[1];  
@@ -698,81 +729,81 @@ namespace Chroma
 
 
 		//! Baryon operator
-    struct BaryonOperator_t
-    {
-      //! Baryon operator time slices corresponding to location of operator source
-      struct TimeSlices_t
-      {
+		struct BaryonOperator_t
+		{
+			//! Baryon operator time slices corresponding to location of operator source
+			struct TimeSlices_t
+			{
 				//! Quark orderings within a baryon operator
 				struct Orderings_t
 				{
-	  			//! Baryon operator dilutions
-	  			struct Dilutions_t
-	  			{
-	    			//! Momentum projected correlator
-	    			struct Mom_t
-	    			{
-	      			multi1d<int>       mom;         /*!< D-1 momentum of this operator */
-	      			multi1d<DComplex>  op;          /*!< Momentum projected operator */
-	    			};
+					//! Baryon operator dilutions
+					struct Dilutions_t
+					{
+						//! Momentum projected correlator
+						struct Mom_t
+						{
+							multi1d<int>       mom;         /*!< D-1 momentum of this operator */
+							multi1d<DComplex>  op;          /*!< Momentum projected operator */
+						};
 
-	    			multi1d<Mom_t> mom_projs;         /*!< Holds momentum projections of the operator */
-	  			
+						multi1d<Mom_t> mom_projs;         /*!< Holds momentum projections of the operator */
+
 					};
 
 					multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
-	  	
+
 					multi3d<Dilutions_t> dilutions;     /*!< Hybrid list indices */
 				};
-	  
-      	multi1d<Orderings_t> orderings;  			/*!< Array is over quark orderings */
-      
+
+				multi1d<Orderings_t> orderings;  			/*!< Array is over quark orderings */
+
 				int t0; 														/*!< Actual time corresponding to this timeslice */
 			};
 
-      multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
+			multi1d< multi1d<int> > perms;   /*!< Permutations of quark enumeration */
 
-      GroupXML_t    smearing;          /*!< String holding quark smearing xml */
+			GroupXML_t    smearing;          /*!< String holding quark smearing xml */
 
-      Seed          seed_l;            /*!< Id of left quark */
-      Seed          seed_m;            /*!< Id of middle quark */
-      Seed          seed_r;            /*!< Id of right quark */
+			Seed          seed_l;            /*!< Id of left quark */
+			Seed          seed_m;            /*!< Id of middle quark */
+			Seed          seed_r;            /*!< Id of right quark */
 
-			
+
 			GroupXML_t    dilution_l;        /*!< Dilution scheme of left quark */ 
 			GroupXML_t    dilution_m;        /*!< Dilution scheme of middle quark */ 
 			GroupXML_t    dilution_r;        /*!< Dilution scheme of right quark */ 
-			
+
 			std::string   id;                /*!< Tag/ID used in analysis codes */
 
-      int           mom2_max;          /*!< |\vec{p}|^2 */
-      int           decay_dir;         /*!< Direction of decay */
-	
+			int           mom2_max;          /*!< |\vec{p}|^2 */
+			int           decay_dir;         /*!< Direction of decay */
+
 			multi1d<TimeSlices_t> time_slices; /*!< Time slices of the lattice that are used */
-    };
+		};
 
 
-    //----------------------------------------------------------------------------
-    //! BaryonOperator header writer
-    void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
-    {
-      push(xml, path);
+		//----------------------------------------------------------------------------
+		//! BaryonOperator header writer
+		void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
+		{
+			push(xml, path);
 
-      int version = 1;
-      write(xml, "version", version);
-      write(xml, "id", param.id);
-      write(xml, "mom2_max", param.mom2_max);
-      write(xml, "decay_dir", param.decay_dir);
-      write(xml, "seed_l", param.seed_l);
-      write(xml, "seed_m", param.seed_m);
-      write(xml, "seed_r", param.seed_r);
+			int version = 1;
+			write(xml, "version", version);
+			write(xml, "id", param.id);
+			write(xml, "mom2_max", param.mom2_max);
+			write(xml, "decay_dir", param.decay_dir);
+			write(xml, "seed_l", param.seed_l);
+			write(xml, "seed_m", param.seed_m);
+			write(xml, "seed_r", param.seed_r);
 			write(xml, "perms", param.perms);
-      
+
 			push(xml, "dilution_l");
 			xml << param.dilution_l.xml; 
-      pop(xml);
-			
-      push(xml, "dilution_m");
+			pop(xml);
+
+			push(xml, "dilution_m");
 			xml << param.dilution_m.xml; 
       pop(xml);
       
@@ -781,8 +812,8 @@ namespace Chroma
       pop(xml);
 			
 			xml <<  param.smearing.xml;
-
-    	pop(xml);
+    	
+			pop(xml);
 		}
 
 
@@ -798,7 +829,7 @@ namespace Chroma
     void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t::Dilutions_t& param)
     {
       write(bin, param.mom_projs);
-    }
+		}
 
     //! BaryonOperator binary writer
     void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlices_t::Orderings_t& param)
@@ -1142,55 +1173,31 @@ namespace Chroma
       readOps(qqq_oplist, params.named_obj.operators_file.ops_file);
 
       //
-      // Create the source and sink smearing factories 
+      // Create the quark smearing factory 
       //
-      Handle< QuarkSmearing<LatticeFermion> > sourceQuarkSmearing;
+      Handle< QuarkSmearing<LatticeFermion> > quarkSmearing;
 
       try
       {
-				QDPIO::cout << "Create source smearing object" << endl;
+				QDPIO::cout << "Create quark smearing object" << endl;
 
-				// Create the source quark smearing object
-				std::istringstream  xml_s(params.param.source_quark_smearing.xml);
+				// Create the quark smearing object
+				std::istringstream  xml_s(params.param.quark_smearing.xml);
 				XMLReader  smeartop(xml_s);
 	
-				sourceQuarkSmearing =
-	  			TheFermSmearingFactory::Instance().createObject(params.param.source_quark_smearing.id,
-							  smeartop, params.param.source_quark_smearing.path);
+				quarkSmearing =
+	  			TheFermSmearingFactory::Instance().createObject(params.param.quark_smearing.id,
+							  smeartop, params.param.quark_smearing.path);
 			
 			}
       catch(const std::string& e) 
       {
-				QDPIO::cerr << ": Caught Exception smearing quark sources: " << e << endl;
+				QDPIO::cerr << ": Caught Exception creating quark smearing object: " << e << endl;
 				QDP_abort(1);
       }
       catch(...)
       {
-				QDPIO::cerr << ": Caught generic exception smearing quark sources" << endl;
-				QDP_abort(1);
-      }
-
-      Handle< QuarkSmearing<LatticeFermion> > sinkQuarkSmearing;
-      try
-      {
-				QDPIO::cout << "Create sink smearing object" << endl;
-				
-				std::istringstream  xml_s(params.param.sink_quark_smearing.xml);
-				XMLReader  smeartop(xml_s);
-	
-				sinkQuarkSmearing = 
-	  			TheFermSmearingFactory::Instance().createObject(params.param.sink_quark_smearing.id,
-					smeartop, params.param.sink_quark_smearing.path);
-      
-			}
-      catch(const std::string& e) 
-      {
-				QDPIO::cerr << ": Caught Exception smearing quark solutions: " << e << endl;
-				QDP_abort(1);
-      }
-      catch(...)
-      {
-				QDPIO::cerr << ": Caught generic exception smearing quark solutions" << endl;
+				QDPIO::cerr << ": Caught generic exception creating smearing object" << endl;
 				QDP_abort(1);
       }
 
@@ -1225,8 +1232,8 @@ namespace Chroma
       {
 				num_orderings = 2;
       
-				if ( (diluted_quarks[0]->getKappa() == diluted_quarks[1]->getKappa()) ||
-					(diluted_quarks[1]->getKappa() != diluted_quarks[2]->getKappa()) )
+				if ( toBool(diluted_quarks[0]->getKappa() == diluted_quarks[1]->getKappa()) ||
+					toBool(diluted_quarks[1]->getKappa() != diluted_quarks[2]->getKappa()) )
 				{
 					QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
 						<< endl;
@@ -1238,8 +1245,8 @@ namespace Chroma
       {
 				num_orderings = 6;
       
-				if ( (diluted_quarks[0]->getKappa() != diluted_quarks[1]->getKappa()) ||
-						(diluted_quarks[0]->getKappa() != diluted_quarks[2]->getKappa()) )
+				if ( toBool(diluted_quarks[0]->getKappa() != diluted_quarks[1]->getKappa()) ||
+						toBool(diluted_quarks[0]->getKappa() != diluted_quarks[2]->getKappa()) )
 				{
 					
 					QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
@@ -1292,73 +1299,73 @@ namespace Chroma
 		  //We make all source operators before we make all sink operators to 
 			//save on memory. 
 
-			StopWatch watch;
-			//Make the source operators 
+			for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
 			{
-
-				// The object holding the smeared and displaced color vector maps  
-				SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
-						diluted_quarks, sourceQuarkSmearing, sinkQuarkSmearing, u_smr );
-
-				// Creation operator
-				BaryonOperator_t  creat_oper;
-				creat_oper.mom2_max    = params.param.mom2_max;
-				creat_oper.decay_dir   = decay_dir;
-				creat_oper.seed_l      = diluted_quarks[0]->getSeed();
-				creat_oper.seed_m      = diluted_quarks[1]->getSeed();
-				creat_oper.seed_r      = diluted_quarks[2]->getSeed();
-				creat_oper.dilution_l  = params.param.quark_dils[0];
-				creat_oper.dilution_m  = params.param.quark_dils[1];
-				creat_oper.dilution_r  = params.param.quark_dils[2];
-				creat_oper.smearing    = params.param.source_quark_smearing;
-				creat_oper.perms       = perms;
-				creat_oper.time_slices.resize( participating_timeslices.size() );
-
-				// Construct creation operator
-				// Loop over each operator 
-				for(int l=0; l < qqq_oplist.ops.size(); ++l)
+				StopWatch watch;
+				//Make the source operators 
 				{
-					QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-					push(xml_out, "BaryonOperator");
+					// The object holding the smeared and displaced color vector maps  
+					SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
+							diluted_quarks, quarkSmearing, u_smr );
 
-					creat_oper.id = qqq_oplist.ops[l].name;
+					// Creation operator
+					BaryonOperator_t  creat_oper;
+					creat_oper.mom2_max    = params.param.mom2_max;
+					creat_oper.decay_dir   = decay_dir;
+					creat_oper.seed_l      = diluted_quarks[0]->getSeed();
+					creat_oper.seed_m      = diluted_quarks[1]->getSeed();
+					creat_oper.seed_r      = diluted_quarks[2]->getSeed();
+					creat_oper.dilution_l  = params.param.quark_dils[0];
+					creat_oper.dilution_m  = params.param.quark_dils[1];
+					creat_oper.dilution_r  = params.param.quark_dils[2];
+					creat_oper.smearing    = params.param.quark_smearing;
+					creat_oper.perms       = perms;
+					creat_oper.time_slices.resize( 1 ); //Only a single t0 per file 
 
-					write(xml_out, "Name", creat_oper.id);
-
-					// Loop over all orderings and build the operator
-					swiss.reset();
-					swiss.start();
-
-					// The keys for the spin and displacements for this particular elemental operator
-					multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
-
-					for(int n = 0 ; n < N_quarks ; ++n)
+					// Construct creation operator
+					// Loop over each operator 
+					for(int l=0; l < qqq_oplist.ops.size(); ++l)
 					{
-						keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
-						keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
-					}
+						QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
-					{
+						push(xml_out, "BaryonOperator");
 
-						creat_oper.time_slices[t0].t0 = participating_timeslices[t0];
-						creat_oper.time_slices[t0].orderings.resize(num_orderings);
+						creat_oper.id = qqq_oplist.ops[l].name;
+
+						write(xml_out, "Name", creat_oper.id);
+
+						// Loop over all orderings and build the operator
+						swiss.reset();
+						swiss.start();
+
+						// The keys for the spin and displacements for this particular elemental operator
+						multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
+
+						for(int n = 0 ; n < N_quarks ; ++n)
+						{
+							keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+							keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+						}
+
+
+						creat_oper.time_slices[0].t0 = participating_timeslices[t0];
+						creat_oper.time_slices[0].orderings.resize(num_orderings);
 
 						for(int ord = 0; ord < num_orderings ; ++ord)
 						{
 							QDPIO::cout << "Ordering = " << ord << endl;
 
-							creat_oper.time_slices[t0].orderings[ord].perm = perms[ord];
+							creat_oper.time_slices[0].orderings[ord].perm = perms[ord];
 
 							const int n0 = perms[ord][0];
 							const int n1 = perms[ord][1];
 							const int n2 = perms[ord][2];
 
 							// The operator must hold all the dilutions
-							
+
 							// Creation operator
-							BaryonOperator_t::TimeSlices_t::Orderings_t& cop = creat_oper.time_slices[t0].orderings[ord];
+							BaryonOperator_t::TimeSlices_t::Orderings_t& cop = creat_oper.time_slices[0].orderings[ord];
 
 							cop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0),
 									diluted_quarks[n2]->getDilSize(t0) );
@@ -1371,37 +1378,37 @@ namespace Chroma
 							for(int i = 0 ; i <  diluted_quarks[n0]->getDilSize(t0) ; ++i)
 							{
 								for(int j = 0 ; j < diluted_quarks[n1]->getDilSize(t0) ; ++j)	      						
-									{
+								{
 
-										keySmearedDispColorVector[0].dil = i;
-										keySmearedDispColorVector[1].dil = j;
-										
-										//Form the di-quark to save on recalculating 
-										multi1d<LatticeComplex> diquark(Nc);
-									
-										const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDispSource(n0, 
-												keySmearedDispColorVector[0]); 
+									keySmearedDispColorVector[0].dil = i;
+									keySmearedDispColorVector[1].dil = j;
 
-										const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDispSource(n1, 
-												keySmearedDispColorVector[1]);
-	
-										/*QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
-											<< endl; 
+									//Form the di-quark to save on recalculating 
+									multi1d<LatticeComplex> diquark(Nc);
+
+									const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDispSource(n0, 
+											keySmearedDispColorVector[0]); 
+
+									const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDispSource(n1, 
+											keySmearedDispColorVector[1]);
+
+									/*QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
+										<< endl; 
 
 										QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
-											<< endl; 
+										<< endl; 
 
-										*/
+*/
 
-										watch.reset();
-										watch.start();
-										//For the source, restrict this operation to a subset
-										makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
-										watch.stop();
+									watch.reset();
+									watch.start();
+									//For the source, restrict this operation to a subset
+									makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
+									watch.stop();
 
-										QDPIO::cout<< " Made diquark : time = " << 
-											watch.getTimeInSeconds() << "secs" << endl;
-
+									/*QDPIO::cout<< " Made diquark : time = " << 
+										watch.getTimeInSeconds() << "secs" << endl;
+									*/		
 
 									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
 									{
@@ -1419,18 +1426,18 @@ namespace Chroma
 
 										/*QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
 											<< endl; 
-										*/
+											*/
 										watch.reset();
 										watch.start();
-										
+
 										makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
 												participating_timeslices[t0] ] );
-										
+
 										watch.stop();
 
-										QDPIO::cout<< "Made Color singlet : time =  " <<  
+										/*QDPIO::cout<< "Made Color singlet : time =  " <<  
 											watch.getTimeInSeconds() << "secs" << endl;
-
+										*/	
 										/*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
 											<< endl;
 											*/	
@@ -1444,9 +1451,9 @@ namespace Chroma
 
 										watch.stop();
 
-										QDPIO::cout << " Spatial sums completed: time = " << 
+										/*QDPIO::cout << " Spatial sums completed: time = " << 
 											watch.getTimeInSeconds() << "secs " << endl;
-
+										*/
 										// Unpack into separate momentum and correlator
 										cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
 
@@ -1464,63 +1471,60 @@ namespace Chroma
 								} // end for j
 							} // end for i
 						}//end ord 
-					}//end t0 
 
-					swiss.stop();
+						swiss.stop();
 
 
-					QDPIO::cout << "Source operator construction: operator= " << l 
-						<< "  time= "
-						<< swiss.getTimeInSeconds() 
-						<< " secs" << endl;
+						QDPIO::cout << "Source operator construction: operator= " << l 
+							<< "  time= "
+							<< swiss.getTimeInSeconds() 
+							<< " secs" << endl;
 
-					//Hard code the elemental op name for now 
-					std::stringstream cnvrt;
-					cnvrt <<  creat_oper.id  << "_src.lime";
+						QDPIO::cout << "Source operator testval(t0 = " << 
+							participating_timeslices[t0] << ") = " << 
+							creat_oper.time_slices[0].orderings[0].dilutions(0,0,0).mom_projs[0].op[0];
 
-					std::string filename;
 
-					filename = cnvrt.str(); 
 
-					// Write the meta-data and the binary for this operator
-					swiss.reset();
-					swiss.start();
-					{
-						XMLBufferWriter     src_record_xml, file_xml;
-						BinaryBufferWriter  src_record_bin;
+						//Hard code the elemental op name for now 
+						std::stringstream cnvrt;
+						cnvrt <<  creat_oper.id  << "_t" << participating_timeslices[t0] << "_src.lime";
 
-						push(file_xml, "SourceBaryonOperator");
-						write(file_xml, "Params", params.param);
-						write(file_xml, "Config_info", gauge_xml);
-						write(file_xml, "Op_Info",qqq_oplist.ops[l]);
+						std::string filename;
 
-						push(file_xml, "QuarkSources");
-						
-						push(file_xml, "Quark_l");
-						push(file_xml, "TimeSlices");
-						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						filename = cnvrt.str(); 
+
+						// Write the meta-data and the binary for this operator
+						swiss.reset();
+						swiss.start();
 						{
-							push(file_xml, "elem");
+							XMLBufferWriter     src_record_xml, file_xml;
+							BinaryBufferWriter  src_record_bin;
+
+							push(file_xml, "SourceBaryonOperator");
+							write(file_xml, "Params", params.param);
+							write(file_xml, "Config_info", gauge_xml);
+							write(file_xml, "Op_Info",qqq_oplist.ops[l]);
+
+							push(file_xml, "QuarkSources");
+
+							push(file_xml, "Quark_l");
+							push(file_xml, "TimeSlice");
 							push(file_xml, "Dilutions");
 							for (int dil = 0; dil < diluted_quarks[0]->getDilSize(t0) ; ++dil)
 							{
 								write( file_xml, "elem", 
 										diluted_quarks[0]->getSourceHeader(t0, dil) );
-							
-							//	QDPIO::cout<< "t0 = " << t0 << " dil = "<< dil <<
+
+								//	QDPIO::cout<< "t0 = " << t0 << " dil = "<< dil <<
 								//	" srdhdr = XX"<<diluted_quarks[0]->getSourceHeader(t0,dil) << endl;
 							}
 							pop(file_xml); //dilutions 
-							pop(file_xml); //elem
-						}
-						pop(file_xml); //TimeSlices
-						pop(file_xml); //Quark_l
+							pop(file_xml); //TimeSlice
+							pop(file_xml); //Quark_l
 
-						push(file_xml, "Quark_m");
-						push(file_xml, "TimeSlices");
-						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
-						{
-							push(file_xml, "elem");
+							push(file_xml, "Quark_m");
+							push(file_xml, "TimeSlice");
 							push(file_xml, "Dilutions");
 							for (int dil = 0; dil < diluted_quarks[1]->getDilSize(t0) ; ++dil)
 							{
@@ -1528,16 +1532,11 @@ namespace Chroma
 										diluted_quarks[1]->getSourceHeader(t0, dil) );
 							}
 							pop(file_xml); //dilutions 
-							pop(file_xml); //elem
-						}
-						pop(file_xml); //TimeSlices
-						pop(file_xml); //Quark_m
-						
-						push(file_xml, "Quark_r");
-						push(file_xml, "TimeSlices");
-						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
-						{
-							push(file_xml, "elem");
+							pop(file_xml); //TimeSlice
+							pop(file_xml); //Quark_m
+
+							push(file_xml, "Quark_r");
+							push(file_xml, "TimeSlice");
 							push(file_xml, "Dilutions");
 							for (int dil = 0; dil < diluted_quarks[2]->getDilSize(t0) ; ++dil)
 							{
@@ -1545,109 +1544,105 @@ namespace Chroma
 										diluted_quarks[2]->getSourceHeader(t0, dil) );
 							}
 							pop(file_xml); //dilutions 
-							pop(file_xml); //elem
+							pop(file_xml); //TimeSlice
+							pop(file_xml); //Quark_r
+
+							pop(file_xml);//QuarkSources
+							push(file_xml, "QuarkSinks");
+
+							push(file_xml, "Quark_l");
+							write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
+							pop(file_xml);
+
+							push(file_xml, "Quark_m");
+							write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
+							pop(file_xml);
+
+							push(file_xml, "Quark_r");
+							write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
+							pop(file_xml);
+
+							pop(file_xml); //Quark Sinks  
+							pop(file_xml);//SourceBaryonOp
+
+							QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
+									QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+
+
+							write(src_record_xml, "BaryonCreationOperator", creat_oper);
+							write(src_record_bin, creat_oper);
+
+							write(qdp_file, src_record_xml, src_record_bin);
+
 						}
-						pop(file_xml); //TimeSlices
-						pop(file_xml); //Quark_r
+						swiss.stop();
 
-						pop(file_xml);//QuarkSources
-						push(file_xml, "QuarkSinks");
+						QDPIO::cout << "Source Operator writing: operator = " << 
+							l	<< "  time= "
+							<< swiss.getTimeInSeconds() 
+							<< " secs" << endl;
 
-						push(file_xml, "Quark_l");
-						write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
-						pop(file_xml);
+						pop(xml_out); // BaryonOperator 
 
-						push(file_xml, "Quark_m");
-						write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
-						pop(file_xml);
-					
-						push(file_xml, "Quark_r");
-						write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
-						pop(file_xml);
-					
-						pop(file_xml); //Quark Sinks  
-						pop(file_xml);//SourceBaryonOp
+					} // end for l (operator )
 
-						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
-								QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+				} //End Make creation operator
 
 
-						write(src_record_xml, "BaryonCreationOperator", creat_oper);
-						write(src_record_bin, creat_oper);
 
-						write(qdp_file, src_record_xml, src_record_bin);
-
-					}
-					swiss.stop();
-
-					QDPIO::cout << "Source Operator writing: operator = " << 
-						l	<< "  time= "
-						<< swiss.getTimeInSeconds() 
-						<< " secs" << endl;
-
-					pop(xml_out); // BaryonOperator 
-
-				} // end for l (operator )
-
-			} //End Make creation operator
-
-
-			
-			//Make Annilation Operator
-			{
-
-				// The object holding the smeared and displaced color vector maps  
-				SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
-						diluted_quarks, sourceQuarkSmearing, sinkQuarkSmearing, u_smr );
-
-					
-							// Annihilation operator
-				BaryonOperator_t  annih_oper;
-				annih_oper.mom2_max    = params.param.mom2_max;
-				annih_oper.decay_dir   = decay_dir;
-				annih_oper.seed_l      = diluted_quarks[0]->getSeed();
-				annih_oper.seed_m      = diluted_quarks[1]->getSeed();
-				annih_oper.seed_r      = diluted_quarks[2]->getSeed();
-				annih_oper.dilution_l  = params.param.quark_dils[0];
-				annih_oper.dilution_m  = params.param.quark_dils[1];
-				annih_oper.dilution_r  = params.param.quark_dils[2];
-				annih_oper.smearing    = params.param.sink_quark_smearing;
-				annih_oper.perms       = perms;
-				annih_oper.time_slices.resize( participating_timeslices.size() );
-	    	
-				// Construct annihilation operator
-				QDPIO::cout << "Building Sink operators" << endl;
-
-				// Loop over each operator 
-				for(int l=0; l < qqq_oplist.ops.size(); ++l)
+				//Make Annilation Operator
 				{
-					QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-					annih_oper.id = qqq_oplist.ops[l].name;
+					// The object holding the smeared and displaced color vector maps  
+					SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
+							diluted_quarks, quarkSmearing, u_smr );
 
-					// Loop over all orderings and build the operator
-					swiss.reset();
-					swiss.start();
 
-					// The keys for the spin and displacements for this particular elemental operator
-					multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
+					// Annihilation operator
+					BaryonOperator_t  annih_oper;
+					annih_oper.mom2_max    = params.param.mom2_max;
+					annih_oper.decay_dir   = decay_dir;
+					annih_oper.seed_l      = diluted_quarks[0]->getSeed();
+					annih_oper.seed_m      = diluted_quarks[1]->getSeed();
+					annih_oper.seed_r      = diluted_quarks[2]->getSeed();
+					annih_oper.dilution_l  = params.param.quark_dils[0];
+					annih_oper.dilution_m  = params.param.quark_dils[1];
+					annih_oper.dilution_r  = params.param.quark_dils[2];
+					annih_oper.smearing    = params.param.quark_smearing;
+					annih_oper.perms       = perms;
+					annih_oper.time_slices.resize( 1 );
 
-					for(int n = 0 ; n < N_quarks ; ++n)
+					// Construct annihilation operator
+					QDPIO::cout << "Building Sink operators" << endl;
+
+					// Loop over each operator 
+					for(int l=0; l < qqq_oplist.ops.size(); ++l)
 					{
-						keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
-						keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
-					}
+						QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-					for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0)
-					{
-						annih_oper.time_slices[t0].t0 = participating_timeslices[t0];
-						annih_oper.time_slices[t0].orderings.resize(num_orderings);
+						annih_oper.id = qqq_oplist.ops[l].name;
+
+						// Loop over all orderings and build the operator
+						swiss.reset();
+						swiss.start();
+
+						// The keys for the spin and displacements for this particular elemental operator
+						multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(N_quarks);
+
+						for(int n = 0 ; n < N_quarks ; ++n)
+						{
+							keySmearedDispColorVector[n].displacement = qqq_oplist.ops[l].quark[n].displacement;
+							keySmearedDispColorVector[n].spin         = qqq_oplist.ops[l].quark[n].spin;
+						}
+
+						annih_oper.time_slices[0].t0 = participating_timeslices[t0];
+						annih_oper.time_slices[0].orderings.resize(num_orderings);
 
 						for(int ord = 0 ; ord < num_orderings ; ++ord)
 						{
 							QDPIO::cout << "Ordering = " << ord << endl;
 
-							annih_oper.time_slices[t0].orderings[ord].perm = perms[ord];
+							annih_oper.time_slices[0].orderings[ord].perm = perms[ord];
 
 							const int n0 = perms[ord][0];
 							const int n1 = perms[ord][1];
@@ -1658,7 +1653,7 @@ namespace Chroma
 							// lattice maybe used
 
 							// Creation operator
-							BaryonOperator_t::TimeSlices_t::Orderings_t& aop = annih_oper.time_slices[t0].orderings[ord];
+							BaryonOperator_t::TimeSlices_t::Orderings_t& aop = annih_oper.time_slices[0].orderings[ord];
 
 							aop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0),
 									diluted_quarks[n2]->getDilSize(t0) );
@@ -1672,7 +1667,7 @@ namespace Chroma
 							{
 								for(int j = 0 ; j < diluted_quarks[n1]->getDilSize(t0) ; ++j)	      
 								{
-									
+
 									keySmearedDispColorVector[0].dil = i;
 									keySmearedDispColorVector[1].dil = j;
 
@@ -1685,23 +1680,23 @@ namespace Chroma
 									const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDispSolution(n1, 
 											keySmearedDispColorVector[1]);
 
-									
+
 									//QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
 									//	<< endl; 
 
 									//QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
 									//	<< endl; 
 
-									
+
 									watch.reset();
 									watch.start();
-									
+
 									makeDiquark( diquark, q0 , q1, all ); 
 
 									watch.stop();
-									QDPIO::cout << "Made diquark: time = " << 
+									/*QDPIO::cout << "Made diquark: time = " << 
 										watch.getTimeInSeconds() << "secs " << endl;
-
+									*/
 
 									for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
 									{
@@ -1725,29 +1720,30 @@ namespace Chroma
 
 										watch.reset();
 										watch.start();
-										
+
 										makeColorSinglet( a_oper, diquark, q2, all);
 
 										watch.stop();
 
+										/*
 										QDPIO::cout <<	"Made Color Singlet: time = " <<
 											watch.getTimeInSeconds() << "secs" << endl;
-										
+										*/
 										/*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
 											<< endl;
-										*/
+											*/
 
 										watch.reset();
 										watch.start();
-										
+
 										// Slow fourier-transform
 										multi2d<DComplex> a_sum( phases.sft(a_oper) );
-										
-										watch.stop();
 
+										watch.stop();
+										/*
 										QDPIO::cout << "Spatial Sums completed: time " << 
 											watch.getTimeInSeconds() << "secs" << endl;
-
+										*/		
 										// Unpack into separate momentum and correlator
 										aop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
 
@@ -1756,49 +1752,49 @@ namespace Chroma
 											aop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
 
 											aop.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
-										
+
 										}
 
 									} // end for k
 								} // end for j
 							} // end for i
 						}//end ord 
-					}//end t0 
-
-					swiss.stop();
+						swiss.stop();
 
 
-					QDPIO::cout << "Sink operator construction: operator= " << l 
-						<< "  time= "
-						<< swiss.getTimeInSeconds() 
-						<< " secs" << endl;
+						QDPIO::cout << "Sink operator construction: operator= " << l 
+							<< "  time= "
+							<< swiss.getTimeInSeconds() 
+							<< " secs" << endl;
 
-					//Hard code the elemental op name for now 
-					std::stringstream cnvrt;
-					cnvrt <<  annih_oper.id  << "_snk.lime";
+						QDPIO::cout << "Sink op testval( t0 = " << 
+							participating_timeslices[t0] << ") = " << 
+							annih_oper.time_slices[0].orderings[0].dilutions(0,0,0).mom_projs[0].op[0] 
+							<< endl;
 
-					std::string filename;
+						//Hard code the elemental op name for now 
+						std::stringstream cnvrt;
+						cnvrt <<  annih_oper.id  << "_t" << participating_timeslices[t0] << "_snk.lime";
 
-					filename = cnvrt.str(); 
+						std::string filename;
 
-					// Write the meta-data and the binary for this operator
-					swiss.reset();
-					swiss.start();
-					{
-						XMLBufferWriter     src_record_xml, file_xml;
-						BinaryBufferWriter  src_record_bin;
+						filename = cnvrt.str(); 
 
-						push(file_xml, "SinkBaryonOperator");
-						write(file_xml, "Params", params.param);
-						write(file_xml, "Config_info", gauge_xml);
-						write(file_xml, "Op_Info",qqq_oplist.ops[l]);
-						push(file_xml, "QuarkSources");
-						
-						push(file_xml, "Quark_l");
-						push(file_xml, "TimeSlices");
-						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
+						// Write the meta-data and the binary for this operator
+						swiss.reset();
+						swiss.start();
 						{
-							push(file_xml, "elem");
+							XMLBufferWriter     src_record_xml, file_xml;
+							BinaryBufferWriter  src_record_bin;
+
+							push(file_xml, "SinkBaryonOperator");
+							write(file_xml, "Params", params.param);
+							write(file_xml, "Config_info", gauge_xml);
+							write(file_xml, "Op_Info",qqq_oplist.ops[l]);
+							push(file_xml, "QuarkSources");
+
+							push(file_xml, "Quark_l");
+							push(file_xml, "TimeSlice");
 							push(file_xml, "Dilutions");
 							for (int dil = 0; dil < diluted_quarks[0]->getDilSize(t0) ; ++dil)
 							{
@@ -1806,16 +1802,11 @@ namespace Chroma
 										diluted_quarks[0]->getSourceHeader(t0, dil) );
 							}
 							pop(file_xml); //dilutions 
-							pop(file_xml); //elem
-						}
-						pop(file_xml); //TimeSlices
-						pop(file_xml); //Quark_l
+							pop(file_xml); //TimeSlice
+							pop(file_xml); //Quark_l
 
-						push(file_xml, "Quark_m");
-						push(file_xml, "TimeSlices");
-						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
-						{
-							push(file_xml, "elem");
+							push(file_xml, "Quark_m");
+							push(file_xml, "TimeSlice");
 							push(file_xml, "Dilutions");
 							for (int dil = 0; dil < diluted_quarks[1]->getDilSize(t0) ; ++dil)
 							{
@@ -1823,16 +1814,11 @@ namespace Chroma
 										diluted_quarks[1]->getSourceHeader(t0, dil) );
 							}
 							pop(file_xml); //dilutions 
-							pop(file_xml); //elem
-						}
-						pop(file_xml); //TimeSlices
-						pop(file_xml); //Quark_m
-						
-						push(file_xml, "Quark_r");
-						push(file_xml, "TimeSlices");
-						for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
-						{
-							push(file_xml, "elem");
+							pop(file_xml); //TimeSlice
+							pop(file_xml); //Quark_m
+
+							push(file_xml, "Quark_r");
+							push(file_xml, "TimeSlice");
 							push(file_xml, "Dilutions");
 							for (int dil = 0; dil < diluted_quarks[2]->getDilSize(t0) ; ++dil)
 							{
@@ -1840,63 +1826,62 @@ namespace Chroma
 										diluted_quarks[2]->getSourceHeader(t0, dil) );
 							}
 							pop(file_xml); //dilutions 
-							pop(file_xml); //elem
+							pop(file_xml); //TimeSlice
+							pop(file_xml); //Quark_r
+
+							pop(file_xml);//QuarkSources
+							push(file_xml, "QuarkSinks");
+
+							push(file_xml, "Quark_l");
+							write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
+							pop(file_xml);
+
+							push(file_xml, "Quark_m");
+							write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
+							pop(file_xml);
+
+							push(file_xml, "Quark_r");
+							write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
+							pop(file_xml);
+
+							pop(file_xml);//QuarkSinks 
+							pop(file_xml);//SinkBaryonOperator
+
+							QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
+									QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+
+
+							write(src_record_xml, "BaryonAnnihilationOperator", annih_oper);
+							write(src_record_bin, annih_oper);
+
+							write(qdp_file, src_record_xml, src_record_bin);
+
 						}
-						pop(file_xml); //TimeSlices
-						pop(file_xml); //Quark_r
+						swiss.stop();
 
-						pop(file_xml);//QuarkSources
-						push(file_xml, "QuarkSinks");
+						QDPIO::cout << "Sink Operator writing: operator = " << l
+							<< "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
 
-						push(file_xml, "Quark_l");
-						write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
-						pop(file_xml);
+					} // end for l (operator )
 
-						push(file_xml, "Quark_m");
-						write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
-						pop(file_xml);
-					
-						push(file_xml, "Quark_r");
-						write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
-						pop(file_xml);
-					
-						pop(file_xml);//QuarkSinks 
-						pop(file_xml);//SinkBaryonOperator
+				} //End Make annihilation operator
 
-						QDPFileWriter qdp_file(file_xml, filename,     // are there one or two files???
-								QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+			} //end t0 
+			// Close the namelist output file XMLDAT
+			pop(xml_out);     // StochBaryon
 
+			snoop.stop();
+			QDPIO::cout << InlineStochGroupBaryonEnv::name << ": total time = " 
+				<< snoop.getTimeInSeconds() 
+				<< " secs" << endl;
 
-						write(src_record_xml, "BaryonAnnihilationOperator", annih_oper);
-						write(src_record_bin,annih_oper);
+			QDPIO::cout << InlineStochGroupBaryonEnv::name << ": ran successfully" << endl;
 
-						write(qdp_file, src_record_xml, src_record_bin);
+			END_CODE();
+		} // func
 
-					}
-					swiss.stop();
+	} // namespace InlineStochGroupBaryonEnv
 
-					QDPIO::cout << "Sink Operator writing: operator = " << l
-						<< "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
-
-				} // end for l (operator )
-
-			} //End Make creation operator
-
-      // Close the namelist output file XMLDAT
-      pop(xml_out);     // StochBaryon
-
-      snoop.stop();
-      QDPIO::cout << InlineStochGroupBaryonEnv::name << ": total time = " 
-		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
-
-      QDPIO::cout << InlineStochGroupBaryonEnv::name << ": ran successfully" << endl;
-
-      END_CODE();
-    } // func
-
-  } // namespace InlineStochGroupBaryonEnv
-
-  /*! @} */  // end of group hadron
+	/*! @} */  // end of group hadron
 
 } // namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_baryon_w.h,v 1.6 2008-01-18 16:43:13 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.h,v 1.7 2008-03-07 16:47:11 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  */
@@ -34,8 +34,7 @@ namespace Chroma
       {
 				int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
 				int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
-				GroupXML_t          source_quark_smearing; /*!< xml string holding smearing params */
-				GroupXML_t          sink_quark_smearing;   /*!< xml string holding smearing params */
+				GroupXML_t          quark_smearing; /*!< xml string holding smearing params */
 				GroupXML_t          link_smearing;         /*!< link smearing xml */
 
 				multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
