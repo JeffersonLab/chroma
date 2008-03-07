@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_clover.eigcg.ini.xml,v 1.1 2007-10-24 03:38:38 edwards Exp $
+; $Id: prec_clover.eigcg.ini.xml,v 1.2 2008-03-07 15:37:59 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -75,8 +75,9 @@
           <invType>EIG_CG_INVERTER</invType>
           <RsdCG>1.0e-8</RsdCG>
           <MaxCG>1000</MaxCG>
-          <Nmax>10</Nmax>
-          <Neig>3</Neig>
+          <Nmax>100</Nmax>
+          <Neig>10</Neig>
+          <Neig_max>120</Neig_max>
           <eigen_id>linop_evs</eigen_id>
           <cleanUpEvecs>false</cleanUpEvecs>
         </InvertParam>
