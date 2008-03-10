@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.229 2008-02-19 16:23:26 bjoo Exp $
+# $Id: Makefile.in,v 3.230 2008-03-10 17:32:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -155,7 +155,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
 	actions/ferm/invert/inv_rel_gmresr_sumr.cc \
 	actions/ferm/invert/inv_rel_sumr.cc \
-	actions/ferm/invert/minvcg.cc \
+	actions/ferm/invert/minvcg.cc actions/ferm/invert/minvcg2.cc \
 	actions/ferm/invert/minvcg_array.cc \
 	actions/ferm/invert/minvsumr.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
@@ -686,9 +686,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inv_eigcg2.$(OBJEXT) inv_eigcg2_array.$(OBJEXT) \
 	inv_rel_cg1.$(OBJEXT) inv_rel_cg2.$(OBJEXT) \
 	inv_rel_gmresr_cg.$(OBJEXT) inv_rel_gmresr_sumr.$(OBJEXT) \
-	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvcg_array.$(OBJEXT) \
-	minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
-	minv_rel_sumr.$(OBJEXT) syssolver_linop_aggregate.$(OBJEXT) \
+	inv_rel_sumr.$(OBJEXT) minvcg.$(OBJEXT) minvcg2.$(OBJEXT) \
+	minvcg_array.$(OBJEXT) minvsumr.$(OBJEXT) \
+	minv_rel_cg.$(OBJEXT) minv_rel_sumr.$(OBJEXT) \
+	syssolver_linop_aggregate.$(OBJEXT) \
 	syssolver_mdagm_aggregate.$(OBJEXT) \
 	syssolver_polyprec_aggregate.$(OBJEXT) \
 	syssolver_cg_params.$(OBJEXT) syssolver_mr_params.$(OBJEXT) \
@@ -1099,7 +1100,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h \
 	actions/ferm/invert/invert.h actions/ferm/invert/invmr.h \
-	actions/ferm/invert/minvcg.h \
+	actions/ferm/invert/minvcg.h actions/ferm/invert/minvcg2.h \
 	actions/ferm/invert/minvcg_array.h \
 	actions/ferm/invert/minvmr.h actions/ferm/invert/minv_rel_cg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
@@ -1896,7 +1897,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/invcg1_array.h \
 	actions/ferm/invert/invcg2_array.h \
 	actions/ferm/invert/invert.h actions/ferm/invert/invmr.h \
-	actions/ferm/invert/minvcg.h \
+	actions/ferm/invert/minvcg.h actions/ferm/invert/minvcg2.h \
 	actions/ferm/invert/minvcg_array.h \
 	actions/ferm/invert/minvmr.h actions/ferm/invert/minv_rel_cg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
@@ -2570,7 +2571,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
 	actions/ferm/invert/inv_rel_gmresr_sumr.cc \
 	actions/ferm/invert/inv_rel_sumr.cc \
-	actions/ferm/invert/minvcg.cc \
+	actions/ferm/invert/minvcg.cc actions/ferm/invert/minvcg2.cc \
 	actions/ferm/invert/minvcg_array.cc \
 	actions/ferm/invert/minvsumr.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
@@ -3495,6 +3496,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minv_rel_cg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minv_rel_sumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvcg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minvsumr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mom_source_const.Po@am__quote@
@@ -4171,6 +4173,20 @@ minvcg.obj: actions/ferm/invert/minvcg.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/minvcg.cc' object='minvcg.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o minvcg.obj `if test -f 'actions/ferm/invert/minvcg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/minvcg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/minvcg.cc'; fi`
+
+minvcg2.o: actions/ferm/invert/minvcg2.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT minvcg2.o -MD -MP -MF $(DEPDIR)/minvcg2.Tpo -c -o minvcg2.o `test -f 'actions/ferm/invert/minvcg2.cc' || echo '$(srcdir)/'`actions/ferm/invert/minvcg2.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/minvcg2.Tpo $(DEPDIR)/minvcg2.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/minvcg2.cc' object='minvcg2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o minvcg2.o `test -f 'actions/ferm/invert/minvcg2.cc' || echo '$(srcdir)/'`actions/ferm/invert/minvcg2.cc
+
+minvcg2.obj: actions/ferm/invert/minvcg2.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT minvcg2.obj -MD -MP -MF $(DEPDIR)/minvcg2.Tpo -c -o minvcg2.obj `if test -f 'actions/ferm/invert/minvcg2.cc'; then $(CYGPATH_W) 'actions/ferm/invert/minvcg2.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/minvcg2.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/minvcg2.Tpo $(DEPDIR)/minvcg2.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/minvcg2.cc' object='minvcg2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o minvcg2.obj `if test -f 'actions/ferm/invert/minvcg2.cc'; then $(CYGPATH_W) 'actions/ferm/invert/minvcg2.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/minvcg2.cc'; fi`
 
 minvcg_array.o: actions/ferm/invert/minvcg_array.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT minvcg_array.o -MD -MP -MF $(DEPDIR)/minvcg_array.Tpo -c -o minvcg_array.o `test -f 'actions/ferm/invert/minvcg_array.cc' || echo '$(srcdir)/'`actions/ferm/invert/minvcg_array.cc

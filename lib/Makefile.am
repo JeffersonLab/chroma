@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.127 2008-01-24 14:50:25 edwards Exp $
+# $Id: Makefile.am,v 3.128 2008-03-10 17:32:36 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -47,6 +47,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/invcg2_array.h actions/ferm/invert/invert.h \
 	actions/ferm/invert/invmr.h \
         actions/ferm/invert/minvcg.h \
+	actions/ferm/invert/minvcg2.h \
         actions/ferm/invert/minvcg_array.h \
         actions/ferm/invert/minvmr.h \
 	actions/ferm/invert/minv_rel_cg.h \
@@ -820,6 +821,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/inv_rel_gmresr_sumr.cc \
 	actions/ferm/invert/inv_rel_sumr.cc \
 	actions/ferm/invert/minvcg.cc \
+	actions/ferm/invert/minvcg2.cc \
 	actions/ferm/invert/minvcg_array.cc \
         actions/ferm/invert/minvsumr.cc \
 	actions/ferm/invert/minv_rel_cg.cc \

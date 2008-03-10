@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 3.5 2007-04-11 03:42:33 edwards Exp $
+// $Id: quarkprop4_w.cc,v 3.6 2008-03-10 17:32:40 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -333,7 +333,7 @@ namespace Chroma
     return TheMdagMFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 lMdagM(state));
+									 linOp(state));
   }
 
 

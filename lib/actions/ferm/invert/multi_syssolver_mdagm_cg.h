@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_cg.h,v 3.3 2007-02-22 21:11:46 bjoo Exp $
+// $Id: multi_syssolver_mdagm_cg.h,v 3.4 2008-03-10 17:32:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -13,6 +13,7 @@
 #include "actions/ferm/invert/multi_syssolver_mdagm.h"
 #include "actions/ferm/invert/multi_syssolver_cg_params.h"
 #include "actions/ferm/invert/minvcg.h"
+#include "actions/ferm/invert/minvcg2.h"
 
 
 namespace Chroma
@@ -78,7 +79,7 @@ namespace Chroma
 	}
 
 	SystemSolverResults_t res;
-  	MInvCG(*A, chi, psi, shifts, RsdCG, invParam.MaxCG, res.n_count);
+  	MInvCG2(*A, chi, psi, shifts, RsdCG, invParam.MaxCG, res.n_count);
 
 	END_CODE();
 
