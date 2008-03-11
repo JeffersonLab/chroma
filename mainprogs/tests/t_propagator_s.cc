@@ -1,13 +1,10 @@
-// $Id: t_propagator_s.cc,v 3.9 2008-03-11 21:02:20 mcneile Exp $
+// $Id: t_propagator_s.cc,v 3.10 2008-03-11 21:37:51 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
  *  I using this code to DEBUG the HISQ inverter.
  *
  */
-
-#define HISQ_OPTION
-#undef  ASQTAD_OPTION
 
 #include <iostream>
 #include <cstdio>
@@ -20,36 +17,11 @@
 #include "meas/hadron/stag_propShift_s.h"
 #include "meas/hadron/pion_local_s.h"
 
-#include "actions/ferm/fermacts/hisq_fermact_params_s.h"
-#include "actions/ferm/fermacts/hisq_fermact_s.h"
-#include "actions/ferm/qprop/hisq_qprop.h"
-
 #include "io/xml_group_reader.h"
 
 /*
  *  Here we have various temporary definitions
  */
-/*
-enum CfgType {
-  CFG_TYPE_MILC = 0,
-  CFG_TYPE_NERSC,
-  CFG_TYPE_SCIDAC,
-  CFG_TYPE_SZIN,
-  CFG_TYPE_UNKNOWN
-} ;
-
-enum PropType {
-  PROP_TYPE_SCIDAC = 2,
-  PROP_TYPE_SZIN,
-  PROP_TYPE_UNKNOWN
-} ;
-
-enum FermType {
-  FERM_TYPE_STAGGERED,
-  FERM_TYPE_UNKNOWN
-};
-*/
-
 
 using namespace Chroma;
 
@@ -63,12 +35,10 @@ using namespace Chroma;
 // and written to the XML output
 struct Param_t
 {
-  FermType     FermTypeP;
   Real         Mass;      // Staggered mass
   Real         u0;        // Tadpole Factor
  
   CfgType  cfg_type;       // storage order for stored gauge configuration
-  PropType prop_type;      // storage order for stored propagator
 
   SysSolverCGParams  invParam;
   
@@ -96,15 +66,6 @@ struct Propagator_input_t
   Prop_t           prop;
 };
 
-
-//
-void read(XMLReader& xml, const string& path, Prop_t& input)
-{
-  XMLReader inputtop(xml, path);
-
-//  read(inputtop, "source_file", input.source_file);
-  read(inputtop, "prop_file", input.prop_file);
-}
 
 
 
@@ -159,74 +120,17 @@ void read(XMLReader& xml, const string& path, Propagator_input_t& input)
      throw;
    }
 
-
+  QDPIO::cout << "Propagator for Staggered fermions" << endl;
   //    Read the common bits
    try 
    {
      XMLReader paramtop(inputtop, "param");  // push into 'param' group
-
-     {
-       string ferm_type_str;
-       read(paramtop, "FermTypeP", ferm_type_str);
-       if (ferm_type_str == "STAGGERED") {
- 	input.param.FermTypeP = FERM_TYPE_STAGGERED;
-       } 
-     }
-
-     //      GTF NOTE: I'm going to switch on FermTypeP here because I want
-     // to leave open the option of treating masses differently.
-     
-
-switch (input.param.FermTypeP) {
-     case FERM_TYPE_STAGGERED :
-
-       QDPIO::cout << " PROPAGATOR: Propagator for Staggered fermions" << endl;
        
-       // This is a Group XML structure which has 2 members 
-       // One is the 'id' which will  be found in the "FermAct" sub-tag
-       // One is the root tag of the Group in this case "FermionAction"
-#if 1						\
- 
-       input.param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
+     // This is a Group XML structure which has 2 members 
+     // One is the 'id' which will  be found in the "FermAct" sub-tag
+     // One is the root tag of the Group in this case "FermionAction"
+     input.param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
-#else
-
-       read(paramtop, "Mass", input.param.Mass);
-       read(paramtop, "u0" , input.param.u0);
-#endif
-
- #if 0
-       for (int i=0; i < input.param.numKappa; ++i) {
- 	if (toBool(input.param.Kappa[i] < 0.0)) {
- 	  QDPIO::cerr << "Unreasonable value for Kappa." << endl;
- 	  QDPIO::cerr << "  Kappa[" << i << "] = " << input.param.Kappa[i] << endl;
- 	  QDP_abort(1);
- 	} else {
- 	  QDPIO::cout << " Spectroscopy Kappa: " << input.param.Kappa[i] << endl;
- 	}
-       }
- #endif
-
-       break;
-
-     default :
-       QDP_error_exit("Fermion type not supported\n.");
-     }
-
-/*      This may need changing in the future but since the plan is
-	not to write out propagators we'll leave alone for now.
-*/
-   {
-       string prop_type_str;
-       read(paramtop, "prop_type", prop_type_str);
-       if (prop_type_str == "SZIN") {
- 	input.param.prop_type = PROP_TYPE_SZIN;
-       } else {
- 	QDP_error_exit("Dont know non SZIN files yet");
-       }
-     }
-
-//     read(paramtop, "invType", input.param.invType);
      read(paramtop, "RsdCG", input.param.invParam.RsdCG);
      read(paramtop, "MaxCG", input.param.invParam.MaxCG);
      read(paramtop, "GFAccu", input.param.GFAccu);
@@ -234,7 +138,6 @@ switch (input.param.FermTypeP) {
      read(paramtop, "GFMax", input.param.GFMax);
 
      read(paramtop, "nrow", input.param.nrow);
-     read(paramtop, "boundary", input.param.boundary);
      read(paramtop, "t_srce", input.param.t_srce);
    }
    catch (const string& e) 
@@ -248,8 +151,6 @@ switch (input.param.FermTypeP) {
    try
    {
      read(inputtop, "Cfg", input.cfg);
-     read(inputtop, "Prop", input.prop);
-     
    }
    catch (const string& e) 
    {
@@ -282,9 +183,7 @@ switch (input.param.FermTypeP) {
    // Put the machine into a known state
    Chroma::initialize(&argc, &argv);
 
-#if 1
    linkageHack();
-#endif
    // Input parameter structure
    Propagator_input_t  input;
 
@@ -362,37 +261,9 @@ switch (input.param.FermTypeP) {
   typedef multi1d<LatticeColorMatrix>  P;
   typedef multi1d<LatticeColorMatrix>  Q;
 
-  // Create a fermion state
-  Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(input.param.boundary));
-
   //
   // Initialize fermion action
   //
-
-#if 0
-  // I know this is an ugly hack from my youth
-#if defined(ASQTAD_OPTION)
-  QDPIO::cout << "Using ASQTAD inverter " <<  endl;
-  write(xml_out, "Action", "ASQTAD");
-  AsqtadFermActParams asq_param;
-  asq_param.Mass = input.param.Mass;
-  asq_param.u0   = input.param.u0;
-  AsqtadFermAct S_f(cfs, asq_param);
-#else
-
-#if defined(HISQ_OPTION)
-  QDPIO::cout << "Using HISQ inverter " <<  endl;
-  write(xml_out, "Action", "HISQ");
-  HisqFermActParams hisq_param;
-  hisq_param.Mass = input.param.Mass;
-  hisq_param.u0   = input.param.u0;
-  HisqFermAct S_f(cfs, hisq_param);
-#else
-#error Need to chose HISQ or ASQTAD
-#endif
-
-#endif
-#else
 
   XMLReader fermact_reader ;
   // Make a memory 'input stream' out of the XML, so we can open an
@@ -414,7 +285,8 @@ switch (input.param.FermTypeP) {
   Handle< StaggeredTypeFermAct< T,P,Q> > fermact(TheStagTypeFermActFactory::Instance().createObject(input.param.fermact.id, fermact_reader, input.param.fermact.path));
   // Cast of a pointer to a reference?
   StaggeredTypeFermAct<T,P,Q>& S_f= *(fermact);
-#endif
+
+
   // Set up a state for the current u,
   // (compute fat & triple links)
   // Use S_f.createState so that S_f can pass in u0
