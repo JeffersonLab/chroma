@@ -1,4 +1,4 @@
-// $Id: t_propagator_s.cc,v 3.8 2008-03-05 21:50:01 bjoo Exp $
+// $Id: t_propagator_s.cc,v 3.9 2008-03-11 21:02:20 mcneile Exp $
 /*! \file
  *  \brief Main code for propagator generation
  *
@@ -185,7 +185,7 @@ switch (input.param.FermTypeP) {
        // This is a Group XML structure which has 2 members 
        // One is the 'id' which will  be found in the "FermAct" sub-tag
        // One is the root tag of the Group in this case "FermionAction"
-#if 0						\
+#if 1						\
  
        input.param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
@@ -282,7 +282,7 @@ switch (input.param.FermTypeP) {
    // Put the machine into a known state
    Chroma::initialize(&argc, &argv);
 
-#if 0
+#if 1
    linkageHack();
 #endif
    // Input parameter structure
@@ -369,7 +369,7 @@ switch (input.param.FermTypeP) {
   // Initialize fermion action
   //
 
-#if 1
+#if 0
   // I know this is an ugly hack from my youth
 #if defined(ASQTAD_OPTION)
   QDPIO::cout << "Using ASQTAD inverter " <<  endl;
@@ -394,12 +394,22 @@ switch (input.param.FermTypeP) {
 #endif
 #else
 
+  XMLReader fermact_reader ;
   // Make a memory 'input stream' out of the XML, so we can open an
   // XML Reader on it.
+  try{
   std::istringstream is(input.param.fermact.xml);
 
   // Open a reader on the memory stream.
-  XMLReader fermact_reader(is);
+  //  XMLReader fermact_reader(is);
+  fermact_reader.open(is);
+  }
+  catch (...)
+    {
+    QDPIO::cerr << "Error reading action name " << endl;
+    throw;
+    }
+
 
   Handle< StaggeredTypeFermAct< T,P,Q> > fermact(TheStagTypeFermActFactory::Instance().createObject(input.param.fermact.id, fermact_reader, input.param.fermact.path));
   // Cast of a pointer to a reference?
