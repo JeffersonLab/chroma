@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.20 2008-03-07 16:47:11 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.21 2008-03-11 19:42:18 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -1254,7 +1254,9 @@ namespace Chroma
 					QDP_abort(1);
 				}
 			}
-					
+				
+			QDPIO::cout << "Num Ordering = " << num_orderings << endl;
+
       multi1d< multi1d<int> >  perms(num_orderings);
       {
 				multi1d<int> p(N_quarks);
