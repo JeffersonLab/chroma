@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.4 2007-11-09 21:28:01 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.5 2008-03-18 16:59:13 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -430,6 +430,9 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
 								     QIOReadEigenInfo);
 
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
+								     QIOReadRitzPairsLatticeFermion);
+	
 	registered = true;
       }
       return success;
