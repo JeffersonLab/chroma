@@ -1,4 +1,4 @@
-// $Id: spectrum_s.cc,v 3.1 2007-12-08 11:31:08 mcneile Exp $
+// $Id: spectrum_s.cc,v 3.2 2008-03-25 11:02:29 mcneile Exp $
 /*! \file
  * \brief Main code for spectrum measurements
  */
@@ -9,6 +9,20 @@
 using namespace Chroma;
 
 void setup_levelthree(QDP::multi1d<int> nrow, int *argc, char ***argv ) ;
+
+
+
+ bool linkageHack(void)
+{
+  bool foo = true;
+
+  // Inline Measurements
+  foo &= StaggeredTypeFermActsEnv::registerAll();
+  foo &= InlineAggregateEnv::registerAll();
+  foo &= GaugeInitEnv::registerAll();
+
+  return foo;
+}
 
 
 //! Spectrum measurements
@@ -25,6 +39,7 @@ int main(int argc, char **argv)
 
   START_CODE();
 
+  linkageHack();
   QDPIO::cerr << "Staggered measurement code." <<  endl;
 
   XMLReader xml_in ;
