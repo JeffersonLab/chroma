@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.6 2008-02-24 11:34:17 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 3.7 2008-03-25 10:58:34 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -13,6 +13,7 @@
 #include "meas/inline/abs_inline_measurement.h"
 #include "meas/hadron/enum_loops_s.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -47,6 +48,8 @@ namespace Chroma
       bool eight_scalars;               // all scalar meson tastes
       bool eight_rhos;                  // all vector meson tastes
 
+      // choose parameters 
+      GroupXML_t fermact ;
 
       //Parameters for Gauge-fixing
       Real GFAccu;                      // Gauge fixing tolerance 
@@ -67,7 +70,6 @@ namespace Chroma
 
       int src_seperation ;
 
-      multi1d<int> boundary;
       multi1d<int> nrow;
       multi1d<int> t_srce;
 

@@ -199,7 +199,6 @@ namespace Chroma {
     read(paramtop, "eight_scalars", param.eight_scalars);
     read(paramtop, "eight_rhos", param.eight_rhos);
 
-    read(paramtop, "boundary", param.boundary);
     read(paramtop, "t_srce", param.t_srce);
     read(paramtop, "nrow", param.nrow);
     read(paramtop, "sym_shift_oper", param.sym_shift_oper);
@@ -215,6 +214,9 @@ namespace Chroma {
 	  read(paramtop, "binary_name", param.binary_name) ;
 	}
     }
+
+
+    param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
 
 
     read(paramtop, "src_seperation", param.src_seperation);
@@ -264,7 +266,6 @@ namespace Chroma {
     write(xml, "Baryon_vary", param.Baryon_vary);
     write(xml, "disconnected_local", param.disconnected_local);
     write(xml, "disconnected_fuzz", param.disconnected_fuzz);
-    write(xml, "boundary", param.boundary);
     write(xml, "nrow", param.nrow);
     write(xml, "t_srce", param.t_srce);
     write(xml, "volume_source",param.volume_source);
@@ -279,19 +280,18 @@ namespace Chroma {
 	    InlineStaggeredSpectrumParams::Quark_Prop_t& input) {
     XMLReader inputtop(xml, path);
 
-    //    read(inputtop, "prop_inversion", input.prop_param);
-    read(inputtop, "Mass", input.Mass);
-    read(inputtop, "u0", input.u0);
-//    input.invParam.invType = CG_INVERTER;   
-    read(inputtop, "RsdCG", input.invParam.RsdCG);
-    read(inputtop, "MaxCG", input.invParam.MaxCG);
-    if( inputtop.count("MaxCGRestart") > 0 ) {
-      read(inputtop, "MaxCGRestart", input.invParam.MaxCGRestart);
+
+    //    read(inputtop, "RsdCG", input.invParam.RsdCG);
+    //  read(inputtop, "MaxCG", input.invParam.MaxCG);
+    read(inputtop, "invParam", input.invParam); // inverter parameters
+
+
+    if( inputtop.count("invParam/MaxCGRestart") > 0 ) {
+      read(inputtop, "invParam/MaxCGRestart", input.invParam.MaxCGRestart);
     }
     else {
       input.invParam.MaxCGRestart = 0 ; 
     }
-
 
   }
 
@@ -792,7 +792,8 @@ namespace Chroma {
     src_seperation     = params.param.src_seperation;     // sep of dilute srcs
     t_length           = params.param.nrow[j_decay];      // length of t dir
     Real RsdCG         = params.prop_param.invParam.RsdCG;// CG residual
-    Real Mass          = params.prop_param.Mass;          // fermion mass
+    //    Real Mass          = params.prop_param.Mass;          // fermion mass
+    Real Mass ; 
     int  fuzz_width    = params.param.fuzz_width;         // fuzzing width
     int  t_source      = params.param.t_srce[j_decay];    // source t coord
 
@@ -828,7 +829,9 @@ namespace Chroma {
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
 
+#if 0 
     // Create a fermion state
+    // boundary has been deleted
     Handle< CreateFermState<T,P,Q> > cfs(new CreateSimpleFermState<T,P,Q>(params.param.boundary));
 
     // Initialize fermion action
@@ -836,6 +839,44 @@ namespace Chroma {
     asq_param.Mass = params.prop_param.Mass;
     asq_param.u0   = params.prop_param.u0;
     AsqtadFermAct S_f(cfs, asq_param);
+    Handle< FermState<T,P,Q> > state(S_f.createState(u));
+#endif
+
+    //
+    // Initialize fermion action
+    //
+
+    XMLReader fermact_reader ;
+    // Make a memory 'input stream' out of the XML, so we can open an
+    // XML Reader on it.
+    try{
+      std::istringstream is(params.param.fermact.xml);
+
+      // Open a reader on the memory stream.
+      //  XMLReader fermact_reader(is);
+      fermact_reader.open(is);
+    }
+    catch (...)
+      {
+	QDPIO::cerr << "Error reading action name " << endl;
+	throw;
+      }
+
+    Handle< StaggeredTypeFermAct< T,P,Q> > fermact(
+TheStagTypeFermActFactory::Instance().createObject(params.param.fermact.id, 
+fermact_reader, 
+params.param.fermact.path));
+    // Cast of a pointer to a reference?
+    StaggeredTypeFermAct<T,P,Q>& S_f= *(fermact);
+
+    cout <<  "DEBUG-DEBUG quark mass = "  << S_f.getQuarkMass() << "\n" ; 
+    Mass = S_f.getQuarkMass() ;
+    params.prop_param.Mass = S_f.getQuarkMass() ;
+
+    // Set up a state for the current u,
+    // (compute fat & triple links)
+    // Use S_f.createState so that S_f can pass in u0
+
     Handle< FermState<T,P,Q> > state(S_f.createState(u));
 
     // Jiggery-pokery to turn a CG struct into a GroupXML_t for the qprops
