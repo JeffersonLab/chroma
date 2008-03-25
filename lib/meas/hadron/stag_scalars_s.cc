@@ -1,13 +1,15 @@
 /*! File: stag_scalars_s.cc 
  *
- * The routines in this file compute all 16 staggered scalars.
- * 
- * BEWARE: These routines ASSUME that the pion propagators have been
- * calculated in the Coulomb (or other spatially fixed) gauge.
- * It is not gauge invariant. It could be made to be so by adding some
- * parallel transport, however folklore claims that increases noise
+ * The routines in this file compute eight  1xTASTE and eight gamma3xTASTE
+ * (gamma_txTASTE)
+ * staggered scalars.
+ * The latter may be exotic and the former may be redundant. Run it if you 
+ * want. Your call.
  *
- * YOU HAVE BEEN WARNED.
+ * comments added to elucidate what operators are being computed
+ * for consistency we keep the same crazy indexing, and for now the same 
+ * XML tags. This whole file might be redundant.
+ *
  */
 
 #include "chromabase.h"
@@ -122,6 +124,7 @@ namespace Chroma {
     int mu, nu, rho;  
 
     // Taste singlet scalar (connected correlator)
+    //  1x1
     corr_fn_s = - StagPhases::alpha(1)*StagPhases::beta(0)*trace(adj(quark_props[0])*quark_props[0]);
 
     // Slice Sum
@@ -134,6 +137,8 @@ namespace Chroma {
     multi1d<int> delta(Nd);
 
     // One link spatial scalars.
+    // 1xgamma0, 1xgamma1, 1xgamma2
+
     for(mu=0; mu<Nd-1; mu++) {
  
       delta = 0;
@@ -146,13 +151,17 @@ namespace Chroma {
       sca_index++;
     }
     
-    // One link temporal
+    // zero link gamma3 operator
+    // gamma3xgamma3
+
     corr_fn_s = -  StagPhases::beta(0)*StagPhases::alpha(1)*StagPhases::alpha(3)*trace(adj(quark_props[0])*quark_props[0]);
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
 
     sca_index++;
 
     // Two link spatial
+    // 1xgamma0gamma1, 1xgamma0gamm2, 1xgamma1gamma2
+
     for(mu=0; mu<Nd-1; mu++) { 
       for(nu=mu+1; nu <Nd-1; nu++) { 
 	delta = 0;
@@ -168,7 +177,8 @@ namespace Chroma {
       }
     }
 
-    // Two link temporal
+    // one link gamma3 operators
+    // gamma3xgamma0gamma3, gamma3xgamma1gamma3, gamma3xgamma2gamma3
     for(mu=0; mu<Nd-1; mu++) { 
       delta = 0;
       delta[mu] = 1;
@@ -182,7 +192,10 @@ namespace Chroma {
       sca_index++;
     }
 
-    // Three link spatial
+    // Three link spatial scalar
+    // despite the loops, there can be only one
+    // 1xgamma3gamma5
+
     for(mu=0; mu<Nd-1; mu++) { 
       for(nu=mu+1; nu <Nd-1; nu++) { 
 	for(rho=nu+1; rho < Nd-1; rho++) { 
@@ -202,7 +215,9 @@ namespace Chroma {
       }
     }
   
-    // Three link temporal 
+    // two-link gamma3 operators
+    // gamma3xgamma2gamma5, gamma3xgamma1gamma5, gamma3xgamma0gamma5
+    // 
     for(mu=0; mu<Nd-1; mu++) { 
       for(nu=mu+1; nu <Nd-1; nu++) { 
 
@@ -219,7 +234,9 @@ namespace Chroma {
       }
     }
 
-    // Four link temporal
+    // three-link gamma3 operator
+    // gamma3xgamma5
+
     delta = 0;
     delta[0] = delta[1] = delta[2] = 1;
 
