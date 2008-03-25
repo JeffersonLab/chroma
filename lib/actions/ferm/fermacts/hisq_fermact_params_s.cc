@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_params_s.cc,v 1.1 2007-05-09 12:43:20 mcneile Exp $
+// $Id: hisq_fermact_params_s.cc,v 1.2 2008-03-25 10:53:36 mcneile Exp $
 /*! \file
  *  \brief Hisq fermion action parameters
  */
@@ -15,6 +15,7 @@ namespace Chroma
   {
     Mass = 0.0;
     u0  = 1.0;
+    epsilon = 0.0 ;
   }
 
 
@@ -26,7 +27,16 @@ namespace Chroma
     // Read the stuff for the action
     read(paramtop, "Mass", Mass);
     read(paramtop, "u0", u0);
-    
+
+    if( paramtop.count("epsilon") > 0 ) {
+      read(paramtop, "epsilon", epsilon);
+    }    
+    else
+      {
+	epsilon = 0.0 ;
+      }
+
+
     //  Read optional anisoParam.
   }
 
@@ -44,6 +54,7 @@ namespace Chroma
 
     write(xml, "Mass", param.Mass);
     write(xml, "u0", param.u0);
+    write(xml, "epsilon", param.epsilon);
     pop(xml);
   }
 }

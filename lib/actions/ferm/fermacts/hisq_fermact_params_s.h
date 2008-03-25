@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hisq_fermact_params_s.h,v 1.1 2007-05-09 12:43:20 mcneile Exp $
+// $Id: hisq_fermact_params_s.h,v 1.2 2008-03-25 10:53:36 mcneile Exp $
 /*! \file
  *  \brief Hisq fermion action parameters
  */
@@ -21,6 +21,7 @@ namespace Chroma
     
     Real Mass;
     Real u0 ; // normally u0 = 1 for Hisq, leave in for now
+    Real epsilon ; // to improve the dispersion relation
   };
 
 
