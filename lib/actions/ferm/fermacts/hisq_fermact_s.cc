@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_s.cc,v 1.6 2008-02-17 11:42:16 mcneile Exp $
+// $Id: hisq_fermact_s.cc,v 1.7 2008-03-25 10:51:19 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */
@@ -148,7 +148,7 @@ namespace Chroma
     multi1d<LatticeColorMatrix> u_fat_I(Nd);
     multi1d<LatticeColorMatrix> u_triple(Nd);
 
-    cout << "HISQ setting up the fat links\n"  ;
+     QDPIO::cout << "HISQ setting up the fat links\n"  ;
 
     // First put in the BC
     u_with_phases = u_;
@@ -157,7 +157,7 @@ namespace Chroma
 #if 0 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
     fat7_param pp ; 
-    cout << "HISQ hacked to do ASQTAD" << endl ; 
+     QDPIO::cout << "HISQ hacked to do ASQTAD" << endl ; 
     pp.c_1l = (Real)(5) / (Real)(8);
     pp.c_3l = (Real)(-1) / ((Real)(16));
     pp.c_5l = - pp.c_3l / ((Real)(4));
@@ -168,11 +168,16 @@ namespace Chroma
     Triple_Links(u_with_phases, u_triple, one);
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
 #endif
+    Real ep = param.epsilon ; 
+    QDPIO::cout << "HISQ epsilon = " << ep << "\n"; ;
+    QDPIO::cout << "HISQ Mass = "    <<  param.Mass << "\n"; ;
+    QDPIO::cout << "HISQ u0 = "      <<  param.u0 << "\n"; ;
 
     // Create Fat7 links. This uses the same
     // coefficients as Asqtad, but with zero
     // Lepage term
     fat7_param pp ; 
+
 
     pp.c_1l = (Real)(1) / (Real)(8);   // lepage contributes here
     pp.c_3l = (Real)(1) / ((Real)(16));
@@ -188,7 +193,7 @@ namespace Chroma
    Real  JacAccu = 0.00000000001 ;
    int JacMax = 100 ; 
    LatticeColorMatrix  w ;
-   cout << "SU3 polar projection Accuracy " << JacAccu << " max iters = " <<  JacMax << endl;
+   QDPIO::cout << "SU3 polar projection Accuracy " << JacAccu << " max iters = " <<  JacMax << endl;
 
    for(int i = 0; i < Nd; i++) 
      {
