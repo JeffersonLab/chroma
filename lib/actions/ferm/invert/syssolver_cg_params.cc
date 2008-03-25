@@ -1,4 +1,4 @@
-// $Id: syssolver_cg_params.cc,v 3.4 2007-09-27 14:47:53 kostas Exp $
+// $Id: syssolver_cg_params.cc,v 3.5 2008-03-25 10:43:44 mcneile Exp $
 /*! \file
  *  \brief Params of CG inverter
  */
@@ -15,7 +15,7 @@ namespace Chroma
 
     read(paramtop, "RsdCG", param.RsdCG);
     read(paramtop, "MaxCG", param.MaxCG);
-    
+
     if( paramtop.count("RsdCGRestart") > 0 ) { 
       read(paramtop, "RsdCGRestart", param.RsdCGRestart);
     }
@@ -29,6 +29,17 @@ namespace Chroma
     else {
       param.MaxCGRestart = param.MaxCG;
     }
+
+
+    int aa = paramtop.count("MinCG") ;
+    if( aa  > 0 ) { 
+      read(paramtop,"MinCG",param.MinCG);
+    }
+    else {
+      param.MinCG = 0 ; 
+    }
+    
+
   }
 
   // Writer parameters
@@ -41,6 +52,7 @@ namespace Chroma
     write(xml, "invType", "CG_INVERTER");
     write(xml, "RsdCG", param.RsdCG);
     write(xml, "MaxCG", param.MaxCG);
+    write(xml, "MinCG", param.MinCG);
     write(xml, "RsdCGRestart", param.RsdCGRestart);
     write(xml, "MaxCGRestart", param.MaxCGRestart);
     pop(xml);
@@ -51,6 +63,7 @@ namespace Chroma
   {
     RsdCG = zero;
     MaxCG = 0;
+    MinCG = 0;
     RsdCGRestart = RsdCG;
     MaxCGRestart = MaxCG;
   }
