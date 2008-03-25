@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.ini.xml,v 3.2 2007-04-11 22:10:01 egregory Exp $
+; $Id: spectrum_s.ini.xml,v 3.3 2008-03-25 11:16:02 mcneile Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -45,9 +45,21 @@
 <OrPara>1.8</OrPara>
 <GFMax>500</GFMax>
 
+       <FermionAction>
+          <FermAct>ASQTAD</FermAct>
+          <Mass>0.1</Mass>
+<u0>0.463032</u0>
+          <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 1</boundary>
+            </FermionBC>
+          </FermState>
+        </FermionAction>
+
 <j_decay>3</j_decay>
  <nrow>4 4 4 4</nrow>
- <boundary>1 1 1 1</boundary>
 <t_srce> 0 0 0 0 </t_srce>
 </Param>
 
@@ -61,10 +73,11 @@
 </Cfg>
 
 <Inversion>
-<Mass>0.1</Mass>
-<u0>0.463032</u0>
-<RsdCG>0.00001</RsdCG>
-<MaxCG>3000</MaxCG>
+<invParam>
+    <RsdCG>1.0e-5</RsdCG>
+     <MinCG>40</MinCG>
+    <MaxCG>1000</MaxCG>
+</invParam>
 </Inversion>
 
 </spectrum_s>
