@@ -1,4 +1,4 @@
-// $Id: invcg1.cc,v 3.4 2007-02-22 21:11:46 bjoo Exp $
+// $Id: invcg1.cc,v 3.5 2008-03-25 10:46:51 mcneile Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -71,7 +71,7 @@ InvCG1_a(const LinearOperator<T>& A,
 	 const T& chi,
 	 T& psi,
 	 const Real& RsdCG, 
-	 int MaxCG)
+	 int MaxCG, int MinCG=0)
 {
   START_CODE();
 
@@ -177,7 +177,7 @@ InvCG1_a(const LinearOperator<T>& A,
     QDPIO::cout << "InvCG1: k = " << k << "  cp = " << cp << endl;
 #endif
 
-    if ( toBool(cp  <=  rsd_sq) )
+    if ( toBool(cp  <=  rsd_sq) && (toBool(MinCG <= 0 ) || toBool( k >= MinCG  )))
     {
       res.n_count = k;
       res.resid   = sqrt(cp);
@@ -217,9 +217,9 @@ InvCG1(const LinearOperator<LatticeFermion>& A,
        const LatticeFermion& chi,
        LatticeFermion& psi,
        const Real& RsdCG, 
-       int MaxCG)
+       int MaxCG,int MinCG)
 {
-  return InvCG1_a(A, chi, psi, RsdCG, MaxCG);
+  return InvCG1_a(A, chi, psi, RsdCG, MaxCG,MinCG);
 }
 
 template<>
@@ -228,9 +228,9 @@ InvCG1(const LinearOperator<LatticeStaggeredFermion>& A,
        const LatticeStaggeredFermion& chi,
        LatticeStaggeredFermion& psi,
        const Real& RsdCG, 
-       int MaxCG)
+       int MaxCG,int MinCG)
 {
-  return InvCG1_a(A, chi, psi, RsdCG, MaxCG);
+  return InvCG1_a(A, chi, psi, RsdCG, MaxCG,MinCG);
 }
 
 }  // end namespace Chroma

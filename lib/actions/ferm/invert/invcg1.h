@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invcg1.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: invcg1.h,v 3.2 2008-03-25 10:46:51 mcneile Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -71,7 +71,7 @@ InvCG1(const LinearOperator<T>& A,
        const T& chi,
        T& psi,
        const Real& RsdCG, 
-       int MaxCG);
+       int MaxCG, int MinCG=0);
 
 }  // end namespace Chroma
 
