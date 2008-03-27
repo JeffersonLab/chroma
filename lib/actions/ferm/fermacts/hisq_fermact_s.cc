@@ -1,4 +1,4 @@
-// $Id: hisq_fermact_s.cc,v 1.7 2008-03-25 10:51:19 mcneile Exp $
+// $Id: hisq_fermact_s.cc,v 1.8 2008-03-27 10:17:34 mcneile Exp $
 /*! \file
  *  \brief Hisq staggered fermion action
  */
@@ -10,10 +10,8 @@ By HPQCD Collaboration and UKQCD Collaboration (E. Follana et al.). Oct 20\06. 2
 Published in Phys.Rev.D75:054502,2007.
 e-Print: hep-lat/0610092
 
-Plan
+Note
 -----
-Implement the simplest version of Hisq using epsilon = 0 in
-equation 38.
 
 My current understanding is that Hisq and Asqtad then
 differ by the way the fat links are constructed.
@@ -23,9 +21,12 @@ HISQ to chroma. I want to try not do too much cut and pasting
 of Asqtad code, so that the chroma class police
 are kept happy. Reuse and all that!
 
-After talking to Kit Wong, the epsilon <> 0 case 
-can be covered by modifying the coefficients here.
 
+The correction to the Naik term, known as epsilon
+(equation 24 in the above paper) is included now as an external argument.
+This is the way that Christine wanted it done. I assume that 
+epsilon will be computed to one loop order in perturbation
+theory (one day).
 */
 
 #include "chromabase.h"
@@ -169,9 +170,12 @@ namespace Chroma
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
 #endif
     Real ep = param.epsilon ; 
+#if 0
     QDPIO::cout << "HISQ epsilon = " << ep << "\n"; ;
     QDPIO::cout << "HISQ Mass = "    <<  param.Mass << "\n"; ;
     QDPIO::cout << "HISQ u0 = "      <<  param.u0 << "\n"; ;
+#endif
+    QDPIO::cout << "Setting up HISQ inverter\n"; ;
 
     // Create Fat7 links. This uses the same
     // coefficients as Asqtad, but with zero
@@ -179,7 +183,7 @@ namespace Chroma
     fat7_param pp ; 
 
 
-    pp.c_1l = (Real)(1) / (Real)(8);   // lepage contributes here
+    pp.c_1l = (Real)(1)/(Real)(8) ;   // lepage contributes here
     pp.c_3l = (Real)(1) / ((Real)(16));
     pp.c_5l = pp.c_3l / ((Real)(4));    // 1/64
     pp.c_7l = pp.c_5l / ((Real)(6));    // -1/384
@@ -202,15 +206,18 @@ namespace Chroma
      }
 
    // with HISQ the three links are fat
-    Real one = (Real) 1.0 ; 
-    Triple_Links(u_fat_I, u_triple, one);
+   Real UU0 = (Real) 1.0 ;  // tadpole 
+   Real c_3 ; 
+   c_3 = (Real)(-1 - ep) / (Real)(24);
+   Triple_Links(u_fat_I, u_triple, UU0, c_3);
+   //   Triple_Links(u_fat_I, u_triple, UU0);
 
     // fatten again with different coefficient of fat term
-    pp.c_1l = (Real)(1)  ; 
-    pp.c_3l = (Real)(1) / ((Real)(16)); //  -0.0625 or -1/16
-    pp.c_5l = pp.c_3l / ((Real)(4));   //   0.01562500 or 1/64
-    pp.c_7l = pp.c_5l / ((Real)(6));   // .00260416666 or 1/384
-    pp.c_Lepage = -2.0 * pp.c_3l ;  // double Lepage term  -1/8
+   pp.c_1l = (Real)(8 + ep) / (Real)(8)  ;
+   pp.c_3l = (Real)(1) / ((Real)(16)); //  -0.0625 or -1/16
+   pp.c_5l = pp.c_3l / ((Real)(4));   //   0.01562500 or 1/64
+   pp.c_7l = pp.c_5l / ((Real)(6));   // .00260416666 or 1/384
+   pp.c_Lepage = -2.0 * pp.c_3l ;  // double Lepage term  -1/8
 
     Fat7_Links(u_fat_I, u_fat, pp);
 
