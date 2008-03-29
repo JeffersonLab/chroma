@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg_array.cc,v 1.2 2008-01-13 22:43:54 edwards Exp $
+// $Id: syssolver_linop_eigcg_array.cc,v 1.3 2008-03-29 03:41:03 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -168,7 +168,7 @@ namespace Chroma
 					     evec, 
 					     0, //Eigenvectors to keep
 					     invParam.Nmax,  // Max vectors to work with
-					     invParam.RsdCGRestart, // CG residual.... Empirical restart need a param here...
+					     invParam.RsdCGRestart[0], // CG residual.... Empirical restart need a param here...
 					     invParam.MaxCG // Max CG itterations
 	    ); 
 	}

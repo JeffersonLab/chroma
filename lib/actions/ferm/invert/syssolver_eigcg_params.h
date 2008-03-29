@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_eigcg_params.h,v 1.6 2007-10-08 20:44:18 edwards Exp $
+// $Id: syssolver_eigcg_params.h,v 1.7 2008-03-29 03:41:03 kostas Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -27,7 +27,7 @@ namespace Chroma
     int   Nmax     ; /*!< number of stored vectors */
     int   Neig_max ; /*!< maximum number of eigenvectors to be refined */
 
-    Real  RsdCGRestart ; /*!< CG residual for restart. */
+    multi1d<Real>  RsdCGRestart ; /*!< CG residual for restart. */
     
     int   vPrecCGvecs  ; /*!< number of vectors for preconditioned CG (if <=0 do regular CG) */
     int   vPrecCGvecStart ; /*!< first vector used inpreconditioned CG  */

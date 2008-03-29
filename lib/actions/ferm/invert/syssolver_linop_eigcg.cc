@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 1.9 2007-11-06 22:04:15 kostas Exp $
+// $Id: syssolver_linop_eigcg.cc,v 1.10 2008-03-29 03:41:03 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -175,7 +175,7 @@ namespace Chroma
 					evec, 
 					0, //Eigenvectors to keep
 					invParam.Nmax,  // Max vectors to work with
-					invParam.RsdCGRestart, // CG residual.... Empirical restart need a param here...
+					invParam.RsdCGRestart[0], // CG residual.... Empirical restart need a param here...
 					invParam.MaxCG // Max CG itterations
 	    ); 
 	}
@@ -183,34 +183,41 @@ namespace Chroma
 	  res = InvEigCG2Env::vecPrecondCG(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,
 					   invParam.vPrecCGvecStart,
 					   invParam.vPrecCGvecStart+invParam.vPrecCGvecs,
-					   invParam.RsdCG, // CG residual       
+					   invParam.RsdCGRestart[0], // CG residual       
 					   invParam.MaxCG // Max CG itterations    
 	    );
 	res.n_count += n_CG ;
 	n_CG=0 ;
-	QDPIO::cout<<"Restart1: "<<endl ;
-	InvEigCG2Env::InitGuess(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig, n_CG);
-	res.n_count += n_CG ;
-	n_CG = res.n_count ;
-	if(invParam.vPrecCGvecs ==0)
-	  res = InvEigCG2Env::InvEigCG2(MdagM,
-					psi,
-					chi_tmp,
-					lambda,
-					evec,
-					0, //Eigenvectors to keep                             
-					invParam.Nmax,  // Max vectors to work with           
-					invParam.RsdCG, // CG residual....
-					invParam.MaxCG // Max CG itterations             
-	    );
-	else
-	  res= InvEigCG2Env::vecPrecondCG(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,
-					  invParam.vPrecCGvecStart,
-					  invParam.vPrecCGvecStart+invParam.vPrecCGvecs,
-					  invParam.RsdCG, // CG residual             
-					  invParam.MaxCG // Max CG itterations          
-	    );
-	res.n_count += n_CG ;
+	for(int restart(1);restart<=invParam.RsdCGRestart.size();restart++){
+	  Real resid ;
+	  if(restart<invParam.RsdCGRestart.size())
+	    resid = invParam.RsdCGRestart[restart];
+	  else
+	    resid = invParam.RsdCG ;
+	  QDPIO::cout<<"Restart"<<restart<<": "<<endl ;
+	  InvEigCG2Env::InitGuess(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig, n_CG);
+	  res.n_count += n_CG ;
+	  n_CG = res.n_count ;
+	  if(invParam.vPrecCGvecs ==0)
+	    res = InvEigCG2Env::InvEigCG2(MdagM,
+					  psi,
+					  chi_tmp,
+					  lambda,
+					  evec,
+					  0, //Eigenvectors to keep                             
+					  invParam.Nmax,  // Max vectors to work with           
+					  resid, // CG residual....
+					  invParam.MaxCG // Max CG itterations             
+					  );
+	  else
+	    res= InvEigCG2Env::vecPrecondCG(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,
+					    invParam.vPrecCGvecStart,
+					    invParam.vPrecCGvecStart+invParam.vPrecCGvecs,
+					    resid, // CG residual             
+					    invParam.MaxCG // Max CG itterations          
+					    );
+	  res.n_count += n_CG ;
+	}
       }
 
       END_CODE();

@@ -1,4 +1,4 @@
-// $Id: syssolver_eigcg_params.cc,v 1.4 2007-10-05 03:39:34 edwards Exp $
+// $Id: syssolver_eigcg_params.cc,v 1.5 2008-03-29 03:41:03 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
@@ -67,7 +67,8 @@ namespace Chroma
   {
     RsdCG = zero;
     MaxCG = 0;
-    RsdCGRestart = RsdCG;
+    RsdCGRestart.resize(1) ;
+    RsdCGRestart[0] = RsdCG;
     Neig =0 ;
     Neig_max =0 ;
     vPrecCGvecs=0 ;
