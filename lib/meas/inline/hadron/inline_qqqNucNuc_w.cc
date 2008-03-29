@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.5 2006-12-10 01:59:59 edwards Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.6 2008-03-29 04:00:01 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -421,6 +421,13 @@ namespace Chroma
       compute_qqbar(qqbar, qprop[0],qprop[0],phases,t0 );
       write_qqbar(qqbarto, qqbar, phases, "pion",sink_type);
 
+      for(int k(0);k<Nd-1;k++){
+	ostringstream tag ;
+	tag<<"rho_"<<k;
+	compute_qqbar(qqbar, (1<<(k+1)),qprop[0],qprop[0],phases,t0 );
+	write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
+      }
+
       if(params.named_obj.prop_ids.size()==2)
       {
 	compute_qqq(qqq, qprop[0],qprop[0],qprop[1],phases,t0, bc_spec);
@@ -434,6 +441,15 @@ namespace Chroma
 	write_qqbar(qqbarto, qqbar, phases, "kaon",sink_type);
 	compute_qqbar(qqbar, qprop[1],qprop[0],phases,t0 );
 	write_qqbar(qqbarto, qqbar, phases, "kaonbar",sink_type);
+
+	for(int k(0);k<Nd-1;k++){
+	  ostringstream tag ;
+	  tag<<"kaonst_"<<k;
+	  compute_qqbar(qqbar, (1<<(k+1)), qprop[0],qprop[1],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
+	  compute_qqbar(qqbar, (1<<(k+1)), qprop[1],qprop[0],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
+	}
       }
     } 
 
