@@ -1,6 +1,9 @@
-//  $Id: qqbar_w.cc,v 3.1 2007-02-22 21:11:49 bjoo Exp $
+//  $Id: qqbar_w.cc,v 3.2 2008-03-29 03:40:20 kostas Exp $
 //  $Log: qqbar_w.cc,v $
-//  Revision 3.1  2007-02-22 21:11:49  bjoo
+//  Revision 3.2  2008-03-29 03:40:20  kostas
+//  added vector mesons
+//
+//  Revision 3.1  2007/02/22 21:11:49  bjoo
 //  Removed Ordered and Unordered Subsets and Sets. Now just have Subsets and Sets -not Unordered or Ordered - passes regressions with suitable QDP where QDP has SSE disabled
 //
 //  Revision 3.0  2006/04/03 04:59:00  edwards
@@ -143,9 +146,71 @@ void compute_qqbar( multi2d<DPropagator>& qqbar,
   }
     
   QDPIO::cout<<"Finished the qqbar code\n";
+  
+  END_CODE();
+}
+
+ /*** bug work around ***/
+ //New code that allows the vector mesons
+ void compute_qqbar( multi2d<DPropagator>& qqbar,const int gg,
+		     const LatticePropagator& quark_prop_1,
+		     const LatticePropagator& quark_prop_2, 
+		     const SftMom& phases,
+		     int t0)
+ {
+  START_CODE();
+  
+  QDPIO::cout<<"Starting the qqbar code\n";
+
+  // Length of lattice in decay direction
+  Set sft_set(phases.getSet()) ;
+  int length(sft_set.numSubsets());
+  //QDPIO::cout<<"Time length: "<<length<<endl ;
+
+  // Construct the anti-quark propagator from quark_prop_2
+  int G5 = Ns*Ns-1;
+  LatticePropagator anti_quark_prop =  Gamma(G5) * quark_prop_2 * Gamma(G5);
+
+  LatticePropagator quarkloop;
+  LatticeSpinMatrix sm ;
+  LatticeColorMatrix cm ;
+
+  quarkloop = adj(anti_quark_prop)*Gamma(gg) *quark_prop_1 ;
+  LatticeComplex cc;
+  multi2d<DPropagator> foo(phases.numMom(),length);
+  multi2d<DColorMatrix> dcm(phases.numMom(),length);
+
+  for(int s1(0);s1<Ns;s1++)
+    for(int s2(0);s2<Ns;s2++){
+      cm = peekSpin(quarkloop,s1,s2);
+      for(int c1(0);c1<Nc;c1++)
+	for(int c2(0);c2<Nc;c2++){
+	  cc = peekColor(cm,c1,c2);
+	  multi2d<DComplex> fcc(phases.sft(cc));
+	  for (int mom_num(0); mom_num < phases.numMom(); ++mom_num){
+	    for(int t = 0; t < length; ++t){
+	      pokeColor(dcm[mom_num][t],fcc[mom_num][t],c1,c2);
+	    }
+	  }
+	}
+      for (int mom_num(0); mom_num < phases.numMom(); ++mom_num)
+	for(int t = 0; t < length; ++t)
+	  pokeSpin(foo[mom_num][t],dcm[mom_num][t],s1,s2);
+    }
+
+  for (int mom_num(0); mom_num < phases.numMom(); ++mom_num){
+    for(int t = 0; t < length; ++t){
+ // QDPIO::cout<<mom_num<<" "<<t<<" "<<trace(foo[mom_num][t]*Gamma(G5))<<endl;
+      int t_eff = (t - t0 + length) % length;
+      qqbar[mom_num][t_eff]= foo[mom_num][t] ;
+    }
+  }
+    
+  QDPIO::cout<<"Finished the qqbar code with Gamma("<<gg<<")\n";
 
   END_CODE();
 }
+
 
 
 void write_qqbar(QDPFileWriter& to,

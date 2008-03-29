@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qqbar_w.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: qqbar_w.h,v 3.1 2008-03-29 03:40:20 kostas Exp $
 /*! \file
  *  \brief constructs 2 quark propagators contracted at the sink
  */
@@ -34,6 +34,13 @@ namespace Chroma {
  */
 
   void compute_qqbar( multi2d<DPropagator>& qqbar,
+		      const LatticePropagator& quark_prop_1,
+		      const LatticePropagator& quark_prop_2, 
+		      const SftMom& phases,
+		      int t0) ;
+
+  // gamma is the gamma matrix at the sink 
+  void compute_qqbar( multi2d<DPropagator>& qqbar, const int gamma,
 		      const LatticePropagator& quark_prop_1,
 		      const LatticePropagator& quark_prop_2, 
 		      const SftMom& phases,
