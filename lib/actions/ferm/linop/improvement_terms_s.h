@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: improvement_terms_s.h,v 3.2 2007-09-01 23:43:40 uid3790 Exp $
+//  $Id: improvement_terms_s.h,v 3.3 2008-03-29 19:15:36 mcneile Exp $
 /*! \file
  *  \brief Support for Asqtad
  */
@@ -29,6 +29,11 @@ namespace Chroma
 
   /*! \ingroup linop */
   void Triple_Links(multi1d<LatticeColorMatrix>& u, multi1d<LatticeColorMatrix>& u_triple, Real u0);
+
+  void Triple_Links(multi1d<LatticeColorMatrix> & u,
+		    multi1d<LatticeColorMatrix> & ut,
+		    Real u0, Real c_3) ;
+
 
   //! Pass parameters to the fat link code
   /*! \ingroup linop */
