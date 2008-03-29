@@ -1,4 +1,4 @@
-// $Id: syssolver_eigcg_params.cc,v 1.5 2008-03-29 03:41:03 kostas Exp $
+// $Id: syssolver_eigcg_params.cc,v 1.6 2008-03-29 05:02:37 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
@@ -21,7 +21,7 @@ namespace Chroma
       read(paramtop, "RsdCGRestart", param.RsdCGRestart);
     }
     else {
-      param.RsdCGRestart = 33.0*param.RsdCG;
+      param.RsdCGRestart[0] = 33.0*param.RsdCG;
     }
     read(paramtop, "Nmax", param.Nmax);
     read(paramtop, "Neig", param.Neig);
