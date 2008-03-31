@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.10 2008-01-13 22:55:50 edwards Exp $
+// $Id: containers.h,v 1.11 2008-03-31 03:22:03 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -10,6 +10,29 @@ namespace Chroma
 {
   namespace LinAlg
   {
+
+    //--- OPT eigcg space ---//
+    class OptEigInfo{
+    public:
+      int N   ; // vector dimension (large)
+      int ncurEvals ;
+      int lde ;
+      multi1d<Complex> evals ;
+      multi1d<Complex> evecs ;
+      multi1d<Complex> H     ;
+      multi1d<Complex> HU    ;
+      //OptEigInfo(){}
+      void init(int ldh,int lde_, int nn){
+	ncurEvals = 0 ;
+	N=nn;
+	lde = lde_ ;
+	evals.resize(ldh);
+	evecs.resize(lde*ldh);
+	H.resize(ldh*ldh);
+	HU.resize(ldh*ldh);
+      }
+    } ;
+
     //------------------------------------------------------------------------------
     //! Hold vectors
     /*! \ingroup invert */
