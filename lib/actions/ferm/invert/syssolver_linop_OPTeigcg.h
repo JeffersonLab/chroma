@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigcg.h,v 1.1 2008-03-31 03:22:04 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.h,v 1.2 2008-04-01 04:02:28 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -101,29 +101,55 @@ namespace Chroma
 
       //Alliws kanoume copy
       //copy x into XX
-      int i ;
-      const int *tab = (A->subset()).siteTable().slice();
-      int count=0;
-      //can be done with scopy for speed...
-      for(int x=0; x < (A->subset()).numSiteTable(); ++x){
-	i = tab[x] ;
-	for(int s(0);s<Ns;s++)
-	  for(int c(0);c<Nc;c++){
-	    XX.elem(i).elem(s).elem(c) = *(px+count);
-	    count++;
-	  }
+      if((A->subset()).hasOrderedRep()){
+	int count=0 ;
+	//can be done with ccopy for speed...
+	for(int i=s.start(); i <= s.end(); i++)
+	  for(int s(0);s<Ns;s++)
+	    for(int c(0);c<Nc;c++){
+	      XX.elem(i).elem(s).elem(c) = *(px+count);
+	      count++;
+	    }
       }
+      else{
+	int i ;
+	const int *tab = (A->subset()).siteTable().slice();
+	int count=0;
+	for(int x=0; x < (A->subset()).numSiteTable(); ++x){
+	  i = tab[x] ;
+	  for(int s(0);s<Ns;s++)
+	    for(int c(0);c<Nc;c++){
+	      XX.elem(i).elem(s).elem(c) = *(px+count);
+	      count++;
+	    }
+	}
+      }
+
       MdagM(YY,XX,PLUS) ;
-      int count=0;
-      //can be done with scopy for speed...
-      for(int x=0; x < (A->subset()).numSiteTable(); ++x){
-	i = tab[x] ;
-	for(int s(0);s<Ns;s++)
-	  for(int c(0);c<Nc;c++){
-	    *(py+count) = YY.elem(i).elem(s).elem(c) ;
-	    count++;
-	  }
+
+      //copy back..
+      if((A->subset()).hasOrderedRep()){
+	int count=0 ;
+	//can be done with ccopy for speed...
+	for(int i=s.start(); i <= s.end(); i++)
+	  for(int s(0);s<Ns;s++)
+	    for(int c(0);c<Nc;c++){
+	      *(px+count) = XX.elem(i).elem(s).elem(c) ;
+	      count++;
+	    }
       }
+      else{
+	int count=0;
+	for(int x=0; x < (A->subset()).numSiteTable(); ++x){
+	  i = tab[x] ;
+	  for(int s(0);s<Ns;s++)
+	    for(int c(0);c<Nc;c++){
+	      *(py+count) = YY.elem(i).elem(s).elem(c) ;
+	      count++;
+	    }
+	}
+      }
+
       numMatvecs++;
 
     }

@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.1 2008-03-31 03:22:03 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.2 2008-04-01 04:02:28 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -78,11 +78,23 @@ namespace Chroma
 
       LinAlg::OptEigInfo& EigInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(invParam.eigen_id);
 
+      Subset s = A.subset() ;
+
       Complex_C *work=NULL  ;
       Complex_C *V=NULL     ;
       Complex_C *ework=NULL ;
-      Complex_C *X = (Complex_C *) psi; /// EDW THELEI ROBERT...
-      Complex_C *B = (Complex_C *) chi; /// EDW THELEI ROBERT...
+      Complex_C *X ;
+      Complex_C *B ;
+      
+      if(s.hasOrderedRep()){
+	X = (Complex_C *) &psi.elem(s.start()).elem().elem().real();
+	B = (Complex_C *) &chi.elem(s.start()).elem().elem().real();
+      }
+      else{//need to copy
+	//X = allocate space for them
+	//B =  allocate space for them...
+	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
+      }
       Complex_C *evecs = (Complex_C *) &EigInfo.evecs[0] ;
       Complex_C *evals = (Complex_C *) &EigInfo.evals[0] ;
       Complex_C *H  = (Complex_C *) &EigInfo.H[0] ;
@@ -95,6 +107,9 @@ namespace Chroma
 		 invParam.updateRestartTol, invParam.MaxCG, invParam.PrintLevel, 
 		 invParam.Neig, invParam.Nmax, stdout);
       
+      if(!s.hasOrderedRep()){
+	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
+      }
       END_CODE();
 
       return res;
@@ -115,6 +130,8 @@ namespace Chroma
     return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
 
+#if 0
+  //OPT EigCG does not  work with double prec Lattice Fermions
   // LatticeFermionD
   template<>
   SystemSolverResults_t
@@ -123,7 +140,7 @@ namespace Chroma
     return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
 
-#if 0
+
   // Not quite ready yet for these - almost there
   // LatticeStaggeredFermionF
   template<>
