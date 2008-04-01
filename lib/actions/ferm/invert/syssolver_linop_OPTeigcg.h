@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigcg.h,v 1.2 2008-04-01 04:02:28 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.h,v 1.3 2008-04-01 21:16:18 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -16,7 +16,7 @@
 
 #include "actions/ferm/invert/syssolver_linop.h"
 #include "actions/ferm/invert/syssolver_OPTeigcg_params.h"
-//#include "actions/ferm/invert/containers.h"
+#include "actions/ferm/invert/containers.h"
 
 namespace Chroma
 {
@@ -59,8 +59,6 @@ namespace Chroma
 	  int VectorSpaceSize =  Nc*Ns*(A->subset()).numSiteTable();
 	  EigInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
 	}
-	esize = invParam.esize*EigInfo.N ;
-	NcNs = Nc*Ns ;
       }
 
     //! Destructor is automatic
@@ -86,77 +84,6 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
 
   private:
-    //The MatVec Interface
-
-    T XX ;
-    T YY ;
-    
-    void MatrixMatvec(void *x, void *y, void *params) {
-      //Works only in single precision CHROMA
-      RComplex<float> *px = (RComplex<float> *) x;
-      RComplex<float> *py = (RComplex<float> *) y;
-
-      //XX.getF() = (Complex *) x ; //AN DOULEPSEI AUTO NA ME FTUSEIS
-      //YY.getF() = (Complex *) y ; //AN DOULEPSEI AUTO NA ME FTUSEIS
-
-      //Alliws kanoume copy
-      //copy x into XX
-      if((A->subset()).hasOrderedRep()){
-	int count=0 ;
-	//can be done with ccopy for speed...
-	for(int i=s.start(); i <= s.end(); i++)
-	  for(int s(0);s<Ns;s++)
-	    for(int c(0);c<Nc;c++){
-	      XX.elem(i).elem(s).elem(c) = *(px+count);
-	      count++;
-	    }
-      }
-      else{
-	int i ;
-	const int *tab = (A->subset()).siteTable().slice();
-	int count=0;
-	for(int x=0; x < (A->subset()).numSiteTable(); ++x){
-	  i = tab[x] ;
-	  for(int s(0);s<Ns;s++)
-	    for(int c(0);c<Nc;c++){
-	      XX.elem(i).elem(s).elem(c) = *(px+count);
-	      count++;
-	    }
-	}
-      }
-
-      MdagM(YY,XX,PLUS) ;
-
-      //copy back..
-      if((A->subset()).hasOrderedRep()){
-	int count=0 ;
-	//can be done with ccopy for speed...
-	for(int i=s.start(); i <= s.end(); i++)
-	  for(int s(0);s<Ns;s++)
-	    for(int c(0);c<Nc;c++){
-	      *(px+count) = XX.elem(i).elem(s).elem(c) ;
-	      count++;
-	    }
-      }
-      else{
-	int count=0;
-	for(int x=0; x < (A->subset()).numSiteTable(); ++x){
-	  i = tab[x] ;
-	  for(int s(0);s<Ns;s++)
-	    for(int c(0);c<Nc;c++){
-	      *(py+count) = YY.elem(i).elem(s).elem(c) ;
-	      count++;
-	    }
-	}
-      }
-
-      numMatvecs++;
-
-    }
-    
-    int NcNs ; // This is Nc*Ns might help speed up the copy
-      
-    int esize ;
 
     // Hide default constructor
     LinOpSysSolverOptEigCG() {}
@@ -167,6 +94,8 @@ namespace Chroma
   };
 
 } // End namespace
+
+
 
 #endif 
 

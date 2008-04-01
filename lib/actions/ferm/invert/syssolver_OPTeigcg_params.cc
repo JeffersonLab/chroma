@@ -1,9 +1,9 @@
-// $Id: syssolver_OPTeigcg_params.cc,v 1.1 2008-03-31 03:22:03 kostas Exp $
+// $Id: syssolver_OPTeigcg_params.cc,v 1.2 2008-04-01 21:16:18 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
 
-#include "actions/ferm/invert/syssolver_eigcg_params.h"
+#include "actions/ferm/invert/syssolver_OPTeigcg_params.h"
 
 namespace Chroma
 {
@@ -33,7 +33,7 @@ namespace Chroma
     read(paramtop, "eigen_id", param.eigen_id);
     
     if( paramtop.count("restartTol") > 0 ) { 
-      read(paramtop, "restartTol", param.RsdCGRestart);
+      read(paramtop, "restartTol", param.restartTol);
     }
 
     if( paramtop.count("NormAest") > 0 ) { 

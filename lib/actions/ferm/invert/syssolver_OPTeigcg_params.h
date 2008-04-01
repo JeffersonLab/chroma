@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigcg_params.h,v 1.1 2008-03-31 03:22:03 kostas Exp $
+// $Id: syssolver_OPTeigcg_params.h,v 1.2 2008-04-01 21:16:18 kostas Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -22,7 +22,7 @@ namespace Chroma
     
     Real RsdCG ;           /*!< CG residual */
     int  MaxCG ;           /*!< Maximum CG iterations */
-    int  PrintLever ;      /*!< Debugg level */
+    int  PrintLevel ;      /*!< Debugg level */
     int  Neig       ;      /*!< number of eigenvectors to compute  */
     int  Nmax       ;      /*!< number of basis vectors */
     int  esize      ;      /*!< 2 <= esize <= 2*Neig + 1 */ 
