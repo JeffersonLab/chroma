@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.7 2008-04-02 16:45:39 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.8 2008-04-02 17:05:54 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -42,7 +42,7 @@ namespace Chroma
 #endif
 
     //! Name to be used
-    const std::string name("EIG_CG_INVERTER");
+    const std::string name("OPT_EIG_CG_INVERTER");
 
     //! Local registration flag
     static bool registered = false;
