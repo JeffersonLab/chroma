@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.5 2008-04-02 04:08:34 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.6 2008-04-02 12:24:03 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -111,7 +111,7 @@ namespace Chroma
 	}
       }
 
-      arg.MdagM(arg.YY,arg.XX,PLUS) ;
+      *(arg.MdagM)(arg.YY,arg.XX,PLUS) ;
 
       //copy back..
       if(s.hasOrderedRep()){
