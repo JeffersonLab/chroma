@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.8 2008-04-02 17:05:54 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.9 2008-04-02 17:54:15 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -87,14 +87,16 @@ namespace Chroma
       //Alliws kanoume copy
       //copy x into XX
       Subset s = arg.MdagM->subset() ; 
-      int one(1);
-      int VecSize = s.numSiteTable()*Nc*Ns ;
       if(s.hasOrderedRep()){
+	/**
+	int one(1);
+        int VecSize = s.numSiteTable()*Nc*Ns ;
 	BLAS_DCOPY(&VecSize, 
 	       (double *)&arg.XX.elem(s.start()).elem(0).elem(0).real(),
 	       &one,
 	       (double *)x, &one);
-	/**
+	**/
+	/**/
 	int count=0 ;
 	//can be done with ccopy for speed...
 	for(int i=s.start(); i <= s.end(); i++)
@@ -103,7 +105,7 @@ namespace Chroma
 	      arg.XX.elem(i).elem(ss).elem(c)  = *(px+count);
 	      count++;
 	    }
-	**/
+	/**/
       }
       else{
 	int i ;
