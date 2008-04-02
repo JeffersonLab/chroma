@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.11 2008-03-31 03:22:03 kostas Exp $
+// $Id: containers.h,v 1.12 2008-04-02 02:55:58 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -17,7 +17,7 @@ namespace Chroma
       int N   ; // vector dimension (large)
       int ncurEvals ;
       int lde ;
-      multi1d<Complex> evals ;
+      multi1d<Real> evals ;
       multi1d<Complex> evecs ;
       multi1d<Complex> H     ;
       multi1d<Complex> HU    ;
