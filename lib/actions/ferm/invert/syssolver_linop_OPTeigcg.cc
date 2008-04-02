@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.4 2008-04-02 03:16:11 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.5 2008-04-02 04:08:34 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -15,13 +15,6 @@
 #include "actions/ferm/invert/syssolver_linop_OPTeigcg.h"
 #include "containers.h"
 
-extern "C"{
-  void MatrixMatvec(void *x, void *y, void* param){
-    
-    y=x ;
-
-  }
-};
 
 namespace Chroma
 {
@@ -100,7 +93,7 @@ namespace Chroma
 	for(int i=s.start(); i <= s.end(); i++)
 	  for(int ss(0);ss<Ns;ss++)
 	    for(int c(0);c<Nc;c++){
-	      arg.XX.elem(i).elem(ss).elem(c) = *(px+count);
+	      arg.XX.elem(i).elem(ss).elem(c)  = *(px+count);
 	      count++;
 	    }
       }
@@ -186,20 +179,28 @@ namespace Chroma
       float *evals = (float *) &EigInfo.evals[0].elem() ;
       Complex_C *H  = (Complex_C *) &EigInfo.H[0] ;
       Complex_C *HU = (Complex_C *) &EigInfo.HU[0] ;
-
       MatVecArg<T> arg ;
       arg.MdagM = MdagM ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
+      //multi1d<Complex_C> ework(esize);
+      float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
+      float updRestTol = invParam.restartTol.elem().elem().elem().elem();
+      float AnormEst = invParam.NormAest.elem().elem().elem().elem();
       /**
       IncrEigpcg(EigInfo.N, EigInfo.lde, 1, X, B, 
 		 &EigInfo.ncurEvals, EigInfo.evals.size(), 
 		 evecs, evals, H, HU, 
-		 &MatrixMatvec, NULL, (void *)&arg, work, V, esize, 
-		 invParam.esize, invParam.RsdCG, &invParam.restartTol,
-		 invParam.NormAest, invParam.updateRestartTol, 
+		 MatrixMatvec<T>, NULL, (void *)&arg, work, V, 
+		 ework, esize, 
+		 resid, &updRestTol,
+		 AnormEst, invParam.updateRestartTol, 
 		 invParam.MaxCG, invParam.PrintLevel, 
 		 invParam.Neig, invParam.Nmax, stdout);
       **/
+      // The const keywork in operator() prevents invParam from being changed.
+      // For this reason the update Restart Tolerence feature does not work...
+      //invParam.restartTol = updRestTol ;
+
       if(!s.hasOrderedRep()){
 	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
       }
