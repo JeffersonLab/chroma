@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.6 2008-04-02 12:24:03 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.7 2008-04-02 16:45:39 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -75,7 +75,7 @@ namespace Chroma
     template<typename T>
     void MatrixMatvec(void *x, void *y, void *params) {
       
-      const MatVecArg<T> &arg = *((MatVecArg<T> *) params) ;
+      MatVecArg<T> &arg = *((MatVecArg<T> *) params) ;
       
       //Works only in single precision CHROMA
       RComplex<float> *px = (RComplex<float> *) x;
@@ -86,8 +86,15 @@ namespace Chroma
 
       //Alliws kanoume copy
       //copy x into XX
-      Subset s = arg.MdagM->subset() ;
+      Subset s = arg.MdagM->subset() ; 
+      int one(1);
+      int VecSize = s.numSiteTable()*Nc*Ns ;
       if(s.hasOrderedRep()){
+	BLAS_DCOPY(&VecSize, 
+	       (double *)&arg.XX.elem(s.start()).elem(0).elem(0).real(),
+	       &one,
+	       (double *)x, &one);
+	/**
 	int count=0 ;
 	//can be done with ccopy for speed...
 	for(int i=s.start(); i <= s.end(); i++)
@@ -96,6 +103,7 @@ namespace Chroma
 	      arg.XX.elem(i).elem(ss).elem(c)  = *(px+count);
 	      count++;
 	    }
+	**/
       }
       else{
 	int i ;
@@ -110,8 +118,11 @@ namespace Chroma
 	    }
 	}
       }
+      
 
-      *(arg.MdagM)(arg.YY,arg.XX,PLUS) ;
+      (*arg.MdagM)(arg.YY,arg.XX,PLUS) ;
+      //T foo,boo;
+      //*(arg.MdagM)(boo,foo,PLUS) ;
 
       //copy back..
       if(s.hasOrderedRep()){
@@ -186,7 +197,7 @@ namespace Chroma
       float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
       float updRestTol = invParam.restartTol.elem().elem().elem().elem();
       float AnormEst = invParam.NormAest.elem().elem().elem().elem();
-      /**
+      /**/
       IncrEigpcg(EigInfo.N, EigInfo.lde, 1, X, B, 
 		 &EigInfo.ncurEvals, EigInfo.evals.size(), 
 		 evecs, evals, H, HU, 
@@ -196,7 +207,7 @@ namespace Chroma
 		 AnormEst, invParam.updateRestartTol, 
 		 invParam.MaxCG, invParam.PrintLevel, 
 		 invParam.Neig, invParam.Nmax, stdout);
-      **/
+      /**/
       // The const keywork in operator() prevents invParam from being changed.
       // For this reason the update Restart Tolerence feature does not work...
       //invParam.restartTol = updRestTol ;
