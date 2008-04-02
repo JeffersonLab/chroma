@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.3 2008-04-01 21:16:18 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.4 2008-04-02 03:16:11 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -15,6 +15,13 @@
 #include "actions/ferm/invert/syssolver_linop_OPTeigcg.h"
 #include "containers.h"
 
+extern "C"{
+  void MatrixMatvec(void *x, void *y, void* param){
+    
+    y=x ;
+
+  }
+};
 
 namespace Chroma
 {
@@ -176,7 +183,7 @@ namespace Chroma
 	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
       }
       Complex_C *evecs = (Complex_C *) &EigInfo.evecs[0] ;
-      Complex_C *evals = (Complex_C *) &EigInfo.evals[0] ;
+      float *evals = (float *) &EigInfo.evals[0].elem() ;
       Complex_C *H  = (Complex_C *) &EigInfo.H[0] ;
       Complex_C *HU = (Complex_C *) &EigInfo.HU[0] ;
 
@@ -184,12 +191,13 @@ namespace Chroma
       arg.MdagM = MdagM ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
       /**
-      IncrEigpcg(EigInfo.N, EigInfo.lde, 1, X, B, &EigInfo.ncurEvals, EigInfo.evals.size(), 
+      IncrEigpcg(EigInfo.N, EigInfo.lde, 1, X, B, 
+		 &EigInfo.ncurEvals, EigInfo.evals.size(), 
 		 evecs, evals, H, HU, 
-		 MatrixMatvec, NULL, (void *)&arg, work, V, esize, 
+		 &MatrixMatvec, NULL, (void *)&arg, work, V, esize, 
 		 invParam.esize, invParam.RsdCG, &invParam.restartTol,
-		 invParam.NormAest, 
-		 invParam.updateRestartTol, invParam.MaxCG, invParam.PrintLevel, 
+		 invParam.NormAest, invParam.updateRestartTol, 
+		 invParam.MaxCG, invParam.PrintLevel, 
 		 invParam.Neig, invParam.Nmax, stdout);
       **/
       if(!s.hasOrderedRep()){
