@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigcg.h,v 1.3 2008-04-01 21:16:18 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.h,v 1.4 2008-04-03 15:58:43 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -58,6 +58,7 @@ namespace Chroma
 	  int N = Layout::sitesOnNode()*Nc*Ns ;
 	  int VectorSpaceSize =  Nc*Ns*(A->subset()).numSiteTable();
 	  EigInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
+	  EigInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
 	}
       }
 

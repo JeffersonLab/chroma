@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.12 2008-04-02 02:55:58 kostas Exp $
+// $Id: containers.h,v 1.13 2008-04-03 15:58:43 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -17,12 +17,14 @@ namespace Chroma
       int N   ; // vector dimension (large)
       int ncurEvals ;
       int lde ;
+      float restartTol ;
       multi1d<Real> evals ;
       multi1d<Complex> evecs ;
       multi1d<Complex> H     ;
       multi1d<Complex> HU    ;
       //OptEigInfo(){}
       void init(int ldh,int lde_, int nn){
+	restartTol =0 ;
 	ncurEvals = 0 ;
 	N=nn;
 	lde = lde_ ;

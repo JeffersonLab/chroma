@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigcg_params.h,v 1.2 2008-04-01 21:16:18 kostas Exp $
+// $Id: syssolver_OPTeigcg_params.h,v 1.3 2008-04-03 15:58:43 kostas Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -45,7 +45,7 @@ namespace Chroma
     
     bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver*/
     string eigen_id ; /*!< named buffer holding the eigenvectors */
-
+    
     void defaults(){
       RsdCG = 1.0e-8;
       MaxCG = 1000;
@@ -60,6 +60,7 @@ namespace Chroma
       cleanUpEvecs=false;
       eigen_id="NULL";
     }
+
   };
 
 

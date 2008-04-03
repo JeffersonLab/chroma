@@ -1,4 +1,4 @@
-// $Id: syssolver_OPTeigcg_params.cc,v 1.2 2008-04-01 21:16:18 kostas Exp $
+// $Id: syssolver_OPTeigcg_params.cc,v 1.3 2008-04-03 15:58:43 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
@@ -12,6 +12,8 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, SysSolverOptEigCGParams& param)
   {
     XMLReader paramtop(xml, path);
+
+    param.defaults();
 
     read(paramtop, "RsdCG", param.RsdCG);
     read(paramtop, "MaxCG", param.MaxCG);
@@ -37,7 +39,11 @@ namespace Chroma
     }
 
     if( paramtop.count("NormAest") > 0 ) { 
-      read(paramtop, "NormAest", param.esize);
+      read(paramtop, "NormAest", param.NormAest);
+    }
+
+    if( paramtop.count("updateRestartTol") > 0 ) { 
+      read(paramtop, "updateRestartTol", param.updateRestartTol);
     }
 
     read(paramtop, "cleanUpEvecs", param.cleanUpEvecs);
