@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.9 2008-04-02 17:54:15 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.10 2008-04-03 04:27:57 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -171,6 +171,11 @@ namespace Chroma
 
       LinAlg::OptEigInfo& EigInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(invParam.eigen_id);
 
+      QDPIO::cout<<"EigInfo.N= "<<EigInfo.N<<endl ;
+      QDPIO::cout<<"EigInfo.lde= "<<EigInfo.lde<<endl ;
+      QDPIO::cout<<"EigInfo.ldh= "<<EigInfo.evals.size()<<endl ;
+      QDPIO::cout<<"EigInfo.ncurEvals= "<<EigInfo.ncurEvals<<endl ;
+
       Subset s = A.subset() ;
 
       Complex_C *work=NULL  ;
@@ -186,7 +191,8 @@ namespace Chroma
       else{//need to copy
 	//X = allocate space for them
 	//B =  allocate space for them...
-	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
+	QDPIO::cout<<"OPPS! I have not implemented OPT_EigCG for Linops with non contigius subset\n";
+	exit(1);
       }
       Complex_C *evecs = (Complex_C *) &EigInfo.evecs[0] ;
       float *evals = (float *) &EigInfo.evals[0].elem() ;
