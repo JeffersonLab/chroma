@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.11 2008-04-03 15:58:43 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.12 2008-04-04 02:23:15 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -166,6 +166,8 @@ namespace Chroma
 				    const SysSolverOptEigCGParams& invParam)
     {
       START_CODE();
+      T chi_tmp;	
+      A(chi_tmp, chi, MINUS);
 
       SystemSolverResults_t res;  // initialized by a constructor
 
@@ -187,7 +189,7 @@ namespace Chroma
 
       if(s.hasOrderedRep()){
 	X = (Complex_C *) &psi.elem(s.start()).elem(0).elem(0).real();
-	B = (Complex_C *) &chi.elem(s.start()).elem(0).elem(0).real();
+	B = (Complex_C *) &chi_tmp.elem(s.start()).elem(0).elem(0).real();
       }
       else{//need to copy
 	//X = allocate space for them
@@ -207,8 +209,8 @@ namespace Chroma
       float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
       float AnormEst = invParam.NormAest.elem().elem().elem().elem();
       /**/
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  initial guess  : "<<sqrt(norm2(psi))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs             : "<<sqrt(norm2(chi))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  initial guess  : "<<sqrt(norm2(psi,s))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs             : "<<sqrt(norm2(chi_tmp,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: AnormEst : "<<AnormEst<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: invParam.updateRestartTol : "<<invParam.updateRestartTol<<endl ;
       
@@ -231,12 +233,13 @@ namespace Chroma
 
       LatticeFermion tt;
       (*MdagM)(tt,psi,PLUS);
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi_tmp,s))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi_tmp,s))<<endl ;
       printf("OPT_EICG_SYSSOLVER: solution pointer        : %d \n",X);
       printf("OPT_EICG_SYSSOLVER: rhs pointer             : %d \n",B);
-      
+     
+       
       for(int i(0);i<EigInfo.ncurEvals;i++)
 	QDPIO::cout<<"OPT_EICG_SYSSOLVER: eval("<<i<<")= "<<EigInfo.evals[i]<<endl ;
 
