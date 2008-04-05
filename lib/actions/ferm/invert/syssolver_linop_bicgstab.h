@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_bicgstab.h,v 3.1 2007-05-01 12:47:24 bjoo Exp $
+// $Id: syssolver_linop_bicgstab.h,v 3.2 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by BICGSTAB
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! BICGSTAB system solver namespace
   namespace LinOpSysSolverBiCGStabEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

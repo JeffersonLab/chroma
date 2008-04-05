@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_cg_array.h,v 3.5 2007-03-05 19:36:32 bjoo Exp $
+// $Id: syssolver_mdagm_cg_array.h,v 3.6 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! CG2 system solver namespace
   namespace MdagMSysSolverCGArrayEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

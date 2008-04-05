@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg_timing.h,v 3.3 2007-03-05 19:36:32 bjoo Exp $
+// $Id: syssolver_linop_cg_timing.h,v 3.4 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! CG system solver namespace
   namespace LinOpSysSolverCGTimingEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

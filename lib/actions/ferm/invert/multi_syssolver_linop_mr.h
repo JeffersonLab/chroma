@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_linop_mr.h,v 1.1 2007-04-11 03:41:36 edwards Exp $
+// $Id: multi_syssolver_linop_mr.h,v 1.2 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a (M+shift)*psi=chi linear system by MR
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! MR system solver namespace
   namespace LinOpMultiSysSolverMREnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

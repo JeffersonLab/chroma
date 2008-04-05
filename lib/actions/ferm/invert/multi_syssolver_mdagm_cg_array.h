@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_cg_array.h,v 3.3 2007-02-22 21:11:46 bjoo Exp $
+// $Id: multi_syssolver_mdagm_cg_array.h,v 3.4 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by multi-shift CG
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! CG system solver namespace
   namespace MdagMMultiSysSolverCGArrayEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

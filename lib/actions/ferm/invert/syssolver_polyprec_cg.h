@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_polyprec_cg.h,v 3.3 2007-02-22 21:11:46 bjoo Exp $
+// $Id: syssolver_polyprec_cg.h,v 3.4 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a PolyPrec*psi=chi linear system by CG1
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! CG system solver namespace
   namespace PolyPrecSysSolverCGEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_cg_timing.h,v 3.3 2007-03-05 19:36:32 bjoo Exp $
+// $Id: syssolver_mdagm_cg_timing.h,v 3.4 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -21,9 +21,6 @@ namespace Chroma
   //! CG2 system solver namespace
   namespace MdagMSysSolverCGTimingsEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

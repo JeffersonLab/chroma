@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg_array.h,v 3.5 2007-03-05 19:36:31 bjoo Exp $
+// $Id: syssolver_linop_cg_array.h,v 3.6 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -22,9 +22,6 @@ namespace Chroma
   //! CG1 system solver namespace
   namespace LinOpSysSolverCGArrayEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

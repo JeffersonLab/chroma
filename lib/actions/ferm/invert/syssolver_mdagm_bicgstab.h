@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_bicgstab.h,v 3.1 2007-05-01 14:39:13 bjoo Exp $
+// $Id: syssolver_mdagm_bicgstab.h,v 3.2 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -24,9 +24,6 @@ namespace Chroma
   //! BiCGStab system solver namespace
   namespace MdagMSysSolverBiCGStabEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }

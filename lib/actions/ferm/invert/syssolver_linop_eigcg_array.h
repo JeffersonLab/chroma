@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg_array.h,v 1.4 2008-01-13 22:59:19 edwards Exp $
+// $Id: syssolver_linop_eigcg_array.h,v 1.5 2008-04-05 19:04:38 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -24,9 +24,6 @@ namespace Chroma
   //! Eigenvector accelerated CG system solver namespace
   namespace LinOpSysSolverEigCGArrayEnv
   {
-    //! Name to be used
-    extern const std::string name;
-
     //! Register the syssolver
     bool registerAll();
   }
