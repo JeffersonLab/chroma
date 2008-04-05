@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.14 2008-04-05 04:10:17 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.15 2008-04-05 13:45:16 edwards Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -234,7 +234,7 @@ namespace Chroma
       /* Update the restartTol in the EigInfo function */
       EigInfo.restartTol = restartTol;
 
-      LatticeFermion tt;
+      T tt;
       (*MdagM)(tt,psi,PLUS);
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi_tmp,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
