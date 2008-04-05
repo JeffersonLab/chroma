@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.231 2008-04-03 15:58:39 kostas Exp $
+# $Id: Makefile.in,v 3.232 2008-04-05 19:02:55 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -73,38 +73,52 @@ POST_UNINSTALL = :
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bgld_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_altivecf_solver.h
 
-@BUILD_CG_DWF_TRUE@am__append_11 = actions/ferm/qprop/avp_inverter_interface.cc
-@BUILD_CG_DWF_SSE_TRUE@am__append_12 = actions/ferm/qprop/avp_ssef_solver.cc \
+@BUILD_CG_DWF_TRUE@am__append_11 = \
+@BUILD_CG_DWF_TRUE@        actions/ferm/qprop/avp_inverter_interface.cc
+
+@BUILD_CG_DWF_SSE_TRUE@am__append_12 = \
+@BUILD_CG_DWF_SSE_TRUE@        actions/ferm/qprop/avp_ssef_solver.cc \
 @BUILD_CG_DWF_SSE_TRUE@	actions/ferm/qprop/avp_ssed_solver.cc
 
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_13 = actions/ferm/qprop/avp_bglf_solver.cc \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_13 = \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@        actions/ferm/qprop/avp_bglf_solver.cc \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	actions/ferm/qprop/avp_bgld_solver.cc
 
 @BUILD_CG_DWF_ALTIVEC_TRUE@am__append_14 = actions/ferm/qprop/avp_altivecf_solver.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_15 = actions/ferm/linop/lwldslash_w_pab.h \
-@BUILD_PAB_WILSON_DSLASH_TRUE@	                  actions/ferm/linop/lwldslash_array_pab_w.h
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_15 = \
+@BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_pab.h \
+@BUILD_PAB_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_array_pab_w.h
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_16 = actions/ferm/linop/lwldslash_w_pab.cc \
-@BUILD_PAB_WILSON_DSLASH_TRUE@		       actions/ferm/linop/lwldslash_array_pab_w.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_16 = \
+@BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_pab.cc \
+@BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_pab_w.cc
 
 @BUILD_OPT_CFZ_LINOP_TRUE@am__append_17 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
 @BUILD_OPT_CFZ_LINOP_TRUE@am__append_18 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
+@BUILD_LAPACK_TRUE@am__append_19 = \
+@BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_OPTeigcg_params.h \
+@BUILD_LAPACK_TRUE@        actions/ferm/invert/syssolver_linop_OPTeigcg.h
+
+@BUILD_LAPACK_TRUE@am__append_20 = \
+@BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
+@BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_linop_OPTeigcg.cc
+
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_19 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_20 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_21 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_22 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
 # include files for scidac libaries
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_21 = -I@QDPC_DIR@/qmp/include \
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_23 = -I@QDPC_DIR@/qmp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qio/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qla/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qdp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qopqdp/include
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_22 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_23 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_24 = actions/ferm/linop/clover_term_bagel_clover.h
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_25 = actions/ferm/linop/clover_term_bagel_clover.cc
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -671,8 +685,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_w_pab.$(OBJEXT) \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	lwldslash_array_pab_w.$(OBJEXT)
 @BUILD_OPT_CFZ_LINOP_TRUE@am__objects_8 = eoprec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_9 = asqtad_cps_wrapper_qprop.$(OBJEXT)
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_10 = clover_term_bagel_clover.$(OBJEXT)
+@BUILD_LAPACK_TRUE@am__objects_9 =  \
+@BUILD_LAPACK_TRUE@	syssolver_OPTeigcg_params.$(OBJEXT) \
+@BUILD_LAPACK_TRUE@	syssolver_linop_OPTeigcg.$(OBJEXT)
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_10 = asqtad_cps_wrapper_qprop.$(OBJEXT)
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_11 = clover_term_bagel_clover.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
@@ -1040,7 +1057,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
-	$(am__objects_8) fermacts_aggregate_s.$(OBJEXT) \
+	$(am__objects_8) $(am__objects_9) \
+	fermacts_aggregate_s.$(OBJEXT) \
 	asqtad_fermact_params_s.$(OBJEXT) asqtad_fermact_s.$(OBJEXT) \
 	hisq_fermact_params_s.$(OBJEXT) hisq_fermact_s.$(OBJEXT) \
 	klein_gordon_fermact_s.$(OBJEXT) fermbcs_reader_s.$(OBJEXT) \
@@ -1060,8 +1078,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	pseudoscalar_loops_s.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
-	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_9) \
-	$(am__objects_10)
+	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_10) \
+	$(am__objects_11)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -1770,6 +1788,7 @@ INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+LAPACK_ENABLED = @LAPACK_ENABLED@
 LATEX = @LATEX@
 LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
@@ -2502,7 +2521,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h $(am__append_6) \
 	$(am__append_8) $(am__append_10) $(am__append_15) \
-	$(am__append_17) $(am__append_19) $(am__append_22)
+	$(am__append_17) $(am__append_19) $(am__append_21) \
+	$(am__append_24)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -2519,7 +2539,7 @@ AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
 	-I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
-	$(am__append_4) $(am__append_5) $(am__append_21)
+	$(am__append_4) $(am__append_5) $(am__append_23)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -3036,7 +3056,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/smear/inline_link_smear.cc $(am__append_9) \
 	$(am__append_11) $(am__append_12) $(am__append_13) \
 	$(am__append_14) $(am__append_16) $(am__append_18) \
-	actions/ferm/fermacts/fermacts_aggregate_s.cc \
+	$(am__append_20) actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermacts/hisq_fermact_params_s.cc \
@@ -3066,7 +3086,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_20) $(am__append_23)
+	util/gauge/stag_phases_s.cc $(am__append_22) $(am__append_25)
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
