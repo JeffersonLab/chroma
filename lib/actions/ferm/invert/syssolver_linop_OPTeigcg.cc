@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.12 2008-04-04 02:23:15 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.13 2008-04-05 04:07:18 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -7,7 +7,6 @@
 #include "qdp-lapack_Complex.h"
 #include "qdp-lapack_eigpcg.h"  
 #include "qdp-lapack_IncrEigpcg.h"
-
 
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
@@ -179,10 +178,13 @@ namespace Chroma
       QDPIO::cout<<"EigInfo.ncurEvals= "<<EigInfo.ncurEvals<<endl ;
       QDPIO::cout<<"EigInfo.restartTol= "<<EigInfo.restartTol<<endl ;
 
+      T chi_tmp;
+      A(chi_tmp, chi, MINUS);
+
       Subset s = A.subset() ;
 
-      Complex_C *X ; //= (Complex_C *) calloc(EigInfo.,sizeof(Complex_C));
-      Complex_C *B ; //= (Complex_C *) calloc(,sizeof(Complex_C));
+      Complex_C *X ; 
+      Complex_C *B ; 
       Complex_C *work=NULL  ;
       Complex_C *V=NULL     ;
       Complex_C *ework=NULL ;
@@ -197,6 +199,7 @@ namespace Chroma
 	QDPIO::cout<<"OPPS! I have not implemented OPT_EigCG for Linops with non contigius subset\n";
 	exit(1);
       }
+
       Complex_C *evecs = (Complex_C *) &EigInfo.evecs[0] ;
       float *evals = (float *) &EigInfo.evals[0].elem() ;
       Complex_C *H  = (Complex_C *) &EigInfo.H[0] ;
@@ -204,45 +207,41 @@ namespace Chroma
       MatVecArg<T> arg ;
       arg.MdagM = MdagM ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
+
       QDPIO::cout<<"OPT_EIGCG_SYSSOLVER= "<<esize<<endl ;
       //multi1d<Complex_C> ework(esize);
       float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
       float AnormEst = invParam.NormAest.elem().elem().elem().elem();
-      /**/
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  initial guess  : "<<sqrt(norm2(psi,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs             : "<<sqrt(norm2(chi_tmp,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: AnormEst : "<<AnormEst<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: invParam.updateRestartTol : "<<invParam.updateRestartTol<<endl ;
-      
-      printf("OPT_EICG_SYSSOLVER: solution pointer        : %d \n",X);
-      printf("OPT_EICG_SYSSOLVER: rhs pointer             : %d \n",B);
-      
+
+      float restartTol;
+      if (EigInfo.ncurEvals < EigInfo.evals.size()) 
+         restartTol = 0.0; 		  // Do not restart the first phase 
+      else {
+        // set it to the user parameter:
+	restartTol = invParam.restartTol.elem().elem().elem().elem();
+
+        // restartTol = EigInfo.restartTol; //or restart with tol as computed 
+      }
+
       IncrEigpcg(EigInfo.N, EigInfo.lde, 1, X, B, 
 		 &EigInfo.ncurEvals, EigInfo.evals.size(), 
 		 evecs, evals, H, HU, 
 		 MatrixMatvec<T>, NULL, (void *)&arg, work, V, 
 		 ework, esize, 
-		 resid, &EigInfo.restartTol,
+		 resid, &restartTol,
 		 AnormEst, invParam.updateRestartTol, 
 		 invParam.MaxCG, invParam.PrintLevel, 
 		 invParam.Neig, invParam.Nmax, stdout);
-      /**/
-      // The const keywork in operator() prevents invParam from being changed.
-      // For this reason the update Restart Tolerence feature does not work...
-      //invParam.restartTol = updRestTol ;
+
+      /* Update the restartTol in the EigInfo function */
+      EigInfo.restartTol = restartTol;
 
       LatticeFermion tt;
       (*MdagM)(tt,psi,PLUS);
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi_tmp,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi_tmp,s))<<endl ;
-      printf("OPT_EICG_SYSSOLVER: solution pointer        : %d \n",X);
-      printf("OPT_EICG_SYSSOLVER: rhs pointer             : %d \n",B);
-     
-       
-      for(int i(0);i<EigInfo.ncurEvals;i++)
-	QDPIO::cout<<"OPT_EICG_SYSSOLVER: eval("<<i<<")= "<<EigInfo.evals[i]<<endl ;
-
+      
       if(!s.hasOrderedRep()){
 	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
       }
