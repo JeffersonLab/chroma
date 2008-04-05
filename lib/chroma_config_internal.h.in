@@ -15,6 +15,9 @@
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 
+/* Using Lapack. This will turn on some system solvers. */
+#undef BUILD_LAPACK
+
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 

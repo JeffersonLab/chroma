@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.129 2008-04-03 15:58:39 kostas Exp $
+# $Id: Makefile.am,v 3.130 2008-04-05 19:02:20 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -1383,17 +1383,19 @@ nobase_include_HEADERS += \
 	actions/ferm/qprop/avp_bglf_solver.h \
 	actions/ferm/qprop/avp_bgld_solver.h \
 	actions/ferm/qprop/avp_altivecf_solver.h
-
-libchroma_a_SOURCES += actions/ferm/qprop/avp_inverter_interface.cc
+libchroma_a_SOURCES += \
+        actions/ferm/qprop/avp_inverter_interface.cc
 endif
 
 if BUILD_CG_DWF_SSE
-libchroma_a_SOURCES += actions/ferm/qprop/avp_ssef_solver.cc \
+libchroma_a_SOURCES += \
+        actions/ferm/qprop/avp_ssef_solver.cc \
 	actions/ferm/qprop/avp_ssed_solver.cc
 endif
 
 if BUILD_CG_DWF_BLUELIGHT
-libchroma_a_SOURCES += actions/ferm/qprop/avp_bglf_solver.cc \
+libchroma_a_SOURCES += \
+        actions/ferm/qprop/avp_bglf_solver.cc \
 	actions/ferm/qprop/avp_bgld_solver.cc
 endif
 
@@ -1402,16 +1404,26 @@ libchroma_a_SOURCES += actions/ferm/qprop/avp_altivecf_solver.cc
 endif
 
 if BUILD_PAB_WILSON_DSLASH
-nobase_include_HEADERS += actions/ferm/linop/lwldslash_w_pab.h \
-	                  actions/ferm/linop/lwldslash_array_pab_w.h
-
-libchroma_a_SOURCES += actions/ferm/linop/lwldslash_w_pab.cc \
-		       actions/ferm/linop/lwldslash_array_pab_w.cc
+nobase_include_HEADERS += \
+        actions/ferm/linop/lwldslash_w_pab.h \
+	actions/ferm/linop/lwldslash_array_pab_w.h
+libchroma_a_SOURCES += \
+        actions/ferm/linop/lwldslash_w_pab.cc \
+        actions/ferm/linop/lwldslash_array_pab_w.cc
 endif
 
 if BUILD_OPT_CFZ_LINOP
 nobase_include_HEADERS += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
 libchroma_a_SOURCES += actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
+endif
+
+if BUILD_LAPACK
+nobase_include_HEADERS += \
+	actions/ferm/invert/syssolver_OPTeigcg_params.h \
+        actions/ferm/invert/syssolver_linop_OPTeigcg.h
+libchroma_a_SOURCES += \
+	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
+	actions/ferm/invert/syssolver_linop_OPTeigcg.cc
 endif
 
 #

@@ -96,6 +96,11 @@ AC_ARG_WITH(bagel_clover,
      BAGEL_CLOVER_HOME="${with_bagel_clover}"]
 )
 
+AC_ARG_ENABLE(lapack,
+  AC_HELP_STRING([--enable-lapack=<type>],
+    [Use the type of lapack bindings specified by <type>. Currently, this can be lapack]),
+  [LAPACK_BINDING="${enableval}"]
+)
 
 AC_ARG_ENABLE(opt_cfz_linop,
   AC_HELP_STRING( 
@@ -207,7 +212,9 @@ else
   AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
 fi 
 
-dnl SSE Wilson Dslash stuff
+dnl ************************************************************************
+dnl **** SSE Wilson dslash                                              ****
+dnl ************************************************************************
 case "$enable_sse_wilson_dslash" in
   yes) 
         AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
@@ -227,7 +234,10 @@ esac
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
 
-dnl CG DWF stuff
+
+dnl ************************************************************************
+dnl **** CG DWF stuff                                                   ****
+dnl ************************************************************************
 if [ test "x${build_cg_dwf}x" = "xyesx" ];
 then
         AC_MSG_NOTICE([Configuring CG DWF])
@@ -285,8 +295,10 @@ then
 	 AC_DEFINE([CHROMA_DO_ONE_CG_RESTART],[1],[Enable Restart in linop syssolvers])
 fi
  
-dnl QCDOC Wilson Dslash stuff
 
+dnl ************************************************************************
+dnl **** Bagel wilson dslash                                            ****
+dnl ************************************************************************
 if test "X${bagel_wilson_dslash_enabled}X" = "XyesX";
 then
    AC_MSG_NOTICE( [Configuring with BAGEL Wilson Dslash] )   
@@ -298,7 +310,6 @@ then
      AC_PATH_PROG([BAGEL_WILSON_DSLASH_CONFIG], [wfm-config], [], [${BAGEL_WILSON_DSLASH_HOME}/bin:${PATH}])
    fi     
 
-dnl check that the program has been found
    if test "X${BAGEL_WILSON_DSLASH_CONFIG}X" = "XX"; 
    then
      AC_MSG_WARN([wfm-config script for bagel_wilson_dslash not found])
@@ -358,6 +369,10 @@ fi
 
 AM_CONDITIONAL(BUILD_PAB_WILSON_DSLASH, [test "x${bagel_wilson_dslash_enabled}x" = "xyesx" ])
 
+
+dnl ************************************************************************
+dnl **** Bagel clover                                                   ****
+dnl ************************************************************************
 if test "X${bagel_clover_enabled}X" = "XyesX";
 then
    AC_MSG_NOTICE( [Configuring with BAGEL Clover Apply] )   
@@ -369,7 +384,6 @@ then
      AC_PATH_PROG([BAGEL_CLOVER_CONFIG], [bagel-clover-config], [], [${BAGEL_CLOVER_HOME}/bin:${PATH}])
    fi     
 
-dnl check that the program has been found
    if test "X${BAGEL_CLOVER_CONFIG}X" = "XX"; 
    then
      AC_MSG_WARN([bagel-clover-config script for bagel_wilson_dslash not found])
@@ -417,8 +431,27 @@ fi
 AM_CONDITIONAL(BUILD_BAGEL_CLOVER_APPLY, [test "x${bagel_clover_enabled}x" = "xyesx" ])
 
 
+dnl ************************************************************************
+dnl **** Use Lapack                                                     ****
+dnl ************************************************************************
+case "${LAPACK_BINDING}" in
+lapack)
+	AC_MSG_NOTICE([Configuring to use Lapack. This will turn on some additional system solvers.])
+	AC_DEFINE(BUILD_LAPACK,[],[Using Lapack. This will turn on some system solvers.])
+        AC_SUBST(LAPACK_ENABLED,[yes])
+	;;
+*)
+	AC_MSG_NOTICE([Will not use Lapack.])
+        AC_SUBST(LAPACK_ENABLED,[no])
+	;;
+esac
 
-dnl level3 Asqtad Inverter stuff
+AM_CONDITIONAL(BUILD_LAPACK, [ test "X${LAPACK_ENABLED}X" = "XyesX" ])
+
+
+dnl ************************************************************************
+dnl **** Level3 Asqtad inverter stuff                                   ****
+dnl ************************************************************************
 case "$enable_asqtad_level3_inverter" in
  yes)
         AC_MSG_NOTICE([Configuring Asqtad level3 Inverter Wrapper])
