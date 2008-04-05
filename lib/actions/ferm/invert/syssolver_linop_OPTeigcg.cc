@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.13 2008-04-05 04:07:18 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.cc,v 1.14 2008-04-05 04:10:17 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -165,6 +165,7 @@ namespace Chroma
 				    const SysSolverOptEigCGParams& invParam)
     {
       START_CODE();
+
       T chi_tmp;	
       A(chi_tmp, chi, MINUS);
 
@@ -177,9 +178,6 @@ namespace Chroma
       QDPIO::cout<<"EigInfo.ldh= "<<EigInfo.evals.size()<<endl ;
       QDPIO::cout<<"EigInfo.ncurEvals= "<<EigInfo.ncurEvals<<endl ;
       QDPIO::cout<<"EigInfo.restartTol= "<<EigInfo.restartTol<<endl ;
-
-      T chi_tmp;
-      A(chi_tmp, chi, MINUS);
 
       Subset s = A.subset() ;
 
