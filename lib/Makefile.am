@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.130 2008-04-05 19:02:20 edwards Exp $
+# $Id: Makefile.am,v 3.131 2008-04-07 04:57:31 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -82,6 +82,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_linop_OPTeigcg.h \
+	actions/ferm/invert/syssolver_linop_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_linop_eigcg_array.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
@@ -839,8 +840,8 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
-	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_linop_OPTeigcg.cc \
+	actions/ferm/invert/syssolver_linop_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
