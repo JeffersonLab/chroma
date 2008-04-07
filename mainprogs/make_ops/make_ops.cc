@@ -503,10 +503,10 @@ void readCoeffFiles(multi1d<GroupBaryonOperator_t> &ops, const multi1d<std::stri
 	int nops = 0;
 
 	//First determine how many ops total 
-	for (int i = 0 ; i < coeff_files.size() ; ++i)
+	for (int f = 0 ; f < coeff_files.size() ; ++f)
 	{
 
-		TextFileReader reader(coeff_files[i]);
+		TextFileReader reader(coeff_files[f]);
 
 		int op;
 
@@ -524,23 +524,23 @@ void readCoeffFiles(multi1d<GroupBaryonOperator_t> &ops, const multi1d<std::stri
 	
 	//Now read the coeffs
 
-	for (int i = 0 ; i < coeff_files.size() ; ++i)
+	for (int f = 0 ; f < coeff_files.size() ; ++f)
 	{
 
 		int op;
 
-		TextFileReader reader(coeff_files[i]);
+		TextFileReader reader(coeff_files[f]);
 		reader >> op;
-		
+
 		for (int l = 0 ; l < op ; ++l)
 		{
 			int nelem;
 			std::string name; 
 			reader >> nelem >> name;
 
-			ops[ i + l ].name = name;
+			ops[ f + l ].name = name;
 
-			ops[ i + l ].term.resize( nelem );
+			ops[ f + l ].term.resize( nelem );
 
 			for (int m = 0 ; m < nelem ; ++m)
 			{
@@ -550,17 +550,17 @@ void readCoeffFiles(multi1d<GroupBaryonOperator_t> &ops, const multi1d<std::stri
 
 				reader >> a >> b >> c >> i >> j >> k >> lparen >> re >> comma >> im >> rparen;
 
-				ops[ i + l].term[m].coeff = cmplx( re, im );
+				ops[ f + l].term[m].coeff = cmplx( re, im );
 
-				ops[i+l].term[m].op.quarks.resize(3);
+				ops[f + l].term[m].op.quarks.resize(3);
 
-				ops[ i + l].term[m].op.quarks[0].spin = a;
-				ops[ i + l].term[m].op.quarks[1].spin = b;
-				ops[ i + l].term[m].op.quarks[2].spin = c;
+				ops[ f + l].term[m].op.quarks[0].spin = a;
+				ops[ f + l].term[m].op.quarks[1].spin = b;
+				ops[ f + l].term[m].op.quarks[2].spin = c;
 
-				ops[ i + l].term[m].op.quarks[0].displacement = i;
-				ops[ i + l].term[m].op.quarks[1].displacement = j;
-				ops[ i + l].term[m].op.quarks[2].displacement = k;
+				ops[ f + l].term[m].op.quarks[0].displacement = i;
+				ops[ f + l].term[m].op.quarks[1].displacement = j;
+				ops[ f + l].term[m].op.quarks[2].displacement = k;
 
 			} //m
 			
@@ -1323,7 +1323,6 @@ int main(int argc, char **argv)
 
 	//Read coeff files 
 	readCoeffFiles(final_ops, input.input_files.coeff_files);
-
 
 	int time_dir = input.param.decay_dir;
 	int Nt = input.param.layout[time_dir]; 

@@ -10,7 +10,7 @@ HDRS=
 OBJS= make_ops.o
 
 make_ops: $(OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS)
+	$(CXX) -o $@ $(CXXFLAGS) $(OBJS) $(LDFLAGS) $(LIBS) 
 
 %.o: %.cc $(HDRS)
 	$(CXX) $(CXXFLAGS) -c $<
