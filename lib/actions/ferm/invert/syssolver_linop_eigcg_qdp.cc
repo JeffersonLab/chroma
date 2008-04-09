@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg_qdp.cc,v 3.3 2008-04-09 04:59:38 kostas Exp $
+// $Id: syssolver_linop_eigcg_qdp.cc,v 3.4 2008-04-09 12:39:11 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -92,13 +92,15 @@ namespace Chroma
       int restart(0);
       Real restartTol = invParam.restartTol ;
       StopWatch snoop;
-      snoop.reset();
       while((flag==-1)||flag==3){
 	flag=0 ;
 	if(invParam.PrintLevel>0)
 	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
 	if(GoodEvecs.Neig>0){//deflate if there avectors to deflate
-	  if(invParam.PrintLevel>0) snoop.start();
+	  if(invParam.PrintLevel>0){
+	          snoop.reset();
+		  snoop.start();
+	  }
 	  InvEigCG2Env::InitGuess(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig,n_CG);
 	  if(invParam.PrintLevel>0) snoop.stop();
 	  if(invParam.PrintLevel>0)
@@ -109,7 +111,6 @@ namespace Chroma
 	//if there is space for new
 	if((GoodEvecs.Neig)<GoodEvecs.evec.vec.size())
 	  {
-	    snoop.start();
 
 	    evec.resize(0);//get in there with no evecs so that it computes new
 	    res = InvEigCG2Env::InvEigCG2(MdagM, psi, chi_tmp, lambda, evec, 
@@ -117,7 +118,9 @@ namespace Chroma
 					  invParam.RsdCG, invParam.MaxCG,
 					  invParam.PrintLevel);
 	    res.n_count += n_CG ;
-	  
+
+	    snoop.reset();
+	    snoop.start();
 	    GoodEvecs.AddVectors(lambda, evec, MdagM.subset());
 	    snoop.stop();
 	    double Time = snoop.getTimeInSeconds() ;
@@ -199,16 +202,18 @@ namespace Chroma
 					       invParam.MaxCG // Max CG itterations    
 					       );
 	    res.n_count += n_CG ;
-	    restartTol *=restartTol ;
-	    if(toBool(restartTol < invParam.RsdCG)){
-	      restartTol = invParam.RsdCG;
-	      flag=0; //stop restarting
-	    }
-	    else{
+	    if(toBool(restartTol==invParam.RsdCG)){
 	      restart++;//count the number of restarts
 	      if(invParam.PrintLevel>0)
 		QDPIO::cout<<"Restart: "<<restart<<endl ;
 	      flag=3 ; //restart
+	    }
+	    else{
+	      flag=0; //stop restarting
+	    }
+	    restartTol *=restartTol ;
+	    if(toBool(restartTol < invParam.RsdCG)){
+	      restartTol = invParam.RsdCG;
 	    }
 	  }
       }//while
