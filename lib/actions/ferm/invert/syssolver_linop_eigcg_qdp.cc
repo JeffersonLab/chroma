@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg_qdp.cc,v 3.2 2008-04-09 04:49:23 kostas Exp $
+// $Id: syssolver_linop_eigcg_qdp.cc,v 3.3 2008-04-09 04:59:38 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -173,8 +173,21 @@ namespace Chroma
 	  {
 	    evec.resize(0);
 	    n_CG = res.n_count ;
-	    if(invParam.vPrecCGvecs ==0){// Call the CHROMA CG 
-	      res = InvCG2(A, chi_tmp, psi, restartTol, invParam.MaxCG);
+	    if(invParam.vPrecCGvecs ==0){
+	      if(invParam.PrintLevel<2)// Call the CHROMA CG 
+		res = InvCG2(A, chi_tmp, psi, restartTol, invParam.MaxCG);
+	      else
+		res = InvEigCG2Env::InvEigCG2(MdagM, 
+					      psi,
+					      chi_tmp,
+					      lambda, 
+					      evec, 
+					      0, //Eigenvectors to keep
+					      invParam.Nmax,  // Max vectors to work with
+					      restartTol, // CG residual...
+					      invParam.MaxCG, // Max CG itterations
+					      invParam.PrintLevel
+					      );
 	    }
 	    else
 	      res = InvEigCG2Env::vecPrecondCG(MdagM,psi,chi_tmp,
