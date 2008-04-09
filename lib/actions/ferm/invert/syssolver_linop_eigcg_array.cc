@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg_array.cc,v 1.3 2008-03-29 03:41:03 kostas Exp $
+// $Id: syssolver_linop_eigcg_array.cc,v 1.4 2008-04-09 04:49:23 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -65,7 +65,7 @@ namespace Chroma
 				    const SysSolverEigCGParams& invParam)
     {
       START_CODE();
-
+#ifdef _WORKING_
       multi1d<T> chi_tmp;
       A(chi_tmp, chi, MINUS);
 
@@ -205,7 +205,11 @@ namespace Chroma
 	    );
 	res.n_count += n_CG;
       }
-
+#else
+      SystemSolverResults_t res;  // initialized by a constructor
+      QDPIO::cerr<<" OOOPS! EigCG does not work with DWF\n";
+      exit(1);
+#endif
       END_CODE();
 
       return res;

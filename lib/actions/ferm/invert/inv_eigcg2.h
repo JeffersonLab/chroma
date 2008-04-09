@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.h,v 1.4 2007-10-11 19:00:09 edwards Exp $
+// $Id: inv_eigcg2.h,v 1.5 2008-04-09 04:49:22 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -33,7 +33,7 @@ namespace Chroma
 				    multi1d<LatticeFermionF>& evec,
 				    int Neig,
 				    int Nmax,
-				    const Real& RsdCG, int MaxCG);
+				    const Real& RsdCG, int MaxCG, const int t);
   
     SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionF>& A, 
 				       LatticeFermionF& x, 
@@ -72,7 +72,7 @@ namespace Chroma
 				    multi1d<LatticeFermionD>& evec,
 				    int Neig,
 				    int Nmax,
-				    const Real& RsdCG, int MaxCG);
+				    const Real& RsdCG, int MaxCG, const int f);
   
     SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionD>& A, 
 				       LatticeFermionD& x, 

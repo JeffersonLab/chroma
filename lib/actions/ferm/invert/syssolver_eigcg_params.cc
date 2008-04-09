@@ -1,4 +1,4 @@
-// $Id: syssolver_eigcg_params.cc,v 1.7 2008-04-03 02:22:23 kostas Exp $
+// $Id: syssolver_eigcg_params.cc,v 1.8 2008-04-09 04:49:22 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
@@ -12,33 +12,48 @@ namespace Chroma
   void read(XMLReader& xml, const string& path, SysSolverEigCGParams& param)
   {
     XMLReader paramtop(xml, path);
+    
+    param.defaults();
 
+    read(paramtop, "invType", param.invType);
+    
     read(paramtop, "RsdCG", param.RsdCG);
     read(paramtop, "MaxCG", param.MaxCG);
-    read(paramtop, "eigen_id", param.eigen_id);
-    
-    if( paramtop.count("RsdCGRestart") > 0 ) { 
-      read(paramtop, "RsdCGRestart", param.RsdCGRestart);
+
+    if( paramtop.count("PrintLevel") > 0 ) { 
+      read(paramtop, "PrintLevel", param.PrintLevel);
     }
-    else {
-      param.RsdCGRestart.resize(1) ;
-      param.RsdCGRestart[0] = 33.0*param.RsdCG;
-    }
+
     read(paramtop, "Nmax", param.Nmax);
     read(paramtop, "Neig", param.Neig);
-    param.Neig_max = 0 ;
     if(paramtop.count("Neig_max")!=0){
       read(paramtop, "Neig_max", param.Neig_max);
     }
 
-    param.vPrecCGvecs = 0 ;
-    param.vPrecCGvecStart = 0 ;
+    if( paramtop.count("esize") > 0 ) { 
+      read(paramtop, "esize", param.esize);
+    }
+
+     if( paramtop.count("restartTol") > 0 ) { 
+      read(paramtop, "restartTol", param.restartTol);
+    }
+
+    if( paramtop.count("NormAest") > 0 ) { 
+      read(paramtop, "NormAest", param.NormAest);
+    }
+
+    if( paramtop.count("updateRestartTol") > 0 ) { 
+      read(paramtop, "updateRestartTol", param.updateRestartTol);
+    }
+
     if(paramtop.count("vPrecCGvecs")!=0){
       read(paramtop, "vPrecCGvecs", param.vPrecCGvecs);
       read(paramtop, "vPrecCGvecStart", param.vPrecCGvecStart);
     }
 
     read(paramtop, "cleanUpEvecs", param.cleanUpEvecs);
+    read(paramtop, "eigen_id", param.eigen_id);
+
   }
 
   // Writer parameters
@@ -48,13 +63,16 @@ namespace Chroma
 
 //  int version = 1;
 //  write(xml, "version", version);
-    write(xml, "invType", "EIG_CG_INVERTER");
+  
+    write(xml, "invType", param.invType);
     write(xml, "RsdCG", param.RsdCG);
     write(xml, "MaxCG", param.MaxCG);
     write(xml, "Nmax", param.Nmax);
     write(xml, "Neig", param.Neig);
     write(xml, "Neig_max", param.Neig_max);
-    write(xml, "RsdCGRestart", param.RsdCGRestart);
+    write(xml, "restartTol", param.restartTol);
+    write(xml, "updateRestartTol", param.updateRestartTol);
+    write(xml, "NormAest", param.NormAest);
     write(xml, "vPrecCGvecs", param.vPrecCGvecs);
     write(xml, "vPrecCGvecs", param.vPrecCGvecStart);
     write(xml, "cleanUpEvecs", param.cleanUpEvecs);
@@ -66,15 +84,7 @@ namespace Chroma
   //! Default constructor
   SysSolverEigCGParams::SysSolverEigCGParams()
   {
-    RsdCG = zero;
-    MaxCG = 0;
-    RsdCGRestart.resize(1) ;
-    RsdCGRestart[0] = RsdCG;
-    Neig =0 ;
-    Neig_max =0 ;
-    vPrecCGvecs=0 ;
-    cleanUpEvecs=false;
-    eigen_id="NULL";
+    defaults();
   }
 
   //! Read parameters
