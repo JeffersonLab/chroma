@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg_qdp.cc,v 3.4 2008-04-09 12:39:11 kostas Exp $
+// $Id: syssolver_linop_eigcg_qdp.cc,v 3.5 2008-04-09 13:11:56 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -202,7 +202,7 @@ namespace Chroma
 					       invParam.MaxCG // Max CG itterations    
 					       );
 	    res.n_count += n_CG ;
-	    if(toBool(restartTol==invParam.RsdCG)){
+	    if(toBool(restartTol!=invParam.RsdCG)){
 	      restart++;//count the number of restarts
 	      if(invParam.PrintLevel>0)
 		QDPIO::cout<<"Restart: "<<restart<<endl ;
