@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.16 2008-04-10 03:01:13 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.17 2008-04-10 03:16:44 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -476,7 +476,7 @@ namespace Chroma
 	if(FindEvals){
 	  if (vec.N==Nmax){//we already have stored the maximum number of vectors
 	    // The magic begins here....
-	    if(PrintLevel==1)
+	    if(PrintLevel>0)
 	      QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 	    H(Nmax-1,Nmax-1) = 1/alpha + beta/alphaprev;
 
