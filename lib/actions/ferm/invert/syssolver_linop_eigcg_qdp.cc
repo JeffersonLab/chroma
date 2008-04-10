@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg_qdp.cc,v 3.5 2008-04-09 13:11:56 kostas Exp $
+// $Id: syssolver_linop_eigcg_qdp.cc,v 3.6 2008-04-10 03:01:13 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -133,7 +133,15 @@ namespace Chroma
 	  
 	    snoop.start();
 	    LinAlg::Matrix<DComplex> Htmp(GoodEvecs.Neig) ;
-	    InvEigCG2Env::SubSpaceMatrix(Htmp,MdagM,GoodEvecs.evec.vec,GoodEvecs.Neig);
+	    //Only do the matrix elements for the new vectors
+	    //InvEigCG2Env::SubSpaceMatrix(Htmp,MdagM,GoodEvecs.evec.vec,GoodEvecs.Neig);
+	    /**/
+	    InvEigCG2Env::SubSpaceMatrix(Htmp,MdagM,
+					 GoodEvecs.evec.vec,
+					 GoodEvecs.eval.vec,
+					 GoodEvecs.Neig,
+					 GoodEvecs.Neig-invParam.Neig);
+	    /**/
 	    char V = 'V' ; char U = 'U' ;
 	    QDPLapack::zheev(V,U,Htmp.mat,lambda);
 	    evec.resize(GoodEvecs.Neig) ;

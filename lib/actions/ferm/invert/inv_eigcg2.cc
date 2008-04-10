@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.cc,v 1.15 2008-04-09 04:49:22 kostas Exp $
+// $Id: inv_eigcg2.cc,v 1.16 2008-04-10 03:01:13 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -57,6 +57,41 @@ namespace Chroma
 	  if(i==j) H(i,j) = real(H(i,j));
 	}
       } 
+    }
+
+    template<typename T>
+    void SubSpaceMatrix_T(LinAlg::Matrix<DComplex>& H,
+			  const LinearOperator<T>& A,
+			  const multi1d<T>& evec,
+			  const multi1d<Double>& eval,
+			  int Nvecs,int NgoodEvecs)
+    {
+      H.N = Nvecs ;
+      if(Nvecs>evec.size()){
+	H.N = evec.size();
+      }
+      if(H.N>H.size()){
+	QDPIO::cerr<<"OOPS! your matrix can't take this many matrix elements\n";
+	exit(1);	
+      }
+      // fill H  with zeros
+      H.mat = 0.0 ;
+      
+      for(int i(0);i<NgoodEvecs;i++)
+	H(i,i) = eval(i);
+
+      T Ap;
+      for(int i(NgoodEvecs);i<H.N;i++)
+      {
+	A(Ap,evec[i],PLUS) ;
+	for(int j(0);j<H.N;j++)
+	{
+	  H(j,i) = innerProduct(evec[j], Ap, A.subset()) ;
+	  //enforce hermiticity
+	  H(i,j) = conj(H(j,i));
+	  if(i==j) H(i,j) = real(H(i,j));
+	}
+      }
     }
 
     //The new code
@@ -1101,6 +1136,14 @@ namespace Chroma
       SubSpaceMatrix_T<LatticeFermionF>(H, A, evec, Nvecs);
     }
 
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionF>& A,
+			const multi1d<LatticeFermionF>& evec,
+			const multi1d<Double>& eval,
+			int Nvecs,int NgoodEvecs){
+      SubSpaceMatrix_T<LatticeFermionF>(H, A, evec, eval, Nvecs, NgoodEvecs) ;
+    }
+
     SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionF>& A,
 				    LatticeFermionF& x, 
 				    const LatticeFermionF& b,
@@ -1155,6 +1198,15 @@ namespace Chroma
     {
       SubSpaceMatrix_T<LatticeFermionD>(H, A, evec, Nvecs);
     }
+     
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionD>& A,
+			const multi1d<LatticeFermionD>& evec,
+			const multi1d<Double>& eval,
+			int Nvecs,int NgoodEvecs){
+      SubSpaceMatrix_T<LatticeFermionD>(H, A, evec, eval, Nvecs, NgoodEvecs) ;
+    }
+
 
     SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionD>& A,
 				    LatticeFermionD& x, 

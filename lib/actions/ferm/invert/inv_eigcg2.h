@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inv_eigcg2.h,v 1.5 2008-04-09 04:49:22 kostas Exp $
+// $Id: inv_eigcg2.h,v 1.6 2008-04-10 03:01:13 kostas Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
  */
@@ -25,7 +25,13 @@ namespace Chroma
 			const LinearOperator<LatticeFermionF>& A,
 			const multi1d<LatticeFermionF>& evec,
 			int Nvecs);
-
+    
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionF>& A,
+			const multi1d<LatticeFermionF>& evec,
+			const multi1d<Double>& eval,
+			int Nvecs,int NgoodEvecs) ;
+    
     SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionF>& A,
 				    LatticeFermionF& x, 
 				    const LatticeFermionF& b,
@@ -64,6 +70,12 @@ namespace Chroma
 			const LinearOperator<LatticeFermionD>& A,
 			const multi1d<LatticeFermionD>& evec,
 			int Nvecs);
+
+    void SubSpaceMatrix(LinAlg::Matrix<DComplex>& H,
+			const LinearOperator<LatticeFermionD>& A,
+			const multi1d<LatticeFermionD>& evec,
+			const multi1d<Double>& eval,
+			int Nvecs,int NgoodEvecs) ;
 
     SystemSolverResults_t InvEigCG2(const LinearOperator<LatticeFermionD>& A,
 				    LatticeFermionD& x, 
