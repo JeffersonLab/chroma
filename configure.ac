@@ -102,6 +102,12 @@ AC_ARG_ENABLE(lapack,
   [LAPACK_BINDING="${enableval}"]
 )
 
+AC_ARG_ENABLE(opt-eigcg,
+  AC_HELP_STRING([--enable-opt-eigcg],
+    [Build optimized eigcg]),
+  [opt_eigcg_enabled="yes"]
+)
+
 AC_ARG_ENABLE(opt_cfz_linop,
   AC_HELP_STRING( 
     [--enable-opt-cfz-linop],
@@ -436,17 +442,35 @@ dnl **** Use Lapack                                                     ****
 dnl ************************************************************************
 case "${LAPACK_BINDING}" in
 lapack)
-	AC_MSG_NOTICE([Configuring to use Lapack. This will turn on some additional system solvers.])
-	AC_DEFINE(BUILD_LAPACK,[],[Using Lapack. This will turn on some system solvers.])
+	AC_MSG_NOTICE([Configuring to use Lapack.])
+	AC_DEFINE(BUILD_LAPACK,[],[Using Lapack])
         AC_SUBST(LAPACK_ENABLED,[yes])
 	;;
 *)
-	AC_MSG_NOTICE([Will not use Lapack.])
+	AC_MSG_NOTICE([Will not use Lapack])
         AC_SUBST(LAPACK_ENABLED,[no])
 	;;
 esac
 
 AM_CONDITIONAL(BUILD_LAPACK, [ test "X${LAPACK_ENABLED}X" = "XyesX" ])
+
+dnl ************************************************************************
+dnl **** Use optimized eigcg                                            ****  
+dnl ************************************************************************   
+case "${opt_eigcg_enabled}" in
+yes)
+        AC_MSG_NOTICE([Configuring to use optimized eigcg])
+        AC_DEFINE(BUILD_OPT_EIGCG,[],[Configuring to use optimized eigcg])
+        AC_SUBST(OPT_EIGCG_ENABLED,[yes])
+        ;;
+*)
+        AC_MSG_NOTICE([Will not build optimized eigCG.])
+        AC_SUBST(OPT_EIGCG_ENABLED,[no])
+        ;;
+esac
+
+AM_CONDITIONAL(BUILD_OPT_EIGCG, [ test "X${OPT_EIGCG_ENABLED}X" = "XyesX" ])
+
 
 
 dnl ************************************************************************

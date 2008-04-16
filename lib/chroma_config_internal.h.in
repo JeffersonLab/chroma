@@ -15,8 +15,11 @@
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 
-/* Using Lapack. This will turn on some system solvers. */
+/* Using Lapack */
 #undef BUILD_LAPACK
+
+/* Configuring to use optimized eigcg */
+#undef BUILD_OPT_EIGCG
 
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
