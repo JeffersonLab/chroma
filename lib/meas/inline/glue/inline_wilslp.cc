@@ -1,10 +1,11 @@
-// $Id: inline_wilslp.cc,v 3.11 2007-10-13 21:02:57 edwards Exp $
+// $Id: inline_wilslp.cc,v 3.12 2008-04-19 03:13:32 edwards Exp $
 /*! \file
  *  \brief Inline Wilson loops
  */
 
 #include "meas/inline/glue/inline_wilslp.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/glue/mesplq.h"
 #include "meas/glue/wilslp.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/inline/make_xml_file.h"
@@ -181,11 +182,18 @@ namespace Chroma
     snoop.reset();
     snoop.start();
 
+    push(xml_out, "WilsonLoop");
+    write(xml_out, "update_no", update_no);
+    write(xml_out, "decay_dir", params.param.j_decay);
+    write(xml_out, "t_dir", params.param.t_dir);
+
     try
     {
       // Grab the gauge field
       multi1d<LatticeColorMatrix> u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      // Calculate some gauge invariant observables
+      MesPlq(xml_out, "Observables", u);
 
       // Set the construct state and modify the fields
       {
@@ -205,11 +213,10 @@ namespace Chroma
 	u = state->getLinks();
       }
     
-      push(xml_out, "WilsonLoop");
-      write(xml_out, "update_no", update_no);
-      write(xml_out, "decay_dir", params.param.j_decay);
-      write(xml_out, "t_dir", params.param.t_dir);
+      // Again calculate some gauge invariant observables
+      MesPlq(xml_out, "Link_observables", u);
 
+      // Compute the Wilson loops
       Double w_plaq, s_plaq, t_plaq, link;
       wilslp(u, params.param.j_decay, params.param.t_dir, params.param.kind,
 	     xml_out, "wilslp");
