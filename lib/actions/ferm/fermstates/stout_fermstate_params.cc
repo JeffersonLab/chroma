@@ -1,4 +1,4 @@
-// $Id: stout_fermstate_params.cc,v 1.3 2007-11-08 15:04:52 bjoo Exp $
+// $Id: stout_fermstate_params.cc,v 1.4 2008-04-19 03:12:49 edwards Exp $
 /*! \file
  *  \brief Stout fermstate params
  */
@@ -47,6 +47,12 @@ namespace Chroma
 	else { 
 	  // default value for orthog dir is 3 -- smear in space only
 	  QDPIO::cout << "Using Default value: orthog_dir = 3, spatial only smearing" << endl;
+	}
+
+	if (paramtop.count("smear_in_this_dirP") > 0)
+	{
+	  QDPIO::cerr << __func__ << ": found a smear_in_this_dirP in version 1. You need version 2 or higher" << endl;
+	  QDP_abort(1);
 	}
 
 	smear_in_this_dirP.resize(Nd);
