@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_meson_w.h,v 1.1 2008-03-17 15:22:58 edwards Exp $
+// $Id: inline_stoch_group_meson_w.h,v 1.2 2008-04-20 15:59:44 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operators
  */
@@ -7,11 +7,8 @@
 #ifndef __inline_stoch_group_meson_h__
 #define __inline_stoch_group_meson_h__
 
-#error "STILL WORKING ON THIS"
-
-#include "chromabase.h"
-#include "chroma.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -36,12 +33,11 @@ namespace Chroma
       {
 	int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
 	int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
-	GroupXML_t          source_quark_smearing; /*!< xml string holding smearing params */
-	GroupXML_t          sink_quark_smearing;   /*!< xml string holding smearing params */
+	GroupXML_t          quark_smearing; /*!< xml string holding smearing params */
 	GroupXML_t          link_smearing;         /*!< link smearing xml */
 
 	multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
-      } param;
+      };
 
       struct NamedObject_t
       {
@@ -51,19 +47,18 @@ namespace Chroma
 	  std::string        id;             /*!< ID/tag used in analysis codes*/
 	};
 
-	TwoQuarkOpsFile_t    operators_file; /*!< Files holding 3-quark ops to make*/
-
-	std::string          quark_ids;      /*!< 3 character string indicating which quarks are degenerate */
-	
+	TwoQuarkOpsFile_t    operators_file; /*!< Files holding 2-quark ops to make*/
+	std::string          quark_ids;      /*!< 2 character string indicating which quarks are degenerate */
 	std::string          gauge_id;       /*!< Gauge field */
-      
-      } named_obj;
+      };
 
-      std::string xml_file;  // Alternate XML file pattern
+      Param_t        param;      /*!< Parameters */    
+      NamedObject_t  named_obj;  /*!< Named objects */
+      std::string    xml_file;   /*!< Alternate XML file pattern */
     };
 
 
-    //! Inline measurement of stochastic group baryon operators
+    //! Inline measurement of stochastic group meson operators
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {
