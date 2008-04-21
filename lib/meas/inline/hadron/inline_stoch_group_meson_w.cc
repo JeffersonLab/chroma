@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.2 2008-04-20 15:59:44 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.3 2008-04-21 03:19:57 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -282,7 +282,6 @@ namespace Chroma
     {
       int  t0;              /*!< Time of source */
       int dil;              /*!< dilution component per timeslice */
-
     };
 
 
@@ -377,7 +376,6 @@ namespace Chroma
 						      const KeySmearedDispColorVector_t& key);
 
     protected:
-      
       //! Displace an object
       virtual const multi1d<LatticeComplex>&	displaceObject(
 	map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark_map,
@@ -391,13 +389,9 @@ namespace Chroma
       virtual const LatticeFermion&
       smearSolution(int qnum , const KeySmearedQuark_t & key);
 
-
     private:
-     
       multi1d< Handle< DilutionScheme<LatticeFermion> > > diluted_quarks;	
-			
       Handle < QuarkSmearing<LatticeFermion> > quarkSmearing;
-
 		
       //!Gauge field 
       const multi1d<LatticeColorMatrix> & u;
@@ -421,13 +415,11 @@ namespace Chroma
     SmearedDispObjects::smearSource(int qnum , 
 				    const KeySmearedQuark_t & key)
     {
-
       map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_src_maps[qnum];
 
       //If entry is not in map create it
       if ( qmap.find(key) == qmap.end() )
       {
-
 	// Insert an empty entry and then modify it. This saves on
 	// copying the data around
 	{
@@ -482,9 +474,7 @@ namespace Chroma
     SmearedDispObjects::smearSolution(int qnum , 
 				      const KeySmearedQuark_t & key)
     {
-
       map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_soln_maps[qnum];
-
 
       //If entry is not in map create it
       if ( qmap.find(key) == qmap.end() )
@@ -539,7 +529,6 @@ namespace Chroma
     SmearedDispObjects::getDispSource(int quark_num, 
 				      const KeySmearedDispColorVector_t& key)
     {
-		
       //Get Smeared quark 
       KeySmearedQuark_t smr_key;
       smr_key.t0 = key.t0;
@@ -565,7 +554,6 @@ namespace Chroma
       }
 
       return vec;
-		
     }
 
     //! Accessor
@@ -573,7 +561,6 @@ namespace Chroma
     SmearedDispObjects::getDispSolution(int quark_num, 
 					const KeySmearedDispColorVector_t& key)
     {
-	
       //Get Smeared quark 
       KeySmearedQuark_t smr_key;
       smr_key.t0 = key.t0;
@@ -609,7 +596,6 @@ namespace Chroma
       const KeySmearedDispColorVector_t& key,
       const LatticeFermion& smrd_q)
     {
-
       StopWatch snoop;
 
       // If no entry, then create a displaced version of the quark
@@ -623,8 +609,6 @@ namespace Chroma
 	//		   << " len=" << term.quark[i].disp_len
 	//		   << " dir=" << term.quark[i].disp_dir
 	//		   << endl;
-
-
 
 	// Insert an empty entry and then modify it. This saves on
 	// copying the data around
@@ -703,23 +687,14 @@ namespace Chroma
     //----------------------------------------------------------------------------
     //Support for the diquarks
 
-    void makeDiquark( multi1d<LatticeComplex> & diquark, const multi1d<LatticeComplex> & q0,
-		      const multi1d<LatticeComplex> & q1, const Subset & subset )
+    void makeColorSinglet (LatticeComplex& singlet, 
+			   const multi1d<LatticeComplex>& q0,
+			   const multi1d<LatticeComplex>& q1, 
+			   const Subset& subset)
     {
-      //The signs for the diquark are taken from
-      //the colorContract function in qdp_primcolorvec.h
-      diquark[0][subset] =  q0[0]*q1[1] - q0[1]*q1[0];
-      diquark[1][subset] =  q0[1]*q1[2] - q0[2]*q1[1];
-      diquark[2][subset] =  q0[2]*q1[0] - q0[0]*q1[2];
-    }
-
-
-    void makeColorSinglet (LatticeComplex & singlet, const multi1d<LatticeComplex> & diquark, 
-			   const multi1d<LatticeComplex> & q2, const Subset & subset)
-    {
-      singlet[subset]  = diquark[0] * q2[2];
-      singlet[subset] += diquark[1] * q2[0];  
-      singlet[subset] += diquark[2] * q2[1];  
+      singlet[subset]  = q0[0] * q1[0];
+      for(int i=1; i < q0.size(); ++i)
+	singlet[subset] += q0[i] * q1[i];
     }
 
 
@@ -746,7 +721,7 @@ namespace Chroma
 	  };
 
 	  multi1d<int> perm;                  /*!< This particular permutation of quark orderings */
-	  multi3d<Dilutions_t> dilutions;     /*!< Hybrid list indices */
+	  multi2d<Dilutions_t> dilutions;     /*!< Hybrid list indices */
 	};
 
 	multi1d<Orderings_t> orderings;       /*!< Array is over quark orderings */
@@ -758,11 +733,9 @@ namespace Chroma
       GroupXML_t    smearing;          /*!< String holding quark smearing xml */
 
       Seed          seed_l;            /*!< Id of left quark */
-      Seed          seed_m;            /*!< Id of middle quark */
       Seed          seed_r;            /*!< Id of right quark */
 
       GroupXML_t    dilution_l;        /*!< Dilution scheme of left quark */ 
-      GroupXML_t    dilution_m;        /*!< Dilution scheme of middle quark */ 
       GroupXML_t    dilution_r;        /*!< Dilution scheme of right quark */ 
 
       std::string   id;                /*!< Tag/ID used in analysis codes */
@@ -786,7 +759,6 @@ namespace Chroma
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "seed_l", param.seed_l);
-      write(xml, "seed_m", param.seed_m);
       write(xml, "seed_r", param.seed_r);
       write(xml, "perms", param.perms);
 
@@ -794,10 +766,6 @@ namespace Chroma
       xml << param.dilution_l.xml; 
       pop(xml);
 
-      push(xml, "dilution_m");
-      xml << param.dilution_m.xml; 
-      pop(xml);
-      
       push(xml, "dilution_r");
       xml << param.dilution_r.xml; 
       pop(xml);
@@ -840,7 +808,6 @@ namespace Chroma
     void write(BinaryWriter& bin, const MesonOperator_t& param)
     {
       write(bin, param.seed_l);
-      write(bin, param.seed_m);
       write(bin, param.seed_r);
       write(bin, param.mom2_max);
       write(bin, param.decay_dir);
@@ -873,11 +840,11 @@ namespace Chroma
 
 	// Read 1-based spin
 	multi1d<int> spin(N_quarks);
-	reader >> spin[0] >> spin[1] >> spin[2];
+	reader >> spin[0] >> spin[1];
 
 	// Read 1-based displacement
 	multi1d<int> displacement(N_quarks);
-	reader >> displacement[0] >> displacement[1] >> displacement[2];
+	reader >> displacement[0] >> displacement[1];
 
 	// Insert for each quark
 	for(int i=0; i < qqq.quark.size(); ++i)
@@ -1205,11 +1172,12 @@ namespace Chroma
       //Should think of a cleverer algorithm for n quarks 
       if  (pstring.size() != N_quarks)
       {
-	QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 3 but is " << pstring.size() << endl;
+	QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 2 but is " << pstring.size() << endl;
 	QDP_abort(1);
       }
 
-      //If 2 identical quarks, different one must be in the fisrt position
+#if 0
+      // If 2 identical quarks, different one must be in the first position
       if (  ( (pstring[0] == pstring[2]) && (pstring[1] != pstring[2]) ) ||
 	    ( (pstring[0] == pstring[1]) && (pstring[1] != pstring[2]) ) )
       {
@@ -1232,7 +1200,7 @@ namespace Chroma
 	}
       }
 			
-      if  (pstring[0] == pstring[2]) 
+      if (pstring[0] == pstring[2]) 
       {
 	num_orderings = 6;
       
@@ -1245,6 +1213,7 @@ namespace Chroma
 	  QDP_abort(1);
 	}
       }
+#endif
 				
       QDPIO::cout << "Num Ordering = " << num_orderings << endl;
 
@@ -1254,38 +1223,14 @@ namespace Chroma
 
 	if (num_orderings >= 1)
 	{
-	  p[0] = 0; p[1] = 1; p[2] = 2;
+	  p[0] = 0; p[1] = 1;
 	  perms[0] = p;
 	}
 
 	if (num_orderings >= 2)
 	{
-	  p[0] = 0; p[1] = 2; p[2] = 1;
+	  p[0] = 0; p[1] = 2;
 	  perms[1] = p;
-	}
-
-	if (num_orderings >= 3)
-	{
-	  p[0] = 1; p[1] = 0; p[2] = 2;
-	  perms[2] = p;
-	}
-
-	if (num_orderings >= 4)
-	{
-	  p[0] = 1; p[1] = 2; p[2] = 0;
-	  perms[3] = p;
-	}
-
-	if (num_orderings >= 5)
-	{
-	  p[0] = 2; p[1] = 1; p[2] = 0;
-	  perms[4] = p;
-	}
-
-	if (num_orderings >= 6)
-	{
-	  p[0] = 2; p[1] = 0; p[2] = 1;
-	  perms[5] = p;
 	}
       }
 
@@ -1307,11 +1252,9 @@ namespace Chroma
 	  creat_oper.mom2_max    = params.param.mom2_max;
 	  creat_oper.decay_dir   = decay_dir;
 	  creat_oper.seed_l      = diluted_quarks[0]->getSeed();
-	  creat_oper.seed_m      = diluted_quarks[1]->getSeed();
-	  creat_oper.seed_r      = diluted_quarks[2]->getSeed();
+	  creat_oper.seed_r      = diluted_quarks[1]->getSeed();
 	  creat_oper.dilution_l  = params.param.quark_dils[0];
-	  creat_oper.dilution_m  = params.param.quark_dils[1];
-	  creat_oper.dilution_r  = params.param.quark_dils[2];
+	  creat_oper.dilution_r  = params.param.quark_dils[1];
 	  creat_oper.smearing    = params.param.quark_smearing;
 	  creat_oper.perms       = perms;
 	  creat_oper.time_slices.resize( 1 ); //Only a single t0 per file 
@@ -1353,15 +1296,13 @@ namespace Chroma
 
 	      const int n0 = perms[ord][0];
 	      const int n1 = perms[ord][1];
-	      const int n2 = perms[ord][2];
 
 	      // The operator must hold all the dilutions
 
 	      // Creation operator
 	      MesonOperator_t::TimeSlices_t::Orderings_t& cop = creat_oper.time_slices[0].orderings[ord];
 
-	      cop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0),
-				   diluted_quarks[n2]->getDilSize(t0) );
+	      cop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0));
 
 	      for (int n = 0 ; n < N_quarks ; ++n)
 	      {
@@ -1370,9 +1311,8 @@ namespace Chroma
 
 	      for(int i = 0 ; i <  diluted_quarks[n0]->getDilSize(t0) ; ++i)
 	      {
-		for(int j = 0 ; j < diluted_quarks[n1]->getDilSize(t0) ; ++j)	      						
+		for(int j = 0 ; j < diluted_quarks[n1]->getDilSize(t0) ; ++j)
 		{
-
 		  keySmearedDispColorVector[0].dil = i;
 		  keySmearedDispColorVector[1].dil = j;
 
@@ -1385,82 +1325,46 @@ namespace Chroma
 		  const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDispSource(n1, 
 										   keySmearedDispColorVector[1]);
 
-		  /*QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
-		    << endl; 
-
-		    QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
-		    << endl; 
-
-		  */
+		  LatticeComplex c_oper;
 
 		  watch.reset();
 		  watch.start();
-		  //For the source, restrict this operation to a subset
-		  makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
+
+		  makeColorSinglet(c_oper, q0, q1, phases.getSet()[participating_timeslices[t0]]);
+		  
 		  watch.stop();
 
-		  /*QDPIO::cout<< " Made diquark : time = " << 
+		  /*QDPIO::cout<< "Made Color singlet : time =  " <<  
 		    watch.getTimeInSeconds() << "secs" << endl;
-		  */		
+		  */	
+		  /*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
+		    << endl;
+		  */	
 
-		  for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
+		  // Slow fourier-transform
+		  // We can restrict what the FT routine requires to a subset.
+		  watch.reset();
+		  watch.start();
+
+		  multi2d<DComplex> c_sum(phases.sft(c_oper, 
+						     participating_timeslices[t0]));
+
+		  watch.stop();
+
+		  /*QDPIO::cout << " Spatial sums completed: time = " << 
+		    watch.getTimeInSeconds() << "secs " << endl;
+		  */
+		  // Unpack into separate momentum and correlator
+		  cop.dilutions(i,j).mom_projs.resize(phases.numMom());
+
+		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 		  {
+		    cop.dilutions(i,j).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		    cop.dilutions(i,j).mom_projs[mom_num].op.resize(1);
 
-		    keySmearedDispColorVector[2].dil = k;
-
-		    // Contract over color indices with antisym tensor.
-		    // NOTE: the creation operator only lives on a time slice, so restrict
-		    // the operation to that time slice
-
-		    LatticeComplex c_oper;
-
-		    const multi1d<LatticeComplex> &q2 = smrd_disp_srcs.getDispSource(n2, 
-										     keySmearedDispColorVector[2]);
-
-		    /*QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
-		      << endl; 
-		    */
-		    watch.reset();
-		    watch.start();
-
-		    makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
-					participating_timeslices[t0] ] );
-
-		    watch.stop();
-
-		    /*QDPIO::cout<< "Made Color singlet : time =  " <<  
-		      watch.getTimeInSeconds() << "secs" << endl;
-		    */	
-		    /*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
-		      << endl;
-		    */	
-		    // Slow fourier-transform
-		    // We can restrict what the FT routine requires to a subset.
-		    watch.reset();
-		    watch.start();
-
-		    multi2d<DComplex> c_sum(phases.sft(c_oper, 
-						       participating_timeslices[t0] ));
-
-		    watch.stop();
-
-		    /*QDPIO::cout << " Spatial sums completed: time = " << 
-		      watch.getTimeInSeconds() << "secs " << endl;
-		    */
-		    // Unpack into separate momentum and correlator
-		    cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-
-		    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
-		    {
-		      cop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
-
-		      cop.dilutions(i,j,k).mom_projs[mom_num].op.resize(1);
-
-		      cop.dilutions(i,j,k).mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ 
-			participating_timeslices[t0] ];
-		    }
-
-		  } // end for k
+		    cop.dilutions(i,j).mom_projs[mom_num].op[ 0 ] = c_sum[mom_num][ 
+		      participating_timeslices[t0] ];
+		  }
 		} // end for j
 	      } // end for i
 	    }//end ord 
@@ -1475,7 +1379,7 @@ namespace Chroma
 
 	    QDPIO::cout << "Source operator testval(t0 = " << 
 	      participating_timeslices[t0] << ") = " << 
-	      creat_oper.time_slices[0].orderings[0].dilutions(0,0,0).mom_projs[0].op[0];
+	      creat_oper.time_slices[0].orderings[0].dilutions(0,0).mom_projs[0].op[0];
 
 
 
@@ -1516,7 +1420,7 @@ namespace Chroma
 	      pop(file_xml); //TimeSlice
 	      pop(file_xml); //Quark_l
 
-	      push(file_xml, "Quark_m");
+	      push(file_xml, "Quark_r");
 	      push(file_xml, "TimeSlice");
 	      push(file_xml, "Dilutions");
 	      for (int dil = 0; dil < diluted_quarks[1]->getDilSize(t0) ; ++dil)
@@ -1526,33 +1430,17 @@ namespace Chroma
 	      }
 	      pop(file_xml); //dilutions 
 	      pop(file_xml); //TimeSlice
-	      pop(file_xml); //Quark_m
-
-	      push(file_xml, "Quark_r");
-	      push(file_xml, "TimeSlice");
-	      push(file_xml, "Dilutions");
-	      for (int dil = 0; dil < diluted_quarks[2]->getDilSize(t0) ; ++dil)
-	      {
-		write( file_xml, "elem", 
-		       diluted_quarks[2]->getSourceHeader(t0, dil) );
-	      }
-	      pop(file_xml); //dilutions 
-	      pop(file_xml); //TimeSlice
 	      pop(file_xml); //Quark_r
 
 	      pop(file_xml);//QuarkSources
 	      push(file_xml, "QuarkSinks");
 
 	      push(file_xml, "Quark_l");
-	      write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
-	      pop(file_xml);
-
-	      push(file_xml, "Quark_m");
-	      write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
+	      write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0));
 	      pop(file_xml);
 
 	      push(file_xml, "Quark_r");
-	      write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
+	      write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0));
 	      pop(file_xml);
 
 	      pop(file_xml); //Quark Sinks  
@@ -1588,7 +1476,7 @@ namespace Chroma
 
 	  // The object holding the smeared and displaced color vector maps  
 	  SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
-					    diluted_quarks, quarkSmearing, u_smr );
+					    diluted_quarks, quarkSmearing, u_smr);
 
 
 	  // Annihilation operator
@@ -1596,11 +1484,9 @@ namespace Chroma
 	  annih_oper.mom2_max    = params.param.mom2_max;
 	  annih_oper.decay_dir   = decay_dir;
 	  annih_oper.seed_l      = diluted_quarks[0]->getSeed();
-	  annih_oper.seed_m      = diluted_quarks[1]->getSeed();
-	  annih_oper.seed_r      = diluted_quarks[2]->getSeed();
+	  annih_oper.seed_r      = diluted_quarks[1]->getSeed();
 	  annih_oper.dilution_l  = params.param.quark_dils[0];
-	  annih_oper.dilution_m  = params.param.quark_dils[1];
-	  annih_oper.dilution_r  = params.param.quark_dils[2];
+	  annih_oper.dilution_r  = params.param.quark_dils[1];
 	  annih_oper.smearing    = params.param.quark_smearing;
 	  annih_oper.perms       = perms;
 	  annih_oper.time_slices.resize( 1 );
@@ -1639,7 +1525,6 @@ namespace Chroma
 
 	      const int n0 = perms[ord][0];
 	      const int n1 = perms[ord][1];
-	      const int n2 = perms[ord][2];
 
 	      // The operator must hold all the dilutions
 	      // We know that all time slices match. However, not all time slices of the
@@ -1648,8 +1533,7 @@ namespace Chroma
 	      // Creation operator
 	      MesonOperator_t::TimeSlices_t::Orderings_t& aop = annih_oper.time_slices[0].orderings[ord];
 
-	      aop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0),
-				   diluted_quarks[n2]->getDilSize(t0) );
+	      aop.dilutions.resize(diluted_quarks[n0]->getDilSize(t0), diluted_quarks[n1]->getDilSize(t0));
 
 	      for (int n = 0 ; n < N_quarks ; ++n)
 	      {
@@ -1673,82 +1557,50 @@ namespace Chroma
 		  const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDispSolution(n1, 
 										     keySmearedDispColorVector[1]);
 
+		  // Contract over color indices with antisym tensor.
+		  // There is a potential optimization here - the colorcontract of
+		  // the first two quarks could be pulled outside the innermost dilution
+		  // loop.
+		  // NOTE: the creation operator only lives on a time slice, so restrict
+		  // the operation to that time slice
 
-		  //QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
-		  //	<< endl; 
-
-		  //QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
-		  //	<< endl; 
-
+		  LatticeComplex a_oper;
 
 		  watch.reset();
 		  watch.start();
 
-		  makeDiquark( diquark, q0 , q1, all ); 
+		  makeColorSinglet(a_oper, q0, q1, all);
 
 		  watch.stop();
-		  /*QDPIO::cout << "Made diquark: time = " << 
-		    watch.getTimeInSeconds() << "secs " << endl;
+
+		  /*
+		    QDPIO::cout <<	"Made Color Singlet: time = " <<
+		    watch.getTimeInSeconds() << "secs" << endl;
+		  */
+		  /*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
+		    << endl;
 		  */
 
-		  for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
+		  watch.reset();
+		  watch.start();
+
+		  // Slow fourier-transform
+		  multi2d<DComplex> a_sum( phases.sft(a_oper) );
+
+		  watch.stop();
+		  /*
+		    QDPIO::cout << "Spatial Sums completed: time " << 
+		    watch.getTimeInSeconds() << "secs" << endl;
+		  */		
+		  // Unpack into separate momentum and correlator
+		  aop.dilutions(i,j).mom_projs.resize(phases.numMom());
+
+		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 		  {
+		    aop.dilutions(i,j).mom_projs[mom_num].mom = phases.numToMom(mom_num);
 
-		    keySmearedDispColorVector[2].dil = k;
-
-		    // Contract over color indices with antisym tensor.
-		    // There is a potential optimization here - the colorcontract of
-		    // the first two quarks could be pulled outside the innermost dilution
-		    // loop.
-		    // NOTE: the creation operator only lives on a time slice, so restrict
-		    // the operation to that time slice
-
-		    LatticeComplex a_oper;
-
-		    const multi1d<LatticeComplex> &q2 = smrd_disp_snks.getDispSolution(n2, 
-										       keySmearedDispColorVector[2]);
-
-		    //QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
-		    //<< endl;
-
-		    watch.reset();
-		    watch.start();
-
-		    makeColorSinglet( a_oper, diquark, q2, all);
-
-		    watch.stop();
-
-		    /*
-		      QDPIO::cout <<	"Made Color Singlet: time = " <<
-		      watch.getTimeInSeconds() << "secs" << endl;
-		    */
-		    /*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
-		      << endl;
-		    */
-
-		    watch.reset();
-		    watch.start();
-
-		    // Slow fourier-transform
-		    multi2d<DComplex> a_sum( phases.sft(a_oper) );
-
-		    watch.stop();
-		    /*
-		      QDPIO::cout << "Spatial Sums completed: time " << 
-		      watch.getTimeInSeconds() << "secs" << endl;
-		    */		
-		    // Unpack into separate momentum and correlator
-		    aop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
-
-		    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
-		    {
-		      aop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
-
-		      aop.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
-
-		    }
-
-		  } // end for k
+		    aop.dilutions(i,j).mom_projs[mom_num].op = a_sum[mom_num];
+		  }
 		} // end for j
 	      } // end for i
 	    }//end ord 
@@ -1762,7 +1614,7 @@ namespace Chroma
 
 	    QDPIO::cout << "Sink op testval( t0 = " << 
 	      participating_timeslices[t0] << ") = " << 
-	      annih_oper.time_slices[0].orderings[0].dilutions(0,0,0).mom_projs[0].op[0] 
+	      annih_oper.time_slices[0].orderings[0].dilutions(0,0).mom_projs[0].op[0] 
 			<< endl;
 
 	    //Hard code the elemental op name for now 
@@ -1798,25 +1650,12 @@ namespace Chroma
 	      pop(file_xml); //TimeSlice
 	      pop(file_xml); //Quark_l
 
-	      push(file_xml, "Quark_m");
+	      push(file_xml, "Quark_r");
 	      push(file_xml, "TimeSlice");
 	      push(file_xml, "Dilutions");
 	      for (int dil = 0; dil < diluted_quarks[1]->getDilSize(t0) ; ++dil)
 	      {
-		write( file_xml, "elem", 
-		       diluted_quarks[1]->getSourceHeader(t0, dil) );
-	      }
-	      pop(file_xml); //dilutions 
-	      pop(file_xml); //TimeSlice
-	      pop(file_xml); //Quark_m
-
-	      push(file_xml, "Quark_r");
-	      push(file_xml, "TimeSlice");
-	      push(file_xml, "Dilutions");
-	      for (int dil = 0; dil < diluted_quarks[2]->getDilSize(t0) ; ++dil)
-	      {
-		write( file_xml, "elem", 
-		       diluted_quarks[2]->getSourceHeader(t0, dil) );
+		write(file_xml, "elem", diluted_quarks[1]->getSourceHeader(t0, dil));
 	      }
 	      pop(file_xml); //dilutions 
 	      pop(file_xml); //TimeSlice
@@ -1826,15 +1665,11 @@ namespace Chroma
 	      push(file_xml, "QuarkSinks");
 
 	      push(file_xml, "Quark_l");
-	      write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0) );
-	      pop(file_xml);
-
-	      push(file_xml, "Quark_m");
-	      write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0) );
+	      write(file_xml, "PropHeader", diluted_quarks[0]->getPropHeader(0,0));
 	      pop(file_xml);
 
 	      push(file_xml, "Quark_r");
-	      write(file_xml, "PropHeader", diluted_quarks[2]->getPropHeader(0,0) );
+	      write(file_xml, "PropHeader", diluted_quarks[1]->getPropHeader(0,0));
 	      pop(file_xml);
 
 	      pop(file_xml);//QuarkSinks 
