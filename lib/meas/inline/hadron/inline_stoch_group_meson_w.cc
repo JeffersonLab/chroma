@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.3 2008-04-21 03:19:57 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.4 2008-04-21 03:20:54 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -1176,45 +1176,6 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-#if 0
-      // If 2 identical quarks, different one must be in the first position
-      if (  ( (pstring[0] == pstring[2]) && (pstring[1] != pstring[2]) ) ||
-	    ( (pstring[0] == pstring[1]) && (pstring[1] != pstring[2]) ) )
-      {
-	QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries.: "
-		    << pstring << endl;
-	QDP_abort(1);
-      }
-			
-      //Check that the kappas of the supposed identical quarks are the same.
-      if ( (pstring[0] != pstring[1]) && (pstring[1] == pstring[2]) )
-      {
-	num_orderings = 2;
-      
-	if ( toBool(diluted_quarks[0]->getKappa() == diluted_quarks[1]->getKappa()) ||
-	     toBool(diluted_quarks[1]->getKappa() != diluted_quarks[2]->getKappa()) )
-	{
-	  QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
-		      << endl;
-	  QDP_abort(1);
-	}
-      }
-			
-      if (pstring[0] == pstring[2]) 
-      {
-	num_orderings = 6;
-      
-	if ( toBool(diluted_quarks[0]->getKappa() != diluted_quarks[1]->getKappa()) ||
-	     toBool(diluted_quarks[0]->getKappa() != diluted_quarks[2]->getKappa()) )
-	{
-					
-	  QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
-		      << endl;
-	  QDP_abort(1);
-	}
-      }
-#endif
-				
       QDPIO::cout << "Num Ordering = " << num_orderings << endl;
 
       multi1d< multi1d<int> >  perms(num_orderings);
