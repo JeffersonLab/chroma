@@ -1,10 +1,9 @@
-// $Id: dilution_scheme_aggregate.cc,v 1.4 2008-01-19 02:10:21 jbulava Exp $
+// $Id: dilution_scheme_aggregate.cc,v 1.5 2008-04-21 03:19:35 edwards Exp $
 /*! \file
  *  \brief All dilution scheme factories
  */
 
 #include "meas/hadron/dilution_scheme_aggregate.h"
-
 #include "meas/hadron/dilution_quark_source_const_w.h"
 
 namespace Chroma
@@ -24,14 +23,14 @@ namespace Chroma
     {
       bool success = true; 
       if (! registered)
-			{
-				// Hadron
-				success &= DilutionQuarkSourceConstEnv::registerAll();
+      {
+	// Hadron
+	success &= DilutionQuarkSourceConstEnv::registerAll();
 
-				registered = true;
-			}
-			return success;
-		}
-	}
+	registered = true;
+      }
+      return success;
+    }
+  }
 
 }

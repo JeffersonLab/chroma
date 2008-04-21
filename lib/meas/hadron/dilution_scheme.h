@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilution_scheme.h,v 1.7 2008-03-07 16:47:11 jbulava Exp $
+// $Id: dilution_scheme.h,v 1.8 2008-04-21 03:19:35 edwards Exp $
 /*! \file
  *  \brief Dilution Schemes
  */
@@ -20,12 +20,9 @@ namespace Chroma
   template<typename T>
   class DilutionScheme
   {
-  
-	public:
-
+  public:
     //! Virtual destructor to help with cleanup;
     virtual ~DilutionScheme() {}
-
  
     //! The decay direction
     virtual int getDecayDir() const = 0;
@@ -33,21 +30,21 @@ namespace Chroma
     //! The seed identifies this quark
     virtual const Seed& getSeed() const = 0;
 
-		virtual int getT0(int t0) const = 0 ;
+    virtual int getT0(int t0) const = 0 ;
 		
-		virtual int getDilSize(int t0) const = 0 ;
+    virtual int getDilSize(int t0) const = 0 ;
 
-		virtual int getNumTimeSlices() const = 0;
+    virtual int getNumTimeSlices() const = 0;
 	
-		virtual Real getKappa() const = 0;
+    virtual Real getKappa() const = 0;
 
-		virtual std::string getCfgInfo() const = 0;
+    virtual std::string getCfgInfo() const = 0;
 
-		virtual	std::string getPropHeader(int t0, int dil) const = 0; 
+    virtual std::string getPropHeader(int t0, int dil) const = 0; 
     
-		virtual	std::string getSourceHeader(int t0, int dil) const = 0; 
+    virtual std::string getSourceHeader(int t0, int dil) const = 0; 
 
-		//! Return the diluted source vector
+    //! Return the diluted source vector
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? PROBABLY NO */
     virtual T dilutedSource(int t0, int dil ) const = 0;
     
