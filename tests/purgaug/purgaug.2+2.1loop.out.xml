@@ -87,10 +87,10 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.28.0</chroma>
+      <chroma>3.28.3</chroma>
       <qdp>1.25.1</qdp>
     </code_version>
-    <run_date>23 Jan 08 10:42:45 EST</run_date>
+    <run_date>23 Apr 08 09:45:19 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 8 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -254,6 +254,66 @@
                 <update_no>2</update_no>
                 <decay_dir>3</decay_dir>
                 <t_dir>3</t_dir>
+                <Observables>
+                  <w_plaq>0.722234190693093</w_plaq>
+                  <s_plaq>0.634462561899757</s_plaq>
+                  <t_plaq>0.810005819486428</t_plaq>
+                  <plane_01_plaq>0.435381019633496</plane_01_plaq>
+                  <plane_02_plaq>0.73837172597996</plane_02_plaq>
+                  <plane_12_plaq>0.729634940085816</plane_12_plaq>
+                  <plane_03_plaq>0.738176218350418</plane_03_plaq>
+                  <plane_13_plaq>0.730531883261089</plane_13_plaq>
+                  <plane_23_plaq>0.961309356847778</plane_23_plaq>
+                  <link>0.0685967315030211</link>
+                  <pollp>
+                    <elem>
+                      <re>0.322501050918314</re>
+                      <im>-0.0155110940298376</im>
+                    </elem>
+                    <elem>
+                      <re>0.288044492563737</re>
+                      <im>0.0154667594191172</im>
+                    </elem>
+                    <elem>
+                      <re>0.690870427371313</re>
+                      <im>-0.00682612401578808</im>
+                    </elem>
+                    <elem>
+                      <re>0.711680463592832</re>
+                      <im>-0.00432597299004556</im>
+                    </elem>
+                  </pollp>
+                </Observables>
+                <Link_observables>
+                  <w_plaq>0.722234190693093</w_plaq>
+                  <s_plaq>0.634462561899757</s_plaq>
+                  <t_plaq>0.810005819486428</t_plaq>
+                  <plane_01_plaq>0.435381019633496</plane_01_plaq>
+                  <plane_02_plaq>0.73837172597996</plane_02_plaq>
+                  <plane_12_plaq>0.729634940085816</plane_12_plaq>
+                  <plane_03_plaq>0.738176218350418</plane_03_plaq>
+                  <plane_13_plaq>0.730531883261089</plane_13_plaq>
+                  <plane_23_plaq>0.961309356847778</plane_23_plaq>
+                  <link>0.0685967315030211</link>
+                  <pollp>
+                    <elem>
+                      <re>0.322501050918314</re>
+                      <im>-0.0155110940298376</im>
+                    </elem>
+                    <elem>
+                      <re>0.288044492563737</re>
+                      <im>0.0154667594191172</im>
+                    </elem>
+                    <elem>
+                      <re>0.690870427371313</re>
+                      <im>-0.00682612401578808</im>
+                    </elem>
+                    <elem>
+                      <re>0.711680463592832</re>
+                      <im>-0.00432597299004556</im>
+                    </elem>
+                  </pollp>
+                </Link_observables>
                 <wils_loop1>
                   <lengthr>2</lengthr>
                   <wloop1>
@@ -399,6 +459,66 @@
                 <update_no>4</update_no>
                 <decay_dir>3</decay_dir>
                 <t_dir>3</t_dir>
+                <Observables>
+                  <w_plaq>0.678110126376446</w_plaq>
+                  <s_plaq>0.576607351672364</s_plaq>
+                  <t_plaq>0.779612901080529</t_plaq>
+                  <plane_01_plaq>0.354388733154337</plane_01_plaq>
+                  <plane_02_plaq>0.695295349670535</plane_02_plaq>
+                  <plane_12_plaq>0.680137972192218</plane_12_plaq>
+                  <plane_03_plaq>0.698917414410971</plane_03_plaq>
+                  <plane_13_plaq>0.687422436943355</plane_13_plaq>
+                  <plane_23_plaq>0.952498851887261</plane_23_plaq>
+                  <link>0.0200591186990096</link>
+                  <pollp>
+                    <elem>
+                      <re>0.145132968972272</re>
+                      <im>-0.0169486390671712</im>
+                    </elem>
+                    <elem>
+                      <re>0.26663935148099</re>
+                      <im>0.00300918601351441</im>
+                    </elem>
+                    <elem>
+                      <re>0.606445029763563</re>
+                      <im>-0.00719518947395651</im>
+                    </elem>
+                    <elem>
+                      <re>0.639168002584483</re>
+                      <im>-0.00658278471200902</im>
+                    </elem>
+                  </pollp>
+                </Observables>
+                <Link_observables>
+                  <w_plaq>0.678110126376446</w_plaq>
+                  <s_plaq>0.576607351672364</s_plaq>
+                  <t_plaq>0.779612901080529</t_plaq>
+                  <plane_01_plaq>0.354388733154337</plane_01_plaq>
+                  <plane_02_plaq>0.695295349670535</plane_02_plaq>
+                  <plane_12_plaq>0.680137972192218</plane_12_plaq>
+                  <plane_03_plaq>0.698917414410971</plane_03_plaq>
+                  <plane_13_plaq>0.687422436943355</plane_13_plaq>
+                  <plane_23_plaq>0.952498851887261</plane_23_plaq>
+                  <link>0.0200591186990096</link>
+                  <pollp>
+                    <elem>
+                      <re>0.145132968972272</re>
+                      <im>-0.0169486390671712</im>
+                    </elem>
+                    <elem>
+                      <re>0.26663935148099</re>
+                      <im>0.00300918601351441</im>
+                    </elem>
+                    <elem>
+                      <re>0.606445029763563</re>
+                      <im>-0.00719518947395651</im>
+                    </elem>
+                    <elem>
+                      <re>0.639168002584483</re>
+                      <im>-0.00658278471200902</im>
+                    </elem>
+                  </pollp>
+                </Link_observables>
                 <wils_loop1>
                   <lengthr>2</lengthr>
                   <wloop1>
