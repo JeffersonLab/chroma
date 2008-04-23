@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.12 2006-09-20 20:28:02 edwards Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.13 2008-04-23 04:06:49 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -238,8 +238,6 @@ namespace Chroma
   //! Baryon operator
   struct BaryonOperator_t
   {
-    //! Serialize generalized operator object
-    multi1d<Complex> serialize();
 
     //! Baryon operator
     struct BaryonOperatorInsertion_t
@@ -272,64 +270,35 @@ namespace Chroma
   };
 
 
-  //! Serialize generalized operator object
-  multi1d<Complex> BaryonOperator_t::serialize()
-  {
-    int orderings_size = orderings.size();
-    int op_size3   = orderings[0].op.size3();
-    int op_size2   = orderings[0].op.size2();
-    int op_size1   = orderings[0].op.size1();
-    int ind_size   = orderings[0].op(0,0,0).ind.size();
-    int elem_size2 = orderings[0].op(0,0,0).ind[0].elem.size2();
-    int elem_size1 = orderings[0].op(0,0,0).ind[0].elem.size1();
-
-//    QDPIO::cout << "orderings=" << orderings_size << endl;
-//    QDPIO::cout << "op_size3=" << op_size3 << endl;
-//    QDPIO::cout << "op_size2=" << op_size2 << endl;
-//    QDPIO::cout << "op_size1=" << op_size1 << endl;
-//    QDPIO::cout << "ind_size=" << ind_size << endl;
-//    QDPIO::cout << "elem_size2=" << elem_size2 << endl;
-//    QDPIO::cout << "elem_size1=" << elem_size1 << endl;
-
-    // dreadful hack - use a complex to hold an int
-    Complex ord_sizes, op_sizes1, op_sizes2, elem_sizes;
-    ord_sizes   = cmplx(Real(orderings_size), Real(zero));
-    op_sizes1   = cmplx(Real(op_size2), Real(op_size1));
-    op_sizes2   = cmplx(Real(op_size3), Real(ind_size));
-    elem_sizes  = cmplx(Real(elem_size2), Real(elem_size1));
-
-    multi1d<Complex> mesprop_1d(4 + orderings_size*op_size3*op_size2*op_size1*ind_size*elem_size2*elem_size1);
-
-//    QDPIO::cout << "mesprop_size=" << mesprop_1d.size() << endl;
-
-    int cnt = 0;
-
-    mesprop_1d[cnt++] = ord_sizes;
-    mesprop_1d[cnt++] = op_sizes1;
-    mesprop_1d[cnt++] = op_sizes2;
-    mesprop_1d[cnt++] = elem_sizes;
-
-    for(int s=0; s < orderings.size(); ++s)             // orderings
-    {
-      for(int i=0; i < orderings[s].op.size3(); ++i)             // op_l
-	for(int j=0; j < orderings[s].op.size2(); ++j)           // op_m
-	  for(int k=0; k < orderings[s].op.size1(); ++k)         // op_r
-	    for(int l=0; l < orderings[s].op(i,j,k).ind.size(); ++l)    // ind
-	      for(int a=0; a < orderings[s].op(i,j,k).ind[l].elem.size2(); ++a)    // elem_l
-		for(int b=0; b < orderings[s].op(i,j,k).ind[l].elem.size1(); ++b)  // elem_r
-		  mesprop_1d[cnt++] = orderings[s].op(i,j,k).ind[l].elem(a,b);
-    }
-
-    if (cnt != mesprop_1d.size())
-    {
-      QDPIO::cerr << InlineStochBaryonEnv::name << ": size mismatch in serialization" << endl;
-      QDP_abort(1);
-    }
-
-    return mesprop_1d;
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, 
+	     const BaryonOperator_t::BaryonOperatorInsertion_t::BaryonOperatorIndex_t::BaryonOperatorElement_t& p){
+    write(bin, p.elem);
   }
 
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, 
+	     const BaryonOperator_t::BaryonOperatorInsertion_t::BaryonOperatorIndex_t& p){
+    write(bin, p.ind);
+  }
 
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, 
+	     const BaryonOperator_t::BaryonOperatorInsertion_t& p){
+    write(bin, p.op);
+  }
+
+  //! BaryonOperator binary writer
+  void write(BinaryWriter& bin, const BaryonOperator_t& param){
+    write(bin, param.seed_l);
+    write(bin, param.seed_m);
+    write(bin, param.seed_r);
+    write(bin, param.mom2_max);
+    write(bin, param.j_decay);
+    write(bin, param.perms);
+    write(bin, param.orderings);
+  }
+  
   //! BaryonOperator header writer
   void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
   {
@@ -870,21 +839,25 @@ namespace Chroma
       write(file_xml, "Config_info", gauge_xml);
       pop(file_xml);
 
-      QDPFileWriter to(file_xml, params.named_obj.prop.op_file,     // are there one or two files???
+      QDPFileWriter to(file_xml, params.named_obj.prop.op_file, 
 		       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
 
       // Write the scalar data
       {
 	XMLBufferWriter record_xml;
+	BinaryBufferWriter  record_bin;
 	write(record_xml, "SourceBaryonOperator", baryon_opA);
-	write(to, record_xml, baryon_opA.serialize());
+	write(record_bin, baryon_opA);
+	write(to, record_xml, record_bin);
       }
 
       // Write the scalar data
       {
 	XMLBufferWriter record_xml;
+	BinaryBufferWriter  record_bin;
 	write(record_xml, "SinkBaryonOperator", baryon_opB);
-	write(to, record_xml, baryon_opB.serialize());
+	write(record_bin, baryon_opB);
+	write(to, record_xml, record_bin);
       }
 
       close(to);
