@@ -870,7 +870,7 @@
       <chroma>3.28.3</chroma>
       <qdp>1.25.1</qdp>
     </code_version>
-    <run_date>22 Apr 08 23:53:59 EDT</run_date>
+    <run_date>22 Apr 08 23:55:44 EDT</run_date>
     <Setgeom>
       <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -930,7 +930,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:44 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1028,7 +1028,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:44 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1107,7 +1107,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490544</id>
     </make_source>
 
         </Source_file_info>
@@ -1184,7 +1184,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:44 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1282,7 +1282,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:44 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1361,7 +1361,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490544</id>
     </make_source>
 
         </Source_file_info>
@@ -1438,7 +1438,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1536,7 +1536,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1615,7 +1615,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490545</id>
     </make_source>
 
         </Source_file_info>
@@ -1692,7 +1692,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1790,7 +1790,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1869,7 +1869,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490545</id>
     </make_source>
 
         </Source_file_info>
@@ -1946,7 +1946,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2044,7 +2044,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2123,7 +2123,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490545</id>
     </make_source>
 
         </Source_file_info>
@@ -2200,7 +2200,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2298,7 +2298,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2377,7 +2377,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490545</id>
     </make_source>
 
         </Source_file_info>
@@ -2454,7 +2454,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2552,7 +2552,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2631,7 +2631,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490545</id>
     </make_source>
 
         </Source_file_info>
@@ -2708,7 +2708,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2806,7 +2806,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2885,7 +2885,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267490439</id>
+      <id>267490545</id>
     </make_source>
 
         </Source_file_info>
@@ -2962,7 +2962,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>22 Apr 08 23:53:59 EDT</run_date>
+          <run_date>22 Apr 08 23:55:45 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3133,12 +3133,6 @@
           <Name>m11_+1_+1</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m11_+0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m11_+2_+2</Name>
-        </MesonOperator>
-        <MesonOperator>
           <Name>m12_0_-3</Name>
         </MesonOperator>
         <MesonOperator>
@@ -3146,21 +3140,6 @@
         </MesonOperator>
         <MesonOperator>
           <Name>m21_0_-3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_+1_+3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_0-1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+2_+1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+3_+2</Name>
         </MesonOperator>
         <MesonOperator>
           <Name>m11_+0_-1</Name>
@@ -3169,12 +3148,6 @@
           <Name>m11_+1_+1</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m11_+0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m11_+2_+2</Name>
-        </MesonOperator>
-        <MesonOperator>
           <Name>m12_0_-3</Name>
         </MesonOperator>
         <MesonOperator>
@@ -3182,21 +3155,6 @@
         </MesonOperator>
         <MesonOperator>
           <Name>m21_0_-3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_+1_+3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_0-1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+2_+1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+3_+2</Name>
         </MesonOperator>
         <MesonOperator>
           <Name>m11_+0_-1</Name>
@@ -3205,12 +3163,6 @@
           <Name>m11_+1_+1</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m11_+0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m11_+2_+2</Name>
-        </MesonOperator>
-        <MesonOperator>
           <Name>m12_0_-3</Name>
         </MesonOperator>
         <MesonOperator>
@@ -3218,21 +3170,6 @@
         </MesonOperator>
         <MesonOperator>
           <Name>m21_0_-3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_+1_+3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_0-1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+2_+1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+3_+2</Name>
         </MesonOperator>
         <MesonOperator>
           <Name>m11_+0_-1</Name>
@@ -3241,12 +3178,6 @@
           <Name>m11_+1_+1</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m11_+0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m11_+2_+2</Name>
-        </MesonOperator>
-        <MesonOperator>
           <Name>m12_0_-3</Name>
         </MesonOperator>
         <MesonOperator>
@@ -3254,21 +3185,6 @@
         </MesonOperator>
         <MesonOperator>
           <Name>m21_0_-3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_+1_+3</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m21_0-1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+2_+1</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_0_-2</Name>
-        </MesonOperator>
-        <MesonOperator>
-          <Name>m22_+3_+2</Name>
         </MesonOperator>
       </StochGroupMeson>
     </elem>
