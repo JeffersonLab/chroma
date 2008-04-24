@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.5 2008-04-23 02:57:32 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.6 2008-04-24 14:07:09 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -260,7 +260,7 @@ namespace Chroma
       pop(xml);
     }
 
-    //! Write three quark op 
+    //! Write two quark op 
     void write(XMLWriter& xml, const string& path, 
 	       const TwoQuarkOps_t::TwoQuarkOp_t& input)
     {
@@ -995,7 +995,7 @@ namespace Chroma
 	}
       }
 		
-      //Another Sanity check, the three quarks must all be 
+      //Another Sanity check, the two quarks must all be 
       //inverted on the same cfg
       for (int n = 1 ; n < N_quarks ; ++n)
       {
