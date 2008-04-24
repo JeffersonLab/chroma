@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.6 2008-04-24 05:20:17 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.7 2008-04-24 05:34:51 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -561,6 +561,36 @@ namespace Chroma{
 	}
       }
 
+      //
+      // Initialize the slow Fourier transform phases
+      //
+      int decay_dir = quarks[0]->getDecayDir();
+      
+      SftMom phases(params.param.mom2_max, false, decay_dir);
+      
+      // Sanity check - if this doesn't work we have serious problems
+      if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir]){
+	QDPIO::cerr << name << ": number of time slices not equal to that";
+	QDPIO::cerr << " in the decay direction: " 
+		    << QDP::Layout::lattSize()[decay_dir]
+		    << endl;
+	QDP_abort(1);
+      }
+
+		
+      // Another sanity check. The seeds of all the quarks must be different
+      // and thier decay directions must be the same 
+      for(int n = 1 ; n < quarks.size(); ++n){
+	if(toBool(quarks[n]->getSeed()==quarks[0]->getSeed())){
+	  QDPIO::cerr << name << ": error, quark seeds are the same" << endl;
+	  QDP_abort(1);
+	}
+
+	if(toBool(quarks[n]->getDecayDir()!=quarks[0]->getDecayDir())){
+	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<endl;
+	  QDP_abort(1);
+	}
+      }
       
       // Smear the gauge field if needed
       //
