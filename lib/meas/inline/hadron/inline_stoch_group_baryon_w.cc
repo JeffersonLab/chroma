@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.21 2008-03-11 19:42:18 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.22 2008-04-24 14:26:04 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -694,7 +694,7 @@ namespace Chroma
 
 				snoop.stop(); 
 
-				QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
+				//QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
 
 				return disp_q.vec;
 			}
