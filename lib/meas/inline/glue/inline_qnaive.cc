@@ -1,5 +1,7 @@
 /*! \file
  *  \brief Inline naive topological charge
+ *
+ * Author: Christian Hagen
  */
 
 #include "meas/inline/glue/inline_qnaive.h"
