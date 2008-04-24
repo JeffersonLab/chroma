@@ -1,5 +1,8 @@
+// $Id: qnaive.cc,v 3.3 2008-04-24 14:17:14 edwards Exp $
 /*! \file
  *  \brief Calculate the topological charge from the gluonic definition
+ *
+ *  Conventions are according to Bilson-Thompson et al., hep-lat/0203008
  *
  * Author: Christian Hagen
  */

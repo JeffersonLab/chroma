@@ -1,5 +1,9 @@
+// -*- C++ -*-
+// $Id: inline_qnaive.h,v 3.2 2008-04-24 14:17:14 edwards Exp $
 /*! \file
  *  \brief Inline naive topological charge
+ *
+ * Author: Christian Hagen
  */
 
 #ifndef INLINE_QNAIVE_H
