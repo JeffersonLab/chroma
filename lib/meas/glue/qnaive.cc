@@ -1,5 +1,7 @@
 /*! \file
  *  \brief Calculate the topological charge from the gluonic definition
+ *
+ * Author: Christian Hagen
  */
 
 #include "chromabase.h"
