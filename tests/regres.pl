@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.41 2008-01-13 18:49:20 edwards Exp $
+#  $Id: regres.pl,v 3.42 2008-04-24 14:04:27 edwards Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #
@@ -29,6 +29,7 @@ sub regresDirs
 	    "$test_dir/chroma/glue/gaugestate/regres.pl",
 	    "$test_dir/chroma/glue/fuzwilp/regres.pl",
 	    "$test_dir/chroma/glue/wilslp/regres.pl",
+	    "$test_dir/chroma/glue/qtop_naive/regres.pl",
 	    "$test_dir/chroma/eig/regres.pl",
 	    "$test_dir/chroma/hadron/fermstate/regres.pl",
 	    "$test_dir/chroma/hadron/make_source/regres.pl",
