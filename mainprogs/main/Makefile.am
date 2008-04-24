@@ -84,7 +84,8 @@ bin_PROGRAMS = chroma  \
         hmc spectrum_s
 
 # Wilson specific programs
-check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac
+check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac \
+        make_meson_ops
 
 
 # Staggered specific programs
@@ -125,6 +126,7 @@ qpropadd_SOURCES= qpropadd.cc
 qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
 cfgtransf_SOURCES= cfgtransf.cc
+make_meson_ops_SOURCES= make_meson_ops.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
 
@@ -138,7 +140,7 @@ cfgtransf_SOURCES= cfgtransf.cc
 
 DEPENDENCIES = build_chroma_libs rebuild_other_libs
 ${bin_PROGRAMS}: ${DEPENDENCIES}
-###${check_PROGRAMS}: ${DEPENDENCIES}  # uncomment this when there are checkprograms
+${check_PROGRAMS}: ${DEPENDENCIES}
 ${EXTRA_PROGRAMS}: ${DEPENDENCIES}
 
 .PHONY: build_chroma_libs
