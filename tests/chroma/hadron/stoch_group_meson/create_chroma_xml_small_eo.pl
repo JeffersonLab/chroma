@@ -20,7 +20,6 @@ $RsdCG = 1.0e-10;
 $MaxCG = 2000;
 
 $Lt = $nrow[3];
-$Ltm1 = $Lt - 1;
 
 #
 # Build chroma input
@@ -44,7 +43,8 @@ foreach $n (1, 2)
   if ($n == 1) {@rnd = (471, 1694, 3965, 563);}
   if ($n == 2) {@rnd = (714, 1573, 3042, 517);}
 
-  foreach $t (0 .. $Ltm1)
+#  foreach $t (0 .. $Lt-1)
+  foreach $t (0 .. 0)
   {
 print <<EOF;
     <elem>
@@ -186,7 +186,8 @@ print <<EOF;
               <TimeSliceFiles>
 EOF
 
-  foreach $t (0 .. $Ltm1)
+#  foreach $t (0 .. $Lt-1)
+  foreach $t (0 .. 0)
   {
 print<<EOF;
                 <elem>
@@ -210,7 +211,8 @@ print<<EOF;
               <TimeSliceFiles>
 EOF
 
-  foreach $t (0 .. $Ltm1)
+#  foreach $t (0 .. $Lt-1)
+  foreach $t (0 .. 0)
   {
 print<<EOF;
                 <elem>
