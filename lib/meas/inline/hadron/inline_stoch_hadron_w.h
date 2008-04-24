@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_hadron_w.h,v 1.4 2007-09-20 20:15:49 kostas Exp $
+// $Id: inline_stoch_hadron_w.h,v 1.5 2008-04-24 05:20:17 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -21,86 +21,74 @@ namespace Chroma
   {
     extern const std::string name;
     bool registerAll();
-  }
-
-  // The flavors
-  enum Flavor {up, down, strange, charm, bottom};
-
-  //! Parameter structure
-  /*! \ingroup inlinehadron */
-  struct InlineStochHadronParams 
-  {
-    InlineStochHadronParams();
-    InlineStochHadronParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
     
-    unsigned long      frequency;
-    
-    struct Param_t
+    // The flavors
+    enum Flavor {up, down, strange, charm, bottom};
+
+    //! Parameter structure
+    /*! \ingroup inlinehadron */
+    struct Params 
     {
-      int          mom2_max;              /*!< (mom)^2 <= mom2_max */
-      
-      //map<const char *, GroupXML_t> ops /*!< map with hadron operators xml */
-      // Allow for many operators at a time.
-      // Operators can be mesons or baryons (quark-antiquark or three quarks).
-      multi1d<GroupXML_t> ops ; /*!< array with hadron operators xml */
-      //Each operator needs its own output file
-      //should be defined in the GroupXML_t
-      
-      GroupXML_t   source_quark_smearing; /*!< xml holding smearing params */
-      GroupXML_t   sink_quark_smearing;   /*!< xml holding smearing params */
-      GroupXML_t   link_smearing;         /*!< link smearing xml */
-      
-    } param;
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+       
+      unsigned long      frequency;
     
-    struct Flavor_t{
-      //! Assumed flavor ordering: up down strange charm  bottom ... 
-      struct TimeSlice_t{
-	multi1d<std::string> dilution_files ;
-	int t ;
-      };
-      multi1d<TimeSlice_t>  time_slices;
-    };
-    
-    //this is not needed. The output file leaves in the operator XML
-    //std::string          op_file; // need to figure out how to write out
-    
-  };
-  
-  struct NamedObject_t
-  {
-    multi1d<Flavor_t>   flavors;
-    std::string         gauge_id;
-  } named_obj;
-  
-  std::string xml_file;  // Alternate XML file pattern
-};
+      struct Param_t
+      {
+	int          mom2_max;              /*!< (mom)^2 <= mom2_max */
+	
+	//Operators can be mesons or baryons (quark-antiquark or three quarks).
+	multi1d<GroupXML_t> ops ; /*!< array with hadron operators xml */
+	//Each operator needs its own output file
+	//should be defined in the GroupXML_t
+      
+	multi1d<GroupXML_t>  smearing; /*!< xml holding smearing params */
+	multi1d<GroupXML_t>  displace; /*!< xml holding displacement params */
+	GroupXML_t   link_smear;         /*!< link smearing xml one for all*/
 
+	multi1d<GroupXML_t> quarks ;     /*! dilutions */
+	
+      } param;
+    
+    
+      struct NamedObject_t
+      {
+	std::string         gauge_id;
+      } named_obj;
+      
+      std::string xml_file;  // Alternate XML file pattern
+
+      void write(XMLWriter& xml_out, const std::string& path);
+
+    };
+  
 
   //! Inline measurement of stochastic baryon operators
   /*! \ingroup inlinehadron */
-  class InlineStochHadron : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineStochHadron() {}
-    InlineStochHadron(const InlineStochHadronParams& p) : params(p) {}
-    InlineStochHadron(const InlineStochHadron& p) : params(p.params) {}
+    class InlineMeas : public AbsInlineMeasurement{
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+      InlineMeas(const InlineMeas& p) : params(p.params) {}
 
-    unsigned long getFrequency(void) const {return params.frequency;}
+      unsigned long getFrequency(void) const {return params.frequency;}
 
-    //! Do the measurement
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
+      //! Do the measurement
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
 
-  protected:
-    //! Do the measurement
-    void func(const unsigned long update_no,
-	      XMLWriter& xml_out); 
+    protected:
+      //! Do the measurement
+      void func(const unsigned long update_no,
+		XMLWriter& xml_out); 
+      
+    private:
+      Params params;
+    };
 
-  private:
-    InlineStochHadronParams params;
-  };
+  }; // name space InlineHadronEnv
 
-}
+};
 
 #endif

@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.5 2007-09-20 20:15:47 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.6 2008-04-24 05:20:17 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -7,11 +7,20 @@
 #include "handle.h"
 #include "meas/inline/hadron/inline_stoch_hadron_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
+#include "meas/smear/quark_smearing_factory.h"
+#include "meas/smear/quark_smearing_aggregate.h"
+#include "meas/smear/displacement.h"
+#include "meas/sources/source_smearing_aggregate.h"
+#include "meas/sources/source_smearing_factory.h"
 #include "meas/sources/dilutezN_source_const.h"
 #include "meas/sources/zN_src.h"
+#include "meas/sinks/sink_smearing_aggregate.h"
+#include "meas/sinks/sink_smearing_factory.h"
 #include "meas/hadron/barspinmat_w.h"
 #include "meas/hadron/baryon_operator_aggregate_w.h"
 #include "meas/hadron/baryon_operator_factory_w.h"
+#include "meas/hadron/dilution_scheme_aggregate.h"
+#include "meas/hadron/dilution_scheme_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -19,16 +28,13 @@
 
 #include "meas/inline/io/named_objmap.h"
 
-namespace Chroma 
-{ 
-  namespace InlineStochHadronEnv 
-  { 
-    namespace
-    {
+namespace Chroma{ 
+  namespace InlineStochHadronEnv{ 
+    namespace{
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
       {
-	return new InlineStochHadron(InlineStochHadronParams(xml_in, path));
+	return new InlineMeas(Params(xml_in, path));
       }
 
       //! Local registration flag
@@ -49,10 +55,8 @@ namespace Chroma
       }
       return success;
     }
-  }
-
-
-
+  
+  /** OLD STUFF
   // Read solution files
   void read(XMLReader& xml, const string& path, InlineStochHadronParams::Flavor_t::TimeSlice_t& input)
   {
@@ -87,231 +91,238 @@ namespace Chroma
     pop(xml);s
   }
 
+  **/
+
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineStochHadronParams::Param_t& param)
-  {
-    XMLReader paramtop(xml, path);
+    void read(XMLReader& xml, const string& path, Params::Param_t& param){
+      XMLReader paramtop(xml, path);
+      
+      int version;
+      read(paramtop, "version", version);
+      
+      switch (version) 
+	{
+	case 1:
+	  /************************************************************/
+	  read(paramtop, "mom2_max", param.mom2_max);
+	  
+	  param.smearing = readXMLArrayGroup(paramtop, "Smearing", "wvf_kind");
+	  param.displace = readXMLArrayGroup(paramtop, "Displacement","DisplacementType");
+	  param.link_smear = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
 
-    int version;
-    read(paramtop, "version", version);
+	  param.ops = readXMLArrayGroup(paramtop, "HadronOperators", "Type");
+	  param.quarks = readXMLArrayGroup(paramtop, "Quarks", "DilutionType");
+	  
+	  break;
+	  
+	default :
+	  /**************************************************************/
 
-    switch (version) 
-    {
-    case 1:
-      /**************************************************************************/
-      break;
-
-    default :
-      /**************************************************************************/
-
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-      QDP_abort(1);
+	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	  QDP_abort(1);
+	}
+      
+      
     }
-
-    read(paramtop, "mom2_max", param.mom2_max);
-
-    param.source_quark_smearing = readXMLGroup(paramtop, "SourceQuarkSmearing", "wvf_kind");
-    param.sink_quark_smearing   = readXMLGroup(paramtop, "SinkQuarkSmearing", "wvf_kind");
-    param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
-
-    ops = readXMLGroup(paramtop, "HadronOperators", "HadronOperatorType");
-    
-  }
 
 
   // Writter for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::Param_t& param)
-  {
-    push(xml, path);
-
-    int version = 1;
-
-    write(xml, "version", version);
-    write(xml, "mom2_max", param.mom2_max);
-    xml << param.source_quark_smearing.xml;
-    xml << param.sink_quark_smearing.xml;
-    xml << param.link_smearing.xml;
-    
-    push(xml,"HadronOperators");
-    for( int t(0);t<ops.size();t++)
-      xml<<ops[t];
-    pop(xml);
-
-    pop(xml);
-  }
-
-
-  //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineStochHadronParams::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "flavors", input.flavors);
-  }
-
-  //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochHadronParams::NamedObject_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "gauge_id", input.gauge_id);
-    write(xml, "flavors", input.flavors);
-
-    pop(xml);
-  }
-
-
-  // Param stuff
-  InlineStochHadronParams::InlineStochHadronParams()
-  { 
-    frequency = 0; 
-  }
-
-  InlineStochHadronParams::InlineStochHadronParams(XMLReader& xml_in, const std::string& path) 
-  {
-    try 
-    {
-      XMLReader paramtop(xml_in, path);
-
-      if (paramtop.count("Frequency") == 1)
-	read(paramtop, "Frequency", frequency);
-      else
-	frequency = 1;
-
-      // Read program parameters
-      read(paramtop, "Param", param);
-
-      // Read in the output propagator/source configuration info
-      read(paramtop, "NamedObject", named_obj);
-
-      // Possible alternate XML file pattern
-      if (paramtop.count("xml_file") != 0) 
-      {
-	read(paramtop, "xml_file", xml_file);
-      }
-    }
-    catch(const std::string& e) 
-    {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
-      QDP_abort(1);
-    }
-  }
-
-
-  void
-  InlineStochHadronParams::write(XMLWriter& xml_out, const std::string& path) 
-  {
-    push(xml_out, path);
-    
-    // Parameters for source construction
-    Chroma::write(xml_out, "Param", param);
-
-    // Write out the output propagator/source configuration info
-    Chroma::write(xml_out, "NamedObject", named_obj);
-
-    pop(xml_out);
-  }
-
-
-
-  //--------------------------------------------------------------
- 
-  //! Structure holding a source and its solutions
-  struct QuarkSourceSolutions_t
-  {
-    //! Structure holding solutions
-    struct TimeSlices_t
-    {
-      struct Dilutions_t
-      {
-	int                t0;
-	LatticeFermion     source;
-	LatticeFermion     soln;
-	PropSourceConst_t  source_header;
-	ChromaProp_t       prop_header;
-      };
+    void write(XMLWriter& xml, const string& path, const Params::Param_t& param){
+      push(xml, path);
       
-      multi1d<Dilutions_t>  dilutions;
+      int version = 1;
+      
+      write(xml, "version", version);
+      write(xml, "mom2_max", param.mom2_max);
+      xml << param.link_smear.xml;
+      
+      push(xml,"Smearing");
+      for( int t(0);t<param.smearing.size();t++){
+	push(xml,"elem");
+	xml<<param.smearing[t].xml;
+	pop(xml);
+      }
+      pop(xml);
+      
+      push(xml,"Displacement");
+      for( int t(0);t<param.displace.size();t++){
+	push(xml,"elem");
+	xml<<param.displace[t].xml;
+	pop(xml);
+      }
+      pop(xml);
+      
+      push(xml,"Quarks");
+      for( int t(0);t<param.quarks.size();t++){
+	push(xml,"elem");
+	xml<<param.quarks[t].xml;
+	pop(xml);
+      }
+      pop(xml);
+      
+      push(xml,"HadronOperators");
+      for( int t(0);t<param.ops.size();t++){
+	push(xml,"elem");
+	xml<<param.ops[t].xml;
+	pop(xml);
+      }
+      pop(xml);
+      
+      
+      pop(xml);
+    }
+
+
+    //! Gauge field parameters
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    {
+      XMLReader inputtop(xml, path);
+      
+      read(inputtop, "gauge_id", input.gauge_id);
+    }
+    
+    //! Gauge field parameters
+    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
+      push(xml, path);
+      
+      write(xml, "gauge_id", input.gauge_id);
+      pop(xml);
+    }
+    
+    
+    // Param stuff
+    Params::Params(){ 
+      frequency = 0;
+      param.mom2_max = 0 ;
+    }
+
+    Params::Params(XMLReader& xml_in, const std::string& path) 
+    {
+      try 
+	{
+	  XMLReader paramtop(xml_in, path);
+	  
+	  if (paramtop.count("Frequency") == 1)
+	    read(paramtop, "Frequency", frequency);
+	  else
+	    frequency = 1;
+	  
+	  // Read program parameters
+	  read(paramtop, "Param", param);
+	  
+	  // Read in the output propagator/source configuration info
+	  read(paramtop, "NamedObject", named_obj);
+	  
+	  // Possible alternate XML file pattern
+	  if (paramtop.count("xml_file") != 0) 
+	    {
+	      read(paramtop, "xml_file", xml_file);
+	    }
+	}
+      catch(const std::string& e) 
+	{
+	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	  QDP_abort(1);
+	}
+    }
+
+
+    void Params::write(XMLWriter& xml_out, const std::string& path) 
+    {
+      push(xml_out, path);
+      
+      // Parameters for source construction
+      InlineStochHadronEnv::write(xml_out, "Param", param);
+      
+      // Write out the output propagator/source configuration info
+      InlineStochHadronEnv::write(xml_out, "NamedObject", named_obj);
+
+      pop(xml_out);
+    }
+
+
+
+    class Key{
+    public:
+      multi1d<int> k;
+      Key(){
+	k.resize(3);
+	k[0]=k[1]=k[2]=0;
+      }
+      Key(int i,int j, int l){
+	k.resize(3);
+	k[0]=i ;  k[1]=j ; k[2]=l ;
+      }
+      Key& set(int i,int j, int l){
+	k[0]=i ; k[1]=j ; k[2]=l ;
+	return *this ;
+      }
+      Key(const Key& klidi){
+	k.resize(3) ;
+	k[0] = klidi.k[0] ;
+	k[1] = klidi.k[1] ;
+	k[2] = klidi.k[2] ;
+      }
+      //     int operator[](const int i){return k[i];} const 
+      
+      ~Key(){} ;
     };
-    //int   time_dir;
-    Seed  seed;
-    multi1d<TimeSlices_t>  time_slices;
-  };
-  
-  class Key{
-  public:
-    multi1d<int> k;
-    Key(){
-      k.resize(3);
-      k[0]=k[1]=k[2]=0;
-    }
-    Key(int i,int j, int l){
-      k.resize(3);
-       k[0]=i ;  k[1]=j ; k[2]=l ;
-    }
-    Key& set(int i,int j, int l){
-      k[0]=i ; k[1]=j ; k[2]=l ;
-      return *this ;
-    }
-    //     int operator[](const int i){return k[i];} const 
     
-    ~Key(){} ;
-  };
-  
-  bool operator<(const Key& a, const Key& b){
-    return (a.k<b.k) ;
-  }
-
- //! Baryon operator
-  struct BaryonOperator_t{
-    //! Baryon operator time slices
-    struct TimeSlice_t{
-      struct Mom_t{
-	struct Permut_t{
-	  //! Baryon operator dilutions
-	  struct Dilutions_t{
-	    multi3d<DComplex> d;
-	    //vector<vector<vector<complex<double> > > > d ;
+    bool operator<(const Key& a, const Key& b){
+      return (a.k<b.k) ;
+    }
+    
+    //! Baryon operator
+    struct HadronOperator_t{
+      //! Baryon operator time slices
+      struct TimeSlice_t{
+	struct Mom_t{
+	  struct Permut_t{
+	    //! Baryon operator dilutions
+	    struct Dilutions_t{
+	      multi3d<DComplex> d;
+	      //vector<vector<vector<complex<double> > > > d ;
+	    } ;
+	    multi1d<Dilutions_t> s;
+	    Permut_t(){s.resize(4);}
 	  } ;
-	  multi1d<Dilutions_t> s;
-	  Permut_t(){s.resize(4);}
+	  map<Key,Permut_t> p ;
 	} ;
-	map<Key,Permut_t> p ;
+	map<Key,Mom_t> m;
       } ;
-      map<Key,Mom_t> m;
-    } ;
-    map<int, TimeSlice_t> t;
-  
-    GroupXML_t    smearing;          /*!< String holding quark smearing xml */
-    multi1d<Seed> seed  ;            /*!< Id of quarks */
+      map<int, TimeSlice_t> t;
+      
+      GroupXML_t    smearing;       /*!< String holding quark smearing xml */
+      
+    multi1d<Seed> seed  ;          /*!< Id of quarks */
+      
+      std::string   id;                /*!< Tag/ID used in analysis codes */
+      
+      int           mom2_max;          /*!< |\vec{p}|^2 */
+      int           time_dir;         /*!< Direction of decay */
+    };
+
+    //! BaryonOperator header writer
+    void write(XMLWriter& xml, const string& path, const HadronOperator_t& param)
+    {
+      push(xml, path);
+      
+      int version = 1;
+      write(xml, "version", version);
+      write(xml, "mom2_max", param.mom2_max);
+      write(xml, "time_dir", param.time_dir);
+      write(xml, "seed", param.seed);
+      xml <<  param.smearing.xml;
+      
+      pop(xml);
+    }
     
-    std::string   id;                /*!< Tag/ID used in analysis codes */
-    
-    int           mom2_max;          /*!< |\vec{p}|^2 */
-    int           time_dir;         /*!< Direction of decay */
-  };
+    //! Key binary writer
+    void write(BinaryWriter& bin, const Key& klidi){
+      write(bin, klidi.k);
+    }
 
-  //! BaryonOperator header writer
-  void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
-  {
-    push(xml, path);
-
-    int version = 1;
-    write(xml, "version", version);
-    write(xml, "mom2_max", param.mom2_max);
-    write(xml, "time_dir", param.time_dir);
-    write(xml, "seed", param.seed);
-    xml <<  param.smearing.xml;
-
-    pop(xml);
-  }
-
-  //! Key binary writer
-  void write(BinaryWriter& bin, const Key& klidi){
-    write(bin, klidi.k);
-  }
-
+  /***** *****************
   //! BaryonOperator binary writer
   void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t::Mom_t::Permut_t::Dilutions_t& dil){
     write(bin, dil.d);
@@ -325,7 +336,7 @@ namespace Chroma
   //! BaryonOperator binary writer
   void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t::Mom_t& mm){
     map<Key,BaryonOperator_t::TimeSlice_t::Mom_t::Permut_t>::iterator it;
-    for(mm.begin();it != mm.end();it++){
+    for(it = mm.p.begin();it != mm.p.end();it++){
       write(bin, it->first);
       write(bin, it->second);
     }
@@ -334,7 +345,7 @@ namespace Chroma
   //! BaryonOperator binary writer
   void write(BinaryWriter& bin, const BaryonOperator_t::TimeSlice_t& tt){
     map<Key,BaryonOperator_t::TimeSlice_t::Mom_t>::iterator it;
-    for(tt.begin();it != tt.end();it++){
+    for(it = tt.m.begin();it != tt.m.end();it++){
       write(bin, it->first);
       write(bin, it->second);
     }
@@ -354,102 +365,226 @@ namespace Chroma
     }
   }
   
+  ****************/
 
   //--------------------------------------------------------------
   // Function call
   //  void 
   //InlineStochHadron::operator()(unsigned long update_no,
   //				XMLWriter& xml_out) 
-  void InlineMeas::operator()(unsigned long update_no,
-			   XMLWriter& xml_out) 
-  {
-    // If xml file not empty, then use alternate
-    if (params.xml_file != "")
+    void InlineMeas::operator()(unsigned long update_no,
+				XMLWriter& xml_out) 
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
-
-      push(xml_out, "stoch_baryon");
+      // If xml file not empty, then use alternate
+      if (params.xml_file != ""){
+	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	
+	push(xml_out, "stoch_hadron");
+	write(xml_out, "update_no", update_no);
+	write(xml_out, "xml_file", xml_file);
+	pop(xml_out);
+	
+	XMLFileWriter xml(xml_file);
+	func(update_no, xml);
+      }
+      else{
+	func(update_no, xml_out);
+      }
+    }
+    
+    
+    // Function call
+    //void 
+    //InlineStochHadron::func(unsigned long update_no,
+    //			  XMLWriter& xml_out) 
+    void InlineMeas::func(unsigned long update_no,
+			  XMLWriter& xml_out) 
+    {
+      START_CODE();
+      
+      StopWatch snoop;
+      snoop.reset();
+      snoop.start();
+      
+      // Test and grab a reference to the gauge field
+      XMLBufferWriter gauge_xml;
+      try
+	{
+	  TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+	  TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+	}
+      catch( std::bad_cast ) 
+	{
+	  QDPIO::cerr << InlineStochHadronEnv::name << ": caught dynamic cast error" 
+		      << endl;
+	  QDP_abort(1);
+	}
+      catch (const string& e) 
+	{
+	  QDPIO::cerr << name << ": map call failed: " << e 
+		      << endl;
+	  QDP_abort(1);
+	}
+      const multi1d<LatticeColorMatrix>& u = 
+	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+      
+      push(xml_out, "stoch_hadron");
       write(xml_out, "update_no", update_no);
-      write(xml_out, "xml_file", xml_file);
+      
+      QDPIO::cout << name << ": Stochastic Hadron Operator" << endl;
+      
+      proginfo(xml_out);    // Print out basic program info
+      
+      // Write out the input
+      params.write(xml_out, "Input");
+      
+      // Write out the config info
+      write(xml_out, "Config_info", gauge_xml);
+      
+      push(xml_out, "Output_version");
+      write(xml_out, "out_version", 1);
       pop(xml_out);
+      
+      // First calculate some gauge invariant observables just for info.
+      // This is really cheap.
+      MesPlq(xml_out, "Observables", u);
+      
+      // Save current seed
+      Seed ran_seed;
+      QDP::RNG::savern(ran_seed);
+      
+      //
+      // Read the source and solutions
+      //
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      int N_quarks = params.param.quarks.size() ;
+      if(N_quarks<2){
+	QDPIO::cout << name << ": Need at least 2" << endl;
+	QDP_abort(1);
+      }
+      bool BuildMesons(false);
+      if(N_quarks>1){
+	QDPIO::cout << name << ": Can build mesons" << endl;
+	BuildMesons = true ;
+      }
+      bool BuildBaryons(false);
+      if(N_quarks>2){
+	QDPIO::cout << name << ": Can build baryons" << endl;
+	BuildBaryons = true ;
+      }
+      
+      multi1d< Handle< DilutionScheme<LatticeFermion> > > quarks(N_quarks); 
+      
+      try{
+	// Loop over quark dilutions
+	for(int n(0); n < params.param.quarks.size(); ++n){
+	  const GroupXML_t& dil_xml = params.param.quarks[n];
+	  std::istringstream  xml_d(dil_xml.xml);
+	  XMLReader  diltop(xml_d);
+	  QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
+	  quarks[n] = 
+	    TheFermDilutionSchemeFactory::Instance().createObject(dil_xml.id, 
+								  diltop, 
+								  dil_xml.path);
+	}
+      }
+      catch(const std::string& e){
+	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << endl;
+	QDP_abort(1);
+      }
+      
+      
+      //-------------------------------------------------------------------
+      //Sanity checks	
 
-      XMLFileWriter xml(xml_file);
-      func(update_no, xml);
-    }
-    else
-    {
-      func(update_no, xml_out);
-    }
-  }
+      //The participating timeslices must match for each quark
+      //grab info from first quark to prime the work
+      
+      multi1d<int> participating_timeslices(quarks[0]->getNumTimeSlices());
+      
+      for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	participating_timeslices[t0] = quarks[0]->getT0(t0);
+      }
+      
+      for (int n = 1 ; n < N_quarks ; ++n){
+	if(quarks[n]->getNumTimeSlices() != participating_timeslices.size()){
+	  QDPIO::cerr << name ;
+	  QDPIO::cerr << " : Quarks do not contain the same number";
+	  QDPIO::cerr << "of dilution timeslices: Quark " << n << endl; 
+	  QDP_abort(1);
+	}
+	
+	for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	  if(quarks[n]->getT0(t0) != participating_timeslices[t0]){
+	    QDPIO::cerr << name << " : Quarks do not contain the same";
+	    QDPIO::cerr << "participating timeslices: Quark ";
+	    QDPIO::cerr << n << " timeslice "<< t0 << endl;
+	    QDP_abort(1);
+	  }
+	}
+      }
+		
+      //Another Sanity check, the three quarks must all be 
+      //inverted on the same cfg
+      for (int n = 1 ; n < N_quarks ; ++n){
+	if (quarks[0]->getCfgInfo() != quarks[n]->getCfgInfo()){
+	  QDPIO::cerr << name << " : Quarks do not contain the same cfg info";
+	  QDPIO::cerr << ", quark "<< n << endl;
+	  QDP_abort(1);
+	}		
+      }
 
+      //Also ensure that the cfg on which the inversions were performed 
+      //is the same as the cfg that we are using
+      {	
+	std::string cfgInfo; 
+	
+	//Really ugly way of doing this(Robert Heeeelp!!)
+	XMLBufferWriter top;
+	write(top, "Config_info", gauge_xml);
+	XMLReader from(top);
+	XMLReader from2(from, "/Config_info");
+	std::ostringstream os;
+	from2.print(os);
+	
+	cfgInfo = os.str();
+	
+	if (cfgInfo != quarks[0]->getCfgInfo()){
+	  QDPIO::cerr << name << " : Quarks do not contain the same";
+	  QDPIO::cerr << " cfg info as the gauge field." ;
+	  QDPIO::cerr << "gauge: XX"<<cfgInfo<<"XX quarks: XX" ;
+	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  endl;
+	  QDP_abort(1);
+	}
+      }
 
-  // Function call
-  //void 
-  //InlineStochHadron::func(unsigned long update_no,
-  //			  XMLWriter& xml_out) 
-  void InlineMeas::func(unsigned long update_no,
-			XMLWriter& xml_out) 
-  {
-    START_CODE();
+      
+      // Smear the gauge field if needed
+      //
+      multi1d<LatticeColorMatrix> u_smr = u;
 
-    StopWatch snoop;
-    snoop.reset();
-    snoop.start();
+      try{
+	std::istringstream  xml_l(params.param.link_smear.xml);
+	XMLReader  linktop(xml_l);
+	QDPIO::cout << "Link smearing type = " << params.param.link_smear.id ; 
+	QDPIO::cout << endl;
+	
+	
+	Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.link_smear.id, linktop, params.param.link_smear.path));
 
-    // Test and grab a reference to the gauge field
-    XMLBufferWriter gauge_xml;
-    try
-    {
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-      TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
-    }
-    catch( std::bad_cast ) 
-    {
-      QDPIO::cerr << InlineStochHadronEnv::name << ": caught dynamic cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << InlineStochHadronEnv::name << ": map call failed: " << e 
-		  << endl;
-      QDP_abort(1);
-    }
-    const multi1d<LatticeColorMatrix>& u = 
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+	(*linkSmearing)(u_smr);
+      }
+      catch(const std::string& e){
+	QDPIO::cerr<<name<<": Caught Exception link smearing: " << e << endl;
+	QDP_abort(1);
+      }
 
-    push(xml_out, "stoch_hadron");
-    write(xml_out, "update_no", update_no);
+      MesPlq(xml_out, "Smeared_Observables", u_smr);
 
-    QDPIO::cout << InlineStochHadronEnv::name << ": Stochastic Hadron Operator" << endl;
-
-    proginfo(xml_out);    // Print out basic program info
-
-    // Write out the input
-    params.writeXML(xml_out, "Input");
-
-    // Write out the config info
-    write(xml_out, "Config_info", gauge_xml);
-
-    push(xml_out, "Output_version");
-    write(xml_out, "out_version", 1);
-    pop(xml_out);
-
-    // First calculate some gauge invariant observables just for info.
-    // This is really cheap.
-    MesPlq(xml_out, "Observables", u);
-
-    // Save current seed
-    Seed ran_seed;
-    QDP::RNG::savern(ran_seed);
-
-    //
-    // Read the source and solutions
-    //
-    StopWatch swatch;
-    swatch.reset();
-    swatch.start();
-
+    /***** COMMENT OUT  *** IN HOPE IT WILL COMPILE
     multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.flavors.size());
     QDPIO::cout << "Number of quark flavors= " << params.named_obj.flavors.size() << endl;
 
@@ -933,24 +1068,24 @@ namespace Chroma
 
       close(to);
     }
-
-    swatch.stop();
-
-    QDPIO::cout << "Operators written: time= "
-		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
-
-    // Close the namelist output file XMLDAT
-    pop(xml_out);     // StochHadron
-
-    snoop.stop();
-    QDPIO::cout << InlineStochHadronEnv::name << ": total time = "
-		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
-
-    QDPIO::cout << InlineStochHadronEnv::name << ": ran successfully" << endl;
-
-    END_CODE();
-  } 
-
-}
+    ****************************************/
+      swatch.stop();
+      
+      QDPIO::cout << "Operators written: time= "
+		  << swatch.getTimeInSeconds() 
+		  << " secs" << endl;
+      
+      // Close the namelist output file XMLDAT
+      pop(xml_out);     // StochHadron
+      
+      snoop.stop();
+      QDPIO::cout << name << ": total time = "
+		  << snoop.getTimeInSeconds() 
+		  << " secs" << endl;
+      
+      QDPIO::cout << name << ": ran successfully" << endl;
+      
+      END_CODE();
+    } 
+  }  // namespace InlineHadronEnv
+}// namespace chroma
