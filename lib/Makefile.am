@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.133 2008-04-24 05:20:12 kostas Exp $
+# $Id: Makefile.am,v 3.134 2008-04-24 14:07:40 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -186,6 +186,7 @@ nobase_include_HEADERS = \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/glue/qnaive.h \
         meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
         meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h \
@@ -686,6 +687,7 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
@@ -938,6 +940,7 @@ libchroma_a_SOURCES = \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
+	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc \
@@ -1287,6 +1290,7 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
