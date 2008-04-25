@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.6 2008-04-24 14:07:09 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.7 2008-04-25 03:56:18 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -352,17 +352,7 @@ namespace Chroma
       SmearedDispObjects(int disp_length,
 			 multi1d< Handle< DilutionScheme<LatticeFermion> > > dil_quarks,	
 			 Handle< QuarkSmearing<LatticeFermion> > qsmr,
-			 const multi1d<LatticeColorMatrix> & u_smr) :
-	displacement_length(disp_length),diluted_quarks(dil_quarks),
-	quarkSmearing(qsmr), u(u_smr)
-	{
-	  smeared_src_maps.resize(N_quarks);
-	  smeared_soln_maps.resize(N_quarks);
-			
-	  disp_src_maps.resize(N_quarks);
-	  disp_soln_maps.resize(N_quarks);
-				
-	}
+			 const multi1d<LatticeColorMatrix> & u_smr);
 
       //! Destructor
       ~SmearedDispObjects() {}
@@ -411,8 +401,30 @@ namespace Chroma
     };
 
 	
+    // Constructor from smeared map 
+    SmearedDispObjects::SmearedDispObjects(int disp_length,
+					   multi1d< Handle< DilutionScheme<LatticeFermion> > > dil_quarks,	
+					   Handle< QuarkSmearing<LatticeFermion> > qsmr,
+					   const multi1d<LatticeColorMatrix> & u_smr) :
+      displacement_length(disp_length),diluted_quarks(dil_quarks),
+      quarkSmearing(qsmr), u(u_smr)
+    {
+      if (diluted_quarks.size() != N_quarks)
+      {
+	QDPIO::cerr << __func__ << ": expected num_quarks=" << N_quarks << endl;
+	QDP_abort(1);
+      }
+
+      smeared_src_maps.resize(N_quarks);
+      smeared_soln_maps.resize(N_quarks);
+			
+      disp_src_maps.resize(N_quarks);
+      disp_soln_maps.resize(N_quarks);
+    }
+
+
     const LatticeFermion&
-    SmearedDispObjects::smearSource(int qnum , 
+    SmearedDispObjects::smearSource(int qnum, 
 				    const KeySmearedQuark_t & key)
     {
       map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_src_maps[qnum];
@@ -444,15 +456,27 @@ namespace Chroma
 	snoop.reset();
 	snoop.start();
 	
-	smrd_q.quark = diluted_quarks[qnum]->dilutedSource(key.t0, key.dil);
+	LatticeFermion f = diluted_quarks[qnum]->dilutedSource(key.t0, key.dil);
 
-	(*quarkSmearing)(smrd_q.quark, u);
+	(*quarkSmearing)(f, u);
 
-	SpinMatrix mat = rotate_mat * Gamma(8);
+	// NOTE: I do not understand the Gamma(8) below
+	SpinMatrix mat_tmp = rotate_mat * Gamma(8);
+
+	// The first set of quarks will get a gamma_5 to implement the oper we need
+	// op=  eta_1^dag * [whatever gamma and U oper structure] * gamma_5 eta_0^dag
+	SpinMatrix mat;
+	if (qnum == 0)
+	{
+	  mat = mat_tmp * Gamma(15);
+	}
+	else
+	{
+	  mat = mat_tmp;
+	}
 				
-	smrd_q.quark = mat * smrd_q.quark;
-	
-	      
+	smrd_q.quark = mat * f;
+
 	snoop.stop();
 
 	QDPIO::cout << " Smeared Sources: Quark = "<< qnum <<" t0 = "
@@ -503,12 +527,24 @@ namespace Chroma
 	snoop.reset();
 	snoop.start();
 	
-	smrd_q.quark = diluted_quarks[qnum]->dilutedSolution(key.t0, key.dil);
+	LatticeFermion f = diluted_quarks[qnum]->dilutedSolution(key.t0, key.dil);
 
 	(*quarkSmearing)(smrd_q.quark, u);
 
-	smrd_q.quark = rotate_mat * smrd_q.quark;
-	
+	// The first set of quarks will get a gamma_5 to implement the oper. we need
+	// op=  psi_0^dag * gamma_5 * [whatever gamma and U oper structure] * psi_1^dag
+	SpinMatrix mat;
+	if (qnum == 0)
+	{
+	  mat = rotate_mat * Gamma(15);
+	}
+	else
+	{
+	  mat = rotate_mat;
+	}
+				
+	smrd_q.quark = mat * f;
+	      
 	snoop.stop();
 
 	QDPIO::cout << " Smeared Sinks: Quark = "<< qnum <<" t0 = "
