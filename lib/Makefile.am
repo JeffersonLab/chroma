@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.135 2008-04-25 18:08:56 bjoo Exp $
+# $Id: Makefile.am,v 3.136 2008-04-25 18:29:37 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -751,6 +751,7 @@ nobase_include_HEADERS += \
         meas/inline/io/szin_write_obj_funcmap.h \
         meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
+	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
 	meas/inline/schrfun/schrfun.h \
 	meas/inline/schrfun/inline_schrfun_aggregate.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
@@ -1359,6 +1360,7 @@ libchroma_a_SOURCES += \
         meas/inline/io/szin_write_obj_funcmap.cc \
         meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
+	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \

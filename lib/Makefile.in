@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.240 2008-04-25 18:08:56 bjoo Exp $
+# $Id: Makefile.in,v 3.241 2008-04-25 18:29:38 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -623,6 +623,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/szin_write_obj_funcmap.cc \
 	meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
+	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
@@ -1062,6 +1063,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	szin_write_obj_funcmap.$(OBJEXT) \
 	xml_write_obj_funcmap.$(OBJEXT) \
 	inline_usqcd_read_ddpairs_prop.$(OBJEXT) \
+	inline_usqcd_write_ddpairs_prop.$(OBJEXT) \
 	inline_schrfun_aggregate.$(OBJEXT) inline_sfpcac_w.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
@@ -1728,6 +1730,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/io/szin_write_obj_funcmap.h \
 	meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
+	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
 	meas/inline/schrfun/schrfun.h \
 	meas/inline/schrfun/inline_schrfun_aggregate.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
@@ -2534,6 +2537,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/io/szin_write_obj_funcmap.h \
 	meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
+	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
 	meas/inline/schrfun/schrfun.h \
 	meas/inline/schrfun/inline_schrfun_aggregate.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
@@ -3074,6 +3078,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/szin_write_obj_funcmap.cc \
 	meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
+	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
@@ -3467,6 +3472,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_usqcd_read_ddpairs_prop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_usqcd_write_ddpairs_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_wilslp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_xml_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_aggregate.Po@am__quote@
@@ -11837,6 +11843,20 @@ inline_usqcd_read_ddpairs_prop.obj: meas/inline/io/inline_usqcd_read_ddpairs_pro
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_usqcd_read_ddpairs_prop.cc' object='inline_usqcd_read_ddpairs_prop.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_usqcd_read_ddpairs_prop.obj `if test -f 'meas/inline/io/inline_usqcd_read_ddpairs_prop.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_usqcd_read_ddpairs_prop.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_usqcd_read_ddpairs_prop.cc'; fi`
+
+inline_usqcd_write_ddpairs_prop.o: meas/inline/io/inline_usqcd_write_ddpairs_prop.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_usqcd_write_ddpairs_prop.o -MD -MP -MF $(DEPDIR)/inline_usqcd_write_ddpairs_prop.Tpo -c -o inline_usqcd_write_ddpairs_prop.o `test -f 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc' || echo '$(srcdir)/'`meas/inline/io/inline_usqcd_write_ddpairs_prop.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_usqcd_write_ddpairs_prop.Tpo $(DEPDIR)/inline_usqcd_write_ddpairs_prop.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_usqcd_write_ddpairs_prop.cc' object='inline_usqcd_write_ddpairs_prop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_usqcd_write_ddpairs_prop.o `test -f 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc' || echo '$(srcdir)/'`meas/inline/io/inline_usqcd_write_ddpairs_prop.cc
+
+inline_usqcd_write_ddpairs_prop.obj: meas/inline/io/inline_usqcd_write_ddpairs_prop.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_usqcd_write_ddpairs_prop.obj -MD -MP -MF $(DEPDIR)/inline_usqcd_write_ddpairs_prop.Tpo -c -o inline_usqcd_write_ddpairs_prop.obj `if test -f 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_usqcd_write_ddpairs_prop.Tpo $(DEPDIR)/inline_usqcd_write_ddpairs_prop.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_usqcd_write_ddpairs_prop.cc' object='inline_usqcd_write_ddpairs_prop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_usqcd_write_ddpairs_prop.obj `if test -f 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; fi`
 
 inline_schrfun_aggregate.o: meas/inline/schrfun/inline_schrfun_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_schrfun_aggregate.o -MD -MP -MF $(DEPDIR)/inline_schrfun_aggregate.Tpo -c -o inline_schrfun_aggregate.o `test -f 'meas/inline/schrfun/inline_schrfun_aggregate.cc' || echo '$(srcdir)/'`meas/inline/schrfun/inline_schrfun_aggregate.cc

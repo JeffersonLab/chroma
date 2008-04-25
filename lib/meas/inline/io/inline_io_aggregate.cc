@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 3.3 2008-04-25 18:09:01 bjoo Exp $
+// $Id: inline_io_aggregate.cc,v 3.4 2008-04-25 18:29:42 bjoo Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
@@ -18,6 +18,7 @@
 
 #include "meas/inline/io/inline_gaussian_obj.h"
 #include "meas/inline/io/inline_usqcd_read_ddpairs_prop.h"
+#include "meas/inline/io/inline_usqcd_write_ddpairs_prop.h"
 
 namespace Chroma
 {
@@ -57,6 +58,7 @@ namespace Chroma
 
 	// QIO USQCD DD PAIRS Reader
 	success &= InlineUSQCDReadDDPairsPropEnv::registerAll();
+	success &= InlineUSQCDWriteDDPairsPropEnv::registerAll();
 
 	registered = true;
       }
