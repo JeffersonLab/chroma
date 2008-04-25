@@ -1,4 +1,4 @@
-// $Id: make_meson_ops.cc,v 3.1 2008-04-24 03:13:33 edwards Exp $
+// $Id: make_meson_ops.cc,v 3.2 2008-04-25 02:52:11 edwards Exp $
 /*! \file
  *  \brief Combine elemental meson ops into a meson operator
  *
@@ -222,6 +222,19 @@ struct TwoQuarkOp_t
 
   multi1d<QuarkInfo_t> quarks;
 };
+
+StandardOutputStream& operator<<(StandardOutputStream& os, const TwoQuarkOp_t& two)
+{
+  os << "TwoQuarkOp:" << endl;
+  for(int i=0; i < two.quarks.size(); ++i)
+  {
+    os << "Quark " << i << " :"
+       << " displacement= " << two.quarks[i].displacement 
+       << " spin= " << two.quarks[i].spin 
+       << endl;
+  }
+  return os;
+}
 
 struct GroupMesonOperator_t
 {
@@ -728,14 +741,14 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 
 	//Open the current op files 
 	XMLReader srcFileXML;
-	XMLReader snkFileXML;
 	{
 	  const std::string & filename = 
 	    ops[i].cfgs[n].time_files[t0].src_file;
 
 	  QDPFileReader rdr(srcFileXML, filename, QDPIO_SERIAL);
 	}	
-
+	
+	XMLReader snkFileXML;
 	{
 	  const std::string & filename = 
 	    ops[i].cfgs[n].time_files[t0].snk_file;
@@ -746,7 +759,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 	//Now check stuff for each file	
 		
 	//Do the cfgs match?
-	std::string srcCfgInfo, snkCfgInfo; 
+	std::string srcCfgInfo; 
 	{
 	  XMLReader xml_tmp(srcFileXML, "/SourceMesonOperator/Config_info");
 	  std::ostringstream os;
@@ -755,6 +768,7 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 	  srcCfgInfo = os.str();
 	}
 
+	std::string snkCfgInfo; 
 	{
 	  XMLReader xml_tmp(snkFileXML, "/SinkMesonOperator/Config_info");
 	  std::ostringstream os;
@@ -780,46 +794,67 @@ void opsError(const multi1d<InputFiles_t::ElementalOpFiles_t> ops)
 	}
 
 	//Do the dilutions match?
-	std::string firstDil, srcDil, sinkDil;
+	std::string firstDil_l, firstDil_r;
 	{
-	  XMLReader xml_tmp(snkFileXML, "/SinkMesonOperator/QuarkSources");
-	  std::ostringstream os;
-	  xml_tmp.print(os);
-					
-	  sinkDil = os.str();
+	  XMLReader xml_l(firstFileXML, "/SourceMesonOperator/QuarkSources/Quark_l/TimeSlice");
+	  XMLReader xml_r(firstFileXML, "/SourceMesonOperator/QuarkSources/Quark_r/TimeSlice");
+	  std::ostringstream os_l, os_r;
+	  xml_l.print(os_l);
+	  xml_r.print(os_r);
+
+	  firstDil_l = os_l.str();
+	  firstDil_r = os_r.str();
 	}
 
-	//int currT0; 	
+	std::string srcDil_l, srcDil_r;
 	{
-	  XMLReader xml_tmp(srcFileXML, "/SourceMesonOperator/QuarkSources");
-	  //read(xml_tmp, "Quark_l/TimeSlice/Dilutions/elem/Source/t_source", currT0);
-	  std::ostringstream os;
-	  xml_tmp.print(os);
+	  XMLReader xml_l(srcFileXML, "/SourceMesonOperator/QuarkSources/Quark_l/TimeSlice");
+	  XMLReader xml_r(srcFileXML, "/SourceMesonOperator/QuarkSources/Quark_r/TimeSlice");
+	  std::ostringstream os_l, os_r;
+	  xml_l.print(os_l);
+	  xml_r.print(os_r);
 
-	  srcDil = os.str();
+	  srcDil_l = os_l.str();
+	  srcDil_r = os_r.str();
 	}
 				
+	std::string sinkDil_l, sinkDil_r;
 	{
-	  XMLReader xml_tmp(firstFileXML, "/SourceMesonOperator/QuarkSources");
-	  std::ostringstream os;
-	  xml_tmp.print(os);
+	  XMLReader xml_l(snkFileXML, "/SinkMesonOperator/QuarkSources/Quark_l/TimeSlice");
+	  XMLReader xml_r(snkFileXML, "/SinkMesonOperator/QuarkSources/Quark_r/TimeSlice");
+	  std::ostringstream os_l, os_r;
+	  xml_l.print(os_l);
+	  xml_r.print(os_r);
 
-	  firstDil = os.str();
+	  sinkDil_l = os_l.str();
+	  sinkDil_r = os_r.str();
 	}
 
-	if (firstDil != sinkDil) 
+	// Check dilutions
+	if (firstDil_l != sinkDil_r) 
 	{
 	  QDPIO::cerr<< "Dilution scheme does not match: snkOp = " <<i<<
 	    " cfg = "<< n << " t0 = " << t0 <<endl;
 
-	  QDPIO::cerr << "firstDil= XX" << firstDil << "XX" << endl
-		      << "sinkDil= XX"  << sinkDil << "XX" << endl;
+	  QDPIO::cerr << "firstDil_l= XX" << firstDil_l << "XX" << endl
+		      << "sinkDil_r= XX"  << sinkDil_r << "XX" << endl;
 
 	  QDP_abort(1);
 	}
 
-			
-	if (firstDil != srcDil) 
+	if (firstDil_r != sinkDil_l) 
+	{
+	  QDPIO::cerr<< "Dilution scheme does not match: snkOp = " <<i<<
+	    " cfg = "<< n << " t0 = " << t0 <<endl;
+
+	  QDPIO::cerr << "firstDil_r= XX" << firstDil_r << "XX" << endl
+		      << "sinkDil_l= XX"  << sinkDil_l << "XX" << endl;
+
+	  QDP_abort(1);
+	}
+
+		
+	if (firstDil_l != srcDil_l || firstDil_r != srcDil_r)
 	{
 	  QDPIO::cerr<< "Dilution scheme does not match: srcOp = " <<i<<
 	    " cfg = "<< n << " t0 = " << t0 << endl;
@@ -924,6 +959,11 @@ struct ElementalOpEntry_t
   InputFiles_t::ElementalOpFiles_t opFiles;
 };
 
+StandardOutputStream& operator<<(StandardOutputStream& os, const ElementalOpKey_t& keyOp)
+{
+  return os << keyOp.op;
+}
+
 //support for elOpmap
 
 bool operator<(const ElementalOpKey_t& keyOpA, const ElementalOpKey_t& keyOpB) 
@@ -1025,7 +1065,6 @@ ElementalOpMap::ElementalOpMap(
 
 MesonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t& opKey, int cfg, int t0) 	
 {
-
   MesonOperator_t source;
 
   bool init = false; 
@@ -1072,16 +1111,16 @@ MesonOperator_t ElementalOpMap::getSourceOp(const ElementalOpKey_t& opKey, int c
     source.configInfo = str_tmp.str();
 
     //Assume each elem. Op file contains only one timeslice
-    if ( source.time_slices.size() != 1)
+    if (source.time_slices.size() != 1)
     {
-      QDPIO::cerr << "ERROR: each elemental op file must contain a single timeslice. Nt = " << source.time_slices.size() << endl;
+      QDPIO::cerr << "ERROR: each elemental op file must contain a single timeslice. Nt = " 
+		  << source.time_slices.size() << endl;
       QDP_abort(1); 
     }
-
   } //if in map
   else
   {
-    QDPIO::cerr<< "Source Elemental operator not found in map."<<endl;
+    QDPIO::cerr<< "Source Elemental operator not found in map. Op=" << opKey <<endl;
     QDP_abort(1);
   }
 
@@ -1228,11 +1267,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "Performing Sanity checks" << endl;
 
   //Check consistencies with cfgs, dilutions for all elemental ops
-#if 0
   opsError(input.input_files.elem_op_files);
-#else
-  QDPIO::cerr << "WARNING: skipping call to opsError - not checking for dilution sanity" << endl;
-#endif
 
   //-------------------------------------------------------------
   QDPIO::cout << "Writing to xml " << endl;
