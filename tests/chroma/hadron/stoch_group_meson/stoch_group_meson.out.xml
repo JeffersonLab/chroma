@@ -59,7 +59,7 @@
         <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
+         <Mass>0</Mass>
          <AnisoParam>
            <anisoP>false</anisoP>
            <t_dir>3</t_dir>
@@ -152,7 +152,7 @@
         <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
+         <Mass>0</Mass>
          <AnisoParam>
            <anisoP>false</anisoP>
            <t_dir>3</t_dir>
@@ -282,7 +282,7 @@
       <chroma>3.28.3</chroma>
       <qdp>1.25.1</qdp>
     </code_version>
-    <run_date>24 Apr 08 23:54:31 EDT</run_date>
+    <run_date>25 Apr 08 01:42:20 EDT</run_date>
     <Setgeom>
       <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -342,7 +342,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>24 Apr 08 23:54:32 EDT</run_date>
+          <run_date>25 Apr 08 01:42:20 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -440,7 +440,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>24 Apr 08 23:54:32 EDT</run_date>
+          <run_date>25 Apr 08 01:42:20 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -455,7 +455,7 @@
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
+      <Mass>0</Mass>
       <AnisoParam>
         <anisoP>false</anisoP>
         <t_dir>3</t_dir>
@@ -519,7 +519,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267663272</id>
+      <id>267669740</id>
     </make_source>
 
         </Source_file_info>
@@ -569,10 +569,10 @@
           <source_corr>96.0000000000002 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>19</ncg_had>
+          <ncg_had>23</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>5.43566088804919 0.502284622409354 0.322882929585752 0.550398138476388</prop_corr>
+          <prop_corr>6.03091341448886 1.62147853556755 1.50869606693305 1.63872679499395</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -596,7 +596,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>24 Apr 08 23:54:32 EDT</run_date>
+          <run_date>25 Apr 08 01:42:21 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -694,7 +694,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>24 Apr 08 23:54:32 EDT</run_date>
+          <run_date>25 Apr 08 01:42:21 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -709,7 +709,7 @@
             <quarkSpinType>FULL</quarkSpinType>
             <obsvP>false</obsvP><FermionAction>
       <FermAct>WILSON</FermAct>
-      <Kappa>0.11</Kappa>
+      <Mass>0</Mass>
       <AnisoParam>
         <anisoP>false</anisoP>
         <t_dir>3</t_dir>
@@ -773,7 +773,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267663272</id>
+      <id>267669741</id>
     </make_source>
 
         </Source_file_info>
@@ -823,10 +823,10 @@
           <source_corr>96.0000000000003 0 0 0</source_corr>
         </Source_correlator>
         <Relaxation_Iterations>
-          <ncg_had>19</ncg_had>
+          <ncg_had>23</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>5.33693120287109 0.218543341454989 0.218656480646447 0.579834447713879</prop_corr>
+          <prop_corr>6.26770671435833 1.1161935082204 1.00368523046261 1.20860699032643</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -850,7 +850,7 @@
             <chroma>3.28.3</chroma>
             <qdp>1.25.1</qdp>
           </code_version>
-          <run_date>24 Apr 08 23:54:32 EDT</run_date>
+          <run_date>25 Apr 08 01:42:21 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -985,16 +985,16 @@
           </pollp>
         </Smeared_Observables>
         <MesonOperator>
-          <Name>m11_0_-1</Name>
+          <Name>m11_1_-1</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m11_0_+1</Name>
+          <Name>m11_1_+1</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m12_0_-3</Name>
+          <Name>m12_1_-3</Name>
         </MesonOperator>
         <MesonOperator>
-          <Name>m21_0_-3</Name>
+          <Name>m21_1_-3</Name>
         </MesonOperator>
       </StochGroupMeson>
     </elem>

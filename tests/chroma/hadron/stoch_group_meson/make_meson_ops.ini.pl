@@ -12,10 +12,10 @@ $Lt = $nrow[3];
 #$elemOpFilesRoot[0] = "/home/jbulava/all-to-all/tests";
 $elemOpFilesRoot[0] = ".";
 
-push(@elemFiles, "m11_0_-1_t0");
-push(@elemFiles, "m11_0_+1_t0");
-push(@elemFiles, "m12_0_-3_t0");
-push(@elemFiles, "m21_0_-3_t0");
+push(@elemFiles, "m11_1_-1_t0");
+push(@elemFiles, "m11_1_+1_t0");
+push(@elemFiles, "m12_1_-3_t0");
+push(@elemFiles, "m21_1_-3_t0");
 
 #$coeffFiles[0] = "/home/jbulava/all-to-all/tests/Nucleon_G1g_1";
 $coeffFiles[0] = "./test_meson";

@@ -7,7 +7,7 @@ $gauge_type = "WEAK_FIELD";
 $gauge_cfg = "dummy";
 
 $anisoP = "false";
-$Kappa = 0.11;
+$mass = 0.0;
 $xi_0 = 1;
 $nu = 1;
 @bc = (1, 1, 1, -1);
@@ -95,7 +95,7 @@ print <<EOF;
         <numRetries>1</numRetries>
         <FermionAction>
          <FermAct>WILSON</FermAct>
-         <Kappa>0.11</Kappa>
+         <Mass>${mass}</Mass>
          <AnisoParam>
            <anisoP>${anisoP}</anisoP>
            <t_dir>3</t_dir>
