@@ -69,8 +69,8 @@
 <OutputInfo>
   <CfgOutputPaths>
     <elem>
-      <SourceOpOutputPath>.</SourceOpOutputPath>
-      <SinkOpOutputPath>.</SinkOpOutputPath>
+      <SourceOpOutputPath>./</SourceOpOutputPath>
+      <SinkOpOutputPath>./</SinkOpOutputPath>
     </elem>
   </CfgOutputPaths>
 </OutputInfo>
@@ -79,7 +79,7 @@
   </Input>
   <GroupMesonOperators>
     <elem>
-      <Name>foo</Name>
+      <Name>meson_op_rep</Name>
       <Terms>
         <elem>
           <ElementalOperator>
@@ -104,7 +104,7 @@
             <Quarks>
               <elem>
                 <Spin>1</Spin>
-                <Displacement>1</Displacement>
+                <Displacement>0</Displacement>
               </elem>
               <elem>
                 <Spin>1</Spin>
@@ -156,3 +156,4 @@
       </Terms>
     </elem>
   </GroupMesonOperators>
+</MakeMesonOps>

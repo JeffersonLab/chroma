@@ -20,7 +20,7 @@ push(@elemFiles, "m21_0_-3_t0");
 #$coeffFiles[0] = "/home/jbulava/all-to-all/tests/Nucleon_G1g_1";
 $coeffFiles[0] = "./test_meson";
 
-$outFilesRoot[0] = ".";
+$outFilesRoot[0] = "./";
 
 
 #

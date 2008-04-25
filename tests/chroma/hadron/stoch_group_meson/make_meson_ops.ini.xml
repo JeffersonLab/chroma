@@ -66,8 +66,8 @@
 <OutputInfo>
   <CfgOutputPaths>
     <elem>
-      <SourceOpOutputPath>.</SourceOpOutputPath>
-      <SinkOpOutputPath>.</SinkOpOutputPath>
+      <SourceOpOutputPath>./</SourceOpOutputPath>
+      <SinkOpOutputPath>./</SinkOpOutputPath>
     </elem>
   </CfgOutputPaths>
 </OutputInfo>
