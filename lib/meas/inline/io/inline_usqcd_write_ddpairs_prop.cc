@@ -1,4 +1,4 @@
-// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.1 2008-04-25 18:30:43 bjoo Exp $
+// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.2 2008-04-25 19:27:54 bjoo Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -131,13 +131,12 @@ namespace Chroma
     QDPIO::cout << "Attempt to write object name = " << params.prop_id << endl;
     QDPIO::cout << "Output file = " << params.output_file_name << endl;
 
+    /* Routine to write the prop here */
+ 
 
-    XMLBufferWriter testout;
-    write(testout, "InputParams", params);
-   
-    QDPIO::cout << "Echo Of Input Params" << endl;
-    QDPIO::cout << testout.str();
 
+
+    /* End of prop writing routine */
    
     
     QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ": ran successfully" << endl;

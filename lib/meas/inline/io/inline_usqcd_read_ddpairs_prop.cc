@@ -1,4 +1,4 @@
-// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.1 2008-04-25 18:09:01 bjoo Exp $
+// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.2 2008-04-25 19:27:54 bjoo Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -139,7 +139,28 @@ namespace Chroma
     QDPIO::cout << "Echo Of Input Params" << endl;
     QDPIO::cout << testout.str();
 
-   
+    /* Do the IO here */
+    /* Create the named objects */
+    try { 
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.source_id);
+      TheNamedObjMap::Instance().create<LatticePropagator>(params.prop_id);
+    }
+    catch(...) { 
+      QDPIO::cerr << "Failed to create the source and prop" <<endl;
+      QDP_abort(1);
+    }
+
+    /* Get references to the data */
+    LatticePropagator& source_ref=TheNamedObjMap::Instance().getData<LatticePropagator>(params.source_id);
+    LatticePropagator& prop_ref=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
+
+    /* Open the file */
+    XMLReader file_xml;
+    QDPFileReader input_file(file_xml, 
+			     params.input_file_name,
+			     QDPIO_SERIAL);
+
+    QDPIO::cout << "FILE XML IS: " << endl;
     
     QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": ran successfully" << endl;
 
