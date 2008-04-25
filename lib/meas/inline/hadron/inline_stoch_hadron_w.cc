@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.8 2008-04-24 05:41:51 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.9 2008-04-25 03:40:23 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -461,20 +461,27 @@ namespace Chroma{
       swatch.start();
       
       int N_quarks = params.param.quarks.size() ;
+      int NumBarOrd(N_quarks*(N_quarks-1)*(N_quarks-2)) ;
+      int NumMesOrd(N_quarks*(N_quarks-1)) ;
       if(N_quarks<2){
 	QDPIO::cout << name << ": Need at least 2" << endl;
 	QDP_abort(1);
       }
-      bool BuildMesons(false);
-      if(N_quarks>1){
+      bool BuildMesons(NumMesOrd>0);
+      if(BuildMesons){
 	QDPIO::cout << name << ": Can build mesons" << endl;
-	BuildMesons = true ;
+	QDPIO::cout<<name<< ": Number of meson orderings: "<<NumMesOrd<<endl;
       }
-      bool BuildBaryons(false);
-      if(N_quarks>2){
+      else
+	NumMesOrd=0;
+
+      bool BuildBaryons(NumBarOrd>0);
+      if(BuildBaryons){
 	QDPIO::cout << name << ": Can build baryons" << endl;
-	BuildBaryons = true ;
+	QDPIO::cout<<name<< ": Number of baryon orderings: "<<NumBarOrd<<endl;
       }
+      else
+	NumBarOrd=0;
       
       multi1d< Handle< DilutionScheme<LatticeFermion> > > quarks(N_quarks); 
       
@@ -614,6 +621,9 @@ namespace Chroma{
 
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
+
+
+      //  QDPIO::cout<<name<<": Caught Exception link smearing: " << e << endl;
     /***** COMMENT OUT  *** IN HOPE IT WILL COMPILE
 
     //
