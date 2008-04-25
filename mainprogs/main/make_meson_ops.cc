@@ -1,4 +1,4 @@
-// $Id: make_meson_ops.cc,v 3.2 2008-04-25 02:52:11 edwards Exp $
+// $Id: make_meson_ops.cc,v 3.3 2008-04-25 05:46:55 edwards Exp $
 /*! \file
  *  \brief Combine elemental meson ops into a meson operator
  *
@@ -216,25 +216,43 @@ struct TwoQuarkOp_t
 {
   struct QuarkInfo_t
   {
-    int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-    int  spin;            /*!< 1-based spin index */
+    multi1d<int>  displacement;    /*!< Orig plus/minus 1-based directional displacements */
+    int           spin;            /*!< 1-based spin index */
   };
 
   multi1d<QuarkInfo_t> quarks;
 };
 
-StandardOutputStream& operator<<(StandardOutputStream& os, const TwoQuarkOp_t& two)
+
+namespace 
 {
-  os << "TwoQuarkOp:" << endl;
-  for(int i=0; i < two.quarks.size(); ++i)
+  StandardOutputStream& operator<<(StandardOutputStream& os, const multi1d<int>& d)
   {
-    os << "Quark " << i << " :"
-       << " displacement= " << two.quarks[i].displacement 
-       << " spin= " << two.quarks[i].spin 
-       << endl;
+    if (d.size() > 0)
+    {
+      os << d[0];
+
+      for(int i=1; i < d.size(); ++i)
+	os << " " << d[i];
+    }
+
+    return os;
   }
-  return os;
+
+  StandardOutputStream& operator<<(StandardOutputStream& os, const TwoQuarkOp_t& two)
+  {
+    os << "TwoQuarkOp:" << endl;
+    for(int i=0; i < two.quarks.size(); ++i)
+    {
+      os << "Quark " << i << " :"
+	 << " displacement= " << two.quarks[i].displacement 
+	 << " spin= " << two.quarks[i].spin 
+	 << endl;
+    }
+    return os;
+  }
 }
+
 
 struct GroupMesonOperator_t
 {
@@ -484,21 +502,29 @@ void readCoeffFiles(multi1d<GroupMesonOperator_t> &ops, const multi1d<std::strin
 
       for (int m = 0 ; m < nelem ; ++m)
       {
-	int a,b,i,j;
-	Real re,im;
-	char lparen,comma,rparen;
+	int a,b;
+	int ndisp;
 
-	reader >> a >> b >> i >> j >> lparen >> re >> comma >> im >> rparen;
+	reader >> a >> b >> ndisp;
 
-	ops[f + l].term[m].coeff = cmplx( re, im );
+	multi1d<int> displacement(ndisp);
+	for(int k=0; k < ndisp; ++k)
+	  reader >> displacement[k];
 
 	ops[f + l].term[m].op.quarks.resize(2);
 
 	ops[f + l].term[m].op.quarks[0].spin = a;
 	ops[f + l].term[m].op.quarks[1].spin = b;
 
-	ops[f + l].term[m].op.quarks[0].displacement = i;
-	ops[f + l].term[m].op.quarks[1].displacement = j;
+	ops[f + l].term[m].op.quarks[0].displacement.resize(1);
+	ops[f + l].term[m].op.quarks[0].displacement[0] = 0;
+	ops[f + l].term[m].op.quarks[1].displacement    = displacement;
+
+	Real re,im;
+	char lparen,comma,rparen;
+	reader >> lparen >> re >> comma >> im >> rparen;
+
+	ops[f + l].term[m].coeff = cmplx( re, im );
       } //m
     } //l 
 	 		
@@ -959,26 +985,29 @@ struct ElementalOpEntry_t
   InputFiles_t::ElementalOpFiles_t opFiles;
 };
 
-StandardOutputStream& operator<<(StandardOutputStream& os, const ElementalOpKey_t& keyOp)
+
+namespace
 {
-  return os << keyOp.op;
+  StandardOutputStream& operator<<(StandardOutputStream& os, const ElementalOpKey_t& keyOp)
+  {
+    return os << keyOp.op;
+  }
 }
+
 
 //support for elOpmap
 
-bool operator<(const ElementalOpKey_t& keyOpA, const ElementalOpKey_t& keyOpB) 
+bool operator<(const ElementalOpKey_t& a, const ElementalOpKey_t& b) 
 {
-  multi1d<int> lga(4);
-  lga[0] = keyOpA.op.quarks[0].displacement;
-  lga[1] = keyOpA.op.quarks[0].spin;
-  lga[2] = keyOpA.op.quarks[1].displacement;
-  lga[3] = keyOpA.op.quarks[1].spin;
+  multi1d<int> lgaa(2);
+  lgaa[0] = a.op.quarks[0].spin;
+  lgaa[1] = a.op.quarks[1].spin;
+  multi1d<int> lga = concat(concat(lgaa, a.op.quarks[0].displacement), a.op.quarks[1].displacement);
 
-  multi1d<int> lgb(4);
-  lgb[0] = keyOpB.op.quarks[0].displacement;
-  lgb[1] = keyOpB.op.quarks[0].spin;
-  lgb[2] = keyOpB.op.quarks[1].displacement;
-  lgb[3] = keyOpB.op.quarks[1].spin;
+  multi1d<int> lgbb(2);
+  lgbb[0] = b.op.quarks[0].spin;
+  lgbb[1] = b.op.quarks[1].spin;
+  multi1d<int> lgb = concat(concat(lgbb, b.op.quarks[0].displacement), b.op.quarks[1].displacement);
 
   return (lga < lgb);
 }

@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.7 2008-04-25 03:56:18 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.8 2008-04-25 05:46:55 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -174,6 +174,25 @@ namespace Chroma
     }
 
 
+    //! Anonymous namespace
+    /*! Diagnostic stuff */
+    namespace
+    {
+      StandardOutputStream& operator<<(StandardOutputStream& os, const multi1d<int>& d)
+      {
+	if (d.size() > 0)
+	{
+	  os << d[0];
+
+	  for(int i=1; i < d.size(); ++i)
+	    os << " " << d[i];
+	}
+
+	return os;
+      }
+    }
+
+
     //----------------------------------------------------------------------------
     // Param stuff
     Params::Params()
@@ -237,8 +256,8 @@ namespace Chroma
       {
 	struct QuarkInfo_t
 	{
-	  int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-	  int  spin;            /*!< 1-based spin index */
+	  multi1d<int>  displacement;   /*!< Orig plus/minus 1-based directional displacements */
+	  int           spin;           /*!< 1-based spin index */
 	};
 
 	multi1d<QuarkInfo_t>  quark;    /*!< Displacement and spin for each quark */
@@ -312,25 +331,25 @@ namespace Chroma
       int  t0;              /*!< Time of source */
       int  dil;             /*!< dilution component per timeslice */
 
-      int  displacement;    /*!< Orig plus/minus 1-based directional displacements */
-      int  spin;            /*!< 1-based spin index */
+      multi1d<int>  displacement;    /*!< Orig plus/minus 1-based directional displacements */
+      int           spin;            /*!< 1-based spin index */
     };
 
 
     //! Support for the keys of smeared and displaced color vectors
     bool operator<(const KeySmearedDispColorVector_t& a, const KeySmearedDispColorVector_t& b)
     {
-      multi1d<int> lga(4);
-      lga[0] = a.displacement;
-      lga[1] = a.spin;
-      lga[2] = a.t0;
-      lga[3] = a.dil;
+      multi1d<int> lgaa(3);
+      lgaa[0] = a.spin;
+      lgaa[1] = a.t0;
+      lgaa[2] = a.dil;
+      multi1d<int> lga = concat(lgaa, a.displacement);
 
-      multi1d<int> lgb(4);
-      lgb[0] = b.displacement;
-      lgb[1] = b.spin;
-      lgb[2] = b.t0;
-      lgb[3] = b.dil;
+      multi1d<int> lgbb(3);
+      lgbb[0] = b.spin;
+      lgbb[1] = b.t0;
+      lgbb[2] = b.dil;
+      multi1d<int> lgb = concat(lgbb, b.displacement);
 
       return (lga < lgb);
     }
@@ -679,17 +698,20 @@ namespace Chroma
 	//Chroma uses a zero-based spin convention
 	LatticeColorVector vec = peekSpin(smrd_q,  key.spin - 1);
 
-	if (key.displacement > 0)
+	for(int i=0; i < key.displacement.size(); ++i)
 	{
-	  int disp_dir = key.displacement - 1;
-	  int disp_len = displacement_length;
-	  displacement(u, vec, disp_len, disp_dir);
-	}
-	else if (key.displacement < 0)
-	{
-	  int disp_dir = -key.displacement - 1;
-	  int disp_len = -displacement_length;
-	  displacement(u, vec, disp_len, disp_dir);
+	  if (key.displacement[i] > 0)
+	  {
+	    int disp_dir = key.displacement[i] - 1;
+	    int disp_len = displacement_length;
+	    displacement(u, vec, disp_len, disp_dir);
+	  }
+	  else if (key.displacement[i] < 0)
+	  {
+	    int disp_dir = -key.displacement[i] - 1;
+	    int disp_len = -displacement_length;
+	    displacement(u, vec, disp_len, disp_dir);
+	  }
 	}
 
 	snoop.stop();
@@ -856,20 +878,19 @@ namespace Chroma
 	qqq.quark.resize(N_quarks);
 
 	// Read 1-based spin
-	multi1d<int> spin(N_quarks);
-	reader >> spin[0] >> spin[1];
+	reader >> qqq.quark[0].spin >> qqq.quark[1].spin;
 
-	// Read 1-based displacement
-	multi1d<int> displacement(N_quarks);
-	reader >> displacement[0] >> displacement[1];
+	// Read 1-based displacement only for the right quark
+	qqq.quark[0].displacement.resize(1);
+	qqq.quark[0].displacement[0] = 0;
 
-	// Insert for each quark
-	for(int i=0; i < qqq.quark.size(); ++i)
-	{
-	  qqq.quark[i].spin = spin[i];
-	  qqq.quark[i].displacement = displacement[i];
-	}
+	int ndisp;
+	reader >> ndisp;
+	multi1d<int> displacement(ndisp);
+	for(int i=0; i < ndisp; ++i)
+	  reader >> displacement[i];
 
+	qqq.quark[1].displacement = displacement;
       } //n
 
       reader.close();
