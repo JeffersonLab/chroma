@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.9 2008-04-25 03:40:23 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.10 2008-04-26 17:03:29 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -294,7 +294,7 @@ namespace Chroma{
       
       GroupXML_t    smearing;       /*!< String holding quark smearing xml */
       
-    multi1d<Seed> seed  ;          /*!< Id of quarks */
+      multi1d<Seed> seed  ;          /*!< Id of quarks. Size == 2 meson, Size=3 is a baryon */
       
       std::string   id;                /*!< Tag/ID used in analysis codes */
       
@@ -462,7 +462,7 @@ namespace Chroma{
       
       int N_quarks = params.param.quarks.size() ;
       int NumBarOrd(N_quarks*(N_quarks-1)*(N_quarks-2)) ;
-      int NumMesOrd(N_quarks*(N_quarks-1)) ;
+      int NumMesOrd(N_quarks*N_quarks) ; // to allow for flavor singlets
       if(N_quarks<2){
 	QDPIO::cout << name << ": Need at least 2" << endl;
 	QDP_abort(1);
