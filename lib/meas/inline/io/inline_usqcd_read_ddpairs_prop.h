@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_usqcd_read_ddpairs_prop.h,v 3.1 2008-04-25 18:09:01 bjoo Exp $
+// $Id: inline_usqcd_read_ddpairs_prop.h,v 3.2 2008-04-28 20:23:46 bjoo Exp $
 /*! \file
  * \brief Inline task to read a USQCD DD Pairs Prop 
  *
@@ -42,6 +42,7 @@ namespace Chroma
     std::string   input_file_name;
     std::string   source_xml;    
     std::string   xml_file;
+    std::string   precision;
   };
 
   //! Inline writing of memory objects
