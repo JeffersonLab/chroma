@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.8 2008-04-25 05:46:55 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.9 2008-04-29 11:34:17 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -422,7 +422,7 @@ namespace Chroma
 	
     // Constructor from smeared map 
     SmearedDispObjects::SmearedDispObjects(int disp_length,
-					   multi1d< Handle< DilutionScheme<LatticeFermion> > > dil_quarks,	
+					   multi1d< Handle< DilutionScheme<LatticeFermion> > > dil_quarks,
 					   Handle< QuarkSmearing<LatticeFermion> > qsmr,
 					   const multi1d<LatticeColorMatrix> & u_smr) :
       displacement_length(disp_length),diluted_quarks(dil_quarks),
@@ -1153,13 +1153,6 @@ namespace Chroma
 
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
-      //Used for testing purposes 	
-      multi1d<int> orig(4);
-      for (int ind = 0 ; ind < 4 ; ++ind)
-      {
-	orig[ind] = 0;
-      }
-
       //
       // Read operator coefficients
       //
@@ -1289,13 +1282,6 @@ namespace Chroma
 		makeColorSinglet(c_oper, q0, q1, phases.getSet()[participating_timeslices[t0]]);
 		  
 		watch.stop();
-
-		/*QDPIO::cout<< "Made Color singlet : time =  " <<  
-		  watch.getTimeInSeconds() << "secs" << endl;
-		*/	
-		/*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
-		  << endl;
-		*/	
 
 		// Slow fourier-transform
 		// We can restrict what the FT routine requires to a subset.
@@ -1508,14 +1494,6 @@ namespace Chroma
 		makeColorSinglet(a_oper, q0, q1, all);
 
 		watch.stop();
-
-		/*
-		  QDPIO::cout <<	"Made Color Singlet: time = " <<
-		  watch.getTimeInSeconds() << "secs" << endl;
-		*/
-		/*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
-		  << endl;
-		*/
 
 		watch.reset();
 		watch.start();
