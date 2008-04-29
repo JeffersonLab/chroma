@@ -8,18 +8,8 @@
 
 @nrow = (2,2,2,2);
 
-
-$Lt = $nrow[3];
-$Ltm1 = $Lt - 1;
-
-$NcoeffFiles = 1;
-$NcoeffFilesm1 = $NcoeffFiles - 1;
-
-$Nbins = 1;
-$Nbinsm1 = $Nbins - 1;
-
-$NelemM1 = 14;
-$elemOpFilesRoot[0] = "/home/jbulava/all-to-all/tests";
+#$elemOpFilesRoot[0] = "/home/jbulava/all-to-all/tests";
+$elemOpFilesRoot[0] = "./";
 
 $elemFiles[0] = "Nuc_323_001";
 $elemFiles[1] = "Nuc_323_002";
@@ -37,10 +27,11 @@ $elemFiles[12] = "Nuc_413_00m2";
 $elemFiles[13] = "Nuc_413_00m3";
 $elemFiles[14] = "Nuc_431_000";
 
-$coeffFiles[0] = "/home/jbulava/all-to-all/tests/Nucleon_G1g_1";
+#$coeffFiles[0] = "/home/jbulava/all-to-all/tests/Nucleon_G1g_1";
+$coeffFiles[0] = "./Nucleon_G1g_1";
 
-
-$outFilesRoot[0] = "/home/jbulava/all-to-all/tests/";
+#$outFilesRoot[0] = "/home/jbulava/all-to-all/tests/";
+$outFilesRoot[0] = "./";
 
 
 #
@@ -56,55 +47,57 @@ print <<EOF;
 ;
 </annotation>
 <Param> 
-	<version>1</version>
-	<Layout>@{nrow}</Layout> 
-	<Decay_dir>3</Decay_dir>
+  <version>1</version>
+  <Layout>@{nrow}</Layout> 
+  <Decay_dir>3</Decay_dir>
 </Param>
 <InputFiles>
-	<CoeffFiles>
+  <CoeffFiles>
 EOF
 
 #Files of Ops to make 
+$NcoeffFilesm1 = $#coeffFiles;
 foreach $l (0 .. $NcoeffFilesm1)
 {
-	print<<EOF;
-		<elem>${coeffFiles[$l]}</elem>
+  print<<EOF;
+    <elem>${coeffFiles[$l]}</elem>
 EOF
 }
 
 print<<EOF;
-	</CoeffFiles>
-	<ElementalOpFiles>
+  </CoeffFiles>
+  <ElementalOpFiles>
 EOF
 
-	foreach $l (0 .. $NelemM1)
-	{
-	print<<EOF;
-		<elem>
-			<Configs>
-				<elem>
-					<DilutionTimeSlices>
-						<elem>
-							<CreationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_src.lime</CreationOperatorFile>
-							<AnnihilationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_snk.lime</AnnihilationOperatorFile>
-						</elem>
-					</DilutionTimeSlices>
-				</elem>
-			</Configs>
-		</elem>
+$NelemM1 = $#elemFiles;
+foreach $l (0 .. $NelemM1)
+{
+  print<<EOF;
+    <elem>
+      <Configs>
+        <elem>
+          <DilutionTimeSlices>
+            <elem>
+              <CreationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_snk.lime</AnnihilationOperatorFile>
+            </elem>
+          </DilutionTimeSlices>
+        </elem>
+      </Configs>
+    </elem>
 EOF
 } #l
 
 print<<EOF;
-	</ElementalOpFiles>
+  </ElementalOpFiles>
 </InputFiles>
 <OutputInfo>
-	<CfgOutputPaths>
-		<elem>
-			<SourceOpOutputPath>${outFilesRoot[0]}</SourceOpOutputPath>
-			<SinkOpOutputPath>${outFilesRoot[0]}</SinkOpOutputPath>
-		</elem>
-	</CfgOutputPaths>
+  <CfgOutputPaths>
+    <elem>
+      <SourceOpOutputPath>${outFilesRoot[0]}</SourceOpOutputPath>
+      <SinkOpOutputPath>${outFilesRoot[0]}</SinkOpOutputPath>
+    </elem>
+  </CfgOutputPaths>
 </OutputInfo>
 </MakeOps>
 EOF
