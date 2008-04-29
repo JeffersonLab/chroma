@@ -74,7 +74,8 @@ bin_PROGRAMS = chroma$(EXEEXT) purgaug$(EXEEXT) cfgtransf$(EXEEXT) \
 	hmc$(EXEEXT) spectrum_s$(EXEEXT)
 check_PROGRAMS = collect_propcomp$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) qpropqio$(EXEEXT) qproptransf$(EXEEXT) \
-	wallformfac$(EXEEXT) make_meson_ops$(EXEEXT)
+	wallformfac$(EXEEXT) make_meson_ops$(EXEEXT) \
+	make_baryon_ops$(EXEEXT)
 EXTRA_PROGRAMS = qpropadd$(EXEEXT) propagator_comp$(EXEEXT) \
 	multi_propagator$(EXEEXT) multi_propagator_comp$(EXEEXT) \
 	collect_multi_propcomp$(EXEEXT) spectrum_s$(EXEEXT)
@@ -122,6 +123,12 @@ hmc_LDADD = $(LDADD)
 hmc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am_make_baryon_ops_OBJECTS = make_baryon_ops.$(OBJEXT)
+make_baryon_ops_OBJECTS = $(am_make_baryon_ops_OBJECTS)
+make_baryon_ops_LDADD = $(LDADD)
+make_baryon_ops_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_make_meson_ops_OBJECTS = make_meson_ops.$(OBJEXT)
 make_meson_ops_OBJECTS = $(am_make_meson_ops_OBJECTS)
 make_meson_ops_LDADD = $(LDADD)
@@ -208,7 +215,8 @@ CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
-	$(hmc_SOURCES) $(make_meson_ops_SOURCES) multi_propagator.c \
+	$(hmc_SOURCES) $(make_baryon_ops_SOURCES) \
+	$(make_meson_ops_SOURCES) multi_propagator.c \
 	$(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) \
 	$(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
 	$(qpropqio_SOURCES) $(qproptransf_SOURCES) \
@@ -216,7 +224,8 @@ SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(wallformfac_SOURCES)
 DIST_SOURCES = $(cfgtransf_SOURCES) $(chroma_SOURCES) \
 	$(collect_multi_propcomp_SOURCES) $(collect_propcomp_SOURCES) \
-	$(hmc_SOURCES) $(make_meson_ops_SOURCES) multi_propagator.c \
+	$(hmc_SOURCES) $(make_baryon_ops_SOURCES) \
+	$(make_meson_ops_SOURCES) multi_propagator.c \
 	$(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) \
 	$(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
 	$(qpropqio_SOURCES) $(qproptransf_SOURCES) \
@@ -400,6 +409,7 @@ qpropadd_SOURCES = qpropadd.cc
 qpropgfix_SOURCES = qpropgfix.cc
 qproptrev_SOURCES = qproptrev.cc
 cfgtransf_SOURCES = cfgtransf.cc
+make_baryon_ops_SOURCES = make_baryon_ops.cc
 make_meson_ops_SOURCES = make_meson_ops.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
@@ -486,6 +496,9 @@ collect_propcomp$(EXEEXT): $(collect_propcomp_OBJECTS) $(collect_propcomp_DEPEND
 hmc$(EXEEXT): $(hmc_OBJECTS) $(hmc_DEPENDENCIES) 
 	@rm -f hmc$(EXEEXT)
 	$(CXXLINK) $(hmc_OBJECTS) $(hmc_LDADD) $(LIBS)
+make_baryon_ops$(EXEEXT): $(make_baryon_ops_OBJECTS) $(make_baryon_ops_DEPENDENCIES) 
+	@rm -f make_baryon_ops$(EXEEXT)
+	$(CXXLINK) $(make_baryon_ops_OBJECTS) $(make_baryon_ops_LDADD) $(LIBS)
 make_meson_ops$(EXEEXT): $(make_meson_ops_OBJECTS) $(make_meson_ops_DEPENDENCIES) 
 	@rm -f make_meson_ops$(EXEEXT)
 	$(CXXLINK) $(make_meson_ops_OBJECTS) $(make_meson_ops_LDADD) $(LIBS)
@@ -534,6 +547,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_multi_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hmc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_baryon_ops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_meson_ops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_propagator_comp.Po@am__quote@
