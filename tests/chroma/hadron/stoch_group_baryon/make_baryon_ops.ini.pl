@@ -9,7 +9,7 @@
 @nrow = (2,2,2,2);
 
 #$elemOpFilesRoot[0] = "/home/jbulava/all-to-all/tests";
-$elemOpFilesRoot[0] = "./";
+$elemOpFilesRoot[0] = ".";
 
 $elemFiles[0] = "Nuc_323_001";
 $elemFiles[1] = "Nuc_323_002";
@@ -78,8 +78,8 @@ foreach $l (0 .. $NelemM1)
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>${elemOpFilesRoot[0]}/${elemFiles[$l]}_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>

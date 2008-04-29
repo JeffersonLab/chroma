@@ -20,8 +20,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_323_001_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_323_001_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_323_001_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_323_001_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -32,8 +32,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_323_002_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_323_002_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_323_002_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_323_002_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -44,8 +44,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_323_003_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_323_003_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_323_003_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_323_003_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -56,8 +56,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_323_00m1_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_323_00m1_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_323_00m1_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_323_00m1_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -68,8 +68,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_323_00m2_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_323_00m2_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_323_00m2_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_323_00m2_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -80,8 +80,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_323_00m3_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_323_00m3_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_323_00m3_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_323_00m3_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -92,8 +92,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_332_000_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_332_000_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_332_000_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_332_000_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -104,8 +104,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_000_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_000_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_000_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_000_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -116,8 +116,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_001_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_001_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_001_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_001_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -128,8 +128,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_002_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_002_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_002_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_002_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -140,8 +140,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_003_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_003_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_003_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_003_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -152,8 +152,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_00m1_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_00m1_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_00m1_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_00m1_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -164,8 +164,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_00m2_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_00m2_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_00m2_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_00m2_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -176,8 +176,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_413_00m3_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_413_00m3_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_413_00m3_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_413_00m3_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
@@ -188,8 +188,8 @@
         <elem>
           <DilutionTimeSlices>
             <elem>
-              <CreationOperatorFile>.//Nuc_431_000_src.lime</CreationOperatorFile>
-              <AnnihilationOperatorFile>.//Nuc_431_000_snk.lime</AnnihilationOperatorFile>
+              <CreationOperatorFile>./Nuc_431_000_t0_src.lime</CreationOperatorFile>
+              <AnnihilationOperatorFile>./Nuc_431_000_t0_snk.lime</AnnihilationOperatorFile>
             </elem>
           </DilutionTimeSlices>
         </elem>
