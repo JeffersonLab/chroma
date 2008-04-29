@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.10 2008-04-26 17:03:29 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.11 2008-04-29 20:21:02 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -245,23 +245,32 @@ namespace Chroma{
     class Key{
     public:
       multi1d<int> k;
-      Key(){
-	k.resize(3);
-	k[0]=k[1]=k[2]=0;
-      }
-      Key(int i,int j, int l){
-	k.resize(3);
-	k[0]=i ;  k[1]=j ; k[2]=l ;
-      }
       Key& set(int i,int j, int l){
+	k.resize(3);
 	k[0]=i ; k[1]=j ; k[2]=l ;
 	return *this ;
       }
+
+      Key& set(int i,int j){
+	k.resize(2);
+	k[0]=i ; k[1]=j ; 
+	return *this ;
+      }
+
+      Key(){
+	k.resize(1);
+	k[0]=0;
+      }
+      Key(int i,int j, int l){
+	set(i,j,l);
+      }
+      Key(int i,int j){
+	set(i,j);
+      }
+      
       Key(const Key& klidi){
-	k.resize(3) ;
-	k[0] = klidi.k[0] ;
-	k[1] = klidi.k[1] ;
-	k[2] = klidi.k[2] ;
+	k.resize(klidi.k.size()) ;
+	for(int i(0);i<k.size();i++) k[i] = klidi.k[i] ;
       }
       //     int operator[](const int i){return k[i];} const 
       
@@ -272,8 +281,132 @@ namespace Chroma{
       return (a.k<b.k) ;
     }
     
+
+     //! The key for smeared quarks 
+    struct KeySmearedQuark_t
+    {
+      int  t0;              /*!< Time of source */
+      int dil;              /*!< dilution component per timeslice */
+      KeySmearedQuark_t(int t, int d):t0(t),dil(d){}
+    };
+
+
+    //! Support for the keys of smeared quarks 
+    bool operator<(const KeySmearedQuark_t& a, const KeySmearedQuark_t& b)
+    {
+      multi1d<int> lga(2);
+      lga[0] = a.t0;
+      lga[1] = a.dil;
+
+      multi1d<int> lgb(2);
+      lgb[0] = b.t0;
+      lgb[1] = b.dil;
+
+      return (lga < lgb);
+    }
+
+    //--------------------------------------------------------------------
+    //! The smeared and displaced objects
+    class SmearedObjects{
+    private:
+      multi1d< Handle< DilutionScheme<LatticeFermion> > > quarks ;
+      GroupXML_t smr_xml ;
+      const multi1d<LatticeColorMatrix>& u; 
+      Handle< QuarkSmearing<LatticeFermion> > Smearing ;
+      
+      multi1d< map<KeySmearedQuark_t,LatticeFermion> > smeared_src ;
+      multi1d< map<KeySmearedQuark_t,LatticeFermion> > smeared_snk ;
+
+    public:
+      //! Constructor from smeared map 
+      SmearedObjects(multi1d< Handle< DilutionScheme<LatticeFermion> > > qrks,
+		     const GroupXML_t smr,
+		     const multi1d<LatticeColorMatrix> & u_smr):
+	quarks(qrks),smr_xml(smr), u(u_smr){
+	try{
+	  std::istringstream  xml_l(smr.xml);
+	  XMLReader  smrtop(xml_l);
+	  QDPIO::cout << "Link smearing type = " <<smr.id ; 
+	  QDPIO::cout << endl;
+	  
+	  Smearing=
+	    TheFermSmearingFactory::Instance().createObject(smr.id, 
+							    smrtop, 
+							    smr.path);
+	}
+	catch(const std::string& e){
+	  QDPIO::cerr <<name<< ": Caught Exception creating quark smearing object: " << e << endl;
+	  QDP_abort(1);
+	}
+	catch(...){
+	  QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" << endl;
+	  QDP_abort(1);
+	}
+	
+	smeared_src.resize(quarks.size());
+	smeared_snk.resize(quarks.size());
+
+      }
+      ~SmearedObjects(){}
+
+      const LatticeFermion& getSmrSource(int qn, const KeySmearedQuark_t& k){
+	if ( smeared_src[qn].find(k) == smeared_src[qn].end() ){
+	  StopWatch snoop;
+	  
+	  snoop.reset();
+	  snoop.start();
+	  // Need to do the smearing...
+	  LatticeFermion f = quarks[qn]->dilutedSource(k.t0, k.dil);
+	  
+	  (*Smearing)(f, u);
+	  smeared_src[qn].insert(std::make_pair(k,f));
+	  // Sanity check - the entry better be there
+	  if ( smeared_src[qn].find(k) == smeared_src[qn].end() ){
+	    QDPIO::cerr << __func__ 
+			<< ": internal error - " 
+			<< "could not insert empty key in map\n" ;
+	    QDP_abort(1);
+	  }
+	  snoop.stop();
+	  
+	  QDPIO::cout << " Smeared Source: Quark = "<< qn <<" t0 = "
+		      << k.t0 <<" dil = "<< k.dil << " Time = "
+		      << snoop.getTimeInSeconds() <<" sec"<<endl;
+	}
+	return (smeared_src[qn].find(k)->second) ;
+      }
+
+      const LatticeFermion& getSmrSolution(int qn, const KeySmearedQuark_t& k){
+	if ( smeared_snk[qn].find(k) == smeared_snk[qn].end() ){
+	  StopWatch snoop;
+	  
+	  snoop.reset();
+	  snoop.start();
+	  // Need to do the smearing...
+	  LatticeFermion f = quarks[qn]->dilutedSolution(k.t0, k.dil);
+	  
+	  (*Smearing)(f, u);
+	  smeared_snk[qn].insert(std::make_pair(k,f));
+	  // Sanity check - the entry better be there
+	  if ( smeared_snk[qn].find(k) == smeared_snk[qn].end() ){
+	    QDPIO::cerr << __func__ 
+			<< ": internal error - " 
+			<< "could not insert empty key in map\n" ;
+	    QDP_abort(1);
+	  }
+	  snoop.stop();
+	  
+	  QDPIO::cout << " Smeared Solution: Quark = "<< qn <<" t0 = "
+		      << k.t0 <<" dil = "<< k.dil << " Time = "
+		      << snoop.getTimeInSeconds() <<" sec"<<endl;
+	}
+	return (smeared_snk[qn].find(k)->second) ;
+      }
+	
+    } ;
+
     //! Baryon operator
-    struct HadronOperator_t{
+    struct BaryonOperator_t{
       //! Baryon operator time slices
       struct TimeSlice_t{
 	struct Mom_t{
@@ -284,7 +417,6 @@ namespace Chroma{
 	      //vector<vector<vector<complex<double> > > > d ;
 	    } ;
 	    multi1d<Dilutions_t> s;
-	    Permut_t(){s.resize(4);}
 	  } ;
 	  map<Key,Permut_t> p ;
 	} ;
@@ -294,16 +426,47 @@ namespace Chroma{
       
       GroupXML_t    smearing;       /*!< String holding quark smearing xml */
       
-      multi1d<Seed> seed  ;          /*!< Id of quarks. Size == 2 meson, Size=3 is a baryon */
+      multi1d<Seed> seed  ;          /*!< Id of quarks. Size=3 is a baryon */
       
       std::string   id;                /*!< Tag/ID used in analysis codes */
       
       int           mom2_max;          /*!< |\vec{p}|^2 */
       int           time_dir;         /*!< Direction of decay */
+      BaryonOperator_t(){seed.resize(3);}
     };
 
+    struct MesonOperator_t{
+      //! Meson operator time slices
+      struct TimeSlice_t{
+	struct Mom_t{
+	  struct Permut_t{
+	    //! Meson operator dilutions
+	    struct Dilutions_t{
+	      multi2d<DComplex> d;
+	      //vector<vector<vector<complex<double> > > > d ;
+	    } ;
+	    multi1d<Dilutions_t> s;
+	  } ;
+	  map<Key,Permut_t> p ;
+	} ;
+	map<Key,Mom_t> m;
+      } ;
+      map<int, TimeSlice_t> t;
+      
+      GroupXML_t    smearing; /*!< String holding quark smearing xml */
+      
+      multi1d<Seed> seed  ; /*!< Id of quarks. Size == 2 meson */
+      
+      std::string   id;                /*!< Tag/ID used in analysis codes */
+      
+      int           mom2_max;          /*!< |\vec{p}|^2 */
+      int           time_dir;         /*!< Direction of decay */
+      MesonOperator_t(){seed.resize(2);}
+    };
+
+
     //! BaryonOperator header writer
-    void write(XMLWriter& xml, const string& path, const HadronOperator_t& param)
+    void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
     {
       push(xml, path);
       
@@ -621,8 +784,46 @@ namespace Chroma{
 
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
-
-
+      //We only do diagonal smearing
+      for(int sm(0);sm<params.param.smearing.size();sm++){
+	SmearedObjects SmrQuarks(quarks,params.param.smearing[sm], u_smr);
+		  
+	//First do all the mesons
+	//solution source mesons
+	for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	  for(int q(0);q< quarks.size() ;q++){
+	    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
+	      KeySmearedQuark_t kk(t0,d) ;
+	      LatticeFermion quark_bar = SmrQuarks.getSmrSource(q,kk);
+	      for(int q1(0);q1< quarks.size() ;q1++){
+		for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+		  KeySmearedQuark_t kk1(t0,d1) ;
+		  LatticeFermion quark = SmrQuarks.getSmrSource(q1,kk1);
+		  
+		}
+	      }
+	    } // dilutions
+	  } // quarks
+	}
+	
+	// Do solution solution mesons, source-source mesons
+	for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	  for(int q(0);q< quarks.size() ;q++){
+	    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
+	      KeySmearedQuark_t kk(t0,d) ;
+	      LatticeFermion quark_bar = SmrQuarks.getSmrSource(q,kk);
+	      for(int q1(0);q1< quarks.size() ;q1++){
+		for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+		  KeySmearedQuark_t kk1(t0,d1) ;
+		  LatticeFermion quark = SmrQuarks.getSmrSource(q1,kk1);
+		  
+		}
+	      }
+	    } // dilutions
+	  } // quarks
+	  
+	} // t0 
+      } // smearings
       //  QDPIO::cout<<name<<": Caught Exception link smearing: " << e << endl;
     /***** COMMENT OUT  *** IN HOPE IT WILL COMPILE
 

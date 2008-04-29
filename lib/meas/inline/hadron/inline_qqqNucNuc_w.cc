@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.6 2008-03-29 04:00:01 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.7 2008-04-29 20:21:02 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -424,7 +424,7 @@ namespace Chroma
       for(int k(0);k<Nd-1;k++){
 	ostringstream tag ;
 	tag<<"rho_"<<k;
-	compute_qqbar(qqbar, (1<<(k+1)),qprop[0],qprop[0],phases,t0 );
+	compute_qqbar(qqbar, (1<<k),qprop[0],qprop[0],phases,t0 );
 	write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
       }
 
@@ -445,9 +445,9 @@ namespace Chroma
 	for(int k(0);k<Nd-1;k++){
 	  ostringstream tag ;
 	  tag<<"kaonst_"<<k;
-	  compute_qqbar(qqbar, (1<<(k+1)), qprop[0],qprop[1],phases,t0 );
+	  compute_qqbar(qqbar, (1<<k), qprop[0],qprop[1],phases,t0 );
 	  write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
-	  compute_qqbar(qqbar, (1<<(k+1)), qprop[1],qprop[0],phases,t0 );
+	  compute_qqbar(qqbar, (1<<k), qprop[1],qprop[0],phases,t0 );
 	  write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
 	}
       }
