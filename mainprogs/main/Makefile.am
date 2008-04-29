@@ -85,7 +85,7 @@ bin_PROGRAMS = chroma  \
 
 # Wilson specific programs
 check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac \
-        make_meson_ops
+        make_meson_ops make_baryon_ops
 
 
 # Staggered specific programs
@@ -126,6 +126,8 @@ qpropadd_SOURCES= qpropadd.cc
 qpropgfix_SOURCES= qpropgfix.cc
 qproptrev_SOURCES= qproptrev.cc
 cfgtransf_SOURCES= cfgtransf.cc
+
+make_baryon_ops_SOURCES= make_baryon_ops.cc
 make_meson_ops_SOURCES= make_meson_ops.cc
 
 #mainparam_io_SOURCES= mainparam_io.cc
