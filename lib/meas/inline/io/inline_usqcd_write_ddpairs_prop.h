@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_usqcd_write_ddpairs_prop.h,v 1.1 2008-04-25 18:30:43 bjoo Exp $
+// $Id: inline_usqcd_write_ddpairs_prop.h,v 1.2 2008-05-01 19:32:56 bjoo Exp $
 /*! \file
  * \brief Inline task to read a USQCD DD Pairs Prop 
  *
@@ -34,9 +34,11 @@ namespace Chroma
 
     // We will recreate the source from the header
     std::string   prop_id;
-    
+    std::string   gauge_id;
+
     std::string   output_file_name;
     QDP_volfmt_t  qio_volfmt;
+    std::string   precision;
 
     std::string   xml_file;
   };

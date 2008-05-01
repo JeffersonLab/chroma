@@ -1,4 +1,4 @@
-// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.3 2008-04-28 20:23:46 bjoo Exp $
+// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.4 2008-05-01 19:32:56 bjoo Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -13,6 +13,7 @@
 #include "util/info/unique_id.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
+#include "io/qprop_io.h"
 
 using namespace QDP;
 
@@ -57,7 +58,7 @@ namespace Chroma
     write(xml, "Frequency", p.frequency);
     push(xml, "Param");
     write(xml, "InputFile", p.input_file_name);
-    write(xml, "SourceXML", p.source_xml);
+    write(xml, "PropXML", p.prop_xml);
     write(xml, "Precision", p.precision);
     pop(xml); // Param
     
@@ -95,16 +96,16 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      if ( paramtop.count("Param/SourceXML") == 1 ) { 
+      if ( paramtop.count("Param/PropXML") == 1 ) { 
 
-	XMLReader prop_header(paramtop, "Param/SourceXML");
+	XMLReader prop_header(paramtop, "Param/PropXML");
 	ostringstream dummy;
 	prop_header.printCurrentContext(dummy);
-	source_xml = dummy.str();
+	prop_xml = dummy.str();
       }
       else { 
 	QDPIO::cout << "NO source XML in Parameter file. Will look in Prop Info" << endl;
-	source_xml == "";
+	prop_xml == "";
       }
 
       
@@ -154,13 +155,12 @@ namespace Chroma
 
     QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ":" << endl;
     StopWatch swatch;
-    QDPIO::cout << "Attempt to read object name = " << params.input_file_name;
+    swatch.reset();
+    swatch.start();
 
-    XMLBufferWriter testout;
-    write(testout, "InputParams", params);
+    QDPIO::cout << "Attempt to read object name = " << params.input_file_name << endl;
+
    
-    QDPIO::cout << "Echo Of Input Params" << endl;
-    QDPIO::cout << testout.str();
 
     /* Do the IO here */
     /* Create the named objects */
@@ -177,7 +177,7 @@ namespace Chroma
     LatticePropagator& source_ref=TheNamedObjMap::Instance().getData<LatticePropagator>(params.source_id);
     LatticePropagator& prop_ref=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
 
-    /* Open the file */
+    /* Open the file - read thef ile XML*/
     XMLReader file_xml;
     QDPFileReader input_file(file_xml, 
 			     params.input_file_name,
@@ -188,165 +188,187 @@ namespace Chroma
     xml_out << file_xml;
     pop(xml_out);
 
-    LatticeFermion tmp;
-    LatticeFermionF tmpF;
-    LatticeFermionD tmpD;
 
-    // Cycle through the spin color components 
-    for(int i=0; i < 24; i++) { 
+    /* Try to bind the prop and source info up front, so you can know if the metadata is OK
+       before reading in the whole file */
 
-      // For the record XML
-      XMLReader rec_xml; 
-
-      // To get the color and spin values
-      int col, spin;
-
-      // Is the record under consideration a source?
-      bool issource=false;
-      
-      // Read the record depending on the precision and cast 
-      // to base precision
-      if( params.precision == "single" ) {
-	read(input_file, rec_xml, tmpF);
-	tmp=tmpF; // Truncate to my inner floating point if necessary
-      }
-      else {
-	// Double
-	read(input_file, rec_xml, tmpD);
-	tmp=tmpD; // Truncate to my inner floating point if necessary
-      }
-       
-
-      // Try and grok source color and spin info
-      try { 
-	read(rec_xml, "/usqcdSourceInfo/info/spin", spin);
-	read(rec_xml, "/usqcdSourceInfo/info/color", col);
-
-	// Found source record spin and color info, so assume it is a source
-	issource = true;
-	QDPIO::cout << "Record is source record with spin="<< spin << " color= "<< col << endl;
-
-      }
-      catch(const std::string& e) { 
-	// We didn't find any source info... May still be a prop component
-	// Otherwise we didn't find a source
-	issource = false;
-      }
-
-      // If it is a source, shove it off into the source object
-      if( issource ) { 
-	FermToProp(tmp, source_ref, col, spin);
-      }
-
-      else { 
+    /* Strategy: Look first in the file xml, and if you cant find the info there, look in the
+       User supplied <PropXML> tags */
+    Propagator_t prop_h_info;
+    MakeSourceProp_t make_source_header;
 	
-	// The thingie was not a source. Is it a Prop component?
-	try { 
-	  // Look for propagator spin and color info
-	  read(rec_xml, "/usqcdInfo/spin", spin);
-	  read(rec_xml, "/usqcdInfo/color", col);
-	  QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
+    try  { 
+      // go to the file <info> tag in the file XML
+      XMLReader prop_info_xml(file_xml, "/usqcdPropFile/info");
+      
+      // check for the existence of a <Propagator> subtag
+      if( prop_info_xml.count("./Propagator") != 0 ) { 
 
-	  // If you find it, it is a prop and we can shove it off 
-	  FermToProp(tmp, prop_ref, col, spin);
-	  
+	// It's there
+	QDPIO::cout << "Found header in Prop File <info> record" << endl;
+	QDPIO::cout << "Attempting to bind" << endl;
+
+	// Try to bind it
+	read(prop_info_xml, "Propagator", prop_h_info);
+
+      }
+      else { 
+
+	// The <info> tag doesn't contain what we want
+	// Let's look at what the user specified in the <PropXML>
+	// Tags...
+
+	// Make a reader out of the prop_xml;
+	istringstream is(params.prop_xml);
+	XMLReader source_top(is);
+      	
+	QDPIO::cout << "Looking for <Propagator> tag in the user supplied XML" << endl;
+	// Check if the tag is there
+	if( source_top.count("/Propagator") == 0 ) { 
+	  QDPIO::cout << "<Propagator> tag not found!" << endl;
+	  QDP_abort(1);
+	}
+
+	// Yes, try to bind it.
+	QDPIO::cout << "Attempting to bind" << endl;
+	read(source_top, "/Propagator", prop_h_info);
+	
+      }
+
+      // Make a source header. The info is there in the propagato
+      QDPIO::cout << "<Propagator> header XML successfully bound" << endl;
+      make_source_header.source_header = prop_h_info.source_header;
+      make_source_header.gauge_header = prop_h_info.gauge_header;
+    }
+    catch(const std::string& e) { 
+      // We've exceptioned so the XML is neither in <info> tag or in the input  params. Barf with message
+      QDPIO::cout << "Caught exception: " << e << endl;
+
+      QDP_abort(1);
+    }
+    catch(...) { 
+      QDPIO::cout << "Caught generic exception. Most likely I failed to open a reader on th string you provided for  <PropXML>" << endl;
+
+      QDP_abort(1);
+    }
+    
+    {
+      LatticeFermion tmpSource;
+      LatticeFermion tmpProp;
+      LatticeFermionF tmpF;
+      LatticeFermionD tmpD;
+    
+      // Cycle through the spin color components 
+      // Assume strict ordering of source spin pairs
+      for(int i=0; i < 12; i++) { 
+
+	// For the record XML
+	XMLReader rec_src_xml, rec_prop_xml; 
+	
+	// To get the color and spin values
+	int col, spin;
+	
+	
+	// Read the record depending on the precision and cast 
+	// to base precision
+	if( params.precision == "single" ) {
+	  tmpF = zero;
+	  read(input_file, rec_src_xml, tmpF);
+	  tmpSource=tmpF; // Truncate to my inner floating point if necessary
+
+	  {
+	    SftMom phases(0, true, Nd-1);
+	    multi1d<Double> source_corr = sumMulti(localNorm2(tmpSource),
+						   phases.getSet());
+	    write(xml_out, "source_corr", source_corr);
+	  }
+
+	  read(input_file, rec_prop_xml, tmpF);
+	  tmpProp = tmpF;
+	}
+	else {
+	  // Double
+	  tmpD = zero;
+	  read(input_file, rec_src_xml, tmpD);
+	  tmpSource=tmpD; // Truncate to my inner floating point if necessary
+	  read(input_file, rec_prop_xml, tmpD);
+	  tmpProp = tmpD;
+	}
+
+	// Look for spin/color info in the Propagator record.
+	// This either has tag <usqcdPropInfo> or <usqcdInfo>
+	// depending on your QIO version apparently.
+	try { 
+	
+	  if ( rec_prop_xml.count("/usqcdPropInfo") != 0 ) { 
+	    //
+	    // As per Manual, the record tag is <usqcdPropInfo>
+	    // 
+	    read(rec_prop_xml, "/usqcdPropInfo/spin", spin);
+	    read(rec_prop_xml, "/usqcdPropInfo/color", col);
+	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
+	    
+	    // If you find it, it is a prop and we can shove it off 
+	    FermToProp(tmpSource, source_ref, col, spin);
+	    FermToProp(tmpProp,   prop_ref, col, spin);
+	  }
+	  else if( rec_prop_xml.count("/usqcdInfo" ) !=  0 ) { 
+	    //
+	    // As per QIO v2.3.4 and Sergey, the record tag is <usqcdInfo>
+	    //
+	    read(rec_prop_xml, "/usqcdInfo/spin", spin);
+	    read(rec_prop_xml, "/usqcdInfo/color", col);
+	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
+	    
+	    // If you find it, it is a prop and we can shove it off 
+	    FermToProp(tmpSource, source_ref, col, spin);
+	    FermToProp(tmpProp,   prop_ref, col, spin);
+	  }
+	  else {
+	    // As yet unforseen cases
+	    QDPIO::cout << "Found neither usqcdInfo nor usqcdPropInfo tag in the propagator record XML" << endl;
+	    QDPIO::cout << "Aborting" << endl;
+	    QDP_abort(1);
+	  }
 	}
 	catch(const std::string& e) { 
-
 	  // We didn't find it so neither a source nor a prop
 	  // and we just quietly barf
 	  QDPIO::cout << "Caught exception reading XML" << e << endl;
 	  QDP_abort(1);
+	  
 	}
       }
     }
 
-
     // We will also need source and prop record XMLs. To conform
     // with what we do now, I give them a unique ID
-    XMLBufferWriter source_rec_xml;
-    XMLBufferWriter prop_rec_xml;
-    push(source_rec_xml, "source");
-    write(source_rec_xml, "id", uniqueId()); 
-    pop(source_rec_xml);
+    XMLBufferWriter source_file_xml;
+    XMLBufferWriter prop_file_xml;
+    push(source_file_xml, "source");
+    write(source_file_xml, "id", uniqueId()); 
+    pop(source_file_xml);
     
-    push(prop_rec_xml, "propagator");
-    write(prop_rec_xml, "id", uniqueId());
-    pop(prop_rec_xml);
+    push(prop_file_xml, "propagator");
+    write(prop_file_xml, "id", uniqueId());
+    pop(prop_file_xml);
 
-    // Now we should have all the objects, just deal with the XML
-    // First look for a header in the <info> tag
-    bool found_header = false;
 
-    try { 
-      // Try and open a reader on our header
-      XMLReader prop_header_xml(file_xml, "//info/Propagator");
-
-      // If we don't exception then we found the header
-      found_header = true;
-      QDPIO::cout << "Found header in Prop File <info> record" << endl;
-
-      // Try to grok the Source header in it the same way
-      XMLReader source_header_xml(prop_header_xml, "./PropSource");
-      QDPIO::cout << "Found source header too" << endl;
-
-      // Set the source and prop XMLs
-      TheNamedObjMap::Instance().get(params.prop_id).setFileXML(prop_header_xml);      
-      TheNamedObjMap::Instance().get(params.prop_id).setRecordXML(prop_rec_xml);      
-
-      TheNamedObjMap::Instance().get(params.source_id).setFileXML(source_header_xml);      
-      TheNamedObjMap::Instance().get(params.source_id).setRecordXML(source_rec_xml);      
-      // And we are done
-    }
-    catch(const std::string& e) {
-
-      // We didn't find the header
-      QDPIO::cout <<  "Didn't find header in info tag. Looking at user supplied" << endl ; 
-      found_header = false;
-    }
-
-    // If we didn't find the header in <info> Look in the source file XML string
-    if( ! found_header ) { 
-      try { 
-	// Turn string into istream
-	istringstream is(params.source_xml);
-	// Open a reader on it
-	XMLReader source_top(is);
-
-	// Try and set the context to be our Header
-	XMLReader prop_header_xml(source_top, "//Propagator");
-
-	// If we don't exception we found it
-	QDPIO::cout << "Found header in User Supplied SourceXML" << endl;
-
-	// Look for the source XML 
-	XMLReader source_header_xml(prop_header_xml, "./PropSource");
-
-	// If we don't exception we found it
-	QDPIO::cout << "Found source header too" << endl;
-	
-	// Set the headers
-	TheNamedObjMap::Instance().get(params.prop_id).setFileXML(prop_header_xml);      
-	TheNamedObjMap::Instance().get(params.prop_id).setRecordXML(prop_rec_xml);      
-	
-	TheNamedObjMap::Instance().get(params.source_id).setFileXML(source_header_xml);      
-	TheNamedObjMap::Instance().get(params.source_id).setRecordXML(source_rec_xml);      
-      }
-      catch(const std::string& e) { 
-	// We've exceptioned so the XML is neither in <info> tag or in the input  params. Barf with message
-	QDPIO::cout << "Caught exception while parsing user supplied possibly fake source XML: " << e << endl;
-	QDPIO::cout << "If you got here it means that the necessary metadata for the prop you are trying to read is neither in the supplied binary neither in your parameters. Your file XML is: " << endl;
-	ostringstream ostr;
-	file_xml.printCurrentContext(ostr);
-	QDPIO::cout << ostr << endl;
-
-	QDPIO::cout << "Your source XML parameter in the param file is: " << endl;
-	QDPIO::cout << params.source_xml << endl;
-
-	QDP_abort(1);
-      }
-    }
+    // Create the usual Chroma Record XMLs
+    // From the structures we bound earlier
+    XMLBufferWriter prop_info_out;
+    XMLBufferWriter source_info_out;
+    write(prop_info_out, "Propagator", prop_h_info);
+    write(source_info_out, "MakeSource", make_source_header);
       
+    // Set the source and prop XMLs
+    TheNamedObjMap::Instance().get(params.prop_id).setFileXML(prop_file_xml);      
+    TheNamedObjMap::Instance().get(params.prop_id).setRecordXML(prop_info_out);      
+    
+    TheNamedObjMap::Instance().get(params.source_id).setFileXML(source_file_xml);      
+    TheNamedObjMap::Instance().get(params.source_id).setRecordXML(source_info_out);      
+      
+        
 
 
     // Print out debugging info about the source correlator...
@@ -363,7 +385,8 @@ namespace Chroma
     }
 
 
-
+    swatch.stop();
+    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": total time = " << swatch.getTimeInSeconds() << " secs"<< endl;
     QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": ran successfully" << endl;
 
     pop(xml_out);  // qio_read_named_obj
