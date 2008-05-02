@@ -1,10 +1,25 @@
-01/21/2007 -- Robert Edwards
+05/02/2008
+	Version 3.28.5 - Maintenance release:
+	some changes here and there, but most importantly,
+	first version of the code to attempt to read write usqcd propagators
+
+	Known problems:
+		FIXME: Single prec base code, single prec read works, double prec barfs for
+	unknown reason
+
+		FIXME: scalar-7n: asqtad candidate  RUN_FAILS
+	                  sink_smearing_s.candidate RUN_FAILS
+	                  spectrum_s.candidate.xml RUN_FAILS
+			  spectrum_s_HISQ.candidate.xml RUN_FAILS
+		Looking at the core file: segfault in  0x00000000005efd7b in Chroma::QDPStaggeredDslash::apply ()
+ 
+01/21/2008 -- Robert Edwards
 	Version 3.28.1 - Cleaned out old intel_sse_dslash code. Removed all
         stand-alone stout_smear routines. Changed task version to go through
         stout_utils package. Some new versions of 2+2 gaugeacts. Some more
         control over eigbounds.
 
-01/21/2007 -- Robert Edwards
+01/21/2008 -- Robert Edwards
 	Version 3.28.0 - Overhauled plaq_gaugeact and lwldslash classes to now
         use a general form of anistropy coeffients - on all plaqs or links. Now
         have support for 2+2 anisotropy. New time-prec. ILU Clover hmc. New NPR

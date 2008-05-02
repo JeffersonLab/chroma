@@ -1,4 +1,4 @@
-// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.3 2008-05-01 19:32:56 bjoo Exp $
+// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.4 2008-05-02 21:03:35 bjoo Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -62,41 +62,7 @@ namespace Chroma
     // as opposed to "usqcdPropInfo" in the manual. The reader can eat both
     // supposedly, so once they decide which one we can change to that.
 
-    const std::string sinkRecordName="usqcdInfo";
-
-    // Functions for QIO
-    //-----------------------------------------
-    static int get_node_number(const int coord[])
-    {
-      multi1d<int> crd(Nd);
-      crd = coord;   // an array copy
-      int node = Layout::nodeNumber(crd);
-      return node;
-    }
-    
-    static int get_node_index(const int coord[])
-    {
-      multi1d<int> crd(Nd);
-      crd = coord;   // an array copy
-      int linear = Layout::linearSiteIndex(crd);
-      return linear;
-    }
-    
-    static void get_coords(int coord[], int node, int linear)
-    {
-      multi1d<int> crd = Layout::siteCoords(node, linear);
-      for(int i=0; i < Nd; ++i)
-	coord[i] = crd[i];
-    }
-    
-    static int get_sites_on_node(int node) 
-    {
-      return Layout::sitesOnNode();
-    }
-
-    typedef PSpinVector< PColorVector< RComplex<REAL32>, 3>, 4> FermF;
-    typedef PSpinVector< PColorVector< RComplex<REAL64>, 3>, 4> FermD;
-
+    const std::string sinkRecordName="usqcdPropInfo";
   }
 
 
@@ -204,13 +170,14 @@ namespace Chroma
        If not, a wider scope reference will be used to bind the prop
        and u. This is to avoid a very very long try {} catch block */
     try {
-      LatticePropagator& trial_prop=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
+      LatticeDiracPropagator& trial_prop=TheNamedObjMap::Instance().getData<LatticePropagator>(params.prop_id);
       
       const multi1d<LatticeColorMatrix>& u_trial = 
 	TheNamedObjMap::Instance().getData<multi1d<LatticeColorMatrix> >(params.gauge_id);
     }
     catch(...) { 
       QDPIO::cout << "Could not get the prop from the named ObjectMap. Missing ID"<< params.prop_id << endl;
+      QDP_abort(1);
     }
 
     // OK If we're here, the prop and gauge field are in the store
@@ -326,118 +293,23 @@ namespace Chroma
     QDPIO::cout << "Source XML is:" << endl;
     QDPIO::cout << source_xml.str();
 
-    /* --------------------------------------------------------------------
-     * OK. Here is where we get in a little trouble. I can't very well use
-     * QDP here, because it is not geared up to do 'hypercube' records.
-     * Maybe I could change that later(?). So I have to go to the
-     * QIO calls directly. What a nigthmare... 
-     * ------------------------------------------------------------------ */
 
-    // QIO Data structures
-    QIO_Layout layout;
-    int latsize[Nd];
-    
-    // Get the lattice size
-    for(int m=0; m < Nd; ++m)
-      latsize[m] = Layout::lattSize()[m];
-    
-    layout.node_number = &get_node_number;
-    layout.node_index  = &get_node_index;
-    layout.get_coords  = &get_coords;
-    layout.num_sites = &get_sites_on_node;
-    layout.latsize = latsize;
-    layout.latdim = Nd; 
-    layout.volume = Layout::vol(); 
-    layout.sites_on_node = Layout::sitesOnNode(); 
-    layout.this_node = Layout::nodeNumber(); 
-    layout.number_of_nodes = Layout::numNodes(); 
-    
-    // Create the "xml string for the file"
-    QIO_String* xml_c = QIO_string_create();
-    
-    // Put the file XML in it
-    QIO_string_set(xml_c, file_xml.str().c_str());
-    
-    // Wrappers over simple ints
-    int volfmt;
-    switch(params.qio_volfmt) {
-      
-      case QDPIO_SINGLEFILE:
-	volfmt = QIO_SINGLEFILE;
-	break;
-	
-    case QDPIO_MULTIFILE:
-      volfmt = QIO_MULTIFILE;
-      break;
-      
-    case QDPIO_PARTFILE:
-      volfmt = QIO_PARTFILE;
-      break;
-      
-    default: 
-      QDPIO::cerr << "Unknown value for qio_volfmt " << params.qio_volfmt << endl;
-      QDP_abort(1);
-      return;
-    }    
-    
-    // QIO_Oflag
-    QIO_Oflag oflag;
-    oflag.serpar = QIO_SERIAL;
-    oflag.mode = QIO_TRUNC; 
-    oflag.ildgstyle = QIO_ILDGNO;
-    oflag.ildgLFN=NULL;
-    
-    // This is recent, but allowed to be null
-    QIO_Filesystem fs; 
-    fs.my_io_node = NULL;
-    fs.master_io_node = NULL;
-    
-    QIO_Writer* qio_out;
-    
-    // Open the qio_out writer
-    if ((qio_out = QIO_open_write(xml_c, params.output_file_name.c_str(),
-				  volfmt, 
-				  &layout, 
-				  &fs, &oflag)) == NULL ) {
-      QDPIO::cerr << "QIO Error failed to open file " << params.output_file_name << endl;
-      QDP_abort(1);  // just bail. Not sure I want this. This is not stream semantics
-    }
-    QIO_string_destroy(xml_c);
-    
-    /* Set the QIO precision and datatype. I hope the typesize is right...*/
-    std::string usqcd_datatype;
-    std::string usqcd_precision;
-    int typesize;
-    int wordsize;
-    if( params.precision == "single" ) {
-      usqcd_datatype = "USQCD_F3_DiracFermion";
-      usqcd_precision ="F";
-      typesize=(int)sizeof(FermF);
-      wordsize=sizeof(WordType<FermF>::Type_t);
-    }
-    else if( params.precision == "double" ) { 
-      usqcd_datatype = "USQCD_D3_DiracFermion";
-      usqcd_precision= "D";
-      typesize=(int)sizeof(FermD);
-      wordsize=sizeof(WordType<FermD>::Type_t);
-    }
-    else { 
-      QDPIO::cerr << "Invalid value for precision: "<< params.precision << endl;
-      QDPIO::cerr << "The value must be either \"single\" or \"double\" " << endl;
-      QDP_abort(1);
-    }
-
+    // Open the QIO output file
+    QDPFileWriter qio_out(file_xml, params.output_file_name,
+			  params.qio_volfmt,
+			  QDPIO_SERIAL,
+			  QDPIO_CREATE);
 
     
     /* Set up the hypercube info */
-    int lower[Nd];
-    int upper[Nd];
+    multi1d<int> lower(Nd);
+    multi1d<int> upper(Nd);
     
     /* This should set the lower corner to be the origin and the max
        corner to be the largest accessible */
     for(int i=0; i < Nd; i++) { 
       lower[i] = 0;
-      upper[i] = latsize[i]-1;
+      upper[i] = Layout::lattSize()[i]-1;
     } 
 
     /* We overwrite the time direction coordinates of the slice
@@ -445,136 +317,57 @@ namespace Chroma
     upper[j_decay] = t_slice;
     lower[j_decay] = t_slice;
     
-    
-    // Prepare the source record info. This won't change
-    QIO_RecordInfo *source_record_info = QIO_create_record_info(QIO_HYPER, 
-								lower,
-								upper,
-								Nd,
-								(char *)(usqcd_datatype.c_str()),
-								(char *)(usqcd_precision.c_str()),
-								3, 4, 
-								typesize,
-								1);
-
-    if( source_record_info == NULL ){ 
-      QDPIO::cerr << "Failed to create record info" << endl;
-      QDP_abort(1);
-    }
-    
-    /* Prepare the source record XML. This won't change. */
-    QIO_String* source_string = QIO_string_create();
-    QIO_string_set(source_string, source_xml.str().c_str());
-    if( source_string == NULL ){ 
-      QDPIO::cerr << "Failed to set source file_xml" << endl;
-      QDP_abort(1);
-    }
-
-
-    /* Make the record info for the propagator spinor components. */
-    QIO_RecordInfo* spinor_record_info = QIO_create_record_info(QIO_FIELD,
-							       NULL,
-							       NULL,
-							       Nd,
-							       (char *)(usqcd_datatype.c_str()),
-							       (char *)(usqcd_precision.c_str()),
-							       3, 4, 
-							       typesize,
-							       1);
-
-    if( spinor_record_info == NULL ){ 
-      QDPIO::cerr << "Failed to create record info" << endl;
-      QDP_abort(1);
-    }
-
-   
-    // OK We're done with the headers and record infos.
 
     // Next we have to loop through the spin-color components and write
     for(int spin=0; spin < Ns; spin++) { 
       for(int color=0; color < Nc; color++) { 
 
-	/* ---------------------------------------------------------------------------
-	 * Make some XML for the spinor -- I couldn't pre-prepare this as it contains
+	/* ---------------------------------------------------------------
+	 * Make some XML for the spinor 
+	 * -- I couldn't pre-prepare this as it contains
 	 * the spin color information
-	 * --------------------------------------------------------------------------- */
+	 * --------------------------------------------------------------- */
 
-	XMLBufferWriter spinor_xml;
-	push(spinor_xml, sinkRecordName);
-	write(spinor_xml, "version", "1.0");
-	write(spinor_xml, "spin", spin);
-	write(spinor_xml, "color", color);
-	push(spinor_xml, "info");
-	//	spinor_xml << thePropHeader ;
-	pop(spinor_xml); // Info
-	pop(spinor_xml); // usqcdPropInfo
+	XMLBufferWriter prop_sink_xml;
+	push(prop_sink_xml, sinkRecordName);
+	write(prop_sink_xml, "version", "1.0");
+	write(prop_sink_xml, "spin", spin);
+	write(prop_sink_xml, "color", color);
+	push(prop_sink_xml, "info");
+	pop(prop_sink_xml); // Info
+	pop(prop_sink_xml); // usqcdPropInfo
 
-	QIO_String* spinor_xml_string = QIO_string_create();
-	QIO_string_set(spinor_xml_string, spinor_xml.str().c_str());
-
-	/* -------------------------------------------------------------------------
+	/* ----------------------------------------------------
 	 * Write the source first.
-	 * ------------------------------------------------------------------------- */
+	 * ---------------------------------------------------- */
 
 	//
 	// Bring the source into the temporary fermion. 
 	//
-	LatticeFermion tmpFerm=zero;
+	LatticeDiracFermion tmpFerm=zero;
 	PropToFerm(theSource, tmpFerm, color, spin);
 	
 	// Now depending on precision, cast and write
 	if ( params.precision == "single" ) { 
-	  LatticeDiracFermionF3 ferm_out = tmpFerm ;           // Single Precision cast
-    
-	  {
-	    SftMom phases(0, true, Nd-1);
-	    multi1d<Double> source_corr = sumMulti(localNorm2(ferm_out),
-						   phases.getSet());
-	    write(xml_out, "output_source_corr", source_corr);
-	  }
+	  LatticeDiracFermionF3 ferm_out(tmpFerm) ;           // Single Precision cast
 
 	  // Write 
-	  QDPIO::cout << "About to write single prec. source record....";
-	  int err_code = QIO_write(qio_out,source_record_info,source_string,
-				   (QDPOLatticeFactoryGet<FermF>),
-				   typesize,
-				   wordsize,
-				   (void *)(ferm_out.getF()));
+	  QDPIO::cout << "About to write single prec. source record...." << endl;
+	  write(qio_out, source_xml, ferm_out, lower, upper);
 
-	  // Error check
-	  if (err_code != QIO_SUCCESS) { 
-	    QDPIO::cout << "Failed!" << endl;
-	    QDP_abort(1);
-	  }
-	  else {
-	    QDPIO::cout << "Successful!" << endl;
-	  }
 	}
 	else {
-	  LatticeDiracFermionD3 ferm_out = tmpFerm;             // Double precision cast
+	  LatticeDiracFermionD3 ferm_out(tmpFerm);             // Double precision cast
     
 	  /* Write */
 	  QDPIO::cout << "About to write double prec. source record....";
-	  int err_code = QIO_write(qio_out,source_record_info,source_string,
-				   (QDPOLatticeFactoryGet<FermD>),
-				   typesize,
-				   wordsize,
-				   (void *)(ferm_out.getF()));
-
-	  /* Error check */
-	  if (err_code != QIO_SUCCESS) { 
-	    QDPIO::cerr << "Failed!" << endl;
-	    QDP_abort(1);
-	  }
-	  else { 
-	    QDPIO::cout << "Successful!" << endl;
-	  }
+	  write(qio_out, source_xml,ferm_out, lower, upper); 
 	}
 
-	/* --------------------------------------------------------------------------------
+	/* ---------------------------------------------------------------
 	 * Done with source. Now do the prop component
-	 * -------------------------------------------------------------------------------- */
-
+	 * --------------------------------------------------------------- */
+	tmpFerm=zero;
 	// Bring the prop component into the tmpFerm
 	PropToFerm(theProp, tmpFerm, color, spin);
 
@@ -583,64 +376,25 @@ namespace Chroma
 	  LatticeDiracFermionF3 ferm_out = tmpFerm ;  // Single precision Cast 
     
 	  /* Write */
-	  QDPIO::cout << "About to write single prec. prop component record....";
-	  int err_code = QIO_write(qio_out,spinor_record_info, spinor_xml_string,
-				   (QDPOLatticeFactoryGet<FermF>),
-				   typesize,
-				   wordsize,
-				   (void *)(ferm_out.getF()));
+	  QDPIO::cout << "About to write single prec. prop component record...." << endl;
+	  write(qio_out, prop_sink_xml, ferm_out);
 
-	  /* Error check */
-	  if (err_code != QIO_SUCCESS) { 
-	    QDPIO::cout << "Failed!" << endl;
-	    QDP_abort(1);
-	  }
-	  else {
-	    QDPIO::cout << "Successful!" << endl;
-	  }
 	}
 	else {
-	  LatticeDiracFermionD3 ferm_out = tmpFerm;  // Double precision cast
+	  LatticeDiracFermionD3 ferm_out(tmpFerm);  // Double precision cast
 
 	  /* Write */
-	  QDPIO::cout << "About to write double prec. prop component record....";
-	  int err_code = QIO_write(qio_out, spinor_record_info, spinor_xml_string,
-				   (QDPOLatticeFactoryGet<FermD>),
-				   typesize,
-				   wordsize,
-				   (void *)(ferm_out.getF()));
-
-	  /* Error check */
-	  if (err_code != QIO_SUCCESS) { 
-	    QDPIO::cerr << "Failed!" << endl;
-	    QDP_abort(1);
-	  }
-	  else { 
-	    QDPIO::cout << "Successful!" << endl;
-	  }
+	  QDPIO::cout << "About to write double prec. prop component record...." << endl;
+	  write(qio_out, prop_sink_xml, ferm_out);
 	}
 
-	/* Destroy QIO string object. My own XML buffers will clean themselves up magically 
-	   so "Nyaaah !!!!!" */
-	QIO_string_destroy(spinor_xml_string);
 
       } // color
     } // spin
 
-    
-    /* Destroy the record infos */
-    QIO_destroy_record_info(spinor_record_info);	
-    QIO_destroy_record_info(source_record_info);
+    qio_out.close();
 
-    /* Destroy the source string */
-    QIO_string_destroy(source_string);
-    
-    
-    /* Close file at the end. */
-    QIO_close_write(qio_out);
-    
-    /* And we are done. Thank heavens! That was singularly unpleasant. 446 odd lines
-       that should have taken much fewer */
+    /* And we are done. */
     swatch.stop();
 
     QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ": total time = " << swatch.getTimeInSeconds() <<" secs" << endl;

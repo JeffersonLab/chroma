@@ -1,4 +1,4 @@
-// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.4 2008-05-01 19:32:56 bjoo Exp $
+// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.5 2008-05-02 21:03:35 bjoo Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -59,7 +59,6 @@ namespace Chroma
     push(xml, "Param");
     write(xml, "InputFile", p.input_file_name);
     write(xml, "PropXML", p.prop_xml);
-    write(xml, "Precision", p.precision);
     pop(xml); // Param
     
     push(xml, "NamedObject");
@@ -89,12 +88,7 @@ namespace Chroma
 
 
       read(paramtop, "Param/InputFile", input_file_name);
-      read(paramtop, "Param/Precision", precision); 
 
-      if ( (precision != "single") && (precision != "double")) { 
-	QDPIO::cout << "Precision must be either single or double" << endl;
-	QDP_abort(1);
-      }
 
       if ( paramtop.count("Param/PropXML") == 1 ) { 
 
@@ -255,8 +249,6 @@ namespace Chroma
     {
       LatticeFermion tmpSource;
       LatticeFermion tmpProp;
-      LatticeFermionF tmpF;
-      LatticeFermionD tmpD;
     
       // Cycle through the spin color components 
       // Assume strict ordering of source spin pairs
@@ -269,37 +261,21 @@ namespace Chroma
 	int col, spin;
 	
 	
-	// Read the record depending on the precision and cast 
-	// to base precision
-	if( params.precision == "single" ) {
-	  tmpF = zero;
-	  read(input_file, rec_src_xml, tmpF);
-	  tmpSource=tmpF; // Truncate to my inner floating point if necessary
+	// Read - this will do the precision casting into 
+	// my precision for me
 
-	  {
-	    SftMom phases(0, true, Nd-1);
-	    multi1d<Double> source_corr = sumMulti(localNorm2(tmpSource),
-						   phases.getSet());
-	    write(xml_out, "source_corr", source_corr);
-	  }
-
-	  read(input_file, rec_prop_xml, tmpF);
-	  tmpProp = tmpF;
-	}
-	else {
-	  // Double
-	  tmpD = zero;
-	  read(input_file, rec_src_xml, tmpD);
-	  tmpSource=tmpD; // Truncate to my inner floating point if necessary
-	  read(input_file, rec_prop_xml, tmpD);
-	  tmpProp = tmpD;
-	}
-
+	// Read source
+	read(input_file, rec_src_xml, tmpSource);
+       	
+	// read prop
+	read(input_file, rec_prop_xml, tmpProp);
+	
 	// Look for spin/color info in the Propagator record.
 	// This either has tag <usqcdPropInfo> or <usqcdInfo>
 	// depending on your QIO version apparently.
 	try { 
-	
+	  
+	  // Find Spin Color Components
 	  if ( rec_prop_xml.count("/usqcdPropInfo") != 0 ) { 
 	    //
 	    // As per Manual, the record tag is <usqcdPropInfo>
@@ -309,8 +285,6 @@ namespace Chroma
 	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
 	    
 	    // If you find it, it is a prop and we can shove it off 
-	    FermToProp(tmpSource, source_ref, col, spin);
-	    FermToProp(tmpProp,   prop_ref, col, spin);
 	  }
 	  else if( rec_prop_xml.count("/usqcdInfo" ) !=  0 ) { 
 	    //
@@ -319,10 +293,6 @@ namespace Chroma
 	    read(rec_prop_xml, "/usqcdInfo/spin", spin);
 	    read(rec_prop_xml, "/usqcdInfo/color", col);
 	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
-	    
-	    // If you find it, it is a prop and we can shove it off 
-	    FermToProp(tmpSource, source_ref, col, spin);
-	    FermToProp(tmpProp,   prop_ref, col, spin);
 	  }
 	  else {
 	    // As yet unforseen cases
@@ -338,6 +308,10 @@ namespace Chroma
 	  QDP_abort(1);
 	  
 	}
+
+	FermToProp(tmpSource, source_ref, col, spin);
+	FermToProp(tmpProp,   prop_ref, col, spin);
+
       }
     }
 
