@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.11 2008-04-29 20:21:02 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.12 2008-05-02 21:34:26 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -241,6 +241,34 @@ namespace Chroma{
     }
 
 
+    void meson(DComplex& corr,
+	       const GroupXML_t& grpXML,
+	       const LatticeComplex& phase,
+	       const LatticeFermion& eta,
+	       const LatticeFermion& chi,
+	       const Subset& s){
+      QDPIO::cout<<"I am a meson!\n" ;
+      std::istringstream  xml_l(grpXML.xml);
+      XMLReader  xmltop(xml_l);
+      QDPIO::cout << "Meson state is = " <<grpXML.id ; 
+      QDPIO::cout << endl;
+      int g ;
+      read(xmltop,"Gamma",g);
+      LatticeComplex tt ;
+      //tt[s] = localInnerProduct(eta,Gamma(g)*chi) ;
+      //corr = sum(localInnerProduct(eta,Gamma(g)*chi)*phase,s) ;
+    }
+    
+    void baryon(DComplex& corr,
+		const GroupXML_t& grpXML,
+		const LatticeComplex& phase,
+		const LatticeFermion& eta1,
+		const LatticeFermion& eta2,
+		const LatticeFermion& eta3,
+		const Subset& s){
+      QDPIO::cout<<"I am a baryon!\n" ;
+    }
+    
 
     class Key{
     public:
@@ -326,7 +354,7 @@ namespace Chroma{
 	try{
 	  std::istringstream  xml_l(smr.xml);
 	  XMLReader  smrtop(xml_l);
-	  QDPIO::cout << "Link smearing type = " <<smr.id ; 
+	  QDPIO::cout << "Quark smearing type = " <<smr.id ; 
 	  QDPIO::cout << endl;
 	  
 	  Smearing=

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_hadron_w.h,v 1.5 2008-04-24 05:20:17 kostas Exp $
+// $Id: inline_stoch_hadron_w.h,v 1.6 2008-05-02 21:34:26 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -64,27 +64,66 @@ namespace Chroma
     };
   
 
+    void meson(DComplex& corr,
+	       const GroupXML_t& grpXML,
+	       const LatticeComplex& phase,
+	       const LatticeFermion& eta,
+	       const LatticeFermion& chi,
+	       const Subset& s) ; 
+    
+    void baryon(DComplex& corr,
+		const GroupXML_t& grpXML,
+		const LatticeComplex& phase,
+		const LatticeFermion& eta1,
+		const LatticeFermion& eta2,
+		const LatticeFermion& eta3,
+		const Subset& s) ;
+    
+
+
   //! Inline measurement of stochastic baryon operators
   /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement{
-    public:
-      ~InlineMeas() {}
-      InlineMeas(const Params& p) : params(p) {}
-      InlineMeas(const InlineMeas& p) : params(p.params) {}
-
-      unsigned long getFrequency(void) const {return params.frequency;}
-
-      //! Do the measurement
-      void operator()(const unsigned long update_no,
-		      XMLWriter& xml_out); 
-
     protected:
       //! Do the measurement
       void func(const unsigned long update_no,
 		XMLWriter& xml_out); 
       
     private:
+ 
+
       Params params;
+
+      map<string, void (*)(DComplex& , 
+			   const GroupXML_t& ,  
+			   const LatticeComplex& , 
+			   const LatticeFermion& , 
+			   const LatticeFermion& ,  
+			   const Subset& )> mesons ;
+
+      map<string, void (*)(DComplex& ,
+			   const GroupXML_t& ,
+			   const LatticeComplex& ,
+			   const LatticeFermion& ,
+			   const LatticeFermion& ,
+			   const LatticeFermion& ,
+			   const Subset& )> baryons ;
+
+      void setUpMaps(){
+	mesons["PION"]  = &meson  ;
+	baryons["NUCLEON"] = &baryon ;
+      }
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {setUpMaps();}
+      InlineMeas(const InlineMeas& p) : params(p.params) {setUpMaps();}
+      
+      unsigned long getFrequency(void) const {return params.frequency;}
+      
+      //! Do the measurement
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
+      
     };
 
   }; // name space InlineHadronEnv
