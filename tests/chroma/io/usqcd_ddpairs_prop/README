@@ -1,0 +1,5 @@
+Currently the only working regression is usqcd_prop_readwrite_internal.ini.xml
+the rest go to show how to use the reader when there is a header in the 
+<info> block in the propagtor (usqcd_ddpairs_prop_read_inheader.ini.xml)
+or when the header has to be faked up because the producing entity didn't produce
+one (usqcd_ddpairs_prop_read_foreign.ini.xml)

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Write some SZIN objects
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    
+    <elem>
+      <Name>USQCD_READ_DD_PAIRS_PROP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+	<InputFile>conv_prop0_t58z16y16x16_DG7p284_N84.990-new</InputFile>
+	<Precision>single</Precision>
+	<PropXML></PropXML>
+      </Param>
+      <NamedObject>
+        <source_id>newSource</source_id>
+	<prop_id>newProp</prop_id>
+      </NamedObject>
+      <xml_file>prop_read_xml</xml_file>
+    </elem>
+  </InlineMeasurements>
+   <nrow>32 32 32 64</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
