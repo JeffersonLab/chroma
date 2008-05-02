@@ -2,7 +2,10 @@
 
 <assertions>
 
-<assertion xpath="//USQCDReadDDPairsProp/source_corr" type="double_array" comparison="relative" tolerance="1.0e-8"/>
-<assertion xpath="//USQCDReadDDPairsProp/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-8"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/USQCDReadDDPairsProp/source_corr" type="double_array" comparison="relative" tolerance="1.0e-8"/>
+<assertion xpath="/chroma/InlineObservables/elem[4]/USQCDReadDDPairsProp/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-8"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[6]/USQCDReadDDPairsProp/source_corr" type="double_array" comparison="relative" tolerance="1.0e-8"/>
+<assertion xpath="/chroma/InlineObservables/elem[6]/USQCDReadDDPairsProp/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-8"/>
 
 </assertions>

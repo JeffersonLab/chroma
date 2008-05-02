@@ -106,6 +106,36 @@ Write some SZIN objects
       </NamedObject>
     </elem>
 
+    <!-- write/read double prec -->
+    <elem>
+      <Name>USQCD_WRITE_DD_PAIRS_PROP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+	<OutputFile>Fred2</OutputFile>
+	<OutputVolfmt>SINGLEFILE</OutputVolfmt>
+	<Precision>double</Precision>
+      </Param>
+      <NamedObject>
+	<prop_id>sh_prop_0</prop_id>
+	<gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>USQCD_READ_DD_PAIRS_PROP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <InputFile>Fred2</InputFile>
+	
+	<!-- all the XML should be in the header. No need to have a PropXML tag -->
+      </Param>
+      <NamedObject>
+	<source_id>source_back2</source_id>
+        <prop_id>prop_back2</prop_id>
+      </NamedObject>
+    </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>

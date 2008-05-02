@@ -109,6 +109,36 @@ Write some SZIN objects
       </NamedObject>
     </elem>
 
+    <!-- write/read double prec -->
+    <elem>
+      <Name>USQCD_WRITE_DD_PAIRS_PROP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+	<OutputFile>Fred2</OutputFile>
+	<OutputVolfmt>SINGLEFILE</OutputVolfmt>
+	<Precision>double</Precision>
+      </Param>
+      <NamedObject>
+	<prop_id>sh_prop_0</prop_id>
+	<gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>USQCD_READ_DD_PAIRS_PROP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <InputFile>Fred2</InputFile>
+	
+	<!-- all the XML should be in the header. No need to have a PropXML tag -->
+      </Param>
+      <NamedObject>
+	<source_id>source_back2</source_id>
+        <prop_id>prop_back2</prop_id>
+      </NamedObject>
+    </elem>
+
   </InlineMeasurements>
    <nrow>4 4 4 8</nrow>
 </Param>
@@ -124,7 +154,7 @@ Write some SZIN objects
       <chroma>3.28.5</chroma>
       <qdp>1.26.0</qdp>
     </code_version>
-    <run_date>02 May 08 16:34:03 EDT</run_date>
+    <run_date>02 May 08 19:22:41 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -184,7 +214,7 @@ Write some SZIN objects
             <chroma>3.28.5</chroma>
             <qdp>1.26.0</qdp>
           </code_version>
-          <run_date>02 May 08 16:34:03 EDT</run_date>
+          <run_date>02 May 08 19:22:41 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -283,7 +313,7 @@ Write some SZIN objects
             <chroma>3.28.5</chroma>
             <qdp>1.26.0</qdp>
           </code_version>
-          <run_date>02 May 08 16:34:03 EDT</run_date>
+          <run_date>02 May 08 19:22:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -362,7 +392,7 @@ Write some SZIN objects
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>268328043</id>
+      <id>268338162</id>
     </make_source>
 
         </Source_file_info>
@@ -486,6 +516,84 @@ Write some SZIN objects
           <prop_corr>0.0205846283744376 0.0262541372089398 0.0489805048589179 0.127992131236013 0.751741620693095 0.127949013659606 0.0489568124176097 0.0262514658332398</prop_corr>
         </Prop_correlator>
       </propagator>
+    </elem>
+    <elem>
+      <USQCDWriteDDPairsProp>
+        <update_no>0</update_no>
+      </USQCDWriteDDPairsProp>
+    </elem>
+    <elem>
+      <USQCDReadDDPairsProp>
+        <update_no>0</update_no>
+        <FileXML><usqcdPropFile>
+      <version>1.0</version>
+      <type>USQCD_DiracFermion_Source_Sink_Pairs</type>
+      <info>
+        <Propagator>
+          <version>1</version>
+          <ForwardProp>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP>
+            <FermionAction>
+              <FermAct>WILSON</FermAct>
+              <Kappa>0.135</Kappa>
+              <AnisoParam>
+                <anisoP>true</anisoP>
+                <t_dir>3</t_dir>
+                <xi_0>2.464</xi_0>
+                <nu>0.95</nu>
+              </AnisoParam>
+              <FermionBC>
+                <FermBC>SIMPLE_FERMBC</FermBC>
+                <boundary>1 1 1 -1</boundary>
+              </FermionBC>
+            </FermionAction>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1.0e-8</RsdCG>
+              <MaxCG>1000</MaxCG>
+            </InvertParam>
+          </ForwardProp>
+          <PropSource>
+            <version>6</version>
+            <Source>
+              <version>2</version>
+              <SourceType>SHELL_SOURCE</SourceType>
+              <j_decay>3</j_decay>
+              <t_srce>0 0 0 4</t_srce>
+              <SmearingParam>
+                <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+                <wvf_param>2.0</wvf_param>
+                <wvfIntPar>5</wvfIntPar>
+                <no_smear_dir>3</no_smear_dir>
+              </SmearingParam>
+              <Displacement>
+                <version>1</version>
+                <DisplacementType>NONE</DisplacementType>
+              </Displacement>
+              <noLinkSmearing>
+                <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+                <link_smear_fact>2.5</link_smear_fact>
+                <link_smear_num>1</link_smear_num>
+                <no_smear_dir>3</no_smear_dir>
+              </noLinkSmearing>
+            </Source>
+            <j_decay>3</j_decay>
+            <t_source>4</t_source>
+          </PropSource>
+          <Config_info>
+            <weak_field>
+</weak_field>
+          </Config_info>
+        </Propagator>
+      </info>
+    </usqcdPropFile>
+
+        </FileXML>
+        <source_corr>0 0 0 0 6.65200990429814 0 0 0</source_corr>
+        <prop_corr>0.0205846283744376 0.0262541372089398 0.0489805048589179 0.127992131236013 0.751741620693095 0.127949013659606 0.0489568124176097 0.0262514658332398</prop_corr>
+      </USQCDReadDDPairsProp>
     </elem>
     <elem>
       <USQCDWriteDDPairsProp>

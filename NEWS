@@ -6,9 +6,6 @@
 	THIS VERSION NOW NEEDS qdp++ CVS Version qdp1-26-0 to build
 
 	Known problems:
-		FIXME: Single prec base code, single prec read works, double prec barfs for
-	unknown reason
-
 		FIXME: scalar-7n: asqtad candidate  RUN_FAILS
 	                  sink_smearing_s.candidate RUN_FAILS
 	                  spectrum_s.candidate.xml RUN_FAILS
