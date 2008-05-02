@@ -3,6 +3,8 @@
 	some changes here and there, but most importantly,
 	first version of the code to attempt to read write usqcd propagators
 
+	THIS VERSION NOW NEEDS qdp++ CVS Version qdp1-26-0 to build
+
 	Known problems:
 		FIXME: Single prec base code, single prec read works, double prec barfs for
 	unknown reason
