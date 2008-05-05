@@ -63,6 +63,13 @@ AC_ARG_ENABLE(cg-solver-restart,
 	[cg_do_one_restart="no"]
 )
 
+AC_ARG_WITH(mdwf,
+	AC_HELP_STRING([--with-mdwf=<install location>]),
+	[mdwf_path=${withval}
+	 build_mdwf="yes"],
+	[mdwf_path=""
+	 build_mdwf="no"]
+)
 AC_ARG_ENABLE(asqtad_level3_inverter,
    AC_HELP_STRING(
     [--enable-asqtad-level3-inverter],
@@ -247,6 +254,10 @@ dnl ************************************************************************
 if [ test "x${build_cg_dwf}x" = "xyesx" ];
 then
         AC_MSG_NOTICE([Configuring CG DWF])
+	if [ test "x${build_mdwf}x" = "xyesx" ];
+	then 
+	  AC_MSG_ERROR([Cannot have both CG-DWF    and MDWF configured at the same time])
+        fi
 
 	case ${cg_dwf_cpu_arch} in
 	sse)
@@ -272,6 +283,8 @@ else
 	AC_MSG_NOTICE([Not building CG DWF])
 fi
 
+
+ 
 AM_CONDITIONAL(BUILD_CG_DWF,
 	[test "x${build_cg_dwf}x" = "xyesx" ])
 
@@ -604,6 +617,8 @@ cobalt)
 	;;
 esac
 
+
+
 dnl
 dnl Always build qdp-lapack. If no --enable-lapack option is given,
 dnl it will build a dummy lib with stubs. If the enable option is
@@ -613,6 +628,53 @@ dnl
 AC_MSG_NOTICE([Configuring qdp-lapack])
 AC_CONFIG_SUBDIRS(other_libs/qdp-lapack)
 AC_SUBST(QDP_LAPACK_DIR, [qdp-lapack])
+
+dnl
+dnl ************************************************************
+dnl MDWF stuff
+dnl ************************************************************
+dnl
+if [ test "x${build_mdwf}x" = "xyesx" ];
+then
+  
+  AC_MSG_NOTICE([Configuring to use MDWF DWF Solver package])
+
+  dnl sanity check
+  if [ test "x${build_cg_dwf}x" = "xyesx" ];
+  then
+    AC_MSG_ERROR([Cannot have both MDWF and CG-DWF enabled together])
+  fi
+
+  dnl set a preprocessor macro
+  AC_DEFINE([BUILD_MDWF],[], [ Build with the MDWF (Moebious DFW) library ])
+
+  dnl find the config package
+  if test "X${mdwf_path}X" = "XX" ; then
+     AC_PATH_PROG(MDWF_CONFIG, [mdwf-config], [])
+  else
+     AC_PATH_PROG(MDWF_CONFIG, [mdwf-config], [], [${mdwf_path}/bin:${PATH}])
+  fi
+
+  if test "X${MDWF_CONFIG}X" = "XX" ; then
+    AC_MSG_ERROR([QDP++ configuration program qdp++-config not found.])
+  fi
+
+  dnl set some flags for the makefiles
+  AC_MSG_NOTICE([Found MDWF configuration program ${MDWF_CONFIG}])
+  AC_SUBST(MDWF_CXXFLAGS, "`${MDWF_CONFIG} --cflags`")
+  AC_MSG_NOTICE([MDWF compile flags: ${MDWF_CXXFLAGS}])
+  AC_SUBST(MDWF_LDFLAGS,  "`${MDWF_CONFIG} --ldflags`")
+  AC_MSG_NOTICE([MDWF linking flags: ${MDWF_LDFLAGS}])
+  AC_SUBST(MDWF_LIBS,     "`${MDWF_CONFIG} --libs`")
+  AC_MSG_NOTICE([MDWF libraries flags: ${MDWF_LIBS}])
+  
+  dnl for the chroma-config file
+  AC_SUBST(MDWF_ENABLED, [yes])
+fi
+
+dnl set a conditional in automake for MDWF Specific files etc.
+AM_CONDITIONAL(BUILD_MDWF,
+	[test "x${build_mdwf}x" = "xyesx" ])
 
 
 ##################################

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.136 2008-04-25 18:29:37 bjoo Exp $
+# $Id: Makefile.am,v 3.137 2008-05-05 19:27:42 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -793,6 +793,10 @@ if BUILD_BAGEL_CLOVER_APPLY
 AM_CXXFLAGS += @BAGEL_CLOVER_CXXFLAGS@
 endif
 
+if BUILD_MDWF
+AM_CXXFLAGS += @MDWF_CXXFLAGS@
+endif
+
 lib_LIBRARIES = libchroma.a
 
 #
@@ -1415,6 +1419,12 @@ endif
 if BUILD_CG_DWF_ALTIVEC
 libchroma_a_SOURCES += actions/ferm/qprop/avp_altivecf_solver.cc
 endif
+
+
+if BUILD_CG_DWF
+nobase_include_HEADERS += mdwf_solver.h
+endif
+
 
 if BUILD_PAB_WILSON_DSLASH
 nobase_include_HEADERS += \
