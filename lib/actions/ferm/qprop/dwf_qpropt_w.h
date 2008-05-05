@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dwf_qpropt_w.h,v 3.11 2007-03-05 19:36:32 bjoo Exp $
+// $Id: dwf_qpropt_w.h,v 3.12 2008-05-05 19:11:58 bjoo Exp $
 /*! \file
  * \brief Pick up possibly optimized DWF inverters.
  *
@@ -94,8 +94,16 @@ namespace Chroma {
 typedef ALTIVECDWFQpropT DWFQpropT;
 }  // end namespace Chroma
 
-#else
+#elif defined(BUILD_MDWF)
 
+// OK Set up Andrews new MDWF solver here.
+#include "mdwf_solver.h"
+namespace Chroma { 
+  typedef MDWFQpropT DWFQpropT;
+}
+
+
+#else
 // Bottom line, if no optimised DWF qpropT-s exist then the naive QDP qpropT
 // becomes the DWFQpropT
 namespace Chroma {
