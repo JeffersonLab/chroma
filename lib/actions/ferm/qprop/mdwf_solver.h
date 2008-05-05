@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mdwf_solver.h,v 1.1 2008-05-05 19:18:06 bjoo Exp $
+// $Id: mdwf_solver.h,v 1.2 2008-05-05 20:12:37 bjoo Exp $
 /*! \file
  *  \brief DWF/SSE double-prec solver
  */
@@ -207,8 +207,16 @@ namespace Chroma
 				      const multi1d<LatticeFermion>& chi) const
     {
       SystemSolverResults_t res;
+      res.n_count = 0;
       int out_iters_single=0;
       int out_iters_double=0;
+
+      /* Stuff for flopcounting */
+      double time_sec;
+      long long  flops;
+      long long  sent; /* Messages? Bytes? Faces? */
+      long long received; /* Messages? Bytes? Receives? */
+
 
       /* Single Precision Branch. Test this first
 	 then duplicate for double prec */
@@ -274,10 +282,27 @@ namespace Chroma
 	  QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
 	  QDP_abort(1);
 	}
-	
-	QDPIO::cout << "MDWF Single Prec : status =" << status 
+
+	/* Get Perf counters before solve */
+	if( QOP_MDWF_performance(&time_sec,
+				 &flops,
+				 &sent,
+				 &received,
+				 state) != 0 ) { 
+	  QDPIO::cerr << "MDWF_Error: "<< QOP_MDWF_error(state) << endl;
+	  QDP_abort(1);
+	}
+
+	/* Report status */
+	QDPIO::cout << "MDWFQpropT Single Prec : status=" << status 
 		    << " iterations=" << out_iters_single
 		    << " resulting epsilon=" << sqrt(out_eps_single) << endl;
+
+	/* Report Flops */
+	FlopCounter flopcount_single;
+	flopcount_single.reset();
+	flopcount_single.addFlops(flops);
+	flopcount_single.report("MDWFQpropT_Single_Prec:", time_sec);
 	
 	/* Export the solution */
 	if( QOP_F3_MDWF_export_fermion(fermionWriter, 
@@ -348,6 +373,7 @@ namespace Chroma
 	int max_iteration = invParam.MaxCGRestart;
 	int status; 
 	
+
 	QDPIO::cout << "MDWFQpropT: Beginning Double Precision Solve" << endl;
 	if( ( status=QOP_D3_MDWF_DDW_CG(dprec_soln,
 					&out_iters_double,
@@ -362,11 +388,27 @@ namespace Chroma
 	  QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
 	  QDP_abort(1);
 	}
-	
-	QDPIO::cout << "MDWF Double Prec : status =" << status 
+
+	/* Get Perf counters before solve */
+	if( QOP_MDWF_performance(&time_sec,
+				 &flops,
+				 &sent,
+				 &received,
+				 state) != 0 ) { 
+	  QDPIO::cerr << "MDWF_Error: "<< QOP_MDWF_error(state) << endl;
+	  QDP_abort(1);
+	}
+	/* Reoirt Status */
+	QDPIO::cout << "MDWFQpropT Double Prec: status=" << status 
 		    << " iterations=" << out_iters_double
 		    << " resulting epsilon=" << sqrt(out_eps_double) << endl;
-	
+
+	/* Report Flops */
+	FlopCounter flopcount_double;
+	flopcount_double.reset();
+	flopcount_double.addFlops(flops);
+	flopcount_double.report("MDWFQpropT_Double_Prec:", time_sec);
+
 	/* Export the solution */
 	if( QOP_D3_MDWF_export_fermion(fermionWriter, 
 				       &psi,
