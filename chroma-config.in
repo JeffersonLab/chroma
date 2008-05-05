@@ -45,6 +45,17 @@ chroma_cxxflags="@CXXFLAGS@ -I@includedir@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH
 chroma_ldflags="@LDFLAGS@ -L@libdir@ @QDPXX_LDFLAGS@ @BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @BAGEL_CLOVER_LDFLAGS@ @QMT_LDFLAGS@"
 chroma_libs="-lchroma "$extra_libs" @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @BAGEL_CLOVER_LIBS@ @LIBS@ @GMP_LIBS@ @QMT_LIBS@" 
 
+mdwf_enabled="@MDWF_ENABLED@"
+case ${mdwf_enabled} in
+yes) 
+	chroma_cxxflags=${chroma_cxxflags}" @MDWF_CXXFLAGS@"
+	chroma_ldflags=${chroma_ldflags}" @MDWF_LDFLAGS@"
+	chroma_libs=${chroma_libs}" @MDWF_LIBS@"
+	;;
+*)
+	;;
+esac
+
 precision="@QDPXX_PRECISION@"
 
 chroma_ranlib="@RANLIB@"

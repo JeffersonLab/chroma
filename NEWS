@@ -1,3 +1,11 @@
+05/05/2008
+	Maintenance: 
+	-- Added support for interfacing to MDWF Moebius DWF library from MIT.
+	   Currently only the Shamir variant of DWF is used and only in the
+           propagator code.
+	   Currently we are having difficulties with mixed precision so 
+           I am enabling the double precision only.
+
 05/02/2008
 	Version 3.28.5 - Maintenance release:
 	some changes here and there, but most importantly,

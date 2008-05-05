@@ -18,6 +18,9 @@
 /* Using Lapack */
 #undef BUILD_LAPACK
 
+/* Build with the MDWF (Moebious DFW) library */
+#undef BUILD_MDWF
+
 /* Configuring to use optimized eigcg */
 #undef BUILD_OPT_EIGCG
 

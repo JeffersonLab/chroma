@@ -722,6 +722,13 @@ QMT_LIBS
 BUILD_QMT_TRUE
 BUILD_QMT_FALSE
 QDP_LAPACK_DIR
+MDWF_CONFIG
+MDWF_CXXFLAGS
+MDWF_LDFLAGS
+MDWF_LIBS
+MDWF_ENABLED
+BUILD_MDWF_TRUE
+BUILD_MDWF_FALSE
 LATEX
 DVIPS
 DVIPDF
@@ -1350,6 +1357,8 @@ Optional Packages:
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-qdp=DIR          Build Chroma on top of QDP++ where QDP++ is
                           installed in DIR
+  --with-mdwf=<install location>
+
   --with-bagel-wilson-dslash=DIR
                           Use Peter Boyles BAGEL Wilson Dslash Library
                           installed in DIR
@@ -3899,6 +3908,17 @@ else
 fi
 
 
+
+# Check whether --with-mdwf was given.
+if test "${with_mdwf+set}" = set; then
+  withval=$with_mdwf; mdwf_path=${withval}
+	 build_mdwf="yes"
+else
+  mdwf_path=""
+	 build_mdwf="no"
+
+fi
+
 # Check whether --enable-asqtad_level3_inverter was given.
 if test "${enable_asqtad_level3_inverter+set}" = set; then
   enableval=$enable_asqtad_level3_inverter;
@@ -4296,6 +4316,12 @@ if  test "x${build_cg_dwf}x" = "xyesx" ;
 then
         { echo "$as_me:$LINENO: Configuring CG DWF" >&5
 echo "$as_me: Configuring CG DWF" >&6;}
+	if  test "x${build_mdwf}x" = "xyesx" ;
+	then
+	  { { echo "$as_me:$LINENO: error: Cannot have both CG-DWF    and MDWF configured at the same time" >&5
+echo "$as_me: error: Cannot have both CG-DWF    and MDWF configured at the same time" >&2;}
+   { (exit 1); exit 1; }; }
+        fi
 
 	case ${cg_dwf_cpu_arch} in
 	sse)
@@ -4333,6 +4359,8 @@ else
 	{ echo "$as_me:$LINENO: Not building CG DWF" >&5
 echo "$as_me: Not building CG DWF" >&6;}
 fi
+
+
 
  if test "x${build_cg_dwf}x" = "xyesx" ; then
   BUILD_CG_DWF_TRUE=
@@ -5236,11 +5264,151 @@ echo "$as_me: WARNING: Unknown value for chroma_testcase_runner. Will use trivia
 	;;
 esac
 
+
+
 { echo "$as_me:$LINENO: Configuring qdp-lapack" >&5
 echo "$as_me: Configuring qdp-lapack" >&6;}
 subdirs="$subdirs other_libs/qdp-lapack"
 
 QDP_LAPACK_DIR=qdp-lapack
+
+
+if  test "x${build_mdwf}x" = "xyesx" ;
+then
+
+  { echo "$as_me:$LINENO: Configuring to use MDWF DWF Solver package" >&5
+echo "$as_me: Configuring to use MDWF DWF Solver package" >&6;}
+
+    if  test "x${build_cg_dwf}x" = "xyesx" ;
+  then
+    { { echo "$as_me:$LINENO: error: Cannot have both MDWF and CG-DWF enabled together" >&5
+echo "$as_me: error: Cannot have both MDWF and CG-DWF enabled together" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_MDWF
+_ACEOF
+
+
+    if test "X${mdwf_path}X" = "XX" ; then
+     # Extract the first word of "mdwf-config", so it can be a program name with args.
+set dummy mdwf-config; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_MDWF_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $MDWF_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MDWF_CONFIG="$MDWF_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_MDWF_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+MDWF_CONFIG=$ac_cv_path_MDWF_CONFIG
+if test -n "$MDWF_CONFIG"; then
+  { echo "$as_me:$LINENO: result: $MDWF_CONFIG" >&5
+echo "${ECHO_T}$MDWF_CONFIG" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+  else
+     # Extract the first word of "mdwf-config", so it can be a program name with args.
+set dummy mdwf-config; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_MDWF_CONFIG+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $MDWF_CONFIG in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MDWF_CONFIG="$MDWF_CONFIG" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="${mdwf_path}/bin:${PATH}"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_MDWF_CONFIG="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+MDWF_CONFIG=$ac_cv_path_MDWF_CONFIG
+if test -n "$MDWF_CONFIG"; then
+  { echo "$as_me:$LINENO: result: $MDWF_CONFIG" >&5
+echo "${ECHO_T}$MDWF_CONFIG" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+  fi
+
+  if test "X${MDWF_CONFIG}X" = "XX" ; then
+    { { echo "$as_me:$LINENO: error: QDP++ configuration program qdp++-config not found." >&5
+echo "$as_me: error: QDP++ configuration program qdp++-config not found." >&2;}
+   { (exit 1); exit 1; }; }
+  fi
+
+    { echo "$as_me:$LINENO: Found MDWF configuration program ${MDWF_CONFIG}" >&5
+echo "$as_me: Found MDWF configuration program ${MDWF_CONFIG}" >&6;}
+  MDWF_CXXFLAGS="`${MDWF_CONFIG} --cflags`"
+
+  { echo "$as_me:$LINENO: MDWF compile flags: ${MDWF_CXXFLAGS}" >&5
+echo "$as_me: MDWF compile flags: ${MDWF_CXXFLAGS}" >&6;}
+  MDWF_LDFLAGS="`${MDWF_CONFIG} --ldflags`"
+
+  { echo "$as_me:$LINENO: MDWF linking flags: ${MDWF_LDFLAGS}" >&5
+echo "$as_me: MDWF linking flags: ${MDWF_LDFLAGS}" >&6;}
+  MDWF_LIBS="`${MDWF_CONFIG} --libs`"
+
+  { echo "$as_me:$LINENO: MDWF libraries flags: ${MDWF_LIBS}" >&5
+echo "$as_me: MDWF libraries flags: ${MDWF_LIBS}" >&6;}
+
+    MDWF_ENABLED=yes
+
+fi
+
+ if test "x${build_mdwf}x" = "xyesx" ; then
+  BUILD_MDWF_TRUE=
+  BUILD_MDWF_FALSE='#'
+else
+  BUILD_MDWF_TRUE='#'
+  BUILD_MDWF_FALSE=
+fi
 
 
 
@@ -5693,6 +5861,13 @@ if test -z "${BUILD_QMT_TRUE}" && test -z "${BUILD_QMT_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_QMT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_QMT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_MDWF_TRUE}" && test -z "${BUILD_MDWF_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_MDWF\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_MDWF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -6426,6 +6601,13 @@ QMT_LIBS!$QMT_LIBS$ac_delim
 BUILD_QMT_TRUE!$BUILD_QMT_TRUE$ac_delim
 BUILD_QMT_FALSE!$BUILD_QMT_FALSE$ac_delim
 QDP_LAPACK_DIR!$QDP_LAPACK_DIR$ac_delim
+MDWF_CONFIG!$MDWF_CONFIG$ac_delim
+MDWF_CXXFLAGS!$MDWF_CXXFLAGS$ac_delim
+MDWF_LDFLAGS!$MDWF_LDFLAGS$ac_delim
+MDWF_LIBS!$MDWF_LIBS$ac_delim
+MDWF_ENABLED!$MDWF_ENABLED$ac_delim
+BUILD_MDWF_TRUE!$BUILD_MDWF_TRUE$ac_delim
+BUILD_MDWF_FALSE!$BUILD_MDWF_FALSE$ac_delim
 LATEX!$LATEX$ac_delim
 DVIPS!$DVIPS$ac_delim
 DVIPDF!$DVIPDF$ac_delim
@@ -6435,7 +6617,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 54; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 61; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
