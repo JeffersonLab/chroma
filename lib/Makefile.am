@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.138 2008-05-06 11:45:46 bjoo Exp $
+# $Id: Makefile.am,v 3.139 2008-05-06 13:23:32 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1421,8 +1421,9 @@ libchroma_a_SOURCES += actions/ferm/qprop/avp_altivecf_solver.cc
 endif
 
 
-if BUILD_CG_DWF
+if BUILD_MDWF
 nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h
+libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc
 endif
 
 
