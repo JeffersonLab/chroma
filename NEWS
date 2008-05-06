@@ -1,3 +1,7 @@
+05/06/2008:  
+	Version 3.29.0
+	 -- Support for MDWF Moebius DWF Library cleaned up and ready to go.
+
 05/05/2008
 	Maintenance: 
 	-- Added support for interfacing to MDWF Moebius DWF library from MIT.
