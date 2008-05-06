@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mdwf_solver.h,v 1.2 2008-05-05 20:12:37 bjoo Exp $
+// $Id: mdwf_solver.h,v 1.3 2008-05-06 11:45:50 bjoo Exp $
 /*! \file
  *  \brief DWF/SSE double-prec solver
  */
@@ -323,7 +323,7 @@ namespace Chroma
       }
 #endif 
 #if 1
-      /* DoublePrecision Branch. Test this first
+      /* DoublePrecision Branch. 
 	 then duplicate for double prec */
       {
 	int out_iters_double;

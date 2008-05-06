@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.243 2008-05-05 19:33:59 bjoo Exp $
+# $Id: Makefile.in,v 3.244 2008-05-06 11:45:46 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -72,7 +72,7 @@ POST_UNINSTALL = :
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bglf_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bgld_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_altivecf_solver.h \
-@BUILD_CG_DWF_TRUE@	mdwf_solver.h
+@BUILD_CG_DWF_TRUE@	actions/ferm/qprop/mdwf_solver.h
 @BUILD_CG_DWF_TRUE@am__append_12 = \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/avp_inverter_interface.cc
 
@@ -1748,7 +1748,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/qprop/avp_ssed_solver.h \
 	actions/ferm/qprop/avp_bglf_solver.h \
 	actions/ferm/qprop/avp_bgld_solver.h \
-	actions/ferm/qprop/avp_altivecf_solver.h mdwf_solver.h \
+	actions/ferm/qprop/avp_altivecf_solver.h \
+	actions/ferm/qprop/mdwf_solver.h \
 	actions/ferm/linop/lwldslash_w_pab.h \
 	actions/ferm/linop/lwldslash_array_pab_w.h \
 	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h \

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.137 2008-05-05 19:27:42 bjoo Exp $
+# $Id: Makefile.am,v 3.138 2008-05-06 11:45:46 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1422,7 +1422,7 @@ endif
 
 
 if BUILD_CG_DWF
-nobase_include_HEADERS += mdwf_solver.h
+nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h
 endif
 
 
