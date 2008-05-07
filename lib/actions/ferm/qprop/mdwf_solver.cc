@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mdwf_solver.cc,v 1.1 2008-05-06 13:25:28 bjoo Exp $
+// $Id: mdwf_solver.cc,v 1.2 2008-05-07 14:44:59 bjoo Exp $
 /*! \file
  *  \brief DWF/SSE double-prec solver
  */
@@ -265,7 +265,7 @@ namespace Chroma
 				      sprec_rhs,
 				      max_iteration,
 				      target_epsilon, 
-				      QOP_MDWF_FINAL_DIRAC_RESIDUAL)) != 0 ) {
+				      QOP_MDWF_LOG_NONE)) != 0 ) {
 	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
 	QDP_abort(1);
       }
