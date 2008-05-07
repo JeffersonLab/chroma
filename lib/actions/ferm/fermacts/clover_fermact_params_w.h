@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_fermact_params_w.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: clover_fermact_params_w.h,v 3.1 2008-05-07 01:12:18 bjoo Exp $
 /*! \file
  *  \brief Parameters for Clover fermion action
  */
@@ -25,6 +25,8 @@ namespace Chroma
 
     // Optional Anisotropy
     AnisoParam_t anisoParam;
+    Real max_norm;
+    bool max_norm_usedP;
   };
 
 

@@ -60,7 +60,7 @@ namespace Chroma
     virtual const Real& getFactor() const = 0;
     virtual const Real& getInvFactor() const = 0;
     virtual const multi1d< LatticeColorMatrix>& getLinks(void) const = 0;
-
+    virtual int getTMax(void) const = 0;
   public:
 
     //! Return the fermion BC object for this linear operator
@@ -376,6 +376,7 @@ namespace Chroma
 				       getQMatrixDaggerInvArray()[cb3d],
 				       getInvFactor(),
 				       isign,
+				       getTMax(),
 				       schroedingerTP());
       
       
@@ -411,6 +412,7 @@ namespace Chroma
 				       getQMatrixDaggerInvArray()[cb3d],
 				       getInvFactor(),	
 				       other_sign,
+				       getTMax(),
 				       schroedingerTP());
 
       
@@ -449,6 +451,7 @@ namespace Chroma
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),	
 					   PLUS,
+					   getTMax(),
 					   schroedingerTP());
 	}
 	
@@ -468,6 +471,7 @@ namespace Chroma
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),
 					   MINUS, 
+					   getTMax(),
 					   schroedingerTP());
 	}
 	
@@ -519,6 +523,7 @@ namespace Chroma
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),
 					   PLUS,
+					   getTMax(),
 					   schroedingerTP());
 	}      
 	T1  = spinReconstructDir3Plus(tmp2);
@@ -536,6 +541,7 @@ namespace Chroma
 					   getQMatrixDaggerInvArray()[cb3d],
 					   getInvFactor(),
 					   MINUS,
+					   getTMax(),
 					   schroedingerTP());
 	}
 	// Two factors of 0.5 from the projectors.

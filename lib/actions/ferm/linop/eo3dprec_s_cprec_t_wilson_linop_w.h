@@ -226,6 +226,9 @@ namespace Chroma
       getFermBC().modifyF(chi, rb3[cb3d]);
     }
 
+    int getTMax() const { 
+      return Layout::lattSize()[Nd-1];
+    }
 
   private:
 

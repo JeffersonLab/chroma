@@ -158,6 +158,9 @@ namespace Chroma
       return u;
     }
 
+    inline int getTMax(void) const {
+      return t_max;
+    }
   private:
     bool schrTP;
 
@@ -180,6 +183,7 @@ namespace Chroma
 
     WilsonDslash3D Dw3D;
     Double logDetTSq;
+    int t_max;
   };
 
 } // End Namespace Chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_nospin_utils.h,v 1.5 2008-01-09 19:07:08 bjoo Exp $
+// $Id: central_tprec_nospin_utils.h,v 1.6 2008-05-07 01:12:18 bjoo Exp $
 /*! \file
  *  \brief Support for time preconditioning
  */
@@ -121,6 +121,7 @@ namespace Chroma
 		const multi1d<CMat>& Q_mat_dag_inv,
 		const Real& invfact,
 		enum PlusMinus isign,
+		const int  t_max,
 		const bool schroedingerTP=false)
     {
       const int t_index=3;
@@ -174,9 +175,20 @@ namespace Chroma
 	      // Let x = Q z_0 = Q W z
 	      HVec_site x_site = Q_mat_inv(site) * chi.elem( tsite(site,0) );
 	      
-	      // Now ( 1 - P Q W z ) = z - P x 
-	      for(int t=0; t < Nt; t++) { 
-		chi.elem( tsite(site,t) ) -= P_mat(site,t) * x_site;
+	      // Now ( 1 - P Q W z ) = z - P x
+
+	      // OK Basically we can save flops here.
+	      // We only need to add on Px if P not numerically zero
+	      int loop_end;
+	      if( Nt-1-t_max <= 0 ) {
+		loop_end=-1;
+	      }
+	      else { 
+		loop_end=Nt-1-t_max;
+	      }
+		
+	      for(int t=Nt-1; t > loop_end ; t--) { 
+		  chi.elem( tsite(site,t) ) -= P_mat(site,t) * x_site;
 	      }
 	    }
 	    // Done! Not as painful as I thought
@@ -214,8 +226,16 @@ namespace Chroma
 	      HVec_site x_site = Q_mat_dag_inv(site) * chi.elem( tsite(site,Nt-1) );
 	      
 	      // Now ( 1 - P Q W z) = z - P x 
-	      for(int t=0; t < Nt; t++) { 
-		chi.elem( tsite(site,t) ) -= P_mat_dag(site,t)*x_site;
+	      int loop_end;
+	      if ( t_max >= Nt-1 ) {
+		loop_end=Nt;
+	      }
+	      else { 
+		loop_end=t_max;
+	      }
+
+	      for(int t=0; t < loop_end; t++) { 
+		  chi.elem( tsite(site,t) ) -= P_mat_dag(site,t)*x_site;
 	      }
 	    }
 	    // Done! Not as painful as I thought

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.7 2008-01-09 19:05:41 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.h,v 1.8 2008-05-07 01:12:19 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson fermion linear operator
  */
@@ -126,6 +126,10 @@ namespace Chroma
 
     //! Get the force due to the det T^\dag T bit
     void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const;
+
+    int getTMax() const { 
+      return Layout::lattSize()[Nd-1];
+    }
 
   private:
 

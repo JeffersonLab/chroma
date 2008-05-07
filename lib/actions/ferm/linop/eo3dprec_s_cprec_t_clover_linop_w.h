@@ -52,6 +52,7 @@ namespace Chroma
       return rb3[0];
     }
 
+
   private:
     const EO3DPrecSpaceCentralPrecTimeLinearOperator<LatticeFermion, 
       multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& EOLinOp;
@@ -96,6 +97,10 @@ namespace Chroma
     int tDir() const { 
       // Always 3 for now?
       return 3; 
+    }
+
+    int getTMax() const { 
+      return Layout::lattSize()[tDir()];
     }
     
     //! Apply inv (C_L)^{-1}

@@ -1,4 +1,4 @@
-// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.6 2008-01-09 19:05:41 bjoo Exp $
+// $Id: unprec_s_cprec_t_wilson_linop_w.cc,v 1.7 2008-05-07 01:12:19 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -305,6 +305,7 @@ namespace Chroma
 				     Q_mat_dag_inv,
 				     invfact,
 				     isign,
+				     getTMax(),
 				     schroedingerTP());
 
     // Reconstruct
@@ -351,6 +352,7 @@ namespace Chroma
 				     Q_mat_dag_inv,
 				     invfact,
 				     other_sign,
+				     getTMax(),
 				     schroedingerTP());
 
     // Reconstruct to full vector
@@ -418,6 +420,7 @@ namespace Chroma
 				       Q_mat_dag_inv,
 				       invfact,
 				       PLUS,
+				       getTMax(),
 				       schroedingerTP());
       
       T1  = spinReconstructDir3Minus(tmp2);
@@ -433,6 +436,7 @@ namespace Chroma
 				       Q_mat_dag_inv,
 				       invfact,
 				       MINUS,
+				       getTMax(),
 				       schroedingerTP());
 
       // Two factors of 0.5 from the projectors.
@@ -503,6 +507,7 @@ namespace Chroma
 				       Q_mat_dag_inv,
 				       invfact,
 				       PLUS,
+				       getTMax(),
 				       schroedingerTP());
       
       T1  = spinReconstructDir3Plus(tmp2);
@@ -518,6 +523,7 @@ namespace Chroma
 				       Q_mat_dag_inv,
 				       invfact,
 				       MINUS,
+				       getTMax(),
 				       schroedingerTP());
 
       // Two factors of 0.5 from the projectors.

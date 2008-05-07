@@ -145,6 +145,12 @@ namespace Chroma
     inline bool schroedingerTP() const { 
       return schrTP;
     }
+
+  protected:
+    inline int getTMax(void) const {
+      // Always return Nt for now
+      return Layout::lattSize()[Nd-1];
+    }
   private:
     bool schrTP;
     AnisoParam_t aniso;

@@ -1,4 +1,4 @@
-// $Id: iluprec_s_cprec_t_clover_linop_w.cc,v 3.6 2008-01-09 19:05:41 bjoo Exp $
+// $Id: iluprec_s_cprec_t_clover_linop_w.cc,v 3.7 2008-05-07 01:12:19 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Clover linear operator
  */
@@ -59,6 +59,8 @@ namespace Chroma
     // Work out aniso factors
     Real ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
     fact = 1 + (Nd-1)*ff + param.Mass;
+    QDPIO::cout << "Factor=" << fact << "  log10(Factor)="<< log10(fact) << endl;
+
     invfact = Real(1)/fact;
     u = fs->getLinks();
 
@@ -144,8 +146,21 @@ namespace Chroma
     }
 
     logDetTSq = zero;
-
+    QDPIO::cout << "Got here " << endl << flush;
     if( !schrTP ) { 
+      // If we are using the max_norm tric. Compute the t_needed
+
+      if( param.max_norm_usedP) {
+	Real tmp1=param.max_norm/sqrt(Real(3));
+	Real t = -( log(tmp1)/log(fact));
+	QDPIO::cout << "Cutoff t is " << t<< endl;
+	t_max=(int)toDouble(ceil(t));
+	QDPIO::cout << "T_max="<<t_max << endl;
+      }
+      else {
+	t_max=Nt;
+	QDPIO::cout << "Not using cutoff trick. Setting T_max="<<t_max<<endl;
+      }
       // P and P_mat dag are needed for the Woodbury 
       // (P_mat for inverting T, P_mat_dag for inverting T_dag - NB P_mat_dag != (P_mat)^dagger
       P_mat.resize(2, Nspaceby2, Nt);
@@ -167,18 +182,28 @@ namespace Chroma
 	  
 	  
 	  for(int t=Nt-2; t >=0; t--) { 
-	    P_mat(cb3, site, t) =  u[t_index].elem( tsite(cb3, site,t)  )  * P_mat(cb3, site,t+1);
-	    P_mat(cb3, site, t) *= invfact.elem();
+	    if( t > Nt-1-t_max) {
+	      P_mat(cb3, site, t) =  u[t_index].elem( tsite(cb3, site,t)  )  * P_mat(cb3, site,t+1);
+	      P_mat(cb3, site, t) *= invfact.elem();
+	    }
+	    else { 
+	      zero_rep(P_mat(cb3, site, t));
+	    }
 	  }
-	  
 	  // Compute the dagger. Opposite order (forward sub) similara to eq 38-42
-	  // in notes
+	   // in notes
 	  P_mat_dag(cb3, site, 0) = adj( u[t_index].elem( tsite(cb3, site, Nt-1) ) );
 	  P_mat_dag(cb3, site, 0) *= minvfact.elem();
-	  
+	 
 	  for(int t=1; t < Nt; t++) { 
-	    P_mat_dag(cb3, site,t) = adj( u[t_index].elem(  tsite(cb3, site, t-1) ) )*P_mat_dag(cb3,site, t-1) ;
-	    P_mat_dag(cb3, site,t) *= invfact.elem();
+	    if( t < t_max ) { 
+	      P_mat_dag(cb3, site,t) = adj( u[t_index].elem(  tsite(cb3, site, t-1) ) )*P_mat_dag(cb3,site, t-1) ;
+	      P_mat_dag(cb3, site,t) *= invfact.elem();
+	    }
+	    else {
+	      zero_rep(P_mat_dag(cb3, site,t));
+	    }
+	    
 	  }
 	  
 	  
@@ -200,12 +225,30 @@ namespace Chroma
       }
     }
     else {
-      schrTP = false;
+      t_max = Nt;
     }
       
     // Create Clover term = A + factor (we don't want the diag mass bit)
     APlusFact.create(fs, param);
     Dw3D.create(fs_, param_.anisoParam);
+
+#if 1
+    QDPIO::cout << "schrTP is " << schrTP << endl;
+    if(schrTP==false) {
+     // Numerical experiments
+      for(int i=0; i < Nt; i++) { 
+      Double fnorm=Double(0);
+      Double fnorm2=Double(0);
+      
+      OScalar<CMat> f; f.elem() = P_mat(0,0,i);
+      fnorm=sqrt(norm2(f));
+      OScalar<CMat> f2; f2.elem() = P_mat_dag(0,0,i);
+      fnorm2=sqrt(norm2(f2));
+          
+      QDPIO::cout << "cb=0 x=0 t="<<i<<" normP="<<fnorm<<" normPdag="<<fnorm2 << endl;
+    }
+    }
+#endif		 
 
     END_CODE();
   }

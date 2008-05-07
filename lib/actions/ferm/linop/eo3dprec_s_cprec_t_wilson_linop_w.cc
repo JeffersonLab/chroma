@@ -1,4 +1,4 @@
-// $Id: eo3dprec_s_cprec_t_wilson_linop_w.cc,v 1.3 2008-01-09 19:05:41 bjoo Exp $
+// $Id: eo3dprec_s_cprec_t_wilson_linop_w.cc,v 1.4 2008-05-07 01:12:18 bjoo Exp $
 /*! \file
  *  \brief Unpreconditioned Wilson linear operator
  */
@@ -275,7 +275,8 @@ namespace Chroma
 				     Q_mat_inv[cb3d],
 				     Q_mat_dag_inv[cb3d],
 				     invfact,
-				     isign);
+				     isign,
+				     getTMax());
 
 
     chi[rb3[cb3d]] += spinReconstructDir3Minus(tmp_T);
@@ -308,7 +309,8 @@ namespace Chroma
 				     Q_mat_inv[cb3d],
 				     Q_mat_dag_inv[cb3d],
 				     invfact,
-				     other_sign);
+				     other_sign,
+				     getTMax());
 
 
     chi[rb3[cb3d]] += spinReconstructDir3Plus(tmp_T);

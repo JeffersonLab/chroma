@@ -1,4 +1,4 @@
-// $Id: clover_fermact_params_w.cc,v 3.1 2006-04-10 21:20:47 edwards Exp $
+// $Id: clover_fermact_params_w.cc,v 3.2 2008-05-07 01:12:18 bjoo Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */
@@ -17,13 +17,15 @@ namespace Chroma
     Mass = Real(0);
     u0   = Real(1);
     clovCoeffR = clovCoeffT = Real(0);
+    max_norm=0;
+    max_norm_usedP=false;
   }
 
   //! Read parameters
   CloverFermActParams::CloverFermActParams(XMLReader& xml, const string& path)
   {
     XMLReader paramtop(xml, path);
-
+    
     // Read the stuff for the action
     if (paramtop.count("Mass") != 0) 
     {
@@ -74,6 +76,16 @@ namespace Chroma
       QDPIO::cout << "clovCoeffR=" << clovCoeffR << endl;
       QDPIO::cout << "clovCOeffT=" << clovCoeffT << endl;
     }
+
+    if( paramtop.count("MaxNorm") != 0 ){
+      read(paramtop, "MaxNorm", max_norm);
+      QDPIO::cout << "MaxNorm="<<max_norm<<endl;
+      max_norm_usedP=true;
+    }
+    else { 
+      max_norm_usedP=false;
+      max_norm=Real(0);
+    }
   }
 
   //! Read parameters
@@ -102,6 +114,9 @@ namespace Chroma
       write(xml, "clovCoeff", param.clovCoeffR);
     }
 
+    if (param.max_norm_usedP){
+      write(xml, "MaxNorm", param.max_norm);
+    }
     pop(xml);
   }
 
