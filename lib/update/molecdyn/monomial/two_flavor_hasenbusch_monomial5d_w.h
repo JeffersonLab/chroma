@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.10 2007-03-22 17:39:23 bjoo Exp $
+// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.11 2008-05-08 08:35:10 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -85,7 +85,7 @@ namespace Chroma
       // Get linear operator
       Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
 	
-      // Get Pauli-Villars linear operator
+      // Get the mass-style preconditioning linear operator
       Handle< DiffLinearOperatorArray<Phi,P,Q> > M_2(precFA.linOp(state));
 	
       // Get/construct the pseudofermion solution
@@ -142,7 +142,7 @@ namespace Chroma
       // Create a linear operator
       Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(f_state));
       
-      // Get Pauli-Villars linear operator
+      // Get the mass-style preconditioning linear operator
       Handle< DiffLinearOperatorArray<Phi,P,Q> > M_2(precFA.linOp(f_state));
 	
       const int N5 = FA.size();
