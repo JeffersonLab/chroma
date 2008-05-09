@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.12 2008-05-02 21:34:26 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.13 2008-05-09 03:59:01 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -811,6 +811,13 @@ namespace Chroma{
       }
 
       MesPlq(xml_out, "Smeared_Observables", u_smr);
+
+      // Parse the Hadron operators
+
+      for(int o(0);o<params.param.ops.size();o++){
+	QDPIO::cout<<"Found Hadron: "<<params.param.ops[o].id<<endl ;
+	
+      }
 
       //We only do diagonal smearing
       for(int sm(0);sm<params.param.smearing.size();sm++){
