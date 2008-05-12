@@ -93,7 +93,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_precnef \
     t_preccfz \
     t_aniso_sym_force \
-    t_monomial_force
+    t_monomial_force \
+    t_clover
 
 #
 # The programs and their dependencies
@@ -191,6 +192,7 @@ t_aniso_gaugeact_SOURCES = t_aniso_gaugeact.cc
 t_temp_prec_SOURCES = t_temp_prec.cc
 t_aniso_sym_force_SOURCES = t_aniso_sym_force.cc
 t_monomial_force_SOURCES = t_monomial_force.cc
+t_clover_SOURCES = t_clover.cc
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
