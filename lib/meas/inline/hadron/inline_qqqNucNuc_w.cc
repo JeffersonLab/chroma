@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.7 2008-04-29 20:21:02 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.8 2008-05-13 21:31:45 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -126,13 +126,13 @@ namespace Chroma
       if (paramtop.count("qqq_file") != 0) 
 	read(paramtop, "qqq_file", qqq_file);
       else // default qqq_file
-	qqq_file = "qqq.dat" ;
+	qqq_file = "DONTDO_qqq" ;
 
       // Possible alternate qqq output file
       if (paramtop.count("qqbar_file") != 0) 
 	read(paramtop, "qqbar_file", qqbar_file);
       else // default qqq_file
-	qqbar_file = "qqbar.dat" ;
+	qqbar_file = "DONTDO_qqbar" ;
       
       // Possible alternate XML file pattern
       if (paramtop.count("xml_file") != 0) 
@@ -404,10 +404,15 @@ namespace Chroma
     pop(file_xml); //qqqNucNuc_w
 
     // Write the scalar data
-    QDPFileWriter qqqto(file_xml, params.qqq_file, 
-			QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
-    QDPFileWriter qqbarto(file_xml, params.qqbar_file, 
-			  QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+    QDPFileWriter qqqto;
+    QDPFileWriter qqbarto;
+    if(params.qqq_file != "DONTDO_qqq")
+      qqqto.open(file_xml, params.qqq_file, QDPIO_SINGLEFILE, QDPIO_SERIAL);
+    //QDPIO_OPEN);
+
+    if(params.qqbar_file != "DONTDO_qqbar")
+      qqbarto.open(file_xml, params.qqbar_file, QDPIO_SINGLEFILE, QDPIO_SERIAL);
+    // QDPIO_OPEN);
   
 
     multi2d<ThreeQuarks> qqq(phases.numMom(),phases.numSubsets()); 
@@ -415,40 +420,61 @@ namespace Chroma
   
 
     {
-      compute_qqq(qqq, qprop[0],qprop[0],qprop[0],phases,t0, bc_spec);
-      write_qqq(qqqto, qqq, phases, "nucleon",sink_type);
-
-      compute_qqbar(qqbar, qprop[0],qprop[0],phases,t0 );
-      write_qqbar(qqbarto, qqbar, phases, "pion",sink_type);
-
-      for(int k(0);k<Nd-1;k++){
-	ostringstream tag ;
-	tag<<"rho_"<<k;
-	compute_qqbar(qqbar, (1<<k),qprop[0],qprop[0],phases,t0 );
-	write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
+      if(params.qqq_file != "DONTDO_qqq"){
+	compute_qqq(qqq, qprop[0],qprop[0],qprop[0],phases,t0, bc_spec);
+	write_qqq(qqqto, qqq, phases, "nucleon",sink_type);
       }
 
-      if(params.named_obj.prop_ids.size()==2)
-      {
-	compute_qqq(qqq, qprop[0],qprop[0],qprop[1],phases,t0, bc_spec);
-	write_qqq(qqqto, qqq, phases, "lambda",sink_type);
-	compute_qqq(qqq, qprop[1],qprop[0],qprop[0],phases,t0, bc_spec);
-	write_qqq(qqqto, qqq, phases, "sigma",sink_type);
-	compute_qqq(qqq, qprop[0],qprop[1],qprop[1],phases,t0, bc_spec);
-	write_qqq(qqqto, qqq, phases, "xi",sink_type);
-
-	compute_qqbar(qqbar, qprop[0],qprop[1],phases,t0 );
-	write_qqbar(qqbarto, qqbar, phases, "kaon",sink_type);
-	compute_qqbar(qqbar, qprop[1],qprop[0],phases,t0 );
-	write_qqbar(qqbarto, qqbar, phases, "kaonbar",sink_type);
-
+      if(params.qqbar_file != "DONTDO_qqbar"){
+	compute_qqbar(qqbar, qprop[0],qprop[0],phases,t0 );
+	write_qqbar(qqbarto, qqbar, phases, "pion",sink_type);
 	for(int k(0);k<Nd-1;k++){
 	  ostringstream tag ;
-	  tag<<"kaonst_"<<k;
-	  compute_qqbar(qqbar, (1<<k), qprop[0],qprop[1],phases,t0 );
+	  tag<<"rho_"<<k;
+	  compute_qqbar(qqbar, (1<<k),qprop[0],qprop[0],phases,t0 );
 	  write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
-	  compute_qqbar(qqbar, (1<<k), qprop[1],qprop[0],phases,t0 );
-	  write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
+	}
+      }
+
+      if(params.named_obj.prop_ids.size()>1){
+	if(params.qqq_file != "DONTDO_qqq"){
+	  compute_qqq(qqq, qprop[0],qprop[0],qprop[1],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "lambda",sink_type);
+	  compute_qqq(qqq, qprop[1],qprop[0],qprop[0],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "sigma",sink_type);
+	  compute_qqq(qqq, qprop[0],qprop[1],qprop[1],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "xi",sink_type);
+	}
+	
+	if(params.qqbar_file != "DONTDO_qqbar"){
+	  compute_qqbar(qqbar, qprop[0],qprop[1],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "kaon",sink_type);
+	  compute_qqbar(qqbar, qprop[1],qprop[0],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "kaonbar",sink_type);
+	  
+	  for(int k(0);k<Nd-1;k++){
+	    ostringstream tag ;
+	    tag<<"kaonst_"<<k;
+	    compute_qqbar(qqbar, (1<<k), qprop[0],qprop[1],phases,t0 );
+	    write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
+	    compute_qqbar(qqbar, (1<<k), qprop[1],qprop[0],phases,t0 );
+	    write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
+	  }
+	}
+      } // number of props > 1
+      // do strange and charmed states 20' states
+      if(params.named_obj.prop_ids.size()==3){
+	if(params.qqq_file != "DONTDO_qqq"){
+	  compute_qqq(qqq, qprop[0],qprop[0],qprop[3],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "lambda_c",sink_type);
+	  compute_qqq(qqq, qprop[3],qprop[0],qprop[0],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "sigma_c",sink_type);
+	  compute_qqq(qqq, qprop[0],qprop[1],qprop[3],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "xi_c",sink_type);
+	  compute_qqq(qqq, qprop[3],qprop[1],qprop[0],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "xip_c",sink_type);
+	  compute_qqq(qqq, qprop[3],qprop[1],qprop[1],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "omega_c",sink_type);
 	}
       }
     } 
