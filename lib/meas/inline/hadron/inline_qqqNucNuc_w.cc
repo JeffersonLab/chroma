@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.8 2008-05-13 21:31:45 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.9 2008-05-13 21:53:49 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -463,7 +463,7 @@ namespace Chroma
 	}
       } // number of props > 1
       // do strange and charmed states 20' states
-      if(params.named_obj.prop_ids.size()==3){
+      if(params.named_obj.prop_ids.size()>2){
 	if(params.qqq_file != "DONTDO_qqq"){
 	  compute_qqq(qqq, qprop[0],qprop[0],qprop[3],phases,t0, bc_spec);
 	  write_qqq(qqqto, qqq, phases, "lambda_c",sink_type);
@@ -476,7 +476,37 @@ namespace Chroma
 	  compute_qqq(qqq, qprop[3],qprop[1],qprop[1],phases,t0, bc_spec);
 	  write_qqq(qqqto, qqq, phases, "omega_c",sink_type);
 	}
-      }
+
+	if(params.qqbar_file != "DONTDO_qqbar"){
+	  compute_qqbar(qqbar, qprop[0],qprop[3],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "D",sink_type);
+	  compute_qqbar(qqbar, qprop[3],qprop[0],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "Dbar",sink_type);
+	  compute_qqbar(qqbar, qprop[1],qprop[3],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "Ds",sink_type);
+	  compute_qqbar(qqbar, qprop[3],qprop[1],phases,t0 );
+	  write_qqbar(qqbarto, qqbar, phases, "Dsbar",sink_type);
+	  for(int k(0);k<Nd-1;k++){
+	    {
+	      ostringstream tag ;
+	      tag<<"Dst_"<<k;
+	      compute_qqbar(qqbar, (1<<k), qprop[0],qprop[3],phases,t0 );
+	      write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
+	      compute_qqbar(qqbar, (1<<k), qprop[3],qprop[0],phases,t0 );
+	      write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
+	    }
+	    {
+	      ostringstream tag ;
+	      tag<<"Dsst_"<<k;
+	      compute_qqbar(qqbar, (1<<k), qprop[1],qprop[3],phases,t0 );
+	      write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
+	      compute_qqbar(qqbar, (1<<k), qprop[3],qprop[1],phases,t0 );
+	      write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
+	    }
+	    
+	  }
+	}
+      }// end num props>2
     } 
 
     close(qqqto);
