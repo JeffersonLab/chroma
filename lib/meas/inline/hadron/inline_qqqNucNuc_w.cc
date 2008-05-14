@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.11 2008-05-14 02:39:02 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.12 2008-05-14 02:51:12 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -67,9 +67,9 @@ namespace Chroma
     }
     read(paramtop, "max_p2", param.max_p2);
     param.doVectorMesons=false ;
-    if(xml.count("doVectorMesons")==1)
+    if(paramtop.count("doVectorMesons") != 0 )
       read(paramtop, "doVectorMesons", param.doVectorMesons);
-    
+
   }
 
 
