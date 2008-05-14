@@ -1,0 +1,276 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: qqqNucNuc_vector.ini.xml,v 1.1 2008-05-14 14:16:42 kostas Exp $
+;
+; Test input for the qqqNucNuc program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Mass>0.1</Mass>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Mass>0.20</Mass>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_1</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_0</prop_id>
+        <smeared_prop_id>sh_pt_prop_0</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_0</prop_id>
+        <smeared_prop_id>sh_sh_prop_0</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_1</prop_id>
+        <smeared_prop_id>sh_pt_prop_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>SHELL_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>sh_prop_1</prop_id>
+        <smeared_prop_id>sh_sh_prop_1</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QQQ_NUCNUC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+	<version>2</version>
+ 	<max_p2>1</max_p2>
+        <doVectorMesons>true</doVectorMesons>	
+       </Param>
+       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+    	  <elem>sh_pt_prop_0</elem>
+    	  <elem>sh_pt_prop_1</elem>
+	</prop_ids>
+      </NamedObject>
+      <qqq_file>qqq_sh_pt.dat</qqq_file>
+      <qqbar_file>qqbar_sh_pt.dat</qqbar_file>
+    </elem>
+
+    <elem>
+      <Name>QQQ_NUCNUC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+	<version>2</version>
+ 	<max_p2>1</max_p2>	
+        <doVectorMesons>true</doVectorMesons> 
+       </Param>
+       <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+    	  <elem>sh_sh_prop_0</elem>
+    	  <elem>sh_sh_prop_1</elem>
+	</prop_ids>
+      </NamedObject>
+      <qqq_file>qqq_sh_sh.dat</qqq_file>
+      <qqbar_file>qqbar_sh_sh.dat</qqbar_file>
+    </elem>
+
+   </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
