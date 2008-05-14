@@ -11,7 +11,7 @@
 namespace Chroma
 {
   //! Diagnostics about the forces, per direction and total
-  /*! @ingroup molecdyn */
+  /*! @ingroup monomial */
   struct ForceMonitors
   {
     Real   F_sq;     /*!< sum norm2(F) */
@@ -24,15 +24,15 @@ namespace Chroma
 
 
   //! Writes a ForceCalc_t
-  /*! @ingroup molecdyn */
+  /*! @ingroup monomial */
   void write(XMLWriter& xml_out, const string& path, const ForceMonitors& param);
 
   //! Helper function for monitoring forces
-  /*! @ingroup molecdyn */
+  /*! @ingroup monomial */
   void forceMonitorCalc(const multi1d<LatticeColorMatrix>& F, ForceMonitors& forces);
 
   //! Calculate and write out forces
-  /*! @ingroup molecdyn */
+  /*! @ingroup monomial */
   void monitorForces(XMLWriter& xml_out, const string& path, const multi1d<LatticeColorMatrix>& F);
 
 }

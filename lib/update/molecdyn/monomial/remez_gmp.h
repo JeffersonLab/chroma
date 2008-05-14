@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: remez_gmp.h,v 3.1 2007-04-17 03:13:04 edwards Exp $
+// $Id: remez_gmp.h,v 3.2 2008-05-14 04:13:44 edwards Exp $
 /*! \file
  *  \brief Remez algorithm for finding nth roots
  */
@@ -15,7 +15,7 @@ namespace Chroma
 {
 
   //! Remez algorithm 
-  /*! @ingroup molecdyn
+  /*! @ingroup monomial
    *
    * The Remez algorithm is used for generating the nth root
    * rational approximation.

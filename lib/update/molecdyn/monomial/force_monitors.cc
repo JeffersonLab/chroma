@@ -1,4 +1,4 @@
-// $Id: force_monitors.cc,v 3.2 2007-03-23 16:01:01 bjoo Exp $
+// $Id: force_monitors.cc,v 3.3 2008-05-14 04:13:01 edwards Exp $
 /*! @file
  * @brief Helper function for calculating forces
  */
@@ -12,7 +12,7 @@ namespace Chroma
 
  
   //! Writes a ForceCalc_t
-  /*! @ingroup molecdyn */
+  /*! @ingroup monomial */
   void write(XMLWriter& xml_out, const string& path, const ForceMonitors& param)
   {
     push(xml_out, path);
@@ -30,7 +30,7 @@ namespace Chroma
 
 
   //! Helper function for calculating forces
-  /*! @ingroup molecdyn */
+  /*! @ingroup monomial */
   inline
   void forceMonitorCalc(const multi1d<LatticeColorMatrix>& F, ForceMonitors& forces)
   {
