@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.12 2008-05-14 02:51:12 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.13 2008-05-14 14:08:35 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -483,6 +483,10 @@ namespace Chroma
 	  write_qqq(qqqto, qqq, phases, "xip_c",sink_type);
 	  compute_qqq(qqq, qprop[2],qprop[1],qprop[1],phases,t0, bc_spec);
 	  write_qqq(qqqto, qqq, phases, "omega_c",sink_type);
+	  compute_qqq(qqq, qprop[0],qprop[2],qprop[2],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "xi_cc",sink_type);
+	  compute_qqq(qqq, qprop[1],qprop[2],qprop[2],phases,t0, bc_spec);
+	  write_qqq(qqqto, qqq, phases, "omega_cc",sink_type);
 	}
 
 	if(params.qqbar_file != "DONTDO_qqbar"){
