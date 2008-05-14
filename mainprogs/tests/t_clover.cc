@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   Chroma::initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[]={6,6,6,4};
+  const int foo[]={24, 24, 24, 128};
   multi1d<int> nrow(Nd);
   nrow=foo;
   Layout::setLattSize(nrow);

@@ -1,4 +1,5 @@
 #include "update/molecdyn/hamiltonian/exact_hamiltonian.h"
+#include <typeinfo> 
 
 namespace Chroma { 
 

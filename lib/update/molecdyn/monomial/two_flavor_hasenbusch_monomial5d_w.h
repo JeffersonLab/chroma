@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.11 2008-05-08 08:35:10 edwards Exp $
+// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.12 2008-05-14 19:24:24 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -13,7 +13,7 @@
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
-
+#include <typeinfo> // For bad_cast
 namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
@@ -203,7 +203,7 @@ namespace Chroma
 	  (getPhi())[i] = (fm.getPhi())[i];
 	}
       }
-      catch(bad_cast) { 
+      catch(std::bad_cast) { 
 	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D" << endl;
 	QDP_abort(1);
       }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.10 2008-01-09 19:05:40 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.11 2008-05-14 19:24:23 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -15,6 +15,7 @@
 
 #include "linearop.h"
 #include "actions/ferm/fermbcs/schroedinger_fermbc_w.h"
+#include <typeinfo>
 
 namespace Chroma
 {

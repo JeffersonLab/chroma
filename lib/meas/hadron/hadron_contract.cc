@@ -1,10 +1,12 @@
-// $Id: hadron_contract.cc,v 3.3 2007-06-12 16:09:37 edwards Exp $
+// $Id: hadron_contract.cc,v 3.4 2008-05-14 19:24:23 bjoo Exp $
 /*! \file
  *  \brief Construct hadron contractions
  */
 
 #include "meas/hadron/hadron_contract.h"
 #include "meas/inline/io/named_objmap.h"
+
+#include <typeinfo>  // For std::bad-cast
 
 namespace Chroma 
 {
