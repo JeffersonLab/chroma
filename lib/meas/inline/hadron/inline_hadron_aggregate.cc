@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.24 2008-04-24 05:20:17 kostas Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.25 2008-05-16 21:50:49 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -40,6 +40,7 @@
 #include "meas/inline/hadron/inline_stoch_group_baryon_w.h"
 #include "meas/inline/hadron/inline_stoch_group_meson_w.h"
 #include "meas/inline/hadron/inline_gauge_transf_obj.h"
+#include "meas/inline/hadron/inline_rotate_spin_w.h"
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -95,6 +96,7 @@ namespace Chroma
 	success &= InlineNprEnv::registerAll();
 	success &= InlineMresEnv::registerAll();
 	success &= InlineGaugeTransfNamedObjEnv::registerAll();
+	success &= InlineRotateSpinEnv::registerAll();
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
