@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.140 2008-05-09 03:58:56 kostas Exp $
+# $Id: Makefile.am,v 3.141 2008-05-16 21:53:15 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -694,6 +694,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_gauge_transf_obj.h \
+	meas/inline/hadron/inline_rotate_spin_w.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -1303,6 +1304,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
+	meas/inline/hadron/inline_rotate_spin_w.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
