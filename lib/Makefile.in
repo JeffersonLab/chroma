@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.247 2008-05-14 19:24:18 bjoo Exp $
+# $Id: Makefile.in,v 3.248 2008-05-16 21:54:34 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -564,6 +564,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
+	meas/inline/hadron/inline_rotate_spin_w.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
@@ -1025,6 +1026,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_hadron_aggregate.$(OBJEXT) \
 	inline_hadron_contract.$(OBJEXT) \
 	inline_gauge_transf_obj.$(OBJEXT) \
+	inline_rotate_spin_w.$(OBJEXT) \
 	inline_apply_fermstate_w.$(OBJEXT) \
 	inline_make_source_w.$(OBJEXT) \
 	inline_make_source_ferm_w.$(OBJEXT) \
@@ -1681,6 +1683,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_gauge_transf_obj.h \
+	meas/inline/hadron/inline_rotate_spin_w.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -2495,6 +2498,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
 	meas/inline/hadron/inline_gauge_transf_obj.h \
+	meas/inline/hadron/inline_rotate_spin_w.h \
 	meas/inline/hadron/inline_apply_fermstate_w.h \
 	meas/inline/hadron/inline_make_source_w.h \
 	meas/inline/hadron/inline_make_source_ferm_w.h \
@@ -3032,6 +3036,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
+	meas/inline/hadron/inline_rotate_spin_w.cc \
 	meas/inline/hadron/inline_apply_fermstate_w.cc \
 	meas/inline/hadron/inline_make_source_w.cc \
 	meas/inline/hadron/inline_make_source_ferm_w.cc \
@@ -3472,6 +3477,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_random_transf_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ritz_H_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rotate_spin_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_schrfun_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_seqprop_test_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_seqsource_w.Po@am__quote@
@@ -10995,6 +11001,20 @@ inline_gauge_transf_obj.obj: meas/inline/hadron/inline_gauge_transf_obj.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_gauge_transf_obj.cc' object='inline_gauge_transf_obj.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_gauge_transf_obj.obj `if test -f 'meas/inline/hadron/inline_gauge_transf_obj.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_gauge_transf_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_gauge_transf_obj.cc'; fi`
+
+inline_rotate_spin_w.o: meas/inline/hadron/inline_rotate_spin_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_rotate_spin_w.o -MD -MP -MF $(DEPDIR)/inline_rotate_spin_w.Tpo -c -o inline_rotate_spin_w.o `test -f 'meas/inline/hadron/inline_rotate_spin_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_rotate_spin_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_rotate_spin_w.Tpo $(DEPDIR)/inline_rotate_spin_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_rotate_spin_w.cc' object='inline_rotate_spin_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_rotate_spin_w.o `test -f 'meas/inline/hadron/inline_rotate_spin_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_rotate_spin_w.cc
+
+inline_rotate_spin_w.obj: meas/inline/hadron/inline_rotate_spin_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_rotate_spin_w.obj -MD -MP -MF $(DEPDIR)/inline_rotate_spin_w.Tpo -c -o inline_rotate_spin_w.obj `if test -f 'meas/inline/hadron/inline_rotate_spin_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_rotate_spin_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_rotate_spin_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_rotate_spin_w.Tpo $(DEPDIR)/inline_rotate_spin_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_rotate_spin_w.cc' object='inline_rotate_spin_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_rotate_spin_w.obj `if test -f 'meas/inline/hadron/inline_rotate_spin_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_rotate_spin_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_rotate_spin_w.cc'; fi`
 
 inline_apply_fermstate_w.o: meas/inline/hadron/inline_apply_fermstate_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_apply_fermstate_w.o -MD -MP -MF $(DEPDIR)/inline_apply_fermstate_w.Tpo -c -o inline_apply_fermstate_w.o `test -f 'meas/inline/hadron/inline_apply_fermstate_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_apply_fermstate_w.cc
