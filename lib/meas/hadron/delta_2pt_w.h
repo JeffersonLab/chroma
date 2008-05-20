@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: delta_2pt_w.h,v 3.1 2007-12-04 04:08:53 kostas Exp $
+// $Id: delta_2pt_w.h,v 3.2 2008-05-20 18:18:54 kostas Exp $
 /*! \file
  *  \brief Construct delta 2pt correlators.
  */
@@ -27,12 +27,13 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
 
-      int           mom2_max;           /*!< (mom - mom_origin)^2 <= mom2_max */
-      multi1d<int>  mom_origin;         /*!< Origin for the momentum */
-      bool          avg_equiv_mom;      /*!< average over equivalent momenta */
-
-      std::string   first_id;        /*!< First/light quark id */
-      std::string   second_id;       /*!< Second/heavy quark id */
+      int           mom2_max;          /*!< (mom - mom_origin)^2 <= mom2_max */
+      multi1d<int>  mom_origin;        /*!< Origin for the momentum */
+      bool          avg_equiv_mom;     /*!< average over equivalent momenta */
+	  
+      bool          min_contractions;  /*!< Only do minimal number of contractions*/
+      std::string   first_id;          /*!< First/light quark id */
+      std::string   second_id;         /*!< Second/heavy quark id */
     };
 
 
