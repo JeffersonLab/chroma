@@ -1,4 +1,4 @@
-// $Id: barspinmat_w.cc,v 3.3 2008-01-11 18:14:17 kostas Exp $
+// $Id: barspinmat_w.cc,v 3.4 2008-05-20 18:23:15 kostas Exp $
 /*! \file
  *  \brief Baryon spin and projector matrices
  */
@@ -284,6 +284,8 @@ namespace Chroma
       SpinMatrix g_one = 1.0;
       return SpinMatrix(0.5*(g_one - timesMinusI(Gamma(11)*g_one)));
     }
+
+#ifndef _FRANKLIN_
     //! T = i \gamma_5 (\gamma_1 + i \gamma_2 )
     SpinMatrix T_ig5XpiY(){
       SpinMatrix g_one = 1.0;
@@ -296,6 +298,24 @@ namespace Chroma
       SpinMatrix tt = (Gamma(1)*g_one + timesMinusI(Gamma(2)*g_one));
       return SpinMatrix(-timesMinusI(Gamma(15)*tt));
     }
+#else
+    //FIX FRANKLIN GNU COMPILER BUG
+    //! T = i \gamma_5 (\gamma_1 - i \gamma_2 )
+    SpinMatrix T_ig5XmiY( )
+    {
+      SpinMatrix g_one = 1.0;
+      //SpinMatrix tt = (Gamma(1)*g_one + timesMinusI(Gamma(2)*g_one));
+      SpinMatrix tt = (Gamma(14)*g_one - timesMinusI(Gamma(13)*g_one));
+      return SpinMatrix(timesMinusI(tt));
+    }
+
+    //! T = i \gamma_5 (\gamma_1 + i \gamma_2 )
+    SpinMatrix T_ig5XpiY(){
+      SpinMatrix g_one = 1.0;
+      SpinMatrix tt = (Gamma(14)*g_one + timesMinusI(Gamma(13)*g_one));
+      return SpinMatrix(timesMinusI(tt));
+    }
+#endif
     
   }
 
