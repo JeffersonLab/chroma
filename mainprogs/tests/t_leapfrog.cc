@@ -209,6 +209,11 @@ int main(int argc, char *argv[])
   QDPIO::cout << "DeltaKE = " << deltaKE << endl;
 
   QDPIO::cout << "DeltaE = " << deltaKE + deltaPE <<endl;
+  push(xml_log, "DeltaE");
+   write(xml_log, "DeltaKE", deltaKE);
+   write(xml_log, "DeltaPE", deltaPE);
+   write(xml_log, "DeltaH", (deltaKE+deltaPE));
+  pop(xml_log);
   pop(xml_log);   // t_leapfrog
   pop(xml_out);   // t_leapfrog
 // xml_out.close();
