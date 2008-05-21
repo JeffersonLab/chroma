@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.8 2008-01-23 18:23:36 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.9 2008-05-21 17:07:50 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -265,13 +265,26 @@ namespace Chroma
       for(int n=0; n < getNthRoot(); ++n)
       {
 	n_count[n] = getX(X,spfe.pole,getPhi()[n],s);
+	LatticeDouble site_S=zero;
 
-	// Weight solns to make final PF field
+	// Take a volume factor out - redefine zero point energy
+	// this constant should have no physical effect, but by
+	// making S fluctuate around 0, it should remove a volume
+	// factor from the energies
+	site_S[ lin->subset() ] = -Double(12);
+	
 	psi[lin->subset()] = spfe.norm * getPhi()[n];
-	for(int i=0; i < X.size(); ++i)
+	for(int i=0; i < X.size(); ++i) {
 	  psi[lin->subset()] += spfe.res[i] * X[i];
+	}
 
-	action += norm2(psi, lin->subset());
+	// Accumulate locally 
+	site_S[ lin->subset()] += localNorm2(psi);
+
+	// action += norm2(psi, lin->subset());
+
+	// Sum
+	action += sum(site_S, lin->subset());
       }
 
       write(xml_out, "n_count", n_count);

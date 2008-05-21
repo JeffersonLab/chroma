@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: exact_hamiltonian.h,v 3.4 2006-12-25 21:40:17 bjoo Exp $
+// $Id: exact_hamiltonian.h,v 3.5 2008-05-21 17:07:50 bjoo Exp $
 /*! \file
  * \brief Exact Hamiltonians
  */
@@ -70,10 +70,45 @@ namespace Chroma
       }
       END_CODE();
     }
-    
+ 
+
+    Double mesKE(const AbsFieldState< 
+	       multi1d<LatticeColorMatrix>, 
+	       multi1d<LatticeColorMatrix> > &s
+	       ) const
+    {
+      START_CODE();
+
+      /* Accumulate KE per site */
+      multi1d<LatticeDouble> ke_per_site(Nd);
+
+      
+      /* Now add on the local Norm2 of the momenta for each link */
+      for(int mu=0; mu < Nd; mu++) { 
+	ke_per_site[mu] = -Double(4);
+	ke_per_site[mu] += localNorm2(s.getP()[mu]);
+      }
+
+      /* Sum up the differences */
+      Double KE=zero;
+      for(int mu=0; mu < Nd; mu++) { 
+	KE += sum(ke_per_site[mu]);
+      }
+
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+      push(xml_out, "mesKE");
+      write(xml_out, "KE", sum(KE));
+      pop(xml_out);  // pop(mesKE);
+
+
+      return KE;
+
+      END_CODE();
+    }
+
     //! The Potential Energy 
-    Double mesPE(const AbsFieldState< multi1d<LatticeColorMatrix>,
-		        multi1d<LatticeColorMatrix> >& s) const 
+    Double  mesPE(const AbsFieldState< multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> >& s) const 
     {
       START_CODE();
 
@@ -84,18 +119,17 @@ namespace Chroma
       int num_terms = monomials.size();
 
       write(xml_out, "num_terms", num_terms);
-      multi1d<Double> PE_terms(num_terms);
-      Double PE = Double(0);
-      
+      Double PE=zero;
+
       // Caller writes elem rule
       push(xml_out, "PEByMonomials");
       for(int i=0; i < num_terms; i++) 
       {
 	push(xml_out, "elem");
-
-	Double tmp = monomials[i]->S(s);
+	Double tmp;
+	tmp=monomials[i]->S(s);
 	PE += tmp;
-	pop(xml_out);
+	pop(xml_out); // elem
       }
       pop(xml_out); // PEByMonomials
       pop(xml_out); // pop(mesPE);

@@ -1,4 +1,4 @@
-// $Id: aniso_sym_spatial_gaugeact.cc,v 3.2 2007-05-24 19:36:05 bjoo Exp $
+// $Id: aniso_sym_spatial_gaugeact.cc,v 3.3 2008-05-21 17:07:50 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -11,6 +11,10 @@
 #include "actions/gauge/gaugeacts/gaugeact_factory.h"
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 #include "actions/gauge/gaugeacts/aniso_sym_shared_functions.h"
+
+#include <cstdio>
+using namespace std;
+
 namespace Chroma
 {
  
@@ -68,6 +72,15 @@ namespace Chroma
 	}
       }
     }
+    
+    // If user gave a zero point energy, subtract it off
+    if( param.use_subtraction  ) { 
+      LatticeReal ff;
+      ff = param.sub_zero;
+      lgimp -= ff;
+    }
+
+    // Sum action and normalize out.
     Double ret_val = sum(lgimp);
     ret_val *= -Double(1)/Double(Nc);
 

@@ -1,4 +1,4 @@
-// $Id: aniso_sym_gaugeact_params.cc,v 3.1 2007-05-22 14:19:42 bjoo Exp $
+// $Id: aniso_sym_gaugeact_params.cc,v 3.2 2008-05-21 17:07:49 bjoo Exp $
 /*! \file
  *  \brief Anisotropic gaugeact useful for spectrum from hep-lat/9911003
  *
@@ -24,6 +24,14 @@ namespace Chroma
       read(paramtop, "u_s", u_s);
       read(paramtop, "u_t", u_t);
       read(paramtop, "AnisoParam", aniso);
+      if( paramtop.count("ZeroEnergy") == 1 ) {
+	read(paramtop, "ZeroEnergy", sub_zero);
+	use_subtraction = true;
+      }
+      else { 
+	sub_zero = Real(0);
+	use_subtraction = false;
+      }
     }
     catch( const std::string& e ) { 
       QDPIO::cerr << "Error reading XML: " <<  e << endl;
@@ -45,6 +53,9 @@ namespace Chroma
     write(xml, "beta", param.beta);
     write(xml, "u_s", param.u_s);
     write(xml, "u_t", param.u_t);
+    if( param.use_subtraction ) { 
+      write(xml, "ZeroEnergy", param.sub_zero);
+    }
     write(xml, "AnisoParam", param.aniso);
 
     pop(xml);
@@ -58,6 +69,14 @@ namespace Chroma
     {
       read(paramtop, "beta", beta);
       read(paramtop, "u_s", u_s);
+      if( paramtop.count("ZeroEnergy") == 1 ) {
+	read(paramtop, "ZeroEnergy", sub_zero);
+	use_subtraction = true;
+      }
+      else { 
+	sub_zero = Real(0);
+	use_subtraction = false;
+      }
       read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
@@ -79,6 +98,9 @@ namespace Chroma
 
     write(xml, "beta", param.beta);
     write(xml, "u_s", param.u_s);
+    if( param.use_subtraction ) { 
+      write(xml, "ZeroEnergy", param.sub_zero);
+    }
     write(xml, "AnisoParam", param.aniso);
 
     pop(xml);

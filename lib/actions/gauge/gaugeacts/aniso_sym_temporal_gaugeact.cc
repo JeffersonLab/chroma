@@ -1,4 +1,4 @@
-// $Id: aniso_sym_temporal_gaugeact.cc,v 3.2 2007-05-24 19:36:05 bjoo Exp $
+// $Id: aniso_sym_temporal_gaugeact.cc,v 3.3 2008-05-21 17:07:50 bjoo Exp $
 /*! \file
  *  \brief  Temporal part of Anisotropic Tree leve LW gauge action
  */
@@ -87,9 +87,16 @@ namespace Chroma
       }
     }
 
-    // Sum lgimp only once
-    Double ret_val = sum(lgimp);
 
+    // If user gave a zero point energy, subtract it off
+    if( param.use_subtraction  ) { 
+      LatticeReal ff;
+      ff = param.sub_zero;
+      lgimp -= ff;
+    }
+
+    Double ret_val = sum(lgimp);
+    
     // Multiply in normalisation
     ret_val *= -Double(1)/Double(Nc);
     
@@ -194,6 +201,7 @@ namespace Chroma
       rect_c_t_2 *= param.aniso.xi_0;
     }
 
+    QDPIO::cout << "Real(Nc)*(u_s_2*u_t_2+u_s_4*u_t_2)="<<Real(Nc)*( Real(3)*u_s_2*u_t_2/Real(4)-Real(12)*u_s_4*u_t_2)/param.beta << endl;
     END_CODE();
   } 
 

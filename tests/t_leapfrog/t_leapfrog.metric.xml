@@ -2,7 +2,7 @@
 
 <assertions>
 
-<assertion xpath="/t_leapfrog/DeltaE/DeltaKE" type="double" comparison="relative" tolerance="1.0e-4"/>
-<assertion xpath="/t_leapfrog/DeltaE/DeltaPE" type="double" comparison="relative" tolerance="1.0e-4"/>
+<assertion xpath="/t_leapfrog/DeltaE/DeltaKE" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/t_leapfrog/DeltaE/DeltaPE" type="double" comparison="relative" tolerance="1.0e-5"/>
 
 </assertions>

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_two_flavor_monomial_w.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_two_flavor_monomial_w.h,v 3.2 2008-05-21 17:07:50 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -52,7 +52,49 @@ namespace Chroma
       return Double(0);
     }
 
+#if 1
+    //! Compute the odd odd contribution (eg
+    Double S_odd_odd(const AbsFieldState<multi1d<LatticeColorMatrix>,
+		       multi1d<LatticeColorMatrix> >& s) {
+      START_CODE();
 
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+      push(xml_out, "S_odd_odd");
+
+      const EvenOddPrecWilsonTypeFermAct<T,P,Q>& FA = getFermAct();
+
+      Handle< FermState<T,P,Q> > bc_g_state = FA.createState(s.getQ());
+
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< EvenOddPrecLinearOperator<T,P,Q> > lin(FA.linOp(bc_g_state));
+      // Get the X fields
+      T X;
+
+      // Action calc doesnt use chrono predictor use zero guess
+      X[ lin->subset() ] = zero;
+
+      // getX noe always uses chrono predictor. Best to Nuke it therefore
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      (getMDSolutionPredictor()).reset();
+      int n_count = getX(X, s);
+
+      LatticeDouble site_action=zero;
+      site_action[ lin->subset() ] = Double(-12);
+      site_action[ lin->subset() ] += localInnerProductReal(getPhi(),X);
+
+     
+      //Double action = innerProductReal(getPhi(), X, lin->subset());
+      Double action = sum(site_action, lin->subset());
+
+      write(xml_out, "n_count", n_count);
+      write(xml_out, "S_oo", action);
+      pop(xml_out);
+
+      END_CODE();
+
+      return action;
+    }
+#endif
   protected:
 
     T& getPhi(void) {
@@ -93,7 +135,7 @@ namespace Chroma
     GroupXML_t inv_param;
 
     Handle<AbsChronologicalPredictor4D<T> > chrono_predictor;
-  };
+    };
 
 
 } //end namespace chroma

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: aniso_sym_gaugeact_params.h,v 3.1 2007-05-22 14:19:42 bjoo Exp $
+// $Id: aniso_sym_gaugeact_params.h,v 3.2 2008-05-21 17:07:50 bjoo Exp $
 /*! \file
  *  \brief Params for Anisotropic Symanzik Gauge Action
  *
@@ -30,6 +30,8 @@ namespace Chroma
     Real beta;  //!< The beta  coupling
     Real u_s;   //!< Spatial Tadpole coupling
     Real u_t;   //!< Temporal Tadpole coupling
+    bool use_subtraction; //!< Whether to use subtraction trick
+    Real sub_zero; //!< Arbitrary constant (zero point energy)
     AnisoParam_t aniso;
   };
   
@@ -52,6 +54,8 @@ namespace Chroma
     Real beta;  //!< The beta  coupling
     Real u_s;   //!< Spatial Tadpole coupling
     AnisoParam_t aniso; //!< The anisotropy parameters
+    bool use_subtraction; //!< Whether to use subtraction trick
+    Real sub_zero; //!< Arbitrary constant (zero point energy)
   };
   
   /*! @ingroup gaugeacts */
