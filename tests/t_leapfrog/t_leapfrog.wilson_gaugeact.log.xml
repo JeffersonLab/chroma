@@ -4,14 +4,14 @@
 <t_leapfrog>
   <mesE>
     <mesKE>
-      <KE>8208.90473865916</KE>
+      <KE>8208.90471569919</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <GaugeMonomial>
-            <S>-15279.0953950332</S>
+            <S>-15279.0956791964</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>
@@ -28,10 +28,10 @@
             <Forces>
               <F_sq_per_direction>1.185838 1.228306 1.186818 10.65417</F_sq_per_direction>
               <F_avg_per_direction>0.6958364 0.7184525 0.7075264 1.807287</F_avg_per_direction>
-              <F_max_per_direction>2.683017 2.797289 2.622198 8.642146</F_max_per_direction>
+              <F_max_per_direction>2.683016 2.79729 2.622198 8.642145</F_max_per_direction>
               <F_sq>3.563782</F_sq>
-              <F_avg>0.9822756</F_avg>
-              <F_max>8.642146</F_max>
+              <F_avg>0.9822757</F_avg>
+              <F_max>8.642145</F_max>
             </Forces>
           </GaugeMonomial>
         </elem>
@@ -53,7 +53,7 @@
             <Forces>
               <F_sq_per_direction>2.730152 2.869519 2.665689 11.90603</F_sq_per_direction>
               <F_avg_per_direction>1.123999 1.15314 1.118755 2.251162</F_avg_per_direction>
-              <F_max_per_direction>4.165985 4.905739 3.787202 8.678277</F_max_per_direction>
+              <F_max_per_direction>4.165985 4.905739 3.787203 8.678277</F_max_per_direction>
               <F_sq>5.042848</F_sq>
               <F_avg>1.411764</F_avg>
               <F_max>8.678277</F_max>
@@ -65,17 +65,22 @@
   </leapP>
   <mesE>
     <mesKE>
-      <KE>8053.49274794557</KE>
+      <KE>8053.49272038061</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <GaugeMonomial>
-            <S>-15117.6759137152</S>
+            <S>-15117.6763190983</S>
           </GaugeMonomial>
         </elem>
       </PEByMonomials>
     </mesPE>
   </mesE>
+  <DeltaE>
+    <DeltaKE>-155.411995318585</DeltaKE>
+    <DeltaPE>161.419360098054</DeltaPE>
+    <DeltaH>6.00736477946884</DeltaH>
+  </DeltaE>
 </t_leapfrog>

@@ -4,14 +4,14 @@
 <t_leapfrog>
   <mesE>
     <mesKE>
-      <KE>4136.50548017618</KE>
+      <KE>4136.50547253568</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <FixedRandomFermMonomial4D>
-            <S>-25.793662835769</S>
+            <S>-25.7936702035367</S>
           </FixedRandomFermMonomial4D>
         </elem>
       </PEByMonomials>
@@ -25,7 +25,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1536.64896469185</F_sq>
+            <F_sq>1536.58143405802</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -43,7 +43,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1543.06235720211</F_sq>
+            <F_sq>1543.04354004629</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -61,7 +61,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1553.21523373923</F_sq>
+            <F_sq>1553.21531767102</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -79,7 +79,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1565.30286851901</F_sq>
+            <F_sq>1565.30233625018</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -97,7 +97,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1577.6285685259</F_sq>
+            <F_sq>1577.6278445216</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -115,7 +115,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1589.05220127959</F_sq>
+            <F_sq>1589.05126681353</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -133,7 +133,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1598.96969074167</F_sq>
+            <F_sq>1598.96860875611</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -151,7 +151,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1607.18714420943</F_sq>
+            <F_sq>1607.18604161184</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -169,7 +169,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1614.01081369712</F_sq>
+            <F_sq>1614.00960371003</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -187,7 +187,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1620.68007508186</F_sq>
+            <F_sq>1620.6789035812</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -205,7 +205,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1630.00394476059</F_sq>
+            <F_sq>1630.00279808483</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -223,7 +223,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1646.79531085373</F_sq>
+            <F_sq>1646.79426495018</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -241,7 +241,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1677.38314506151</F_sq>
+            <F_sq>1677.38230619935</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -259,7 +259,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1727.46926899555</F_sq>
+            <F_sq>1727.46856741061</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -277,7 +277,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1798.68438660744</F_sq>
+            <F_sq>1798.68391619388</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -295,7 +295,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1886.08767984355</F_sq>
+            <F_sq>1886.08729773417</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -313,7 +313,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>1979.40813135327</F_sq>
+            <F_sq>1979.40778365408</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -331,7 +331,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>2067.14705655492</F_sq>
+            <F_sq>2067.14661436227</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -349,7 +349,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>2139.36901630161</F_sq>
+            <F_sq>2139.3684635115</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -367,7 +367,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>2190.8093050248</F_sq>
+            <F_sq>2190.80854849747</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -385,7 +385,7 @@
       <ForcesByMonomial>
         <elem>
           <FixedRandomFermMonomial4D>
-            <F_sq>2223.00039633898</F_sq>
+            <F_sq>2222.99966503919</F_sq>
           </FixedRandomFermMonomial4D>
         </elem>
       </ForcesByMonomial>
@@ -393,17 +393,22 @@
   </leapP>
   <mesE>
     <mesKE>
-      <KE>4547.30958727421</KE>
+      <KE>4547.30833963778</KE>
     </mesKE>
     <mesPE>
       <num_terms>1</num_terms>
       <PEByMonomials>
         <elem>
           <FixedRandomFermMonomial4D>
-            <S>-437.017068158635</S>
+            <S>-437.016305204481</S>
           </FixedRandomFermMonomial4D>
         </elem>
       </PEByMonomials>
     </mesPE>
   </mesE>
+  <DeltaE>
+    <DeltaKE>410.802867102106</DeltaKE>
+    <DeltaPE>-411.222635000944</DeltaPE>
+    <DeltaH>-0.419767898838472</DeltaH>
+  </DeltaE>
 </t_leapfrog>

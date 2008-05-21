@@ -553,4 +553,9 @@
       </PEByMonomials>
     </mesPE>
   </mesE>
+  <DeltaE>
+    <DeltaKE>-570.085085330552</DeltaKE>
+    <DeltaPE>570.987696319587</DeltaPE>
+    <DeltaH>0.902610989034997</DeltaH>
+  </DeltaE>
 </t_leapfrog>
