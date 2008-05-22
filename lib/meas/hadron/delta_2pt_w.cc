@@ -1,4 +1,4 @@
-// $Id: delta_2pt_w.cc,v 3.8 2008-05-20 18:18:54 kostas Exp $
+// $Id: delta_2pt_w.cc,v 3.9 2008-05-22 18:50:00 caubin Exp $
 /*! \file
  *  \brief Construct meson 2pt correlators.
  */
@@ -84,9 +84,13 @@ namespace Chroma
       read(paramtop, "avg_equiv_mom", avg_equiv_mom);
       read(paramtop, "mom_origin", mom_origin);
       if(paramtop.count("min_contractions") !=0 )
-		read(paramtop, "min_contractions", min_contractions);
+	read(paramtop, "min_contractions", min_contractions);
       else
-		min_contractions = false ;
+	min_contractions = false ;
+      if(paramtop.count("parity") !=0 ) 
+	read(paramtop, "parity", parity);
+      else
+	parity = "all" ;//By default, do both pos and neg parity.
       read(paramtop, "first_id", first_id);
       read(paramtop, "second_id", second_id);
     }
@@ -104,6 +108,7 @@ namespace Chroma
       write(xml, "avg_equiv_mom", avg_equiv_mom);
       write(xml, "mom_origin", mom_origin);
       write(xml, "min_contractions", min_contractions);
+      write(xml, "parity", parity);
       write(xml, "first_id", first_id);
       write(xml, "second_id", second_id);
 
@@ -154,151 +159,226 @@ namespace Chroma
       Projector["SigmaPlus"] = BaryonSpinMats::T_ig5XpiY();
       Projector["SigmaMinus"] = BaryonSpinMats::T_ig5XmiY();
 
-      if(!params.min_contractions){
-	for(int mu(0);mu<Ns ;mu++)
-	  SnkDiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
-	for(int mu(0);mu<Ns ;mu++)
-	  SrcDiQuark[mu] = BaryonSpinMats::CgmuTrans(mu+1);
-	
-	map<std::string,SpinMatrix>::iterator par;
-	map<std::string,SpinMatrix>::iterator proj;
-	for ( par=Parity.begin();par != Parity.end(); par++){
-	  for ( proj=Projector.begin();proj != Projector.end(); proj++){
-	    SpinMatrix T = par->second * proj->second ;// the projector matrix
-	    QDPIO::cout<<" Parity: "<<par->first<<endl;
-	    QDPIO::cout<<" Projector: "<<proj->first<<endl;
-	    for( int src(0) ;src<Ns;src++)
-	      for( int snk(0) ;snk<Ns;snk++){
-		QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
-		
-		Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
-		had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
-							      quark_prop2,
-							      T,SrcDiQuark[src],
-							      SnkDiQuark[snk]);
-		
-		push(had->xml, xml_group);
-		write(had->xml, id_tag, "delta");
-		write(had->xml, "SrcDiQuark", src);
-		write(had->xml, "SnkDiQuark", snk);
-		write(had->xml, "Parity", par->first);
-		write(had->xml, "Projector", proj->first);	      
-		write(had->xml, "PropHeaders", forward_headers);
-		
-		pop(had->xml);
-		
-		hadron.push_back(had); 
-	      }
-	  }
-	}
-		
-	//projector for the spin averaged correlator
-	//only works for zero momentum
-	SpinMatrix g_one = 1.0 ;
-	multi1d< multi1d<SpinMatrix> > ProjGmuGnu(Ns-1) ;
-	for(int s1(0);s1<Ns-1;s1++){
-	  ProjGmuGnu[s1].resize(Ns-1) ;
-	  for(int s2(0);s2<Ns-1;s2++)
-	    ProjGmuGnu[s1][s2] = Gamma(1<<s1) * (Gamma(1<<s2)*g_one) ;
-	}
-	
-	for ( par=Parity.begin();par != Parity.end(); par++){
-	  Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
-	  had->corr = 0.0 ;
-	  for( int src(0) ;src<Ns-1;src++)
-	    for( int snk(0) ;snk<Ns-1;snk++){
-	      QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
-	      SpinMatrix T =  (- 1.0/3.0) * ProjGmuGnu[src][snk] ;
-	      if(src == snk ) T += g_one ;
-	      T = par->second * T ;
-	      had->corr += Baryon2PtContractions::sigmast2pt(quark_prop1, 
-							     quark_prop2,
-							     T,SrcDiQuark[src],
-							     SnkDiQuark[snk]);
-	    }
-	  push(had->xml, xml_group);
-	  write(had->xml, id_tag, "delta");
-	  write(had->xml, "Parity", par->first);
-	  write(had->xml, "Projector", "SpinAveraged");
-	  write(had->xml, "PropHeaders", forward_headers);
-	  pop(had->xml);
+	  for(int mu(0);mu<Ns ;mu++)
+		SnkDiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
+	  for(int mu(0);mu<Ns ;mu++)
+		SrcDiQuark[mu] = BaryonSpinMats::CgmuTrans(mu+1);
 	  
-	  hadron.push_back(had); 
-	}
-      }//Ends if(!params.min_contractions)
-      
-      if(params.min_contractions){
-	/**
-	   Here we need all mu, nu combos for the 1 +/- Sigma3,and
-	   just the 02, 20, 12, 21 for the SigmaMinus and SigmaPlus
-	**/
-	QDPIO::cout<<"Only calculating contractions we need for zero momentum..."<<endl;
-	for(int mu(0);mu<Ns-1 ;mu++)
-	  SnkDiQuark[mu] = BaryonSpinMats::Cgmu(mu+1);
-	for(int mu(0);mu<Ns-1 ;mu++)
-	  SrcDiQuark[mu] = BaryonSpinMats::CgmuTrans(mu+1);
-	
-	map<std::string,SpinMatrix>::iterator proj;
-	SpinMatrix par = Parity["PosPar"];
-	for ( proj=Projector.begin();proj != Projector.end(); proj++){
-	  SpinMatrix T = par * proj->second ;// the projector matrix
-	  QDPIO::cout<<" Parity: PosPar"<<endl;
-	  QDPIO::cout<<" Projector: "<<proj->first<<endl;
-	  if((proj->first)=="SigmaPlus"||(proj->first)=="SigmaMinus"){
-	    for( int src(0) ;src<Ns-1;src++)
-	      for( int snk(0) ;snk<Ns-1;snk++){
-		if((src!=snk) && ((src==2)||(snk==2)) ){
-		  QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+	  if(!params.min_contractions){
+		/* 
+		   If we do all contractions, we ignore the parity parameter.
+		 */
+		map<std::string,SpinMatrix>::iterator par;
+		map<std::string,SpinMatrix>::iterator proj;
+		for ( par=Parity.begin();par != Parity.end(); par++){
+		  for ( proj=Projector.begin();proj != Projector.end(); proj++){
+			SpinMatrix T = par->second * proj->second ;// the projector matrix
+			QDPIO::cout<<" Parity: "<<par->first<<endl;
+			QDPIO::cout<<" Projector: "<<proj->first<<endl;
+			for( int src(0) ;src<Ns;src++)
+			  for( int snk(0) ;snk<Ns;snk++){
+				QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
 				
+				Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+				had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
+															  quark_prop2,
+															  T,SrcDiQuark[src],
+															  SnkDiQuark[snk]);
+				push(had->xml, xml_group);
+				write(had->xml, id_tag, "delta");
+				write(had->xml, "SrcDiQuark", src);
+				write(had->xml, "SnkDiQuark", snk);
+				write(had->xml, "Parity", par->first);
+				write(had->xml, "Projector", proj->first);	      
+				write(had->xml, "PropHeaders", forward_headers);
+				
+				pop(had->xml);
+				
+				hadron.push_back(had); 
+			  }
+		  }
+		}
+		
+		//projector for the spin averaged correlator
+		//only works for zero momentum
+		SpinMatrix g_one = 1.0 ;
+		multi1d< multi1d<SpinMatrix> > ProjGmuGnu(Ns-1) ;
+		for(int s1(0);s1<Ns-1;s1++){
+		  ProjGmuGnu[s1].resize(Ns-1) ;
+		  for(int s2(0);s2<Ns-1;s2++)
+			ProjGmuGnu[s1][s2] = Gamma(1<<s1) * (Gamma(1<<s2)*g_one) ;
+		}
+		
+		for ( par=Parity.begin();par != Parity.end(); par++){
 		  Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
-		  had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
-								quark_prop2,
-								T,SrcDiQuark[src],
-								SnkDiQuark[snk]);
-				
-				
+		  had->corr = 0.0 ;
+		  for( int src(0) ;src<Ns-1;src++)
+			for( int snk(0) ;snk<Ns-1;snk++){
+			  QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+			  SpinMatrix T =  (- 1.0/3.0) * ProjGmuGnu[src][snk] ;
+			  if(src == snk ) T += g_one ;
+			  T = par->second * T ;
+			  had->corr += Baryon2PtContractions::sigmast2pt(quark_prop1, 
+															 quark_prop2,
+															 T,SrcDiQuark[src],
+															 SnkDiQuark[snk]);
+			}
 		  push(had->xml, xml_group);
 		  write(had->xml, id_tag, "delta");
-		  write(had->xml, "SrcDiQuark", src);
-		  write(had->xml, "SnkDiQuark", snk);
-		  write(had->xml, "Parity", "PosPar");
-		  write(had->xml, "Projector", proj->first);	      
+		  write(had->xml, "Parity", par->first);
+		  write(had->xml, "Projector", "SpinAveraged");
 		  write(had->xml, "PropHeaders", forward_headers);
-			  
 		  pop(had->xml);
-			  
+	      
 		  hadron.push_back(had); 
 		}
-	      }
-	  }
-	  else{
-	    for( int src(0) ;src<Ns-1;src++)
-	      for( int snk(0) ;snk<Ns-1;snk++){
-		QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+	  }//Ends if(!params.min_contractions)
+
+	  if(params.min_contractions && (params.parity!="all")){
+		/**
+		   Here we need all mu, nu combos for the 1 +/- Sigma3,and
+		   just the 02, 20, 12, 21 for the SigmaMinus and SigmaPlus
+		   This only does one of the parities, either positive or negative,
+		   but default is positive
+		 **/
+		map<std::string,SpinMatrix>::iterator proj;
+		SpinMatrix par;
+		/**
+		   if(params.parity=="Neg")
+		   par = Parity["NegPar"];
+		   else
+		   par = Parity["PosPar"];
+		**/
+		par = Parity[params.parity];
+		cout<<"Parity flag is"<<params.parity<<endl;
+		for ( proj=Projector.begin();proj != Projector.end(); proj++){
+		  SpinMatrix T = par * proj->second ;// the projector matrix
+		  QDPIO::cout<<" Parity: "<<params.parity<<endl;
+		  QDPIO::cout<<" Projector: "<<proj->first<<endl;
+		  if((proj->first)=="SigmaPlus"||(proj->first)=="SigmaMinus"){
+		  for( int src(0) ;src<Ns-1;src++)
+			for( int snk(0) ;snk<Ns-1;snk++){
+			  if((src!=snk) && ((src==2)||(snk==2)) ){
+				QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
 				
-		Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
-		had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
-							      quark_prop2,
-							      T,SrcDiQuark[src],
-							      SnkDiQuark[snk]);
+				Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+				had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
+															  quark_prop2,
+															  T,SrcDiQuark[src],
+															  SnkDiQuark[snk]);
 				
 				
-		push(had->xml, xml_group);
-		write(had->xml, id_tag, "delta");
-		write(had->xml, "SrcDiQuark", src);
-		write(had->xml, "SnkDiQuark", snk);
-		write(had->xml, "Parity", "PosPar");
-		write(had->xml, "Projector", proj->first);	      
-		write(had->xml, "PropHeaders", forward_headers);
+				push(had->xml, xml_group);
+				write(had->xml, id_tag, "delta");
+				write(had->xml, "SrcDiQuark", src);
+				write(had->xml, "SnkDiQuark", snk);
+				write(had->xml, "Parity", "PosPar");
+				write(had->xml, "Projector", proj->first);	      
+				write(had->xml, "PropHeaders", forward_headers);
+			  
+				pop(had->xml);
+			  
+				hadron.push_back(had); 
+			  }
+			}
+		  }
+		  else{
+			for( int src(0) ;src<Ns-1;src++)
+			  for( int snk(0) ;snk<Ns-1;snk++){
+				QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
 				
-		pop(had->xml);
+				Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+				had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
+															  quark_prop2,
+															  T,SrcDiQuark[src],
+															  SnkDiQuark[snk]);
 				
-		hadron.push_back(had); 
-	      }
-	  }
-	}
+				
+				push(had->xml, xml_group);
+				write(had->xml, id_tag, "delta");
+				write(had->xml, "SrcDiQuark", src);
+				write(had->xml, "SnkDiQuark", snk);
+				write(had->xml, "Parity", "PosPar");
+				write(had->xml, "Projector", proj->first);	      
+				write(had->xml, "PropHeaders", forward_headers);
+				
+				pop(had->xml);
+				
+				hadron.push_back(had); 
+			  }
+		  }
+		}
 		
-      }//Ends if(params.min_contractions)
+	  }//Ends if(params.min_contractions)
+
+	  if(params.min_contractions && (params.parity=="all")){
+		/**
+		   Here we need all mu, nu combos for the 1 +/- Sigma3,and
+		   just the 02, 20, 12, 21 for the SigmaMinus and SigmaPlus
+		   This does both positive and negative parities.
+		 **/
+		map<std::string,SpinMatrix>::iterator par;
+		map<std::string,SpinMatrix>::iterator proj;
+		for ( par=Parity.begin();par != Parity.end(); par++){		
+		  for ( proj=Projector.begin();proj != Projector.end(); proj++){
+			SpinMatrix T = par->second * proj->second ;// the projector matrix
+			QDPIO::cout<<" Parity: "<<par->first<<endl;
+			QDPIO::cout<<" Projector: "<<proj->first<<endl;
+			if((proj->first)=="SigmaPlus"||(proj->first)=="SigmaMinus"){
+			  for( int src(0) ;src<Ns-1;src++)
+				for( int snk(0) ;snk<Ns-1;snk++){
+				  if((src!=snk) && ((src==2)||(snk==2)) ){
+					QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+					
+					Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+					had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
+																  quark_prop2,
+																  T,SrcDiQuark[src],
+																  SnkDiQuark[snk]);
+					
+					
+					push(had->xml, xml_group);
+					write(had->xml, id_tag, "delta");
+					write(had->xml, "SrcDiQuark", src);
+					write(had->xml, "SnkDiQuark", snk);
+					write(had->xml, "Parity", par->first);
+					write(had->xml, "Projector", proj->first);	      
+					write(had->xml, "PropHeaders", forward_headers);
+					pop(had->xml);
+					
+					hadron.push_back(had); 
+				  }
+				}
+			}
+			else{
+			  for( int src(0) ;src<Ns-1;src++)
+				for( int snk(0) ;snk<Ns-1;snk++){
+				  QDPIO::cout<<"   Computing C_"<<snk<<src<<endl;
+				  
+				  Handle<Hadron2PtContract_t> had(new Hadron2PtContract_t);
+				  had->corr = Baryon2PtContractions::sigmast2pt(quark_prop1, 
+																quark_prop2,
+																T,SrcDiQuark[src],
+																SnkDiQuark[snk]);
+				  
+				  
+				  push(had->xml, xml_group);
+				  write(had->xml, id_tag, "delta");
+				  write(had->xml, "SrcDiQuark", src);
+				  write(had->xml, "SnkDiQuark", snk);
+				  write(had->xml, "Parity", par->first);
+				  write(had->xml, "Projector", proj->first);	      
+				  write(had->xml, "PropHeaders", forward_headers);
+				  
+				  pop(had->xml);
+				  
+				  hadron.push_back(had); 
+				}
+			}
+		  }
+		}
+	  }//Ends if(params.min_contractions)
+	  
       
       END_CODE();
 
@@ -311,12 +391,12 @@ namespace Chroma
     {
       bool success = true; 
       if (! registered)
-	{
-	  //! Register all the factories
-	  success &= Chroma::TheHadronContractFactory::Instance().registerObject(string("Delta"), mesDeltaCorrs);
+      {
+	//! Register all the factories
+	success &= Chroma::TheHadronContractFactory::Instance().registerObject(string("Delta"), mesDeltaCorrs);
 
-	  registered = true;
-	}
+	registered = true;
+      }
       return success;
     }
 
