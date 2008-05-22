@@ -1,3 +1,8 @@
+05/22/2008:  
+	Version 3.29.1
+	Precision related tweaks in some HMC monomials. Some new variants of qqqNucNuc
+        measurements and hadron_contract measurements.
+
 05/06/2008:  
 	Version 3.29.0
 	 -- Support for MDWF Moebius DWF Library cleaned up and ready to go.
