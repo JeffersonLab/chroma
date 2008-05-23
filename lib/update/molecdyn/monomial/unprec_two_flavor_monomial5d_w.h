@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial5d_w.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_two_flavor_monomial5d_w.h,v 3.3 2008-05-23 21:31:36 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 5D ferm monomials
@@ -18,7 +18,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace UnprecTwoFlavorWilsonTypeFermMonomial5DEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 
@@ -42,9 +41,6 @@ namespace Chroma
 
       // Construct out of a parameter struct. Check against the desired FermAct name
       UnprecTwoFlavorWilsonTypeFermMonomial5D(const TwoFlavorWilsonTypeFermMonomialParams& param_);
-
-      // Copy Constructor
-      UnprecTwoFlavorWilsonTypeFermMonomial5D(const UnprecTwoFlavorWilsonTypeFermMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), chrono_predictor(m.chrono_predictor) {}
 
     protected:
 

@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.9 2008-05-21 17:07:50 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.10 2008-05-23 21:31:33 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
  */
 
-#ifndef __one_flavor_monomial_w_h__
-#define __one_flavor_monomial_w_h__
+#ifndef __one_flavor_rat_monomial_w_h__
+#define __one_flavor_rat_monomial_w_h__
 
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
@@ -77,6 +77,9 @@ namespace Chroma
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
 
+      // Get multi-shift system solver
+      Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(state, getForceInvParams()));
+
       // Partial Fraction Expansion coeffs for force
       const RemezCoeff_t& fpfe = getFPFE();
 
@@ -87,14 +90,15 @@ namespace Chroma
       F.resize(Nd);
       F = zero;
 
-      // Loop over nth-roots, so the pseudoferms
-      multi1d<int> n_count(getNthRoot());
-      QDPIO::cout << "nthRoot = " << getNthRoot() << endl;
+      // Loop over all the pseudoferms
+      multi1d<int> n_count(getNPF());
+      QDPIO::cout << "num_pf = " << getNPF() << endl;
 
-      for(int n=0; n < getNthRoot(); ++n)
+      for(int n=0; n < getNPF(); ++n)
       {
-	// Get X out here via multisolver
-	n_count[n] = getX(X,fpfe.pole,getPhi()[n],s);
+	// The multi-shift inversion
+	SystemSolverResults_t res = (*invMdagM)(X, fpfe.pole, getPhi()[n]);
+	n_count[n] = res.n_count;
 
 	// Loop over solns and accumulate force contributions
 	F_tmp = zero;
@@ -158,37 +162,41 @@ namespace Chroma
       push(xml_out, "OneFlavorRatExactWilsonTypeFermMonomial");
 
       // Get at the ferion action for piece i
-      const WilsonTypeFermAct<Phi,P,Q>& S_f = getFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
       
       // Create a Connect State, apply fermionic boundaries
-      Handle< FermState<Phi,P,Q> > f_state(S_f.createState(s.getQ()));
+      Handle< FermState<Phi,P,Q> > f_state(FA.createState(s.getQ()));
       
       // Create a linear operator
-      Handle< DiffLinearOperator<Phi,P,Q> > M(S_f.linOp(f_state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(f_state));
       
+      // Get multi-shift system solver
+      Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(f_state, getActionInvParams()));
+
       // Partial Fraction Expansion coeffs for heat-bath
       const RemezCoeff_t& sipfe = getSIPFE();
 
-      // Loop over nth-roots, so the pseudoferms
-      getPhi().resize(getNthRoot());
-      multi1d<int> n_count(getNthRoot());
+      // Loop over pseudoferms
+      getPhi().resize(getNPF());
+      multi1d<int> n_count(getNPF());
       Phi eta;
 
-      for(int n=0; n < getNthRoot(); ++n)
+      for(int n=0; n < getNPF(); ++n)
       {
 	// Fill the eta field with gaussian noise
 	eta = zero;
 	gaussian(eta, M->subset());
       
 	// Account for fermion BC by modifying the proposed field
-	S_f.getFermBC().modifyF(eta);
+	FA.getFermBC().modifyF(eta);
 
 	// Temporary: Move to correct normalisation
 	eta *= sqrt(0.5);
       
-	// Get X out here via multisolver
+	// The multi-shift inversion
 	multi1d<Phi> X;
-	n_count[n] = getX(X,sipfe.pole,eta,s);
+	SystemSolverResults_t res = (*invMdagM)(X, sipfe.pole, eta);
+	n_count[n] = res.n_count;
 
 	// Weight solns to make final PF field
 	getPhi()[n][M->subset()] = sipfe.norm * eta;
@@ -249,6 +257,9 @@ namespace Chroma
 
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
+ 
+      // Get multi-shift system solver
+      Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(bc_g_state, getActionInvParams()));
 
       // Partial Fraction Expansion coeffs for action
       const RemezCoeff_t& spfe = getSPFE();
@@ -257,14 +268,16 @@ namespace Chroma
       // Get X out here via multisolver
       multi1d<Phi> X;
 
-      // Loop over nth-roots, so the pseudoferms
-      multi1d<int> n_count(getNthRoot());
+      // Loop over all the pseudoferms
+      multi1d<int> n_count(getNPF());
       Double action = zero;
       Phi psi;
 
-      for(int n=0; n < getNthRoot(); ++n)
+      for(int n=0; n < getNPF(); ++n)
       {
-	n_count[n] = getX(X,spfe.pole,getPhi()[n],s);
+	// The multi-shift inversion
+	SystemSolverResults_t res = (*invMdagM)(X, spfe.pole, getPhi()[n]);
+	n_count[n] = res.n_count;
 	LatticeDouble site_S=zero;
 
 	// Take a volume factor out - redefine zero point energy
@@ -302,10 +315,13 @@ namespace Chroma
     virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getActionInvParams(void) const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getForceInvParams(void) const = 0;
 
     //! Return number of roots in used
-    virtual int getNthRoot() const = 0;
+    virtual int getNPF() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -321,31 +337,6 @@ namespace Chroma
 
     //! mutator for pseudofermion
     virtual multi1d<Phi>& getPhi(void) = 0;    
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-    virtual int getX(multi1d<Phi>& X, 
-		     const multi1d<Real>& shifts, 
-		     const Phi& chi, 
-		     const AbsFieldState<P,Q>& s) const
-    {
-      START_CODE();
-
-      // Grab the fermact
-      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
-
-      // Make the state
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-
-      // Get multi-shift system solver
-      Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(state, getInvParams()));
-
-      // Do the inversion
-      SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
-      
-      END_CODE();
-
-      return res.n_count;
-    }
 
   };
 
@@ -387,10 +378,13 @@ namespace Chroma
     virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getActionInvParams(void) const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getForceInvParams(void) const = 0;
 
     //! Return number of roots in used
-    virtual int getNthRoot() const = 0;
+    virtual int getNPF() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -459,10 +453,13 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getActionInvParams(void) const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getForceInvParams(void) const = 0;
 
     //! Return number of roots in used
-    virtual int getNthRoot() const = 0;
+    virtual int getNPF() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;

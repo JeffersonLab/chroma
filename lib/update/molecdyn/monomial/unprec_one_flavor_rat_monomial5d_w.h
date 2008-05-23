@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: unprec_one_flavor_rat_monomial5d_w.h,v 3.3 2008-05-23 21:31:34 edwards Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 5D ferm monomials
  */
@@ -9,7 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h"
-#include "update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h"
+#include "update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -17,7 +17,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace UnprecOneFlavorWilsonTypeFermRatMonomial5DEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 
@@ -32,98 +31,72 @@ namespace Chroma
     multi1d<LatticeColorMatrix>,
     multi1d<LatticeColorMatrix>,
     LatticeFermion>
-    {
-    public: 
-      // Typedefs to save typing
-      typedef LatticeFermion               T;
-      typedef multi1d<LatticeColorMatrix>  P;
-      typedef multi1d<LatticeColorMatrix>  Q;
+  {
+  public: 
+    // Typedefs to save typing
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
 
-      // Construct out of a parameter struct. Check against the desired FermAct name
-      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
+    // Construct out of a parameter struct. Check against the desired FermAct name
+    UnprecOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
 
-      // Copy Constructor
-      UnprecOneFlavorWilsonTypeFermRatMonomial5D(const UnprecOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
+  protected:
 
+    const UnprecWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
+      return *fermact;
+    }
 
-    protected:
+    //! Get parameters for the inverter
+    const GroupXML_t& getActionInvParams(void) const { 
+      return actionInvParam;
+    }
 
-      const UnprecWilsonTypeFermAct5D<T,P,Q>& getFermAct(void) const { 
-	return *fermact;
-      }
+    //! Get parameters for the inverter
+    const GroupXML_t& getForceInvParams(void) const { 
+      return forceInvParam;
+    }
 
-      //! Get parameters for the inverter
-      const GroupXML_t& getInvParams(void) const { 
-	return inv_param;
-      }
+    //! Return number of roots in used
+    int getNPF() const {return num_pf;}
 
-      //! Accessor for pseudofermion (read only)
-      const multi1d< multi1d<T> >& getPhi(void) const {return phi;}
+    //! Accessor for pseudofermion (read only)
+    const multi1d< multi1d<T> >& getPhi(void) const {return phi;}
 
-      //! mutator for pseudofermion
-      multi1d< multi1d<T> >& getPhi(void) {return phi;}
+    //! mutator for pseudofermion
+    multi1d< multi1d<T> >& getPhi(void) {return phi;}
 
-      //! Accessor for PV pseudofermion (read only)
-      const multi1d< multi1d<T> >& getPhiPV(void) const {return phiPV;}
+    //! Return the partial fraction expansion for the force calc
+    const RemezCoeff_t& getFPFE() const {return fpfe;}
 
-      //! mutator for PV pseudofermion 
-      multi1d< multi1d<T> >& getPhiPV(void) {return phiPV;}
+    //! Return the partial fraction expansion for the action calc
+    const RemezCoeff_t& getSPFE() const {return spfe;}
 
-      //! Return number of roots in used
-      int getNthRoot() const {return nthRoot;}
-      
-      //! Return number of roots used in PV
-      int getNthRootPV() const { return nthRootPV; }
+    //! Return the partial fraction expansion for the heat-bath
+    const RemezCoeff_t& getSIPFE() const {return sipfe;}
 
-      //! Return the partial fraction expansion for the force calc
-      const RemezCoeff_t& getFPFE() const {return fpfe;}
+  private:
+    // Hide empty constructor and =
+    UnprecOneFlavorWilsonTypeFermRatMonomial5D();
+    void operator=(const UnprecOneFlavorWilsonTypeFermRatMonomial5D&);
 
-      //! Return the partial fraction expansion for the action calc
-      const RemezCoeff_t& getSPFE() const {return spfe;}
+    // Pseudofermion field phi
+    multi1d< multi1d<T> > phi;
 
-      //! Return the partial fraction expansion for the heat-bath
-      const RemezCoeff_t& getSIPFE() const {return sipfe;}
+    // A handle for the UnprecWilsonFermAct
+    Handle<const UnprecWilsonTypeFermAct5D<T,P,Q> > fermact;
 
-      //! Return the partial fraction expansion for the force calc in PV
-      const RemezCoeff_t& getFPVPFE() const {return fpvpfe;}
+    // The parameters for the inversion
+    GroupXML_t actionInvParam;
+    GroupXML_t forceInvParam;
 
-      //! Return the partial fraction expansion for the action calc in PV
-      const RemezCoeff_t& getSPVPFE() const {return spvpfe;}
+    // Number of nth-roots
+    int num_pf;
 
-      //! Return the partial fraction expansion for the heat-bath in PV
-      const RemezCoeff_t& getSIPVPFE() const {return sipvpfe;}
-
-    private:
-      // Hide empty constructor and =
-      UnprecOneFlavorWilsonTypeFermRatMonomial5D();
-      void operator=(const UnprecOneFlavorWilsonTypeFermRatMonomial5D&);
-
-      // Pseudofermion field phi
-      multi1d< multi1d<T> > phi;
-
-      // Pseudofermion field phi
-      multi1d< multi1d<T> > phiPV;
-
-      // A handle for the UnprecWilsonFermAct
-      Handle<const UnprecWilsonTypeFermAct5D<T,P,Q> > fermact;
-
-      // The parameters for the inversion
-      GroupXML_t inv_param;
-
-      // Number of nth-roots
-      int nthRoot;
-
-      // Number of nth-roots in PV
-      int nthRootPV;
-
-      // Coefficients and roots of partial fractions
-      RemezCoeff_t  fpfe;
-      RemezCoeff_t  spfe;
-      RemezCoeff_t  sipfe;
-
-      RemezCoeff_t  fpvpfe;
-      RemezCoeff_t  spvpfe;
-      RemezCoeff_t  sipvpfe;
+    // Coefficients and roots of partial fractions
+    RemezCoeff_t  fpfe;
+    RemezCoeff_t  spfe;
+    RemezCoeff_t  sipfe;
   };
 
 

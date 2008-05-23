@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial5d_w.h,v 3.7 2007-04-17 03:13:04 edwards Exp $
+// $Id: one_flavor_rat_monomial5d_w.h,v 3.8 2008-05-23 21:31:33 edwards Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
  */
 
-#ifndef __one_flavor_monomial5d_w_h__
-#define __one_flavor_monomial5d_w_h__
+#ifndef __one_flavor_rat_monomial5d_w_h__
+#define __one_flavor_rat_monomial5d_w_h__
 
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
@@ -48,17 +48,15 @@ namespace Chroma
 
       /**** Identical code for unprec and even-odd prec case *****/
       
-      // S_f = chi^dag*N(M^dag*M)/D(M^dag*M)*chi  +  chiPV^dag*P(V^dag*V)/Q(V^dag*V)*chiPV
+      // S_f = chi^dag*N(M^dag*M)/D(M^dag*M)*chi 
       //
-      // Here, M is some 5D operator and V is the Pauli-Villars field
-      // N and D makeup the rat. poly of the M term and P and & makeup the rat.poly of the PV term
+      // Here, M is some 5D operator
+      // N and D makeup the rat. poly of the M term 
       //
       // Need
       // dS_f/dU = - \sum_i psi_i^dag * n_i * [d(M^dag)*M + M^dag*dM] * psi
-      //           - \sum_i psiPV_i^dag * p_i * [d(V^dag)*V + V^dag*dV] * psiPV
       //
       //    where    psi_i   = (M^dag*M + n_i)^(-1)*chi
-      //    and      psiPV_i = (V^dag*V + p_i)^(-1)*chiPV
       //
       // In Balint's notation, the result is  
       // \dot{S} = -\sum_i p_i [ X_i^dag*\dot{M}^\dag*Y_i - Y_i^dag\dot{M}*X_i]
@@ -76,9 +74,10 @@ namespace Chroma
       F = zero;
 
       // Force term for the linop
-
       {
-	multi1d<int> n_m_count(getNthRoot());
+	// Get multi-shift system solver
+	Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagM(state, getForceInvParams()));
+
 	// Get linear operator
 	Handle< const DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
 	
@@ -88,12 +87,14 @@ namespace Chroma
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> Y;
 	P  F_1, F_2, F_tmp(Nd);
+	multi1d<int> n_m_count(getNPF());
 
-	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRoot(); ++n)
+	// Loop over the pseudoferms
+	for(int n=0; n < getNPF(); ++n)
 	{
-	  // Get X out here via multisolver
-	  n_m_count[n] = getX(X,fpfe.pole,getPhi()[n],s);
+	  // The multi-shift inversion
+	  SystemSolverResults_t res = (*invMdagM)(X, fpfe.pole, getPhi()[n]);
+	  n_m_count[n] = res.n_count;
 
 	  // Loop over solns and accumulate force contributions
 	  F_tmp = zero;
@@ -125,62 +126,7 @@ namespace Chroma
 	write(xml_out, "n_m_count", n_m_count);    
 	monitorForces(xml_out, "ForcesOperator", F);
       }
-      // Force term for the PV
 
-      {
-	multi1d<int> n_pv_count(getNthRootPV());
-	// Get Pauli-Villars linear operator
-	Handle< const DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(state));
-	
-	// Partial Fraction Expansion coeffs for force in PV
-	const RemezCoeff_t& fpvpfe = getFPVPFE();
-
-	multi1d< multi1d<Phi> > X;
-	multi1d<Phi> Y;
-	P  F_1, F_2, F_tmp(Nd), F_PV(Nd);
-
-	// Total Force for PV
-	F_PV = zero;
-
-	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRootPV(); ++n)
-	{
-	  // Get X out here via multisolver
-	  n_pv_count[n] = getXPV(X,fpvpfe.pole,getPhiPV()[n],s);
-
-	  // Loop over solns and accumulate force contributions
-	  F_tmp = zero;
-	  for(int i=0; i < X.size(); ++i)
-	  {
-	    (*PV)(Y, X[i], PLUS);
-
-	    // The  d(M^dag)*M  term
-	    PV->deriv(F_1, X[i], Y, MINUS);
-      
-	    // The  M^dag*d(M)  term
-	    PV->deriv(F_2, Y, X[i], PLUS);
-	    F_1 += F_2;
-
-	    // Reweight each contribution in partial fraction
-	    for(int mu=0; mu < F.size(); mu++)
-	      F_tmp[mu] -= fpvpfe.res[i] * F_1[mu];
-	  }
-
-
-	  // Accumulate force for n-th roots
-	  // Dont recurse to thin links, since we are not monitoring by poles anymore
-	  F_PV += F_tmp;
-	}
-      
-	// Recurse down links
-	state->deriv(F_PV);
-	write(xml_out, "n_pv_count", n_pv_count);
-	monitorForces(xml_out, "ForcesPV", F_PV);
-
-	// Add Pauli-Villars to the total.      
-	F += F_PV;
-      }
-	
       monitorForces(xml_out, "Forces", F);
 
       pop(xml_out);
@@ -228,9 +174,13 @@ namespace Chroma
       const int N5 = FA.size();
 
       // Pseudofermions for M term
-      multi1d<int> n_m_count(getNthRoot());
-      getPhi().resize(getNthRoot()); // Will hold nth-root pseudoferms
+      multi1d<int> n_m_count(getNPF());
+      getPhi().resize(getNPF()); // Will hold nth-root pseudoferms
       { 
+	// Get multi-shift system solver
+	Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagM(f_state, getActionInvParams()));
+
+	// Get linear operator
 	Handle< const DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(f_state));
       
 	// Partial Fraction Expansion coeffs for heat-bath
@@ -238,10 +188,9 @@ namespace Chroma
 
 	multi1d<Phi> eta(N5);
 	
-	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRoot(); ++n)
+	// Loop over the pseudoferms
+	for(int n=0; n < getNPF(); ++n)
 	{
-
 	  // Fill the eta field with gaussian noise
 	  eta = zero;
 	  for(int i=0; i < N5; ++i)
@@ -254,9 +203,10 @@ namespace Chroma
 	  for(int i=0; i < N5; ++i)
 	    eta[i][M->subset()] *= sqrt(0.5);
       
-	  // Get X out here via multisolver
+	  // The multi-shift inversion
 	  multi1d< multi1d<Phi> > X;
-	  n_m_count[n] = getX(X,sipfe.pole,eta,s);
+	  SystemSolverResults_t res = (*invMdagM)(X, sipfe.pole, eta);
+	  n_m_count[n] = res.n_count;
 
 	  // Sanity checks
 	  if (X.size() != sipfe.pole.size())
@@ -278,56 +228,7 @@ namespace Chroma
 	}
       }
 
-
-      // Pseudofermions for PV term
-      multi1d<int> n_pv_count(getNthRootPV());
-      getPhiPV().resize(getNthRootPV()); // Will hold nth-root pseudoferms
-      { 
-	Handle< const DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(f_state));
-	
-	// Partial Fraction Expansion coeffs for heat-bath in pv
-	const RemezCoeff_t& sipvpfe = getSIPVPFE();
-
-	multi1d<Phi> eta(N5);
-
-	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRootPV(); ++n)
-	{
-	  // Fill the eta field with gaussian noise
-	  eta = zero;
-	  for(int i=0; i < N5; ++i)
-	    gaussian(eta[i], PV->subset());
-      
-	  // Temporary: Move to correct normalisation
-	  for(int i=0; i < N5; ++i)
-	    eta[i][PV->subset()] *= sqrt(0.5);
-      
-	  // Get X out here via multisolver
-	  multi1d< multi1d<Phi> > X;
-	  n_pv_count[n] = getXPV(X,sipvpfe.pole,eta,s);
-
-	  // Sanity checks
-	  if (X.size() != sipvpfe.pole.size())
-	    QDP_error_exit("%s : sanity failure, internal size not getSIPartFracRoot size", __func__);
-
-	  if (X[0].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-	  
-	  // Weight solns to make final PF field
-	  getPhiPV()[n].resize(N5);
-
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	  {
-	    getPhiPV()[n][j][PV->subset()] = sipvpfe.norm * eta[j];
-	    for(int i=0; i < X.size(); ++i)
-	      getPhiPV()[n][j][PV->subset()] += sipvpfe.res[i] * X[i][j];
-	  }
-	}
-      }
-
       write(xml_out, "n_m_count", n_m_count);
-      write(xml_out, "n_pv_count", n_pv_count);
       pop(xml_out);
     
       END_CODE();
@@ -347,11 +248,6 @@ namespace Chroma
 	getPhi().resize(fm.getPhi().size());
 	for(int i=0 ; i < fm.getPhi().size(); i++) { 
 	  (getPhi())[i] = (fm.getPhi())[i];
-	}
-
-	getPhiPV().resize(fm.getPhiPV().size());
-	for(int i=0 ; i < fm.getPhiPV().size(); i++) { 
-	  (getPhiPV())[i] = (fm.getPhiPV())[i];
 	}
       }
       catch(bad_cast) { 
@@ -397,8 +293,12 @@ namespace Chroma
 
       // Action for M term
       Double action_m = zero;
-      multi1d<int> n_m_count(getNthRoot());
+      multi1d<int> n_m_count(getNPF());
       {
+	// Get multi-shift system solver
+	Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagM(bc_g_state, getActionInvParams()));
+
+	// Get linear operator
 	Handle< const DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(bc_g_state));
 
 	// Partial Fraction Expansion coeffs for action
@@ -408,10 +308,12 @@ namespace Chroma
 	multi1d< multi1d<Phi> > X;
 	multi1d<Phi> tmp(N5);
 
-	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRoot(); ++n)
+	// Loop over the pseudoferms
+	for(int n=0; n < getNPF(); ++n)
 	{
-	  n_m_count[n] = getX(X,spfe.pole,getPhi()[n],s);
+	  // The multi-shift inversion
+	  SystemSolverResults_t res = (*invMdagM)(X, spfe.pole, getPhi()[n]);
+	  n_m_count[n] = res.n_count;
 
 	  // Sanity checks
 	  if (X.size() != spfe.pole.size())
@@ -434,50 +336,9 @@ namespace Chroma
 	}
       }
 
-      // Action for PV term
-      Double action_pv = zero;
-      multi1d<int> n_pv_count(getNthRootPV());
-      {
-	Handle< const DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(bc_g_state));
-
-	// Partial Fraction Expansion coeffs for action
-	const RemezCoeff_t& spvpfe = getSPVPFE();
-
-	// Get X out here via multisolver
-	multi1d< multi1d<Phi> > X;
-	multi1d<Phi> tmp(N5);
-
-	// Loop over nth-roots, so the pseudoferms
-	for(int n=0; n < getNthRootPV(); ++n)
-	{
-	  n_pv_count[n] = getXPV(X,spvpfe.pole,getPhiPV()[n],s);
-
-	  // Sanity checks
-	  if (X.size() != spvpfe.pole.size())
-	    QDP_error_exit("%s : sanity failure, internal size not getSPVPartFracRoot size", __func__);
-
-	  if (X[0].size() != N5)
-	    QDP_error_exit("%s : sanity failure, internal size not N5", __func__);
-
-	  // Weight solns
-	  // Loop over each 5d slice
-	  for(int j=0; j < N5; ++j)
-	  {
-	    tmp[j][PV->subset()] = spvpfe.norm * getPhiPV()[n][j];
-	    for(int i=0; i < X.size(); ++i)
-	      tmp[j][PV->subset()] += spvpfe.res[i] * X[i][j];
-	  }
-
-	  // Action on the subset
-	  action_pv += norm2(tmp, PV->subset());
-	}
-      }
-
       write(xml_out, "n_m_count", n_m_count);
-      write(xml_out, "n_pv_count", n_pv_count);
       write(xml_out, "S_m", action_m);
-      write(xml_out, "S_PV", action_pv);
-      Double action = action_m + action_pv;
+      Double action = action_m;
       write(xml_out, "S", action);
       pop(xml_out);
     
@@ -492,7 +353,10 @@ namespace Chroma
     virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getActionInvParams(void) const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getForceInvParams(void) const = 0;
 
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
@@ -500,17 +364,8 @@ namespace Chroma
     //! mutator for pseudofermion
     virtual multi1d< multi1d<Phi> >& getPhi(void) = 0;    
 
-    //! Accessor for PV pseudofermion (read only)
-    virtual const multi1d< multi1d<Phi> >& getPhiPV(void) const = 0;
-
-    //! mutator for PV pseudofermion 
-    virtual multi1d< multi1d<Phi> >& getPhiPV(void) = 0;    
-
-    //! Return number of roots in used
-    virtual int getNthRoot() const = 0;
-
-    //! Return number of roots used in PV
-    virtual int getNthRootPV() const = 0;
+    //! Return number of pseudofermions
+    virtual int getNPF() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -520,67 +375,6 @@ namespace Chroma
 
     //! Return the partial fraction expansion for the heat-bath
     virtual const RemezCoeff_t& getSIPFE() const = 0;
-
-    //! Return the partial fraction expansion for the force calc in PV
-    virtual const RemezCoeff_t& getFPVPFE() const = 0;
-
-    //! Return the partial fraction expansion for the action calc in PV
-    virtual const RemezCoeff_t& getSPVPFE() const = 0;
-
-    //! Return the partial fraction expansion for the heat-bath in PV
-    virtual const RemezCoeff_t& getSIPVPFE() const = 0;
-
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi  using partfrac
-    virtual int getX(multi1d< multi1d<Phi> >& X, 
-		     const multi1d<Real>& shifts, 
-		     const multi1d<Phi>& chi, 
-		     const AbsFieldState<P,Q>& s) const
-    {
-      START_CODE();
-
-      // Grab the fermact
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-
-      // Make the state
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-
-      // Get multi-shift system solver
-      Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagM(state, getInvParams()));
-
-      // Do the inversion
-      SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
-      
-      END_CODE();
-
-      return res.n_count;
-    }
-
-  
-    //! Multi-mass solver  (M^dagM + q_i)^{-1} chi for PV using partfrac
-    virtual int getXPV(multi1d< multi1d<Phi> >& X, 
-		       const multi1d<Real>& shifts, 
-		       const multi1d<Phi>& chi, 
-		       const AbsFieldState<P,Q>& s) const
-    {
-      START_CODE();
-
-      // Grab the fermact
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-
-      // Make the state
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-
-      // Get multi-shift system solver
-      Handle< MdagMMultiSystemSolverArray<Phi> > invMdagM(FA.mInvMdagMPV(state, getInvParams()));
-
-      // Do the inversion
-      SystemSolverResults_t res = (*invMdagM)(X, shifts, chi);
-    
-      END_CODE();
-
-      return res.n_count;
-    }
-
   };
 
 
@@ -621,25 +415,19 @@ namespace Chroma
     virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getActionInvParams(void) const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getForceInvParams(void) const = 0;
+
+    //! Return number of roots in used
+    virtual int getNPF() const = 0;
 
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
     virtual multi1d< multi1d<Phi> >& getPhi(void) = 0;    
-
-    //! Accessor for PV pseudofermion (read only)
-    virtual const multi1d< multi1d<Phi> >& getPhiPV(void) const = 0;
-
-    //! mutator for PV pseudofermion 
-    virtual multi1d< multi1d<Phi> >& getPhiPV(void) = 0;    
-
-    //! Return number of roots in used
-    virtual int getNthRoot() const = 0;
-
-    //! Return number of roots used in PV
-    virtual int getNthRootPV() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -650,14 +438,6 @@ namespace Chroma
     //! Return the partial fraction expansion for the heat-bath
     virtual const RemezCoeff_t& getSIPFE() const = 0;
 
-    //! Return the partial fraction expansion for the force calc in PV
-    virtual const RemezCoeff_t& getFPVPFE() const = 0;
-
-    //! Return the partial fraction expansion for the action calc in PV
-    virtual const RemezCoeff_t& getSPVPFE() const = 0;
-
-    //! Return the partial fraction expansion for the heat-bath in PV
-    virtual const RemezCoeff_t& getSIPVPFE() const = 0;
   };
 
 
@@ -711,25 +491,19 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getActionInvParams(void) const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getForceInvParams(void) const = 0;
+
+    //! Return number of roots in used
+    virtual int getNPF() const = 0;
 
     //! Accessor for pseudofermion (read only)
     virtual const multi1d< multi1d<Phi> >& getPhi(void) const = 0;
 
     //! mutator for pseudofermion
     virtual multi1d< multi1d<Phi> >& getPhi(void) = 0;    
-
-    //! Accessor for PV pseudofermion (read only)
-    virtual const multi1d< multi1d<Phi> >& getPhiPV(void) const = 0;
-
-    //! mutator for PV pseudofermion 
-    virtual multi1d< multi1d<Phi> >& getPhiPV(void) = 0;    
-
-    //! Return number of roots in used
-    virtual int getNthRoot() const = 0;
-
-    //! Return number of roots used in PV
-    virtual int getNthRootPV() const = 0;
 
     //! Return the partial fraction expansion for the force calc
     virtual const RemezCoeff_t& getFPFE() const = 0;
@@ -739,15 +513,6 @@ namespace Chroma
 
     //! Return the partial fraction expansion for the heat-bath
     virtual const RemezCoeff_t& getSIPFE() const = 0;
-
-    //! Return the partial fraction expansion for the force calc in PV
-    virtual const RemezCoeff_t& getFPVPFE() const = 0;
-
-    //! Return the partial fraction expansion for the action calc in PV
-    virtual const RemezCoeff_t& getSPVPFE() const = 0;
-
-    //! Return the partial fraction expansion for the heat-bath in PV
-    virtual const RemezCoeff_t& getSIPVPFE() const = 0;
   };
 
   //-------------------------------------------------------------------------------------------

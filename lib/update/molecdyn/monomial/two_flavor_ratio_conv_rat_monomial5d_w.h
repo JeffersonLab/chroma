@@ -1,26 +1,29 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial5d_w.h,v 1.12 2008-05-14 19:24:24 bjoo Exp $
+// $Id: two_flavor_ratio_conv_rat_monomial5d_w.h,v 3.1 2008-05-23 21:31:34 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
  */
 
-#ifndef __two_flavor_hasenbusch_monomial5d_w_h__
-#define __two_flavor_hasenbusch_monomial5d_w_h__
+#ifndef __two_flavor_ratio_conv_rat_monomial5d_w_h__
+#define __two_flavor_ratio_conv_rat_monomial5d_w_h__
 
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
+#include "update/molecdyn/monomial/remez_coeff.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
+
 #include <typeinfo> // For bad_cast
+
 namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
-  //! Exact 2 degen flavor Hasenbusch like fermact monomial in extra dimensions
+  //! Exact 2 degen flavor RatioConvRat like fermact monomial in extra dimensions
   /*! @ingroup monomial
    *
-   * Exact 2 degen flavor Hasenbusch like fermact monomial. Preconditioning is not
+   * Exact 2 degen flavor RatioConvRat like fermact monomial. Preconditioning is not
    * specified yet.
    * Can supply a default dsdq and pseudoferm refresh algorithm
    * 
@@ -32,11 +35,11 @@ namespace Chroma
    * so called TwoFlavorExact actions.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D : public ExactWilsonTypeFermMonomial5D<P,Q,Phi>
+  class TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D : public ExactWilsonTypeFermMonomial5D<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D() {}
+    ~TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) = 0;
@@ -49,7 +52,7 @@ namespace Chroma
 
       // SelfIdentification/Encapsultaion Rule
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
-      push(xml_out, "TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D");
+      push(xml_out, "TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D");
 
       /**** Identical code for unprec and even-odd prec case *****/
       
@@ -76,8 +79,8 @@ namespace Chroma
       //    X = (M^dag*M)^(-1)*M_2^dag*chi   Y = M*X = (M^dag)^(-1)*M_2^dag*chi
       // In Robert's notation,  X -> psi .
       //
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-      const WilsonTypeFermAct5D<Phi,P,Q>& precFA = getFermActPrec();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getNumerFermAct();
+      const WilsonTypeFermAct5D<Phi,P,Q>& precFA = getDenomFermAct();
 
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
@@ -133,8 +136,8 @@ namespace Chroma
       // Heatbath all the fields
       
       // Get at the ferion action for piece i
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-      const WilsonTypeFermAct5D<Phi,P,Q>& precFA = getFermActPrec();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getNumerFermAct();
+      const WilsonTypeFermAct5D<Phi,P,Q>& precFA = getDenomFermAct();
       
       // Create a Connect State, apply fermionic boundaries
       Handle< FermState<Phi,P,Q> > f_state(FA.createState(field_state.getQ()));
@@ -173,7 +176,7 @@ namespace Chroma
 
       // Solve  (V^dag*V)*eta = tmp
       // Get system solver
-      Handle< MdagMSystemSolverArray<Phi> > invMdagM(precFA.invMdagM(f_state, getInvParams()));
+      Handle< MdagMSystemSolverArray<Phi> > invMdagM(precFA.invMdagM(f_state, getNumerInvParams()));
 
       // Do the inversion
       SystemSolverResults_t res = (*invMdagM)(eta, tmp);
@@ -182,7 +185,7 @@ namespace Chroma
       (*M_2)(getPhi(), eta, PLUS);
 
       // Reset the chronological predictor
-      QDPIO::cout << "TwoFlavHasenbuschWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -193,7 +196,7 @@ namespace Chroma
       START_CODE();
 
       try {
-	const TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D<P,Q,Phi>& fm = dynamic_cast< const TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D<P,Q,Phi>& >(m);
+	const TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D<P,Q,Phi>& fm = dynamic_cast< const TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D<P,Q,Phi>& >(m);
 
 	// Do a resize here -- otherwise if the fields have not yet
 	// been refreshed there may be trouble
@@ -204,7 +207,7 @@ namespace Chroma
 	}
       }
       catch(std::bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D" << endl;
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D" << endl;
 	QDP_abort(1);
       }
 
@@ -213,28 +216,47 @@ namespace Chroma
     }
   
     //! Reset predictors
-    virtual void resetPredictors(void) {
+    virtual void resetPredictors() {
       getMDSolutionPredictor().reset();
 
     }
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi() = 0;    
 
     //! Get at fermion action
-    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const
+      {return getNumerFermAct();}
 
-    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec(void) const =0;
+    //! Get at fermion action
+    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getNumerFermAct() const = 0;
+
+    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getDenomFermAct() const =0;
+
+    //! Get parameters for the inverter
+    virtual const GroupXML_t& getNumerInvParams() const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t getInvParams(void) const = 0;
+    virtual const GroupXML_t& getDenomActionInvParams() const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getDenomForceInvParams() const = 0;
+
+    //! Return the partial fraction expansion for the force calc
+    virtual const RemezCoeff_t& getDenomFPFE() const = 0;
+
+    //! Return the partial fraction expansion for the action calc
+    virtual const RemezCoeff_t& getDenomSPFE() const = 0;
+
+    //! Return the partial fraction expansion for the heat-bath
+    virtual const RemezCoeff_t& getDenomSIPFE() const = 0;
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor() = 0;
 
     //! Get (M^dagM)^{-1} phi
     virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)
@@ -242,8 +264,8 @@ namespace Chroma
       START_CODE();
 
       // Grab the fermact
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getFermActPrec();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getNumerFermAct();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getDenomFermAct();
 
       // Make the state
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
@@ -258,7 +280,7 @@ namespace Chroma
       (*M_prec)(MPrecDagPhi, getPhi(), MINUS);
 
       // Get system solver
-      Handle< MdagMSystemSolverArray<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+      Handle< MdagMSystemSolverArray<Phi> > invMdagM(FA.invMdagM(state, getNumerInvParams()));
 
       // CG Chrono predictor needs MdagM
       Handle< DiffLinearOperatorArray<Phi,P,Q> > MdagM(FA.lMdagM(state));
@@ -288,11 +310,11 @@ namespace Chroma
    * so called TwoFlavorExact actions.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial5D : public TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D<P,Q,Phi>
+  class TwoFlavorExactUnprecRatioConvRatWilsonTypeFermMonomial5D : public TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial5D() {}
+    ~TwoFlavorExactUnprecRatioConvRatWilsonTypeFermMonomial5D() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) 
@@ -301,10 +323,10 @@ namespace Chroma
 
       // SelfEncapsulation/Identification Rule
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
-      push(xml_out, "TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial5D");
+      push(xml_out, "TwoFlavorExactUnprecRatioConvRatWilsonTypeFermMonomial5D");
 
       // Get at the ferion action for piece i
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getFermActPrec();
+      const WilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getDenomFermAct();
 
       // Create a Connect State, apply fermionic boundaries
       Handle< FermState<Phi,P,Q> > f_state(FA_prec.createState(s.getQ()));
@@ -323,7 +345,7 @@ namespace Chroma
 
       // getX() now always uses Chrono predictor. Best to Nuke it for
       // energy calcs
-      QDPIO::cout << "TwoFlavHasenbuschWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
       getMDSolutionPredictor().reset();
       int n_count = getX(X,s);
 
@@ -347,22 +369,19 @@ namespace Chroma
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi() = 0;    
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getNumerFermAct() const = 0;
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec(void) const = 0;
-
-    //! Get inverter params
-    virtual const GroupXML_t getInvParams(void) const = 0;
+    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getDenomFermAct() const = 0;
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor() = 0;
   };
 
 
@@ -374,11 +393,11 @@ namespace Chroma
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial5D : public TwoFlavorExactHasenbuschWilsonTypeFermMonomial5D<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial5D : public TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial5D() {}
+    ~TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial5D() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -391,8 +410,8 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
-      const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-      const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getFermActPrec();
+      const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& FA = getNumerFermAct();
+      const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& FA_prec = getDenomFermAct();
       
       Handle< FermState<Phi,P,Q> > bc_g_state(FA.createState(s.getQ()));
 
@@ -409,7 +428,7 @@ namespace Chroma
       X = zero;
 
       // Get X now always uses predictor. Best to nuke it therefore
-      QDPIO::cout << "TwoFlavHasenbuschWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
       getMDSolutionPredictor().reset();
       int n_count = getX(X, s);
 
@@ -437,7 +456,7 @@ namespace Chroma
       START_CODE();
 
       XMLWriter& xml_out=TheXMLLogWriter::Instance();
-      push(xml_out, "TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial5D");
+      push(xml_out, "TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial5D");
 
       Double action = S_even_even(s) + S_odd_odd(s);
 
@@ -451,20 +470,17 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
-    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec() const = 0;
-
-    //! Get inverter params
-    virtual const GroupXML_t getInvParams(void) const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getNumerFermAct() const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getDenomFermAct() const = 0;
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor() = 0;
 
-    //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    //! Accessor for pseudofermion
+    virtual const multi1d<Phi>& getPhi() const = 0;
 
-    //! mutator for pseudofermion with Pf index i 
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    //! mutator for pseudofermion
+    virtual multi1d<Phi>& getPhi() = 0;    
   };
 
   //-------------------------------------------------------------------------------------------
@@ -475,11 +491,11 @@ namespace Chroma
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial5D : public TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial5D<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecConstDetRatioConvRatWilsonTypeFermMonomial5D : public TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial5D<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial5D() {}
+    ~TwoFlavorExactEvenOddPrecConstDetRatioConvRatWilsonTypeFermMonomial5D() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
@@ -488,8 +504,8 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecConstDetWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
-    virtual const EvenOddPrecConstDetWilsonTypeFermAct5D<Phi,P,Q>& getFermActPrec() const = 0;
+    virtual const EvenOddPrecConstDetWilsonTypeFermAct5D<Phi,P,Q>& getNumerFermAct() const = 0;
+    virtual const EvenOddPrecConstDetWilsonTypeFermAct5D<Phi,P,Q>& getDenomFermAct() const = 0;
   };
 
 

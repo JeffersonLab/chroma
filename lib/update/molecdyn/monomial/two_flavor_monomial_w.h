@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.9 2007-12-18 21:06:47 bjoo Exp $
+// $Id: two_flavor_monomial_w.h,v 3.10 2008-05-23 21:31:34 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -71,7 +71,7 @@ namespace Chroma
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
 	
       Phi X, Y;
 
@@ -80,13 +80,13 @@ namespace Chroma
       int n_count = getX(X,s);
       // (getMDSolutionPredictor()).newVector(X);
       
-      (*lin)(Y, X, PLUS);
+      (*M)(Y, X, PLUS);
 
-      lin->deriv(F, X, Y, MINUS);
+      M->deriv(F, X, Y, MINUS);
 
       // fold M^dag into X^dag ->  Y  !!
       P F_tmp;
-      lin->deriv(F_tmp, Y, X, PLUS);
+      M->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
  
       for(int mu=0; mu < F.size(); ++mu)
@@ -308,18 +308,18 @@ namespace Chroma
       Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > M(FA.linOp(bc_g_state));
       // Get the X fields
       Phi X;
 
       // Action calc doesnt use chrono predictor use zero guess
-      X[ lin->subset() ] = zero;
+      X[ M->subset() ] = zero;
 
       // getX noe always uses chrono predictor. Best to Nuke it therefore
       QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
       int n_count = getX(X, s);
-      Double action = innerProductReal(getPhi(), X, lin->subset());
+      Double action = innerProductReal(getPhi(), X, M->subset());
       
       write(xml_out, "n_count", n_count);
       write(xml_out, "S_oo", action);
@@ -417,9 +417,9 @@ namespace Chroma
       Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(bc_g_state));
       
-      Double S_ee =(Double(-2)*lin->logDetEvenEvenLinOp());
+      Double S_ee =(Double(-2)*M->logDetEvenEvenLinOp());
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_even_even");
       write(xml_out, "S_ee", S_ee);
@@ -479,7 +479,7 @@ namespace Chroma
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
       //Create LinOp
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > lin(FA.linOp(state));
+      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
 
       P F_tmp;
 
@@ -493,13 +493,13 @@ namespace Chroma
       int n_count = getX(X,s);
       // (getMDSolutionPredictor()).newVector(X);
       
-      (*lin)(Y, X, PLUS);
+      (*M)(Y, X, PLUS);
 
-      lin->deriv(F, X, Y, MINUS);
+      M->deriv(F, X, Y, MINUS);
       
       // fold M^dag into X^dag ->  Y  !!
 
-      lin->deriv(F_tmp, Y, X, PLUS);
+      M->deriv(F_tmp, Y, X, PLUS);
       F += F_tmp;
  
       for(int mu=0; mu < F.size(); ++mu) {
@@ -507,7 +507,7 @@ namespace Chroma
       }
    
       
-      lin->derivLogDetEvenEvenLinOp(F_tmp, PLUS);
+      M->derivLogDetEvenEvenLinOp(F_tmp, PLUS);
       for(int mu =0; mu < Nd; mu++) { 
 	F[mu] += Real(-2)*F_tmp[mu]; 
       }

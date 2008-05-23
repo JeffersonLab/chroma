@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial5d_w.h,v 3.7 2007-03-22 17:39:23 bjoo Exp $
+// $Id: two_flavor_monomial5d_w.h,v 3.8 2008-05-23 21:31:34 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -52,24 +52,18 @@ namespace Chroma
 
       /**** Identical code for unprec and even-odd prec case *****/
       
-      // S_f = chi^dag*V*(M^dag*M)^(-1)*V^dag*chi     
-      // Here, M is some 5D operator and V is the Pauli-Villars field
+      // S_f = chi^dag*(M^dag*M)^(-1)*chi     
+      // Here, M is some 5D operator
       //
       // Need
-      // dS_f/dU =  chi^dag * dV * (M^dag*M)^(-1) * V^dag * chi 
-      //         -  chi^dag * V * (M^dag*M)^(-1) * [d(M^dag)*M + M^dag*dM] * V^dag * (M^dag*M)^(-1) * chi
-      //         +  chi^dag * V * (M^dag*M)^(-1) * d(V^dag) * chi 
+      // dS_f/dU = -chi^dag * (M^dag*M)^(-1) * [d(M^dag)*M + M^dag*dM] * (M^dag*M)^(-1) * chi
       //
-      //         =  chi^dag * dV * psi
-      //         -  psi^dag * [d(M^dag)*M + M^dag*dM] * psi
-      //         +  psi^dag * d(V^dag) * chi 
-      //
-      // where  psi = (M^dag*M)^(-1) * V^dag * chi
+      // where  psi = (M^dag*M)^(-1) * chi
       //
       // In Balint's notation, the result is  
-      // \dot{S} = chi^dag*\dot(V)*X - X^dag*\dot{M}^\dag*Y - Y^dag\dot{M}*X + X*\dot{V}^dag*chi
+      // \dot{S} = chi^dag*X - X^dag*\dot{M}^\dag*Y - Y^dag\dot{M}*X + X*chi
       // where
-      //    X = (M^dag*M)^(-1)*V^dag*chi   Y = M*X = (M^dag)^(-1)*V^dag*chi
+      //    X = (M^dag*M)^(-1)*chi   Y = M*X = (M^dag)^(-1)*chi
       // In Robert's notation,  X -> psi .
       //
       const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
@@ -79,9 +73,6 @@ namespace Chroma
 	
       // Get linear operator
       Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
-	
-      // Get Pauli-Villars linear operator
-      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(state));
 	
       // Get/construct the pseudofermion solution
       multi1d<Phi> X(FA.size()), Y(FA.size());
@@ -93,42 +84,20 @@ namespace Chroma
 
       (*M)(Y, X, PLUS);
 
-      // First PV contribution
-      PV->deriv(F, getPhi(), X, PLUS);
-
-      // Last PV contribution
-      P F_tmp;
-      PV->deriv(F_tmp, X, getPhi(), MINUS);
-      F += F_tmp;   // NOTE SIGN
-
-      // F now holds PV contribution with respect to fat links
-      // Now derive it with respect to the thin links
-      // I could do this at the end but this way I can continue
-      // monitoring
-      state->deriv(F);
-
-
-      write(xml_out, "n_count", n_count);      
-      monitorForces(xml_out, "ForcesPV", F);
-
-
-
-      // First interior term
-      P FM;
-      M->deriv(FM, X, Y, MINUS);
+      M->deriv(F, X, Y, MINUS);
       
       // fold M^dag into X^dag ->  Y  !!
+      P F_tmp;
       M->deriv(F_tmp, Y, X, PLUS);
-      FM += F_tmp;   // NOTE SIGN
+      F += F_tmp;
+ 
+      for(int mu=0; mu < F.size(); ++mu) {
+	F[mu] *= Real(-1);
+      }
 
-      // Now get derivative with respect to thin links if action is 
-      // fat linked
-      state->deriv(FM);
-      monitorForces(xml_out, "ForcesOperator", FM);
-
-      F -= FM;  // NOTE SIGN
+      state->deriv(F);
+      write(xml_out, "n_count", n_count);
       monitorForces(xml_out, "Forces", F);
-
       pop(xml_out);
     
       END_CODE();
@@ -150,9 +119,6 @@ namespace Chroma
       // Create a linear operator
       Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(f_state));
       
-      // Get Pauli-Villars linear operator
-      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(f_state));
-	
       const int N5 = FA.size();
       multi1d<Phi> eta(N5);
       eta = zero;
@@ -172,12 +138,6 @@ namespace Chroma
       multi1d<Phi> tmp(N5);
       (*M)(tmp, eta, MINUS);
 
-      // Solve  (V^dag*V)*eta = tmp
-      int n_pv_count = getXPV(eta, tmp, field_state);
-
-      // Finally, get phi
-      (*PV)(getPhi(), eta, PLUS);
-
       // Reset the chronological predictor
       QDPIO::cout << "TwoFlavWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
       getMDSolutionPredictor().reset();
@@ -189,7 +149,8 @@ namespace Chroma
     {
       START_CODE();
 
-      try {
+      try 
+      {
 	const TwoFlavorExactWilsonTypeFermMonomial5D<P,Q,Phi>& fm = dynamic_cast< const TwoFlavorExactWilsonTypeFermMonomial5D<P,Q,Phi>& >(m);
 
 	// Do a resize here -- otherwise if the fields have not yet
@@ -210,26 +171,26 @@ namespace Chroma
     }
   
     //! Reset predictors
-    virtual void resetPredictors(void) {
+    virtual void resetPredictors() {
       getMDSolutionPredictor().reset();
 
     }
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi() = 0;    
 
     //! Get at fermion action
-    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const WilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams() const = 0;
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor() = 0;
 
     //! Get (M^dagM)^{-1} phi
     virtual int getX(multi1d<Phi>& X, const AbsFieldState<P,Q>& s)
@@ -242,55 +203,19 @@ namespace Chroma
       // Make the state
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
-      // Get linop
-      Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOp(state));
-      // Get PV
-      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(state));
-
-      multi1d<Phi> VdagPhi(FA.size());
-    
-      (*PV)(VdagPhi, getPhi(), MINUS);
-
       // Get system solver
       Handle< MdagMSystemSolverArray<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
       // CG Chrono predictor needs MdagM
       Handle< DiffLinearOperatorArray<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      (getMDSolutionPredictor())(X, *MdagM, VdagPhi);
+      (getMDSolutionPredictor())(X, *MdagM, getPhi());
 
       // Do the inversion
-      SystemSolverResults_t res = (*invMdagM)(X, VdagPhi);
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
 
       // Register the new vector
       (getMDSolutionPredictor()).newVector(X);
  
-      END_CODE();
-
-      return res.n_count;
-    }
-
-  
-    //! Get X = (PV^dag*PV)^{-1} eta
-    virtual int getXPV(multi1d<Phi>& X, const multi1d<Phi>& eta, const AbsFieldState<P,Q>& s) const
-    {
-      START_CODE();
-
-      // Grab the fermact
-      const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
-
-      // Make the state
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-   
-      // Get linop
-      Handle< DiffLinearOperatorArray<Phi,P,Q> > M(FA.linOpPV(state));
-
-      // Get system solver
-      const GroupXML_t& inv_param = getInvParams();
-      Handle< MdagMSystemSolverArray<Phi> > invMdagM(FA.invMdagMPV(state,inv_param));
-
-      // Do the inversion
-      SystemSolverResults_t res = (*invMdagM)(X, eta);
-
       END_CODE();
 
       return res.n_count;
@@ -324,23 +249,12 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial5D");
 
-           // Get at the ferion action for piece i
       const WilsonTypeFermAct5D<Phi,P,Q>& FA = getFermAct();
 
-      // Create a Connect State, apply fermionic boundaries
-      Handle< FermState<Phi,P,Q> > f_state(FA.createState(s.getQ()));
-      Handle< DiffLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(f_state));
- 
       multi1d<Phi> X(FA.size());
-      multi1d<Phi> tmp(FA.size());
-
-      // Paranoia -- to deal with subsets.
-      tmp = zero; 
 
       // Energy calc does not use chrono predictor
       X = zero;
-
-      // X is now (M^dagM)^{-1} V^{dag} phi
 
       // getX() now always uses Chrono predictor. Best to Nuke it for
       // energy calcs
@@ -348,13 +262,10 @@ namespace Chroma
       getMDSolutionPredictor().reset();
       int n_count = getX(X,s);
 
-      // tmp is now V (M^dag M)^{-1} V^{dag} phi
-      (*PV)(tmp, X, PLUS);
-
       // Action on the entire lattice
       Double action = zero;
       for(int s=0; s < FA.size(); ++s)
-	action += innerProductReal(getPhi()[s], tmp[s]);
+	action += innerProductReal(getPhi()[s], X[s]);
 
       write(xml_out, "n_count", n_count);
       write(xml_out, "S", action);
@@ -368,19 +279,19 @@ namespace Chroma
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi() = 0;    
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const UnprecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams() const = 0;
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor() = 0;
   };
 
 
@@ -414,13 +325,10 @@ namespace Chroma
       Handle< FermState<Phi,P,Q> > bc_g_state(FA.createState(s.getQ()));
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLinearOperatorArray<Phi,P,Q> > lin(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLinearOperatorArray<Phi,P,Q> > M(FA.linOp(bc_g_state));
 
-      Handle< EvenOddPrecLinearOperatorArray<Phi,P,Q> > PV(FA.linOpPV(bc_g_state));
       // Get the X fields
       multi1d<Phi> X(FA.size());
-
-      // X is now (M^dag M)^{-1} V^dag phi
 
       // Chrono predictor not used in energy calculation
       X = zero;
@@ -430,14 +338,10 @@ namespace Chroma
       getMDSolutionPredictor().reset();
       int n_count = getX(X, s);
 
-      multi1d<Phi> tmp(FA.size());
-      (*PV)(tmp, X, PLUS);
-
       Double action = zero;
       // Total odd-subset action. NOTE: QDP has norm2(multi1d) but not innerProd
       for(int s=0; s < FA.size(); ++s)
-	action += innerProductReal(getPhi()[s], tmp[s], lin->subset());
-
+	action += innerProductReal(getPhi()[s], X[s], M->subset());
 
       write(xml_out, "n_count", n_count);
       write(xml_out, "S_oo", action);
@@ -471,16 +375,16 @@ namespace Chroma
     virtual const EvenOddPrecWilsonTypeFermAct5D<Phi,P,Q>& getFermAct() const = 0;
 
     //! Get inverter params
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    virtual const GroupXML_t& getInvParams() const = 0;
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor5D<Phi>& getMDSolutionPredictor() = 0;
 
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const multi1d<Phi>& getPhi(void) const = 0;
+    virtual const multi1d<Phi>& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual multi1d<Phi>& getPhi(void) = 0;    
+    virtual multi1d<Phi>& getPhi() = 0;    
   };
 
   //-------------------------------------------------------------------------------------------

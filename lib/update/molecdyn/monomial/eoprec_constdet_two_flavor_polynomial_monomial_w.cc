@@ -1,4 +1,4 @@
-// $Id: eoprec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_two_flavor_polynomial_monomial_w.cc,v 3.2 2008-05-23 21:31:33 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -25,8 +25,6 @@ namespace Chroma
       Monomial< multi1d<LatticeColorMatrix>,
 		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
       {
-	QDPIO::cout << "Create Monomial: " << name << endl;
-
 	return new EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial(
 	  TwoFlavorWilsonTypeFermMonomialParams(xml, path));
       }

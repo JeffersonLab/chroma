@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: unprec_two_flavor_monomial_w.h,v 3.3 2007-12-18 21:06:47 bjoo Exp $
+// $Id: unprec_two_flavor_monomial_w.h,v 3.4 2008-05-23 21:31:36 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -17,7 +17,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace UnprecTwoFlavorWilsonTypeFermMonomialEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 

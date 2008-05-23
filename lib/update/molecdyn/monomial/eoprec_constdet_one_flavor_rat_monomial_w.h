@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_one_flavor_rat_monomial_w.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_one_flavor_rat_monomial_w.h,v 3.2 2008-05-23 21:31:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -17,7 +17,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 
@@ -41,9 +40,6 @@ namespace Chroma
 
     // Construct out of a parameter struct. Check against the desired FermAct name
     EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
-    // Copy Constructor
-    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial& m) 
-      : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot) {}
 
   protected:
 
@@ -55,12 +51,17 @@ namespace Chroma
     }
 
     //! Get parameters for the inverter
-    const GroupXML_t& getInvParams(void) const { 
-      return inv_param;
+    const GroupXML_t& getActionInvParams(void) const { 
+      return actionInvParam;
+    }
+
+    //! Get parameters for the inverter
+    const GroupXML_t& getForceInvParams(void) const { 
+      return forceInvParam;
     }
 
     //! Return number of roots in used
-    int getNthRoot() const {return nthRoot;}
+    int getNPF() const {return num_pf;}
 
     //! Return the partial fraction expansion for the force calc
     const RemezCoeff_t& getFPFE() const {return fpfe;}
@@ -72,7 +73,6 @@ namespace Chroma
     const RemezCoeff_t& getSIPFE() const {return sipfe;}
 
   private:
- 
     // Hide empty constructor and =
     EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial();
     void operator=(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial&);
@@ -84,10 +84,11 @@ namespace Chroma
     Handle<const EvenOddPrecWilsonTypeFermAct<T,P,Q> > fermact;
 
     // The parameters for the inversion
-    GroupXML_t inv_param;
+    GroupXML_t actionInvParam;
+    GroupXML_t forceInvParam;
 
     // Number of nth-roots
-    int nthRoot;
+    int num_pf;
 
     // Coefficients and roots of partial fractions
     RemezCoeff_t  fpfe;

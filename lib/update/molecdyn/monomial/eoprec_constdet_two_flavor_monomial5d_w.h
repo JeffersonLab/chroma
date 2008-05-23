@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_two_flavor_monomial5d_w.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_two_flavor_monomial5d_w.h,v 3.2 2008-05-23 21:31:33 edwards Exp $
 
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 5D ferm monomials
@@ -18,7 +18,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecConstDetTwoFlavorWilsonTypeFermMonomial5DEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 

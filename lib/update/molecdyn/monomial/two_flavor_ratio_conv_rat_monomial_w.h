@@ -1,17 +1,18 @@
 // -*- C++ -*-
-// $Id: two_flavor_hasenbusch_monomial_w.h,v 3.8 2007-03-29 19:35:36 edwards Exp $
+// $Id: two_flavor_ratio_conv_rat_monomial_w.h,v 3.1 2008-05-23 21:31:34 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
  */
 
-#ifndef __two_flavor_hasenbusch_monomial_w_h__
-#define __two_flavor_hasenbusch_monomial_w_h__
+#ifndef __two_flavor_ratio_conv_rat_monomial_w_h__
+#define __two_flavor_ratio_conv_rat_monomial_w_h__
 
 #include "unprec_wilstype_fermact_w.h"
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
+#include "update/molecdyn/monomial/remez_coeff.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
@@ -20,10 +21,10 @@ using namespace std;
 namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
-  //! Exact 2 flavor hasenbusch type monomial
+  //! Exact 2 flavor RatioConvRat type monomial
   /*! @ingroup monomial
    *
-   * Exact 2 flavor Hasenbusch type  monomial. 
+   * Exact 2 flavor RatioConvRat type  monomial. 
    *
    * Can supply default dsdq()
    *                    pseudoferm refresh
@@ -33,11 +34,11 @@ namespace Chroma
    * so called TwoFlavorExact monomial.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactHasenbuschWilsonTypeFermMonomial : public ExactWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactRatioConvRatWilsonTypeFermMonomial : public ExactWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactHasenbuschWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactRatioConvRatWilsonTypeFermMonomial() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) = 0;
@@ -50,7 +51,7 @@ namespace Chroma
 
       // Self Description/Encapsulation Rule
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
-      push(xml_out, "TwoFlavorExactHasenbuschWilsonTypeFermMonomial");
+      push(xml_out, "TwoFlavorExactRatioConvRatWilsonTypeFermMonomial");
 
       /**** Identical code for unprec and even-odd prec case *****/
       
@@ -70,8 +71,8 @@ namespace Chroma
       //    X = (M^dag*M)^(-1)M_prec^\dag*chi   Y = M*X = (M^dag)^(-1)M_prec^\dag *chi
       // In Robert's notation,  X -> psi .
       //
-      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();          // for M
-      const WilsonTypeFermAct<Phi,P,Q>& FAPrec = getFermActPrec();  // for M_prec
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();          // for M
+      const WilsonTypeFermAct<Phi,P,Q>& FAPrec = getDenomFermAct();  // for M_prec
 
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
@@ -125,10 +126,10 @@ namespace Chroma
       // Heatbath all the fields
       
       // Get at the fermion action for the expensive matrix
-      const WilsonTypeFermAct<Phi,P,Q>& S_f = getFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& S_f = getNumerFermAct();
 
       // Get the fermion action for the preconditioner
-      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getFermActPrec();
+      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
 
       // Create a Connect State, apply fermionic boundaries
       Handle< FermState<Phi,P,Q> > f_state(S_f.createState(field_state.getQ()));
@@ -174,7 +175,7 @@ namespace Chroma
       (*M)(eta_tmp, eta, MINUS);  // M^\dag \eta
 
       // Get system solver
-      Handle< MdagMSystemSolver<Phi> > invMdagM(S_prec.invMdagM(f_state, getInvParams()));
+      Handle< MdagMSystemSolver<Phi> > invMdagM(S_prec.invMdagM(f_state, getNumerInvParams()));
 
       // Solve MdagM_prec X = eta
       SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
@@ -182,7 +183,7 @@ namespace Chroma
       (*M_prec)(getPhi(), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
 
       // Now invert M_prec^{dagger} on it
-      QDPIO::cout << "TwoFlavHasenbuschWilson4DMonomial: resetting Predictor at end of field refresh" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson4DMonomial: resetting Predictor at end of field refresh" << endl;
       getMDSolutionPredictor().reset();
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
@@ -199,13 +200,13 @@ namespace Chroma
       START_CODE();
 
       try {
-	const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& fm = 
-	  dynamic_cast<  const TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>& >(m);
+	const TwoFlavorExactRatioConvRatWilsonTypeFermMonomial<P,Q,Phi>& fm = 
+	  dynamic_cast<  const TwoFlavorExactRatioConvRatWilsonTypeFermMonomial<P,Q,Phi>& >(m);
 
 	getPhi() = fm.getPhi();
       }
       catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactHasenbuschWilsonTypeFermMonomial " << endl;
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvRatWilsonTypeFermMonomial " << endl;
 	QDP_abort(1);
       }
 
@@ -214,7 +215,7 @@ namespace Chroma
     }
 
     //! Reset predictors
-    virtual void resetPredictors(void) {
+    virtual void resetPredictors() {
       getMDSolutionPredictor().reset();
 
     }
@@ -226,8 +227,8 @@ namespace Chroma
       START_CODE();
 
       // Grab the fermact
-      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
-      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getFermActPrec();
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getDenomFermAct();
 
       // Make the state
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
@@ -237,7 +238,7 @@ namespace Chroma
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
 
       // Get system solver
-      const GroupXML_t& inv_param = getInvParams();
+      const GroupXML_t& inv_param = getNumerInvParams();
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,inv_param));
 
       SystemSolverResults_t res;
@@ -271,40 +272,59 @@ namespace Chroma
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const Phi& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual Phi& getPhi(void) = 0;    
-
-    //! Get at fermion action
-    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
-
-    //! Get at fermion action for preconditioner
-    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermActPrec(void) const = 0;
+    virtual Phi& getPhi() = 0;    
 
     //! Get the initial guess predictor
-    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor() = 0;
 
-    //! Do an inversion of the type 
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    //! Get at fermion action
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getFermAct() const
+      {return getNumerFermAct();}
+
+    //! Get at fermion action
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getNumerFermAct() const = 0;
+
+    //! Get at fermion action for preconditioner
+    virtual const WilsonTypeFermAct<Phi,P,Q>& getDenomFermAct() const = 0;
+
+    //! Get parameters for the inverter
+    virtual const GroupXML_t& getNumerInvParams() const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getDenomActionInvParams() const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getDenomForceInvParams() const = 0;
+
+    //! Return the partial fraction expansion for the force calc
+    virtual const RemezCoeff_t& getDenomFPFE() const = 0;
+
+    //! Return the partial fraction expansion for the action calc
+    virtual const RemezCoeff_t& getDenomSPFE() const = 0;
+
+    //! Return the partial fraction expansion for the heat-bath
+    virtual const RemezCoeff_t& getDenomSIPFE() const = 0;
   };
 
 
   //-------------------------------------------------------------------------------------------
-  //! Exact 2 degen flavor unpreconditioned Hasenbusch type fermact monomial
+  //! Exact 2 degen flavor unpreconditioned RatioConvRat type fermact monomial
   /*! @ingroup monomial
    *
-   * Exact 2 degen flavor unpreconditioned Hasenbusch tpye fermact monomial.
+   * Exact 2 degen flavor unpreconditioned RatioConvRat tpye fermact monomial.
    * 
    * CAVEAT: I assume there is only 1 pseudofermion field in the following
    * so called TwoFlavorExact monomial.
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial : public TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactUnprecRatioConvRatWilsonTypeFermMonomial : public TwoFlavorExactRatioConvRatWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactUnprecRatioConvRatWilsonTypeFermMonomial() {}
 
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s)
@@ -313,7 +333,7 @@ namespace Chroma
 
       // Self identification/encapsulation Rule
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
-      push(xml_out, "TwoFlavorExactUnprecHasenbuschWilsonTypeFermMonomial");
+      push(xml_out, "TwoFlavorExactUnprecRatioConvRatWilsonTypeFermMonomial");
 
       Phi X;
       
@@ -322,14 +342,14 @@ namespace Chroma
       //
       // We now need to multiply by M_prec afterwords
       X = zero;
-      QDPIO::cout << "TwoFlavHasenbuschWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
       int n_count = getX(X,s);
 
 
       // Get the fermion action for the preconditioner
-      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getFermActPrec();
+      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
       Handle< FermState<Phi,P,Q> > f_state(S_prec.createState(s.getQ()));
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(S_prec.linOp(f_state));      
 
@@ -352,39 +372,35 @@ namespace Chroma
 
   protected:
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const Phi& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual Phi& getPhi(void) = 0;    
+    virtual Phi& getPhi() = 0;    
+
+    //! Get the initial guess predictor
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor() = 0;
 
     //! Get at fermion action
-    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getFermAct(void) const = 0;
+    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getNumerFermAct() const = 0;
 
     //! Get at the preconditioned fermion actions
-    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getFermActPrec(void) const = 0;
-
-    //! Get at the chronological predcitor
-    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
-
-    //! Get parameters for the inverter
-    virtual const GroupXML_t& getInvParams(void) const = 0;
-
+    virtual const UnprecWilsonTypeFermAct<Phi,P,Q>& getDenomFermAct() const = 0;
   };
 
 
   //-------------------------------------------------------------------------------------------
-  //! Exact 2 degen flavor even-odd preconditioned Hasenbusch type fermact monomial
+  //! Exact 2 degen flavor even-odd preconditioned RatioConvRat type fermact monomial
   /*! @ingroup monomial
    *
-   * Exact 2 degen flavor even-odd preconditioned Hasenbusch type fermact monomial.
+   * Exact 2 degen flavor even-odd preconditioned RatioConvRat type fermact monomial.
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial : public TwoFlavorExactHasenbuschWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial : public TwoFlavorExactRatioConvRatWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s)  = 0;
@@ -397,7 +413,7 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
-      const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();
 
       Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
 
@@ -410,12 +426,12 @@ namespace Chroma
       X[ lin->subset() ] = zero;
 
       // getX noe always uses chrono predictor. Best to Nuke it therefore
-      QDPIO::cout << "TwoFlavHasenbuschWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
       int n_count = getX(X, s);
 
-      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getFermActPrec();
+      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
       Handle< FermState<Phi,P,Q> > f_state(S_prec.createState(s.getQ()));
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(S_prec.linOp(f_state));      
 
@@ -440,7 +456,7 @@ namespace Chroma
       START_CODE();
 
       XMLWriter& xml_out=TheXMLLogWriter::Instance();
-      push(xml_out, "TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial");
+      push(xml_out, "TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial");
 
       Double action = S_even_even(s) + S_odd_odd(s);
 
@@ -453,37 +469,35 @@ namespace Chroma
     }
 
   protected:
-    //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
-
-    //! Get at the preconditioned fermion actions
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermActPrec(void) const = 0;
     //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const Phi& getPhi() const = 0;
 
     //! mutator for pseudofermion with Pf index i 
-    virtual Phi& getPhi(void) = 0;    
+    virtual Phi& getPhi() = 0;    
 
-    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
+    //! Get the initial guess predictor
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor() = 0;
 
-    //! Get parameters for the inverter
-    virtual const GroupXML_t& getInvParams(void) const = 0;
+    //! Get at fermion action
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getNumerFermAct() const = 0;
 
+    //! Get at the preconditioned fermion actions
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getDenomFermAct() const = 0;
   };
 
   //-------------------------------------------------------------------------------------------
-  //! Exact 2 degen flavor even-odd preconditioned Hasenbusch type fermact monomial
+  //! Exact 2 degen flavor even-odd preconditioned RatioConvRat type fermact monomial
   /*! @ingroup monomial
    *
-   * Exact 2 degen flavor even-odd preconditioned Hasenbusch type fermact monomial.
+   * Exact 2 degen flavor even-odd preconditioned RatioConvRat type fermact monomial.
    * Can supply a default dsdq algorithm
    */
   template<typename P, typename Q, typename Phi>
-  class TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecHasenbuschWilsonTypeFermMonomial<P,Q,Phi>
+  class TwoFlavorExactEvenOddPrecConstDetRatioConvRatWilsonTypeFermMonomial : public TwoFlavorExactEvenOddPrecRatioConvRatWilsonTypeFermMonomial<P,Q,Phi>
   {
   public:
      //! virtual destructor:
-    ~TwoFlavorExactEvenOddPrecConstDetHasenbuschWilsonTypeFermMonomial() {}
+    ~TwoFlavorExactEvenOddPrecConstDetRatioConvRatWilsonTypeFermMonomial() {}
 
     //! Even even contribution (eg ln det Clover)
     virtual Double S_even_even(const AbsFieldState<P,Q>& s) {
@@ -492,12 +506,10 @@ namespace Chroma
 
   protected:
     //! Get at fermion action
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getNumerFermAct() const = 0;
 
     //! Get at the preconditioned fermion actions
-    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getFermActPrec(void) const = 0;
-    //! Accessor for pseudofermion with Pf index i (read only)
-    virtual const Phi& getPhi(void) const = 0;
+    virtual const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& getDenomFermAct() const = 0;
   };
 
 }

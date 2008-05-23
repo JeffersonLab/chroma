@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_params_w.h,v 3.2 2006-07-04 02:55:52 edwards Exp $
+// $Id: one_flavor_rat_monomial_params_w.h,v 3.3 2008-05-23 21:31:33 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */
@@ -8,7 +8,7 @@
 #define __one_flavor_rat_monomial_params_w_h__
 
 #include "chromabase.h"
-#include "io/xml_group_reader.h"
+#include "update/molecdyn/monomial/comp_approx.h"
 
 namespace Chroma 
 {
@@ -22,23 +22,10 @@ namespace Chroma
 
     // Read monomial from some root path
     OneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path);
-    OneFlavorWilsonTypeFermRatMonomialParams(XMLReader& in, const std::string& path,
-					     int expNumPower_, int expDenPower_);
 
-    GroupXML_t      inv_param;     /*!< Inverter Parameters */
-    GroupXML_t      fermact;       /*!< Fermion action */
-    int             expNumPower;   /*!< (M^dag*M)^{expNumPower / (2*expDenPower)} */
-    int             expDenPower;   /*!< (M^dag*M)^{expNumPower / (2*expDenPower)} */
-    int             nthRoot;       /*!< Use "n" copies of nth-root 1-flavor */
-
-    struct Remez_t   // eigenvalue bounds of M^dag*M
-    {
-      Real lowerMin;
-      Real upperMax;
-      int  forceDegree;
-      int  actionDegree;
-      int  digitPrecision;
-    } remez;
+    // Params for each major group - action/heatbath & force
+    CompApprox_t    numer;         /*!< Fermion action and rat. structure for numerator */
+    int             num_pf;        /*!< Use "num_pf" copies of pseudo-fermions for chi^dag*f(M^dag*M)*chi  */
   };
 
   void read(XMLReader& xml, const string& path, OneFlavorWilsonTypeFermRatMonomialParams& param);

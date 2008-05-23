@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_one_flavor_rat_monomial5d_w.h,v 3.1 2006-10-19 16:01:34 edwards Exp $
+// $Id: eoprec_constdet_one_flavor_rat_monomial5d_w.h,v 3.2 2008-05-23 21:31:32 edwards Exp $
 /*! @file
  * @brief One-flavor collection of even-odd preconditioned 5D ferm monomials
  */
@@ -9,7 +9,7 @@
 
 #include "update/molecdyn/field_state.h"
 #include "update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h"
-#include "update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h"
+#include "update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h"
 
 namespace Chroma 
 {
@@ -17,7 +17,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5DEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 
@@ -40,10 +39,7 @@ namespace Chroma
     typedef multi1d<LatticeColorMatrix>  Q;
 
     // Construct out of a parameter struct. Check against the desired FermAct name
-    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomial5DParams& param_);
-    
-    // Copy Constructor
-    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D& m) : phi(m.phi), fermact(m.fermact), inv_param(m.inv_param), nthRoot(m.nthRoot), nthRootPV(m.nthRootPV) {}
+    EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial5D(const OneFlavorWilsonTypeFermRatMonomialParams& param_);
     
     //! Even even contribution (eg ln det Clover)
     Double S_even_even(const AbsFieldState<multi1d<LatticeColorMatrix>,
@@ -59,8 +55,13 @@ namespace Chroma
     }
 
     //! Get parameters for the inverter
-    const GroupXML_t& getInvParams(void) const { 
-      return inv_param;
+    const GroupXML_t& getActionInvParams(void) const { 
+      return actionInvParam;
+    }
+
+    //! Get parameters for the inverter
+    const GroupXML_t& getForceInvParams(void) const { 
+      return forceInvParam;
     }
 
     //! Accessor for pseudofermion (read only)
@@ -69,31 +70,14 @@ namespace Chroma
     //! mutator for pseudofermion
     multi1d< multi1d<T> >& getPhi(void) {return phi;}
 
-    //! Accessor for PV pseudofermion (read only)
-    const multi1d< multi1d<T> >& getPhiPV(void) const {return phiPV;}
-
-    //! mutator for PV pseudofermion 
-    multi1d< multi1d<T> >& getPhiPV(void) {return phiPV;}
-
     //! Return number of roots in used
-    int getNthRoot() const {return nthRoot;}
-
-    int getNthRootPV() const { return nthRootPV; }
+    int getNPF() const {return num_pf;}
 
     //! Return the partial fraction expansion for the action calc
     const RemezCoeff_t& getSPFE() const {return spfe;}
 
     //! Return the partial fraction expansion for the heat-bath
     const RemezCoeff_t& getSIPFE() const {return sipfe;}
-
-    //! Return the partial fraction expansion for the force calc in PV
-    const RemezCoeff_t& getFPVPFE() const {return fpvpfe;}
-
-    //! Return the partial fraction expansion for the action calc in PV
-    const RemezCoeff_t& getSPVPFE() const {return spvpfe;}
-
-    //! Return the partial fraction expansion for the heat-bath in PV
-    const RemezCoeff_t& getSIPVPFE() const {return sipvpfe;}
 
   private:
  
@@ -104,20 +88,15 @@ namespace Chroma
     // Pseudofermion field phi
     multi1d< multi1d<T> > phi;
       
-    // Pseudofermion field phi
-    multi1d< multi1d<T> > phiPV;
-
     // A handle for the EvenOddPrecWilsonFermAct
     Handle<const EvenOddPrecConstDetWilsonTypeFermAct5D<T,P,Q> > fermact;
 
     // The parameters for the inversion
-    GroupXML_t  inv_param;
+    GroupXML_t actionInvParam;
+    GroupXML_t forceInvParam;
 
     // Number of nth-roots
-    int nthRoot;
-
-    // Number of PV nth-roots
-    int nthRootPV;
+    int num_pf;
 
     //! Return the partial fraction expansion for the force calc
     const RemezCoeff_t& getFPFE() const {return fpfe;}
@@ -125,10 +104,6 @@ namespace Chroma
     RemezCoeff_t  fpfe;
     RemezCoeff_t  spfe;
     RemezCoeff_t  sipfe;
-
-    RemezCoeff_t  fpvpfe;
-    RemezCoeff_t  spvpfe;
-    RemezCoeff_t  sipvpfe;
   };
 
 
