@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.252 2008-05-22 15:12:11 edwards Exp $
+# $Id: Makefile.in,v 3.253 2008-05-23 21:32:35 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -341,8 +341,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
-	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/monomial/force_monitors.cc \
+	update/molecdyn/monomial/rat_approx_aggregate.cc \
+	update/molecdyn/monomial/remez_rat_approx.cc \
+	update/molecdyn/monomial/comp_approx.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -523,25 +525,39 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
 	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.cc \
 	util/ferm/staggered_operators_s.cc util/ferm/gammasgn_w.cc \
@@ -846,8 +862,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	stout_utils.$(OBJEXT) printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
 	unique_id.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
 	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
-	gauge_monomial.$(OBJEXT) genapprox.$(OBJEXT) \
-	force_monitors.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) force_monitors.$(OBJEXT) \
+	rat_approx_aggregate.$(OBJEXT) remez_rat_approx.$(OBJEXT) \
+	comp_approx.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
 	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
 	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
 	lcm_integrator_leaps.$(OBJEXT) \
@@ -991,25 +1008,39 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	gamma_displacement_w.$(OBJEXT) walfil_w.$(OBJEXT) \
 	monomial_aggregate_w.$(OBJEXT) \
 	one_flavor_rat_monomial_params_w.$(OBJEXT) \
+	one_flavor_ratio_rat_conv_monomial_params_w.$(OBJEXT) \
+	one_flavor_ratio_rat_rat_monomial_params_w.$(OBJEXT) \
 	unprec_one_flavor_rat_monomial_w.$(OBJEXT) \
-	eoprec_constdet_one_flavor_rat_monomial_w.$(OBJEXT) \
-	one_flavor_rat_monomial5d_params_w.$(OBJEXT) \
 	unprec_one_flavor_rat_monomial5d_w.$(OBJEXT) \
+	unprec_one_flavor_ratio_rat_conv_monomial_w.$(OBJEXT) \
+	unprec_one_flavor_ratio_rat_conv_monomial5d_w.$(OBJEXT) \
+	unprec_one_flavor_ratio_rat_rat_monomial_w.$(OBJEXT) \
+	unprec_one_flavor_ratio_rat_rat_monomial5d_w.$(OBJEXT) \
+	eoprec_constdet_one_flavor_rat_monomial_w.$(OBJEXT) \
 	eoprec_constdet_one_flavor_rat_monomial5d_w.$(OBJEXT) \
+	eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.$(OBJEXT) \
+	eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.$(OBJEXT) \
+	eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.$(OBJEXT) \
+	eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.$(OBJEXT) \
 	two_flavor_monomial_params_w.$(OBJEXT) \
+	two_flavor_ratio_conv_conv_monomial_params_w.$(OBJEXT) \
+	two_flavor_ratio_conv_rat_monomial_params_w.$(OBJEXT) \
 	unprec_two_flavor_monomial_w.$(OBJEXT) \
-	eoprec_constdet_two_flavor_monomial_w.$(OBJEXT) \
-	eoprec_logdet_two_flavor_monomial_w.$(OBJEXT) \
 	unprec_two_flavor_monomial5d_w.$(OBJEXT) \
+	eoprec_constdet_two_flavor_monomial_w.$(OBJEXT) \
 	eoprec_constdet_two_flavor_monomial5d_w.$(OBJEXT) \
-	two_flavor_hasenbusch_monomial_params_w.$(OBJEXT) \
-	unprec_two_flavor_hasenbusch_monomial_w.$(OBJEXT) \
-	unprec_two_flavor_hasenbusch_monomial5d_w.$(OBJEXT) \
-	eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.$(OBJEXT) \
-	eoprec_constdet_two_flavor_hasenbusch_monomial_w.$(OBJEXT) \
+	eoprec_logdet_two_flavor_monomial_w.$(OBJEXT) \
+	unprec_two_flavor_ratio_conv_conv_monomial_w.$(OBJEXT) \
+	unprec_two_flavor_ratio_conv_conv_monomial5d_w.$(OBJEXT) \
+	unprec_two_flavor_ratio_conv_rat_monomial_w.$(OBJEXT) \
+	unprec_two_flavor_ratio_conv_rat_monomial5d_w.$(OBJEXT) \
+	eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.$(OBJEXT) \
+	eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.$(OBJEXT) \
+	eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.$(OBJEXT) \
+	eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.$(OBJEXT) \
+	eoprec_logdet_ee_monomial_w.$(OBJEXT) \
 	eoprec_constdet_two_flavor_polynomial_monomial_w.$(OBJEXT) \
 	eoprec_constdet_two_flavor_polyprec_monomial_w.$(OBJEXT) \
-	eoprec_logdet_ee_monomial_w.$(OBJEXT) \
 	fixed_random_ferm_monomial.$(OBJEXT) \
 	central_tprec_logdet_tt_monomial_w.$(OBJEXT) \
 	staggered_operators_s.$(OBJEXT) gammasgn_w.$(OBJEXT) \
@@ -1377,12 +1408,16 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
-	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/monomial/bigfloat.h \
 	update/molecdyn/monomial/remez.h \
 	update/molecdyn/monomial/remez_coeff.h \
 	update/molecdyn/monomial/remez_stub.h \
+	update/molecdyn/monomial/rat_approx.h \
+	update/molecdyn/monomial/rat_approx_factory.h \
+	update/molecdyn/monomial/rat_approx_aggregate.h \
+	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -1584,33 +1619,53 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
+	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
 	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
@@ -2192,12 +2247,16 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
-	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/monomial/bigfloat.h \
 	update/molecdyn/monomial/remez.h \
 	update/molecdyn/monomial/remez_coeff.h \
 	update/molecdyn/monomial/remez_stub.h \
+	update/molecdyn/monomial/rat_approx.h \
+	update/molecdyn/monomial/rat_approx_factory.h \
+	update/molecdyn/monomial/rat_approx_aggregate.h \
+	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -2399,33 +2458,53 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
+	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
 	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
@@ -2813,8 +2892,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
-	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/monomial/force_monitors.cc \
+	update/molecdyn/monomial/rat_approx_aggregate.cc \
+	update/molecdyn/monomial/remez_rat_approx.cc \
+	update/molecdyn/monomial/comp_approx.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -2995,25 +3076,39 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/gamma_displacement_w.cc meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
 	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.cc \
 	util/ferm/staggered_operators_s.cc util/ferm/gammasgn_w.cc \
@@ -3273,6 +3368,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_term_bagel_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_term_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clover_term_qdp_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/comp_approx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/conjgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/constgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/coulgauge.Po@am__quote@
@@ -3327,12 +3423,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_polynomial_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_polyprec_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_dwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_dwf_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_fermact_qprop.Po@am__quote@
@@ -3402,7 +3504,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugebc_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_quark_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaus_smear.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genapprox.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/global_metropolis_accrej.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gluecor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gramschm.Po@am__quote@
@@ -3609,8 +3710,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_spin_insertion.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/norm_gram_schm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npr_vertex_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial5d_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial_params_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/overlap_state_info.Po@am__quote@
@@ -3658,6 +3760,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rat_approx_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rbc_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readcppacs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readmilc.Po@am__quote@
@@ -3666,6 +3769,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remez_gmp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remez_rat_approx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rg_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rgauge.Po@am__quote@
@@ -3778,8 +3882,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/temporal_wilson_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/twisted_fermbc_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_monomial_params_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unique_id.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_gauge_init.Po@am__quote@
@@ -3800,6 +3905,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_nef_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_one_flavor_rat_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_one_flavor_rat_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovdwf_fermact_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovdwf_linop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ovext_fermact_array_w.Po@am__quote@
@@ -3814,10 +3923,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_ppdwf4d_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_s_cprec_t_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_s_cprec_t_wilson_linop_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_w12_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_w12_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unprec_wilson_fermact_w.Po@am__quote@
@@ -7544,20 +7655,6 @@ gauge_monomial.obj: update/molecdyn/monomial/gauge_monomial.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_monomial.obj `if test -f 'update/molecdyn/monomial/gauge_monomial.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/gauge_monomial.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/gauge_monomial.cc'; fi`
 
-genapprox.o: update/molecdyn/monomial/genapprox.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT genapprox.o -MD -MP -MF $(DEPDIR)/genapprox.Tpo -c -o genapprox.o `test -f 'update/molecdyn/monomial/genapprox.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/genapprox.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/genapprox.Tpo $(DEPDIR)/genapprox.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/genapprox.cc' object='genapprox.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o genapprox.o `test -f 'update/molecdyn/monomial/genapprox.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/genapprox.cc
-
-genapprox.obj: update/molecdyn/monomial/genapprox.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT genapprox.obj -MD -MP -MF $(DEPDIR)/genapprox.Tpo -c -o genapprox.obj `if test -f 'update/molecdyn/monomial/genapprox.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/genapprox.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/genapprox.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/genapprox.Tpo $(DEPDIR)/genapprox.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/genapprox.cc' object='genapprox.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o genapprox.obj `if test -f 'update/molecdyn/monomial/genapprox.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/genapprox.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/genapprox.cc'; fi`
-
 force_monitors.o: update/molecdyn/monomial/force_monitors.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT force_monitors.o -MD -MP -MF $(DEPDIR)/force_monitors.Tpo -c -o force_monitors.o `test -f 'update/molecdyn/monomial/force_monitors.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/force_monitors.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/force_monitors.Tpo $(DEPDIR)/force_monitors.Po
@@ -7571,6 +7668,48 @@ force_monitors.obj: update/molecdyn/monomial/force_monitors.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/force_monitors.cc' object='force_monitors.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o force_monitors.obj `if test -f 'update/molecdyn/monomial/force_monitors.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/force_monitors.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/force_monitors.cc'; fi`
+
+rat_approx_aggregate.o: update/molecdyn/monomial/rat_approx_aggregate.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rat_approx_aggregate.o -MD -MP -MF $(DEPDIR)/rat_approx_aggregate.Tpo -c -o rat_approx_aggregate.o `test -f 'update/molecdyn/monomial/rat_approx_aggregate.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/rat_approx_aggregate.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/rat_approx_aggregate.Tpo $(DEPDIR)/rat_approx_aggregate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/rat_approx_aggregate.cc' object='rat_approx_aggregate.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rat_approx_aggregate.o `test -f 'update/molecdyn/monomial/rat_approx_aggregate.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/rat_approx_aggregate.cc
+
+rat_approx_aggregate.obj: update/molecdyn/monomial/rat_approx_aggregate.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT rat_approx_aggregate.obj -MD -MP -MF $(DEPDIR)/rat_approx_aggregate.Tpo -c -o rat_approx_aggregate.obj `if test -f 'update/molecdyn/monomial/rat_approx_aggregate.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/rat_approx_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/rat_approx_aggregate.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/rat_approx_aggregate.Tpo $(DEPDIR)/rat_approx_aggregate.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/rat_approx_aggregate.cc' object='rat_approx_aggregate.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o rat_approx_aggregate.obj `if test -f 'update/molecdyn/monomial/rat_approx_aggregate.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/rat_approx_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/rat_approx_aggregate.cc'; fi`
+
+remez_rat_approx.o: update/molecdyn/monomial/remez_rat_approx.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_rat_approx.o -MD -MP -MF $(DEPDIR)/remez_rat_approx.Tpo -c -o remez_rat_approx.o `test -f 'update/molecdyn/monomial/remez_rat_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/remez_rat_approx.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/remez_rat_approx.Tpo $(DEPDIR)/remez_rat_approx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/remez_rat_approx.cc' object='remez_rat_approx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_rat_approx.o `test -f 'update/molecdyn/monomial/remez_rat_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/remez_rat_approx.cc
+
+remez_rat_approx.obj: update/molecdyn/monomial/remez_rat_approx.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_rat_approx.obj -MD -MP -MF $(DEPDIR)/remez_rat_approx.Tpo -c -o remez_rat_approx.obj `if test -f 'update/molecdyn/monomial/remez_rat_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/remez_rat_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/remez_rat_approx.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/remez_rat_approx.Tpo $(DEPDIR)/remez_rat_approx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/remez_rat_approx.cc' object='remez_rat_approx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_rat_approx.obj `if test -f 'update/molecdyn/monomial/remez_rat_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/remez_rat_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/remez_rat_approx.cc'; fi`
+
+comp_approx.o: update/molecdyn/monomial/comp_approx.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT comp_approx.o -MD -MP -MF $(DEPDIR)/comp_approx.Tpo -c -o comp_approx.o `test -f 'update/molecdyn/monomial/comp_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/comp_approx.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/comp_approx.Tpo $(DEPDIR)/comp_approx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/comp_approx.cc' object='comp_approx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o comp_approx.o `test -f 'update/molecdyn/monomial/comp_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/comp_approx.cc
+
+comp_approx.obj: update/molecdyn/monomial/comp_approx.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT comp_approx.obj -MD -MP -MF $(DEPDIR)/comp_approx.Tpo -c -o comp_approx.obj `if test -f 'update/molecdyn/monomial/comp_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/comp_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/comp_approx.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/comp_approx.Tpo $(DEPDIR)/comp_approx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/comp_approx.cc' object='comp_approx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o comp_approx.obj `if test -f 'update/molecdyn/monomial/comp_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/comp_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/comp_approx.cc'; fi`
 
 integrator_aggregate.o: update/molecdyn/integrator/integrator_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT integrator_aggregate.o -MD -MP -MF $(DEPDIR)/integrator_aggregate.Tpo -c -o integrator_aggregate.o `test -f 'update/molecdyn/integrator/integrator_aggregate.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/integrator_aggregate.cc
@@ -10358,6 +10497,34 @@ one_flavor_rat_monomial_params_w.obj: update/molecdyn/monomial/one_flavor_rat_mo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_rat_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc'; fi`
 
+one_flavor_ratio_rat_conv_monomial_params_w.o: update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT one_flavor_ratio_rat_conv_monomial_params_w.o -MD -MP -MF $(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Tpo -c -o one_flavor_ratio_rat_conv_monomial_params_w.o `test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Tpo $(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc' object='one_flavor_ratio_rat_conv_monomial_params_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_ratio_rat_conv_monomial_params_w.o `test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc
+
+one_flavor_ratio_rat_conv_monomial_params_w.obj: update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT one_flavor_ratio_rat_conv_monomial_params_w.obj -MD -MP -MF $(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Tpo -c -o one_flavor_ratio_rat_conv_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Tpo $(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc' object='one_flavor_ratio_rat_conv_monomial_params_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_ratio_rat_conv_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc'; fi`
+
+one_flavor_ratio_rat_rat_monomial_params_w.o: update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT one_flavor_ratio_rat_rat_monomial_params_w.o -MD -MP -MF $(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Tpo -c -o one_flavor_ratio_rat_rat_monomial_params_w.o `test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Tpo $(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc' object='one_flavor_ratio_rat_rat_monomial_params_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_ratio_rat_rat_monomial_params_w.o `test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc
+
+one_flavor_ratio_rat_rat_monomial_params_w.obj: update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT one_flavor_ratio_rat_rat_monomial_params_w.obj -MD -MP -MF $(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Tpo -c -o one_flavor_ratio_rat_rat_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Tpo $(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc' object='one_flavor_ratio_rat_rat_monomial_params_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_ratio_rat_rat_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc'; fi`
+
 unprec_one_flavor_rat_monomial_w.o: update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_one_flavor_rat_monomial_w.Tpo -c -o unprec_one_flavor_rat_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_rat_monomial_w.Tpo $(DEPDIR)/unprec_one_flavor_rat_monomial_w.Po
@@ -10371,34 +10538,6 @@ unprec_one_flavor_rat_monomial_w.obj: update/molecdyn/monomial/unprec_one_flavor
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc' object='unprec_one_flavor_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc'; fi`
-
-eoprec_constdet_one_flavor_rat_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' object='eoprec_constdet_one_flavor_rat_monomial_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
-
-eoprec_constdet_one_flavor_rat_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_rat_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' object='eoprec_constdet_one_flavor_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; fi`
-
-one_flavor_rat_monomial5d_params_w.o: update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT one_flavor_rat_monomial5d_params_w.o -MD -MP -MF $(DEPDIR)/one_flavor_rat_monomial5d_params_w.Tpo -c -o one_flavor_rat_monomial5d_params_w.o `test -f 'update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/one_flavor_rat_monomial5d_params_w.Tpo $(DEPDIR)/one_flavor_rat_monomial5d_params_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc' object='one_flavor_rat_monomial5d_params_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_rat_monomial5d_params_w.o `test -f 'update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc
-
-one_flavor_rat_monomial5d_params_w.obj: update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT one_flavor_rat_monomial5d_params_w.obj -MD -MP -MF $(DEPDIR)/one_flavor_rat_monomial5d_params_w.Tpo -c -o one_flavor_rat_monomial5d_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/one_flavor_rat_monomial5d_params_w.Tpo $(DEPDIR)/one_flavor_rat_monomial5d_params_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc' object='one_flavor_rat_monomial5d_params_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o one_flavor_rat_monomial5d_params_w.obj `if test -f 'update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc'; fi`
 
 unprec_one_flavor_rat_monomial5d_w.o: update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_rat_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_one_flavor_rat_monomial5d_w.Tpo -c -o unprec_one_flavor_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc
@@ -10414,6 +10553,76 @@ unprec_one_flavor_rat_monomial5d_w.obj: update/molecdyn/monomial/unprec_one_flav
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc'; fi`
 
+unprec_one_flavor_ratio_rat_conv_monomial_w.o: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_conv_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Tpo -c -o unprec_one_flavor_ratio_rat_conv_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc' object='unprec_one_flavor_ratio_rat_conv_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_conv_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc
+
+unprec_one_flavor_ratio_rat_conv_monomial_w.obj: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_conv_monomial_w.obj -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Tpo -c -o unprec_one_flavor_ratio_rat_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc' object='unprec_one_flavor_ratio_rat_conv_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc'; fi`
+
+unprec_one_flavor_ratio_rat_conv_monomial5d_w.o: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_conv_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Tpo -c -o unprec_one_flavor_ratio_rat_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc' object='unprec_one_flavor_ratio_rat_conv_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc
+
+unprec_one_flavor_ratio_rat_conv_monomial5d_w.obj: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_conv_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Tpo -c -o unprec_one_flavor_ratio_rat_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc' object='unprec_one_flavor_ratio_rat_conv_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc'; fi`
+
+unprec_one_flavor_ratio_rat_rat_monomial_w.o: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Tpo -c -o unprec_one_flavor_ratio_rat_rat_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc' object='unprec_one_flavor_ratio_rat_rat_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_rat_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc
+
+unprec_one_flavor_ratio_rat_rat_monomial_w.obj: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_rat_monomial_w.obj -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Tpo -c -o unprec_one_flavor_ratio_rat_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc' object='unprec_one_flavor_ratio_rat_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc'; fi`
+
+unprec_one_flavor_ratio_rat_rat_monomial5d_w.o: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_rat_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Tpo -c -o unprec_one_flavor_ratio_rat_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc' object='unprec_one_flavor_ratio_rat_rat_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc
+
+unprec_one_flavor_ratio_rat_rat_monomial5d_w.obj: update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_one_flavor_ratio_rat_rat_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Tpo -c -o unprec_one_flavor_ratio_rat_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Tpo $(DEPDIR)/unprec_one_flavor_ratio_rat_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc' object='unprec_one_flavor_ratio_rat_rat_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_one_flavor_ratio_rat_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc'; fi`
+
+eoprec_constdet_one_flavor_rat_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' object='eoprec_constdet_one_flavor_rat_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
+
+eoprec_constdet_one_flavor_rat_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_rat_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc' object='eoprec_constdet_one_flavor_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc'; fi`
+
 eoprec_constdet_one_flavor_rat_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_rat_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial5d_w.Tpo -c -o eoprec_constdet_one_flavor_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial5d_w.Po
@@ -10427,6 +10636,62 @@ eoprec_constdet_one_flavor_rat_monomial5d_w.obj: update/molecdyn/monomial/eoprec
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc' object='eoprec_constdet_one_flavor_rat_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc'; fi`
+
+eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc
+
+eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc'; fi`
+
+eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc
+
+eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.obj: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc'; fi`
+
+eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc
+
+eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc'; fi`
+
+eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc
+
+eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.obj: update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Tpo -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc' object='eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc'; fi`
 
 two_flavor_monomial_params_w.o: update/molecdyn/monomial/two_flavor_monomial_params_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_monomial_params_w.o -MD -MP -MF $(DEPDIR)/two_flavor_monomial_params_w.Tpo -c -o two_flavor_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_monomial_params_w.cc
@@ -10442,6 +10707,34 @@ two_flavor_monomial_params_w.obj: update/molecdyn/monomial/two_flavor_monomial_p
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_monomial_params_w.cc'; fi`
 
+two_flavor_ratio_conv_conv_monomial_params_w.o: update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_ratio_conv_conv_monomial_params_w.o -MD -MP -MF $(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Tpo -c -o two_flavor_ratio_conv_conv_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Tpo $(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc' object='two_flavor_ratio_conv_conv_monomial_params_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_ratio_conv_conv_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc
+
+two_flavor_ratio_conv_conv_monomial_params_w.obj: update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_ratio_conv_conv_monomial_params_w.obj -MD -MP -MF $(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Tpo -c -o two_flavor_ratio_conv_conv_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Tpo $(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc' object='two_flavor_ratio_conv_conv_monomial_params_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_ratio_conv_conv_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc'; fi`
+
+two_flavor_ratio_conv_rat_monomial_params_w.o: update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_ratio_conv_rat_monomial_params_w.o -MD -MP -MF $(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Tpo -c -o two_flavor_ratio_conv_rat_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Tpo $(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc' object='two_flavor_ratio_conv_rat_monomial_params_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_ratio_conv_rat_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc
+
+two_flavor_ratio_conv_rat_monomial_params_w.obj: update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_ratio_conv_rat_monomial_params_w.obj -MD -MP -MF $(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Tpo -c -o two_flavor_ratio_conv_rat_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Tpo $(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc' object='two_flavor_ratio_conv_rat_monomial_params_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_ratio_conv_rat_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc'; fi`
+
 unprec_two_flavor_monomial_w.o: update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_monomial_w.Tpo -c -o unprec_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_monomial_w.Po
@@ -10455,34 +10748,6 @@ unprec_two_flavor_monomial_w.obj: update/molecdyn/monomial/unprec_two_flavor_mon
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc' object='unprec_two_flavor_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc'; fi`
-
-eoprec_constdet_two_flavor_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' object='eoprec_constdet_two_flavor_monomial_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
-
-eoprec_constdet_two_flavor_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' object='eoprec_constdet_two_flavor_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; fi`
-
-eoprec_logdet_two_flavor_monomial_w.o: update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_two_flavor_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo -c -o eoprec_logdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' object='eoprec_logdet_two_flavor_monomial_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
-
-eoprec_logdet_two_flavor_monomial_w.obj: update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_two_flavor_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo -c -o eoprec_logdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' object='eoprec_logdet_two_flavor_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; fi`
 
 unprec_two_flavor_monomial5d_w.o: update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_monomial5d_w.Tpo -c -o unprec_two_flavor_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc
@@ -10498,6 +10763,20 @@ unprec_two_flavor_monomial5d_w.obj: update/molecdyn/monomial/unprec_two_flavor_m
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc'; fi`
 
+eoprec_constdet_two_flavor_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' object='eoprec_constdet_two_flavor_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
+
+eoprec_constdet_two_flavor_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc' object='eoprec_constdet_two_flavor_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc'; fi`
+
 eoprec_constdet_two_flavor_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_monomial5d_w.Po
@@ -10512,75 +10791,145 @@ eoprec_constdet_two_flavor_monomial5d_w.obj: update/molecdyn/monomial/eoprec_con
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc'; fi`
 
-two_flavor_hasenbusch_monomial_params_w.o: update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_hasenbusch_monomial_params_w.o -MD -MP -MF $(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Tpo -c -o two_flavor_hasenbusch_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Tpo $(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc' object='two_flavor_hasenbusch_monomial_params_w.o' libtool=no @AMDEPBACKSLASH@
+eoprec_logdet_two_flavor_monomial_w.o: update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_two_flavor_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo -c -o eoprec_logdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' object='eoprec_logdet_two_flavor_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_hasenbusch_monomial_params_w.o `test -f 'update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_two_flavor_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
 
-two_flavor_hasenbusch_monomial_params_w.obj: update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT two_flavor_hasenbusch_monomial_params_w.obj -MD -MP -MF $(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Tpo -c -o two_flavor_hasenbusch_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Tpo $(DEPDIR)/two_flavor_hasenbusch_monomial_params_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc' object='two_flavor_hasenbusch_monomial_params_w.obj' libtool=no @AMDEPBACKSLASH@
+eoprec_logdet_two_flavor_monomial_w.obj: update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_two_flavor_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo -c -o eoprec_logdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_two_flavor_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc' object='eoprec_logdet_two_flavor_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o two_flavor_hasenbusch_monomial_params_w.obj `if test -f 'update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_two_flavor_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc'; fi`
 
-unprec_two_flavor_hasenbusch_monomial_w.o: update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_hasenbusch_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Tpo -c -o unprec_two_flavor_hasenbusch_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc' object='unprec_two_flavor_hasenbusch_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_conv_monomial_w.o: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_conv_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Tpo -c -o unprec_two_flavor_ratio_conv_conv_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc' object='unprec_two_flavor_ratio_conv_conv_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_hasenbusch_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_conv_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc
 
-unprec_two_flavor_hasenbusch_monomial_w.obj: update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_hasenbusch_monomial_w.obj -MD -MP -MF $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Tpo -c -o unprec_two_flavor_hasenbusch_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc' object='unprec_two_flavor_hasenbusch_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_conv_monomial_w.obj: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_conv_monomial_w.obj -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Tpo -c -o unprec_two_flavor_ratio_conv_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc' object='unprec_two_flavor_ratio_conv_conv_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_hasenbusch_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc'; fi`
 
-unprec_two_flavor_hasenbusch_monomial5d_w.o: update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_hasenbusch_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Tpo -c -o unprec_two_flavor_hasenbusch_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Tpo $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc' object='unprec_two_flavor_hasenbusch_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_conv_monomial5d_w.o: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_conv_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Tpo -c -o unprec_two_flavor_ratio_conv_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc' object='unprec_two_flavor_ratio_conv_conv_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_hasenbusch_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc
 
-unprec_two_flavor_hasenbusch_monomial5d_w.obj: update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_hasenbusch_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Tpo -c -o unprec_two_flavor_hasenbusch_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Tpo $(DEPDIR)/unprec_two_flavor_hasenbusch_monomial5d_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc' object='unprec_two_flavor_hasenbusch_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_conv_monomial5d_w.obj: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_conv_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Tpo -c -o unprec_two_flavor_ratio_conv_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc' object='unprec_two_flavor_ratio_conv_conv_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_hasenbusch_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc'; fi`
 
-eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc' object='eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_rat_monomial_w.o: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Tpo -c -o unprec_two_flavor_ratio_conv_rat_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc' object='unprec_two_flavor_ratio_conv_rat_monomial_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_rat_monomial_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc
 
-eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc' object='eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_rat_monomial_w.obj: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_rat_monomial_w.obj -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Tpo -c -o unprec_two_flavor_ratio_conv_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc' object='unprec_two_flavor_ratio_conv_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc'; fi`
 
-eoprec_constdet_two_flavor_hasenbusch_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_hasenbusch_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_hasenbusch_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc' object='eoprec_constdet_two_flavor_hasenbusch_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_rat_monomial5d_w.o: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_rat_monomial5d_w.o -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Tpo -c -o unprec_two_flavor_ratio_conv_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc' object='unprec_two_flavor_ratio_conv_rat_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_hasenbusch_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc
 
-eoprec_constdet_two_flavor_hasenbusch_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_hasenbusch_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_hasenbusch_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_hasenbusch_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc' object='eoprec_constdet_two_flavor_hasenbusch_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+unprec_two_flavor_ratio_conv_rat_monomial5d_w.obj: update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_two_flavor_ratio_conv_rat_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Tpo -c -o unprec_two_flavor_ratio_conv_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Tpo $(DEPDIR)/unprec_two_flavor_ratio_conv_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc' object='unprec_two_flavor_ratio_conv_rat_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_hasenbusch_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o unprec_two_flavor_ratio_conv_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc'; fi`
+
+eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc
+
+eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc'; fi`
+
+eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc
+
+eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc'; fi`
+
+eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc
+
+eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc'; fi`
+
+eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc
+
+eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.obj: update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.obj -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Tpo -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Tpo $(DEPDIR)/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc' object='eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc'; fi`
+
+eoprec_logdet_ee_monomial_w.o: update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_ee_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo -c -o eoprec_logdet_ee_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_ee_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' object='eoprec_logdet_ee_monomial_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_ee_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
+
+eoprec_logdet_ee_monomial_w.obj: update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_ee_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo -c -o eoprec_logdet_ee_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_ee_monomial_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' object='eoprec_logdet_ee_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_ee_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; fi`
 
 eoprec_constdet_two_flavor_polynomial_monomial_w.o: update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_constdet_two_flavor_polynomial_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_constdet_two_flavor_polynomial_monomial_w.Tpo -c -o eoprec_constdet_two_flavor_polynomial_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc
@@ -10609,20 +10958,6 @@ eoprec_constdet_two_flavor_polyprec_monomial_w.obj: update/molecdyn/monomial/eop
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc' object='eoprec_constdet_two_flavor_polyprec_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_constdet_two_flavor_polyprec_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc'; fi`
-
-eoprec_logdet_ee_monomial_w.o: update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_ee_monomial_w.o -MD -MP -MF $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo -c -o eoprec_logdet_ee_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_ee_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' object='eoprec_logdet_ee_monomial_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_ee_monomial_w.o `test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
-
-eoprec_logdet_ee_monomial_w.obj: update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_logdet_ee_monomial_w.obj -MD -MP -MF $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo -c -o eoprec_logdet_ee_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_logdet_ee_monomial_w.Tpo $(DEPDIR)/eoprec_logdet_ee_monomial_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc' object='eoprec_logdet_ee_monomial_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_logdet_ee_monomial_w.obj `if test -f 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc'; fi`
 
 fixed_random_ferm_monomial.o: update/molecdyn/monomial/fixed_random_ferm_monomial.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fixed_random_ferm_monomial.o -MD -MP -MF $(DEPDIR)/fixed_random_ferm_monomial.Tpo -c -o fixed_random_ferm_monomial.o `test -f 'update/molecdyn/monomial/fixed_random_ferm_monomial.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/fixed_random_ferm_monomial.cc
