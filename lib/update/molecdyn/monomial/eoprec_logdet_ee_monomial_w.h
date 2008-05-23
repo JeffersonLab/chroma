@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_logdet_ee_monomial_w.h,v 3.3 2007-10-24 02:46:37 edwards Exp $
+// $Id: eoprec_logdet_ee_monomial_w.h,v 3.4 2008-05-23 18:39:45 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */
@@ -102,7 +102,6 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace EvenOddPrecLogDetEvenEvenMonomial4DEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 

@@ -1,4 +1,4 @@
-// $Id: eoprec_logdet_ee_monomial_w.cc,v 3.2 2007-10-24 02:46:37 edwards Exp $
+// $Id: eoprec_logdet_ee_monomial_w.cc,v 3.3 2008-05-23 18:39:45 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(A_ee))
  */
@@ -20,8 +20,6 @@ namespace Chroma
       Monomial< multi1d<LatticeColorMatrix>,
 		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
       {
-	QDPIO::cout << "Create Monomial: " << name << endl;
-
 	return new EvenOddPrecLogDetEvenEvenMonomial4D(EvenOddPrecLogDetEvenEvenMonomialParams(xml, path));
       }
 

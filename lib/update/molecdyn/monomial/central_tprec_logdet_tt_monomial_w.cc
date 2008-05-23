@@ -1,4 +1,4 @@
-// $Id: central_tprec_logdet_tt_monomial_w.cc,v 3.1 2007-12-12 21:42:58 bjoo Exp $
+// $Id: central_tprec_logdet_tt_monomial_w.cc,v 3.2 2008-05-23 18:39:45 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned log(det(T^\dag T ))
  */
@@ -26,8 +26,6 @@ namespace Chroma
       Monomial< multi1d<LatticeColorMatrix>,
 		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
       {
-	QDPIO::cout << "Create Monomial: " << name << endl;
-
 	return new CentralTimePrecLogDetTTMonomial4D(CentralTimePrecLogDetTTMonomialParams(xml, path));
       }
 
