@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fixed_random_ferm_monomial.h,v 3.5 2006-09-20 20:28:05 edwards Exp $
+// $Id: fixed_random_ferm_monomial.h,v 3.6 2008-05-23 18:40:41 edwards Exp $
 
 /*! @file
  * @brief Fixed random monomial
@@ -23,7 +23,6 @@ namespace Chroma {
   /*! @ingroup monomial */
   namespace FixedRandomFermMonomial4DEnv 
   {
-    extern const std::string name;
     bool registerAll();
   }
 

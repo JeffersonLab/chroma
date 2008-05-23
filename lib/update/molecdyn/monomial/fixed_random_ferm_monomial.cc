@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fixed_random_ferm_monomial.cc,v 3.8 2006-09-20 20:28:05 edwards Exp $
+// $Id: fixed_random_ferm_monomial.cc,v 3.9 2008-05-23 18:40:41 edwards Exp $
 
 /*! @file
  * @brief Fixed random monomial
@@ -19,8 +19,6 @@ namespace Chroma {
     Monomial< multi1d<LatticeColorMatrix>,
 	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
     {
-      QDPIO::cout << "Create Monomial: " << name << endl;
-      
       return new  FixedRandomFermMonomial4D(FixedRandomFermMonomialParams(xml,path));
       
     }
