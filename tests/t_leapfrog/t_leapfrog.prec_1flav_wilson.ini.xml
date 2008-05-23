@@ -4,25 +4,50 @@
     <Monomials>
       <elem>
 	<Name>ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL</Name>
-        <expNumPower>1</expNumPower>
-        <expDenPower>1</expDenPower>
-        <nthRoot>2</nthRoot>
-	<InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-7</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-        <FermionAction>
-          <FermAct>WILSON</FermAct>
-	  <Kappa>0.10</Kappa>
-          <boundary>1 1 1 -1</boundary>
-        </FermionAction>
-	<Remez>
-          <lowerMin>8</lowerMin>
-          <upperMax>40</upperMax>
-          <forceDegree>10</forceDegree>
-          <actionDegree>10</actionDegree>
-        </Remez>
+        <num_pf>2</num_pf>
+        <Numerator>
+          <FermionAction>
+            <FermAct>WILSON</FermAct>
+            <Kappa>0.10</Kappa>
+            <FermState>
+              <Name>SIMPLE_FERM_STATE</Name>
+              <FermionBC>
+                <FermBC>SIMPLE_FERMBC</FermBC>
+                <boundary>1 1 1 -1</boundary>
+              </FermionBC>
+            </FermState>
+          </FermionAction>
+          <ActionApprox>
+            <RationalApprox>
+              <ratApproxType>REMEZ</ratApproxType>
+              <numPower>-1</numPower>
+              <denPower>8</denPower>
+              <lowerMin>8</lowerMin>
+              <upperMax>40</upperMax>
+              <degree>10</degree>
+            </RationalApprox>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1.0e-7</RsdCG>
+              <MaxCG>1000</MaxCG>
+            </InvertParam>
+          </ActionApprox>
+          <ForceApprox>
+            <RationalApprox>
+              <ratApproxType>REMEZ</ratApproxType>
+              <numPower>-1</numPower>
+              <denPower>4</denPower>
+              <lowerMin>8</lowerMin>
+              <upperMax>40</upperMax>
+              <degree>4</degree>
+            </RationalApprox>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1.0e-4 1.0e-5 1.0e-6 1.0e-7</RsdCG>
+              <MaxCG>1000</MaxCG>
+            </InvertParam>
+          </ForceApprox>
+        </Numerator>
 	<NamedObject>
 	  <monomial_id>fermion</monomial_id>
 	</NamedObject>
@@ -46,10 +71,10 @@
      <monomial_ids><elem>fermion</elem><elem>gauge</elem></monomial_ids>
    </Hamiltonian>
    <MDIntegrator>
-	<tau0>0.1</tau0>
+	<tau0>1.0</tau0>
 	<Integrator>
 	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>25</n_steps>
+	  <n_steps>5</n_steps>
           <monomial_ids><elem>fermion</elem><elem>gauge</elem></monomial_ids>
         </Integrator>
    </MDIntegrator>

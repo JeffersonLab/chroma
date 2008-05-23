@@ -4,30 +4,46 @@
     <Monomials>
       <elem>
 	<Name>ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL5D</Name>
-        <nthRoot>2</nthRoot>
-        <nthRootPV>2</nthRootPV>
-        <expNumPower>1</expNumPower>
-        <expDenPower>1</expDenPower>
-	<InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-7</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-        <FermionAction>
-          <FermAct>DWF</FermAct>
-          <OverMass>1.4</OverMass>
-          <Mass>0.06</Mass>
-          <N5>6</N5>
-          <boundary>1 1 1 -1</boundary>
-        </FermionAction>
-	<Remez>
-          <lowerMin>0.001</lowerMin>
-          <upperMax>5.8</upperMax>
-          <lowerMinPV>0.001</lowerMinPV>
-          <upperMaxPV>5.8</upperMaxPV>
-          <degree>10</degree>
-          <degreePV>10</degreePV>
-        </Remez>
+        <num_pf>2</num_pf>
+        <Numerator>
+          <FermionAction>
+            <FermAct>DWF</FermAct>
+            <OverMass>1.4</OverMass>
+            <Mass>0.06</Mass>
+            <N5>6</N5>
+            <boundary>1 1 1 -1</boundary>
+          </FermionAction>
+          <ActionApprox>
+            <RationalApprox>
+              <ratApproxType>REMEZ</ratApproxType>
+              <numPower>-1</numPower>
+              <denPower>8</denPower>
+              <lowerMin>0.001</lowerMin>
+              <upperMax>5.8</upperMax>
+              <degree>10</degree>
+            </RationalApprox>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1.0e-7</RsdCG>
+              <MaxCG>1000</MaxCG>
+            </InvertParam>
+          </ActionApprox>
+          <ForceApprox>
+            <RationalApprox>
+              <ratApproxType>REMEZ</ratApproxType>
+              <numPower>-1</numPower>
+              <denPower>4</denPower>
+              <lowerMin>0.001</lowerMin>
+              <upperMax>5.8</upperMax>
+              <degree>4</degree>
+            </RationalApprox>
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1.0e-4 1.0e-5 1.0e-6 1.0e-7</RsdCG>
+              <MaxCG>1000</MaxCG>
+            </InvertParam>
+          </ForceApprox>
+        </Numerator>
 	<NamedObject>
 	  <monomial_id>dwf_1flav</monomial_id>
 	</NamedObject>
@@ -37,7 +53,7 @@
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	   <Name>WILSON_GAUGEACT</Name>
-	   <beta>5.2</beta>
+	   <beta>5.7</beta>
 	   <GaugeBC>
 		<Name>PERIODIC_GAUGEBC</Name>
            </GaugeBC>
@@ -45,7 +61,6 @@
 	<NamedObject>
 	  <monomial_id>gauge</monomial_id>
 	</NamedObject>
-
       </elem>
     </Monomials>
 
