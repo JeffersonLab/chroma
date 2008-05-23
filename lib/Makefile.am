@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.141 2008-05-16 21:53:15 edwards Exp $
+# $Id: Makefile.am,v 3.142 2008-05-23 21:32:25 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -331,12 +331,16 @@ nobase_include_HEADERS = \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
-	update/molecdyn/monomial/genapprox.h \
 	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/monomial/bigfloat.h \
 	update/molecdyn/monomial/remez.h \
 	update/molecdyn/monomial/remez_coeff.h \
 	update/molecdyn/monomial/remez_stub.h \
+	update/molecdyn/monomial/rat_approx.h \
+	update/molecdyn/monomial/rat_approx_factory.h \
+	update/molecdyn/monomial/rat_approx_aggregate.h \
+	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
@@ -353,8 +357,12 @@ nodist_include_HEADERS=chroma_config_internal.h
 # Wilson specific headers
 nobase_include_HEADERS += \
         wilstype_polyfermact_w.h \
-        wilstype_fermact_w.h unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h central_tprec_fermact_w.h \
-        eoprec_constdet_wilstype_fermact_w.h eoprec_logdet_wilstype_fermact_w.h \
+        wilstype_fermact_w.h \
+        unprec_wilstype_fermact_w.h \
+        eoprec_wilstype_fermact_w.h \
+        central_tprec_fermact_w.h \
+        eoprec_constdet_wilstype_fermact_w.h \
+        eoprec_logdet_wilstype_fermact_w.h \
 	unprec_s_cprec_t_wilstype_fermact_w.h \
 	iluprec_s_cprec_t_wilstype_fermact_w.h \
 	eo3dprec_s_cprec_t_wilstype_fermact_w.h \
@@ -561,33 +569,53 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/monomial_w.h \
 	update/molecdyn/monomial/monomial_aggregate_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
-	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.h \
 	update/molecdyn/monomial/one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial5d_w.h \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/two_flavor_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
-        update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial5d_w.h \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.h \
-	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
-	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.h \
+        update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/two_flavor_polyprec_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.h \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.h \
 	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.h \
 	util/ferm/ferm_w.h util/ferm/diractodr.h \
@@ -1034,8 +1062,10 @@ libchroma_a_SOURCES = \
 	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
-	update/molecdyn/monomial/genapprox.cc \
 	update/molecdyn/monomial/force_monitors.cc \
+	update/molecdyn/monomial/rat_approx_aggregate.cc \
+	update/molecdyn/monomial/remez_rat_approx.cc \
+	update/molecdyn/monomial/comp_approx.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
@@ -1241,25 +1271,39 @@ libchroma_a_SOURCES += \
         meas/sources/walfil_w.cc \
 	update/molecdyn/monomial/monomial_aggregate_w.cc \
 	update/molecdyn/monomial/one_flavor_rat_monomial_params_w.cc \
+	update/molecdyn/monomial/one_flavor_ratio_rat_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/one_flavor_ratio_rat_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
-	update/molecdyn/monomial/one_flavor_rat_monomial5d_params_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/two_flavor_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_conv_monomial_params_w.cc \
+	update/molecdyn/monomial/two_flavor_ratio_conv_rat_monomial_params_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/unprec_two_flavor_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_monomial5d_w.cc \
-	update/molecdyn/monomial/two_flavor_hasenbusch_monomial_params_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial_w.cc \
-	update/molecdyn/monomial/unprec_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial5d_w.cc \
-	update/molecdyn/monomial/eoprec_constdet_two_flavor_hasenbusch_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_two_flavor_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial_w.cc \
+	update/molecdyn/monomial/unprec_two_flavor_ratio_conv_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_conv_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_two_flavor_ratio_conv_rat_monomial5d_w.cc \
+	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
-	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
 	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.cc \
 	util/ferm/staggered_operators_s.cc \
