@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.18 2007-08-30 17:36:32 edwards Exp $
+// $Id: clover_term_qdp_w.cc,v 3.19 2008-05-23 11:37:58 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -441,9 +441,16 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    END_CODE();
+    LatticeReal ff=tr_log_diag_;
 
-    return sum(tr_log_diag_, rb[cb]);
+    if( param.sub_zero_usedP ) { 
+ 	QDPIO::cout << "Subtracting "<< param.sub_zero<<endl;
+	LatticeReal tmp;
+	tmp[rb[cb]] = param.sub_zero;
+	ff[rb[cb]] -= tmp;
+    }
+    END_CODE();
+    return sum(ff, rb[cb]);
   }
 
 

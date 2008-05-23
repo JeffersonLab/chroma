@@ -1,4 +1,4 @@
-// $Id: clover_fermact_params_w.cc,v 3.2 2008-05-07 01:12:18 bjoo Exp $
+// $Id: clover_fermact_params_w.cc,v 3.3 2008-05-23 11:37:58 bjoo Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */
@@ -19,6 +19,9 @@ namespace Chroma
     clovCoeffR = clovCoeffT = Real(0);
     max_norm=0;
     max_norm_usedP=false;
+
+    sub_zero=0;
+    sub_zero_usedP=false;
   }
 
   //! Read parameters
@@ -86,6 +89,16 @@ namespace Chroma
       max_norm_usedP=false;
       max_norm=Real(0);
     }
+
+    if( paramtop.count("ZeroEnergy") != 0 ) { 
+      read(paramtop, "ZeroEnergy", sub_zero);
+      QDPIO::cout << "ZeroEnergy=" <<sub_zero << endl;
+      sub_zero_usedP=true;
+    }
+    else { 
+      sub_zero_usedP=false;
+      sub_zero=Real(0);
+    }
   }
 
   //! Read parameters
@@ -116,6 +129,10 @@ namespace Chroma
 
     if (param.max_norm_usedP){
       write(xml, "MaxNorm", param.max_norm);
+    }
+
+    if (param.sub_zero_usedP == true ) {
+      write(xml, "ZeroEnergy", param.sub_zero);
     }
     pop(xml);
   }
