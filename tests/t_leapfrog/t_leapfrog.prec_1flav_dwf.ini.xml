@@ -43,7 +43,7 @@
               <MaxCG>1000</MaxCG>
             </InvertParam>
           </ForceApprox>
-        </Numerator>
+        </Action>
 	<NamedObject>
 	  <monomial_id>dwf_1flav</monomial_id>
 	</NamedObject>
