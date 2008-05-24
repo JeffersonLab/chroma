@@ -1,4 +1,4 @@
-// $Id: two_flavor_ratio_conv_conv_monomial_params_w.cc,v 3.1 2008-05-23 21:31:34 edwards Exp $
+// $Id: two_flavor_ratio_conv_conv_monomial_params_w.cc,v 3.2 2008-05-24 04:29:32 edwards Exp $
 /*! @file
  * @brief Two-flavor RatioConvConv monomial params
  */
@@ -17,8 +17,8 @@ namespace Chroma
     
     try {
       // Read the inverter Parameters
-      read(paramtop, "Numerator", numer);
-      read(paramtop, "Denominator", denom);
+      read(paramtop, "Action", numer);
+      read(paramtop, "PrecAction", denom);
 
       if( paramtop.count("./ChronologicalPredictor") == 0 ) 
       {
@@ -47,8 +47,8 @@ namespace Chroma
   void write(XMLWriter& xml, const std::string& path,
 	     const TwoFlavorRatioConvConvWilsonTypeFermMonomialParams& params) 
   {
-    write(xml, "Numerator", params.numer);
-    write(xml, "Denominator", params.denom); 
+    write(xml, "Action", params.numer);
+    write(xml, "PrecAction", params.denom); 
     xml << params.predictor.xml;
   }
  

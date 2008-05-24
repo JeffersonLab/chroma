@@ -1,4 +1,4 @@
-// $Id: one_flavor_rat_monomial_params_w.cc,v 3.3 2008-05-23 21:31:33 edwards Exp $
+// $Id: one_flavor_rat_monomial_params_w.cc,v 3.4 2008-05-24 04:29:31 edwards Exp $
 /*! @file
  * @brief One-flavor monomial params
  */
@@ -17,7 +17,7 @@ namespace Chroma
     try 
     {
       read(paramtop, "num_pf", num_pf);
-      read(paramtop, "Numerator", numer);
+      read(paramtop, "Action", numer);
     }
     catch(const string& s) 
     {
@@ -41,7 +41,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "num_pf", params.num_pf);
-    write(xml, "Numerator", params.numer);
+    write(xml, "Action", params.numer);
 
     pop(xml);
   }
