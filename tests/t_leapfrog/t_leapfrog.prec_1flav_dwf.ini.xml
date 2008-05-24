@@ -5,7 +5,7 @@
       <elem>
 	<Name>ONE_FLAVOR_EOPREC_CONSTDET_FERM_RAT_MONOMIAL5D</Name>
         <num_pf>2</num_pf>
-        <Numerator>
+        <Action>
           <FermionAction>
             <FermAct>DWF</FermAct>
             <OverMass>1.4</OverMass>
