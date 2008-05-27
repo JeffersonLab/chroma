@@ -10,7 +10,7 @@
             <FermAct>DWF</FermAct>
             <OverMass>1.4</OverMass>
             <Mass>0.06</Mass>
-            <N5>6</N5>
+            <N5>4</N5>
             <boundary>1 1 1 -1</boundary>
           </FermionAction>
           <ActionApprox>
@@ -75,7 +75,7 @@
         <tau0>1.0</tau0>
 	<Integrator>
            <Name>LCM_STS_LEAPFROG</Name>
-           <n_steps>5</n_steps>
+           <n_steps>50</n_steps>
            <monomial_ids>
             <elem>dwf_1flav</elem>
    	    <elem>gauge</elem>
