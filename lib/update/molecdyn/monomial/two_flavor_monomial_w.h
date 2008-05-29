@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.10 2008-05-23 21:31:34 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 3.11 2008-05-29 03:58:37 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -70,16 +70,28 @@ namespace Chroma
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-	
-      Phi X, Y;
 
-      // Get X out here
-      // (getMDSolutionPredictor())(X);
-      int n_count = getX(X,s);
-      // (getMDSolutionPredictor()).newVector(X);
+      // Solution to linear system using chrono predictor.
+      Phi X;
+
+      // CG Chrono predictor needs MdagM
+      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+
+      // Insert vector
+      (getMDSolutionPredictor()).newVector(X);
       
+      Phi Y;
+
       (*M)(Y, X, PLUS);
 
       M->deriv(F, X, Y, MINUS);
@@ -96,7 +108,7 @@ namespace Chroma
       // now derive it with respect to the thin links if needs be
       state->deriv(F);
       
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       monitorForces(xml_out, "Forces", F);
 
       pop(xml_out);
@@ -179,38 +191,6 @@ namespace Chroma
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
-
-
-    //! Get (M^dagM)^{-1} phi
-    virtual int getX(Phi& X, const AbsFieldState<P,Q>& s)
-    {
-      START_CODE();
-
-      // Grab the fermact
-      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
-
-      // Make the state
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-
-      // Get system solver
-      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
-
-      // CG Chrono predictor needs MdagM
-      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      (getMDSolutionPredictor())(X, *MdagM, getPhi());
-
-      // Solve MdagM X = eta
-      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
-      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
-
-      // Insert vector
-      (getMDSolutionPredictor()).newVector(X);
-
-      END_CODE();
-
-      return res.n_count;
-    }
-
   };
 
 
@@ -239,18 +219,30 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecWilsonTypeFermMonomial");
 
+      // Grab the fermact
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+
+      // Make the state
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+
       Phi X;
       
       // Energy calc doesnt use Chrono Predictor
       X = zero;
       QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
-      int n_count = getX(X,s);
+
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
 
       // Action on the entire lattice
       Double action = innerProductReal(getPhi(), X);
       
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       write(xml_out, "S", action);
       pop(xml_out);
 
@@ -305,23 +297,31 @@ namespace Chroma
 
       const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
 
-      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
+      Handle< FermState<Phi,P,Q> > state = FA.createState(s.getQ());
 
-      // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > M(FA.linOp(bc_g_state));
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+
+      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+
       // Get the X fields
       Phi X;
 
       // Action calc doesnt use chrono predictor use zero guess
       X[ M->subset() ] = zero;
 
-      // getX noe always uses chrono predictor. Best to Nuke it therefore
+      // Energy calc doesnt use Chrono Predictor
       QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
-      int n_count = getX(X, s);
+
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+
+      // Action
       Double action = innerProductReal(getPhi(), X, M->subset());
       
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       write(xml_out, "S_oo", action);
       pop(xml_out);
 
@@ -414,10 +414,10 @@ namespace Chroma
       START_CODE();
 
       const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
-      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
+      Handle< FermState<Phi,P,Q> > state = FA.createState(s.getQ());
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
       
       Double S_ee =(Double(-2)*M->logDetEvenEvenLinOp());
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
@@ -478,6 +478,9 @@ namespace Chroma
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+
       //Create LinOp
       Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
 
@@ -486,13 +489,20 @@ namespace Chroma
       // Do the force computation. deriv() in these linops refers only
       // to the bit coming from the odd-odd bilinear -- this works in 
       // the normal way.
-      Phi X, Y;
+      Phi X;
 
-      // Get X out here
-      // (getMDSolutionPredictor())(X);
-      int n_count = getX(X,s);
-      // (getMDSolutionPredictor()).newVector(X);
+      // CG Chrono predictor needs MdagM
+      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+
+ // Insert vector
+      (getMDSolutionPredictor()).newVector(X);
       
+      Phi Y;
       (*M)(Y, X, PLUS);
 
       M->deriv(F, X, Y, MINUS);
@@ -513,7 +523,7 @@ namespace Chroma
       }
       
       state->deriv(F);
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       monitorForces(xml_out, "Forces", F);
       pop(xml_out);
 
@@ -522,10 +532,21 @@ namespace Chroma
 
     // Inherit everything from Base Class
   protected:
+    //! Accessor for pseudofermion with Pf index i (read only)
+    virtual const Phi& getPhi(void) const = 0;
+
+    //! mutator for pseudofermion with Pf index i 
+    virtual Phi& getPhi(void) = 0;    
+
     //! Get at fermion action
     //! For now the prototype is the same as before -- wait until we 
     //! refactor these before making them EvenOddPrecConstDetWilsonType...
     virtual const EvenOddPrecLogDetWilsonTypeFermAct<Phi,P,Q>& getFermAct() const = 0;
+
+    //! Get inverter params
+    virtual const GroupXML_t& getInvParams(void) const = 0;
+
+    virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor(void) = 0;
   };
 
 }

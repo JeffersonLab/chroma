@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_constdet_two_flavor_monomial_w.h,v 3.3 2008-05-23 21:31:33 edwards Exp $
+// $Id: eoprec_constdet_two_flavor_monomial_w.h,v 3.4 2008-05-29 03:58:37 edwards Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -62,30 +62,34 @@ namespace Chroma
 
       const EvenOddPrecWilsonTypeFermAct<T,P,Q>& FA = getFermAct();
 
-      Handle< FermState<T,P,Q> > bc_g_state = FA.createState(s.getQ());
+      Handle< FermState<T,P,Q> > state = FA.createState(s.getQ());
+
+      // Get system solver
+      Handle< MdagMSystemSolver<T> > invMdagM(FA.invMdagM(state, getInvParams()));
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLinearOperator<T,P,Q> > lin(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLinearOperator<T,P,Q> > lin(FA.linOp(state));
       // Get the X fields
       T X;
 
       // Action calc doesnt use chrono predictor use zero guess
       X[ lin->subset() ] = zero;
 
-      // getX noe always uses chrono predictor. Best to Nuke it therefore
+      // No predictor used here.
       QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
-      int n_count = getX(X, s);
+
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
 
       LatticeDouble site_action=zero;
       site_action[ lin->subset() ] = Double(-12);
       site_action[ lin->subset() ] += localInnerProductReal(getPhi(),X);
-
      
       //Double action = innerProductReal(getPhi(), X, lin->subset());
       Double action = sum(site_action, lin->subset());
 
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       write(xml_out, "S_oo", action);
       pop(xml_out);
 
