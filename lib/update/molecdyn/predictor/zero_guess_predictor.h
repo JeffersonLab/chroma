@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zero_guess_predictor.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
+// $Id: zero_guess_predictor.h,v 3.4 2008-05-29 03:28:05 edwards Exp $
 /*! \file
  * \brief Zero initial guess predictor
  *
@@ -89,7 +89,12 @@ namespace Chroma
     { 
       START_CODE();
 
-      QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
+      if (A.size() != N5)
+      {
+	QDPIO::cerr << "ZeroGuess5D: mismatched sizes A.size=" << A.size() 
+		    << "  and N5=" << N5 << endl;
+	QDP_abort(1);
+      }
       psi.resize(N5);
       psi = zero;
     
