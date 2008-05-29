@@ -1,4 +1,4 @@
-// $Id: invcg2_array.cc,v 3.6 2007-08-27 18:18:54 edwards Exp $
+// $Id: invcg2_array.cc,v 3.7 2008-05-29 03:28:31 edwards Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -89,8 +89,12 @@ namespace Chroma
     multi1d<T> r(N);             // moveToFastMemoryHint(r);
     multi1d<T> chi_internal(N);  // moveToFastMemoryHint(chi_internal);
 
-    QDPIO::cout << "chi_internal has size" << chi_internal.size() << endl;
-    QDPIO::cout << "chi has size" << chi.size() << endl;
+    if (M.size() != chi.size())
+    {
+      QDPIO::cerr << __func__ << ": linop has size=" << M.size()
+		  << "  but chi has size=" << chi.size() << endl;
+      QDP_abort(1);
+    }
 
     for(int i=0; i < N; i++) {
       chi_internal[i][ M.subset() ] = chi[i];
