@@ -48,10 +48,10 @@
 
    </Hamiltonian>
    <MDIntegrator>
-	<tau0>0.05</tau0>
+	<tau0>1.0</tau0>
 	<Integrator>
 	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>100</n_steps>
+	  <n_steps>25</n_steps>
           <monomial_ids><elem>dwf</elem><elem>gauge</elem></monomial_ids>
 	</Integrator>
    </MDIntegrator>
