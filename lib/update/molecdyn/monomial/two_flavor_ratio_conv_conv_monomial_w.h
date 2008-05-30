@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_ratio_conv_conv_monomial_w.h,v 3.1 2008-05-23 21:31:34 edwards Exp $
+// $Id: two_flavor_ratio_conv_conv_monomial_w.h,v 3.2 2008-05-30 18:45:45 edwards Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -27,7 +27,6 @@ namespace Chroma
    *
    * Can supply default dsdq()
    *                    pseudoferm refresh
-   *                    getX() algorithm
    * 
    * CAVEAT: I assume there is only 1 pseudofermion field in the following
    * so called TwoFlavorExact monomial.
@@ -71,45 +70,58 @@ namespace Chroma
       // In Robert's notation,  X -> psi .
       //
       const WilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();          // for M
-      const WilsonTypeFermAct<Phi,P,Q>& FAPrec = getDenomFermAct();  // for M_prec
+      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getDenomFermAct();  // for M_prec
 
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,getNumerInvParams()));
+
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(state));	
-      Handle< DiffLinearOperator<Phi,P,Q> > linPrec(FAPrec.linOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));	
+      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
 
       Phi X=zero;
       Phi Y=zero;
 
-      // Get X out here
-      int n_count = getX(X,s);
+      // Need MdagM for CG based predictor
+      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      Phi M_dag_prec_phi;
+
+      // M_dag_prec phi = M^{dag}_prec \phi - the RHS
+      (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
+
+      (getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
+
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
+
+      (getMDSolutionPredictor()).newVector(X);
       
-      (*lin)(Y, X, PLUS);
+      (*M)(Y, X, PLUS);
 
       // \phi^{\dagger} \dot(M_prec) X
-      linPrec->deriv(F, getPhi(), X, PLUS);
+      M_prec->deriv(F, getPhi(), X, PLUS);
       
-
       // - X^{\dagger} \dot( M^{\dagger}) Y
       P F_tmp;
-      lin->deriv(F_tmp, X, Y, MINUS);
+      M->deriv(F_tmp, X, Y, MINUS);
       F -= F_tmp;
  
       // - Y^{\dagger} \dot( M ) X
-      lin->deriv(F_tmp, Y, X, PLUS);
+      M->deriv(F_tmp, Y, X, PLUS);
       F -= F_tmp;
 
       // + X^{\dagger} \dot(M_prec)^dagger \phi
-      linPrec->deriv(F_tmp, X, getPhi(), MINUS);
+      M_prec->deriv(F_tmp, X, getPhi(), MINUS);
       F += F_tmp;
 
       // F now holds derivative with respect to possibly fat links
       // now derive it with respect to the thin links if needs be
       state->deriv(F);
 
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       monitorForces(xml_out, "Forces", F);
 
       pop(xml_out);
@@ -125,17 +137,17 @@ namespace Chroma
       // Heatbath all the fields
       
       // Get at the fermion action for the expensive matrix
-      const WilsonTypeFermAct<Phi,P,Q>& S_f = getNumerFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();
 
       // Get the fermion action for the preconditioner
-      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getDenomFermAct();
 
       // Create a Connect State, apply fermionic boundaries
-      Handle< FermState<Phi,P,Q> > f_state(S_f.createState(field_state.getQ()));
+      Handle< FermState<Phi,P,Q> > state(FA.createState(field_state.getQ()));
       
       // Create a linear operator for the Expensive op
-      Handle< DiffLinearOperator<Phi,P,Q> > M(S_f.linOp(f_state));
-      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(S_prec.linOp(f_state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
 
       Phi eta = zero;
       
@@ -143,7 +155,7 @@ namespace Chroma
       gaussian(eta, M->subset());
       
       // Account for fermion BC by modifying the proposed field
-      S_f.getFermBC().modifyF(eta);
+      FA.getFermBC().modifyF(eta);
 
       // Temporary: Move to correct normalisation
       eta *= sqrt(0.5);
@@ -174,7 +186,7 @@ namespace Chroma
       (*M)(eta_tmp, eta, MINUS);  // M^\dag \eta
 
       // Get system solver
-      Handle< MdagMSystemSolver<Phi> > invMdagM(S_prec.invMdagM(f_state, getNumerInvParams()));
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA_prec.invMdagM(state, getNumerInvParams()));
 
       // Solve MdagM_prec X = eta
       SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
@@ -218,56 +230,6 @@ namespace Chroma
       getMDSolutionPredictor().reset();
 
     }
-
-    // We want to generate X = (M^dag M)^{-1} M^{\dagger}_prec \phi
-    // Which is a normal solve on M^dag M X = M^{\dagger}_prec \phi
-    virtual int getX( Phi& X, const AbsFieldState<P,Q>& s)
-    {
-      START_CODE();
-
-      // Grab the fermact
-      const WilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();
-      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getDenomFermAct();
-
-      // Make the state
-      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-
-      // Get linop
-      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
-
-      // Get system solver
-      const GroupXML_t& inv_param = getNumerInvParams();
-      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,inv_param));
-
-      SystemSolverResults_t res;
-
-      // Do the inversion...
-//    case CG_INVERTER:
-      {
-	// Solve MdagM X = M^{dag}_prec \phi
-	// Do the inversion...
-
-	// Need MdagM for CG based predictor
-	Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-	Phi M_dag_prec_phi;
-
-	// M_dag_prec phi = M^{dag}_prec \phi - the RHS
-	(*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
-
-	(getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
-
-	// Solve MdagM X = eta
-	res = (*invMdagM)(X, M_dag_prec_phi);
-
-	(getMDSolutionPredictor()).newVector(X);
-      }
-
-      END_CODE();
-
-      return res.n_count;
-    }
-
 
   protected:
     //! Accessor for pseudofermion with Pf
@@ -319,6 +281,16 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactUnprecRatioConvConvWilsonTypeFermMonomial");
 
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();          // for M
+      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getDenomFermAct();  // for M_prec
+
+      // Create a state for linop
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+	
+      // Get the fermion action for the preconditioner
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));	
+      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
+
       Phi X;
       
       // Energy calc doesnt use Chrono Predictor
@@ -329,22 +301,25 @@ namespace Chroma
       QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
-      int n_count = getX(X,s);
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,getNumerInvParams()));
 
+      // M_dag_prec phi = M^{dag}_prec \phi - the RHS
+      Phi M_dag_prec_phi;
+      (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
 
-      // Get the fermion action for the preconditioner
-      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
-      Handle< FermState<Phi,P,Q> > f_state(S_prec.createState(s.getQ()));
-      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(S_prec.linOp(f_state));      
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
 
+      (getMDSolutionPredictor()).newVector(X);
+      
       Phi phi_tmp=zero;
       (*M_prec)(phi_tmp, X, PLUS);
 
       // Action on the entire lattice
       Double action = innerProductReal(getPhi(), phi_tmp);
 
-      
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       write(xml_out, "S", action);
       pop(xml_out);
 
@@ -400,35 +375,43 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "S_odd_odd");
 
+      // Fermion actions
       const EvenOddPrecWilsonTypeFermAct<Phi,P,Q>& FA = getNumerFermAct();
+      const WilsonTypeFermAct<Phi,P,Q>& FA_prec = getDenomFermAct();  // for M_prec
 
-      Handle< FermState<Phi,P,Q> > bc_g_state = FA.createState(s.getQ());
+      // Create a state for linop
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
+      Handle< EvenOddPrecLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));      
+
       // Get the X fields
       Phi X;
 
       // Action calc doesnt use chrono predictor use zero guess
-      X[ lin->subset() ] = zero;
+      X[ M->subset() ] = zero;
 
-      // getX noe always uses chrono predictor. Best to Nuke it therefore
+      // Reset chrono predictor
       QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
-      int n_count = getX(X, s);
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,getNumerInvParams()));
 
-      const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
-      Handle< FermState<Phi,P,Q> > f_state(S_prec.createState(s.getQ()));
-      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(S_prec.linOp(f_state));      
+      // M_dag_prec phi = M^{dag}_prec \phi - the RHS
+      Phi M_dag_prec_phi;
+      (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
+
+      // Solve MdagM X = eta
+      SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
 
       Phi phi_tmp=zero;
       (*M_prec)(phi_tmp, X, PLUS);
 
-
-      Double action = innerProductReal(getPhi(), phi_tmp, lin->subset());
+      Double action = innerProductReal(getPhi(), phi_tmp, M->subset());
       
-      write(xml_out, "n_count", n_count);
+      write(xml_out, "n_count", res.n_count);
       write(xml_out, "S_oo", action);
       pop(xml_out);
 
