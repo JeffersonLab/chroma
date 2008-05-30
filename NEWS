@@ -1,3 +1,24 @@
+05/30/2008:  
+	Version 3.30.0
+  	Major overhaul of monomial structure which are now of the form
+
+	   pseudoferm term		   tag
+	  A=M^dag*M chi*A_1^-1*chi         two_flavor
+	  chi*M_2*A_1^-1*M_2^dag*chi	   two_flavor_ratio_conv_conv
+	  chi*R(A_2)*A_1^-1*R(A_2)*chi	   two_flavor_ratio_conv_rat
+	  chi*R(A_1)*chi		   one_flavor_rat
+	  chi*M_2*R(A_1)*M_2^dag*chi	   one_flavor_ratio_rat_conv
+	  chi*R(A_2)*R(A_1)*R(M_2)*chi	   one_flavor_ratio_rat_rat
+
+	  This structure exists for both 4D and 5D variants. Not all are
+	  implemented at the level of the derivatives, but can be. The 5D
+	  monomials no longer have an explicit reference to the
+	  Pauli-Villars (PV) linOpPV.  That linOp is now added as an
+	  appropriate separate monomial or the M_2 term. This is handled
+	  simply by giving a DWF-like fermact with a quark mass of 1, or it
+	  might require a kind of PV fermact in the case of some of the
+	  more esoteric 5D actions.
+
 05/22/2008:  
 	Version 3.29.2
 	Precision related tweaks in some HMC monomials. Some new variants of qqqNucNuc
