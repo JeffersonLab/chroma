@@ -1,4 +1,4 @@
-//  $Id: proginfo.cc,v 3.1 2007-02-25 22:37:04 edwards Exp $
+//  $Id: proginfo.cc,v 3.2 2008-05-30 18:53:11 edwards Exp $
 /*! \file
  *  \brief Print out basic info about this program
  */
@@ -30,6 +30,7 @@ namespace Chroma
     push(xml,"code_version");
     write(xml, "chroma", CHROMA_PACKAGE_VERSION);
     write(xml, "qdp", QDP_PACKAGE_VERSION);
+    write(xml, "basePrecision", BASE_PRECISION);
     pop(xml);
 
     std::time_t now;
