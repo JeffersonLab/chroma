@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.20 2008-05-21 15:15:16 bjoo Exp $
+#  $Id: regres.pl,v 3.21 2008-06-02 16:33:00 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -360,5 +360,14 @@
 #	 metric      => "$test_dir/t_leapfrog/t_leapfrog.2+2_gaugeact.metric.xml" ,
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.2+2_gaugeact.log.xml" ,
+     },
+    {
+         exec_path   => "$top_builddir/mainprogs/tests" ,
+         execute     => "t_leapfrog" ,
+         input       => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson-readcoeffs.ini.xml",
+         log         => "t_leapfrog.prec_1flav_wilson-readcoeffs.candidate.xml",
+         metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+         controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson-readcoeffs.log.xml" ,
      }
+
      );
