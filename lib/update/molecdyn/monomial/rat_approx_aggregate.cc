@@ -1,10 +1,11 @@
-// $Id: rat_approx_aggregate.cc,v 3.1 2008-05-23 21:31:34 edwards Exp $
+// $Id: rat_approx_aggregate.cc,v 3.2 2008-06-02 15:42:49 bjoo Exp $
 /*! \file
  *  \brief Rational approximation aggregator
  */
 
 #include "update/molecdyn/monomial/rat_approx_aggregate.h"
 #include "update/molecdyn/monomial/remez_rat_approx.h"
+#include "update/molecdyn/monomial/read_rat_approx.h"
 
 namespace Chroma
 {
@@ -25,6 +26,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= RemezRatApproxEnv::registerAll();
+	success &= ReadRatApproxEnv::registerAll();
 	registered = true;
       }
       return success;
