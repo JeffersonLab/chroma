@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 3.1 2007-05-30 20:21:11 edwards Exp $
+// $Id: t_remez.cc,v 3.2 2008-06-02 15:44:57 bjoo Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -19,27 +19,56 @@ int main(int argc, char *argv[])
   Layout::setLattSize(nrow);
   Layout::create();
 
-  XMLFileWriter xml_out("t_remez.xml");
-  push(xml_out, "t_remez");
+  Real lower;
+  Real upper;
+  long prec;
+  int degree;
+  unsigned long power_num;
+  unsigned long power_den;
 
-  proginfo(xml_out);  // basic program info
+  XMLReader xml_in(Chroma::getXMLInputFileName());
+  XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
-  Real lower = Real(1.0e-4);
-  Real upper = 1.6;
-  long prec = 80;
-  int degree = 14;
-  unsigned long power_num = 1;
-  unsigned long power_den = 2;
+  try { 
+    XMLReader paramtop(xml_in, "/Remez");
+    read(paramtop, "lower", lower);
+    read(paramtop, "upper", upper);
+    read(paramtop, "powerNum", power_num);
+    read(paramtop, "powerDen", power_den);
+    read(paramtop, "degree", degree);
+    if( paramtop.count("prec") == 1 ) { 
+      read(paramtop, "prec", prec);
+    }
+    else { 
+      prec=80;
+    }
 
+    push(xml_out, "Remez");
+    proginfo(xml_out);  // basic program info
+    push(xml_out, "Param");
+    xml_out << paramtop;
+    pop(xml_out);
+  
+  }
+  catch(const std::string& s) { 
+    QDPIO::cout << "Caught Exception reading parameters: " << s << endl;
+    QDP_abort(1);
+  }
+  catch(...) { 
+    QDPIO::cout << "Caught unknown exception while processing input " << endl;
+    QDP_abort(1);
+  }
+
+
+  
   Remez  remez(lower, upper, prec);
-
   remez.generateApprox(degree, power_num, power_den);
 
   QDPIO::cout << "Start getPFE" << endl;
   RemezCoeff_t pfe = remez.getPFE();
   QDPIO::cout << "Finished getPFE" << endl;
 
-  push(xml_out, "Remez_pfe");
+  push(xml_out, "PFECoeffs");
   write(xml_out, "norm", pfe.norm);
   write(xml_out, "res", pfe.res);
   write(xml_out, "pole", pfe.pole);
@@ -49,7 +78,7 @@ int main(int argc, char *argv[])
   RemezCoeff_t ipfe = remez.getIPFE();
   QDPIO::cout << "Finished getIPFE" << endl;
 
-  push(xml_out, "Remez_ipfe");
+  push(xml_out, "IPFECoeffs");
   write(xml_out, "norm", ipfe.norm);
   write(xml_out, "res", ipfe.res);
   write(xml_out, "pole", ipfe.pole);
