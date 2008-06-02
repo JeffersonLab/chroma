@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 3.2 2008-06-02 15:44:57 bjoo Exp $
+// $Id: t_remez.cc,v 3.3 2008-06-02 16:18:41 bjoo Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
   Real upper;
   long prec;
   int degree;
-  unsigned long power_num;
-  unsigned long power_den;
+  long power_num;
+  long power_den;
 
   XMLReader xml_in(Chroma::getXMLInputFileName());
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
@@ -59,13 +59,35 @@ int main(int argc, char *argv[])
     QDP_abort(1);
   }
 
+  bool invertP;
+
+  long multmp = power_num*power_den;
+  if( multmp > 0 ) { 
+    invertP = false;
+    QDPIO::cout << "Either both num and den powers are + or both are -" << endl;
+  }
+  else { 
+    invertP = true;
+    QDPIO::cout << "One of num or den powers is -" << endl;
+  }
+
+  unsigned long pn = power_num > 0 ? power_num : -power_num ;
+  unsigned long pd = power_den > 0 ? power_den : -power_den ;
 
   
   Remez  remez(lower, upper, prec);
-  remez.generateApprox(degree, power_num, power_den);
+  remez.generateApprox(degree, pn, pd);
 
   QDPIO::cout << "Start getPFE" << endl;
-  RemezCoeff_t pfe = remez.getPFE();
+  RemezCoeff_t pfe;
+
+  if( ! invertP ) {
+    pfe = remez.getPFE();
+  }
+  else { 
+    pfe = remez.getIPFE();
+  }
+
   QDPIO::cout << "Finished getPFE" << endl;
 
   push(xml_out, "PFECoeffs");
@@ -75,13 +97,22 @@ int main(int argc, char *argv[])
   pop(xml_out);
 
   QDPIO::cout << "Start getIPFE" << endl;
-  RemezCoeff_t ipfe = remez.getIPFE();
+  RemezCoeff_t ipfe;
+
+  if( !invertP )  {
+    ipfe = remez.getIPFE();
+  }
+  else { 
+    ipfe = remez.getPFE();
+  }
   QDPIO::cout << "Finished getIPFE" << endl;
 
   push(xml_out, "IPFECoeffs");
   write(xml_out, "norm", ipfe.norm);
   write(xml_out, "res", ipfe.res);
   write(xml_out, "pole", ipfe.pole);
+  pop(xml_out);
+
   pop(xml_out);
 
   int N = 20;
