@@ -11,6 +11,9 @@ namespace Chroma {
     RationalApprox* createApprox(XMLReader& xml_in,
 				 const std::string& path)
     {
+      QDPIO::cout << " XML Is: " << endl;
+      xml_in.print(std::cout);
+      std::cout << endl <<flush ;
       return new ReadRatApprox(Params(xml_in, path));
     }
 
@@ -36,12 +39,16 @@ namespace Chroma {
     //! Params for Remez type rational approximation
     /*! @ingroup monomial */
     Params::Params(XMLReader& in, const std::string& path) { 
+      
       try { 
-	XMLReader pfe_in(in, "PFECoeffs");
+	XMLReader paramtop(in,path);
+
+       
+	XMLReader pfe_in(paramtop, "PFECoeffs");
 	read(pfe_in, "norm", pfe.norm);
 	read(pfe_in, "res", pfe.res);
 	read(pfe_in, "pole", pfe.pole);
-	XMLReader ipfe_in(in, "IPFECoeffs");
+	XMLReader ipfe_in(paramtop, "IPFECoeffs");
 	read(ipfe_in, "norm", ipfe.norm);
 	read(ipfe_in, "res", ipfe.res);
 	read(ipfe_in, "pole", ipfe.pole);
