@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.254 2008-05-30 18:49:10 edwards Exp $
+# $Id: Makefile.in,v 3.255 2008-06-02 19:32:51 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -344,6 +344,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/force_monitors.cc \
 	update/molecdyn/monomial/rat_approx_aggregate.cc \
 	update/molecdyn/monomial/remez_rat_approx.cc \
+	update/molecdyn/monomial/read_rat_approx.cc \
 	update/molecdyn/monomial/comp_approx.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
@@ -864,10 +865,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
 	gauge_monomial.$(OBJEXT) force_monitors.$(OBJEXT) \
 	rat_approx_aggregate.$(OBJEXT) remez_rat_approx.$(OBJEXT) \
-	comp_approx.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
-	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
-	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
-	lcm_integrator_leaps.$(OBJEXT) \
+	read_rat_approx.$(OBJEXT) comp_approx.$(OBJEXT) \
+	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
+	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
+	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
 	lcm_sts_leapfrog_recursive.$(OBJEXT) \
@@ -1417,6 +1418,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/rat_approx_factory.h \
 	update/molecdyn/monomial/rat_approx_aggregate.h \
 	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/read_rat_approx.h \
 	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
@@ -2256,6 +2258,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/rat_approx_factory.h \
 	update/molecdyn/monomial/rat_approx_aggregate.h \
 	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/read_rat_approx.h \
 	update/molecdyn/monomial/comp_approx.h \
 	update/molecdyn/predictor/predictor.h \
 	update/molecdyn/predictor/chrono_predictor.h \
@@ -2895,6 +2898,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/force_monitors.cc \
 	update/molecdyn/monomial/rat_approx_aggregate.cc \
 	update/molecdyn/monomial/remez_rat_approx.cc \
+	update/molecdyn/monomial/read_rat_approx.cc \
 	update/molecdyn/monomial/comp_approx.cc \
 	update/molecdyn/integrator/integrator_aggregate.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
@@ -3762,6 +3766,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rat_approx_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rbc_gaugeact.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/read_rat_approx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readcppacs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readmilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
@@ -7696,6 +7701,20 @@ remez_rat_approx.obj: update/molecdyn/monomial/remez_rat_approx.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/remez_rat_approx.cc' object='remez_rat_approx.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o remez_rat_approx.obj `if test -f 'update/molecdyn/monomial/remez_rat_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/remez_rat_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/remez_rat_approx.cc'; fi`
+
+read_rat_approx.o: update/molecdyn/monomial/read_rat_approx.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT read_rat_approx.o -MD -MP -MF $(DEPDIR)/read_rat_approx.Tpo -c -o read_rat_approx.o `test -f 'update/molecdyn/monomial/read_rat_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/read_rat_approx.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/read_rat_approx.Tpo $(DEPDIR)/read_rat_approx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/read_rat_approx.cc' object='read_rat_approx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o read_rat_approx.o `test -f 'update/molecdyn/monomial/read_rat_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/read_rat_approx.cc
+
+read_rat_approx.obj: update/molecdyn/monomial/read_rat_approx.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT read_rat_approx.obj -MD -MP -MF $(DEPDIR)/read_rat_approx.Tpo -c -o read_rat_approx.obj `if test -f 'update/molecdyn/monomial/read_rat_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/read_rat_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/read_rat_approx.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/read_rat_approx.Tpo $(DEPDIR)/read_rat_approx.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/monomial/read_rat_approx.cc' object='read_rat_approx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o read_rat_approx.obj `if test -f 'update/molecdyn/monomial/read_rat_approx.cc'; then $(CYGPATH_W) 'update/molecdyn/monomial/read_rat_approx.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/monomial/read_rat_approx.cc'; fi`
 
 comp_approx.o: update/molecdyn/monomial/comp_approx.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT comp_approx.o -MD -MP -MF $(DEPDIR)/comp_approx.Tpo -c -o comp_approx.o `test -f 'update/molecdyn/monomial/comp_approx.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/comp_approx.cc
