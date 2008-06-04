@@ -159,7 +159,7 @@ print <<EOF;
       <Param> 
         <version>1</version>
         <creationOpContractType>SOURCE-SOURCE</creationOpContractType>
-        <annihilationOpContractType>SOURCE-SOURCE</annihilationOpContractType>
+        <annihilationOpContractType>SOLUTION-SOLUTION</annihilationOpContractType>
         <mom2_max>0</mom2_max>
         <displacement_length>1</displacement_length>
 
