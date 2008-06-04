@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.255 2008-06-02 19:32:51 bjoo Exp $
+# $Id: Makefile.in,v 3.256 2008-06-04 03:20:43 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -253,6 +253,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugestates/stout_gaugestate.cc \
 	init/chroma_init.cc io/eigen_io.cc io/monomial_io.cc \
 	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
+	io/enum_io/enum_mesonop_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
@@ -796,8 +797,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	stout_gaugestate.$(OBJEXT) chroma_init.$(OBJEXT) \
 	eigen_io.$(OBJEXT) monomial_io.$(OBJEXT) \
 	enum_cfgtype_io.$(OBJEXT) enum_coeffs_io.$(OBJEXT) \
-	enum_eigenvectype_io.$(OBJEXT) enum_fermtype_io.$(OBJEXT) \
-	enum_gaugeacttype_io.$(OBJEXT) enum_heatbathtype_io.$(OBJEXT) \
+	enum_mesonop_io.$(OBJEXT) enum_eigenvectype_io.$(OBJEXT) \
+	enum_fermtype_io.$(OBJEXT) enum_gaugeacttype_io.$(OBJEXT) \
+	enum_heatbathtype_io.$(OBJEXT) \
 	enum_inner_solver_type_io.$(OBJEXT) \
 	enum_plusminus_io.$(OBJEXT) \
 	enum_md_integrator_type_io.$(OBJEXT) \
@@ -1276,7 +1278,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugestates/stout_gaugestate.h \
 	init/chroma_init.h io/io.h io/xmllog_io.h io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
-	io/enum_io/enum_coeffs_io.h io/enum_io/enum_proptype_io.h \
+	io/enum_io/enum_coeffs_io.h io/enum_io/enum_mesonop_io.h \
+	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
@@ -2116,7 +2119,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugestates/stout_gaugestate.h \
 	init/chroma_init.h io/io.h io/xmllog_io.h io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
-	io/enum_io/enum_coeffs_io.h io/enum_io/enum_proptype_io.h \
+	io/enum_io/enum_coeffs_io.h io/enum_io/enum_mesonop_io.h \
+	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
@@ -2807,6 +2811,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugestates/stout_gaugestate.cc \
 	init/chroma_init.cc io/eigen_io.cc io/monomial_io.cc \
 	io/enum_io/enum_cfgtype_io.cc io/enum_io/enum_coeffs_io.cc \
+	io/enum_io/enum_mesonop_io.cc \
 	io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
@@ -3410,6 +3415,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_heatbathtype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_inner_solver_type_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_md_integrator_type_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_mesonop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_plusminus_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_proptype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_qdpvolfmt_io.Po@am__quote@
@@ -5559,6 +5565,20 @@ enum_coeffs_io.obj: io/enum_io/enum_coeffs_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/enum_io/enum_coeffs_io.cc' object='enum_coeffs_io.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_coeffs_io.obj `if test -f 'io/enum_io/enum_coeffs_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_coeffs_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_coeffs_io.cc'; fi`
+
+enum_mesonop_io.o: io/enum_io/enum_mesonop_io.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_mesonop_io.o -MD -MP -MF $(DEPDIR)/enum_mesonop_io.Tpo -c -o enum_mesonop_io.o `test -f 'io/enum_io/enum_mesonop_io.cc' || echo '$(srcdir)/'`io/enum_io/enum_mesonop_io.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/enum_mesonop_io.Tpo $(DEPDIR)/enum_mesonop_io.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/enum_io/enum_mesonop_io.cc' object='enum_mesonop_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_mesonop_io.o `test -f 'io/enum_io/enum_mesonop_io.cc' || echo '$(srcdir)/'`io/enum_io/enum_mesonop_io.cc
+
+enum_mesonop_io.obj: io/enum_io/enum_mesonop_io.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_mesonop_io.obj -MD -MP -MF $(DEPDIR)/enum_mesonop_io.Tpo -c -o enum_mesonop_io.obj `if test -f 'io/enum_io/enum_mesonop_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_mesonop_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_mesonop_io.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/enum_mesonop_io.Tpo $(DEPDIR)/enum_mesonop_io.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/enum_io/enum_mesonop_io.cc' object='enum_mesonop_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_mesonop_io.obj `if test -f 'io/enum_io/enum_mesonop_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_mesonop_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_mesonop_io.cc'; fi`
 
 enum_eigenvectype_io.o: io/enum_io/enum_eigenvectype_io.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_eigenvectype_io.o -MD -MP -MF $(DEPDIR)/enum_eigenvectype_io.Tpo -c -o enum_eigenvectype_io.o `test -f 'io/enum_io/enum_eigenvectype_io.cc' || echo '$(srcdir)/'`io/enum_io/enum_eigenvectype_io.cc
