@@ -55,10 +55,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.28.3</chroma>
-      <qdp>1.25.1</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>24 Apr 08 10:00:22 EDT</run_date>
+    <run_date>04 Jun 08 16:21:59 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -80,32 +81,32 @@
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814696585</w_plaq>
-    <s_plaq>0.994800872195305</s_plaq>
-    <t_plaq>0.994728757197865</t_plaq>
-    <plane_01_plaq>0.994752409479891</plane_01_plaq>
-    <plane_02_plaq>0.995051670897131</plane_02_plaq>
-    <plane_12_plaq>0.994598536208893</plane_12_plaq>
-    <plane_03_plaq>0.994927927424821</plane_03_plaq>
-    <plane_13_plaq>0.994742139785861</plane_13_plaq>
-    <plane_23_plaq>0.994516204382914</plane_23_plaq>
-    <link>0.379317688059624</link>
+    <w_plaq>0.994764811229996</w_plaq>
+    <s_plaq>0.994800868133704</s_plaq>
+    <t_plaq>0.994728754326287</t_plaq>
+    <plane_01_plaq>0.994752410954485</plane_01_plaq>
+    <plane_02_plaq>0.995051669888198</plane_02_plaq>
+    <plane_12_plaq>0.994598523558428</plane_12_plaq>
+    <plane_03_plaq>0.994927932818731</plane_03_plaq>
+    <plane_13_plaq>0.994742131947229</plane_13_plaq>
+    <plane_23_plaq>0.994516198212902</plane_23_plaq>
+    <link>0.379317688096004</link>
     <pollp>
       <elem>
-        <re>0.967222581617534</re>
-        <im>-0.00121316459171794</im>
+        <re>0.96722258736069</re>
+        <im>-0.00121316528187284</im>
       </elem>
       <elem>
-        <re>0.967032070310476</re>
-        <im>-0.00129617047105057</im>
+        <re>0.967032058009257</re>
+        <im>-0.00129616999978073</im>
       </elem>
       <elem>
-        <re>0.967467519260632</re>
-        <im>-0.0011454828290122</im>
+        <re>0.96746751650547</re>
+        <im>-0.00114548282635951</im>
       </elem>
       <elem>
-        <re>0.879538947211889</re>
-        <im>-0.01044028334627</im>
+        <re>0.879538941662759</re>
+        <im>-0.0104402848846803</im>
       </elem>
     </pollp>
   </Observables>
@@ -140,62 +141,62 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994764814696585</w_plaq>
-          <s_plaq>0.994800872195305</s_plaq>
-          <t_plaq>0.994728757197865</t_plaq>
-          <plane_01_plaq>0.994752409479891</plane_01_plaq>
-          <plane_02_plaq>0.995051670897131</plane_02_plaq>
-          <plane_12_plaq>0.994598536208893</plane_12_plaq>
-          <plane_03_plaq>0.994927927424821</plane_03_plaq>
-          <plane_13_plaq>0.994742139785861</plane_13_plaq>
-          <plane_23_plaq>0.994516204382914</plane_23_plaq>
-          <link>0.379317688059624</link>
+          <w_plaq>0.994764811229996</w_plaq>
+          <s_plaq>0.994800868133704</s_plaq>
+          <t_plaq>0.994728754326287</t_plaq>
+          <plane_01_plaq>0.994752410954485</plane_01_plaq>
+          <plane_02_plaq>0.995051669888198</plane_02_plaq>
+          <plane_12_plaq>0.994598523558428</plane_12_plaq>
+          <plane_03_plaq>0.994927932818731</plane_03_plaq>
+          <plane_13_plaq>0.994742131947229</plane_13_plaq>
+          <plane_23_plaq>0.994516198212902</plane_23_plaq>
+          <link>0.379317688096004</link>
           <pollp>
             <elem>
-              <re>0.967222581617534</re>
-              <im>-0.00121316459171794</im>
+              <re>0.96722258736069</re>
+              <im>-0.00121316528187284</im>
             </elem>
             <elem>
-              <re>0.967032070310476</re>
-              <im>-0.00129617047105057</im>
+              <re>0.967032058009257</re>
+              <im>-0.00129616999978073</im>
             </elem>
             <elem>
-              <re>0.967467519260632</re>
-              <im>-0.0011454828290122</im>
+              <re>0.96746751650547</re>
+              <im>-0.00114548282635951</im>
             </elem>
             <elem>
-              <re>0.879538947211889</re>
-              <im>-0.01044028334627</im>
+              <re>0.879538941662759</re>
+              <im>-0.0104402848846803</im>
             </elem>
           </pollp>
         </Observables>
         <Link_observables>
-          <w_plaq>0.999999363854941</w_plaq>
-          <s_plaq>0.999999111725224</s_plaq>
-          <t_plaq>0.999999615984658</t_plaq>
-          <plane_01_plaq>0.999998670420609</plane_01_plaq>
-          <plane_02_plaq>1.00000005859571</plane_02_plaq>
-          <plane_12_plaq>0.999998606159352</plane_12_plaq>
-          <plane_03_plaq>0.999999164409625</plane_03_plaq>
-          <plane_13_plaq>0.999999976872156</plane_13_plaq>
-          <plane_23_plaq>0.999999706672194</plane_23_plaq>
-          <link>0.379604141892438</link>
+          <w_plaq>0.999999349497052</w_plaq>
+          <s_plaq>0.999999099618031</s_plaq>
+          <t_plaq>0.999999599376073</t_plaq>
+          <plane_01_plaq>0.999998663862546</plane_01_plaq>
+          <plane_02_plaq>1.00000003864989</plane_02_plaq>
+          <plane_12_plaq>0.99999859634166</plane_12_plaq>
+          <plane_03_plaq>0.999999147063742</plane_03_plaq>
+          <plane_13_plaq>0.999999967093269</plane_13_plaq>
+          <plane_23_plaq>0.999999683971206</plane_23_plaq>
+          <link>0.37960416165879</link>
           <pollp>
             <elem>
-              <re>0.972088555145698</re>
-              <im>-0.00116989690256257</im>
+              <re>0.972088526313504</re>
+              <im>-0.00116989797515998</im>
             </elem>
             <elem>
-              <re>0.971668306660528</re>
-              <im>-0.0012422562294887</im>
+              <re>0.971668294165283</re>
+              <im>-0.00124225744881793</im>
             </elem>
             <elem>
-              <re>0.972189706168137</re>
-              <im>-0.00112774468774054</im>
+              <re>0.972189658942322</re>
+              <im>-0.00112774547657561</im>
             </elem>
             <elem>
-              <re>0.888196682712684</re>
-              <im>-0.0102420112258793</im>
+              <re>0.888196497224271</re>
+              <im>-0.0102420263768484</im>
             </elem>
           </pollp>
         </Link_observables>
@@ -205,7 +206,7 @@
       <QTop>
         <update_no>0</update_no>
         <k5>0</k5>
-        <qtop>1.18860762065111e-09</qtop>
+        <qtop>1.17825250265567e-09</qtop>
       </QTop>
     </elem>
   </InlineObservables>

@@ -204,10 +204,11 @@ Photon sequential source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.2</chroma>
-      <qdp>1.24.4</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>23 Aug 07 17:53:43 EDT</run_date>
+    <run_date>04 Jun 08 16:27:44 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -264,10 +265,11 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:53:43 EDT</run_date>
+          <run_date>04 Jun 08 16:27:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -320,7 +322,6 @@ Photon sequential source
 
 
 
-
         </Config_info>
         <Observables>
           <w_plaq>1</w_plaq>
@@ -353,7 +354,7 @@ Photon sequential source
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.75983503863309 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.75983497174457 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -362,10 +363,11 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:53:43 EDT</run_date>
+          <run_date>04 Jun 08 16:27:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -409,7 +411,6 @@ Photon sequential source
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>1</out_version>
@@ -445,7 +446,7 @@ Photon sequential source
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>246473623</id>
+      <id>271178864</id>
     </make_source>
 
         </Source_file_info>
@@ -484,87 +485,87 @@ Photon sequential source
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.75983503863309 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.75983497174457 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.676038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.676038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.731781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.731781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.676038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.676038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.731781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.731781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.676038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.676038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.731781e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>31</n_count>
-            <resid>1.786381e-07</resid>
+            <resid>1.731781e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>372</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.952822721196223 0.183508574734423 0.181259596192655 0.218486942483855 0.269022101623309 0.331990108274443 0.409824120823037 0.50594020143782</prop_corr>
+          <prop_corr>0.952822627973766 0.183508570429641 0.181259594806991 0.218486941547295 0.269022111858139 0.33199013233518 0.409824178586392 0.505940224092084</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -573,10 +574,11 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:53:44 EDT</run_date>
+          <run_date>04 Jun 08 16:27:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -623,7 +625,6 @@ Photon sequential source
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>1</out_version>
@@ -722,11 +723,11 @@ Photon sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.952822721196223 0.183508574734423 0.181259596192655 0.218486942483855 0.269022101623309 0.331990108274443 0.409824120823037 0.50594020143782</forward_prop_corr>
+            <forward_prop_corr>0.952822627973766 0.183508570429641 0.181259594806991 0.218486941547295 0.269022111858139 0.33199013233518 0.409824178586392 0.505940224092084</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0.522935979122964 1.4719235759949 5.0559399480948 17.7401186023666 62.3857903267205 219.457454051271 0</seqsource_corr>
+          <seqsource_corr>0 0.522935959761203 1.4719235369834 5.05593986170035 17.740119245412 62.3857937652353 219.457487739188 0</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>
@@ -741,10 +742,11 @@ Photon sequential source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:53:44 EDT</run_date>
+          <run_date>04 Jun 08 16:27:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -791,7 +793,6 @@ Photon sequential source
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>1</out_version>
@@ -890,11 +891,11 @@ Photon sequential source
         </Forward_prop_infos>
         <Forward_prop_correlators>
           <elem>
-            <forward_prop_corr>0.952822721196223 0.183508574734423 0.181259596192655 0.218486942483855 0.269022101623309 0.331990108274443 0.409824120823037 0.50594020143782</forward_prop_corr>
+            <forward_prop_corr>0.952822627973766 0.183508570429641 0.181259594806991 0.218486941547295 0.269022111858139 0.33199013233518 0.409824178586392 0.505940224092084</forward_prop_corr>
           </elem>
         </Forward_prop_correlators>
         <SeqSource_correlator>
-          <seqsource_corr>0 0.522935976965872 1.4719235688697 5.0559399336456 17.7401186004588 62.3857897163851 219.457453244438 0</seqsource_corr>
+          <seqsource_corr>0 0.522935962647566 1.47192355653533 5.05593991884962 17.7401192779653 62.3857937855646 219.457485023886 0</seqsource_corr>
         </SeqSource_correlator>
       </seqsource>
     </elem>

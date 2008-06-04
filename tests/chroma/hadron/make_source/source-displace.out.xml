@@ -112,10 +112,11 @@ Make a propagator source
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.2</chroma>
-      <qdp>1.24.4</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>23 Aug 07 17:44:41 EDT</run_date>
+    <run_date>04 Jun 08 16:23:34 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -137,32 +138,32 @@ Make a propagator source
 
   </Config_info>
   <Observables>
-    <w_plaq>-0.0037975712400819</w_plaq>
-    <s_plaq>-0.00327781306704209</s_plaq>
-    <t_plaq>-0.00431732941312172</t_plaq>
-    <plane_01_plaq>0.00678453797202868</plane_01_plaq>
-    <plane_02_plaq>-0.0144243003026835</plane_02_plaq>
-    <plane_12_plaq>-0.00219367687047149</plane_12_plaq>
-    <plane_03_plaq>0.000596277165944533</plane_03_plaq>
-    <plane_13_plaq>-0.00482086163538042</plane_13_plaq>
-    <plane_23_plaq>-0.00872740376992927</plane_23_plaq>
-    <link>0.104803482606371</link>
+    <w_plaq>-0.00379757105919351</w_plaq>
+    <s_plaq>-0.00327781392115867</s_plaq>
+    <t_plaq>-0.00431732819722836</t_plaq>
+    <plane_01_plaq>0.00678453939811637</plane_01_plaq>
+    <plane_02_plaq>-0.0144243010605957</plane_02_plaq>
+    <plane_12_plaq>-0.00219368010099667</plane_12_plaq>
+    <plane_03_plaq>0.000596278133646896</plane_03_plaq>
+    <plane_13_plaq>-0.00482086541160243</plane_13_plaq>
+    <plane_23_plaq>-0.00872739731372955</plane_23_plaq>
+    <link>0.104803482307034</link>
     <pollp>
       <elem>
-        <re>0.0402090424925821</re>
-        <im>-0.0193806042895327</im>
+        <re>0.0402090495966452</re>
+        <im>-0.0193806107296647</im>
       </elem>
       <elem>
-        <re>0.0258227064193003</re>
-        <im>0.031734983489514</im>
+        <re>0.0258227051429761</re>
+        <im>0.0317349925705154</im>
       </elem>
       <elem>
-        <re>-0.00015588875597435</re>
-        <im>0.00880705600957299</im>
+        <re>-0.000155896823950267</re>
+        <im>0.00880705685995053</im>
       </elem>
       <elem>
-        <re>0.0281715754943737</re>
-        <im>-0.0108408468337681</im>
+        <re>0.0281715586752398</re>
+        <im>-0.0108408587402664</im>
       </elem>
     </pollp>
   </Observables>
@@ -172,10 +173,11 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:41 EDT</run_date>
+          <run_date>04 Jun 08 16:23:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -233,40 +235,39 @@ Make a propagator source
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>-0.0037975712400819</w_plaq>
-          <s_plaq>-0.00327781306704209</s_plaq>
-          <t_plaq>-0.00431732941312172</t_plaq>
-          <plane_01_plaq>0.00678453797202868</plane_01_plaq>
-          <plane_02_plaq>-0.0144243003026835</plane_02_plaq>
-          <plane_12_plaq>-0.00219367687047149</plane_12_plaq>
-          <plane_03_plaq>0.000596277165944533</plane_03_plaq>
-          <plane_13_plaq>-0.00482086163538042</plane_13_plaq>
-          <plane_23_plaq>-0.00872740376992927</plane_23_plaq>
-          <link>0.104803482606371</link>
+          <w_plaq>-0.00379757105919351</w_plaq>
+          <s_plaq>-0.00327781392115867</s_plaq>
+          <t_plaq>-0.00431732819722836</t_plaq>
+          <plane_01_plaq>0.00678453939811637</plane_01_plaq>
+          <plane_02_plaq>-0.0144243010605957</plane_02_plaq>
+          <plane_12_plaq>-0.00219368010099667</plane_12_plaq>
+          <plane_03_plaq>0.000596278133646896</plane_03_plaq>
+          <plane_13_plaq>-0.00482086541160243</plane_13_plaq>
+          <plane_23_plaq>-0.00872739731372955</plane_23_plaq>
+          <link>0.104803482307034</link>
           <pollp>
             <elem>
-              <re>0.0402090424925821</re>
-              <im>-0.0193806042895327</im>
+              <re>0.0402090495966452</re>
+              <im>-0.0193806107296647</im>
             </elem>
             <elem>
-              <re>0.0258227064193003</re>
-              <im>0.031734983489514</im>
+              <re>0.0258227051429761</re>
+              <im>0.0317349925705154</im>
             </elem>
             <elem>
-              <re>-0.00015588875597435</re>
-              <im>0.00880705600957299</im>
+              <re>-0.000155896823950267</re>
+              <im>0.00880705685995053</im>
             </elem>
             <elem>
-              <re>0.0281715754943737</re>
-              <im>-0.0108408468337681</im>
+              <re>0.0281715586752398</re>
+              <im>-0.0108408587402664</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 3.24635657826709 0 0 0 0 0</source_corr>
+          <source_corr>0 0 3.24635597896261 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -275,10 +276,11 @@ Make a propagator source
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:41 EDT</run_date>
+          <run_date>04 Jun 08 16:23:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -336,40 +338,39 @@ Make a propagator source
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>-0.0037975712400819</w_plaq>
-          <s_plaq>-0.00327781306704209</s_plaq>
-          <t_plaq>-0.00431732941312172</t_plaq>
-          <plane_01_plaq>0.00678453797202868</plane_01_plaq>
-          <plane_02_plaq>-0.0144243003026835</plane_02_plaq>
-          <plane_12_plaq>-0.00219367687047149</plane_12_plaq>
-          <plane_03_plaq>0.000596277165944533</plane_03_plaq>
-          <plane_13_plaq>-0.00482086163538042</plane_13_plaq>
-          <plane_23_plaq>-0.00872740376992927</plane_23_plaq>
-          <link>0.104803482606371</link>
+          <w_plaq>-0.00379757105919351</w_plaq>
+          <s_plaq>-0.00327781392115867</s_plaq>
+          <t_plaq>-0.00431732819722836</t_plaq>
+          <plane_01_plaq>0.00678453939811637</plane_01_plaq>
+          <plane_02_plaq>-0.0144243010605957</plane_02_plaq>
+          <plane_12_plaq>-0.00219368010099667</plane_12_plaq>
+          <plane_03_plaq>0.000596278133646896</plane_03_plaq>
+          <plane_13_plaq>-0.00482086541160243</plane_13_plaq>
+          <plane_23_plaq>-0.00872739731372955</plane_23_plaq>
+          <link>0.104803482307034</link>
           <pollp>
             <elem>
-              <re>0.0402090424925821</re>
-              <im>-0.0193806042895327</im>
+              <re>0.0402090495966452</re>
+              <im>-0.0193806107296647</im>
             </elem>
             <elem>
-              <re>0.0258227064193003</re>
-              <im>0.031734983489514</im>
+              <re>0.0258227051429761</re>
+              <im>0.0317349925705154</im>
             </elem>
             <elem>
-              <re>-0.00015588875597435</re>
-              <im>0.00880705600957299</im>
+              <re>-0.000155896823950267</re>
+              <im>0.00880705685995053</im>
             </elem>
             <elem>
-              <re>0.0281715754943737</re>
-              <im>-0.0108408468337681</im>
+              <re>0.0281715586752398</re>
+              <im>-0.0108408587402664</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0 0 0 2.74813051230314 0 0 0 0</source_corr>
+          <source_corr>0 0 0 2.74813067255065 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>

@@ -86,10 +86,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.28.3</chroma>
-      <qdp>1.25.1</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>23 Apr 08 09:45:25 EDT</run_date>
+    <run_date>04 Jun 08 16:25:16 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 8 8</latt_size>
       <logical_size>1 1 1 1</logical_size>

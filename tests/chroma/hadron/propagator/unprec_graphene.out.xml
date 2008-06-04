@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_graphene.out.xml,v 3.4 2008-01-01 23:09:33 edwards Exp $
+; $Id: unprec_graphene.out.xml,v 3.5 2008-06-04 20:30:27 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -113,10 +113,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.27.0</chroma>
-      <qdp>1.25.1</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>01 Jan 08 17:49:51 EST</run_date>
+    <run_date>04 Jun 08 16:25:50 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -173,10 +174,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.27.0</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>01 Jan 08 17:49:51 EST</run_date>
+          <run_date>04 Jun 08 16:25:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -272,10 +274,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.27.0</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>01 Jan 08 17:49:51 EST</run_date>
+          <run_date>04 Jun 08 16:25:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -348,7 +351,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>257795391</id>
+      <id>271178750</id>
     </make_source>
 
         </Source_file_info>
@@ -396,7 +399,7 @@
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>70</n_count>
-            <resid>2.755191e-07</resid>
+            <resid>2.755222e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
@@ -414,7 +417,7 @@
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>70</n_count>
-            <resid>2.657817e-07</resid>
+            <resid>2.66167e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
@@ -444,32 +447,32 @@
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>70</n_count>
-            <resid>2.710509e-07</resid>
+            <resid>2.717127e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>70</n_count>
-            <resid>2.742342e-07</resid>
+            <resid>2.741978e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>69</n_count>
-            <resid>2.629085e-07</resid>
+            <resid>2.654806e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>69</n_count>
-            <resid>2.527787e-07</resid>
+            <resid>2.527306e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>835</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.249272516815569 0.0189680160989267 0.0039184462057193 0.00164938497825231 0.00120436274104851 0.00165144589335007 0.00392338113676948 0.0189782650402662</prop_corr>
+          <prop_corr>0.249272516894204 0.0189680161487788 0.00391844624039616 0.00164938499797932 0.00120436274920781 0.00165144589957366 0.00392338113941993 0.0189782650277207</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>

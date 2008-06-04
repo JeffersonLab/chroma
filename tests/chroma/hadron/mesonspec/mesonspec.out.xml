@@ -444,10 +444,11 @@ regression test spectrum output is kept within the chroma xml output
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.2</chroma>
-      <qdp>1.24.4</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>23 Aug 07 17:44:47 EDT</run_date>
+    <run_date>04 Jun 08 16:23:35 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -469,32 +470,32 @@ regression test spectrum output is kept within the chroma xml output
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994803997506905</w_plaq>
-    <s_plaq>0.994798443435381</s_plaq>
-    <t_plaq>0.994809551578429</t_plaq>
-    <plane_01_plaq>0.994703592111667</plane_01_plaq>
-    <plane_02_plaq>0.994926826562732</plane_02_plaq>
-    <plane_12_plaq>0.994764911631743</plane_12_plaq>
-    <plane_03_plaq>0.994693187686304</plane_03_plaq>
-    <plane_13_plaq>0.994853908040871</plane_13_plaq>
-    <plane_23_plaq>0.994881559008112</plane_23_plaq>
-    <link>0.379449337626284</link>
+    <w_plaq>0.994803994066185</w_plaq>
+    <s_plaq>0.994798439037469</s_plaq>
+    <t_plaq>0.994809549094902</t_plaq>
+    <plane_01_plaq>0.994703591180344</plane_01_plaq>
+    <plane_02_plaq>0.994926821130017</plane_02_plaq>
+    <plane_12_plaq>0.994764904802044</plane_12_plaq>
+    <plane_03_plaq>0.994693187065423</plane_03_plaq>
+    <plane_13_plaq>0.99485390773043</plane_13_plaq>
+    <plane_23_plaq>0.994881552488854</plane_23_plaq>
+    <link>0.379449338496973</link>
     <pollp>
       <elem>
-        <re>0.966585880688702</re>
-        <im>-0.00132088747318448</im>
+        <re>0.966585880455871</re>
+        <im>-0.00132088744157954</im>
       </elem>
       <elem>
-        <re>0.966365773618842</re>
-        <im>-0.00123499087385426</im>
+        <re>0.96636577649042</re>
+        <im>-0.00123499021750225</im>
       </elem>
       <elem>
-        <re>0.967146154958755</re>
-        <im>-0.00112309937897711</im>
+        <re>0.967146147663395</re>
+        <im>-0.00112309937412647</im>
       </elem>
       <elem>
-        <re>0.87876926199533</re>
-        <im>-0.00991386472378508</im>
+        <re>0.878769262383381</re>
+        <im>-0.00991386627477671</im>
       </elem>
     </pollp>
   </Observables>
@@ -504,10 +505,11 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:47 EDT</run_date>
+          <run_date>04 Jun 08 16:23:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -562,40 +564,39 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>6.68018581299261 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.68018574848822 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -604,10 +605,11 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:47 EDT</run_date>
+          <run_date>04 Jun 08 16:23:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -651,43 +653,42 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>246473087</id>
+      <id>271178615</id>
     </make_source>
 
         </Source_file_info>
@@ -728,87 +729,87 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>6.68018581299261 0 0 0 0 0 0 0</source_corr>
+          <source_corr>6.68018574848822 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.146389e-07</resid>
+            <resid>1.262585e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.158391e-07</resid>
+            <resid>1.22812e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.257907e-07</resid>
+            <resid>1.284172e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.142089e-07</resid>
+            <resid>1.167142e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.145996e-07</resid>
+            <resid>1.032642e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.098741e-07</resid>
+            <resid>1.148571e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.255339e-07</resid>
+            <resid>1.14481e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.399763e-07</resid>
+            <resid>1.476692e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.177981e-07</resid>
+            <resid>1.132519e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.322421e-07</resid>
+            <resid>1.228827e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.480853e-07</resid>
+            <resid>1.529251e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.175791e-07</resid>
+            <resid>1.255873e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</prop_corr>
+          <prop_corr>0.192608932093107 0.0159807806755118 0.00618062912222503 0.0028418096199957 0.00198266743085943 0.00283889772162193 0.00617588833110045 0.0159631269136217</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -846,40 +847,39 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>246473088</id>
+      <id>271178615</id>
     </propagator>
 
         </Prop_file_info>
@@ -944,10 +944,10 @@ regression test spectrum output is kept within the chroma xml output
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</forward_prop_corr>
+          <forward_prop_corr>0.192608932093107 0.0159807806755118 0.00618062912222503 0.0028418096199957 0.00198266743085943 0.00283889772162193 0.00617588833110045 0.0159631269136217</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.192608932093107 0.0159807806755118 0.00618062912222503 0.0028418096199957 0.00198266743085943 0.00283889772162193 0.00617588833110045 0.0159631269136217</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -956,10 +956,11 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:48 EDT</run_date>
+          <run_date>04 Jun 08 16:23:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1016,40 +1017,39 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Source_correlator>
-          <source_corr>0.134745016195319 0 0 0 0 0 0 0</source_corr>
+          <source_corr>0.134745012784604 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
       </make_source>
     </elem>
@@ -1058,10 +1058,11 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:48 EDT</run_date>
+          <run_date>04 Jun 08 16:23:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1105,43 +1106,42 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>246473088</id>
+      <id>271178615</id>
     </make_source>
 
         </Source_file_info>
@@ -1184,87 +1184,87 @@ regression test spectrum output is kept within the chroma xml output
 
         </Source_record_info>
         <Source_correlator>
-          <source_corr>0.134745016195319 0 0 0 0 0 0 0</source_corr>
+          <source_corr>0.134745012784604 0 0 0 0 0 0 0</source_corr>
         </Source_correlator>
         <QuarkProp4>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.355809e-07</resid>
+            <resid>1.397832e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.114435e-07</resid>
+            <resid>1.170919e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.107297e-07</resid>
+            <resid>1.187885e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.358141e-07</resid>
+            <resid>1.233377e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.071696e-07</resid>
+            <resid>1.191048e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.026494e-07</resid>
+            <resid>1.095143e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.135813e-07</resid>
+            <resid>1.150563e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.263607e-07</resid>
+            <resid>1.28413e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.19718e-07</resid>
+            <resid>1.144922e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.53466e-07</resid>
+            <resid>1.371667e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.261595e-07</resid>
+            <resid>1.181732e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.380547e-07</resid>
+            <resid>1.101763e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.00386918897016351 0.000316164183123094 0.000120015239094967 5.41338768463611e-05 3.73349496359418e-05 5.410110099466e-05 0.000119966185137764 0.000315877179622688</prop_corr>
+          <prop_corr>0.00386918904353595 0.000316164198249512 0.000120015247171509 5.41338793895751e-05 3.73349521638227e-05 5.41011060547236e-05 0.000119966197707099 0.000315877209825775</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1296,40 +1296,39 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>246473089</id>
+      <id>271178616</id>
     </propagator>
 
         </Prop_file_info>
@@ -1396,10 +1395,10 @@ regression test spectrum output is kept within the chroma xml output
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.00386918897016351 0.000316164183123094 0.000120015239094967 5.41338768463611e-05 3.73349496359418e-05 5.410110099466e-05 0.000119966185137764 0.000315877179622688</forward_prop_corr>
+          <forward_prop_corr>0.00386918904353595 0.000316164198249512 0.000120015247171509 5.41338793895751e-05 3.73349521638227e-05 5.41011060547236e-05 0.000119966197707099 0.000315877209825775</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.00386918897016351 0.000316164183123094 0.000120015239094967 5.41338768463611e-05 3.73349496359418e-05 5.410110099466e-05 0.000119966185137764 0.000315877179622688</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.00386918904353595 0.000316164198249512 0.000120015247171509 5.41338793895751e-05 3.73349521638227e-05 5.41011060547236e-05 0.000119966197707099 0.000315877209825775</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1439,40 +1438,39 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>246473089</id>
+      <id>271178616</id>
     </propagator>
 
         </Prop_file_info>
@@ -1539,10 +1537,10 @@ regression test spectrum output is kept within the chroma xml output
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.00386918897016351 0.000316164183123094 0.000120015239094967 5.41338768463611e-05 3.73349496359418e-05 5.410110099466e-05 0.000119966185137764 0.000315877179622688</forward_prop_corr>
+          <forward_prop_corr>0.00386918904353595 0.000316164198249512 0.000120015247171509 5.41338793895751e-05 3.73349521638227e-05 5.41011060547236e-05 0.000119966197707099 0.000315877209825775</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.000153723958162349 1.13420195561614e-05 4.47305190292042e-06 2.14132781819415e-06 1.3627747182267e-06 2.19901424938097e-06 4.15815325363651e-06 1.21669830356169e-05</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.000153723915516 1.13420179889327e-05 4.47305100507812e-06 2.14132793023891e-06 1.36277463869093e-06 2.19901536097516e-06 4.15815249293396e-06 1.21669848103583e-05</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1551,10 +1549,11 @@ regression test spectrum output is kept within the chroma xml output
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Aug 07 17:44:49 EDT</run_date>
+          <run_date>04 Jun 08 16:23:36 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1642,38 +1641,37 @@ regression test spectrum output is kept within the chroma xml output
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>3</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803997506905</w_plaq>
-          <s_plaq>0.994798443435381</s_plaq>
-          <t_plaq>0.994809551578429</t_plaq>
-          <plane_01_plaq>0.994703592111667</plane_01_plaq>
-          <plane_02_plaq>0.994926826562732</plane_02_plaq>
-          <plane_12_plaq>0.994764911631743</plane_12_plaq>
-          <plane_03_plaq>0.994693187686304</plane_03_plaq>
-          <plane_13_plaq>0.994853908040871</plane_13_plaq>
-          <plane_23_plaq>0.994881559008112</plane_23_plaq>
-          <link>0.379449337626284</link>
+          <w_plaq>0.994803994066185</w_plaq>
+          <s_plaq>0.994798439037469</s_plaq>
+          <t_plaq>0.994809549094902</t_plaq>
+          <plane_01_plaq>0.994703591180344</plane_01_plaq>
+          <plane_02_plaq>0.994926821130017</plane_02_plaq>
+          <plane_12_plaq>0.994764904802044</plane_12_plaq>
+          <plane_03_plaq>0.994693187065423</plane_03_plaq>
+          <plane_13_plaq>0.99485390773043</plane_13_plaq>
+          <plane_23_plaq>0.994881552488854</plane_23_plaq>
+          <link>0.379449338496973</link>
           <pollp>
             <elem>
-              <re>0.966585880688702</re>
-              <im>-0.00132088747318448</im>
+              <re>0.966585880455871</re>
+              <im>-0.00132088744157954</im>
             </elem>
             <elem>
-              <re>0.966365773618842</re>
-              <im>-0.00123499087385426</im>
+              <re>0.96636577649042</re>
+              <im>-0.00123499021750225</im>
             </elem>
             <elem>
-              <re>0.967146154958755</re>
-              <im>-0.00112309937897711</im>
+              <re>0.967146147663395</re>
+              <im>-0.00112309937412647</im>
             </elem>
             <elem>
-              <re>0.87876926199533</re>
-              <im>-0.00991386472378508</im>
+              <re>0.878769262383381</re>
+              <im>-0.00991386627477671</im>
             </elem>
           </pollp>
         </Observables>
@@ -1683,8 +1681,8 @@ regression test spectrum output is kept within the chroma xml output
             <source_wavetype>1</source_wavetype>
             <sink_particle>rho_x</sink_particle>
             <sink_wavetype>1</sink_wavetype>
-            <Mass_1>0.5454546</Mass_1>
-            <Mass_2>0.5454546</Mass_2>
+            <Mass_1>0.5454545</Mass_1>
+            <Mass_2>0.5454545</Mass_2>
             <t0>0</t0>
             <Forward_prop_headers>
               <elem>
@@ -1994,12 +1992,12 @@ regression test spectrum output is kept within the chroma xml output
             </Forward_prop_headers>
             <Forward_prop_correlator>
               <elem>
-                <forward_prop_corr_1>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</forward_prop_corr_1>
-                <forward_prop_corr_2>0.00386918897016351 0.000316164183123094 0.000120015239094967 5.41338768463611e-05 3.73349496359418e-05 5.410110099466e-05 0.000119966185137764 0.000315877179622688</forward_prop_corr_2>
+                <forward_prop_corr_1>0.192608932093107 0.0159807806755118 0.00618062912222503 0.0028418096199957 0.00198266743085943 0.00283889772162193 0.00617588833110045 0.0159631269136217</forward_prop_corr_1>
+                <forward_prop_corr_2>0.00386918904353595 0.000316164198249512 0.000120015247171509 5.41338793895751e-05 3.73349521638227e-05 5.41011060547236e-05 0.000119966197707099 0.000315877209825775</forward_prop_corr_2>
               </elem>
               <elem>
-                <forward_prop_corr_1>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</forward_prop_corr_1>
-                <forward_prop_corr_2>0.000153723958162349 1.13420195561614e-05 4.47305190292042e-06 2.14132781819415e-06 1.3627747182267e-06 2.19901424938097e-06 4.15815325363651e-06 1.21669830356169e-05</forward_prop_corr_2>
+                <forward_prop_corr_1>0.192608932093107 0.0159807806755118 0.00618062912222503 0.0028418096199957 0.00198266743085943 0.00283889772162193 0.00617588833110045 0.0159631269136217</forward_prop_corr_1>
+                <forward_prop_corr_2>0.000153723915516 1.13420179889327e-05 4.47305100507812e-06 2.14132793023891e-06 1.36277463869093e-06 2.19901536097516e-06 4.15815249293396e-06 1.21669848103583e-05</forward_prop_corr_2>
               </elem>
             </Forward_prop_correlator>
             <SourceSinkType>
@@ -2031,36 +2029,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>0 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>0.0141647824802931</re>
-                      <im>2.12205782936792e-05</im>
+                      <re>0.0141647809750793</re>
+                      <im>2.12217091810629e-05</im>
                     </elem>
                     <elem>
-                      <re>-0.000181778506657793</re>
-                      <im>-4.27987105755534e-07</im>
+                      <re>-0.000181778424348522</re>
+                      <im>-4.28008701813809e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000166070538398344</re>
-                      <im>-4.21691020324744e-07</im>
+                      <re>-0.000166070498835325</re>
+                      <im>-4.21709190123742e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000158443425561927</re>
-                      <im>-4.01098190883076e-07</im>
+                      <re>-0.000158443392365371</re>
+                      <im>-4.01117236203952e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000157497707505172</re>
-                      <im>-4.31846471471431e-07</im>
+                      <re>-0.00015749768203932</re>
+                      <im>-4.31868692363224e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.00015840866990402</re>
-                      <im>-5.04364218167908e-07</im>
+                      <re>-0.000158408631705242</re>
+                      <im>-5.04386352795372e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000166560914522051</re>
-                      <im>-4.29131883361578e-07</im>
+                      <re>-0.000166560868819943</re>
+                      <im>-4.29159537906898e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.00018092908521794</re>
-                      <im>-2.92663336010079e-07</im>
+                      <re>-0.000180929004500285</re>
+                      <im>-2.9270109580537e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2069,36 +2067,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>0.000671568621274498</re>
-                      <im>7.86721131638303e-06</im>
+                      <re>0.000671568486892118</re>
+                      <im>7.86735379796213e-06</im>
                     </elem>
                     <elem>
-                      <re>-3.86787799468547e-06</re>
-                      <im>7.2106274217812e-07</im>
+                      <re>-3.8678812471149e-06</re>
+                      <im>7.21060719764448e-07</im>
                     </elem>
                     <elem>
-                      <re>-1.04977760565807e-06</re>
-                      <im>3.7777024249785e-07</im>
+                      <re>-1.04978104547509e-06</re>
+                      <im>3.77770037123619e-07</im>
                     </elem>
                     <elem>
-                      <re>-4.24098787382799e-07</re>
-                      <im>1.53762717051903e-07</im>
+                      <re>-4.24098981926603e-07</re>
+                      <im>1.53762907805553e-07</im>
                     </elem>
                     <elem>
-                      <re>-3.7886810311809e-07</re>
-                      <im>-1.78151847219458e-08</im>
+                      <re>-3.7886805426831e-07</re>
+                      <im>-1.78148255200713e-08</im>
                     </elem>
                     <elem>
-                      <re>-4.3663813843446e-07</re>
-                      <im>-9.05743263219331e-08</im>
+                      <re>-4.36637501579409e-07</re>
+                      <im>-9.0574512121505e-08</im>
                     </elem>
                     <elem>
-                      <re>-1.02483766614458e-06</re>
-                      <im>-3.12548443164759e-07</im>
+                      <re>-1.02483906019878e-06</re>
+                      <im>-3.12548951432934e-07</im>
                     </elem>
                     <elem>
-                      <re>-3.50010933828912e-06</re>
-                      <im>-6.52946270526991e-07</im>
+                      <re>-3.50010728521332e-06</re>
+                      <im>-6.52946671353847e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2107,36 +2105,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.000443724948449804</re>
-                      <im>5.99576750957827e-07</im>
+                      <re>-0.000443724801734655</re>
+                      <im>5.99600415599814e-07</im>
                     </elem>
                     <elem>
-                      <re>6.00133208732718e-07</re>
-                      <im>1.93096165817514e-08</im>
+                      <re>6.00130340061705e-07</re>
+                      <im>1.93096076289649e-08</im>
                     </elem>
                     <elem>
-                      <re>6.57009515290932e-08</re>
-                      <im>2.74248287501315e-08</im>
+                      <re>6.57012203318681e-08</re>
+                      <im>2.74243690619288e-08</im>
                     </elem>
                     <elem>
-                      <re>5.84155380298675e-08</re>
-                      <im>1.06147105050507e-08</im>
+                      <re>5.84152476397482e-08</re>
+                      <im>1.0614529777893e-08</im>
                     </elem>
                     <elem>
-                      <re>3.55336185253804e-08</re>
-                      <im>-3.00280451592184e-09</im>
+                      <re>3.55323001658331e-08</re>
+                      <im>-3.00284646142793e-09</im>
                     </elem>
                     <elem>
-                      <re>3.7067198490503e-10</re>
-                      <im>-2.80165308303229e-08</im>
+                      <re>3.69988960049512e-10</re>
+                      <im>-2.8016826190833e-08</im>
                     </elem>
                     <elem>
-                      <re>9.83805746639913e-09</re>
-                      <im>-6.07912747673148e-09</im>
+                      <re>9.83949038523791e-09</re>
+                      <im>-6.0788604818755e-09</im>
                     </elem>
                     <elem>
-                      <re>5.91885160350344e-07</re>
-                      <im>-8.32730257008162e-09</im>
+                      <re>5.91880315278952e-07</re>
+                      <im>-8.32659398462397e-09</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2145,36 +2143,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 1</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.000110441616170392</re>
-                      <im>1.8428389546632e-06</im>
+                      <re>-0.000110441355063134</re>
+                      <im>1.84283639025844e-06</im>
                     </elem>
                     <elem>
-                      <re>9.20964678544683e-08</re>
-                      <im>1.44236285961561e-08</im>
+                      <re>9.20925586015088e-08</re>
+                      <im>1.44239072233938e-08</im>
                     </elem>
                     <elem>
-                      <re>-1.70666795778622e-08</re>
-                      <im>1.10372905105063e-09</im>
+                      <re>-1.70683129389556e-08</re>
+                      <im>1.10362577814582e-09</im>
                     </elem>
                     <elem>
-                      <re>-1.92767774122722e-08</re>
-                      <im>2.62201473932507e-09</im>
+                      <re>-1.92767632069217e-08</re>
+                      <im>2.62198510108076e-09</im>
                     </elem>
                     <elem>
-                      <re>-3.9205832760083e-10</re>
-                      <im>-1.46779135471151e-10</im>
+                      <re>-3.92266975623536e-10</re>
+                      <im>-1.46711333283837e-10</im>
                     </elem>
                     <elem>
-                      <re>-1.61676760284148e-08</re>
-                      <im>-8.91899536318354e-10</im>
+                      <re>-1.61676635309157e-08</re>
+                      <im>-8.92130360359124e-10</im>
                     </elem>
                     <elem>
-                      <re>-2.12913707846796e-09</re>
-                      <im>-4.60694547388727e-09</im>
+                      <re>-2.13009465198583e-09</re>
+                      <im>-4.60687662069237e-09</im>
                     </elem>
                     <elem>
-                      <re>-6.62043075255244e-08</re>
-                      <im>-1.24479581643456e-08</im>
+                      <re>-6.62043558357859e-08</re>
+                      <im>-1.2448472926281e-08</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2186,8 +2184,8 @@ regression test spectrum output is kept within the chroma xml output
             <source_wavetype>fred</source_wavetype>
             <sink_particle>pion</sink_particle>
             <sink_wavetype>fred</sink_wavetype>
-            <Mass_1>0.5454546</Mass_1>
-            <Mass_2>0.5454546</Mass_2>
+            <Mass_1>0.5454545</Mass_1>
+            <Mass_2>0.5454545</Mass_2>
             <t0>0</t0>
             <Forward_prop_headers>
               <elem>
@@ -2341,8 +2339,8 @@ regression test spectrum output is kept within the chroma xml output
             </Forward_prop_headers>
             <Forward_prop_correlator>
               <elem>
-                <forward_prop_corr_1>0.192608933764297 0.0159807816605731 0.0061806294667891 0.00284180982291039 0.00198266749054003 0.00283889777482897 0.00617588852307574 0.0159631273350801</forward_prop_corr_1>
-                <forward_prop_corr_2>0.00386918897016351 0.000316164183123094 0.000120015239094967 5.41338768463611e-05 3.73349496359418e-05 5.410110099466e-05 0.000119966185137764 0.000315877179622688</forward_prop_corr_2>
+                <forward_prop_corr_1>0.192608932093107 0.0159807806755118 0.00618062912222503 0.0028418096199957 0.00198266743085943 0.00283889772162193 0.00617588833110045 0.0159631269136217</forward_prop_corr_1>
+                <forward_prop_corr_2>0.00386918904353595 0.000316164198249512 0.000120015247171509 5.41338793895751e-05 3.73349521638227e-05 5.41011060547236e-05 0.000119966197707099 0.000315877209825775</forward_prop_corr_2>
               </elem>
             </Forward_prop_correlator>
             <SourceSinkType>
@@ -2364,36 +2362,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>0 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.0176892879367188</re>
-                      <im>-3.19073406984671e-06</im>
+                      <re>-0.01768928587353</re>
+                      <im>-3.19129492254433e-06</im>
                     </elem>
                     <elem>
-                      <re>-0.00165793679752824</re>
-                      <im>1.20072585951814e-06</im>
+                      <re>-0.00165793661017233</re>
+                      <im>1.20063752895305e-06</im>
                     </elem>
                     <elem>
-                      <re>-0.00065600572997937</re>
-                      <im>-3.54503413291241e-08</im>
+                      <re>-0.000656005662676762</re>
+                      <im>-3.54884583941839e-08</im>
                     </elem>
                     <elem>
-                      <re>-0.000305171757190692</re>
-                      <im>-1.35426287822815e-07</im>
+                      <re>-0.00030517170944222</re>
+                      <im>-1.35445169746617e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000215209607858924</re>
-                      <im>-2.76307170699042e-07</im>
+                      <re>-0.000215209577163478</re>
+                      <im>-2.76321181047479e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000305029040646332</re>
-                      <im>-6.44635661739557e-07</im>
+                      <re>-0.000305029006085533</re>
+                      <im>-6.4465408300407e-07</im>
                     </elem>
                     <elem>
-                      <re>-0.000655855243167025</re>
-                      <im>-1.47599613864458e-06</im>
+                      <re>-0.000655855181321385</re>
+                      <im>-1.47603059375001e-06</im>
                     </elem>
                     <elem>
-                      <re>-0.00165648944312125</re>
-                      <im>-2.75294210805299e-06</im>
+                      <re>-0.00165648928395967</re>
+                      <im>-2.75302208230244e-06</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2402,36 +2400,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 0 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>-0.00165632841718466</re>
-                      <im>-3.06720089440167e-06</im>
+                      <re>-0.00165632818347113</re>
+                      <im>-3.06718551200781e-06</im>
                     </elem>
                     <elem>
-                      <re>-3.85459581407223e-05</re>
-                      <im>4.63042863396108e-07</im>
+                      <re>-3.85459651125182e-05</re>
+                      <im>4.63046443608079e-07</im>
                     </elem>
                     <elem>
-                      <re>-5.5629521147035e-06</re>
-                      <im>1.15439395494241e-07</im>
+                      <re>-5.56295031378431e-06</re>
+                      <im>1.15440483325539e-07</im>
                     </elem>
                     <elem>
-                      <re>-1.2538253175238e-06</re>
-                      <im>4.16369554994616e-08</im>
+                      <re>-1.25382273656956e-06</re>
+                      <im>4.16371577389714e-08</im>
                     </elem>
                     <elem>
-                      <re>-5.51598536925025e-07</re>
-                      <im>-1.87699694445174e-09</im>
+                      <re>-5.51598501146593e-07</re>
+                      <im>-1.87708230888015e-09</im>
                     </elem>
                     <elem>
-                      <re>-1.28156369501362e-06</re>
-                      <im>-5.32441301919399e-08</im>
+                      <re>-1.28156448503276e-06</re>
+                      <im>-5.32440125918397e-08</im>
                     </elem>
                     <elem>
-                      <re>-5.49251387211094e-06</re>
-                      <im>-2.02651096789685e-07</im>
+                      <re>-5.49251244823929e-06</re>
+                      <im>-2.02650453535199e-07</im>
                     </elem>
                     <elem>
-                      <re>-3.83446806121528e-05</re>
-                      <im>-4.61967437170443e-07</im>
+                      <re>-3.83446825686333e-05</re>
+                      <im>-4.61965040261418e-07</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2440,36 +2438,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 0</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>0.000190723232837848</re>
-                      <im>1.26885288881709e-06</im>
+                      <re>0.00019072322933683</re>
+                      <im>1.26885710721202e-06</im>
                     </elem>
                     <elem>
-                      <re>2.60655573443224e-06</re>
-                      <im>4.32312498074603e-07</im>
+                      <re>2.60654764083616e-06</re>
+                      <im>4.32310242227405e-07</im>
                     </elem>
                     <elem>
-                      <re>1.34530773116469e-07</re>
-                      <im>5.05700849326903e-08</im>
+                      <re>1.34527991763807e-07</re>
+                      <im>5.05700281927852e-08</im>
                     </elem>
                     <elem>
-                      <re>1.94232886033968e-08</re>
-                      <im>5.92293718833219e-09</im>
+                      <re>1.94217568171836e-08</re>
+                      <im>5.92302287074923e-09</im>
                     </elem>
                     <elem>
-                      <re>2.25662783645326e-09</re>
-                      <im>1.04556862576801e-09</im>
+                      <re>2.25559557550627e-09</re>
+                      <im>1.04569605448952e-09</im>
                     </elem>
                     <elem>
-                      <re>7.85254240448678e-09</re>
-                      <im>4.03429606057202e-10</im>
+                      <re>7.84945830606006e-09</re>
+                      <im>4.03577231035548e-10</im>
                     </elem>
                     <elem>
-                      <re>1.02331927815888e-07</re>
-                      <im>-5.11908126200432e-09</im>
+                      <re>1.02331423315829e-07</re>
+                      <im>-5.11869015346493e-09</im>
                     </elem>
                     <elem>
-                      <re>2.46346338957579e-06</re>
-                      <im>-5.71476220390212e-08</im>
+                      <re>2.46345727927078e-06</re>
+                      <im>-5.71456093282417e-08</im>
                     </elem>
                   </mesprop>
                 </elem>
@@ -2478,36 +2476,36 @@ regression test spectrum output is kept within the chroma xml output
                   <sink_mom>1 1 1</sink_mom>
                   <mesprop>
                     <elem>
-                      <re>7.12233822014926e-05</re>
-                      <im>-1.91949212525463e-06</im>
+                      <re>7.12231365806715e-05</re>
+                      <im>-1.91949022183142e-06</im>
                     </elem>
                     <elem>
-                      <re>8.17104326896949e-07</re>
-                      <im>3.44623139044478e-07</im>
+                      <re>8.17097800419074e-07</re>
+                      <im>3.44624359997918e-07</im>
                     </elem>
                     <elem>
-                      <re>1.65077733255095e-08</re>
-                      <im>1.42719347885328e-08</im>
+                      <re>1.65047570211901e-08</re>
+                      <im>1.42721617793913e-08</im>
                     </elem>
                     <elem>
-                      <re>-4.44628645350104e-09</re>
-                      <im>1.11728942710065e-09</im>
+                      <re>-4.44804235979582e-09</re>
+                      <im>1.11715813118889e-09</im>
                     </elem>
                     <elem>
-                      <re>7.18950887187424e-10</re>
-                      <im>-6.73407517737883e-10</im>
+                      <re>7.1849943550738e-10</re>
+                      <im>-6.73438134547626e-10</im>
                     </elem>
                     <elem>
-                      <re>1.32670292347074e-08</re>
-                      <im>-7.80669201344692e-09</im>
+                      <re>1.32657268128262e-08</re>
+                      <im>-7.80662562104886e-09</im>
                     </elem>
                     <elem>
-                      <re>7.88927341741926e-08</re>
-                      <im>-2.9782694532462e-08</im>
+                      <re>7.88897180162921e-08</re>
+                      <im>-2.97830876144128e-08</im>
                     </elem>
                     <elem>
-                      <re>8.86990768307918e-07</re>
-                      <im>2.65712936560198e-09</im>
+                      <re>8.86982430786842e-07</re>
+                      <im>2.65858786870808e-09</im>
                     </elem>
                   </mesprop>
                 </elem>
