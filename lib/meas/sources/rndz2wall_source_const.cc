@@ -1,4 +1,4 @@
-// $Id: rndz2wall_source_const.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
+// $Id: rndz2wall_source_const.cc,v 3.2 2008-06-04 14:44:43 kostas Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */
@@ -85,6 +85,9 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      read(paramtop, "ran_seed", ran_seed);
+
+      /**
 #if 0
 #warning "CHECK IF SETTING SEED IS DESIRED BEHAVIOR"
       //
@@ -96,7 +99,7 @@ namespace Chroma
 #warning "CHECK IF GRABBING SEED IS DESIRED BEHAVIOR"
       QDP::RNG::savern(ran_seed);
 #endif
-
+      **/
 
       read(paramtop, "j_decay", j_decay);
       read(paramtop, "t_source", t_source);
@@ -123,6 +126,16 @@ namespace Chroma
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
       QDPIO::cout << "Rand Z2 Wall source" << endl;
+
+      
+      // Save current seed
+      Seed ran_seed;
+      QDP::RNG::savern(ran_seed);
+
+      // Set the seed to desired value
+      QDP::RNG::setrn(params.ran_seed);
+      
+      
 
       // Create the quark source
       LatticePropagator quark_source;
@@ -174,6 +187,10 @@ namespace Chroma
 	  FermToProp(chi, quark_source, color_source, spin_source);
 	}
       }
+
+      
+      // Reset the seed
+      QDP::RNG::setrn(ran_seed);
 
       return quark_source;
     }
