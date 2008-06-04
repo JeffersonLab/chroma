@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.143 2008-06-02 15:44:10 bjoo Exp $
+# $Id: Makefile.am,v 3.144 2008-06-04 03:17:24 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -156,6 +156,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_type_map.h \
 	io/enum_io/enum_cfgtype_io.h \
 	io/enum_io/enum_coeffs_io.h \
+	io/enum_io/enum_mesonop_io.h \
 	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
@@ -948,7 +949,9 @@ libchroma_a_SOURCES = \
 	io/eigen_io.cc \
 	io/monomial_io.cc \
         io/enum_io/enum_cfgtype_io.cc \
-	io/enum_io/enum_coeffs_io.cc io/enum_io/enum_eigenvectype_io.cc \
+	io/enum_io/enum_coeffs_io.cc \
+	io/enum_io/enum_mesonop_io.cc \
+        io/enum_io/enum_eigenvectype_io.cc \
 	io/enum_io/enum_fermtype_io.cc \
 	io/enum_io/enum_gaugeacttype_io.cc \
 	io/enum_io/enum_heatbathtype_io.cc \
