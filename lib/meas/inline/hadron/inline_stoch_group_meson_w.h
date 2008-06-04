@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_group_meson_w.h,v 1.2 2008-04-20 15:59:44 edwards Exp $
+// $Id: inline_stoch_group_meson_w.h,v 1.3 2008-06-04 03:19:53 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operators
  */
@@ -9,6 +9,7 @@
 
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/xml_group_reader.h"
+#include "io/enum_io/enum_mesonop_io.h"
 
 namespace Chroma 
 { 
@@ -31,10 +32,12 @@ namespace Chroma
 
       struct Param_t
       {
-	int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
-	int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
-	GroupXML_t          quark_smearing; /*!< xml string holding smearing params */
-	GroupXML_t          link_smearing;         /*!< link smearing xml */
+	MesonOpType         creat_op_contract_type; /*<! Contraction type for creation op */
+	MesonOpType         annih_op_contract_type; /*<! Contraction type for annihilation op */
+	int                 mom2_max;               /*!< (mom)^2 <= mom2_max */
+	int                 displacement_length;    /*!< Displacement length for creat. and annih. ops */
+	GroupXML_t          quark_smearing;         /*!< xml string holding smearing params */
+	GroupXML_t          link_smearing;          /*!< link smearing xml */
 
 	multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
       };

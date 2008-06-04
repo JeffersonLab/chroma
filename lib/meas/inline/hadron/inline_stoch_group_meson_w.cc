@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.9 2008-04-29 11:34:17 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.10 2008-06-04 03:16:18 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -64,6 +64,8 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      read(paramtop, "creationOpContractType", param.creat_op_contract_type);
+      read(paramtop, "annihilationOpContractType", param.annih_op_contract_type);
       read(paramtop, "mom2_max", param.mom2_max);
       read(paramtop, "displacement_length", param.displacement_length);
 
@@ -81,6 +83,8 @@ namespace Chroma
       int version = 1;
 
       write(xml, "version", version);
+      write(xml, "creationOpContractType", param.creat_op_contract_type);
+      write(xml, "annihilationOpContractType", param.annih_op_contract_type);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "displacement_length", param.displacement_length);
       xml << param.quark_smearing.xml;
@@ -479,19 +483,16 @@ namespace Chroma
 
 	(*quarkSmearing)(f, u);
 
-	// NOTE: I do not understand the Gamma(8) below
-	SpinMatrix mat_tmp = rotate_mat * Gamma(8);
-
 	// The first set of quarks will get a gamma_5 to implement the oper we need
 	// op=  eta_1^dag * [whatever gamma and U oper structure] * gamma_5 eta_0^dag
 	SpinMatrix mat;
 	if (qnum == 0)
 	{
-	  mat = mat_tmp * Gamma(15);
+	  mat = rotate_mat * Gamma(15);
 	}
 	else
 	{
-	  mat = mat_tmp;
+	  mat = rotate_mat;
 	}
 				
 	smrd_q.quark = mat * f;
@@ -755,6 +756,58 @@ namespace Chroma
     }
 
 
+    //----------------------------------------------------------------------------
+    // Color contract two fermions
+    multi2d<DComplex> contractOp (SmearedDispObjects& smrd_disp_vecs,
+				  int n0, const KeySmearedDispColorVector_t& k0,
+				  int n1, const KeySmearedDispColorVector_t& k1,
+				  MesonOpType contractType, 
+				  const SftMom& phases,
+				  int t0)
+    {
+      multi2d<DComplex> op_sum;
+      LatticeComplex singlet;
+
+      switch(contractType)
+      {
+      case MESON_OP_TYPE_SOURCE_SOURCE:
+	makeColorSinglet(singlet,
+			 smrd_disp_vecs.getDispSource(n0, k0),
+			 smrd_disp_vecs.getDispSource(n0, k0),
+			 phases.getSet()[t0]);
+	op_sum = phases.sft(singlet, t0);
+	break;
+
+      case MESON_OP_TYPE_SOURCE_SOLUTION:
+	makeColorSinglet(singlet,
+			 smrd_disp_vecs.getDispSource(n0, k0),
+			 smrd_disp_vecs.getDispSolution(n0, k0),
+			 phases.getSet()[t0]);
+	op_sum = phases.sft(singlet, t0);
+	break;
+
+      case MESON_OP_TYPE_SOLUTION_SOURCE:
+	makeColorSinglet(singlet,
+			 smrd_disp_vecs.getDispSolution(n0, k0),
+			 smrd_disp_vecs.getDispSource(n0, k0),
+			 phases.getSet()[t0]);
+	op_sum = phases.sft(singlet, t0);
+	break;
+
+      case MESON_OP_TYPE_SOLUTION_SOLUTION:
+	makeColorSinglet(singlet,
+			 smrd_disp_vecs.getDispSolution(n0, k0),
+			 smrd_disp_vecs.getDispSolution(n0, k0),
+			 all);
+	op_sum = phases.sft(singlet);
+	break;
+      }
+
+      return op_sum;
+    }
+		  
+
+    //----------------------------------------------------------------------------
     //! Meson operator
     struct MesonOperator_t
     {
@@ -788,6 +841,7 @@ namespace Chroma
 
       std::string   id;                /*!< Tag/ID used in analysis codes */
 
+      MesonOpType   op_contract_type;  /*<! Contraction type for creation op */
       int           mom2_max;          /*!< |\vec{p}|^2 */
       int           decay_dir;         /*!< Direction of decay */
 
@@ -804,6 +858,7 @@ namespace Chroma
       int version = 1;
       write(xml, "version", version);
       write(xml, "id", param.id);
+      write(xml, "opContractType", param.op_contract_type);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "seed_l", param.seed_l);
@@ -1200,15 +1255,21 @@ namespace Chroma
       for(int t0 = 0; t0 < participating_timeslices.size() ; ++t0)
       {
 	StopWatch watch;
+
+	// Bummer. We have to hold both the smeared sources and the smeared
+	// solutions simultaneously since the operator construction might
+	// involve both the sources and the solutions in one operator
+	// for either the creation and/or annihilation operator
+
+	// The object holding the smeared and displaced color vector maps  
+	SmearedDispObjects smrd_disp_vecs(params.param.displacement_length,
+					  diluted_quarks, quarkSmearing, u_smr);
+
 	//Make the source operators 
 	{
-
-	  // The object holding the smeared and displaced color vector maps  
-	  SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
-					    diluted_quarks, quarkSmearing, u_smr);
-
 	  // Creation operator
 	  MesonOperator_t  creat_oper;
+	  creat_oper.op_contract_type = params.param.creat_op_contract_type;
 	  creat_oper.mom2_max    = params.param.mom2_max;
 	  creat_oper.decay_dir   = decay_dir;
 	  creat_oper.seed_l      = diluted_quarks[1]->getSeed();
@@ -1268,28 +1329,21 @@ namespace Chroma
 		keySmearedDispColorVector[0].dil = i;
 		keySmearedDispColorVector[1].dil = j;
 
-		const multi1d<LatticeComplex> &q0 = smrd_disp_srcs.getDispSource(n0, 
-										 keySmearedDispColorVector[0]);
-
-		const multi1d<LatticeComplex> &q1 = smrd_disp_srcs.getDispSource(n1, 
-										 keySmearedDispColorVector[1]);
-
 		LatticeComplex c_oper;
-
+	
 		watch.reset();
 		watch.start();
 
-		makeColorSinglet(c_oper, q0, q1, phases.getSet()[participating_timeslices[t0]]);
-		  
-		watch.stop();
-
+		// Do the relevant quark contraction
 		// Slow fourier-transform
 		// We can restrict what the FT routine requires to a subset.
-		watch.reset();
-		watch.start();
-
-		multi2d<DComplex> c_sum(phases.sft(c_oper, participating_timeslices[t0]));
-
+		multi2d<DComplex> c_sum(contractOp(smrd_disp_vecs,
+						   n0, keySmearedDispColorVector[0],
+						   n1, keySmearedDispColorVector[1],
+						   params.param.creat_op_contract_type,
+						   phases,
+						   participating_timeslices[t0]));
+		  
 		watch.stop();
 
 		/*QDPIO::cout << " Spatial sums completed: time = " << 
@@ -1413,14 +1467,9 @@ namespace Chroma
 
 	//Make Annilation Operator
 	{
-
-	  // The object holding the smeared and displaced color vector maps  
-	  SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
-					    diluted_quarks, quarkSmearing, u_smr);
-
-
 	  // Annihilation operator
 	  MesonOperator_t  annih_oper;
+	  annih_oper.op_contract_type = params.param.annih_op_contract_type;
 	  annih_oper.mom2_max    = params.param.mom2_max;
 	  annih_oper.decay_dir   = decay_dir;
 	  annih_oper.seed_l      = diluted_quarks[0]->getSeed();
@@ -1479,28 +1528,20 @@ namespace Chroma
 		keySmearedDispColorVector[0].dil = i;
 		keySmearedDispColorVector[1].dil = j;
 
-		const multi1d<LatticeComplex> &q0 = smrd_disp_snks.getDispSolution(n0, 
-										   keySmearedDispColorVector[0]);
-
-		const multi1d<LatticeComplex> &q1 = smrd_disp_snks.getDispSolution(n1, 
-										   keySmearedDispColorVector[1]);
+		watch.reset();
+		watch.start();
 
 		// Contract over color indices
-		LatticeComplex a_oper;
-
-		watch.reset();
-		watch.start();
-
-		makeColorSinglet(a_oper, q0, q1, all);
-
-		watch.stop();
-
-		watch.reset();
-		watch.start();
-
+		// Do the relevant quark contraction
 		// Slow fourier-transform
-		multi2d<DComplex> a_sum(phases.sft(a_oper));
-
+		// We can restrict what the FT routine requires to a subset.
+		multi2d<DComplex> a_sum(contractOp(smrd_disp_vecs,
+						   n0, keySmearedDispColorVector[0],
+						   n1, keySmearedDispColorVector[1],
+						   params.param.annih_op_contract_type,
+						   phases,
+						   participating_timeslices[t0]));
+		  
 		watch.stop();
 		/*
 		  QDPIO::cout << "Spatial Sums completed: time " << 
