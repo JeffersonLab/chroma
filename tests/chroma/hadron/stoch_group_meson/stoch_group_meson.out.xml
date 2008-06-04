@@ -207,6 +207,8 @@
       <Frequency>1</Frequency>
       <Param> 
         <version>1</version>
+        <creationOpContractType>SOURCE-SOURCE</creationOpContractType>
+        <annihilationOpContractType>SOURCE-SOURCE</annihilationOpContractType>
         <mom2_max>0</mom2_max>
         <displacement_length>1</displacement_length>
 
@@ -279,10 +281,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.28.3</chroma>
-      <qdp>1.25.1</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.26.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>25 Apr 08 01:42:20 EDT</run_date>
+    <run_date>03 Jun 08 23:15:45 EDT</run_date>
     <Setgeom>
       <latt_size>2 2 2 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -339,10 +342,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.3</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.26.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Apr 08 01:42:20 EDT</run_date>
+          <run_date>03 Jun 08 23:15:46 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -437,10 +441,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.3</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.26.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Apr 08 01:42:20 EDT</run_date>
+          <run_date>03 Jun 08 23:15:46 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -519,7 +524,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267669740</id>
+      <id>271116946</id>
     </make_source>
 
         </Source_file_info>
@@ -593,10 +598,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.3</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.26.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Apr 08 01:42:21 EDT</run_date>
+          <run_date>03 Jun 08 23:15:46 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -691,10 +697,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.3</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.26.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Apr 08 01:42:21 EDT</run_date>
+          <run_date>03 Jun 08 23:15:46 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -773,7 +780,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>267669741</id>
+      <id>271116946</id>
     </make_source>
 
         </Source_file_info>
@@ -847,10 +854,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.3</chroma>
-            <qdp>1.25.1</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.26.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Apr 08 01:42:21 EDT</run_date>
+          <run_date>03 Jun 08 23:15:47 EDT</run_date>
           <Setgeom>
             <latt_size>2 2 2 4</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -862,6 +870,8 @@
         <Input>
           <Param>
             <version>1</version>
+            <creationOpContractType>SOURCE-SOURCE</creationOpContractType>
+            <annihilationOpContractType>SOURCE-SOURCE</annihilationOpContractType>
             <mom2_max>0</mom2_max>
             <displacement_length>1</displacement_length><QuarkSmearing>
 <!-- wvf_kind>NONE</wvf_kind -->
