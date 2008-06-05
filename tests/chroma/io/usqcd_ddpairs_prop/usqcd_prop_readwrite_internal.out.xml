@@ -151,10 +151,11 @@ Write some SZIN objects
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.28.5</chroma>
-      <qdp>1.26.0</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>02 May 08 19:22:41 EDT</run_date>
+    <run_date>05 Jun 08 15:56:25 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -211,10 +212,11 @@ Write some SZIN objects
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.5</chroma>
-            <qdp>1.26.0</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>02 May 08 19:22:41 EDT</run_date>
+          <run_date>05 Jun 08 15:56:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -310,10 +312,11 @@ Write some SZIN objects
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.28.5</chroma>
-            <qdp>1.26.0</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>02 May 08 19:22:42 EDT</run_date>
+          <run_date>05 Jun 08 15:56:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -392,7 +395,7 @@ Write some SZIN objects
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>268338162</id>
+      <id>271263385</id>
     </make_source>
 
         </Source_file_info>
@@ -440,80 +443,80 @@ Write some SZIN objects
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>26</n_count>
-            <resid>1.142317e-07</resid>
+            <resid>1.084446e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>26</n_count>
-            <resid>1.320728e-07</resid>
+            <resid>1.259073e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>26</n_count>
-            <resid>1.338568e-07</resid>
+            <resid>1.31553e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>26</n_count>
-            <resid>1.293359e-07</resid>
+            <resid>1.359047e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>26</n_count>
-            <resid>1.281844e-07</resid>
+            <resid>1.16607e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>26</n_count>
-            <resid>1.290484e-07</resid>
+            <resid>1.243808e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>26</n_count>
-            <resid>1.193681e-07</resid>
+            <resid>1.134932e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>26</n_count>
-            <resid>1.283999e-07</resid>
+            <resid>1.29966e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>26</n_count>
-            <resid>1.275912e-07</resid>
+            <resid>1.19408e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>26</n_count>
-            <resid>1.306896e-07</resid>
+            <resid>1.377132e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>26</n_count>
-            <resid>1.430476e-07</resid>
+            <resid>1.280537e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>26</n_count>
-            <resid>1.095345e-07</resid>
+            <resid>1.119109e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>312</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.0205846283744376 0.0262541372089398 0.0489805048589179 0.127992131236013 0.751741620693095 0.127949013659606 0.0489568124176097 0.0262514658332398</prop_corr>
+          <prop_corr>0.020584628068402 0.0262541361951863 0.0489805027661468 0.127992126929985 0.751741617254163 0.127949014527583 0.0489568119329433 0.0262514658184576</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -592,7 +595,7 @@ Write some SZIN objects
 
         </FileXML>
         <source_corr>0 0 0 0 6.65200990429814 0 0 0</source_corr>
-        <prop_corr>0.0205846283744376 0.0262541372089398 0.0489805048589179 0.127992131236013 0.751741620693095 0.127949013659606 0.0489568124176097 0.0262514658332398</prop_corr>
+        <prop_corr>0.020584628068402 0.0262541361951863 0.0489805027661468 0.127992126929985 0.751741617254163 0.127949014527583 0.0489568119329433 0.0262514658184576</prop_corr>
       </USQCDReadDDPairsProp>
     </elem>
     <elem>
@@ -670,7 +673,7 @@ Write some SZIN objects
 
         </FileXML>
         <source_corr>0 0 0 0 6.65200990429814 0 0 0</source_corr>
-        <prop_corr>0.0205846283744376 0.0262541372089398 0.0489805048589179 0.127992131236013 0.751741620693095 0.127949013659606 0.0489568124176097 0.0262514658332398</prop_corr>
+        <prop_corr>0.020584628068402 0.0262541361951863 0.0489805027661468 0.127992126929985 0.751741617254163 0.127949014527583 0.0489568119329433 0.0262514658184576</prop_corr>
       </USQCDReadDDPairsProp>
     </elem>
   </InlineObservables>

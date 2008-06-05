@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: schrfun-pcac.out.xml,v 1.2 2007-08-27 23:02:13 edwards Exp $
+; $Id: schrfun-pcac.out.xml,v 1.3 2008-06-05 19:58:58 edwards Exp $
 ;
 ; Schroedinger input file for chroma main program
 ;
@@ -87,10 +87,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.24.2</chroma>
-      <qdp>1.24.4</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>27 Aug 07 19:00:44 EDT</run_date>
+    <run_date>05 Jun 08 15:57:06 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -122,28 +123,28 @@
 
   </Config_info>
   <Observables>
-    <w_plaq>0.99517734348774</w_plaq>
-    <s_plaq>0.99999996026357</s_plaq>
+    <w_plaq>0.995177348454793</w_plaq>
+    <s_plaq>0.999999970197678</s_plaq>
     <t_plaq>0.990354726711909</t_plaq>
-    <plane_01_plaq>0.99999996026357</plane_01_plaq>
-    <plane_02_plaq>0.99999996026357</plane_02_plaq>
-    <plane_12_plaq>0.99999996026357</plane_12_plaq>
+    <plane_01_plaq>0.999999970197678</plane_01_plaq>
+    <plane_02_plaq>0.999999970197678</plane_02_plaq>
+    <plane_12_plaq>0.999999970197678</plane_12_plaq>
     <plane_03_plaq>0.990354726711909</plane_03_plaq>
     <plane_13_plaq>0.990354726711909</plane_13_plaq>
     <plane_23_plaq>0.990354726711909</plane_23_plaq>
     <link>0.965140111744404</link>
     <pollp>
       <elem>
-        <re>0.42904923359553</re>
-        <im>0.168811708688736</im>
+        <re>0.429049236079057</re>
+        <im>0.168811698754628</im>
       </elem>
       <elem>
-        <re>0.42904923359553</re>
-        <im>0.168811708688736</im>
+        <re>0.429049236079057</re>
+        <im>0.168811698754628</im>
       </elem>
       <elem>
-        <re>0.42904923359553</re>
-        <im>0.168811708688736</im>
+        <re>0.429049236079057</re>
+        <im>0.168811698754628</im>
       </elem>
       <elem>
         <re>1</re>
@@ -157,10 +158,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.24.2</chroma>
-            <qdp>1.24.4</qdp>
+            <chroma>3.30.0</chroma>
+            <qdp>1.27.0</qdp>
+            <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>27 Aug 07 19:00:45 EDT</run_date>
+          <run_date>05 Jun 08 15:57:06 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -226,34 +228,33 @@
 
 
 
-
         </Config_info>
         <Output_version>
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.99517734348774</w_plaq>
-          <s_plaq>0.99999996026357</s_plaq>
+          <w_plaq>0.995177348454793</w_plaq>
+          <s_plaq>0.999999970197678</s_plaq>
           <t_plaq>0.990354726711909</t_plaq>
-          <plane_01_plaq>0.99999996026357</plane_01_plaq>
-          <plane_02_plaq>0.99999996026357</plane_02_plaq>
-          <plane_12_plaq>0.99999996026357</plane_12_plaq>
+          <plane_01_plaq>0.999999970197678</plane_01_plaq>
+          <plane_02_plaq>0.999999970197678</plane_02_plaq>
+          <plane_12_plaq>0.999999970197678</plane_12_plaq>
           <plane_03_plaq>0.990354726711909</plane_03_plaq>
           <plane_13_plaq>0.990354726711909</plane_13_plaq>
           <plane_23_plaq>0.990354726711909</plane_23_plaq>
           <link>0.965140111744404</link>
           <pollp>
             <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
+              <re>0.429049236079057</re>
+              <im>0.168811698754628</im>
             </elem>
             <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
+              <re>0.429049236079057</re>
+              <im>0.168811698754628</im>
             </elem>
             <elem>
-              <re>0.42904923359553</re>
-              <im>0.168811708688736</im>
+              <re>0.429049236079057</re>
+              <im>0.168811698754628</im>
             </elem>
             <elem>
               <re>1</re>
@@ -265,30 +266,30 @@
           <PCAC_measurements>
             <elem>
               <direction>-1</direction>
-              <pseudo_prop>0 3.365129 1.37733 0.7175191 0.477253 0.390939 0.3628245 0</pseudo_prop>
-              <axial_prop>0 -0.6199241 -0.4394631 -0.3911346 -0.3741991 -0.3658284 -0.3594635 0</axial_prop>
+              <pseudo_prop>0 3.365129 1.377329 0.7175182 0.4772523 0.3909383 0.3628238 0</pseudo_prop>
+              <axial_prop>0 -0.6199232 -0.4394621 -0.3911337 -0.3741984 -0.3658277 -0.3594628 0</axial_prop>
             </elem>
             <elem>
               <direction>1</direction>
-              <pseudo_prop>0 7.877634 4.880032 2.832588 1.554424 0.8079571 0.4198223 0</pseudo_prop>
-              <axial_prop>-0 -0.3958071 -0.3739811 -0.3516217 -0.3316196 -0.3158966 -0.3024663 -0</axial_prop>
+              <pseudo_prop>0 7.877632 4.880032 2.832587 1.554424 0.807957 0.4198223 0</pseudo_prop>
+              <axial_prop>-0 -0.3958063 -0.3739806 -0.3516213 -0.3316195 -0.3158965 -0.3024663 -0</axial_prop>
             </elem>
           </PCAC_measurements>
           <ZV_measurements>
-            <f_1>0.7222885</f_1>
-            <vector_corr>0 0.7116981 0.7065569 0.6986403 0.6881527 0.6753489 0.6605205 0</vector_corr>
+            <f_1>0.7222886</f_1>
+            <vector_corr>0 0.7116973 0.7065564 0.6986399 0.6881523 0.6753488 0.6605206 0</vector_corr>
           </ZV_measurements>
           <ZA_measurements>
-            <f_1>0.7222885</f_1>
-            <f_AA>0.6443572</f_AA>
-            <f_AP_PA>-0.1009538</f_AP_PA>
+            <f_1>0.7222886</f_1>
+            <f_AA>0.6443573</f_AA>
+            <f_AP_PA>-0.100954</f_AP_PA>
             <f_PP>-0.1057963</f_PP>
-            <fd_AA>0.03631656</fd_AA>
-            <fd_AP_PA>0.9323536</fd_AP_PA>
+            <fd_AA>0.03631628</fd_AA>
+            <fd_AP_PA>0.9323518</fd_AP_PA>
             <fd_PP>2.108594</fd_PP>
           </ZA_measurements>
           <Relaxation_Iterations>
-            <ncg_had>910</ncg_had>
+            <ncg_had>924</ncg_had>
           </Relaxation_Iterations>
         </sfpcac>
       </SFpcac>
