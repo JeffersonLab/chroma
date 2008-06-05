@@ -448,7 +448,7 @@ regression test spectrum output is kept within the chroma xml output
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:37:55 EDT</run_date>
+    <run_date>04 Jun 08 23:10:17 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -509,7 +509,7 @@ regression test spectrum output is kept within the chroma xml output
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:37:55 EDT</run_date>
+          <run_date>04 Jun 08 23:10:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -609,7 +609,7 @@ regression test spectrum output is kept within the chroma xml output
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:37:55 EDT</run_date>
+          <run_date>04 Jun 08 23:10:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -688,7 +688,7 @@ regression test spectrum output is kept within the chroma xml output
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271179475</id>
+      <id>271203018</id>
     </make_source>
 
         </Source_file_info>
@@ -879,7 +879,7 @@ regression test spectrum output is kept within the chroma xml output
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271179476</id>
+      <id>271203018</id>
     </propagator>
 
         </Prop_file_info>
@@ -960,7 +960,7 @@ regression test spectrum output is kept within the chroma xml output
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:37:56 EDT</run_date>
+          <run_date>04 Jun 08 23:10:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1062,7 +1062,7 @@ regression test spectrum output is kept within the chroma xml output
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:37:56 EDT</run_date>
+          <run_date>04 Jun 08 23:10:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1141,7 +1141,7 @@ regression test spectrum output is kept within the chroma xml output
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271179476</id>
+      <id>271203018</id>
     </make_source>
 
         </Source_file_info>
@@ -1328,7 +1328,7 @@ regression test spectrum output is kept within the chroma xml output
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271179476</id>
+      <id>271203018</id>
     </propagator>
 
         </Prop_file_info>
@@ -1470,7 +1470,7 @@ regression test spectrum output is kept within the chroma xml output
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271179476</id>
+      <id>271203018</id>
     </propagator>
 
         </Prop_file_info>
@@ -1553,7 +1553,7 @@ regression test spectrum output is kept within the chroma xml output
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:37:56 EDT</run_date>
+          <run_date>04 Jun 08 23:10:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

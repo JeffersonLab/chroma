@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec-zolo-ev-multi.out.xml,v 3.8 2008-06-04 20:30:26 edwards Exp $
+; $Id: unprec-zolo-ev-multi.out.xml,v 3.9 2008-06-05 03:33:26 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -235,7 +235,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:24:39 EDT</run_date>
+    <run_date>04 Jun 08 23:11:20 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -296,7 +296,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:24:39 EDT</run_date>
+          <run_date>04 Jun 08 23:11:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -895,7 +895,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:24:44 EDT</run_date>
+          <run_date>04 Jun 08 23:11:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1074,7 +1074,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178684</id>
+      <id>271203085</id>
     </make_source>
 
         </Source_file_info>
@@ -1120,7 +1120,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:24:44 EDT</run_date>
+          <run_date>04 Jun 08 23:11:25 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

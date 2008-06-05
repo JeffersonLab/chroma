@@ -90,7 +90,7 @@ Make a dilute source
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:37:52 EDT</run_date>
+    <run_date>04 Jun 08 23:10:15 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -151,7 +151,7 @@ Make a dilute source
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:37:52 EDT</run_date>
+          <run_date>04 Jun 08 23:10:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

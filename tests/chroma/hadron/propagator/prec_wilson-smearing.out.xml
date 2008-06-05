@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: prec_wilson-smearing.out.xml,v 3.10 2008-06-04 20:30:26 edwards Exp $
+; $Id: prec_wilson-smearing.out.xml,v 3.11 2008-06-05 03:33:25 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -125,7 +125,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:24:25 EDT</run_date>
+    <run_date>04 Jun 08 23:11:07 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -272,7 +272,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:24:25 EDT</run_date>
+          <run_date>04 Jun 08 23:11:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -374,7 +374,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:24:26 EDT</run_date>
+          <run_date>04 Jun 08 23:11:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -455,7 +455,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178666</id>
+      <id>271203067</id>
     </make_source>
 
         </Source_file_info>

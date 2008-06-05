@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: ritz_Hw-v1.out.xml,v 3.8 2008-06-05 02:23:04 edwards Exp $
+; $Id: ritz_Hw-v1.out.xml,v 3.9 2008-06-05 03:33:15 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -81,7 +81,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:36:14 EDT</run_date>
+    <run_date>04 Jun 08 22:48:01 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -142,7 +142,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:36:14 EDT</run_date>
+          <run_date>04 Jun 08 22:48:01 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

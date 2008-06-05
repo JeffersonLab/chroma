@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: unprec_ovext.out.xml,v 3.8 2008-06-04 20:30:27 edwards Exp $
+; $Id: unprec_ovext.out.xml,v 3.9 2008-06-05 03:33:26 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -114,7 +114,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:25:08 EDT</run_date>
+    <run_date>04 Jun 08 23:11:49 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -175,7 +175,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:25:08 EDT</run_date>
+          <run_date>04 Jun 08 23:11:49 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -275,7 +275,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:25:08 EDT</run_date>
+          <run_date>04 Jun 08 23:11:49 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -358,7 +358,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178708</id>
+      <id>271203109</id>
     </make_source>
 
         </Source_file_info>

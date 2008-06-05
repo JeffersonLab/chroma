@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: qqqNucNuc.out.xml,v 3.5 2008-06-04 20:30:27 edwards Exp $
+; $Id: qqqNucNuc.out.xml,v 3.6 2008-06-05 03:33:27 edwards Exp $
 ;
 ; Test input for the qqqNucNuc program
 ;
@@ -281,7 +281,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:26:20 EDT</run_date>
+    <run_date>04 Jun 08 23:12:57 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -342,7 +342,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:26:20 EDT</run_date>
+          <run_date>04 Jun 08 23:12:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -442,7 +442,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:26:20 EDT</run_date>
+          <run_date>04 Jun 08 23:12:57 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -521,7 +521,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178780</id>
+      <id>271203177</id>
     </make_source>
 
         </Source_file_info>
@@ -655,7 +655,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:26:20 EDT</run_date>
+          <run_date>04 Jun 08 23:12:58 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -734,7 +734,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178780</id>
+      <id>271203177</id>
     </make_source>
 
         </Source_file_info>
@@ -915,7 +915,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271178780</id>
+      <id>271203178</id>
     </propagator>
 
         </Prop_file_info>
@@ -1059,7 +1059,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271178780</id>
+      <id>271203178</id>
     </propagator>
 
         </Prop_file_info>
@@ -1187,7 +1187,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271178781</id>
+      <id>271203179</id>
     </propagator>
 
         </Prop_file_info>
@@ -1331,7 +1331,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271178781</id>
+      <id>271203179</id>
     </propagator>
 
         </Prop_file_info>
@@ -1412,7 +1412,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:26:21 EDT</run_date>
+          <run_date>04 Jun 08 23:12:59 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1638,7 +1638,7 @@
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:26:28 EDT</run_date>
+          <run_date>04 Jun 08 23:13:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
