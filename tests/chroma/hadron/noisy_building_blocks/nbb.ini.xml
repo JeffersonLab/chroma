@@ -16,6 +16,14 @@ Calculate noisy building blocks - insertions in traces
             <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
             <j_decay>3</j_decay>
             <t_source>0</t_source>
+            <ran_seed>
+              <Seed>      
+                <elem>471</elem>
+                <elem>1694</elem>
+                <elem>3965</elem>
+                <elem>563</elem>
+              </Seed>
+            </ran_seed>
           </Source>
         </Param>
         <NamedObject>
@@ -113,6 +121,14 @@ Calculate noisy building blocks - insertions in traces
             <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
             <j_decay>3</j_decay>
             <t_source>0</t_source>
+            <ran_seed>
+              <Seed>      
+                <elem>471</elem>
+                <elem>1694</elem>
+                <elem>3965</elem>
+                <elem>563</elem>
+              </Seed>
+            </ran_seed>
           </Source>
         </Param>
         <NamedObject>

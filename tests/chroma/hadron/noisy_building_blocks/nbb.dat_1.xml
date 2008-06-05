@@ -5,10 +5,11 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.17.0</chroma>
-      <qdp>1.21.2</qdp>
+      <chroma>3.30.0</chroma>
+      <qdp>1.27.0</qdp>
+      <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>14 Oct 06 01:06:48 EDT</run_date>
+    <run_date>04 Jun 08 22:46:05 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -49,22 +50,22 @@
 
 
 
-
   </Config_info>
   <Observables>
-    <ave_plaq>0.994737201137468</ave_plaq>
-    <ave_spacelike_plaq>0.994879270438105</ave_spacelike_plaq>
-    <ave_timelike_plaq>0.994595131836832</ave_timelike_plaq>
-    <ave_link_trace>0.379315779769968</ave_link_trace>
+    <ave_plaq>0.994737202094661</ave_plaq>
+    <ave_spacelike_plaq>0.99487927230075</ave_spacelike_plaq>
+    <ave_timelike_plaq>0.994595131888572</ave_timelike_plaq>
+    <ave_link_trace>0.379315780669761</ave_link_trace>
   </Observables>
   <ForwardProp>
     <FrwdPropId>nprop_1</FrwdPropId>
     <FrwdPropXML><propagator>
-      <id>0</id>
+      <id>271201565</id>
     </propagator>
 
     </FrwdPropXML>
     <FrwdPropRecordXML><Propagator>
+      <version>1</version>
       <ForwardProp>
         <version>9</version>
         <quarkSpinType>FULL</quarkSpinType>
@@ -89,8 +90,6 @@
           <MaxCG>1000</MaxCG>
         </InvertParam>
       </ForwardProp>
-      <StateInfo>
-</StateInfo>
       <PropSource>
         <version>6</version>
         <Source>
@@ -98,18 +97,18 @@
           <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_source>0</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
         </Source>
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>3747</elem>
-          <elem>957</elem>
-          <elem>2880</elem>
-          <elem>1262</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -117,16 +116,17 @@
     </Propagator>
 
     </FrwdPropRecordXML>
-    <FrwdPropCheck>43.4014820165298 2.11952978033372 0.420656622930347 0.138716800052443 0.0531565703431594 0.0210718476263285 0.00843050707342251 0.00338871599147449</FrwdPropCheck>
+    <FrwdPropCheck>46.8658187882816 2.91222399658289 0.734923079147473 0.266822570471857 0.106327618525147 0.0432434604633775 0.0176854991284829 0.00725468857684572</FrwdPropCheck>
   </ForwardProp>
   <NoisySource>
     <NoisySrcId>nsrc_1</NoisySrcId>
     <NoisySrcXML><make_source>
-      <id>0</id>
+      <id>271201565</id>
     </make_source>
 
     </NoisySrcXML>
     <NoisySrcRecordXML><MakeSource>
+      <version>1</version>
       <PropSource>
         <version>6</version>
         <Source>
@@ -134,18 +134,18 @@
           <SourceType>RAND_Z2_WALL_SOURCE</SourceType>
           <j_decay>3</j_decay>
           <t_source>0</t_source>
+          <ran_seed>
+            <Seed>
+              <elem>471</elem>
+              <elem>1694</elem>
+              <elem>3965</elem>
+              <elem>563</elem>
+            </Seed>
+          </ran_seed>
         </Source>
         <j_decay>3</j_decay>
         <t_source>0</t_source>
       </PropSource>
-      <RNG>
-        <Seed>
-          <elem>3747</elem>
-          <elem>957</elem>
-          <elem>2880</elem>
-          <elem>1262</elem>
-        </Seed>
-      </RNG>
       <Config_info>
         <weak_field>
 </weak_field>
@@ -153,6 +153,6 @@
     </MakeSource>
 
     </NoisySrcRecordXML>
-    <NoisySrcCheck>767.999973712481 0 0 0 0 0 0 0</NoisySrcCheck>
+    <NoisySrcCheck>767.999954223633 0 0 0 0 0 0 0</NoisySrcCheck>
   </NoisySource>
 </ExampleBuildingBlocks>
