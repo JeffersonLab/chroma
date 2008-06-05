@@ -195,7 +195,7 @@ Hadron spectrum input
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:23:29 EDT</run_date>
+    <run_date>04 Jun 08 16:37:49 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -256,7 +256,7 @@ Hadron spectrum input
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:23:29 EDT</run_date>
+          <run_date>04 Jun 08 16:37:49 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -356,7 +356,7 @@ Hadron spectrum input
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:23:29 EDT</run_date>
+          <run_date>04 Jun 08 16:37:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -435,7 +435,7 @@ Hadron spectrum input
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178609</id>
+      <id>271179470</id>
     </make_source>
 
         </Source_file_info>
@@ -626,7 +626,7 @@ Hadron spectrum input
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271178610</id>
+      <id>271179470</id>
     </propagator>
 
         </Prop_file_info>
@@ -770,7 +770,7 @@ Hadron spectrum input
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271178610</id>
+      <id>271179470</id>
     </propagator>
 
         </Prop_file_info>
@@ -851,7 +851,7 @@ Hadron spectrum input
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:23:30 EDT</run_date>
+          <run_date>04 Jun 08 16:37:50 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>

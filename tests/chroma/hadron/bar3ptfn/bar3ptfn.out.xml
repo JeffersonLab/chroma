@@ -425,7 +425,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:22:00 EDT</run_date>
+    <run_date>04 Jun 08 16:36:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -486,7 +486,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:00 EDT</run_date>
+          <run_date>04 Jun 08 16:36:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -586,7 +586,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:01 EDT</run_date>
+          <run_date>04 Jun 08 16:36:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -665,7 +665,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271178521</id>
+      <id>271179381</id>
     </make_source>
 
         </Source_file_info>
@@ -799,7 +799,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:01 EDT</run_date>
+          <run_date>04 Jun 08 16:36:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -973,7 +973,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:01 EDT</run_date>
+          <run_date>04 Jun 08 16:36:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1213,7 +1213,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:01 EDT</run_date>
+          <run_date>04 Jun 08 16:36:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1387,7 +1387,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:01 EDT</run_date>
+          <run_date>04 Jun 08 16:36:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1466,7 +1466,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><seqsource>
-      <id>271178521</id>
+      <id>271179381</id>
     </seqsource>
 
         </Source_file_info>
@@ -1693,7 +1693,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:02 EDT</run_date>
+          <run_date>04 Jun 08 16:36:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1772,7 +1772,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><seqsource>
-      <id>271178521</id>
+      <id>271179381</id>
     </seqsource>
 
         </Source_file_info>
@@ -2082,7 +2082,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:02 EDT</run_date>
+          <run_date>04 Jun 08 16:36:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2161,7 +2161,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Source_file_info><seqsource>
-      <id>271178521</id>
+      <id>271179382</id>
     </seqsource>
 
         </Source_file_info>
@@ -2388,7 +2388,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <qdp>1.27.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 16:22:03 EDT</run_date>
+          <run_date>04 Jun 08 16:36:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2462,7 +2462,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
           </pollp>
         </Observables>
         <Propagator_file_info><propagator>
-      <id>271178521</id>
+      <id>271179381</id>
     </propagator>
 
         </Propagator_file_info>
@@ -2534,7 +2534,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <elem>
               <seq_src_ctr>0</seq_src_ctr>
               <SequentialProp_file_info><propagator>
-      <id>271178522</id>
+      <id>271179382</id>
     </propagator>
 
               </SequentialProp_file_info>
@@ -2704,7 +2704,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <elem>
               <seq_src_ctr>1</seq_src_ctr>
               <SequentialProp_file_info><propagator>
-      <id>271178522</id>
+      <id>271179382</id>
     </propagator>
 
               </SequentialProp_file_info>
@@ -2957,7 +2957,7 @@ Calculate bar3ptfn - insertions in 3-pt functions
             <elem>
               <seq_src_ctr>2</seq_src_ctr>
               <SequentialProp_file_info><propagator>
-      <id>271178523</id>
+      <id>271179383</id>
     </propagator>
 
               </SequentialProp_file_info>
