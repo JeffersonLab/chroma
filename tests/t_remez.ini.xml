@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<Remez>
-  <lower>8</lower>
-  <upper>40</upper>
-  <powerNum>-1</powerNum>
-  <powerDen>4</powerDen>
-  <degree>4</degree>
-</Remez>
