@@ -1,4 +1,4 @@
-// $Id: t_remez.cc,v 3.3 2008-06-02 16:18:41 bjoo Exp $
+// $Id: t_remez.cc,v 3.4 2008-06-06 17:15:27 bjoo Exp $
 /*! \file
  *  \brief Test the Remez code
  */
@@ -25,17 +25,19 @@ int main(int argc, char *argv[])
   int degree;
   long power_num;
   long power_den;
+  Real maxerr;
 
   XMLReader xml_in(Chroma::getXMLInputFileName());
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
 
   try { 
     XMLReader paramtop(xml_in, "/Remez");
-    read(paramtop, "lower", lower);
-    read(paramtop, "upper", upper);
-    read(paramtop, "powerNum", power_num);
-    read(paramtop, "powerDen", power_den);
+    read(paramtop, "lowerMin", lower);
+    read(paramtop, "upperMax", upper);
+    read(paramtop, "numPower", power_num);
+    read(paramtop, "denPower", power_den);
     read(paramtop, "degree", degree);
+
     if( paramtop.count("prec") == 1 ) { 
       read(paramtop, "prec", prec);
     }
@@ -43,7 +45,9 @@ int main(int argc, char *argv[])
       prec=80;
     }
 
-    push(xml_out, "Remez");
+    push(xml_out, "RationalApprox");
+    write(xml_out, "ratApproxType", "READ_COEFFS");
+
     proginfo(xml_out);  // basic program info
     push(xml_out, "Param");
     xml_out << paramtop;
@@ -76,7 +80,8 @@ int main(int argc, char *argv[])
 
   
   Remez  remez(lower, upper, prec);
-  remez.generateApprox(degree, pn, pd);
+  Real error;
+  error=remez.generateApprox(degree, pn, pd);
 
   QDPIO::cout << "Start getPFE" << endl;
   RemezCoeff_t pfe;
@@ -89,6 +94,13 @@ int main(int argc, char *argv[])
   }
 
   QDPIO::cout << "Finished getPFE" << endl;
+
+  push(xml_out, "ApproxInfo");
+  write(xml_out, "lowerMin", lower);
+  write(xml_out, "upperMax", upper);
+  write(xml_out, "degree", degree);
+  write(xml_out, "error", error);
+  pop(xml_out);
 
   push(xml_out, "PFECoeffs");
   write(xml_out, "norm", pfe.norm);
@@ -115,19 +127,8 @@ int main(int argc, char *argv[])
 
   pop(xml_out);
 
-  int N = 20;
-  for(int n=0; n < N; ++n)
-  {
-    Double x = exp(log(lower) + n*(log(upper)-log(lower))/Double(N));
-    Double f = remez.evalPFE(x,ipfe);
-    Double fn = 1/sqrt(x);
-    QDPIO::cout << "x=" << x 
-		<< " f(x)=" << f
-		<< " fn=" << fn
-		<< "   diff=" << Double(f-fn) << endl;
-  }
-
-  xml_out.close();
+  QDPIO::cout << "Approximation with degree " << degree << " has maximum error=" << error << endl;
+  
 
   // Time to bolt
   Chroma::finalize();
