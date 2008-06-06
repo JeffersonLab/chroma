@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Remez>
+  <annotation>
+	Single Strange Flavour, Force piece. Bounds are 1.0e-4 to 10 .
+        Because it is the force it is a square root, and assumes
+        1 pseudofermion field per flavor.
+  </annotation>
+ 
+  <lowerMin>1.0e-4</lowerMin>
+  <upperMax>10</upperMax>
+  <numPower>-1</numPower>
+  <denPower>2</denPower>
+  <degree>10</degree>
+</Remez>

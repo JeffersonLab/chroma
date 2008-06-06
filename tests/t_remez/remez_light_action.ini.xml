@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Remez>
+  <annotation>
+	Single Light Flavour, Action piece. Bounds are 5.0e-6 to 10 .
+        Because it is the action/refresh it is a 4th root, and assumes
+        1 pseudofermion field per flavor.
+  </annotation>
+ 
+  <lowerMin>5.0e-6</lowerMin>
+  <upperMax>10</upperMax>
+  <numPower>-1</numPower>
+  <denPower>4</denPower>
+  <degree>16</degree>
+</Remez>
