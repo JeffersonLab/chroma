@@ -79,6 +79,34 @@ Write some QIO objects
 
     <elem>
       <annotation>
+        Make a fake gaussian eigeninfo struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>EigenInfoLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>EigenInfoLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eigeninfo_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
         Erase the default_gauge_field. NOTE: this is a bad idea
         in practice - do not do this. Once deleted it cannot be
         retrieved.
@@ -103,10 +131,10 @@ Write some QIO objects
   <ProgramInfo>
     <code_version>
       <chroma>3.30.0</chroma>
-      <qdp>1.27.0</qdp>
+      <qdp>1.26.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>05 Jun 08 15:56:25 EDT</run_date>
+    <run_date>17 Jun 08 12:08:52 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -128,32 +156,32 @@ Write some QIO objects
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764811229996</w_plaq>
-    <s_plaq>0.994800868133704</s_plaq>
-    <t_plaq>0.994728754326287</t_plaq>
-    <plane_01_plaq>0.994752410954485</plane_01_plaq>
-    <plane_02_plaq>0.995051669888198</plane_02_plaq>
-    <plane_12_plaq>0.994598523558428</plane_12_plaq>
-    <plane_03_plaq>0.994927932818731</plane_03_plaq>
-    <plane_13_plaq>0.994742131947229</plane_13_plaq>
-    <plane_23_plaq>0.994516198212902</plane_23_plaq>
-    <link>0.379317688096004</link>
+    <w_plaq>0.994764814696585</w_plaq>
+    <s_plaq>0.994800872195305</s_plaq>
+    <t_plaq>0.994728757197865</t_plaq>
+    <plane_01_plaq>0.994752409479891</plane_01_plaq>
+    <plane_02_plaq>0.995051670897131</plane_02_plaq>
+    <plane_12_plaq>0.994598536208893</plane_12_plaq>
+    <plane_03_plaq>0.994927927424821</plane_03_plaq>
+    <plane_13_plaq>0.994742139785861</plane_13_plaq>
+    <plane_23_plaq>0.994516204382914</plane_23_plaq>
+    <link>0.379317688059624</link>
     <pollp>
       <elem>
-        <re>0.96722258736069</re>
-        <im>-0.00121316528187284</im>
+        <re>0.967222581617534</re>
+        <im>-0.00121316459171794</im>
       </elem>
       <elem>
-        <re>0.967032058009257</re>
-        <im>-0.00129616999978073</im>
+        <re>0.967032070310476</re>
+        <im>-0.00129617047105057</im>
       </elem>
       <elem>
-        <re>0.96746751650547</re>
-        <im>-0.00114548282635951</im>
+        <re>0.967467519260632</re>
+        <im>-0.0011454828290122</im>
       </elem>
       <elem>
-        <re>0.879538941662759</re>
-        <im>-0.0104402848846803</im>
+        <re>0.879538947211889</re>
+        <im>-0.01044028334627</im>
       </elem>
     </pollp>
   </Observables>
@@ -184,6 +212,17 @@ Write some QIO objects
       <qio_write_erase_named_obj>
         <update_no>0</update_no>
         <object_id>prop_0</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigeninfo_0</object_id>
       </qio_write_erase_named_obj>
     </elem>
     <elem>

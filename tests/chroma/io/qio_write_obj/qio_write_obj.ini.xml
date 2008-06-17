@@ -76,6 +76,34 @@ Write some QIO objects
 
     <elem>
       <annotation>
+        Make a fake gaussian eigeninfo struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>EigenInfoLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>EigenInfoLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eigeninfo_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
         Erase the default_gauge_field. NOTE: this is a bad idea
         in practice - do not do this. Once deleted it cannot be
         retrieved.
