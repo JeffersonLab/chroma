@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.2 2007-11-09 21:27:25 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.3 2008-06-17 16:10:21 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -12,6 +12,8 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/inline/io/inline_gaussian_obj.h"
+
+#include "util/ferm/eigeninfo.h"
 
 namespace Chroma 
 { 
@@ -75,6 +77,38 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
+      //! Init a faky gaussian eigeninfo struct of T-s
+      template<typename T>
+      void gaussianInitEigenInfo(const string& buffer_id)
+      {
+	// A shorthand for the object
+	TheNamedObjMap::Instance().create< EigenInfo<T> >(buffer_id);
+	EigenInfo<T>& obj=TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id);
+
+	// Put 4 in here just for fun
+	int N = 4;
+	obj.getEvalues().resize(N);
+	obj.getEvectors().resize(N);
+
+	for(int m=0; m < N; ++m)
+	{
+	  random(obj.getEvalues()[m]);
+	  gaussian(obj.getEvectors()[m]);
+	}
+
+	// I haven't figure out what to put in here
+	XMLBufferWriter file_xml, record_xml;
+
+	push(file_xml,"FileXML");
+	pop(file_xml);
+
+	push(record_xml,"RecordXML");
+	pop(record_xml);
+
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
 
       //! Local registration flag
       bool registered = false;
@@ -95,8 +129,8 @@ namespace Chroma
 									  gaussianInitObj<LatticeStaggeredPropagator>);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
 									  gaussianInitObj<LatticeStaggeredFermion>);
-	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
-									  gaussianInitMulti1dLatColMat);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
+									  gaussianInitEigenInfo<LatticeColorVector>);
 	registered = true;
       }
       return success;
