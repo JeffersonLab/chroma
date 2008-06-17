@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.1 2008-06-17 17:46:45 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.2 2008-06-17 20:54:46 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -118,21 +118,21 @@ namespace Chroma
 
       //! Local registration flag
       bool registered = false;
+    }
+      
+    const std::string name = "PROP_MATELEM_COLORVEC";
 
-      const std::string name = "PROP_MATELEM_COLORVEC";
-
-      //! Register all the factories
-      bool registerAll() 
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
       {
-	bool success = true; 
-	if (! registered)
-	{
-	  success &= WilsonTypeFermActsEnv::registerAll();
-	  success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-	  registered = true;
-	}
-	return success;
+	success &= WilsonTypeFermActsEnv::registerAll();
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	registered = true;
       }
+      return success;
     }
 
 
