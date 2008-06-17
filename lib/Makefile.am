@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.144 2008-06-04 03:17:24 edwards Exp $
+# $Id: Makefile.am,v 3.145 2008-06-17 17:47:07 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -744,6 +744,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
+	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -827,6 +828,10 @@ endif
 
 if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
+endif
+
+if BUILD_FFDB_LITE
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src -I$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
 endif
 
 lib_LIBRARIES = libchroma.a
@@ -1373,6 +1378,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
+	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
