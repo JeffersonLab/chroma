@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.6 2008-06-17 15:36:58 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.7 2008-06-17 16:10:41 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -302,9 +302,9 @@ namespace Chroma
       //------------------------------------------------------------------------
       //! Write out an EigenInfo Type
       template<typename T>
-      void QIOWriteEigenInfo_a(const string& buffer_id,
-			       const string& file,
-			       QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      void QIOWriteEigenInfo(const string& buffer_id,
+			     const string& file,
+			     QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO writing
 	XMLBufferWriter file_xml, record_xml;
@@ -371,24 +371,6 @@ namespace Chroma
 
 	// Done! That was unnecessarily painful
 	close(to);
-      }
-
-      //------------------------------------------------------------------------
-      //! Write out an EigenInfo Type
-      void QIOWriteEigenInfoLatticeFermion(const string& buffer_id,
-					   const string& file,
-					   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
-      {
-	QIOWriteEigenInfo_a<LatticeFermion>(buffer_id, file, volfmt, serpar);
-      }
-
-      //------------------------------------------------------------------------
-      //! Write out an EigenInfo Type
-      void QIOWriteEigenInfoLatticeColorVector(const string& buffer_id,
-					       const string& file,
-					       QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
-      {
-	QIOWriteEigenInfo_a<LatticeColorVector>(buffer_id, file, volfmt, serpar);
       }
 
       //------------------------------------------------------------------------
@@ -472,10 +454,13 @@ namespace Chroma
 								      QIOWriteQQDiquarkContract);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
-								      QIOWriteEigenInfoLatticeFermion);
+								      QIOWriteEigenInfo<LatticeFermion>);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
+								      QIOWriteEigenInfo<LatticeFermion>);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
-								      QIOWriteEigenInfoLatticeColorVector);
+								      QIOWriteEigenInfo<LatticeColorVector>);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);

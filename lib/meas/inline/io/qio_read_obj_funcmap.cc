@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.6 2008-06-17 15:36:58 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.7 2008-06-17 16:10:41 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -262,9 +262,9 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       template<typename T>
-      void QIOReadEigenInfo_a(const string& buffer_id,
-			      const string& file,
-			      QDP_serialparallel_t serpar)
+      void QIOReadEigenInfo(const string& buffer_id,
+			    const string& file,
+			    QDP_serialparallel_t serpar)
       {
 	multi1d<Real64> evalsD;
 
@@ -342,22 +342,6 @@ namespace Chroma
 
 	// Done - That too was unnecessarily painful
 	close(to);
-      }
-
-      //------------------------------------------------------------------------
-      void QIOReadEigenInfoLatticeFermion(const string& buffer_id,
-					  const string& file,
-					  QDP_serialparallel_t serpar)
-      {
-	QIOReadEigenInfo_a<LatticeFermion>(buffer_id, file, serpar);
-      }
-
-      //------------------------------------------------------------------------
-      void QIOReadEigenInfoLatticeColorVector(const string& buffer_id,
-					      const string& file,
-					      QDP_serialparallel_t serpar)
-      {
-	QIOReadEigenInfo_a<LatticeColorVector>(buffer_id, file, serpar);
       }
 
       //------------------------------------------------------------------------
@@ -448,10 +432,10 @@ namespace Chroma
 								     QIOReadQQDiquarkContract);
 	
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"),
-								     QIOReadEigenInfoLatticeFermion);
+								     QIOReadEigenInfo<LatticeFermion>);
 
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"),
-								     QIOReadEigenInfoLatticeColorVector);
+								     QIOReadEigenInfo<LatticeColorVector>);
 
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);
