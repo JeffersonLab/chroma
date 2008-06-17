@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: ritz_Hw-v1.ini.xml,v 3.1 2006-04-11 04:18:24 edwards Exp $
+; $Id: ritz_Hw-v1.ini.xml,v 3.2 2008-06-17 21:05:21 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -44,7 +44,7 @@
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigen_info_0</object_id>
-        <object_type>EigenInfo</object_type>
+        <object_type>EigenInfoLatticeFermion</object_type>
       </NamedObject>
       <File>
         <file_name>./eig</file_name>

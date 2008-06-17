@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: ritz_Hw-v1.out.xml,v 3.9 2008-06-05 03:33:15 edwards Exp $
+; $Id: ritz_Hw-v1.out.xml,v 3.10 2008-06-17 21:05:21 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -47,7 +47,7 @@
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigen_info_0</object_id>
-        <object_type>EigenInfo</object_type>
+        <object_type>EigenInfoLatticeFermion</object_type>
       </NamedObject>
       <File>
         <file_name>./eig</file_name>
@@ -78,10 +78,10 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.30.0</chroma>
-      <qdp>1.27.0</qdp>
+      <qdp>1.26.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 22:48:01 EDT</run_date>
+    <run_date>17 Jun 08 16:58:05 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -103,32 +103,32 @@
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994803994066185</w_plaq>
-    <s_plaq>0.994798439037469</s_plaq>
-    <t_plaq>0.994809549094902</t_plaq>
-    <plane_01_plaq>0.994703591180344</plane_01_plaq>
-    <plane_02_plaq>0.994926821130017</plane_02_plaq>
-    <plane_12_plaq>0.994764904802044</plane_12_plaq>
-    <plane_03_plaq>0.994693187065423</plane_03_plaq>
-    <plane_13_plaq>0.99485390773043</plane_13_plaq>
-    <plane_23_plaq>0.994881552488854</plane_23_plaq>
-    <link>0.379449338496973</link>
+    <w_plaq>0.994803996717868</w_plaq>
+    <s_plaq>0.994798442568734</s_plaq>
+    <t_plaq>0.994809550867002</t_plaq>
+    <plane_01_plaq>0.994703591063929</plane_01_plaq>
+    <plane_02_plaq>0.994926826756758</plane_02_plaq>
+    <plane_12_plaq>0.994764909885513</plane_12_plaq>
+    <plane_03_plaq>0.99469318621171</plane_03_plaq>
+    <plane_13_plaq>0.994853909166219</plane_13_plaq>
+    <plane_23_plaq>0.994881557223077</plane_23_plaq>
+    <link>0.379449337626284</link>
     <pollp>
       <elem>
-        <re>0.966585880455871</re>
-        <im>-0.00132088744157954</im>
+        <re>0.966585880688702</re>
+        <im>-0.00132088747318448</im>
       </elem>
       <elem>
-        <re>0.96636577649042</re>
-        <im>-0.00123499021750225</im>
+        <re>0.966365773618842</re>
+        <im>-0.00123499087385426</im>
       </elem>
       <elem>
-        <re>0.967146147663395</re>
-        <im>-0.00112309937412647</im>
+        <re>0.967146154958755</re>
+        <im>-0.0011230993850404</im>
       </elem>
       <elem>
-        <re>0.878769262383381</re>
-        <im>-0.00991386627477671</im>
+        <re>0.878769262034136</re>
+        <im>-0.00991386470438253</im>
       </elem>
     </pollp>
   </Observables>
@@ -139,10 +139,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <qdp>1.26.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 22:48:01 EDT</run_date>
+          <run_date>17 Jun 08 16:58:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -192,32 +192,32 @@
           <out_version>1</out_version>
         </Output_version>
         <Observables>
-          <w_plaq>0.994803994066185</w_plaq>
-          <s_plaq>0.994798439037469</s_plaq>
-          <t_plaq>0.994809549094902</t_plaq>
-          <plane_01_plaq>0.994703591180344</plane_01_plaq>
-          <plane_02_plaq>0.994926821130017</plane_02_plaq>
-          <plane_12_plaq>0.994764904802044</plane_12_plaq>
-          <plane_03_plaq>0.994693187065423</plane_03_plaq>
-          <plane_13_plaq>0.99485390773043</plane_13_plaq>
-          <plane_23_plaq>0.994881552488854</plane_23_plaq>
-          <link>0.379449338496973</link>
+          <w_plaq>0.994803996717868</w_plaq>
+          <s_plaq>0.994798442568734</s_plaq>
+          <t_plaq>0.994809550867002</t_plaq>
+          <plane_01_plaq>0.994703591063929</plane_01_plaq>
+          <plane_02_plaq>0.994926826756758</plane_02_plaq>
+          <plane_12_plaq>0.994764909885513</plane_12_plaq>
+          <plane_03_plaq>0.99469318621171</plane_03_plaq>
+          <plane_13_plaq>0.994853909166219</plane_13_plaq>
+          <plane_23_plaq>0.994881557223077</plane_23_plaq>
+          <link>0.379449337626284</link>
           <pollp>
             <elem>
-              <re>0.966585880455871</re>
-              <im>-0.00132088744157954</im>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
             </elem>
             <elem>
-              <re>0.96636577649042</re>
-              <im>-0.00123499021750225</im>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
             </elem>
             <elem>
-              <re>0.967146147663395</re>
-              <im>-0.00112309937412647</im>
+              <re>0.967146154958755</re>
+              <im>-0.0011230993850404</im>
             </elem>
             <elem>
-              <re>0.878769262383381</re>
-              <im>-0.00991386627477671</im>
+              <re>0.878769262034136</re>
+              <im>-0.00991386470438253</im>
             </elem>
           </pollp>
         </Observables>
@@ -241,7 +241,7 @@
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>1.947455</final_grad>
+      <final_grad>1.947456</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
@@ -261,7 +261,7 @@
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>1.921726</final_grad>
+      <final_grad>1.921725</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
@@ -276,98 +276,98 @@
   <KS_iter>
     <ev>
       <n_count>8</n_count>
-      <final_grad>0.544579</final_grad>
+      <final_grad>0.5445789</final_grad>
     </ev>
     <ev>
       <n_count>8</n_count>
-      <final_grad>0.5887082</final_grad>
+      <final_grad>0.5887081</final_grad>
     </ev>
     <ev>
       <n_count>8</n_count>
-      <final_grad>0.5676072</final_grad>
+      <final_grad>0.5676073</final_grad>
     </ev>
     <ev>
       <n_count>8</n_count>
-      <final_grad>0.5640759</final_grad>
+      <final_grad>0.5640763</final_grad>
     </ev>
     <ev>
       <n_count>9</n_count>
-      <final_grad>0.5650105</final_grad>
+      <final_grad>0.5650112</final_grad>
     </ev>
     <ev>
       <n_count>9</n_count>
-      <final_grad>0.5719485</final_grad>
+      <final_grad>0.5719479</final_grad>
     </ev>
     <ev>
       <n_count>9</n_count>
-      <final_grad>0.6063507</final_grad>
+      <final_grad>0.6063501</final_grad>
     </ev>
     <ev>
       <n_count>9</n_count>
-      <final_grad>0.618558</final_grad>
+      <final_grad>0.6185578</final_grad>
     </ev>
     <ev>
       <n_count>10</n_count>
-      <final_grad>0.5660166</final_grad>
+      <final_grad>0.5660171</final_grad>
     </ev>
     <ev>
       <n_count>9</n_count>
-      <final_grad>0.6322873</final_grad>
+      <final_grad>0.6322871</final_grad>
     </ev>
     <ev>
       <n_count>10</n_count>
-      <final_grad>0.5730231</final_grad>
+      <final_grad>0.573023</final_grad>
     </ev>
     <ev>
       <n_count>10</n_count>
-      <final_grad>0.6033542</final_grad>
+      <final_grad>0.603354</final_grad>
     </ev>
     <n_jacob>5</n_jacob>
   </KS_iter>
   <KS_iter>
     <ev>
       <n_count>13</n_count>
-      <final_grad>0.1598144</final_grad>
+      <final_grad>0.1598137</final_grad>
     </ev>
     <ev>
       <n_count>17</n_count>
-      <final_grad>0.1658676</final_grad>
+      <final_grad>0.1658673</final_grad>
     </ev>
     <ev>
       <n_count>17</n_count>
-      <final_grad>0.1703368</final_grad>
+      <final_grad>0.1703367</final_grad>
     </ev>
     <ev>
       <n_count>18</n_count>
-      <final_grad>0.1398969</final_grad>
+      <final_grad>0.1398966</final_grad>
     </ev>
     <ev>
       <n_count>18</n_count>
-      <final_grad>0.1486634</final_grad>
+      <final_grad>0.1486632</final_grad>
     </ev>
     <ev>
       <n_count>18</n_count>
-      <final_grad>0.1502945</final_grad>
+      <final_grad>0.1502949</final_grad>
     </ev>
     <ev>
       <n_count>18</n_count>
-      <final_grad>0.1653584</final_grad>
+      <final_grad>0.1653583</final_grad>
     </ev>
     <ev>
       <n_count>18</n_count>
-      <final_grad>0.1729412</final_grad>
+      <final_grad>0.1729409</final_grad>
     </ev>
     <ev>
       <n_count>25</n_count>
-      <final_grad>0.1810985</final_grad>
+      <final_grad>0.181099</final_grad>
     </ev>
     <ev>
       <n_count>18</n_count>
-      <final_grad>0.1807785</final_grad>
+      <final_grad>0.1807782</final_grad>
     </ev>
     <ev>
       <n_count>19</n_count>
-      <final_grad>0.1918804</final_grad>
+      <final_grad>0.191881</final_grad>
     </ev>
     <ev>
       <n_count>19</n_count>
@@ -378,324 +378,324 @@
   <KS_iter>
     <ev>
       <n_count>14</n_count>
-      <final_grad>0.04925316</final_grad>
+      <final_grad>0.0492532</final_grad>
     </ev>
     <ev>
       <n_count>17</n_count>
-      <final_grad>0.04854624</final_grad>
+      <final_grad>0.04854554</final_grad>
     </ev>
     <ev>
       <n_count>14</n_count>
-      <final_grad>0.05309647</final_grad>
+      <final_grad>0.05309663</final_grad>
     </ev>
     <ev>
       <n_count>23</n_count>
-      <final_grad>0.04898842</final_grad>
+      <final_grad>0.04898872</final_grad>
     </ev>
     <ev>
       <n_count>22</n_count>
-      <final_grad>0.04770385</final_grad>
+      <final_grad>0.04770337</final_grad>
     </ev>
     <ev>
       <n_count>24</n_count>
-      <final_grad>0.04894518</final_grad>
+      <final_grad>0.04894515</final_grad>
     </ev>
     <ev>
       <n_count>23</n_count>
-      <final_grad>0.05089868</final_grad>
+      <final_grad>0.0508986</final_grad>
     </ev>
     <ev>
       <n_count>23</n_count>
-      <final_grad>0.05400497</final_grad>
+      <final_grad>0.05400464</final_grad>
     </ev>
     <ev>
       <n_count>24</n_count>
-      <final_grad>0.05299821</final_grad>
+      <final_grad>0.05299813</final_grad>
     </ev>
     <ev>
       <n_count>47</n_count>
-      <final_grad>0.04706145</final_grad>
+      <final_grad>0.04706139</final_grad>
     </ev>
     <ev>
       <n_count>23</n_count>
-      <final_grad>0.05894917</final_grad>
+      <final_grad>0.05894908</final_grad>
     </ev>
     <ev>
       <n_count>48</n_count>
-      <final_grad>0.05656648</final_grad>
+      <final_grad>0.05656682</final_grad>
     </ev>
     <n_jacob>5</n_jacob>
   </KS_iter>
   <KS_iter>
     <ev>
       <n_count>26</n_count>
-      <final_grad>0.01517533</final_grad>
+      <final_grad>0.01517521</final_grad>
     </ev>
     <ev>
       <n_count>29</n_count>
-      <final_grad>0.01328301</final_grad>
+      <final_grad>0.01328293</final_grad>
     </ev>
     <ev>
       <n_count>30</n_count>
-      <final_grad>0.01593476</final_grad>
+      <final_grad>0.01593456</final_grad>
     </ev>
     <ev>
       <n_count>45</n_count>
-      <final_grad>0.015133</final_grad>
+      <final_grad>0.0151293</final_grad>
     </ev>
     <ev>
       <n_count>37</n_count>
-      <final_grad>0.01611595</final_grad>
+      <final_grad>0.01611797</final_grad>
     </ev>
     <ev>
       <n_count>64</n_count>
-      <final_grad>0.01460875</final_grad>
+      <final_grad>0.01461048</final_grad>
     </ev>
     <ev>
       <n_count>71</n_count>
-      <final_grad>0.01464154</final_grad>
+      <final_grad>0.01464287</final_grad>
     </ev>
     <ev>
       <n_count>91</n_count>
-      <final_grad>0.01334791</final_grad>
+      <final_grad>0.01332035</final_grad>
     </ev>
     <ev>
       <n_count>28</n_count>
-      <final_grad>0.01508526</final_grad>
+      <final_grad>0.01508534</final_grad>
     </ev>
     <ev>
       <n_count>37</n_count>
-      <final_grad>0.01581514</final_grad>
+      <final_grad>0.01581658</final_grad>
     </ev>
     <ev>
       <n_count>37</n_count>
-      <final_grad>0.01854739</final_grad>
+      <final_grad>0.01854734</final_grad>
     </ev>
     <ev>
       <n_count>45</n_count>
-      <final_grad>0.01638777</final_grad>
+      <final_grad>0.0163879</final_grad>
     </ev>
     <n_jacob>4</n_jacob>
   </KS_iter>
   <KS_iter>
     <ev>
       <n_count>24</n_count>
-      <final_grad>0.004777371</final_grad>
+      <final_grad>0.004776365</final_grad>
     </ev>
     <ev>
       <n_count>41</n_count>
-      <final_grad>0.004331639</final_grad>
+      <final_grad>0.00433148</final_grad>
     </ev>
     <ev>
       <n_count>44</n_count>
-      <final_grad>0.004591103</final_grad>
+      <final_grad>0.004589468</final_grad>
     </ev>
     <ev>
       <n_count>55</n_count>
-      <final_grad>0.004393473</final_grad>
+      <final_grad>0.004386718</final_grad>
     </ev>
     <ev>
       <n_count>27</n_count>
-      <final_grad>0.004618044</final_grad>
+      <final_grad>0.004620186</final_grad>
     </ev>
     <ev>
-      <n_count>43</n_count>
-      <final_grad>0.004591902</final_grad>
+      <n_count>42</n_count>
+      <final_grad>0.004705526</final_grad>
     </ev>
     <ev>
       <n_count>37</n_count>
-      <final_grad>0.004297785</final_grad>
+      <final_grad>0.004298298</final_grad>
     </ev>
     <ev>
       <n_count>71</n_count>
-      <final_grad>0.004219017</final_grad>
+      <final_grad>0.004181103</final_grad>
     </ev>
     <ev>
       <n_count>33</n_count>
-      <final_grad>0.005052354</final_grad>
+      <final_grad>0.005052153</final_grad>
     </ev>
     <ev>
       <n_count>115</n_count>
-      <final_grad>0.004529583</final_grad>
+      <final_grad>0.004429545</final_grad>
     </ev>
     <ev>
       <n_count>117</n_count>
-      <final_grad>0.004409447</final_grad>
+      <final_grad>0.004369854</final_grad>
     </ev>
     <ev>
       <n_count>33</n_count>
-      <final_grad>0.004965689</final_grad>
+      <final_grad>0.004965657</final_grad>
     </ev>
     <n_jacob>4</n_jacob>
   </KS_iter>
   <KS_iter>
     <ev>
       <n_count>36</n_count>
-      <final_grad>0.001295614</final_grad>
+      <final_grad>0.001295554</final_grad>
     </ev>
     <ev>
       <n_count>33</n_count>
-      <final_grad>0.001503022</final_grad>
+      <final_grad>0.001502755</final_grad>
     </ev>
     <ev>
       <n_count>29</n_count>
-      <final_grad>0.001415353</final_grad>
+      <final_grad>0.001413924</final_grad>
     </ev>
     <ev>
       <n_count>31</n_count>
-      <final_grad>0.001346898</final_grad>
+      <final_grad>0.001347741</final_grad>
     </ev>
     <ev>
       <n_count>39</n_count>
-      <final_grad>0.00130753</final_grad>
+      <final_grad>0.001363527</final_grad>
     </ev>
     <ev>
-      <n_count>48</n_count>
-      <final_grad>0.001424984</final_grad>
+      <n_count>49</n_count>
+      <final_grad>0.001396486</final_grad>
     </ev>
     <ev>
       <n_count>40</n_count>
-      <final_grad>0.001317933</final_grad>
+      <final_grad>0.001311514</final_grad>
     </ev>
     <ev>
       <n_count>26</n_count>
-      <final_grad>0.001347206</final_grad>
+      <final_grad>0.001352027</final_grad>
     </ev>
     <ev>
       <n_count>95</n_count>
-      <final_grad>0.001273993</final_grad>
+      <final_grad>0.00126641</final_grad>
     </ev>
     <ev>
       <n_count>104</n_count>
-      <final_grad>0.001414845</final_grad>
+      <final_grad>0.001417085</final_grad>
     </ev>
     <ev>
       <n_count>107</n_count>
-      <final_grad>0.001352163</final_grad>
+      <final_grad>0.0013542</final_grad>
     </ev>
     <ev>
       <n_count>200</n_count>
-      <final_grad>0.0104989</final_grad>
+      <final_grad>0.009798496</final_grad>
     </ev>
     <n_jacob>2</n_jacob>
   </KS_iter>
   <KS_iter>
     <ev>
       <n_count>48</n_count>
-      <final_grad>0.0003857996</final_grad>
+      <final_grad>0.0003933927</final_grad>
     </ev>
     <ev>
       <n_count>48</n_count>
-      <final_grad>0.0003991734</final_grad>
+      <final_grad>0.0003987431</final_grad>
     </ev>
     <ev>
       <n_count>41</n_count>
-      <final_grad>0.0004165441</final_grad>
+      <final_grad>0.0004171376</final_grad>
     </ev>
     <ev>
       <n_count>37</n_count>
-      <final_grad>0.0004028393</final_grad>
+      <final_grad>0.00041029</final_grad>
     </ev>
     <ev>
       <n_count>62</n_count>
-      <final_grad>0.0003756577</final_grad>
+      <final_grad>0.0003774156</final_grad>
     </ev>
     <ev>
-      <n_count>45</n_count>
-      <final_grad>0.0004312046</final_grad>
+      <n_count>42</n_count>
+      <final_grad>0.0004397086</final_grad>
     </ev>
     <ev>
       <n_count>53</n_count>
-      <final_grad>0.0004184025</final_grad>
+      <final_grad>0.0004140675</final_grad>
     </ev>
     <ev>
       <n_count>52</n_count>
-      <final_grad>0.0003701089</final_grad>
+      <final_grad>0.0003699964</final_grad>
     </ev>
     <ev>
       <n_count>200</n_count>
-      <final_grad>0.001261596</final_grad>
-    </ev>
-    <ev>
-      <n_count>131</n_count>
-      <final_grad>0.0004534364</final_grad>
+      <final_grad>0.001200281</final_grad>
     </ev>
     <ev>
       <n_count>200</n_count>
-      <final_grad>0.001249089</final_grad>
+      <final_grad>0.0007925613</final_grad>
     </ev>
     <ev>
-      <n_count>154</n_count>
-      <final_grad>0.002944832</final_grad>
+      <n_count>200</n_count>
+      <final_grad>0.001217247</final_grad>
+    </ev>
+    <ev>
+      <n_count>157</n_count>
+      <final_grad>0.003113116</final_grad>
     </ev>
     <n_jacob>4</n_jacob>
   </KS_iter>
   <KS_iter>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0003723546</final_grad>
+      <final_grad>0.0003737201</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0003567984</final_grad>
+      <final_grad>0.000356591</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0004043982</final_grad>
+      <final_grad>0.0004038075</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0003110773</final_grad>
+      <final_grad>0.0003191422</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0002398599</final_grad>
-    </ev>
-    <ev>
-      <n_count>7</n_count>
-      <final_grad>0.0004136206</final_grad>
+      <final_grad>0.0002463072</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0003759441</final_grad>
+      <final_grad>0.0003471218</final_grad>
     </ev>
     <ev>
       <n_count>5</n_count>
-      <final_grad>0.0002507122</final_grad>
+      <final_grad>0.0003896265</final_grad>
     </ev>
     <ev>
-      <n_count>93</n_count>
-      <final_grad>0.0004585823</final_grad>
+      <n_count>5</n_count>
+      <final_grad>0.0002534998</final_grad>
+    </ev>
+    <ev>
+      <n_count>100</n_count>
+      <final_grad>0.000447138</final_grad>
     </ev>
     <ev>
       <n_count>91</n_count>
-      <final_grad>0.0005824452</final_grad>
+      <final_grad>0.0004698238</final_grad>
     </ev>
     <ev>
-      <n_count>30</n_count>
-      <final_grad>0.0003980986</final_grad>
+      <n_count>104</n_count>
+      <final_grad>0.0004070164</final_grad>
     </ev>
     <ev>
       <n_count>91</n_count>
-      <final_grad>0.0006661178</final_grad>
+      <final_grad>0.0008009083</final_grad>
     </ev>
     <n_jacob>1</n_jacob>
   </KS_iter>
   <final_n_jacob>1</final_n_jacob>
-  <n_cg_tot>4073</n_cg_tot>
+  <n_cg_tot>4221</n_cg_tot>
   <n_KS>9</n_KS>
-  <lambda_H>0.41554 0.4155599 0.4157618 0.4157768 0.4196471 0.4197801 0.4200352 0.4200601 1 1 1 1</lambda_H>
+  <lambda_H>0.4155399 0.4155599 0.4157618 0.4157768 0.4196471 0.4197802 0.4200352 0.4200601 1 1 1 1</lambda_H>
 </EigSpecRitzKS>
 
-        <lambda_Msq>0.41554 0.4155599 0.4157618 0.4157768 0.4196471 0.4197801 0.4200352 0.4200601 1 1 1 1</lambda_Msq>
-        <check_norm>0.0003723546 0.0003567984 0.0004043982 0.0003110773 0.0002398599 0.0004136206 0.0003759441 0.0002507122</check_norm>
-        <check_norm_rel>0.0008960742 0.0008585968 0.0009726679 0.0007481833 0.0005715753 0.0009853268 0.0008950298 0.0005968483</check_norm_rel>
+        <lambda_Msq>0.4155399 0.4155599 0.4157618 0.4157768 0.4196471 0.4197802 0.4200352 0.4200601 1 1 1 1</lambda_Msq>
+        <check_norm>0.0003737201 0.000356591 0.0004038075 0.0003191422 0.0002463072 0.0003471218 0.0003896265 0.0002534998</check_norm>
+        <check_norm_rel>0.0008993603 0.0008580979 0.0009712474 0.0007675805 0.0005869389 0.0008269132 0.0009276043 0.0006034846</check_norm_rel>
         <eigFix>
-          <lambda_Hw>0.6446115 -0.6446428 0.644787 -0.6448118 -0.6477973 0.6478807 0.6480825 -0.6481283 1 1 1 1</lambda_Hw>
+          <lambda_Hw>0.6446115 -0.6446429 0.6447868 -0.6448117 -0.6477973 0.6478772 0.6480821 -0.6481282 1 1 1 1</lambda_Hw>
           <n_valid>8</n_valid>
           <valid_eig>1 1 1 1 1 1 1 1</valid_eig>
-          <check_norm>0.001594341 0.001483329 0.002836964 0.002515704 0.00113256 0.005663991 0.00310994 0.002441427</check_norm>
-          <check_norm_rel>0.002473336 0.002301008 0.004399847 0.003901455 0.001748325 0.008742337 0.004798679 0.003766888</check_norm_rel>
+          <check_norm>0.00162801 0.001485508 0.002859495 0.002517846 0.001178852 0.006073192 0.003171864 0.002465051</check_norm>
+          <check_norm_rel>0.002525567 0.002304389 0.004434791 0.003904777 0.001819785 0.009373986 0.004894232 0.003803338</check_norm_rel>
         </eigFix>
 <LambdaHighRitz>
   <EigSpecRitzCG>
@@ -703,14 +703,14 @@
       <n_count>65</n_count>
     </eval1>
     <eValues>
-      <lambda>-42.86554</lambda>
+      <lambda>-42.86555</lambda>
     </eValues>
     <n_cg_tot>65</n_cg_tot>
   </EigSpecRitzCG>
 </LambdaHighRitz>
 
         <Highest>
-          <lambda_hi>6.547178</lambda_hi>
+          <lambda_hi>6.547179</lambda_hi>
         </Highest>
       </RitzEigenHw>
     </elem>
