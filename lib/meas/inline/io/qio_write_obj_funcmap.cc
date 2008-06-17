@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.5 2007-11-09 21:28:01 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.6 2008-06-17 15:36:58 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -301,20 +301,23 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write out an EigenInfo Type
-      void QIOWriteEigenInfo(const string& buffer_id,
-			     const string& file,
-			     QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      template<typename T>
+      void QIOWriteEigenInfo_a(const string& buffer_id,
+			       const string& file,
+			       QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
-
 	// This is needed for QIO writing
 	XMLBufferWriter file_xml, record_xml;
 
 	// A shorthand for the object
-	EigenInfo& obj=TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id);
+	EigenInfo<T>& obj=TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id);
 
 	// get the file XML and record XML out of the named buffer
 	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
 	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+
+	// RGE: I BELIEVE ALL THE COMPLAINTS BELOW ARE NOW FIXED IN QDP++,
+	// BUT I DO NOT WANT TO REMOVE THE CODE YET - CANNOT BE BOTHERED DEBUGGING
 
 	// Write out the largest EV in BINARY so as not to loose precision
 	// BUG!?? :For some reason I need to write this as a 1 element array and 
@@ -328,7 +331,7 @@ namespace Chroma
 	// to write the number of evalues/vectors into a record XML for this
 	// largest ev. 
 	multi1d<Real64> largestD(1);
-	largestD[0]=obj.getLargest();
+	largestD[0] = obj.getLargest();
 
 	// SHorthand
 	multi1d<Real> evals = obj.getEvalues();
@@ -349,25 +352,43 @@ namespace Chroma
 	multi1d<Real64> evalsD(evals.size());
 
 	for (int i=0; i<evals.size(); i++)
-	  evalsD[i]=Real64(evals[i]);
+	  evalsD[i] = Real64(evals[i]);
 
 	// Write them with record XML
 	write(to, record_xml, evalsD);
 
 	// Now write the evectors 1 by 1 to avoid double storing
-	multi1d<LatticeFermion>& evecs=obj.getEvectors();
+	multi1d<T>& evecs=obj.getEvectors();
 	for (int i=0; i<evecs.size(); i++)
 	{
 	  XMLBufferWriter record_xml_dummy;
 	  push(record_xml_dummy, "dummy_record_xml");
 	  pop(record_xml_dummy);
 	
-	  // evecD=LatticeFermionD(evecs[i]);
+	  // evec=<T>(evecs[i]);
 	  write(to, record_xml_dummy, evecs[i]);
 	}
 
 	// Done! That was unnecessarily painful
 	close(to);
+      }
+
+      //------------------------------------------------------------------------
+      //! Write out an EigenInfo Type
+      void QIOWriteEigenInfoLatticeFermion(const string& buffer_id,
+					   const string& file,
+					   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	QIOWriteEigenInfo_a<LatticeFermion>(buffer_id, file, volfmt, serpar);
+      }
+
+      //------------------------------------------------------------------------
+      //! Write out an EigenInfo Type
+      void QIOWriteEigenInfoLatticeColorVector(const string& buffer_id,
+					       const string& file,
+					       QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	QIOWriteEigenInfo_a<LatticeColorVector>(buffer_id, file, volfmt, serpar);
       }
 
       //------------------------------------------------------------------------
@@ -450,8 +471,11 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("QQDiquarkContract"), 
 								      QIOWriteQQDiquarkContract);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfo"), 
-								      QIOWriteEigenInfo);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
+								      QIOWriteEigenInfoLatticeFermion);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
+								      QIOWriteEigenInfoLatticeColorVector);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);

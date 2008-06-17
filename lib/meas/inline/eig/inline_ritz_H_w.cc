@@ -1,4 +1,4 @@
-// $Id: inline_ritz_H_w.cc,v 3.5 2007-08-23 19:02:44 edwards Exp $
+// $Id: inline_ritz_H_w.cc,v 3.6 2008-06-17 15:36:58 edwards Exp $
 /*! \file
  * \brief Inline construction of eigenvalues (Ritz)
  *
@@ -174,7 +174,7 @@ namespace Chroma
 		      Handle< LinearOperator<LatticeFermion> >& H,
 		      const RitzParams_t& params,
 		      XMLWriter& xml_out,
-		      EigenInfo& eigenvec_val);
+		      EigenInfo<LatticeFermion>& eigenvec_val);
 
 
     // Function call
@@ -244,9 +244,9 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
 
-      TheNamedObjMap::Instance().create<EigenInfo>(params.named_obj.eigen_id);
-      EigenInfo& eigenvec_val = 
-	TheNamedObjMap::Instance().getData<EigenInfo>(params.named_obj.eigen_id);
+      TheNamedObjMap::Instance().create< EigenInfo<LatticeFermion> >(params.named_obj.eigen_id);
+      EigenInfo<LatticeFermion>& eigenvec_val = 
+	TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.eigen_id);
 
 
       // File XML - the name of the measurement and and ID
@@ -336,7 +336,7 @@ namespace Chroma
 		      Handle< LinearOperator<LatticeFermion> >& H,
 		      const RitzParams_t& params,
 		      XMLWriter& xml_out,
-		      EigenInfo& eigenvec_val)
+		      EigenInfo<LatticeFermion>& eigenvec_val)
     {
 
       // Try and get lowest eigenvalue of MM

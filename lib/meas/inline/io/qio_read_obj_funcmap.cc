@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.5 2008-03-18 16:59:13 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.6 2008-06-17 15:36:58 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -261,18 +261,22 @@ namespace Chroma
 
 
       //------------------------------------------------------------------------
-      void QIOReadEigenInfo(const string& buffer_id,
-			    const string& file,
-			    QDP_serialparallel_t serpar)
+      template<typename T>
+      void QIOReadEigenInfo_a(const string& buffer_id,
+			      const string& file,
+			      QDP_serialparallel_t serpar)
       {
 	multi1d<Real64> evalsD;
+
+	// RGE: I BELIEVE ALL THE COMPLAINTS BELOW ARE NOW FIXED IN QDP++,
+	// BUT I DO NOT WANT TO REMOVE THE CODE YET - CANNOT BE BOTHERED DEBUGGING
 
 	// BUG? Need to read these as an array even though there is only one
 	// and also I need to know in advance the array size.
 	multi1d<Real64> largestD(1);
 
 	// Would like this to be double, but casting double prec to single prec doesn't work.
-	LatticeFermion evecD;
+	T evecD;
 
 	// Stuff 
 	XMLReader file_xml, record_xml, largest_record_xml;
@@ -281,7 +285,7 @@ namespace Chroma
 	QDPFileReader to(file_xml,file,serpar);
 
 	// Create object
-	TheNamedObjMap::Instance().create< EigenInfo >(buffer_id);
+	TheNamedObjMap::Instance().create< EigenInfo<T> >(buffer_id);
 
 	// Read largest ev plus XML file containing number of eval/evec pairs
 	read(to, largest_record_xml, largestD);
@@ -297,7 +301,7 @@ namespace Chroma
 	}
 
 	// Set largest EV
-	TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getLargest()=largestD[0];
+	TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id).getLargest()=largestD[0];
 
 	// REsize eval arrays so that IO works correctly
 	evalsD.resize(size);
@@ -311,25 +315,25 @@ namespace Chroma
 	}
 
 	// Resize eval array 
-	TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvalues().resize(evalsD.size());
+	TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id).getEvalues().resize(evalsD.size());
       
 	// Downcast evals to Real() precision
 	for (int i=0; i<evalsD.size(); i++)
-	  TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvalues()[i] = Real(evalsD[i]);
+	  TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id).getEvalues()[i] = Real(evalsD[i]);
 
 
 	// Resize evec arrays
-	TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvectors().resize(evalsD.size());
+	TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id).getEvectors().resize(evalsD.size());
 
 	// Loop and read evecs
 	for (int i=0; i<evalsD.size(); i++)
 	{
 	  XMLReader record_xml_dummy;
 	  read(to, record_xml_dummy, evecD);
-	  LatticeFermion evecR;
+	  T evecR;
 	  evecR=evecD;
 
-	  (TheNamedObjMap::Instance().getData< EigenInfo >(buffer_id).getEvectors())[i]=evecR;
+	  (TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id).getEvectors())[i]=evecR;
 	}
  
 	// Set File and Record XML throw away dummy XMLs
@@ -338,6 +342,22 @@ namespace Chroma
 
 	// Done - That too was unnecessarily painful
 	close(to);
+      }
+
+      //------------------------------------------------------------------------
+      void QIOReadEigenInfoLatticeFermion(const string& buffer_id,
+					  const string& file,
+					  QDP_serialparallel_t serpar)
+      {
+	QIOReadEigenInfo_a<LatticeFermion>(buffer_id, file, serpar);
+      }
+
+      //------------------------------------------------------------------------
+      void QIOReadEigenInfoLatticeColorVector(const string& buffer_id,
+					      const string& file,
+					      QDP_serialparallel_t serpar)
+      {
+	QIOReadEigenInfo_a<LatticeColorVector>(buffer_id, file, serpar);
       }
 
       //------------------------------------------------------------------------
@@ -427,8 +447,11 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("QQDiquarkContract"), 
 								     QIOReadQQDiquarkContract);
 	
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfo"),
-								     QIOReadEigenInfo);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"),
+								     QIOReadEigenInfoLatticeFermion);
+
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"),
+								     QIOReadEigenInfoLatticeColorVector);
 
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);
