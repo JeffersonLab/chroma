@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eigen_state.h,v 1.1 2006-09-19 17:53:36 edwards Exp $
+// $Id: eigen_state.h,v 1.2 2008-06-17 20:50:55 edwards Exp $
 /*! \file
  *  \brief Eigenstate reader
  */
@@ -50,7 +50,7 @@ namespace Chroma
       eigen_info_id = eigen_info_id_;
       QDPIO::cout << "Creating EigenConnectState using eigen_info_id :" << eigen_info_id << endl << flush ;
 
-      Neig = TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getEvalues().size();
+      Neig = TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getEvalues().size();
       dummy_evecs.resize(0);
       dummy_evals.resize(0);
 
@@ -68,8 +68,7 @@ namespace Chroma
 	return dummy_evals;
       }
       
-      return TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getEvalues();
-      
+      return TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getEvalues();
     }
 
     //! Return the eigenvalues
@@ -78,8 +77,7 @@ namespace Chroma
 	return dummy_evals;
       }
       
-      return TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getEvalues();
-      
+      return TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getEvalues();
     }
 
     multi1d<LatticeFermion>& getEvectors() { 
@@ -87,7 +85,7 @@ namespace Chroma
 	return dummy_evecs;
       }
 
-      return TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getEvectors();
+      return TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getEvectors();
       
     }
 
@@ -96,7 +94,7 @@ namespace Chroma
 	return dummy_evecs;
       }
 
-      return TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getEvectors();
+      return TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getEvectors();
       
     }
 
@@ -106,7 +104,7 @@ namespace Chroma
 	QDP_abort(1);
       }
       
-      return TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getLargest();      
+      return TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getLargest();      
     }
 
     const Real& getLargest() const {
@@ -115,7 +113,7 @@ namespace Chroma
 	QDP_abort(1);
       }
       
-      return TheNamedObjMap::Instance().getData<EigenInfo>(eigen_info_id).getLargest();      
+      return TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getLargest();      
     }
   
     int getNEig() const { 
