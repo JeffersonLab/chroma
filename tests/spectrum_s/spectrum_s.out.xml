@@ -9,7 +9,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:24:44 EDT</run_date>
+    <run_date>18 Jun 08 11:06:22 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -85,21 +85,21 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.568401</time_in_sec>
+    <time_in_sec>0.569929</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>649</n_count>
-    <time_in_sec>0.576236</time_in_sec>
+    <time_in_sec>0.577784</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.569103</time_in_sec>
+    <time_in_sec>0.569656</time_in_sec>
   </Qprop>
   <Pseudoscalars>
     <Lsink_Lsrc>
@@ -214,42 +214,42 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.567066</time_in_sec>
+    <time_in_sec>0.568084</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.567068</time_in_sec>
+    <time_in_sec>0.5681</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>620</n_count>
-    <time_in_sec>0.549146</time_in_sec>
+    <time_in_sec>0.551152</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>599</n_count>
-    <time_in_sec>0.541321</time_in_sec>
+    <time_in_sec>0.531835</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.567374</time_in_sec>
+    <time_in_sec>0.567909</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>618</n_count>
-    <time_in_sec>0.547932</time_in_sec>
+    <time_in_sec>0.548572</time_in_sec>
   </Qprop>
   <baryon_correlators>
     <source_time>0</source_time>
@@ -480,19 +480,19 @@
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>644</n_count>
-      <time_in_sec>0.570167</time_in_sec>
+      <time_in_sec>0.571764</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>640</n_count>
-      <time_in_sec>0.566665</time_in_sec>
+      <time_in_sec>0.569998</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>618</n_count>
-      <time_in_sec>0.54811</time_in_sec>
+      <time_in_sec>0.550506</time_in_sec>
     </Qprop>
     <LocalSource>
       <LocalSink>

@@ -112,7 +112,7 @@
       <qdp>1.27.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 16:25:34 EDT</run_date>
+    <run_date>18 Jun 08 11:03:29 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -135,19 +135,19 @@
             <WarmUpP>false</WarmUpP>
             <H_old>
               <KE_old>-9.97497973644797</KE_old>
-              <PE_old>-8711.06633633762</PE_old>
+              <PE_old>-8711.06634279011</PE_old>
             </H_old>
             <H_new>
-              <KE_new>-2460.00358332268</KE_new>
-              <PE_new>-6259.12766973374</PE_new>
+              <KE_new>-2460.00359091806</KE_new>
+              <PE_new>-6259.12775114287</PE_new>
             </H_new>
-            <deltaKE>-2450.02860358624</deltaKE>
-            <deltaPE>2451.93866660388</deltaPE>
-            <deltaH>1.91006301764583</deltaH>
-            <AccProb>0.14807105521213</AccProb>
+            <deltaKE>-2450.02861118162</deltaKE>
+            <deltaPE>2451.93859164724</deltaPE>
+            <deltaH>1.90998046562027</deltaH>
+            <AccProb>0.148083279282219</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.331688</seconds_for_trajectory>
+          <seconds_for_trajectory>0.310409</seconds_for_trajectory>
           <InlineObservables>
             <elem>
               <Plaquette>
@@ -188,7 +188,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.001155</seconds_for_measurements>
+          <seconds_for_measurements>0.001259</seconds_for_measurements>
         </Update>
       </elem>
       <elem>
@@ -199,36 +199,36 @@
             <WarmUpP>false</WarmUpP>
             <H_old>
               <KE_old>-64.3467335558773</KE_old>
-              <PE_old>-8731.79072066621</PE_old>
+              <PE_old>-8731.79072129032</PE_old>
             </H_old>
             <H_new>
-              <KE_new>-2475.34708051716</KE_new>
-              <PE_new>-6318.88902526938</PE_new>
+              <KE_new>-2475.34709619225</KE_new>
+              <PE_new>-6318.88896074455</PE_new>
             </H_new>
-            <deltaKE>-2411.00034696128</deltaKE>
-            <deltaPE>2412.90169539684</deltaPE>
-            <deltaH>1.90134843555643</deltaH>
-            <AccProb>0.149367071495949</AccProb>
+            <deltaKE>-2411.00036263637</deltaKE>
+            <deltaPE>2412.90176054577</deltaPE>
+            <deltaH>1.90139790939975</deltaH>
+            <AccProb>0.149359681915654</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_trajectory>0.335244</seconds_for_trajectory>
+          <seconds_for_trajectory>0.309191</seconds_for_trajectory>
           <HMCTrajectory>
             <WarmUpP>false</WarmUpP>
             <H_old>
               <KE_old>-64.3467335558773</KE_old>
-              <PE_old>-8731.79072066621</PE_old>
+              <PE_old>-8731.79072129032</PE_old>
             </H_old>
             <H_new>
-              <KE_new>-2475.34708051716</KE_new>
-              <PE_new>-6318.88902526938</PE_new>
+              <KE_new>-2475.34709619225</KE_new>
+              <PE_new>-6318.88896074455</PE_new>
             </H_new>
-            <deltaKE>-2411.00034696128</deltaKE>
-            <deltaPE>2412.90169539684</deltaPE>
-            <deltaH>1.90134843555643</deltaH>
-            <AccProb>0.149367071495949</AccProb>
+            <deltaKE>-2411.00036263637</deltaKE>
+            <deltaPE>2412.90176054577</deltaPE>
+            <deltaH>1.90139790939975</deltaH>
+            <AccProb>0.149359681915654</AccProb>
             <AcceptP>false</AcceptP>
           </HMCTrajectory>
-          <seconds_for_repro_trajectory>0.336189</seconds_for_repro_trajectory>
+          <seconds_for_repro_trajectory>0.308264</seconds_for_repro_trajectory>
           <ReproCheck>true</ReproCheck>
           <InlineObservables>
             <elem>
@@ -270,7 +270,7 @@
               </PolyakovLoop>
             </elem>
           </InlineObservables>
-          <seconds_for_measurements>0.00112</seconds_for_measurements>
+          <seconds_for_measurements>0.001262</seconds_for_measurements>
         </Update>
       </elem>
     </MCUpdates>
