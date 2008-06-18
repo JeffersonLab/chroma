@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_nersc_read_obj.h,v 3.2 2006-09-20 20:28:03 edwards Exp $
+// $Id: inline_nersc_read_obj.h,v 3.3 2008-06-18 21:38:28 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -11,7 +11,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/qprop_io.h"
+//#include "io/qprop_io.h"
 
 namespace Chroma 
 { 
