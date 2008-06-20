@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_meson_w.cc,v 1.10 2008-06-04 03:16:18 edwards Exp $
+// $Id: inline_stoch_group_meson_w.cc,v 1.11 2008-06-20 15:17:37 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic group meson operator
  *
@@ -773,7 +773,7 @@ namespace Chroma
       case MESON_OP_TYPE_SOURCE_SOURCE:
 	makeColorSinglet(singlet,
 			 smrd_disp_vecs.getDispSource(n0, k0),
-			 smrd_disp_vecs.getDispSource(n0, k0),
+			 smrd_disp_vecs.getDispSource(n1, k1),
 			 phases.getSet()[t0]);
 	op_sum = phases.sft(singlet, t0);
 	break;
@@ -781,7 +781,7 @@ namespace Chroma
       case MESON_OP_TYPE_SOURCE_SOLUTION:
 	makeColorSinglet(singlet,
 			 smrd_disp_vecs.getDispSource(n0, k0),
-			 smrd_disp_vecs.getDispSolution(n0, k0),
+			 smrd_disp_vecs.getDispSolution(n1, k1),
 			 phases.getSet()[t0]);
 	op_sum = phases.sft(singlet, t0);
 	break;
@@ -789,7 +789,7 @@ namespace Chroma
       case MESON_OP_TYPE_SOLUTION_SOURCE:
 	makeColorSinglet(singlet,
 			 smrd_disp_vecs.getDispSolution(n0, k0),
-			 smrd_disp_vecs.getDispSource(n0, k0),
+			 smrd_disp_vecs.getDispSource(n1, k1),
 			 phases.getSet()[t0]);
 	op_sum = phases.sft(singlet, t0);
 	break;
@@ -797,7 +797,7 @@ namespace Chroma
       case MESON_OP_TYPE_SOLUTION_SOLUTION:
 	makeColorSinglet(singlet,
 			 smrd_disp_vecs.getDispSolution(n0, k0),
-			 smrd_disp_vecs.getDispSolution(n0, k0),
+			 smrd_disp_vecs.getDispSolution(n1, k1),
 			 all);
 	op_sum = phases.sft(singlet);
 	break;
