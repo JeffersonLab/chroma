@@ -1,4 +1,4 @@
-// $Id: minvcg2.cc,v 3.1 2008-03-10 17:32:40 bjoo Exp $
+// $Id: minvcg2.cc,v 3.2 2008-06-21 00:43:42 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -188,6 +188,9 @@ namespace Chroma
 
     Double b = -cp/d;
 
+    //  r[1] += b[0] A . p[0]; 
+    r[sub] += Real(b)*MMp;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
+
     /* Compute the shifted bs and z */
     multi1d<Double> bs(n_shift);
     multi2d<Double> z(2, n_shift);
@@ -210,8 +213,6 @@ namespace Chroma
       bs[s] = b * z[iz][s];
     }
 
-    //  r[1] += b[0] A . p[0]; 
-    r[sub] += Real(b)*MMp;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
 
     //  Psi[1] -= b[0] p[0] = - b[0] chi;
     for(s = 0; s < n_shift; ++s) {
@@ -278,6 +279,10 @@ namespace Chroma
 
       bp = b;
       b = -cp/d;
+      //  r[k+1] += b[k] A . p[k] ; 
+      r[sub] += Real(b)*MMp;                                flopcount.addSiteFlops(4*Nc*Ns,sub);
+      //  c  =  | r[k] |**2 
+      c = norm2(r,sub);	                                   flopcount.addSiteFlops(4*Nc*Ns,sub);
 
       // Compute the shifted bs and z 
       iz = 1 - iz;
@@ -291,8 +296,6 @@ namespace Chroma
 	}
       }
 
-      //  r[k+1] += b[k] A . p[k] ; 
-      r[sub] += Real(b)*MMp;                                flopcount.addSiteFlops(4*Nc*Ns,sub);
 
 
       //  Psi[k+1] -= b[k] p[k] ; 
@@ -304,8 +307,6 @@ namespace Chroma
 	}
       }
 
-      //  c  =  | r[k] |**2 
-      c = norm2(r,sub);	                                   flopcount.addSiteFlops(4*Nc*Ns,sub);
 
       //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN;
       // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
