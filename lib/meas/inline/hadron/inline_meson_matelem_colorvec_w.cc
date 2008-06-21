@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.1 2008-06-21 04:19:47 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.2 2008-06-21 05:14:49 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -404,6 +404,7 @@ namespace Chroma
 
 	// Modify the previous empty entry
 	SmearedDispColorVector_t& disp_q = disp_src_map.find(key)->second;
+	disp_q.vec = eigen_source.getEvectors()[key.colvec];
 
 	snoop.reset();
 	snoop.start();
@@ -426,7 +427,7 @@ namespace Chroma
 
 	snoop.stop();
 
-	QDPIO::cout << "Displaced Quarks:  Disp = "
+	QDPIO::cout << "Displaced Vector:  Disp = "
 		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
 
       } // if find in map
@@ -458,6 +459,16 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! MesonElementalOperator writer
+    void read(BinaryReader& bin, MesonElementalOperator_t& param)
+    {
+      read(bin, param.colvec_l);
+      read(bin, param.colvec_r);
+      read(bin, param.displacement);
+      read(bin, param.mom);
+      read(bin, param.op);
+    }
+
+    //! MesonElementalOperator writer
     void write(BinaryWriter& bin, const MesonElementalOperator_t& param)
     {
       write(bin, param.colvec_l);
@@ -465,6 +476,32 @@ namespace Chroma
       write(bin, param.displacement);
       write(bin, param.mom);
       write(bin, param.op);
+    }
+
+    //! MesonElementalOperator writer
+    void read(XMLReader& xml, const std::string& path, MesonElementalOperator_t& param)
+    {
+      XMLReader paramtop(xml, path);
+    
+      read(paramtop, "colvec_l", param.colvec_l);
+      read(paramtop, "colvec_r", param.colvec_r);
+      read(paramtop, "displacement", param.displacement);
+      read(paramtop, "mom", param.mom);
+      read(paramtop, "op", param.op);
+    }
+
+    //! MesonElementalOperator writer
+    void write(XMLWriter& xml, const std::string& path, const MesonElementalOperator_t& param)
+    {
+      push(xml, path);
+
+      write(xml, "colvec_l", param.colvec_l);
+      write(xml, "colvec_r", param.colvec_r);
+      write(xml, "displacement", param.displacement);
+      write(xml, "mom", param.mom);
+      write(xml, "op", param.op);
+
+      pop(xml);
     }
 
 
@@ -645,6 +682,8 @@ namespace Chroma
       write(src_record_bin, params.param.num_vecs);
       write(src_record_bin, qq_oplist.ops.size());
 
+      push(xml_out, "ElementalOps");
+
       // Loop over all time slices for the source. This is the same 
       // as the subsets for  phases
 
@@ -703,6 +742,7 @@ namespace Chroma
 	      mop.op           = op_sum[mom_num];
 
 	      write(src_record_bin, mop);
+	      write(xml_out, "elem", mop);  // debugging
 	      ++total_num_elem;
 	    }
 	  } // end for j
@@ -715,6 +755,8 @@ namespace Chroma
 		    << " secs" << endl;
 
       } // for l
+
+      pop(xml_out); // ElementalOps
 
       // Write the meta-data and the binary for this operator
       swiss.reset();
