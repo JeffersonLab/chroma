@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.2 2008-06-17 20:54:46 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.3 2008-06-21 04:19:11 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -27,7 +27,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "source_id", input.source_id);
+    read(inputtop, "colorvec_id", input.colorvec_id);
   }
 
   //! Propagator output
@@ -36,7 +36,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "gauge_id", input.gauge_id);
-    write(xml, "source_id", input.source_id);
+    write(xml, "colorvec_id", input.colorvec_id);
 
     pop(xml);
   }
@@ -48,7 +48,7 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "num_vecs", input.num_vecs);
-    read(inputtop, "t_source", input.t_source);
+    read(inputtop, "t_sources", input.t_sources);
     read(inputtop, "decay_dir", input.decay_dir);
   }
 
@@ -58,7 +58,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "num_vecs", input.num_vecs);
-    write(xml, "t_source", input.t_source);
+    write(xml, "t_sources", input.t_sources);
     write(xml, "decay_dir", input.decay_dir);
 
     pop(xml);
@@ -254,11 +254,11 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a named buffer" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.source_id);
+	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
 
-	// Snarf the source info. This is will throw if the source_id is not there
-	TheNamedObjMap::Instance().get(params.named_obj.source_id).getFileXML(source_file_xml);
-	TheNamedObjMap::Instance().get(params.named_obj.source_id).getRecordXML(source_record_xml);
+	// Snarf the source info. This is will throw if the colorvec_id is not there
+	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getRecordXML(source_record_xml);
 
 	// Write out the source header
 	write(xml_out, "Source_file_info", source_file_xml);
@@ -275,7 +275,7 @@ namespace Chroma
 	QDP_abort(1);
       }
       const EigenInfo<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.source_id);
+	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
@@ -348,58 +348,68 @@ namespace Chroma
 	// Loop over the source color and spin, creating the source
 	// and calling the relevant propagator routines.
 	//
-	const int N_vecs    = params.param.contract.num_vecs;
-	const int decay_dir = params.param.contract.decay_dir;
-	const int t_source  = params.param.contract.t_source;
+	const int N_vecs              = params.param.contract.num_vecs;
+	const int decay_dir           = params.param.contract.decay_dir;
+	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, decay_dir);
 
-	// All the loops
-	for(int colorvec_source=0; colorvec_source < N_vecs; ++colorvec_source)
+	push(xml_out, "ColorVecMatElems");
+
+	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
-	  QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
+	  int t_source = t_sources[tt];
+	  QDPIO::cout << "t_source = " << t_source << endl; 
 
-	  // Pull out a time-slice of the color vector source
-	  LatticeColorVector vec_srce = zero;
-	  vec_srce[phases.getSet()[t_source]] = eigen_source.getEvectors()[colorvec_source];
-	
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
+	  // All the loops
+	  for(int colorvec_source=0; colorvec_source < N_vecs; ++colorvec_source)
 	  {
-	    QDPIO::cout << "spin_source = " << spin_source << endl; 
+	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
 
-	    // Insert a ColorVector into spin index spin_source
-	    // This only overwrites sections, so need to initialize first
-	    LatticeFermion chi = zero;
-	    CvToFerm(vec_srce, chi, spin_source);
-
-	    LatticeFermion quark_soln = zero;
-
-	    // Do the propagator inversion
-	    SystemSolverResults_t res = (*PP)(quark_soln, chi);
-	    ncg_had = res.n_count;
-
-	    for(int colorvec_sink=0; colorvec_sink < N_vecs; ++colorvec_sink)
+	    // Pull out a time-slice of the color vector source
+	    LatticeColorVector vec_srce = zero;
+	    vec_srce[phases.getSet()[t_source]] = eigen_source.getEvectors()[colorvec_source];
+	
+	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {
-	      const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
+	      QDPIO::cout << "spin_source = " << spin_source << endl; 
 
-	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	      // Insert a ColorVector into spin index spin_source
+	      // This only overwrites sections, so need to initialize first
+	      LatticeFermion chi = zero;
+	      CvToFerm(vec_srce, chi, spin_source);
+
+	      LatticeFermion quark_soln = zero;
+
+	      // Do the propagator inversion
+	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
+	      ncg_had = res.n_count;
+
+	      for(int colorvec_sink=0; colorvec_sink < N_vecs; ++colorvec_sink)
 	      {
-		multi1d<DComplex> corr = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
-						  phases.getSet());
+		const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
 
-		push(xml_out, "elem");
-		write(xml_out, "t_source", t_source);
-		write(xml_out, "colorvec_source", colorvec_source);
-		write(xml_out, "colorvec_sink", colorvec_sink);
-		write(xml_out, "spin_source", spin_source);
-		write(xml_out, "spin_sink", spin_sink);
-		write(xml_out, "corr", corr);
-		pop(xml_out);
-	      }
-	    }
-	  }
-	}
+		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+		{
+		  multi1d<DComplex> corr = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
+						    phases.getSet());
+
+		  push(xml_out, "elem");
+		  write(xml_out, "t_source", t_source);
+		  write(xml_out, "colorvec_source", colorvec_source);
+		  write(xml_out, "colorvec_sink", colorvec_sink);
+		  write(xml_out, "spin_source", spin_source);
+		  write(xml_out, "spin_sink", spin_sink);
+		  write(xml_out, "corr", corr);
+		  pop(xml_out);
+		} // for spin_sink
+	      } // for colorvec_sink
+	    } // for spin_source
+	  } // for colorvec_source
+	} // for t_source
+
+	pop(xml_out);
 
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
@@ -411,7 +421,6 @@ namespace Chroma
 	QDPIO::cout << name << ": caught exception around qprop: " << e << endl;
 	QDP_abort(1);
       }
-
 
       push(xml_out,"Relaxation_Iterations");
       write(xml_out, "ncg_had", ncg_had);

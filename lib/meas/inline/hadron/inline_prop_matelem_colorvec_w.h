@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_matelem_colorvec_w.h,v 1.1 2008-06-17 17:46:45 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.h,v 1.2 2008-06-21 04:19:10 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -33,9 +33,9 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int num_vecs;   /*!< Number of color vectors to use */
-	  int t_source;   /*!< Time slice source for props */
-	  int decay_dir;  /*!< Decay direction */
+	  int num_vecs;             /*!< Number of color vectors to use */
+	  int decay_dir;            /*!< Decay direction */
+	  multi1d<int> t_sources;   /*!< Array of time slice sources for props */
 	};
 
 	ChromaProp_t    prop;
@@ -44,8 +44,8 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	std::string     gauge_id;
-	std::string     source_id;
+	std::string     gauge_id;       /*!< Gauge field */
+	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern
