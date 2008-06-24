@@ -1,4 +1,4 @@
-// $Id: sunfill.cc,v 3.3 2007-08-29 13:31:47 edwards Exp $
+// $Id: sunfill.cc,v 3.4 2008-06-24 20:57:24 edwards Exp $
 /*! \file
  *  \brief  Fill an SU(Nc) matrix with an SU(2) submatrix
  */
@@ -30,13 +30,11 @@ namespace Chroma
    * \param s          subset for operations       (Read)
    */
 
-  template<typename S>
-  inline
   void
-  sunFill_t(LatticeColorMatrix& dest,
-	    const multi1d<LatticeReal>& r,
-	    int su2_index,
-	    const S& s)
+  sunFill(LatticeColorMatrix& dest,
+	  const multi1d<LatticeReal>& r,
+	  int su2_index,
+	  const Subset& s)
   {
     START_CODE();
 
@@ -81,17 +79,6 @@ namespace Chroma
 
     END_CODE();
   }
-
-
-  void
-  sunFill(LatticeColorMatrix& d, 
-	  const multi1d<LatticeReal>& r,
-	  int su2_index,
-	  const Subset& s)
-  {
-    sunFill_t(d, r, su2_index, s);
-  }
-
 
 }  // end namespace Chroma
 
