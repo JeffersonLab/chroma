@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.259 2008-06-21 04:20:30 edwards Exp $
+# $Id: Makefile.in,v 3.260 2008-06-26 19:20:48 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -41,11 +41,10 @@ POST_UNINSTALL = :
 @BUILD_QMT_TRUE@am__append_4 = @QMT_CXXFLAGS@
 @BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_5 = @BAGEL_CLOVER_CXXFLAGS@
 @BUILD_MDWF_TRUE@am__append_6 = @MDWF_CXXFLAGS@
-@BUILD_FFDB_LITE_TRUE@am__append_7 = -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src -I$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
-@BUILD_GMP_REMEZ_TRUE@am__append_8 = update/molecdyn/monomial/remez_gmp.h
-@BUILD_GMP_REMEZ_TRUE@am__append_9 = update/molecdyn/monomial/remez_gmp.cc
+@BUILD_GMP_REMEZ_TRUE@am__append_7 = update/molecdyn/monomial/remez_gmp.h
+@BUILD_GMP_REMEZ_TRUE@am__append_8 = update/molecdyn/monomial/remez_gmp.cc
 
 # Taken out for now
 #	meas/inline/hadron/inline_spectrum_w.cc
@@ -55,17 +54,17 @@ POST_UNINSTALL = :
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_10 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_9 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_3d_sse_w.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_11 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_10 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_3d_sse_w.cc
 
-@BUILD_CG_DWF_TRUE@am__append_12 = \
+@BUILD_CG_DWF_TRUE@am__append_11 = \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_inverter_interface.h \
@@ -75,54 +74,54 @@ POST_UNINSTALL = :
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bgld_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_altivecf_solver.h
 
-@BUILD_CG_DWF_TRUE@am__append_13 = \
+@BUILD_CG_DWF_TRUE@am__append_12 = \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/avp_inverter_interface.cc
 
-@BUILD_CG_DWF_SSE_TRUE@am__append_14 = \
+@BUILD_CG_DWF_SSE_TRUE@am__append_13 = \
 @BUILD_CG_DWF_SSE_TRUE@        actions/ferm/qprop/avp_ssef_solver.cc \
 @BUILD_CG_DWF_SSE_TRUE@	actions/ferm/qprop/avp_ssed_solver.cc
 
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_15 = \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_14 = \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@        actions/ferm/qprop/avp_bglf_solver.cc \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	actions/ferm/qprop/avp_bgld_solver.cc
 
-@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_16 = actions/ferm/qprop/avp_altivecf_solver.cc
-@BUILD_MDWF_TRUE@am__append_17 = actions/ferm/qprop/mdwf_solver.h
-@BUILD_MDWF_TRUE@am__append_18 = actions/ferm/qprop/mdwf_solver.cc
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_19 = \
+@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_15 = actions/ferm/qprop/avp_altivecf_solver.cc
+@BUILD_MDWF_TRUE@am__append_16 = actions/ferm/qprop/mdwf_solver.h
+@BUILD_MDWF_TRUE@am__append_17 = actions/ferm/qprop/mdwf_solver.cc
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_18 = \
 @BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_array_pab_w.h
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_20 = \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_19 = \
 @BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_pab.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_pab_w.cc
 
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_21 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_22 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
-@BUILD_LAPACK_TRUE@am__append_23 = \
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_20 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_21 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
+@BUILD_LAPACK_TRUE@am__append_22 = \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 @BUILD_LAPACK_TRUE@        actions/ferm/invert/syssolver_linop_OPTeigcg.h
 
-@BUILD_LAPACK_TRUE@am__append_24 = \
+@BUILD_LAPACK_TRUE@am__append_23 = \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_linop_OPTeigcg.cc
 
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_25 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_26 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_24 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_25 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
 # include files for scidac libaries
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_27 = -I@QDPC_DIR@/qmp/include \
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_26 = -I@QDPC_DIR@/qmp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qio/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qla/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qdp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qopqdp/include
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_28 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_29 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_27 = actions/ferm/linop/clover_term_bagel_clover.h
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_28 = actions/ferm/linop/clover_term_bagel_clover.cc
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -278,10 +277,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
-	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/qnaive.cc \
-	meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc \
-	meas/glue/polycor.cc meas/hadron/dilution_scheme_aggregate.cc \
+	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/wloop.cc \
+	meas/glue/mesplq.cc meas/glue/polylp.cc meas/glue/wilslp.cc \
+	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
+	meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
@@ -691,6 +691,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
 	meas/hadron/pions_s.cc meas/hadron/pion_local_s.cc \
+	meas/hadron/g4g5_x_g4g5_local.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
 	meas/hadron/vector_meson_s.cc meas/hadron/pion_sing_s.cc \
 	meas/hadron/scalar_loops_s.cc \
@@ -822,9 +823,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) axgauge.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
-	mesplq.$(OBJEXT) polylp.$(OBJEXT) wilslp.$(OBJEXT) \
-	qnaive.$(OBJEXT) block.$(OBJEXT) fuzglue.$(OBJEXT) \
-	gluecor.$(OBJEXT) polycor.$(OBJEXT) \
+	wloop.$(OBJEXT) mesplq.$(OBJEXT) polylp.$(OBJEXT) \
+	wilslp.$(OBJEXT) qnaive.$(OBJEXT) block.$(OBJEXT) \
+	fuzglue.$(OBJEXT) gluecor.$(OBJEXT) polycor.$(OBJEXT) \
 	dilution_scheme_aggregate.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
 	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
 	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) \
@@ -1133,10 +1134,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	quarkprop4_s.$(OBJEXT) follana_io_s.$(OBJEXT) \
 	baryon_s.$(OBJEXT) mesphas_follana_s.$(OBJEXT) \
 	ks_local_loops.$(OBJEXT) mesphas_s.$(OBJEXT) pions_s.$(OBJEXT) \
-	pion_local_s.$(OBJEXT) stag_propShift_s.$(OBJEXT) \
-	stag_scalars_s.$(OBJEXT) vector_meson_s.$(OBJEXT) \
-	pion_sing_s.$(OBJEXT) scalar_loops_s.$(OBJEXT) \
-	pseudoscalar_loops_s.$(OBJEXT) \
+	pion_local_s.$(OBJEXT) g4g5_x_g4g5_local.$(OBJEXT) \
+	stag_propShift_s.$(OBJEXT) stag_scalars_s.$(OBJEXT) \
+	vector_meson_s.$(OBJEXT) pion_sing_s.$(OBJEXT) \
+	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
 	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_11) \
@@ -1309,9 +1310,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/qnaive.h \
-	meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h \
-	meas/glue/polycor.h meas/hadron/hadron.h \
+	meas/glue/wloop.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/glue/qnaive.h meas/glue/block.h meas/glue/fuzglue.h \
+	meas/glue/gluecor.h meas/glue/polycor.h meas/hadron/hadron.h \
 	meas/hadron/baryon_operator.h meas/hadron/dilution_scheme.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
@@ -1717,8 +1718,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/ks_local_loops.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
-	meas/hadron/pion_local_s.h meas/hadron/loops_s.h \
-	meas/hadron/stoch_conn_s.h meas/hadron/scalar_loops_s.h \
+	meas/hadron/pion_local_s.h meas/hadron/g4g5_x_g4g5_local.h \
+	meas/hadron/loops_s.h meas/hadron/stoch_conn_s.h \
+	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/pseudoscalar_stoch_conn_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
@@ -1879,8 +1881,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
-FFDB_LITE_DIR = @FFDB_LITE_DIR@
-FFDB_LITE_ENABLED = @FFDB_LITE_ENABLED@
 GMP_CXXFLAGS = @GMP_CXXFLAGS@
 GMP_LDFLAGS = @GMP_LDFLAGS@
 GMP_LIBS = @GMP_LIBS@
@@ -2155,10 +2155,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/qnaive.h \
-	meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h \
-	meas/glue/polycor.h meas/hadron/hadron.h \
-	meas/hadron/baryon_operator.h meas/hadron/dilution_scheme.h \
+	meas/glue/mesplq.h meas/glue/wloop.h meas/glue/fuzwilp.h \
+	meas/glue/wilslp.h meas/glue/qnaive.h meas/glue/block.h \
+	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
+	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/dilution_scheme.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
@@ -2563,8 +2564,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/ks_local_loops.h meas/hadron/hadron_s.h \
 	meas/hadron/hadron_corr_s.h meas/hadron/mesphas_follana_s.h \
 	meas/hadron/mesphas_s.h meas/hadron/pions_s.h \
-	meas/hadron/pion_local_s.h meas/hadron/loops_s.h \
-	meas/hadron/stoch_conn_s.h meas/hadron/scalar_loops_s.h \
+	meas/hadron/pion_local_s.h meas/hadron/g4g5_x_g4g5_local.h \
+	meas/hadron/loops_s.h meas/hadron/stoch_conn_s.h \
+	meas/hadron/scalar_loops_s.h \
 	meas/hadron/pseudoscalar_loops_s.h \
 	meas/hadron/pseudoscalar_stoch_conn_s.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
@@ -2663,10 +2665,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h $(am__append_8) \
-	$(am__append_10) $(am__append_12) $(am__append_17) \
-	$(am__append_19) $(am__append_21) $(am__append_23) \
-	$(am__append_25) $(am__append_28)
+	meas/inline/smear/inline_link_smear.h $(am__append_7) \
+	$(am__append_9) $(am__append_11) $(am__append_16) \
+	$(am__append_18) $(am__append_20) $(am__append_22) \
+	$(am__append_24) $(am__append_27)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -2684,7 +2686,7 @@ AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_27)
+	$(am__append_26)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -2850,10 +2852,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/mesplq.cc \
-	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/qnaive.cc \
-	meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc \
-	meas/glue/polycor.cc meas/hadron/dilution_scheme_aggregate.cc \
+	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/wloop.cc \
+	meas/glue/mesplq.cc meas/glue/polylp.cc meas/glue/wilslp.cc \
+	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
+	meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
@@ -2941,7 +2944,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc $(am__append_9) \
+	meas/hadron/dilution_quark_source_const_w.cc $(am__append_8) \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
@@ -3226,10 +3229,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc $(am__append_11) \
-	$(am__append_13) $(am__append_14) $(am__append_15) \
-	$(am__append_16) $(am__append_18) $(am__append_20) \
-	$(am__append_22) $(am__append_24) \
+	meas/inline/smear/inline_link_smear.cc $(am__append_10) \
+	$(am__append_12) $(am__append_13) $(am__append_14) \
+	$(am__append_15) $(am__append_17) $(am__append_19) \
+	$(am__append_21) $(am__append_23) \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
@@ -3253,6 +3256,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
 	meas/hadron/ks_local_loops.cc meas/hadron/mesphas_s.cc \
 	meas/hadron/pions_s.cc meas/hadron/pion_local_s.cc \
+	meas/hadron/g4g5_x_g4g5_local.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
 	meas/hadron/vector_meson_s.cc meas/hadron/pion_sing_s.cc \
 	meas/hadron/scalar_loops_s.cc \
@@ -3260,7 +3264,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_26) $(am__append_29)
+	util/gauge/stag_phases_s.cc $(am__append_25) $(am__append_28)
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -3520,6 +3524,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzglue.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzwilp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fuzz_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/g4g5_x_g4g5_local.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamma5_herm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gamma_displacement_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gammasgn_w.Po@am__quote@
@@ -3995,6 +4000,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_fermact_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wilson_gaugeact_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wloop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
@@ -6230,6 +6236,20 @@ mesfield.obj: meas/glue/mesfield.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/mesfield.cc' object='mesfield.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesfield.obj `if test -f 'meas/glue/mesfield.cc'; then $(CYGPATH_W) 'meas/glue/mesfield.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/mesfield.cc'; fi`
+
+wloop.o: meas/glue/wloop.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wloop.o -MD -MP -MF $(DEPDIR)/wloop.Tpo -c -o wloop.o `test -f 'meas/glue/wloop.cc' || echo '$(srcdir)/'`meas/glue/wloop.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/wloop.Tpo $(DEPDIR)/wloop.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/wloop.cc' object='wloop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wloop.o `test -f 'meas/glue/wloop.cc' || echo '$(srcdir)/'`meas/glue/wloop.cc
+
+wloop.obj: meas/glue/wloop.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wloop.obj -MD -MP -MF $(DEPDIR)/wloop.Tpo -c -o wloop.obj `if test -f 'meas/glue/wloop.cc'; then $(CYGPATH_W) 'meas/glue/wloop.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/wloop.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/wloop.Tpo $(DEPDIR)/wloop.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/wloop.cc' object='wloop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wloop.obj `if test -f 'meas/glue/wloop.cc'; then $(CYGPATH_W) 'meas/glue/wloop.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/wloop.cc'; fi`
 
 mesplq.o: meas/glue/mesplq.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesplq.o -MD -MP -MF $(DEPDIR)/mesplq.Tpo -c -o mesplq.o `test -f 'meas/glue/mesplq.cc' || echo '$(srcdir)/'`meas/glue/mesplq.cc
@@ -12964,6 +12984,20 @@ pion_local_s.obj: meas/hadron/pion_local_s.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/pion_local_s.cc' object='pion_local_s.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o pion_local_s.obj `if test -f 'meas/hadron/pion_local_s.cc'; then $(CYGPATH_W) 'meas/hadron/pion_local_s.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/pion_local_s.cc'; fi`
+
+g4g5_x_g4g5_local.o: meas/hadron/g4g5_x_g4g5_local.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT g4g5_x_g4g5_local.o -MD -MP -MF $(DEPDIR)/g4g5_x_g4g5_local.Tpo -c -o g4g5_x_g4g5_local.o `test -f 'meas/hadron/g4g5_x_g4g5_local.cc' || echo '$(srcdir)/'`meas/hadron/g4g5_x_g4g5_local.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/g4g5_x_g4g5_local.Tpo $(DEPDIR)/g4g5_x_g4g5_local.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/g4g5_x_g4g5_local.cc' object='g4g5_x_g4g5_local.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o g4g5_x_g4g5_local.o `test -f 'meas/hadron/g4g5_x_g4g5_local.cc' || echo '$(srcdir)/'`meas/hadron/g4g5_x_g4g5_local.cc
+
+g4g5_x_g4g5_local.obj: meas/hadron/g4g5_x_g4g5_local.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT g4g5_x_g4g5_local.obj -MD -MP -MF $(DEPDIR)/g4g5_x_g4g5_local.Tpo -c -o g4g5_x_g4g5_local.obj `if test -f 'meas/hadron/g4g5_x_g4g5_local.cc'; then $(CYGPATH_W) 'meas/hadron/g4g5_x_g4g5_local.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/g4g5_x_g4g5_local.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/g4g5_x_g4g5_local.Tpo $(DEPDIR)/g4g5_x_g4g5_local.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/g4g5_x_g4g5_local.cc' object='g4g5_x_g4g5_local.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o g4g5_x_g4g5_local.obj `if test -f 'meas/hadron/g4g5_x_g4g5_local.cc'; then $(CYGPATH_W) 'meas/hadron/g4g5_x_g4g5_local.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/g4g5_x_g4g5_local.cc'; fi`
 
 stag_propShift_s.o: meas/hadron/stag_propShift_s.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT stag_propShift_s.o -MD -MP -MF $(DEPDIR)/stag_propShift_s.Tpo -c -o stag_propShift_s.o `test -f 'meas/hadron/stag_propShift_s.cc' || echo '$(srcdir)/'`meas/hadron/stag_propShift_s.cc
