@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.148 2008-06-26 15:02:34 mcneile Exp $
+# $Id: Makefile.am,v 3.149 2008-06-26 15:12:48 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -675,6 +675,7 @@ nobase_include_HEADERS += \
 	meas/hadron/mesphas_follana_s.h meas/hadron/mesphas_s.h \
 	meas/hadron/pions_s.h \
         meas/hadron/pion_local_s.h \
+        meas/hadron/g4g5_x_g4g5_local.h \
 	meas/hadron/loops_s.h \
 	meas/hadron/stoch_conn_s.h \
 	meas/hadron/scalar_loops_s.h \
@@ -1544,6 +1545,7 @@ libchroma_a_SOURCES += \
         meas/hadron/ks_local_loops.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
         meas/hadron/pion_local_s.cc \
+        meas/hadron/g4g5_x_g4g5_local.cc \
 	meas/hadron/stag_propShift_s.cc meas/hadron/stag_scalars_s.cc \
 	meas/hadron/vector_meson_s.cc \
 	meas/hadron/pion_sing_s.cc \
