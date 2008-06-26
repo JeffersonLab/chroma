@@ -1,3 +1,4 @@
+// $Id: util_compute_quark_prop_s.cc,v 3.3 2008-06-26 15:20:10 mcneile Exp $
 //
 // Wrapper code to compute a staggered quark propagtor.
 //
@@ -165,6 +166,7 @@ static int flag=1;
 
 	// start with local source 
 	coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+
 	srcfil(q_source, coord,color_source ) ;
 
 	// now do the shift
@@ -231,7 +233,7 @@ static int flag=1;
 				 XMLWriter & xml_out,
 				 Real RsdCG, Real Mass, 
 				 int j_decay,
-				 int src_ind, int color_source){
+				 int src_ind, int color_source, int t_source){
 
     LatticeStaggeredFermion q_source ;
     LatticeStaggeredFermion q_source_fuzz ; 
@@ -259,6 +261,7 @@ static int flag=1;
 
 	// start with local source 
 	coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+        coord[j_decay] = t_source ;
 	srcfil(q_source, coord,color_source ) ;
 
 	// now do the shift

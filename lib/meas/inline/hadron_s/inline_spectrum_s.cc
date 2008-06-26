@@ -26,11 +26,15 @@
 #include "util/ferm/transf.h"
 #include "meas/hadron/ks_local_loops.h"
 #include "meas/smear/fuzz_smear.h"
+#include "meas/hadron/vector_meson_s.h"
+
 
 #include "meas/inline/make_xml_file.h"
 
 #include "util_compute_quark_prop_s.h"
 #include "util_compute_meson_s.h"
+#include "meas/hadron/pion_local_s.h"
+#include "meas/hadron/g4g5_x_g4g5_local.h"
 
 namespace Chroma 
 { 
@@ -75,7 +79,7 @@ namespace Chroma {
 				 XMLWriter & xml_out,
 				 Real RsdCG, Real Mass, 
 				 int j_decay,
-				 int src_ind, int color_source);
+				 int src_ind, int color_source, int t_source=0);
 
   void ks_compute_baryon(string name,
 			 LatticeStaggeredPropagator & quark_propagator,
@@ -187,6 +191,9 @@ namespace Chroma {
     //    switch (version) 
 
     read(paramtop, "Meson_local", param.Meson_local);
+    read(paramtop, "Meson_charm_local", param.Meson_charm_local);
+    read(paramtop, "Wilson_loops", param.Wilson_loops);
+
     read(paramtop, "Baryon_local", param.Baryon_local);
     read(paramtop, "Baryon_vary", param.Baryon_vary);
     read(paramtop, "LocalPion_vary", param.LocalPion_vary);
@@ -262,6 +269,8 @@ namespace Chroma {
     write(xml, "version", version);
 
     write(xml, "Meson_local", param.Meson_local);
+    write(xml, "Meson_charm_local", param.Meson_charm_local);
+    write(xml, "Wilson_loops", param.Wilson_loops);
     write(xml, "Baryon_local", param.Baryon_local);
     write(xml, "Baryon_vary", param.Baryon_vary);
     write(xml, "disconnected_local", param.disconnected_local);
@@ -585,7 +594,7 @@ namespace Chroma {
 		 Real RsdCG, Real Mass,
 		 int j_decay,
 		 LatticeStaggeredPropagator &quark_propagator_Lsink_Lsrc,
-		 stag_src_type type_of_src ){
+		 stag_src_type type_of_src, int t_source = 0  ){
 
     //    stag_src_type type_of_src = LOCAL_SRC ;
     //    stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE;
@@ -601,7 +610,8 @@ namespace Chroma {
 					    gauge_shift, sym_shift,
 					    u, qprop, xml_out,
 					    RsdCG, Mass,
-					    j_decay, src_ind, color_source) ;
+					    j_decay, src_ind, 
+					    color_source,t_source) ;
 
       /*
        * Move the solution to the appropriate components
@@ -672,6 +682,53 @@ namespace Chroma {
     }
   }
 
+
+  /***  **/
+
+  void meson_charm(LatticeStaggeredPropagator & quark_prop, 
+		   XMLWriter& xml_out, 
+		   const multi1d<LatticeColorMatrix> & u,
+		   int  t_source, int j_decay, int t_length)
+  {
+  push(xml_out, "local_meson_charm_correlators");
+
+  // local pseudoscalar pion
+  staggered_local_pion pion(t_length,u) ;
+  pion.compute(quark_prop,quark_prop,j_decay) ;
+  pion.dump(t_source,xml_out) ;
+
+  bool avg_equiv_mom = true ;
+  int mom2_max = 2 ; 
+  // non-zero momentum
+  multi1d<int> tsrc(4) ; 
+  tsrc[0] =  tsrc[1] =  tsrc[2] =  tsrc[3] =  0 ; 
+  tsrc[j_decay] = t_source ;
+
+  SftMom phases(mom2_max, tsrc, avg_equiv_mom,j_decay);
+
+
+  pion.compute_and_dump(quark_prop,quark_prop,j_decay,t_source,
+	       phases,xml_out) ;
+
+  // ( gamma_4 gamma_5 cross gamma_4 gamma_5 ) pion
+  g4g5_x_g4g5_local_meson pion_g4g5(t_length,u)  ;  
+  pion_g4g5.compute(quark_prop,quark_prop,j_decay) ;
+  pion_g4g5.dump(t_source,xml_out) ;
+
+  // vector mesons
+  vector_meson vector(t_length,  u) ;
+  vector.compute(quark_prop,j_decay);
+  vector.dump(t_source,xml_out);
+
+  pop(xml_out);
+
+}
+
+
+
+
+
+
 /***************************************************************************/
 
   // Real work done here
@@ -719,6 +776,9 @@ namespace Chroma {
     bool do_Baryon_local         = params.param.Baryon_local;
     bool do_ps4_singlet          = params.param.ps4link_singlet_conn;
     bool do_ps4_singlet_fuzz     = params.param.ps4link_singlet_conn_fuzz;
+    bool Meson_local             = params.param.Meson_local ;
+    bool Meson_charm_local       = params.param.Meson_charm_local ;
+    bool Wilson_loops             = params.param.Wilson_loops ;
 
     bool do_Baryon_vary          = params.param.Baryon_vary ;
     bool do_LocalPion_vary       = params.param.LocalPion_vary;
@@ -729,22 +789,23 @@ namespace Chroma {
     bool do_local_disc_loops     = params.param.disconnected_local  ;
 
     //change this to do stochastic connected loops
-    bool do_stoch_conn_corr      = false;
+    bool do_stoch_conn_corr       = false;
 
-    bool do_fuzzing              = false;
-    bool do_variational_spectra  = false;
+    bool do_fuzzing               = false;
+    bool do_variational_spectra   = false;
 
-    bool need_basic_8            = false;  
+    bool need_basic_8             = false;  
 
-    bool need_fuzzed_corner_prop = false;
+    bool need_fuzzed_corner_prop  = false;
 
-    bool done_ps4_singlet        = false;
-    bool done_ps4_singlet_fuzz   = false;
-    bool done_local_baryons      = false;
+    bool done_ps4_singlet         = false;
+    bool done_ps4_singlet_fuzz    = false;
+    bool done_local_baryons       = false;
     bool done_fuzzed_baryons      = false;
-    bool done_local_disc_loops   = false;
+    bool done_local_disc_loops    = false;
     bool done_fuzzed_disc_loops   = false;
-
+    bool done_meson_corr          = false;
+    bool done_meson_charm_corr    = false;
 
     //shouldnt be hard-coded
     stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
@@ -869,7 +930,6 @@ params.param.fermact.path));
     // Cast of a pointer to a reference?
     StaggeredTypeFermAct<T,P,Q>& S_f= *(fermact);
 
-    cout <<  "DEBUG-DEBUG quark mass = "  << S_f.getQuarkMass() << "\n" ; 
     Mass = S_f.getQuarkMass() ;
     params.prop_param.Mass = S_f.getQuarkMass() ;
 
@@ -897,6 +957,15 @@ params.param.fermact.path));
     // 
     LatticeStaggeredFermion psi ;
     LatticeStaggeredFermion q_source ; 
+
+
+    if( Wilson_loops ) 
+      {
+	//	push(xml_out, "Wilson_loops") ;
+        Wloop(xml_out,"Wilson_loops", u) ;
+	//  pop(xml_out);
+      }
+
 
 
     // Do local disconnected loops if we are not going to do fuzzed 
@@ -1245,14 +1314,19 @@ params.param.fermact.path));
     //might still need to local pions or baryons
 
     if((( do_ps4_singlet ) && (!done_ps4_singlet)) ||
-       (( do_Baryon_local) &&(!done_local_baryons))){
+       (( do_Baryon_local) &&(!done_local_baryons))  || 
+       ( Meson_local  && ! done_meson_corr  )  ||
+       (  Meson_charm_local && ! done_meson_charm_corr)
+       )
+      {
 
       //still need to compute local corner propagator
       LatticeStaggeredPropagator local_corner_prop;
 
       ncg_had += 
 	MakeCornerProp(psi, gauge_shift, sym_shift, u , qprop, xml_out, RsdCG, 
-		       Mass, j_decay, local_corner_prop, type_of_src);
+		       Mass, j_decay, 
+                       local_corner_prop, type_of_src, t_source);
 
 
 
@@ -1286,7 +1360,30 @@ params.param.fermact.path));
 	pop(xml_out);
 	done_local_baryons = true;
       }
-    }
+
+      // local meson correlators 
+      if( !done_meson_corr && Meson_local )
+	{
+	  push(xml_out, "local_meson_correlators");
+	  staggered_local_pion pion(t_length,u) ;
+	  pion.compute(local_corner_prop,local_corner_prop,j_decay) ;
+	  pion.dump(t_source,xml_out) ;
+	  pop(xml_out);
+	  done_meson_corr = true ;
+	}
+
+
+      // local meson correlators 
+      if( !done_meson_charm_corr && Meson_charm_local )
+	{
+	  meson_charm(local_corner_prop,
+		      xml_out, u,t_source,j_decay,t_length) ;
+
+	  done_meson_charm_corr = true ;
+	}
+
+
+      } // end if-then compute quark propagator
 
   
     pop(xml_out); // spectrum_s

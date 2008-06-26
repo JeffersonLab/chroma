@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.7 2008-03-25 10:58:34 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 3.8 2008-06-26 15:20:10 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -14,6 +14,7 @@
 #include "meas/hadron/enum_loops_s.h"
 #include "actions/ferm/invert/syssolver_cg_params.h"
 #include "io/xml_group_reader.h"
+#include "meas/glue/wloop.h"
 
 namespace Chroma 
 { 
@@ -37,6 +38,8 @@ namespace Chroma
     struct Param_t
     {
       bool Meson_local;                 // Meson spectroscopy
+      bool Meson_charm_local;           // Meson charm spectroscopy
+      bool Wilson_loops;                  // Wilson loops for alpha_s
       bool Baryon_local;                // Baryons spectroscopy
       bool Baryon_vary;                 // Baryons spectroscopy variational
       bool LocalPion_vary;              // local pion spectroscopy variational
