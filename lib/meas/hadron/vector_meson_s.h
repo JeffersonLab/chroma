@@ -22,6 +22,10 @@ namespace Chroma {
     compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 	    int j_decay);
 
+    void
+    compute(LatticeStaggeredPropagator & quark_props,
+	    int j_decay);
+
 
     vector_meson(int t_len, 
 		 const multi1d<LatticeColorMatrix> & uin,

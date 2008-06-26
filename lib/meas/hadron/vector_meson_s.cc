@@ -1,8 +1,10 @@
 /*! File:  vector_meson_s.cc   
  *
  * The routines in this file computes some of the staggered rhos
- * (This routine has not yet been CHECKED !!!!!)
- * 
+ *
+ * Only the local vectors are computed.
+
+ *
  * BEWARE: These routines ASSUME that the quark propagators have been
  * calculated in the Coulomb (or other spatially fixed) gauge.
  * It is not gauge invariant. It could be made to be so by adding some
@@ -33,9 +35,9 @@ private:
   TimeSliceFunc() {}  // hide default constructor
 };
 
-/*! staggeredScalars
+/*! StaggeredVectorMesons
  *
- * This routine computes all 16 staggered scalars.
+ * This routine computes the three local vector mesons.
  * 
  * Caveats: i) It assumes that the propagators you give 
  *             have been computed in some spatially fixed gauge
@@ -62,8 +64,6 @@ private:
  */
  
 
-// THis brings the staggered phases alpha and beta into the namespace
-
 void 
 vector_meson::compute(
    multi1d<LatticeStaggeredPropagator>& quark_props,
@@ -78,11 +78,6 @@ vector_meson::compute(
     QDP_abort(1);
   }
 
-  // Check for 8 props
-  if( quark_props.size() != NUM_STAG_PROPS ) { 
-    QDPIO::cerr << "staggeredScalars: input quark props has the wrong number of elements. It should be 8 but is " << quark_props.size() << endl;
-    QDP_abort(1);
-  };
 
   // Also for now we want j_decay to be 3.
   switch( j_decay ) { 
@@ -90,7 +85,7 @@ vector_meson::compute(
     break;
     
   default:
-    QDPIO::cerr << "staggeredScalars: j_decay must be 3 for just now. It is " << j_decay << endl;
+    QDPIO::cerr << "staggeredVectors: j_decay must be 3 for just now. It is " << j_decay << endl;
     QDP_abort(1);
   };
 
@@ -106,72 +101,130 @@ vector_meson::compute(
   // Machinery to do timeslice sums with 
   Set timeslice;
   timeslice.make(TimeSliceFunc(Nd-1));
-
-  // Phases
-  //multi1d<LatticeInteger> alpha(Nd); // KS Phases
-  //multi1d<LatticeInteger> beta(Nd);  // Auxiliary phases for this work
-
-  // Get the phases -- now done elsewhere
-  // mesPhasFollana(alpha, beta);
   
   // Counters/Indices
   int sca_index = 0;
-  int i;
-  int mu, nu, rho;  
-
-  // 
-  // Array to describe shifts in cube
-  multi1d<int> delta(Nd);
-
 
   //
   //
   //
-
-    mu = 0 ; 
-    delta = 0;
-    delta[mu] = 1;
-      
-    corr_fn_s =  StagPhases::alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
-                             *adj(quark_props[ deltaToPropIndex(delta) ]));
+    corr_fn_s =  StagPhases::alpha(1)*
+        trace(quark_props[0]*adj(quark_props[ 0 ]));
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     tag_names[sca_index] = "gamma_x_CROSS_gamma_x" ; 
     sca_index++;
-
-
-    mu = 1 ; 
-    delta = 0;
-    delta[mu] = 1;
       
-    corr_fn_s =  StagPhases::alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
-                             *adj(quark_props[ deltaToPropIndex(delta) ]));
+    corr_fn_s =  StagPhases::alpha(1)*StagPhases::alpha(2)*
+                trace(quark_props[0]*adj(quark_props[0]));
+
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     tag_names[sca_index] = "gamma_y_CROSS_gamma_y" ; 
     sca_index++;
 
 
-    mu = 2 ; 
-    delta = 0;
-    delta[mu] = 1;
-      
-    corr_fn_s =  StagPhases::alpha(1)*trace(shift_deltaProp(delta,quark_props[0])
-                             *adj(quark_props[ deltaToPropIndex(delta) ]));
+    corr_fn_s =  StagPhases::alpha(2)*StagPhases::alpha(3)*
+                             trace(quark_props[0]*adj(quark_props[0] ));
     corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
     tag_names[sca_index] = "gamma_z_CROSS_gamma_z" ; 
     sca_index++;
 
-    //
-    //
-    //
-
-#ifdef NNNNNNNNNNNNNNn
-    corr_fn[ sca_index ] = ( 
-			    corr_fn[ sca_index ] 
-			    + corr_fn[ sca_index ] 
-			    + corr_fn[ sca_index ] ) / 3.0 ; 
-#endif
 
     tag_names[sca_index] = "M_VT" ; 
+
+    for(int t= 0 ;  t < latt_size[Nd-1] ; ++t)
+    {
+      corr_fn[sca_index][t] = ( corr_fn[0][t] 
+				+ corr_fn[1][t] 
+				+ corr_fn[2][t] ) / 3.0 ; 
+    }
+
+
+}
+
+
+/**
+     Compute the local vector meson correlators using a single
+     local quark propagator.
+
+ * I have checked this routine against the MILC code. 
+
+**/
+
+
+void 
+vector_meson::compute(
+   LatticeStaggeredPropagator & quark_props,
+   int j_decay)
+{
+
+  // Paranoid Checks
+
+  if( Nd != 4 ) { 
+    QDPIO::cerr << "The no of dimensions should be 4 for now. It is: " 
+		<< Nd << endl;
+    QDP_abort(1);
+  }
+
+
+  // Also for now we want j_decay to be 3.
+  switch( j_decay ) { 
+  case 3:
+    break;
+    
+  default:
+    QDPIO::cerr << "staggeredVectors: j_decay must be 3 for just now. It is " << j_decay << endl;
+    QDP_abort(1);
+  };
+
+  // Get the lattice size.
+  const multi1d<int>& latt_size = Layout::lattSize();
+  
+  // resize output array appropriately
+  corr_fn.resize(NUM_STAG_PIONS, latt_size[Nd-1]);
+
+  // Correlation functions before spatial sum
+  LatticeComplex corr_fn_s;
+
+  // Machinery to do timeslice sums with 
+  Set timeslice;
+  timeslice.make(TimeSliceFunc(Nd-1));
+  
+  // Counters/Indices
+  int sca_index = 0;
+
+  //
+  //
+  //
+
+  corr_fn_s =  StagPhases::alpha(1)*
+    trace(quark_props*adj(quark_props));
+  corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+  tag_names[sca_index] = "gamma_x_CROSS_gamma_x" ; 
+  sca_index++;
+
+    corr_fn_s =  StagPhases::alpha(1)*StagPhases::alpha(2)*
+                trace(quark_props*adj(quark_props));
+
+    corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+    tag_names[sca_index] = "gamma_y_CROSS_gamma_y" ; 
+    sca_index++;
+
+
+    corr_fn_s =  StagPhases::alpha(2)*StagPhases::alpha(3)*
+                             trace(quark_props*adj(quark_props ));
+    corr_fn[ sca_index ] = sumMulti(corr_fn_s, timeslice);
+    tag_names[sca_index] = "gamma_z_CROSS_gamma_z" ; 
+    sca_index++;
+
+
+    tag_names[sca_index] = "M_VT" ; 
+
+    for(int t= 0 ;  t < latt_size[Nd-1] ; ++t)
+    {
+      corr_fn[sca_index][t] = (   corr_fn[0][t] 
+				+ corr_fn[1][t] 
+				+ corr_fn[2][t] ) / 3.0 ; 
+    }
 
 
 }
