@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.147 2008-06-21 04:20:10 edwards Exp $
+# $Id: Makefile.am,v 3.148 2008-06-26 15:02:34 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -185,7 +185,7 @@ nobase_include_HEADERS = \
 	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
-        meas/glue/mesplq.h meas/glue/polylp.h \
+        meas/glue/mesplq.h meas/glue/polylp.h meas/glue/mesplq.h meas/glue/wloop.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/glue/qnaive.h \
         meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
@@ -985,7 +985,7 @@ libchroma_a_SOURCES = \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
-        meas/glue/mesplq.cc meas/glue/polylp.cc \
+        meas/glue/wloop.cc  meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
