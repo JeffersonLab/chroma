@@ -5,6 +5,7 @@
 
 #include "meas/hadron/hadron_corr_s.h"
 #include "meas/hadron/stag_propShift_s.h"
+#include "util/ft/sftmom.h"
 
 namespace Chroma {
 
@@ -29,6 +30,17 @@ using staggered fermions.
   // This is very ugly
    void compute(multi1d<LatticeStaggeredPropagator>& quark_props,
 			 int j_decay) { QDP_abort(1);   }  
+
+
+
+
+  void 
+  compute_and_dump(
+				LatticeStaggeredPropagator& quark_prop_A,
+				LatticeStaggeredPropagator& quark_prop_B,
+				int j_decay, int , 
+				const SftMom& phases, XMLWriter& xml) ;
+
   
   staggered_local_pion(int t_len, 
 		       const multi1d<LatticeColorMatrix> & uin,
