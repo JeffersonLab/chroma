@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.260 2008-06-26 19:20:48 mcneile Exp $
+# $Id: Makefile.in,v 3.261 2008-06-27 15:18:58 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -2687,6 +2687,10 @@ AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_26)
+
+#if BUILD_FFDB_LITE
+#AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src -I$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
+#endif
 lib_LIBRARIES = libchroma.a
 
 #
