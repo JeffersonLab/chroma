@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s.ini.xml,v 3.4 2008-06-26 15:23:38 mcneile Exp $
+; $Id: spectrum_s.ini.xml,v 3.5 2008-06-27 09:48:28 mcneile Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -21,6 +21,7 @@
  <Baryon_local>true</Baryon_local>
  <Baryon_vary>true</Baryon_vary>
 <Meson_charm_local>true</Meson_charm_local>
+<Meson_charm_noisy_local>true</Meson_charm_noisy_local>
 <Wilson_loops>false</Wilson_loops>
  <singletPs_Conn_local>true</singletPs_Conn_local>
  <eight_pions>true</eight_pions>

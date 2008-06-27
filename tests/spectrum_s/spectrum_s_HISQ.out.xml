@@ -23,6 +23,9 @@
       <version>1</version>
       <Meson_local>true</Meson_local>
       <Baryon_local>true</Baryon_local>
+ <Meson_charm_local>true</Meson_charm_local>
+      <Wilson_loops>false</Wilson_loops>
+<Meson_charm_noisy_local>true</Meson_charm_noisy_local>
       <Baryon_vary>true</Baryon_vary>
       <disconnected_local>true</disconnected_local>
       <disconnected_fuzz>true</disconnected_fuzz>

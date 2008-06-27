@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s_HISQ.ini.xml,v 3.2 2008-06-26 15:23:38 mcneile Exp $
+; $Id: spectrum_s_HISQ.ini.xml,v 3.3 2008-06-27 09:48:28 mcneile Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -20,6 +20,7 @@
  <Meson_local>true</Meson_local>
 <Meson_charm_local>false</Meson_charm_local>
 <Wilson_loops>false</Wilson_loops>
+<Meson_charm_noisy_local>true</Meson_charm_noisy_local>
  <Baryon_local>true</Baryon_local>
  <Baryon_vary>true</Baryon_vary>
  <singletPs_Conn_local>true</singletPs_Conn_local>
