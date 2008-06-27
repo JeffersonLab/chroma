@@ -192,6 +192,7 @@ namespace Chroma {
 
     read(paramtop, "Meson_local", param.Meson_local);
     read(paramtop, "Meson_charm_local", param.Meson_charm_local);
+    read(paramtop, "Meson_charm_noisy_local", param.Meson_charm_noisy_local);
     read(paramtop, "Wilson_loops", param.Wilson_loops);
 
     read(paramtop, "Baryon_local", param.Baryon_local);
@@ -270,6 +271,7 @@ namespace Chroma {
 
     write(xml, "Meson_local", param.Meson_local);
     write(xml, "Meson_charm_local", param.Meson_charm_local);
+    write(xml, "Meson_charm_noisy_local", param.Meson_charm_noisy_local);
     write(xml, "Wilson_loops", param.Wilson_loops);
     write(xml, "Baryon_local", param.Baryon_local);
     write(xml, "Baryon_vary", param.Baryon_vary);
@@ -778,6 +780,7 @@ namespace Chroma {
     bool do_ps4_singlet_fuzz     = params.param.ps4link_singlet_conn_fuzz;
     bool Meson_local             = params.param.Meson_local ;
     bool Meson_charm_local       = params.param.Meson_charm_local ;
+    bool Meson_charm_noisy_local = params.param.Meson_charm_noisy_local ;
     bool Wilson_loops             = params.param.Wilson_loops ;
 
     bool do_Baryon_vary          = params.param.Baryon_vary ;
@@ -1384,6 +1387,27 @@ params.param.fermact.path));
 
 
       } // end if-then compute quark propagator
+
+
+    // compute wall source
+    if( Meson_charm_noisy_local  )
+      {
+	  push(xml_out, "noisy_local_meson_correlators");
+
+      LatticeStaggeredPropagator noisy_corner_prop;
+
+      QDPIO::cout << "Starting inversion for noisy wall source \n" ;
+      ncg_had += 
+	MakeCornerProp(psi, gauge_shift, sym_shift, u , qprop, xml_out, RsdCG, 
+		       Mass, j_decay, 
+                       noisy_corner_prop, NOISY_LOCAL_SOURCE , t_source);
+
+
+      meson_charm(noisy_corner_prop,xml_out, u,t_source,j_decay,t_length) ;
+
+      pop(xml_out); 
+      }
+
 
   
     pop(xml_out); // spectrum_s

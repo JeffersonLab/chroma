@@ -1,4 +1,3 @@
-// $Id: util_compute_quark_prop_s.cc,v 3.3 2008-06-26 15:20:10 mcneile Exp $
 //
 // Wrapper code to compute a staggered quark propagtor.
 //
@@ -11,6 +10,7 @@
 #include "meas/hadron/hadron_s.h"
 #include "meas/smear/fuzz_smear.h"
 #include "meas/sources/srcfil.h"
+#include "meas/sources/dilute_gauss_src_s.h"
 
 #include "util_compute_quark_prop_s.h"
 
@@ -60,6 +60,9 @@ namespace Chroma {
       break;
     case FUZZED_SRC:
       str_source_type="FUZZED_SRC";
+      break;
+    case NOISY_LOCAL_SOURCE:
+      str_source_type="NOISY_LOCAL_SOURCE";
       break;
     default:
       QDPIO::cerr << "Unknown type of source in" << str_source_type << endl;
@@ -254,8 +257,9 @@ static int flag=1;
       PropIndexTodelta(src_ind, coord) ;
       srcfil(q_source, coord,color_source ) ;
 
-    }else{
-      if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
+    }
+    else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
+      
 	q_source = zero ;
 	multi1d<int> coord(Nd);
 
@@ -271,8 +275,13 @@ static int flag=1;
 	q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
 
 	// sym-shift true for symmetric shifting!!!!!!!
+    }
+    else if( type_of_src ==  NOISY_LOCAL_SOURCE  ) {
 
-      }else{
+      gaussian_color_src_on_slice(q_source, color_source,t_source, j_decay);  
+
+      }
+    else{
 
 	QDPIO::cerr << "Conflicting source and shift types in " <<
 	  "util_compute_quark_prop_s.cc" <<endl;
@@ -281,7 +290,7 @@ static int flag=1;
 	exit(0);
 
       }
-    }
+  
 
 
     // Use the last initial guess as the current guess

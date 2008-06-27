@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.8 2008-06-26 15:20:10 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 3.9 2008-06-27 09:34:19 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -39,6 +39,7 @@ namespace Chroma
     {
       bool Meson_local;                 // Meson spectroscopy
       bool Meson_charm_local;           // Meson charm spectroscopy
+      bool Meson_charm_noisy_local;           // Meson charm spectroscopy
       bool Wilson_loops;                  // Wilson loops for alpha_s
       bool Baryon_local;                // Baryons spectroscopy
       bool Baryon_vary;                 // Baryons spectroscopy variational

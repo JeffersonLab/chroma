@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: util_compute_quark_prop_s.h,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: util_compute_quark_prop_s.h,v 3.1 2008-06-27 09:34:19 mcneile Exp $
 /*! \file
  * \brief Compute staggered quark propagator
  *
@@ -11,7 +11,7 @@
 
 #include "chromabase.h"
 
-enum stag_src_enum { LOCAL_SRC  , FUZZED_SRC , GAUGE_INVAR_LOCAL_SOURCE } ;
+enum stag_src_enum { LOCAL_SRC  , FUZZED_SRC , GAUGE_INVAR_LOCAL_SOURCE , NOISY_LOCAL_SOURCE } ;
 typedef   stag_src_enum stag_src_type ;
 
 
