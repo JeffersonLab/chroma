@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.2 2008-06-21 05:14:49 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.3 2008-06-27 06:14:57 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -453,12 +453,12 @@ namespace Chroma
       int                colvec_r;     /*!< Right colorvector index */
       multi1d<int>       displacement; /*!< Displacement dirs of right colorvector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
-      multi1d<DComplex>  op;           /*!< Momentum projected operator */
+      multi1d<ComplexD>  op;           /*!< Momentum projected operator */
     };
 
 
     //----------------------------------------------------------------------------
-    //! MesonElementalOperator writer
+    //! MesonElementalOperator reader
     void read(BinaryReader& bin, MesonElementalOperator_t& param)
     {
       read(bin, param.colvec_l);
@@ -468,7 +468,7 @@ namespace Chroma
       read(bin, param.op);
     }
 
-    //! MesonElementalOperator writer
+    //! MesonElementalOperator write
     void write(BinaryWriter& bin, const MesonElementalOperator_t& param)
     {
       write(bin, param.colvec_l);
@@ -478,7 +478,7 @@ namespace Chroma
       write(bin, param.op);
     }
 
-    //! MesonElementalOperator writer
+    //! MesonElementalOperator reader
     void read(XMLReader& xml, const std::string& path, MesonElementalOperator_t& param)
     {
       XMLReader paramtop(xml, path);
@@ -676,11 +676,15 @@ namespace Chroma
       QDPIO::cout << "Building meson operators" << endl;
 
       BinaryBufferWriter src_record_bin;
+      int num_elem_to_write = 
+	qq_oplist.ops.size() * params.param.num_vecs * 
+	params.param.num_vecs * phases.numMom();
 
       write(src_record_bin, params.param.mom2_max);
       write(src_record_bin, params.param.decay_dir);
       write(src_record_bin, params.param.num_vecs);
       write(src_record_bin, qq_oplist.ops.size());
+      write(src_record_bin, num_elem_to_write);
 
       push(xml_out, "ElementalOps");
 
@@ -723,7 +727,7 @@ namespace Chroma
 	    LatticeComplex lop = localInnerProduct(smrd_disp_vecs.getDispVector(keySmearedDispColorVector[0]),
 						   smrd_disp_vecs.getDispVector(keySmearedDispColorVector[1]));
 
-	    multi2d<DComplex> op_sum = phases.sft(lop);
+	    multi2d<ComplexD> op_sum = phases.sft(lop);
 
 	    watch.stop();
 	    /*
@@ -757,6 +761,15 @@ namespace Chroma
       } // for l
 
       pop(xml_out); // ElementalOps
+
+      // Sanity check
+      if (total_num_elem != num_elem_to_write)
+      {
+	QDPIO::cerr << name << ": inconsistent number of elemental ops written = "
+		    << total_num_elem
+		    << endl;
+	QDP_abort(1);
+      }
 
       // Write the meta-data and the binary for this operator
       swiss.reset();
