@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
   Chroma::initialize(&argc, &argv);
 
   // Setup the layout
-  const int foo[]={24, 24, 24, 128};
+  const int foo[]={4, 4, 4, 4};
   multi1d<int> nrow(Nd);
   nrow=foo;
   Layout::setLattSize(nrow);
@@ -53,11 +53,11 @@ int main(int argc, char *argv[])
   dest1=zero;
   dest2=zero;
 
-  int n_sec=10;
+  int n_sec=30;
   unsigned long iters=1;
   double time;
 
-  QDPIO::cout << "Calibrating QDP CloverTerm" << endl;
+  QDPIO::cout << "Calibrating QDPCloverTerm" << endl;
   do { 
     iters *= 2;
     StopWatch swatch;
@@ -84,6 +84,57 @@ int main(int argc, char *argv[])
     swatch.start();
     for(unsigned long i=0; i < iters; i++) { 
       qdp_clov.apply(dest1, src, PLUS, 0);
+    }
+    swatch.stop();
+    time=swatch.getTimeInSeconds();
+    Internal::globalSum(time);
+    time /= (double)Layout::numNodes();
+
+    // Flopcount
+    QDPIO::cout << "Layout volume=" << Layout::vol() << endl;
+    QDPIO::cout << "FLOPS=" << qdp_clov.nFlops() << endl;
+    QDPIO::cout << "iters=" << iters <<endl;
+    QDPIO::cout << "time=" << time << endl;
+    double flops=(double)qdp_clov.nFlops();
+    flops *= (double)(Layout::sitesOnNode())/(double)2;
+    flops *= (double)(iters);
+    FlopCounter fc;
+    fc.addFlops((unsigned long long)floor(flops));
+    fc.report("QDPCloverTerm", time);
+
+  }
+
+  CloverTerm opt_clov;
+  opt_clov.create(fs, params);
+
+  iters = 1;
+  QDPIO::cout << "Calibrating CloverTerm" << endl;
+  do { 
+    iters *= 2;
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+    for(unsigned long i=0; i < iters; i++) { 
+      opt_clov.apply(dest1, src, PLUS, 0);
+    }
+    swatch.stop();
+    time=swatch.getTimeInSeconds();
+    Internal::globalSum(time);
+    time /= (double)Layout::numNodes();
+    QDPIO::cout << "." << flush;
+  }
+  while(time < (double)n_sec );
+
+
+  QDPIO::cout << endl;
+
+  {
+    QDPIO::cout << "Timing with " << iters << " iterations" << endl;
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
+    for(unsigned long i=0; i < iters; i++) { 
+      opt_clov.apply(dest1, src, PLUS, 0);
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();

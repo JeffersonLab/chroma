@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 3.3 2007-08-27 18:18:53 edwards Exp $
+// $Id: invcg2.cc,v 3.4 2008-06-27 20:24:09 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -114,13 +114,14 @@ namespace Chroma
 
     r[s] = chi_internal - mmp;
     flopcount.addSiteFlops(2*Nc*Ns,s);
+    //  Cp = |r[0]|^2
+    Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
+    flopcount.addSiteFlops(4*Nc*Ns, s);
 
     //  p[1]  :=  r[0]
     p[s] = r;
   
-    //  Cp = |r[0]|^2
-    Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
-    flopcount.addSiteFlops(4*Nc*Ns, s);
+
 
 #if 0
     QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
@@ -158,24 +159,26 @@ namespace Chroma
       //  d = | mp | ** 2
       d = norm2(mp, s);  flopcount.addSiteFlops(4*Nc*Ns,s);
 
-      a = Real(c)/Real(d);
-
-      //  Psi[k] += a[k] p[k]
-      psi[s] += a * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
-
       //  r[k] -= a[k] A . p[k] ;
       //      	       +            +
       //  r  =  r  -  M(u)  . Mp  =  M  . M . p  =  A . p
       M(mmp, mp, MINUS);
       flopcount.addFlops(M.nFlops());
 
+      a = Real(c)/Real(d);
+
       r[s] -= a * mmp;
       flopcount.addSiteFlops(4*Nc*Ns, s);
+      //  cp  =  | r[k] |**2
+      cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
+
+      //  Psi[k] += a[k] p[k]
+      psi[s] += a * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
+
+
 
       //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 
-      //  cp  =  | r[k] |**2
-      cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
 
 //    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 

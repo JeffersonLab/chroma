@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.150 2008-06-27 15:08:23 edwards Exp $
+# $Id: Makefile.am,v 3.151 2008-06-27 20:24:05 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1512,6 +1512,12 @@ nobase_include_HEADERS += \
 libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 	actions/ferm/invert/syssolver_linop_OPTeigcg.cc
+endif
+
+if BUILD_SSED_CLOVER_APPLY
+nobase_include_HEADERS += actions/ferm/linop/clover_term_ssed.h
+libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
+	actions/ferm/linop/clover_apply_ssed.cc
 endif
 
 #

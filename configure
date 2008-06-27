@@ -701,6 +701,8 @@ BAGEL_CLOVER_LDFLAGS
 BAGEL_CLOVER_LIBS
 BUILD_BAGEL_CLOVER_APPLY_TRUE
 BUILD_BAGEL_CLOVER_APPLY_FALSE
+BUILD_SSED_CLOVER_APPLY_TRUE
+BUILD_SSED_CLOVER_APPLY_FALSE
 LAPACK_ENABLED
 BUILD_LAPACK_TRUE
 BUILD_LAPACK_FALSE
@@ -1342,6 +1344,7 @@ Optional Features:
   --enable-bagel-wilson-dslash-sloppy
                           Enable Sloppy Precision in BAGEL Dslash -- different
                           internal and external precisions
+  --enable-ssed-clover    Enable SSE Double Prec clover operator
   --enable-lapack=<type>  Use the type of lapack bindings specified by <type>.
                           Currently, this can be lapack
   --enable-opt-eigcg      Build optimized eigcg
@@ -3945,10 +3948,20 @@ fi
 
 
 
+
 # Check whether --with-bagel_clover was given.
 if test "${with_bagel_clover+set}" = set; then
   withval=$with_bagel_clover; bagel_clover_enabled="yes"
      BAGEL_CLOVER_HOME="${with_bagel_clover}"
+
+fi
+
+
+# Check whether --enable-ssed_clover was given.
+if test "${enable_ssed_clover+set}" = set; then
+  enableval=$enable_ssed_clover; ssed_clover_enabled="${enableval}"
+else
+  ssed_clover_enabled="no"
 
 fi
 
@@ -4820,6 +4833,7 @@ else
 echo "$as_me: Not using BAGEL Clover " >&6;}
 fi
 
+
 if test "X${bagel_clover_enabled}X" = "XyesX";
 then
   { echo "$as_me:$LINENO: checking if we can compile/link a simple BAGEL Clover program" >&5
@@ -4928,6 +4942,29 @@ fi
 else
   BUILD_BAGEL_CLOVER_APPLY_TRUE='#'
   BUILD_BAGEL_CLOVER_APPLY_FALSE=
+fi
+
+
+if test "X${ssed_clover_enabled}X" = "XyesX";
+then
+   { echo "$as_me:$LINENO: Building with SSED Clover Apply " >&5
+echo "$as_me: Building with SSED Clover Apply " >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_SSED_CLOVER_TERM
+_ACEOF
+
+else
+   { echo "$as_me:$LINENO: Not using SSE DP Clover " >&5
+echo "$as_me: Not using SSE DP Clover " >&6;}
+fi
+
+ if test "x${ssed_clover_enabled}x" = "xyesx" ; then
+  BUILD_SSED_CLOVER_APPLY_TRUE=
+  BUILD_SSED_CLOVER_APPLY_FALSE='#'
+else
+  BUILD_SSED_CLOVER_APPLY_TRUE='#'
+  BUILD_SSED_CLOVER_APPLY_FALSE=
 fi
 
 
@@ -5822,6 +5859,13 @@ echo "$as_me: error: conditional \"BUILD_BAGEL_CLOVER_APPLY\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_SSED_CLOVER_APPLY_TRUE}" && test -z "${BUILD_SSED_CLOVER_APPLY_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSED_CLOVER_APPLY\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_SSED_CLOVER_APPLY\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_LAPACK_TRUE}" && test -z "${BUILD_LAPACK_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_LAPACK\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -6580,6 +6624,8 @@ BAGEL_CLOVER_LDFLAGS!$BAGEL_CLOVER_LDFLAGS$ac_delim
 BAGEL_CLOVER_LIBS!$BAGEL_CLOVER_LIBS$ac_delim
 BUILD_BAGEL_CLOVER_APPLY_TRUE!$BUILD_BAGEL_CLOVER_APPLY_TRUE$ac_delim
 BUILD_BAGEL_CLOVER_APPLY_FALSE!$BUILD_BAGEL_CLOVER_APPLY_FALSE$ac_delim
+BUILD_SSED_CLOVER_APPLY_TRUE!$BUILD_SSED_CLOVER_APPLY_TRUE$ac_delim
+BUILD_SSED_CLOVER_APPLY_FALSE!$BUILD_SSED_CLOVER_APPLY_FALSE$ac_delim
 LAPACK_ENABLED!$LAPACK_ENABLED$ac_delim
 BUILD_LAPACK_TRUE!$BUILD_LAPACK_TRUE$ac_delim
 BUILD_LAPACK_FALSE!$BUILD_LAPACK_FALSE$ac_delim
@@ -6617,7 +6663,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 61; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 63; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

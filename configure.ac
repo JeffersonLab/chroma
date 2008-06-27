@@ -94,6 +94,7 @@ AC_ARG_ENABLE(bagel_wilson_dslash_sloppy,
 	[bagel_wilson_dslash_sloppy="no"]
 )
 
+
 AC_ARG_WITH(bagel_clover,
   AC_HELP_STRING(
     [--with-bagel-clover=DIR],
@@ -101,6 +102,14 @@ AC_ARG_WITH(bagel_clover,
   ),
     [bagel_clover_enabled="yes"
      BAGEL_CLOVER_HOME="${with_bagel_clover}"]
+)
+
+AC_ARG_ENABLE(ssed_clover,
+	AC_HELP_STRING(
+        [--enable-ssed-clover], 
+	[Enable SSE Double Prec clover operator]),
+	[ssed_clover_enabled="${enableval}"],
+	[ssed_clover_enabled="no"]
 )
 
 AC_ARG_ENABLE(lapack,
@@ -425,6 +434,7 @@ else
    AC_MSG_NOTICE( [Not using BAGEL Clover] )  
 fi
 
+
 if test "X${bagel_clover_enabled}X" = "XyesX";
 then
   AC_MSG_CHECKING([if we can compile/link a simple BAGEL Clover program])
@@ -448,6 +458,19 @@ then
 fi
 
 AM_CONDITIONAL(BUILD_BAGEL_CLOVER_APPLY, [test "x${bagel_clover_enabled}x" = "xyesx" ])
+
+dnl ************************************************************************
+dnl **** SSE Double Prec clover                                          ****
+dnl ************************************************************************
+if test "X${ssed_clover_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with SSED Clover Apply] )   
+   AC_DEFINE([BUILD_SSED_CLOVER_TERM],[], [ Use SSED Clover Term Apply ])
+else
+   AC_MSG_NOTICE( [Not using SSE DP Clover] )  
+fi
+
+AM_CONDITIONAL(BUILD_SSED_CLOVER_APPLY, [test "x${ssed_clover_enabled}x" = "xyesx" ])
 
 
 dnl ************************************************************************

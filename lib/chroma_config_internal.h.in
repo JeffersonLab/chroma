@@ -27,6 +27,9 @@
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 
+/* Use SSED Clover Term Apply */
+#undef BUILD_SSED_CLOVER_TERM
+
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
 
