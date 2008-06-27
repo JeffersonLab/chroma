@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.3 2008-06-21 04:19:11 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.4 2008-06-27 06:15:35 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -21,6 +21,8 @@
 
 namespace Chroma 
 { 
+  namespace InlinePropMatElemColorVecEnv 
+  {
   //! Propagator input
   void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params::NamedObject_t& input)
   {
@@ -103,7 +105,7 @@ namespace Chroma
 
     pop(xml);
   }
-
+  } // namespace InlinePropMatElemColorVecEnv 
 
 
   namespace InlinePropMatElemColorVecEnv 
@@ -136,6 +138,72 @@ namespace Chroma
     }
 
 
+    //----------------------------------------------------------------------------
+    //! Prop operator
+    struct PropElementalOperator_t
+    {
+      int                t_source;      /*!< Source time slice */
+      int                colorvec_src;  /*!< Source colorvector index */
+      int                colorvec_snk;  /*!< Sink colorvector index */
+      int                spin_src;      /*!< Source spin index */
+      int                spin_snk;      /*!< Sink spin index */
+      multi1d<ComplexD>  corr;          /*!< Projected propagator */
+    };
+
+
+    //----------------------------------------------------------------------------
+    //! PropElementalOperator reader
+    void read(BinaryReader& bin, PropElementalOperator_t& param)
+    {
+      read(bin, param.t_source);
+      read(bin, param.colorvec_src);
+      read(bin, param.colorvec_snk);
+      read(bin, param.spin_src);
+      read(bin, param.spin_snk);
+      read(bin, param.corr);
+    }
+
+    //! PropElementalOperator write
+    void write(BinaryWriter& bin, const PropElementalOperator_t& param)
+    {
+      write(bin, param.t_source);
+      write(bin, param.colorvec_src);
+      write(bin, param.colorvec_snk);
+      write(bin, param.spin_src);
+      write(bin, param.spin_snk);
+      write(bin, param.corr);
+    }
+
+    //! PropElementalOperator reader
+    void read(XMLReader& xml, const std::string& path, PropElementalOperator_t& param)
+    {
+      XMLReader paramtop(xml, path);
+    
+      read(paramtop, "t_source", param.t_source);
+      read(paramtop, "colorvec_src", param.colorvec_src);
+      read(paramtop, "colorvec_snk", param.colorvec_snk);
+      read(paramtop, "spin_src", param.spin_src);
+      read(paramtop, "spin_snk", param.spin_snk);
+      read(paramtop, "corr", param.corr);
+    }
+
+    //! PropElementalOperator writer
+    void write(XMLWriter& xml, const std::string& path, const PropElementalOperator_t& param)
+    {
+      push(xml, path);
+
+      write(xml, "t_source", param.t_source);
+      write(xml, "colorvec_src", param.colorvec_src);
+      write(xml, "colorvec_snk", param.colorvec_snk);
+      write(xml, "spin_src", param.spin_src);
+      write(xml, "spin_snk", param.spin_snk);
+      write(xml, "corr", param.corr);
+
+      pop(xml);
+    }
+
+
+    //----------------------------------------------------------------------------
     // Param stuff
     Params::Params() { frequency = 0; }
 
@@ -392,17 +460,17 @@ namespace Chroma
 
 		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 		{
-		  multi1d<DComplex> corr = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
-						    phases.getSet());
-
-		  push(xml_out, "elem");
-		  write(xml_out, "t_source", t_source);
-		  write(xml_out, "colorvec_source", colorvec_source);
-		  write(xml_out, "colorvec_sink", colorvec_sink);
-		  write(xml_out, "spin_source", spin_source);
-		  write(xml_out, "spin_sink", spin_sink);
-		  write(xml_out, "corr", corr);
-		  pop(xml_out);
+		  PropElementalOperator_t op;
+		  op.t_source     = t_source;
+		  op.colorvec_src = colorvec_source;
+		  op.colorvec_snk = colorvec_sink;
+		  op.spin_src     = spin_source;
+		  op.spin_snk     = spin_sink;
+		  op.corr         = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
+					     phases.getSet());
+		  
+//		  write(bin, op);               // binary output
+		  write(xml_out, "elem", op);   // xml output
 		} // for spin_sink
 	      } // for colorvec_sink
 	    } // for spin_source
