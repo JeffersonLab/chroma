@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: colorvec_matelem.ini.xml,v 1.1 2008-06-29 20:23:06 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Make a fake gaussian eigeninfo struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>EigenInfoLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>3</num_vecs>
+          <t_sources>0</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Kappa>0.115</Kappa>
+           <clovCoeff>1.17</clovCoeff>
+           <clovCoeffR>0.91</clovCoeffR>
+           <clovCoeffT>1.07</clovCoeffT>
+           <AnisoParam>
+             <anisoP>true</anisoP>
+             <t_dir>3</t_dir>
+             <xi_0>2.464</xi_0>
+             <nu>0.95</nu>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_op_file>prop.lime</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MESON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>1</mom2_max>
+        <num_vecs>3</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>0</elem>
+          <elem>2 -1</elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <displacement_file>disp.txt</displacement_file>
+        <meson_op_file>meson.lime</meson_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
