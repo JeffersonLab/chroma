@@ -1,4 +1,4 @@
-// $Id: gramschm.h,v 3.1 2007-02-22 21:11:48 bjoo Exp $
+// $Id: gramschm.h,v 3.2 2008-06-29 20:33:23 edwards Exp $
 /*! \file
  *  \brief Gramm-Schmidt orthogonolization
  */
@@ -80,6 +80,25 @@ void GramSchm(multi1d<LatticeFermion>& psi,
  */
 void GramSchm(LatticeFermion& psi, 
 	      const multi1d<LatticeFermion>& vec, 
+	      const int Nvec,
+	      const Subset& sub);
+
+
+//! Gram Schmidt rothogonalisation
+/*!
+ * \ingroup eig
+ * 
+ * Convenience function: Orthogonalise single vector psi against 
+ * the first Nvec vectors of vec
+ *
+ * Arguments:
+ *  \param psi         Pseudofermion field     	       (Modify)
+ *  \param vec         subspace wrt orthog     	       (Read)
+ *  \param Nvec        no of vectors to orthog against (Read)
+ *  \param sub         Subset to use                   (Read) 
+ */
+void GramSchm(LatticeColorVector& psi, 
+	      const multi1d<LatticeColorVector>& vec, 
 	      const int Nvec,
 	      const Subset& sub);
 
