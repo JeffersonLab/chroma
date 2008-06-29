@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.3 2008-06-17 16:10:21 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.4 2008-06-29 20:17:08 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -14,6 +14,9 @@
 #include "meas/inline/io/inline_gaussian_obj.h"
 
 #include "util/ferm/eigeninfo.h"
+
+#include "util/ft/sftmom.h"
+#include "meas/eig/gramschm.h"
 
 namespace Chroma 
 { 
@@ -94,6 +97,33 @@ namespace Chroma
 	{
 	  random(obj.getEvalues()[m]);
 	  gaussian(obj.getEvectors()[m]);
+	}
+
+	//
+	// Orthogonalize the vectors
+	//
+	// To get a time direction subset
+	SftMom phases(0, false, Nd-1);
+
+	// Do this the inefficient way - loop over all subsets
+	for(int t=0; t < phases.numSubsets(); ++t)
+	{
+	  const Subset& s = phases.getSet()[t];
+
+	  for(int m=0; m < N; ++m)
+	  {
+	    // Convenience
+	    T& v = obj.getEvectors()[m];
+
+	    if (m > 0)
+	    {
+	      // Orthogonalize this vector against the previous "m" of them
+	      GramSchm(v, obj.getEvectors(), m, s);
+	    }
+
+	    // Normalize
+	    v[s] /= sqrt(norm2(v, s));
+	  }
 	}
 
 	// I haven't figure out what to put in here
