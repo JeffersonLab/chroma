@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigen_bin_colvec_read_obj.h,v 3.1 2008-06-18 21:38:28 edwards Exp $
+// $Id: inline_eigen_bin_colvec_read_obj.h,v 3.2 2008-06-29 20:17:27 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -36,7 +36,7 @@ namespace Chroma
 
       struct File_t
       {
-	std::string   file_name;
+	multi1d<std::string>   file_names;
       } file;
     };
 

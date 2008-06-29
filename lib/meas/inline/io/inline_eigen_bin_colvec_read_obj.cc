@@ -1,4 +1,4 @@
-// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.1 2008-06-18 21:38:28 edwards Exp $
+// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.2 2008-06-29 20:17:27 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -32,7 +32,7 @@ namespace Chroma
   {
     push(xml, path);
 
-    write(xml, "file_name", input.file_name);
+    write(xml, "file_names", input.file_names);
 
     pop(xml);
   }
@@ -51,7 +51,7 @@ namespace Chroma
   {
     XMLReader inputtop(xml, path);
 
-    read(inputtop, "file_name", input.file_name);
+    read(inputtop, "file_names", input.file_names);
   }
 
 
@@ -148,15 +148,18 @@ namespace Chroma
 	TheNamedObjMap::Instance().create< EigenInfo<T> >(params.named_obj.object_id);
 	EigenInfo<T>& eigen = TheNamedObjMap::Instance().getData< EigenInfo<T> >(params.named_obj.object_id);
 
-	eigen.getEvalues().resize(1);
-	eigen.getEvectors().resize(1);
+	eigen.getEvalues().resize(params.file.file_names.size());
+	eigen.getEvectors().resize(params.file.file_names.size());
 
 	// Read the object
 	swatch.start();
 
-	BinaryFileReader bin(params.file.file_name);
-	read(bin, eigen.getEvectors()[0]);
-	read(bin, eigen.getEvalues()[0]);
+	for(int i=0; i < params.file.file_names.size(); ++i)
+	{
+	  BinaryFileReader bin(params.file.file_names[i]);
+	  read(bin, eigen.getEvectors()[i]);
+	  read(bin, eigen.getEvalues()[i]);  // only read the first time slice for the ev - there are Lt of them
+	}
 
 	swatch.stop();
 
