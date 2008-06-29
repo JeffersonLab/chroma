@@ -1,4 +1,4 @@
-// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.2 2008-06-29 20:17:27 edwards Exp $
+// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.3 2008-06-29 21:26:23 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -168,8 +168,8 @@ namespace Chroma
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;
-	push(file_xml, "EigenInfo");
-	pop(file_xml);
+	push(record_xml, "EigenInfo");
+	pop(record_xml);
 
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
