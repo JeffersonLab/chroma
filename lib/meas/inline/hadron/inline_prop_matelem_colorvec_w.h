@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_matelem_colorvec_w.h,v 1.2 2008-06-21 04:19:10 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.h,v 1.3 2008-06-29 03:06:57 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -46,6 +46,7 @@ namespace Chroma
       {
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
+	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern

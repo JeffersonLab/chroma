@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.4 2008-06-27 06:15:35 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.5 2008-06-29 03:06:57 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -30,6 +30,7 @@ namespace Chroma
 
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "colorvec_id", input.colorvec_id);
+    read(inputtop, "prop_op_file", input.prop_op_file);
   }
 
   //! Propagator output
@@ -39,6 +40,7 @@ namespace Chroma
 
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "colorvec_id", input.colorvec_id);
+    write(xml, "prop_op_file", input.prop_op_file);
 
     pop(xml);
   }
@@ -377,6 +379,12 @@ namespace Chroma
       // Total number of iterations
       int ncg_had = 0;
 
+      // Number of props written
+      int total_num_elem = 0;
+
+      // Binary output
+      BinaryBufferWriter src_record_bin;
+
       //
       // Try the factories
       //
@@ -416,22 +424,31 @@ namespace Chroma
 	// Loop over the source color and spin, creating the source
 	// and calling the relevant propagator routines.
 	//
-	const int N_vecs              = params.param.contract.num_vecs;
+	const int num_vecs            = params.param.contract.num_vecs;
 	const int decay_dir           = params.param.contract.decay_dir;
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, decay_dir);
 
+	// Binary output
+	int num_elem_to_write = num_vecs * num_vecs * t_sources.size() * Ns * Ns;
+
+	write(src_record_bin, decay_dir);
+	write(src_record_bin, num_vecs);
+	write(src_record_bin, t_sources);
+	write(src_record_bin, num_elem_to_write);
+
 	push(xml_out, "ColorVecMatElems");
 
+	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt];
 	  QDPIO::cout << "t_source = " << t_source << endl; 
 
 	  // All the loops
-	  for(int colorvec_source=0; colorvec_source < N_vecs; ++colorvec_source)
+	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
 	  {
 	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
 
@@ -454,7 +471,7 @@ namespace Chroma
 	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
 	      ncg_had = res.n_count;
 
-	      for(int colorvec_sink=0; colorvec_sink < N_vecs; ++colorvec_sink)
+	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 	      {
 		const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
 
@@ -469,8 +486,9 @@ namespace Chroma
 		  op.corr         = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
 					     phases.getSet());
 		  
-//		  write(bin, op);               // binary output
-		  write(xml_out, "elem", op);   // xml output
+		  write(src_record_bin, op);    // binary output
+		  write(xml_out, "elem", op);   // xml output (debugging)
+		  ++total_num_elem;
 		} // for spin_sink
 	      } // for colorvec_sink
 	    } // for spin_source
@@ -478,6 +496,15 @@ namespace Chroma
 	} // for t_source
 
 	pop(xml_out);
+
+	// Sanity check
+	if (total_num_elem != num_elem_to_write)
+	{
+	  QDPIO::cerr << name << ": inconsistent number of elemental ops written = "
+		      << total_num_elem
+		    << endl;
+	  QDP_abort(1);
+	}
 
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
@@ -495,6 +522,28 @@ namespace Chroma
       pop(xml_out);
 
       pop(xml_out);  // prop_matelem_colorvec
+
+      // Write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter src_record_xml, file_xml;
+
+	push(file_xml, "PropElementalOperators");
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	QDPFileWriter qdp_file(file_xml, params.named_obj.prop_op_file,
+			       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
+
+	push(src_record_xml, "PropElementalOperator");
+	write(src_record_xml, "decay_dir", params.param.contract.decay_dir);
+	write(src_record_xml, "num_vecs", params.param.contract.num_vecs);
+	write(src_record_xml, "t_sources", params.param.contract.t_sources);
+	write(src_record_xml, "total_num_elem", total_num_elem);
+	pop(src_record_xml);
+
+	write(qdp_file, src_record_xml, src_record_bin);
+      }
 
       snoop.stop();
       QDPIO::cout << name << ": total time = "
