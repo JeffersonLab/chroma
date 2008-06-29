@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.3 2008-06-27 06:14:57 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.4 2008-06-29 03:06:28 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -49,6 +49,7 @@ namespace Chroma
 
     read(paramtop, "mom2_max", param.mom2_max);
     read(paramtop, "displacement_length", param.displacement_length);
+    read(paramtop, "displacement_list", param.displacement_list);
     read(paramtop, "num_vecs", param.num_vecs);
     read(paramtop, "decay_dir", param.decay_dir);
 
@@ -66,6 +67,7 @@ namespace Chroma
     write(xml, "version", version);
     write(xml, "mom2_max", param.mom2_max);
     write(xml, "displacement_length", param.displacement_length);
+    write(xml, "displacement_list", param.displacement_list);
     write(xml, "num_vecs", param.num_vecs);
     write(xml, "decay_dir", param.decay_dir);
     xml << param.link_smearing.xml;
@@ -80,7 +82,6 @@ namespace Chroma
 
     read(inputtop, "gauge_id", input.gauge_id);
     read(inputtop, "colorvec_id", input.colorvec_id);
-    read(inputtop, "displacement_file", input.displacement_file);
     read(inputtop, "meson_op_file", input.meson_op_file);
   }
 
@@ -91,7 +92,6 @@ namespace Chroma
 
     write(xml, "gauge_id", input.gauge_id);
     write(xml, "colorvec_id", input.colorvec_id);
-    write(xml, "displacement_file", input.displacement_file);
     write(xml, "meson_op_file", input.meson_op_file);
 
     pop(xml);
@@ -208,60 +208,6 @@ namespace Chroma
       pop(xml_out);
     }
 
-
-
-    //--------------------------------------------------------------
-    //! 2-quark operator structure
-    struct TwoQuarkOps_t
-    {
-      struct Displacement_t
-      {
-	multi1d<int> displacement;   /*!< Orig plus/minus 1-based directional displacements */
-      };
-
-      multi1d<Displacement_t> ops; /*!< 2-quark ops within a file */
-    };
-
-    //! Read two quark op
-    void read(XMLReader& xml, const string& path, 
-	      TwoQuarkOps_t::Displacement_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "displacement", input.displacement);
-    }
-
-    //! Read two quark ops
-    void read(XMLReader& xml, const string& path, 
-	      TwoQuarkOps_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "Operators", input.ops);
-    }
-	
-    //! Write two quark op
-    void write(XMLWriter& xml, const string& path, 
-	       const TwoQuarkOps_t::Displacement_t& input)
-    {
-      push(xml, path);
-
-      write(xml, "Displacement", input.displacement);
-
-      pop(xml);
-    }
-
-    //! Write two quark op 
-    void write(XMLWriter& xml, const string& path, 
-	       const TwoQuarkOps_t& input)
-    {
-      push(xml, path);
-
-      write(xml, "Operators", input.ops);
-
-      pop(xml);
-    }
-	
 
 
     //----------------------------------------------------------------------------
@@ -506,37 +452,33 @@ namespace Chroma
 
 
     //----------------------------------------------------------------------------
-    //! Read 2-quark operators file, assign correct displacement length
-    void readOps(TwoQuarkOps_t& oplist, 
-		 const std::string& displacement_file)
+    //! Make sure displacements are something sensible
+    multi1d< multi1d<int> > normalizeDisplacements(const multi1d< multi1d<int> >& orig_list)
     {
       START_CODE();
 
-      TextFileReader reader(displacement_file);
+      multi1d< multi1d<int> > displacement_list(orig_list.size());
 
-      int num_ops;
-      reader >> num_ops;
-      oplist.ops.resize(num_ops);
-
-      //Loop over ops within a file
-      for(int n=0; n < oplist.ops.size(); ++n)
+      // Loop over displacements
+      for(int n=0; n < orig_list.size(); ++n)
       {
-	TwoQuarkOps_t::Displacement_t& qq = oplist.ops[n];
+	if (orig_list[n].size() == 0)
+	{
+	  displacement_list[n].resize(1);
+	  displacement_list[n] = 0;
+	}
+	else
+	{
+	  displacement_list[n] = orig_list[n];
+	}
 
-	// Read 1-based displacement only for the right quark
-	int ndisp;
-	reader >> ndisp;
-	multi1d<int> displacement(ndisp);
-	for(int i=0; i < ndisp; ++i)
-	  reader >> displacement[i];
-
-	qq.displacement = displacement;
-      } //n
-
-      reader.close();
+	QDPIO::cout << "disp[" << n << "]= " << displacement_list[n] << endl;
+      }
 
       END_CODE();
-    } //void readOps
+
+      return displacement_list;
+    } // void normalizeDisplacements
 
 
     //-------------------------------------------------------------------------------
@@ -653,12 +595,15 @@ namespace Chroma
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       //
-      // Read operator coefficients
+      // Make sure displacements are something sensible
       //
-      QDPIO::cout << "Reading 2-quark operators" << endl;
-      TwoQuarkOps_t qq_oplist; 
+      QDPIO::cout << "Normalize displacement lengths" << endl;
+      multi1d< multi1d<int> > displacement_list(normalizeDisplacements(params.param.displacement_list));
 
-      readOps(qq_oplist, params.named_obj.displacement_file);
+      for(int n=0; n < displacement_list.size(); ++n)
+      {
+	QDPIO::cout << "displa[" << n << "]= " << displacement_list[n] << endl;
+      }
 
       //
       // The object holding the displaced color vector maps  
@@ -676,14 +621,13 @@ namespace Chroma
       QDPIO::cout << "Building meson operators" << endl;
 
       BinaryBufferWriter src_record_bin;
-      int num_elem_to_write = 
-	qq_oplist.ops.size() * params.param.num_vecs * 
+      int num_elem_to_write = displacement_list.size() * params.param.num_vecs * 
 	params.param.num_vecs * phases.numMom();
 
       write(src_record_bin, params.param.mom2_max);
       write(src_record_bin, params.param.decay_dir);
       write(src_record_bin, params.param.num_vecs);
-      write(src_record_bin, qq_oplist.ops.size());
+      write(src_record_bin, displacement_list.size());
       write(src_record_bin, num_elem_to_write);
 
       push(xml_out, "ElementalOps");
@@ -693,11 +637,13 @@ namespace Chroma
 
       // Loop over each operator 
       int total_num_elem = 0;
-      for(int l=0; l < qq_oplist.ops.size(); ++l)
+      for(int l=0; l < displacement_list.size(); ++l)
       {
 	StopWatch watch;
 
 	QDPIO::cout << "Elemental operator: op = " << l << endl;
+
+	QDPIO::cout << "displacement = " << displacement_list[l] << endl;
 
 	// Build the operator
 	swiss.reset();
@@ -709,7 +655,7 @@ namespace Chroma
 	// No displacement for left colorvector, only displace right colorvector
 	keySmearedDispColorVector[0].displacement.resize(1);
 	keySmearedDispColorVector[0].displacement = 0;
-	keySmearedDispColorVector[1].displacement = qq_oplist.ops[l].displacement;
+	keySmearedDispColorVector[1].displacement = displacement_list[l];
 
 	for(int i = 0 ; i <  params.param.num_vecs; ++i)
 	{
@@ -742,7 +688,7 @@ namespace Chroma
 	      mop.colvec_l     = i;
 	      mop.colvec_r     = j;
 	      mop.mom          = phases.numToMom(mom_num);
-	      mop.displacement = qq_oplist.ops[l].displacement; // only right colorvector
+	      mop.displacement = displacement_list[l]; // only right colorvector
 	      mop.op           = op_sum[mom_num];
 
 	      write(src_record_bin, mop);
@@ -780,7 +726,7 @@ namespace Chroma
 	push(file_xml, "MesonElementalOperators");
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Op_Info",qq_oplist);
+	write(file_xml, "Op_Info",displacement_list);
 	pop(file_xml);
 
 	QDPFileWriter qdp_file(file_xml, params.named_obj.meson_op_file,
@@ -790,7 +736,7 @@ namespace Chroma
 	write(src_record_xml, "mom2_max", params.param.mom2_max);
 	write(src_record_xml, "decay_dir", params.param.decay_dir);
 	write(src_record_xml, "num_vecs", params.param.num_vecs);
-	write(src_record_xml, "num_disp", qq_oplist.ops.size());
+	write(src_record_xml, "num_disp", displacement_list.size());
 	write(src_record_xml, "total_num_elem", total_num_elem);
 	pop(src_record_xml);
 

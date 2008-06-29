@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_meson_matelem_colorvec_w.h,v 1.1 2008-06-21 04:19:47 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.h,v 1.2 2008-06-29 03:06:28 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -30,18 +30,18 @@ namespace Chroma
 
       struct Param_t
       {
-	int                 mom2_max;               /*!< (mom)^2 <= mom2_max */
-	int                 displacement_length;    /*!< Displacement length for creat. and annih. ops */
-	int                 num_vecs;               /*!< Number of color vectors to use */
-	int                 decay_dir;              /*!< Decay direction */
-	GroupXML_t          link_smearing;          /*!< link smearing xml */
+	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
+	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
+	int                     num_vecs;               /*!< Number of color vectors to use */
+	int                     decay_dir;              /*!< Decay direction */
+	multi1d< multi1d<int> > displacement_list;      /*!< Array of displacements list to generate */
+	GroupXML_t              link_smearing;          /*!< link smearing xml */
       };
 
       struct NamedObject_t
       {
 	std::string         gauge_id;               /*!< Gauge field */
 	std::string         colorvec_id;            /*!< LatticeColorVector EigenInfo */
-	std::string         displacement_file;      /*!< Coefficient file name */
 	std::string         meson_op_file;          /*!< File name for creation operators */
       };
 
