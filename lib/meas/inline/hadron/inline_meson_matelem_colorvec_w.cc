@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.4 2008-06-29 03:06:28 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.5 2008-06-30 03:58:05 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -692,7 +692,7 @@ namespace Chroma
 	      mop.op           = op_sum[mom_num];
 
 	      write(src_record_bin, mop);
-	      write(xml_out, "elem", mop);  // debugging
+//	      write(xml_out, "elem", mop);  // debugging
 	      ++total_num_elem;
 	    }
 	  } // end for j
