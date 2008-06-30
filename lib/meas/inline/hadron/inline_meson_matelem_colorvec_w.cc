@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.6 2008-06-30 14:14:45 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.7 2008-06-30 15:09:03 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -336,7 +336,7 @@ namespace Chroma
 
 	  snoop.stop();
 
-	  QDPIO::cout<<"Inserted key in map: time = "<< snoop.getTimeInSeconds() << "secs"<<endl;
+//	  QDPIO::cout<<"Inserted key in map: time = "<< snoop.getTimeInSeconds() << "secs"<<endl;
 
 	  // Sanity check - the entry better be there
 	  if (disp_src_map.find(key) == disp_src_map.end())
@@ -373,8 +373,8 @@ namespace Chroma
 
 	snoop.stop();
 
-	QDPIO::cout << "Displaced Vector:  Disp = "
-		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
+//	QDPIO::cout << "Displaced Vector:  Disp = "
+//		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
 
       } // if find in map
 
@@ -492,7 +492,7 @@ namespace Chroma
       {
 	string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "stoch_meson");
+	push(xml_out, "MesonMatElemColorVec");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
@@ -544,7 +544,7 @@ namespace Chroma
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Stochastic Meson Operator" << endl;
+      QDPIO::cout << name << ": Meson color-vector matrix element" << endl;
 
       proginfo(xml_out);    // Print out basic program info
 
