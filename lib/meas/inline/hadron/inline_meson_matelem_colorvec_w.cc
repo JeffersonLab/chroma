@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.5 2008-06-30 03:58:05 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.6 2008-06-30 14:14:45 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -386,7 +386,7 @@ namespace Chroma
 
       snoop.stop(); 
 
-      QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
+//      QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
 
       return disp_q.vec;
     }
