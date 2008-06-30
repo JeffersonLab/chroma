@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.5 2008-06-29 03:06:57 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.6 2008-06-30 03:57:37 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -487,7 +487,7 @@ namespace Chroma
 					     phases.getSet());
 		  
 		  write(src_record_bin, op);    // binary output
-		  write(xml_out, "elem", op);   // xml output (debugging)
+//		  write(xml_out, "elem", op);   // xml output (debugging)
 		  ++total_num_elem;
 		} // for spin_sink
 	      } // for colorvec_sink
