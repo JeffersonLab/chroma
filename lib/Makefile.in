@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.262 2008-06-27 20:24:05 bjoo Exp $
+# $Id: Makefile.in,v 3.263 2008-07-02 21:21:18 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -608,6 +608,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
@@ -1090,6 +1091,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_building_blocks_w.$(OBJEXT) \
 	inline_noisy_building_blocks_w.$(OBJEXT) \
 	inline_prop_matelem_colorvec_w.$(OBJEXT) \
+	inline_baryon_matelem_colorvec_w.$(OBJEXT) \
 	inline_meson_matelem_colorvec_w.$(OBJEXT) \
 	inline_mres_w.$(OBJEXT) inline_qpropqio_w.$(OBJEXT) \
 	inline_qpropadd_w.$(OBJEXT) inline_qqqNucNuc_w.$(OBJEXT) \
@@ -1782,6 +1784,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
@@ -1891,6 +1894,8 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+FFDB_LITE_DIR = @FFDB_LITE_DIR@
+FFDB_LITE_ENABLED = @FFDB_LITE_ENABLED@
 GMP_CXXFLAGS = @GMP_CXXFLAGS@
 GMP_LDFLAGS = @GMP_LDFLAGS@
 GMP_LIBS = @GMP_LIBS@
@@ -2629,6 +2634,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
@@ -3193,6 +3199,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
@@ -3580,6 +3587,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_apply_fermstate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_apply_gaugestate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_bar3ptfn_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_baryon_matelem_colorvec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_diquark_w.Po@am__quote@
@@ -11726,6 +11734,20 @@ inline_prop_matelem_colorvec_w.obj: meas/inline/hadron/inline_prop_matelem_color
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_prop_matelem_colorvec_w.cc' object='inline_prop_matelem_colorvec_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_prop_matelem_colorvec_w.obj `if test -f 'meas/inline/hadron/inline_prop_matelem_colorvec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_prop_matelem_colorvec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_prop_matelem_colorvec_w.cc'; fi`
+
+inline_baryon_matelem_colorvec_w.o: meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_baryon_matelem_colorvec_w.o -MD -MP -MF $(DEPDIR)/inline_baryon_matelem_colorvec_w.Tpo -c -o inline_baryon_matelem_colorvec_w.o `test -f 'meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_baryon_matelem_colorvec_w.Tpo $(DEPDIR)/inline_baryon_matelem_colorvec_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc' object='inline_baryon_matelem_colorvec_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_baryon_matelem_colorvec_w.o `test -f 'meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc
+
+inline_baryon_matelem_colorvec_w.obj: meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_baryon_matelem_colorvec_w.obj -MD -MP -MF $(DEPDIR)/inline_baryon_matelem_colorvec_w.Tpo -c -o inline_baryon_matelem_colorvec_w.obj `if test -f 'meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_baryon_matelem_colorvec_w.Tpo $(DEPDIR)/inline_baryon_matelem_colorvec_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc' object='inline_baryon_matelem_colorvec_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_baryon_matelem_colorvec_w.obj `if test -f 'meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc'; fi`
 
 inline_meson_matelem_colorvec_w.o: meas/inline/hadron/inline_meson_matelem_colorvec_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_meson_matelem_colorvec_w.o -MD -MP -MF $(DEPDIR)/inline_meson_matelem_colorvec_w.Tpo -c -o inline_meson_matelem_colorvec_w.o `test -f 'meas/inline/hadron/inline_meson_matelem_colorvec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_meson_matelem_colorvec_w.cc
