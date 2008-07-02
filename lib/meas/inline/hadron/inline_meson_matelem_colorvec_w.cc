@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.7 2008-06-30 15:09:03 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.8 2008-07-02 21:22:30 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -315,15 +315,6 @@ namespace Chroma
       // If no entry, then create a displaced version of the quark
       if (disp_src_map.find(key) == disp_src_map.end())
       {
-	//	      cout << __func__ 
-	//		   << ": n=" << n
-	//		   << " l=" << l
-	//		   << " i=" << i 
-	//		   << " disp=" << term.quark[i].displacement
-	//		   << " len=" << term.quark[i].disp_len
-	//		   << " dir=" << term.quark[i].disp_dir
-	//		   << endl;
-
 	// Insert an empty entry and then modify it. This saves on
 	// copying the data around
 	{
@@ -458,14 +449,14 @@ namespace Chroma
       START_CODE();
 
       multi1d< multi1d<int> > displacement_list(orig_list.size());
+      multi1d<int> empty(1); empty = 0;
 
       // Loop over displacements
       for(int n=0; n < orig_list.size(); ++n)
       {
 	if (orig_list[n].size() == 0)
 	{
-	  displacement_list[n].resize(1);
-	  displacement_list[n] = 0;
+	  displacement_list[n] = empty;
 	}
 	else
 	{
