@@ -1,4 +1,4 @@
-// $Id: inline_prop_colorvec_w.cc,v 1.1 2008-07-21 02:16:09 edwards Exp $
+// $Id: inline_prop_colorvec_w.cc,v 1.2 2008-07-21 02:30:56 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -423,8 +423,6 @@ namespace Chroma
 	    } // for spin_source
 	  } // for colorvec_source
 	} // for t_source
-
-	pop(xml_out);
 
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 

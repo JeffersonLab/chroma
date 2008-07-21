@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_matelem_colorvec_w.h,v 1.3 2008-06-29 03:06:57 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.h,v 1.4 2008-07-21 02:30:56 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -31,21 +31,16 @@ namespace Chroma
 
       struct Param_t
       {
-	struct Contract_t
-	{
-	  int num_vecs;             /*!< Number of color vectors to use */
-	  int decay_dir;            /*!< Decay direction */
-	  multi1d<int> t_sources;   /*!< Array of time slice sources for props */
-	};
-
-	ChromaProp_t    prop;
-	Contract_t      contract;
+	int             num_vecs;       /*!< Number of color vectors to use */
+	int             decay_dir;      /*!< Decay direction */
+	multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
       } param;
 
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
+	std::string     prop_id;        /*!< Id for input propagator solutions */
 	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
       } named_obj;
 
@@ -78,16 +73,6 @@ namespace Chroma
     };
 
   } // namespace PropMatElemColorVec
-
-
-  //! Reader
-  /*! \ingroup inlinehadron */
-  void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params& param);
-
-  //! Writer
-  /*! \ingroup inlinehadron */
-  void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params& param);
-
 
 }
 
