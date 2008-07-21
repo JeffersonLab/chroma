@@ -1,43 +1,38 @@
-// $Id: inline_static_light_spec_w.cc,v 1.5 2008-07-21 18:15:36 kostas Exp $
+// $Id: inline_heavyhadspec_w.cc,v 1.1 2008-07-21 18:15:36 kostas Exp $
 /*! \file
- * \brief Inline construction of hadron spectrum
+ * \brief Inline construction of heavy hadron spectrum in SU(3)
  *
- * Spectrum calculations
  */
 
-#include "meas/inline/hadron/inline_static_light_spec_w.h"
+#include "meas/inline/hadron/inline_heavyhadspec_w.h"
+#include "meas/hadron/heavy_hadrons_su3_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "io/param_io.h"
 #include "io/qprop_io.h"
-#include "meas/hadron/mesQl_w.h"
-#include "meas/hadron/barQll_w.h"
-#include "meas/hadron/mesQlPOT_w.h"
-#include "meas/hadron/heavy_hadron_potentials_w.h"
-#include "meas/hadron/curcor2_w.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/smear/no_quark_displacement.h"
 
 namespace Chroma 
 { 
-  namespace InlineStaticLightSpecEnv 
+  namespace InlineHeavyHadSpecEnv 
   { 
     namespace
     {
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
       {
-	return new InlineStaticLightSpec(InlineStaticLightSpecParams(xml_in, path));
+	return new InlineHeavyHadSpec(InlineHeavyHadSpecParams(xml_in, path));
       }
 
       //! Local registration flag
       bool registered = false;
     }
 
-    const std::string name = "STATIC_LIGHT_SPECTRUM";
+    const std::string name = "HEAVY_HADRON_SPECTRUM";
 
     //! Register all the factories
     bool registerAll() 
@@ -55,7 +50,7 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, InlineStaticLightSpecParams::Param_t& param)
+  void read(XMLReader& xml, const string& path, InlineHeavyHadSpecParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -72,33 +67,32 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    read(paramtop, "MesonP", param.MesonP);
-    read(paramtop, "BaryonP", param.BaryonP);
-    read(paramtop, "MesonPot", param.MesonPot);
-    read(paramtop, "BaryonPot", param.BaryonPot);
+    read(paramtop, "time_rev", param.time_rev);
 
+    read(paramtop, "mom2_max", param.mom2_max);
+    read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
   }
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, const InlineStaticLightSpecParams::Param_t& param)
+  void write(XMLWriter& xml, const string& path, const InlineHeavyHadSpecParams::Param_t& param)
   {
     push(xml, path);
 
     int version = 1;
     write(xml, "version", version);
 
-    write(xml, "MesonP", param.MesonP);
-    write(xml, "BaryonP", param.BaryonP);
-    write(xml, "MesonPot", param.MesonPot);
-    write(xml, "BaryonPot", param.BaryonPot);
+    write(xml, "time_rev", param.time_rev);
+
+    write(xml, "mom2_max", param.mom2_max);
+    write(xml, "avg_equiv_mom", param.avg_equiv_mom);
 
     pop(xml);
   }
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineStaticLightSpecParams::NamedObject_t::Props_t& input)
+  void read(XMLReader& xml, const string& path, InlineHeavyHadSpecParams::NamedObject_t::Props_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -107,7 +101,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineStaticLightSpecParams::NamedObject_t::Props_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHeavyHadSpecParams::NamedObject_t::Props_t& input)
   {
     push(xml, path);
 
@@ -119,7 +113,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineStaticLightSpecParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineHeavyHadSpecParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -128,7 +122,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineStaticLightSpecParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHeavyHadSpecParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -140,12 +134,12 @@ namespace Chroma
 
 
   // Param stuff
-  InlineStaticLightSpecParams::InlineStaticLightSpecParams()
+  InlineHeavyHadSpecParams::InlineHeavyHadSpecParams()
   { 
     frequency = 0; 
   }
 
-  InlineStaticLightSpecParams::InlineStaticLightSpecParams(XMLReader& xml_in, const std::string& path) 
+  InlineHeavyHadSpecParams::InlineHeavyHadSpecParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -177,7 +171,7 @@ namespace Chroma
 
 
   void
-  InlineStaticLightSpecParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineHeavyHadSpecParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
@@ -257,13 +251,13 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << InlineStaticLightSpecEnv::name << ": caught dynamic cast error" 
+	QDPIO::cerr << InlineHeavyHadSpecEnv::name << ": caught dynamic cast error" 
 		    << endl;
 	QDP_abort(1);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << InlineStaticLightSpecEnv::name << ": error message: " << e 
+	QDPIO::cerr << InlineHeavyHadSpecEnv::name << ": error message: " << e 
 		    << endl;
 	QDP_abort(1);
       }
@@ -275,7 +269,24 @@ namespace Chroma
       // clear def. of a Mass
       QDPIO::cout << "Try action and mass" << endl;
       s.Mass = getMass(s.prop_header.prop_header.fermact);
-      s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
+
+      // Only baryons care about boundaries
+      // Try to find them. If not present, assume dirichlet.
+      // This turns off any attempt to time reverse which is the
+      // only thing that the BC are affecting.
+      s.bc.resize(Nd);
+      s.bc = 0;
+    
+      try
+      {
+	s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << InlineHeavyHadSpecEnv::name 
+		    << ": caught exception. No BC found in these headers. Will assume dirichlet: " << e 
+		    << endl;
+      }
 
       QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
       QDPIO::cout << "Mass = " << s.Mass << endl;
@@ -284,7 +295,7 @@ namespace Chroma
 
     //! Read all sinks
     void readAllSinks(AllSinkProps_t& s, 
-		      InlineStaticLightSpecParams::NamedObject_t::Props_t sink_pair)
+		      InlineHeavyHadSpecParams::NamedObject_t::Props_t sink_pair)
     {
       QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.first_id << endl;
       readSinkProp(s.sink_prop_1, sink_pair.first_id);
@@ -301,7 +312,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineStaticLightSpec::operator()(unsigned long update_no,
+  InlineHeavyHadSpec::operator()(unsigned long update_no,
 			    XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -309,7 +320,7 @@ namespace Chroma
     {
       string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-      push(xml_out, "StaticLightSpec");
+      push(xml_out, "heavyhadspec");
       write(xml_out, "update_no", update_no);
       write(xml_out, "xml_file", xml_file);
       pop(xml_out);
@@ -326,7 +337,7 @@ namespace Chroma
 
   // Real work done here
   void 
-  InlineStaticLightSpec::func(unsigned long update_no,
+  InlineHeavyHadSpec::func(unsigned long update_no,
 		      XMLWriter& xml_out) 
   {
     START_CODE();
@@ -344,24 +355,23 @@ namespace Chroma
     }
     catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineStaticLightSpecEnv::name << ": caught dynamic cast error" 
+      QDPIO::cerr << InlineHeavyHadSpecEnv::name << ": caught dynamic cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineStaticLightSpecEnv::name << ": map call failed: " << e 
+      QDPIO::cerr << InlineHeavyHadSpecEnv::name << ": map call failed: " << e 
 		  << endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-    push(xml_out, "StaticLightSpec");
+    push(xml_out, "heavyhadspec");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " StaticLightSpec: Spectroscopy for Wilson-like fermions" ;
-    QDPIO::cout << endl;
+    QDPIO::cout << " HEAVYHADSPEC: SU(3) heavy hadron spectroscopy for Wilson-like fermions" << endl;
     QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
     QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
@@ -378,7 +388,7 @@ namespace Chroma
     write(xml_out, "Config_info", gauge_xml);
 
     push(xml_out, "Output_version");
-    write(xml_out, "out_version", 14);
+    write(xml_out, "out_version", 15);
     pop(xml_out);
 
 
@@ -391,7 +401,7 @@ namespace Chroma
     // Now loop over the various fermion pairs
     for(int lpair=0; lpair < params.named_obj.sink_pairs.size(); ++lpair)
     {
-      const InlineStaticLightSpecParams::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
+      const InlineHeavyHadSpecParams::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
 
       push(xml_out, "elem");
 
@@ -399,25 +409,16 @@ namespace Chroma
       readAllSinks(all_sinks, named_obj);
 
       // Derived from input prop
-      multi1d<int> t_src1
+      multi1d<int> t_srce
                   = all_sinks.sink_prop_1.prop_header.source_header.getTSrce();
-      multi1d<int> t_src2
-                  = all_sinks.sink_prop_2.prop_header.source_header.getTSrce();
-
       int j_decay = all_sinks.sink_prop_1.prop_header.source_header.j_decay;
       int t0      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
-      int bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
 
       // Sanity checks
       {
 	if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
 	{
 	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
-	  QDP_abort(1);
-	}
-	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
-	{
-	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
 	  QDP_abort(1);
 	}
 	if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
@@ -438,14 +439,28 @@ namespace Chroma
 	}
       }
 
+      // Only baryons care about bc
+      int bc_spec = 0;
+      bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
+      if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
+	{
+	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	  QDP_abort(1);
+	}
+      
+
+
+      // Initialize the slow Fourier transform phases
+      SftMom phases(params.param.mom2_max, t_srce, params.param.avg_equiv_mom,
+                    j_decay);
+
+      // Keep a copy of the phases with NO momenta
+      SftMom phases_nomom(0, true, j_decay);
 
       // Masses
       write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
       write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
       write(xml_out, "t0", t0);
-
-      // Initialize the slow Fourier transform phases with NO momenta
-      SftMom phases(0, true, j_decay);
 
       // Save prop input
       push(xml_out, "Forward_prop_headers");
@@ -499,9 +514,15 @@ namespace Chroma
       string src_type;
       if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	src_type = "Point";
+      else if (all_sinks.sink_prop_1.source_type == "SF_POINT_SOURCE")
+	src_type = "Point";
       else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
 	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "SF_SHELL_SOURCE")
+	src_type = "Shell";
       else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	src_type = "Wall";
+      else if (all_sinks.sink_prop_1.source_type == "SF_WALL_SOURCE")
 	src_type = "Wall";
       else
       {
@@ -526,48 +547,22 @@ namespace Chroma
       QDPIO::cout << "Source type = " << src_type << endl;
       QDPIO::cout << "Sink type = "   << snk_type << endl;
 
-      // Do the mesons first
-      if (params.param.MesonP) 
-      {
-	Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson");
-	if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
-	  Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson");
-      } // end if (MesonP)
-
-
-      // Do the baryons
-      if (params.param.BaryonP) 
-      {
-	//if location of prop1 is not equal to prop2 gauge non invariant
-	//correlation function may occure...
-	//Hopefully the user knows what he is doing...
-	Qll(u, sink_prop_1,sink_prop_2,t_src1, phases,xml_out, source_sink_type +"_Wilson_QllBaryons");
-      } // end if (BaryonP)
       
-      // Do the potentials
-      if (params.param.MesonPot){ 
-	QlQlPOT(u,sink_prop_1,sink_prop_2, t_src1, t_src2, phases,
-		xml_out, source_sink_type +"_Wilson_QlQlPotential");
-      }
-      
-      // Do the full set of potentials
-      if (params.param.BaryonPot){ 
-	QllQllPOT(u,sink_prop_1,sink_prop_2, t_src1, t_src2, phases,
-		xml_out, source_sink_type +"_Wilson_QllQllPotential");
-      }
-
-      
+      static_light_su3(u, sink_prop_1, sink_prop_2, t_srce,
+		       phases_nomom,xml_out, 
+		       source_sink_type + "_Heavy_Hadrons_SU3");
+	
       pop(xml_out);  // array element
     }
     pop(xml_out);  // Wilson_spectroscopy
-    pop(xml_out);  // StaticLightSpec
+    pop(xml_out);  // heavyhadspec
 
     snoop.stop();
-    QDPIO::cout << InlineStaticLightSpecEnv::name << ": total time = "
+    QDPIO::cout << InlineHeavyHadSpecEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
 		<< " secs" << endl;
 
-    QDPIO::cout << InlineStaticLightSpecEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineHeavyHadSpecEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 

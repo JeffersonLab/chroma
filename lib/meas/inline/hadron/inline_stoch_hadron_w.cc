@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.13 2008-05-09 03:59:01 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.14 2008-07-21 18:15:36 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -442,6 +442,7 @@ namespace Chroma{
 	    //! Baryon operator dilutions
 	    struct Dilutions_t{
 	      multi3d<DComplex> d;
+	      //might be able to use multi2d<DFermion> if DFermion exists
 	      //vector<vector<vector<complex<double> > > > d ;
 	    } ;
 	    multi1d<Dilutions_t> s;
