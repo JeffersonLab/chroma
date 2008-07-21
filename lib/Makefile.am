@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.153 2008-07-21 02:32:24 edwards Exp $
+# $Id: Makefile.am,v 3.154 2008-07-21 18:44:56 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -203,6 +203,8 @@ nobase_include_HEADERS = \
 	meas/hadron/mesQl_w.h \
 	meas/hadron/mesQlPOT_w.h \
 	meas/hadron/barQll_w.h \
+        meas/hadron/heavy_hadrons_su3_w.h\
+	meas/hadron/heavy_hadron_potentials_w.h\
 	meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
         meas/hadron/spin_insertion_aggregate.h \
@@ -739,6 +741,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
+        meas/inline/hadron/inline_heavyhadspec_w.h\
 	meas/inline/hadron/inline_sink_smear_w.h \
         meas/inline/hadron/inline_diquark_w.h \
         meas/inline/hadron/inline_qqq_w.h \
@@ -1002,6 +1005,8 @@ libchroma_a_SOURCES = \
 	meas/hadron/mesQl_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
+	meas/hadron/heavy_hadron_potentials_w.cc\
+	meas/hadron/heavy_hadrons_su3_w.cc\
         meas/hadron/spin_insertion_aggregate.cc \
         meas/hadron/no_spin_insertion.cc \
 	meas/hadron/stoch_var.cc \
@@ -1377,6 +1382,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
+	meas/inline/hadron/inline_heavyhadspec_w.cc \
 	meas/inline/hadron/inline_static_light_spec_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_diquark_w.cc \

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: hadron_w.h,v 3.4 2006-12-10 02:04:28 edwards Exp $
+// $Id: hadron_w.h,v 3.5 2008-07-21 18:45:01 kostas Exp $
 
 /*! \file
  * \brief Hadronic observables
@@ -49,5 +49,9 @@
 #include "mesQl_w.h"
 #include "barQll_w.h"
 #include "mesQlPOT_w.h"
+
+#include "heavy_hadron_potentials_w.h"
+#include "heavy_hadrons_su3_w.h"
+
 
 #endif
