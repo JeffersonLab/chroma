@@ -1,17 +1,17 @@
 // -*- C++ -*-
-// $Id: staggered_operators_s.cc,v 1.5 2006-11-21 05:20:14 kostas Exp $
+// $Id: staggered_operators_s.cc,v 1.6 2008-07-21 02:33:28 edwards Exp $
 /*! \file
  *  \brief Staggered  operators
  *
  */
 
-#include "chromabase.h"
 #include "util/ferm/staggered_operators_s.h"
 
 namespace Chroma 
 {
 
-  namespace StaggeredFlavorOperators{
+  namespace StaggeredFlavorOperators
+  {
 
     namespace AntiSymmetricTensor4D
     {
@@ -86,138 +86,138 @@ namespace Chroma
     typedef LatticeStaggeredPropagator  T ;
     typedef multi1d<LatticeColorMatrix> G ;
   
-  void StaggeredZeta(LatticeStaggeredPropagator& dest,int mu){
-    LatticeReal sign = 1.0 ;
+    void StaggeredZeta(LatticeStaggeredPropagator& dest,int mu){
+      LatticeReal sign = 1.0 ;
     
-    for(int c(mu+1);c<Nd;c++){
-      where(QDP::Layout::latticeCoordinate(c) & 1 == 1, -1.0*sign, sign);
+      for(int c(mu+1);c<Nd;c++){
+	where(QDP::Layout::latticeCoordinate(c) & 1 == 1, -1.0*sign, sign);
+      }
+      dest *= sign ;
     }
-    dest *= sign ;
-  }
     //boundary conditions are not checked in both routines.
     //as a result they do not work right on the boundary...
 
-  void StaggeredEta(LatticeStaggeredPropagator& dest,int mu){
-    LatticeReal sign = 1.0 ;
+    void StaggeredEta(LatticeStaggeredPropagator& dest,int mu){
+      LatticeReal sign = 1.0 ;
     
-    for(int c(0);c<mu;c++){
-      where(QDP::Layout::latticeCoordinate(c) & 1 == 1, -1.0*sign, sign);
-    }
-
-    dest *= sign ;
-  }
-
-  void SymShift(T& dest,const T& src,const G& u,const int mu){
-    dest = u[mu]*shift(src,FORWARD,mu) + shift(adj(u[mu])*src,BACKWARD,mu) ;
-  }
-  
-
-  void EtaShift(T& dest, const T& src, const  G& u, const multi1d<int>& mu){
-    T tmp(src);
-    for(int c(0) ; c<mu.size();c++){
-      SymShift(dest, tmp, u, mu[c]);
-      StaggeredEta(dest,mu[c]);
-      tmp = dest ;
-    }
-  }
-
-  void EtaShift(T& dest, const T& src, const  G& u, const int mu){
-    SymShift(dest, src, u, mu);
-    StaggeredEta(dest,mu);
-  }
-
-  void ZetaShift(T& dest, const T& src, const  G& u, const multi1d<int>& mu){
-    T tmp(src);
-    for(int c(0) ; c<mu.size();c++){
-      SymShift(dest, tmp, u, mu[c]);
-      StaggeredZeta(dest,mu[c]);
-      tmp = dest ;
-    }
-  }
-
-  void ZetaShift(T& dest, const T& src, const  G& u, const int mu){
-    SymShift(dest, src, u, mu);
-    StaggeredZeta(dest,mu);
-  }
-
-  void SpinScalar(T& dest, const T& src, const G& u ){
-    dest = src ;
-  }
-  
-  void SpinVector(T& dest, const T& src, const G& u,const int mu){
-    EtaShift(dest,src,u,mu) ;
-  }
-
-  void SpinTensor(T& dest, const T& src, const G& u,const int mu,const int nu){
-    T tmp ;
-
-    multi1d<int> d(2) ;
-    d[0]=mu;d[1]=nu;
-    EtaShift(dest,src,u,d);
-    d[0]=nu;d[1]=mu;
-    EtaShift(tmp,src,u,d);
-    
-    dest -= tmp ;
-    dest *= 0.5 ;
-  }
-  void SpinAxialVector (T& dest, const T& src, const G& u,const int mu){
-    T tmp ;
-    dest = zero ;
-    for(int p(0);p<24;p++)
-      if(eps_indx(p)[0]==mu){
-	EtaShift(tmp,src,u,eps_indx(p));
-	dest += eps_sign(p)/6.0*tmp ;
-      } 
-  }
-
-  void SpinPseudoScalar(T& dest, const T& src, const G& u){
-    T tmp ;
-    dest = zero ;
-    for(int p(0);p<24;p++){
-      EtaShift(tmp,src,u,eps_indx(p));
-      dest += eps_sign(p)/24.0*tmp ;
-    } 
-  }
-
-  void FlavorScalar(T& dest,const T& src,const G& u ){
-    dest = src ;
-  }
-  
-  void FlavorVector(T& dest,const T& src,const G& u,const int mu){
-    ZetaShift(dest,src,u,mu) ;
-  }
-  
-  void FlavorTensor(T& dest,const T& src,const G& u,const int mu,const int nu){
-    T tmp ;
-
-    multi1d<int> d(2) ;
-    d[0]=mu;d[1]=nu;
-    ZetaShift(dest,src,u,d);
-    d[0]=nu;d[1]=mu;
-    ZetaShift(tmp,src,u,d);
-    
-    dest -= tmp ;
-    dest *= 0.5 ;
-  }
-  
-  void FlavorAxialVector (T& dest,const T& src,const G& u,const int mu){
-    T tmp ;
-    dest = zero ;
-    for(int p(0);p<24;p++)
-      if(eps_indx(p)[0]==mu){
-	ZetaShift(tmp,src,u,eps_indx(p));
-	dest += eps_sign(p)/6.0*tmp ;
+      for(int c(0);c<mu;c++){
+	where(QDP::Layout::latticeCoordinate(c) & 1 == 1, -1.0*sign, sign);
       }
-  }
 
-  void FlavorPseudoScalar(T& dest,const T& src,const G& u){
-    T tmp ;
-    dest = zero ;
-    for(int p(0);p<24;p++){
-      ZetaShift(tmp,src,u,eps_indx(p));
-      dest += eps_sign(p)/24.0*tmp ;
-    } 
-  }
+      dest *= sign ;
+    }
+
+    void SymShift(T& dest,const T& src,const G& u,const int mu){
+      dest = u[mu]*shift(src,FORWARD,mu) + shift(adj(u[mu])*src,BACKWARD,mu) ;
+    }
+  
+
+    void EtaShift(T& dest, const T& src, const  G& u, const multi1d<int>& mu){
+      T tmp(src);
+      for(int c(0) ; c<mu.size();c++){
+	SymShift(dest, tmp, u, mu[c]);
+	StaggeredEta(dest,mu[c]);
+	tmp = dest ;
+      }
+    }
+
+    void EtaShift(T& dest, const T& src, const  G& u, const int mu){
+      SymShift(dest, src, u, mu);
+      StaggeredEta(dest,mu);
+    }
+
+    void ZetaShift(T& dest, const T& src, const  G& u, const multi1d<int>& mu){
+      T tmp(src);
+      for(int c(0) ; c<mu.size();c++){
+	SymShift(dest, tmp, u, mu[c]);
+	StaggeredZeta(dest,mu[c]);
+	tmp = dest ;
+      }
+    }
+
+    void ZetaShift(T& dest, const T& src, const  G& u, const int mu){
+      SymShift(dest, src, u, mu);
+      StaggeredZeta(dest,mu);
+    }
+
+    void SpinScalar(T& dest, const T& src, const G& u ){
+      dest = src ;
+    }
+  
+    void SpinVector(T& dest, const T& src, const G& u,const int mu){
+      EtaShift(dest,src,u,mu) ;
+    }
+
+    void SpinTensor(T& dest, const T& src, const G& u,const int mu,const int nu){
+      T tmp ;
+
+      multi1d<int> d(2) ;
+      d[0]=mu;d[1]=nu;
+      EtaShift(dest,src,u,d);
+      d[0]=nu;d[1]=mu;
+      EtaShift(tmp,src,u,d);
+    
+      dest -= tmp ;
+      dest *= 0.5 ;
+    }
+    void SpinAxialVector (T& dest, const T& src, const G& u,const int mu){
+      T tmp ;
+      dest = zero ;
+      for(int p(0);p<24;p++)
+	if(eps_indx(p)[0]==mu){
+	  EtaShift(tmp,src,u,eps_indx(p));
+	  dest += eps_sign(p)/6.0*tmp ;
+	} 
+    }
+
+    void SpinPseudoScalar(T& dest, const T& src, const G& u){
+      T tmp ;
+      dest = zero ;
+      for(int p(0);p<24;p++){
+	EtaShift(tmp,src,u,eps_indx(p));
+	dest += eps_sign(p)/24.0*tmp ;
+      } 
+    }
+
+    void FlavorScalar(T& dest,const T& src,const G& u ){
+      dest = src ;
+    }
+  
+    void FlavorVector(T& dest,const T& src,const G& u,const int mu){
+      ZetaShift(dest,src,u,mu) ;
+    }
+  
+    void FlavorTensor(T& dest,const T& src,const G& u,const int mu,const int nu){
+      T tmp ;
+
+      multi1d<int> d(2) ;
+      d[0]=mu;d[1]=nu;
+      ZetaShift(dest,src,u,d);
+      d[0]=nu;d[1]=mu;
+      ZetaShift(tmp,src,u,d);
+    
+      dest -= tmp ;
+      dest *= 0.5 ;
+    }
+  
+    void FlavorAxialVector (T& dest,const T& src,const G& u,const int mu){
+      T tmp ;
+      dest = zero ;
+      for(int p(0);p<24;p++)
+	if(eps_indx(p)[0]==mu){
+	  ZetaShift(tmp,src,u,eps_indx(p));
+	  dest += eps_sign(p)/6.0*tmp ;
+	}
+    }
+
+    void FlavorPseudoScalar(T& dest,const T& src,const G& u){
+      T tmp ;
+      dest = zero ;
+      for(int p(0);p<24;p++){
+	ZetaShift(tmp,src,u,eps_indx(p));
+	dest += eps_sign(p)/24.0*tmp ;
+      } 
+    }
 
   } // end unamed name space
   
