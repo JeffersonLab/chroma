@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: colorvec_matelem.ini.xml,v 1.1 2008-06-29 20:23:06 edwards Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -22,7 +21,7 @@
     </elem>
 
     <elem>
-      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Name>PROP_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
@@ -62,6 +61,22 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>3</num_vecs>
+        <t_sources>0</t_sources>
+        <decay_dir>3</decay_dir>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec</prop_id>
         <prop_op_file>prop.lime</prop_op_file>
       </NamedObject>
     </elem>
@@ -71,13 +86,19 @@
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <mom2_max>1</mom2_max>
+        <mom2_max>0</mom2_max>
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
         <!-- List of displacement arrays -->
         <displacement_list>
           <elem>0</elem>
+          <elem>+1</elem>
+          <elem>-1</elem>
+          <elem>+2</elem>
+          <elem>-2</elem>
+          <elem>+3</elem>
+          <elem>-3</elem>
           <elem>2 -1</elem>
         </displacement_list>
 
@@ -92,8 +113,45 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <displacement_file>disp.txt</displacement_file>
         <meson_op_file>meson.lime</meson_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>BARYON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>0</mom2_max>
+        <num_vecs>3</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>0</right>
+          </elem>
+          <elem>
+             <left>1</left>
+             <middle>-3</middle>
+             <right>1 -2</right>
+          </elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <baryon_op_file>baryon.lime</baryon_op_file>
       </NamedObject>
     </elem>
 
