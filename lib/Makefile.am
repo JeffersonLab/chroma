@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.152 2008-07-02 21:21:07 edwards Exp $
+# $Id: Makefile.am,v 3.153 2008-07-21 02:32:24 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -628,7 +628,9 @@ nobase_include_HEADERS += \
 	util/ferm/staggered_operators_s.h \
 	util/ferm/antisymtensor.h \
 	util/ferm/etensor.h \
-        util/ferm/symtensor.h
+        util/ferm/symtensor.h \
+	util/ferm/map_obj.h \
+	util/ferm/key_prop_colorvec.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
 #	actions/ferm/fermacts/eoprec_flic_fermact_w.h
@@ -745,6 +747,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
+	meas/inline/hadron/inline_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
@@ -1325,7 +1328,8 @@ libchroma_a_SOURCES += \
 	util/ferm/gamma5_herm_w.cc \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \
-        util/ferm/symtensor.cc
+        util/ferm/symtensor.cc \
+	util/ferm/key_prop_colorvec.cc
 
 # Taken out for now
 #        meas/hadron/multipole_w.cc
@@ -1382,6 +1386,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_bar3ptfn_w.cc \
 	meas/inline/hadron/inline_building_blocks_w.cc \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
+	meas/inline/hadron/inline_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
