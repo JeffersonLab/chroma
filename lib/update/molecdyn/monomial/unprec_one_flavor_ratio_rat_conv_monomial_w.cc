@@ -1,4 +1,4 @@
-// $Id: unprec_one_flavor_ratio_rat_conv_monomial_w.cc,v 3.1 2008-05-23 21:31:35 edwards Exp $
+// $Id: unprec_one_flavor_ratio_rat_conv_monomial_w.cc,v 3.2 2008-07-22 17:41:55 bjoo Exp $
 /*! @file
  * @brief One-flavor collection of unpreconditioned 4D ferm monomials
  */
@@ -73,6 +73,7 @@ namespace Chroma
 							     fermact_reader, 
 							     param.numer.fermact.path);
 
+#if 0
       WilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
       // Check success of the downcast 
@@ -81,8 +82,8 @@ namespace Chroma
 	QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecOneFlavorWilsonTypeFermRatioRatConvMonomial()" << endl;
 	QDP_abort(1);
       }
-
-      fermact_num = downcast;    
+#endif
+      fermact_num = tmp_act;    
     }
 
     //*********************************************************************
@@ -129,6 +130,7 @@ namespace Chroma
 							     fermact_reader, 
 							     param.denom.fermact.path);
 
+#if 0
       WilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<UnprecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
       // Check success of the downcast 
@@ -137,8 +139,8 @@ namespace Chroma
 	QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecOneFlavorWilsonTypeFermRatioRatConvMonomial()" << endl;
 	QDP_abort(1);
       }
-
-      fermact_den = downcast;    
+#endif
+      fermact_den = tmp_act;    
     }
     //*********************************************************************
 
