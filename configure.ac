@@ -157,6 +157,12 @@ AC_ARG_WITH(qmt,
    [ qmt_enabled="no" ]
 )
 
+dnl database
+AC_ARG_ENABLE(db-lite,
+  AC_HELP_STRING([--enable-db-lite],
+    [Build routines using Berkeley DB]),
+  [ffdb_enabled="yes"]
+)
 
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
@@ -507,6 +513,27 @@ esac
 
 AM_CONDITIONAL(BUILD_OPT_EIGCG, [ test "X${OPT_EIGCG_ENABLED}X" = "XyesX" ])
 
+dnl ************************************************************************
+dnl **** Use ffdb-lite                                                  ****  
+dnl ************************************************************************   
+case "$ffdb_enabled" in
+  yes) 
+dnl ??HEY, CAN I CALL THE FFDB-LITE CONFIG SCRIPT AFTER CONFIG_SUBDIRS TO GET PARAMS??
+        AC_MSG_NOTICE([Configuring to use Berkeley DB routines])
+	AC_CONFIG_SUBDIRS(other_libs/ffdb-lite)
+	AC_SUBST(FFDB_LITE_DIR, [ffdb-lite])
+	AC_DEFINE([BUILD_FFDB_LITE],[],[Build ffdb-lite])
+        AC_SUBST(FFDB_LITE_ENABLED,[yes])
+	;;
+  *)
+	AC_SUBST(FFDB_LITE_DIR)
+	AC_MSG_NOTICE([Not building ffdb-lite])
+        AC_SUBST(FFDB_LITE_ENABLED,[no])
+        ;;
+esac 
+
+AM_CONDITIONAL(BUILD_FFDB_LITE,
+  [test "x${ffdb_enabled}x" = "xyesx" ])
 
 
 dnl ************************************************************************
