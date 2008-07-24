@@ -46,10 +46,9 @@ POST_UNINSTALL = :
 @BUILD_QMT_TRUE@am__append_13 = @QMT_CXXFLAGS@
 @BUILD_QMT_TRUE@am__append_14 = @QMT_LDFLAGS@
 @BUILD_QMT_TRUE@am__append_15 = @QMT_LIBS@
-@BUILD_FFDB_LITE_TRUE@am__append_16 = -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src \
-@BUILD_FFDB_LITE_TRUE@	-I$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
+@BUILD_FFDB_LITE_TRUE@am__append_16 = -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src @FFDB_CXXFLAGS@ @FFDB_INC@
 @BUILD_FFDB_LITE_TRUE@am__append_17 = -L$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
-@BUILD_FFDB_LITE_TRUE@am__append_18 = -lffdblite
+@BUILD_FFDB_LITE_TRUE@am__append_18 = @FFDB_LIBS@
 bin_PROGRAMS = t_mesplq$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_ritz_KS$(EXEEXT) \
 	t_lwldslash_array$(EXEEXT) t_leapfrog$(EXEEXT) \
@@ -87,7 +86,7 @@ EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_hmc$(EXEEXT) t_propagator_twisted$(EXEEXT) \
 	t_circular_buffer$(EXEEXT) t_precnef$(EXEEXT) \
 	t_preccfz$(EXEEXT) t_aniso_sym_force$(EXEEXT) \
-	t_monomial_force$(EXEEXT) t_clover$(EXEEXT)
+	t_monomial_force$(EXEEXT) t_clover$(EXEEXT) t_db$(EXEEXT)
 subdir = mainprogs/tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -145,6 +144,12 @@ am_t_conslinop_OBJECTS = t_conslinop.$(OBJEXT)
 t_conslinop_OBJECTS = $(am_t_conslinop_OBJECTS)
 t_conslinop_LDADD = $(LDADD)
 t_conslinop_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_db_OBJECTS = t_db.$(OBJEXT)
+t_db_OBJECTS = $(am_t_db_OBJECTS)
+t_db_LDADD = $(LDADD)
+t_db_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_disc_loop_s_OBJECTS = t_disc_loop_s.$(OBJEXT)
@@ -649,8 +654,9 @@ LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 	$(t_ape_smear_SOURCES) $(t_bicgstab_SOURCES) \
 	$(t_circular_buffer_SOURCES) $(t_clover_SOURCES) \
-	$(t_conslinop_SOURCES) $(t_disc_loop_s_SOURCES) \
-	$(t_dslashm_SOURCES) $(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) \
+	$(t_conslinop_SOURCES) $(t_db_SOURCES) \
+	$(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) \
+	$(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) \
 	$(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) \
 	$(t_follana_io_s_SOURCES) $(t_follana_pion_s_SOURCES) \
 	$(t_formfac_SOURCES) $(t_fuzwilp_SOURCES) \
@@ -689,7 +695,7 @@ SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_aniso_sym_force_SOURCES) $(t_ape_smear_SOURCES) \
 	$(t_bicgstab_SOURCES) $(t_circular_buffer_SOURCES) \
-	$(t_clover_SOURCES) $(t_conslinop_SOURCES) \
+	$(t_clover_SOURCES) $(t_conslinop_SOURCES) $(t_db_SOURCES) \
 	$(t_disc_loop_s_SOURCES) $(t_dslashm_SOURCES) \
 	$(t_dwf4d_SOURCES) $(t_dwflinop_SOURCES) \
 	$(t_dwflocality_SOURCES) $(t_fermion_loop_w_SOURCES) \
@@ -767,6 +773,9 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+FFDB_CXXFLAGS = @FFDB_CXXFLAGS@
+FFDB_INC = @FFDB_INC@
+FFDB_LIBS = @FFDB_LIBS@
 FFDB_LITE_DIR = @FFDB_LITE_DIR@
 FFDB_LITE_ENABLED = @FFDB_LITE_ENABLED@
 GMP_CXXFLAGS = @GMP_CXXFLAGS@
@@ -980,6 +989,8 @@ t_temp_prec_SOURCES = t_temp_prec.cc
 t_aniso_sym_force_SOURCES = t_aniso_sym_force.cc
 t_monomial_force_SOURCES = t_monomial_force.cc
 t_clover_SOURCES = t_clover.cc
+t_db_SOURCES = t_db.cc
+
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
@@ -1064,6 +1075,9 @@ t_clover$(EXEEXT): $(t_clover_OBJECTS) $(t_clover_DEPENDENCIES)
 t_conslinop$(EXEEXT): $(t_conslinop_OBJECTS) $(t_conslinop_DEPENDENCIES) 
 	@rm -f t_conslinop$(EXEEXT)
 	$(CXXLINK) $(t_conslinop_OBJECTS) $(t_conslinop_LDADD) $(LIBS)
+t_db$(EXEEXT): $(t_db_OBJECTS) $(t_db_DEPENDENCIES) 
+	@rm -f t_db$(EXEEXT)
+	$(CXXLINK) $(t_db_OBJECTS) $(t_db_LDADD) $(LIBS)
 t_disc_loop_s$(EXEEXT): $(t_disc_loop_s_OBJECTS) $(t_disc_loop_s_DEPENDENCIES) 
 	@rm -f t_disc_loop_s$(EXEEXT)
 	$(CXXLINK) $(t_disc_loop_s_OBJECTS) $(t_disc_loop_s_LDADD) $(LIBS)
@@ -1302,6 +1316,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_circular_buffer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_conslinop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_disc_loop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dslashm.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_dwf4d.Po@am__quote@
