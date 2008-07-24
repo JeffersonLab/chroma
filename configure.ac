@@ -157,11 +157,19 @@ AC_ARG_WITH(qmt,
    [ qmt_enabled="no" ]
 )
 
-dnl database
+dnl database wrapper
 AC_ARG_ENABLE(db-lite,
   AC_HELP_STRING([--enable-db-lite],
     [Build routines using Berkeley DB]),
   [ffdb_enabled="yes"]
+)
+
+dnl may need location of berkeley db
+AC_ARG_WITH([db],
+  [AC_HELP_STRING([--with-db],
+    [use Berkeley DB location])],
+    [DBLOCATION=$withval],
+    [DBLOCATION="N/A"]
 )
 
 dnl level 3 libraries for asqtad inverter
@@ -245,8 +253,9 @@ dnl **** SSE Wilson dslash                                              ****
 dnl ************************************************************************
 case "$enable_sse_wilson_dslash" in
   yes) 
-        AC_MSG_NOTICE( [Configuring SSE Wilson Dslash ] )
+        AC_MSG_NOTICE([Configuring SSE Wilson Dslash])
 	AC_CONFIG_SUBDIRS(other_libs/sse_wilson_dslash)
+        AC_MSG_NOTICE([Finished configuring SSE Wilson Dslash])
 	AC_SUBST(SSE_DSLASH_DIR, [sse_wilson_dslash])
 	AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[ Build SSE Dslash Op ])
         AC_SUBST(SSE_DSLASH_ENABLED,[yes]	)	  
@@ -289,7 +298,9 @@ then
 		;;
 	esac
 
+        AC_MSG_NOTICE([Configuring cg-dwf])
 	AC_CONFIG_SUBDIRS(other_libs/cg-dwf)
+        AC_MSG_NOTICE([Finished configuring cg-dwf])
 	AC_SUBST(CG_DWF_DIR, [cg-dwf])
 	AC_DEFINE([BUILD_CG_DWF],[1],[Build CG DWF])
 	AC_SUBST(CG_DWF_ENABLED,[yes])
@@ -518,12 +529,23 @@ dnl **** Use ffdb-lite                                                  ****
 dnl ************************************************************************   
 case "$ffdb_enabled" in
   yes) 
-dnl ??HEY, CAN I CALL THE FFDB-LITE CONFIG SCRIPT AFTER CONFIG_SUBDIRS TO GET PARAMS??
         AC_MSG_NOTICE([Configuring to use Berkeley DB routines])
 	AC_CONFIG_SUBDIRS(other_libs/ffdb-lite)
+        AC_MSG_NOTICE([Finished configuring to use Berkeley DB routines])
 	AC_SUBST(FFDB_LITE_DIR, [ffdb-lite])
 	AC_DEFINE([BUILD_FFDB_LITE],[],[Build ffdb-lite])
         AC_SUBST(FFDB_LITE_ENABLED,[yes])
+
+	if test "$DBLOCATION" = N/A
+	then
+		AC_SUBST(FFDB_LIBS,"-lffdblite -ldb -ldb_cxx")
+		AC_SUBST(FFDB_INC,[])
+		AC_SUBST(FFDB_CXXFLAGS,"-DHAVE_CXX_STDHEADERS")
+	else
+		AC_SUBST(FFDB_LIBS,"-lffdblite $DBLOCATION/lib/libdb.a $DBLOCATION/lib/libdb_cxx.a")
+		AC_SUBST(FFDB_INC,"-I$DBLOCATION/include")
+		AC_SUBST(FFDB_CXXFLAGS,"-DHAVE_CXX_STDHEADERS")
+	fi
 	;;
   *)
 	AC_SUBST(FFDB_LITE_DIR)
@@ -677,6 +699,7 @@ dnl and not fry when call
 dnl
 AC_MSG_NOTICE([Configuring qdp-lapack])
 AC_CONFIG_SUBDIRS(other_libs/qdp-lapack)
+AC_MSG_NOTICE([Finished configuring qdp-lapack])
 AC_SUBST(QDP_LAPACK_DIR, [qdp-lapack])
 
 dnl
@@ -726,15 +749,18 @@ dnl set a conditional in automake for MDWF Specific files etc.
 AM_CONDITIONAL(BUILD_MDWF,
 	[test "x${build_mdwf}x" = "xyesx" ])
 
-
 ##################################
 # Check for programs to build docs
 ##################################
+AC_MSG_NOTICE([Here 1])
+
 AC_CHECK_PROG(LATEX, latex, latex, true)
 AC_CHECK_PROG(DVIPS, dvips, dvips, true)
 AC_CHECK_PROG(DVIPDF, dvipdf, dvipdf, true)
 AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 AC_PATH_PROG(XMLDIFF, [xmldiff],[xmldiff],[$PATH:/usr/local/bin])
+
+AC_MSG_NOTICE([Here 2])
 
 if test "X${XMLDIFF}X" = "XxmldiffX";
 then 
@@ -754,6 +780,8 @@ fi
 # AC_CONFIG_FILES(docs/chromadoc)
 
 dnl Make the Makefiles
+AC_MSG_NOTICE([Here 3])
+
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(chroma-config)
 AC_CONFIG_FILES(lib/Makefile)
@@ -767,6 +795,8 @@ dnl run all the scripts through AC CONFIG files to put
 dnl them in the build directory. We can even potentially install them
 dnl if we want later. Also this allows us to configure complicated runners 
 dnl later with extre --enable options etc
+AC_MSG_NOTICE([Here 4])
+
 AC_CONFIG_FILES(scripts/test_runners/trivial_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/6n_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/7n_mpirun_rsh_runner.sh)
@@ -774,6 +804,11 @@ AC_CONFIG_FILES(scripts/test_runners/cobalt_runner.sh)
 
 dnl Copy - dont symlink - the chosen testcase runner to the top builddir for
 dnl for the fixture runner script
+AC_MSG_NOTICE([Here 5])
+
 AC_CONFIG_COMMANDS([RUN],
 		   [ cp scripts/test_runners/${the_testcase_runner} ./RUN ; chmod u+x ./RUN ],[the_testcase_runner=${chroma_testcase_runner_script}])
+
+AC_MSG_NOTICE([Here 6])
+
 AC_OUTPUT
