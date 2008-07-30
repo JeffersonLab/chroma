@@ -1,10 +1,10 @@
-// $Id: t_db.cc,v 1.1 2008-07-24 02:51:13 edwards Exp $
+// $Id: t_db.cc,v 1.2 2008-07-30 19:27:11 edwards Exp $
 /*! \file
- *  \brief Test the Wilson mesons() routine
+ *  \brief Test the database routines
  */
 
 #include "chroma.h"
-#include "ConfDataStoreDB.h"
+#include "ConfVarDSizeStoreDB.h"
 
 namespace Chroma
 {
@@ -17,11 +17,11 @@ namespace Chroma
     // Part of Serializable
     const unsigned short serialID (void) const {return 789;}
     void objectBuffer (char* &buffer, unsigned int& length) {
-      buffer = (char*)&data_; length = 2;
+      buffer = (char*)data_; length = sizeof(data_);
     }
 
     const unsigned int sizeOfObject (void) const throw (SerializeException) {
-      sizeof(data_);
+      return sizeof(data_);
     }
 
     void writeObject (void) throw (SerializeException) {
@@ -57,13 +57,13 @@ namespace Chroma
   class TestDBData : public DBData
   {
   public:
-    const unsigned short serialID (void) const {return 789;}
+    const unsigned short serialID (void) const {return 890;}
     void objectBuffer (char* &buffer, unsigned int& length) {
-      buffer = (char*)&data_; length = sizeOfObject();
+      buffer = (char*)data_; length = sizeOfObject();
     }
 
     const unsigned int sizeOfObject (void) const throw (SerializeException) {
-      sizeof(data_);
+      return sizeof(data_);
     }
 
     void writeObject (void) throw (SerializeException) {
@@ -99,19 +99,73 @@ int main(int argc, char *argv[])
   XMLFileWriter xml("t_db.xml");
   push(xml,"t_db");
 
-  push(xml,"lattice");
+//  push(xml,"lattice");
   write(xml,"Nd", Nd);
   write(xml,"Nc", Nc);
   write(xml,"Ns", Ns);
   write(xml,"nrow", nrow);
-  pop(xml);
+//  pop(xml);
 
   // Try out some simple DB stuff
+  try
   {
     TestDBKey testDBKey;
     TestDBData testDBData;
 
-    ConfDataStoreDB<TestDBKey, TestDBData> db("test.db");
+    // Open it
+    QDPIO::cout << "open" << endl;
+    ConfVarDSizeStoreDB<TestDBKey, TestDBData> db("test.db");
+
+    // Test it
+    QDPIO::cout << "insert" << endl;
+    db.insert(testDBKey, testDBData);
+
+    // Flush it
+    QDPIO::cout << "flush" << endl;
+    db.flush();
+
+    QDPIO::cout << "closing" << endl;
+  }
+  catch (...) {
+    QDPIO::cout << "Error in db routines" << endl;
+  }
+
+  // Test the db
+  try
+  {
+    // Open it
+    QDPIO::cout << "open" << endl;
+    typedef ConfVarDSizeStoreDB<TestDBKey, TestDBData> DBType_t;
+    DBType_t db("test.db");
+
+    // Test it
+    QDPIO::cout << "find keys" << endl;
+    std::vector<TestDBKey> keys;
+    db.keys(keys);
+
+    // Flush it
+    QDPIO::cout << "printing" << endl;
+    for(int i=0; i < keys.size(); ++i)
+      QDPIO::cout << "found a key: i= " << i << endl;
+      
+//    for(DBType_t::key_iterator ptr=db.begin(); ptr != db.end(); ++ptr)
+//    {
+//      QDPIO::cout << "found a key" << endl;
+//    }
+
+    QDPIO::cout << "closing" << endl;
+  }
+  catch (DbException& e) {
+    QDPIO::cerr << "DBException: " << e.what() << std::endl;
+    QDP_abort(1);
+  }
+  catch(std::exception &e) {
+    QDPIO::cerr << "Std exception: " << e.what() << std::endl;
+    QDP_abort(1);
+  }
+  catch (...) {
+    QDPIO::cout << "Generic error in db routines" << endl;
+    QDP_abort(1);
   }
 
   // Done
@@ -120,6 +174,7 @@ int main(int argc, char *argv[])
   // Time to bolt
   Chroma::finalize();
 
+  QDPIO::cout << "finished" << endl;
   exit(0);
 }
 
