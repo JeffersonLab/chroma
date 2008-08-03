@@ -1,7 +1,11 @@
-05/30/2008:  
-	Version 3.30.1
+08/02/2008:  
+	Version 3.30.2
   	Balint did some rework of the comms in the sse wilson dslash.
         Started adding some Berkeley DB flags, but these will all change.
+
+07/21/2008:  
+	Version 3.30.1
+        Kostas added some static-light routines from Will Detmold.
 
 05/30/2008:  
 	Version 3.30.0
