@@ -1,4 +1,9 @@
 05/30/2008:  
+	Version 3.30.1
+  	Balint did some rework of the comms in the sse wilson dslash.
+        Started adding some Berkeley DB flags, but these will all change.
+
+05/30/2008:  
 	Version 3.30.0
   	Major overhaul of monomial structure which are now of the form
 
