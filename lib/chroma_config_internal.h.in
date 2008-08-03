@@ -12,9 +12,6 @@
 /* Build CPS ASQTAD INVERTER */
 #undef BUILD_CPS_ASQTAD_INVERTER
 
-/* Build ffdb-lite */
-#undef BUILD_FFDB_LITE
-
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 

@@ -671,6 +671,9 @@ QDPXX_NC
 QDPXX_NS
 QDPXX_PARALLEL_ARCH
 QDPXX_PRECISION
+FFDB_LITE_ENABLED
+BUILD_FFDB_LITE_TRUE
+BUILD_FFDB_LITE_FALSE
 subdirs
 SSE_DSLASH_DIR
 SSE_DSLASH_ENABLED
@@ -709,13 +712,6 @@ BUILD_LAPACK_FALSE
 OPT_EIGCG_ENABLED
 BUILD_OPT_EIGCG_TRUE
 BUILD_OPT_EIGCG_FALSE
-FFDB_LITE_DIR
-FFDB_LITE_ENABLED
-FFDB_LIBS
-FFDB_INC
-FFDB_CXXFLAGS
-BUILD_FFDB_LITE_TRUE
-BUILD_FFDB_LITE_FALSE
 BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE
 BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_FALSE
 BUILD_OPT_CFZ_LINOP_TRUE
@@ -759,7 +755,6 @@ CC
 CFLAGS'
 ac_subdirs_all='other_libs/sse_wilson_dslash
 other_libs/cg-dwf
-other_libs/ffdb-lite
 other_libs/qdp-lapack'
 
 # Initialize some variables set by options.
@@ -1362,7 +1357,6 @@ Optional Features:
   --enable-testcase-runner=script
                           Use <script> to run testcases:
                           trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh
-  --enable-db-lite        Build routines using Berkeley DB
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1378,7 +1372,6 @@ Optional Packages:
   --with-gmp=<DIR>        Enable use of GMP - GNU Multi-Precision library,
                           installed in DIR
   --with-qmt=<DIR>        Enable use of QMT Threads library installed in DIR
-  --with-db               use Berkeley DB location
   --with-asqtadlevel3=DIR Build Chroma on top of the level3 asqtad libraries,
                           where the libraries installed in DIR.
 
@@ -4027,23 +4020,6 @@ else
 fi
 
 
-# Check whether --enable-db-lite was given.
-if test "${enable_db_lite+set}" = set; then
-  enableval=$enable_db_lite; ffdb_enabled="yes"
-
-fi
-
-
-
-# Check whether --with-db was given.
-if test "${with_db+set}" = set; then
-  withval=$with_db; DBLOCATION=$withval
-else
-  DBLOCATION="N/A"
-
-fi
-
-
 
 # Check whether --with-asqtadlevel3 was given.
 if test "${with_asqtadlevel3+set}" = set; then
@@ -4314,6 +4290,21 @@ echo "${ECHO_T}no" >&6; }
 echo "$as_me: error: Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version." >&2;}
    { (exit 1); exit 1; }; }
 fi
+
+FFDB_LITE_ENABLED="`${QDPXX_CONFIG} --db-enabled 2>/dev/null`"
+
+{ echo "$as_me:$LINENO: DB-lite enabled: ${FFDB_LITE_ENABLED}" >&5
+echo "$as_me: DB-lite enabled: ${FFDB_LITE_ENABLED}" >&6;}
+
+ if test "x${FFDB_LITE_ENABLED}x" = "xyesx" ; then
+  BUILD_FFDB_LITE_TRUE=
+  BUILD_FFDB_LITE_FALSE='#'
+else
+  BUILD_FFDB_LITE_TRUE='#'
+  BUILD_FFDB_LITE_FALSE=
+fi
+
+
 
 case "$enable_sse_wilson_dslash" in
   yes)
@@ -5059,58 +5050,6 @@ else
 fi
 
 
-case "$ffdb_enabled" in
-  yes)
-        { echo "$as_me:$LINENO: Configuring to use Berkeley DB routines" >&5
-echo "$as_me: Configuring to use Berkeley DB routines" >&6;}
-	subdirs="$subdirs other_libs/ffdb-lite"
-
-        { echo "$as_me:$LINENO: Finished configuring to use Berkeley DB routines" >&5
-echo "$as_me: Finished configuring to use Berkeley DB routines" >&6;}
-	FFDB_LITE_DIR=ffdb-lite
-
-
-cat >>confdefs.h <<\_ACEOF
-#define BUILD_FFDB_LITE
-_ACEOF
-
-        FFDB_LITE_ENABLED=yes
-
-
-	if test "$DBLOCATION" = N/A
-	then
-		FFDB_LIBS="-lffdblite -ldb -ldb_cxx"
-
-
-		FFDB_CXXFLAGS="-DHAVE_CXX_STDHEADERS"
-
-	else
-		FFDB_LIBS="-lffdblite $DBLOCATION/lib/libdb.a $DBLOCATION/lib/libdb_cxx.a"
-
-		FFDB_INC="-I$DBLOCATION/include"
-
-		FFDB_CXXFLAGS="-DHAVE_CXX_STDHEADERS"
-
-	fi
-	;;
-  *)
-
-	{ echo "$as_me:$LINENO: Not building ffdb-lite" >&5
-echo "$as_me: Not building ffdb-lite" >&6;}
-        FFDB_LITE_ENABLED=no
-
-        ;;
-esac
-
- if test "x${ffdb_enabled}x" = "xyesx" ; then
-  BUILD_FFDB_LITE_TRUE=
-  BUILD_FFDB_LITE_FALSE='#'
-else
-  BUILD_FFDB_LITE_TRUE='#'
-  BUILD_FFDB_LITE_FALSE=
-fi
-
-
 
 case "$enable_asqtad_level3_inverter" in
  yes)
@@ -5536,9 +5475,6 @@ fi
 ##################################
 # Check for programs to build docs
 ##################################
-{ echo "$as_me:$LINENO: Here 1" >&5
-echo "$as_me: Here 1" >&6;}
-
 # Extract the first word of "latex", so it can be a program name with args.
 set dummy latex; ac_word=$2
 { echo "$as_me:$LINENO: checking for $ac_word" >&5
@@ -5734,9 +5670,6 @@ fi
 
 
 
-{ echo "$as_me:$LINENO: Here 2" >&5
-echo "$as_me: Here 2" >&6;}
-
 if test "X${XMLDIFF}X" = "XxmldiffX";
 then
      { echo "$as_me:$LINENO: WARNING: xmldiff not found in your PATH. make xcheck may fail" >&5
@@ -5755,9 +5688,6 @@ fi
 # The docs stuff needs more work. Turn it all off for now.
 # AC_CONFIG_FILES(docs/chromadoc)
 
-{ echo "$as_me:$LINENO: Here 3" >&5
-echo "$as_me: Here 3" >&6;}
-
 ac_config_files="$ac_config_files Makefile"
 
 ac_config_files="$ac_config_files chroma-config"
@@ -5775,9 +5705,6 @@ ac_config_files="$ac_config_files docs/Makefile"
 ac_config_files="$ac_config_files other_libs/Makefile"
 
 
-{ echo "$as_me:$LINENO: Here 4" >&5
-echo "$as_me: Here 4" >&6;}
-
 ac_config_files="$ac_config_files scripts/test_runners/trivial_runner.sh"
 
 ac_config_files="$ac_config_files scripts/test_runners/6n_mpirun_rsh_runner.sh"
@@ -5787,14 +5714,8 @@ ac_config_files="$ac_config_files scripts/test_runners/7n_mpirun_rsh_runner.sh"
 ac_config_files="$ac_config_files scripts/test_runners/cobalt_runner.sh"
 
 
-{ echo "$as_me:$LINENO: Here 5" >&5
-echo "$as_me: Here 5" >&6;}
-
 ac_config_commands="$ac_config_commands RUN"
 
-
-{ echo "$as_me:$LINENO: Here 6" >&5
-echo "$as_me: Here 6" >&6;}
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -5913,6 +5834,13 @@ echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_FFDB_LITE_TRUE}" && test -z "${BUILD_FFDB_LITE_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_FFDB_LITE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_FFDB_LITE\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_SSE_WILSON_DSLASH_TRUE}" && test -z "${BUILD_SSE_WILSON_DSLASH_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -5980,13 +5908,6 @@ if test -z "${BUILD_OPT_EIGCG_TRUE}" && test -z "${BUILD_OPT_EIGCG_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_OPT_EIGCG\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"BUILD_OPT_EIGCG\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${BUILD_FFDB_LITE_TRUE}" && test -z "${BUILD_FFDB_LITE_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_FFDB_LITE\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_FFDB_LITE\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -6663,10 +6584,10 @@ QDPXX_NC!$QDPXX_NC$ac_delim
 QDPXX_NS!$QDPXX_NS$ac_delim
 QDPXX_PARALLEL_ARCH!$QDPXX_PARALLEL_ARCH$ac_delim
 QDPXX_PRECISION!$QDPXX_PRECISION$ac_delim
+FFDB_LITE_ENABLED!$FFDB_LITE_ENABLED$ac_delim
+BUILD_FFDB_LITE_TRUE!$BUILD_FFDB_LITE_TRUE$ac_delim
+BUILD_FFDB_LITE_FALSE!$BUILD_FFDB_LITE_FALSE$ac_delim
 subdirs!$subdirs$ac_delim
-SSE_DSLASH_DIR!$SSE_DSLASH_DIR$ac_delim
-SSE_DSLASH_ENABLED!$SSE_DSLASH_ENABLED$ac_delim
-BUILD_SSE_WILSON_DSLASH_TRUE!$BUILD_SSE_WILSON_DSLASH_TRUE$ac_delim
 _ACEOF
 
   if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 97; then
@@ -6708,6 +6629,9 @@ _ACEOF
 ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
+SSE_DSLASH_DIR!$SSE_DSLASH_DIR$ac_delim
+SSE_DSLASH_ENABLED!$SSE_DSLASH_ENABLED$ac_delim
+BUILD_SSE_WILSON_DSLASH_TRUE!$BUILD_SSE_WILSON_DSLASH_TRUE$ac_delim
 BUILD_SSE_WILSON_DSLASH_FALSE!$BUILD_SSE_WILSON_DSLASH_FALSE$ac_delim
 CG_DWF_DIR!$CG_DWF_DIR$ac_delim
 CG_DWF_ENABLED!$CG_DWF_ENABLED$ac_delim
@@ -6742,13 +6666,6 @@ BUILD_LAPACK_FALSE!$BUILD_LAPACK_FALSE$ac_delim
 OPT_EIGCG_ENABLED!$OPT_EIGCG_ENABLED$ac_delim
 BUILD_OPT_EIGCG_TRUE!$BUILD_OPT_EIGCG_TRUE$ac_delim
 BUILD_OPT_EIGCG_FALSE!$BUILD_OPT_EIGCG_FALSE$ac_delim
-FFDB_LITE_DIR!$FFDB_LITE_DIR$ac_delim
-FFDB_LITE_ENABLED!$FFDB_LITE_ENABLED$ac_delim
-FFDB_LIBS!$FFDB_LIBS$ac_delim
-FFDB_INC!$FFDB_INC$ac_delim
-FFDB_CXXFLAGS!$FFDB_CXXFLAGS$ac_delim
-BUILD_FFDB_LITE_TRUE!$BUILD_FFDB_LITE_TRUE$ac_delim
-BUILD_FFDB_LITE_FALSE!$BUILD_FFDB_LITE_FALSE$ac_delim
 BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE!$BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE$ac_delim
 BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_FALSE!$BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_FALSE$ac_delim
 BUILD_OPT_CFZ_LINOP_TRUE!$BUILD_OPT_CFZ_LINOP_TRUE$ac_delim
@@ -6780,7 +6697,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 70; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 66; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
