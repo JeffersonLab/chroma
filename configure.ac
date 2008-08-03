@@ -157,21 +157,6 @@ AC_ARG_WITH(qmt,
    [ qmt_enabled="no" ]
 )
 
-dnl database wrapper
-AC_ARG_ENABLE(db-lite,
-  AC_HELP_STRING([--enable-db-lite],
-    [Build routines using Berkeley DB]),
-  [ffdb_enabled="yes"]
-)
-
-dnl may need location of berkeley db
-AC_ARG_WITH([db],
-  [AC_HELP_STRING([--with-db],
-    [use Berkeley DB location])],
-    [DBLOCATION=$withval],
-    [DBLOCATION="N/A"]
-)
-
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
   AC_HELP_STRING(
@@ -247,6 +232,16 @@ else
   AC_MSG_RESULT(no)
   AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
 fi 
+
+dnl
+dnl Check if ffdb-lite is enabled
+dnl
+AC_SUBST(FFDB_LITE_ENABLED, "`${QDPXX_CONFIG} --db-enabled 2>/dev/null`")
+AC_MSG_NOTICE([DB-lite enabled: ${FFDB_LITE_ENABLED}])
+
+AM_CONDITIONAL(BUILD_FFDB_LITE,
+  [test "x${FFDB_LITE_ENABLED}x" = "xyesx" ])
+
 
 dnl ************************************************************************
 dnl **** SSE Wilson dslash                                              ****
@@ -524,39 +519,6 @@ esac
 
 AM_CONDITIONAL(BUILD_OPT_EIGCG, [ test "X${OPT_EIGCG_ENABLED}X" = "XyesX" ])
 
-dnl ************************************************************************
-dnl **** Use ffdb-lite                                                  ****  
-dnl ************************************************************************   
-case "$ffdb_enabled" in
-  yes) 
-        AC_MSG_NOTICE([Configuring to use Berkeley DB routines])
-	AC_CONFIG_SUBDIRS(other_libs/ffdb-lite)
-        AC_MSG_NOTICE([Finished configuring to use Berkeley DB routines])
-	AC_SUBST(FFDB_LITE_DIR, [ffdb-lite])
-	AC_DEFINE([BUILD_FFDB_LITE],[],[Build ffdb-lite])
-        AC_SUBST(FFDB_LITE_ENABLED,[yes])
-
-	if test "$DBLOCATION" = N/A
-	then
-		AC_SUBST(FFDB_LIBS,"-lffdblite -ldb -ldb_cxx")
-		AC_SUBST(FFDB_INC,[])
-		AC_SUBST(FFDB_CXXFLAGS,"-DHAVE_CXX_STDHEADERS")
-	else
-		AC_SUBST(FFDB_LIBS,"-lffdblite $DBLOCATION/lib/libdb.a $DBLOCATION/lib/libdb_cxx.a")
-		AC_SUBST(FFDB_INC,"-I$DBLOCATION/include")
-		AC_SUBST(FFDB_CXXFLAGS,"-DHAVE_CXX_STDHEADERS")
-	fi
-	;;
-  *)
-	AC_SUBST(FFDB_LITE_DIR)
-	AC_MSG_NOTICE([Not building ffdb-lite])
-        AC_SUBST(FFDB_LITE_ENABLED,[no])
-        ;;
-esac 
-
-AM_CONDITIONAL(BUILD_FFDB_LITE,
-  [test "x${ffdb_enabled}x" = "xyesx" ])
-
 
 dnl ************************************************************************
 dnl **** Level3 Asqtad inverter stuff                                   ****
@@ -752,15 +714,11 @@ AM_CONDITIONAL(BUILD_MDWF,
 ##################################
 # Check for programs to build docs
 ##################################
-AC_MSG_NOTICE([Here 1])
-
 AC_CHECK_PROG(LATEX, latex, latex, true)
 AC_CHECK_PROG(DVIPS, dvips, dvips, true)
 AC_CHECK_PROG(DVIPDF, dvipdf, dvipdf, true)
 AC_CHECK_PROG(DOXYGEN, doxygen, doxygen, true)
 AC_PATH_PROG(XMLDIFF, [xmldiff],[xmldiff],[$PATH:/usr/local/bin])
-
-AC_MSG_NOTICE([Here 2])
 
 if test "X${XMLDIFF}X" = "XxmldiffX";
 then 
@@ -780,8 +738,6 @@ fi
 # AC_CONFIG_FILES(docs/chromadoc)
 
 dnl Make the Makefiles
-AC_MSG_NOTICE([Here 3])
-
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(chroma-config)
 AC_CONFIG_FILES(lib/Makefile)
@@ -795,8 +751,6 @@ dnl run all the scripts through AC CONFIG files to put
 dnl them in the build directory. We can even potentially install them
 dnl if we want later. Also this allows us to configure complicated runners 
 dnl later with extre --enable options etc
-AC_MSG_NOTICE([Here 4])
-
 AC_CONFIG_FILES(scripts/test_runners/trivial_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/6n_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/7n_mpirun_rsh_runner.sh)
@@ -804,11 +758,7 @@ AC_CONFIG_FILES(scripts/test_runners/cobalt_runner.sh)
 
 dnl Copy - dont symlink - the chosen testcase runner to the top builddir for
 dnl for the fixture runner script
-AC_MSG_NOTICE([Here 5])
-
 AC_CONFIG_COMMANDS([RUN],
 		   [ cp scripts/test_runners/${the_testcase_runner} ./RUN ; chmod u+x ./RUN ],[the_testcase_runner=${chroma_testcase_runner_script}])
-
-AC_MSG_NOTICE([Here 6])
 
 AC_OUTPUT

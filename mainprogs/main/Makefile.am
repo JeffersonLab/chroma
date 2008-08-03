@@ -68,13 +68,6 @@ AM_LDFLAGS  += @QMT_LDFLAGS@
 LDADD += @QMT_LIBS@
 endif
 
-if BUILD_FFDB_LITE
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src
-AM_CXXFLAGS += -I$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
-AM_LDFLAGS  += -L$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
-LDADD += -lffdblite
-endif
-
 
 #
 # Local Headers

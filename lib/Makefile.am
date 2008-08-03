@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.155 2008-07-22 17:50:35 edwards Exp $
+# $Id: Makefile.am,v 3.156 2008-08-03 03:25:29 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -838,10 +838,6 @@ endif
 
 if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
-endif
-
-if BUILD_FFDB_LITE
-AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@FFDB_LITE_DIR@/src -I$(BUILDDIR)/other_libs/@FFDB_LITE_DIR@/src
 endif
 
 lib_LIBRARIES = libchroma.a
