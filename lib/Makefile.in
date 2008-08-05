@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.269 2008-08-03 03:26:32 edwards Exp $
+# $Id: Makefile.in,v 3.270 2008-08-05 04:18:02 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -1708,8 +1708,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h util/ferm/antisymtensor.h \
 	util/ferm/etensor.h util/ferm/symtensor.h util/ferm/map_obj.h \
-	util/ferm/key_prop_colorvec.h stagtype_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
+	util/ferm/key_prop_colorvec.h util/ferm/key_val_db.h \
+	stagtype_fermact_s.h actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
@@ -2562,8 +2562,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h util/ferm/antisymtensor.h \
 	util/ferm/etensor.h util/ferm/symtensor.h util/ferm/map_obj.h \
-	util/ferm/key_prop_colorvec.h stagtype_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
+	util/ferm/key_prop_colorvec.h util/ferm/key_val_db.h \
+	stagtype_fermact_s.h actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
