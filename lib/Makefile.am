@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.156 2008-08-03 03:25:29 edwards Exp $
+# $Id: Makefile.am,v 3.157 2008-08-05 04:17:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -632,7 +632,8 @@ nobase_include_HEADERS += \
 	util/ferm/etensor.h \
         util/ferm/symtensor.h \
 	util/ferm/map_obj.h \
-	util/ferm/key_prop_colorvec.h
+	util/ferm/key_prop_colorvec.h \
+	util/ferm/key_val_db.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
 #	actions/ferm/fermacts/eoprec_flic_fermact_w.h
