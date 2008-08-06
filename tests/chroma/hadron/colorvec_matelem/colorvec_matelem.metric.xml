@@ -6,6 +6,6 @@
 
 <assertion xpath="/chroma/InlineObservables/elem[4]/MesonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[5]/MesonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[5]/BaryonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
 
 </assertions>

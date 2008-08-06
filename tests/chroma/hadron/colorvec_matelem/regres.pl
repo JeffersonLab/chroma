@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.1 2008-08-06 15:24:31 edwards Exp $
+#  $Id: regres.pl,v 1.2 2008-08-06 15:27:21 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -15,8 +15,8 @@
 	 execute     => "chroma" , 
 	 input       => "$test_dir/chroma/hadron/colorvec_matelem/colorvec_matelem.ini.xml" , 
 	 output      => "colorvec_matelem.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/propagator/colorvec_matelem.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/propagator/colorvec_matelem.out.xml" ,
+	 metric      => "$test_dir/chroma/hadron/colorvec_matelem/colorvec_matelem.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/colorvec_matelem/colorvec_matelem.out.xml" ,
      }
 
      );
