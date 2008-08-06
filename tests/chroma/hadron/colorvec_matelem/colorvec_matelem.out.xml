@@ -94,6 +94,8 @@
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
+        <orthog_basis>false</orthog_basis>
+
         <!-- List of displacement arrays -->
         <displacement_list>
           <elem>0</elem>
@@ -130,6 +132,8 @@
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
         <!-- List of displacement arrays -->
         <displacement_list>
           <elem>
@@ -185,7 +189,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>06 Aug 08 11:12:06 EDT</run_date>
+    <run_date>06 Aug 08 12:40:26 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -251,7 +255,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 11:12:07 EDT</run_date>
+          <run_date>06 Aug 08 12:40:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -369,7 +373,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 11:12:09 EDT</run_date>
+          <run_date>06 Aug 08 12:40:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -463,7 +467,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 11:12:10 EDT</run_date>
+          <run_date>06 Aug 08 12:40:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -488,7 +492,8 @@
               <elem>2 -1</elem>
             </displacement_list>
             <num_vecs>3</num_vecs>
-            <decay_dir>3</decay_dir><LinkSmearing>
+            <decay_dir>3</decay_dir>
+            <orthog_basis>false</orthog_basis><LinkSmearing>
 <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
@@ -584,7 +589,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 11:12:11 EDT</run_date>
+          <run_date>06 Aug 08 12:40:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -611,7 +616,8 @@
               </elem>
             </displacement_list>
             <num_vecs>3</num_vecs>
-            <decay_dir>3</decay_dir><LinkSmearing>
+            <decay_dir>3</decay_dir>
+            <site_orthog_basis>false</site_orthog_basis><LinkSmearing>
 <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>

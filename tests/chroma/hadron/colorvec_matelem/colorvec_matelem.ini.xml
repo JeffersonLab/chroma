@@ -91,6 +91,8 @@
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
+        <orthog_basis>false</orthog_basis>
+
         <!-- List of displacement arrays -->
         <displacement_list>
           <elem>0</elem>
@@ -127,6 +129,8 @@
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
         <!-- List of displacement arrays -->
         <displacement_list>
           <elem>
