@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.270 2008-08-05 04:18:02 edwards Exp $
+# $Id: Makefile.in,v 3.271 2008-08-06 15:20:07 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -310,7 +310,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
-	meas/sources/mom_source_const.cc \
+	meas/smear/disp_colvec_map.cc meas/sources/mom_source_const.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
@@ -859,11 +859,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
 	no_quark_displacement.$(OBJEXT) \
-	simple_quark_displacement.$(OBJEXT) mom_source_const.$(OBJEXT) \
-	pt_source_const.$(OBJEXT) pt_source_smearing.$(OBJEXT) \
-	sh_source_const.$(OBJEXT) sh_source_smearing.$(OBJEXT) \
-	sf_pt_source_const.$(OBJEXT) sf_sh_source_const.$(OBJEXT) \
-	sf_wall_source_const.$(OBJEXT) dilutezN_source_const.$(OBJEXT) \
+	simple_quark_displacement.$(OBJEXT) disp_colvec_map.$(OBJEXT) \
+	mom_source_const.$(OBJEXT) pt_source_const.$(OBJEXT) \
+	pt_source_smearing.$(OBJEXT) sh_source_const.$(OBJEXT) \
+	sh_source_smearing.$(OBJEXT) sf_pt_source_const.$(OBJEXT) \
+	sf_sh_source_const.$(OBJEXT) sf_wall_source_const.$(OBJEXT) \
+	dilutezN_source_const.$(OBJEXT) \
 	rndz2wall_source_const.$(OBJEXT) wall_source_const.$(OBJEXT) \
 	partwall_source_const.$(OBJEXT) \
 	source_const_aggregate.$(OBJEXT) \
@@ -1371,11 +1372,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/smear/quark_smearing_aggregate.h \
 	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
-	meas/smear/quark_source_sink.h meas/sources/sources.h \
-	meas/sources/source_construction.h meas/sources/srcfil.h \
-	meas/sources/z2_src.h meas/sources/dilute_gauss_src_s.h \
-	meas/sources/zN_src.h meas/sources/mom_source_const.h \
-	meas/sources/pt_source_const.h \
+	meas/smear/quark_source_sink.h meas/smear/disp_colvec_map.h \
+	meas/sources/sources.h meas/sources/source_construction.h \
+	meas/sources/srcfil.h meas/sources/z2_src.h \
+	meas/sources/dilute_gauss_src_s.h meas/sources/zN_src.h \
+	meas/sources/mom_source_const.h meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
@@ -2225,11 +2226,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/smear/quark_smearing_aggregate.h \
 	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
-	meas/smear/quark_source_sink.h meas/sources/sources.h \
-	meas/sources/source_construction.h meas/sources/srcfil.h \
-	meas/sources/z2_src.h meas/sources/dilute_gauss_src_s.h \
-	meas/sources/zN_src.h meas/sources/mom_source_const.h \
-	meas/sources/pt_source_const.h \
+	meas/smear/quark_source_sink.h meas/smear/disp_colvec_map.h \
+	meas/sources/sources.h meas/sources/source_construction.h \
+	meas/sources/srcfil.h meas/sources/z2_src.h \
+	meas/sources/dilute_gauss_src_s.h meas/sources/zN_src.h \
+	meas/sources/mom_source_const.h meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
@@ -2915,7 +2916,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
-	meas/sources/mom_source_const.cc \
+	meas/smear/disp_colvec_map.cc meas/sources/mom_source_const.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
@@ -3461,6 +3462,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diquark_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/diractodr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/disordered_gauge_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/disp_colvec_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_fermact_qprop_array_w.Po@am__quote@
@@ -6914,6 +6916,20 @@ simple_quark_displacement.obj: meas/smear/simple_quark_displacement.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/simple_quark_displacement.cc' object='simple_quark_displacement.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o simple_quark_displacement.obj `if test -f 'meas/smear/simple_quark_displacement.cc'; then $(CYGPATH_W) 'meas/smear/simple_quark_displacement.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/simple_quark_displacement.cc'; fi`
+
+disp_colvec_map.o: meas/smear/disp_colvec_map.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT disp_colvec_map.o -MD -MP -MF $(DEPDIR)/disp_colvec_map.Tpo -c -o disp_colvec_map.o `test -f 'meas/smear/disp_colvec_map.cc' || echo '$(srcdir)/'`meas/smear/disp_colvec_map.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/disp_colvec_map.Tpo $(DEPDIR)/disp_colvec_map.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/disp_colvec_map.cc' object='disp_colvec_map.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o disp_colvec_map.o `test -f 'meas/smear/disp_colvec_map.cc' || echo '$(srcdir)/'`meas/smear/disp_colvec_map.cc
+
+disp_colvec_map.obj: meas/smear/disp_colvec_map.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT disp_colvec_map.obj -MD -MP -MF $(DEPDIR)/disp_colvec_map.Tpo -c -o disp_colvec_map.obj `if test -f 'meas/smear/disp_colvec_map.cc'; then $(CYGPATH_W) 'meas/smear/disp_colvec_map.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/disp_colvec_map.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/disp_colvec_map.Tpo $(DEPDIR)/disp_colvec_map.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/disp_colvec_map.cc' object='disp_colvec_map.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o disp_colvec_map.obj `if test -f 'meas/smear/disp_colvec_map.cc'; then $(CYGPATH_W) 'meas/smear/disp_colvec_map.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/disp_colvec_map.cc'; fi`
 
 mom_source_const.o: meas/sources/mom_source_const.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mom_source_const.o -MD -MP -MF $(DEPDIR)/mom_source_const.Tpo -c -o mom_source_const.o `test -f 'meas/sources/mom_source_const.cc' || echo '$(srcdir)/'`meas/sources/mom_source_const.cc
