@@ -36,7 +36,7 @@
           <numRetries>1</numRetries>
           <FermionAction>
            <FermAct>CLOVER</FermAct>
-           <Kappa>0.115</Kappa>
+           <Mass>0.05</Mass>
            <clovCoeff>1.17</clovCoeff>
            <clovCoeffR>0.91</clovCoeffR>
            <clovCoeffT>1.07</clovCoeffT>
@@ -72,12 +72,13 @@
         <num_vecs>3</num_vecs>
         <t_sources>0</t_sources>
         <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_id>prop_colorvec</prop_id>
-        <prop_op_file>prop.lime</prop_op_file>
+        <prop_op_file>prop.db</prop_op_file>
       </NamedObject>
     </elem>
 
@@ -113,7 +114,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <meson_op_file>meson.lime</meson_op_file>
+        <meson_op_file>meson.db</meson_op_file>
       </NamedObject>
     </elem>
 
@@ -151,7 +152,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <baryon_op_file>baryon.lime</baryon_op_file>
+        <baryon_op_file>baryon.db</baryon_op_file>
       </NamedObject>
     </elem>
 
