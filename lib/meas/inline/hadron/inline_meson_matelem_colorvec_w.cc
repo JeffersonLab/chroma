@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.9 2008-08-06 15:20:52 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.10 2008-08-06 17:58:00 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -17,6 +17,11 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+
+#define COLORVEC_MATELEM_TYPE_ZERO       0
+#define COLORVEC_MATELEM_TYPE_ONE        1
+#define COLORVEC_MATELEM_TYPE_MONE       -1
+#define COLORVEC_MATELEM_TYPE_GENERIC    10
 
 namespace Chroma 
 { 
@@ -53,6 +58,7 @@ namespace Chroma
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
+      read(paramtop, "orthog_basis", param.orthog_basis);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
@@ -71,6 +77,7 @@ namespace Chroma
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
+      write(xml, "orthog_basis", param.orthog_basis);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -546,9 +553,29 @@ namespace Chroma
 	      key.key().displacement  = displacement_list[l]; // only right colorvector
 
 	      SerialDBData<ValMesonElementalOperator_t> val;
-	      val.data().type_of_data = 10;
-	      val.data().op           = op_sum[mom_num];
 
+	      // Build in some optimizations. 
+	      // We know that if the colorvectors are orthogonal, then at zero mom
+	      // the inner product is either 1 or 0. Set a flag and don't store
+	      // the trivial data.
+	      if (params.param.orthog_basis && mom_num == 0)
+	      {
+		if (i == j)
+		{
+		  val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
+		}
+		else
+		{
+		  val.data().type_of_data = COLORVEC_MATELEM_TYPE_ZERO;
+		}
+	      }
+	      else
+	      {
+		val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+		val.data().op           = op_sum[mom_num];
+	      }
+
+	      // Insert into the DB
 	      qdp_db.insert(key, val);
 
 //	      write(xml_out, "elem", key.key());  // debugging

@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.2 2008-08-06 15:20:52 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.3 2008-08-06 17:58:00 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -17,6 +17,11 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+
+#define COLORVEC_MATELEM_TYPE_ZERO       0
+#define COLORVEC_MATELEM_TYPE_ONE        1
+#define COLORVEC_MATELEM_TYPE_MONE       -1
+#define COLORVEC_MATELEM_TYPE_GENERIC    10
 
 namespace Chroma 
 { 
@@ -77,6 +82,7 @@ namespace Chroma
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
+      read(paramtop, "site_orthog_basis", param.site_orthog_basis);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
@@ -95,6 +101,7 @@ namespace Chroma
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
+      write(xml, "site_orthog_basis", param.site_orthog_basis);
       xml << param.link_smearing.xml;
 
       pop(xml);
@@ -259,6 +266,7 @@ namespace Chroma
     //! Baryon operator
     struct ValBaryonElementalOperator_t
     {
+      int                type_of_data; /*!< Flag indicating type of data (maybe trivial) */
       multi1d<ComplexD>  op;           /*!< Momentum projected operator */
     };
 
@@ -323,12 +331,14 @@ namespace Chroma
     //! BaryonElementalOperator reader
     void read(BinaryReader& bin, ValBaryonElementalOperator_t& param)
     {
+      read(bin, param.type_of_data);
       read(bin, param.op);
     }
 
     //! BaryonElementalOperator write
     void write(BinaryWriter& bin, const ValBaryonElementalOperator_t& param)
     {
+      write(bin, param.type_of_data);
       write(bin, param.op);
     }
 
@@ -337,6 +347,7 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
     
+      read(paramtop, "type_of_data", param.type_of_data);
       read(paramtop, "op", param.op);
     }
 
@@ -345,6 +356,7 @@ namespace Chroma
     {
       push(xml, path);
 
+      write(xml, "type_of_data", param.type_of_data);
       write(xml, "op", param.op);
 
       pop(xml);
@@ -608,6 +620,31 @@ namespace Chroma
 		SerialDBData<ValBaryonElementalOperator_t> val;
 		val.data().op          = op_sum[mom_num];
 
+		// Build in some optimizations. 
+		// We know that if the colorvectors are orthogonal, then at zero mom
+		// the inner product is either 1 if all the vectors. Set a flag and 
+		// don't store the trivial data.
+		//
+		// NOTE: need to check signs here
+		//
+		if (params.param.site_orthog_basis && mom_num == 0)
+		{
+		  if ((i != j) && (i != k) && (j != k))
+		  {
+		    val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
+		  }
+		  else
+		  {
+		    val.data().type_of_data = COLORVEC_MATELEM_TYPE_ZERO;
+		  }
+		}
+		else
+		{
+		  val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+		  val.data().op           = op_sum[mom_num];
+		}
+
+		// Insert into the DB
 		qdp_db.insert(key, val);
 
 //	        write(xml_out, "elem", mop);  // debugging

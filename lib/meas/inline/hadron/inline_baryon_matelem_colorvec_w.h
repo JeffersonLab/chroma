@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_baryon_matelem_colorvec_w.h,v 3.1 2008-07-02 21:21:59 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.h,v 3.2 2008-08-06 17:58:00 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon
  operators via colorvector matrix elements
@@ -44,6 +44,9 @@ namespace Chroma
 	int                     decay_dir;              /*!< Decay direction */
 	multi1d<Displacement_t> displacement_list;      /*!< Array of displacements list to generate */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
+
+	// This all may need some work
+	bool                    site_orthog_basis;      /*!< Whether all the basis vectors are site level orthog */
       };
 
       struct NamedObject_t

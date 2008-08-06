@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_meson_matelem_colorvec_w.h,v 1.2 2008-06-29 03:06:28 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.h,v 1.3 2008-08-06 17:58:00 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -36,6 +36,9 @@ namespace Chroma
 	int                     decay_dir;              /*!< Decay direction */
 	multi1d< multi1d<int> > displacement_list;      /*!< Array of displacements list to generate */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
+
+	// This all may need some work
+	bool                    orthog_basis;           /*!< Whether all the basis vectors are orthog */
       };
 
       struct NamedObject_t
