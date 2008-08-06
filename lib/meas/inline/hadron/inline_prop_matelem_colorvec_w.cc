@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.7 2008-07-21 02:30:56 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.8 2008-08-06 15:20:52 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -12,6 +12,7 @@
 #include "util/ferm/eigeninfo.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/key_val_db.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
@@ -22,71 +23,73 @@ namespace Chroma
 { 
   namespace InlinePropMatElemColorVecEnv 
   {
-  //! Propagator input
-  void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
+    //! Propagator input
+    void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params::NamedObject_t& input)
+    {
+      XMLReader inputtop(xml, path);
 
-    read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "colorvec_id", input.colorvec_id);
-    read(inputtop, "prop_id", input.prop_id);
-    read(inputtop, "prop_op_file", input.prop_op_file);
-  }
+      read(inputtop, "gauge_id", input.gauge_id);
+      read(inputtop, "colorvec_id", input.colorvec_id);
+      read(inputtop, "prop_id", input.prop_id);
+      read(inputtop, "prop_op_file", input.prop_op_file);
+    }
 
-  //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params::NamedObject_t& input)
-  {
-    push(xml, path);
+    //! Propagator output
+    void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params::NamedObject_t& input)
+    {
+      push(xml, path);
 
-    write(xml, "gauge_id", input.gauge_id);
-    write(xml, "colorvec_id", input.colorvec_id);
-    write(xml, "prop_id", input.prop_id);
-    write(xml, "prop_op_file", input.prop_op_file);
+      write(xml, "gauge_id", input.gauge_id);
+      write(xml, "colorvec_id", input.colorvec_id);
+      write(xml, "prop_id", input.prop_id);
+      write(xml, "prop_op_file", input.prop_op_file);
 
-    pop(xml);
-  }
-
-
-  //! Propagator input
-  void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params::Param_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "num_vecs", input.num_vecs);
-    read(inputtop, "t_sources", input.t_sources);
-    read(inputtop, "decay_dir", input.decay_dir);
-  }
-
-  //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params::Param_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "num_vecs", input.num_vecs);
-    write(xml, "t_sources", input.t_sources);
-    write(xml, "decay_dir", input.decay_dir);
-
-    pop(xml);
-  }
+      pop(xml);
+    }
 
 
-  //! Propagator input
-  void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params& input)
-  {
-    InlinePropMatElemColorVecEnv::Params tmp(xml, path);
-    input = tmp;
-  }
+    //! Propagator input
+    void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params::Param_t& input)
+    {
+      XMLReader inputtop(xml, path);
 
-  //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params& input)
-  {
-    push(xml, path);
+      read(inputtop, "num_vecs", input.num_vecs);
+      read(inputtop, "t_sources", input.t_sources);
+      read(inputtop, "decay_dir", input.decay_dir);
+      read(inputtop, "mass_label", input.mass_label);
+    }
+
+    //! Propagator output
+    void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params::Param_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "num_vecs", input.num_vecs);
+      write(xml, "t_sources", input.t_sources);
+      write(xml, "decay_dir", input.decay_dir);
+      write(xml, "mass_label", input.mass_label);
+
+      pop(xml);
+    }
+
+
+    //! Propagator input
+    void read(XMLReader& xml, const string& path, InlinePropMatElemColorVecEnv::Params& input)
+    {
+      InlinePropMatElemColorVecEnv::Params tmp(xml, path);
+      input = tmp;
+    }
+
+    //! Propagator output
+    void write(XMLWriter& xml, const string& path, const InlinePropMatElemColorVecEnv::Params& input)
+    {
+      push(xml, path);
     
-    write(xml, "Param", input.param);
-    write(xml, "NamedObject", input.named_obj);
+      write(xml, "Param", input.param);
+      write(xml, "NamedObject", input.named_obj);
 
-    pop(xml);
-  }
+      pop(xml);
+    }
   } // namespace InlinePropMatElemColorVecEnv 
 
 
@@ -121,42 +124,49 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! Prop operator
-    struct PropElementalOperator_t
+    struct KeyPropElementalOperator_t
     {
       int                t_source;      /*!< Source time slice */
       int                colorvec_src;  /*!< Source colorvector index */
       int                colorvec_snk;  /*!< Sink colorvector index */
       int                spin_src;      /*!< Source spin index */
       int                spin_snk;      /*!< Sink spin index */
+      std::string        mass_label;    /*!< A mass label */
+    };
+
+
+    //! Prop operator
+    struct ValPropElementalOperator_t
+    {
       multi1d<ComplexD>  corr;          /*!< Projected propagator */
     };
 
 
     //----------------------------------------------------------------------------
     //! PropElementalOperator reader
-    void read(BinaryReader& bin, PropElementalOperator_t& param)
+    void read(BinaryReader& bin, KeyPropElementalOperator_t& param)
     {
       read(bin, param.t_source);
       read(bin, param.colorvec_src);
       read(bin, param.colorvec_snk);
       read(bin, param.spin_src);
       read(bin, param.spin_snk);
-      read(bin, param.corr);
+      read(bin, param.mass_label, 32);
     }
 
     //! PropElementalOperator write
-    void write(BinaryWriter& bin, const PropElementalOperator_t& param)
+    void write(BinaryWriter& bin, const KeyPropElementalOperator_t& param)
     {
       write(bin, param.t_source);
       write(bin, param.colorvec_src);
       write(bin, param.colorvec_snk);
       write(bin, param.spin_src);
       write(bin, param.spin_snk);
-      write(bin, param.corr);
+      write(bin, param.mass_label);
     }
 
     //! PropElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, PropElementalOperator_t& param)
+    void read(XMLReader& xml, const std::string& path, KeyPropElementalOperator_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -165,11 +175,11 @@ namespace Chroma
       read(paramtop, "colorvec_snk", param.colorvec_snk);
       read(paramtop, "spin_src", param.spin_src);
       read(paramtop, "spin_snk", param.spin_snk);
-      read(paramtop, "corr", param.corr);
+      read(paramtop, "mass_label", param.mass_label);
     }
 
     //! PropElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const PropElementalOperator_t& param)
+    void write(XMLWriter& xml, const std::string& path, const KeyPropElementalOperator_t& param)
     {
       push(xml, path);
 
@@ -178,6 +188,38 @@ namespace Chroma
       write(xml, "colorvec_snk", param.colorvec_snk);
       write(xml, "spin_src", param.spin_src);
       write(xml, "spin_snk", param.spin_snk);
+      write(xml, "mass_label", param.mass_label);
+
+      pop(xml);
+    }
+
+
+    //----------------------------------------------------------------------------
+    //! PropElementalOperator reader
+    void read(BinaryReader& bin, ValPropElementalOperator_t& param)
+    {
+      read(bin, param.corr);
+    }
+
+    //! PropElementalOperator write
+    void write(BinaryWriter& bin, const ValPropElementalOperator_t& param)
+    {
+      write(bin, param.corr);
+    }
+
+    //! PropElementalOperator reader
+    void read(XMLReader& xml, const std::string& path, ValPropElementalOperator_t& param)
+    {
+      XMLReader paramtop(xml, path);
+    
+      read(paramtop, "corr", param.corr);
+    }
+
+    //! PropElementalOperator writer
+    void write(XMLWriter& xml, const std::string& path, const ValPropElementalOperator_t& param)
+    {
+      push(xml, path);
+
       write(xml, "corr", param.corr);
 
       pop(xml);
@@ -363,11 +405,9 @@ namespace Chroma
       // Total number of iterations
       int ncg_had = 0;
 
-      // Number of props written
-      int total_num_elem = 0;
-
-      // Binary output
-      BinaryBufferWriter src_record_bin;
+      // DB storage
+      BinaryVarStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > 
+	qdp_db(params.named_obj.prop_op_file);
 
       //
       // Try the factories
@@ -390,13 +430,6 @@ namespace Chroma
 	SftMom phases(0, true, decay_dir);
 
 	// Binary output
-	int num_elem_to_write = num_vecs * num_vecs * t_sources.size() * Ns * Ns;
-
-	write(src_record_bin, decay_dir);
-	write(src_record_bin, num_vecs);
-	write(src_record_bin, t_sources);
-	write(src_record_bin, num_elem_to_write);
-
 	push(xml_out, "ColorVecMatElems");
 
 	// Loop over each operator 
@@ -431,18 +464,19 @@ namespace Chroma
 
 		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 		{
-		  PropElementalOperator_t op;
-		  op.t_source     = t_source;
-		  op.colorvec_src = colorvec_source;
-		  op.colorvec_snk = colorvec_sink;
-		  op.spin_src     = spin_source;
-		  op.spin_snk     = spin_sink;
-		  op.corr         = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
-					     phases.getSet());
+		  SerialDBKey<KeyPropElementalOperator_t> key;
+		  key.key().t_source     = t_source;
+		  key.key().colorvec_src = colorvec_source;
+		  key.key().colorvec_snk = colorvec_sink;
+		  key.key().spin_src     = spin_source;
+		  key.key().spin_snk     = spin_sink;
+		  key.key().mass_label   = params.param.mass_label;
+
+		  SerialDBData<ValPropElementalOperator_t> val;
+		  val.data().corr        = sumMulti(localInnerProduct(vec_sink, peekSpin(quark_soln, spin_sink)), 
+						    phases.getSet());
 		  
-		  write(src_record_bin, op);    // binary output
-//		  write(xml_out, "elem", op);   // xml output (debugging)
-		  ++total_num_elem;
+		  qdp_db.insert(key, val);
 		} // for spin_sink
 	      } // for colorvec_sink
 	    } // for spin_source
@@ -450,15 +484,6 @@ namespace Chroma
 	} // for t_source
 
 	pop(xml_out);
-
-	// Sanity check
-	if (total_num_elem != num_elem_to_write)
-	{
-	  QDPIO::cerr << name << ": inconsistent number of elemental ops written = "
-		      << total_num_elem
-		    << endl;
-	  QDP_abort(1);
-	}
 
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
@@ -479,24 +504,14 @@ namespace Chroma
 
       // Write the meta-data and the binary for this operator
       {
-	XMLBufferWriter src_record_xml, file_xml;
+	XMLBufferWriter file_xml;
 
 	push(file_xml, "PropElementalOperators");
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
 
-	QDPFileWriter qdp_file(file_xml, params.named_obj.prop_op_file,
-			       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
-
-	push(src_record_xml, "PropElementalOperator");
-	write(src_record_xml, "decay_dir", params.param.decay_dir);
-	write(src_record_xml, "num_vecs", params.param.num_vecs);
-	write(src_record_xml, "t_sources", params.param.t_sources);
-	write(src_record_xml, "total_num_elem", total_num_elem);
-	pop(src_record_xml);
-
-	write(qdp_file, src_record_xml, src_record_bin);
+	qdp_db.insertUserdata(file_xml.str());
       }
 
       snoop.stop();

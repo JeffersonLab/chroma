@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_matelem_colorvec_w.h,v 1.4 2008-07-21 02:30:56 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.h,v 1.5 2008-08-06 15:20:52 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -34,6 +34,7 @@ namespace Chroma
 	int             num_vecs;       /*!< Number of color vectors to use */
 	int             decay_dir;      /*!< Decay direction */
 	multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
+	std::string     mass_label;     /*!< Some kind of mass label */
       } param;
 
       struct NamedObject_t

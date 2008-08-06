@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.8 2008-07-02 21:22:30 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.9 2008-08-06 15:20:52 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -9,8 +9,9 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/displacement.h"
+#include "meas/smear/disp_colvec_map.h"
 #include "util/ferm/eigeninfo.h"
+#include "util/ferm/key_val_db.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
@@ -26,82 +27,82 @@ namespace Chroma
    */
   namespace InlineMesonMatElemColorVecEnv 
   { 
-  // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineMesonMatElemColorVecEnv::Params::Param_t& param)
-  {
-    XMLReader paramtop(xml, path);
-    
-    int version;
-    read(paramtop, "version", version);
-
-    switch (version) 
+    // Reader for input parameters
+    void read(XMLReader& xml, const string& path, InlineMesonMatElemColorVecEnv::Params::Param_t& param)
     {
-    case 1:
-      /**************************************************************************/
-      break;
+      XMLReader paramtop(xml, path);
+    
+      int version;
+      read(paramtop, "version", version);
 
-    default :
-      /**************************************************************************/
+      switch (version) 
+      {
+      case 1:
+	/**************************************************************************/
+	break;
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-      QDP_abort(1);
+      default :
+	/**************************************************************************/
+
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDP_abort(1);
+      }
+
+      read(paramtop, "mom2_max", param.mom2_max);
+      read(paramtop, "displacement_length", param.displacement_length);
+      read(paramtop, "displacement_list", param.displacement_list);
+      read(paramtop, "num_vecs", param.num_vecs);
+      read(paramtop, "decay_dir", param.decay_dir);
+
+      param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
 
-    read(paramtop, "mom2_max", param.mom2_max);
-    read(paramtop, "displacement_length", param.displacement_length);
-    read(paramtop, "displacement_list", param.displacement_list);
-    read(paramtop, "num_vecs", param.num_vecs);
-    read(paramtop, "decay_dir", param.decay_dir);
 
-    param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
-  }
+    // Writer for input parameters
+    void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params::Param_t& param)
+    {
+      push(xml, path);
 
+      int version = 1;
 
-  // Writer for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params::Param_t& param)
-  {
-    push(xml, path);
+      write(xml, "version", version);
+      write(xml, "mom2_max", param.mom2_max);
+      write(xml, "displacement_length", param.displacement_length);
+      write(xml, "displacement_list", param.displacement_list);
+      write(xml, "num_vecs", param.num_vecs);
+      write(xml, "decay_dir", param.decay_dir);
+      xml << param.link_smearing.xml;
 
-    int version = 1;
+      pop(xml);
+    }
 
-    write(xml, "version", version);
-    write(xml, "mom2_max", param.mom2_max);
-    write(xml, "displacement_length", param.displacement_length);
-    write(xml, "displacement_list", param.displacement_list);
-    write(xml, "num_vecs", param.num_vecs);
-    write(xml, "decay_dir", param.decay_dir);
-    xml << param.link_smearing.xml;
+    //! Read named objects 
+    void read(XMLReader& xml, const string& path, InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
+    {
+      XMLReader inputtop(xml, path);
 
-    pop(xml);
-  }
+      read(inputtop, "gauge_id", input.gauge_id);
+      read(inputtop, "colorvec_id", input.colorvec_id);
+      read(inputtop, "meson_op_file", input.meson_op_file);
+    }
 
-  //! Read named objects 
-  void read(XMLReader& xml, const string& path, InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
+    //! Write named objects
+    void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
+    {
+      push(xml, path);
 
-    read(inputtop, "gauge_id", input.gauge_id);
-    read(inputtop, "colorvec_id", input.colorvec_id);
-    read(inputtop, "meson_op_file", input.meson_op_file);
-  }
+      write(xml, "gauge_id", input.gauge_id);
+      write(xml, "colorvec_id", input.colorvec_id);
+      write(xml, "meson_op_file", input.meson_op_file);
 
-  //! Write named objects
-  void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
-  {
-    push(xml, path);
+      pop(xml);
+    }
 
-    write(xml, "gauge_id", input.gauge_id);
-    write(xml, "colorvec_id", input.colorvec_id);
-    write(xml, "meson_op_file", input.meson_op_file);
-
-    pop(xml);
-  }
-
-  // Writer for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params& param)
-  {
-    param.writeXML(xml, path);
-  }
+    // Writer for input parameters
+    void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params& param)
+    {
+      param.writeXML(xml, path);
+    }
   }
 
 
@@ -209,214 +210,45 @@ namespace Chroma
     }
 
 
-
-    //----------------------------------------------------------------------------
-    //! The key for smeared and displaced color vectors
-    struct KeySmearedDispColorVector_t
-    {
-      int  colvec;                  /*!< Colorvector index */
-      multi1d<int> displacement;    /*!< Orig plus/minus 1-based directional displacements */
-    };
-
-
-    //! Support for the keys of smeared and displaced color vectors
-    bool operator<(const KeySmearedDispColorVector_t& a, const KeySmearedDispColorVector_t& b)
-    {
-      multi1d<int> lgaa(1);
-      lgaa[0] = a.colvec;
-      multi1d<int> lga = concat(lgaa, a.displacement);
-
-      multi1d<int> lgbb(1);
-      lgbb[0] = b.colvec;
-      multi1d<int> lgb = concat(lgbb, b.displacement);
-
-      return (lga < lgb);
-    }
-
-
-    //! The value of the map
-    struct SmearedDispColorVector_t
-    {
-      LatticeColorVector vec;
-    };
-
-
-    //----------------------------------------------------------------------------
-    //! The smeared and displaced objects
-    class SmearedDispObjects
-    {
-    public:
-      //! Constructor from smeared map 
-      SmearedDispObjects(int disp_length,
-			 const std::string& colorvec_id,
-			 const multi1d<LatticeColorMatrix> & u_smr);
-
-      //! Destructor
-      ~SmearedDispObjects() {}
-
-      //! Accessor
-      const LatticeColorVector& getDispVector(const KeySmearedDispColorVector_t& key);
-
-    protected:
-      //! Displace an object
-      const LatticeColorVector& displaceObject(const KeySmearedDispColorVector_t& key);
-			
-    private:
-      //! Lattice color vectors
-      const EigenInfo<LatticeColorVector>& eigen_source;
-
-      //! Named object id of eigenvectors
-      std::string colorvec_id;
-		
-      //! Gauge field 
-      const multi1d<LatticeColorMatrix>& u;
-			
-      //! Displacement length
-      int displacement_length;
-			
-      //!Maps of smeared displaced color vectors 
-      map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> disp_src_map;
-    };
-
-	
-    // Constructor from smeared map 
-    SmearedDispObjects::SmearedDispObjects(int disp_length,
-					   const std::string& colorvec_id,
-					   const multi1d<LatticeColorMatrix>& u_smr) :
-      displacement_length(disp_length), 
-      eigen_source(TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(colorvec_id)), 
-      u(u_smr)
-    {
-    }
-
-
-    //! Accessor
-    const LatticeColorVector&
-    SmearedDispObjects::getDispVector(const KeySmearedDispColorVector_t& key)
-    {
-      //Check if any displacement is needed
-      if (displacement_length == 0) 
-      {
-	return eigen_source.getEvectors()[key.colvec];
-      }
-      else
-      {
-	return displaceObject(key);
-      }
-    }
-
-
-    //! Accessor
-    const LatticeColorVector&
-    SmearedDispObjects::displaceObject(const KeySmearedDispColorVector_t& key)
-    {
-      StopWatch snoop;
-
-      // If no entry, then create a displaced version of the quark
-      if (disp_src_map.find(key) == disp_src_map.end())
-      {
-	// Insert an empty entry and then modify it. This saves on
-	// copying the data around
-	{
-	  SmearedDispColorVector_t disp_empty;
-
-	  snoop.reset();
-	  snoop.start();
-
-	  disp_src_map.insert(std::make_pair(key, disp_empty));
-
-	  snoop.stop();
-
-//	  QDPIO::cout<<"Inserted key in map: time = "<< snoop.getTimeInSeconds() << "secs"<<endl;
-
-	  // Sanity check - the entry better be there
-	  if (disp_src_map.find(key) == disp_src_map.end())
-	  {
-	    QDPIO::cerr << __func__ 
-			<< ": internal error - could not insert empty key in map"
-			<< endl;
-	    QDP_abort(1);
-	  }		      
-	}
-
-	// Modify the previous empty entry
-	SmearedDispColorVector_t& disp_q = disp_src_map.find(key)->second;
-	disp_q.vec = eigen_source.getEvectors()[key.colvec];
-
-	snoop.reset();
-	snoop.start();
-
-	for(int i=0; i < key.displacement.size(); ++i)
-	{
-	  if (key.displacement[i] > 0)
-	  {
-	    int disp_dir = key.displacement[i] - 1;
-	    int disp_len = displacement_length;
-	    displacement(u, disp_q.vec, disp_len, disp_dir);
-	  }
-	  else if (key.displacement[i] < 0)
-	  {
-	    int disp_dir = -key.displacement[i] - 1;
-	    int disp_len = -displacement_length;
-	    displacement(u, disp_q.vec, disp_len, disp_dir);
-	  }
-	}
-
-	snoop.stop();
-
-//	QDPIO::cout << "Displaced Vector:  Disp = "
-//		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
-
-      } // if find in map
-
-      snoop.reset();
-      snoop.start();
-
-      // The key now must exist in the map, so return the vector
-      SmearedDispColorVector_t& disp_q = disp_src_map.find(key)->second;
-
-      snoop.stop(); 
-
-//      QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
-
-      return disp_q.vec;
-    }
-
     //----------------------------------------------------------------------------
     //! Meson operator
-    struct MesonElementalOperator_t
+    struct KeyMesonElementalOperator_t
     {
       int                colvec_l;     /*!< Left colorvector index */
       int                colvec_r;     /*!< Right colorvector index */
       multi1d<int>       displacement; /*!< Displacement dirs of right colorvector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
+    };
+
+    //! Meson operator
+    struct ValMesonElementalOperator_t
+    {
+      int                type_of_data; /*!< Flag indicating type of data (maybe trivial) */
       multi1d<ComplexD>  op;           /*!< Momentum projected operator */
     };
 
 
     //----------------------------------------------------------------------------
-    //! MesonElementalOperator reader
-    void read(BinaryReader& bin, MesonElementalOperator_t& param)
+    //! KeyMesonElementalOperator reader
+    void read(BinaryReader& bin, KeyMesonElementalOperator_t& param)
     {
       read(bin, param.colvec_l);
       read(bin, param.colvec_r);
       read(bin, param.displacement);
       read(bin, param.mom);
-      read(bin, param.op);
     }
 
     //! MesonElementalOperator write
-    void write(BinaryWriter& bin, const MesonElementalOperator_t& param)
+    void write(BinaryWriter& bin, const KeyMesonElementalOperator_t& param)
     {
       write(bin, param.colvec_l);
       write(bin, param.colvec_r);
       write(bin, param.displacement);
       write(bin, param.mom);
-      write(bin, param.op);
     }
 
     //! MesonElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, MesonElementalOperator_t& param)
+    void read(XMLReader& xml, const std::string& path, KeyMesonElementalOperator_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -424,11 +256,10 @@ namespace Chroma
       read(paramtop, "colvec_r", param.colvec_r);
       read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
-      read(paramtop, "op", param.op);
     }
 
     //! MesonElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const MesonElementalOperator_t& param)
+    void write(XMLWriter& xml, const std::string& path, const KeyMesonElementalOperator_t& param)
     {
       push(xml, path);
 
@@ -436,6 +267,41 @@ namespace Chroma
       write(xml, "colvec_r", param.colvec_r);
       write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
+
+      pop(xml);
+    }
+
+
+    //----------------------------------------------------------------------------
+    //! MesonElementalOperator reader
+    void read(BinaryReader& bin, ValMesonElementalOperator_t& param)
+    {
+      read(bin, param.type_of_data);
+      read(bin, param.op);
+    }
+
+    //! MesonElementalOperator write
+    void write(BinaryWriter& bin, const ValMesonElementalOperator_t& param)
+    {
+      write(bin, param.type_of_data);
+      write(bin, param.op);
+    }
+
+    //! MesonElementalOperator reader
+    void read(XMLReader& xml, const std::string& path, ValMesonElementalOperator_t& param)
+    {
+      XMLReader paramtop(xml, path);
+    
+      read(paramtop, "type_of_data", param.type_of_data);
+      read(paramtop, "op", param.op);
+    }
+
+    //! MesonElementalOperator writer
+    void write(XMLWriter& xml, const std::string& path, const ValMesonElementalOperator_t& param)
+    {
+      push(xml, path);
+
+      write(xml, "type_of_data", param.type_of_data);
       write(xml, "op", param.op);
 
       pop(xml);
@@ -518,6 +384,8 @@ namespace Chroma
       {
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+
+	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
       }
       catch( std::bad_cast ) 
       {
@@ -531,6 +399,9 @@ namespace Chroma
       }
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+
+      const EigenInfo<LatticeColorVector>& eigen_source = 
+	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
@@ -599,9 +470,9 @@ namespace Chroma
       //
       // The object holding the displaced color vector maps  
       //
-      SmearedDispObjects smrd_disp_vecs(params.param.displacement_length,
-					params.named_obj.colorvec_id, 
-					u_smr);
+      DispColorVectorMap smrd_disp_vecs(params.param.displacement_length,
+					u_smr,
+					eigen_source.getEvectors());
 
       //
       // Meson operators
@@ -611,15 +482,9 @@ namespace Chroma
       //
       QDPIO::cout << "Building meson operators" << endl;
 
-      BinaryBufferWriter src_record_bin;
-      int num_elem_to_write = displacement_list.size() * params.param.num_vecs * 
-	params.param.num_vecs * phases.numMom();
-
-      write(src_record_bin, params.param.mom2_max);
-      write(src_record_bin, params.param.decay_dir);
-      write(src_record_bin, params.param.num_vecs);
-      write(src_record_bin, displacement_list.size());
-      write(src_record_bin, num_elem_to_write);
+      // DB storage
+      BinaryVarStoreDB< SerialDBKey<KeyMesonElementalOperator_t>, SerialDBData<ValMesonElementalOperator_t> > 
+	qdp_db(params.named_obj.meson_op_file);
 
       push(xml_out, "ElementalOps");
 
@@ -627,7 +492,6 @@ namespace Chroma
       // as the subsets for  phases
 
       // Loop over each operator 
-      int total_num_elem = 0;
       for(int l=0; l < displacement_list.size(); ++l)
       {
 	StopWatch watch;
@@ -641,19 +505,19 @@ namespace Chroma
 	swiss.start();
 
 	// The keys for the spin and displacements for this particular elemental operator
-	multi1d<KeySmearedDispColorVector_t> keySmearedDispColorVector(2);
+	multi1d<KeyDispColorVector_t> keyDispColorVector(2);
 
 	// No displacement for left colorvector, only displace right colorvector
-	keySmearedDispColorVector[0].displacement.resize(1);
-	keySmearedDispColorVector[0].displacement = 0;
-	keySmearedDispColorVector[1].displacement = displacement_list[l];
+	keyDispColorVector[0].displacement.resize(1);
+	keyDispColorVector[0].displacement = 0;
+	keyDispColorVector[1].displacement = displacement_list[l];
 
 	for(int i = 0 ; i <  params.param.num_vecs; ++i)
 	{
 	  for(int j = 0 ; j < params.param.num_vecs; ++j)
 	  {
-	    keySmearedDispColorVector[0].colvec = i;
-	    keySmearedDispColorVector[1].colvec = j;
+	    keyDispColorVector[0].colvec = i;
+	    keyDispColorVector[1].colvec = j;
 
 	    watch.reset();
 	    watch.start();
@@ -661,8 +525,8 @@ namespace Chroma
 	    // Contract over color indices
 	    // Do the relevant quark contraction
 	    // Slow fourier-transform
-	    LatticeComplex lop = localInnerProduct(smrd_disp_vecs.getDispVector(keySmearedDispColorVector[0]),
-						   smrd_disp_vecs.getDispVector(keySmearedDispColorVector[1]));
+	    LatticeComplex lop = localInnerProduct(smrd_disp_vecs.getDispVector(keyDispColorVector[0]),
+						   smrd_disp_vecs.getDispVector(keyDispColorVector[1]));
 
 	    multi2d<ComplexD> op_sum = phases.sft(lop);
 
@@ -675,16 +539,19 @@ namespace Chroma
 	    // Write the momentum projected fields
 	    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	    {
-	      MesonElementalOperator_t mop;
-	      mop.colvec_l     = i;
-	      mop.colvec_r     = j;
-	      mop.mom          = phases.numToMom(mom_num);
-	      mop.displacement = displacement_list[l]; // only right colorvector
-	      mop.op           = op_sum[mom_num];
+	      SerialDBKey<KeyMesonElementalOperator_t> key;
+	      key.key().colvec_l      = i;
+	      key.key().colvec_r      = j;
+	      key.key().mom           = phases.numToMom(mom_num);
+	      key.key().displacement  = displacement_list[l]; // only right colorvector
 
-	      write(src_record_bin, mop);
-//	      write(xml_out, "elem", mop);  // debugging
-	      ++total_num_elem;
+	      SerialDBData<ValMesonElementalOperator_t> val;
+	      val.data().type_of_data = 10;
+	      val.data().op           = op_sum[mom_num];
+
+	      qdp_db.insert(key, val);
+
+//	      write(xml_out, "elem", key.key());  // debugging
 	    }
 	  } // end for j
 	} // end for i
@@ -699,20 +566,11 @@ namespace Chroma
 
       pop(xml_out); // ElementalOps
 
-      // Sanity check
-      if (total_num_elem != num_elem_to_write)
-      {
-	QDPIO::cerr << name << ": inconsistent number of elemental ops written = "
-		    << total_num_elem
-		    << endl;
-	QDP_abort(1);
-      }
-
       // Write the meta-data and the binary for this operator
       swiss.reset();
       swiss.start();
       {
-	XMLBufferWriter src_record_xml, file_xml;
+	XMLBufferWriter file_xml;
 
 	push(file_xml, "MesonElementalOperators");
 	write(file_xml, "Params", params.param);
@@ -720,18 +578,7 @@ namespace Chroma
 	write(file_xml, "Op_Info",displacement_list);
 	pop(file_xml);
 
-	QDPFileWriter qdp_file(file_xml, params.named_obj.meson_op_file,
-			       QDPIO_SINGLEFILE, QDPIO_SERIAL, QDPIO_OPEN);
-
-	push(src_record_xml, "MesonElementalOperator");
-	write(src_record_xml, "mom2_max", params.param.mom2_max);
-	write(src_record_xml, "decay_dir", params.param.decay_dir);
-	write(src_record_xml, "num_vecs", params.param.num_vecs);
-	write(src_record_xml, "num_disp", displacement_list.size());
-	write(src_record_xml, "total_num_elem", total_num_elem);
-	pop(src_record_xml);
-
-	write(qdp_file, src_record_xml, src_record_bin);
+	qdp_db.insertUserdata(file_xml.str());
       }
       swiss.stop();
 
