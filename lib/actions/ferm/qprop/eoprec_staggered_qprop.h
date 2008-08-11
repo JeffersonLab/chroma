@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_staggered_qprop.h,v 3.4 2007-02-22 21:11:48 bjoo Exp $
+// $Id: eoprec_staggered_qprop.h,v 3.5 2008-08-11 10:45:35 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for an even-odd non-preconditioned fermion operator
  *
@@ -76,7 +76,10 @@ namespace Chroma
     
 
       /* psi = (M^dag * M)^(-1) chi  = A^{-1} chi*/
-      SystemSolverResults_t res = InvCG1(*A, tmp, psi, invParam.RsdCG, invParam.MaxCG);
+      SystemSolverResults_t res = InvCG1(*A, tmp, psi, 
+					 invParam.RsdCG, 
+					 invParam.MaxCG,
+					 invParam.MinCG);
       
       // psi[rb[0]] is returned, so reconstruct psi[rb[1]]
       invm = Real(1)/(2*Mass);
