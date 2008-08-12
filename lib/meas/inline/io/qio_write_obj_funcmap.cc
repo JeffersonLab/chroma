@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.7 2008-06-17 16:10:41 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.8 2008-08-12 19:52:02 bjoo Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -452,9 +452,6 @@ namespace Chroma
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("QQDiquarkContract"), 
 								      QIOWriteQQDiquarkContract);
-
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
-								      QIOWriteEigenInfo<LatticeFermion>);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
