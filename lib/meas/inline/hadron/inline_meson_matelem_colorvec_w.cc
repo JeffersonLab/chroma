@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.11 2008-08-12 03:42:24 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.12 2008-08-14 03:17:51 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -554,7 +554,6 @@ namespace Chroma
 
 	      SerialDBData<ValMesonElementalOperator_t> val;
 
-#if 0
 	      // Build in some optimizations. 
 	      // We know that if the colorvectors are orthogonal, then at zero mom
 	      // the inner product is either 1 or 0. Set a flag and don't store
@@ -572,10 +571,9 @@ namespace Chroma
 	      }
 	      else
 	      {
-#endif
 		val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
 		val.data().op           = op_sum[mom_num];
-//	      }
+	      }
 
 	      // Insert into the DB
 	      qdp_db.insert(key, val);
