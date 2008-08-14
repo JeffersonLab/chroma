@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.12 2008-08-14 03:17:51 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.13 2008-08-14 15:08:24 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -474,6 +474,10 @@ namespace Chroma
 	QDPIO::cout << "displa[" << n << "]= " << displacement_list[n] << endl;
       }
 
+      // Keep track of no displacements and zero momentum
+      multi1d<int> zero_displacement(1); zero_displacement = 0;
+      multi1d<int> zero_mom(3); zero_mom = 0;
+
       //
       // The object holding the displaced color vector maps  
       //
@@ -556,9 +560,11 @@ namespace Chroma
 
 	      // Build in some optimizations. 
 	      // We know that if the colorvectors are orthogonal, then at zero mom
-	      // the inner product is either 1 or 0. Set a flag and don't store
-	      // the trivial data.
-	      if (params.param.orthog_basis && mom_num == 0)
+	      // and no displacements the inner product is either 1 or 0. 
+	      // Set a flag and don't store the trivial data.
+	      if ( params.param.orthog_basis && 
+		  (phases.numToMom(mom_num)) == zero_mom && 
+		  (displacement_list[l] == zero_displacement) )
 	      {
 		if (i == j)
 		{
