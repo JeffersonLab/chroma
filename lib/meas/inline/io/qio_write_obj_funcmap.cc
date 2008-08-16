@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.8 2008-08-12 19:52:02 bjoo Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.9 2008-08-16 05:06:40 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -10,6 +10,8 @@
 #include "meas/hadron/diquark_w.h"
 #include "util/info/unique_id.h"
 #include "util/ferm/eigeninfo.h"
+#include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/map_obj.h"
 #include "actions/ferm/invert/containers.h"
 
 namespace Chroma
@@ -410,6 +412,41 @@ namespace Chroma
 	close(to);
       }
 
+      //! Write out a MapObject Type
+      template<typename K, typename V>
+      void QIOWriteMapObjKeyPropColVecLatFerm(const string& buffer_id,
+					      const string& file,
+					      QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	// This is needed for QIO writing
+	XMLBufferWriter file_xml, record_xml;
+
+	// A shorthand for the object
+	MapObject<K,V>& obj = TheNamedObjMap::Instance().getData< MapObject<K,V> >(buffer_id);
+
+	// Get the file XML and record XML out of the named buffer
+	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).getRecordXML(record_xml);
+
+	// Open file
+	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+
+	// Use the iterators to run through the object, saving each 
+	// in a separate record
+	for(typename MapObject<K,V>::MapType_t::const_iterator mm = obj.begin();
+	    mm != obj.end();
+	    ++mm)
+	{
+	  XMLBufferWriter local_record_xml;
+	  write(local_record_xml, "MapEntry", mm->first);
+	
+	  write(to, local_record_xml, mm->second);
+	}
+
+	// Close and bolt
+	close(to);
+      }
+
       //! Local registration flag
       bool registered = false;
 
@@ -461,6 +498,9 @@ namespace Chroma
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
+								      QIOWriteMapObjKeyPropColVecLatFerm<KeyPropColorVec_t,LatticeFermion>);
 
 	registered = true;
       }

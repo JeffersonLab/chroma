@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.8 2008-08-12 19:52:02 bjoo Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.9 2008-08-16 05:06:39 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -9,6 +9,8 @@
 
 #include "meas/hadron/diquark_w.h"
 #include "util/ferm/eigeninfo.h"
+#include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/map_obj.h"
 #include "actions/ferm/invert/containers.h"
 
 namespace Chroma
@@ -346,8 +348,8 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       void QIOReadEigenInfoLatticeColorVector(const string& buffer_id,
-			    const string& file,
-			    QDP_serialparallel_t serpar)
+					      const string& file,
+					      QDP_serialparallel_t serpar)
       {
 	multi1d<Real64> evalsD;
 
@@ -476,6 +478,71 @@ namespace Chroma
 	close(to);
       }
 
+      //! Read a MapObject Type
+      template<typename K, typename V>
+      void QIOReadMapObjKeyPropColVecLatFerm(const string& buffer_id,
+					     const string& file,
+					     QDP_serialparallel_t serpar)
+      {
+	// This is needed for QIO writing
+	XMLReader file_xml;
+
+	// Open file
+	QDPFileReader to(file_xml,file,serpar);
+
+	// Create object
+	TheNamedObjMap::Instance().create< MapObject<K,V> >(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+
+	// A shorthand for the object
+	MapObject<K,V>& obj = TheNamedObjMap::Instance().getData< MapObject<K,V> >(buffer_id);
+
+	// The number of records should be recorded in the header
+	int num_records;
+	read(file_xml, "/PropColorVectors/num_records", num_records);
+
+	// Use the iterators to run through the object, reading each record
+	for(int i=0; i < num_records; ++i)
+	{
+	  XMLReader local_record_xml;
+
+	  // The key and value
+	  K key;
+	  V val;
+
+	  read(to, local_record_xml, val);
+
+	  // Extract the key
+	  read(local_record_xml, "/MapEntry", key);
+
+	  // Insert the key and value into the map
+	  obj.insert(key, val);
+	}
+
+	// Sanity check
+	if (obj.size() != num_records)
+	{
+	  QDPIO::cerr << __func__ << ": Error: number of object records unexpected:"
+		      << "  num_records= " << num_records
+		      << "  obj.size= " << obj.size()
+		      << endl;
+	  QDP_abort(1);
+	}
+
+	// Setup a record xml
+	XMLBufferWriter record_xml;
+	push(record_xml, "PropColorVector");
+	write(record_xml, "num_records", obj.size());  // This should be the size of num_records
+	pop(record_xml);
+
+	// Set File and Record XML throw away dummy XMLs
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+
+	// Close and bolt
+	close(to);
+      }
+
       //! Local registration flag
       bool registered = false;
 
@@ -523,6 +590,9 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);
 	
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
+								     QIOReadMapObjKeyPropColVecLatFerm<KeyPropColorVec_t,LatticeFermion>);
+
 	registered = true;
       }
       return success;
