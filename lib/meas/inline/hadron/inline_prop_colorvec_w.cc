@@ -1,4 +1,4 @@
-// $Id: inline_prop_colorvec_w.cc,v 1.2 2008-07-21 02:30:56 edwards Exp $
+// $Id: inline_prop_colorvec_w.cc,v 1.3 2008-08-16 05:07:13 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -440,6 +440,26 @@ namespace Chroma
       pop(xml_out);
 
       pop(xml_out);  // prop_colorvec
+
+      // Write the meta-data for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "PropColorVectors");
+	write(file_xml, "num_records", map_obj.size()); 
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	XMLBufferWriter record_xml;
+	push(record_xml, "PropColorVector");
+	write(record_xml, "num_records", map_obj.size()); 
+	pop(record_xml);
+
+	// Write the propagator xml info
+	TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
+      }
 
       snoop.stop();
       QDPIO::cout << name << ": total time = "
