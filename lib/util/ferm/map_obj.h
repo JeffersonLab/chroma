@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: map_obj.h,v 1.1 2008-07-21 02:32:24 edwards Exp $
+// $Id: map_obj.h,v 1.2 2008-08-16 05:08:52 edwards Exp $
 /*! \file
  * \brief Wrapper over maps
  */
@@ -18,11 +18,10 @@ namespace Chroma
   template<typename K, typename V>
   class MapObject
   {
-  private:
+  public:
     //! Map type convenience
     typedef std::map<K,V> MapType_t;
 
-  public:
     //! Default constructor
     MapObject() {}
 
@@ -57,6 +56,9 @@ namespace Chroma
       return src_map.find(key)->second;
     }
 			
+    //! The number of elements
+    typename MapType_t::size_type size() const {return src_map.size();}
+
     //! Dump keys
     std::vector<K> dump() const {
       std::vector<K> keys;
@@ -69,6 +71,12 @@ namespace Chroma
       }
       return keys;
     }
+
+    //! Usual begin iterator
+    typename MapType_t::const_iterator begin() const {return src_map.begin();}
+
+    //! Usual end iterator
+    typename MapType_t::const_iterator end() const {return src_map.end();}
 
   private:
     //! Map of objects
