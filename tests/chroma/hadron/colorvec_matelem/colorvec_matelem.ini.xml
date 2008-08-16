@@ -66,6 +66,40 @@
     </elem>
 
     <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem> 
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+   
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
       <Name>PROP_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -91,7 +125,7 @@
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
-        <orthog_basis>false</orthog_basis>
+        <orthog_basis>true</orthog_basis>
 
         <!-- List of displacement arrays -->
         <displacement_list>

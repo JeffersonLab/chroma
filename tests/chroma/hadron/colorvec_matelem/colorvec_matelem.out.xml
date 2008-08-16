@@ -69,6 +69,40 @@
     </elem>
 
     <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem> 
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+   
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
       <Name>PROP_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -94,7 +128,7 @@
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
-        <orthog_basis>false</orthog_basis>
+        <orthog_basis>true</orthog_basis>
 
         <!-- List of displacement arrays -->
         <displacement_list>
@@ -189,7 +223,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>06 Aug 08 12:40:26 EDT</run_date>
+    <run_date>16 Aug 08 01:04:12 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -255,7 +289,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 12:40:27 EDT</run_date>
+          <run_date>16 Aug 08 01:04:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -365,6 +399,24 @@
       </PropColorVec>
     </elem>
     <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </qio_write_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
       <PropMatElemColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -373,7 +425,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 12:40:28 EDT</run_date>
+          <run_date>16 Aug 08 01:04:15 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -467,7 +519,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 12:40:29 EDT</run_date>
+          <run_date>16 Aug 08 01:04:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -493,7 +545,7 @@
             </displacement_list>
             <num_vecs>3</num_vecs>
             <decay_dir>3</decay_dir>
-            <orthog_basis>false</orthog_basis><LinkSmearing>
+            <orthog_basis>true</orthog_basis><LinkSmearing>
 <!-- LinkSmearingType>NONE</LinkSmearingType -->
       <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
       <link_smear_fact>0.1625</link_smear_fact>
@@ -589,7 +641,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>06 Aug 08 12:40:30 EDT</run_date>
+          <run_date>16 Aug 08 01:04:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
