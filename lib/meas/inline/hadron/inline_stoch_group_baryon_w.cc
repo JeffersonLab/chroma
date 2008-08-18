@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.23 2008-04-29 11:51:08 edwards Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.24 2008-08-18 18:23:56 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -48,42 +48,56 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-      int version;
-      read(paramtop, "version", version);
+			int version;
+			read(paramtop, "version", version);
 
-      switch (version) 
-      {
-      case 1:
-	/**************************************************************************/
-	break;
+					multi1d< multi1d<int> > temp;
+			switch (version) 
+			{
+				case 1:
+					read(paramtop, "mom2_max", param.mom2_max);
+					break;
 
-      default :
-	/**************************************************************************/
+				case 2:
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-	QDP_abort(1);
-      }
+					read(paramtop, "moms" , temp);
 
-      read(paramtop, "mom2_max", param.mom2_max);
-      read(paramtop, "displacement_length", param.displacement_length);
+					param.mom2_max = 0;
+					param.moms.resize(temp.size(), temp[0].size() );
 
-      param.quark_smearing = readXMLGroup(paramtop, "QuarkSmearing", "wvf_kind");
-      param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
-      param.quark_dils             = readXMLArrayGroup(paramtop, "QuarkDilutions", "DilutionType");
-    }
+					for (int i = 0 ; i < temp.size() ; ++i) 
+						param.moms[i] = temp[i];
 
 
-    // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
-    {
-      push(xml, path);
+					break;
+				
+				default :
 
-      int version = 1;
+					QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+					QDP_abort(1);
+			}
 
-      write(xml, "version", version);
-      write(xml, "mom2_max", param.mom2_max);
-      write(xml, "displacement_length", param.displacement_length);
-      xml << param.quark_smearing.xml;
+			read(paramtop, "displacement_length", param.displacement_length);
+
+			param.quark_smearing = readXMLGroup(paramtop, "QuarkSmearing", "wvf_kind");
+			param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
+			param.quark_dils             = readXMLArrayGroup(paramtop, "QuarkDilutions", "DilutionType");
+
+
+		}
+
+
+		// Writer for input parameters
+		void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
+		{
+			push(xml, path);
+
+			int version = 1;
+
+			write(xml, "version", version);
+			write(xml, "mom2_max", param.mom2_max);
+			write(xml, "displacement_length", param.displacement_length);
+			xml << param.quark_smearing.xml;
       xml << param.link_smearing.xml;
 
       push(xml, "QuarkDilutions");
@@ -1101,7 +1115,11 @@ namespace Chroma
       //
       int decay_dir = diluted_quarks[0]->getDecayDir();
 
-      SftMom phases(params.param.mom2_max, false, decay_dir);
+      //SftMom phases(params.param.mom2_max, false, decay_dir);
+     //Changed this to cut down on the size of the files created 
+			
+
+			SftMom phases(params.param.moms, decay_dir);
 
       // Sanity check - if this doesn't work we have serious problems
       if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])

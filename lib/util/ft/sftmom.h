@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.6 2007-06-21 18:18:55 edwards Exp $
+//  $Id: sftmom.h,v 3.7 2008-08-18 18:23:56 jbulava Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -34,6 +34,9 @@ namespace Chroma
   public:
     //! Constructor about origin
     SftMom(int mom2_max, bool avg_equiv_mom_=false, int j_decay=-1);
+    
+		//! Constructor about origin, with a list of momenta 
+    SftMom(const multi2d<int> & moms , int j_decay=-1);
 
     //! Construct around some fixed origin_offset
     SftMom(int mom2_max, multi1d<int> origin_offset_,

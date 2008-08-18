@@ -1,6 +1,10 @@
-//  $Id: sftmom.cc,v 3.6 2007-08-23 21:28:31 edwards Exp $
+//  $Id: sftmom.cc,v 3.7 2008-08-18 18:23:56 jbulava Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.6  2007-08-23 21:28:31  edwards
+//  Revision 3.7  2008-08-18 18:23:56  jbulava
+//  Added an additional constructor to sftmom class that allows a list of momenta
+//  to be calculated rather than all momenta less that a max value.
+//
+//  Revision 3.6  2007/08/23 21:28:31  edwards
 //  Bug fix. Removed some invalid uses of resize within a multi2d.
 //
 //  Revision 3.5  2007/08/01 19:33:14  edwards
@@ -87,6 +91,7 @@
 
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
+#include "util/ft/single_phase.h"
 #include "qdp_util.h"                 // part of QDP++, for crtesn()
 
 namespace Chroma 
@@ -156,11 +161,37 @@ namespace Chroma
     } else {
       mom_off.resize(Nd-1) ;
     }
+
     origin_off = 0 ;
     mom_off = 0 ;
 
     init(mom2_max, origin_off, mom_off, avg_mom, j_decay) ;
   }
+
+	SftMom::SftMom(const multi2d<int> & moms , int j_decay)
+	{
+		decay_dir = j_decay;
+		
+		multi1d<int> orig(Nd);
+
+
+		for(int i = 0 ; i < Nd ; ++i)
+			orig[i] = 0;
+		
+		init(0, orig, orig , false, decay_dir);
+		
+		num_mom = moms.size2();
+		mom_list = moms;
+
+		phases.resize(num_mom);
+
+
+		for (int m = 0 ; m < num_mom ; ++m)
+		{
+			phases[m] = singlePhase(orig, mom_list[m], decay_dir);
+		}
+
+	}
 
   SftMom::SftMom(int mom2_max, multi1d<int> origin_offset_, bool avg_mom,
                  int j_decay)
