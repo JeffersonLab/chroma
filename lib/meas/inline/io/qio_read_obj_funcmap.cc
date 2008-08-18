@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.9 2008-08-16 05:06:39 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.10 2008-08-18 18:10:49 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -490,9 +490,12 @@ namespace Chroma
 	// Open file
 	QDPFileReader to(file_xml,file,serpar);
 
-	// Create object
-	TheNamedObjMap::Instance().create< MapObject<K,V> >(buffer_id);
-	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	// Create object if it does not exist. Otherwise, we can continue reading into it.
+	if (! TheNamedObjMap::Instance().check(buffer_id))
+        {
+	  TheNamedObjMap::Instance().create< MapObject<K,V> >(buffer_id);
+  	  TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+        }
 
 	// A shorthand for the object
 	MapObject<K,V>& obj = TheNamedObjMap::Instance().getData< MapObject<K,V> >(buffer_id);
