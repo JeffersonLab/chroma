@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.24 2008-08-18 18:23:56 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.25 2008-08-18 19:45:00 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -56,6 +56,12 @@ namespace Chroma
 			{
 				case 1:
 					read(paramtop, "mom2_max", param.mom2_max);
+					param.moms.resize(1,3);
+				
+					param.moms[0][0] = 0;
+					param.moms[0][1] = 0;
+					param.moms[0][2] = 0;
+
 					break;
 
 				case 2:
@@ -1117,12 +1123,19 @@ namespace Chroma
 
       //SftMom phases(params.param.mom2_max, false, decay_dir);
      //Changed this to cut down on the size of the files created 
-			
+		//Stupid way to do this.....
+		//phases1 is the instance to be used if version one has been selected
+//likewise for phases2
+			//Idea: make a constructor for SftMom that takes a bit of 
+			//xml and handles the problem. 
 
-			SftMom phases(params.param.moms, decay_dir);
+			SftMom phases1(params.param.mom2_max, false, decay_dir);
+
+			SftMom phases2(params.param.moms, decay_dir);
+
 
       // Sanity check - if this doesn't work we have serious problems
-      if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])
+      if (phases1.numSubsets() != QDP::Layout::lattSize()[decay_dir])
       {
 	QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
 		    << QDP::Layout::lattSize()[decay_dir]
@@ -1423,7 +1436,7 @@ namespace Chroma
 		  watch.reset();
 		  watch.start();
 		  //For the source, restrict this operation to a subset
-		  makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
+		  makeDiquark( diquark, q0 , q1, phases1.getSet()[ participating_timeslices[t0] ] ); 
 		  watch.stop();
 
 		  /*QDPIO::cout<< " Made diquark : time = " << 
@@ -1450,7 +1463,7 @@ namespace Chroma
 		    watch.reset();
 		    watch.start();
 
-		    makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
+		    makeColorSinglet( c_oper, diquark, q2, phases1.getSet()[ 
 					participating_timeslices[t0] ] );
 
 		    watch.stop();
@@ -1466,8 +1479,36 @@ namespace Chroma
 		    watch.reset();
 		    watch.start();
 
-		    multi2d<DComplex> c_sum(phases.sft(c_oper, 
+		    /*
+				 multi2d<DComplex> c_sum(phases.sft(c_oper, 
 						       participating_timeslices[t0] ));
+				*/
+
+ 				multi2d<DComplex> c_sum;
+				int num_mom;
+
+				switch (params.param.version)
+				{
+
+					case 1: 
+				
+					c_sum = phases1.sft(c_oper, participating_timeslices[t0]);
+					num_mom = phases1.numMom();
+				
+					params.param.moms.resize(num_mom,Nd -1);
+
+					for (int mm = 0 ; mm < num_mom ; ++mm)
+						params.param.moms[mm] = phases1.numToMom(mm);
+
+						break;
+
+					case 2: 
+
+					c_sum = phases2.sft(c_oper, participating_timeslices[t0]);
+					num_mom = phases2.numMom();
+			
+					break;
+				}
 
 		    watch.stop();
 
@@ -1475,11 +1516,13 @@ namespace Chroma
 		      watch.getTimeInSeconds() << "secs " << endl;
 		    */
 		    // Unpack into separate momentum and correlator
-		    cop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
 
-		    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+		    cop.dilutions(i,j,k).mom_projs.resize(num_mom);
+
+		    for(int mom_num = 0 ; mom_num < num_mom ; ++mom_num) 
 		    {
-		      cop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		      cop.dilutions(i,j,k).mom_projs[mom_num].mom = 
+						params.param.moms[mom_num];
 
 		      cop.dilutions(i,j,k).mom_projs[mom_num].op.resize(1);
 
@@ -1757,7 +1800,29 @@ namespace Chroma
 		    watch.start();
 
 		    // Slow fourier-transform
-		    multi2d<DComplex> a_sum( phases.sft(a_oper) );
+		    multi2d<DComplex> a_sum;
+				int num_mom;
+
+				switch (params.param.version)
+				{
+
+					case 1: 
+				
+					a_sum = phases1.sft(a_oper) ;
+					num_mom = phases1.numMom();
+				
+
+						break;
+
+					case 2: 
+
+					a_sum = phases2.sft(
+							a_oper);
+					num_mom = phases2.numMom();
+			
+					break;
+				}
+
 
 		    watch.stop();
 		    /*
@@ -1765,11 +1830,11 @@ namespace Chroma
 		      watch.getTimeInSeconds() << "secs" << endl;
 		    */		
 		    // Unpack into separate momentum and correlator
-		    aop.dilutions(i,j,k).mom_projs.resize(phases.numMom());
+		    aop.dilutions(i,j,k).mom_projs.resize(num_mom);
 
-		    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+		    for(int mom_num = 0 ; mom_num < num_mom ; ++mom_num) 
 		    {
-		      aop.dilutions(i,j,k).mom_projs[mom_num].mom = phases.numToMom(mom_num);
+		      aop.dilutions(i,j,k).mom_projs[mom_num].mom = params.param.moms[mom_num];
 
 		      aop.dilutions(i,j,k).mom_projs[mom_num].op = a_sum[mom_num];
 
