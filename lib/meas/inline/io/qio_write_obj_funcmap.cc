@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.9 2008-08-16 05:06:40 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.10 2008-08-21 21:11:22 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -414,9 +414,9 @@ namespace Chroma
 
       //! Write out a MapObject Type
       template<typename K, typename V>
-      void QIOWriteMapObjKeyPropColVecLatFerm(const string& buffer_id,
-					      const string& file,
-					      QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      void QIOWriteMapObj(const string& buffer_id,
+			  const string& file,
+			  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO writing
 	XMLBufferWriter file_xml, record_xml;
@@ -500,7 +500,7 @@ namespace Chroma
 								      QIOWriteRitzPairsLatticeFermion);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
-								      QIOWriteMapObjKeyPropColVecLatFerm<KeyPropColorVec_t,LatticeFermion>);
+								      QIOWriteMapObj<KeyPropColorVec_t,LatticeFermion>);
 
 	registered = true;
       }

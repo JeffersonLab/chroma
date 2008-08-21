@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.4 2008-06-29 20:17:08 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.5 2008-08-21 21:11:22 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -14,6 +14,8 @@
 #include "meas/inline/io/inline_gaussian_obj.h"
 
 #include "util/ferm/eigeninfo.h"
+#include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/map_obj.h"
 
 #include "util/ft/sftmom.h"
 #include "meas/eig/gramschm.h"
@@ -140,6 +142,69 @@ namespace Chroma
       }
 
 
+      //! Init a faky gaussian MapObject Type of struct of keys and vals
+      void gaussianInitMapObjKeyPropColorVecLatFerm(const string& buffer_id)
+      {
+	// Create the object
+	TheNamedObjMap::Instance().create< MapObject<KeyPropColorVec_t,LatticeFermion> >(buffer_id);
+	MapObject<KeyPropColorVec_t,LatticeFermion>& obj = 
+	  TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(buffer_id);
+
+	// Fix these. Put two sources in here.
+	int N = 8;
+	multi1d<int> t_sources(2);
+	t_sources[0] = 0;
+	t_sources[1] = QDP::Layout::lattSize()[Nd-1] / 2;
+
+	// Loop over each source and create a fake set of propagators
+	for(int tt=0; tt < t_sources.size(); ++tt)
+	{
+	  int t0 = t_sources[tt];
+
+	  for(int colorvec_src=0; colorvec_src < N; ++colorvec_src)
+	  {
+	    for(int spin_src=0; spin_src < Ns; ++spin_src)
+	    {
+	      // The key
+	      KeyPropColorVec_t key;
+	      key.t_source     = t0;
+	      key.colorvec_src = colorvec_src;
+	      key.spin_src     = spin_src;
+
+	      // The value
+	      LatticeFermion val;
+	      gaussian(val);
+
+	      // Insert the key and value into the map
+	      obj.insert(key, val);
+	    } // spin_src
+	  } // colorvec_src
+	} // tt
+
+	// Write the meta-data for this operator
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "PropColorVectors");
+	  write(file_xml, "num_records", obj.size()); 
+	  push(file_xml, "Params");
+	  pop(file_xml);
+	  push(file_xml, "Config_info");
+	  pop(file_xml);
+	  pop(file_xml); // PropColorVectors
+
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "PropColorVector");
+	  write(record_xml, "num_records", obj.size()); 
+	  pop(record_xml);
+
+	  // Write the propagator xml info
+	  TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	  TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+	}
+      }
+
+
       //! Local registration flag
       bool registered = false;
 
@@ -161,6 +226,9 @@ namespace Chroma
 									  gaussianInitObj<LatticeStaggeredFermion>);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
 									  gaussianInitEigenInfo<LatticeColorVector>);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
+									  gaussianInitMapObjKeyPropColorVecLatFerm);
+
 	registered = true;
       }
       return success;

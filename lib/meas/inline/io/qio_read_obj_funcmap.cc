@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.10 2008-08-18 18:10:49 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.11 2008-08-21 21:11:22 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -480,11 +480,11 @@ namespace Chroma
 
       //! Read a MapObject Type
       template<typename K, typename V>
-      void QIOReadMapObjKeyPropColVecLatFerm(const string& buffer_id,
-					     const string& file,
-					     QDP_serialparallel_t serpar)
+      void QIOReadMapObj(const string& buffer_id,
+			 const string& file,
+			 QDP_serialparallel_t serpar)
       {
-	// This is needed for QIO writing
+	// This is needed for QIO reading
 	XMLReader file_xml;
 
 	// Open file
@@ -594,7 +594,7 @@ namespace Chroma
 								     QIOReadRitzPairsLatticeFermion);
 	
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
-								     QIOReadMapObjKeyPropColVecLatFerm<KeyPropColorVec_t,LatticeFermion>);
+								     QIOReadMapObj<KeyPropColorVec_t,LatticeFermion>);
 
 	registered = true;
       }
