@@ -2,10 +2,10 @@
 
 <assertions>
 
-<assertion xpath="/chroma/InlineObservables/elem[6]/PropMatElemColorVec/Source_correlators/source_corrs/elem[1]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[7]/PropMatElemColorVec/Source_correlators/source_corrs/elem[1]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[7]/MesonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[8]/MesonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
 
-<assertion xpath="/chroma/InlineObservables/elem[8]/BaryonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[9]/BaryonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
 
 </assertions>

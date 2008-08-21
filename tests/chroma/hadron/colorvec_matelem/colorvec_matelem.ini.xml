@@ -21,6 +21,37 @@
     </elem>
 
     <elem>
+      <annotation>
+        Make a fake gaussian map object holding propagator solutions
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, write and erase this object.
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
       <Name>PROP_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -66,7 +97,7 @@
     </elem>
 
     <elem>
-      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_colorvec</object_id>
@@ -78,15 +109,6 @@
       </File>
     </elem>
 
-    <elem> 
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
-      </NamedObject>
-    </elem>
-   
     <elem>
       <Name>QIO_READ_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>

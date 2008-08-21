@@ -24,6 +24,37 @@
     </elem>
 
     <elem>
+      <annotation>
+        Make a fake gaussian map object holding propagator solutions
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, write and erase this object.
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
       <Name>PROP_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -69,7 +100,7 @@
     </elem>
 
     <elem>
-      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_colorvec</object_id>
@@ -81,15 +112,6 @@
       </File>
     </elem>
 
-    <elem> 
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
-      </NamedObject>
-    </elem>
-   
     <elem>
       <Name>QIO_READ_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
@@ -223,7 +245,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>16 Aug 08 01:04:12 EDT</run_date>
+    <run_date>21 Aug 08 17:06:22 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -281,6 +303,17 @@
       </gaussian_init_named_obj>
     </elem>
     <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
       <PropColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -289,7 +322,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>16 Aug 08 01:04:13 EDT</run_date>
+          <run_date>21 Aug 08 17:06:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -399,16 +432,10 @@
       </PropColorVec>
     </elem>
     <elem>
-      <qio_write_named_obj>
+      <qio_write_erase_named_obj>
         <update_no>0</update_no>
         <object_id>prop_colorvec</object_id>
-      </qio_write_named_obj>
-    </elem>
-    <elem>
-      <erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>prop_colorvec</object_id>
-      </erase_named_obj>
+      </qio_write_erase_named_obj>
     </elem>
     <elem>
       <qio_read_named_obj>
@@ -425,7 +452,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>16 Aug 08 01:04:15 EDT</run_date>
+          <run_date>21 Aug 08 17:06:26 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -519,7 +546,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>16 Aug 08 01:04:17 EDT</run_date>
+          <run_date>21 Aug 08 17:06:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -641,7 +668,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>16 Aug 08 01:04:18 EDT</run_date>
+          <run_date>21 Aug 08 17:06:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
