@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.3 2008-08-06 17:58:00 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.4 2008-08-26 20:12:31 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -549,7 +549,7 @@ namespace Chroma
 
       // DB storage
       BinaryVarStoreDB< SerialDBKey<KeyBaryonElementalOperator_t>, SerialDBData<ValBaryonElementalOperator_t> > 
-	qdp_db(params.named_obj.baryon_op_file);
+	qdp_db(params.named_obj.baryon_op_file, 50*1024*1024, 64*1024);
 
       push(xml_out, "ElementalOps");
 
