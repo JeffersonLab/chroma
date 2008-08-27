@@ -1,4 +1,4 @@
-// $Id: heavy_hadrons_su3_w.cc,v 1.1 2008-07-21 17:59:14 kostas Exp $ 
+// $Id: heavy_hadrons_su3_w.cc,v 1.2 2008-08-27 02:11:05 edwards Exp $ 
 /*! \file
  *  \brief Heavy hadrons in su3 : Detmold
  */
@@ -142,7 +142,7 @@ void static_light_su3(const multi1d<LatticeColorMatrix>& u,
   // Lambda_b
   // Note we will use spin to differentiate the Lambda_b from the \Sigma_B^0
   // and simply take Bud to be the flavour structure
-  QllBlock B_U1_S1_0_Cg5(Nt,U1,D1,Cg5,HQB0);
+  QllBlock B_U1_S1_0_Cg5(Nt,U1,S1,Cg5,HQB0);
   
   // Xi_b^0 2 pt
   QDPIO::cout<<"  Contracting xi_b^0 \n";
@@ -187,9 +187,9 @@ void static_light_su3(const multi1d<LatticeColorMatrix>& u,
   xibprime0J1mneg1 = sigmabpluscontract(B_U1_S1_0_Cgminus, Cgminus);
 
   QDPIO::cout<<"Making omegaB^- blocks\n";
-  QllBlock B_S1_S1_0_Cg3(Nt,U1,S1,Cg3,HQB0);
-  QllBlock B_S1_S1_0_Cgplus(Nt,U1,S1,Cgplus,HQB0);
-  QllBlock B_S1_S1_0_Cgminus(Nt,U1,S1,Cgminus,HQB0);
+  QllBlock B_S1_S1_0_Cg3(Nt,S1,S1,Cg3,HQB0);
+  QllBlock B_S1_S1_0_Cgplus(Nt,S1,S1,Cgplus,HQB0);
+  QllBlock B_S1_S1_0_Cgminus(Nt,S1,S1,Cgminus,HQB0);
 
   // omegaB^- 2pt
   QDPIO::cout<<"  Contracting omegaB^- \n";
