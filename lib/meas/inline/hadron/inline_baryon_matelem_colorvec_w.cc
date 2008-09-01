@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.4 2008-08-26 20:12:31 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.5 2008-09-01 01:43:33 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -364,6 +364,36 @@ namespace Chroma
 
 
     //----------------------------------------------------------------------------
+    //! Normalize just one displacement array
+    multi1d<int> normDisp(const multi1d<int>& orig)
+    {
+      START_CODE();
+
+      multi1d<int> disp;
+      multi1d<int> empty; 
+      multi1d<int> no_disp(1); no_disp[0] = 0;
+
+      // NOTE: a no-displacement is recorded as a zero-length array
+      // Convert a length one array with no displacement into a no-displacement array
+      if (orig.size() == 1)
+      {
+	if (orig == no_disp)
+	  disp = empty;
+	else
+	  disp = orig;
+      }
+      else
+      {
+	disp = orig;
+      }
+
+      END_CODE();
+
+      return disp;
+    } // void normDisp
+
+
+    //----------------------------------------------------------------------------
     //! Make sure displacements are something sensible
     multi1d<Params::Param_t::Displacement_t> 
     normalizeDisplacements(const multi1d<Params::Param_t::Displacement_t>& orig_list)
@@ -372,34 +402,21 @@ namespace Chroma
 
       multi1d<Params::Param_t::Displacement_t> displacement_list(orig_list.size());
 
-      multi1d<int> empty(1); empty = 0;
-
       // Loop over displacements
       for(int n=0; n < orig_list.size(); ++n)
       {
 	const Params::Param_t::Displacement_t& o = orig_list[n];
 	Params::Param_t::Displacement_t&       d = displacement_list[n];
 
-	if (o.left.size() == 0)
-	  d.left = empty;
-	else
-	  d.left = o.left;
+	d.left   = normDisp(o.left);
+	d.middle = normDisp(o.middle);
+	d.right  = normDisp(o.right);
 
-	if (o.middle.size() == 0)
-	  d.middle = empty;
-	else
-	  d.middle = o.middle;
-
-	if (o.right.size() == 0)
-	  d.right = empty;
-	else
-	  d.right = o.right;
-
-	QDPIO::cout << "disp[" << n << "]="
-		    << "  left= " << d.left
-		    << "  middle= " << d.middle
-		    << "  right= " << d.right
-		    << endl;
+//	QDPIO::cout << "disp[" << n << "]="
+//		    << "  left= " << d.left
+//		    << "  middle= " << d.middle
+//		    << "  right= " << d.right
+//		    << endl;
       }
 
       END_CODE();
@@ -670,6 +687,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "BaryonElementalOperators");
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info",displacement_list);

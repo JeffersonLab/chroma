@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.14 2008-08-26 19:37:26 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.15 2008-09-01 01:43:34 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -322,21 +322,46 @@ namespace Chroma
       START_CODE();
 
       multi1d< multi1d<int> > displacement_list(orig_list.size());
-      multi1d<int> empty(1); empty = 0;
+      multi1d<int> empty; 
+      multi1d<int> no_disp(1); no_disp[0] = 0;
 
       // Loop over displacements
       for(int n=0; n < orig_list.size(); ++n)
       {
-	if (orig_list[n].size() == 0)
+	// Convenience refs
+	const multi1d<int>& orig = orig_list[n];
+	multi1d<int>& disp       = displacement_list[n];
+
+	// NOTE: a no-displacement is recorded as a zero-length array
+	// Convert a length one array with no displacement into a no-displacement array
+	if (orig.size() == 1)
 	{
-	  displacement_list[n] = empty;
+	  if (orig == no_disp)
+	    disp = empty;
+	  else
+	    disp = orig;
 	}
 	else
 	{
-	  displacement_list[n] = orig_list[n];
+	  disp = orig;
 	}
+      }
 
-	QDPIO::cout << "disp[" << n << "]= " << displacement_list[n] << endl;
+      // Check displacements
+      for(int n=0; n < displacement_list.size(); ++n)
+      {
+	const multi1d<int>& disp = displacement_list[n];
+
+	for(int i=0; i < disp.size(); ++i)
+	{
+	  if (disp[i] == 0)
+	  {
+	    QDPIO::cerr << __func__ << ": do not allow zero within a displacement list" << endl;
+	    QDP_abort(1);
+	  }
+	}
+	
+//	QDPIO::cout << "disp[" << n << "]= " << disp << endl;
       }
 
       END_CODE();
@@ -471,7 +496,7 @@ namespace Chroma
 
       for(int n=0; n < displacement_list.size(); ++n)
       {
-	QDPIO::cout << "displa[" << n << "]= " << displacement_list[n] << endl;
+	QDPIO::cout << "displacement[" << n << "]= " << displacement_list[n] << endl;
       }
 
       // Keep track of no displacements and zero momentum
@@ -516,19 +541,15 @@ namespace Chroma
 	swiss.start();
 
 	// The keys for the spin and displacements for this particular elemental operator
-	multi1d<KeyDispColorVector_t> keyDispColorVector(2);
-
 	// No displacement for left colorvector, only displace right colorvector
-	keyDispColorVector[0].displacement.resize(1);
-	keyDispColorVector[0].displacement = 0;
-	keyDispColorVector[1].displacement = displacement_list[l];
+	KeyDispColorVector_t keyDispColorVector;
+	keyDispColorVector.displacement = displacement_list[l];
 
 	for(int i = 0 ; i <  params.param.num_vecs; ++i)
 	{
 	  for(int j = 0 ; j < params.param.num_vecs; ++j)
 	  {
-	    keyDispColorVector[0].colvec = i;
-	    keyDispColorVector[1].colvec = j;
+	    keyDispColorVector.colvec = j;
 
 	    watch.reset();
 	    watch.start();
@@ -536,8 +557,8 @@ namespace Chroma
 	    // Contract over color indices
 	    // Do the relevant quark contraction
 	    // Slow fourier-transform
-	    LatticeComplex lop = localInnerProduct(smrd_disp_vecs.getDispVector(keyDispColorVector[0]),
-						   smrd_disp_vecs.getDispVector(keyDispColorVector[1]));
+	    LatticeComplex lop = localInnerProduct(eigen_source.getEvectors()[i],
+						   smrd_disp_vecs.getDispVector(keyDispColorVector));
 
 	    multi2d<ComplexD> op_sum = phases.sft(lop);
 
@@ -606,6 +627,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "MesonElementalOperators");
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info",displacement_list);
