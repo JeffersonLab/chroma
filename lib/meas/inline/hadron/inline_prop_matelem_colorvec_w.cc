@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.10 2008-08-21 17:45:38 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.11 2008-09-01 01:44:00 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -522,6 +522,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "PropElementalOperators");
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
