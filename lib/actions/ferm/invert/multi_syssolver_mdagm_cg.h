@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_cg.h,v 3.5 2008-04-05 19:04:38 edwards Exp $
+// $Id: multi_syssolver_mdagm_cg.h,v 3.6 2008-09-02 20:10:18 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -14,7 +14,7 @@
 #include "actions/ferm/invert/multi_syssolver_cg_params.h"
 #include "actions/ferm/invert/minvcg.h"
 #include "actions/ferm/invert/minvcg2.h"
-
+#include "init/chroma_init.h"
 
 namespace Chroma
 {
@@ -77,7 +77,25 @@ namespace Chroma
 
 	SystemSolverResults_t res;
   	MInvCG2(*A, chi, psi, shifts, RsdCG, invParam.MaxCG, res.n_count);
+	XMLFileWriter& log = Chroma::getXMLLogInstance();
+	push(log, "MultiCG");
+	write(log, "shifts", shifts);
+	write(log, "RsdCG", RsdCG);
+	write(log, "n_count", res.n_count);
+	Double chinorm=norm2(chi, A->subset());
+	multi1d<Double> r_rel(shifts.size());
 
+	for(int i=0; i < shifts.size(); i++) { 
+	   T tmp1,tmp2;
+	   (*A)(tmp1, psi[i], PLUS);
+	   (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
+	   tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
+	   T r;
+	   r[ A->subset() ] = chi - tmp2;
+	   r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
+	}
+	write(log, "ResidRel", r_rel);
+	pop(log);
 	END_CODE();
 
 	return res;
