@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
+// $Id: syssolver.h,v 3.4 2008-09-02 20:10:49 bjoo Exp $
 /*! @file
  * @brief Linear system solvers
  */
@@ -115,6 +115,7 @@ namespace Chroma
 
 
 
+
   //-----------------------------------------------------------------------------------
   //! Linear multi-system solvers of arrays
   /*! @ingroup solvers
@@ -143,6 +144,65 @@ namespace Chroma
     virtual SystemSolverResults_t operator() (multi1d< multi1d<T> >& psi, 
 					      const multi1d<Real>& shifts, 
 					      const multi1d<T>& chi) const = 0;
+
+    //! Return the subset on which the operator acts
+    virtual const Subset& subset() const = 0;
+  };
+
+
+  //-----------------------------------------------------------------------------------
+  //! Linear multi-system solvers with accumulation
+  /*! @ingroup solvers
+   *
+   * A tweak of solvers for multi-shift linear systems of equations. 
+   * so that the results are accumulated a la:
+   * 
+   *   s = A sum_sigma t_i X_i 
+   * where x_i are the solutions.
+   * The solver may only live on a subset.
+   */
+  template<typename T>
+  class MultiSystemSolverAccumulate
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~MultiSystemSolverAccumulate() {}
+
+    //! Apply the operator onto a source vector
+    virtual SystemSolverResults_t operator() (T& psi, 
+					      const Real& norm,
+					      const multi1d<Real>& residues,
+					      const multi1d<Real>& poles, 
+					      const T& chi) const = 0;
+
+    //! Return the subset on which the operator acts
+    virtual const Subset& subset() const = 0;
+  };
+
+  //-----------------------------------------------------------------------------------
+  //! Linear multi-system solvers with accumulation
+  /*! @ingroup solvers
+   *
+   * A tweak of solvers for multi-shift linear systems of equations. 
+   * so that the results are accumulated a la:
+   * 
+   *   s = A sum_sigma t_i X_i 
+   * where x_i are the solutions.
+   * The solver may only live on a subset.
+   */
+  template<typename T>
+  class MultiSystemSolverAccumulateArray
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~MultiSystemSolverAccumulateArray() {}
+
+    //! Apply the operator onto a source vector
+    virtual SystemSolverResults_t operator() (T& psi, 
+					      const Real& norm,
+					      const multi1d<Real>& residues,
+					      const multi1d<Real>& poles, 
+					      const T& chi) const = 0;
 
     //! Return the subset on which the operator acts
     virtual const Subset& subset() const = 0;
