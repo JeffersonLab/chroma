@@ -165,8 +165,8 @@
           <elem>-1 -1</elem>
           <elem>2 2</elem>
           <elem>-2 -2</elem>
-          <elem>3</elem>
-          <elem>-3</elem>
+          <elem>3 3</elem>
+          <elem>-3 -3</elem>
           <elem>1 2</elem>
           <elem>-1 2</elem>
           <elem>1 -2</elem>
@@ -274,7 +274,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Sep 08 15:09:31 EDT</run_date>
+    <run_date>04 Sep 08 15:12:39 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -351,7 +351,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:09:32 EDT</run_date>
+          <run_date>04 Sep 08 15:12:40 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -481,7 +481,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:09:35 EDT</run_date>
+          <run_date>04 Sep 08 15:12:43 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -575,7 +575,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:09:37 EDT</run_date>
+          <run_date>04 Sep 08 15:12:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -601,8 +601,8 @@
               <elem>-1 -1</elem>
               <elem>2 2</elem>
               <elem>-2 -2</elem>
-              <elem>3</elem>
-              <elem>-3</elem>
+              <elem>3 3</elem>
+              <elem>-3 -3</elem>
               <elem>1 2</elem>
               <elem>-1 2</elem>
               <elem>1 -2</elem>
@@ -726,7 +726,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:09:38 EDT</run_date>
+          <run_date>04 Sep 08 15:12:46 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
