@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.159 2008-09-02 20:10:49 bjoo Exp $
+# $Id: Makefile.am,v 3.160 2008-09-06 18:37:30 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -50,6 +50,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/minvcg2.h \
 	actions/ferm/invert/minvcg2_accum.h \
         actions/ferm/invert/minvcg_array.h \
+	actions/ferm/invert/minvcg_accumulate_array.h \
         actions/ferm/invert/minvmr.h \
 	actions/ferm/invert/minv_rel_cg.h \
 	actions/ferm/invert/invcg2_timing_hacks.h \
@@ -106,6 +107,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/multi_syssolver_mdagm_accumulate_factory.h \
 	actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate.h \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate_array.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/llincomb.h \
 	actions/ferm/linop/lopscl.h \
@@ -887,6 +889,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/minvcg2.cc \
 	actions/ferm/invert/minvcg2_accum.cc \
 	actions/ferm/invert/minvcg_array.cc \
+	actions/ferm/invert/minvcg_accumulate_array.cc \
         actions/ferm/invert/minvsumr.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
 	actions/ferm/invert/minv_rel_sumr.cc \
@@ -918,8 +921,9 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
-	actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate_array.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.cc \
 	actions/ferm/invert/norm_gram_schm.cc \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \

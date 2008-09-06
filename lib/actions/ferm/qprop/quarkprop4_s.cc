@@ -1,4 +1,4 @@
-// $Id: quarkprop4_s.cc,v 3.6 2007-04-11 03:42:33 edwards Exp $
+// $Id: quarkprop4_s.cc,v 3.7 2008-09-06 18:36:25 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -13,6 +13,7 @@
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
 #include "actions/ferm/invert/multi_syssolver_linop_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_factory.h"
 
 
 namespace Chroma 
@@ -238,6 +239,23 @@ namespace Chroma
 
     // THIS NEEDS TO BE FIXED TO USE A PROPER MDAGM
     return TheMdagMStagFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
+									 paramtop,
+									 invParam.path,
+									 linOp(state));
+  }
+
+  //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
+  /*! \ingroup qprop */
+  template<>
+  MdagMMultiSystemSolverAccumulate<LF>*
+  StaggeredTypeFermAct<LF,LCM,LCM>::mInvMdagMAcc(Handle< FermState<LF,LCM,LCM> > state,
+					      const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    // THIS NEEDS TO BE FIXED TO USE A PROPER MDAGM
+    return TheMdagMStagFermMultiSystemSolverAccumulateFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
 									 linOp(state));

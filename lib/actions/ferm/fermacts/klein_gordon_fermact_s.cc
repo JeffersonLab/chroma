@@ -1,4 +1,4 @@
-// $Id: klein_gordon_fermact_s.cc,v 3.1 2006-12-07 18:26:18 edwards Exp $
+// $Id: klein_gordon_fermact_s.cc,v 3.2 2008-09-06 18:36:25 bjoo Exp $
 /*! \file
  *  \brief Klein-Gordon boson action masquerading action as a staggered action
  */
@@ -151,6 +151,20 @@ namespace Chroma
     XMLReader  paramtop(xml);
 
     return TheMdagMStagFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
+									     paramtop,
+									     invParam.path,
+									     lMdagM(state));
+  }
+
+  // Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+  MdagMMultiSystemSolverAccumulate<LatticeStaggeredFermion>* 
+  KleinGordonFermAct::mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
+				const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    return TheMdagMStagFermMultiSystemSolverAccumulateFactory::Instance().createObject(invParam.id,
 									     paramtop,
 									     invParam.path,
 									     lMdagM(state));

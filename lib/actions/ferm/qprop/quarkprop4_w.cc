@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 3.6 2008-03-10 17:32:40 bjoo Exp $
+// $Id: quarkprop4_w.cc,v 3.7 2008-09-06 18:36:25 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -12,6 +12,7 @@
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
 #include "actions/ferm/invert/multi_syssolver_linop_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_factory.h"
 
 
 namespace Chroma 
@@ -336,6 +337,22 @@ namespace Chroma
 									 linOp(state));
   }
 
+  //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
+  /*! \ingroup qprop */
+  template<>
+  MdagMMultiSystemSolverAccumulate<LF>*
+  WilsonTypeFermAct<LF,LCM,LCM>::mInvMdagMAcc(Handle< FermState<LF,LCM,LCM> > state,
+					   const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    return TheMdagMFermMultiSystemSolverAccumulateFactory::Instance().createObject(invParam.id,
+									 paramtop,
+									 invParam.path,
+									 linOp(state));
+  }
+
 
 
   //------------------------------------------------------------------------------------
@@ -372,6 +389,7 @@ namespace Chroma
 									 invParam.path,
 									 linOp(state));
   }
+
 
 
   // Return a linear operator solver for this action to solve M*psi=chi 
@@ -424,6 +442,22 @@ namespace Chroma
 									      lMdagM(state));
   }
 
+  //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
+  /*! \ingroup qprop */
+  template<>
+  MdagMMultiSystemSolverAccumulateArray<LF>*
+  WilsonTypeFermAct5D<LF,LCM,LCM>::mInvMdagMAcc(Handle< FermState<LF,LCM,LCM> > state,
+					     const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    return TheMdagMFermMultiSystemSolverAccumulateArrayFactory::Instance().createObject(invParam.id,
+									      paramtop,
+									      invParam.path,
+									      lMdagM(state));
+  }
+
 
   //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
   /*! \ingroup qprop */
@@ -439,6 +473,26 @@ namespace Chroma
     Handle< LinearOperatorArray<LF> > MdagM(new MdagMLinOpArray<LF>(PV));
 
     return TheMdagMFermMultiSystemSolverArrayFactory::Instance().createObject(
+      invParam.id,
+      paramtop,
+      invParam.path,
+      MdagM);
+  }
+
+  //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
+  /*! \ingroup qprop */
+  template<>
+  MdagMMultiSystemSolverAccumulateArray<LF>*
+  WilsonTypeFermAct5D<LF,LCM,LCM>::mInvMdagMPVAcc(Handle< FermState<LF,LCM,LCM> > state,
+					       const GroupXML_t& invParam) const
+  {
+    std::istringstream  xml(invParam.xml);
+    XMLReader  paramtop(xml);
+
+    Handle< LinearOperatorArray<LF> > PV(linOpPV(state));
+    Handle< LinearOperatorArray<LF> > MdagM(new MdagMLinOpArray<LF>(PV));
+
+    return TheMdagMFermMultiSystemSolverAccumulateArrayFactory::Instance().createObject(
       invParam.id,
       paramtop,
       invParam.path,
