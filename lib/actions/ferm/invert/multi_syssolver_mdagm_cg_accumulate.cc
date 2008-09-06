@@ -1,4 +1,4 @@
-// $Id: multi_syssolver_mdagm_cg_accumulate.cc,v 3.1 2008-09-02 20:10:18 bjoo Exp $
+// $Id: multi_syssolver_mdagm_cg_accumulate.cc,v 3.2 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -12,7 +12,8 @@ namespace Chroma
 {
 
   //! CG2 system solver namespace
-  namespace MdagMMultiSysSolverCGAccumulateEnv
+            
+  namespace MdagMMultiSysSolverAccumulateCGEnv
   {
     //! Callback function
     MdagMMultiSystemSolverAccumulate<LatticeFermion>* createFerm(XMLReader& xml_in,

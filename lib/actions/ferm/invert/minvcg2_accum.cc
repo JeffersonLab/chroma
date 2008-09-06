@@ -1,4 +1,4 @@
-// $Id: minvcg2_accum.cc,v 3.1 2008-09-02 20:10:18 bjoo Exp $
+// $Id: minvcg2_accum.cc,v 3.2 2008-09-06 18:35:34 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -72,39 +72,32 @@ namespace Chroma
   template<typename T>
   void MInvCG2Accum_a(const LinearOperator<T>& M, 
 		 const T& chi, 
-		 T& psi,
-		 const Real& norm,
-		 const multi1d<Real>& residues,
-		 const multi1d<Real>& poles, 
-		 const Real& RsdCG, 
-		 int MaxCG,
-		 int& n_count)
+		      T& psi,
+		      const Real& norm,
+		      const multi1d<Real>& residues,
+		      const multi1d<Real>& poles, 
+		      const Real& RsdCG, 
+		      int MaxCG,
+		      int& n_count)
   {
+
     START_CODE();
+
     const Subset& sub = M.subset();
 
 
     int n_shift = poles.size();
-    int s;
-    Double cp;
+
     if (n_shift == 0) 
     {
-      QDPIO::cerr << "MInvCGAccum: You must supply at least 1 mass: mass.size() = " 
+      QDPIO::cerr << "MInvCG: You must supply at least 1 mass: mass.size() = " 
 		  << n_shift << endl;
       QDP_abort(1);
     }
-
-    if (n_shift != residues.size()) { 
-      QDPIO::cerr << "MInvCGAccum: Different number of poles and residues: n_oles=" << n_shift << " n_residues="<< residues.size() << endl;
-      QDP_abort(1);
-    }
-
-    // Put in the A scale 
     multi1d<Real> scaled_res(n_shift);
-    for(int i=0; i < n_shift; i++) { 
-      scaled_res[i] = norm*residues(i);
+    for(int i=0; i < n_shift; i++) {
+      scaled_res[i] = norm*residues[i];
     }
-
 
     /* Now find the smallest mass */
     int isz = 0;
@@ -114,14 +107,25 @@ namespace Chroma
       }
     }
 
+    // Temporary to work with.
+    multi1d<T> X(n_shift);
 
-    // For this algorithm, all the psi have to be 0 to start
+    // We need to make sure, that X is at least as big as the number
+    // of poles. We resize it if it is not big enough.
+    // However, it is allowed to be bigger.
+    if( X.size() <  n_shift ) { 
+      X.resize(n_shift);
+    }
+
+    // For this algorithm, all the X have to be 0 to start
     // Only is that way the initial residuum r = chi
-    psi[sub] = zero;
+    for(int i= 0; i < n_shift; ++i) { 
+      X[i][sub] = zero;
+    }
   
     T chi_internal;      moveToFastMemoryHint(chi_internal);
     chi_internal[sub] = chi;
-    moveToFastMemoryHint(psi,true);
+    moveToFastMemoryHint(X,true);
 
     FlopCounter flopcount;
     flopcount.reset();
@@ -133,7 +137,6 @@ namespace Chroma
     Double chi_norm_sq = norm2(chi_internal,sub);    flopcount.addSiteFlops(4*Nc*Ns,sub);
     Double chi_norm = sqrt(chi_norm_sq);
 
-    // Check RHS is not too small 
     if( toBool( chi_norm < fuzz )) 
     {
       swatch.stop();
@@ -142,16 +145,29 @@ namespace Chroma
 
       QDPIO::cout << "MInvCG2: " << n_count << " iterations" << endl;
       flopcount.report("minvcg2", swatch.getTimeInSeconds());
+
+      psi[sub] = zero;
+      for(int s=0; s < n_shift; s++) { 
+	psi[sub] += scaled_res[s]*X[s];
+      }
+      revertFromFastMemoryHint(X,false);
       revertFromFastMemoryHint(psi,true);
 
-      // The psi are all zero anyway at this point
-      // for(int i=0; i < n_shift; i++) { psi[i] = zero; }
+      // The X are all zero anyway at this point
+      // for(int i=0; i < n_shift; i++) { X[i] = zero; }
       END_CODE();
       return;
     }
 
-    Double rsdcg_sq = RsdCG * RsdCG;
-    Double rsd_sq = chi_norm_sq*rsdcg_sq;
+    multi1d<Double> rsd_sq(n_shift);
+    multi1d<Double> rsdcg_sq(n_shift);
+
+    Double cp = chi_norm_sq;
+    int s;
+    for(s = 0; s < n_shift; ++s)  {
+      rsdcg_sq[s] = RsdCG * RsdCG;  // RsdCG^2
+      rsd_sq[s] = Real(cp) * rsdcg_sq[s]; // || chi ||^2 RsdCG^2
+    }
 
   
     // r[0] := p[0] := Chi 
@@ -163,16 +179,12 @@ namespace Chroma
     p_0[sub] = chi_internal;
 
 
-    // Psi[0] := 0;
+    // X[0] := 0;
     multi1d<T> p(n_shift);   moveToFastMemoryHint(p);
     for(s = 0; s < n_shift; ++s) {
       p[s][sub] = chi_internal;                     // no flops
     }
 
-    multi1d<T> X(n_shift); moveToFastMemoryHint(X);
-    for(s = 0; s < n_shift; ++s) { 
-      X[s][sub] = zero;
-    }
 
     //  b[0] := - | r[0] |**2 / < p[0], Ap[0] > ;/
     //  First compute  d  =  < p, A.p > 
@@ -204,8 +216,7 @@ namespace Chroma
 
     iz = 1;
 
-    for(s = 0; s < n_shift; ++s)
-    {
+    for(s = 0; s < n_shift; ++s) {
       z[1-iz][s] = Double(1);
       // z[iz][s] = Double(1) / (Double(1) - (Double(poles[s])-Double(poles[isz]))*b);
       z[iz][s] = Double(1) / (Double(1) - Double(poles[s])*b);
@@ -213,11 +224,11 @@ namespace Chroma
     }
 
 
-    //  Psi[1] -= b[0] p[0] = - b[0] chi;
+    //  X[1] -= b[0] p[0] = - b[0] chi;
     for(s = 0; s < n_shift; ++s) {
       X[s][sub] = -Real(bs[s])*chi_internal;  flopcount.addSiteFlops(2*Nc*Ns,sub);
     }
-  
+
     //  c = |r[1]|^2   
     Double c = norm2(r,sub);   	       	         flopcount.addSiteFlops(4*Nc*Ns,sub);
 
@@ -227,20 +238,14 @@ namespace Chroma
       convsP[s] = false;
     }
 
-    bool convP = false;
-
-    psi[sub] = scaled_res[0]*X[0];     flopcount.addSiteFlops(2*Nc*Ns,sub);
-    for(s=1; s < n_shift; ++s) {
-      psi[sub] += scaled_res[s]*X[s];  flopcount.addSiteFlops(4*Nc*Ns,sub);
-    }
-
+    bool convP = toBool( c < rsd_sq[isz] );
 
 #if 0 
     QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << endl;
 #endif
 
     //  FOR k FROM 1 TO MaxCG DO
-    //  IF |psi[k+1] - psi[k]| <= RsdCG |psi[k+1]| THEN RETURN; 
+    //  IF |X[k+1] - X[k]| <= RsdCG |X[k+1]| THEN RETURN; 
     Double z0, z1;
     Double ztmp;
     Double cs;
@@ -248,10 +253,15 @@ namespace Chroma
     Double as;
     Double  bp;
     int k;
-  
+
+    psi[sub] = scaled_res[0]*X[0];
+    for(int i=1; i < n_shift; i++) { 
+      psi[sub] += scaled_res[i]*X[i];
+    }
+    Double psi_norm = norm2(psi,sub);
+
     for(k = 1; k <= MaxCG && !convP ; ++k)
     {
-
       //  a[k+1] := |r[k]|**2 / |r[k-1]|**2 ; 
       a = c/cp;
 
@@ -292,7 +302,6 @@ namespace Chroma
 
       // Compute the shifted bs and z 
       iz = 1 - iz;
-
       for(s = 0; s < n_shift; s++) {
       	if ( !convsP[s] ) {
 	  z0 = z[1-iz][s];
@@ -304,52 +313,47 @@ namespace Chroma
       }
 
 
-
-      //  X[k+1] -= b[k] p[k] ; 
-      for(s = 0; s < n_shift; ++s) {
-	if (! convsP[s] ) {
-	  X[s][sub] = Real(bs[s])*p[s];                 flopcount.addSiteFlops(2*Nc*Ns,sub);
-	}
-      }
-
-
-      //    IF |psi[k+1] - psi[k]| <= RsdCG |psi[k]| THEN RETURN;
+      //    IF |X[k+1] - X[k]| <= RsdCG |X[k+1]| THEN RETURN;
       // or IF |r[k+1]| <= RsdCG |chi| THEN RETURN;
       convP = true;
-      
-      for(s = 0; s < n_shift; s++) {
+      for(s = 0; s < n_shift; s++)  {
 	if (! convsP[s] ) {
 	  // Convergence methods 
 	  // Check norm of shifted residuals 
 	  Double css = c * z[iz][s]* z[iz][s];
-	  convsP[s] = toBool( css < rsd_sq ); 
+	  convsP[s] = toBool( css < rsd_sq[s] );
 	}
 	convP &= convsP[s];
       }
 
-      T vectmp;
-      vectmp[sub] = scaled_res[0]*X[0];    flopcount.addSiteFlops(4*Nc*Ns,sub);
-      for(s=1; s < n_shift; s++) { 
-	vectmp[sub] += scaled_res[s]*X[s]; flopcount.addSiteFlops(4*Nc*Ns,sub);
+
+      //  X[k+1] -= b[k] p[k] ; 
+      T Delta = zero;                     // The amount of change
+      psi[sub] = zero;                    // Rebuild psi
+      for(s = 0; s < n_shift; ++s) {      
+	if (! convsP[s] ) {
+	  T tmp;
+	  tmp[sub] = Real(bs[s])*p[s];       // This pole hasn't converged 
+                                          // yet so update solution
+	  X[s][sub] -= tmp;                  
+	  Delta[sub] += scaled_res[s]*tmp; // Accumulate "change vector" in the Xs
+
+	}
+	psi[sub] += scaled_res[s]*X[s];   // Accumualte psi (from X's)
       }
       
-      Double delta_s_norm = norm2(vectmp,sub); flopcount.addSiteFlops(4*Nc*Ns,sub);
-
-      // Sum up the psi
-      psi[sub] -= vectmp; flopcount.addSiteFlops(2*Nc*Ns,sub);
-      Double s_norm = norm2(psi,sub);  flopcount.addSiteFlops(4*Nc*Ns,sub);
-
-      bool convPSum = true;
-      convP |= toBool( delta_s_norm <  rsdcg_sq*s_norm );
-      
+      Double delta_norm = norm2(Delta,sub);
+      Double psi_norm = norm2(psi,sub);
+      convP |= toBool( delta_norm < rsdcg_sq[0]*psi_norm);
       n_count = k;
-    } 
+    }
 
     swatch.stop();
 
+
     QDPIO::cout << "MInvCG2Accum: " << n_count << " iterations" << endl;
-    flopcount.report("MInvCG2Accum", swatch.getTimeInSeconds());
-    revertFromFastMemoryHint(psi,true);
+    flopcount.report("minvcg", swatch.getTimeInSeconds());
+    revertFromFastMemoryHint(X,true);
 
     if (n_count == MaxCG) {
       QDP_error_exit("too many CG iterationns: %d\n", n_count);
@@ -360,15 +364,16 @@ namespace Chroma
   }
 
 
+
   /*! \ingroup invert */
   template<>
   void MInvCG2Accum(const LinearOperator<LatticeFermion>& M,
-	       const LatticeFermion& chi, 
-	       LatticeFermion& psi,
-	       const Real& norm,
-	       const multi1d<Real>& residues,
-	       const multi1d<Real>& poles, 
-	       const Real& RsdCG, 
+		    const LatticeFermion& chi, 
+		    LatticeFermion& psi,
+		    const Real& norm,
+		    const multi1d<Real>& residues,
+		    const multi1d<Real>& poles, 
+		    const Real& RsdCG, 
 	       int MaxCG,
 	       int& n_count)
   {
@@ -381,12 +386,12 @@ namespace Chroma
   void MInvCG2Accum(const DiffLinearOperator<LatticeFermion,
 	                               multi1d<LatticeColorMatrix>,
 	                               multi1d<LatticeColorMatrix> >& M,
-	       const LatticeFermion& chi, 
-	       LatticeFermion& psi,
-	       const Real& norm,
-	       const multi1d<Real>& residues,
-	       const multi1d<Real>& poles, 
-	       const Real& RsdCG, 
+		    const LatticeFermion& chi, 
+		    LatticeFermion& psi,
+		    const Real& norm,
+		    const multi1d<Real>& residues,
+		    const multi1d<Real>& poles, 
+		    const Real& RsdCG, 
 	       int MaxCG,
 	       int& n_count)
   {

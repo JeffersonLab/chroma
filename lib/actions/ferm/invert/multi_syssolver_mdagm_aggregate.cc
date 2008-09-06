@@ -1,9 +1,11 @@
-// $Id: multi_syssolver_mdagm_aggregate.cc,v 3.3 2006-09-20 20:28:00 edwards Exp $
+// $Id: multi_syssolver_mdagm_aggregate.cc,v 3.4 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
 
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
+
+#include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h"
 
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg_array.h"

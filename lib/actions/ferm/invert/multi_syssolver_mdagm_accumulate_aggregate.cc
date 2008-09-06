@@ -1,4 +1,4 @@
-// $Id: multi_syssolver_mdagm_accumulate_aggregate.cc,v 3.1 2008-09-02 20:10:18 bjoo Exp $
+// $Id: multi_syssolver_mdagm_accumulate_aggregate.cc,v 3.2 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -6,6 +6,7 @@
 #include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h"
 
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate_array.h"
 
 namespace Chroma
 {
@@ -23,6 +24,7 @@ namespace Chroma
       {
 	// Sources
 	success &= MdagMMultiSysSolverAccumulateCGEnv::registerAll();
+
 	registered = true;
       }
       return success;
@@ -30,7 +32,7 @@ namespace Chroma
   }
 
   /* This doesnt work yet */
-#if 0
+
   //! Registration aggregator
   namespace MdagMMultiSysSolverAccumulateArrayEnv
   {
@@ -50,6 +52,6 @@ namespace Chroma
       return success;
     }
   }
-#endif
+
 
 }

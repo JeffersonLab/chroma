@@ -1,10 +1,10 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_accumulate_factory.h,v 3.1 2008-09-02 20:10:18 bjoo Exp $
+// $Id: multi_syssolver_mdagm_accumulate_factory.h,v 3.2 2008-09-06 18:35:35 bjoo Exp $
 /*! \file
  *  \brief Factory for producing system solvers for MdagM*psi = chi
  */
 
-#ifndef __multi_syssolver_mdagm_accumualte_factory_h__
+#ifndef __multi_syssolver_mdagm_accumulate_factory_h__
 #define __multi_syssolver_mdagm_accumulate_factory_h__
 
 #include "singleton.h"
