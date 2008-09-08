@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: multi_syssolver_mdagm_cg.h,v 3.6 2008-09-02 20:10:18 bjoo Exp $
+// $Id: multi_syssolver_mdagm_cg.h,v 3.7 2008-09-08 20:05:24 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -77,6 +77,7 @@ namespace Chroma
 
 	SystemSolverResults_t res;
   	MInvCG2(*A, chi, psi, shifts, RsdCG, invParam.MaxCG, res.n_count);
+#if 0
 	XMLFileWriter& log = Chroma::getXMLLogInstance();
 	push(log, "MultiCG");
 	write(log, "shifts", shifts);
@@ -96,6 +97,7 @@ namespace Chroma
 	}
 	write(log, "ResidRel", r_rel);
 	pop(log);
+#endif
 	END_CODE();
 
 	return res;

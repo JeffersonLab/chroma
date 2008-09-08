@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.18 2008-01-21 20:18:50 edwards Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.19 2008-09-08 20:05:24 bjoo Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -54,7 +54,7 @@
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
-
+#include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
 
 
@@ -77,6 +77,7 @@ namespace Chroma
 	success &= LinOpSysSolverEnv::registerAll();
 	success &= MdagMSysSolverEnv::registerAll();
 	success &= MdagMMultiSysSolverEnv::registerAll();
+	success &= MdagMMultiSysSolverAccumulateEnv::registerAll();
 
 	// All 4D bcs
 	success &= WilsonTypeFermBCEnv::registerAll();
@@ -139,6 +140,7 @@ namespace Chroma
 	success &= LinOpSysSolverArrayEnv::registerAll();
 	success &= MdagMSysSolverArrayEnv::registerAll();
 	success &= MdagMMultiSysSolverArrayEnv::registerAll();
+	success &= MdagMMultiSysSolverAccumulateArrayEnv::registerAll();
 
 	// All 5D bcs
 	success &= WilsonTypeFermBCEnv::registerAll();

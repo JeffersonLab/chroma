@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_s.cc,v 3.3 2008-03-11 20:57:03 mcneile Exp $
+// $Id: fermacts_aggregate_s.cc,v 3.4 2008-09-08 20:05:24 bjoo Exp $
 /*! \file
  *  \brief All Staggered-type fermion actions
  */
@@ -13,7 +13,7 @@
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
-
+#include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_s.h"
 
 
@@ -36,6 +36,7 @@ namespace Chroma
 	success &= LinOpSysSolverEnv::registerAll();
 	success &= MdagMSysSolverEnv::registerAll();
 	success &= MdagMMultiSysSolverEnv::registerAll();
+        success &= MdagMMultiSysSolverAccumulateEnv::registerAll();
 
 	// All 4D bcs
 	success &= StaggeredTypeFermBCEnv::registerAll();
