@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.1 2008-04-21 03:18:52 edwards Exp $
+#  $Id: regres.pl,v 1.2 2008-09-08 21:37:50 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -13,9 +13,19 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/stoch_baryon/stoch_group_baryon.ini.xml" , 
-	 output      => "stoch_group_baryon.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/stoch_baryon/stoch_group_baryon.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/stoch_baryon/stoch_group_baryon.out.xml" ,
+	 input       => "$test_dir/chroma/hadron/stoch_group_meson/stoch_group_meson.ini.xml" , 
+	 aux_files   => ["$test_dir/chroma/hadron/stoch_group_meson/two_displace"] , 
+	 output      => "stoch_group_meson.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/stoch_group_meson/stoch_group_meson.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/stoch_group_meson/stoch_group_meson.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "make_meson_ops" , 
+	 input       => "$test_dir/chroma/hadron/stoch_group_meson/make_meson_ops.ini.xml" , 
+	 aux_files   => ["$test_dir/chroma/hadron/stoch_group_meson/test_meson"] , 
+	 output      => "make_meson_ops.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/stoch_group_meson/make_meson_ops.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/stoch_group_meson/make_meson_ops.out.xml" ,
      }
      );
