@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: fermact.h,v 3.5 2007-04-11 03:43:26 edwards Exp $
+// $Id: fermact.h,v 3.6 2008-09-08 16:00:19 bjoo Exp $
 
 /*! @file
  * @brief Class structure for fermion actions
@@ -21,7 +21,7 @@
 #include "actions/ferm/invert/syssolver_mdagm.h"
 #include "actions/ferm/invert/multi_syssolver_linop.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm.h"
-
+#include "actions/ferm/invert/multi_syssolver_mdagm_accumulate.h"
 namespace Chroma
 {
   //! Base class for quadratic matter actions (e.g., fermions)
@@ -201,6 +201,11 @@ namespace Chroma
     virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
 						 const GroupXML_t& invParam) const = 0;
 
+    //! Return a multi-shift accumulate solver.
+    //  for solving  A \sum_j p_j (MdagM + shift_j)^{-1} psi_j
+    virtual MdagMMultiSystemSolverAccumulate<T>* mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const = 0;
+
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */
     virtual SystemSolver<T>* qprop(Handle< FermState<T,P,Q> > state,
@@ -300,9 +305,26 @@ namespace Chroma
     virtual MdagMMultiSystemSolverArray<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
 						      const GroupXML_t& invParam) const = 0;
 
+
+
+    
+    //! Return a multi-shift accumulate solver.
+    //  for solving  A \sum_j p_j (MdagM + shift_j)^{-1} psi_j
+    virtual MdagMMultiSystemSolverAccumulateArray<T>* mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
+								   const GroupXML_t& invParam) const = 0;
+
+
     //! Return a multi-shift linear operator solver for this action to solve (PV^dag*PV+shift)*psi=chi 
     virtual MdagMMultiSystemSolverArray<T>* mInvMdagMPV(Handle< FermState<T,P,Q> > state,
 							const GroupXML_t& invParam) const = 0;
+
+
+    //! Return a multi-shift accumulate solver.
+    //  for solving  A \sum_j p_j (MdagM + shift_j)^{-1} psi_j
+    //  but for the PV.
+    virtual MdagMMultiSystemSolverAccumulateArray<T>* mInvMdagMPVAcc(Handle< FermState<T,P,Q> > state,
+							const GroupXML_t& invParam) const = 0;
+
 
     //! Return quark prop solver, solution of unpreconditioned system
     /*! Default implementation provided */

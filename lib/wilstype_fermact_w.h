@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wilstype_fermact_w.h,v 3.3 2007-12-12 21:42:58 bjoo Exp $
+// $Id: wilstype_fermact_w.h,v 3.4 2008-09-08 16:00:19 bjoo Exp $
 
 /*! @file
  * @brief Wilson-like fermion actions
@@ -55,6 +55,10 @@ namespace Chroma
     //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
     /*! Default implementation */
     virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const;
+
+    /*! Default implementation */
+    virtual MdagMMultiSystemSolverAccumulate<T>* mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
 						 const GroupXML_t& invParam) const;
 
     //! Given a complete propagator as a source, this does all the inversions needed
@@ -131,9 +135,20 @@ namespace Chroma
     virtual MdagMMultiSystemSolverArray<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
 						      const GroupXML_t& invParam) const;
 
-    //! Return a multi-shift linear operator solver for this action to solve (PV^dag*PV+shift)*psi=chi 
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMMultiSystemSolverAccumulateArray<T>* mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
+						      const GroupXML_t& invParam) const;
+
+
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
     /*! Default implementation provided */
     virtual MdagMMultiSystemSolverArray<T>* mInvMdagMPV(Handle< FermState<T,P,Q> > state,
+						      const GroupXML_t& invParam) const;
+
+    //! Return a multi-shift linear operator solver for this action to solve (PV^dag*PV+shift)*psi=chi 
+    /*! Default implementation provided */
+    virtual MdagMMultiSystemSolverAccumulateArray<T>* mInvMdagMPVAcc(Handle< FermState<T,P,Q> > state,
 							const GroupXML_t& invParam) const;
 
     //! Produce an unpreconditioned linear operator projecting 5D to 4D (the inverse of qprop below)

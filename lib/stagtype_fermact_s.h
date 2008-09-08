@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stagtype_fermact_s.h,v 3.2 2007-04-11 03:43:26 edwards Exp $
+// $Id: stagtype_fermact_s.h,v 3.3 2008-09-08 16:00:19 bjoo Exp $
 
 /*! @file
  * @brief Staggered-like fermion actions
@@ -48,6 +48,11 @@ namespace Chroma
     //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
     /*! Default implementation */
     virtual MdagMMultiSystemSolver<T>* mInvMdagM(Handle< FermState<T,P,Q> > state,
+						 const GroupXML_t& invParam) const;
+
+    //! Return a multi-shift linear operator solver for this action to solve (MdagM+shift)*psi=chi 
+    /*! Default implementation */
+    virtual MdagMMultiSystemSolverAccumulate<T>* mInvMdagMAcc(Handle< FermState<T,P,Q> > state,
 						 const GroupXML_t& invParam) const;
 
     //! Given a complete propagator as a source, this does all the inversions needed

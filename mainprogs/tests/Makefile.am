@@ -95,7 +95,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_aniso_sym_force \
     t_monomial_force \
     t_clover \
-    t_db
+    t_db \
+    t_solver_accum
 
 #
 # The programs and their dependencies
@@ -186,7 +187,7 @@ t_aniso_sym_force_SOURCES = t_aniso_sym_force.cc
 t_monomial_force_SOURCES = t_monomial_force.cc
 t_clover_SOURCES = t_clover.cc
 t_db_SOURCES = t_db.cc
-
+t_solver_accum_SOURCES = t_solver_accum.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

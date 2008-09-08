@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver.h,v 3.4 2008-09-02 20:10:49 bjoo Exp $
+// $Id: syssolver.h,v 3.5 2008-09-08 16:00:19 bjoo Exp $
 /*! @file
  * @brief Linear system solvers
  */
@@ -198,11 +198,11 @@ namespace Chroma
     virtual ~MultiSystemSolverAccumulateArray() {}
 
     //! Apply the operator onto a source vector
-    virtual SystemSolverResults_t operator() (T& psi, 
+    virtual SystemSolverResults_t operator() (multi1d<T>& psi, 
 					      const Real& norm,
 					      const multi1d<Real>& residues,
 					      const multi1d<Real>& poles, 
-					      const T& chi) const = 0;
+					      const multi1d<T>& chi) const = 0;
 
     //! Return the subset on which the operator acts
     virtual const Subset& subset() const = 0;

@@ -1,4 +1,4 @@
-// $Id: minvcg_accumulate_array.cc,v 3.1 2008-09-06 18:35:35 bjoo Exp $
+// $Id: minvcg_accumulate_array.cc,v 3.2 2008-09-08 16:00:19 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -403,16 +403,8 @@ namespace Chroma
       }
       flopcount.addSiteFlops(4*Nc*Ns*N, sub);
 
-      //  X[k+1] -= b[k] p[k] ; 
-      for(int s = 0; s < n_shift; ++s) {
-	if (! convsP[s] ) {
-	  for(int n=0; n < N; ++n) {
-	    X[s][n][sub] -= Real(bs[s])*p[s][n];
-	  }
-	  flopcount.addSiteFlops(4*Nc*Ns*N, sub);
-	}
-      }
 
+      // Check convergence
       //  c  =  | r[k] |**2 
       c = norm2(r,sub);	                
       flopcount.addSiteFlops(4*Nc*Ns*N, sub);
@@ -433,7 +425,7 @@ namespace Chroma
 	convP &= convsP[s];
       }
 
-      // Check accumulated result
+      // Check accumulated result -- modify X-s in the same loop
       multi1d<T> Delta(N);
       for(int n=0; n < N; n++) { 
 	Delta[n][sub] = zero;
@@ -448,6 +440,7 @@ namespace Chroma
 	    Delta[n][sub] += scaled_res[s]*tmp[n];
 	  }
 	}
+	// Always use the all the new X-s to update psi.
 	for(int n=0; n < N; n++) { 
 	  psi[n][sub] += scaled_res[s]*X[s][n];
 	}
