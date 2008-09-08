@@ -1,4 +1,4 @@
-// $Id: minvcg2_accum.cc,v 3.2 2008-09-06 18:35:34 bjoo Exp $
+// $Id: minvcg2_accum.cc,v 3.3 2008-09-08 18:40:55 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -94,10 +94,6 @@ namespace Chroma
 		  << n_shift << endl;
       QDP_abort(1);
     }
-    multi1d<Real> scaled_res(n_shift);
-    for(int i=0; i < n_shift; i++) {
-      scaled_res[i] = norm*residues[i];
-    }
 
     /* Now find the smallest mass */
     int isz = 0;
@@ -146,9 +142,9 @@ namespace Chroma
       QDPIO::cout << "MInvCG2: " << n_count << " iterations" << endl;
       flopcount.report("minvcg2", swatch.getTimeInSeconds());
 
-      psi[sub] = zero;
+      psi[sub] = norm*chi_internal;
       for(int s=0; s < n_shift; s++) { 
-	psi[sub] += scaled_res[s]*X[s];
+	psi[sub] += residues[s]*X[s];
       }
       revertFromFastMemoryHint(X,false);
       revertFromFastMemoryHint(psi,true);
@@ -254,11 +250,6 @@ namespace Chroma
     Double  bp;
     int k;
 
-    psi[sub] = scaled_res[0]*X[0];
-    for(int i=1; i < n_shift; i++) { 
-      psi[sub] += scaled_res[i]*X[i];
-    }
-    Double psi_norm = norm2(psi,sub);
 
     for(k = 1; k <= MaxCG && !convP ; ++k)
     {
@@ -329,17 +320,17 @@ namespace Chroma
 
       //  X[k+1] -= b[k] p[k] ; 
       T Delta = zero;                     // The amount of change
-      psi[sub] = zero;                    // Rebuild psi
+      psi[sub] = norm*chi_internal;                    // Rebuild psi
       for(s = 0; s < n_shift; ++s) {      
 	if (! convsP[s] ) {
 	  T tmp;
 	  tmp[sub] = Real(bs[s])*p[s];       // This pole hasn't converged 
                                           // yet so update solution
 	  X[s][sub] -= tmp;                  
-	  Delta[sub] += scaled_res[s]*tmp; // Accumulate "change vector" in the Xs
+	  Delta[sub] += residues[s]*tmp; // Accumulate "change vector" in the Xs
 
 	}
-	psi[sub] += scaled_res[s]*X[s];   // Accumualte psi (from X's)
+	psi[sub] += residues[s]*X[s];   // Accumualte psi (from X's)
       }
       
       Double delta_norm = norm2(Delta,sub);

@@ -1,4 +1,4 @@
-// $Id: t_solver_accum.cc,v 1.1 2008-09-08 16:01:50 bjoo Exp $
+// $Id: t_solver_accum.cc,v 1.2 2008-09-08 18:41:16 bjoo Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -154,11 +154,11 @@ int main(int argc, char **argv)
 	}
 	(*multi_solver)(temp_ferms, pfe.pole,rhs);
 	
-	Real ftmp = pfe.norm*pfe.res[0];
-	psi1[subset] = ftmp * temp_ferms[0];
-	for(int i=1; i < temp_ferms.size(); i++) { 
-	  ftmp = pfe.norm*pfe.res[i];
-	  psi1[subset] += ftmp * temp_ferms[i];
+
+	psi1[subset] = pfe.norm*rhs;
+
+	for(int i=0; i < temp_ferms.size(); i++) { 
+	  psi1[subset] += pfe.res[i] * temp_ferms[i];
 	}
       }
     
@@ -223,11 +223,13 @@ int main(int argc, char **argv)
       }
 
       (*multi_solver_5d)(tmp5, pfe.pole, rhs5);
-      
+
+      for(int n=0; n < N5; n++) {
+	psi5[n][sub5] = pfe.norm*rhs5[n];
+      }
       for(int i=0; i < pfe.pole.size(); i++) { 
-	Real ftmp = pfe.norm * pfe.res[i];
 	for(int n=0; n < N5; n++) { 
-	  psi5[n][sub5] += ftmp * tmp5[i][n];
+	  psi5[n][sub5] += pfe.res[i] * tmp5[i][n];
 	}
       }
     }

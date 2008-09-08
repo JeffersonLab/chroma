@@ -1,4 +1,4 @@
-// $Id: minvcg_accumulate_array.cc,v 3.2 2008-09-08 16:00:19 bjoo Exp $
+// $Id: minvcg_accumulate_array.cc,v 3.3 2008-09-08 18:40:55 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -124,10 +124,6 @@ namespace Chroma
       psi[i] = zero;
     }
 
-    multi1d<Real> scaled_res(n_shift);
-    for(int i=0; i < n_shift; i++) { 
-      scaled_res[i] = norm*residues[i];
-    }
 
     multi1d<T> r(N);
     multi1d< multi1d<T> > p(n_shift);
@@ -197,11 +193,11 @@ namespace Chroma
 
       // Accumulate psi
       for(int n=0; n < N; n++) { 
-	psi[n][sub]=zero;
+	psi[n][sub]=norm*chi_internal[n];
       }
       for(int s=0; s < n_shift; s++) {
 	for(int n=0; n < N; n++) { 
-	  psi[n][sub] += scaled_res[s]*X[s][n];
+	  psi[n][sub] += residues[s]*X[s][n];
 	}
       }
 
@@ -314,15 +310,6 @@ namespace Chroma
     Double  bp;
     int k;
 
-    // First value for psi, constructed from X-s
-    for(int i=0; i < N; i++) { 
-      psi[i][sub] = scaled_res[0]*X[0][i];
-    }
-    for(int s=1; s < n_shift; s++) { 
-      for(int i=0; i < N; i++) { 
-	psi[i][sub] = scaled_res[s]*X[s][i];
-      }
-    }
 
     for(k = 1; k <= MaxCG && !convP ; ++k)
     {
@@ -429,7 +416,7 @@ namespace Chroma
       multi1d<T> Delta(N);
       for(int n=0; n < N; n++) { 
 	Delta[n][sub] = zero;
-	psi[n][sub] = zero;
+	psi[n][sub] = norm*chi_internal[n];
       }
       for(int s=0 ; s < n_shift; s++) { 
 	if ( !convsP[s] ) { 
@@ -437,12 +424,12 @@ namespace Chroma
 	  for(int n=0; n < N; n++) { 
 	    tmp[n][sub] = Real(bs[s])*p[s][n];
 	    X[s][n][sub] -= tmp[n];
-	    Delta[n][sub] += scaled_res[s]*tmp[n];
+	    Delta[n][sub] += residues[s]*tmp[n];
 	  }
 	}
 	// Always use the all the new X-s to update psi.
 	for(int n=0; n < N; n++) { 
-	  psi[n][sub] += scaled_res[s]*X[s][n];
+	  psi[n][sub] += residues[s]*X[s][n];
 	}
       }
 
