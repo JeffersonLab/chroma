@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.5 2007-10-31 14:14:38 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.6 2008-09-08 21:37:27 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -128,6 +128,18 @@ for $file (&regresDirs())
 	mkpath([$canddir], 0, 0755);
 	chdir($canddir) || die "error cd $canddir : $!\n";
 
+	# Copy over to the regression dir any auxilliary files
+	my(@aux_files) =  @{$h->{"aux_files"}}; 
+
+	use File::Copy;
+	my $ff;
+	foreach $ff (@aux_files)
+	{
+#printf "Copy file $ff\n";
+	  copy($ff, $canddir) || die "Copy failed: $!";
+	}
+
+	# Execute
 	printf "%-15s", $execute;
 	if (-x "$exec_path/$execute")
 	{
