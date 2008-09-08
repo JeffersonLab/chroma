@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Params>
+  <FermionAction>
+    <FermAct>WILSON</FermAct>
+    <Kappa>0.10</Kappa>
+    <FermState>
+      <Name>SIMPLE_FERM_STATE</Name>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermState>
+  </FermionAction>
+
+   <FermionAction5D>
+    <FermAct>DWF</FermAct>
+    <Mass>0.010</Mass>
+    <OverMass>1.7</OverMass>
+    <N5>4</N5>
+    <FermState>
+      <Name>SIMPLE_FERM_STATE</Name>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermState>
+  </FermionAction5D>
+
+  <InvertParam>
+    <invType>CG_INVERTER</invType>
+    <RsdCG>1.0e-12</RsdCG>
+    <MaxCG>1000</MaxCG>
+  </InvertParam>
+
+  <Approximation>
+    <ratApproxType>READ_COEFFS</ratApproxType>
+    <Param><annotation>
+	Single Light Flavour, Force piece. Bounds are 5.0e-6 to 10 .
+	Because it is the force,  it is a square root, and assumes
+	1 pseudofermion field per flavor.
+      </annotation>
+      <lowerMin>8</lowerMin>
+      <upperMax>40</upperMax>
+      <numPower>-1</numPower>
+      <denPower>4</denPower>
+      <degree>4</degree>
+    </Param>
+    <ApproxInfo>
+      <lowerMin>8</lowerMin>
+      <upperMax>40</upperMax>
+      <degree>4</degree>
+      <error>2.54088289782852e-09</error>
+    </ApproxInfo>
+    <PFECoeffs>
+      <norm>0.166077145008607</norm>
+      <res>0.639587972322044 1.54014109870541 4.40363816473436 27.604227738445</res>
+      <pole>0.852779184641702 7.05342225132413 30.9343928193785 187.964357040492</pole>
+    </PFECoeffs>
+    <IPFECoeffs>
+      <norm>6.0212981138866</norm>
+      <res>-1.05745542037207 -6.22824814921148 -41.8984749956582 -1190.32232382461</res>
+      <pole>1.70245042750879 10.3444732815166 45.3680481045817 375.24368061874</pole>
+    </IPFECoeffs>
+  </Approximation>
+</Params>
