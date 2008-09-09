@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qqqNucNuc_w.h,v 3.4 2008-05-14 02:52:41 kostas Exp $
+// $Id: inline_qqqNucNuc_w.h,v 3.5 2008-09-09 20:30:42 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -34,6 +34,7 @@ namespace Chroma
     {
       int max_p2;
       bool doVectorMesons ;
+      bool doDecupletBar  ;
     } param;
 
     struct NamedObject_t

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: qqq_w.h,v 3.0 2006-04-03 04:59:00 edwards Exp $
+// $Id: qqq_w.h,v 3.1 2008-09-09 20:30:42 kostas Exp $
 /*! \file
  *  \brief constructs 3 quark propagators contracted at the sink
  */
@@ -88,6 +88,14 @@ namespace Chroma {
 };
 
   void compute_qqq(multi2d<ThreeQuarks>& qqq, 
+		   const LatticePropagator& q1,
+		   const LatticePropagator& q2,
+		   const LatticePropagator& q3,
+		   const SftMom& phases,
+		   int t0, int bc_spec
+		   ) ;
+
+  void compute_qqq(multi2d<ThreeQuarks>& qqq, const int k,
 		   const LatticePropagator& q1,
 		   const LatticePropagator& q2,
 		   const LatticePropagator& q3,
