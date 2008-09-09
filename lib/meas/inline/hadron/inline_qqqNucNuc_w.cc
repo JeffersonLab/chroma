@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.14 2008-09-09 20:30:42 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.15 2008-09-09 20:35:07 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -433,12 +433,14 @@ namespace Chroma
       if(params.qqq_file != "DONTDO_qqq"){
 	compute_qqq(qqq, qprop[0],qprop[0],qprop[0],phases,t0, bc_spec);
 	write_qqq(qqqto, qqq, phases, "nucleon",sink_type);
-	for(int k(0);k<Nd-1;k++){
-	  ostringstream tag ;
-	  tag<<"Delta_"<<k;
-	  compute_qqq(qqq,k,qprop[0],qprop[0],qprop[0],phases,t0);
-	  write_qqq(qqqto, qqq, phases, tag.str(), sink_type);
-	}
+	
+	if(params.param.doDecupletBar)
+	  for(int k(0);k<Nd-1;k++){
+	    ostringstream tag ;
+	    tag<<"Delta_"<<k;
+	    compute_qqq(qqq,k,qprop[0],qprop[0],qprop[0],phases,t0);
+	    write_qqq(qqqto, qqq, phases, tag.str(), sink_type);
+	  }
 
       }
 
@@ -464,12 +466,12 @@ namespace Chroma
 	  write_qqq(qqqto, qqq, phases, "xi",sink_type);
 
 	  if(params.param.doDecupletBar)
-	  for(int k(0);k<Nd-1;k++){
-	    ostringstream tag ;
-	    tag<<"Omega_"<<k;
-	    compute_qqq(qqq,k,qprop[1],qprop[1],qprop[1],phases,t0);
-	    write_qqq(qqqto, qqq, phases, tag.str(), sink_type);
-	  }
+	    for(int k(0);k<Nd-1;k++){
+	      ostringstream tag ;
+	      tag<<"Omega_"<<k;
+	      compute_qqq(qqq,k,qprop[1],qprop[1],qprop[1],phases,t0);
+	      write_qqq(qqqto, qqq, phases, tag.str(), sink_type);
+	    }
 
 	}
 	
