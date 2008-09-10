@@ -1,4 +1,4 @@
-// $Id: inline_qqqNucNuc_w.cc,v 3.16 2008-09-09 21:11:02 kostas Exp $
+// $Id: inline_qqqNucNuc_w.cc,v 3.17 2008-09-10 21:27:50 kostas Exp $
 /*! \file
  * \brief The QQQ and QQBAR object calculation
  *
@@ -435,7 +435,7 @@ namespace Chroma
 	write_qqq(qqqto, qqq, phases, "nucleon",sink_type);
 	
 	if(params.param.doDecupletBar)
-	  for(int k(0);k<Nd-1;k++){
+	  for(int k(1);k<Nd;k++){
 	    ostringstream tag ;
 	    tag<<"Delta_"<<k;
 	    compute_qqq(qqq, k,qprop[0],qprop[0],qprop[0],phases,t0, bc_spec);
@@ -466,7 +466,7 @@ namespace Chroma
 	  write_qqq(qqqto, qqq, phases, "xi",sink_type);
 
 	  if(params.param.doDecupletBar)
-	    for(int k(0);k<Nd-1;k++){
+	    for(int k(1);k<Nd;k++){
 	      ostringstream tag ;
 	      tag<<"Omega_"<<k;
 	      compute_qqq(qqq,k,qprop[1],qprop[1],qprop[1],phases,t0, bc_spec);
