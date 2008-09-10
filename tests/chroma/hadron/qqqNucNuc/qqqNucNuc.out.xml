@@ -4,7 +4,7 @@
 <chroma>
   <Input><chroma>
 <annotation>
-; $Id: qqqNucNuc.out.xml,v 3.6 2008-06-05 03:33:27 edwards Exp $
+; $Id: qqqNucNuc.out.xml,v 3.7 2008-09-10 21:24:27 kostas Exp $
 ;
 ; Test input for the qqqNucNuc program
 ;
@@ -277,11 +277,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.30.0</chroma>
-      <qdp>1.27.0</qdp>
+      <chroma>3.31.0</chroma>
+      <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 23:12:57 EDT</run_date>
+    <run_date>10 Sep 08 17:19:27 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -338,11 +338,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.0</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:57 EDT</run_date>
+          <run_date>10 Sep 08 17:19:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -438,11 +438,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.0</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:57 EDT</run_date>
+          <run_date>10 Sep 08 17:19:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -521,7 +521,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271203177</id>
+      <id>279649168</id>
     </make_source>
 
         </Source_file_info>
@@ -569,80 +569,80 @@
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>67</n_count>
-            <resid>1.490852e-07</resid>
+            <resid>1.522589e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>67</n_count>
-            <resid>1.491466e-07</resid>
+            <resid>1.404541e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>67</n_count>
-            <resid>1.466709e-07</resid>
+            <resid>1.377794e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>67</n_count>
-            <resid>1.615328e-07</resid>
+            <resid>1.438162e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>70</n_count>
-            <resid>1.559765e-07</resid>
+            <resid>1.443914e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>70</n_count>
-            <resid>1.621906e-07</resid>
+            <resid>1.644038e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>70</n_count>
-            <resid>1.679751e-07</resid>
+            <resid>1.533624e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>70</n_count>
-            <resid>1.409807e-07</resid>
+            <resid>1.620975e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>70</n_count>
-            <resid>1.64718e-07</resid>
+            <resid>1.371073e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>70</n_count>
-            <resid>1.825325e-07</resid>
+            <resid>1.942332e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>70</n_count>
-            <resid>1.609389e-07</resid>
+            <resid>1.545042e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>70</n_count>
-            <resid>1.589997e-07</resid>
+            <resid>1.554145e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>828</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.213164762321236 0.0406796409512657 0.0330189707948324 0.0295030868878228 0.0283761764057118 0.0295109040656188 0.0330075459071115 0.0406790371305194</prop_corr>
+          <prop_corr>0.213164761324948 0.0406796407410033 0.0330189709915401 0.0295030874059786 0.0283761778029514 0.0295109057495252 0.0330075475832087 0.0406790389474258</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -651,11 +651,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.0</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:58 EDT</run_date>
+          <run_date>10 Sep 08 17:19:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -734,7 +734,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271203177</id>
+      <id>279649168</id>
     </make_source>
 
         </Source_file_info>
@@ -782,80 +782,80 @@
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>63</n_count>
-            <resid>1.368603e-07</resid>
+            <resid>1.408122e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>63</n_count>
-            <resid>1.51821e-07</resid>
+            <resid>1.54189e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>63</n_count>
-            <resid>1.462252e-07</resid>
+            <resid>1.477732e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>63</n_count>
-            <resid>1.865408e-07</resid>
+            <resid>1.91135e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>63</n_count>
-            <resid>1.650799e-07</resid>
+            <resid>1.66746e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>63</n_count>
-            <resid>1.442863e-07</resid>
+            <resid>1.383923e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>63</n_count>
-            <resid>1.421812e-07</resid>
+            <resid>1.347713e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>63</n_count>
-            <resid>1.486297e-07</resid>
+            <resid>1.466087e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>63</n_count>
-            <resid>1.536948e-07</resid>
+            <resid>1.473822e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>63</n_count>
-            <resid>1.479115e-07</resid>
+            <resid>1.407679e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>63</n_count>
-            <resid>1.693345e-07</resid>
+            <resid>1.769812e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>63</n_count>
-            <resid>1.471321e-07</resid>
+            <resid>1.522317e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>756</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.218925732106393 0.0336649078591417 0.0231941944973117 0.0183243765838906 0.0168050780416652 0.0183264861141403 0.0231813860361609 0.033662421242163</prop_corr>
+          <prop_corr>0.218925727670164 0.0336649079662047 0.0231941948280313 0.0183243771327506 0.0168050784627616 0.0183264863732519 0.0231813861097229 0.0336624212581215</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -915,7 +915,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271203178</id>
+      <id>279649168</id>
     </propagator>
 
         </Prop_file_info>
@@ -980,10 +980,10 @@
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.213164762321236 0.0406796409512657 0.0330189707948324 0.0295030868878228 0.0283761764057118 0.0295109040656188 0.0330075459071115 0.0406790371305194</forward_prop_corr>
+          <forward_prop_corr>0.213164761324948 0.0406796407410033 0.0330189709915401 0.0295030874059786 0.0283761778029514 0.0295109057495252 0.0330075475832087 0.0406790389474258</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.213164762321236 0.0406796409512657 0.0330189707948324 0.0295030868878228 0.0283761764057118 0.0295109040656188 0.0330075459071115 0.0406790371305194</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.213164761324948 0.0406796407410033 0.0330189709915401 0.0295030874059786 0.0283761778029514 0.0295109057495252 0.0330075475832087 0.0406790389474258</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1059,7 +1059,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271203178</id>
+      <id>279649168</id>
     </propagator>
 
         </Prop_file_info>
@@ -1124,10 +1124,10 @@
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.213164762321236 0.0406796409512657 0.0330189707948324 0.0295030868878228 0.0283761764057118 0.0295109040656188 0.0330075459071115 0.0406790371305194</forward_prop_corr>
+          <forward_prop_corr>0.213164761324948 0.0406796407410033 0.0330189709915401 0.0295030874059786 0.0283761778029514 0.0295109057495252 0.0330075475832087 0.0406790389474258</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>3.08562370503534 0.0678126055691363 0.0325707810772114 0.0286266968761598 0.0275243682882631 0.0286554589577765 0.0325170653127772 0.0677828844176818</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>3.08562367366534 0.0678126064393624 0.0325707814910982 0.0286266970387499 0.0275243695945524 0.0286554602031224 0.0325170669882042 0.067782885241978</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1187,7 +1187,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271203179</id>
+      <id>279649168</id>
     </propagator>
 
         </Prop_file_info>
@@ -1252,10 +1252,10 @@
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.218925732106393 0.0336649078591417 0.0231941944973117 0.0183243765838906 0.0168050780416652 0.0183264861141403 0.0231813860361609 0.033662421242163</forward_prop_corr>
+          <forward_prop_corr>0.218925727670164 0.0336649079662047 0.0231941948280313 0.0183243771327506 0.0168050784627616 0.0183264863732519 0.0231813861097229 0.0336624212581215</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.218925732106393 0.0336649078591417 0.0231941944973117 0.0183243765838906 0.0168050780416652 0.0183264861141403 0.0231813860361609 0.033662421242163</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.218925727670164 0.0336649079662047 0.0231941948280313 0.0183243771327506 0.0168050784627616 0.0183264863732519 0.0231813861097229 0.0336624212581215</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1331,7 +1331,7 @@
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271203179</id>
+      <id>279649168</id>
     </propagator>
 
         </Prop_file_info>
@@ -1396,10 +1396,10 @@
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.218925732106393 0.0336649078591417 0.0231941944973117 0.0183243765838906 0.0168050780416652 0.0183264861141403 0.0231813860361609 0.033662421242163</forward_prop_corr>
+          <forward_prop_corr>0.218925727670164 0.0336649079662047 0.0231941948280313 0.0183243771327506 0.0168050784627616 0.0183264863732519 0.0231813861097229 0.0336624212581215</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>3.01179362864395 0.0594845597771359 0.0229992164456227 0.017781416906597 0.0162991124760279 0.017796406307095 0.0229570898845497 0.0594576879512819</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>3.01179356049566 0.0594845600772919 0.022999216760564 0.0177814174981341 0.0162991129342084 0.0177964065276584 0.0229570895951544 0.0594576863310685</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -1408,11 +1408,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.0</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:59 EDT</run_date>
+          <run_date>10 Sep 08 17:19:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1425,6 +1425,7 @@
           <Param>
             <max_p2>1</max_p2>
             <doVectorMesons>false</doVectorMesons>
+            <doDecupletBar>false</doDecupletBar>
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
@@ -1546,7 +1547,7 @@
 </Config_info>
               </ForwardProp>
               <Qprop_correlator>
-                <qp_corr>0.213164762321236 0.0406796409512657 0.0330189707948324 0.0295030868878228 0.0283761764057118 0.0295109040656188 0.0330075459071115 0.0406790371305194</qp_corr>
+                <qp_corr>0.213164761324948 0.0406796407410033 0.0330189709915401 0.0295030874059786 0.0283761778029514 0.0295109057495252 0.0330075475832087 0.0406790389474258</qp_corr>
               </Qprop_correlator>
             </elem>
             <elem>
@@ -1616,7 +1617,7 @@
 </Config_info>
               </ForwardProp>
               <Qprop_correlator>
-                <qp_corr>0.218925732106393 0.0336649078591417 0.0231941944973117 0.0183243765838906 0.0168050780416652 0.0183264861141403 0.0231813860361609 0.033662421242163</qp_corr>
+                <qp_corr>0.218925727670164 0.0336649079662047 0.0231941948280313 0.0183243771327506 0.0168050784627616 0.0183264863732519 0.0231813861097229 0.0336624212581215</qp_corr>
               </Qprop_correlator>
             </elem>
           </Propagator>
@@ -1634,11 +1635,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.0</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:13:05 EDT</run_date>
+          <run_date>10 Sep 08 17:19:31 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1651,6 +1652,7 @@
           <Param>
             <max_p2>1</max_p2>
             <doVectorMesons>false</doVectorMesons>
+            <doDecupletBar>false</doDecupletBar>
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
@@ -1788,7 +1790,7 @@
 </Config_info>
               </ForwardProp>
               <Qprop_correlator>
-                <qp_corr>3.08562370503534 0.0678126055691363 0.0325707810772114 0.0286266968761598 0.0275243682882631 0.0286554589577765 0.0325170653127772 0.0677828844176818</qp_corr>
+                <qp_corr>3.08562367366534 0.0678126064393624 0.0325707814910982 0.0286266970387499 0.0275243695945524 0.0286554602031224 0.0325170669882042 0.067782885241978</qp_corr>
               </Qprop_correlator>
             </elem>
             <elem>
@@ -1874,7 +1876,7 @@
 </Config_info>
               </ForwardProp>
               <Qprop_correlator>
-                <qp_corr>3.01179362864395 0.0594845597771359 0.0229992164456227 0.017781416906597 0.0162991124760279 0.017796406307095 0.0229570898845497 0.0594576879512819</qp_corr>
+                <qp_corr>3.01179356049566 0.0594845600772919 0.022999216760564 0.0177814174981341 0.0162991129342084 0.0177964065276584 0.0229570895951544 0.0594576863310685</qp_corr>
               </Qprop_correlator>
             </elem>
           </Propagator>
