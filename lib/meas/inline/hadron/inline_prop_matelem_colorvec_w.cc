@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.11 2008-09-01 01:44:00 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.12 2008-09-10 14:44:33 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -329,7 +329,7 @@ namespace Chroma
       push(xml_out, "PropMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": propagator calculation" << endl;
+      QDPIO::cout << name << ": propagator colorvector matrix element calculation" << endl;
 
       proginfo(xml_out);    // Print out basic program info
 
