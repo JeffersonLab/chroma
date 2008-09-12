@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.5 2008-08-21 21:11:22 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.6 2008-09-12 20:10:25 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -142,6 +142,45 @@ namespace Chroma
       }
 
 
+      //! Init a 3 unit vectors in an eigeninfo struct of T-s
+      /*! Impose site level orthogonality */
+      void unitInitEigenInfoLatColVec(const string& buffer_id)
+      {
+	// A shorthand for the object
+	TheNamedObjMap::Instance().create< EigenInfo<LatticeColorVector> >(buffer_id);
+	EigenInfo<LatticeColorVector>& obj=TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id);
+
+	// Use Nc vectors. There are only Nc site-level orthog. vectors in SU(N)
+	int N = Nc;
+	obj.getEvalues().resize(N);
+	obj.getEvectors().resize(N);
+
+	for(int m=0; m < N; ++m)
+	{
+	  ColorVector vec = zero;
+	  pokeColor(vec, cmplx(Real(1),Real(0)), m);
+
+	  obj.getEvalues()[m]  = zero;
+	  obj.getEvectors()[m] = vec;   // Same for all sites
+	}
+
+	// To get a time direction subset
+	SftMom phases(0, false, Nd-1);
+
+	// I haven't figure out what to put in here
+	XMLBufferWriter file_xml, record_xml;
+
+	push(file_xml,"FileXML");
+	pop(file_xml);
+
+	push(record_xml,"RecordXML");
+	pop(record_xml);
+
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+      }
+
+
       //! Init a faky gaussian MapObject Type of struct of keys and vals
       void gaussianInitMapObjKeyPropColorVecLatFerm(const string& buffer_id)
       {
@@ -226,6 +265,8 @@ namespace Chroma
 									  gaussianInitObj<LatticeStaggeredFermion>);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
 									  gaussianInitEigenInfo<LatticeColorVector>);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("UnitEigenInfoLatticeColorVector"), 
+									  unitInitEigenInfoLatColVec);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
 									  gaussianInitMapObjKeyPropColorVecLatFerm);
 
