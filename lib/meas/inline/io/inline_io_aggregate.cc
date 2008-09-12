@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 3.5 2008-06-29 20:16:39 edwards Exp $
+// $Id: inline_io_aggregate.cc,v 3.6 2008-09-12 19:47:06 jbulava Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
@@ -21,6 +21,7 @@
 #include "meas/inline/io/inline_usqcd_write_ddpairs_prop.h"
 
 #include "meas/inline/io/inline_eigen_bin_colvec_read_obj.h"
+#include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
 
 namespace Chroma
 {
@@ -56,6 +57,7 @@ namespace Chroma
 	success &= InlineNERSCWriteNamedObjEnv::registerAll();
 
 	success &= InlineEigenBinColVecReadNamedObjEnv::registerAll();
+	success &= InlineEigenLimeColVecReadNamedObjEnv::registerAll();
 
 	success &= InlineXMLWriteNamedObjEnv::registerAll();
 
