@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.160 2008-09-06 18:37:30 bjoo Exp $
+# $Id: Makefile.am,v 3.161 2008-09-12 20:14:27 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -793,6 +793,7 @@ nobase_include_HEADERS += \
 	meas/inline/io/inline_nersc_read_obj.h \
 	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_eigen_bin_colvec_read_obj.h \
+	meas/inline/io/inline_eigen_lime_colvec_read_obj.h \
 	meas/inline/io/inline_xml_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
@@ -1442,6 +1443,7 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_nersc_read_obj.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_eigen_bin_colvec_read_obj.cc \
+	meas/inline/io/inline_eigen_lime_colvec_read_obj.cc \
 	meas/inline/io/inline_xml_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
