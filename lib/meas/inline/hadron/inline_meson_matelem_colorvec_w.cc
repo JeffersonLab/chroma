@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.16 2008-09-13 19:56:40 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.17 2008-09-13 21:40:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -486,6 +486,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       //
