@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.161 2008-09-12 20:14:27 jbulava Exp $
+# $Id: Makefile.am,v 3.162 2008-09-13 19:54:20 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -275,6 +275,7 @@ nobase_include_HEADERS = \
 	meas/sources/source_smearing_aggregate.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
+	util/ferm/subset_vectors.h \
 	util/ft/sftmom.h util/ft/single_phase.h \
         util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
@@ -1063,6 +1064,7 @@ libchroma_a_SOURCES = \
         meas/sources/dilute_gauss_src_s.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc \
+	util/ferm/subset_vectors.cc \
         util/ft/sftmom.cc util/ft/single_phase.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
