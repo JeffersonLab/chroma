@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.25 2008-08-18 19:45:00 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.26 2008-09-13 19:15:39 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -56,11 +56,14 @@ namespace Chroma
 			{
 				case 1:
 					read(paramtop, "mom2_max", param.mom2_max);
+
+					/*
 					param.moms.resize(1,3);
 				
 					param.moms[0][0] = 0;
 					param.moms[0][1] = 0;
 					param.moms[0][2] = 0;
+					*/
 
 					break;
 
@@ -1131,8 +1134,26 @@ namespace Chroma
 
 			SftMom phases1(params.param.mom2_max, false, decay_dir);
 
-			SftMom phases2(params.param.moms, decay_dir);
+			multi2d<int> mom_temp;
+			switch (params.param.version)
+			{
+				case 1:
+					mom_temp.resize(1,3);
+					mom_temp[0][0] = 0;
+					mom_temp[0][1] = 0;
+					mom_temp[0][2] = 0;
 
+					break;
+				
+				case 2:
+	
+					mom_temp = params.param.moms;
+
+					break;
+
+			}
+
+			SftMom phases2(mom_temp, decay_dir);
 
       // Sanity check - if this doesn't work we have serious problems
       if (phases1.numSubsets() != QDP::Layout::lattSize()[decay_dir])
@@ -1497,10 +1518,12 @@ namespace Chroma
 				
 					params.param.moms.resize(num_mom,Nd -1);
 
+					
 					for (int mm = 0 ; mm < num_mom ; ++mm)
 						params.param.moms[mm] = phases1.numToMom(mm);
 
-						break;
+	
+					break;
 
 					case 2: 
 
