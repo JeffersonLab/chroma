@@ -63,7 +63,7 @@ foreach $n (1, 2, 3)
   if ($n == 2) {@rnd = (714, 1573, 3042, 517);}
   if ($n == 3) {@rnd = (123, 73, 42, 17);}
 
-#  foreach $t (0 .. $Lt-1)
+#  foreach $t (0 .. $Nt-1)
   foreach $t (0 .. 0)
   {
 print <<EOF;
@@ -169,84 +169,86 @@ EOF
 
 # Make the operators
 
-print <<EOF;
+#print <<EOF;
 
-    <elem>
-      <annotation>
-      ; STOCH_GROUP_BARYON input file.
-      </annotation>
+#    <elem>
+#      <annotation>
+#      ; STOCH_GROUP_BARYON input file.
+#      </annotation>
      
-      <Name>STOCH_GROUP_BARYON</Name>
-      <Frequency>1</Frequency>
-      <Param> 
-        <version>1</version>
-        <mom2_max>0</mom2_max>
-        <displacement_length>${disp_len}</displacement_length>
+#      <Name>STOCH_GROUP_BARYON</Name>
+#      <Frequency>1</Frequency>
+#      <Param> 
+#        <version>2</version>
+#        <moms>
+#					<elem>0 0 0</elem>
+#				</moms>
+#        <displacement_length>${disp_len}</displacement_length>
 
-       	<QuarkSmearing>
- 	  <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
-          <wvf_param>${sigma}</wvf_param>
-          <wvfIntPar>${n_sigma}</wvfIntPar>
-          <no_smear_dir>3</no_smear_dir>
-        </QuarkSmearing>
+#       	<QuarkSmearing>
+# 	  <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+#          <wvf_param>${sigma}</wvf_param>
+#          <wvfIntPar>${n_sigma}</wvfIntPar>
+#          <no_smear_dir>3</no_smear_dir>
+#        </QuarkSmearing>
 
-	<LinkSmearing>
-          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
-          <link_smear_fact>${rho}</link_smear_fact>
-          <link_smear_num>${n_rho}</link_smear_num>
-          <no_smear_dir>3</no_smear_dir>
-	</LinkSmearing>
+#	<LinkSmearing>
+#          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+					# <link_smear_fact>${rho}</link_smear_fact>
+					#         <link_smear_num>${n_rho}</link_smear_num>
+#          <no_smear_dir>3</no_smear_dir>
+#	</LinkSmearing>
      	
-	<QuarkDilutions>
-EOF
-foreach $n (1, 2, 3)
-{
-print <<EOF;
-          <elem>
-	    <DilutionType>DILUTION_QUARK_SOURCE_CONST_FERM</DilutionType>
-	      <version>1</version>
-	      <QuarkFiles>
-	      <TimeSliceFiles>
-EOF
-foreach $t (0 .. $Nt-1)
-{
-print <<EOF;
-                <elem>
-		  <DilutionFiles>
-EOF
-foreach $s (0 .. 0)
-{
-	print <<EOF;
-	            <elem>./zN_prop_q${n}_t${t}_sX_spc0.lime</elem>	
-EOF
-} #s
-print <<EOF;
-                  </DilutionFiles>
-                </elem>
-EOF
-} #t
+#	<QuarkDilutions>
+#EOF
+#foreach $n (1, 2, 3)
+#{
+#print <<EOF;
+#          <elem>
+#	    <DilutionType>DILUTION_QUARK_SOURCE_CONST_FERM</DilutionType>
+#	      <version>1</version>
+#	      <QuarkFiles>
+#	      <TimeSliceFiles>
+#EOF
+#foreach $t (0 .. $Nt-1)
+#{
+#print <<EOF;
+#                <elem>
+#		  <DilutionFiles>
+#EOF
+#foreach $s (0 .. 0)
+#{
+#	print <<EOF;
+#	            <elem>./zN_prop_q${n}_t${t}_sX_spc0.lime</elem>	
+#EOF
+#} #s
+#print <<EOF;
+#                  </DilutionFiles>
+#                </elem>
+#EOF
+#} #t
 
-print <<EOF;
-              </TimeSliceFiles>
-            </QuarkFiles>
-          </elem>
-EOF
+#print <<EOF;
+#              </TimeSliceFiles>
+#            </QuarkFiles>
+#          </elem>
+#EOF
 
-}#foreach n
+#}#foreach n
 
-print <<EOF;
-        </QuarkDilutions>	
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <operators_file>
-          <ops_file>${Elem_opFile}</ops_file>
-          <id>Nucleons</id>
-        </operators_file>
-        <Quark_ids>${quark_id}</Quark_ids>
-      </NamedObject>
-    </elem>
-EOF
+#print <<EOF;
+#        </QuarkDilutions>	
+#      </Param>
+#      <NamedObject>
+#        <gauge_id>default_gauge_field</gauge_id>
+#        <operators_file>
+#          <ops_file>${Elem_opFile}</ops_file>
+#          <id>Nucleons</id>
+#        </operators_file>
+#        <Quark_ids>${quark_id}</Quark_ids>
+#      </NamedObject>
+#    </elem>
+#EOF
 print <<EOF;
   </InlineMeasurements>
   <nrow>@{nrow}</nrow>
