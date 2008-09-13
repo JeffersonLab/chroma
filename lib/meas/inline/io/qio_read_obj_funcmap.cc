@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.12 2008-09-13 19:56:40 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.13 2008-09-13 20:18:42 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -366,7 +366,7 @@ namespace Chroma
 	// Extract number of EVs from XML
 	int N, decay_dir;
 	try { 
-	  XMLReader vec_xml("/AllVectors");
+	  XMLReader vec_xml(file_xml, "/AllVectors");
 
 	  read(vec_xml, "n_vec", N);
 	  read(vec_xml, "decay_dir", decay_dir);
