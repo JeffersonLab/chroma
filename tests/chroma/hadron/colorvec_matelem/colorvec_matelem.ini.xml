@@ -10,13 +10,64 @@
 
     <elem>
       <annotation>
-        Make a fake gaussian eigeninfo struct
+        Make a fake unit subset_vectors struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, write and erase this object.
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a fake gaussian subset_vectors struct
       </annotation>
       <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
-        <object_type>EigenInfoLatticeColorVector</object_type>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
     </elem>
 
@@ -46,6 +97,29 @@
         <file_name>./prop_colorvec.lime</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+      </NamedObject>
     </elem>
 
     <elem>

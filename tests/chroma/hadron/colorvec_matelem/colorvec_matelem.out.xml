@@ -13,13 +13,64 @@
 
     <elem>
       <annotation>
-        Make a fake gaussian eigeninfo struct
+        Make a fake unit subset_vectors struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, write and erase this object.
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a fake gaussian subset_vectors struct
       </annotation>
       <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
-        <object_type>EigenInfoLatticeColorVector</object_type>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
     </elem>
 
@@ -49,6 +100,29 @@
         <file_name>./prop_colorvec.lime</file_name>
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+      </NamedObject>
     </elem>
 
     <elem>
@@ -274,7 +348,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Sep 08 15:12:39 EDT</run_date>
+    <run_date>13 Sep 08 16:17:08 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -332,6 +406,29 @@
       </gaussian_init_named_obj>
     </elem>
     <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>unit_subset_vectors_0</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>unit_subset_vectors_0</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>unit_subset_vectors_0</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
       <gaussian_init_named_obj>
         <update_no>0</update_no>
       </gaussian_init_named_obj>
@@ -343,6 +440,18 @@
       </qio_write_erase_named_obj>
     </elem>
     <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
       <PropColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -351,7 +460,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:12:40 EDT</run_date>
+          <run_date>13 Sep 08 16:17:14 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -449,10 +558,10 @@
         </Source_record_info>
         <Source_correlators>
           <source_corrs>
-            <elem>1.0000000014269 1.00000000254677 0.999999999163169 1.00000000022136 1.00000000342205 1.00000000091359 1.00000000209165 0.999999996265698</elem>
-            <elem>1.00000000280036 1.00000000125202 0.999999994264612 1.00000000582397 0.999999998249038 1.00000000540859 0.999999998045267 0.999999997026065</elem>
-            <elem>0.999999997605156 0.999999995446401 1.00000000760921 1.00000000221294 0.999999995703041 0.999999996439752 0.999999997170186 1.00000000244613</elem>
-            <elem>0.999999995917949 1.000000006826 0.999999999366451 1.00000000064511 0.999999999602915 0.999999998685942 1.00000001284647 1.00000000040209</elem>
+            <elem>1.00000000393144 1.00000000501427 0.999999999384311 1.00000000423127 1.00000000153041 1.00000000447461 1.00000000027876 0.999999999808167</elem>
+            <elem>1.00000000033623 1.0000000028979 1.00000000023849 0.999999993079775 1.00000000393894 0.999999999622586 1.00000001133914 1.00000000397227</elem>
+            <elem>1.00000000284892 0.999999995288074 0.999999992490977 1.00000000480525 1.00000000048194 1.00000000475059 1.00000000050739 0.999999996882558</elem>
+            <elem>0.999999997221682 0.999999989933913 1.00000000417779 0.999999999473719 0.999999997352113 0.999999992016284 0.999999997626443 0.999999991714444</elem>
           </source_corrs>
         </Source_correlators>
         <Relaxation_Iterations>
@@ -481,7 +590,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:12:43 EDT</run_date>
+          <run_date>13 Sep 08 16:17:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -553,10 +662,10 @@
         </Source_record_info>
         <Source_correlators>
           <source_corrs>
-            <elem>1.0000000014269 1.00000000254677 0.999999999163169 1.00000000022136 1.00000000342205 1.00000000091359 1.00000000209165 0.999999996265698</elem>
-            <elem>1.00000000280036 1.00000000125202 0.999999994264612 1.00000000582397 0.999999998249038 1.00000000540859 0.999999998045267 0.999999997026065</elem>
-            <elem>0.999999997605156 0.999999995446401 1.00000000760921 1.00000000221294 0.999999995703041 0.999999996439752 0.999999997170186 1.00000000244613</elem>
-            <elem>0.999999995917949 1.000000006826 0.999999999366451 1.00000000064511 0.999999999602915 0.999999998685942 1.00000001284647 1.00000000040209</elem>
+            <elem>1.00000000393144 1.00000000501427 0.999999999384311 1.00000000423127 1.00000000153041 1.00000000447461 1.00000000027876 0.999999999808167</elem>
+            <elem>1.00000000033623 1.0000000028979 1.00000000023849 0.999999993079775 1.00000000393894 0.999999999622586 1.00000001133914 1.00000000397227</elem>
+            <elem>1.00000000284892 0.999999995288074 0.999999992490977 1.00000000480525 1.00000000048194 1.00000000475059 1.00000000050739 0.999999996882558</elem>
+            <elem>0.999999997221682 0.999999989933913 1.00000000417779 0.999999999473719 0.999999997352113 0.999999992016284 0.999999997626443 0.999999991714444</elem>
           </source_corrs>
         </Source_correlators>
         <ColorVecMatElems>
@@ -575,7 +684,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:12:44 EDT</run_date>
+          <run_date>13 Sep 08 16:17:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -726,7 +835,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Sep 08 15:12:46 EDT</run_date>
+          <run_date>13 Sep 08 16:17:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
