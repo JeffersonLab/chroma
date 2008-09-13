@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.11 2008-08-21 21:11:22 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.12 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -9,6 +9,7 @@
 
 #include "meas/hadron/diquark_w.h"
 #include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/map_obj.h"
 #include "actions/ferm/invert/containers.h"
@@ -347,22 +348,11 @@ namespace Chroma
 
 
       //------------------------------------------------------------------------
-      void QIOReadEigenInfoLatticeColorVector(const string& buffer_id,
-					      const string& file,
-					      QDP_serialparallel_t serpar)
+      template<typename T>
+      void QIOReadSubsetVectors(const string& buffer_id,
+				const string& file,
+				QDP_serialparallel_t serpar)
       {
-	multi1d<Real64> evalsD;
-
-	// RGE: I BELIEVE ALL THE COMPLAINTS BELOW ARE NOW FIXED IN QDP++,
-	// BUT I DO NOT WANT TO REMOVE THE CODE YET - CANNOT BE BOTHERED DEBUGGING
-
-	// BUG? Need to read these as an array even though there is only one
-	// and also I need to know in advance the array size.
-	multi1d<Real64> largestD(1);
-
-	// Would like this to be double, but casting double prec to single prec doesn't work.
-	LatticeColorVector evecD;
-
 	// Stuff 
 	XMLReader file_xml, record_xml, largest_record_xml;
 
@@ -370,62 +360,41 @@ namespace Chroma
 	QDPFileReader to(file_xml,file,serpar);
 
 	// Create object
-	TheNamedObjMap::Instance().create< EigenInfo<LatticeColorVector> >(buffer_id);
-
-	// Read largest ev plus XML file containing number of eval/evec pairs
-	read(to, largest_record_xml, largestD);
+	TheNamedObjMap::Instance().create< SubsetVectors<T> >(buffer_id);
+	SubsetVectors<T>& obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(buffer_id);
 
 	// Extract number of EVs from XML
-	int size;
+	int N, decay_dir;
 	try { 
-	  read(largest_record_xml, "/NumElem/n_vec", size);
+	  XMLReader vec_xml("/AllVectors");
+
+	  read(vec_xml, "n_vec", N);
+	  read(vec_xml, "decay_dir", decay_dir);
 	}
 	catch(const std::string& e) { 
 	  QDPIO::cerr<< "Caught Exception while reading XML: " << e << endl;
 	  QDP_abort(1);
 	}
 
-	// Set largest EV
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id).getLargest()=largestD[0];
-
-	// REsize eval arrays so that IO works correctly
-	evalsD.resize(size);
-
-	// Read evals
-	read(to, record_xml, evalsD);
-
-	QDPIO::cout << "Read " << evalsD.size() << "Evals " << endl;
-	for(int i=0; i < evalsD.size(); i++) { 
-	  QDPIO::cout << "Eval["<<i<<"] = " << Real(evalsD[i]) << endl;
-	}
-
-	// Resize eval array 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id).getEvalues().resize(evalsD.size());
-      
-	// Downcast evals to Real() precision
-	for (int i=0; i<evalsD.size(); i++)
-	  TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id).getEvalues()[i] = Real(evalsD[i]);
-
-
-	// Resize evec arrays
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id).getEvectors().resize(evalsD.size());
+	// Resize arrays
+	const int Lt = QDP::Layout::lattSize()[decay_dir];
+	obj.getEvectors().resize(N);
+	obj.getEvalues().resize(N);
 
 	// Loop and read evecs
-	for (int i=0; i<evalsD.size(); i++)
+	for(int n=0; n < N; n++)
 	{
 	  XMLReader record_xml_dummy;
-	  read(to, record_xml_dummy, evecD);
-	  LatticeColorVector evecR;
-	  evecR=evecD;
 
-	  (TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id).getEvectors())[i]=evecR;
+	  read(to, record_xml_dummy, obj.getEvectors()[n]);
+	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalues()[n].weights);
 	}
  
 	// Set File and Record XML throw away dummy XMLs
 	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
 
-	// Done - That too was unnecessarily painful
+	// Done
 	close(to);
       }
 
@@ -587,8 +556,8 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"),
 								     QIOReadEigenInfoLatticeFermion);
 
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"),
-								     QIOReadEigenInfoLatticeColorVector);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"),
+								     QIOReadSubsetVectors<LatticeColorVector>);
 
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);

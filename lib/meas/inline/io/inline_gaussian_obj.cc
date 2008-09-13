@@ -1,4 +1,4 @@
-// $Id: inline_gaussian_obj.cc,v 3.6 2008-09-12 20:10:25 edwards Exp $
+// $Id: inline_gaussian_obj.cc,v 3.7 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Inline task to gaussian init a named object
  *
@@ -13,7 +13,7 @@
 #include "meas/inline/io/named_objmap.h"
 #include "meas/inline/io/inline_gaussian_obj.h"
 
-#include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/map_obj.h"
 
@@ -82,45 +82,50 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
       }
 
-      //! Init a faky gaussian eigeninfo struct of T-s
+      //! Init a faky gaussian subset of vectors over T-s
       template<typename T>
-      void gaussianInitEigenInfo(const string& buffer_id)
+      void gaussianInitSubsetVectors(const string& buffer_id)
       {
 	// A shorthand for the object
-	TheNamedObjMap::Instance().create< EigenInfo<T> >(buffer_id);
-	EigenInfo<T>& obj=TheNamedObjMap::Instance().getData< EigenInfo<T> >(buffer_id);
+	TheNamedObjMap::Instance().create< SubsetVectors<T> >(buffer_id);
+	SubsetVectors<T>& obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(buffer_id);
+
+	// To get a time direction subset
+	int decay_dir = Nd-1;
+	SftMom phases(0, false, decay_dir);
+	const int Lt = phases.numSubsets();
 
 	// Put 4 in here just for fun
 	int N = 4;
-	obj.getEvalues().resize(N);
 	obj.getEvectors().resize(N);
+	obj.getEvalues().resize(N);
+	obj.getDecayDir() = decay_dir;
 
-	for(int m=0; m < N; ++m)
+ 	for(int n=0; n < N; ++n)
 	{
-	  random(obj.getEvalues()[m]);
-	  gaussian(obj.getEvectors()[m]);
+	  obj.getEvalues()[n].weights.resize(Lt);
+	  gaussian(obj.getEvectors()[n]);
 	}
 
 	//
 	// Orthogonalize the vectors
 	//
-	// To get a time direction subset
-	SftMom phases(0, false, Nd-1);
-
 	// Do this the inefficient way - loop over all subsets
-	for(int t=0; t < phases.numSubsets(); ++t)
+	for(int t=0; t < Lt; ++t)
 	{
 	  const Subset& s = phases.getSet()[t];
 
-	  for(int m=0; m < N; ++m)
+	  for(int n=0; n < N; ++n)
 	  {
-	    // Convenience
-	    T& v = obj.getEvectors()[m];
+	    random(obj.getEvalues()[n].weights[t]);
 
-	    if (m > 0)
+	    // Convenience
+	    T& v = obj.getEvectors()[n];
+
+	    if (n > 0)
 	    {
-	      // Orthogonalize this vector against the previous "m" of them
-	      GramSchm(v, obj.getEvectors(), m, s);
+	      // Orthogonalize this vector against the previous "n" of them
+	      GramSchm(v, obj.getEvectors(), n, s);
 	    }
 
 	    // Normalize
@@ -144,28 +149,30 @@ namespace Chroma
 
       //! Init a 3 unit vectors in an eigeninfo struct of T-s
       /*! Impose site level orthogonality */
-      void unitInitEigenInfoLatColVec(const string& buffer_id)
+      void unitInitSubsetVectorsLatColVec(const string& buffer_id)
       {
 	// A shorthand for the object
-	TheNamedObjMap::Instance().create< EigenInfo<LatticeColorVector> >(buffer_id);
-	EigenInfo<LatticeColorVector>& obj=TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(buffer_id);
+	TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(buffer_id);
+	SubsetVectors<LatticeColorVector>& obj=TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(buffer_id);
+	// Time extent
+	int decay_dir = Nd-1;
+	const int Lt = QDP::Layout::lattSize()[decay_dir];
 
 	// Use Nc vectors. There are only Nc site-level orthog. vectors in SU(N)
 	int N = Nc;
-	obj.getEvalues().resize(N);
 	obj.getEvectors().resize(N);
+	obj.getEvalues().resize(N);
+	obj.getDecayDir() = decay_dir;
 
-	for(int m=0; m < N; ++m)
+	for(int n=0; n < N; ++n)
 	{
 	  ColorVector vec = zero;
-	  pokeColor(vec, cmplx(Real(1),Real(0)), m);
+	  pokeColor(vec, cmplx(Real(1),Real(0)), n);
 
-	  obj.getEvalues()[m]  = zero;
-	  obj.getEvectors()[m] = vec;   // Same for all sites
+	  obj.getEvectors()[n] = vec;   // Same for all sites
+	  obj.getEvalues()[n].weights.resize(Lt);
+	  obj.getEvalues()[n].weights = zero;  // There are all zero for the constant field
 	}
-
-	// To get a time direction subset
-	SftMom phases(0, false, Nd-1);
 
 	// I haven't figure out what to put in here
 	XMLBufferWriter file_xml, record_xml;
@@ -263,10 +270,10 @@ namespace Chroma
 									  gaussianInitObj<LatticeStaggeredPropagator>);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
 									  gaussianInitObj<LatticeStaggeredFermion>);
-	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
-									  gaussianInitEigenInfo<LatticeColorVector>);
-	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("UnitEigenInfoLatticeColorVector"), 
-									  unitInitEigenInfoLatColVec);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+									  gaussianInitSubsetVectors<LatticeColorVector>);
+	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("UnitSubsetVectorsLatticeColorVector"), 
+									  unitInitSubsetVectorsLatColVec);
 	success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
 									  gaussianInitMapObjKeyPropColorVecLatFerm);
 

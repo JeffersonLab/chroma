@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.15 2008-09-01 01:43:34 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.16 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -10,7 +10,7 @@
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/glue/mesplq.h"
 #include "meas/smear/disp_colvec_map.h"
-#include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_val_db.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -417,7 +417,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
       }
       catch( std::bad_cast ) 
       {
@@ -432,8 +432,8 @@ namespace Chroma
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      const EigenInfo<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
+      const SubsetVectors<LatticeColorVector>& eigen_source = 
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
@@ -628,6 +628,8 @@ namespace Chroma
 
 	push(file_xml, "MesonElementalOperators");
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info",displacement_list);

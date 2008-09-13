@@ -1,4 +1,4 @@
-// $Id: inline_prop_colorvec_w.cc,v 1.3 2008-08-16 05:07:13 edwards Exp $
+// $Id: inline_prop_colorvec_w.cc,v 1.4 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -9,7 +9,7 @@
 #include "meas/inline/hadron/inline_prop_colorvec_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/transf.h"
@@ -261,7 +261,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a named buffer" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
@@ -281,8 +281,8 @@ namespace Chroma
 	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
 	QDP_abort(1);
       }
-      const EigenInfo<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
+      const SubsetVectors<LatticeColorVector>& eigen_source = 
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
@@ -314,7 +314,7 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	multi1d< multi1d<Double> > source_corrs(eigen_source.getEvalues().size());
+	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
 	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvectors()[m]), phases.getSet());
@@ -326,11 +326,11 @@ namespace Chroma
       }
 
       // Another sanity check
-      if (params.param.contract.num_vecs > eigen_source.getEvalues().size())
+      if (params.param.contract.num_vecs > eigen_source.getNumVectors())
       {
 	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.contract.num_vecs
 		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.getEvalues().size() << endl;
+		    << eigen_source.getNumVectors() << endl;
 	QDP_abort(1);
       }
 

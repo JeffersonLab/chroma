@@ -1,4 +1,4 @@
-// $Id: inline_eigen_lime_colvec_read_obj.cc,v 3.1 2008-09-12 19:47:06 jbulava Exp $
+// $Id: inline_eigen_lime_colvec_read_obj.cc,v 3.2 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -11,7 +11,7 @@
 #include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 
 namespace Chroma 
 { 
@@ -145,11 +145,12 @@ namespace Chroma
 	
 	typedef LatticeColorVector T;
 
-	TheNamedObjMap::Instance().create< EigenInfo<T> >(params.named_obj.object_id);
-	EigenInfo<T>& eigen = TheNamedObjMap::Instance().getData< EigenInfo<T> >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
+	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
 	eigen.getEvalues().resize(params.file.file_names.size());
 	eigen.getEvectors().resize(params.file.file_names.size());
+	eigen.getDecayDir() = Nd-1;
 
 	// Read the object
 	swatch.start();
@@ -159,33 +160,31 @@ namespace Chroma
 	XMLBufferWriter final_file_xml;
 
 	XMLBufferWriter final_record_xml;
-	push(final_record_xml, "EigenInfo");
+	push(final_record_xml, "SubsetVectors");
 	push(final_record_xml, "InfoArray");
 
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
-		XMLReader curr_file_xml;
-		XMLReader curr_record_xml;
+	  XMLReader curr_file_xml;
+	  XMLReader curr_record_xml;
 
-		std::string filename = params.file.file_names[i];
-		QDPFileReader rdr(curr_file_xml, filename, QDPIO_SERIAL);
+	  std::string filename = params.file.file_names[i];
+	  QDPFileReader rdr(curr_file_xml, filename, QDPIO_SERIAL);
 
 	  read(rdr, curr_record_xml, eigen.getEvectors()[i]);
 		
-		multi1d<Real> evals;
-		read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
+	  multi1d<Real> evals;
+	  read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
 
-		eigen.getEvalues()[i] = evals[0]; //This is silly. Need to 
-																			//Redo EigenInfo class to hold all 
-																			//the eigenvalues
+	  eigen.getEvalues()[i].weights = evals; // Copies all the weights
 
-		write(final_record_xml, "elem", curr_record_xml);
+	  write(final_record_xml, "elem", curr_record_xml);
 
-		//Plop some info into the file xml only once 
-		if (i == 0 )
-		{
-			write(final_file_xml, "Input", curr_file_xml);
-		}
+	  //Plop some info into the file xml only once 
+	  if (i == 0 )
+	  {
+	    write(final_file_xml, "Input", curr_file_xml);
+	  }
 	
 	}
 
@@ -193,8 +192,6 @@ namespace Chroma
 	pop(final_record_xml);
 	
 	swatch.stop();
-
-
 
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(final_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(final_record_xml);

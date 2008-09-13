@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.10 2008-08-21 21:11:22 edwards Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.11 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -10,6 +10,7 @@
 #include "meas/hadron/diquark_w.h"
 #include "util/info/unique_id.h"
 #include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/map_obj.h"
 #include "actions/ferm/invert/containers.h"
@@ -376,6 +377,41 @@ namespace Chroma
       }
 
       //------------------------------------------------------------------------
+      template<typename T>
+      void QIOWriteSubsetVectors(const string& buffer_id,
+				 const string& file,
+				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	// A shorthand for the object
+	SubsetVectors<T>& obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(buffer_id);
+
+	// Write number of EVs to XML
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "AllVectors");
+	write(file_xml, "n_vec", obj.getNumVectors());
+	write(file_xml, "decay_dir", obj.getDecayDir());
+	pop(file_xml);
+
+	// Open file
+	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+
+	// Loop and read evecs
+	for(int n=0; n < obj.getNumVectors(); n++)
+	{
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "VectorInfo");
+	  write(record_xml, "weights", obj.getEvalues()[n].weights);
+	  pop(record_xml);
+
+	  write(to, record_xml, obj.getEvectors()[n]);
+	}
+
+	// Done
+	close(to);
+      }
+
+      //------------------------------------------------------------------------
       //! Write out an RitzPairs Type
       void QIOWriteRitzPairsLatticeFermion(const string& buffer_id,
 					   const string& file,
@@ -493,8 +529,8 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeColorVector"), 
-								      QIOWriteEigenInfo<LatticeColorVector>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+								      QIOWriteSubsetVectors<LatticeColorVector>);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);

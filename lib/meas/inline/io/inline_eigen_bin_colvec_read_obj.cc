@@ -1,4 +1,4 @@
-// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.3 2008-06-29 21:26:23 edwards Exp $
+// $Id: inline_eigen_bin_colvec_read_obj.cc,v 3.4 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -11,7 +11,7 @@
 #include "meas/inline/io/inline_eigen_bin_colvec_read_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 
 namespace Chroma 
 { 
@@ -145,11 +145,14 @@ namespace Chroma
 	
 	typedef LatticeColorVector T;
 
-	TheNamedObjMap::Instance().create< EigenInfo<T> >(params.named_obj.object_id);
-	EigenInfo<T>& eigen = TheNamedObjMap::Instance().getData< EigenInfo<T> >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
+	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
 	eigen.getEvalues().resize(params.file.file_names.size());
 	eigen.getEvectors().resize(params.file.file_names.size());
+	eigen.getDecayDir() = Nd-1;
+
+	const int Lt = QDP::Layout::lattSize()[eigen.getDecayDir()];
 
 	// Read the object
 	swatch.start();
@@ -158,17 +161,22 @@ namespace Chroma
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
 	  read(bin, eigen.getEvectors()[i]);
-	  read(bin, eigen.getEvalues()[i]);  // only read the first time slice for the ev - there are Lt of them
+
+	  eigen.getEvalues()[i].weights.resize(Lt);
+	  for(int t=0; t < Lt; ++t)
+	  {
+	    read(bin, eigen.getEvalues()[i].weights[t]);
+	  }
 	}
 
 	swatch.stop();
 
 	XMLBufferWriter file_xml;
-	push(file_xml, "EigenInfo");
+	push(file_xml, "SubsetVectors");
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;
-	push(record_xml, "EigenInfo");
+	push(record_xml, "SubsetVectors");
 	pop(record_xml);
 
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);

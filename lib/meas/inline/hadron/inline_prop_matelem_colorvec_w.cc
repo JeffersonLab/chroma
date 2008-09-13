@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.12 2008-09-10 14:44:33 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.13 2008-09-13 19:56:40 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -9,7 +9,7 @@
 #include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/eigeninfo.h"
+#include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_val_db.h"
@@ -354,7 +354,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a named buffer. Check for the prop map" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.prop_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
@@ -375,8 +375,8 @@ namespace Chroma
 	QDPIO::cerr << name << ": error extracting source_header or prop map: " << e << endl;
 	QDP_abort(1);
       }
-      const EigenInfo<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
+      const SubsetVectors<LatticeColorVector>& eigen_source = 
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       // Cast should be valid now
       const MapObject<KeyPropColorVec_t,LatticeFermion>& map_obj =
@@ -390,7 +390,7 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	multi1d< multi1d<Double> > source_corrs(eigen_source.getEvalues().size());
+	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
 	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvectors()[m]), phases.getSet());
@@ -402,11 +402,11 @@ namespace Chroma
       }
 
       // Another sanity check
-      if (params.param.num_vecs > eigen_source.getEvalues().size())
+      if (params.param.num_vecs > eigen_source.getNumVectors())
       {
 	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.num_vecs
 		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.getEvalues().size() << endl;
+		    << eigen_source.getNumVectors() << endl;
 	QDP_abort(1);
       }
 
@@ -523,6 +523,8 @@ namespace Chroma
 
 	push(file_xml, "PropElementalOperators");
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
