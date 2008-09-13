@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.273 2008-09-12 20:14:27 jbulava Exp $
+# $Id: Makefile.in,v 3.274 2008-09-13 19:54:37 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -332,7 +332,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
 	meas/sources/zN_src.cc meas/sources/dilute_gauss_src_s.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
+	util/ferm/tdiractodr.cc util/ferm/transf.cc \
+	util/ferm/subset_vectors.cc util/ft/sftmom.cc \
 	util/ft/single_phase.cc util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/gauge_init_aggregate.cc \
@@ -881,28 +882,29 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	source_smearing_aggregate.$(OBJEXT) srcfil.$(OBJEXT) \
 	z2_src.$(OBJEXT) zN_src.$(OBJEXT) dilute_gauss_src_s.$(OBJEXT) \
 	diractodr.$(OBJEXT) paulitodr.$(OBJEXT) tdiractodr.$(OBJEXT) \
-	transf.$(OBJEXT) sftmom.$(OBJEXT) single_phase.$(OBJEXT) \
-	eesu3.$(OBJEXT) eeu1.$(OBJEXT) expm12.$(OBJEXT) \
-	expmat.$(OBJEXT) expsu3.$(OBJEXT) gauge_startup.$(OBJEXT) \
-	gauge_init_aggregate.$(OBJEXT) milc_gauge_init.$(OBJEXT) \
-	nersc_gauge_init.$(OBJEXT) szin_gauge_init.$(OBJEXT) \
-	szinqio_gauge_init.$(OBJEXT) kyu_gauge_init.$(OBJEXT) \
-	disordered_gauge_init.$(OBJEXT) unit_gauge_init.$(OBJEXT) \
-	cppacs_gauge_init.$(OBJEXT) weak_gauge_init.$(OBJEXT) \
-	sf_gauge_init.$(OBJEXT) hotst.$(OBJEXT) reunit.$(OBJEXT) \
-	rgauge.$(OBJEXT) shift2.$(OBJEXT) su2extract.$(OBJEXT) \
-	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
-	taproj.$(OBJEXT) unit_check.$(OBJEXT) conjgauge.$(OBJEXT) \
-	constgauge.$(OBJEXT) weak_field.$(OBJEXT) \
-	stout_utils.$(OBJEXT) printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
-	unique_id.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
-	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
-	gauge_monomial.$(OBJEXT) force_monitors.$(OBJEXT) \
-	rat_approx_aggregate.$(OBJEXT) remez_rat_approx.$(OBJEXT) \
-	read_rat_approx.$(OBJEXT) comp_approx.$(OBJEXT) \
-	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
-	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
-	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
+	transf.$(OBJEXT) subset_vectors.$(OBJEXT) sftmom.$(OBJEXT) \
+	single_phase.$(OBJEXT) eesu3.$(OBJEXT) eeu1.$(OBJEXT) \
+	expm12.$(OBJEXT) expmat.$(OBJEXT) expsu3.$(OBJEXT) \
+	gauge_startup.$(OBJEXT) gauge_init_aggregate.$(OBJEXT) \
+	milc_gauge_init.$(OBJEXT) nersc_gauge_init.$(OBJEXT) \
+	szin_gauge_init.$(OBJEXT) szinqio_gauge_init.$(OBJEXT) \
+	kyu_gauge_init.$(OBJEXT) disordered_gauge_init.$(OBJEXT) \
+	unit_gauge_init.$(OBJEXT) cppacs_gauge_init.$(OBJEXT) \
+	weak_gauge_init.$(OBJEXT) sf_gauge_init.$(OBJEXT) \
+	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
+	shift2.$(OBJEXT) su2extract.$(OBJEXT) su3proj.$(OBJEXT) \
+	sunfill.$(OBJEXT) sun_proj.$(OBJEXT) taproj.$(OBJEXT) \
+	unit_check.$(OBJEXT) conjgauge.$(OBJEXT) constgauge.$(OBJEXT) \
+	weak_field.$(OBJEXT) stout_utils.$(OBJEXT) printgeom.$(OBJEXT) \
+	proginfo.$(OBJEXT) unique_id.$(OBJEXT) su3over.$(OBJEXT) \
+	su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
+	exact_hamiltonian.$(OBJEXT) gauge_monomial.$(OBJEXT) \
+	force_monitors.$(OBJEXT) rat_approx_aggregate.$(OBJEXT) \
+	remez_rat_approx.$(OBJEXT) read_rat_approx.$(OBJEXT) \
+	comp_approx.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
+	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
+	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
+	lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
 	lcm_sts_leapfrog_recursive.$(OBJEXT) \
@@ -1410,9 +1412,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
 	util/ferm/transf.h util/ft/ft.h util/ferm/eigeninfo.h \
-	util/ft/sftmom.h util/ft/single_phase.h util/gauge/eesu2.h \
-	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
-	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
+	util/ferm/subset_vectors.h util/ft/sftmom.h \
+	util/ft/single_phase.h util/gauge/eesu2.h util/gauge/eeu1.h \
+	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
 	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
@@ -2272,9 +2275,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
 	util/ferm/transf.h util/ft/ft.h util/ferm/eigeninfo.h \
-	util/ft/sftmom.h util/ft/single_phase.h util/gauge/eesu2.h \
-	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
-	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
+	util/ferm/subset_vectors.h util/ft/sftmom.h \
+	util/ft/single_phase.h util/gauge/eesu2.h util/gauge/eeu1.h \
+	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
 	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
@@ -2965,7 +2969,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/sources/srcfil.cc meas/sources/z2_src.cc \
 	meas/sources/zN_src.cc meas/sources/dilute_gauss_src_s.cc \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
-	util/ferm/tdiractodr.cc util/ferm/transf.cc util/ft/sftmom.cc \
+	util/ferm/tdiractodr.cc util/ferm/transf.cc \
+	util/ferm/subset_vectors.cc util/ft/sftmom.cc \
 	util/ft/single_phase.cc util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/gauge_init_aggregate.cc \
@@ -3974,6 +3979,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su2extract.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3over.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/su3proj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/subset_vectors.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sun_proj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sunfill.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/symtensor.Po@am__quote@
@@ -7347,6 +7353,20 @@ transf.obj: util/ferm/transf.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/transf.cc' object='transf.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o transf.obj `if test -f 'util/ferm/transf.cc'; then $(CYGPATH_W) 'util/ferm/transf.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/transf.cc'; fi`
+
+subset_vectors.o: util/ferm/subset_vectors.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT subset_vectors.o -MD -MP -MF $(DEPDIR)/subset_vectors.Tpo -c -o subset_vectors.o `test -f 'util/ferm/subset_vectors.cc' || echo '$(srcdir)/'`util/ferm/subset_vectors.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/subset_vectors.Tpo $(DEPDIR)/subset_vectors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/subset_vectors.cc' object='subset_vectors.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o subset_vectors.o `test -f 'util/ferm/subset_vectors.cc' || echo '$(srcdir)/'`util/ferm/subset_vectors.cc
+
+subset_vectors.obj: util/ferm/subset_vectors.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT subset_vectors.obj -MD -MP -MF $(DEPDIR)/subset_vectors.Tpo -c -o subset_vectors.obj `if test -f 'util/ferm/subset_vectors.cc'; then $(CYGPATH_W) 'util/ferm/subset_vectors.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/subset_vectors.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/subset_vectors.Tpo $(DEPDIR)/subset_vectors.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/subset_vectors.cc' object='subset_vectors.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o subset_vectors.obj `if test -f 'util/ferm/subset_vectors.cc'; then $(CYGPATH_W) 'util/ferm/subset_vectors.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/subset_vectors.cc'; fi`
 
 sftmom.o: util/ft/sftmom.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sftmom.o -MD -MP -MF $(DEPDIR)/sftmom.Tpo -c -o sftmom.o `test -f 'util/ft/sftmom.cc' || echo '$(srcdir)/'`util/ft/sftmom.cc
