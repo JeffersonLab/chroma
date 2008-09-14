@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.274 2008-09-13 19:54:37 edwards Exp $
+# $Id: Makefile.in,v 3.275 2008-09-14 02:25:36 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -661,6 +661,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
+	meas/inline/io/inline_rng.cc \
 	meas/inline/io/qio_read_obj_funcmap.cc \
 	meas/inline/io/qio_write_obj_funcmap.cc \
 	meas/inline/io/szin_read_obj_funcmap.cc \
@@ -1143,7 +1144,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_eigen_lime_colvec_read_obj.$(OBJEXT) \
 	inline_xml_write_obj.$(OBJEXT) inline_erase_obj.$(OBJEXT) \
 	inline_list_obj.$(OBJEXT) inline_gaussian_obj.$(OBJEXT) \
-	qio_read_obj_funcmap.$(OBJEXT) qio_write_obj_funcmap.$(OBJEXT) \
+	inline_rng.$(OBJEXT) qio_read_obj_funcmap.$(OBJEXT) \
+	qio_write_obj_funcmap.$(OBJEXT) \
 	szin_read_obj_funcmap.$(OBJEXT) \
 	szin_write_obj_funcmap.$(OBJEXT) \
 	xml_write_obj_funcmap.$(OBJEXT) \
@@ -1856,6 +1858,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
 	meas/inline/io/inline_gaussian_obj.h \
+	meas/inline/io/inline_rng.h \
 	meas/inline/io/qio_read_obj_funcmap.h \
 	meas/inline/io/qio_write_obj_funcmap.h \
 	meas/inline/io/szin_read_obj_funcmap.h \
@@ -2719,6 +2722,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
 	meas/inline/io/inline_gaussian_obj.h \
+	meas/inline/io/inline_rng.h \
 	meas/inline/io/qio_read_obj_funcmap.h \
 	meas/inline/io/qio_write_obj_funcmap.h \
 	meas/inline/io/szin_read_obj_funcmap.h \
@@ -3298,6 +3302,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
+	meas/inline/io/inline_rng.cc \
 	meas/inline/io/qio_read_obj_funcmap.cc \
 	meas/inline/io/qio_write_obj_funcmap.cc \
 	meas/inline/io/szin_read_obj_funcmap.cc \
@@ -3702,6 +3707,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_random_transf_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ritz_H_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rng.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rotate_spin_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_schrfun_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_seqprop_test_w.Po@am__quote@
@@ -12561,6 +12567,20 @@ inline_gaussian_obj.obj: meas/inline/io/inline_gaussian_obj.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_gaussian_obj.cc' object='inline_gaussian_obj.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_gaussian_obj.obj `if test -f 'meas/inline/io/inline_gaussian_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_gaussian_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_gaussian_obj.cc'; fi`
+
+inline_rng.o: meas/inline/io/inline_rng.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_rng.o -MD -MP -MF $(DEPDIR)/inline_rng.Tpo -c -o inline_rng.o `test -f 'meas/inline/io/inline_rng.cc' || echo '$(srcdir)/'`meas/inline/io/inline_rng.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_rng.Tpo $(DEPDIR)/inline_rng.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_rng.cc' object='inline_rng.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_rng.o `test -f 'meas/inline/io/inline_rng.cc' || echo '$(srcdir)/'`meas/inline/io/inline_rng.cc
+
+inline_rng.obj: meas/inline/io/inline_rng.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_rng.obj -MD -MP -MF $(DEPDIR)/inline_rng.Tpo -c -o inline_rng.obj `if test -f 'meas/inline/io/inline_rng.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_rng.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_rng.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_rng.Tpo $(DEPDIR)/inline_rng.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_rng.cc' object='inline_rng.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_rng.obj `if test -f 'meas/inline/io/inline_rng.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_rng.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_rng.cc'; fi`
 
 qio_read_obj_funcmap.o: meas/inline/io/qio_read_obj_funcmap.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qio_read_obj_funcmap.o -MD -MP -MF $(DEPDIR)/qio_read_obj_funcmap.Tpo -c -o qio_read_obj_funcmap.o `test -f 'meas/inline/io/qio_read_obj_funcmap.cc' || echo '$(srcdir)/'`meas/inline/io/qio_read_obj_funcmap.cc
