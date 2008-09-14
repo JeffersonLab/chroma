@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.162 2008-09-13 19:54:20 edwards Exp $
+# $Id: Makefile.am,v 3.163 2008-09-14 02:25:16 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -799,6 +799,7 @@ nobase_include_HEADERS += \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
 	meas/inline/io/inline_gaussian_obj.h \
+	meas/inline/io/inline_rng.h \
         meas/inline/io/qio_read_obj_funcmap.h \
         meas/inline/io/qio_write_obj_funcmap.h \
         meas/inline/io/szin_read_obj_funcmap.h \
@@ -1450,6 +1451,7 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
+	meas/inline/io/inline_rng.cc \
         meas/inline/io/qio_read_obj_funcmap.cc \
         meas/inline/io/qio_write_obj_funcmap.cc \
         meas/inline/io/szin_read_obj_funcmap.cc \
