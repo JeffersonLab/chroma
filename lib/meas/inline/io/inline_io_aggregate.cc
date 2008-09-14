@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 3.6 2008-09-12 19:47:06 jbulava Exp $
+// $Id: inline_io_aggregate.cc,v 3.7 2008-09-14 02:26:10 edwards Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
@@ -13,6 +13,8 @@
 #include "meas/inline/io/inline_szin_write_obj.h"
 #include "meas/inline/io/inline_nersc_read_obj.h"
 #include "meas/inline/io/inline_nersc_write_obj.h"
+
+#include "meas/inline/io/inline_rng.h"
 
 #include "meas/inline/io/inline_xml_write_obj.h"
 
@@ -42,6 +44,8 @@ namespace Chroma
       if (! registered)
       {
 	// Tasks
+	success &= InlineSetRNGEnv::registerAll();
+
 	success &= InlineQIOReadNamedObjEnv::registerAll();
 	success &= InlineQIOWriteNamedObjEnv::registerAll();
 	success &= InlineQIOWriteEraseNamedObjEnv::registerAll();
