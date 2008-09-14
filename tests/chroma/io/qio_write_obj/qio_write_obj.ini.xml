@@ -82,7 +82,7 @@ Write some QIO objects
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
-        <object_type>EigenInfoLatticeColorVector</object_type>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
     </elem>
 
@@ -94,7 +94,7 @@ Write some QIO objects
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
-        <object_type>EigenInfoLatticeColorVector</object_type>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
       <File>
         <file_name>./eigeninfo_0</file_name>

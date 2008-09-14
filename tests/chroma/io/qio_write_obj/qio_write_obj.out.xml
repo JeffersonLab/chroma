@@ -85,7 +85,7 @@ Write some QIO objects
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
-        <object_type>EigenInfoLatticeColorVector</object_type>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
     </elem>
 
@@ -97,7 +97,7 @@ Write some QIO objects
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
-        <object_type>EigenInfoLatticeColorVector</object_type>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
       <File>
         <file_name>./eigeninfo_0</file_name>
@@ -130,11 +130,11 @@ Write some QIO objects
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.30.0</chroma>
-      <qdp>1.26.0</qdp>
+      <chroma>3.31.0</chroma>
+      <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>17 Jun 08 12:08:52 EDT</run_date>
+    <run_date>14 Sep 08 11:33:38 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -156,32 +156,32 @@ Write some QIO objects
 
   </Config_info>
   <Observables>
-    <w_plaq>0.994764814696585</w_plaq>
-    <s_plaq>0.994800872195305</s_plaq>
-    <t_plaq>0.994728757197865</t_plaq>
-    <plane_01_plaq>0.994752409479891</plane_01_plaq>
-    <plane_02_plaq>0.995051670897131</plane_02_plaq>
-    <plane_12_plaq>0.994598536208893</plane_12_plaq>
-    <plane_03_plaq>0.994927927424821</plane_03_plaq>
-    <plane_13_plaq>0.994742139785861</plane_13_plaq>
-    <plane_23_plaq>0.994516204382914</plane_23_plaq>
-    <link>0.379317688059624</link>
+    <w_plaq>0.994764811229996</w_plaq>
+    <s_plaq>0.994800868133704</s_plaq>
+    <t_plaq>0.994728754326287</t_plaq>
+    <plane_01_plaq>0.994752410954485</plane_01_plaq>
+    <plane_02_plaq>0.995051669888198</plane_02_plaq>
+    <plane_12_plaq>0.994598523558428</plane_12_plaq>
+    <plane_03_plaq>0.994927932818731</plane_03_plaq>
+    <plane_13_plaq>0.994742131947229</plane_13_plaq>
+    <plane_23_plaq>0.994516198212902</plane_23_plaq>
+    <link>0.379317688096004</link>
     <pollp>
       <elem>
-        <re>0.967222581617534</re>
-        <im>-0.00121316459171794</im>
+        <re>0.96722258736069</re>
+        <im>-0.00121316528187284</im>
       </elem>
       <elem>
-        <re>0.967032070310476</re>
-        <im>-0.00129617047105057</im>
+        <re>0.967032058009257</re>
+        <im>-0.00129616999978073</im>
       </elem>
       <elem>
-        <re>0.967467519260632</re>
-        <im>-0.0011454828290122</im>
+        <re>0.96746751650547</re>
+        <im>-0.00114548282635951</im>
       </elem>
       <elem>
-        <re>0.879538947211889</re>
-        <im>-0.01044028334627</im>
+        <re>0.879538941662759</re>
+        <im>-0.0104402848846803</im>
       </elem>
     </pollp>
   </Observables>
