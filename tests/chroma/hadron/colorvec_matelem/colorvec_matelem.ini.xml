@@ -131,7 +131,7 @@
       <Param>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>0</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
         <Propagator>
@@ -200,7 +200,7 @@
       <Frequency>1</Frequency>
       <Param>
         <num_vecs>3</num_vecs>
-        <t_sources>0</t_sources>
+        <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
       </Param>

@@ -134,7 +134,7 @@
       <Param>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>0</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
         <Propagator>
@@ -203,7 +203,7 @@
       <Frequency>1</Frequency>
       <Param>
         <num_vecs>3</num_vecs>
-        <t_sources>0</t_sources>
+        <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
       </Param>
@@ -348,7 +348,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>13 Sep 08 16:17:08 EDT</run_date>
+    <run_date>22 Sep 08 23:07:11 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -460,7 +460,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>13 Sep 08 16:17:14 EDT</run_date>
+          <run_date>22 Sep 08 23:07:16 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -499,7 +499,7 @@
 </Propagator>
             <Contractions>
               <num_vecs>3</num_vecs>
-              <t_sources>0</t_sources>
+              <t_sources>0 3</t_sources>
               <decay_dir>3</decay_dir>
             </Contractions>
           </Param>
@@ -590,7 +590,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>13 Sep 08 16:17:17 EDT</run_date>
+          <run_date>22 Sep 08 23:07:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -602,7 +602,7 @@
         <Input>
           <Param>
             <num_vecs>3</num_vecs>
-            <t_sources>0</t_sources>
+            <t_sources>0 3</t_sources>
             <decay_dir>3</decay_dir>
             <mass_label>U0.05</mass_label>
           </Param>
@@ -684,7 +684,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>13 Sep 08 16:17:18 EDT</run_date>
+          <run_date>22 Sep 08 23:07:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -835,7 +835,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>13 Sep 08 16:17:20 EDT</run_date>
+          <run_date>22 Sep 08 23:07:23 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
