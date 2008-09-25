@@ -1,4 +1,4 @@
-// $Id: inline_eigen_lime_colvec_read_obj.cc,v 3.2 2008-09-13 19:56:40 edwards Exp $
+// $Id: inline_eigen_lime_colvec_read_obj.cc,v 3.3 2008-09-25 19:59:04 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -174,7 +174,7 @@ namespace Chroma
 	  read(rdr, curr_record_xml, eigen.getEvectors()[i]);
 		
 	  multi1d<Real> evals;
-	  read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
+	  read(curr_record_xml, "/LaplaceEigInfo/EigParams/EigenValues", evals);
 
 	  eigen.getEvalues()[i].weights = evals; // Copies all the weights
 
