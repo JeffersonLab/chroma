@@ -1,4 +1,4 @@
-// $Id: subset_vectors.cc,v 1.1 2008-09-13 19:57:05 edwards Exp $
+// $Id: subset_vectors.cc,v 1.2 2008-09-26 01:19:41 jbulava Exp $
 /*! \file
  *  \brief Holds of vectors and weights
  */
@@ -18,9 +18,9 @@ namespace Chroma
   // Writer
   void write(XMLWriter& xml, const std::string& path, const SubsetVectorWeight_t& param)
   {
-    push(xml, path);
+    //push(xml, path);
     write(xml, path, param.weights);
-    pop(xml);
+    //pop(xml);
   }
 
 }  // end namespace Chroma
