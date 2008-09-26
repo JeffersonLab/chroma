@@ -1,4 +1,8 @@
-08/02/2008 - Robert Edwards  
+08/26/2008 - Robert Edwards  
+	Version 3.30.4
+        Changed format of colorvec dbs. Now use fixed record dbs.
+
+08/26/2008 - Robert Edwards  
 	Version 3.30.3
         A working version of the colorvec chain.
 
