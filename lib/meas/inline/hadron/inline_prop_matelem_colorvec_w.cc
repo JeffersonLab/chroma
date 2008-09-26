@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.13 2008-09-13 19:56:40 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.14 2008-09-26 19:54:47 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -126,6 +126,7 @@ namespace Chroma
     //! Prop operator
     struct KeyPropElementalOperator_t
     {
+      int                t_slice;       /*!< Propagator time slice */
       int                t_source;      /*!< Source time slice */
       int                spin_src;      /*!< Source spin index */
       int                spin_snk;      /*!< Sink spin index */
@@ -136,19 +137,23 @@ namespace Chroma
     //! Prop operator
     struct ValPropElementalOperator_t
     {
-      struct Corr_t
-      {
-	multi1d<ComplexD>  corr;          /*!< Projected propagator */
-      };
-
-      multi2d<Corr_t>  mat;               /*!< Colorvector source and sink */
+      multi2d<ComplexD>  mat;               /*!< Colorvector source and sink */
     };
 
+
+    //----------------------------------------------------------------------------
+    //! Holds key and value as temporaries
+    struct KeyValPropElementalOperator_t
+    {
+      SerialDBKey<KeyPropElementalOperator_t>  key;
+      SerialDBData<ValPropElementalOperator_t> val;
+    };
 
     //----------------------------------------------------------------------------
     //! PropElementalOperator reader
     void read(BinaryReader& bin, KeyPropElementalOperator_t& param)
     {
+      read(bin, param.t_slice);
       read(bin, param.t_source);
       read(bin, param.spin_src);
       read(bin, param.spin_snk);
@@ -158,6 +163,7 @@ namespace Chroma
     //! PropElementalOperator write
     void write(BinaryWriter& bin, const KeyPropElementalOperator_t& param)
     {
+      write(bin, param.t_slice);
       write(bin, param.t_source);
       write(bin, param.spin_src);
       write(bin, param.spin_snk);
@@ -169,6 +175,7 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
     
+      read(paramtop, "t_slice", param.t_slice);
       read(paramtop, "t_source", param.t_source);
       read(paramtop, "spin_src", param.spin_src);
       read(paramtop, "spin_snk", param.spin_snk);
@@ -180,6 +187,7 @@ namespace Chroma
     {
       push(xml, path);
 
+      write(xml, "t_slice", param.t_slice);
       write(xml, "t_source", param.t_source);
       write(xml, "spin_src", param.spin_src);
       write(xml, "spin_snk", param.spin_snk);
@@ -191,11 +199,6 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! PropElementalOperator reader
-    void read(BinaryReader& bin, ValPropElementalOperator_t::Corr_t& param)
-    {
-      read(bin, param.corr);
-    }
-
     void read(BinaryReader& bin, ValPropElementalOperator_t& param)
     {
       int n1;
@@ -211,12 +214,6 @@ namespace Chroma
 	  read(bin, param.mat[j][i]);
 	}
       }
-    }
-
-    //! PropElementalOperator write
-    void write(BinaryWriter& bin, const ValPropElementalOperator_t::Corr_t& param)
-    {
-      write(bin, param.corr);
     }
 
     //! PropElementalOperator write
@@ -463,14 +460,17 @@ namespace Chroma
 	    {
 	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
 
-	      SerialDBKey<KeyPropElementalOperator_t> key;
-	      key.key().t_source     = t_source;
-	      key.key().spin_src     = spin_source;
-	      key.key().spin_snk     = spin_sink;
-	      key.key().mass_label   = params.param.mass_label;
-
-	      SerialDBData<ValPropElementalOperator_t> val;
-	      val.data().mat.resize(num_vecs,num_vecs);
+	      // Invert the time - make it an independent key
+	      multi1d<KeyValPropElementalOperator_t> buf(phases.numSubsets());
+	      for(int t=0; t < phases.numSubsets(); ++t)
+	      {
+		buf[t].key.key().t_slice      = t;
+		buf[t].key.key().t_source     = t_source;
+		buf[t].key.key().spin_src     = spin_source;
+		buf[t].key.key().spin_snk     = spin_sink;
+		buf[t].key.key().mass_label   = params.param.mass_label;
+		buf[t].val.data().mat.resize(num_vecs,num_vecs);
+	      }
 
 	      for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
 	      {
@@ -485,14 +485,21 @@ namespace Chroma
 		{
 		  const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
 
-		  val.data().mat(colorvec_sink,colorvec_source).corr = 
-		    sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet());
+		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
+
+		  for(int t=0; t < hsum.size(); ++t)
+		  {
+		    buf[t].val.data().mat(colorvec_sink,colorvec_source) = hsum[t];
+		  }
 
 		} // for colorvec_sink
 	      } // for colorvec_source
 	      
 	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
-	      qdp_db.insert(key, val);
+	      for(int t=0; t < phases.numSubsets(); ++t)
+	      {
+		qdp_db.insert(buf[t].key, buf[t].val);
+	      }
 
 	    } // for spin_sink
 	  } // for spin_source

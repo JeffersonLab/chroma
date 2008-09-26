@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.17 2008-09-13 21:40:14 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.18 2008-09-26 19:54:47 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -8,8 +8,8 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
+#include "meas/smear/displace.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/disp_colvec_map.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_val_db.h"
 #include "util/ft/sftmom.h"
@@ -221,8 +221,7 @@ namespace Chroma
     //! Meson operator
     struct KeyMesonElementalOperator_t
     {
-      int                colvec_l;     /*!< Left colorvector index */
-      int                colvec_r;     /*!< Right colorvector index */
+      int                t_slice;      /*!< Meson operator time slice */
       multi1d<int>       displacement; /*!< Displacement dirs of right colorvector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
     };
@@ -231,7 +230,16 @@ namespace Chroma
     struct ValMesonElementalOperator_t
     {
       int                type_of_data; /*!< Flag indicating type of data (maybe trivial) */
-      multi1d<ComplexD>  op;           /*!< Momentum projected operator */
+      multi2d<ComplexD>  op;          /*!< Colorvector source and sink with momentum projection */
+    };
+
+
+    //----------------------------------------------------------------------------
+    //! Holds key and value as temporaries
+    struct KeyValMesonElementalOperator_t
+    {
+      SerialDBKey<KeyMesonElementalOperator_t>  key;
+      SerialDBData<ValMesonElementalOperator_t> val;
     };
 
 
@@ -239,8 +247,7 @@ namespace Chroma
     //! KeyMesonElementalOperator reader
     void read(BinaryReader& bin, KeyMesonElementalOperator_t& param)
     {
-      read(bin, param.colvec_l);
-      read(bin, param.colvec_r);
+      read(bin, param.t_slice);
       read(bin, param.displacement);
       read(bin, param.mom);
     }
@@ -248,8 +255,7 @@ namespace Chroma
     //! MesonElementalOperator write
     void write(BinaryWriter& bin, const KeyMesonElementalOperator_t& param)
     {
-      write(bin, param.colvec_l);
-      write(bin, param.colvec_r);
+      write(bin, param.t_slice);
       write(bin, param.displacement);
       write(bin, param.mom);
     }
@@ -259,8 +265,7 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
     
-      read(paramtop, "colvec_l", param.colvec_l);
-      read(paramtop, "colvec_r", param.colvec_r);
+      read(paramtop, "t_slice", param.t_slice);
       read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
     }
@@ -270,8 +275,7 @@ namespace Chroma
     {
       push(xml, path);
 
-      write(xml, "colvec_l", param.colvec_l);
-      write(xml, "colvec_r", param.colvec_r);
+      write(xml, "t_slice", param.t_slice);
       write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
 
@@ -284,36 +288,35 @@ namespace Chroma
     void read(BinaryReader& bin, ValMesonElementalOperator_t& param)
     {
       read(bin, param.type_of_data);
-      read(bin, param.op);
+
+      int n;
+      read(bin, n);    // the size is always written, even if 0
+      param.op.resize(n,n);
+  
+      for(int i=0; i < n; ++i)
+      {
+	for(int j=0; j < n; ++j)
+	{
+	  read(bin, param.op(i,j));
+	}
+      }
     }
 
     //! MesonElementalOperator write
     void write(BinaryWriter& bin, const ValMesonElementalOperator_t& param)
     {
       write(bin, param.type_of_data);
-      write(bin, param.op);
+
+      int n = param.op.size1();  // all sizes the same
+      write(bin, n);
+      for(int i=0; i < n; ++i)
+      {
+	for(int j=0; j < n; ++j)
+	{
+	  write(bin, param.op(i,j));
+	}
+      }
     }
-
-    //! MesonElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, ValMesonElementalOperator_t& param)
-    {
-      XMLReader paramtop(xml, path);
-    
-      read(paramtop, "type_of_data", param.type_of_data);
-      read(paramtop, "op", param.op);
-    }
-
-    //! MesonElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const ValMesonElementalOperator_t& param)
-    {
-      push(xml, path);
-
-      write(xml, "type_of_data", param.type_of_data);
-      write(xml, "op", param.op);
-
-      pop(xml);
-    }
-
 
     //----------------------------------------------------------------------------
     //! Make sure displacements are something sensible
@@ -501,15 +504,8 @@ namespace Chroma
       }
 
       // Keep track of no displacements and zero momentum
-      multi1d<int> zero_displacement(1); zero_displacement = 0;
+      multi1d<int> no_displacement;
       multi1d<int> zero_mom(3); zero_mom = 0;
-
-      //
-      // The object holding the displaced color vector maps  
-      //
-      DispColorVectorMap smrd_disp_vecs(params.param.displacement_length,
-					u_smr,
-					eigen_source.getEvectors());
 
       //
       // Meson operators
@@ -520,7 +516,7 @@ namespace Chroma
       QDPIO::cout << "Building meson operators" << endl;
 
       // DB storage
-      BinaryVarStoreDB< SerialDBKey<KeyMesonElementalOperator_t>, SerialDBData<ValMesonElementalOperator_t> > 
+      BinaryFxStoreDB< SerialDBKey<KeyMesonElementalOperator_t>, SerialDBData<ValMesonElementalOperator_t> > 
 	qdp_db(params.named_obj.meson_op_file, 50*1024*1024, 64*1024);
 
       push(xml_out, "ElementalOps");
@@ -541,75 +537,71 @@ namespace Chroma
 	swiss.reset();
 	swiss.start();
 
-	// The keys for the spin and displacements for this particular elemental operator
-	// No displacement for left colorvector, only displace right colorvector
-	KeyDispColorVector_t keyDispColorVector;
-	keyDispColorVector.displacement = displacement_list[l];
-
-	for(int i = 0 ; i <  params.param.num_vecs; ++i)
+	// Big loop over the momentum projection
+	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
+	  // The keys for the spin and displacements for this particular elemental operator
+	  // No displacement for left colorvector, only displace right colorvector
+	  // Invert the time - make it an independent key
+	  multi1d<KeyValMesonElementalOperator_t> buf(phases.numSubsets());
+	  for(int t=0; t < phases.numSubsets(); ++t)
+	  {
+	    buf[t].key.key().t_slice       = t;
+	    buf[t].key.key().mom           = phases.numToMom(mom_num);
+	    buf[t].key.key().displacement  = displacement_list[l]; // only right colorvector
+	    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs);
+
+	    if ( params.param.orthog_basis && 
+		 (phases.numToMom(mom_num)) == zero_mom && 
+		 (displacement_list[l] == no_displacement) )
+	    {
+	      buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
+	    }
+	    else
+	    {
+	      buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+	    }
+	  }
+
 	  for(int j = 0 ; j < params.param.num_vecs; ++j)
 	  {
-	    keyDispColorVector.colvec = j;
+	    // Displace the right vector and multiply by the momentum phase
+	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
+								      eigen_source.getEvectors()[j], 
+								      params.param.displacement_length, 
+								      displacement_list[l]);
 
-	    watch.reset();
-	    watch.start();
-
-	    // Contract over color indices
-	    // Do the relevant quark contraction
-	    // Slow fourier-transform
-	    LatticeComplex lop = localInnerProduct(eigen_source.getEvectors()[i],
-						   smrd_disp_vecs.getDispVector(keyDispColorVector));
-
-	    multi2d<ComplexD> op_sum = phases.sft(lop);
-
-	    watch.stop();
-	    /*
-	      QDPIO::cout << "Spatial Sums completed: time " << 
-	      watch.getTimeInSeconds() << "secs" << endl;
-	    */		
-
-	    // Write the momentum projected fields
-	    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+	    for(int i = 0 ; i <  params.param.num_vecs; ++i)
 	    {
-	      SerialDBKey<KeyMesonElementalOperator_t> key;
-	      key.key().colvec_l      = i;
-	      key.key().colvec_r      = j;
-	      key.key().mom           = phases.numToMom(mom_num);
-	      key.key().displacement  = displacement_list[l]; // only right colorvector
+	      watch.reset();
+	      watch.start();
 
-	      SerialDBData<ValMesonElementalOperator_t> val;
+	      // Contract over color indices
+	      // Do the relevant quark contraction
+	      LatticeComplex lop = localInnerProduct(eigen_source.getEvectors()[i], shift_vec);
 
-	      // Build in some optimizations. 
-	      // We know that if the colorvectors are orthogonal, then at zero mom
-	      // and no displacements the inner product is either 1 or 0. 
-	      // Set a flag and don't store the trivial data.
-	      if ( params.param.orthog_basis && 
-		  (phases.numToMom(mom_num)) == zero_mom && 
-		  (displacement_list[l] == zero_displacement) )
+	      // Slow fourier-transform
+	      multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());
+
+	      watch.stop();
+
+	      for(int t=0; t < op_sum.size(); ++t)
 	      {
-		if (i == j)
-		{
-		  val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
-		}
-		else
-		{
-		  val.data().type_of_data = COLORVEC_MATELEM_TYPE_ZERO;
-		}
+		buf[t].val.data().op(i,j) = op_sum[t];
 	      }
-	      else
-	      {
-		val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
-		val.data().op           = op_sum[mom_num];
-	      }
-
-	      // Insert into the DB
-	      qdp_db.insert(key, val);
 
 //	      write(xml_out, "elem", key.key());  // debugging
-	    }
-	  } // end for j
-	} // end for i
+	    } // end for j
+	  } // end for i
+
+	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+	  for(int t=0; t < phases.numSubsets(); ++t)
+	  {
+	    qdp_db.insert(buf[t].key, buf[t].val);
+	  }
+
+	} // mom_num
+
 	swiss.stop();
 
 	QDPIO::cout << "Meson operator= " << l 

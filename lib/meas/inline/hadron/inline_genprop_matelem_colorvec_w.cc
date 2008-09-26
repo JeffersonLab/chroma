@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.1 2008-09-01 01:44:31 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.2 2008-09-26 19:54:47 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -11,8 +11,6 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/glue/mesplq.h"
-#include "meas/smear/disp_colvec_map.h"
-#include "util/ferm/eigeninfo.h"
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ft/sftmom.h"
@@ -216,13 +214,11 @@ namespace Chroma
 
 
     //----------------------------------------------------------------------------
-    //! Meson operator
+    //! Generalized propagator operator
     struct KeyGenPropElementalOperator_t
     {
       int                t_source;      /*!< Source time slice */
       int                t_sink;        /*!< Source time slice */
-      int                colvec_l;      /*!< Left colorvector index */
-      int                colvec_r;      /*!< Right colorvector index */
       int                spin_l;        /*!< Source spin index */
       int                spin_r;        /*!< Sink spin index */
       multi1d<int>       displacement;  /*!< Displacement dirs of right colorvector */
@@ -230,10 +226,15 @@ namespace Chroma
       std::string        mass_label;    /*!< A mass label */
     };
 
-    //! Meson operator
+    //! Generalized propagator operator
     struct ValGenPropElementalOperator_t
     {
-      multi1d<ComplexD>  op;           /*!< Momentum projected operator */
+      struct Corr_t
+      {
+	multi1d<ComplexD>  op;            /*!< Momentum projected operator */
+      };
+
+      multi2d<Corr_t>  mat;               /*!< Colorvector source and sink */
     };
 
 
@@ -243,8 +244,6 @@ namespace Chroma
     {
       read(bin, param.t_source);
       read(bin, param.t_sink);
-      read(bin, param.colvec_l);
-      read(bin, param.colvec_r);
       read(bin, param.spin_l);
       read(bin, param.spin_r);
       read(bin, param.displacement);
@@ -257,8 +256,6 @@ namespace Chroma
     {
       write(bin, param.t_source);
       write(bin, param.t_sink);
-      write(bin, param.colvec_l);
-      write(bin, param.colvec_r);
       write(bin, param.spin_l);
       write(bin, param.spin_r);
       write(bin, param.displacement);
@@ -273,8 +270,6 @@ namespace Chroma
     
       read(paramtop, "t_source", param.t_source);
       read(paramtop, "t_sink", param.t_sink);
-      read(paramtop, "colvec_l", param.colvec_l);
-      read(paramtop, "colvec_r", param.colvec_r);
       read(paramtop, "spin_l", param.spin_l);
       read(paramtop, "spin_r", param.spin_r);
       read(paramtop, "displacement", param.displacement);
@@ -289,8 +284,6 @@ namespace Chroma
 
       write(xml, "t_source", param.t_source);
       write(xml, "t_sink", param.t_sink);
-      write(xml, "colvec_l", param.colvec_l);
-      write(xml, "colvec_r", param.colvec_r);
       write(xml, "spin_l", param.spin_l);
       write(xml, "spin_r", param.spin_r);
       write(xml, "displacement", param.displacement);
@@ -302,34 +295,25 @@ namespace Chroma
 
 
     //----------------------------------------------------------------------------
-    //! GenPropElementalOperator reader
-    void read(BinaryReader& bin, ValGenPropElementalOperator_t& param)
+    //! PropElementalOperator write
+    void write(BinaryWriter& bin, const ValPropElementalOperator_t::Corr_t& param)
     {
-      read(bin, param.op);
+      write(bin, param.corr);
     }
 
-    //! GenPropElementalOperator write
-    void write(BinaryWriter& bin, const ValGenPropElementalOperator_t& param)
+    //! PropElementalOperator write
+    void write(BinaryWriter& bin, const ValPropElementalOperator_t& param)
     {
-      write(bin, param.op);
-    }
+      write(bin, param.mat.size2());    // always write the size
+      write(bin, param.mat.size1());    // always write the size
 
-    //! GenPropElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, ValGenPropElementalOperator_t& param)
-    {
-      XMLReader paramtop(xml, path);
-    
-      read(paramtop, "op", param.op);
-    }
-
-    //! GenPropElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const ValGenPropElementalOperator_t& param)
-    {
-      push(xml, path);
-
-      write(xml, "op", param.op);
-
-      pop(xml);
+      for(int i=0; i < param.mat.size1(); ++i)
+      {
+	for(int j=0; j < param.mat.size2(); ++j)
+	{
+	  write(bin, param.mat[j][i]);
+	}
+      }
     }
 
 
@@ -340,21 +324,46 @@ namespace Chroma
       START_CODE();
 
       multi1d< multi1d<int> > displacement_list(orig_list.size());
-      multi1d<int> empty(1); empty = 0;
+      multi1d<int> empty; 
+      multi1d<int> no_disp(1); no_disp[0] = 0;
 
       // Loop over displacements
       for(int n=0; n < orig_list.size(); ++n)
       {
-	if (orig_list[n].size() == 0)
+	// Convenience refs
+	const multi1d<int>& orig = orig_list[n];
+	multi1d<int>& disp       = displacement_list[n];
+
+	// NOTE: a no-displacement is recorded as a zero-length array
+	// Convert a length one array with no displacement into a no-displacement array
+	if (orig.size() == 1)
 	{
-	  displacement_list[n] = empty;
+	  if (orig == no_disp)
+	    disp = empty;
+	  else
+	    disp = orig;
 	}
 	else
 	{
-	  displacement_list[n] = orig_list[n];
+	  disp = orig;
 	}
+      }
 
-	QDPIO::cout << "disp[" << n << "]= " << displacement_list[n] << endl;
+      // Check displacements
+      for(int n=0; n < displacement_list.size(); ++n)
+      {
+	const multi1d<int>& disp = displacement_list[n];
+
+	for(int i=0; i < disp.size(); ++i)
+	{
+	  if (disp[i] == 0)
+	  {
+	    QDPIO::cerr << __func__ << ": do not allow zero within a displacement list" << endl;
+	    QDP_abort(1);
+	  }
+	}
+	
+//	QDPIO::cout << "disp[" << n << "]= " << disp << endl;
       }
 
       END_CODE();
@@ -411,7 +420,6 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
 	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.prop_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
@@ -435,9 +443,6 @@ namespace Chroma
       // Cast should be valid now
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-
-      const EigenInfo<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< EigenInfo<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       const MapObject<KeyPropColorVec_t,LatticeFermion>& map_obj =
 	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.prop_id);
@@ -506,24 +511,13 @@ namespace Chroma
 	QDPIO::cout << "displa[" << n << "]= " << displacement_list[n] << endl;
       }
 
-      // Keep track of no displacements and zero momentum
-      multi1d<int> zero_displacement(1); zero_displacement = 0;
-      multi1d<int> zero_mom(3); zero_mom = 0;
-
-      //
-      // The object holding the displaced color vector maps  
-      //
-      DispColorVectorMap smrd_disp_vecs(params.param.displacement_length,
-					u_smr,
-					eigen_source.getEvectors());
-
       //
       // Generalized propagatos
       //
       QDPIO::cout << "Building generalized propagators" << endl;
 
       // DB storage
-      BinaryVarStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > 
+      BinaryFxStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > 
 	qdp_db(params.named_obj.genprop_op_file);
 
       push(xml_out, "ElementalOps");
@@ -549,13 +543,93 @@ namespace Chroma
 	swiss.reset();
 	swiss.start();
 
-	// The keys for the spin and displacements for this particular elemental operator
-	multi1d<KeyDispColorVector_t> keyDispColorVector(2);
+	//
+	// All the loops
+	//
+	// NOTE: I pull the spin source and sink loops to the outside intentionally.
+	// The idea is to create a colorvector index (2d) array. These are not
+	// too big, but are big enough to make the IO efficient, and the DB efficient
+	// on reading. For N=32 and Lt=128, the mats are 2MB.
+	//
+	for(int spin_source=0; spin_source < Ns; ++spin_source)
+	{
+	  QDPIO::cout << "spin_source = " << spin_source << endl; 
 
-	// No displacement for left colorvector, only displace right colorvector
-	keyDispColorVector[0].displacement.resize(1);
-	keyDispColorVector[0].displacement = 0;
-	keyDispColorVector[1].displacement = displacement_list[l];
+	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	  {
+	    QDPIO::cout << "spin_sink = " << spin_sink << endl; 
+
+	    SerialDBKey<KeyGenPropElementalOperator_t> key;
+	    key.key().t_source     = t_source;
+	    key.key().t_sink       = t_spin;
+	    key.key().spin_r       = spin_source;
+	    key.key().spin_l       = spin_sink;
+	    key.key().mass_label   = params.param.mass_label;
+
+	    SerialDBData<ValGenPropElementalOperator_t> val;
+	    val.data().mat.resize(num_vecs,num_vecs);
+
+	    for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
+	    {
+	      KeyPropColorVec_t key_src;
+	      key_src.t_source     = t_source;
+	      key_src.colorvec_src = colorvec_source;
+	      key_src.spin_src     = spin_source;
+		  
+	      LatticeFermion ferm_source(map_obj[key_src]);
+
+	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
+	      {
+		KeyPropColorVec_t key_snk
+		key_src.t_source     = t_sink;
+		key_src.colorvec_src = colorvec_sink;
+		key_src.spin_src     = spin_sink;
+		  
+		LatticeFermion ferm_sink(map_obj[key_snk]);
+
+		// Contract over color indices
+		// Do the relevant quark contraction
+		// Slow fourier-transform
+		LatticeComplex lop = localInnerProduct(smrd_disp_vecs.getDispVector(keyDispColorVector[0]),
+						       smrd_disp_vecs.getDispVector(keyDispColorVector[1]));
+
+		multi2d<ComplexD> op_sum = phases.sft(lop);
+
+		watch.stop();
+		/*
+		  QDPIO::cout << "Spatial Sums completed: time " << 
+		  watch.getTimeInSeconds() << "secs" << endl;
+		*/
+
+		// Write the momentum projected fields
+		for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+		{
+		  SerialDBKey<KeyGenPropElementalOperator_t> key;
+		  key.key().colvec_l      = i;
+		  key.key().colvec_r      = j;
+		  key.key().mom           = phases.numToMom(mom_num);
+		  key.key().displacement  = displacement_list[l]; // only right colorvector
+
+		  SerialDBData<ValGenPropElementalOperator_t> val;
+		  val.data().op           = op_sum[mom_num];
+		  
+		  // Insert into the DB
+		  qdp_db.insert(key, val);
+
+//	          write(xml_out, "elem", key.key());  // debugging
+		} // mom_num
+		val.data().mat(colorvec_sink,colorvec_source).corr = 
+		  sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet());
+
+	      } // for colorvec_sink
+	    } // for colorvec_source
+	      
+	    QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
+	    qdp_db.insert(key, val);
+
+	  } // for spin_sink
+	} // for spin_source
+
 
 	// All the loops
 	for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)

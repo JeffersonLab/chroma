@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.6 2008-09-13 19:56:40 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.7 2008-09-26 19:54:47 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -254,9 +254,7 @@ namespace Chroma
     //! Baryon operator
     struct KeyBaryonElementalOperator_t
     {
-      int                colvec_l;     /*!< Left colorvector index */
-      int                colvec_m;     /*!< Middle colorvector index */
-      int                colvec_r;     /*!< Right colorvector index */
+      int                t_slice;      /*!< Baryon operator time slice */
       multi1d<int>       left;         /*!< Displacement dirs of left colorvector */
       multi1d<int>       middle;       /*!< Displacement dirs of middle colorvector */
       multi1d<int>       right;        /*!< Displacement dirs of right colorvector */
@@ -267,7 +265,16 @@ namespace Chroma
     struct ValBaryonElementalOperator_t
     {
       int                type_of_data; /*!< Flag indicating type of data (maybe trivial) */
-      multi1d<ComplexD>  op;           /*!< Momentum projected operator */
+      multi3d<ComplexD>  op;           /*!< Momentum projected operator */
+    };
+
+
+    //----------------------------------------------------------------------------
+    //! Holds key and value as temporaries
+    struct KeyValBaryonElementalOperator_t
+    {
+      SerialDBKey<KeyBaryonElementalOperator_t>  key;
+      SerialDBData<ValBaryonElementalOperator_t> val;
     };
 
 
@@ -275,9 +282,7 @@ namespace Chroma
     //! BaryonElementalOperator reader
     void read(BinaryReader& bin, KeyBaryonElementalOperator_t& param)
     {
-      read(bin, param.colvec_l);
-      read(bin, param.colvec_m);
-      read(bin, param.colvec_r);
+      read(bin, param.t_slice);
       read(bin, param.left);
       read(bin, param.middle);
       read(bin, param.right);
@@ -287,9 +292,7 @@ namespace Chroma
     //! BaryonElementalOperator write
     void write(BinaryWriter& bin, const KeyBaryonElementalOperator_t& param)
     {
-      write(bin, param.colvec_l);
-      write(bin, param.colvec_m);
-      write(bin, param.colvec_r);
+      write(bin, param.t_slice);
       write(bin, param.left);
       write(bin, param.middle);
       write(bin, param.right);
@@ -301,9 +304,7 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
     
-      read(paramtop, "colvec_l", param.colvec_l);
-      read(paramtop, "colvec_m", param.colvec_m);
-      read(paramtop, "colvec_r", param.colvec_r);
+      read(paramtop, "t_slice", param.t_slice);
       read(paramtop, "left", param.left);
       read(paramtop, "middle", param.middle);
       read(paramtop, "right", param.right);
@@ -315,9 +316,7 @@ namespace Chroma
     {
       push(xml, path);
 
-      write(xml, "colvec_l", param.colvec_l);
-      write(xml, "colvec_m", param.colvec_m);
-      write(xml, "colvec_r", param.colvec_r);
+      write(xml, "t_slice", param.t_slice);
       write(xml, "left", param.left);
       write(xml, "middle", param.middle);
       write(xml, "right", param.right);
@@ -332,34 +331,40 @@ namespace Chroma
     void read(BinaryReader& bin, ValBaryonElementalOperator_t& param)
     {
       read(bin, param.type_of_data);
-      read(bin, param.op);
+
+      int n;
+      read(bin, n);    // the size is always written, even if 0
+      param.op.resize(n,n,n);
+  
+      for(int i=0; i < n; ++i)
+      {
+	for(int j=0; j < n; ++j)
+	{
+	  for(int k=0; k < n; ++k)
+	  {
+	    read(bin, param.op(i,j,k));
+	  }
+	}
+      }
     }
 
     //! BaryonElementalOperator write
     void write(BinaryWriter& bin, const ValBaryonElementalOperator_t& param)
     {
       write(bin, param.type_of_data);
-      write(bin, param.op);
-    }
 
-    //! BaryonElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, ValBaryonElementalOperator_t& param)
-    {
-      XMLReader paramtop(xml, path);
-    
-      read(paramtop, "type_of_data", param.type_of_data);
-      read(paramtop, "op", param.op);
-    }
-
-    //! BaryonElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const ValBaryonElementalOperator_t& param)
-    {
-      push(xml, path);
-
-      write(xml, "type_of_data", param.type_of_data);
-      write(xml, "op", param.op);
-
-      pop(xml);
+      int n = param.op.size1();  // all sizes the same
+      write(bin, n);
+      for(int i=0; i < n; ++i)
+      {
+	for(int j=0; j < n; ++j)
+	{
+	  for(int k=0; k < n; ++k)
+	  {
+	    write(bin, param.op(i,j,k));
+	  }
+	}
+      }
     }
 
 
@@ -565,7 +570,7 @@ namespace Chroma
       QDPIO::cout << "Building baryon operators" << endl;
 
       // DB storage
-      BinaryVarStoreDB< SerialDBKey<KeyBaryonElementalOperator_t>, SerialDBData<ValBaryonElementalOperator_t> > 
+      BinaryFxStoreDB< SerialDBKey<KeyBaryonElementalOperator_t>, SerialDBData<ValBaryonElementalOperator_t> > 
 	qdp_db(params.named_obj.baryon_op_file, 50*1024*1024, 64*1024);
 
       push(xml_out, "ElementalOps");
@@ -586,89 +591,75 @@ namespace Chroma
 	swiss.reset();
 	swiss.start();
 
-	// The keys for the spin and displacements for this particular elemental operator
-	multi1d<KeyDispColorVector_t> keyDispColorVector(3);
-
-	// No displacement for left colorvector, only displace right colorvector
-	keyDispColorVector[0].displacement = displacement_list[l].left;
-	keyDispColorVector[1].displacement = displacement_list[l].middle;
-	keyDispColorVector[2].displacement = displacement_list[l].right;
-
-	for(int i = 0 ; i <  params.param.num_vecs; ++i)
+	// Big loop over the momentum projection
+	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
-	  for(int j = 0 ; j < params.param.num_vecs; ++j)
+	  // The keys for the displacements for this particular elemental operator
+	  // Invert the time - make it an independent key
+	  multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
+	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
-	    for(int k = 0 ; k < params.param.num_vecs; ++k)
+	    buf[t].key.key().t_slice       = t;
+	    buf[t].key.key().left          = displacement_list[l].left;
+	    buf[t].key.key().middle        = displacement_list[l].middle;
+	    buf[t].key.key().right         = displacement_list[l].right;
+	    buf[t].key.key().mom           = phases.numToMom(mom_num);
+	    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
+
+	    // Build in some optimizations. 
+	    // At this very moment, optimizations turned off
+	    buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+	  }
+
+
+	  // The keys for the spin and displacements for this particular elemental operator
+	  multi1d<KeyDispColorVector_t> keyDispColorVector(3);
+
+	  // Can displace each colorvector
+	  keyDispColorVector[0].displacement = displacement_list[l].left;
+	  keyDispColorVector[1].displacement = displacement_list[l].middle;
+	  keyDispColorVector[2].displacement = displacement_list[l].right;
+
+	  for(int i = 0 ; i <  params.param.num_vecs; ++i)
+	  {
+	    for(int j = 0 ; j < params.param.num_vecs; ++j)
 	    {
-	      keyDispColorVector[0].colvec = i;
-	      keyDispColorVector[1].colvec = j;
-	      keyDispColorVector[2].colvec = k;
-
-	      watch.reset();
-	      watch.start();
-
-	      // Contract over color indices
-	      // Do the relevant quark contraction
-	      // Slow fourier-transform
-	      LatticeComplex lop = colorContract(smrd_disp_vecs.getDispVector(keyDispColorVector[0]),
-						 smrd_disp_vecs.getDispVector(keyDispColorVector[1]),
-						 smrd_disp_vecs.getDispVector(keyDispColorVector[2]));
-
-	      multi2d<ComplexD> op_sum = phases.sft(lop);
-
-	      watch.stop();
-	      /*
-		QDPIO::cout << "Spatial Sums completed: time " << 
-		watch.getTimeInSeconds() << "secs" << endl;
-	      */		
-
-	      // Write the momentum projected fields
-	      for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+	      for(int k = 0 ; k < params.param.num_vecs; ++k)
 	      {
-		SerialDBKey<KeyBaryonElementalOperator_t> key;
-		key.key().colvec_l     = i;
-		key.key().colvec_m     = j;
-		key.key().colvec_r     = k;
-		key.key().mom          = phases.numToMom(mom_num);
-		key.key().left         = displacement_list[l].left;
-		key.key().middle       = displacement_list[l].middle;
-		key.key().right        = displacement_list[l].right;
+		keyDispColorVector[0].colvec = i;
+		keyDispColorVector[1].colvec = j;
+		keyDispColorVector[2].colvec = k;
 
-		SerialDBData<ValBaryonElementalOperator_t> val;
-		val.data().op          = op_sum[mom_num];
+		watch.reset();
+		watch.start();
 
-		// Build in some optimizations. 
-		// We know that if the colorvectors are orthogonal, then at zero mom
-		// the inner product is either 1 if all the vectors. Set a flag and 
-		// don't store the trivial data.
-		//
-		// NOTE: need to check signs here
-		//
-		if (params.param.site_orthog_basis && mom_num == 0)
+		// Contract over color indices
+		// Do the relevant quark contraction
+		// Slow fourier-transform
+		LatticeComplex lop = colorContract(smrd_disp_vecs.getDispVector(keyDispColorVector[0]),
+						   smrd_disp_vecs.getDispVector(keyDispColorVector[1]),
+						   smrd_disp_vecs.getDispVector(keyDispColorVector[2]));
+
+		// Slow fourier-transform
+		multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
+
+		watch.stop();
+
+		for(int t=0; t < op_sum.size(); ++t)
 		{
-		  if ((i != j) && (i != k) && (j != k))
-		  {
-		    val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
-		  }
-		  else
-		  {
-		    val.data().type_of_data = COLORVEC_MATELEM_TYPE_ZERO;
-		  }
+		  buf[t].val.data().op(i,j,k) = op_sum[t];
 		}
-		else
-		{
-		  val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
-		  val.data().op           = op_sum[mom_num];
-		}
+	      } // end for k
+	    } // end for j
+	  } // end for i
 
-		// Insert into the DB
-		qdp_db.insert(key, val);
+	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+	  for(int t=0; t < phases.numSubsets(); ++t)
+	  {
+	    qdp_db.insert(buf[t].key, buf[t].val);
+	  }
 
-//	        write(xml_out, "elem", mop);  // debugging
-	      }
-	    } // end for k
-	  } // end for j
-	} // end for i
+	} // mom_num
 	swiss.stop();
 
 	QDPIO::cout << "Baryon operator= " << l 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_genprop_matelem_colorvec_w.h,v 1.1 2008-09-01 01:44:31 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.h,v 1.2 2008-09-26 19:54:47 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -43,7 +43,6 @@ namespace Chroma
       struct NamedObject_t
       {
 	std::string         gauge_id;               /*!< Gauge field */
-	std::string         colorvec_id;            /*!< LatticeColorVector EigenInfo */
 	std::string         prop_id;                /*!< Id for input propagator solutions */
 	std::string         genprop_op_file;        /*!< File for generalized propagators operators */
       };
