@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: displace.h,v 3.2 2007-06-21 19:18:34 edwards Exp $
+// $Id: displace.h,v 3.3 2008-09-26 19:53:45 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -26,6 +26,24 @@
 namespace Chroma 
 {
 
+  //! Apply a displacement path to a lattice field
+  /*!
+   * \ingroup smear
+   *
+   * Arguments:
+   *
+   *  \param u        gauge field ( Read )
+   *  \param chi      color vector field ( Read )
+   *  \param length   displacement length - must be greater than zero ( Read )
+   *  \param path     array of direction of displacement paths - pos/neg, or zero ( Read )
+   *
+   *  \return  displaced field
+   */
+  LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorVector& chi, 
+			      int length, const multi1d<int>& path);
+
+
   //! Apply a displacement operator to a lattice field
   /*!
    * \ingroup smear
@@ -43,24 +61,6 @@ namespace Chroma
 			      const LatticeColorVector& chi, 
 			      int length, int dir);
 
-
-  //! Apply a displacement operator to a lattice field
-  /*!
-   * \ingroup smear
-   *
-   * Arguments:
-   *
-   *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
-   *  \param length   length of displacement ( Read )
-   *  \param dir      direction of displacement ( Read )
-   *
-   *  \return  displaced field
-   */
-  LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
-				 const LatticePropagator& chi, 
-				 int length, int dir);
-  
 
   //! Apply a displacement operator to a lattice field
   /*! \ingroup smear */
@@ -82,6 +82,23 @@ namespace Chroma
 				      const LatticeStaggeredPropagator& chi, 
 				      int length, int dir);  
 
+  //! Apply a displacement operator to a lattice field
+  /*!
+   * \ingroup smear
+   *
+   * Arguments:
+   *
+   *  \param u        gauge field ( Read )
+   *  \param chi      color vector field ( Modify )
+   *  \param length   length of displacement ( Read )
+   *  \param dir      direction of displacement ( Read )
+   *
+   *  \return  displaced field
+   */
+  LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
+				 const LatticePropagator& chi, 
+				 int length, int dir);
+  
 
   //! Apply first deriv to the right onto source
   /*!

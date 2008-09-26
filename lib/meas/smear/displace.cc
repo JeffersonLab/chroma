@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.2 2007-06-21 19:18:34 edwards Exp $
+//  $Id: displace.cc,v 3.3 2008-09-26 19:53:45 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -68,6 +68,62 @@ namespace Chroma
       }
     }
     return chi;
+  }
+
+
+  //! Apply a displacement path to a lattice field
+  /*!
+   * \ingroup smear
+   *
+   * Arguments:
+   *
+   *  \param u        gauge field ( Read )
+   *  \param chi      color vector field ( Read )
+   *  \param length   displacement length - must be greater than zero ( Read )
+   *  \param path     array of direction of displacement paths - pos/neg, or zero ( Read )
+   *
+   *  \return  displaced field
+   */
+  template<typename T>
+  T displace(const multi1d<LatticeColorMatrix>& u, 
+	     const T& psi, 
+	     int displacement_length, const multi1d<int>& path)
+  {
+    if (displacement_length < 0)
+    {
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << endl;
+      QDP_abort(1);
+    }
+
+    T chi = psi;
+
+    for(int i=0; i < path.size(); ++i)
+    {
+      if (path[i] > 0)
+      {
+	int disp_dir = path[i] - 1;
+	int disp_len = displacement_length;
+	chi = displace(u, chi, disp_len, disp_dir);
+      }
+      else if (path[i] < 0)
+      {
+	int disp_dir = -path[i] - 1;
+	int disp_len = -displacement_length;
+	chi = displace(u, chi, disp_len, disp_dir);
+      }
+    }
+
+    return chi;
+  }
+
+
+  // Apply a displacement path to a lattice field
+  LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorVector& chi, 
+			      int length, const multi1d<int>& path)
+  {
+    return displace<LatticeColorVector>(u, chi, length, path);
+   
   }
 
 
