@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.19 2008-09-26 20:43:59 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.20 2008-09-27 05:14:29 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -78,7 +78,7 @@ namespace Chroma
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "orthog_basis", param.orthog_basis);
-      xml << param.link_smearing.xml;
+     xml << param.link_smearing.xml;
 
       pop(xml);
     }
@@ -318,59 +318,35 @@ namespace Chroma
       }
     }
 
+
     //----------------------------------------------------------------------------
-    //! Make sure displacements are something sensible
-    multi1d< multi1d<int> > normalizeDisplacements(const multi1d< multi1d<int> >& orig_list)
+    //! Normalize just one displacement array
+    multi1d<int> normDisp(const multi1d<int>& orig)
     {
       START_CODE();
 
-      multi1d< multi1d<int> > displacement_list(orig_list.size());
+      multi1d<int> disp;
       multi1d<int> empty; 
       multi1d<int> no_disp(1); no_disp[0] = 0;
 
-      // Loop over displacements
-      for(int n=0; n < orig_list.size(); ++n)
+      // NOTE: a no-displacement is recorded as a zero-length array
+      // Convert a length one array with no displacement into a no-displacement array
+      if (orig.size() == 1)
       {
-	// Convenience refs
-	const multi1d<int>& orig = orig_list[n];
-	multi1d<int>& disp       = displacement_list[n];
-
-	// NOTE: a no-displacement is recorded as a zero-length array
-	// Convert a length one array with no displacement into a no-displacement array
-	if (orig.size() == 1)
-	{
-	  if (orig == no_disp)
-	    disp = empty;
-	  else
-	    disp = orig;
-	}
+	if (orig == no_disp)
+	  disp = empty;
 	else
-	{
 	  disp = orig;
-	}
       }
-
-      // Check displacements
-      for(int n=0; n < displacement_list.size(); ++n)
+      else
       {
-	const multi1d<int>& disp = displacement_list[n];
-
-	for(int i=0; i < disp.size(); ++i)
-	{
-	  if (disp[i] == 0)
-	  {
-	    QDPIO::cerr << __func__ << ": do not allow zero within a displacement list" << endl;
-	    QDP_abort(1);
-	  }
-	}
-	
-//	QDPIO::cout << "disp[" << n << "]= " << disp << endl;
+	disp = orig;
       }
 
       END_CODE();
 
-      return displacement_list;
-    } // void normalizeDisplacements
+      return disp;
+    } // void normDisp
 
 
     //-------------------------------------------------------------------------------
@@ -492,17 +468,6 @@ namespace Chroma
       // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
-      //
-      // Make sure displacements are something sensible
-      //
-      QDPIO::cout << "Normalize displacement lengths" << endl;
-      multi1d< multi1d<int> > displacement_list(normalizeDisplacements(params.param.displacement_list));
-
-      for(int n=0; n < displacement_list.size(); ++n)
-      {
-	QDPIO::cout << "displacement[" << n << "]= " << displacement_list[n] << endl;
-      }
-
       // Keep track of no displacements and zero momentum
       multi1d<int> no_displacement;
       multi1d<int> zero_mom(3); zero_mom = 0;
@@ -525,13 +490,16 @@ namespace Chroma
       // as the subsets for  phases
 
       // Loop over each operator 
-      for(int l=0; l < displacement_list.size(); ++l)
+      for(int l=0; l < params.param.displacement_list.size(); ++l)
       {
 	StopWatch watch;
 
 	QDPIO::cout << "Elemental operator: op = " << l << endl;
 
-	QDPIO::cout << "displacement = " << displacement_list[l] << endl;
+	// Make sure displacement is something sensible
+	multi1d<int> disp = normDisp(params.param.displacement_list[l]);
+
+	QDPIO::cout << "displacement = " << disp << endl;
 
 	// Build the operator
 	swiss.reset();
@@ -548,12 +516,12 @@ namespace Chroma
 	  {
 	    buf[t].key.key().t_slice       = t;
 	    buf[t].key.key().mom           = phases.numToMom(mom_num);
-	    buf[t].key.key().displacement  = displacement_list[l]; // only right colorvector
+	    buf[t].key.key().displacement  = disp; // only right colorvector
 	    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs);
 
 	    if ( params.param.orthog_basis && 
 		 (phases.numToMom(mom_num)) == zero_mom && 
-		 (displacement_list[l] == no_displacement) )
+		 (disp == no_displacement) )
 	    {
 	      buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
 	    }
@@ -569,7 +537,7 @@ namespace Chroma
 	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
 								      eigen_source.getEvectors()[j], 
 								      params.param.displacement_length, 
-								      displacement_list[l]);
+								      disp);
 
 	    for(int i = 0 ; i <  params.param.num_vecs; ++i)
 	    {
@@ -594,7 +562,7 @@ namespace Chroma
 	    } // end for j
 	  } // end for i
 
-	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+	  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
 	    qdp_db.insert(buf[t].key, buf[t].val);
@@ -625,7 +593,7 @@ namespace Chroma
 	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Op_Info",displacement_list);
+	write(file_xml, "Op_Info",params.param.displacement_list);
 	pop(file_xml);
 
 	qdp_db.insertUserdata(file_xml.str());
