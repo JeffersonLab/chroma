@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: displace.h,v 3.3 2008-09-26 19:53:45 edwards Exp $
+// $Id: displace.h,v 3.4 2008-09-27 05:13:18 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -42,6 +42,13 @@ namespace Chroma
   LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
 			      const LatticeColorVector& chi, 
 			      int length, const multi1d<int>& path);
+
+
+  //! Apply a displacement path to a lattice field
+  /*! \ingroup smear */
+  LatticeFermion displace(const multi1d<LatticeColorMatrix>& u, 
+			  const LatticeFermion& chi,
+			  int length, const multi1d<int>& path);
 
 
   //! Apply a displacement operator to a lattice field

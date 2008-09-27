@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.3 2008-09-26 19:53:45 edwards Exp $
+//  $Id: displace.cc,v 3.4 2008-09-27 05:13:18 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -71,6 +71,52 @@ namespace Chroma
   }
 
 
+  // Apply a displacement operator to a lattice field
+  LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorVector& chi, 
+			      int length, int dir)
+  {
+    return displace<LatticeColorVector>(u, chi, length, dir);
+  }
+
+
+  // Apply a displacement operator to a lattice field
+  LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
+			     LatticePropagator& chi, 
+			     int length, int dir)
+  {
+    return displace<LatticePropagator>(u, chi, length, dir);
+  }
+
+
+  // Apply a displacement operator to a lattice field
+  LatticeFermion displace(const multi1d<LatticeColorMatrix>& u, 
+			  const LatticeFermion& chi, 
+			  int length, int dir)
+  {
+    return displace<LatticeFermion>(u, chi, length, dir);
+  }
+
+
+  // Apply a displacement operator to a lattice field
+  LatticeStaggeredFermion displace(const multi1d<LatticeColorMatrix>& u, 
+				   const LatticeStaggeredFermion& chi, 
+				   int length, int dir)
+  {
+    return displace<LatticeStaggeredFermion>(u, chi, length, dir);
+  }
+
+
+  // Apply a displacement operator to a lattice field
+  LatticeStaggeredPropagator displace(const multi1d<LatticeColorMatrix>& u, 
+				      LatticeStaggeredPropagator& chi, 
+				      int length, int dir)
+  {
+    displace<LatticeStaggeredPropagator>(u, chi, length, dir);
+  }
+
+
+
   //! Apply a displacement path to a lattice field
   /*!
    * \ingroup smear
@@ -123,54 +169,16 @@ namespace Chroma
 			      int length, const multi1d<int>& path)
   {
     return displace<LatticeColorVector>(u, chi, length, path);
-   
   }
 
 
-  // Apply a displacement operator to a lattice field
-  LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
-			      const LatticeColorVector& chi, 
-			      int length, int dir)
-  {
-    return displace<LatticeColorVector>(u, chi, length, dir);
-  }
-
-
-  // Apply a displacement operator to a lattice field
-  LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
-			     LatticePropagator& chi, 
-			     int length, int dir)
-  {
-    return displace<LatticePropagator>(u, chi, length, dir);
-  }
-
-
-  // Apply a displacement operator to a lattice field
+  // Apply a displacement path to a lattice field
   LatticeFermion displace(const multi1d<LatticeColorMatrix>& u, 
 			  const LatticeFermion& chi, 
-			  int length, int dir)
+			  int length, const multi1d<int>& path)
   {
-    return displace<LatticeFermion>(u, chi, length, dir);
+    return displace<LatticeFermion>(u, chi, length, path);
   }
-
-
-  // Apply a displacement operator to a lattice field
-  LatticeStaggeredFermion displace(const multi1d<LatticeColorMatrix>& u, 
-				   const LatticeStaggeredFermion& chi, 
-				   int length, int dir)
-  {
-    return displace<LatticeStaggeredFermion>(u, chi, length, dir);
-  }
-
-
-  // Apply a displacement operator to a lattice field
-  LatticeStaggeredPropagator displace(const multi1d<LatticeColorMatrix>& u, 
-				      LatticeStaggeredPropagator& chi, 
-				      int length, int dir)
-  {
-    displace<LatticeStaggeredPropagator>(u, chi, length, dir);
-  }
-
 
 
   //! Apply first deriv to the right onto source
