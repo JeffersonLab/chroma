@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.30 2008-07-21 18:45:02 kostas Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.31 2008-09-27 05:14:59 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -35,6 +35,7 @@
 #include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
+#include "meas/inline/hadron/inline_genprop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
@@ -103,6 +104,7 @@ namespace Chroma
 	success &= InlinePropMatElemColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
+	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineMresEnv::registerAll();
 	success &= InlineGaugeTransfNamedObjEnv::registerAll();
 	success &= InlineRotateSpinEnv::registerAll();

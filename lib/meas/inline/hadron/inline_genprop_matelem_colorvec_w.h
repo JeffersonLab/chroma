@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_genprop_matelem_colorvec_w.h,v 1.2 2008-09-26 19:54:47 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.h,v 1.3 2008-09-27 05:14:59 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -19,7 +19,6 @@ namespace Chroma
   {
     bool registerAll();
 
-
     //! Parameter structure
     /*! \ingroup inlinehadron */
     struct Params
@@ -32,18 +31,31 @@ namespace Chroma
 
       struct Param_t
       {
+	int                     t_source;               /*!< Source time slice for props */
+	int                     t_sink;                 /*!< Sink time slice for props */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
+	multi1d<int>            mom_offset;             /*!< Momentum origin - the mom2_max will be around here */
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */
 	int                     decay_dir;              /*!< Decay direction */
-	multi1d< multi1d<int> > displacement_list;      /*!< Array of displacements list to generate */
+	std::string             mass_label;             /*!< Some kind of mass label */
+
+	struct DispGamma_t
+	{
+	  int                   gamma;                  /*!< The gamma matrix for this displacement */
+	  multi1d<int>          displacement;           /*!< The displacement path for this gamma */
+	};
+
+	multi1d<DispGamma_t>    disp_gamma_list;        /*!< Array of displacements and gammas to generate */
+
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
       };
 
       struct NamedObject_t
       {
 	std::string         gauge_id;               /*!< Gauge field */
-	std::string         prop_id;                /*!< Id for input propagator solutions */
+	std::string         source_prop_id;         /*!< Id for input propagator solutions */
+	std::string         sink_prop_id;           /*!< Id for input propagator solutions */
 	std::string         genprop_op_file;        /*!< File for generalized propagators operators */
       };
 
