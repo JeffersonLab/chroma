@@ -217,7 +217,7 @@
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <mom2_max>0</mom2_max>
+        <mom2_max>2</mom2_max>
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
@@ -284,7 +284,7 @@
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <mom2_max>0</mom2_max>
+        <mom2_max>2</mom2_max>
         <num_vecs>3</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
@@ -316,6 +316,44 @@
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <baryon_op_file>baryon.db</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GENPROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <num_vecs>3</num_vecs>
+        <mom2_max>1</mom2_max>
+        <mom_offset>0 0 0</mom_offset>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+        <displacement_length>1</displacement_length>
+
+        <!-- List of displacements and Gamma matrices -->
+        <DisplacementGammaList>
+          <elem>
+            <gamma>15</gamma>
+            <displacement></displacement>
+          </elem>
+        </DisplacementGammaList>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_prop_id>prop_colorvec</source_prop_id>
+        <sink_prop_id>prop_colorvec</sink_prop_id>
+        <genprop_op_file>genprop.db</genprop_op_file>
       </NamedObject>
     </elem>
 
