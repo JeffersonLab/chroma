@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.3 2008-09-27 05:14:59 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.4 2008-09-28 03:13:31 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -399,9 +399,13 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
-      
       StopWatch swiss;
 			
+      push(xml_out, "GenPropMatElemColorVec");
+      write(xml_out, "update_no", update_no);
+
+      QDPIO::cout << name << ": Generalized propagator color-vector matrix element" << endl;
+
       // Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml;
       XMLReader source_prop_file_xml, source_prop_record_xml;
@@ -421,12 +425,6 @@ namespace Chroma
 	// Snarf the prop info. This is will throw if the prop_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.sink_prop_id).getFileXML(sink_prop_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.sink_prop_id).getRecordXML(sink_prop_record_xml);
-
-	// Write out the source header
-	write(xml_out, "Source_prop_file_info", source_prop_file_xml);
-	write(xml_out, "Source_prop_record_info", source_prop_record_xml);
-	write(xml_out, "Sink_prop_file_info", sink_prop_file_xml);
-	write(xml_out, "Sink_prop_record_info", sink_prop_record_xml);
       }
       catch( std::bad_cast ) 
       {
@@ -447,22 +445,23 @@ namespace Chroma
       const MapObject<KeyPropColorVec_t,LatticeFermion>& sink_ferm_map =
 	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.sink_prop_id);
 
-      push(xml_out, "GenPropMatElemColorVec");
-      write(xml_out, "update_no", update_no);
-
-      QDPIO::cout << name << ": Generalized propagator color-vector matrix element" << endl;
+      push(xml_out, "Output_version");
+      write(xml_out, "out_version", 1);
+      pop(xml_out);
 
       proginfo(xml_out);    // Print out basic program info
 
       // Write out the input
       params.writeXML(xml_out, "Input");
 
+      // Write out the source header
+      write(xml_out, "Source_prop_file_info", source_prop_file_xml);
+      write(xml_out, "Source_prop_record_info", source_prop_record_xml);
+      write(xml_out, "Sink_prop_file_info", sink_prop_file_xml);
+      write(xml_out, "Sink_prop_record_info", sink_prop_record_xml);
+
       // Write out the config info
       write(xml_out, "Config_info", gauge_xml);
-
-      push(xml_out, "Output_version");
-      write(xml_out, "out_version", 1);
-      pop(xml_out);
 
       //First calculate some gauge invariant observables just for info.
       //This is really cheap.
@@ -643,8 +642,10 @@ namespace Chroma
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info", params.param.disp_gamma_list);
+	write(file_xml, "Source_prop_record_info", source_prop_record_xml);
+	write(file_xml, "Sink_prop_record_info", sink_prop_record_xml);
+	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
 
 	qdp_db.insertUserdata(file_xml.str());
