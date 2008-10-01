@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.4 2008-09-28 03:13:31 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.5 2008-10-01 20:50:42 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -80,6 +80,8 @@ namespace Chroma
 
       write(xml, "gamma", param.gamma);
       write(xml, "displacement", param.displacement);
+
+      pop(xml);
     }
 
     // Writer for input parameters
