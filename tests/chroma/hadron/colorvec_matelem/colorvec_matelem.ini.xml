@@ -16,7 +16,7 @@
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>unit_subset_vectors_0</object_id>
-        <object_type>SubsetVectorsLatticeColorVector</object_type>
+        <object_type>UnitSubsetVectorsLatticeColorVector</object_type>
       </NamedObject>
     </elem>
 
