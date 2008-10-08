@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.277 2008-09-27 05:12:48 edwards Exp $
+# $Id: Makefile.in,v 3.278 2008-10-08 19:48:21 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -420,6 +420,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
@@ -496,7 +498,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/eoprec_slrc_linop_w.cc \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
-	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
+	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \ \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
@@ -957,6 +961,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	unprec_s_cprec_t_wilson_fermact_w.$(OBJEXT) \
 	iluprec_s_cprec_t_wilson_fermact_w.$(OBJEXT) \
 	iluprec_s_cprec_t_clover_fermact_w.$(OBJEXT) \
+	ilu2prec_s_cprec_t_wilson_fermact_w.$(OBJEXT) \
+	ilu2prec_s_cprec_t_clover_fermact_w.$(OBJEXT) \
 	eo3dprec_s_cprec_t_wilson_fermact_w.$(OBJEXT) \
 	eo3dprec_s_cprec_t_clover_fermact_w.$(OBJEXT) \
 	unprec_zolo_nef_fermact_array_w.$(OBJEXT) \
@@ -1014,6 +1020,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	unprec_s_cprec_t_wilson_linop_w.$(OBJEXT) \
 	iluprec_s_cprec_t_wilson_linop_w.$(OBJEXT) \
 	iluprec_s_cprec_t_clover_linop_w.$(OBJEXT) \
+	ilu2prec_s_cprec_t_wilson_linop_w.$(OBJEXT) \
+	ilu2prec_s_cprec_t_clover_linop_w.$(OBJEXT) \
 	eo3dprec_s_cprec_t_wilson_linop_w.$(OBJEXT) \
 	eo3dprec_s_cprec_t_clover_linop_w.$(OBJEXT) \
 	dwf_fermact_qprop_array_w.$(OBJEXT) dwf_quarkprop4_w.$(OBJEXT) \
@@ -1532,6 +1540,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.h \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
@@ -1632,8 +1642,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilsonlike_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/qprop/qprop_w.h actions/ferm/qprop/quarkprop4_w.h \
@@ -2397,6 +2410,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.h \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
@@ -2497,8 +2512,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilsonlike_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/qprop/qprop_w.h actions/ferm/qprop/quarkprop4_w.h \
@@ -3064,6 +3082,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
@@ -3141,7 +3161,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/eoprec_slrc_linop_w.cc \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
-	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
+	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \ \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
@@ -3649,6 +3671,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_link_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyp_smear3d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iluprec_s_cprec_t_clover_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iluprec_s_cprec_t_clover_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/iluprec_s_cprec_t_wilson_fermact_w.Po@am__quote@
@@ -8864,6 +8890,34 @@ iluprec_s_cprec_t_clover_fermact_w.obj: actions/ferm/fermacts/iluprec_s_cprec_t_
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o iluprec_s_cprec_t_clover_fermact_w.obj `if test -f 'actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc'; fi`
 
+ilu2prec_s_cprec_t_wilson_fermact_w.o: actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_wilson_fermact_w.o -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Tpo -c -o ilu2prec_s_cprec_t_wilson_fermact_w.o `test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc' object='ilu2prec_s_cprec_t_wilson_fermact_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_wilson_fermact_w.o `test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc
+
+ilu2prec_s_cprec_t_wilson_fermact_w.obj: actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_wilson_fermact_w.obj -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Tpo -c -o ilu2prec_s_cprec_t_wilson_fermact_w.obj `if test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_wilson_fermact_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc' object='ilu2prec_s_cprec_t_wilson_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_wilson_fermact_w.obj `if test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc'; fi`
+
+ilu2prec_s_cprec_t_clover_fermact_w.o: actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_clover_fermact_w.o -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Tpo -c -o ilu2prec_s_cprec_t_clover_fermact_w.o `test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc' object='ilu2prec_s_cprec_t_clover_fermact_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_clover_fermact_w.o `test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc
+
+ilu2prec_s_cprec_t_clover_fermact_w.obj: actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_clover_fermact_w.obj -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Tpo -c -o ilu2prec_s_cprec_t_clover_fermact_w.obj `if test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_clover_fermact_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc' object='ilu2prec_s_cprec_t_clover_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_clover_fermact_w.obj `if test -f 'actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc'; fi`
+
 eo3dprec_s_cprec_t_wilson_fermact_w.o: actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eo3dprec_s_cprec_t_wilson_fermact_w.o -MD -MP -MF $(DEPDIR)/eo3dprec_s_cprec_t_wilson_fermact_w.Tpo -c -o eo3dprec_s_cprec_t_wilson_fermact_w.o `test -f 'actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eo3dprec_s_cprec_t_wilson_fermact_w.Tpo $(DEPDIR)/eo3dprec_s_cprec_t_wilson_fermact_w.Po
@@ -9941,6 +9995,34 @@ iluprec_s_cprec_t_clover_linop_w.obj: actions/ferm/linop/iluprec_s_cprec_t_clove
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc' object='iluprec_s_cprec_t_clover_linop_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o iluprec_s_cprec_t_clover_linop_w.obj `if test -f 'actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc'; fi`
+
+ilu2prec_s_cprec_t_wilson_linop_w.o: actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_wilson_linop_w.o -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Tpo -c -o ilu2prec_s_cprec_t_wilson_linop_w.o `test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc' object='ilu2prec_s_cprec_t_wilson_linop_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_wilson_linop_w.o `test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc
+
+ilu2prec_s_cprec_t_wilson_linop_w.obj: actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_wilson_linop_w.obj -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Tpo -c -o ilu2prec_s_cprec_t_wilson_linop_w.obj `if test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_wilson_linop_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc' object='ilu2prec_s_cprec_t_wilson_linop_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_wilson_linop_w.obj `if test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc'; fi`
+
+ilu2prec_s_cprec_t_clover_linop_w.o: actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_clover_linop_w.o -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Tpo -c -o ilu2prec_s_cprec_t_clover_linop_w.o `test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc' object='ilu2prec_s_cprec_t_clover_linop_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_clover_linop_w.o `test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc
+
+ilu2prec_s_cprec_t_clover_linop_w.obj: actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ilu2prec_s_cprec_t_clover_linop_w.obj -MD -MP -MF $(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Tpo -c -o ilu2prec_s_cprec_t_clover_linop_w.obj `if test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Tpo $(DEPDIR)/ilu2prec_s_cprec_t_clover_linop_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc' object='ilu2prec_s_cprec_t_clover_linop_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o ilu2prec_s_cprec_t_clover_linop_w.obj `if test -f 'actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc'; then $(CYGPATH_W) 'actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc'; fi`
 
 eo3dprec_s_cprec_t_wilson_linop_w.o: actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eo3dprec_s_cprec_t_wilson_linop_w.o -MD -MP -MF $(DEPDIR)/eo3dprec_s_cprec_t_wilson_linop_w.Tpo -c -o eo3dprec_s_cprec_t_wilson_linop_w.o `test -f 'actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc' || echo '$(srcdir)/'`actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc
