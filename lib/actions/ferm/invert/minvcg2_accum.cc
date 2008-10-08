@@ -1,4 +1,4 @@
-// $Id: minvcg2_accum.cc,v 3.3 2008-09-08 18:40:55 bjoo Exp $
+// $Id: minvcg2_accum.cc,v 3.4 2008-10-08 19:40:17 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -84,7 +84,7 @@ namespace Chroma
     START_CODE();
 
     const Subset& sub = M.subset();
-
+    moveToFastMemoryHint(psi,true);
 
     int n_shift = poles.size();
 
@@ -321,20 +321,31 @@ namespace Chroma
       //  X[k+1] -= b[k] p[k] ; 
       T Delta = zero;                     // The amount of change
       psi[sub] = norm*chi_internal;                    // Rebuild psi
+      flopcount.addSiteFlops(2*Nc*Ns,sub);
+
       for(s = 0; s < n_shift; ++s) {      
 	if (! convsP[s] ) {
 	  T tmp;
-	  tmp[sub] = Real(bs[s])*p[s];       // This pole hasn't converged 
-                                          // yet so update solution
+	  tmp[sub] = Real(bs[s])*p[s];    
+	  flopcount.addSiteFlops(2*Nc*Ns,sub);   // This pole hasn't converged 
+	                                         // yet so update solution
 	  X[s][sub] -= tmp;                  
+	  flopcount.addSiteFlops(2*Nc*Ns,sub);
+
 	  Delta[sub] += residues[s]*tmp; // Accumulate "change vector" in the Xs
+	  flopcount.addSiteFlops(4*Nc*Ns,sub);
 
 	}
 	psi[sub] += residues[s]*X[s];   // Accumualte psi (from X's)
+	flopcount.addSiteFlops(4*Nc*Ns,sub);
       }
       
       Double delta_norm = norm2(Delta,sub);
+      flopcount.addSiteFlops(4*Nc*Ns,sub);
+
       Double psi_norm = norm2(psi,sub);
+      flopcount.addSiteFlops(4*Nc*Ns,sub);
+
       convP |= toBool( delta_norm < rsdcg_sq[0]*psi_norm);
       n_count = k;
     }
@@ -344,7 +355,8 @@ namespace Chroma
 
     QDPIO::cout << "MInvCG2Accum: " << n_count << " iterations" << endl;
     flopcount.report("minvcg", swatch.getTimeInSeconds());
-    revertFromFastMemoryHint(X,true);
+    revertFromFastMemoryHint(X,false);
+    revertFromFastMemoryHint(psi,true);
 
     if (n_count == MaxCG) {
       QDP_error_exit("too many CG iterationns: %d\n", n_count);

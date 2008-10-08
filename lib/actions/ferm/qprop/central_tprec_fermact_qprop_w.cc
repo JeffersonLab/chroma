@@ -1,4 +1,4 @@
-// $Id: central_tprec_fermact_qprop_w.cc,v 1.4 2007-05-01 13:07:13 bjoo Exp $
+// $Id: central_tprec_fermact_qprop_w.cc,v 1.5 2008-10-08 19:40:18 bjoo Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -90,6 +90,81 @@ namespace Chroma
     Handle< LinOpSystemSolver<T> > invA;
   };
 
+  template<typename T, typename P, typename Q, template <typename, typename, typename> class L>
+  class Central2PrecTimeFermActQprop : public SystemSolver<T>
+  {
+  public:
+    //! Constructor
+    /*!
+     * \param A_         Linear operator ( Read )
+     * \param invParam_  inverter parameters ( Read )
+     */
+    Central2PrecTimeFermActQprop(Handle< L<T,P,Q> > A_,
+					   Handle< LinOpSystemSolver<T> > invA_) : A(A_), invA(invA_) 
+      {}
+
+    //! Destructor is automatic
+    ~Central2PrecTimeFermActQprop() {}
+
+    //! Return the subset on which the operator acts
+    const Subset& subset() const {return all;}
+
+    //! Solver the linear system
+    /*!
+     * \param psi      quark propagator ( Modify )
+     * \param chi      source ( Read )
+     * \return number of CG iterations
+     */
+    SystemSolverResults_t operator() (T& psi, const T& chi) const
+    {
+      START_CODE();
+
+      // We need to solve    C_L^{1}( 1 + C_L D_s C_R )C_R^{-1} \psi = \chi
+      //
+      // We do this by solving ( 1 + C_L D_s C_R ) \psi' = \chi'
+      // with \chi' = C_L \chi
+      //
+      // and then at the end C_R^{-1] \psi = \psi' => \psi = C_R \psi'
+      //
+      // First compute \chi'
+      T chi_prime=zero;
+      QDPIO::cout << "Preparing LinOp" << endl;
+      A->leftLinOp(chi_prime, chi, PLUS);
+
+
+      psi=zero;
+      T psi_prime = zero;
+
+      // Call inverter
+      QDPIO::cout << "Solving" << endl;
+      SystemSolverResults_t res = (*invA)(psi_prime, chi_prime);
+
+
+      QDPIO::cout <<"Reconstructing" << endl;
+      // Reconstruct psi = C_R psi_prime
+      A->rightLinOp(psi, psi_prime, PLUS);
+
+      // Compute residual
+      {
+	T  r=zero;
+	A->unprecLinOp(r, psi, PLUS);
+	r -= chi;
+	res.resid = sqrt(norm2(r));
+      }
+
+      END_CODE();
+
+      return res;
+    }
+
+  private:
+    // Hide default constructor
+    Central2PrecTimeFermActQprop() {}
+
+    Handle< L<T,P,Q> > A;
+    Handle< LinOpSystemSolver<T> > invA;
+  };
+
 
   typedef LatticeFermion LF;
   typedef multi1d<LatticeColorMatrix> LCM;
@@ -110,6 +185,16 @@ namespace Chroma
 								 const GroupXML_t& invParam) const
   {
     return new CentralPrecTimeFermActQprop<LF,LCM,LCM,ILUPrecSpaceCentralPrecTimeLinearOperator>(Handle< ILUPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
+												 Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+  }
+  
+
+  template<>
+  SystemSolver<LF>* 
+  ILU2PrecSpaceCentralPrecTimeWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
+								 const GroupXML_t& invParam) const
+  {
+    return new Central2PrecTimeFermActQprop<LF,LCM,LCM,ILU2PrecSpaceCentralPrecTimeLinearOperator>(Handle< ILU2PrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
 												 Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
   }
   
