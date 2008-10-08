@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: central_tprec_linop.h,v 3.11 2008-05-14 19:24:23 bjoo Exp $
+// $Id: central_tprec_linop.h,v 3.12 2008-10-08 19:42:26 bjoo Exp $
 /*! @file
  * @brief Time-preconditioned Linear Operators
  */
@@ -142,6 +142,132 @@ namespace Chroma
 
     //! Get the force due to the det T^\dag T bit
     virtual void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const = 0;
+  };
+
+
+ template<typename T, typename P, typename Q>
+  class Central2TimePrecLinearOperator : public DiffLinearOperator<T,P,Q>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~Central2TimePrecLinearOperator() {}
+
+    //! Defined on the entire lattice
+    const Subset& subset() const = 0;
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
+
+    //! Do we have SchroedingerBCs in time?
+    //! Yucky but doable as a default
+    virtual bool schroedingerTP() const 
+    {
+
+      // Get the BCs
+      const FermBC<T,P,Q>& fbc=getFermBC();
+
+      // If they are nontrivial
+      if( fbc.nontrivialP() ) {
+
+	// Try and cast to a SchrFermBC base class
+	try { 
+	  const SchrFermBC& schrReference = dynamic_cast<const SchrFermBC&>(fbc);
+	  // Success -- check whether its dir is the same as my tDir
+	  return ( schrReference.getDir() == tDir() );
+	}
+	catch( std::bad_cast ) { 
+	  // Cast failed - so not Schroedinger(?)
+	  return false;
+	}
+      }
+
+      // Wasn't nontrivial to start with.
+      return false;
+    }
+
+
+    //! The time direction
+    virtual int tDir() const = 0;
+
+    //! Apply inv (C_L)^{-1}
+    virtual void invLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+    
+    //! Apply inv (C_R)^{-1}
+    virtual void invRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+    
+    //! Apply C_L
+    virtual void leftLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+    
+    //! Apply C_R
+    virtual void rightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+
+    //! Apply the operator onto a source vector
+    //  This varies a lot amongst the families
+    virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+
+    //! Apply the UNPRECONDITIONED operator onto a source vector
+    /*! Mainly intended for debugging */
+    /*! This by the way defines the essence of the preconditioning ie:
+     *    M_unprec = C^{-1}_L  M_prec C^{-1}_R
+     *
+     *    This applies whether we use
+     *           no spatial preconditioning: M_prec = 1 + C_L D_s C_R
+     *           ILU preconditioning         M_prec = L + U + L (A-1) U 
+     *                Here L & U involve both D_s and C_L & C_R, with 
+     *                A being a left over diagonal piece.
+     */
+    virtual void unprecLinOp(T& chi, const T& psi, 
+			     enum PlusMinus isign) const
+    {
+
+      switch (isign) { 
+      case PLUS:
+	{
+	  T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+	  invRightLinOp(tmp1, psi, isign);
+	  (*this)(tmp2, tmp1, isign);
+	  invLeftLinOp(chi, tmp2, isign);
+	}
+	break;
+      case MINUS:
+	{
+	  T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+	  invLeftLinOp(tmp1, psi, isign);
+	  (*this)(tmp2, tmp1, isign);
+	  invRightLinOp(chi, tmp2, isign);
+	}
+	break;
+      default:
+	QDPIO::cerr << "unknown sign" << endl;
+	QDP_abort(1);
+      }
+
+      
+      getFermBC().modifyF(chi);
+    }
+    
+  protected:
+    //! Apply inv (C_L)^{-1}
+    virtual void invCLeftLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+    
+    //! Apply inv (C_R)^{-1}
+    virtual void invCRightLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+    
+    //! Apply C_L
+    virtual void cLeftLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+    
+    //! Apply C_R
+    virtual void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+    
+    //! Apply the d/dt of the preconditioned linop
+    virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const  = 0;    
+
+    
   };
 
 
@@ -766,6 +892,281 @@ namespace Chroma
 
   };
 
+
+
+
+
+
+  //-----------------------------------------------------------------------------------
+  //! Time preconditioned linear operator
+  /*! @ingroup linop
+   *
+   * Support for time preconditioned linear operators with Mike's style ILU spatial preconditioning
+
+   */
+
+  //! For now, no forces just yet - come later...
+  template<typename T, typename P, typename Q>
+  class ILU2PrecSpaceCentralPrecTimeLinearOperator : public Central2TimePrecLinearOperator<T,P,Q>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~ILU2PrecSpaceCentralPrecTimeLinearOperator() {}
+
+    //! Defined on the entire lattice
+    const Subset& subset() const {return all;}
+
+    //! Return the fermion BC object for this linear operator
+    virtual const FermBC<T,P,Q>& getFermBC() const = 0;
+
+    //! The time direction
+    virtual int tDir() const = 0;
+
+
+    //! Apply S_L
+    virtual void leftLinOp(T& chi, const T& psi, enum PlusMinus isign) const {
+      if( isign == PLUS ) { 
+	T tmp1;
+	cLeftLinOp(chi, psi, PLUS,0);  // C^e_L psi_e // done
+	cLeftLinOp(chi, psi, PLUS,1);  // C^o_L psi_o
+	DBar(tmp1, chi, PLUS, 1); // CB of TARGET: tmp1 = D^{oe} C^e_L
+	chi[rb3[1]] += tmp1;      // chi[1] = C^{o}_L psi_o D^{oe}C^e_L psi_e 
+
+      }
+      else { 
+	T tmp1;
+	DBar(tmp1, psi, MINUS, 0); // CB of TARGET: tmp1 = D^\dag^eo psi_o	
+	tmp1[rb3[0]] += psi;       // tmp1 = psi_e +  D^\dag^eo psi_o
+	tmp1[rb3[1]] = psi;        // tmp1 = psi_o 
+	cLeftLinOp(chi, tmp1, MINUS, 0); // chi = C^e_L [psi_e +  D^\dag^eo psi_o]
+	cLeftLinOp(chi, tmp1, MINUS, 1); // chi = C^o_L psi_o
+      }
+    }
+
+    //! Apply S_R 
+    virtual void rightLinOp(T& chi, const T& psi, enum PlusMinus isign) const 
+    {
+      if ( isign == PLUS ) { 
+	T tmp1;
+	DBar(tmp1, psi, PLUS, 0); // CB of TARGET: tmp1 = D^eo psi_o	
+	tmp1[rb3[0]] += psi;       // tmp1 = psi_e +  D psi_o
+	tmp1[rb3[1]] = psi;        // tmp1 = psi_o 
+	cRightLinOp(chi, tmp1, PLUS, 0); // chi = C^e_R [psi_e +  D psi_o]
+	cRightLinOp(chi, tmp1, PLUS, 1); // chi = C^o_R psi_o
+
+      }
+      else {
+	T tmp1;
+	cRightLinOp(chi, psi, MINUS,0);  // (C^e_R)^\dag psi_e // done
+	cRightLinOp(chi, psi, MINUS,1);  // (C^o_R)^\dag psi_o
+
+	DBar(tmp1, chi, MINUS, 1); // CB of TARGET: tmp1 = D^{oe}\dag  C^e_R\dag
+	chi[rb3[1]] += tmp1;      // chi[1] = C^{o}_L psi_o D^{oe}C^e_L psi_e 
+      }
+    }
+
+
+    //! Apply S_L^{-1}
+    virtual void invLeftLinOp(T& chi, const T& psi, enum PlusMinus isign) const 
+    {
+      T tmp1, tmp2;
+      if(isign == PLUS ) { 
+
+	DBar(tmp1, psi, PLUS, 1);   // tmp1= D^{oe} psi_e
+	tmp2[rb3[1]] = psi - tmp1;  // tmp2= -D^{oe} psi_e + psi_o
+
+	invCLeftLinOp(chi, psi, PLUS, 0); 
+	invCLeftLinOp(chi, tmp2, PLUS, 1);
+      }
+      else { 
+	invCLeftLinOp(chi, psi, MINUS, 0);
+	invCLeftLinOp(chi, psi, MINUS, 1); 
+	DBar(tmp1, chi, MINUS, 0); // tmp1 = D^{eo}^\dagger (C^o_L)^{-dagger} psi_o
+	chi[rb3[0]] -= tmp1;
+
+      }
+    }
+
+    //! Apply S_R^{-1}
+    virtual void invRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const 
+    {
+      T tmp1, tmp2;
+      if( isign == PLUS) {
+	invCRightLinOp(chi, psi, PLUS, 0);
+	invCRightLinOp(chi, psi, PLUS, 1); 
+	DBar(tmp1, chi, PLUS, 0); // tmp1 = D^{eo}^\dagger (C^o_L)^{-dagger} psi_o
+	chi[rb3[0]] -= tmp1;
+      }
+      else { 
+	DBar(tmp1, psi, MINUS, 1);   // tmp1= D^{oe}^dagger psi_e
+	tmp2[rb3[1]] = psi - tmp1;  // tmp2= -D^{oe}^dagger psi_e + psi_o
+
+	invCRightLinOp(chi, psi, MINUS, 0); 
+	invCRightLinOp(chi, tmp2, MINUS, 1);
+      }
+    }
+
+
+
+    //! Override operator()  For this preconditioning 
+    virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const
+    {
+      T   tmp1, tmp2,tmp3; moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+      switch (isign)
+      {
+      case PLUS:
+
+
+	chi = psi;
+	DBar(tmp1, psi, PLUS, 0);   // tmp1 = Dbar^{eo} psi_o
+
+	tmp3[rb3[0]] = tmp1 + psi;  // tmp1 = psi_e + Dbar^{eo} psi_o
+	ABar(tmp2, tmp3, PLUS, 0);  // tmp2 = ABar [  psi_e + Dbar^{eo} psi_o ]
+	chi[rb3[0]] += tmp2;
+
+	ABar(tmp3, psi, PLUS, 1);  // t3 = \Bar(A)_o psi_o
+
+	chi[rb3[1]] += tmp3;
+	tmp3[rb3[0]] = tmp2 - tmp1;
+	DBar(tmp1, tmp3, PLUS, 1);
+
+	chi[rb3[1]] += tmp1;
+
+
+	break;
+
+	
+      case MINUS:
+	chi = psi;
+
+	DBar(tmp1, psi, MINUS, 0);  // tmp1 = D^\dag_eo psi_o
+
+	tmp2[rb3[0]] = psi + tmp1;  // tmp2 = psi_e +  D^\dag_eo psi_o
+	ABar(tmp3, tmp2, MINUS, 0); // t3 = A^\dag{ = psi_e +  D^\dag_eo psi_o }
+	
+
+	chi[rb3[0]] += tmp3;
+	
+
+	tmp2[rb3[0]] = tmp3 - tmp1; // t2= A^\dag [ psi_e + D^\dag psi_o ] - D^\dag psi_p
+	DBar(tmp3, tmp2, MINUS, 1); 
+	ABar(tmp1, psi, MINUS, 1);
+	chi[rb3[1]] += tmp3;
+	chi[rb3[1]] += tmp1;
+
+	break;
+
+      default:
+	QDPIO::cerr << "unknown sign" << endl;
+	QDP_abort(1);
+      }
+      getFermBC().modifyF(chi);
+
+    }
+
+    //! Apply the UNPRECONDITIONED operator onto a source vector
+    /*! Mainly intended for debugging */
+    virtual void unprecLinOp(T& chi, const T& psi, 
+			     enum PlusMinus isign) const
+    {
+
+      switch (isign) { 
+      case PLUS:
+	{
+	  T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+	  invRightLinOp(tmp1, psi, isign);
+	  (*this)(tmp2, tmp1, isign);
+	  invLeftLinOp(chi, tmp2, isign);
+	}
+	break;
+      case MINUS:
+	{
+	  T   tmp1, tmp2;  moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
+
+	  invLeftLinOp(tmp1, psi, isign);
+	  (*this)(tmp2, tmp1, isign);
+	  invRightLinOp(chi, tmp2, isign);
+	}
+	break;
+      default:
+	QDPIO::cerr << "unknown sign" << endl;
+	QDP_abort(1);
+      }
+
+      getFermBC().modifyF(chi);
+    }
+
+  protected:
+    //! Apply inv (C_L)^{-1}
+    virtual void invCLeftLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+
+    //! Apply inv (C_R)^{-1}
+    virtual void invCRightLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+
+    //! Apply C_L
+    virtual void cLeftLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+    
+    //! Apply C_R
+    virtual void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+
+    virtual void DBar(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const
+    {
+      T tmp1, tmp2;
+      if (isign == PLUS) { 
+	cRightLinOp(tmp1, psi, PLUS, (1-cb3d));
+	Dslash3D(tmp2, tmp1, PLUS, cb3d);
+	cLeftLinOp(chi, tmp2, PLUS, cb3d);
+      }
+      else {
+	cLeftLinOp(tmp1, psi, MINUS, 1-cb3d);
+	Dslash3D(tmp2, tmp1, MINUS, cb3d);
+	cRightLinOp(chi, tmp2, MINUS, cb3d);
+      }
+    }
+
+     
+    virtual void ABar(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const
+    {
+      T tmp1, tmp2; 
+      if( isign == PLUS ) { 
+	cRightLinOp(tmp1, psi, PLUS, cb3d);
+	AH(tmp2, tmp1, PLUS, cb3d);
+	cLeftLinOp(chi, tmp2, PLUS, cb3d);
+      }
+      else {
+	cLeftLinOp(tmp1, psi, MINUS, cb3d);
+	AH(tmp2, tmp1, MINUS, cb3d);
+	cRightLinOp(chi, tmp2, MINUS, cb3d);
+      }
+    }
+
+    virtual void Dslash3D(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+    virtual void AH(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const = 0;
+
+    //! Apply the d/dt of the preconditioned linop
+    virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const 
+    {
+      QDPIO::cerr << "Not Yet Implemented " << endl;
+      QDP_abort(1);
+    }
+      
+
+    //! Get log det ( T^\dag T )
+    virtual Double logDetTDagT(void) const
+    {
+      QDPIO::cerr << "Not Yet Implemented " << endl;
+      QDP_abort(1);
+    }
+
+    //! Get the force due to the det T^\dag T bit
+    virtual void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const 
+    {
+      QDPIO::cerr<< "Not Yet Implemented" << endl;
+      QDP_abort(1);
+    }
+
+  };
 
 }
 

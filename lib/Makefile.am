@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.164 2008-09-27 05:12:28 edwards Exp $
+# $Id: Makefile.am,v 3.165 2008-10-08 19:42:26 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -415,6 +415,8 @@ nobase_include_HEADERS += \
         actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h \
         actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h \
         actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h \
+        actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.h \
+        actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h \
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.h \
@@ -517,8 +519,11 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/central_tprec_nospin_utils.h \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilsonlike_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilsonlike_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.h \
+	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.h \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.h \
 	actions/ferm/qprop/qprop_w.h \
@@ -1179,6 +1184,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
 	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc\
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc \
+	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc\
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc\
 	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc\
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
@@ -1255,6 +1262,8 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
+\	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \

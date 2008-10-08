@@ -36,6 +36,30 @@ namespace Chroma {
 
   };
 
+  //-------------------------------------------------------------------------------------------
+  //! Wilson-like fermion actions
+  /*! @ingroup actions
+   *
+   * Wilson-like fermion actions
+   */
+  template<typename T, typename P, typename Q>
+  class Central2TimePrecFermAct : public WilsonTypeFermAct<T,P,Q>
+  {
+  public:
+    //! Virtual destructor to help with cleanup;
+    virtual ~Central2TimePrecFermAct() {}
+
+    virtual Central2TimePrecLinearOperator<T,P,Q>* linOp( Handle< FermState<T,P,Q> > state) const = 0;
+
+    //! Produce a linear operator M^dag.M for this action
+    /*! Default implementation */
+    virtual DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state) const
+      {
+	return new DiffMdagMLinOp<T,P,Q>(this->linOp(state));
+      }
+
+  };
+
 
 
 
