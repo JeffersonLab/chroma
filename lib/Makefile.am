@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.165 2008-10-08 19:42:26 bjoo Exp $
+# $Id: Makefile.am,v 3.166 2008-10-15 16:08:47 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -1262,7 +1262,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
-\	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
+	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
 	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
