@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.5 2008-10-01 20:50:42 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.6 2008-10-15 20:09:24 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -68,6 +68,7 @@ namespace Chroma
       read(paramtop, "DisplacementGammaList", param.disp_gamma_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
+      read(paramtop, "mass_label", param.mass_label);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
@@ -100,6 +101,8 @@ namespace Chroma
       write(xml, "DisplacementGammaList", param.disp_gamma_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
+      write(xml, "mass_label", param.mass_label);
+
       xml << param.link_smearing.xml;
 
       pop(xml);
