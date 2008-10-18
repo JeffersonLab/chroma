@@ -1,7 +1,7 @@
 // -*- C++ -*-
-// $Id: inline_prop_3pt_w.h,v 1.1 2008-10-15 18:56:48 kostas Exp $
+// $Id: inline_prop_3pt_w.h,v 1.2 2008-10-18 04:15:15 kostas Exp $
 /*! \file
- * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
+ * \brief Inline measurement of stochastic 3pt functions.
  *
  * spectroscopy
  */
@@ -34,14 +34,16 @@ namespace Chroma
        
       unsigned long      frequency;
     
+      struct Operator_t{
+	multi1d<int> p ; /*!< the momentum inserted */
+        int gamma ; /*!< insersion operator gamma Matrix 0..15 */
+        Complex f  ; /*!< overal factor */
+      }
+
       struct Param_t
       {
-	multi1d<int> p ; /*!< the momentum inserted */
-	int gamma ; /*!< insersion operator gamma Matrix 0..15 */
-	Complex f  ; /*!< overal factor */
-
-	multi1d<GroupXML_t> quarks ;     /*! dilutions */
-	
+	Operator_t op ; /*! the operator */
+	multi1d<GroupXML_t> chi ;     /*! dilutions */
       } param;
     
     
