@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.2 2008-10-18 04:15:15 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.3 2008-10-18 14:18:45 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -403,10 +403,74 @@ namespace Chroma{
 	}
       }
  
-      //Print out here the operator details
-      //NEEDS to be done
+      // Read the quark propagator and extract headers
+      ChromaProp_t prop_header;
+      PropSourceConst_t source_header;
+      QDPIO::cout << "Attempt to read propagator info" << endl;
+      try
+	{
+	  // Try the cast to see if this is a valid source
+	  LatticePropagator& tt_prop =
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+	  
+	  //Snarf the source info. 
+	  //This is will throw if the source_id is not there
+	  XMLReader prop_file_xml, prop_record_xml;
+	  TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
+	  TheNamedObjMap::Instance().get(params.named_obj.prop_id).getRecordXML(prop_record_xml);
+	  // Try to invert this record XML into a ChromaProp struct
+	  // Also pull out the id of this source
+	  {
+	    read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
+	    read(prop_record_xml, "/Propagator/PropSource", source_header);
+	  }
+	}    
+      catch (std::bad_cast){
+	QDPIO::cerr << name << ": caught dynamic cast error" ;
+	QDPIO::cerr << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e){
+	QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
+	QDP_abort(1);
+      }
+      const LatticePropagator& prop = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
+ 
+      QDPIO::cout << "Propagator successfully read and parsed" << endl;
 
-      //NEED to read the prop from the namedbuffer
+      //create the 3pt prop
+      try{
+	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop_3p_id);
+      }
+      catch (std::bad_cast){
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e){
+	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+	QDP_abort(1);
+      }
+
+      // Cast should be valid now
+      LatticePropagator& prop_3pt = 
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_3pt_id);
+
+      // Need to check if the propagator gauge field is the same as the rest...
+      // NEED TO IMPLEMENT THIS
+
+      //Print out here the operator details
+      {
+	write(top, "Operator", params.param.op);
+	write(top, "t0", t0);
+	XMLReader from(top);
+	XMLReader from2(from, "/Operator");
+	std::ostringstream os;
+	QDPIO::cout<<name<<" Operator: "<<endl ;
+	from2.print(QDPIO::cout);
+	QDPIO::cout<< " Time slice: "<<t0<<endl ;
+	QDPIO::cout<<name<<" End Operator: "<<endl ;
+      }
  
       prop = Gamma(params.param.op.g)*prop ;
       prop = param.param.op.f*prop ;
@@ -427,7 +491,51 @@ namespace Chroma{
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
 	}
       
-      //NEED to save the prop_3pt to a named buffer
+      // Sanity check - 
+      // write out the propagator (pion) correlator in the Nd-1 direction
+      {
+	// Initialize the slow Fourier transform phases
+	SftMom  phases(0, true, Nd-1);
+
+	multi1d<Double> corr = sumMulti(localNorm2(prop_3pt),phases.getSet());
+
+	push(xml_out, "Prop_correlator");
+	write(xml_out, "prop_corr", corr);
+	pop(xml_out);
+      }
+
+
+      // Save the propagator info
+      try
+	{
+	  QDPIO::cout << "Start writing propagator info" << endl;
+
+	  XMLBufferWriter file_xml;
+	  push(file_xml, "propagator");
+	  write(file_xml, "id", uniqueId());  // NOTE: new ID form
+	  pop(file_xml);
+
+	  XMLBufferWriter record_xml;
+	  push(record_xml , "Propagator");
+	  write(record_xml, "ForwardProp", prop_header);
+	  write(record_xml, "PropSource", source_header);
+	  write(record_xml, "t0",t0);
+	  write(record_xml, "Operator",params.param.op);
+	  pop(record_xml);
+	  // Write the propagator xml info
+	  TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
+	  TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
+
+	  QDPIO::cout << "Propagator successfully updated" << endl;
+	}
+      catch (std::bad_cast){
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e){
+	QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
+	QDP_abort(1);
+      }
 
 
       // Close the namelist output file XMLDAT
