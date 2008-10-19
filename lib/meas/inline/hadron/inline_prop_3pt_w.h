@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_3pt_w.h,v 1.2 2008-10-18 04:15:15 kostas Exp $
+// $Id: inline_prop_3pt_w.h,v 1.3 2008-10-19 04:48:30 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *
@@ -38,7 +38,7 @@ namespace Chroma
 	multi1d<int> p ; /*!< the momentum inserted */
         int gamma ; /*!< insersion operator gamma Matrix 0..15 */
         Complex f  ; /*!< overal factor */
-      }
+      } ;
 
       struct Param_t
       {
@@ -76,8 +76,8 @@ namespace Chroma
 
     public:
       ~InlineMeas() {}
-      InlineMeas(const Params& p) : params(p) {setUpMaps();}
-      InlineMeas(const InlineMeas& p) : params(p.params) {setUpMaps();}
+      InlineMeas(const Params& p) : params(p) {}
+      InlineMeas(const InlineMeas& p) : params(p.params) {}
       
       unsigned long getFrequency(void) const {return params.frequency;}
       

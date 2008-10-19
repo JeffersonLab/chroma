@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.3 2008-10-18 14:18:45 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.4 2008-10-19 04:48:30 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -25,7 +25,8 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
-
+#include "util/info/unique_id.h"
+#include "util/ferm/transf.h"
 #include "meas/inline/io/named_objmap.h"
 
 namespace Chroma{ 
@@ -49,39 +50,37 @@ namespace Chroma{
       bool success = true; 
       if (! registered)
       {
-	success &= BaryonOperatorEnv::registerAll();
+	//success &= BaryonOperatorEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }
       return success;
     }
   
-
-  }
-  void read(XMLReader& xml, const string& path, Params::Operator_t& op){
-    XMLReader paramtop(xml, path);
+    void read(XMLReader& xml, const string& path, Params::Operator_t& op){
+      XMLReader paramtop(xml, path);
+      
+      read(paramtop, "gamma", op.gamma);
+      read(paramtop, "p", op.p);
+      if(paramtop.count("factor")>0)
+	read(paramtop, "factor", op.f);
+      else
+	op.f = 1.0 ;
+    }
     
-    read(paramtop, "gamma", param.gamma);
-    read(paramtop, "p", param.p);
-    if(paramtop.count("factor")>0)
-      read(paramtop, "factor", param.f);
-    else
-      param.f = 1.0 ;
-  }
-
-  // Writter for input parameters                                           
-  void write(XMLWriter& xml, const string& path, const Params::Param_t& param){
+    // Writter for input parameters                                           
+    void write(XMLWriter& xml, const string& path, const Params::Operator_t& op){
     push(xml, path);
 
-    write(xml, "p", param.p);
-    write(xml, "gamma", param.gamma);
-    write(xml, "f", param.f);
+    write(xml, "p", op.p);
+    write(xml, "gamma", op.gamma);
+    write(xml, "f", op.f);
 
     pop(xml);
   }
   
   // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param){
+  void read(XMLReader& xml, const string& path, Params::Param_t& param){
       XMLReader paramtop(xml, path);
       
       int version;
@@ -92,7 +91,7 @@ namespace Chroma{
 	case 1:
 	  /************************************************************/
 	  read(paramtop,"op",param.op);
-	  param.q = readXMLArrayGroup(paramtop, "Quarks", "DilutionType");
+	  param.chi = readXMLArrayGroup(paramtop, "Quarks", "DilutionType");
 	  
 	  break;
 	  
@@ -107,7 +106,7 @@ namespace Chroma{
     }
 
 
-  // Writter for input parameters
+    // Writter for input parameters
     void write(XMLWriter& xml, const string& path, const Params::Param_t& param){
       push(xml, path);
       
@@ -117,9 +116,9 @@ namespace Chroma{
       write(xml, "op", param.op);
       
       push(xml,"Quarks");
-      for( int t(0);t<param.q.size();t++){
+      for( int t(0);t<param.chi.size();t++){
 	push(xml,"elem");
-	xml<<param.q[t].xml;
+	xml<<param.chi[t].xml;
 	pop(xml);
       }
       pop(xml);
@@ -129,7 +128,7 @@ namespace Chroma{
 
 
     //! Gauge field parameters
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
       
@@ -139,7 +138,7 @@ namespace Chroma{
     }
     
     //! Gauge field parameters
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
+  void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
       push(xml, path);
       
       write(xml, "gauge_id", input.gauge_id);
@@ -152,10 +151,10 @@ namespace Chroma{
     // Param stuff
     Params::Params(){ 
       frequency = 0;
-      param.gamma = 0 ;
-      param.f = 1.0 ;
+      param.op.gamma = 0 ;
+      param.op.f = 1.0 ;
     }
-
+    
     Params::Params(XMLReader& xml_in, const std::string& path) 
     {
       try 
@@ -295,12 +294,14 @@ namespace Chroma{
       swatch.reset();
       swatch.start();
       
-      int N_quarks = params.param.q.size() ;
+      int N_quarks = params.param.chi.size() ;
+
+      multi1d< Handle< DilutionScheme<LatticeFermion> > > quarks(N_quarks);
 
       try{
 	// Loop over quark dilutions
-	for(int n(0); n < params.param.q.size(); ++n){
-	  const GroupXML_t& dil_xml = params.param.q[n];
+	for(int n(0); n < params.param.chi.size(); ++n){
+	  const GroupXML_t& dil_xml = params.param.chi[n];
 	  std::istringstream  xml_d(dil_xml.xml);
 	  XMLReader  diltop(xml_d);
 	  QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
@@ -328,7 +329,7 @@ namespace Chroma{
 	  QDPIO::cerr << name ;
 	  QDPIO::cerr << " : Only one time slice is allowed";
 	  QDPIO::cerr << "Quark " << n << " had " ;
-	  QDPIO::err  << quarks[n]->getNumTimeSlices() << endl;
+	  QDPIO::cerr  << quarks[n]->getNumTimeSlices() << endl;
 	  QDP_abort(1);
 	}
 	int tt0 = quarks[n]->getT0(0);
@@ -384,7 +385,7 @@ namespace Chroma{
       
       int mom2(0);
       for(int i(0);i<Nd-1;i++)
-	mom2 += param.param.op.p[i]*param.param.op.p[i] ;
+	mom2 += params.param.op.p[i]*params.param.op.p[i] ;
       
       //SftMom phases(params.param.mom2_max, false, decay_dir);
       SftMom phases(mom2, false, decay_dir);
@@ -441,7 +442,7 @@ namespace Chroma{
 
       //create the 3pt prop
       try{
-	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop_3p_id);
+	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop3pt_id);
       }
       catch (std::bad_cast){
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
@@ -454,39 +455,43 @@ namespace Chroma{
 
       // Cast should be valid now
       LatticePropagator& prop_3pt = 
-	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_3pt_id);
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop3pt_id);
 
       // Need to check if the propagator gauge field is the same as the rest...
       // NEED TO IMPLEMENT THIS
 
       //Print out here the operator details
+      write(xml_out, "Operator", params.param.op);
+      write(xml_out, "t0", t0);
       {
+	XMLBufferWriter top;
 	write(top, "Operator", params.param.op);
-	write(top, "t0", t0);
+        write(top, "t0", t0);
 	XMLReader from(top);
 	XMLReader from2(from, "/Operator");
 	std::ostringstream os;
 	QDPIO::cout<<name<<" Operator: "<<endl ;
-	from2.print(QDPIO::cout);
+	from2.print(os);
+	QDPIO::cout<<os.str()<<endl ;
 	QDPIO::cout<< " Time slice: "<<t0<<endl ;
 	QDPIO::cout<<name<<" End Operator: "<<endl ;
       }
  
-      prop = Gamma(params.param.op.g)*prop ;
-      prop = param.param.op.f*prop ;
-      LatticePropagator prop_3pt ; 
+      LatticePropagator tmp_prop = Gamma(params.param.op.gamma)*prop ;
+      tmp_prop = params.param.op.f*tmp_prop;
+          
       LatticeFermion ferm_3pt = zero ;
       LatticeFermion ferm ;
-      LatticeComplex phase = phases[momToNum(params.param.op.p)];
+      LatticeComplex phase = phases[phases.momToNum(params.param.op.p)];
       for(int s(0);s<Ns;s++)
 	for(int c(0);c<Nc;c++){
-	  PropToFerm(prop,ferm,c,s) ;
+	  PropToFerm(tmp_prop,ferm,c,s) ;
 	  ferm_3pt = zero;
 	  for(int n(0);n<quarks.size();n++)
 	    for(int i = 0 ; i <  quarks[n]->getDilSize(t0) ; ++i){
 	      LatticeComplex cc = 
 		phase*localInnerProduct(quarks[n]->dilutedSource(t0,i),ferm) ;
-	      ferm_3pt + = sum(cc,t0)*conj(quarks[n]->dilutedSolution(t0,i));
+	      ferm_3pt += sum(cc,phases.getSet()[t0])*conj(quarks[n]->dilutedSolution(t0,i));
 	    }
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
 	}
