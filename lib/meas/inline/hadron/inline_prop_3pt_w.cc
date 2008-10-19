@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.4 2008-10-19 04:48:30 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.5 2008-10-19 05:19:29 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -74,7 +74,7 @@ namespace Chroma{
 
     write(xml, "p", op.p);
     write(xml, "gamma", op.gamma);
-    write(xml, "f", op.f);
+    write(xml, "factor", op.f);
 
     pop(xml);
   }
@@ -325,14 +325,17 @@ namespace Chroma{
       int t0; // The time slice
 
       for (int n(0) ; n < N_quarks ; ++n){
+	/**
 	if(quarks[n]->getNumTimeSlices()!=1){
 	  QDPIO::cerr << name ;
-	  QDPIO::cerr << " : Only one time slice is allowed";
+	  QDPIO::cerr << " : Only one time slice is allowed. ";
 	  QDPIO::cerr << "Quark " << n << " had " ;
 	  QDPIO::cerr  << quarks[n]->getNumTimeSlices() << endl;
 	  QDP_abort(1);
 	}
+	**/
 	int tt0 = quarks[n]->getT0(0);
+	QDPIO::cout << " Got timeslice: "<<tt0<<endl;
 	if(n==0) 
 	  t0 = tt0 ;
 	else
@@ -461,14 +464,16 @@ namespace Chroma{
       // NEED TO IMPLEMENT THIS
 
       //Print out here the operator details
-      write(xml_out, "Operator", params.param.op);
+      write(xml_out, "op", params.param.op);
       write(xml_out, "t0", t0);
       {
 	XMLBufferWriter top;
+        push(top, "tt");
 	write(top, "Operator", params.param.op);
         write(top, "t0", t0);
+	pop(top);
 	XMLReader from(top);
-	XMLReader from2(from, "/Operator");
+	XMLReader from2(from, "/tt/Operator");
 	std::ostringstream os;
 	QDPIO::cout<<name<<" Operator: "<<endl ;
 	from2.print(os);
@@ -528,8 +533,8 @@ namespace Chroma{
 	  write(record_xml, "Operator",params.param.op);
 	  pop(record_xml);
 	  // Write the propagator xml info
-	  TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
+	  TheNamedObjMap::Instance().get(params.named_obj.prop3pt_id).setFileXML(file_xml);
+	  TheNamedObjMap::Instance().get(params.named_obj.prop3pt_id).setRecordXML(record_xml);
 
 	  QDPIO::cout << "Propagator successfully updated" << endl;
 	}
