@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.26 2008-09-13 19:15:39 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.27 2008-10-23 19:32:57 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -55,14 +55,20 @@ namespace Chroma
 			switch (version) 
 			{
 				case 1:
+					
+					QDPIO::cerr << "version 1 no longer supported. " << endl;
+					exit(0);
+					/*
 					read(paramtop, "mom2_max", param.mom2_max);
 
-					/*
+
+				
 					param.moms.resize(1,3);
 				
 					param.moms[0][0] = 0;
 					param.moms[0][1] = 0;
 					param.moms[0][2] = 0;
+					
 					*/
 
 					break;
@@ -1132,31 +1138,11 @@ namespace Chroma
 			//Idea: make a constructor for SftMom that takes a bit of 
 			//xml and handles the problem. 
 
-			SftMom phases1(params.param.mom2_max, false, decay_dir);
-
-			multi2d<int> mom_temp;
-			switch (params.param.version)
-			{
-				case 1:
-					mom_temp.resize(1,3);
-					mom_temp[0][0] = 0;
-					mom_temp[0][1] = 0;
-					mom_temp[0][2] = 0;
-
-					break;
-				
-				case 2:
-	
-					mom_temp = params.param.moms;
-
-					break;
-
-			}
-
-			SftMom phases2(mom_temp, decay_dir);
+			
+			SftMom phases(params.param.moms, decay_dir);
 
       // Sanity check - if this doesn't work we have serious problems
-      if (phases1.numSubsets() != QDP::Layout::lattSize()[decay_dir])
+      if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])
       {
 	QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
 		    << QDP::Layout::lattSize()[decay_dir]
@@ -1365,7 +1351,7 @@ namespace Chroma
 
 	  // Creation operator
 	  BaryonOperator_t  creat_oper;
-	  creat_oper.mom2_max    = params.param.mom2_max;
+	  creat_oper.mom2_max    = 0;
 	  creat_oper.decay_dir   = decay_dir;
 	  creat_oper.seed_l      = diluted_quarks[0]->getSeed();
 	  creat_oper.seed_m      = diluted_quarks[1]->getSeed();
@@ -1457,7 +1443,7 @@ namespace Chroma
 		  watch.reset();
 		  watch.start();
 		  //For the source, restrict this operation to a subset
-		  makeDiquark( diquark, q0 , q1, phases1.getSet()[ participating_timeslices[t0] ] ); 
+		  makeDiquark( diquark, q0 , q1, phases.getSet()[ participating_timeslices[t0] ] ); 
 		  watch.stop();
 
 		  /*QDPIO::cout<< " Made diquark : time = " << 
@@ -1484,7 +1470,7 @@ namespace Chroma
 		    watch.reset();
 		    watch.start();
 
-		    makeColorSinglet( c_oper, diquark, q2, phases1.getSet()[ 
+		    makeColorSinglet( c_oper, diquark, q2, phases.getSet()[ 
 					participating_timeslices[t0] ] );
 
 		    watch.stop();
@@ -1508,31 +1494,9 @@ namespace Chroma
  				multi2d<DComplex> c_sum;
 				int num_mom;
 
-				switch (params.param.version)
-				{
-
-					case 1: 
-				
-					c_sum = phases1.sft(c_oper, participating_timeslices[t0]);
-					num_mom = phases1.numMom();
-				
-					params.param.moms.resize(num_mom,Nd -1);
-
-					
-					for (int mm = 0 ; mm < num_mom ; ++mm)
-						params.param.moms[mm] = phases1.numToMom(mm);
-
-	
-					break;
-
-					case 2: 
-
-					c_sum = phases2.sft(c_oper, participating_timeslices[t0]);
-					num_mom = phases2.numMom();
+					c_sum = phases.sft(c_oper, participating_timeslices[t0]);
+					num_mom = phases.numMom();
 			
-					break;
-				}
-
 		    watch.stop();
 
 		    /*QDPIO::cout << " Spatial sums completed: time = " << 
@@ -1686,7 +1650,7 @@ namespace Chroma
 
 	  // Annihilation operator
 	  BaryonOperator_t  annih_oper;
-	  annih_oper.mom2_max    = params.param.mom2_max;
+	  annih_oper.mom2_max    = 0;
 	  annih_oper.decay_dir   = decay_dir;
 	  annih_oper.seed_l      = diluted_quarks[0]->getSeed();
 	  annih_oper.seed_m      = diluted_quarks[1]->getSeed();
@@ -1826,26 +1790,9 @@ namespace Chroma
 		    multi2d<DComplex> a_sum;
 				int num_mom;
 
-				switch (params.param.version)
-				{
-
-					case 1: 
-				
-					a_sum = phases1.sft(a_oper) ;
-					num_mom = phases1.numMom();
-				
-
-						break;
-
-					case 2: 
-
-					a_sum = phases2.sft(
+					a_sum = phases.sft(
 							a_oper);
-					num_mom = phases2.numMom();
-			
-					break;
-				}
-
+					num_mom = phases.numMom();
 
 		    watch.stop();
 		    /*
