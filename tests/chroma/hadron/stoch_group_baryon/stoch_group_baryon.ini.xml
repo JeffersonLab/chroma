@@ -286,6 +286,86 @@
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
+
+    <elem>
+      <annotation>
+      ; STOCH_GROUP_BARYON input file.
+      </annotation>
+     
+      <Name>STOCH_GROUP_BARYON</Name>
+      <Frequency>1</Frequency>
+      <Param> 
+        <version>2</version>
+        <moms>
+					<elem>0 0 0</elem>
+			  </moms>
+        <displacement_length>3</displacement_length>
+
+       	<QuarkSmearing>
+ 	  <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+          <wvf_param>3</wvf_param>
+          <wvfIntPar>32</wvfIntPar>
+          <no_smear_dir>3</no_smear_dir>
+        </QuarkSmearing>
+
+	<LinkSmearing>
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+					 <link_smear_fact>0.15625</link_smear_fact>
+					         <link_smear_num>16</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+	</LinkSmearing>
+     	
+	<QuarkDilutions>
+          <elem>
+	    <DilutionType>DILUTION_QUARK_SOURCE_CONST_FERM</DilutionType>
+	      <version>1</version>
+	      <QuarkFiles>
+	      <TimeSliceFiles>
+                <elem>
+		  <DilutionFiles>
+	            <elem>./zN_prop_q1_t0_sX_spc0.lime</elem>	
+                  </DilutionFiles>
+                </elem>
+              </TimeSliceFiles>
+            </QuarkFiles>
+          </elem>
+          <elem>
+	    <DilutionType>DILUTION_QUARK_SOURCE_CONST_FERM</DilutionType>
+	      <version>1</version>
+	      <QuarkFiles>
+	      <TimeSliceFiles>
+                <elem>
+		  <DilutionFiles>
+	            <elem>./zN_prop_q2_t0_sX_spc0.lime</elem>	
+                  </DilutionFiles>
+                </elem>
+              </TimeSliceFiles>
+            </QuarkFiles>
+          </elem>
+          <elem>
+	    <DilutionType>DILUTION_QUARK_SOURCE_CONST_FERM</DilutionType>
+	      <version>1</version>
+	      <QuarkFiles>
+	      <TimeSliceFiles>
+                <elem>
+		  <DilutionFiles>
+	            <elem>./zN_prop_q3_t0_sX_spc0.lime</elem>	
+                  </DilutionFiles>
+                </elem>
+              </TimeSliceFiles>
+            </QuarkFiles>
+          </elem>
+        </QuarkDilutions>	
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <operators_file>
+          <ops_file>Nucleon_elem</ops_file>
+          <id>Nucleons</id>
+        </operators_file>
+        <Quark_ids>lll</Quark_ids>
+      </NamedObject>
+    </elem>
   </InlineMeasurements>
   <nrow>2 2 2 2</nrow>
 </Param>
