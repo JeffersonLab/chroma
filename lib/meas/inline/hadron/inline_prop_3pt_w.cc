@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.5 2008-10-19 05:19:29 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.6 2008-10-29 20:30:10 edwards Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -496,7 +496,7 @@ namespace Chroma{
 	    for(int i = 0 ; i <  quarks[n]->getDilSize(t0) ; ++i){
 	      LatticeComplex cc = 
 		phase*localInnerProduct(quarks[n]->dilutedSource(t0,i),ferm) ;
-	      ferm_3pt += sum(cc,phases.getSet()[t0])*conj(quarks[n]->dilutedSolution(t0,i));
+	      ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(t0,i);
 	    }
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
 	}
