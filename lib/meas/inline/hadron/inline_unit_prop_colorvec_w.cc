@@ -1,4 +1,4 @@
-// $Id: inline_unit_prop_colorvec_w.cc,v 1.1 2008-10-28 21:34:47 edwards Exp $
+// $Id: inline_unit_prop_colorvec_w.cc,v 1.2 2008-10-30 14:57:40 edwards Exp $
 /*! \file
  * \brief Construct a propagator element that is     I^-1 * multi1d<LatticeColorVector>
  *
@@ -374,14 +374,12 @@ namespace Chroma
 	      LatticeFermion chi = zero;
 	      CvToFerm(vec_srce, chi, spin_source);
 
-	      LatticeFermion quark_soln = zero;
-
 	      KeyPropColorVec_t key;
 	      key.t_source     = t_source;
 	      key.colorvec_src = colorvec_source;
 	      key.spin_src     = spin_source;
 		  
-	      map_obj.insert(key, quark_soln);
+	      map_obj.insert(key, chi);
 	    } // for spin_source
 	  } // for colorvec_source
 	} // for t_source
