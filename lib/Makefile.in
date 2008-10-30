@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.281 2008-10-28 21:36:24 edwards Exp $
+# $Id: Makefile.in,v 3.282 2008-10-30 14:31:31 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -315,7 +315,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
-	meas/smear/disp_colvec_map.cc meas/sources/mom_source_const.cc \
+	meas/smear/disp_colvec_map.cc \
+	meas/smear/vector_quark_smearing.cc meas/smear/vector_smear.cc \
+	meas/sources/mom_source_const.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
@@ -879,6 +881,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	quark_displacement_aggregate.$(OBJEXT) \
 	no_quark_displacement.$(OBJEXT) \
 	simple_quark_displacement.$(OBJEXT) disp_colvec_map.$(OBJEXT) \
+	vector_quark_smearing.$(OBJEXT) vector_smear.$(OBJEXT) \
 	mom_source_const.$(OBJEXT) pt_source_const.$(OBJEXT) \
 	pt_source_smearing.$(OBJEXT) sh_source_const.$(OBJEXT) \
 	sh_source_smearing.$(OBJEXT) sf_pt_source_const.$(OBJEXT) \
@@ -1408,6 +1411,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
 	meas/smear/quark_source_sink.h meas/smear/disp_colvec_map.h \
+	meas/smear/vector_quark_smearing.h meas/smear/vector_smear.h \
 	meas/sources/sources.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/z2_src.h \
 	meas/sources/dilute_gauss_src_s.h meas/sources/zN_src.h \
@@ -2280,6 +2284,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
 	meas/smear/quark_source_sink.h meas/smear/disp_colvec_map.h \
+	meas/smear/vector_quark_smearing.h meas/smear/vector_smear.h \
 	meas/sources/sources.h meas/sources/source_construction.h \
 	meas/sources/srcfil.h meas/sources/z2_src.h \
 	meas/sources/dilute_gauss_src_s.h meas/sources/zN_src.h \
@@ -2985,7 +2990,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
-	meas/smear/disp_colvec_map.cc meas/sources/mom_source_const.cc \
+	meas/smear/disp_colvec_map.cc \
+	meas/smear/vector_quark_smearing.cc meas/smear/vector_smear.cc \
+	meas/sources/mom_source_const.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
@@ -4123,6 +4130,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_quark_prop_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/util_compute_singlet_ps.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vector_meson_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vector_quark_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/vector_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/walfil_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wall_qprop_w.Po@am__quote@
@@ -7094,6 +7103,34 @@ disp_colvec_map.obj: meas/smear/disp_colvec_map.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/disp_colvec_map.cc' object='disp_colvec_map.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o disp_colvec_map.obj `if test -f 'meas/smear/disp_colvec_map.cc'; then $(CYGPATH_W) 'meas/smear/disp_colvec_map.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/disp_colvec_map.cc'; fi`
+
+vector_quark_smearing.o: meas/smear/vector_quark_smearing.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vector_quark_smearing.o -MD -MP -MF $(DEPDIR)/vector_quark_smearing.Tpo -c -o vector_quark_smearing.o `test -f 'meas/smear/vector_quark_smearing.cc' || echo '$(srcdir)/'`meas/smear/vector_quark_smearing.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vector_quark_smearing.Tpo $(DEPDIR)/vector_quark_smearing.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/vector_quark_smearing.cc' object='vector_quark_smearing.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vector_quark_smearing.o `test -f 'meas/smear/vector_quark_smearing.cc' || echo '$(srcdir)/'`meas/smear/vector_quark_smearing.cc
+
+vector_quark_smearing.obj: meas/smear/vector_quark_smearing.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vector_quark_smearing.obj -MD -MP -MF $(DEPDIR)/vector_quark_smearing.Tpo -c -o vector_quark_smearing.obj `if test -f 'meas/smear/vector_quark_smearing.cc'; then $(CYGPATH_W) 'meas/smear/vector_quark_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/vector_quark_smearing.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vector_quark_smearing.Tpo $(DEPDIR)/vector_quark_smearing.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/vector_quark_smearing.cc' object='vector_quark_smearing.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vector_quark_smearing.obj `if test -f 'meas/smear/vector_quark_smearing.cc'; then $(CYGPATH_W) 'meas/smear/vector_quark_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/vector_quark_smearing.cc'; fi`
+
+vector_smear.o: meas/smear/vector_smear.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vector_smear.o -MD -MP -MF $(DEPDIR)/vector_smear.Tpo -c -o vector_smear.o `test -f 'meas/smear/vector_smear.cc' || echo '$(srcdir)/'`meas/smear/vector_smear.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vector_smear.Tpo $(DEPDIR)/vector_smear.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/vector_smear.cc' object='vector_smear.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vector_smear.o `test -f 'meas/smear/vector_smear.cc' || echo '$(srcdir)/'`meas/smear/vector_smear.cc
+
+vector_smear.obj: meas/smear/vector_smear.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT vector_smear.obj -MD -MP -MF $(DEPDIR)/vector_smear.Tpo -c -o vector_smear.obj `if test -f 'meas/smear/vector_smear.cc'; then $(CYGPATH_W) 'meas/smear/vector_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/vector_smear.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/vector_smear.Tpo $(DEPDIR)/vector_smear.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/vector_smear.cc' object='vector_smear.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o vector_smear.obj `if test -f 'meas/smear/vector_smear.cc'; then $(CYGPATH_W) 'meas/smear/vector_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/vector_smear.cc'; fi`
 
 mom_source_const.o: meas/sources/mom_source_const.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mom_source_const.o -MD -MP -MF $(DEPDIR)/mom_source_const.Tpo -c -o mom_source_const.o `test -f 'meas/sources/mom_source_const.cc' || echo '$(srcdir)/'`meas/sources/mom_source_const.cc
