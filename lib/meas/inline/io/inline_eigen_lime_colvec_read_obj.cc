@@ -1,4 +1,4 @@
-// $Id: inline_eigen_lime_colvec_read_obj.cc,v 3.4 2008-10-06 15:52:58 jbulava Exp $
+// $Id: inline_eigen_lime_colvec_read_obj.cc,v 3.5 2008-10-30 14:47:19 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -174,7 +174,15 @@ namespace Chroma
 	  read(rdr, curr_record_xml, eigen.getEvectors()[i]);
 		
 	  multi1d<Real> evals;
-	  read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
+	  if (curr_record_xml.count("/LaplaceEigInfo/EigenValues") != 0)
+	    read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
+	  else if (curr_record_xml.count("/LaplaceEigInfo/EigParams/EigenValues") != 0)
+	    read(curr_record_xml, "/LaplaceEigInfo/EigParams/EigenValues", evals);
+	  else
+	  {
+	    QDPIO::cerr << __func__ << ": LaplaceEigInfo tag for EigenValues not found\n" << std::endl;
+	    QDP_abort(1);
+	  }
 
 	  eigen.getEvalues()[i].weights = evals; // Copies all the weights
 
