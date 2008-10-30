@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.168 2008-10-28 21:36:14 edwards Exp $
+# $Id: Makefile.am,v 3.169 2008-10-30 14:30:45 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -251,6 +251,8 @@ nobase_include_HEADERS = \
 	meas/smear/gaus_quark_smearing.h \
         meas/smear/quark_source_sink.h \
 	meas/smear/disp_colvec_map.h \
+        meas/smear/vector_quark_smearing.h \
+        meas/smear/vector_smear.h \
 	meas/sources/sources.h \
 	meas/sources/source_construction.h \
         meas/sources/srcfil.h \
@@ -1053,6 +1055,8 @@ libchroma_a_SOURCES = \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
 	meas/smear/disp_colvec_map.cc \
+        meas/smear/vector_quark_smearing.cc \
+        meas/smear/vector_smear.cc \
         meas/sources/mom_source_const.cc \
         meas/sources/pt_source_const.cc \
         meas/sources/pt_source_smearing.cc \
