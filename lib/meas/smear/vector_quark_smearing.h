@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: vector_quark_smearing.h,v 3.1 2008-10-29 19:42:37 jbulava Exp $
+// $Id: vector_quark_smearing.h,v 3.2 2008-11-04 17:26:16 edwards Exp $
 /*! \file
  *  \brief Vector Smearing: Use an outerproduct of vectors as the 
  *  smearing scheme. 
@@ -28,12 +28,10 @@ namespace Chroma
       Params() {}
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
-    
      
-			std::string vecs_id;
+      std::string vecs_id;
       Real sigma;                /*!< exponential smearing wieght */
-			int no_smear_dir;         /*!< don't allow smearing in this direction */
-
+      int no_smear_dir;         /*!< don't allow smearing in this direction */
     };
 
 
@@ -42,19 +40,17 @@ namespace Chroma
      *
      * vector quark smearing object
      */
-		template<typename T> 
+    template<typename T> 
     class VectorQuarkSmear : public QuarkSmearing<T>
     {
     public:
       //! Full constructor
-      VectorQuarkSmear(const Params& p) : params(p)
-			{
-				vecs = 
-					TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.vecs_id);
+      VectorQuarkSmear(const Params& p) :
+	params(p), 
+	vecs(TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.vecs_id))
+	{}
 
-			}
-
-			//! Smear the quark
+      //! Smear the quark
       void operator()(T& quark, const multi1d<LatticeColorMatrix>& u) const;
 
     private:
@@ -63,7 +59,7 @@ namespace Chroma
 
     private:
       Params  params;   /*!< smearing params */
-			SubsetVectors<LatticeColorVector> vecs; /*!< vectors to be used */
+      SubsetVectors<LatticeColorVector> vecs; /*!< vectors to be used */
     };
 
   }  // end namespace

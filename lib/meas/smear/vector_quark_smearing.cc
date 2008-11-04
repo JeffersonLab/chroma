@@ -1,4 +1,4 @@
-// $Id: vector_quark_smearing.cc,v 3.1 2008-10-29 19:42:37 jbulava Exp $
+// $Id: vector_quark_smearing.cc,v 3.2 2008-11-04 17:26:16 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -57,7 +57,6 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	
 	success &= Chroma::TheFermSmearingFactory::Instance().registerObject(name, createFerm);
 	success &= Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createColorVec);
 	registered = true;
@@ -94,7 +93,7 @@ namespace Chroma
     template<>
     void
     VectorQuarkSmear<LatticeFermion>::operator()(LatticeFermion& quark,
-					   const multi1d<LatticeColorMatrix>& u) const
+						 const multi1d<LatticeColorMatrix>& u) const
     {
       vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
     }
@@ -103,7 +102,7 @@ namespace Chroma
     template<>
     void
     VectorQuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,
-					       const multi1d<LatticeColorMatrix>& u) const
+						     const multi1d<LatticeColorMatrix>& u) const
     {
       vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
     }
