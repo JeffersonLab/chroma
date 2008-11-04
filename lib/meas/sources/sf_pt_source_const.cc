@@ -1,4 +1,4 @@
-// $Id: sf_pt_source_const.cc,v 3.2 2007-08-27 21:19:10 edwards Exp $
+// $Id: sf_pt_source_const.cc,v 3.3 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Point source construction for Schroedinger Functional
  */
@@ -43,10 +43,13 @@ namespace Chroma
       
       //! Local registration flag
       bool registered = false;
+
+      //! Name to be used
+      const std::string name("SF_POINT_SOURCE");
     }
 
-    //! Name to be used
-    const std::string name("SF_POINT_SOURCE");
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

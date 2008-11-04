@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_link_smearing.h,v 3.3 2008-01-24 14:50:53 edwards Exp $
+// $Id: stout_link_smearing.h,v 3.4 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Stout link smearing
  */
@@ -15,9 +15,10 @@ namespace Chroma
   //! Name and registration
   namespace StoutLinkSmearingEnv
   {
-    extern const std::string name;
     bool registerAll();
-  
+
+    //! Return the name
+    std::string getName();
 
     //! Params for Stout link smearing
     /*! @ingroup smear */

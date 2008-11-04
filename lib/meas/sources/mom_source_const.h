@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mom_source_const.h,v 3.3 2007-11-29 04:13:07 kostas Exp $
+// $Id: mom_source_const.h,v 3.4 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Fixed momentum (wall) source construction
  */
@@ -16,9 +16,10 @@ namespace Chroma
   /*! @ingroup sources */
   namespace MomWallQuarkSourceConstEnv
   {
-    extern const std::string name;
     bool registerAll();
 
+    //! Return the name
+    std::string getName();
   
     //! MomWall source parameters
     /*! @ingroup sources */

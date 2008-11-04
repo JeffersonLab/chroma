@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sh_sink_smearing.h,v 3.5 2006-09-20 20:28:04 edwards Exp $
+// $Id: sh_sink_smearing.h,v 3.6 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -17,9 +17,11 @@ namespace Chroma
   /*! @ingroup sinks */
   namespace ShellQuarkSinkSmearingEnv
   {
-    extern const std::string name;
     bool registerAll();
-  
+
+    //! Return the name
+    std::string getName();
+
 
     //! Point sink parameters
     /*! @ingroup sinks */

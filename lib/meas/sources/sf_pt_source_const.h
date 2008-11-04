@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sf_pt_source_const.h,v 3.2 2007-08-27 21:19:10 edwards Exp $
+// $Id: sf_pt_source_const.h,v 3.3 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Point source construction for Schroedinger Functional
  */
@@ -18,9 +18,10 @@ namespace Chroma
   /*! @ingroup sources */
   namespace SFPointQuarkSourceConstEnv
   {
-    extern const std::string name;
     bool registerAll();
 
+    //! Return the name
+    std::string getName();
   
     //! SFPoint source parameters
     /*! @ingroup sources */

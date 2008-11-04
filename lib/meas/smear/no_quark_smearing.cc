@@ -1,4 +1,4 @@
-// $Id: no_quark_smearing.cc,v 3.3 2006-11-17 02:17:32 edwards Exp $
+// $Id: no_quark_smearing.cc,v 3.4 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief No quark smearing
  */
@@ -28,39 +28,45 @@ namespace Chroma
   //! Hooks to register the class
   namespace NoQuarkSmearingEnv
   {
-    //! Callback function
-    QuarkSmearing<LatticePropagator>* createProp(XMLReader& xml_in,
-						 const std::string& path)
-    {
-      return new QuarkSmear<LatticePropagator>(Params(xml_in, path));
-    }
+    namespace
+    {    
+      //! Callback function
+      QuarkSmearing<LatticePropagator>* createProp(XMLReader& xml_in,
+						   const std::string& path)
+      {
+	return new QuarkSmear<LatticePropagator>(Params(xml_in, path));
+      }
 
-    //! Callback function
-    QuarkSmearing<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
-							      const std::string& path)
-    {
-      return new QuarkSmear<LatticeStaggeredPropagator>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkSmearing<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								const std::string& path)
+      {
+	return new QuarkSmear<LatticeStaggeredPropagator>(Params(xml_in, path));
+      }
 
-    //! Callback function
-    QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
-					      const std::string& path)
-    {
-      return new QuarkSmear<LatticeFermion>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path)
+      {
+	return new QuarkSmear<LatticeFermion>(Params(xml_in, path));
+      }
     
-    //! Callback function
-    QuarkSmearing<LatticeColorVector>* createColorVec(XMLReader& xml_in,
-						      const std::string& path)
-    {
-      return new QuarkSmear<LatticeColorVector>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkSmearing<LatticeColorVector>* createColorVec(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new QuarkSmear<LatticeColorVector>(Params(xml_in, path));
+      }
     
-    //! Name to be used
-    const std::string name = "NONE";
+      //! Local registration flag
+      bool registered = false;
 
-    //! Local registration flag
-    static bool registered = false;
+      //! Name to be used
+      const std::string name = "NONE";
+    }
+
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 
@@ -89,7 +95,7 @@ namespace Chroma
     {
       push(xml, path);
     
-      write(xml, "wvf_kind", NoQuarkSmearingEnv::name);
+      write(xml, "wvf_kind", NoQuarkSmearingEnv::getName());
 
       pop(xml);
     }

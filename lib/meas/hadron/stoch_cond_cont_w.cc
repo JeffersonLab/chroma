@@ -1,4 +1,4 @@
-// $Id: stoch_cond_cont_w.cc,v 3.1 2007-08-11 22:43:21 edwards Exp $
+// $Id: stoch_cond_cont_w.cc,v 3.2 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Stoch quark condensates
  */
@@ -194,9 +194,9 @@ namespace Chroma
 	  XMLReader  sourcetop(xml_s);
 //	QDPIO::cout << "Source = " << quark.dilutions[i].source_header.source.id << endl;
 
-	  if (quark.dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
+	  if (quark.dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
 	  {
-	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
 	    QDP_abort(1);
 	  }
 

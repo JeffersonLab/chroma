@@ -1,4 +1,4 @@
-// $Id: sh_sink_smearing.cc,v 3.7 2007-08-27 20:02:01 uid3790 Exp $
+// $Id: sh_sink_smearing.cc,v 3.8 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Shell sink smearing
  */
@@ -43,35 +43,41 @@ namespace Chroma
   //! Hooks to register the class
   namespace ShellQuarkSinkSmearingEnv
   {
-    //! Callback function
-    QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
-						   const std::string& path,
-						   const multi1d<LatticeColorMatrix>& u)
+    namespace
     {
-      return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
+      //! Callback function
+      QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
+						     const std::string& path,
+						     const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
+      }
+
+      //! Callback function
+      QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								  const std::string& path,
+								  const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
+      }
+
+      //! Callback function
+      QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						  const std::string& path,
+						  const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SinkSmear<LatticeFermion>(Params(xml_in, path), u);
+      }
+
+      //! Name to be used
+      const std::string name("SHELL_SINK");
+
+      //! Local registration flag
+      bool registered = false;
     }
 
-    //! Callback function
-    QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
-								const std::string& path,
-								const multi1d<LatticeColorMatrix>& u)
-    {
-      return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
-    }
-
-    //! Callback function
-    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
-						const std::string& path,
-						const multi1d<LatticeColorMatrix>& u)
-    {
-      return new SinkSmear<LatticeFermion>(Params(xml_in, path), u);
-    }
-
-    //! Name to be used
-    const std::string name("SHELL_SINK");
-
-    //! Local registration flag
-    static bool registered = false;
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 
@@ -114,7 +120,7 @@ namespace Chroma
       case 1:
       {
 	quark_displacement = QuarkDisplacementEnv::nullXMLGroup();
-	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
+	quark_displacement.id = SimpleQuarkDisplacementEnv::getName();
 	int disp_length = 0;
 	int disp_dir = 0;
 
@@ -180,7 +186,7 @@ namespace Chroma
       int version = 3;
       write(xml, "version", version);
 
-      write(xml, "SinkType", ShellQuarkSinkSmearingEnv::name);
+      write(xml, "SinkType", ShellQuarkSinkSmearingEnv::getName());
       xml << quark_smearing.xml;
       xml << quark_displacement.xml;
       xml << link_smearing.xml;

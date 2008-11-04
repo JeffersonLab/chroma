@@ -1,4 +1,4 @@
-// $Id: vector_quark_smearing.cc,v 3.2 2008-11-04 17:26:16 edwards Exp $
+// $Id: vector_quark_smearing.cc,v 3.3 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Gaussian smearing of color vector
  */
@@ -31,25 +31,31 @@ namespace Chroma
   namespace VectorQuarkSmearingEnv
   {
     
-    //! Callback function
-    QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
-					      const std::string& path)
+    namespace
     {
-      return new VectorQuarkSmear<LatticeFermion>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
+						const std::string& path)
+      {
+	return new VectorQuarkSmear<LatticeFermion>(Params(xml_in, path));
+      }
     
-    //! Callback function
-    QuarkSmearing<LatticeColorVector>* createColorVec(XMLReader& xml_in,
-						      const std::string& path)
-    {
-      return new VectorQuarkSmear<LatticeColorVector>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkSmearing<LatticeColorVector>* createColorVec(XMLReader& xml_in,
+							const std::string& path)
+      {
+	return new VectorQuarkSmear<LatticeColorVector>(Params(xml_in, path));
+      }
     
-    //! Name to be used
-    const std::string name = "VECTOR_SMEAR";
+      //! Local registration flag
+      bool registered = false;
 
-    //! Local registration flag
-    static bool registered = false;
+      //! Name to be used
+      const std::string name = "VECTOR_SMEAR";
+    }
+
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

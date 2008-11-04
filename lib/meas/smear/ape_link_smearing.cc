@@ -1,4 +1,4 @@
-// $Id: ape_link_smearing.cc,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: ape_link_smearing.cc,v 3.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief APE link smearing
  */
@@ -29,18 +29,24 @@ namespace Chroma
   //! Hooks to register the class
   namespace APELinkSmearingEnv
   {
-    //! Callback function
-    LinkSmearing* createSource(XMLReader& xml_in,
-			       const std::string& path)
+    namespace
     {
-      return new LinkSmear(Params(xml_in, path));
+      //! Callback function
+      LinkSmearing* createSource(XMLReader& xml_in,
+				 const std::string& path)
+      {
+	return new LinkSmear(Params(xml_in, path));
+      }
+
+      //! Local registration flag
+      bool registered = false;
+
+      //! Name to be used
+      const std::string name = "APE_SMEAR";
     }
 
-    //! Name to be used
-    const std::string name = "APE_SMEAR";
-
-    //! Local registration flag
-    static bool registered = false;
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

@@ -1,4 +1,4 @@
-// $Id: quark_smearing_aggregate.cc,v 3.6 2008-10-29 19:42:37 jbulava Exp $
+// $Id: quark_smearing_aggregate.cc,v 3.7 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief All quark smearing
  */
@@ -15,8 +15,11 @@ namespace Chroma
   // Registration aggregator
   namespace QuarkSmearingEnv
   {
-    //! Local registration flag
-    static bool registered = false;
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
 
     //! Register all the factories
     bool registerAll() 
@@ -34,7 +37,7 @@ namespace Chroma
 
 
     // Returns a no-smearing group
-    GroupXML_t   nullXMLGroup()
+    GroupXML_t nullXMLGroup()
     {
       GroupXML_t nope;
 
@@ -42,7 +45,7 @@ namespace Chroma
       NoQuarkSmearingEnv::Params  non;
       write(xml_tmp, "SmearingParam", non);
       nope.xml = xml_tmp.str();
-      nope.id = NoQuarkSmearingEnv::name;
+      nope.id = NoQuarkSmearingEnv::getName();
       nope.path = "/SmearingParam";
 
       return nope;

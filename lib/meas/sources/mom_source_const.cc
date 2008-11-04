@@ -1,4 +1,4 @@
-// $Id: mom_source_const.cc,v 3.6 2007-11-29 04:13:07 kostas Exp $
+// $Id: mom_source_const.cc,v 3.7 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Momentum (wall) source construction
  */
@@ -58,18 +58,24 @@ namespace Chroma
   //! Hooks to register the class
   namespace MomWallQuarkSourceConstEnv
   {
-    //! Callback function
-    QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
-							   const std::string& path)
+    namespace
     {
-      return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      //! Callback function
+      QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
+							     const std::string& path)
+      {
+	return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      }
+
+      //! Name to be used
+      const std::string name("MOMENTUM_VOLUME_SOURCE");
+
+      //! Local registration flag
+      bool registered = false;
     }
 
-    //! Name to be used
-    const std::string name("MOMENTUM_VOLUME_SOURCE");
-
-    //! Local registration flag
-    static bool registered = false;
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

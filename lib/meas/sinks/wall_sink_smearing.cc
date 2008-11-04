@@ -1,4 +1,4 @@
-// $Id: wall_sink_smearing.cc,v 1.2 2007-08-27 21:18:29 edwards Exp $
+// $Id: wall_sink_smearing.cc,v 1.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Wall sink smearing
  */
@@ -29,35 +29,41 @@ namespace Chroma
   //! Hooks to register the class
   namespace WallQuarkSinkSmearingEnv
   {
-    //! Callback function
-    QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
-						   const std::string& path,
+    namespace
+    {
+      //! Callback function
+      QuarkSourceSink<LatticePropagator>* createProp(XMLReader& xml_in,
+						     const std::string& path,
 						   const multi1d<LatticeColorMatrix>& u)
-    {
-      return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
+      {
+	return new SinkSmear<LatticePropagator>(Params(xml_in, path), u);
+      }
+
+      //! Callback function
+      QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								  const std::string& path,
+								  const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
+      }
+
+      //! Callback function
+      QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
+						  const std::string& path,
+						  const multi1d<LatticeColorMatrix>& u)
+      {
+	return new SinkSmear<LatticeFermion>(Params(xml_in, path), u);
+      }
+
+      //! Name to be used
+      const std::string name("WALL_SINK");
+
+      //! Local registration flag
+      bool registered = false;
     }
 
-    //! Callback function
-    QuarkSourceSink<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
-								const std::string& path,
-								const multi1d<LatticeColorMatrix>& u)
-    {
-      return new SinkSmear<LatticeStaggeredPropagator>(Params(xml_in, path), u);
-    }
-
-    //! Callback function
-    QuarkSourceSink<LatticeFermion>* createFerm(XMLReader& xml_in,
-						const std::string& path,
-						const multi1d<LatticeColorMatrix>& u)
-    {
-      return new SinkSmear<LatticeFermion>(Params(xml_in, path), u);
-    }
-
-    //! Name to be used
-    const std::string name("WALL_SINK");
-
-    //! Local registration flag
-    static bool registered = false;
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 
@@ -116,7 +122,7 @@ namespace Chroma
       int version = 1;
       push(xml, path);
       write(xml, "version", version);
-      write(xml, "SinkType", WallQuarkSinkSmearingEnv::name);
+      write(xml, "SinkType", WallQuarkSinkSmearingEnv::getName());
       write(xml, "j_decay", j_decay);
       pop(xml);
     }

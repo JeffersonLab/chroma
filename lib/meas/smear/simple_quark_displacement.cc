@@ -1,4 +1,4 @@
-// $Id: simple_quark_displacement.cc,v 3.2 2006-11-17 02:17:32 edwards Exp $
+// $Id: simple_quark_displacement.cc,v 3.3 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Simple quark displacement
  */
@@ -28,39 +28,45 @@ namespace Chroma
   //! Hooks to register the class
   namespace SimpleQuarkDisplacementEnv
   {
-    //! Callback function
-    QuarkDisplacement<LatticePropagator>* createProp(XMLReader& xml_in,
-						     const std::string& path)
+    namespace
     {
-      return new QuarkDisplace<LatticePropagator>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkDisplacement<LatticePropagator>* createProp(XMLReader& xml_in,
+						       const std::string& path)
+      {
+	return new QuarkDisplace<LatticePropagator>(Params(xml_in, path));
+      }
 
-    //! Callback function
-    QuarkDisplacement<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
-								  const std::string& path)
-    {
-      return new QuarkDisplace<LatticeStaggeredPropagator>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkDisplacement<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								    const std::string& path)
+      {
+	return new QuarkDisplace<LatticeStaggeredPropagator>(Params(xml_in, path));
+      }
 
-    //! Callback function
-    QuarkDisplacement<LatticeFermion>* createFerm(XMLReader& xml_in,
-						  const std::string& path)
-    {
-      return new QuarkDisplace<LatticeFermion>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkDisplacement<LatticeFermion>* createFerm(XMLReader& xml_in,
+						    const std::string& path)
+      {
+	return new QuarkDisplace<LatticeFermion>(Params(xml_in, path));
+      }
     
-    //! Callback function
-    QuarkDisplacement<LatticeColorVector>* createColorVec(XMLReader& xml_in,
-							  const std::string& path)
-    {
-      return new QuarkDisplace<LatticeColorVector>(Params(xml_in, path));
-    }
+      //! Callback function
+      QuarkDisplacement<LatticeColorVector>* createColorVec(XMLReader& xml_in,
+							    const std::string& path)
+      {
+	return new QuarkDisplace<LatticeColorVector>(Params(xml_in, path));
+      }
     
-    //! Name to be used
-    const std::string name = "SIMPLE_DISPLACEMENT";
+      //! Local registration flag
+      bool registered = false;
 
-    //! Local registration flag
-    static bool registered = false;
+      //! Name to be used
+      const std::string name = "SIMPLE_DISPLACEMENT";
+    }
+
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

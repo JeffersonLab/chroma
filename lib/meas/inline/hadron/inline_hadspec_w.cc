@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.12 2007-08-28 04:56:15 uid3790 Exp $
+// $Id: inline_hadspec_w.cc,v 3.13 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -249,14 +249,14 @@ namespace Chroma
 	  if (prop_record_xml.count(xpath) != 0)
 	    read(prop_record_xml, xpath, s.source_disp_type);
 	  else
-	    s.source_disp_type = NoQuarkDisplacementEnv::name;
+	    s.source_disp_type = NoQuarkDisplacementEnv::getName();
 
 	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", s.sink_type);
 	  xpath = "/SinkSmear/PropSink/Sink/Displacement/DisplacementType";
 	  if (prop_record_xml.count(xpath) != 0)
 	    read(prop_record_xml, xpath, s.sink_disp_type);
 	  else
-	    s.sink_disp_type = NoQuarkDisplacementEnv::name;
+	    s.sink_disp_type = NoQuarkDisplacementEnv::getName();
 	}
       }
       catch( std::bad_cast ) 

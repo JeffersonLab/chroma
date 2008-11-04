@@ -1,4 +1,4 @@
-// $Id: pt_source_smearing.cc,v 3.5 2007-08-25 04:02:39 edwards Exp $
+// $Id: pt_source_smearing.cc,v 3.6 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -28,14 +28,7 @@ namespace Chroma
   // Writer
   void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingEnv::Params& param)
   {
-    push(xml, path);
-    int version = 1;
-    write(xml, "version", version);
-
-    write(xml, "SourceType", PointQuarkSourceSmearingEnv::name);
-    xml << param.link_smearing.xml;
-    xml << param.quark_displacement.xml;
-    pop(xml);
+    param.writeXML(xml, path);
   }
 
 
@@ -71,10 +64,13 @@ namespace Chroma
 
       //! Local registration flag
       bool registered = false;
+
+      //! Name to be used
+      const std::string name("POINT_SOURCE");
     }
 
-    //! Name to be used
-    const std::string name("POINT_SOURCE");
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 
@@ -111,7 +107,7 @@ namespace Chroma
       {
       case 1:
       {
-	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
+	quark_displacement.id = SimpleQuarkDisplacementEnv::getName();
 	int disp_length = 0;
 	int disp_dir = 0;
 

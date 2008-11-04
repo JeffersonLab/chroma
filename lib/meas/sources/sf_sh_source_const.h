@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sf_sh_source_const.h,v 3.2 2007-08-27 21:19:10 edwards Exp $
+// $Id: sf_sh_source_const.h,v 3.3 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Shell source construction for Schroedinger Functional
  */
@@ -18,9 +18,10 @@ namespace Chroma
   /*! @ingroup sources */
   namespace SFShellQuarkSourceConstEnv
   {
-    extern const std::string name;
     bool registerAll();
 
+    //! Return the name
+    std::string getName();
 
     //! Point source parameters
     /*! @ingroup sources */

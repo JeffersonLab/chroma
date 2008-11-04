@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: vector_quark_smearing.h,v 3.2 2008-11-04 17:26:16 edwards Exp $
+// $Id: vector_quark_smearing.h,v 3.3 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Vector Smearing: Use an outerproduct of vectors as the 
  *  smearing scheme. 
@@ -18,9 +18,11 @@ namespace Chroma
   //! Name and registration
   namespace VectorQuarkSmearingEnv
   {
-    extern const std::string name;
     bool registerAll();
   
+    //! Return the name
+    std::string getName();
+
     //! Params for Vector Smearing 
     /*! @ingroup smear */
     struct Params

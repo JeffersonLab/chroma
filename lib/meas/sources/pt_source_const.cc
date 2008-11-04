@@ -1,4 +1,4 @@
-// $Id: pt_source_const.cc,v 3.9 2007-08-27 20:03:43 uid3790 Exp $
+// $Id: pt_source_const.cc,v 3.10 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Point source construction
  */
@@ -55,10 +55,13 @@ namespace Chroma
       
       //! Local registration flag
       bool registered = false;
+
+      //! Name to be used
+      const std::string name("POINT_SOURCE");
     }
 
-    //! Name to be used
-    const std::string name("POINT_SOURCE");
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 
@@ -97,7 +100,7 @@ namespace Chroma
       case 1:
       {
 	quark_displacement = QuarkDisplacementEnv::nullXMLGroup();
-	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
+	quark_displacement.id = SimpleQuarkDisplacementEnv::getName();
 	int disp_length = 0;
 	int disp_dir = 0;
 

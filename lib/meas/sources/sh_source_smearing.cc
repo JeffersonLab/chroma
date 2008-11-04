@@ -1,4 +1,4 @@
-// $Id: sh_source_smearing.cc,v 3.8 2007-08-25 04:02:39 edwards Exp $
+// $Id: sh_source_smearing.cc,v 3.9 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Shell source construction
  */
@@ -70,10 +70,13 @@ namespace Chroma
 
       //! Local registration flag
       bool registered = false;
+
+      //! Name to be used
+      const std::string name("SHELL_SOURCE");
     }
 
-    //! Name to be used
-    const std::string name("SHELL_SOURCE");
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 
@@ -114,7 +117,7 @@ namespace Chroma
       {
       case 1:
       {
-	quark_displacement.id = SimpleQuarkDisplacementEnv::name;
+	quark_displacement.id = SimpleQuarkDisplacementEnv::getName();
 	int disp_length = 0;
 	int disp_dir = 0;
 

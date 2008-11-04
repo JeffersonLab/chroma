@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.14 2008-04-21 03:19:35 edwards Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.15 2008-11-04 18:43:56 edwards Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -482,9 +482,9 @@ read(from, record_xml, sour);
       std::istringstream  xml_s(qq.source_header.source.xml);
       XMLReader  sourcetop(xml_s);
 
-      if (qq.source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
+      if (qq.source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
       {
-	QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
 	QDP_abort(1);
       }
 

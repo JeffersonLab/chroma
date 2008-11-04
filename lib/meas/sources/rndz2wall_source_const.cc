@@ -1,4 +1,4 @@
-// $Id: rndz2wall_source_const.cc,v 3.2 2008-06-04 14:44:43 kostas Exp $
+// $Id: rndz2wall_source_const.cc,v 3.3 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */
@@ -40,10 +40,13 @@ namespace Chroma
       
       //! Local registration flag
       bool registered = false;
+
+      //! Name to be used
+      const std::string name("RAND_Z2_WALL_SOURCE");
     }
 
-    //! Name to be used
-    const std::string name("RAND_Z2_WALL_SOURCE");
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

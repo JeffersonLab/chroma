@@ -1,4 +1,4 @@
-// $Id: link_smearing_aggregate.cc,v 3.8 2008-01-24 14:50:53 edwards Exp $
+// $Id: link_smearing_aggregate.cc,v 3.9 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief All link smearing applicators
  */
@@ -16,8 +16,11 @@ namespace Chroma
   // Registration aggregator
   namespace LinkSmearingEnv
   {
-    //! Local registration flag
-    static bool registered = false;
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
 
     //! Register all the factories
     bool registerAll() 
@@ -38,7 +41,7 @@ namespace Chroma
 
 
     // Returns a no-smearing group
-    GroupXML_t   nullXMLGroup()
+    GroupXML_t nullXMLGroup()
     {
       GroupXML_t nope;
 
@@ -46,7 +49,7 @@ namespace Chroma
       NoLinkSmearingEnv::Params  non;
       write(xml_tmp, "LinkSmearing", non);
       nope.xml = xml_tmp.printCurrentContext();
-      nope.id = NoLinkSmearingEnv::name;
+      nope.id = NoLinkSmearingEnv::getName();
       nope.path = "/LinkSmearing";
 
       return nope;

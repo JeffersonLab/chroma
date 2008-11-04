@@ -1,4 +1,4 @@
-// $Id: inline_heavyhadspec_w.cc,v 1.1 2008-07-21 18:15:36 kostas Exp $
+// $Id: inline_heavyhadspec_w.cc,v 1.2 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline construction of heavy hadron spectrum in SU(3)
  *
@@ -239,14 +239,14 @@ namespace Chroma
 	  if (prop_record_xml.count(xpath) != 0)
 	    read(prop_record_xml, xpath, s.source_disp_type);
 	  else
-	    s.source_disp_type = NoQuarkDisplacementEnv::name;
+	    s.source_disp_type = NoQuarkDisplacementEnv::getName();
 
 	  read(prop_record_xml, "/SinkSmear/PropSink/Sink/SinkType", s.sink_type);
 	  xpath = "/SinkSmear/PropSink/Sink/Displacement/DisplacementType";
 	  if (prop_record_xml.count(xpath) != 0)
 	    read(prop_record_xml, xpath, s.sink_disp_type);
 	  else
-	    s.sink_disp_type = NoQuarkDisplacementEnv::name;
+	    s.sink_disp_type = NoQuarkDisplacementEnv::getName();
 	}
       }
       catch( std::bad_cast ) 

@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.19 2007-11-27 23:01:26 kostas Exp $
+// $Id: qprop_io.cc,v 3.20 2008-11-04 18:43:56 edwards Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -8,6 +8,7 @@
 #include "io/qprop_io.h"
 
 #include "meas/smear/simple_quark_displacement.h"
+#include "meas/smear/ape_link_smearing.h"
 
 namespace Chroma 
 {
@@ -299,7 +300,7 @@ namespace Chroma
 
 	  {
 	    push(xml_tmp, "Displacement");
-	    write(xml_tmp, "DisplacementType", SimpleQuarkDisplacementEnv::name);
+	    write(xml_tmp, "DisplacementType", SimpleQuarkDisplacementEnv::getName());
 
 	    write(xml_tmp, "disp_length", disp_length);
 	    write(xml_tmp, "disp_dir",  disp_dir);
@@ -309,7 +310,7 @@ namespace Chroma
 
 	  {
 	    push(xml_tmp, "LinkSmearing");
-	    write(xml_tmp, "LinkSmearingType", "APE_SMEAR");
+	    write(xml_tmp, "LinkSmearingType", APELinkSmearingEnv::getName());
 	    write(xml_tmp, "link_smear_num", link_smear_num);
 	    write(xml_tmp, "link_smear_fact", link_smear_fact);
 	    write(xml_tmp, "no_smear_dir", header.j_decay);
@@ -487,7 +488,7 @@ namespace Chroma
 
 	  {
 	    push(xml_tmp, "Displacement");
-	    write(xml_tmp, "DisplacementType", SimpleQuarkDisplacementEnv::name);
+	    write(xml_tmp, "DisplacementType", SimpleQuarkDisplacementEnv::getName());
 
 	    write(xml_tmp, "disp_length", disp_length);
 	    write(xml_tmp, "disp_dir",  disp_dir);
@@ -497,7 +498,7 @@ namespace Chroma
 
 	  {
 	    push(xml_tmp, "LinkSmearing");
-	    write(xml_tmp, "LinkSmearingType", "APE_SMEAR");
+	    write(xml_tmp, "LinkSmearingType", APELinkSmearingEnv::getName());
 	    write(xml_tmp, "link_smear_num", link_smear_num);
 	    write(xml_tmp, "link_smear_fact", link_smear_fact);
 	    write(xml_tmp, "no_smear_dir", header.j_decay);

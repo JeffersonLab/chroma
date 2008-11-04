@@ -1,4 +1,4 @@
-// $Id: inline_stoch_baryon_w.cc,v 3.13 2008-04-23 04:06:49 kostas Exp $
+// $Id: inline_stoch_baryon_w.cc,v 3.14 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic baryon operator
  *
@@ -471,9 +471,9 @@ namespace Chroma
 	  XMLReader  sourcetop(xml_s);
 //	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
 
-	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
+	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
 	  {
-	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
 	    QDP_abort(1);
 	  }
 

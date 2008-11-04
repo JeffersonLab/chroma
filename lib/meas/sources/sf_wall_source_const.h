@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sf_wall_source_const.h,v 3.2 2007-08-27 21:19:10 edwards Exp $
+// $Id: sf_wall_source_const.h,v 3.3 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Wall source construction fpr Schroedinger Functional
  */
@@ -18,9 +18,10 @@ namespace Chroma
   /*! @ingroup sources */
   namespace SFWallQuarkSourceConstEnv
   {
-    extern const std::string name;
     bool registerAll();
 
+    //! Return the name
+    std::string getName();
   
     //! Wall source parameters
     /*! @ingroup sources */

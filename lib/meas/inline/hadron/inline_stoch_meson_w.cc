@@ -1,4 +1,4 @@
-// $Id: inline_stoch_meson_w.cc,v 3.3 2006-09-20 20:28:03 edwards Exp $
+// $Id: inline_stoch_meson_w.cc,v 3.4 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *
@@ -473,9 +473,9 @@ namespace Chroma
 	  XMLReader  sourcetop(xml_s);
 //	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
 
-	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::name)
+	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
 	  {
-	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::name << endl;
+	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
 	    QDP_abort(1);
 	  }
 

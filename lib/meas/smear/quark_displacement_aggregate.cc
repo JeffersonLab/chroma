@@ -1,4 +1,4 @@
-// $Id: quark_displacement_aggregate.cc,v 3.9 2007-08-25 04:56:13 edwards Exp $
+// $Id: quark_displacement_aggregate.cc,v 3.10 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief All quark displacements
  */
@@ -19,8 +19,11 @@ namespace Chroma
   // Registration aggregator
   namespace QuarkDisplacementEnv
   {
-    //! Local registration flag
-    static bool registered = false;
+    namespace
+    {
+      //! Local registration flag
+      bool registered = false;
+    }
 
     //! Register all the factories
     bool registerAll() 
@@ -53,7 +56,7 @@ namespace Chroma
       NoQuarkDisplacementEnv::Params  non;
       write(xml_tmp, "Displacement", non);
       nope.xml  = xml_tmp.str();
-      nope.id   = NoQuarkDisplacementEnv::name;
+      nope.id   = NoQuarkDisplacementEnv::getName();
       nope.path = "/Displacement";
 
       return nope;

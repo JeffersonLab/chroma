@@ -1,4 +1,4 @@
-// $Id: partwall_source_const.cc,v 3.1 2006-09-20 20:28:04 edwards Exp $
+// $Id: partwall_source_const.cc,v 3.2 2008-11-04 18:43:58 edwards Exp $
 /*! \file
  *  \brief Partial wall source construction
  */
@@ -59,10 +59,13 @@ namespace Chroma
       
       //! Local registration flag
       bool registered = false;
+
+      //! Name to be used
+      const std::string name("PARTIAL_WALL_SOURCE");
     }
 
-    //! Name to be used
-    const std::string name("PARTIAL_WALL_SOURCE");
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

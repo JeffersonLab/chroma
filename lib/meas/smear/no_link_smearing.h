@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: no_link_smearing.h,v 3.2 2006-09-20 20:28:04 edwards Exp $
+// $Id: no_link_smearing.h,v 3.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief No link smearing
  */
@@ -15,9 +15,10 @@ namespace Chroma
   //! Name and registration
   namespace NoLinkSmearingEnv
   {
-    extern const std::string name;
     bool registerAll();
 
+    //! Return the name
+    std::string getName();
   
     //! Params for No link smearing
     /*! @ingroup smear */

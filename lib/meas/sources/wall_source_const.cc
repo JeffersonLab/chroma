@@ -1,4 +1,4 @@
-// $Id: wall_source_const.cc,v 3.2 2007-08-27 20:02:35 uid3790 Exp $
+// $Id: wall_source_const.cc,v 3.3 2008-11-04 18:43:59 edwards Exp $
 /*! \file
  *  \brief Wall source construction
  */
@@ -29,18 +29,24 @@ namespace Chroma
   //! Hooks to register the class
   namespace WallQuarkSourceConstEnv
   {
-    //! Callback function
-    QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
-							   const std::string& path)
+    namespace
     {
+      //! Callback function
+      QuarkSourceConstruction<LatticePropagator>* createProp(XMLReader& xml_in,
+							     const std::string& path)
+      {
       return new SourceConst<LatticePropagator>(Params(xml_in, path));
+      }
+      
+      //! Name to be used
+      const std::string name("WALL_SOURCE");
+
+      //! Local registration flag
+      bool registered = false;
     }
 
-    //! Name to be used
-    const std::string name("WALL_SOURCE");
-
-    //! Local registration flag
-    static bool registered = false;
+    //! Return the name
+    std::string getName() {return name;}
 
     //! Register all the factories
     bool registerAll() 

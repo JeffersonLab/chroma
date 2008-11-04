@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: wall_sink_smearing.h,v 1.2 2007-08-27 21:18:29 edwards Exp $
+// $Id: wall_sink_smearing.h,v 1.3 2008-11-04 18:43:57 edwards Exp $
 /*! \file
  *  \brief Wall sink smearing
  */
@@ -17,8 +17,10 @@ namespace Chroma
   /*! @ingroup sinks */
   namespace WallQuarkSinkSmearingEnv
   {
-    extern const std::string name;
     bool registerAll();
+
+    //! Return the name
+    std::string getName();
 
 
     //! Wall sink parameters
