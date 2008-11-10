@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<chroma>
+  
+<annotation>
+Make a dilute source
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>11</elem>
+              <elem>13</elem>
+              <elem>17</elem>
+              <elem>19</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>2 2 2</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+             <elem>1 1 0</elem>
+             <elem>0 1 1</elem>
+             <elem>1 0 1</elem>
+          </spatial_mask>
+
+          <color_mask>0  2</color_mask>
+          <spin_mask>0 1  3</spin_mask>
+
+	  <Displacement>
+            <version>1</version>
+            <DisplacementType>SIMPLE_DISPLACEMENT</DisplacementType>
+            <disp_length>1</disp_length>
+            <disp_dir>0</disp_dir>
+          </Displacement>
+
+          <Smearing>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </Smearing>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>z2_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>z2_source_0</object_id>
+        <object_type>LatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./z2_source_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
