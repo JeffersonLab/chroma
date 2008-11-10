@@ -1,9 +1,22 @@
-// $Id: dilutezN_source_const.cc,v 3.2 2008-11-04 18:43:58 edwards Exp $
+// $Id: dilutezN_source_const.cc,v 3.3 2008-11-10 00:04:58 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
 
 #include "chromabase.h"
+#include "handle.h"
+
+#include "meas/smear/link_smearing_aggregate.h"
+#include "meas/smear/link_smearing_factory.h"
+
+#include "meas/smear/quark_smearing_aggregate.h"
+#include "meas/smear/quark_smearing_factory.h"
+
+#include "meas/smear/quark_displacement_aggregate.h"
+#include "meas/smear/quark_displacement_factory.h"
+
+#include "meas/smear/simple_quark_displacement.h"
+#include "meas/smear/no_quark_displacement.h"
 
 #include "meas/sources/source_const_factory.h"
 #include "meas/sources/dilutezN_source_const.h"
@@ -44,7 +57,7 @@ namespace Chroma
 
       //! Name to be used
       const std::string name("RAND_DILUTE_ZN_SOURCE");
-    }
+    }  // end namespace
 
     //! Return the name
     std::string getName() {return name;}
@@ -55,6 +68,10 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= LinkSmearingEnv::registerAll();
+	success &= QuarkSmearingEnv::registerAll();
+	success &= QuarkDisplacementEnv::registerAll();
+	//	success &= Chroma::TheFermSourceSmearingFactory::Instance().registerObject(name, createFerm);
 	success &= Chroma::TheFermSourceConstructionFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
@@ -65,6 +82,7 @@ namespace Chroma
     //! Initialize
     Params::Params()
     {
+      smear = false ;
       j_decay = -1;
       t_source = -1;
     }
@@ -89,6 +107,14 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      smear = false ;
+      if(paramtop.count("Smearing") !=0 ) {
+	smr = readXMLGroup(paramtop, "Smearing", "wvf_kind");
+	link_smear = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
+	displace = readXMLGroup(paramtop, "Displacement","DisplacementType");
+	smear = true ;
+      }
+
       read(paramtop, "ran_seed", ran_seed);
       read(paramtop, "N", N);
       read(paramtop, "j_decay", j_decay);
@@ -107,6 +133,13 @@ namespace Chroma
       push(xml, path);
 
       int version = 1;
+
+      if(smear){
+	 xml << smr.xml;
+	 xml << displace.xml ;
+	 xml << link_smear.xml ;
+      }
+
       write(xml, "version", version);
       write(xml, "ran_seed", ran_seed);
       write(xml, "N", N);
@@ -239,6 +272,74 @@ namespace Chroma
       // Zap the unused sites
       quark_source = where(mask, quark_noise, Fermion(zero));
 
+
+      if(params.smear){// do the smearing
+	Handle< QuarkSmearing<LatticeFermion> >  Smearing ;
+	try{
+	  std::istringstream  xml_l(params.smr.xml);
+	  XMLReader  smrtop(xml_l);
+	  QDPIO::cout << "Quark smearing type = " <<params.smr.id ; 
+	  QDPIO::cout << endl;
+	  
+	  Smearing = 
+	    TheFermSmearingFactory::Instance().createObject(params.smr.id,smrtop, 
+							    params.smr.path);
+	}
+	catch(const std::string& e){
+	  QDPIO::cerr <<name<< ": Caught Exception creating quark smearing object: " << e << endl;
+	  QDP_abort(1);
+	}
+	catch(...){
+	  QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" << endl;
+	  QDP_abort(1);
+	}
+	// Smear the gauge field if needed
+	//
+	multi1d<LatticeColorMatrix> u_smr = u;
+
+	try{
+	  std::istringstream  xml_l(params.link_smear.xml);
+	  XMLReader  linktop(xml_l);
+	  QDPIO::cout << "Link smearing type = " << params.link_smear.id ; 
+	  QDPIO::cout << endl;
+	  
+	  
+	  Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smear.id, linktop, params.link_smear.path));
+	  
+	  (*linkSmearing)(u_smr);
+	  //MesPlq(xml_out, "Smeared_Observables", u_smr);
+	}
+	catch(const std::string& e){
+	  QDPIO::cerr<<name<<": Caught Exception link smearing: " << e << endl;
+	  QDP_abort(1);
+	}
+	
+
+	(*Smearing)(quark_source, u_smr);
+
+	//
+	// Create the quark displacement object
+	//
+	std::istringstream  xml_d(params.displace.xml);
+	XMLReader  displacetop(xml_d);
+	
+	try{
+	  Handle< QuarkDisplacement<LatticeFermion> >
+	    quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.displace.id, displacetop, params.displace.path));
+	  QDPIO::cout << "Quark displacement type = " << params.displace.id ; 
+	  QDPIO::cout << endl;
+
+	  // displacement has to be taken along negative direction.
+	  // Not sure why MINUS....
+	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
+	}
+	catch(const std::string& e){
+	  QDPIO::cerr<<name<<": Caught Exception quark displacement: "<<e<< endl;
+	  QDP_abort(1);
+	}
+      }// if(smear) ends here
+      
+      
       // Reset the seed
       QDP::RNG::setrn(ran_seed);
 
