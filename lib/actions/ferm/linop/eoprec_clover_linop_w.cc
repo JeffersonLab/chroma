@@ -1,4 +1,4 @@
-// $Id: eoprec_clover_linop_w.cc,v 3.3 2007-06-17 02:25:16 bjoo Exp $
+// $Id: eoprec_clover_linop_w.cc,v 3.4 2008-11-10 17:59:07 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
@@ -148,6 +148,9 @@ namespace Chroma
     LatticeFermion tmp1; moveToFastMemoryHint(tmp1);
     LatticeFermion tmp2; moveToFastMemoryHint(tmp2);
     Real mquarter = -0.25;
+
+
+    
   
     //  tmp1_o  =  D_oe   A^(-1)_ee  D_eo  psi_o
     D.apply(tmp1, psi, isign, 0);
@@ -166,7 +169,20 @@ namespace Chroma
     clov_apply_time += swatch.getTimeInSeconds();
 
     chi[rb[1]] += mquarter*tmp1;
-    
+
+    // Twisted Term?
+    if( param.twisted_m_usedP ){ 
+      // tmp1 = i mu gamma_5 tmp1
+      tmp1[rb[1]] = (GammaConst<Ns,Ns*Ns-1>() * timesI(psi));
+      
+      if( isign == PLUS ) {
+	chi[rb[1]] += param.twisted_m * tmp1;
+      }
+      else {
+	chi[rb[1]] -= param.twisted_m * tmp1;
+      }
+    }
+
     END_CODE();
   }
 
@@ -253,6 +269,9 @@ namespace Chroma
   unsigned long EvenOddPrecCloverLinOp::nFlops() const
   {
     unsigned long cbsite_flops = 2*D.nFlops()+2*clov.nFlops()+4*Nc*Ns;
+    if(  param.twisted_m_usedP ) { 
+      cbsite_flops += 4*Nc*Ns; // a + mu*b : a = chi, b = g_5 I psi
+    }
     return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 

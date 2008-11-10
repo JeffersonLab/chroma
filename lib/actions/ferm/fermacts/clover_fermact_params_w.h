@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_fermact_params_w.h,v 3.2 2008-05-23 11:37:58 bjoo Exp $
+// $Id: clover_fermact_params_w.h,v 3.3 2008-11-10 17:59:07 bjoo Exp $
 /*! \file
  *  \brief Parameters for Clover fermion action
  */
@@ -31,6 +31,10 @@ namespace Chroma
     // Zero point energy
     Real sub_zero;
     bool sub_zero_usedP;
+
+    // Optional mass twist...
+    Real twisted_m;
+    bool twisted_m_usedP;
 
   };
 

@@ -1,4 +1,4 @@
-// $Id: eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc,v 3.1 2008-05-23 21:31:33 edwards Exp $
+// $Id: eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc,v 3.2 2008-11-10 17:59:07 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -74,7 +74,7 @@ namespace Chroma
 							     fermact_reader, 
 							     param.numer.fermact.path);
 
-      EvenOddPrecConstDetWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+      EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
       // Check success of the downcast 
       if( downcast == 0x0 ) 
@@ -98,7 +98,7 @@ namespace Chroma
 							     fermact_reader, 
 							     param.denom.fermact.path);
 
-      EvenOddPrecConstDetWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecConstDetWilsonTypeFermAct<T,P,Q>*>(tmp_act);
+      EvenOddPrecWilsonTypeFermAct<T,P,Q>* downcast=dynamic_cast<EvenOddPrecWilsonTypeFermAct<T,P,Q>*>(tmp_act);
 
       // Check success of the downcast 
       if( downcast == 0x0 ) 

@@ -1,4 +1,4 @@
-// $Id: clover_fermact_params_w.cc,v 3.3 2008-05-23 11:37:58 bjoo Exp $
+// $Id: clover_fermact_params_w.cc,v 3.4 2008-11-10 17:59:07 bjoo Exp $
 /*! \file
  *  \brief Clover fermion action parameters
  */
@@ -99,6 +99,15 @@ namespace Chroma
       sub_zero_usedP=false;
       sub_zero=Real(0);
     }
+
+    if( paramtop.count("TwistedM") != 0 ) { 
+      twisted_m_usedP = true;
+      read(paramtop, "TwistedM", twisted_m);
+    }
+    else {				       
+      twisted_m_usedP = false;
+    }
+
   }
 
   //! Read parameters
@@ -134,6 +143,11 @@ namespace Chroma
     if (param.sub_zero_usedP == true ) {
       write(xml, "ZeroEnergy", param.sub_zero);
     }
+
+    if (param.twisted_m_usedP == true ) { 
+      write(xml, "TwistedM", param.twisted_m);
+    }
+
     pop(xml);
   }
 
