@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: vector_quark_smearing.h,v 3.3 2008-11-04 18:43:58 edwards Exp $
+// $Id: vector_quark_smearing.h,v 3.4 2008-11-10 22:05:54 jbulava Exp $
 /*! \file
  *  \brief Vector Smearing: Use an outerproduct of vectors as the 
  *  smearing scheme. 
@@ -48,9 +48,18 @@ namespace Chroma
     public:
       //! Full constructor
       VectorQuarkSmear(const Params& p) :
-	params(p), 
-	vecs(TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.vecs_id))
-	{}
+	params(p) 
+			{
+		
+				try{
+	vecs = TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.vecs_id);
+				}
+				catch(std::string & e)
+				{
+					QDPIO::cerr << " Caught Exception reading vecs: " << e << endl;
+	QDP_abort(1);
+				}
+			}
 
       //! Smear the quark
       void operator()(T& quark, const multi1d<LatticeColorMatrix>& u) const;
