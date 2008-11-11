@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: deriv_meson_seqsrc_w.h,v 3.6 2006-12-04 20:38:47 edwards Exp $
+// $Id: deriv_meson_seqsrc_w.h,v 3.7 2008-11-11 21:27:42 edwards Exp $
 /*! \file
  *  \brief Construct derivative meson sequential sources.
  *
@@ -117,6 +117,15 @@ namespace Chroma
 					     const multi1d<LatticeColorMatrix>& u,
 					     int mu) const;
       
+      //! Apply left and right "nabla_i" onto the source
+      /*!
+       * \f$\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
+       *
+       * \return $\f \nabla_\mu F(x,0) = U_\mu(x) F(x+\mu)  - U_{x-\mu}^\dag(x-\mu) F(x-\mu)\f$
+       */
+      virtual multi1d<LatticePropagator> threePtNablaVector(const LatticePropagator& forward_prop,
+							    const multi1d<LatticeColorMatrix>& u) const;
+      
       //! Apply left and right "D_i" operator onto source
       /*!
        * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
@@ -129,6 +138,17 @@ namespace Chroma
 					 const multi1d<LatticeColorMatrix>& u,
 					 int mu) const;
       
+      //! Apply left and right "D_i" operator onto source
+      /*!
+       * \f$D_i = s_{ijk}\nabla_j\nabla_k\f$
+       *
+       * where  \f$s_{ijk} = +1 \quad\forall i\ne j, j\ne k, i \ne k\f$
+       * 
+       * \return $\f D_\mu F(x,0\f$
+       */
+      virtual multi1d<LatticePropagator> threePtDVector(const LatticePropagator& forward_prop,
+							const multi1d<LatticeColorMatrix>& u) const;
+      
       //! Apply left and right "B_i" operator onto source
       /*!
        * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
@@ -138,6 +158,15 @@ namespace Chroma
       virtual LatticePropagator threePtB(const LatticePropagator& forward_prop,
 					 const multi1d<LatticeColorMatrix>& u,
 					 int mu) const;
+
+      //! Apply left and right "B_i" operator onto source
+      /*!
+       * \f$B_i = \epsilon_{ijk}\nabla_j\nabla_k\f$
+       *
+       * \return $\fB_\mu F(z,0)\f$
+       */
+      virtual multi1d<LatticePropagator> threePtBVector(const LatticePropagator& forward_prop,
+							const multi1d<LatticeColorMatrix>& u) const;
 
       //! Apply left and right "nabla_i" onto the source
       /*!

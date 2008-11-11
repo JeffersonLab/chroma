@@ -1,4 +1,4 @@
-// $Id: deriv_quark_displacement_w.cc,v 3.4 2007-06-21 19:18:34 edwards Exp $
+// $Id: deriv_quark_displacement_w.cc,v 3.5 2008-11-11 21:27:42 edwards Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -735,8 +735,9 @@ namespace Chroma
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
-	  if (ETensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
+	  Real e = ETensor3d(params.deriv_dir,j,k);
+	  if (toBool(e != 0.0))
+	    fin += e * (Gamma(1 << j) * rightNabla(tmp,u,k,length));
 	}
       
       tmp = Gamma(G5) * fin;
@@ -833,8 +834,9 @@ namespace Chroma
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
-	  if (ETensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
+	  Real e = ETensor3d(params.deriv_dir,j,k);
+	  if (toBool(e != 0.0))
+	    fin += e * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
       
       tmp = Gamma(G5) * fin;
@@ -937,8 +939,9 @@ namespace Chroma
       for(int j=0; j < 3; ++j)
 	for(int k=0; k < 3; ++k)
 	{
-	  if (ETensor3d(params.deriv_dir,j,k) != 0)
-	    fin += Real(ETensor3d(params.deriv_dir,j,k)) * (Gamma(1 << j) * rightD(tmp,u,k,length));
+	  Real e = ETensor3d(params.deriv_dir,j,k);
+	  if (toBool(e != 0.0))
+	    fin += e * (Gamma(1 << j) * rightD(tmp,u,k,length));
 	}
 
       tmp = Gamma(1 << 3) * (Gamma(G5) * fin);
