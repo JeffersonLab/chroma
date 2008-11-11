@@ -1,3 +1,9 @@
+11/11/2008 - Robert Edwards  
+	Version 3.31.0
+        New stochastic generalized prop (3-pt) by Kostas. Added twisted-mass to
+        clover. Put DB's into projection use. Fixed up colorvec generalized prop.
+        New ILU style time-prec for clover. New readers for eigvecs.
+
 08/26/2008 - Robert Edwards  
 	Version 3.30.4
         Changed format of colorvec dbs. Now use fixed record dbs.
