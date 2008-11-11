@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-#  $Id: run_chroma_xmldiff.pl,v 3.6 2008-09-08 21:37:27 edwards Exp $
+#  $Id: run_chroma_xmldiff.pl,v 3.7 2008-11-11 23:13:30 edwards Exp $
 #
 #  This is wrapper script to run the xmldiff application from
 #  a makefile
@@ -83,9 +83,9 @@ for $file (&regresDirs())
 	my($exec_path) =  $h->{"exec_path"} ; 
 	my($execute)   =  $h->{"execute"} ; 
 	my($candidate);
-	my($outdir);
 	my($out_file);
 	my($log_file);
+	my($outdir);
 
         if ( $h->{"output"} ne "" && $h->{"log"} ne "" )
         {
@@ -95,14 +95,12 @@ for $file (&regresDirs())
         if ( $h->{"output"} ne "" )
         {
 	  $candidate =  $h->{"output"} ; 
-	  $outdir    =  $h->{"output"} ; 
 	  $out_file  =  $candidate;
 	  $log_file  =  "XMLLOG";
         }
         elsif ( $h->{"log"} ne "" )
         {
 	  $candidate =  $h->{"log"} ; 
-	  $outdir    =  $h->{"log"} ; 
 	  $out_file  =  "XMLDAT";
 	  $log_file  =  $candidate;
         }
@@ -110,6 +108,15 @@ for $file (&regresDirs())
         {
           die "Did not find either an  output or a log entry\n";
         }
+
+        if ( $h->{"output_dir"} ne "" )
+        {
+	  $outdir    =  $h->{"output_dir"};
+	}
+	else
+        {
+	  $outdir    =  $candidate;
+	}
 
 	my($metric)    =  $h->{"metric"} ; 
 	my($control)   =  $h->{"controlfile"} ; 
@@ -121,10 +128,6 @@ for $file (&regresDirs())
 #       printf "exec_path=$exec_path\n";
 #       printf "canddir=$canddir\n";
 
-	if (-d $canddir)
-	{
-	    rmtree([$canddir]);
-	}
 	mkpath([$canddir], 0, 0755);
 	chdir($canddir) || die "error cd $canddir : $!\n";
 
