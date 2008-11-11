@@ -1,4 +1,10 @@
 11/11/2008 - Robert Edwards  
+	Version 3.31.1
+        Fixed the "E" tensor operator in util/ferm/etensor. Reimplemented
+        deriv. seqsources to reuse basic routines. Checked against old deriv.
+        seqsources.
+
+11/11/2008 - Robert Edwards  
 	Version 3.31.0
         New stochastic generalized prop (3-pt) by Kostas. Added twisted-mass to
         clover. Put DB's into projection use. Fixed up colorvec generalized prop.
