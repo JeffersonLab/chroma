@@ -2,4 +2,7 @@
 
 <assertions>
 
+<!-- This is really only here to check the code actually ran correctly -->
+<assertion xpath="/MakeMesonOps/GroupMesonOperators/elem/Terms/elem[1]/Coefficient/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+
 </assertions>

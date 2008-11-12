@@ -298,8 +298,10 @@
       <Name>STOCH_GROUP_BARYON</Name>
       <Frequency>1</Frequency>
       <Param> 
-        <version>1</version>
-        <mom2_max>0</mom2_max>
+        <version>2</version>
+        <moms>
+					<elem>0 0 0</elem>
+			  </moms>
         <displacement_length>3</displacement_length>
 
        	<QuarkSmearing>
@@ -311,8 +313,8 @@
 
 	<LinkSmearing>
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
-          <link_smear_fact>0.15625</link_smear_fact>
-          <link_smear_num>16</link_smear_num>
+					 <link_smear_fact>0.15625</link_smear_fact>
+					         <link_smear_num>16</link_smear_num>
           <no_smear_dir>3</no_smear_dir>
 	</LinkSmearing>
      	
@@ -379,11 +381,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.30.0</chroma>
-      <qdp>1.27.0</qdp>
+      <chroma>3.31.1</chroma>
+      <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 23:07:15 EDT</run_date>
+    <run_date>11 Nov 08 18:20:51 EST</run_date>
     <Setgeom>
       <latt_size>2 2 2 2</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -440,11 +442,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -539,11 +541,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -622,7 +624,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271202835</id>
+      <id>285013251</id>
     </make_source>
 
         </Source_file_info>
@@ -675,7 +677,7 @@
           <ncg_had>14</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>6.36072911290375 1.23666492674568</prop_corr>
+          <prop_corr>6.36072920450533 1.23666494500401</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -696,11 +698,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -795,11 +797,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -878,7 +880,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271202835</id>
+      <id>285013251</id>
     </make_source>
 
         </Source_file_info>
@@ -931,7 +933,7 @@
           <ncg_had>14</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>5.9281208824832 1.02450237450276</prop_corr>
+          <prop_corr>5.92812093607654 1.02450231535308</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -952,11 +954,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1051,11 +1053,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1134,7 +1136,7 @@
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271202835</id>
+      <id>285013251</id>
     </make_source>
 
         </Source_file_info>
@@ -1187,7 +1189,7 @@
           <ncg_had>14</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>6.25361819492878 1.47463911330078</prop_corr>
+          <prop_corr>6.25361817441444 1.4746388759287</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -1208,11 +1210,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.31.1</chroma>
+            <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:07:15 EDT</run_date>
+          <run_date>11 Nov 08 18:20:51 EST</run_date>
           <Setgeom>
             <latt_size>2 2 2 2</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1326,3 +1328,83 @@
               <im>-0.0379038421281924</im>
             </elem>
           </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.997952832943863</w_plaq>
+          <s_plaq>0.999977649913894</s_plaq>
+          <t_plaq>0.995928015973833</t_plaq>
+          <plane_01_plaq>0.999972403049469</plane_01_plaq>
+          <plane_02_plaq>0.999992777903875</plane_02_plaq>
+          <plane_12_plaq>0.999967768788338</plane_12_plaq>
+          <plane_03_plaq>0.995990857481956</plane_03_plaq>
+          <plane_13_plaq>0.996056978901227</plane_13_plaq>
+          <plane_23_plaq>0.995736211538315</plane_23_plaq>
+          <link>0.379514034216603</link>
+          <pollp>
+            <elem>
+              <re>-0.327081409593423</re>
+              <im>-0.0344379058418175</im>
+            </elem>
+            <elem>
+              <re>-0.326649077236652</re>
+              <im>-0.0384581645485014</im>
+            </elem>
+            <elem>
+              <re>-0.32685507213076</re>
+              <im>-0.0276303160159538</im>
+            </elem>
+            <elem>
+              <re>-0.326373708744844</re>
+              <im>-0.0379038421281924</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <BaryonOperator>
+          <Name>Nuc_332_000</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_000</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_431_000</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_323_001</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_323_00m1</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_323_002</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_323_00m2</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_323_003</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_323_00m3</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_001</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_00m1</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_002</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_00m2</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_003</Name>
+        </BaryonOperator>
+        <BaryonOperator>
+          <Name>Nuc_413_00m3</Name>
+        </BaryonOperator>
+      </StochGroupBaryon>
+    </elem>
+  </InlineObservables>
+</chroma>

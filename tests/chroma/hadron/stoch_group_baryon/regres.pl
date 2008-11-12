@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 1.2 2008-09-08 21:38:02 edwards Exp $
+#  $Id: regres.pl,v 1.3 2008-11-12 00:25:34 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -15,6 +15,7 @@
 	 execute     => "chroma" , 
 	 input       => "$test_dir/chroma/hadron/stoch_group_baryon/stoch_group_baryon.ini.xml" , 
 	 aux_files   => ["$test_dir/chroma/hadron/stoch_group_baryon/Nucleon_elem"] , 
+	 output_dir  => "stoch_group_baryon",
 	 output      => "stoch_group_baryon.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/stoch_group_baryon/stoch_group_baryon.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/stoch_group_baryon/stoch_group_baryon.out.xml" ,
@@ -24,6 +25,7 @@
 	 execute     => "make_baryon_ops" , 
 	 input       => "$test_dir/chroma/hadron/stoch_group_baryon/make_baryon_ops.ini.xml" , 
 	 aux_files   => ["$test_dir/chroma/hadron/stoch_group_baryon/Nucleon_G1g_1"] , 
+	 output_dir  => "stoch_group_baryon",
 	 output      => "make_baryon_ops.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/stoch_group_baryon/make_baryon_ops.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/stoch_group_baryon/make_baryon_ops.out.xml" ,
