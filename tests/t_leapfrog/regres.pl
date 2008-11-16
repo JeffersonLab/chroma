@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.21 2008-06-02 16:33:00 bjoo Exp $
+#  $Id: regres.pl,v 3.22 2008-11-16 17:04:05 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -10,6 +10,22 @@
 #
 @regres_list = 
     (
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" ,
+         execute     => "t_leapfrog" ,
+         input       => "$test_dir/t_leapfrog/t_leapfrog.sts_min_norm_2_dtau.ini.xml",
+         log         => "t_leapfrog.sts_min_norm_2_dtau.candidate.xml",
+         metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+         controlfile => "$test_dir/t_leapfrog/t_leapfrog.sts_min_norm_2_dtau.log.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" ,
+         execute     => "t_leapfrog" ,
+         input       => "$test_dir/t_leapfrog/t_leapfrog.tst_min_norm_2_dtau.ini.xml",
+         log         => "t_leapfrog.tst_min_norm_2_dtau.candidate.xml",
+         metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+         controlfile => "$test_dir/t_leapfrog/t_leapfrog.tst_min_norm_2_dtau.log.xml" ,
+     },
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 

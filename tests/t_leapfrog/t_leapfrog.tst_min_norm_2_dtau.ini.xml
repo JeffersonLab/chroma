@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-14</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+	  <Kappa>0.115</Kappa>
+	  <clovCoeff>1.2</clovCoeff>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>3</n_smear>
+           <orthog_dir>3</orthog_dir>
+
+           <FermionBC>
+            <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+            <SchrPhiMult>2.0</SchrPhiMult>
+            <loop_extent>1</loop_extent>
+            <decay_dir>3</decay_dir>
+            <theta>0 0 0</theta>
+          </FermionBC>
+          </FermState>
+	  <ChronologicalPredictor>
+	    <Name>ZERO_SOLUTION_4D_PREDICTOR</Name>
+	  </ChronologicalPredictor>
+        </FermionAction>
+	<NamedObject>
+	  <monomial_id>clover</monomial_id>
+        </NamedObject>
+      </elem>
+
+    </Monomials>
+   <Hamiltonian>
+     <monomial_ids><elem>clover</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+	<tau0>1</tau0>
+	<Integrator>
+  	  <Name>LCM_TST_MIN_NORM_2_DTAU</Name>
+	  <delta_tau_max>0.1</delta_tau_max>
+          <monomial_ids><elem>clover</elem></monomial_ids>
+	</Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>4 4 4 4</nrow>
+</LeapfrogTest>
