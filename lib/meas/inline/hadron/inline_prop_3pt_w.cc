@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.6 2008-10-29 20:30:10 edwards Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.7 2008-11-17 04:44:56 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -479,7 +479,7 @@ namespace Chroma{
 	from2.print(os);
 	QDPIO::cout<<os.str()<<endl ;
 	QDPIO::cout<< " Time slice: "<<t0<<endl ;
-	QDPIO::cout<<name<<" End Operator: "<<endl ;
+	QDPIO::cout<<name<<" End Operator "<<endl ;
       }
  
       LatticePropagator tmp_prop = Gamma(params.param.op.gamma)*prop ;
@@ -490,14 +490,17 @@ namespace Chroma{
       LatticeComplex phase = phases[phases.momToNum(params.param.op.p)];
       for(int s(0);s<Ns;s++)
 	for(int c(0);c<Nc;c++){
+	  QDPIO::cout<<" Doing quark color and spin: "<<c<<" "<<s <<endl ;
 	  PropToFerm(tmp_prop,ferm,c,s) ;
 	  ferm_3pt = zero;
-	  for(int n(0);n<quarks.size();n++)
+	  for(int n(0);n<quarks.size();n++){
+	    QDPIO::cout<<" Doing quark: "<<n <<endl ;
 	    for(int i = 0 ; i <  quarks[n]->getDilSize(t0) ; ++i){
 	      LatticeComplex cc = 
 		phase*localInnerProduct(quarks[n]->dilutedSource(t0,i),ferm) ;
 	      ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(t0,i);
 	    }
+	  }
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
 	}
       
