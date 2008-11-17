@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.7 2008-11-17 04:44:56 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.8 2008-11-17 18:22:12 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -346,7 +346,12 @@ namespace Chroma{
             QDP_abort(1);
 	  }
       }
-		
+
+      for(int n(0);n<quarks.size();n++){
+	QDPIO::cout<<"Quark: "<<n <<" has "<<quarks[n]->getDilSize(0);
+	QDPIO::cout<<" dilutions on time slice "<<t0<<endl ;
+      }
+
       //Another Sanity check, the three quarks must all be 
       //inverted on the same cfg
       for (int n = 1 ; n < N_quarks ; ++n){
@@ -356,6 +361,7 @@ namespace Chroma{
 	  QDP_abort(1);
 	}		
       }
+
 
       //Also ensure that the cfg on which the inversions were performed 
       //is the same as the cfg that we are using
@@ -495,13 +501,24 @@ namespace Chroma{
 	  ferm_3pt = zero;
 	  for(int n(0);n<quarks.size();n++){
 	    QDPIO::cout<<" Doing quark: "<<n <<endl ;
-	    for(int i = 0 ; i <  quarks[n]->getDilSize(t0) ; ++i){
-	      LatticeComplex cc = 
-		phase*localInnerProduct(quarks[n]->dilutedSource(t0,i),ferm) ;
-	      ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(t0,i);
+	    QDPIO::cout<<"    quark: "<<n <<" has "<<quarks[n]->getDilSize(0);
+	    QDPIO::cout<<" dilutions on time slice "<<t0<<endl ;
+	    for(int i = 0 ; i <  quarks[n]->getDilSize(0) ; ++i){
+	      QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
+	      LatticeFermion eta = quarks[n]->dilutedSource(0,i) ;
+	      LatticeFermion chi = quarks[n]->dilutedSolution(0,i);
+	      LatticeComplex cc = phase*localInnerProduct(eta,ferm) ;
+	      QDPIO::cout<<"    Done with eta^\\dagger * prop: "<<endl ;
+	      ferm_3pt += sum(cc,phases.getSet()[t0])*chi;
+	      QDPIO::cout<<"  Done with chi * (eta^\\dagger * prop ) "<<endl ;
+	      //  LatticeComplex cc = 
+	      //phase*localInnerProduct(quarks[n]->dilutedSource(t0,i),ferm) ;
+	      //ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(t0,i);
 	    }
+	    QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
 	  }
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
+	  QDPIO::cout<<" Done with quark color and spin: "<<c<<" "<<s <<endl ;
 	}
       
       // Sanity check - 
