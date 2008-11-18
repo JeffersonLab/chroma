@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.8 2008-11-17 18:22:12 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.9 2008-11-18 22:28:05 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -62,6 +62,7 @@ namespace Chroma{
       
       read(paramtop, "gamma", op.gamma);
       read(paramtop, "p", op.p);
+      read(paramtop, "t", op.t);
       if(paramtop.count("factor")>0)
 	read(paramtop, "factor", op.f);
       else
@@ -73,6 +74,7 @@ namespace Chroma{
     push(xml, path);
 
     write(xml, "p", op.p);
+    write(xml, "t", op.t);
     write(xml, "gamma", op.gamma);
     write(xml, "factor", op.f);
 
@@ -320,38 +322,6 @@ namespace Chroma{
       //-------------------------------------------------------------------
       //Sanity checks	
 
-      //The participating timeslices must match for each quark
-      //grab info from first quark to prime the work
-      int t0; // The time slice
-
-      for (int n(0) ; n < N_quarks ; ++n){
-	/**
-	if(quarks[n]->getNumTimeSlices()!=1){
-	  QDPIO::cerr << name ;
-	  QDPIO::cerr << " : Only one time slice is allowed. ";
-	  QDPIO::cerr << "Quark " << n << " had " ;
-	  QDPIO::cerr  << quarks[n]->getNumTimeSlices() << endl;
-	  QDP_abort(1);
-	}
-	**/
-	int tt0 = quarks[n]->getT0(0);
-	QDPIO::cout << " Got timeslice: "<<tt0<<endl;
-	if(n==0) 
-	  t0 = tt0 ;
-	else
-	  if(t0!=tt0){
-	    QDPIO::cerr << name << " : Quarks do not contain the same";
-	    QDPIO::cerr << "timeslice (t0="<<t0<<") : Quark ";
-	    QDPIO::cerr << n << " has timeslice "<< tt0 << endl;
-            QDP_abort(1);
-	  }
-      }
-
-      for(int n(0);n<quarks.size();n++){
-	QDPIO::cout<<"Quark: "<<n <<" has "<<quarks[n]->getDilSize(0);
-	QDPIO::cout<<" dilutions on time slice "<<t0<<endl ;
-      }
-
       //Another Sanity check, the three quarks must all be 
       //inverted on the same cfg
       for (int n = 1 ; n < N_quarks ; ++n){
@@ -387,11 +357,11 @@ namespace Chroma{
 	}
       }
       
+
+      int decay_dir = quarks[0]->getDecayDir();
       //
       // Initialize the slow Fourier transform phases
       //
-      int decay_dir = quarks[0]->getDecayDir();
-      
       int mom2(0);
       for(int i(0);i<Nd-1;i++)
 	mom2 += params.param.op.p[i]*params.param.op.p[i] ;
@@ -471,12 +441,12 @@ namespace Chroma{
 
       //Print out here the operator details
       write(xml_out, "op", params.param.op);
-      write(xml_out, "t0", t0);
+      //write(xml_out, "t0", t0);
       {
 	XMLBufferWriter top;
         push(top, "tt");
 	write(top, "Operator", params.param.op);
-        write(top, "t0", t0);
+        //write(top, "t0", t0);
 	pop(top);
 	XMLReader from(top);
 	XMLReader from2(from, "/tt/Operator");
@@ -484,7 +454,7 @@ namespace Chroma{
 	QDPIO::cout<<name<<" Operator: "<<endl ;
 	from2.print(os);
 	QDPIO::cout<<os.str()<<endl ;
-	QDPIO::cout<< " Time slice: "<<t0<<endl ;
+	//QDPIO::cout<< " Time slice: "<<t0<<endl ;
 	QDPIO::cout<<name<<" End Operator "<<endl ;
       }
  
@@ -494,29 +464,39 @@ namespace Chroma{
       LatticeFermion ferm_3pt = zero ;
       LatticeFermion ferm ;
       LatticeComplex phase = phases[phases.momToNum(params.param.op.p)];
+      int t0 = params.param.op.t;
       for(int s(0);s<Ns;s++)
 	for(int c(0);c<Nc;c++){
 	  QDPIO::cout<<" Doing quark color and spin: "<<c<<" "<<s <<endl ;
 	  PropToFerm(tmp_prop,ferm,c,s) ;
 	  ferm_3pt = zero;
+	  int count(0);
 	  for(int n(0);n<quarks.size();n++){
-	    QDPIO::cout<<" Doing quark: "<<n <<endl ;
-	    QDPIO::cout<<"    quark: "<<n <<" has "<<quarks[n]->getDilSize(0);
-	    QDPIO::cout<<" dilutions on time slice "<<t0<<endl ;
-	    for(int i = 0 ; i <  quarks[n]->getDilSize(0) ; ++i){
-	      QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
-	      LatticeFermion eta = quarks[n]->dilutedSource(0,i) ;
-	      LatticeFermion chi = quarks[n]->dilutedSolution(0,i);
-	      LatticeComplex cc = phase*localInnerProduct(eta,ferm) ;
-	      QDPIO::cout<<"    Done with eta^\\dagger * prop: "<<endl ;
-	      ferm_3pt += sum(cc,phases.getSet()[t0])*chi;
-	      QDPIO::cout<<"  Done with chi * (eta^\\dagger * prop ) "<<endl ;
-	      //  LatticeComplex cc = 
-	      //phase*localInnerProduct(quarks[n]->dilutedSource(t0,i),ferm) ;
-	      //ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(t0,i);
+	    int i_t0(-100) ;
+	    for (int tt(0) ; tt < quarks[n]->getNumTimeSlices() ; ++tt)
+	      if(quarks[n]->getT0(tt) == t0) 
+		i_t0 = tt;
+	    if(i_t0!=-100){ //this quark contains the appropriate t
+	      count++;
+
+	      QDPIO::cout<<" Doing quark: "<<n <<endl ;
+	      QDPIO::cout<<"   quark: "<<n <<" has "<<quarks[n]->getDilSize(i_t0);
+	      QDPIO::cout<<" dilutions on time slice "<<t0<<endl ;
+	      for(int i = 0 ; i <  quarks[n]->getDilSize(i_t0) ; ++i){
+		QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
+	        LatticeComplex cc = 
+		  phase*localInnerProduct(quarks[n]->dilutedSource(i_t0,i),ferm);
+		ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(i_t0,i);
+	      }
+	      QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
 	    }
-	    QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
 	  }
+	  if(count==0){
+	    QDPIO::cerr<<name<< ": error, no appropriate time slice found" <<endl;
+	    QDP_abort(1);
+	    
+	  }
+	  ferm_3pt = ferm_3pt/Double(count) ; // compute the mean over noises
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
 	  QDPIO::cout<<" Done with quark color and spin: "<<c<<" "<<s <<endl ;
 	}
@@ -549,7 +529,7 @@ namespace Chroma{
 	  push(record_xml , "Propagator");
 	  write(record_xml, "ForwardProp", prop_header);
 	  write(record_xml, "PropSource", source_header);
-	  write(record_xml, "t0",t0);
+	  //write(record_xml, "t0",t0);
 	  write(record_xml, "Operator",params.param.op);
 	  pop(record_xml);
 	  // Write the propagator xml info
