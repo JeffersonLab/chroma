@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_hadron_w.h,v 1.7 2008-11-19 03:33:03 kostas Exp $
+// $Id: inline_stoch_hadron_w.h,v 1.8 2008-11-19 18:58:53 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -57,8 +57,8 @@ namespace Chroma
       struct NamedObject_t
       {
 	std::string         gauge_id;
-	std::string         meson_db;
-	std::string         baryon_db;
+	//std::string         meson_db;
+	//std::string         baryon_db;
       } named_obj;
       
       std::string xml_file;  // Alternate XML file pattern
@@ -66,8 +66,19 @@ namespace Chroma
       void write(XMLWriter& xml_out, const std::string& path);
 
     };
+
+    struct MesonOp{
+      int g ;
+      string file;
+    } ;
+
+    struct BaryonOp{
+      int g ;
+      string file;
+    } ;
   
 
+    /**
     void meson(DComplex& corr,
 	       const GroupXML_t& grpXML,
 	       const LatticeComplex& phase,
@@ -83,7 +94,9 @@ namespace Chroma
 		const LatticeFermion& eta3,
 		const Subset& s) ;
     
-
+    **/
+    void ParseMeson(MesonOp&,const GroupXML_t&) ;
+    void ParseBaryon(BaryonOp&,const GroupXML_t&) ;
 
   //! Inline measurement of stochastic baryon operators
   /*! \ingroup inlinehadron */
@@ -97,7 +110,7 @@ namespace Chroma
  
 
       Params params;
-
+      /**
       map<string, void (*)(DComplex& , 
 			   const GroupXML_t& ,  
 			   const LatticeComplex& , 
@@ -112,11 +125,16 @@ namespace Chroma
 			   const LatticeFermion& ,
 			   const LatticeFermion& ,
 			   const Subset& )> baryons ;
+      **/
+      map<string, void (*)(MesonOp&,const GroupXML_t& )> mesons ;
+
+      map<string, void (*)(BaryonOp&, const GroupXML_t&)> baryons ;
 
       void setUpMaps(){
-	mesons["PION"]  = &meson  ;
-	baryons["NUCLEON"] = &baryon ;
+	mesons["PION"]  = &ParseMeson  ;
+	baryons["NUCLEON"] = &ParseBaryon ;
       }
+      
     public:
       ~InlineMeas() {}
       InlineMeas(const Params& p) : params(p) {setUpMaps();}

@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.15 2008-11-19 03:33:03 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.16 2008-11-19 18:58:53 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -27,6 +27,8 @@
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+
+#include "util/ferm/key_val_db.h"
 
 namespace Chroma{ 
   namespace InlineStochHadronEnv{ 
@@ -140,16 +142,16 @@ namespace Chroma{
       XMLReader inputtop(xml, path);
       
       read(inputtop, "gauge_id", input.gauge_id);
-      read(inputtop, "meson_DB_file", input.meson_db);
-      read(inputtop, "baryon_DB_file", input.baryon_db);
+      //read(inputtop, "meson_DB_file", input.meson_db);
+      //read(inputtop, "baryon_DB_file", input.baryon_db);
     }
     
     //! Gauge field parameters
     void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
       push(xml, path);
       write(xml, "gauge_id", input.gauge_id);
-      write(xml, "meson_DB_file", input.meson_db);
-      write(xml, "baryon_DB_file", input.baryon_db);
+      //write(xml, "meson_DB_file", input.meson_db);
+      //write(xml, "baryon_DB_file", input.baryon_db);
       pop(xml);
     }
     
@@ -205,26 +207,46 @@ namespace Chroma{
     }
 
 
+    void ParseMeson(MesonOp& m, const GroupXML_t& grpXML){
+      QDPIO::cout<<"I am a meson!\n" ;
+      std::istringstream  xml_l(grpXML.xml);
+      XMLReader xmltop(xml_l);
+      XMLReader xml(xmltop,"/elem");
+      QDPIO::cout << "Meson state is = " <<grpXML.id ; 
+      QDPIO::cout << endl;
+      QDPIO::cout << " XML =" <<grpXML.xml ; 
+      QDPIO::cout << endl;
+      read(xml,"Gamma",m.g);
+      read(xml,"File",m.file);
+    }
+
+    void ParseBaryon(BaryonOp& m, const GroupXML_t& grpXML){
+      QDPIO::cout<<"I am a Baryon!\n" ;
+      std::istringstream  xml_l(grpXML.xml);
+      XMLReader  xmltop(xml_l);
+      XMLReader xml(xmltop,"/elem");
+      QDPIO::cout << "Baryon state is = " <<grpXML.id ; 
+      QDPIO::cout << endl;
+      QDPIO::cout << " XML =" <<grpXML.xml ; 
+      QDPIO::cout << endl;
+      read(xml,"Gamma",m.g);
+      read(xml,"File",m.file);
+    }
+
     void meson(DComplex& corr,
-	       const GroupXML_t& grpXML,
+	       const int& g,
 	       const LatticeComplex& phase,
 	       const LatticeFermion& eta,
 	       const LatticeFermion& chi,
 	       const Subset& s){
-      QDPIO::cout<<"I am a meson!\n" ;
-      std::istringstream  xml_l(grpXML.xml);
-      XMLReader  xmltop(xml_l);
-      QDPIO::cout << "Meson state is = " <<grpXML.id ; 
-      QDPIO::cout << endl;
-      int g ;
-      read(xmltop,"Gamma",g);
       LatticeComplex tt ;
-      //tt[s] = localInnerProduct(eta,Gamma(g)*chi) ;
-      //corr = sum(localInnerProduct(eta,Gamma(g)*chi)*phase,s) ;
+      tt[s] = localInnerProduct(eta,Gamma(g)*chi) ;
+      corr = sum(localInnerProduct(eta,Gamma(g)*chi)*phase,s) ;
     }
+
     
     void baryon(DComplex& corr,
-		const GroupXML_t& grpXML,
+		const int& g,
 		const LatticeComplex& phase,
 		const LatticeFermion& eta1,
 		const LatticeFermion& eta2,
@@ -287,6 +309,7 @@ namespace Chroma{
       // for the moment ignore displacements
       int type ; // creation: 0 or anihilation: 1
       int t    ; // time slice 
+      int t0   ; // source time slice
       //if size of qn is 3 then it's a baryon if it is 2 then it's a meson
       multi1d<int> qn ; // the quark noise id 
       multi1d<int> p ;
@@ -297,6 +320,7 @@ namespace Chroma{
     void write(BinaryWriter& bin, const HadronKey& h){
       write(bin, h.type);
       write(bin, h.t);
+      write(bin, h.t0);
       write(bin, h.qn);
       write(bin, h.p);
       write(bin, h.gamma);
@@ -306,6 +330,7 @@ namespace Chroma{
     void read(BinaryReader& bin, HadronKey& h){
       read(bin, h.type);
       read(bin, h.t);
+      read(bin, h.t0);
       read(bin, h.qn);
       read(bin, h.p);
       read(bin, h.gamma);
@@ -342,6 +367,49 @@ namespace Chroma{
       for(int i(0);i<count;i++){
 	read(bin, k);
 	read(bin, h.data[k]);
+      }
+    }
+
+    class MesonOpData{
+    public:
+      multi2d<DComplex> data ;
+      MesonOpData(int n2, int n1){
+	data.resize(n2,n1) ;
+      }
+      
+    } ;
+
+    //! MesonOp reader
+    void read(BinaryReader& bin, MesonOpData& param)
+    {
+      int n1;
+      read(bin, n1);  
+      int n2;
+      read(bin, n2);  
+      param.data.resize(n2,n1);
+  
+      for(int i=0; i < n2; ++i)
+      {
+	for(int j=0; j < n1; ++j)
+	{
+	  read(bin, param.data(i,j));
+	}
+      }
+    }
+
+    //! MesonElementalOperator write
+    void write(BinaryWriter& bin, const MesonOpData& param)
+    {
+      int n1 = param.data.size1();  // all sizes the same
+      int n2 = param.data.size2();  // all sizes the same
+      write(bin, n1);
+      write(bin, n2);
+      for(int i=0; i < n2; ++i)
+      {
+	for(int j=0; j < n1; ++j)
+	{
+	  write(bin, param.data(i,j));
+	}
       }
     }
 
@@ -618,10 +686,28 @@ namespace Chroma{
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       // Parse the Hadron operators
-
+      map<string, MesonOp> LocalMesonOps ;
+      map<string, BaryonOp> LocalBaryonOps ;
       for(int o(0);o<params.param.ops.size();o++){
 	QDPIO::cout<<"Found Hadron: "<<params.param.ops[o].id<<endl ;
-	
+	map<string, void (*)(MesonOp&,const GroupXML_t& )>::iterator 
+	  iter=mesons.find(params.param.ops[o].id);
+	if(iter != mesons.end()){
+	  iter->second(LocalMesonOps[params.param.ops[o].id],
+		       params.param.ops[o]);
+	}
+	else{// Maybe it's a baryon
+	  map<string, void (*)(BaryonOp&, const GroupXML_t&)>::iterator 
+	    it=baryons.find(params.param.ops[o].id);
+	  if(it != baryons.end())
+	    it->second(LocalBaryonOps[params.param.ops[o].id],
+			  params.param.ops[o]);
+	  
+	  else{
+	    QDPIO::cout<<" Operator: "<<params.param.ops[o].id ;
+	    QDPIO::cout<<" is unkown " <<endl ;
+	  }
+	}
       }
 
       //We only do diagonal one smearing smearing
@@ -646,14 +732,17 @@ namespace Chroma{
 	QDP_abort(1);
       }
 
+      multi1d< multi1d< multi1d<LatticeFermion> > > smearedSol(quarks.size());
       for(int q(0);q< quarks.size() ;q++){
+	smearedSol[q].resize(participating_timeslices.size());
 	for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	  smearedSol[q][t0].resize(quarks[q]->getDilSize(t0)) ;
 	  for(int i = 0 ; i <  quarks[q]->getDilSize(t0) ; ++i){
-	    LatticeFermion sol = quarks[q]->dilutedSolution(t0,i) ;
+	    smearedSol[q][t0][i] = quarks[q]->dilutedSolution(t0,i) ;
 	    //	    (*Smearing)(quarks[q]->dilutedSolution(t0,i), u_smr);  
-	    (*Smearing)(sol, u_smr);  
+	    (*Smearing)(smearedSol[q][t0][i], u_smr);  
 	    // does this overwride the dilutedSolution ?
-	    quarks[q]->dilutedSolution(t0,i) = sol ;
+	    // quarks[q]->dilutedSolution(t0,i) = sol ;
 	  }
 	}
       }
@@ -662,32 +751,81 @@ namespace Chroma{
       //First do all the mesons
       //Make a loop over meson operators
       //source source creation
-      for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
-	HadronKey keyCr ;
-	HadronKey keyAn ;
-	keyCr.type = MESON_SRC_SRC ;
-	keyCr.t = participating_timeslices[t0] ;
-	keyCr.qn.resize(2);
-	keyAn = keyCr ;
-	keyAn.type = MESON_SOL_SOL ;
-	for(int q(0);q< quarks.size() ;q++){
-	  keyCr.qn[0]=q;
-	  keyAn.qn[0]=q;
-	  for(int q1(0);q1< quarks.size() ;q1++)
-	    if(q!=q1){
-	      keyCr.qn[1] = q1 ;
-	      keyAn.qn[1] = q1 ;
-	      for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
-		LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
-		quark_bar = Gamma(Ns-1)*quark_bar ;
-		for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-		  LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
-		  // code the builds mesons go here
-		}
-	      }
-	    } // dilutions
-	} // quarks
-      }// t0
+      map<string, MesonOp>::iterator it ;
+      for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
+	MesonOp op = it->second ;
+	// DB storage
+	BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<multi2d<DComplex> > > 
+	  qdp_db(op.file, 10*1024*1024, 64*1024);
+	SerialDBKey<HadronKey> key ;
+	//HadronKey key ;
+	key.key().gamma = op.g ;
+	// loop over the momentum projection
+	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num){
+	  key.key().p = phases.numToMom(mom_num);
+	  for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	    key.key().t0 = participating_timeslices[t0] ;
+	    key.key().t = key.key().t0 ; // creation ops leave on one time slice only
+	    key.key().qn.resize(2);
+	    //first do the sources
+	    key.key().type = MESON_SRC_SRC ;
+	    for(int q(0);q< quarks.size() ;q++){
+	      key.key().qn[0]=q;
+	      for(int q1(0);q1< quarks.size() ;q1++)
+		if(q!=q1){
+		  key.key().qn[1] = q1 ;
+		  //multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		  //MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		  SerialDBData<multi2d<DComplex> > val ;
+		  val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		  for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
+		    LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
+		    quark_bar = Gamma(Ns-1)*quark_bar ;
+		    for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+		      QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+		      QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+		      LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
+		      meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark,
+			    phases.getSet()[key.key().t]);
+		    }// dilutions d
+		  }// dilutions d1
+		  qdp_db.insert(key, val);
+		} // quark 2
+	    } // quark 1 
+	    
+	    key.key().type = MESON_SOL_SOL ;
+	    for(int q(0);q< quarks.size() ;q++){
+	      key.key().qn[0]=q;
+	      for(int q1(q+1);q1< quarks.size() ;q1++){
+		key.key().qn[1] = q1 ;
+		//multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		//MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		SerialDBData<multi2d<DComplex> > val ;
+		val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		for(int t(0);t<phases.numSubsets();t++){
+		  key.key().t = t ;
+		  for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
+		    LatticeFermion quark_bar = smearedSol[q][t0][d] ;
+		      //quarks[q]->dilutedSolution(t0,d);
+		    quark_bar = Gamma(Ns-1)*quark_bar ;
+		    for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+		      QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+		      QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+		      LatticeFermion quark =  smearedSol[q1][t0][d1] ;
+			//quarks[q1]->dilutedSolution(t0,d1);
+		      meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark,
+			    phases.getSet()[key.key().t]);
+		    }// dilutions d
+		  }// dilutions d1
+		  qdp_db.insert(key, val);
+		} // loop over time
+	      } // quark 2
+	    } // quark 1 
+	    
+
+	  }// t0
+	}//mom
+      }// ops
       
       
       // first do only mesons
