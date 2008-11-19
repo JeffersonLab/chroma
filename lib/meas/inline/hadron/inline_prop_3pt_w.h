@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_3pt_w.h,v 1.3 2008-10-19 04:48:30 kostas Exp $
+// $Id: inline_prop_3pt_w.h,v 1.4 2008-11-19 03:33:03 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *
@@ -35,6 +35,7 @@ namespace Chroma
       unsigned long      frequency;
     
       struct Operator_t{
+	int t ; /*!< time for insersion */
 	multi1d<int> p ; /*!< the momentum inserted */
         int gamma ; /*!< insersion operator gamma Matrix 0..15 */
         Complex f  ; /*!< overal factor */

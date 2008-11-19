@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_hadron_w.h,v 1.6 2008-05-02 21:34:26 kostas Exp $
+// $Id: inline_stoch_hadron_w.h,v 1.7 2008-11-19 03:33:03 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -43,8 +43,10 @@ namespace Chroma
 	//Each operator needs its own output file
 	//should be defined in the GroupXML_t
       
-	multi1d<GroupXML_t>  smearing; /*!< xml holding smearing params */
+	GroupXML_t  smearing; /*!< xml holding smearing params. only one allowed */
+	// for the moment ignore displacements...
 	multi1d<GroupXML_t>  displace; /*!< xml holding displacement params */
+
 	GroupXML_t   link_smear;         /*!< link smearing xml one for all*/
 
 	multi1d<GroupXML_t> quarks ;     /*! dilutions */
@@ -55,6 +57,8 @@ namespace Chroma
       struct NamedObject_t
       {
 	std::string         gauge_id;
+	std::string         meson_db;
+	std::string         baryon_db;
       } named_obj;
       
       std::string xml_file;  // Alternate XML file pattern
