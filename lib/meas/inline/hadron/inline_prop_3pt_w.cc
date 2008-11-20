@@ -1,4 +1,4 @@
-// $Id: inline_prop_3pt_w.cc,v 1.9 2008-11-18 22:28:05 kostas Exp $
+// $Id: inline_prop_3pt_w.cc,v 1.10 2008-11-20 03:53:44 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -529,6 +529,7 @@ namespace Chroma{
 	  push(record_xml , "Propagator");
 	  write(record_xml, "ForwardProp", prop_header);
 	  write(record_xml, "PropSource", source_header);
+	  write(record_xml, "Config_info", gauge_xml);
 	  //write(record_xml, "t0",t0);
 	  write(record_xml, "Operator",params.param.op);
 	  pop(record_xml);
