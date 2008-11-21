@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.16 2008-11-19 18:58:53 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.17 2008-11-21 17:30:55 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -239,13 +239,11 @@ namespace Chroma{
 	       const LatticeFermion& eta,
 	       const LatticeFermion& chi,
 	       const Subset& s){
-      LatticeComplex tt ;
-      tt[s] = localInnerProduct(eta,Gamma(g)*chi) ;
       corr = sum(localInnerProduct(eta,Gamma(g)*chi)*phase,s) ;
     }
 
     
-    void baryon(DComplex& corr,
+    void baryon(multi1d<DComplex>& d,
 		const int& g,
 		const LatticeComplex& phase,
 		const LatticeFermion& eta1,
@@ -253,11 +251,49 @@ namespace Chroma{
 		const LatticeFermion& eta3,
 		const Subset& s){
       QDPIO::cout<<"I am a baryon!\n" ;
+
+      START_CODE();
+
+
+      d = zero;
+
+      // C gamma_5 = Gamma(5)
+      SpinMatrix g_one = 1.0 ;
+      SpinMatrix Cg5 = Gamma(g)*g_one ; //BaryonSpinMats::Cg5();
+
+      for(int k=0; k < Ns; ++k)
+	{
+	  LatticeSpinMatrix di_quark = zero;
+
+	  for(int j=0; j < Ns; ++j)
+	    {
+	      for(int i=0; i < Ns; ++i)
+		{
+		  // Contract over color indices with antisym tensors
+		  LatticeComplex b_oper = colorContract(peekSpin(eta1, i),
+							peekSpin(eta2, j),
+							peekSpin(eta3, k));
+
+		  pokeSpin(di_quark, b_oper, j, i);
+		}
+	    }
+
+	  d[k] += sum(traceSpin(Cg5 * di_quark)*phase,s);
+	}
+
+      END_CODE();
     }
 
     class Key{
     public:
       multi1d<int> k;
+
+      Key& set(int i,int j, int l,int s){
+	k.resize(4);
+	k[0]=i ; k[1]=j ; k[2]=l ; k[3]=s;
+	return *this ;
+      }
+
       Key& set(int i,int j, int l){
 	k.resize(3);
 	k[0]=i ; k[1]=j ; k[2]=l ;
@@ -276,6 +312,9 @@ namespace Chroma{
       }
       Key(int i,int j, int l){
 	set(i,j,l);
+      }
+      Key(int i,int j, int l,int s){
+	set(i,j,l,s);
       }
       Key(int i,int j){
 	set(i,j);
@@ -339,7 +378,8 @@ namespace Chroma{
     /*
       intented use: 
       HadronOperator foo ;
-      foo.data(Key(1,2,3)) ; // should return the 1,2,3 dilution of this hadron
+      foo.data(Key(1,2)) ; // should return the 1,2 dilution of a meson
+      foo.data(Key(1,2,3,s); for baryons where s is the spin index... 
      */
     struct HadronOperator{
       map<Key,DComplex> data ; // the Key has size 3 for a baryon of 2 for a hadron
@@ -751,108 +791,189 @@ namespace Chroma{
       //First do all the mesons
       //Make a loop over meson operators
       //source source creation
-      map<string, MesonOp>::iterator it ;
-      for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
-	MesonOp op = it->second ;
-	// DB storage
-	BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<multi2d<DComplex> > > 
-	  qdp_db(op.file, 10*1024*1024, 64*1024);
-	SerialDBKey<HadronKey> key ;
-	//HadronKey key ;
-	key.key().gamma = op.g ;
-	// loop over the momentum projection
-	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num){
-	  key.key().p = phases.numToMom(mom_num);
-	  for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
-	    key.key().t0 = participating_timeslices[t0] ;
-	    key.key().t = key.key().t0 ; // creation ops leave on one time slice only
-	    key.key().qn.resize(2);
-	    //first do the sources
-	    key.key().type = MESON_SRC_SRC ;
-	    for(int q(0);q< quarks.size() ;q++){
-	      key.key().qn[0]=q;
-	      for(int q1(0);q1< quarks.size() ;q1++)
-		if(q!=q1){
+      {
+	map<string, MesonOp>::iterator it ;
+	for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
+	  MesonOp op = it->second ;
+	  // DB storage
+	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<multi2d<DComplex> > > 
+	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
+	    qdp_db(op.file, 10*1024*1024, 64*1024);
+	  SerialDBKey<HadronKey> key ;
+	  //HadronKey key ;
+	  key.key().gamma = op.g ;
+	  // loop over the momentum projection
+	  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num){
+	    key.key().p = phases.numToMom(mom_num);
+	    for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	      key.key().t0 = participating_timeslices[t0] ;
+	      key.key().t = key.key().t0 ; // creation ops leave on one time slice only
+	      key.key().qn.resize(2);
+	      //first do the sources
+	      key.key().type = MESON_SRC_SRC ;
+	      for(int q(0);q< quarks.size() ;q++){
+		key.key().qn[0]=q;
+		for(int q1(0);q1< quarks.size() ;q1++)
+		  if(q!=q1){
+		    key.key().qn[1] = q1 ;
+		    //multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		    //MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		    //SerialDBData<multi2d<DComplex> > val ;
+		    //val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		    SerialDBData< HadronOperator > val ;
+		    
+		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
+		      LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
+		      quark_bar = Gamma(Ns-1)*quark_bar ;
+		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
+			DComplex cc ;
+			meson(cc,op.g,phases[mom_num],quark_bar,quark,   
+			      phases.getSet()[key.key().t]);
+			if(toBool(real(cc)!=0.0) && toBool(imag(cc)!=0.0))
+			  val.data().data[Key(d,d1)] = cc ;
+			//meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark,   phases.getSet()[key.key().t]);
+		      }// dilutions d
+		    }// dilutions d1
+		    qdp_db.insert(key, val);
+		  } // quark 2
+	      } // quark 1 
+	      
+	      key.key().type = MESON_SOL_SOL ;
+	      for(int q(0);q< quarks.size() ;q++){
+		key.key().qn[0]=q;
+		for(int q1(q+1);q1< quarks.size() ;q1++){
 		  key.key().qn[1] = q1 ;
 		  //multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
 		  //MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		  SerialDBData<multi2d<DComplex> > val ;
-		  val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		  for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
-		    LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
-		    quark_bar = Gamma(Ns-1)*quark_bar ;
-		    for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-		      QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-		      QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
-		      LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
-		      meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark,
-			    phases.getSet()[key.key().t]);
-		    }// dilutions d
-		  }// dilutions d1
-		  qdp_db.insert(key, val);
-		} // quark 2
-	    } // quark 1 
-	    
-	    key.key().type = MESON_SOL_SOL ;
-	    for(int q(0);q< quarks.size() ;q++){
-	      key.key().qn[0]=q;
-	      for(int q1(q+1);q1< quarks.size() ;q1++){
-		key.key().qn[1] = q1 ;
-		//multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		//MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		SerialDBData<multi2d<DComplex> > val ;
-		val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		for(int t(0);t<phases.numSubsets();t++){
-		  key.key().t = t ;
-		  for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
-		    LatticeFermion quark_bar = smearedSol[q][t0][d] ;
+		  //SerialDBData<multi2d<DComplex> > val ;
+		  //val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
+		  SerialDBData< HadronOperator > val ;
+		  for(int t(0);t<phases.numSubsets();t++){
+		    key.key().t = t ;
+		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
+		      LatticeFermion quark_bar = smearedSol[q][t0][d] ;
 		      //quarks[q]->dilutedSolution(t0,d);
-		    quark_bar = Gamma(Ns-1)*quark_bar ;
-		    for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-		      QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-		      QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
-		      LatticeFermion quark =  smearedSol[q1][t0][d1] ;
+		      quark_bar = Gamma(Ns-1)*quark_bar ;
+		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
 			//quarks[q1]->dilutedSolution(t0,d1);
-		      meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark,
-			    phases.getSet()[key.key().t]);
-		    }// dilutions d
-		  }// dilutions d1
-		  qdp_db.insert(key, val);
-		} // loop over time
-	      } // quark 2
-	    } // quark 1 
-	    
+			//meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark, phases.getSet()[key.key().t]);
+			DComplex cc ;
+			meson(cc,op.g,phases[mom_num],quark_bar,quark,
+			      phases.getSet()[key.key().t]);
+			if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
+			  val.data().data[Key(d,d1)] = cc ;
+		      }// dilutions d
+		    }// dilutions d1
+		    qdp_db.insert(key, val);
+		  } // loop over time
+		} // quark 2
+	      } // quark 1 
+	      
+	      
+	    }// t0
+	  }//mom
+	}// ops
+      }// Done with Mesons
 
-	  }// t0
-	}//mom
-      }// ops
+      //Now the Baryons
+      {
+	map<string, BaryonOp>::iterator it ;
+	for(it=LocalBaryonOps.begin();it!=LocalBaryonOps.end();it++){
+	  BaryonOp op = it->second ;
+	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
+	    qdp_db(op.file, 10*1024*1024, 64*1024);
+	  SerialDBKey<HadronKey> key ;
+	  //HadronKey key ;
+	  key.key().gamma = op.g ;
+	  // loop over the momentum projection
+	  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num){
+	    key.key().p = phases.numToMom(mom_num);
+	    for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
+	      key.key().t0 = participating_timeslices[t0] ;
+	      key.key().t = key.key().t0 ; // creation ops leave on one time slice only
+	      key.key().qn.resize(3);
+	      //first do the sources
+	      key.key().type = BARYON_SRC ;
+	      for(int q0(0);q0< quarks.size() ;q0++){
+		key.key().qn[0]=q0;
+		for(int q1(0);q1< quarks.size() ;q1++)
+		  if(q0!=q1){
+		    key.key().qn[1]=q1;
+		    for(int q2(0);q2< quarks.size() ;q2++)
+		      if((q1!=q2)&&(q0!=q2)){		    
+			key.key().qn[2] = q2 ;
+			SerialDBData< HadronOperator > val ;
+			for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
+			  LatticeFermion quark0 = quarks[q0]->dilutedSource(t0,d0);
+			  for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+			    LatticeFermion quark1 = quarks[q1]->dilutedSource(t0,d1);
+			    for ( int d2(0) ; d2 < quarks[q2]->getDilSize(t0); d2++){
+			      QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
+			      QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
+			      LatticeFermion quark2 = quarks[q2]->dilutedSource(t0,d2);
+			      multi1d<DComplex> cc ;
+			      baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,   
+				     phases.getSet()[key.key().t]);
+			      for(int s(0);s<Ns;s++)
+				if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
+				  val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
+			    }// dilutions d2
+			  }//dilutions d1
+			}// dilutions d0
+			qdp_db.insert(key, val);
+		      } // quark 2
+		  } // quark 1 
+	      } // quark 0 
+
+	      
+	      // Then next block needs work
+	      key.key().type = BARYON_SOL ;
+	      for(int q0(0);q0< quarks.size() ;q0++){
+		key.key().qn[0]=q0;
+		for(int q1(q0+1);q1< quarks.size() ;q1++){
+		  key.key().qn[1] = q1 ;
+		  for(int q2(q1+1);q2< quarks.size() ;q2++){
+		    key.key().qn[2] = q2 ;
+		    SerialDBData< HadronOperator > val ;
+		    for(int t(0);t<phases.numSubsets();t++){
+		      key.key().t = t ;
+		      for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
+			LatticeFermion quark0 = smearedSol[q0][t0][d0] ;
+			for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+			  LatticeFermion quark1 = smearedSol[q1][t0][d1] ;
+			  for ( int d2(0) ; d2 < quarks[q2]->getDilSize(t0); d2++){
+			    QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
+			    QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
+			    LatticeFermion quark2 =  smearedSol[q2][t0][d2] ;
+			    
+			    multi1d<DComplex> cc ;
+			    baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,
+				   phases.getSet()[key.key().t]);
+			    for(int s(0);s<Ns;s++)
+			      if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
+				val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
+			  }// dilutions d0
+			}// dilutions d1
+		      }//dilutions d2
+		      qdp_db.insert(key, val);
+		    } // loop over time
+		  } // quark 2
+		} // quark 1 
+	      }// quark 0
+	      
+	    }// t0
+	  }//mom
+	}// ops
+
+      }// done with baryons
       
       
-      // first do only mesons
-      /**  Do the Baryons later
-      // Do solution solution mesons, source-source mesons
-      for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
-	HadronKey key ;
-	key.t = participating_timeslices[t0] ;
-	key.qn.resize(3); 
-	for(int q(0);q< quarks.size() ;q++){
-	  key.qn[0] = q ;
-	  for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
-	    KeySmearedQuark_t kk(t0,d) ;
-	    LatticeFermion quark_bar = SmrQuarks.getSmrSource(q,kk);
-	    for(int q1(0);q1< quarks.size() ;q1++){
-	      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-		KeySmearedQuark_t kk1(t0,d1) ;
-		LatticeFermion quark = SmrQuarks.getSmrSource(q1,kk1);
-		
-	      }
-	    }
-	  } // dilutions
-	} // quarks
-	  
-      } // t0 
-      **/
-
       swatch.stop();
       
       QDPIO::cout << "Operators written: time= "
