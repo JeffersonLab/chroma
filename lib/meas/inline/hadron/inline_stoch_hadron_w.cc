@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.18 2008-11-22 03:17:48 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.19 2008-11-22 04:45:13 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -254,6 +254,7 @@ namespace Chroma{
 
       START_CODE();
 
+      d.resize(Ns) ;
 
       d = zero;
 
@@ -382,7 +383,7 @@ namespace Chroma{
       foo.data(Key(1,2,3,s); for baryons where s is the spin index... 
      */
     struct HadronOperator{
-      map<Key,DComplex> data ; // the Key has size 3 for a baryon of 2 for a hadron
+      map<Key,DComplex> data ; // the Key has size 4 for a baryon of 2 for a hadron
     } ;
     
      //! HadronKey binary writer
@@ -413,62 +414,94 @@ namespace Chroma{
     class MesonOpData{
     public:
       multi2d<DComplex> data ;
-      MesonOpData(int n2, int n1){
-	data.resize(n2,n1) ;
+      MesonOpData(){}
+      MesonOpData(int n ){
+	data.resize(n,n) ;
       }
-      
+      void resize(int n){
+	data.resize(n,n);
+      }
     } ;
+    class BaryonOpData{
+    public:
+      multi3d< multi1d<DComplex> > data ;
+      BaryonOpData(){}
+      BaryonOpData(int n ){
+        data.resize(n,n,n) ;
+      }
+      void resize(int n){
+	data.resize(n,n,n);
+      } 
+    } ;
+
 
     //! MesonOp reader
     void read(BinaryReader& bin, MesonOpData& param)
     {
-      int n1;
-      read(bin, n1);  
-      int n2;
-      read(bin, n2);  
-      param.data.resize(n2,n1);
+      int n;
+      read(bin, n);  
+      param.data.resize(n,n);
   
-      for(int i=0; i < n2; ++i)
+      for(int i=0; i < n; ++i)
       {
-	for(int j=0; j < n1; ++j)
+	for(int j=0; j < n; ++j)
 	{
 	  read(bin, param.data(i,j));
 	}
       }
     }
 
-    //! MesonElementalOperator write
+    //! MesonOp write
     void write(BinaryWriter& bin, const MesonOpData& param)
     {
-      int n1 = param.data.size1();  // all sizes the same
-      int n2 = param.data.size2();  // all sizes the same
-      write(bin, n1);
-      write(bin, n2);
-      for(int i=0; i < n2; ++i)
+      int n = param.data.size1();  // all sizes the same
+      write(bin, n);
+      for(int i=0; i < n; ++i)
       {
-	for(int j=0; j < n1; ++j)
+	for(int j=0; j < n; ++j)
 	{
 	  write(bin, param.data(i,j));
 	}
       }
     }
 
-    /**
-    //! BaryonOperator header writer
-    void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
+
+
+    //! BaryonOp reader
+    void read(BinaryReader& bin, BaryonOpData& param)
     {
-      push(xml, path);
-      
-      int version = 1;
-      write(xml, "version", version);
-      write(xml, "mom2_max", param.mom2_max);
-      write(xml, "time_dir", param.time_dir);
-      write(xml, "seed", param.seed);
-      xml <<  param.smearing.xml;
-      
-      pop(xml);
+      int n;
+      read(bin, n);  
+      param.data.resize(n,n,n);
+  
+      for(int i=0; i < n; ++i)
+      {
+	for(int j=0; j < n; ++j)
+	{
+	  for(int k=0; k < n; ++k)
+	    {
+	      read(bin, param.data(i,j,k));
+	    }
+	}
+      }
     }
-    **/
+
+    //! BaryonOp write
+    void write(BinaryWriter& bin, const BaryonOpData& param)
+    {
+      int n = param.data.size1();  // all sizes the same
+      write(bin, n);
+      for(int i=0; i < n; ++i)
+      {
+	for(int j=0; j < n; ++j)
+	{
+	  for(int k=0; k < n; ++k)
+            {
+	      write(bin, param.data(i,j,k));
+	    }
+	}
+      }
+    }
 
 
   //--------------------------------------------------------------
@@ -510,6 +543,11 @@ namespace Chroma{
       snoop.reset();
       snoop.start();
       
+      XMLBufferWriter UserData_xml;
+
+      push(UserData_xml, "StochHadron");
+      proginfo(UserData_xml);
+
       // Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml;
       try
@@ -534,16 +572,19 @@ namespace Chroma{
       
       push(xml_out, "stoch_hadron");
       write(xml_out, "update_no", update_no);
-      
+    
+
       QDPIO::cout << name << ": Stochastic Hadron Operator" << endl;
       
       proginfo(xml_out);    // Print out basic program info
       
       // Write out the input
       params.write(xml_out, "Input");
-      
+      params.write(UserData_xml, "Input");
+
       // Write out the config info
       write(xml_out, "Config_info", gauge_xml);
+      write(UserData_xml,"Config_info",gauge_xml);
       
       push(xml_out, "Output_version");
       write(xml_out, "out_version", 1);
@@ -688,7 +729,14 @@ namespace Chroma{
 	QDP_abort(1);
       }
 
-		
+      write(UserData_xml,"decay_dir",decay_dir);
+      push(UserData_xml,"Quarks");
+      for(int k(0);k<quarks.size();k++){
+	push(UserData_xml,"elem");
+	write(UserData_xml,"Seed",quarks[0]->getSeed());
+	pop(UserData_xml);
+      }
+      pop(UserData_xml);
       // Another sanity check. The seeds of all the quarks must be different
       // and thier decay directions must be the same 
       for(int n = 1 ; n < quarks.size(); ++n){
@@ -788,6 +836,7 @@ namespace Chroma{
       }
       // Solution vectors are now smeared
       		  
+      pop(UserData_xml);//done with UserData_xml 
       //First do all the mesons
       //Make a loop over meson operators
       //source source creation
@@ -796,9 +845,10 @@ namespace Chroma{
 	for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
 	  MesonOp op = it->second ;
 	  // DB storage
-	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<multi2d<DComplex> > > 
-	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
+	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
+	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<MesonOpData > > 
 	    qdp_db(op.file, 10*1024*1024, 64*1024);
+	  qdp_db.insertUserdata(UserData_xml.str());
 	  SerialDBKey<HadronKey> key ;
 	  //HadronKey key ;
 	  key.key().gamma = op.g ;
@@ -816,11 +866,9 @@ namespace Chroma{
 		for(int q1(0);q1< quarks.size() ;q1++)
 		  if(q!=q1){
 		    key.key().qn[1] = q1 ;
-		    //multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		    //MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		    //SerialDBData<multi2d<DComplex> > val ;
-		    //val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		    SerialDBData< HadronOperator > val ;
+		    SerialDBData<MesonOpData > val ;
+		    val.data().resize(quarks[q]->getDilSize(t0));
+		    //SerialDBData< HadronOperator > val ;
 		    
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
 		      LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
@@ -830,11 +878,12 @@ namespace Chroma{
 			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
 			LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
 			DComplex cc ;
-			meson(cc,op.g,phases[mom_num],quark_bar,quark,   
-			      phases.getSet()[key.key().t]);
-			if(toBool(real(cc)!=0.0) && toBool(imag(cc)!=0.0))
-			  val.data().data[Key(d,d1)] = cc ;
-			//meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark,   phases.getSet()[key.key().t]);
+			//meson(cc,op.g,phases[mom_num],quark_bar,quark,   
+			//      phases.getSet()[key.key().t]);
+			//if(toBool(real(cc)!=0.0) && toBool(imag(cc)!=0.0))
+			//  val.data().data[Key(d,d1)] = cc ;
+			meson(val.data().data(d,d1),op.g,phases[mom_num],
+			      quark_bar,quark, phases.getSet()[key.key().t]);
 		      }// dilutions d
 		    }// dilutions d1
 		    qdp_db.insert(key, val);
@@ -846,11 +895,9 @@ namespace Chroma{
 		key.key().qn[0]=q;
 		for(int q1(q+1);q1< quarks.size() ;q1++){
 		  key.key().qn[1] = q1 ;
-		  //multi2d<DComplex> data(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		  //MesonOpData mes(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		  //SerialDBData<multi2d<DComplex> > val ;
-		  //val.data().resize(quarks[q]->getDilSize(t0),quarks[q1]->getDilSize(t0));
-		  SerialDBData< HadronOperator > val ;
+		  SerialDBData<MesonOpData > val ;
+		  val.data().resize(quarks[q]->getDilSize(t0));
+		  //SerialDBData< HadronOperator > val ;
 		  for(int t(0);t<phases.numSubsets();t++){
 		    key.key().t = t ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
@@ -860,13 +907,13 @@ namespace Chroma{
 			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
 			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
-			//quarks[q1]->dilutedSolution(t0,d1);
-			//meson(val.data()(d,d1),op.g,phases[mom_num],quark_bar,quark, phases.getSet()[key.key().t]);
-			DComplex cc ;
-			meson(cc,op.g,phases[mom_num],quark_bar,quark,
-			      phases.getSet()[key.key().t]);
-			if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
-			  val.data().data[Key(d,d1)] = cc ;
+			meson(val.data().data(d,d1),op.g,phases[mom_num],
+			      quark_bar,quark, phases.getSet()[key.key().t]);
+			//DComplex cc ;
+			//meson(cc,op.g,phases[mom_num],quark_bar,quark,
+			//      phases.getSet()[key.key().t]);
+			//if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
+			//  val.data().data[Key(d,d1)] = cc ;
 		      }// dilutions d
 		    }// dilutions d1
 		    qdp_db.insert(key, val);
@@ -881,7 +928,9 @@ namespace Chroma{
                 for(int q1(0);q1< quarks.size() ;q1++){
                   key.key().qn[1] = q1 ;
 
-		  SerialDBData< HadronOperator > val ;
+		  SerialDBData<MesonOpData > val ;
+                  val.data().resize(quarks[q]->getDilSize(t0));
+		  //SerialDBData< HadronOperator > val ;
 		  for (int tt = 0 ; tt < participating_timeslices.size() ; ++tt){
 		    int t = participating_timeslices[tt] ;
 		    key.key().t = t ;
@@ -891,11 +940,11 @@ namespace Chroma{
 			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
 			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
-			DComplex cc ;
-			meson(cc,op.g,phases[mom_num],quark_bar,quark,
+			//DComplex cc ;
+			meson(val.data().data(d,d1),op.g,phases[mom_num],quark_bar,quark,
 			      phases.getSet()[key.key().t]);
-			if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
-			  val.data().data[Key(d,d1)] = cc ;
+			//if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
+			//val.data().data[Key(d,d1)] = cc ;
 		      }// dilutions d1                                   
 		    }// dilutions d                                        
 		    qdp_db.insert(key, val);
@@ -913,8 +962,11 @@ namespace Chroma{
 	map<string, BaryonOp>::iterator it ;
 	for(it=LocalBaryonOps.begin();it!=LocalBaryonOps.end();it++){
 	  BaryonOp op = it->second ;
-	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
+	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 	 
+	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<BaryonOpData > > 
 	    qdp_db(op.file, 10*1024*1024, 64*1024);
+	  qdp_db.insertUserdata(UserData_xml.str());
+
 	  SerialDBKey<HadronKey> key ;
 	  //HadronKey key ;
 	  key.key().gamma = op.g ;
@@ -935,7 +987,9 @@ namespace Chroma{
 		    for(int q2(0);q2< quarks.size() ;q2++)
 		      if((q1!=q2)&&(q0!=q2)){		    
 			key.key().qn[2] = q2 ;
-			SerialDBData< HadronOperator > val ;
+			//SerialDBData< HadronOperator > val ;
+			SerialDBData< BaryonOpData > val ;
+			val.data().resize(quarks[q0]->getDilSize(t0));
 			for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
 			  LatticeFermion quark0 = quarks[q0]->dilutedSource(t0,d0);
 			  for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
@@ -947,9 +1001,10 @@ namespace Chroma{
 			      multi1d<DComplex> cc ;
 			      baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,   
 				     phases.getSet()[key.key().t]);
-			      for(int s(0);s<Ns;s++)
-				if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
-				  val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
+			      val.data().data(d0,d1,d2) = cc ;
+			      //for(int s(0);s<Ns;s++)
+			      //if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
+			      //  val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
 			    }// dilutions d2
 			  }//dilutions d1
 			}// dilutions d0
@@ -967,7 +1022,9 @@ namespace Chroma{
 		  key.key().qn[1] = q1 ;
 		  for(int q2(q1+1);q2< quarks.size() ;q2++){
 		    key.key().qn[2] = q2 ;
-		    SerialDBData< HadronOperator > val ;
+		    //SerialDBData< HadronOperator > val ;
+		    SerialDBData< BaryonOpData > val ;
+		    val.data().resize(quarks[q0]->getDilSize(t0));
 		    for(int t(0);t<phases.numSubsets();t++){
 		      key.key().t = t ;
 		      for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
@@ -982,9 +1039,10 @@ namespace Chroma{
 			    multi1d<DComplex> cc ;
 			    baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,
 				   phases.getSet()[key.key().t]);
-			    for(int s(0);s<Ns;s++)
-			      if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
-				val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
+			    val.data().data(d0,d1,d2) = cc ;
+			    //for(int s(0);s<Ns;s++)
+			    //  if(toBool(real(cc[s])!=0.0) && toBool(imag(cc[s])!=0.0))
+			    //  val.data().data[Key(d0,d1,d2,s)] = cc[s] ;
 			  }// dilutions d0
 			}// dilutions d1
 		      }//dilutions d2
