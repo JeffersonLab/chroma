@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.19 2008-11-22 04:45:13 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.20 2008-11-22 05:05:08 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -733,7 +733,8 @@ namespace Chroma{
       push(UserData_xml,"Quarks");
       for(int k(0);k<quarks.size();k++){
 	push(UserData_xml,"elem");
-	write(UserData_xml,"Seed",quarks[0]->getSeed());
+	//write(UserData_xml,"Seed",quarks[0]->getSeed());
+	UserData_xml<<quarks[k]->getSeed();
 	pop(UserData_xml);
       }
       pop(UserData_xml);
