@@ -196,6 +196,26 @@
     </elem>
     
     <elem>
+      <annotation>
+        Compute static propagator solution vectors
+      </annotation>
+      <Name>STATIC_PROP_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>3</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>static_prop_colorvec</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
       <Name>PROP_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -209,6 +229,23 @@
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_id>prop_colorvec</prop_id>
         <prop_op_file>prop.db</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>3</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+        <mass_label>STATIC</mass_label>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>static_prop_colorvec</prop_id>
+        <prop_op_file>static_prop.db</prop_op_file>
       </NamedObject>
     </elem>
 
