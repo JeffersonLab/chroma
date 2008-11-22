@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.17 2008-11-21 17:30:55 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.18 2008-11-22 03:17:48 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -855,7 +855,6 @@ namespace Chroma{
 		    key.key().t = t ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
 		      LatticeFermion quark_bar = smearedSol[q][t0][d] ;
-		      //quarks[q]->dilutedSolution(t0,d);
 		      quark_bar = Gamma(Ns-1)*quark_bar ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
 			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
@@ -875,6 +874,34 @@ namespace Chroma{
 		} // quark 2
 	      } // quark 1 
 	      
+
+	      key.key().type = MESON_SRC_SOL ;
+              for(int q(0);q< quarks.size() ;q++){
+                key.key().qn[0]=q;
+                for(int q1(0);q1< quarks.size() ;q1++){
+                  key.key().qn[1] = q1 ;
+
+		  SerialDBData< HadronOperator > val ;
+		  for (int tt = 0 ; tt < participating_timeslices.size() ; ++tt){
+		    int t = participating_timeslices[tt] ;
+		    key.key().t = t ;
+		    for ( int d(0) ; d < quarks[q]->getDilSize(tt); d++){
+		      LatticeFermion quark_bar = quarks[q]->dilutedSource(tt,d);
+		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
+			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
+			DComplex cc ;
+			meson(cc,op.g,phases[mom_num],quark_bar,quark,
+			      phases.getSet()[key.key().t]);
+			if(toBool(real(cc)!=0.0)&&toBool(imag(cc)!=0.0))
+			  val.data().data[Key(d,d1)] = cc ;
+		      }// dilutions d1                                   
+		    }// dilutions d                                        
+		    qdp_db.insert(key, val);
+		  } // loop over time                                              
+		} // quark 2                                                             
+	      } // quark 1          
 	      
 	    }// t0
 	  }//mom
