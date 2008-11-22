@@ -245,7 +245,7 @@
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_id>static_prop_colorvec</prop_id>
-        <prop_op_file>static_prop.db</prop_op_file>
+        <prop_op_file>prop.db</prop_op_file>
       </NamedObject>
     </elem>
 
