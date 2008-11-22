@@ -1,4 +1,4 @@
-// $Id: inline_static_prop_colorvec_w.cc,v 3.1 2008-11-22 19:14:34 edwards Exp $
+// $Id: inline_static_prop_colorvec_w.cc,v 3.2 2008-11-22 22:17:29 edwards Exp $
 /*! \file
  * \brief Compute a static prop  (1/2)*(1+gamma_4)U*U*...U * multi1d<LatticeColorVector>
  *
@@ -372,9 +372,11 @@ namespace Chroma
 	  LatticeColorMatrix u_shift = zero;
 	  u_shift[phases.getSet()[t_source]] = 1.0;  // unit matrix only on t_source
 
-	  for(int t=0; t < Nt; ++t)
+	  for(int t=1; t < Nt; ++t)
 	  {
-	    u_shift = displace(u, u_shift, +1, decay_dir); // Can safely overwrite output
+	    int ti = (-t + t_source + Nt) % Nt;
+	    LatticeColorMatrix tmp = shift(u_shift, FORWARD, decay_dir);
+	    u_shift[phases.getSet()[ti]] = u[decay_dir] * tmp;
 	  }
 
 
@@ -386,6 +388,13 @@ namespace Chroma
 	    // Pull out a time-slice of the color vector source
 	    LatticeColorVector vec_srce = zero;
 	    vec_srce[phases.getSet()[t_source]] = eigen_source.getEvectors()[colorvec_source];
+
+	    for(int t=1; t < Nt; ++t)
+	    {
+	      int ti = (-t + t_source + Nt) % Nt;
+	      LatticeColorVector tmp = shift(vec_srce, FORWARD, decay_dir);
+	      vec_srce[phases.getSet()[ti]] = tmp;
+	    }
 
 	    // The color part of the static prop is just the shifted source
 	    LatticeColorVector vec_shift = u_shift * vec_srce;
