@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: displace.h,v 3.4 2008-09-27 05:13:18 edwards Exp $
+// $Id: displace.h,v 3.5 2008-11-22 19:13:05 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -88,6 +88,12 @@ namespace Chroma
   LatticeStaggeredPropagator displace(const multi1d<LatticeColorMatrix>& u, 
 				      const LatticeStaggeredPropagator& chi, 
 				      int length, int dir);  
+
+  //! Apply a displacement operator to a lattice field
+  /*! \ingroup smear */
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, int dir);  
 
   //! Apply a displacement operator to a lattice field
   /*!

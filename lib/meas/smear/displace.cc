@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.4 2008-09-27 05:13:18 edwards Exp $
+//  $Id: displace.cc,v 3.5 2008-11-22 19:13:05 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -82,7 +82,7 @@ namespace Chroma
 
   // Apply a displacement operator to a lattice field
   LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
-			     LatticePropagator& chi, 
+			     const LatticePropagator& chi, 
 			     int length, int dir)
   {
     return displace<LatticePropagator>(u, chi, length, dir);
@@ -109,10 +109,19 @@ namespace Chroma
 
   // Apply a displacement operator to a lattice field
   LatticeStaggeredPropagator displace(const multi1d<LatticeColorMatrix>& u, 
-				      LatticeStaggeredPropagator& chi, 
+				      const LatticeStaggeredPropagator& chi, 
 				      int length, int dir)
   {
-    displace<LatticeStaggeredPropagator>(u, chi, length, dir);
+    return displace<LatticeStaggeredPropagator>(u, chi, length, dir);
+  }
+
+
+  // Apply a displacement operator to a lattice field
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, int dir)
+  {
+    return displace<LatticeColorMatrix>(u, chi, length, dir);
   }
 
 
