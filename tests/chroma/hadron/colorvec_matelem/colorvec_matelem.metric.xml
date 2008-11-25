@@ -2,7 +2,7 @@
 
 <assertions>
 
-<assertion xpath="/chroma/InlineObservables/elem[13]/PropMatElemColorVec/Source_correlators/source_corrs/elem[1]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+<assertion xpath="/chroma/InlineObservables/elem[14]/PropMatElemColorVec/Source_correlators/source_corrs/elem[1]" type="double_array" comparison="relative" tolerance="1.0e-5"/>
 
 <assertion xpath="/chroma/InlineObservables/elem[16]/MesonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
 
