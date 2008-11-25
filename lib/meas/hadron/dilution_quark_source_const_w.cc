@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.15 2008-11-04 18:43:56 edwards Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.16 2008-11-25 22:31:13 kostas Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -75,6 +75,7 @@ namespace Chroma
     //! Initialize
     Params::Params()
     {
+      UseSourceHeaderSmearing = true ;
     }
 
 
@@ -99,8 +100,12 @@ namespace Chroma
 	QDP_abort(1);
       }
 
+      UseSourceHeaderSmearing = true ;
       read(paramtop, "QuarkFiles", quark_files);
+      if(paramtop.count("UseSourceHeaderSmearing")!=0)
+	read(paramtop, "UseSourceHeaderSmearing", UseSourceHeaderSmearing);
     }
+
 
 
     // Writer
@@ -111,6 +116,8 @@ namespace Chroma
       int version = 1;
       write(xml, "version", version);
       write(xml, "QuarkFiles", quark_files);
+      if(!UseSourceHeaderSmearing)
+	write(xml, "UseSourceHeaderSmearing", UseSourceHeaderSmearing);
       pop(xml);
     }
 
@@ -472,7 +479,7 @@ read(from, record_xml, sour);
 
 			
       //Dummy gauge field to send to the source construction routine;
-      multi1d<LatticeColorMatrix> dummy;
+      multi1d<LatticeColorMatrix> dummy; 
 			
 
       // Build source construction
@@ -491,10 +498,20 @@ read(from, record_xml, sour);
       // Manually create the params so I can peek into them and use the source constructor
       DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
 						     qq.source_header.source.path);
+
+      if(!params.UseSourceHeaderSmearing){
+	QDPIO::cout<<"Will NOT use Smearing/displacement options specified in the header\n"<<endl ;
+	srcParams.smear = false ; 
+      }
+      else{
+	QDPIO::cerr<<" Smearing/displacement not implemented\n"<<endl ;
+	QDP_abort(10);
+      }
       DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
       
       QDP::RNG::setrn( quark.seed );
 
+     
       LatticeFermion sour = srcConst(dummy);
 			
 			
