@@ -376,7 +376,19 @@
         <!-- List of displacements and Gamma matrices -->
         <DisplacementGammaList>
           <elem>
-            <gamma>15</gamma>
+            <gamma>1</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
             <displacement/>
           </elem>
         </DisplacementGammaList>
@@ -423,7 +435,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>22 Nov 08 16:30:25 EST</run_date>
+    <run_date>24 Nov 08 23:50:01 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -535,7 +547,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:27 EST</run_date>
+          <run_date>24 Nov 08 23:50:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -665,7 +677,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:30 EST</run_date>
+          <run_date>24 Nov 08 23:50:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -754,7 +766,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:30 EST</run_date>
+          <run_date>24 Nov 08 23:50:05 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -848,7 +860,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:31 EST</run_date>
+          <run_date>24 Nov 08 23:50:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -942,7 +954,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:32 EST</run_date>
+          <run_date>24 Nov 08 23:50:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1093,7 +1105,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:34 EST</run_date>
+          <run_date>24 Nov 08 23:50:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1220,7 +1232,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Nov 08 16:30:35 EST</run_date>
+          <run_date>24 Nov 08 23:50:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1239,7 +1251,19 @@
             <displacement_length>1</displacement_length>
             <DisplacementGammaList>
               <elem>
-                <gamma>15</gamma>
+                <gamma>1</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>2</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>4</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>8</gamma>
                 <displacement></displacement>
               </elem>
             </DisplacementGammaList>

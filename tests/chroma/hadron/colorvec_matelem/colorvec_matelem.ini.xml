@@ -373,7 +373,19 @@
         <!-- List of displacements and Gamma matrices -->
         <DisplacementGammaList>
           <elem>
-            <gamma>15</gamma>
+            <gamma>1</gamma>
+            <displacement></displacement>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement></displacement>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement></displacement>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
             <displacement></displacement>
           </elem>
         </DisplacementGammaList>
