@@ -5,17 +5,17 @@
   <update_no>0</update_no>
   <ProgramInfo>
     <code_version>
-      <chroma>3.30.0</chroma>
-      <qdp>1.27.0</qdp>
+      <chroma>3.31.1</chroma>
+      <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>18 Jun 08 11:06:22 EDT</run_date>
+    <run_date>25 Nov 08 06:12:06 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 4</latt_size>
-      <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 4</subgrid_size>
+      <logical_size>1 1 2 2</logical_size>
+      <subgrid_size>4 4 2 2</subgrid_size>
       <total_volume>256</total_volume>
-      <subgrid_volume>256</subgrid_volume>
+      <subgrid_volume>64</subgrid_volume>
     </Setgeom>
   </ProgramInfo>
   <Input>
@@ -23,7 +23,7 @@
       <version>1</version>
       <Meson_local>true</Meson_local>
       <Meson_charm_local>true</Meson_charm_local>
-<Meson_charm_noisy_local>true</Meson_charm_noisy_local>
+      <Meson_charm_noisy_local>true</Meson_charm_noisy_local>
       <Wilson_loops>false</Wilson_loops>
       <Baryon_local>true</Baryon_local>
       <Baryon_vary>true</Baryon_vary>
@@ -88,21 +88,21 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.569929</time_in_sec>
+    <time_in_sec>0.5582</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>649</n_count>
-    <time_in_sec>0.577784</time_in_sec>
+    <time_in_sec>0.668302</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.569656</time_in_sec>
+    <time_in_sec>1.070811</time_in_sec>
   </Qprop>
   <Pseudoscalars>
     <Lsink_Lsrc>
@@ -217,42 +217,42 @@
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.568084</time_in_sec>
+    <time_in_sec>0.595675</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.5681</time_in_sec>
+    <time_in_sec>0.574638</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>620</n_count>
-    <time_in_sec>0.551152</time_in_sec>
+    <time_in_sec>0.557133</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>599</n_count>
-    <time_in_sec>0.531835</time_in_sec>
+    <time_in_sec>0.54267</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>640</n_count>
-    <time_in_sec>0.567909</time_in_sec>
+    <time_in_sec>0.57546</time_in_sec>
   </Qprop>
   <Qprop>
     <Staggered_src_tag>0</Staggered_src_tag>
     <Mass>0.1</Mass>
     <RsdCG>1e-05</RsdCG>
     <n_count>618</n_count>
-    <time_in_sec>0.548572</time_in_sec>
+    <time_in_sec>0.558208</time_in_sec>
   </Qprop>
   <baryon_correlators>
     <source_time>0</source_time>
@@ -483,19 +483,19 @@
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>644</n_count>
-      <time_in_sec>0.571764</time_in_sec>
+      <time_in_sec>0.57738</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>640</n_count>
-      <time_in_sec>0.569998</time_in_sec>
+      <time_in_sec>0.572663</time_in_sec>
     </Qprop>
     <Qprop>
       <Mass>0.1</Mass>
       <RsdCG>1e-05</RsdCG>
       <n_count>618</n_count>
-      <time_in_sec>0.550506</time_in_sec>
+      <time_in_sec>0.553378</time_in_sec>
     </Qprop>
     <LocalSource>
       <LocalSink>
@@ -1844,4 +1844,243 @@
       </loop_gamma5_cross_one_k_fz>
     </fuzz_loops_s>
   </disconnected_loops>
+  <Qprop>
+    <Staggered_src_tag>0</Staggered_src_tag>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>640</n_count>
+    <time_in_sec>0.579066</time_in_sec>
+  </Qprop>
+  <Qprop>
+    <Staggered_src_tag>0</Staggered_src_tag>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>640</n_count>
+    <time_in_sec>0.577195</time_in_sec>
+  </Qprop>
+  <Qprop>
+    <Staggered_src_tag>0</Staggered_src_tag>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>620</n_count>
+    <time_in_sec>0.56813</time_in_sec>
+  </Qprop>
+  <local_meson_correlators>
+    <Pseudoscalar>
+      <gamma5_CROSS_gamma5>
+        <Pi>0.5003038 0.3655748 0.3772653 0.4417423</Pi>
+      </gamma5_CROSS_gamma5>
+    </Pseudoscalar>
+  </local_meson_correlators>
+  <local_meson_charm_correlators>
+    <Pseudoscalar>
+      <gamma5_CROSS_gamma5>
+        <Pi>0.5003038 0.3655748 0.3772653 0.4417423</Pi>
+      </gamma5_CROSS_gamma5>
+    </Pseudoscalar>
+    <gamma5_CROSS_gamma5_mom>
+      <elem>
+        <sink_mom_num>0</sink_mom_num>
+        <sink_mom>0 0 0</sink_mom>
+        <mesprop>
+          <elem>
+            <re>0.500303778098896</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>0.365574785741046</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>0.377265286108013</re>
+            <im>0</im>
+          </elem>
+          <elem>
+            <re>0.441742289811373</re>
+            <im>0</im>
+          </elem>
+        </mesprop>
+      </elem>
+      <elem>
+        <sink_mom_num>1</sink_mom_num>
+        <sink_mom>1 0 0</sink_mom>
+        <mesprop>
+          <elem>
+            <re>0.0822681011870433</re>
+            <im>-4.50403975476633e-10</im>
+          </elem>
+          <elem>
+            <re>0.00718818806691433</re>
+            <im>-3.80828707136071e-10</im>
+          </elem>
+          <elem>
+            <re>0.0219184852530215</re>
+            <im>-5.53113051657324e-10</im>
+          </elem>
+          <elem>
+            <re>0.0239083117452479</re>
+            <im>-4.10721386669266e-10</im>
+          </elem>
+        </mesprop>
+      </elem>
+      <elem>
+        <sink_mom_num>2</sink_mom_num>
+        <sink_mom>1 1 0</sink_mom>
+        <mesprop>
+          <elem>
+            <re>0.0536827334845619</re>
+            <im>-2.96440948323615e-11</im>
+          </elem>
+          <elem>
+            <re>0.00714900087911974</re>
+            <im>-1.62940522051165e-11</im>
+          </elem>
+          <elem>
+            <re>0.00594206860608221</re>
+            <im>-3.99017689602152e-11</im>
+          </elem>
+          <elem>
+            <re>-0.00656196500644339</re>
+            <im>-6.44385524138727e-11</im>
+          </elem>
+        </mesprop>
+      </elem>
+    </gamma5_CROSS_gamma5_mom>
+    <g4g5_x_g4g5>
+      <gamma4gamma5_CROSS_gamma4gamma5>
+        <Pi>-0.125589 0.06364287 -0.08214185 0.04755668</Pi>
+      </gamma4gamma5_CROSS_gamma4gamma5>
+    </g4g5_x_g4g5>
+    <Vector_meson>
+      <gamma_x_CROSS_gamma_x>
+        <Vec>0.05937922 0.0119248 0.03231195 0.004279891</Vec>
+      </gamma_x_CROSS_gamma_x>
+      <gamma_y_CROSS_gamma_y>
+        <Vec>0.05316045 -0.0009292657 0.0188308 0.04268679</Vec>
+      </gamma_y_CROSS_gamma_y>
+      <gamma_z_CROSS_gamma_z>
+        <Vec>0.03828948 -0.02256483 0.002354442 0.02143565</Vec>
+      </gamma_z_CROSS_gamma_z>
+      <M_VT>
+        <Vec>0.05027638 -0.003856432 0.0178324 0.02280078</Vec>
+      </M_VT>
+    </Vector_meson>
+  </local_meson_charm_correlators>
+  <noisy_local_meson_correlators>
+    <Qprop>
+      <Staggered_src_tag>0</Staggered_src_tag>
+      <Mass>0.1</Mass>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>437</n_count>
+      <time_in_sec>0.396539</time_in_sec>
+    </Qprop>
+    <Qprop>
+      <Staggered_src_tag>0</Staggered_src_tag>
+      <Mass>0.1</Mass>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>439</n_count>
+      <time_in_sec>0.398432</time_in_sec>
+    </Qprop>
+    <Qprop>
+      <Staggered_src_tag>0</Staggered_src_tag>
+      <Mass>0.1</Mass>
+      <RsdCG>1e-05</RsdCG>
+      <n_count>441</n_count>
+      <time_in_sec>0.400648</time_in_sec>
+    </Qprop>
+    <local_meson_charm_correlators>
+      <Pseudoscalar>
+        <gamma5_CROSS_gamma5>
+          <Pi>39.91386 38.54824 33.85711 34.90216</Pi>
+        </gamma5_CROSS_gamma5>
+      </Pseudoscalar>
+      <gamma5_CROSS_gamma5_mom>
+        <elem>
+          <sink_mom_num>0</sink_mom_num>
+          <sink_mom>0 0 0</sink_mom>
+          <mesprop>
+            <elem>
+              <re>39.9138659387827</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>38.5482407510281</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>33.8571074754</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>34.902155354619</re>
+              <im>0</im>
+            </elem>
+          </mesprop>
+        </elem>
+        <elem>
+          <sink_mom_num>1</sink_mom_num>
+          <sink_mom>1 0 0</sink_mom>
+          <mesprop>
+            <elem>
+              <re>-0.0698447821440569</re>
+              <im>-3.99374512830677e-08</im>
+            </elem>
+            <elem>
+              <re>0.610579118018245</re>
+              <im>-5.31884689362546e-08</im>
+            </elem>
+            <elem>
+              <re>-0.868269694044859</re>
+              <im>-3.87995063049622e-08</im>
+            </elem>
+            <elem>
+              <re>1.36584072743754</re>
+              <im>-4.60455683425234e-08</im>
+            </elem>
+          </mesprop>
+        </elem>
+        <elem>
+          <sink_mom_num>2</sink_mom_num>
+          <sink_mom>1 1 0</sink_mom>
+          <mesprop>
+            <elem>
+              <re>0.290180071033452</re>
+              <im>-7.40591435350005e-09</im>
+            </elem>
+            <elem>
+              <re>-1.09518677293223</re>
+              <im>1.23857526438613e-08</im>
+            </elem>
+            <elem>
+              <re>0.240523515775375</re>
+              <im>-6.18171587104251e-09</im>
+            </elem>
+            <elem>
+              <re>0.193971473838672</re>
+              <im>3.67602678430717e-09</im>
+            </elem>
+          </mesprop>
+        </elem>
+      </gamma5_CROSS_gamma5_mom>
+      <g4g5_x_g4g5>
+        <gamma4gamma5_CROSS_gamma4gamma5>
+          <Pi>-2.186654 -0.7988898 -0.199565 -4.195521</Pi>
+        </gamma4gamma5_CROSS_gamma4gamma5>
+      </g4g5_x_g4g5>
+      <Vector_meson>
+        <gamma_x_CROSS_gamma_x>
+          <Vec>-0.248609 -1.415231 -0.2482383 0.7294331</Vec>
+        </gamma_x_CROSS_gamma_x>
+        <gamma_y_CROSS_gamma_y>
+          <Vec>2.360927 -3.263984 -1.398597 4.006543</Vec>
+        </gamma_y_CROSS_gamma_y>
+        <gamma_z_CROSS_gamma_z>
+          <Vec>0.4439325 0.1792291 1.127935 1.556361</Vec>
+        </gamma_z_CROSS_gamma_z>
+        <M_VT>
+          <Vec>0.8520834 -1.499995 -0.1729667 2.097446</Vec>
+        </M_VT>
+      </Vector_meson>
+    </local_meson_charm_correlators>
+  </noisy_local_meson_correlators>
 </spectrum_s>
