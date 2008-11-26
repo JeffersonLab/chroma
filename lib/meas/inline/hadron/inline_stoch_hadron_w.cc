@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.20 2008-11-22 05:05:08 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.21 2008-11-26 03:20:50 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -250,7 +250,7 @@ namespace Chroma{
 		const LatticeFermion& eta2,
 		const LatticeFermion& eta3,
 		const Subset& s){
-      QDPIO::cout<<"I am a baryon!\n" ;
+      //QDPIO::cout<<"I am a baryon!\n" ;
 
       START_CODE();
 
@@ -822,21 +822,23 @@ namespace Chroma{
       }
 
       multi1d< multi1d< multi1d<LatticeFermion> > > smearedSol(quarks.size());
+      multi1d< multi1d< multi1d<LatticeFermion> > > src(quarks.size());
       for(int q(0);q< quarks.size() ;q++){
 	smearedSol[q].resize(participating_timeslices.size());
+	src[q].resize(participating_timeslices.size());
 	for (int t0 = 0 ; t0 < participating_timeslices.size() ; ++t0){
 	  smearedSol[q][t0].resize(quarks[q]->getDilSize(t0)) ;
+	  src[q][t0].resize(quarks[q]->getDilSize(t0)) ;
 	  for(int i = 0 ; i <  quarks[q]->getDilSize(t0) ; ++i){
 	    smearedSol[q][t0][i] = quarks[q]->dilutedSolution(t0,i) ;
-	    //	    (*Smearing)(quarks[q]->dilutedSolution(t0,i), u_smr);  
+	    src[q][t0][i] = quarks[q]->dilutedSource(t0, i) ;
 	    (*Smearing)(smearedSol[q][t0][i], u_smr);  
-	    // does this overwride the dilutedSolution ?
-	    // quarks[q]->dilutedSolution(t0,i) = sol ;
 	  }
 	}
       }
       // Solution vectors are now smeared
       		  
+      QDPIO::cout<<"   Doing " << phases.numMom()<< "  momenta "<<endl ;
       pop(UserData_xml);//done with UserData_xml 
       //First do all the mesons
       //Make a loop over meson operators
@@ -862,6 +864,7 @@ namespace Chroma{
 	      key.key().qn.resize(2);
 	      //first do the sources
 	      key.key().type = MESON_SRC_SRC ;
+	      QDPIO::cout<<"   Doing MESON_SRC_SRC"<<endl ;
 	      for(int q(0);q< quarks.size() ;q++){
 		key.key().qn[0]=q;
 		for(int q1(0);q1< quarks.size() ;q1++)
@@ -870,14 +873,16 @@ namespace Chroma{
 		    SerialDBData<MesonOpData > val ;
 		    val.data().resize(quarks[q]->getDilSize(t0));
 		    //SerialDBData< HadronOperator > val ;
-		    
+		    QDPIO::cout<<"   quarks: "<<q<<" "<<q1 <<endl ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
-		      LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
+		      //LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
+		      LatticeFermion quark_bar = src[q][t0][d];
 		      quark_bar = Gamma(Ns-1)*quark_bar ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
-			LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
+			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			//LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
+			LatticeFermion quark = src[q1][t0][d1];
 			DComplex cc ;
 			//meson(cc,op.g,phases[mom_num],quark_bar,quark,   
 			//      phases.getSet()[key.key().t]);
@@ -892,10 +897,12 @@ namespace Chroma{
 	      } // quark 1 
 	      
 	      key.key().type = MESON_SOL_SOL ;
+	      QDPIO::cout<<"   Doing MESON_SOL_SOL"<<endl ;
 	      for(int q(0);q< quarks.size() ;q++){
 		key.key().qn[0]=q;
 		for(int q1(q+1);q1< quarks.size() ;q1++){
 		  key.key().qn[1] = q1 ;
+		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<endl ;
 		  SerialDBData<MesonOpData > val ;
 		  val.data().resize(quarks[q]->getDilSize(t0));
 		  //SerialDBData< HadronOperator > val ;
@@ -905,8 +912,8 @@ namespace Chroma{
 		      LatticeFermion quark_bar = smearedSol[q][t0][d] ;
 		      quark_bar = Gamma(Ns-1)*quark_bar ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
 			meson(val.data().data(d,d1),op.g,phases[mom_num],
 			      quark_bar,quark, phases.getSet()[key.key().t]);
@@ -924,11 +931,12 @@ namespace Chroma{
 	      
 
 	      key.key().type = MESON_SRC_SOL ;
+	      QDPIO::cout<<"   Doing MESON_SRC_SOL"<<endl  ;
               for(int q(0);q< quarks.size() ;q++){
                 key.key().qn[0]=q;
                 for(int q1(0);q1< quarks.size() ;q1++){
                   key.key().qn[1] = q1 ;
-
+		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<endl ;
 		  SerialDBData<MesonOpData > val ;
                   val.data().resize(quarks[q]->getDilSize(t0));
 		  //SerialDBData< HadronOperator > val ;
@@ -936,10 +944,11 @@ namespace Chroma{
 		    int t = participating_timeslices[tt] ;
 		    key.key().t = t ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(tt); d++){
-		      LatticeFermion quark_bar = quarks[q]->dilutedSource(tt,d);
+		      //LatticeFermion quark_bar = quarks[q]->dilutedSource(tt,d);
+		      LatticeFermion quark_bar = src[q][tt][d] ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-			QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-			QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
+			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
 			//DComplex cc ;
 			meson(val.data().data(d,d1),op.g,phases[mom_num],quark_bar,quark,
@@ -980,6 +989,7 @@ namespace Chroma{
 	      key.key().qn.resize(3);
 	      //first do the sources
 	      key.key().type = BARYON_SRC ;
+	      QDPIO::cout<<"   Doing BARYON_SRC "<<endl ;
 	      for(int q0(0);q0< quarks.size() ;q0++){
 		key.key().qn[0]=q0;
 		for(int q1(0);q1< quarks.size() ;q1++)
@@ -988,17 +998,21 @@ namespace Chroma{
 		    for(int q2(0);q2< quarks.size() ;q2++)
 		      if((q1!=q2)&&(q0!=q2)){		    
 			key.key().qn[2] = q2 ;
+			QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2<<endl ;
 			//SerialDBData< HadronOperator > val ;
 			SerialDBData< BaryonOpData > val ;
 			val.data().resize(quarks[q0]->getDilSize(t0));
 			for ( int d0(0) ; d0 < quarks[q0]->getDilSize(t0); d0++){
-			  LatticeFermion quark0 = quarks[q0]->dilutedSource(t0,d0);
+			  //LatticeFermion quark0 = quarks[q0]->dilutedSource(t0,d0);
+			  LatticeFermion quark0 = src[q0][t0][d0];
 			  for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
-			    LatticeFermion quark1 = quarks[q1]->dilutedSource(t0,d1);
+			    //LatticeFermion quark1 = quarks[q1]->dilutedSource(t0,d1);
+			    LatticeFermion quark1 = src[q1][t0][d1];
 			    for ( int d2(0) ; d2 < quarks[q2]->getDilSize(t0); d2++){
-			      QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
-			      QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
-			      LatticeFermion quark2 = quarks[q2]->dilutedSource(t0,d2);
+			      //QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
+			      //QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
+			      //LatticeFermion quark2 = quarks[q2]->dilutedSource(t0,d2);
+			      LatticeFermion quark2 = src[q2][t0][d2];
 			      multi1d<DComplex> cc ;
 			      baryon(cc,op.g,phases[mom_num],quark0,quark1,quark2,   
 				     phases.getSet()[key.key().t]);
@@ -1017,12 +1031,14 @@ namespace Chroma{
 	      
 	      // Then next block needs work
 	      key.key().type = BARYON_SOL ;
+	      QDPIO::cout<<"   Doing BARYON_SOL "<<endl ;
 	      for(int q0(0);q0< quarks.size() ;q0++){
 		key.key().qn[0]=q0;
 		for(int q1(q0+1);q1< quarks.size() ;q1++){
 		  key.key().qn[1] = q1 ;
 		  for(int q2(q1+1);q2< quarks.size() ;q2++){
 		    key.key().qn[2] = q2 ;
+		    QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2 <<endl ;
 		    //SerialDBData< HadronOperator > val ;
 		    SerialDBData< BaryonOpData > val ;
 		    val.data().resize(quarks[q0]->getDilSize(t0));
@@ -1033,8 +1049,8 @@ namespace Chroma{
 			for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
 			  LatticeFermion quark1 = smearedSol[q1][t0][d1] ;
 			  for ( int d2(0) ; d2 < quarks[q2]->getDilSize(t0); d2++){
-			    QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
-			    QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
+			    //QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
+			    //QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
 			    LatticeFermion quark2 =  smearedSol[q2][t0][d2] ;
 			    
 			    multi1d<DComplex> cc ;
