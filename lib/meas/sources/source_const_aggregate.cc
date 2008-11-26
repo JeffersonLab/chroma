@@ -1,4 +1,4 @@
-// $Id: source_const_aggregate.cc,v 3.4 2007-08-27 20:04:04 uid3790 Exp $
+// $Id: source_const_aggregate.cc,v 3.5 2008-11-26 06:23:12 kostas Exp $
 /*! \file
  *  \brief All make source constructors
  */
@@ -13,6 +13,7 @@
 
 #include "meas/sources/rndz2wall_source_const.h"
 #include "meas/sources/dilutezN_source_const.h"
+#include "meas/sources/diluteGrid_source_const.h"
 
 #include "meas/sources/sf_pt_source_const.h"
 #include "meas/sources/sf_sh_source_const.h"
@@ -41,6 +42,8 @@ namespace Chroma
 	success &= MomWallQuarkSourceConstEnv::registerAll();
 	success &= PartialWallQuarkSourceConstEnv::registerAll();
 	success &= DiluteZNQuarkSourceConstEnv::registerAll();
+
+	success &= DiluteGridQuarkSourceConstEnv::registerAll();
 
 	success &= SFPointQuarkSourceConstEnv::registerAll();
 	success &= SFShellQuarkSourceConstEnv::registerAll();
