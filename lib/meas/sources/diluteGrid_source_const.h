@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: diluteGrid_source_const.h,v 3.1 2008-11-26 06:23:12 kostas Exp $
+// $Id: diluteGrid_source_const.h,v 3.2 2008-11-27 03:22:17 kostas Exp $
 /*! \file
  *  \brief Random Z(M) source construction using dilution
  *
@@ -40,9 +40,10 @@ namespace Chroma
 
       multi1d<int>             spatial_mask_size;    /*!< Spatial size of periodic mask */
       multi1d< multi1d<int> >  spatial_mask;         /*!< Sites included in site mask */
-      multi1d<int>             color_mask;           /*!< Color size of periodic mask */
-      multi1d<int>             spin_mask;            /*!< Spin size of periodic mask */
-
+      //multi1d<int>             color_mask;           /*!< Color size of periodic mask */
+      //multi1d<int>             spin_mask;            /*!< Spin size of periodic mask */
+      int color ;                                    /*!< the color */
+      int spin ;                                     /*!< the spin index */
       int                      j_decay;              /*!< decay direction */
       int                      t_source;             /*!< source time slice location */
     };

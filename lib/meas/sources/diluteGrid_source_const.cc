@@ -1,4 +1,4 @@
-// $Id: diluteGrid_source_const.cc,v 3.1 2008-11-26 06:23:12 kostas Exp $
+// $Id: diluteGrid_source_const.cc,v 3.2 2008-11-27 03:22:16 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -118,8 +118,8 @@ namespace Chroma
 
       read(paramtop, "spatial_mask_size", spatial_mask_size);
       read(paramtop, "spatial_mask", spatial_mask);
-      read(paramtop, "color_mask", color_mask);
-      read(paramtop, "spin_mask", spin_mask);
+      read(paramtop, "color", color);
+      read(paramtop, "spin", spin);
     }
 
 
@@ -142,8 +142,8 @@ namespace Chroma
 
       write(xml, "spatial_mask_size", spatial_mask_size);
       write(xml, "spatial_mask", spatial_mask);
-      write(xml, "color_mask", color_mask);
-      write(xml, "spin_mask", spin_mask);
+      write(xml, "color", color);
+      write(xml, "spin", spin);
 
       pop(xml);
     }
@@ -191,6 +191,7 @@ namespace Chroma
       }
 
       // More sanity checks
+      /**
       for(int c=0; c < params.color_mask.size(); ++c)
       {
 	if (params.color_mask[c] < 0 || params.color_mask[c] >= Nc)
@@ -199,7 +200,6 @@ namespace Chroma
 	  QDP_abort(1);
 	}
       }
-
       for(int s=0; s < params.spin_mask.size(); ++s)
       {
 	if (params.spin_mask[s] < 0 || params.spin_mask[s] >= Ns)
@@ -207,6 +207,15 @@ namespace Chroma
 	  QDPIO::cerr << name << ": spin mask incorrect 7" << endl;
 	  QDP_abort(1);
 	}
+      }
+      **/
+      if (params.color < 0 || params.color >= Nc){
+	  QDPIO::cerr << name << ": color mask incorrect 6" << endl;
+	  QDP_abort(1);
+      }
+      if (params.spin < 0 || params.spin >= Ns){
+	QDPIO::cerr << name << ": spin mask incorrect 7" << endl;
+	QDP_abort(1);
       }
 
       //
@@ -224,36 +233,11 @@ namespace Chroma
       Fermion tt = zero ;
       ColorVector cc = zero ;
       Complex z=cmplx(Real(1.0),0.0);
-      for(int c(0);c<Nc;c++)
-	pokeColor(cc,z,c);
-      for(int s(0);s<Ns;s++)
-	pokeSpin(tt,cc,s);
-
+      pokeColor(cc,z,params.color);
+      pokeSpin(tt,cc,params.spin);
       LatticeFermion quark_noise = tt ;
   
-      // This is the filtered noise source to return
-      LatticeFermion quark_source = zero;
-
-      // Filter over the color and spin indices first
-      for(int s=0; s < params.spin_mask.size(); ++s)
-      {
-	int spin_source = params.spin_mask[s];
-	LatticeColorVector colvec = peekSpin(quark_noise, spin_source);
-	LatticeColorVector dest   = zero;
-
-	for(int c=0; c < params.color_mask.size(); ++c)
-	{ 
-	  int color_source = params.color_mask[c];
-	  LatticeComplex comp = peekColor(colvec, color_source);
-
-	  pokeColor(dest, comp, color_source);
-	}
-
-	pokeSpin(quark_source, dest, spin_source);
-      }
-
-      quark_noise = quark_source;  // reset
-
+      LatticeFermion quark_source ;
       // Filter over the spatial sites
       LatticeBoolean    mask = false;  // this is the starting mask
 
