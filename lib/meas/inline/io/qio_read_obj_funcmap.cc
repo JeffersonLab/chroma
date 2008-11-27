@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.13 2008-09-13 20:18:42 edwards Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.14 2008-11-27 05:49:11 kostas Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -11,6 +11,7 @@
 #include "util/ferm/eigeninfo.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/key_grid_prop.h"
 #include "util/ferm/map_obj.h"
 #include "actions/ferm/invert/containers.h"
 
@@ -398,8 +399,8 @@ namespace Chroma
 	close(to);
       }
 
-      //------------------------------------------------------------------------
-      //! Write out an RitzPairs Type
+      //-----------------------------------------------------------------------
+      //! Read a RitzPairs Type
       void QIOReadRitzPairsLatticeFermion(const string& buffer_id,
 					  const string& file,
 					  QDP_serialparallel_t serpar)
@@ -447,6 +448,82 @@ namespace Chroma
 	close(to);
       }
 
+      //-----------------------------------------------------------------------
+      //! Read a OptEigInfo Type
+      void QIOReadOptEigInfo(const string& buffer_id,
+			     const string& file,
+			     QDP_serialparallel_t serpar)
+      {
+	// File XML
+	XMLReader file_xml;
+
+	// Open file
+	QDPFileReader to(file_xml,file,serpar);
+
+	// Create the named object
+	TheNamedObjMap::Instance().create< LinAlg::OptEigInfo >(buffer_id);
+	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
+
+	// A shorthand for the object
+	LinAlg::OptEigInfo& obj = 
+	  TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(buffer_id);
+
+	XMLReader record_xml;
+	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
+	
+	multi1d<int> nrow ;
+	multi1d<int> geom ;
+	read(file_xml, "/OptEigInfo/nrow", nrow);
+	read(file_xml, "/OptEigInfo/geom", geom);
+	if(nrow.size()!=Nd){
+	  QDPIO::cerr << __func__ << ": Wrong space-time dimension" << endl;
+          QDP_abort(11);
+	}
+	for(int mu(0);mu<Nd;mu++){
+	  if( (nrow[mu]!=Layout::lattSize()[mu])||
+	      (geom[mu]!=Layout::logicalSize()[mu])){
+	    QDPIO::cerr << __func__ << ": Wrong geometry " << endl;
+	    QDP_abort(12);
+	  }    
+	}
+	int ldh ;
+	read(file_xml, "/OptEigInfo/ldh", ldh);
+	read(file_xml, "/OptEigInfo/lde", obj.lde);
+	read(file_xml, "/OptEigInfo/N", obj.N);
+	if(obj.lde !=  Layout::sitesOnNode()*Nc*Ns ){
+	  QDPIO::cerr << __func__ << ": these vectors where produced on a different  machine geometry" << endl;
+	  QDPIO::cerr << __func__ << ": obj.lde=" <<obj.lde<<  endl;
+	  QDPIO::cerr << __func__ << ": Layout::sitesOnNode()*Nc*Ns=" ;
+	  QDPIO::cerr << Layout::sitesOnNode()*Nc*Ns <<  endl;
+	  
+          QDP_abort(13);
+	}
+	QDPIO::cout << __func__ << ": obj.lde=" << obj.lde<< endl;
+	QDPIO::cout << __func__ << ":     ldh=" << ldh<< endl;
+	QDPIO::cout << __func__ << ": obj.N=" <<obj.N<<  endl;
+
+	obj.init(ldh, obj.lde, obj.N );
+	
+	read(file_xml, "/OptEigInfo/ncurEvals", obj.ncurEvals);
+	read(file_xml, "/OptEigInfo/restartTol", obj.restartTol);
+	
+	QDPIO::cout << __func__ << ": obj.ncurEvals=" << obj.ncurEvals<< endl;
+	QDPIO::cout << __func__ << ": obj.restartTol=" <<obj.restartTol<< endl;
+
+
+	{
+	  XMLReader record_xml;
+	  read(to, record_xml, obj.evecs);
+	  read(to, record_xml, obj.evals);
+	  //read(record_xml, "/EigenValues", obj.evals);
+	  read(to, record_xml, obj.H);
+	  read(to, record_xml, obj.HU);
+	}
+
+	// Close
+	close(to);
+      }
+
       //! Read a MapObject Type
       template<typename K, typename V>
       void QIOReadMapObj(const string& buffer_id,
@@ -471,7 +548,14 @@ namespace Chroma
 
 	// The number of records should be recorded in the header
 	int num_records;
-	read(file_xml, "/PropColorVectors/num_records", num_records);
+	if(file_xml.count("/PropColorVectors")!=0)
+	  read(file_xml, "/PropColorVectors/num_records", num_records);
+	else if (file_xml.count("/GridProp")!=0)
+	  read(file_xml, "/GridProp/num_records", num_records);
+	else{
+	  QDPIO::cerr << __func__ << ": Can't find num_records "<< endl;
+	  QDP_abort(1);
+	}
 
 	// Use the iterators to run through the object, reading each record
 	for(int i=0; i < num_records; ++i)
@@ -503,7 +587,15 @@ namespace Chroma
 
 	// Setup a record xml
 	XMLBufferWriter record_xml;
-	push(record_xml, "PropColorVector");
+	if(file_xml.count("/PropColorVectors")!=0)
+	  push(record_xml, "PropColorVector");
+        else if (file_xml.count("/GridProp")!=0)
+	  push(record_xml, "GridProp");
+        else{
+	  push(record_xml, "NamedObjectMap");
+        }
+
+
 	write(record_xml, "num_records", obj.size());  // This should be the size of num_records
 	pop(record_xml);
 
@@ -562,8 +654,13 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);
 	
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("O\
+ptEigInfo"), QIOReadOptEigInfo);
+
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
 								     QIOReadMapObj<KeyPropColorVec_t,LatticeFermion>);
+
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyGridPropLatticeFermion"), QIOReadMapObj<KeyGridProp_t,LatticeFermion>);
 
 	registered = true;
       }
