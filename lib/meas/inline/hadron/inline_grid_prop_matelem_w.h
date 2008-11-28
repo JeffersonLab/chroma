@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_grid_prop_w.h,v 3.2 2008-11-28 05:13:58 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.h,v 3.1 2008-11-28 05:13:57 kostas Exp $
 /*! \file
- * \brief Compute the propagator elements    M^-1 * multi1d<LatticeColorVector>
+ * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
  * Propagator calculation on a colorvector
  */
 
-#ifndef __inline_grid_prop_w_h__
-#define __inline_grid_prop_w_h__
+#ifndef __inline_grid_prop_matelem_w_h__
+#define __inline_grid_prop_matelem_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -16,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineGridPropEnv 
+  namespace InlineGridPropMatElemEnv 
   {
     bool registerAll();
 
@@ -31,31 +31,17 @@ namespace Chroma
 
       struct Param_t
       {
-
-	
-	struct Sources_t
-	{
-	  multi1d<int>                     spatial_mask_size;
-	  multi1d<multi1d<multi1d<int> > > spatial_masks ;
-	  int decay_dir;            /*!< Decay direction */
-	  multi1d<int> t_sources;   /*!< Array of time slice sources for props */
-
-	  bool smear ;
-	  GroupXML_t  smr; /*!< xml holding smearing params */
-	  GroupXML_t  displace; /*!< xml holding displacement params */
-	  GroupXML_t  link_smear;  /*!< link smearing xml */
-
-
-	};
-
-	ChromaProp_t    prop ;
-	Sources_t       src  ;
+	int             Ngrids;         /*!< Number of grids to use */
+	int             decay_dir;      /*!< Decay direction */
+	multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
+	std::string     mass_label;     /*!< Some kind of mass label */
       } param;
 
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */
-	std::string     prop_id;        /*!< Id for output propagator solutions */
+	std::string     prop_id;        /*!< Id for input propagator solutions */
+	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern
@@ -86,10 +72,7 @@ namespace Chroma
       Params params;
     };
 
-    void read(XMLReader& xml, const string& path, 
-	      InlineGridPropEnv::Params::Param_t::Sources_t& input) ;
-  } // namespace GridProp
-
+  } // namespace GridPropMatElemEnv
 
 }
 

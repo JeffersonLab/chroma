@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_w.cc,v 3.1 2008-11-27 03:22:16 kostas Exp $
+// $Id: inline_grid_prop_w.cc,v 3.2 2008-11-28 05:13:58 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -74,7 +74,7 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "spatial_mask_size", out.spatial_mask_size);
-      write(xml, "spatial_mask", out.spatial_masks);
+      write(xml, "spatial_masks", out.spatial_masks);
 
       write(xml, "t_sources", out.t_sources);
       write(xml, "decay_dir", out.decay_dir);
