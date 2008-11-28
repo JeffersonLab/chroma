@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.1 2008-11-28 05:13:57 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.2 2008-11-28 05:56:05 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -407,7 +407,7 @@ namespace Chroma
 
       //Hunt for the source info 
       DiluteGridQuarkSourceConstEnv::Params srcParams ;
-      DiluteGridQuarkSourceConstEnv::Params snkParams ;
+      //DiluteGridQuarkSourceConstEnv::Params snkParams ;
       InlineGridPropEnv::Params::Param_t::Sources_t src_t;
       {
 	
@@ -433,7 +433,7 @@ namespace Chroma
 	
       }
 
-      snkParams=srcParams ;
+      //snkParams=srcParams ;
       // DB storage                  
       BinaryFxStoreDB<SerialDBKey<KeyGridPropElem_t>,
 	SerialDBData<ValGridPropElem_t> > 
@@ -465,6 +465,8 @@ namespace Chroma
 	        src(s,c,g) = +GridSrc(u);
 		// need to make the grid source return just the grid of color vectors
 		// this way I do not have to store the full LatticeFermion
+		// this is not supported by chroma now.... so we have to leave with this...
+		// the cost is x4 in memory and x4 in computation
 	      } //t
 	    }//g
 	  }//c
@@ -473,22 +475,29 @@ namespace Chroma
 	for(int t0(0);t0<src_t.t_sources.size();t0++){//loop over source timeslices
 	  QDPIO::cout << name << ": Doing source timeslice " 
 		      << src_t.t_sources[t0] << endl ;
-          srcParams.t_source = src_t.t_sources[t0] ;
-	  
-          for(int s(0);s<Ns;s++){// loop over spins
-            srcParams.spin = s;
-            for(int c(0);c<Nc;c++){// loop over colors
-              srcParams.color = c;
-              for(int g(0);g<src_t.spatial_masks.size();g++){//loop over grids
-                srcParams.spatial_mask =src_t.spatial_masks[g];
-		QDPIO::cout << name << ": Doing spin " << s ;
-		QDPIO::cout <<" color " << c << " and  grid " << g<< " ( of " ;
-		QDPIO::cout << src_t.spatial_masks.size() << ")"<<endl;
+	  KeyGridProp_t key;
+	  key.t_source  = src_t.t_sources[t0] ;
 
-                //Constuct the source                              
-	      }//g
-	    }//c
-	  }//s
+          for(int src_s(0);src_s<Ns;src_s++){// loop over spins
+	    key.spin      = src_s ;
+	    for(int src_c(0);src_c<Nc;src_c++){// loop over colors
+	      key.color     = src_c ;
+	      for(int src_g(0);src_g<src_t.spatial_masks.size();src_g++){//loop over grids
+		key.grid      = src_g ;
+		// pick the object from the map now
+		for(int snk_s(0);snk_s<Ns;snk_s++){// loop over spins
+	      
+		  for(int g(0);g<src_t.spatial_masks.size();g++){//loop over grids
+		    //QDPIO::cout << name << ": Doing spin " << s ;
+		    //QDPIO::cout <<" color " << c << " and  grid " << g<< " ( of " ;
+		    //QDPIO::cout << src_t.spatial_masks.size() << ")"<<endl;
+		    
+		    //Constuct the source                              
+		  }//g snk
+		}//c
+	      }//s
+	    }
+	  }
 	}//t0
 	swatch.stop();
 	QDPIO::cout << "Matelem computed: time= " 
