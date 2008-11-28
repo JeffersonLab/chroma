@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.3 2008-11-28 14:48:24 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.4 2008-11-28 18:18:39 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -447,39 +447,31 @@ namespace Chroma
 	SftMom phases(0, true, src_t.decay_dir);
 	//
 	// Loop over t  color and spin, creating the sources
-        multi3d<LatticeFermion> src(Ns,Nc,src_t.spatial_masks.size()) ;
-	for(int s(0);s<Ns;s++){// loop over spins                                 
-	  srcParams.spin = s;
-	  for(int c(0);c<Nc;c++){// loop over colors
-	    srcParams.color = c;
-	    for(int g(0);g<src_t.spatial_masks.size();g++){
-	      srcParams.spatial_mask =src_t.spatial_masks[g];
-	      QDPIO::cout << name << ": Doing spin " << s ;
-	      QDPIO::cout <<" color " << c << " and  grid " << g<< " ( of " ;
-	      QDPIO::cout << src_t.spatial_masks.size() << ")"<<endl;
-	      src(s,c,g) = zero ;
-	      for(int t(0); t< phases.numSubsets();t++){
-		srcParams.t_source = t ;
-		DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion>  
-		  GridSrc(srcParams);
-	        src(s,c,g) = +GridSrc(u);
-		// need to make the grid source return just the grid of color vectors
-		// this way I do not have to store the full LatticeFermion
-		// this is not supported by chroma now.... so we have to leave with this...
-		// the cost is x4 in memory and x4 in computation
-		//
-		// An other way out is to set
-		//  srcParama.spin = -1 
-		//  srcParams.t_source = -1 
-		// and have the DiluteGridSource do all spins and time together
-		// i.e. no spin time dilution, then pick the right spin and time 
-		// when contractions are done
-		// this will cut memory by 4 and computation by 4*Nt
-		// seems the way to go. Grid source is now modified...
-	      } //t
-	    }//g
-	  }//c
-	}//s
+        //multi3d<LatticeFermion> src(Ns,Nc,src_t.spatial_masks.size()) ;
+	multi2d<LatticeFermion> src(Nc,src_t.spatial_masks.size()) ;
+	//for(int s(0);s<Ns;s++){// loop over spins                                 
+	//srcParams.spin = s;
+	srcParams.spin = -1 ;// do all spins at once
+	srcParams.t_source = -1 ; // do all time slices at once
+	for(int c(0);c<Nc;c++){// loop over colors
+	  srcParams.color = c;
+	  for(int g(0);g<src_t.spatial_masks.size();g++){
+	    srcParams.spatial_mask =src_t.spatial_masks[g];
+	    QDPIO::cout << name << ": Doing color " << c 
+			<< " and  grid " << g<< " ( of " 
+			<< src_t.spatial_masks.size() << ")"<<endl;
+	    DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion> GridSrc(srcParams);
+	    src(c,g) = GridSrc(u);
+	    
+	    //  srcParama.spin = -1 
+	    //  srcParams.t_source = -1 
+	    // and have the DiluteGridSource do all spins and time together
+	    // i.e. no spin time dilution, then pick the right spin and time 
+	    // when contractions are done
+	    // this will cut memory by 4 and computation by 4*Nt
+	    // seems the way to go. Grid source is now modified...
+	  }//g
+	}//c
 	
 	for(int t0(0);t0<src_t.t_sources.size();t0++){//loop over source timeslices
 	  QDPIO::cout << name << ": Doing source timeslice " 
