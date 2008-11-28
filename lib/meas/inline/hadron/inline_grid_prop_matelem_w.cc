@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.2 2008-11-28 05:56:05 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.3 2008-11-28 14:48:24 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -467,6 +467,15 @@ namespace Chroma
 		// this way I do not have to store the full LatticeFermion
 		// this is not supported by chroma now.... so we have to leave with this...
 		// the cost is x4 in memory and x4 in computation
+		//
+		// An other way out is to set
+		//  srcParama.spin = -1 
+		//  srcParams.t_source = -1 
+		// and have the DiluteGridSource do all spins and time together
+		// i.e. no spin time dilution, then pick the right spin and time 
+		// when contractions are done
+		// this will cut memory by 4 and computation by 4*Nt
+		// seems the way to go. Grid source is now modified...
 	      } //t
 	    }//g
 	  }//c

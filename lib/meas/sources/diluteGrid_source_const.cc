@@ -1,4 +1,4 @@
-// $Id: diluteGrid_source_const.cc,v 3.2 2008-11-27 03:22:16 kostas Exp $
+// $Id: diluteGrid_source_const.cc,v 3.3 2008-11-28 14:48:24 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -190,51 +190,31 @@ namespace Chroma
 	}
       }
 
-      // More sanity checks
-      /**
-      for(int c=0; c < params.color_mask.size(); ++c)
-      {
-	if (params.color_mask[c] < 0 || params.color_mask[c] >= Nc)
-	{
-	  QDPIO::cerr << name << ": color mask incorrect 6" << endl;
-	  QDP_abort(1);
-	}
-      }
-      for(int s=0; s < params.spin_mask.size(); ++s)
-      {
-	if (params.spin_mask[s] < 0 || params.spin_mask[s] >= Ns)
-	{
-	  QDPIO::cerr << name << ": spin mask incorrect 7" << endl;
-	  QDP_abort(1);
-	}
-      }
-      **/
       if (params.color < 0 || params.color >= Nc){
 	  QDPIO::cerr << name << ": color mask incorrect 6" << endl;
 	  QDP_abort(1);
       }
-      if (params.spin < 0 || params.spin >= Ns){
-	QDPIO::cerr << name << ": spin mask incorrect 7" << endl;
-	QDP_abort(1);
-      }
+      //if (params.spin < 0 || params.spin >= Ns){
+      //QDPIO::cerr << name << ": spin mask incorrect 7" << endl;
+      //QDP_abort(1);
+      //}
 
       //
       // Finally, do something useful
       //
-
-      // Save current seed
-      //Seed ran_seed;
-      //QDP::RNG::savern(ran_seed);
-
-      // Set the seed to desired value
-      //QDP::RNG::setrn(params.ran_seed);
 
       // Create the noisy quark source on the entire lattice
       Fermion tt = zero ;
       ColorVector cc = zero ;
       Complex z=cmplx(Real(1.0),0.0);
       pokeColor(cc,z,params.color);
-      pokeSpin(tt,cc,params.spin);
+      if((params.spin>0)&&(params.spin<Ns)) // single spin selected
+	pokeSpin(tt,cc,params.spin);
+      else{
+	for(int s(0);s<Ns;s++)
+	  pokeSpin(tt,cc,s);
+	QDPIO::cout << name << ": NO spin mask used!" << endl;
+      }
       LatticeFermion quark_noise = tt ;
   
       LatticeFermion quark_source ;
@@ -252,7 +232,11 @@ namespace Chroma
       }
 
       // Filter over the time slices
-      mask &= Layout::latticeCoordinate(params.j_decay) == params.t_source;
+      // params.t_source<0 means no filter over time 
+      if(params.t_source>0) // single time slice is selected 
+	mask &= Layout::latticeCoordinate(params.j_decay) == params.t_source;
+      else
+	QDPIO::cout << name << ": NO time mask used!" << endl;
 
       // Zap the unused sites
       quark_source = where(mask, quark_noise, Fermion(zero));
