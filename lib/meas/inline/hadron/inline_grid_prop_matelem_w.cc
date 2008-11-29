@@ -1,8 +1,8 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.4 2008-11-28 18:18:39 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.5 2008-11-29 04:28:02 kostas Exp $
 /*! \file
- * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
+ * \brief Compute the matrix element of  LatticeFermion*M^-1*LatticeFermion
  *
- * Propagator calculation on a colorvector
+ * Propagator calculation
  */
 
 #include "fermact.h"
@@ -447,10 +447,14 @@ namespace Chroma
 	SftMom phases(0, true, src_t.decay_dir);
 	//
 	// Loop over t  color and spin, creating the sources
-        //multi3d<LatticeFermion> src(Ns,Nc,src_t.spatial_masks.size()) ;
-	multi2d<LatticeFermion> src(Nc,src_t.spatial_masks.size()) ;
-	//for(int s(0);s<Ns;s++){// loop over spins                                 
-	//srcParams.spin = s;
+	//  srcParama.spin = -1 
+	//  srcParams.t_source = -1 
+	// and have the DiluteGridSource do all spins and time together
+	// i.e. no spin time dilution, then pick the right spin and time 
+	// when contractions are done
+	// this will cut memory by 4 and computation by 4*Nt
+	// seems the way to go. Grid source is now modified...
+	multi2d<LatticeFermion> snk(Nc,src_t.spatial_masks.size()) ;
 	srcParams.spin = -1 ;// do all spins at once
 	srcParams.t_source = -1 ; // do all time slices at once
 	for(int c(0);c<Nc;c++){// loop over colors
@@ -461,15 +465,8 @@ namespace Chroma
 			<< " and  grid " << g<< " ( of " 
 			<< src_t.spatial_masks.size() << ")"<<endl;
 	    DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion> GridSrc(srcParams);
-	    src(c,g) = GridSrc(u);
+	    snk(c,g) = GridSrc(u);
 	    
-	    //  srcParama.spin = -1 
-	    //  srcParams.t_source = -1 
-	    // and have the DiluteGridSource do all spins and time together
-	    // i.e. no spin time dilution, then pick the right spin and time 
-	    // when contractions are done
-	    // this will cut memory by 4 and computation by 4*Nt
-	    // seems the way to go. Grid source is now modified...
 	  }//g
 	}//c
 	
@@ -479,26 +476,41 @@ namespace Chroma
 	  KeyGridProp_t key;
 	  key.t_source  = src_t.t_sources[t0] ;
 
+	  // Invert the time - make it an independent key
+	  multi1d<KeyValGridPropElem_t> buf(phases.numSubsets());
+	  for(int t(0); t<phases.numSubsets(); t++){
+	    buf[t].key.key().t_slice      = t;    
+	    buf[t].key.key().t_source     = src_t.t_sources[t0] ; 
+	    buf[t].key.key().mass_label   = params.param.mass_label; 
+	    buf[t].val.data().setGrids(src_t.spatial_masks.size()); 
+	  }                
+
           for(int src_s(0);src_s<Ns;src_s++){// loop over spins
 	    key.spin      = src_s ;
 	    for(int src_c(0);src_c<Nc;src_c++){// loop over colors
 	      key.color     = src_c ;
-	      for(int src_g(0);src_g<src_t.spatial_masks.size();src_g++){//loop over grids
+	      //loop over grids
+	      for(int src_g(0);src_g<src_t.spatial_masks.size();src_g++){
 		key.grid      = src_g ;
-		// pick the object from the map now
+		LatticeFermion snk_vec = zero ;
 		for(int snk_s(0);snk_s<Ns;snk_s++){// loop over spins
-	      
-		  for(int g(0);g<src_t.spatial_masks.size();g++){//loop over grids
-		    //QDPIO::cout << name << ": Doing spin " << s ;
-		    //QDPIO::cout <<" color " << c << " and  grid " << g<< " ( of " ;
-		    //QDPIO::cout << src_t.spatial_masks.size() << ")"<<endl;
-		    
-		    //Constuct the source                              
-		  }//g snk
-		}//c
-	      }//s
-	    }
-	  }
+		  for(int snk_c(0);snk_c<Nc;snk_c++){// loop over colors
+		    //loop over grids
+		    for(int snk_g(0);snk_g<src_t.spatial_masks.size();snk_g++){
+		      pokeSpin(snk_vec, peekSpin(snk(snk_c,snk_g),snk_s), snk_s) ;
+		      multi1d<ComplexD> 
+		      hsum(sumMulti(localInnerProduct(snk_vec,map_obj[key]),phases.getSet()));
+		      for(int t(0); t<hsum.size(); t++)                            
+			buf[t].val.data().m(snk_s,src_s)(snk_c,src_c)(snk_g,src_g)=
+			  hsum[t];  
+		    }//g snk
+		  }//c snk
+		}//s snk
+	      }// g src
+	    }//c src
+	  }//s src
+	  for(int t(0); t<phases.numSubsets(); t++)
+	    qdp_db.insert(buf[t].key, buf[t].val);   
 	}//t0
 	swatch.stop();
 	QDPIO::cout << "Matelem computed: time= " 
@@ -510,104 +522,6 @@ namespace Chroma
 	QDP_abort(1);
       }
      
-
-      /***
-      //
-      // Try the factories
-      //
-
-	// and calling the relevant propagator routines.
-	//
-	const int num_vecs            = params.param.num_vecs;
-	const int decay_dir           = params.param.decay_dir;
-	const multi1d<int>& t_sources = params.param.t_sources;
-
-	// Initialize the slow Fourier transform phases
-	SftMom phases(0, true, decay_dir);
-
-	// Binary output
-	push(xml_out, "ColorVecMatElems");
-
-	// Loop over each operator 
-	for(int tt=0; tt < t_sources.size(); ++tt)
-	{
-	  int t_source = t_sources[tt];
-	  QDPIO::cout << "t_source = " << t_source << endl; 
-
-	  //
-	  // All the loops
-	  //
-	  // NOTE: I pull the spin source and sink loops to the outside intentionally.
-	  // The idea is to create a colorvector index (2d) array. These are not
-	  // too big, but are big enough to make the IO efficient, and the DB efficient
-	  // on reading. For N=32 and Lt=128, the mats are 2MB.
-	  //
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
-	  {
-	    QDPIO::cout << "spin_source = " << spin_source << endl; 
-
-	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
-	    {
-	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
-
-	      // Invert the time - make it an independent key
-	      multi1d<KeyValGridPropElem_t> buf(phases.numSubsets());
-	      for(int t=0; t < phases.numSubsets(); ++t)
-	      {
-		buf[t].key.key().t_slice      = t;
-		buf[t].key.key().t_source     = t_source;
-		buf[t].key.key().spin_src     = spin_source;
-		buf[t].key.key().spin_snk     = spin_sink;
-		buf[t].key.key().mass_label   = params.param.mass_label;
-		buf[t].val.data().mat.resize(num_vecs,num_vecs);
-	      }
-
-	      for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
-	      {
-		KeyPropColorVec_t key;
-		key.t_source     = t_source;
-		key.colorvec_src = colorvec_source;
-		key.spin_src     = spin_source;
-		  
-		LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
-
-		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
-		{
-		  const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
-
-		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
-
-		  for(int t=0; t < hsum.size(); ++t)
-		  {
-		    buf[t].val.data().mat(colorvec_sink,colorvec_source) = hsum[t];
-		  }
-
-		} // for colorvec_sink
-	      } // for colorvec_source
-	      
-	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
-	      for(int t=0; t < phases.numSubsets(); ++t)
-	      {
-		qdp_db.insert(buf[t].key, buf[t].val);
-	      }
-
-	    } // for spin_sink
-	  } // for spin_source
-	} // for t_source
-
-	pop(xml_out);
-
-
-      }
-
-
-
-
-      push(xml_out,"Relaxation_Iterations");
-      write(xml_out, "ncg_had", ncg_had);
-      pop(xml_out);
-     *******/
-
       pop(xml_out);  // grid_prop_matelem
 
       // Write the meta-data and the binary for this operator
