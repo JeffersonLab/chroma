@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.5 2008-11-29 04:28:02 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.6 2008-11-29 12:39:27 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeFermion*M^-1*LatticeFermion
  *
@@ -454,6 +454,9 @@ namespace Chroma
 	// when contractions are done
 	// this will cut memory by 4 and computation by 4*Nt
 	// seems the way to go. Grid source is now modified...
+	StopWatch roloi;
+	roloi.reset();
+	roloi.start();
 	multi2d<LatticeFermion> snk(Nc,src_t.spatial_masks.size()) ;
 	srcParams.spin = -1 ;// do all spins at once
 	srcParams.t_source = -1 ; // do all time slices at once
@@ -469,7 +472,11 @@ namespace Chroma
 	    
 	  }//g
 	}//c
-	
+	roloi.stop();
+	QDPIO::cout << "Sources constructed: time= "
+                    << roloi.getTimeInSeconds()
+                    << " secs" << endl;
+
 	for(int t0(0);t0<src_t.t_sources.size();t0++){//loop over source timeslices
 	  QDPIO::cout << name << ": Doing source timeslice " 
 		      << src_t.t_sources[t0] << endl ;
@@ -492,17 +499,18 @@ namespace Chroma
 	      //loop over grids
 	      for(int src_g(0);src_g<src_t.spatial_masks.size();src_g++){
 		key.grid      = src_g ;
-		LatticeFermion snk_vec = zero ;
 		for(int snk_s(0);snk_s<Ns;snk_s++){// loop over spins
 		  for(int snk_c(0);snk_c<Nc;snk_c++){// loop over colors
 		    //loop over grids
 		    for(int snk_g(0);snk_g<src_t.spatial_masks.size();snk_g++){
-		      pokeSpin(snk_vec, peekSpin(snk(snk_c,snk_g),snk_s), snk_s) ;
+		      LatticeFermion snk_vec = zero ;
+		      pokeSpin(snk_vec, 
+			       peekSpin(snk(snk_c,snk_g),snk_s), snk_s) ;
 		      multi1d<ComplexD> 
-		      hsum(sumMulti(localInnerProduct(snk_vec,map_obj[key]),phases.getSet()));
-		      for(int t(0); t<hsum.size(); t++)                            
-			buf[t].val.data().m(snk_s,src_s)(snk_c,src_c)(snk_g,src_g)=
-			  hsum[t];  
+		      hsum(sumMulti(localInnerProduct(snk_vec,map_obj[key]),
+				    phases.getSet()));
+		      for(int t(0); t<hsum.size(); t++)
+			buf[t].val.data().m(snk_s,src_s)(snk_c,src_c)(snk_g,src_g)=hsum[t];  
 		    }//g snk
 		  }//c snk
 		}//s snk
