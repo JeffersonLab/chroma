@@ -1,4 +1,4 @@
-// $Id: diluteGrid_source_const.cc,v 3.4 2008-12-01 14:19:43 kostas Exp $
+// $Id: diluteGrid_source_const.cc,v 3.5 2008-12-01 14:25:08 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -233,7 +233,7 @@ namespace Chroma
 
       // Filter over the time slices
       // params.t_source<0 means no filter over time 
-      if(params.t_source>0) // single time slice is selected 
+      if(params.t_source>-1) // single time slice is selected 
 	mask &= Layout::latticeCoordinate(params.j_decay) == params.t_source;
       else
 	QDPIO::cout << name << ": NO time mask used!" << endl;
