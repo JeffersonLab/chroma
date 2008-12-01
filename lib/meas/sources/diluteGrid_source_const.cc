@@ -1,4 +1,4 @@
-// $Id: diluteGrid_source_const.cc,v 3.3 2008-11-28 14:48:24 kostas Exp $
+// $Id: diluteGrid_source_const.cc,v 3.4 2008-12-01 14:19:43 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -208,7 +208,7 @@ namespace Chroma
       ColorVector cc = zero ;
       Complex z=cmplx(Real(1.0),0.0);
       pokeColor(cc,z,params.color);
-      if((params.spin>0)&&(params.spin<Ns)) // single spin selected
+      if((params.spin>-1)&&(params.spin<Ns)) // single spin selected
 	pokeSpin(tt,cc,params.spin);
       else{
 	for(int s(0);s<Ns;s++)
