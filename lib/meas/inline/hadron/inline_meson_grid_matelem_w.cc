@@ -1,4 +1,4 @@
-// $Id: inline_meson_grid_matelem_w.cc,v 3.1 2008-12-01 03:09:17 kostas Exp $
+// $Id: inline_meson_grid_matelem_w.cc,v 3.2 2008-12-01 03:18:25 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -592,7 +592,7 @@ namespace Chroma
 	  int j(0);
 	  for(int g(0) ; g<Ngrids; ++g){
 	    for(int c(0) ; c<Nc ; c++,j++){
-	      QDPIO::cout<<"source index: "<<j<<" ("<<g<<","<<c<<")"<<endl ;
+	      //QDPIO::cout<<"source index: "<<j<<" ("<<g<<","<<c<<")"<<endl ;
 	      // Displace the right vector and multiply by the momentum phase
 
 	      LatticeColorVector q = peekSpin(vec(c,g),0);
@@ -612,7 +612,7 @@ namespace Chroma
 		int i(0);
 		for(int gg(0) ; gg<Ngrids; ++gg){
 		  for(int cc(0) ; cc<Nc ; cc++,i++){
-		    QDPIO::cout<<"sink index: "<<i <<"("<<gg<<","<<cc<<")"<<endl ;
+		    //QDPIO::cout<<"sink index: "<<i <<"("<<gg<<","<<cc<<")"<<endl ;
 		    // Contract over color indices
 		    // Do the relevant quark contraction
 		    LatticeColorVector qbar = peekSpin(vec(cc,gg),0);
