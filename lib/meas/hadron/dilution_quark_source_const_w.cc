@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.16 2008-11-25 22:31:13 kostas Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.17 2008-12-03 21:16:46 kostas Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -75,7 +75,7 @@ namespace Chroma
     //! Initialize
     Params::Params()
     {
-      UseSourceHeaderSmearing = true ;
+      UseSourceHeaderSmearing = false ;
     }
 
 
@@ -500,13 +500,17 @@ read(from, record_xml, sour);
 						     qq.source_header.source.path);
 
       if(!params.UseSourceHeaderSmearing){
-	QDPIO::cout<<"Will NOT use Smearing/displacement options specified in the header\n"<<endl ;
+	QDPIO::cout<<name
+		   <<": Will NOT use Smearing/displacement options specified in the header\n"<<endl ;
 	srcParams.smear = false ; 
       }
       else{
-	QDPIO::cerr<<" Smearing/displacement not implemented\n"<<endl ;
-	QDP_abort(10);
+	QDPIO::cout<<name<<": Smearing/displacement not implemented\n"<<endl ;
+	QDPIO::cout<<name
+		   <<": Will NOT use Smearing/displacement options specified in the header\n"<<endl ;
+	srcParams.smear = false ; 
       }
+
       DiluteZNQuarkSourceConstEnv::SourceConst<LatticeFermion>  srcConst(srcParams);
       
       QDP::RNG::setrn( quark.seed );
