@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.1 2008-12-06 01:00:52 kostas Exp $
+// $Id: inline_disco_w.cc,v 1.2 2008-12-06 01:14:42 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -365,6 +365,15 @@ namespace Chroma{
 	  QDPIO::cout<<" dilutions on time slice "<<t<<endl ;
 	  for(int i = 0 ; i <  quarks[n]->getDilSize(it) ; ++i){
 	    QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
+	    /**
+	    do_disco(data_base_file, 
+		     quarks[n]->dilutedSource(it,i),
+		     quarks[n]->dilutedSolution(it,i),
+		     path_length) ;
+	    **/
+	    LatticeComplex cc=
+	      localInnerProduct(quarks[n]->dilutedSource(it,i),
+				quarks[n]->dilutedSolution(it,i));
 	    //localInnerProduct(quarks[n]->dilutedSource(i_t0,i),ferm);
 	    //ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(i_t0,i);
 	  }

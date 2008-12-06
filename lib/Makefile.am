@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.175 2008-12-01 03:09:11 kostas Exp $
+# $Id: Makefile.am,v 3.176 2008-12-06 01:14:42 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -760,6 +760,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_seqsource_w.h \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_prop_3pt_w.h \
+	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
@@ -1423,7 +1424,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_multi_propagator_w.cc \
 	meas/inline/hadron/inline_seqsource_w.cc \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
-	meas/inline/hadron/inline_prop_3pt_w.cc \
+	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
