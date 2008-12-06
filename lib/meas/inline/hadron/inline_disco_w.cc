@@ -1,8 +1,10 @@
-// $Id: inline_disco_w.cc,v 1.3 2008-12-06 02:24:55 kostas Exp $
+// $Id: inline_disco_w.cc,v 1.4 2008-12-06 06:39:39 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
  */
+#include <vector> ;
+#include <map> ;
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_w.h"
@@ -28,6 +30,8 @@
 #include "util/info/unique_id.h"
 #include "util/ferm/transf.h"
 #include "meas/inline/io/named_objmap.h"
+
+#include "util/ferm/key_val_db.h"
 
 namespace Chroma{ 
   namespace InlineDiscoEnv{ 
@@ -179,6 +183,144 @@ namespace Chroma{
     }
 
     
+    //! Meson operator     
+    struct KeyOperator_t
+    {
+      unsigned short int t_slice ; /*!< Meson operator time slice */
+      multi1d<short int> disp    ; /*!< Displacement dirs of quark (right)*/
+      multi1d<short int> mom     ; /*!< D-1 momentum of this operator */
+      
+      KeyOperator_t(){
+	mom.resize(Nd-1);
+      }
+    };
+
+    class ValOperator_t{
+    public:
+      multi1d<ComplexD> op ;  
+      ValOperator_t(){op.resize(Ns*Ns);} // Here go the 16 gamma matrices
+      ~ValOperator_t(){}
+    } ;
+
+    struct KeyVal_t{
+      SerialDBKey <KeyOperator_t> k ;
+      SerialDBData<ValOperator_t> v ;
+    };
+
+    //! KeyOperator reader    
+    void read(BinaryReader& bin, KeyOperator_t& d){
+      read(bin,d.t_slice);
+      unsigned short int n ;
+      read(bin,n);
+      d.disp.resize(n); 
+      read(bin,d.disp);
+      d.mom.resize(Nd-1) ;
+      read(bin,d.mom);
+    }
+    //! KeyOperator writer
+    void write(BinaryWriter& bin, KeyOperator_t& d){
+      write(bin,d.t_slice);
+      unsigned short int n ;
+      n = d.disp.size();
+      write(bin,n);
+      write(bin,d.disp);
+      write(bin,d.mom);
+    }
+
+    //! ValOperator reader    
+    void read(BinaryReader& bin, ValOperator_t& d){
+      d.op.resize(Ns*Ns);
+      read(bin,d.op);
+    }
+    //! ValOperator writer
+    void write(BinaryWriter& bin, ValOperator_t& d){
+      write(bin,d.op);
+    }
+
+    namespace{
+      StandardOutputStream& operator<<(StandardOutputStream& os, const multi1d<short int>& d){
+	if (d.size() > 0){
+	  os << d[0]; 
+	  for(int i=1; i < d.size(); ++i)
+	    os << " " << d[i];
+	}
+	return os;
+      }
+    }
+
+    void do_disco(BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,
+		  SerialDBData<ValOperator_t> >& db,
+		  const LatticeFermion& qbar,
+		  const LatticeFermion& q,
+		  const SftMom& p,
+		  const int& t, 
+		  const multi1d<short int>& path,
+	 	  const int& max_path_length ){
+      QDPIO::cout<<" Computing Operator with path length "<<path.size()
+		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+      
+      SerialDBData<ValOperator_t> ttval ;
+      SerialDBData<ValOperator_t> val ;
+      SerialDBKey<KeyOperator_t > key ;
+      key.key().t_slice = t ;
+      if(path.size()==0){
+	key.key().disp.resize(1);
+	key.key().disp[0] = 0 ;
+      }
+      else
+	key.key().disp = path ;
+
+      multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
+      for (int m(0); m < p.numMom(); m++)
+	foo[m].resize(Ns*Ns);
+      for(int g(0);g<Ns*Ns;g++){
+	LatticeComplex cc = localInnerProduct(qbar,Gamma(g)*q);
+	for (int m(0); m < p.numMom(); m++){
+	  foo[m][g] = sum(p[m]*cc,p.getSet()[t]) ;
+	}
+      }
+      for (int m(0); m < p.numMom(); m++){
+	for(int i(0);i<Nd;i++)
+	  key.key().mom[i] = p.numToMom(m)[i] ;
+	
+	val.data().op = foo[m];
+	if(!db.get(key,ttval)){
+	  for (int i(0);i<Ns*Ns;i++)
+	    val.data().op[i]+=ttval.data().op[1];
+	} 
+	db.insert(key,val);
+      }
+
+      if(path.size()<max_path_length){
+	QDPIO::cout<<" attempt to add new path. "
+		   <<" current path length is : "<<path.size();
+	multi1d<short int> new_path(path.size()+1);
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	for(int i(0);i<path.size();i++)
+	  new_path[i] = path[i] ;
+	for(int sign(-1);sign<2;sign+=2)
+	  for(int mu(0);mu<Nd;mu++){
+	    new_path[path.size()]= sign*(mu+1) ;
+	    //skip back tracking 
+	    bool back_track=false ;
+	    if(path.size()>0)
+	      if(path[path.size()-1] == -new_path[path.size()])
+		back_track=true;
+	    if(!back_track){
+	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      LatticeFermion q_mu ;
+	      if(sign>0)
+		q_mu = shift(q, FORWARD, mu);
+	      else
+		q_mu = shift(q, BACKWARD, mu);
+
+	      do_disco(db, qbar, q_mu, p, t, new_path, max_path_length);
+	    } // skip backtracking
+	  } // mu
+      }
+      
+    }// do_disco
+
 
   //--------------------------------------------------------------
   // Function call
@@ -355,7 +497,10 @@ namespace Chroma{
 	  QDP_abort(1);
 	}
       }
- 
+
+      // DB storage          
+      BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> >
+	qdp_db(params.named_obj.op_db_file, 10*1024*1024, 64*1024);
 
       for(int n(0);n<quarks.size();n++){
 	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
@@ -365,25 +510,29 @@ namespace Chroma{
 	  QDPIO::cout<<" dilutions on time slice "<<t<<endl ;
 	  for(int i = 0 ; i <  quarks[n]->getDilSize(it) ; ++i){
 	    QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
-	    /**
-	    do_disco(data_base_file, 
-		     quarks[n]->dilutedSource(it,i),
-		     quarks[n]->dilutedSolution(it,i),
-		     path_length) ;
-	    **/
-	    LatticeComplex cc=
-	      localInnerProduct(quarks[n]->dilutedSource(it,i),
-				quarks[n]->dilutedSolution(it,i));
-	    //localInnerProduct(quarks[n]->dilutedSource(i_t0,i),ferm);
-	    //ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(i_t0,i);
+	    multi1d<short int> d ;
+	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
+	    LatticeFermion q     = quarks[n]->dilutedSolution(it,i);
+	    QDPIO::cout<<"   Starting recursion "<<endl ;
+	    do_disco(qdp_db,qbar,q,
+		     phases, t,  d, params.param.max_path_length ) ;
+	    QDPIO::cout<<" done with recursion! "
+		       <<"  The length of the path is: "<<d.size()<<endl ;
+	    
 	  }
 	  QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
 	}
       }
-      // ferm_3pt = ferm_3pt/Double(count) ; // compute the mean over noises
-      
-      // Here goes the DB stuff
-
+      //Need to normalize with the number of quarks
+      vector< SerialDBKey<KeyOperator_t> > keys ;
+      SerialDBData<ValOperator_t> val ;
+      qdp_db.keys(keys);
+      for(int k(0);k<keys.size();k++){
+	qdp_db.get(keys[k],val) ;
+	for(int i(0);i<val.data().op.size();i++)
+	  val.data().op[i]/=toDouble(quarks.size());
+	qdp_db.insert(keys[k],val) ;
+      }
       
       // Close the namelist output file XMLDAT
       pop(xml_out);     // Disco
