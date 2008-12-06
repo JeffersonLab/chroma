@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.176 2008-12-06 01:14:42 kostas Exp $
+# $Id: Makefile.am,v 3.177 2008-12-06 02:24:49 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -1424,6 +1424,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_multi_propagator_w.cc \
 	meas/inline/hadron/inline_seqsource_w.cc \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
+	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \

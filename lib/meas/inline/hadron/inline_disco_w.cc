@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.2 2008-12-06 01:14:42 kostas Exp $
+// $Id: inline_disco_w.cc,v 1.3 2008-12-06 02:24:55 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -69,7 +69,7 @@ namespace Chroma{
 	case 1:
 	  /************************************************************/
 	  read(paramtop,"max_path_length",param.max_path_length);
-	  read(paramtop,"p2_max",param.p2_ax);
+	  read(paramtop,"p2_max",param.p2_max);
 	  read(paramtop,"mass_label",param.mass_label);
 	  param.chi = readXMLArrayGroup(paramtop, "Quarks", "DilutionType");
 	  
@@ -95,7 +95,7 @@ namespace Chroma{
       write(xml, "version", version);
 
       write(xml,"max_path_length",param.max_path_length);
-      write(xml,"p2_max",param.p2_ax);
+      write(xml,"p2_max",param.p2_max);
       write(xml,"mass_label",param.mass_label);
 
       push(xml,"Quarks");
