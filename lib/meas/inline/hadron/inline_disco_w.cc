@@ -1,10 +1,10 @@
-// $Id: inline_disco_w.cc,v 1.4 2008-12-06 06:39:39 kostas Exp $
+// $Id: inline_disco_w.cc,v 1.5 2008-12-06 06:51:49 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
  */
-#include <vector> ;
-#include <map> ;
+#include <vector> 
+#include <map> 
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_w.h"
