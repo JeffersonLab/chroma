@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.5 2008-12-06 06:51:49 kostas Exp $
+// $Id: inline_disco_w.cc,v 1.6 2008-12-06 14:48:06 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -194,6 +194,10 @@ namespace Chroma{
 	mom.resize(Nd-1);
       }
     };
+    
+    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
+      return ((a.t_slice<b.t_slice)&&(a.mom<b.mom)&&(a.disp<b.disp)) ;
+    }
 
     class ValOperator_t{
     public:
@@ -248,8 +252,7 @@ namespace Chroma{
       }
     }
 
-    void do_disco(BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,
-		  SerialDBData<ValOperator_t> >& db,
+    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
 		  const LatticeFermion& qbar,
 		  const LatticeFermion& q,
 		  const SftMom& p,
@@ -259,16 +262,16 @@ namespace Chroma{
       QDPIO::cout<<" Computing Operator with path length "<<path.size()
 		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
       
-      SerialDBData<ValOperator_t> ttval ;
-      SerialDBData<ValOperator_t> val ;
-      SerialDBKey<KeyOperator_t > key ;
-      key.key().t_slice = t ;
+      ValOperator_t val ;
+      KeyOperator_t key ;
+      pair<KeyOperator_t, ValOperator_t> kv ; 
+      kv.first.t_slice = t ;
       if(path.size()==0){
-	key.key().disp.resize(1);
-	key.key().disp[0] = 0 ;
+	kv.first.disp.resize(1);
+	kv.first.disp[0] = 0 ;
       }
       else
-	key.key().disp = path ;
+	kv.first.disp = path ;
 
       multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
       for (int m(0); m < p.numMom(); m++)
@@ -281,14 +284,21 @@ namespace Chroma{
       }
       for (int m(0); m < p.numMom(); m++){
 	for(int i(0);i<Nd;i++)
-	  key.key().mom[i] = p.numToMom(m)[i] ;
+	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
-	val.data().op = foo[m];
-	if(!db.get(key,ttval)){
-	  for (int i(0);i<Ns*Ns;i++)
-	    val.data().op[i]+=ttval.data().op[1];
+	kv.second.op = foo[m];
+	map< KeyOperator_t, ValOperator_t >::iterator it ;
+	it = db.find(kv.first) ;
+	if(it == db.end()){// new element
+	  QDPIO::cout<<"Inserting new entry in map\n";
+	  //db.insert(db.rbegin(),kv);
+	  db.insert(kv);
 	} 
-	db.insert(key,val);
+	else{// element exists need to add resutl to it
+	  for(int i(0);i<kv.second.op.size();i++)
+	    it->second.op[i] += kv.second.op[i] ;
+	}
+
       }
 
       if(path.size()<max_path_length){
@@ -498,9 +508,7 @@ namespace Chroma{
 	}
       }
 
-      // DB storage          
-      BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> >
-	qdp_db(params.named_obj.op_db_file, 10*1024*1024, 64*1024);
+      map< KeyOperator_t, ValOperator_t > data ;
 
       for(int n(0);n<quarks.size();n++){
 	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
@@ -514,26 +522,29 @@ namespace Chroma{
 	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
 	    LatticeFermion q     = quarks[n]->dilutedSolution(it,i);
 	    QDPIO::cout<<"   Starting recursion "<<endl ;
-	    do_disco(qdp_db,qbar,q,
-		     phases, t,  d, params.param.max_path_length ) ;
+	    do_disco(data, qbar, q, phases, t, d, params.param.max_path_length);
 	    QDPIO::cout<<" done with recursion! "
 		       <<"  The length of the path is: "<<d.size()<<endl ;
-	    
 	  }
 	  QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
 	}
       }
-      //Need to normalize with the number of quarks
-      vector< SerialDBKey<KeyOperator_t> > keys ;
+      // DB storage          
+      BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> >
+	qdp_db(params.named_obj.op_db_file, 10*1024*1024, 64*1024);
+
+      SerialDBKey <KeyOperator_t> key ;
       SerialDBData<ValOperator_t> val ;
-      qdp_db.keys(keys);
-      for(int k(0);k<keys.size();k++){
-	qdp_db.get(keys[k],val) ;
-	for(int i(0);i<val.data().op.size();i++)
-	  val.data().op[i]/=toDouble(quarks.size());
-	qdp_db.insert(keys[k],val) ;
+      map< KeyOperator_t, ValOperator_t >::iterator it;
+      for(it=data.begin();it!=data.end();it++){
+	key.key()  = it->first  ;
+	val.data().op.resize(it->second.op.size()) ;
+	// normalize to number of quarks 
+	for(int i(0);i<it->second.op.size();i++)
+          val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
+	qdp_db.insert(key,val) ;
       }
-      
+
       // Close the namelist output file XMLDAT
       pop(xml_out);     // Disco
       
