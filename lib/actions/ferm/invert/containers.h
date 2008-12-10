@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.13 2008-04-03 15:58:43 kostas Exp $
+// $Id: containers.h,v 1.14 2008-12-10 04:52:01 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -22,7 +22,6 @@ namespace Chroma
       multi1d<Complex> evecs ;
       multi1d<Complex> H     ;
       multi1d<Complex> HU    ;
-      //OptEigInfo(){}
       void init(int ldh,int lde_, int nn){
 	restartTol =0 ;
 	ncurEvals = 0 ;
@@ -35,7 +34,63 @@ namespace Chroma
       }
     } ;
 
-    //------------------------------------------------------------------------------
+    class EigInfo{
+    public:
+      int ncurEvals ;
+      int lde ;
+      float restartTol ;
+      multi1d<Real> evals ;
+      multi1d<LatticeFermion> evecs ;
+      multi1d<Complex> H     ;
+      multi1d<Complex> HU    ;
+      void init(int ldh,int lde_){
+        restartTol =0 ;
+        ncurEvals = 0 ;
+        lde = lde_ ;
+	evals.resize(ldh);
+	evecs.resize(ldh);
+        H.resize(ldh*ldh);
+        HU.resize(ldh*ldh);
+      }
+      EigInfo(const OptEigInfo& o, const Subset& s){
+	ncurEvals = o.ncurEvals ;
+	lde = o.lde ;
+	restartTol = o.restartTol ;
+	evals = o.evals ;
+	H = o.H ;
+	HU = o.HU ;
+	evecs.resize(o.evals.size()) ;
+	for(int v(0);v<ncurEvals;v++){
+	  RComplex<float> *px = (RComplex<float> *)&o.evecs[v];
+	  if(s.hasOrderedRep()){
+	    int count=0 ;
+	    //can be done with ccopy for speed...          
+	    for(int i=s.start(); i <= s.end(); i++)
+	      for(int ss(0);ss<Ns;ss++)
+		for(int c(0);c<Nc;c++){
+		  evecs[v].elem(i).elem(ss).elem(c)  = *(px+count);
+		  count++;
+		}
+	  }//if
+	  else{
+	    int i ;
+	    const int *tab = s.siteTable().slice();
+	    int count=0;
+	    for(int x=0; x < s.numSiteTable(); ++x){
+	      i = tab[x] ;
+	      for(int ss(0);ss<Ns;ss++)
+		for(int c(0);c<Nc;c++){
+		  evecs[v].elem(i).elem(ss).elem(c) = *(px+count);
+		  count++;
+		}
+	    }
+	  }//else
+	  
+	}// v
+      }
+    } ;
+
+    //--------------------------------------------------------------------------
     //! Hold vectors
     /*! \ingroup invert */
     template<class T> class Vectors
