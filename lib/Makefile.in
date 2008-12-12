@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.298 2008-12-06 02:24:49 kostas Exp $
+# $Id: Makefile.in,v 3.299 2008-12-12 17:11:09 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -621,6 +621,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_disco_w.cc \
+	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
@@ -1135,8 +1136,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_multi_propagator_w.$(OBJEXT) \
 	inline_seqsource_w.$(OBJEXT) inline_seqprop_test_w.$(OBJEXT) \
 	inline_prop_3pt_w.$(OBJEXT) inline_disco_w.$(OBJEXT) \
-	inline_hadspec_w.$(OBJEXT) inline_mesonspec_w.$(OBJEXT) \
-	inline_heavyhadspec_w.$(OBJEXT) \
+	inline_disco_eigcg_w.$(OBJEXT) inline_hadspec_w.$(OBJEXT) \
+	inline_mesonspec_w.$(OBJEXT) inline_heavyhadspec_w.$(OBJEXT) \
 	inline_static_light_spec_w.$(OBJEXT) \
 	inline_sink_smear_w.$(OBJEXT) inline_diquark_w.$(OBJEXT) \
 	inline_qqq_w.$(OBJEXT) inline_qqq_diquark_w.$(OBJEXT) \
@@ -1856,6 +1857,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_disco_w.h \
+	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
 	meas/inline/hadron/inline_static_light_spec_w.h \
@@ -2762,6 +2764,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_disco_w.h \
+	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
 	meas/inline/hadron/inline_static_light_spec_w.h \
@@ -3354,6 +3357,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_disco_w.cc \
+	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
@@ -3776,6 +3780,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_diquark_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_disco_eigcg_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_disco_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eig_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigbnds.Po@am__quote@
@@ -12083,6 +12088,20 @@ inline_disco_w.obj: meas/inline/hadron/inline_disco_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_disco_w.cc' object='inline_disco_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_disco_w.obj `if test -f 'meas/inline/hadron/inline_disco_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_disco_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_disco_w.cc'; fi`
+
+inline_disco_eigcg_w.o: meas/inline/hadron/inline_disco_eigcg_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_disco_eigcg_w.o -MD -MP -MF "$(DEPDIR)/inline_disco_eigcg_w.Tpo" -c -o inline_disco_eigcg_w.o `test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_disco_eigcg_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_disco_eigcg_w.Tpo" "$(DEPDIR)/inline_disco_eigcg_w.Po"; else rm -f "$(DEPDIR)/inline_disco_eigcg_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_disco_eigcg_w.cc' object='inline_disco_eigcg_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_disco_eigcg_w.o `test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_disco_eigcg_w.cc
+
+inline_disco_eigcg_w.obj: meas/inline/hadron/inline_disco_eigcg_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_disco_eigcg_w.obj -MD -MP -MF "$(DEPDIR)/inline_disco_eigcg_w.Tpo" -c -o inline_disco_eigcg_w.obj `if test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_disco_eigcg_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_disco_eigcg_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_disco_eigcg_w.Tpo" "$(DEPDIR)/inline_disco_eigcg_w.Po"; else rm -f "$(DEPDIR)/inline_disco_eigcg_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_disco_eigcg_w.cc' object='inline_disco_eigcg_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_disco_eigcg_w.obj `if test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_disco_eigcg_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_disco_eigcg_w.cc'; fi`
 
 inline_hadspec_w.o: meas/inline/hadron/inline_hadspec_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadspec_w.o -MD -MP -MF "$(DEPDIR)/inline_hadspec_w.Tpo" -c -o inline_hadspec_w.o `test -f 'meas/inline/hadron/inline_hadspec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadspec_w.cc; \

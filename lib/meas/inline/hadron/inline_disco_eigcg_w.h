@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_disco_eigcg_w.h,v 1.1 2008-12-12 16:41:56 kostas Exp $
+// $Id: inline_disco_eigcg_w.h,v 1.2 2008-12-12 17:11:16 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *
  * spectroscopy
  */
 
-#ifndef __inline_disco_h__
-#define __inline_disco_h__
+#ifndef __inline_disco_eigcg_h__
+#define __inline_disco_eigcg_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -17,7 +17,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineDiscoEnv 
+  namespace InlineDiscoEigCGEnv 
   {
     extern const std::string name;
     bool registerAll();
@@ -42,8 +42,9 @@ namespace Chroma
     
       struct NamedObject_t
       {
-	std::string         gauge_id;
-	std::string         op_db_file;
+	std::string         gauge_id   ;
+	std::string         evecs_id   ;
+	std::string         op_db_file ;
       } named_obj;
       
       std::string xml_file;  // Alternate XML file pattern
@@ -79,7 +80,7 @@ namespace Chroma
       
     };
 
-  }; // name space InlineDiscoEnv
+  }; // name space InlineDiscoEigCGEnv
 
 };
 

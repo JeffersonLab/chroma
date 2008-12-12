@@ -1,4 +1,4 @@
-// $Id: inline_disco_eigcg_w.cc,v 1.1 2008-12-12 16:41:56 kostas Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.2 2008-12-12 17:11:15 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -7,7 +7,7 @@
 #include <map> 
 
 #include "handle.h"
-#include "meas/inline/hadron/inline_disco_w.h"
+#include "meas/inline/hadron/inline_disco_eigcg_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/quark_smearing_factory.h"
 #include "meas/smear/quark_smearing_aggregate.h"
@@ -34,7 +34,7 @@
 #include "util/ferm/key_val_db.h"
 
 namespace Chroma{ 
-  namespace InlineDiscoEnv{ 
+  namespace InlineDiscoEigCGEnv{ 
     namespace{
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
@@ -46,7 +46,7 @@ namespace Chroma{
       bool registered = false;
     }
 
-    const std::string name = "DISCO";
+    const std::string name = "DISCO_EIGCG";
 
     //! Register all the factories
     bool registerAll() 
@@ -119,8 +119,9 @@ namespace Chroma{
     {
       XMLReader inputtop(xml, path);
       
-      read(inputtop, "gauge_id", input.gauge_id);
-      read(inputtop, "op_db_file", input.op_db_file);
+      read(inputtop, "gauge_id",   input.gauge_id   ) ;
+      read(inputtop, "evecs_id",   input.evecs_id   ) ;
+      read(inputtop, "op_db_file", input.op_db_file ) ;
     }
     
     //! Gauge field parameters
@@ -128,6 +129,7 @@ namespace Chroma{
       push(xml, path);
       
       write(xml, "gauge_id", input.gauge_id);
+      write(xml, "evecs_id",   input.evecs_id   ) ;
       write(xml, "op_db_file", input.op_db_file);
       pop(xml);
     }
@@ -174,10 +176,10 @@ namespace Chroma{
       push(xml_out, path);
       
       // Parameters for source construction
-      InlineDiscoEnv::write(xml_out, "Param", param);
+      InlineDiscoEigCGEnv::write(xml_out, "Param", param);
       
       // Write out the output propagator/source configuration info
-      InlineDiscoEnv::write(xml_out, "NamedObject", named_obj);
+      InlineDiscoEigCGEnv::write(xml_out, "NamedObject", named_obj);
 
       pop(xml_out);
     }
@@ -335,7 +337,7 @@ namespace Chroma{
   //--------------------------------------------------------------
   // Function call
   //  void 
-  //InlineDisco::operator()(unsigned long update_no,
+  //InlineDiscoEigCG::operator()(unsigned long update_no,
   //				XMLWriter& xml_out) 
     void InlineMeas::operator()(unsigned long update_no,
 				XMLWriter& xml_out) 
@@ -344,7 +346,7 @@ namespace Chroma{
       if (params.xml_file != ""){
 	string xml_file = makeXMLFileName(params.xml_file, update_no);
 	
-	push(xml_out, "propagator_3pt");
+	push(xml_out, "discoEigCG");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
@@ -360,7 +362,7 @@ namespace Chroma{
     
     // Function call
     //void 
-    //InlineDisco::func(unsigned long update_no,
+    //InlineDiscoEigCG::func(unsigned long update_no,
     //			  XMLWriter& xml_out) 
     void InlineMeas::func(unsigned long update_no,
 			  XMLWriter& xml_out) 
@@ -380,7 +382,7 @@ namespace Chroma{
 	}
       catch( std::bad_cast ) 
 	{
-	  QDPIO::cerr << InlineDiscoEnv::name << ": caught dynamic cast error" 
+	  QDPIO::cerr << InlineDiscoEigCGEnv::name << ": caught dynamic cast error" 
 		      << endl;
 	  QDP_abort(1);
 	}
@@ -393,10 +395,10 @@ namespace Chroma{
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
       
-      push(xml_out, "disco");
+      push(xml_out, "discoEigCG");
       write(xml_out, "update_no", update_no);
       
-      QDPIO::cout << name << ": Disconnected diagrams" << endl;
+      QDPIO::cout << name << ": Disconnected diagrams with eigCG vectors" << endl;
       
       proginfo(xml_out);    // Print out basic program info
       
@@ -546,7 +548,7 @@ namespace Chroma{
       }
 
       // Close the namelist output file XMLDAT
-      pop(xml_out);     // Disco
+      pop(xml_out);     // DiscoEigCG
       
       snoop.stop();
       QDPIO::cout << name << ": total time = "
@@ -557,5 +559,5 @@ namespace Chroma{
       
       END_CODE();
     } 
-  }  // namespace InlineDiscoEnv
+  }  // namespace InlineDiscoEigCGEnv
 }// namespace chroma
