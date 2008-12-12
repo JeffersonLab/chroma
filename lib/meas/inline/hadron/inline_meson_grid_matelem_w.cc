@@ -1,4 +1,4 @@
-// $Id: inline_meson_grid_matelem_w.cc,v 3.2 2008-12-01 03:18:25 kostas Exp $
+// $Id: inline_meson_grid_matelem_w.cc,v 3.3 2008-12-12 03:54:56 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -9,6 +9,8 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
+#include "meas/smear/no_quark_displacement.h"
+#include "meas/smear/no_link_smearing.h"
 #include "meas/smear/displace.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
@@ -81,6 +83,12 @@ namespace Chroma
       read(paramtop, "Grid", param.grid);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
+
+      param.smear = false ;
+      if(paramtop.count("Smearing") !=0 ) {
+	param.smearing  = readXMLGroup(paramtop, "Smearing", "wvf_kind");
+	param.smear = true ;
+      }
       
     }
 
@@ -99,6 +107,10 @@ namespace Chroma
       write(xml, "Grid", param.grid);
 
       xml << param.link_smearing.xml;
+
+      if(param.smear){
+	xml<< param.smearing.xml ;
+      }
 
       pop(xml);
     }
@@ -507,8 +519,26 @@ namespace Chroma
       roloi.reset();
       roloi.start();
       DiluteGridQuarkSourceConstEnv::Params srcParams ;
-      srcParams.smear = false ;
+      NoQuarkDisplacementEnv::Params noQuarkDisp ;
+      NoLinkSmearingEnv::Params noLinkSmear ;
+      srcParams.smear = params.param.smear ;
+      srcParams.smr   = params.param.smearing ;
+      //for speed I could just pass the smeared field to the source constructor
+      //and tell it not to link smear....
+      //srcParams.link_smear = params.param.link_smearing ;
       srcParams.j_decay = params.param.grid.decay_dir ;
+      //create a no displacement xml
+      {
+	XMLBufferWriter tt ;
+	push(tt,"foo");
+	noQuarkDisp.writeXML(tt,"Displacement");
+	noLinkSmear.writeXML(tt,"LinkSmearing");
+	pop(tt);
+	XMLReader from(tt);
+	srcParams.displace = readXMLGroup(from, "/foo/Displacement", "DisplacementType");
+	srcParams.link_smear = readXMLGroup(from, "/foo/LinkSmearing", "LinkSmearingType");
+      }
+      QDPIO::cout << name << ": Not smearing in dir "<<srcParams.j_decay<<endl ;
       srcParams.spatial_mask_size = params.param.grid.spatial_mask_size ;
       multi2d<LatticeFermion> vec(Nc,params.param.grid.spatial_masks.size()) ;
       srcParams.spin = -1 ;// do all spins at once                          
@@ -521,7 +551,8 @@ namespace Chroma
 		      << " and  grid " << g<< " ( of "
 		      << params.param.grid.spatial_masks.size() << ")"<<endl;
 	  DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion> GridSrc(srcParams);
-	  vec(c,g) = GridSrc(u);
+	  
+	  vec(c,g) = GridSrc(u_smr);
 	}//g                                                               
       }//c                                                          
       roloi.stop();

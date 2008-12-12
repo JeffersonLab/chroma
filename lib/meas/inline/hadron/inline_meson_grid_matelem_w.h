@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_meson_grid_matelem_w.h,v 3.1 2008-12-01 03:09:17 kostas Exp $
+// $Id: inline_meson_grid_matelem_w.h,v 3.2 2008-12-12 03:54:57 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -41,7 +41,9 @@ namespace Chroma
 	int                     displacement_length   ; /*!< Displacement length for creat. and annih. ops */
 	multi1d< multi1d<int> > displacement_list     ; /*!< Array of displacements list to generate       */
 	GroupXML_t              link_smearing         ; /*!< link smearing xml                             */
+	GroupXML_t              smearing              ; /*!< quark smearing xml                            */
 	Grid_t                  grid                  ; /*!< grid descriptor                               */
+	bool                    smear                 ;
       };
 
       struct NamedObject_t
