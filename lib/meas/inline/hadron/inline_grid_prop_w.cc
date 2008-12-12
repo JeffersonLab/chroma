@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_w.cc,v 3.2 2008-11-28 05:13:58 kostas Exp $
+// $Id: inline_grid_prop_w.cc,v 3.3 2008-12-12 04:13:34 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -360,7 +360,7 @@ namespace Chroma
 		
 		//Constuct the source
 		DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion>  GridSrc(srcParams);
-		LatticeFermion chi = GridSrc(u);
+		LatticeFermion chi = GridSrc(u);// one can save time here by passed an presmeared field
 
 		LatticeFermion quark_soln = zero;
 		// Do the propagator inversion
