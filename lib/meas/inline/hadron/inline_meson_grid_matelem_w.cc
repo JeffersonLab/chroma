@@ -1,4 +1,4 @@
-// $Id: inline_meson_grid_matelem_w.cc,v 3.3 2008-12-12 03:54:56 kostas Exp $
+// $Id: inline_meson_grid_matelem_w.cc,v 3.4 2008-12-12 04:05:02 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -581,6 +581,8 @@ namespace Chroma
       int Ngrids = params.param.grid.spatial_masks.size() ;
       // Loop over each operator 
       int format_type = MATELEM_TYPE_DIAGONAL ;
+      if( params.param.smear )
+	format_type = MATELEM_TYPE_GENERIC ;
       for(int l=0; l < params.param.displacement_list.size(); ++l){
 	multi1d<int> disp = normDisp(params.param.displacement_list[l]);
 	if(disp.size()!=0)
