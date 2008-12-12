@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_disco_eigcg_w.h,v 1.2 2008-12-12 17:11:16 kostas Exp $
+// $Id: inline_disco_eigcg_w.h,v 1.3 2008-12-12 23:04:38 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *
@@ -38,6 +38,7 @@ namespace Chroma
 	int p2_max ; /*! maximum p2  */
 	multi1d<GroupXML_t> chi ;     /*! dilutions */
 	string mass_label ; /*! a string flag maybe used in analysis*/
+	GroupXML_t action ; /*! need to specify the action whose operator D we are computing the trace. The vectors may require manipulation if they come from an EO action and or if they are vectors that approximate the D^\dagger D invese (as those that EigCG produces are */
       } param;
     
       struct NamedObject_t

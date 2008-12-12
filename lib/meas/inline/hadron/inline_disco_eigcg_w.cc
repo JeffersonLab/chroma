@@ -1,4 +1,4 @@
-// $Id: inline_disco_eigcg_w.cc,v 1.2 2008-12-12 17:11:15 kostas Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.3 2008-12-12 23:04:38 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -76,6 +76,7 @@ namespace Chroma{
 	  read(paramtop,"p2_max",param.p2_max);
 	  read(paramtop,"mass_label",param.mass_label);
 	  param.chi = readXMLArrayGroup(paramtop, "Quarks", "DilutionType");
+	  param.action = readXMLGroup(paramtop, "FermionAction","FermAct");
 	  
 	  break;
 	  
@@ -101,7 +102,9 @@ namespace Chroma{
       write(xml,"max_path_length",param.max_path_length);
       write(xml,"p2_max",param.p2_max);
       write(xml,"mass_label",param.mass_label);
-
+      push(xml,"FermionAction");
+      xml<<param.action.xml ;
+      pop(xml);
       push(xml,"Quarks");
       for( int t(0);t<param.chi.size();t++){
 	push(xml,"elem");
