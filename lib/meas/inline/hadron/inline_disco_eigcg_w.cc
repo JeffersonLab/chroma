@@ -1,4 +1,4 @@
-// $Id: inline_disco_eigcg_w.cc,v 1.4 2008-12-13 04:42:19 kostas Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.5 2008-12-13 13:27:56 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -345,7 +345,61 @@ namespace Chroma{
       }
       
     }// do_disco
+    
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+    Handle<EvenOddPrecLinearOperator<T,P,Q> > 
+    createOddOdd_Op( const Params::Param_t& param, const P& u){     
+      //
+      // Initialize fermion action
+      //
+      std::istringstream  xml_s(param.action.xml);
+      XMLReader  fermacttop(xml_s);
+      QDPIO::cout << "FermAct = " << param.action.id << endl;
+      //
+      // Try the factories
+      //
+      Handle< FermState<T,P,Q> > state ;
+      try{
+	  QDPIO::cout << "Try the various Wilson fermion factories" << endl;
+	  // Typedefs to save typing
+	  // Generic Wilson-Type stuff
+	  Handle< FermionAction<T,P,Q> >
+	    Sf(TheFermionActionFactory::Instance().createObject(param.action.id,
+								fermacttop,
+								param.action.path));
+	  state = Sf->createState(u);//got the state
+	  QDPIO::cout << "Suitable factory found: compute the trace quark prop"<<endl;
+	}
+      catch (const std::string& e){
+	QDPIO::cout << name 
+		    << ": caught exception instantiating the action: " << e << endl;
+      }
 
+      //Now need to construct the operator
+      //this seems tricky and mabey there is a better way... (Robert-Balint help!)
+      //We only work with Wilson and Clover Wilson fermions so check the following 2
+      // For the moment we restrict to EO preconditioned only
+
+      //this is the Odd-Odd piece
+      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo ;
+      if(param.action.id == "WILSON"){
+	WilsonFermActParams wp(fermacttop,param.action.path);
+	//write(xml_out,"WILSON_PARAM",wp);
+	return  new EvenOddPrecWilsonLinOp(state,wp.Mass,wp.anisoParam ) ;
+      }
+      else if(param.action.id == "CLOVER"){
+	CloverFermActParams cp(fermacttop,param.action.path);
+	return  new EvenOddPrecCloverLinOp(state,cp) ;
+
+      }
+      else{
+	QDPIO::cout<<name<<" : Tough luck dude! No code for you..."<<endl ;
+	QDP_abort(1);
+      }
+      return NULL ;
+    }
 
   //--------------------------------------------------------------
   // Function call
@@ -547,60 +601,10 @@ namespace Chroma{
 	}
       }
 
+     
       //in order to do the remaining of the peices we instantiate the action
       // so that we get a handle to the linear operator whose trace we compute
-      //
-      // Initialize fermion action
-      //
-      std::istringstream  xml_s(params.param.action.xml);
-      XMLReader  fermacttop(xml_s);
-      QDPIO::cout << "FermAct = " << params.param.action.id << endl;
-      //
-      // Try the factories
-      //
-      typedef LatticeFermion               T;
-      typedef multi1d<LatticeColorMatrix>  P;
-      typedef multi1d<LatticeColorMatrix>  Q;
-      Handle< FermState<T,P,Q> > state ;
-      try{
-	  QDPIO::cout << "Try the various Wilson fermion factories" << endl;
-	  // Typedefs to save typing
-	  // Generic Wilson-Type stuff
-	  Handle< FermionAction<T,P,Q> >
-	    Sf(TheFermionActionFactory::Instance().createObject(params.param.action.id,
-								fermacttop,
-								params.param.action.path));
-	  state = Sf->createState(u);//got the state
-	  QDPIO::cout << "Suitable factory found: compute the trace quark prop"<<endl;
-	}
-      catch (const std::string& e){
-	QDPIO::cout << name 
-		    << ": caught exception instantiating the action: " << e << endl;
-      }
-
-      //Now need to construct the operator
-      //this seems tricky and mabey there is a better way... (Robert-Balint help!)
-      //We only work with Wilson and Clover Wilson fermions so check the following 2
-      // For the moment we restrict to EO preconditioned only
-
-      //this is the Odd-Odd piece
-      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo ;
-      if(params.param.action.id == "WILSON"){
-	WilsonFermActParams wp(fermacttop,params.param.action.path);
-	//write(xml_out,"WILSON_PARAM",wp);
-	Doo = new EvenOddPrecWilsonLinOp(state,wp.Mass,wp.anisoParam ) ;
-      }
-      else if(params.param.action.id == "CLOVER"){
-	CloverFermActParams cp(fermacttop,params.param.action.path);
-	Doo = new EvenOddPrecCloverLinOp(state,cp) ;
-
-      }
-      else{
-	QDPIO::cout<<name<<" : Tough luck dude! No code for you..."<<endl ;
-	QDP_abort(1);
-      }
-
-     
+      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo=createOddOdd_Op(params.param,u);
 
       //Here we  subtract from the random noise estimate 
       // the piece that the eigenvectors will compute for us
