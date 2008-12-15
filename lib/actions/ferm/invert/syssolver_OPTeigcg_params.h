@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigcg_params.h,v 1.3 2008-04-03 15:58:43 kostas Exp $
+// $Id: syssolver_OPTeigcg_params.h,v 1.4 2008-12-15 05:02:06 kostas Exp $
 /*! \file
  *  \brief Solve a CG1 system
  */
@@ -45,6 +45,15 @@ namespace Chroma
     
     bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver*/
     string eigen_id ; /*!< named buffer holding the eigenvectors */
+
+    struct File_t
+    {
+      bool read ;
+      bool write ;
+      std::string   file_name;
+      QDP_volfmt_t  file_volfmt;
+    } file;
+
     
     void defaults(){
       RsdCG = 1.0e-8;
@@ -59,6 +68,14 @@ namespace Chroma
       
       cleanUpEvecs=false;
       eigen_id="NULL";
+
+      //IO control                                                                                               
+      file.file_name = eigen_id ;
+      file.file_volfmt = QDPIO_SINGLEFILE ;
+
+      file.read   = false;
+      file.write  = false;
+
     }
 
   };

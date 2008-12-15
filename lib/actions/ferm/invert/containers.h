@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.14 2008-12-10 04:52:01 kostas Exp $
+// $Id: containers.h,v 1.15 2008-12-15 05:02:06 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -32,6 +32,34 @@ namespace Chroma
 	H.resize(ldh*ldh);
 	HU.resize(ldh*ldh);
       }
+      
+      void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v) const 
+      {// returnts the vector v as a lattice fermion
+	RComplex<float> *px = (RComplex<float> *)&evecs[v];
+	if(s.hasOrderedRep()){
+	  int count=0 ;
+	  //can be done with ccopy for speed...                                                                
+	  for(int i=s.start(); i <= s.end(); i++)
+	    for(int ss(0);ss<Ns;ss++)
+	      for(int c(0);c<Nc;c++){
+		lf.elem(i).elem(ss).elem(c)  = *(px+count);
+		count++;
+	      }
+	}//if   
+	else{
+	  int i ;
+	  const int *tab = s.siteTable().slice();
+	  int count=0;
+	  for(int x=0; x < s.numSiteTable(); ++x){
+	    i = tab[x] ;
+	    for(int ss(0);ss<Ns;ss++)
+	      for(int c(0);c<Nc;c++){
+		lf.elem(i).elem(ss).elem(c) = *(px+count);
+		count++;
+	      }
+	  }
+	}//else        
+      }
     } ;
 
     class EigInfo{
@@ -60,33 +88,8 @@ namespace Chroma
 	H = o.H ;
 	HU = o.HU ;
 	evecs.resize(o.evals.size()) ;
-	for(int v(0);v<ncurEvals;v++){
-	  RComplex<float> *px = (RComplex<float> *)&o.evecs[v];
-	  if(s.hasOrderedRep()){
-	    int count=0 ;
-	    //can be done with ccopy for speed...          
-	    for(int i=s.start(); i <= s.end(); i++)
-	      for(int ss(0);ss<Ns;ss++)
-		for(int c(0);c<Nc;c++){
-		  evecs[v].elem(i).elem(ss).elem(c)  = *(px+count);
-		  count++;
-		}
-	  }//if
-	  else{
-	    int i ;
-	    const int *tab = s.siteTable().slice();
-	    int count=0;
-	    for(int x=0; x < s.numSiteTable(); ++x){
-	      i = tab[x] ;
-	      for(int ss(0);ss<Ns;ss++)
-		for(int c(0);c<Nc;c++){
-		  evecs[v].elem(i).elem(ss).elem(c) = *(px+count);
-		  count++;
-		}
-	    }
-	  }//else
-	  
-	}// v
+	for(int v(0);v<ncurEvals;v++)
+	  o.CvToLatFerm(evecs[v],s,v);
       }
     } ;
 

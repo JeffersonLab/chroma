@@ -1,12 +1,37 @@
-// $Id: syssolver_eigcg_params.cc,v 1.8 2008-04-09 04:49:22 kostas Exp $
+// $Id: syssolver_eigcg_params.cc,v 1.9 2008-12-15 05:02:06 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
 
 #include "actions/ferm/invert/syssolver_eigcg_params.h"
+#include "io/qprop_io.h"
 
 namespace Chroma
 {
+
+  //! File output                                                                       
+  void write(XMLWriter& xml, const string& path, const SysSolverEigCGParams::File_t& input){
+    push(xml, path);
+
+    write(xml, "read", input.read);
+    write(xml, "write", input.write);
+    write(xml, "file_name", input.file_name);
+    write(xml, "file_volfmt", input.file_volfmt);
+
+    pop(xml);
+  }
+
+
+  //! File output
+  void read(XMLReader& xml, const string& path, SysSolverEigCGParams::File_t& input){
+    XMLReader inputtop(xml, path);
+
+    read(inputtop, "read", input.read);
+    read(inputtop, "write", input.write);
+    read(inputtop, "file_name", input.file_name);
+    read(inputtop, "file_volfmt", input.file_volfmt);
+  }
+
 
   // Read parameters
   void read(XMLReader& xml, const string& path, SysSolverEigCGParams& param)
@@ -54,6 +79,10 @@ namespace Chroma
     read(paramtop, "cleanUpEvecs", param.cleanUpEvecs);
     read(paramtop, "eigen_id", param.eigen_id);
 
+    if(paramtop.count("FileIO")!=0){
+      read(paramtop, "FileIO", param.file);
+    }
+
   }
 
   // Writer parameters
@@ -77,6 +106,8 @@ namespace Chroma
     write(xml, "vPrecCGvecs", param.vPrecCGvecStart);
     write(xml, "cleanUpEvecs", param.cleanUpEvecs);
     write(xml, "eigen_id", param.eigen_id);
+
+    write(xml, "FileIO",param.file);
 
     pop(xml);
   }
