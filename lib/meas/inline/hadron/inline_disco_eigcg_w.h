@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_disco_eigcg_w.h,v 1.3 2008-12-12 23:04:38 kostas Exp $
+// $Id: inline_disco_eigcg_w.h,v 1.4 2008-12-15 19:24:28 kostas Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *
@@ -43,9 +43,9 @@ namespace Chroma
     
       struct NamedObject_t
       {
-	std::string         gauge_id   ;
-	std::string         evecs_id   ;
-	std::string         op_db_file ;
+	std::string         gauge_id    ;
+	std::string         evecs_file;
+	std::string         op_db_file  ;
       } named_obj;
       
       std::string xml_file;  // Alternate XML file pattern

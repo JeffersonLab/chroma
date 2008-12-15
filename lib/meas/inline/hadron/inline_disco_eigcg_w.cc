@@ -1,4 +1,4 @@
-// $Id: inline_disco_eigcg_w.cc,v 1.5 2008-12-13 13:27:56 kostas Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.6 2008-12-15 19:24:28 kostas Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -126,24 +126,23 @@ namespace Chroma{
       pop(xml); // final pop
     }
 
-
     //! Gauge field parameters
-  void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
       
-      read(inputtop, "gauge_id",   input.gauge_id   ) ;
-      read(inputtop, "evecs_id",   input.evecs_id   ) ;
-      read(inputtop, "op_db_file", input.op_db_file ) ;
+      read(inputtop, "gauge_id"   , input.gauge_id   ) ;
+      read(inputtop, "evecs_file" , input.evecs_file ) ;
+      read(inputtop, "op_db_file" , input.op_db_file ) ;
     }
     
     //! Gauge field parameters
-  void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
+    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
       push(xml, path);
       
-      write(xml, "gauge_id", input.gauge_id);
-      write(xml, "evecs_id",   input.evecs_id   ) ;
-      write(xml, "op_db_file", input.op_db_file);
+      write(xml, "gauge_id"   , input.gauge_id   );
+      write(xml, "evecs_file" , input.evecs_file );
+      write(xml, "op_db_file" , input.op_db_file );
       pop(xml);
     }
     
@@ -346,6 +345,48 @@ namespace Chroma{
       
     }// do_disco
     
+    struct CholeskyFactors{
+      multi1d<Real>    evals ;
+      multi1d<Complex> H     ;
+      multi1d<Complex> HU    ;
+    } ;
+
+    void   ReadOPTEigCGVecs(multi1d<LatticeFermion>& vec,
+			    CholeskyFactors& Clsk, 
+			    const string& evecs_file)
+    {
+      QDPIO::cout<<name<<" : Reading vecs from "
+		 << evecs_file <<endl ;
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      int Nvecs,ldh ;
+      // File XML                                      
+      XMLReader file_xml;
+      // Open file     
+      QDPFileReader to(file_xml,evecs_file,QDPIO_SERIAL);
+      read(file_xml, "/OptEigInfo/ncurEvals", Nvecs);
+      read(file_xml, "/OptEigInfo/ldh", ldh);
+      vec.resize(Nvecs);
+      Clsk.evals.resize(ldh);
+      Clsk.H.resize(ldh*ldh);
+      Clsk.HU.resize(ldh*ldh);
+
+      for(int v(0);v<Nvecs;v++){
+	XMLReader record_xml;
+	read(to, record_xml, vec[v]);
+      }
+      
+      XMLReader record_xml;
+      read(to, record_xml, Clsk.evals);
+      read(to, record_xml, Clsk.H);
+      read(to, record_xml, Clsk.HU);
+      swatch.stop();
+      QDPIO::cout<<name<<" : Time to read vecs= "
+		 << swatch.getTimeInSeconds() <<" secs "<<endl ;
+    }
+
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
@@ -605,6 +646,11 @@ namespace Chroma{
       //in order to do the remaining of the peices we instantiate the action
       // so that we get a handle to the linear operator whose trace we compute
       Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo=createOddOdd_Op(params.param,u);
+
+      //Now I can read the evecs from disk
+      multi1d<LatticeFermion> vec; // the vectors
+      CholeskyFactors Clsk; // the Cholesky Factors 
+      ReadOPTEigCGVecs(vec,Clsk,params.named_obj.evecs_file);
 
       //Here we  subtract from the random noise estimate 
       // the piece that the eigenvectors will compute for us

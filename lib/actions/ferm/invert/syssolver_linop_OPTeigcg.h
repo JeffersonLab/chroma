@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigcg.h,v 1.7 2008-12-15 16:45:45 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.h,v 1.8 2008-12-15 19:24:28 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -154,9 +154,24 @@ namespace Chroma
       //this is just fine
       {
 	XMLReader record_xml;
-	read(to, record_xml, obj.evals);
-	read(to, record_xml, obj.H);
-	read(to, record_xml, obj.HU);
+	multi1d<Real>    evals(ldh) ;
+	multi1d<Complex> H(ldh*ldh)     ;
+	multi1d<Complex> HU(ldh*ldh)    ;
+	read(to, record_xml, evals);
+	read(to, record_xml, H);
+	read(to, record_xml, HU);
+	if(ldh<=obj.evals.size()){
+	  for(int i(0);i<ldh;i++)
+	    obj.evals[i] = evals[i] ;
+	  for(int i(0);i<H.size();i++){
+	    obj.H[i] = H[i] ;
+	    obj.HU[i] = HU[i] ;
+	  }
+	}
+	else{
+	  QDPIO::cerr<<__func__<< " : ldh of the current object is not large enough to hold the Cholesky factors" ;
+	  QDP_abort(1);
+	}
       }
 
     // Close                             
