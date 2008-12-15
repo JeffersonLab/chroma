@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.12 2008-11-27 05:49:11 kostas Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.13 2008-12-15 16:45:45 kostas Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -14,6 +14,7 @@
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_grid_prop.h"
 #include "util/ferm/map_obj.h"
+
 #include "actions/ferm/invert/containers.h"
 
 namespace Chroma
@@ -448,61 +449,6 @@ namespace Chroma
 	// Close
 	close(to);
       }
-      //! Write out an OptEigInfo Type                          
-      void QIOWriteOptEigInfo(const string& buffer_id,
-			      const string& file,
-			      QDP_volfmt_t volfmt, 
-			      QDP_serialparallel_t serpar){
-	// A shorthand for the object         
-        const LinAlg::OptEigInfo& obj =
-	  TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(buffer_id);
-
-	// File XML                                 
-	XMLBufferWriter file_xml;
-	push(file_xml, "OptEigInfo");
-	write(file_xml, "id", uniqueId());
-	write(file_xml, "N", obj.N);
-	write(file_xml, "ncurEvals", obj.ncurEvals);
-	write(file_xml, "restartTol", obj.restartTol);
-	write(file_xml, "lde", obj.lde);
-	write(file_xml, "ldh", obj.evals.size());
-	
-	write(file_xml, "nrow", Layout::lattSize());
-	write(file_xml, "geom", Layout::logicalSize());
-	pop(file_xml);
-	
-	// Open file                                           
-	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
-	
-	{
-	  XMLBufferWriter record_xml;
-	  push(record_xml, "EigenVectors");
-	  pop(record_xml);
-	  write(to, record_xml, obj.evecs);
-	}
-	{
-	  XMLBufferWriter record_xml;
-	  push(record_xml, "EigenValues");
-	  pop(record_xml);
-	  write(to, record_xml, obj.evals);
-	}
-	{
-	  XMLBufferWriter record_xml;
-	  push(record_xml, "H");
-	  pop(record_xml);
-	  write(to, record_xml, obj.H);
-	}
-	{
-	  XMLBufferWriter record_xml;
-	  push(record_xml, "HU");
-	  pop(record_xml);
-	  write(to, record_xml, obj.HU);
-	}
-	
-	// Close        
-	close(to);
-      }
-
 
       //! Write out a MapObject Type
       template<typename K, typename V>
@@ -591,8 +537,6 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
 	
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("OptEigInfo"), QIOWriteOptEigInfo);
-
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
 								      QIOWriteMapObj<KeyPropColorVec_t,LatticeFermion>);
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.15 2008-12-15 05:02:06 kostas Exp $
+// $Id: containers.h,v 1.16 2008-12-15 16:45:45 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -11,6 +11,69 @@ namespace Chroma
   namespace LinAlg
   {
 
+       
+    //! copies an EigCG vector to a LatticeFermion (Works only in single prec.
+    // Robert et.al. we might want to generalizes this to work for everything
+    // We will make a double prec eigCG at some point
+    inline void CopyToLatFerm(LatticeFermion& lf, RComplex<float> *px, 
+		       const Subset& s)
+    {
+      if(s.hasOrderedRep()){
+	int count=0 ;
+	//can be done with ccopy for speed...   
+	for(int i=s.start(); i <= s.end(); i++)
+	  for(int ss(0);ss<Ns;ss++)
+	      for(int c(0);c<Nc;c++){
+		lf.elem(i).elem(ss).elem(c)  = *(px+count);
+		count++;
+	      }
+      }//if   
+      else{
+	int i ;
+	const int *tab = s.siteTable().slice();
+	int count=0;
+	for(int x=0; x < s.numSiteTable(); ++x){
+	  i = tab[x] ;
+	  for(int ss(0);ss<Ns;ss++)
+	    for(int c(0);c<Nc;c++){
+	      lf.elem(i).elem(ss).elem(c) = *(px+count);
+	      count++;
+	    }
+	}
+      }//else        
+    }
+
+    //! copies a LatticeFermion into an EigCG vector 
+    //! (Works only in single prec.
+    // Robert et.al. we might want to generalizes this to work for everything
+    inline void CopyFromLatFerm(RComplex<float> *px, const LatticeFermion& lf, 
+			 const Subset& s) 
+    {
+      if(s.hasOrderedRep()){
+	int count=0 ;
+	//can be done with ccopy for speed...   
+	for(int i=s.start(); i <= s.end(); i++)
+	  for(int ss(0);ss<Ns;ss++)
+	      for(int c(0);c<Nc;c++){
+		*(px+count) = lf.elem(i).elem(ss).elem(c)  ;
+		count++;
+	      }
+      }//if   
+      else{
+	int i ;
+	const int *tab = s.siteTable().slice();
+	int count=0;
+	for(int x=0; x < s.numSiteTable(); ++x){
+	  i = tab[x] ;
+	  for(int ss(0);ss<Ns;ss++)
+	    for(int c(0);c<Nc;c++){
+	      *(px+count) = lf.elem(i).elem(ss).elem(c) ;
+	      count++;
+	    }
+	}
+      }//else        
+    }
+      
     //--- OPT eigcg space ---//
     class OptEigInfo{
     public:
@@ -35,30 +98,22 @@ namespace Chroma
       
       void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v) const 
       {// returnts the vector v as a lattice fermion
-	RComplex<float> *px = (RComplex<float> *)&evecs[v];
-	if(s.hasOrderedRep()){
-	  int count=0 ;
-	  //can be done with ccopy for speed...                                                                
-	  for(int i=s.start(); i <= s.end(); i++)
-	    for(int ss(0);ss<Ns;ss++)
-	      for(int c(0);c<Nc;c++){
-		lf.elem(i).elem(ss).elem(c)  = *(px+count);
-		count++;
-	      }
-	}//if   
-	else{
-	  int i ;
-	  const int *tab = s.siteTable().slice();
-	  int count=0;
-	  for(int x=0; x < s.numSiteTable(); ++x){
-	    i = tab[x] ;
-	    for(int ss(0);ss<Ns;ss++)
-	      for(int c(0);c<Nc;c++){
-		lf.elem(i).elem(ss).elem(c) = *(px+count);
-		count++;
-	      }
-	  }
-	}//else        
+	if(v>=evals.size()){
+	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<endl ;
+	  QDP_abort(100);
+	}
+	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
+	CopyToLatFerm(lf,px,s);
+      }
+
+      void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v)
+      {// returnts the vector v as a lattice fermion
+	if(v>=evals.size()){
+	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<endl ;
+	  QDP_abort(101);
+	}
+	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
+	CopyFromLatFerm(px,lf,s);
       }
     } ;
 
@@ -93,7 +148,7 @@ namespace Chroma
       }
     } ;
 
-    //--------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     //! Hold vectors
     /*! \ingroup invert */
     template<class T> class Vectors

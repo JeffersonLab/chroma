@@ -1,4 +1,4 @@
-// $Id: qio_read_obj_funcmap.cc,v 3.14 2008-11-27 05:49:11 kostas Exp $
+// $Id: qio_read_obj_funcmap.cc,v 3.15 2008-12-15 16:45:45 kostas Exp $
 /*! \file
  *  \brief Read object function map
  */
@@ -448,82 +448,6 @@ namespace Chroma
 	close(to);
       }
 
-      //-----------------------------------------------------------------------
-      //! Read a OptEigInfo Type
-      void QIOReadOptEigInfo(const string& buffer_id,
-			     const string& file,
-			     QDP_serialparallel_t serpar)
-      {
-	// File XML
-	XMLReader file_xml;
-
-	// Open file
-	QDPFileReader to(file_xml,file,serpar);
-
-	// Create the named object
-	TheNamedObjMap::Instance().create< LinAlg::OptEigInfo >(buffer_id);
-	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
-
-	// A shorthand for the object
-	LinAlg::OptEigInfo& obj = 
-	  TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(buffer_id);
-
-	XMLReader record_xml;
-	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
-	
-	multi1d<int> nrow ;
-	multi1d<int> geom ;
-	read(file_xml, "/OptEigInfo/nrow", nrow);
-	read(file_xml, "/OptEigInfo/geom", geom);
-	if(nrow.size()!=Nd){
-	  QDPIO::cerr << __func__ << ": Wrong space-time dimension" << endl;
-          QDP_abort(11);
-	}
-	for(int mu(0);mu<Nd;mu++){
-	  if( (nrow[mu]!=Layout::lattSize()[mu])||
-	      (geom[mu]!=Layout::logicalSize()[mu])){
-	    QDPIO::cerr << __func__ << ": Wrong geometry " << endl;
-	    QDP_abort(12);
-	  }    
-	}
-	int ldh ;
-	read(file_xml, "/OptEigInfo/ldh", ldh);
-	read(file_xml, "/OptEigInfo/lde", obj.lde);
-	read(file_xml, "/OptEigInfo/N", obj.N);
-	if(obj.lde !=  Layout::sitesOnNode()*Nc*Ns ){
-	  QDPIO::cerr << __func__ << ": these vectors where produced on a different  machine geometry" << endl;
-	  QDPIO::cerr << __func__ << ": obj.lde=" <<obj.lde<<  endl;
-	  QDPIO::cerr << __func__ << ": Layout::sitesOnNode()*Nc*Ns=" ;
-	  QDPIO::cerr << Layout::sitesOnNode()*Nc*Ns <<  endl;
-	  
-          QDP_abort(13);
-	}
-	QDPIO::cout << __func__ << ": obj.lde=" << obj.lde<< endl;
-	QDPIO::cout << __func__ << ":     ldh=" << ldh<< endl;
-	QDPIO::cout << __func__ << ": obj.N=" <<obj.N<<  endl;
-
-	obj.init(ldh, obj.lde, obj.N );
-	
-	read(file_xml, "/OptEigInfo/ncurEvals", obj.ncurEvals);
-	read(file_xml, "/OptEigInfo/restartTol", obj.restartTol);
-	
-	QDPIO::cout << __func__ << ": obj.ncurEvals=" << obj.ncurEvals<< endl;
-	QDPIO::cout << __func__ << ": obj.restartTol=" <<obj.restartTol<< endl;
-
-
-	{
-	  XMLReader record_xml;
-	  read(to, record_xml, obj.evecs);
-	  read(to, record_xml, obj.evals);
-	  //read(record_xml, "/EigenValues", obj.evals);
-	  read(to, record_xml, obj.H);
-	  read(to, record_xml, obj.HU);
-	}
-
-	// Close
-	close(to);
-      }
-
       //! Read a MapObject Type
       template<typename K, typename V>
       void QIOReadMapObj(const string& buffer_id,
@@ -654,9 +578,6 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);
 	
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("O\
-ptEigInfo"), QIOReadOptEigInfo);
-
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
 								     QIOReadMapObj<KeyPropColorVec_t,LatticeFermion>);
 

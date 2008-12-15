@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigcg.h,v 1.6 2008-12-15 05:02:06 kostas Exp $
+// $Id: syssolver_linop_OPTeigcg.h,v 1.7 2008-12-15 16:45:45 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -39,13 +39,17 @@ namespace Chroma
   {
   public:
 
-    //! Write out an OptEigInfo Type                                                                           
+    //! Write out an OptEigInfo Type                         
     void QIOWriteOptEvecs(){
-      // A shorthand for the object                                                                            
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
+      // A shorthand for the object                                      
       const LinAlg::OptEigInfo& obj =
 	TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(invParam.eigen_id);
 
-      // File XML                                                                                              
+      // File XML                                            
       XMLBufferWriter file_xml;
       push(file_xml, "OptEigInfo");
       write(file_xml, "id", uniqueId());
@@ -56,7 +60,7 @@ namespace Chroma
       write(file_xml, "ldh", obj.evals.size());
       pop(file_xml);
 
-      // Open file                                                                                             
+      // Open file                                  
       QDPFileWriter to(file_xml,
 		       invParam.file.file_name,
 		       invParam.file.file_volfmt,
@@ -91,22 +95,29 @@ namespace Chroma
 	write(to, record_xml, obj.HU);
       }
 
-      // Close                                                                                                 
+      // Close                                                 
       close(to);
-
+      swatch.stop();
+      QDPIO::cout<<" QIOWriteOptEvecs: Time to write evecs= "
+		 << swatch.getTimeInSeconds() <<" secs "<<endl ;
     }
 
-    //-----------------------------------------------------------------------                                  
-    //! Read a OptEigInfo Type                                                                                 
+    //-----------------------------------------------------------------------
+    //! Read a OptEigInfo Type                                           
     void QIOReadOptEvecs()
     {
-      // File XML                                                                                              
+
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
+      // File XML                                      
       XMLReader file_xml;
 
-      // Open file                                                                                             
+      // Open file     
       QDPFileReader to(file_xml,invParam.file.file_name,QDPIO_SERIAL);
 
-      // A shorthand for the object                                                                            
+      // A shorthand for the object         
       LinAlg::OptEigInfo& obj =
 	TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(invParam.eigen_id);
 
@@ -134,11 +145,11 @@ namespace Chroma
 	QDP_abort(1);
       }
       
-      //the following loop still needs work...
       for(int v(0);v<obj.ncurEvals;v++){
         LatticeFermion lf ;
 	XMLReader record_xml;
 	read(to, record_xml, lf);
+	obj.CvToEigCGvec(lf, subset(), v) ;
       }
       //this is just fine
       {
@@ -148,8 +159,12 @@ namespace Chroma
 	read(to, record_xml, obj.HU);
       }
 
-    // Close                                                                                                 
+    // Close                             
     close(to);
+
+    swatch.stop();
+    QDPIO::cout<<" QIOReadOptEvecs: Time to read evecs= "
+	       << swatch.getTimeInSeconds() <<" secs "<<endl ;
   }
 
     //! Constructor
@@ -174,6 +189,7 @@ namespace Chroma
 	  EigInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
 	  if(invParam.file.read){
 	    QDPIO::cout<<"LinOpSysSolverOptEigCG : reading evecs from disk"<<endl ;
+	    QIOReadOptEvecs() ;
 	  }
 	}
       }
@@ -183,6 +199,7 @@ namespace Chroma
       {
 	if(invParam.file.write){
 	  QDPIO::cout<<"LinOpSysSolverOptEigCG : writing evecs to disk"<<endl ;
+	  QIOWriteOptEvecs() ;
 	}
 	if (invParam.cleanUpEvecs)
 	{
