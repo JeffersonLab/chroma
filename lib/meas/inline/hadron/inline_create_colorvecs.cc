@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.1 2008-12-19 17:43:20 kostas Exp $
+// $Id: inline_create_colorvecs.cc,v 3.2 2008-12-19 18:07:22 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -344,8 +344,20 @@ namespace Chroma
 	srcParams.smr = params.param.src.smr ;
       }
       
-      int Nvecs(0) ;
+      // Initialize the slow Fourier transform phases
+      SftMom phases(0, true, params.param.src.decay_dir);
+      
+      int Nvecs(3*params.param.src.spatial_masks.size()) ;
+      color_vecs.getEvectors().resize(Nvecs);
+      color_vecs.getEvalues().resize(Nvecs);
+      for(int i(0);i<Nvecs;i++){
+	color_vecs.getEvalues()[i].weights.resize(phases.numSubsets());
+      }
+
+      color_vecs.getDecayDir() ;
+
       srcParams.spin = 0;
+      int count(0);
       for(int c(0);c<Nc;c++){// loop over colors
 	srcParams.color = c;
 	for(int g(0);g<params.param.src.spatial_masks.size();g++){
@@ -357,17 +369,13 @@ namespace Chroma
 	  DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion>  
 	    GridSrc(srcParams);
 	  LatticeFermion chi = GridSrc(u_smr);
-	  Nvecs ++;
+	  color_vecs.getEvectors()[count] = peekSpin(chi,0) ;
+	  count ++;
 	}
       }
 
-      multi1d< multi1d<Double> > evals(Nvecs) ;
-      // Initialize the slow Fourier transform phases
-      SftMom phases(0, true, params.param.src.decay_dir);
       
-      for(int i(0);i<Nvecs;i++){
-	evals[i].resize(phases.numSubsets());
-      }
+      
       // The code goes here
       StopWatch swatch;
       swatch.reset();
