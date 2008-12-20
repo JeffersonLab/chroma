@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.3 2008-12-20 06:23:52 kostas Exp $
+// $Id: inline_create_colorvecs.cc,v 3.4 2008-12-20 06:36:32 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -509,12 +509,14 @@ namespace Chroma
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;
+	push(record_xml, "EgenInfo");
 	for(int i(0);i<Nvecs;i++){
-	  push(record_xml, "EgenInfo");
+	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
 	  write(record_xml, "EigenValues", color_vecs.getEvalues()[i].weights); 
 	  pop(record_xml);
 	}
+	pop(record_xml);
 	
 	// Write the propagator xml info
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).setFileXML(file_xml);
