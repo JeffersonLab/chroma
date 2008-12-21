@@ -1,11 +1,13 @@
 // -*- C++ -*-
-//  $Id: npr_vertex_w.h,v 1.4 2006-11-03 20:18:21 hwlin Exp $
+//  $Id: npr_vertex_w.h,v 1.5 2008-12-21 21:22:37 edwards Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
 
 #ifndef __npr_vertex_w_h__
 #define __npr_vertex_w_h__
+
+#include "chromabase.h"
 
 namespace Chroma 
 {

@@ -1,13 +1,10 @@
-//  $Id: npr_vertex_w.cc,v 1.7 2007-11-30 05:06:14 kostas Exp $
+//  $Id: npr_vertex_w.cc,v 1.8 2008-12-21 21:22:37 edwards Exp $
 /*! \file
  *  \brief NPR vertex calculations
  */
 
-#include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/npr_vertex_w.h"
-
-using namespace QDP;
 
 namespace Chroma 
 {

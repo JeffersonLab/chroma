@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.9 2007-11-11 14:53:29 kostas Exp $ 
+// $Id: barQll_w.cc,v 1.10 2008-12-21 21:22:36 edwards Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -6,8 +6,6 @@
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "barQll_w.h"
-
-using namespace QDP;
 
 namespace Chroma { 
 

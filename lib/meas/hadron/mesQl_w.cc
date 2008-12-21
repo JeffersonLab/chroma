@@ -1,14 +1,10 @@
-// $Id: mesQl_w.cc,v 1.2 2006-05-18 18:03:10 kostas Exp $ 
+// $Id: mesQl_w.cc,v 1.3 2008-12-21 21:22:37 edwards Exp $ 
 /*! \file
  *  \brief Heavy Meson (Qlbar)  2-pt function : Orginos and Savage
  */
 
-#include "chromabase.h"
-#include "util/ft/sftmom.h"
-#include "barQll_w.h"
 #include "mesQl_w.h"
-
-using namespace QDP;
+#include "barQll_w.h"
 
 namespace Chroma {
 
