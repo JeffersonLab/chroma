@@ -1,6 +1,9 @@
-//  $Id: sftmom.cc,v 3.7 2008-08-18 18:23:56 jbulava Exp $
+//  $Id: sftmom.cc,v 3.8 2008-12-21 21:03:43 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.7  2008-08-18 18:23:56  jbulava
+//  Revision 3.8  2008-12-21 21:03:43  edwards
+//  Moved include of chromabase into the .h file.
+//
+//  Revision 3.7  2008/08/18 18:23:56  jbulava
 //  Added an additional constructor to sftmom class that allows a list of momenta
 //  to be calculated rather than all momenta less that a max value.
 //
@@ -89,7 +92,6 @@
 //  Initial version of SftMom class
 //
 
-#include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "util/ft/single_phase.h"
 #include "qdp_util.h"                 // part of QDP++, for crtesn()

@@ -1,11 +1,13 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.7 2008-08-18 18:23:56 jbulava Exp $
+//  $Id: sftmom.h,v 3.8 2008-12-21 21:03:43 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
 
-#ifndef SFTMOM_INCLUDE
-#define SFTMOM_INCLUDE
+#ifndef __sftmom_h__
+#define __sftmom_h__
+
+#include "chromabase.h"
 
 namespace Chroma 
 {
