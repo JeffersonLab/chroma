@@ -1,4 +1,4 @@
-// $Id: heavy_hadron_potentials_w.cc,v 1.2 2008-12-21 21:22:36 edwards Exp $ 
+// $Id: heavy_hadron_potentials_w.cc,v 1.3 2008-12-21 21:45:47 edwards Exp $ 
 /*! \file
  *  \brief Potential between 2 heavy hadrons : Detmold
  *  Correlators checked independentely by Savage
@@ -34,6 +34,7 @@ namespace Chroma
    * \param xml_group          group name for xml data ( Read )
    *
    */
+
 
   void QllQllPOT(const multi1d<LatticeColorMatrix>& u, 
 		 const LatticePropagator& quark1,
@@ -944,10 +945,10 @@ namespace Chroma
 
 
 
-  multi1d<DComplex> c1contract(QllBlock BzU1zD1z0zCg5, QllBlock BzU1zD3z0zCg5, 
-			       QllBlock BzU2zD2zRzCg5, QllBlock BzU2zD4zRzCg5, 
-			       QllBlock BzU3zD1z0zCg5, QllBlock BzU3zD3z0zCg5, 
-			       QllBlock BzU4zD2zRzCg5, QllBlock BzU4zD4zRzCg5,
+  multi1d<DComplex> c1contract(const QllBlock& BzU1zD1z0zCg5, const QllBlock& BzU1zD3z0zCg5, 
+			       const QllBlock& BzU2zD2zRzCg5, const QllBlock& BzU2zD4zRzCg5, 
+			       const QllBlock& BzU3zD1z0zCg5, const QllBlock& BzU3zD3z0zCg5, 
+			       const QllBlock& BzU4zD2zRzCg5, const QllBlock& BzU4zD4zRzCg5,
 			       const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for Lambda_b (R) \Lambda_b (0) 
   // spin matrix S1 is at R and S2 is at 0
@@ -1014,9 +1015,9 @@ namespace Chroma
 
 
 
-  multi1d<DComplex> c4contract(QllBlock BzU1zD1z0zCgjj, QllBlock BzU2zU2zRzCgii,
-			       QllBlock BzU2zU4zRzCgii, QllBlock BzU3zD1z0zCgjj, 
-			       QllBlock BzU4zU2zRzCgii,
+  multi1d<DComplex> c4contract(const QllBlock& BzU1zD1z0zCgjj, const QllBlock& BzU2zU2zRzCgii,
+			       const QllBlock& BzU2zU4zRzCgii, const QllBlock& BzU3zD1z0zCgjj, 
+			       const QllBlock& BzU4zU2zRzCgii,
 			       const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for Sigma_b^+ (R) \Sigma_b^0 (0) 
   // and  Sigma_b^+ (R) \Lambda_b (0)
@@ -1084,10 +1085,10 @@ namespace Chroma
   }
 
 
-  multi1d<DComplex> c5contract(QllBlock BzU1zU1z0zCgjj, QllBlock BzU1zU3z0zCgjj,
-			       QllBlock BzU2zU2zRzCgii, QllBlock BzU2zU4zRzCgii,
-			       QllBlock BzU3zU1z0zCgjj, QllBlock BzU3zU3z0zCgjj,
-			       QllBlock BzU4zU2zRzCgii, QllBlock BzU4zU4zRzCgii,
+  multi1d<DComplex> c5contract(const QllBlock& BzU1zU1z0zCgjj, const QllBlock& BzU1zU3z0zCgjj,
+			       const QllBlock& BzU2zU2zRzCgii, const QllBlock& BzU2zU4zRzCgii,
+			       const QllBlock& BzU3zU1z0zCgjj, const QllBlock& BzU3zU3z0zCgjj,
+			       const QllBlock& BzU4zU2zRzCgii, const QllBlock& BzU4zU4zRzCgii,
 			       const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for Sigma_b^+ \Sigma_b^+
   // spin matrix S1 is at R and S2 is at 0
@@ -1174,7 +1175,7 @@ namespace Chroma
 
 
 
-  multi1d<DComplex> c6contract(QllBlock BzD1zD1z0zCgjj, QllBlock BzU2zU2zRzCgii,
+  multi1d<DComplex> c6contract(const QllBlock& BzD1zD1z0zCgjj, const QllBlock& BzU2zU2zRzCgii,
 			       const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for Sigma_b^+ \Sigma_b^- and  Sigma_b^+ \overline{\Sigma}_b^
   // spin matrix S1 is at R and S2 is at 0
@@ -1239,8 +1240,8 @@ namespace Chroma
   }
 
 
-  multi1d<DComplex> c7contract(QllBlock BzU1zD3z0zCG5, QllBlock BzU2zU4zRzCGii, QllBlock BzU3zD3z0zCG5, 
-			       QllBlock BzU4zU2zRzCGii, QllBlock BzU4zU4zRzCGii,
+  multi1d<DComplex> c7contract(const QllBlock& BzU1zD3z0zCG5, const QllBlock& BzU2zU4zRzCGii, const QllBlock& BzU3zD3z0zCG5, 
+			       const QllBlock& BzU4zU2zRzCGii, const QllBlock& BzU4zU4zRzCGii,
 			       const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for Sigma_b^+ \Lambda_b transition
   // spin matrix S1 is CG5 and S2 is at CGi
@@ -1308,8 +1309,8 @@ namespace Chroma
   }
 
 
-  multi1d<DComplex> d1contract(QllBlock BzU1zD1z0zCG5, QllBlock BzU3zD1z0zCG5, 
-			       HeavyMesonBlock HzU2zRzG5, HeavyMesonBlock HzU4zRzG5,
+  multi1d<DComplex> d1contract(const QllBlock& BzU1zD1z0zCG5, const QllBlock& BzU3zD1z0zCG5, 
+			       const HeavyMesonBlock& HzU2zRzG5, const HeavyMesonBlock& HzU4zRzG5,
 			       const SpinMatrix& mesonS1, const SpinMatrix& baryonS2)
   // Contractions for Bu (R)  Lambda_b (0)
   // spin matrix S1 is at R and S2 is at 0
@@ -1363,8 +1364,8 @@ namespace Chroma
 
 
 
-  multi1d<DComplex> d2contract(QllBlock BzU1zU1z0zCGi, QllBlock BzU3zU1z0zCGi, QllBlock BzU1zU3z0zCGi, 
-			       HeavyMesonBlock HzU2zRzG5, HeavyMesonBlock HzU4zRzG5,
+  multi1d<DComplex> d2contract(const QllBlock& BzU1zU1z0zCGi, const QllBlock& BzU3zU1z0zCGi, const QllBlock& BzU1zU3z0zCGi, 
+			       const HeavyMesonBlock& HzU2zRzG5, const HeavyMesonBlock& HzU4zRzG5,
 			       const SpinMatrix& mesonS1, const SpinMatrix& baryonS2)
   // Contractions for Bu (R)  Sigma_b ^+(0)
   // spin matrix S1 is at R and S2 is at 0
@@ -1420,7 +1421,7 @@ namespace Chroma
   }
 
 
-  multi1d<DComplex> d3contract(QllBlock BzU1zU1z0zCGi, HeavyMesonBlock HzD2zRzG5, 
+  multi1d<DComplex> d3contract(const QllBlock& BzU1zU1z0zCGi, const HeavyMesonBlock& HzD2zRzG5, 
 			       const SpinMatrix& mesonS1, const SpinMatrix& baryonS2)
   // Contractions for Bd (R)  Sigma_b ^+(0)
   // spin matrix S1 is at R and S2 is at 0
@@ -1472,8 +1473,8 @@ namespace Chroma
 
 
 
-  multi1d<DComplex> m1contract( HeavyMesonBlock HzU1z0zG5,  HeavyMesonBlock HzU2zRzG5,
-				HeavyMesonBlock HzU3z0zG5,  HeavyMesonBlock HzU4zRzG5,
+  multi1d<DComplex> m1contract( const HeavyMesonBlock& HzU1z0zG5,  const HeavyMesonBlock& HzU2zRzG5,
+				const HeavyMesonBlock& HzU3z0zG5,  const HeavyMesonBlock& HzU4zRzG5,
 				const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for B B potential
   // spin matrix S1 is at 0 and S2 is at R
@@ -1511,7 +1512,7 @@ namespace Chroma
   }
 
 
-  multi1d<DComplex> m2contract( HeavyMesonBlock HzU1z0zG5,  HeavyMesonBlock HzD2zRzG5,
+  multi1d<DComplex> m2contract( const HeavyMesonBlock& HzU1z0zG5,  const HeavyMesonBlock& HzD2zRzG5,
 				const SpinMatrix& S1, const SpinMatrix& S2)
   // Contractions for B Bs ( or Bu Bd in I=0) potential
   // spin matrix S1 is at 0 and S2 is at R
@@ -1549,7 +1550,7 @@ namespace Chroma
 
 
 
-  multi1d<DComplex> lambdabcontract( QllBlock BzU1zD1z0zCG5,
+  multi1d<DComplex> lambdabcontract( const QllBlock& BzU1zD1z0zCG5,
 				     const SpinMatrix& S1)
   // Contractions for lambda_B baryon
   {
@@ -1587,7 +1588,7 @@ namespace Chroma
     return result;
   }
 
-  multi1d<DComplex> sigmabpluscontract( QllBlock BzU1zU1z0zCGi,
+  multi1d<DComplex> sigmabpluscontract( const QllBlock& BzU1zU1z0zCGi,
 					const SpinMatrix& S1)
   // Contractions for lambda_B baryon
   {
@@ -1625,7 +1626,7 @@ namespace Chroma
     return result;
   }
 
-  multi1d<DComplex> bcontract( HeavyMesonBlock H1,
+  multi1d<DComplex> bcontract( const HeavyMesonBlock& H1,
 			       const SpinMatrix& S1)
   // Contractions for B meson
   {
@@ -1656,17 +1657,17 @@ namespace Chroma
 
   multi2d<DComplex> c4J2corr(
     // Spin up blocks
-    QllBlock BzU1zD1z0zCgplus, QllBlock BzU2zU2zRzCgplus,
-    QllBlock BzU2zU4zRzCgplus, QllBlock BzU3zD1z0zCgplus, 
-    QllBlock BzU4zU2zRzCgplus,
+    const QllBlock& BzU1zD1z0zCgplus, const QllBlock& BzU2zU2zRzCgplus,
+    const QllBlock& BzU2zU4zRzCgplus, const QllBlock& BzU3zD1z0zCgplus, 
+    const QllBlock& BzU4zU2zRzCgplus,
     // Spin zero blocks
-    QllBlock BzU1zD1z0zCg3, QllBlock BzU2zU2zRzCg3,
-    QllBlock BzU2zU4zRzCg3, QllBlock BzU3zD1z0zCg3, 
-    QllBlock BzU4zU2zRzCg3,
+    const QllBlock& BzU1zD1z0zCg3, const QllBlock& BzU2zU2zRzCg3,
+    const QllBlock& BzU2zU4zRzCg3, const QllBlock& BzU3zD1z0zCg3, 
+    const QllBlock& BzU4zU2zRzCg3,
     // Spin down blocks
-    QllBlock BzU1zD1z0zCgminus, QllBlock BzU2zU2zRzCgminus,
-    QllBlock BzU2zU4zRzCgminus, QllBlock BzU3zD1z0zCgminus, 
-    QllBlock BzU4zU2zRzCgminus)
+    const QllBlock& BzU1zD1z0zCgminus, const QllBlock& BzU2zU2zRzCgminus,
+    const QllBlock& BzU2zU4zRzCgminus, const QllBlock& BzU3zD1z0zCgminus, 
+    const QllBlock& BzU4zU2zRzCgminus)
   {
     // Calculate all 9 spin states of the J=1 \otimes J=1 baryon system
 
@@ -1830,20 +1831,20 @@ namespace Chroma
 
   multi2d<DComplex> c5J2corr(
     // Spin up blocks
-    QllBlock BzU1zU1z0zCgplus, QllBlock BzU1zU3z0zCgplus,
-    QllBlock BzU2zU2zRzCgplus, QllBlock BzU2zU4zRzCgplus,
-    QllBlock BzU3zU1z0zCgplus, QllBlock BzU3zU3z0zCgplus,
-    QllBlock BzU4zU2zRzCgplus, QllBlock BzU4zU4zRzCgplus,
+    const QllBlock& BzU1zU1z0zCgplus, const QllBlock& BzU1zU3z0zCgplus,
+    const QllBlock& BzU2zU2zRzCgplus, const QllBlock& BzU2zU4zRzCgplus,
+    const QllBlock& BzU3zU1z0zCgplus, const QllBlock& BzU3zU3z0zCgplus,
+    const QllBlock& BzU4zU2zRzCgplus, const QllBlock& BzU4zU4zRzCgplus,
     // Spin zero blocks
-    QllBlock BzU1zU1z0zCg3, QllBlock BzU1zU3z0zCg3,
-    QllBlock BzU2zU2zRzCg3, QllBlock BzU2zU4zRzCg3,
-    QllBlock BzU3zU1z0zCg3, QllBlock BzU3zU3z0zCg3,
-    QllBlock BzU4zU2zRzCg3, QllBlock BzU4zU4zRzCg3,
+    const QllBlock& BzU1zU1z0zCg3, const QllBlock& BzU1zU3z0zCg3,
+    const QllBlock& BzU2zU2zRzCg3, const QllBlock& BzU2zU4zRzCg3,
+    const QllBlock& BzU3zU1z0zCg3, const QllBlock& BzU3zU3z0zCg3,
+    const QllBlock& BzU4zU2zRzCg3, const QllBlock& BzU4zU4zRzCg3,
     // Spin down blocks
-    QllBlock BzU1zU1z0zCgminus, QllBlock BzU1zU3z0zCgminus,
-    QllBlock BzU2zU2zRzCgminus, QllBlock BzU2zU4zRzCgminus,
-    QllBlock BzU3zU1z0zCgminus, QllBlock BzU3zU3z0zCgminus,
-    QllBlock BzU4zU2zRzCgminus, QllBlock BzU4zU4zRzCgminus)
+    const QllBlock& BzU1zU1z0zCgminus, const QllBlock& BzU1zU3z0zCgminus,
+    const QllBlock& BzU2zU2zRzCgminus, const QllBlock& BzU2zU4zRzCgminus,
+    const QllBlock& BzU3zU1z0zCgminus, const QllBlock& BzU3zU3z0zCgminus,
+    const QllBlock& BzU4zU2zRzCgminus, const QllBlock& BzU4zU4zRzCgminus)
   {
     // Calculate all 9 spin states of the J=1 \otimes J=1 baryon system
 
@@ -2022,11 +2023,11 @@ namespace Chroma
 
   multi2d<DComplex> c6J2corr(
     // Spin up blocks
-    QllBlock BzD1zD1z0zCgplus, QllBlock BzU2zU2zRzCgplus,
+    const QllBlock& BzD1zD1z0zCgplus, const QllBlock& BzU2zU2zRzCgplus,
     // Spin zero blocks
-    QllBlock BzD1zD1z0zCg3, QllBlock BzU2zU2zRzCg3,
+    const QllBlock& BzD1zD1z0zCg3, const QllBlock& BzU2zU2zRzCg3,
     // Spin down blocks
-    QllBlock BzD1zD1z0zCgminus, QllBlock BzU2zU2zRzCgminus)
+    const QllBlock& BzD1zD1z0zCgminus, const QllBlock& BzU2zU2zRzCgminus)
   {
     // Calculate all 9 spin states of the J=1 \otimes J=1 baryon system
 
@@ -2141,13 +2142,13 @@ namespace Chroma
 
   multi2d<DComplex> d2J32corr(
     // Spin up blocks
-    QllBlock BzU1zU1z0zCgplus, QllBlock BzU3zU1z0zCgplus, QllBlock BzU1zU3z0zCgplus, 
-    HeavyMesonBlock HzU2zRzGup, HeavyMesonBlock HzU4zRzGup,
+    const QllBlock& BzU1zU1z0zCgplus, const QllBlock& BzU3zU1z0zCgplus, const QllBlock& BzU1zU3z0zCgplus, 
+    const HeavyMesonBlock& HzU2zRzGup, const HeavyMesonBlock& HzU4zRzGup,
     // Spin zero blocks
-    QllBlock BzU1zU1z0zCg3, QllBlock BzU3zU1z0zCg3, QllBlock BzU1zU3z0zCg3, 
+    const QllBlock& BzU1zU1z0zCg3, const QllBlock& BzU3zU1z0zCg3, const QllBlock& BzU1zU3z0zCg3, 
     // Spin down blocks
-    QllBlock BzU1zU1z0zCgminus, QllBlock BzU3zU1z0zCgminus, QllBlock BzU1zU3z0zCgminus, 
-    HeavyMesonBlock HzU2zRzGdown, HeavyMesonBlock HzU4zRzGdown)
+    const QllBlock& BzU1zU1z0zCgminus, const QllBlock& BzU3zU1z0zCgminus, const QllBlock& BzU1zU3z0zCgminus, 
+    const HeavyMesonBlock& HzU2zRzGdown, const HeavyMesonBlock& HzU4zRzGdown)
   {
     // Calculate all 6 spin states of the J=1 \otimes J=1/2 baryon - meson system
 
@@ -2243,13 +2244,13 @@ namespace Chroma
 
   multi2d<DComplex> d3J32corr(
     // Spin up blocks
-    QllBlock BzU1zU1z0zCgplus, 
-    HeavyMesonBlock HzU2zRzGup, 
+    const QllBlock& BzU1zU1z0zCgplus, 
+    const HeavyMesonBlock& HzU2zRzGup, 
     // Spin zero blocks
-    QllBlock BzU1zU1z0zCg3,
+    const QllBlock& BzU1zU1z0zCg3,
     // Spin down blocks
-    QllBlock BzU1zU1z0zCgminus,
-    HeavyMesonBlock HzU2zRzGdown)
+    const QllBlock& BzU1zU1z0zCgminus,
+    const HeavyMesonBlock& HzU2zRzGdown)
   {
     // Calculate all 6 spin states of the J=1 \otimes J=1/2 baryon - meson system
 

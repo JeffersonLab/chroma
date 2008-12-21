@@ -32,25 +32,17 @@ namespace Chroma
    * \param xml_group          group name for xml data ( Read )
    *
    */
+  void QllQllPOT(const multi1d<LatticeColorMatrix>& u, 
+		 const LatticePropagator& quark1,
+		 const LatticePropagator& quark2,
+		 const multi1d<int>& src1, 
+		 const multi1d<int>& src2, 
+		 const SftMom& phases,
+		 XMLWriter& xml,
+		 const string& xml_group);
 
 
-
-  // pre-declaration of initialisation function
-  multi1d<DComplex> makeQllBlock(multi1d<DPropagator> Q1,
-				 multi1d<DPropagator> Q2,
-				 const SpinMatrix& S,
-				 multiNd<DComplex> HQ,
-				 int size, 
-				 int length);
-
-  multi1d<DComplex> makeHeavyMesonBlock(multi1d<DPropagator> Q,
-					const SpinMatrix& S,
-					multi1d<ColorMatrix> HQ,
-					const SpinMatrix& HQspin,
-					int size, 
-					int length);
-
-
+  // Data classes
   class QllBlock{
   private:
     multi1d<DComplex> data;
@@ -82,12 +74,12 @@ namespace Chroma
   
     ~QllBlock(){};
   
-    DComplex& operator()(int t, int a, int b, int c, int alpha, int beta){
+    const DComplex& operator()(int t, int a, int b, int c, int alpha, int beta) const{
     
       return data[a + Nc*(b + Nc*(c + Nc* (alpha + Ns *(t + Nt* beta))))];
     };
 
-    DComplex& operator()(multi1d<int> ind){
+    const DComplex& operator()(multi1d<int> ind) const {
 
       if (ind.size() != 6)
       {
@@ -101,16 +93,16 @@ namespace Chroma
       return data[a + Nc*(b + Nc*(c + Nc* (alpha + Ns *(t + Nt* beta))))];
     };
 
-    int size(){return mysize;};
+    int size() const {return mysize;};
 
-    int length() {return Nt;};
+    int length() const {return Nt;};
 
     multi1d<DComplex> makeQllBlock( multi1d<DPropagator> Q1,
 				    multi1d<DPropagator> Q2,
 				    const SpinMatrix& S,
 				    multiNd<DComplex> HQ,
 				    int size, 
-				    int length)
+				    int length) const
       {
 	multi1d<DComplex> result(size);
 	multi1d<int> Carray;
@@ -185,12 +177,12 @@ namespace Chroma
   
     ~HeavyMesonBlock(){};
   
-    DComplex& operator()(int t, int a, int b, int alpha, int beta){
+    const DComplex& operator()(int t, int a, int b, int alpha, int beta) const {
     
       return data[a + Nc*(b + Nc* (alpha + Ns *(t + Nt* beta)))];
     };
 
-    DComplex& operator()(multi1d<int> ind){
+    const DComplex& operator()(multi1d<int> ind) const {
 
       if (ind.size() != 5)
       {
@@ -204,16 +196,16 @@ namespace Chroma
       return data[a + Nc*(b + Nc* (alpha + Ns *(t + Nt* beta)))];
     };
 
-    int size(){return mysize;};
+    int size() const {return mysize;};
 
-    int length() {return Nt;};
+    int length() const {return Nt;};
 
     multi1d<DComplex> makeHeavyMesonBlock(multi1d<DPropagator> Q,
 					  const SpinMatrix& S,
 					  multi1d<ColorMatrix> HQ,
 					  const SpinMatrix& HQspin,
 					  int size, 
-					  int Nt)
+					  int Nt) const
     // For Qbarl :  HQspin = 0.5 * (g_one - g_one * Gamma(8)); // This is the antiQ projector
     // For Qlbar :  HQspin = 0.5 * (g_one + g_one * Gamma(8)); // This is the Q projector
       {
@@ -252,110 +244,101 @@ namespace Chroma
 
 
 
-
-  void QllQllPOT(const multi1d<LatticeColorMatrix>& u, 
-		 const LatticePropagator& quark1,
-		 const LatticePropagator& quark2,
-		 const multi1d<int>& src1, 
-		 const multi1d<int>& src2, 
-		 const SftMom& phases,
-		 XMLWriter& xml,
-		 const string& xml_group);
-
+  // Work
   multiNd<DComplex> HBQfunc(const multi1d<ColorMatrix>& HQ);
 
   multiNd<DComplex> antiHBQfunc(const multi1d<ColorMatrix>& HQ);
 
-  multi1d<DComplex> c1contract( QllBlock B1,  QllBlock B2,
-				QllBlock B3,  QllBlock B4,
-				QllBlock B5,  QllBlock B6,
-				QllBlock B7,  QllBlock B8,
+  multi1d<DComplex> c1contract(const QllBlock& B1, const QllBlock& B2,
+				const QllBlock& B3, const QllBlock& B4,
+				const QllBlock& B5,  const QllBlock& B6,
+				const QllBlock& B7,  const QllBlock& B8,
 				const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> c4contract( QllBlock B1,  QllBlock B2,
-				QllBlock B3,  QllBlock B4,
-				QllBlock B5,  
+  multi1d<DComplex> c4contract( const QllBlock& B1,  const QllBlock& B2,
+				const QllBlock& B3,  const QllBlock& B4,
+				const QllBlock& B5,  
 				const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> c5contract( QllBlock B1,  QllBlock B2,
-				QllBlock B3,  QllBlock B4,
-				QllBlock B5,  QllBlock B6,
-				QllBlock B7,  QllBlock B8,
+  multi1d<DComplex> c5contract( const QllBlock& B1,  const QllBlock& B2,
+				const QllBlock& B3,  const QllBlock& B4,
+				const QllBlock& B5,  const QllBlock& B6,
+				const QllBlock& B7,  const QllBlock& B8,
 				const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> c6contract( QllBlock B1,  QllBlock B2,
+  multi1d<DComplex> c6contract( const QllBlock& B1,  const QllBlock& B2,
 				const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> c7contract(QllBlock BzU1zD3z0zCG5, QllBlock BzU2zU4zRzCGii, QllBlock BzU3zD3z0zCG5, 
-			       QllBlock BzU4zU2zRzCGii, QllBlock BzU4zU4zRzCGii,
+  multi1d<DComplex> c7contract(const QllBlock& BzU1zD3z0zCG5, const QllBlock& BzU2zU4zRzCGii, const QllBlock& BzU3zD3z0zCG5, 
+			       const QllBlock& BzU4zU2zRzCGii, const QllBlock& BzU4zU4zRzCGii,
 			       const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> d1contract(QllBlock BzU1zD1z0zCG5, QllBlock BzU3zD1z0zCG5, 
-			       HeavyMesonBlock HzU2zRzC, HeavyMesonBlock HzU4zRzC,
+  multi1d<DComplex> d1contract(const QllBlock& BzU1zD1z0zCG5, const QllBlock& BzU3zD1z0zCG5, 
+			       const HeavyMesonBlock& HzU2zRzC, const HeavyMesonBlock& HzU4zRzC,
 			       const SpinMatrix& mesonS1, const SpinMatrix& baryonS2);
 
-  multi1d<DComplex> d2contract(QllBlock BzU1zU1z0zCGi, QllBlock BzU3zU1z0zCGi, QllBlock BzU1zU3z0zCGi, 
-			       HeavyMesonBlock HzU2zRzG5, HeavyMesonBlock HzU4zRzG5,
+  multi1d<DComplex> d2contract(const QllBlock& BzU1zU1z0zCGi, const QllBlock& BzU3zU1z0zCGi, const QllBlock& BzU1zU3z0zCGi, 
+			       const HeavyMesonBlock& HzU2zRzG5, const HeavyMesonBlock& HzU4zRzG5,
 			       const SpinMatrix& mesonS1, const SpinMatrix& baryonS2);
 
-  multi1d<DComplex> d3contract(QllBlock BzU1zU1z0zCGi, HeavyMesonBlock HzU2zRzG5,
+  multi1d<DComplex> d3contract(const QllBlock& BzU1zU1z0zCGi, const HeavyMesonBlock& HzU2zRzG5,
 			       const SpinMatrix& mesonS1, const SpinMatrix& baryonS2);
 
-  multi1d<DComplex> m1contract( HeavyMesonBlock H1,  HeavyMesonBlock H2,
-				HeavyMesonBlock H3,  HeavyMesonBlock H4,
+  multi1d<DComplex> m1contract( const HeavyMesonBlock& H1,  const HeavyMesonBlock& H2,
+				const HeavyMesonBlock& H3,  const HeavyMesonBlock& H4,
 				const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> m2contract( HeavyMesonBlock H1,  HeavyMesonBlock H2,
+  multi1d<DComplex> m2contract( const HeavyMesonBlock& H1,  const HeavyMesonBlock& H2,
 				const SpinMatrix& S1, const SpinMatrix& S2);
 
-  multi1d<DComplex> bcontract(HeavyMesonBlock H1,
+  multi1d<DComplex> bcontract(const HeavyMesonBlock& H1,
 			      const SpinMatrix& S1);
 
-  multi1d<DComplex> lambdabcontract(QllBlock H1,
+  multi1d<DComplex> lambdabcontract(const QllBlock& H1,
 				    const SpinMatrix& S1);
 
-  multi1d<DComplex> sigmabpluscontract(QllBlock H1,
+  multi1d<DComplex> sigmabpluscontract(const QllBlock& H1,
 				       const SpinMatrix& S1);
 
-  multi2d<DComplex> c1J2corr(QllBlock B1,QllBlock B2,QllBlock B3,
-			     QllBlock B4,QllBlock B5,QllBlock B6,
-			     QllBlock B7,QllBlock B8,QllBlock B9,
-			     QllBlock B10,QllBlock B11,QllBlock B12,
-			     QllBlock B13,QllBlock B14,QllBlock B15,
-			     QllBlock B16,QllBlock B17,QllBlock B18,
-			     QllBlock B19,QllBlock B20,QllBlock B21,
-			     QllBlock B22,QllBlock B23,QllBlock B24);
+  multi2d<DComplex> c1J2corr(const QllBlock& B1,const QllBlock& B2,const QllBlock& B3,
+			     const QllBlock& B4,const QllBlock& B5,const QllBlock& B6,
+			     const QllBlock& B7,const QllBlock& B8,const QllBlock& B9,
+			     const QllBlock& B10,const QllBlock& B11,const QllBlock& B12,
+			     const QllBlock& B13,const QllBlock& B14,const QllBlock& B15,
+			     const QllBlock& B16,const QllBlock& B17,const QllBlock& B18,
+			     const QllBlock& B19,const QllBlock& B20,const QllBlock& B21,
+			     const QllBlock& B22,const QllBlock& B23,const QllBlock& B24);
 
-  multi2d<DComplex> c4J2corr(QllBlock B1,QllBlock B2,QllBlock B3,
-			     QllBlock B4,QllBlock B5,QllBlock B6,
-			     QllBlock B7,QllBlock B8,QllBlock B9,
-			     QllBlock B10,QllBlock B11,QllBlock B12,
-			     QllBlock B13,QllBlock B14,QllBlock B15);
+  multi2d<DComplex> c4J2corr(const QllBlock& B1,const QllBlock& B2,const QllBlock& B3,
+			     const QllBlock& B4,const QllBlock& B5,const QllBlock& B6,
+			     const QllBlock& B7,const QllBlock& B8,const QllBlock& B9,
+			     const QllBlock& B10,const QllBlock& B11,const QllBlock& B12,
+			     const QllBlock& B13,const QllBlock& B14,const QllBlock& B15);
 
-  multi2d<DComplex> c5J2corr(QllBlock B1,QllBlock B2,QllBlock B3,
-			     QllBlock B4,QllBlock B5,QllBlock B6,
-			     QllBlock B7,QllBlock B8,QllBlock B9,
-			     QllBlock B10,QllBlock B11,QllBlock B12,
-			     QllBlock B13,QllBlock B14,QllBlock B15,
-			     QllBlock B16,QllBlock B17,QllBlock B18,
-			     QllBlock B19,QllBlock B20,QllBlock B21,
-			     QllBlock B22,QllBlock B23,QllBlock B24);
+  multi2d<DComplex> c5J2corr(const QllBlock& B1,const QllBlock& B2,const QllBlock& B3,
+			     const QllBlock& B4,const QllBlock& B5,const QllBlock& B6,
+			     const QllBlock& B7,const QllBlock& B8,const QllBlock& B9,
+			     const QllBlock& B10,const QllBlock& B11,const QllBlock& B12,
+			     const QllBlock& B13,const QllBlock& B14,const QllBlock& B15,
+			     const QllBlock& B16,const QllBlock& B17,const QllBlock& B18,
+			     const QllBlock& B19,const QllBlock& B20,const QllBlock& B21,
+			     const QllBlock& B22,const QllBlock& B23,const QllBlock& B24);
 
-  multi2d<DComplex> c6J2corr(QllBlock B1,QllBlock B2,QllBlock B3,
-			     QllBlock B4,QllBlock B5,QllBlock B6);
+  multi2d<DComplex> c6J2corr(const QllBlock& B1,const QllBlock& B2,const QllBlock& B3,
+			     const QllBlock& B4,const QllBlock& B5,const QllBlock& B6);
 
 
-  multi2d<DComplex> d2J32corr(QllBlock BzU1zU1z0zCGplus, QllBlock BzU3zU1z0zCGplus, QllBlock BzU1zU3z0zCGplus, 
-			      HeavyMesonBlock HzU2zRzGup, HeavyMesonBlock HzU4zRzGup,
-			      QllBlock BzU1zU1z0zCG3, QllBlock BzU3zU1z0zCG3, QllBlock BzU1zU3z0zCG3, 
-			      QllBlock BzU1zU1z0zCGminus, QllBlock BzU3zU1z0zCGminus, QllBlock BzU1zU3z0zCGminus, 
-			      HeavyMesonBlock HzU2zRzGdown, HeavyMesonBlock HzU4zRzGdown);
+  multi2d<DComplex> d2J32corr(const QllBlock& BzU1zU1z0zCGplus, const QllBlock& BzU3zU1z0zCGplus, const QllBlock& BzU1zU3z0zCGplus, 
+			      const HeavyMesonBlock& HzU2zRzGup, const HeavyMesonBlock& HzU4zRzGup,
+			      const QllBlock& BzU1zU1z0zCG3, const QllBlock& BzU3zU1z0zCG3, const QllBlock& BzU1zU3z0zCG3, 
+			      const QllBlock& BzU1zU1z0zCGminus, const QllBlock& BzU3zU1z0zCGminus, const QllBlock& BzU1zU3z0zCGminus, 
+			      const HeavyMesonBlock& HzU2zRzGdown, const HeavyMesonBlock& HzU4zRzGdown);
 
-  multi2d<DComplex> d3J32corr(QllBlock BzU1zU1z0zCGplus, 
-			      HeavyMesonBlock HzU2zRzGup, 
-			      QllBlock BzU1zU1z0zCG3, 
-			      QllBlock BzU1zU1z0zCGminus,
-			      HeavyMesonBlock HzU2zRzGdown);
+  multi2d<DComplex> d3J32corr(const QllBlock& BzU1zU1z0zCGplus, 
+			      const HeavyMesonBlock& HzU2zRzGup, 
+			      const QllBlock& BzU1zU1z0zCG3, 
+			      const QllBlock& BzU1zU1z0zCGminus,
+			      const HeavyMesonBlock& HzU2zRzGdown);
 
 }
 
