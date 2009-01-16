@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.179 2008-12-19 17:43:14 kostas Exp $
+# $Id: Makefile.am,v 3.180 2009-01-16 17:25:39 caubin Exp $
 #
 # Path for all files used in building the library
 
@@ -208,6 +208,7 @@ nobase_include_HEADERS = \
 	meas/hadron/hadron_contract_factory.h \
 	meas/hadron/hadron_2pt.h \
 	meas/hadron/mesQl_w.h \
+	meas/hadron/Ql_3pt_w.h \
 	meas/hadron/mesQlPOT_w.h \
 	meas/hadron/barQll_w.h \
         meas/hadron/heavy_hadrons_su3_w.h\
@@ -766,6 +767,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
+        meas/inline/hadron/inline_static_light_cont_w.h \
         meas/inline/hadron/inline_heavyhadspec_w.h\
 	meas/inline/hadron/inline_sink_smear_w.h \
         meas/inline/hadron/inline_diquark_w.h \
@@ -1037,6 +1039,7 @@ libchroma_a_SOURCES = \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc \
 	meas/hadron/mesQl_w.cc \
+	meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc\
@@ -1434,6 +1437,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
 	meas/inline/hadron/inline_static_light_spec_w.cc \
+	meas/inline/hadron/inline_static_light_cont_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_diquark_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \

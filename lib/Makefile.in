@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.300 2008-12-19 17:43:14 kostas Exp $
+# $Id: Makefile.in,v 3.301 2009-01-16 17:25:40 caubin Exp $
 #
 # Path for all files used in building the library
 
@@ -298,7 +298,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
-	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
+	meas/hadron/Ql_3pt_w.cc meas/hadron/mesQlPOT_w.cc \
+	meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc \
 	meas/hadron/heavy_hadrons_su3_w.cc \
 	meas/hadron/spin_insertion_aggregate.cc \
@@ -627,6 +628,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
 	meas/inline/hadron/inline_static_light_spec_w.cc \
+	meas/inline/hadron/inline_static_light_cont_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_diquark_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
@@ -879,8 +881,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	fuzglue.$(OBJEXT) gluecor.$(OBJEXT) polycor.$(OBJEXT) \
 	dilution_scheme_aggregate.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
 	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
-	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) \
-	barQll_w.$(OBJEXT) heavy_hadron_potentials_w.$(OBJEXT) \
+	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
+	mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
+	heavy_hadron_potentials_w.$(OBJEXT) \
 	heavy_hadrons_su3_w.$(OBJEXT) \
 	spin_insertion_aggregate.$(OBJEXT) no_spin_insertion.$(OBJEXT) \
 	stoch_var.$(OBJEXT) pt_sink_smearing.$(OBJEXT) \
@@ -1141,6 +1144,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_hadspec_w.$(OBJEXT) inline_mesonspec_w.$(OBJEXT) \
 	inline_heavyhadspec_w.$(OBJEXT) \
 	inline_static_light_spec_w.$(OBJEXT) \
+	inline_static_light_cont_w.$(OBJEXT) \
 	inline_sink_smear_w.$(OBJEXT) inline_diquark_w.$(OBJEXT) \
 	inline_qqq_w.$(OBJEXT) inline_qqq_diquark_w.$(OBJEXT) \
 	inline_qqbar_w.$(OBJEXT) inline_bar3ptfn_w.$(OBJEXT) \
@@ -1402,8 +1406,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
-	meas/hadron/mesQl_w.h meas/hadron/mesQlPOT_w.h \
-	meas/hadron/barQll_w.h meas/hadron/heavy_hadrons_su3_w.h \
+	meas/hadron/mesQl_w.h meas/hadron/Ql_3pt_w.h \
+	meas/hadron/mesQlPOT_w.h meas/hadron/barQll_w.h \
+	meas/hadron/heavy_hadrons_su3_w.h \
 	meas/hadron/heavy_hadron_potentials_w.h \
 	meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
@@ -1864,6 +1869,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
 	meas/inline/hadron/inline_static_light_spec_w.h \
+	meas/inline/hadron/inline_static_light_cont_w.h \
 	meas/inline/hadron/inline_heavyhadspec_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
 	meas/inline/hadron/inline_diquark_w.h \
@@ -2310,8 +2316,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
-	meas/hadron/mesQl_w.h meas/hadron/mesQlPOT_w.h \
-	meas/hadron/barQll_w.h meas/hadron/heavy_hadrons_su3_w.h \
+	meas/hadron/mesQl_w.h meas/hadron/Ql_3pt_w.h \
+	meas/hadron/mesQlPOT_w.h meas/hadron/barQll_w.h \
+	meas/hadron/heavy_hadrons_su3_w.h \
 	meas/hadron/heavy_hadron_potentials_w.h \
 	meas/hadron/spin_insertion.h \
 	meas/hadron/spin_insertion_factory.h \
@@ -2772,6 +2779,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
 	meas/inline/hadron/inline_static_light_spec_w.h \
+	meas/inline/hadron/inline_static_light_cont_w.h \
 	meas/inline/hadron/inline_heavyhadspec_w.h \
 	meas/inline/hadron/inline_sink_smear_w.h \
 	meas/inline/hadron/inline_diquark_w.h \
@@ -3038,7 +3046,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
-	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
+	meas/hadron/Ql_3pt_w.cc meas/hadron/mesQlPOT_w.cc \
+	meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc \
 	meas/hadron/heavy_hadrons_su3_w.cc \
 	meas/hadron/spin_insertion_aggregate.cc \
@@ -3367,6 +3376,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
 	meas/inline/hadron/inline_static_light_spec_w.cc \
+	meas/inline/hadron/inline_static_light_cont_w.cc \
 	meas/inline/hadron/inline_sink_smear_w.cc \
 	meas/inline/hadron/inline_diquark_w.cc \
 	meas/inline/hadron/inline_qqq_w.cc \
@@ -3564,6 +3574,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BuildingBlocks_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Ql_3pt_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_spectrum_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/aniso_sym_gaugeact_params.Po@am__quote@
@@ -3854,6 +3865,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_smear_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_spectrum_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stag_to_wils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_static_light_cont_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_static_light_spec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_static_prop_colorvec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_baryon_w.Po@am__quote@
@@ -6760,6 +6772,20 @@ mesQl_w.obj: meas/hadron/mesQl_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/mesQl_w.cc' object='mesQl_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o mesQl_w.obj `if test -f 'meas/hadron/mesQl_w.cc'; then $(CYGPATH_W) 'meas/hadron/mesQl_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/mesQl_w.cc'; fi`
+
+Ql_3pt_w.o: meas/hadron/Ql_3pt_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Ql_3pt_w.o -MD -MP -MF "$(DEPDIR)/Ql_3pt_w.Tpo" -c -o Ql_3pt_w.o `test -f 'meas/hadron/Ql_3pt_w.cc' || echo '$(srcdir)/'`meas/hadron/Ql_3pt_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Ql_3pt_w.Tpo" "$(DEPDIR)/Ql_3pt_w.Po"; else rm -f "$(DEPDIR)/Ql_3pt_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/Ql_3pt_w.cc' object='Ql_3pt_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Ql_3pt_w.o `test -f 'meas/hadron/Ql_3pt_w.cc' || echo '$(srcdir)/'`meas/hadron/Ql_3pt_w.cc
+
+Ql_3pt_w.obj: meas/hadron/Ql_3pt_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Ql_3pt_w.obj -MD -MP -MF "$(DEPDIR)/Ql_3pt_w.Tpo" -c -o Ql_3pt_w.obj `if test -f 'meas/hadron/Ql_3pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/Ql_3pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/Ql_3pt_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/Ql_3pt_w.Tpo" "$(DEPDIR)/Ql_3pt_w.Po"; else rm -f "$(DEPDIR)/Ql_3pt_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/Ql_3pt_w.cc' object='Ql_3pt_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o Ql_3pt_w.obj `if test -f 'meas/hadron/Ql_3pt_w.cc'; then $(CYGPATH_W) 'meas/hadron/Ql_3pt_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/Ql_3pt_w.cc'; fi`
 
 mesQlPOT_w.o: meas/hadron/mesQlPOT_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT mesQlPOT_w.o -MD -MP -MF "$(DEPDIR)/mesQlPOT_w.Tpo" -c -o mesQlPOT_w.o `test -f 'meas/hadron/mesQlPOT_w.cc' || echo '$(srcdir)/'`meas/hadron/mesQlPOT_w.cc; \
@@ -12178,6 +12204,20 @@ inline_static_light_spec_w.obj: meas/inline/hadron/inline_static_light_spec_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_static_light_spec_w.cc' object='inline_static_light_spec_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_static_light_spec_w.obj `if test -f 'meas/inline/hadron/inline_static_light_spec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_static_light_spec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_static_light_spec_w.cc'; fi`
+
+inline_static_light_cont_w.o: meas/inline/hadron/inline_static_light_cont_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_static_light_cont_w.o -MD -MP -MF "$(DEPDIR)/inline_static_light_cont_w.Tpo" -c -o inline_static_light_cont_w.o `test -f 'meas/inline/hadron/inline_static_light_cont_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_static_light_cont_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_static_light_cont_w.Tpo" "$(DEPDIR)/inline_static_light_cont_w.Po"; else rm -f "$(DEPDIR)/inline_static_light_cont_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_static_light_cont_w.cc' object='inline_static_light_cont_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_static_light_cont_w.o `test -f 'meas/inline/hadron/inline_static_light_cont_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_static_light_cont_w.cc
+
+inline_static_light_cont_w.obj: meas/inline/hadron/inline_static_light_cont_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_static_light_cont_w.obj -MD -MP -MF "$(DEPDIR)/inline_static_light_cont_w.Tpo" -c -o inline_static_light_cont_w.obj `if test -f 'meas/inline/hadron/inline_static_light_cont_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_static_light_cont_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_static_light_cont_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_static_light_cont_w.Tpo" "$(DEPDIR)/inline_static_light_cont_w.Po"; else rm -f "$(DEPDIR)/inline_static_light_cont_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_static_light_cont_w.cc' object='inline_static_light_cont_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_static_light_cont_w.obj `if test -f 'meas/inline/hadron/inline_static_light_cont_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_static_light_cont_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_static_light_cont_w.cc'; fi`
 
 inline_sink_smear_w.o: meas/inline/hadron/inline_sink_smear_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_sink_smear_w.o -MD -MP -MF "$(DEPDIR)/inline_sink_smear_w.Tpo" -c -o inline_sink_smear_w.o `test -f 'meas/inline/hadron/inline_sink_smear_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_sink_smear_w.cc; \

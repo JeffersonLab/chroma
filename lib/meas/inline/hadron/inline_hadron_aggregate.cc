@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.40 2008-12-19 17:43:20 kostas Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.41 2009-01-16 17:25:46 caubin Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -11,6 +11,7 @@
 #include "meas/inline/hadron/inline_disco_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
 #include "meas/inline/hadron/inline_static_light_spec_w.h"
+#include "meas/inline/hadron/inline_static_light_cont_w.h"
 #include "meas/inline/hadron/inline_heavyhadspec_w.h"
 #include "meas/inline/hadron/inline_make_source_w.h"
 #include "meas/inline/hadron/inline_make_source_ferm_w.h"
@@ -130,6 +131,7 @@ namespace Chroma
 	success &= InlineQQQNucNucEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();
 	success &= InlineStaticLightSpecEnv::registerAll();
+	success &= InlineStaticLightContEnv::registerAll();
 	success &= InlineHeavyHadSpecEnv::registerAll();
 	success &= InlineStochMesonEnv::registerAll();
 	success &= InlineStochBaryonEnv::registerAll();
