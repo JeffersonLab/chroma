@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_static_light_cont_w.h,v 1.1 2009-01-16 17:30:31 caubin Exp $
+// $Id: inline_static_light_cont_w.h,v 1.2 2009-01-19 20:02:35 caubin Exp $
 /*! \file
  * \brief Inline static light contractions for weak three and four point functions
  *
@@ -33,6 +33,14 @@ namespace Chroma
 
     struct Param_t
     {
+
+      bool         Pt_snk;
+      bool         Sl_snk;
+      bool         Wl_snk;
+      string       wvf_kind;
+      multi1d<Real>  wvf_param;
+      multi1d<int>   wvfIntPar;
+
       bool MesonP;             // Do Meson Spect.
       bool FourPt;             // Calculate four-point function in addition to 3pt
     } param;

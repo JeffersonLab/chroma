@@ -1,4 +1,4 @@
-// $Id: inline_static_light_cont_w.cc,v 1.1 2009-01-16 17:30:31 caubin Exp $
+// $Id: inline_static_light_cont_w.cc,v 1.2 2009-01-19 20:02:35 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
  *
@@ -70,6 +70,15 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    read(paramtop, "Pt_snk", param.Pt_snk);
+    read(paramtop, "Sl_snk", param.Sl_snk);
+    read(paramtop, "Wl_snk", param.Wl_snk);
+
+    read(paramtop, "wvf_kind", param.wvf_kind);
+    read(paramtop, "wvf_param", param.wvf_param);
+    read(paramtop, "wvfIntPar", param.wvfIntPar);
+
+
     read(paramtop, "MesonP", param.MesonP);
     read(paramtop, "FourPt", param.FourPt);
 
@@ -84,8 +93,17 @@ namespace Chroma
     int version = 1;
     write(xml, "version", version);
 
+    write(xml, "Pt_snk", param.Pt_snk);
+    write(xml, "Sl_snk", param.Sl_snk);
+    write(xml, "Wl_snk", param.Wl_snk);
+
+    write(xml, "wvf_kind", param.wvf_kind);
+    write(xml, "wvf_param", param.wvf_param);
+    write(xml, "wvfIntPar", param.wvfIntPar);
+
     write(xml, "MesonP", param.MesonP);
     write(xml, "FourPt", param.FourPt);
+    write(xml, "nrow", Layout::lattSize());
 
     pop(xml);
   }
@@ -579,16 +597,16 @@ namespace Chroma
       // Do the mesons first
       if (params.param.MesonP) 
 	{
-	  Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson");
+	  Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson1");
 	  if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
-	    Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson");
+	    Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson2");
 	  if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
-	    Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson");
+	    Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3");
 	} // end if (MesonP)
       
       //Now we actually will do the contractions...
 
-      QlQl(u, sink_prop_1, sink_prop_2,  t_src1, t_src2, phases, xml_out, "Wilson_Ql_Ql_3pt");
+      QlQl(u, sink_prop_1, sink_prop_2,  t_src1, t_src2, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
 
       pop(xml_out);  // array element
     }
