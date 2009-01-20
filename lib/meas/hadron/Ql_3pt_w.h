@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//$Id: Ql_3pt_w.h,v 1.1 2009-01-16 17:30:31 caubin Exp $
+//$Id: Ql_3pt_w.h,v 1.2 2009-01-20 20:04:55 caubin Exp $
 /*! \file
  *  \brief Static-Light 3pt function
  */
@@ -38,6 +38,28 @@ namespace Chroma
   void QlQl(const multi1d<LatticeColorMatrix>& u, 
 	     const LatticePropagator& quark_propagator1,
 	     const LatticePropagator& quark_propagator2,
+	     const multi1d<int>& src_coord, 
+	     const multi1d<int>& snk_coord, 
+	     const SftMom& phases,
+	     XMLWriter& xml,
+	     const string& xml_group);
+
+  void QlQl(const multi1d<LatticeColorMatrix>& u, 
+	     const LatticePropagator& quark_propagator1,
+	     const LatticePropagator& quark_propagator2,
+	     const LatticePropagator& heavy_quark_propagator,
+	     const multi1d<int>& src_coord, 
+	     const multi1d<int>& snk_coord, 
+	     const multi1d<int>& heavy_src, 
+	     const SftMom& phases,
+	     XMLWriter& xml,
+	     const string& xml_group);
+
+  void QlQl(const multi1d<LatticeColorMatrix>& u, 
+	     const LatticePropagator& quark_propagator1,
+	     const LatticePropagator& quark_propagator2,
+	     const LatticePropagator& heavy_quark_propagator1,
+	     const LatticePropagator& heavy_quark_propagator2,
 	     const multi1d<int>& src_coord, 
 	     const multi1d<int>& snk_coord, 
 	     const SftMom& phases,
