@@ -1,11 +1,11 @@
-// $Id: inline_static_light_cont_w.cc,v 1.2 2009-01-19 20:02:35 caubin Exp $
+// $Id: inline_heavy_light_cont_w.cc,v 3.1 2009-01-20 16:16:58 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
- *
+ *  Still just does static!!
  * Contraction calculations
  */
 
-#include "meas/inline/hadron/inline_static_light_cont_w.h"
+#include "meas/inline/hadron/inline_heavy_light_cont_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ft/sftmom.h"
@@ -21,21 +21,21 @@
 
 namespace Chroma 
 { 
-  namespace InlineStaticLightContEnv 
+  namespace InlineHeavyLightContEnv 
   { 
     namespace
     {
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
       {
-	return new InlineStaticLightCont(InlineStaticLightContParams(xml_in, path));
+	return new InlineHeavyLightCont(InlineHeavyLightContParams(xml_in, path));
       }
 
       //! Local registration flag
       bool registered = false;
     }
 
-    const std::string name = "STATIC_LIGHT_CONTRACTION";
+    const std::string name = "HEAVY_LIGHT_CONTRACTION";
 
     //! Register all the factories
     bool registerAll() 
@@ -53,7 +53,7 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, InlineStaticLightContParams::Param_t& param)
+  void read(XMLReader& xml, const string& path, InlineHeavyLightContParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -70,15 +70,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    read(paramtop, "Pt_snk", param.Pt_snk);
-    read(paramtop, "Sl_snk", param.Sl_snk);
-    read(paramtop, "Wl_snk", param.Wl_snk);
-
-    read(paramtop, "wvf_kind", param.wvf_kind);
-    read(paramtop, "wvf_param", param.wvf_param);
-    read(paramtop, "wvfIntPar", param.wvfIntPar);
-
-
     read(paramtop, "MesonP", param.MesonP);
     read(paramtop, "FourPt", param.FourPt);
 
@@ -86,20 +77,12 @@ namespace Chroma
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, const InlineStaticLightContParams::Param_t& param)
+  void write(XMLWriter& xml, const string& path, const InlineHeavyLightContParams::Param_t& param)
   {
     push(xml, path);
 
     int version = 1;
     write(xml, "version", version);
-
-    write(xml, "Pt_snk", param.Pt_snk);
-    write(xml, "Sl_snk", param.Sl_snk);
-    write(xml, "Wl_snk", param.Wl_snk);
-
-    write(xml, "wvf_kind", param.wvf_kind);
-    write(xml, "wvf_param", param.wvf_param);
-    write(xml, "wvfIntPar", param.wvfIntPar);
 
     write(xml, "MesonP", param.MesonP);
     write(xml, "FourPt", param.FourPt);
@@ -110,17 +93,29 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineStaticLightContParams::NamedObject_t::Props_t& input)
+  void read(XMLReader& xml, const string& path, InlineHeavyLightContParams::NamedObject_t::Props_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "first_id", input.first_id);
     read(inputtop, "second_id", input.second_id);
-    read(inputtop, "third_id", input.third_id);
+    if (inputtop.count("third_id") == 1)
+      read(inputtop, "third_id", input.third_id);
+    else
+      input.third_id = "None";
+
+    if (inputtop.count("heavy_id1") == 1)
+      read(inputtop, "heavy_id1", input.heavy_id1);
+    else
+      input.heavy_id1 = "Static";
+    if (inputtop.count("heavy_id2") == 1)
+      read(inputtop, "heavy_id2", input.heavy_id2);
+    else
+      input.heavy_id2 = "Static";
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineStaticLightContParams::NamedObject_t::Props_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHeavyLightContParams::NamedObject_t::Props_t& input)
   {
     push(xml, path);
 
@@ -128,12 +123,14 @@ namespace Chroma
     write(xml, "second_id", input.second_id);
     write(xml, "third_id", input.third_id);
 
+    write(xml, "heavy_id1", input.heavy_id1);
+    write(xml, "heavy_id2", input.heavy_id2);
     pop(xml);
   }
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineStaticLightContParams::NamedObject_t& input)
+  void read(XMLReader& xml, const string& path, InlineHeavyLightContParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -142,7 +139,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineStaticLightContParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const string& path, const InlineHeavyLightContParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -154,12 +151,12 @@ namespace Chroma
 
 
   // Param stuff
-  InlineStaticLightContParams::InlineStaticLightContParams()
+  InlineHeavyLightContParams::InlineHeavyLightContParams()
   { 
     frequency = 0; 
   }
 
-  InlineStaticLightContParams::InlineStaticLightContParams(XMLReader& xml_in, const std::string& path) 
+  InlineHeavyLightContParams::InlineHeavyLightContParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
     {
@@ -191,7 +188,7 @@ namespace Chroma
 
 
   void
-  InlineStaticLightContParams::write(XMLWriter& xml_out, const std::string& path) 
+  InlineHeavyLightContParams::write(XMLWriter& xml_out, const std::string& path) 
   {
     push(xml_out, path);
     
@@ -227,6 +224,9 @@ namespace Chroma
       SinkPropContainer_t  sink_prop_1;
       SinkPropContainer_t  sink_prop_2;
       SinkPropContainer_t  sink_prop_3;
+
+      SinkPropContainer_t  heavy_prop_1;
+      SinkPropContainer_t  heavy_prop_2;
     };
 
 
@@ -270,17 +270,16 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << InlineStaticLightContEnv::name << ": caught dynamic cast error" 
+	QDPIO::cerr << InlineHeavyLightContEnv::name << ": caught dynamic cast error" 
 		    << endl;
 	QDP_abort(1);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << InlineStaticLightContEnv::name << ": error message: " << e 
+	QDPIO::cerr << InlineHeavyLightContEnv::name << ": error message: " << e 
 		    << endl;
 	QDP_abort(1);
       }
-
 
       // Derived from input prop
       // Hunt around to find the mass
@@ -297,8 +296,8 @@ namespace Chroma
 
     //! Read all sinks
     void readAllSinks(AllSinkProps_t& s, 
-		      InlineStaticLightContParams::NamedObject_t::Props_t sink_pair, 
-		      InlineStaticLightContParams::Param_t params)
+		      InlineHeavyLightContParams::NamedObject_t::Props_t sink_pair, 
+		      InlineHeavyLightContParams::Param_t params)
     {
       QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.first_id << endl;
       readSinkProp(s.sink_prop_1, sink_pair.first_id);
@@ -308,10 +307,26 @@ namespace Chroma
       readSinkProp(s.sink_prop_2, sink_pair.second_id);
       QDPIO::cout << "Forward propagator successfully parsed" << endl;
 
-      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.third_id << endl;
-      readSinkProp(s.sink_prop_3, sink_pair.third_id);
-      QDPIO::cout << "Forward propagator successfully parsed" << endl;
-
+      if (sink_pair.third_id != "None"){
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.third_id << endl;
+	readSinkProp(s.sink_prop_3, sink_pair.third_id);
+	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      }
+      else{
+	QDPIO::cout << "Using "<<sink_pair.second_id <<" as spectator." << endl;
+        readSinkProp(s.sink_prop_3, sink_pair.second_id);
+	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      }
+      if (sink_pair.heavy_id1 != "Static"){
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.heavy_id1 << endl;
+        readSinkProp(s.heavy_prop_1, sink_pair.heavy_id1);
+	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      }
+      if (sink_pair.heavy_id2 != "Static"){
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.heavy_id2 << endl;
+        readSinkProp(s.heavy_prop_2, sink_pair.heavy_id2);
+	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      }
     }
   } // namespace anonymous
 
@@ -319,7 +334,7 @@ namespace Chroma
 
   // Function call
   void 
-  InlineStaticLightCont::operator()(unsigned long update_no,
+  InlineHeavyLightCont::operator()(unsigned long update_no,
 			    XMLWriter& xml_out) 
   {
     // If xml file not empty, then use alternate
@@ -327,7 +342,7 @@ namespace Chroma
     {
       string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-      push(xml_out, "StaticLightCont");
+      push(xml_out, "HeavyLightCont");
       write(xml_out, "update_no", update_no);
       write(xml_out, "xml_file", xml_file);
       pop(xml_out);
@@ -343,7 +358,7 @@ namespace Chroma
 
   // Real work done here
   void 
-  InlineStaticLightCont::func(unsigned long update_no,
+  InlineHeavyLightCont::func(unsigned long update_no,
 		      XMLWriter& xml_out) 
   {
     START_CODE();
@@ -361,23 +376,23 @@ namespace Chroma
     }
     catch( std::bad_cast ) 
     {
-      QDPIO::cerr << InlineStaticLightContEnv::name << ": caught dynamic cast error" 
+      QDPIO::cerr << InlineHeavyLightContEnv::name << ": caught dynamic cast error" 
 		  << endl;
       QDP_abort(1);
     }
     catch (const string& e) 
     {
-      QDPIO::cerr << InlineStaticLightContEnv::name << ": map call failed: " << e 
+      QDPIO::cerr << InlineHeavyLightContEnv::name << ": map call failed: " << e 
 		  << endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-    push(xml_out, "StaticLightCont");
+    push(xml_out, "HeavyLightCont");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " StaticLightCont: Contractions for Wilson-like fermions" ;
+    QDPIO::cout << " HeavyLightCont: Contractions for Wilson-like fermions" ;
     QDPIO::cout << endl;
     QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
     QDPIO::cout << "     volume: " << Layout::lattSize()[0];
@@ -408,8 +423,9 @@ namespace Chroma
     // Now loop over the various fermion pairs
     for(int lpair=0; lpair < params.named_obj.sink_pairs.size(); ++lpair)
     {
-      const InlineStaticLightContParams::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
-      const InlineStaticLightContParams::Param_t param = params.param;
+      // Note that this named_obj should have the defs of the props...
+      const InlineHeavyLightContParams::NamedObject_t::Props_t named_obj = params.named_obj.sink_pairs[lpair];
+      const InlineHeavyLightContParams::Param_t param = params.param;
 
       push(xml_out, "elem");
 
@@ -486,7 +502,6 @@ namespace Chroma
 	    }
 	}
       }
-
 
       // Masses
       write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
@@ -611,14 +626,14 @@ namespace Chroma
       pop(xml_out);  // array element
     }
     pop(xml_out);  // Wilson_spectroscopy
-    pop(xml_out);  // StaticLightCont
+    pop(xml_out);  // HeavyLightCont
 
     snoop.stop();
-    QDPIO::cout << InlineStaticLightContEnv::name << ": total time = "
+    QDPIO::cout << InlineHeavyLightContEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
 		<< " secs" << endl;
 
-    QDPIO::cout << InlineStaticLightContEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineHeavyLightContEnv::name << ": ran successfully" << endl;
 
     END_CODE();
   } 
