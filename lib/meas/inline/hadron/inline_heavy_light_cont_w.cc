@@ -1,4 +1,4 @@
-// $Id: inline_heavy_light_cont_w.cc,v 3.3 2009-01-22 16:25:20 caubin Exp $
+// $Id: inline_heavy_light_cont_w.cc,v 3.4 2009-01-22 16:41:06 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
  *  Still just does static!!
@@ -444,7 +444,8 @@ namespace Chroma
         = all_sinks.sink_prop_3.prop_header.source_header.getTSrce();
       
       int j_decay = all_sinks.sink_prop_1.prop_header.source_header.j_decay;
-      int t0      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
+      int t01      = all_sinks.sink_prop_1.prop_header.source_header.t_source;
+      int t02      = all_sinks.sink_prop_2.prop_header.source_header.t_source;
       int bc_spec = all_sinks.sink_prop_1.bc[j_decay] ;
 	  
       // Sanity checks
@@ -454,6 +455,33 @@ namespace Chroma
 	    QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
 	    QDP_abort(1);
 	  }
+	if (named_obj.heavy_id1 != "Static"){
+	  if ((all_sinks.heavy_prop_1.prop_header.source_header.t_source != t01) 
+	      || (all_sinks.heavy_prop_1.prop_header.source_header.t_source != t02))
+	    {
+	      QDPIO::cerr << "Error!! Heavy quark 1 must have same t_source as one of the light propagators " << endl;
+	      QDP_abort(1);
+	    }
+	  if (all_sinks.heavy_prop_1.prop_header.source_header.j_decay != j_decay)
+	    {
+	      QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	      QDP_abort(1);
+	    }
+	}
+	if (named_obj.heavy_id2 != "Static"){
+	  if ((all_sinks.heavy_prop_2.prop_header.source_header.t_source != t01) 
+	      || (all_sinks.heavy_prop_2.prop_header.source_header.t_source != t02))
+	    {
+	      QDPIO::cerr << "Error!! Heavy quark 2 must have same t_source as one of the light propagators " << endl;
+	      QDP_abort(1);
+	    }
+	  if (all_sinks.heavy_prop_2.prop_header.source_header.j_decay != j_decay)
+	    {
+	      QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	      QDP_abort(1);
+	    }
+	}
+	
 	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
 	  {
 	    QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
@@ -480,7 +508,8 @@ namespace Chroma
 		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
 		if (params.param.FourPt)
 		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t0", t0);
+		write(xml_out, "t01", t01);
+		write(xml_out, "t02", t02);
 		
 		// Initialize the slow Fourier transform phases with NO momenta
 		SftMom phases(0, true, j_decay);
@@ -602,7 +631,8 @@ namespace Chroma
 		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
 		if (params.param.FourPt)
 		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t0", t0);
+		write(xml_out, "t01", t01);
+		write(xml_out, "t02", t02);
 		
 		// Initialize the slow Fourier transform phases with NO momenta
 		SftMom phases(0, true, j_decay);
@@ -734,7 +764,8 @@ namespace Chroma
 		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
 		if (params.param.FourPt)
 		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t0", t0);
+		write(xml_out, "t01", t01);
+		write(xml_out, "t02", t02);
 		
 		// Initialize the slow Fourier transform phases with NO momenta
 		SftMom phases(0, true, j_decay);
@@ -866,7 +897,8 @@ namespace Chroma
 		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
 		if (params.param.FourPt)
 		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t0", t0);
+		write(xml_out, "t01", t01);
+		write(xml_out, "t02", t02);
 		
 		// Initialize the slow Fourier transform phases with NO momenta
 		SftMom phases(0, true, j_decay);
