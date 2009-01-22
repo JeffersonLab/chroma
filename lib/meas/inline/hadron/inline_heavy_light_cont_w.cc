@@ -1,4 +1,4 @@
-// $Id: inline_heavy_light_cont_w.cc,v 3.2 2009-01-20 20:04:55 caubin Exp $
+// $Id: inline_heavy_light_cont_w.cc,v 3.3 2009-01-22 16:25:20 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
  *  Still just does static!!
@@ -449,62 +449,30 @@ namespace Chroma
 	  
       // Sanity checks
       {
-		if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
-		  {
-			QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
-			QDP_abort(1);
-		  }
-		if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
-		  {
-			QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
-			QDP_abort(1);
-		  }
-		if (all_sinks.sink_prop_2.prop_header.source_header.t_source != 
-			all_sinks.sink_prop_1.prop_header.source_header.t_source)
-		  {
-			QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
-			QDP_abort(1);
-		  }
-		if (all_sinks.sink_prop_1.source_type != all_sinks.sink_prop_2.source_type)
-		  {
-			QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
-			QDP_abort(1);
-		  }
-		if (all_sinks.sink_prop_1.sink_type != all_sinks.sink_prop_2.sink_type)
-		  {
-			QDPIO::cerr << "Error!! sink_type must be the same in a pair " << endl;
-			QDP_abort(1);
-		  }
-		if (params.param.FourPt){
-		  if (all_sinks.sink_prop_3.prop_header.source_header.j_decay != j_decay)
-			{
-			  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
-			  QDP_abort(1);
-			}
-		  if (all_sinks.sink_prop_3.bc[j_decay] != bc_spec)
-			{
-			  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
-			  QDP_abort(1);
-			}
-		  if (all_sinks.sink_prop_3.prop_header.source_header.t_source != 
-			  all_sinks.sink_prop_1.prop_header.source_header.t_source)
-			{
-			  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
-			  QDP_abort(1);
-			}
-		  if (all_sinks.sink_prop_1.source_type != all_sinks.sink_prop_3.source_type)
-			{
-			  QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
-			  QDP_abort(1);
-			}
-		  if (all_sinks.sink_prop_1.sink_type != all_sinks.sink_prop_3.sink_type)
-			{
-			  QDPIO::cerr << "Error!! sink_type must be the same in a pair " << endl;
-			  QDP_abort(1);
-			}
-		}
+	if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
+	  {
+	    QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	    QDP_abort(1);
+	  }
+	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
+	  {
+	    QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	    QDP_abort(1);
+	  }
+	if (params.param.FourPt){
+	  if (all_sinks.sink_prop_3.prop_header.source_header.j_decay != j_decay)
+	    {
+	      QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	      QDP_abort(1);
+	    }
+	  if (all_sinks.sink_prop_3.bc[j_decay] != bc_spec)
+	    {
+	      QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	      QDP_abort(1);
+	    }
+	}
       }
-
+      
 	  if (named_obj.heavy_id1=="Static" && named_obj.heavy_id2=="Static"){
 		
 		// Masses
