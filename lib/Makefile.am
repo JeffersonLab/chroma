@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.181 2009-01-20 16:16:52 caubin Exp $
+# $Id: Makefile.am,v 3.182 2009-01-26 22:56:42 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -83,13 +83,14 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
-	actions/ferm/invert/syssolver_linop_OPTeigcg.h \
-	actions/ferm/invert/syssolver_linop_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_linop_eigcg_array.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
 	actions/ferm/invert/syssolver_mdagm_cg_array.h \
+	actions/ferm/invert/syssolver_mdagm_eigcg.h \
+	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
+	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_linop_bicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
@@ -930,13 +931,14 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
-	actions/ferm/invert/syssolver_linop_OPTeigcg.cc \
-	actions/ferm/invert/syssolver_linop_eigcg_qdp.cc \
+	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
+	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
+	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/syssolver_linop_bicgstab.cc \
 	actions/ferm/invert/syssolver_linop_mr.cc \
@@ -1583,10 +1585,10 @@ endif
 if BUILD_LAPACK
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
-        actions/ferm/invert/syssolver_linop_OPTeigcg.h
+        actions/ferm/invert/syssolver_mdagm_OPTeigcg.h
 libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
-	actions/ferm/invert/syssolver_linop_OPTeigcg.cc
+	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc
 endif
 
 if BUILD_SSED_CLOVER_APPLY
