@@ -1,3 +1,10 @@
+01/26/2009 - Robert Edwards  
+	Version 3.32.0
+        Delta tau version of min-norm-2 integrators. New stochastic
+        insertion for 3-pt corr.  Added static prop colorvec. Added grid
+        sources. IO for eigcg vecs. Disconnected routines. Added static_light_cont
+        and heavy_light_cont.
+
 11/11/2008 - Robert Edwards  
 	Version 3.31.1
         Fixed the "E" tensor operator in util/ferm/etensor. Reimplemented
