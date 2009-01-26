@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg_qdp.h,v 3.1 2008-04-07 04:58:51 edwards Exp $
+// $Id: syssolver_mdagm_eigcg_qdp.h,v 3.1 2009-01-26 22:47:06 edwards Exp $
 /*! \file
- *  \brief Solve a M*psi=chi linear system by CG2
+ *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
 
-#ifndef __syssolver_linop_eigcg_qdp_h__
-#define __syssolver_linop_eigcg_qdp_h__
+#ifndef __syssolver_mdagm_eigcg_qdp_h__
+#define __syssolver_mdagm_eigcg_qdp_h__
 
 #include "handle.h"
 #include "syssolver.h"
@@ -14,7 +14,7 @@
 #include "named_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/syssolver_mdagm.h"
 #include "actions/ferm/invert/syssolver_eigcg_params.h"
 #include "actions/ferm/invert/containers.h"
 
@@ -22,7 +22,7 @@ namespace Chroma
 {
 
   //! Eigenvector accelerated CG system solver namespace
-  namespace LinOpSysSolverQDPEigCGEnv
+  namespace MdagMSysSolverQDPEigCGEnv
   {
     //! Register the syssolver
     bool registerAll();
@@ -33,7 +33,7 @@ namespace Chroma
   /*! \ingroup invert
    */
   template<typename T>
-  class LinOpSysSolverQDPEigCG : public LinOpSystemSolver<T>
+  class MdagMSysSolverQDPEigCG : public MdagMSystemSolver<T>
   {
   public:
     //! Constructor
@@ -41,7 +41,7 @@ namespace Chroma
      * \param M_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    LinOpSysSolverQDPEigCG(Handle< LinearOperator<T> > A_,
+    MdagMSysSolverQDPEigCG(Handle< LinearOperator<T> > A_,
 			   const SysSolverEigCGParams& invParam_) : 
       MdagM(new MdagMLinOp<T>(A_)), A(A_), invParam(invParam_) 
       {
@@ -62,7 +62,7 @@ namespace Chroma
       }
 
     //! Destructor is automatic
-    ~LinOpSysSolverQDPEigCG()
+    ~MdagMSysSolverQDPEigCG()
       {
 	if (invParam.cleanUpEvecs)
 	{
@@ -85,7 +85,7 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    LinOpSysSolverQDPEigCG() {}
+    MdagMSysSolverQDPEigCG() {}
 
     Handle< LinearOperator<T> > MdagM;
     Handle< LinearOperator<T> > A;

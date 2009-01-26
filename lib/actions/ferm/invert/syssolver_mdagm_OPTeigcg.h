@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigcg.h,v 1.8 2008-12-15 19:24:28 kostas Exp $
+// $Id: syssolver_mdagm_OPTeigcg.h,v 3.1 2009-01-26 22:47:06 edwards Exp $
 /*! \file
- *  \brief Solve a M*psi=chi linear system by CG2
+ *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
 
-#ifndef __syssolver_linop_OPTeigcg_h__
-#define __syssolver_linop_OPTeigcg_h__
+#ifndef __syssolver_mdagm_OPTeigcg_h__
+#define __syssolver_mdagm_OPTeigcg_h__
 
 #include "handle.h"
 #include "syssolver.h"
@@ -14,7 +14,7 @@
 #include "named_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/syssolver_mdagm.h"
 #include "actions/ferm/invert/syssolver_OPTeigcg_params.h"
 #include "actions/ferm/invert/containers.h"
 
@@ -24,7 +24,7 @@ namespace Chroma
 {
 
   //! Eigenvector accelerated CG system solver namespace
-  namespace LinOpSysSolverOptEigCGEnv
+  namespace MdagMSysSolverOptEigCGEnv
   {
     //! Register the syssolver
     bool registerAll();
@@ -35,7 +35,7 @@ namespace Chroma
   /*! \ingroup invert
    */
   template<typename T>
-  class LinOpSysSolverOptEigCG : public LinOpSystemSolver<T>
+  class MdagMSysSolverOptEigCG : public MdagMSystemSolver<T>
   {
   public:
 
@@ -187,8 +187,8 @@ namespace Chroma
      * \param M_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    LinOpSysSolverOptEigCG(Handle< LinearOperator<T> > A_,
-			const SysSolverOptEigCGParams& invParam_) : 
+    MdagMSysSolverOptEigCG(Handle< LinearOperator<T> > A_,
+			   const SysSolverOptEigCGParams& invParam_) : 
       MdagM(new MdagMLinOp<T>(A_)), A(A_), invParam(invParam_) 
       {
 	numMatvecs = 0 ;
@@ -203,17 +203,17 @@ namespace Chroma
 	  EigInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
 	  EigInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
 	  if(invParam.file.read){
-	    QDPIO::cout<<"LinOpSysSolverOptEigCG : reading evecs from disk"<<endl ;
+	    QDPIO::cout<<"MdagMSysSolverOptEigCG : reading evecs from disk"<<endl ;
 	    QIOReadOptEvecs() ;
 	  }
 	}
       }
 
     //! Destructor is automatic
-    ~LinOpSysSolverOptEigCG()
+    ~MdagMSysSolverOptEigCG()
       {
 	if(invParam.file.write){
-	  QDPIO::cout<<"LinOpSysSolverOptEigCG : writing evecs to disk"<<endl ;
+	  QDPIO::cout<<"MdagMSysSolverOptEigCG : writing evecs to disk"<<endl ;
 	  QIOWriteOptEvecs() ;
 	}
 	if (invParam.cleanUpEvecs)
@@ -238,7 +238,7 @@ namespace Chroma
   private:
 
     // Hide default constructor
-    LinOpSysSolverOptEigCG() {}
+    MdagMSysSolverOptEigCG() {}
     int numMatvecs ;
     Handle< LinearOperator<T> > MdagM;
     Handle< LinearOperator<T> > A;

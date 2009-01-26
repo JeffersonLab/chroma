@@ -1,6 +1,6 @@
-// $Id: syssolver_linop_OPTeigcg.cc,v 1.16 2008-04-09 04:49:23 kostas Exp $
+// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.1 2009-01-26 22:47:06 edwards Exp $
 /*! \file
- *  \brief Solve a M*psi=chi linear system by CG2
+ *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
 
 
@@ -8,10 +8,10 @@
 #include "qdp-lapack_eigpcg.h"  
 #include "qdp-lapack_IncrEigpcg.h"
 
-#include "actions/ferm/invert/syssolver_linop_factory.h"
-#include "actions/ferm/invert/syssolver_linop_aggregate.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 
-#include "actions/ferm/invert/syssolver_linop_OPTeigcg.h"
+#include "actions/ferm/invert/syssolver_mdagm_OPTeigcg.h"
 #include "containers.h"
 
 
@@ -19,24 +19,24 @@ namespace Chroma
 {
 
   //! CG1 system solver namespace
-  namespace LinOpSysSolverOptEigCGEnv
+  namespace MdagMSysSolverOptEigCGEnv
   {
     //! Callback function
-    LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
+    MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverOptEigCG<LatticeFermion>(A, SysSolverOptEigCGParams(xml_in, path));
+      return new MdagMSysSolverOptEigCG<LatticeFermion>(A, SysSolverOptEigCGParams(xml_in, path));
     }
 
 #if 0
     //! Callback function
-    LinOpSystemSolver<LatticeStaggeredFermion>* createStagFerm(
+    MdagMSystemSolver<LatticeStaggeredFermion>* createStagFerm(
       XMLReader& xml_in,
       const std::string& path,
       Handle< LinearOperator<LatticeStaggeredFermion> > A)
     {
-      return new LinOpSysSolverOptEigCG<LatticeStaggeredFermion>(A, SysSolverOptEigCGParams(xml_in, path));
+      return new MdagMSysSolverOptEigCG<LatticeStaggeredFermion>(A, SysSolverOptEigCGParams(xml_in, path));
     }
 #endif
 
@@ -52,8 +52,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
-//	success &= Chroma::TheLinOpStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
+	success &= Chroma::TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+//	success &= Chroma::TheMdagMStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
 	registered = true;
       }
       return success;
@@ -166,9 +166,6 @@ namespace Chroma
     {
       START_CODE();
 
-      T chi_tmp;	
-      A(chi_tmp, chi, MINUS);
-
       SystemSolverResults_t res;  // initialized by a constructor
 
       LinAlg::OptEigInfo& EigInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(invParam.eigen_id);
@@ -189,7 +186,7 @@ namespace Chroma
 
       if(s.hasOrderedRep()){
 	X = (Complex_C *) &psi.elem(s.start()).elem(0).elem(0).real();
-	B = (Complex_C *) &chi_tmp.elem(s.start()).elem(0).elem(0).real();
+	B = (Complex_C *) &chi.elem(s.start()).elem(0).elem(0).real();
       }
       else{//need to copy
 	//X = allocate space for them
@@ -236,9 +233,9 @@ namespace Chroma
 
       T tt;
       (*MdagM)(tt,psi,PLUS);
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi_tmp,s))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi_tmp,s))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
       
       if(!s.hasOrderedRep()){
 	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
@@ -258,7 +255,7 @@ namespace Chroma
   // LatticeFermionF
   template<>
   SystemSolverResults_t
-  LinOpSysSolverOptEigCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
+  MdagMSysSolverOptEigCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
   {
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }
@@ -268,7 +265,7 @@ namespace Chroma
   // LatticeFermionD
   template<>
   SystemSolverResults_t
-  LinOpSysSolverOptEigCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
+  MdagMSysSolverOptEigCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
   {
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }
@@ -278,7 +275,7 @@ namespace Chroma
   // LatticeStaggeredFermionF
   template<>
   SystemSolverResults_t
-  LinOpSysSolverOptEigCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
+  MdagMSysSolverOptEigCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
   {
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }
@@ -286,7 +283,7 @@ namespace Chroma
   // LatticeStaggeredFermionD
   template<>
   SystemSolverResults_t
-  LinOpSysSolverOptEigCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
+  MdagMSysSolverOptEigCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
   {
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }

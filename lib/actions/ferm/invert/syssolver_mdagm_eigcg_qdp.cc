@@ -1,14 +1,14 @@
-// $Id: syssolver_linop_eigcg_qdp.cc,v 3.6 2008-04-10 03:01:13 kostas Exp $
+// $Id: syssolver_mdagm_eigcg_qdp.cc,v 3.1 2009-01-26 22:47:06 edwards Exp $
 /*! \file
- *  \brief Solve a M*psi=chi linear system by CG2
+ *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
 
 #include <qdp-lapack.h>
 
-#include "actions/ferm/invert/syssolver_linop_factory.h"
-#include "actions/ferm/invert/syssolver_linop_aggregate.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 
-#include "actions/ferm/invert/syssolver_linop_eigcg_qdp.h"
+#include "actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h"
 #include "actions/ferm/invert/inv_eigcg2.h"
 #include "actions/ferm/invert/norm_gram_schm.h"
 #include "actions/ferm/invert/invcg2.h"
@@ -20,24 +20,24 @@ namespace Chroma
 {
 
   //! CG1 system solver namespace
-  namespace LinOpSysSolverQDPEigCGEnv
+  namespace MdagMSysSolverQDPEigCGEnv
   {
     //! Callback function
-    LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
+    MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverQDPEigCG<LatticeFermion>(A, SysSolverEigCGParams(xml_in, path));
+      return new MdagMSysSolverQDPEigCG<LatticeFermion>(A, SysSolverEigCGParams(xml_in, path));
     }
 
 #if 0
     //! Callback function
-    LinOpSystemSolver<LatticeStaggeredFermion>* createStagFerm(
+    MdagMSystemSolver<LatticeStaggeredFermion>* createStagFerm(
       XMLReader& xml_in,
       const std::string& path,
       Handle< LinearOperator<LatticeStaggeredFermion> > A)
     {
-      return new LinOpSysSolverQDPEigCG<LatticeStaggeredFermion>(A, SysSolverEigCGParams(xml_in, path));
+      return new MdagMSysSolverQDPEigCG<LatticeStaggeredFermion>(A, SysSolverEigCGParams(xml_in, path));
     }
 #endif
 
@@ -53,8 +53,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
-//	success &= Chroma::TheLinOpStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
+	success &= Chroma::TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+//	success &= Chroma::TheMdagMStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
 	registered = true;
       }
       return success;
@@ -73,14 +73,11 @@ namespace Chroma
      */
     template<typename T>
     SystemSolverResults_t sysSolver(T& psi, const T& chi, 
-				    const LinearOperator<T>& A, 
+				    const LinearOperator<T>& A,
 				    const LinearOperator<T>& MdagM, 
 				    const SysSolverEigCGParams& invParam)
     {
       START_CODE();
-
-      T chi_tmp;
-      A(chi_tmp, chi, MINUS);
 
       LinAlg::RitzPairs<T>& GoodEvecs = TheNamedObjMap::Instance().getData< LinAlg::RitzPairs<T> >(invParam.eigen_id);
 
@@ -101,7 +98,7 @@ namespace Chroma
 	          snoop.reset();
 		  snoop.start();
 	  }
-	  InvEigCG2Env::InitGuess(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig,n_CG);
+	  InvEigCG2Env::InitGuess(MdagM,psi,chi,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig,n_CG);
 	  if(invParam.PrintLevel>0) snoop.stop();
 	  if(invParam.PrintLevel>0)
 	    QDPIO::cout << "InitGuess:  time = "
@@ -113,7 +110,7 @@ namespace Chroma
 	  {
 
 	    evec.resize(0);//get in there with no evecs so that it computes new
-	    res = InvEigCG2Env::InvEigCG2(MdagM, psi, chi_tmp, lambda, evec, 
+	    res = InvEigCG2Env::InvEigCG2(MdagM, psi, chi, lambda, evec, 
 					  invParam.Neig, invParam.Nmax, 
 					  invParam.RsdCG, invParam.MaxCG,
 					  invParam.PrintLevel);
@@ -186,11 +183,11 @@ namespace Chroma
 	    n_CG = res.n_count ;
 	    if(invParam.vPrecCGvecs ==0){
 	      if(invParam.PrintLevel<2)// Call the CHROMA CG 
-		res = InvCG2(A, chi_tmp, psi, restartTol, invParam.MaxCG);
+		res = InvCG2(A, chi, psi, restartTol, invParam.MaxCG);
 	      else
 		res = InvEigCG2Env::InvEigCG2(MdagM, 
 					      psi,
-					      chi_tmp,
+					      chi,
 					      lambda, 
 					      evec, 
 					      0, //Eigenvectors to keep
@@ -201,7 +198,7 @@ namespace Chroma
 					      );
 	    }
 	    else
-	      res = InvEigCG2Env::vecPrecondCG(MdagM,psi,chi_tmp,
+	      res = InvEigCG2Env::vecPrecondCG(MdagM,psi,chi,
 					       GoodEvecs.eval.vec,
 					       GoodEvecs.evec.vec,
 					       invParam.vPrecCGvecStart,
@@ -241,7 +238,7 @@ namespace Chroma
   // LatticeFermionF
   template<>
   SystemSolverResults_t
-  LinOpSysSolverQDPEigCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
+  MdagMSysSolverQDPEigCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
   {
     return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
@@ -249,7 +246,7 @@ namespace Chroma
   // LatticeFermionD
   template<>
   SystemSolverResults_t
-  LinOpSysSolverQDPEigCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
+  MdagMSysSolverQDPEigCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
   {
     return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
@@ -259,7 +256,7 @@ namespace Chroma
   // LatticeStaggeredFermionF
   template<>
   SystemSolverResults_t
-  LinOpSysSolverQDPEigCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
+  MdagMSysSolverQDPEigCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
   {
     return sysSolver(psi, chi, *A, *MdagM, invParam);
   }
@@ -267,7 +264,7 @@ namespace Chroma
   // LatticeStaggeredFermionD
   template<>
   SystemSolverResults_t
-  LinOpSysSolverQDPEigCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
+  MdagMSysSolverQDPEigCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
   {
     return sysSolver(psi, chi, *A, *MdagM, invParam);
   }

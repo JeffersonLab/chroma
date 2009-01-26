@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_cg.cc,v 3.2 2006-09-20 20:28:00 edwards Exp $
+// $Id: syssolver_mdagm_cg.cc,v 3.3 2009-01-26 22:47:06 edwards Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -14,6 +14,17 @@ namespace Chroma
   //! CG2 system solver namespace
   namespace MdagMSysSolverCGEnv
   {
+    //! Anonymous namespace
+    namespace
+    {
+      //! Name to be used
+      const std::string name("CG_INVERTER");
+
+      //! Local registration flag
+      bool registered = false;
+    }
+
+
     //! Callback function
     MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
@@ -21,12 +32,6 @@ namespace Chroma
     {
       return new MdagMSysSolverCG<LatticeFermion>(A, SysSolverCGParams(xml_in, path));
     }
-
-    //! Name to be used
-    const std::string name("CG_INVERTER");
-
-    //! Local registration flag
-    static bool registered = false;
 
     //! Register all the factories
     bool registerAll() 
