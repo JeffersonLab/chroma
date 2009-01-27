@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.11 2009-01-27 15:39:33 caubin Exp $ 
+// $Id: barQll_w.cc,v 1.12 2009-01-27 15:43:24 caubin Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -169,8 +169,6 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
   Qprop = conj(transpose(Qprop));
 }
 
-}
-
 
 //! Backwards Heavy Quark Propagator
 /*!
@@ -207,5 +205,6 @@ void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
 
   Qprop = conj(transpose(Qprop));
 }
+
 
 }
