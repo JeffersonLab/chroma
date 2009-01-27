@@ -1,4 +1,4 @@
-//$Id: barQll_w.h,v 1.6 2006-10-17 13:23:41 kostas Exp $
+//$Id: barQll_w.h,v 1.7 2009-01-27 15:40:44 caubin Exp $
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -62,6 +62,24 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
  *
  */
 void HeavyQuarkProp(LatticeColorMatrix& Qprop,
+		    const multi1d<LatticeColorMatrix>& u,
+		    const multi1d<int>& src_coord,
+		    int length);
+
+//! Backwards Heavy Quark Propagator
+/*!
+ * \ingroup hadron
+ *
+ * 
+ * This constructs the propagator for a spinless Wilson-Line propagating from the 
+ * point src_coord backward in time, and vanishing on later time-slices.
+ *
+ * \param Qprop              Wilson-Line (write)
+ * \param u                  Gauge Field (Read) 
+ * \param src_coord          cartesian coordinates of the source ( Read )
+ *
+ */
+void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
 		    const multi1d<LatticeColorMatrix>& u,
 		    const multi1d<int>& src_coord,
 		    int length);
