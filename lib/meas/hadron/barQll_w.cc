@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.10 2008-12-21 21:22:36 edwards Exp $ 
+// $Id: barQll_w.cc,v 1.11 2009-01-27 15:39:33 caubin Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -166,6 +166,45 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
     Qprop[slice[t]] = shift(Qprop,BACKWARD,Nd-1)*U_t_minus_one ;
   }
  
+  Qprop = conj(transpose(Qprop));
+}
+
+}
+
+
+//! Backwards Heavy Quark Propagator
+/*!
+ * \ingroup hadron
+ *
+ * This constructs the propagator for a spinless Wilson-Line propagating from the
+ * point src_coord BACKWARD in time, and vanishing on later time-slices.
+ *
+ * \param Qprop              Wilson-Line (write)
+ * \param u                  Gauge Field (Read)
+ * \param src_coord          cartesian coordinates of the source ( Read )
+ *
+ */
+
+void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
+                    const multi1d<LatticeColorMatrix>& u,
+                    const multi1d<int>& src_coord,int length)
+{
+
+  Set slice ;
+  slice.make(TimeSliceFunc(Nd-1));
+
+  Qprop = 0.0 ;
+
+  ColorMatrix one = 1.0 ;
+
+  pokeSite(Qprop,one,src_coord);
+
+  LatticeColorMatrix U_t_plus_one ;
+  U_t_plus_one = shift(u[Nd-1],FORWARD,Nd-1) ;
+  for(int t(src_coord[Nd-1]+1);t>=0;t--){
+    Qprop[slice[t]] = shift(Qprop,FORWARD,Nd-1)*U_t_plus_one ;
+  }
+
   Qprop = conj(transpose(Qprop));
 }
 

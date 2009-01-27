@@ -1,4 +1,4 @@
-// $Id: Ql_3pt_w.cc,v 1.2 2009-01-20 20:04:55 caubin Exp $ 
+// $Id: Ql_3pt_w.cc,v 1.3 2009-01-27 15:39:32 caubin Exp $ 
 /*! \file
  *  \brief Static-Light 3pt function
  */
@@ -62,7 +62,7 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
   LatticeColorMatrix Qprop2; // c quark
 
   HeavyQuarkProp(Qprop1,u,src_coord,length);
-  HeavyQuarkProp(Qprop2,u,snk_coord,length);
+  HeavyQuarkPropBack(Qprop2,u,snk_coord,length);
 
   // S_proj_unpol = (1/2)(1 + gamma_4)
   // This is the heavy quark dirac structure, but I am using the notation
@@ -93,8 +93,8 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
       for(int t = 0; t < length; ++t)
 	{
 	  int t_eff = (t - src_coord[Nd-1] + length) % length;
-	  HQprop[sink_mom_num][t_eff]  = hsumHq[sink_mom_num][t];
-	  HQprop_m[sink_mom_num][t_eff]  = hsumHq_m[sink_mom_num][t];
+	  HQprop[sink_mom_num][t_eff] = hsumHq[sink_mom_num][t];
+	  HQprop_m[sink_mom_num][t_eff] = hsumHq_m[sink_mom_num][t];
 	}
     
     //XMLWriter xml_bar(xml);
