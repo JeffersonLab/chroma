@@ -1,4 +1,4 @@
-// $Id: qprop_io.cc,v 3.20 2008-11-04 18:43:56 edwards Exp $
+// $Id: qprop_io.cc,v 3.21 2009-01-29 16:57:28 caubin Exp $
 /*! \file
  * \brief Routines associated with Chroma propagator IO
  */
@@ -127,6 +127,7 @@ namespace Chroma
     XMLReader  sourcetop(xml_s);
 
     multi1d<int> t_srce;
+    multi1d<int> t_source;
 
     try
     {
@@ -136,8 +137,21 @@ namespace Chroma
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error reading source: " << e << endl;
-      throw e;
+      try
+	{
+	  XMLReader  top(sourcetop, source.path);
+
+	  read(top, "t_source", t_source);
+	  t_srce.resize(Nd);
+	  t_srce[Nd-1] = t_source[0];
+	  for(int i=0;i<Nd-1;i++)
+	    t_srce[i] = 0;
+	}
+      catch (const std::string& e)
+	{
+	  QDPIO::cerr << "Error reading source: " << e << endl;
+	  throw e;
+	}
     }
 
     return t_srce;
