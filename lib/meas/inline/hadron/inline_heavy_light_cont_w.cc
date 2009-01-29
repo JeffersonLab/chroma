@@ -1,4 +1,4 @@
-// $Id: inline_heavy_light_cont_w.cc,v 3.5 2009-01-23 21:07:35 caubin Exp $
+// $Id: inline_heavy_light_cont_w.cc,v 3.6 2009-01-29 16:05:35 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
  *  Still just does static!!
@@ -482,7 +482,6 @@ namespace Chroma
 	  QDP_abort(1);
 	  }
 	  }
-	**/
 	
 	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
 	  {
@@ -501,6 +500,7 @@ namespace Chroma
 	      QDP_abort(1);
 	    }
 	}
+	**/
       }
       
 	  if (named_obj.heavy_id1=="Static" && named_obj.heavy_id2=="Static"){
