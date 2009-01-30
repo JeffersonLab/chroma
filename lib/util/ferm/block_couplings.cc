@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: block_couplings.cc,v 1.1 2009-01-30 20:52:47 kostas Exp $
+// $Id: block_couplings.cc,v 1.2 2009-01-30 21:07:21 kostas Exp $
 /*! \file
  *  \brief Caclulates the couplings between neighboring blocks given a displacement path
  */
@@ -26,7 +26,7 @@ namespace Chroma
     return out;    
   }
 
-  vector<int> block_coublings(const int b,
+  vector<int> block_couplings(const int b,
 			      const Set& S,const multi1d<int>& disp,
 			      const int len){
     vector<int> b_list ;
@@ -49,7 +49,7 @@ namespace Chroma
 	}
 
       int flag = toInt(sum(blk2*blk));
-      if(flag)
+      if(flag>0)
 	b_list.push_back(b2);
     }
 
