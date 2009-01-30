@@ -24,6 +24,8 @@
     <SavePrefix>dummy_run</SavePrefix>
     <SaveVolfmt>SINGLEFILE</SaveVolfmt>
     <ReproCheckP>false</ReproCheckP>
+    <ReverseCheckP>true</ReverseCheckP>
+    <ReverseCheckFrequency>1</ReverseCheckFrequency>
     <InlineMeasurements>
       <elem>
         <Name>POLYAKOV_LOOP</Name>

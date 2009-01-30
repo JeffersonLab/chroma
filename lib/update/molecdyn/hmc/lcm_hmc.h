@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lcm_hmc.h,v 3.4 2006-12-25 21:40:17 bjoo Exp $
+// $Id: lcm_hmc.h,v 3.5 2009-01-30 20:57:51 bjoo Exp $
 /*! \file
  * \brief HMC trajectory
  *
@@ -83,6 +83,41 @@ namespace Chroma
     
       END_CODE();
     }
+
+
+    void flipMomenta(AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s) const {
+
+      multi1d<LatticeColorMatrix>& p = s.getP();
+      for(int mu=0; mu < Nd; mu++) { 
+	p[mu] *= Real(-1);
+      }
+    }
+
+    void reverseCheckMetrics(Double& deltaQ, Double& deltaP,
+			     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s,
+			     const AbsFieldState<multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& s_old
+			     ) const  { 
+
+      multi1d<LatticeColorMatrix> DelQ(Nd);
+      multi1d<LatticeColorMatrix> DelP(Nd);
+      for(int mu=0; mu < Nd; mu++) {
+	DelQ[mu]=s.getQ()[mu] - s_old.getQ()[mu];
+	DelP[mu]=s.getP()[mu] - s_old.getP()[mu];
+      }
+      
+      deltaQ = sqrt(norm2(DelQ[0]));
+      deltaP = sqrt(norm2(DelP[0]));
+      for(int mu=1; mu < Nd; mu++) { 
+	deltaQ += sqrt(norm2(DelQ[mu]));
+	deltaP += sqrt(norm2(DelP[mu]));
+      }
+
+      deltaQ /= Double(Nd*Layout::vol());
+      deltaP /= Double(Nd*Layout::vol());
+
+      
+    }
+
   };
 }
 

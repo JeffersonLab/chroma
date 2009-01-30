@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_hmc.h,v 3.6 2006-12-25 21:40:17 bjoo Exp $
+// $Id: abs_hmc.h,v 3.7 2009-01-30 20:57:51 bjoo Exp $
 /*! \file
  * \brief Abstract HMC trajectory Using the new structure
  *
@@ -32,7 +32,8 @@ namespace Chroma
 
     // Do the HMC trajectory
     virtual void operator()(AbsFieldState<P,Q>& s,
-			    const bool WarmUpP)
+			    const bool WarmUpP, 
+			    const bool CheckRevP)
     {
       START_CODE();
 
@@ -85,6 +86,56 @@ namespace Chroma
       // Integrate MD trajectory
       MD(s, MD.getTrajLength());
            
+
+      // If this is a reverse trajectory
+      if( CheckRevP ) { 
+
+	QDPIO::cout << "Reversing trajectory for reversability test" <<endl;
+
+	// Copy state
+	Handle< AbsFieldState<P,Q> >  s_rev(s.clone());
+	
+	// Flip Momenta
+	flipMomenta(*s_rev);
+	
+	// Go back
+	MD(*s_rev, MD.getTrajLength());
+
+	// Flip Momenta back (to original)
+	flipMomenta(*s_rev);
+
+
+	Double KE_rev;
+	Double PE_rev;
+       
+	H_MC.mesE(*s_rev, KE_rev, PE_rev);
+
+	Double DeltaDeltaKE = KE_rev - KE_old;
+	Double DeltaDeltaPE = PE_rev - PE_old;
+	Double DeltaDeltaH = DeltaDeltaKE + DeltaDeltaPE;
+
+	
+	Double dq;
+	Double dp;
+	reverseCheckMetrics(dq,dp, *s_rev, *s_old);
+
+	push(xml_log, "ReversibilityMetrics");
+	write(xml_log, "DeltaDeltaH", fabs(DeltaDeltaH));
+	write(xml_log, "DeltaDeltaKE", fabs(DeltaDeltaKE));
+	write(xml_log, "DeltaDeltaPE", fabs(DeltaDeltaPE));
+	write(xml_log, "DeltaQPerSite", dq);
+	write(xml_log, "DeltaPPerSite", dp);
+	pop(xml_log);
+
+	QDPIO::cout << "Reversibility: DeltaDeltaH = " << fabs(DeltaDeltaH) <<endl;
+	QDPIO::cout << "Reversibility: DeltaQ      = " << dq << endl;
+	QDPIO::cout << "Reversibility: DeltaP      = " << dp << endl;
+
+
+	// s_rev goes away... We continue as if nothing happened
+	
+      }
+
       //  Measure the energy of the new state
       Double KE, PE;
 
@@ -162,6 +213,12 @@ namespace Chroma
     
     virtual bool acceptReject(const Double& DeltaH) const = 0;
     
+
+    // These things are for reversebility checking...
+    virtual void flipMomenta(AbsFieldState<P,Q>& state) const = 0;
+    virtual void reverseCheckMetrics(Double& deltaQ, Double& deltaP,
+				     const AbsFieldState<P,Q>& s, 
+				     const AbsFieldState<P,Q>& s_old) const = 0;
   };
 
 } // end namespace chroma 

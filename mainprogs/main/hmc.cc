@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.21 2008-01-10 14:33:45 bjoo Exp $
+// $Id: hmc.cc,v 3.22 2009-01-30 20:57:51 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -25,6 +25,9 @@ namespace Chroma
     std::string   inline_measurement_xml;
     bool          repro_checkP;
     int           repro_check_frequency;
+    bool          rev_checkP;
+    int           rev_check_frequency;
+
   };
   
   void read(XMLReader& xml, const std::string& path, MCControl& p) 
@@ -60,6 +63,24 @@ namespace Chroma
 	if( paramtop.count("./ReproCheckFrequency") == 1 ) {
 	  // Read user value if given
 	  read(paramtop, "./ReproCheckFrequency", p.repro_check_frequency);
+	}
+      }
+
+      // Reversibility checking enabled by default.
+      p.rev_checkP = true;
+      p.rev_check_frequency = 10;
+
+      // Now overwrite with user values
+      if( paramtop.count("./ReverseCheckP") == 1 ) {
+	// Read user value if given
+	read(paramtop, "./ReverseCheckP", p.rev_checkP);
+      }
+
+      // If we do repro checking, read the frequency
+      if( p.rev_checkP ) { 
+	if( paramtop.count("./ReverseCheckFrequency") == 1 ) {
+	  // Read user value if given
+	  read(paramtop, "./ReverseCheckFrequency", p.rev_check_frequency);
 	}
       }
 
@@ -105,6 +126,10 @@ namespace Chroma
       write(xml, "ReproCheckP", p.repro_checkP);
       if( p.repro_checkP ) { 
 	write(xml, "ReproCheckFrequency", p.repro_check_frequency);
+      }
+      write(xml, "ReverseCheckP", p.rev_checkP);
+      if( p.rev_checkP ) { 
+	write(xml, "ReverseCheckFrequency", p.rev_check_frequency);
       }
 
       xml << p.inline_measurement_xml;
@@ -363,7 +388,12 @@ namespace Chroma
 	write(xml_out, "WarmUpP", warm_up_p);
 	write(xml_log, "WarmUpP", warm_up_p);
 
-
+	bool do_reverse = false;
+	if( mc_control.rev_checkP 
+	    && ( cur_update % mc_control.rev_check_frequency == 0 )) {
+	  do_reverse = true;
+	  QDPIO::cout << "Doing Reversibility Test this traj" << endl;
+	}
 
 
 	// Check if I need to do any reproducibility testing
@@ -383,7 +413,9 @@ namespace Chroma
 	  QDPIO::cout << "Before HMC trajectory call" << endl;
 	  swatch.reset(); 
 	  swatch.start();
-	  theHMCTrj( gauge_state, warm_up_p ); 
+
+	  // This may do a reversibility check 
+	  theHMCTrj( gauge_state, warm_up_p, do_reverse ); 
 	  swatch.stop(); 
 	  
 	  QDPIO::cout << "After HMC trajectory call: time= "
@@ -410,7 +442,8 @@ namespace Chroma
 	  QDPIO::cout << "Before HMC repro trajectory call" << endl;
 	  swatch.reset(); 
 	  swatch.start();
-	  theHMCTrj( gauge_state, warm_up_p ); 
+	  // Dont repeat the reversibility check in the repro test
+	  theHMCTrj( gauge_state, warm_up_p, false ); 
 	  swatch.stop(); 
 	  
 	  QDPIO::cout << "After HMC repro trajectory call: time= "
@@ -455,7 +488,7 @@ namespace Chroma
 	  QDPIO::cout << "Before HMC trajectory call" << endl;
 	  swatch.reset();
 	  swatch.start();
-	  theHMCTrj( gauge_state, warm_up_p );
+	  theHMCTrj( gauge_state, warm_up_p, do_reverse  );
 	  swatch.stop();
 	
 	  QDPIO::cout << "After HMC trajectory call: time= "

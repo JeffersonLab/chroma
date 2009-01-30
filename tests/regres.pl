@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.50 2008-09-08 21:39:09 edwards Exp $
+#  $Id: regres.pl,v 3.51 2009-01-30 20:57:51 bjoo Exp $
 #
 #  This is the top-level script used by chroma/scripts/run_chroma_xmldiff.pl
 #
@@ -16,7 +16,7 @@ sub regresDirs
     #
 #    return (
 #    	"$test_dir/chroma/hadron/propagator/regres.pl",
-#        "$test_dir/t_leapfrog/regres.pl",
+#        "$test_dir/hmc/regres.pl",
 #    );
 
      return ( 
