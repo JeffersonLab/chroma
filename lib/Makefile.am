@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.184 2009-01-30 05:28:00 kostas Exp $
+# $Id: Makefile.am,v 3.185 2009-01-30 20:52:41 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -282,6 +282,7 @@ nobase_include_HEADERS = \
 	util/ferm/eigeninfo.h \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
+	util/ferm/block_couplings.h \
 	util/ft/sftmom.h util/ft/single_phase.h \
         util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
@@ -1099,6 +1100,7 @@ libchroma_a_SOURCES = \
 	util/ferm/diractodr.cc util/ferm/paulitodr.cc \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc \
 	util/ferm/subset_vectors.cc \
+	util/ferm/block_couplings.cc \
         util/ft/sftmom.cc util/ft/single_phase.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
