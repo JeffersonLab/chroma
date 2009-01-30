@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.42 2009-01-20 16:16:58 caubin Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.43 2009-01-30 03:42:39 kostas Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -38,6 +38,7 @@
 #include "meas/inline/hadron/inline_npr_w.h"
 #include "meas/inline/hadron/inline_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_grid_prop_w.h"
+#include "meas/inline/hadron/inline_block_prop_w.h"
 #include "meas/inline/hadron/inline_static_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_unit_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
@@ -116,6 +117,7 @@ namespace Chroma
 	success &= InlineNprEnv::registerAll();
 	success &= InlinePropColorVecEnv::registerAll();
 	success &= InlineGridPropEnv::registerAll();
+	success &= InlineBlockPropEnv::registerAll();
 	success &= InlineStaticPropColorVecEnv::registerAll();
 	success &= InlineUnitPropColorVecEnv::registerAll();
 	success &= InlinePropMatElemColorVecEnv::registerAll();

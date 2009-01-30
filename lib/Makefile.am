@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.182 2009-01-26 22:56:42 edwards Exp $
+# $Id: Makefile.am,v 3.183 2009-01-30 03:42:30 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -281,6 +281,7 @@ nobase_include_HEADERS = \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
 	util/ferm/subset_vectors.h \
+	util/ferm/block_subset.h \
 	util/ft/sftmom.h util/ft/single_phase.h \
         util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
@@ -655,6 +656,7 @@ nobase_include_HEADERS += \
 	util/ferm/map_obj.h \
 	util/ferm/key_prop_colorvec.h \
 	util/ferm/key_grid_prop.h \
+	util/ferm/key_block_prop.h \
 	util/ferm/key_val_db.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
@@ -780,6 +782,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_prop_colorvec_w.h \
 	meas/inline/hadron/inline_grid_prop_w.h \
+	meas/inline/hadron/inline_block_prop_w.h \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_unit_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
@@ -1385,6 +1388,7 @@ libchroma_a_SOURCES += \
         util/ferm/etensor.cc \
         util/ferm/symtensor.cc \
 	util/ferm/key_grid_prop.cc \
+	util/ferm/key_block_prop.cc \
 	util/ferm/key_prop_colorvec.cc
 
 # Taken out for now
@@ -1450,6 +1454,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_grid_prop_w.cc \
+	meas/inline/hadron/inline_block_prop_w.cc \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_unit_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \

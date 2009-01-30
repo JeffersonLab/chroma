@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: block_subset.h,v 1.1 2009-01-16 04:06:34 kostas Exp $
+// $Id: block_subset.h,v 1.2 2009-01-30 03:42:40 kostas Exp $
 /*! \file
  * \brief Key for propagator colorvector sources
  */
@@ -41,7 +41,7 @@ namespace Chroma
   private:
     BlockFunc() {}  // hide default constructor
     
-    void BlockFunc::init(const multi1d<int>& blk)  {
+    void init(const multi1d<int>& blk)  {
       blockNum.resize(Nd) ;
       block.resize(Nd) ;
       Nblocks = 1 ;

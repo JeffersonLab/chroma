@@ -1,4 +1,4 @@
-// $Id: qio_write_obj_funcmap.cc,v 3.13 2008-12-15 16:45:45 kostas Exp $
+// $Id: qio_write_obj_funcmap.cc,v 3.14 2009-01-30 03:42:40 kostas Exp $
 /*! \file
  *  \brief Write object function map
  */
@@ -13,6 +13,7 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_grid_prop.h"
+#include "util/ferm/key_block_prop.h"
 #include "util/ferm/map_obj.h"
 
 #include "actions/ferm/invert/containers.h"
@@ -541,6 +542,8 @@ namespace Chroma
 								      QIOWriteMapObj<KeyPropColorVec_t,LatticeFermion>);
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyGridPropLatticeFermion"), QIOWriteMapObj<KeyGridProp_t,LatticeFermion>);
+
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyBlockPropLatticeFermion"), QIOWriteMapObj<KeyBlockProp_t,LatticeFermion>);
 
 	registered = true;
       }
