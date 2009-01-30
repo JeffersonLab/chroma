@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.43 2009-01-30 03:42:39 kostas Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.44 2009-01-30 05:28:09 kostas Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -43,6 +43,7 @@
 #include "meas/inline/hadron/inline_unit_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_grid_prop_matelem_w.h"
+#include "meas/inline/hadron/inline_block_prop_matelem_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_grid_matelem_w.h"
@@ -124,6 +125,7 @@ namespace Chroma
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonGridMatElemEnv::registerAll();
+	//	success &= InlineMesonBlockMatElemEnv::registerAll();
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
 	success &= InlineMresEnv::registerAll();
 	success &= InlineGaugeTransfNamedObjEnv::registerAll();
@@ -141,6 +143,7 @@ namespace Chroma
 	success &= InlineStochGroupBaryonEnv::registerAll();
 	success &= InlineStochGroupMesonEnv::registerAll();
 	success &= InlineGridPropMatElemEnv::registerAll();
+	success &= InlineBlockPropMatElemEnv::registerAll();
 
 	registered = true;
       }
