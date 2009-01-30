@@ -1,4 +1,4 @@
-// $Id: inline_disco_eigcg_w.cc,v 1.6 2008-12-15 19:24:28 kostas Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.7 2009-01-30 21:19:10 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -308,7 +308,7 @@ namespace Chroma{
 	  //db.insert(db.rbegin(),kv);
 	  db.insert(kv);
 	} 
-	else{// element exists need to add resutl to it
+	else{// element exists need to add result to it
 	  for(int i(0);i<kv.second.op.size();i++)
 	    it->second.op[i] += kv.second.op[i] ;
 	}
@@ -351,7 +351,20 @@ namespace Chroma{
       multi1d<Complex> HU    ;
     } ;
 
-    void   ReadOPTEigCGVecs(multi1d<LatticeFermion>& vec,
+    // Added this "projector" routine to return chitilde = (1 - VHinv Vdag Sdag S)chi given
+    // an input chi vector, and of course the vectors and H. Note it also takes in
+    // Sdag S chi, because I can't figure out how to input a handle...This
+    // is really ugly, but it works...
+    void PRchi(LatticeFermion& chitilde, const LatticeFermion& chi,
+	       const LatticeFermion& SdagSchi,
+	       multi1d<Complex> H ,  multi1d<LatticeFermion>& V){
+      // For now just neglect second piece...
+      chitilde = chi ;//- V*adj(V)*SdagSchi;
+      
+    }
+
+
+    void ReadOPTEigCGVecs(multi1d<LatticeFermion>& vec,
 			    CholeskyFactors& Clsk, 
 			    const string& evecs_file)
     {
@@ -619,6 +632,13 @@ namespace Chroma{
       }
 
 
+      // We need to have the operator for the random noise part...
+      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo=createOddOdd_Op(params.param,u);
+      //Now I can read the evecs from disk
+      multi1d<LatticeFermion> vec; // the vectors
+      CholeskyFactors Clsk; // the Cholesky Factors 
+      ReadOPTEigCGVecs(vec,Clsk,params.named_obj.evecs_file);
+      
       //This is the piece with only the random noise
       map< KeyOperator_t, ValOperator_t > data ;
 
@@ -633,32 +653,42 @@ namespace Chroma{
 	    multi1d<short int> d ;
 	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
 	    LatticeFermion q     = quarks[n]->dilutedSolution(it,i);
+	    LatticeFermion qtmp, q2, qbar2;
+	    LatticeFermion chitilde, SdagSchi;
+	    Doo->oddOddLinOp(qtmp,q,MINUS); //Make sure MINUS is dagger
+	    Doo->oddOddLinOp(SdagSchi,qtmp,PLUS); //Make sure MINUS is dagger
+	    PRchi(chitilde, q,  SdagSchi,Clsk.H , vec);
+	    //Now below we do the same thing, but instead of q we put chitilde...
+	    // Currently with the PRchi definition, it just sets chiltilde to q,
+	    // so actually this doesn't do anything interesting.
 	    QDPIO::cout<<"   Starting recursion "<<endl ;
-	    do_disco(data, qbar, q, phases, t, d, params.param.max_path_length);
+	    do_disco(data, qbar, chitilde, phases, t, d, params.param.max_path_length);
+	    Doo->evenOddLinOp(qtmp,chitilde,PLUS);// Check that PLUS is not dagger
+	    Doo->evenEvenInvLinOp(q2,qtmp,PLUS);
+	    Doo->oddEvenLinOp(qtmp,qbar,MINUS); // 
+	    Doo->evenEvenInvLinOp(qbar2,qtmp,MINUS); 
+	    // Note if element exists in db, do_disco is smart and adds
+	    // new result to it...
+            do_disco(data, qbar2, q2, phases, t, d, params.param.max_path_length);
+
 	    QDPIO::cout<<" done with recursion! "
 		       <<"  The length of the path is: "<<d.size()<<endl ;
 	  }
 	  QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
 	}
       }
-
-     
-      //in order to do the remaining of the peices we instantiate the action
-      // so that we get a handle to the linear operator whose trace we compute
-      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo=createOddOdd_Op(params.param,u);
-
-      //Now I can read the evecs from disk
-      multi1d<LatticeFermion> vec; // the vectors
-      CholeskyFactors Clsk; // the Cholesky Factors 
-      ReadOPTEigCGVecs(vec,Clsk,params.named_obj.evecs_file);
-
-      //Here we  subtract from the random noise estimate 
-      // the piece that the eigenvectors will compute for us
-
+      
+      // So the above section calculates
+      // Tr[etadag gamma Sinv eta]
+      // Tr[etadag Doe DeeInv gamma DeeInv Deo Sinv eta]
+      // -Tr[etadag gamma V Hinv Vdag Sdag eta]
+      // -Tr[etadag Doe DeeInv gamma DeeInv Deo V Hinv Vdag Sdag eta]
 
       //Here we should compute the piece that comes from eigenvectors
-      
-
+      // Still have to do this!!
+      // Tr[Hinv Vdag Sdag gamma V]
+      // Tr[Hinv Vdag Sdag Doe DeeInv gamma DeeInv Deo V]
+      // Tr[gamma DeeInv]
 
 
       //After all the pieces are computed we write the final result to the
