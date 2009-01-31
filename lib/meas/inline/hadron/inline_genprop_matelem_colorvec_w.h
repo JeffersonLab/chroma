@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_genprop_matelem_colorvec_w.h,v 1.3 2008-09-27 05:14:59 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.h,v 1.4 2009-01-31 04:49:31 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -31,6 +31,8 @@ namespace Chroma
 
       struct Param_t
       {
+	bool                    restrict_plateau;       /*!< Restrict the time slices save to the plateau region */
+	bool                    avg_equiv_mom;          /*!< Average the genprop over rotations of momenta at fixed mom^2 */
 	int                     t_source;               /*!< Source time slice for props */
 	int                     t_sink;                 /*!< Sink time slice for props */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */

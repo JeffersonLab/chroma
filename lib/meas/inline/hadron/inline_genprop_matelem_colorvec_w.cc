@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.6 2008-10-15 20:09:24 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.7 2009-01-31 04:49:30 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -50,12 +50,16 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	/**************************************************************************/
+	param.restrict_plateau = false;
+	param.avg_equiv_mom    = false;
+	break;
+
+      case 2:
+	read(paramtop, "restrict_plateau", param.restrict_plateau);
+	read(paramtop, "avg_equiv_mom", param.avg_equiv_mom);
 	break;
 
       default :
-	/**************************************************************************/
-
 	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
 	QDP_abort(1);
       }
@@ -90,9 +94,11 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 1;
+      int version = 2;
 
       write(xml, "version", version);
+      write(xml, "restrict_plateau", param.restrict_plateau);
+      write(xml, "avg_equiv_mom", param.avg_equiv_mom);
       write(xml, "t_source", param.t_source);
       write(xml, "t_sink", param.t_sink);
       write(xml, "mom_offset", param.mom_offset);
@@ -451,7 +457,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.sink_prop_id);
 
       push(xml_out, "Output_version");
-      write(xml_out, "out_version", 1);
+      write(xml_out, "out_version", 2);
       pop(xml_out);
 
       proginfo(xml_out);    // Print out basic program info
@@ -477,7 +483,8 @@ namespace Chroma
       //
       multi1d<int> origin_offset(Nd);
       origin_offset = 0;
-      SftMom phases(params.param.mom2_max, origin_offset, params.param.mom_offset, false, params.param.decay_dir);
+      SftMom phases(params.param.mom2_max, origin_offset, params.param.mom_offset, 
+		    params.param.avg_equiv_mom, params.param.decay_dir);
 
       //
       // Smear the gauge field if needed
@@ -520,10 +527,31 @@ namespace Chroma
       // Loop over all time slices for the source. This is the same 
       // as the subsets for  phases
 
-      const int num_vecs  = params.param.num_vecs;
-      const int decay_dir = params.param.decay_dir;
-      const int t_source  = params.param.t_source;
-      const int t_sink    = params.param.t_sink;
+      const bool restrict_plateau = params.param.restrict_plateau;
+      const int num_vecs          = params.param.num_vecs;
+      const int decay_dir         = params.param.decay_dir;
+      const int t_source          = params.param.t_source;
+      const int t_sink            = params.param.t_sink;
+
+      // Define the start and end region for the plateau
+      int t_start;
+      int t_end;
+
+      if (restrict_plateau)
+      {
+	t_start = t_source;
+	t_end   = t_sink;
+
+	if (t_source > t_sink)
+	{
+	  t_end += phases.numSubsets();
+	}
+      }
+      else
+      {
+	t_start = 0;
+	t_end   = phases.numSubsets() - 1;
+      }
 
       // Loop over each operator 
       for(int l=0; l < params.param.disp_gamma_list.size(); ++l)
@@ -562,8 +590,10 @@ namespace Chroma
 	      // No displacement for left colorvector, only displace right colorvector
 	      // Invert the time - make it an independent key
 	      multi1d<KeyValGenPropElementalOperator_t> buf(phases.numSubsets());
-	      for(int t=0; t < phases.numSubsets(); ++t)
+	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
+		int t = tt % phases.numSubsets(); // mod back into a normal interval
+
 		buf[t].key.key().t_slice       = t;
 		buf[t].key.key().t_source      = t_source;
 		buf[t].key.key().t_sink        = t_sink;
@@ -609,16 +639,18 @@ namespace Chroma
 
 		  watch.stop();
 
-		  for(int t=0; t < op_sum.size(); ++t)
+		  for(int tt=t_start; tt <= t_end; ++tt)
 		  {
+		    int t = tt % phases.numSubsets(); // mod back into a normal interval
 		    buf[t].val.data().op(i,j) = op_sum[t];
 		  }
 		} // end for i
 	      } // end for j
 
 	      QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
-	      for(int t=0; t < phases.numSubsets(); ++t)
+	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
+		int t = tt % phases.numSubsets(); // mod back into a normal interval
 		qdp_db.insert(buf[t].key, buf[t].val);
 	      }
 
