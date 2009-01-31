@@ -134,7 +134,7 @@
       <Param>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>2 7</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
         <Propagator>
@@ -207,7 +207,7 @@
       <Param>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>2 7</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
       </Param>
@@ -223,7 +223,7 @@
       <Frequency>1</Frequency>
       <Param>
         <num_vecs>3</num_vecs>
-        <t_sources>2 7</t_sources>
+        <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
       </Param>
@@ -240,7 +240,7 @@
       <Frequency>1</Frequency>
       <Param>
         <num_vecs>3</num_vecs>
-        <t_sources>2 7</t_sources>
+        <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>STATIC</mass_label>
       </Param>
@@ -369,8 +369,8 @@
         <num_vecs>3</num_vecs>
         <mom2_max>3</mom2_max>
         <mom_offset>0 0 0</mom_offset>
-        <t_source>7</t_source>
-        <t_sink>2</t_sink>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
         <displacement_length>1</displacement_length>
@@ -437,7 +437,7 @@
       <qdp>1.29.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>30 Jan 09 23:39:37 EST</run_date>
+    <run_date>31 Jan 09 15:54:56 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -549,7 +549,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:38 EST</run_date>
+          <run_date>31 Jan 09 15:54:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -588,7 +588,7 @@
 </Propagator>
             <Contractions>
               <num_vecs>3</num_vecs>
-              <t_sources>2 7</t_sources>
+              <t_sources>0 3</t_sources>
               <decay_dir>3</decay_dir>
             </Contractions>
           </Param>
@@ -679,7 +679,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:41 EST</run_date>
+          <run_date>31 Jan 09 15:54:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -692,7 +692,7 @@
           <Param>
             <Contractions>
               <num_vecs>3</num_vecs>
-              <t_sources>2 7</t_sources>
+              <t_sources>0 3</t_sources>
               <decay_dir>3</decay_dir>
             </Contractions>
           </Param>
@@ -768,7 +768,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:41 EST</run_date>
+          <run_date>31 Jan 09 15:54:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -780,7 +780,7 @@
         <Input>
           <Param>
             <num_vecs>3</num_vecs>
-            <t_sources>2 7</t_sources>
+            <t_sources>0 3</t_sources>
             <decay_dir>3</decay_dir>
             <mass_label>U0.05</mass_label>
           </Param>
@@ -862,7 +862,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:41 EST</run_date>
+          <run_date>31 Jan 09 15:54:58 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -874,7 +874,7 @@
         <Input>
           <Param>
             <num_vecs>3</num_vecs>
-            <t_sources>2 7</t_sources>
+            <t_sources>0 3</t_sources>
             <decay_dir>3</decay_dir>
             <mass_label>STATIC</mass_label>
           </Param>
@@ -956,7 +956,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:41 EST</run_date>
+          <run_date>31 Jan 09 15:54:59 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1107,7 +1107,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:43 EST</run_date>
+          <run_date>31 Jan 09 15:55:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1234,7 +1234,7 @@
             <qdp>1.29.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>30 Jan 09 23:39:43 EST</run_date>
+          <run_date>31 Jan 09 15:55:00 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1248,8 +1248,8 @@
             <version>2</version>
             <restrict_plateau>true</restrict_plateau>
             <avg_equiv_mom>true</avg_equiv_mom>
-            <t_source>7</t_source>
-            <t_sink>2</t_sink>
+            <t_source>0</t_source>
+            <t_sink>3</t_sink>
             <mom_offset>0 0 0</mom_offset>
             <mom2_max>3</mom2_max>
             <displacement_length>1</displacement_length>
@@ -1320,7 +1320,7 @@
         </Propagator>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>2 7</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
       </Params>
@@ -1368,7 +1368,7 @@
         </Propagator>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>2 7</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
       </Params>

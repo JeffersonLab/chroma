@@ -131,7 +131,7 @@
       <Param>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>2 7</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
         <Propagator>
@@ -204,7 +204,7 @@
       <Param>
         <Contractions>
           <num_vecs>3</num_vecs>
-          <t_sources>2 7</t_sources>
+          <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
       </Param>
@@ -220,7 +220,7 @@
       <Frequency>1</Frequency>
       <Param>
         <num_vecs>3</num_vecs>
-        <t_sources>2 7</t_sources>
+        <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
       </Param>
@@ -237,7 +237,7 @@
       <Frequency>1</Frequency>
       <Param>
         <num_vecs>3</num_vecs>
-        <t_sources>2 7</t_sources>
+        <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>STATIC</mass_label>
       </Param>
@@ -366,8 +366,8 @@
         <num_vecs>3</num_vecs>
         <mom2_max>3</mom2_max>
         <mom_offset>0 0 0</mom_offset>
-        <t_source>7</t_source>
-        <t_sink>2</t_sink>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
         <displacement_length>1</displacement_length>
