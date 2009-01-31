@@ -1,4 +1,4 @@
-// $Id: inline_meson_block_matelem_w.cc,v 3.1 2009-01-30 21:07:21 kostas Exp $
+// $Id: inline_meson_block_matelem_w.cc,v 3.2 2009-01-31 15:29:07 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -559,19 +559,22 @@ namespace Chroma
 		for(int j = 0 ; j < params.param.num_vecs; ++j)
 		  {
 		    // Displace the right vector and multiply by the momentum phase
-		    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
-									      eigen_source.getEvectors()[j], 
-									      params.param.displacement_length, 
-									      disp);
+		    LatticeColorVector tt = zero ;
+		    tt[blocks[blk_right]] = eigen_source.getEvectors()[j] ;
+		    LatticeColorVector shift_vec = phases[mom_num] * 
+		      displace(u_smr, tt, params.param.displacement_length, disp);
 
 		    for(int i = 0 ; i <  params.param.num_vecs; ++i)
 		      {
 			watch.reset();
 			watch.start();
+			
+			tt=zero ;
+			tt[blocks[blk_left]] = eigen_source.getEvectors()[i] ;
 
 			// Contract over color indices
 			// Do the relevant quark contraction
-			LatticeComplex lop = localInnerProduct(eigen_source.getEvectors()[i], shift_vec);
+			LatticeComplex lop = localInnerProduct(tt, shift_vec);
 			
 			// Slow fourier-transform
 			multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());

@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.1 2009-01-31 05:14:53 kostas Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.2 2009-01-31 15:29:07 kostas Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -295,7 +295,7 @@ namespace Chroma
       read(bin, param.right);
       read(bin, param.mom);
       read(bin, param.b_left);
-      read(bin, param.b_middle);
+      read(bin, param.b_midle);
       read(bin, param.b_right);
     }
 
@@ -308,7 +308,7 @@ namespace Chroma
       write(bin, param.right);
       write(bin, param.mom);
       write(bin, param.b_left);
-      write(bin, param.b_middle);
+      write(bin, param.b_midle);
       write(bin, param.b_right);
     }
 
@@ -323,7 +323,7 @@ namespace Chroma
       read(paramtop, "right", param.right);
       read(paramtop, "mom", param.mom);
       read(paramtop, "left_block", param.b_left);
-      read(paramtop, "middle_block", param.b_middle);
+      read(paramtop, "middle_block", param.b_midle);
       read(paramtop, "right_block", param.b_right);
     }
 
@@ -338,7 +338,7 @@ namespace Chroma
       write(xml, "right", param.right);
       write(xml, "mom", param.mom);
       write(xml, "left_block", param.b_left);
-      write(xml, "middle_block", param.b_middle);
+      write(xml, "middle_block", param.b_midle);
       write(xml, "right_block", param.b_right);
       pop(xml);
     }
@@ -613,81 +613,107 @@ namespace Chroma
 	swiss.reset();
 	swiss.start();
 	
+	if(displacement_list[l].left.size()!=0){
+	  QDPIO::cerr<<"The BLOCK BARYON code does not work with displacements on the left quark..."<<endl ;
+	  QDP_abort(1239);
+	}
 	// NEED TO FIGURE OUT HOW TO LOOP OVER THE BLOCKS THAT COUPLE
 	// HERE is the place to do it
+	for(int b(0);b<blocks.numSubsets();b++){
+	  int blk_left = b ;
+	  vector<int> blk_coup_midle   ; 
+	  // call a routine that calculate the couplings
+	  blk_coup_midle = block_couplings(b, blocks, displacement_list[l].middle, params.param.displacement_length);
+	  for(int blk_c(0);blk_c< blk_coup_midle.size();blk_c++){
+	    int blk_midle = blk_coup_midle[blk_c] ;
+	    vector<int> blk_coup_right   ; 
+	    // call a routine that calculate the couplings
+	    blk_coup_right = block_couplings(blk_left,blk_midle, blocks, displacement_list[l].right, params.param.displacement_length);
+	    for(int blk_d(0);blk_d< blk_coup_right.size();blk_d++){
+	      int blk_right = blk_coup_right[blk_d] ;
 
-
-	// Big loop over the momentum projection
-	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
-	{
-	  // The keys for the displacements for this particular elemental operator
-	  // Invert the time - make it an independent key
-	  multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
-	  for(int t=0; t < phases.numSubsets(); ++t)
-	  {
-	    buf[t].key.key().t_slice       = t;
-	    buf[t].key.key().left          = displacement_list[l].left;
-	    buf[t].key.key().middle        = displacement_list[l].middle;
-	    buf[t].key.key().right         = displacement_list[l].right;
-	    buf[t].key.key().mom           = phases.numToMom(mom_num);
-	    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
-
-	    // Build in some optimizations. 
-	    // At this very moment, optimizations turned off
-	    buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
-	  }
-
-
-	  // The keys for the spin and displacements for this particular elemental operator
-	  multi1d<KeyDispColorVector_t> keyDispColorVector(3);
-
-	  // Can displace each colorvector
-	  keyDispColorVector[0].displacement = displacement_list[l].left;
-	  keyDispColorVector[1].displacement = displacement_list[l].middle;
-	  keyDispColorVector[2].displacement = displacement_list[l].right;
-
-	  for(int i = 0 ; i <  params.param.num_vecs; ++i)
-	  {
-	    for(int j = 0 ; j < params.param.num_vecs; ++j)
-	    {
-	      for(int k = 0 ; k < params.param.num_vecs; ++k)
-	      {
-		keyDispColorVector[0].colvec = i;
-		keyDispColorVector[1].colvec = j;
-		keyDispColorVector[2].colvec = k;
-
-		watch.reset();
-		watch.start();
-
-		// Contract over color indices
-		// Do the relevant quark contraction
-		// Slow fourier-transform
-		LatticeComplex lop = colorContract(smrd_disp_vecs.getDispVector(keyDispColorVector[0]),
-						   smrd_disp_vecs.getDispVector(keyDispColorVector[1]),
-						   smrd_disp_vecs.getDispVector(keyDispColorVector[2]));
-
-		// Slow fourier-transform
-		multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
-
-		watch.stop();
-
-		for(int t=0; t < op_sum.size(); ++t)
+	      // Big loop over the momentum projection
+	      for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 		{
-		  buf[t].val.data().op(i,j,k) = op_sum[t];
-		}
-	      } // end for k
-	    } // end for j
-	  } // end for i
+		  // The keys for the displacements for this particular elemental operator
+		  // Invert the time - make it an independent key
+		  multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
+		  for(int t=0; t < phases.numSubsets(); ++t)
+		    {
+		      buf[t].key.key().t_slice       = t;
+		      buf[t].key.key().left          = displacement_list[l].left;
+		      buf[t].key.key().middle        = displacement_list[l].middle;
+		      buf[t].key.key().right         = displacement_list[l].right;
+		      buf[t].key.key().mom           = phases.numToMom(mom_num);
+		      buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
+		      buf[t].key.key().b_left  = blk_left ;
+		      buf[t].key.key().b_midle = blk_midle ;
+		      buf[t].key.key().b_right = blk_right ;
+		      
+		      // Build in some optimizations. 
+		      // At this very moment, optimizations turned off
+		      buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+		    }
+		  
+		  
+		  // The keys for the spin and displacements for this particular elemental operator
+		  multi1d<KeyDispColorVector_t> keyDispColorVector(3);
+		  
+		  // Can displace each colorvector
+		  keyDispColorVector[0].displacement = displacement_list[l].left;
+		  keyDispColorVector[1].displacement = displacement_list[l].middle;
+		  keyDispColorVector[2].displacement = displacement_list[l].right;
 
-	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
-	  for(int t=0; t < phases.numSubsets(); ++t)
-	  {
-	    qdp_db.insert(buf[t].key, buf[t].val);
-	  }
+		  for(int i = 0 ; i <  params.param.num_vecs; ++i)
+		    {
+		      LatticeColorVector q_left = zero ;
+		      q_left[blocks[blk_left]] = smrd_disp_vecs.getDispVector(keyDispColorVector[0]) ;
+		      for(int j = 0 ; j < params.param.num_vecs; ++j)
+			{
+			  LatticeColorVector q_midle = zero ;
+			  q_midle[blocks[blk_midle]] = smrd_disp_vecs.getDispVector(keyDispColorVector[1]) ;
+			  for(int k = 0 ; k < params.param.num_vecs; ++k)
+			    {
+			      LatticeColorVector q_right = zero ;
+			      q_right[blocks[blk_right]] = smrd_disp_vecs.getDispVector(keyDispColorVector[2]) ;
+			      
+			      keyDispColorVector[0].colvec = i;
+			      keyDispColorVector[1].colvec = j;
+			      keyDispColorVector[2].colvec = k;
+			      
+			      watch.reset();
+			      watch.start();
+			      
+			      // Contract over color indices
+			      // Do the relevant quark contraction
+			      // Slow fourier-transform
+			      LatticeComplex lop = colorContract(q_left,q_midle,q_right);
+			      // Slow fourier-transform
+			      multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
+			      
+			      watch.stop();
+			      
+			      for(int t=0; t < op_sum.size(); ++t)
+				{
+				  buf[t].val.data().op(i,j,k) = op_sum[t];
+				}
+			    } // end for k
+			} // end for j
+		    } // end for i
 
-	} // mom_num
+		  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+		  for(int t=0; t < phases.numSubsets(); ++t)
+		    {
+		      qdp_db.insert(buf[t].key, buf[t].val);
+		    }
+
+		} // mom_num
+	    }// right block loop
+	  }// midle block loop
+	}// left block loop
+
 	swiss.stop();
-
+	
 	QDPIO::cout << "Baryon operator= " << l 
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
