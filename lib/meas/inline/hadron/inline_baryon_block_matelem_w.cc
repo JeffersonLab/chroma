@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.2 2009-01-31 15:29:07 kostas Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.3 2009-01-31 15:52:02 kostas Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -156,7 +156,7 @@ namespace Chroma
       bool registered = false;
     }
 
-    const std::string name = "BARYON_MATELEM_COLORVEC";
+    const std::string name = "BARYON_BLOCK_MATELEM";
 
     //! Register all the factories
     bool registerAll() 
