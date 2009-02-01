@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: block_subset.h,v 1.2 2009-01-30 03:42:40 kostas Exp $
+// $Id: block_subset.h,v 1.3 2009-02-01 05:34:54 kostas Exp $
 /*! \file
  * \brief Key for propagator colorvector sources
  */
@@ -24,14 +24,12 @@ namespace Chroma
     }
 
     int operator() (const multi1d<int>& coordinate) const{
-      int b = coordinate[0]/block[0] ;
+      int b = 0 ;
       
-      for(int d(1);d<Nd ;d++){
-	int x = coordinate[d]/block[d] ; 
-	b += blockNum[d-1]*x ;
-      }
-      return b ;
-      
+      for(int d(Nd-1); d>-1 ;d--)
+	b = blockNum[d]*b + coordinate[d]/block[d] ;
+
+      return b ;      
     }
 
     int numSubsets() const{
@@ -60,6 +58,20 @@ namespace Chroma
 	blockNum[d] = Layout::lattSize()[d] / block[d];
 	Nblocks *= blockNum[d] ;
       }// d
+
+      /** DEBUG
+      QDPIO::cout<<"BlockNums: ";
+      for(int d(0); d < Nd; d++){
+	QDPIO::cout<<blockNum[d]<<" ";
+      }
+      QDPIO::cout<<endl;
+
+      QDPIO::cout<<"BlockSize: ";
+      for(int d(0); d < Nd; d++){
+	QDPIO::cout<<block[d]<<" ";
+      }
+      QDPIO::cout<<endl;
+      END DEBUG **/
     }
 
 

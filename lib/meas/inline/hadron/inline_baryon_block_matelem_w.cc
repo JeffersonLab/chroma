@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.3 2009-01-31 15:52:02 kostas Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.4 2009-02-01 05:34:53 kostas Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -600,6 +600,7 @@ namespace Chroma
       Set blocks ;
       blocks.make(BlockFunc(params.param.decay_dir, params.param.block));
       
+      QDPIO::cout<<"Number of Blocks: "<<blocks.numSubsets()<<endl ;
       // Loop over each operator 
       for(int l=0; l < displacement_list.size(); ++l)
       {
@@ -613,105 +614,103 @@ namespace Chroma
 	swiss.reset();
 	swiss.start();
 	
-	if(displacement_list[l].left.size()!=0){
-	  QDPIO::cerr<<"The BLOCK BARYON code does not work with displacements on the left quark..."<<endl ;
-	  QDP_abort(1239);
-	}
-	// NEED TO FIGURE OUT HOW TO LOOP OVER THE BLOCKS THAT COUPLE
-	// HERE is the place to do it
-	for(int b(0);b<blocks.numSubsets();b++){
-	  int blk_left = b ;
-	  vector<int> blk_coup_midle   ; 
-	  // call a routine that calculate the couplings
-	  blk_coup_midle = block_couplings(b, blocks, displacement_list[l].middle, params.param.displacement_length);
-	  for(int blk_c(0);blk_c< blk_coup_midle.size();blk_c++){
-	    int blk_midle = blk_coup_midle[blk_c] ;
-	    vector<int> blk_coup_right   ; 
-	    // call a routine that calculate the couplings
-	    blk_coup_right = block_couplings(blk_left,blk_midle, blocks, displacement_list[l].right, params.param.displacement_length);
-	    for(int blk_d(0);blk_d< blk_coup_right.size();blk_d++){
-	      int blk_right = blk_coup_right[blk_d] ;
+	multi1d<DisplacedBlock> dblk(3) ;
+	for(int blk_left(0);blk_left<blocks.numSubsets();blk_left++){
+	  //QDPIO::cout<<"blk_left : "<<blk_left<<endl ;
+	  dblk[0].blk  = blk_left ;
+	  dblk[0].disp = displacement_list[l].left ;
+	  for(int blk_midle(0);blk_midle< blocks.numSubsets();blk_midle++){
+	    dblk[1].blk  = blk_midle ;
+	    dblk[1].disp = displacement_list[l].middle ;
+	    if(blocks_couple(dblk,blocks,params.param.displacement_length,2))
+	      for(int blk_right(0);blk_right<blocks.numSubsets();blk_right++){
+		dblk[2].blk  = blk_right ;
+		dblk[2].disp = displacement_list[l].right ;
+		if(blocks_couple(dblk,blocks,params.param.displacement_length)){
+		  QDPIO::cout<<"Doing block: "<<blk_left<<" "<<blk_midle<<" "<<blk_right<<endl ;
 
-	      // Big loop over the momentum projection
-	      for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
-		{
-		  // The keys for the displacements for this particular elemental operator
-		  // Invert the time - make it an independent key
-		  multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
-		  for(int t=0; t < phases.numSubsets(); ++t)
+		  // Big loop over the momentum projection
+		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 		    {
-		      buf[t].key.key().t_slice       = t;
-		      buf[t].key.key().left          = displacement_list[l].left;
-		      buf[t].key.key().middle        = displacement_list[l].middle;
-		      buf[t].key.key().right         = displacement_list[l].right;
-		      buf[t].key.key().mom           = phases.numToMom(mom_num);
-		      buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
-		      buf[t].key.key().b_left  = blk_left ;
-		      buf[t].key.key().b_midle = blk_midle ;
-		      buf[t].key.key().b_right = blk_right ;
-		      
-		      // Build in some optimizations. 
-		      // At this very moment, optimizations turned off
-		      buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
-		    }
-		  
-		  
-		  // The keys for the spin and displacements for this particular elemental operator
-		  multi1d<KeyDispColorVector_t> keyDispColorVector(3);
-		  
-		  // Can displace each colorvector
-		  keyDispColorVector[0].displacement = displacement_list[l].left;
-		  keyDispColorVector[1].displacement = displacement_list[l].middle;
-		  keyDispColorVector[2].displacement = displacement_list[l].right;
-
-		  for(int i = 0 ; i <  params.param.num_vecs; ++i)
-		    {
-		      LatticeColorVector q_left = zero ;
-		      q_left[blocks[blk_left]] = smrd_disp_vecs.getDispVector(keyDispColorVector[0]) ;
-		      for(int j = 0 ; j < params.param.num_vecs; ++j)
+		      // The keys for the displacements for this particular elemental operator
+		      // Invert the time - make it an independent key
+		      multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
+		      for(int t=0; t < phases.numSubsets(); ++t)
 			{
-			  LatticeColorVector q_midle = zero ;
-			  q_midle[blocks[blk_midle]] = smrd_disp_vecs.getDispVector(keyDispColorVector[1]) ;
-			  for(int k = 0 ; k < params.param.num_vecs; ++k)
+			  buf[t].key.key().t_slice       = t;
+			  buf[t].key.key().left          = displacement_list[l].left;
+			  buf[t].key.key().middle        = displacement_list[l].middle;
+			  buf[t].key.key().right         = displacement_list[l].right;
+			  buf[t].key.key().mom           = phases.numToMom(mom_num);
+			  buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
+			  buf[t].key.key().b_left  = blk_left ;
+			  buf[t].key.key().b_midle = blk_midle ;
+			  buf[t].key.key().b_right = blk_right ;
+			  
+			  // Build in some optimizations. 
+			  // At this very moment, optimizations turned off
+			  buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+			}
+		      
+		      
+		      // The keys for the spin and displacements for this particular elemental operator
+		      multi1d<KeyDispColorVector_t> keyDispColorVector(3);
+		      
+		      // Can displace each colorvector
+		      keyDispColorVector[0].displacement = displacement_list[l].left;
+		      keyDispColorVector[1].displacement = displacement_list[l].middle;
+		      keyDispColorVector[2].displacement = displacement_list[l].right;
+		      for(int i = 0 ; i <  params.param.num_vecs; ++i)
+			{
+			  //QDPIO::cout<<"left: "<<i<<endl ;
+			  keyDispColorVector[0].colvec = i;
+			  LatticeColorVector q_left = zero ;
+			  q_left[blocks[blk_left]] = smrd_disp_vecs.getDispVector(keyDispColorVector[0]) ;
+			  
+			  for(int j = 0 ; j < params.param.num_vecs; ++j)
 			    {
-			      LatticeColorVector q_right = zero ;
-			      q_right[blocks[blk_right]] = smrd_disp_vecs.getDispVector(keyDispColorVector[2]) ;
-			      
-			      keyDispColorVector[0].colvec = i;
+			      //QDPIO::cout<<"middle: "<<j<<endl ;
 			      keyDispColorVector[1].colvec = j;
-			      keyDispColorVector[2].colvec = k;
-			      
-			      watch.reset();
-			      watch.start();
-			      
-			      // Contract over color indices
-			      // Do the relevant quark contraction
-			      // Slow fourier-transform
-			      LatticeComplex lop = colorContract(q_left,q_midle,q_right);
-			      // Slow fourier-transform
-			      multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
-			      
-			      watch.stop();
-			      
-			      for(int t=0; t < op_sum.size(); ++t)
+			      LatticeColorVector q_midle = zero ;
+			      q_midle[blocks[blk_midle]] = smrd_disp_vecs.getDispVector(keyDispColorVector[1]) ;
+			      for(int k = 0 ; k < params.param.num_vecs; ++k)
 				{
-				  buf[t].val.data().op(i,j,k) = op_sum[t];
-				}
-			    } // end for k
-			} // end for j
-		    } // end for i
-
-		  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
-		  for(int t=0; t < phases.numSubsets(); ++t)
-		    {
-		      qdp_db.insert(buf[t].key, buf[t].val);
-		    }
-
-		} // mom_num
-	    }// right block loop
+				  //QDPIO::cout<<"right: "<<k<<endl ;
+				  keyDispColorVector[2].colvec = k;
+				  LatticeColorVector q_right = zero ;
+				  q_right[blocks[blk_right]] = smrd_disp_vecs.getDispVector(keyDispColorVector[2]) ;
+				  
+				  watch.reset();
+				  watch.start();
+				  
+				  // Contract over color indices
+				  // Do the relevant quark contraction
+				  // Slow fourier-transform
+				  LatticeComplex lop = colorContract(q_left,q_midle,q_right);
+				  // Slow fourier-transform
+				  multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
+				  
+				  watch.stop();
+				  
+				  for(int t=0; t < op_sum.size(); ++t)
+				    {
+				      buf[t].val.data().op(i,j,k) = op_sum[t];
+				    }
+				} // end for k
+			    } // end for j
+			} // end for i
+		      
+		      QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+		      for(int t=0; t < phases.numSubsets(); ++t)
+			{
+			  qdp_db.insert(buf[t].key, buf[t].val);
+			}
+		    } // mom_num
+		} // if blocks couple
+	      }// right block loop
 	  }// midle block loop
 	}// left block loop
-
+	
 	swiss.stop();
 	
 	QDPIO::cout << "Baryon operator= " << l 

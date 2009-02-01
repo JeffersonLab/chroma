@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: block_couplings.cc,v 1.3 2009-01-31 05:13:38 kostas Exp $
+// $Id: block_couplings.cc,v 1.4 2009-02-01 05:34:54 kostas Exp $
 /*! \file
  *  \brief Caclulates the couplings between neighboring blocks given a displacement path
  */
@@ -51,11 +51,14 @@ namespace Chroma
     blk[S[b]] = One ;
 
     for(int b2(0) ; b2<S.numSubsets();b2++){
+      
       LatticeInteger blk2 = zero ;
       blk2[S[b2]] = One ;
+      //QDPIO::cout<<"Points in block "<<b2<<" "<<sum(blk2)<<endl ;
       displace(blk2,len,disp);
 
       int flag = toInt(sum(blk2*blk));
+      //QDPIO::cout<<"b2 ="<<b2<<" flag "<<flag << endl ;
       if(flag>0)
 	b_list.push_back(b2);
     }
@@ -64,28 +67,30 @@ namespace Chroma
       
   }
 
-  vector<int> block_couplings(const int b, const int b1,
-			      const Set& S,const multi1d<int>& disp,
-			      const int len){
-    vector<int> b_list ;
-    LatticeInteger blk = zero ;
-    LatticeInteger blk1 = zero ;
-    LatticeInteger One = 1 ;
-    blk[S[b]] = One ;
-    blk1[S[b1]] = One ;
-
-    for(int b2(0) ; b2<S.numSubsets();b2++){
-      LatticeInteger blk2 = zero ;
-      blk2[S[b2]] = One ;
-      displace(blk2,len,disp);
-
-      int flag = toInt(sum(blk2*blk1*blk));
-      if(flag>0)
-	b_list.push_back(b2);
+  bool blocks_couple(const multi1d<DisplacedBlock>& b, 
+		     const Set& S,
+		     const int len,int blocks_to_check){
+    LatticeInteger One  = 1 ;
+    LatticeInteger flag = 1 ;
+    if(blocks_to_check>b.size())
+      blocks_to_check=b.size() ;
+    for(int k(0);k<blocks_to_check;k++){
+      LatticeInteger blk = zero ;
+      blk[S[b[k].blk]] = One ;
+      displace(blk,len,b[k].disp);
+      flag *= blk ;
     }
-
-    return b_list ;
-      
+    //QDPIO::cout<<" Coupling flag "<<sum(flag)<<endl ;
+    if(toBool(sum(flag)>0))
+      return true ;
+    else
+      return false ;
   }
+
+    bool blocks_couple(const multi1d<DisplacedBlock>& b, 
+		     const Set& S,
+		     const int len){
+      return blocks_couple(b,S,len,b.size()) ;
+    }
 
 } // namespace Chroma

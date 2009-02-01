@@ -1,4 +1,4 @@
-// $Id: inline_meson_block_matelem_w.cc,v 3.2 2009-01-31 15:29:07 kostas Exp $
+// $Id: inline_meson_block_matelem_w.cc,v 3.3 2009-02-01 05:34:54 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -528,6 +528,7 @@ namespace Chroma
 	  blk_couplings = block_couplings(b, blocks, disp, params.param.displacement_length);
 	  for(int blk_c(0);blk_c< blk_couplings.size();blk_c++){
 	    int blk_right = blk_couplings[blk_c] ;
+	    QDPIO::cout<<"Doing block: "<<blk_left<<" "<<blk_right<<endl ;
 	    // Big loop over the momentum projection
 	    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	      {
