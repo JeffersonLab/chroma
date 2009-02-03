@@ -1,4 +1,4 @@
-// $Id: clover_term_ssed.cc,v 1.1 2008-06-27 20:22:57 bjoo Exp $
+// $Id: clover_term_ssed.cc,v 1.2 2009-02-03 21:30:16 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -13,7 +13,7 @@
 
 namespace Chroma 
 { 
-  extern void ssed_clover_apply(REAL64* diag, REAL64* offd, REAL64* psiptr, REAL64* chiptr, int n_sites);
+  //extern void ssed_clover_apply(REAL64* diag, REAL64* offd, REAL64* psiptr, REAL64* chiptr, int n_sites);
 
   // Empty constructor. Must use create later
   SSEDCloverTerm::SSEDCloverTerm() {
@@ -919,6 +919,8 @@ namespace Chroma
 
     
     if( rb[cb].hasOrderedRep() ) {
+
+#if 0
       // unsigned int start = rb[cb].start();
       // unsigned long n_sites = rb[cb].siteTable().size();
       int start = rb[cb].start();
@@ -936,7 +938,18 @@ namespace Chroma
       REAL64* offd = (REAL64 *)&(tri_off_diag[start][0][0].real());
       REAL64* diag = (REAL64 *)&(tri_diag[start][0][0].elem());
       ssed_clover_apply(diag, offd, psiptr, chiptr, n_sites);
+#endif
 
+      SSEDCloverApplyStruct a;
+      a.chi = (LatticeFermion*)&chi;
+      a.psi = (LatticeFermion*)&psi;
+      a.tri_off = tri_off_diag;
+      a.tri_diag = tri_diag;
+      a.cb = cb;
+
+      dispatch_to_threads(rb[cb].siteTable().size(), a, EOCloverDispatchFunction);
+
+      
     }
     else {
       const multi1d<int>& tab = rb[cb].siteTable();
