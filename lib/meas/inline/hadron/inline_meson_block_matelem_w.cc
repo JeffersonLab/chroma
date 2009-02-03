@@ -1,4 +1,4 @@
-// $Id: inline_meson_block_matelem_w.cc,v 3.3 2009-02-01 05:34:54 kostas Exp $
+// $Id: inline_meson_block_matelem_w.cc,v 3.4 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -495,7 +495,7 @@ namespace Chroma
 
       // DB storage
       BinaryFxStoreDB< SerialDBKey<KeyMesonElementalOperator_t>, SerialDBData<ValMesonElementalOperator_t> > 
-	qdp_db(params.named_obj.meson_op_file, 10*1024*1024, 64*1024);
+	qdp_db(params.named_obj.meson_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       push(xml_out, "ElementalOps");
 

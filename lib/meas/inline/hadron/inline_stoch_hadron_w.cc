@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.21 2008-11-26 03:20:50 kostas Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.22 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -850,7 +850,7 @@ namespace Chroma{
 	  // DB storage
 	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
 	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<MesonOpData > > 
-	    qdp_db(op.file, 10*1024*1024, 64*1024);
+	    qdp_db(op.file, DB_CREATE, db_cachesize, db_pagesize);
 	  qdp_db.insertUserdata(UserData_xml.str());
 	  SerialDBKey<HadronKey> key ;
 	  //HadronKey key ;
@@ -974,7 +974,7 @@ namespace Chroma{
 	  BaryonOp op = it->second ;
 	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 	 
 	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<BaryonOpData > > 
-	    qdp_db(op.file, 10*1024*1024, 64*1024);
+	    qdp_db(op.file, DB_CREATE, db_cachesize, db_pagesize);
 	  qdp_db.insertUserdata(UserData_xml.str());
 
 	  SerialDBKey<HadronKey> key ;

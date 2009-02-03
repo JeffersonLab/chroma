@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.6 2008-11-29 12:39:27 kostas Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.7 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeFermion*M^-1*LatticeFermion
  *
@@ -437,7 +437,7 @@ namespace Chroma
       // DB storage                  
       BinaryFxStoreDB<SerialDBKey<KeyGridPropElem_t>,
 	SerialDBData<ValGridPropElem_t> > 
-	qdp_db(params.named_obj.prop_op_file, 10*1024*1024, 64*1024);   
+	qdp_db(params.named_obj.prop_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       try{
 	StopWatch swatch;

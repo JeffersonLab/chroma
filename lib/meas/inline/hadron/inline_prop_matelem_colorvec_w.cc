@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.15 2008-09-26 21:15:52 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.16 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -413,7 +413,7 @@ namespace Chroma
 
       // DB storage
       BinaryFxStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > 
-        qdp_db(params.named_obj.prop_op_file, 10*1024*1024, 64*1024);
+        qdp_db(params.named_obj.prop_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       //
       // Try the factories

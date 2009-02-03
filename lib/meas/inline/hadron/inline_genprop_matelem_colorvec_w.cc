@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.7 2009-01-31 04:49:30 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.8 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -520,7 +520,7 @@ namespace Chroma
 
       // DB storage
       BinaryFxStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > 
-        qdp_db(params.named_obj.genprop_op_file, 10*1024*1024, 64*1024);
+        qdp_db(params.named_obj.genprop_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       push(xml_out, "ElementalOps");
 

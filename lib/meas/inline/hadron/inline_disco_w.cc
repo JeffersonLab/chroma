@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.6 2008-12-06 14:48:06 kostas Exp $
+// $Id: inline_disco_w.cc,v 1.7 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -531,7 +531,7 @@ namespace Chroma{
       }
       // DB storage          
       BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> >
-	qdp_db(params.named_obj.op_db_file, 10*1024*1024, 64*1024);
+	qdp_db(params.named_obj.op_db_file, DB_CREATE, db_cachesize, db_pagesize);
 
       SerialDBKey <KeyOperator_t> key ;
       SerialDBData<ValOperator_t> val ;

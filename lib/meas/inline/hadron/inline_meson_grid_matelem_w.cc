@@ -1,4 +1,4 @@
-// $Id: inline_meson_grid_matelem_w.cc,v 3.4 2008-12-12 04:05:02 kostas Exp $
+// $Id: inline_meson_grid_matelem_w.cc,v 3.5 2009-02-03 21:35:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -571,7 +571,7 @@ namespace Chroma
       // DB storage
       BinaryFxStoreDB<SerialDBKey<KeyMesonOperator_t>, 
 	              SerialDBData<ValMesonOperator_t> > 
-	qdp_db(params.named_obj.meson_op_file, 10*1024*1024, 64*1024);
+	qdp_db(params.named_obj.meson_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       push(xml_out, "MesonGridOps");
 
