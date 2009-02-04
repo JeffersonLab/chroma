@@ -1,4 +1,4 @@
-// $Id: clover_term_qdp_w.cc,v 3.19 2008-05-23 11:37:58 bjoo Exp $
+// $Id: clover_term_qdp_w.cc,v 3.20 2009-02-04 15:20:31 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -850,6 +850,519 @@ namespace Chroma
   {
     START_CODE();
 
+    QDPCloverApplyStruct arg = { chi,psi,tri,cb };
+    int num_sites = rb[cb].siteTable().size();
+
+    // The dispatch function is at the end of the file
+    // ought to work for non-threaded targets too...
+    dispatch_to_threads(num_sites, arg, QDPCloverDispatchFunction);
+    getFermBC().modifyF(chi, QDP::rb[cb]);
+
+    END_CODE();
+  }
+
+  /**
+   * Apply a dslash
+   *
+   * Performs the operation
+   *
+   *  chi <-   (L + D + L^dag) . psi
+   *
+   * where
+   *   L       is a lower triangular matrix
+   *   D       is the real diagonal. (stored together in type TRIANG)
+   *
+   * Arguments:
+   * \param chi     result                                      (Write)
+   * \param psi     source                                      (Read)
+   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   */
+  void QDPCloverTerm::applySite(LatticeFermion& chi, const LatticeFermion& psi, 
+			    enum PlusMinus isign, int site) const
+  {
+    START_CODE();
+
+    if ( Ns != 4 )
+    {
+      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << endl;
+      QDP_abort(1);
+    }
+
+    int n = 2*Nc;
+
+    RComplex<REAL>* cchi = (RComplex<REAL>*)&(chi.elem(site).elem(0).elem(0));
+    const RComplex<REAL>* ppsi = (const RComplex<REAL>*)&(psi.elem(site).elem(0).elem(0));
+
+
+    cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
+      +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
+      +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
+      +   conj(tri[site].offd[0][ 3]) * ppsi[ 3]
+      +   conj(tri[site].offd[0][ 6]) * ppsi[ 4]
+      +   conj(tri[site].offd[0][10]) * ppsi[ 5];
+    
+    cchi[ 1] = tri[site].diag[0][ 1]  * ppsi[ 1]
+      +        tri[site].offd[0][ 0]  * ppsi[ 0]
+      +   conj(tri[site].offd[0][ 2]) * ppsi[ 2]
+      +   conj(tri[site].offd[0][ 4]) * ppsi[ 3]
+      +   conj(tri[site].offd[0][ 7]) * ppsi[ 4]
+      +   conj(tri[site].offd[0][11]) * ppsi[ 5];
+    
+    cchi[ 2] = tri[site].diag[0][ 2]  * ppsi[ 2]
+      +        tri[site].offd[0][ 1]  * ppsi[ 0]
+      +        tri[site].offd[0][ 2]  * ppsi[ 1]
+      +   conj(tri[site].offd[0][ 5]) * ppsi[ 3]
+      +   conj(tri[site].offd[0][ 8]) * ppsi[ 4]
+      +   conj(tri[site].offd[0][12]) * ppsi[ 5];
+    
+    cchi[ 3] = tri[site].diag[0][ 3]  * ppsi[ 3]
+      +        tri[site].offd[0][ 3]  * ppsi[ 0]
+      +        tri[site].offd[0][ 4]  * ppsi[ 1]
+      +        tri[site].offd[0][ 5]  * ppsi[ 2]
+      +   conj(tri[site].offd[0][ 9]) * ppsi[ 4]
+      +   conj(tri[site].offd[0][13]) * ppsi[ 5];
+    
+    cchi[ 4] = tri[site].diag[0][ 4]  * ppsi[ 4]
+      +        tri[site].offd[0][ 6]  * ppsi[ 0]
+      +        tri[site].offd[0][ 7]  * ppsi[ 1]
+      +        tri[site].offd[0][ 8]  * ppsi[ 2]
+      +        tri[site].offd[0][ 9]  * ppsi[ 3]
+      +   conj(tri[site].offd[0][14]) * ppsi[ 5];
+    
+    cchi[ 5] = tri[site].diag[0][ 5]  * ppsi[ 5]
+      +        tri[site].offd[0][10]  * ppsi[ 0]
+      +        tri[site].offd[0][11]  * ppsi[ 1]
+      +        tri[site].offd[0][12]  * ppsi[ 2]
+      +        tri[site].offd[0][13]  * ppsi[ 3]
+      +        tri[site].offd[0][14]  * ppsi[ 4];
+    
+    cchi[ 6] = tri[site].diag[1][ 0]  * ppsi[ 6]
+      +   conj(tri[site].offd[1][ 0]) * ppsi[ 7]
+      +   conj(tri[site].offd[1][ 1]) * ppsi[ 8]
+      +   conj(tri[site].offd[1][ 3]) * ppsi[ 9]
+      +   conj(tri[site].offd[1][ 6]) * ppsi[10]
+      +   conj(tri[site].offd[1][10]) * ppsi[11];
+    
+    cchi[ 7] = tri[site].diag[1][ 1]  * ppsi[ 7]
+      +        tri[site].offd[1][ 0]  * ppsi[ 6]
+      +   conj(tri[site].offd[1][ 2]) * ppsi[ 8]
+      +   conj(tri[site].offd[1][ 4]) * ppsi[ 9]
+      +   conj(tri[site].offd[1][ 7]) * ppsi[10]
+      +   conj(tri[site].offd[1][11]) * ppsi[11];
+    
+    cchi[ 8] = tri[site].diag[1][ 2]  * ppsi[ 8]
+      +        tri[site].offd[1][ 1]  * ppsi[ 6]
+      +        tri[site].offd[1][ 2]  * ppsi[ 7]
+      +   conj(tri[site].offd[1][ 5]) * ppsi[ 9]
+      +   conj(tri[site].offd[1][ 8]) * ppsi[10]
+      +   conj(tri[site].offd[1][12]) * ppsi[11];
+    
+    cchi[ 9] = tri[site].diag[1][ 3]  * ppsi[ 9]
+      +        tri[site].offd[1][ 3]  * ppsi[ 6]
+      +        tri[site].offd[1][ 4]  * ppsi[ 7]
+      +        tri[site].offd[1][ 5]  * ppsi[ 8]
+      +   conj(tri[site].offd[1][ 9]) * ppsi[10]
+      +   conj(tri[site].offd[1][13]) * ppsi[11];
+    
+    cchi[10] = tri[site].diag[1][ 4]  * ppsi[10]
+      +        tri[site].offd[1][ 6]  * ppsi[ 6]
+      +        tri[site].offd[1][ 7]  * ppsi[ 7]
+      +        tri[site].offd[1][ 8]  * ppsi[ 8]
+      +        tri[site].offd[1][ 9]  * ppsi[ 9]
+      +   conj(tri[site].offd[1][14]) * ppsi[11];
+    
+    cchi[11] = tri[site].diag[1][ 5]  * ppsi[11]
+      +        tri[site].offd[1][10]  * ppsi[ 6]
+      +        tri[site].offd[1][11]  * ppsi[ 7]
+      +        tri[site].offd[1][12]  * ppsi[ 8]
+      +        tri[site].offd[1][13]  * ppsi[ 9]
+      +        tri[site].offd[1][14]  * ppsi[10];
+
+
+    END_CODE();
+  }
+
+
+
+
+  //! TRIACNTR 
+  /*! 
+   * \ingroup linop
+   *
+   *  Calculates
+   *     Tr_D ( Gamma_mat L )
+   *
+   * This routine is specific to Wilson fermions!
+   * 
+   *  the trace over the Dirac indices for one of the 16 Gamma matrices
+   *  and a hermitian color x spin matrix A, stored as a block diagonal
+   *  complex lower triangular matrix L and a real diagonal diag_L.
+
+   *  Here 0 <= mat <= 15 and
+   *  if mat = mat_1 + mat_2 * 2 + mat_3 * 4 + mat_4 * 8
+   *
+   *  Gamma(mat) = gamma(1)^(mat_1) * gamma(2)^(mat_2) * gamma(3)^(mat_3)
+   *             * gamma(4)^(mat_4)
+   *
+   *  Further, in basis for the Gamma matrices used, A is of the form
+   *
+   *      | A_0 |  0  |
+   *  A = | --------- |
+   *      |  0  | A_1 |
+   *
+   *
+   * Arguments:
+   *
+   *  \param B         the resulting SU(N) color matrix	  (Write) 
+   *  \param clov      clover term                        (Read) 
+   *  \param mat       label of the Gamma matrix          (Read)
+   */
+  void QDPCloverTerm::triacntr(LatticeColorMatrix& B, int mat, int cb) const
+  {
+    START_CODE();
+
+    B = zero;
+
+    if ( mat < 0  ||  mat > 15 )
+    {
+      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
+      QDP_abort(1);
+    }
+  
+    switch( mat )
+    {
+    case 0:
+      /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
+      /*#               0  1  0  0 */
+      /*#               0  0  1  0 */
+      /*#               0  0  0  1 */
+      /*# From diagonal part */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp0;
+	RScalar<REAL> lr_zero0;
+	RScalar<REAL> lrtmp0;
+  
+	lr_zero0 = 0;
+  
+	for(int i0 = 0; i0 < Nc; ++i0)
+	{
+	  lrtmp0 = tri[site].diag[0][i0];
+	  lrtmp0 += tri[site].diag[0][i0+Nc];
+	  lrtmp0 += tri[site].diag[1][i0];
+	  lrtmp0 += tri[site].diag[1][i0+Nc];
+	  B.elem(site).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
+	}
+
+	/*# From lower triangular portion */
+	int elem_ij0 = 0;
+	for(int i0 = 1; i0 < Nc; ++i0)
+	{
+	  int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
+
+	  for(int j0 = 0; j0 < i0; ++j0)
+	  {
+	    lctmp0 = tri[site].offd[0][elem_ij0];
+	    lctmp0 += tri[site].offd[0][elem_ijb0];
+	    lctmp0 += tri[site].offd[1][elem_ij0];
+	    lctmp0 += tri[site].offd[1][elem_ijb0];
+
+	    B.elem(site).elem().elem(j0,i0) = lctmp0;
+	    B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
+
+
+	    elem_ij0++;
+	    elem_ijb0++;
+	  }
+	}
+      }
+      break;
+
+    case 3:
+      /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
+      /*#               0  i  0  0 */
+      /*#               0  0 -i  0 */
+      /*#               0  0  0  i */
+      /*# From diagonal part */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp3;
+	RScalar<REAL> lr_zero3;
+	RScalar<REAL> lrtmp3;
+                          
+	lr_zero3 = 0;
+  
+	for(int i3 = 0; i3 < Nc; ++i3)
+	{
+	  lrtmp3 = tri[site].diag[0][i3+Nc];
+	  lrtmp3 -= tri[site].diag[0][i3];
+	  lrtmp3 -= tri[site].diag[1][i3];
+	  lrtmp3 += tri[site].diag[1][i3+Nc];
+	  B.elem(site).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
+	}
+	
+	/*# From lower triangular portion */
+	int elem_ij3 = 0;
+	for(int i3 = 1; i3 < Nc; ++i3)
+	{
+	  int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
+
+	  for(int j3 = 0; j3 < i3; ++j3)
+	  {
+	    lctmp3 = tri[site].offd[0][elem_ijb3];
+	    lctmp3 -= tri[site].offd[0][elem_ij3];
+	    lctmp3 -= tri[site].offd[1][elem_ij3];
+	    lctmp3 += tri[site].offd[1][elem_ijb3];
+
+	    B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
+	    B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
+	    
+	    elem_ij3++;
+	    elem_ijb3++;
+	  }
+	}
+      }
+      break;
+
+    case 5:
+      /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
+      /*#               1  0  0  0 */
+      /*#               0  0  0 -1 */
+      /*#               0  0  1  0 */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp5;
+	RScalar<REAL> lrtmp5;
+                          
+	for(int i5 = 0; i5 < Nc; ++i5)
+	{
+	  int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
+
+	  for(int j5 = 0; j5 < Nc; ++j5)
+	  {
+	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
+
+	  
+	    lctmp5 = adj(tri[site].offd[0][elem_ji5]);
+	    lctmp5 -= tri[site].offd[0][elem_ij5];
+	    lctmp5 += adj(tri[site].offd[1][elem_ji5]);
+	    lctmp5 -= tri[site].offd[1][elem_ij5];
+
+
+	    B.elem(site).elem().elem(i5,j5) = lctmp5;
+
+	    elem_ij5++;
+	  }
+	}
+      }
+      break;
+
+    case 6:
+      /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
+      /*#              -i  0  0  0 */
+      /*#               0  0  0 -i */
+      /*#               0  0 -i  0 */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp6;
+	RScalar<REAL> lrtmp6;
+                          
+	for(int i6 = 0; i6 < Nc; ++i6)
+	{
+	  int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
+
+	  for(int j6 = 0; j6 < Nc; ++j6)
+	  {
+	    int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
+
+	    lctmp6 = adj(tri[site].offd[0][elem_ji6]);
+	    lctmp6 += tri[site].offd[0][elem_ij6];
+	    lctmp6 += adj(tri[site].offd[1][elem_ji6]);
+	    lctmp6 += tri[site].offd[1][elem_ij6];
+
+	    B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
+
+	    elem_ij6++;
+	  }
+	}
+      }
+      break;
+
+    case 9:
+      /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
+      /*#               i  0  0  0 */
+      /*#               0  0  0 -i */
+      /*#               0  0 -i  0 */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp9;
+	RScalar<REAL> lrtmp9;
+                          
+	for(int i9 = 0; i9 < Nc; ++i9)
+	{
+	  int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
+
+	  for(int j9 = 0; j9 < Nc; ++j9)
+	  {
+	    int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
+
+	    lctmp9 = adj(tri[site].offd[0][elem_ji9]);
+	    lctmp9 += tri[site].offd[0][elem_ij9];
+	    lctmp9 -= adj(tri[site].offd[1][elem_ji9]);
+	    lctmp9 -= tri[site].offd[1][elem_ij9];
+
+	    B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
+
+	    elem_ij9++;
+	  }
+	}
+      }
+      break;
+
+    case 10:
+      /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
+      /*#               1  0  0  0 */
+      /*#               0  0  0  1 */
+      /*#               0  0 -1  0 */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp10;
+	RScalar<REAL> lrtmp10;
+                          
+	for(int i10 = 0; i10 < Nc; ++i10)
+	{
+	  int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
+	
+	  for(int j10 = 0; j10 < Nc; ++j10)
+	  {
+	    int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
+
+	    lctmp10 = adj(tri[site].offd[0][elem_ji10]);
+	    lctmp10 -= tri[site].offd[0][elem_ij10];
+	    lctmp10 -= adj(tri[site].offd[1][elem_ji10]);
+	    lctmp10 += tri[site].offd[1][elem_ij10];
+
+	    B.elem(site).elem().elem(i10,j10) = lctmp10;
+
+	    elem_ij10++;
+	  }
+	}
+      }
+      break;
+    
+    case 12:
+      /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
+      /*#               0 -i  0  0 */
+      /*#               0  0 -i  0 */
+      /*#               0  0  0  i */
+      /*# From diagonal part */
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
+      {
+	int site = rb[cb].siteTable()[ssite];
+
+	RComplex<REAL> lctmp12;
+	RScalar<REAL> lr_zero12;
+	RScalar<REAL> lrtmp12;
+                          
+	lr_zero12 = 0;
+  
+	for(int i12 = 0; i12 < Nc; ++i12)
+	{
+	  lrtmp12 = tri[site].diag[0][i12];
+	  lrtmp12 -= tri[site].diag[0][i12+Nc];
+	  lrtmp12 -= tri[site].diag[1][i12];
+	  lrtmp12 += tri[site].diag[1][i12+Nc];
+	  B.elem(site).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
+	}
+    
+	/*# From lower triangular portion */
+	int elem_ij12 = 0;
+	for(int i12 = 1; i12 < Nc; ++i12)
+	{
+	  int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
+
+	  for(int j12 = 0; j12 < i12; ++j12)
+	  {
+	    lctmp12 = tri[site].offd[0][elem_ij12];
+	    lctmp12 -= tri[site].offd[0][elem_ijb12];
+	    lctmp12 -= tri[site].offd[1][elem_ij12];
+	    lctmp12 += tri[site].offd[1][elem_ijb12];
+	
+	    B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
+	    B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
+	
+	    elem_ij12++;
+	    elem_ijb12++;
+	  }
+	}
+      }
+      break;
+    
+    default:
+      QDPIO::cout << __func__ << ": invalid Gamma matrix int" << endl;
+      QDP_abort(1);
+    }
+
+    END_CODE();
+  }
+
+  //! Returns the appropriate clover coefficient for indices mu and nu
+  Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const 
+  { 
+    START_CODE();
+
+    if( param.anisoParam.anisoP ) 
+    { 
+      if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
+	return param.clovCoeffT;
+      }
+      else { 
+	// Otherwise return the spatial coeff
+	return param.clovCoeffR;
+      }
+    }
+    else { 
+      // If there is no anisotropy just return the spatial one, it will
+      // be the same as the temporal one
+      return param.clovCoeffR; 
+    } 
+    
+    END_CODE();
+  }
+
+
+
+
+
+  void QDPCloverDispatchFunction(int lo, int hi, int MyId,
+				 QDPCloverApplyStruct* arg)
+
+  {
+
+    // This is essentially the body of the previous "Apply"
+    // but now the args are handed in through user arg struct...
+    
+    START_CODE();
+
+    // Unwrap the args...
+    LatticeFermion& chi=arg->chi;
+    const LatticeFermion& psi=arg->psi;
+    const multi1d<PrimitiveClovTriang>& tri = arg->tri;
+    int cb = arg->cb;
+
     if ( Ns != 4 )
     {
       QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << endl;
@@ -859,7 +1372,9 @@ namespace Chroma
     int n = 2*Nc;
 
     const multi1d<int>& tab = rb[cb].siteTable();
-    for(int ssite=0; ssite < tab.size(); ++ssite) 
+
+    // Now just loop from low to high sites...
+    for(int ssite=lo; ssite < hi; ++ssite) 
     {
       int site = tab[ssite];
 
@@ -1373,490 +1888,8 @@ namespace Chroma
 
     }
 
-    getFermBC().modifyF(chi, QDP::rb[cb]);
-
-    END_CODE();
-  }
-
-  /**
-   * Apply a dslash
-   *
-   * Performs the operation
-   *
-   *  chi <-   (L + D + L^dag) . psi
-   *
-   * where
-   *   L       is a lower triangular matrix
-   *   D       is the real diagonal. (stored together in type TRIANG)
-   *
-   * Arguments:
-   * \param chi     result                                      (Write)
-   * \param psi     source                                      (Read)
-   * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
-   */
-  void QDPCloverTerm::applySite(LatticeFermion& chi, const LatticeFermion& psi, 
-			    enum PlusMinus isign, int site) const
-  {
-    START_CODE();
-
-    if ( Ns != 4 )
-    {
-      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << endl;
-      QDP_abort(1);
-    }
-
-    int n = 2*Nc;
-
-    RComplex<REAL>* cchi = (RComplex<REAL>*)&(chi.elem(site).elem(0).elem(0));
-    const RComplex<REAL>* ppsi = (const RComplex<REAL>*)&(psi.elem(site).elem(0).elem(0));
 
 
-    cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
-      +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
-      +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 3]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 6]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][10]) * ppsi[ 5];
-    
-    cchi[ 1] = tri[site].diag[0][ 1]  * ppsi[ 1]
-      +        tri[site].offd[0][ 0]  * ppsi[ 0]
-      +   conj(tri[site].offd[0][ 2]) * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 4]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 7]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][11]) * ppsi[ 5];
-    
-    cchi[ 2] = tri[site].diag[0][ 2]  * ppsi[ 2]
-      +        tri[site].offd[0][ 1]  * ppsi[ 0]
-      +        tri[site].offd[0][ 2]  * ppsi[ 1]
-      +   conj(tri[site].offd[0][ 5]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 8]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][12]) * ppsi[ 5];
-    
-    cchi[ 3] = tri[site].diag[0][ 3]  * ppsi[ 3]
-      +        tri[site].offd[0][ 3]  * ppsi[ 0]
-      +        tri[site].offd[0][ 4]  * ppsi[ 1]
-      +        tri[site].offd[0][ 5]  * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 9]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][13]) * ppsi[ 5];
-    
-    cchi[ 4] = tri[site].diag[0][ 4]  * ppsi[ 4]
-      +        tri[site].offd[0][ 6]  * ppsi[ 0]
-      +        tri[site].offd[0][ 7]  * ppsi[ 1]
-      +        tri[site].offd[0][ 8]  * ppsi[ 2]
-      +        tri[site].offd[0][ 9]  * ppsi[ 3]
-      +   conj(tri[site].offd[0][14]) * ppsi[ 5];
-    
-    cchi[ 5] = tri[site].diag[0][ 5]  * ppsi[ 5]
-      +        tri[site].offd[0][10]  * ppsi[ 0]
-      +        tri[site].offd[0][11]  * ppsi[ 1]
-      +        tri[site].offd[0][12]  * ppsi[ 2]
-      +        tri[site].offd[0][13]  * ppsi[ 3]
-      +        tri[site].offd[0][14]  * ppsi[ 4];
-    
-    cchi[ 6] = tri[site].diag[1][ 0]  * ppsi[ 6]
-      +   conj(tri[site].offd[1][ 0]) * ppsi[ 7]
-      +   conj(tri[site].offd[1][ 1]) * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 3]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 6]) * ppsi[10]
-      +   conj(tri[site].offd[1][10]) * ppsi[11];
-    
-    cchi[ 7] = tri[site].diag[1][ 1]  * ppsi[ 7]
-      +        tri[site].offd[1][ 0]  * ppsi[ 6]
-      +   conj(tri[site].offd[1][ 2]) * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 4]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 7]) * ppsi[10]
-      +   conj(tri[site].offd[1][11]) * ppsi[11];
-    
-    cchi[ 8] = tri[site].diag[1][ 2]  * ppsi[ 8]
-      +        tri[site].offd[1][ 1]  * ppsi[ 6]
-      +        tri[site].offd[1][ 2]  * ppsi[ 7]
-      +   conj(tri[site].offd[1][ 5]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 8]) * ppsi[10]
-      +   conj(tri[site].offd[1][12]) * ppsi[11];
-    
-    cchi[ 9] = tri[site].diag[1][ 3]  * ppsi[ 9]
-      +        tri[site].offd[1][ 3]  * ppsi[ 6]
-      +        tri[site].offd[1][ 4]  * ppsi[ 7]
-      +        tri[site].offd[1][ 5]  * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 9]) * ppsi[10]
-      +   conj(tri[site].offd[1][13]) * ppsi[11];
-    
-    cchi[10] = tri[site].diag[1][ 4]  * ppsi[10]
-      +        tri[site].offd[1][ 6]  * ppsi[ 6]
-      +        tri[site].offd[1][ 7]  * ppsi[ 7]
-      +        tri[site].offd[1][ 8]  * ppsi[ 8]
-      +        tri[site].offd[1][ 9]  * ppsi[ 9]
-      +   conj(tri[site].offd[1][14]) * ppsi[11];
-    
-    cchi[11] = tri[site].diag[1][ 5]  * ppsi[11]
-      +        tri[site].offd[1][10]  * ppsi[ 6]
-      +        tri[site].offd[1][11]  * ppsi[ 7]
-      +        tri[site].offd[1][12]  * ppsi[ 8]
-      +        tri[site].offd[1][13]  * ppsi[ 9]
-      +        tri[site].offd[1][14]  * ppsi[10];
-
-
-    END_CODE();
-  }
-
-
-
-
-  //! TRIACNTR 
-  /*! 
-   * \ingroup linop
-   *
-   *  Calculates
-   *     Tr_D ( Gamma_mat L )
-   *
-   * This routine is specific to Wilson fermions!
-   * 
-   *  the trace over the Dirac indices for one of the 16 Gamma matrices
-   *  and a hermitian color x spin matrix A, stored as a block diagonal
-   *  complex lower triangular matrix L and a real diagonal diag_L.
-
-   *  Here 0 <= mat <= 15 and
-   *  if mat = mat_1 + mat_2 * 2 + mat_3 * 4 + mat_4 * 8
-   *
-   *  Gamma(mat) = gamma(1)^(mat_1) * gamma(2)^(mat_2) * gamma(3)^(mat_3)
-   *             * gamma(4)^(mat_4)
-   *
-   *  Further, in basis for the Gamma matrices used, A is of the form
-   *
-   *      | A_0 |  0  |
-   *  A = | --------- |
-   *      |  0  | A_1 |
-   *
-   *
-   * Arguments:
-   *
-   *  \param B         the resulting SU(N) color matrix	  (Write) 
-   *  \param clov      clover term                        (Read) 
-   *  \param mat       label of the Gamma matrix          (Read)
-   */
-  void QDPCloverTerm::triacntr(LatticeColorMatrix& B, int mat, int cb) const
-  {
-    START_CODE();
-
-    B = zero;
-
-    if ( mat < 0  ||  mat > 15 )
-    {
-      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
-      QDP_abort(1);
-    }
-  
-    switch( mat )
-    {
-    case 0:
-      /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
-      /*#               0  1  0  0 */
-      /*#               0  0  1  0 */
-      /*#               0  0  0  1 */
-      /*# From diagonal part */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp0;
-	RScalar<REAL> lr_zero0;
-	RScalar<REAL> lrtmp0;
-  
-	lr_zero0 = 0;
-  
-	for(int i0 = 0; i0 < Nc; ++i0)
-	{
-	  lrtmp0 = tri[site].diag[0][i0];
-	  lrtmp0 += tri[site].diag[0][i0+Nc];
-	  lrtmp0 += tri[site].diag[1][i0];
-	  lrtmp0 += tri[site].diag[1][i0+Nc];
-	  B.elem(site).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
-	}
-
-	/*# From lower triangular portion */
-	int elem_ij0 = 0;
-	for(int i0 = 1; i0 < Nc; ++i0)
-	{
-	  int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
-
-	  for(int j0 = 0; j0 < i0; ++j0)
-	  {
-	    lctmp0 = tri[site].offd[0][elem_ij0];
-	    lctmp0 += tri[site].offd[0][elem_ijb0];
-	    lctmp0 += tri[site].offd[1][elem_ij0];
-	    lctmp0 += tri[site].offd[1][elem_ijb0];
-
-	    B.elem(site).elem().elem(j0,i0) = lctmp0;
-	    B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
-
-
-	    elem_ij0++;
-	    elem_ijb0++;
-	  }
-	}
-      }
-      break;
-
-    case 3:
-      /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
-      /*#               0  i  0  0 */
-      /*#               0  0 -i  0 */
-      /*#               0  0  0  i */
-      /*# From diagonal part */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp3;
-	RScalar<REAL> lr_zero3;
-	RScalar<REAL> lrtmp3;
-                          
-	lr_zero3 = 0;
-  
-	for(int i3 = 0; i3 < Nc; ++i3)
-	{
-	  lrtmp3 = tri[site].diag[0][i3+Nc];
-	  lrtmp3 -= tri[site].diag[0][i3];
-	  lrtmp3 -= tri[site].diag[1][i3];
-	  lrtmp3 += tri[site].diag[1][i3+Nc];
-	  B.elem(site).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
-	}
-	
-	/*# From lower triangular portion */
-	int elem_ij3 = 0;
-	for(int i3 = 1; i3 < Nc; ++i3)
-	{
-	  int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
-
-	  for(int j3 = 0; j3 < i3; ++j3)
-	  {
-	    lctmp3 = tri[site].offd[0][elem_ijb3];
-	    lctmp3 -= tri[site].offd[0][elem_ij3];
-	    lctmp3 -= tri[site].offd[1][elem_ij3];
-	    lctmp3 += tri[site].offd[1][elem_ijb3];
-
-	    B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
-	    B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
-	    
-	    elem_ij3++;
-	    elem_ijb3++;
-	  }
-	}
-      }
-      break;
-
-    case 5:
-      /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
-      /*#               1  0  0  0 */
-      /*#               0  0  0 -1 */
-      /*#               0  0  1  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp5;
-	RScalar<REAL> lrtmp5;
-                          
-	for(int i5 = 0; i5 < Nc; ++i5)
-	{
-	  int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
-
-	  for(int j5 = 0; j5 < Nc; ++j5)
-	  {
-	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
-
-	  
-	    lctmp5 = adj(tri[site].offd[0][elem_ji5]);
-	    lctmp5 -= tri[site].offd[0][elem_ij5];
-	    lctmp5 += adj(tri[site].offd[1][elem_ji5]);
-	    lctmp5 -= tri[site].offd[1][elem_ij5];
-
-
-	    B.elem(site).elem().elem(i5,j5) = lctmp5;
-
-	    elem_ij5++;
-	  }
-	}
-      }
-      break;
-
-    case 6:
-      /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
-      /*#              -i  0  0  0 */
-      /*#               0  0  0 -i */
-      /*#               0  0 -i  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp6;
-	RScalar<REAL> lrtmp6;
-                          
-	for(int i6 = 0; i6 < Nc; ++i6)
-	{
-	  int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
-
-	  for(int j6 = 0; j6 < Nc; ++j6)
-	  {
-	    int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
-
-	    lctmp6 = adj(tri[site].offd[0][elem_ji6]);
-	    lctmp6 += tri[site].offd[0][elem_ij6];
-	    lctmp6 += adj(tri[site].offd[1][elem_ji6]);
-	    lctmp6 += tri[site].offd[1][elem_ij6];
-
-	    B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
-
-	    elem_ij6++;
-	  }
-	}
-      }
-      break;
-
-    case 9:
-      /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
-      /*#               i  0  0  0 */
-      /*#               0  0  0 -i */
-      /*#               0  0 -i  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp9;
-	RScalar<REAL> lrtmp9;
-                          
-	for(int i9 = 0; i9 < Nc; ++i9)
-	{
-	  int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
-
-	  for(int j9 = 0; j9 < Nc; ++j9)
-	  {
-	    int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
-
-	    lctmp9 = adj(tri[site].offd[0][elem_ji9]);
-	    lctmp9 += tri[site].offd[0][elem_ij9];
-	    lctmp9 -= adj(tri[site].offd[1][elem_ji9]);
-	    lctmp9 -= tri[site].offd[1][elem_ij9];
-
-	    B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
-
-	    elem_ij9++;
-	  }
-	}
-      }
-      break;
-
-    case 10:
-      /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
-      /*#               1  0  0  0 */
-      /*#               0  0  0  1 */
-      /*#               0  0 -1  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp10;
-	RScalar<REAL> lrtmp10;
-                          
-	for(int i10 = 0; i10 < Nc; ++i10)
-	{
-	  int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
-	
-	  for(int j10 = 0; j10 < Nc; ++j10)
-	  {
-	    int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
-
-	    lctmp10 = adj(tri[site].offd[0][elem_ji10]);
-	    lctmp10 -= tri[site].offd[0][elem_ij10];
-	    lctmp10 -= adj(tri[site].offd[1][elem_ji10]);
-	    lctmp10 += tri[site].offd[1][elem_ij10];
-
-	    B.elem(site).elem().elem(i10,j10) = lctmp10;
-
-	    elem_ij10++;
-	  }
-	}
-      }
-      break;
-    
-    case 12:
-      /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
-      /*#               0 -i  0  0 */
-      /*#               0  0 -i  0 */
-      /*#               0  0  0  i */
-      /*# From diagonal part */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp12;
-	RScalar<REAL> lr_zero12;
-	RScalar<REAL> lrtmp12;
-                          
-	lr_zero12 = 0;
-  
-	for(int i12 = 0; i12 < Nc; ++i12)
-	{
-	  lrtmp12 = tri[site].diag[0][i12];
-	  lrtmp12 -= tri[site].diag[0][i12+Nc];
-	  lrtmp12 -= tri[site].diag[1][i12];
-	  lrtmp12 += tri[site].diag[1][i12+Nc];
-	  B.elem(site).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
-	}
-    
-	/*# From lower triangular portion */
-	int elem_ij12 = 0;
-	for(int i12 = 1; i12 < Nc; ++i12)
-	{
-	  int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
-
-	  for(int j12 = 0; j12 < i12; ++j12)
-	  {
-	    lctmp12 = tri[site].offd[0][elem_ij12];
-	    lctmp12 -= tri[site].offd[0][elem_ijb12];
-	    lctmp12 -= tri[site].offd[1][elem_ij12];
-	    lctmp12 += tri[site].offd[1][elem_ijb12];
-	
-	    B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
-	    B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
-	
-	    elem_ij12++;
-	    elem_ijb12++;
-	  }
-	}
-      }
-      break;
-    
-    default:
-      QDPIO::cout << __func__ << ": invalid Gamma matrix int" << endl;
-      QDP_abort(1);
-    }
-
-    END_CODE();
-  }
-
-  //! Returns the appropriate clover coefficient for indices mu and nu
-  Real QDPCloverTerm::getCloverCoeff(int mu, int nu) const 
-  { 
-    START_CODE();
-
-    if( param.anisoParam.anisoP ) 
-    { 
-      if (mu==param.anisoParam.t_dir || nu == param.anisoParam.t_dir) { 
-	return param.clovCoeffT;
-      }
-      else { 
-	// Otherwise return the spatial coeff
-	return param.clovCoeffR;
-      }
-    }
-    else { 
-      // If there is no anisotropy just return the spatial one, it will
-      // be the same as the temporal one
-      return param.clovCoeffR; 
-    } 
-    
     END_CODE();
   }
 
