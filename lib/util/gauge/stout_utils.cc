@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: stout_utils.cc,v 1.5 2008-02-19 16:21:59 bjoo Exp $
+// $Id: stout_utils.cc,v 1.6 2009-02-04 21:16:03 bjoo Exp $
 /*! \file
  *  \brief Stout utilities
  */
@@ -346,29 +346,29 @@ namespace Chroma
     }
 
 
-    /*! \ingroup gauge */
-    void getFsAndBs(const LatticeColorMatrix& Q,
-		    const LatticeColorMatrix& QQ,
-		    multi1d<LatticeComplex>& f,
-		    multi1d<LatticeComplex>& b1,
-		    multi1d<LatticeComplex>& b2,
-		    bool dobs)
+    /* A namespace to hide the thread dispatcher in */
+    namespace StoutUtils { 
+      struct GetFsAndBsArgs { 
+	const LatticeColorMatrix& Q;
+	const LatticeColorMatrix& QQ;
+	multi1d<LatticeComplex>& f;
+	multi1d<LatticeComplex>& b1;
+	multi1d<LatticeComplex>& b2;
+	bool dobs;
+      };
+      
+    inline 
+    void getFsAndBsSiteLoop(int lo, int hi, int myId, 
+			      GetFsAndBsArgs* arg)
     {
-      START_CODE();
-      QDP::StopWatch swatch;
-      swatch.reset();
-      swatch.start();
+      const LatticeColorMatrix& Q = arg->Q;
+      const LatticeColorMatrix& QQ = arg->QQ;
+      multi1d<LatticeComplex>& f = arg->f;
+      multi1d<LatticeComplex>& b1 = arg->b1;
+      multi1d<LatticeComplex>& b2 = arg->b2;
+      bool dobs=arg->dobs;
       
-      f.resize(3);
-      if( dobs ) { 
-	b1.resize(3);
-	b2.resize(3);
-      }
-      
-      int num_sites = Layout::sitesOnNode();
-      
-      // Drop into a site loop here...
-      for(int site=0; site < num_sites; site++)  
+      for(int site=lo; site < hi; site++)  
       { 
 	// Get the traces
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  Q_site = Q.elem(site).elem();
@@ -809,7 +809,36 @@ namespace Chroma
 	  }
 	  
 	} // End of if( corner_caseP ) else {}
+      } // End site loop
+    } // End Function
+
+    } // End Namespace
+	
+    /*! \ingroup gauge */
+    void getFsAndBs(const LatticeColorMatrix& Q,
+		    const LatticeColorMatrix& QQ,
+		    multi1d<LatticeComplex>& f,
+		    multi1d<LatticeComplex>& b1,
+		    multi1d<LatticeComplex>& b2,
+		    bool dobs)
+    {
+      START_CODE();
+      QDP::StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      f.resize(3);
+      if( dobs ) { 
+	b1.resize(3);
+	b2.resize(3);
       }
+      
+      int num_sites = Layout::sitesOnNode();
+      StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
+      dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+      
+      // Drop into a site loop here...
+
       swatch.stop();
       StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();
       END_CODE();

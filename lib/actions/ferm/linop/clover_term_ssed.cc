@@ -1,4 +1,4 @@
-// $Id: clover_term_ssed.cc,v 1.2 2009-02-03 21:30:16 bjoo Exp $
+// $Id: clover_term_ssed.cc,v 1.3 2009-02-04 21:16:03 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -188,6 +188,9 @@ namespace Chroma
     // Should be allocated by constructor.
     // tri_diag.resize(from.tri_diag.size());
     // tri_off_diag.resize(from.tri_off_diag.size());
+
+    // This I claim is so performance uncritical, that
+    // for now I won't parallelize it...
     for(int site=0; site < Layout::sitesOnNode(); site++) {
       for(int block = 0; block < 2; block++) { 
 	for(int comp=0; comp< 6; comp++) { 
@@ -284,6 +287,142 @@ namespace Chroma
    *  \param f         field strength tensor F(cb,mu,nu)        (Read)
    *  \param diag_mass effective mass term                      (Read)
    */
+
+  namespace SSEDCloverEnv { 
+    struct MakeClovArgs  {
+      LatticeColorMatrix& f0;
+      LatticeColorMatrix& f1;
+      LatticeColorMatrix& f2;
+      LatticeColorMatrix& f3;
+      LatticeColorMatrix& f4;
+      LatticeColorMatrix& f5;
+      PrimitiveClovDiag* tri_diag;
+      PrimitiveClovOffDiag* tri_off_diag;
+      const Real& diag_mass;
+    };
+
+    inline
+    void makeClovSiteLoop(int lo, int hi, int myId, MakeClovArgs* a)
+    {
+      LatticeColorMatrix& f0=a->f0;
+      LatticeColorMatrix& f1=a->f1;
+      LatticeColorMatrix& f2=a->f2;
+      LatticeColorMatrix& f3=a->f3;
+      LatticeColorMatrix& f4=a->f4;
+      LatticeColorMatrix& f5=a->f5;
+      PrimitiveClovDiag* tri_diag=a->tri_diag;
+      PrimitiveClovOffDiag* tri_off_diag=a->tri_off_diag;
+      const Real& diag_mass = a->diag_mass;
+
+      for(int site = lo; site < hi; ++site) {
+
+	for(int jj = 0; jj < 2; jj++) {
+
+	  for(int ii = 0; ii < 2*Nc; ii++) {
+
+	    tri_diag[site][jj][ii] = diag_mass.elem().elem().elem();
+	  }
+	}
+	
+	
+	/* The appropriate clover coeffients are already included in the
+	   field strengths F(mu,nu)! */
+	
+	RComplex<REAL> E_minus;
+	RComplex<REAL> B_minus;
+	RComplex<REAL> ctmp_0;
+	RComplex<REAL> ctmp_1;
+	RScalar<REAL> rtmp_0;
+	RScalar<REAL> rtmp_1;
+	
+	for(int i = 0; i < Nc; ++i) {
+
+	  /*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
+	  /*#             = 1 - i*diag(F(3,2) - F(1,0)) */
+	  ctmp_0 = f5.elem(site).elem().elem(i,i);
+	  ctmp_0 -= f0.elem(site).elem().elem(i,i);
+	  rtmp_0 = imag(ctmp_0);
+	  tri_diag[site][0][i] += rtmp_0;
+	  
+	  /*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
+	  /*#                = 1 + i*diag(F(3,2) - F(1,0)) */
+	  tri_diag[site][0][i+Nc] -= rtmp_0;
+	  
+	  /*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
+	  /*#             = 1 + i*diag(F(3,2) + F(1,0)) */
+	  ctmp_1 = f5.elem(site).elem().elem(i,i);
+	  ctmp_1 += f0.elem(site).elem().elem(i,i);
+	  rtmp_1 = imag(ctmp_1);
+	  tri_diag[site][1][i] -= rtmp_1;
+	  
+	  /*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
+	  /*#                = 1 - i*diag(F(3,2) + F(1,0)) */
+	  tri_diag[site][1][i+Nc] += rtmp_1;
+	}
+	
+	/*# Construct lower triangular portion */
+	/*# Block diagonal terms */
+	for(int i = 1; i < Nc; ++i) {
+
+	  for(int j = 0; j < i; ++j) {
+	    
+	    int elem_ij  = i*(i-1)/2 + j;
+	    int elem_tmp = (i+Nc)*(i+Nc-1)/2 + j+Nc;
+	    
+	    /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
+	    /*#          = -i*(F(3,2) - F(1,0)) */
+	    ctmp_0 = f0.elem(site).elem().elem(i,j);
+	    ctmp_0 -= f5.elem(site).elem().elem(i,j);
+	    tri_off_diag[site][0][elem_ij] = timesI(ctmp_0);
+	    
+	    /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
+	    /*#                = +i*(F(3,2) - F(1,0)) */
+	    tri_off_diag[site][0][elem_tmp] = -tri_off_diag[site][0][elem_ij];
+	    
+	    /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
+	    /*#          = i*(F(3,2) + F(1,0)) */
+	    ctmp_1 = f5.elem(site).elem().elem(i,j);
+	    ctmp_1 += f0.elem(site).elem().elem(i,j);
+	    tri_off_diag[site][1][elem_ij] = timesI(ctmp_1);
+	    
+	    /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
+	    /*#                = -i*(F(3,2) + F(1,0)) */
+	    tri_off_diag[site][1][elem_tmp] = -tri_off_diag[site][1][elem_ij];
+	  }
+	}
+      
+	/*# Off-diagonal */
+	for(int i = 0; i < Nc; ++i) {
+
+	  for(int j = 0; j < Nc; ++j) {
+
+	    // Flipped index
+	    // by swapping i <-> j. In the past i would run slow
+	    // and now j runs slow
+	    int elem_ij  = (i+Nc)*(i+Nc-1)/2 + j;
+	    
+	    /*# i*E_- = (i*E_x + E_y) */
+	    /*#       = (i*F(3,0) + F(3,1)) */
+	    E_minus = timesI(f2.elem(site).elem().elem(i,j));
+	    E_minus += f4.elem(site).elem().elem(i,j);
+	    
+	    /*# i*B_- = (i*B_x + B_y) */
+	    /*#       = (i*F(2,1) - F(2,0)) */
+	    B_minus = timesI(f3.elem(site).elem().elem(i,j));
+	    B_minus -= f1.elem(site).elem().elem(i,j);
+	    
+	    /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
+	    tri_off_diag[site][0][elem_ij] = B_minus - E_minus;
+	    
+	    /*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
+	    tri_off_diag[site][1][elem_ij] = E_minus + B_minus;
+	  }
+	}
+      } // End Site Loop
+    } // End Function
+  }; // End Namespace
+
+
   void SSEDCloverTerm::makeClov(const multi1d<LatticeColorMatrix>& f, const Real& diag_mass)
   {
     START_CODE();
@@ -294,7 +433,7 @@ namespace Chroma
     LatticeColorMatrix f3;
     LatticeColorMatrix f4;
     LatticeColorMatrix f5;
-
+    
     const int nodeSites = QDP::Layout::sitesOnNode();
 
     START_CODE();
@@ -312,161 +451,8 @@ namespace Chroma
     f4 = f[4] * getCloverCoeff(1,3);
     f5 = f[5] * getCloverCoeff(2,3);    
 
-    /* Multiply in the appropriate clover coefficient */
-    /*
-      switch (param.anisoParam.t_dir)
-      {
-      case 1:
-      f0 = f[0] * param.clovCoeffT;
-      f1 = f[1] * param.clovCoeffR;
-      f2 = f[2] * param.clovCoeffR;
-      f3 = f[3] * param.clovCoeffT;
-      f4 = f[4] * param.clovCoeffT;
-      f5 = f[5] * param.clovCoeffR;
-      break;
-
-      case 2:
-      f0 = f[0] * param.clovCoeffR;
-      f1 = f[1] * param.clovCoeffT;
-      f2 = f[2] * param.clovCoeffR;
-      f3 = f[3] * param.clovCoeffT;
-      f4 = f[4] * param.clovCoeffR;
-      f5 = f[5] * param.clovCoeffT;
-      break;
-
-      case 3:
-      f0 = f[0] * param.clovCoeffR;
-      f1 = f[1] * param.clovCoeffR;
-      f2 = f[2] * param.clovCoeffT;
-      f3 = f[3] * param.clovCoeffR;
-      f4 = f[4] * param.clovCoeffT;
-      f5 = f[5] * param.clovCoeffT;
-      break;
-
-      default:
-      QDPIO::cerr << __func__ << ": invalid time direction: t_dir= " 
-      << param.anisoParam.t_dir << endl;
-      QDP_abort(1);
-      }
-    */
-
-    // These are now preallocated
-    //tri_diag.resize(nodeSites);  // hold local lattice
-    // tri_off_diag.resize(nodeSites);
-
-    /*# Construct diagonal */
-    for(int site = 0; site < nodeSites; ++site)
-    {
-
-      for(int jj = 0; jj < 2; jj++)
-      {
-	for(int ii = 0; ii < 2*Nc; ii++)
-	{
-	  tri_diag[site][jj][ii] = diag_mass.elem().elem().elem();
-	}
-      }
-    }
-
-
-
-    /* The appropriate clover coeffients are already included in the
-       field strengths F(mu,nu)! */
-    for(int site = 0; site < nodeSites; ++site)
-    {
-      RComplex<REAL> E_minus;
-      RComplex<REAL> B_minus;
-      RComplex<REAL> ctmp_0;
-      RComplex<REAL> ctmp_1;
-      RScalar<REAL> rtmp_0;
-      RScalar<REAL> rtmp_1;
-  
-      for(int i = 0; i < Nc; ++i)
-      {
-	/*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
-	/*#             = 1 - i*diag(F(3,2) - F(1,0)) */
-	ctmp_0 = f5.elem(site).elem().elem(i,i);
-	ctmp_0 -= f0.elem(site).elem().elem(i,i);
-	rtmp_0 = imag(ctmp_0);
-	tri_diag[site][0][i] += rtmp_0;
-
-	/*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
-	/*#                = 1 + i*diag(F(3,2) - F(1,0)) */
-	tri_diag[site][0][i+Nc] -= rtmp_0;
-
-	/*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
-	/*#             = 1 + i*diag(F(3,2) + F(1,0)) */
-	ctmp_1 = f5.elem(site).elem().elem(i,i);
-	ctmp_1 += f0.elem(site).elem().elem(i,i);
-	rtmp_1 = imag(ctmp_1);
-	tri_diag[site][1][i] -= rtmp_1;
-
-	/*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
-	/*#                = 1 - i*diag(F(3,2) + F(1,0)) */
-	tri_diag[site][1][i+Nc] += rtmp_1;
-      }
-
-      /*# Construct lower triangular portion */
-      /*# Block diagonal terms */
-      for(int i = 1; i < Nc; ++i)
-      {
-	for(int j = 0; j < i; ++j)
-	{
-	  int elem_ij  = i*(i-1)/2 + j;
-	  int elem_tmp = (i+Nc)*(i+Nc-1)/2 + j+Nc;
-
-	  /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
-	  /*#          = -i*(F(3,2) - F(1,0)) */
-	  ctmp_0 = f0.elem(site).elem().elem(i,j);
-	  ctmp_0 -= f5.elem(site).elem().elem(i,j);
-	  tri_off_diag[site][0][elem_ij] = timesI(ctmp_0);
-
-	  /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
-	  /*#                = +i*(F(3,2) - F(1,0)) */
-	  tri_off_diag[site][0][elem_tmp] = -tri_off_diag[site][0][elem_ij];
-
-	  /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
-	  /*#          = i*(F(3,2) + F(1,0)) */
-	  ctmp_1 = f5.elem(site).elem().elem(i,j);
-	  ctmp_1 += f0.elem(site).elem().elem(i,j);
-	  tri_off_diag[site][1][elem_ij] = timesI(ctmp_1);
-
-	  /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
-	  /*#                = -i*(F(3,2) + F(1,0)) */
-	  tri_off_diag[site][1][elem_tmp] = -tri_off_diag[site][1][elem_ij];
-	}
-      }
-      
-      /*# Off-diagonal */
-      for(int i = 0; i < Nc; ++i)
-      {
-	for(int j = 0; j < Nc; ++j)
-	{
-	  // Flipped index
-	  // by swapping i <-> j. In the past i would run slow
-	  // and now j runs slow
-	  int elem_ij  = (i+Nc)*(i+Nc-1)/2 + j;
-
-	  /*# i*E_- = (i*E_x + E_y) */
-	  /*#       = (i*F(3,0) + F(3,1)) */
-	  E_minus = timesI(f2.elem(site).elem().elem(i,j));
-	  E_minus += f4.elem(site).elem().elem(i,j);
-
-	  /*# i*B_- = (i*B_x + B_y) */
-	  /*#       = (i*F(2,1) - F(2,0)) */
-	  B_minus = timesI(f3.elem(site).elem().elem(i,j));
-	  B_minus -= f1.elem(site).elem().elem(i,j);
-
-	  /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
-	  tri_off_diag[site][0][elem_ij] = B_minus - E_minus;
-
-	  /*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
-	  tri_off_diag[site][1][elem_ij] = E_minus + B_minus;
-	}
-      }
-	
-
-    }
-
+    SSEDCloverEnv::MakeClovArgs a={f0,f1,f2,f3,f4,f5,tri_diag,tri_off_diag, diag_mass};
+    dispatch_to_threads(nodeSites, a, SSEDCloverEnv::makeClovSiteLoop);
 
     END_CODE();
   }
@@ -481,7 +467,7 @@ namespace Chroma
     START_CODE();
 
     // When you are doing the cholesky - also fill out the trace_log_diag piece)
-    // chlclovms(tr_log_diag_, cb);
+    //chlclovms(tr_log_diag_, cb);
     ldagdlinv(tr_log_diag_,cb);
     
     END_CODE();
@@ -510,6 +496,212 @@ namespace Chroma
     return sum(tr_log_diag_, rb[cb]);
   }    
 
+
+  namespace SSEDCloverEnv { 
+    struct LDagDLInvArgs { 
+      LatticeReal& tr_log_diag;
+      PrimitiveClovDiag* tri_diag;
+      PrimitiveClovOffDiag* tri_off_diag;
+      int cb;
+    };
+
+    inline 
+    void lDagDLInvSiteLoop(int lo, int hi, int myId, LDagDLInvArgs *a)
+    {
+      LatticeReal& tr_log_diag = a->tr_log_diag;
+      PrimitiveClovDiag* tri_diag = a->tri_diag;
+      PrimitiveClovOffDiag* tri_off_diag = a->tri_off_diag;
+      int cb = a->cb;
+
+      RScalar<REAL> zip=0;
+      
+      int N = 2*Nc;
+
+      // Loop through the sites.
+      for(int ssite=lo; ssite < hi; ++ssite)  {
+
+	int site = rb[cb].siteTable()[ssite];
+	
+	int site_neg_logdet=0;
+	// Loop through the blocks on the site.
+	for(int block=0; block < 2; block++) { 
+	  
+	  // Triangular storage 
+	  // Big arrays to get good alignment...
+	  
+	  RScalar<REAL> inv_d[8] QDP_ALIGN16;
+	  RComplex<REAL> inv_offd[16] QDP_ALIGN16;
+	  RComplex<REAL> v[8] QDP_ALIGN16;
+	  RScalar<REAL>  diag_g[8] QDP_ALIGN16;
+	  // Algorithm 4.1.2 LDL^\dagger Decomposition
+	  // From Golub, van Loan 3rd ed, page 139
+	  for(int i=0; i < N; i++) { 
+	    inv_d[i] = tri_diag[site][block][i];
+	  }
+	  for(int i=0; i < 15; i++) { 
+	    inv_offd[i]  =tri_off_diag[site][block][i];
+	  }
+	  
+	  for(int j=0; j < N; ++j) { 
+	    
+	    // Compute v(0:j-1)
+	    //
+	    // for i=0:j-2
+	    //   v(i) = A(j,i) A(i,i)
+	    // end
+	    
+	    
+	    for(int i=0; i < j; i++) { 
+	      int elem_ji = j*(j-1)/2 + i;
+	      
+	      RComplex<REAL> A_ii = cmplx( inv_d[i], zip );
+	      v[i] = A_ii*adj(inv_offd[elem_ji]);
+	    }
+	    
+	    // v(j) = A(j,j) - A(j, 0:j-2) v(0:j-2)
+	    //                 ^ This is done with a loop over k ie:
+	    //
+	    // v(j) = A(j,j) - sum_k A*(j,k) v(k)     k=0...j-2
+	    //
+	    //      = A(j,j) - sum_k A*(j,k) A(j,k) A(k,k)
+	    //      = A(j,j) - sum_k | A(j,k) |^2 A(k,k)
+	    
+	    v[j] = cmplx(inv_d[j],zip);
+	    
+	    for(int k=0; k < j; k++) { 
+	      int elem_jk = j*(j-1)/2 + k;
+	      v[j] -= inv_offd[elem_jk]*v[k];
+	    }
+	    
+	    
+	    // At this point in time v[j] has to be real, since
+	    // A(j,j) is from diag ie real and all | A(j,k) |^2 is real
+	    // as is A(k,k)
+	    
+	    // A(j,j) is the diagonal element - so store it.
+	    inv_d[j] = real( v[j] );
+	    
+	    // Last line of algorithm:
+	    // A( j+1 : n, j) = ( A(j+1:n, j) - A(j+1:n, 1:j-1)v(1:k-1) ) / v(j)
+	    //
+	    // use k as first colon notation and l as second so
+	    // 
+	    // for k=j+1 < n-1
+	    //      A(k,j) = A(k,j) ;
+	    //      for l=0 < j-1
+	    //         A(k,j) -= A(k, l) v(l)
+	    //      end
+	    //      A(k,j) /= v(j);
+	    //
+	    for(int k=j+1; k < N; k++) { 
+	      int elem_kj = k*(k-1)/2 + j;
+	      for(int l=0; l < j; l++) { 
+		int elem_kl = k*(k-1)/2 + l;
+		inv_offd[elem_kj] -= inv_offd[elem_kl] * v[l];
+	      }
+	      inv_offd[elem_kj] /= v[j];
+	    }
+	  }
+	  
+	  // Now fix up the inverse
+	  RScalar<REAL> one;
+	  one.elem() = (REAL)1;
+	  
+	  for(int i=0; i < N; i++) { 
+	    diag_g[i] = one/inv_d[i];
+	    
+	    // Compute the trace log
+	    // NB we are always doing trace log | A | 
+	    // (because we are always working with actually A^\dagger A
+	    //  even in one flavour case where we square root)
+	    tr_log_diag.elem(site).elem().elem().elem() += log(fabs(inv_d[i].elem()));
+	    // However, it is worth counting just the no of negative logdets
+	    // on site
+	    if( inv_d[i].elem() < 0 ) { 
+	      site_neg_logdet++;
+	    }
+	  }
+	  // Now we need to invert the L D L^\dagger 
+	  // We can do this by solving:
+	  //
+	  //  L D L^\dagger M^{-1} = 1   
+	  //
+	  // This can be done by solving L D X = 1  (X = L^\dagger M^{-1})
+	  //
+	  // Then solving L^\dagger M^{-1} = X
+	  //
+	  // LD is lower diagonal and so X will also be lower diagonal.
+	  // LD X = 1 can be solved by forward substitution.
+	  //
+	  // Likewise L^\dagger is strictly upper triagonal and so
+	  // L^\dagger M^{-1} = X can be solved by forward substitution.
+	  RComplex<REAL> sum;
+	  for(int k = 0; k < N; ++k) {
+
+	    for(int i = 0; i < k; ++i) {
+	      zero_rep(v[i]);
+	    }
+	    
+	    /*# Forward substitution */
+	    
+	    // The first element is the inverse of the diagonal
+	    v[k] = cmplx(diag_g[k],zip);
+	    
+	    for(int i = k+1; i < N; ++i) {
+	      zero_rep(v[i]);
+	      
+	      for(int j = k; j < i; ++j) {
+		int elem_ij = i*(i-1)/2+j;	
+		
+		// subtract l_ij*d_j*x_{kj}
+		v[i] -= inv_offd[elem_ij] *inv_d[j]*v[j];
+		
+	      }
+	
+	      // scale out by 1/d_i
+	      v[i] *= diag_g[i];
+	    }
+	    
+	    /*# Backward substitution */
+	    // V[N-1] remains unchanged
+	    // Start from V[N-2]
+	    
+	    for(int i = N-2; (int)i >= (int)k; --i) {
+	      for(int j = i+1; j < N; ++j) {
+		int elem_ji = j*(j-1)/2 + i;
+		// Subtract terms of typ (l_ji)*x_kj
+		v[i] -= adj(inv_offd[elem_ji]) * v[j];
+	      }
+	    }
+	    
+	    /*# Overwrite column k of invcl.offd */
+	    inv_d[k] = real(v[k]);
+	    for(int i = k+1; i < N; ++i) {
+	      
+	      int elem_ik = i*(i-1)/2+k;
+	      inv_offd[elem_ik] = v[i];
+	    }
+	  }
+	  
+	  
+	  // Overwrite original data
+	  for(int i=0; i < N; i++) { 
+	    tri_diag[site][block][i] = inv_d[i];
+	  }
+	  for(int i=0; i < 15; i++) { 
+	    tri_off_diag[site][block][i] = inv_offd[i];
+	  }
+	}
+	
+	if( site_neg_logdet != 0 ) { 
+	  // Report if site had odd number of negative terms. (-ve def)
+	  std::cout << "WARNING: Odd number of negative terms in Clover DET (" 
+		    << site_neg_logdet<< ") at site: " << site << endl;
+	}
+      } // End Site Loop
+    } // End Function
+  } // End Namespace
+
    /*! An LDL^\dag decomposition and inversion? */
   void SSEDCloverTerm::ldagdlinv(LatticeReal& tr_log_diag, int cb)
   {
@@ -520,192 +712,10 @@ namespace Chroma
 
     // Zero trace log
     tr_log_diag = zero;
-    RScalar<REAL> zip=0;
 
-    int N = 2*Nc;
+    SSEDCloverEnv::LDagDLInvArgs a = { tr_log_diag, tri_diag, tri_off_diag, cb };
+    dispatch_to_threads(rb[cb].numSiteTable(), a, SSEDCloverEnv::lDagDLInvSiteLoop);
 
-    // Loop through the sites.
-    for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-    {
-      int site = rb[cb].siteTable()[ssite];
-
-      int site_neg_logdet=0;
-      // Loop through the blocks on the site.
-      for(int block=0; block < 2; block++) { 
-
-	// Triangular storage 
-	// Big arrays to get good alignment...
-
-	RScalar<REAL> inv_d[8] QDP_ALIGN16;
-	RComplex<REAL> inv_offd[16] QDP_ALIGN16;
-	RComplex<REAL> v[8] QDP_ALIGN16;
-	RScalar<REAL>  diag_g[8] QDP_ALIGN16;
-	// Algorithm 4.1.2 LDL^\dagger Decomposition
-	// From Golub, van Loan 3rd ed, page 139
-	for(int i=0; i < N; i++) { 
-	  inv_d[i] = tri_diag[site][block][i];
-	}
-	for(int i=0; i < 15; i++) { 
-	  inv_offd[i]  =tri_off_diag[site][block][i];
-	}
-
-	for(int j=0; j < N; ++j) { 
-
-	  // Compute v(0:j-1)
-	  //
-	  // for i=0:j-2
-          //   v(i) = A(j,i) A(i,i)
-	  // end
-
-
-	  for(int i=0; i < j; i++) { 
-	    int elem_ji = j*(j-1)/2 + i;
-
-	    RComplex<REAL> A_ii = cmplx( inv_d[i], zip );
-	    v[i] = A_ii*adj(inv_offd[elem_ji]);
-	  }
-	  
-	  // v(j) = A(j,j) - A(j, 0:j-2) v(0:j-2)
-	  //                 ^ This is done with a loop over k ie:
-	  //
-	  // v(j) = A(j,j) - sum_k A*(j,k) v(k)     k=0...j-2
-	  //
-	  //      = A(j,j) - sum_k A*(j,k) A(j,k) A(k,k)
-	  //      = A(j,j) - sum_k | A(j,k) |^2 A(k,k)
- 
-	  v[j] = cmplx(inv_d[j],zip);
-
-	  for(int k=0; k < j; k++) { 
-	    int elem_jk = j*(j-1)/2 + k;
-	    v[j] -= inv_offd[elem_jk]*v[k];
-	  }
-	  
-
-	  // At this point in time v[j] has to be real, since
-	  // A(j,j) is from diag ie real and all | A(j,k) |^2 is real
-	  // as is A(k,k)
-	  
-	  // A(j,j) is the diagonal element - so store it.
-	  inv_d[j] = real( v[j] );
-
-	  // Last line of algorithm:
-	  // A( j+1 : n, j) = ( A(j+1:n, j) - A(j+1:n, 1:j-1)v(1:k-1) ) / v(j)
-	  //
-	  // use k as first colon notation and l as second so
-	  // 
-	  // for k=j+1 < n-1
-	  //      A(k,j) = A(k,j) ;
-	  //      for l=0 < j-1
-	  //         A(k,j) -= A(k, l) v(l)
-	  //      end
-	  //      A(k,j) /= v(j);
-	  //
-	  for(int k=j+1; k < N; k++) { 
-	    int elem_kj = k*(k-1)/2 + j;
-	    for(int l=0; l < j; l++) { 
-	      int elem_kl = k*(k-1)/2 + l;
-	      inv_offd[elem_kj] -= inv_offd[elem_kl] * v[l];
-	    }
-	    inv_offd[elem_kj] /= v[j];
-	  }
-	}
-
-	// Now fix up the inverse
-	RScalar<REAL> one;
-	one.elem() = (REAL)1;
-
-	for(int i=0; i < N; i++) { 
-	  diag_g[i] = one/inv_d[i];
-	
-	  // Compute the trace log
-	  // NB we are always doing trace log | A | 
-	  // (because we are always working with actually A^\dagger A
-	  //  even in one flavour case where we square root)
-	  tr_log_diag.elem(site).elem().elem().elem() += log(fabs(inv_d[i].elem()));
-	  // However, it is worth counting just the no of negative logdets
-	  // on site
-	  if( inv_d[i].elem() < 0 ) { 
-	    site_neg_logdet++;
-	  }
-	}
-	// Now we need to invert the L D L^\dagger 
-	// We can do this by solving:
-	//
-	//  L D L^\dagger M^{-1} = 1   
-	//
-	// This can be done by solving L D X = 1  (X = L^\dagger M^{-1})
-	//
-	// Then solving L^\dagger M^{-1} = X
-	//
-	// LD is lower diagonal and so X will also be lower diagonal.
-	// LD X = 1 can be solved by forward substitution.
-	//
-	// Likewise L^\dagger is strictly upper triagonal and so
-	// L^\dagger M^{-1} = X can be solved by forward substitution.
-	RComplex<REAL> sum;
-	for(int k = 0; k < N; ++k)
-	{
-	  for(int i = 0; i < k; ++i) {
-	    zero_rep(v[i]);
-	  }
-	  
-	  /*# Forward substitution */
-
-	  // The first element is the inverse of the diagonal
-	  v[k] = cmplx(diag_g[k],zip);
-      
-	  for(int i = k+1; i < N; ++i) {
-	    zero_rep(v[i]);
-
-	    for(int j = k; j < i; ++j) {
-	      int elem_ij = i*(i-1)/2+j;	
-
-	      // subtract l_ij*d_j*x_{kj}
-	      v[i] -= inv_offd[elem_ij] *inv_d[j]*v[j];
-
-	    }
-	
-	    // scale out by 1/d_i
-	    v[i] *= diag_g[i];
-	  }
-      
-	  /*# Backward substitution */
-	  // V[N-1] remains unchanged
-	  // Start from V[N-2]
-
-	  for(int i = N-2; (int)i >= (int)k; --i) {
-	    for(int j = i+1; j < N; ++j) {
-	      int elem_ji = j*(j-1)/2 + i;
-	      // Subtract terms of typ (l_ji)*x_kj
-	      v[i] -= adj(inv_offd[elem_ji]) * v[j];
-	    }
-	  }
-
-	  /*# Overwrite column k of invcl.offd */
-	  inv_d[k] = real(v[k]);
-	  for(int i = k+1; i < N; ++i)
-	  {
-	    int elem_ik = i*(i-1)/2+k;
-	    inv_offd[elem_ik] = v[i];
-	  }
-	}
-
-
-	// Overwrite original data
-	for(int i=0; i < N; i++) { 
-	  tri_diag[site][block][i] = inv_d[i];
-	}
-	for(int i=0; i < 15; i++) { 
-	  tri_off_diag[site][block][i] = inv_offd[i];
-	}
-      }
-
-      if( site_neg_logdet != 0 ) { 
-	// Report if site had odd number of negative terms. (-ve def)
-	std::cout << "WARNING: Odd number of negative terms in Clover DET (" 
-		  << site_neg_logdet<< ") at site: " << site << endl;
-      }
-    }
     
     // This comes from the days when we used to do Cholesky
     choles_done[cb] = true;
@@ -714,7 +724,7 @@ namespace Chroma
 
   
 
-
+#if 0
   /*! CHLCLOVMS - Cholesky decompose the clover mass term and uses it to
    *              compute  lower(A^-1) = lower((L.L^dag)^-1)
    *              Adapted from Golub and Van Loan, Matrix Computations, 2nd, Sec 4.2.4
@@ -725,6 +735,170 @@ namespace Chroma
    * \param logdet       logarithm of the determinant        (Write)
    * \param cb           checkerboard of work                (Read)
    */
+  namespace SSEDCloverEnv { 
+
+    typedef LDagDLInvArgs CholesArgs;
+
+    inline 
+    void cholesSiteLoop(int lo, int hi, int myId, CholesArgs* a)
+    {
+      LatticeReal& tr_log_diag = a->tr_log_diag;
+      PrimitiveClovDiag* tri_diag = a->tri_diag;
+      PrimitiveClovOffDiag* tri_off_diag = a->tri_off_diag;
+      int cb = a->cb;
+      int n = 2*Nc;
+
+      /*# Cholesky decompose  A = L.L^dag */
+      /*# NOTE!!: I can store this matrix in  invclov, but will need a */
+      /*#   temporary  diag */
+      for(int ssite=lo; ssite < hi; ++ssite)  {
+
+	int site = rb[cb].siteTable()[ssite];
+	
+	PrimitiveClovDiag  invclov_diag;
+	PrimitiveClovOffDiag  invclov_off_diag;
+	
+	multi1d< RScalar<REAL> > diag_g(n);
+	multi1d< RComplex<REAL> > v1(n);
+	RComplex<REAL> sum;
+	RScalar<REAL> one;
+	RScalar<REAL> zero;
+	RScalar<REAL> lrtmp;
+
+	one = 1;
+	zero = 0;
+	
+	for(int s = 0; s < 2; ++s) {
+
+	  int elem_jk = 0;
+	  int elem_ij;
+	  
+	  for(int j = 0; j <  n; ++j) {
+
+	    /*# Multiply clover mass term against basis vector.  */
+	    /*# Actually, I need a column of the lower triang matrix clov. */
+	    v1[j] = cmplx(tri_diag[site][s][j],zero);
+	    
+	    elem_ij = elem_jk + 2*j;
+	    
+	    for(int i = j+1; i < n; ++i) {
+
+	      v1[i] = tri_off_diag[site][s][elem_ij];
+	      elem_ij += i;
+	    }
+      
+	    /*# Back to cholesky */
+	    /*# forward substitute */
+	    for(int k = 0; k < j; ++k) {
+
+	      int elem_ik = elem_jk;
+	      
+	      for(int i = j; i < n; ++i) {
+
+		v1[i] -= adj(invclov_off_diag[s][elem_jk]) * invclov_off_diag[s][elem_ik];
+		elem_ik += i;
+	      }
+	      elem_jk++;
+	    }
+
+	    /*# The diagonal is (should be!!) real and positive */
+	    diag_g[j] = real(v1[j]);
+	  
+	    /*#+ */
+	    /*# Squeeze in computation of the trace log of the diagonal term */
+	    /*#- */
+	    if ( diag_g[j].elem() > 0 )  {
+
+	      lrtmp = log(diag_g[j]);
+	    }
+	    else {
+
+	      // Make sure any node can print this message
+	      cerr << "Clover term has negative diagonal element: "
+		   << "diag_g[" << j << "]= " << diag_g[j] 
+	         << " at site: " << site << endl;
+	      QDP_abort(1);
+	    }
+
+	    tr_log_diag.elem(site).elem().elem() += lrtmp;
+	  
+	    diag_g[j] = sqrt(diag_g[j]);
+	    diag_g[j] = one / diag_g[j];
+	    
+	    /*# backward substitute */
+	    elem_ij = elem_jk + j;
+	    for(int i = j+1; i < n; ++i) {
+
+	      invclov_off_diag[s][elem_ij] = v1[i] * diag_g[j];
+	      elem_ij += i;
+	    }
+	  }
+	  
+	  /*# Use forward and back substitution to construct  invcl.offd = lower(A^-1) */
+	  for(int k = 0; k < n; ++k) {
+
+	    for(int i = 0; i < k; ++i) {
+	      zero_rep(v1[i]);
+	  
+	      /*# Forward substitution */
+	      v1[k] = cmplx(diag_g[k],zero);
+      
+	      for(int i = k+1; i < n; ++i) {
+
+		zero_rep(sum);
+		elem_ij = i*(i-1)/2+k;	
+		for(int j = k; j < i; ++j) {
+
+		  sum -= invclov_off_diag[s][elem_ij] * v1[j];
+		  elem_ij++;
+		}
+	
+		v1[i] = sum * diag_g[i];
+	      }
+      
+	      /*# Backward substitution */
+	      v1[n-1] = v1[n-1] * diag_g[n-1];
+     
+	      for(int i = n-2; (int)i >= (int)k; --i) {
+
+		sum = v1[i];
+		
+		int elem_ji = ((i+1)*i)/2+i;
+		for(int j = i+1; j < n; ++j) {
+
+		  sum -= adj(invclov_off_diag[s][elem_ji]) * v1[j];
+		  elem_ji += j;
+		}
+		v1[i] = sum * diag_g[i];
+	      }
+
+	      /*# Overwrite column k of invcl.offd */
+	      invclov_diag[s][k] = real(v1[k]);
+
+	      int elem_ik = ((k+1)*k)/2+k;
+      
+	      for(int i = k+1; i < n; ++i) {
+
+		invclov_off_diag[s][elem_ik] = v1[i];
+		elem_ik += i;
+	      }
+	    }
+	  }
+
+	  // Overwrite original element
+	  for(int s=0; s < 2; s++) { 
+	    for(int i=0; i < 6; i++) { 
+	      tri_diag[site][s][i] = invclov_diag[s][i];
+	    }
+	    for(int i=0; i < 15; i++) {
+	      tri_off_diag[site][s][i] = invclov_off_diag[s][i];
+	    }
+	  }
+	}
+      }
+    } // End function
+  } // End Namespace
+
   void SSEDCloverTerm::chlclovms(LatticeReal& tr_log_diag, int cb)
   {
     START_CODE();
@@ -733,162 +907,12 @@ namespace Chroma
       QDP_error_exit("Matrix is too small", Nc, Ns);
   
     tr_log_diag = zero;
-  
-    int n = 2*Nc;
-
-    /*# Cholesky decompose  A = L.L^dag */
-    /*# NOTE!!: I can store this matrix in  invclov, but will need a */
-    /*#   temporary  diag */
-    for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-    {
-      int site = rb[cb].siteTable()[ssite];
-
-      PrimitiveClovDiag  invclov_diag;
-      PrimitiveClovOffDiag  invclov_off_diag;
-
-      multi1d< RScalar<REAL> > diag_g(n);
-      multi1d< RComplex<REAL> > v1(n);
-      RComplex<REAL> sum;
-      RScalar<REAL> one;
-      RScalar<REAL> zero;
-      RScalar<REAL> lrtmp;
-
-      one = 1;
-      zero = 0;
-  
-      for(int s = 0; s < 2; ++s)
-      {
-	int elem_jk = 0;
-	int elem_ij;
-	
-	for(int j = 0; j <  n; ++j)
-	{
-	  /*# Multiply clover mass term against basis vector.  */
-	  /*# Actually, I need a column of the lower triang matrix clov. */
-	  v1[j] = cmplx(tri_diag[site][s][j],zero);
-    
-	  elem_ij = elem_jk + 2*j;
-      
-	  for(int i = j+1; i < n; ++i)
-	  {
-	    v1[i] = tri_off_diag[site][s][elem_ij];
-	    elem_ij += i;
-	  }
-      
-	  /*# Back to cholesky */
-	  /*# forward substitute */
-	  for(int k = 0; k < j; ++k)
-	  {
-	    int elem_ik = elem_jk;
-	
-	    for(int i = j; i < n; ++i)
-	    {
-	      v1[i] -= adj(invclov_off_diag[s][elem_jk]) * invclov_off_diag[s][elem_ik];
-	      elem_ik += i;
-	    }
-	    elem_jk++;
-	  }
-
-	  /*# The diagonal is (should be!!) real and positive */
-	  diag_g[j] = real(v1[j]);
-	  
-	  /*#+ */
-	  /*# Squeeze in computation of the trace log of the diagonal term */
-	  /*#- */
-	  if ( diag_g[j].elem() > 0 ) 
-          { 
-	    lrtmp = log(diag_g[j]);
-	  }
-	  else
-          { 
-            // Make sure any node can print this message
-	    cerr << "Clover term has negative diagonal element: "
-	         << "diag_g[" << j << "]= " << diag_g[j] 
-	         << " at site: " << site << endl;
-	    QDP_abort(1);
-	  }
-
-	  tr_log_diag.elem(site).elem().elem() += lrtmp;
-	  
-	  diag_g[j] = sqrt(diag_g[j]);
-	  diag_g[j] = one / diag_g[j];
-      
-	  /*# backward substitute */
-	  elem_ij = elem_jk + j;
-	  for(int i = j+1; i < n; ++i)
-	  {
-	    invclov_off_diag[s][elem_ij] = v1[i] * diag_g[j];
-	    elem_ij += i;
-	  }
-	}
-
-	/*# Use forward and back substitution to construct  invcl.offd = lower(A^-1) */
-	for(int k = 0; k < n; ++k)
-	{
-	  for(int i = 0; i < k; ++i)
-	    zero_rep(v1[i]);
-	  
-	  /*# Forward substitution */
-	  v1[k] = cmplx(diag_g[k],zero);
-      
-	  for(int i = k+1; i < n; ++i)
-	  {
-	    zero_rep(sum);
-	    elem_ij = i*(i-1)/2+k;	
-	    for(int j = k; j < i; ++j)
-	    {
-	      sum -= invclov_off_diag[s][elem_ij] * v1[j];
-	      elem_ij++;
-	    }
-	
-	    v1[i] = sum * diag_g[i];
-	  }
-      
-	  /*# Backward substitution */
-	  v1[n-1] = v1[n-1] * diag_g[n-1];
-     
-	  for(int i = n-2; (int)i >= (int)k; --i)
-	  {
-	    sum = v1[i];
-	    
-	    int elem_ji = ((i+1)*i)/2+i;
-	    for(int j = i+1; j < n; ++j)
-	    {
-	      sum -= adj(invclov_off_diag[s][elem_ji]) * v1[j];
-	      elem_ji += j;
-	    }
-	    v1[i] = sum * diag_g[i];
-	  }
-
-	  /*# Overwrite column k of invcl.offd */
-	  invclov_diag[s][k] = real(v1[k]);
-
-	  int elem_ik = ((k+1)*k)/2+k;
-      
-	  for(int i = k+1; i < n; ++i)
-	  {
-	    invclov_off_diag[s][elem_ik] = v1[i];
-	    elem_ik += i;
-	  }
-	}
-      }
-
-      // Overwrite original element
-      for(int s=0; s < 2; s++) { 
-	for(int i=0; i < 6; i++) { 
-	  tri_diag[site][s][i] = invclov_diag[s][i];
-	}
-	for(int i=0; i < 15; i++) {
-	  tri_off_diag[site][s][i] = invclov_off_diag[s][i];
-	}
-      }
-    }
-  
-  
+    SSEDCloverEnv::CholesArgs a = { tr_log_diag, tri_diag, tri_off_diag, cb };
+    dispatch_to_threads(rb[cb].numSiteTable(), a, SSEDCloverEnv::cholesSiteLoop);
     choles_done[cb] = true;
     END_CODE();
   }
-
+#endif
 
   /**
    * Apply a dslash
@@ -907,6 +931,8 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb      Checkerboard of OUTPUT vector               (Read) 
    */
+
+
   void SSEDCloverTerm::apply(LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign, int cb) const
   {

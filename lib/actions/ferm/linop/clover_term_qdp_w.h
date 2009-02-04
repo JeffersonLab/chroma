@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.7 2009-02-04 15:20:31 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.8 2009-02-04 21:16:03 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -126,15 +126,6 @@ namespace Chroma
     multi1d<PrimitiveClovTriang>  tri;
     
   };
-
-  struct QDPCloverApplyStruct { 
-    LatticeFermion& chi;
-    const LatticeFermion& psi;
-    const multi1d<PrimitiveClovTriang>& tri;
-    int cb;
-  };
-  
-  void QDPCloverDispatchFunction(int lo, int hi, int myId, QDPCloverApplyStruct* a);
 
 
  
