@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_ssed.h,v 1.2 2009-02-03 21:30:16 bjoo Exp $
+// $Id: clover_term_ssed.h,v 1.3 2009-02-05 15:19:15 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -127,31 +127,6 @@ namespace Chroma
     PrimitiveClovOffDiag *       tri_off_diag;
   };
 
-
-  struct SSEDCloverApplyStruct { 
-    LatticeFermion* chi;
-    LatticeFermion* psi;
-    PrimitiveClovOffDiag* tri_off;
-    PrimitiveClovDiag* tri_diag;
-    int cb;
-  };
-  
-  extern void ssed_clover_apply(REAL64* diag, REAL64* offd, REAL64* psiptr, REAL64* chiptr, int n_sites);
-
-  // Dispatch function for threading
-  inline
-  void EOCloverDispatchFunction(int lo, int hi, int myID, 
-			      SSEDCloverApplyStruct* a)
-  {
-    int n_4vec=hi-lo;
-    int start=rb[ a->cb ].start()+lo;
-  
-    REAL64* chiptr = (REAL64 *)&( a->chi->elem(start).elem(0).elem(0).real());
-    REAL64* psiptr = (REAL64 *)&( a->psi->elem(start).elem(0).elem(0).real());
-    REAL64* offd = (REAL64 *)&(a->tri_off[start][0][0].real());
-    REAL64* diag = (REAL64 *)&(a->tri_diag[start][0][0].elem());
-    ssed_clover_apply(diag, offd, psiptr, chiptr, n_4vec);
-  }
 
   
 } // End Namespace Chroma

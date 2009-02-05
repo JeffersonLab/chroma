@@ -1,4 +1,4 @@
-// $Id: clover_term_ssed.cc,v 1.3 2009-02-04 21:16:03 bjoo Exp $
+// $Id: clover_term_ssed.cc,v 1.4 2009-02-05 15:19:15 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -490,10 +490,17 @@ namespace Chroma
       QDPIO::cout << "You sure you shouldn't be asking invclov?" << endl;
       QDP_abort(1);
     }
+LatticeReal ff=tr_log_diag_;
 
+    if( param.sub_zero_usedP ) { 
+ 	QDPIO::cout << "Subtracting "<< param.sub_zero<<endl;
+	LatticeReal tmp;
+	tmp[rb[cb]] = param.sub_zero;
+	ff[rb[cb]] -= tmp;
+    }
     END_CODE();
 
-    return sum(tr_log_diag_, rb[cb]);
+    return sum(ff, rb[cb]);
   }    
 
 
@@ -722,197 +729,6 @@ namespace Chroma
     END_CODE();
   }
 
-  
-
-#if 0
-  /*! CHLCLOVMS - Cholesky decompose the clover mass term and uses it to
-   *              compute  lower(A^-1) = lower((L.L^dag)^-1)
-   *              Adapted from Golub and Van Loan, Matrix Computations, 2nd, Sec 4.2.4
-   *
-   * Arguments:
-   *
-   * \param DetP         flag whether to compute determinant (Read)
-   * \param logdet       logarithm of the determinant        (Write)
-   * \param cb           checkerboard of work                (Read)
-   */
-  namespace SSEDCloverEnv { 
-
-    typedef LDagDLInvArgs CholesArgs;
-
-    inline 
-    void cholesSiteLoop(int lo, int hi, int myId, CholesArgs* a)
-    {
-      LatticeReal& tr_log_diag = a->tr_log_diag;
-      PrimitiveClovDiag* tri_diag = a->tri_diag;
-      PrimitiveClovOffDiag* tri_off_diag = a->tri_off_diag;
-      int cb = a->cb;
-      int n = 2*Nc;
-
-      /*# Cholesky decompose  A = L.L^dag */
-      /*# NOTE!!: I can store this matrix in  invclov, but will need a */
-      /*#   temporary  diag */
-      for(int ssite=lo; ssite < hi; ++ssite)  {
-
-	int site = rb[cb].siteTable()[ssite];
-	
-	PrimitiveClovDiag  invclov_diag;
-	PrimitiveClovOffDiag  invclov_off_diag;
-	
-	multi1d< RScalar<REAL> > diag_g(n);
-	multi1d< RComplex<REAL> > v1(n);
-	RComplex<REAL> sum;
-	RScalar<REAL> one;
-	RScalar<REAL> zero;
-	RScalar<REAL> lrtmp;
-
-	one = 1;
-	zero = 0;
-	
-	for(int s = 0; s < 2; ++s) {
-
-	  int elem_jk = 0;
-	  int elem_ij;
-	  
-	  for(int j = 0; j <  n; ++j) {
-
-	    /*# Multiply clover mass term against basis vector.  */
-	    /*# Actually, I need a column of the lower triang matrix clov. */
-	    v1[j] = cmplx(tri_diag[site][s][j],zero);
-	    
-	    elem_ij = elem_jk + 2*j;
-	    
-	    for(int i = j+1; i < n; ++i) {
-
-	      v1[i] = tri_off_diag[site][s][elem_ij];
-	      elem_ij += i;
-	    }
-      
-	    /*# Back to cholesky */
-	    /*# forward substitute */
-	    for(int k = 0; k < j; ++k) {
-
-	      int elem_ik = elem_jk;
-	      
-	      for(int i = j; i < n; ++i) {
-
-		v1[i] -= adj(invclov_off_diag[s][elem_jk]) * invclov_off_diag[s][elem_ik];
-		elem_ik += i;
-	      }
-	      elem_jk++;
-	    }
-
-	    /*# The diagonal is (should be!!) real and positive */
-	    diag_g[j] = real(v1[j]);
-	  
-	    /*#+ */
-	    /*# Squeeze in computation of the trace log of the diagonal term */
-	    /*#- */
-	    if ( diag_g[j].elem() > 0 )  {
-
-	      lrtmp = log(diag_g[j]);
-	    }
-	    else {
-
-	      // Make sure any node can print this message
-	      cerr << "Clover term has negative diagonal element: "
-		   << "diag_g[" << j << "]= " << diag_g[j] 
-	         << " at site: " << site << endl;
-	      QDP_abort(1);
-	    }
-
-	    tr_log_diag.elem(site).elem().elem() += lrtmp;
-	  
-	    diag_g[j] = sqrt(diag_g[j]);
-	    diag_g[j] = one / diag_g[j];
-	    
-	    /*# backward substitute */
-	    elem_ij = elem_jk + j;
-	    for(int i = j+1; i < n; ++i) {
-
-	      invclov_off_diag[s][elem_ij] = v1[i] * diag_g[j];
-	      elem_ij += i;
-	    }
-	  }
-	  
-	  /*# Use forward and back substitution to construct  invcl.offd = lower(A^-1) */
-	  for(int k = 0; k < n; ++k) {
-
-	    for(int i = 0; i < k; ++i) {
-	      zero_rep(v1[i]);
-	  
-	      /*# Forward substitution */
-	      v1[k] = cmplx(diag_g[k],zero);
-      
-	      for(int i = k+1; i < n; ++i) {
-
-		zero_rep(sum);
-		elem_ij = i*(i-1)/2+k;	
-		for(int j = k; j < i; ++j) {
-
-		  sum -= invclov_off_diag[s][elem_ij] * v1[j];
-		  elem_ij++;
-		}
-	
-		v1[i] = sum * diag_g[i];
-	      }
-      
-	      /*# Backward substitution */
-	      v1[n-1] = v1[n-1] * diag_g[n-1];
-     
-	      for(int i = n-2; (int)i >= (int)k; --i) {
-
-		sum = v1[i];
-		
-		int elem_ji = ((i+1)*i)/2+i;
-		for(int j = i+1; j < n; ++j) {
-
-		  sum -= adj(invclov_off_diag[s][elem_ji]) * v1[j];
-		  elem_ji += j;
-		}
-		v1[i] = sum * diag_g[i];
-	      }
-
-	      /*# Overwrite column k of invcl.offd */
-	      invclov_diag[s][k] = real(v1[k]);
-
-	      int elem_ik = ((k+1)*k)/2+k;
-      
-	      for(int i = k+1; i < n; ++i) {
-
-		invclov_off_diag[s][elem_ik] = v1[i];
-		elem_ik += i;
-	      }
-	    }
-	  }
-
-	  // Overwrite original element
-	  for(int s=0; s < 2; s++) { 
-	    for(int i=0; i < 6; i++) { 
-	      tri_diag[site][s][i] = invclov_diag[s][i];
-	    }
-	    for(int i=0; i < 15; i++) {
-	      tri_off_diag[site][s][i] = invclov_off_diag[s][i];
-	    }
-	  }
-	}
-      }
-    } // End function
-  } // End Namespace
-
-  void SSEDCloverTerm::chlclovms(LatticeReal& tr_log_diag, int cb)
-  {
-    START_CODE();
-
-    if ( 2*Nc < 3 )
-      QDP_error_exit("Matrix is too small", Nc, Ns);
-  
-    tr_log_diag = zero;
-    SSEDCloverEnv::CholesArgs a = { tr_log_diag, tri_diag, tri_off_diag, cb };
-    dispatch_to_threads(rb[cb].numSiteTable(), a, SSEDCloverEnv::cholesSiteLoop);
-    choles_done[cb] = true;
-    END_CODE();
-  }
-#endif
 
   /**
    * Apply a dslash
@@ -931,7 +747,53 @@ namespace Chroma
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    * \param cb      Checkerboard of OUTPUT vector               (Read) 
    */
+  extern void ssed_clover_apply(REAL64* diag, REAL64* offd, REAL64* psiptr, REAL64* chiptr, int n_sites);
 
+  namespace SSEDCloverEnv{
+    struct ApplyArgs { 
+      LatticeFermion& chi;
+      const LatticeFermion& psi;
+      PrimitiveClovOffDiag* tri_off;
+      PrimitiveClovDiag* tri_diag;
+      int cb;
+    };
+
+    // Dispatch function for threading
+    inline
+    void orderedApplySiteLoop(int lo, int hi, int myID, 
+			      ApplyArgs* a)
+    {
+      int n_4vec=hi-lo;
+      int start=rb[ a->cb ].start()+lo;
+      
+      REAL64* chiptr = (REAL64 *)&( a->chi.elem(start).elem(0).elem(0).real());
+      REAL64* psiptr = (REAL64 *)&( a->psi.elem(start).elem(0).elem(0).real());
+      REAL64* offd = (REAL64 *)&(a->tri_off[start][0][0].real());
+      REAL64* diag = (REAL64 *)&(a->tri_diag[start][0][0].elem());
+      ssed_clover_apply(diag, offd, psiptr, chiptr, n_4vec);
+    }
+
+    inline 
+    void unorderedApplySiteLoop(int lo, int hi, int myId, ApplyArgs* a)
+    {
+      int cb = a->cb;
+      const multi1d<int>& tab = rb[cb].siteTable();
+
+
+      for(int ssite=lo; ssite < hi; ++ssite) {
+	
+	int site = tab[ssite];
+	unsigned long n_sites=1;
+		
+	REAL64* chiptr = (REAL64 *)&( a->chi.elem(site).elem(0).elem(0).real());
+	REAL64* psiptr = (REAL64 *)&(a->psi.elem(site).elem(0).elem(0).real());
+	REAL64* offd = (REAL64 *)&(a->tri_off[site][0][0].real());
+	REAL64* diag = (REAL64 *)&(a->tri_diag[site][0][0].elem());
+	ssed_clover_apply(diag, offd, psiptr, chiptr, n_sites);
+	
+      }
+    }
+  }
 
   void SSEDCloverTerm::apply(LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign, int cb) const
@@ -943,58 +805,18 @@ namespace Chroma
 
     int n = 2*Nc;
 
+    SSEDCloverEnv::ApplyArgs a = {chi, psi, tri_off_diag, tri_diag,cb};
     
     if( rb[cb].hasOrderedRep() ) {
 
-#if 0
-      // unsigned int start = rb[cb].start();
-      // unsigned long n_sites = rb[cb].siteTable().size();
-      int start = rb[cb].start();
-      unsigned long n_sites=rb[cb].siteTable().size();
-#if 0
-      //Testing code do only one site
-      unsigned long n_sites =1;
-#endif
-      // Need to unroll over sites, so instead of having : site, struct { diag, offdiag } 
-      // we have site,diag,  and site, offdiag arrays
-      //
-
-      REAL64* chiptr = (REAL64 *)&( chi.elem(start).elem(0).elem(0).real());
-      REAL64* psiptr = (REAL64 *)&(psi.elem(start).elem(0).elem(0).real());
-      REAL64* offd = (REAL64 *)&(tri_off_diag[start][0][0].real());
-      REAL64* diag = (REAL64 *)&(tri_diag[start][0][0].elem());
-      ssed_clover_apply(diag, offd, psiptr, chiptr, n_sites);
-#endif
-
-      SSEDCloverApplyStruct a;
-      a.chi = (LatticeFermion*)&chi;
-      a.psi = (LatticeFermion*)&psi;
-      a.tri_off = tri_off_diag;
-      a.tri_diag = tri_diag;
-      a.cb = cb;
-
-      dispatch_to_threads(rb[cb].siteTable().size(), a, EOCloverDispatchFunction);
+      dispatch_to_threads(rb[cb].siteTable().size(), a, 
+			  SSEDCloverEnv::orderedApplySiteLoop);
 
       
     }
     else {
-      const multi1d<int>& tab = rb[cb].siteTable();
-
-
-      for(int ssite=0; ssite < tab.size(); ++ssite) {
-	
-	int site = tab[ssite];
-	unsigned long n_sites=1;
-	// RComplex<REAL>* cchi = (RComplex<REAL>*)&(chi.elem(site).elem(0).elem(0));
-	// const RComplex<REAL>* ppsi = (const RComplex<REAL>*)&(psi.elem(site).elem(0).elem(0));
-	
-	REAL64* chiptr = (REAL64 *)&( chi.elem(site).elem(0).elem(0).real());
-	REAL64* psiptr = (REAL64 *)&(psi.elem(site).elem(0).elem(0).real());
-	REAL64* offd = (REAL64 *)&(tri_off_diag[site][0][0].real());
-	REAL64* diag = (REAL64 *)&(tri_diag[site][0][0].elem());
-	ssed_clover_apply(diag, offd, psiptr, chiptr, n_sites);
-	
-      }
+      dispatch_to_threads(rb[cb].siteTable().size(), a, 
+			  SSEDCloverEnv::unorderedApplySiteLoop);
     }
 
     getFermBC().modifyF(chi, QDP::rb[cb]);
@@ -1156,6 +978,309 @@ namespace Chroma
    *  \param clov      clover term                        (Read) 
    *  \param mat       label of the Gamma matrix          (Read)
    */
+
+  namespace SSEDCloverEnv {
+    struct TriaCntrArgs { 
+      LatticeColorMatrix& B;
+      PrimitiveClovDiag* tri_diag;
+      PrimitiveClovOffDiag* tri_off;
+      int mat;
+      int cb;
+    };
+  
+
+    inline 
+    void triaCntrSiteLoop(int lo, int hi, int myId, TriaCntrArgs* a) 
+    {
+      PrimitiveClovDiag* tri_diag = a->tri_diag;
+      PrimitiveClovOffDiag* tri_off_diag = a->tri_off;
+      LatticeColorMatrix& B = a->B;
+      int mat = a->mat;
+      int cb = a->cb;
+
+
+      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) {
+      
+	int site = rb[cb].siteTable()[ssite];
+	
+	switch( mat ) {
+
+	case 0:
+	  /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
+	  /*#               0  1  0  0 */
+	  /*#               0  0  1  0 */
+	  /*#               0  0  0  1 */
+	  /*# From diagonal part */
+	  {
+	    RComplex<REAL> lctmp0;
+	    RScalar<REAL> lr_zero0;
+	    RScalar<REAL> lrtmp0;
+	    
+	    lr_zero0 = 0;
+	    
+	    for(int i0 = 0; i0 < Nc; ++i0) {
+	      lrtmp0 = tri_diag[site][0][i0];
+	      lrtmp0 += tri_diag[site][0][i0+Nc];
+	      lrtmp0 += tri_diag[site][1][i0];
+	      lrtmp0 += tri_diag[site][1][i0+Nc];
+	      B.elem(site).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
+	    }
+	    
+	    /*# From lower triangular portion */
+	    int elem_ij0 = 0;
+	    for(int i0 = 1; i0 < Nc; ++i0) {
+	      
+	      int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
+	      
+	      for(int j0 = 0; j0 < i0; ++j0) {
+		
+		lctmp0 = tri_off_diag[site][0][elem_ij0];
+		lctmp0 += tri_off_diag[site][0][elem_ijb0];
+		lctmp0 += tri_off_diag[site][1][elem_ij0];
+		lctmp0 += tri_off_diag[site][1][elem_ijb0];
+		
+		B.elem(site).elem().elem(j0,i0) = lctmp0;
+		B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
+		
+		
+		elem_ij0++;
+		elem_ijb0++;
+	      }
+	    }
+	  }
+	  break;
+	  
+	case 3:
+	  /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
+	  /*#               0  i  0  0 */
+	  /*#               0  0 -i  0 */
+	  /*#               0  0  0  i */
+	  /*# From diagonal part */
+	  {
+	    
+	    RComplex<REAL> lctmp3;
+	    RScalar<REAL> lr_zero3;
+	    RScalar<REAL> lrtmp3;
+	    
+	    lr_zero3 = 0;
+	    
+	    for(int i3 = 0; i3 < Nc; ++i3) {
+	      
+	      lrtmp3 = tri_diag[site][0][i3+Nc];
+	      lrtmp3 -= tri_diag[site][0][i3];
+	      lrtmp3 -= tri_diag[site][1][i3];
+	      lrtmp3 += tri_diag[site][1][i3+Nc];
+	      B.elem(site).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
+	    }
+	    
+	    /*# From lower triangular portion */
+	    int elem_ij3 = 0;
+	    for(int i3 = 1; i3 < Nc; ++i3) {
+	      
+	      int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
+	      
+	      for(int j3 = 0; j3 < i3; ++j3) {
+		
+		lctmp3 = tri_off_diag[site][0][elem_ijb3];
+		lctmp3 -= tri_off_diag[site][0][elem_ij3];
+		lctmp3 -= tri_off_diag[site][1][elem_ij3];
+		lctmp3 += tri_off_diag[site][1][elem_ijb3];
+		
+		B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
+		B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
+		
+		elem_ij3++;
+		elem_ijb3++;
+	      }
+	    }
+	  }
+	  break;
+	  
+	case 5:
+	  /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
+	  /*#               1  0  0  0 */
+	  /*#               0  0  0 -1 */
+	  /*#               0  0  1  0 */
+	  {
+	    
+	    
+	    RComplex<REAL> lctmp5;
+	    RScalar<REAL> lrtmp5;
+	    
+	    for(int i5 = 0; i5 < Nc; ++i5) {
+	      
+	      int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
+	      
+	      for(int j5 = 0; j5 < Nc; ++j5) {
+		
+		int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
+		
+		
+		lctmp5 = adj(tri_off_diag[site][0][elem_ji5]);
+		lctmp5 -= tri_off_diag[site][0][elem_ij5];
+		lctmp5 += adj(tri_off_diag[site][1][elem_ji5]);
+		lctmp5 -= tri_off_diag[site][1][elem_ij5];
+		
+		
+		B.elem(site).elem().elem(i5,j5) = lctmp5;
+		
+		elem_ij5++;
+	      }
+	    }
+	  }
+	  break;
+	  
+	case 6:
+	  /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
+	  /*#              -i  0  0  0 */
+	  /*#               0  0  0 -i */
+	  /*#               0  0 -i  0 */
+	  {
+	    
+	    RComplex<REAL> lctmp6;
+	    RScalar<REAL> lrtmp6;
+	    
+	    for(int i6 = 0; i6 < Nc; ++i6) {
+	      
+	      int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
+	      
+	      for(int j6 = 0; j6 < Nc; ++j6) {
+		
+		int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
+		
+		lctmp6 = adj(tri_off_diag[site][0][elem_ji6]);
+		lctmp6 += tri_off_diag[site][0][elem_ij6];
+		lctmp6 += adj(tri_off_diag[site][1][elem_ji6]);
+		lctmp6 += tri_off_diag[site][1][elem_ij6];
+		
+		B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
+		
+		elem_ij6++;
+	      }
+	    }
+	  }
+	  break;
+	  
+	case 9:
+	  /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
+	  /*#               i  0  0  0 */
+	  /*#               0  0  0 -i */
+	  /*#               0  0 -i  0 */
+	  {
+	    RComplex<REAL> lctmp9;
+	    RScalar<REAL> lrtmp9;
+	    
+	    for(int i9 = 0; i9 < Nc; ++i9) {
+	      
+	      int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
+	      
+	      for(int j9 = 0; j9 < Nc; ++j9) {
+		
+		int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
+		
+		lctmp9 = adj(tri_off_diag[site][0][elem_ji9]);
+		lctmp9 += tri_off_diag[site][0][elem_ij9];
+		lctmp9 -= adj(tri_off_diag[site][1][elem_ji9]);
+		lctmp9 -= tri_off_diag[site][1][elem_ij9];
+		
+		B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
+		
+		elem_ij9++;
+	      }
+	    }
+	  }
+	  break;
+	  
+	case 10:
+	/*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
+	/*#               1  0  0  0 */
+	/*#               0  0  0  1 */
+	/*#               0  0 -1  0 */
+	  {
+	    
+	    RComplex<REAL> lctmp10;
+	    RScalar<REAL> lrtmp10;
+	    
+	    for(int i10 = 0; i10 < Nc; ++i10) {
+	      
+	      int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2; 
+		
+	      for(int j10 = 0; j10 < Nc; ++j10) {
+		
+		int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
+		
+		lctmp10 = adj(tri_off_diag[site][0][elem_ji10]);
+		lctmp10 -= tri_off_diag[site][0][elem_ij10];
+		lctmp10 -= adj(tri_off_diag[site][1][elem_ji10]);
+		lctmp10 += tri_off_diag[site][1][elem_ij10];
+		
+		B.elem(site).elem().elem(i10,j10) = lctmp10;
+		
+		elem_ij10++;
+	      }
+	    }
+	  }
+	  
+	  break;
+	  
+	case 12:
+	  /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
+	  /*#               0 -i  0  0 */
+	  /*#               0  0 -i  0 */
+	  /*#               0  0  0  i */
+	  /*# From diagonal part */
+	  {
+	  
+	  
+	    RComplex<REAL> lctmp12;
+	    RScalar<REAL> lr_zero12;
+	    RScalar<REAL> lrtmp12;
+	    
+	    lr_zero12 = 0;
+	    
+	    for(int i12 = 0; i12 < Nc; ++i12) {
+	      
+	      lrtmp12 = tri_diag[site][0][i12];
+	      lrtmp12 -= tri_diag[site][0][i12+Nc];
+	      lrtmp12 -= tri_diag[site][1][i12];
+	      lrtmp12 += tri_diag[site][1][i12+Nc];
+	      B.elem(site).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
+	    }
+	    
+	    /*# From lower triangular portion */
+	    int elem_ij12 = 0;
+	    for(int i12 = 1; i12 < Nc; ++i12) {
+	      
+	      int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
+	      
+	      for(int j12 = 0; j12 < i12; ++j12) {
+		
+		lctmp12 = tri_off_diag[site][0][elem_ij12];
+		lctmp12 -= tri_off_diag[site][0][elem_ijb12];
+		lctmp12 -= tri_off_diag[site][1][elem_ij12];
+		lctmp12 += tri_off_diag[site][1][elem_ijb12];
+		
+		B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
+		B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
+		
+		elem_ij12++;
+		elem_ijb12++;
+	      }
+	    }
+	  }
+	  break;
+	
+	default:
+	  {
+	    B = zero;
+	    QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
+	  }
+	} // End Switch
+	
+      } // End Site Loop.
+    } // End Function
+  } // End Namespace 
+
   void SSEDCloverTerm::triacntr(LatticeColorMatrix& B, int mat, int cb) const
   {
     START_CODE();
@@ -1167,294 +1292,10 @@ namespace Chroma
       QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
       QDP_abort(1);
     }
-  
-    switch( mat )
-    {
-    case 0:
-      /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
-      /*#               0  1  0  0 */
-      /*#               0  0  1  0 */
-      /*#               0  0  0  1 */
-      /*# From diagonal part */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp0;
-	RScalar<REAL> lr_zero0;
-	RScalar<REAL> lrtmp0;
-  
-	lr_zero0 = 0;
-  
-	for(int i0 = 0; i0 < Nc; ++i0)
-	{
-	  lrtmp0 = tri_diag[site][0][i0];
-	  lrtmp0 += tri_diag[site][0][i0+Nc];
-	  lrtmp0 += tri_diag[site][1][i0];
-	  lrtmp0 += tri_diag[site][1][i0+Nc];
-	  B.elem(site).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
-	}
-
-	/*# From lower triangular portion */
-	int elem_ij0 = 0;
-	for(int i0 = 1; i0 < Nc; ++i0)
-	{
-	  int elem_ijb0 = (i0+Nc)*(i0+Nc-1)/2 + Nc;
-
-	  for(int j0 = 0; j0 < i0; ++j0)
-	  {
-	    lctmp0 = tri_off_diag[site][0][elem_ij0];
-	    lctmp0 += tri_off_diag[site][0][elem_ijb0];
-	    lctmp0 += tri_off_diag[site][1][elem_ij0];
-	    lctmp0 += tri_off_diag[site][1][elem_ijb0];
-
-	    B.elem(site).elem().elem(j0,i0) = lctmp0;
-	    B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
-
-
-	    elem_ij0++;
-	    elem_ijb0++;
-	  }
-	}
-      }
-      break;
-
-    case 3:
-      /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
-      /*#               0  i  0  0 */
-      /*#               0  0 -i  0 */
-      /*#               0  0  0  i */
-      /*# From diagonal part */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp3;
-	RScalar<REAL> lr_zero3;
-	RScalar<REAL> lrtmp3;
-                          
-	lr_zero3 = 0;
-  
-	for(int i3 = 0; i3 < Nc; ++i3)
-	{
-	  lrtmp3 = tri_diag[site][0][i3+Nc];
-	  lrtmp3 -= tri_diag[site][0][i3];
-	  lrtmp3 -= tri_diag[site][1][i3];
-	  lrtmp3 += tri_diag[site][1][i3+Nc];
-	  B.elem(site).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
-	}
-	
-	/*# From lower triangular portion */
-	int elem_ij3 = 0;
-	for(int i3 = 1; i3 < Nc; ++i3)
-	{
-	  int elem_ijb3 = (i3+Nc)*(i3+Nc-1)/2 + Nc;
-
-	  for(int j3 = 0; j3 < i3; ++j3)
-	  {
-	    lctmp3 = tri_off_diag[site][0][elem_ijb3];
-	    lctmp3 -= tri_off_diag[site][0][elem_ij3];
-	    lctmp3 -= tri_off_diag[site][1][elem_ij3];
-	    lctmp3 += tri_off_diag[site][1][elem_ijb3];
-
-	    B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
-	    B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
-	    
-	    elem_ij3++;
-	    elem_ijb3++;
-	  }
-	}
-      }
-      break;
-
-    case 5:
-      /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
-      /*#               1  0  0  0 */
-      /*#               0  0  0 -1 */
-      /*#               0  0  1  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp5;
-	RScalar<REAL> lrtmp5;
-                          
-	for(int i5 = 0; i5 < Nc; ++i5)
-	{
-	  int elem_ij5 = (i5+Nc)*(i5+Nc-1)/2;
-
-	  for(int j5 = 0; j5 < Nc; ++j5)
-	  {
-	    int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
-
-	  
-	    lctmp5 = adj(tri_off_diag[site][0][elem_ji5]);
-	    lctmp5 -= tri_off_diag[site][0][elem_ij5];
-	    lctmp5 += adj(tri_off_diag[site][1][elem_ji5]);
-	    lctmp5 -= tri_off_diag[site][1][elem_ij5];
-
-
-	    B.elem(site).elem().elem(i5,j5) = lctmp5;
-
-	    elem_ij5++;
-	  }
-	}
-      }
-      break;
-
-    case 6:
-      /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
-      /*#              -i  0  0  0 */
-      /*#               0  0  0 -i */
-      /*#               0  0 -i  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp6;
-	RScalar<REAL> lrtmp6;
-                          
-	for(int i6 = 0; i6 < Nc; ++i6)
-	{
-	  int elem_ij6 = (i6+Nc)*(i6+Nc-1)/2;
-
-	  for(int j6 = 0; j6 < Nc; ++j6)
-	  {
-	    int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
-
-	    lctmp6 = adj(tri_off_diag[site][0][elem_ji6]);
-	    lctmp6 += tri_off_diag[site][0][elem_ij6];
-	    lctmp6 += adj(tri_off_diag[site][1][elem_ji6]);
-	    lctmp6 += tri_off_diag[site][1][elem_ij6];
-
-	    B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
-
-	    elem_ij6++;
-	  }
-	}
-      }
-      break;
-
-    case 9:
-      /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
-      /*#               i  0  0  0 */
-      /*#               0  0  0 -i */
-      /*#               0  0 -i  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp9;
-	RScalar<REAL> lrtmp9;
-                          
-	for(int i9 = 0; i9 < Nc; ++i9)
-	{
-	  int elem_ij9 = (i9+Nc)*(i9+Nc-1)/2;
-
-	  for(int j9 = 0; j9 < Nc; ++j9)
-	  {
-	    int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
-
-	    lctmp9 = adj(tri_off_diag[site][0][elem_ji9]);
-	    lctmp9 += tri_off_diag[site][0][elem_ij9];
-	    lctmp9 -= adj(tri_off_diag[site][1][elem_ji9]);
-	    lctmp9 -= tri_off_diag[site][1][elem_ij9];
-
-	    B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
-
-	    elem_ij9++;
-	  }
-	}
-      }
-      break;
-
-    case 10:
-      /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
-      /*#               1  0  0  0 */
-      /*#               0  0  0  1 */
-      /*#               0  0 -1  0 */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp10;
-	RScalar<REAL> lrtmp10;
-                          
-	for(int i10 = 0; i10 < Nc; ++i10)
-	{
-	  int elem_ij10 = (i10+Nc)*(i10+Nc-1)/2;
-	
-	  for(int j10 = 0; j10 < Nc; ++j10)
-	  {
-	    int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
-
-	    lctmp10 = adj(tri_off_diag[site][0][elem_ji10]);
-	    lctmp10 -= tri_off_diag[site][0][elem_ij10];
-	    lctmp10 -= adj(tri_off_diag[site][1][elem_ji10]);
-	    lctmp10 += tri_off_diag[site][1][elem_ij10];
-
-	    B.elem(site).elem().elem(i10,j10) = lctmp10;
-
-	    elem_ij10++;
-	  }
-	}
-      }
-      break;
     
-    case 12:
-      /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
-      /*#               0 -i  0  0 */
-      /*#               0  0 -i  0 */
-      /*#               0  0  0  i */
-      /*# From diagonal part */
-      for(int ssite=0; ssite < rb[cb].numSiteTable(); ++ssite) 
-      {
-	int site = rb[cb].siteTable()[ssite];
-
-	RComplex<REAL> lctmp12;
-	RScalar<REAL> lr_zero12;
-	RScalar<REAL> lrtmp12;
-                          
-	lr_zero12 = 0;
-  
-	for(int i12 = 0; i12 < Nc; ++i12)
-	{
-	  lrtmp12 = tri_diag[site][0][i12];
-	  lrtmp12 -= tri_diag[site][0][i12+Nc];
-	  lrtmp12 -= tri_diag[site][1][i12];
-	  lrtmp12 += tri_diag[site][1][i12+Nc];
-	  B.elem(site).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
-	}
-    
-	/*# From lower triangular portion */
-	int elem_ij12 = 0;
-	for(int i12 = 1; i12 < Nc; ++i12)
-	{
-	  int elem_ijb12 = (i12+Nc)*(i12+Nc-1)/2 + Nc;
-
-	  for(int j12 = 0; j12 < i12; ++j12)
-	  {
-	    lctmp12 = tri_off_diag[site][0][elem_ij12];
-	    lctmp12 -= tri_off_diag[site][0][elem_ijb12];
-	    lctmp12 -= tri_off_diag[site][1][elem_ij12];
-	    lctmp12 += tri_off_diag[site][1][elem_ijb12];
-	
-	    B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
-	    B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
-	
-	    elem_ij12++;
-	    elem_ijb12++;
-	  }
-	}
-      }
-      break;
-    
-    default:
-    {
-      B = zero;
-      QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
-    }
-    }
+    SSEDCloverEnv::TriaCntrArgs a = { B, tri_diag, tri_off_diag, mat, cb};
+    dispatch_to_threads(rb[cb].numSiteTable(), a, 
+			SSEDCloverEnv::triaCntrSiteLoop);
   
 
     END_CODE();
