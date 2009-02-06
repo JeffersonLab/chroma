@@ -1,4 +1,4 @@
-// $Id: clover_term_ssed.cc,v 1.4 2009-02-05 15:19:15 bjoo Exp $
+// $Id: clover_term_ssed.cc,v 1.5 2009-02-06 15:53:33 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  *
@@ -76,7 +76,6 @@ namespace Chroma
 			       const CloverFermActParams& param_)
   {
     START_CODE();
-    QDPIO::cout  << "SSED Clover Term Created" << endl;
     u = fs->getLinks();
     fbc = fs->getFermBC();
     param = param_;
