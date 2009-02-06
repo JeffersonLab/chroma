@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: one_flavor_rat_monomial_w.h,v 3.11 2008-09-08 20:05:24 bjoo Exp $
+// $Id: one_flavor_rat_monomial_w.h,v 3.12 2009-02-06 15:25:17 bjoo Exp $
 
 /*! @file
  * @brief One flavor monomials using RHMC
@@ -171,7 +171,7 @@ namespace Chroma
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(f_state));
       
       // Get multi-shift system solver
-#if 0
+#if 1
       Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(f_state, getActionInvParams()));
 #else
       Handle< MdagMMultiSystemSolverAccumulate<Phi> > invMdagM(FA.mInvMdagMAcc(f_state, getActionInvParams()));
@@ -197,7 +197,7 @@ namespace Chroma
 	eta *= sqrt(0.5);
       
 	// The multi-shift inversion
-#if 0
+#if 1
 	multi1d<Phi> X;
 	SystemSolverResults_t res = (*invMdagM)(X, sipfe.pole, eta);
 #else
@@ -206,7 +206,7 @@ namespace Chroma
 	n_count[n] = res.n_count;
 
 	// Weight solns to make final PF field
-#if 0
+#if 1
 	getPhi()[n][M->subset()] = sipfe.norm * eta;
 	for(int i=0; i < X.size(); ++i)
 	  getPhi()[n][M->subset()] += sipfe.res[i] * X[i];
@@ -268,7 +268,7 @@ namespace Chroma
       Handle< DiffLinearOperator<Phi,P,Q> > lin(FA.linOp(bc_g_state));
  
       // Get multi-shift system solver
-#if 1
+#if 0
       Handle< MdagMMultiSystemSolverAccumulate<Phi> > invMdagM(FA.mInvMdagMAcc(bc_g_state, getActionInvParams()));
 #else
      Handle< MdagMMultiSystemSolver<Phi> > invMdagM(FA.mInvMdagM(bc_g_state, getActionInvParams()));
@@ -279,7 +279,7 @@ namespace Chroma
 
       // Compute energy
       // Get X out here via multisolver
-#if 0
+#if 1
       multi1d<Phi> X;
 #endif
       // Loop over all the pseudoferms
@@ -289,7 +289,7 @@ namespace Chroma
 
       for(int n=0; n < getNPF(); ++n)
       {
-#if 1
+#if 0
 	// The multi-shift inversion
 	SystemSolverResults_t res = (*invMdagM)(psi, spfe.norm, spfe.res,spfe.pole, getPhi()[n]);
 #else
@@ -304,7 +304,7 @@ namespace Chroma
 	// making S fluctuate around 0, it should remove a volume
 	// factor from the energies
 	site_S[ lin->subset() ] = -Double(12);
-#if 0	
+#if 1	
 	psi[lin->subset()] = spfe.norm * getPhi()[n];
 	for(int i=0; i < X.size(); ++i) {
 	  psi[lin->subset()] += spfe.res[i] * X[i];
