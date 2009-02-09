@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.22 2009-01-30 20:57:51 bjoo Exp $
+// $Id: hmc.cc,v 3.23 2009-02-09 21:19:33 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -728,6 +728,18 @@ int main(int argc, char *argv[])
     swatch.stop();
     QDPIO::cout << "Gauge field successfully initialized: time= " 
 		<< swatch.getTimeInSeconds() 
+		<< " secs" << endl;
+
+    swatch.reset();
+    swatch.start();
+    {
+      for(int mu=0; mu < Nd; mu++) { 
+	reunit(u[mu]);
+      }
+    }
+    swatch.stop();
+    QDPIO::cout << "Gauge field reunitarized: time="
+		<< swatch.getTimeInSeconds()
 		<< " secs" << endl;
 
     // Write out the config header

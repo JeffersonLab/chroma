@@ -1,10 +1,11 @@
-// $Id: gauge_startup.cc,v 3.2 2006-08-25 23:46:37 edwards Exp $
+// $Id: gauge_startup.cc,v 3.3 2009-02-09 21:19:33 bjoo Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
 
 #include "chromabase.h"
 #include "util/gauge/gauge_startup.h"
+#include "util/gauge/reunit.h"
 
 #include "qdp_iogauge.h"
 #include "io/param_io.h"
@@ -156,6 +157,15 @@ namespace Chroma
       QDPIO::cerr << __func__ << ": Configuration type is unsupported." << endl;
       QDP_abort(1);
     }
+
+    // Reunitarize gauge field (eg for Double prec?)
+    // This should get rid of those pesky big Delta H's 
+    // going from single to double and they can't possibly hurt
+    // in either single or double
+    for(int mu=0; mu < Nd; mu++){ 
+      reunit(u[mu]);
+    }
+
 
     END_CODE();
   }
