@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.187 2009-01-31 15:29:00 kostas Exp $
+# $Id: Makefile.am,v 3.188 2009-02-09 22:16:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -493,6 +493,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
 	actions/ferm/linop/eoprec_clover_linop_w.h \
+	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.h \
 	actions/ferm/linop/eoprec_dwflike_linop_base_array_w.h \
@@ -1288,6 +1289,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/clover_term_base_w.cc \
 	actions/ferm/linop/clover_term_qdp_w.cc \
 	actions/ferm/linop/eoprec_clover_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
 	actions/ferm/linop/eoprec_slic_linop_w.cc \
