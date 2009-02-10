@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.188 2009-02-09 22:16:49 edwards Exp $
+# $Id: Makefile.am,v 3.189 2009-02-10 04:22:35 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -393,6 +393,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
@@ -1198,6 +1199,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.310 2009-02-09 22:16:50 edwards Exp $
+# $Id: Makefile.in,v 3.311 2009-02-10 04:22:35 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -408,6 +408,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
@@ -972,6 +973,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	eoprec_ovext_fermact_array_w.$(OBJEXT) \
 	clover_fermact_params_w.$(OBJEXT) \
 	eoprec_clover_fermact_w.$(OBJEXT) \
+	eoprec_clover_orbifold_fermact_w.$(OBJEXT) \
 	unprec_clover_fermact_w.$(OBJEXT) \
 	eoprec_slic_fermact_w.$(OBJEXT) \
 	eoprec_slrc_fermact_w.$(OBJEXT) \
@@ -1560,6 +1562,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
@@ -2453,6 +2456,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
 	actions/ferm/fermacts/clover_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
@@ -3160,6 +3164,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
@@ -3684,6 +3689,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_extfield_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_linop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_orbifold_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_clover_orbifold_linop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po@am__quote@
@@ -8860,6 +8866,20 @@ eoprec_clover_fermact_w.obj: actions/ferm/fermacts/eoprec_clover_fermact_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/eoprec_clover_fermact_w.cc' object='eoprec_clover_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_clover_fermact_w.obj `if test -f 'actions/ferm/fermacts/eoprec_clover_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/eoprec_clover_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/eoprec_clover_fermact_w.cc'; fi`
+
+eoprec_clover_orbifold_fermact_w.o: actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_clover_orbifold_fermact_w.o -MD -MP -MF $(DEPDIR)/eoprec_clover_orbifold_fermact_w.Tpo -c -o eoprec_clover_orbifold_fermact_w.o `test -f 'actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_clover_orbifold_fermact_w.Tpo $(DEPDIR)/eoprec_clover_orbifold_fermact_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc' object='eoprec_clover_orbifold_fermact_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_clover_orbifold_fermact_w.o `test -f 'actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc
+
+eoprec_clover_orbifold_fermact_w.obj: actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eoprec_clover_orbifold_fermact_w.obj -MD -MP -MF $(DEPDIR)/eoprec_clover_orbifold_fermact_w.Tpo -c -o eoprec_clover_orbifold_fermact_w.obj `if test -f 'actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eoprec_clover_orbifold_fermact_w.Tpo $(DEPDIR)/eoprec_clover_orbifold_fermact_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc' object='eoprec_clover_orbifold_fermact_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eoprec_clover_orbifold_fermact_w.obj `if test -f 'actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc'; fi`
 
 unprec_clover_fermact_w.o: actions/ferm/fermacts/unprec_clover_fermact_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unprec_clover_fermact_w.o -MD -MP -MF $(DEPDIR)/unprec_clover_fermact_w.Tpo -c -o unprec_clover_fermact_w.o `test -f 'actions/ferm/fermacts/unprec_clover_fermact_w.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/unprec_clover_fermact_w.cc

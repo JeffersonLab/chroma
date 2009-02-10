@@ -1,4 +1,4 @@
-// $Id: fermacts_aggregate_w.cc,v 3.20 2008-10-08 19:40:17 bjoo Exp $
+// $Id: fermacts_aggregate_w.cc,v 3.21 2009-02-10 04:22:42 edwards Exp $
 /*! \file
  *  \brief All Wilson-type fermion actions
  */
@@ -15,6 +15,7 @@
 #include "actions/ferm/fermacts/unprec_w12_fermact_w.h"
 
 #include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_wilson_coarse_fine_fermact_w.h"
@@ -98,6 +99,7 @@ namespace Chroma
 
 	success &= EvenOddPrecCloverFermActEnv::registerAll();
 	success &= UnprecCloverFermActEnv::registerAll();
+	success &= EvenOddPrecCloverOrbifoldFermActEnv::registerAll();
 	success &= EvenOddPrecSLICFermActEnv::registerAll();
 	success &= EvenOddPrecSLRCFermActEnv::registerAll();
 	

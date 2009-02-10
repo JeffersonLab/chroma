@@ -1,4 +1,4 @@
-// $Id: eoprec_clover_orbifold_linop_w.cc,v 1.1 2009-02-09 22:16:59 edwards Exp $
+// $Id: eoprec_clover_orbifold_linop_w.cc,v 1.2 2009-02-10 04:22:42 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator with orbifold
  *
@@ -33,31 +33,28 @@ namespace Chroma
 
     D.create(fs, param.anisoParam);
 
-    clov_deriv_time = 0;
-    clov_apply_time = 0;
-
     if ( param.twisted_m_usedP )
     {
-      QDPIO::cerr << "EvenOddPrecCloverOrbifoldLinOp:: no twisted-mass allowed";
+      QDPIO::cerr << "EvenOddPrecCloverOrbifoldLinOp:: no twisted-mass allowed\n";
       QDP_abort(1);
     }
 
     // Orbifold Sanity checks
     if (QDP::Layout::subgridLattSize()[0] != QDP::Layout::lattSize()[0])
     {
-      QDPIO::cerr << "Requires x-dir on-node";
+      QDPIO::cerr << "Requires x-dir on-node\n";
       QDP_abort(1);
     }
 
     if (QDP::Layout::subgridLattSize()[1] != QDP::Layout::lattSize()[1])
     {
-      QDPIO::cerr << "Requires y-dir on-node";
+      QDPIO::cerr << "Requires y-dir on-node\n";
       QDP_abort(1);
     }
 
     if (QDP::Layout::subgridLattSize()[2] != QDP::Layout::lattSize()[2])
     {
-      QDPIO::cerr << "Requires z-dir on-node";
+      QDPIO::cerr << "Requires z-dir on-node\n";
       QDP_abort(1);
     }
 
@@ -72,10 +69,7 @@ namespace Chroma
   {
     START_CODE();
 
-    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 1);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
 
     END_CODE();
   }
@@ -89,10 +83,7 @@ namespace Chroma
     START_CODE();
 
     // Nuke for testing
-    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 0);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
     
     END_CODE();
   }
@@ -104,10 +95,7 @@ namespace Chroma
   {
     START_CODE();
 
-    swatch.reset(); swatch.start();
     invclov.apply(chi, psi, isign, 0);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
     
     END_CODE();
   }
@@ -219,10 +207,7 @@ namespace Chroma
     orbifold(tmp1, psi, QDP::Layout::lattSize()[2]-1, 0); // z=L-1, cb=0
 
     // tmp2_e = A_ee^{-1} * tmp1_e
-    swatch.reset(); swatch.start();
     invclov.apply(tmp2, tmp1, isign, 0);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
 
     // tmp1_o = D_oe * tmp2_e
     D.apply(tmp1, tmp2, isign, 1);
@@ -232,10 +217,7 @@ namespace Chroma
     orbifold(tmp1, tmp2, QDP::Layout::lattSize()[2]-1, 1); // z=L-1, cb=1
 
     //  chi_o  =  A_oo  psi_o  -  tmp1_o
-    swatch.reset(); swatch.start();
     clov.apply(chi, psi, isign, 1);
-    swatch.stop();
-    clov_apply_time += swatch.getTimeInSeconds();
 
     chi[rb[1]] += mquarter*tmp1;
 
@@ -244,97 +226,20 @@ namespace Chroma
   }
 
 
-  //! Apply the even-even block onto a source vector
-  void 
-  EvenOddPrecCloverOrbifoldLinOp::derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-						     const LatticeFermion& chi, const LatticeFermion& psi, 
-						     enum PlusMinus isign) const
-  {
-    START_CODE();
-    
-    swatch.reset(); swatch.start();
-    clov.deriv(ds_u, chi, psi, isign, 0);
-    swatch.stop();
-    clov_deriv_time  += swatch.getTimeInSeconds();
-
-    END_CODE();
-  }
-
-  //! Apply the even-even block onto a source vector
-  void 
-  EvenOddPrecCloverOrbifoldLinOp::derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
-							   enum PlusMinus isign) const
-  {
-    START_CODE();
-
-    // Testing Odd Odd Term - get nothing from even even term
-    invclov.derivTrLn(ds_u, isign, 0);
-    
-    END_CODE();
-  }
-
-  //! Apply the the even-odd block onto a source vector
-  void 
-  EvenOddPrecCloverOrbifoldLinOp::derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-						    const LatticeFermion& chi, const LatticeFermion& psi, 
-						    enum PlusMinus isign) const
-  {
-    START_CODE();
-    ds_u.resize(Nd);
-    D.deriv(ds_u, chi, psi, isign, 0);
-    for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu]  *= Real(-0.5);
-    }
-    END_CODE();
-  }
- 
-  //! Apply the the odd-even block onto a source vector
-  void 
-  EvenOddPrecCloverOrbifoldLinOp::derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-						    const LatticeFermion& chi, const LatticeFermion& psi, 
-						    enum PlusMinus isign) const
-  {
-    START_CODE();
-    ds_u.resize(Nd);
-
-    D.deriv(ds_u, chi, psi, isign, 1);
-    for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu]  *= Real(-0.5);
-    }
-    END_CODE();
-  }
-
-  // Inherit this
-  //! Apply the the odd-odd block onto a source vector
-  void 
-  EvenOddPrecCloverOrbifoldLinOp::derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-						   const LatticeFermion& chi, const LatticeFermion& psi, 
-						   enum PlusMinus isign) const
-  {   
-    START_CODE();
-
-    swatch.reset(); swatch.start();
-    clov.deriv(ds_u, chi, psi, isign, 1);
-    swatch.stop();
-    clov_deriv_time += swatch.getTimeInSeconds();
-    
-    END_CODE();
-  }
-
-
-  //! Return flops performed by the operator()
+  // Return flops performed by the operator()
   unsigned long EvenOddPrecCloverOrbifoldLinOp::nFlops() const
   {
     unsigned long cbsite_flops = 2*D.nFlops()+2*clov.nFlops()+4*Nc*Ns;
-    if(  param.twisted_m_usedP ) { 
-      cbsite_flops += 4*Nc*Ns; // a + mu*b : a = chi, b = g_5 I psi
-    }
     return cbsite_flops*(Layout::sitesOnNode()/2);
   }
 
-  //! Get the log det of the even even part
-  // BUt for now, return zero for testing.
-  Double EvenOddPrecCloverOrbifoldLinOp::logDetEvenEvenLinOp(void) const  {
-    return invclov.cholesDet(0);
+
+  // Get the log det of the even even part
+  Double EvenOddPrecCloverOrbifoldLinOp::logDetEvenEvenLinOp(void) const  
+  {
+    QDPIO::cerr << "EvenOddPrecCloverOrbifoldLinOp::" << __func__ << " not suppported\n";
+    QDP_abort(1);
+    return zero;
   }
+
 } // End Namespace Chroma

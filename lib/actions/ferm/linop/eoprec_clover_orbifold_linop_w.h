@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_clover_orbifold_linop_w.h,v 1.1 2009-02-09 22:16:59 edwards Exp $
+// $Id: eoprec_clover_orbifold_linop_w.h,v 1.2 2009-02-10 04:22:42 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator with orbifold
  *
@@ -47,11 +47,7 @@ namespace Chroma
       {create(fs,param_);}
 
     //! Destructor is automatic
-    ~EvenOddPrecCloverOrbifoldLinOp() {
-      QDPIO::cout << "CLOV_LINOP: Time spent in clov deriv (total) = " << clov_deriv_time << endl;
-      QDPIO::cout << "CLOV_LINOP: Time spent in clov apply/invapply (total) = " << clov_apply_time << endl;
-
-    }
+    ~EvenOddPrecCloverOrbifoldLinOp() {}
 
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
@@ -89,32 +85,9 @@ namespace Chroma
     void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
 		    enum PlusMinus isign) const;
 
-    //! Apply the even-even block onto a source vector
-    void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			    const LatticeFermion& chi, const LatticeFermion& psi, 
-			    enum PlusMinus isign) const;
-
-    void derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-				  enum PlusMinus isign) const;
-
-    //! Apply the the even-odd block onto a source vector
-    void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			   const LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const;
- 
-    //! Apply the the odd-even block onto a source vector
-    void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			   const LatticeFermion& chi, const LatticeFermion& psi, 
-			   enum PlusMinus isign) const;
-
-    //! Apply the the odd-odd block onto a source vector
-    void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
-			  const LatticeFermion& chi, const LatticeFermion& psi, 
-			  enum PlusMinus isign) const;
-
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
-
+ 
     //! Get the log det of the even even part
     Double logDetEvenEvenLinOp(void) const; 
 
@@ -123,9 +96,6 @@ namespace Chroma
     WilsonDslash D;
     CloverTerm   clov;
     CloverTerm   invclov;  // uggh, only needed for evenEvenLinOp
-    mutable double clov_apply_time;
-    mutable double clov_deriv_time;
-    mutable StopWatch swatch;
   };
 
 } // End Namespace Chroma
