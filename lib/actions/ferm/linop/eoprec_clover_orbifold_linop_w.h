@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_clover_orbifold_linop_w.h,v 1.2 2009-02-10 04:22:42 edwards Exp $
+// $Id: eoprec_clover_orbifold_linop_w.h,v 1.3 2009-02-11 06:17:16 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator with orbifold
  *
@@ -79,6 +79,7 @@ namespace Chroma
     //! Orbifold term
     void orbifold(LatticeFermion& chi, 
 		  const LatticeFermion& psi, 
+		  enum PlusMinus isign,
 		  int z, int cb) const;
 
     //! Override inherited one with a few more funkies

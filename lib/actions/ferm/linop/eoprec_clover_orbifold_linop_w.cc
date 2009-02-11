@@ -1,4 +1,4 @@
-// $Id: eoprec_clover_orbifold_linop_w.cc,v 1.2 2009-02-10 04:22:42 edwards Exp $
+// $Id: eoprec_clover_orbifold_linop_w.cc,v 1.3 2009-02-11 06:17:16 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator with orbifold
  *
@@ -150,6 +150,7 @@ namespace Chroma
   // Orbifold term
   void EvenOddPrecCloverOrbifoldLinOp::orbifold(LatticeFermion& chi, 
 						const LatticeFermion& psi, 
+						enum PlusMinus isign,
 						int z, int cb) const
   {
     LatticeFermion tmp;
@@ -178,8 +179,16 @@ namespace Chroma
 	  coord[1] = QDP::Layout::lattSize()[1] - 1 - y;
 	  int site_n = QDP::Layout::linearSiteIndex(coord);
 
-	  tmp.elem(site) = g4 * psi.elem(site_n);
-	  chi.elem(site) += g3 * tmp.elem(site) + tmp.elem(site);
+	  if (isign == PLUS)
+	  {
+	    tmp.elem(site) = g4 * psi.elem(site_n);
+	    chi.elem(site) += tmp.elem(site) + g3 * tmp.elem(site);
+	  }
+	  else
+	  {
+	    tmp.elem(site) = g4 * psi.elem(site_n);
+	    chi.elem(site) += tmp.elem(site) - g3 * tmp.elem(site);
+	  }
 	}
       }
     }
@@ -203,8 +212,8 @@ namespace Chroma
     D.apply(tmp1, psi, isign, 0);
 
     // tmp1_e += (Orbifold term)*psi_o
-    orbifold(tmp1, psi, 0, 0); // z=0, cb=0
-    orbifold(tmp1, psi, QDP::Layout::lattSize()[2]-1, 0); // z=L-1, cb=0
+    orbifold(tmp1, psi, isign, 0, 0); // z=0, cb=0
+    orbifold(tmp1, psi, isign, QDP::Layout::lattSize()[2]-1, 0); // z=L-1, cb=0
 
     // tmp2_e = A_ee^{-1} * tmp1_e
     invclov.apply(tmp2, tmp1, isign, 0);
@@ -213,8 +222,8 @@ namespace Chroma
     D.apply(tmp1, tmp2, isign, 1);
 
     // tmp1_o += (Orbifold term)*tmp2_e
-    orbifold(tmp1, tmp2, 0, 1); // z=0, cb=1
-    orbifold(tmp1, tmp2, QDP::Layout::lattSize()[2]-1, 1); // z=L-1, cb=1
+    orbifold(tmp1, tmp2, isign, 0, 1); // z=0, cb=1
+    orbifold(tmp1, tmp2, isign, QDP::Layout::lattSize()[2]-1, 1); // z=L-1, cb=1
 
     //  chi_o  =  A_oo  psi_o  -  tmp1_o
     clov.apply(chi, psi, isign, 1);
