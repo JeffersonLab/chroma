@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_create_colorvecs.h,v 3.1 2008-12-19 17:43:20 kostas Exp $
+// $Id: inline_create_colorvecs.h,v 3.2 2009-02-11 05:14:19 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -44,7 +44,8 @@ namespace Chroma
 	Sources_t       src  ;
 	int Nhits ;
 	bool OrthoNormal ;
-
+	bool BlockOrthoNormal ;
+	multi1d<int> block ;
       } param;
 
       struct NamedObject_t

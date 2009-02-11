@@ -1,4 +1,4 @@
-// $Id: inline_meson_block_matelem_w.cc,v 3.4 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_meson_block_matelem_w.cc,v 3.5 2009-02-11 05:14:19 kostas Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -296,7 +296,7 @@ namespace Chroma
     }
 
 
-    //----------------------------------------------------------------------------
+    //------------------------------------------------------------------------
     //! MesonElementalOperator reader
     void read(BinaryReader& bin, ValMesonElementalOperator_t& param)
     {

@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.4 2008-12-20 06:36:32 kostas Exp $
+// $Id: inline_create_colorvecs.cc,v 3.5 2009-02-11 05:14:19 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -11,6 +11,7 @@
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
+#include "util/ferm/block_subset.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/key_grid_prop.h"
 #include "util/ferm/transf.h"
@@ -102,6 +103,12 @@ namespace Chroma
       read(inputtop, "Nhits", input.Nhits) ;
       read(inputtop, "OrthoNormal", input.OrthoNormal) ;
       read(inputtop, "Sources"   , input.src)  ;
+
+      input.BlockOrthoNormal=false ;
+      if(inputtop.count("BlockOrthoNormal")!=0){
+	input.BlockOrthoNormal=true ;
+	read(inputtop, "BlockOrthoNormal", input.block) ;
+      }
     }
 
     //! Propagator output
@@ -113,6 +120,9 @@ namespace Chroma
       write(xml, "OrthoNormal", input.OrthoNormal) ;
       write(xml, "Sources"   , input.src)  ;
 
+      if(input.BlockOrthoNormal){
+	write(xml, "BlockOrthoNormal", input.block) ;
+      }
       pop(xml);
     }
 
@@ -459,6 +469,41 @@ namespace Chroma
 	}
 	
       }
+      if(params.param.BlockOrthoNormal){
+	//create the block dims array
+	Set blocks ;
+	multi1d<int> block_dims(Nd);
+	int k(0);
+	QDPIO::cout<<"Block Orthonormalizing with block size: ";
+	for(int d(0); d < Nd; d++){
+	  if (d == params.param.src.decay_dir )
+	    block_dims[d] = 1 ;
+	  else{
+	    if(k<params.param.block.size()){
+	      block_dims[d] = params.param.block[k] ;
+	      k++ ;
+	    }
+	    else
+	      block_dims[d] = Layout::lattSize()[d] ;
+	  }
+	  QDPIO::cout<<	  block_dims[d]<< " ";
+	}
+	QDPIO::cout<<endl ;
+	blocks.make(BlockFunc(block_dims));
+	for(int i(0);i<Nvecs;i++){
+	  for(int k(0);k<i;k++){
+	      multi1d<DComplex> cc =
+                sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
+                                           color_vecs.getEvectors()[i]),
+                         blocks);
+	      for(int b(0);b<blocks.numSubsets();b++)
+                color_vecs.getEvectors()[i][blocks[b]] -=
+                  cc[b]*color_vecs.getEvectors()[k] ;
+	  }
+
+	}
+
+      }//BlockOrthoNormalize
 
       {
 	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
