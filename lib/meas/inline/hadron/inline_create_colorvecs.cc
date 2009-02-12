@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.5 2009-02-11 05:14:19 kostas Exp $
+// $Id: inline_create_colorvecs.cc,v 3.6 2009-02-12 06:34:10 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -500,7 +500,10 @@ namespace Chroma
                 color_vecs.getEvectors()[i][blocks[b]] -=
                   cc[b]*color_vecs.getEvectors()[k] ;
 	  }
-
+	  multi1d<Double> norm2 =
+	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
+	  for(int b(0);b<blocks.numSubsets();b++)
+	    color_vecs.getEvectors()[i][blocks[b]] /= sqrt(norm2[b]) ;
 	}
 
       }//BlockOrthoNormalize
