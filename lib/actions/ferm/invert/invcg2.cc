@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 3.4 2008-06-27 20:24:09 bjoo Exp $
+// $Id: invcg2.cc,v 3.5 2009-02-13 20:17:15 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -7,6 +7,10 @@
 #include "actions/ferm/invert/invcg2.h"
 
 using namespace QDP::Hints;
+#undef PAT
+#ifdef PAT
+#include <pat_api.h>
+#endif
 
 namespace Chroma 
 {
@@ -233,7 +237,14 @@ namespace Chroma
 	 const Real& RsdCG, 
 	 int MaxCG)
   {
+#ifdef PAT
+    int ierr = PAT_region_begin(20, "InvCG2Single");
+#endif
     return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+#ifdef PAT
+    ierr = PAT_region_end(20);
+#endif
+
   }
 
   // Double precision
@@ -244,7 +255,13 @@ namespace Chroma
 	 const Real& RsdCG, 
 	 int MaxCG)
   {
+#ifdef PAT
+    int ierr=PAT_region_begin(21, "InvCG2Double");
+#endif
     return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+#ifdef PAT
+    ierr= PAT_region_end(21);
+#endif
   }
 
   // Single precision

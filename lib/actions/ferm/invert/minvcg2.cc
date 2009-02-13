@@ -1,4 +1,4 @@
-// $Id: minvcg2.cc,v 3.2 2008-06-21 00:43:42 bjoo Exp $
+// $Id: minvcg2.cc,v 3.3 2009-02-13 20:17:46 bjoo Exp $
 
 /*! \file
  *  \brief Multishift Conjugate-Gradient algorithm for a Linear Operator
@@ -6,7 +6,10 @@
 
 #include "linearop.h"
 #include "actions/ferm/invert/minvcg2.h"
-
+#undef PAT
+#ifdef PAT
+#include <pat_api.h>
+#endif
 namespace Chroma 
 {
 
@@ -370,7 +373,13 @@ namespace Chroma
 	      int MaxCG,
 	      int &n_count)
   {
+#ifdef PAT
+    int ierr=PAT_region_begin(22, "MInvCG2LinOp");
+#endif
     MInvCG2_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
+#ifdef PAT
+    ierr=PAT_region_end(22);
+#endif
   }
 
 
@@ -386,7 +395,13 @@ namespace Chroma
 	      int MaxCG,
 	      int &n_count)
   {
+#ifdef PAT
+     int ierr=PAT_region_begin(23,"MInvCG2DiffLinOp");
+#endif
     MInvCG2_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
+#ifdef PAT
+     ierr=PAT_region_end(23);
+#endif
   }
 
 }  // end namespace Chroma
