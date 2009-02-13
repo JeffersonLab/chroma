@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.312 2009-02-10 14:33:11 edwards Exp $
+# $Id: Makefile.in,v 3.313 2009-02-13 22:41:17 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -687,6 +687,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_eigen_bin_colvec_read_obj.cc \
 	meas/inline/io/inline_eigen_lime_colvec_read_obj.cc \
+	meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc \
 	meas/inline/io/inline_xml_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
@@ -1198,6 +1199,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_nersc_write_obj.$(OBJEXT) \
 	inline_eigen_bin_colvec_read_obj.$(OBJEXT) \
 	inline_eigen_lime_colvec_read_obj.$(OBJEXT) \
+	inline_eigen_bin_lime_colvec_read_obj.$(OBJEXT) \
 	inline_xml_write_obj.$(OBJEXT) inline_erase_obj.$(OBJEXT) \
 	inline_list_obj.$(OBJEXT) inline_gaussian_obj.$(OBJEXT) \
 	inline_rng.$(OBJEXT) qio_read_obj_funcmap.$(OBJEXT) \
@@ -1940,6 +1942,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_eigen_bin_colvec_read_obj.h \
 	meas/inline/io/inline_eigen_lime_colvec_read_obj.h \
+	meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h \
 	meas/inline/io/inline_xml_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
@@ -2834,6 +2837,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/io/inline_nersc_write_obj.h \
 	meas/inline/io/inline_eigen_bin_colvec_read_obj.h \
 	meas/inline/io/inline_eigen_lime_colvec_read_obj.h \
+	meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h \
 	meas/inline/io/inline_xml_write_obj.h \
 	meas/inline/io/inline_erase_obj.h \
 	meas/inline/io/inline_list_obj.h \
@@ -3444,6 +3448,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_nersc_write_obj.cc \
 	meas/inline/io/inline_eigen_bin_colvec_read_obj.cc \
 	meas/inline/io/inline_eigen_lime_colvec_read_obj.cc \
+	meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc \
 	meas/inline/io/inline_xml_write_obj.cc \
 	meas/inline/io/inline_erase_obj.cc \
 	meas/inline/io/inline_list_obj.cc \
@@ -3821,6 +3826,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eig_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigbnds.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigen_bin_colvec_read_obj.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_eigen_lime_colvec_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_erase_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_fuzwilp.Po@am__quote@
@@ -13122,6 +13128,20 @@ inline_eigen_lime_colvec_read_obj.obj: meas/inline/io/inline_eigen_lime_colvec_r
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_eigen_lime_colvec_read_obj.cc' object='inline_eigen_lime_colvec_read_obj.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_eigen_lime_colvec_read_obj.obj `if test -f 'meas/inline/io/inline_eigen_lime_colvec_read_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_eigen_lime_colvec_read_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_eigen_lime_colvec_read_obj.cc'; fi`
+
+inline_eigen_bin_lime_colvec_read_obj.o: meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_eigen_bin_lime_colvec_read_obj.o -MD -MP -MF $(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Tpo -c -o inline_eigen_bin_lime_colvec_read_obj.o `test -f 'meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Tpo $(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc' object='inline_eigen_bin_lime_colvec_read_obj.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_eigen_bin_lime_colvec_read_obj.o `test -f 'meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc
+
+inline_eigen_bin_lime_colvec_read_obj.obj: meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_eigen_bin_lime_colvec_read_obj.obj -MD -MP -MF $(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Tpo -c -o inline_eigen_bin_lime_colvec_read_obj.obj `if test -f 'meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Tpo $(DEPDIR)/inline_eigen_bin_lime_colvec_read_obj.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc' object='inline_eigen_bin_lime_colvec_read_obj.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_eigen_bin_lime_colvec_read_obj.obj `if test -f 'meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.cc'; fi`
 
 inline_xml_write_obj.o: meas/inline/io/inline_xml_write_obj.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_xml_write_obj.o -MD -MP -MF $(DEPDIR)/inline_xml_write_obj.Tpo -c -o inline_xml_write_obj.o `test -f 'meas/inline/io/inline_xml_write_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_xml_write_obj.cc

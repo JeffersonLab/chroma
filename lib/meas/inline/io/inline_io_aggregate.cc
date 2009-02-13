@@ -1,4 +1,4 @@
-// $Id: inline_io_aggregate.cc,v 3.7 2008-09-14 02:26:10 edwards Exp $
+// $Id: inline_io_aggregate.cc,v 3.8 2009-02-13 22:41:24 jbulava Exp $
 /*! \file
  *  \brief Inline IO aggregator
  */
@@ -24,6 +24,7 @@
 
 #include "meas/inline/io/inline_eigen_bin_colvec_read_obj.h"
 #include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
+#include "meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h"
 
 namespace Chroma
 {
@@ -62,6 +63,7 @@ namespace Chroma
 
 	success &= InlineEigenBinColVecReadNamedObjEnv::registerAll();
 	success &= InlineEigenLimeColVecReadNamedObjEnv::registerAll();
+	success &= InlineEigenBinLimeColVecReadNamedObjEnv::registerAll();
 
 	success &= InlineXMLWriteNamedObjEnv::registerAll();
 
