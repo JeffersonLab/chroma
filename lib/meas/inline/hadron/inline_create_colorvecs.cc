@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.6 2009-02-12 06:34:10 kostas Exp $
+// $Id: inline_create_colorvecs.cc,v 3.7 2009-02-13 22:39:10 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -507,6 +507,65 @@ namespace Chroma
 	}
 
       }//BlockOrthoNormalize
+#define PRINT_SMEARING_MATRIX
+#ifdef PRINT_SMEARING_MATRIX
+      if(params.param.BlockOrthoNormal){
+	QDPIO::cout<<"Computing the Smearing Matrix"<<endl;
+	//compute the smearing matrix
+	Set blks ;
+	blks.make(BlockFunc(params.param.src.decay_dir, params.param.block));
+	LatticeColorVector vec ;
+	LatticeColorVector vecd ;
+	multi1d<DComplex> cc ;
+	multi1d< multi2d<multi2d<DComplex> > > M(phases.numSubsets());
+	for(int t(0);t<phases.numSubsets();t++){
+	  M[t].resize(blks.numSubsets(),blks.numSubsets());
+	  for(int b(0);b<blks.numSubsets();b++)
+	    for(int bb(0);bb<blks.numSubsets();bb++)
+	      M[t](b,bb).resize(Nvecs,Nvecs);
+	}
+	
+	for(int b(0);b<blks.numSubsets();b++){
+	  for(int i(0);i<Nvecs;i++){
+	    vec = zero ;
+	    vec[blks[b]] = color_vecs.getEvectors()[i] ;
+	    (*Smearing)(vec, u_smr);
+	    for(int bb(b);bb<blks.numSubsets();bb++){
+	      for(int j(i);j<Nvecs;j++){
+		vecd            = zero ;
+		vecd[blks[bb]] = color_vecs.getEvectors()[j] ;
+		cc = sumMulti(localInnerProduct(vecd,vec),  phases.getSet());
+		for(int t(0);t<phases.numSubsets();t++){
+		  M[t](bb,b)(j,i) = cc[t] ;
+		  M[t](b,bb)(i,j) = conj(cc[t]) ;
+		}
+	      }// j
+	    }//bb
+	  }//i
+	}//b
+	QDPIO::cout<<"Writing the Smearing Matrix"<<endl;
+	push(xml_out,"SmearingMatrix");
+	for(int t(0);t<phases.numSubsets();t++){
+	  push(xml_out,"TimeSlice");
+	  write(xml_out,"t",t);
+	  for(int b(0);b<blks.numSubsets();b++)
+	    for(int bb(b);bb<blks.numSubsets();bb++){
+	      push(xml_out,"Block") ;
+	      write(xml_out,"b_left",b);
+	      write(xml_out,"b_right",bb);
+	      for(int i(0);i<Nvecs;i++){
+		push(xml_out,"ColorVecRow") ;
+		write(xml_out,"row_indx",i);
+		write(xml_out,"row",M[t](b,bb)[i]) ;		      
+		pop(xml_out);//ColorVecRow 
+	      }
+	      pop(xml_out);//block
+	    }
+	  pop(xml_out);//time slice 
+	}
+	pop(xml_out); //SmearingMatrix
+      }//BlockOrthoNormalize
+#endif
 
       {
 	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
