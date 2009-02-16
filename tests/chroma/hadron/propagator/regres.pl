@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.10 2009-02-10 04:22:49 edwards Exp $
+#  $Id: regres.pl,v 3.11 2009-02-16 16:22:16 edwards Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -97,14 +97,6 @@
 	 output      => "prec_clover-stout3d.mr.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.mr.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.mr.out.xml" ,
-     },
-     {
-	 exec_path   => "$top_builddir/mainprogs/main" , 
-	 execute     => "chroma" , 
-	 input       => "$test_dir/chroma/hadron/propagator/prec_clover_orbifold.ini.xml" , 
-	 output      => "prec_clover_orbifold.candidate.xml",
-	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover_orbifold.metric.xml" ,
-	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover_orbifold.out.xml" ,
      },
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
