@@ -1,4 +1,4 @@
-// $Id: inline_eigen_bin_lime_colvec_read_obj.cc,v 3.1 2009-02-13 22:41:24 jbulava Exp $
+// $Id: inline_eigen_bin_lime_colvec_read_obj.cc,v 3.2 2009-02-16 16:39:40 jbulava Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -200,6 +200,7 @@ namespace Chroma
 					TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
 					SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
+					
 					int nt = QDP::Layout::lattSize()[Nd-1];
 					int ns = QDP::Layout::lattSize()[0];
 
@@ -225,6 +226,7 @@ namespace Chroma
 					write(final_file_xml, "Input", file_xml);
 
 
+					
 					for (int t = 0 ; t < nt ; ++t)
 					{
 
@@ -232,8 +234,7 @@ namespace Chroma
 						BinaryBufferReader bin_rdr;
 						read(rdr, curr_record_xml, bin_rdr);
 
-						multi1d<Complex> vecs_flat;
-						read(bin_rdr, vecs_flat);
+						
 
 						multi1d<Real> evals;
 
@@ -249,17 +250,17 @@ namespace Chroma
 
 						int nev = evals.size();
 
-						if (vecs_flat.size() != ndim * nev)
-						{
-							QDPIO::cerr << "invalid size in binary buffer" << endl;
-							exit(1);
-						}
-
 						if (t == 0)
 						{
 							eigen.getEvalues().resize(nev);
 							eigen.getEvectors().resize(nev);
 							eigen.getDecayDir() = Nd - 1;
+						
+							for (int v = 0 ; v < nev ; ++v)
+							{
+									eigen.getEvectors()[v] = zero;
+									eigen.getEvalues()[v].weights.resize(nt);
+							}			
 						}
 
 						for (int n = 0 ; n < nev ; n++)
@@ -267,9 +268,14 @@ namespace Chroma
 
 							eigen.getEvalues()[n].weights[t] = evals[n]; // Copies all the weights
 
-							multi1d<Complex> temp(ndim);
-							for (int i = 0 ; i < ndim ; ++i)
-								temp[i] = vecs_flat[n*ndim + i];
+							multi1d<Complex> temp;
+							read(bin_rdr, temp);
+
+							if (temp.size() != ndim )
+							{
+								QDPIO::cerr << "Invalid array size" << endl;
+								exit(1);
+							}
 
 							unserialize(eigen.getEvectors()[n], temp, t);
 						}
