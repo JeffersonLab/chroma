@@ -1,6 +1,11 @@
-//  $Id: sftmom.cc,v 3.8 2008-12-21 21:03:43 edwards Exp $
+//  $Id: sftmom.cc,v 3.9 2009-02-17 16:33:38 edwards Exp $
 //  $Log: sftmom.cc,v $
-//  Revision 3.8  2008-12-21 21:03:43  edwards
+//  Revision 3.9  2009-02-17 16:33:38  edwards
+//  Added a function that will return the multiplicity of a particular mom id.
+//  This is number of equiv. canonical mom. Only non-zero when mom averaging
+//  is enabled. Can use this to undo the averaging.
+//
+//  Revision 3.8  2008/12/21 21:03:43  edwards
 //  Moved include of chromabase into the .h file.
 //
 //  Revision 3.7  2008/08/18 18:23:56  jbulava
@@ -170,30 +175,30 @@ namespace Chroma
     init(mom2_max, origin_off, mom_off, avg_mom, j_decay) ;
   }
 
-	SftMom::SftMom(const multi2d<int> & moms , int j_decay)
-	{
-		decay_dir = j_decay;
+  SftMom::SftMom(const multi2d<int> & moms , int j_decay)
+  {
+    decay_dir = j_decay;
 		
-		multi1d<int> orig(Nd);
+    multi1d<int> orig(Nd);
 
 
-		for(int i = 0 ; i < Nd ; ++i)
-			orig[i] = 0;
+    for(int i = 0 ; i < Nd ; ++i)
+      orig[i] = 0;
 		
-		init(0, orig, orig , false, decay_dir);
+    init(0, orig, orig , false, decay_dir);
 		
-		num_mom = moms.size2();
-		mom_list = moms;
+    num_mom = moms.size2();
+    mom_list = moms;
 
-		phases.resize(num_mom);
+    phases.resize(num_mom);
 
 
-		for (int m = 0 ; m < num_mom ; ++m)
-		{
-			phases[m] = singlePhase(orig, mom_list[m], decay_dir);
-		}
+    for (int m = 0 ; m < num_mom ; ++m)
+    {
+      phases[m] = singlePhase(orig, mom_list[m], decay_dir);
+    }
 
-	}
+  }
 
   SftMom::SftMom(int mom2_max, multi1d<int> origin_offset_, bool avg_mom,
                  int j_decay)
@@ -336,10 +341,12 @@ namespace Chroma
     for (int mu=0; mu < Nd; ++mu)
       my_coord[mu] = Layout::latticeCoordinate(mu);
 
+    // Keep track of |mom| degeneracy for averaging
+    mom_degen.resize(num_mom);
+    mom_degen = 0;
+
     // If averaging over equivalent momenta, we need redo mom_size and mom_vol
     // to allow both positive and negative momentum components
-    multi1d<int> mom_degen ;
-
     if (avg_equiv_mom) {
       mom_vol = 1 ;
 
@@ -347,10 +354,6 @@ namespace Chroma
 	mom_vol      *= (2*L) + 1 ;
 	mom_size[mu]  = (2*L) + 1 ;
       }
-
-      // Keep track of |mom| degeneracy for averaging
-      mom_degen.resize(num_mom) ;
-      mom_degen = 0 ;
     }
 
     // reset mom_num

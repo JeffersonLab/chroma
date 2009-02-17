@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//  $Id: sftmom.h,v 3.8 2008-12-21 21:03:43 edwards Exp $
+//  $Id: sftmom.h,v 3.9 2009-02-17 16:33:38 edwards Exp $
 /*! \file
  *  \brief Fourier transform phase factor support
  */
@@ -89,6 +89,11 @@ namespace Chroma
     const LatticeComplex& operator[](int mom_num) const
       { return phases[mom_num]; }
 
+    //! Return the the multiplicity for this momenta id.
+    /*! Only nonzero if momentum averaging is turned on */
+    int multiplicity(int mom_num) const
+      { return mom_degen[mom_num]; }
+
     //! Do a sumMulti(cf*phases,getSet())
     multi2d<DComplex> sft(const LatticeComplex& cf) const;
 
@@ -114,6 +119,7 @@ namespace Chroma
     multi1d<int> origin_offset;
     multi1d<int> mom_offset;
     multi1d<LatticeComplex> phases;
+    multi1d<int> mom_degen;
     Set sft_set;
   };
 
