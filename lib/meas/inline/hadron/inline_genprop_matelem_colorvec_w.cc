@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.8 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.9 2009-02-17 16:45:10 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -634,8 +634,15 @@ namespace Chroma
 		  // Do the relevant quark contraction
 		  LatticeComplex lop = localInnerProduct(sink_ferm_map[key_l], shift_ferm);
 
+		  // Reweight the phase in case there was momentum averaging
+		  Real reweight;
+		  if (phases.multiplicity(mom_num) > 0)
+		    reweight = Real(phases.multiplicity(mom_num));
+		  else
+		    reweight = 1.0;
+
 		  // Slow fourier-transform
-		  multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
+		  multi1d<ComplexD> op_sum = sumMulti(reweight * phases[mom_num] * lop, phases.getSet());
 
 		  watch.stop();
 
