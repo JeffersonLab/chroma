@@ -1,4 +1,4 @@
-// $Id: quark_smearing_aggregate.cc,v 3.7 2008-11-04 18:43:58 edwards Exp $
+// $Id: quark_smearing_aggregate.cc,v 3.8 2009-02-20 15:10:24 edwards Exp $
 /*! \file
  *  \brief All quark smearing
  */
@@ -7,7 +7,8 @@
 
 #include "meas/smear/no_quark_smearing.h"
 #include "meas/smear/gaus_quark_smearing.h"
-#include "meas/smear/vector_quark_smearing.h" 
+#include "meas/smear/vector_quark_smearing.h"
+#include "meas/smear/jacobi_quark_smearing.h"
 
 namespace Chroma
 {
@@ -30,6 +31,7 @@ namespace Chroma
 	success &= NoQuarkSmearingEnv::registerAll();
 	success &= GausQuarkSmearingEnv::registerAll();
 	success &= VectorQuarkSmearingEnv::registerAll();
+	success &= JacobiQuarkSmearingEnv::registerAll();
 	registered = true;
       }
       return success;
