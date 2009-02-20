@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.190 2009-02-13 22:41:17 jbulava Exp $
+# $Id: Makefile.am,v 3.191 2009-02-20 15:17:21 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -228,6 +228,7 @@ nobase_include_HEADERS = \
 	meas/sinks/sink_smearing_aggregate.h \
 	meas/sinks/sink_smearing_factory.h \
 	meas/smear/ape_smear.h \
+	meas/smear/jacobi_smear.h \
         meas/smear/displace.h \
         meas/smear/displacement.h \
 	meas/smear/fuzz_smear.h \
@@ -251,9 +252,10 @@ nobase_include_HEADERS = \
         meas/smear/quark_smearing_aggregate.h \
 	meas/smear/no_quark_smearing.h \
 	meas/smear/gaus_quark_smearing.h \
+        meas/smear/jacobi_quark_smearing.h \
+        meas/smear/vector_quark_smearing.h \
         meas/smear/quark_source_sink.h \
 	meas/smear/disp_colvec_map.h \
-        meas/smear/vector_quark_smearing.h \
         meas/smear/vector_smear.h \
 	meas/sources/sources.h \
 	meas/sources/source_construction.h \
@@ -1064,6 +1066,7 @@ libchroma_a_SOURCES = \
         meas/sinks/wall_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc \
 	meas/smear/ape_smear.cc \
+	meas/smear/jacobi_smear.cc \
         meas/smear/displace.cc \
         meas/smear/displacement.cc \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
@@ -1077,11 +1080,12 @@ libchroma_a_SOURCES = \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \
+        meas/smear/jacobi_quark_smearing.cc \
+        meas/smear/vector_quark_smearing.cc \
 	meas/smear/quark_displacement_aggregate.cc \
 	meas/smear/no_quark_displacement.cc \
 	meas/smear/simple_quark_displacement.cc \
 	meas/smear/disp_colvec_map.cc \
-        meas/smear/vector_quark_smearing.cc \
         meas/smear/vector_smear.cc \
         meas/sources/mom_source_const.cc \
         meas/sources/pt_source_const.cc \
