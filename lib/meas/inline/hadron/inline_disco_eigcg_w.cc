@@ -1,10 +1,12 @@
-// $Id: inline_disco_eigcg_w.cc,v 1.8 2009-02-03 21:35:14 edwards Exp $
+
+// $Id: inline_disco_eigcg_w.cc,v 1.9 2009-02-20 20:29:01 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
  */
 #include <vector> 
 #include <map> 
+#include <qdp-lapack.h>
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
@@ -42,6 +44,8 @@
 #include "actions/ferm/linop/linop_w.h"
 
 #include "util/ferm/key_val_db.h"
+
+
 
 namespace Chroma{ 
   namespace InlineDiscoEigCGEnv{ 
@@ -266,140 +270,6 @@ namespace Chroma{
       }
     }
 
-    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
-		  const LatticeFermion& qbar,
-		  const LatticeFermion& q,
-		  const SftMom& p,
-		  const int& t, 
-		  const multi1d<short int>& path,
-	 	  const int& max_path_length ){
-      QDPIO::cout<<" Computing Operator with path length "<<path.size()
-		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
-      
-      ValOperator_t val ;
-      KeyOperator_t key ;
-      pair<KeyOperator_t, ValOperator_t> kv ; 
-      kv.first.t_slice = t ;
-      if(path.size()==0){
-	kv.first.disp.resize(1);
-	kv.first.disp[0] = 0 ;
-      }
-      else
-	kv.first.disp = path ;
-
-      multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
-      for (int m(0); m < p.numMom(); m++)
-	foo[m].resize(Ns*Ns);
-      for(int g(0);g<Ns*Ns;g++){
-	LatticeComplex cc = localInnerProduct(qbar,Gamma(g)*q);
-	for (int m(0); m < p.numMom(); m++){
-	  foo[m][g] = sum(p[m]*cc,p.getSet()[t]) ;
-	}
-      }
-      for (int m(0); m < p.numMom(); m++){
-	for(int i(0);i<Nd;i++)
-	  kv.first.mom[i] = p.numToMom(m)[i] ;
-	
-	kv.second.op = foo[m];
-	map< KeyOperator_t, ValOperator_t >::iterator it ;
-	it = db.find(kv.first) ;
-	if(it == db.end()){// new element
-	  QDPIO::cout<<"Inserting new entry in map\n";
-	  //db.insert(db.rbegin(),kv);
-	  db.insert(kv);
-	} 
-	else{// element exists need to add result to it
-	  for(int i(0);i<kv.second.op.size();i++)
-	    it->second.op[i] += kv.second.op[i] ;
-	}
-
-      }
-
-      if(path.size()<max_path_length){
-	QDPIO::cout<<" attempt to add new path. "
-		   <<" current path length is : "<<path.size();
-	multi1d<short int> new_path(path.size()+1);
-	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
-	for(int i(0);i<path.size();i++)
-	  new_path[i] = path[i] ;
-	for(int sign(-1);sign<2;sign+=2)
-	  for(int mu(0);mu<Nd;mu++){
-	    new_path[path.size()]= sign*(mu+1) ;
-	    //skip back tracking 
-	    bool back_track=false ;
-	    if(path.size()>0)
-	      if(path[path.size()-1] == -new_path[path.size()])
-		back_track=true;
-	    if(!back_track){
-	      QDPIO::cout<<" Added path: "<<new_path<<endl;
-	      LatticeFermion q_mu ;
-	      if(sign>0)
-		q_mu = shift(q, FORWARD, mu);
-	      else
-		q_mu = shift(q, BACKWARD, mu);
-
-	      do_disco(db, qbar, q_mu, p, t, new_path, max_path_length);
-	    } // skip backtracking
-	  } // mu
-      }
-      
-    }// do_disco
-    
-    struct CholeskyFactors{
-      multi1d<Real>    evals ;
-      multi1d<Complex> H     ;
-      multi1d<Complex> HU    ;
-    } ;
-
-    // Added this "projector" routine to return chitilde = (1 - VHinv Vdag Sdag S)chi given
-    // an input chi vector, and of course the vectors and H. Note it also takes in
-    // Sdag S chi, because I can't figure out how to input a handle...This
-    // is really ugly, but it works...
-    void PRchi(LatticeFermion& chitilde, const LatticeFermion& chi,
-	       const LatticeFermion& SdagSchi,
-	       multi1d<Complex> H ,  multi1d<LatticeFermion>& V){
-      // For now just neglect second piece...
-      chitilde = chi ;//- V*adj(V)*SdagSchi;
-      
-    }
-
-
-    void ReadOPTEigCGVecs(multi1d<LatticeFermion>& vec,
-			    CholeskyFactors& Clsk, 
-			    const string& evecs_file)
-    {
-      QDPIO::cout<<name<<" : Reading vecs from "
-		 << evecs_file <<endl ;
-      StopWatch swatch;
-      swatch.reset();
-      swatch.start();
-      
-      int Nvecs,ldh ;
-      // File XML                                      
-      XMLReader file_xml;
-      // Open file     
-      QDPFileReader to(file_xml,evecs_file,QDPIO_SERIAL);
-      read(file_xml, "/OptEigInfo/ncurEvals", Nvecs);
-      read(file_xml, "/OptEigInfo/ldh", ldh);
-      vec.resize(Nvecs);
-      Clsk.evals.resize(ldh);
-      Clsk.H.resize(ldh*ldh);
-      Clsk.HU.resize(ldh*ldh);
-
-      for(int v(0);v<Nvecs;v++){
-	XMLReader record_xml;
-	read(to, record_xml, vec[v]);
-      }
-      
-      XMLReader record_xml;
-      read(to, record_xml, Clsk.evals);
-      read(to, record_xml, Clsk.H);
-      read(to, record_xml, Clsk.HU);
-      swatch.stop();
-      QDPIO::cout<<name<<" : Time to read vecs= "
-		 << swatch.getTimeInSeconds() <<" secs "<<endl ;
-    }
-
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
@@ -454,7 +324,335 @@ namespace Chroma{
       }
       return NULL ;
     }
+    /**
+    typedef LatticeFermion               T;
+    typedef multi1d<LatticeColorMatrix>  P;
+    typedef multi1d<LatticeColorMatrix>  Q;
+    **/
+    struct CholeskyFactors{
+      multi1d<Real>    evals ;
+      multi1d<Complex> H     ;
+      multi1d<Complex> HU    ;
+      int              ldh   ;
+      int              Nvec  ;
+    } ;
 
+    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+		  const LatticeFermion& qbar,
+		  const LatticeFermion& q,
+		  const SftMom& p,
+		  const int& t, 
+		  const multi1d<short int>& path,
+	 	  const int& max_path_length ){
+      QDPIO::cout<<" Computing Operator with path length "<<path.size()
+		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+      
+      ValOperator_t val ;
+      KeyOperator_t key ;
+      pair<KeyOperator_t, ValOperator_t> kv ; 
+      kv.first.t_slice = t ;
+      if(path.size()==0){
+	kv.first.disp.resize(1);
+	kv.first.disp[0] = 0 ;
+      }
+      else
+	kv.first.disp = path ;
+
+      multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
+      for (int m(0); m < p.numMom(); m++)
+	foo[m].resize(Ns*Ns);
+      for(int g(0);g<Ns*Ns;g++){
+	LatticeComplex cc = localInnerProduct(qbar,Gamma(g)*q);
+	for (int m(0); m < p.numMom(); m++){
+	  foo[m][g] = sum(p[m]*cc,p.getSet()[t]);
+	}
+      }
+      for (int m(0); m < p.numMom(); m++){
+	for(int i(0);i<Nd;i++)
+	  kv.first.mom[i] = p.numToMom(m)[i] ;
+	
+	kv.second.op = foo[m];
+	map< KeyOperator_t, ValOperator_t >::iterator it ;
+	it = db.find(kv.first) ;
+	if(it == db.end()){// new element
+	  QDPIO::cout<<"Inserting new entry in map\n";
+	  //db.insert(db.rbegin(),kv);
+	  db.insert(kv);
+	} 
+	else{// element exists need to add result to it
+	  for(int i(0);i<kv.second.op.size();i++)
+	    it->second.op[i] += kv.second.op[i] ;
+	}
+	
+      }
+
+      if(path.size()<max_path_length){
+	QDPIO::cout<<" attempt to add new path. "
+		   <<" current path length is : "<<path.size();
+	multi1d<short int> new_path(path.size()+1);
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	for(int i(0);i<path.size();i++)
+	  new_path[i] = path[i] ;
+	for(int sign(-1);sign<2;sign+=2)
+	  for(int mu(0);mu<Nd;mu++){
+	    new_path[path.size()]= sign*(mu+1) ;
+	    //skip back tracking 
+	    bool back_track=false ;
+	    if(path.size()>0)
+	      if(path[path.size()-1] == -new_path[path.size()])
+		back_track=true;
+	    if(!back_track){
+	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      LatticeFermion q_mu ;
+	      if(sign>0)
+		q_mu = shift(q, FORWARD, mu);
+	      else
+		q_mu = shift(q, BACKWARD, mu);
+
+	      do_disco(db, qbar, q_mu, p, t, new_path, max_path_length);
+	    } // skip backtracking
+	  } // mu
+      }// path.size loop
+      
+    }// do_disco
+
+    // Getting rid of path-length stuff...
+    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+		  CholeskyFactors Clsk , 
+		  multi1d<LatticeFermion>& vec,
+		  const Params::Param_t& param, 
+		  const P& u,
+                  const int& t,
+		  const SftMom& p,
+                  const multi1d<short int>& path,
+                  const int& max_path_length){
+
+      QDPIO::cout<<" Computing Operator with path length "<<path.size()
+		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+      
+      ValOperator_t val ;
+      KeyOperator_t key ;
+      pair<KeyOperator_t, ValOperator_t> kv ; 
+
+      kv.first.t_slice = t ;
+      kv.first.disp.resize(1);
+      kv.first.disp[0] = 0 ;
+
+      int ldb = vec.size();
+      int info;
+      char U = 'U';
+      int Nrhs = ldb; // Because we have no dilution vectors, but rhs's are made of EigCG vecs...
+      multi2d<Complex> B(Nrhs,ldb);
+      multi1d<LatticeFermion> Svec(ldb);
+      multi1d<LatticeFermion> SvecDD(ldb);
+      multi1d<LatticeFermion> DDvec(ldb);
+      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo = createOddOdd_Op(param,u);
+      
+      QDPIO::cout<<"Watch out! This will be wrong for the tensor gamma matrices!!"<<endl;
+      
+      for(int i(0); i<ldb;i++){
+	LatticeFermion tmp;
+	Doo->oddOddLinOp(Svec[i],vec[i],PLUS); 
+	Doo->oddEvenLinOp(tmp,Svec[i],MINUS); 
+	Doo->evenEvenInvLinOp(SvecDD[i],tmp,MINUS); 
+	Doo->evenOddLinOp(tmp,vec[i],PLUS); 
+	Doo->evenEvenInvLinOp(DDvec[i],tmp,PLUS); 
+      }
+
+      multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
+      for (int m(0); m < p.numMom(); m++)
+	foo[m].resize(Ns*Ns);
+
+      // Okay, this is probably inefficient, b/c we are doing some things multiple times...
+      for(int g(0);g<Ns*Ns;g++){
+	for (int m(0); m < p.numMom(); m++){
+	  for (int i(0); i<ldb;i++){
+	    for (int j(0); j<ldb;j++){
+	      LatticeComplex cc1 = localInnerProduct(Svec[j],Gamma(g)*vec[i]);
+	      LatticeComplex cc2 = localInnerProduct(SvecDD[j],Gamma(g)*DDvec[i]);
+	      B[i][j] = sum(p[m]*(cc1+cc2),p.getSet()[t]) ;
+
+	    }//j
+	  }//i 
+	  int r = QDPLapack::cpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
+	  // and at this point, B is H^-1 Vdag Sdag gamma V, so
+	  foo[m][g] = 0.0;
+	  ComplexD footmp = foo[m][g];
+	  for (int i(0); i<ldb;i++){
+	    foo[m][g] = footmp + ComplexD(B[i][i]);//This does the trace of the last set of indices...
+	    footmp = foo[m][g]; 
+	  }
+	  
+	  // For debugging purposes, both r and info should be zero...
+	  QDPIO::cout<<"do_disco cpotrs r = "<<r<<endl;
+	  QDPIO::cout<<"do_disco cpotrs info = "<<info<<endl;
+	}//m
+	
+      }
+      for (int m(0); m < p.numMom(); m++){
+	for(int i(0);i<Nd;i++)
+	  kv.first.mom[i] = p.numToMom(m)[i] ;
+	
+	kv.second.op = foo[m];
+	map< KeyOperator_t, ValOperator_t >::iterator it ;
+	it = db.find(kv.first) ;
+	if(it == db.end()){// new element
+	  QDPIO::cout<<"Inserting new entry in map\n";
+	  //db.insert(db.rbegin(),kv);
+	  db.insert(kv);
+	} 
+	else{// element exists need to add result to it
+	  for(int i(0);i<kv.second.op.size();i++)
+	    it->second.op[i] += kv.second.op[i] ;
+	}
+
+      }
+
+      if(path.size()<max_path_length){
+	QDPIO::cout<<" attempt to add new path. "
+		   <<" current path length is : "<<path.size();
+	multi1d<short int> new_path(path.size()+1);
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	for(int i(0);i<path.size();i++)
+	  new_path[i] = path[i] ;
+	for(int sign(-1);sign<2;sign+=2)
+	  for(int mu(0);mu<Nd;mu++){
+	    new_path[path.size()]= sign*(mu+1) ;
+	    //skip back tracking 
+	    bool back_track=false ;
+	    if(path.size()>0)
+	      if(path[path.size()-1] == -new_path[path.size()])
+		back_track=true;
+ 	    if(!back_track){
+	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      multi1d<LatticeFermion> vec_mu(vec.size()) ;
+	      for(int j(0);j<vec.size();j++){
+		if(sign>0)
+		  vec_mu[j] = shift(vec[j], FORWARD, mu);
+		else
+		  vec_mu[j] = shift(vec[j], BACKWARD, mu);
+	      }
+ 	      do_disco(db, Clsk , vec_mu, param, u, t, p, new_path, max_path_length);
+	    } // skip backtracking
+	  } // mu
+      }// path.size loop
+      
+      
+    }// do_disco
+    
+
+    void ReadOPTEigCGVecs(multi1d<LatticeFermion>& vec,
+			    CholeskyFactors& Clsk, 
+			    const string& evecs_file)
+    {
+      QDPIO::cout<<name<<" : Reading vecs from "
+		 << evecs_file <<endl ;
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+      
+      int Nvecs,ldh ;
+      // File XML                                      
+      XMLReader file_xml;
+      // Open file     
+      QDPFileReader to(file_xml,evecs_file,QDPIO_SERIAL);
+      read(file_xml, "/OptEigInfo/ncurEvals", Nvecs);
+      read(file_xml, "/OptEigInfo/ldh", ldh);
+      // Added Nvecs and ldh to the Cholesky structure for later...
+      Clsk.Nvec = Nvecs;
+      Clsk.ldh = ldh;
+      vec.resize(Nvecs);
+      Clsk.evals.resize(ldh);
+      Clsk.H.resize(ldh*ldh);
+      Clsk.HU.resize(ldh*ldh);
+
+      for(int v(0);v<Nvecs;v++){
+	XMLReader record_xml;
+	read(to, record_xml, vec[v]);
+      }
+      
+      XMLReader record_xml;
+      read(to, record_xml, Clsk.evals);
+      read(to, record_xml, Clsk.H);
+      read(to, record_xml, Clsk.HU);
+      swatch.stop();
+      QDPIO::cout<<name<<" : Time to read vecs= "
+		 << swatch.getTimeInSeconds() <<" secs "<<endl ;
+    }
+
+
+    // Added this "projector" routine to return chitilde = (1 - V Hinv Vdag Sdag S)chi given
+    // an input chi vector, and of course the vectors and H. 
+    // Note we take in the entire cholesky Factor struct
+    void PRchi(multi1d<multi1d< multi1d<LatticeFermion> > > quarkstilde,
+	       multi1d< Handle< DilutionScheme<LatticeFermion> > >& quarks,
+	       CholeskyFactors Clsk , multi1d<LatticeFermion>& vec,
+	       const Params::Param_t& param, const P& u){
+      /**
+	 Okay, quarks is the set of dilution vectors here, so it is a multi1d of LatticeFermions
+	 multi1d< Handle< DilutionScheme<LatticeFermion> > > quarks(N_quarks);
+	 We have to figure out how to deal with these. It might be best to have this input
+	 and the chitilde which is an output will be the same thing...with the projector
+	 having acted upon it.
+      **/
+      char U = 'U';
+      int info;
+
+      int ldb = vec.size();//This is the offset that will for now be the size of each vector
+      // int Nrhs = Clsk.Nvec;// Okay, it is either this or quarks.size()
+      //int Nrhs = quarks.size();// I think it is this for this case...but should it really be
+      // [quarks.size()] * [quarks[n]->getNumTimeSlices()] * [quarks[n]->getDilSize(it)]????
+      // I think this is what we'll need to do to get the # of RHS's...
+      
+      // multi1d<LatticeFermion> Svec(vec.size());// Use this perhaps to be S*V, so that we can
+      // take localInnerProduct of this with S*chi, and that would return VdagSdagSchi
+      
+      //      quarkstilde = quarks;
+
+      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo = createOddOdd_Op(param,u);
+      
+      // Now we have to create the Sdag * S * quarks object to put into B
+      for(int n(0);n<quarks.size();n++){
+	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
+	  int t = quarks[n]->getT0(it) ;
+	  QDPIO::cout<<" Doing quark: "<<n <<endl ;
+	  QDPIO::cout<<"   quark: "<<n <<" has "<<quarks[n]->getDilSize(it);
+	  QDPIO::cout<<" dilutions on time slice "<<t<<endl ;
+	  int Nrhs = quarks[n]->getDilSize(it) ;
+	  multi2d<Complex> B(Nrhs, ldb);
+	  for(int i(0); i<ldb;i++){
+	    for(int j = 0 ; j <  Nrhs ; ++j){
+	      QDPIO::cout<<"index of B[j,i] = "<<j<<", "<<i<<endl ;
+	      QDPIO::cout<<"   Doing dilution : "<<j<<endl ;
+	      LatticeFermion q     = quarks[n]->dilutedSolution(it,j);
+	      LatticeFermion qtmp, SdagSchi;
+	      Doo->oddOddLinOp(qtmp,q,PLUS); 
+	      Doo->oddOddLinOp(SdagSchi,qtmp,MINUS); 
+	      // Sum over lattice sites, so we return a complex number for B
+	      B[j][i] = sum(localInnerProduct(vec[i],SdagSchi),rb[1]);
+	    }
+	  }
+	  int r = QDPLapack::cpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
+	  // For debugging purposes, both r and info should be zero...
+	  QDPIO::cout<<"PRchi cpotrs r = "<<r<<endl;
+	  QDPIO::cout<<"PRchi cpotrs info = "<<info<<endl;
+	  // Now we have B = H^-1 VdagSdagS chi, and need to run over the vectors
+	  // to apply PR on the original Solution vector...
+	  for(int j = 0 ; j <  Nrhs ; ++j){
+	    LatticeFermion vBtmp = B[j][0]*vec[0];// This is WRONG! I don't know why I need the [0]!!
+	    LatticeFermion q     = quarks[n]->dilutedSolution(it,j);
+	    LatticeFermion vB;
+	    for(int i(1); i<ldb;i++){
+	      vB    = B[j][i]*vec[i] + vBtmp;
+	      vBtmp = vB;
+	    }
+	    quarkstilde[n][it][j] = q - vB;//Okay, if everything above is correct, this is it!
+	  }
+
+	}
+      }
+    }// End of PRchi call...
+    
   //--------------------------------------------------------------
   // Function call
   //  void 
@@ -631,7 +829,6 @@ namespace Chroma{
 	}
       }
 
-
       // We need to have the operator for the random noise part...
       Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo=createOddOdd_Op(params.param,u);
       //Now I can read the evecs from disk
@@ -639,9 +836,21 @@ namespace Chroma{
       CholeskyFactors Clsk; // the Cholesky Factors 
       ReadOPTEigCGVecs(vec,Clsk,params.named_obj.evecs_file);
       
-      //This is the piece with only the random noise
       map< KeyOperator_t, ValOperator_t > data ;
 
+      // Make quarkstilde the same size as quarks...
+      multi1d<multi1d< multi1d<LatticeFermion> > > quarkstilde(quarks.size());
+      for(int n(0);n<quarks.size();n++){
+	quarkstilde[n].resize(quarks[n]->getNumTimeSlices());
+	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
+	  quarkstilde[n][it].resize(quarks[n]->getDilSize(it));
+	}
+      }
+      
+      // So now this creates what we call chi-tilde in my notes, or
+      // chitilde = P_R S^-1 \eta_o
+      PRchi(quarkstilde, quarks, Clsk, vec, params.param, u);
+      
       for(int n(0);n<quarks.size();n++){
 	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
 	  int t = quarks[n]->getT0(it) ;
@@ -651,24 +860,21 @@ namespace Chroma{
 	  for(int i = 0 ; i <  quarks[n]->getDilSize(it) ; ++i){
 	    QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
 	    multi1d<short int> d ;
-	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
-	    LatticeFermion q     = quarks[n]->dilutedSolution(it,i);
 	    LatticeFermion qtmp, q2, qbar2;
-	    LatticeFermion chitilde, SdagSchi;
-	    Doo->oddOddLinOp(qtmp,q,MINUS); //Make sure MINUS is dagger
-	    Doo->oddOddLinOp(SdagSchi,qtmp,PLUS); //Make sure MINUS is dagger
-	    PRchi(chitilde, q,  SdagSchi,Clsk.H , vec);
-	    //Now below we do the same thing, but instead of q we put chitilde...
-	    // Currently with the PRchi definition, it just sets chiltilde to q,
-	    // so actually this doesn't do anything interesting.
+	    // Now, I want to do the two trace terms that have the chitilde. Thus
+	    // The q chosen should be from quarkstilde, not quarks
+	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
+	    LatticeFermion q     = quarkstilde[n][it][i];
 	    QDPIO::cout<<"   Starting recursion "<<endl ;
-	    do_disco(data, qbar, chitilde, phases, t, d, params.param.max_path_length);
-	    Doo->evenOddLinOp(qtmp,chitilde,PLUS);// Check that PLUS is not dagger
+	    // this is \eta^dag gamma chitilde:
+	    do_disco(data, qbar, q, phases, t, d, params.param.max_path_length);
+	    Doo->evenOddLinOp(qtmp,q,PLUS);// Check that PLUS is not dagger
 	    Doo->evenEvenInvLinOp(q2,qtmp,PLUS);
-	    Doo->oddEvenLinOp(qtmp,qbar,MINUS); // 
+	    // Now, when qbar goes into do_disco, it will be daggered, hence the
+	    // weird structure:
+	    Doo->oddEvenLinOp(qtmp,qbar,MINUS); 
 	    Doo->evenEvenInvLinOp(qbar2,qtmp,MINUS); 
-	    // Note if element exists in db, do_disco is smart and adds
-	    // new result to it...
+	    // This is the eta^dag DoeDee-1 gamma Dee-1Deochitilde:
             do_disco(data, qbar2, q2, phases, t, d, params.param.max_path_length);
 
 	    QDPIO::cout<<" done with recursion! "
@@ -678,34 +884,49 @@ namespace Chroma{
 	}
       }
       
-      // So the above section calculates
-      // Tr[etadag gamma Sinv eta]
-      // Tr[etadag Doe DeeInv gamma DeeInv Deo Sinv eta]
-      // -Tr[etadag gamma V Hinv Vdag Sdag eta]
-      // -Tr[etadag Doe DeeInv gamma DeeInv Deo V Hinv Vdag Sdag eta]
 
-      //Here we should compute the piece that comes from eigenvectors
-      // Still have to do this!!
-      // Tr[Hinv Vdag Sdag gamma V]
-      // Tr[Hinv Vdag Sdag Doe DeeInv gamma DeeInv Deo V]
-      // Tr[gamma DeeInv]
+      // Okay, first we are going to normalize all the pieces above by the number of 
+      // quarks...
+      SerialDBKey <KeyOperator_t> key ;
+      SerialDBData<ValOperator_t> val ;
+      map< KeyOperator_t, ValOperator_t >::iterator it;
 
+      for(it=data.begin();it!=data.end();it++){
+	key.key()  = it->first  ;
+	val.data().op.resize(it->second.op.size()) ;
+	for(int i(0);i<it->second.op.size();i++)
+          val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
+      }
 
-      //After all the pieces are computed we write the final result to the
-      //database
+      // Now calculate the other pieces which need no normalization...
+      // Note using just timeslices for quarks[0]...may be a problem
+      // if quarks dilute on diff timeslices...
+
+      // Also not sure if this will be properly added to the data structure to
+      // the properly averaged data above after playing with it...
+
+      for (int it(0) ; it < quarks[0]->getNumTimeSlices() ; ++it){
+	multi1d<short int> d ;
+	int t = quarks[0]->getT0(it) ;
+	QDPIO::cout<<"   Starting recursion again"<<endl ;
+	do_disco(data, Clsk, vec, params.param, u, t, phases,d, params.param.max_path_length);
+	QDPIO::cout<<" done with recursion! "
+		   <<"  The length of the path is: "<<d.size()<<endl ;
+      }
+
+      //After all the pieces are computed we write the final result to the database
       // DB storage          
       BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> >
 	qdp_db(params.named_obj.op_db_file, DB_CREATE, db_cachesize, db_pagesize);
 
-      SerialDBKey <KeyOperator_t> key ;
-      SerialDBData<ValOperator_t> val ;
-      map< KeyOperator_t, ValOperator_t >::iterator it;
+
       for(it=data.begin();it!=data.end();it++){
 	key.key()  = it->first  ;
 	val.data().op.resize(it->second.op.size()) ;
-	// normalize to number of quarks 
+	// DON'T normalize to number of quarks here, because we only do it on a 
+	// certain number of the terms in the trace...done above
 	for(int i(0);i<it->second.op.size();i++)
-          val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
+          val.data().op[i] = it->second.op[i];
 	qdp_db.insert(key,val) ;
       }
 
