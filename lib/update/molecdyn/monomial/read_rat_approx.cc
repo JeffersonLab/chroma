@@ -13,7 +13,7 @@ namespace Chroma {
     {
       QDPIO::cout << " XML Is: " << endl;
       xml_in.print(std::cout);
-      std::cout << endl <<flush ;
+      QDPIO::cout << endl <<flush ;
       return new ReadRatApprox(Params(xml_in, path));
     }
 
