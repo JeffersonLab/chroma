@@ -1,4 +1,4 @@
-// $Id: inline_block_colorvecs.cc,v 3.1 2009-02-23 17:03:15 kostas Exp $
+// $Id: inline_block_colorvecs.cc,v 3.2 2009-02-23 17:36:18 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -30,6 +30,8 @@
 
 #include "meas/inline/io/named_objmap.h"
 #include "meas/smear/gaus_smear.h"
+
+#include "util/ferm/key_val_db.h"
 
 namespace Chroma 
 { 
@@ -126,6 +128,111 @@ namespace Chroma
       pop(xml);
     }
   } // namespace InlineBlockColorVecsEnv 
+
+
+  
+
+    //-------------------------------------------------------------------------
+    //! reweighting matrix operator
+    struct KeySmearingMatrix_t
+    {
+      int                t_slice;      /*!< time slice */
+    };
+
+    //! Meson operator
+    struct ValSmearingMatrix_t
+    {
+      multi2d< multi2d<ComplexD> > mat;  /*!< the matrix */
+    };
+
+
+    //----------------------------------------------------------------------------
+    //! Holds key and value as temporaries
+    struct KeyValSmearingMatrix_t
+    {
+      SerialDBKey<KeySmearingMatrix_t>  key;
+      SerialDBData<ValSmearingMatrix_t> val;
+    };
+
+
+    //----------------------------------------------------------------------------
+    //! KeySmearingMatrix reader
+    void read(BinaryReader& bin, KeySmearingMatrix_t& param)
+    {
+      read(bin, param.t_slice);
+    }
+
+    //! SmearingMatrix write
+    void write(BinaryWriter& bin, const KeySmearingMatrix_t& param)
+    {
+      write(bin, param.t_slice);
+    }
+
+    //! SmearingMatrix reader
+    void read(XMLReader& xml, const std::string& path, KeySmearingMatrix_t& param)
+    {
+      XMLReader paramtop(xml, path);
+    
+      read(paramtop, "t_slice", param.t_slice);
+    }
+
+    //! SmearingMatrix writer
+    void write(XMLWriter& xml, const std::string& path, const KeySmearingMatrix_t& param)
+    {
+      push(xml, path);
+
+      write(xml, "t_slice", param.t_slice);
+
+      pop(xml);
+    }
+
+
+    //----------------------------------------------------------------------------
+    //! SmearingMatrix reader
+    void read(BinaryReader& bin, ValSmearingMatrix_t& param)
+    {
+
+      int n1; //number of blocks
+      int n2;
+      read(bin, n2);    // the size is always written, even if 0
+      read(bin, n1);    // the size is always written, even if 0
+      param.mat.resize(n2,n1);
+      
+      int nv1 ; 
+      int nv2 ; // number of color vectors
+      read(bin, nv2);    // the size is always written, even if 0  
+      read(bin, nv1);    // the size is always written, even if 0   
+      //loops over blocks
+      for(int bi=0; bi < param.mat.size1(); ++bi)
+	for(int bj=0; bj < param.mat.size2(); ++bj){
+	  //loops over color vectors
+	  param.mat[bj][bi].resize(nv2,nv1);
+	  for(int ci=0; ci < param.mat[bj][bi].size1(); ++ci)
+	    for(int cj=0; cj < param.mat[bj][bi].size2(); ++cj)
+	      read(bin, param.mat[bj][bi][cj][ci]);
+	}
+
+    }
+
+    //! SmearingMatrix write
+    void write(BinaryWriter& bin, const ValSmearingMatrix_t& param)
+    {
+      write(bin, param.mat.size2());    // always write the size
+      write(bin, param.mat.size1());    // always write the size
+      
+      write(bin, param.mat(0,0).size2());    // always write the size
+      write(bin, param.mat(0,0).size1());    // always write the size
+      
+      //loops over blocks                                                   
+      for(int bi=0; bi < param.mat.size1(); ++bi)
+        for(int bj=0; bj < param.mat.size2(); ++bj)
+	  //loops over color vectors
+          for(int ci=0; ci < param.mat[bj][bi].size1(); ++ci)
+            for(int cj=0; cj < param.mat[bj][bi].size2(); ++cj)
+	      write(bin, param.mat[bj][bi][cj][ci]);
+      
+    }
+  
 
 
   namespace InlineBlockColorVecsEnv 
@@ -441,21 +548,25 @@ namespace Chroma
 
       //#define PRINT_SMEARING_MATRIX
 #ifdef PRINT_SMEARING_MATRIX
-      if(params.param.BlockOrthoNormal){
-	QDPIO::cout<<"Computing the Smearing Matrix"<<endl;
-	//compute the smearing matrix
-	Set blks ;
-	blks.make(BlockFunc(params.param.src.decay_dir, params.param.block));
-	LatticeColorVector vec ;
-	LatticeColorVector vecd ;
-	multi1d<DComplex> cc ;
-	multi1d< multi2d<multi2d<DComplex> > > M(phases.numSubsets());
-	for(int t(0);t<phases.numSubsets();t++){
-	  M[t].resize(blks.numSubsets(),blks.numSubsets());
-	  for(int b(0);b<blks.numSubsets();b++)
-	    for(int bb(0);bb<blks.numSubsets();bb++)
-	      M[t](b,bb).resize(Nvecs,Nvecs);
-	}
+      // DB storage
+      BinaryFxStoreDB< SerialDBKey<KeySmearingMatrix_t>, SerialDBData<ValSmearingMatrix_t> > 
+	qdp_db(params.named_obj.smearing_matrix_file, DB_CREATE, db_cachesize, db_pagesize);
+      QDPIO::cout<<"Computing the Smearing Matrix"<<endl;
+      //compute the smearing matrix
+      Set blks ;
+      blks.make(BlockFunc(params.param.src.decay_dir, params.param.block));
+      LatticeColorVector vec ;
+      LatticeColorVector vecd ;
+      multi1d<DComplex> cc ;
+      for(int t(0);t<phases.numSubsets();t++){
+	KeyValSmearingMatrix_t kv ;
+	kv.key.key().t_slice = t ;
+	int Nblocks = blks.numSubsets() ;
+	
+	kv.val.data().mat.resize(Nblocks,Nblocks) ;
+	for(int b(0);b<blks.numSubsets();b++)
+	  for(int bb(0);bb<blks.numSubsets();bb++)
+	    kv.val.data()(b,bb).resize(Nvecs,Nvecs);
 	
 	for(int b(0);b<blks.numSubsets();b++){
 	  for(int i(0);i<Nvecs;i++){
@@ -468,35 +579,15 @@ namespace Chroma
 		vecd[blks[bb]] = color_vecs.getEvectors()[j] ;
 		cc = sumMulti(localInnerProduct(vecd,vec),  phases.getSet());
 		for(int t(0);t<phases.numSubsets();t++){
-		  M[t](bb,b)(j,i) = cc[t] ;
-		  M[t](b,bb)(i,j) = conj(cc[t]) ;
+		  kv.val.data()(bb,b)(j,i) = cc[t] ;
+		  kv.val.data()(b,bb)(i,j) = conj(cc[t]) ;
 		}
 	      }// j
 	    }//bb
 	  }//i
 	}//b
-	QDPIO::cout<<"Writing the Smearing Matrix"<<endl;
-	push(xml_out,"SmearingMatrix");
-	for(int t(0);t<phases.numSubsets();t++){
-	  push(xml_out,"TimeSlice");
-	  write(xml_out,"t",t);
-	  for(int b(0);b<blks.numSubsets();b++)
-	    for(int bb(b);bb<blks.numSubsets();bb++){
-	      push(xml_out,"Block") ;
-	      write(xml_out,"b_left",b);
-	      write(xml_out,"b_right",bb);
-	      for(int i(0);i<Nvecs;i++){
-		push(xml_out,"ColorVecRow") ;
-		write(xml_out,"row_indx",i);
-		write(xml_out,"row",M[t](b,bb)[i]) ;		      
-		pop(xml_out);//ColorVecRow 
-	      }
-	      pop(xml_out);//block
-	    }
-	  pop(xml_out);//time slice 
-	}
-	pop(xml_out); //SmearingMatrix
-      }//BlockOrthoNormalize
+	qdp_db.insert(kv.key, kv.val);
+      }// loop over t
 #endif
 
       {
