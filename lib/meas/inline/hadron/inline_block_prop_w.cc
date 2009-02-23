@@ -1,4 +1,4 @@
-// $Id: inline_block_prop_w.cc,v 1.1 2009-01-30 03:43:42 kostas Exp $
+// $Id: inline_block_prop_w.cc,v 1.2 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of   M^-1 * multi1d<LatticeColorVector>
  *
@@ -54,10 +54,10 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
-      read(inputtop, "num_vecs"  , input.num_vecs  );
-      read(inputtop, "block"     , input.block     );
-      read(inputtop, "t_sources" , input.t_sources );
-      read(inputtop, "decay_dir" , input.decay_dir );
+      read(inputtop, "num_vecs", input.num_vecs);
+      read(inputtop, "block_size", input.block_size);
+      read(inputtop, "t_sources", input.t_sources);
+      read(inputtop, "decay_dir", input.decay_dir);
     }
 
     //! Propagator output
@@ -65,10 +65,10 @@ namespace Chroma
     {
       push(xml, path);
 
-      write(xml, "num_vecs"  , input.num_vecs  );
-      write(xml, "block"     , input.block     );
-      write(xml, "t_sources" , input.t_sources );
-      write(xml, "decay_dir" , input.decay_dir );
+      write(xml, "num_vecs",  input.num_vecs);
+      write(xml, "block",     input.block_size);
+      write(xml, "t_sources", input.t_sources);
+      write(xml, "decay_dir", input.decay_dir);
 
       pop(xml);
     }
@@ -388,25 +388,33 @@ namespace Chroma
 	SftMom phases(0, true, decay_dir);
 
 	//Make the block Set
-	Set blocks ; 
-	blocks.make(BlockFunc(decay_dir, params.param.contract.block));
+	Set blocks; 
+	blocks.make(BlockFunc(decay_dir, params.param.contract.block_size));
+
 	// Loop over each operator 
-	for(int tt=0; tt < t_sources.size(); ++tt){
+	for(int tt=0; tt < t_sources.size(); ++tt)
+	{
 	  int t_source = t_sources[tt];
 	  QDPIO::cout << "t_source = " << t_source << endl; 
+
 	  // All the loops
-	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source){
+	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
+	  {
 	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
+
 	    // loop over blocks                                           
 	    // Pull out a time-slice of the color vector source
 	    LatticeColorVector vec_srce = zero;
-	    vec_srce[phases.getSet()[t_source]] = 
-	      eigen_source.getEvectors()[colorvec_source];
-	    for(int b=0; b < blocks.numSubsets(); b++){
+	    vec_srce[phases.getSet()[t_source]] = eigen_source.getEvectors()[colorvec_source];
+
+	    for(int b=0; b < blocks.numSubsets(); b++)
+	    {
 	      QDPIO::cout << "block = " << b << endl;
-	      LatticeColorVector blk_vec = zero ;
-	      blk_vec[blocks[b]] = vec_srce ;
-	      for(int spin_source=0; spin_source < Ns; ++spin_source){
+	      LatticeColorVector blk_vec = zero;
+	      blk_vec[blocks[b]] = vec_srce;
+
+	      for(int spin_source=0; spin_source < Ns; ++spin_source)
+	      {
 		QDPIO::cout << "spin_source = " << spin_source << endl; 
 
 		// Insert a ColorVector into spin index spin_source
@@ -424,7 +432,7 @@ namespace Chroma
 		key.t_source = t_source;
 		key.color    = colorvec_source;
 		key.spin     = spin_source;
-		key.block    = b ;
+		key.block    = b;
 		
 		map_obj.insert(key, quark_soln);
 	      } // for spin_source

@@ -1,4 +1,4 @@
-// $Id: inline_block_prop_matelem_w.cc,v 1.2 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_block_prop_matelem_w.cc,v 1.3 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -56,7 +56,7 @@ namespace Chroma
 
       read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "t_sources", input.t_sources);
-      read(inputtop, "block", input.block);
+      read(inputtop, "block_size", input.block_size);
       read(inputtop, "decay_dir", input.decay_dir);
       read(inputtop, "mass_label", input.mass_label);
     }
@@ -68,7 +68,7 @@ namespace Chroma
 
       write(xml, "num_vecs", input.num_vecs);
       write(xml, "t_sources", input.t_sources);
-      write(xml, "block", input.block);
+      write(xml, "block_size", input.block_size);
       write(xml, "decay_dir", input.decay_dir);
       write(xml, "mass_label", input.mass_label);
 
@@ -131,8 +131,10 @@ namespace Chroma
     {
       int                t_slice;       /*!< Propagator time slice */
       int                t_source;      /*!< Source time slice */
-      int                spin_src;      /*!< Source spin index */
-      int                spin_snk;      /*!< Sink spin index */
+      int                blk_l;         /*!< Left block index */
+      int                blk_r;         /*!< Right block index */
+      int                spin_r;        /*!< Source spin index */
+      int                spin_l;        /*!< Sink spin index */
       std::string        mass_label;    /*!< A mass label */
     };
 
@@ -141,8 +143,7 @@ namespace Chroma
     
     struct ValPropElementalOperator_t
     {
-      multi2d< multi2d<ComplexD> >  mat;     /*!< Colorvector source and sink */
-      // used as mat(block_snk,block_src)(cv_snk,cv_src)
+      multi2d<ComplexD>  mat;           /*!< Colorvector source and sink */
     };
 
 
@@ -160,8 +161,10 @@ namespace Chroma
     {
       read(bin, param.t_slice);
       read(bin, param.t_source);
-      read(bin, param.spin_src);
-      read(bin, param.spin_snk);
+      read(bin, param.blk_l);
+      read(bin, param.blk_r);
+      read(bin, param.spin_l);
+      read(bin, param.spin_r);
       read(bin, param.mass_label, 32);
     }
 
@@ -170,8 +173,10 @@ namespace Chroma
     {
       write(bin, param.t_slice);
       write(bin, param.t_source);
-      write(bin, param.spin_src);
-      write(bin, param.spin_snk);
+      write(bin, param.blk_l);
+      write(bin, param.blk_r);
+      write(bin, param.spin_l);
+      write(bin, param.spin_r);
       write(bin, param.mass_label);
     }
 
@@ -182,8 +187,10 @@ namespace Chroma
     
       read(paramtop, "t_slice", param.t_slice);
       read(paramtop, "t_source", param.t_source);
-      read(paramtop, "spin_src", param.spin_src);
-      read(paramtop, "spin_snk", param.spin_snk);
+      read(paramtop, "blk_l", param.blk_l);
+      read(paramtop, "blk_r", param.blk_r);
+      read(paramtop, "spin_l", param.spin_l);
+      read(paramtop, "spin_r", param.spin_r);
       read(paramtop, "mass_label", param.mass_label);
     }
 
@@ -194,8 +201,10 @@ namespace Chroma
 
       write(xml, "t_slice", param.t_slice);
       write(xml, "t_source", param.t_source);
-      write(xml, "spin_src", param.spin_src);
-      write(xml, "spin_snk", param.spin_snk);
+      write(xml, "blk_l", param.blk_l);
+      write(xml, "blk_r", param.blk_r);
+      write(xml, "spin_l", param.spin_l);
+      write(xml, "spin_r", param.spin_r);
       write(xml, "mass_label", param.mass_label);
 
       pop(xml);
@@ -204,43 +213,36 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! PropElementalOperator reader
-    void read(BinaryReader& bin, ValPropElementalOperator_t& param){
-      int n1; //number of blocks
+    void read(BinaryReader& bin, ValPropElementalOperator_t& param)
+    {
+      int n1;
       int n2;
       read(bin, n2);    // the size is always written, even if 0
       read(bin, n1);    // the size is always written, even if 0
       param.mat.resize(n2,n1);
-      
-      int nv1 ; 
-      int nv2 ; // number of color vectors
-      read(bin, nv2);    // the size is always written, even if 0  
-      read(bin, nv1);    // the size is always written, even if 0   
-      //loops over blocks
-      for(int bi=0; bi < param.mat.size1(); ++bi)
-	for(int bj=0; bj < param.mat.size2(); ++bj){
-	  //loops over color vectors
-	  param.mat[bj][bi].resize(nv2,nv1);
-	  for(int ci=0; ci < param.mat[bj][bi].size1(); ++ci)
-	    for(int cj=0; cj < param.mat[bj][bi].size2(); ++cj)
-	      read(bin, param.mat[bj][bi][cj][ci]);
+  
+      for(int i=0; i < param.mat.size1(); ++i)
+      {
+	for(int j=0; j < param.mat.size2(); ++j)
+	{
+	  read(bin, param.mat[j][i]);
 	}
+      }
     }
 
     //! PropElementalOperator write
-    void write(BinaryWriter& bin, const ValPropElementalOperator_t& param){
+    void write(BinaryWriter& bin, const ValPropElementalOperator_t& param)
+    {
       write(bin, param.mat.size2());    // always write the size
       write(bin, param.mat.size1());    // always write the size
 
-      write(bin, param.mat(0,0).size2());    // always write the size
-      write(bin, param.mat(0,0).size1());    // always write the size
-
-      //loops over blocks                                                   
-      for(int bi=0; bi < param.mat.size1(); ++bi)
-        for(int bj=0; bj < param.mat.size2(); ++bj)
-	  //loops over color vectors
-          for(int ci=0; ci < param.mat[bj][bi].size1(); ++ci)
-            for(int cj=0; cj < param.mat[bj][bi].size2(); ++cj)
-	      write(bin, param.mat[bj][bi][cj][ci]);
+      for(int i=0; i < param.mat.size1(); ++i)
+      {
+	for(int j=0; j < param.mat.size2(); ++j)
+	{
+	  write(bin, param.mat[j][i]);
+	}
+      }
     }
 
 
@@ -447,10 +449,11 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, decay_dir);
 
-	//Make the block Set                                                        
-        Set blocks ;
-	blocks.make(BlockFunc(decay_dir, params.param.block));
-	int Nblocks = blocks.numSubsets() ;
+	// Make the block Set                                                        
+        Set blocks;
+	blocks.make(BlockFunc(decay_dir, params.param.block_size));
+	int Nblocks = blocks.numSubsets();
+
 	// Binary output
 	push(xml_out, "ColorVecMatElems");
 
@@ -468,58 +471,68 @@ namespace Chroma
 	  // too big, but are big enough to make the IO efficient, and the DB efficient
 	  // on reading. For N=32 and Lt=128, the mats are 2MB.
 	  //
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
+	  for(int blk_source=0; blk_source < Nblocks; ++blk_source)
 	  {
-	    QDPIO::cout << "spin_source = " << spin_source << endl; 
+	    // QDPIO::cout << "block_source = " << blk_source << endl;
 
-	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	    for(int blk_sink=0; blk_sink < Nblocks; ++blk_sink)
 	    {
-	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
+	      // QDPIO::cout << "block_sink = " << blk_sink << endl;
 
-	      // Invert the time - make it an independent key
-	      multi1d<KeyValPropElementalOperator_t> buf(phases.numSubsets());
-	      for(int t=0; t < phases.numSubsets(); ++t)
+	      for(int spin_source=0; spin_source < Ns; ++spin_source)
 	      {
-		buf[t].key.key().t_slice      = t;
-		buf[t].key.key().t_source     = t_source;
-		buf[t].key.key().spin_src     = spin_source;
-		buf[t].key.key().spin_snk     = spin_sink;
-		buf[t].key.key().mass_label   = params.param.mass_label;
-		buf[t].val.data().mat.resize(Nblocks,Nblocks);
-		for(int i(0);i<Nblocks;i++)
-		  for(int j(0);j<Nblocks;j++)		    
-		    buf[t].val.data().mat(i,j).resize(num_vecs,num_vecs);
-	      }
+		// QDPIO::cout << "spin_source = " << spin_source << endl; 
 
-	      for(int blk_source=0; blk_source < Nblocks; ++blk_source){
-		//QDPIO::cout << "block_source = " << blk_source << endl;
-		for(int colorvec_source=0; colorvec_source<num_vecs;++colorvec_source){
-		  //QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
-		  KeyBlockProp_t key;
-		  key.t_source     = t_source;
-		  key.color        = colorvec_source;
-		  key.spin         = spin_source;
-		  key.block        = blk_source ;
-		  LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
-		  for(int blk_sink=0; blk_sink < Nblocks; ++blk_sink)
-		    for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink){
+		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+		{
+		  // QDPIO::cout << "spin_sink = " << spin_sink << endl; 
+
+		  // Invert the time - make it an independent key
+		  multi1d<KeyValPropElementalOperator_t> buf(phases.numSubsets());
+		  for(int t=0; t < phases.numSubsets(); ++t)
+		  {
+		    buf[t].key.key().t_slice      = t;
+		    buf[t].key.key().t_source     = t_source;
+		    buf[t].key.key().blk_l        = blk_sink;
+		    buf[t].key.key().blk_r        = blk_source;
+		    buf[t].key.key().spin_l       = spin_sink;
+		    buf[t].key.key().spin_r       = spin_source;
+		    buf[t].key.key().mass_label   = params.param.mass_label;
+		    buf[t].val.data().mat.resize(num_vecs,num_vecs);
+		  }
+
+		  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
+		  {
+		    // QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
+		    KeyBlockProp_t key;
+		    key.t_source  = t_source;
+		    key.color     = colorvec_source;
+		    key.spin      = spin_source;
+		    key.block     = blk_source;
+
+		    LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
+
+		    for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
+		    {
 		      const LatticeColorVector& vec = eigen_source.getEvectors()[colorvec_sink];
-		      LatticeColorVector vec_sink = zero ;
-		      vec_sink[blocks[blk_sink]] = vec ;
+		      LatticeColorVector vec_sink = zero;
+		      vec_sink[blocks[blk_sink]] = vec;
+
 		      multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
 		      
 		      for(int t=0; t < hsum.size(); ++t)
-			buf[t].val.data().mat(blk_sink,blk_source)(colorvec_sink,colorvec_source) = hsum[t];
+			buf[t].val.data().mat(colorvec_sink,colorvec_source) = hsum[t];
 		    } // for colorvec_sink
-		} // for colorvec_source
-	      }//blk_source
+		  } // for colorvec_source
 	      
-	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
-	      for(int t=0; t < phases.numSubsets(); ++t)
-		qdp_db.insert(buf[t].key, buf[t].val);
+		  QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
+		  for(int t=0; t < phases.numSubsets(); ++t)
+		    qdp_db.insert(buf[t].key, buf[t].val);
 
-	    } // for spin_sink
-	  } // for spin_source
+		} // for spin_sink
+	      } // for spin_source
+	    } // for blk_sink
+	  } // for blk_source
 	} // for t_source
 	
 	pop(xml_out);
@@ -544,8 +557,10 @@ namespace Chroma
       {
 	XMLBufferWriter file_xml;
 
-	push(file_xml, "PropElementalOperators");
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("blockPropElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);

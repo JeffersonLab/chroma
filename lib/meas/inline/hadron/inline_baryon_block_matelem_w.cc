@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.5 2009-02-03 21:35:13 edwards Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.6 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -84,7 +84,7 @@ namespace Chroma
       read(paramtop, "displacement_list", param.displacement_list);
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
-      read(paramtop, "block", param.block);
+      read(paramtop, "block_size", param.block_size);
       read(paramtop, "site_orthog_basis", param.site_orthog_basis);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
@@ -104,7 +104,7 @@ namespace Chroma
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
-      write(xml, "block", param.block);
+      write(xml, "block_size", param.block_size);
       write(xml, "site_orthog_basis", param.site_orthog_basis);
       xml << param.link_smearing.xml;
 
@@ -259,13 +259,14 @@ namespace Chroma
     struct KeyBaryonElementalOperator_t
     {
       int                t_slice;      /*!< Baryon operator time slice */
+      int                displacement_length; /*!< Displacement length for creat. and annih. ops */
       multi1d<int>       left;         /*!< Displacement dirs of left colorvector */
       multi1d<int>       middle;       /*!< Displacement dirs of middle colorvector */
       multi1d<int>       right;        /*!< Displacement dirs of right colorvector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
-      int b_left  ; // the block of the  left quark    
-      int b_midle ; // the block for the midle quark                              
-      int b_right ; // the block for the right quark   
+      int                blk_l;       /*!< Block of the left quark */
+      int                blk_m;     /*!< Block for the middle quark */
+      int                blk_r;      /*!< Block for the right quark */
     };
 
     //! Baryon operator
@@ -290,26 +291,28 @@ namespace Chroma
     void read(BinaryReader& bin, KeyBaryonElementalOperator_t& param)
     {
       read(bin, param.t_slice);
+      read(bin, param.displacement_length);
       read(bin, param.left);
       read(bin, param.middle);
       read(bin, param.right);
       read(bin, param.mom);
-      read(bin, param.b_left);
-      read(bin, param.b_midle);
-      read(bin, param.b_right);
+      read(bin, param.blk_l);
+      read(bin, param.blk_m);
+      read(bin, param.blk_r);
     }
 
     //! BaryonElementalOperator write
     void write(BinaryWriter& bin, const KeyBaryonElementalOperator_t& param)
     {
       write(bin, param.t_slice);
+      write(bin, param.displacement_length);
       write(bin, param.left);
       write(bin, param.middle);
       write(bin, param.right);
       write(bin, param.mom);
-      write(bin, param.b_left);
-      write(bin, param.b_midle);
-      write(bin, param.b_right);
+      write(bin, param.blk_l);
+      write(bin, param.blk_m);
+      write(bin, param.blk_r);
     }
 
     //! BaryonElementalOperator reader
@@ -318,13 +321,14 @@ namespace Chroma
       XMLReader paramtop(xml, path);
     
       read(paramtop, "t_slice", param.t_slice);
+      read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "left", param.left);
       read(paramtop, "middle", param.middle);
       read(paramtop, "right", param.right);
       read(paramtop, "mom", param.mom);
-      read(paramtop, "left_block", param.b_left);
-      read(paramtop, "middle_block", param.b_midle);
-      read(paramtop, "right_block", param.b_right);
+      read(paramtop, "blk_l", param.blk_l);
+      read(paramtop, "blk_m", param.blk_m);
+      read(paramtop, "blk_r", param.blk_r);
     }
 
     //! BaryonElementalOperator writer
@@ -333,13 +337,14 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "t_slice", param.t_slice);
+      write(xml, "displacement_length", param.displacement_length);
       write(xml, "left", param.left);
       write(xml, "middle", param.middle);
       write(xml, "right", param.right);
       write(xml, "mom", param.mom);
-      write(xml, "left_block", param.b_left);
-      write(xml, "middle_block", param.b_midle);
-      write(xml, "right_block", param.b_right);
+      write(xml, "blk_l", param.blk_l);
+      write(xml, "blk_m", param.blk_m);
+      write(xml, "blk_r", param.blk_r);
       pop(xml);
     }
 
@@ -597,15 +602,13 @@ namespace Chroma
       // as the subsets for  phases
 
       //Make the block Set                                                       
-      Set blocks ;
-      blocks.make(BlockFunc(params.param.decay_dir, params.param.block));
+      Set blocks;
+      blocks.make(BlockFunc(params.param.decay_dir, params.param.block_size));
       
-      QDPIO::cout<<"Number of Blocks: "<<blocks.numSubsets()<<endl ;
+      QDPIO::cout<<"Number of Blocks: "<<blocks.numSubsets()<<endl;
       // Loop over each operator 
       for(int l=0; l < displacement_list.size(); ++l)
       {
-	StopWatch watch;
-
 	QDPIO::cout << "Elemental operator: op = " << l << endl;
 
 	QDPIO::cout << "displacement: " << displacement_list[l] << endl;
@@ -614,101 +617,108 @@ namespace Chroma
 	swiss.reset();
 	swiss.start();
 	
-	multi1d<DisplacedBlock> dblk(3) ;
-	for(int blk_left(0);blk_left<blocks.numSubsets();blk_left++){
-	  //QDPIO::cout<<"blk_left : "<<blk_left<<endl ;
-	  dblk[0].blk  = blk_left ;
-	  dblk[0].disp = displacement_list[l].left ;
-	  for(int blk_midle(0);blk_midle< blocks.numSubsets();blk_midle++){
-	    dblk[1].blk  = blk_midle ;
-	    dblk[1].disp = displacement_list[l].middle ;
-	    if(blocks_couple(dblk,blocks,params.param.displacement_length,2))
-	      for(int blk_right(0);blk_right<blocks.numSubsets();blk_right++){
-		dblk[2].blk  = blk_right ;
-		dblk[2].disp = displacement_list[l].right ;
-		if(blocks_couple(dblk,blocks,params.param.displacement_length)){
-		  QDPIO::cout<<"Doing block: "<<blk_left<<" "<<blk_midle<<" "<<blk_right<<endl ;
+	multi1d<DisplacedBlock> dblk(3);
+	for(int blk_left(0); blk_left < blocks.numSubsets(); blk_left++)
+	{
+	  //QDPIO::cout<<"blk_left : "<<blk_left<<endl;
+	  dblk[0].blk  = blk_left;
+	  dblk[0].disp = displacement_list[l].left;
+
+	  for(int blk_middle(0); blk_middle < blocks.numSubsets(); blk_middle++)
+	  {
+	    dblk[1].blk  = blk_middle;
+	    dblk[1].disp = displacement_list[l].middle;
+
+	    if (blocks_couple(dblk, blocks, params.param.displacement_length, 2))
+	    {
+	      for(int blk_right(0); blk_right < blocks.numSubsets(); blk_right++)
+	      {
+		dblk[2].blk  = blk_right;
+		dblk[2].disp = displacement_list[l].right;
+
+		if (blocks_couple(dblk, blocks, params.param.displacement_length))
+		{
+		  QDPIO::cout << "Doing block: " << blk_left << " " << blk_middle << " " << blk_right << endl;
 
 		  // Big loop over the momentum projection
-		  for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+		  for(int mom_num = 0; mom_num < phases.numMom(); ++mom_num) 
+		  {
+		    // The keys for the displacements for this particular elemental operator
+		    // Invert the time - make it an independent key
+		    multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
+		    for(int t=0; t < phases.numSubsets(); ++t)
 		    {
-		      // The keys for the displacements for this particular elemental operator
-		      // Invert the time - make it an independent key
-		      multi1d<KeyValBaryonElementalOperator_t> buf(phases.numSubsets());
-		      for(int t=0; t < phases.numSubsets(); ++t)
-			{
-			  buf[t].key.key().t_slice       = t;
-			  buf[t].key.key().left          = displacement_list[l].left;
-			  buf[t].key.key().middle        = displacement_list[l].middle;
-			  buf[t].key.key().right         = displacement_list[l].right;
-			  buf[t].key.key().mom           = phases.numToMom(mom_num);
-			  buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
-			  buf[t].key.key().b_left  = blk_left ;
-			  buf[t].key.key().b_midle = blk_midle ;
-			  buf[t].key.key().b_right = blk_right ;
+		      buf[t].key.key().t_slice       = t;
+		      buf[t].key.key().displacement_length = params.param.displacement_length;
+		      buf[t].key.key().left          = displacement_list[l].left;
+		      buf[t].key.key().middle        = displacement_list[l].middle;
+		      buf[t].key.key().right         = displacement_list[l].right;
+		      buf[t].key.key().mom           = phases.numToMom(mom_num);
+		      buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs,params.param.num_vecs);
+		      buf[t].key.key().blk_l         = blk_left;
+		      buf[t].key.key().blk_m         = blk_middle;
+		      buf[t].key.key().blk_r         = blk_right;
 			  
-			  // Build in some optimizations. 
-			  // At this very moment, optimizations turned off
-			  buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
-			}
+		      // Build in some optimizations. 
+		      // At this very moment, optimizations turned off
+		      buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+		    }
 		      
 		      
-		      // The keys for the spin and displacements for this particular elemental operator
-		      multi1d<KeyDispColorVector_t> keyDispColorVector(3);
+		    // The keys for the spin and displacements for this particular elemental operator
+		    multi1d<KeyDispColorVector_t> keyDispColorVector(3);
 		      
-		      // Can displace each colorvector
-		      keyDispColorVector[0].displacement = displacement_list[l].left;
-		      keyDispColorVector[1].displacement = displacement_list[l].middle;
-		      keyDispColorVector[2].displacement = displacement_list[l].right;
-		      for(int i = 0 ; i <  params.param.num_vecs; ++i)
-			{
-			  //QDPIO::cout<<"left: "<<i<<endl ;
-			  keyDispColorVector[0].colvec = i;
-			  LatticeColorVector q_left = zero ;
-			  q_left[blocks[blk_left]] = smrd_disp_vecs.getDispVector(keyDispColorVector[0]) ;
+		    // Can displace each colorvector
+		    keyDispColorVector[0].displacement = displacement_list[l].left;
+		    keyDispColorVector[1].displacement = displacement_list[l].middle;
+		    keyDispColorVector[2].displacement = displacement_list[l].right;
+		    for(int i = 0; i <  params.param.num_vecs; ++i)
+		    {
+		      //QDPIO::cout<<"left: "<<i<<endl;
+		      keyDispColorVector[0].colvec = i;
+		      LatticeColorVector q_left = zero;
+		      q_left[blocks[blk_left]] = smrd_disp_vecs.getDispVector(keyDispColorVector[0]);
 			  
-			  for(int j = 0 ; j < params.param.num_vecs; ++j)
-			    {
-			      //QDPIO::cout<<"middle: "<<j<<endl ;
-			      keyDispColorVector[1].colvec = j;
-			      LatticeColorVector q_midle = zero ;
-			      q_midle[blocks[blk_midle]] = smrd_disp_vecs.getDispVector(keyDispColorVector[1]) ;
-			      for(int k = 0 ; k < params.param.num_vecs; ++k)
-				{
-				  //QDPIO::cout<<"right: "<<k<<endl ;
-				  keyDispColorVector[2].colvec = k;
-				  LatticeColorVector q_right = zero ;
-				  q_right[blocks[blk_right]] = smrd_disp_vecs.getDispVector(keyDispColorVector[2]) ;
-				  
-				  watch.reset();
-				  watch.start();
-				  
-				  // Contract over color indices
-				  // Do the relevant quark contraction
-				  // Slow fourier-transform
-				  LatticeComplex lop = colorContract(q_left,q_midle,q_right);
-				  // Slow fourier-transform
-				  multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
-				  
-				  watch.stop();
-				  
-				  for(int t=0; t < op_sum.size(); ++t)
-				    {
-				      buf[t].val.data().op(i,j,k) = op_sum[t];
-				    }
-				} // end for k
-			    } // end for j
-			} // end for i
-		      
-		      QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
-		      for(int t=0; t < phases.numSubsets(); ++t)
+		      for(int j = 0; j < params.param.num_vecs; ++j)
+		      {
+			//QDPIO::cout<<"middle: "<<j<<endl;
+			keyDispColorVector[1].colvec = j;
+			LatticeColorVector q_middle = zero;
+			q_middle[blocks[blk_middle]] = smrd_disp_vecs.getDispVector(keyDispColorVector[1]);
+
+			for(int k = 0; k < params.param.num_vecs; ++k)
 			{
-			  qdp_db.insert(buf[t].key, buf[t].val);
-			}
-		    } // mom_num
+			  //QDPIO::cout<<"right: "<<k<<endl;
+			  keyDispColorVector[2].colvec = k;
+			  LatticeColorVector q_right = zero;
+			  q_right[blocks[blk_right]] = smrd_disp_vecs.getDispVector(keyDispColorVector[2]);
+				  
+			  // Contract over color indices
+			  // Do the relevant quark contraction
+			  // Slow fourier-transform
+			  LatticeComplex lop = colorContract(q_left,q_middle,q_right);
+
+			  // Slow fourier-transform
+			  multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
+				  
+			  for(int t=0; t < op_sum.size(); ++t)
+			  {
+			    buf[t].val.data().op(i,j,k) = op_sum[t];
+			  }
+			} // end for k
+		      } // end for j
+		    } // end for i
+		      
+		    QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+		    for(int t=0; t < phases.numSubsets(); ++t)
+		    {
+		      qdp_db.insert(buf[t].key, buf[t].val);
+		    }
+		  } // mom_num
 		} // if blocks couple
 	      }// right block loop
-	  }// midle block loop
+	    } // if blocks_couple
+	  }// middle block loop
 	}// left block loop
 	
 	swiss.stop();
@@ -728,8 +738,10 @@ namespace Chroma
       {
 	XMLBufferWriter file_xml;
 
-	push(file_xml, "BaryonElementalOperators");
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("blockBaryonElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);

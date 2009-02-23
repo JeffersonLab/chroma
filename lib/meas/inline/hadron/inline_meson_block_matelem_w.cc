@@ -1,4 +1,4 @@
-// $Id: inline_meson_block_matelem_w.cc,v 3.5 2009-02-11 05:14:19 kostas Exp $
+// $Id: inline_meson_block_matelem_w.cc,v 3.6 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -61,7 +61,7 @@ namespace Chroma
       read(paramtop, "num_vecs", param.num_vecs);
       read(paramtop, "decay_dir", param.decay_dir);
       read(paramtop, "orthog_basis", param.orthog_basis);
-      read(paramtop, "block", param.block);
+      read(paramtop, "block_size", param.block_size);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
     }
@@ -81,8 +81,8 @@ namespace Chroma
       write(xml, "num_vecs", param.num_vecs);
       write(xml, "decay_dir", param.decay_dir);
       write(xml, "orthog_basis", param.orthog_basis);
-      write(xml, "block", param.block);
-     xml << param.link_smearing.xml;
+      write(xml, "block_size", param.block_size);
+      xml << param.link_smearing.xml;
 
       pop(xml);
     }
@@ -225,11 +225,12 @@ namespace Chroma
     //! Meson operator
     struct KeyMesonElementalOperator_t
     {
-      int                t_slice;      /*!< Meson operator time slice */
-      multi1d<int>       displacement; /*!< Displacement dirs of right colorvector */
-      multi1d<int>       mom;          /*!< D-1 momentum of this operator */
-      int b_left ;  // the block of the anti-quark
-      int b_right ; // the block for the quark
+      int                t_slice;             /*!< Meson operator time slice */
+      int                displacement_length; /*!< Displacement length for creat. and annih. ops */
+      multi1d<int>       displacement;        /*!< Displacement dirs of right colorvector */
+      multi1d<int>       mom;                 /*!< D-1 momentum of this operator */
+      int                blk_l;            /*!< Block of the anti-quark */
+      int                blk_r;           /*!< Block for the quark */
     };
 
     //! Meson operator
@@ -254,20 +255,22 @@ namespace Chroma
     void read(BinaryReader& bin, KeyMesonElementalOperator_t& param)
     {
       read(bin, param.t_slice);
+      read(bin, param.displacement_length);
       read(bin, param.displacement);
       read(bin, param.mom);
-      read(bin, param.b_left);
-      read(bin, param.b_right);
+      read(bin, param.blk_l);
+      read(bin, param.blk_r);
     }
 
     //! MesonElementalOperator write
     void write(BinaryWriter& bin, const KeyMesonElementalOperator_t& param)
     {
       write(bin, param.t_slice);
+      write(bin, param.displacement_length);
       write(bin, param.displacement);
       write(bin, param.mom);
-      write(bin, param.b_left);
-      write(bin, param.b_right);
+      write(bin, param.blk_l);
+      write(bin, param.blk_r);
     }
 
     //! MesonElementalOperator reader
@@ -276,10 +279,11 @@ namespace Chroma
       XMLReader paramtop(xml, path);
     
       read(paramtop, "t_slice", param.t_slice);
+      read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "displacement", param.displacement);
       read(paramtop, "mom", param.mom);
-      read(paramtop, "left_block", param.b_left);
-      read(paramtop, "right_block", param.b_right);
+      read(paramtop, "blk_l", param.blk_l);
+      read(paramtop, "blk_r", param.blk_r);
     }
 
     //! MesonElementalOperator writer
@@ -288,10 +292,11 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "t_slice", param.t_slice);
+      write(xml, "displacement_length", param.displacement);
       write(xml, "displacement", param.displacement);
       write(xml, "mom", param.mom);
-      write(xml, "left_block", param.b_left);
-      write(xml, "right_block", param.b_right);
+      write(xml, "blk_l", param.blk_l);
+      write(xml, "blk_r", param.blk_r);
       pop(xml);
     }
 
@@ -503,8 +508,8 @@ namespace Chroma
       // as the subsets for  phases
 
       //Make the block Set                             
-      Set blocks ;
-      blocks.make(BlockFunc(params.param.decay_dir, params.param.block));
+      Set blocks;
+      blocks.make(BlockFunc(params.param.decay_dir, params.param.block_size));
 
       // Loop over each operator 
       for(int l=0; l < params.param.displacement_list.size(); ++l)
@@ -521,83 +526,90 @@ namespace Chroma
 	// Build the operator
 	swiss.reset();
 	swiss.start();
-	for(int b(0);b<blocks.numSubsets();b++){
-	  int blk_left = b ;
-	  vector<int> blk_couplings   ; 
+
+	for(int b(0); b < blocks.numSubsets(); b++)
+	{
+	  int blk_left = b;
+	  vector<int> blk_couplings;
+
 	  // call a routine that calculate the couplings
 	  blk_couplings = block_couplings(b, blocks, disp, params.param.displacement_length);
-	  for(int blk_c(0);blk_c< blk_couplings.size();blk_c++){
-	    int blk_right = blk_couplings[blk_c] ;
-	    QDPIO::cout<<"Doing block: "<<blk_left<<" "<<blk_right<<endl ;
+
+	  for(int blk_c(0); blk_c < blk_couplings.size(); blk_c++)
+	  {
+	    int blk_right = blk_couplings[blk_c];
+	    QDPIO::cout << "Doing block: " << blk_left << " " << blk_right << endl;
+
 	    // Big loop over the momentum projection
-	    for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
+	    for(int mom_num = 0; mom_num < phases.numMom(); ++mom_num) 
+	    {
+	      // The keys for the spin and displacements for this particular elemental operator
+	      // No displacement for left colorvector, only displace right colorvector
+	      // Invert the time - make it an independent key
+	      multi1d<KeyValMesonElementalOperator_t> buf(phases.numSubsets());
+	      for(int t=0; t < phases.numSubsets(); ++t)
 	      {
-		// The keys for the spin and displacements for this particular elemental operator
-		// No displacement for left colorvector, only displace right colorvector
-		// Invert the time - make it an independent key
-		multi1d<KeyValMesonElementalOperator_t> buf(phases.numSubsets());
-		for(int t=0; t < phases.numSubsets(); ++t)
-		  {
-		    buf[t].key.key().t_slice       = t;
-		    buf[t].key.key().mom           = phases.numToMom(mom_num);
-		    buf[t].key.key().displacement  = disp; // only right colorvector
-		    buf[t].key.key().b_left        = blk_left ;
-		    buf[t].key.key().b_right       = blk_right ;
-		    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs);
+		buf[t].key.key().t_slice       = t;
+		buf[t].key.key().mom           = phases.numToMom(mom_num);
+		buf[t].key.key().displacement_length = params.param.displacement_length;
+		buf[t].key.key().displacement  = disp; // only right colorvector
+		buf[t].key.key().blk_l      = blk_left;
+		buf[t].key.key().blk_r     = blk_right;
+		buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs);
 		    
-		    if ( params.param.orthog_basis && 
-			 (phases.numToMom(mom_num)) == zero_mom && 
-			 (disp == no_displacement) )
-		      {
-			buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
-		      }
-		    else
-		      {
-			buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
-		      }
+		if ( params.param.orthog_basis && 
+		     (phases.numToMom(mom_num)) == zero_mom && 
+		     (disp == no_displacement) )
+		{
+		  buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_ONE;
+		}
+		else
+		{
+		  buf[t].val.data().type_of_data = COLORVEC_MATELEM_TYPE_GENERIC;
+		}
+	      }
+
+	      for(int j = 0; j < params.param.num_vecs; ++j)
+	      {
+		// Displace the right vector and multiply by the momentum phase
+		LatticeColorVector tt = zero;
+		tt[blocks[blk_right]] = eigen_source.getEvectors()[j];
+		LatticeColorVector shift_vec = phases[mom_num] * 
+		  displace(u_smr, tt, params.param.displacement_length, disp);
+
+		for(int i = 0; i <  params.param.num_vecs; ++i)
+		{
+		  watch.reset();
+		  watch.start();
+			
+		  tt = zero;
+		  tt[blocks[blk_left]] = eigen_source.getEvectors()[i];
+
+		  // Contract over color indices
+		  // Do the relevant quark contraction
+		  LatticeComplex lop = localInnerProduct(tt, shift_vec);
+			
+		  // Slow fourier-transform
+		  multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());
+			
+		  watch.stop();
+			
+		  for(int t=0; t < op_sum.size(); ++t)
+		  {
+		    buf[t].val.data().op(i,j) = op_sum[t];
 		  }
 
-		for(int j = 0 ; j < params.param.num_vecs; ++j)
-		  {
-		    // Displace the right vector and multiply by the momentum phase
-		    LatticeColorVector tt = zero ;
-		    tt[blocks[blk_right]] = eigen_source.getEvectors()[j] ;
-		    LatticeColorVector shift_vec = phases[mom_num] * 
-		      displace(u_smr, tt, params.param.displacement_length, disp);
+		  //  write(xml_out, "elem", key.key());  // debugging
+		} // end for j
+	      } // end for i
 
-		    for(int i = 0 ; i <  params.param.num_vecs; ++i)
-		      {
-			watch.reset();
-			watch.start();
-			
-			tt=zero ;
-			tt[blocks[blk_left]] = eigen_source.getEvectors()[i] ;
-
-			// Contract over color indices
-			// Do the relevant quark contraction
-			LatticeComplex lop = localInnerProduct(tt, shift_vec);
-			
-			// Slow fourier-transform
-			multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());
-			
-			watch.stop();
-			
-			for(int t=0; t < op_sum.size(); ++t)
-			  {
-			    buf[t].val.data().op(i,j) = op_sum[t];
-			  }
-
-			//  write(xml_out, "elem", key.key());  // debugging
-		      } // end for j
-		  } // end for i
-
-		QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
-		for(int t=0; t < phases.numSubsets(); ++t)
-		  {
-		    qdp_db.insert(buf[t].key, buf[t].val);
-		  }
+	      QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
+	      for(int t=0; t < phases.numSubsets(); ++t)
+	      {
+		qdp_db.insert(buf[t].key, buf[t].val);
+	      }
 		
-	      } // mom_num
+	    } // mom_num
 
 	  }// block couplings loop
 	}// loop over blocks
@@ -618,8 +630,10 @@ namespace Chroma
       {
 	XMLBufferWriter file_xml;
 
-	push(file_xml, "MesonElementalOperators");
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", "blockMesonElemOp");
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);

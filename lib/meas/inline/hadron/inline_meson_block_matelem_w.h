@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_meson_block_matelem_w.h,v 3.1 2009-01-30 21:07:21 kostas Exp $
+// $Id: inline_meson_block_matelem_w.h,v 3.2 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -36,7 +36,8 @@ namespace Chroma
 	multi1d< multi1d<int> > displacement_list;   /*!< Array of displacements list to generate */
 	GroupXML_t              link_smearing;       /*!< link smearing xml */
 
-	multi1d<int>            block;               /*!< describes the block */
+	multi1d<int>            block_size;          /*!< describes the block */
+
 	// This all may need some work
 	bool                    orthog_basis;        /*!< Whether all the basis vectors are orthog */
       };

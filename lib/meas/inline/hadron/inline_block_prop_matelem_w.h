@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_block_prop_matelem_w.h,v 1.1 2009-01-30 05:31:41 kostas Exp $
+// $Id: inline_block_prop_matelem_w.h,v 1.2 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -31,12 +31,12 @@ namespace Chroma
 
       struct Param_t
       {
-	int             num_vecs   ;  /*!< Number of color vectors to use */
-	int             decay_dir  ;  /*!< Decay direction */
-	multi1d<int>    t_sources  ;  /*!< Array of time slice sources for props */
-	multi1d<int>    block      ;  /*!< describes the block */
-	std::string     mass_label ;  /*!< Some kind of mass label */
-      } param;
+	int             num_vecs;       /*!< Number of color vectors to use */
+	int             decay_dir;      /*!< Decay direction */
+	multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
+	multi1d<int>    block_size;     /*!< describes the block */
+	std::string     mass_label;     /*!< Some kind of mass label */
+      };
 
       struct NamedObject_t
       {
@@ -44,9 +44,11 @@ namespace Chroma
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
 	std::string     prop_id;        /*!< Id for input propagator solutions */
 	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
-      } named_obj;
+      };
 
-      std::string xml_file;  // Alternate XML file pattern
+      Param_t           param;          /*!< Parameters */
+      NamedObject_t     named_obj;      /*!< Named objects*/ 
+      std::string       xml_file;       /*!< Alternate XML file pattern */
     };
 
 

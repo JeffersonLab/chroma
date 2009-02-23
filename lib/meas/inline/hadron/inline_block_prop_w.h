@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_block_prop_w.h,v 1.1 2009-01-30 03:43:42 kostas Exp $
+// $Id: inline_block_prop_w.h,v 1.2 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Compute the propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
@@ -33,10 +33,10 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int num_vecs;             /*!< Number of color vectors to use */
-	  multi1d<int> block ;      /*!< describes the block */
-	  int decay_dir;            /*!< Decay direction */
-	  multi1d<int> t_sources;   /*!< Array of time slice sources for props */
+	  int          num_vecs;        /*!< Number of color vectors to use */
+	  multi1d<int> block_size;      /*!< describes the block */
+	  int          decay_dir;       /*!< Decay direction */
+	  multi1d<int> t_sources;       /*!< Array of time slice sources for props */
 	};
 
 	ChromaProp_t    prop;

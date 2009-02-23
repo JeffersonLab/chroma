@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.8 2009-02-23 17:03:15 kostas Exp $
+// $Id: inline_create_colorvecs.cc,v 3.9 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -87,8 +87,8 @@ namespace Chroma
       write(xml, "decay_dir", out.decay_dir);
 
       if(out.smear){
-	 xml << out.smr.xml;
-	 xml << out.link_smear.xml ;
+	xml << out.smr.xml;
+	xml << out.link_smear.xml ;
       }
 
       pop(xml);
@@ -317,19 +317,19 @@ namespace Chroma
       // Create the output files
       //
       try
-	{
-	  TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-	}
+      {
+	TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+      }
       catch (std::bad_cast)
-	{
-	  QDPIO::cerr << name << ": caught dynamic cast error" << endl;
-	  QDP_abort(1);
-	}
+      {
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
+      }
       catch (const string& e) 
-	{
-	  QDPIO::cerr << name << ": error creating prop: " << e << endl;
-	  QDP_abort(1);
-	}
+      {
+	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+	QDP_abort(1);
+      }
 
       // Cast should be valid now
       SubsetVectors<LatticeColorVector>& color_vecs=TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
@@ -492,13 +492,13 @@ namespace Chroma
 	blocks.make(BlockFunc(block_dims));
 	for(int i(0);i<Nvecs;i++){
 	  for(int k(0);k<i;k++){
-	      multi1d<DComplex> cc =
-                sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-                                           color_vecs.getEvectors()[i]),
-                         blocks);
-	      for(int b(0);b<blocks.numSubsets();b++)
-                color_vecs.getEvectors()[i][blocks[b]] -=
-                  cc[b]*color_vecs.getEvectors()[k] ;
+	    multi1d<DComplex> cc =
+	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
+					 color_vecs.getEvectors()[i]),
+		       blocks);
+	    for(int b(0);b<blocks.numSubsets();b++)
+	      color_vecs.getEvectors()[i][blocks[b]] -=
+		cc[b]*color_vecs.getEvectors()[k] ;
 	  }
 	  multi1d<Double> norm2 =
 	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
@@ -507,9 +507,11 @@ namespace Chroma
 	}
 
       }//BlockOrthoNormalize
+
       //#define PRINT_SMEARING_MATRIX
 #ifdef PRINT_SMEARING_MATRIX
-      if(params.param.BlockOrthoNormal){
+      if(params.param.BlockOrthoNormal)
+      {
 	QDPIO::cout<<"Computing the Smearing Matrix"<<endl;
 	//compute the smearing matrix
 	Set blks ;

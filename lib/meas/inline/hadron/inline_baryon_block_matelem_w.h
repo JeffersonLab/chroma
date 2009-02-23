@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_baryon_block_matelem_w.h,v 1.1 2009-01-31 05:14:53 kostas Exp $
+// $Id: inline_baryon_block_matelem_w.h,v 1.2 2009-02-23 19:52:02 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon
  operators via colorvector matrix elements
@@ -45,7 +45,8 @@ namespace Chroma
 	multi1d<Displacement_t> displacement_list;      /*!< Array of displacements list to generate */
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
 
-	multi1d<int>            block ; /*!< describes the block */
+	multi1d<int>            block_size;             /*!< describes the block */
+
 	// This all may need some work
 	bool                    site_orthog_basis;      /*!< Whether all the basis vectors are site level orthog */
       };
