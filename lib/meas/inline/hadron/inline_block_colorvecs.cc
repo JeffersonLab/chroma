@@ -1,4 +1,4 @@
-// $Id: inline_block_colorvecs.cc,v 3.2 2009-02-23 17:36:18 kostas Exp $
+// $Id: inline_block_colorvecs.cc,v 3.3 2009-02-23 17:39:35 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -44,6 +44,7 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_id", input.colorvec_id);
+      read(inputtop, "smearing_matrix_file", input.smearing_matrix_file);
     }
 
     //! Propagator output
@@ -53,7 +54,7 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_id", input.colorvec_id);
-
+      write(xml, "smearing_matrix_file", input.smearing_matrix_file);
       pop(xml);
     }
 

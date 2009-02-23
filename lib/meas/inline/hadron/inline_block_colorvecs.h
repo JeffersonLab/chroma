@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_block_colorvecs.h,v 3.1 2009-02-23 17:03:15 kostas Exp $
+// $Id: inline_block_colorvecs.h,v 3.2 2009-02-23 17:39:35 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -47,6 +47,7 @@ namespace Chroma
       {
 	std::string     gauge_id;      /*!< Gauge field */
 	std::string     colorvec_id;   /*!< Id for color vectors */
+	std::string     smearing_matrix_file; /*!< smearing matrix data base */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern
