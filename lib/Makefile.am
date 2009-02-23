@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.192 2009-02-23 17:03:08 kostas Exp $
+# $Id: Makefile.am,v 3.193 2009-02-23 19:45:18 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -800,6 +800,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_meson_block_matelem_w.h \
 	meas/inline/hadron/inline_baryon_block_matelem_w.h \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_block_genprop_matelem_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -1482,6 +1483,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_meson_block_matelem_w.cc \
 	meas/inline/hadron/inline_baryon_block_matelem_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_block_genprop_matelem_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
