@@ -1,4 +1,4 @@
-// $Id: inline_create_colorvecs.cc,v 3.8 2009-02-23 17:03:15 kostas Exp $
+// $Id: inline_block_colorvecs.cc,v 3.1 2009-02-23 17:03:15 kostas Exp $
 /*! \file
  * \brief make color vectors
  *
@@ -6,7 +6,7 @@
  */
 
 #include "fermact.h"
-#include "meas/inline/hadron/inline_create_colorvecs.h"
+#include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/glue/mesplq.h"
@@ -28,17 +28,15 @@
 #include "meas/smear/no_quark_displacement.h"
 #include "meas/smear/no_link_smearing.h"
 
-#include "meas/sources/diluteGrid_source_const.h"
-
 #include "meas/inline/io/named_objmap.h"
 #include "meas/smear/gaus_smear.h"
 
 namespace Chroma 
 { 
-  namespace InlineCreateColorVecsEnv 
+  namespace InlineBlockColorVecsEnv 
   {
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const string& path, InlineBlockColorVecsEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -47,7 +45,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const string& path, const InlineBlockColorVecsEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -58,84 +56,67 @@ namespace Chroma
     }
 
 
-    //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params::Param_t::Sources_t& input)
+       //! Propagator input
+    void read(XMLReader& xml, const string& path, InlineBlockColorVecsEnv::Params::Param_t::Sources_t& input)
     {
       XMLReader inputtop(xml, path);
-      read(inputtop, "spatial_mask_size",input.spatial_mask_size);
-      read(inputtop, "spatial_masks", input.spatial_masks);
 
       read(inputtop, "decay_dir", input.decay_dir);
       
-      input.smear = false ;
-      if(inputtop.count("Smearing") !=0 ) {
-	input.smr = readXMLGroup(inputtop, "Smearing", "wvf_kind");
-	input.link_smear = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
-	input.smear = true ;
-      }
+      input.smr = readXMLGroup(inputtop, "Smearing", "wvf_kind");
+      input.link_smear = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
       
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params::Param_t::Sources_t& out)
+    void write(XMLWriter& xml, const string& path, const InlineBlockColorVecsEnv::Params::Param_t::Sources_t& out)
     {
       push(xml, path);
-
-      write(xml, "spatial_mask_size", out.spatial_mask_size);
-      write(xml, "spatial_masks", out.spatial_masks);
-
       write(xml, "decay_dir", out.decay_dir);
 
-      if(out.smear){
-	 xml << out.smr.xml;
-	 xml << out.link_smear.xml ;
-      }
+      xml << out.smr.xml;
+      xml << out.link_smear.xml ;
 
       pop(xml);
     }
 
 
+
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params::Param_t& input)
+    void read(XMLReader& xml, const string& path, InlineBlockColorVecsEnv::Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
-
-      read(inputtop, "Nhits", input.Nhits) ;
-      read(inputtop, "OrthoNormal", input.OrthoNormal) ;
-      read(inputtop, "Sources"   , input.src)  ;
-
-      input.BlockOrthoNormal=false ;
-      if(inputtop.count("BlockOrthoNormal")!=0){
-	input.BlockOrthoNormal=true ;
-	read(inputtop, "BlockOrthoNormal", input.block) ;
+      
+      read(inputtop, "Source", input.src) ;
+      read(inputtop, "block", input.block) ;
+      input.OrthoNormal=false ;
+      if(inputtop.count("OrthoNormal")!=0){
+	read(inputtop, "OrthoNormal", input.OrthoNormal) ;
       }
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params::Param_t& input)
+    void write(XMLWriter& xml, const string& path, const InlineBlockColorVecsEnv::Params::Param_t& input)
     {
       push(xml, path);
-
-      write(xml, "Nhits", input.Nhits) ;
+      
+      write(xml, "Source", input.src) ;
       write(xml, "OrthoNormal", input.OrthoNormal) ;
-      write(xml, "Sources"   , input.src)  ;
-
-      if(input.BlockOrthoNormal){
-	write(xml, "BlockOrthoNormal", input.block) ;
-      }
+      write(xml, "block", input.block) ;
+      
       pop(xml);
     }
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params& input)
+    void read(XMLReader& xml, const string& path, InlineBlockColorVecsEnv::Params& input)
     {
-      InlineCreateColorVecsEnv::Params tmp(xml, path);
+      InlineBlockColorVecsEnv::Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params& input)
+    void write(XMLWriter& xml, const string& path, const InlineBlockColorVecsEnv::Params& input)
     {
       push(xml, path);
     
@@ -144,14 +125,14 @@ namespace Chroma
 
       pop(xml);
     }
-  } // namespace InlineCreateColorVecsEnv 
+  } // namespace InlineBlockColorVecsEnv 
 
 
-  namespace InlineCreateColorVecsEnv 
+  namespace InlineBlockColorVecsEnv 
   {
     namespace
     {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+      AbsInlineMeasurement* blockMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
       {
 	return new InlineMeas(Params(xml_in, path));
@@ -161,7 +142,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "CREATE_COLORVECS";
+    const std::string name = "BLOCK_COLORVECS";
 
     //! Register all the factories
     bool registerAll() 
@@ -169,7 +150,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= TheInlineMeasurementFactory::Instance().registerObject(name, blockMeasurement);
 	registered = true;
       }
       return success;
@@ -222,7 +203,7 @@ namespace Chroma
       {
 	string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "CreateColorVecs");
+	push(xml_out, "BlockColorVecs");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
@@ -267,10 +248,10 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      push(xml_out, "CreateColorVecs");
+      push(xml_out, "BlockColorVecs");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Create color vectors" << endl;
+      QDPIO::cout << name << ": Block color vectors" << endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -287,134 +268,31 @@ namespace Chroma
       // Calculate some gauge invariant observables just for info.
       MesPlq(xml_out, "Observables", u);
 
-      //
+       //
       // Smear the gauge field if needed
       //
       multi1d<LatticeColorMatrix> u_smr = u;
       
       try
-      {
-	std::istringstream  xml_l(params.param.src.link_smear.xml);
-	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " 
-		    << params.param.src.link_smear.id
-		    << endl;
-		
-	Handle< LinkSmearing >
-	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.src.link_smear.id, linktop,params.param.src.link_smear.path));
-	(*linkSmearing)(u_smr);
-      }
+	{
+	  std::istringstream  xml_l(params.param.src.link_smear.xml);
+	  XMLReader  linktop(xml_l);
+	  QDPIO::cout << "Link smearing type = " 
+		      << params.param.src.link_smear.id
+		      << endl;
+	  
+	  Handle< LinkSmearing >
+	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.src.link_smear.id, linktop,params.param.src.link_smear.path));
+	  (*linkSmearing)(u_smr);
+	}
       catch(const std::string& e){
 	QDPIO::cerr << name << ": Caught Exception link smearing: "<<e<< endl;
 	QDP_abort(1);
       }
-
+      
       // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
-
-
-      //
-      // Create the output files
-      //
-      try
-	{
-	  TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-	}
-      catch (std::bad_cast)
-	{
-	  QDPIO::cerr << name << ": caught dynamic cast error" << endl;
-	  QDP_abort(1);
-	}
-      catch (const string& e) 
-	{
-	  QDPIO::cerr << name << ": error creating prop: " << e << endl;
-	  QDP_abort(1);
-	}
-
-      // Cast should be valid now
-      SubsetVectors<LatticeColorVector>& color_vecs=TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-
-      //QDPIO::cout << name << ": Created named buffer" << endl;
       
-      DiluteGridQuarkSourceConstEnv::Params srcParams ;
-
-      NoQuarkDisplacementEnv::Params noQuarkDisp ;
-      NoLinkSmearingEnv::Params      noLinkSmear ;
-      //create a no displacement xml
-      {
-	XMLBufferWriter tt ;
-	push(tt,"foo");
-	noQuarkDisp.writeXML(tt,"Displacement");
-	noLinkSmear.writeXML(tt,"LinkSmearing");
-	pop(tt);
-	XMLReader from(tt);
-	srcParams.displace = readXMLGroup(from, "/foo/Displacement", "DisplacementType");
-	srcParams.link_smear = readXMLGroup(from, "/foo/LinkSmearing", "LinkSmearingType");
-      }
-      srcParams.j_decay = params.param.src.decay_dir ;
-      srcParams.spatial_mask_size = params.param.src.spatial_mask_size ;
-      if(params.param.src.smear){
-	srcParams.smear = false ;
-	srcParams.smr = params.param.src.smr ;
-      }
-
-      // The code goes here
-      StopWatch swatch;
-      swatch.reset();
-      swatch.start();
-      /** 
-
-       *Loop for Nhits
-       *    apply smearing
-       *    if orthonormalize is true to a GramSchmit on them
-       *    Compute the v'Smearing v matrix elements for all color vectors
-       *    call them evals and monitor convergence on one time slice
-       *EndLoop
-
-       **/
-
-      // Initialize the slow Fourier transform phases
-      SftMom phases(0, true, params.param.src.decay_dir);
-      
-      int Nvecs(3*params.param.src.spatial_masks.size()) ;
-      color_vecs.getEvectors().resize(Nvecs);
-      color_vecs.getEvalues().resize(Nvecs);
-      for(int i(0);i<Nvecs;i++){
-	color_vecs.getEvalues()[i].weights.resize(phases.numSubsets());
-      }
-
-      color_vecs.getDecayDir() = params.param.src.decay_dir ;
-
-      srcParams.spin = 0;
-      int count(0);
-      for(int c(0);c<Nc;c++){// loop over colors
-	srcParams.color = c;
-	for(int g(0);g<params.param.src.spatial_masks.size();g++){
-	  srcParams.spatial_mask = params.param.src.spatial_masks[g];
-	  QDPIO::cout << name << ": Doing  color " << c 
-		      << " and  grid " << g<< " ( of " 
-		      << params.param.src.spatial_masks.size() << ")"<<endl;
-	  //Constuct the source
-	  DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion>  
-	    GridSrc(srcParams);
-	  LatticeFermion chi = GridSrc(u_smr);
-	  color_vecs.getEvectors()[count] = peekSpin(chi,0) ;
-	  if(params.param.OrthoNormal){
-	    for(int k(0);k<count;k++){
-	      multi1d<DComplex> cc = sumMulti(localInnerProduct(color_vecs.getEvectors()[k],color_vecs.getEvectors()[count]),phases.getSet());
-	      for(int t(0);t<phases.numSubsets();t++)
-		color_vecs.getEvectors()[count][phases.getSet()[t]] -= 
-		  cc[t]*color_vecs.getEvectors()[k] ;
-	    }
-	    multi1d<Double> norm2 = 
-	      sumMulti(localNorm2(color_vecs.getEvectors()[count]),phases.getSet());
-	    for(int t(0);t<phases.numSubsets();t++)
-	      color_vecs.getEvectors()[count][phases.getSet()[t]] /= sqrt(norm2[t]) ;
-	  }
-	      
-	  count ++;
-	}
-      }
 
       Handle< QuarkSmearing<LatticeColorVector> >  Smearing ;
       try{
@@ -422,7 +300,7 @@ namespace Chroma
 	XMLReader  smrtop(xml_l);
 	QDPIO::cout << "ColorVector Smearing type = " <<params.param.src.smr.id ;
 	QDPIO::cout << endl;
-
+	
 	Smearing =
 	  TheColorVecSmearingFactory::Instance().createObject(params.param.src.smr.id,
 							      smrtop,
@@ -439,74 +317,128 @@ namespace Chroma
 		    <<   endl;
 	QDP_abort(1);
       }
-      
-      // TheColorVecSmearingFactory::Instance().
-      //GausQuarkSmearingEnv::Params QsmrParams(
-      //GausQuarkSmearingEnv::QuarkSmear<LatticeColorVector> smearVecs(QsmrParams);
-      //for the moment only gaussing smearing works...
-      //but this is good enough for what we want to do
-      for(int hit(1);hit<params.param.Nhits;hit++){
-	for(int i(0);i<Nvecs;i++){
-	  QDPIO::cout << name << ": Doing colorvec: "<<i
-		      << " hit no: "<<hit<<endl ;
-	  (*Smearing)(color_vecs.getEvectors()[i], u_smr);
-	  if(params.param.OrthoNormal){
-            for(int k(0);k<i;k++){
-              multi1d<DComplex> cc = 
-		sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					   color_vecs.getEvectors()[i]),
-			 phases.getSet());
-              for(int t(0);t<phases.numSubsets();t++)
-                color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-                  cc[t]*color_vecs.getEvectors()[k] ;
-            }
-            multi1d<Double> norm2 =
-	      sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
-            for(int t(0);t<phases.numSubsets();t++)
-              color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]) ;
-	  }
 
+      
+
+      /**
+      //
+      // create the output files
+      //
+      try
+	{
+	  TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.blocked_colorvec_id);
 	}
-	
+      catch (std::bad_cast)
+	{
+	  QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	  QDP_abort(1);
+	}
+      catch (const string& e) 
+	{
+	  QDPIO::cerr << name << ": error creating prop: " << e << endl;
+	  QDP_abort(1);
+	}
+
+      // Cast should be valid now
+      SubsetVectors<LatticeColorVector>& blocked_color_vecs=TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.blocked_colorvec_id);
+
+      **/
+      //
+      // Read in the source along with relevant information.
+      // 
+      XMLReader source_file_xml, source_record_xml;
+
+      QDPIO::cout << "Snarf the source from a named buffer" << endl;
+      try
+	{
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+
+	// Snarf the source info. This is will throw if the colorvec_id is not there
+	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getRecordXML(source_record_xml);
+
+	// Write out the source header
+	write(xml_out, "Source_file_info", source_file_xml);
+	write(xml_out, "Source_record_info", source_record_xml);
+	}    
+      catch (std::bad_cast)
+      {
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
       }
-      if(params.param.BlockOrthoNormal){
-	//create the block dims array
-	Set blocks ;
-	multi1d<int> block_dims(Nd);
-	int k(0);
-	QDPIO::cout<<"Block Orthonormalizing with block size: ";
-	for(int d(0); d < Nd; d++){
-	  if (d == params.param.src.decay_dir )
-	    block_dims[d] = 1 ;
-	  else{
-	    if(k<params.param.block.size()){
-	      block_dims[d] = params.param.block[k] ;
-	      k++ ;
-	    }
-	    else
-	      block_dims[d] = Layout::lattSize()[d] ;
-	  }
-	  QDPIO::cout<<	  block_dims[d]<< " ";
-	}
-	QDPIO::cout<<endl ;
-	blocks.make(BlockFunc(block_dims));
+      catch (const string& e) 
+      {
+	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
+	QDP_abort(1);
+      }
+      SubsetVectors<LatticeColorVector>& color_vecs = 
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+      
+      QDPIO::cout << "Source successfully read and parsed" << endl;
+
+       // The code goes here
+      StopWatch swatch;
+      swatch.reset();
+      swatch.start();
+
+      // Initialize the slow Fourier transform phases
+      SftMom phases(0, true, params.param.src.decay_dir);
+      
+      int Nvecs = color_vecs.getEvectors().size();
+      if(params.param.OrthoNormal){
 	for(int i(0);i<Nvecs;i++){
 	  for(int k(0);k<i;k++){
-	      multi1d<DComplex> cc =
-                sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-                                           color_vecs.getEvectors()[i]),
-                         blocks);
-	      for(int b(0);b<blocks.numSubsets();b++)
-                color_vecs.getEvectors()[i][blocks[b]] -=
-                  cc[b]*color_vecs.getEvectors()[k] ;
+	    multi1d<DComplex> cc = 
+	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
+					 color_vecs.getEvectors()[i]),
+		       phases.getSet());
+	    for(int t(0);t<phases.numSubsets();t++)
+	      color_vecs.getEvectors()[i][phases.getSet()[t]] -=
+		cc[t]*color_vecs.getEvectors()[k] ;
 	  }
 	  multi1d<Double> norm2 =
-	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
-	  for(int b(0);b<blocks.numSubsets();b++)
-	    color_vecs.getEvectors()[i][blocks[b]] /= sqrt(norm2[b]) ;
+	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
+	  for(int t(0);t<phases.numSubsets();t++)
+	    color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]) ;
 	}
+      }
 
-      }//BlockOrthoNormalize
+      //block the block dims array
+      Set blocks ;
+      multi1d<int> block_dims(Nd);
+      int k(0);
+      QDPIO::cout<<"Block Orthonormalizing with block size: ";
+      for(int d(0); d < Nd; d++){
+	if (d == params.param.src.decay_dir )
+	  block_dims[d] = 1 ;
+	else{
+	  if(k<params.param.block.size()){
+	    block_dims[d] = params.param.block[k] ;
+	    k++ ;
+	  }
+	  else
+	    block_dims[d] = Layout::lattSize()[d] ;
+	}
+	QDPIO::cout<<	  block_dims[d]<< " ";
+      }
+      QDPIO::cout<<endl ;
+      blocks.make(BlockFunc(block_dims));
+      for(int i(0);i<Nvecs;i++){
+	for(int k(0);k<i;k++){
+	  multi1d<DComplex> cc =
+	    sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
+				       color_vecs.getEvectors()[i]),
+		     blocks);
+	  for(int b(0);b<blocks.numSubsets();b++)
+	    color_vecs.getEvectors()[i][blocks[b]] -=
+	      cc[b]*color_vecs.getEvectors()[k] ;
+	}
+	multi1d<Double> norm2 =
+	  sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
+	for(int b(0);b<blocks.numSubsets();b++)
+	  color_vecs.getEvectors()[i][blocks[b]] /= sqrt(norm2[b]) ;
+      }
+
       //#define PRINT_SMEARING_MATRIX
 #ifdef PRINT_SMEARING_MATRIX
       if(params.param.BlockOrthoNormal){
@@ -602,7 +534,7 @@ namespace Chroma
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;      
 
-      pop(xml_out);  // CreateColorVecs
+      pop(xml_out);  // BlockColorVecs
 
       /**/
       // Write the meta-data for this operator
