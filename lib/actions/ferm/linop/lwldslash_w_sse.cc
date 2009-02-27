@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_sse.cc,v 3.4 2008-03-04 22:38:08 bjoo Exp $
+// $Id: lwldslash_w_sse.cc,v 3.5 2009-02-27 15:22:00 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -11,7 +11,9 @@
 
 namespace Chroma 
 { 
-
+  namespace SSERefCount {
+	static bool initedP = false;
+  }
   //! Initialization routine
   void SSEWilsonDslash::init()
   {
@@ -20,11 +22,14 @@ namespace Chroma
     QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
 #endif
 
-    // Initialize using the total problem size
-    init_sse_su3dslash(Layout::lattSize().slice(),
+    if( SSERefCount::initedP == false ) {
+      // Initialize using the total problem size
+      init_sse_su3dslash(Layout::lattSize().slice(),
 			Layout::QDPXX_getSiteCoords,
                         Layout::QDPXX_getLinearSiteIndex,
                         Layout::QDPXX_nodeNumber);
+      SSERefCount::initedP = true;
+    }
   }
 
 
@@ -131,7 +136,8 @@ namespace Chroma
     QDPIO::cout << "Calling free_sse_su3dslash()... " << endl;
 #endif
 
-    free_sse_su3dslash();
+    // Never free
+    // free_sse_su3dslash();
 
     END_CODE();
   }
