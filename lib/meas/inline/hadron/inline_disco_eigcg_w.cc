@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eigcg_w.cc,v 1.9 2009-02-20 20:29:01 caubin Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.10 2009-02-27 16:44:38 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -622,7 +622,6 @@ namespace Chroma{
 	  multi2d<Complex> B(Nrhs, ldb);
 	  for(int i(0); i<ldb;i++){
 	    for(int j = 0 ; j <  Nrhs ; ++j){
-	      QDPIO::cout<<"index of B[j,i] = "<<j<<", "<<i<<endl ;
 	      QDPIO::cout<<"   Doing dilution : "<<j<<endl ;
 	      LatticeFermion q     = quarks[n]->dilutedSolution(it,j);
 	      LatticeFermion qtmp, SdagSchi;
