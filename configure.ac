@@ -112,6 +112,14 @@ AC_ARG_ENABLE(ssed_clover,
 	[ssed_clover_enabled="no"]
 )
 
+AC_ARG_ENABLE(craypat,
+	AC_HELP_STRING(
+         [--enable-craypat],
+	 [Enable Cray Pat instrumentation of some routines]),
+         [craypat_enabled="${enableval}"],
+ 	 [craypat_enabled="no"]
+)
+
 AC_ARG_ENABLE(lapack,
   AC_HELP_STRING([--enable-lapack=<type>],
     [Use the type of lapack bindings specified by <type>. Currently, this can be lapack]),
@@ -233,6 +241,13 @@ else
   AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
 fi 
 
+dnl turn on craypat
+if test "X${craypat_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE([Enabling CrayPAT sections in some routines])
+  AC_DEFINE([CRAYPAT],[1], [Turn on Craypat]) 
+fi
+
 dnl
 dnl Check if ffdb-lite is enabled
 dnl
@@ -266,7 +281,7 @@ esac
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
 
-
+ 
 dnl ************************************************************************
 dnl **** CG DWF stuff                                                   ****
 dnl ************************************************************************
