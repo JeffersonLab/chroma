@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eigcg_w.cc,v 1.10 2009-02-27 16:44:38 caubin Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.11 2009-03-04 17:31:33 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -204,9 +204,9 @@ namespace Chroma{
     //! Meson operator     
     struct KeyOperator_t
     {
+      multi1d<short int> mom     ; /*!< D-1 momentum of this operator */
       unsigned short int t_slice ; /*!< Meson operator time slice */
       multi1d<short int> disp    ; /*!< Displacement dirs of quark (right)*/
-      multi1d<short int> mom     ; /*!< D-1 momentum of this operator */
       
       KeyOperator_t(){
 	mom.resize(Nd-1);
@@ -214,7 +214,31 @@ namespace Chroma{
     };
     
     bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
-      return ((a.t_slice<b.t_slice)&&(a.mom<b.mom)&&(a.disp<b.disp)) ;
+      if(a.t_slice<b.t_slice)
+	return true ;
+      else if(a.mom<b.mom)
+	return true ;
+      else if (a.disp<b.disp) 
+	return true ;
+      else 
+	false ;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const KeyOperator_t& d)
+    {
+      os << "KeyOperator_t:"
+	 << " t_slice = " << d.t_slice
+	 << ", disp = ";
+      for (int i=0; i<d.disp.size();i++){
+	os << d.disp[i] << " " ;
+      }
+      os << ", mom = ";
+      for (int i=0; i<d.mom.size();i++){
+	os << d.mom[i] << " " ;
+      }
+      os << std::endl;
+
+      return os;
     }
 
     class ValOperator_t{
@@ -223,6 +247,20 @@ namespace Chroma{
       ValOperator_t(){op.resize(Ns*Ns);} // Here go the 16 gamma matrices
       ~ValOperator_t(){}
     } ;
+
+    //-------------------------------------------------------------------------                            
+    //! stream IO                                                                                          
+    std::ostream& operator<<(std::ostream& os, const ValOperator_t& d)
+    {
+      os << "ValOperator_t:\n";
+      for (int i=0; i<d.op.size();i++){
+        os <<"     gamma["<<i<<"] = "<< d.op[i] << endl ;
+      }
+      
+      return os;
+    }
+    
+
 
     struct KeyVal_t{
       SerialDBKey <KeyOperator_t> k ;
@@ -368,24 +406,27 @@ namespace Chroma{
 	}
       }
       for (int m(0); m < p.numMom(); m++){
-	for(int i(0);i<Nd;i++)
+	for(int i(0);i<(Nd-1);i++)
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
-	map< KeyOperator_t, ValOperator_t >::iterator it ;
-	it = db.find(kv.first) ;
-	if(it == db.end()){// new element
-	  QDPIO::cout<<"Inserting new entry in map\n";
-	  //db.insert(db.rbegin(),kv);
-	  db.insert(kv);
-	} 
-	else{// element exists need to add result to it
-	  for(int i(0);i<kv.second.op.size();i++)
-	    it->second.op[i] += kv.second.op[i] ;
-	}
-	
-      }
+	for (int i(0);i<16;i++)
+	  cout<<"foo["<<m<<"]["<<i<<"] = "<<foo[m][i]<<endl;
 
+	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	
+	itbo = db.insert(kv);
+	if( !(itbo.second) ){  // if insert fails, key already exists, so add result
+	  for(int i(0);i<kv.second.op.size();i++)
+	    itbo.first->second.op[i] += kv.second.op[i] ;
+	}
+	else
+	  QDPIO::cout<<"Inserting new entry in map\n";
+
+	cout<<"key = "<<kv.first<<endl;
+	cout<<"      "<<kv.second<<endl;
+      }
+      
       if(path.size()<max_path_length){
 	QDPIO::cout<<" attempt to add new path. "
 		   <<" current path length is : "<<path.size();
@@ -416,7 +457,6 @@ namespace Chroma{
       
     }// do_disco
 
-    // Getting rid of path-length stuff...
     void do_disco(map< KeyOperator_t, ValOperator_t >& db,
 		  CholeskyFactors Clsk , 
 		  multi1d<LatticeFermion>& vec,
@@ -490,21 +530,22 @@ namespace Chroma{
 	
       }
       for (int m(0); m < p.numMom(); m++){
-	for(int i(0);i<Nd;i++)
+	for(int i(0);i<(Nd-1);i++)
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
 	map< KeyOperator_t, ValOperator_t >::iterator it ;
 	it = db.find(kv.first) ;
-	if(it == db.end()){// new element
-	  QDPIO::cout<<"Inserting new entry in map\n";
-	  //db.insert(db.rbegin(),kv);
-	  db.insert(kv);
-	} 
-	else{// element exists need to add result to it
+
+	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	
+	itbo = db.insert(kv);
+	if( !(itbo.second) ){  // if insert fails, key already exists, so add result
 	  for(int i(0);i<kv.second.op.size();i++)
-	    it->second.op[i] += kv.second.op[i] ;
+	    itbo.first->second.op[i] += kv.second.op[i] ;
 	}
+	else
+	  QDPIO::cout<<"Inserting new entry in map\n";
 
       }
 
@@ -588,26 +629,10 @@ namespace Chroma{
 	       multi1d< Handle< DilutionScheme<LatticeFermion> > >& quarks,
 	       CholeskyFactors Clsk , multi1d<LatticeFermion>& vec,
 	       const Params::Param_t& param, const P& u){
-      /**
-	 Okay, quarks is the set of dilution vectors here, so it is a multi1d of LatticeFermions
-	 multi1d< Handle< DilutionScheme<LatticeFermion> > > quarks(N_quarks);
-	 We have to figure out how to deal with these. It might be best to have this input
-	 and the chitilde which is an output will be the same thing...with the projector
-	 having acted upon it.
-      **/
       char U = 'U';
       int info;
 
       int ldb = vec.size();//This is the offset that will for now be the size of each vector
-      // int Nrhs = Clsk.Nvec;// Okay, it is either this or quarks.size()
-      //int Nrhs = quarks.size();// I think it is this for this case...but should it really be
-      // [quarks.size()] * [quarks[n]->getNumTimeSlices()] * [quarks[n]->getDilSize(it)]????
-      // I think this is what we'll need to do to get the # of RHS's...
-      
-      // multi1d<LatticeFermion> Svec(vec.size());// Use this perhaps to be S*V, so that we can
-      // take localInnerProduct of this with S*chi, and that would return VdagSdagSchi
-      
-      //      quarkstilde = quarks;
 
       Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo = createOddOdd_Op(param,u);
       
@@ -632,20 +657,17 @@ namespace Chroma{
 	    }
 	  }
 	  int r = QDPLapack::cpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
-	  // For debugging purposes, both r and info should be zero...
 	  QDPIO::cout<<"PRchi cpotrs r = "<<r<<endl;
 	  QDPIO::cout<<"PRchi cpotrs info = "<<info<<endl;
-	  // Now we have B = H^-1 VdagSdagS chi, and need to run over the vectors
-	  // to apply PR on the original Solution vector...
 	  for(int j = 0 ; j <  Nrhs ; ++j){
-	    LatticeFermion vBtmp = B[j][0]*vec[0];// This is WRONG! I don't know why I need the [0]!!
+	    LatticeFermion vBtmp = B[j][0]*vec[0];
 	    LatticeFermion q     = quarks[n]->dilutedSolution(it,j);
 	    LatticeFermion vB;
 	    for(int i(1); i<ldb;i++){
 	      vB    = B[j][i]*vec[i] + vBtmp;
 	      vBtmp = vB;
 	    }
-	    quarkstilde[n][it][j] = q - vB;//Okay, if everything above is correct, this is it!
+	    quarkstilde[n][it][j] = q - vB;
 	  }
 
 	}
@@ -893,8 +915,13 @@ namespace Chroma{
       for(it=data.begin();it!=data.end();it++){
 	key.key()  = it->first  ;
 	val.data().op.resize(it->second.op.size()) ;
-	for(int i(0);i<it->second.op.size();i++)
+	for(int i(0);i<it->second.op.size();i++){
+	  // Note that somehow this turns zeros into nans...
+	  //          val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
+	  QDPIO::cout<<"Also wrong for now! We are not normalizing by\n"
+		     <<"the number of quarks, this is only right for one quark dilution!\n";
           val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
+	}
       }
 
       // Now calculate the other pieces which need no normalization...

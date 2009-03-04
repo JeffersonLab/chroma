@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.7 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_disco_w.cc,v 1.8 2009-03-04 17:31:33 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -196,7 +196,14 @@ namespace Chroma{
     };
     
     bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
-      return ((a.t_slice<b.t_slice)&&(a.mom<b.mom)&&(a.disp<b.disp)) ;
+      if(a.t_slice<b.t_slice)
+        return true ;
+      else if(a.mom<b.mom)
+        return true ;
+      else if (a.disp<b.disp)
+        return true ;
+      else
+        false ;
     }
 
     class ValOperator_t{
@@ -283,7 +290,7 @@ namespace Chroma{
 	}
       }
       for (int m(0); m < p.numMom(); m++){
-	for(int i(0);i<Nd;i++)
+	for(int i(0);i<(Nd-1);i++)
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
