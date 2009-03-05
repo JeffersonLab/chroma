@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.317 2009-03-05 03:16:12 edwards Exp $
+# $Id: Makefile.in,v 3.318 2009-03-05 03:58:28 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -2033,7 +2033,6 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
-FFDB_LITE_ENABLED = @FFDB_LITE_ENABLED@
 GMP_CXXFLAGS = @GMP_CXXFLAGS@
 GMP_LDFLAGS = @GMP_LDFLAGS@
 GMP_LIBS = @GMP_LIBS@
