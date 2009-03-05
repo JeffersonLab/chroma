@@ -1,3 +1,9 @@
+03/04/2009 - Robert Edwards  
+	Version 3.33.0
+        Changed around eigcg support for MdagM and M. New block colorvec support 
+        by Kostas. New sloppy precision sse-dslash support by Balint. Disco eigcg
+        by Kostas and Christopher.
+
 01/26/2009 - Robert Edwards  
 	Version 3.32.0
         Delta tau version of min-norm-2 integrators. New stochastic
