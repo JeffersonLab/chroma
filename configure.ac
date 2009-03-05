@@ -1,4 +1,4 @@
-AC_INIT(chroma,3.33.0,edwards@jlab.org)
+AC_INIT(chroma,3.34.0,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AM_INIT_AUTOMAKE
@@ -110,14 +110,6 @@ AC_ARG_ENABLE(ssed_clover,
 	[Enable SSE Double Prec clover operator]),
 	[ssed_clover_enabled="${enableval}"],
 	[ssed_clover_enabled="no"]
-)
-
-AC_ARG_ENABLE(craypat,
-	AC_HELP_STRING(
-         [--enable-craypat],
-	 [Enable Cray Pat instrumentation of some routines]),
-         [craypat_enabled="${enableval}"],
- 	 [craypat_enabled="no"]
 )
 
 AC_ARG_ENABLE(lapack,
@@ -241,23 +233,6 @@ else
   AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
 fi 
 
-dnl turn on craypat
-if test "X${craypat_enabled}X" = "XyesX";
-then
-  AC_MSG_NOTICE([Enabling CrayPAT sections in some routines])
-  AC_DEFINE([CRAYPAT],[1], [Turn on Craypat]) 
-fi
-
-dnl
-dnl Check if ffdb-lite is enabled
-dnl
-AC_SUBST(FFDB_LITE_ENABLED, "`${QDPXX_CONFIG} --db-enabled 2>/dev/null`")
-AC_MSG_NOTICE([DB-lite enabled: ${FFDB_LITE_ENABLED}])
-
-AM_CONDITIONAL(BUILD_FFDB_LITE,
-  [test "x${FFDB_LITE_ENABLED}x" = "xyesx" ])
-
-
 dnl ************************************************************************
 dnl **** SSE Wilson dslash                                              ****
 dnl ************************************************************************
@@ -281,7 +256,7 @@ esac
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
 
- 
+
 dnl ************************************************************************
 dnl **** CG DWF stuff                                                   ****
 dnl ************************************************************************
