@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.6 2009-02-23 19:52:02 edwards Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.7 2009-03-05 04:01:06 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -264,9 +264,9 @@ namespace Chroma
       multi1d<int>       middle;       /*!< Displacement dirs of middle colorvector */
       multi1d<int>       right;        /*!< Displacement dirs of right colorvector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
-      int                blk_l;       /*!< Block of the left quark */
-      int                blk_m;     /*!< Block for the middle quark */
-      int                blk_r;      /*!< Block for the right quark */
+      int                blk_l;        /*!< Block of the left quark */
+      int                blk_m;        /*!< Block for the middle quark */
+      int                blk_r;        /*!< Block for the right quark */
     };
 
     //! Baryon operator
@@ -585,16 +585,41 @@ namespace Chroma
 					eigen_source.getEvectors());
 
       //
+      // DB storage
+      //
+      BinaryStoreDB< SerialDBKey<KeyBaryonElementalOperator_t>, SerialDBData<ValBaryonElementalOperator_t> > 
+	qdp_db;
+
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("blockBaryonElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "blockSize", params.param.block_size);
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Weights", eigen_source.getEvalues());
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	write(file_xml, "Op_Info",displacement_list);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	qdp_db.open(params.named_obj.baryon_op_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
+
+      //
       // Baryon operators
       //
       // The creation and annihilation operators are the same without the
       // spin matrices.
       //
       QDPIO::cout << "Building baryon operators" << endl;
-
-      // DB storage
-      BinaryFxStoreDB< SerialDBKey<KeyBaryonElementalOperator_t>, SerialDBData<ValBaryonElementalOperator_t> > 
-	qdp_db(params.named_obj.baryon_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       push(xml_out, "ElementalOps");
 
@@ -731,27 +756,6 @@ namespace Chroma
       } // for l
 
       pop(xml_out); // ElementalOps
-
-      // Write the meta-data and the binary for this operator
-      swiss.reset();
-      swiss.start();
-      {
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("blockBaryonElemOp"));
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "blockSize", params.param.block_size);
-	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Op_Info",displacement_list);
-	pop(file_xml);
-
-	qdp_db.insertUserdata(file_xml.str());
-      }
-      swiss.stop();
 
       QDPIO::cout << "Baryon Operator written:"
 		  << "  time= " << swiss.getTimeInSeconds() << " secs" << endl;

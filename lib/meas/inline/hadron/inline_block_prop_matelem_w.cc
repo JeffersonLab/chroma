@@ -1,4 +1,4 @@
-// $Id: inline_block_prop_matelem_w.cc,v 1.3 2009-02-23 19:52:02 edwards Exp $
+// $Id: inline_block_prop_matelem_w.cc,v 1.4 2009-03-05 04:01:06 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -425,9 +425,34 @@ namespace Chroma
       // Total number of iterations
       int ncg_had = 0;
 
+
+      //
       // DB storage
-      BinaryFxStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > 
-        qdp_db(params.named_obj.prop_op_file, DB_CREATE, db_cachesize, db_pagesize);
+      //
+      BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > 
+	qdp_db;
+
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("blockPropElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "blockSize", params.param.block_size);
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Weights", eigen_source.getEvalues());
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
 
       //
       // Try the factories
@@ -552,23 +577,6 @@ namespace Chroma
       pop(xml_out);
       
       pop(xml_out);  // prop_matelem_colorvec
-      
-      // Write the meta-data and the binary for this operator
-      {
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("blockPropElemOp"));
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "blockSize", params.param.block_size);
-	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
-
-	qdp_db.insertUserdata(file_xml.str());
-      }
       
       snoop.stop();
       QDPIO::cout << name << ": total time = "

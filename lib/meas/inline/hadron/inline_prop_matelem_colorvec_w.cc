@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.16 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.17 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -408,12 +408,35 @@ namespace Chroma
       }
 
 
+      //
+      // DB storage
+      //
+      BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
+
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("propElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Weights", eigen_source.getEvalues());
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size() + 17);
+
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
+
+
       // Total number of iterations
       int ncg_had = 0;
-
-      // DB storage
-      BinaryFxStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > 
-        qdp_db(params.named_obj.prop_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       //
       // Try the factories
@@ -523,21 +546,6 @@ namespace Chroma
       pop(xml_out);
 
       pop(xml_out);  // prop_matelem_colorvec
-
-      // Write the meta-data and the binary for this operator
-      {
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "PropElementalOperators");
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
-
-	qdp_db.insertUserdata(file_xml.str());
-      }
 
       snoop.stop();
       QDPIO::cout << name << ": total time = "

@@ -1,4 +1,4 @@
-// $Id: inline_grid_prop_matelem_w.cc,v 3.7 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_grid_prop_matelem_w.cc,v 3.8 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeFermion*M^-1*LatticeFermion
  *
@@ -434,11 +434,35 @@ namespace Chroma
       }
 
       //snkParams=srcParams ;
-      // DB storage                  
-      BinaryFxStoreDB<SerialDBKey<KeyGridPropElem_t>,
-	SerialDBData<ValGridPropElem_t> > 
-	qdp_db(params.named_obj.prop_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
+      //
+      // DB storage
+      //
+      BinaryStoreDB<SerialDBKey<KeyGridPropElem_t>, SerialDBData<ValGridPropElem_t> > qdp_db;
+
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("gridPropElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "numGrids", params.param.Ngrids);
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
+
+
+      // Create grid props
       try{
 	StopWatch swatch;
 	swatch.reset();
@@ -531,21 +555,6 @@ namespace Chroma
       }
      
       pop(xml_out);  // grid_prop_matelem
-
-      // Write the meta-data and the binary for this operator
-      {
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "GridPropElems");
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", params.param.decay_dir);
-	//write(file_xml, "Weights", eigen_source.getEvalues());
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
-
-	//qdp_db.insertUserdata(file_xml.str());
-      }
 
       snoop.stop();
       QDPIO::cout << name << ": total time = "

@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eigcg_w.cc,v 1.11 2009-03-04 17:31:33 caubin Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.12 2009-03-05 04:01:06 edwards Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -942,10 +942,29 @@ namespace Chroma{
 
       //After all the pieces are computed we write the final result to the database
       // DB storage          
-      BinaryFxStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> >
-	qdp_db(params.named_obj.op_db_file, DB_CREATE, db_cachesize, db_pagesize);
+      BinaryStoreDB<SerialDBKey<KeyOperator_t>,SerialDBData<ValOperator_t> > qdp_db;
 
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
 
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("discoEigElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", decay_dir);
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	qdp_db.open(params.named_obj.op_db_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
+
+      // Store all the data
       for(it=data.begin();it!=data.end();it++){
 	key.key()  = it->first  ;
 	val.data().op.resize(it->second.op.size()) ;

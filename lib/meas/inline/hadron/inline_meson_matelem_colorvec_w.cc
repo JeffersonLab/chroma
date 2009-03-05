@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.21 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.22 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -468,6 +468,36 @@ namespace Chroma
       // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
+      //
+      // DB storage
+      //
+      BinaryStoreDB< SerialDBKey<KeyMesonElementalOperator_t>, SerialDBData<ValMesonElementalOperator_t> > 
+	qdp_db;
+
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("mesonElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+//	write(file_xml, "blockSize", params.param.block_size);
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Weights", eigen_source.getEvalues());
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	write(file_xml, "Op_Info", params.param.displacement_list);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	qdp_db.open(params.named_obj.meson_op_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
+
+
       // Keep track of no displacements and zero momentum
       multi1d<int> no_displacement;
       multi1d<int> zero_mom(3); zero_mom = 0;
@@ -479,10 +509,6 @@ namespace Chroma
       // spin matrices.
       //
       QDPIO::cout << "Building meson operators" << endl;
-
-      // DB storage
-      BinaryFxStoreDB< SerialDBKey<KeyMesonElementalOperator_t>, SerialDBData<ValMesonElementalOperator_t> > 
-	qdp_db(params.named_obj.meson_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       push(xml_out, "ElementalOps");
 
@@ -580,28 +606,6 @@ namespace Chroma
       } // for l
 
       pop(xml_out); // ElementalOps
-
-      // Write the meta-data and the binary for this operator
-      swiss.reset();
-      swiss.start();
-      {
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "MesonElementalOperators");
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Op_Info",params.param.displacement_list);
-	pop(file_xml);
-
-	qdp_db.insertUserdata(file_xml.str());
-      }
-      swiss.stop();
-
-      QDPIO::cout << "Meson Operator written:"
-		  << "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
 
       // Close the namelist output file XMLDAT
       pop(xml_out);     // MesonMatElemColorVector

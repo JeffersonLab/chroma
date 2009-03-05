@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: key_val_db.h,v 1.1 2008-08-05 04:15:04 edwards Exp $
+// $Id: key_val_db.h,v 1.2 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Key and values for DB
  */
@@ -12,7 +12,7 @@
 
 namespace Chroma
 {
-  using namespace FFDB;
+  using namespace FILEDB;
 
   //---------------------------------------------------------------------
   //! Serializable key harness
@@ -52,15 +52,11 @@ namespace Chroma
     int hasCompareFunc (void) const {return 0;}
 
     /**
-     * Static Hash Function Implementation
+     * Empty hash and compare functions. We are using default functions.
      */
-    static unsigned int hash (Db *db, const void* bytes, unsigned int len) {return 0;}
-
-    /**
-     * Static empty compare function 
-     */
-    static int compare (Db *db, const Dbt* k1, const Dbt* k2) {return 0;}
-
+    static unsigned int hash (const void* bytes, unsigned int len) {return 0;}
+    static int compare (const FFDB_DBT* k1, const FFDB_DBT* k2) {return 0;}
+   
   private:
     K  key_;
   };

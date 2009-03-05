@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.9 2009-02-17 16:45:10 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.10 2009-03-05 04:01:06 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -514,13 +514,39 @@ namespace Chroma
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       //
+      // DB storage
+      //
+      BinaryStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > 
+	qdp_db;
+
+      // Open the file, and write the meta-data and the binary for this operator
+      {
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "DBMetaData");
+	write(file_xml, "id", string("genPropElemOp"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Op_Info", params.param.disp_gamma_list);
+	write(file_xml, "Source_prop_record_info", source_prop_record_xml);
+	write(file_xml, "Sink_prop_record_info", sink_prop_record_xml);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+	std::string file_str(file_xml.str());
+	qdp_db.setMaxUserInfoLen(file_str.size());
+
+	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR | O_CREAT, 0664);
+
+	qdp_db.insertUserdata(file_str);
+      }
+
+
+      //
       // Generalized propagatos
       //
       QDPIO::cout << "Building generalized propagators" << endl;
-
-      // DB storage
-      BinaryFxStoreDB< SerialDBKey<KeyGenPropElementalOperator_t>, SerialDBData<ValGenPropElementalOperator_t> > 
-        qdp_db(params.named_obj.genprop_op_file, DB_CREATE, db_cachesize, db_pagesize);
 
       push(xml_out, "ElementalOps");
 
@@ -675,29 +701,6 @@ namespace Chroma
       } // for l
 
       pop(xml_out); // ElementalOps
-
-      // Write the meta-data and the binary for this operator
-      swiss.reset();
-      swiss.start();
-      {
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "PropElementalOperators");
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Op_Info", params.param.disp_gamma_list);
-	write(file_xml, "Source_prop_record_info", source_prop_record_xml);
-	write(file_xml, "Sink_prop_record_info", sink_prop_record_xml);
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
-
-	qdp_db.insertUserdata(file_xml.str());
-      }
-      swiss.stop();
-
-      QDPIO::cout << "Meson Operator written:"
-		  << "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
 
       // Close the namelist output file XMLDAT
       pop(xml_out);     // GenPropMatElemColorVector

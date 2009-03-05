@@ -1,4 +1,4 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.22 2009-02-03 21:35:14 edwards Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.23 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
@@ -849,9 +849,11 @@ namespace Chroma{
 	  MesonOp op = it->second ;
 	  // DB storage
 	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 
-	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<MesonOpData > > 
-	    qdp_db(op.file, DB_CREATE, db_cachesize, db_pagesize);
+	  BinaryStoreDB< SerialDBKey<HadronKey>, SerialDBData<MesonOpData > > qdp_db;
+	  qdp_db.setMaxUserInfoLen(UserData_xml.str().size());
+	  qdp_db.open(op.file, O_RDWR | O_CREAT, 0664);
 	  qdp_db.insertUserdata(UserData_xml.str());
+
 	  SerialDBKey<HadronKey> key ;
 	  //HadronKey key ;
 	  key.key().gamma = op.g ;
@@ -972,9 +974,9 @@ namespace Chroma{
 	map<string, BaryonOp>::iterator it ;
 	for(it=LocalBaryonOps.begin();it!=LocalBaryonOps.end();it++){
 	  BaryonOp op = it->second ;
-	  //BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<HadronOperator > > 	 
-	  BinaryFxStoreDB< SerialDBKey<HadronKey>, SerialDBData<BaryonOpData > > 
-	    qdp_db(op.file, DB_CREATE, db_cachesize, db_pagesize);
+	  BinaryStoreDB< SerialDBKey<HadronKey>, SerialDBData<BaryonOpData > > qdp_db;
+	  qdp_db.setMaxUserInfoLen(UserData_xml.str().size());
+	  qdp_db.open(op.file, O_RDWR | O_CREAT, 0664);
 	  qdp_db.insertUserdata(UserData_xml.str());
 
 	  SerialDBKey<HadronKey> key ;
