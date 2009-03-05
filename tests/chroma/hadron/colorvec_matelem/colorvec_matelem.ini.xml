@@ -228,7 +228,7 @@
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_id>prop_colorvec</prop_id>
-        <prop_op_file>prop.db</prop_op_file>
+        <prop_op_file>prop.sdb</prop_op_file>
       </NamedObject>
     </elem>
 
@@ -245,7 +245,7 @@
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_id>static_prop_colorvec</prop_id>
-        <prop_op_file>prop.db</prop_op_file>
+        <prop_op_file>prop.sdb</prop_op_file>
       </NamedObject>
     </elem>
 
@@ -312,7 +312,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <meson_op_file>meson.db</meson_op_file>
+        <meson_op_file>meson.sdb</meson_op_file>
       </NamedObject>
     </elem>
 
@@ -352,7 +352,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <baryon_op_file>baryon.db</baryon_op_file>
+        <baryon_op_file>baryon.sdb</baryon_op_file>
       </NamedObject>
     </elem>
 
@@ -404,7 +404,7 @@
         <gauge_id>default_gauge_field</gauge_id>
         <source_prop_id>prop_colorvec</source_prop_id>
         <sink_prop_id>prop_colorvec</sink_prop_id>
-        <genprop_op_file>genprop.db</genprop_op_file>
+        <genprop_op_file>genprop.sdb</genprop_op_file>
       </NamedObject>
     </elem>
 
