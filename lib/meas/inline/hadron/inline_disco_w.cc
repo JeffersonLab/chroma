@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.9 2009-03-05 04:01:06 edwards Exp $
+// $Id: inline_disco_w.cc,v 1.10 2009-03-06 19:30:18 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -195,17 +195,38 @@ namespace Chroma{
       }
     };
     
+    /**
     bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
       if(a.t_slice<b.t_slice)
-        return true ;
+	return true ;
       else if(a.mom<b.mom)
-        return true ;
+	  return true ;
       else if (a.disp<b.disp)
-        return true ;
+	return true ;
       else
-        false ;
+	false ;
     }
+    **/
+    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
+      return ((a.t_slice<b.t_slice)||(a.mom<b.mom)||(a.disp<b.disp));
+    }
+    
+    std::ostream& operator<<(std::ostream& os, const KeyOperator_t& d)
+    {
+      os << "KeyOperator_t:"
+         << " t_slice = " << d.t_slice
+         << ", disp = ";
+      for (int i=0; i<d.disp.size();i++){
+        os << d.disp[i] << " " ;
+      }
+      os << ", mom = ";
+      for (int i=0; i<d.mom.size();i++){
+        os << d.mom[i] << " " ;
+      }
+      os << std::endl;
 
+      return os;
+    }
     class ValOperator_t{
     public:
       multi1d<ComplexD> op ;  
@@ -213,6 +234,18 @@ namespace Chroma{
       ~ValOperator_t(){}
     } ;
 
+    //-------------------------------------------------------------------------
+    //! stream IO
+    std::ostream& operator<<(std::ostream& os, const ValOperator_t& d)
+    {
+      os << "ValOperator_t:\n";
+      for (int i=0; i<d.op.size();i++){
+	os <<"     gamma["<<i<<"] = "<< d.op[i] << endl ;
+      }
+      
+      return os;
+    }
+    
     struct KeyVal_t{
       SerialDBKey <KeyOperator_t> k ;
       SerialDBData<ValOperator_t> v ;
@@ -294,18 +327,22 @@ namespace Chroma{
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
-	map< KeyOperator_t, ValOperator_t >::iterator it ;
-	it = db.find(kv.first) ;
-	if(it == db.end()){// new element
-	  QDPIO::cout<<"Inserting new entry in map\n";
-	  //db.insert(db.rbegin(),kv);
-	  db.insert(kv);
-	} 
-	else{// element exists need to add resutl to it
-	  for(int i(0);i<kv.second.op.size();i++)
-	    it->second.op[i] += kv.second.op[i] ;
-	}
+        pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 
+        itbo = db.insert(kv);
+        if( itbo.second ){ 
+	  QDPIO::cout<<"Inserting new entry in map\n";
+	}
+	else{ // if insert fails, key already exists, so add result
+	  cout<<"Key = "<<kv.first<<endl;
+	  QDPIO::cout<<"Adding result to value already there"<<endl;
+	  for(int i(0);i<kv.second.op.size();i++){
+	    cout<<"i = "<<i<<"... "<<itbo.first->second.op[i]<<" + "<<kv.second.op[i];
+	    itbo.first->second.op[i] += kv.second.op[i] ;
+	    cout<< " = "<<itbo.first->second.op[i]<<endl;
+	  }
+	}
+	
       }
 
       if(path.size()<max_path_length){
@@ -516,7 +553,7 @@ namespace Chroma{
       }
 
       map< KeyOperator_t, ValOperator_t > data ;
-
+      
       for(int n(0);n<quarks.size();n++){
 	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
 	  int t = quarks[n]->getT0(it) ;

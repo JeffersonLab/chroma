@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eigcg_w.cc,v 1.12 2009-03-05 04:01:06 edwards Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.13 2009-03-06 19:30:18 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -213,6 +213,7 @@ namespace Chroma{
       }
     };
     
+    /*
     bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
       if(a.t_slice<b.t_slice)
 	return true ;
@@ -222,6 +223,10 @@ namespace Chroma{
 	return true ;
       else 
 	false ;
+    }
+    */
+    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
+      return ((a.t_slice<b.t_slice)||(a.mom<b.mom)||(a.disp<b.disp));
     }
 
     std::ostream& operator<<(std::ostream& os, const KeyOperator_t& d)
@@ -362,11 +367,7 @@ namespace Chroma{
       }
       return NULL ;
     }
-    /**
-    typedef LatticeFermion               T;
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
-    **/
+
     struct CholeskyFactors{
       multi1d<Real>    evals ;
       multi1d<Complex> H     ;
@@ -395,6 +396,9 @@ namespace Chroma{
       }
       else
 	kv.first.disp = path ;
+
+      cout<<"Norm of q = "<<norm2(q)<<endl;
+      cout<<"Norm of qbar = "<<norm2(qbar)<<endl;
 
       multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
       for (int m(0); m < p.numMom(); m++)
