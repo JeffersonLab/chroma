@@ -1,4 +1,4 @@
-// $Id: dilution_quark_source_const_w.cc,v 1.17 2008-12-03 21:16:46 kostas Exp $
+// $Id: dilution_quark_source_const_w.cc,v 1.18 2009-03-09 18:23:26 edwards Exp $
 /*! \file
  * \brief Dilution scheme specified by MAKE_SOURCE and PROPAGATOR calls  
  *
@@ -403,6 +403,8 @@ namespace Chroma
 	}//t0
 
 			
+#if 0
+#warning "Turned off the sanity check that the dilutions summed to a unity operator on a time-slice"
 	//Ensure that the given dilutions form a full dilution scheme per 
 	//timeslice. Only need to check a single timeslice as 
 	//we have guaranteed the same dilutions per timeslice
@@ -431,6 +433,7 @@ namespace Chroma
 
 	  QDP_abort(1);
 	}
+#endif
 				
       } //try
       catch (const string& e) 
