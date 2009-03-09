@@ -1,4 +1,4 @@
-// $Id: inline_disco_w.cc,v 1.10 2009-03-06 19:30:18 caubin Exp $
+// $Id: inline_disco_w.cc,v 1.11 2009-03-09 15:25:11 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -195,18 +195,6 @@ namespace Chroma{
       }
     };
     
-    /**
-    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
-      if(a.t_slice<b.t_slice)
-	return true ;
-      else if(a.mom<b.mom)
-	  return true ;
-      else if (a.disp<b.disp)
-	return true ;
-      else
-	false ;
-    }
-    **/
     bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
       return ((a.t_slice<b.t_slice)||(a.mom<b.mom)||(a.disp<b.disp));
     }
@@ -337,12 +325,9 @@ namespace Chroma{
 	  cout<<"Key = "<<kv.first<<endl;
 	  QDPIO::cout<<"Adding result to value already there"<<endl;
 	  for(int i(0);i<kv.second.op.size();i++){
-	    cout<<"i = "<<i<<"... "<<itbo.first->second.op[i]<<" + "<<kv.second.op[i];
 	    itbo.first->second.op[i] += kv.second.op[i] ;
-	    cout<< " = "<<itbo.first->second.op[i]<<endl;
 	  }
 	}
-	
       }
 
       if(path.size()<max_path_length){

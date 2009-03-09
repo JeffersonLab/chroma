@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eigcg_w.cc,v 1.13 2009-03-06 19:30:18 caubin Exp $
+// $Id: inline_disco_eigcg_w.cc,v 1.14 2009-03-09 15:25:11 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -213,18 +213,6 @@ namespace Chroma{
       }
     };
     
-    /*
-    bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
-      if(a.t_slice<b.t_slice)
-	return true ;
-      else if(a.mom<b.mom)
-	return true ;
-      else if (a.disp<b.disp) 
-	return true ;
-      else 
-	false ;
-    }
-    */
     bool operator<(const KeyOperator_t& a, const KeyOperator_t& b){
       return ((a.t_slice<b.t_slice)||(a.mom<b.mom)||(a.disp<b.disp));
     }
@@ -629,7 +617,7 @@ namespace Chroma{
     // Added this "projector" routine to return chitilde = (1 - V Hinv Vdag Sdag S)chi given
     // an input chi vector, and of course the vectors and H. 
     // Note we take in the entire cholesky Factor struct
-    void PRchi(multi1d<multi1d< multi1d<LatticeFermion> > > quarkstilde,
+    void PRchi(multi1d<multi1d< multi1d<LatticeFermion> > >& quarkstilde,
 	       multi1d< Handle< DilutionScheme<LatticeFermion> > >& quarks,
 	       CholeskyFactors Clsk , multi1d<LatticeFermion>& vec,
 	       const Params::Param_t& param, const P& u){
@@ -658,6 +646,7 @@ namespace Chroma{
 	      Doo->oddOddLinOp(SdagSchi,qtmp,MINUS); 
 	      // Sum over lattice sites, so we return a complex number for B
 	      B[j][i] = sum(localInnerProduct(vec[i],SdagSchi),rb[1]);
+	      //	      cout << "B[" << j << "][" << i "] = " << B[j][i] << endl;
 	    }
 	  }
 	  int r = QDPLapack::cpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
@@ -876,6 +865,7 @@ namespace Chroma{
       // chitilde = P_R S^-1 \eta_o
       PRchi(quarkstilde, quarks, Clsk, vec, params.param, u);
       
+      
       for(int n(0);n<quarks.size();n++){
 	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; ++it){
 	  int t = quarks[n]->getT0(it) ;
@@ -920,10 +910,6 @@ namespace Chroma{
 	key.key()  = it->first  ;
 	val.data().op.resize(it->second.op.size()) ;
 	for(int i(0);i<it->second.op.size();i++){
-	  // Note that somehow this turns zeros into nans...
-	  //          val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
-	  QDPIO::cout<<"Also wrong for now! We are not normalizing by\n"
-		     <<"the number of quarks, this is only right for one quark dilution!\n";
           val.data().op[i] = it->second.op[i]/toDouble(quarks.size());
 	}
       }
