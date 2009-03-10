@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: composite_set.h,v 1.1 2009-03-10 19:14:49 kostas Exp $
+// $Id: composite_set.h,v 1.2 2009-03-10 21:55:16 kostas Exp $
 /*! \file
  * \brief Key for propagator colorvector sources
  */
@@ -34,8 +34,8 @@ namespace Chroma
   private:
     CompositeSetFunc() {}  // hide default constructor
     
-    Set set1 ;
-    Set set2 ;
+    SetFunc set1 ;
+    SetFunc set2 ;
 
   };
 
