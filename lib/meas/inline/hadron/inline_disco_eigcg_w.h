@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_disco_eigcg_w.h,v 1.5 2009-01-30 03:42:39 kostas Exp $
+// $Id: inline_disco_eigcg_w.h,v 1.6 2009-03-12 18:41:48 caubin Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
  *
@@ -8,6 +8,8 @@
 
 #ifndef __inline_disco_eigcg_h__
 #define __inline_disco_eigcg_h__
+
+//#include <qdp_subset.h>
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -64,10 +66,8 @@ namespace Chroma
 		XMLWriter& xml_out); 
       
     private:
- 
-
       Params params;
-
+      
     public:
       ~InlineMeas() {}
       InlineMeas(const Params& p) : params(p) {}
@@ -81,8 +81,49 @@ namespace Chroma
       
     };
 
-  }; // name space InlineDiscoEigCGEnv
 
+    //! Function object used for constructing the time-slice set but only with odd sites
+    //! Has an index ultimately such that
+    //! ind = 2*t + rb
+    //! where t is the timeslice we want and rb is 0 (even) or 1 (odd), telling us what
+    //! kind of site this will be.
+    class TimeSliceRBFunc : public SetFunc
+    {
+    public:
+      TimeSliceRBFunc(int dir): dir_decay(dir) {}
+      
+      int operator() (const multi1d<int>& coordinate) const
+      {
+	int sum = 0;
+	for(int m=0; m < coordinate.size(); ++m)
+	  sum += coordinate[m];
+	
+	if ((dir_decay<0)||(dir_decay>=Nd)) {
+	  return sum & 1 ; //In this case return the entire rb subset, with all timeslices
+	} 
+	else {
+	  return ( 2*(coordinate[dir_decay]) + (sum & 1) ) ;
+	}
+      }
+      
+      int numSubsets() const
+      {
+	if ((dir_decay<0)||(dir_decay>=Nd)) {
+	  return 2 ; //Here there's the even or the odd subset
+	} else {
+	  // There are this many subsets, because for each time direction, we have
+	  // either even or odd sites...
+	  return 2*(Layout::lattSize()[dir_decay]) ;
+	}
+      }
+      
+    private:
+      TimeSliceRBFunc() {}  // hide default constructor
+      
+      int dir_decay;
+    };
+    
+  }; // name space InlineDiscoEigCGEnv
 };
 
 #endif
