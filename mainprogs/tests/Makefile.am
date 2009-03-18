@@ -88,6 +88,7 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_overbu t_lower_tests t_seqsource \
     t_unprec_wilson_force t_prec_wilson_force t_unprec_twoflav_wilson_monomial \
     t_prec_twoflav_wilson_monomial t_hamiltonian t_hmc \
+    t_stagg_baryon \
     t_propagator_twisted \
     t_circular_buffer \
     t_precnef \
@@ -141,6 +142,8 @@ t_ovlap5d_bj_SOURCES = t_ovlap5d_bj.cc
 t_propagator_s_SOURCES = t_propagator_s.cc
 t_disc_loop_s_SOURCES = t_disc_loop_s.cc
 t_propagator_fuzz_s_SOURCES = t_propagator_fuzz_s.cc
+t_stagg_baryon_SOURCES = t_stagg_baryon.cc
+
 t_propagator_fuzz_baryon_s_SOURCES = t_propagator_fuzz_baryon_s.cc
 t_propagator_w_SOURCES = t_propagator_w.cc
 
