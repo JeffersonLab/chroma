@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.193 2009-02-23 19:45:18 edwards Exp $
+# $Id: Makefile.am,v 3.194 2009-03-18 13:40:35 mcneile Exp $
 #
 # Path for all files used in building the library
 
@@ -1651,7 +1651,9 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/klein_gordon_linop_s.cc \
 	actions/ferm/qprop/quarkprop4_s.cc \
 	io/follana_io_s.cc \
-	meas/hadron/baryon_s.cc meas/hadron/mesphas_follana_s.cc \
+	meas/hadron/baryon_s.cc \
+	meas/hadron/baryon_spin3by2_s.cc \
+        meas/hadron/mesphas_follana_s.cc \
         meas/hadron/ks_local_loops.cc \
 	meas/hadron/mesphas_s.cc meas/hadron/pions_s.cc \
         meas/hadron/pion_local_s.cc \
