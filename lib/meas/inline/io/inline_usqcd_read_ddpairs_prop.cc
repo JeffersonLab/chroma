@@ -1,9 +1,10 @@
-// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.5 2008-05-02 21:03:35 bjoo Exp $
+// $Id: inline_usqcd_read_ddpairs_prop.cc,v 3.6 2009-03-19 17:10:02 mcneile Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
  * Named object writing
  */
+
 
 #include "chromabase.h"
 
@@ -368,3 +369,4 @@ namespace Chroma
     END_CODE();
 }
 };
+

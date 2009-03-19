@@ -1,9 +1,10 @@
-// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.4 2008-05-02 21:03:35 bjoo Exp $
+// $Id: inline_usqcd_write_ddpairs_prop.cc,v 1.5 2009-03-19 17:10:02 mcneile Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
  * Named object writing
  */
+
 
 #include "chromabase.h"
 #include "handle.h"
@@ -149,6 +150,12 @@ namespace Chroma
   void InlineUSQCDWriteDDPairsProp::func(unsigned long update_no, XMLWriter& xml_out)
   {
     START_CODE();
+    if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+      QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+      QDP_abort(111) ;
+    }
+#if QDP_NC == 3
+
 
     push(xml_out, "USQCDWriteDDPairsProp");
     write(xml_out, "update_no", update_no);
@@ -403,6 +410,8 @@ namespace Chroma
 
     pop(xml_out);  // qio_write_named_obj
 
+#endif
     END_CODE();
 }
 };
+
