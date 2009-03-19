@@ -1,7 +1,10 @@
-// $Id: simple_baryon_operator_w.cc,v 1.6 2006-11-22 04:17:02 juge Exp $
+// $Id: simple_baryon_operator_w.cc,v 1.7 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
+
+#include "qdp_config.h"
+
 
 #include "meas/hadron/simple_baryon_operator_w.h"
 #include "meas/hadron/baryon_operator_factory_w.h"
@@ -194,6 +197,7 @@ namespace Chroma
     {
       START_CODE();
 
+
       // Depending on whether this is the sink or source, do the appropriate
       // combination of smearing and displacing
       multi1d<LatticeFermion> q;
@@ -202,6 +206,12 @@ namespace Chroma
       // The return
       multi1d<LatticeComplex> d(Ns);
       d = zero;
+
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<"BarNuclCg5 code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
 
       // C gamma_5 = Gamma(5)
       SpinMatrix Cg5 = BaryonSpinMats::Cg5();
@@ -226,6 +236,7 @@ namespace Chroma
 	d[k] += traceSpin(Cg5 * di_quark);
       }
 
+#endif
       END_CODE();
 
       return d;
@@ -277,4 +288,6 @@ namespace Chroma
 
 
 }  // end namespace Chroma
+
+
 

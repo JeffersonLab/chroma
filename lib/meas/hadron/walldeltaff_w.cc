@@ -1,9 +1,15 @@
-// $Id: walldeltaff_w.cc,v 3.0 2006-04-03 04:59:01 edwards Exp $
+// $Id: walldeltaff_w.cc,v 3.1 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Wall-sink delta^+ -> gamma+delta^+ form-factors 
  *
  *  Form factors constructed from a quark and a backward quark propagator
  */
+
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
+
 
 #include "chromabase.h"
 #include "meas/hadron/walldeltaff_w.h"
@@ -450,3 +456,8 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 }
 
 }  // end namespace Chroma
+
+#endif
+#endif
+#endif
+

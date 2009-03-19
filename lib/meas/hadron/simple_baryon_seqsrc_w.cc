@@ -1,7 +1,9 @@
-// $Id: simple_baryon_seqsrc_w.cc,v 3.6 2007-11-07 00:40:41 edwards Exp $
+// $Id: simple_baryon_seqsrc_w.cc,v 3.7 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct baryon sequential sources.
  */
+
+#include "qdp_config.h"
 
 #include "meas/hadron/simple_baryon_seqsrc_w.h"
 #include "meas/hadron/seqsource_factory_w.h"
@@ -161,6 +163,12 @@ namespace Chroma
 			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
+
 
       check2Args("BarNuclUTCg5", quark_propagators);
 
@@ -195,6 +203,13 @@ namespace Chroma
 
       return projectBaryon(src_prop_tmp,
 			   forward_headers);
+
+#else
+      LatticePropagator q1_tmp;
+
+      q1_tmp = zero ;
+      return q1_tmp ;
+#endif
     }
 
     
@@ -231,6 +246,12 @@ namespace Chroma
 			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
+
 
       check1Args("BarNuclDTCg5", quark_propagators);
 
@@ -259,6 +280,12 @@ namespace Chroma
 
       return projectBaryon(src_prop_tmp,
 			   forward_headers);
+#else
+      LatticePropagator q1_tmp;
+
+      q1_tmp = zero ;
+      return q1_tmp ; 
+#endif
     }
 
     // Compute the 2-pt at the sink
@@ -295,6 +322,13 @@ namespace Chroma
 			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
+
+
 
       check2Args("BarDeltaUTsp", quark_propagators);
 
@@ -338,6 +372,14 @@ namespace Chroma
 
       return projectBaryon(src_prop_tmp,
 			   forward_headers);
+#else
+      LatticePropagator q1_tmp;
+
+      q1_tmp = zero ;
+      return q1_tmp ;
+#endif
+
+
     }
 
 
@@ -375,6 +417,11 @@ namespace Chroma
 			     const multi1d<LatticePropagator>& quark_propagators)
     {
       START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
 
       check1Args("BarDeltaDTsp", quark_propagators);
 
@@ -410,6 +457,8 @@ namespace Chroma
 
       return projectBaryon(src_prop_tmp,
 			   forward_headers);
+#endif
+
     }
 
     // Compute the 2-pt at the sink
@@ -842,3 +891,4 @@ namespace Chroma
 
 
 }  // end namespace Chroma
+

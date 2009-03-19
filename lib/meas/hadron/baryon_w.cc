@@ -1,4 +1,4 @@
-// $Id: baryon_w.cc,v 3.0 2006-04-03 04:58:59 edwards Exp $ 
+// $Id: baryon_w.cc,v 3.1 2009-03-19 17:17:20 mcneile Exp $ 
 /*! \file
  *  \brief Baryon 2-pt functions
  */
@@ -141,10 +141,17 @@ namespace Chroma
   LatticeComplex nucl2pt(const LatticePropagator& quark_propagator,
 			 const SpinMatrix& T, const SpinMatrix& sp) 
   {
+#if QDP_NC == 3
+
     LatticePropagator di_quark = quarkContract13(quark_propagator * sp,
 						 sp * quark_propagator);
     return LatticeComplex(trace(T * traceColor(quark_propagator * traceSpin(di_quark)))
                         + trace(T * traceColor(quark_propagator * di_quark)));
+#else
+    LatticeComplex a ; 
+    a = zero ;
+    return a ;
+#endif
   }
 	      
 
@@ -153,10 +160,19 @@ namespace Chroma
   LatticeComplex delta2pt(const LatticePropagator& quark_propagator,
 			  const SpinMatrix& T, const SpinMatrix& sp) 
   {
+#if QDP_NC == 3
     LatticePropagator di_quark = quarkContract13(quark_propagator * sp,
 						 sp * quark_propagator);
     return LatticeComplex(trace(T * traceColor(quark_propagator * traceSpin(di_quark)))
 		      + 2*trace(T * traceColor(quark_propagator * di_quark)));
+
+#else
+    LatticeComplex a ; 
+    a = zero ;
+    return a ;
+#endif
+
+
   }
 
 
@@ -504,3 +520,4 @@ namespace Chroma
   }
 
 }  // end namespace Chroma
+

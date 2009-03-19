@@ -1,7 +1,8 @@
-//  $Id: barcomp_w.cc,v 3.2 2007-02-02 05:22:47 edwards Exp $
+//  $Id: barcomp_w.cc,v 3.3 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct all components of a baryon propagator
  */
+
 
 #include "meas/hadron/barcomp_w.h"
 
@@ -71,6 +72,12 @@ namespace Chroma
 		     int t0, int bc_spec)
   {
     START_CODE();
+    if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+      QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+      QDP_abort(111) ;
+    }
+#if QDP_NC == 3
+
 
     // Length of lattice in decay direction
     int length  = phases.numSubsets();
@@ -109,6 +116,7 @@ namespace Chroma
       }
     }
 
+#endif
     END_CODE();
   }
 
@@ -164,6 +172,12 @@ namespace Chroma
 	       int t0, int bc_spec)
   {
     START_CODE();
+    if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+      QDPIO::cerr<<"barcomp code only works for Nc=3 and Ns=4\n";
+      QDP_abort(111) ;
+    }
+#if QDP_NC == 3
+
 
     // Length of lattice in decay direction
     int length  = phases.numSubsets();
@@ -208,8 +222,10 @@ namespace Chroma
 		}
 	      }
 
+#endif
     END_CODE();
   }
 
 
 }  // end namespace Chroma
+

@@ -1,7 +1,9 @@
-// $Id: group_baryon_operator_w.cc,v 1.26 2007-06-10 14:40:23 edwards Exp $
+// $Id: group_baryon_operator_w.cc,v 1.27 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct group baryon operators
  */
+
+
 #include "chromabase.h"
 
 #include "meas/hadron/group_baryon_operator_w.h"
@@ -881,6 +883,13 @@ namespace Chroma
                                ) const
     { 
 			START_CODE();
+			if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+			  QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+			  QDP_abort(111) ;
+			}
+#if QDP_NC == 3
+
+
       // The result of displace and smearing (in some unspecified order here)
       multi1d< map<int, LatticeFermion> > disp_quarks;
       // Depending on whether this is the sink or source, do the 
@@ -912,6 +921,13 @@ namespace Chroma
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
       return d;
+
+#else
+      LatticeComplex d;
+      d = zero ; 
+      return d;
+#endif
+
     } // LatticeComplex GroupBaryonQQQ::operator()
 
     // for the annihilation operator
@@ -923,6 +939,13 @@ namespace Chroma
                                  enum PlusMinus isign ) const
     { 
       START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
+
+
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": entering" << endl;
       // The result of displace and smearing (in some unspecified order here)
       multi1d< map<int, LatticeFermion> > disp_quarks;
@@ -956,6 +979,12 @@ namespace Chroma
       //QDPIO::cout << __PRETTY_FUNCTION__ << ": exiting" << endl;
       END_CODE();
       return d;
+#else
+
+      multi1d<LatticeComplex> d( 1 ); 
+      return d;
+#endif
+
     } // multi1d<LatticeComplex> GroupBaryonQQQ::operator()
 
 
@@ -1048,3 +1077,4 @@ namespace Chroma
 
 
 }  // namespace Chroma
+

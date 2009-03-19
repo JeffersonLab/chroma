@@ -1,7 +1,8 @@
-// $Id: barhqlq_w.cc,v 3.4 2007-11-30 06:38:20 kostas Exp $
+// $Id: barhqlq_w.cc,v 3.5 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Heavy-light baryon 2-pt functions
  */
+
 
 #include "meas/hadron/barhqlq_w.h"
 #include "meas/hadron/barspinmat_w.h"
@@ -19,10 +20,13 @@ namespace Chroma
 			    const LatticePropagator& quark_propagator_2,
 			    const SpinMatrix& T, const SpinMatrix& sp) 
     {
+#if QDP_NC == 3
+
       LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp,
 						   sp * quark_propagator_2);
       return LatticeComplex(trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
 			    + trace(T * traceColor(quark_propagator_2 * di_quark)));
+#endif
     }
 	      
 
@@ -32,10 +36,13 @@ namespace Chroma
 			 const LatticePropagator& quark_propagator_2,
 			 const SpinMatrix& T, const SpinMatrix& sp) 
     {
+#if QDP_NC == 3
+
       LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp,
 						   sp * quark_propagator_2);
       return LatticeComplex(trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)))
 			    + trace(T * traceColor(quark_propagator_1 * di_quark)));
+#endif
     }
 	      
 
@@ -45,6 +52,8 @@ namespace Chroma
 			     const LatticePropagator& quark_propagator_2,
 			     const SpinMatrix& T, const SpinMatrix& sp) 
     {
+#if QDP_NC == 3
+
       // WARNING: I'm not convinced the original SZIN version (or this version) is correct!
       LatticePropagator di_quark = quarkContract13(quark_propagator_2 * sp,
 						   sp * quark_propagator_2);
@@ -57,6 +66,7 @@ namespace Chroma
       b_prop += trace(T * traceColor(quark_propagator_2 * di_quark));
 
       return b_prop;
+#endif
     }
 
 
@@ -66,9 +76,12 @@ namespace Chroma
 				  const LatticePropagator& quark_propagator_2,
 				  const SpinMatrix& T, const SpinMatrix& sp) 
     {
+#if QDP_NC == 3
+
       LatticePropagator di_quark = quarkContract13(quark_propagator_2 * sp,
 						   sp * quark_propagator_2);
       return LatticeComplex(trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark))));
+#endif
     }
 
 
@@ -78,6 +91,8 @@ namespace Chroma
 			      const LatticePropagator& quark_propagator_2,
 			      const SpinMatrix& T, const SpinMatrix& sp) 
     {
+#if QDP_NC == 3
+
       LatticePropagator di_quark = quarkContract13(quark_propagator_1 * sp, 
 						   sp * quark_propagator_2);
       LatticeComplex b_prop = trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
@@ -94,6 +109,7 @@ namespace Chroma
       b_prop += trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)));
 
       return b_prop;
+#endif
     }
 
     //! Delta 2-pt
@@ -103,6 +119,8 @@ namespace Chroma
 			      const SpinMatrix& T, const SpinMatrix& spSRC,
 			      const SpinMatrix& spSNK) 
     {
+#if QDP_NC == 3
+
       LatticePropagator di_quark = quarkContract13(quark_propagator_1 * spSRC, 
 						   spSNK * quark_propagator_2);
       LatticeComplex b_prop = trace(T * traceColor(quark_propagator_2 * traceSpin(di_quark)))
@@ -118,6 +136,7 @@ namespace Chroma
       b_prop *= 2;
       b_prop += trace(T * traceColor(quark_propagator_1 * traceSpin(di_quark)));
       return b_prop;
+#endif
     }
 
   }  // namespace  Baryon2PtContractions
@@ -577,3 +596,5 @@ namespace Chroma
   }
 
 }  // end namespace Chroma
+
+

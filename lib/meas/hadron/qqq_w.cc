@@ -1,6 +1,9 @@
-//  $Id: qqq_w.cc,v 3.2 2008-12-21 21:22:37 edwards Exp $
+//  $Id: qqq_w.cc,v 3.3 2009-03-19 17:17:20 mcneile Exp $
 //  $Log: qqq_w.cc,v $
-//  Revision 3.2  2008-12-21 21:22:37  edwards
+//  Revision 3.3  2009-03-19 17:17:20  mcneile
+//  Added guard code so that chroma compiles with Nc <> 3
+//
+//  Revision 3.2  2008/12/21 21:22:37  edwards
 //  Some code cleanups. Put in chroma namespace. Moved around the chromabase.h
 //  include.
 //
@@ -21,6 +24,7 @@
 //
 //  constructs 3 quark propagators contracted at the sink
 //
+
 
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
@@ -46,6 +50,12 @@ namespace Chroma
   {
   
     START_CODE();
+    if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+      QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+      QDP_abort(111) ;
+    }
+#if QDP_NC == 3
+
   
     QDPIO::cout<<"Starting the qqq code\n";
 
@@ -108,6 +118,7 @@ namespace Chroma
 
     QDPIO::cout<<"Finished the qqq code\n";
 
+#endif
     END_CODE();
     
   }
@@ -121,6 +132,12 @@ namespace Chroma
     ){
   
     START_CODE();
+    if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+      QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+      QDP_abort(111) ;
+    }
+#if QDP_NC == 3
+
   
     QDPIO::cout<<"Starting the qqq code\n";
 
@@ -175,6 +192,7 @@ namespace Chroma
 
     QDPIO::cout<<"Finished the qqq code\n";
 
+#endif
     END_CODE();
     
   }

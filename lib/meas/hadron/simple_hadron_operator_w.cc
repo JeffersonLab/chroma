@@ -1,7 +1,14 @@
-// $Id: simple_hadron_operator_w.cc,v 1.1 2008-05-09 03:59:01 kostas Exp $
+// $Id: simple_hadron_operator_w.cc,v 1.2 2009-03-19 17:17:20 mcneile Exp $
 /*! \file
  *  \brief Construct simple baryon operators
  */
+
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
+
+
 
 #include "meas/hadron/simple_hadron_operator_w.h"
 #include "meas/hadron/baryon_operator_factory_w.h"
@@ -124,3 +131,6 @@ namespace Chroma
 
 }  // end namespace Chroma
 
+#endif
+#endif
+#endif
