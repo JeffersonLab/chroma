@@ -1,4 +1,4 @@
-// $Id: inline_meson_block_matelem_w.cc,v 3.7 2009-03-05 04:01:07 edwards Exp $
+// $Id: inline_meson_block_matelem_w.cc,v 3.8 2009-03-19 17:12:20 mcneile Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -670,3 +670,4 @@ namespace Chroma
   /*! @} */  // end of group hadron
 
 } // namespace Chroma
+

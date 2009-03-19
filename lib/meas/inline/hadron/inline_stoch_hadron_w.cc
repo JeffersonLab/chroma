@@ -1,8 +1,9 @@
-// $Id: inline_stoch_hadron_w.cc,v 1.23 2009-03-05 04:01:07 edwards Exp $
+// $Id: inline_stoch_hadron_w.cc,v 1.24 2009-03-19 17:12:20 mcneile Exp $
 /*! \file
  * \brief Inline measurement of stochastic hadron operator (mesons and baryons).
  *
  */
+
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_stoch_hadron_w.h"
@@ -251,6 +252,11 @@ namespace Chroma{
 		const LatticeFermion& eta3,
 		const Subset& s){
       //QDPIO::cout<<"I am a baryon!\n" ;
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<"baryon code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
 
       START_CODE();
 
@@ -283,6 +289,7 @@ namespace Chroma{
 	}
 
       END_CODE();
+#endif
     }
 
     class Key{
@@ -1098,3 +1105,4 @@ namespace Chroma{
     } 
   }  // namespace InlineHadronEnv
 }// namespace chroma
+

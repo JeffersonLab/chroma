@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.7 2009-03-05 04:01:06 edwards Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.8 2009-03-19 17:12:20 mcneile Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -485,6 +485,12 @@ namespace Chroma
 		     XMLWriter& xml_out) 
     {
       START_CODE();
+      if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+	QDPIO::cerr<<"inline_baryon_block_matelem_w code only works for Nc=3 and Ns=4\n";
+	QDP_abort(111) ;
+      }
+#if QDP_NC == 3
+
 
       StopWatch snoop;
       snoop.reset();
@@ -770,6 +776,7 @@ namespace Chroma
 
       QDPIO::cout << name << ": ran successfully" << endl;
 
+#endif
       END_CODE();
     } // func
   } // namespace InlineBaryonBlockMatElemEnv
@@ -777,3 +784,6 @@ namespace Chroma
   /*! @} */  // end of group hadron
 
 } // namespace Chroma
+
+
+

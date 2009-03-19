@@ -1,7 +1,9 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.22 2009-03-05 04:01:07 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.23 2009-03-19 17:12:20 mcneile Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
+
+
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
@@ -624,3 +626,5 @@ namespace Chroma
   /*! @} */  // end of group hadron
 
 } // namespace Chroma
+
+
