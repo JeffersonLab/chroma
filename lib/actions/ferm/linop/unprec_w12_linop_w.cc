@@ -1,7 +1,13 @@
-// $Id: unprec_w12_linop_w.cc,v 3.1 2006-08-26 05:50:06 edwards Exp $
+// $Id: unprec_w12_linop_w.cc,v 3.2 2009-03-19 17:08:00 mcneile Exp $
 /*! \file
  *  \brief Unpreconditioned W12 action
  */
+
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
+
 
 #include "chromabase.h"
 #include "actions/ferm/linop/unprec_w12_linop_w.h"
@@ -270,3 +276,8 @@ namespace Chroma
   }
 
 }; // End Namespace Chroma
+
+
+#endif
+#endif
+#endif

@@ -1,9 +1,15 @@
-// $Id: central_tprec_fermact_qprop_w.cc,v 1.5 2008-10-08 19:40:18 bjoo Exp $
+// $Id: central_tprec_fermact_qprop_w.cc,v 1.6 2009-03-19 17:06:43 mcneile Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
  *  Solve for the propagator of a even-odd non-preconditioned fermion operator
  */
+
+#include "qdp_config.h"
+#if QDP_NS == 4
+#if QDP_ND == 4
+#if QDP_NC == 3
+
 
 #include "unprec_s_cprec_t_wilstype_fermact_w.h"
 #include "iluprec_s_cprec_t_wilstype_fermact_w.h"
@@ -302,3 +308,9 @@ namespace Chroma
 
 
 } // namespace Chroma 
+
+
+#endif
+#endif
+#endif
+
