@@ -1,0 +1,83 @@
+$Id: large_nc.txt,v 1.1 2009-03-19 21:49:48 mcneile Exp $
+
+Chroma and large N_c
+---------------------
+
+The chroma library is built on top of qdp++. The number
+of colours in qdp++ is a global parameter that can be 
+set at compile time.
+
+There are various part of chroma where there are functions that
+are hard wired for SU(3). For example:
+
+  i)  baryons because of those pesky epsilon factors
+  ii) any code that moves from Lie algebra to the group.
+      For example stouting.
+
+Chroma has been used to compute quark propagators 
+and generate gauge configurations for Nc > 3 (arXiv:0806.2278).
+At the moment the hmc doesn't work for arbitary 
+Nc.
+
+Installation
+-------------
+
+To compile chroma for the SU(6) gauge group for example,
+you first need to compile qdp++ for correct number of
+colours
+
+./qdp++/configure --enable-parallel-arch=scalar  --enable-Nc=6 \
+                  [your normal compilation options]
+
+The default value for Nc is 3.
+
+Here I assume that you want to just compile the pure chroma
+library. Other libraries such as BAGEL may not work with chroma
+for an arbitary number of colours.
+
+Developer guide
+----------------
+
+The essential technique to get the code to compile 
+for SU(N_c) is to not to include any code hardwired for
+SU3 in the compile.
+
+if ( Nc != 3 ){    /* Code is specific to Ns=4 and Nc=3. */
+    QDPIO::cerr<<" code only works for Nc=3 and Ns=4\n";
+    QDP_abort(111) ;
+  }
+#if QDP_NC == 3
+// the rest of the code for SU(3) 
+
+#else
+      LatticePropagator q1_tmp;
+
+      q1_tmp = zero ;
+      return q1_tmp ;
+#endif
+
+See the functions below for example:
+
+chroma/lib/meas/hadron/barcomp_w.cc
+chroma/lib/meas/hadron/baryon_w.cc
+
+Sometimes the preprocessor can be used to get rid of the 
+entire file. Other times the preprocessor directives have to 
+go into the body of the function.
+
+Some of us really hate preprocessor directives, because
+they are like poisonous weeds that can strangle a code.
+However, in this case there are not too many directives used.
+
+I don't believe there has been any thought into designing the 
+code, so that it can do baryons for large N_c. Some effective field
+theory people are interested in large N_c mass splittngs for baryons
+
+
+
+Comment
+-------
+
+Hey dude, remember that Nc=3, N=0, and the coupling runs
+in the real world. Please enjoy your theoretical speculation
+responsibly!
