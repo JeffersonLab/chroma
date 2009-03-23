@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.23 2009-03-19 17:12:20 mcneile Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.24 2009-03-23 16:44:08 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -485,10 +485,10 @@ namespace Chroma
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 //	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
 	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info", params.param.displacement_list);
+	write(file_xml, "Config_info", gauge_xml);
+	write(file_xml, "Weights", eigen_source.getEvalues());
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
