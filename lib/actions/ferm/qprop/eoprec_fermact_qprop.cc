@@ -1,4 +1,4 @@
-// $Id: eoprec_fermact_qprop.cc,v 3.2 2007-02-22 21:11:48 bjoo Exp $
+// $Id: eoprec_fermact_qprop.cc,v 3.3 2009-03-26 00:07:25 edwards Exp $
 /*! \file
  *  \brief Propagator solver for a generic even-odd preconditioned fermion operator
  *
@@ -44,7 +44,7 @@ namespace Chroma
       START_CODE();
 
       /* Step (i) */
-      /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_o */
+      /* chi_tmp =  chi_o - D_oe * A_ee^-1 * chi_e */
       T chi_tmp;
       {
 	T tmp1, tmp2;
