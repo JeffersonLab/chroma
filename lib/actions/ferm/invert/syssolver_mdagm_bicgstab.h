@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_bicgstab.h,v 3.2 2008-04-05 19:04:38 edwards Exp $
+// $Id: syssolver_mdagm_bicgstab.h,v 3.3 2009-04-02 19:56:54 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -16,7 +16,7 @@
 #include "actions/ferm/invert/invbicgstab.h"
 #ifdef CHROMA_DO_ONE_CG_RESTART
 #include "actions/ferm/invert/invcg2.h"
-#endif 
+#endif
 
 namespace Chroma
 {
@@ -61,13 +61,15 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
 	START_CODE();
-
+	StopWatch swatch;
+	
 	SystemSolverResults_t res1,res2,res3;  // initialized by a constructor
 	
 	// ( M^\dag M )^{-1} => M^{-1} M^{-dag}
 	// so ( M^\dag M )^{-1} X = \phi
 	// => X = M^{-1} M^{-dag} \phi
 	//      = M%{-1} Y        Y = M^{-\dag} \phi
+	swatch.start();
 	T Y = psi;
 	res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
 	res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
@@ -84,13 +86,16 @@ namespace Chroma
 	  re[A->subset()] -= chi;
 	  QDPIO::cout << "MDAGM_BICGSTAB: n=" 
 		      << res3.n_count 
-		      << " resid=" << sqrt(norm2(re,A->subset())) << endl;
+		      << " resid=" << sqrt(norm2(re,A->subset())/norm2(chi,A->subset())) << endl;
 	}
+
 #ifdef CHROMA_DO_ONE_CG_RESTART
 	// CG Polish - should be very quick
 	res3 = InvCG2(*A, chi, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab);	res3.n_count += res2.n_count + res1.n_count;
 #endif
-	
+	swatch.stop();
+	double time = swatch.getTimeInSeconds();
+	QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
 
 	END_CODE();
 
