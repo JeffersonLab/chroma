@@ -2,6 +2,7 @@
 #include "util/gauge/taproj.h"
 #include "util/gauge/reunit.h"
 #include "util/gauge/expmat.h"
+#include "update/molecdyn/monomial/force_monitors.h"
 
 namespace Chroma 
 { 
@@ -54,6 +55,7 @@ namespace Chroma
 	}
       }
       pop(xml_out); // ForcesByMonomial
+      monitorForces(xml_out, "TotalForcesThisLevel", dsdQ);
       pop(xml_out); // AbsHamiltonianForce 
 
 
