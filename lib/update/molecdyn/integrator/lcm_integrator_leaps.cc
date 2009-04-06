@@ -55,7 +55,7 @@ namespace Chroma
 	}
       }
       pop(xml_out); // ForcesByMonomial
-      monitorForces(xml_out, "TotalForcesThisLevel", dsdQ);
+      // monitorForces(xml_out, "TotalForcesThisLevel", dsdQ);
       pop(xml_out); // AbsHamiltonianForce 
 
 
