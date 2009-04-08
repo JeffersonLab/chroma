@@ -1,27 +1,24 @@
 // -*- C++ -*-
-// $Id: inline_disco_eigcg_w.h,v 1.7 2009-04-08 18:34:11 caubin Exp $
+// $Id: inline_disco_eo_eigcg_w.h,v 3.1 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  * \brief Inline measurement of stochastic 3pt functions.
- *
- * spectroscopy
+ * 
+ * This uses eo-preconditioning on the noise vector side as well as 
+ * with the eig-cg vectors. NOTE THIS CODE DOES NOT WORK.
  */
 
-#ifndef __inline_disco_eigcg_h__
-#define __inline_disco_eigcg_h__
-
-//#include <qdp_subset.h>
+#ifndef __inline_disco_eo_eigcg_h__
+#define __inline_disco_eo_eigcg_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
 #include "meas/hadron/barQll_w.h"
 
-//#include <map>
-
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineDiscoEigCGEnv 
+  namespace InlineDiscoEoEigCGEnv 
   {
     extern const std::string name;
     bool registerAll();
@@ -126,7 +123,7 @@ namespace Chroma
 
 
     
-  }; // name space InlineDiscoEigCGEnv
+  }; // name space InlineDiscoEoEigCGEnv
 };
 
 #endif

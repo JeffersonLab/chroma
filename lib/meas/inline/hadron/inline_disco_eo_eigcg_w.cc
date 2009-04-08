@@ -1,18 +1,17 @@
 
-// $Id: inline_disco_eigcg_w.cc,v 1.18 2009-04-08 18:34:11 caubin Exp $
+// $Id: inline_disco_eo_eigcg_w.cc,v 3.1 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
- * 
- * This version does not use e/o preconditioning on the noise vectors,
- * but it does for the eigcg pieces, as it must.
  *
+ * This uses eo-preconditioning on the noise vector side as well as
+ * with the eig-cg vectors. NOTE THIS CODE DOES NOT WORK.          
  */
 #include <vector> 
 #include <map> 
 #include <qdp-lapack.h>
 
 #include "handle.h"
-#include "meas/inline/hadron/inline_disco_eigcg_w.h"
+#include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/quark_smearing_factory.h"
 #include "meas/smear/quark_smearing_aggregate.h"
@@ -47,13 +46,10 @@
 #include "actions/ferm/fermacts/wilson_fermact_params_w.h"
 #include "actions/ferm/linop/linop_w.h"
 
-
 #include "util/ferm/key_val_db.h"
 
-
-
 namespace Chroma{ 
-  namespace InlineDiscoEigCGEnv{ 
+  namespace InlineDiscoEoEigCGEnv{ 
     namespace{
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
@@ -65,7 +61,7 @@ namespace Chroma{
       bool registered = false;
     }
 
-    const std::string name = "DISCO_EIGCG";
+    const std::string name = "DISCO_EO_EIGCG";
 
     //! Register all the factories
     bool registerAll() 
@@ -199,10 +195,10 @@ namespace Chroma{
       push(xml_out, path);
       
       // Parameters for source construction
-      InlineDiscoEigCGEnv::write(xml_out, "Param", param);
+      InlineDiscoEoEigCGEnv::write(xml_out, "Param", param);
       
       // Write out the output propagator/source configuration info
-      InlineDiscoEigCGEnv::write(xml_out, "NamedObject", named_obj);
+      InlineDiscoEoEigCGEnv::write(xml_out, "NamedObject", named_obj);
 
       pop(xml_out);
     }
@@ -305,12 +301,6 @@ namespace Chroma{
       }
     }
 
-    //    Set t0set;
-    //    t0set.make(TimeSliceFunc(Nd-1));
-    
-    //    Set timerb;
-    //    timerb.make(TimeSliceRBFunc(Nd-1));
-    
     typedef LatticeFermion               T;
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
@@ -377,10 +367,15 @@ namespace Chroma{
 		  const LatticeFermion& q,
 		  const SftMom& p,
 		  const int& t, 
+		  const Subset& trb,
 		  const multi1d<short int>& path,
 	 	  const int& max_path_length ){
       QDPIO::cout<<" Computing Operator with path length "<<path.size()
 		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+      /**
+	 This do_disco routine should not be called, I don't think it's ever needed...
+      
+       **/
       ValOperator_t val ;
       KeyOperator_t key ;
       pair<KeyOperator_t, ValOperator_t> kv ; 
@@ -398,7 +393,8 @@ namespace Chroma{
       for(int g(0);g<Ns*Ns;g++){
 	LatticeComplex cc = localInnerProduct(qbar,Gamma(g)*q);
 	for (int m(0); m < p.numMom(); m++){
-	  foo[m][g] = sum(p[m]*cc,p.getSet()[t]);
+	  // trb is the set of even/odd sites on timeslice t
+	  foo[m][g] = sum(p[m]*cc,trb);
 	}
       }
       for (int m(0); m < p.numMom(); m++){
@@ -441,10 +437,190 @@ namespace Chroma{
 	      else
 		q_mu = shift(q, BACKWARD, mu);
 
-	      do_disco(db, qbar, q_mu, p, t, new_path, max_path_length);
+	      do_disco(db, qbar, q_mu, p, t, trb,  new_path, max_path_length);
 	    } // skip backtracking
 	  } // mu
       }// path.size loop
+      
+    }// do_disco
+
+    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+		  const LatticeFermion& qbar,
+		  const LatticeFermion& q,
+		  const Handle<EvenOddPrecLinearOperator<T,P,Q> >& Doo,
+		  const SftMom& p,
+		  const int& t, 
+		  const Subset& trb,
+		  const multi1d<short int>& path,
+	 	  const int& max_path_length ){
+      QDPIO::cout<<" Computing Operator with path length "<<path.size()
+		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+      
+      /** This version of do_disco is the one we call 
+	  
+      Currently we have editted this so as to put the timeslice and phase factor
+      on the correct part for the "even" sum, so right now this code is not terribly 
+      efficient. Work on optimizing this all later.      
+
+      **/
+      
+      ValOperator_t val ;
+      KeyOperator_t key ;
+      pair<KeyOperator_t, ValOperator_t> kv ; 
+      kv.first.t_slice = t ;
+      if(path.size()==0){
+	kv.first.disp.resize(1);
+	kv.first.disp[0] = 0 ;
+      }
+      else
+	kv.first.disp = path ;
+
+      multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
+      for (int m(0); m < p.numMom(); m++)
+        foo[m].resize(Ns*Ns);
+
+      // First do the odd sites, and put in foo.
+      for(int g(0);g<Ns*Ns;g++){
+        LatticeComplex cc = localInnerProduct(qbar,Gamma(g)*q);
+        for (int m(0); m < p.numMom(); m++){
+          // trb is the set of odd sites on timeslice t
+          foo[m][g] = sum(p[m]*cc,trb);
+        }
+      }
+      
+      Set t0set;
+      t0set.make(TimeSliceFunc(Nd-1));// 3 is decay dir....need to change this later.
+      
+      // Now we have to do the even sites
+      LatticeFermion qtmp  = zero ;
+      LatticeFermion qbar2 = zero ;
+      Doo->evenOddLinOp(qtmp,q,PLUS);
+      Doo->evenEvenInvLinOp(qbar2,qtmp,PLUS);                                            
+      for(int g(0);g<Ns*Ns;g++){
+        for (int m(0); m < p.numMom(); m++){
+	  LatticeFermion q2 = zero ;
+	  LatticeFermion chi = zero ;
+	  qtmp = zero ;
+	  q2[t0set[t]] = p[m]*(Gamma(g)*qbar2);//rhs should only set the t0 terms non-zero...
+	  Doo->evenEvenInvLinOp(qtmp,q2,PLUS);
+	  Doo->oddEvenLinOp(chi,qtmp,PLUS);                                                   
+	  foo[m][g] += innerProduct(qbar,chi);
+	}
+      }
+      
+      for (int m(0); m < p.numMom(); m++){
+	for(int i(0);i<(Nd-1);i++)
+	  kv.first.mom[i] = p.numToMom(m)[i] ;
+	
+	kv.second.op = foo[m];
+	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	
+	itbo = db.insert(kv);
+        if( itbo.second ){
+	  QDPIO::cout<<"Inserting new entry in map\n";
+        }
+        else{ // if insert fails, key already exists, so add result
+          for(int i(0);i<kv.second.op.size();i++)
+	    itbo.first->second.op[i] += kv.second.op[i] ;
+        }
+      }//m 
+      
+      if(path.size()<max_path_length){
+	QDPIO::cout<<" attempt to add new path. "
+		   <<" current path length is : "<<path.size();
+	multi1d<short int> new_path(path.size()+1);
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	for(int i(0);i<path.size();i++)
+	  new_path[i] = path[i] ;
+	for(int sign(-1);sign<2;sign+=2)
+	  for(int mu(0);mu<Nd;mu++){
+	    new_path[path.size()]= sign*(mu+1) ;
+	    //skip back tracking 
+	    bool back_track=false ;
+	    if(path.size()>0)
+	      if(path[path.size()-1] == -new_path[path.size()])
+		back_track=true;
+	    if(!back_track){
+	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      LatticeFermion q_mu ;
+	      if(sign>0)
+		q_mu = shift(q, FORWARD, mu);
+	      else
+		q_mu = shift(q, BACKWARD, mu);
+
+	      do_disco(db, qbar, q_mu, Doo, p, t, trb,  new_path, max_path_length);
+	    } // skip backtracking
+	  } // mu
+      }// path.size loop
+      
+    }// do_disco
+
+    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+                  const Params::Param_t& param,
+                  const P& u,
+		  const SftMom& p,
+		  const int& t, 
+		  const Subset& trb,
+		  const multi1d<short int>& path){
+      QDPIO::cout<<" Computing Operator with path length "<<path.size()
+		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+      
+      int max_path_length = param.max_path_length;
+      ValOperator_t val ;
+      KeyOperator_t key ;
+      pair<KeyOperator_t, ValOperator_t> kv ; 
+      kv.first.t_slice = t ;
+      if(path.size()==0){
+	kv.first.disp.resize(1);
+	kv.first.disp[0] = 0 ;
+      }
+      else
+	kv.first.disp = path ;
+      
+      Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo = createOddOdd_Op(param,u);
+      
+      multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
+      for (int m(0); m < p.numMom(); m++){
+	foo[m].resize(Ns*Ns);
+	for (int g(0); g<Ns*Ns;g++){
+	  foo[m][g] = 0.0;
+	}
+      }
+      for(int g(0);g<Ns*Ns;g++){
+	for(int col=0;col<3;col++){
+	  for(int sp=0;sp<4;sp++){
+	    Fermion tt = zero ;
+	    ColorVector cv = zero ;
+	    Complex z = cmplx(Real(1.0),0.0) ;
+	    pokeColor(cv,z,col);
+	    pokeSpin(tt,cv,sp);
+	    LatticeFermion V = tt ;
+	    for (int m(0); m < p.numMom(); m++){
+	      //only on even sites
+	      LatticeFermion DV = zero;
+	      Doo->evenEvenInvLinOp(DV,V,PLUS);
+	      foo[m][g] += sum(p[m]*localInnerProduct(V,Gamma(g)*DV),trb);
+	    }//m
+	  }//spin
+	}//col
+      }//g
+
+      for (int m(0); m < p.numMom(); m++){
+	for(int i(0);i<(Nd-1);i++)
+	  kv.first.mom[i] = p.numToMom(m)[i] ;
+	
+	kv.second.op = foo[m];
+	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	
+	itbo = db.insert(kv);
+        if( itbo.second ){
+	  QDPIO::cout<<"Inserting new entry in map\n";
+        }
+        else{ // if insert fails, key already exists, so add result
+          for(int i(0);i<kv.second.op.size();i++)
+            itbo.first->second.op[i] += kv.second.op[i] ;
+        }
+      }//m 
       
     }// do_disco
 
@@ -480,7 +656,6 @@ namespace Chroma{
       char U = 'U';
       int Nrhs = ldb; // Because we have no dilution vectors, but rhs's are made of EigCG vecs...
       multi2d<Complex> B(Nrhs,ldb);
-      /*
       multi1d< multi1d<LatticeFermion> > DDvec(ldb);
       // Zero out the fermions
       for(int i(0); i<ldb;i++){
@@ -490,7 +665,7 @@ namespace Chroma{
       cout<<"We've initialized DDvec!\n";
 
       for(int i(0); i<ldb;i++){
-	LatticeFermion qtmp = zero ;
+	LatticeFermion qtmp  = zero ;
 	LatticeFermion qtmp2 = zero ;
 	LatticeFermion qtmp3 = zero ;
 	Doo->evenOddLinOp(qtmp,vec[i],PLUS);
@@ -507,41 +682,20 @@ namespace Chroma{
 	  DDvec[i][g] = qtmp + qtmp2;
 	}
       }
-      */
+
       multi1d< multi1d<ComplexD> > foo(p.numMom()) ;
       for (int m(0); m < p.numMom(); m++){
 	foo[m].resize(Ns*Ns);
 	foo[m] = zero;
       }
       // Okay, this is probably inefficient, b/c we are doing some things multiple times...
-      multi1d< LatticeFermion > Svec(ldb);
-      multi1d< LatticeFermion > DDvec(ldb);
-      multi1d< LatticeFermion > DDSvec(ldb);
-      Svec = zero;
-      DDvec = zero;
-      for(int i(0); i<ldb;i++){
-	LatticeFermion qtmp = zero ;
-	// DeeInv * Deo * V:
-	Doo->evenOddLinOp(qtmp, vec[i],PLUS);
-	Doo->evenEvenInvLinOp(DDvec[i], qtmp,PLUS);
-	qtmp = zero;
-	//DeeInv^dag * Deo^dag * Soo * V:
-	Doo->oddOddLinOp(qtmp,vec[i],PLUS);
-	LatticeFermion qtmp2 = zero;
-	Doo->evenOddLinOp(qtmp2,qtmp,MINUS);
-	Doo->evenEvenInvLinOp(DDSvec[i],qtmp2,MINUS);
-	// Soo * V
-	Doo->oddOddLinOp(Svec[i],vec[i],PLUS);
-      }
-      
       for(int g(0);g<Ns*Ns;g++){
 	for (int m(0); m < p.numMom(); m++){
 	  for (int i(0); i<ldb;i++){
 	    for (int j(0); j<ldb;j++){
-	      LatticeComplex cc1 = localInnerProduct(Svec[j],Gamma(g)*vec[i]);
-	      LatticeComplex cc2 = localInnerProduct(DDSvec[j],Gamma(g)*DDvec[i]);
-	      B[i][j] = sum(p[m]*(cc1+cc2),trb) ;
-	      //	      B[i][j] = sum(p[m]*(cc1+cc2),rb[1]) ;
+	      //	      LatticeComplex cc1 = localInnerProduct(Svec[j],Gamma(g)*vec[i]);
+	      LatticeComplex cc2 = localInnerProduct(vec[j],DDvec[i][g]);
+	      B[i][j] = sum(p[m]*cc2,trb) ;
 	    }//j
 	  }//i 
 
@@ -551,6 +705,7 @@ namespace Chroma{
 	  QDPIO::cout<<"do_disco cpotrs r = "<<r<<endl;
 	  QDPIO::cout<<"do_disco cpotrs info = "<<info<<endl;
 
+	  //	  foo[m][g] = 0.0;
 	  for (int i(0); i<ldb;i++){
 	    foo[m][g] += ComplexD(B[i][i]);// Trace over last set of indices
 	  }
@@ -678,10 +833,9 @@ namespace Chroma{
 	      LatticeFermion SdagSchi = zero ;
 	      Doo->oddOddLinOp(SdagSchi,qsrc,MINUS); 
 	      // Sum over (odd) lattice sites, so we return a complex number for B
-	      // SHOULD THIS BE ONLY SITES THAT INCLUDE THE TIMESLICE WE'RE ON?
-	      // Doesn't seem to matter, same answer either way.
-	      B[j][i] = sum(localInnerProduct(vec[i],SdagSchi),rb[1]);
-	      //B[j][i] = sum(localInnerProduct(vec[i],SdagSchi),timerb[2*t+1]);
+	      // SHOULDN'T THIS BE ONLY SITES THAT INCLUDE THE TIMESLICE WE'RE ON?
+	      //	      B[j][i] = sum(localInnerProduct(vec[i],SdagSchi),rb[1]);
+	      B[j][i] = sum(localInnerProduct(vec[i],SdagSchi),timerb[2*t+1]);
 	    }
 	  }
 
@@ -690,7 +844,7 @@ namespace Chroma{
 	  QDPIO::cout<<"PRchi cpotrs info = "<<info<<endl;
 
 	  for(int j = 0 ; j <  Nrhs ; j++){
-	    LatticeFermion vB = zero;
+	    LatticeFermion vB = zero; //B[j][0]*vec[0];
 	    LatticeFermion q     = quarks[n]->dilutedSolution(it,j);
 	    for(int i(0); i<ldb;i++)
 	      vB += B[j][i]*vec[i];
@@ -765,7 +919,7 @@ namespace Chroma{
 	}
       catch( std::bad_cast ) 
 	{
-	  QDPIO::cerr << InlineDiscoEigCGEnv::name << ": caught dynamic cast error" 
+	  QDPIO::cerr << InlineDiscoEoEigCGEnv::name << ": caught dynamic cast error" 
 		      << endl;
 	  QDP_abort(1);
 	}
@@ -931,12 +1085,14 @@ namespace Chroma{
 	  for(int i = 0 ; i <  quarks[n]->getDilSize(it) ; i++){
 	    QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
 	    multi1d<short int> d ;
+	    // Now, I want to do the two trace terms that have the chitilde. Thus
 	    // The q chosen should be from quarkstilde = PR*quarks->dilutedSolution()
 	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
 	    LatticeFermion q     = quarkstilde[n][it][i];
 	    QDPIO::cout<<"   Starting recursion "<<endl ;
-	    // This is the noise vector piece.
-	    do_disco(data, qbar, q, phases, t, d, params.param.max_path_length);
+	    // this does both terms with the noise vectors
+	    // the 1 means to do sum over odd sites...
+	    do_disco(data, qbar, q, Doo, phases, t, timerb[2*t+1], d, params.param.max_path_length);
 
 	    QDPIO::cout<<" done with recursion! "
 		       <<"  The length of the path is: "<<d.size()<<endl ;
@@ -962,6 +1118,13 @@ namespace Chroma{
       // Now calculate the other pieces which need no normalization...
       // Note using just timeslices for quarks[0]...may be a problem
       // if quarks dilute on diff timeslices...
+      
+      for (int it(0) ; it < quarks[0]->getNumTimeSlices() ; it++){
+	multi1d<short int> d ;
+	int t = quarks[0]->getT0(it) ;
+	// Now let's do the Tr[Dee^-1 gamma]
+	do_disco(data,params.param, u, phases, t, timerb[2*t+0], d);
+      }
       
       if (params.named_obj.evecs_file!=""){// Only if we have vectors...
 	for (int it(0) ; it < quarks[0]->getNumTimeSlices() ; it++){
@@ -1023,5 +1186,5 @@ namespace Chroma{
       
       END_CODE();
     } 
-  }  // namespace InlineDiscoEigCGEnv
+  }  // namespace InlineDiscoEoEigCGEnv
 }// namespace chroma

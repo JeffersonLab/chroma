@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.48 2009-02-23 19:44:57 edwards Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.49 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -10,6 +10,8 @@
 #include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
 #include "meas/inline/hadron/inline_disco_w.h"
+#include "meas/inline/hadron/inline_disco_eoprec_w.h"
+#include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
 #include "meas/inline/hadron/inline_static_light_spec_w.h"
 #include "meas/inline/hadron/inline_heavy_light_cont_w.h"
@@ -108,6 +110,8 @@ namespace Chroma
 	success &= InlineBlockColorVecsEnv::registerAll();
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
+	success &= InlineDiscoEOPrecEnv::registerAll();
+	success &= InlineDiscoEoEigCGEnv::registerAll();
 	success &= InlineDiscoEigCGEnv::registerAll();
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();

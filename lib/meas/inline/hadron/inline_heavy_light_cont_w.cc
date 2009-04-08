@@ -1,4 +1,4 @@
-// $Id: inline_heavy_light_cont_w.cc,v 3.6 2009-01-29 16:05:35 caubin Exp $
+// $Id: inline_heavy_light_cont_w.cc,v 3.7 2009-04-08 18:34:11 caubin Exp $
 /*! \file
  * \brief Inline construction of hadron contractions
  *  Still just does static!!
@@ -503,543 +503,554 @@ namespace Chroma
 	**/
       }
       
-	  if (named_obj.heavy_id1=="Static" && named_obj.heavy_id2=="Static"){
-		
-		// Masses
-		write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
-		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
-		if (params.param.FourPt)
-		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t01", t01);
-		write(xml_out, "t02", t02);
-		
-		// Initialize the slow Fourier transform phases with NO momenta
-		SftMom phases(0, true, j_decay);
-		
-		// Save prop input
-		push(xml_out, "Forward_prop_headers");
-		write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
-		write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
-		if (params.param.FourPt)
-		  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
-		pop(xml_out);
-		
-		// Sanity check - write out the norm2 of the forward prop in the j_decay direction
-		// Use this for any possible verification
-		push(xml_out, "Forward_prop_correlator");
-		{
-		  const LatticePropagator& sink_prop_1 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		  const LatticePropagator& sink_prop_2 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		  const LatticePropagator& sink_prop_3 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		  
-		  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
-		  
-		  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
-		}
-		pop(xml_out);
-		
-		
-		push(xml_out, "SourceSinkType");
-		{
-		  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-		  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-		  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-		  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
-		  if (params.param.FourPt){
-			QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-			QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
-		  }
-		  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
-		  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
-		  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
-		  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
-		  
-		  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
-		  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
-		  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
-		  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
-		  if (params.param.FourPt){
-			write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
-			write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
-			write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
-			write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
-		  }
-		}
-		pop(xml_out);
-		
-		
-		// References for use later
-		const LatticePropagator& sink_prop_1 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		const LatticePropagator& sink_prop_2 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		const LatticePropagator& sink_prop_3 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		
-		// Construct group name for output
-		string src_type;
-		if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
-		  src_type = "Point";
-		else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
-		  src_type = "Shell";
-		else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
-		  src_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string snk_type;
-		if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
-		  snk_type = "Point";
-		else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
-		  snk_type = "Shell";
-		else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
-		  snk_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string source_sink_type = src_type + "_" + snk_type;
-		QDPIO::cout << "Source type = " << src_type << endl;
-		QDPIO::cout << "Sink type = "   << snk_type << endl;
-		
-		if (params.param.MesonP) 
-		  {
-			Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson1");
-			if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
-			  Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson2");
-			if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
-			  Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3");
-		  } // end if (MesonP)
-		
-		//Now we actually will do the contractions...
-		
-		QlQl(u, sink_prop_1, sink_prop_2,  t_src1, t_src2, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
-		
-		pop(xml_out);  // array element
-	  }// End of if statement for both heavies being static.
-
-	  else if (named_obj.heavy_id1=="Static" && named_obj.heavy_id2!="Static"){
-		// Masses
-		write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
-		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
-		if (params.param.FourPt)
-		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t01", t01);
-		write(xml_out, "t02", t02);
-		
-		// Initialize the slow Fourier transform phases with NO momenta
-		SftMom phases(0, true, j_decay);
-		
-		// Save prop input
-		push(xml_out, "Forward_prop_headers");
-		write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
-		write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
-		if (params.param.FourPt)
-		  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
-		pop(xml_out);
-		
-		// Sanity check - write out the norm2 of the forward prop in the j_decay direction
-		// Use this for any possible verification
-		push(xml_out, "Forward_prop_correlator");
-		{
-		  const LatticePropagator& sink_prop_1 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		  const LatticePropagator& sink_prop_2 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		  const LatticePropagator& sink_prop_3 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		  
-		  const LatticePropagator& heavy_prop_2 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
-		  
-		  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
-		  
-		  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_heavy2", sumMulti(localNorm2(heavy_prop_2), phases.getSet()));
-		}
-		pop(xml_out);
-		
-		
-		push(xml_out, "SourceSinkType");
-		{
-		  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-		  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-		  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-		  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
-		  if (params.param.FourPt){
-			QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-			QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
-		  }
-		  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
-		  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
-		  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
-		  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
-		  
-		  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
-		  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
-		  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
-		  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
-		  if (params.param.FourPt){
-			write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
-			write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
-			write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
-			write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
-		  }
-		  write(xml_out, "source_type_h2", all_sinks.heavy_prop_2.source_type);
-		  write(xml_out, "source_disp_type_h2", all_sinks.heavy_prop_2.source_disp_type);
-		  write(xml_out, "sink_type_h2", all_sinks.heavy_prop_2.sink_type);
-		  write(xml_out, "sink_disp_type_h2", all_sinks.heavy_prop_2.sink_disp_type);
-		}
-		pop(xml_out);
-		
-		
-		// References for use later
-		const LatticePropagator& sink_prop_1 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		const LatticePropagator& sink_prop_2 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		const LatticePropagator& sink_prop_3 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		const LatticePropagator& heavy_prop_2 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
-		
-		// Construct group name for output
-		string src_type;
-		if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
-		  src_type = "Point";
-		else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
-		  src_type = "Shell";
-		else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
-		  src_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string snk_type;
-		if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
-		  snk_type = "Point";
-		else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
-		  snk_type = "Shell";
-		else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
-		  snk_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string source_sink_type = src_type + "_" + snk_type;
-		QDPIO::cout << "Source type = " << src_type << endl;
-		QDPIO::cout << "Sink type = "   << snk_type << endl;
-		
-		if (params.param.MesonP) 
-		  {
-			Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson1");
-			if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
-			  Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson2");
-			if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
-			  Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3");
-		  } // end if (MesonP)
-		
-		//Now we actually will do the contractions...
-		
-		QlQl(u, sink_prop_1, sink_prop_2, heavy_prop_2,  t_src1, t_src2, t_src2, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
-		
-		pop(xml_out);  // array element
-	  }// End of if statement for first id being static.
-
-	  else if (named_obj.heavy_id1!="Static" && named_obj.heavy_id2=="Static"){
-		// Masses
-		write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
-		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
-		if (params.param.FourPt)
-		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t01", t01);
-		write(xml_out, "t02", t02);
-		
-		// Initialize the slow Fourier transform phases with NO momenta
-		SftMom phases(0, true, j_decay);
-		
-		// Save prop input
-		push(xml_out, "Forward_prop_headers");
-		write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
-		write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
-		if (params.param.FourPt)
-		  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
-		pop(xml_out);
-		
-		// Sanity check - write out the norm2 of the forward prop in the j_decay direction
-		// Use this for any possible verification
-		push(xml_out, "Forward_prop_correlator");
-		{
-		  const LatticePropagator& sink_prop_1 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		  const LatticePropagator& sink_prop_2 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		  const LatticePropagator& sink_prop_3 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		  
-		  const LatticePropagator& heavy_prop_1 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
-		  
-		  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
-		  
-		  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_h1", sumMulti(localNorm2(heavy_prop_1), phases.getSet()));
-		}
-		pop(xml_out);
-		
-		push(xml_out, "SourceSinkType");
-		{
-		  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-		  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-		  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-		  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
-		  if (params.param.FourPt){
-			QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-			QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
-		  }
-		  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
-		  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
-		  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
-		  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
-		  
-		  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
-		  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
-		  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
-		  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
-		  if (params.param.FourPt){
-			write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
-			write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
-			write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
-			write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
-		  }
-		  write(xml_out, "source_type_h1", all_sinks.heavy_prop_1.source_type);
-		  write(xml_out, "source_disp_type_h1", all_sinks.heavy_prop_1.source_disp_type);
-		  write(xml_out, "sink_type_h1", all_sinks.heavy_prop_1.sink_type);
-		  write(xml_out, "sink_disp_type_h1", all_sinks.heavy_prop_1.sink_disp_type);
-		}
-		pop(xml_out);
-		
-		
-		// References for use later
-		const LatticePropagator& sink_prop_1 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		const LatticePropagator& sink_prop_2 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		const LatticePropagator& sink_prop_3 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		
-		const LatticePropagator& heavy_prop_1 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
-		
-		// Construct group name for output
-		string src_type;
-		if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
-		  src_type = "Point";
-		else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
-		  src_type = "Shell";
-		else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
-		  src_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string snk_type;
-		if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
-		  snk_type = "Point";
-		else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
-		  snk_type = "Shell";
-		else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
-		  snk_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string source_sink_type = src_type + "_" + snk_type;
-		QDPIO::cout << "Source type = " << src_type << endl;
-		QDPIO::cout << "Sink type = "   << snk_type << endl;
-		
-		if (params.param.MesonP) 
-		  {
-			Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson1");
-			if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
-			  Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson2");
-			if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
-			  Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3");
-		  } // end if (MesonP)
-		
-		//Now we actually will do the contractions...
-		
-		QlQl(u, sink_prop_1, sink_prop_2, heavy_prop_1,  t_src1, t_src2, t_src1, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
-		
-		pop(xml_out);  // array element
-	  }// End of if statement for second id being static.
-
-	  else if (named_obj.heavy_id1!="Static" && named_obj.heavy_id2!="Static"){
-		// Masses
-		write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
-		write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
-		if (params.param.FourPt)
-		  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
-		write(xml_out, "t01", t01);
-		write(xml_out, "t02", t02);
-		
-		// Initialize the slow Fourier transform phases with NO momenta
-		SftMom phases(0, true, j_decay);
-		
-		// Save prop input
-		push(xml_out, "Forward_prop_headers");
-		write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
-		write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
-		if (params.param.FourPt)
-		  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
-		pop(xml_out);
-		
-		// Sanity check - write out the norm2 of the forward prop in the j_decay direction
-		// Use this for any possible verification
-		push(xml_out, "Forward_prop_correlator");
-		{
-		  const LatticePropagator& sink_prop_1 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		  const LatticePropagator& sink_prop_2 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		  const LatticePropagator& sink_prop_3 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		  
-		  const LatticePropagator& heavy_prop_1 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
-		  const LatticePropagator& heavy_prop_2 = 
-			TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
-		  
-		  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
-		  
-		  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_h1", sumMulti(localNorm2(heavy_prop_1), phases.getSet()));
-		  write(xml_out, "forward_prop_corr_h2", sumMulti(localNorm2(heavy_prop_2), phases.getSet()));
-		  
-		}
-		pop(xml_out);
-		
-		
-		push(xml_out, "SourceSinkType");
-		{
-		  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-		  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-		  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-		  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
-		  if (params.param.FourPt){
-			QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-			QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
-		  }
-		  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
-		  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
-		  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
-		  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
-		  
-		  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
-		  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
-		  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
-		  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
-		  if (params.param.FourPt){
-			write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
-			write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
-			write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
-			write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
-		  }
-		  write(xml_out, "source_type_h1", all_sinks.heavy_prop_1.source_type);
-		  write(xml_out, "source_disp_type_h1", all_sinks.heavy_prop_1.source_disp_type);
-		  write(xml_out, "sink_type_h1", all_sinks.heavy_prop_1.sink_type);
-		  write(xml_out, "sink_disp_type_h1", all_sinks.heavy_prop_1.sink_disp_type);
-		  
-		  write(xml_out, "source_type_h2", all_sinks.heavy_prop_2.source_type);
-		  write(xml_out, "source_disp_type_h2", all_sinks.heavy_prop_2.source_disp_type);
-		  write(xml_out, "sink_type_h2", all_sinks.heavy_prop_2.sink_type);
-		  write(xml_out, "sink_disp_type_h2", all_sinks.heavy_prop_2.sink_disp_type);
-
-		}
-		pop(xml_out);
-		
-		
-		// References for use later
-		const LatticePropagator& sink_prop_1 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
-		const LatticePropagator& sink_prop_2 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
-		const LatticePropagator& sink_prop_3 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
-		
-		const LatticePropagator& heavy_prop_1 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
-		const LatticePropagator& heavy_prop_2 = 
-		  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
-		// Construct group name for output
-		string src_type;
-		if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
-		  src_type = "Point";
-		else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
-		  src_type = "Shell";
-		else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
-		  src_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string snk_type;
-		if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
-		  snk_type = "Point";
-		else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
-		  snk_type = "Shell";
-		else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
-		  snk_type = "Wall";
-		else
-		  {
-			QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
-			QDP_abort(1);
-		  }
-		
-		string source_sink_type = src_type + "_" + snk_type;
-		QDPIO::cout << "Source type = " << src_type << endl;
-		QDPIO::cout << "Sink type = "   << snk_type << endl;
-		
-		QDPIO::cout << "Note that we are not calculating Heavy-Light Spectrum,"<<endl;
-		QDPIO::cout << "because both heavy quarks are not static."<<endl;
-
-		//Now we actually will do the contractions...
-		
-		QlQl(u, sink_prop_1, sink_prop_2, heavy_prop_1, heavy_prop_2,  t_src1, t_src2, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
-		
-		pop(xml_out);  // array element
-	  }// End of if statement for no statics.
-
-
-
-
-
-	  }// End of loop over pairs...
-	  pop(xml_out);  // Wilson_spectroscopy
-    pop(xml_out);  // HeavyLightCont
+      /** 
+	  Here we want to define the bc's for everything...in principle this 
+	  should be read in from everything, but whatever.
+       **/
+      
+      int HQBC = -1;
+      
+      if (named_obj.heavy_id1=="Static" && named_obj.heavy_id2=="Static"){
 	
+	// Masses
+	write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
+	write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
+	if (params.param.FourPt)
+	  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
+	write(xml_out, "t01", t01);
+	write(xml_out, "t02", t02);
+	
+	// Initialize the slow Fourier transform phases with NO momenta
+	SftMom phases(0, true, j_decay);
+	
+	// Save prop input
+	push(xml_out, "Forward_prop_headers");
+	write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
+	write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
+	if (params.param.FourPt)
+	  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
+	pop(xml_out);
+	
+	// Sanity check - write out the norm2 of the forward prop in the j_decay direction
+	// Use this for any possible verification
+	push(xml_out, "Forward_prop_correlator");
+	{
+	  const LatticePropagator& sink_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	  const LatticePropagator& sink_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	  const LatticePropagator& sink_prop_3 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	  
+	  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
+	  
+	  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
+	}
+	pop(xml_out);
+		
+	
+	push(xml_out, "SourceSinkType");
+	{
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  if (params.param.FourPt){
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	  }
+	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
+	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
+	  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
+	  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
+	  
+	  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
+	  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
+	  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
+	  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
+	  if (params.param.FourPt){
+	    write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
+	    write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
+	    write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
+	    write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
+	  }
+	}
+	pop(xml_out);
+	
+	
+	// References for use later
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	const LatticePropagator& sink_prop_3 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	
+	// Construct group name for output
+	string src_type;
+	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
+	  src_type = "Point";
+	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	  src_type = "Shell";
+	else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	  src_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string snk_type;
+	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
+	  snk_type = "Point";
+	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	  snk_type = "Shell";
+	else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
+	  snk_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << endl;
+	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	
+	if (params.param.MesonP) 
+	  {
+	    Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type+"_Wilson_Qlmeson1",HQBC);
+	    if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
+	      Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type+"_Wilson_Qlmeson2",HQBC);
+	    if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
+	      Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3",HQBC);
+	    // For testing backwards prop, we will calculate the Qlbar for a backwards
+	    // static quark
+	    QlbarBACK(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type+"_Wilson_Ql_back_meson1",HQBC);
+            if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
+              QlbarBACK(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type+"_Wilson_Ql_back_meson2",HQBC);
+            if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
+              QlbarBACK(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Ql_back_meson3",HQBC);
+
+	    
+	  } // end if (MesonP)
+	
+	//Now we actually will do the contractions...
+		
+	QlQl(u, sink_prop_1, sink_prop_2,  t_src1, t_src2, HQBC, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
+	
+	pop(xml_out);  // array element
+      }// End of if statement for both heavies being static.
+      
+      else if (named_obj.heavy_id1=="Static" && named_obj.heavy_id2!="Static"){
+	// Masses
+	write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
+	write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
+	if (params.param.FourPt)
+	  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
+	write(xml_out, "t01", t01);
+	write(xml_out, "t02", t02);
+	
+	// Initialize the slow Fourier transform phases with NO momenta
+	SftMom phases(0, true, j_decay);
+	
+	// Save prop input
+	push(xml_out, "Forward_prop_headers");
+	write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
+	write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
+	if (params.param.FourPt)
+	  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
+	pop(xml_out);
+	
+	// Sanity check - write out the norm2 of the forward prop in the j_decay direction
+	// Use this for any possible verification
+	push(xml_out, "Forward_prop_correlator");
+	{
+	  const LatticePropagator& sink_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	  const LatticePropagator& sink_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	  const LatticePropagator& sink_prop_3 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	  
+	  const LatticePropagator& heavy_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
+	  
+	  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
+	  
+	  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_heavy2", sumMulti(localNorm2(heavy_prop_2), phases.getSet()));
+	}
+	pop(xml_out);
+	
+	
+	push(xml_out, "SourceSinkType");
+	{
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  if (params.param.FourPt){
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	  }
+	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
+	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
+	  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
+	  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
+	  
+	  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
+	  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
+	  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
+	  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
+	  if (params.param.FourPt){
+	    write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
+	    write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
+	    write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
+	    write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
+	  }
+	  write(xml_out, "source_type_h2", all_sinks.heavy_prop_2.source_type);
+	  write(xml_out, "source_disp_type_h2", all_sinks.heavy_prop_2.source_disp_type);
+	  write(xml_out, "sink_type_h2", all_sinks.heavy_prop_2.sink_type);
+	  write(xml_out, "sink_disp_type_h2", all_sinks.heavy_prop_2.sink_disp_type);
+	}
+	pop(xml_out);
+	
+	
+	// References for use later
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	const LatticePropagator& sink_prop_3 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	const LatticePropagator& heavy_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
+	
+	// Construct group name for output
+	string src_type;
+	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
+	  src_type = "Point";
+	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	  src_type = "Shell";
+	else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	  src_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string snk_type;
+	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
+	  snk_type = "Point";
+	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	  snk_type = "Shell";
+	else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
+	  snk_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << endl;
+	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	
+	if (params.param.MesonP) 
+	  {
+	    Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson1");
+	    if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
+	      Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson2");
+	    if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
+	      Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3");
+	  } // end if (MesonP)
+	
+	//Now we actually will do the contractions...
+	
+	QlQl(u, sink_prop_1, sink_prop_2, heavy_prop_2,  t_src1, t_src2, t_src2, HQBC, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
+	
+	pop(xml_out);  // array element
+      }// End of if statement for first id being static.
+      
+      else if (named_obj.heavy_id1!="Static" && named_obj.heavy_id2=="Static"){
+	// Masses
+	write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
+	write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
+	if (params.param.FourPt)
+	  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
+	write(xml_out, "t01", t01);
+	write(xml_out, "t02", t02);
+	
+	// Initialize the slow Fourier transform phases with NO momenta
+	SftMom phases(0, true, j_decay);
+	
+	// Save prop input
+	push(xml_out, "Forward_prop_headers");
+	write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
+	write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
+	if (params.param.FourPt)
+	  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
+	pop(xml_out);
+	
+	// Sanity check - write out the norm2 of the forward prop in the j_decay direction
+	// Use this for any possible verification
+	push(xml_out, "Forward_prop_correlator");
+	{
+	  const LatticePropagator& sink_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	  const LatticePropagator& sink_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	  const LatticePropagator& sink_prop_3 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	  
+	  const LatticePropagator& heavy_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
+	  
+	  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
+	  
+	  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_h1", sumMulti(localNorm2(heavy_prop_1), phases.getSet()));
+	}
+	pop(xml_out);
+	    
+	push(xml_out, "SourceSinkType");
+	{
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  if (params.param.FourPt){
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	  }
+	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
+	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
+	  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
+	  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
+	  
+	  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
+	  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
+	  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
+	  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
+	  if (params.param.FourPt){
+	    write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
+	    write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
+	    write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
+	    write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
+	  }
+	  write(xml_out, "source_type_h1", all_sinks.heavy_prop_1.source_type);
+	  write(xml_out, "source_disp_type_h1", all_sinks.heavy_prop_1.source_disp_type);
+	  write(xml_out, "sink_type_h1", all_sinks.heavy_prop_1.sink_type);
+	  write(xml_out, "sink_disp_type_h1", all_sinks.heavy_prop_1.sink_disp_type);
+	}
+	pop(xml_out);
+	
+	// References for use later
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	const LatticePropagator& sink_prop_3 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	
+	const LatticePropagator& heavy_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
+	
+	// Construct group name for output
+	string src_type;
+	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
+	  src_type = "Point";
+	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	  src_type = "Shell";
+	else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	  src_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string snk_type;
+	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
+	  snk_type = "Point";
+	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	  snk_type = "Shell";
+	else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
+	  snk_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << endl;
+	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	
+	if (params.param.MesonP) 
+	  {
+	    Qlbar(u, sink_prop_1, t_src1, phases, xml_out, source_sink_type + "_Wilson_Qlmeson1");
+	    if(all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id)
+	      Qlbar(u, sink_prop_2, t_src2, phases, xml_out, source_sink_type + "_Wilson_Qlmeson2");
+	    if (params.param.FourPt && all_sinks.sink_prop_3.quark_propagator_id!=all_sinks.sink_prop_2.quark_propagator_id && all_sinks.sink_prop_1.quark_propagator_id!=all_sinks.sink_prop_3.quark_propagator_id)
+	      Qlbar(u, sink_prop_3, t_src3, phases, xml_out, source_sink_type + "_Wilson_Qlmeson3");
+	  } // end if (MesonP)
+	
+	//Now we actually will do the contractions...
+	
+	QlQl(u, sink_prop_1, sink_prop_2, heavy_prop_1,  t_src1, t_src2, t_src1, HQBC, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
+	
+	pop(xml_out);  // array element
+      }// End of if statement for second id being static.
+      
+      else if (named_obj.heavy_id1!="Static" && named_obj.heavy_id2!="Static"){
+	// Masses
+	write(xml_out, "Mass_1", all_sinks.sink_prop_1.Mass);
+	write(xml_out, "Mass_2", all_sinks.sink_prop_2.Mass);
+	if (params.param.FourPt)
+	  write(xml_out, "Mass_3", all_sinks.sink_prop_3.Mass);
+	write(xml_out, "t01", t01);
+	write(xml_out, "t02", t02);
+	
+	// Initialize the slow Fourier transform phases with NO momenta
+	SftMom phases(0, true, j_decay);
+	
+	// Save prop input
+	push(xml_out, "Forward_prop_headers");
+	write(xml_out, "First_forward_prop", all_sinks.sink_prop_1.prop_header);
+	write(xml_out, "Second_forward_prop", all_sinks.sink_prop_2.prop_header);
+	if (params.param.FourPt)
+	  write(xml_out, "Third_forward_prop", all_sinks.sink_prop_3.prop_header);
+	pop(xml_out);
+	
+	// Sanity check - write out the norm2 of the forward prop in the j_decay direction
+	// Use this for any possible verification
+	push(xml_out, "Forward_prop_correlator");
+	{
+	  const LatticePropagator& sink_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	  const LatticePropagator& sink_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	  const LatticePropagator& sink_prop_3 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	  
+	  const LatticePropagator& heavy_prop_1 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
+	  const LatticePropagator& heavy_prop_2 = 
+	    TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
+	  
+	  write(xml_out, "forward_prop_corr_1", sumMulti(localNorm2(sink_prop_1), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_2", sumMulti(localNorm2(sink_prop_2), phases.getSet()));
+	  
+	  write(xml_out, "forward_prop_corr_3", sumMulti(localNorm2(sink_prop_3), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_h1", sumMulti(localNorm2(heavy_prop_1), phases.getSet()));
+	  write(xml_out, "forward_prop_corr_h2", sumMulti(localNorm2(heavy_prop_2), phases.getSet()));
+	  
+	}
+	pop(xml_out);
+	
+	
+	push(xml_out, "SourceSinkType");
+	{
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  if (params.param.FourPt){
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	  }
+	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
+	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
+	  write(xml_out, "sink_type_1", all_sinks.sink_prop_1.sink_type);
+	  write(xml_out, "sink_disp_type_1", all_sinks.sink_prop_1.sink_disp_type);
+	  
+	  write(xml_out, "source_type_2", all_sinks.sink_prop_2.source_type);
+	  write(xml_out, "source_disp_type_2", all_sinks.sink_prop_2.source_disp_type);
+	  write(xml_out, "sink_type_2", all_sinks.sink_prop_2.sink_type);
+	  write(xml_out, "sink_disp_type_2", all_sinks.sink_prop_2.sink_disp_type);
+	  if (params.param.FourPt){
+	    write(xml_out, "source_type_3", all_sinks.sink_prop_3.source_type);
+	    write(xml_out, "source_disp_type_3", all_sinks.sink_prop_3.source_disp_type);
+	    write(xml_out, "sink_type_3", all_sinks.sink_prop_3.sink_type);
+	    write(xml_out, "sink_disp_type_3", all_sinks.sink_prop_3.sink_disp_type);
+	  }
+	  write(xml_out, "source_type_h1", all_sinks.heavy_prop_1.source_type);
+	  write(xml_out, "source_disp_type_h1", all_sinks.heavy_prop_1.source_disp_type);
+	  write(xml_out, "sink_type_h1", all_sinks.heavy_prop_1.sink_type);
+	  write(xml_out, "sink_disp_type_h1", all_sinks.heavy_prop_1.sink_disp_type);
+	  
+	  write(xml_out, "source_type_h2", all_sinks.heavy_prop_2.source_type);
+	  write(xml_out, "source_disp_type_h2", all_sinks.heavy_prop_2.source_disp_type);
+	  write(xml_out, "sink_type_h2", all_sinks.heavy_prop_2.sink_type);
+	  write(xml_out, "sink_disp_type_h2", all_sinks.heavy_prop_2.sink_disp_type);
+	  
+	}
+	pop(xml_out);
+	
+	
+	// References for use later
+	const LatticePropagator& sink_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_1.quark_propagator_id);
+	const LatticePropagator& sink_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_2.quark_propagator_id);
+	const LatticePropagator& sink_prop_3 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
+	
+	const LatticePropagator& heavy_prop_1 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
+	const LatticePropagator& heavy_prop_2 = 
+	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
+	// Construct group name for output
+	string src_type;
+	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
+	  src_type = "Point";
+	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	  src_type = "Shell";
+	else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
+	  src_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string snk_type;
+	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
+	  snk_type = "Point";
+	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	  snk_type = "Shell";
+	else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
+	  snk_type = "Wall";
+	else
+	  {
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDP_abort(1);
+	  }
+	
+	string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << endl;
+	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	
+	QDPIO::cout << "Note that we are not calculating Heavy-Light Spectrum,"<<endl;
+	QDPIO::cout << "because both heavy quarks are not static."<<endl;
+	
+	//Now we actually will do the contractions...
+	
+	QlQl(u, sink_prop_1, sink_prop_2, heavy_prop_1, heavy_prop_2,  t_src1, t_src2, phases, xml_out, source_sink_type +"Wilson_Ql_Ql_3pt");
+	
+	pop(xml_out);  // array element
+      }// End of if statement for no statics.
+      
+    }// End of loop over pairs...
+    pop(xml_out);  // Wilson_spectroscopy
+    pop(xml_out);  // HeavyLightCont
+    
     snoop.stop();
     QDPIO::cout << InlineHeavyLightContEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
