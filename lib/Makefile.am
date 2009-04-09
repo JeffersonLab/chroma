@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.194 2009-03-18 13:40:35 mcneile Exp $
+# $Id: Makefile.am,v 3.195 2009-04-09 23:01:01 caubin Exp $
 #
 # Path for all files used in building the library
 
@@ -772,7 +772,9 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
+	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
+	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
@@ -1455,7 +1457,9 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
+	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
+	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \

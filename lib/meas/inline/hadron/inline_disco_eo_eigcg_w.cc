@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eo_eigcg_w.cc,v 3.1 2009-04-08 18:34:11 caubin Exp $
+// $Id: inline_disco_eo_eigcg_w.cc,v 3.2 2009-04-09 23:01:09 caubin Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -48,7 +48,7 @@
 
 #include "util/ferm/key_val_db.h"
 
-namespace Chroma{ 
+namespace Chroma{
   namespace InlineDiscoEoEigCGEnv{ 
     namespace{
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
