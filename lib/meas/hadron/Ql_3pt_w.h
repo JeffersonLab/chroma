@@ -1,5 +1,5 @@
 // -*- C++ -*-
-//$Id: Ql_3pt_w.h,v 1.2 2009-01-20 20:04:55 caubin Exp $
+//$Id: Ql_3pt_w.h,v 1.3 2009-04-09 22:57:38 caubin Exp $
 /*! \file
  *  \brief Static-Light 3pt function
  */
@@ -34,37 +34,40 @@ namespace Chroma
    * \param xml                xml file object ( Read )
    * \param xml_group          group name for xml data ( Read )
    *
+   * \param bc                 if included, this is the boundary condition for the static quarks.
    */
   void QlQl(const multi1d<LatticeColorMatrix>& u, 
-	     const LatticePropagator& quark_propagator1,
-	     const LatticePropagator& quark_propagator2,
-	     const multi1d<int>& src_coord, 
-	     const multi1d<int>& snk_coord, 
-	     const SftMom& phases,
-	     XMLWriter& xml,
-	     const string& xml_group);
+	    const LatticePropagator& quark_propagator1,
+	    const LatticePropagator& quark_propagator2,
+	    const multi1d<int>& src_coord, 
+	    const multi1d<int>& snk_coord, 
+	    const int& bc, 
+	    const SftMom& phases,
+	    XMLWriter& xml,
+	    const string& xml_group);
 
   void QlQl(const multi1d<LatticeColorMatrix>& u, 
-	     const LatticePropagator& quark_propagator1,
-	     const LatticePropagator& quark_propagator2,
-	     const LatticePropagator& heavy_quark_propagator,
-	     const multi1d<int>& src_coord, 
-	     const multi1d<int>& snk_coord, 
-	     const multi1d<int>& heavy_src, 
-	     const SftMom& phases,
-	     XMLWriter& xml,
-	     const string& xml_group);
-
+	    const LatticePropagator& quark_propagator1,
+	    const LatticePropagator& quark_propagator2,
+	    const LatticePropagator& heavy_quark_propagator,
+	    const multi1d<int>& src_coord, 
+	    const multi1d<int>& snk_coord, 
+	    const multi1d<int>& heavy_src, 
+            const int& bc,
+	    const SftMom& phases,
+	    XMLWriter& xml,
+	    const string& xml_group);
+  
   void QlQl(const multi1d<LatticeColorMatrix>& u, 
-	     const LatticePropagator& quark_propagator1,
-	     const LatticePropagator& quark_propagator2,
-	     const LatticePropagator& heavy_quark_propagator1,
-	     const LatticePropagator& heavy_quark_propagator2,
-	     const multi1d<int>& src_coord, 
-	     const multi1d<int>& snk_coord, 
-	     const SftMom& phases,
-	     XMLWriter& xml,
-	     const string& xml_group);
-
+	    const LatticePropagator& quark_propagator1,
+	    const LatticePropagator& quark_propagator2,
+	    const LatticePropagator& heavy_quark_propagator1,
+	    const LatticePropagator& heavy_quark_propagator2,
+	    const multi1d<int>& src_coord, 
+	    const multi1d<int>& snk_coord, 
+	    const SftMom& phases,
+	    XMLWriter& xml,
+	    const string& xml_group);
+  
 }
 #endif

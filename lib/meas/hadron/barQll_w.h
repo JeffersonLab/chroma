@@ -1,4 +1,4 @@
-//$Id: barQll_w.h,v 1.7 2009-01-27 15:40:44 caubin Exp $
+//$Id: barQll_w.h,v 1.8 2009-04-09 22:57:38 caubin Exp $
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -64,7 +64,8 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 void HeavyQuarkProp(LatticeColorMatrix& Qprop,
 		    const multi1d<LatticeColorMatrix>& u,
 		    const multi1d<int>& src_coord,
-		    int length);
+		    int length,
+		    int bc = 0);
 
 //! Backwards Heavy Quark Propagator
 /*!
@@ -82,7 +83,8 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
 void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
 		    const multi1d<LatticeColorMatrix>& u,
 		    const multi1d<int>& src_coord,
-		    int length);
+		    int length,
+		    int bc = 0);
 
 
 

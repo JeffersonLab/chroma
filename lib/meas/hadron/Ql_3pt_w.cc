@@ -1,4 +1,4 @@
-// $Id: Ql_3pt_w.cc,v 1.4 2009-02-20 15:02:53 caubin Exp $ 
+// $Id: Ql_3pt_w.cc,v 1.5 2009-04-09 22:57:38 caubin Exp $ 
 /*! \file
  *  \brief Heavy-Light 3pt function
  */
@@ -39,16 +39,18 @@ namespace Chroma {
  * \param xml                xml file object ( Read )  
  * \param xml_group          group name for xml data ( Read ) 
  *
+ * \param bc                 if there, the bc's for the static quark props...
  */
   
 void QlQl(const multi1d<LatticeColorMatrix>& u,
-	    const LatticePropagator& quark_propagator1,
-	    const LatticePropagator& quark_propagator2,
-	    const multi1d<int>& src_coord,
-	    const multi1d<int>& snk_coord,
-	    const SftMom& phases,
-	    XMLWriter& xml,
-	    const string& xml_group)
+	  const LatticePropagator& quark_propagator1,
+	  const LatticePropagator& quark_propagator2,
+	  const multi1d<int>& src_coord,
+	  const multi1d<int>& snk_coord,
+	  const int& bc, 
+	  const SftMom& phases,
+	  XMLWriter& xml,
+	  const string& xml_group)
 {
     START_CODE();
   
@@ -61,8 +63,8 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
   LatticeColorMatrix Qprop1; // b quark
   LatticeColorMatrix Qprop2; // c quark
 
-  HeavyQuarkProp(Qprop1,u,src_coord,length);
-  HeavyQuarkPropBack(Qprop2,u,snk_coord,length);
+  HeavyQuarkProp(Qprop1,u,src_coord,length,bc);
+  HeavyQuarkPropBack(Qprop2,u,snk_coord,length,bc);
 
   // S_proj_unpol = (1/2)(1 + gamma_4)
   // This is the heavy quark dirac structure, but I am using the notation
@@ -121,15 +123,16 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
   
   
 void QlQl(const multi1d<LatticeColorMatrix>& u,
-	    const LatticePropagator& quark_propagator1,
-	    const LatticePropagator& quark_propagator2,
-	    const LatticePropagator& heavy_quark_propagator,
-	    const multi1d<int>& src_coord,
-	    const multi1d<int>& snk_coord,
-	    const multi1d<int>& heavy_src, 
-	    const SftMom& phases,
-	    XMLWriter& xml,
-	    const string& xml_group)
+	  const LatticePropagator& quark_propagator1,
+	  const LatticePropagator& quark_propagator2,
+	  const LatticePropagator& heavy_quark_propagator,
+	  const multi1d<int>& src_coord,
+	  const multi1d<int>& snk_coord,
+	  const multi1d<int>& heavy_src, 
+	  const int& bc,
+	  const SftMom& phases,
+	  XMLWriter& xml,
+	  const string& xml_group)
 {
     START_CODE();
   
@@ -142,9 +145,9 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
   LatticeColorMatrix Qprop; // b quark
 
   if (heavy_src==src_coord)
-	HeavyQuarkProp(Qprop,u,snk_coord,length);
+    HeavyQuarkProp(Qprop,u,snk_coord,length,bc);
   else 
-	HeavyQuarkProp(Qprop,u,src_coord,length);
+    HeavyQuarkProp(Qprop,u,src_coord,length,bc);
 
   // S_proj_unpol = (1/2)(1 + gamma_4)
   // This is the heavy quark dirac structure, but I am using the notation

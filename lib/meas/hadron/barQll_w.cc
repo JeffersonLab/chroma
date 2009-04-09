@@ -1,4 +1,4 @@
-// $Id: barQll_w.cc,v 1.12 2009-01-27 15:43:24 caubin Exp $ 
+// $Id: barQll_w.cc,v 1.13 2009-04-09 22:57:38 caubin Exp $ 
 /*! \file
  *  \brief Heavy Baryon (Qll)  2-pt function : Orginos and Savage
  */
@@ -130,8 +130,6 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
   Qll(u,quark_propagator,quark_propagator,src_coord,phases,xml,xml_group) ;
 }
 
-
-
 //! Heavy Quark Propagator
 /*!
  * \ingroup hadron
@@ -139,16 +137,20 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
  * 
  * This constructs the propagator for a spinless Wilson-Line propagating from the 
  * point src_coord forward in time, and vanishing on previous time-slices.
- *
+ * 
  * \param Qprop              Wilson-Line (write)
  * \param u                  Gauge Field (Read) 
  * \param src_coord          cartesian coordinates of the source ( Read )
- *
+ * \param length             Time length
+ * Added:
+ * \param bc                 Boundary condition = +/- 1 (p,ap bcs) or 
+ *                           0 for Dirichlet (no wraparound, default)
  */
 
 void HeavyQuarkProp(LatticeColorMatrix& Qprop,
 		    const multi1d<LatticeColorMatrix>& u,
-		    const multi1d<int>& src_coord,int length)
+		    const multi1d<int>& src_coord,int length,
+		    int bc)
 {
 
   Set slice ;
@@ -162,13 +164,31 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
 
   LatticeColorMatrix U_t_minus_one ;
   U_t_minus_one = shift(u[Nd-1],BACKWARD,Nd-1) ;
-  for(int t(src_coord[Nd-1]+1);t<length;t++){
-    Qprop[slice[t]] = shift(Qprop,BACKWARD,Nd-1)*U_t_minus_one ;
+  if (bc==0){//Dirichlet
+    for(int t(src_coord[Nd-1]+1);t<length;t++){
+      Qprop[slice[t]] = shift(Qprop,BACKWARD,Nd-1)*U_t_minus_one ;
+    }
   }
- 
+  else if (bc==1){//periodic bc's
+    for(int t(1);t<length;t++){
+      int t_eff = (t - src_coord[Nd-1] + length) % length;
+      Qprop[slice[t_eff]] = shift(Qprop,BACKWARD,Nd-1)*U_t_minus_one ;
+    }
+  }
+  else if (bc==-1){//anti-periodic
+    for(int t(1);t<length;t++){
+      int t_eff = (t - src_coord[Nd-1] + length) % length;
+      if (t_eff==0)//When we hit the boundary
+	Qprop[slice[t_eff]] = -shift(Qprop,BACKWARD,Nd-1)*U_t_minus_one ;
+      else
+	Qprop[slice[t_eff]] = shift(Qprop,BACKWARD,Nd-1)*U_t_minus_one ;
+    }
+  }
+  
   Qprop = conj(transpose(Qprop));
+  cout<<"Norm of fwd prop = "<<norm2(Qprop)<<endl;
 }
-
+  
 
 //! Backwards Heavy Quark Propagator
 /*!
@@ -180,16 +200,26 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
  * \param Qprop              Wilson-Line (write)
  * \param u                  Gauge Field (Read)
  * \param src_coord          cartesian coordinates of the source ( Read )
- *
+ * \param length             Timelength
+ * \param bc =0              Boundary condition (default 0 = Dirichlet,
+ *                           otherwise +/-1)
  */
 
 void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
-                    const multi1d<LatticeColorMatrix>& u,
-                    const multi1d<int>& src_coord,int length)
+			const multi1d<LatticeColorMatrix>& u,
+			const multi1d<int>& src_coord,int length,
+			int bc)
 {
 
   Set slice ;
   slice.make(TimeSliceFunc(Nd-1));
+
+  /**
+     This is all wrong.
+     I have to rethink this whole deal...
+     Sigh.
+  
+  **/
 
   Qprop = 0.0 ;
 
@@ -199,11 +229,33 @@ void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
 
   LatticeColorMatrix U_t_plus_one ;
   U_t_plus_one = shift(u[Nd-1],FORWARD,Nd-1) ;
-  for(int t(src_coord[Nd-1]+1);t>=0;t--){
-    Qprop[slice[t]] = shift(Qprop,FORWARD,Nd-1)*U_t_plus_one ;
+  if (bc==0){
+    for(int t(src_coord[Nd-1]-2);t>=0;t--){
+      //      Qprop[slice[t]] = shift(Qprop,FORWARD,Nd-1)*U_t_plus_one;
+      Qprop[slice[t]] = U_t_plus_one*shift(Qprop,FORWARD,Nd-1);
+    }
   }
-
-  Qprop = conj(transpose(Qprop));
+  else if (bc==1){//periodic bc's
+    for(int t(1);t<length;t++){
+      int t_eff = (src_coord[Nd-1] - t - length) % length; 
+      Qprop[slice[t_eff]] = U_t_plus_one*shift(Qprop,FORWARD,Nd-1);
+      //      Qprop[slice[t_eff]] = shift(Qprop,FORWARD,Nd-1)*U_t_plus_one;
+    }
+  }
+  else if (bc==-1){//anti-periodic
+    for(int t(1);t<length;t++){
+      int t_eff = length + (src_coord[Nd-1] - t - length) % length;
+      if (t_eff==(length-1))//When we hit the boundary
+	Qprop[slice[t_eff]] = -U_t_plus_one*shift(Qprop,FORWARD,Nd-1);
+      //	Qprop[slice[t_eff]] = -shift(Qprop,FORWARD,Nd-1)*U_t_plus_one;
+      else
+        Qprop[slice[t_eff]] = U_t_plus_one*shift(Qprop,FORWARD,Nd-1);
+      //        Qprop[slice[t_eff]] = shift(Qprop,FORWARD,Nd-1)*U_t_plus_one;
+    } 
+  } 
+  // Don't think we need to do this....
+  //Qprop = conj(transpose(Qprop));
+  cout<<"Norm of bwd prop = "<<norm2(Qprop)<<endl;
 }
 
 
