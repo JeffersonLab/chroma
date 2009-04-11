@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.49 2009-04-08 18:34:11 caubin Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.50 2009-04-11 03:33:54 edwards Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -6,6 +6,7 @@
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
 #include "meas/inline/hadron/inline_apply_fermstate_w.h"
 //#include "meas/inline/hadron/inline_spectrumQll.h"
+#include "meas/inline/hadron/inline_block_orthog_colorvec.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
@@ -106,6 +107,7 @@ namespace Chroma
 	success &= InlineMesonSpecEnv::registerAll();
 	success &= InlineHadronContractEnv::registerAll();
 //	success &= InlineSpectrumEnv::registerAll();
+	success &= InlineBlockOrthogColorVecsEnv::registerAll();
 	success &= InlineCreateColorVecsEnv::registerAll();
 	success &= InlineBlockColorVecsEnv::registerAll();
 	success &= InlineProp3ptEnv::registerAll();
