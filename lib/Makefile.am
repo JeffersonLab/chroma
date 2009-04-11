@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.195 2009-04-09 23:01:01 caubin Exp $
+# $Id: Makefile.am,v 3.196 2009-04-11 01:50:37 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -267,6 +267,7 @@ nobase_include_HEADERS = \
 	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
+	meas/sources/norm_sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
 	meas/sources/sf_pt_source_const.h \
 	meas/sources/sf_sh_source_const.h \
@@ -1095,6 +1096,7 @@ libchroma_a_SOURCES = \
         meas/sources/pt_source_const.cc \
         meas/sources/pt_source_smearing.cc \
         meas/sources/sh_source_const.cc \
+        meas/sources/norm_sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
 	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \

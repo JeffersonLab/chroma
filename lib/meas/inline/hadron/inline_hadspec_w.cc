@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.13 2008-11-04 18:43:57 edwards Exp $
+// $Id: inline_hadspec_w.cc,v 3.14 2009-04-11 01:50:45 kostas Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -529,6 +529,8 @@ namespace Chroma
       else if (all_sinks.sink_prop_1.source_type == "SF_POINT_SOURCE")
 	src_type = "Point";
       else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
+	src_type = "Shell";
+      else if (all_sinks.sink_prop_1.source_type == "NORM_SHELL_SOURCE")
 	src_type = "Shell";
       else if (all_sinks.sink_prop_1.source_type == "SF_SHELL_SOURCE")
 	src_type = "Shell";

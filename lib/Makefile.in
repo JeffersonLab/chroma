@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.319 2009-04-09 23:01:01 caubin Exp $
+# $Id: Makefile.in,v 3.320 2009-04-11 01:50:37 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -329,6 +329,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
+	meas/sources/norm_sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
 	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \
@@ -919,9 +920,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	simple_quark_displacement.$(OBJEXT) disp_colvec_map.$(OBJEXT) \
 	vector_smear.$(OBJEXT) mom_source_const.$(OBJEXT) \
 	pt_source_const.$(OBJEXT) pt_source_smearing.$(OBJEXT) \
-	sh_source_const.$(OBJEXT) sh_source_smearing.$(OBJEXT) \
-	sf_pt_source_const.$(OBJEXT) sf_sh_source_const.$(OBJEXT) \
-	sf_wall_source_const.$(OBJEXT) dilutezN_source_const.$(OBJEXT) \
+	sh_source_const.$(OBJEXT) norm_sh_source_const.$(OBJEXT) \
+	sh_source_smearing.$(OBJEXT) sf_pt_source_const.$(OBJEXT) \
+	sf_sh_source_const.$(OBJEXT) sf_wall_source_const.$(OBJEXT) \
+	dilutezN_source_const.$(OBJEXT) \
 	diluteGrid_source_const.$(OBJEXT) \
 	rndz2wall_source_const.$(OBJEXT) wall_source_const.$(OBJEXT) \
 	partwall_source_const.$(OBJEXT) \
@@ -1478,6 +1480,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
+	meas/sources/norm_sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
 	meas/sources/sf_pt_source_const.h \
 	meas/sources/sf_sh_source_const.h \
@@ -2400,6 +2403,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sources/pt_source_const.h \
 	meas/sources/pt_source_smearing.h \
 	meas/sources/sh_source_const.h \
+	meas/sources/norm_sh_source_const.h \
 	meas/sources/sh_source_smearing.h \
 	meas/sources/sf_pt_source_const.h \
 	meas/sources/sf_sh_source_const.h \
@@ -3133,6 +3137,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/sources/pt_source_const.cc \
 	meas/sources/pt_source_smearing.cc \
 	meas/sources/sh_source_const.cc \
+	meas/sources/norm_sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
 	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \
@@ -4085,6 +4090,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_quark_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/no_spin_insertion.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/norm_gram_schm.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/norm_sh_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npr_vertex_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Po@am__quote@
@@ -7434,6 +7440,20 @@ sh_source_const.obj: meas/sources/sh_source_const.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/sh_source_const.cc' object='sh_source_const.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sh_source_const.obj `if test -f 'meas/sources/sh_source_const.cc'; then $(CYGPATH_W) 'meas/sources/sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/sh_source_const.cc'; fi`
+
+norm_sh_source_const.o: meas/sources/norm_sh_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT norm_sh_source_const.o -MD -MP -MF "$(DEPDIR)/norm_sh_source_const.Tpo" -c -o norm_sh_source_const.o `test -f 'meas/sources/norm_sh_source_const.cc' || echo '$(srcdir)/'`meas/sources/norm_sh_source_const.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/norm_sh_source_const.Tpo" "$(DEPDIR)/norm_sh_source_const.Po"; else rm -f "$(DEPDIR)/norm_sh_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/norm_sh_source_const.cc' object='norm_sh_source_const.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o norm_sh_source_const.o `test -f 'meas/sources/norm_sh_source_const.cc' || echo '$(srcdir)/'`meas/sources/norm_sh_source_const.cc
+
+norm_sh_source_const.obj: meas/sources/norm_sh_source_const.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT norm_sh_source_const.obj -MD -MP -MF "$(DEPDIR)/norm_sh_source_const.Tpo" -c -o norm_sh_source_const.obj `if test -f 'meas/sources/norm_sh_source_const.cc'; then $(CYGPATH_W) 'meas/sources/norm_sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/norm_sh_source_const.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/norm_sh_source_const.Tpo" "$(DEPDIR)/norm_sh_source_const.Po"; else rm -f "$(DEPDIR)/norm_sh_source_const.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/sources/norm_sh_source_const.cc' object='norm_sh_source_const.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o norm_sh_source_const.obj `if test -f 'meas/sources/norm_sh_source_const.cc'; then $(CYGPATH_W) 'meas/sources/norm_sh_source_const.cc'; else $(CYGPATH_W) '$(srcdir)/meas/sources/norm_sh_source_const.cc'; fi`
 
 sh_source_smearing.o: meas/sources/sh_source_smearing.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sh_source_smearing.o -MD -MP -MF "$(DEPDIR)/sh_source_smearing.Tpo" -c -o sh_source_smearing.o `test -f 'meas/sources/sh_source_smearing.cc' || echo '$(srcdir)/'`meas/sources/sh_source_smearing.cc; \
