@@ -399,7 +399,7 @@ Not used in this test, instead use create colorvecs below.
           <elem>
              <left>1</left>
              <middle>-3</middle>
-             <right>1 -2</right>
+             <right>-2</right>
           </elem>
         </displacement_list>
 
