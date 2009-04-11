@@ -1,4 +1,4 @@
-// $Id: zN_src.cc,v 3.0 2006-04-03 04:59:06 edwards Exp $
+// $Id: zN_src.cc,v 3.1 2009-04-11 04:33:02 edwards Exp $
 /*! \file
  *  \brief Variety of Z(N) noise sources
  */
@@ -8,6 +8,19 @@
 
 namespace Chroma 
 {
+
+  // Z(N)-rng
+  Complex zN_rng(int N)
+  {
+    Real rnd1;
+    random(rnd1);
+
+    Real twopiN = Chroma::twopi / N;
+    Real theta = twopiN * floor(N*rnd1);
+
+    return cmplx(cos(theta),sin(theta));
+  }
+
 
   //! Volume source of Z(N) noise
   /*!
