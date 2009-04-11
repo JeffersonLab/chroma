@@ -1,44 +1,29 @@
-// $Id: inline_create_colorvecs.cc,v 3.9 2009-02-23 19:52:02 edwards Exp $
+// $Id: inline_create_colorvecs.cc,v 3.10 2009-04-11 03:32:46 edwards Exp $
 /*! \file
- * \brief make color vectors
- *
- * Propagator calculation on a colorvector
+ * \brief Construct colorvectors via power iteration of the laplacian
  */
 
 #include "fermact.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_factory.h"
+#include "meas/smear/link_smearing_aggregate.h"
+#include "meas/smear/gaus_smear.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/block_subset.h"
 #include "util/ferm/map_obj.h"
-#include "util/ferm/key_grid_prop.h"
-#include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "meas/inline/make_xml_file.h"
 
-#include "meas/smear/quark_smearing_aggregate.h"
-#include "meas/smear/quark_smearing_factory.h"
-
-#include "meas/smear/link_smearing_aggregate.h"
-#include "meas/smear/no_quark_displacement.h"
-#include "meas/smear/no_link_smearing.h"
-
-#include "meas/sources/diluteGrid_source_const.h"
-
 #include "meas/inline/io/named_objmap.h"
-#include "meas/smear/gaus_smear.h"
 
 namespace Chroma 
 { 
   namespace InlineCreateColorVecsEnv 
   {
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -47,7 +32,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -57,85 +42,44 @@ namespace Chroma
       pop(xml);
     }
 
-
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params::Param_t::Sources_t& input)
+    void read(XMLReader& xml, const string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
-      read(inputtop, "spatial_mask_size",input.spatial_mask_size);
-      read(inputtop, "spatial_masks", input.spatial_masks);
 
+      read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "decay_dir", input.decay_dir);
-      
-      input.smear = false ;
-      if(inputtop.count("Smearing") !=0 ) {
-	input.smr = readXMLGroup(inputtop, "Smearing", "wvf_kind");
-	input.link_smear = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
-	input.smear = true ;
-      }
-      
+      read(inputtop, "num_iter", input.num_iter);
+      read(inputtop, "num_orthog", input.num_orthog);
+      read(inputtop, "width", input.width);
+      input.link_smear = readXMLGroup(inputtop, "LinkSmearing", "LinkSmearingType");
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params::Param_t::Sources_t& out)
+    void write(XMLWriter& xml, const string& path, const Params::Param_t& out)
     {
       push(xml, path);
 
-      write(xml, "spatial_mask_size", out.spatial_mask_size);
-      write(xml, "spatial_masks", out.spatial_masks);
-
+      write(xml, "num_vecs", out.num_vecs);
       write(xml, "decay_dir", out.decay_dir);
-
-      if(out.smear){
-	xml << out.smr.xml;
-	xml << out.link_smear.xml ;
-      }
+      write(xml, "num_iter", out.num_iter);
+      write(xml, "num_orthog", out.num_orthog);
+      write(xml, "width", out.width);
+      xml << out.link_smear.xml;
 
       pop(xml);
     }
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params::Param_t& input)
+    void read(XMLReader& xml, const string& path, Params& input)
     {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "Nhits", input.Nhits) ;
-      read(inputtop, "OrthoNormal", input.OrthoNormal) ;
-      read(inputtop, "Sources"   , input.src)  ;
-
-      input.BlockOrthoNormal=false ;
-      if(inputtop.count("BlockOrthoNormal")!=0){
-	input.BlockOrthoNormal=true ;
-	read(inputtop, "BlockOrthoNormal", input.block) ;
-      }
-    }
-
-    //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params::Param_t& input)
-    {
-      push(xml, path);
-
-      write(xml, "Nhits", input.Nhits) ;
-      write(xml, "OrthoNormal", input.OrthoNormal) ;
-      write(xml, "Sources"   , input.src)  ;
-
-      if(input.BlockOrthoNormal){
-	write(xml, "BlockOrthoNormal", input.block) ;
-      }
-      pop(xml);
-    }
-
-
-    //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineCreateColorVecsEnv::Params& input)
-    {
-      InlineCreateColorVecsEnv::Params tmp(xml, path);
+      Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineCreateColorVecsEnv::Params& input)
+    void write(XMLWriter& xml, const string& path, const Params& input)
     {
       push(xml, path);
     
@@ -294,14 +238,15 @@ namespace Chroma
       
       try
       {
-	std::istringstream  xml_l(params.param.src.link_smear.xml);
+	std::istringstream  xml_l(params.param.link_smear.xml);
 	XMLReader  linktop(xml_l);
 	QDPIO::cout << "Link smearing type = " 
-		    << params.param.src.link_smear.id
+		    << params.param.link_smear.id
 		    << endl;
 		
 	Handle< LinkSmearing >
-	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.src.link_smear.id, linktop,params.param.src.link_smear.path));
+	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.link_smear.id, 
+								       linktop,params.param.link_smear.path));
 	(*linkSmearing)(u_smr);
       }
       catch(const std::string& e){
@@ -332,39 +277,16 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      SubsetVectors<LatticeColorVector>& color_vecs=TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-
-      //QDPIO::cout << name << ": Created named buffer" << endl;
-      
-      DiluteGridQuarkSourceConstEnv::Params srcParams ;
-
-      NoQuarkDisplacementEnv::Params noQuarkDisp ;
-      NoLinkSmearingEnv::Params      noLinkSmear ;
-      //create a no displacement xml
-      {
-	XMLBufferWriter tt ;
-	push(tt,"foo");
-	noQuarkDisp.writeXML(tt,"Displacement");
-	noLinkSmear.writeXML(tt,"LinkSmearing");
-	pop(tt);
-	XMLReader from(tt);
-	srcParams.displace = readXMLGroup(from, "/foo/Displacement", "DisplacementType");
-	srcParams.link_smear = readXMLGroup(from, "/foo/LinkSmearing", "LinkSmearingType");
-      }
-      srcParams.j_decay = params.param.src.decay_dir ;
-      srcParams.spatial_mask_size = params.param.src.spatial_mask_size ;
-      if(params.param.src.smear){
-	srcParams.smear = false ;
-	srcParams.smr = params.param.src.smr ;
-      }
+      SubsetVectors<LatticeColorVector>& color_vecs =
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       // The code goes here
       StopWatch swatch;
       swatch.reset();
       swatch.start();
-      /** 
 
-       *Loop for Nhits
+      /** 
+       *Loop for num_iter
        *    apply smearing
        *    if orthonormalize is true to a GramSchmit on them
        *    Compute the v'Smearing v matrix elements for all color vectors
@@ -374,201 +296,80 @@ namespace Chroma
        **/
 
       // Initialize the slow Fourier transform phases
-      SftMom phases(0, true, params.param.src.decay_dir);
+      SftMom phases(0, true, params.param.decay_dir);
       
-      int Nvecs(3*params.param.src.spatial_masks.size()) ;
-      color_vecs.getEvectors().resize(Nvecs);
-      color_vecs.getEvalues().resize(Nvecs);
-      for(int i(0);i<Nvecs;i++){
+      const int num_vecs = params.param.num_vecs;
+
+      color_vecs.getEvectors().resize(num_vecs);
+      color_vecs.getEvalues().resize(num_vecs);
+      for(int i(0);i<num_vecs;i++){
 	color_vecs.getEvalues()[i].weights.resize(phases.numSubsets());
       }
 
-      color_vecs.getDecayDir() = params.param.src.decay_dir ;
+      color_vecs.getDecayDir() = params.param.decay_dir;
 
-      srcParams.spin = 0;
-      int count(0);
-      for(int c(0);c<Nc;c++){// loop over colors
-	srcParams.color = c;
-	for(int g(0);g<params.param.src.spatial_masks.size();g++){
-	  srcParams.spatial_mask = params.param.src.spatial_masks[g];
-	  QDPIO::cout << name << ": Doing  color " << c 
-		      << " and  grid " << g<< " ( of " 
-		      << params.param.src.spatial_masks.size() << ")"<<endl;
-	  //Constuct the source
-	  DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion>  
-	    GridSrc(srcParams);
-	  LatticeFermion chi = GridSrc(u_smr);
-	  color_vecs.getEvectors()[count] = peekSpin(chi,0) ;
-	  if(params.param.OrthoNormal){
-	    for(int k(0);k<count;k++){
-	      multi1d<DComplex> cc = sumMulti(localInnerProduct(color_vecs.getEvectors()[k],color_vecs.getEvectors()[count]),phases.getSet());
-	      for(int t(0);t<phases.numSubsets();t++)
-		color_vecs.getEvectors()[count][phases.getSet()[t]] -= 
-		  cc[t]*color_vecs.getEvectors()[k] ;
-	    }
-	    multi1d<Double> norm2 = 
-	      sumMulti(localNorm2(color_vecs.getEvectors()[count]),phases.getSet());
-	    for(int t(0);t<phases.numSubsets();t++)
-	      color_vecs.getEvectors()[count][phases.getSet()[t]] /= sqrt(norm2[t]) ;
-	  }
-	      
-	  count ++;
+      //
+      // Initialize the color vectors with gaussian numbers
+      // Orthogonalize them all
+      //
+      for(int i=0; i < num_vecs; ++i)
+      {
+	gaussian(color_vecs.getEvectors()[i]);
+
+	for(int k=0; k < i; ++k)
+	{
+	  multi1d<DComplex> cc = 
+	    sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
+				       color_vecs.getEvectors()[i]),
+		     phases.getSet());
+	  for(int t(0);t<phases.numSubsets();t++)
+	    color_vecs.getEvectors()[i][phases.getSet()[t]] -=
+	      cc[t]*color_vecs.getEvectors()[k];
 	}
+
+	multi1d<Double> norm2 =
+	  sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
+
+	for(int t=0; t < phases.numSubsets(); ++t)
+	  color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]);
       }
 
-      Handle< QuarkSmearing<LatticeColorVector> >  Smearing ;
-      try{
-	std::istringstream  xml_l(params.param.src.smr.xml);
-	XMLReader  smrtop(xml_l);
-	QDPIO::cout << "ColorVector Smearing type = " <<params.param.src.smr.id ;
-	QDPIO::cout << endl;
 
-	Smearing =
-	  TheColorVecSmearingFactory::Instance().createObject(params.param.src.smr.id,
-							      smrtop,
-							      params.param.src.smr.path);
-      }
-      catch(const std::string& e){
-	QDPIO::cerr <<name
-		    << ": Caught Exception creating ColorVector smearing object: " 
-		    << e << endl;
-	QDP_abort(1);
-      }
-      catch(...){
-	QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" 
-		    <<   endl;
-	QDP_abort(1);
-      }
-      
-      // TheColorVecSmearingFactory::Instance().
-      //GausQuarkSmearingEnv::Params QsmrParams(
-      //GausQuarkSmearingEnv::QuarkSmear<LatticeColorVector> smearVecs(QsmrParams);
-      //for the moment only gaussing smearing works...
-      //but this is good enough for what we want to do
-      for(int hit(1);hit<params.param.Nhits;hit++){
-	for(int i(0);i<Nvecs;i++){
-	  QDPIO::cout << name << ": Doing colorvec: "<<i
-		      << " hit no: "<<hit<<endl ;
-	  (*Smearing)(color_vecs.getEvectors()[i], u_smr);
-	  if(params.param.OrthoNormal){
-            for(int k(0);k<i;k++){
-              multi1d<DComplex> cc = 
-		sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					   color_vecs.getEvectors()[i]),
-			 phases.getSet());
-              for(int t(0);t<phases.numSubsets();t++)
-                color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-                  cc[t]*color_vecs.getEvectors()[k] ;
-            }
-            multi1d<Double> norm2 =
-	      sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
-            for(int t(0);t<phases.numSubsets();t++)
-              color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]) ;
-	  }
+      //
+      // Gaussian smear in an orthogonalization loop
+      //
+      for(int hit=1; hit < params.param.num_orthog; ++hit)
+      {
+	for(int i=0; i < num_vecs; ++i)
+	{
+	  QDPIO::cout << name << ": Doing colorvec: "<<i << " hit no: "<<hit<<endl;
+	  gausSmear(u_smr, 
+		    color_vecs.getEvectors()[i],
+		    params.param.width, params.param.num_iter, params.param.decay_dir);
 
-	}
-	
-      }
-      if(params.param.BlockOrthoNormal){
-	//create the block dims array
-	Set blocks ;
-	multi1d<int> block_dims(Nd);
-	int k(0);
-	QDPIO::cout<<"Block Orthonormalizing with block size: ";
-	for(int d(0); d < Nd; d++){
-	  if (d == params.param.src.decay_dir )
-	    block_dims[d] = 1 ;
-	  else{
-	    if(k<params.param.block.size()){
-	      block_dims[d] = params.param.block[k] ;
-	      k++ ;
-	    }
-	    else
-	      block_dims[d] = Layout::lattSize()[d] ;
-	  }
-	  QDPIO::cout<<	  block_dims[d]<< " ";
-	}
-	QDPIO::cout<<endl ;
-	blocks.make(BlockFunc(block_dims));
-	for(int i(0);i<Nvecs;i++){
-	  for(int k(0);k<i;k++){
-	    multi1d<DComplex> cc =
+	  for(int k=0; k < i; ++k)
+	  {
+	    multi1d<DComplex> cc = 
 	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
 					 color_vecs.getEvectors()[i]),
-		       blocks);
-	    for(int b(0);b<blocks.numSubsets();b++)
-	      color_vecs.getEvectors()[i][blocks[b]] -=
-		cc[b]*color_vecs.getEvectors()[k] ;
+		       phases.getSet());
+	    for(int t(0);t<phases.numSubsets();t++)
+	      color_vecs.getEvectors()[i][phases.getSet()[t]] -=
+		cc[t]*color_vecs.getEvectors()[k];
 	  }
+
 	  multi1d<Double> norm2 =
-	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
-	  for(int b(0);b<blocks.numSubsets();b++)
-	    color_vecs.getEvectors()[i][blocks[b]] /= sqrt(norm2[b]) ;
-	}
+	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
 
-      }//BlockOrthoNormalize
-
-      //#define PRINT_SMEARING_MATRIX
-#ifdef PRINT_SMEARING_MATRIX
-      if(params.param.BlockOrthoNormal)
-      {
-	QDPIO::cout<<"Computing the Smearing Matrix"<<endl;
-	//compute the smearing matrix
-	Set blks ;
-	blks.make(BlockFunc(params.param.src.decay_dir, params.param.block));
-	LatticeColorVector vec ;
-	LatticeColorVector vecd ;
-	multi1d<DComplex> cc ;
-	multi1d< multi2d<multi2d<DComplex> > > M(phases.numSubsets());
-	for(int t(0);t<phases.numSubsets();t++){
-	  M[t].resize(blks.numSubsets(),blks.numSubsets());
-	  for(int b(0);b<blks.numSubsets();b++)
-	    for(int bb(0);bb<blks.numSubsets();bb++)
-	      M[t](b,bb).resize(Nvecs,Nvecs);
+	  for(int t=0; t < phases.numSubsets(); ++t)
+	    color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]);
 	}
-	
-	for(int b(0);b<blks.numSubsets();b++){
-	  for(int i(0);i<Nvecs;i++){
-	    vec = zero ;
-	    vec[blks[b]] = color_vecs.getEvectors()[i] ;
-	    (*Smearing)(vec, u_smr);
-	    for(int bb(b);bb<blks.numSubsets();bb++){
-	      for(int j(i);j<Nvecs;j++){
-		vecd            = zero ;
-		vecd[blks[bb]] = color_vecs.getEvectors()[j] ;
-		cc = sumMulti(localInnerProduct(vecd,vec),  phases.getSet());
-		for(int t(0);t<phases.numSubsets();t++){
-		  M[t](bb,b)(j,i) = cc[t] ;
-		  M[t](b,bb)(i,j) = conj(cc[t]) ;
-		}
-	      }// j
-	    }//bb
-	  }//i
-	}//b
-	QDPIO::cout<<"Writing the Smearing Matrix"<<endl;
-	push(xml_out,"SmearingMatrix");
-	for(int t(0);t<phases.numSubsets();t++){
-	  push(xml_out,"TimeSlice");
-	  write(xml_out,"t",t);
-	  for(int b(0);b<blks.numSubsets();b++)
-	    for(int bb(b);bb<blks.numSubsets();bb++){
-	      push(xml_out,"Block") ;
-	      write(xml_out,"b_left",b);
-	      write(xml_out,"b_right",bb);
-	      for(int i(0);i<Nvecs;i++){
-		push(xml_out,"ColorVecRow") ;
-		write(xml_out,"row_indx",i);
-		write(xml_out,"row",M[t](b,bb)[i]) ;		      
-		pop(xml_out);//ColorVecRow 
-	      }
-	      pop(xml_out);//block
-	    }
-	  pop(xml_out);//time slice 
-	}
-	pop(xml_out); //SmearingMatrix
-      }//BlockOrthoNormalize
-#endif
+      }
 
+
+      //
+      // Compute the version of eigenvalues (which they are not)
+      // 
       {
 	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
@@ -579,17 +380,21 @@ namespace Chroma
 	pop(xml_out);
 	//compute the "eigenvalues"
 	push(xml_out,"SmearingEvals");
-	for(int i(0);i<Nvecs;i++){
-	  LatticeColorVector Svec = color_vecs.getEvectors()[i] ;
-	  (*Smearing)(Svec, u_smr);
+	for(int i(0);i<num_vecs;i++){
+	  LatticeColorVector Svec = color_vecs.getEvectors()[i];
+	  gausSmear(u_smr, 
+		    Svec,
+		    params.param.width, params.param.num_iter, params.param.decay_dir);
+
 	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i],
-				       Svec),  phases.getSet());
+	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i], 
+				       Svec),  
+		     phases.getSet());
 
 	  for(int t(0);t<phases.numSubsets();t++)
 	    color_vecs.getEvalues()[i].weights[t] = real(cc[t]);
 
-	  push(xml_out,"Vector") ;
+	  push(xml_out,"Vector");
 	  write(xml_out, "VecNo",i);
 	  write(xml_out, "Evals", color_vecs.getEvalues()[i].weights);
 	  pop(xml_out);
@@ -598,9 +403,8 @@ namespace Chroma
       }
       
       
-      
       swatch.stop();
-      QDPIO::cout << name << ": time for colorvec contstruction = "
+      QDPIO::cout << name << ": time for colorvec construction = "
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;      
 
@@ -611,15 +415,15 @@ namespace Chroma
       {
 	XMLBufferWriter file_xml;
 
-	push(file_xml, "GridColorVecs");
-	write(file_xml, "Nvecs", Nvecs); 
+	push(file_xml, "LaplaceEigInfo");
+	write(file_xml, "num_vecs", num_vecs); 
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;
-	push(record_xml, "EgenInfo");
-	for(int i(0);i<Nvecs;i++){
+	push(record_xml, "SubsetVectors");
+	for(int i(0);i<num_vecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
 	  write(record_xml, "EigenValues", color_vecs.getEvalues()[i].weights); 

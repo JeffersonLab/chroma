@@ -1,20 +1,20 @@
 // -*- C++ -*-
-// $Id: inline_create_colorvecs.h,v 3.3 2009-04-11 03:32:46 edwards Exp $
+// $Id: inline_block_orthog_colorvec.h,v 3.1 2009-04-11 03:32:46 edwards Exp $
 /*! \file
- * \brief Construct colorvectors via power iteration of the laplacian
+ * \brief Block orthogonalize a colorvec structure
  */
 
-#ifndef __inline_create_colorvecs_h__
-#define __inline_create_colorvecs_h__
+#ifndef __inline_block_orthog_colorvec_h__
+#define __inline_block_orthog_colorvec_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-//#include "io/qprop_io.h"
+#include "io/qprop_io.h"
 
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineCreateColorVecsEnv 
+  namespace InlineBlockOrthogColorVecsEnv 
   {
     bool registerAll();
 
@@ -29,27 +29,34 @@ namespace Chroma
 
       struct Param_t
       {
-	int         num_vecs;    /*!< Number of vectors */
-	int         decay_dir;   /*!< Decay direction */
-	int         num_iter;    /*!< Number of hits/iterations of the gaussian smearing */
-	Real        width;       /*!< Smearing width - same conventions as gaussian quark smearing */
-	int         num_orthog;  /*!< Number of hits/iterations of orthogonalization step */
-	GroupXML_t  link_smear;  /*!< link smearing xml */
-      };
+
+	struct Sources_t {
+	  multi1d<int>                     spatial_mask_size;
+	  multi1d<multi1d<multi1d<int> > > spatial_masks ;
+	  int decay_dir;            /*!< Decay direction */
+
+	  bool smear ;
+	  GroupXML_t  smr; /*!< xml holding smearing params */
+	  GroupXML_t  link_smear;  /*!< link smearing xml */
+	};
+	Sources_t       src  ;
+	int Nhits ;
+	bool OrthoNormal ;
+	bool BlockOrthoNormal ;
+	multi1d<int> block ;
+      } param;
 
       struct NamedObject_t
       {
 	std::string     gauge_id;      /*!< Gauge field */
 	std::string     colorvec_id;   /*!< Id for color vectors */
-      };
+      } named_obj;
 
-      Param_t        param;      /*!< Parameters */
-      NamedObject_t  named_obj;  /*!< Named objects */
-      std::string    xml_file;   /*!< Alternate XML file pattern */
+      std::string xml_file;  // Alternate XML file pattern
     };
 
 
-    //! Inline task for creating colorvectors
+    //! Inline task for compute LatticeColorVector matrix elements of a propagator
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {
@@ -73,7 +80,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace CreateColorVecsEnv
+  } // namespace BlockOrthogColorVecsEnv
 
 }
 
