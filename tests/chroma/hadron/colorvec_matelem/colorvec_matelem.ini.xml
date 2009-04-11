@@ -8,6 +8,12 @@
 <Param> 
   <InlineMeasurements>
 
+<annotation>
+Lots of tasks to initialize colorvecs, write and read them as well
+as propagators. The create_colorvecs below is the task that produces
+vectors that are actually used.
+</annotation>
+
     <elem>
       <annotation>
         Make a fake unit subset_vectors struct
@@ -66,8 +72,19 @@
       <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>eigeninfo_0</object_id>
+        <object_id>stuff_to_erase</object_id>
         <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>stuff_to_erase</object_id>
       </NamedObject>
     </elem>
 
@@ -121,6 +138,51 @@
         <object_id>prop_colorvec</object_id>
       </NamedObject>
     </elem>
+
+<annotation>
+This task will read eigevectors produced by  chroma_eig/laplace_eigs .
+Not used in this test, instead use create colorvecs below.
+   <elem>
+      <Name>EIGENINFO_LIME_COLORVEC_READ_NAMED_OBJECT</Name>
+      <File>
+        <file_names>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec0.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec1.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec2.lime</elem>
+        </file_names>
+      </File>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+</annotation>
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>20</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+      </NamedObject>
+    </elem>
+
 
     <elem>
       <annotation>

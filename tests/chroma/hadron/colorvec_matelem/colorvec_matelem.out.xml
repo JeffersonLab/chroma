@@ -11,6 +11,12 @@
 <Param> 
   <InlineMeasurements>
 
+<annotation>
+Lots of tasks to initialize colorvecs, write and read them as well
+as propagators. The create_colorvecs below is the task that produces
+vectors that are actually used.
+</annotation>
+
     <elem>
       <annotation>
         Make a fake unit subset_vectors struct
@@ -69,8 +75,19 @@
       <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>eigeninfo_0</object_id>
+        <object_id>stuff_to_erase</object_id>
         <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>stuff_to_erase</object_id>
       </NamedObject>
     </elem>
 
@@ -124,6 +141,51 @@
         <object_id>prop_colorvec</object_id>
       </NamedObject>
     </elem>
+
+<annotation>
+This task will read eigevectors produced by  chroma_eig/laplace_eigs .
+Not used in this test, instead use create colorvecs below.
+   <elem>
+      <Name>EIGENINFO_LIME_COLORVEC_READ_NAMED_OBJECT</Name>
+      <File>
+        <file_names>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec0.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec1.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec2.lime</elem>
+        </file_names>
+      </File>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+</annotation>
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>20</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+      </NamedObject>
+    </elem>
+
 
     <elem>
       <annotation>
@@ -433,11 +495,11 @@
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.33.0</chroma>
+      <chroma>3.34.0</chroma>
       <qdp>1.31.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Mar 09 23:06:07 EST</run_date>
+    <run_date>10 Apr 09 23:51:11 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -518,6 +580,12 @@
       </gaussian_init_named_obj>
     </elem>
     <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>stuff_to_erase</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
       <gaussian_init_named_obj>
         <update_no>0</update_no>
       </gaussian_init_named_obj>
@@ -541,15 +609,179 @@
       </erase_named_obj>
     </elem>
     <elem>
+      <CreateColorVecs>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.34.0</chroma>
+            <qdp>1.31.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>10 Apr 09 23:51:12 EDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <num_iter>50</num_iter>
+            <num_orthog>20</num_orthog>
+            <width>3</width><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994803997506905</w_plaq>
+          <s_plaq>0.994798443435381</s_plaq>
+          <t_plaq>0.994809551578429</t_plaq>
+          <plane_01_plaq>0.994703592111667</plane_01_plaq>
+          <plane_02_plaq>0.994926826562732</plane_02_plaq>
+          <plane_12_plaq>0.994764911631743</plane_12_plaq>
+          <plane_03_plaq>0.994693187686304</plane_03_plaq>
+          <plane_13_plaq>0.994853908040871</plane_13_plaq>
+          <plane_23_plaq>0.994881559008112</plane_23_plaq>
+          <link>0.379449337626284</link>
+          <pollp>
+            <elem>
+              <re>0.966585880688702</re>
+              <im>-0.00132088747318448</im>
+            </elem>
+            <elem>
+              <re>0.966365773618842</re>
+              <im>-0.00123499087385426</im>
+            </elem>
+            <elem>
+              <re>0.967146154958755</re>
+              <im>-0.0011230993850404</im>
+            </elem>
+            <elem>
+              <re>0.878769262034136</re>
+              <im>-0.00991386470438253</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.998175961224155</w_plaq>
+          <s_plaq>0.999880677709977</s_plaq>
+          <t_plaq>0.996471244738334</t_plaq>
+          <plane_01_plaq>0.999860904179513</plane_01_plaq>
+          <plane_02_plaq>0.999894909095019</plane_02_plaq>
+          <plane_12_plaq>0.999886219855398</plane_12_plaq>
+          <plane_03_plaq>0.996367450958739</plane_03_plaq>
+          <plane_13_plaq>0.996532114067425</plane_13_plaq>
+          <plane_23_plaq>0.996514169188837</plane_23_plaq>
+          <link>0.379637535775449</link>
+          <pollp>
+            <elem>
+              <re>0.971324241952971</re>
+              <im>-0.00127694184394992</im>
+            </elem>
+            <elem>
+              <re>0.971388444188051</re>
+              <im>-0.00121283838742177</im>
+            </elem>
+            <elem>
+              <re>0.97194997407496</re>
+              <im>-0.00108983216826649</im>
+            </elem>
+            <elem>
+              <re>0.878769262034136</re>
+              <im>-0.00991386470438253</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <Source_correlators>
+          <source_corrs>
+            <elem>0.999999999958829 1.00000000000946 1.00000000341199 0.999999997297524 0.999999998999764 0.999999996299671 0.999999999487598 0.999999999916167</elem>
+            <elem>1.00000000060883 1.00000000143646 1.00000000127021 0.999999992713415 0.999999994679691 1.00000000206482 1.00000000132621 1.00000000142883</elem>
+            <elem>1.00000000104742 0.999999997691349 1.00000000080409 1.00000000507989 0.999999994344329 1.00000000334665 1.00000000297925 0.999999997954447</elem>
+            <elem>0.999999999500455 0.999999995598359 0.999999996661464 1.00000000040129 1.00000000177181 0.999999998635194 0.999999994899414 1.00000000723064</elem>
+            <elem>0.999999993034695 1.00000000232922 0.999999997825294 0.999999993164302 0.99999999971935 1.00000000000634 1.00000000183507 0.999999993467223</elem>
+            <elem>0.999999999043559 0.999999997199072 1.00000000329109 0.999999997279857 0.999999995360603 0.999999996021609 0.999999996011274 1.00000000345818</elem>
+            <elem>0.999999995871845 0.999999998190024 1.00000000615705 1.00000000151428 0.999999997743898 1.0000000038496 1.00000000440576 0.999999996924271</elem>
+            <elem>1.00000000331815 1.00000000492317 0.999999998577371 1.00000000063895 1.00000000397125 0.999999995340073 0.999999998171085 1.00000000750608</elem>
+            <elem>1.00000000295065 1.00000000105732 0.999999998774791 0.999999997866617 0.999999998920565 1.00000000005226 1.00000000116535 0.999999997561276</elem>
+            <elem>0.999999997950759 1.00000000688848 0.999999997945884 0.999999993386055 0.999999999145577 1.00000000970233 0.999999998074301 1.00000000095123</elem>
+          </source_corrs>
+        </Source_correlators>
+        <SmearingEvals>
+          <Vector>
+            <VecNo>0</VecNo>
+            <Evals>0.9724367 0.9941522 0.9907563 0.9933674 0.9902869 0.9744946 0.9704831 0.9872698</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>1</VecNo>
+            <Evals>0.9753342 0.9766536 0.962734 0.9668703 0.9730855 0.9816517 0.9786247 0.9731646</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>2</VecNo>
+            <Evals>0.9806436 0.9579492 0.9752583 0.9674424 0.9646655 0.9715811 0.9799705 0.9682569</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>3</VecNo>
+            <Evals>0.01298432 0.01273318 0.01295752 0.01300379 0.01299571 0.01304477 0.01294085 0.01298165</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>4</VecNo>
+            <Evals>0.0129218 0.01294938 0.01289663 0.01284371 0.01295265 0.01302713 0.01284635 0.01293204</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>5</VecNo>
+            <Evals>0.01258512 0.01252694 0.01283246 0.01289983 0.01238059 0.01288031 0.01282923 0.01248894</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>6</VecNo>
+            <Evals>0.01213142 0.01239107 0.01184631 0.01178741 0.01236369 0.01178864 0.01191216 0.01209534</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>7</VecNo>
+            <Evals>0.01174162 0.01186663 0.01176868 0.01183917 0.01182833 0.01164096 0.01181011 0.01182556</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>8</VecNo>
+            <Evals>0.01172168 0.01171888 0.01175621 0.01173355 0.01156236 0.0114227 0.01179091 0.01176109</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>9</VecNo>
+            <Evals>0.01008677 0.00993148 0.01002643 0.01016799 0.0102112 0.01053203 0.01021895 0.01022508</Evals>
+          </Vector>
+        </SmearingEvals>
+      </CreateColorVecs>
+    </elem>
+    <elem>
       <PropColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:08 EST</run_date>
+          <run_date>10 Apr 09 23:51:16 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -637,24 +869,89 @@
             </elem>
           </pollp>
         </Observables>
-        <Source_file_info><FileXML>
-</FileXML>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
 
         </Source_file_info>
-        <Source_record_info><RecordXML>
-</RecordXML>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.9724367 0.9941522 0.9907563 0.9933674 0.9902869 0.9744946 0.9704831 0.9872698</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.9753342 0.9766536 0.962734 0.9668703 0.9730855 0.9816517 0.9786247 0.9731646</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.9806436 0.9579492 0.9752583 0.9674424 0.9646655 0.9715811 0.9799705 0.9682569</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>0.01298432 0.01273318 0.01295752 0.01300379 0.01299571 0.01304477 0.01294085 0.01298165</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>0.0129218 0.01294938 0.01289663 0.01284371 0.01295265 0.01302713 0.01284635 0.01293204</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>0.01258512 0.01252694 0.01283246 0.01289983 0.01238059 0.01288031 0.01282923 0.01248894</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>0.01213142 0.01239107 0.01184631 0.01178741 0.01236369 0.01178864 0.01191216 0.01209534</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>0.01174162 0.01186663 0.01176868 0.01183917 0.01182833 0.01164096 0.01181011 0.01182556</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>0.01172168 0.01171888 0.01175621 0.01173355 0.01156236 0.0114227 0.01179091 0.01176109</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>0.01008677 0.00993148 0.01002643 0.01016799 0.0102112 0.01053203 0.01021895 0.01022508</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
 
         </Source_record_info>
         <Source_correlators>
           <source_corrs>
-            <elem>0.999999994725238 1.00000000685288 0.999999995100533 0.999999999875081 1.00000000162787 1.00000001080375 0.999999998828968 1.00000000631543</elem>
-            <elem>1.00000000737786 0.999999997851944 0.999999998703076 0.999999991730817 0.999999998185154 0.999999998603328 1.00000000168896 0.999999993664957</elem>
-            <elem>0.999999996528894 0.999999994717531 0.9999999985783 0.999999994849563 0.999999993249452 1.00000000690234 1.00000000289452 0.999999997716112</elem>
-            <elem>0.999999998758703 1.00000000232995 0.999999998786408 1.00000000428923 1.00000000340274 1.00000000074444 1.00000000080639 0.999999998389617</elem>
+            <elem>0.999999999958829 1.00000000000946 1.00000000341199 0.999999997297524 0.999999998999764 0.999999996299671 0.999999999487598 0.999999999916167</elem>
+            <elem>1.00000000060883 1.00000000143646 1.00000000127021 0.999999992713415 0.999999994679691 1.00000000206482 1.00000000132621 1.00000000142883</elem>
+            <elem>1.00000000104742 0.999999997691349 1.00000000080409 1.00000000507989 0.999999994344329 1.00000000334665 1.00000000297925 0.999999997954447</elem>
+            <elem>0.999999999500455 0.999999995598359 0.999999996661464 1.00000000040129 1.00000000177181 0.999999998635194 0.999999994899414 1.00000000723064</elem>
+            <elem>0.999999993034695 1.00000000232922 0.999999997825294 0.999999993164302 0.99999999971935 1.00000000000634 1.00000000183507 0.999999993467223</elem>
+            <elem>0.999999999043559 0.999999997199072 1.00000000329109 0.999999997279857 0.999999995360603 0.999999996021609 0.999999996011274 1.00000000345818</elem>
+            <elem>0.999999995871845 0.999999998190024 1.00000000615705 1.00000000151428 0.999999997743898 1.0000000038496 1.00000000440576 0.999999996924271</elem>
+            <elem>1.00000000331815 1.00000000492317 0.999999998577371 1.00000000063895 1.00000000397125 0.999999995340073 0.999999998171085 1.00000000750608</elem>
+            <elem>1.00000000295065 1.00000000105732 0.999999998774791 0.999999997866617 0.999999998920565 1.00000000005226 1.00000000116535 0.999999997561276</elem>
+            <elem>0.999999997950759 1.00000000688848 0.999999997945884 0.999999993386055 0.999999999145577 1.00000000970233 0.999999998074301 1.00000000095123</elem>
           </source_corrs>
         </Source_correlators>
         <Relaxation_Iterations>
-          <ncg_had>34</ncg_had>
+          <ncg_had>33</ncg_had>
         </Relaxation_Iterations>
       </PropColorVec>
     </elem>
@@ -675,11 +972,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:10 EST</run_date>
+          <run_date>10 Apr 09 23:51:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -741,20 +1038,85 @@
             </elem>
           </pollp>
         </Observables>
-        <Source_file_info><FileXML>
-</FileXML>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
 
         </Source_file_info>
-        <Source_record_info><RecordXML>
-</RecordXML>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.9724367 0.9941522 0.9907563 0.9933674 0.9902869 0.9744946 0.9704831 0.9872698</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.9753342 0.9766536 0.962734 0.9668703 0.9730855 0.9816517 0.9786247 0.9731646</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.9806436 0.9579492 0.9752583 0.9674424 0.9646655 0.9715811 0.9799705 0.9682569</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>0.01298432 0.01273318 0.01295752 0.01300379 0.01299571 0.01304477 0.01294085 0.01298165</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>0.0129218 0.01294938 0.01289663 0.01284371 0.01295265 0.01302713 0.01284635 0.01293204</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>0.01258512 0.01252694 0.01283246 0.01289983 0.01238059 0.01288031 0.01282923 0.01248894</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>0.01213142 0.01239107 0.01184631 0.01178741 0.01236369 0.01178864 0.01191216 0.01209534</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>0.01174162 0.01186663 0.01176868 0.01183917 0.01182833 0.01164096 0.01181011 0.01182556</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>0.01172168 0.01171888 0.01175621 0.01173355 0.01156236 0.0114227 0.01179091 0.01176109</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>0.01008677 0.00993148 0.01002643 0.01016799 0.0102112 0.01053203 0.01021895 0.01022508</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
 
         </Source_record_info>
         <Source_correlators>
           <source_corrs>
-            <elem>0.999999994725238 1.00000000685288 0.999999995100533 0.999999999875081 1.00000000162787 1.00000001080375 0.999999998828968 1.00000000631543</elem>
-            <elem>1.00000000737786 0.999999997851944 0.999999998703076 0.999999991730817 0.999999998185154 0.999999998603328 1.00000000168896 0.999999993664957</elem>
-            <elem>0.999999996528894 0.999999994717531 0.9999999985783 0.999999994849563 0.999999993249452 1.00000000690234 1.00000000289452 0.999999997716112</elem>
-            <elem>0.999999998758703 1.00000000232995 0.999999998786408 1.00000000428923 1.00000000340274 1.00000000074444 1.00000000080639 0.999999998389617</elem>
+            <elem>0.999999999958829 1.00000000000946 1.00000000341199 0.999999997297524 0.999999998999764 0.999999996299671 0.999999999487598 0.999999999916167</elem>
+            <elem>1.00000000060883 1.00000000143646 1.00000000127021 0.999999992713415 0.999999994679691 1.00000000206482 1.00000000132621 1.00000000142883</elem>
+            <elem>1.00000000104742 0.999999997691349 1.00000000080409 1.00000000507989 0.999999994344329 1.00000000334665 1.00000000297925 0.999999997954447</elem>
+            <elem>0.999999999500455 0.999999995598359 0.999999996661464 1.00000000040129 1.00000000177181 0.999999998635194 0.999999994899414 1.00000000723064</elem>
+            <elem>0.999999993034695 1.00000000232922 0.999999997825294 0.999999993164302 0.99999999971935 1.00000000000634 1.00000000183507 0.999999993467223</elem>
+            <elem>0.999999999043559 0.999999997199072 1.00000000329109 0.999999997279857 0.999999995360603 0.999999996021609 0.999999996011274 1.00000000345818</elem>
+            <elem>0.999999995871845 0.999999998190024 1.00000000615705 1.00000000151428 0.999999997743898 1.0000000038496 1.00000000440576 0.999999996924271</elem>
+            <elem>1.00000000331815 1.00000000492317 0.999999998577371 1.00000000063895 1.00000000397125 0.999999995340073 0.999999998171085 1.00000000750608</elem>
+            <elem>1.00000000295065 1.00000000105732 0.999999998774791 0.999999997866617 0.999999998920565 1.00000000005226 1.00000000116535 0.999999997561276</elem>
+            <elem>0.999999997950759 1.00000000688848 0.999999997945884 0.999999993386055 0.999999999145577 1.00000000970233 0.999999998074301 1.00000000095123</elem>
           </source_corrs>
         </Source_correlators>
       </PropColorVec>
@@ -764,11 +1126,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:10 EST</run_date>
+          <run_date>10 Apr 09 23:51:17 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -830,20 +1192,85 @@
             </elem>
           </pollp>
         </Observables>
-        <Source_file_info><FileXML>
-</FileXML>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
 
         </Source_file_info>
-        <Source_record_info><RecordXML>
-</RecordXML>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.9724367 0.9941522 0.9907563 0.9933674 0.9902869 0.9744946 0.9704831 0.9872698</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.9753342 0.9766536 0.962734 0.9668703 0.9730855 0.9816517 0.9786247 0.9731646</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.9806436 0.9579492 0.9752583 0.9674424 0.9646655 0.9715811 0.9799705 0.9682569</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>0.01298432 0.01273318 0.01295752 0.01300379 0.01299571 0.01304477 0.01294085 0.01298165</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>0.0129218 0.01294938 0.01289663 0.01284371 0.01295265 0.01302713 0.01284635 0.01293204</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>0.01258512 0.01252694 0.01283246 0.01289983 0.01238059 0.01288031 0.01282923 0.01248894</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>0.01213142 0.01239107 0.01184631 0.01178741 0.01236369 0.01178864 0.01191216 0.01209534</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>0.01174162 0.01186663 0.01176868 0.01183917 0.01182833 0.01164096 0.01181011 0.01182556</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>0.01172168 0.01171888 0.01175621 0.01173355 0.01156236 0.0114227 0.01179091 0.01176109</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>0.01008677 0.00993148 0.01002643 0.01016799 0.0102112 0.01053203 0.01021895 0.01022508</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
 
         </Source_record_info>
         <Source_correlators>
           <source_corrs>
-            <elem>0.999999994725238 1.00000000685288 0.999999995100533 0.999999999875081 1.00000000162787 1.00000001080375 0.999999998828968 1.00000000631543</elem>
-            <elem>1.00000000737786 0.999999997851944 0.999999998703076 0.999999991730817 0.999999998185154 0.999999998603328 1.00000000168896 0.999999993664957</elem>
-            <elem>0.999999996528894 0.999999994717531 0.9999999985783 0.999999994849563 0.999999993249452 1.00000000690234 1.00000000289452 0.999999997716112</elem>
-            <elem>0.999999998758703 1.00000000232995 0.999999998786408 1.00000000428923 1.00000000340274 1.00000000074444 1.00000000080639 0.999999998389617</elem>
+            <elem>0.999999999958829 1.00000000000946 1.00000000341199 0.999999997297524 0.999999998999764 0.999999996299671 0.999999999487598 0.999999999916167</elem>
+            <elem>1.00000000060883 1.00000000143646 1.00000000127021 0.999999992713415 0.999999994679691 1.00000000206482 1.00000000132621 1.00000000142883</elem>
+            <elem>1.00000000104742 0.999999997691349 1.00000000080409 1.00000000507989 0.999999994344329 1.00000000334665 1.00000000297925 0.999999997954447</elem>
+            <elem>0.999999999500455 0.999999995598359 0.999999996661464 1.00000000040129 1.00000000177181 0.999999998635194 0.999999994899414 1.00000000723064</elem>
+            <elem>0.999999993034695 1.00000000232922 0.999999997825294 0.999999993164302 0.99999999971935 1.00000000000634 1.00000000183507 0.999999993467223</elem>
+            <elem>0.999999999043559 0.999999997199072 1.00000000329109 0.999999997279857 0.999999995360603 0.999999996021609 0.999999996011274 1.00000000345818</elem>
+            <elem>0.999999995871845 0.999999998190024 1.00000000615705 1.00000000151428 0.999999997743898 1.0000000038496 1.00000000440576 0.999999996924271</elem>
+            <elem>1.00000000331815 1.00000000492317 0.999999998577371 1.00000000063895 1.00000000397125 0.999999995340073 0.999999998171085 1.00000000750608</elem>
+            <elem>1.00000000295065 1.00000000105732 0.999999998774791 0.999999997866617 0.999999998920565 1.00000000005226 1.00000000116535 0.999999997561276</elem>
+            <elem>0.999999997950759 1.00000000688848 0.999999997945884 0.999999993386055 0.999999999145577 1.00000000970233 0.999999998074301 1.00000000095123</elem>
           </source_corrs>
         </Source_correlators>
         <ColorVecMatElems>
@@ -858,11 +1285,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:10 EST</run_date>
+          <run_date>10 Apr 09 23:51:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -924,20 +1351,85 @@
             </elem>
           </pollp>
         </Observables>
-        <Source_file_info><FileXML>
-</FileXML>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
 
         </Source_file_info>
-        <Source_record_info><RecordXML>
-</RecordXML>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.9724367 0.9941522 0.9907563 0.9933674 0.9902869 0.9744946 0.9704831 0.9872698</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.9753342 0.9766536 0.962734 0.9668703 0.9730855 0.9816517 0.9786247 0.9731646</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.9806436 0.9579492 0.9752583 0.9674424 0.9646655 0.9715811 0.9799705 0.9682569</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>0.01298432 0.01273318 0.01295752 0.01300379 0.01299571 0.01304477 0.01294085 0.01298165</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>0.0129218 0.01294938 0.01289663 0.01284371 0.01295265 0.01302713 0.01284635 0.01293204</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>0.01258512 0.01252694 0.01283246 0.01289983 0.01238059 0.01288031 0.01282923 0.01248894</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>0.01213142 0.01239107 0.01184631 0.01178741 0.01236369 0.01178864 0.01191216 0.01209534</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>0.01174162 0.01186663 0.01176868 0.01183917 0.01182833 0.01164096 0.01181011 0.01182556</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>0.01172168 0.01171888 0.01175621 0.01173355 0.01156236 0.0114227 0.01179091 0.01176109</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>0.01008677 0.00993148 0.01002643 0.01016799 0.0102112 0.01053203 0.01021895 0.01022508</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
 
         </Source_record_info>
         <Source_correlators>
           <source_corrs>
-            <elem>0.999999994725238 1.00000000685288 0.999999995100533 0.999999999875081 1.00000000162787 1.00000001080375 0.999999998828968 1.00000000631543</elem>
-            <elem>1.00000000737786 0.999999997851944 0.999999998703076 0.999999991730817 0.999999998185154 0.999999998603328 1.00000000168896 0.999999993664957</elem>
-            <elem>0.999999996528894 0.999999994717531 0.9999999985783 0.999999994849563 0.999999993249452 1.00000000690234 1.00000000289452 0.999999997716112</elem>
-            <elem>0.999999998758703 1.00000000232995 0.999999998786408 1.00000000428923 1.00000000340274 1.00000000074444 1.00000000080639 0.999999998389617</elem>
+            <elem>0.999999999958829 1.00000000000946 1.00000000341199 0.999999997297524 0.999999998999764 0.999999996299671 0.999999999487598 0.999999999916167</elem>
+            <elem>1.00000000060883 1.00000000143646 1.00000000127021 0.999999992713415 0.999999994679691 1.00000000206482 1.00000000132621 1.00000000142883</elem>
+            <elem>1.00000000104742 0.999999997691349 1.00000000080409 1.00000000507989 0.999999994344329 1.00000000334665 1.00000000297925 0.999999997954447</elem>
+            <elem>0.999999999500455 0.999999995598359 0.999999996661464 1.00000000040129 1.00000000177181 0.999999998635194 0.999999994899414 1.00000000723064</elem>
+            <elem>0.999999993034695 1.00000000232922 0.999999997825294 0.999999993164302 0.99999999971935 1.00000000000634 1.00000000183507 0.999999993467223</elem>
+            <elem>0.999999999043559 0.999999997199072 1.00000000329109 0.999999997279857 0.999999995360603 0.999999996021609 0.999999996011274 1.00000000345818</elem>
+            <elem>0.999999995871845 0.999999998190024 1.00000000615705 1.00000000151428 0.999999997743898 1.0000000038496 1.00000000440576 0.999999996924271</elem>
+            <elem>1.00000000331815 1.00000000492317 0.999999998577371 1.00000000063895 1.00000000397125 0.999999995340073 0.999999998171085 1.00000000750608</elem>
+            <elem>1.00000000295065 1.00000000105732 0.999999998774791 0.999999997866617 0.999999998920565 1.00000000005226 1.00000000116535 0.999999997561276</elem>
+            <elem>0.999999997950759 1.00000000688848 0.999999997945884 0.999999993386055 0.999999999145577 1.00000000970233 0.999999998074301 1.00000000095123</elem>
           </source_corrs>
         </Source_correlators>
         <ColorVecMatElems>
@@ -952,11 +1444,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:10 EST</run_date>
+          <run_date>10 Apr 09 23:51:18 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1103,11 +1595,11 @@
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:12 EST</run_date>
+          <run_date>10 Apr 09 23:51:19 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1230,11 +1722,11 @@
         </Output_version>
         <ProgramInfo>
           <code_version>
-            <chroma>3.33.0</chroma>
+            <chroma>3.34.0</chroma>
             <qdp>1.31.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Mar 09 23:06:12 EST</run_date>
+          <run_date>10 Apr 09 23:51:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
