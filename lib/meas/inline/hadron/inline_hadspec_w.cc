@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.14 2009-04-11 01:50:45 kostas Exp $
+// $Id: inline_hadspec_w.cc,v 3.15 2009-04-12 03:45:00 kostas Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -548,6 +548,8 @@ namespace Chroma
       if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	snk_type = "Point";
       else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
+	snk_type = "Shell";
+      else if (all_sinks.sink_prop_1.sink_type == "NORM_SHELL_SINK")
 	snk_type = "Shell";
       else if (all_sinks.sink_prop_1.sink_type == "WALL_SINK")
 	snk_type = "Wall";

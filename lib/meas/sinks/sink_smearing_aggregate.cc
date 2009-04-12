@@ -1,4 +1,4 @@
-// $Id: sink_smearing_aggregate.cc,v 3.2 2009-01-31 06:12:27 flemingg Exp $
+// $Id: sink_smearing_aggregate.cc,v 3.3 2009-04-12 03:45:00 kostas Exp $
 /*! \file
  *  \brief All make sink constructors
  */
@@ -7,6 +7,7 @@
 
 #include "meas/sinks/pt_sink_smearing.h"
 #include "meas/sinks/sh_sink_smearing.h"
+#include "meas/sinks/norm_sh_sink_smearing.h"
 #include "meas/sinks/wall_sink_smearing.h"
 
 namespace Chroma
@@ -27,6 +28,7 @@ namespace Chroma
 	// Sinks
 	success &= PointQuarkSinkSmearingEnv::registerAll();
 	success &= ShellQuarkSinkSmearingEnv::registerAll();
+	success &= NormShellQuarkSinkSmearingEnv::registerAll();
 	success &= WallQuarkSinkSmearingEnv::registerAll();
 
 	registered = true;
