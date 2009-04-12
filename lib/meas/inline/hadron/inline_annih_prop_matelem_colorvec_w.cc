@@ -1,4 +1,4 @@
-// $Id: inline_annih_prop_matelem_colorvec_w.cc,v 3.1 2009-04-12 20:54:11 edwards Exp $
+// $Id: inline_annih_prop_matelem_colorvec_w.cc,v 3.2 2009-04-12 22:06:13 edwards Exp $
 /*! \file
  * \brief Compute the annihilation diagram propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
@@ -57,7 +57,7 @@ namespace Chroma
       XMLReader inputtop(xml, path);
 
       read(inputtop, "num_vecs", input.num_vecs);
-      read(inputtop, "t_source_start", input.t_source_start);
+      read(inputtop, "t_sources_start", input.t_sources_start);
       read(inputtop, "dt", input.dt);
       read(inputtop, "decay_dir", input.decay_dir);
       read(inputtop, "N", input.N);
@@ -71,7 +71,7 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "num_vecs", input.num_vecs);
-      write(xml, "t_source_start", input.t_source_start);
+      write(xml, "t_sources_start", input.t_sources_start);
       write(xml, "dt", input.dt);
       write(xml, "decay_dir", input.decay_dir);
       write(xml, "N", input.N);
@@ -358,11 +358,6 @@ namespace Chroma
 
 
       //
-      // Have to hold temporarily the solution vectors
-      //
-      MapObject<KeyPropColorVec_t,LatticeFermion> map_obj;
-
-      //
       // DB storage
       //
       BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
@@ -375,9 +370,10 @@ namespace Chroma
 	write(file_xml, "id", string("propElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.contract.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param.contract);
 	write(file_xml, "Config_info", gauge_xml);
+	write(file_xml, "Weights", eigen_source.getEvalues());
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
@@ -442,167 +438,176 @@ namespace Chroma
 	const int num_vecs        = params.param.contract.num_vecs;
 	const int decay_dir       = params.param.contract.decay_dir;
 	const int dt              = params.param.contract.dt;
-	const int t_source_start  = params.param.contract.t_source_start;
 	const int Lt              = QDP::Layout::lattSize()[decay_dir];
 	const int num_sources     = Lt / params.param.contract.dt;
+	const multi1d<int>& t_sources_start = params.param.contract.t_sources_start;
 
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, decay_dir);
 
-	// The random numbers used for the stochastic combination of sources is held here
-	MapObject<KeyRNGColorVec_t,Complex> rng_map_obj;
-
-	// Build up list of time sources
-	multi1d<int> t_sources(num_sources);
-
-	for(int nn=0; nn < t_sources.size(); ++nn)
+	for(int tt=0; tt < t_sources_start.size(); ++tt)
 	{
-	  int t = (t_source_start + dt*nn + Lt) % Lt;
-	  t_sources[nn] = t;
+	  int t_source_start = params.param.contract.t_sources_start[tt];
+	  // Construct all the solution vectors for only the first time source
+	  QDPIO::cout << "t_source_start = " << t_source_start << endl; 
 
-	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
-	  {
-	    KeyRNGColorVec_t key;
-	    key.t_source     = t;
-	    key.colorvec_src = colorvec_source;
+	  //
+	  // Have to hold temporarily the solution vectors
+	  //
+	  MapObject<KeyPropColorVec_t,LatticeFermion> map_obj;
 
-	    rng_map_obj.insert(key, zN_rng(params.param.contract.N));
-	  }
-	}
+	  // The random numbers used for the stochastic combination of sources is held here
+	  MapObject<KeyRNGColorVec_t,Complex> rng_map_obj;
 
+	  // Build up list of time sources
+	  multi1d<int> t_sources(num_sources);
 
-	// Construct all the solution vectors for only the first time source
-	QDPIO::cout << "t_source_start = " << t_source_start << endl; 
-
-	// All the loops
-	for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
-	{
-	  QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
-
-	  // Accumulate the source from several time-slices
-	  LatticeColorVector vec_srce = zero;
 	  for(int nn=0; nn < t_sources.size(); ++nn)
 	  {
-	    int t = t_sources[nn];
+	    int t = (t_source_start + dt*nn + Lt) % Lt;
+	    t_sources[nn] = t;
 
-	    KeyRNGColorVec_t rng_key;
-	    rng_key.t_source     = t;
-	    rng_key.colorvec_src = colorvec_source;
+	    for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
+	    {
+	      KeyRNGColorVec_t key;
+	      key.t_source     = t;
+	      key.colorvec_src = colorvec_source;
 
-	    // Pull out a time-slice of the color vector source, give it a random weight
-	    vec_srce[phases.getSet()[t]] = 
-	      rng_map_obj[rng_key] * eigen_source.getEvectors()[colorvec_source];
+	      rng_map_obj.insert(key, zN_rng(params.param.contract.N));
+	    }
 	  }
-	
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
+
+
+	  // All the loops
+	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
 	  {
-	    QDPIO::cout << "spin_source = " << spin_source << endl; 
+	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
 
-	    // Insert a ColorVector into spin index spin_source
-	    // This only overwrites sections, so need to initialize first
-	    LatticeFermion chi = zero;
-	    CvToFerm(vec_srce, chi, spin_source);
-
-	    LatticeFermion quark_soln = zero;
-
-	    // Do the propagator inversion
-	    SystemSolverResults_t res = (*PP)(quark_soln, chi);
-	    ncg_had = res.n_count;
-
-	    KeyPropColorVec_t key;
-	    key.t_source     = t_source_start;
-	    key.colorvec_src = colorvec_source;
-	    key.spin_src     = spin_source;
-	    
-	    map_obj.insert(key, quark_soln);
-	  } // for spin_source
-	} // for colorvec_source
-
-
-	swatch.stop();
-	QDPIO::cout << "Propagators computed: time= " 
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
-
-
-	//
-	// All the loops
-	//
-	// NOTE: I pull the spin source and sink loops to the outside intentionally.
-	// The idea is to create a colorvector index (2d) array. These are not
-	// too big, but are big enough to make the IO efficient, and the DB efficient
-	// on reading. For N=32 and Lt=128, the mats are 2MB.
-	//
-	swatch.reset();
-	swatch.start();
-	QDPIO::cout << "Extract matrix elements" << endl;
-
-	for(int spin_source=0; spin_source < Ns; ++spin_source)
-	{
-	  QDPIO::cout << "spin_source = " << spin_source << endl; 
-	  
-	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
-	  {
-	    QDPIO::cout << "spin_sink = " << spin_sink << endl; 
-
-	    // Construct the keys and values. Have to hold the buffers here given that
-	    // the source and sink spin indices are pulled out as well as the time
-	    multi1d<KeyValPropElementalOperator_t> buf(t_sources.size());
+	    // Accumulate the source from several time-slices
+	    LatticeColorVector vec_srce = zero;
 	    for(int nn=0; nn < t_sources.size(); ++nn)
 	    {
 	      int t = t_sources[nn];
 
-	      buf[nn].key.key().t_slice      = t;
-	      buf[nn].key.key().t_source     = t;
-	      buf[nn].key.key().spin_src     = spin_source;
-	      buf[nn].key.key().spin_snk     = spin_sink;
-	      buf[nn].key.key().mass_label   = params.param.contract.mass_label;
-	      buf[nn].val.data().mat.resize(num_vecs,num_vecs);
-	    }
+	      KeyRNGColorVec_t rng_key;
+	      rng_key.t_source     = t;
+	      rng_key.colorvec_src = colorvec_source;
 
-	    for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
+	      // Pull out a time-slice of the color vector source, give it a random weight
+	      vec_srce[phases.getSet()[t]] = 
+		rng_map_obj[rng_key] * eigen_source.getEvectors()[colorvec_source];
+	    }
+	
+	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {
+	      QDPIO::cout << "spin_source = " << spin_source << endl; 
+
+	      // Insert a ColorVector into spin index spin_source
+	      // This only overwrites sections, so need to initialize first
+	      LatticeFermion chi = zero;
+	      CvToFerm(vec_srce, chi, spin_source);
+
+	      LatticeFermion quark_soln = zero;
+
+	      // Do the propagator inversion
+	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
+	      ncg_had = res.n_count;
+
 	      KeyPropColorVec_t key;
 	      key.t_source     = t_source_start;
 	      key.colorvec_src = colorvec_source;
 	      key.spin_src     = spin_source;
-		  
-	      LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
+	    
+	      map_obj.insert(key, quark_soln);
+	    } // for spin_source
+	  } // for colorvec_source
 
-	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
-	      {
-		const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
 
-		multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
-		
-		for(int nn=0; nn < t_sources.size(); ++nn)
-		{
-		  int t = t_sources[nn];
+	  swatch.stop();
+	  QDPIO::cout << "Propagators computed: time= " 
+		      << swatch.getTimeInSeconds() 
+		      << " secs" << endl;
 
-		  KeyRNGColorVec_t rng_key;
-		  rng_key.t_source     = t;
-		  rng_key.colorvec_src = colorvec_source;
 
-		  buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(rng_map_obj[rng_key]) * hsum[t];
-		}
+	  //
+	  // All the loops
+	  //
+	  // NOTE: I pull the spin source and sink loops to the outside intentionally.
+	  // The idea is to create a colorvector index (2d) array. These are not
+	  // too big, but are big enough to make the IO efficient, and the DB efficient
+	  // on reading. For N=32 and Lt=128, the mats are 2MB.
+	  //
+	  swatch.reset();
+	  swatch.start();
+	  QDPIO::cout << "Extract matrix elements" << endl;
 
-	      } // for colorvec_sink
-	    } // for colorvec_source
-	      
-	    QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
-	    for(int nn=0; nn < t_sources.size(); ++nn)
+	  for(int spin_source=0; spin_source < Ns; ++spin_source)
+	  {
+	    QDPIO::cout << "spin_source = " << spin_source << endl; 
+	  
+	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	    {
-	      int t = t_sources[nn];
-	      qdp_db.insert(buf[nn].key, buf[nn].val);
-	    }
+	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
 
-	  } // for spin_sink
-	} // for spin_source
+	      // Construct the keys and values. Have to hold the buffers here given that
+	      // the source and sink spin indices are pulled out as well as the time
+	      multi1d<KeyValPropElementalOperator_t> buf(t_sources.size());
+	      for(int nn=0; nn < t_sources.size(); ++nn)
+	      {
+		int t = t_sources[nn];
 
-	swatch.stop();
-	QDPIO::cout << "Matrix elements computed: time= " 
-		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		buf[nn].key.key().t_slice      = t;
+		buf[nn].key.key().t_source     = t;
+		buf[nn].key.key().spin_src     = spin_source;
+		buf[nn].key.key().spin_snk     = spin_sink;
+		buf[nn].key.key().mass_label   = params.param.contract.mass_label;
+		buf[nn].val.data().mat.resize(num_vecs,num_vecs);
+	      }
+
+	      for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
+	      {
+		KeyPropColorVec_t key;
+		key.t_source     = t_source_start;
+		key.colorvec_src = colorvec_source;
+		key.spin_src     = spin_source;
+		  
+		LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
+
+		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
+		{
+		  const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
+
+		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
+		
+		  for(int nn=0; nn < t_sources.size(); ++nn)
+		  {
+		    int t = t_sources[nn];
+
+		    KeyRNGColorVec_t rng_key;
+		    rng_key.t_source     = t;
+		    rng_key.colorvec_src = colorvec_source;
+
+		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(rng_map_obj[rng_key]) * hsum[t];
+		  }
+
+		} // for colorvec_sink
+	      } // for colorvec_source
+	      
+	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
+	      for(int nn=0; nn < t_sources.size(); ++nn)
+	      {
+		int t = t_sources[nn];
+		qdp_db.insert(buf[nn].key, buf[nn].val);
+	      }
+
+	    } // for spin_sink
+	  } // for spin_source
+
+	  swatch.stop();
+	  QDPIO::cout << "Matrix elements computed: time= " 
+		      << swatch.getTimeInSeconds() 
+		      << " secs" << endl;
+	} // tt
       }
       catch (const std::string& e) 
       {

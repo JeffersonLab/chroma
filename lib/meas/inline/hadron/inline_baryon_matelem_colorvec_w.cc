@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.12 2009-03-23 16:44:08 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.13 2009-04-12 22:06:13 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -584,6 +584,7 @@ namespace Chroma
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 //	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
+	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Op_Info",displacement_list);
 	write(file_xml, "Config_info", gauge_xml);

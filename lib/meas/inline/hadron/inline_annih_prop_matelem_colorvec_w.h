@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_annih_prop_matelem_colorvec_w.h,v 3.1 2009-04-12 20:54:11 edwards Exp $
+// $Id: inline_annih_prop_matelem_colorvec_w.h,v 3.2 2009-04-12 22:06:13 edwards Exp $
 /*! \file
  * \brief Compute the annihilation diagram propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
@@ -36,7 +36,7 @@ namespace Chroma
 	  int           num_vecs;       /*!< Number of color vectors to use */
 	  int           decay_dir;      /*!< Decay direction */
 	  int           dt;             /*!< Separation of sources */
-	  int           t_source_start; /*!< Starting location for diluted time sources */
+	  multi1d<int>  t_sources_start; /*!< Starting location for diluted time sources */
 	  int           N;              /*!< N in Z(N) source */
 	  Seed          ran_seed;       /*!< RNG seed for this source */
 	  std::string   mass_label;     /*!< Some kind of mass label */
