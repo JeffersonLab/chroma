@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.17 2009-03-05 04:01:07 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.18 2009-04-12 20:54:11 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -12,6 +12,7 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/key_prop_colorvec.h"
+#include "util/ferm/key_prop_matelem.h"
 #include "util/ferm/key_val_db.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
@@ -119,116 +120,6 @@ namespace Chroma
 	registered = true;
       }
       return success;
-    }
-
-
-    //----------------------------------------------------------------------------
-    //! Prop operator
-    struct KeyPropElementalOperator_t
-    {
-      int                t_slice;       /*!< Propagator time slice */
-      int                t_source;      /*!< Source time slice */
-      int                spin_src;      /*!< Source spin index */
-      int                spin_snk;      /*!< Sink spin index */
-      std::string        mass_label;    /*!< A mass label */
-    };
-
-
-    //! Prop operator
-    struct ValPropElementalOperator_t
-    {
-      multi2d<ComplexD>  mat;               /*!< Colorvector source and sink */
-    };
-
-
-    //----------------------------------------------------------------------------
-    //! Holds key and value as temporaries
-    struct KeyValPropElementalOperator_t
-    {
-      SerialDBKey<KeyPropElementalOperator_t>  key;
-      SerialDBData<ValPropElementalOperator_t> val;
-    };
-
-    //----------------------------------------------------------------------------
-    //! PropElementalOperator reader
-    void read(BinaryReader& bin, KeyPropElementalOperator_t& param)
-    {
-      read(bin, param.t_slice);
-      read(bin, param.t_source);
-      read(bin, param.spin_src);
-      read(bin, param.spin_snk);
-      read(bin, param.mass_label, 32);
-    }
-
-    //! PropElementalOperator write
-    void write(BinaryWriter& bin, const KeyPropElementalOperator_t& param)
-    {
-      write(bin, param.t_slice);
-      write(bin, param.t_source);
-      write(bin, param.spin_src);
-      write(bin, param.spin_snk);
-      write(bin, param.mass_label);
-    }
-
-    //! PropElementalOperator reader
-    void read(XMLReader& xml, const std::string& path, KeyPropElementalOperator_t& param)
-    {
-      XMLReader paramtop(xml, path);
-    
-      read(paramtop, "t_slice", param.t_slice);
-      read(paramtop, "t_source", param.t_source);
-      read(paramtop, "spin_src", param.spin_src);
-      read(paramtop, "spin_snk", param.spin_snk);
-      read(paramtop, "mass_label", param.mass_label);
-    }
-
-    //! PropElementalOperator writer
-    void write(XMLWriter& xml, const std::string& path, const KeyPropElementalOperator_t& param)
-    {
-      push(xml, path);
-
-      write(xml, "t_slice", param.t_slice);
-      write(xml, "t_source", param.t_source);
-      write(xml, "spin_src", param.spin_src);
-      write(xml, "spin_snk", param.spin_snk);
-      write(xml, "mass_label", param.mass_label);
-
-      pop(xml);
-    }
-
-
-    //----------------------------------------------------------------------------
-    //! PropElementalOperator reader
-    void read(BinaryReader& bin, ValPropElementalOperator_t& param)
-    {
-      int n1;
-      int n2;
-      read(bin, n2);    // the size is always written, even if 0
-      read(bin, n1);    // the size is always written, even if 0
-      param.mat.resize(n2,n1);
-  
-      for(int i=0; i < param.mat.size1(); ++i)
-      {
-	for(int j=0; j < param.mat.size2(); ++j)
-	{
-	  read(bin, param.mat[j][i]);
-	}
-      }
-    }
-
-    //! PropElementalOperator write
-    void write(BinaryWriter& bin, const ValPropElementalOperator_t& param)
-    {
-      write(bin, param.mat.size2());    // always write the size
-      write(bin, param.mat.size1());    // always write the size
-
-      for(int i=0; i < param.mat.size1(); ++i)
-      {
-	for(int j=0; j < param.mat.size2(); ++j)
-	{
-	  write(bin, param.mat[j][i]);
-	}
-      }
     }
 
 
