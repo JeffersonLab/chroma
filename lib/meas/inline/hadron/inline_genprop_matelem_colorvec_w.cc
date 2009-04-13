@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.10 2009-03-05 04:01:06 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.11 2009-04-13 06:32:48 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -527,6 +527,7 @@ namespace Chroma
 	write(file_xml, "id", string("genPropElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
+	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Op_Info", params.param.disp_gamma_list);
 	write(file_xml, "Source_prop_record_info", source_prop_record_xml);
