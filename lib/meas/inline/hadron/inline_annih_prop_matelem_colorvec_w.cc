@@ -1,4 +1,4 @@
-// $Id: inline_annih_prop_matelem_colorvec_w.cc,v 3.2 2009-04-12 22:06:13 edwards Exp $
+// $Id: inline_annih_prop_matelem_colorvec_w.cc,v 3.3 2009-04-16 04:04:32 edwards Exp $
 /*! \file
  * \brief Compute the annihilation diagram propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
@@ -150,31 +150,6 @@ namespace Chroma
 	registered = true;
       }
       return success;
-    }
-
-
-    //----------------------------------------------------------------------------
-    //! Prop operator
-    /*! \ingroup ferm */
-    struct KeyRNGColorVec_t
-    {
-      int        t_source;      /*!< Source time slice */
-      int        colorvec_src;  /*!< Source colorvector index */
-    };
-
-    
-    //! Support for the keys of the RNG's used for annihilation props
-    bool operator<(const KeyRNGColorVec_t& a, const KeyRNGColorVec_t& b)
-    {
-      multi1d<int> lgaa(2);
-      lgaa[0] = a.t_source;
-      lgaa[1] = a.colorvec_src;
-
-      multi1d<int> lgbb(2);
-      lgbb[0] = b.t_source;
-      lgbb[1] = b.colorvec_src;
-
-      return (lgaa < lgbb);
     }
 
 
@@ -457,7 +432,7 @@ namespace Chroma
 	  MapObject<KeyPropColorVec_t,LatticeFermion> map_obj;
 
 	  // The random numbers used for the stochastic combination of sources is held here
-	  MapObject<KeyRNGColorVec_t,Complex> rng_map_obj;
+	  MapObject<int,Complex> rng_map_obj;
 
 	  // Build up list of time sources
 	  multi1d<int> t_sources(num_sources);
@@ -467,14 +442,7 @@ namespace Chroma
 	    int t = (t_source_start + dt*nn + Lt) % Lt;
 	    t_sources[nn] = t;
 
-	    for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
-	    {
-	      KeyRNGColorVec_t key;
-	      key.t_source     = t;
-	      key.colorvec_src = colorvec_source;
-
-	      rng_map_obj.insert(key, zN_rng(params.param.contract.N));
-	    }
+	    rng_map_obj.insert(t, zN_rng(params.param.contract.N));
 	  }
 
 
@@ -489,13 +457,9 @@ namespace Chroma
 	    {
 	      int t = t_sources[nn];
 
-	      KeyRNGColorVec_t rng_key;
-	      rng_key.t_source     = t;
-	      rng_key.colorvec_src = colorvec_source;
-
 	      // Pull out a time-slice of the color vector source, give it a random weight
 	      vec_srce[phases.getSet()[t]] = 
-		rng_map_obj[rng_key] * eigen_source.getEvectors()[colorvec_source];
+		rng_map_obj[t] * eigen_source.getEvectors()[colorvec_source];
 	    }
 	
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
@@ -583,11 +547,7 @@ namespace Chroma
 		  {
 		    int t = t_sources[nn];
 
-		    KeyRNGColorVec_t rng_key;
-		    rng_key.t_source     = t;
-		    rng_key.colorvec_src = colorvec_source;
-
-		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(rng_map_obj[rng_key]) * hsum[t];
+		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(rng_map_obj[t]) * hsum[t];
 		  }
 
 		} // for colorvec_sink
