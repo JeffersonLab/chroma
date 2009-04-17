@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_w.h,v 3.5 2009-04-17 02:05:33 bjoo Exp $
+// $Id: dslash_w.h,v 3.6 2009-04-17 20:44:43 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -20,8 +20,26 @@
 
 // The following is an ifdef lis that switches in optimised
 // Dslash-es. Currently only optimised dslash is the SSE One;
+#ifdef BUILD_CPP_WILSON_DSLASH
 
-#ifdef BUILD_SSE_WILSON_DSLASH
+#warning "Using New Dslashen
+
+#include "lwldslash_w_cppf.h"
+#include "lwldslash_w_cppd.h"
+namespace Chroma {
+
+typedef CPPWilsonDslashF WilsonDslashF;
+typedef CPPWilsonDslashD WilsonDslashD;
+
+#if BASE_PRECISION == 32
+typedef CPPWilsonDslashF WilsonDslash;
+#else 
+typedef CPPWilsonDslashD WilsonDslash;
+#endif
+
+} // End Namespace Chroma
+
+#elif defined BUILD_SSE_WILSON_DSLASH
 // The lwldslash_w_sse.h defines the SSE Dslash class
 // The following typedef switches it in.
 
