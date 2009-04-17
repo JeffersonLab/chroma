@@ -1,4 +1,4 @@
-// $Id: quarkprop4_w.cc,v 3.7 2008-09-06 18:36:25 bjoo Exp $
+// $Id: quarkprop4_w.cc,v 3.8 2009-04-17 02:05:34 bjoo Exp $
 /*! \file
  *  \brief Full quark propagator solver
  *
@@ -283,6 +283,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
 								    paramtop,
 								    invParam.path,
+								    state,
 								    linOp(state));
   }
 
@@ -300,6 +301,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverFactory::Instance().createObject(invParam.id,
 								    paramtop,
 								    invParam.path,
+								    state,
 								    linOp(state));
   }
 

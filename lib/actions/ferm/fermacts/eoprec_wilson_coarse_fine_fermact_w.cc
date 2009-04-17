@@ -1,4 +1,4 @@
-// $Id: eoprec_wilson_coarse_fine_fermact_w.cc,v 3.1 2008-01-21 20:18:50 edwards Exp $
+// $Id: eoprec_wilson_coarse_fine_fermact_w.cc,v 3.2 2009-04-17 02:05:30 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action supporting 2+2 anisotropy
  */
@@ -104,6 +104,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
 								    paramtop,
 								    invParam.path,
+								    state,
 								    linOp(state));
   }
 
@@ -119,6 +120,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverFactory::Instance().createObject(invParam.id,
 								    paramtop,
 								    invParam.path,
+								    state,
 								    linOp(state));
   }
 

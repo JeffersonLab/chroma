@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_fermbc.h,v 3.3 2007-02-22 21:11:45 bjoo Exp $
+// $Id: simple_fermbc.h,v 3.4 2009-04-17 02:05:30 bjoo Exp $
 /*! \file
  *  \brief Simple fermionic BC
  */
@@ -50,7 +50,7 @@ namespace Chroma
      *       like Complex
      */
     SimpleFermBC(const SimpleFermBCParams& p) :
-      gbc(new PeriodicGaugeBC()), boundary(p.boundary)
+      gbc(new PeriodicGaugeBC<P,Q>()), boundary(p.boundary)
       {init();}
   
     //! Only full constructor
@@ -61,7 +61,7 @@ namespace Chroma
      *       like Complex
      */
     SimpleFermBC(const multi1d<int>& boundary_) : 
-      gbc(new PeriodicGaugeBC()), boundary(boundary_)
+      gbc(new PeriodicGaugeBC<P,Q>()), boundary(boundary_)
       {init();}
   
     //! Use both a Gauge BC and a boundary field

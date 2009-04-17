@@ -1,4 +1,4 @@
-// $Id: predictor_aggregate.cc,v 3.2 2006-09-20 20:28:05 edwards Exp $
+// $Id: predictor_aggregate.cc,v 3.3 2009-04-17 02:05:38 bjoo Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */
@@ -9,6 +9,7 @@
 #include "update/molecdyn/predictor/last_solution_predictor.h"
 #include "update/molecdyn/predictor/linear_extrap_predictor.h"
 #include "update/molecdyn/predictor/mre_extrap_predictor.h"
+#include "update/molecdyn/predictor/mre_initcg_extrap_predictor.h"
 
 namespace Chroma
 {
@@ -36,6 +37,7 @@ namespace Chroma
 	success &= LinearExtrapolation5DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation5DChronoPredictorEnv::registerAll();
+	success &= MREInitCG4DChronoPredictorEnv::registerAll();
 
 	registered = true;
       }

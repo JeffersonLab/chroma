@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     gaugeStartup(file_xml, config_xml, u, foo);
   }
 
-  Handle< GaugeBC< U,U> > gbc = new PeriodicGaugeBC();
+  Handle< GaugeBC< U,U> > gbc = new PeriodicGaugeBC<U,U>();
   Handle< CreateGaugeState<U, U> > cgs = new CreateSimpleGaugeState<U,U>(gbc);
   
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: simple_gaugebc.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: simple_gaugebc.h,v 3.3 2009-04-17 02:05:35 bjoo Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -40,13 +40,11 @@ namespace Chroma
    *  Simple BC, where boundary array is multiplied on the links on the
    *  edge of the lattice
    */
-  class SimpleGaugeBC : public GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  template<typename P, typename Q>
+  class SimpleGaugeBC : public GaugeBC<P,Q>
   {
   public:
     // Typedefs to save typing
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
-
     //! Only full constructor
     /*!
      * \param boundary  multiply links on edge of lattice by boundary
@@ -88,7 +86,7 @@ namespace Chroma
     SimpleGaugeBC() {}
 
     //! Hide assignment
-    void operator=(const SimpleGaugeBC& a) {}
+    void operator=(const SimpleGaugeBC<P,Q>& a) {}
 
   private:
     multi1d<Complex> boundary;

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_bagel_clover.h,v 1.5 2007-06-26 20:42:24 bjoo Exp $
+// $Id: clover_term_bagel_clover.h,v 1.6 2009-04-17 02:05:32 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -42,7 +42,7 @@ namespace Chroma
    * \ingroup linop
    *
    */
-  class BAGELCloverTerm : public CloverTermBase
+  class BAGELCloverTerm : public CloverTermBase<LatticeFermion, LatticeColorMatrix>
   {
   public:
     // Typedefs to save typing

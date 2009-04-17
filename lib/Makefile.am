@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.199 2009-04-12 20:54:01 edwards Exp $
+# $Id: Makefile.am,v 3.200 2009-04-17 02:05:19 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -63,6 +63,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
 	actions/ferm/invert/inv_rel_gmresr_cg.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
+	actions/ferm/invert/inv_multiprec_richardson.h \
         actions/ferm/invert/containers.h \
 	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
@@ -75,6 +76,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_polyprec_factory.h \
 	actions/ferm/invert/syssolver_polyprec_aggregate.h \
 	actions/ferm/invert/syssolver_cg_params.h \
+	actions/ferm/invert/syssolver_richardson_clover_params.h \
 	actions/ferm/invert/syssolver_mr_params.h \
 	actions/ferm/invert/syssolver_bicgstab_params.h \
 	actions/ferm/invert/syssolver_eigcg_params.h \
@@ -91,6 +93,8 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_mdagm_eigcg.h \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h \
+	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h \
+	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_linop_bicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
@@ -376,7 +380,8 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/circular_buffer.h \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
-	update/molecdyn/predictor/mre_extrap_predictor.h
+	update/molecdyn/predictor/mre_extrap_predictor.h \
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -498,6 +503,7 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/clover_term_base_w.h \
 	actions/ferm/linop/clover_term_qdp_w.h \
 	actions/ferm/linop/eoprec_clover_linop_w.h \
+	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
 	actions/ferm/linop/unprec_clover_linop_w.h \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.h \
@@ -933,6 +939,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
 	actions/ferm/invert/inv_rel_gmresr_sumr.cc \
 	actions/ferm/invert/inv_rel_sumr.cc \
+	actions/ferm/invert/inv_multiprec_richardson.cc \
 	actions/ferm/invert/minvcg.cc \
 	actions/ferm/invert/minvcg2.cc \
 	actions/ferm/invert/minvcg2_accum.cc \
@@ -946,6 +953,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
 	actions/ferm/invert/syssolver_cg_params.cc \
 	actions/ferm/invert/syssolver_mr_params.cc \
+	actions/ferm/invert/syssolver_richardson_clover_params.cc \
 	actions/ferm/invert/syssolver_bicgstab_params.cc \
 	actions/ferm/invert/syssolver_eigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
@@ -954,10 +962,12 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
 	actions/ferm/invert/syssolver_linop_eigcg.cc \
 	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
+	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
+	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
@@ -1181,6 +1191,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
 	meas/hadron/dilution_quark_source_const_w.cc
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
@@ -1307,6 +1318,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/clover_term_base_w.cc \
 	actions/ferm/linop/clover_term_qdp_w.cc \
 	actions/ferm/linop/eoprec_clover_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
 	actions/ferm/linop/unprec_clover_linop_w.cc \
 	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \

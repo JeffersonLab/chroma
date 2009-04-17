@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mesfield.h,v 3.0 2006-04-03 04:58:58 edwards Exp $
+// $Id: mesfield.h,v 3.1 2009-04-17 02:05:37 bjoo Exp $
 /*! \file
  *  \brief Calculates the antihermitian field strength tensor  iF(mu,nu)
  */
@@ -30,8 +30,12 @@ namespace Chroma
    *  \param u   gauge field (Read)
    */
 
-  void mesField(multi1d<LatticeColorMatrix>& f,
-		const multi1d<LatticeColorMatrix>& u);
+
+  void mesField(multi1d<LatticeColorMatrixF>& f,
+		const multi1d<LatticeColorMatrixF>& u);
+
+  void mesField(multi1d<LatticeColorMatrixD>& f,
+		const multi1d<LatticeColorMatrixD>& u);
 
 }  // end namespace Chroma
 

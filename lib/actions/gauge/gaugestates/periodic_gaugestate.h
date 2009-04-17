@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_gaugestate.h,v 1.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: periodic_gaugestate.h,v 1.3 2009-04-17 02:05:36 bjoo Exp $
 
 /*! @file
  * @brief Periodic gauge state and a creator
@@ -29,16 +29,13 @@ namespace Chroma
    *
    * Only needs to hold a gauge field and gauge bc
    */
-  class PeriodicGaugeState : public GaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  template<typename P, typename Q>
+  class PeriodicGaugeState : public GaugeState<P,Q>
   {
   public:
-    // Typedefs to save typing
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
-
     //! Full constructor
     PeriodicGaugeState(const Q& q_) : 
-      gbc(new PeriodicGaugeBC()), q(q_) {}
+      gbc(new PeriodicGaugeBC<P,Q>()), q(q_) {}
 
     //! Destructor
     ~PeriodicGaugeState() {}
@@ -54,7 +51,7 @@ namespace Chroma
 
   private:
     PeriodicGaugeState() {}  // hide default constructur
-    void operator=(const PeriodicGaugeState&) {} // hide =
+    void operator=(const PeriodicGaugeState<P,Q>&) {} // hide =
 
   private:
     Handle< GaugeBC<P,Q> >  gbc;
@@ -68,24 +65,21 @@ namespace Chroma
    *
    * This is a factory class for producing a connection state
    */
+  template<typename P, typename Q>
   class CreatePeriodicGaugeState : 
-    public CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+    public CreateGaugeState< P, Q>
   {
   public:
-    // Typedefs to save typing
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
-
     //! Full constructor
-    CreatePeriodicGaugeState() : gbc(new PeriodicGaugeBC()) {}
+    CreatePeriodicGaugeState() : gbc(new PeriodicGaugeBC<P,Q>()) {}
 
     //! Destructor
     ~CreatePeriodicGaugeState() {}
    
     //! Construct a ConnectState
-    PeriodicGaugeState* operator()(const Q& q) const
+    PeriodicGaugeState<P,Q>* operator()(const Q& q) const
       {
-	return new PeriodicGaugeState(q);
+	return new PeriodicGaugeState<P,Q>(q);
       }
 
     //! Return the gauge BC object for this state
@@ -95,7 +89,7 @@ namespace Chroma
     Handle< GaugeBC<P,Q> > getGaugeBC() const {return gbc;}
 
   private:
-    void operator=(const CreatePeriodicGaugeState&) {} // hide =
+    void operator=(const CreatePeriodicGaugeState<P,Q>&) {} // hide =
 
   private:
     Handle< GaugeBC<P,Q> >  gbc;

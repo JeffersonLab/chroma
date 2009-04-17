@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: periodic_gaugebc.h,v 3.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: periodic_gaugebc.h,v 3.3 2009-04-17 02:05:35 bjoo Exp $
 /*! \file
  *  \brief Periodic gauge boundary conditions
  */
@@ -21,12 +21,10 @@ namespace Chroma {
 
   //! Periodic gauge
   /*! @ingroup gaugebcs */
-  class PeriodicGaugeBC : public GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
+  template<typename P, typename Q>
+  class PeriodicGaugeBC : public GaugeBC<P,Q>
   {
   public:
-    // Typedefs to save typing
-    typedef multi1d<LatticeColorMatrix>  P;
-    typedef multi1d<LatticeColorMatrix>  Q;
 
     //! Only empty constructor
     PeriodicGaugeBC() {}
@@ -46,7 +44,7 @@ namespace Chroma {
 
   private:
     //! Hide assignment
-    void operator=(const PeriodicGaugeBC&) {}
+    void operator=(const PeriodicGaugeBC<P,Q>&) {}
 
   };
 

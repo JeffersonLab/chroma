@@ -1,4 +1,4 @@
-// $Id: invbicgstab.cc,v 3.2 2007-05-01 12:47:24 bjoo Exp $
+// $Id: invbicgstab.cc,v 3.3 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -159,13 +159,40 @@ InvBiCGStab_a(const LinearOperator<T>& A,
   return ret;
 }
 
-
+#if 0
 // Fix here for now
 template<>
 SystemSolverResults_t
 InvBiCGStab(const LinearOperator<LatticeFermion>& A,
 	    const LatticeFermion& chi,
 	    LatticeFermion& psi,
+	    const Real& RsdBiCGStab, 
+	    int MaxBiCGStab, 
+	    enum PlusMinus isign)
+
+{
+  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+}
+#endif
+
+template<>
+SystemSolverResults_t
+InvBiCGStab(const LinearOperator<LatticeFermionF>& A,
+	    const LatticeFermionF& chi,
+	    LatticeFermionF& psi,
+	    const Real& RsdBiCGStab, 
+	    int MaxBiCGStab, 
+	    enum PlusMinus isign)
+
+{
+  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+}
+
+template<>
+SystemSolverResults_t
+InvBiCGStab(const LinearOperator<LatticeFermionD>& A,
+	    const LatticeFermionD& chi,
+	    LatticeFermionD& psi,
 	    const Real& RsdBiCGStab, 
 	    int MaxBiCGStab, 
 	    enum PlusMinus isign)

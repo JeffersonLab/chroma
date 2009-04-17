@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_eigcg.cc,v 3.1 2009-01-26 22:47:05 edwards Exp $
+// $Id: syssolver_linop_eigcg.cc,v 3.2 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by EigCG
  */
@@ -31,12 +31,14 @@ namespace Chroma
     //! Callback function
     LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
+						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
       Handle< MdagMSystemSolver<LatticeFermion> > mdagmSysSolver(
 	TheMdagMFermSystemSolverFactory::Instance().createObject(name,
 								 xml_in,
 								 path,
+								 state,
 								 A));
 
       return new LinOpSysSolverEigCG<LatticeFermion>(A, mdagmSysSolver);

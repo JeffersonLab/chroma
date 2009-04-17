@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: typelist.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
+// $Id: typelist.h,v 3.1 2009-04-17 02:05:30 bjoo Exp $
 /*! @file
  * @brief Typelist support
  */
@@ -45,8 +45,7 @@ namespace Chroma
 
 #define TYPELIST_3(T1, T2, T3) ::Chroma::Typelist<T1, TYPELIST_2(T2, T3) >
 
-#define TYPELIST_4(T1, T2, T3, T4) \
-    ::Chroma::Typelist<T1, TYPELIST_3(T2, T3, T4) >
+#define TYPELIST_4(T1, T2, T3, T4) ::Chroma::Typelist<T1, TYPELIST_3(T2, T3, T4) >
 
 #define TYPELIST_5(T1, T2, T3, T4, T5) \
     ::Chroma::Typelist<T1, TYPELIST_4(T2, T3, T4, T5) >

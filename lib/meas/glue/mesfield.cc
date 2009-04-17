@@ -1,4 +1,4 @@
-// $Id: mesfield.cc,v 3.0 2006-04-03 04:58:58 edwards Exp $
+// $Id: mesfield.cc,v 3.1 2009-04-17 02:05:36 bjoo Exp $
 /*! \file
  *  \brief Calculates the antihermitian field strength tensor  iF(mu,nu)
  */
@@ -28,19 +28,19 @@ namespace Chroma
    *  \param f   field strength tensor f(mu,nu) (Write)
    *  \param u   gauge field (Read)
    */
-
-  void mesField(multi1d<LatticeColorMatrix>& f,
-		const multi1d<LatticeColorMatrix>& u)
+  template<typename U>
+  void mesFieldT(multi1d<U>& f,
+		const multi1d<U>& u)
   {
     START_CODE();
 
     f.resize(Nd*(Nd-1)/2);
     
-    LatticeColorMatrix tmp_0;
-    LatticeColorMatrix tmp_1;
-    LatticeColorMatrix tmp_2;
-    LatticeColorMatrix tmp_3;
-    LatticeColorMatrix tmp_4;
+    U tmp_0;
+    U tmp_1;
+    U tmp_2;
+    U tmp_3;
+    U tmp_4;
 
     Real fact = 0.125;
   
@@ -77,5 +77,18 @@ namespace Chroma
             
     END_CODE();
   }
+
+  void mesField(multi1d<LatticeColorMatrixF>& f,
+		const multi1d<LatticeColorMatrixF>& u) 
+  {
+    mesFieldT(f,u);
+  }
+
+  void mesField(multi1d<LatticeColorMatrixD>& f,
+		const multi1d<LatticeColorMatrixD>& u) 
+  {
+    mesFieldT(f,u);
+  }
+
 
 }  // namespace Chroma

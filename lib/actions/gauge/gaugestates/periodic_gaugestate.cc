@@ -1,4 +1,4 @@
-// $Id: periodic_gaugestate.cc,v 1.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: periodic_gaugestate.cc,v 1.3 2009-04-17 02:05:36 bjoo Exp $
 /*! \file
  *  \brief Periodic gauge state and a creator
  */
@@ -18,7 +18,8 @@ namespace Chroma
 		     multi1d<LatticeColorMatrix> >* createCreator(XMLReader& xml, 
 								  const std::string& path) 
     {
-      return new CreatePeriodicGaugeState();
+      return new CreatePeriodicGaugeState<multi1d<LatticeColorMatrix>, 
+		     multi1d<LatticeColorMatrix> > ();
     }
 
     const std::string name = "PERIODIC_GAUGE_STATE";

@@ -1,16 +1,18 @@
-// $Id: eoprec_clover_linop_w.cc,v 3.4 2008-11-10 17:59:07 bjoo Exp $
+// $Id: eoprec_clover_linop_w.cc,v 3.5 2009-04-17 02:05:33 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned clover linear operator
  */
 
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 
-using namespace QDP::Hints;
+
 
 namespace Chroma 
 { 
 
-  //! Creation routine with Anisotropy
+   using namespace QDP::Hints;
+
+ //! Creation routine with Anisotropy
   /*!
    * \param u_ 	    gauge field     	       (Read)
    * \param param_  fermion kappa   	       (Read)

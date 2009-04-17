@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_cg_timing.cc,v 3.1 2006-11-16 20:39:15 bjoo Exp $
+// $Id: syssolver_linop_cg_timing.cc,v 3.2 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by CG2
  */
@@ -17,6 +17,7 @@ namespace Chroma
     //! Callback function
     LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
+						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state,
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
       return new LinOpSysSolverCGTiming<LatticeFermion>(A, SysSolverCGParams(xml_in, path));

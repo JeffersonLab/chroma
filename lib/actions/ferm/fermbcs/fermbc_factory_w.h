@@ -1,11 +1,13 @@
 // -*- C++ -*-
-// $Id: fermbc_factory_w.h,v 3.0 2006-04-03 04:58:48 edwards Exp $
+// $Id: fermbc_factory_w.h,v 3.1 2009-04-17 02:05:30 bjoo Exp $
 /*! \file
  *  \brief Fermion Boundary Condition factories
  */
 
 #ifndef __fermbc_factory_w_h__
 #define __fermbc_factory_w_h__
+
+#include "qdp_precision.h"
 
 #include "singleton.h"
 #include "objfactory.h"
@@ -29,6 +31,33 @@ namespace Chroma
 							    const std::string&), 
 		  StringFactoryError> >
   TheWilsonTypeFermBCFactory;
+
+  typedef SingletonHolder< 
+    ObjectFactory<FermBC<LatticeFermionF, 
+			 multi1d<LatticeColorMatrixF>, 
+			 multi1d<LatticeColorMatrixF> >, 
+		  std::string,
+		  TYPELIST_2(XMLReader&, const std::string&),
+		  FermBC<LatticeFermionF,
+			 multi1d<LatticeColorMatrixF>, 
+			 multi1d<LatticeColorMatrixF> >* (*)(XMLReader&, 
+							    const std::string&), 
+		  StringFactoryError> >
+  TheWilsonTypeFermBCFFactory;
+
+  typedef SingletonHolder< 
+    ObjectFactory<FermBC<LatticeFermionD, 
+			 multi1d<LatticeColorMatrixD>, 
+			 multi1d<LatticeColorMatrixD> >, 
+		  std::string,
+		  TYPELIST_2(XMLReader&, const std::string&),
+		  FermBC<LatticeFermionD,
+			 multi1d<LatticeColorMatrixD>, 
+			 multi1d<LatticeColorMatrixD> >* (*)(XMLReader&, 
+							    const std::string&), 
+		  StringFactoryError> >
+  TheWilsonTypeFermBCDFactory;
+
 
 }
 

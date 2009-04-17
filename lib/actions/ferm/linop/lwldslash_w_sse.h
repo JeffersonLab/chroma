@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_sse.h,v 3.2 2008-01-21 20:18:50 edwards Exp $
+// $Id: lwldslash_w_sse.h,v 3.3 2009-04-17 02:05:34 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -46,7 +46,9 @@ namespace Chroma
    *
    */
                                                                                 
-  class SSEWilsonDslash : public WilsonDslashBase
+  class SSEWilsonDslash : public WilsonDslashBase<LatticeFermion,
+						  multi1d<LatticeColorMatrix>, 
+						  multi1d<LatticeColorMatrix> >
   {
   public:
     // Typedefs to save typing

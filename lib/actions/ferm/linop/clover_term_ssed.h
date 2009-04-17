@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_ssed.h,v 1.3 2009-02-05 15:19:15 bjoo Exp $
+// $Id: clover_term_ssed.h,v 1.4 2009-04-17 02:05:33 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -32,7 +32,8 @@ namespace Chroma
    * \ingroup linop
    *
    */
-  class SSEDCloverTerm : public CloverTermBase
+  class SSEDCloverTerm : public CloverTermBase<LatticeFermionD,
+					       LatticeColorMatrixD>
   {
   public:
     // Typedefs to save typing

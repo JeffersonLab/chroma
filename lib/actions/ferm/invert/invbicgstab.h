@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: invbicgstab.h,v 3.2 2007-05-11 02:32:32 edwards Exp $
+// $Id: invbicgstab.h,v 3.3 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -26,6 +26,8 @@ namespace Chroma
 	      const Real& RsdBiCGStab,
 	      int MaxBiCGStab,
 	      enum PlusMinus isign);
+
+ 
 
   /*! @} */  // end of group invert
 	    

@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_mr.cc,v 1.1 2007-04-11 03:42:07 edwards Exp $
+// $Id: syssolver_linop_mr.cc,v 1.2 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by MR
  */
@@ -17,6 +17,7 @@ namespace Chroma
     //! Callback function
     LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
+						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
       return new LinOpSysSolverMR<LatticeFermion>(A, SysSolverMRParams(xml_in, path));

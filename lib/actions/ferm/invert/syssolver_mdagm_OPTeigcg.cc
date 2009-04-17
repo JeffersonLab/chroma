@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.1 2009-01-26 22:47:06 edwards Exp $
+// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.2 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
@@ -24,6 +24,7 @@ namespace Chroma
     //! Callback function
     MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
+						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
       return new MdagMSysSolverOptEigCG<LatticeFermion>(A, SysSolverOptEigCGParams(xml_in, path));

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: abs_integrator.h,v 3.6 2006-12-28 17:34:00 bjoo Exp $
+// $Id: abs_integrator.h,v 3.7 2009-04-17 02:05:37 bjoo Exp $
 
 /*! @file
  * @brief Integrators
@@ -82,6 +82,7 @@ namespace Chroma
   template<typename P, typename Q>
   class AbsMDIntegrator {
   public:
+
     //! Virtual destructor
     virtual ~AbsMDIntegrator(void) {}
 

@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.11 2009-01-26 22:47:05 edwards Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.12 2009-04-17 02:05:31 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -10,9 +10,11 @@
 #include "actions/ferm/invert/syssolver_linop_mr.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg.h"
+#include "actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h"
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
+
 
 namespace Chroma
 {
@@ -35,6 +37,7 @@ namespace Chroma
 	success &= LinOpSysSolverMREnv::registerAll();
 	success &= LinOpSysSolverCGTimingEnv::registerAll();
 	success &= LinOpSysSolverEigCGEnv::registerAll();
+	success &= LinOpSysSolverRichardsonCloverEnv::registerAll();
 	registered = true;
       }
       return success;

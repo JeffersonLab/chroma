@@ -1,4 +1,4 @@
-// $Id: simple_gaugebc.cc,v 3.1 2006-09-20 20:28:01 edwards Exp $
+// $Id: simple_gaugebc.cc,v 3.2 2009-04-17 02:05:35 bjoo Exp $
 /*! \file
  *  \brief Simple gauge boundary conditions
  */
@@ -16,7 +16,27 @@ namespace Chroma {
 										       const string& path)
     {
       QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
-      return new SimpleGaugeBC(SimpleGaugeBCParams(xml, path));
+      return new SimpleGaugeBC<
+        multi1d<LatticeColorMatrix>, 
+	multi1d<LatticeColorMatrix> >(SimpleGaugeBCParams(xml, path));
+    }
+
+    GaugeBC< multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> >* createGaugeBCF(XMLReader& xml, 
+										       const string& path)
+    {
+      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
+      return new SimpleGaugeBC<
+        multi1d<LatticeColorMatrixF>, 
+	multi1d<LatticeColorMatrixF> >(SimpleGaugeBCParams(xml, path));
+    }
+
+    GaugeBC< multi1d<LatticeColorMatrixD>, multi1d<LatticeColorMatrixD> >* createGaugeBCD(XMLReader& xml, 
+										       const string& path)
+    {
+      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
+      return new SimpleGaugeBC<
+        multi1d<LatticeColorMatrixD>, 
+	multi1d<LatticeColorMatrixD> >(SimpleGaugeBCParams(xml, path));
     }
 
     const std::string name = "SIMPLE_GAUGEBC";
@@ -31,6 +51,8 @@ namespace Chroma {
       if (! registered)
       {
 	success &= TheGaugeBCFactory::Instance().registerObject(name, createGaugeBC);
+	success &= TheGaugeBCFFactory::Instance().registerObject(name, createGaugeBCF);
+	success &= TheGaugeBCDFactory::Instance().registerObject(name, createGaugeBCD);
 	registered = true;
       }
       return success;

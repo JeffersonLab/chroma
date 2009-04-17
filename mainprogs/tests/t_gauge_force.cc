@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
   typedef multi1d<LatticeColorMatrix>  P;
   typedef multi1d<LatticeColorMatrix>  Q;
 
-  Handle< GaugeBC<P,Q> > gbc(new PeriodicGaugeBC);
+  Handle< GaugeBC<P,Q> > gbc(new PeriodicGaugeBC<P,Q>);
   Handle< CreateGaugeState<P,Q> > cgs(new CreateSimpleGaugeState<P,Q>(gbc));
   Real betaMC = Real(5.7);
   RectGaugeAct S_g_MC(cgs, betaMC);

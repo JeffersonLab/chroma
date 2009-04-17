@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_clover_linop_w.h,v 3.2 2007-06-07 15:41:36 bjoo Exp $
+// $Id: eoprec_clover_linop_w.h,v 3.3 2009-04-17 02:05:33 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -120,6 +120,8 @@ namespace Chroma
     mutable double clov_deriv_time;
     mutable StopWatch swatch;
   };
+
+
 
 } // End Namespace Chroma
 

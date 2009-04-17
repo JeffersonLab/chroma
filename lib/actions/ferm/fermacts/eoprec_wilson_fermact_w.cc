@@ -1,4 +1,4 @@
-// $Id: eoprec_wilson_fermact_w.cc,v 3.1 2006-10-19 16:01:27 edwards Exp $
+// $Id: eoprec_wilson_fermact_w.cc,v 3.2 2009-04-17 02:05:30 bjoo Exp $
 /*! \file
  *  \brief Even-odd preconditioned Wilson fermion action
  */
@@ -87,6 +87,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverFactory::Instance().createObject(invParam.id,
 								    paramtop,
 								    invParam.path,
+								    state,
 								    linOp(state));
   }
 
@@ -102,6 +103,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverFactory::Instance().createObject(invParam.id,
 								    paramtop,
 								    invParam.path,
+								    state,
 								    linOp(state));
   }
 
