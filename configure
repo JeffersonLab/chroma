@@ -676,6 +676,10 @@ SSE_DSLASH_DIR
 SSE_DSLASH_ENABLED
 BUILD_SSE_WILSON_DSLASH_TRUE
 BUILD_SSE_WILSON_DSLASH_FALSE
+CPP_DSLASH_DIR
+CPP_DSLASH_ENABLED
+BUILD_CPP_WILSON_DSLASH_TRUE
+BUILD_CPP_WILSON_DSLASH_FALSE
 CG_DWF_DIR
 CG_DWF_ENABLED
 BUILD_CG_DWF_TRUE
@@ -751,6 +755,7 @@ CCC
 CC
 CFLAGS'
 ac_subdirs_all='other_libs/sse_wilson_dslash
+other_libs/cpp_wilson_dslash
 other_libs/cg-dwf
 other_libs/qdp-lapack'
 
@@ -1331,6 +1336,16 @@ Optional Features:
   --enable-dependency-tracking   do not reject slow dependency extractors
   --enable-sse-wilson-dslash
                           Build and Use the SSE2 Wilson Dslash Library
+
+  --enable-cpp-wilson-dslash
+                          Build and Use the CPP Wilson Dslash Library. Can
+                          also specify --enable-sse2 or --enable-sse3 and
+                          requires a QMP location in parscalar more with
+                          --with-qmp
+
+  --enable-sse2           Enable SSE2 support in the CPP Wilson Dslash package
+
+  --enable-sse3           Enable SSE3 support in the CPP Wilson Dslash package
 
   --enable-cg-dwf=<cpuarch> <cpuarch>=sse
 
@@ -3882,6 +3897,24 @@ if test "${enable_sse_wilson_dslash+set}" = set; then
 fi
 
 
+# Check whether --enable-cpp_wilson_dslash was given.
+if test "${enable_cpp_wilson_dslash+set}" = set; then
+  enableval=$enable_cpp_wilson_dslash;
+fi
+
+
+# Check whether --enable-sse2 was given.
+if test "${enable_sse2+set}" = set; then
+  enableval=$enable_sse2;
+fi
+
+
+# Check whether --enable-sse3 was given.
+if test "${enable_sse3+set}" = set; then
+  enableval=$enable_sse3;
+fi
+
+
 # Check whether --enable-cg-dwf was given.
 if test "${enable_cg_dwf+set}" = set; then
   enableval=$enable_cg_dwf; cg_dwf_cpu_arch=${enableval}
@@ -4290,6 +4323,12 @@ fi
 
 case "$enable_sse_wilson_dslash" in
   yes)
+       if test "X${enable_cpp_wilson_dslash}X" = "XyesX";
+       then
+          { { echo "$as_me:$LINENO: error: Cannot compile and link both CPP Wilson Dslash and SSE Wilson Dslash. Disable one of them" >&5
+echo "$as_me: error: Cannot compile and link both CPP Wilson Dslash and SSE Wilson Dslash. Disable one of them" >&2;}
+   { (exit 1); exit 1; }; }
+       fi
         { echo "$as_me:$LINENO: Configuring SSE Wilson Dslash" >&5
 echo "$as_me: Configuring SSE Wilson Dslash" >&6;}
 	subdirs="$subdirs other_libs/sse_wilson_dslash"
@@ -4322,6 +4361,48 @@ esac
 else
   BUILD_SSE_WILSON_DSLASH_TRUE='#'
   BUILD_SSE_WILSON_DSLASH_FALSE=
+fi
+
+
+
+case "$enable_cpp_wilson_dslash" in
+ yes)
+       if test "X${enable_sse_wilson_dslash}X" = "XyesX";
+       then
+          { { echo "$as_me:$LINENO: error: Cannot compile and link both CPP Wilson Dslash and SSE Wilson Dslash. Disable one of them" >&5
+echo "$as_me: error: Cannot compile and link both CPP Wilson Dslash and SSE Wilson Dslash. Disable one of them" >&2;}
+   { (exit 1); exit 1; }; }
+       fi
+        { echo "$as_me:$LINENO: Configuring CPP Wilson Dslash" >&5
+echo "$as_me: Configuring CPP Wilson Dslash" >&6;}
+	subdirs="$subdirs other_libs/cpp_wilson_dslash"
+
+        { echo "$as_me:$LINENO: Finished configuring CPP Wilson Dslash" >&5
+echo "$as_me: Finished configuring CPP Wilson Dslash" >&6;}
+	CPP_DSLASH_DIR=cpp_wilson_dslash
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_CPP_WILSON_DSLASH
+_ACEOF
+
+        CPP_DSLASH_ENABLED=yes
+
+	;;
+  *)
+
+	{ echo "$as_me:$LINENO: Not building CPP Dslash  " >&5
+echo "$as_me: Not building CPP Dslash  " >&6;}
+        CPP_DSLASH_ENABLED=no
+
+        ;;
+esac
+ if test "x${enable_cpp_wilson_dslash}x" = "xyesx" ; then
+  BUILD_CPP_WILSON_DSLASH_TRUE=
+  BUILD_CPP_WILSON_DSLASH_FALSE='#'
+else
+  BUILD_CPP_WILSON_DSLASH_TRUE='#'
+  BUILD_CPP_WILSON_DSLASH_FALSE=
 fi
 
 
@@ -5823,6 +5904,13 @@ echo "$as_me: error: conditional \"BUILD_SSE_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_CPP_WILSON_DSLASH_TRUE}" && test -z "${BUILD_CPP_WILSON_DSLASH_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_CPP_WILSON_DSLASH\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_CPP_WILSON_DSLASH\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_CG_DWF_TRUE}" && test -z "${BUILD_CG_DWF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_CG_DWF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -6605,6 +6693,10 @@ ac_delim='%!_!# '
 for ac_last_try in false false false false false :; do
   cat >conf$$subs.sed <<_ACEOF
 BUILD_SSE_WILSON_DSLASH_FALSE!$BUILD_SSE_WILSON_DSLASH_FALSE$ac_delim
+CPP_DSLASH_DIR!$CPP_DSLASH_DIR$ac_delim
+CPP_DSLASH_ENABLED!$CPP_DSLASH_ENABLED$ac_delim
+BUILD_CPP_WILSON_DSLASH_TRUE!$BUILD_CPP_WILSON_DSLASH_TRUE$ac_delim
+BUILD_CPP_WILSON_DSLASH_FALSE!$BUILD_CPP_WILSON_DSLASH_FALSE$ac_delim
 CG_DWF_DIR!$CG_DWF_DIR$ac_delim
 CG_DWF_ENABLED!$CG_DWF_ENABLED$ac_delim
 BUILD_CG_DWF_TRUE!$BUILD_CG_DWF_TRUE$ac_delim
@@ -6669,7 +6761,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 63; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 67; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
@@ -7070,21 +7162,22 @@ echo "$as_me: $ac_file is unchanged" >&6;}
   fi
   rm -f "$tmp/out12"
 # Compute $ac_file's index in $config_headers.
+_am_arg=$ac_file
 _am_stamp_count=1
 for _am_header in $config_headers :; do
   case $_am_header in
-    $ac_file | $ac_file:* )
+    $_am_arg | $_am_arg:* )
       break ;;
     * )
       _am_stamp_count=`expr $_am_stamp_count + 1` ;;
   esac
 done
-echo "timestamp for $ac_file" >`$as_dirname -- $ac_file ||
-$as_expr X$ac_file : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
-	 X$ac_file : 'X\(//\)[^/]' \| \
-	 X$ac_file : 'X\(//\)$' \| \
-	 X$ac_file : 'X\(/\)' \| . 2>/dev/null ||
-echo X$ac_file |
+echo "timestamp for $_am_arg" >`$as_dirname -- "$_am_arg" ||
+$as_expr X"$_am_arg" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
+	 X"$_am_arg" : 'X\(//\)[^/]' \| \
+	 X"$_am_arg" : 'X\(//\)$' \| \
+	 X"$_am_arg" : 'X\(/\)' \| . 2>/dev/null ||
+echo X"$_am_arg" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
@@ -7121,7 +7214,7 @@ echo "$as_me: executing $ac_file commands" >&6;}
   # each Makefile.in and add a new line on top of each file to say so.
   # Grep'ing the whole file is not good either: AIX grep has a line
   # limit of 2048, but all sed's we know have understand at least 4000.
-  if sed 10q "$mf" | grep '^#.*generated by automake' > /dev/null 2>&1; then
+  if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
     dirpart=`$as_dirname -- "$mf" ||
 $as_expr X"$mf" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
 	 X"$mf" : 'X\(//\)[^/]' \| \

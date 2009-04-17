@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_cppd.cc,v 3.1 2009-04-17 20:44:43 bjoo Exp $
+// $Id: lwldslash_w_cppd.cc,v 3.2 2009-04-17 20:54:29 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -12,10 +12,6 @@ using namespace CPlusPlusWilsonDslash;
 
 namespace Chroma 
 { 
-  namespace CPPDRefCount {
-    static bool initedP = false;
-  }
-
   //! Initialization routine
   void CPPWilsonDslashD::init()
   {
@@ -24,14 +20,13 @@ namespace Chroma
     QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
 #endif
 
-    if( CPPDRefCount::initedP == false ) {
+
       // Initialize using the total problem size
-      D=new Dslash<float>(Layout::lattSize().slice(),
+      D=new Dslash<double>(Layout::lattSize().slice(),
 			Layout::QDPXX_getSiteCoords,
                         Layout::QDPXX_getLinearSiteIndex,
                         Layout::QDPXX_nodeNumber);
-      CPPDRefCount::initedP = true;
-    }
+      
   }
 
 
@@ -182,11 +177,11 @@ namespace Chroma
     int cbsites = QDP::Layout::sitesOnNode()/2;
 
 
-    (*D)((double *)&(chid.elem(all.start()).elem(0).elem(0).real()),	  
-	  (double *)&(psid.elem(all.start()).elem(0).elem(0).real()),
-	  (double *)&(packed_gauged[0]),
-	  isign, 
-	  source_cb);
+    (*D)((double *)&(chi.elem(all.start()).elem(0).elem(0).real()),	  
+	 (double *)&(psi.elem(all.start()).elem(0).elem(0).real()),
+	 (double *)&(packed_gauge[0]),
+	 isign, 
+	 source_cb);
 
     // sse_su3dslash_wilson((SSEREAL *)&(packed_gauge[0]),
     //			 (SSEREAL *)&(psi.elem(0).elem(0).elem(0).real()),

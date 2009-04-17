@@ -23,6 +23,12 @@ AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
 LDADD += -llevel3 @QDPXX_LIBS@
 endif
 
+if BUILD_CPP_WILSON_DSLASH
+AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@CPP_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/include
+AM_LDFLAGS += -L$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/lib
+LDADD += -ldslash @QDPXX_LIBS@
+endif
+
 if BUILD_CG_DWF
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@CG_DWF_DIR@
 AM_CXXFLAGS += -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@

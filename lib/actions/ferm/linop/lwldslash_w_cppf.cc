@@ -1,11 +1,10 @@
-// $Id: lwldslash_w_cppf.cc,v 3.1 2009-04-17 20:44:43 bjoo Exp $
+// $Id: lwldslash_w_cppf.cc,v 3.2 2009-04-17 20:54:29 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
 
 #include "chromabase.h"
 #include "actions/ferm/linop/lwldslash_w_cppf.h"
-#include <sse_config.h>
 #include "cpp_dslash.h"
 #include "cpp_dslash_qdp_packer.h"
 

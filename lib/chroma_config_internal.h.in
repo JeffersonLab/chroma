@@ -9,6 +9,9 @@
 /* Build CG DWF */
 #undef BUILD_CG_DWF
 
+/* Build CPP Dslash Ops */
+#undef BUILD_CPP_WILSON_DSLASH
+
 /* Build CPS ASQTAD INVERTER */
 #undef BUILD_CPS_ASQTAD_INVERTER
 

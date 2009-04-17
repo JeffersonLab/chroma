@@ -43,6 +43,27 @@ AC_ARG_ENABLE(sse_wilson_dslash,
     [Build and Use the SSE2 Wilson Dslash Library])
 )
 
+dnl CPP_WILSON_DSLASH_OPTIONS
+AC_ARG_ENABLE(cpp_wilson_dslash,
+   AC_HELP_STRING(
+    [--enable-cpp-wilson-dslash],
+    [Build and Use the CPP Wilson Dslash Library. Can also specify --enable-sse2 or --enable-sse3 and requires a QMP location in parscalar more with --with-qmp]   )
+)
+
+AC_ARG_ENABLE(sse2,
+   AC_HELP_STRING(
+    [--enable-sse2],
+    [Enable SSE2 support in the CPP Wilson Dslash package]
+   )
+)
+
+AC_ARG_ENABLE(sse3,
+   AC_HELP_STRING(
+    [--enable-sse3],
+    [Enable SSE3 support in the CPP Wilson Dslash package]
+   )
+)
+
 AC_ARG_ENABLE(cg-dwf,
 	AC_HELP_STRING([--enable-cg-dwf=<cpuarch> <cpuarch>=sse,bluelight,altivec]),
 	[cg_dwf_cpu_arch=${enableval}
@@ -238,6 +259,10 @@ dnl **** SSE Wilson dslash                                              ****
 dnl ************************************************************************
 case "$enable_sse_wilson_dslash" in
   yes) 
+       if test "X${enable_cpp_wilson_dslash}X" = "XyesX";
+       then 
+          AC_MSG_ERROR([Cannot compile and link both CPP Wilson Dslash and SSE Wilson Dslash. Disable one of them])
+       fi
         AC_MSG_NOTICE([Configuring SSE Wilson Dslash])
 	AC_CONFIG_SUBDIRS(other_libs/sse_wilson_dslash)
         AC_MSG_NOTICE([Finished configuring SSE Wilson Dslash])
@@ -255,6 +280,32 @@ esac
 
 AM_CONDITIONAL(BUILD_SSE_WILSON_DSLASH,
   [test "x${enable_sse_wilson_dslash}x" = "xyesx" ])
+
+
+dnl ************************************************************************
+dnl **** CPP DSlash Stuff                                              *****
+dnl ************************************************************************
+case "$enable_cpp_wilson_dslash" in
+ yes)
+       if test "X${enable_sse_wilson_dslash}X" = "XyesX";
+       then 
+          AC_MSG_ERROR([Cannot compile and link both CPP Wilson Dslash and SSE Wilson Dslash. Disable one of them])
+       fi
+        AC_MSG_NOTICE([Configuring CPP Wilson Dslash])
+	AC_CONFIG_SUBDIRS(other_libs/cpp_wilson_dslash)
+        AC_MSG_NOTICE([Finished configuring CPP Wilson Dslash])
+	AC_SUBST(CPP_DSLASH_DIR, [cpp_wilson_dslash])
+	AC_DEFINE([BUILD_CPP_WILSON_DSLASH],[],[ Build CPP Dslash Ops ])
+        AC_SUBST(CPP_DSLASH_ENABLED,[yes]	)	  
+	;;
+  *)
+	AC_SUBST(CPP_DSLASH_DIR)
+	AC_MSG_NOTICE( [Not building CPP Dslash ] )
+        AC_SUBST(CPP_DSLASH_ENABLED,[no]	)
+        ;;
+esac 
+AM_CONDITIONAL(BUILD_CPP_WILSON_DSLASH,
+  [test "x${enable_cpp_wilson_dslash}x" = "xyesx" ])
 
 
 dnl ************************************************************************
