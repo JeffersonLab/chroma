@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: pbp.h,v 3.0 2006-04-03 04:59:04 edwards Exp $
+// $Id: pbp.h,v 3.1 2009-04-21 01:21:42 eneil Exp $
 
 /*! \file
  * \brief Psibar-psi measurements
@@ -16,5 +16,6 @@
 #ifndef __pbp_h__
 #define __pbp_h__
 
+#include "mespbp_w.h"
 
 #endif

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[3]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[4]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[5]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[6]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[7]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[8]/PsiBarPsi[2]/elem/pbp" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+</assertions>

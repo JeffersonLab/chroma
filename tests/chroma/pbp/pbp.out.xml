@@ -1,0 +1,539 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; Test input file for chroma program
+</annotation>
+<Param>
+  <InlineMeasurements>
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>10</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>10</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>100</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>100</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>1000</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>1000</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>10000</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>10000</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>100000</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>100000</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>1000000</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>1000000</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>10000000</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>10000000</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+	<elem>
+	  <Name>PSI_BAR_PSI</Name>
+	  <Frequency>1</Frequency>
+		<Param>
+		<version>1</version>
+		<Mass>100000000</Mass>
+	  <FermionAction>
+		<FermAct>WILSON</FermAct>
+		<Mass>100000000</Mass>
+		<FermionBC>
+		  <FermBC>SIMPLE_FERMBC</FermBC>
+		  <boundary>1 1 1 -1</boundary>
+	 	</FermionBC>
+	  </FermionAction>
+	  <InvertParam>
+		<invType>CG_INVERTER</invType>
+		<RsdCG>1.0e-8</RsdCG>
+		<MaxCG>1000</MaxCG>
+	  </InvertParam>
+		</Param>
+	  <NamedObject>
+	    <gauge_id>default_gauge_field</gauge_id>
+	  </NamedObject>
+	</elem>
+
+
+    </InlineMeasurements>
+    <nrow>8 8 8 4</nrow>
+  </Param>
+
+  <RNG>
+    <Seed>	
+      <elem>11</elem>
+      <elem>13</elem>
+      <elem>17</elem>
+      <elem>19</elem>
+    </Seed>
+  </RNG>
+
+  <Cfg>
+    <cfg_type>WEAK_FIELD</cfg_type>
+    <cfg_file>dummy</cfg_file>
+  </Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.32.0</chroma>
+      <qdp>1.30.0</qdp>
+      <basePrecision>32</basePrecision>
+    </code_version>
+    <run_date>24 Feb 09 15:55:05 EST</run_date>
+    <Setgeom>
+      <latt_size>8 8 8 4</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>8 8 8 4</subgrid_size>
+      <total_volume>2048</total_volume>
+      <subgrid_volume>2048</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>13</elem>
+      <elem>17</elem>
+      <elem>19</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994824702450488</w_plaq>
+    <s_plaq>0.994832279509865</s_plaq>
+    <t_plaq>0.994817125391112</t_plaq>
+    <plane_01_plaq>0.994821155793034</plane_01_plaq>
+    <plane_02_plaq>0.994849299274695</plane_02_plaq>
+    <plane_12_plaq>0.994826383461865</plane_12_plaq>
+    <plane_03_plaq>0.994741344708018</plane_03_plaq>
+    <plane_13_plaq>0.994881725482022</plane_13_plaq>
+    <plane_23_plaq>0.994828305983295</plane_23_plaq>
+    <link>0.379358315670591</link>
+    <pollp>
+      <elem>
+        <re>0.881283957355966</re>
+        <im>-0.00950330776322517</im>
+      </elem>
+      <elem>
+        <re>0.880148899857886</re>
+        <im>-0.00986440569537687</im>
+      </elem>
+      <elem>
+        <re>0.879983748348119</re>
+        <im>-0.0096839727330007</im>
+      </elem>
+      <elem>
+        <re>0.966761037241668</re>
+        <im>-0.00122909483206968</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>0.0711726086873119</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>0.0096333483412905</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>0.000990007268572351</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>9.95893902991547e-05</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>1.01476444213456e-05</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>9.96423907650108e-07</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>9.93182871158237e-08</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+    <elem>
+      <PsiBarPsi>
+        <update_no>0</update_no>
+      </PsiBarPsi>
+      <ProgramInfo>
+        <code_version>
+          <chroma>3.32.0</chroma>
+          <qdp>1.30.0</qdp>
+          <basePrecision>32</basePrecision>
+        </code_version>
+        <run_date>24 Feb 09 15:55:05 EST</run_date>
+        <Setgeom>
+          <latt_size>8 8 8 4</latt_size>
+          <logical_size>1 1 1 1</logical_size>
+          <subgrid_size>8 8 8 4</subgrid_size>
+          <total_volume>2048</total_volume>
+          <subgrid_volume>2048</subgrid_volume>
+        </Setgeom>
+      </ProgramInfo>
+      <Config_info><weak_field>
+</weak_field>
+
+
+
+      </Config_info>
+      <PsiBarPsi>
+        <elem>
+          <pbp>9.93466753453588e-09</pbp>
+        </elem>
+      </PsiBarPsi>
+    </elem>
+  </InlineObservables>
+</chroma>

@@ -1,4 +1,4 @@
-// $Id: inline_aggregate.cc,v 3.2 2006-09-20 20:28:01 edwards Exp $
+// $Id: inline_aggregate.cc,v 3.3 2009-04-21 01:21:41 eneil Exp $
 /*! \file
  *  \brief Inline measurement aggregator
  */
@@ -11,6 +11,7 @@
 #include "meas/inline/schrfun/inline_schrfun_aggregate.h"
 #include "meas/inline/smear/inline_smear_aggregate.h"
 #include "meas/inline/io/inline_io_aggregate.h"
+#include "meas/inline/pbp/inline_pbp_aggregate.h"
 
 #include "meas/inline/hadron_s/inline_hadron_aggregate_s.h"
 
@@ -39,6 +40,7 @@ namespace Chroma
 	success &= InlineSchrFunAggregateEnv::registerAll();
 	success &= InlineSmearAggregateEnv::registerAll();
 	success &= InlineIOAggregateEnv::registerAll();
+	success &= InlinePsiBarPsiAggregateEnv::registerAll();
 
 	success &= InlineStaggeredHadronAggregateEnv::registerAll();
 

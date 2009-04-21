@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.201 2009-04-17 20:54:18 bjoo Exp $
+# $Id: Makefile.am,v 3.202 2009-04-21 01:21:41 eneil Exp $
 #
 # Path for all files used in building the library
 
@@ -224,6 +224,7 @@ nobase_include_HEADERS = \
 	meas/hadron/no_spin_insertion.h \
 	meas/hadron/stoch_var.h \
 	meas/meas.h meas/pbp/pbp.h \
+	meas/pbp/mespbp_w.h \
         meas/schrfun/schrfun.h \
 	meas/sinks/sinks.h \
         meas/sinks/pt_sink_smearing.h \
@@ -858,6 +859,9 @@ nobase_include_HEADERS += \
         meas/inline/io/xml_write_obj_funcmap.h \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
+	meas/inline/pbp/pbp.h \
+	meas/inline/pbp/inline_pbp_aggregate.h \
+	meas/inline/pbp/inline_psibarpsi_w.h \
 	meas/inline/schrfun/schrfun.h \
 	meas/inline/schrfun/inline_schrfun_aggregate.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
@@ -1379,6 +1383,7 @@ libchroma_a_SOURCES += \
 	meas/hadron/wallpionff_w.cc meas/hadron/wallrhoff_w.cc \
 	meas/hadron/wallrhopiff_w.cc meas/hadron/wall_qprop_w.cc \
 	meas/hadron/npr_vertex_w.cc \
+	meas/pbp/mespbp_w.cc \
         meas/schrfun/sfpcac_w.cc \
         meas/schrfun/sfcorr_w.cc \
         meas/schrfun/sfcurrents_w.cc \
@@ -1563,6 +1568,8 @@ libchroma_a_SOURCES += \
         meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
+	meas/inline/pbp/inline_pbp_aggregate.cc \
+	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
