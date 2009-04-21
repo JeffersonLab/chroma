@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_pab.h,v 3.4 2008-01-21 20:18:50 edwards Exp $
+// $Id: lwldslash_w_pab.h,v 3.5 2009-04-21 22:32:00 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -54,9 +54,14 @@ namespace Chroma
    *
    */
 
-  class PABWilsonDslash : public WilsonDslashBase
+  class PABWilsonDslash : public WilsonDslashBase< LatticeFermion, 
+ 	multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >
   {
   public:
+    typedef LatticeFermion T;
+    typedef multi1d<LatticeColorMatrix> Q;
+    typedef multi1d<LatticeColorMatrix> P;
+
     //! Empty constructor. Must use create later
     PABWilsonDslash();
 
