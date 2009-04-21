@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <chroma>
 <annotation>
-; $Id: prec_clover-stout3d-richardson-clover-multiprec.ini.xml,v 1.1 2009-04-17 02:08:35 bjoo Exp $
+; $Id: prec_clover-stout3d-richardson-clover-multiprec.ini.xml,v 1.2 2009-04-21 23:49:18 bjoo Exp $
 ;
 ; Test input file for chroma main program
 ;
@@ -80,7 +80,7 @@
         <InvertParam>
           <invType>RICHARDSON_MP_CLOVER_INVERTER</invType>
 	  <MaxIter>1000</MaxIter>
-          <RsdTarget>1.0e-14</RsdTarget>
+          <RsdTarget>1.0e-8</RsdTarget>
           <CloverParams>
             <Kappa>0.115</Kappa>
             <clovCoeff>1.17</clovCoeff>
@@ -95,7 +95,7 @@
          </CloverParams>
  	 <InnerSolverParams>
 	   <invType>BICGSTAB_INVERTER</invType>
- 	   <RsdBiCGStab>1.0e-03</RsdBiCGStab>
+ 	   <RsdBiCGStab>1.0e-02</RsdBiCGStab>
 	   <MaxBiCGStab>10000</MaxBiCGStab>
          </InnerSolverParams>
         </InvertParam>
@@ -115,7 +115,7 @@
     </elem>
 
   </InlineMeasurements>
-   <nrow>8 8 4 16</nrow>
+   <nrow>4 4 4 8</nrow>
 </Param>
 
 <RNG>
