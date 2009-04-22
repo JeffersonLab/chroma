@@ -1,3 +1,9 @@
+21/04/2009 - Balint Joo
+	Version 3.34.0
+	Added regression support for multiprec clover in propagator and t_leapfrog
+	Integrated cpp-wilson-dslash for multiprec dslash support. (Experimental)
+
+
 03/04/2009 - Robert Edwards  
 	Version 3.33.0
         Changed around eigcg support for MdagM and M. New block colorvec support 
