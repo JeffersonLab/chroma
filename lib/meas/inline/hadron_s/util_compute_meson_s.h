@@ -13,6 +13,14 @@ namespace Chroma {
 		      XMLWriter & xml_out,
 		      int j_decay,int t_length, int t_source);
 
+  void compute_vary_scalar(LatticeStaggeredPropagator& prop_Lsn_Lsr,
+			   LatticeStaggeredPropagator& prop_Fsn_Lsr,
+			   LatticeStaggeredPropagator& prop_Lsn_Fsr,
+			   LatticeStaggeredPropagator& prop_Fsn_Fsr,
+			   const multi1d<LatticeColorMatrix>& u,
+			   bool gauge_shift, bool sym_shift,
+			   XMLWriter& xml_out, int j_decay, int t_length, int t_source);
+
   void compute_8_pions(	multi1d<LatticeStaggeredPropagator> & stag_prop,
 			const multi1d<LatticeColorMatrix> & u ,
 			bool gauge_shift, bool sym_shift ,
@@ -30,6 +38,29 @@ namespace Chroma {
 			 bool gauge_shift, bool sym_shift,
 			 XMLWriter & xml_out,
 			 int j_decay, int t_length, int t_source);
+ void compute_8_pions(	multi1d<LatticeStaggeredPropagator> & stag_prop,
+			const multi1d<LatticeColorMatrix> & u ,
+			bool gauge_shift, bool sym_shift ,
+			XMLWriter & xml_out, 
+			int j_decay, int t_length, int t_source,
+			bool binary_meson_dump, 
+			std::string binary_name);
+
+  void compute_8_scalars(multi1d<LatticeStaggeredPropagator> & stag_prop,
+			 const multi1d<LatticeColorMatrix> & u ,
+			 bool gauge_shift, bool sym_shift,
+			 XMLWriter & xml_out,
+			 int j_decay, int t_length, int t_source,
+			 bool binary_meson_dump, 
+			 std::string binary_name);
+
+  void compute_8_vectors(multi1d<LatticeStaggeredPropagator> & stag_prop,
+			 const multi1d<LatticeColorMatrix> & u ,
+			 bool gauge_shift, bool sym_shift,
+			 XMLWriter & xml_out,
+			 int j_decay, int t_length, int t_source,
+			 bool binary_meson_dump,
+			 std::string binary_name);
 }
 
 

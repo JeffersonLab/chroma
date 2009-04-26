@@ -1,4 +1,4 @@
-// $Id: util_compute_meson_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: util_compute_meson_s.cc,v 3.1 2009-04-26 21:02:51 mcneile Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -13,7 +13,7 @@
 #include "meas/sources/srcfil.h"
 #include "util/ferm/transf.h"
 #include "meas/hadron/pion_local_s.h"
-
+#include "meas/hadron/scalar_local_s.h"
 
 #include "util_compute_quark_prop_s.h"
 
@@ -94,8 +94,61 @@ push(xml_out,"Meson_correlators");
 
   QDPIO::cout << "Computed variational fuzzed mesons"  << endl;
 
-}
+  }
 
+  void compute_vary_scalar(LatticeStaggeredPropagator& prop_Lsn_Lsr,
+			   LatticeStaggeredPropagator& prop_Fsn_Lsr,
+			   LatticeStaggeredPropagator& prop_Lsn_Fsr,
+			   LatticeStaggeredPropagator& prop_Fsn_Fsr,
+			   const multi1d<LatticeColorMatrix>& u,
+			   bool gauge_shift, bool sym_shift,
+			   XMLWriter& xml_out, int j_decay, int t_length, int t_source) 
+  {
+    Stag_shift_option type_of_shift;
+
+    if (gauge_shift && sym_shift) {
+      type_of_shift = SYM_GAUGE_INVAR;
+    } else {
+      if ( gauge_shift && !sym_shift ) {
+	type_of_shift = GAUGE_INVAR;
+      } else {
+	if ( !gauge_shift && sym_shift ) {
+	  type_of_shift = SYM_NON_GAUGE_INVAR;
+	} else {
+	  if ( !gauge_shift && !sym_shift ) {
+	    type_of_shift = NON_GAUGE_INVAR;
+	  }
+	}
+      }
+    }
+  
+    staggered_local_scalar scalar(t_length, u, type_of_shift);
+
+    push(xml_out, "Scalar_multichannel");
+    scalar.compute(prop_Lsn_Lsr, prop_Lsn_Lsr, j_decay);
+    push(xml_out, "Lsink_Lsrc");
+    scalar.dump(t_source,xml_out);
+    pop(xml_out);
+
+    scalar.compute(prop_Lsn_Lsr, prop_Lsn_Fsr, j_decay);
+    push(xml_out, "Fsink_Lsrc");
+    scalar.dump(t_source,xml_out);
+    pop(xml_out);
+
+    scalar.compute(prop_Lsn_Lsr, prop_Lsn_Fsr, j_decay);
+    push(xml_out, "Lsink_Fsrc");
+    scalar.dump(t_source,xml_out);
+    pop(xml_out);
+
+    scalar.compute(prop_Lsn_Lsr, prop_Fsn_Fsr, j_decay);
+    push(xml_out, "Fsink_Fsrc");
+    scalar.dump(t_source,xml_out);
+    pop(xml_out);
+
+    pop(xml_out);
+
+    QDPIO::cout << "Computed multichannel local scalar\n";
+  }
 
 
 } // end of namespace
