@@ -191,7 +191,7 @@ Not used in this test, instead use create colorvecs below.
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <num_vecs>3</num_vecs>
+          <num_vecs>10</num_vecs>
           <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
@@ -264,7 +264,7 @@ Not used in this test, instead use create colorvecs below.
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <num_vecs>3</num_vecs>
+          <num_vecs>10</num_vecs>
           <t_sources_start>0 1 2 3</t_sources_start>
           <dt>4</dt>
           <decay_dir>3</decay_dir>
@@ -323,7 +323,7 @@ Not used in this test, instead use create colorvecs below.
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <num_vecs>3</num_vecs>
+          <num_vecs>10</num_vecs>
           <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>
         </Contractions>
@@ -339,7 +339,7 @@ Not used in this test, instead use create colorvecs below.
       <Name>PROP_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
-        <num_vecs>3</num_vecs>
+        <num_vecs>10</num_vecs>
         <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>U0.05</mass_label>
@@ -356,7 +356,7 @@ Not used in this test, instead use create colorvecs below.
       <Name>PROP_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
-        <num_vecs>3</num_vecs>
+        <num_vecs>10</num_vecs>
         <t_sources>0 3</t_sources>
         <decay_dir>3</decay_dir>
         <mass_label>STATIC</mass_label>
@@ -375,7 +375,7 @@ Not used in this test, instead use create colorvecs below.
       <Param>
         <version>1</version>
         <mom2_max>0</mom2_max>
-        <num_vecs>3</num_vecs>
+        <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
         <orthog_basis>true</orthog_basis>
@@ -419,156 +419,156 @@ Not used in this test, instead use create colorvecs below.
           <elem>-3 2</elem>
           <elem>3 -2</elem>
           <elem>-3 -2</elem>
+          <elem>-3 -3 -3</elem>
           <elem>-3 -3 -2</elem>
           <elem>-3 -3 -1</elem>
           <elem>-3 -3 1</elem>
           <elem>-3 -3 2</elem>
-          <elem>-3 -3 3</elem>
           <elem>-3 -2 -3</elem>
+          <elem>-3 -2 -2</elem>
           <elem>-3 -2 -1</elem>
           <elem>-3 -2 1</elem>
-          <elem>-3 -2 2</elem>
           <elem>-3 -2 3</elem>
           <elem>-3 -1 -3</elem>
           <elem>-3 -1 -2</elem>
-          <elem>-3 -1 1</elem>
+          <elem>-3 -1 -1</elem>
           <elem>-3 -1 2</elem>
           <elem>-3 -1 3</elem>
           <elem>-3 1 -3</elem>
           <elem>-3 1 -2</elem>
-          <elem>-3 1 -1</elem>
+          <elem>-3 1 1</elem>
           <elem>-3 1 2</elem>
           <elem>-3 1 3</elem>
           <elem>-3 2 -3</elem>
-          <elem>-3 2 -2</elem>
           <elem>-3 2 -1</elem>
           <elem>-3 2 1</elem>
+          <elem>-3 2 2</elem>
           <elem>-3 2 3</elem>
+          <elem>-2 -3 -3</elem>
           <elem>-2 -3 -2</elem>
           <elem>-2 -3 -1</elem>
           <elem>-2 -3 1</elem>
           <elem>-2 -3 2</elem>
-          <elem>-2 -3 3</elem>
           <elem>-2 -2 -3</elem>
+          <elem>-2 -2 -2</elem>
           <elem>-2 -2 -1</elem>
           <elem>-2 -2 1</elem>
-          <elem>-2 -2 2</elem>
           <elem>-2 -2 3</elem>
           <elem>-2 -1 -3</elem>
           <elem>-2 -1 -2</elem>
-          <elem>-2 -1 1</elem>
+          <elem>-2 -1 -1</elem>
           <elem>-2 -1 2</elem>
           <elem>-2 -1 3</elem>
           <elem>-2 1 -3</elem>
           <elem>-2 1 -2</elem>
-          <elem>-2 1 -1</elem>
+          <elem>-2 1 1</elem>
           <elem>-2 1 2</elem>
           <elem>-2 1 3</elem>
-          <elem>-2 3 -3</elem>
           <elem>-2 3 -2</elem>
           <elem>-2 3 -1</elem>
           <elem>-2 3 1</elem>
           <elem>-2 3 2</elem>
+          <elem>-2 3 3</elem>
+          <elem>-1 -3 -3</elem>
           <elem>-1 -3 -2</elem>
           <elem>-1 -3 -1</elem>
           <elem>-1 -3 1</elem>
           <elem>-1 -3 2</elem>
-          <elem>-1 -3 3</elem>
           <elem>-1 -2 -3</elem>
+          <elem>-1 -2 -2</elem>
           <elem>-1 -2 -1</elem>
           <elem>-1 -2 1</elem>
-          <elem>-1 -2 2</elem>
           <elem>-1 -2 3</elem>
           <elem>-1 -1 -3</elem>
           <elem>-1 -1 -2</elem>
-          <elem>-1 -1 1</elem>
+          <elem>-1 -1 -1</elem>
           <elem>-1 -1 2</elem>
           <elem>-1 -1 3</elem>
           <elem>-1 2 -3</elem>
-          <elem>-1 2 -2</elem>
           <elem>-1 2 -1</elem>
           <elem>-1 2 1</elem>
+          <elem>-1 2 2</elem>
           <elem>-1 2 3</elem>
-          <elem>-1 3 -3</elem>
           <elem>-1 3 -2</elem>
           <elem>-1 3 -1</elem>
           <elem>-1 3 1</elem>
           <elem>-1 3 2</elem>
+          <elem>-1 3 3</elem>
+          <elem>1 -3 -3</elem>
           <elem>1 -3 -2</elem>
           <elem>1 -3 -1</elem>
           <elem>1 -3 1</elem>
           <elem>1 -3 2</elem>
-          <elem>1 -3 3</elem>
           <elem>1 -2 -3</elem>
+          <elem>1 -2 -2</elem>
           <elem>1 -2 -1</elem>
           <elem>1 -2 1</elem>
-          <elem>1 -2 2</elem>
           <elem>1 -2 3</elem>
           <elem>1 1 -3</elem>
           <elem>1 1 -2</elem>
-          <elem>1 1 -1</elem>
+          <elem>1 1 1</elem>
           <elem>1 1 2</elem>
           <elem>1 1 3</elem>
           <elem>1 2 -3</elem>
-          <elem>1 2 -2</elem>
           <elem>1 2 -1</elem>
           <elem>1 2 1</elem>
+          <elem>1 2 2</elem>
           <elem>1 2 3</elem>
-          <elem>1 3 -3</elem>
           <elem>1 3 -2</elem>
           <elem>1 3 -1</elem>
           <elem>1 3 1</elem>
           <elem>1 3 2</elem>
+          <elem>1 3 3</elem>
+          <elem>2 -3 -3</elem>
           <elem>2 -3 -2</elem>
           <elem>2 -3 -1</elem>
           <elem>2 -3 1</elem>
           <elem>2 -3 2</elem>
-          <elem>2 -3 3</elem>
           <elem>2 -1 -3</elem>
           <elem>2 -1 -2</elem>
-          <elem>2 -1 1</elem>
+          <elem>2 -1 -1</elem>
           <elem>2 -1 2</elem>
           <elem>2 -1 3</elem>
           <elem>2 1 -3</elem>
           <elem>2 1 -2</elem>
-          <elem>2 1 -1</elem>
+          <elem>2 1 1</elem>
           <elem>2 1 2</elem>
           <elem>2 1 3</elem>
           <elem>2 2 -3</elem>
-          <elem>2 2 -2</elem>
           <elem>2 2 -1</elem>
           <elem>2 2 1</elem>
+          <elem>2 2 2</elem>
           <elem>2 2 3</elem>
-          <elem>2 3 -3</elem>
           <elem>2 3 -2</elem>
           <elem>2 3 -1</elem>
           <elem>2 3 1</elem>
           <elem>2 3 2</elem>
+          <elem>2 3 3</elem>
           <elem>3 -2 -3</elem>
+          <elem>3 -2 -2</elem>
           <elem>3 -2 -1</elem>
           <elem>3 -2 1</elem>
-          <elem>3 -2 2</elem>
           <elem>3 -2 3</elem>
           <elem>3 -1 -3</elem>
           <elem>3 -1 -2</elem>
-          <elem>3 -1 1</elem>
+          <elem>3 -1 -1</elem>
           <elem>3 -1 2</elem>
           <elem>3 -1 3</elem>
           <elem>3 1 -3</elem>
           <elem>3 1 -2</elem>
-          <elem>3 1 -1</elem>
+          <elem>3 1 1</elem>
           <elem>3 1 2</elem>
           <elem>3 1 3</elem>
           <elem>3 2 -3</elem>
-          <elem>3 2 -2</elem>
           <elem>3 2 -1</elem>
           <elem>3 2 1</elem>
+          <elem>3 2 2</elem>
           <elem>3 2 3</elem>
-          <elem>3 3 -3</elem>
           <elem>3 3 -2</elem>
           <elem>3 3 -1</elem>
           <elem>3 3 1</elem>
           <elem>3 3 2</elem>
+          <elem>3 3 3</elem>
         </displacement_list>
 
         <LinkSmearing>
@@ -592,7 +592,7 @@ Not used in this test, instead use create colorvecs below.
       <Param>
         <version>1</version>
         <mom2_max>2</mom2_max>
-        <num_vecs>3</num_vecs>
+        <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
         <orthog_basis>true</orthog_basis>
@@ -623,7 +623,7 @@ Not used in this test, instead use create colorvecs below.
       <Param>
         <version>1</version>
         <mom2_max>2</mom2_max>
-        <num_vecs>3</num_vecs>
+        <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
         <site_orthog_basis>false</site_orthog_basis>
@@ -664,7 +664,7 @@ Not used in this test, instead use create colorvecs below.
         <version>2</version>
         <restrict_plateau>true</restrict_plateau>
         <avg_equiv_mom>true</avg_equiv_mom>
-        <num_vecs>3</num_vecs>
+        <num_vecs>10</num_vecs>
         <mom2_max>3</mom2_max>
         <mom_offset>0 0 0</mom_offset>
         <t_source>0</t_source>
