@@ -198,6 +198,16 @@ namespace Chroma {
     read(paramtop, "Baryon_local", param.Baryon_local);
     read(paramtop, "Baryon_vary", param.Baryon_vary);
     read(paramtop, "LocalPion_vary", param.LocalPion_vary);
+
+    if( paramtop.count("LocalScalar_vary") > 0 ) {
+      read(paramtop, "LocalScalar_vary", param.LocalScalar_vary);
+    }
+    else
+      {
+	param.LocalScalar_vary = false ; 
+      }
+
+
     read(paramtop, "disconnected_local", param.disconnected_local);
     read(paramtop, "disconnected_fuzz", param.disconnected_fuzz);
     read(paramtop, "singletPs_Conn_local", param.ps4link_singlet_conn);
@@ -785,6 +795,7 @@ namespace Chroma {
 
     bool do_Baryon_vary          = params.param.Baryon_vary ;
     bool do_LocalPion_vary       = params.param.LocalPion_vary;
+    bool do_LocalScalar_vary     = params.param.LocalScalar_vary;
     bool do_8_pions              = params.param.eight_pions;
     bool do_8_scalars            = params.param.eight_scalars;
     bool do_8_rhos               = params.param.eight_rhos;
@@ -814,13 +825,13 @@ namespace Chroma {
     stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
 
 
-    if( ( do_Baryon_vary || do_LocalPion_vary)|| 
+    if( ( do_Baryon_vary || do_LocalPion_vary || do_LocalScalar_vary   )|| 
 	(do_fuzzed_disc_loops||do_ps4_singlet_fuzz)){
       // need smeared links
       do_fuzzing = true ;
     }
 
-    if (( do_Baryon_vary || do_LocalPion_vary)||(do_ps4_singlet_fuzz)) {
+    if (( do_Baryon_vary || do_LocalPion_vary)||(do_ps4_singlet_fuzz) || do_LocalScalar_vary) {
 
       // make the fuzzed corner props
       // (LsrcLsnk, LsrcFsnk,FsrcLsink,FsrcFsnk)
@@ -1205,6 +1216,18 @@ params.param.fermact.path));
 
 	if( do_LocalPion_vary ) {
 	  compute_vary_ps(quark_propagator_Lsink_Lsrc,
+			  quark_propagator_Fsink_Lsrc,
+			  quark_propagator_Lsink_Fsrc,
+			  quark_propagator_Fsink_Fsrc,
+			  u, gauge_shift, sym_shift,
+			  xml_out,j_decay,
+			  t_length,t_source);
+	}
+
+
+
+	if( do_LocalScalar_vary ) {
+	  compute_vary_scalar(quark_propagator_Lsink_Lsrc,
 			  quark_propagator_Fsink_Lsrc,
 			  quark_propagator_Lsink_Fsrc,
 			  quark_propagator_Fsink_Fsrc,

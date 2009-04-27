@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.9 2008-06-27 09:34:19 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 3.10 2009-04-27 10:16:11 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -44,6 +44,7 @@ namespace Chroma
       bool Baryon_local;                // Baryons spectroscopy
       bool Baryon_vary;                 // Baryons spectroscopy variational
       bool LocalPion_vary;              // local pion spectroscopy variational
+      bool LocalScalar_vary;              // local pion spectroscopy variational
       bool disconnected_local ;         // disconnected loops local
       bool disconnected_fuzz  ;         // disconnected loops fuzz
       bool ps4link_singlet_conn ;  
