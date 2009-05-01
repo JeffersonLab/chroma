@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dslash_w.h,v 3.6 2009-04-17 20:44:43 bjoo Exp $
+// $Id: dslash_w.h,v 3.7 2009-05-01 15:03:02 bjoo Exp $
 /*! \file
  *  \brief Include possibly optimized Wilson dslash
  */
@@ -22,7 +22,7 @@
 // Dslash-es. Currently only optimised dslash is the SSE One;
 #ifdef BUILD_CPP_WILSON_DSLASH
 
-#warning "Using New Dslashen
+#warning "Using New Dslashen"
 
 #include "lwldslash_w_cppf.h"
 #include "lwldslash_w_cppd.h"
