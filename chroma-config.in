@@ -23,9 +23,19 @@ version="@VERSION@"
 
 extra_libs="-lqdp-lapack"
 sse_dslash_enabled="@SSE_DSLASH_ENABLED@"
+cpp_dslash_enabled="@CPP_DSLASH_ENABLED@"
+
 case $sse_dslash_enabled in
 yes)
 	extra_libs="$extra_libs -llevel3"
+	;;
+*)
+	;;
+esac
+
+case $cpp_dslash_enabled in 
+yes)
+	extra_libs="$extra_libs -ldslash"
 	;;
 *)
 	;;
