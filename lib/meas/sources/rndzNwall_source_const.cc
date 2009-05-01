@@ -1,4 +1,4 @@
-// $Id: rndzNwall_source_const.cc,v 1.2 2009-05-01 22:41:13 kostas Exp $
+// $Id: rndzNwall_source_const.cc,v 1.3 2009-05-01 22:52:02 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -151,7 +151,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Rand ZN Wall source" << endl;
+      QDPIO::cout << "Rand Z"<<params.N<<" Wall source" << endl;
 
       
       // Save current seed
