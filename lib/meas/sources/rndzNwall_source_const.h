@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: rndzNwall_source_const.h,v 1.1 2009-05-01 17:34:01 kostas Exp $
+// $Id: rndzNwall_source_const.h,v 1.2 2009-05-01 22:41:13 kostas Exp $
 /*! \file
  *  \brief Random Z2 wall source construction
  */
@@ -8,6 +8,7 @@
 #define __rndzNwall_source_const_h__
 
 #include "meas/sources/source_construction.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma
 {

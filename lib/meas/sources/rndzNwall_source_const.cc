@@ -1,9 +1,10 @@
-// $Id: rndzNwall_source_const.cc,v 1.1 2009-05-01 17:34:01 kostas Exp $
+// $Id: rndzNwall_source_const.cc,v 1.2 2009-05-01 22:41:13 kostas Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
 
 #include "chromabase.h"
+#include "handle.h"
 
 #include "meas/sources/source_const_factory.h"
 #include "meas/sources/rndzNwall_source_const.h"
@@ -208,8 +209,8 @@ namespace Chroma
 
 	  random(rnd);
 	  
-	  Real twopiN = Chroma::twopi / N;
-	  theta = twopiN * floor(N*rnd);
+	  Real twopiN = Chroma::twopi / params.N;
+	  theta = twopiN * floor(params.N*rnd);
 	  z = cmplx(cos(theta),sin(theta));
 	  
 	  

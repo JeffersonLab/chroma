@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.203 2009-04-26 20:36:17 mcneile Exp $
+# $Id: Makefile.am,v 3.204 2009-05-01 22:41:05 kostas Exp $
 #
 # Path for all files used in building the library
 
@@ -280,7 +280,8 @@ nobase_include_HEADERS = \
 	meas/sources/sf_wall_source_const.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
-	meas/sources/rndz2wall_source_const.h \
+	meas/sources/rndz2wall_source_const.h 
+	meas/sources/rndzNwall_source_const.h \
 	meas/sources/wall_source_const.h \
 	meas/sources/partwall_source_const.h \
 	meas/sources/source_const_aggregate.h \
@@ -1128,6 +1129,7 @@ libchroma_a_SOURCES = \
         meas/sources/dilutezN_source_const.cc \
         meas/sources/diluteGrid_source_const.cc \
         meas/sources/rndz2wall_source_const.cc \
+        meas/sources/rndzNwall_source_const.cc \
         meas/sources/wall_source_const.cc \
         meas/sources/partwall_source_const.cc \
 	meas/sources/source_const_aggregate.cc \
