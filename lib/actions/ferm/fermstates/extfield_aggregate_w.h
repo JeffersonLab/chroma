@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: extfield_aggregate_w.h,v 1.8 2008-02-18 20:45:17 kostas Exp $
+// $Id: extfield_aggregate_w.h,v 1.9 2009-05-04 17:11:50 caubin Exp $
 /*! \file
  *  \brief External field functions
  */
@@ -82,6 +82,7 @@ namespace Chroma
       int x_src   ; // source point fo e field
       Real Efield ; // The E field is E = (Efield)*x, so
 	  //this is the e field divided by the distance.
+      bool patch ;
     } ;
     //! Construct Linear Electric field (E = epsilon*x)
     /*!
@@ -93,6 +94,7 @@ namespace Chroma
       int x_dir ;
       int x_src   ; // source point fo e field
       Real Efield ;
+      bool patch ;
     public:
       //! Full constructor
       LinearElectricExternalField(LinearElectricParams p):t_dir(p.t_dir),

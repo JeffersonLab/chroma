@@ -1,4 +1,4 @@
-// $Id: extfield_aggregate_w.cc,v 1.10 2008-02-18 20:45:17 kostas Exp $
+// $Id: extfield_aggregate_w.cc,v 1.11 2009-05-04 17:11:50 caubin Exp $
 /*! \file
  *  \brief External field aggregate
  */
@@ -99,6 +99,10 @@ namespace Chroma
       read(paramtop, "x_dir",  param.x_dir);
       read(paramtop, "x_src",  param.x_src);
       read(paramtop, "Efield", param.Efield);
+      if(paramtop.count("patch") !=0 )
+        read(paramtop, "patch", param.patch);
+      else
+        param.patch = false ;
     }
   
   //! Writer
@@ -112,6 +116,7 @@ namespace Chroma
       write(xml, "x_dir",  param.x_dir);
       write(xml, "x_src",  param.x_src);
       write(xml, "Efield", param.Efield);
+      write(xml, "patch", param.patch);
       pop(xml);
     }
 
@@ -228,11 +233,21 @@ namespace Chroma
       START_CODE();
 	  
       LatticeComplex U ;
+      Real A0;
+      A0 = -(0.5)*Efield;
       if(mu==t_dir){
-	Real A0;
-	A0 = -(0.5)*Efield;
 	QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A0<<endl ;
-	LatticeReal E = A0*(Layout::latticeCoordinate(x_dir)-x_src)*(Layout::latticeCoordinate(x_dir)-x_src) ; 
+	// This line is -1/2 * Efield * (z-z0) * (z-z0-1) to get the correct E-field
+	LatticeReal E = A0*(Layout::latticeCoordinate(x_dir)-x_src)*(Layout::latticeCoordinate(x_dir)-x_src - 1) ; 
+	U = cmplx(cos(E),sin(E));
+	return U ;
+      }
+      if((mu==x_dir)&&(patch)){// do the patch for the e-field
+	LatticeBoolean XX = (Layout::latticeCoordinate(x_dir)==
+			     (Layout::lattSize()[x_dir] - 1) )  ;
+	LatticeReal E = -A0*XX*(Layout::lattSize()[x_dir]-1)*(Layout::lattSize()[x_dir]-2)*
+	  Layout::latticeCoordinate(t_dir)  ;
+	
 	U = cmplx(cos(E),sin(E));
 	return U ;
       }
