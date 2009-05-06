@@ -347,7 +347,7 @@ namespace Chroma {
     }
 
     if(((param.Baryon_vary)||(param.ps4link_singlet_conn_fuzz))||
-       ((param.disconnected_fuzz)||(param.LocalPion_vary) || LocalScalar_vary )){
+       ((param.disconnected_fuzz)||(param.LocalPion_vary) || param.LocalScalar_vary )){
       read(paramtop, "fuzz_width", param.fuzz_width);
     }else{
       param.fuzz_width = 0 ;
