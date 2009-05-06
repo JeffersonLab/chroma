@@ -2,7 +2,7 @@
 
 <spectrum_s>
 <annotation>
-; $Id: spectrum_s_HISQ.ini.xml,v 3.3 2008-06-27 09:48:28 mcneile Exp $
+; $Id: spectrum_s_HISQ.ini.xml,v 3.4 2009-05-06 15:56:46 mcneile Exp $
 ;
 ; SPECTRUM_S input file.
 ;
@@ -28,7 +28,7 @@
  <eight_scalars>true</eight_scalars>
  <eight_rhos>false</eight_rhos>
 <LocalPion_vary>true</LocalPion_vary>
-
+<Pion_nondegen_noisy_local>false</Pion_nondegen_noisy_local>
 <fuzz_width>2</fuzz_width>
  <disconnected_local>true</disconnected_local>
  <disconnected_fuzz>true</disconnected_fuzz>
