@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_spectrum_s.h,v 3.10 2009-04-27 10:16:11 mcneile Exp $
+// $Id: inline_spectrum_s.h,v 3.11 2009-05-06 12:06:39 mcneile Exp $
 /*! \file
  * \brief Inline staggered spectrum calculations
  *
@@ -40,11 +40,17 @@ namespace Chroma
       bool Meson_local;                 // Meson spectroscopy
       bool Meson_charm_local;           // Meson charm spectroscopy
       bool Meson_charm_noisy_local;           // Meson charm spectroscopy
+      bool Pion_nondegen_noisy_local;           // Non-degenerate spectroscopy
+	
+      bool Pion_nondegen_noisy_local2;           // Non-degenerate spectroscopy
+      bool Pion_nondegen_noisy_local3;           // Non-degenerate spectroscopy
+      bool Pion_nondegen_noisy_local4;           // Non-degenerate spectroscopy
+
       bool Wilson_loops;                  // Wilson loops for alpha_s
       bool Baryon_local;                // Baryons spectroscopy
       bool Baryon_vary;                 // Baryons spectroscopy variational
       bool LocalPion_vary;              // local pion spectroscopy variational
-      bool LocalScalar_vary;              // local pion spectroscopy variational
+      bool LocalScalar_vary;            // local scalar spectroscopy variational
       bool disconnected_local ;         // disconnected loops local
       bool disconnected_fuzz  ;         // disconnected loops fuzz
       bool ps4link_singlet_conn ;  
@@ -55,6 +61,12 @@ namespace Chroma
 
       // choose parameters 
       GroupXML_t fermact ;
+      GroupXML_t fermact2 ;
+
+      GroupXML_t fermact3 ;
+      GroupXML_t fermact4 ;
+      GroupXML_t fermact5 ;
+
 
       //Parameters for Gauge-fixing
       Real GFAccu;                      // Gauge fixing tolerance 
