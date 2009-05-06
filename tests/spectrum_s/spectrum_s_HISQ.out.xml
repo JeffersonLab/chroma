@@ -24,6 +24,10 @@
       <Meson_local>true</Meson_local>
       <Meson_charm_local>false</Meson_charm_local>
       <Meson_charm_noisy_local>true</Meson_charm_noisy_local>
+      <Pion_nondegen_noisy_local>false</Pion_nondegen_noisy_local>
+      <Pion_nondegen_noisy_local2>false</Pion_nondegen_noisy_local2>
+      <Pion_nondegen_noisy_local3>false</Pion_nondegen_noisy_local3>
+      <Pion_nondegen_noisy_local4>false</Pion_nondegen_noisy_local4>
       <Wilson_loops>false</Wilson_loops>
       <Baryon_local>true</Baryon_local>
       <Baryon_vary>true</Baryon_vary>
