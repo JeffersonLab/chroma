@@ -151,6 +151,15 @@ namespace Chroma {
 			 XMLWriter & xml_out,
 			 int j_decay, int tlength);
 
+  void ks_compute_baryon(string name,
+                         LatticeStaggeredPropagator & quark_propagator_a,
+                         LatticeStaggeredPropagator & quark_propagator_b,
+                         LatticeStaggeredPropagator & quark_propagator_c,
+                         XMLWriter & xml_out,
+                         int j_decay, int tlength,
+                         bool binary_baryon_dump, std::string binary_name);
+
+
   void write_smearing_info(string name, stag_src_type type_of_src,
 			   XMLWriter &xml_out, int fuzz_width ) ;
 
@@ -165,6 +174,22 @@ namespace Chroma {
 			     quark_propagator_Lsink_Fsrc,
 			     LatticeStaggeredPropagator & 
 			     quark_propagator_Fsink_Fsrc) ;
+
+
+  void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
+                             int j_decay, int t_len,
+                             LatticeStaggeredPropagator &
+                             quark_propagator_Lsink_Lsrc,
+                             LatticeStaggeredPropagator &
+                             quark_propagator_Fsink_Lsrc,
+                             LatticeStaggeredPropagator &
+                             quark_propagator_Lsink_Fsrc,
+                             LatticeStaggeredPropagator &
+                             quark_propagator_Fsink_Fsrc,
+                             bool binary_baryon_dump,
+                             std::string binary_name) ;
+
+
 
 
   int compute_singlet_ps(LatticeStaggeredFermion & psi,
@@ -1426,8 +1451,10 @@ params.param.fermact.path));
 	write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
 	pop(xml_out);
 	string b_tag("srcLLL_sinkLLL_nucleon") ;
+	string b_filename(params.param.binary_name+b_tag);
 	ks_compute_baryon(b_tag,stag_prop[0],stag_prop[0],stag_prop[0],
-			  xml_out, j_decay, t_length) ;
+			  xml_out, j_decay, t_length,
+			  params.param.binary_baryon_dump,b_filename) ;
 
 	pop(xml_out);
 	done_local_baryons = true;
@@ -1528,7 +1555,9 @@ params.param.fermact.path));
 				quark_propagator_Lsink_Lsrc,
 				quark_propagator_Fsink_Lsrc,
 				quark_propagator_Lsink_Fsrc,
-				quark_propagator_Fsink_Fsrc) ;
+				quark_propagator_Fsink_Fsrc,
+				params.param.binary_baryon_dump,
+				params.param.binary_name) ;
 
 	  done_local_baryons = true;
 	  done_fuzzed_baryons = true;
@@ -1606,7 +1635,9 @@ params.param.fermact.path));
 	  ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
 			    quark_propagator_Lsink_Lsrc,
 			    quark_propagator_Lsink_Lsrc,
-			    xml_out, j_decay, t_length) ;
+			    xml_out, j_decay, t_length,
+			    params.param.binary_baryon_dump,
+			    params.param.binary_name) ;
 
 	  pop(xml_out);
 	  done_local_baryons = true;
@@ -1699,7 +1730,9 @@ params.param.fermact.path));
 	pop(xml_out);
 	string b_tag("srcLLL_sinkLLL_nucleon") ;
 	ks_compute_baryon(b_tag,local_corner_prop, local_corner_prop,
-			  local_corner_prop, xml_out, j_decay, t_length) ;
+			  local_corner_prop, xml_out, j_decay, t_length,
+			  params.param.binary_baryon_dump,
+			  params.param.binary_name) ;
 
 	pop(xml_out);
 	done_local_baryons = true;
