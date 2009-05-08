@@ -297,13 +297,31 @@ namespace Chroma {
 
     param.binary_name = "dump_"  ; 
     param.binary_loop_checkpoint = false ;
+    param.binary_meson_dump = false ;
+    param.binary_baryon_dump = false ;
+
     if (paramtop.count("binary_loop_checkpoint") == 1){
-      read(paramtop, "binary_loop_checkpoint", param.binary_loop_checkpoint) ;
-      if( param.binary_loop_checkpoint )
+      read(paramtop, "binary_loop_checkpoint", 
+	   param.binary_loop_checkpoint) ;
+    }
+
+    if (paramtop.count("binary_meson_dump") == 1){
+      read(paramtop, "binary_meson_dump",
+           param.binary_meson_dump) ;
+    }
+
+    if (paramtop.count("binary_baryon_dump") == 1){
+      read(paramtop, "binary_baryon_dump",
+           param.binary_baryon_dump) ;
+    }
+
+      if( param.binary_loop_checkpoint || param.binary_baryon_dump  ||
+      param.binary_meson_dump )
 	{
 	  read(paramtop, "binary_name", param.binary_name) ;
 	}
-    }
+
+
 
 
     param.fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
@@ -1345,7 +1363,10 @@ params.param.fermact.path));
 	StopWatch swatch;
 	swatch.start();
 	compute_8_pions( stag_prop, u , gauge_shift, sym_shift,
-			 xml_out, j_decay, t_length, t_source);
+			 xml_out, j_decay, t_length, t_source,
+			 params.param.binary_meson_dump,
+			 params.param.binary_name);
+
 	swatch.stop();
 	double time_in_sec  = swatch.getTimeInSeconds();
 	QDPIO::cout << "PROF4:compute_8_pions " << time_in_sec << " sec" << endl;
@@ -1354,12 +1375,17 @@ params.param.fermact.path));
       if(do_8_scalars){
 	// do scalar stuff
 	compute_8_scalars( stag_prop, u,  gauge_shift, sym_shift,
-			   xml_out, j_decay, t_length, t_source);
+			   xml_out, j_decay, t_length, t_source,
+			   params.param.binary_meson_dump,
+			   params.param.binary_name);
+	
       }
       if(do_8_rhos){
 	// do vector stuff
 	compute_8_vectors( stag_prop, u,  gauge_shift, sym_shift,
-			   xml_out, j_decay, t_length, t_source);
+			   xml_out, j_decay, t_length, t_source,
+			   params.param.binary_meson_dump,
+			   params.param.binary_name);
       }
 
 
