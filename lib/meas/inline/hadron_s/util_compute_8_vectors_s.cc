@@ -1,4 +1,4 @@
-// $Id: util_compute_8_vectors_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: util_compute_8_vectors_s.cc,v 3.1 2009-05-08 10:15:40 mcneile Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -22,10 +22,11 @@ namespace Chroma {
 
 
   void compute_8_vectors(multi1d<LatticeStaggeredPropagator> & stag_prop,
-		       const multi1d<LatticeColorMatrix> & u , 
-		       bool gauge_shift, bool sym_shift,
-		       XMLWriter & xml_out,
-		       int j_decay, int t_length, int t_source){
+			 const multi1d<LatticeColorMatrix> & u ,
+			 bool gauge_shift, bool sym_shift,
+			 XMLWriter & xml_out,
+			 int j_decay, int t_length, int t_source,
+			 bool binary_meson_dump, std::string binary_name){
 
     Stag_shift_option type_of_shift;
 
@@ -48,18 +49,26 @@ namespace Chroma {
     vector_meson vector(t_length,  u, type_of_shift) ;
 
 
-    push(xml_out,"Vectors");
 
   // ---------- LL ----------
   vector.compute(stag_prop,j_decay);
 
-  push(xml_out, "Lsink_Lsrc");
-  vector.dump(t_source,xml_out);
-  pop(xml_out);
+  if(binary_meson_dump){
+
+    std::string tagged_filename_base;
+    tagged_filename_base=binary_name+"VT.LL.";
+    vector.binary_dump(t_source,tagged_filename_base);
+  }else{
+
+    push(xml_out,"Vectors");
+    push(xml_out, "Lsink_Lsrc");
+    vector.dump(t_source,xml_out);
+    pop(xml_out);
+    pop(xml_out); //Vectors
+  }
 
   // ------------------------
 
-  pop(xml_out); //Vectors
 
   QDPIO::cout << "Computed 8 basic vector mesons"  << endl;
 

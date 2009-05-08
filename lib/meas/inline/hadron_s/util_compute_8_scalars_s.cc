@@ -1,4 +1,4 @@
-// $Id: util_compute_8_scalars_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: util_compute_8_scalars_s.cc,v 3.1 2009-05-08 10:15:40 mcneile Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -22,10 +22,11 @@ namespace Chroma {
 
 
   void compute_8_scalars(multi1d<LatticeStaggeredPropagator> & stag_prop,
-		       const multi1d<LatticeColorMatrix> & u , 
-		       bool gauge_shift, bool sym_shift,
-		       XMLWriter & xml_out,
-		       int j_decay, int t_length, int t_source){
+			 const multi1d<LatticeColorMatrix> & u ,
+			 bool gauge_shift, bool sym_shift,
+			 XMLWriter & xml_out,
+			 int j_decay, int t_length, int t_source,
+			 bool binary_meson_dump, std::string binary_name){
 
     Stag_shift_option type_of_shift;
 
@@ -48,18 +49,28 @@ namespace Chroma {
     staggered_scalars scalar(t_length,  u, type_of_shift) ;
 
 
-    push(xml_out,"Scalars");
-
   // ---------- LL ----------
-  scalar.compute(stag_prop,j_decay);
+    scalar.compute(stag_prop,j_decay);
 
-  push(xml_out, "Lsink_Lsrc");
-  scalar.dump(t_source,xml_out);
-  pop(xml_out);
+    if(binary_meson_dump){
+
+      std::string tagged_filename_base;
+      tagged_filename_base=binary_name+"SC.LL.";
+      scalar.binary_dump(t_source,tagged_filename_base);
+    }else{
+
+      push(xml_out,"Scalars");
+
+      push(xml_out, "Lsink_Lsrc");
+      scalar.dump(t_source,xml_out);
+      pop(xml_out);
+
+      pop(xml_out); //Scalars
+
+    }
 
   // ------------------------
 
-  pop(xml_out); //Scalars
 
   QDPIO::cout << "Computed 8 basic scalars"  << endl;
 

@@ -1,4 +1,4 @@
-// $Id: util_compute_8_pions_s.cc,v 3.0 2006-04-03 04:59:03 edwards Exp $
+// $Id: util_compute_8_pions_s.cc,v 3.1 2009-05-08 10:15:40 mcneile Exp $
 /*! \file
  * \brief Wrapper code to compute staggered meson correlators.
  *
@@ -25,7 +25,8 @@ namespace Chroma {
 		       const multi1d<LatticeColorMatrix> & u , 
 		       bool gauge_shift, bool sym_shift,
 		       XMLWriter & xml_out,
-		       int j_decay, int t_length, int t_source){
+		       int j_decay, int t_length, int t_source,
+		       bool binary_meson_dump, std::string binary_name){
 
     Stag_shift_option type_of_shift;
 
@@ -48,24 +49,35 @@ namespace Chroma {
     staggered_pions pseudoscalar(t_length,  u, type_of_shift) ;
 
 
-    push(xml_out,"Pseudoscalars");
 
   // ---------- LL ----------
-  pseudoscalar.compute(stag_prop,j_decay);
+    pseudoscalar.compute(stag_prop,j_decay);
 
-  push(xml_out, "Lsink_Lsrc");
-  pseudoscalar.dump(t_source,xml_out);
-  pop(xml_out);  // Lsink_Lsrc
+
+    if(binary_meson_dump){
+
+      std::string tagged_filename_base;
+      tagged_filename_base=binary_name+"PS.LL.";
+      pseudoscalar.binary_dump(t_source,tagged_filename_base);
+
+    }else{
+
+      push(xml_out,"Pseudoscalars");
+      push(xml_out, "Lsink_Lsrc");
+      pseudoscalar.dump(t_source,xml_out);
+      pop(xml_out);  // Lsink_Lsrc
+      pop(xml_out); //Pseudoscalars
+
+    }
 
   // -------------------------
 
-  pop(xml_out); //Pseudoscalars
 
 
-  QDPIO::cout << "Computed 8 basic pseudoscalars"  << endl;
+    QDPIO::cout << "Computed 8 basic pseudoscalars"  << endl;
 
 
-}
+  }
 
 
 
