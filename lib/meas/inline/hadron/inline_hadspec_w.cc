@@ -1,4 +1,4 @@
-// $Id: inline_hadspec_w.cc,v 3.15 2009-04-12 03:45:00 kostas Exp $
+// $Id: inline_hadspec_w.cc,v 3.16 2009-05-12 04:09:56 kostas Exp $
 /*! \file
  * \brief Inline construction of hadron spectrum
  *
@@ -537,6 +537,8 @@ namespace Chroma
       else if (all_sinks.sink_prop_1.source_type == "WALL_SOURCE")
 	src_type = "Wall";
       else if (all_sinks.sink_prop_1.source_type == "SF_WALL_SOURCE")
+	src_type = "Wall";
+      else if (all_sinks.sink_prop_1.source_type == "RAND_ZN_WALL_SOURCE")
 	src_type = "Wall";
       else
       {
