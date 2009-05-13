@@ -1,4 +1,4 @@
-// $Id: gauge_startup.cc,v 3.4 2009-05-13 03:32:32 edwards Exp $
+// $Id: gauge_startup.cc,v 3.5 2009-05-13 13:12:19 edwards Exp $
 /*! \file
  *  \brief Initialize the gauge fields
  */
@@ -57,14 +57,8 @@ namespace Chroma
       break;
   
     case CFG_TYPE_MILC:
-    {
-      multi1d<LatticeColorMatrixF> uu;
-      readMILC(gauge_xml, uu, cfg.cfg_file);
-      u.resize(uu.size());
-      for(int mu=0; uu.size(); ++mu)
-        u[mu] = uu[mu];
-    }
-    break;
+      readMILC(gauge_xml, u, cfg.cfg_file);
+      break;
 
     case CFG_TYPE_CPPACS :
       readCPPACS(gauge_xml, u, cfg.cfg_file);

@@ -1,4 +1,4 @@
-// $Id: milc_gauge_init.cc,v 3.2 2009-05-13 03:26:09 edwards Exp $
+// $Id: milc_gauge_init.cc,v 3.3 2009-05-13 13:12:19 edwards Exp $
 /*! \file
  *  \brief Read a MILC config
  */
@@ -83,11 +83,7 @@ namespace Chroma
 			    XMLReader& gauge_xml,
 			    multi1d<LatticeColorMatrix>& u) const
     {
-      multi1d<LatticeColorMatrixF> uu;
-      readMILC(gauge_xml, uu, params.cfg_file);
-      u.resize(uu.size());
-      for(int mu=0; mu < uu.size(); ++mu)
-	u[mu] = uu[mu];
+      readMILC(gauge_xml, u, params.cfg_file);
     }
   }
 }

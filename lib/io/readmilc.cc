@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 3.2 2009-05-13 03:26:09 edwards Exp $
+// $Id: readmilc.cc,v 3.3 2009-05-13 13:12:19 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -139,6 +139,30 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg
   { 
     QDP_error_exit("Error in readMILC: %s",e.c_str());
   }
+
+  END_CODE();
+}
+
+//! Read a MILC configuration file
+/*!
+ * \ingroup io
+ *
+ * \param xml        xml reader holding config info ( Modify )
+ * \param u          gauge configuration ( Modify )
+ * \param cfg_file   path ( Read )
+ */    
+
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const string& cfg_file)
+{
+  START_CODE();
+
+  // MILC configs only in single-prec, 
+  multi1d<LatticeColorMatrixF> uu;
+  readMILC(xml, uu, cfg_file);
+
+  u.resize(uu.size());
+  for(int mu=0; uu.size(); ++mu)
+    u[mu] = uu[mu];
 
   END_CODE();
 }
