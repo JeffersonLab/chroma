@@ -1,4 +1,4 @@
-// $Id: readmilc.cc,v 3.1 2007-06-10 14:40:23 edwards Exp $
+// $Id: readmilc.cc,v 3.2 2009-05-13 03:26:09 edwards Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -20,9 +20,11 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string& cfg_file)
 {
   START_CODE();
+
+  u.resize(Nd);
 
   BinaryFileReader cfg_in(cfg_file); // for now, cfg_io_location not used
 
@@ -115,7 +117,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg_file)
 {
   START_CODE();
 
