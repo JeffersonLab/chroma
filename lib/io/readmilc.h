@@ -1,4 +1,4 @@
-// $Id: readmilc.h,v 3.2 2009-05-13 13:12:19 edwards Exp $
+// $Id: readmilc.h,v 3.3 2009-05-14 20:11:31 bjoo Exp $
 
 /*! \file
  *  \brief Read a MILC gauge configuration written in the 1997 format
@@ -31,7 +31,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string& cfg_file);
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const string& cfg_file);
 
 //! Read a MILC gauge configuration written in the 1997 format
 /*!
@@ -42,7 +42,8 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixD>& u, const string& cfg_file);
+void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string& cfg_file);
+
 
 }  // end namespace Chroma
 
