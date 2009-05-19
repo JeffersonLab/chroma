@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_slic_linop_w.h,v 3.3 2007-10-09 03:06:51 edwards Exp $
+// $Id: eoprec_slic_linop_w.h,v 3.4 2009-05-19 20:07:33 edwards Exp $
 /*! \file
  *  \brief Even-odd preconditioned Clover fermion linear operator
  */
@@ -42,14 +42,13 @@ namespace Chroma
 
     //! Full constructor
     EvenOddPrecSLICLinOp(Handle< FermState<T,P,Q> > fs,
-			 const CloverFermActParams& param_) : slic_fs(fs)
-      {create(fs, param_);}
+			 const CloverFermActParams& param_);
 
     //! Destructor is automatic
     ~EvenOddPrecSLICLinOp() {}
 
     //! Return the fermion BC object for this linear operator
-    const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
+    const FermBC<T,P,Q>& getFermBC() const {return D_pl.getFermBC();}
 
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs,
@@ -110,9 +109,11 @@ namespace Chroma
 
   private:
     Handle< FermState<T,P,Q> > slic_fs;
-    Handle< FermState<T,P,Q> > thin_fs;
+    Handle< FermState<T,P,Q> > fs_pl;
+    Handle< FermState<T,P,Q> > fs_mn;
     CloverFermActParams param;
-    WilsonDslash D;
+    WilsonDslash D_pl;
+    WilsonDslash D_mn;
     CloverTerm   clov;
     CloverTerm   invclov;  // uggh, only needed for evenEvenLinOp
   };
