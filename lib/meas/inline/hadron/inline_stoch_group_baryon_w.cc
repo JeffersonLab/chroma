@@ -1,4 +1,4 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.27 2008-10-23 19:32:57 jbulava Exp $
+// $Id: inline_stoch_group_baryon_w.cc,v 1.28 2009-05-19 20:43:05 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -1686,9 +1686,12 @@ namespace Chroma
 	    }
 
 	    annih_oper.time_slices[0].t0 = participating_timeslices[t0];
-	    annih_oper.time_slices[0].orderings.resize(num_orderings);
+	    //annih_oper.time_slices[0].orderings.resize(num_orderings);
+	    annih_oper.time_slices[0].orderings.resize(1);
 
-	    for(int ord = 0 ; ord < num_orderings ; ++ord)
+
+			int ord = 0;
+	    //for(int ord = 0 ; ord < num_orderings ; ++ord)
 	    {
 	      QDPIO::cout << "Ordering = " << ord << endl;
 
