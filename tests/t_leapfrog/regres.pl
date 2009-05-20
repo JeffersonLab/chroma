@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.23 2009-04-22 00:08:19 bjoo Exp $
+#  $Id: regres.pl,v 3.24 2009-05-20 19:07:09 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -9,14 +9,33 @@
 # and the good output that is tested against.
 #
 @regres_list = 
-    (     {
+    (  
+       {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-cg-lf-clover.ini.xml",
+	 log         => "t_leapfrog.prec_clover_stout-cg-lf-clover.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-cg-lf-clover.log.xml" ,
+     },
+
+       {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
 	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-richardson-multiprec.ini.xml",
 	 log         => "t_leapfrog.prec_clover_stout-richardson-multiprec.candidate.xml",
 	 metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
 	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-richardson-multiprec.log.xml" ,
+       },
+       {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-rel-bicgstab-multiprec.ini.xml",
+	 log         => "t_leapfrog.prec_clover_stout-rel-bicgstab-multiprec.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-rel-bicgstab-multiprec.log.xml" ,
      },
+
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" ,
          execute     => "t_leapfrog" ,
