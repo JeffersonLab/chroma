@@ -1,4 +1,4 @@
-// $Id: lwldslash_w_cppf.cc,v 3.2 2009-04-17 20:54:29 bjoo Exp $
+// $Id: lwldslash_w_cppf.cc,v 3.3 2009-05-20 19:28:11 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -142,7 +142,7 @@ namespace Chroma
    *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
    */
   void
-  CPPWilsonDslashF::apply (LatticeFermionF& chi, const LatticeFermionF& psi, 
+  CPPWilsonDslashF::apply (T& chi, const T& psi, 
 			  enum PlusMinus isign, int cb) const
   {
     START_CODE();

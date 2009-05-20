@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w_cppd.h,v 3.1 2009-04-17 20:44:43 bjoo Exp $
+// $Id: lwldslash_w_cppd.h,v 3.2 2009-05-20 19:28:11 bjoo Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -98,7 +98,7 @@ namespace Chroma
      *
      * \return The output of applying dslash on psi
      */
-    void apply(LatticeFermionD& chi, const LatticeFermionD& psi, 
+    void apply(T& chi, const T& psi, 
 	       enum PlusMinus isign, int cb) const;
 
     //! Return the fermion BC object for this linear operator
