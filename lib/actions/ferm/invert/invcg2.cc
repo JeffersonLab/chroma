@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 3.5 2009-02-13 20:17:15 bjoo Exp $
+// $Id: invcg2.cc,v 3.6 2009-05-20 20:19:14 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -68,12 +68,12 @@ namespace Chroma
    *  2 A + 2 Nc Ns + N_Count ( 2 A + 10 Nc Ns )
    */
 
-  template<typename T, typename C>
+  template<typename T, typename RT>
   SystemSolverResults_t 
-  InvCG2_a(const C& M,
+  InvCG2_a(const LinearOperator<T>& M,
 	   const T& chi,
 	   T& psi,
-	   const Real& RsdCG, 
+	   const RT& RsdCG, 
 	   int MaxCG)
   {
     START_CODE();
@@ -98,14 +98,14 @@ namespace Chroma
     swatch.start();
 
 //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
-    Real chi_sq =  Real(norm2(chi_internal,s));
+    Double chi_sq =  norm2(chi_internal,s);
     flopcount.addSiteFlops(4*Nc*Ns,s);
 
 #if 0
     QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
 #endif
 
-    Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
+    Double rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
     //                                            +
     //  r[0]  :=  Chi - A . Psi[0]    where  A = M  . M
@@ -146,8 +146,8 @@ namespace Chroma
     //
     //  FOR k FROM 1 TO MaxCG DO
     //
-    Real a, b;
-    Double c, d;
+
+    Double a, b, c, d;
   
     for(int k = 1; k <= MaxCG; ++k)
     {
@@ -169,15 +169,19 @@ namespace Chroma
       M(mmp, mp, MINUS);
       flopcount.addFlops(M.nFlops());
 
-      a = Real(c)/Real(d);
+ 
+      a = c/d;
 
-      r[s] -= a * mmp;
+      RT ar = a;
+
+      r[s] -= ar * mmp;
       flopcount.addSiteFlops(4*Nc*Ns, s);
+
       //  cp  =  | r[k] |**2
       cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
 
       //  Psi[k] += a[k] p[k]
-      psi[s] += a * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
+      psi[s] += ar * p;    flopcount.addSiteFlops(4*Nc*Ns,s);
 
 
 
@@ -208,10 +212,11 @@ namespace Chroma
       }
 
       //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
-      b = Real(cp) / Real(c);
+      b = cp / c;
+      RT br = b;
 
       //  p[k+1] := r[k] + b[k+1] p[k]
-      p[s] = r + b*p;    flopcount.addSiteFlops(4*Nc*Ns,s);
+      p[s] = r + br*p;    flopcount.addSiteFlops(4*Nc*Ns,s);
     }
     res.n_count = MaxCG;
     res.resid   = sqrt(cp);
@@ -240,7 +245,7 @@ namespace Chroma
 #ifdef PAT
     int ierr = PAT_region_begin(20, "InvCG2Single");
 #endif
-    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+    return InvCG2_a<LatticeFermionF,RealF>(M, chi, psi, RsdCG, MaxCG);
 #ifdef PAT
     ierr = PAT_region_end(20);
 #endif
@@ -258,7 +263,7 @@ namespace Chroma
 #ifdef PAT
     int ierr=PAT_region_begin(21, "InvCG2Double");
 #endif
-    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+    return InvCG2_a<LatticeFermionD, RealD>(M, chi, psi, RsdCG, MaxCG);
 #ifdef PAT
     ierr= PAT_region_end(21);
 #endif
@@ -272,7 +277,7 @@ namespace Chroma
 	 const Real& RsdCG, 
 	 int MaxCG)
   {
-    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+    return InvCG2_a<LatticeStaggeredFermionF,RealF>(M, chi, psi, RsdCG, MaxCG);
   }
 
   // Double precision
@@ -283,7 +288,7 @@ namespace Chroma
 	 const Real& RsdCG, 
 	 int MaxCG)
   {
-    return InvCG2_a(M, chi, psi, RsdCG, MaxCG);
+    return InvCG2_a<LatticeStaggeredFermionD,RealD>(M, chi, psi, RsdCG, MaxCG);
   }
 
 }  // end namespace Chroma
