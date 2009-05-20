@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.1 2009-05-20 15:25:51 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.2 2009-05-20 18:22:34 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -26,19 +26,22 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   bool convP = false;
 
   // First get r = r0 = chi - A psi
-  T r;
+  TF r;
   T b; 
+  T r_dble;
+  T x_dble;
+
   b[s] = chi;
   {
     T tmp;
     A(tmp, psi, isign);
     b[s] -= tmp;
   }
-  T x; x[s]=zero;
+  TF x; x[s]=zero;
  
   // now work out r= chi - Apsi = chi - r0
   r[s] = b; 
-  T r0; r0[s] = b;
+  TF r0; r0[s] = b;
 
   Double b_sq = norm2(b,s);
   Double r_sq = b_sq;
@@ -53,14 +56,14 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
 
   // Now initialise v = p = 0
-  T p;
-  T v;
+  TF p;
+  TF v;
 
   p[s] = zero;
   v[s] = zero;
 
-  T tmp;
-  T t;
+  TF tmp;
+  TF t;
 
 
   DComplex rho, rho_prev, alpha, omega;
@@ -95,6 +98,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     }
 
     // v = Ap
+#if 0
     { 
       TF vf; 
       TF pf;
@@ -102,6 +106,9 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       AF(vf,pf,isign);
       v[s] = vf;
     }
+#else
+    AF(v,p,isign);
+#endif
 
     // alpha = rho_{k+1} / < r_0 | v >
     // put <r_0 | v > into tmp
@@ -122,6 +129,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     r[s]  -=  alpha*v;
     
     // t = As  = Ar 
+#if 0
     { 
       TF tf;
       TF rf;
@@ -131,6 +139,9 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     
       t[s]=tf;
     }
+#else
+    AF(t,r,isign);
+#endif
 
     // omega = < t | s > / < t | t > = < t | r > / norm2(t);
 
@@ -168,20 +179,24 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       
       {
 	T tmp2;
-	A(tmp2, x, isign); // Use full solution so far
+	x_dble[s] = x;
 
-	r[s] = b - tmp2;     // new R = b - Ax
+	A(tmp2, x_dble, isign); // Use full solution so far
+	r_dble[s] = b - tmp2;
+
+	r[s] = r_dble;     // new R = b - Ax
+	r_sq = norm2(r_dble,s);
       }
-      r_sq = norm2(r,s);
       rNorm = sqrt(r_sq);
       maxrr = rNorm;
 	
       
       if( updateX ) { 
 	//QDPIO::cout << "Iter " << k << ": updating x " << endl;
-	psi[s] += x; // Add on group accumulated solution in y
+	if( ! updateR ) { x_dble[s]=x; } // if updateR then this is done already
+	psi[s] += x_dble; // Add on group accumulated solution in y
 	x[s] = zero; // zero y
-	b[s] = r;
+	b[s] = r_dble;
 	r0Norm = rNorm;
 	maxrx = rNorm;
       }
@@ -197,9 +212,9 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       // if updateX true, then we have just updated psi
       // strictly x[s] should be zero, so it should be OK to add it
       // but why do the work if you don't need to
-      if( !updateX ) { 
-	psi[s]+=x;
-      }
+      x_dble[s] = x;
+      psi[s]+=x_dble;
+      
 
       ret.resid = rNorm;
       ret.n_count = k;

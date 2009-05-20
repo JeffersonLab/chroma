@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.2 2009-05-20 18:22:34 bjoo Exp $
+// $Id: syssolver_mdagm_cg_lf_clover.h,v 3.1 2009-05-20 18:22:34 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
 
-#ifndef __syssolver_mdagm_rel_bicgstab_multiprec_h__
-#define __syssolver_mdagm_rel_bicgstab_multiprec_h__
+#ifndef __syssolver_mdagm_cg_lf_clover_h__
+#define __syssolver_mdadm_cg_lf_clover_h__
 #include "chroma_config.h"
 
 #include "handle.h"
@@ -15,11 +15,11 @@
 #include "lmdagm.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/syssolver_mdagm.h"
-#include "actions/ferm/invert/reliable_bicgstab.h"
 #include "actions/ferm/invert/syssolver_mdagm_factory.h"
-#include "actions/ferm/invert/syssolver_rel_bicgstab_clover_params.h"
+#include "actions/ferm/invert/syssolver_cg_clover_params.h"
 #include "actions/ferm/linop/eoprec_clover_dumb_linop_w.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
+#include "actions/ferm/invert/invcg2.h"
 
 #include <string>
 using namespace std;
@@ -28,7 +28,7 @@ namespace Chroma
 {
 
   //! Richardson system solver namespace
-  namespace MdagMSysSolverReliableBiCGStabCloverEnv
+  namespace MdagMSysSolverCGLFCloverEnv
   {
     //! Register the syssolver
     bool registerAll();
@@ -36,12 +36,11 @@ namespace Chroma
 
 
 
-  //! Solve a system using Richardson iteration.
+  //! Solve a system using CG iteration.
   /*! \ingroup invert
- *** WARNING THIS SOLVER WORKS FOR CLOVER FERMIONS ONLY ***
    */
  
-  class MdagMSysSolverReliableBiCGStabClover : public MdagMSystemSolver<LatticeFermion>
+  class MdagMSysSolverCGLFClover : public MdagMSystemSolver<LatticeFermion>
   {
   public:
     typedef LatticeFermion T;
@@ -61,20 +60,18 @@ namespace Chroma
      * \param M_        Linear operator ( Read )
      * \param invParam  inverter parameters ( Read )
      */
-    MdagMSysSolverReliableBiCGStabClover(Handle< LinearOperator<T> > A_,
-					 Handle< FermState<T,Q,Q> > state_,
-					 const SysSolverReliableBiCGStabCloverParams& invParam_) : 
+    MdagMSysSolverCGLFClover(Handle< LinearOperator<T> > A_,
+			     Handle< FermState<T,Q,Q> > state_,
+			   const SysSolverCGCloverParams& invParam_) : 
       A(A_), invParam(invParam_) 
     {
 
       // Get the Links out of the state and convertto single.
       QF links_single; links_single.resize(Nd);
-      QD links_double; links_double.resize(Nd);
 
       const Q& links = state_->getLinks();
       for(int mu=0; mu < Nd; mu++) { 
 	links_single[mu] = links[mu];
-	links_double[mu] = links[mu];
       }
 
       
@@ -82,18 +79,14 @@ namespace Chroma
       // with gaugeBCs applied... 
       // Now I need to create a single prec state...
       fstate_single = new PeriodicFermState<TF,QF,QF>(links_single);
-      fstate_double = new PeriodicFermState<TD,QD,QD>(links_double);
 
       // Make single precision M
       M_single= new EvenOddPrecDumbCloverFLinOp( fstate_single, invParam_.clovParams );
-      M_double= new EvenOddPrecDumbCloverDLinOp( fstate_double, invParam_.clovParams );
-
-      
 					     
     }
 
     //! Destructor is automatic
-    ~MdagMSysSolverReliableBiCGStabClover() {}
+    ~MdagMSysSolverCGLFClover() {}
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
@@ -106,70 +99,37 @@ namespace Chroma
      */
     SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
-      SystemSolverResults_t res,res1,res2;
+      SystemSolverResults_t res;
 
       START_CODE();
       StopWatch swatch;
       swatch.start();
-      const Subset& s = (*M_double).subset();
-      //    T MdagChi;
 
-      // This is a CGNE. So create new RHS
-      //      (*A)(MdagChi, chi, MINUS);
-      // Handle< LinearOperator<T> > MM(new MdagMLinOp<T>(A));
+      TF psi_f = psi;
+      TF chi_f = chi;
 
-      TD psi_d; psi_d[s] = psi;
-      TD chi_d; chi_d[s] = chi;
+      res = InvCG2( (*M_single), 
+		    chi_f,
+		    psi_f,
+		    invParam.RsdCG,
+		    invParam.MaxCG);
       
-
-      // Two Step BiCGStab:
-      // Step 1:  M^\dagger Y = chi;
-
-      res1=InvBiCGStabReliable(*M_double,
-			       *M_single,
-			       chi_d,
-			       psi_d,
-			       invParam.RsdTarget,
-			       invParam.Delta,
-			       invParam.MaxIter,
-			       MINUS);
-      
-      // Now Y =defn= psi_d = ( M^\dag )^{-1} chi
-      // Step 2: M X = Y
-
-      // Don't copy just use psi_d = Y as the source
-      // and reuse chi_d as the result
-      chi_d[s]=psi;
-      res2=InvBiCGStabReliable(*M_double,
-			       *M_single,
-			       psi_d,
-			       chi_d,
-			       invParam.RsdTarget,
-			       invParam.Delta,
-			       invParam.MaxIter,
-			       PLUS);
-      
-      
-      psi[s] = chi_d;
-
+      psi = psi_f;
       swatch.stop();
       double time = swatch.getTimeInSeconds();
-
       { 
 	T r;
 	r[A->subset()]=chi;
-	T tmp,tmp2;
-	// M^\dag M
+	T tmp, tmp1;
 	(*A)(tmp, psi, PLUS);
-	(*A)(tmp2,tmp, MINUS);
-	r[A->subset()] -= tmp2;
-	res.n_count = res1.n_count + res2.n_count;
+	(*A)(tmp1, tmp, MINUS);
+	r[A->subset()] -= tmp1;
 	res.resid = sqrt(norm2(r, A->subset())/norm2(chi, A->subset()));
       }
-      QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
-      QDPIO::cout << "RELIABLE_BICTSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
-   
-      
+
+      QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER_TIME: "<<time<< " sec" << endl;
+
       END_CODE();
       return res;
     }
@@ -177,15 +137,15 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    MdagMSysSolverReliableBiCGStabClover() {}
+    MdagMSysSolverCGLFClover() {}
     Handle< LinearOperator<T> > A;
-    const SysSolverReliableBiCGStabCloverParams invParam;
+    const SysSolverCGCloverParams invParam;
 
     // Created and initialized here.
     Handle< FermState<TF, QF, QF> > fstate_single;
-    Handle< FermState<TD, QD, QD> > fstate_double;
     Handle< LinearOperator<TF> > M_single;
-    Handle< LinearOperator<TD> > M_double;
+
+
   };
 
 
