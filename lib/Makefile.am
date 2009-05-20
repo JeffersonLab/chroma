@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.205 2009-05-20 15:27:24 bjoo Exp $
+# $Id: Makefile.am,v 3.206 2009-05-20 19:15:20 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -79,6 +79,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_cg_params.h \
 	actions/ferm/invert/syssolver_richardson_clover_params.h \
 	actions/ferm/invert/syssolver_rel_bicgstab_clover_params.h \
+	actions/ferm/invert/syssolver_cg_clover_params.h \
 	actions/ferm/invert/syssolver_mr_params.h \
 	actions/ferm/invert/syssolver_bicgstab_params.h \
 	actions/ferm/invert/syssolver_eigcg_params.h \
@@ -101,6 +102,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h \
+	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
 	actions/ferm/invert/multi_syssolver_mr_params.h \
 	actions/ferm/invert/multi_syssolver_linop.h \
@@ -970,6 +972,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mr_params.cc \
 	actions/ferm/invert/syssolver_richardson_clover_params.cc \
 	actions/ferm/invert/syssolver_rel_bicgstab_clover_params.cc \
+	actions/ferm/invert/syssolver_cg_clover_params.cc \
 	actions/ferm/invert/syssolver_bicgstab_params.cc \
 	actions/ferm/invert/syssolver_eigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
@@ -986,6 +989,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \

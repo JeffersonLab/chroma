@@ -1,3 +1,7 @@
+20/05/2009 - Balint Joo
+	Added Multi-Prec BiCGStab Solver (LinOp & MdagM) (Clover Only)
+	Added Internally Single Precision CG Solver (MdagM only,Clover Only)
+
 21/04/2009 - Balint Joo
 	Version 3.34.0
 	Added regression support for multiprec clover in propagator and t_leapfrog
