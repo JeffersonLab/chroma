@@ -672,9 +672,9 @@ void initOp (BaryonOperator_t &oper , const BaryonOperator_t &elem_oper )
 	}//ijk
 	}//t_0
 
-*/
 }//p
 
+*/
 
 } //void
 
@@ -1416,6 +1416,7 @@ int main(int argc, char **argv)
 
 					QDPIO::cout<< "Making Source Baryon Op: " << source.id << " t0 = " << t0 << endl;
 
+					ElementalOpKey_t elOpKey;					
 					elOpKey.op = final_ops[l].term[0].op;
 
 					const BaryonOperator_t & elem_source = el_op_maps.getSourceOp(elOpKey, i, t0 );
@@ -1428,7 +1429,7 @@ int main(int argc, char **argv)
 
 					source.time_slices[0].orderings.resize(nord);
 
-					int ndil_final = params.param.red_dils_l.size();
+					int ndil_final = input.param.red_dils_l.size();
 
 					for (int ord = 0 ; ord < nord ; ++ord)
 					{
@@ -1443,9 +1444,9 @@ int main(int argc, char **argv)
 								for (int d3 = 0 ; d3 < ndil_final ; ++d3)
 								{
 
-									const multi1d<int>& dilarr1 = params.param.red_dils_l[d1];
-									const multi1d<int>& dilarr2 = params.param.red_dils_l[d2];
-									const multi1d<int>& dilarr3 = params.param.red_dils_l[d3];
+									const multi1d<int>& dilarr1 = input.param.red_dils_l[d1].dil;
+									const multi1d<int>& dilarr2 = input.param.red_dils_l[d2].dil;
+									const multi1d<int>& dilarr3 = input.param.red_dils_l[d3].dil;
 
 									int nmom = elem_source.time_slices[0].orderings[ord].dilutions(0,
 											0,0).mom_projs.size(); 
@@ -1454,7 +1455,7 @@ int main(int argc, char **argv)
 											d2,d3).mom_projs.resize(nmom);
 
 
-									for int (mom = 0 ; mom < nmom ++mom)
+									for (int mom = 0 ; mom < nmom; ++mom)
 									{
 										source.time_slices[0].orderings[ord].dilutions(d1,
 												d2,d3).mom_projs[mom].mom = 
@@ -1472,7 +1473,7 @@ int main(int argc, char **argv)
 
 									for (int n1 = 0 ; n1 < dilarr1.size() ; ++n1)
 										for (int n2 = 0 ; n2 < dilarr2.size() ; ++n2)
-											for (int n3 = 0 ; n3 < dilarr3.size() ;  ndil_final ; ++n3)
+											for (int n3 = 0 ; n3 < dilarr3.size() ; ++n3)
 											{
 												const int& r1 = dilarr1[n1];
 												const int& r2 = dilarr2[n2];
@@ -1481,10 +1482,8 @@ int main(int argc, char **argv)
 												for (int mom = 0 ; mom < nmom ; ++mom)
 												{
 
-													source.time_slices[0].orderings[ord].dilutions(d1,
-															d2,d3).mom_projs[mom].op[0] += 
-														elem_source.time_slices[0].orderings[ord].dilutions(r1,
-																r2,r3).mom_projs[mom].op;
+													source.time_slices[0].orderings[ord].dilutions(d1,d2,d3).mom_projs[mom].op[0] += 
+														elem_source.time_slices[0].orderings[ord].dilutions(r1,r2,r3).mom_projs[mom].op[0];
 												}
 
 											} //n1, n2 , n3
@@ -1575,7 +1574,7 @@ int main(int argc, char **argv)
 						
 							sink.time_slices[0].orderings.resize(nord);
 
-						int ndil_final = params.param.red_dils_l.size();
+						int ndil_final = input.param.red_dils_l.size();
 
 
 						for (int ord = 0 ; ord < nord ; ++ord)
@@ -1584,16 +1583,16 @@ int main(int argc, char **argv)
 						ndil_final, ndil_final);
 
 				sink.time_slices[0].orderings[ord].perm = 
-					elem_sink.time_slices[t].orderings[ord].perm; 
+					elem_sink.time_slices[0].orderings[ord].perm; 
 			
 				for (int d1 = 0 ; d1 < ndil_final ; ++d1)
 					for (int d2 = 0 ; d2 < ndil_final ; ++d2)
 						for (int d3 = 0 ; d3 < ndil_final ; ++d3)
 						{
 
-							const multi1d<int>& dilarr1 = params.param.red_dils_l[d1];
-							const multi1d<int>& dilarr2 = params.param.red_dils_l[d2];
-							const multi1d<int>& dilarr3 = params.param.red_dils_l[d3];
+							const multi1d<int>& dilarr1 = input.param.red_dils_l[d1].dil;
+							const multi1d<int>& dilarr2 = input.param.red_dils_l[d2].dil;
+							const multi1d<int>& dilarr3 = input.param.red_dils_l[d3].dil;
 	 
 							int nmom = elem_sink.time_slices[0].orderings[ord].dilutions(0,
 									0,0).mom_projs.size(); 
@@ -1602,7 +1601,7 @@ int main(int argc, char **argv)
 									d2,d3).mom_projs.resize(nmom);
 
 
-							for int (mom = 0 ; mom < nmom ++mom)
+							for ( int mom = 0 ; mom < nmom; ++mom)
 							{
 								sink.time_slices[0].orderings[ord].dilutions(d1,
 									d2,d3).mom_projs[mom].mom = 
@@ -1621,7 +1620,7 @@ int main(int argc, char **argv)
 							}
 								for (int n1 = 0 ; n1 < dilarr1.size() ; ++n1)
 					for (int n2 = 0 ; n2 < dilarr2.size() ; ++n2)
-						for (int n3 = 0 ; n3 < dilarr3.size() ;  ndil_final ; ++n3)
+						for (int n3 = 0 ; n3 < dilarr3.size() ; ++n3)
 						{
 							const int& r1 = dilarr1[n1];
 							const int& r2 = dilarr2[n2];
