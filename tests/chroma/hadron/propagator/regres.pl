@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.12 2009-04-21 23:49:18 bjoo Exp $
+#  $Id: regres.pl,v 3.13 2009-05-20 15:24:02 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -225,7 +225,16 @@
 	 output      => "prec-clover-stout3d-richardson-multiprec.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-richardson-clover-multiprec.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-richardson-clover-multiprec.out.xml" ,
+     },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-bicgstab-clover-multiprec.ini.xml" , 
+	 output      => "prec-clover-stout3d-rel-bicgstab-multiprec.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-bicgstab-clover-multiprec.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-bicgstab-clover-multiprec.out.xml" ,
      }
+
 # Commented these out so they don't break nightlies. They work but need
 # time to be local...  Will fix later by mucking with the run script
 #    ,
