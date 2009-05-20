@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_aggregate.cc,v 3.7 2009-04-17 02:05:31 bjoo Exp $
+// $Id: syssolver_mdagm_aggregate.cc,v 3.8 2009-05-20 15:25:52 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -12,6 +12,7 @@
 #include "actions/ferm/invert/syssolver_mdagm_cg_array.h"
 #include "actions/ferm/invert/syssolver_mdagm_eigcg.h"
 #include "actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h"
+#include "actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h"
 
 namespace Chroma
 {
@@ -34,6 +35,7 @@ namespace Chroma
 	success &= MdagMSysSolverBiCGStabEnv::registerAll();
 	success &= MdagMSysSolverEigCGEnv::registerAll();
 	success &= MdagMSysSolverRichardsonCloverEnv::registerAll();
+	success &= MdagMSysSolverReliableBiCGStabCloverEnv::registerAll();
 	registered = true;
       }
       return success;
