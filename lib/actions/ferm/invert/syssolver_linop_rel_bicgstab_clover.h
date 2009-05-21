@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_rel_bicgstab_clover.h,v 3.1 2009-05-20 15:25:51 bjoo Exp $
+// $Id: syssolver_linop_rel_bicgstab_clover.h,v 3.2 2009-05-21 20:44:12 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -121,7 +121,7 @@ namespace Chroma
       TD psi_d = psi;
       TD chi_d = chi;
 
-      InvBiCGStabReliable(*M_double,
+      res=InvBiCGStabReliable(*M_double,
 			  *M_single,
 			  chi_d,
 			  psi_d,

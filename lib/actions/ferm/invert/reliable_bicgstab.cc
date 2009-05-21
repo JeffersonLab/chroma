@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.3 2009-05-21 19:32:22 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.4 2009-05-21 20:44:12 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -30,6 +30,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   T b; 
   T r_dble;
   T x_dble;
+  int k;
 
   StopWatch swatch;
   FlopCounter flopcount;
@@ -88,7 +89,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   omega = Double(1);
 
   // The iterations 
-  for(int k = 0; k <= MaxBiCGStab && !convP ; k++) { 
+  for(k = 0; k < MaxBiCGStab && !convP ; k++) { 
     
     // rho_{k+1} = < r_0 | r >
     if( k == 0 ) { 
@@ -217,9 +218,6 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       }
 
     }
-    // QDPIO::cout << "r_sq = " << r_sq << endl;
-
-    //    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
     if( toBool(r_sq < rsd_sq ) ) {
       
       convP = true;
@@ -230,10 +228,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       x_dble[s] = x;
       psi[s]+=x_dble;
       flopcount.addSiteFlops(2*Nc*Ns,s);
-
       ret.resid = rNorm;
       ret.n_count = k;
-
     }
     else { 
       convP = false;
@@ -243,12 +239,12 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
   }
   swatch.stop();
-
-  QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << endl;
-  flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
-
-  if ( ret.n_count == MaxBiCGStab ) { 
-    QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
+  if( k >= MaxBiCGStab ) {
+    QDPIO::cerr << "Nonconvergence of reliable BiCGStab. MaxIters = " << MaxBiCGStab << " exceeded" << endl;
+    QDP_abort(1);
+  }
+  else { 
+     flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
   }
 
   return ret;
