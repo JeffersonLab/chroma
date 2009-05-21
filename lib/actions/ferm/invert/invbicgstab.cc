@@ -1,4 +1,4 @@
-// $Id: invbicgstab.cc,v 3.3 2009-04-17 02:05:31 bjoo Exp $
+// $Id: invbicgstab.cc,v 3.4 2009-05-21 19:32:22 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,7 +8,7 @@
 
 namespace Chroma {
 
-template<typename T>
+  template<typename T, typename CR>
 SystemSolverResults_t
 InvBiCGStab_a(const LinearOperator<T>& A,
 	      const T& chi,
@@ -19,12 +19,20 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
 {
   SystemSolverResults_t ret;
-
+  StopWatch swatch;
+  FlopCounter flopcount;
+  flopcount.reset();
   const Subset& s = A.subset();
-
   bool convP = false;
-  Real chi_sq =  Real(norm2(chi,s));
-  Real rsd_sq =  RsdBiCGStab*RsdBiCGStab*chi_sq;
+
+  swatch.reset();
+  swatch.start();
+
+  Double chi_sq =  norm2(chi,s);
+  flopcount.addSiteFlops(4*Nc*Ns,s);
+
+
+  Double rsd_sq =  RsdBiCGStab*RsdBiCGStab*chi_sq;
 
   // First get r = r0 = chi - A psi
   T r;
@@ -32,9 +40,11 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
   // Get A psi, use r0 as a temporary
   A(r0, psi, isign);
+  flopcount.addFlops(A.nFlops());
 
   // now work out r= chi - Apsi = chi - r0
   r[s] = chi - r0;
+  flopcount.addSiteFlops(2*Nc*Ns,s);
 
   // Also copy back to r0. We are no longer in need of the
   // nth component
@@ -52,13 +62,13 @@ InvBiCGStab_a(const LinearOperator<T>& A,
   T tmp;
   T t;
 
-  Complex rho, rho_prev, alpha, omega;
+  ComplexD rho, rho_prev, alpha, omega;
 
   // rho_0 := alpha := omega = 1
   // Iterations start at k=1, so rho_0 is in rho_prev
-  rho_prev = Real(1);
-  alpha = Real(1);
-  omega = Real(1);
+  rho_prev = Double(1);
+  alpha = Double(1);
+  omega = Double(1);
 
   // The iterations 
   for(int k = 1; k <= MaxBiCGStab && !convP ; k++) { 
@@ -66,13 +76,14 @@ InvBiCGStab_a(const LinearOperator<T>& A,
     // rho_{k+1} = < r_0 | r >
     rho = innerProduct(r0,r,s);
 
+
     if( toBool( real(rho) == 0 ) && toBool( imag(rho) == 0 ) ) {
       QDPIO::cout << "BiCGStab breakdown: rho = 0" << endl;
       QDP_abort(1);
     }
 
     // beta = ( rho_{k+1}/rho_{k})(alpha/omega)
-    Complex beta;
+    ComplexD beta;
     beta = ( rho / rho_prev ) * (alpha/omega);
     
     // p = r + beta(p - omega v)
@@ -80,15 +91,20 @@ InvBiCGStab_a(const LinearOperator<T>& A,
     // first work out p - omega v 
     // into tmp
     // then do p = r + beta tmp
-    tmp[s] = p - omega*v;
-    p[s] = r + beta*tmp;
-    
+    CR omega_r = omega;
+    CR beta_r = beta;
+    tmp[s] = p - omega_r*v;
+    p[s] = r + beta_r*tmp;
+
+
     // v = Ap
     A(v,p,isign);
 
+
     // alpha = rho_{k+1} / < r_0 | v >
     // put <r_0 | v > into tmp
-    Complex ctmp = innerProduct(r0,v,s);
+    DComplex ctmp = innerProduct(r0,v,s);
+
 
     if( toBool( real(ctmp) == 0 ) && toBool( imag(ctmp) == 0 ) ) {
       QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
@@ -102,15 +118,18 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
     // s = r - alpha v
     // I can overlap s with r, because I recompute it at the end.
-    r[s]  -=  alpha*v;
-    
+    CR alpha_r = alpha;
+    r[s]  -=  alpha_r*v;
+
+
     // t = As  = Ar 
     A(t,r,isign);
-    
     // omega = < t | s > / < t | t > = < t | r > / norm2(t);
 
     // This does the full 5D norm
-    Real t_norm = norm2(t,s);
+    Double t_norm = norm2(t,s);
+
+
     if( toBool(t_norm == 0) ) { 
       QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << endl;
       QDP_abort(1);
@@ -125,16 +144,21 @@ InvBiCGStab_a(const LinearOperator<T>& A,
     //
     // use tmp to compute psi + omega r
     // then add in the alpha p
-    tmp[s] = psi + omega*r;
-    psi[s] = tmp + alpha*p;
+    omega_r = omega;
+    alpha_r = alpha;
+    tmp[s] = psi + omega_r*r;   
+    psi[s] = tmp + alpha_r*p;
+
 
 
     // r = s - omega t = r - omega t1G
-    Double r_norm;
-    
-    r[s] -= omega*t;
 
-    r_norm = norm2(r,s);
+    
+    r[s] -= omega_r*t;
+
+
+    Double r_norm = norm2(r,s);
+
 
     //    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
     if( toBool(r_norm < rsd_sq ) ) {
@@ -147,11 +171,29 @@ InvBiCGStab_a(const LinearOperator<T>& A,
       convP = false;
     }
 
+    //-------BiCGStab Flopcounting --------------------------------------
+    // flopcount.addSiteFlops(8*Nc*Ns,s);     // <r0|r>
+    // flopcount.addSiteFlops(16*Nc*Ns,s);    // p = r + beta p - beta_omega v
+    // flopcount.addSiteFlops(8*Nc*Ns,s);  //  <r0 | v>
+    // flopcount.addSiteFlops(8*Nc*Ns,s);  //  r -= alpha v
+    // flopcount.addSiteFlops(8*Nc*Ns, s); //  < t, r>
+    // flopcount.addSiteFlops(4*Nc*Ns, s); //  < t, t>     
+    // flopcount.addSiteFlops(16*Nc*Ns,s); // psi += omega r + alpha_p
+    // flopcount.addSiteFlops(8*Nc*Ns,s); // r -=omega t
+    // flopcount.addSiteFlops(4*Nc*Ns,s); // norm2(r)
+    // flopcount.addFlops(2*A.nFlops());  // = 80*Nc*Ns cbsite flops + 2*A
+    //----------------------------------------------------------------------
+    flopcount.addSiteFlops(80*Nc*Ns,s);
+    flopcount.addFlops(2*A.nFlops());
 
 
   }
+  
+  swatch.stop();
 
   QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << endl;
+  flopcount.report("invbicgstab", swatch.getTimeInSeconds());
+
   if ( ret.n_count == MaxBiCGStab ) { 
     QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
   }
@@ -171,7 +213,7 @@ InvBiCGStab(const LinearOperator<LatticeFermion>& A,
 	    enum PlusMinus isign)
 
 {
-  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeFermion, Complex>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
 }
 #endif
 
@@ -185,7 +227,7 @@ InvBiCGStab(const LinearOperator<LatticeFermionF>& A,
 	    enum PlusMinus isign)
 
 {
-  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeFermionF, ComplexF>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
 }
 
 template<>
@@ -198,7 +240,7 @@ InvBiCGStab(const LinearOperator<LatticeFermionD>& A,
 	    enum PlusMinus isign)
 
 {
-  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeFermionD, ComplexD>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
 }
 
 // Staggered
@@ -212,7 +254,7 @@ InvBiCGStab(const LinearOperator<LatticeStaggeredFermion>& A,
 	    enum PlusMinus isign)
 
 {
-  return InvBiCGStab_a(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeStaggeredFermion, Complex>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
 }
 
 }  // end namespace Chroma

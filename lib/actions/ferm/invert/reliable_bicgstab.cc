@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.2 2009-05-20 18:22:34 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.3 2009-05-21 19:32:22 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -8,7 +8,7 @@
 
 namespace Chroma {
 
-  template<typename T, typename TF>
+  template<typename T, typename TF, typename CF>
 SystemSolverResults_t
 RelInvBiCGStab_a(const LinearOperator<T>& A,
 	      const LinearOperator<TF>& AF,
@@ -31,12 +31,22 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   T r_dble;
   T x_dble;
 
+  StopWatch swatch;
+  FlopCounter flopcount;
+  flopcount.reset();
+  swatch.reset();
+  swatch.start();
+
+
   b[s] = chi;
   {
     T tmp;
     A(tmp, psi, isign);
     b[s] -= tmp;
+    flopcount.addFlops(A.nFlops());
+    flopcount.addSiteFlops(2*Nc*Ns,s);
   }
+
   TF x; x[s]=zero;
  
   // now work out r= chi - Apsi = chi - r0
@@ -44,6 +54,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   TF r0; r0[s] = b;
 
   Double b_sq = norm2(b,s);
+  flopcount.addSiteFlops(4*Nc*Ns,s);
+
   Double r_sq = b_sq;
   Double rsd_sq =  Double(RsdBiCGStab)*Double(RsdBiCGStab)*b_sq;
 
@@ -67,7 +79,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
 
   DComplex rho, rho_prev, alpha, omega;
-
+  CF rho_r, alpha_r, omega_r;
   // rho_0 := alpha := omega = 1
   // Iterations start at k=1, so rho_0 is in rho_prev
   rho = Double(1);
@@ -87,28 +99,22 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     }
     else { 
       DComplex beta =(rho / rho_prev) * (alpha/omega);
-    
+      CF beta_r = beta;
+      omega_r = omega;
       // p = r + beta(p - omega v)
 
       // first work out p - omega v 
       // into tmp
       // then do p = r + beta tmp
-      tmp[s] = p - omega*v;
-      p[s] = r + beta*tmp;
+
+      tmp[s] = p - omega_r*v;
+      p[s] = r + beta_r*tmp;
+
+
     }
 
     // v = Ap
-#if 0
-    { 
-      TF vf; 
-      TF pf;
-      pf[s] = p;
-      AF(vf,pf,isign);
-      v[s] = vf;
-    }
-#else
     AF(v,p,isign);
-#endif
 
     // alpha = rho_{k+1} / < r_0 | v >
     // put <r_0 | v > into tmp
@@ -126,28 +132,20 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
     // s = r - alpha v
     // I can overlap s with r, because I recompute it at the end.
-    r[s]  -=  alpha*v;
-    
-    // t = As  = Ar 
-#if 0
-    { 
-      TF tf;
-      TF rf;
-      rf[s] = r;
+    alpha_r = alpha;
+    r[s]  -=  alpha_r*v;
 
-      AF(tf,rf,isign);
-    
-      t[s]=tf;
-    }
-#else
+
+    // t = As  = Ar 
     AF(t,r,isign);
-#endif
+
 
     // omega = < t | s > / < t | t > = < t | r > / norm2(t);
 
     // This does the full 5D norm
     // accumulate <t | s > = <t | r> into omega
     Double t_norm = norm2(t,s);
+
     omega = innerProduct(t,r,s);
     omega /= t_norm;
 
@@ -156,16 +154,26 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     //
     // use tmp to compute psi + omega r
     // then add in the alpha p
-    tmp[s] = x + omega*r;
-    x[s] = tmp + alpha*p;
+    omega_r = omega;
+
+    tmp[s] = x + omega_r*r;
+    x[s] = tmp + alpha_r*p;
 
 
     // r = s - omega t = r - omega t1G
-    r[s] -= omega*t;
-
+    r[s] -= omega_r*t;
 
     r_sq = norm2(r,s);
+
+
     rho = innerProduct(r0,r,s);
+
+    // Flops so far: Standard BiCGStab Flops
+    // -----------------------------------------
+    flopcount.addSiteFlops(80*Nc*Ns,s);
+    flopcount.addFlops(2*A.nFlops());
+    // ------------------------------------------
+
     rNorm = sqrt(r_sq);
 
     if( toBool( rNorm > maxrx) ) maxrx = rNorm;
@@ -182,10 +190,15 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 	x_dble[s] = x;
 
 	A(tmp2, x_dble, isign); // Use full solution so far
+
 	r_dble[s] = b - tmp2;
 
 	r[s] = r_dble;     // new R = b - Ax
 	r_sq = norm2(r_dble,s);
+
+	flopcount.addSiteFlops(6*Nc*Ns,s);
+	flopcount.addFlops(A.nFlops());
+
       }
       rNorm = sqrt(r_sq);
       maxrr = rNorm;
@@ -195,6 +208,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 	//QDPIO::cout << "Iter " << k << ": updating x " << endl;
 	if( ! updateR ) { x_dble[s]=x; } // if updateR then this is done already
 	psi[s] += x_dble; // Add on group accumulated solution in y
+	flopcount.addSiteFlops(2*Nc*Ns,s);
+
 	x[s] = zero; // zero y
 	b[s] = r_dble;
 	r0Norm = rNorm;
@@ -214,7 +229,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       // but why do the work if you don't need to
       x_dble[s] = x;
       psi[s]+=x_dble;
-      
+      flopcount.addSiteFlops(2*Nc*Ns,s);
 
       ret.resid = rNorm;
       ret.n_count = k;
@@ -227,8 +242,11 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
 
   }
+  swatch.stop();
 
   QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << endl;
+  flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
+
   if ( ret.n_count == MaxBiCGStab ) { 
     QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
   }
@@ -251,7 +269,7 @@ InvBiCGStabReliable(const LinearOperator<LatticeFermionF>& A,
 		    enum PlusMinus isign)
 
 {
-  return RelInvBiCGStab_a<LatticeFermionF,LatticeFermionF>(A,A, chi, psi, RsdBiCGStab, Delta, MaxBiCGStab, isign);
+  return RelInvBiCGStab_a<LatticeFermionF,LatticeFermionF, ComplexF>(A,A, chi, psi, RsdBiCGStab, Delta, MaxBiCGStab, isign);
 }
 
   // Pure double
@@ -265,7 +283,7 @@ InvBiCGStabReliable(const LinearOperator<LatticeFermionD>& A,
 		    enum PlusMinus isign)
 
 {
-  return RelInvBiCGStab_a<LatticeFermionD, LatticeFermionD>(A,A, chi, psi, RsdBiCGStab, Delta, MaxBiCGStab, isign);
+  return RelInvBiCGStab_a<LatticeFermionD, LatticeFermionD, ComplexD>(A,A, chi, psi, RsdBiCGStab, Delta, MaxBiCGStab, isign);
 }
 
   // single double
@@ -280,7 +298,7 @@ InvBiCGStabReliable(const LinearOperator<LatticeFermionD>& A,
 		    enum PlusMinus isign)
 
 {
-  return RelInvBiCGStab_a<LatticeFermionD, LatticeFermionF>(A,AF, chi, psi, RsdBiCGStab, Delta, MaxBiCGStab, isign);
+  return RelInvBiCGStab_a<LatticeFermionD, LatticeFermionF, ComplexF>(A,AF, chi, psi, RsdBiCGStab, Delta, MaxBiCGStab, isign);
 }
 
 
