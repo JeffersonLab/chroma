@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: subset_vectors.h,v 1.1 2008-09-13 19:57:05 edwards Exp $
+// $Id: subset_vectors.h,v 1.2 2009-05-21 02:39:13 jbulava Exp $
 /*! \file
  *  \brief Holds of vectors and weights
  */
@@ -54,7 +54,7 @@ namespace Chroma
     int getNumVectors() const {return evectors.size();}
 
     //! Extent of decay direction
-    int getDecayExtent() const {return evectors.size();}
+    int getDecayExtent() const {return QDP::Layout::lattSize()[decay_dir];}
 
     //! Get decay direction
     int getDecayDir() const {return decay_dir;}
