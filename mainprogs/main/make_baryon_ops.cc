@@ -594,7 +594,7 @@ void initOp (BaryonOperator_t &oper , const BaryonOperator_t &elem_oper )
   oper.quark_smearing = elem_oper.quark_smearing;
   oper.link_smearing = elem_oper.link_smearing;
 
-  int Nord = elem_oper.perms.size();
+  int Nord = elem_oper.time_slices[0].orderings.size();
   int Nt = 1;
 
   oper.time_slices.resize(Nt);
@@ -653,7 +653,7 @@ void addTo(BaryonOperator_t &oper, const BaryonOperator_t &elem_oper,
 	   const DComplex& coeff)
 {
 
-  int Nord = elem_oper.perms.size();
+  int Nord = elem_oper.time_slices[0].orderings.size();
   int Nt = 1;
 
 

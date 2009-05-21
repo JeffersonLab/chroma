@@ -685,7 +685,7 @@ void addTo(BaryonOperator_t &oper, const BaryonOperator_t &elem_oper,
 		const DComplex& coeff)
 {
 
-	int Nord = elem_oper.perms.size();
+	int Nord = elem_oper.time_slices[0].orderings.size();
 	int Nt = 1;
 
 
@@ -1425,9 +1425,16 @@ int main(int argc, char **argv)
 
 					source.time_slices.resize(1);
 
+					source.time_slices[0].t0 = elem_source.time_slices[0].t0;
+
 					int nord = elem_source.time_slices[0].orderings.size();
 
-					source.time_slices[0].orderings.resize(nord);
+					cout << "Nord = " << nord << endl;
+
+						
+					cout << " Ndil = " << elem_source.time_slices[0].orderings[0].dilutions.size1()<< endl;
+					
+						source.time_slices[0].orderings.resize(nord);
 
 					int ndil_final = input.param.red_dils_l.size();
 
@@ -1484,6 +1491,13 @@ int main(int argc, char **argv)
 
 													source.time_slices[0].orderings[ord].dilutions(d1,d2,d3).mom_projs[mom].op[0] += 
 														elem_source.time_slices[0].orderings[ord].dilutions(r1,r2,r3).mom_projs[mom].op[0];
+											
+													/*
+												cout << "r1, r2, r3 = " << r1 << ", " << r2 << ", "
+													<< r3 << endl << "elem_source = " << 
+														elem_source.time_slices[0].orderings[ord].dilutions(r1,r2,r3).mom_projs[mom].op[0] << endl;
+											*/	
+												
 												}
 
 											} //n1, n2 , n3
@@ -1570,12 +1584,20 @@ int main(int argc, char **argv)
 
 						sink.time_slices.resize(1); 
 
+						sink.time_slices[0].t0 = elem_sink.time_slices[0].t0;
 						int nord = elem_sink.time_slices[0].orderings.size();
-						
+				
+						cout << " Ndil = " << elem_sink.time_slices[0].orderings[0].dilutions.size1()
+							<< endl; 
+						cout << " Nord = " << nord << endl;
+
 							sink.time_slices[0].orderings.resize(nord);
 
 						int ndil_final = input.param.red_dils_l.size();
 
+						cout << " NDil_final = " << ndil_final << endl;
+
+						cout << "Nt = " << Nt << endl;
 
 						for (int ord = 0 ; ord < nord ; ++ord)
 						{
@@ -1614,7 +1636,7 @@ int main(int argc, char **argv)
 								for (int t = 0 ; t < Nt ; ++t)
 								{
 								sink.time_slices[0].orderings[ord].dilutions(d1,
-									d2,d3).mom_projs[mom].op[0] = Real(0.0); 
+									d2,d3).mom_projs[mom].op[t] = Real(0.0); 
 								}
 
 							}
@@ -1636,6 +1658,16 @@ int main(int argc, char **argv)
 									d2,d3).mom_projs[mom].op[t] += 
 								elem_sink.time_slices[0].orderings[ord].dilutions(r1,
 									r2,r3).mom_projs[mom].op[t];
+								
+						
+								/*
+								cout << " t = " << t << endl;
+
+												cout << "r1, r2, r3 = " << r1 << ", " << r2 << ", "
+													<< r3 << endl << "elem_sink = " << 
+														elem_sink.time_slices[0].orderings[ord].dilutions(r1,r2,r3).mom_projs[mom].op[t] << endl;
+								*/	
+								
 								}
 								
 							}
