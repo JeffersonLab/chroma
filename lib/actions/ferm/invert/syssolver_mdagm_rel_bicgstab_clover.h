@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.2 2009-05-20 18:22:34 bjoo Exp $
+// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.3 2009-05-22 19:50:38 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -164,7 +164,7 @@ namespace Chroma
 	(*A)(tmp2,tmp, MINUS);
 	r[A->subset()] -= tmp2;
 	res.n_count = res1.n_count + res2.n_count;
-	res.resid = sqrt(norm2(r, A->subset())/norm2(chi, A->subset()));
+	res.resid = sqrt(norm2(r, A->subset()));
       }
       QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
       QDPIO::cout << "RELIABLE_BICTSTAB_SOLVER_TIME: "<<time<< " sec" << endl;

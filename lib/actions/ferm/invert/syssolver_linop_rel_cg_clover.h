@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_rel_cg_clover.h,v 3.1 2009-05-22 14:21:39 bjoo Exp $
+// $Id: syssolver_linop_rel_cg_clover.h,v 3.2 2009-05-22 19:50:38 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -145,7 +145,7 @@ namespace Chroma
 	T tmp;
 	(*A)(tmp, psi, PLUS);
 	r[A->subset()] -= tmp;
-	res.resid = sqrt(norm2(r, A->subset())/norm2(chi, A->subset()));
+	res.resid = sqrt(norm2(r, A->subset()));
       }
       QDPIO::cout << "RELIABLE_CGNE_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
    
