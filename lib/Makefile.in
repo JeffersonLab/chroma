@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.333 2009-05-21 03:59:07 edwards Exp $
+# $Id: Makefile.in,v 3.334 2009-05-22 14:22:54 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -194,6 +194,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
 	actions/ferm/invert/minv_rel_sumr.cc \
 	actions/ferm/invert/reliable_bicgstab.cc \
+	actions/ferm/invert/reliable_cg.cc \
 	actions/ferm/invert/syssolver_linop_aggregate.cc \
 	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
@@ -212,12 +213,14 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_linop_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
@@ -841,7 +844,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	minvcg_array.$(OBJEXT) minvcg_accumulate_array.$(OBJEXT) \
 	minvsumr.$(OBJEXT) minv_rel_cg.$(OBJEXT) \
 	minv_rel_sumr.$(OBJEXT) reliable_bicgstab.$(OBJEXT) \
-	syssolver_linop_aggregate.$(OBJEXT) \
+	reliable_cg.$(OBJEXT) syssolver_linop_aggregate.$(OBJEXT) \
 	syssolver_mdagm_aggregate.$(OBJEXT) \
 	syssolver_polyprec_aggregate.$(OBJEXT) \
 	syssolver_cg_params.$(OBJEXT) syssolver_mr_params.$(OBJEXT) \
@@ -858,12 +861,14 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	syssolver_linop_eigcg_array.$(OBJEXT) \
 	syssolver_linop_richardson_multiprec_clover.$(OBJEXT) \
 	syssolver_linop_rel_bicgstab_clover.$(OBJEXT) \
+	syssolver_linop_rel_cg_clover.$(OBJEXT) \
 	syssolver_mdagm_cg.$(OBJEXT) \
 	syssolver_mdagm_bicgstab.$(OBJEXT) \
 	syssolver_mdagm_cg_timing.$(OBJEXT) \
 	syssolver_mdagm_cg_array.$(OBJEXT) \
 	syssolver_mdagm_richardson_multiprec_clover.$(OBJEXT) \
 	syssolver_mdagm_rel_bicgstab_clover.$(OBJEXT) \
+	syssolver_mdagm_rel_cg_clover.$(OBJEXT) \
 	syssolver_mdagm_cg_lf_clover.$(OBJEXT) \
 	syssolver_mdagm_OPTeigcg.$(OBJEXT) \
 	syssolver_mdagm_eigcg_qdp.$(OBJEXT) \
@@ -1360,6 +1365,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/inv_multiprec_richardson.h \
 	actions/ferm/invert/reliable_bicgstab.h \
+	actions/ferm/invert/reliable_cg.h \
 	actions/ferm/invert/containers.h \
 	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
@@ -1385,6 +1391,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_linop_eigcg_array.h \
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h \
+	actions/ferm/invert/syssolver_linop_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_linop_bicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
@@ -1397,6 +1404,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h \
+	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
 	actions/ferm/invert/multi_syssolver_mr_params.h \
@@ -2199,6 +2207,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/inv_multiprec_richardson.h \
 	actions/ferm/invert/reliable_bicgstab.h \
+	actions/ferm/invert/reliable_cg.h \
 	actions/ferm/invert/containers.h \
 	actions/ferm/invert/norm_gram_schm.h \
 	actions/ferm/invert/syssolver_linop.h \
@@ -2224,6 +2233,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_linop_eigcg_array.h \
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h \
+	actions/ferm/invert/syssolver_linop_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_linop_bicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
@@ -2236,6 +2246,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h \
+	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
 	actions/ferm/invert/multi_syssolver_mr_params.h \
@@ -2898,6 +2909,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/minv_rel_cg.cc \
 	actions/ferm/invert/minv_rel_sumr.cc \
 	actions/ferm/invert/reliable_bicgstab.cc \
+	actions/ferm/invert/reliable_cg.cc \
 	actions/ferm/invert/syssolver_linop_aggregate.cc \
 	actions/ferm/invert/syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/syssolver_polyprec_aggregate.cc \
@@ -2916,12 +2928,14 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_linop_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
@@ -4086,6 +4100,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reliable_bicgstab.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reliable_cg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remez_gmp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/remez_rat_approx.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reunit.Po@am__quote@
@@ -4186,6 +4201,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_eigcg_array.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_mr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_rel_bicgstab_clover.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_rel_cg_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_linop_richardson_multiprec_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_OPTeigcg.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_aggregate.Po@am__quote@
@@ -4196,6 +4212,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_cg_timing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_eigcg_qdp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_rel_bicgstab_clover.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_rel_cg_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mdagm_richardson_multiprec_clover.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_mr_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syssolver_polyprec_aggregate.Po@am__quote@
@@ -4838,6 +4855,20 @@ reliable_bicgstab.obj: actions/ferm/invert/reliable_bicgstab.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o reliable_bicgstab.obj `if test -f 'actions/ferm/invert/reliable_bicgstab.cc'; then $(CYGPATH_W) 'actions/ferm/invert/reliable_bicgstab.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/reliable_bicgstab.cc'; fi`
 
+reliable_cg.o: actions/ferm/invert/reliable_cg.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT reliable_cg.o -MD -MP -MF $(DEPDIR)/reliable_cg.Tpo -c -o reliable_cg.o `test -f 'actions/ferm/invert/reliable_cg.cc' || echo '$(srcdir)/'`actions/ferm/invert/reliable_cg.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/reliable_cg.Tpo $(DEPDIR)/reliable_cg.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/reliable_cg.cc' object='reliable_cg.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o reliable_cg.o `test -f 'actions/ferm/invert/reliable_cg.cc' || echo '$(srcdir)/'`actions/ferm/invert/reliable_cg.cc
+
+reliable_cg.obj: actions/ferm/invert/reliable_cg.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT reliable_cg.obj -MD -MP -MF $(DEPDIR)/reliable_cg.Tpo -c -o reliable_cg.obj `if test -f 'actions/ferm/invert/reliable_cg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/reliable_cg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/reliable_cg.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/reliable_cg.Tpo $(DEPDIR)/reliable_cg.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/reliable_cg.cc' object='reliable_cg.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o reliable_cg.obj `if test -f 'actions/ferm/invert/reliable_cg.cc'; then $(CYGPATH_W) 'actions/ferm/invert/reliable_cg.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/reliable_cg.cc'; fi`
+
 syssolver_linop_aggregate.o: actions/ferm/invert/syssolver_linop_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_aggregate.o -MD -MP -MF $(DEPDIR)/syssolver_linop_aggregate.Tpo -c -o syssolver_linop_aggregate.o `test -f 'actions/ferm/invert/syssolver_linop_aggregate.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_aggregate.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/syssolver_linop_aggregate.Tpo $(DEPDIR)/syssolver_linop_aggregate.Po
@@ -5090,6 +5121,20 @@ syssolver_linop_rel_bicgstab_clover.obj: actions/ferm/invert/syssolver_linop_rel
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_rel_bicgstab_clover.obj `if test -f 'actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc'; fi`
 
+syssolver_linop_rel_cg_clover.o: actions/ferm/invert/syssolver_linop_rel_cg_clover.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_rel_cg_clover.o -MD -MP -MF $(DEPDIR)/syssolver_linop_rel_cg_clover.Tpo -c -o syssolver_linop_rel_cg_clover.o `test -f 'actions/ferm/invert/syssolver_linop_rel_cg_clover.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_rel_cg_clover.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/syssolver_linop_rel_cg_clover.Tpo $(DEPDIR)/syssolver_linop_rel_cg_clover.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_rel_cg_clover.cc' object='syssolver_linop_rel_cg_clover.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_rel_cg_clover.o `test -f 'actions/ferm/invert/syssolver_linop_rel_cg_clover.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_linop_rel_cg_clover.cc
+
+syssolver_linop_rel_cg_clover.obj: actions/ferm/invert/syssolver_linop_rel_cg_clover.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_linop_rel_cg_clover.obj -MD -MP -MF $(DEPDIR)/syssolver_linop_rel_cg_clover.Tpo -c -o syssolver_linop_rel_cg_clover.obj `if test -f 'actions/ferm/invert/syssolver_linop_rel_cg_clover.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_rel_cg_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_rel_cg_clover.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/syssolver_linop_rel_cg_clover.Tpo $(DEPDIR)/syssolver_linop_rel_cg_clover.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_linop_rel_cg_clover.cc' object='syssolver_linop_rel_cg_clover.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_linop_rel_cg_clover.obj `if test -f 'actions/ferm/invert/syssolver_linop_rel_cg_clover.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_linop_rel_cg_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_linop_rel_cg_clover.cc'; fi`
+
 syssolver_mdagm_cg.o: actions/ferm/invert/syssolver_mdagm_cg.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_cg.o -MD -MP -MF $(DEPDIR)/syssolver_mdagm_cg.Tpo -c -o syssolver_mdagm_cg.o `test -f 'actions/ferm/invert/syssolver_mdagm_cg.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_cg.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/syssolver_mdagm_cg.Tpo $(DEPDIR)/syssolver_mdagm_cg.Po
@@ -5173,6 +5218,20 @@ syssolver_mdagm_rel_bicgstab_clover.obj: actions/ferm/invert/syssolver_mdagm_rel
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc' object='syssolver_mdagm_rel_bicgstab_clover.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mdagm_rel_bicgstab_clover.obj `if test -f 'actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc'; fi`
+
+syssolver_mdagm_rel_cg_clover.o: actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_rel_cg_clover.o -MD -MP -MF $(DEPDIR)/syssolver_mdagm_rel_cg_clover.Tpo -c -o syssolver_mdagm_rel_cg_clover.o `test -f 'actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/syssolver_mdagm_rel_cg_clover.Tpo $(DEPDIR)/syssolver_mdagm_rel_cg_clover.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc' object='syssolver_mdagm_rel_cg_clover.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mdagm_rel_cg_clover.o `test -f 'actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc
+
+syssolver_mdagm_rel_cg_clover.obj: actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_rel_cg_clover.obj -MD -MP -MF $(DEPDIR)/syssolver_mdagm_rel_cg_clover.Tpo -c -o syssolver_mdagm_rel_cg_clover.obj `if test -f 'actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/syssolver_mdagm_rel_cg_clover.Tpo $(DEPDIR)/syssolver_mdagm_rel_cg_clover.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc' object='syssolver_mdagm_rel_cg_clover.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_mdagm_rel_cg_clover.obj `if test -f 'actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc'; then $(CYGPATH_W) 'actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc'; fi`
 
 syssolver_mdagm_cg_lf_clover.o: actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_mdagm_cg_lf_clover.o -MD -MP -MF $(DEPDIR)/syssolver_mdagm_cg_lf_clover.Tpo -c -o syssolver_mdagm_cg_lf_clover.o `test -f 'actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc' || echo '$(srcdir)/'`actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc
