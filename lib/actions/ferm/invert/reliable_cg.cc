@@ -1,4 +1,4 @@
-// $Id: reliable_cg.cc,v 3.1 2009-05-22 14:21:38 bjoo Exp $
+// $Id: reliable_cg.cc,v 3.2 2009-05-22 15:25:22 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -86,17 +86,23 @@ RelInvCG_a(const LinearOperator<T>& A,
       c = r_sq;
 
       TF mmp,mp;
-      AF(mp, p, PLUS); flopcount.addFlops(A.nFlops());
-      d = norm2(mp,s); flopcount.addSiteFlops(4*Nc*Ns,s);
-      AF(mmp,mp,MINUS); flopcount.addFlops(A.nFlops());
+      AF(mp, p, PLUS); 
+      d = norm2(mp,s); 
+      AF(mmp,mp,MINUS); 
 
       a = c/d;
       RF ar = a;
-      x[s] += ar*p;  flopcount.addSiteFlops(4*Nc*Ns,s);
-      r[s] -= ar*mmp; flopcount.addSiteFlops(4*Nc*Ns,s);
+      x[s] += ar*p;  
+      r[s] -= ar*mmp; 
 
-      r_sq = norm2(r,s);
+      r_sq = norm2(r,s); 
       
+      //      flopcount.addSiteFlops(4*Nc*Ns,s); <mp, mp>
+      //      flopcount.addSiteFlops(4*Nc*Ns,s); x += a * p
+      //      flopcount.addSiteFlops(4*Nc*Ns,s); r -= a * mm
+      //      flopcount.addSiteFlops(4*Nc*Ns,s); norm2(r)
+      flopcount.addSiteFlops(16*Nc*Ns,s);
+      flopcount.addFlops(2*A.nFlops());
 
       // Reliable update part...
       rNorm = sqrt(r_sq);
@@ -122,8 +128,8 @@ RelInvCG_a(const LinearOperator<T>& A,
 	r[s] = r_dble;     // new R = b - Ax
 	r_sq = norm2(r_dble,s);
 
-	flopcount.addSiteFlops(6*Nc*Ns,s);
-	flopcount.addFlops(A.nFlops());
+	flopcount.addSiteFlops(6*Nc*Ns,s); // 4 from norm2, 2 from r=b-tmp2
+	flopcount.addFlops(2*A.nFlops());
 
 	rNorm = sqrt(r_sq);
 	maxrr = rNorm;

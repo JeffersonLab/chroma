@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.24 2009-05-20 19:07:09 bjoo Exp $
+#  $Id: regres.pl,v 3.25 2009-05-22 15:25:22 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -10,6 +10,14 @@
 #
 @regres_list = 
     (  
+       {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-rel-cg-multiprec.ini.xml",
+	 log         => "t_leapfrog.prec_clover_stout-rel-cg-multiprec.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_clover_stout-rel-cg-multiprec.log.xml" ,
+     },
        {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 
