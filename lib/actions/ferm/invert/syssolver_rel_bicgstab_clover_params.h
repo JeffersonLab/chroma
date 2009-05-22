@@ -22,7 +22,7 @@ namespace Chroma
     Real Delta;
   };
 
-
+  typedef SysSolverReliableBiCGStabCloverParams SysSolverReliableCGCloverParams;
   void read(XMLReader& xml, const std::string& path, SysSolverReliableBiCGStabCloverParams& p);
 
   void write(XMLWriter& xml, const std::string& path, 
