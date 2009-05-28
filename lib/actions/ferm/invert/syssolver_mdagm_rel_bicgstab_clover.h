@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.3 2009-05-22 19:50:38 bjoo Exp $
+// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.4 2009-05-28 15:36:31 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -111,6 +111,8 @@ namespace Chroma
       START_CODE();
       StopWatch swatch;
       swatch.start();
+
+
       const Subset& s = (*M_double).subset();
       //    T MdagChi;
 
@@ -139,7 +141,7 @@ namespace Chroma
 
       // Don't copy just use psi_d = Y as the source
       // and reuse chi_d as the result
-      chi_d[s]=psi;
+      chi_d[s]=zero;
       res2=InvBiCGStabReliable(*M_double,
 			       *M_single,
 			       psi_d,
@@ -148,12 +150,7 @@ namespace Chroma
 			       invParam.Delta,
 			       invParam.MaxIter,
 			       PLUS);
-      
-      
       psi[s] = chi_d;
-
-      swatch.stop();
-      double time = swatch.getTimeInSeconds();
 
       { 
 	T r;
@@ -166,7 +163,12 @@ namespace Chroma
 	res.n_count = res1.n_count + res2.n_count;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count 
+		  << " iterations. Rsd = " << res.resid 
+		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+
+      swatch.stop();
+      double time = swatch.getTimeInSeconds();
       QDPIO::cout << "RELIABLE_BICTSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
    
       

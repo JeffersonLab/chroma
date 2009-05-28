@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_bicgstab.h,v 3.3 2009-04-02 19:56:54 bjoo Exp $
+// $Id: syssolver_mdagm_bicgstab.h,v 3.4 2009-05-28 15:36:30 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -63,19 +63,30 @@ namespace Chroma
 	START_CODE();
 	StopWatch swatch;
 	
-	SystemSolverResults_t res1,res2,res3;  // initialized by a constructor
+	SystemSolverResults_t res1,res2,res3;  // initialized by a constructo
+	swatch.start();
+
 	
 	// ( M^\dag M )^{-1} => M^{-1} M^{-dag}
 	// so ( M^\dag M )^{-1} X = \phi
 	// => X = M^{-1} M^{-dag} \phi
 	//      = M%{-1} Y        Y = M^{-\dag} \phi
-	swatch.start();
+	res3.n_count = 0;
+
+
 	T Y = psi;
 	res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
 	res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
 
-	res3.n_count = res2.n_count + res1.n_count;
-	res3.resid = res2.resid;
+
+#ifdef CHROMA_DO_ONE_CG_RESTART
+	// CG Polish - should be very quick
+	res3 = InvCG2(*A, chi, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab);
+#endif
+
+	swatch.stop();
+	res3.n_count += res2.n_count + res1.n_count;
+
 
 
 	{ // Find true residuum
@@ -84,18 +95,18 @@ namespace Chroma
 	  (*A)(Y, psi, PLUS);
 	  (*A)(re,Y, MINUS);
 	  re[A->subset()] -= chi;
-	  QDPIO::cout << "MDAGM_BICGSTAB: n=" 
-		      << res3.n_count 
-		      << " resid=" << sqrt(norm2(re,A->subset())/norm2(chi,A->subset())) << endl;
+	  res3.resid = sqrt(norm2(re,A->subset()));
 	}
 
-#ifdef CHROMA_DO_ONE_CG_RESTART
-	// CG Polish - should be very quick
-	res3 = InvCG2(*A, chi, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab);	res3.n_count += res2.n_count + res1.n_count;
-#endif
-	swatch.stop();
+
+  
+	QDPIO::cout << "BICGSTAB_SOLVER: " << res3.n_count 
+		    << " iterations. Rsd = " << res3.resid 
+		    << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
+
 	double time = swatch.getTimeInSeconds();
 	QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+	
 
 	END_CODE();
 

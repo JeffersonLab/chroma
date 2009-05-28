@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_cg_lf_clover.h,v 3.1 2009-05-20 18:22:34 bjoo Exp $
+// $Id: syssolver_mdagm_cg_lf_clover.h,v 3.2 2009-05-28 15:36:31 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -108,15 +108,17 @@ namespace Chroma
       TF psi_f = psi;
       TF chi_f = chi;
 
+
       res = InvCG2( (*M_single), 
 		    chi_f,
 		    psi_f,
 		    invParam.RsdCG,
 		    invParam.MaxCG);
+
       
       psi = psi_f;
-      swatch.stop();
-      double time = swatch.getTimeInSeconds();
+
+
       { 
 	T r;
 	r[A->subset()]=chi;
@@ -124,10 +126,16 @@ namespace Chroma
 	(*A)(tmp, psi, PLUS);
 	(*A)(tmp1, tmp, MINUS);
 	r[A->subset()] -= tmp1;
-	res.resid = sqrt(norm2(r, A->subset())/norm2(chi, A->subset()));
+	res.resid = sqrt(norm2(r, A->subset()));
       }
 
-      QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER: " << res.n_count 
+		  << " iterations. Rsd = " << res.resid 
+		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+
+      swatch.stop();
+
+      double time = swatch.getTimeInSeconds();
       QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER_TIME: "<<time<< " sec" << endl;
 
       END_CODE();
