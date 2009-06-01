@@ -52,14 +52,45 @@ namespace Chroma
   }
 
 
-  void MinimalResidualExtrapolation4DChronoPredictor::operator()(
-								 LatticeFermion& psi,
-								 const LinearOperator<LatticeFermion>& M,
-								 const LatticeFermion& chi) 
+  void MinimalResidualExtrapolation4DChronoPredictor::predictX(LatticeFermion& X,
+							       const LinearOperator<LatticeFermion>& M,
+							       const LatticeFermion& chi) 
   {
     START_CODE();
 
-    int Nvec = chrono_buf->size();
+    int Nvec = chrono_bufX->size();
+    switch(Nvec) { 
+    case 0:
+      {
+	QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << endl;
+	X= zero;
+      }
+      break;
+    case 1:
+      {
+	QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
+	chrono_bufX->get(0,psi);
+      }
+      break;
+    default:
+      {
+	QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << endl;
+	
+	find_extrap_solution(psi, M, chi, chron_bufX, PLUS);
+      }
+      break;
+    }
+    
+    END_CODE();
+  }
+
+  void MinimalResidualExtrapolation4DChronoPredictor::predictY(LatticeFermion& Y,
+							       const LinearOperator<LatticeFermion>& M,
+							       const LatticeFermion& chi) 
+  {
+    START_CODE();
+
+    int Nvec = chrono_bufY->size();
     switch(Nvec) { 
     case 0:
       {
@@ -70,13 +101,13 @@ namespace Chroma
     case 1:
       {
 	QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
-	chrono_buf->get(0,psi);
+	chrono_bufY->get(0,psi);
       }
       break;
     default:
       {
-	QDPIO::cout << "MRE Predictor: Finding  extrapolation with "<< Nvec << " vectors" << endl;
-	find_extrap_solution(psi, M, chi);
+	QDPIO::cout << "MRE Predictor: Finding Y extrapolation with "<< Nvec << " vectors" << endl;
+	find_extrap_solution(psi, M, chi, chrono_bufY, MINUS);
       }
       break;
     }
@@ -89,7 +120,9 @@ namespace Chroma
   MinimalResidualExtrapolation4DChronoPredictor::find_extrap_solution(
 					  LatticeFermion& psi,
 					  const LinearOperator<LatticeFermion>& A,
-					  const LatticeFermion& chi) 
+					  const LatticeFermion& chi,
+					  const Handle<CircularBuffer<LatticeFermion> >& chrono_buf, 
+					  enum PlusMinus isign) 
   {
     START_CODE();
 
@@ -139,7 +172,7 @@ namespace Chroma
 
     for(int m = 0 ; m < Nvec; m++) { 
       LatticeFermion tmpvec;
-      A(tmpvec, v[m], PLUS);
+      A(tmpvec, v[m], isign);
 
       for(int n = 0; n < Nvec; n++) { 
 	G(n,m) = innerProduct(v[n], tmpvec, s);

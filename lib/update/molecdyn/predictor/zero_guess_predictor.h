@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: zero_guess_predictor.h,v 3.4 2008-05-29 03:28:05 edwards Exp $
+// $Id: zero_guess_predictor.h,v 3.5 2009-06-01 19:46:37 bjoo Exp $
 /*! \file
  * \brief Zero initial guess predictor
  *
@@ -27,7 +27,7 @@ namespace Chroma
   //! Zero initial guess predictor
   /*! @ingroup predictor */
   class ZeroGuess4DChronoPredictor : 
-    public AbsChronologicalPredictor4D<LatticeFermion> 
+    public AbsTwoStepChronologicalPredictor4D<LatticeFermion> 
   {
   public:
 
@@ -35,24 +35,42 @@ namespace Chroma
     ~ZeroGuess4DChronoPredictor(void) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(LatticeFermion& psi,
-		    const LinearOperator<LatticeFermion> &A,
-		    const LatticeFermion& chi) 
+    void predictX(LatticeFermion& X,
+		  const LinearOperator<LatticeFermion> &A,
+		  const LatticeFermion& chi) 
     {
       START_CODE();
 
       QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
-      psi = zero;
+      X = zero;
+
+      END_CODE();
+    }
+
+    void predictY(LatticeFermion& Y,
+		  const LinearOperator<LatticeFermion> &A,
+		  const LatticeFermion& chi) 
+    {
+      START_CODE();
+
+      QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
+      Y = zero;
 
       END_CODE();
     }
     
+
+
     // No internal state so reset is a nop
     void reset(void) {
     }
 
     // Ignore new vector
-    void newVector(const LatticeFermion& psi) {
+    void newXVector(const LatticeFermion& psi) {
+      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << endl;
+    }
+
+    void newYVector(const LatticeFermion& psi) {
       QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << endl;
     }
 

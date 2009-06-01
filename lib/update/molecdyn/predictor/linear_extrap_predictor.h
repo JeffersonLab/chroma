@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linear_extrap_predictor.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
+// $Id: linear_extrap_predictor.h,v 3.4 2009-06-01 19:46:37 bjoo Exp $
 /*! \file
  * \brief Linear extrapolation predictor
  *
@@ -31,18 +31,20 @@ namespace Chroma
     public AbsChronologicalPredictor4D<LatticeFermion> 
   {
   private:
-    Handle< CircularBuffer<LatticeFermion> > chrono_buf;
+    Handle< CircularBuffer<LatticeFermion> > chrono_bufX;
+    Handle< CircularBuffer<LatticeFermion> > chrono_bufY;
 
   public:
-    LinearExtrapolation4DChronoPredictor(void) : chrono_buf(new CircularBuffer<LatticeFermion>((unsigned int)2)) {}
+    LinearExtrapolation4DChronoPredictor(void) : chrono_bufX(new CircularBuffer<LatticeFermion>((unsigned int)2)), chrono_bufY(new CircularBuffer<LatticeFermion>((unsigned int)2)) {}
 
     // Destructor is automagic
     ~LinearExtrapolation4DChronoPredictor(void) {}
 
 
-    void operator()(LatticeFermion& psi,
-		    const LinearOperator<LatticeFermion>& A, 
-		    const LatticeFermion& chi) 
+    void guess(LatticeFermion& psi,
+	       const LinearOperator<LatticeFermion>& A, 
+	       const LatticeFermion& chi, 
+	       Handle< CircularBuffer <LatticeFermion> > chrono_buf ) 
     {
       START_CODE();
 
@@ -83,23 +85,50 @@ namespace Chroma
 
       END_CODE();
     }
+
+    void predictX(LatticeFermion& X, 
+		  const LinearOperator<T>& A, 
+		  const T& chi) {
+      guess(X,A,chi,chrono_bufX);
+    }
+
+    void predictY(LatticeFermion& Y, 
+		  const LinearOperator<T>& A, 
+		  const T& chi) {
+      guess(Y,A,chi,chrono_bufY);
+    }
+
     
     // No internal state so reset is a nop
     void reset(void) {
-      chrono_buf->reset();
+      chrono_bufX->reset();
+      chrono_bufY->reset();
     }
 
     // Ignore new vector
-    void newVector(const LatticeFermion& psi) 
+    void newXVector(const LatticeFermion& X) 
     {
       START_CODE();
 
       QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
-      chrono_buf->push(psi);
+      chrono_bufX->push(X);
       QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
     
       END_CODE();
     }
+
+    // Ignore new vector
+    void newYVector(const LatticeFermion& Y) 
+    {
+      START_CODE();
+
+      QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
+      chrono_bufY->push(Y);
+      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+    
+      END_CODE();
+    }
+
 
   };
 

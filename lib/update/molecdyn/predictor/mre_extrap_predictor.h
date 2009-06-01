@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mre_extrap_predictor.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
+// $Id: mre_extrap_predictor.h,v 3.4 2009-06-01 19:46:37 bjoo Exp $
 /*! \file
  * \brief Minimal residual predictor
  *
@@ -28,38 +28,60 @@ namespace Chroma
   //! Minimal residual predictor
   /*! @ingroup predictor */
   class MinimalResidualExtrapolation4DChronoPredictor  
-    : public AbsChronologicalPredictor4D<LatticeFermion> 
+    : public AbsTwoStepChronologicalPredictor4D<LatticeFermion> 
   {
   private:
-    Handle< CircularBuffer<LatticeFermion> > chrono_buf;
+    Handle< CircularBuffer<LatticeFermion> > chrono_bufX;
+    Handle< CircularBuffer<LatticeFermion> > chrono_bufY;
     
     void find_extrap_solution(LatticeFermion& psi, 
 			      const LinearOperator<LatticeFermion>& A,
-			      const LatticeFermion& chi);
+			      const LatticeFermion& chi,
+			      const Handle<CircularBuffer<LatticeFermion> >& chrono_buf,
+			      enum PlusMinus isign);
   public:
     
-    MinimalResidualExtrapolation4DChronoPredictor(unsigned int max_chrono) : chrono_buf(new CircularBuffer<LatticeFermion>(max_chrono)) {}
+    MinimalResidualExtrapolation4DChronoPredictor(unsigned int max_chrono) : 
+      chrono_bufX(new CircularBuffer<LatticeFermion>(max_chrono)),
+      chrono_bufY(new CircularBuffer<LatticeFermion>(max_chrono)) {}
     
     // Destructor is automagic
     ~MinimalResidualExtrapolation4DChronoPredictor(void) {}
 
     // Do the hard work
-    void operator()(LatticeFermion& psi, 
+    void predictX()(LatticeFermion& X, 
+		    const LinearOperator<LatticeFermion>& A,
+		    const LatticeFermion& chi);
+
+    void predictY()(LatticeFermion& Y, 
 		    const LinearOperator<LatticeFermion>& A,
 		    const LatticeFermion& chi);
     
     // No internal state so reset is a nop
     void reset(void) {
-      chrono_buf->reset();
+      chrono_bufX->reset();
+      chrono_bufY->reset();
     }
 
-    // Ignore new vector
-    void newVector(const LatticeFermion& psi) 
+
+    void newXVector(const LatticeFermion& X) 
     {
       START_CODE();
 
       QDPIO::cout << "MREPredictor: registering new solution. " << endl;
-      chrono_buf->push(psi);
+      chrono_bufX->push(psi);
+      QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
+    
+      END_CODE();
+    }
+
+
+    void newYVector(const LatticeFermion& Y) 
+    {
+      START_CODE();
+
+      QDPIO::cout << "MREPredictor: registering new solution. " << endl;
+      chrono_bufY->push(psi);
       QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
     
       END_CODE();

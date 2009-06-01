@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: last_solution_predictor.h,v 3.3 2006-12-28 17:34:00 bjoo Exp $
+// $Id: last_solution_predictor.h,v 3.4 2009-06-01 19:46:36 bjoo Exp $
 /*! \file
  * \brief Last solution predictor
  *
@@ -28,7 +28,7 @@ namespace Chroma
   //! Last solution predictor
   /*! @ingroup predictor */
   class LastSolution4DChronoPredictor : 
-    public AbsChronologicalPredictor4D<LatticeFermion> 
+    public AbsTwoStepChronologicalPredictor4D<LatticeFermion> 
   {
    
   public:
@@ -36,26 +36,52 @@ namespace Chroma
     // Destructor is automagic
     ~LastSolution4DChronoPredictor(void) {}
 
-    LastSolution4DChronoPredictor(void) : last_solution_available(false) {};
+    LastSolution4DChronoPredictor(void) : last_solutionX_available(false),
+					  last_solutionY_available(false),
+					  last_solutionX(zero),
+					  lass_solutionY(zero){};
 
     LastSolution4DChronoPredictor(const LastSolution4DChronoPredictor& p) :
-      last_solution(p.last_solution), last_solution_available(p.last_solution_available) {}
+      last_solutionX_available(p.last_solutionX_available),
+      last_solutionY_available(p.last_solutionY_available),
+      last_solutionX(p.last_solutionX), 
+      last_solutionY(p.last_solutionY) {}
 
     // Zero out psi -- it is a zero guess after all
-    void operator()(LatticeFermion& psi,
+    void predictX()(LatticeFermion& X,
 		    const LinearOperator<LatticeFermion>& A,
 		    const LatticeFermion& chi) 
     {
       START_CODE();
 
       QDPIO::cout << "LastSolution4DChronoPredictor: ";
-      if( last_solution_available ) { 
+      if( last_solutionX_available ) { 
 	QDPIO::cout << "Giving you the last solution" << endl;
-	psi = last_solution;
+	X = last_solutionX;
       }
       else {
 	QDPIO::cout << "No available last guess. Giving you zero" << endl;
-	psi = zero;
+	X = zero;
+      }
+    
+      END_CODE();
+    }
+
+    // Zero out psi -- it is a zero guess after all
+    void predictY()(LatticeFermion& Y,
+		    const LinearOperator<LatticeFermion>& A,
+		    const LatticeFermion& chi) 
+    {
+      START_CODE();
+
+      QDPIO::cout << "LastSolution4DChronoPredictor: ";
+      if( last_solutionY_available ) { 
+	QDPIO::cout << "Giving you the last solution" << endl;
+	Y = last_solutionY;
+      }
+      else {
+	QDPIO::cout << "No available last guess. Giving you zero" << endl;
+	Y = zero;
       }
     
       END_CODE();
@@ -66,25 +92,42 @@ namespace Chroma
     {
 
       // Set the dirty bit
-      last_solution_available = false;
+      last_solutionX_available = false;
+      last_solutionY_available = false;
+
     }
 
     // Ignore new vector
-    void newVector(const LatticeFermion& psi) 
+    void newXVector(const LatticeFermion& X) 
     {
       START_CODE();
 
       QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
-      last_solution = psi;
-      last_solution_available = true;
+      last_solutionX = X;
+      last_solutionX_available = true;
+    
+      END_CODE();
+    }
+
+    // Ignore new vector
+    void newYVector(const LatticeFermion& Y) 
+    {
+      START_CODE();
+
+      QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
+      last_solutionY = Y;
+      last_solutionY_available = true;
     
       END_CODE();
     }
 
   private:
 
-    LatticeFermion last_solution;
-    bool last_solution_available;
+    bool last_solutionX_available;
+    bool last_solutionY_available;
+    LatticeFermion last_solutionX;
+    LatticeFermion last_solutionY;
+
   };
 
   
