@@ -34,6 +34,7 @@ bool linkageHack(void)
   return foo;
 }
 
+
 int main(int argc, char *argv[]) 
 {
   Chroma::initialize(&argc, &argv);
@@ -87,6 +88,17 @@ int main(int argc, char *argv[])
     XMLReader config_xml;
 
     gaugeStartup(file_xml, config_xml, u, cfg);
+  }
+
+  {
+    bool monitorForcesP = true;
+
+    if( paramtop.count("./MonitorForces") == 1 ) {
+      read(paramtop, "./MonitorForces", monitorForcesP );
+    }
+
+    QDPIO::cout << "MonitorForces is " << monitorForcesP << endl;
+    setForceMonitoring( monitorForcesP );
   }
 
   // Try and create an array of monomials:

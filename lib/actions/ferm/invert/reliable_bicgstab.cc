@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.4 2009-05-21 20:44:12 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.5 2009-06-01 16:24:54 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -38,6 +38,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   swatch.reset();
   swatch.start();
 
+  Double rsd_sq =  Double(RsdBiCGStab)*Double(RsdBiCGStab)*norm2(chi,s);
 
   b[s] = chi;
   {
@@ -58,7 +59,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   flopcount.addSiteFlops(4*Nc*Ns,s);
 
   Double r_sq = b_sq;
-  Double rsd_sq =  Double(RsdBiCGStab)*Double(RsdBiCGStab)*b_sq;
+
 
   Double rNorm = sqrt(r_sq);
   Double r0Norm = rNorm;

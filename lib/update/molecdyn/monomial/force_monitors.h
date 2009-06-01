@@ -35,5 +35,8 @@ namespace Chroma
   /*! @ingroup monomial */
   void monitorForces(XMLWriter& xml_out, const string& path, const multi1d<LatticeColorMatrix>& F);
 
+  void setForceMonitoring(bool monitorP);
+
+
 }
 #endif

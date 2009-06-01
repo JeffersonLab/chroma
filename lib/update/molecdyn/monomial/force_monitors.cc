@@ -1,4 +1,4 @@
-// $Id: force_monitors.cc,v 3.3 2008-05-14 04:13:01 edwards Exp $
+// $Id: force_monitors.cc,v 3.4 2009-06-01 16:24:54 bjoo Exp $
 /*! @file
  * @brief Helper function for calculating forces
  */
@@ -8,7 +8,6 @@
 
 namespace Chroma 
 { 
- 
 
  
   //! Writes a ForceCalc_t
@@ -104,11 +103,25 @@ namespace Chroma
     return;
   }
 
+
+  namespace ForceMonitorEnv { 
+    static bool monitorForcesP = true;
+  }
+
+  void setForceMonitoring(bool monitorP) 
+  {
+    ForceMonitorEnv::monitorForcesP = monitorP;
+  }
+
+
   void monitorForces(XMLWriter& xml_out, const string& path, const multi1d<LatticeColorMatrix>& F)
   {
-    ForceMonitors mon;
-    forceMonitorCalc(F, mon);
-    write(xml_out, path, mon);
+    if( ForceMonitorEnv::monitorForcesP == true ) { 
+      QDPIO::cout << "Monitoring force" << endl;
+      ForceMonitors mon;
+      forceMonitorCalc(F, mon);
+      write(xml_out, path, mon);
+    }
   }
 }  //end namespace Chroma
 

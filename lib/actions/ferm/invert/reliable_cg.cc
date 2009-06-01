@@ -1,4 +1,4 @@
-// $Id: reliable_cg.cc,v 3.2 2009-05-22 15:25:22 bjoo Exp $
+// $Id: reliable_cg.cc,v 3.3 2009-06-01 16:24:54 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -37,9 +37,13 @@ RelInvCG_a(const LinearOperator<T>& A,
     flopcount.reset();
     swatch.reset();
     swatch.start();
+
     
 
     b[s] = chi;
+    Double chi_norm = norm2(chi,s);
+    Double rsd_sq=RsdCG*RsdCG*chi_norm;
+
     {
       T tmp1, tmp2;
       A(tmp1, psi, PLUS);
@@ -54,11 +58,12 @@ RelInvCG_a(const LinearOperator<T>& A,
     // now work out r= chi - Apsi = chi - r0
     r[s] = b; 
 
-    Double b_sq = norm2(b,s);
+    Double r_sq = norm2(r,s);
     flopcount.addSiteFlops(4*Nc*Ns,s);
 
-    Double r_sq = b_sq;
-    Double rsd_sq =  Double(RsdCG)*Double(RsdCG)*b_sq;
+
+    QDPIO::cout << "|| r0 || = " << sqrt(r_sq) << endl;
+
 
     Double rNorm = sqrt(r_sq);
     Double r0Norm = rNorm;

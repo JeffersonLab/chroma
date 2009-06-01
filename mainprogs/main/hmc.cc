@@ -1,4 +1,4 @@
-// $Id: hmc.cc,v 3.23 2009-02-09 21:19:33 bjoo Exp $
+// $Id: hmc.cc,v 3.24 2009-06-01 16:24:54 bjoo Exp $
 /*! \file
  *  \brief Main code for HMC with dynamical fermion generation
  */
@@ -27,6 +27,7 @@ namespace Chroma
     int           repro_check_frequency;
     bool          rev_checkP;
     int           rev_check_frequency;
+    bool          monitorForcesP;
 
   };
   
@@ -84,6 +85,13 @@ namespace Chroma
 	}
       }
 
+      if( paramtop.count("./MonitorForces") == 1 ) {
+	read(paramtop, "./MonitorForces", p.monitorForcesP);
+      }
+      else { 
+	p.monitorForcesP = true;
+      }
+
       if( paramtop.count("./InlineMeasurements") == 0 ) {
 	XMLBufferWriter dummy;
 	push(dummy, "InlineMeasurements");
@@ -99,6 +107,8 @@ namespace Chroma
 	QDPIO::cout << "InlineMeasurements are: " << endl;
 	QDPIO::cout << p.inline_measurement_xml << endl;
       }
+
+      
     }
     catch(const std::string& e ) { 
       QDPIO::cerr << "Caught Exception: " << e << endl;
@@ -131,6 +141,7 @@ namespace Chroma
       if( p.rev_checkP ) { 
 	write(xml, "ReverseCheckFrequency", p.rev_check_frequency);
       }
+      write(xml, "MonitorForces", p.monitorForcesP);
 
       xml << p.inline_measurement_xml;
       
@@ -322,6 +333,11 @@ namespace Chroma
 	     multi1d< Handle<AbsInlineMeasurement> >& user_measurements) 
   {
     START_CODE();
+
+
+    // Turn monitoring off/on
+    QDPIO::cout << "Setting Force monitoring to " << mc_control.monitorForcesP  << endl;
+    setForceMonitoring(mc_control.monitorForcesP) ;
     QDP::StopWatch swatch;
 
     XMLWriter& xml_out = TheXMLOutputWriter::Instance();
