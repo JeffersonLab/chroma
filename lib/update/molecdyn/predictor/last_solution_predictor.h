@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: last_solution_predictor.h,v 3.4 2009-06-01 19:46:36 bjoo Exp $
+// $Id: last_solution_predictor.h,v 3.5 2009-06-01 20:39:37 bjoo Exp $
 /*! \file
  * \brief Last solution predictor
  *
@@ -39,7 +39,7 @@ namespace Chroma
     LastSolution4DChronoPredictor(void) : last_solutionX_available(false),
 					  last_solutionY_available(false),
 					  last_solutionX(zero),
-					  lass_solutionY(zero){};
+					  last_solutionY(zero){}
 
     LastSolution4DChronoPredictor(const LastSolution4DChronoPredictor& p) :
       last_solutionX_available(p.last_solutionX_available),
@@ -48,7 +48,7 @@ namespace Chroma
       last_solutionY(p.last_solutionY) {}
 
     // Zero out psi -- it is a zero guess after all
-    void predictX()(LatticeFermion& X,
+    void predictX(LatticeFermion& X,
 		    const LinearOperator<LatticeFermion>& A,
 		    const LatticeFermion& chi) 
     {
@@ -68,7 +68,7 @@ namespace Chroma
     }
 
     // Zero out psi -- it is a zero guess after all
-    void predictY()(LatticeFermion& Y,
+    void predictY(LatticeFermion& Y,
 		    const LinearOperator<LatticeFermion>& A,
 		    const LatticeFermion& chi) 
     {

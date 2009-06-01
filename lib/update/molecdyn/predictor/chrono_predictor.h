@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: chrono_predictor.h,v 3.1 2009-06-01 19:46:36 bjoo Exp $
+// $Id: chrono_predictor.h,v 3.2 2009-06-01 20:39:36 bjoo Exp $
 /*! \file
  * \brief Chronological predictor for HMC
  *
@@ -55,7 +55,7 @@ namespace Chroma
   //! Abstract interface for a Chronological Solution predictor
   /*! @ingroup predictor */
   template<typename T>
-  class AbsTwoStepChronologicalPredictor4D : AbsChronologicalPredictor4D<T> {
+  class AbsTwoStepChronologicalPredictor4D : public AbsChronologicalPredictor4D<T> {
   public:
     
     // Virtual destructor to help with cleanup

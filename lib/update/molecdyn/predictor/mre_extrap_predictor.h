@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: mre_extrap_predictor.h,v 3.4 2009-06-01 19:46:37 bjoo Exp $
+// $Id: mre_extrap_predictor.h,v 3.5 2009-06-01 20:39:37 bjoo Exp $
 /*! \file
  * \brief Minimal residual predictor
  *
@@ -49,11 +49,11 @@ namespace Chroma
     ~MinimalResidualExtrapolation4DChronoPredictor(void) {}
 
     // Do the hard work
-    void predictX()(LatticeFermion& X, 
+    void predictX(LatticeFermion& X, 
 		    const LinearOperator<LatticeFermion>& A,
 		    const LatticeFermion& chi);
 
-    void predictY()(LatticeFermion& Y, 
+    void predictY(LatticeFermion& Y, 
 		    const LinearOperator<LatticeFermion>& A,
 		    const LatticeFermion& chi);
     
@@ -68,9 +68,9 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "MREPredictor: registering new solution. " << endl;
-      chrono_bufX->push(psi);
-      QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MREPredictor: registering new X solution. " << endl;
+      chrono_bufX->push(X);
+      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_bufX->size() << endl;
     
       END_CODE();
     }
@@ -80,9 +80,9 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "MREPredictor: registering new solution. " << endl;
-      chrono_bufY->push(psi);
-      QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MREPredictor: registering new Y solution. " << endl;
+      chrono_bufY->push(Y);
+      QDPIO::cout << "MREPredictor: number of Y vectors stored is = " << chrono_bufY->size() << endl;
     
       END_CODE();
     }

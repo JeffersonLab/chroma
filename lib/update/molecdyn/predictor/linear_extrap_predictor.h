@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: linear_extrap_predictor.h,v 3.4 2009-06-01 19:46:37 bjoo Exp $
+// $Id: linear_extrap_predictor.h,v 3.5 2009-06-01 20:39:37 bjoo Exp $
 /*! \file
  * \brief Linear extrapolation predictor
  *
@@ -28,7 +28,7 @@ namespace Chroma
   //! Last solution predictor
   /*! @ingroup predictor */
   class LinearExtrapolation4DChronoPredictor : 
-    public AbsChronologicalPredictor4D<LatticeFermion> 
+    public AbsTwoStepChronologicalPredictor4D<LatticeFermion> 
   {
   private:
     Handle< CircularBuffer<LatticeFermion> > chrono_bufX;
@@ -87,14 +87,14 @@ namespace Chroma
     }
 
     void predictX(LatticeFermion& X, 
-		  const LinearOperator<T>& A, 
-		  const T& chi) {
+		  const LinearOperator<LatticeFermion>& A, 
+		  const LatticeFermion& chi) {
       guess(X,A,chi,chrono_bufX);
     }
 
     void predictY(LatticeFermion& Y, 
-		  const LinearOperator<T>& A, 
-		  const T& chi) {
+		  const LinearOperator<LatticeFermion>& A, 
+		  const LatticeFermion& chi) {
       guess(Y,A,chi,chrono_bufY);
     }
 
@@ -110,9 +110,9 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
+      QDPIO::cout << "LinearExtrapolationPredictor: registering new X solution. ";
       chrono_bufX->push(X);
-      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << " number of vectors stored is = " << chrono_bufX->size() << endl;
     
       END_CODE();
     }
@@ -122,9 +122,9 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
+      QDPIO::cout << "LinearExtrapolationPredictor: registering new Y solution. ";
       chrono_bufY->push(Y);
-      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << " number of vectors stored is = " << chrono_bufY->size() << endl;
     
       END_CODE();
     }

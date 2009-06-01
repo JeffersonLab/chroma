@@ -69,14 +69,15 @@ namespace Chroma
     case 1:
       {
 	QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
-	chrono_bufX->get(0,psi);
+	chrono_bufX->get(0,X);
       }
       break;
     default:
       {
 	QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << endl;
 	
-	find_extrap_solution(psi, M, chi, chron_bufX, PLUS);
+	// Expect M is actually M^\dagger M here 
+	find_extrap_solution(X, M, chi, chrono_bufX, PLUS);
       }
       break;
     }
@@ -95,19 +96,20 @@ namespace Chroma
     case 0:
       {
 	QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << endl;
-	psi = zero;
+	Y = zero;
       }
       break;
     case 1:
       {
 	QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
-	chrono_bufY->get(0,psi);
+	chrono_bufY->get(0,Y);
       }
       break;
     default:
       {
 	QDPIO::cout << "MRE Predictor: Finding Y extrapolation with "<< Nvec << " vectors" << endl;
-	find_extrap_solution(psi, M, chi, chrono_bufY, MINUS);
+	// Should have M as just M (not M^\dagger M) here.
+	find_extrap_solution(Y, M, chi, chrono_bufY, MINUS);
       }
       break;
     }
