@@ -76,7 +76,8 @@ namespace Chroma
       {
 	QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << endl;
 	
-	// Expect M is actually M^\dagger M here 
+	// Expect M is either  MdagM if we use chi
+	// or                   M    if we minimize against Y
 	find_extrap_solution(X, M, chi, chrono_bufX, PLUS);
       }
       break;

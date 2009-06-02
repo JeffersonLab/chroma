@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: syssolver_mdagm.h,v 3.2 2009-06-02 15:56:40 bjoo Exp $
 /*! \file
  *  \brief Disambiguator for MdagM system solvers
  */
@@ -10,6 +10,7 @@
 #include "linearop.h"
 #include "handle.h"
 #include "syssolver.h"
+#include "update/molecdyn/predictor/chrono_predictor.h"
 
 namespace Chroma
 {
@@ -17,7 +18,16 @@ namespace Chroma
   /*! This struct is solely to disambiguate the type of SystemSolvers */
   template<typename T>
   struct MdagMSystemSolver : virtual public SystemSolver<T>
-  {
+  {    
+
+    virtual SystemSolverResults_t operator() (T& psi, const T& chi) const = 0;
+
+    //! Return the subset on which the operator acts
+    virtual const Subset& subset() const = 0;
+    virtual SystemSolverResults_t operator()(T& psi, 
+					     const T& chi,
+					     AbsChronologicalPredictor4D<T>& predictor) const = 0;
+
   };
 
 

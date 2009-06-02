@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_rel_cg_clover.h,v 3.3 2009-05-22 19:50:38 bjoo Exp $
+// $Id: syssolver_mdagm_rel_cg_clover.h,v 3.4 2009-06-02 15:56:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -147,6 +147,38 @@ namespace Chroma
       QDPIO::cout << "RELIABLE_CG_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
    
       
+      END_CODE();
+      return res;
+    }
+
+ 
+
+
+    //! Solve the linear system starting with a chrono guess 
+    /*! 
+     * \param psi solution (Write)
+     * \param chi source   (Read)
+     * \param predictor   a chronological predictor (Read)
+     * \return syssolver results
+     */
+
+    SystemSolverResults_t operator()(T& psi, const T& chi, 
+				     AbsChronologicalPredictor4D<T>& predictor) const 
+    {
+      
+      START_CODE();
+
+      // This solver uses InvCG2, so A is just the matrix.
+      // I need to predict with A^\dagger A
+      {
+	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+	predictor(psi, (*MdagM), chi);
+      }
+      // Do solve
+      SystemSolverResults_t res=(*this)(psi,chi);
+
+      // Store result
+      predictor.newVector(psi);
       END_CODE();
       return res;
     }

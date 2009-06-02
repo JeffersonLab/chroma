@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_monomial_w.h,v 3.11 2008-05-29 03:58:37 edwards Exp $
+// $Id: two_flavor_monomial_w.h,v 3.12 2009-06-02 15:56:40 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -80,15 +80,15 @@ namespace Chroma
       Phi X;
 
       // CG Chrono predictor needs MdagM
-      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+      //Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      //      (getMDSolutionPredictor())(X, *MdagM, getPhi());
 
       // Solve MdagM X = eta
-      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi(), getMDSolutionPredictor());
       QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
 
-      // Insert vector
-      (getMDSolutionPredictor()).newVector(X);
+      // Insert vector --  Now done in the syssolver_mdagm
+      //(getMDSolutionPredictor()).newVector(X);
       
       Phi Y;
 
@@ -492,15 +492,15 @@ namespace Chroma
       Phi X;
 
       // CG Chrono predictor needs MdagM
-      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+      //      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      // (getMDSolutionPredictor())(X, *MdagM, getPhi());
 
       // Solve MdagM X = eta
-      SystemSolverResults_t res = (*invMdagM)(X, getPhi());
+      SystemSolverResults_t res = (*invMdagM)(X, getPhi(),getMDSolutionPredictor());
       QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
 
- // Insert vector
-      (getMDSolutionPredictor()).newVector(X);
+      // Insert vector -- now done in syssolver
+      //(getMDSolutionPredictor()).newVector(X);
       
       Phi Y;
       (*M)(Y, X, PLUS);

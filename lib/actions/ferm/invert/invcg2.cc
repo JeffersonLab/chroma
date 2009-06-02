@@ -1,4 +1,4 @@
-// $Id: invcg2.cc,v 3.6 2009-05-20 20:19:14 bjoo Exp $
+// $Id: invcg2.cc,v 3.7 2009-06-02 15:56:39 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -122,14 +122,16 @@ namespace Chroma
     Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
     flopcount.addSiteFlops(4*Nc*Ns, s);
 
+
+#if 1
+    QDPIO::cout << "InvCG: k = 0  || r ||= " <<sqrt(cp) << endl;
+#endif
+
     //  p[1]  :=  r[0]
     p[s] = r;
   
 
 
-#if 0
-    QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
-#endif
 
     //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
     if ( toBool(cp  <=  rsd_sq) )
@@ -195,7 +197,7 @@ namespace Chroma
 	res.n_count = k;
 	res.resid   = sqrt(cp);
 	swatch.stop();
-	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+	//	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
 	flopcount.report("invcg2", swatch.getTimeInSeconds());
 	revertFromFastMemoryHint(psi,true);
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_bicgstab.h,v 3.4 2009-05-28 15:36:30 bjoo Exp $
+// $Id: syssolver_mdagm_bicgstab.h,v 3.5 2009-06-02 15:56:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -18,6 +18,9 @@
 #include "actions/ferm/invert/invcg2.h"
 #endif
 
+#include "lmdagm.h"
+#include "update/molecdyn/predictor/chrono_predictor.h"
+#include "update/molecdyn/predictor/zero_guess_predictor.h"
 namespace Chroma
 {
 
@@ -60,34 +63,119 @@ namespace Chroma
      */
     SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
+      START_CODE();
+      
+      
+      StopWatch swatch;
+      SystemSolverResults_t res1,res2,res3;  // initialized by a constructo
+      swatch.reset(); swatch.start();
+
+      T Y;
+      Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+      (*A)(Y, psi, PLUS); // Y = M X
+      
+      res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
+	
+      // Step 2: Solve M X = Y
+      res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
+
+      res3.n_count = 0;
+      // Potential safety polishup
+#ifdef CHROMA_DO_ONE_CG_RESTART
+      // CG Polish - should be very quick
+      res3 = InvCG2(*A, chi, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab);
+#endif
+      res3.n_count += res2.n_count + res1.n_count;
+
+      { // Find true residuum
+	Y=zero;
+	T re=zero;
+	(*A)(Y, psi, PLUS);
+	(*A)(re,Y, MINUS);
+	re[A->subset()] -= chi;
+	res3.resid = sqrt(norm2(re,A->subset()));
+      }
+
+      swatch.stop();
+      QDPIO::cout << "BICGSTAB_SOLVER: " << res3.n_count 
+		  << " iterations. Rsd = " << res3.resid 
+		  << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
+      
+      double time = swatch.getTimeInSeconds();
+      QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+	
+      
+      END_CODE();
+
+      return res3;
+
+    }
+
+    //! Solver the linear system
+    /*!
+     * \param psi      solution ( Modify )
+     * \param chi      source ( Read )
+     * \return syssolver results
+     */
+    SystemSolverResults_t operator() (T& psi, const T& chi,
+				      AbsChronologicalPredictor4D<T>& predictor) const
+    {
 	START_CODE();
+
+
 	StopWatch swatch;
-	
 	SystemSolverResults_t res1,res2,res3;  // initialized by a constructo
-	swatch.start();
+	swatch.reset(); swatch.start();
 
-	
-	// ( M^\dag M )^{-1} => M^{-1} M^{-dag}
-	// so ( M^\dag M )^{-1} X = \phi
-	// => X = M^{-1} M^{-dag} \phi
-	//      = M%{-1} Y        Y = M^{-\dag} \phi
+	T Y = zero;
+
+	try { 
+	  // Get a two step solution plan
+	  AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor
+	    = dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
+
+	  // Hooray , we succeeded.
+	  // Step 1: Solve M^\dagger Y = chi
+
+	  two_step_predictor.predictY(Y,*A,chi);
+	  res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
+	  two_step_predictor.newYVector(Y);
+
+	  // Step 2: Solve M X = Y
+	  two_step_predictor.predictX(psi,*A, Y);
+	  res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
+	  two_step_predictor.newXVector(psi);
+	}
+	catch(std::bad_cast) {
+
+	  // Boo Hiss, we can't downcast to a two step predictor.
+	  // We rely on the fact that we can predict 
+	  //    X ~ (M^\dagger M)^{-1} chi
+	  // and then 
+	  //    X ~  M^{-1} M^{-\dagger} chi
+	  //
+	  //  Then MX ~ M^{-\dagger} chi ~ Y
+
+	  T Y ;
+	  Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+	  predictor(psi, (*MdagM), chi);
+	  (*A)(Y, psi, PLUS); // Y = M X
+	  res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
+	  // Step 2: Solve M X = Y
+	  res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
+
+	  predictor.newVector(psi);
+
+	}
+
 	res3.n_count = 0;
-
-
-	T Y = psi;
-	res1 = InvBiCGStab(*A, chi, Y, invParam.RsdBiCGStab, invParam.MaxBiCGStab, MINUS );
-	res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
-
-
+	// Potential safety polishup
 #ifdef CHROMA_DO_ONE_CG_RESTART
 	// CG Polish - should be very quick
 	res3 = InvCG2(*A, chi, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab);
 #endif
 
-	swatch.stop();
 	res3.n_count += res2.n_count + res1.n_count;
-
-
 
 	{ // Find true residuum
 	  Y=zero;
@@ -98,8 +186,7 @@ namespace Chroma
 	  res3.resid = sqrt(norm2(re,A->subset()));
 	}
 
-
-  
+	swatch.stop();
 	QDPIO::cout << "BICGSTAB_SOLVER: " << res3.n_count 
 		    << " iterations. Rsd = " << res3.resid 
 		    << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
@@ -112,6 +199,7 @@ namespace Chroma
 
 	return res3;
     }
+
 
 
   private:

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: two_flavor_ratio_conv_conv_monomial_w.h,v 3.2 2008-05-30 18:45:45 edwards Exp $
+// $Id: two_flavor_ratio_conv_conv_monomial_w.h,v 3.3 2009-06-02 15:56:40 bjoo Exp $
 
 /*! @file
  * @brief Two flavor Monomials - gauge action or fermion binlinear contributions for HMC
@@ -92,12 +92,12 @@ namespace Chroma
       // M_dag_prec phi = M^{dag}_prec \phi - the RHS
       (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
 
-      (getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
+      //(getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
 
       // Solve MdagM X = eta
-      SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
+      SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi, getMDSolutionPredictor());
 
-      (getMDSolutionPredictor()).newVector(X);
+      // (getMDSolutionPredictor()).newVector(X);
       
       (*M)(Y, X, PLUS);
 
@@ -311,8 +311,6 @@ namespace Chroma
       // Solve MdagM X = eta
       SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi);
 
-      (getMDSolutionPredictor()).newVector(X);
-      
       Phi phi_tmp=zero;
       (*M_prec)(phi_tmp, X, PLUS);
 

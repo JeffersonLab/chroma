@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.4 2009-05-28 15:36:31 bjoo Exp $
+// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.5 2009-06-02 15:56:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -98,7 +98,7 @@ namespace Chroma
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
 
-    //! Solver the linear system
+   //! Solver the linear system
     /*!
      * \param psi      solution ( Modify )
      * \param chi      source ( Read )
@@ -111,22 +111,28 @@ namespace Chroma
       START_CODE();
       StopWatch swatch;
       swatch.start();
-
-
       const Subset& s = (*M_double).subset();
-      //    T MdagChi;
-
-      // This is a CGNE. So create new RHS
-      //      (*A)(MdagChi, chi, MINUS);
-      // Handle< LinearOperator<T> > MM(new MdagMLinOp<T>(A));
-
-      TD psi_d; psi_d[s] = psi;
-      TD chi_d; chi_d[s] = chi;
       
-
+      
+      // Boo Hiss, we can't downcast to a two step predictor.
+      // We rely on the fact that we can predict 
+      //    X ~ (M^\dagger M)^{-1} chi
+      // and then 
+      //    X ~  M^{-1} M^{-\dagger} chi
+      //
+      //  Then MX ~ M^{-\dagger} chi ~ Y
+	
+      T Y ;
+      Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+      (*A)(Y, psi, PLUS); // Y = M X
+	  
+      TD psi_d;
+      TD chi_d;
+      psi_d[s] = Y;
+      chi_d[s] = chi;
       // Two Step BiCGStab:
       // Step 1:  M^\dagger Y = chi;
-
+      
       res1=InvBiCGStabReliable(*M_double,
 			       *M_single,
 			       chi_d,
@@ -135,13 +141,9 @@ namespace Chroma
 			       invParam.Delta,
 			       invParam.MaxIter,
 			       MINUS);
-      
-      // Now Y =defn= psi_d = ( M^\dag )^{-1} chi
-      // Step 2: M X = Y
 
-      // Don't copy just use psi_d = Y as the source
-      // and reuse chi_d as the result
-      chi_d[s]=zero;
+      chi_d[s] = psi;
+
       res2=InvBiCGStabReliable(*M_double,
 			       *M_single,
 			       psi_d,
@@ -150,8 +152,10 @@ namespace Chroma
 			       invParam.Delta,
 			       invParam.MaxIter,
 			       PLUS);
+      
       psi[s] = chi_d;
-
+	
+      // Check solution
       { 
 	T r;
 	r[A->subset()]=chi;
@@ -166,16 +170,148 @@ namespace Chroma
       QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count 
 		  << " iterations. Rsd = " << res.resid 
 		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
-
+      
       swatch.stop();
       double time = swatch.getTimeInSeconds();
       QDPIO::cout << "RELIABLE_BICTSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
-   
+      
+      
+      END_CODE();
+      return res;
+
+    }
+
+
+    //! Solver the linear system
+    /*!
+     * \param psi      solution ( Modify )
+     * \param chi      source ( Read )
+     * \return syssolver results
+     */
+    SystemSolverResults_t operator() (T& psi, const T& chi,
+				      AbsChronologicalPredictor4D<T>& predictor) const
+    {
+      SystemSolverResults_t res,res1,res2;
+
+      START_CODE();
+      StopWatch swatch;
+      swatch.start();
+      const Subset& s = (*M_double).subset();
+
+      TD psi_d; TD chi_d;
+      try { 
+	// Get a two step solution plan
+	AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor
+	  = dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
+      
+        // Hooray , we succeeded.
+        // Step 1: Solve M^\dagger Y = chi
+        T Y = zero;
+	two_step_predictor.predictY(Y,*A,chi);
+	psi_d[s] = Y;
+	chi_d[s] = chi;
+	// Two Step BiCGStab:
+	// Step 1:  M^\dagger Y = chi;
+	  
+	res1=InvBiCGStabReliable(*M_double,
+				 *M_single,
+				 chi_d,
+				 psi_d,
+				 invParam.RsdTarget,
+				 invParam.Delta,
+				 invParam.MaxIter,
+				 MINUS);
+
+	Y[s] = psi_d;
+	two_step_predictor.newYVector(Y);
+	
+	two_step_predictor.predictX(psi,*A, Y);
+	chi_d[s] = psi;
+
+	res2=InvBiCGStabReliable(*M_double,
+				 *M_single,
+				 psi_d,
+				 chi_d,
+				 invParam.RsdTarget,
+				 invParam.Delta,
+				 invParam.MaxIter,
+				 PLUS);
+	
+
+	psi[s] = chi_d;
+	two_step_predictor.newXVector(psi);
+      }
+      catch(std::bad_cast) {
+
+	// Boo Hiss, we can't downcast to a two step predictor.
+	// We rely on the fact that we can predict 
+	//    X ~ (M^\dagger M)^{-1} chi
+	// and then 
+	//    X ~  M^{-1} M^{-\dagger} chi
+	//
+	//  Then MX ~ M^{-\dagger} chi ~ Y
+	
+	T Y ;
+	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+	predictor(psi, (*MdagM), chi);
+	(*A)(Y, psi, PLUS); // Y = M X
+	  
+	psi_d[s] = Y;
+	chi_d[s] = chi;
+	// Two Step BiCGStab:
+	// Step 1:  M^\dagger Y = chi;
+	  
+	res1=InvBiCGStabReliable(*M_double,
+				 *M_single,
+				 chi_d,
+				 psi_d,
+				 invParam.RsdTarget,
+				 invParam.Delta,
+				 invParam.MaxIter,
+				 MINUS);
+
+	chi_d[s] = psi;
+
+	res2=InvBiCGStabReliable(*M_double,
+				 *M_single,
+				 psi_d,
+				 chi_d,
+				 invParam.RsdTarget,
+				 invParam.Delta,
+				 invParam.MaxIter,
+				 PLUS);
+
+	psi[s] = chi_d;
+	predictor.newVector(psi);
+
+	
+      }
+	
+      // Check solution
+      { 
+	T r;
+	r[A->subset()]=chi;
+	T tmp,tmp2;
+	// M^\dag M
+	(*A)(tmp, psi, PLUS);
+	(*A)(tmp2,tmp, MINUS);
+	r[A->subset()] -= tmp2;
+	res.n_count = res1.n_count + res2.n_count;
+	res.resid = sqrt(norm2(r, A->subset()));
+      }
+      QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count 
+		  << " iterations. Rsd = " << res.resid 
+		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      
+      swatch.stop();
+      double time = swatch.getTimeInSeconds();
+      QDPIO::cout << "RELIABLE_BICTSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      
       
       END_CODE();
       return res;
     }
-
+    
 
   private:
     // Hide default constructor
