@@ -680,6 +680,8 @@ CPP_DSLASH_DIR
 CPP_DSLASH_ENABLED
 BUILD_CPP_WILSON_DSLASH_TRUE
 BUILD_CPP_WILSON_DSLASH_FALSE
+BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE
+BUILD_GENERIC_SCALARSITE_BICGSTAB_FALSE
 CG_DWF_DIR
 CG_DWF_ENABLED
 BUILD_CG_DWF_TRUE
@@ -1365,6 +1367,10 @@ Optional Features:
   --enable-opt-eigcg      Build optimized eigcg
   --enable-opt-cfz-linop  Build and use the generic optimized Continued Frac.
                           Zolo. (CFZ) Linear Oper.
+
+  --enable-generic-scalarsite-bicgstab-kernels
+                          Switch on kernels to reduce Reliable BiCGStab BLAS
+                          memory bandwidth on threaded machines
 
   --enable-testcase-runner=script
                           Use <script> to run testcases:
@@ -4019,6 +4025,12 @@ if test "${enable_opt_cfz_linop+set}" = set; then
 fi
 
 
+# Check whether --enable-enable_generic_scalarsite_bicgstab_kernels was given.
+if test "${enable_enable_generic_scalarsite_bicgstab_kernels+set}" = set; then
+  enableval=$enable_enable_generic_scalarsite_bicgstab_kernels;
+fi
+
+
 # Check whether --enable-testcase-runner was given.
 if test "${enable_testcase_runner+set}" = set; then
   enableval=$enable_testcase_runner; chroma_testcase_runner=${enable_testcase_runner}
@@ -4321,6 +4333,7 @@ echo "$as_me: error: Cannot compile/link a program with QDP++. Use --with-qdp++=
    { (exit 1); exit 1; }; }
 fi
 
+
 case "$enable_sse_wilson_dslash" in
   yes)
        if test "X${enable_cpp_wilson_dslash}X" = "XyesX";
@@ -4403,6 +4416,28 @@ esac
 else
   BUILD_CPP_WILSON_DSLASH_TRUE='#'
   BUILD_CPP_WILSON_DSLASH_FALSE=
+fi
+
+
+case "$enable_generic_scalarsite_bicgstab_kernels" in
+ yes)
+        { echo "$as_me:$LINENO: Enabling Generic Scalarsite BiCGStab Kernels" >&5
+echo "$as_me: Enabling Generic Scalarsite BiCGStab Kernels" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_GENERIC_SCALARSITE_BICGSTAB
+_ACEOF
+
+	;;
+  *)
+        ;;
+esac
+ if test "x${enable_generic_scalarsite_bicgstab_kernels}x" = "xyesx" ; then
+  BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE=
+  BUILD_GENERIC_SCALARSITE_BICGSTAB_FALSE='#'
+else
+  BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE='#'
+  BUILD_GENERIC_SCALARSITE_BICGSTAB_FALSE=
 fi
 
 
@@ -5911,6 +5946,13 @@ echo "$as_me: error: conditional \"BUILD_CPP_WILSON_DSLASH\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
+if test -z "${BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE}" && test -z "${BUILD_GENERIC_SCALARSITE_BICGSTAB_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_GENERIC_SCALARSITE_BICGSTAB\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_GENERIC_SCALARSITE_BICGSTAB\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
 if test -z "${BUILD_CG_DWF_TRUE}" && test -z "${BUILD_CG_DWF_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"BUILD_CG_DWF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
@@ -6697,6 +6739,8 @@ CPP_DSLASH_DIR!$CPP_DSLASH_DIR$ac_delim
 CPP_DSLASH_ENABLED!$CPP_DSLASH_ENABLED$ac_delim
 BUILD_CPP_WILSON_DSLASH_TRUE!$BUILD_CPP_WILSON_DSLASH_TRUE$ac_delim
 BUILD_CPP_WILSON_DSLASH_FALSE!$BUILD_CPP_WILSON_DSLASH_FALSE$ac_delim
+BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE!$BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE$ac_delim
+BUILD_GENERIC_SCALARSITE_BICGSTAB_FALSE!$BUILD_GENERIC_SCALARSITE_BICGSTAB_FALSE$ac_delim
 CG_DWF_DIR!$CG_DWF_DIR$ac_delim
 CG_DWF_ENABLED!$CG_DWF_ENABLED$ac_delim
 BUILD_CG_DWF_TRUE!$BUILD_CG_DWF_TRUE$ac_delim
@@ -6761,7 +6805,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 67; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 69; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

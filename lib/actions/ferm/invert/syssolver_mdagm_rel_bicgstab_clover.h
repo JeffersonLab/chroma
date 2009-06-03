@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.5 2009-06-02 15:56:40 bjoo Exp $
+// $Id: syssolver_mdagm_rel_bicgstab_clover.h,v 3.6 2009-06-03 19:20:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -225,7 +225,9 @@ namespace Chroma
 	Y[s] = psi_d;
 	two_step_predictor.newYVector(Y);
 	
-	two_step_predictor.predictX(psi,*A, Y);
+	Handle<LinearOperator<T> > MdagM(new MdagMLinOp<T>(A));
+
+	two_step_predictor.predictX(psi,*MdagM, chi);
 	chi_d[s] = psi;
 
 	res2=InvBiCGStabReliable(*M_double,

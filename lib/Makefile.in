@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.334 2009-05-22 14:22:54 bjoo Exp $
+# $Id: Makefile.in,v 3.335 2009-06-03 19:20:32 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -120,21 +120,26 @@ POST_UNINSTALL = :
 @BUILD_SSED_CLOVER_APPLY_TRUE@	actions/ferm/linop/clover_apply_ssed.cc
 
 
+#
+# BICGSTAB Kernels Testing:
+@BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE@am__append_29 = actions/ferm/invert/bicgstab_kernels_scalarsite_generic.h
+@BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE@am__append_30 = actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
+
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_29 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_30 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_31 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_32 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
 # include files for scidac libaries
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_31 = -I@QDPC_DIR@/qmp/include \
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_33 = -I@QDPC_DIR@/qmp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qio/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qla/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qdp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qopqdp/include
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_32 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_33 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_34 = actions/ferm/linop/clover_term_bagel_clover.h
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_35 = actions/ferm/linop/clover_term_bagel_clover.cc
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -760,6 +765,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc \
 	actions/ferm/linop/clover_term_ssed.cc \
 	actions/ferm/linop/clover_apply_ssed.cc \
+	actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
@@ -822,8 +828,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_SSED_CLOVER_APPLY_TRUE@am__objects_12 =  \
 @BUILD_SSED_CLOVER_APPLY_TRUE@	clover_term_ssed.$(OBJEXT) \
 @BUILD_SSED_CLOVER_APPLY_TRUE@	clover_apply_ssed.$(OBJEXT)
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_13 = asqtad_cps_wrapper_qprop.$(OBJEXT)
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_14 = clover_term_bagel_clover.$(OBJEXT)
+@BUILD_GENERIC_SCALARSITE_BICGSTAB_TRUE@am__objects_13 = bicgstab_kernels_scalarsite_generic.$(OBJEXT)
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_14 = asqtad_cps_wrapper_qprop.$(OBJEXT)
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_15 = clover_term_bagel_clover.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
@@ -1281,7 +1288,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	$(am__objects_2) $(am__objects_3) $(am__objects_4) \
 	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
 	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
-	$(am__objects_11) $(am__objects_12) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
 	fermacts_aggregate_s.$(OBJEXT) \
 	asqtad_fermact_params_s.$(OBJEXT) asqtad_fermact_s.$(OBJEXT) \
 	hisq_fermact_params_s.$(OBJEXT) hisq_fermact_s.$(OBJEXT) \
@@ -1303,8 +1310,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	scalar_loops_s.$(OBJEXT) pseudoscalar_loops_s.$(OBJEXT) \
 	pseudoscalar_stoch_conn_s.$(OBJEXT) \
 	deriv_quark_displacement_s.$(OBJEXT) quark_flavor_s.$(OBJEXT) \
-	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_13) \
-	$(am__objects_14)
+	walfil_s.$(OBJEXT) stag_phases_s.$(OBJEXT) $(am__objects_14) \
+	$(am__objects_15)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -1365,6 +1372,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/inv_multiprec_richardson.h \
 	actions/ferm/invert/reliable_bicgstab.h \
+	actions/ferm/invert/bicgstab_kernels.h \
+	actions/ferm/invert/bicgstab_kernels_naive.h \
 	actions/ferm/invert/reliable_cg.h \
 	actions/ferm/invert/containers.h \
 	actions/ferm/invert/norm_gram_schm.h \
@@ -1994,6 +2003,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/linop/lwldslash_array_pab_w.h \
 	actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h \
 	actions/ferm/linop/clover_term_ssed.h \
+	actions/ferm/invert/bicgstab_kernels_scalarsite_generic.h \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h \
 	actions/ferm/linop/clover_term_bagel_clover.h
 nobase_includeHEADERS_INSTALL = $(install_sh_DATA)
@@ -2207,6 +2217,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/inv_multiprec_richardson.h \
 	actions/ferm/invert/reliable_bicgstab.h \
+	actions/ferm/invert/bicgstab_kernels.h \
+	actions/ferm/invert/bicgstab_kernels_naive.h \
 	actions/ferm/invert/reliable_cg.h \
 	actions/ferm/invert/containers.h \
 	actions/ferm/invert/norm_gram_schm.h \
@@ -2821,7 +2833,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	$(am__append_10) $(am__append_12) $(am__append_14) \
 	$(am__append_19) $(am__append_21) $(am__append_23) \
 	$(am__append_25) $(am__append_27) $(am__append_29) \
-	$(am__append_32)
+	$(am__append_31) $(am__append_34)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -2839,7 +2851,7 @@ AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_31)
+	$(am__append_7) $(am__append_33)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -3461,7 +3473,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	$(am__append_13) $(am__append_15) $(am__append_16) \
 	$(am__append_17) $(am__append_18) $(am__append_20) \
 	$(am__append_22) $(am__append_24) $(am__append_26) \
-	$(am__append_28) actions/ferm/fermacts/fermacts_aggregate_s.cc \
+	$(am__append_28) $(am__append_30) \
+	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
 	actions/ferm/fermacts/hisq_fermact_params_s.cc \
@@ -3493,7 +3506,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_30) $(am__append_33)
+	util/gauge/stag_phases_s.cc $(am__append_32) $(am__append_35)
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -3621,6 +3634,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_spin3by2_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_spinmat_funcmap_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bicgstab_kernels_scalarsite_generic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/block.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/block_couplings.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/central_tprec_fermact_qprop_w.Po@am__quote@
@@ -14052,6 +14066,20 @@ clover_apply_ssed.obj: actions/ferm/linop/clover_apply_ssed.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/linop/clover_apply_ssed.cc' object='clover_apply_ssed.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o clover_apply_ssed.obj `if test -f 'actions/ferm/linop/clover_apply_ssed.cc'; then $(CYGPATH_W) 'actions/ferm/linop/clover_apply_ssed.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/linop/clover_apply_ssed.cc'; fi`
+
+bicgstab_kernels_scalarsite_generic.o: actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bicgstab_kernels_scalarsite_generic.o -MD -MP -MF $(DEPDIR)/bicgstab_kernels_scalarsite_generic.Tpo -c -o bicgstab_kernels_scalarsite_generic.o `test -f 'actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc' || echo '$(srcdir)/'`actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/bicgstab_kernels_scalarsite_generic.Tpo $(DEPDIR)/bicgstab_kernels_scalarsite_generic.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc' object='bicgstab_kernels_scalarsite_generic.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bicgstab_kernels_scalarsite_generic.o `test -f 'actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc' || echo '$(srcdir)/'`actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
+
+bicgstab_kernels_scalarsite_generic.obj: actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT bicgstab_kernels_scalarsite_generic.obj -MD -MP -MF $(DEPDIR)/bicgstab_kernels_scalarsite_generic.Tpo -c -o bicgstab_kernels_scalarsite_generic.obj `if test -f 'actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc'; then $(CYGPATH_W) 'actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/bicgstab_kernels_scalarsite_generic.Tpo $(DEPDIR)/bicgstab_kernels_scalarsite_generic.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc' object='bicgstab_kernels_scalarsite_generic.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o bicgstab_kernels_scalarsite_generic.obj `if test -f 'actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc'; then $(CYGPATH_W) 'actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc'; fi`
 
 fermacts_aggregate_s.o: actions/ferm/fermacts/fermacts_aggregate_s.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT fermacts_aggregate_s.o -MD -MP -MF $(DEPDIR)/fermacts_aggregate_s.Tpo -c -o fermacts_aggregate_s.o `test -f 'actions/ferm/fermacts/fermacts_aggregate_s.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/fermacts_aggregate_s.cc

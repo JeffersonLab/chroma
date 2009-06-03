@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.5 2009-06-01 16:24:54 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.6 2009-06-03 19:20:40 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -6,7 +6,11 @@
 #include "chromabase.h"
 #include "actions/ferm/invert/reliable_bicgstab.h"
 
+#include "actions/ferm/invert/bicgstab_kernels.h"
+
 namespace Chroma {
+
+  using namespace BiCGStabKernels;
 
   template<typename T, typename TF, typename CF>
 SystemSolverResults_t
@@ -20,6 +24,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 	      enum PlusMinus isign)
   {
   SystemSolverResults_t ret;
+
+  BiCGStabKernels::initKernels();
 
   const Subset& s = A.subset();
 
@@ -40,24 +46,33 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
   Double rsd_sq =  Double(RsdBiCGStab)*Double(RsdBiCGStab)*norm2(chi,s);
 
-  b[s] = chi;
+  TF r0;
+
+  
+  Double b_sq;
   {
     T tmp;
     A(tmp, psi, isign);
-    b[s] -= tmp;
-    flopcount.addFlops(A.nFlops());
-    flopcount.addSiteFlops(2*Nc*Ns,s);
+
+    // We could do all this in a onner
+    // b_sq = minusTmpB(tmp, b, r, r0,s)
+    //
+    //b[s] = chi-tmp;
+    //b_sq = norm2(b,s);
+    // r[s] = b;
+
+    xymz_normx(b,chi,tmp,b_sq,s);
+    r[s] = b;
+    r0[s] = b;
+
   }
+  QDPIO::cout << "r0 = " << b_sq << endl;;
+
+  flopcount.addFlops(A.nFlops());
+  flopcount.addSiteFlops(2*Nc*Ns,s);
+  flopcount.addSiteFlops(4*Nc*Ns,s);  
 
   TF x; x[s]=zero;
- 
-  // now work out r= chi - Apsi = chi - r0
-  r[s] = b; 
-  TF r0; r0[s] = b;
-
-  Double b_sq = norm2(b,s);
-  flopcount.addSiteFlops(4*Nc*Ns,s);
-
   Double r_sq = b_sq;
 
 
@@ -103,15 +118,19 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       DComplex beta =(rho / rho_prev) * (alpha/omega);
       CF beta_r = beta;
       omega_r = omega;
-      // p = r + beta(p - omega v)
 
+      // NB: This could be done in a onner
+      // rPlusBetaPMinusBetaOmegav(p, r, v, beta, omega, s) 
+
+      // p = r + beta(p - omega v)
       // first work out p - omega v 
       // into tmp
       // then do p = r + beta tmp
 
-      tmp[s] = p - omega_r*v;
-      p[s] = r + beta_r*tmp;
 
+      // tmp[s] = p - omega_r*v;
+      // p[s] = r + beta_r*tmp;
+      yxpaymabz(r, p, v, beta_r, omega_r, s);
 
     }
 
@@ -143,32 +162,43 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
 
     // omega = < t | s > / < t | t > = < t | r > / norm2(t);
-
-    // This does the full 5D norm
     // accumulate <t | s > = <t | r> into omega
-    Double t_norm = norm2(t,s);
 
-    omega = innerProduct(t,r,s);
+    // As Mike tells me, I could do these together.
+    // I can probably reduce these to a single ALLREDUCE/QMP_sum_double_array()
+    // 
+    // some routine like:  t_norm = normXCdotXY(t,r,s, iprod_r, iprod_i)
+    // Double t_norm = norm2(t,s);
+    // omega = innerProduct(t,r,s);
+
+    Double t_norm;
+    norm2x_cdotxy(t,r, t_norm, omega, s);
+    
     omega /= t_norm;
 
+    // again
+    // This is a simple xPlusAYPlusBz(x,r,p,omega,alpha)
     // psi = psi + omega s + alpha p 
     //     = psi + omega r + alpha p
     //
     // use tmp to compute psi + omega r
     // then add in the alpha p
     omega_r = omega;
+    // tmp[s] = x + omega_r*r;
+    // x[s] = tmp + alpha_r*p;
 
-    tmp[s] = x + omega_r*r;
-    x[s] = tmp + alpha_r*p;
 
+    xpaypbz(x,r,p,omega_r, alpha_r,s);
 
     // r = s - omega t = r - omega t1G
-    r[s] -= omega_r*t;
 
-    r_sq = norm2(r,s);
+    // I can roll this all together 
+    // r_sq = XMinusAYNormXCDotZX(r,t,r0,omega_r, omega_i, rho_r, rho_i, s),
+    // r[s] -= omega_r*t;
+    // r_sq = norm2(r,s);
+    // rho = innerProduct(r0,r,s);
 
-
-    rho = innerProduct(r0,r,s);
+    xmay_normx_cdotzx(r, t, r0, omega_r, r_sq, rho,s); 
 
     // Flops so far: Standard BiCGStab Flops
     // -----------------------------------------
@@ -193,10 +223,13 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
 	A(tmp2, x_dble, isign); // Use full solution so far
 
-	r_dble[s] = b - tmp2;
-
-	r[s] = r_dble;     // new R = b - Ax
-	r_sq = norm2(r_dble,s);
+	// Roll this together - can eliminate r_dble which is an intermediary
+	
+	// r_dble[s] = b - tmp2;
+	// r_sq = norm2(r_dble,s);
+	// r[s] = r_dble;     
+	xymz_normx(r_dble, b,tmp2, r_sq,s);
+	r[s]=r_dble;
 
 	flopcount.addSiteFlops(6*Nc*Ns,s);
 	flopcount.addFlops(A.nFlops());
@@ -248,6 +281,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
      flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
   }
 
+  BiCGStabKernels::finishKernels();
   return ret;
 
 }

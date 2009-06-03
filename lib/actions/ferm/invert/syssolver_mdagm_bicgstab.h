@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_bicgstab.h,v 3.5 2009-06-02 15:56:40 bjoo Exp $
+// $Id: syssolver_mdagm_bicgstab.h,v 3.6 2009-06-03 19:20:40 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -142,7 +142,8 @@ namespace Chroma
 	  two_step_predictor.newYVector(Y);
 
 	  // Step 2: Solve M X = Y
-	  two_step_predictor.predictX(psi,*A, Y);
+	  Handle<LinearOperator<T> > MdagM(new MdagMLinOp<T>(A));
+	  two_step_predictor.predictX(psi,*MdagM, chi);
 	  res2 = InvBiCGStab(*A, Y, psi, invParam.RsdBiCGStab, invParam.MaxBiCGStab, PLUS );
 	  two_step_predictor.newXVector(psi);
 	}

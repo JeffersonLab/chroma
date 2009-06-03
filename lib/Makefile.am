@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.207 2009-05-22 14:22:54 bjoo Exp $
+# $Id: Makefile.am,v 3.208 2009-06-03 19:20:31 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -65,6 +65,8 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_gmresr_cg_array.h \
 	actions/ferm/invert/inv_multiprec_richardson.h \
 	actions/ferm/invert/reliable_bicgstab.h \
+	actions/ferm/invert/bicgstab_kernels.h \
+	actions/ferm/invert/bicgstab_kernels_naive.h \
 	actions/ferm/invert/reliable_cg.h \
         actions/ferm/invert/containers.h \
 	actions/ferm/invert/norm_gram_schm.h \
@@ -1690,6 +1692,14 @@ if BUILD_SSED_CLOVER_APPLY
 nobase_include_HEADERS += actions/ferm/linop/clover_term_ssed.h
 libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
 	actions/ferm/linop/clover_apply_ssed.cc
+endif
+
+
+#
+# BICGSTAB Kernels Testing:
+if BUILD_GENERIC_SCALARSITE_BICGSTAB
+nobase_include_HEADERS += actions/ferm/invert/bicgstab_kernels_scalarsite_generic.h
+libchroma_a_SOURCES += actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
 endif
 
 #

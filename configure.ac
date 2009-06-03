@@ -151,6 +151,12 @@ AC_ARG_ENABLE(opt_cfz_linop,
     [Build and use the generic optimized Continued Frac. Zolo. (CFZ) Linear Oper.])
 )
 
+AC_ARG_ENABLE(enable_generic_scalarsite_bicgstab_kernels,
+	AC_HELP_STRING(
+	[--enable-generic-scalarsite-bicgstab-kernels],
+	[Switch on kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
+)
+
 AC_ARG_ENABLE(testcase-runner,
   AC_HELP_STRING([--enable-testcase-runner=script],
     [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh]),
@@ -254,6 +260,7 @@ else
   AC_MSG_ERROR([Cannot compile/link a program with QDP++. Use --with-qdp++=<dir> to select a working version.])
 fi 
 
+
 dnl ************************************************************************
 dnl **** SSE Wilson dslash                                              ****
 dnl ************************************************************************
@@ -306,6 +313,20 @@ case "$enable_cpp_wilson_dslash" in
 esac 
 AM_CONDITIONAL(BUILD_CPP_WILSON_DSLASH,
   [test "x${enable_cpp_wilson_dslash}x" = "xyesx" ])
+
+dnl ************************************************************************
+dnl **** Generic Scalarsite BiCGStab Stuff
+dnl ************************************************************************
+case "$enable_generic_scalarsite_bicgstab_kernels" in
+ yes)
+        AC_MSG_NOTICE([Enabling Generic Scalarsite BiCGStab Kernels])
+	AC_DEFINE([BUILD_GENERIC_SCALARSITE_BICGSTAB],[],[ BUILD_GENERIC_SCALARSITE_BICGSTAB ])
+	;;
+  *)
+        ;;
+esac 
+AM_CONDITIONAL(BUILD_GENERIC_SCALARSITE_BICGSTAB,
+  [test "x${enable_generic_scalarsite_bicgstab_kernels}x" = "xyesx" ])
 
 
 dnl ************************************************************************
