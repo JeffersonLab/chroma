@@ -1,10 +1,11 @@
-// $Id: predictor_aggregate.cc,v 3.3 2009-04-17 02:05:38 bjoo Exp $
+// $Id: predictor_aggregate.cc,v 3.4 2009-06-04 20:29:13 bjoo Exp $
 /*! \file
  *  \brief Chrono predictor aggregator
  */
 
 #include "update/molecdyn/predictor/predictor_aggregate.h"
 
+#include "update/molecdyn/predictor/null_predictor.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
 #include "update/molecdyn/predictor/last_solution_predictor.h"
 #include "update/molecdyn/predictor/linear_extrap_predictor.h"
@@ -29,6 +30,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= Null4DChronoPredictorEnv::registerAll();
+	success &= Null5DChronoPredictorEnv::registerAll();
 	success &= ZeroGuess4DChronoPredictorEnv::registerAll();
 	success &= ZeroGuess5DChronoPredictorEnv::registerAll();
 	success &= LastSolution4DChronoPredictorEnv::registerAll();  
