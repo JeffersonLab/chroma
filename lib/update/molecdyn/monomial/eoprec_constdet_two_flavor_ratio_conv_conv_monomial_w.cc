@@ -1,4 +1,4 @@
-// $Id: eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc,v 3.2 2008-11-10 17:59:07 bjoo Exp $
+// $Id: eoprec_constdet_two_flavor_ratio_conv_conv_monomial_w.cc,v 3.3 2009-06-04 20:30:27 bjoo Exp $
 /*! @file
  * @brief Two-flavor collection of even-odd preconditioned 4D ferm monomials
  */
@@ -13,6 +13,7 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 
+#include "update/molecdyn/predictor/null_predictor.h"
 #include "update/molecdyn/predictor/zero_guess_predictor.h"
 
 
@@ -116,8 +117,9 @@ namespace Chroma
     {
       AbsChronologicalPredictor4D<LatticeFermion>* tmp = 0x0;
       if( param.predictor.xml == "" ) {
-	// No predictor specified use zero guess
-	tmp = new ZeroGuess4DChronoPredictor();
+	// No predictor specified use: Null guess
+	QDPIO::cout << "No predictor specified. Using NULL Predictor" << endl;
+	tmp = new Null4DChronoPredictor();
       }
       else 
       {
