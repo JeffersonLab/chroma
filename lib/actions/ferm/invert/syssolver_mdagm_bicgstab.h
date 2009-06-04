@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_bicgstab.h,v 3.6 2009-06-03 19:20:40 bjoo Exp $
+// $Id: syssolver_mdagm_bicgstab.h,v 3.7 2009-06-04 20:32:48 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -127,7 +127,7 @@ namespace Chroma
 	SystemSolverResults_t res1,res2,res3;  // initialized by a constructo
 	swatch.reset(); swatch.start();
 
-	T Y = zero;
+	T Y = psi;
 
 	try { 
 	  // Get a two step solution plan
