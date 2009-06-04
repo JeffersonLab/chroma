@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.208 2009-06-03 19:20:31 bjoo Exp $
+# $Id: Makefile.am,v 3.209 2009-06-04 20:33:20 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -388,6 +388,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/predictor_aggregate.h \
+	update/molecdyn/predictor/null_predictor.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
@@ -1217,6 +1218,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
+	update/molecdyn/predictor/null_predictor.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.335 2009-06-03 19:20:32 bjoo Exp $
+# $Id: Makefile.in,v 3.336 2009-06-04 20:33:21 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -416,6 +416,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
+	update/molecdyn/predictor/null_predictor.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
@@ -1018,7 +1019,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	lcm_4mn4fp_recursive.$(OBJEXT) \
 	lcm_creutz_gocksch_4_recursive.$(OBJEXT) \
 	global_metropolis_accrej.$(OBJEXT) \
-	predictor_aggregate.$(OBJEXT) zero_guess_predictor.$(OBJEXT) \
+	predictor_aggregate.$(OBJEXT) null_predictor.$(OBJEXT) \
+	zero_guess_predictor.$(OBJEXT) \
 	last_solution_predictor.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) lu_solve.$(OBJEXT) \
 	mre_extrap_predictor.$(OBJEXT) \
@@ -3138,6 +3140,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.cc \
 	update/molecdyn/hmc/global_metropolis_accrej.cc \
 	update/molecdyn/predictor/predictor_aggregate.cc \
+	update/molecdyn/predictor/null_predictor.cc \
 	update/molecdyn/predictor/zero_guess_predictor.cc \
 	update/molecdyn/predictor/last_solution_predictor.cc \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
@@ -4054,6 +4057,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/norm_sh_sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/norm_sh_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/npr_vertex_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/null_predictor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_rat_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_ratio_rat_conv_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/one_flavor_ratio_rat_rat_monomial_params_w.Po@am__quote@
@@ -8830,6 +8834,20 @@ predictor_aggregate.obj: update/molecdyn/predictor/predictor_aggregate.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/predictor_aggregate.cc' object='predictor_aggregate.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o predictor_aggregate.obj `if test -f 'update/molecdyn/predictor/predictor_aggregate.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/predictor_aggregate.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/predictor_aggregate.cc'; fi`
+
+null_predictor.o: update/molecdyn/predictor/null_predictor.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT null_predictor.o -MD -MP -MF $(DEPDIR)/null_predictor.Tpo -c -o null_predictor.o `test -f 'update/molecdyn/predictor/null_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/null_predictor.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/null_predictor.Tpo $(DEPDIR)/null_predictor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/null_predictor.cc' object='null_predictor.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o null_predictor.o `test -f 'update/molecdyn/predictor/null_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/null_predictor.cc
+
+null_predictor.obj: update/molecdyn/predictor/null_predictor.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT null_predictor.obj -MD -MP -MF $(DEPDIR)/null_predictor.Tpo -c -o null_predictor.obj `if test -f 'update/molecdyn/predictor/null_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/null_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/null_predictor.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/null_predictor.Tpo $(DEPDIR)/null_predictor.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/predictor/null_predictor.cc' object='null_predictor.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o null_predictor.obj `if test -f 'update/molecdyn/predictor/null_predictor.cc'; then $(CYGPATH_W) 'update/molecdyn/predictor/null_predictor.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/predictor/null_predictor.cc'; fi`
 
 zero_guess_predictor.o: update/molecdyn/predictor/zero_guess_predictor.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT zero_guess_predictor.o -MD -MP -MF $(DEPDIR)/zero_guess_predictor.Tpo -c -o zero_guess_predictor.o `test -f 'update/molecdyn/predictor/zero_guess_predictor.cc' || echo '$(srcdir)/'`update/molecdyn/predictor/zero_guess_predictor.cc
@@ -14997,6 +15015,7 @@ uninstall-am: uninstall-libLIBRARIES uninstall-nobase_includeHEADERS \
 	update/molecdyn/predictor/chrono_predictor.h \
 	update/molecdyn/predictor/chrono_predictor_factory.h \
 	update/molecdyn/predictor/predictor_aggregate.h \
+	update/molecdyn/predictor/null_predictor.h \
 	update/molecdyn/predictor/zero_guess_predictor.h \
 	update/molecdyn/predictor/last_solution_predictor.h \
 	update/molecdyn/predictor/circular_buffer.h \
