@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.6 2009-06-03 19:20:40 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.7 2009-06-05 13:08:29 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -31,11 +31,21 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
   bool convP = false;
 
-  // First get r = r0 = chi - A psi
-  TF r;
+  // These are all the vectors. There should be
+  // None declared later on. These declarations do 'mallocs'
+  // under the hood. Want those out of the main loop.
   T b; 
+  T tmp;
   T r_dble;
   T x_dble;
+
+  TF r;
+  TF r0;
+  TF x; 
+  TF p;
+  TF v;
+  TF t;
+
   int k;
 
   StopWatch swatch;
@@ -44,37 +54,32 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   swatch.reset();
   swatch.start();
 
+  x[s]=zero;
+  p[s] = zero;
+  v[s] = zero;
+
   Double rsd_sq =  Double(RsdBiCGStab)*Double(RsdBiCGStab)*norm2(chi,s);
-
-  TF r0;
-
-  
   Double b_sq;
-  {
-    T tmp;
-    A(tmp, psi, isign);
 
-    // We could do all this in a onner
-    // b_sq = minusTmpB(tmp, b, r, r0,s)
-    //
-    //b[s] = chi-tmp;
-    //b_sq = norm2(b,s);
-    // r[s] = b;
 
-    xymz_normx(b,chi,tmp,b_sq,s);
-    r[s] = b;
-    r0[s] = b;
+  A(tmp, psi, isign);
 
-  }
+  // We could do all this in a onner
+  // b_sq = minusTmpB(tmp, b, r, r0,s)
+  //
+  //b[s] = chi-tmp;
+  //b_sq = norm2(b,s);
+  // r[s] = b;
+
+  xymz_normx(b,chi,tmp,b_sq,s);
+  r[s] = b;
+  r0[s] = b;
+  Double r_sq = b_sq;
   QDPIO::cout << "r0 = " << b_sq << endl;;
 
   flopcount.addFlops(A.nFlops());
   flopcount.addSiteFlops(2*Nc*Ns,s);
   flopcount.addSiteFlops(4*Nc*Ns,s);  
-
-  TF x; x[s]=zero;
-  Double r_sq = b_sq;
-
 
   Double rNorm = sqrt(r_sq);
   Double r0Norm = rNorm;
@@ -84,18 +89,11 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   bool updateX = false;
 
 
-  // Now initialise v = p = 0
-  TF p;
-  TF v;
-
-  p[s] = zero;
-  v[s] = zero;
-
-  TF tmp;
-  TF t;
-
-
   DComplex rho, rho_prev, alpha, omega;
+
+  DComplex ctmp;
+  Double t_norm;
+
   CF rho_r, alpha_r, omega_r;
   // rho_0 := alpha := omega = 1
   // Iterations start at k=1, so rho_0 is in rho_prev
@@ -107,7 +105,6 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   // The iterations 
   for(k = 0; k < MaxBiCGStab && !convP ; k++) { 
     
-    // rho_{k+1} = < r_0 | r >
     if( k == 0 ) { 
       // I know that r_0 = r so <r_0|r>=norm2(r) = r_sq
       // rho = innerProduct(r0,r,s);
@@ -131,7 +128,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       // tmp[s] = p - omega_r*v;
       // p[s] = r + beta_r*tmp;
       yxpaymabz(r, p, v, beta_r, omega_r, s);
-
+      
     }
 
     // v = Ap
@@ -139,13 +136,13 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
     // alpha = rho_{k+1} / < r_0 | v >
     // put <r_0 | v > into tmp
-    DComplex ctmp = innerProduct(r0,v,s);
+    ctmp = innerProduct(r0,v,s);
 
     if( toBool( real(ctmp) == 0 ) && toBool( imag(ctmp) == 0 ) ) {
       QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
       QDP_abort(1);
     }
-
+    
     alpha = rho / ctmp;
 
     // Done with rho now, so save it into rho_prev
@@ -171,7 +168,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     // Double t_norm = norm2(t,s);
     // omega = innerProduct(t,r,s);
 
-    Double t_norm;
+    
     norm2x_cdotxy(t,r, t_norm, omega, s);
     
     omega /= t_norm;
@@ -217,24 +214,22 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     if( updateR ) { 
       // QDPIO::cout << "Iter " << k << ": updating r " << endl;
       
-      {
-	T tmp2;
-	x_dble[s] = x;
+    
+      x_dble[s] = x;
 
-	A(tmp2, x_dble, isign); // Use full solution so far
+      A(tmp, x_dble, isign); // Use full solution so far
 
-	// Roll this together - can eliminate r_dble which is an intermediary
+      // Roll this together - can eliminate r_dble which is an intermediary
 	
-	// r_dble[s] = b - tmp2;
-	// r_sq = norm2(r_dble,s);
-	// r[s] = r_dble;     
-	xymz_normx(r_dble, b,tmp2, r_sq,s);
-	r[s]=r_dble;
+      // r_dble[s] = b - tmp2;
+      // r_sq = norm2(r_dble,s);
+      // r[s] = r_dble;     
+      xymz_normx(r_dble, b,tmp, r_sq,s);
+      r[s]=r_dble;
 
-	flopcount.addSiteFlops(6*Nc*Ns,s);
-	flopcount.addFlops(A.nFlops());
+      flopcount.addSiteFlops(6*Nc*Ns,s);
+      flopcount.addFlops(A.nFlops());
 
-      }
       rNorm = sqrt(r_sq);
       maxrr = rNorm;
 	
@@ -244,14 +239,16 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 	if( ! updateR ) { x_dble[s]=x; } // if updateR then this is done already
 	psi[s] += x_dble; // Add on group accumulated solution in y
 	flopcount.addSiteFlops(2*Nc*Ns,s);
-
+	
 	x[s] = zero; // zero y
 	b[s] = r_dble;
 	r0Norm = rNorm;
 	maxrx = rNorm;
       }
-
+      
     }
+
+
     if( toBool(r_sq < rsd_sq ) ) {
       
       convP = true;
@@ -268,7 +265,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     else { 
       convP = false;
     }
-
+    
 
 
   }
@@ -278,7 +275,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     QDP_abort(1);
   }
   else { 
-     flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
+    QDPIO::cout << "reliable_bicgstab: n_count " << ret.n_count << endl;
+    flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
   }
 
   BiCGStabKernels::finishKernels();
