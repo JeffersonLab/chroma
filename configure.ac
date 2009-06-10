@@ -157,6 +157,12 @@ AC_ARG_ENABLE(enable_generic_scalarsite_bicgstab_kernels,
 	[Switch on kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
 )
 
+AC_ARG_ENABLE(enable_sse_scalarsite_bicgstab_kernels,
+	AC_HELP_STRING(
+	[--enable-sse-scalarsite-bicgstab-kernels],
+	[Switch on SSE kernels to reduce Reliable BiCGStab BLAS memory bandwidth on threaded machines])
+)
+
 AC_ARG_ENABLE(testcase-runner,
   AC_HELP_STRING([--enable-testcase-runner=script],
     [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh]),
@@ -320,13 +326,29 @@ dnl ************************************************************************
 case "$enable_generic_scalarsite_bicgstab_kernels" in
  yes)
         AC_MSG_NOTICE([Enabling Generic Scalarsite BiCGStab Kernels])
-	AC_DEFINE([BUILD_GENERIC_SCALARSITE_BICGSTAB],[],[ BUILD_GENERIC_SCALARSITE_BICGSTAB ])
+	AC_DEFINE([BUILD_SCALARSITE_BICGSTAB],[],[Build Scalarsite BICGStab Kernels])
+	AC_DEFINE([BUILD_GENERIC_SCALARSITE_BICGSTAB],[],[Use Generic Kernels ])
 	;;
   *)
         ;;
 esac 
-AM_CONDITIONAL(BUILD_GENERIC_SCALARSITE_BICGSTAB,
-  [test "x${enable_generic_scalarsite_bicgstab_kernels}x" = "xyesx" ])
+
+dnl ************************************************************************
+dnl **** Generic Scalarsite BiCGStab Stuff
+dnl ************************************************************************
+case "$enable_sse_scalarsite_bicgstab_kernels" in
+ yes)
+        AC_MSG_NOTICE([Enabling SSE Scalarsite BiCGStab Kernels])
+	AC_DEFINE([BUILD_SCALARSITE_BICGSTAB],[],[Build Scalarsite BICGStab Kernels])
+	AC_DEFINE([BUILD_SSE_SCALARSITE_BICGSTAB],[],[Use Generic Kernels ])
+	;;
+  *)
+        ;;
+esac 
+AM_CONDITIONAL(BUILD_SCALARSITE_BICGSTAB,
+  [test "x${enable_sse_scalarsite_bicgstab_kernels}x" = "xyesx" -o "x${enable_generic_scalarsite_bicgstab_kernels}x"  ])
+
+
 
 
 dnl ************************************************************************

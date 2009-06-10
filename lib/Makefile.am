@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.209 2009-06-04 20:33:20 bjoo Exp $
+# $Id: Makefile.am,v 3.210 2009-06-10 20:05:07 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1699,9 +1699,27 @@ endif
 
 #
 # BICGSTAB Kernels Testing:
-if BUILD_GENERIC_SCALARSITE_BICGSTAB
-nobase_include_HEADERS += actions/ferm/invert/bicgstab_kernels_scalarsite_generic.h
-libchroma_a_SOURCES += actions/ferm/invert/bicgstab_kernels_scalarsite_generic.cc
+if BUILD_SCALARSITE_BICGSTAB
+nobase_include_HEADERS += 
+	actions/ferm/invert/bicgstab_kernels_scalarsite.h \
+	actions/ferm/invert/bicgstab_kernels_scalarsite_wrappers.h \
+	actions/ferm/invert/ord_norm2x_cdotxy_kernel.h \
+	actions/ferm/invert/ord_norm2x_cdotxy_kernel_sse.h \
+	actions/ferm/invert/ord_norm2x_cdotxy_kernel_generic.h \
+	actions/ferm/invert/ord_xmay_normx_cdotzx_kernel.h \
+	actions/ferm/invert/ord_xmay_normx_cdotzx_kernel_generic.h \
+	actions/ferm/invert/ord_xmay_normx_cdotzx_kernel_sse.h \
+	actions/ferm/invert/ord_xmyz_normx_kernel.h \
+	actions/ferm/invert/ord_xmyz_normx_kernel_generic.h \
+	actions/ferm/invert/ord_xmyz_normx_kernel_sse.h \
+	actions/ferm/invert/ord_xpaypbz_kernel.h \
+	actions/ferm/invert/ord_xpaypbz_kernel_generic.h \
+	actions/ferm/invert/ord_xpaypbz_kernel_sse.h \
+	actions/ferm/invert/ord_yxpaymabz_kernel.h \
+	actions/ferm/invert/ord_yxpaymabz_kernel_generic.h \
+	actions/ferm/invert/ord_yxpaymabz_kernel_sse.h
+
+libchroma_a_SOURCES += actions/ferm/invert/bicgstab_kernels_scalarsite.cc
 endif
 
 #

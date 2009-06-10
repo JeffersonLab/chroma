@@ -15,7 +15,7 @@
 /* Build CPS ASQTAD INVERTER */
 #undef BUILD_CPS_ASQTAD_INVERTER
 
-/* BUILD_GENERIC_SCALARSITE_BICGSTAB */
+/* Use Generic Kernels */
 #undef BUILD_GENERIC_SCALARSITE_BICGSTAB
 
 /* Build GMP Remez code */
@@ -33,8 +33,14 @@
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 
+/* Build Scalarsite BICGStab Kernels */
+#undef BUILD_SCALARSITE_BICGSTAB
+
 /* Use SSED Clover Term Apply */
 #undef BUILD_SSED_CLOVER_TERM
+
+/* Use Generic Kernels */
+#undef BUILD_SSE_SCALARSITE_BICGSTAB
 
 /* Build SSE Dslash Op */
 #undef BUILD_SSE_WILSON_DSLASH
