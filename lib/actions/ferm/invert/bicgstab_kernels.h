@@ -7,19 +7,19 @@
 
 #include "actions/ferm/invert/bicgstab_kernels_naive.h"
 
-#ifdef BUILD_GENERIC_SCALARSITE_BICGSTAB
+#ifdef BUILD_SCALARSITE_BICGSTAB
 #warning "Using Scalarsite BiCGStab Kernels"
-#include "actions/ferm/invert/bicgstab_kernels_scalarsite_generic.h"
+#include "actions/ferm/invert/bicgstab_kernels_scalarsite.h"
 #endif
 
 namespace Chroma {
 
   namespace BiCGStabKernels { 
 
-    void initKernels() 
+    void initKernels()
     {
 
-#ifdef BUILD_GENERIC_SCALARSITE_BICGSTAB
+#ifdef BUILD_SCALARSITE_BICGSTAB
       initScalarSiteKernels();
 #endif
 
@@ -29,7 +29,7 @@ namespace Chroma {
 
     void finishKernels()
     {
-#ifdef BUILD_GENERIC_SCALARSITE_BICGSTAB
+#ifdef BUILD_SCALARSITE_BICGSTAB
       finishScalarSiteKernels();
 #endif
     }

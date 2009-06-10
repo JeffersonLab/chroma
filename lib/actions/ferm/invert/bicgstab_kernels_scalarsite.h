@@ -1,7 +1,7 @@
-#ifndef BICGSTAB_KERNELS_SCALARSITE_GENERIC_H
-#define BICGSTAB_KERNELS_SCALARSITE_GENERIC_H
+#ifndef BICGSTAB_KERNELS_SCALARSITE_H
+#define BICGSTAB_KERNELS_SCALARSITE_H
 #include "chromabase.h"
-
+#include "chroma_config.h"
 
 /* The funky kernels used by BiCGStab.
    These versions should always work... */
@@ -23,33 +23,7 @@ namespace Chroma {
       REAL64* norm_ptr;
     };
 
-    void ord_xymz_normx_kernel(int lo, int hi, int my_id, ord_xymz_normx_arg* a)
-    {
-      REAL64* x_ptr;
-      REAL64* y_ptr;
-      REAL64* z_ptr;
-      REAL64 norm=0;
-
-      x_ptr = &(a->x_ptr[lo]);
-      y_ptr = &(a->y_ptr[lo]);
-      z_ptr = &(a->z_ptr[lo]);
-
-      int len = hi-lo;
-      for(int count = 0; count < len; count+=4) { 
-
-	x_ptr[count] = y_ptr[count] - z_ptr[count];
-	x_ptr[count+1] = y_ptr[count+1] - z_ptr[count+1];
-	x_ptr[count+2] = y_ptr[count+2] - z_ptr[count+2];
-	x_ptr[count+3] = y_ptr[count+3] - z_ptr[count+3];
-
-	norm += x_ptr[count]*x_ptr[count];
-	norm += x_ptr[count+1]*x_ptr[count+1];
-	norm += x_ptr[count+2]*x_ptr[count+2];
-	norm += x_ptr[count+3]*x_ptr[count+3];
-      }
-      
-      a->norm_ptr[my_id] = norm;
-    }
+#include "actions/ferm/invert/ord_xmyz_normx_kernel.h"
 
     template<>
       void xymz_normx(LatticeDiracFermionD& x, 
@@ -87,8 +61,6 @@ namespace Chroma {
 
     }
 
-#if 1
-
     struct ord_yxpaymabz_arg
     {
       REAL32* x_ptr;
@@ -101,42 +73,7 @@ namespace Chroma {
 
     };
 
-    void ord_yxpaymabz_kernel(int lo, int hi, int my_id, ord_yxpaymabz_arg* a)
-    {
-      REAL32* x_ptr = &(a->x_ptr[lo]);
-      REAL32* y_ptr = &(a->y_ptr[lo]);
-      REAL32* z_ptr = &(a->z_ptr[lo]);
-
-      REAL32 a_re = a->a_re;
-      REAL32 a_im = a->a_im;
-      REAL32 b_re = a->b_re;
-      REAL32 b_im = a->b_im;
-
-      int len = hi - lo;
-      for(int count = 0; count < len; count+=4) { 
-	REAL32 tmp_re, tmp_im;
-	REAL32 tmp_re2, tmp_im2;
-	tmp_re  = y_ptr[count] - b_re*z_ptr[count];
-	tmp_re +=  b_im*z_ptr[count+1];
-	tmp_im  = y_ptr[count+1] - b_re*z_ptr[count+1];
-	tmp_im -=  b_im*z_ptr[count];
-	
-
-	tmp_re2  = y_ptr[count+2] - b_re*z_ptr[count+2];
-	tmp_re2 +=  b_im*z_ptr[count+3];
-	tmp_im2  = y_ptr[count+3] - b_re*z_ptr[count+3];
-	tmp_im2 -=  b_im*z_ptr[count+2];
-	
-	y_ptr[count]   = x_ptr[count] + a_re*tmp_re ;
-	y_ptr[count]  -=  a_im*tmp_im;
-	y_ptr[count+1] = x_ptr[count+1] + a_re*tmp_im ;
-	y_ptr[count+1]+= a_im*tmp_re; 
-	y_ptr[count+2]   = x_ptr[count+2] + a_re*tmp_re2 ;
-	y_ptr[count+2]  -=  a_im*tmp_im2;
-	y_ptr[count+3] = x_ptr[count+3] + a_re*tmp_im2 ;
-	y_ptr[count+3]+= a_im*tmp_re2; 
-      }
-    }
+#include "actions/ferm/invert/ord_yxpaymabz_kernel.h"
 
     template<>
       void yxpaymabz(LatticeDiracFermionF& x, 
@@ -163,13 +100,7 @@ namespace Chroma {
 	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
 	QDP_abort(1);
       }
-      // T tmp;
-      // tmp[s] = y - b*z;
-      // y[s] = x + a*tmp;
     }
-#endif
-
-#if 1
 
     struct ord_norm2x_cdotxy_arg
     {
@@ -180,39 +111,8 @@ namespace Chroma {
 
     };
 
-
-    void ord_norm2x_cdotxy_kernel(int lo, int hi, int my_id, ord_norm2x_cdotxy_arg* a)
-    {
-      REAL32* x_ptr = &(a->x_ptr[lo]);
-      REAL32* y_ptr = &(a->y_ptr[lo]);
-      REAL64 norm_array[3] = {0,0,0};
-
-      int len = hi-lo;
-      for(int count = 0; count < len; count+=4) { 
-	// norm
-	norm_array[0] += x_ptr[count]*x_ptr[count];
-	norm_array[0] += x_ptr[count+1]*x_ptr[count+1];
-	norm_array[0] += x_ptr[count+2]*x_ptr[count+2];
-	norm_array[0] += x_ptr[count+3]*x_ptr[count+3];
-	
-	// cdot re
-	norm_array[1] += x_ptr[count]*y_ptr[count];
-	norm_array[1] += x_ptr[count+1]*y_ptr[count+1];
-	norm_array[1] += x_ptr[count+2]*y_ptr[count+2];
-	norm_array[1] += x_ptr[count+3]*y_ptr[count+3];
-	
-	// cdot im
-	norm_array[2] += x_ptr[count]*y_ptr[count+1];
-	norm_array[2] -= x_ptr[count+1]*y_ptr[count];
-	norm_array[2] += x_ptr[count+2]*y_ptr[count+3];
-	norm_array[2] -= x_ptr[count+3]*y_ptr[count+2];
-      }
-      a->norm_space[3*my_id]=norm_array[0];
-      a->norm_space[3*my_id+1]=norm_array[1];
-      a->norm_space[3*my_id+2]=norm_array[2];
-    }
       
-      
+#include "actions/ferm/invert/ord_norm2x_cdotxy_kernel.h"
 
     template<>
       void norm2x_cdotxy(const LatticeDiracFermionF& x, 
@@ -248,13 +148,8 @@ namespace Chroma {
 	cdotxy.elem().elem().elem().real()= norm_array[1];
 	cdotxy.elem().elem().elem().imag() = norm_array[2];
 	
-	// norm2x = norm2(x,s);
-	//cdotxy = innerProduct(x,y,s);
       }
  
-#endif
-
-#if 1
 
     struct ord_xpaypbz_arg {
       REAL32* x_ptr;
@@ -266,48 +161,8 @@ namespace Chroma {
       REAL32 b_im;
     };
 
-    void ord_xpaypbz_kernel(int lo, int hi, int my_id, ord_xpaypbz_arg* a)
-    {
-      REAL32* x_ptr = &(a->x_ptr[lo]);
-      REAL32* y_ptr = &(a->y_ptr[lo]);
-      REAL32* z_ptr = &(a->z_ptr[lo]);
 
-      REAL32 a_re = a->a_re;
-      REAL32 a_im = a->a_im;
-      REAL32 b_re = a->b_re;
-      REAL32 b_im = a->b_im;
-
-      int len = hi - lo;
-      for(int count = 0; count < len; count+=4) { 
-	  REAL32 tmp_re, tmp_im;
-	  REAL32 tmp_re2, tmp_im2;
-
-	  tmp_re  = x_ptr[count] + a_re*y_ptr[count];
-	  tmp_re -=  a_im*y_ptr[count+1];
-	  tmp_im  = x_ptr[count+1] + a_re*y_ptr[count+1];
-	  tmp_im +=  a_im*y_ptr[count];
-	  
-
-
-	  tmp_re2  = x_ptr[count+2] + a_re*y_ptr[count+2];
-	  tmp_re2 -=  a_im*y_ptr[count+3];
-	  tmp_im2  = x_ptr[count+3] + a_re*y_ptr[count+3];
-	  tmp_im2 +=  a_im*y_ptr[count+2];
-
-
-	  x_ptr[count]   = tmp_re + b_re*z_ptr[count] ;
-	  x_ptr[count]  -=  b_im*z_ptr[count+1];
-	  x_ptr[count+1] = tmp_im + b_re*z_ptr[count+1];
-	  x_ptr[count+1]+= b_im *z_ptr[count]; 
-
-	  
-	  x_ptr[count+2]   = tmp_re2 + b_re*z_ptr[count+2] ;
-	  x_ptr[count+2]  -=  b_im*z_ptr[count+3];
-	  x_ptr[count+3] = tmp_im2 + b_re*z_ptr[count+3];
-	  x_ptr[count+3]+= b_im *z_ptr[count+2]; 
-
-      }
-    }
+#include "actions/ferm/invert/ord_xpaypbz_kernel.h"
 
     template<>
       void xpaypbz(LatticeDiracFermionF& x, 
@@ -338,14 +193,7 @@ namespace Chroma {
       }
       
 
-    //      T tmp;
-    // tmp[s] = x + a*y;
-    //  x[s] = tmp + b*z;
     }
-
-#endif
-
-#if 1    
 
     struct ord_xmay_normx_cdotzx_arg {
       REAL32* x_ptr;
@@ -356,52 +204,8 @@ namespace Chroma {
       REAL64* norm_space;
     };
 
-    void ord_xmay_normx_cdotzx_kernel(int lo, int hi, int my_id, ord_xmay_normx_cdotzx_arg *a) 
-    {
-
-      REAL32* x_ptr=&(a->x_ptr[lo]);
-      REAL32* y_ptr=&(a->y_ptr[lo]);
-      REAL32* z_ptr=&(a->z_ptr[lo]);
-      REAL32 a_re = a->a_re;
-      REAL32 a_im = a->a_im;
-      REAL64 norm_array[3]={0,0,0};
-
-      int len = hi-lo;
-      for(int count = 0; count < len; count+=4) { 
-
-	x_ptr[count] -= a_re*y_ptr[count];
-	x_ptr[count] += a_im*y_ptr[count+1];
-	
-	x_ptr[count+1] -= a_im*y_ptr[count];
-	x_ptr[count+1] -= a_re*y_ptr[count+1];
-	
-	x_ptr[count+2] -= a_re*y_ptr[count+2];
-	x_ptr[count+2] += a_im*y_ptr[count+3];
-	
-	x_ptr[count+3] -= a_im*y_ptr[count+2];
-	x_ptr[count+3] -= a_re*y_ptr[count+3];
-	
-	norm_array[0] += x_ptr[count]*x_ptr[count];
-	norm_array[0] += x_ptr[count+1]*x_ptr[count+1];
-	norm_array[0] += x_ptr[count+2]*x_ptr[count+2];
-	norm_array[0] += x_ptr[count+3]*x_ptr[count+3];
-	
-	norm_array[1] += z_ptr[count]*x_ptr[count];
-	norm_array[1] += z_ptr[count+1]*x_ptr[count+1];
-	norm_array[1] += z_ptr[count+2]*x_ptr[count+2];
-	norm_array[1] += z_ptr[count+3]*x_ptr[count+3];
-	
-	norm_array[2] += z_ptr[count]*x_ptr[count+1];
-	norm_array[2] -= z_ptr[count+1]*x_ptr[count];
-	norm_array[2] += z_ptr[count+2]*x_ptr[count+3];
-	norm_array[2] -= z_ptr[count+3]*x_ptr[count+2];
-	
-      }
-      a->norm_space[3*my_id]=norm_array[0];
-      a->norm_space[3*my_id+1]=norm_array[1];
-      a->norm_space[3*my_id+2]=norm_array[2];
-    }      
-
+#include "actions/ferm/invert/ord_xmay_normx_cdotzx_kernel.h"
+  
     template<> 
       void xmay_normx_cdotzx(LatticeDiracFermionF& x,
 			     const LatticeDiracFermionF& y, 
@@ -452,7 +256,7 @@ namespace Chroma {
 
 
     
-#endif
+
   }
 }
 
