@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.210 2009-06-10 20:05:07 bjoo Exp $
+# $Id: Makefile.am,v 3.211 2009-06-12 19:53:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1717,7 +1717,10 @@ nobase_include_HEADERS +=
 	actions/ferm/invert/ord_xpaypbz_kernel_sse.h \
 	actions/ferm/invert/ord_yxpaymabz_kernel.h \
 	actions/ferm/invert/ord_yxpaymabz_kernel_generic.h \
-	actions/ferm/invert/ord_yxpaymabz_kernel_sse.h
+	actions/ferm/invert/ord_yxpaymabz_kernel_sse.h \
+	actions/ferm/invert/ord_cxmayf_kernel.h \
+	actions/ferm/invert/ord_cxmayf_kernel_generic.h \
+	actions/ferm/invert/ord_cxmayf_kernel_sse.h
 
 libchroma_a_SOURCES += actions/ferm/invert/bicgstab_kernels_scalarsite.cc
 endif

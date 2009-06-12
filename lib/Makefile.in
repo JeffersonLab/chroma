@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.337 2009-06-10 20:05:07 bjoo Exp $
+# $Id: Makefile.in,v 3.338 2009-06-12 19:53:41 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -15060,7 +15060,10 @@ uninstall-am: uninstall-info-am uninstall-libLIBRARIES \
 @BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_xpaypbz_kernel_sse.h \
 @BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_yxpaymabz_kernel.h \
 @BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_yxpaymabz_kernel_generic.h \
-@BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_yxpaymabz_kernel_sse.h
+@BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_yxpaymabz_kernel_sse.h \
+@BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_cxmayf_kernel.h \
+@BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_cxmayf_kernel_generic.h \
+@BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_cxmayf_kernel_sse.h
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
