@@ -255,6 +255,46 @@ namespace Chroma {
     }
 
 
+
+    struct ord_cxmayf_arg {
+      REAL32* x_ptr;
+      REAL32* y_ptr;
+      REAL32 a_re;
+      REAL32 a_im;
+    };
+
+
+#include "actions/ferm/invert/ord_cxmayf_kernel.h"
+
+    template<>
+      inline
+      void cxmay(LatticeDiracFermionF& x, 
+		 const LatticeDiracFermionF& y, 
+		 const ComplexF& a, 
+		 const Subset& s)
+
+    {
+
+      if( s.hasOrderedRep() ) { 
+	REAL32* x_ptr = (REAL32*)&(x.elem(s.start()).elem(0).elem(0).real());
+	REAL32* y_ptr = (REAL32*)&(y.elem(s.start()).elem(0).elem(0).real());
+	REAL32 a_re = a.elem().elem().elem().real();
+	REAL32 a_im = a.elem().elem().elem().imag();
+	ord_cxmayf_arg arg={x_ptr,y_ptr,a_re,a_im};
+
+	int len=4*3*2*(s.end()-s.start()+1);
+	dispatch_to_threads(len,arg, ord_cxmayf_kernel);
+      }
+      else {
+	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDP_abort(1);
+      }
+      
+
+    }
+
+
+
     
 
   }

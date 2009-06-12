@@ -50,6 +50,14 @@ namespace Chroma {
       cdotzx = innerProduct(z,x,s);
     }
 
+
+    template<typename T, typename C>
+      void cxmay(T& x, const T& y, const C& a, const Subset& s)
+    {
+      x[s] -= a*y;
+    } 
+
+
   }
     
 

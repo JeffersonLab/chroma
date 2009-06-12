@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.7 2009-06-05 13:08:29 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.8 2009-06-12 19:52:44 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -151,7 +151,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     // s = r - alpha v
     // I can overlap s with r, because I recompute it at the end.
     alpha_r = alpha;
-    r[s]  -=  alpha_r*v;
+    // r[s]  -=  alpha_r*v;
+    cxmay(r,v,alpha_r,s);
 
 
     // t = As  = Ar 
