@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.1 2009-06-15 15:20:12 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.2 2009-06-15 18:04:29 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -179,6 +179,19 @@ namespace Chroma
       }
     }
 
+void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& ortho)
+	{
+	for(int i = 0; i < init.size() ; i++){
+	  ortho[i] = init[i];
+	  for(int j = 0; j < i; j++){
+	    ortho[i] -= innerProduct(ortho[j], init[i])/innerProduct(ortho[j], ortho[j]) * ortho[j];
+	  }
+	}
+	//still need to normalize (take another parameter of LCV's?)
+	
+	
+	}
+	
 
     // Real work done here
     void 
@@ -298,6 +311,49 @@ namespace Chroma
       color_vecs.getDecayDir() = params.param.decay_dir;
 
 
+	  //Choose starting vector 
+	  LatticeColorVector start;
+
+	
+	  //Build Krlov subspace
+	  int kdim = 3 * params.param.num_vecs;
+	 
+	  multi1d<LatticeColorVector> krylov_vecs(kdim);
+
+	  krylov_vecs[0] = start;
+
+	  for (int k = 1 ; k < kdim  ; ++k)
+	  {	
+		 //Perform orthogonalization wrt previous vector
+		 orthog(u, krylov_vecs[k-1], krylov_vecs[k]);
+		  
+	  	//Reorthogonalize?
+		//gram(krylov,krylov,k);
+
+		 if (k > 1)
+		 {
+			LatticeColorVector beta_km1; 
+			getBeta(beta_km1, krylov_vecs[k-1]);
+
+			 krylov_vecs[k] -= krylov_vecs[k-1] * beta_km1; 
+		 }
+
+		 LatticeColorVector beta_k;
+		 getBeta(beta_k, krylov_vecs[k]);
+
+		 if (norm2(beta_k) < params.param.tol)
+		 {
+			 break;
+		 }
+		 
+		 krylov_vecs /= beta_k; 
+	  }
+
+	  	
+
+
+
+
 
 	  //BRANDON: CODE GOES HERE
       /*
@@ -335,18 +391,7 @@ namespace Chroma
 }
       */
 
-	void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& ortho)
-	{
-	for(int i = 0; i < init.length - 1; i++){
-	  ortho[i] = init[i];
-	  for(int j = 0; j < i; j++){
-	    ortho[i] -= innerProduct(ortho[j], init[i])/innerProduct(ortho[j], ortho[j]) * ortho[j];
-	  }
-	}
-	//still need to normalize (take another parameter of LCV's?)
-	}
-	
-	  pop(xml_out);
+		  pop(xml_out);
       
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec construction = "
