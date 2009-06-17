@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.2 2009-06-15 18:04:29 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.3 2009-06-17 18:11:35 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -179,6 +179,7 @@ namespace Chroma
       }
     }
 
+    /*
 void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& ortho)
 	{
 	for(int i = 0; i < init.size() ; i++){
@@ -188,9 +189,61 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 	  }
 	}
 	//still need to normalize (take another parameter of LCV's?)
-	
+	*/
 	
 	}
+
+     template<typename T>                                                                                                                                           
+     void laplacian(const multi1d<LatticeColorMatrix>& u, const T& psi, T& chi, int j_decay)
+    {                                                                                                                                                               
+          T temp;                                                                                                                                                   
+                                                                                                                                                                    
+          Real minus_one = -1.;                                                                                                                                     
+                                                                                                                                                                    
+          temp = chi * minus_one;                                                                                                                                   
+                                                                                                                                                                    
+          klein_gord(u, temp, chi, 0.0, j_decay);                                                                                                                   
+    }  
+
+
+    void q(const multi1d<LatticeColorMatrix>& u,
+	   const LatticeColorVector& psi,
+	   LatticeColorVector& chi,
+	   int j_decay)
+    {
+      laplacian(u, psi, chi, j_decay);
+      chi *= Real(-2.0 / 14.0);
+      chi += psi * Real(-1.0 - 2.0 * .35 / 14.0);
+    }
+
+    //12th order chebyshev
+    void chebyshev(const multi1d<LatticeColorMatrix>& u,
+		   const LatticeColorVector& psi,
+		   LatticeColorVector& chi,
+		   int j_decay)
+    {
+      int n = 12;                                                                                                                                               
+      double chebCo[6] = {-72.0, 840.0, -3584.0, 6912.0, -6144.0, 2048.0};
+      LatticeColorVector tmp = psi;
+      LatticeColorVector prev;
+      LatticeColorVector final = zero;
+
+      for(int i = 2; i <= n; i += 2){
+	if(i > 2)
+	  tmp = prev;
+
+	q(u, tmp, chi, j_decay);
+	tmp = chi;
+	q(u, tmp, chi, j_decay);
+	prev = chi;
+
+	final += chebCo[i/2-1]*chi;
+      }
+
+      final += psi;
+      chi = final;
+    }
+
 	
 
     // Real work done here
@@ -310,14 +363,100 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 
       color_vecs.getDecayDir() = params.param.decay_dir;
 
-
-	  //Choose starting vector 
-	  LatticeColorVector start;
-
+		// Choose the starting eigenvectors to have identical 
+		// components and unit norm. 
+		// The norm is evaluated time slice by time slice
+		LatticeColorVector starting_vectors;
+		ColorVector ones;
+		pokeColor(ones, Complex(1.0), 0);
+		pokeColor(ones, Complex(1.0), 1);
+		pokeColor(ones, Complex(1.0), 2);
 	
+		starting_vectors = ones;
+
+		// Norm of the eigenvectors on each time slice
+		// vector_norms is declared complex, this allows 
+		// us to use partitionedInnerProduct but it may be a
+		// design flaw
+		multi1d<DComplex> vector_norms;
+
+		// This function gives the norms squared
+		partitionedInnerProduct(starting_vectors,starting_vectors,vector_norms,phases.getSet());
+		// Apply the square root to get the true norm
+		// and normalise the starting vectors
+		for(int t=0; t<phases.numSubsets(); ++t)
+		{
+			vector_norms[t]   	 = sqrt(Real(vector_norms[t]));
+			starting_vectors[t] /= vector_norms[t];
+		}
+
+
 	  //Build Krlov subspace
 	  int kdim = 3 * params.param.num_vecs;
-	 
+
+		// beta should really be an array of Reals	
+		multi1d<DComplex> beta(kdim-1);	
+		multi1d<DComplex> alpha(kdim);
+		multi1d<LatticeColorVector> lanczos_vectors(kdim);
+		lanczos_vectors[0] = starting_vectors;
+
+		// Yields alpha[0] ... alpha[kdim-2]
+		// 				beta[0] ... beta[kdim-2] 
+		// 				lanczos_vector[0] ... lanczos_vector[kdim-1]
+		// After the last iteration compute alpha[kdim-1]
+		for(int k=0; k<kdim-1; ++k)
+		{
+		        //temporary seems to be defined as a single element but is used as both an array and a single element?
+			LatticeColorVector temporary;
+			// Apply the spatial Laplace operator; j_decay denotes the temporal direction		
+			laplacian(u,lanczos_vectors[k],temporary,j_decay); 
+			
+			if(k > 0){	
+			 	for(int t=0; t<phases.numSubsets(); ++t){
+					temporary[t] -= beta[k-1]*lanczos_vectors[k-1];
+				}
+			}
+
+			partitionedInnerProduct(lanczos[k],temporary,alpha[k],phases.getSet());
+			
+			for(int t=0; t<phases.numSubsets(); ++t){
+				temporary[t] -= alpha[k]*lanczos_vectors[k];
+			}
+
+
+			// Reorthogonalise - this may be unnecessary
+			if(k>0){
+			 for(int t=0; t<phases.numSubsets(); ++t){
+				temporary[t] -= alpha[k-1]*lanczos_vectors[k-1];
+			 }
+			}
+
+			for(int t=0; t<phases.numSubsets(); ++t){
+				temporary[t] -= alpha[k]*lanczos_vectors[k];
+			} //
+			
+		
+			// Global reorthogonalisation to go here?	
+			// .......
+			// .....	
+
+			partitionedInnerProduct(temporary,temporary,beta[k],phases.getSet());
+
+			for(int t=0; t<phases.numSubsets(); ++t)
+			{
+				beta[k][t] 			= sqrt(Real(beta[k][t]));
+				lanczos[k+1][t] = temporary/beta[k][t];
+			}
+		}
+		// Loop over k is complete, now compute alpha[kdim-1]
+
+		// Finally compute eigenvectors and eigenvalues
+
+
+
+
+		
+		/*
 	  multi1d<LatticeColorVector> krylov_vecs(kdim);
 
 	  krylov_vecs[0] = start;
@@ -348,48 +487,90 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 		 
 		 krylov_vecs /= beta_k; 
 	  }
-
-	  	
+		*/
+		
+		// On a gauge field configuration {U}, the action of the
+		// three dimensional laplacian on a colour field (eigenvector) Psi
+		// is 
+		// -2*(Nd-1)*Psi +  
+		// sum{mu ne j_decay} [ U_mu(x) * Psi(x+mu)  +
+		// 										  U^{dagger}_mu(x-mu) * Psi(x-mu) ]
+		//
+		// \param j_decay  'temporal direction'
+		
+		// We will apply the Laplacian using the 
+		// "klein_gord" function :
+		// void klein_gord(const multi1d<LatticeColorMatrix>& u,
+		// 								 const T& psi,
+		// 								 T& chi,
+		// 								 const Real& mass_sq, int j_decay)
+		//
+		// where 
+		// Chi := (mass_sq + 2*(Nd-1))*Psi -
+		// 				sum_{mu ne j_decay} [U_mu(x) * Psi(x+mu) +
+		// 														 U^dagger_mu(x-mu) * Psi(x-mu) ]
+		//
+		// \param  mass_sq 'klein-gordan mass*mass' 
+		//
+		// To get the action of the laplacian on  
+		// the field chi, we write the (templated) function:
+		//
+		// template<typename T>
+		// void laplacian(const multi1d<LatticeColorMatrix>& u,
+		// 								T& psi, T& chi, int j_decay)
+		//{
+		//	T temp;
+		//
+		// 	Real minus_one = -1.;
+		//
+		// 	temp = chi * minus_one;
+		//	
+		//	klein_gord(u, temp, chi, 0.0, j_decay);
+		//}
+		//
+		//
+		//
+		// It is also useful to define a function which evaluates the inner 
+		// product of two fields time slice by time slice. 
+		// The function should return an array of complex numbers. 
+		// Each element of the array will hold the inner 
+		// product on a single timeslice. 
+		// 
+		// We will use Sftmom to partition the lattice into 
+		// a set of timeslices. 
+		// Let phases be an instance of Sftmom, and let inner_prod
+		// hold the inner products of the fields phi and chi 
+		// evaluated on a set of subsets defined by phases.
+		// 
+		//
+		// multi1d<DComplex> inner_prod = 
+		// sumMulti(localInnerProduct,phi,chi),
+		// 					phases.getSet());
+		//
+		// Then our function could be 
+		// template<typename T>
+		// void partitionedInnerProduct(const T& phi, const T& chi, 
+		// 															multi1d<DComplex>& inner_prod,
+		// 															Set& product_set){
+		//
+		//	inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);
+		// }
+		//
+		// Note: I'm not sure whether we have to pass inner_prod by reference 
+		// 	
+		// 
+		//
+		//
+		//
+		//
+		//
+			
 
 
 
 
 
 	  //BRANDON: CODE GOES HERE
-      /*
-	v1 = v/||v|| - choose starting vector in direction of interest
-	Lanczos factorization - AVm = VmTm + rmem
-
-	Loop to convergence - (Tk = Dk)
-	compute o(Tm) and p shifts (u1, u2, up)
-	initialize Q = Im
-	
-	for j = 1 to p{
-	QR factorize: QjRj = Tm - ujI
-	update Tm = Qj*TmQj, Q=QQj
-	}
-
-	rk = vk+1Bk + rmok, where Bk = Tm(k+1,k) and ok = Q(m,k)
-	Vk = VmQ(:, 1 : k); Tk = Tm(1 : k, 1 : k)
-	k step Lanczos factorization
-	AVk = VkTk + rkek*
-	apply p additional steps of Lanczos to obtain a new mstep Lanczos
-	AVm = VmTm + rmem*
-	end
-
-	Aside: m step Lanczos
-	start with r = rk, prev residual or start vec, Bk = ||rk||
-	for j = k+1, m {
-	vj = r/Bj-1
-	r = Avj - vj-1/Bj-1
-	aj = bj*r
-	r = r - vjaj
-	if(||r|| < p*sqrt(aj^2 + Bj-1^2){
-	s = Vj*r
-	r = r - Vjs
-	aj = aj + sj, Bj = Bj + sj-1
-}
-      */
 
 		  pop(xml_out);
       
