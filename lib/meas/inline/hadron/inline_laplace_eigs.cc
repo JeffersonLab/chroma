@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.5 2009-06-23 15:22:48 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.6 2009-06-23 19:01:26 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -213,13 +213,9 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
      template<typename T>                                                                                                                                           
      void laplacian(const multi1d<LatticeColorMatrix>& u, const T& psi, T& chi, int j_decay)
     {                                                                                                                                                               
-          T temp;                                                                                                                                                   
-                                                                                                                                                                    
-          Real minus_one = -1.;                                                                                                                                     
-                                                                                                                                                                    
-          temp = chi * minus_one;                                                                                                                                   
-                                                                                                                                                                    
-          klein_gord(u, temp, chi, 0.0, j_decay);                                                                                                                   
+          T temp;                                                                         Real minus_one = -1.;                                                                                                                                
+          temp = psi * minus_one;                                                                                                                
+          klein_gord(u, temp, chi, 0.0, j_decay);                               
     }  
 
 
@@ -398,13 +394,21 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 		// design flaw
 		multi1d<DComplex> vector_norms;
 
+
+		QDPIO::cout << "Normalizing starting vector" << endl;
+
 		// This function gives the norms squared
 		partitionedInnerProduct(starting_vectors,starting_vectors,vector_norms,phases.getSet());
 		// Apply the square root to get the true norm
 		// and normalise the starting vectors
+	
+		QDPIO::cout << "Nt = " << nt << endl;
+		
 		for(int t=0; t<nt; ++t)
 		{
-		  vector_norms[t]  = Complex(sqrt(Real(real(vector_norms[t]))));
+			QDPIO::cout << "vector_norms[" << t << "] = " << vector_norms[t] << endl; 
+
+			vector_norms[t]  = Complex(sqrt(Real(real(vector_norms[t]))));
 			starting_vectors[phases.getSet()[t]] /= vector_norms[t];
 		}
 
@@ -413,7 +417,9 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 	  int kdim = 3 * params.param.num_vecs;
 	  int j_decay = params.param.decay_dir;
 
-		// beta should really be an array of Reals	
+		QDPIO::cout << "Krylov Dim = " << kdim << endl; 
+		
+			// beta should really be an array of Reals	
 		multi1d< multi1d<DComplex> > beta(kdim-1);	
 		multi1d< multi1d<DComplex> > alpha(kdim);
 
@@ -437,7 +443,11 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 		// After the last iteration compute alpha[kdim-1]
 		for(int k=0; k<kdim-1; ++k)
 		{
-		        //temporary seems to be defined as a single element but is used as both an array and a single element?
+		
+			QDPIO::cout << "k = " << k << endl; 
+
+			
+			//temporary seems to be defined as a single element but is used as both an array and a single element?
 			LatticeColorVector temporary;
 			// Apply the spatial Laplace operator; j_decay denotes the temporal direction		
 			laplacian(u,lanczos_vectors[k],temporary,j_decay); 
@@ -451,10 +461,12 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			partitionedInnerProduct(lanczos_vectors[k],temporary,alpha[k],phases.getSet());
 			
 			for(int t=0; t<nt; ++t){
+				QDPIO::cout << "alpha[k][" << t << "] = " << alpha[k][t] << endl;
 			  temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
 			}
 
 
+			QDPIO::cout << "Reorthogonalizing" << endl;
 			// Reorthogonalise - this may be unnecessary
 			if(k>0){
 			 for(int t=0; t<nt; ++t){
@@ -462,6 +474,7 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			 }
 			}
 
+		/*	
 			for(int t=0; t<nt; ++t){
 			  temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
 			} //
@@ -470,11 +483,13 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			// Global reorthogonalisation to go here?	
 			// .......
 			// .....	
+*/
 
 			partitionedInnerProduct(temporary,temporary,beta[k],phases.getSet());
 
 			for(int t=0; t<nt; ++t)
 			{
+				QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
 			  beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
 				lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
 			}
