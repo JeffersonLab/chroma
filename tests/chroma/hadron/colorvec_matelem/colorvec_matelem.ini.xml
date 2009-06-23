@@ -185,6 +185,22 @@ Not used in this test, instead use create colorvecs below.
 
     <elem>
       <annotation>
+        Save this copy
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>SINGLEFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
         Compute propagator solution vectors
       </annotation>
       <Name>PROP_COLORVEC</Name>
@@ -622,7 +638,7 @@ Not used in this test, instead use create colorvecs below.
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <mom2_max>2</mom2_max>
+        <mom2_max>0</mom2_max>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
@@ -634,6 +650,36 @@ Not used in this test, instead use create colorvecs below.
              <left>0</left>
              <middle>0</middle>
              <right>0</right>
+          </elem>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>+1</right>
+          </elem>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>-1</right>
+          </elem>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>+2</right>
+          </elem>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>-2</right>
+          </elem>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>+3</right>
+          </elem>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>-3</right>
           </elem>
           <elem>
              <left>1</left>
@@ -654,6 +700,93 @@ Not used in this test, instead use create colorvecs below.
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <baryon_op_file>baryon.sdb</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>BARYON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>0</right>
+          </elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <baryon_op_file>baryon.sdb</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GENPROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <restrict_plateau>true</restrict_plateau>
+        <avg_equiv_mom>false</avg_equiv_mom>
+        <num_vecs>10</num_vecs>
+        <mom2_max>2</mom2_max>
+        <mom_offset>0 0 0</mom_offset>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+        <displacement_length>1</displacement_length>
+
+        <!-- List of displacements and Gamma matrices -->
+        <DisplacementGammaList>
+          <elem>
+            <gamma>1</gamma>
+            <displacement></displacement>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement></displacement>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement></displacement>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
+            <displacement></displacement>
+          </elem>
+        </DisplacementGammaList>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_prop_id>prop_colorvec</source_prop_id>
+        <sink_prop_id>prop_colorvec</sink_prop_id>
+        <genprop_op_file>genprop.sdb</genprop_op_file>
       </NamedObject>
     </elem>
 
@@ -705,7 +838,7 @@ Not used in this test, instead use create colorvecs below.
         <gauge_id>default_gauge_field</gauge_id>
         <source_prop_id>prop_colorvec</source_prop_id>
         <sink_prop_id>prop_colorvec</sink_prop_id>
-        <genprop_op_file>genprop.sdb</genprop_op_file>
+        <genprop_op_file>genprop_avg.sdb</genprop_op_file>
       </NamedObject>
     </elem>
 
