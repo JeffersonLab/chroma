@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.6 2009-06-23 19:01:26 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.7 2009-06-23 19:18:59 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -466,24 +466,27 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			}
 
 
-			QDPIO::cout << "Reorthogonalizing" << endl;
+			QDPIO::cout << "Reorthogonalizing" << endl;	
+			multi1d<DComplex> alpha_temp(nt);
 			// Reorthogonalise - this may be unnecessary
 			if(k>0){
+			
+				partitionedInnerProduct(lanczos_vectors[k-1],temporary,alpha_temp,phases.getSet());
 			 for(int t=0; t<nt; ++t){
-			   temporary[phases.getSet()[t]] -= alpha[k-1][t]*lanczos_vectors[k-1];
+			   temporary[phases.getSet()[t]] -= alpha_temp[t]*lanczos_vectors[k-1];
 			 }
 			}
 
-		/*	
+				partitionedInnerProduct(lanczos_vectors[k],temporary,alpha_temp,phases.getSet());
+
 			for(int t=0; t<nt; ++t){
-			  temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
+			  temporary[phases.getSet()[t]] -= alpha_temp[t]*lanczos_vectors[k];
 			} //
 			
 		
 			// Global reorthogonalisation to go here?	
 			// .......
 			// .....	
-*/
 
 			partitionedInnerProduct(temporary,temporary,beta[k],phases.getSet());
 
