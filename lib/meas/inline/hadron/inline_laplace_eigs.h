@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_laplace_eigs.h,v 1.1 2009-06-15 15:20:12 jbulava Exp $
+// $Id: inline_laplace_eigs.h,v 1.2 2009-06-23 15:12:42 jbulava Exp $
 /*! \file
  * \brief Use the Implicitly Restarted Lanczos method with a Tchebyshev 
  * polynomial preconditioner to solve for the lowest eigenvalues and 
@@ -16,7 +16,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineLaplceEigsEnv 
+  namespace InlineLaplaceEigsEnv 
   {
     bool registerAll();
 
@@ -75,7 +75,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace CreateColorVecsEnv
+  } // namespace LaplaceEigsEnv
 
 }
 

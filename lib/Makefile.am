@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.211 2009-06-12 19:53:41 bjoo Exp $
+# $Id: Makefile.am,v 3.212 2009-06-23 15:12:40 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -795,6 +795,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
+	meas/inline/hadron/inline_laplace_eigs.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -1510,6 +1511,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
+	meas/inline/hadron/inline_laplace_eigs.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \

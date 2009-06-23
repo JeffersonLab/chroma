@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.3 2009-06-17 18:11:35 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.4 2009-06-23 15:12:42 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -16,6 +16,7 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
+#include "actions/boson/operator/klein_gord.h"
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -189,9 +190,25 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 	  }
 	}
 	//still need to normalize (take another parameter of LCV's?)
-	*/
 	
 	}
+    */  
+   
+     template<typename T>                                                                                                                                           
+     void partitionedInnerProduct(const T& phi, const T& chi, multi1d<DComplex>& inner_prod, const Set& product_set){                       
+                                                                                                                                                                    
+          inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);                                                                                            
+     }
+ 
+    
+    /*
+     void partitionedInnerProduct(const LatticeColorVector& phi, const LatticeColorVector& chi, multi1d<DComplex>& inner_prod, Set& product_set)
+     {
+     
+       inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);
+     
+     }
+*/
 
      template<typename T>                                                                                                                                           
      void laplacian(const multi1d<LatticeColorMatrix>& u, const T& psi, T& chi, int j_decay)
@@ -354,6 +371,7 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
       SftMom phases(0, true, params.param.decay_dir);
       
       const int num_vecs = params.param.num_vecs;
+      int nt = phases.numSubsets();
 
       color_vecs.getEvectors().resize(num_vecs);
       color_vecs.getEvalues().resize(num_vecs);
@@ -384,19 +402,32 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 		partitionedInnerProduct(starting_vectors,starting_vectors,vector_norms,phases.getSet());
 		// Apply the square root to get the true norm
 		// and normalise the starting vectors
-		for(int t=0; t<phases.numSubsets(); ++t)
+		for(int t=0; t<nt; ++t)
 		{
-			vector_norms[t]   	 = sqrt(Real(vector_norms[t]));
-			starting_vectors[t] /= vector_norms[t];
+		  vector_norms[t]  = Complex(sqrt(Real(real(vector_norms[t]))));
+			starting_vectors[phases.getSet()[t]] /= vector_norms[t];
 		}
 
 
 	  //Build Krlov subspace
 	  int kdim = 3 * params.param.num_vecs;
+	  int j_decay = params.param.decay_dir;
 
 		// beta should really be an array of Reals	
-		multi1d<DComplex> beta(kdim-1);	
-		multi1d<DComplex> alpha(kdim);
+		multi1d< multi1d<DComplex> > beta(kdim-1);	
+		multi1d< multi1d<DComplex> > alpha(kdim);
+
+		for (int k = 0 ; k < kdim ; ++k)
+		{			
+			alpha[k].resize(nt);
+
+			if (k < kdim-1)
+			{
+				beta[k].resize(nt);
+			}
+		}
+
+
 		multi1d<LatticeColorVector> lanczos_vectors(kdim);
 		lanczos_vectors[0] = starting_vectors;
 
@@ -412,27 +443,27 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			laplacian(u,lanczos_vectors[k],temporary,j_decay); 
 			
 			if(k > 0){	
-			 	for(int t=0; t<phases.numSubsets(); ++t){
-					temporary[t] -= beta[k-1]*lanczos_vectors[k-1];
+			 	for(int t=0; t<nt; ++t){
+				  temporary[phases.getSet()[t]] -= beta[k-1][t]*lanczos_vectors[k-1];
 				}
 			}
 
-			partitionedInnerProduct(lanczos[k],temporary,alpha[k],phases.getSet());
+			partitionedInnerProduct(lanczos_vectors[k],temporary,alpha[k],phases.getSet());
 			
-			for(int t=0; t<phases.numSubsets(); ++t){
-				temporary[t] -= alpha[k]*lanczos_vectors[k];
+			for(int t=0; t<nt; ++t){
+			  temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
 			}
 
 
 			// Reorthogonalise - this may be unnecessary
 			if(k>0){
-			 for(int t=0; t<phases.numSubsets(); ++t){
-				temporary[t] -= alpha[k-1]*lanczos_vectors[k-1];
+			 for(int t=0; t<nt; ++t){
+			   temporary[phases.getSet()[t]] -= alpha[k-1][t]*lanczos_vectors[k-1];
 			 }
 			}
 
-			for(int t=0; t<phases.numSubsets(); ++t){
-				temporary[t] -= alpha[k]*lanczos_vectors[k];
+			for(int t=0; t<nt; ++t){
+			  temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
 			} //
 			
 		
@@ -442,10 +473,10 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 
 			partitionedInnerProduct(temporary,temporary,beta[k],phases.getSet());
 
-			for(int t=0; t<phases.numSubsets(); ++t)
+			for(int t=0; t<nt; ++t)
 			{
-				beta[k][t] 			= sqrt(Real(beta[k][t]));
-				lanczos[k+1][t] = temporary/beta[k][t];
+			  beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
+				lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
 			}
 		}
 		// Loop over k is complete, now compute alpha[kdim-1]
