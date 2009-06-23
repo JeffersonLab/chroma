@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.4 2009-06-23 15:12:42 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.5 2009-06-23 15:22:48 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -478,10 +478,22 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			  beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
 				lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
 			}
+			
+			cout << "Checking orthogonality of vector " << k+1 << endl;
+			for(int m = 0; m <= k; m++){
+			  multi1d<DComplex> tmp(nt);
+			  partitionedInnerProduct(lanczos_vectors[k+1],lanczos_vectors[m],tmp,phases.getSet());
+			  
+
+			  for(int t = 0; t < nt; t++){
+			    cout << "   t = " << t << ": " << tmp[t] << endl;
+			  }
+			}
 		}
 		// Loop over k is complete, now compute alpha[kdim-1]
 
 		// Finally compute eigenvectors and eigenvalues
+
 
 
 
