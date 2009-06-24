@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: sources.h,v 3.3 2009-06-24 19:55:40 jbulava Exp $
+// $Id: sources.h,v 3.4 2009-06-24 19:59:33 jbulava Exp $
 
 /*! \file
  * \brief Quark sources
@@ -32,7 +32,7 @@
 #include "sh_source_const.h"
 #include "rndz2wall_source_const.h"
 #include "dilutezN_source_const.h"
-#include "dilutezN_eigvec_source_const.h"
+#include "dilute_zN_eigvec_source_const.h"
 #include "diluteGrid_source_const.h"
 
 #include "pt_source_smearing.h"
