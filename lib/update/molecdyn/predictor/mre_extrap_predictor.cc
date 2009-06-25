@@ -57,6 +57,9 @@ namespace Chroma
 							       const LatticeFermion& chi) 
   {
     START_CODE();
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
 
     int Nvec = chrono_bufX->size();
     switch(Nvec) { 
@@ -82,7 +85,10 @@ namespace Chroma
       }
       break;
     }
-    
+
+    swatch.stop();
+    QDPIO::cout << "MRE_PREDICT_X_TIME = " << swatch.getTimeInSeconds() << " s" << endl;
+
     END_CODE();
   }
 
@@ -91,6 +97,9 @@ namespace Chroma
 							       const LatticeFermion& chi) 
   {
     START_CODE();
+    StopWatch swatch;
+    swatch.reset();
+    swatch.start();
 
     int Nvec = chrono_bufY->size();
     switch(Nvec) { 
@@ -114,7 +123,9 @@ namespace Chroma
       }
       break;
     }
-    
+
+    swatch.stop();
+    QDPIO::cout << "MRE_PREDICT_Y_TIME = " << swatch.getTimeInSeconds() << " s" << endl;
     END_CODE();
   }
 
