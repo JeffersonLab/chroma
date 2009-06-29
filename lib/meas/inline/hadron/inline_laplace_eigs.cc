@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.7 2009-06-23 19:18:59 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.8 2009-06-29 14:35:26 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -24,6 +24,13 @@ namespace Chroma
 { 
   namespace InlineLaplaceEigsEnv 
   {
+
+    extern "C"
+    {
+      void dsteqr_(char *, int *, double *, double *, double *, int *,
+		   double *, int *);
+    }
+
     //! Propagator input
     void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
@@ -178,37 +185,13 @@ namespace Chroma
       {
 	func(update_no, xml_out);
       }
-    }
-
-    /*
-void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& ortho)
-	{
-	for(int i = 0; i < init.size() ; i++){
-	  ortho[i] = init[i];
-	  for(int j = 0; j < i; j++){
-	    ortho[i] -= innerProduct(ortho[j], init[i])/innerProduct(ortho[j], ortho[j]) * ortho[j];
-	  }
-	}
-	//still need to normalize (take another parameter of LCV's?)
-	
-	}
-    */  
+    }  
    
      template<typename T>                                                                                                                                           
      void partitionedInnerProduct(const T& phi, const T& chi, multi1d<DComplex>& inner_prod, const Set& product_set){                       
                                                                                                                                                                     
           inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);                                                                                            
      }
- 
-    
-    /*
-     void partitionedInnerProduct(const LatticeColorVector& phi, const LatticeColorVector& chi, multi1d<DComplex>& inner_prod, Set& product_set)
-     {
-     
-       inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);
-     
-     }
-*/
 
      template<typename T>                                                                                                                                           
      void laplacian(const multi1d<LatticeColorMatrix>& u, const T& psi, T& chi, int j_decay)
@@ -360,13 +343,15 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 
       // The code goes here
       StopWatch swatch;
+      StopWatch fossil;
+      fossil.reset();
       swatch.reset();
       swatch.start();
 
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, params.param.decay_dir);
       
-      const int num_vecs = params.param.num_vecs;
+      int num_vecs = params.param.num_vecs;
       int nt = phases.numSubsets();
 
       color_vecs.getEvectors().resize(num_vecs);
@@ -422,6 +407,22 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 			// beta should really be an array of Reals	
 		multi1d< multi1d<DComplex> > beta(kdim-1);	
 		multi1d< multi1d<DComplex> > alpha(kdim);
+		/*
+		double d[nt][kdim];
+		double e[nt][kdim-1];
+		double z[nt][kdim][kdim];
+		*/
+		
+		multi1d<double*> d(nt);
+		multi1d<double*> e(nt);
+		multi1d<double*> z(nt);
+	
+		for (int t = 0 ; t < nt ; ++t)
+		{
+			d[t] = new double[kdim];
+			e[t] = new double[kdim - 1];
+			z[t] = new double[kdim * kdim];
+		}
 
 		for (int k = 0 ; k < kdim ; ++k)
 		{			
@@ -495,6 +496,8 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 				QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
 			  beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
 				lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
+				d[t][k] = toDouble(Real(real(alpha[k][t])));
+				e[t][k] = toDouble(Real(real(beta[k][t])));
 			}
 			
 			cout << "Checking orthogonality of vector " << k+1 << endl;
@@ -513,9 +516,28 @@ void gram(const multi1d<LatticeColorVector>& init, multi1d<LatticeColorVector>& 
 		// Finally compute eigenvectors and eigenvalues
 
 
+		//parameters for dsteqr
+		char compz = 'I';
+		
+		double work[2*kdim-2];
+
+		int info = 0;
+		int ldz = kdim;
 
 
+		for(int t = 0; t < nt; t++) {
+		 
+		  fossil.reset();
+		  fossil.start();
 
+		  dsteqr_(&compz, &num_vecs, d[t], e[t], z[t], &ldz, work, &info);
+
+		  fossil.stop();
+
+		  QDPIO::cout << "LAPACK routine completed: " << fossil.getTimeInSeconds() << " sec" << endl;
+
+		  QDPIO::cout << "info = " << info << endl;
+		}
 		
 		/*
 	  multi1d<LatticeColorVector> krylov_vecs(kdim);
