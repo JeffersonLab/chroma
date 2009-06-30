@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.9 2009-06-30 20:24:58 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.10 2009-06-30 21:10:13 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -528,7 +528,7 @@ namespace Chroma
 				//temporary seems to be defined as a single element but is used as both an array and a single element?
 				LatticeColorVector temporary;
 				// Apply the spatial Laplace operator; j_decay denotes the temporal direction		
-				laplacian(u,lanczos_vectors[k],temporary,j_decay); 
+				laplacian(u_smr,lanczos_vectors[k],temporary,j_decay); 
 
 				if(k > 0){	
 					for(int t=0; t<nt; ++t){
@@ -579,14 +579,14 @@ namespace Chroma
 						e[t][k] = toDouble(Real(real(beta[k][t])));
 				}
 				
-				   cout << "Checking orthogonality of vector " << k+1 << endl;
+				QDPIO::cout << "Checking orthogonality of vector " << k+1 << endl;
 				   for(int m = 0; m <= k; m++){
 				   multi1d<DComplex> tmp(nt);
 				   partitionedInnerProduct(lanczos_vectors[k+1],lanczos_vectors[m],tmp,phases.getSet());
 
 
 				   for(int t = 0; t < nt; t++){
-				   cout << "   t = " << t << ": " << tmp[t] << endl;
+						 QDPIO::cout << "   t = " << t << ": " << tmp[t] << endl;
 				   }
 		}
 				  
@@ -595,6 +595,28 @@ namespace Chroma
 
 			// Finally compute eigenvectors and eigenvalues
 
+			//Is AL = LT, up to small corrections? 
+		/*
+			QDPIO::cout << "Testing AL = LT" << endl;
+			
+			for (int k = 0 ; k < kdim -1 ; ++k)
+			{
+				QDPIO::cout << "Row " << k << endl;
+				
+				LatticeColorVector al = zero;
+
+				laplacian(u_smr, lanczos_vectors[k], al, j_decay);
+
+				LatticeColorVector lt = zero;
+
+				for (int t = 0 ; t < nt ; ++t)
+				{
+					lt[ phases.getSet()[t] ] += 	
+
+				}
+
+			}
+			*/
 
 			//parameters for dsteqr
 			char compz = 'I';
@@ -610,11 +632,11 @@ namespace Chroma
 
 			for(int t = 0; t < nt; t++) {
 
-				cout << "Starting QR factorization t = " << t << endl;
+				QDPIO::cout << "Starting QR factorization t = " << t << endl;
 				fossil.reset();
 				fossil.start();
 
-				dsteqr_(&compz, &num_vecs, d[t], e[t], z[t], &ldz, work, &info);
+				dsteqr_(&compz, &ldz, d[t], e[t], z[t], &ldz, work, &info);
 
 				fossil.stop();
 
@@ -629,6 +651,9 @@ namespace Chroma
 				for (int v = 0 ; v < kdim - 1 ; ++v)
 				{
 					evals[t][v] = d[t][v]; 
+						
+					QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << endl;
+
 					evecs[t][v].resize(kdim - 1);
 
 					for (int n = 0 ; n < kdim - 1 ; ++n)
@@ -665,30 +690,51 @@ namespace Chroma
 							(Av[n] - evals[t][v]*evecs[t][v][n]);
 					}//n
 
-					cout << "Vector " << v << " : dcnt = " << dcnt << endl;
+					QDPIO::cout << "Vector " << v << " : dcnt = " << dcnt << endl;
 
 				}//v
 
 			}//t
 				
-/*
+
 			//Get Eigenvectors
-			for (int k = 0 ; k < kdim ; ++k)
+			
+			QDPIO::cout << "Obtaining eigenvectors of the laplacian" << endl;
+			for (int k = 0 ; k < params.param.num_vecs ; ++k)
 			{
 				LatticeColorVector vec_k = zero;
 
+				LatticeColorVector lambda_v = zero;
+
 				for (int t = 0 ; t < nt ; ++t)
 				{
-					for (int n = 0 ; n < kdim ; ++n)
+					for (int n = 0 ; n < kdim - 1 ; ++n)
 					{
 						vec_k[phases.getSet()[t] ] += 
 							Real(evecs[t][k][n]) * lanczos_vectors[n];
 					}
+
+					lambda_v[phases.getSet()[t] ] += Real(evals[t][k]) * vec_k; 
+				}
+				
+				//Test if this is an eigenvector
+				LatticeColorVector avec = zero;
+
+				laplacian(u_smr, vec_k, avec, j_decay);
+
+				multi1d< DComplex > dcnt_arr(nt);
+
+				LatticeColorVector diffs = avec - lambda_v;
+				partitionedInnerProduct( diffs, diffs, dcnt_arr, phases.getSet());  
+
+				QDPIO::cout << "Testing Lap. eigvec " << k << endl;
+				for (int t = 0 ; t < nt ; ++t)
+				{
+					QDPIO::cout << "dcnt[" << t << "] = " << dcnt_arr[t] << endl;
 				}
 
-				//Test if 
-*/
-			
+			}//k
+
 			/*
 				//Get Eigenvectors
 				for( int t = 0; t < nt; t++){
