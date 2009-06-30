@@ -16,6 +16,7 @@ namespace Chroma {
 
   namespace BiCGStabKernels { 
 
+    inline
     void initKernels()
     {
 
@@ -26,7 +27,7 @@ namespace Chroma {
 
     }
 
-
+    inline
     void finishKernels()
     {
 #ifdef BUILD_SCALARSITE_BICGSTAB

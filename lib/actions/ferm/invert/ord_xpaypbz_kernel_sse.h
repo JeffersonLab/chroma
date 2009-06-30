@@ -1,6 +1,7 @@
 #include <xmmintrin.h>
 #include <emmintrin.h>
 
+inline
 void ord_xpaypbz_kernel(int lo, int hi, int my_id, ord_xpaypbz_arg* a)
 {
   REAL32* x_ptr = &(a->x_ptr[lo]);

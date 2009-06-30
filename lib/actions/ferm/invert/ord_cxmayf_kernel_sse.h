@@ -1,6 +1,7 @@
 #include <xmmintrin.h>
 #include <pmmintrin.h>
 
+inline
 void ord_cxmayf_kernel(int lo, int hi, int my_id, ord_cxmayf_arg* arg)
 {
   REAL32* x_ptr = &(arg->x_ptr[lo]);

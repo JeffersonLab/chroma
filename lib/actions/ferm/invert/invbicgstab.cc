@@ -1,4 +1,4 @@
-// $Id: invbicgstab.cc,v 3.4 2009-05-21 19:32:22 bjoo Exp $
+// $Id: invbicgstab.cc,v 3.5 2009-06-30 15:52:10 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -6,8 +6,267 @@
 #include "chromabase.h"
 #include "actions/ferm/invert/invbicgstab.h"
 
-namespace Chroma {
 
+#include "actions/ferm/invert/bicgstab_kernels.h"
+
+using namespace Chroma::BiCGStabKernels;
+
+namespace Chroma {
+  template<typename T, typename CR>
+SystemSolverResults_t
+InvBiCGStab_a(const LinearOperator<T>& A,
+	      const T& chi,
+	      T& psi,
+	      const Real& RsdBiCGStab,
+	      int MaxBiCGStab, 
+	      enum PlusMinus isign)
+
+{
+  
+  SystemSolverResults_t ret;
+  StopWatch swatch;
+  swatch.reset();
+  swatch.start();
+
+  initKernels();
+  
+  FlopCounter flopcount;
+  flopcount.reset();
+  const Subset& sub = A.subset();
+  bool convP = false;
+
+
+  T r0,r,u,f0,v,z,q,t,s;
+  DComplex sigma_n_2, sigma_n_1, sigma_n, pi_n_1, pi_n, phi_n_1,phi_n;
+  DComplex tau_n_1, tau_n, rho_n_1, rho_n, alpha_n_1, alpha_n, omega_n_1, omega_n;
+  DComplex theta_n, eta_n, gamma_n, beta_n, delta_n;
+  Double   kappa_n,rnorm_prev;
+
+  DComplex tcmpx1, tcmpx2; // Temporaries
+  T tvec1;
+
+  Double chi_sq =  norm2(chi,sub);
+  flopcount.addSiteFlops(4*Nc*Ns,sub);
+  Double rsd_sq =  RsdBiCGStab*RsdBiCGStab*chi_sq;
+
+
+
+
+  // First get r = r0 = chi - A psi
+  // Get A psi, use r0 as a temporary
+  A(r0, psi, isign);
+  flopcount.addFlops(A.nFlops());
+
+  // now work out r= chi - Apsi = chi - r0
+  r[sub] = chi - r0;
+  flopcount.addSiteFlops(2*Nc*Ns,sub);
+
+
+  // Also copy back to r0. We are no longer in need of the
+  // nth component
+  r0[sub] = r;
+  
+  // u = Ar;
+  A(u, r, isign);
+  flopcount.addFlops(A.nFlops());
+
+
+  // f0 = A^\dag r
+  if( isign == PLUS ) { 
+    A(f0, r, MINUS);
+  }
+  else { 
+    A(f0, r, PLUS);
+  }
+  flopcount.addFlops(A.nFlops());
+
+  // q_n = v_n = z_n = 0;
+  q[sub]=zero;
+  v[sub]=zero;
+  z[sub]=zero;
+
+  sigma_n_2 = Double(0);
+  pi_n_1 = Double(0);
+  tau_n_1 = Double(0);
+
+  // Deviate from paper. Paper says phi_n = 0. Follow code from PETSc 
+  phi_n_1 = innerProduct(r0,r0,sub);
+  sigma_n_1 = innerProduct(r0,u, sub);
+  flopcount.addSiteFlops(16*Nc*Ns,sub);   // each inner product is 8
+
+  rho_n_1 = Double(1);
+  alpha_n_1 = Double(1);
+  omega_n_1 = Double(1);
+
+  // Main Loop starts here
+  for(int k = 1; k <= MaxBiCGStab && !convP ; k++) { 
+
+    // 16 Flops: NB I pulled the -omega factor out. This may
+    // or may not be good.
+    rho_n = phi_n_1 - omega_n_1*(sigma_n_2 - alpha_n_1*pi_n_1);
+    
+
+    if( k == 1)  {
+      delta_n = rho_n;
+    }
+    else { 
+      /* NB:  The paper says rho_n/rho_n_1, rather than rho_n/tau_n_1 
+       * Again here for now I will defer to the petsc code. */
+      delta_n = rho_n /tau_n_1;  // 11 Flops
+    }
+
+    beta_n = delta_n /omega_n_1; // 11 Flops
+
+    tau_n = sigma_n_1 + beta_n*tau_n_1 - delta_n*pi_n_1; // 16 flops
+
+
+    alpha_n = rho_n/tau_n;       // 11 Flops
+
+
+    /* Now some vector update.
+     * 
+     * PETSc claims code in paper is wrong for z_n update
+     *
+     * z_n = alpha_n*r_{n-1} + (alpha_n/alpha_{n-1})*beta_n z_{n-1}
+     *         -alpha_n*delta_n*v_{n-1}
+     *
+     * v_n = u_{n-1] + beta_n*v_{n-1} - delta_n*q_n{-1}
+     */
+
+    // z_n 
+    tcmpx1 = (alpha_n/alpha_n_1)*beta_n; // 11 Flops for the ratio, 6 for mul.
+    tcmpx2 = alpha_n*delta_n;            // 6 Flops
+
+    // ZV Updates
+    ibicgstab_zvupdates(r,z,v,u,q, alpha_n, tcmpx1,tcmpx2,beta_n,delta_n, sub);
+
+#if 0
+    tvec1[sub] = tcmpx1*z;
+    z[sub] = alpha_n*r + tvec1;
+    z[sub] -= tcmpx2*v;
+#endif
+
+
+
+#if 0
+    tvec1[sub] = v;
+    v[sub] = u + beta_n*tvec1;
+    v[sub]-= delta_n*q;
+#endif
+
+
+    
+
+    /* q = A*v */
+    A(q,v,isign);
+
+    /* Does all of:
+     *
+     *  s = r-alpha_n*v_n
+     *  t = u - alpha_n q_n 
+     *  phi_n = < r0, s>
+     *  gamma_n = <f0, s>
+     *  pi      = <r0, q>
+     *  eta     = <f0, t>
+     *  theta   = <s,  t>
+     *  kappa   = || t ||^2
+     *  rnorm_prev = || r ||^2 
+     * 
+     * in principle with 1 big allreduce */
+    ibicgstab_stupdates_reduces(alpha_n,
+				r, u, v, q, r0, f0,
+				s, t, 
+				phi_n,pi_n,gamma_n,eta_n,theta_n,kappa_n,rnorm_prev, sub);
+    
+#if 0
+    s[sub] = r - alpha_n*v;
+    t[sub] = u - alpha_n*q;
+
+    /* Now 5 inner products + 1 norm + the residual norm from last iteration */
+    phi_n = innerProduct(r0,s,sub);
+    gamma_n = innerProduct(f0,s,sub);
+
+    pi_n  = innerProduct(r0,q,sub);
+    eta_n   = innerProduct(f0,t,sub);
+    theta_n = innerProduct(s,t,sub);
+    kappa_n  = norm2(t,sub);
+    rnorm_prev = norm2(r,sub);
+#endif
+
+    // 5 inner products with 8Fl each=> 40, 2 norms with 4 Fl each = 8
+    flopcount.addSiteFlops( 54*Nc*Ns, sub);
+    flopcount.addFlops(A.nFlops()+88); // not first iteration delta more comlex
+    
+    // Check whether previous iteration converged:
+    if( toBool( rnorm_prev <= rsd_sq ) ) { 
+      convP = true;
+      ret.n_count = k; // Should this be k-1?
+      ret.resid = sqrt(rnorm_prev);
+    }
+    else { 
+      // Not converged: 
+      omega_n = theta_n/ kappa_n;           // 11 Flops
+      sigma_n = gamma_n - omega_n*eta_n;    // 8 Flops
+
+      // r = s - omega t
+      // x = x + z + omega s
+      ibicgstab_rxupdate(omega_n,
+			    s,
+			    t,
+			    z,
+			    r, 
+			    psi,
+			    sub);
+				
+
+#if 0
+      // Update r
+      r[sub] = s - omega_n*t;               // 8 Flops/complex
+
+      // Update x 
+      psi[sub] += z;                        // 2 flops/complex
+      psi[sub] += omega_n*s;                // 8 flops/complex
+#endif
+
+      // u = A r
+      A(u,r, isign);
+
+
+      flopcount.addSiteFlops( 18*Nc*Ns, sub);      
+      flopcount.addFlops(A.nFlops()+19);
+
+      // Update n_1 locations with n locations
+      sigma_n_2 = sigma_n_1;
+      sigma_n_1 = sigma_n;
+      pi_n_1 = pi_n;
+      phi_n_1 = phi_n;
+      alpha_n_1 = alpha_n;
+      tau_n_1 = tau_n;
+      rho_n_1 = rho_n;
+      omega_n_1 = omega_n;
+    }
+    
+
+  }
+
+
+
+  swatch.stop();
+  if( ret.n_count > 1 ) flopcount.addFlops(-11); // For first iter
+
+  QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << endl;
+  flopcount.report("invbicgstab", swatch.getTimeInSeconds());
+
+  if ( ret.n_count == MaxBiCGStab ) { 
+    QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
+  }
+
+  finishKernels();
+  return ret;
+}
+
+
+#if 0
   template<typename T, typename CR>
 SystemSolverResults_t
 InvBiCGStab_a(const LinearOperator<T>& A,
@@ -200,7 +459,7 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
   return ret;
 }
-
+#endif
 #if 0
 // Fix here for now
 template<>

@@ -58,6 +58,73 @@ namespace Chroma {
     } 
 
 
+
+    template<typename T, typename C>
+      inline
+      void ibicgstab_zvupdates(const T& r, T& z, T &v,
+			       const T& u, const T& q,
+			       const C& alpha,
+			       const C& alpha_rat_beta,
+			       const C& alpha_delta, 
+			       const C& beta,
+			       const C& delta,
+			       const Subset& s)
+    {
+      T tmp;
+      tmp[s] = alpha_rat_beta*z;
+      z[s] = tmp  + alpha*r ;
+      z[s] -= alpha_delta*v;
+      
+      tmp = v;
+      v[s] = u+beta*tmp;
+      v[s]-= delta*q;
+    }
+
+    template<typename T, typename C, typename F>
+      void ibicgstab_stupdates_reduces(const C& alpha,
+				       const T& r,
+				       const T& u,
+				       const T& v,
+				       const T& q,
+				       const T& r0,
+				       const T& f0,
+				       T& s,
+				       T& t,
+				       C& phi,
+				       C& pi,
+				       C& gamma,
+				       C& eta,
+				       C& theta,
+				       F& kappa,
+				       F& rnorm,
+				       const Subset& sub)
+    {
+      s[sub] = r - alpha*v;
+      phi = innerProduct(r0,s,sub);
+      gamma = innerProduct(f0,s,sub);
+
+      t[sub] = u - alpha*q;
+      pi = innerProduct(r0,q,sub);
+      eta = innerProduct(f0,t,sub);
+      theta = innerProduct(s,t,sub);
+      kappa=norm2(t,sub);
+      rnorm = norm2(r,sub);
+    }
+	
+    template<typename T, typename C>
+      void ibicgstab_rxupdate(const C& omega,
+			      const T& s,
+			      const T& t,
+			      const T& z,
+			      T& r,
+			      T& x,
+			      const Subset& sub)
+    {
+      r[sub] = s - omega*t;
+      x[sub] += omega*s;
+      x[sub] += z;
+    }
+		
   }
     
 

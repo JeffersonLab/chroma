@@ -1,3 +1,4 @@
+inline
 void ord_xymz_normx_kernel(int lo, int hi, int my_id, ord_xymz_normx_arg* a)
 {
   REAL64* x_ptr;

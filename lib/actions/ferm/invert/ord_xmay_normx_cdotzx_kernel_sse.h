@@ -1,3 +1,4 @@
+inline
 void ord_xmay_normx_cdotzx_kernel(int lo, int hi, int my_id, ord_xmay_normx_cdotzx_arg *a) 
 {
   

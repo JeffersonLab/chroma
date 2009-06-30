@@ -9,7 +9,6 @@
 namespace Chroma { 
 
   namespace BiCGStabKernels { 
-
     void initScalarSiteKernels();
     void finishScalarSiteKernels();
 
@@ -26,6 +25,7 @@ namespace Chroma {
 #include "actions/ferm/invert/ord_xmyz_normx_kernel.h"
 
     template<>
+      inline
       void xymz_normx(LatticeDiracFermionD& x, 
 		      const LatticeDiracFermionD& y, 
 		      const LatticeDiracFermionD& z, 
@@ -76,6 +76,7 @@ namespace Chroma {
 #include "actions/ferm/invert/ord_yxpaymabz_kernel.h"
 
     template<>
+      inline
       void yxpaymabz(LatticeDiracFermionF& x, 
 		     LatticeDiracFermionF& y, 
 		     LatticeDiracFermionF& z, 
@@ -115,6 +116,7 @@ namespace Chroma {
 #include "actions/ferm/invert/ord_norm2x_cdotxy_kernel.h"
 
     template<>
+      inline
       void norm2x_cdotxy(const LatticeDiracFermionF& x, 
 			 const LatticeDiracFermionF& y, Double& norm2x, DComplex& cdotxy,  const Subset& s) 
       {
@@ -165,6 +167,7 @@ namespace Chroma {
 #include "actions/ferm/invert/ord_xpaypbz_kernel.h"
 
     template<>
+      inline
       void xpaypbz(LatticeDiracFermionF& x, 
 		   LatticeDiracFermionF& y, 
 		   LatticeDiracFermionF& z, 
@@ -207,6 +210,7 @@ namespace Chroma {
 #include "actions/ferm/invert/ord_xmay_normx_cdotzx_kernel.h"
   
     template<> 
+      inline
       void xmay_normx_cdotzx(LatticeDiracFermionF& x,
 			     const LatticeDiracFermionF& y, 
 			     const LatticeDiracFermionF& z, 
@@ -294,8 +298,418 @@ namespace Chroma {
     }
 
 
+    /********************
+     * IBICGSTAB KERNELS
+     ******************** */
 
-    
+
+    template<typename F>
+    struct ib_zvupdates_arg {
+      F* r_ptr;
+      F* z_ptr;
+      F* v_ptr;
+      F* u_ptr;
+      F* q_ptr;
+     
+      F alpha_re;
+      F alpha_im;
+
+      F alpha_rat_beta_re;
+      F alpha_rat_beta_im;
+      
+      F alpha_delta_re;
+      F alpha_delta_im;
+      
+      F beta_re;
+      F beta_im;
+
+      F delta_re;
+      F delta_im;
+    };
+
+#include "actions/ferm/invert/ord_ib_zvupdates_kernel.h"
+
+    template<>
+      inline
+    void 
+      ibicgstab_zvupdates(const LatticeDiracFermionF3& r, 
+			  LatticeDiracFermionF3& z, 
+			  LatticeDiracFermionF3& v,
+			  const LatticeDiracFermionF3& u, 
+			  const LatticeDiracFermionF3& q,
+			  const ComplexD& alpha,
+			  const ComplexD& alpha_rat_beta,
+			  const ComplexD& alpha_delta, 
+			  const ComplexD& beta,
+			  const ComplexD& delta,
+			  const Subset& sub)
+      {     
+	if( sub.hasOrderedRep() ) { 
+	  REAL32* r_ptr = (REAL32*)&(r.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* z_ptr = (REAL32*)&(z.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* v_ptr = (REAL32*)&(v.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* u_ptr = (REAL32*)&(u.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* q_ptr = (REAL32*)&(q.elem(sub.start()).elem(0).elem(0).real());
+	
+	  REAL32 a_re = (REAL32)alpha.elem().elem().elem().real();
+	  REAL32 a_im = (REAL32)alpha.elem().elem().elem().imag();
+
+	  REAL32 arb_re = (REAL32)alpha_rat_beta.elem().elem().elem().real();
+	  REAL32 arb_im = (REAL32)alpha_rat_beta.elem().elem().elem().imag();
+
+	  REAL32 ad_re = (REAL32)alpha_delta.elem().elem().elem().real();
+	  REAL32 ad_im = (REAL32)alpha_delta.elem().elem().elem().imag();
+
+	  REAL32 beta_re = (REAL32)beta.elem().elem().elem().real();
+	  REAL32 beta_im = (REAL32)beta.elem().elem().elem().imag();
+
+	  REAL32 delta_re = (REAL32)delta.elem().elem().elem().real();
+	  REAL32 delta_im = (REAL32)delta.elem().elem().elem().imag();
+	  
+	  ib_zvupdates_arg<REAL32> arg={r_ptr,z_ptr,v_ptr,u_ptr,q_ptr, 
+					a_re, a_im, arb_re, arb_im, ad_re, ad_im, 
+					beta_re, beta_im, delta_re, delta_im};
+
+	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  dispatch_to_threads(len,arg, ord_ib_zvupdates_kernel_real32);
+      }
+      else {
+	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDP_abort(1);
+      }
+      
+
+
+      }
+
+#if 0
+    template<>
+      inline
+      void 
+      ibicgstab_zvupdates(const LatticeDiracFermionD3& r, 
+			  LatticeDiracFermionD3& z, 
+			  LatticeDiracFermionD3 &v,
+			  const LatticeDiracFermionD3& u, 
+			  const LatticeDiracFermionD3& q,
+			  const ComplexD& alpha,
+			  const ComplexD& alpha_rat_beta,
+			  const ComplexD& alpha_delta, 
+			  const ComplexD& beta,
+			  const ComplexD& delta,
+			  const Subset& sub)
+      {     
+	if( sub.hasOrderedRep() ) { 
+	  REAL64* r_ptr = (REAL64*)&(r.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* z_ptr = (REAL64*)&(z.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* v_ptr = (REAL64*)&(v.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* u_ptr = (REAL64*)&(u.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* q_ptr = (REAL64*)&(q.elem(sub.start()).elem(0).elem(0).real());
+	
+	  REAL64 a_re = alpha.elem().elem().elem().real();
+	  REAL64 a_im = alpha.elem().elem().elem().imag();
+
+	  REAL64 arb_re = alpha_rat_beta.elem().elem().elem().real();
+	  REAL64 arb_im = alpha_rat_beta.elem().elem().elem().imag();
+
+	  REAL64 ad_re = alpha_delta.elem().elem().elem().real();
+	  REAL64 ad_im = alpha_delta.elem().elem().elem().imag();
+
+	  REAL64 beta_re = beta.elem().elem().elem().real();
+	  REAL64 beta_im = beta.elem().elem().elem().imag();
+
+	  REAL64 delta_re = delta.elem().elem().elem().real();
+	  REAL64 delta_im = delta.elem().elem().elem().imag();
+	  
+	  ib_zvupdates_arg<REAL64> arg={r_ptr,z_ptr,v_ptr,u_ptr,q_ptr, 
+					a_re, a_im, arb_re, arb_im, ad_re, ad_im, 
+					beta_re, beta_im, delta_re, delta_im};
+
+	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  dispatch_to_threads(len,arg, ord_ib_zvupdates_kernel_real64);
+	}
+	else {
+	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDP_abort(1);
+	}
+      }
+
+#endif
+
+
+
+    template<typename F> 
+      struct ib_rxupdate_arg { 
+	F* s_ptr;
+	F* t_ptr;
+	F* z_ptr;
+	F* r_ptr;
+	F* x_ptr;
+
+	F omega_re; // omega
+	F omega_im; 
+      };
+
+#include "actions/ferm/invert/ord_ib_rxupdate_kernel.h"
+    template<>
+      inline
+      void 
+      ibicgstab_rxupdate(const ComplexD& omega,
+			  const LatticeDiracFermionF3& s,
+			  const LatticeDiracFermionF3& t,
+			  const LatticeDiracFermionF3& z,
+			  LatticeDiracFermionF3& r,
+			  LatticeDiracFermionF3& x,
+			  const Subset& sub)
+      {     
+	if( sub.hasOrderedRep() ) { 
+	  REAL32* s_ptr = (REAL32*)&(s.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* t_ptr = (REAL32*)&(t.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* z_ptr = (REAL32*)&(z.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* r_ptr = (REAL32*)&(r.elem(sub.start()).elem(0).elem(0).real());
+	  REAL32* x_ptr = (REAL32*)&(x.elem(sub.start()).elem(0).elem(0).real());
+	
+	  REAL32 omega_re = (REAL32)omega.elem().elem().elem().real();
+	  REAL32 omega_im = (REAL32)omega.elem().elem().elem().imag();
+	  
+	  ib_rxupdate_arg<REAL32> arg={s_ptr,t_ptr,z_ptr,r_ptr,x_ptr, 
+					omega_re, omega_im};
+
+	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  dispatch_to_threads(len,arg, ord_ib_rxupdate_kernel_real32);
+	}
+	else {
+	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDP_abort(1);
+	}
+      }
+
+
+    template<>
+      inline
+      void 
+      ibicgstab_rxupdate(const ComplexD& omega,
+			  const LatticeDiracFermionD3& s,
+			  const LatticeDiracFermionD3& t,
+			  const LatticeDiracFermionD3& z,
+			  LatticeDiracFermionD3& r,
+			  LatticeDiracFermionD3& x,
+			  const Subset& sub)
+      {     
+	if( sub.hasOrderedRep() ) { 
+	  REAL64* s_ptr = (REAL64*)&(s.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* t_ptr = (REAL64*)&(t.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* z_ptr = (REAL64*)&(z.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* r_ptr = (REAL64*)&(r.elem(sub.start()).elem(0).elem(0).real());
+	  REAL64* x_ptr = (REAL64*)&(x.elem(sub.start()).elem(0).elem(0).real());
+	
+	  REAL64 omega_re = omega.elem().elem().elem().real();
+				
+	  REAL64 omega_im = omega.elem().elem().elem().imag();
+	  
+	  ib_rxupdate_arg<REAL64> arg={s_ptr,t_ptr,z_ptr,r_ptr,x_ptr, 
+					omega_re, omega_im};
+
+	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  dispatch_to_threads(len,arg, ord_ib_rxupdate_kernel_real64);
+	}
+	else {
+	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDP_abort(1);
+	}
+      }
+
+
+    template<typename F> 
+      struct ib_stupdate_arg { 
+	F a_r;   // Real + imaginary parts of alpha
+	F a_i;   
+	F* r;
+	F* u;
+	F* v;
+	F* q;
+	F* r0;
+	F* f0;
+	F* s;
+	F* t;
+	
+	// Reduction results 
+	REAL64* norm_space; // Space for 12 doubles
+      };
+#include "actions/ferm/invert/ord_ib_stupdates_reduces.h"
+
+    template<>
+      inline
+      void ibicgstab_stupdates_reduces(const ComplexD& alpha,
+				       const LatticeDiracFermionF3& r,
+				       const LatticeDiracFermionF3& u,
+				       const LatticeDiracFermionF3& v,
+				       const LatticeDiracFermionF3& q,
+				       const LatticeDiracFermionF3& r0,
+				       const LatticeDiracFermionF3& f0,
+				       LatticeDiracFermionF3& s,
+				       LatticeDiracFermionF3& t,
+				       ComplexD& phi,
+				       ComplexD& pi,
+				       ComplexD& gamma,
+				       ComplexD& eta,
+				       ComplexD& theta,
+				       Double& kappa,
+				       Double& rnorm,
+				       const Subset& sub)
+      
+      {     
+
+	REAL64 norm_array[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+
+	if( sub.hasOrderedRep() ) { 
+	  ib_stupdate_arg<REAL32> arg = { 
+	    (REAL32)alpha.elem().elem().elem().real(),
+	    (REAL32)alpha.elem().elem().elem().imag(),
+	    (REAL32*)&(r.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(u.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(v.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(q.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(r0.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(f0.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(s.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL32*)&(t.elem(sub.start()).elem(0).elem(0).real()),
+	    getNormSpace() };
+	  
+	  for(int i=0; i < 12*qdpNumThreads(); i++) { 
+	    arg.norm_space[i] = (REAL64)0;
+	  }
+
+
+	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  dispatch_to_threads(len,arg,ord_ib_stupdates_kernel_real32);
+	  for(int i=0; i < qdpNumThreads(); i++) { 
+	    norm_array[0] += arg.norm_space[12*i];
+	    norm_array[1] += arg.norm_space[12*i+1];
+	    norm_array[2] += arg.norm_space[12*i+2];
+	    norm_array[3] += arg.norm_space[12*i+3];
+	    norm_array[4] += arg.norm_space[12*i+4];
+	    norm_array[5] += arg.norm_space[12*i+5];
+	    norm_array[6] += arg.norm_space[12*i+6];
+	    norm_array[7] += arg.norm_space[12*i+7];
+	    norm_array[8] += arg.norm_space[12*i+8];
+	    norm_array[9] += arg.norm_space[12*i+9];
+	    norm_array[10] += arg.norm_space[12*i+10];
+	    norm_array[11] += arg.norm_space[12*i+11];
+	  }
+	  Internal::globalSumArray(norm_array,12);
+	 
+	  phi.elem().elem().elem().real() = norm_array[0];
+	  phi.elem().elem().elem().imag() = norm_array[1];
+
+	  gamma.elem().elem().elem().real() = norm_array[2];
+	  gamma.elem().elem().elem().imag() = norm_array[3];
+
+	  pi.elem().elem().elem().real() = norm_array[4];
+	  pi.elem().elem().elem().imag() = norm_array[5];
+
+	  eta.elem().elem().elem().real() = norm_array[6];
+	  eta.elem().elem().elem().imag() = norm_array[7];
+
+	  theta.elem().elem().elem().real() = norm_array[8];
+	  theta.elem().elem().elem().imag() = norm_array[9];
+
+	  kappa.elem().elem().elem().elem() = norm_array[10];
+	  rnorm.elem().elem().elem().elem() = norm_array[11];
+
+	}
+	else {
+	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDP_abort(1);
+	}
+      }
+
+
+    template<>
+      inline
+      void ibicgstab_stupdates_reduces(const ComplexD& alpha,
+				       const LatticeDiracFermionD3& r,
+				       const LatticeDiracFermionD3& u,
+				       const LatticeDiracFermionD3& v,
+				       const LatticeDiracFermionD3& q,
+				       const LatticeDiracFermionD3& r0,
+				       const LatticeDiracFermionD3& f0,
+				       LatticeDiracFermionD3& s,
+				       LatticeDiracFermionD3& t,
+				       ComplexD& phi,
+				       ComplexD& pi,
+				       ComplexD& gamma,
+				       ComplexD& eta,
+				       ComplexD& theta,
+				       Double& kappa,
+				       Double& rnorm,
+				       const Subset& sub)
+      
+      {     
+
+	REAL64 norm_array[12]={0,0,0,0,0,0,0,0,0,0,0,0};
+
+	if( sub.hasOrderedRep() ) { 
+	  ib_stupdate_arg<REAL64> arg = { 
+	    (REAL64)alpha.elem().elem().elem().real(),
+	    (REAL64)alpha.elem().elem().elem().imag(),
+	    (REAL64*)&(r.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(u.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(v.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(q.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(r0.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(f0.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(s.elem(sub.start()).elem(0).elem(0).real()),
+	    (REAL64*)&(t.elem(sub.start()).elem(0).elem(0).real()),
+	    getNormSpace() };
+	  
+	  for(int i=0; i < 12*qdpNumThreads(); i++) { 
+	    arg.norm_space[i] = (REAL64)0;
+	  }
+
+	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  dispatch_to_threads(len,arg,ord_ib_stupdates_kernel_real64);
+	  for(int i=0; i < qdpNumThreads(); i++) { 
+	    norm_array[0] += arg.norm_space[12*i];
+	    norm_array[1] += arg.norm_space[12*i+1];
+	    norm_array[2] += arg.norm_space[12*i+2];
+	    norm_array[3] += arg.norm_space[12*i+3];
+	    norm_array[4] += arg.norm_space[12*i+4];
+	    norm_array[5] += arg.norm_space[12*i+5];
+	    norm_array[6] += arg.norm_space[12*i+6];
+	    norm_array[7] += arg.norm_space[12*i+7];
+	    norm_array[8] += arg.norm_space[12*i+8];
+	    norm_array[9] += arg.norm_space[12*i+9];
+	    norm_array[10] += arg.norm_space[12*i+10];
+	    norm_array[11] += arg.norm_space[12*i+11];
+	  }
+	  Internal::globalSumArray(norm_array,12);
+	 
+	  phi.elem().elem().elem().real() = norm_array[0];
+	  phi.elem().elem().elem().imag() = norm_array[1];
+
+	  gamma.elem().elem().elem().real() = norm_array[2];
+	  gamma.elem().elem().elem().imag() = norm_array[3];
+
+	  pi.elem().elem().elem().real() = norm_array[4];
+	  pi.elem().elem().elem().imag() = norm_array[5];
+
+	  eta.elem().elem().elem().real() = norm_array[6];
+	  eta.elem().elem().elem().imag() = norm_array[7];
+
+	  theta.elem().elem().elem().real() = norm_array[8];
+	  theta.elem().elem().elem().imag() = norm_array[9];
+
+	  kappa.elem().elem().elem().elem() = norm_array[10];
+	  rnorm.elem().elem().elem().elem() = norm_array[11];
+
+	}
+	else {
+	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDP_abort(1);
+	}
+      }
+
+
 
   }
 }

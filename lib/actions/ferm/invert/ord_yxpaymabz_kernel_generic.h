@@ -1,3 +1,4 @@
+inline
 void ord_yxpaymabz_kernel(int lo, int hi, int my_id, ord_yxpaymabz_arg* a)
 {
   REAL32* x_ptr = &(a->x_ptr[lo]);
