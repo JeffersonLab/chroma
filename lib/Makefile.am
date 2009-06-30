@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.213 2009-06-24 20:01:52 jbulava Exp $
+# $Id: Makefile.am,v 3.214 2009-06-30 15:51:50 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -683,6 +683,7 @@ nobase_include_HEADERS += \
         util/ferm/symtensor.h \
 	util/ferm/map_obj.h \
 	util/ferm/key_prop_colorvec.h \
+	util/ferm/key_laph_dil_prop.h \
 	util/ferm/key_prop_matelem.h \
 	util/ferm/key_grid_prop.h \
 	util/ferm/key_block_prop.h \
@@ -797,6 +798,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_laplace_eigs.h \
+	meas/inline/hadron/inline_laph_diluted_props_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -1464,6 +1466,7 @@ libchroma_a_SOURCES += \
 	util/ferm/key_grid_prop.cc \
 	util/ferm/key_block_prop.cc \
 	util/ferm/key_prop_colorvec.cc \
+	util/ferm/key_laph_dil_prop.cc \
 	util/ferm/key_prop_matelem.cc
 
 # Taken out for now
@@ -1514,6 +1517,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc \
+	meas/inline/hadron/inline_laph_diluted_props_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \

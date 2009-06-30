@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.340 2009-06-24 20:01:52 jbulava Exp $
+# $Id: Makefile.in,v 3.341 2009-06-30 15:51:51 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -630,9 +630,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/ferm/gamma5_herm_w.cc util/ferm/antisymtensor.cc \
 	util/ferm/etensor.cc util/ferm/symtensor.cc \
 	util/ferm/key_grid_prop.cc util/ferm/key_block_prop.cc \
-	util/ferm/key_prop_colorvec.cc util/ferm/key_prop_matelem.cc \
-	io/inline_io.cc meas/inline/inline_aggregate.cc \
-	meas/inline/make_xml_file.cc \
+	util/ferm/key_prop_colorvec.cc util/ferm/key_laph_dil_prop.cc \
+	util/ferm/key_prop_matelem.cc io/inline_io.cc \
+	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/eig/inline_ritz_H_w.cc \
@@ -662,6 +662,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc \
+	meas/inline/hadron/inline_laph_diluted_props_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
@@ -1202,11 +1203,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	gamma5_herm_w.$(OBJEXT) antisymtensor.$(OBJEXT) \
 	etensor.$(OBJEXT) symtensor.$(OBJEXT) key_grid_prop.$(OBJEXT) \
 	key_block_prop.$(OBJEXT) key_prop_colorvec.$(OBJEXT) \
-	key_prop_matelem.$(OBJEXT) inline_io.$(OBJEXT) \
-	inline_aggregate.$(OBJEXT) make_xml_file.$(OBJEXT) \
-	inline_eig_aggregate.$(OBJEXT) inline_eigbnds.$(OBJEXT) \
-	inline_ritz_H_w.$(OBJEXT) inline_gfix_aggregate.$(OBJEXT) \
-	inline_coulgauge.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
+	key_laph_dil_prop.$(OBJEXT) key_prop_matelem.$(OBJEXT) \
+	inline_io.$(OBJEXT) inline_aggregate.$(OBJEXT) \
+	make_xml_file.$(OBJEXT) inline_eig_aggregate.$(OBJEXT) \
+	inline_eigbnds.$(OBJEXT) inline_ritz_H_w.$(OBJEXT) \
+	inline_gfix_aggregate.$(OBJEXT) inline_coulgauge.$(OBJEXT) \
+	inline_glue_aggregate.$(OBJEXT) \
 	inline_apply_gaugestate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
 	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
 	inline_fuzwilp.$(OBJEXT) inline_qnaive.$(OBJEXT) \
@@ -1225,9 +1227,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_prop_3pt_w.$(OBJEXT) \
 	inline_block_orthog_colorvec.$(OBJEXT) \
 	inline_create_colorvecs.$(OBJEXT) \
-	inline_laplace_eigs.$(OBJEXT) inline_block_colorvecs.$(OBJEXT) \
-	inline_disco_w.$(OBJEXT) inline_disco_eoprec_w.$(OBJEXT) \
-	inline_disco_eigcg_w.$(OBJEXT) \
+	inline_laplace_eigs.$(OBJEXT) \
+	inline_laph_diluted_props_w.$(OBJEXT) \
+	inline_block_colorvecs.$(OBJEXT) inline_disco_w.$(OBJEXT) \
+	inline_disco_eoprec_w.$(OBJEXT) inline_disco_eigcg_w.$(OBJEXT) \
 	inline_disco_eo_eigcg_w.$(OBJEXT) inline_hadspec_w.$(OBJEXT) \
 	inline_mesonspec_w.$(OBJEXT) inline_heavyhadspec_w.$(OBJEXT) \
 	inline_static_light_spec_w.$(OBJEXT) \
@@ -1825,10 +1828,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h util/ferm/antisymtensor.h \
 	util/ferm/etensor.h util/ferm/symtensor.h util/ferm/map_obj.h \
-	util/ferm/key_prop_colorvec.h util/ferm/key_prop_matelem.h \
-	util/ferm/key_grid_prop.h util/ferm/key_block_prop.h \
-	util/ferm/key_val_db.h stagtype_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
+	util/ferm/key_prop_colorvec.h util/ferm/key_laph_dil_prop.h \
+	util/ferm/key_prop_matelem.h util/ferm/key_grid_prop.h \
+	util/ferm/key_block_prop.h util/ferm/key_val_db.h \
+	stagtype_fermact_s.h actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
@@ -1907,6 +1910,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_laplace_eigs.h \
+	meas/inline/hadron/inline_laph_diluted_props_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -2672,10 +2676,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h util/ferm/antisymtensor.h \
 	util/ferm/etensor.h util/ferm/symtensor.h util/ferm/map_obj.h \
-	util/ferm/key_prop_colorvec.h util/ferm/key_prop_matelem.h \
-	util/ferm/key_grid_prop.h util/ferm/key_block_prop.h \
-	util/ferm/key_val_db.h stagtype_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
+	util/ferm/key_prop_colorvec.h util/ferm/key_laph_dil_prop.h \
+	util/ferm/key_prop_matelem.h util/ferm/key_grid_prop.h \
+	util/ferm/key_block_prop.h util/ferm/key_val_db.h \
+	stagtype_fermact_s.h actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
@@ -2754,6 +2758,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_laplace_eigs.h \
+	meas/inline/hadron/inline_laph_diluted_props_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -3361,9 +3366,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/ferm/gamma5_herm_w.cc util/ferm/antisymtensor.cc \
 	util/ferm/etensor.cc util/ferm/symtensor.cc \
 	util/ferm/key_grid_prop.cc util/ferm/key_block_prop.cc \
-	util/ferm/key_prop_colorvec.cc util/ferm/key_prop_matelem.cc \
-	io/inline_io.cc meas/inline/inline_aggregate.cc \
-	meas/inline/make_xml_file.cc \
+	util/ferm/key_prop_colorvec.cc util/ferm/key_laph_dil_prop.cc \
+	util/ferm/key_prop_matelem.cc io/inline_io.cc \
+	meas/inline/inline_aggregate.cc meas/inline/make_xml_file.cc \
 	meas/inline/eig/inline_eig_aggregate.cc \
 	meas/inline/eig/inline_eigbnds.cc \
 	meas/inline/eig/inline_ritz_H_w.cc \
@@ -3393,6 +3398,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc \
+	meas/inline/hadron/inline_laph_diluted_props_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
@@ -3874,6 +3880,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_heavyhadspec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_io_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_laph_diluted_props_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_laplace_eigs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_link_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_list_obj.Po@am__quote@
@@ -3965,6 +3972,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jacobi_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_block_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_grid_prop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_laph_dil_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_colorvec.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_matelem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
@@ -12178,6 +12186,20 @@ key_prop_colorvec.obj: util/ferm/key_prop_colorvec.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_prop_colorvec.obj `if test -f 'util/ferm/key_prop_colorvec.cc'; then $(CYGPATH_W) 'util/ferm/key_prop_colorvec.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/key_prop_colorvec.cc'; fi`
 
+key_laph_dil_prop.o: util/ferm/key_laph_dil_prop.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_laph_dil_prop.o -MD -MP -MF $(DEPDIR)/key_laph_dil_prop.Tpo -c -o key_laph_dil_prop.o `test -f 'util/ferm/key_laph_dil_prop.cc' || echo '$(srcdir)/'`util/ferm/key_laph_dil_prop.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/key_laph_dil_prop.Tpo $(DEPDIR)/key_laph_dil_prop.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/key_laph_dil_prop.cc' object='key_laph_dil_prop.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_laph_dil_prop.o `test -f 'util/ferm/key_laph_dil_prop.cc' || echo '$(srcdir)/'`util/ferm/key_laph_dil_prop.cc
+
+key_laph_dil_prop.obj: util/ferm/key_laph_dil_prop.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_laph_dil_prop.obj -MD -MP -MF $(DEPDIR)/key_laph_dil_prop.Tpo -c -o key_laph_dil_prop.obj `if test -f 'util/ferm/key_laph_dil_prop.cc'; then $(CYGPATH_W) 'util/ferm/key_laph_dil_prop.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/key_laph_dil_prop.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/key_laph_dil_prop.Tpo $(DEPDIR)/key_laph_dil_prop.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/key_laph_dil_prop.cc' object='key_laph_dil_prop.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_laph_dil_prop.obj `if test -f 'util/ferm/key_laph_dil_prop.cc'; then $(CYGPATH_W) 'util/ferm/key_laph_dil_prop.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/key_laph_dil_prop.cc'; fi`
+
 key_prop_matelem.o: util/ferm/key_prop_matelem.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_prop_matelem.o -MD -MP -MF $(DEPDIR)/key_prop_matelem.Tpo -c -o key_prop_matelem.o `test -f 'util/ferm/key_prop_matelem.cc' || echo '$(srcdir)/'`util/ferm/key_prop_matelem.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/key_prop_matelem.Tpo $(DEPDIR)/key_prop_matelem.Po
@@ -12639,6 +12661,20 @@ inline_laplace_eigs.obj: meas/inline/hadron/inline_laplace_eigs.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_laplace_eigs.cc' object='inline_laplace_eigs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_laplace_eigs.obj `if test -f 'meas/inline/hadron/inline_laplace_eigs.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_laplace_eigs.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_laplace_eigs.cc'; fi`
+
+inline_laph_diluted_props_w.o: meas/inline/hadron/inline_laph_diluted_props_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_laph_diluted_props_w.o -MD -MP -MF $(DEPDIR)/inline_laph_diluted_props_w.Tpo -c -o inline_laph_diluted_props_w.o `test -f 'meas/inline/hadron/inline_laph_diluted_props_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_laph_diluted_props_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_laph_diluted_props_w.Tpo $(DEPDIR)/inline_laph_diluted_props_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_laph_diluted_props_w.cc' object='inline_laph_diluted_props_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_laph_diluted_props_w.o `test -f 'meas/inline/hadron/inline_laph_diluted_props_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_laph_diluted_props_w.cc
+
+inline_laph_diluted_props_w.obj: meas/inline/hadron/inline_laph_diluted_props_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_laph_diluted_props_w.obj -MD -MP -MF $(DEPDIR)/inline_laph_diluted_props_w.Tpo -c -o inline_laph_diluted_props_w.obj `if test -f 'meas/inline/hadron/inline_laph_diluted_props_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_laph_diluted_props_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_laph_diluted_props_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_laph_diluted_props_w.Tpo $(DEPDIR)/inline_laph_diluted_props_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_laph_diluted_props_w.cc' object='inline_laph_diluted_props_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_laph_diluted_props_w.obj `if test -f 'meas/inline/hadron/inline_laph_diluted_props_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_laph_diluted_props_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_laph_diluted_props_w.cc'; fi`
 
 inline_block_colorvecs.o: meas/inline/hadron/inline_block_colorvecs.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_block_colorvecs.o -MD -MP -MF $(DEPDIR)/inline_block_colorvecs.Tpo -c -o inline_block_colorvecs.o `test -f 'meas/inline/hadron/inline_block_colorvecs.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_block_colorvecs.cc
