@@ -106,16 +106,16 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[7] += f0[count+2]*t[count+3];
     norm_array[7] -= f0[count+3]*t[count+2];
 
-    // ** theta=(s,t) 
-    norm_array[8] += s[count]*t[count];
-    norm_array[8] += s[count+1]*t[count+1];
-    norm_array[8] += s[count+2]*t[count+2];
-    norm_array[8] += s[count+3]*t[count+3];
+    // ** theta=(t,s) 
+    norm_array[8] += t[count]*s[count];
+    norm_array[8] += t[count+1]*s[count+1];
+    norm_array[8] += t[count+2]*s[count+2];
+    norm_array[8] += t[count+3]*s[count+3];
 
-    norm_array[9] += s[count]*t[count+1];
-    norm_array[9] -= s[count+1]*t[count];
-    norm_array[9] += s[count+2]*t[count+3];
-    norm_array[9] -= s[count+3]*t[count+2];
+    norm_array[9] += t[count]*s[count+1];
+    norm_array[9] -= t[count+1]*s[count];
+    norm_array[9] += t[count+2]*s[count+3];
+    norm_array[9] -= t[count+3]*s[count+2];
 
 
     // ** kappa = || t ||^2
@@ -208,11 +208,11 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
 
 
     // ** theta=(s,t) 
-    norm_array[8] += s[count]*t[count];
-    norm_array[8] += s[count+1]*t[count+1];
+    norm_array[8] += t[count]*s[count];
+    norm_array[8] += t[count+1]*s[count+1];
 
-    norm_array[9] += s[count]*t[count+1];
-    norm_array[9] -= s[count+1]*t[count];
+    norm_array[9] += t[count]*s[count+1];
+    norm_array[9] -= t[count+1]*s[count];
 
 
     // ** kappa = || t ||^2

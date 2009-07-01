@@ -100,13 +100,13 @@ namespace Chroma {
 				       const Subset& sub)
     {
       s[sub] = r - alpha*v;
+      t[sub] = u - alpha*q;
+
       phi = innerProduct(r0,s,sub);
       gamma = innerProduct(f0,s,sub);
-
-      t[sub] = u - alpha*q;
       pi = innerProduct(r0,q,sub);
       eta = innerProduct(f0,t,sub);
-      theta = innerProduct(s,t,sub);
+      theta = innerProduct(t,s,sub);
       kappa=norm2(t,sub);
       rnorm = norm2(r,sub);
     }

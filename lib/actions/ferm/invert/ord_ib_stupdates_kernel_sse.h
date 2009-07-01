@@ -298,44 +298,44 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
 #endif
 
 #if 0
-    // ** theta=(s,t) 
-    norm_array[8] += s[count]*t[count];
-    norm_array[8] += s[count+1]*t[count+1];
-    norm_array[8] += s[count+2]*t[count+2];
-    norm_array[8] += s[count+3]*t[count+3];
+    // ** theta=(t,s) 
+    norm_array[8] += t[count]*s[count];
+    norm_array[8] += t[count+1]*s[count+1];
+    norm_array[8] += t[count+2]*s[count+2];
+    norm_array[8] += t[count+3]*s[count+3];
 
-    norm_array[9] += s[count]*t[count+1];
-    norm_array[9] -= s[count+1]*t[count];
-    norm_array[9] += s[count+2]*t[count+3];
-    norm_array[9] -= s[count+3]*t[count+2];
+    norm_array[9] += t[count]*s[count+1];
+    norm_array[9] -= t[count+1]*s[count];
+    norm_array[9] += t[count+2]*s[count+3];
+    norm_array[9] -= t[count+3]*s[count+2];
 #else
-    // ** theta=(s,t)
+    // ** theta=(t,s)
 
     /* Load dotprod accumulated so far */
     dotprod = _mm_load_pd(&norm_array[8]);
     
     /* dotprod holds the current partial sum */
  
-    /*    dotprod[0] += slo[0]*tlo[0];         */
-    /*    dotprod[1] -= slo[1]*tlo[0];       */
-    t1 = _mm_shuffle_pd(tlo,tlo,0x0);
-    dotprod = _mm_add_pd(dotprod, _mm_mul_pd(slo, _mm_mul_pd(mask,t1)));
+    /*    dotprod[0] += tlo[0]*slo[0];         */
+    /*    dotprod[1] -= tlo[1]*slo[0];       */
+    t1 = _mm_shuffle_pd(slo,slo,0x0);
+    dotprod = _mm_add_pd(dotprod, _mm_mul_pd(tlo, _mm_mul_pd(mask,t1)));
 
-    /*    dotprod[0] += slo[1]*tlo[1]   */
-    /*    dotprod[1] += slo[0]*tlo[1];    */
-    t1 = _mm_shuffle_pd(tlo,tlo,0x3);
-    t2 = _mm_shuffle_pd(slo,slo,0x1);
+    /*    dotprod[0] += tlo[1]*slo[1]   */
+    /*    dotprod[1] += tlo[0]*slo[1];    */
+    t1 = _mm_shuffle_pd(slo,slo,0x3);
+    t2 = _mm_shuffle_pd(tlo,tlo,0x1);
     dotprod = _mm_add_pd(dotprod, _mm_mul_pd(t2,t1));
 
-    /*    dotprod[0] += shi[0]*thi[0];         */
-    /*    dotprod[1] -= shi[1]*thi[0];       */
-    t1 = _mm_shuffle_pd(thi,thi,0x0);
-    dotprod = _mm_add_pd(dotprod, _mm_mul_pd(shi, _mm_mul_pd(mask,t1)));
+    /*    dotprod[0] += thi[0]*shi[0];         */
+    /*    dotprod[1] -= thi[1]*shi[0];       */
+    t1 = _mm_shuffle_pd(shi,shi,0x0);
+    dotprod = _mm_add_pd(dotprod, _mm_mul_pd(thi, _mm_mul_pd(mask,t1)));
     
-    /*    dotprod[0] += shi[1]*thi[1]   */
-    /*    dotprod[1] += shi[0]*thi[1];    */
-    t1 = _mm_shuffle_pd(thi,thi,0x3);
-    t2 = _mm_shuffle_pd(shi,shi,0x1);
+    /*    dotprod[0] += thi[1]*shi[1]   */
+    /*    dotprod[1] += thi[0]*shi[1];    */
+    t1 = _mm_shuffle_pd(shi,shi,0x3);
+    t2 = _mm_shuffle_pd(thi,thi,0x1);
     dotprod = _mm_add_pd(dotprod, _mm_mul_pd(t2,t1));
     _mm_store_pd(&norm_array[8],dotprod);
 #endif
@@ -558,26 +558,26 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
 
 
 #if 0
-    // ** theta=(s,t) 
-    norm_array[8] += s[count]*t[count];
-    norm_array[8] += s[count+1]*t[count+1];
+    // ** theta=(t,s) 
+    norm_array[8] += t[count]*s[count];
+    norm_array[8] += t[count+1]*s[count+1];
 
-    norm_array[9] += s[count]*t[count+1];
-    norm_array[9] -= s[count+1]*t[count];
+    norm_array[9] += t[count]*s[count+1];
+    norm_array[9] -= t[count+1]*s[count];
 #else
     dotprod = _mm_load_pd(&norm_array[8]);
     
     /* dotprod holds the current partial sum */
  
-    /*    dotprod[0] += s[0]*t[0];         */
-    /*    dotprod[1] -= s[1]*t[0];       */
-    t1 = _mm_shuffle_pd(tvec,tvec,0x0);
-    dotprod = _mm_add_pd(dotprod, _mm_mul_pd(svec, _mm_mul_pd(mask,t1)));
+    /*    dotprod[0] += t[0]*s[0];         */
+    /*    dotprod[1] -= t[1]*s[0];       */
+    t1 = _mm_shuffle_pd(svec,svec,0x0);
+    dotprod = _mm_add_pd(dotprod, _mm_mul_pd(tvec, _mm_mul_pd(mask,t1)));
 
-    /*    dotprod[0] += s[1]*t[1]   */
-    /*    dotprod[1] += s[0]*t[1];    */
-    t1 = _mm_shuffle_pd(tvec,tvec,0x3);
-    t2 = _mm_shuffle_pd(svec,svec,0x1);
+    /*    dotprod[0] += t[1]*s[1]   */
+    /*    dotprod[1] += t[0]*s[1];    */
+    t1 = _mm_shuffle_pd(svec,svec,0x3);
+    t2 = _mm_shuffle_pd(tvec,tvec,0x1);
     dotprod = _mm_add_pd(dotprod, _mm_mul_pd(t2,t1));
 
     _mm_store_pd(&norm_array[8],dotprod);
@@ -588,7 +588,7 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[10] += t[count]*t[count];
     norm_array[10] += t[count+1]*t[count+1];
    
-    // ** rnorm = || t ||^2
+    // ** rnorm = || r ||^2
     norm_array[11] += r[count]*r[count];
     norm_array[11] += r[count+1]*r[count+1];
 #else
