@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.10 2009-06-30 21:10:13 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.11 2009-07-01 14:10:01 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -237,6 +237,7 @@ namespace Chroma
 			Real minus_one = -1.;                                                                                                                                
 			temp = psi * minus_one;                                                                                                                
 			klein_gord(u, temp, chi, 0.0, j_decay);                               
+		
 		}  
 
 
@@ -496,9 +497,9 @@ namespace Chroma
 
 			for (int t = 0 ; t < nt ; ++t)
 			{
-				d[t] = new double[kdim - 1];
-				e[t] = new double[kdim - 2];
-				z[t] = new double[(kdim -1) * (kdim - 1)];
+				d[t] = new double[kdim - 2];
+				e[t] = new double[kdim - 3];
+				z[t] = new double[(kdim - 2) * (kdim - 2)];
 			}
 
 			for (int k = 0 ; k < kdim ; ++k)
@@ -528,7 +529,8 @@ namespace Chroma
 				//temporary seems to be defined as a single element but is used as both an array and a single element?
 				LatticeColorVector temporary;
 				// Apply the spatial Laplace operator; j_decay denotes the temporal direction		
-				laplacian(u_smr,lanczos_vectors[k],temporary,j_decay); 
+				//laplacian(u_smr,lanczos_vectors[k],temporary,j_decay); 
+				chebyshev(u_smr,lanczos_vectors[k],temporary,j_decay); 
 
 				if(k > 0){	
 					for(int t=0; t<nt; ++t){
@@ -573,9 +575,10 @@ namespace Chroma
 					QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
 					beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
 					lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
-					d[t][k] = toDouble(Real(real(alpha[k][t])));
+					if (k < kdim - 2)
+						d[t][k] = toDouble(Real(real(alpha[k][t])));
 			
-					if (k < kdim - 1)
+					if (k < kdim - 3)
 						e[t][k] = toDouble(Real(real(beta[k][t])));
 				}
 				
@@ -596,7 +599,7 @@ namespace Chroma
 			// Finally compute eigenvectors and eigenvalues
 
 			//Is AL = LT, up to small corrections? 
-		/*
+		
 			QDPIO::cout << "Testing AL = LT" << endl;
 			
 			for (int k = 0 ; k < kdim -1 ; ++k)
@@ -605,26 +608,48 @@ namespace Chroma
 				
 				LatticeColorVector al = zero;
 
-				laplacian(u_smr, lanczos_vectors[k], al, j_decay);
+				//laplacian(u_smr, lanczos_vectors[k], al, j_decay);
+				chebyshev(u_smr, lanczos_vectors[k], al, j_decay);
 
 				LatticeColorVector lt = zero;
 
 				for (int t = 0 ; t < nt ; ++t)
-				{
-					lt[ phases.getSet()[t] ] += 	
+				{	
+						if (k != 0)
+							{
+								lt[ phases.getSet()[t] ] += toDouble(Real(real(beta[k-1][t])))
+									* lanczos_vectors[k-1];
+							}
 
-				}
+						if (k != (kdim - 2))
+						{
 
-			}
-			*/
+							lt[phases.getSet()[t]] += toDouble(Real(real(beta[k][t]))) * 
+								lanczos_vectors[k+1];
+						}
+
+						lt[ phases.getSet()[t] ] += toDouble(Real(real(alpha[k][t]))) * 
+							lanczos_vectors[k];
+				} //t
+
+				LatticeColorVector ldiff = al - lt; 
+				
+				multi1d<DComplex> ldcnt(nt); 
+				partitionedInnerProduct(ldiff, ldiff, ldcnt, phases.getSet());
+
+				for (int t = 0 ; t < nt ; t++)
+					QDPIO::cout << "   dcnt[" << t << "] = " << ldcnt[t] << endl; 
+				
+				} //k
+
 
 			//parameters for dsteqr
 			char compz = 'I';
 
-			double* work  = new double[2*(kdim - 1) - 2];
+			double* work  = new double[2*(kdim - 2) - 2];
 
 			int info = 0;
-			int ldz = kdim - 1;
+			int ldz = kdim - 2;
 
 
 			multi1d< multi1d< multi1d<double> > > evecs(nt);
@@ -645,28 +670,28 @@ namespace Chroma
 				QDPIO::cout << "info = " << info << endl;
 
 
-				evecs[t].resize(kdim - 1);
-				evals[t].resize(kdim - 1);
+				evecs[t].resize(kdim - 2);
+				evals[t].resize(kdim - 2);
 
-				for (int v = 0 ; v < kdim - 1 ; ++v)
+				for (int v = 0 ; v < kdim - 2 ; ++v)
 				{
 					evals[t][v] = d[t][v]; 
 						
 					QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << endl;
 
-					evecs[t][v].resize(kdim - 1);
+					evecs[t][v].resize(kdim - 2);
 
-					for (int n = 0 ; n < kdim - 1 ; ++n)
+					for (int n = 0 ; n < kdim - 2 ; ++n)
 					{
-						evecs[t][v][n] = z[t][v * (kdim - 1) + n ];
+						evecs[t][v][n] = z[t][v * (kdim - 2) + n ];
 					}
 
 					//Apply matrix to vector
-					multi1d<double> Av(kdim - 1);
+					multi1d<double> Av(kdim - 2);
 
 					double dcnt = 0;
 
-					for (int n = 0 ; n < kdim - 1 ; ++n)
+					for (int n = 0 ; n < kdim - 2 ; ++n)
 					{
 						Av[n] = 0;
 						if (n != 0)
@@ -675,7 +700,7 @@ namespace Chroma
 								evecs[t][v][n-1];
 						}
 
-						if (n != (kdim - 2))
+						if (n != (kdim - 3))
 						{
 
 							Av[n] += toDouble(Real(real(beta[n][t]))) * 
@@ -708,7 +733,7 @@ namespace Chroma
 
 				for (int t = 0 ; t < nt ; ++t)
 				{
-					for (int n = 0 ; n < kdim - 1 ; ++n)
+					for (int n = 0 ; n < kdim - 2 ; ++n)
 					{
 						vec_k[phases.getSet()[t] ] += 
 							Real(evecs[t][k][n]) * lanczos_vectors[n];
@@ -720,7 +745,8 @@ namespace Chroma
 				//Test if this is an eigenvector
 				LatticeColorVector avec = zero;
 
-				laplacian(u_smr, vec_k, avec, j_decay);
+				//laplacian(u_smr, vec_k, avec, j_decay);
+				chebyshev(u_smr, vec_k, avec, j_decay);
 
 				multi1d< DComplex > dcnt_arr(nt);
 
