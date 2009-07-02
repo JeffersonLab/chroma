@@ -329,6 +329,7 @@ namespace Chroma {
 
 #include "actions/ferm/invert/ord_ib_zvupdates_kernel.h"
 
+#if 1
     template<>
       inline
     void 
@@ -380,9 +381,10 @@ namespace Chroma {
       
 
 
-      }
+    }
+#endif    
 
-#if 0
+
     template<>
       inline
       void 
@@ -433,7 +435,6 @@ namespace Chroma {
 	}
       }
 
-#endif
 
 
 
@@ -450,6 +451,7 @@ namespace Chroma {
       };
 
 #include "actions/ferm/invert/ord_ib_rxupdate_kernel.h"
+
     template<>
       inline
       void 
@@ -537,6 +539,7 @@ namespace Chroma {
       };
 #include "actions/ferm/invert/ord_ib_stupdates_reduces.h"
 
+#if 1
     template<>
       inline
       void ibicgstab_stupdates_reduces(const ComplexD& alpha,
@@ -623,6 +626,7 @@ namespace Chroma {
 	}
       }
 
+#endif
 
     template<>
       inline

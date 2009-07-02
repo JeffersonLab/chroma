@@ -244,7 +244,7 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
     
     /*    dotprod[0] += r0hi[1]*qhi[1]   */
     /*    dotprod[1] += r0hi[0]*qhi[1];    */
-    t1 = _mm_shuffle_pd(shi,shi,0x3);
+    t1 = _mm_shuffle_pd(qhi,qhi,0x3);
     t2 = _mm_shuffle_pd(r0hi,r0hi,0x1);
     dotprod = _mm_add_pd(dotprod, _mm_mul_pd(t2,t1));
     _mm_store_pd(&norm_array[4],dotprod);

@@ -211,7 +211,7 @@ void ord_ib_zvupdates_kernel_real64(int lo, int hi, int my_id, ib_zvupdates_arg<
 
   for(int count = 0; count < len; count+=2) { 
 
-
+ 
     ztmp = _mm_load_pd(&z[count]);
     vtmp = _mm_load_pd(&v[count]);
     rvec = _mm_load_pd(&r[count]);
@@ -226,8 +226,11 @@ void ord_ib_zvupdates_kernel_real64(int lo, int hi, int my_id, ib_zvupdates_arg<
 
     /* z = (alpha_n/alpha_n-1)*beta z */
     /*
+      ztmp[0] = z[count];
+      ztmp[1] = z[count+1];
       z[count]    = arb_re * ztmp[0] - arb_im * ztmp[1];
       z[count+1]  = arb_re * ztmp[1] + arb_im * ztmp[0];  
+
     */
 
     zvec = _mm_mul_pd(arb_re_vec, ztmp);
@@ -239,40 +242,42 @@ void ord_ib_zvupdates_kernel_real64(int lo, int hi, int my_id, ib_zvupdates_arg<
     /*
       z[count  ] += a_re * r[count];
       z[count+1] += a_re * r[count+1];
-    */
-    zvec = _mm_add_pd(zvec,_mm_mul_pd(a_re_vec,rvec));
 
-    /*
       z[count  ] -= a_im * r[count+1];
       z[count+1] += a_im * r[count];
+
+
     */
+    zvec = _mm_add_pd(zvec,_mm_mul_pd(a_re_vec,rvec));
     zvec = _mm_add_pd(zvec,_mm_mul_pd(a_im_vec,tmpshuf2));
 
     /* z -= alpha*delta*v */
     /*
       z[count  ] -= ad_re * v[count] ;
       z[count+1] -= ad_re * v[count+1];
-    */
-    zvec = _mm_sub_pd(zvec, _mm_mul_pd(ad_re_vec,vtmp));
-    
-    /*
+      
       z[count  ] += ad_im * v[count+1];
       z[count+1] -= ad_im * v[count];
     */
+    zvec = _mm_sub_pd(zvec, _mm_mul_pd(ad_re_vec,vtmp));
     zvec = _mm_sub_pd(zvec, _mm_mul_pd(ad_im_vec, tmpshuf3));
     _mm_store_pd(&z[count], zvec);
+
+
+
 
     /* v = u + b*v */
     /*
       v[count]   = u[count]   + b_re*vtmp[0] - b_im*vtmp[1];
       v[count+1] = u[count+1] + b_re*vtmp[1] + b_im*vtmp[0];
+
     */
     vvec = _mm_add_pd( uvec, _mm_mul_pd(b_re_vec,vtmp));
     vvec = _mm_add_pd( vvec, _mm_mul_pd(b_im_vec,tmpshuf3));
 
     /*
-    v[count]   -= d_re*q[count];
-    v[count+1] -= d_re*q[count+1];
+      v[count]   -= d_re*q[count];
+      v[count+1] -= d_re*q[count+1];
     */
     vvec = _mm_sub_pd( vvec, _mm_mul_pd(d_re_vec,qvec));
 
@@ -281,7 +286,7 @@ void ord_ib_zvupdates_kernel_real64(int lo, int hi, int my_id, ib_zvupdates_arg<
       v[count+1] -= d_im*q[count];
     */
     vvec = _mm_sub_pd( vvec, _mm_mul_pd(d_im_vec, tmpshuf4));
-
+    _mm_store_pd(&v[count],vvec);
   }
 }
 
