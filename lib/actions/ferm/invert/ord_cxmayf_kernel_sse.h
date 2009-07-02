@@ -1,3 +1,4 @@
+
 #include <xmmintrin.h>
 #include <pmmintrin.h>
 
@@ -25,7 +26,8 @@ void ord_cxmayf_kernel(int lo, int hi, int my_id, ord_cxmayf_arg* arg)
     __m128 t3 = _mm_mul_ps(av_im, yv2);
     xv = _mm_add_ps(t2, t3);
     
-    _mm_store_ps(&x_ptr[count], xv);
+    // _mm_store_ps(&x_ptr[count], xv);
+    _mm_stream_ps(&x_ptr[count], xv);
   }
      
 

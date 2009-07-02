@@ -31,23 +31,28 @@ void ord_xymz_normx_kernel(int lo, int hi, int my_id, ord_xymz_normx_arg* a)
     zvec1 = _mm_load_pd(&z_ptr[count]);
 
     xvec1 = _mm_sub_pd(yvec1,zvec1);
-    _mm_store_pd(&x_ptr[count], xvec1);
+    //    _mm_store_pd(&x_ptr[count], xvec1);
+    _mm_stream_pd(&x_ptr[count], xvec1);
 
 
     yvec2 = _mm_load_pd(&y_ptr[count+2]);
     zvec2 = _mm_load_pd(&z_ptr[count+2]);
     xvec2 = _mm_sub_pd(yvec2,zvec2);
-    _mm_store_pd(&x_ptr[count+2], xvec2); 
+    //    _mm_store_pd(&x_ptr[count+2], xvec2); 
+    _mm_stream_pd(&x_ptr[count+2], xvec2); 
+
 
     yvec3 = _mm_load_pd(&y_ptr[count+4]);
     zvec3 = _mm_load_pd(&z_ptr[count+4]);
     xvec3 = _mm_sub_pd(yvec3,zvec3);
-    _mm_store_pd(&x_ptr[count+4], xvec3);
+    // _mm_store_pd(&x_ptr[count+4], xvec3);
+    _mm_stream_pd(&x_ptr[count+4], xvec3);
 
     yvec4 = _mm_load_pd(&y_ptr[count+6]);
     zvec4 = _mm_load_pd(&z_ptr[count+6]);
     xvec4 = _mm_sub_pd(yvec4,zvec4);
-    _mm_store_pd(&x_ptr[count+6], xvec4);    
+    //_mm_store_pd(&x_ptr[count+6], xvec4);    
+    _mm_stream_pd(&x_ptr[count+6], xvec4);    
 
     yvec1 = _mm_mul_pd(xvec1,xvec1);
     norm_vec1 = _mm_add_pd(norm_vec1,yvec1);

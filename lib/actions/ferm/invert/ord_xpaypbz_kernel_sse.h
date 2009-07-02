@@ -43,7 +43,8 @@ void ord_xpaypbz_kernel(int lo, int hi, int my_id, ord_xpaypbz_arg* a)
     t4 = _mm_mul_ps(bv_im, t1);
     xv = _mm_add_ps(t3,t4);
 
-    _mm_store_ps(&x_ptr[count], xv);
+    //    _mm_store_ps(&x_ptr[count], xv);
+    _mm_stream_ps(&x_ptr[count], xv);
 
 #if 0
 			    

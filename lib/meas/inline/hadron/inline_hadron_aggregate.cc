@@ -1,7 +1,9 @@
-// $Id: inline_hadron_aggregate.cc,v 3.53 2009-06-30 15:51:52 jbulava Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.54 2009-07-02 18:24:52 bjoo Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
+
+#include "chroma_config.h"
 
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
 #include "meas/inline/hadron/inline_apply_fermstate_w.h"
@@ -9,7 +11,13 @@
 #include "meas/inline/hadron/inline_block_orthog_colorvec.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
+
+#ifdef BUILD_LAPACK
 #include "meas/inline/hadron/inline_laplace_eigs.h"
+#else
+#warning "Not Building Inline Laplace Eigs"
+#endif
+
 #include "meas/inline/hadron/inline_laph_diluted_props_w.h"
 #include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
@@ -106,7 +114,9 @@ namespace Chroma
 
 	success &= InlineMultiPropagatorEnv::registerAll();  // save space
 	success &= InlineSeqSourceEnv::registerAll();
+#ifdef BUILD_LAPACK
 	success &= InlineLaplaceEigsEnv::registerAll();
+#endif
 	success &= InlineLaphDilutedPropsEnv::registerAll();
 	success &= InlineSeqPropTestEnv::registerAll();
 	success &= InlineHadSpecEnv::registerAll();

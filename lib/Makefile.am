@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.215 2009-06-30 15:57:19 bjoo Exp $
+# $Id: Makefile.am,v 3.216 2009-07-02 18:24:49 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -58,6 +58,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_sumr.h \
 	actions/ferm/invert/minv_rel_sumr.h \
 	actions/ferm/invert/invbicgstab.h \
+	actions/ferm/invert/invibicgstab.h \
 	actions/ferm/invert/invbicgstab_array.h \
         actions/ferm/invert/inv_minres_array.h \
 	actions/ferm/invert/inv_rel_gmresr_sumr.h \
@@ -96,9 +97,11 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_linop_bicgstab.h \
+	actions/ferm/invert/syssolver_linop_ibicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.h \
+	actions/ferm/invert/syssolver_mdagm_ibicgstab.h \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.h \
 	actions/ferm/invert/syssolver_mdagm_cg_array.h \
 	actions/ferm/invert/syssolver_mdagm_eigcg.h \
@@ -797,7 +800,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
-	meas/inline/hadron/inline_laplace_eigs.h \
 	meas/inline/hadron/inline_laph_diluted_props_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
@@ -948,6 +950,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/fermstates/overlap_state.cc \
 	actions/ferm/fermstates/stout_fermstate_params.cc \
 	actions/ferm/invert/invbicgstab.cc \
+	actions/ferm/invert/invibicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
 	actions/ferm/invert/invcg1.cc \
 	actions/ferm/invert/invcg1_array.cc \
@@ -997,6 +1000,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
+	actions/ferm/invert/syssolver_mdagm_ibicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
@@ -1007,6 +1011,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/syssolver_linop_bicgstab.cc \
+	actions/ferm/invert/syssolver_linop_ibicgstab.cc \
 	actions/ferm/invert/syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
 	actions/ferm/invert/multi_syssolver_mr_params.cc \
@@ -1516,7 +1521,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
-	meas/inline/hadron/inline_laplace_eigs.cc \
 	meas/inline/hadron/inline_laph_diluted_props_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
@@ -1692,10 +1696,12 @@ endif
 if BUILD_LAPACK
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
-        actions/ferm/invert/syssolver_mdagm_OPTeigcg.h
+        actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
+	meas/inline/hadron/inline_laplace_eigs.h
 libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
-	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc
+	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
+	meas/inline/hadron/inline_laplace_eigs.cc
 endif
 
 if BUILD_SSED_CLOVER_APPLY

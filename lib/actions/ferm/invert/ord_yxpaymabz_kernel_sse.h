@@ -60,7 +60,8 @@ void ord_yxpaymabz_kernel(int lo, int hi, int my_id, ord_yxpaymabz_arg* a)
     t3 = _mm_mul_ps(av_im, zv2);
     yv = _mm_add_ps(yv, t3);
 
-    _mm_store_ps(&y_ptr[count], yv);
+    //    _mm_store_ps(&y_ptr[count], yv);
+    _mm_stream_ps(&y_ptr[count], yv);
 
     
   }

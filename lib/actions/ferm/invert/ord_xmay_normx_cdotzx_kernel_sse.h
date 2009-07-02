@@ -39,7 +39,8 @@ void ord_xmay_normx_cdotzx_kernel(int lo, int hi, int my_id, ord_xmay_normx_cdot
     __m128 t2 = _mm_mul_ps(av_im, t1);
     xv  = _mm_add_ps(xv, t2);
 
-    _mm_store_ps(&x_ptr[count], xv);
+    //_mm_store_ps(&x_ptr[count], xv);
+    _mm_stream_ps(&x_ptr[count], xv);
 
      __m128d xlow,xhi;
     __m128d zlow,zhi;
