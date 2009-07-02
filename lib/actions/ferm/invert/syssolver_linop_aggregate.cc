@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.15 2009-07-02 18:24:52 bjoo Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.16 2009-07-02 22:11:03 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -8,6 +8,7 @@
 #include "actions/ferm/invert/syssolver_linop_cg.h"
 #include "actions/ferm/invert/syssolver_linop_bicgstab.h"
 #include "actions/ferm/invert/syssolver_linop_ibicgstab.h"
+#include "actions/ferm/invert/syssolver_linop_bicrstab.h"
 #include "actions/ferm/invert/syssolver_linop_mr.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg.h"
@@ -37,6 +38,7 @@ namespace Chroma
 	// 4D system solvers
 	success &= LinOpSysSolverCGEnv::registerAll();
 	success &= LinOpSysSolverBiCGStabEnv::registerAll();
+	success &= LinOpSysSolverBiCRStabEnv::registerAll();
 	success &= LinOpSysSolverIBiCGStabEnv::registerAll();
 	success &= LinOpSysSolverMREnv::registerAll();
 	success &= LinOpSysSolverCGTimingEnv::registerAll();

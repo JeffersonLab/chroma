@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.216 2009-07-02 18:24:49 bjoo Exp $
+# $Id: Makefile.am,v 3.217 2009-07-02 22:11:01 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -58,6 +58,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/inv_rel_sumr.h \
 	actions/ferm/invert/minv_rel_sumr.h \
 	actions/ferm/invert/invbicgstab.h \
+	actions/ferm/invert/invbicrstab.h \
 	actions/ferm/invert/invibicgstab.h \
 	actions/ferm/invert/invbicgstab_array.h \
         actions/ferm/invert/inv_minres_array.h \
@@ -97,6 +98,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_linop_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_linop_bicgstab.h \
+	actions/ferm/invert/syssolver_linop_bicrstab.h \
 	actions/ferm/invert/syssolver_linop_ibicgstab.h \
 	actions/ferm/invert/syssolver_linop_mr.h \
 	actions/ferm/invert/syssolver_mdagm_cg.h \
@@ -950,6 +952,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/fermstates/overlap_state.cc \
 	actions/ferm/fermstates/stout_fermstate_params.cc \
 	actions/ferm/invert/invbicgstab.cc \
+	actions/ferm/invert/invbicrstab.cc \
 	actions/ferm/invert/invibicgstab.cc \
 	actions/ferm/invert/invbicgstab_array.cc \
 	actions/ferm/invert/invcg1.cc \
@@ -1011,6 +1014,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/syssolver_linop_bicgstab.cc \
+	actions/ferm/invert/syssolver_linop_bicrstab.cc \
 	actions/ferm/invert/syssolver_linop_ibicgstab.cc \
 	actions/ferm/invert/syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_cg_params.cc \
