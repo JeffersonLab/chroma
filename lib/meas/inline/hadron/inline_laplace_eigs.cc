@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.11 2009-07-01 14:10:01 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.12 2009-07-02 11:10:03 edwards Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -17,6 +17,7 @@
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
 #include "actions/boson/operator/klein_gord.h"
+#include <qdp-lapack.h>
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -24,12 +25,6 @@ namespace Chroma
 { 
   namespace InlineLaplaceEigsEnv 
   {
-
-    extern "C"
-    {
-      void dsteqr_(char *, int *, double *, double *, double *, int *,
-		   double *, int *);
-    }
 
     //! Propagator input
     void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
@@ -661,7 +656,7 @@ namespace Chroma
 				fossil.reset();
 				fossil.start();
 
-				dsteqr_(&compz, &ldz, d[t], e[t], z[t], &ldz, work, &info);
+				QDPLapack::dsteqr(&compz, &ldz, d[t], e[t], z[t], &ldz, work, &info);
 
 				fossil.stop();
 
