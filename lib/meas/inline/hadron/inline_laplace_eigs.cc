@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.12 2009-07-02 11:10:03 edwards Exp $
+// $Id: inline_laplace_eigs.cc,v 1.13 2009-07-03 16:51:02 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -182,43 +182,6 @@ namespace Chroma
       }
     }
 
-    //Turn an array into a LatticeColorVector (on a single timeslice)
-	
-	/*
-	void unserialize(LatticeColorVector &cvec, const multi1d<complex<double> > &vec)
-    {
-      int vsize = QDP::Layout::lattSize()[0] * QDP::Layout::lattSize()[0] * QDP::Layout::lattSize()[0] * Nc;
-
-      if (vec.size() != vsize)
-        {
-	  cerr << "in unserialize: invalid size of serialized vector"
-	       << endl;
-
-	  exit(0);
-        }
-
-      //Loop over space coords                                                                                                                                                  
-      for (int x = 0 ; x < QDP::Layout::lattSize()[0] ; ++x)
-	for (int y = 0 ; y < QDP::Layout::lattSize()[0] ; ++y)
-	  for (int z = 0 ; z < QDP::Layout::lattSize()[0] ; ++z)
-	    {
-	      ColorVector sitevec = zero;
-
-	      for (int c = 0 ; c < Nc ; ++c)
-		{
-		  complex<double> temp = vec[ c + Nc*(z + QDP::Layout::lattSize()[0]*(y + QDP::Layout::lattSize()[0]*x)) ];
-		  Complex val = cmplx(Real(real(temp)), Real(imag(temp)) );
-
-		  pokeColor(sitevec, val, c);
-		}
-
-	      pokeSite(cvec, sitevec, coords(x, y, z) );
-	    }
-
-    }
-
-   */
-
 	template<typename T> 
 		void partitionedInnerProduct(const T& phi, const T& chi, multi1d<DComplex>& inner_prod, const Set& product_set){                       
 
@@ -273,46 +236,6 @@ namespace Chroma
 		final += psi;
 		chi = final;
 	}
-
-	//Tests to make sure Ax = lambda*x
-	/*
-	   void test(const multi1d<LatticeColorMatrix> &u,
-	   const multi1d< multi1d< multi1d< complex<double> > > > &eigen_vecs,
-	   const multi1d< multi1d< complex<double> > > &eigen_vals, double tol)
-	   {
-
-	   QDPIO::cout << "Testing eigenvals and eigenvecs" << endl;
-
-	   int ts = eigen_vecs.size();
-	   int nev = eigen_vecs[0].size();
-	   int decay = params.param.decay_dir;
-
-	   for( int t = 0; t < ts; t++){
-
-	   for( int i = 0; i < nev; i++){
-
-	   LatticeColorVector x = zero;
-
-	   unserialize(x, eigen_vecs[t][i]);
-
-	   Complex lambda = cmplx( Real(real(eigen_vals[t][i])),
-	   Real(imag(eigen_vals[t][i])) );
-
-	   LatticeColorVector lambda_x = lambda*x;
-	   LatticeColorVector Ax = zero;
-
-	   laplacian(u, x, Ax, decay);
-
-	   Real dcnt = norm2(Ax + lambda_x);
-	   QDPIO::cout << "evec= " << i << "  dcnt= " << dcnt << endl;
-
-	   if( toBool( (Real(tol) < dcnt) ) ){
-	   QDPIO::cerr << "ERROR: dcnt > tol * 10, invalid eigen pair" << endl;
-	   }
-	   }
-	   }
-	   }
-	   */
 
 
 	// Real work done here
@@ -439,12 +362,15 @@ namespace Chroma
 			// components and unit norm. 
 			// The norm is evaluated time slice by time slice
 			LatticeColorVector starting_vectors;
+			/*
 			ColorVector ones;
 			pokeColor(ones, Complex(1.0), 0);
 			pokeColor(ones, Complex(1.0), 1);
 			pokeColor(ones, Complex(1.0), 2);
-
+		
 			starting_vectors = ones;
+			*/
+			gaussian(starting_vectors);
 
 			// Norm of the eigenvectors on each time slice
 			// vector_norms is declared complex, this allows 
@@ -464,7 +390,7 @@ namespace Chroma
 
 			for(int t=0; t<nt; ++t)
 			{
-				QDPIO::cout << "vector_norms[" << t << "] = " << vector_norms[t] << endl; 
+				//QDPIO::cout << "vector_norms[" << t << "] = " << vector_norms[t] << endl; 
 
 				vector_norms[t]  = Complex(sqrt(Real(real(vector_norms[t]))));
 				starting_vectors[phases.getSet()[t]] /= vector_norms[t];
@@ -536,7 +462,7 @@ namespace Chroma
 				partitionedInnerProduct(lanczos_vectors[k],temporary,alpha[k],phases.getSet());
 
 				for(int t=0; t<nt; ++t){
-			QDPIO::cout << "alpha[k][" << t << "] = " << alpha[k][t] << endl;
+				  //QDPIO::cout << "alpha[k][" << t << "] = " << alpha[k][t] << endl;
 					temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
 				}
 
@@ -567,7 +493,7 @@ namespace Chroma
 
 				for(int t=0; t<nt; ++t)
 				{
-					QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
+				  //QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
 					beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
 					lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
 					if (k < kdim - 2)
@@ -576,7 +502,7 @@ namespace Chroma
 					if (k < kdim - 3)
 						e[t][k] = toDouble(Real(real(beta[k][t])));
 				}
-				
+				/*
 				QDPIO::cout << "Checking orthogonality of vector " << k+1 << endl;
 				   for(int m = 0; m <= k; m++){
 				   multi1d<DComplex> tmp(nt);
@@ -587,6 +513,7 @@ namespace Chroma
 						 QDPIO::cout << "   t = " << t << ": " << tmp[t] << endl;
 				   }
 		}
+				*/
 				  
 			}
 			// Loop over k is complete, now compute alpha[kdim-1]
@@ -595,7 +522,10 @@ namespace Chroma
 
 			//Is AL = LT, up to small corrections? 
 		
+
+			/*
 			QDPIO::cout << "Testing AL = LT" << endl;
+		
 			
 			for (int k = 0 ; k < kdim -1 ; ++k)
 			{
@@ -633,10 +563,13 @@ namespace Chroma
 				partitionedInnerProduct(ldiff, ldiff, ldcnt, phases.getSet());
 
 				for (int t = 0 ; t < nt ; t++)
-					QDPIO::cout << "   dcnt[" << t << "] = " << ldcnt[t] << endl; 
+					
+					if (toDouble(Real(real(ldcnt[t]))) > 1e-5)
+						QDPIO::cout << "   dcnt[" << t << "] = " << ldcnt[t] << endl; 
 				
 				} //k
-
+				
+				*/
 
 			//parameters for dsteqr
 			char compz = 'I';
@@ -652,7 +585,7 @@ namespace Chroma
 
 			for(int t = 0; t < nt; t++) {
 
-				QDPIO::cout << "Starting QR factorization t = " << t << endl;
+			  //QDPIO::cout << "Starting QR factorization t = " << t << endl;
 				fossil.reset();
 				fossil.start();
 
@@ -672,7 +605,7 @@ namespace Chroma
 				{
 					evals[t][v] = d[t][v]; 
 						
-					QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << endl;
+					//QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << endl;
 
 					evecs[t][v].resize(kdim - 2);
 
@@ -710,7 +643,7 @@ namespace Chroma
 							(Av[n] - evals[t][v]*evecs[t][v][n]);
 					}//n
 
-					QDPIO::cout << "Vector " << v << " : dcnt = " << dcnt << endl;
+					//QDPIO::cout << "Vector " << v << " : dcnt = " << dcnt << endl;
 
 				}//v
 
@@ -724,22 +657,35 @@ namespace Chroma
 			{
 				LatticeColorVector vec_k = zero;
 
-				LatticeColorVector lambda_v = zero;
+				//LatticeColorVector lambda_v = zero;
 
 				for (int t = 0 ; t < nt ; ++t)
 				{
+					
+				  //QDPIO::cout << "t = " << t << endl;
+
 					for (int n = 0 ; n < kdim - 2 ; ++n)
 					{
 						vec_k[phases.getSet()[t] ] += 
-							Real(evecs[t][k][n]) * lanczos_vectors[n];
+							Real(evecs[t][kdim - 3 - k][n]) * lanczos_vectors[n];
 					}
 
-					lambda_v[phases.getSet()[t] ] += Real(evals[t][k]) * vec_k; 
+					//QDPIO::cout << "Made evector" << endl;
+
+					//lambda_v[phases.getSet()[t] ] += 
+					//	Real(evals[t][kdim - 3 - k]) * vec_k; 
+				
+					
+					//QDPIO::cout << "Eval[" << k << "] = " <<
+					//color_vecs.getEvalues()[k].weights[t] << endl;
 				}
+			
+				color_vecs.getEvectors()[k] = vec_k;
 				
 				//Test if this is an eigenvector
-				LatticeColorVector avec = zero;
+			//	LatticeColorVector avec = zero;
 
+				/*
 				//laplacian(u_smr, vec_k, avec, j_decay);
 				chebyshev(u_smr, vec_k, avec, j_decay);
 
@@ -747,41 +693,62 @@ namespace Chroma
 
 				LatticeColorVector diffs = avec - lambda_v;
 				partitionedInnerProduct( diffs, diffs, dcnt_arr, phases.getSet());  
+				*/
 
-				QDPIO::cout << "Testing Lap. eigvec " << k << endl;
+				//QDPIO::cout << "Testing Lap. eigvec " << k << endl;
+				/*
 				for (int t = 0 ; t < nt ; ++t)
 				{
-					QDPIO::cout << "dcnt[" << t << "] = " << dcnt_arr[t] << endl;
+					if (toDouble(Real(real(dcnt_arr[t]))) > 1e-5) 
+				  		QDPIO::cout << "dcnt[" << t << "] = " << dcnt_arr[t] 
+							    << endl;
+				}
+				*/
+
+				multi1d< DComplex > temp(nt);
+				multi1d< DComplex > temp2(nt);
+
+				LatticeColorVector bvec = zero;
+				laplacian(u_smr, vec_k, bvec, j_decay);
+				partitionedInnerProduct(vec_k, bvec, temp, phases.getSet());
+				partitionedInnerProduct(vec_k, vec_k, temp2, phases.getSet());
+				
+				//Obtaining eigenvalues of the laplacian
+				for(int t = 0; t < nt; t++){
+				  Complex temp3 = temp[t] / temp2[t];
+
+				  evals[t][k] = -1.0 * toDouble(Real(real(temp3)));
+				  
+					color_vecs.getEvalues()[k].weights[t] = 
+						Real(evals[t][k]);
+				  
+					QDPIO::cout << "t = " << t << endl;
+				  QDPIO::cout << "lap_evals[" << k << "] = " << evals[t][k] << endl;
+				}
+
+				LatticeColorVector lambda_v2 = zero;
+
+				for(int t = 0; t < nt; t++){
+				  
+				  lambda_v2[phases.getSet()[t]] = Real(evals[t][k]) * vec_k;
+
+				}
+				
+				multi1d< DComplex > dcnt_arr2(nt);
+
+				LatticeColorVector diffs2 = bvec + lambda_v2;
+
+				partitionedInnerProduct(diffs2, diffs2, dcnt_arr2, phases.getSet());
+
+				QDPIO::cout << "Testing Laplace Eigenvalue " << k << endl;
+				for(int t = 0; t < nt; t++){
+				  if(toDouble(Real(real(dcnt_arr2[t]))) > 1e-5)
+				    QDPIO::cout << "dcnt[" << k << "] = " << dcnt_arr2[t] << endl;
 				}
 
 			}//k
 
-			/*
-				//Get Eigenvectors
-				for( int t = 0; t < nt; t++){
-				evecs[t].resize(kdim);
 
-				for( int vec = 0; vec < kdim; vec++){
-				evecs[t][vec].resize(kdim);
-
-				for( int elem = 0; elem < kdim; elem++){
-				evecs[t][vec][elem] = complex<double>(z[t][kdim * vec + elem], 0);
-				}
-				}
-				}
-
-				//Get Eigenvalues
-				for( int t = 0; t < nt; t++){
-				evals[t].resize(kdim);
-
-				for( int i = 0; i < kdim; i++){
-				evals[t][i] = d[t][i];
-				}
-				}
-
-				test(u, evecs, evals, params.param.tol);
-				
-				*/
 				/*
 				multi1d<LatticeColorVector> krylov_vecs(kdim);
 
@@ -898,7 +865,7 @@ namespace Chroma
 
 				//BRANDON: CODE GOES HERE
 
-				pop(xml_out);
+				//pop(xml_out);
 
 				swatch.stop();
 				QDPIO::cout << name << ": time for colorvec construction = "
@@ -908,7 +875,7 @@ namespace Chroma
 				pop(xml_out);  // CreateColorVecs
 
 				
-				/*
+				
 				// Write the meta-data for this operator
 				{
 					XMLBufferWriter file_xml;
@@ -933,7 +900,7 @@ namespace Chroma
 					TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).setFileXML(file_xml);
 					TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).setRecordXML(record_xml);
 				}
-				*/
+				
 
 				snoop.stop();
 				QDPIO::cout << name << ": total time = "
