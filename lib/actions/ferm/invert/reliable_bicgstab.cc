@@ -1,4 +1,4 @@
-// $Id: reliable_bicgstab.cc,v 3.8 2009-06-12 19:52:44 bjoo Exp $
+// $Id: reliable_bicgstab.cc,v 3.9 2009-07-06 19:02:34 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -87,6 +87,8 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   Double maxrr = rNorm;
   bool updateR = false;
   bool updateX = false;
+  int rupdates = 0;
+  int xupdates = 0;
 
 
   DComplex rho, rho_prev, alpha, omega;
@@ -214,7 +216,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 
     if( updateR ) { 
       // QDPIO::cout << "Iter " << k << ": updating r " << endl;
-      
+      rupdates++;
     
       x_dble[s] = x;
 
@@ -236,6 +238,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
 	
       
       if( updateX ) { 
+	xupdates++;
 	//QDPIO::cout << "Iter " << k << ": updating x " << endl;
 	if( ! updateR ) { x_dble[s]=x; } // if updateR then this is done already
 	psi[s] += x_dble; // Add on group accumulated solution in y
@@ -276,7 +279,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "reliable_bicgstab: n_count " << ret.n_count << endl;
+    QDPIO::cout << "reliable_bicgstab: n_count " << ret.n_count << " r-updates: " << rupdates << " xr-updates: " << xupdates  << endl;
     flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
   }
 

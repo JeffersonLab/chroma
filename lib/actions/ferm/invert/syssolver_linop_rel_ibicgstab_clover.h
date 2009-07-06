@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_rel_bicgstab_clover.h,v 3.4 2009-07-06 19:02:34 bjoo Exp $
+// $Id: syssolver_linop_rel_ibicgstab_clover.h,v 3.1 2009-07-06 19:02:34 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
 
-#ifndef __syssolver_linop_rel_bicgstab_multiprec_h__
-#define __syssolver_linop_rel_bicgstab_multiprec_h__
+#ifndef __syssolver_linop_rel_ibicgstab_multiprec_h__
+#define __syssolver_linop_rel_ibicgstab_multiprec_h__
 #include "chroma_config.h"
 
 #include "handle.h"
@@ -15,7 +15,7 @@
 #include "lmdagm.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/syssolver_mdagm.h"
-#include "actions/ferm/invert/reliable_bicgstab.h"
+#include "actions/ferm/invert/reliable_ibicgstab.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_rel_bicgstab_clover_params.h"
 #include "actions/ferm/linop/eoprec_clover_dumb_linop_w.h"
@@ -28,7 +28,7 @@ namespace Chroma
 {
 
   //! Richardson system solver namespace
-  namespace LinOpSysSolverReliableBiCGStabCloverEnv
+  namespace LinOpSysSolverReliableIBiCGStabCloverEnv
   {
     //! Register the syssolver
     bool registerAll();
@@ -41,7 +41,7 @@ namespace Chroma
  *** WARNING THIS SOLVER WORKS FOR CLOVER FERMIONS ONLY ***
    */
  
-  class LinOpSysSolverReliableBiCGStabClover : public LinOpSystemSolver<LatticeFermion>
+  class LinOpSysSolverReliableIBiCGStabClover : public LinOpSystemSolver<LatticeFermion>
   {
   public:
     typedef LatticeFermion T;
@@ -61,7 +61,7 @@ namespace Chroma
      * \param M_        Linear operator ( Read )
      * \param invParam  inverter parameters ( Read )
      */
-    LinOpSysSolverReliableBiCGStabClover(Handle< LinearOperator<T> > A_,
+    LinOpSysSolverReliableIBiCGStabClover(Handle< LinearOperator<T> > A_,
 					 Handle< FermState<T,Q,Q> > state_,
 					 const SysSolverReliableBiCGStabCloverParams& invParam_) : 
       A(A_), invParam(invParam_) 
@@ -93,7 +93,7 @@ namespace Chroma
     }
 
     //! Destructor is automatic
-    ~LinOpSysSolverReliableBiCGStabClover() {}
+    ~LinOpSysSolverReliableIBiCGStabClover() {}
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
@@ -121,7 +121,7 @@ namespace Chroma
       TD psi_d = psi;
       TD chi_d = chi;
 
-      res=InvBiCGStabReliable(*M_double,
+      res=InvIBiCGStabReliable(*M_double,
 			  *M_single,
 			  chi_d,
 			  psi_d,
@@ -143,8 +143,8 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
-      QDPIO::cout << "RELIABLE_BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
    
       
       END_CODE();
@@ -154,7 +154,7 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    LinOpSysSolverReliableBiCGStabClover() {}
+    LinOpSysSolverReliableIBiCGStabClover() {}
     Handle< LinearOperator<T> > A;
     const SysSolverReliableBiCGStabCloverParams invParam;
 
