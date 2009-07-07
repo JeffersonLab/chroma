@@ -24,6 +24,7 @@ namespace Chroma {
 
 #include "actions/ferm/invert/ord_xmyz_normx_kernel.h"
 
+
     template<>
       inline
       void xymz_normx(LatticeDiracFermionD& x, 
@@ -61,6 +62,7 @@ namespace Chroma {
 
     }
 
+
     struct ord_yxpaymabz_arg
     {
       REAL32* x_ptr;
@@ -74,7 +76,6 @@ namespace Chroma {
     };
 
 #include "actions/ferm/invert/ord_yxpaymabz_kernel.h"
-
     template<>
       inline
       void yxpaymabz(LatticeDiracFermionF& x, 
@@ -102,6 +103,7 @@ namespace Chroma {
 	QDP_abort(1);
       }
     }
+
 
     struct ord_norm2x_cdotxy_arg
     {
@@ -151,7 +153,7 @@ namespace Chroma {
 	cdotxy.elem().elem().elem().imag() = norm_array[2];
 	
       }
- 
+
 
     struct ord_xpaypbz_arg {
       REAL32* x_ptr;
@@ -198,6 +200,8 @@ namespace Chroma {
 
     }
 
+
+
     struct ord_xmay_normx_cdotzx_arg {
       REAL32* x_ptr;
       REAL32* y_ptr;
@@ -207,8 +211,10 @@ namespace Chroma {
       REAL64* norm_space;
     };
 
+
 #include "actions/ferm/invert/ord_xmay_normx_cdotzx_kernel.h"
-  
+
+
     template<> 
       inline
       void xmay_normx_cdotzx(LatticeDiracFermionF& x,
@@ -259,7 +265,6 @@ namespace Chroma {
     }
 
 
-
     struct ord_cxmayf_arg {
       REAL32* x_ptr;
       REAL32* y_ptr;
@@ -269,7 +274,6 @@ namespace Chroma {
 
 
 #include "actions/ferm/invert/ord_cxmayf_kernel.h"
-
     template<>
       inline
       void cxmay(LatticeDiracFermionF& x, 

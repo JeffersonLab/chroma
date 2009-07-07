@@ -1,5 +1,5 @@
 #
-#  $Id: regres.pl,v 3.14 2009-05-22 14:29:30 bjoo Exp $
+#  $Id: regres.pl,v 3.15 2009-07-07 21:00:14 bjoo Exp $
 #
 #  This is the portion of a script this is included recursively
 #
@@ -92,6 +92,24 @@
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.bicgstab.out.xml" ,
      },
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-ibicgstab.ini.xml" , 
+	 output      => "prec-clover-stout3d-ibicgstab.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-ibicgstab.out.xml" ,
+     },
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-bicrstab.ini.xml" , 
+	 output      => "prec-clover-stout3d-bicrstab.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-bicrstab.out.xml" ,
+     },
+
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
@@ -235,6 +253,15 @@
 	 output      => "prec-clover-stout3d-rel-bicgstab-multiprec.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-bicgstab-clover-multiprec.metric.xml" ,
 	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-bicgstab-clover-multiprec.out.xml" ,
+     },
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-ibicgstab.ini.xml" , 
+	 output      => "prec-clover-stout3d-rel-ibicgstab.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/prec_clover-stout3d-rel-ibicgstab.out.xml" ,
      },
 
      {
