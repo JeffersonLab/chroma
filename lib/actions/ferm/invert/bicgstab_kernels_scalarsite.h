@@ -539,7 +539,7 @@ namespace Chroma {
       };
 #include "actions/ferm/invert/ord_ib_stupdates_reduces.h"
 
-#if 1
+
     template<>
       inline
       void ibicgstab_stupdates_reduces(const ComplexD& alpha,
@@ -626,7 +626,6 @@ namespace Chroma {
 	}
       }
 
-#endif
 
     template<>
       inline
@@ -653,6 +652,7 @@ namespace Chroma {
 	REAL64 norm_array[12]={0,0,0,0,0,0,0,0,0,0,0,0};
 
 	if( sub.hasOrderedRep() ) { 
+	  
 	  ib_stupdate_arg<REAL64> arg = { 
 	    (REAL64)alpha.elem().elem().elem().real(),
 	    (REAL64)alpha.elem().elem().elem().imag(),
@@ -672,6 +672,8 @@ namespace Chroma {
 
 	  int len=4*3*2*(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg,ord_ib_stupdates_kernel_real64);
+
+	  
 	  for(int i=0; i < qdpNumThreads(); i++) { 
 	    norm_array[0] += arg.norm_space[12*i];
 	    norm_array[1] += arg.norm_space[12*i+1];
@@ -711,7 +713,10 @@ namespace Chroma {
 	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
 	  QDP_abort(1);
 	}
+
       }
+
+
 
 
 

@@ -1,4 +1,4 @@
-// $Id: reliable_ibicgstab.cc,v 3.1 2009-07-06 19:02:34 bjoo Exp $
+// $Id: reliable_ibicgstab.cc,v 3.2 2009-07-07 19:13:20 bjoo Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -50,26 +50,22 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   TF z;
   TF x;
 
-  TF vprev, zprev,qprev;
+  TF vn_1, zn_1,qn_1;
 
   int k;
   ComplexD rhon, rhon_1;             // rho_n, rho_{n-1}
   ComplexD alphan, alphan_1;         // alpha_{n}, alpha_{n-1}
-  ComplexD omega;          // omega_{n} AND omega_{n-1} (before omega update)
+  ComplexD omegan, omegan_1;          // omega_{n} AND omega_{n-1} (before omega update)
   ComplexD taun,taun_1;              // tau_{n}, tau_{n-1}
   RealD kappa;                       
   RealD rnorm_prev;                  // lagged residuum
   ComplexD theta;
   ComplexD sigman_2, sigman_1;       
-  ComplexD phi;                      // phi_{n} AND phi_{n-1} before phi update
-  ComplexD pi_c;                     // pi_{n} and pi_{n-1} before pi update
+  ComplexD phin, phin_1;                      // phi_{n} AND phi_{n-1} before phi update
+  ComplexD pin, pin_1;                     // pi_{n} and pi_{n-1} before pi update
   ComplexD gamma, eta;  
   swatch.reset();
   swatch.start();
-
-
-  ComplexD phi_prev, pi_prev;
-
 
 
   Double rsd_sq =  RsdBiCGStab*RsdBiCGStab*norm2(chi,sub);
@@ -78,9 +74,9 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
 
   // Now initialise x_0 = v_0 = q_0 = z_0 = 0 
   x[sub] = zero;
-  v[sub] = zero;
-  q[sub] = zero;   
-  z[sub] = zero;
+  vn_1[sub] = zero;
+  qn_1[sub] = zero;   
+  zn_1[sub] = zero;
 
 
 
@@ -89,14 +85,14 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   xymz_normx(b,chi,dtmp,b_sq,sub);
   r[sub] = b;
   r0[sub] = b;
-  Double r_sq = b_sq;
+
   QDPIO::cout << "r0 = " << b_sq << endl;;
 
   flopcount.addFlops(A.nFlops());
   flopcount.addSiteFlops(2*Nc*Ns,sub);
   flopcount.addSiteFlops(4*Nc*Ns,sub);  
 
-  Double rNorm = sqrt(r_sq);
+  Double rNorm = sqrt(b_sq);
   Double r0Norm = rNorm;
   Double maxrx = rNorm;
   Double maxrr = rNorm;
@@ -123,7 +119,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   // rho_0 := alpha_0 := omega_0 = 1
   rhon_1 = Double(1);
   alphan_1 = Double(1);
-  omega = Double(1);
+  omegan_1 = Double(1);
 
   // tau_0 = <r0,v0> = 0 since v0 = 0
   taun_1 = Double(0);
@@ -132,7 +128,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   sigman_2 = Double(0);
 
   // pi_0 = <r0,q_0> = 0
-  pi_c = Double(0);
+  pin_1 = Double(0);
 
   // sigma_{0} = <r0, Ar_0> = <r0, u_0>
   sigman_1 = innerProduct(r0,u,sub); 
@@ -144,7 +140,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   //**** So I will use the PETSc version which appears to work
 
   // phi_0 = <r0,r0>
-  phi = innerProduct(r0,r0,sub);
+  phin_1 = innerProduct(r0,r0,sub);
   flopcount.addSiteFlops(16*Nc*Ns,sub);      // (for sigma & phi)
 
   /********** ITERATION STARTS HERE ***************/
@@ -159,7 +155,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
     //   rho = phi_{n-1} - omega_{n-1}*( sigma_{n-2} - alpha_{n-1}*pi_{n-1} )
     //
     // Check for rho=0. If it is it will lead to breakdown in next iteration
-    rhon = phi - omega*(sigman_2 - alphan_1*pi_c);         // 16 flops
+    rhon = phin_1 - omegan_1*(sigman_2 - alphan_1*pin_1);         // 16 flops
 
 
     if( toBool( real(rhon) == 0 ) && toBool( imag(rhon) == 0 ) ) {
@@ -178,15 +174,21 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
     ComplexD beta;
     ComplexD delta;
     delta =( rhon / rhon_1 ) * alphan_1;             // 15 flops
-    beta = delta/omega;                              //  9 flops 
+    beta = delta/omegan_1;                              //  9 flops 
 
 
     // tau_n = <r0, v> needed for denominator of alpha 
     // but can be updated by recurrance
-    taun = sigman_1 + beta*(taun_1- omega*pi_c);     // 16 flops 
+    taun = sigman_1 + beta*(taun_1- omegan_1*pin_1);     // 16 flops 
 
     if( toBool( real(taun) == 0 ) && toBool( imag(taun) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: n="<<n<<" <r_0|v> = 0" << endl;
+      QDPIO::cout << "sigman_1 = " << sigman_1 << endl;
+      QDPIO::cout << "beta= " << beta << endl;
+      QDPIO::cout << "taun_1 = " << taun_1 << endl;
+      QDPIO::cout << "ometan_1 = " << omegan_1 << endl;
+      QDPIO::cout << "pin_1 = " << pin_1 << endl;
+
       QDP_abort(1);
     }
 
@@ -211,26 +213,23 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
     //                  - (beta*alphan*omegan_1)*v_{n-1}
     ComplexD bar = beta*alphan/alphan_1;           // 15 flops
     ComplexD alphadelta = alphan*delta;            //  6 flops 
-    
 #if 0
-    zprev[sub] = z;
-    tmp[sub] = bar*z;                           
+    tmp[sub] = bar*zn_1;                           
     z[sub] = alphan*r+tmp;
-    z[sub] -= alphadelta*v;                        // 22 Nc*Ns flops/site
+    z[sub] -= alphadelta*vn_1;                        // 22 Nc*Ns flops/site
 
     
     // v = u_{n-1} + beta*v_{n-1} - beta*omegan_1*q_n_1
-    vprev[sub] = v;
-    tmp[sub] = beta*v;  // 6Nc Ns
+    tmp[sub] = beta*vn_1;  // 6Nc Ns
     v[sub] = u + tmp;   // 2Nc Ns
-    v[sub] -= delta*q;  // 8Nc Ns
+    v[sub] -= delta*qn_1;  // 8Nc Ns
 #else
-    zprev[sub] = z;
-    vprev[sub] = v;
-    ibicgstab_zvupdates(r,z,v,u,q,alphan, bar, alphadelta, beta, delta, sub);
+    v[sub]=vn_1;
+    z[sub]=zn_1;
+
+    ibicgstab_zvupdates(r,z,v,u,qn_1,alphan, bar, alphadelta, beta, delta, sub);
 #endif
 
-    qprev[sub] = q;
     // q = Av
     AF(q,v,isign);
 
@@ -244,21 +243,16 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
 
     // This should all be done with one sync point
     // BIG ALLREDUCE
-    phi_prev = phi;
-    pi_prev = pi_c;
 
 
-    phi = innerProduct(r0,s,sub);         // 8 Nc Ns flops/site
+    phin = innerProduct(r0,s,sub);         // 8 Nc Ns flops/site
     gamma = innerProduct(f0,s,sub);       // 8 Nc Ns flops/site
-    pi_c = innerProduct(r0,q,sub);        // 8 Nc Ns flops/site
+    pin = innerProduct(r0,q,sub);        // 8 Nc Ns flops/site
     eta = innerProduct(f0,t,sub);         // 8 Nc Ns flops/site
     theta = innerProduct(t,s,sub);        // 8 Nc Ns flops/site
     kappa = norm2(t,sub);                 // 4 Nc Ns flops/site
     rnorm_prev = norm2(r,sub);            // 4 Nc Ns flops/site 
 #else
-    phi_prev = phi;
-    pi_prev = pi_c;
-
     ibicgstab_stupdates_reduces( alphan, 
 				 r,
 				 u,
@@ -268,8 +262,8 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
 				 f0,
 				 s,
 				 t,
-				 phi,
-				 pi_c, 
+				 phin,
+				 pin, 
 				 gamma,
 				 eta,
 				 theta, 
@@ -307,6 +301,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
     }
  
 
+#if 1
     // Begin Reliable Updating ideas...
     rNorm = sqrt(rnorm_prev);
     if( toBool( rNorm > maxrx) ) maxrx = rNorm;
@@ -327,23 +322,22 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
       // r[s] = r_dble;     
       xymz_normx(r_dble, b,dtmp, rnorm_prev,sub);
       r[sub]=r_dble;
-
+      flopcount.addFlops(A.nFlops());
       flopcount.addSiteFlops(6*Nc*Ns,sub);
+
+
+      // Must also reset un_1
+      AF(u,r,isign);
       
+      // Recomputing sigma_{n-1} = < r0, u_{n-1} > 
+      // from the new u_{n-1} really helps stability
+      sigman_1 = innerProduct(r0,u,sub); 
+      flopcount.addFlops(A.nFlops());
+      flopcount.addSiteFlops(8*Nc*Ns,sub);
+
 
       rNorm = sqrt(rnorm_prev);
       maxrr = rNorm;
-
-      // Rollback
-      AF(u,r,isign); // new u_{n-1} from new r_{n-1}.
-      flopcount.addFlops(2*A.nFlops());
-
-      phi = phi_prev; // restore
-      pi_c = pi_prev; // restore 
-      z[sub]=zprev; // restored
-      v[sub]=vprev; // restored
-      q[sub]=qprev; // restored 
-
       rupdates++;
       
       if( updateX ) { 
@@ -361,6 +355,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
       
     }
 
+#endif
 
     if( ! updateR ) {
 
@@ -372,7 +367,24 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
       }
       
       // Regular BiCGStab omega_n = <t,s> / <t,t> = theta/kappa
-      omega = theta/kappa;                                     // 9 flops
+      omegan = theta/kappa;                                     // 9 flops
+      
+      
+      
+#if 0
+      // Update r, x
+      // r = s - omega t
+      r[sub] = s - omegan*t;
+      
+      // x = x + omega s + z
+      tmp[sub] = x + omegan*s;   
+      x[sub] = tmp + z;
+#else
+      ibicgstab_rxupdate(omegan,s,t,z,r,x,sub);
+#endif
+      
+      // Recompute next u = A r
+      AF(u,r,isign); 
       
       // sigma_n = <r0, A u_n> = gamma_n - omega_n * eta_n;
       //
@@ -380,30 +392,20 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
       // So if I stuck this in sigma_n, I'd just end up moving it to sigma_{n-1}
       // So I'll just stick it straight into sigma_{n-1}
       sigman_2 = sigman_1;   // Preserve
-      sigman_1 = gamma - omega*eta;                           // 8 flops
-      
-      
-#if 0
-      // Update r, x
-      // r = s - omega t
-      r[sub] = s - omega*t;
-      
-      // x = x + omega s + z
-      tmp[sub] = x + omega*s;   
-      x[sub] = tmp + z;
-#else
-      ibicgstab_rxupdate(omega,s,t,z,r,x,sub);
-#endif
-      
-      // Recompute next u = A r
-      AF(u,r,isign); 
-      
+      sigman_1 = gamma - omegan*eta;                           // 8 flops
       
       // Update past values: Some of this could be saved I am sure
       rhon_1 = rhon;
       alphan_1 = alphan;
       taun_1 = taun;
-      
+      omegan_1 = omegan;
+      pin_1 = pin;
+      phin_1 = phin;
+     
+      vn_1[sub]=v;
+      qn_1[sub]=q;
+      zn_1[sub]=z;
+       
       // Collected Flops
       // Omega + Sigma Updates: flopcount.addFlops(17);
       // r & x updates:         flopcount.addSiteFlops(18*Nc*Ns, sub)

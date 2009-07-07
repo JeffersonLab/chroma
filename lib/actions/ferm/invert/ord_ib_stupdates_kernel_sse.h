@@ -7,14 +7,14 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
   REAL32 a_r = a->a_r;
   REAL32 a_i = a->a_i;
 
-  REAL32* r = a->r;
-  REAL32* u = a->u;
-  REAL32* v = a->v;
-  REAL32* q = a->q;
-  REAL32* r0 = a->r0;
-  REAL32* f0 = a->f0;
-  REAL32* s = a->s;
-  REAL32* t = a->t;
+  REAL32* r = &(a->r[lo]);
+  REAL32* u = &(a->u[lo]);
+  REAL32* v = &(a->v[lo]);
+  REAL32* q = &(a->q[lo]);
+  REAL32* r0 = &(a->r0[lo]);
+  REAL32* f0 = &(a->f0[lo]);
+  REAL32* s = &(a->s[lo]);
+  REAL32* t = &(a->t[lo]);
   REAL64* norm_array = &(a->norm_space[12*my_id]);
 
   // Caller zeroed norm_space
@@ -393,14 +393,14 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
   REAL64 a_r = a->a_r;
   REAL64 a_i = a->a_i;
 
-  REAL64* r = a->r;
-  REAL64* u = a->u;
-  REAL64* v = a->v;
-  REAL64* q = a->q;
-  REAL64* r0 = a->r0;
-  REAL64* f0 = a->f0;
-  REAL64* s = a->s;
-  REAL64* t = a->t;
+  REAL64* r = &(a->r[lo]);
+  REAL64* u = &(a->u[lo]);
+  REAL64* v = &(a->v[lo]);
+  REAL64* q = &(a->q[lo]);
+  REAL64* r0 = &(a->r0[lo]);
+  REAL64* f0 = &(a->f0[lo]);
+  REAL64* s = &(a->s[lo]);
+  REAL64* t = &(a->t[lo]);
   REAL64* norm_array = &(a->norm_space[12*my_id]);
   
   __m128d svec, rvec, vvec;

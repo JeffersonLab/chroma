@@ -1,21 +1,24 @@
+#include <cstdio>
+using namespace std;
+
+
 inline
 void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<REAL32>* a)
 {
   REAL32 a_r = a->a_r;
   REAL32 a_i = a->a_i;
 
-  REAL32* r = a->r;
-  REAL32* u = a->u;
-  REAL32* v = a->v;
-  REAL32* q = a->q;
-  REAL32* r0 = a->r0;
-  REAL32* f0 = a->f0;
-  REAL32* s = a->s;
-  REAL32* t = a->t;
+  REAL32* r = &(a->r[lo]);
+  REAL32* u = &(a->u[lo]);
+  REAL32* v = &(a->v[lo]);
+  REAL32* q = &(a->q[lo]);
+  REAL32* r0 = &(a->r0[lo]);
+  REAL32* f0 = &(a->f0[lo]);
+  REAL32* s =  &(a->s[lo]);
+  REAL32* t =  &(a->t[lo]);
   REAL64* norm_array = &(a->norm_space[12*my_id]);
 
   // Caller zeroed norm_space
-  
   int len = hi-lo;
   for(int count = 0; count < len; count+=4) { 
     // First need s = r - alpha*v
@@ -54,7 +57,7 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[1] -= r0[count+3]*s[count+2];
 
 
-    // ** phi=(f0,s) 
+    // ** gamma =(f0,s) 
     norm_array[2] += f0[count]*s[count];
     norm_array[2] += f0[count+1]*s[count+1];
     norm_array[2] += f0[count+2]*s[count+2];
@@ -124,7 +127,7 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[10] += t[count+2]*t[count+2];
     norm_array[10] += t[count+3]*t[count+3];
    
-    // ** rnorm = || t ||^2
+    // ** rnorm = || r ||^2
     norm_array[11] += r[count]*r[count];
     norm_array[11] += r[count+1]*r[count+1];
     norm_array[11] += r[count+2]*r[count+2];
@@ -140,16 +143,16 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
   REAL64 a_r = a->a_r;
   REAL64 a_i = a->a_i;
 
-  REAL64* r = a->r;
-  REAL64* u = a->u;
-  REAL64* v = a->v;
-  REAL64* q = a->q;
-  REAL64* r0 = a->r0;
-  REAL64* f0 = a->f0;
-  REAL64* s = a->s;
-  REAL64* t = a->t;
+  REAL64* r = &(a->r[lo]);
+  REAL64* u = &(a->u[lo]);
+  REAL64* v = &(a->v[lo]);
+  REAL64* q = &(a->q[lo]);
+  REAL64* r0 = &(a->r0[lo]);
+  REAL64* f0 = &(a->f0[lo]);
+  REAL64* s = &(a->s[lo]);
+  REAL64* t = &(a->t[lo]);
   REAL64* norm_array = &(a->norm_space[12*my_id]);
-
+  
   // Caller zeroed norm_space
   
   int len = hi-lo;
@@ -172,7 +175,7 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[1] += r0[count]*s[count+1];
     norm_array[1] -= r0[count+1]*s[count];
 
-    // ** phi=(f0,s) 
+    // ** gamma=(f0,s) 
     norm_array[2] += f0[count]*s[count];
     norm_array[2] += f0[count+1]*s[count+1];
 
@@ -207,7 +210,7 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[7] += f0[count]*t[count+1];
 
 
-    // ** theta=(s,t) 
+    // ** theta=(t,s) 
     norm_array[8] += t[count]*s[count];
     norm_array[8] += t[count+1]*s[count+1];
 
@@ -219,7 +222,7 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
     norm_array[10] += t[count]*t[count];
     norm_array[10] += t[count+1]*t[count+1];
    
-    // ** rnorm = || t ||^2
+    // ** rnorm = || r ||^2
     norm_array[11] += r[count]*r[count];
     norm_array[11] += r[count+1]*r[count+1];
  
