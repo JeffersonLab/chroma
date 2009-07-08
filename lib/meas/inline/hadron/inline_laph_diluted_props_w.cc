@@ -1,4 +1,4 @@
-// $Id: inline_laph_diluted_props_w.cc,v 3.1 2009-06-30 15:51:52 jbulava Exp $
+// $Id: inline_laph_diluted_props_w.cc,v 3.2 2009-07-08 21:44:23 jbulava Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -18,6 +18,12 @@
 #include "meas/inline/make_xml_file.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
+#include "meas/smear/quark_smearing_factory.h"
+#include "meas/smear/quark_smearing_aggregate.h"
+#include "meas/sources/source_smearing_aggregate.h"
+#include "meas/sources/source_smearing_factory.h"
+#include "meas/sinks/sink_smearing_aggregate.h"
+#include "meas/sinks/sink_smearing_factory.h"
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -117,7 +123,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "LAPH_DILUTED_PROPS";
+    const std::string name = "STOCH_LAPH_QUARKS";
 
     //! Register all the factories
     bool registerAll() 
@@ -209,6 +215,12 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
+
+
+			SpinMatrix sp_one = 1.0;
+
+			SpinMatrix gamma_4 = Gamma(8) * sp_one;
+
       // Test and grab a reference to the gauge field
       multi1d<LatticeColorMatrix> u;
       XMLBufferWriter gauge_xml;
@@ -271,7 +283,7 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db_props.setMaxUserInfoLen(file_str.size() + 17);
+	qdp_db_props.setMaxUserInfoLen(file_str.size());
 
 	qdp_db_props.open(params.named_obj.prop_file, O_RDWR | O_CREAT, 0664);
 
@@ -314,6 +326,42 @@ namespace Chroma
       
 	QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
 	swatch.start();
+
+
+
+	//Initialize quark smearing operator for the sinks
+	Handle< QuarkSmearing<LatticeFermion> > quarkSmearing;
+
+      try
+      {
+	QDPIO::cout << "Create quark smearing object" << endl;
+
+		XMLBufferWriter smr_buf;
+		push(smr_buf, "QuarkSmearing");
+		write(smr_buf, "wvf_kind", "VECTOR_SMEAR");
+		write(smr_buf, "sigma", 0.0);
+		write(smr_buf, "subset_vecs_id", params.named_obj.eigvec_id);
+		write(smr_buf, "no_smear_dir", params.param.decay_dir);
+		pop(smr_buf);
+	// Create the quark smearing object
+	XMLReader  smeartop(smr_buf);
+	
+	quarkSmearing =
+	  TheFermSmearingFactory::Instance().createObject("VECTOR_SMEAR",
+							  smeartop, "/QuarkSmearing");
+			
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << ": Caught Exception creating quark smearing object: " << e << endl;
+	QDP_abort(1);
+      }
+      catch(...)
+      {
+	QDPIO::cerr << ": Caught generic exception creating smearing object" << endl;
+	QDP_abort(1);
+      }
+
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -396,10 +444,15 @@ namespace Chroma
 	sourceConstruction(TheFermSourceConstructionFactory::Instance().createObject(
 				"RAND_DILUTE_EIGVEC_ZN_SOURCE",
 										     src_rdr,
-										     "SourceParams"));
+										     "/SourceParams"));
 
 				//This source lives only on a single timeslice
 				LatticeFermion curr_source = (*sourceConstruction)(u);
+
+
+				//Multiply this source by gamma_4
+				curr_source = gamma_4 * curr_source;	
+			
 
 				//Keep all the t0's in a single LatticeFermion
 				source_out[phases.getSet()[t_source]] += curr_source;
@@ -408,6 +461,10 @@ namespace Chroma
 				LatticeFermion curr_solution = zero;
 
 				SystemSolverResults_t res = (*PP)(curr_solution, curr_source);
+
+
+				//Smear Solution with the vector smearing operator
+				(*quarkSmearing)(curr_solution,u);
 
 				//Insert the solution into the map
 				KeyLaphDilutedProp_t snk_key; 

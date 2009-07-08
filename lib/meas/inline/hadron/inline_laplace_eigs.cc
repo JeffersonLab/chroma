@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.14 2009-07-08 21:06:54 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.15 2009-07-08 21:44:23 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -370,7 +370,7 @@ namespace Chroma
 			pokeColor(ones, Complex(1.0), 2);
 		
 			starting_vectors = ones;
-			/*			
+			*/			
 
 			gaussian(starting_vectors);
 
