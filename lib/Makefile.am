@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.218 2009-07-06 19:02:57 bjoo Exp $
+# $Id: Makefile.am,v 3.219 2009-07-08 18:52:37 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -113,7 +113,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.h \
 	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h \
-	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.h \	
+	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.h \
 	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.h \
 	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.h \
 	actions/ferm/invert/multi_syssolver_cg_params.h \
