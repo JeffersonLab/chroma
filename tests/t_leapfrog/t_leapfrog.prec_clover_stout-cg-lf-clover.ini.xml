@@ -4,13 +4,6 @@
     <Monomials>
       <elem>
 	<Name>TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL</Name>
-	<!--
-	<InvertParam>
-          <invType>CG_INVERTER</invType>
-          <RsdCG>1.0e-14</RsdCG>
-          <MaxCG>1000</MaxCG>
-        </InvertParam>
-	-->
         <InvertParam>
           <invType>SINGLE_PREC_CG_CLOVER_INVERTER</invType>
           <MaxCG>1000</MaxCG>
@@ -76,5 +69,5 @@
 	<cfg_type>UNIT</cfg_type>
 	<cfg_file>DUMMY</cfg_file>
    </GaugeStartup>
-   <nrow>8 8 4 16</nrow>
+   <nrow>4 4 4 8</nrow>
 </LeapfrogTest>
