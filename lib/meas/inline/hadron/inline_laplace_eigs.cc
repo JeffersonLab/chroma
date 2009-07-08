@@ -1,4 +1,4 @@
-// $Id: inline_laplace_eigs.cc,v 1.13 2009-07-03 16:51:02 jbulava Exp $
+// $Id: inline_laplace_eigs.cc,v 1.14 2009-07-08 21:06:54 jbulava Exp $
 /*! \file
  * \brief Use the IRL method to solve for eigenvalues and eigenvectors 
  * of the gauge-covariant laplacian.  
@@ -362,6 +362,7 @@ namespace Chroma
 			// components and unit norm. 
 			// The norm is evaluated time slice by time slice
 			LatticeColorVector starting_vectors;
+			
 			/*
 			ColorVector ones;
 			pokeColor(ones, Complex(1.0), 0);
@@ -369,7 +370,8 @@ namespace Chroma
 			pokeColor(ones, Complex(1.0), 2);
 		
 			starting_vectors = ones;
-			*/
+			/*			
+
 			gaussian(starting_vectors);
 
 			// Norm of the eigenvectors on each time slice
@@ -406,11 +408,6 @@ namespace Chroma
 			// beta should really be an array of Reals	
 			multi1d< multi1d<DComplex> > beta(kdim-1);	
 			multi1d< multi1d<DComplex> > alpha(kdim);
-			/*
-			   double d[nt][kdim];
-			   double e[nt][kdim-1];
-			   double z[nt][kdim][kdim];
-			   */
 
 			multi1d<double*> d(nt);
 			multi1d<double*> e(nt);
@@ -418,9 +415,9 @@ namespace Chroma
 
 			for (int t = 0 ; t < nt ; ++t)
 			{
-				d[t] = new double[kdim - 2];
-				e[t] = new double[kdim - 3];
-				z[t] = new double[(kdim - 2) * (kdim - 2)];
+				d[t] = new double[kdim];
+				e[t] = new double[kdim - 1];
+				z[t] = new double[(kdim) * (kdim)];
 			}
 
 			for (int k = 0 ; k < kdim ; ++k)
@@ -496,11 +493,11 @@ namespace Chroma
 				  //QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
 					beta[k][t] 			= Complex(sqrt(Real(real(beta[k][t]))));
 					lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
-					if (k < kdim - 2)
-						d[t][k] = toDouble(Real(real(alpha[k][t])));
+					//if (k < kdim - 1)
+					d[t][k] = toDouble(Real(real(alpha[k][t])));
 			
-					if (k < kdim - 3)
-						e[t][k] = toDouble(Real(real(beta[k][t])));
+					//if (k < kdim - 2)
+					e[t][k] = toDouble(Real(real(beta[k][t])));
 				}
 				/*
 				QDPIO::cout << "Checking orthogonality of vector " << k+1 << endl;
@@ -517,6 +514,16 @@ namespace Chroma
 				  
 			}
 			// Loop over k is complete, now compute alpha[kdim-1]
+
+			LatticeColorVector tmp;
+
+			chebyshev(u_smr, lanczos_vectors[kdim-1], tmp, j_decay);
+
+			for(int t = 0; t < nt; t++){
+			  tmp[phases.getSet()[t]] -= beta[kdim-2][t]*lanczos_vectors[kdim-2];
+			}
+
+			partitionedInnerProduct(lanczos_vectors[kdim-1],tmp,alpha[kdim-1],phases.getSet());
 
 			// Finally compute eigenvectors and eigenvalues
 
@@ -574,10 +581,10 @@ namespace Chroma
 			//parameters for dsteqr
 			char compz = 'I';
 
-			double* work  = new double[2*(kdim - 2) - 2];
+			double* work  = new double[2*(kdim) - 2];
 
 			int info = 0;
-			int ldz = kdim - 2;
+			int ldz = kdim;
 
 
 			multi1d< multi1d< multi1d<double> > > evecs(nt);
@@ -598,28 +605,28 @@ namespace Chroma
 				QDPIO::cout << "info = " << info << endl;
 
 
-				evecs[t].resize(kdim - 2);
-				evals[t].resize(kdim - 2);
+				evecs[t].resize(kdim);
+				evals[t].resize(kdim);
 
-				for (int v = 0 ; v < kdim - 2 ; ++v)
+				for (int v = 0 ; v < kdim ; ++v)
 				{
 					evals[t][v] = d[t][v]; 
 						
 					//QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << endl;
 
-					evecs[t][v].resize(kdim - 2);
+					evecs[t][v].resize(kdim);
 
-					for (int n = 0 ; n < kdim - 2 ; ++n)
+					for (int n = 0 ; n < kdim ; ++n)
 					{
-						evecs[t][v][n] = z[t][v * (kdim - 2) + n ];
+						evecs[t][v][n] = z[t][v * (kdim ) + n ];
 					}
 
 					//Apply matrix to vector
-					multi1d<double> Av(kdim - 2);
+					multi1d<double> Av(kdim );
 
 					double dcnt = 0;
 
-					for (int n = 0 ; n < kdim - 2 ; ++n)
+					for (int n = 0 ; n < kdim  ; ++n)
 					{
 						Av[n] = 0;
 						if (n != 0)
@@ -628,7 +635,7 @@ namespace Chroma
 								evecs[t][v][n-1];
 						}
 
-						if (n != (kdim - 3))
+						if (n != (kdim - 1))
 						{
 
 							Av[n] += toDouble(Real(real(beta[n][t]))) * 
@@ -664,10 +671,10 @@ namespace Chroma
 					
 				  //QDPIO::cout << "t = " << t << endl;
 
-					for (int n = 0 ; n < kdim - 2 ; ++n)
+					for (int n = 0 ; n < kdim  ; ++n)
 					{
 						vec_k[phases.getSet()[t] ] += 
-							Real(evecs[t][kdim - 3 - k][n]) * lanczos_vectors[n];
+							Real(evecs[t][kdim - 1 - k][n]) * lanczos_vectors[n];
 					}
 
 					//QDPIO::cout << "Made evector" << endl;
@@ -748,122 +755,6 @@ namespace Chroma
 
 			}//k
 
-
-				/*
-				multi1d<LatticeColorVector> krylov_vecs(kdim);
-
-				krylov_vecs[0] = start;
-
-				for (int k = 1 ; k < kdim  ; ++k)
-				{	
-				//Perform orthogonalization wrt previous vector
-				orthog(u, krylov_vecs[k-1], krylov_vecs[k]);
-
-				//Reorthogonalize?
-				//gram(krylov,krylov,k);
-
-				if (k > 1)
-				{
-				LatticeColorVector beta_km1; 
-				getBeta(beta_km1, krylov_vecs[k-1]);
-
-				krylov_vecs[k] -= krylov_vecs[k-1] * beta_km1; 
-				}
-
-				LatticeColorVector beta_k;
-				getBeta(beta_k, krylov_vecs[k]);
-
-				if (norm2(beta_k) < params.param.tol)
-				{
-				break;
-				}
-
-				krylov_vecs /= beta_k; 
-				}
-				*/
-
-				// On a gauge field configuration {U}, the action of the
-				// three dimensional laplacian on a colour field (eigenvector) Psi
-				// is 
-				// -2*(Nd-1)*Psi +  
-				// sum{mu ne j_decay} [ U_mu(x) * Psi(x+mu)  +
-				// 										  U^{dagger}_mu(x-mu) * Psi(x-mu) ]
-				//
-				// \param j_decay  'temporal direction'
-
-				// We will apply the Laplacian using the 
-				// "klein_gord" function :
-				// void klein_gord(const multi1d<LatticeColorMatrix>& u,
-				// 								 const T& psi,
-				// 								 T& chi,
-				// 								 const Real& mass_sq, int j_decay)
-				//
-				// where 
-				// Chi := (mass_sq + 2*(Nd-1))*Psi -
-				// 				sum_{mu ne j_decay} [U_mu(x) * Psi(x+mu) +
-				// 														 U^dagger_mu(x-mu) * Psi(x-mu) ]
-				//
-				// \param  mass_sq 'klein-gordan mass*mass' 
-				//
-				// To get the action of the laplacian on  
-				// the field chi, we write the (templated) function:
-				//
-				// template<typename T>
-				// void laplacian(const multi1d<LatticeColorMatrix>& u,
-				// 								T& psi, T& chi, int j_decay)
-				//{
-				//	T temp;
-				//
-				// 	Real minus_one = -1.;
-				//
-				// 	temp = chi * minus_one;
-				//	
-				//	klein_gord(u, temp, chi, 0.0, j_decay);
-				//}
-				//
-				//
-				//
-				// It is also useful to define a function which evaluates the inner 
-				// product of two fields time slice by time slice. 
-				// The function should return an array of complex numbers. 
-				// Each element of the array will hold the inner 
-				// product on a single timeslice. 
-				// 
-				// We will use Sftmom to partition the lattice into 
-				// a set of timeslices. 
-				// Let phases be an instance of Sftmom, and let inner_prod
-				// hold the inner products of the fields phi and chi 
-				// evaluated on a set of subsets defined by phases.
-				// 
-				//
-				// multi1d<DComplex> inner_prod = 
-				// sumMulti(localInnerProduct,phi,chi),
-				// 					phases.getSet());
-				//
-				// Then our function could be 
-				// template<typename T>
-				// void partitionedInnerProduct(const T& phi, const T& chi, 
-				// 															multi1d<DComplex>& inner_prod,
-				// 															Set& product_set){
-				//
-				//	inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);
-				// }
-				//
-				// Note: I'm not sure whether we have to pass inner_prod by reference 
-				// 	
-				// 
-				//
-				//
-				//
-				//
-				//
-
-
-
-
-
-
-				//BRANDON: CODE GOES HERE
 
 				//pop(xml_out);
 
