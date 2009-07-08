@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm_ibicgstab.h,v 3.1 2009-07-02 18:24:52 bjoo Exp $
+// $Id: syssolver_mdagm_ibicgstab.h,v 3.2 2009-07-08 18:46:47 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -97,12 +97,12 @@ namespace Chroma
       }
 
       swatch.stop();
-      QDPIO::cout << "BICGSTAB_SOLVER: " << res3.n_count 
+      QDPIO::cout << "IBICGSTAB_SOLVER: " << res3.n_count 
 		  << " iterations. Rsd = " << res3.resid 
 		  << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
       
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
 	
       
       END_CODE();
@@ -188,12 +188,12 @@ namespace Chroma
 	}
 
 	swatch.stop();
-	QDPIO::cout << "BICGSTAB_SOLVER: " << res3.n_count 
+	QDPIO::cout << "IBICGSTAB_SOLVER: " << res3.n_count 
 		    << " iterations. Rsd = " << res3.resid 
 		    << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
 
 	double time = swatch.getTimeInSeconds();
-	QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+	QDPIO::cout << "IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
 	
 
 	END_CODE();

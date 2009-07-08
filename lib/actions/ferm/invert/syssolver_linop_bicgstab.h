@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_bicgstab.h,v 3.2 2008-04-05 19:04:38 edwards Exp $
+// $Id: syssolver_linop_bicgstab.h,v 3.3 2009-07-08 18:46:47 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by BICGSTAB
  */
@@ -58,10 +58,11 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const
     {
       START_CODE();
-      
+      StopWatch swatch;
       
       SystemSolverResults_t res;  // initialized by a constructor
-      
+      swatch.start();
+
       // For now solve with PLUS until we add a way to explicitly
       // ask for MINUS
       res = InvBiCGStab(*A, 
@@ -71,7 +72,20 @@ namespace Chroma
 			invParam.MaxBiCGStab, 
 			PLUS);
       
-      
+      swatch.stop();
+      double time = swatch.getTimeInSeconds();
+      { 
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*A)(tmp, psi, PLUS);
+	r[A->subset()] -= tmp;
+	res.resid = sqrt(norm2(r, A->subset()));
+      }
+      QDPIO::cout << "BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+
+
       END_CODE();
       
       return res;
