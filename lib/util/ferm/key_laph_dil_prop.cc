@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: key_laph_dil_prop.cc,v 1.1 2009-06-30 15:48:10 jbulava Exp $
+// $Id: key_laph_dil_prop.cc,v 1.2 2009-07-09 02:13:21 jbulava Exp $
 /*! \file
  * \brief Key for propagator colorvector matrix elements
  */
@@ -12,19 +12,28 @@ namespace Chroma
 		bool operator<(const KeyLaphDilutedProp_t& a, 
 				const KeyLaphDilutedProp_t& b)
 		{
-			multi1d<int> lgaa(4);
+			
+			bool ret; 
+			
+			multi1d<int> lgaa(3);
 			lgaa[0] = a.spin_dil;
 			lgaa[1] = a.evec_dil;
 			lgaa[2] = a.noise_src;
-			lgaa[3] = a.src_or_snk;
+			//lgaa[3] = a.src_or_snk;
 
-			multi1d<int> lgbb(4);
+			multi1d<int> lgbb(3);
 			lgbb[0] = b.spin_dil;
 			lgbb[1] = b.evec_dil;
 			lgbb[2] = b.noise_src;
-			lgbb[3] = b.src_or_snk;
+			//lgbb[3] = b.src_or_snk;
    
-			return (lgaa < lgbb);
+
+			if (lgaa == lgbb)
+				ret = (a.src_or_snk < b.src_or_snk);
+			else 
+				ret = (lgaa < lgbb);
+
+			return ret;
 		}
 
 		void write(BinaryWriter& bin, const KeyLaphDilutedProp_t& param)
@@ -37,7 +46,7 @@ namespace Chroma
 
 		void read(BinaryReader& bin, KeyLaphDilutedProp_t& param)
 		{
-			read(bin, param.src_or_snk);
+			read(bin, param.src_or_snk, 32);
 			read(bin, param.spin_dil);
 			read(bin, param.evec_dil);
 			read(bin, param.noise_src);

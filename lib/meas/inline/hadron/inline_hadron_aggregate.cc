@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.54 2009-07-02 18:24:52 bjoo Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.55 2009-07-09 02:13:20 jbulava Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -18,7 +18,7 @@
 #warning "Not Building Inline Laplace Eigs"
 #endif
 
-#include "meas/inline/hadron/inline_laph_diluted_props_w.h"
+#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
 #include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
 #include "meas/inline/hadron/inline_disco_w.h"

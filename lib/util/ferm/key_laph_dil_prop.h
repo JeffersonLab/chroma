@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: key_laph_dil_prop.h,v 1.1 2009-06-30 15:48:10 jbulava Exp $
+// $Id: key_laph_dil_prop.h,v 1.2 2009-07-09 02:13:21 jbulava Exp $
 /*! \file
  * \brief Key for propagator colorvector matrix elements
  */
@@ -21,8 +21,8 @@ namespace Chroma
 
 	struct KeyLaphDilutedProp_t
 		{
-			int src_or_snk; //Is this a source or solution? Will be either
-															//0 = "SRC" or  1 = "SNK"
+			std::string src_or_snk; //Is this a source or solution? Will be either
+															//"SRC" or  "SNK"
 
 			int t0; //If the above string is 'SRC', this will always be 0. If it is 
 							//"SNK", this will be the t0 on which it was created

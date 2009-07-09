@@ -1,4 +1,4 @@
-// $Id: inline_laph_diluted_props_w.cc,v 3.2 2009-07-08 21:44:23 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.1 2009-07-09 02:13:21 jbulava Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -6,7 +6,7 @@
  */
 
 #include "fermact.h"
-#include "meas/inline/hadron/inline_laph_diluted_props_w.h"
+#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
@@ -469,7 +469,7 @@ namespace Chroma
 				//Insert the solution into the map
 				KeyLaphDilutedProp_t snk_key; 
 				
-				snk_key.src_or_snk = 1;
+				snk_key.src_or_snk = "SNK";
 				snk_key.t0 = t_source;
 				snk_key.spin_dil = spin_source;
 				snk_key.evec_dil = vec_dil;
@@ -488,7 +488,7 @@ namespace Chroma
 		
 				//Insert source into map 
 				KeyLaphDilutedProp_t src_key;
-				src_key.src_or_snk = 0;
+				src_key.src_or_snk = "SRC";
 				src_key.t0 = 0; 
 				src_key.spin_dil = spin_source;
 				src_key.evec_dil = vec_dil;

@@ -1,13 +1,13 @@
 // -*- C++ -*-
-// $Id: inline_laph_diluted_props_w.h,v 3.1 2009-06-30 15:51:53 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.h,v 3.1 2009-07-09 02:13:21 jbulava Exp $
 /*! \file
  * \brief Compute the laph-diluted sources and solutions. Write them out to a single db file.  
  *
  * Propagator calculation on a laph diluted source 
  */
 
-#ifndef __inline_laph_diluted_props_w_h__
-#define __inline_laph_diluted_props_w_h__
+#ifndef __inline_stoch_laph_quark_w_h__
+#define __inline_stoch_laph_quark_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
