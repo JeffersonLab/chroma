@@ -1,4 +1,4 @@
-// $Id: dilute_zN_eigvec_source_const.cc,v 3.1 2009-06-24 19:59:33 jbulava Exp $
+// $Id: dilute_zN_eigvec_source_const.cc,v 3.2 2009-07-12 00:45:36 jbulava Exp $
 /*! \file
  *  \brief Random ZN wall source construction
  */
@@ -176,7 +176,7 @@ namespace Chroma
 			//
       // Sanity checks
       //
-      if (params.spin_mask.size() <= Ns)
+      if (params.spin_mask.size() > Ns)
       {
 	QDPIO::cerr << name << ": spin mask size incorrect 1" << endl;
 	QDP_abort(1);
@@ -188,7 +188,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-			 if (params.t_sources.size() <= Nt)
+			 if (params.t_sources.size() > Nt)
       {
 	QDPIO::cerr << name << ": time sources size incorrect 1" << endl;
 	QDP_abort(1);
@@ -199,6 +199,23 @@ namespace Chroma
 	QDPIO::cerr << name << ": time sources size incorrect 2" << endl;
 	QDP_abort(1);
       }
+
+			//check that there are no repeats, and that each is < Nt
+			for (int t = 0 ; t < params.t_sources.size() ; ++t)
+			{
+				if ( (t > 0) && (params.t_sources[t] == params.t_sources[0]) )
+				{
+					QDPIO::cerr << "ERROR: repeat in t_sources" << endl;
+					QDP_abort(1);
+				}
+
+				if (params.t_sources[t] >= Nt)
+				{
+					QDPIO::cerr << "ERROR: invalid component in t_sources "  
+						<< params.t_sources[t] <<  " >= " << Nt << endl;
+					QDP_abort(1);
+				}
+			}
 
 			XMLBufferWriter eig_vecs_xml;
 			
@@ -225,6 +242,35 @@ namespace Chroma
 			const SubsetVectors<LatticeColorVector>& eigen_vecs = 
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.eigen_vec_id);
 
+			int n_ev = eigen_vecs.getEvectors().size();
+
+			//Sanity checks on the eigenvector dilutions
+			int n_ev_dil = params.eigen_vectors.size();
+			
+			//First, ensure there are not more than n_ev elements
+			if ( n_ev_dil > n_ev)
+			{
+				QDPIO::cerr << "ERROR: n_ev_dil > n_ev" << endl;
+				QDP_abort(1);
+			}
+
+			//Check that there are no repeats in the vectors, also that each 
+			//element is not larger than n_ev
+			for (int v = 0 ; v < n_ev_dil ; ++v)
+			{
+				if ( (v > 0) && (params.eigen_vectors[v] == params.eigen_vectors[0]) )
+				{
+					QDPIO::cerr << "ERROR: repeat in eigen_vectors" << endl;
+					QDP_abort(1);
+				}
+
+				if (params.eigen_vectors[v] >= n_ev)
+				{
+					QDPIO::cerr << "ERROR: invalid component in eigen_vectors" << endl;
+					QDP_abort(1);
+				}
+			}
+
 			//params.writeXML(xml_out, "Input");
 
 			//params.writeXML(xml_out, "EigVecsXML");
@@ -245,8 +291,10 @@ namespace Chroma
 
 			SftMom phases(0, true, params.j_decay);
 
-			LatticeLAPHSubSpace_t laph_noise;
+			LatticeLAPHSubSpace_t laph_noise(n_ev, Nt);
 			fill_laph_subspace_zN(laph_noise, params.ran_seed, params.N);
+
+			QDPIO::cout << "Created LapH Noise " << endl;
 
 			LatticeFermion dil_source = zero;
 

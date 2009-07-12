@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: dilute_zN_eigvec_source_const.h,v 3.1 2009-06-24 19:59:33 jbulava Exp $
+// $Id: dilute_zN_eigvec_source_const.h,v 3.2 2009-07-12 00:45:36 jbulava Exp $
 /*! \file
  *  \brief Random Z(N) source construction using dilution in eigenvector 
  *  space
@@ -51,6 +51,22 @@ namespace Chroma
 
 		struct LatticeLAPHSubSpace_t
 		{
+			
+			LatticeLAPHSubSpace_t(int nev, int nt)
+			{
+				
+				time_slices.resize(nt);
+				for (int t = 0 ; t < nt ; ++t)
+				{
+					time_slices[t].spins.resize(Ns);
+					for (int s = 0 ; s < Ns ; ++s)
+					{
+						time_slices[t].spins[s].lap_eigs.resize(nev);
+					}
+				}
+			}
+
+			
 			struct Timeslice_t
 			{
 				struct Spin_t
