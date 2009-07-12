@@ -1,4 +1,4 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.1 2009-07-09 02:13:21 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.2 2009-07-12 00:44:43 jbulava Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -123,7 +123,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "STOCH_LAPH_QUARKS";
+    const std::string name = "STOCH_LAPH_QUARK";
 
     //! Register all the factories
     bool registerAll() 
@@ -215,8 +215,6 @@ namespace Chroma
       snoop.reset();
       snoop.start();
 
-
-
 			SpinMatrix sp_one = 1.0;
 
 			SpinMatrix gamma_4 = Gamma(8) * sp_one;
@@ -261,8 +259,48 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
 
+			//Sanity checks on noise sources
+	    int n_noises = params.param.ran_seeds.size();
+
+    	for (int r1 = 0 ; r1 < n_noises ; ++r1)
+    		for (int r2 = 0 ; r2 < r1 ; ++r2)
+				{
+					if (toBool(params.param.ran_seeds[r1] == params.param.ran_seeds[r2]) )
+					{
+						QDPIO::cerr << "ERROR: Seed " << r1 << " = " << r2 << endl;
+						QDP_abort(1);
+					}
+				}
+
 			//Sanity checks on the eigenvector dilutions
-     
+			
+			//First check that the dilution components sum to unity
+			int n_ev_dil = params.param.eig_vec_dils.size();
+
+			std::vector<int> total_dils;
+
+			for (int d = 0 ;  d < n_ev_dil ; ++d)
+			{
+				int curr_size = params.param.eig_vec_dils[d].size();
+
+				for (int e = 0 ; e < curr_size ; ++e)
+					total_dils.push_back(params.param.eig_vec_dils[d][e]);
+			}
+
+			sort( total_dils.begin(), total_dils.end() );
+
+			for (int v = 0 ; v < total_dils.size() ; ++v)
+			{
+				if (total_dils[v] != v)
+				{
+					QDPIO::cerr << 
+						"ERROR: the eigenvector dilution projectors do not sum to unity"
+						<< endl;
+
+					QDP_abort(1);
+				}
+			}
+						
 
 			//
       // DB storage
@@ -378,7 +416,6 @@ namespace Chroma
 	// Loop over each operator 
 	QDPIO::cout << "Spin_dil = " << params.param.spin_dil << endl;
 
-	int n_noises = params.param.ran_seeds.size();
 
 	for (int r = 0 ; r < n_noises ; ++r)
 	{
@@ -389,7 +426,7 @@ namespace Chroma
 		if (params.param.spin_dil)
 			nspins = Ns;
 		else
-			nspins = 0;
+			nspins = 1;
 	  
 		for(int spin_source = 0 ; spin_source < nspins ; ++spin_source)
 	  {
@@ -408,6 +445,8 @@ namespace Chroma
 	  int t_source = t_sources[tt];
 	  QDPIO::cout << "t_source = " << t_source << endl; 
 
+		multi1d<int> t_arr(1);
+		t_arr[0] = t_source;
 		//Make diluted noisy source xml	
 		XMLBufferWriter src_buf;
 		push(src_buf, "SourceParams");
@@ -416,7 +455,7 @@ namespace Chroma
 		write(src_buf, "ran_seed", curr_seed);
 		write(src_buf, "N", 4);
 		write(src_buf, "j_decay", params.param.decay_dir);
-		write(src_buf, "t_sources", t_source);
+		write(src_buf, "t_sources", t_arr);
 		write(src_buf, "eigen_vec_id", params.named_obj.eigvec_id);
 		write(src_buf, "eigen_vectors", curr_vecs);
 

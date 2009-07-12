@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_laph_baryon_w.h,v 3.1 2009-07-09 02:13:21 jbulava Exp $
+// $Id: inline_stoch_laph_baryon_w.h,v 3.2 2009-07-12 00:44:43 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic source and sink functions 
  * for baryons
@@ -30,35 +30,33 @@ namespace Chroma
 
 			unsigned long      frequency;
 
+			//Noise ids
+			//T0's 
+			//cfg info
+			//dilution scheme
+			//smearing info (link and quark)
+
 			struct Param_t
 			{
 
-				int version;    /*!< included to handle the two momentum options */
-
+				multi1d<BaryonOperator> bops;               /*!< Baryon operator 
+																											information 
+																											(see baryon_operator.h)*/
 
 				GroupXML_t          link_smearing;         /*!< link smearing xml */
 
-				multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
-
-				multi2d<int> moms;    /*!< Momenta to be used */
 			};
 
 			struct NamedObject_t
 			{
-				struct ThreeQuarkOpsFile_t
-				{
-					std::string        ops_file;       /*!< Coefficient file name */
-					std::string        id;             /*!< ID/tag used in analysis codes*/
-				};
-
-				ThreeQuarkOpsFile_t  operators_file; /*!< Files holding 3-quark ops to make*/
-				std::string          quark_ids;      /*!< 3 character string indicating which quarks are degenerate */
-				std::string          gauge_id;       /*!< Gauge field */
+		
+				//Names of files that were output of STOCH_LAPH_QUARK
+			
 			};
 
 			Param_t        param;      /*!< Parameters */    
 			NamedObject_t  named_obj;  /*!< Named objects */
-			std::string    xml_file;   /*!< Alternate XML file pattern */
+		
 		};
 
 
@@ -91,8 +89,19 @@ namespace Chroma
 		{
 			struct DilutionComponent_t
 			{
-				mutli1d<DComplex> time;   //Will be length Lt	
+				multi1d<DComplex> time;   //Will be length Lt	
+			
+				DilutionComponent_t& operator*(const DComplex& coeff)
+				{
+					DilutionComponent_t result;
+
+					result.time = time * coeff;
+				
+					return result;
+				}
+			
 			};
+		
 		
 			multi3d<DilutionComponent_t> dilutions;
 		
@@ -104,6 +113,9 @@ namespace Chroma
 
 		struct Source_qqq_t
 		{
+			Source_qqq_t(int dil_size) : dilutions.resize(dil_size, dil_size, 
+					dil_size) {}
+
 			multi3d<DComplex> dilutions;
 		};
 		/*Acessed as follows:
@@ -111,13 +123,48 @@ namespace Chroma
 		src.dilutions(d1,d2,d3);
 		*/
 
+
+		//vector of momenta:   mutli1d< multi1d<int> > momenta( 
+		//array of results: multi1d<BaronOpSourceSink_t> bresults( 
+		//BaryonOpSourceSink_t(dil_size, nt), momenta.size() ) 
+		 
+
 		struct BaryonOpSourceSink_t
 		{
+			
+			BaryonOpSourceSink_t(int dil_size, int nt) : src(dil_size), 
+			snk(dil_size, nt)
+			{
+			}
+			
 			Source_qqq_t src;
 
 			Sink_qqq_t snk;
+		
+			BaryonOpSourceSink_t& operator*(const DComplex& coeff)
+			{
+
+				BaryonOpSourceSink_t result;
+
+				//Do src first
+				result.src.dilutions = src.dilutions * coeff;
+
+				//Sink
+				result.snk.dilutions = snk.dilutions * coeff;
+
+				return result;
+			}
+
+			BaryonOpSourceSink_t& operator+=(const BaryonOpSourceSink_t& rhs)
+			{
+
+				//Check Sizes
+				if 
+			}
+		
 		};
 
+		
 
 
 		
