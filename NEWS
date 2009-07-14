@@ -1,14 +1,20 @@
-8/7/2009 - Balint
+July 14, 2009 - Robert Ewdards
+	Version 3.35.0
+        Balint did all this in 3.34.1, but the latter was never actually
+        tagged it. John Bulava added new measurement routines related to
+        distilled dilution.
+
+7/8/2009 - Balint
 	Version 3.34.1
         Added IBiCGStab for BiCGStab with 1 Global Reduction per iteration
 	Added Reliable IBiCGStab (Clover only) to allow multi-precision use.
  	Added Regressions, tweaked output. 	
 
-20/05/2009 - Balint Joo
+05/202009 - Balint Joo
 	Added Multi-Prec BiCGStab Solver (LinOp & MdagM) (Clover Only)
 	Added Internally Single Precision CG Solver (MdagM only,Clover Only)
 
-21/04/2009 - Balint Joo
+04/21/2009 - Balint Joo
 	Version 3.34.0
 	Added regression support for multiprec clover in propagator and t_leapfrog
 	Integrated cpp-wilson-dslash for multiprec dslash support. (Experimental)
