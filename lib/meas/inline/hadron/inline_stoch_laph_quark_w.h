@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_laph_quark_w.h,v 3.1 2009-07-09 02:13:21 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.h,v 3.2 2009-07-15 02:52:08 jbulava Exp $
 /*! \file
  * \brief Compute the laph-diluted sources and solutions. Write them out to a single db file.  
  *
@@ -12,6 +12,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "meas/laph/laph.h"
 
 namespace Chroma 
 { 
@@ -24,7 +25,7 @@ namespace Chroma
     /*! \ingroup inlinehadron */ 
     struct Params 
     {
-      Params();
+     Params();
       Params(XMLReader& xml_in, const std::string& path);
 
       unsigned long     frequency;
@@ -67,8 +68,8 @@ namespace Chroma
     {
     public:
       ~InlineMeas() {}
-      InlineMeas(const Params& p) : params(p) {}
-      InlineMeas(const InlineMeas& p) : params(p.params) {}
+      InlineMeas(const Params& p) : params(p) {} 
+			InlineMeas(const InlineMeas& p) : params(p.params) {}
 
       unsigned long getFrequency(void) const {return params.frequency;}
 
