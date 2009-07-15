@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.220 2009-07-09 02:13:17 jbulava Exp $
+# $Id: Makefile.am,v 3.221 2009-07-15 02:55:01 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -308,6 +308,7 @@ nobase_include_HEADERS = \
 	meas/sources/source_const_factory.h \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h \
+	meas/
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
 	util/ferm/subset_vectors.h \
@@ -753,6 +754,8 @@ nobase_include_HEADERS += \
 	meas/hadron/pion_sing_s.h \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
+	meas/laph/laph.h \
+	meas/laph/gauge_configuration.h \
 	meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h \
@@ -1122,6 +1125,7 @@ libchroma_a_SOURCES = \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc \
 	meas/hadron/mesQl_w.cc \
+	meas/laph/gauge_configuration.cc \
 	meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
