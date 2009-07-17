@@ -1,4 +1,4 @@
-// $Id: inline_random_transf_gauge.cc,v 3.1 2007-11-09 21:26:43 edwards Exp $
+// $Id: inline_random_transf_gauge.cc,v 3.2 2009-07-17 21:32:24 edwards Exp $
 /*! \file
  *  \brief Do a random gauge transformation on a gauge field
  */
@@ -145,6 +145,9 @@ namespace Chroma
       multi1d<LatticeColorMatrix> u_rgauge = u;
       LatticeColorMatrix g;  // the gauge rotation matrices
       rgauge(u_rgauge, g);
+
+      // Calculate observables again. The link is not gauge invariant.
+      MesPlq(xml_out, "Random_gauge_transf_observables", u_rgauge);
 
       // Now store the configuration to a memory object
       {
