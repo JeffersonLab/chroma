@@ -1,16 +1,18 @@
 //The definitions for the GaugeConfiguration class
 
-#include "meas/laph/gauge_configuration.h"
+#include "meas/laph/gauge_configuration_handler.h"
 #include "chroma.h"
 
 namespace Chroma
 {
-
    namespace LaphEnv
    {
 
-      GaugeConfiguration::GaugeConfiguration(const std::string& gauge_id)
+      GaugeConfigurationHandler::GaugeConfigurationHandler(
+					const GaugeConfigurationInfo& gauge_in) : gauge_info(gauge_in) 
       {
+
+				std::string gauge_id = gauge_in.getGaugeId();
 
          if (cfg == NULL)
          {
@@ -35,22 +37,6 @@ namespace Chroma
             }
             cfg = &(TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(gauge_id));
 
-            gauge_xml = gauge_xml_buff.str();
-
-            XMLReader gauge_rdr(gauge_xml_buff);
-
-            if (gauge_rdr.count("/Params/MCControl/StartUpdateNum") != 0)
-            {
-               read(gauge_rdr, "/Params/MCControl/StartUpdateNum" , traj_num);
-            }
-            else
-            {
-               traj_num = 1000;
-            }
-
-            QDPIO::cout << "TrajNum = " << traj_num << endl;
-            QDPIO::cout << "Gauge Cfg Initialized" << endl;
-
          }
          else
          {
@@ -62,12 +48,8 @@ namespace Chroma
 
            // initialization of static parameters
 	   
-      multi1d<LatticeColorMatrix>* GaugeConfiguration::cfg = NULL;
+      multi1d<LatticeColorMatrix>* GaugeConfigurationHandler::cfg = NULL;
 
-      std::string GaugeConfiguration::gauge_xml = ""; 
-   
-      int GaugeConfiguration::traj_num = 0;
-   
    }
 
 }
