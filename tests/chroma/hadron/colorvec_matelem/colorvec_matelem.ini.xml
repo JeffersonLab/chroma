@@ -168,7 +168,7 @@ Not used in this test, instead use create colorvecs below.
         <decay_dir>3</decay_dir>
         <num_iter>50</num_iter>
         <width>3.0</width>
-        <num_orthog>10</num_orthog>
+        <num_orthog>20</num_orthog>
         <LinkSmearing>
           <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
@@ -218,15 +218,10 @@ Not used in this test, instead use create colorvecs below.
           <numRetries>1</numRetries>
           <FermionAction>
            <FermAct>CLOVER</FermAct>
-           <Mass>0.05</Mass>
-           <clovCoeff>1.17</clovCoeff>
-           <clovCoeffR>0.91</clovCoeffR>
-           <clovCoeffT>1.07</clovCoeffT>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
            <AnisoParam>
-             <anisoP>true</anisoP>
-             <t_dir>3</t_dir>
-             <xi_0>2.464</xi_0>
-             <nu>0.95</nu>
+             <anisoP>false</anisoP>
            </AnisoParam>
            <FermionBC>
              <FermBC>SIMPLE_FERMBC</FermBC>
@@ -273,85 +268,6 @@ Not used in this test, instead use create colorvecs below.
     </elem>
     
     <elem>
-      <annotation>
-        Compute annihilation propagator solution vectors
-      </annotation>
-      <Name>ANNIH_PROP_MATELEM_COLORVEC</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <Contractions>
-          <num_vecs>10</num_vecs>
-          <t_sources_start>0 1 2 3</t_sources_start>
-          <dt>4</dt>
-          <decay_dir>3</decay_dir>
-          <N>4</N>
-          <ran_seed>
-            <Seed>	
-              <elem>13</elem>
-              <elem>14</elem>
-              <elem>15</elem>
-              <elem>17</elem>
-            </Seed>
-          </ran_seed>
-          <mass_label>U0.05-rnd1</mass_label>
-        </Contractions>
-        <Propagator>
-          <version>10</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP>
-          <numRetries>1</numRetries>
-          <FermionAction>
-           <FermAct>CLOVER</FermAct>
-           <Mass>0.05</Mass>
-           <clovCoeff>1.17</clovCoeff>
-           <clovCoeffR>0.91</clovCoeffR>
-           <clovCoeffT>1.07</clovCoeffT>
-           <AnisoParam>
-             <anisoP>true</anisoP>
-             <t_dir>3</t_dir>
-             <xi_0>2.464</xi_0>
-             <nu>0.95</nu>
-           </AnisoParam>
-           <FermionBC>
-             <FermBC>SIMPLE_FERMBC</FermBC>
-             <boundary>1 1 1 -1</boundary>
-           </FermionBC>
-          </FermionAction>
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1.0e-8</RsdCG>
-            <MaxCG>1000</MaxCG>
-          </InvertParam>
-        </Propagator>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_op_file>annih_prop.sdb</prop_op_file>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Compute static propagator solution vectors
-      </annotation>
-      <Name>STATIC_PROP_COLORVEC</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <Contractions>
-          <num_vecs>10</num_vecs>
-          <t_sources>0 3</t_sources>
-          <decay_dir>3</decay_dir>
-        </Contractions>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_id>static_prop_colorvec</prop_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
       <Name>PROP_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
@@ -369,28 +285,11 @@ Not used in this test, instead use create colorvecs below.
     </elem>
 
     <elem>
-      <Name>PROP_MATELEM_COLORVEC</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <num_vecs>10</num_vecs>
-        <t_sources>0 3</t_sources>
-        <decay_dir>3</decay_dir>
-        <mass_label>STATIC</mass_label>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_id>static_prop_colorvec</prop_id>
-        <prop_op_file>prop.sdb</prop_op_file>
-      </NamedObject>
-    </elem>
-
-    <elem>
       <Name>MESON_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
         <version>1</version>
-        <mom2_max>0</mom2_max>
+        <mom2_max>2</mom2_max>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
@@ -646,46 +545,80 @@ Not used in this test, instead use create colorvecs below.
 
         <!-- List of displacement arrays -->
         <displacement_list>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>0</right>
-          </elem>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>+1</right>
-          </elem>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>-1</right>
-          </elem>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>+2</right>
-          </elem>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>-2</right>
-          </elem>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>+3</right>
-          </elem>
-          <elem>
-             <left>0</left>
-             <middle>0</middle>
-             <right>-3</right>
-          </elem>
-          <elem>
-             <left>1</left>
-             <middle>-3</middle>
-             <right>-2</right>
-          </elem>
+          <elem><left>1</left><middle>-3</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>0</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 3</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>1</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>2</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>3</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>1</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>2</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>3</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>1</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>2</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>3</right></elem>
+          <elem><left>0</left><middle>1</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>1</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>1</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>1</middle><right>1</right></elem>
+          <elem><left>0</left><middle>1</middle><right>2</right></elem>
+          <elem><left>0</left><middle>1</middle><right>3</right></elem>
+          <elem><left>0</left><middle>2</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>2</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>2</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>2</middle><right>1</right></elem>
+          <elem><left>0</left><middle>2</middle><right>2</right></elem>
+          <elem><left>0</left><middle>2</middle><right>3</right></elem>
+          <elem><left>0</left><middle>3</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>3</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>3</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>3</middle><right>1</right></elem>
+          <elem><left>0</left><middle>3</middle><right>2</right></elem>
+          <elem><left>0</left><middle>3</middle><right>3</right></elem>
         </displacement_list>
 
         <LinkSmearing>
