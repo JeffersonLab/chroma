@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.222 2009-07-17 15:23:38 jbulava Exp $
+# $Id: Makefile.am,v 3.223 2009-07-17 19:12:57 jbulava Exp $
 #
 # Path for all files used in building the library
 
@@ -755,7 +755,8 @@ nobase_include_HEADERS += \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
 	meas/laph/laph.h \
-	meas/laph/gauge_configuration.h \
+	meas/laph/gauge_configuration_info.h \
+	meas/laph/gauge_configuration_handler.h \
 	meas/laph/xml_help.h \
 	meas/laph/field_smearing.h \
 	meas/hadron/enum_loops_s.h \
@@ -1127,7 +1128,8 @@ libchroma_a_SOURCES = \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc \
 	meas/hadron/mesQl_w.cc \
-	meas/laph/gauge_configuration.cc \
+	meas/laph/gauge_configuration_info.cc \
+	meas/laph/gauge_configuration_handler.cc \
 	meas/laph/xml_help.cc \
 	meas/laph/field_smearing.cc \
 	meas/hadron/Ql_3pt_w.cc \
