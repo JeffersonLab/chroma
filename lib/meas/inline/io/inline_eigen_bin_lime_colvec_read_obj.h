@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_eigen_bin_lime_colvec_read_obj.h,v 3.1 2009-02-13 22:41:24 jbulava Exp $
+// $Id: inline_eigen_bin_lime_colvec_read_obj.h,v 3.2 2009-07-17 14:53:13 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -14,53 +14,53 @@
 
 namespace Chroma 
 { 
-	/*! \ingroup inlineio */
-	namespace InlineEigenBinLimeColVecReadNamedObjEnv 
-	{
-		bool registerAll();	
+  /*! \ingroup inlineio */
+  namespace InlineEigenBinLimeColVecReadNamedObjEnv 
+  {
+    bool registerAll();	
 
-		//! Parameter structure
-		/*! \ingroup inlineio */
-		struct Params 
-		{
-			Params();
-			Params(XMLReader& xml_in, const std::string& path);
-			void writeXML(XMLWriter& xml_out, const std::string& path);
+    //! Parameter structure
+    /*! \ingroup inlineio */
+    struct Params 
+    {
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
 
-			unsigned long frequency;
+      unsigned long frequency;
 
-			struct NamedObject_t
-			{
-				std::string   object_id;
-			} named_obj;
+      struct NamedObject_t
+      {
+	std::string   object_id;
+      } named_obj;
 
-			struct File_t
-			{
-				std::string file_name; //Lime files for all timeslices 
-			} file;
+      struct File_t
+      {
+	std::string file_name; //Lime files for all timeslices 
+      } file;
 
-		};
+    };
 
-		//! Inline reading of latticecolorvectors that are eigenvectors
-		/*! \ingroup inlineio */
-		class InlineMeas : public AbsInlineMeasurement 
-		{
-			public:
-				~InlineMeas() {}
-				InlineMeas(const Params& p) : params(p) {}
-				InlineMeas(const InlineMeas& p) : params(p.params) {}
+    //! Inline reading of latticecolorvectors that are eigenvectors
+    /*! \ingroup inlineio */
+    class InlineMeas : public AbsInlineMeasurement 
+    {
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+      InlineMeas(const InlineMeas& p) : params(p.params) {}
 
-				unsigned long getFrequency(void) const {return params.frequency;}
+      unsigned long getFrequency(void) const {return params.frequency;}
 
-				//! Do the writing
-				void operator()(const unsigned long update_no,
-						XMLWriter& xml_out); 
+      //! Do the writing
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
 
-			private:
-				Params params;
-		};
+    private:
+      Params params;
+    };
 
-	}
+  }
 }
 
 #endif
