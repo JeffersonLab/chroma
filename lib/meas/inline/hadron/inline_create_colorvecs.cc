@@ -1,9 +1,10 @@
-// $Id: inline_create_colorvecs.cc,v 3.10 2009-04-11 03:32:46 edwards Exp $
+// $Id: inline_create_colorvecs.cc,v 3.11 2009-07-17 14:52:36 edwards Exp $
 /*! \file
  * \brief Construct colorvectors via power iteration of the laplacian
  */
 
 #include "fermact.h"
+#include "actions/boson/operator/klein_gord.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_factory.h"
@@ -310,42 +311,23 @@ namespace Chroma
 
       //
       // Initialize the color vectors with gaussian numbers
-      // Orthogonalize them all
-      //
-      for(int i=0; i < num_vecs; ++i)
-      {
-	gaussian(color_vecs.getEvectors()[i]);
-
-	for(int k=0; k < i; ++k)
-	{
-	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-				       color_vecs.getEvectors()[i]),
-		     phases.getSet());
-	  for(int t(0);t<phases.numSubsets();t++)
-	    color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-	      cc[t]*color_vecs.getEvectors()[k];
-	}
-
-	multi1d<Double> norm2 =
-	  sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
-
-	for(int t=0; t < phases.numSubsets(); ++t)
-	  color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]);
-      }
-
-
-      //
       // Gaussian smear in an orthogonalization loop
       //
-      for(int hit=1; hit < params.param.num_orthog; ++hit)
+      for(int hit=0; hit <= params.param.num_orthog; ++hit)
       {
 	for(int i=0; i < num_vecs; ++i)
 	{
 	  QDPIO::cout << name << ": Doing colorvec: "<<i << " hit no: "<<hit<<endl;
-	  gausSmear(u_smr, 
-		    color_vecs.getEvectors()[i],
-		    params.param.width, params.param.num_iter, params.param.decay_dir);
+	  if (hit == 0)
+	  {
+	    gaussian(color_vecs.getEvectors()[i]);
+	  }
+	  else
+	  {
+	    gausSmear(u_smr, 
+		      color_vecs.getEvectors()[i],
+		      params.param.width, params.param.num_iter, params.param.decay_dir);
+	  }
 
 	  for(int k=0; k < i; ++k)
 	  {
@@ -380,18 +362,17 @@ namespace Chroma
 	pop(xml_out);
 	//compute the "eigenvalues"
 	push(xml_out,"SmearingEvals");
-	for(int i(0);i<num_vecs;i++){
-	  LatticeColorVector Svec = color_vecs.getEvectors()[i];
-	  gausSmear(u_smr, 
-		    Svec,
-		    params.param.width, params.param.num_iter, params.param.decay_dir);
+	for(int i=0; i < num_vecs; ++i)
+	{
+	  LatticeColorVector Svec;
+	  klein_gord(u_smr, color_vecs.getEvectors()[i], Svec, Real(0), params.param.decay_dir);
 
 	  multi1d<DComplex> cc = 
 	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i], 
 				       Svec),  
 		     phases.getSet());
 
-	  for(int t(0);t<phases.numSubsets();t++)
+	  for(int t=0; t < phases.numSubsets(); ++t)
 	    color_vecs.getEvalues()[i].weights[t] = real(cc[t]);
 
 	  push(xml_out,"Vector");
