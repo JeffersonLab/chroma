@@ -1,4 +1,4 @@
-// $Id: inline_static_prop_colorvec_w.cc,v 3.2 2008-11-22 22:17:29 edwards Exp $
+// $Id: inline_static_prop_colorvec_w.cc,v 3.3 2009-07-17 21:34:06 edwards Exp $
 /*! \file
  * \brief Compute a static prop  (1/2)*(1+gamma_4)U*U*...U * multi1d<LatticeColorVector>
  *
@@ -374,9 +374,9 @@ namespace Chroma
 
 	  for(int t=1; t < Nt; ++t)
 	  {
-	    int ti = (-t + t_source + Nt) % Nt;
-	    LatticeColorMatrix tmp = shift(u_shift, FORWARD, decay_dir);
-	    u_shift[phases.getSet()[ti]] = u[decay_dir] * tmp;
+	    int ti = (t + t_source + Nt) % Nt;
+	    LatticeColorMatrix tmp = shift(adj(u[decay_dir]) * u_shift, BACKWARD, decay_dir);
+	    u_shift[phases.getSet()[ti]] = tmp;
 	  }
 
 
@@ -391,8 +391,8 @@ namespace Chroma
 
 	    for(int t=1; t < Nt; ++t)
 	    {
-	      int ti = (-t + t_source + Nt) % Nt;
-	      LatticeColorVector tmp = shift(vec_srce, FORWARD, decay_dir);
+	      int ti = (t + t_source + Nt) % Nt;
+	      LatticeColorVector tmp = shift(vec_srce, BACKWARD, decay_dir);
 	      vec_srce[phases.getSet()[ti]] = tmp;
 	    }
 
