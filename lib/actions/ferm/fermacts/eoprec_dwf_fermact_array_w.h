@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: eoprec_dwf_fermact_array_w.h,v 3.1 2006-10-19 16:01:27 edwards Exp $
+// $Id: eoprec_dwf_fermact_array_w.h,v 3.2 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief 4D style even-odd preconditioned domain-wall fermion action
  */
@@ -132,8 +132,9 @@ namespace Chroma
     const CreateFermState<T,P,Q>& getCreateState() const {return *cfs;}
 
   private:
-    EvenOddPrecDWFermActArray() {} // Partial constructor
-    EvenOddPrecDWFermActArray& operator=(const EvenOddPrecDWFermActArray& a) {} // Hide =
+      EvenOddPrecDWFermActArray() {} // Partial constructor
+      EvenOddPrecDWFermActArray& operator=(const EvenOddPrecDWFermActArray& a) { return *this; // satisfy return type
+      } // Hide =
 
   private:
     Handle< CreateFermState<T,P,Q> >  cfs;

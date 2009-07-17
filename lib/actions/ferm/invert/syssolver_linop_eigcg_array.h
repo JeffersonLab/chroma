@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_eigcg_array.h,v 1.5 2008-04-05 19:04:38 edwards Exp $
+// $Id: syssolver_linop_eigcg_array.h,v 1.6 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system array by EigCG2
  */
@@ -71,10 +71,10 @@ namespace Chroma
       }
 
     //! Return the subset on which the operator acts
-    const Subset& subset() const {return A->subset();}
+    const Subset& subset(void) const {return A->subset();}
 
     //! Expected length of array index
-    int size() const {return A->size();}
+    int size(void) const {return A->size(); }
 
     //! Solver the linear system
     /*!

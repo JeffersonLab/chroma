@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_mdagm.h,v 3.2 2009-06-02 15:56:40 bjoo Exp $
+// $Id: syssolver_mdagm.h,v 3.3 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief Disambiguator for MdagM system solvers
  */
@@ -16,10 +16,16 @@ namespace Chroma
 {
   //! SystemSolver disambiguator
   /*! This struct is solely to disambiguate the type of SystemSolvers */
+  /* Was previously defined as
+     template<typename T>
+     struct MdagMSystemSolver: virtual public SystemSolver<T> 
+ 
+     I have changed this to make xlC happy 
+*/
   template<typename T>
-  struct MdagMSystemSolver : virtual public SystemSolver<T>
+  class MdagMSystemSolver : public SystemSolver<T>
   {    
-
+  public:
     virtual SystemSolverResults_t operator() (T& psi, const T& chi) const = 0;
 
     //! Return the subset on which the operator acts
@@ -33,8 +39,15 @@ namespace Chroma
 
   //! SystemSolver disambiguator
   /*! This struct is solely to disambiguate the type of SystemSolvers */
+
+  /* Was previously declared as:
   template<typename T>
   struct MdagMSystemSolverArray : virtual public SystemSolverArray<T>
+
+  I have changed it to make xlC happy
+  */
+  template<typename T>
+  class MdagMSystemSolverArray : public SystemSolverArray<T>
   {
   };
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop.h,v 3.1 2006-07-03 15:26:08 edwards Exp $
+// $Id: syssolver_linop.h,v 3.2 2009-07-17 19:14:46 bjoo Exp $
 /*! \file
  *  \brief Disambiguator for LinOp system solvers
  */
@@ -15,16 +15,22 @@ namespace Chroma
 {
   //! SystemSolver disambiguator
   /*! This struct is solely to disambiguate the type of SystemSolvers */
+  
+  /* NB: Previously these were declared as 'virtual public SystemSolver<T>'
+     BUT That seemed to break XLC in a Bad Way */
   template<typename T>
-  struct LinOpSystemSolver : virtual public SystemSolver<T>
+  class LinOpSystemSolver : public SystemSolver<T>
   {
   };
 
 
   //! SystemSolver disambiguator
   /*! This struct is solely to disambiguate the type of SystemSolvers */
+  
+  /* NB: Previously this was declared as virtual public SystemSolverArray<T> 
+     but that broke the xlC build */
   template<typename T>
-  struct LinOpSystemSolverArray : virtual public SystemSolverArray<T>
+  class LinOpSystemSolverArray : public SystemSolverArray<T>
   {
   };
 
