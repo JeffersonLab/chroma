@@ -1,4 +1,4 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.3 2009-07-15 02:52:08 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.4 2009-07-17 19:37:09 jbulava Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -216,8 +216,9 @@ namespace Chroma
 				START_CODE();
 
 				//Start up the gauge config
-				GaugeConfiguration gauge_cfg(params.named_obj.gauge_id);
+				GaugeConfigurationInfo gauge_info(params.named_obj.gauge_id);
 
+				cout << "GaugeXML = XX" << gauge_info.output() << "XX" << endl;
 				/*
 					 StopWatch snoop;
 					 snoop.reset();
