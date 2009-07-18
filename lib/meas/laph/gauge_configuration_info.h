@@ -27,54 +27,50 @@
 
 namespace Chroma
 {
-
-   namespace LaphEnv
-   {
-
-      class GaugeConfigurationInfo
-      {
+  namespace LaphEnv
+  {
 
 
-         public:
+ class GaugeConfigurationInfo
+ {
 
-            GaugeConfigurationInfo(XMLReader& xml_rdr);
-           
-						GaugeConfigurationInfo( 
-								const GaugeConfigurationInfo& rhs) : gauge_xml(rhs.output()),
-								  gauge_id(rhs.getGaugeId()), traj_num(rhs.getTrajNum()) {}
-						
-						GaugeConfigurationInfo& operator=(const GaugeConfigurationInfo& rhs)
-						{
-							gauge_xml = rhs.output();
-							traj_num = rhs.getTrajNum();
-							gauge_id = rhs.getGaugeId();
-							
-							return *this;
-						}
+   std::string gauge_xml;    // private data
+   std::string gauge_id;
+   int traj_num;
+
+  public:
+
+   GaugeConfigurationInfo(XMLReader& xml_rdr);
+          
+   GaugeConfigurationInfo(const GaugeConfigurationInfo& rhs) 
+          : gauge_xml(rhs.output()), gauge_id(rhs.getGaugeId()), 
+            traj_num(rhs.getTrajNum()) {}
+                  
+                  GaugeConfigurationInfo& operator=(const GaugeConfigurationInfo& rhs)
+                  {
+                     gauge_xml = rhs.output();
+                     traj_num = rhs.getTrajNum();
+                     gauge_id = rhs.getGaugeId();
+                     
+                     return *this;
+                  }
 
             const std::string& output() const { return gauge_xml;}
 
             const int getTrajNum() const {return traj_num;}
       
-						const std::string& getGaugeId() const {return gauge_id; }
+                  const std::string& getGaugeId() const {return gauge_id; }
 
-						void check(const GaugeConfigurationInfo& rhs) const
-						{
-							if (rhs.output() != gauge_xml)
-							{
-								QDPIO::cerr << __func__ << 
-									"gauge xml does not match original XML." << endl;
-								QDP_abort(1);
-							}
-						}
+                  void check(const GaugeConfigurationInfo& rhs) const
+                  {
+                     if (rhs.output() != gauge_xml)
+                     {
+                        QDPIO::cerr << __func__ << 
+                           "gauge xml does not match original XML." << endl;
+                        QDP_abort(1);
+                     }
+                  }
 
-         private:
-	 
-            std::string gauge_xml;
-
-						std::string gauge_id;
-
-            int traj_num;
       };
 
    }

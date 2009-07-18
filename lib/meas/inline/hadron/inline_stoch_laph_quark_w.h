@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_laph_quark_w.h,v 3.2 2009-07-15 02:52:08 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.h,v 3.3 2009-07-18 02:34:47 jbulava Exp $
 /*! \file
  * \brief Compute the laph-diluted sources and solutions. Write them out to a single db file.  
  *
@@ -17,74 +17,29 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineLaphDilutedPropsEnv 
+  namespace InlineStochLaphQuarkEnv 
   {
     bool registerAll();
 
-    //! Parameter structure
-    /*! \ingroup inlinehadron */ 
-    struct Params 
-    {
-     Params();
-      Params(XMLReader& xml_in, const std::string& path);
-
-      unsigned long     frequency;
-
-      struct Param_t
-      {
-				int             decay_dir;      /*!< Decay direction */
-
-				bool spin_dil; 									/*!< include full spin dilution? */
-
-				multi1d< multi1d<int> > eig_vec_dils; /*!< the array of eigenvector dilutions */ 
-				
-				multi1d<int>    t_sources;      /*!< Array of time slice sources for props, assumes full time dilution */
-	
-				
-				multi1d<Seed> ran_seeds;        /*!<Array of random seeds, this will be the number of unique noise sources created. */
-				
-				std::string     mass_label;     /*!< Some kind of mass label for these quarks */
-
-				ChromaProp_t    prop;
-
-
-      } param;
-
-      struct NamedObject_t
-      {
-				std::string     gauge_id;     /*!< Gauge field */
-				std::string     eigvec_id;    /*!< LatticeColorVector EigenInfo */
-				std::string     prop_file; /*!< File name for propagators and sources */
-      
-			} named_obj;
-
-      std::string xml_file;  // Alternate XML file pattern
-    };
-
-
     //! Inline task for compute LatticeColorVector matrix elements of a propagator
     /*! \ingroup inlinehadron */
-    class InlineMeas : public AbsInlineMeasurement 
+    class StochLaphQuarkInlineMeas : public AbsInlineMeasurement 
     {
     public:
-      ~InlineMeas() {}
-      InlineMeas(const Params& p) : params(p) {} 
-			InlineMeas(const InlineMeas& p) : params(p.params) {}
-
-      unsigned long getFrequency(void) const {return params.frequency;}
+      ~StochLaphQuarkInlineMeas() {}
+      
+			StochLaphQuarkInlineMeas(XMLReader& xml_in, const std::string& path) 
+			: xml_rdr(xml_in, path) {}
 
       //! Do the measurement
       void operator()(const unsigned long update_no,
-		      XMLWriter& xml_out); 
+		                  XMLWriter& xml_out); 
 
-    protected:
-      //! Do the measurement
-      void func(const unsigned long update_no,
-		XMLWriter& xml_out); 
-
-    private:
-      Params params;
-    };
+			long unsigned int getFrequency() const {return 0;}
+   
+		private:
+			XMLReader xml_rdr;
+		};
 	
 
   } // namespace PropMatElemColorVec

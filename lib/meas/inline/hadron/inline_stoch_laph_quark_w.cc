@@ -1,4 +1,4 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.4 2009-07-17 19:37:09 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.5 2009-07-18 02:34:47 jbulava Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -36,187 +36,54 @@
 namespace Chroma 
 {  
 	using namespace LaphEnv;
-	
-	namespace InlineLaphDilutedPropsEnv 
-  {
-    //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineLaphDilutedPropsEnv::Params::NamedObject_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "gauge_id", input.gauge_id);
-      read(inputtop, "eigvec_id", input.eigvec_id);
-      read(inputtop, "prop_file", input.prop_file);
-    
-		}
-
-    //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineLaphDilutedPropsEnv::Params::NamedObject_t& input)
-    {
-      push(xml, path);
-
-      write(xml, "gauge_id", input.gauge_id);
-      write(xml, "eigvec_id", input.eigvec_id);
-      write(xml, "prop_file", input.prop_file);
-
-      pop(xml);
-    }
 
 
-    //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineLaphDilutedPropsEnv::Params::Param_t& input)
-    {
-      XMLReader inputtop(xml, path);
-
-      read(inputtop, "t_sources", input.t_sources);
-      read(inputtop, "eig_vec_dils", input.eig_vec_dils);
-      read(inputtop, "RanSeeds", input.ran_seeds);
-      read(inputtop, "decay_dir", input.decay_dir);
-      read(inputtop, "mass_label", input.mass_label);
-      read(inputtop, "prop_xml", input.prop);
-    
-		}
-
-    //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineLaphDilutedPropsEnv::Params::Param_t& input)
-    {
-      push(xml, path);
-
-      write(xml, "eig_vec_dils", input.eig_vec_dils);
-      write(xml, "RanSeeds", input.ran_seeds);
-      write(xml, "t_sources", input.t_sources);
-      write(xml, "decay_dir", input.decay_dir);
-      write(xml, "mass_label", input.mass_label);
-      write(xml, "prop_xml", input.prop);
-
-      pop(xml);
-    }
-
-
-    //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineLaphDilutedPropsEnv::Params& input)
-    {
-      InlineLaphDilutedPropsEnv::Params tmp(xml, path);
-      input = tmp;
-    }
-
-    //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineLaphDilutedPropsEnv::Params& input)
-    {
-      push(xml, path);
-    
-      write(xml, "Param", input.param);
-      write(xml, "NamedObject", input.named_obj);
-
-      pop(xml);
-    }
-  } // namespace InlinePropMatElemColorVecEnv 
-
-
-  namespace InlineLaphDilutedPropsEnv 
-  {
-    namespace
-    {
-      AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					      const std::string& path) 
-      {
-	return new InlineMeas(Params(xml_in, path));
-      }
-
-      //! Local registration flag
-      bool registered = false;
-    }
-      
-    const std::string name = "STOCH_LAPH_QUARK";
-
-    //! Register all the factories
-    bool registerAll() 
-    {
-      bool success = true; 
-      if (! registered)
-      {
-	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-	registered = true;
-      }
-      return success;
-    }
-
-
-    //----------------------------------------------------------------------------
-    // Param stuff
-		Params::Params() { frequency = 0; }
-
-		Params::Params(XMLReader& xml_in, const std::string& path) 
+	namespace InlineStochLaphQuarkEnv 
+	{
+		namespace
 		{
-			try 
+			AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+					const std::string& path) 
 			{
-				XMLReader paramtop(xml_in, path);
-
-				if (paramtop.count("Frequency") == 1)
-					read(paramtop, "Frequency", frequency);
-				else
-					frequency = 1;
-
-				// Parameters for source construction
-				read(paramtop, "Param", param);
-
-				// Read in the output propagator/source configuration info
-				read(paramtop, "NamedObject", named_obj);
-
-
-				// Possible alternate XML file pattern
-				if (paramtop.count("xml_file") != 0) 
-				{
-					read(paramtop, "xml_file", xml_file);
-				}
+				return new StochLaphQuarkInlineMeas(xml_in, path);
 			}
-			catch(const std::string& e) 
+
+			//! Local registration flag
+			bool registered = false;
+		}
+
+		const std::string name = "STOCH_LAPH_QUARK";
+
+		//! Register all the factories
+		bool registerAll() 
+		{
+			bool success = true; 
+			if (! registered)
 			{
-				QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
-				QDP_abort(1);
+				success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+				registered = true;
 			}
+			return success;
 		}
 
 
+		//--------------------------------------------------------------------------
+	
 		// Function call
-		void 
-			InlineMeas::operator()(unsigned long update_no,
-					XMLWriter& xml_out) 
+		void StochLaphQuarkInlineMeas::operator()(unsigned long update_no,
+					                      XMLWriter& xml_out) 
 			{
-				// If xml file not empty, then use alternate
-				if (params.xml_file != "")
-				{
-					string xml_file = makeXMLFileName(params.xml_file, update_no);
+				
+				FieldSmearingInfo smearing_info(xml_rdr);
+				xml_out << smearing_info.output();
 
-					push(xml_out, "LaphDilutedProps");
-					write(xml_out, "update_no", update_no);
-					write(xml_out, "xml_file", xml_file);
-					pop(xml_out);
+				LaphNoiseInfo laph_noise_info(xml_rdr);
+				xml_out << laph_noise_info.output();
 
-					XMLFileWriter xml(xml_file);
-					func(update_no, xml);
-				}
-				else
-				{
-					func(update_no, xml_out);
-				}
-			}
+				GaugeConfigurationInfo gauge_cfg(xml_rdr);
+				xml_out << gauge_cfg.output();
 
-		//For now, both the sources and the sinks will be stored in the 
-		//same db, both as lattice fermions. This is a tremendous waste 
-		//of space for only a few t0's, but will make things alot 
-		//simpler if all t0's are done at the source. The source will 
-		//have support only on the t0's specified in the Params struct. 
-
-		// Real work done here
-		void 
-			InlineMeas::func(unsigned long update_no,
-					XMLWriter& xml_out) 
-			{
 				START_CODE();
-
-				//Start up the gauge config
-				GaugeConfigurationInfo gauge_info(params.named_obj.gauge_id);
 
 				cout << "GaugeXML = XX" << gauge_info.output() << "XX" << endl;
 				/*

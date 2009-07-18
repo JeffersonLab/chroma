@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.55 2009-07-09 02:13:20 jbulava Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.56 2009-07-18 02:34:47 jbulava Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -117,7 +117,7 @@ namespace Chroma
 #ifdef BUILD_LAPACK
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
-	success &= InlineLaphDilutedPropsEnv::registerAll();
+	success &= InlineStochLaphQuarkEnv::registerAll();
 	success &= InlineSeqPropTestEnv::registerAll();
 	success &= InlineHadSpecEnv::registerAll();
 	success &= InlineMesonSpecEnv::registerAll();
