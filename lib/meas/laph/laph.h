@@ -9,6 +9,7 @@
 #include "meas/laph/xml_help.h"
 #include "meas/laph/field_smearing_info.h"
 #include "meas/laph/laph_noise_info.h"
+#include "meas/laph/quark_action_info.h"
 
 
 
