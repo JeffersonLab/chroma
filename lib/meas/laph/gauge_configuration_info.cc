@@ -40,20 +40,33 @@ namespace Chroma
 
 				XMLReader gauge_rdr(gauge_xml_buff);
 
-				XMLReader temp_rdr(gauge_rdr, "//MCControl");
-				ostringstream temp_strm;
-				temp_rdr.print(temp_strm);
-				gauge_xml = temp_strm.str();
+				
 
 				if (gauge_rdr.count("/Params/MCControl/StartUpdateNum") != 0)
 				{
 					read(gauge_rdr, "/Params/MCControl/StartUpdateNum" , traj_num);
+				
+				XMLReader temp_rdr(gauge_rdr, "//MCControl");
+				ostringstream temp_strm;
+				temp_rdr.print(temp_strm);
+				gauge_xml = temp_strm.str();
+				
 				}
 				else
 				{
 
 					QDPIO::cerr << "WARNING: No trajectory number found!" << endl;
 					traj_num = 1000;
+
+					XMLReader temp_rdr(gauge_rdr, "/");
+					ostringstream temp_strm;
+					temp_rdr.print(temp_strm);
+					gauge_xml = temp_strm.str();
+				
+					QDPIO::cout << "gauge_xml = XX " << 
+							gauge_xml << "XX" 
+							<< endl;
+
 				}
 
 			}
@@ -63,11 +76,26 @@ namespace Chroma
 				try
 				{
 
+					if (xml_rdr.count("//MCControl") != 0)
+					{
 					XMLReader xml_temp(xml_rdr, "//MCControl");
 					ostringstream strm;
 					xml_temp.print(strm);
 
 					gauge_xml = strm.str();
+					}
+					else
+					{
+						XMLReader xml_temp(xml_rdr, "/");
+						ostringstream strm;
+						xml_temp.print(strm);
+						gauge_xml = strm.str();
+					
+						QDPIO::cout << "gauge_xml = XX " << 
+							gauge_xml << "XX" 
+							<< endl;
+
+					}
 
 					traj_num = 0;
 					gauge_id = "";
