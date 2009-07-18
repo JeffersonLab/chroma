@@ -37,7 +37,7 @@ namespace Chroma
 
          public:
 
-            GaugeConfigurationInfo(const std::string& gauge_id_in);
+            GaugeConfigurationInfo(XMLReader& xml_rdr);
            
 						GaugeConfigurationInfo( 
 								const GaugeConfigurationInfo& rhs) : gauge_xml(rhs.output()),

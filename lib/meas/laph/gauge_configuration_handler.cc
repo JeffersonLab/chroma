@@ -14,6 +14,12 @@ namespace Chroma
 
 				std::string gauge_id = gauge_in.getGaugeId();
 
+				if (gauge_id == "")
+				{
+					QDPIO::cerr << "Invalid gauge_id" << endl;
+					QDP_abort(1);
+				}
+
          if (cfg == NULL)
          {
             //Assign the cfg from the named object map
