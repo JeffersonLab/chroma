@@ -1,4 +1,4 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.6 2009-07-18 02:44:37 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.7 2009-07-18 15:18:11 jbulava Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -82,6 +82,9 @@ namespace Chroma
 
 				GaugeConfigurationInfo gauge_cfg(xml_rdr);
 				xml_out << gauge_cfg.output();
+
+				QuarkActionInfo quark_action_info(xml_rdr);
+				xml_out << quark_action_info.output();
 
 				START_CODE();
 
