@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.226 2009-07-18 16:54:30 jbulava Exp $
+# $Id: Makefile.am,v 3.227 2009-07-22 02:26:45 colin Exp $
 #
 # Path for all files used in building the library
 
@@ -762,6 +762,7 @@ nobase_include_HEADERS += \
 	meas/laph/field_smearing_info.h \
 	meas/laph/gauge_configuration_handler.h \
 	meas/laph/xml_help.h \
+	meas/laph/dilution_scheme_info.h \
 	meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h \
@@ -1138,6 +1139,7 @@ libchroma_a_SOURCES = \
 	meas/laph/laph_noise_info.cc \
 	meas/laph/quark_action_info.cc \
 	meas/laph/inverter_info.cc \
+	meas/laph/dilution_scheme_info.cc \
 	meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \

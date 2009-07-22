@@ -11,65 +11,119 @@ namespace Chroma {
 
 LaphNoiseInfo::LaphNoiseInfo(XMLReader& xml_rdr)
 {
+ int zng,ss0,ss1,ss2,ss3;
  try{
     XMLReader xml_in(xml_rdr, "//laph_noise"); 
-    read(xml_in,"./seed0", s0 );
-    read(xml_in,"./seed1", s1 );
-    read(xml_in,"./seed2", s2 );
-    read(xml_in,"./seed3", s3 );
-    read(xml_in,"./traj_offset", trajOffset );
-    read(xml_in,"./nhits", nHits );
+    read(xml_in,"./zn_group", zng );
+    read(xml_in,"./seed0", ss0 );
+    read(xml_in,"./seed1", ss1 );
+    read(xml_in,"./seed2", ss2 );
+    read(xml_in,"./seed3", ss3 );
     }
  catch(const string& err){
     QDPIO::cerr << "could not initialize LaphNoiseInfo from XML input"<<endl;
     QDP_abort(1);}
- if (nHits<1){
-    QDPIO::cerr << "nHits > 0 required in LaphNoiseInfo"<<endl;
+ assign(zng,ss0,ss1,ss2,ss3);
+}
+
+LaphNoiseInfo::LaphNoiseInfo(const LaphNoiseInfo& in)
+              : s0(in.s0), s1(in.s1), s2(in.s2), s3(in.s3),
+                znGroup(in.znGroup), currTraj(in.currTraj) 
+{
+ rngseed=in.rngseed;
+}
+
+
+LaphNoiseInfo& LaphNoiseInfo::operator=(const LaphNoiseInfo& in)
+{
+ s0=in.s0; s1=in.s1; s2=in.s2; s3=in.s3;
+ znGroup=in.znGroup;
+ currTraj=in.currTraj;
+ rngseed=in.rngseed;
+ return *this;
+}
+
+void LaphNoiseInfo::assign(int zngroup, int seed0, int seed1, 
+                           int seed2, int seed3)
+{
+ znGroup=zngroup;
+ s0=seed0; s1=seed1; s2=seed2; s3=seed3;
+ if  ((znGroup<2)||(s0<0)||(s0>4095)||(s1<0)||(s1>4095)
+    ||(s2<0)||(s2>4095)||(s3<0)||(s3>2047)){
+    QDPIO::cerr << "improper initialization of LaphNoiseInfo"<<endl;
+    QDPIO::cerr << "seed0,seed1,seed2 must have value 0 to 4095"<<endl;
+    QDPIO::cerr << "seed3 must have value 0 to 2047"<<endl;
+    QDPIO::cerr << "zn_group must have integer value >= 2"<<endl;
     QDP_abort(1);}
- 
- currTraj=0;
- rngseed = s0;
- /*
-		rngseed <<= 12;
- rngseed |= s1;
- rngseed <<= 12;
- rngseed |= s2;
- rngseed <<= 12;
- rngseed |= s3; 
-*/
- }
+ currTraj=1000;
+ calc_seed();
+}
+
+void LaphNoiseInfo::checkEqual(const LaphNoiseInfo& in) const
+{
+ if  ((s0!=in.s0)||(s1!=in.s1)||(s2!=in.s2)||(s3!=in.s3)
+    ||(znGroup!=in.znGroup)){
+    QDPIO::cerr << "LaphNoiseInfo does not checkEqual...abort"<<endl;
+    QDP_abort(1);}
+}
+
+bool LaphNoiseInfo::operator==(const LaphNoiseInfo& in) const
+{
+ return ((s0==in.s0)&&(s1==in.s1)&&(s2==in.s2)&&(s3==in.s3)
+        &&(znGroup==in.znGroup));
+}
+
 
 Seed LaphNoiseInfo::getSeed(const GaugeConfigurationInfo& G) const
 {
  int traj_num=G.getTrajNum();
  if (traj_num==currTraj) return rngseed;
- unsigned int ss0=s0, ss1=s1, ss2=s2, ss3=s3;
- for (int i=0;i<(nHits+1)*(trajOffset-traj_num);i++)
-    lcongr(ss0,ss1,ss2,ss3);
- for (int i=0;i<nHits*(traj_num-trajOffset);i++)
-    lcongr(ss0,ss1,ss2,ss3);
  currTraj=traj_num;
- rngseed = 0;
- rngseed = ss0;
-/* 
- rngseed <<= 12;
- rngseed |= ss1;
- rngseed <<= 12;
- rngseed |= ss2;
- rngseed <<= 12;
- rngseed |= ss3; 
- */
+ calc_seed();
  return rngseed;
 }
 
+  // perform linear congruential on the four integers
+  // i0,i1,i2 are mod 2^12, and i3 is mod 2^11
+  // multiplier,shift,mod chosen to satisfy
+  //    gcd of shift and mod is 1
+  //    multiplier-1 is divisible by all prime factors of mod
+  //    multiplier-1 is multiple of 4 when mod is multiple of 4
+  //    multiplier*mod+shift must not overflow 2^31
 
-void LaphNoiseInfo::lcongr(unsigned int& ss0, unsigned int& ss1,
-                           unsigned int& ss2, unsigned int& ss3) const
+void LaphNoiseInfo::lcongr(int& i0, int& i1, int& i2, int& i3) const
 {
- ss0=(ran_mult*ss0+ran_shift) % ran_mod;
- ss1=(ran_mult*ss1+ran_shift) % ran_mod;
- ss2=(ran_mult*ss2+ran_shift) % ran_mod;
- ss3=(ran_mult*ss3+ran_shift) % ran_mod;
+ i0=(16385*i0+13) % 4096;   // mod of power of 2 is bit shift...fast
+ i1=(16401*i1+27) % 4096;
+ i2=(16417*i2+11) % 4096;
+ i3=(16449*i3+47) % 2048;
+}
+
+
+void LaphNoiseInfo::calc_seed() const
+{
+ int nHits=1;
+ int trajOffset=1000;
+ int i0=s0, i1=s1, i2=s2, i3=s3;
+
+   // run four sequences of linear congruential RNG
+   // based on the trajectory number, the offset, and nHits
+   //   -> if currTraj>trajOffset, do nHits as traj number increases by 1
+   //   -> if currTraj<trajOffset, do nHits+1 as traj number decreases by 1
+   // RNG used keep i0,i1,i2 twelve bits or below, and i3 eleven bits or below
+
+ for (int k=0;k<(nHits+1)*(trajOffset-currTraj);k++)
+    lcongr(i0,i1,i2,i3);
+ for (int k=0;k<nHits*(currTraj-trajOffset);k++)
+    lcongr(i0,i1,i2,i3);
+
+     // put results into the 47 bit seed
+
+ rngseed = i3;
+ rngseed = (rngseed<<12) | i2;
+ rngseed = (rngseed<<12) | i1;
+ rngseed = (rngseed<<12) | i0;
+
 }
 
 
@@ -77,12 +131,11 @@ string LaphNoiseInfo::output() const
 {
  ostringstream oss;
  oss << "<laph_noise>"<<endl;
+ oss << "  <zn_group> " << znGroup << " </zn_group>"<<endl;
  oss << "  <seed0> " << s0 << " </seed0>"<<endl;
  oss << "  <seed1> " << s1 << " </seed1>"<<endl;
  oss << "  <seed2> " << s2 << " </seed2>"<<endl;
  oss << "  <seed3> " << s3 << " </seed3>"<<endl;
- oss << "  <traj_offset> " << trajOffset << " </traj_offset>"<<endl;
- oss << "  <nhits> " << nHits << " </nhits>"<<endl;
  oss << "</laph_noise>"<<endl;
  return oss.str();
 }

@@ -17,31 +17,37 @@ namespace Chroma {
 // *   The XML input must have the format                            *
 // *                                                                 *
 // *         <laph_noise>                                            *
-// *            <seed0> 1234567890 </seed0>                          *
-// *            <seed1> 2345678901 </seed1>                          *
-// *            <seed2> 3456789012 </seed2>                          *
-// *            <seed3> 4012345678 </seed3>                          *
-// *            <traj_offset> 1024 </traj_offset>                    *
-// *            <nhits> 8 </nhits>                                   *
+// *            <zn_group> 4 </zn_group>                             *
+// *            <seed0> 3156 </seed0>                                *
+// *            <seed1> 2981 </seed1>                                *
+// *            <seed2> 4013 </seed2>                                *
+// *            <seed3> 1132 </seed3>                                *
 // *         </laph_noise>                                           *
 // *                                                                 *
-// *   Each seed is an unsigned integer (0..2^32-1).  Basically,     *
-// *   a noise on a configuration is constructed using the random    *
-// *   number generator with a seed.  The information contained      *
-// *   in a "LaphNoiseInfo" object is used to compute a seed for     *
+// *   The group Z(N) is used, so the value of "N" must be specified *
+// *   in the tag named "zn_group".  This must be an integer >=2.    *
+// *   The value of 4 is recommended.                                *
+// *                                                                 *
+// *   "seed0", "seed1", "seed2", "seed3" are integers; each must be *
+// *   given a value in the range 0 to 4095 (2^12-1), except "seed3" *
+// *   whose range is from 0 to 2047 (2^11-1).                       *
+// *                                                                 *
+// *   A noise vector for a configuration is constructed using a     *
+// *   random number generator with a seed.  The four seed integers  *
+// *   in a "LaphNoiseInfo" object are used to compute a seed for    *
 // *   a configuration identified by a given RHMC trajectory         *
 // *   number.  The four integers are combined to compute a QDP++    *
 // *   Seed, which is used for the configuration having trajectory   *
-// *   number equal to "traj_offset".  For configurations having     *
-// *   other trajectory numbers, a simple linear congruential        *
-// *   RNG is called some prescribed number of times to obtain       *
-// *   the Seed corresponding to that trajectory number.  For        *
-// *   trajectory number "k", the number of applications of the      *
-// *   RNG is                                                        *
+// *   number equal to "trajOffset" (a pre-set number, usually 1000).*
+// *   For configurations having other trajectory numbers, a simple  *
+// *   linear congruential RNG is called some prescribed number of   *
+// *   times to obtain the Seed corresponding to that trajectory     *
+// *   number.  For trajectory number "k", the number of             *
+// *   applications of the RNG is                                    *
 // *      "nhits"*("k"-"traj_offset")  for "k">"traj_offset"         *
 // *   or                                                            *
 // *     ("nhits"+1)*("traj_offset"-"k") for "k"<"traj_offset"       *
-// *                                                                 *
+// *   where "nhits" has a pre-set value (usually, 1).               *
 // *                                                                 *
 // *   Example usage:                                                *
 // *                                                                 *
@@ -49,14 +55,11 @@ namespace Chroma {
 // *     LaphNoiseInfo rho(xml_in);                                  *
 // *                                                                 *
 // *     LaphNoiseInfo rho2(....);                                   *
-// *     rho.check(rho2);        // aborts if rho2 != rho            *
+// *     rho.checkEqual(rho2);   // aborts if rho2 != rho            *
 // *     if (rho==rho2) ...      // returns boolean                  *
 // *                                                                 *
 // *     GaugeConfigurationInfo G(....)                              *
 // *     Seed s = rho.getSeed(G);                                    *
-// *                                                                 *
-// *     int ival = getNumberOfHits();                               *
-// *     int jval = getTrajectoryOffset();                           *
 // *                                                                 *
 // *     string str = rho.output();   // xml string                  *
 // *                                                                 *
@@ -65,12 +68,8 @@ namespace Chroma {
 class LaphNoiseInfo
 {
 
-  unsigned int s0,s1,s2,s3;
-  int trajOffset;
-  unsigned int nHits;
-  static const unsigned long long int ran_mult=1103515245ULL;
-  static const unsigned long long int ran_shift=12345ULL;
-  static const unsigned long long int ran_mod=4294967296ULL;
+  int znGroup;
+  int s0,s1,s2,s3;
 
   mutable int currTraj;
   mutable Seed rngseed;
@@ -79,51 +78,35 @@ class LaphNoiseInfo
 
   LaphNoiseInfo(XMLReader& xml_in);
 
-  LaphNoiseInfo(const LaphNoiseInfo& in) 
-     :  s0(in.s0), s1(in.s1), s2(in.s2), s3(in.s3),
-        trajOffset(in.trajOffset), nHits(in.nHits),
-        currTraj(in.currTraj) 
-   {
-    rngseed=in.rngseed;
-   }
+  LaphNoiseInfo(const LaphNoiseInfo& in);
 
-  LaphNoiseInfo& operator=(const LaphNoiseInfo& in)
-   {
-    s0=in.s0; s1=in.s1; s2=in.s2; s3=in.s3;
-    trajOffset=in.trajOffset;
-    nHits=in.nHits;
-    currTraj=in.currTraj;
-    rngseed=in.rngseed;
-    return *this;
-   }
+  LaphNoiseInfo& operator=(const LaphNoiseInfo& in);
 
-  void check(const LaphNoiseInfo& in) const
-   {
-    if  ((s0!=in.s0)||(s1!=in.s1)||(s2!=in.s2)||(s3!=in.s3)
-       ||(trajOffset!=in.trajOffset)||(nHits!=in.nHits)){
-       QDPIO::cerr << "LaphNoiseInfo does not check...abort"<<endl;
-       QDP_abort(1);}
-   }
+  void assign(int zngroup, int seed0, int seed1, int seed2, int seed3);
 
-  bool operator==(const LaphNoiseInfo& in) const
-   {
-    return ((s0==in.s0)&&(s1==in.s1)&&(s2==in.s2)&&(s3==in.s3)
-       &&(trajOffset==in.trajOffset)&&(nHits==in.nHits));
-   }
+  void checkEqual(const LaphNoiseInfo& in) const;
+
+  bool operator==(const LaphNoiseInfo& in) const;
+
 
     // output functions
 
   Seed getSeed(const GaugeConfigurationInfo& G) const;
-  int getNumberOfHits() const { return nHits; }
-  int getTrajectoryOffset() const { return trajOffset; }
+
+  int getZNGroup() const { return znGroup; }
+  int getSeed0() const { return s0; }
+  int getSeed1() const { return s1; }
+  int getSeed2() const { return s2; }
+  int getSeed3() const { return s3; }
 
   std::string output() const;
 
 
  private:
 
-  void lcongr(unsigned int& ss0, unsigned int& ss1,
-              unsigned int& ss2, unsigned int& ss3) const;
+  void check_assignment();
+  void calc_seed() const;
+  void lcongr(int& i0, int& i1, int& i2, int& i3) const;
 
 
 };
