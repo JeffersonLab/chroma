@@ -7,9 +7,12 @@
 //
 //      Usage:
 //
-//         GaugeConfigurationInfo u(string gauge_id);   
-//               -->Checks that this id in the NamedObjectMap is valid, 
-//                  and extracts the trajectory number
+//         GaugeConfigurationInfo u(XMLReader xml_in);   
+//               -->First, checks if 'gauge_id' is a tag. If yes, uses the 
+//               -->gauge_id to extract gauge_xml from the named_obj_map
+//               -->If 'gauge_id' is not a tag, checks if xml_in contians a 
+//               -->valid gauge_xml. Also extracts the trajectory number from
+//               --> the gauge_xml
 //
 //         u.check(GaugeConfigurationInfo);  
 //               --> checks that another config has the same xml 
@@ -17,8 +20,7 @@
 //         u.output();        <-- outputs the gauge xml 
 //         u.getTrajNum();    <-- returns the integer number of the 
 //                                RHMC trajectory for this configuration
-//         u.getGaugeId();    <-- outputs the gauge_id                              
-
+//         u.getGaugeId();    <-- outputs the gauge_id                          //         u.getTExtent()
 
 #ifndef laph_gauge_configuration_info_h
 #define laph_gauge_configuration_info_h
@@ -37,6 +39,9 @@ namespace Chroma
    std::string gauge_xml;    // private data
    std::string gauge_id;
    int traj_num;
+	
+	 //Should get this from xml somehow, but for now just hard code it
+	 static const decay_dir = 3;
 
   public:
 
@@ -58,7 +63,12 @@ namespace Chroma
             const std::string& output() const { return gauge_xml;}
 
             const int getTrajNum() const {return traj_num;}
-      
+     
+						const int getTimeDir() const {return decay_dir;}
+
+						const int getTExtent() const {
+							return QDP::Layout::lattsize()[decay_dir];}
+
                   const std::string& getGaugeId() const {return gauge_id; }
 
                   void check(const GaugeConfigurationInfo& rhs) const
