@@ -1,7 +1,9 @@
-// $Id: wupp_smear.cc,v 3.1 2009-07-22 02:43:27 edwards Exp $
+// $Id: wupp_smear.cc,v 3.2 2009-07-22 02:44:04 edwards Exp $
 /*! \file
  *  \brief 3d Laplacian solution on color vector
  */
+
+#error "THIS CODE IS NOT YET READY"
 
 #include "chromabase.h"
 #include "meas/smear/wupp_smear.h"
