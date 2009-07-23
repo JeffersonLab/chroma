@@ -41,7 +41,7 @@ namespace Chroma
    int traj_num;
 	
 	 //Should get this from xml somehow, but for now just hard code it
-	 static const decay_dir = 3;
+	 static const int decay_dir = 3;
 
   public:
 
@@ -67,11 +67,11 @@ namespace Chroma
 						const int getTimeDir() const {return decay_dir;}
 
 						const int getTExtent() const {
-							return QDP::Layout::lattsize()[decay_dir];}
+							return QDP::Layout::lattSize()[decay_dir];}
 
                   const std::string& getGaugeId() const {return gauge_id; }
 
-                  void check(const GaugeConfigurationInfo& rhs) const
+                  void checkEqual(const GaugeConfigurationInfo& rhs) const
                   {
                      if (rhs.output() != gauge_xml)
                      {
