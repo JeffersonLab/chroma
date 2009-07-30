@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.2 2009-04-17 02:05:31 bjoo Exp $
+// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.3 2009-07-30 20:33:57 bjoo Exp $
 /*! \file
  *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
@@ -185,9 +185,14 @@ namespace Chroma
       Complex_C *V=NULL     ;
       Complex_C *ework=NULL ;
 
+      // OK, for now Weirdly enough psi and chi have to be
+      // explicit single precision, so downcast those...
+      LatticeDiracFermionF3 psif = psi;
+      LatticeDiracFermionF3 chif = chi;
+
       if(s.hasOrderedRep()){
-	X = (Complex_C *) &psi.elem(s.start()).elem(0).elem(0).real();
-	B = (Complex_C *) &chi.elem(s.start()).elem(0).elem(0).real();
+	X = (Complex_C *) &psif.elem(s.start()).elem(0).elem(0).real();
+	B = (Complex_C *) &chif.elem(s.start()).elem(0).elem(0).real();
       }
       else{//need to copy
 	//X = allocate space for them
@@ -232,12 +237,17 @@ namespace Chroma
       /* Update the restartTol in the EigInfo function */
       EigInfo.restartTol = restartTol;
 
+      // Copy result back
+      psi = psif;
+
       T tt;
       (*MdagM)(tt,psi,PLUS);
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
       
+
+
       if(!s.hasOrderedRep()){
 	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
       }
@@ -261,8 +271,6 @@ namespace Chroma
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }
 
-#if 0
-  //OPT EigCG does not  work with double prec Lattice Fermions
   // LatticeFermionD
   template<>
   SystemSolverResults_t
@@ -271,6 +279,8 @@ namespace Chroma
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }
 
+#if 0
+ 
 
   // Not quite ready yet for these - almost there
   // LatticeStaggeredFermionF
