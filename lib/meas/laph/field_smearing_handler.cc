@@ -1,6 +1,6 @@
 #include "field_smearing_handler.h"
 #include "xml_help.h"
-
+#include <typeinfo>
 
 namespace Chroma {
   namespace LaphEnv {
