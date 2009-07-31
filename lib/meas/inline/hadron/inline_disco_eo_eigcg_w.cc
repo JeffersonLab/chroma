@@ -1,5 +1,5 @@
 
-// $Id: inline_disco_eo_eigcg_w.cc,v 3.2 2009-04-09 23:01:09 caubin Exp $
+// $Id: inline_disco_eo_eigcg_w.cc,v 3.3 2009-07-31 14:09:31 bjoo Exp $
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
@@ -9,6 +9,7 @@
 #include <vector> 
 #include <map> 
 #include <qdp-lapack.h>
+#include <qdp_config.h>
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_eo_eigcg_w.h"
@@ -699,7 +700,11 @@ namespace Chroma{
 	    }//j
 	  }//i 
 
+#if BASE_PRECISION == 32
 	  int r = QDPLapack::cpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
+#else
+	  int r = QDPLapack::zpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
+#endif
 	  // and at this point, B is H^-1 Vdag Sdag gamma V, so
 	  // For debugging purposes, both r and info should be zero...
 	  QDPIO::cout<<"do_disco cpotrs r = "<<r<<endl;
@@ -839,7 +844,12 @@ namespace Chroma{
 	    }
 	  }
 
+	  // This could be better done.
+#if BASE_PRECISION == 32
 	  int r = QDPLapack::cpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
+#else
+	  int r = QDPLapack::zpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
+#endif
 	  QDPIO::cout<<"PRchi cpotrs r = "<<r<<endl;
 	  QDPIO::cout<<"PRchi cpotrs info = "<<info<<endl;
 

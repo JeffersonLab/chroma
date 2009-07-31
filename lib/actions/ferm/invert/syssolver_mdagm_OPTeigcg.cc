@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.3 2009-07-30 20:33:57 bjoo Exp $
+// $Id: syssolver_mdagm_OPTeigcg.cc,v 3.4 2009-07-31 14:09:31 bjoo Exp $
 /*! \file
  *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
  */
@@ -187,8 +187,11 @@ namespace Chroma
 
       // OK, for now Weirdly enough psi and chi have to be
       // explicit single precision, so downcast those...
-      LatticeDiracFermionF3 psif = psi;
-      LatticeDiracFermionF3 chif = chi;
+      // Most generically the single prec type of say a 
+      // type T should be given by the QDP++ Type trait:
+      // SinglePrecType<T>::Type_t
+      typename SinglePrecType<T>::Type_t psif = psi;
+      typename SinglePrecType<T>::Type_t chif = chi;
 
       if(s.hasOrderedRep()){
 	X = (Complex_C *) &psif.elem(s.start()).elem(0).elem(0).real();
@@ -279,7 +282,7 @@ namespace Chroma
     return sysSolver(psi, chi, *A, MdagM, invParam);
   }
 
-#if 0
+#if 1
  
 
   // Not quite ready yet for these - almost there
