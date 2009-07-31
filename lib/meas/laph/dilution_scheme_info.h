@@ -3,7 +3,7 @@
 
 #include "qdp.h"
 #include "chromabase.h"
-#include "laph.h"
+#include "xml_help.h"
 #include "field_smearing_info.h"
 #include <vector>
 
@@ -42,7 +42,7 @@ namespace Chroma {
 // *     DilutionSchemeInfo dil(xml_in);  // construct from xml      *
 // *                                                                 *
 // *     DilutionSchemeInfo dil2(...);                               *
-// *     bool flag = dil.checkEqual(dil2);  // dil == dil2 ?         *
+// *     dil.checkEqual(dil2);  // if dil != dil2 throw exception    *
 // *                                                                 *
 // *     string xml_out = dil.output();     // xml output            *
 // *                                                                 *
@@ -96,6 +96,8 @@ class DilutionSchemeInfo
 
   DilutionSchemeInfo& operator=(const DilutionSchemeInfo& in);
 
+  ~DilutionSchemeInfo(){}
+
   void assign(int spin_dil_type, int eigvec_dil_type, int time_dil_type = 1);
 
   void checkEqual(const DilutionSchemeInfo& in) const;
@@ -106,6 +108,8 @@ class DilutionSchemeInfo
     // output functions
 
   void getProjectors(const FieldSmearingInfo& S, vector<Projector>& dilprojs) const;
+  
+  int getNumberOfProjectors(const FieldSmearingInfo& S) const;
 
   std::string output(int indent = 0) const;   // XML output
 
@@ -117,6 +121,8 @@ class DilutionSchemeInfo
   std::string dil_out(int indent, int DilType, bool out_nproj = false) const;
 
   void setProjectorMasks(vector<list<int> >& projs, int dil_type, int nBasis) const;
+
+  int findProjectorNumber(int dil_type, int nBasis) const;
 
 };
 

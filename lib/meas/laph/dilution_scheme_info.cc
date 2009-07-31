@@ -38,6 +38,7 @@ DilutionSchemeInfo& DilutionSchemeInfo::operator=(const DilutionSchemeInfo& in)
 }
 
 
+
 void DilutionSchemeInfo::assign(int spin_dil_type, int eigvec_dil_type, 
                                 int time_dil_type)
 {
@@ -48,7 +49,7 @@ void DilutionSchemeInfo::assign(int spin_dil_type, int eigvec_dil_type,
     if ((spin_dil_type>2)||(spin_dil_type<-2))
        throw "spin dilution type must have value -2, 0, 1, 2";
     }
- catch(const string& errmsg){
+ catch(const char* errmsg){
     QDPIO::cerr << "Invalid DilutionSchemeInfo assigment:"<<endl;
     QDPIO::cerr << "   ..."<<errmsg<<endl;
     QDP_abort(1);}
@@ -61,9 +62,8 @@ void DilutionSchemeInfo::assign(int spin_dil_type, int eigvec_dil_type,
 void DilutionSchemeInfo::checkEqual(const DilutionSchemeInfo& in) const
 {
  if ((spinDilutionType!=in.spinDilutionType)
-   ||(eigvecDilutionType!=in.eigvecDilutionType)){
-    QDPIO::cerr << "DilutionSchemeInfo does not checkEqual...abort"<<endl;
-    QDP_abort(1);}
+   ||(eigvecDilutionType!=in.eigvecDilutionType))
+    throw string("DilutionSchemeInfo does not checkEqual...abort");
 }
 
 bool DilutionSchemeInfo::operator==(const DilutionSchemeInfo& in) const
@@ -135,6 +135,22 @@ void DilutionSchemeInfo::setProjectorMasks(vector<list<int> >& projs,
 }
  
 
+int DilutionSchemeInfo::findProjectorNumber(int dil_type, int nBasis) const
+{
+ if (dil_type==0) return 1;                 // no dilution
+ else if (dil_type==1) return nBasis;       // full dilution
+ else if (dil_type>1) return dil_type;      // block dilution
+ else if (dil_type<-1) return -dil_type;    // interlace dilution
+}
+ 
+int DilutionSchemeInfo::getNumberOfProjectors(const FieldSmearingInfo& S) const
+{
+ int nspinproj=findProjectorNumber(spinDilutionType, 4);
+ int nEig=S.getNumberOfLaplacianEigenvectors();
+ int neigproj=findProjectorNumber(eigvecDilutionType, nEig);
+ return nspinproj*neigproj;
+}
+
 
 string DilutionSchemeInfo::output(int indent) const
 {
@@ -190,6 +206,7 @@ void DilutionSchemeInfo::dil_in(XMLReader& xml_in, const std::string& path,
     }
  catch(const string& errstr){
        QDPIO::cerr << "invalid DilutionSchemeInfo read from XML"<<endl;
+       QDPIO::cerr << errstr << endl;
        QDP_abort(1);}
 }
 

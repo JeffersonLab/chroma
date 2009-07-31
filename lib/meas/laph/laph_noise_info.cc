@@ -62,15 +62,23 @@ void LaphNoiseInfo::assign(int zngroup, int seed0, int seed1,
 void LaphNoiseInfo::checkEqual(const LaphNoiseInfo& in) const
 {
  if  ((s0!=in.s0)||(s1!=in.s1)||(s2!=in.s2)||(s3!=in.s3)
-    ||(znGroup!=in.znGroup)){
-    QDPIO::cerr << "LaphNoiseInfo does not checkEqual...abort"<<endl;
-    QDP_abort(1);}
+    ||(znGroup!=in.znGroup))
+    throw string("LaphNoiseInfo does not checkEqual");
 }
 
 bool LaphNoiseInfo::operator==(const LaphNoiseInfo& in) const
 {
  return ((s0==in.s0)&&(s1==in.s1)&&(s2==in.s2)&&(s3==in.s3)
         &&(znGroup==in.znGroup));
+}
+
+bool LaphNoiseInfo::operator<(const LaphNoiseInfo& in) const
+{
+ return     ((s0<in.s0) || ((s0==in.s0) 
+         && ((s1<in.s1) || ((s1==in.s1) 
+         && ((s2<in.s2) || ((s2==in.s2) 
+         && ((s3<in.s3) || ((s3==in.s3) 
+         && ((znGroup<in.znGroup))))))))));
 }
 
 
@@ -127,19 +135,48 @@ void LaphNoiseInfo::calc_seed() const
 }
 
 
-string LaphNoiseInfo::output() const
+string LaphNoiseInfo::output(int indent) const
 {
+ string pad(3*indent,' ');
  ostringstream oss;
- oss << "<laph_noise>"<<endl;
- oss << "  <zn_group> " << znGroup << " </zn_group>"<<endl;
- oss << "  <seed0> " << s0 << " </seed0>"<<endl;
- oss << "  <seed1> " << s1 << " </seed1>"<<endl;
- oss << "  <seed2> " << s2 << " </seed2>"<<endl;
- oss << "  <seed3> " << s3 << " </seed3>"<<endl;
- oss << "</laph_noise>"<<endl;
+ oss << pad << "<laph_noise>"<<endl;
+ oss << pad << "  <zn_group> " << znGroup << " </zn_group>"<<endl;
+ oss << pad << "  <seed0> " << s0 << " </seed0>"<<endl;
+ oss << pad << "  <seed1> " << s1 << " </seed1>"<<endl;
+ oss << pad << "  <seed2> " << s2 << " </seed2>"<<endl;
+ oss << pad << "  <seed3> " << s3 << " </seed3>"<<endl;
+ oss << pad << "</laph_noise>"<<endl;
  return oss.str();
 }
 
+void LaphNoiseInfo::binaryWrite(BinaryWriter& out) const
+{
+ try{
+    write(out,znGroup);
+    write(out,s0);
+    write(out,s1);
+    write(out,s2);
+    write(out,s3);}
+ catch(...){
+    QDPIO::cerr << "failed to binary write LaphNoiseInfo"<<endl;
+    QDP_abort(1);}
+}
+
+
+void LaphNoiseInfo::binaryRead(BinaryReader& in)
+{
+ int iz,i0,i1,i2,i3;
+ try{
+    read(in,iz);
+    read(in,i0);
+    read(in,i1);
+    read(in,i2);
+    read(in,i3);}
+ catch(...){
+    QDPIO::cerr << "failed to binary read LaphNoiseInfo"<<endl;
+    QDP_abort(1);}
+ assign(iz,i0,i1,i2,i3);
+}
 
 // *************************************************************
   }

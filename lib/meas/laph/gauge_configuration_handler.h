@@ -1,3 +1,16 @@
+#ifndef LAPH_GAUGE_CONFIGURATION_HANDLER_H
+#define LAPH_GAUGE_CONFIGURATION_HANDLER_H
+
+#include "meas/inline/io/named_objmap.h"
+#include "gauge_configuration_info.h"
+#include "chromabase.h"
+
+
+namespace Chroma {
+  namespace LaphEnv {
+
+
+// ******************************************************************************
 
 //    Class "GaugeConfigurationHandler" manages the actual gauge configuration.
 //    It contains a "GaugeConfigurationInfo" that holds the gauge_xml as well
@@ -17,46 +30,57 @@
 //                                       
 
 
-#ifndef laph_gauge_configuration_handler_h
-#define laph_gauge_configuration_handler_h
-
-#include "meas/inline/io/named_objmap.h"
-#include "meas/laph/gauge_configuration_info.h"
-#include "chromabase.h"
-
-
-
-namespace Chroma
+class GaugeConfigurationHandler
 {
-   namespace LaphEnv
-   {
-      class GaugeConfigurationHandler
-      {
 
-         public:
+      // pointer to the info about the gauge config (internally
+      // managed by this handler)
+      
+    const GaugeConfigurationInfo* gauge_info;
 
-            //This constructor will get the cfg from the named_obj map and
-            //set the static ref to the gauge_field
-            GaugeConfigurationHandler(const GaugeConfigurationInfo& gauge_in);
+      // pointer to the gauge field (external: in NamedObjMap)
+ 
+    const multi1d<LatticeColorMatrix>* cfg;
+    
+    
+      // prevent copying
+    GaugeConfigurationHandler(const GaugeConfigurationHandler& u);
+    GaugeConfigurationHandler& operator=(const GaugeConfigurationHandler& u);
 
-            const multi1d<LatticeColorMatrix>& getData() const {return *(cfg);}
 
-            const GaugeConfigurationInfo& getInfo() const {return gauge_info;}
-	    
-         private:
-	 
-            //Static reference to the gauge field 
-            static multi1d<LatticeColorMatrix>* cfg;
+  public:
 
-						//Should this be static?
-						const GaugeConfigurationInfo& gauge_info;
+    GaugeConfigurationHandler();
+    
+    GaugeConfigurationHandler(XMLReader& xml_in);
 
-      };
+    void setInfo(XMLReader& xml_in);
 
-   }
+    ~GaugeConfigurationHandler();
+    
+    void clear();
+    
 
+    void setData();
+    
+    
+      // access to the gauge configuration and its info
+
+    const multi1d<LatticeColorMatrix>& getData() const {return *cfg;}
+
+    const GaugeConfigurationInfo& getInfo() const {return *gauge_info;}
+
+    string outputInfo() const;
+
+    bool isInfoSet() const { return (gauge_info!=0);}
+
+    bool isDataSet() const { return (cfg!=0);}
+
+  
+
+};
+
+// *************************************************************************
+  }
 }
-
-
-
 #endif

@@ -1,79 +1,90 @@
-
-//    Class "InverterInfo" holds information about the  
-//    inverter.
-//    It also can check that the tolerance on this 
-//    inverter is the same when compared
-//    against another InverterInfo. This is a very simple 
-//    wrapper over an inverter_xml, that will also return the tolerance.
-//
-//      Usage:
-//
-//         InverterInfo u(XMLReader inv_rdr);   
-//               -->Checks that this reader contains some valid info, 
-//                  and extracts the tolerance
-//
-//         u.check(InverterInfo);  
-//               --> checks that another inverter has the same tolerance 
-//
-//         u.output();        <-- outputs the inverter xml 
-//         u.getTol();    		<-- returns the (Real) tolerance 
-//                                
-
-
-#ifndef laph_inverter_info_h
-#define laph_inverter_info_h
+#ifndef LAPH_INVERTER_INFO_H
+#define LAPH_INVERTER_INFO_H
 
 #include "chromabase.h"
+#include "xml_help.h"
 
-namespace Chroma
+namespace Chroma {
+  namespace LaphEnv {
+
+// *******************************************************************
+// *                                                                 *
+// *  Class "InverterInfo" holds information about the inverter.     *
+// *  It also can check that the tolerance on this inverter is the   *
+// *  same when compared against another InverterInfo.               *
+// *  The expected XML input for this class is                       *
+// *                                                                 *
+// *   <InvertParam>                                                 *
+// *       <RsdCG> 1e-6 </RsdCG>                                     *
+// *   </InvertParam>                                                *
+// *                                                                 *
+// *  The tolerance of the inversion is extracted only and used      *
+// *  for identification purposes.                                   *
+// *                                                                 *
+// *  Usage:                                                         *
+// *                                                                 *
+// *    XMLReader xmlr(...);                                         *
+// *    InverterInfo inv(xmlr);                                      *
+// *              --> checks that this reader contains some valid    *
+// *                  info and extracts the tolerance                *
+// *                                                                 *
+// *    InverterInfo inv2(...);                                      *
+// *    inv.checkEqual(inv2);                                        *
+// *             -->  checks inv and inv2 have same XML content,     *
+// *                  throwing string exception if not               *
+// *    inv.checkEqualTolerance(inv2);                               *
+// *             -->  checks inv and inv2 have same tolerance,       *
+// *                  throwing string exception if not               *
+// *    inv.matchXMLverbatim(inv2);                                  *
+// *             -->  checks inv and inv2 have exactly same XML,     *
+// *                  throwing string exception if not               *
+// *                                                                 *
+// *    string sval = inv.output();    <-- outputs the inverter xml  *
+// *    sval = inv.output(2);          <-- indented xml output       *
+// *    double val = inv.getTolerance(); <-- returns the tolerance   *
+// *                                                                 *
+// *******************************************************************
+
+
+
+class InverterInfo
 {
 
-   namespace LaphEnv
-   {
+   std::string inverter_xml;
+   std::string id;
+   double tol;
 
-      class InverterInfo
-      {
-         public:
+  public:
 
-            InverterInfo(XMLReader& act_rdr);
-           
-						InverterInfo( 
-								const InverterInfo& rhs) : inverter_xml(rhs.output()),
-								  tol(rhs.getTol()) {}
-						
-						InverterInfo& operator=(const InverterInfo& rhs)
-						{
-							inverter_xml = rhs.output();
-							tol = rhs.getTol();
-							
-							return *this;
-						}
+   InverterInfo(const InverterInfo& rhs);
+                                          
+   InverterInfo& operator=(const InverterInfo& rhs);
 
-            const std::string& output() const { return inverter_xml;}
+   InverterInfo(XMLReader& act_rdr);
+     
+   ~InverterInfo(){}
 
-            const Real getTol() const {return tol;}
-      
-						void check(const InverterInfo& rhs) const
-						{
-							if (toBool(rhs.getTol() != tol))
-							{
-								QDPIO::cerr << __func__ << 
-									": Inverter tolerances do not match" << endl;
-								QDP_abort(1);
-							}
-						}
+   void checkEqual(const InverterInfo& rhs) const;
 
-         private:
-	 
-            std::string inverter_xml;
+   void checkEqualTolerance(const InverterInfo& rhs) const;
 
-						Real tol;
-      };
+   void matchXMLverbatim(const InverterInfo& rhs) const;
 
-   }
+   bool operator==(const InverterInfo& rhs) const;
 
+
+
+   std::string output(int indent = 0) const;
+
+   double getTolerance() const {return tol;}
+
+   std::string getId() const { return id;}
+
+
+};
+
+
+// *****************************************************************
+  }
 }
-
-
-
 #endif

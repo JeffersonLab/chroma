@@ -3,7 +3,7 @@
 
 #include "qdp.h"
 #include "chromabase.h"
-#include "laph.h"
+#include "gauge_configuration_info.h"
 
 namespace Chroma {
   namespace LaphEnv {
@@ -55,7 +55,7 @@ namespace Chroma {
 // *     LaphNoiseInfo rho(xml_in);                                  *
 // *                                                                 *
 // *     LaphNoiseInfo rho2(....);                                   *
-// *     rho.checkEqual(rho2);   // aborts if rho2 != rho            *
+// *     rho.checkEqual(rho2);   // throws exception if rho2 != rho  *
 // *     if (rho==rho2) ...      // returns boolean                  *
 // *                                                                 *
 // *     GaugeConfigurationInfo G(....)                              *
@@ -82,11 +82,15 @@ class LaphNoiseInfo
 
   LaphNoiseInfo& operator=(const LaphNoiseInfo& in);
 
+  ~LaphNoiseInfo(){}
+
   void assign(int zngroup, int seed0, int seed1, int seed2, int seed3);
 
   void checkEqual(const LaphNoiseInfo& in) const;
 
   bool operator==(const LaphNoiseInfo& in) const;
+
+  bool operator<(const LaphNoiseInfo& in) const;
 
 
     // output functions
@@ -99,8 +103,10 @@ class LaphNoiseInfo
   int getSeed2() const { return s2; }
   int getSeed3() const { return s3; }
 
-  std::string output() const;
+  std::string output(int indent = 0) const;
 
+  void binaryWrite(BinaryWriter& out) const;
+  void binaryRead(BinaryReader& in);
 
  private:
 

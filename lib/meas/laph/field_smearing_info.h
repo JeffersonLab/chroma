@@ -18,6 +18,7 @@ namespace Chroma {
 // *       <stout_laph_smearing>                                     *
 // *           <link_iterations> 4 </link_iterations>                *
 // *           <link_staple_weight>  0.25 </link_staple_weight>      *
+// *           <laph_sigma_cutoff> 0.76 </laph_sigma_cutoff>         *
 // *           <number_laph_eigvecs> 32 </number_laph_eigvecs>       *
 // *       </stout_laph_smearing>                                    *
 // *                                                                 *
@@ -27,18 +28,22 @@ namespace Chroma {
 // *     FieldSmearingInfo smear(xml_in);                            *
 // *                                                                 *
 // *     FieldSmearingInfo smear2(....);                             *
-// *     smear.checkEqual(smear2);  // aborts if smear2 != smear     *
+// *     smear.checkEqual(smear2);  // throws string exception       *
+// *                                //   if smear2 != smear          *
 // *     if (smear==smear2) ...     // returns boolean               *
 // *                                                                 *
 // *     int ival = smear.getNumberOfLinkIterations();               *
 // *     double dval = smear.getLinkStapleWeight();                  *
 // *     int jval = getNumberOfLaplacianEigenvectors();              *
+// *     double dval = smear.getLaphSigmaCutoff();                   *
 // *     string sval = getLinkSmearType();                           *
 // *     string ssval = getQuarkSmearType();                         *
 // *                                                                 *
-// *     string out = smear.output();   // xml output                *
+// *     string out = smear.output();    // xml output               *
+// *     string out = smear.output(2);   // indented xml output      *
 // *                                                                 *
 // *******************************************************************
+
 
 class FieldSmearingInfo
 {
@@ -46,6 +51,7 @@ class FieldSmearingInfo
   int linkIterations;
   double linkStapleWeight;
   int laphNumEigvecs;
+  double laphSigma;
 
  public:  
 
@@ -55,7 +61,9 @@ class FieldSmearingInfo
 
   FieldSmearingInfo& operator=(const FieldSmearingInfo& in);
 
-  void assign(int link_it, double link_wt, int quark_nvecs);
+  void assign(int link_it, double link_wt, int quark_nvecs, double laph_sigma);
+
+  ~FieldSmearingInfo(){}
 
   void checkEqual(const FieldSmearingInfo& in) const;
 
@@ -69,12 +77,15 @@ class FieldSmearingInfo
   double getLinkStapleWeight() const { return linkStapleWeight; }
 
   int getNumberOfLaplacianEigenvectors() const {return laphNumEigvecs;}
+  
+  double getLaphSigmaCutoff() const { return laphSigma; }
 
   std::string getLinkSmearType() const { return "STOUT"; }
 
   std::string getQuarkSmearType() const { return "LAPH"; }
 
-  std::string output() const;
+  std::string output(int indent = 0) const;
+
 
 };
 
