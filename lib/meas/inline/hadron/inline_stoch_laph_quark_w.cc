@@ -1,4 +1,4 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.8 2009-07-18 16:54:30 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.9 2009-07-31 19:15:03 colin Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -33,61 +33,59 @@
 #include "meas/sources/source_const_aggregate.h"
 #include "util/ferm/diractodr.h"
 
-namespace Chroma 
-{  
-	using namespace LaphEnv;
+namespace Chroma {
+  using namespace LaphEnv;
+  namespace InlineStochLaphQuarkEnv {
+    namespace {
 
+AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, const std::string& path) 
+ {return new StochLaphQuarkInlineMeas(xml_in, path);}
 
-	namespace InlineStochLaphQuarkEnv 
-	{
-		namespace
-		{
-			AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
-					const std::string& path) 
-			{
-				return new StochLaphQuarkInlineMeas(xml_in, path);
-			}
+   //! Local registration flag
+bool registered = false;
+}
 
-			//! Local registration flag
-			bool registered = false;
-		}
+const std::string name = "STOCH_LAPH_QUARK";
 
-		const std::string name = "STOCH_LAPH_QUARK";
+  //! Register all the factories
+bool registerAll() 
+{
+ bool success = true; 
+ if (!registered){
+    success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+    registered = true;}
+ return success;
+}
 
-		//! Register all the factories
-		bool registerAll() 
-		{
-			bool success = true; 
-			if (! registered)
-			{
-				success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-				registered = true;
-			}
-			return success;
-		}
-
-
-		//--------------------------------------------------------------------------
+// *********************************************************************
 	
-		// Function call
-		void StochLaphQuarkInlineMeas::operator()(unsigned long update_no,
-					                      XMLWriter& xml_out) 
-			{
+     // Subroutine which does all of the work!!
+
+void StochLaphQuarkInlineMeas::operator()(unsigned long update_no,
+                                          XMLWriter& xml_out) 
+{
 				
-				FieldSmearingInfo smearing_info(xml_rdr);
-				xml_out << smearing_info.output();
+ QuarkSourceSinkHandler Q(xml_rdr);
+  
+ QDPIO::cout << "Constructed Gauge Handler" << endl;
+ 
+   FieldSmearingHandler FSH(xml_rdr);
 
-				LaphNoiseInfo laph_noise_info(xml_rdr);
-				xml_out << laph_noise_info.output();
+   QDPIO::cout << "Constructed FieldSmearing Handler" << endl;
+				
+                              
+				FSH.computeSmearedGaugeField();	 
+				
+				QDPIO::cout << "Computed Smeared Gauge Field" << endl;
+				MesPlq(xml_out, "Observables", 
+						FSH.getSmearedGaugeField() );
+					 
+                                //FSH.computeLaphEigenvectors();
+                                
+   // const multi1d<LatticeColorVector>& ev=FSH.getLaphEigenvectors();
+    
+    
 
-				GaugeConfigurationInfo gauge_cfg(xml_rdr);
-				xml_out << gauge_cfg.output();
-
-				QuarkActionInfo quark_action_info(xml_rdr);
-				xml_out << quark_action_info.output();
-
-				InverterInfo invert_info(xml_rdr);
-				xml_out << invert_info.output();
 
 				START_CODE();
 
