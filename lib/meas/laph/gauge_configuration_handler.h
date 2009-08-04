@@ -66,7 +66,7 @@ class GaugeConfigurationHandler
     
       // access to the gauge configuration and its info
 
-    const multi1d<LatticeColorMatrix>& getData() const {return *cfg;}
+    const multi1d<LatticeColorMatrix>& getData() {setData();return *cfg;}
 
     const GaugeConfigurationInfo& getInfo() const {return *gauge_info;}
 

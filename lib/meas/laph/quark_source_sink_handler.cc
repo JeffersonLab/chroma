@@ -131,30 +131,33 @@ QuarkSourceSinkHandler::QuarkSourceSinkHandler()
             invertPtr(0), fileMode(0) {}
 
 QuarkSourceSinkHandler::QuarkSourceSinkHandler(XMLReader& xml_info)
+          : uPtr(0), smearPtr(0), dilPtr(0), qactionPtr(0),
+            invertPtr(0), fileMode(0)
 {
+cout << "in constructor"<<endl;
  setInfo(xml_info);
 }
 
 
 void QuarkSourceSinkHandler::setInfo(XMLReader& xml_info)
 {
- clear();
- set_info(xml_info);
- setFileNames(xml_info);
- setup_file_map();
+ clear(); cout << "cleared"<<endl;
+ set_info(xml_info);  
+ setFileNames(xml_info); cout << "filenames set"<<endl;
+ setup_file_map(); cout << "filemap"<<endl;
  QDPIO::cout << "Info set in QuarkSourceSinkHandler"<<endl;
  QDPIO::cout << outputInfo() <<endl;
 }
 
 void QuarkSourceSinkHandler::set_info(XMLReader& xml_info)
 {
- create_handlers();
- smearPtr->setInfo(xml_info);
- uPtr->setInfo(xml_info);
+ create_handlers(); cout << "handlers created"<<endl;
+ smearPtr->setInfo(xml_info); cout << "smearing info done"<<endl;
+ uPtr->setInfo(xml_info);  cout << "gauge info done"<<endl;
  try{
-    dilPtr = new DilutionSchemeInfo(xml_info);
-    qactionPtr = new QuarkActionInfo(xml_info);
-    invertPtr = new InverterInfo(xml_info);}
+    dilPtr = new DilutionSchemeInfo(xml_info); cout << "dil done"<<endl;
+    qactionPtr = new QuarkActionInfo(xml_info); cout << "quark action"<<endl;
+    invertPtr = new InverterInfo(xml_info); cout << "inverted "<<endl;}
  catch(...){
     QDPIO::cerr << "allocation problem in QuarkSourceSinkHandler"<<endl;
     QDP_abort(1);}
@@ -692,11 +695,11 @@ void QuarkSourceSinkHandler::setFileNames(XMLReader& xml_in)
        fmode=tidyString(fmode);
        if (fmode=="must_exist") fileMode=1;
        else if (fmode=="create_if_not_there") fileMode=2;}
-    int ntags=xmlr.count("//file_name");
+    int ntags=xmlr.count("//file_name"); cout << "ntags="<<ntags<<endl;
     string fname;
     for (int i=1;i<=ntags;i++){
        ostringstream element_xpath;
-       element_xpath << "//filename[" << i << "]";
+       element_xpath << "//file_name[" << i << "]";
        read(xmlr, element_xpath.str(),fname);
        flist.push_back(tidyString(fname));}
     }

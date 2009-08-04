@@ -14,7 +14,7 @@ FieldSmearingHandler::FieldSmearingHandler()
 
 
 FieldSmearingHandler::FieldSmearingHandler(XMLReader& smear_xml)
-     : laph_eigvecs(0) 
+     : uPtr(0), laph_eigvecs(0),smearPtr(0)
 {
  setInfo(smear_xml);
 }
@@ -249,7 +249,7 @@ void FieldSmearingHandler::computeSmearedGaugeField()
                 << "  computing smeared gauge field" << endl;
     QDP_abort(1);}
 
- double rho = smearPtr->getLinkStapleWeight();
+ double rho = smearPtr->getLinkStapleWeight();  cout << "rho = "<<rho<<endl;
  int niters = smearPtr->getNumberOfLinkIterations();
  int tdir = uPtr->getInfo().getTimeDir();
  int ndir = uPtr->getInfo().getNumberOfDirections();
@@ -257,6 +257,8 @@ void FieldSmearingHandler::computeSmearedGaugeField()
  QDPIO::cout << "Computation of smeared gauge field commencing in FieldSmearingHandler"<<endl;
  QDPIO::cout << smearPtr->output()<<endl;
  
+ cout << "tdir = "<<tdir<<endl;
+ cout << "ndir = "<<ndir<<endl;
  multi1d<bool> smear_dirs(ndir);
  for (int i=0;i<ndir;i++) smear_dirs[i] = true;
  smear_dirs[tdir]=false;
@@ -277,14 +279,14 @@ void FieldSmearingHandler::computeSmearedGaugeField()
 
  START_CODE();
  StopWatch rolex;
- rolex.start();
+ rolex.start();  cout << "start fuzzing"<<endl;
 
  if ((niters%2)==0) usmear=uPtr->getData();
  else{
-    utemp=uPtr->getData();
+    utemp=uPtr->getData(); cout << "utemp assigned"<<endl;
     Chroma::Stouting::smear_links(utemp,usmear,smear_dirs,rhomat);}
 
- for (int k=0;k<(niters/2);k++){
+ for (int k=0;k<(niters/2);k++){ cout << "k = "<<k<<endl;
     Chroma::Stouting::smear_links(usmear,utemp,smear_dirs,rhomat);
     Chroma::Stouting::smear_links(utemp,usmear,smear_dirs,rhomat);}
 

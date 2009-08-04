@@ -11,6 +11,7 @@ GaugeConfigurationHandler::GaugeConfigurationHandler()
 
 
 GaugeConfigurationHandler::GaugeConfigurationHandler(XMLReader& xml_in)
+     : gauge_info(0), cfg(0)
 {
  setInfo(xml_in);
  QDPIO::cout << "GaugeConfigurationHandler constructed"<<endl;
