@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.228 2009-07-31 19:20:03 colin Exp $
+# $Id: Makefile.am,v 3.229 2009-08-04 12:43:48 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -300,7 +300,7 @@ nobase_include_HEADERS = \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
-	meas/sources/rndz2wall_source_const.h 
+	meas/sources/rndz2wall_source_const.h \
 	meas/sources/rndzNwall_source_const.h \
 	meas/sources/wall_source_const.h \
 	meas/sources/partwall_source_const.h \
@@ -308,7 +308,6 @@ nobase_include_HEADERS = \
 	meas/sources/source_const_factory.h \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h \
-	meas/
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
 	util/ferm/subset_vectors.h \

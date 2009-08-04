@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.352 2009-07-30 20:33:54 bjoo Exp $
+# $Id: Makefile.in,v 3.353 2009-08-04 12:43:48 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -334,9 +334,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
 	meas/laph/gauge_configuration_info.cc \
 	meas/laph/gauge_configuration_handler.cc meas/laph/xml_help.cc \
-	meas/laph/field_smearing_info.cc meas/laph/laph_noise_info.cc \
-	meas/laph/quark_action_info.cc meas/laph/inverter_info.cc \
-	meas/laph/dilution_scheme_info.cc meas/hadron/Ql_3pt_w.cc \
+	meas/laph/field_smearing_info.cc \
+	meas/laph/field_smearing_handler.cc \
+	meas/laph/laph_noise_info.cc meas/laph/quark_action_info.cc \
+	meas/laph/inverter_info.cc meas/laph/dilution_scheme_info.cc \
+	meas/laph/quark_source_sink_handler.cc meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc \
 	meas/hadron/heavy_hadrons_su3_w.cc \
@@ -979,9 +981,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) \
 	gauge_configuration_info.$(OBJEXT) \
 	gauge_configuration_handler.$(OBJEXT) xml_help.$(OBJEXT) \
-	field_smearing_info.$(OBJEXT) laph_noise_info.$(OBJEXT) \
-	quark_action_info.$(OBJEXT) inverter_info.$(OBJEXT) \
-	dilution_scheme_info.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
+	field_smearing_info.$(OBJEXT) field_smearing_handler.$(OBJEXT) \
+	laph_noise_info.$(OBJEXT) quark_action_info.$(OBJEXT) \
+	inverter_info.$(OBJEXT) dilution_scheme_info.$(OBJEXT) \
+	quark_source_sink_handler.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
 	mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
 	heavy_hadron_potentials_w.$(OBJEXT) \
 	heavy_hadrons_su3_w.$(OBJEXT) \
@@ -1608,10 +1611,96 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
-	meas/sources/rndz2wall_source_const.h wilstype_polyfermact_w.h \
-	wilstype_fermact_w.h unprec_wilstype_fermact_w.h \
-	eoprec_wilstype_fermact_w.h central_tprec_fermact_w.h \
-	eoprec_constdet_wilstype_fermact_w.h \
+	meas/sources/rndz2wall_source_const.h \
+	meas/sources/rndzNwall_source_const.h \
+	meas/sources/wall_source_const.h \
+	meas/sources/partwall_source_const.h \
+	meas/sources/source_const_aggregate.h \
+	meas/sources/source_const_factory.h \
+	meas/sources/source_smearing_factory.h \
+	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
+	util/ferm/transf.h util/ft/ft.h util/ferm/eigeninfo.h \
+	util/ferm/subset_vectors.h util/ferm/block_subset.h \
+	util/ferm/block_couplings.h util/ft/sftmom.h \
+	util/ft/single_phase.h util/gauge/eesu2.h util/gauge/eeu1.h \
+	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/eesu3.h util/gauge/gauge.h \
+	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
+	util/gauge/gauge_init_factory.h \
+	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
+	util/gauge/nersc_gauge_init.h util/gauge/szin_gauge_init.h \
+	util/gauge/szinqio_gauge_init.h util/gauge/kyu_gauge_init.h \
+	util/gauge/disordered_gauge_init.h \
+	util/gauge/unit_gauge_init.h util/gauge/cppacs_gauge_init.h \
+	util/gauge/weak_gauge_init.h util/gauge/sf_gauge_init.h \
+	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
+	util/gauge/shift2.h util/gauge/su2extract.h \
+	util/gauge/su3proj.h util/gauge/sunfill.h \
+	util/gauge/sun_proj.h util/gauge/taproj.h \
+	util/gauge/unit_check.h util/gauge/weak_field.h \
+	util/gauge/conjgauge.h util/gauge/constgauge.h \
+	util/gauge/stout_utils.h util/info/info.h util/info/proginfo.h \
+	util/info/printgeom.h util/info/unique_id.h util/util.h \
+	update/update.h update/heatbath/heatbath.h \
+	update/heatbath/su3over.h update/heatbath/su3hb.h \
+	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
+	update/heatbath/mciter.h update/molecdyn/molecdyn.h \
+	update/molecdyn/field_state.h \
+	update/molecdyn/hamiltonian/hamiltonian.h \
+	update/molecdyn/hamiltonian/abs_hamiltonian.h \
+	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/integrator/abs_integrator.h \
+	update/molecdyn/integrator/integrator_aggregate.h \
+	update/molecdyn/integrator/integrator.h \
+	update/molecdyn/integrator/integrator_shared.h \
+	update/molecdyn/integrator/lcm_integrator_leaps.h \
+	update/molecdyn/integrator/lcm_exp_sdt.h \
+	update/molecdyn/integrator/lcm_exp_tdt.h \
+	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
+	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
+	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
+	update/molecdyn/integrator/lcm_4mn5fp_recursive.h \
+	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
+	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.h \
+	update/molecdyn/integrator/lcm_toplevel_integrator.h \
+	update/molecdyn/integrator/md_integrator_factory.h \
+	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
+	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/force_monitors.h \
+	update/molecdyn/monomial/bigfloat.h \
+	update/molecdyn/monomial/remez.h \
+	update/molecdyn/monomial/remez_coeff.h \
+	update/molecdyn/monomial/remez_stub.h \
+	update/molecdyn/monomial/rat_approx.h \
+	update/molecdyn/monomial/rat_approx_factory.h \
+	update/molecdyn/monomial/rat_approx_aggregate.h \
+	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/read_rat_approx.h \
+	update/molecdyn/monomial/comp_approx.h \
+	update/molecdyn/predictor/predictor.h \
+	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/chrono_predictor_factory.h \
+	update/molecdyn/predictor/predictor_aggregate.h \
+	update/molecdyn/predictor/null_predictor.h \
+	update/molecdyn/predictor/zero_guess_predictor.h \
+	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/circular_buffer.h \
+	update/molecdyn/predictor/linear_extrap_predictor.h \
+	update/molecdyn/predictor/lu_solve.h \
+	update/molecdyn/predictor/mre_extrap_predictor.h \
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.h \
+	wilstype_polyfermact_w.h wilstype_fermact_w.h \
+	unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h \
+	central_tprec_fermact_w.h eoprec_constdet_wilstype_fermact_w.h \
 	eoprec_logdet_wilstype_fermact_w.h \
 	unprec_s_cprec_t_wilstype_fermact_w.h \
 	iluprec_s_cprec_t_wilstype_fermact_w.h \
@@ -1905,11 +1994,14 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/laph/laph.h \
-	meas/laph/gauge_configuration_info.h \
+	meas/laph/pointer.h meas/laph/gauge_configuration_info.h \
 	meas/laph/laph_noise_info.h meas/laph/quark_action_info.h \
 	meas/laph/inverter_info.h meas/laph/field_smearing_info.h \
+	meas/laph/field_smearing_handler.h \
 	meas/laph/gauge_configuration_handler.h meas/laph/xml_help.h \
-	meas/laph/dilution_scheme_info.h meas/hadron/enum_loops_s.h \
+	meas/laph/dilution_scheme_info.h \
+	meas/laph/quark_source_sink_handler.h \
+	meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
@@ -2469,10 +2561,96 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sources/dilutezN_source_const.h \
 	meas/sources/dilute_zN_eigvec_source_const.h \
 	meas/sources/diluteGrid_source_const.h \
-	meas/sources/rndz2wall_source_const.h wilstype_polyfermact_w.h \
-	wilstype_fermact_w.h unprec_wilstype_fermact_w.h \
-	eoprec_wilstype_fermact_w.h central_tprec_fermact_w.h \
-	eoprec_constdet_wilstype_fermact_w.h \
+	meas/sources/rndz2wall_source_const.h \
+	meas/sources/rndzNwall_source_const.h \
+	meas/sources/wall_source_const.h \
+	meas/sources/partwall_source_const.h \
+	meas/sources/source_const_aggregate.h \
+	meas/sources/source_const_factory.h \
+	meas/sources/source_smearing_factory.h \
+	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
+	util/ferm/transf.h util/ft/ft.h util/ferm/eigeninfo.h \
+	util/ferm/subset_vectors.h util/ferm/block_subset.h \
+	util/ferm/block_couplings.h util/ft/sftmom.h \
+	util/ft/single_phase.h util/gauge/eesu2.h util/gauge/eeu1.h \
+	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
+	util/gauge/eesu3.h util/gauge/gauge.h \
+	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
+	util/gauge/gauge_init_factory.h \
+	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
+	util/gauge/nersc_gauge_init.h util/gauge/szin_gauge_init.h \
+	util/gauge/szinqio_gauge_init.h util/gauge/kyu_gauge_init.h \
+	util/gauge/disordered_gauge_init.h \
+	util/gauge/unit_gauge_init.h util/gauge/cppacs_gauge_init.h \
+	util/gauge/weak_gauge_init.h util/gauge/sf_gauge_init.h \
+	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
+	util/gauge/shift2.h util/gauge/su2extract.h \
+	util/gauge/su3proj.h util/gauge/sunfill.h \
+	util/gauge/sun_proj.h util/gauge/taproj.h \
+	util/gauge/unit_check.h util/gauge/weak_field.h \
+	util/gauge/conjgauge.h util/gauge/constgauge.h \
+	util/gauge/stout_utils.h util/info/info.h util/info/proginfo.h \
+	util/info/printgeom.h util/info/unique_id.h util/util.h \
+	update/update.h update/heatbath/heatbath.h \
+	update/heatbath/su3over.h update/heatbath/su3hb.h \
+	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
+	update/heatbath/mciter.h update/molecdyn/molecdyn.h \
+	update/molecdyn/field_state.h \
+	update/molecdyn/hamiltonian/hamiltonian.h \
+	update/molecdyn/hamiltonian/abs_hamiltonian.h \
+	update/molecdyn/hamiltonian/exact_hamiltonian.h \
+	update/molecdyn/integrator/abs_integrator.h \
+	update/molecdyn/integrator/integrator_aggregate.h \
+	update/molecdyn/integrator/integrator.h \
+	update/molecdyn/integrator/integrator_shared.h \
+	update/molecdyn/integrator/lcm_integrator_leaps.h \
+	update/molecdyn/integrator/lcm_exp_sdt.h \
+	update/molecdyn/integrator/lcm_exp_tdt.h \
+	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
+	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
+	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
+	update/molecdyn/integrator/lcm_4mn5fp_recursive.h \
+	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
+	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.h \
+	update/molecdyn/integrator/lcm_toplevel_integrator.h \
+	update/molecdyn/integrator/md_integrator_factory.h \
+	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
+	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/global_metropolis_accrej.h \
+	update/molecdyn/monomial/monomial.h \
+	update/molecdyn/monomial/abs_monomial.h \
+	update/molecdyn/monomial/monomial_factory.h \
+	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/force_monitors.h \
+	update/molecdyn/monomial/bigfloat.h \
+	update/molecdyn/monomial/remez.h \
+	update/molecdyn/monomial/remez_coeff.h \
+	update/molecdyn/monomial/remez_stub.h \
+	update/molecdyn/monomial/rat_approx.h \
+	update/molecdyn/monomial/rat_approx_factory.h \
+	update/molecdyn/monomial/rat_approx_aggregate.h \
+	update/molecdyn/monomial/remez_rat_approx.h \
+	update/molecdyn/monomial/read_rat_approx.h \
+	update/molecdyn/monomial/comp_approx.h \
+	update/molecdyn/predictor/predictor.h \
+	update/molecdyn/predictor/chrono_predictor.h \
+	update/molecdyn/predictor/chrono_predictor_factory.h \
+	update/molecdyn/predictor/predictor_aggregate.h \
+	update/molecdyn/predictor/null_predictor.h \
+	update/molecdyn/predictor/zero_guess_predictor.h \
+	update/molecdyn/predictor/last_solution_predictor.h \
+	update/molecdyn/predictor/circular_buffer.h \
+	update/molecdyn/predictor/linear_extrap_predictor.h \
+	update/molecdyn/predictor/lu_solve.h \
+	update/molecdyn/predictor/mre_extrap_predictor.h \
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.h \
+	wilstype_polyfermact_w.h wilstype_fermact_w.h \
+	unprec_wilstype_fermact_w.h eoprec_wilstype_fermact_w.h \
+	central_tprec_fermact_w.h eoprec_constdet_wilstype_fermact_w.h \
 	eoprec_logdet_wilstype_fermact_w.h \
 	unprec_s_cprec_t_wilstype_fermact_w.h \
 	iluprec_s_cprec_t_wilstype_fermact_w.h \
@@ -2766,11 +2944,14 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/laph/laph.h \
-	meas/laph/gauge_configuration_info.h \
+	meas/laph/pointer.h meas/laph/gauge_configuration_info.h \
 	meas/laph/laph_noise_info.h meas/laph/quark_action_info.h \
 	meas/laph/inverter_info.h meas/laph/field_smearing_info.h \
+	meas/laph/field_smearing_handler.h \
 	meas/laph/gauge_configuration_handler.h meas/laph/xml_help.h \
-	meas/laph/dilution_scheme_info.h meas/hadron/enum_loops_s.h \
+	meas/laph/dilution_scheme_info.h \
+	meas/laph/quark_source_sink_handler.h \
+	meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
@@ -3119,9 +3300,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/hadron_2pt.cc meas/hadron/mesQl_w.cc \
 	meas/laph/gauge_configuration_info.cc \
 	meas/laph/gauge_configuration_handler.cc meas/laph/xml_help.cc \
-	meas/laph/field_smearing_info.cc meas/laph/laph_noise_info.cc \
-	meas/laph/quark_action_info.cc meas/laph/inverter_info.cc \
-	meas/laph/dilution_scheme_info.cc meas/hadron/Ql_3pt_w.cc \
+	meas/laph/field_smearing_info.cc \
+	meas/laph/field_smearing_handler.cc \
+	meas/laph/laph_noise_info.cc meas/laph/quark_action_info.cc \
+	meas/laph/inverter_info.cc meas/laph/dilution_scheme_info.cc \
+	meas/laph/quark_source_sink_handler.cc meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc \
 	meas/hadron/heavy_hadrons_su3_w.cc \
@@ -3852,6 +4035,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_reader_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermbcs_reader_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/field_smearing_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/field_smearing_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fixed_random_ferm_monomial.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/follana_io_s.Po@am__quote@
@@ -4195,6 +4379,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_displacement_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_flavor_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_smearing_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_source_sink_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_w.Po@am__quote@
@@ -7308,6 +7493,20 @@ field_smearing_info.obj: meas/laph/field_smearing_info.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o field_smearing_info.obj `if test -f 'meas/laph/field_smearing_info.cc'; then $(CYGPATH_W) 'meas/laph/field_smearing_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/field_smearing_info.cc'; fi`
 
+field_smearing_handler.o: meas/laph/field_smearing_handler.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT field_smearing_handler.o -MD -MP -MF $(DEPDIR)/field_smearing_handler.Tpo -c -o field_smearing_handler.o `test -f 'meas/laph/field_smearing_handler.cc' || echo '$(srcdir)/'`meas/laph/field_smearing_handler.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/field_smearing_handler.Tpo $(DEPDIR)/field_smearing_handler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/field_smearing_handler.cc' object='field_smearing_handler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o field_smearing_handler.o `test -f 'meas/laph/field_smearing_handler.cc' || echo '$(srcdir)/'`meas/laph/field_smearing_handler.cc
+
+field_smearing_handler.obj: meas/laph/field_smearing_handler.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT field_smearing_handler.obj -MD -MP -MF $(DEPDIR)/field_smearing_handler.Tpo -c -o field_smearing_handler.obj `if test -f 'meas/laph/field_smearing_handler.cc'; then $(CYGPATH_W) 'meas/laph/field_smearing_handler.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/field_smearing_handler.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/field_smearing_handler.Tpo $(DEPDIR)/field_smearing_handler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/field_smearing_handler.cc' object='field_smearing_handler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o field_smearing_handler.obj `if test -f 'meas/laph/field_smearing_handler.cc'; then $(CYGPATH_W) 'meas/laph/field_smearing_handler.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/field_smearing_handler.cc'; fi`
+
 laph_noise_info.o: meas/laph/laph_noise_info.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT laph_noise_info.o -MD -MP -MF $(DEPDIR)/laph_noise_info.Tpo -c -o laph_noise_info.o `test -f 'meas/laph/laph_noise_info.cc' || echo '$(srcdir)/'`meas/laph/laph_noise_info.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/laph_noise_info.Tpo $(DEPDIR)/laph_noise_info.Po
@@ -7363,6 +7562,20 @@ dilution_scheme_info.obj: meas/laph/dilution_scheme_info.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/dilution_scheme_info.cc' object='dilution_scheme_info.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilution_scheme_info.obj `if test -f 'meas/laph/dilution_scheme_info.cc'; then $(CYGPATH_W) 'meas/laph/dilution_scheme_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/dilution_scheme_info.cc'; fi`
+
+quark_source_sink_handler.o: meas/laph/quark_source_sink_handler.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_source_sink_handler.o -MD -MP -MF $(DEPDIR)/quark_source_sink_handler.Tpo -c -o quark_source_sink_handler.o `test -f 'meas/laph/quark_source_sink_handler.cc' || echo '$(srcdir)/'`meas/laph/quark_source_sink_handler.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/quark_source_sink_handler.Tpo $(DEPDIR)/quark_source_sink_handler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_source_sink_handler.cc' object='quark_source_sink_handler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_source_sink_handler.o `test -f 'meas/laph/quark_source_sink_handler.cc' || echo '$(srcdir)/'`meas/laph/quark_source_sink_handler.cc
+
+quark_source_sink_handler.obj: meas/laph/quark_source_sink_handler.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_source_sink_handler.obj -MD -MP -MF $(DEPDIR)/quark_source_sink_handler.Tpo -c -o quark_source_sink_handler.obj `if test -f 'meas/laph/quark_source_sink_handler.cc'; then $(CYGPATH_W) 'meas/laph/quark_source_sink_handler.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_source_sink_handler.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/quark_source_sink_handler.Tpo $(DEPDIR)/quark_source_sink_handler.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_source_sink_handler.cc' object='quark_source_sink_handler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_source_sink_handler.obj `if test -f 'meas/laph/quark_source_sink_handler.cc'; then $(CYGPATH_W) 'meas/laph/quark_source_sink_handler.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_source_sink_handler.cc'; fi`
 
 Ql_3pt_w.o: meas/hadron/Ql_3pt_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Ql_3pt_w.o -MD -MP -MF $(DEPDIR)/Ql_3pt_w.Tpo -c -o Ql_3pt_w.o `test -f 'meas/hadron/Ql_3pt_w.cc' || echo '$(srcdir)/'`meas/hadron/Ql_3pt_w.cc
@@ -15296,111 +15509,6 @@ uninstall-am: uninstall-libLIBRARIES uninstall-nobase_includeHEADERS \
 	uninstall-nobase_includeHEADERS \
 	uninstall-nodist_includeHEADERS
 
-	meas/sources/rndzNwall_source_const.h \
-	meas/sources/wall_source_const.h \
-	meas/sources/partwall_source_const.h \
-	meas/sources/source_const_aggregate.h \
-	meas/sources/source_const_factory.h \
-	meas/sources/source_smearing_factory.h \
-	meas/sources/source_smearing_aggregate.h \
-	meas/
-	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
-	util/ferm/eigeninfo.h \
-	util/ferm/subset_vectors.h \
-	util/ferm/block_subset.h \
-	util/ferm/block_couplings.h \
-	util/ft/sftmom.h util/ft/single_phase.h \
-        util/gauge/eesu2.h util/gauge/eeu1.h \
-	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
-	util/gauge/eesu3.h \
-	util/gauge/gauge.h \
-	util/gauge/gauge_startup.h \
-	util/gauge/gauge_init.h \
-	util/gauge/gauge_init_factory.h \
-	util/gauge/gauge_init_aggregate.h \
-	util/gauge/milc_gauge_init.h \
-	util/gauge/nersc_gauge_init.h \
-	util/gauge/szin_gauge_init.h \
-	util/gauge/szinqio_gauge_init.h \
-	util/gauge/kyu_gauge_init.h \
-	util/gauge/disordered_gauge_init.h \
-	util/gauge/unit_gauge_init.h \
-	util/gauge/cppacs_gauge_init.h \
-	util/gauge/weak_gauge_init.h \
-	util/gauge/sf_gauge_init.h \
-	util/gauge/hotst.h util/gauge/reunit.h \
-	util/gauge/rgauge.h util/gauge/shift2.h \
-        util/gauge/su2extract.h util/gauge/su3proj.h \
-	util/gauge/sunfill.h util/gauge/sun_proj.h util/gauge/taproj.h \
-	util/gauge/unit_check.h util/gauge/weak_field.h \
-	util/gauge/conjgauge.h util/gauge/constgauge.h \
-	util/gauge/stout_utils.h \
-        util/info/info.h \
-        util/info/proginfo.h \
-        util/info/printgeom.h \
-        util/info/unique_id.h \
-        util/util.h \
-	update/update.h \
-	update/heatbath/heatbath.h \
-        update/heatbath/su3over.h update/heatbath/su3hb.h \
-	update/heatbath/hb_params.h \
-	update/heatbath/su2_hb_update.h \
-	update/heatbath/mciter.h \
-	update/molecdyn/molecdyn.h \
-	update/molecdyn/field_state.h \
-	update/molecdyn/hamiltonian/hamiltonian.h \
-	update/molecdyn/hamiltonian/abs_hamiltonian.h \
-	update/molecdyn/hamiltonian/exact_hamiltonian.h \
-	update/molecdyn/integrator/abs_integrator.h \
-	update/molecdyn/integrator/integrator_aggregate.h \
-	update/molecdyn/integrator/integrator.h \
-	update/molecdyn/integrator/integrator_shared.h \
-	update/molecdyn/integrator/lcm_integrator_leaps.h \
-	update/molecdyn/integrator/lcm_exp_sdt.h \
-	update/molecdyn/integrator/lcm_exp_tdt.h \
-	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
-	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
-	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
-	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
-	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
-	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h \
-	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
-	update/molecdyn/integrator/lcm_4mn5fp_recursive.h\
-	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
-	update/molecdyn/integrator/lcm_creutz_gocksch_4_recursive.h \
-	update/molecdyn/integrator/lcm_toplevel_integrator.h \
-	update/molecdyn/integrator/md_integrator_factory.h \
-	update/molecdyn/hmc/hmc.h \
-	update/molecdyn/hmc/abs_hmc.h \
-	update/molecdyn/hmc/lcm_hmc.h \
-	update/molecdyn/hmc/global_metropolis_accrej.h \
-	update/molecdyn/monomial/monomial.h \
-	update/molecdyn/monomial/abs_monomial.h \
-	update/molecdyn/monomial/monomial_factory.h \
-	update/molecdyn/monomial/gauge_monomial.h \
-	update/molecdyn/monomial/force_monitors.h \
-	update/molecdyn/monomial/bigfloat.h \
-	update/molecdyn/monomial/remez.h \
-	update/molecdyn/monomial/remez_coeff.h \
-	update/molecdyn/monomial/remez_stub.h \
-	update/molecdyn/monomial/rat_approx.h \
-	update/molecdyn/monomial/rat_approx_factory.h \
-	update/molecdyn/monomial/rat_approx_aggregate.h \
-	update/molecdyn/monomial/remez_rat_approx.h \
-	update/molecdyn/monomial/read_rat_approx.h \
-	update/molecdyn/monomial/comp_approx.h \
-	update/molecdyn/predictor/predictor.h \
-	update/molecdyn/predictor/chrono_predictor.h \
-	update/molecdyn/predictor/chrono_predictor_factory.h \
-	update/molecdyn/predictor/predictor_aggregate.h \
-	update/molecdyn/predictor/null_predictor.h \
-	update/molecdyn/predictor/zero_guess_predictor.h \
-	update/molecdyn/predictor/last_solution_predictor.h \
-	update/molecdyn/predictor/circular_buffer.h \
-	update/molecdyn/predictor/linear_extrap_predictor.h \
-	update/molecdyn/predictor/lu_solve.h \
-	update/molecdyn/predictor/mre_extrap_predictor.h \
-	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
 @BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/bicgstab_kernels_scalarsite.h \
 @BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/bicgstab_kernels_scalarsite_wrappers.h \
 @BUILD_SCALARSITE_BICGSTAB_TRUE@	actions/ferm/invert/ord_norm2x_cdotxy_kernel.h \
