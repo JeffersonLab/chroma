@@ -1,4 +1,4 @@
-// $Id: inline_stoch_meson_w.cc,v 3.4 2008-11-04 18:43:57 edwards Exp $
+// $Id: inline_stoch_meson_w.cc,v 3.5 2009-08-05 15:26:49 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic meson operator
  *
@@ -517,17 +517,16 @@ namespace Chroma
 	    QDP_abort(1);
 	  }
 
+#if 0
 	  // Use a trick here, create the source and subtract it from the global noisy
 	  // Check at the end that the global noisy is zero everywhere.
 	  // NOTE: the seed will be set every call
 	  quarks[n].dilutions[i].source = srcConst(u);
 	  quark_noise -= quarks[n].dilutions[i].source;
 
-#if 0
 	  // Diagnostic
 	  {
 	    // Keep a copy of the phases with NO momenta
-	    SftMom phases_nomom(0, true, quarks[n].dilutions[i].source_header.j_decay);
 
 	    multi1d<Double> source_corr = sumMulti(localNorm2(quarks[n].dilutions[i].source), 
 						   phases_nomom.getSet());
@@ -545,13 +544,15 @@ namespace Chroma
 #endif
 	} // end for i
 
-	Double dcnt = norm2(quark_noise);
+#if 0
+	Double dcnt = norm2(quark_noise, phases );
 	if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
 	{
 	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
 	  QDP_abort(1);
 	}
 
+#endif
       } // end for n
 
       pop(xml_out);
