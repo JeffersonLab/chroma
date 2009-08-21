@@ -56,11 +56,11 @@ class InverterInfo
 
   public:
 
+   InverterInfo(XMLReader& xml_in);
+
    InverterInfo(const InverterInfo& rhs);
                                           
    InverterInfo& operator=(const InverterInfo& rhs);
-
-   InverterInfo(XMLReader& act_rdr);
      
    ~InverterInfo(){}
 

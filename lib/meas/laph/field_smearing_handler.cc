@@ -6,31 +6,42 @@ namespace Chroma {
   namespace LaphEnv {
 
 
+ // **********************************************************
+
    // constructors
 
 FieldSmearingHandler::FieldSmearingHandler() 
-     : uPtr(0), smearPtr(0), laph_eigvecs(0) {}
-
-
-
-FieldSmearingHandler::FieldSmearingHandler(XMLReader& smear_xml)
-     : uPtr(0), laph_eigvecs(0),smearPtr(0)
+     : smearPtr(0), laph_eigvecs(0) 
 {
- setInfo(smear_xml);
+ create_handlers();
 }
 
 
-void FieldSmearingHandler::setInfo(XMLReader& xml_info)
+
+FieldSmearingHandler::FieldSmearingHandler(XMLReader& xml_in)
+     : smearPtr(0), laph_eigvecs(0)
+{
+ create_handlers();
+ set_info(xml_in);
+}
+
+
+void FieldSmearingHandler::setInfo(XMLReader& xml_in)
 {
  clear();
- create_handlers();
+ set_info(xml_in);
+}
+
+
+void FieldSmearingHandler::set_info(XMLReader& xml_in)
+{
  try{
-    uPtr->setInfo(xml_info);
-    if (xml_info.count("//laph_eigvecs_namedobj_id")==1)
-       read(xml_info,"//laph_eigvecs_namedobj_id",laph_eigvecs_id);
+    uPtr->setInfo(xml_in);
+    if (xml_in.count(".//LaphEigvecsNamedObjId")==1)
+       read(xml_in,".//LaphEigvecsNamedObjId",laph_eigvecs_id);
    else
        laph_eigvecs_id="laph_eigvecs_id";
-    smearPtr=new FieldSmearingInfo(xml_info);}
+    smearPtr=new FieldSmearingInfo(xml_in);}
  catch(...){
     QDPIO::cerr << "problem in setInfo in FieldSmearingHandler"<<endl;
     QDP_abort(1);}
@@ -39,29 +50,66 @@ void FieldSmearingHandler::setInfo(XMLReader& xml_info)
  QDPIO::cout << "FieldSmearingInfo set in FieldSmearingHandler"<<endl;
 }
 
+void FieldSmearingHandler::setInfo(const string& header)
+{
+ clear();
+ try{
+    uPtr->setInfo(header);
+    laph_eigvecs_id="laph_eigvecs_id";
+    smearPtr=new FieldSmearingInfo(header);}
+ catch(...){
+    QDPIO::cerr << "problem in setInfo in FieldSmearingHandler"<<endl;
+    QDP_abort(1);}
+}
+
     // destructor
 
 FieldSmearingHandler::~FieldSmearingHandler()
 {
- clear();
+ destroy();
 }
 
-
 void FieldSmearingHandler::clear()
+{
+ destroy();
+ create_handlers();
+ QDPIO::cout << "FieldSmearingHandler cleared"<<endl;
+}
+
+void FieldSmearingHandler::destroy()
 {
  try {delete smearPtr;} catch(...) {QDP_abort(1);}
  smearPtr=0;
  laph_eigvecs_id.clear();
  destroy_handlers(); 
  clear_data();  
- QDPIO::cout << "FieldSmearingHandler cleared"<<endl;
 }
 
+ // **********************************************************
 
 bool FieldSmearingHandler::isInfoSet() const
 {
  return ((smearPtr!=0)&&(uPtr->isInfoSet())&&(!laph_eigvecs_id.empty()));
 }
+
+const FieldSmearingInfo& FieldSmearingHandler::getFieldSmearingInfo() const
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in FieldSmearingHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getFieldSmearingInfo"<<endl;
+    QDP_abort(1);}
+ return *smearPtr;
+}
+
+const GaugeConfigurationInfo& FieldSmearingHandler::getGaugeConfigurationInfo() const
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in FieldSmearingHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getGaugeConfigurationInfo"<<endl;
+    QDP_abort(1);}
+ return uPtr->getInfo();
+}
+
 
 string FieldSmearingHandler::outputInfo() const
 {
@@ -71,6 +119,8 @@ string FieldSmearingHandler::outputInfo() const
  return oss.str();
 }
  
+ // **********************************************************
+
 
 void FieldSmearingHandler::computeLaphEigenvectors()
 {
@@ -119,7 +169,8 @@ void FieldSmearingHandler::computeLaphEigenvectors()
 // do the computation, put into laph_eigvecs  
 
   // ***********************DUMMY*****************************
-  
+
+// compute smeared gauge field
   for (int k =0;k<nEigvecs;k++)
      gaussian(laph_eigvecs->getEvectors()[k]);
  
@@ -134,7 +185,7 @@ void FieldSmearingHandler::computeLaphEigenvectors()
              << " secs" << endl;
  QDPIO::cout << "ran successfully" << endl;
 
-   // put metadata into NamedObjMap
+   // put header into NamedObjMap
 
  XMLBufferWriter file_xml;
  push(file_xml, "LaplaceEigvectorInfo");
@@ -142,8 +193,8 @@ void FieldSmearingHandler::computeLaphEigenvectors()
 
  XMLBufferWriter record_xml;
  push(record_xml, "LaplaceEigvectorInfo");
- record_xml << uPtr->getInfo().output();
- record_xml << smearPtr->output();
+ record_xml << smearPtr->getHeader();
+ record_xml << uPtr->getGaugeConfigHeader();
  push(record_xml, "SubsetVectors");
  for(int i=0;i<nEigvecs;i++){
    push(record_xml, "EigenPair");
@@ -154,7 +205,7 @@ void FieldSmearingHandler::computeLaphEigenvectors()
  pop(record_xml);
  pop(record_xml);
 
- // Write metadata to NamedObjMap
+ // Write header to NamedObjMap
  TheNamedObjMap::Instance().get(laph_eigvecs_id).setFileXML(file_xml);
  TheNamedObjMap::Instance().get(laph_eigvecs_id).setRecordXML(record_xml);
 
@@ -186,7 +237,7 @@ void FieldSmearingHandler::setLaphEigenvectors()
     return;}
  try{
     TheNamedObjMap::Instance().get(laph_eigvecs_id).getRecordXML(source_record_xml);
-    check_set(source_record_xml);
+    check_match(source_record_xml);
     laph_eigvecs = &(TheNamedObjMap::Instance().getData<SubsetVectors<LatticeColorVector> >(laph_eigvecs_id));
     }
  catch (std::bad_cast){
@@ -236,9 +287,7 @@ void FieldSmearingHandler::clearLaphEigenvectors(bool namedobj_erase)
 
 
 
-
-
-
+ // **********************************************************
 
 
 
@@ -249,7 +298,7 @@ void FieldSmearingHandler::computeSmearedGaugeField()
                 << "  computing smeared gauge field" << endl;
     QDP_abort(1);}
 
- double rho = smearPtr->getLinkStapleWeight();  cout << "rho = "<<rho<<endl;
+ double rho = smearPtr->getLinkStapleWeight();  cout << "rho = "<<Real(rho)<<endl;
  int niters = smearPtr->getNumberOfLinkIterations();
  int tdir = uPtr->getInfo().getTimeDir();
  int ndir = uPtr->getInfo().getNumberOfDirections();
@@ -341,15 +390,24 @@ void FieldSmearingHandler::destroy_handlers()
  uPtr=0;
 }
 
+// ********************HEREHERHECHANGECHANGE*********!!!!!!!!!!!!!!!!!!
 
-
-void FieldSmearingHandler::check_set(XMLReader& record_xml)
+void FieldSmearingHandler::check_match(XMLReader& record_xml)
+{}
+/*
 {
- GaugeConfigurationInfo ucheck(record_xml);
- FieldSmearingInfo scheck(record_xml);
- uPtr->getInfo().matchXMLverbatim(ucheck);
- smearPtr->checkEqual(scheck);
+ if (xml_tag_count(record_xml,"LaplaceEigvectorInfo")!=1){
+    QDPIO::cerr << "Bad XML input to FieldSmearingHandler::check_match"<<endl;
+    QDPIO::cerr << "Expected one <LaplaceEigvectorInfo> tag"<<endl;
+    QDP_abort(1);}
+ XMLReader xmlr(record_xml,"//LaplaceEigvectorInfo");
+ GaugeConfigurationInfo ucheck(xmlr);
+ FieldSmearingInfo scheck(xmlr);
+ assertEqual(uPtr->getInfo(),ucheck,"FieldSmearingHandler::check_GaugeConfigurationInfo");
+ assertEqual(*smearPtr,scheck,"FieldSmearingHandler::check_FieldSmearingInfo");
 }
+*/
+
 
 // *****************************************************************
   }

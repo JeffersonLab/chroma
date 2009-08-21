@@ -6,6 +6,55 @@ namespace Chroma {
   namespace LaphEnv {
 
 
+// *************************************************************
+
+   // XMLReader constructor
+
+FieldSmearingInfo::FieldSmearingInfo(XMLReader& xml_in)
+{
+ if (xml_tag_count(xml_in,"StoutLaphSmearing")!=1){
+    QDPIO::cerr << "Bad XML input to FieldSmearingInfo"<<endl;
+    QDPIO::cerr << "Expected one <StoutLaphSmearing> tag"<<endl;
+    QDP_abort(1);}
+ XMLReader xmlr(xml_in, "./descendant-or-self::StoutLaphSmearing");
+ extract_info_from_reader(xmlr);
+}
+
+
+void FieldSmearingInfo::extract_info_from_reader(XMLReader& xml_in)
+{
+ xmlread(xml_in,"LinkIterations", linkIterations, "FieldSmearingInfo");
+ xmlread(xml_in,"LinkStapleWeight", linkStapleWeight, "FieldSmearingInfo");
+ xmlread(xml_in,"LaphSigmaCutoff", laphSigma, "FieldSmearingInfo");
+ xmlread(xml_in,"NumberLaphEigvecs", laphNumEigvecs, "FieldSmearingInfo");
+ if ((linkIterations<0)||(linkStapleWeight<0.0)||(laphNumEigvecs<1)
+    ||(laphSigma<=0)){
+    QDPIO::cerr << "invalid smearing scheme parameters in FieldSmearingInfo"<<endl;
+    QDP_abort(1);}
+}
+
+
+ // *************************************************************
+
+   // This version of the constructor assumes that header information
+   // from a quark_source_sink file, for example, is passed in.
+
+FieldSmearingInfo::FieldSmearingInfo(const string& header)
+{
+ string smearing_header;
+ extract_xml_element(header,"StoutLaphSmearing",smearing_header,
+                     "FieldSmearingInfo");
+ stringstream tmp;
+ tmp << smearing_header;
+ XMLReader xmlr0(tmp);
+ XMLReader xmlr(xmlr0,"/StoutLaphSmearing");  
+ extract_info_from_reader(xmlr);
+}
+
+
+  // ************************************************************
+
+    // copy constructor
 
 FieldSmearingInfo::FieldSmearingInfo(const FieldSmearingInfo& in) 
             : linkIterations(in.linkIterations),
@@ -40,54 +89,20 @@ bool FieldSmearingInfo::operator==(const FieldSmearingInfo& in) const
 }
 
 
-   // fatally aborting if not found
-
-FieldSmearingInfo::FieldSmearingInfo(XMLReader& xml_rdr)
-{
- int link_it,quark_nvecs;
- double link_wt, laph_sigma;
- try{
-    XMLReader xml_in(xml_rdr, "//stout_laph_smearing");
-    read(xml_in,"./link_iterations", link_it );
-    read(xml_in,"./link_staple_weight", link_wt );
-    read(xml_in,"./laph_sigma_cutoff", laph_sigma );
-    read(xml_in,"./number_laph_eigvecs", quark_nvecs );
-    }
- catch(const string& err){
-    QDPIO::cerr << "ERROR: "<<err<<endl;
-    QDPIO::cerr << "could not initialize FieldSmearingInfo from XML input"<<endl;
-    QDP_abort(1);}
- assign(link_it,link_wt,quark_nvecs,laph_sigma);
-}
-
-void FieldSmearingInfo::assign(int link_it, double link_wt, int quark_nvecs,
-                               double laph_sigma)
-{
- linkIterations=link_it;
- linkStapleWeight=link_wt;
- laphNumEigvecs=quark_nvecs;
- laphSigma=laph_sigma;
- if ((linkIterations<0)||(linkStapleWeight<0.0)||(laphNumEigvecs<1)
-    ||(laphSigma<=0)){
-    QDPIO::cerr << "invalid smearing scheme"<<endl;
-    QDP_abort(1);}
-}
-
-
 string FieldSmearingInfo::output(int indent) const
 {
  string pad(3*indent,' ');
  ostringstream oss;
- oss << pad << "<stout_laph_smearing>"<<endl;
- oss << pad << "   <link_iterations> " << linkIterations 
-     << " </link_iterations>"<<endl;
- oss << pad << "   <link_staple_weight> " << linkStapleWeight 
-     << " </link_staple_weight>"<<endl;
- oss << pad << "   <laph_sigma_cutoff> " << laphSigma 
-     << " </laph_sigma_cutoff>"<<endl;
- oss << pad << "   <number_laph_eigvecs> " << laphNumEigvecs 
-     << " </number_laph_eigvecs>"<<endl;
- oss << pad << "</stout_laph_smearing>"<<endl;
+ oss << pad << "<StoutLaphSmearing>"<<endl;
+ oss << pad << "   <LinkIterations>" << linkIterations 
+     << "</LinkIterations>"<<endl;
+ oss << pad << "   <LinkStapleWeight>" << linkStapleWeight 
+     << "</LinkStapleWeight>"<<endl;
+ oss << pad << "   <LaphSigmaCutoff>" << laphSigma 
+     << "</LaphSigmaCutoff>"<<endl;
+ oss << pad << "   <NumberLaphEigvecs>" << laphNumEigvecs 
+     << "</NumberLaphEigvecs>"<<endl;
+ oss << pad << "</StoutLaphSmearing>"<<endl;
  return oss.str();
 }
 

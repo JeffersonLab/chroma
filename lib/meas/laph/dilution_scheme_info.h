@@ -17,18 +17,18 @@ namespace Chroma {
 // *   about a Laph dilution scheme.  Full time dilution is          *
 // *   enforced.  XML input format for a Laph dilution scheme:       *
 // *                                                                 *
-// *     <laph_dilution_scheme>                                      *
-// *        <time_dilution>                                          *
-// *           <dilution_type> full </dilution_type>                 *
-// *        </time_dilution>                                         *
-// *        <spin_dilution>                                          *
-// *           <dilution_type> none </dilution_type>                 *
-// *        </spin_dilution>                                         *
-// *        <eigvec_dilution>                                        *
-// *           <dilution_type> block </dilution_type>                *
-// *           <number_projectors> 4 </number_projectors>            *
-// *        </eigvec_dilution>                                       *
-// *     </laph_dilution_scheme>                                     *
+// *     <LaphDilutionScheme>                                        *
+// *        <TimeDilution>                                           *
+// *           <DilutionType> full </DilutionType>                   *
+// *        </TimeDilution>                                          *
+// *        <SpinDilution>                                           *
+// *           <DilutionType> none </DilutionType>                   *
+// *        </SpinDilution>                                          *
+// *        <EigvecDilution>                                         *
+// *           <DilutionType> block </DilutionType>                  *
+// *           <NumberProjectors> 4 </NumberProjectors>              *
+// *        </EigvecDilution>                                        *
+// *     </LaphDilutionScheme>                                       *
 // *                                                                 *
 // *   Time dilution must be input as "full".  Spin and Laph         *
 // *   eigenvector dilution can be "full", "none", "block", or       *
@@ -92,13 +92,13 @@ class DilutionSchemeInfo
 
   DilutionSchemeInfo(XMLReader& xml_in);
 
+  DilutionSchemeInfo(const std::string& header);
+
   DilutionSchemeInfo(const DilutionSchemeInfo& in);
 
   DilutionSchemeInfo& operator=(const DilutionSchemeInfo& in);
 
   ~DilutionSchemeInfo(){}
-
-  void assign(int spin_dil_type, int eigvec_dil_type, int time_dil_type = 1);
 
   void checkEqual(const DilutionSchemeInfo& in) const;
 
@@ -113,15 +113,16 @@ class DilutionSchemeInfo
 
   std::string output(int indent = 0) const;   // XML output
 
+  std::string getHeader() const { return output(0); }
+
 
  private:
 
+  void assign(int spin_dil_type, int eigvec_dil_type, int time_dil_type = 1);
+  void assign_from_reader(XMLReader& xml_in);
   void dil_in(XMLReader& xml_in, const std::string& path, int& DilType);
-
   std::string dil_out(int indent, int DilType, bool out_nproj = false) const;
-
   void setProjectorMasks(vector<list<int> >& projs, int dil_type, int nBasis) const;
-
   int findProjectorNumber(int dil_type, int nBasis) const;
 
 };

@@ -10,6 +10,61 @@ namespace Chroma {
 
 // *********************************************************
 
+    // This routine calls an xml read inside a try block
+    // and outputs an informative message if the read fails.
+    // The added parameter is a string which should be the
+    // name of the class which called this function.
+    // Note that a **tag name** should be used. A "./descendant-or-self::"
+    // is prepended to form an appropriate Xpath.
+
+template <typename T>
+void xmlread(XMLReader& xmlr, const string& tagname, T& val,
+             const string& callingClass)
+{
+ try{
+    read(xmlr,"./descendant-or-self::"+tagname,val);}
+ catch(const string& err_msg){
+    QDPIO::cerr << "Invalid read of "<<tagname<<" in "<<callingClass<<endl;
+    QDP_abort(1);}
+}
+
+// *********************************************************
+
+    // This returns the number of times that the tag "tagname"
+    // is found in the descendents of the current context.
+    // A **tag name** should be input, not an Xpath, since
+    // a "./descendant-or-self::" is prepended to form an Xpath.
+
+int xml_tag_count(XMLReader& xmlr, const string& tagname);
+
+
+// *********************************************************
+
+template <typename T>
+void assertEqual(const T& obj1, const T& obj2, const string& callingClass)
+{
+ try{
+    obj1.checkEqual(obj2);}
+ catch(const string& err_msg){
+    QDPIO::cerr << err_msg <<" in "<<callingClass<<endl;
+    QDP_abort(1);}
+}
+ 
+// *********************************************************
+
+    //  This routine searches in the XML string "in_str" to find
+    //  the tag with name "tag_name" and returns that complete
+    //  XML element in "out_str".  If the tag is not found or
+    //  multiple occurrences are found, this indicates a serious
+    //  error and an abort is issued.  "callingClass" is the name
+    //  of the class that called this function and is output 
+    //  before an abort to help correct the situation.
+
+void extract_xml_element(const string& in_str, const string& tag_name,
+                         string& out_str, const string& callingClass);
+
+// *********************************************************
+
    //  This routine checks that the current "top" node in "xmlr"
    //  has name "tagname".
 
@@ -45,6 +100,13 @@ bool xmlContentIsEqual(const string& doc1, const string& doc2,
 
 bool xmlContentIsEqual(XMLReader& xmlr1, XMLReader& xmlr2, 
                        float float_rel_tol = 1e-6);
+
+  // Same as above, but first tries a straight string comparison.
+  // If strings are the same, returns true; otherwise, an
+  // XML content comparison is made.
+
+bool headerMatch(const string& doc1, const string& doc2, 
+                 float float_rel_tol = 1e-6);
 
 
 // *********************************************************

@@ -16,16 +16,16 @@ namespace Chroma {
 // *   notion of a noise identity extends to an entire ensemble.     *
 // *   The XML input must have the format                            *
 // *                                                                 *
-// *         <laph_noise>                                            *
-// *            <zn_group> 4 </zn_group>                             *
+// *         <LaphNoise>                                             *
+// *            <ZNGroup> 4 </ZNGroup>                               *
 // *            <seed0> 3156 </seed0>                                *
 // *            <seed1> 2981 </seed1>                                *
 // *            <seed2> 4013 </seed2>                                *
 // *            <seed3> 1132 </seed3>                                *
-// *         </laph_noise>                                           *
+// *         </LaphNoise>                                            *
 // *                                                                 *
 // *   The group Z(N) is used, so the value of "N" must be specified *
-// *   in the tag named "zn_group".  This must be an integer >=2.    *
+// *   in the tag named "ZNGroup".  This must be an integer >=2.     *
 // *   The value of 4 is recommended.                                *
 // *                                                                 *
 // *   "seed0", "seed1", "seed2", "seed3" are integers; each must be *
@@ -78,13 +78,13 @@ class LaphNoiseInfo
 
   LaphNoiseInfo(XMLReader& xml_in);
 
+  LaphNoiseInfo(const std::string& header);
+
   LaphNoiseInfo(const LaphNoiseInfo& in);
 
   LaphNoiseInfo& operator=(const LaphNoiseInfo& in);
 
   ~LaphNoiseInfo(){}
-
-  void assign(int zngroup, int seed0, int seed1, int seed2, int seed3);
 
   void checkEqual(const LaphNoiseInfo& in) const;
 
@@ -105,11 +105,14 @@ class LaphNoiseInfo
 
   std::string output(int indent = 0) const;
 
+  std::string getHeader() const { return output(0);}
+
   void binaryWrite(BinaryWriter& out) const;
   void binaryRead(BinaryReader& in);
 
  private:
 
+  void extract_info_from_reader(XMLReader& xml_in);
   void check_assignment();
   void calc_seed() const;
   void lcongr(int& i0, int& i1, int& i2, int& i3) const;

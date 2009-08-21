@@ -4,7 +4,7 @@
 namespace Chroma {
   namespace LaphEnv {
 
-
+ // **********************************************************
 
 GaugeConfigurationHandler::GaugeConfigurationHandler()
      : gauge_info(0), cfg(0) {}
@@ -13,14 +13,18 @@ GaugeConfigurationHandler::GaugeConfigurationHandler()
 GaugeConfigurationHandler::GaugeConfigurationHandler(XMLReader& xml_in)
      : gauge_info(0), cfg(0)
 {
- setInfo(xml_in);
- QDPIO::cout << "GaugeConfigurationHandler constructed"<<endl;
+ set_info(xml_in);
 }
 
 
 void GaugeConfigurationHandler::setInfo(XMLReader& xml_in)
 {
  clear();
+ set_info(xml_in);
+}
+
+void GaugeConfigurationHandler::set_info(XMLReader& xml_in)
+{
  try{
     gauge_info = new GaugeConfigurationInfo(xml_in);}
  catch(...){
@@ -29,12 +33,23 @@ void GaugeConfigurationHandler::setInfo(XMLReader& xml_in)
  QDPIO::cout << "GaugeConfig info set in GaugeConfigurationHandler"<<endl;
 }
 
+void GaugeConfigurationHandler::setInfo(const string& header)
+{
+ clear();
+ try{
+    gauge_info = new GaugeConfigurationInfo(header);}
+ catch(...){
+    QDPIO::cerr << "problem allocating GaugeConfigurationInfo"<<endl;
+    QDP_abort(1);}    
+}
+
 void GaugeConfigurationHandler::setData()
 {
  if (!isInfoSet()){
     QDPIO::cerr << "error in GaugeConfigurationHandler:"<<endl;
     QDPIO::cerr << "  must setInfo before setData"<<endl;
     QDP_abort(1);}
+
  string gauge_id = gauge_info->getGaugeId();
  if (gauge_id == ""){
     QDPIO::cerr << "empty gauge_id in GaugeConfigurationHandler" << endl;
@@ -68,13 +83,37 @@ void GaugeConfigurationHandler::clear()
  try {delete gauge_info;} catch(...) {QDP_abort(1);}
  gauge_info=0;
  cfg=0;
- QDPIO::cout << "GaugeConfigurationHandler cleared"<<endl;
 }
 
+const multi1d<LatticeColorMatrix>& GaugeConfigurationHandler::getData() 
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in GaugeConfigurationHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getData"<<endl;
+    QDP_abort(1);}
+ if (!isDataSet()) setData();
+ return *cfg;
+}
+
+const GaugeConfigurationInfo& GaugeConfigurationHandler::getInfo() const
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in GaugeConfigurationHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getInfo"<<endl;
+    QDP_abort(1);}
+ return *gauge_info;
+}
 
 string GaugeConfigurationHandler::outputInfo() const
 {
- return gauge_info->output();
+ if (isInfoSet()) return gauge_info->output();
+ return "";
+}
+
+string GaugeConfigurationHandler::getGaugeConfigHeader() const
+{
+ if (isInfoSet()) return gauge_info->getGaugeConfigHeader();
+ return "";
 }
 
 

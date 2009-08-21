@@ -6,17 +6,27 @@ namespace Chroma {
   namespace LaphEnv {
 
 
+// *************************************************************
 
-   // constructor gets input from XMLReader
+   // XMLReader constructor
 
-DilutionSchemeInfo::DilutionSchemeInfo(XMLReader& xml_rdr)
+DilutionSchemeInfo::DilutionSchemeInfo(XMLReader& xml_in)
+{
+ if (xml_tag_count(xml_in,"LaphDilutionScheme")!=1){
+    QDPIO::cerr << "Bad XML input to DilutionSchemeInfo"<<endl;
+    QDPIO::cerr << "Expected one <LaphDilutionScheme> tag"<<endl;
+    QDP_abort(1);}
+ XMLReader xmlr(xml_in, "./descendant-or-self::LaphDilutionScheme");
+ assign_from_reader(xmlr);
+}
+
+void DilutionSchemeInfo::assign_from_reader(XMLReader& xml_in)
 {
  int time_dil_type, spin_dil_type, eigvec_dil_type;
  try{
-    XMLReader xml_in(xml_rdr, "//laph_dilution_scheme");
-    dil_in(xml_in,"./time_dilution", time_dil_type );
-    dil_in(xml_in,"./spin_dilution", spin_dil_type );
-    dil_in(xml_in,"./eigvec_dilution", eigvec_dil_type );
+    dil_in(xml_in,"./TimeDilution", time_dil_type );
+    dil_in(xml_in,"./SpinDilution", spin_dil_type );
+    dil_in(xml_in,"./EigvecDilution", eigvec_dil_type );
     }
  catch(const string& err){
     QDPIO::cerr << "could not initialize DilutionSchemeInfo from XML input"<<endl;
@@ -24,6 +34,27 @@ DilutionSchemeInfo::DilutionSchemeInfo(XMLReader& xml_rdr)
  assign(spin_dil_type, eigvec_dil_type, time_dil_type);
 }
 
+ // *************************************************************
+
+   // This version of the constructor assumes that header information
+   // from a quark_source_sink file, for example, is passed in.
+
+DilutionSchemeInfo::DilutionSchemeInfo(const string& header)
+{
+ string dilution_header;
+ extract_xml_element(header,"LaphDilutionScheme",dilution_header,
+                     "DilutionSchemeInfo");
+ stringstream tmp;
+ tmp << dilution_header;
+ XMLReader xmlr0(tmp);
+ XMLReader xmlr(xmlr0,"/LaphDilutionScheme");  
+ assign_from_reader(xmlr);
+}
+
+
+  // ************************************************************
+
+    // copy constructor
 
 DilutionSchemeInfo::DilutionSchemeInfo(const DilutionSchemeInfo& in)
                    : spinDilutionType(in.spinDilutionType),
@@ -38,18 +69,20 @@ DilutionSchemeInfo& DilutionSchemeInfo::operator=(const DilutionSchemeInfo& in)
 }
 
 
+// ***************************************************************
+
 
 void DilutionSchemeInfo::assign(int spin_dil_type, int eigvec_dil_type, 
                                 int time_dil_type)
 {
  try{
-    if (time_dil_type!=1) throw "only full time dilution allowed";
+    if (time_dil_type!=1) throw string("only full time dilution allowed");
     if ((spin_dil_type==-1)||(eigvec_dil_type==-1)) 
-       throw "dilution types cannot have value -1";
+       throw string("dilution types cannot have value -1");
     if ((spin_dil_type>2)||(spin_dil_type<-2))
-       throw "spin dilution type must have value -2, 0, 1, 2";
+       throw string("spin dilution type must have value -2, 0, 1, 2");
     }
- catch(const char* errmsg){
+ catch(const string& errmsg){
     QDPIO::cerr << "Invalid DilutionSchemeInfo assigment:"<<endl;
     QDPIO::cerr << "   ..."<<errmsg<<endl;
     QDP_abort(1);}
@@ -156,17 +189,17 @@ string DilutionSchemeInfo::output(int indent) const
 {
  string pad(3*indent,' ');
  ostringstream oss;
- oss << pad << "<laph_dilution_scheme>"<<endl;
- oss << pad <<"   <time_dilution> " <<endl
+ oss << pad << "<LaphDilutionScheme>"<<endl;
+ oss << pad <<"   <TimeDilution> " <<endl
      << dil_out(indent,1)
-     << pad << "   </time_dilution>"<<endl;
- oss << pad << "   <spin_dilution> " <<endl
+     << pad << "   </TimeDilution>"<<endl;
+ oss << pad << "   <SpinDilution> " <<endl
      << dil_out(indent,spinDilutionType,false)
-     << pad << "   </spin_dilution>"<<endl;
- oss << pad << "   <eigvec_dilution> " <<endl
+     << pad << "   </SpinDilution>"<<endl;
+ oss << pad << "   <EigvecDilution> " <<endl
      << dil_out(indent,eigvecDilutionType,true) 
-     << pad << "   </eigvec_dilution>"<<endl;
- oss << pad << "</laph_dilution_scheme>"<<endl;
+     << pad << "   </EigvecDilution>"<<endl;
+ oss << pad << "</LaphDilutionScheme>"<<endl;
  return oss.str();
 }
 
@@ -177,7 +210,7 @@ void DilutionSchemeInfo::dil_in(XMLReader& xml_in, const std::string& path,
  string tmp;
  DilType=0;
  try{
-    read(xml_in,path+"/dilution_type",tmp);
+    read(xml_in,path+"/DilutionType",tmp);
     tmp=tidyString(tmp);
     if (tmp=="none"){
        DilType=0;
@@ -188,21 +221,21 @@ void DilutionSchemeInfo::dil_in(XMLReader& xml_in, const std::string& path,
     else if (tmp=="block"){
        DilType=2;
        int nproj;
-       if (xml_in.count(path+"/number_projectors")==1){
-          read(xml_in,path+"/number_projectors",nproj);
+       if (xml_in.count(path+"/NumberProjectors")==1){
+          read(xml_in,path+"/NumberProjectors",nproj);
           if (nproj>1) DilType=nproj;
-          else throw "invalid number of block projectors";}
+          else throw string("invalid number of block projectors");}
        }
     else if (tmp=="interlace"){
        DilType=-2;
        int nproj;
-       if (xml_in.count(path+"/number_projectors")==1){
-          read(xml_in,path+"/number_projectors",nproj);
+       if (xml_in.count(path+"/NumberProjectors")==1){
+          read(xml_in,path+"/NumberProjectors",nproj);
           if (nproj>1) DilType=-nproj;
-          else throw "invalid number of interlace projectors";}
+          else throw string("invalid number of interlace projectors");}
        }
     else{
-       throw "invalid read";}
+       throw string("invalid read");}
     }
  catch(const string& errstr){
        QDPIO::cerr << "invalid DilutionSchemeInfo read from XML"<<endl;
@@ -221,12 +254,12 @@ string DilutionSchemeInfo::dil_out(int indent, int DilType,
  else if (DilType>1) dtype="block";
  else if (DilType<1) dtype="interlace";
  ostringstream oss;
- oss << pad <<"      <dilution_type> "<<dtype<<" </dilution_type>"<<endl;
+ oss << pad <<"      <DilutionType> "<<dtype<<" </DilutionType>"<<endl;
  if (out_nproj){
     if (DilType>1)
-       oss << pad << "      <number_projectors> "<<DilType<<" </number_projectors>"<<endl;
+       oss << pad << "      <NumberProjectors> "<<DilType<<" </NumberProjectors>"<<endl;
     else if (DilType<1)
-       oss << pad << "      <number_projectors> "<<-DilType<<" </number_projectors>"<<endl;
+       oss << pad << "      <NumberProjectors> "<<-DilType<<" </NumberProjectors>"<<endl;
     }
  return oss.str();
 }

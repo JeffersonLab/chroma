@@ -15,12 +15,12 @@ namespace Chroma {
 // *   link smearing and quark Laph smearing are enforced.  The XML  *
 // *   input must have the format                                    *
 // *                                                                 *
-// *       <stout_laph_smearing>                                     *
-// *           <link_iterations> 4 </link_iterations>                *
-// *           <link_staple_weight>  0.25 </link_staple_weight>      *
-// *           <laph_sigma_cutoff> 0.76 </laph_sigma_cutoff>         *
-// *           <number_laph_eigvecs> 32 </number_laph_eigvecs>       *
-// *       </stout_laph_smearing>                                    *
+// *       <StoutLaphSmearing>                                       *
+// *           <LinkIterations> 4 </LinkIterations>                  *
+// *           <LinkStapleWeight>  0.25 </LinkStapleWeight>          *
+// *           <LaphSigmaCutoff> 0.76 </LaphSigmaCutoff>             *
+// *           <NumberLaphEigvecs> 32 </NumberLaphEigvecs>           *
+// *       </StoutLaphSmearing>                                      *
 // *                                                                 *
 // *   Example usage:                                                *
 // *                                                                 *
@@ -57,11 +57,11 @@ class FieldSmearingInfo
 
   FieldSmearingInfo(XMLReader& xml_in);
 
+  FieldSmearingInfo(const std::string& header);
+
   FieldSmearingInfo(const FieldSmearingInfo& in);
 
   FieldSmearingInfo& operator=(const FieldSmearingInfo& in);
-
-  void assign(int link_it, double link_wt, int quark_nvecs, double laph_sigma);
 
   ~FieldSmearingInfo(){}
 
@@ -86,6 +86,12 @@ class FieldSmearingInfo
 
   std::string output(int indent = 0) const;
 
+  std::string getHeader() const { return output(0); }
+
+
+ private:
+
+  void extract_info_from_reader(XMLReader& xml_in);
 
 };
 

@@ -11,24 +11,55 @@ namespace Chroma {
 // *  Class "GaugeConfigurationInfo" holds information about a     *
 // *  gauge configuration.  It also checks that its config info    *
 // *  is the same when compared against another object of class    *
-// *  GaugeConfigurationInfo. This is a very simple wrapper over   *
-// *  a gauge_xml, that will also return the trajectory number     *
-// *  as well as some other info about the gauge configuration.    *
+// *  GaugeConfigurationInfo. This will also return the trajectory *
+// *  number as well as some other info about the gauge            *
+// *  configuration.                                               *
 // *                                                               *
-// *  Usage:                                                       *
+// *  XML input:                                                   *
 // *                                                               *
-// *    GaugeConfigurationInfo u(XMLReader& xml_in);               *
+// *   Recall that the chroma XML input file must have the form    *
 // *                                                               *
-// *       --> If "gauge_id" is found in "xml_in", then this       *
-// *           info corresponds to an actual configuration.        *
-// *           "gauge_id" is assigned, as well as "gauge_xml",     *
-// *           and the trajectory number is extracted from the     *
-// *           named object map, as well as other info.            *
-// *       --> If not found, then this is metadata from            *
-// *           some quantity (such as a quark source/sink)         *
-// *           other than a configuration.  "gauge_id" is set      *
-// *           to the empty string but the "gauge_xml" is          *
-// *           assigned.                                           *
+// *    <chroma>                                                   *
+// *      <annotation> Job title </annotation>                     *
+// *      <RNG> .... </RNG>  (optional)                            *
+// *      <Param>                                                  *
+// *         <nrow>X Y Z T</nrow>                                  *
+// *         <InlineMeasurements>                                  *
+// *            <elem>  .... </elem>   <-- each inline measurement *
+// *         </InlineMeasurements>                                 *
+// *      </Param>                                                 *
+// *      <Cfg>                                                    *
+// *         <cfg_type>CONFIG_FILE_TYPE</cfg_type>                 *
+// *         <cfg_file>cfg_file_name</cfg_file>                    *
+// *      </Cfg>                                                   *
+// *    </chroma>                                                  *
+// *                                                               *
+// *   The gauge configuration specified in the <Cfg> tag gets     *
+// *   the gauge_id = "default_gauge_id".                          *
+// *                                                               *
+// *  There are two constructors to GaugeConfigurationInfo: one    *
+// *  that takes an XMLReader, and another that takes a string.    *
+// *                                                               *
+// *    XMLReader xml_in(...);                                     *
+// *    GaugeConfigurationInfo U(xml_in);                          *
+// *                                                               *
+// *      --> This constructor expects XML of the form             *
+// *               <GaugeConfigurationInfo>                        *
+// *                  <gauge_id>....</gauge_id>                    *
+// *               </GaugeConfigurationInfo>                       *
+// *          then information about the configuration is obtained *
+// *          from TheNamedObjMap and the gauge_header string is   *
+// *          formed.  The gauge_header string is surrounded by    *
+// *          the tag <GaugeConfigHeader>...</GaugeConfigHeader>.  *
+// *                                                               *
+// *    string headerInfo(...);                                    *
+// *    GaugeConfigurationInfo U(headerInfo);                      *
+// *                                                               *
+// *      --> This version of the constructor assumes that header  *
+// *          information from a quark_source_sink file, for       *
+// *          example, is passed in and requires the string        *
+// *          contains the gauge_header string, which is extracted *
+// *          verbatim and has tag <GaugeConfigHeader>.            *
 // *                                                               *
 // *    GaugeConfigurationInfo u2(xml_in);                         *
 // *    u.checkEqual(u2); --> checks that u2 and u have same xml   *
@@ -51,17 +82,21 @@ namespace Chroma {
 class GaugeConfigurationInfo
 {
 
-  std::string gauge_xml;    // private data
+  std::string file_name;
+  std::string config_type;
   std::string gauge_id;
   int traj_num;
   int time_dir;
   int time_extent;
+  multi1d<int> extents;
   int number_dir;
 
  public:
 
   GaugeConfigurationInfo(XMLReader& xml_rdr);
          
+  GaugeConfigurationInfo(const std::string& header);
+
   GaugeConfigurationInfo(const GaugeConfigurationInfo& rhs);
                  
   GaugeConfigurationInfo& operator=(const GaugeConfigurationInfo& rhs);
@@ -72,7 +107,6 @@ class GaugeConfigurationInfo
 
   bool operator==(const GaugeConfigurationInfo& rhs) const;
 
-  void matchXMLverbatim(const GaugeConfigurationInfo& rhs) const;
 
 
 
@@ -82,11 +116,21 @@ class GaugeConfigurationInfo
 
   std::string getGaugeId() const { return gauge_id; }
 
+  std::string getGaugeConfigHeader() const { return output(0); }
+
+  std::string getFullRecordXML() const;
+
   int getTimeExtent() const { return time_extent; }
 
   int getTimeDir() const { return time_dir; }
   
   int getNumberOfDirections() const { return number_dir; }
+
+
+ private:
+
+  void set_info_from_gauge_header(XMLReader& xmlg);
+  void set_info_from_header_string(const std::string& header);
 
 };
 

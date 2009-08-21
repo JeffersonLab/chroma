@@ -25,8 +25,7 @@ namespace Chroma {
 // *     -- computes Laplacian eigenvectors (NamedObjMap stored)  *
 // *                                                              *
 // *                                                              *
-// *  Internally maintains a FieldSmearingInfo.  Requires         *
-// *  connection with an externally maintained                    *
+// *  Internally maintains a FieldSmearingInfo and a              *
 // *  GaugeConfigurationHandler.                                  *
 // *                                                              *
 // *  All Laph Handlers follow the member naming convention:      *
@@ -51,7 +50,7 @@ class FieldSmearingHandler
        // pointers to internal infos (managed by this handler
        // with new and delete)
 
-   FieldSmearingInfo* smearPtr;
+   const FieldSmearingInfo* smearPtr;
 
 
        // storage and/or references to internal data
@@ -62,7 +61,7 @@ class FieldSmearingHandler
 
    string laph_eigvecs_id;
 
-       // Prevent copying ... handler which might contain large
+       // prevent copying ... handler might contain large
        // amounts of data
 
    FieldSmearingHandler(const FieldSmearingHandler&);
@@ -79,6 +78,8 @@ class FieldSmearingHandler
 
    void setInfo(XMLReader& xml_in);
 
+   void setInfo(const std::string& header);
+
    ~FieldSmearingHandler();
 
    void clear();  // clears everything in the handler
@@ -88,12 +89,9 @@ class FieldSmearingHandler
 
    bool isInfoSet() const;
 
-   const FieldSmearingInfo& getInfo() const {return *smearPtr;}
+   const FieldSmearingInfo& getFieldSmearingInfo() const;
 
-   FieldSmearingInfo& getInfo() { return *smearPtr; }
-   
-   const GaugeConfigurationInfo& getGaugeConfigInfo() const 
-       { return uPtr->getInfo(); }
+   const GaugeConfigurationInfo& getGaugeConfigurationInfo() const;
 
    string outputInfo() const;
 
@@ -144,10 +142,12 @@ class FieldSmearingHandler
 
  private:
 
+   void set_info(XMLReader& xml_in);
    void clear_data();
    void create_handlers();
    void destroy_handlers();
-   void check_set(XMLReader& record_xml);
+   void destroy();
+   void check_match(XMLReader& record_xml);
 
 
 };

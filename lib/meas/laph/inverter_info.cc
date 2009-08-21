@@ -25,14 +25,14 @@ InverterInfo& InverterInfo::operator=(const InverterInfo& rhs)
 }
 
 
-InverterInfo::InverterInfo(XMLReader& act_rdr)
+InverterInfo::InverterInfo(XMLReader& xml_in)
 {
  try{
-    XMLReader xml_in(act_rdr, "//InvertParam");
-    read(xml_in, "RsdCG", tol);
-    read(xml_in, "invType", id);
+    XMLReader xmlr(xml_in, "./descendant-or-self::InvertParam");
+    read(xmlr, "RsdCG", tol);
+    read(xmlr, "invType", id);
     ostringstream strm;
-    xml_in.print(strm);
+    xmlr.print(strm);
     inverter_xml = strm.str();
     QDPIO::cout << "Inverter XML:"<<endl << inverter_xml << endl;
     QDPIO::cout << "Tolerance = " << tol << endl;

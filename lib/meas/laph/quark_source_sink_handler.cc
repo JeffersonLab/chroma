@@ -13,25 +13,6 @@ namespace Chroma {
 //  use of BinaryStoreDB in  qdp++/include/qdp_db_imp.h
 //  with SerialDBKey and SerialDBData in chroma/lib/util/ferm/key_val_db.h
 
-// ****************************************************************
-// *                                                              *
-// *  "QuarkSourceSinkHandler" handles access to the smeared gauge  *
-// *  field and the eigenvectors of the Laplacian used in the     *
-// *  quark field Laplacian Heaviside (Laph) smearing.            *
-// *  See declarations below for available member functions.      *
-// *                                                              *
-// *  Synopsis of important tasks:                                *
-// *     -- computes smeared gauge field (locally stored)         *
-// *     -- computes Laplacian eigenvectors (NamedObjMap stored)  *
-// *                                                              *
-// *                                                              *
-// *  Internally maintains a QuarkSourceSinkInfo.  Requires         *
-// *  connection with an externally maintained                    *
-// *  GaugeConfigurationHandler.                                  *
-// *                                                              *
-// ****************************************************************
-
-
    // use of a pointer to LaphNoiseInfo is dangerous!!  But this
    // class is only used internally so criminals have no access to it.
    
@@ -127,72 +108,112 @@ void read(BinaryReader& in, QuarkSourceSinkHandler::Key& key_in )
 
 
 QuarkSourceSinkHandler::QuarkSourceSinkHandler()
-          : uPtr(0), smearPtr(0), dilPtr(0), qactionPtr(0),
-            invertPtr(0), fileMode(0) {}
-
-QuarkSourceSinkHandler::QuarkSourceSinkHandler(XMLReader& xml_info)
-          : uPtr(0), smearPtr(0), dilPtr(0), qactionPtr(0),
-            invertPtr(0), fileMode(0)
+          : dilPtr(0), qactionPtr(0), invertPtr(0), fileMode(0) 
 {
-cout << "in constructor"<<endl;
- setInfo(xml_info);
+ create_handlers();
+}
+
+QuarkSourceSinkHandler::QuarkSourceSinkHandler(XMLReader& xml_in)
+          : dilPtr(0), qactionPtr(0), invertPtr(0), fileMode(0)
+{
+ create_handlers();
+ set_info(xml_in);
 }
 
 
-void QuarkSourceSinkHandler::setInfo(XMLReader& xml_info)
+void QuarkSourceSinkHandler::setInfo(XMLReader& xml_in)
 {
- clear(); cout << "cleared"<<endl;
- set_info(xml_info);  
- setFileNames(xml_info); cout << "filenames set"<<endl;
- setup_file_map(); cout << "filemap"<<endl;
+ clear();
+ set_info(xml_in);
+}
+
+void QuarkSourceSinkHandler::set_info(XMLReader& xml_in)
+{
+ if (xml_tag_count(xml_in,"QuarkSourceSinkInfo")!=1){
+    QDPIO::cerr << "Bad XML input to QuarkSourceSinkHandler"<<endl;
+    QDPIO::cerr << "Expected one <QuarkSourceSinkInfo> tag"<<endl;
+    QDP_abort(1);}
+ XMLReader xml_info(xml_in, ".//QuarkSourceSinkInfo");
+
+ set_file_names(xml_info);
+ invertPtr = new InverterInfo(xml_info);
+
+ if  ((xml_tag_count(xml_info,"StoutLaphSmearing")==1)
+    &&(xml_tag_count(xml_info,"GaugeConfigurationInfo")==1)
+    &&(xml_tag_count(xml_info,"QuarkInfo")==1)
+    &&(xml_tag_count(xml_info,"LaphDilutionScheme")==1))
+    set_info_helper(xml_info);
+ else
+    set_info_from_file(xml_info);                        
+
+ setup_file_map();
+
  QDPIO::cout << "Info set in QuarkSourceSinkHandler"<<endl;
  QDPIO::cout << outputInfo() <<endl;
 }
 
-void QuarkSourceSinkHandler::set_info(XMLReader& xml_info)
+void QuarkSourceSinkHandler::set_info_helper(XMLReader& xml_info)
 {
- create_handlers(); cout << "handlers created"<<endl;
+   // one GaugeConfigurationInfo tag will initialize uPtr and part of smearPtr
  smearPtr->setInfo(xml_info); cout << "smearing info done"<<endl;
- uPtr->setInfo(xml_info);  cout << "gauge info done"<<endl;
+ uPtr->setInfo(xml_info);  cout << "gauge info done"<<endl;  
  try{
     dilPtr = new DilutionSchemeInfo(xml_info); cout << "dil done"<<endl;
-    qactionPtr = new QuarkActionInfo(xml_info); cout << "quark action"<<endl;
-    invertPtr = new InverterInfo(xml_info); cout << "inverted "<<endl;}
+    qactionPtr = new QuarkInfo(xml_info,uPtr->getInfo()); cout << "quark action"<<endl;}
  catch(...){
     QDPIO::cerr << "allocation problem in QuarkSourceSinkHandler"<<endl;
     QDP_abort(1);}
 }
 
-void QuarkSourceSinkHandler::setInfoFromFile(XMLReader& xml_info)
+
+void QuarkSourceSinkHandler::set_info_helper(const string& header)
 {
- clear();
- setFileNames(xml_info);
+ string info;
+ extract_xml_element(header,"QuarkSourceSinkHeader",
+                     info,"QuarkSourceSinkHandler");
+
+   // one GaugeConfigurationInfo tag will initialize uPtr and part of smearPtr
+ smearPtr->setInfo(header); cout << "smearing info done"<<endl;
+ uPtr->setInfo(header);  cout << "gauge info done"<<endl;  
+ try{
+    dilPtr = new DilutionSchemeInfo(info); cout << "dil done"<<endl;
+    qactionPtr = new QuarkInfo(info); cout << "quark action"<<endl;}
+ catch(...){
+    QDPIO::cerr << "allocation problem in QuarkSourceSinkHandler"<<endl;
+    QDP_abort(1);}
+}
+
+
+void QuarkSourceSinkHandler::set_info_from_file(XMLReader& xml_info)
+{
  for (int k=0;k<fileNames.size();k++)
     if (fileExists(fileNames[k])){
        BinaryStoreDB<SerialDBKey<Key>,SerialDBData<LatticeFermion> > fsource;
        fsource.open(fileNames[k], O_RDONLY , 0664);
        string headerInfo;
        fsource.getUserdata(headerInfo);
-       stringstream oss; oss << headerInfo;
-       XMLReader xmlr(oss);
-       set_info(xmlr);
+       set_info_helper(headerInfo);
        fsource.close();
        break;}
  if (!isInfoSet()){
     QDPIO::cerr << "could not get info from files in QuarkSourceSinkHandler"<<endl;
     QDP_abort(1);}
- setup_file_map();
- QDPIO::cout << "Info set in QuarkSourceSinkHandler"<<endl;
- QDPIO::cout << outputInfo() <<endl;
 }
 
 
 QuarkSourceSinkHandler::~QuarkSourceSinkHandler()
 {
- clear();
+ destroy();
 }
 
 void QuarkSourceSinkHandler::clear()
+{
+ destroy();
+ create_handlers();
+ QDPIO::cout << "QuarkSourceSinkHandler cleared"<<endl;
+}
+
+void QuarkSourceSinkHandler::destroy()
 {
  try{
     delete dilPtr;
@@ -207,7 +228,6 @@ void QuarkSourceSinkHandler::clear()
  fileMode=0;
  clearData();
  destroy_handlers();
- QDPIO::cout << "QuarkSourceSinkHandler cleared"<<endl;
 }
 
 bool QuarkSourceSinkHandler::isInfoSet() const
@@ -219,12 +239,80 @@ bool QuarkSourceSinkHandler::isInfoSet() const
 string QuarkSourceSinkHandler::outputInfo() const
 {
  ostringstream oss;
- oss << uPtr->outputInfo() << endl;
- oss << smearPtr->outputInfo() << endl;
+ oss << "<QuarkSourceSinkInfo>"<<endl;
+ oss << smearPtr->outputInfo() << endl;  // also outputs uPtr-> info
  oss << dilPtr->output() << endl;
  oss << qactionPtr->output() << endl;
+ oss << "</QuarkSourceSinkInfo>";
  return oss.str();
 }
+
+string QuarkSourceSinkHandler::getHeader() const
+{
+ ostringstream oss;
+ oss << "<QuarkSourceSinkHeader>"<<endl;
+ oss << smearPtr->outputInfo() << endl; // also outputs uPtr-> info
+ oss << dilPtr->output() << endl;
+ oss << qactionPtr->output() << endl;
+ oss << "</QuarkSourceSinkHeader>";
+ return oss.str();
+}
+
+const GaugeConfigurationInfo& QuarkSourceSinkHandler::getGaugeConfigurationInfo() const 
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in QuarkSourceSinkHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getGaugeConfigurationInfo"<<endl;
+    QDP_abort(1);}
+ return uPtr->getInfo();
+}
+
+const FieldSmearingInfo& QuarkSourceSinkHandler::getFieldSmearingInfo() const
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in QuarkSourceSinkHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getFieldSmearingInfo"<<endl;
+    QDP_abort(1);}
+ return smearPtr->getFieldSmearingInfo();
+}
+
+const DilutionSchemeInfo& QuarkSourceSinkHandler::getDilutionSchemeInfo() const 
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in QuarkSourceSinkHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getDilutionSchemeInfo"<<endl;
+    QDP_abort(1);}
+ return *dilPtr;
+}
+
+const QuarkInfo& QuarkSourceSinkHandler::getQuarkInfo() const 
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in QuarkSourceSinkHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getQuarkInfo"<<endl;
+    QDP_abort(1);}
+ return *qactionPtr;
+}
+
+const InverterInfo& QuarkSourceSinkHandler::getInverterInfo() const 
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in QuarkSourceSinkHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getInverterInfo"<<endl;
+    QDP_abort(1);}
+ return *invertPtr;
+}
+
+int QuarkSourceSinkHandler::getNumberOfDilutionProjectors() const 
+{
+ if (!isInfoSet()){
+    QDPIO::cerr << "error in QuarkSourceSinkHandler:"<<endl;
+    QDPIO::cerr << "  must setInfo before calling getNumberOfDilutionProjectors"<<endl;
+    QDP_abort(1);}
+ return dilPtr->getNumberOfProjectors(smearPtr->getFieldSmearingInfo());
+}
+
+
 
         // compute for all dilution indices and dump out to file
         // specified by "file_index";  compute sources for all source
@@ -256,7 +344,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise,
      // set up the dilution projectors
 
  vector<DilutionSchemeInfo::Projector> dilProjs;
- dilPtr->getProjectors(smearPtr->getInfo(),dilProjs);
+ dilPtr->getProjectors(smearPtr->getFieldSmearingInfo(),dilProjs);
  
  QDPIO::cout << "Quark source computation for all dilutions, one noise, beginning"<<endl;
  START_CODE();
@@ -273,7 +361,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise,
  int Textent = uPtr->getInfo().getTimeExtent();
  int Tdir = uPtr->getInfo().getTimeDir();
  int Nspin = QDP::Ns;
- int nEigs = smearPtr->getInfo().getNumberOfLaplacianEigenvectors();
+ int nEigs = smearPtr->getFieldSmearingInfo().getNumberOfLaplacianEigenvectors();
  int Zn = noise.getZNGroup();
   
  multi3d<DComplex> laph_noise(Textent,Nspin,nEigs);
@@ -290,8 +378,9 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise,
  for (int dil=0;dil<dilProjs.size();dil++){
 
     Key kval(noise,Textent,dil);    // Textent signals a source (not a sink)
-    if (fileMap.find(kval)!=fileMap.end()){   // already computed!!
-       QDPIO::cout << "warning: computeQuarkSource already computed...skip re-computing"<<endl;}
+    if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=3)){   // already computed!!
+       QDPIO::cout << "warning: computeQuarkSource already computed..."
+                   << "skip re-computing since fileMode is not overwrite"<<endl;}
     else{
     
         // get the lists of which spins and which eigenvectors are
@@ -360,7 +449,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
      // set up the dilution projectors
 
  vector<DilutionSchemeInfo::Projector> dilProjs;
- dilPtr->getProjectors(smearPtr->getInfo(),dilProjs);
+ dilPtr->getProjectors(smearPtr->getFieldSmearingInfo(),dilProjs);
  
  QDPIO::cout << "Quark sink computation for all dilutions, one noise,"
              << " one source time beginning"<<endl;
@@ -378,7 +467,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
 
  int Tdir = uPtr->getInfo().getTimeDir();
  int Nspin = QDP::Ns;
- int nEigs = smearPtr->getInfo().getNumberOfLaplacianEigenvectors();
+ int nEigs = smearPtr->getFieldSmearingInfo().getNumberOfLaplacianEigenvectors();
  int Zn = noise.getZNGroup();
   
  multi3d<DComplex> laph_noise(Textent,Nspin,nEigs);
@@ -405,7 +494,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
  GroupXML_t solverInfo;
  solverInfo.xml =  invertPtr->output();
  solverInfo.id = invertPtr->getId();
- solverInfo.path = "//InvertParam";
+ solverInfo.path = ".//InvertParam";
  
    // Initialize fermion action
    
@@ -419,7 +508,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
 
  try{
     S_f=TheFermionActionFactory::Instance().createObject(fermact_id,
-                                   fermacttop,"//FermionAction");
+                                   fermacttop,".//FermionAction");
     state=S_f->createState(uPtr->getData());
     PP = S_f->qprop(state,solverInfo);}
  catch(const string& err){
@@ -432,8 +521,9 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
  for (int dil=0;dil<dilProjs.size();dil++){
 
     Key kval(noise,source_time,dil);
-    if (fileMap.find(kval)!=fileMap.end()){   // already computed!!
-       QDPIO::cout << "warning: computeQuarkSink already computed...skip re-computing"<<endl;}
+    if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=3)){   // already computed!!
+       QDPIO::cout << "warning: computeQuarkSink already computed..."
+                   << "skip re-computing since fileMode not overwrite"<<endl;}
     else{
     
         // get the lists of which spins and which eigenvectors are
@@ -496,7 +586,7 @@ void QuarkSourceSinkHandler::computeSink(XMLReader& xml_in, int file_index)
 {
  LaphNoiseInfo noise(xml_in);
  int source_time;
- read(xml_in,"//source_time",source_time);
+ read(xml_in,".//source_time",source_time);
  computeSink(noise,source_time,file_index);
 }
 
@@ -510,7 +600,7 @@ void QuarkSourceSinkHandler::eraseSink(XMLReader& xml_in)
 {
  LaphNoiseInfo noise(xml_in);
  int source_time;
- read(xml_in,"//source_time",source_time);
+ read(xml_in,".//source_time",source_time);
  eraseSink(noise,source_time);
 }
 
@@ -680,26 +770,28 @@ void QuarkSourceSinkHandler::destroy_handlers()
 
   //  This sets the fileName vector from the XML input.
   //  It checks that all file names are different (no repeats allowed)
-  //  and aborts if no file names are given
+  //  and aborts if no file names are given.  This routine also sets
+  //  the fileMode integer flag.
 
-void QuarkSourceSinkHandler::setFileNames(XMLReader& xml_in)
+void QuarkSourceSinkHandler::set_file_names(XMLReader& xml_in)
 {
      // read list of filenames
  list<string> flist;
  fileMode = 0;  // read only
  try{
-    XMLReader xmlr(xml_in,"//file_name_list");
-    if (xmlr.count("//file_mode")==1){
+    XMLReader xmlr(xml_in,".//FileNameList");
+    if (xmlr.count("./FileMode")==1){
        string fmode;
-       read(xmlr,"//file_mode",fmode);
+       read(xmlr,"./FileMode",fmode);
        fmode=tidyString(fmode);
        if (fmode=="must_exist") fileMode=1;
-       else if (fmode=="create_if_not_there") fileMode=2;}
-    int ntags=xmlr.count("//file_name"); cout << "ntags="<<ntags<<endl;
+       else if (fmode=="create_if_not_there") fileMode=2;
+       else if (fmode=="overwrite") fileMode=3;}
+    int ntags=xmlr.count("./FileName"); cout << "ntags="<<ntags<<endl;
     string fname;
     for (int i=1;i<=ntags;i++){
        ostringstream element_xpath;
-       element_xpath << "//file_name[" << i << "]";
+       element_xpath << "./FileName[" << i << "]";
        read(xmlr, element_xpath.str(),fname);
        flist.push_back(tidyString(fname));}
     }
@@ -732,7 +824,7 @@ void QuarkSourceSinkHandler::setFileNames(XMLReader& xml_in)
 void QuarkSourceSinkHandler::setup_file_map()
 {
  string header_info;
- header_info=outputInfo();
+ header_info=getHeader();
 
       // make the fileMap from the files that exist; create files
       // if they don't exist and fileMode = 2 specified
@@ -760,7 +852,7 @@ void QuarkSourceSinkHandler::setup_file_map()
        fsource.open(fileNames[k], O_RDONLY , 0664);
        string hdinf;
        fsource.getUserdata(hdinf);
-       if (hdinf!=header_info){
+       if (!headerMatch(hdinf,header_info)){
           QDPIO::cerr << "header info in file "<<fileNames[k]
                       << " does not match info in QuarkSourceSinkHandler"<<endl;
           QDP_abort(1);}

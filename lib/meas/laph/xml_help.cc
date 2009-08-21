@@ -5,22 +5,64 @@ using namespace std;
 namespace Chroma {
   namespace LaphEnv {
 
+
+// *********************************************************
+
+    // This returns the number of times that the tag "tagname"
+    // is found in the descendents of the current context or the current context.
+    // A **tag name** should be input, not an Xpath, since
+    // a "./descendant-or-self::" is prepended to form an Xpath.
+
+int xml_tag_count(XMLReader& xmlr, const string& tagname)
+{
+ return xmlr.count("./descendant-or-self::"+tagname);
+}
+
  // ************************************************************
+
+    //  This routine searches in the XML string "in_str" to find
+    //  the tag with name "tag_name" and returns that complete
+    //  XML element in "out_str".  If the tag is not found or
+    //  multiple occurrences are found, this indicates a serious
+    //  error and an abort is issued.  "callingClass" is the name
+    //  of the class that called this function and is output 
+    //  before an abort to help correct the situation.
+
+void extract_xml_element(const string& in_str, const string& tag_name,
+                         string& out_str, const string& callingClass)
+{
+ int start=in_str.find("<"+tag_name+">");
+ int stop=in_str.find("</"+tag_name+">");
+ if ((start==string::npos)||(stop==string::npos)||(stop<start)){
+    QDPIO::cerr << "could not find tag "<<tag_name<<" in header string"
+                << " in class "<<callingClass<<endl;
+    QDP_abort(1);}
+ out_str=in_str.substr(start,stop-start+tag_name.length()+3);
+ if (in_str.find("<"+tag_name+">",start+1)!=string::npos){
+    QDPIO::cerr << "multiple occurrences of tag "<<tag_name
+                <<" in header string in class "<<callingClass<<endl;
+    QDP_abort(1);}
+}
+
+// *********************************************************
 
    //  This routine checks that the current "top" node in "xmlr"
    //  has name "tagname".
 
 bool checkXMLCurrentTagName(XMLReader& xmlr, const std::string& tagname)
 {
- stringstream oss;
- xmlr.print(oss);
- string xmlstr=oss.str();
- int start=xmlstr.find_first_of("<");
- if (start==string::npos) return false;
- int stop=xmlstr.find_first_of(">");
- if (stop==string::npos) return false;
- xmlstr=tidyString(xmlstr.substr(start+1,stop-start-1));
- return (xmlstr==tagname);
+ ostringstream path;
+ path << "self::"<<tagname;
+ return (xmlr.count(path.str())==1);
+// stringstream oss;
+// xmlr.print(oss);
+// string xmlstr=oss.str();
+// int start=xmlstr.find_first_of("<");
+// if (start==string::npos) return false;
+// int stop=xmlstr.find_first_of(">");
+// if (stop==string::npos) return false;
+// xmlstr=tidyString(xmlstr.substr(start+1,stop-start-1));
+// return (xmlstr==tagname);
 }
 
  // ************************************************************
@@ -59,6 +101,12 @@ bool xmlContentIsEqual(XMLReader& xmlr1, XMLReader& xmlr2,
  xmlContentIsEqual(oss1.str(),oss2.str(),float_rel_tol);
 }
 
+bool headerMatch(const string& doc1, const string& doc2, 
+                 float float_rel_tol)
+{
+ if (doc1==doc2) return true;
+ return xmlContentIsEqual(doc1,doc2,float_rel_tol);
+}
 
 // ************************************************************
 

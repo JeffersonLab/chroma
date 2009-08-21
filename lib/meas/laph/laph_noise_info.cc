@@ -6,31 +6,71 @@ namespace Chroma {
   namespace LaphEnv {
 
 
+// *************************************************************
 
-   // constructor gets input from XMLReader
+   // XMLReader constructor
 
-LaphNoiseInfo::LaphNoiseInfo(XMLReader& xml_rdr)
+LaphNoiseInfo::LaphNoiseInfo(XMLReader& xml_in)
 {
- int zng,ss0,ss1,ss2,ss3;
- try{
-    XMLReader xml_in(xml_rdr, "//laph_noise"); 
-    read(xml_in,"./zn_group", zng );
-    read(xml_in,"./seed0", ss0 );
-    read(xml_in,"./seed1", ss1 );
-    read(xml_in,"./seed2", ss2 );
-    read(xml_in,"./seed3", ss3 );
-    }
- catch(const string& err){
-    QDPIO::cerr << "could not initialize LaphNoiseInfo from XML input"<<endl;
+ if (xml_tag_count(xml_in,"LaphNoiseInfo")!=1){
+    QDPIO::cerr << "Bad XML input to LaphNoiseInfo"<<endl;
+    QDPIO::cerr << "Expected one <LaphNoiseInfo> tag"<<endl;
     QDP_abort(1);}
- assign(zng,ss0,ss1,ss2,ss3);
+ XMLReader xmlr(xml_in, "./descendant-or-self::LaphNoiseInfo");
+ extract_info_from_reader(xmlr);
 }
+
+void LaphNoiseInfo::extract_info_from_reader(XMLReader& xml_in)
+{
+ xmlread(xml_in,"ZNGroup", znGroup, "LaphNoiseInfo");
+ xmlread(xml_in,"seed0", s0, "LaphNoiseInfo");
+ xmlread(xml_in,"seed1", s1, "LaphNoiseInfo");
+ xmlread(xml_in,"seed2", s2, "LaphNoiseInfo");
+ xmlread(xml_in,"seed3", s3, "LaphNoiseInfo");
+ check_assignment();
+ currTraj=1000;
+ calc_seed();
+}
+
+void LaphNoiseInfo::check_assignment()
+{
+ if  ((znGroup<2)||(s0<0)||(s0>4095)||(s1<0)||(s1>4095)
+    ||(s2<0)||(s2>4095)||(s3<0)||(s3>2047)){
+    QDPIO::cerr << "improper initialization of LaphNoiseInfo"<<endl;
+    QDPIO::cerr << "seed0,seed1,seed2 must have value 0 to 4095"<<endl;
+    QDPIO::cerr << "seed3 must have value 0 to 2047"<<endl;
+    QDPIO::cerr << "ZNGroup must have integer value >= 2"<<endl;
+    QDP_abort(1);}
+}
+
+ // *************************************************************
+
+   // This version of the constructor assumes that header information
+   // from a quark_source_sink file, for example, is passed in.
+
+LaphNoiseInfo::LaphNoiseInfo(const string& header)
+{
+ string noise_header;
+ extract_xml_element(header,"LaphNoiseInfo",noise_header,
+                     "LaphNoiseInfo");
+ stringstream tmp;
+ tmp << noise_header;
+ XMLReader xmlr0(tmp);
+ XMLReader xmlr(xmlr0,"/LaphNoiseInfo");  
+ extract_info_from_reader(xmlr);
+}
+
+
+
+  // ************************************************************
+
+    // copy constructor
 
 LaphNoiseInfo::LaphNoiseInfo(const LaphNoiseInfo& in)
               : s0(in.s0), s1(in.s1), s2(in.s2), s3(in.s3),
                 znGroup(in.znGroup), currTraj(in.currTraj) 
 {
- rngseed=in.rngseed;
+ rngseed=in.rngseed;  // no copy constructor for this type!!
 }
 
 
@@ -41,22 +81,6 @@ LaphNoiseInfo& LaphNoiseInfo::operator=(const LaphNoiseInfo& in)
  currTraj=in.currTraj;
  rngseed=in.rngseed;
  return *this;
-}
-
-void LaphNoiseInfo::assign(int zngroup, int seed0, int seed1, 
-                           int seed2, int seed3)
-{
- znGroup=zngroup;
- s0=seed0; s1=seed1; s2=seed2; s3=seed3;
- if  ((znGroup<2)||(s0<0)||(s0>4095)||(s1<0)||(s1>4095)
-    ||(s2<0)||(s2>4095)||(s3<0)||(s3>2047)){
-    QDPIO::cerr << "improper initialization of LaphNoiseInfo"<<endl;
-    QDPIO::cerr << "seed0,seed1,seed2 must have value 0 to 4095"<<endl;
-    QDPIO::cerr << "seed3 must have value 0 to 2047"<<endl;
-    QDPIO::cerr << "zn_group must have integer value >= 2"<<endl;
-    QDP_abort(1);}
- currTraj=1000;
- calc_seed();
 }
 
 void LaphNoiseInfo::checkEqual(const LaphNoiseInfo& in) const
@@ -80,6 +104,9 @@ bool LaphNoiseInfo::operator<(const LaphNoiseInfo& in) const
          && ((s3<in.s3) || ((s3==in.s3) 
          && ((znGroup<in.znGroup))))))))));
 }
+
+
+// **********************************************************
 
 
 Seed LaphNoiseInfo::getSeed(const GaugeConfigurationInfo& G) const
@@ -139,13 +166,13 @@ string LaphNoiseInfo::output(int indent) const
 {
  string pad(3*indent,' ');
  ostringstream oss;
- oss << pad << "<laph_noise>"<<endl;
- oss << pad << "  <zn_group> " << znGroup << " </zn_group>"<<endl;
+ oss << pad << "<LaphNoiseInfo>"<<endl;
+ oss << pad << "  <ZNGroup> " << znGroup << " </ZNGroup>"<<endl;
  oss << pad << "  <seed0> " << s0 << " </seed0>"<<endl;
  oss << pad << "  <seed1> " << s1 << " </seed1>"<<endl;
  oss << pad << "  <seed2> " << s2 << " </seed2>"<<endl;
  oss << pad << "  <seed3> " << s3 << " </seed3>"<<endl;
- oss << pad << "</laph_noise>"<<endl;
+ oss << pad << "</LaphNoiseInfo>"<<endl;
  return oss.str();
 }
 
@@ -165,17 +192,16 @@ void LaphNoiseInfo::binaryWrite(BinaryWriter& out) const
 
 void LaphNoiseInfo::binaryRead(BinaryReader& in)
 {
- int iz,i0,i1,i2,i3;
  try{
-    read(in,iz);
-    read(in,i0);
-    read(in,i1);
-    read(in,i2);
-    read(in,i3);}
+    read(in,znGroup);
+    read(in,s0);
+    read(in,s1);
+    read(in,s2);
+    read(in,s3);}
  catch(...){
     QDPIO::cerr << "failed to binary read LaphNoiseInfo"<<endl;
     QDP_abort(1);}
- assign(iz,i0,i1,i2,i3);
+ check_assignment();
 }
 
 // *************************************************************

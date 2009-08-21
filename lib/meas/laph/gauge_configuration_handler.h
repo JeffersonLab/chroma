@@ -10,24 +10,32 @@ namespace Chroma {
   namespace LaphEnv {
 
 
-// ******************************************************************************
-
-//    Class "GaugeConfigurationHandler" manages the actual gauge configuration.
-//    It contains a "GaugeConfigurationInfo" that holds the gauge_xml as well
-//    as a reference to the actual cfg.
-//
-//      Usage:
-//
-//         GaugeConfigurationHandler u(GaugeConfigurationInfo);   
-//               --> first call, get date from NamedObjectMap; 
-//                   set up static parameters.
-//               --> any subsequent call to the constructor causes an abort!!
-//               --> basically this is a simple singleton
-//
-//
-//         u.GetData();       <-- reference to the actual configuration
-//         u.GetInfo();       <-- reference to the GaugeConfigurationInfo
-//                                       
+// *******************************************************************
+// *                                                                 *
+// *  Class "GaugeConfigurationHandler" manages information about    *
+// *  and access to the gauge configuration in the Laph environment. *
+// *  It contains a "GaugeConfigurationInfo" that holds the gauge    *
+// *  header, as well as a reference to the actual cfg.              *
+// *                                                                 *
+// *    Basic usage:                                                 *
+// *                                                                 *
+// *      (a) declare a GaugeConfigurationHandler                    *
+// *      (b) set the info  -- via constructor or setInfo(..)        *
+// *      (c) set the data  -- via setData(..)                       *
+// *      (d) use getData(..) for access to gauge configuration      *
+// *                                                                 *
+// *     -- getInfo(..) provides access to configuration info        *
+// *     -- can be cleared and info/data reset                       *
+// *                                                                 *
+// *    Example:                                                     *
+// *       XMLReader xml_in;                                         *
+// *       GaugeConfigurationHandler uHandler;                       *
+// *       uHandler.setInfo(xml_in);                                 *
+// *       uHandler.setData();                                       *
+// *       const multi1d<LatticeColorMatrix>& U=uHandler.getData();  *
+// *    --> access to config through U                               *
+// *                                                                 *
+// *******************************************************************
 
 
 class GaugeConfigurationHandler
@@ -56,27 +64,33 @@ class GaugeConfigurationHandler
 
     void setInfo(XMLReader& xml_in);
 
+    void setInfo(const std::string& header);
+
     ~GaugeConfigurationHandler();
     
     void clear();
     
-
     void setData();
     
     
       // access to the gauge configuration and its info
 
-    const multi1d<LatticeColorMatrix>& getData() {setData();return *cfg;}
+    const multi1d<LatticeColorMatrix>& getData();
 
-    const GaugeConfigurationInfo& getInfo() const {return *gauge_info;}
+    const GaugeConfigurationInfo& getInfo() const;
 
-    string outputInfo() const;
+    std::string outputInfo() const;
+
+    std::string getGaugeConfigHeader() const;
 
     bool isInfoSet() const { return (gauge_info!=0);}
 
     bool isDataSet() const { return (cfg!=0);}
 
-  
+
+  private:
+
+    void set_info(XMLReader& xml_in);  
 
 };
 

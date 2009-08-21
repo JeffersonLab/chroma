@@ -13,7 +13,7 @@
 #include "field_smearing_handler.h"
 #include "dilution_scheme_info.h"
 #include "laph_noise_info.h"
-#include "quark_action_info.h"
+#include "quark_info.h"
 #include "inverter_info.h"
 #include "util/ferm/key_val_db.h"
 
@@ -23,22 +23,32 @@ namespace Chroma {
 
 // ****************************************************************
 // *                                                              *
-// *  "QuarkSourceSinkHandler" handles access to the smeared gauge  *
-// *  field and the eigenvectors of the Laplacian used in the     *
-// *  quark field Laplacian Heaviside (Laph) smearing.            *
-// *  See declarations below for available member functions.      *
+// *  "QuarkSourceSinkHandler" handles computation of and         *
+// *  subsequent access to the quark source and sink functions.   *
 // *                                                              *
-// *  Synopsis of important tasks:                                *
-// *     -- computes smeared gauge field (locally stored)         *
-// *     -- computes Laplacian eigenvectors (NamedObjMap stored)  *
+// *  Required XML input for setting the handler info:            *
 // *                                                              *
+// *   <QuarkSourceSinkInfo>                                      *
+// *      <FileNameList> ...  </FileNameList>  (required)         *
+// *      <InvertParam>  ...  </InvertParam>   (required)         *
+// *      <StoutLaphSmearing>      ...  </StoutLaphSmearing>      *
+// *      <GaugeConfigurationInfo> ...  </GaugeConfigurationInfo> *
+// *      <QuarkInfo>              ...  </QuarkInfo>              *
+// *      <LaphDilutionScheme>     ...  </LaphDilutionScheme>     *
+// *   </QuarkSourceSinkInfo>                                     *
 // *                                                              *
-// *  Internally maintains a QuarkSourceSinkInfo.  Requires         *
-// *  connection with an externally maintained                    *
-// *  GaugeConfigurationHandler.                                  *
+// *  The file list and the inverter parameters are mandatory.    *
+// *  The remaining info items, if absent, are extracted from     *
+// *  the files in file list.  If no files yet exist, then these  *
+// *  info items are mandatory.                                   *
+// *  All Laph Handlers follow the member naming convention:      *
+// *                                                              *
+// *    compute....()  to do original computation                 *
+// *    set...()       to internally set from file or NamedObjMap *
+// *                                                              *
+// *    get...()       provides access to results                 *
 // *                                                              *
 // ****************************************************************
-
 
 
 class QuarkSourceSinkHandler
@@ -75,21 +85,21 @@ class QuarkSourceSinkHandler
        // pointers to internal infos (managed by this handler
        // with new and delete)
 
-   DilutionSchemeInfo *dilPtr;
-   QuarkActionInfo *qactionPtr;
-   InverterInfo *invertPtr;
+   const DilutionSchemeInfo *dilPtr;
+   const QuarkInfo *qactionPtr;
+   const InverterInfo *invertPtr;
 
 
        // storage and/or references to internal data
 
    vector<std::string> fileNames;            // files to handle
    int fileMode;                // 0 = read_only, 1 = must_exist, 
-                                // 2 = create_if_not_there
+                                // 2 = create_if_not_there, 3 = overwrite
    map<Key,int> fileMap;                    // key -> file index
    map<Key,SerialDBData<LatticeFermion>* > m_storage; // storage of source/sinks
 
 
-       // Prevent copying ... handler which might contain large
+       // Prevent copying ... handler might contain large
        // amounts of data
 
    QuarkSourceSinkHandler(const QuarkSourceSinkHandler&);
@@ -102,11 +112,9 @@ class QuarkSourceSinkHandler
 
    QuarkSourceSinkHandler();
 
-   QuarkSourceSinkHandler(XMLReader& xml_info);
+   QuarkSourceSinkHandler(XMLReader& xml_in);
 
-   void setInfo(XMLReader& xml_info);
-
-   void setInfoFromFile(XMLReader& xml_info);
+   void setInfo(XMLReader& xml_in);
 
    ~QuarkSourceSinkHandler();
 
@@ -116,21 +124,22 @@ class QuarkSourceSinkHandler
 
    string outputInfo() const;
 
+   string getHeader() const;
 
 
-   const GaugeConfigurationInfo& getGaugeConfigurationInfo() const 
-      {return uPtr->getInfo();}
-   const FieldSmearingInfo& getFieldSmearingInfo() const 
-      {return smearPtr->getInfo();}
-   const DilutionSchemeInfo& getDilutionSchemeInfo() const 
-      {return *dilPtr;}
-   const QuarkActionInfo& getQuarkActionInfo() const 
-      {return *qactionPtr;}
-   const InverterInfo& getInverterInfo() const 
-      {return *invertPtr;}
 
-   int getNumberOfDilutionProjectors() const 
-    {return dilPtr->getNumberOfProjectors(smearPtr->getInfo());}
+   const GaugeConfigurationInfo& getGaugeConfigurationInfo() const;
+
+   const FieldSmearingInfo& getFieldSmearingInfo() const;
+
+   const DilutionSchemeInfo& getDilutionSchemeInfo() const; 
+
+   const QuarkInfo& getQuarkInfo() const;
+
+   const InverterInfo& getInverterInfo() const;
+
+   int getNumberOfDilutionProjectors() const;
+
 
 
         // compute for all dilution indices and dump out to file
@@ -147,13 +156,13 @@ class QuarkSourceSinkHandler
    void computeSink(const LaphNoiseInfo& noise, int source_time, int file_index = -1);
 
 
-   void eraseSink(XMLReader& xml_in);
+//   void eraseSink(XMLReader& xml_in);
    
-   void eraseSink(const LaphNoiseInfo& noise, int source_time);
+//   void eraseSink(const LaphNoiseInfo& noise, int source_time);
    
-   void eraseSource(XMLReader& xml_in);
+//   void eraseSource(XMLReader& xml_in);
    
-   void eraseSource(const LaphNoiseInfo& noise);
+//   void eraseSource(const LaphNoiseInfo& noise);
    
    
 
@@ -190,8 +199,12 @@ class QuarkSourceSinkHandler
 
    void create_handlers();
    void destroy_handlers();
-   void setFileNames(XMLReader& record_xml);
+   void destroy();
    void set_info(XMLReader& xml_info);
+   void set_file_names(XMLReader& record_xml);
+   void set_info_helper(XMLReader& xml_info);
+   void set_info_helper(const std::string& header);
+   void set_info_from_file(XMLReader& xml_in);
    void setup_file_map();
 
    int file_index_helper(int file_index);
