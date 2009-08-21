@@ -1,49 +1,81 @@
 // -*- C++ -*-
-// $Id: inline_stoch_laph_quark_w.h,v 3.3 2009-07-18 02:34:47 jbulava Exp $
+// $Id: inline_stoch_laph_quark_w.h,v 3.4 2009-08-21 14:54:51 colin Exp $
 /*! \file
- * \brief Compute the laph-diluted sources and solutions. Write them out to a single db file.  
+ * \brief Compute the laph-diluted quark sources and sinks. Write them 
+ *  out to db files.  Uses a QuarkSourceSinkHandler.
  *
- * Propagator calculation on a laph diluted source 
+ * Propagator calculation on laph diluted sources
  */
 
-#ifndef __inline_stoch_laph_quark_w_h__
-#define __inline_stoch_laph_quark_w_h__
+#ifndef __INLINE_STOCH_LAPH_QUARK_W_H__
+#define __INLINE_STOCH_LAPH_QUARK_W_H__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/qprop_io.h"
 #include "meas/laph/laph.h"
 
-namespace Chroma 
-{ 
-  /*! \ingroup inlinehadron */
-  namespace InlineStochLaphQuarkEnv 
-  {
-    bool registerAll();
 
-    //! Inline task for compute LatticeColorVector matrix elements of a propagator
+namespace Chroma { 
+  namespace InlineStochLaphQuarkEnv {
+
+ // **************************************************************
+
+
+extern const std::string name;
+bool registerAll();
+
     /*! \ingroup inlinehadron */
-    class StochLaphQuarkInlineMeas : public AbsInlineMeasurement 
-    {
-    public:
-      ~StochLaphQuarkInlineMeas() {}
+
+class StochLaphQuarkInlineMeas : public AbsInlineMeasurement 
+{
+
+   XMLReader xml_rdr;   // holds the XML input for this inline
+                        // measurement, for use by the operator()
+                        // member below
+
+   struct SinkComputation {
+      LaphEnv::LaphNoiseInfo Noise;
+      int SourceTime;
+      int FileIndex; 
+
+    SinkComputation(const LaphEnv::LaphNoiseInfo& in_noise, int in_time, int in_file_ind)
+       : Noise(in_noise), SourceTime(in_time), FileIndex(in_file_ind) {}
+   };
+
+   struct SourceComputation {
+      LaphEnv::LaphNoiseInfo Noise;
+      int FileIndex; 
+
+    SourceComputation(const LaphEnv::LaphNoiseInfo& in_noise, int in_file_ind)
+       : Noise(in_noise), FileIndex(in_file_ind) {}
+   };
+
+   list<SinkComputation> sinkComputations;
+   list<SourceComputation> sourceComputations;
+
+ public:
+
+   StochLaphQuarkInlineMeas(XMLReader& xml_in, const std::string& path) 
+                              : xml_rdr(xml_in, path) {}
+
+   ~StochLaphQuarkInlineMeas() {}
       
-			StochLaphQuarkInlineMeas(XMLReader& xml_in, const std::string& path) 
-			: xml_rdr(xml_in, path) {}
+   void setSinkComputations(int TimeExtent);
+   void clearSinkComputations();
+
+   void setSourceComputations();
+   void clearSourceComputations();
 
       //! Do the measurement
-      void operator()(const unsigned long update_no,
-		                  XMLWriter& xml_out); 
+   void operator()(const unsigned long update_no, XMLWriter& xml_out); 
 
-			long unsigned int getFrequency() const {return 0;}
+   unsigned long getFrequency() const {return 0;}
    
-		private:
-			XMLReader xml_rdr;
-		};
+};
 	
 
-  } // namespace PropMatElemColorVec
-
+// ***********************************************************
+  }
 }
 
 #endif

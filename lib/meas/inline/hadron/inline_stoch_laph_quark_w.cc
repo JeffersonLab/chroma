@@ -1,93 +1,391 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.9 2009-07-31 19:15:03 colin Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.10 2009-08-21 14:54:51 colin Exp $
 /*! \file
- * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
+ * \brief Compute the laph-diluted quark sources and sinks. Write them 
+ *  out to db files.  Uses a QuarkSourceSinkHandler.
  *
- * Propagator calculation on a colorvector
+ * Propagator calculation on laph diluted sources
  */
 
-#include "fermact.h"
-#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
-#include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/glue/mesplq.h"
-#include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
-#include "util/ferm/key_val_db.h"
-#include "util/ferm/key_laph_dil_prop.h"
-#include "util/ft/sftmom.h"
-#include "util/info/proginfo.h"
-#include "meas/inline/make_xml_file.h"
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
-#include "meas/smear/quark_smearing_factory.h"
-#include "meas/smear/quark_smearing_aggregate.h"
-#include "meas/sources/source_smearing_aggregate.h"
-#include "meas/sources/source_smearing_factory.h"
-#include "meas/sinks/sink_smearing_aggregate.h"
-#include "meas/sinks/sink_smearing_factory.h"
-#include "meas/laph/laph.h"
 
-#include "meas/inline/io/named_objmap.h"
-
-#include "meas/inline/hadron/inline_make_source_ferm_w.h"
-#include "meas/sources/source_const_factory.h"
-#include "meas/sources/source_const_aggregate.h"
-#include "util/ferm/diractodr.h"
+#include "inline_stoch_laph_quark_w.h"
+#include "chroma.h"
 
 namespace Chroma {
   using namespace LaphEnv;
   namespace InlineStochLaphQuarkEnv {
-    namespace {
 
-AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, const std::string& path) 
- {return new StochLaphQuarkInlineMeas(xml_in, path);}
+    //  The crucial create measurement routine. Must be in the *.cc
+    //  so that it is local to this file.  Dynamically allocates
+    //  and instantiates an object of our class "StochLaphQuarkInlineMeas".
 
-   //! Local registration flag
-bool registered = false;
+AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
+                                        const std::string& path) 
+{
+ return new StochLaphQuarkInlineMeas(xml_in, path);
 }
+
+    //  The name of this inline measurement.   This is the name 
+    //  with which the createMeasurement function is associated in the 
+    //  Object Factory. You must include this name in the XML input 
+    //  to Chroma through
+    //     <InlineMeasurements>
+    //        <elem>
+    //            <Name> STOCH_LAPH_QUARK </Name>
+    //             ...
+    //        </elem>
+    //    </InlineMeasurements>
 
 const std::string name = "STOCH_LAPH_QUARK";
 
-  //! Register all the factories
+    // Registration boolean hidden in anonymous namespace.
+namespace {
+   bool registered = false;
+}
+
+    // Register all the factories.  This function may be called many
+    // times by other measurements, so we only want to register this
+    // inline measurement once.  Hence, the use of the "registered"
+    // boolean above (which must be hidden in an anonymous namespace).
+
 bool registerAll() 
 {
  bool success = true; 
  if (!registered){
-    success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+    success &= TheInlineMeasurementFactory::Instance().registerObject(
+                      name, createMeasurement);
     registered = true;}
  return success;
 }
 
 // *********************************************************************
 	
-     // Subroutine which does all of the work!!
+     // XML input must have form:
+     //
+     //   <QuarkSourceSinkInfo> ... </QuarkSourceSinkInfo>
+
+     //   <LaphNoiseList> ... </LaphNoiseList>
+     //   <SourceTimeList> ... </SourceTimeList> 
+
+     // Inside the <LaphNoiseList> should be one or more <LaphNoise>
+     // tags.
+     // Inside the <SourceTimeList> should be either
+     //     <Values> 2 5 8 </Values>
+     // or  <All> </All>
+
+
+
+
+
+void StochLaphQuarkInlineMeas::clearSinkComputations()
+{
+ sinkComputations.clear();
+}
+
+void StochLaphQuarkInlineMeas::clearSourceComputations()
+{
+ sourceComputations.clear();
+}
+      
+void StochLaphQuarkInlineMeas::setSinkComputations(int TimeExtent)
+{
+ if (!sinkComputations.empty()) sinkComputations.clear();
+
+ if (xml_tag_count(xml_rdr,"SinkComputations")==1){
+    XMLReader xmlrd(xml_rdr,"./descendant-or-self::SinkComputations");
+
+    int default_file_index=-1;
+    if (xml_tag_count(xmlrd,"DefaultFileIndex")==1)
+       xmlread(xmlrd,"DefaultFileIndex",default_file_index,"STOCH_LAPH_QUARK");
+
+    if (xml_tag_count(xmlrd,"NoiseList_TimeList_OneFile")==1){
+       XMLReader xmlr(xmlrd,"./descendant-or-self::NoiseList_TimeList_OneFile");
+       multi1d<int> source_times;
+       if (xml_tag_count(xmlr,"SourceTimeList")==1){
+          if (xml_tag_count(xmlr,"SourceTimeList/All")==1){
+             source_times.resize(TimeExtent);
+             for (int t=0;t<TimeExtent;t++) source_times[t]=t;}
+          else
+             xmlread(xmlr,"SourceTimeList/Values",source_times,
+                     "STOCH_LAPH_QUARK");}
+       int num_noises=xml_tag_count(xmlr,"LaphNoiseList/LaphNoiseInfo");
+       for (int k=1;k<=num_noises;k++){
+          ostringstream path;
+          path << "./descendant::LaphNoiseList/LaphNoiseInfo["<<k<<"]";
+          XMLReader xml_noise(xmlr,path.str());
+          LaphNoiseInfo aNoise(xml_noise);
+          for (int t=0;t<source_times.size();t++){
+             sinkComputations.push_back(SinkComputation(aNoise,source_times[t],
+                                                        default_file_index));}}}
+
+    if (xml_tag_count(xmlrd,"ComputationList")==1){
+       XMLReader xmlr(xmlrd,"./descendant-or-self::ComputationList");
+       int ncomputations=xml_tag_count(xmlr,"Computation");
+       for (int k=1;k<=ncomputations;k++){
+          ostringstream path;
+          path << "./descendant::Computation["<<k<<"]";
+          XMLReader xml_comp(xmlr,path.str());
+          LaphNoiseInfo aNoise(xml_comp);
+          int file_index=default_file_index;
+          if (xml_tag_count(xml_comp,"FileIndex")==1)
+             xmlread(xml_comp,"FileIndex",file_index,"STOCH_LAPH_QUARK");
+          int source_time;
+          xmlread(xml_comp,"SourceTime",source_time,"STOCH_LAPH_QUARK");
+          sinkComputations.push_back(SinkComputation(aNoise,source_time,
+                                                     file_index));}}
+
+    }
+
+ QDPIO::cout << endl << "STOCH_LAPH_QUARK sink computations:"<<endl;
+ QDPIO::cout << " Number of sink computations = "<<sinkComputations.size()<<endl;
+ int count=0;
+ for (list<SinkComputation>::const_iterator it=sinkComputations.begin();
+      it!=sinkComputations.end();count++,it++){
+    QDPIO::cout <<endl<< "SinkComputation "<<count<<":"<<endl;
+    QDPIO::cout << it->Noise.output();
+    QDPIO::cout << "<SourceTime>"<<it->SourceTime<<"</SourceTime>"<<endl;
+    QDPIO::cout << "<FileIndex>"<<it->FileIndex<<"</FileIndex>"<<endl;}
+
+}
+
+
+void StochLaphQuarkInlineMeas::setSourceComputations()
+{
+ if (!sourceComputations.empty()) sourceComputations.clear();
+
+ if (xml_tag_count(xml_rdr,"SourceComputations")==1){
+    XMLReader xmlrd(xml_rdr,"./descendant-or-self::SourceComputations");
+
+    int default_file_index=-1;
+    if (xml_tag_count(xmlrd,"DefaultFileIndex")==1)
+       xmlread(xmlrd,"DefaultFileIndex",default_file_index,"STOCH_LAPH_QUARK");
+
+    if (xml_tag_count(xmlrd,"ComputationList")==1){
+       XMLReader xmlr(xmlrd,"./descendant-or-self::ComputationList");
+       int ncomputations=xml_tag_count(xmlr,"Computation");
+       for (int k=1;k<=ncomputations;k++){
+          ostringstream path;
+          path << "./descendant::Computation["<<k<<"]";
+          XMLReader xml_comp(xmlr,path.str());
+          LaphNoiseInfo aNoise(xml_comp);
+          int file_index=default_file_index;
+          if (xml_tag_count(xml_comp,"FileIndex")==1)
+             xmlread(xml_comp,"FileIndex",file_index,"STOCH_LAPH_QUARK");
+          sourceComputations.push_back(SourceComputation(aNoise,
+                                                         file_index));}}
+
+    }
+
+ QDPIO::cout << endl << "STOCH_LAPH_QUARK source computations:"<<endl;
+ QDPIO::cout << " Number of source computations = "<<sourceComputations.size()<<endl;
+ int count=0;
+ for (list<SourceComputation>::const_iterator it=sourceComputations.begin();
+      it!=sourceComputations.end();count++,it++){
+    QDPIO::cout <<endl<< "SourceComputation "<<count<<":"<<endl;
+    QDPIO::cout << it->Noise.output();
+    QDPIO::cout << "<FileIndex>"<<it->FileIndex<<"</FileIndex>"<<endl;}
+
+}
+
+
+// *********************************************************************
+	
+     // Subroutine which does all of the work!!  Input parameters
+     // must be as shown (specified by Chroma).  Actual input to
+     // this routine is through the private data member
+     //     XMLReader xlm_rdr
+
 
 void StochLaphQuarkInlineMeas::operator()(unsigned long update_no,
                                           XMLWriter& xml_out) 
 {
+
+    // create the handler and set up the info from the
+    // XML <QuarkSourceSinkInfo> tag
+
+ QuarkSourceSinkHandler Q(xml_rdr);  
+
+    // read the list of computations (noises, time sources, file indices)
+    // from xml_rdr and store in the "Computations" data member
+
+ setSourceComputations();
+ setSinkComputations(Q.getGaugeConfigurationInfo().getTimeExtent());
+
+ int count=0;
+ for (list<SourceComputation>::const_iterator it=sourceComputations.begin();
+      it!=sourceComputations.end();count++,it++){
+    QDPIO::cout << "Now starting source computation "<<count<<":"<<endl;
+    Q.computeSource(it->Noise,it->FileIndex);}
+
+ count=0;
+ for (list<SinkComputation>::const_iterator it=sinkComputations.begin();
+      it!=sinkComputations.end();count++,it++){
+    QDPIO::cout << "Now starting sink computation "<<count<<":"<<endl;
+    Q.computeSink(it->Noise,it->SourceTime,it->FileIndex);}
+
+/*
+ GaugeConfigurationInfo G(xml_rdr);
+
+ GaugeConfigurationInfo G2(G);
+
+ cout << "G2 time extent = "<<G2.getTimeExtent()<<endl;
+ cout << "G2 time dir = "<<G2.getTimeDir()<<endl;
+ cout << "G2 num dir = "<<G2.getNumberOfDirections()<<endl;
+ cout << "G2 num traj = "<<G2.getTrajNum()<<endl;
+ cout << "G2 gauge_id = "<<G2.getGaugeId()<<endl;
+
+ cout << "G2 output = "<<endl;
+ cout << G2.output()<<endl;
+ cout << "G2 done"<<endl;
+
+ cout << "are equal? "; assertEqual(G2,G,"inlineMeas");
+ cout << "okay"<<endl;
+ if (G2==G) cout << "equal true"<<endl;
+ else cout << "equal false"<< endl;
+
+// string header("<GaugeConfigurationInfo><onetag>here</onetag></GaugeConfigurationInfo>");
+ //GaugeConfigurationInfo G3(header);
+
+
+ string header=G.getGaugeConfigHeader();
+ GaugeConfigurationInfo G4(header);
+
+ try{
+    G.checkEqual(G4);}
+ catch(const string& err){
+    cout << "Did not match"<<endl;}
+ cout << "match okay!!"<<endl;
+
+cout << G.getFullRecordXML()<<endl;
+
+// assertEqual(G,G3,"inlineMeas");
+
+
+ QuarkInfo SQ(xml_rdr,G);
+
+ cout << " mass is "<<SQ.getMass()<<endl;
+
+ string qhead = SQ.getQuarkHeader();
+
+ cout << "qhead = "<<qhead<<endl;
+
+ QuarkInfo SQ2(qhead);
+
+ cout << "SQ2 = "<<SQ2.getQuarkHeader()<<endl;
+ cout << "SQ2 "<<SQ2.getMassName()<<" = "<<SQ2.getMass()<<endl;
+ cout << "SQ2 action id = "<<SQ2.getActionId()<<endl;
+
+ assertEqual(SQ,SQ2,"inlineMeas");
+ cout << "they match"<<endl;
+*/
+/*
+ cout << "  ****************************************"<<endl<<endl;
+
+ FieldSmearingInfo fs(xml_rdr);
+ cout << "fs header is "<<fs.getHeader()<<endl;
+
+ string fshead=fs.getHeader();
+
+ FieldSmearingInfo fs2(fshead);
+ cout << "fs2 header is "<<fs2.getHeader()<<endl;
+
+ try{
+    fs.checkEqual(fs2);
+    cout << "fs and fs2 match"<<endl;}
+ catch(const string& err2){
+    cout << "fs and fs2 did not match"<<endl;}
+
+
+ LaphNoiseInfo noise1(xml_rdr);
+ cout << "noise1 header is "<<noise1.getHeader()<<endl;
+
+ string nhead = noise1.getHeader();
+ LaphNoiseInfo noise2(nhead);
+ cout << "noise2 header is "<<noise2.getHeader()<<endl;
+
+ try{
+    noise1.checkEqual(noise2);
+    cout <<"noise1 and noise2 are equal"<<endl;}
+ catch(const string& err3){
+    cout <<"noise1 and noise2 do not match"<<endl;}
+
+
+
+ DilutionSchemeInfo dilscheme1(xml_rdr);
+ cout << "dilscheme1 header is "<<dilscheme1.getHeader()<<endl;
+
+ string dhead = dilscheme1.getHeader();
+ DilutionSchemeInfo dilscheme2(dhead);
+ cout << "dilscheme2 header is "<<dilscheme2.getHeader()<<endl;
+
+ try{
+    dilscheme1.checkEqual(dilscheme2);
+    cout <<"dilscheme1 and dilscheme2 are equal"<<endl;}
+ catch(const string& err3){
+    cout <<"dilscheme1 and dilscheme2 do not match"<<endl;}
+*/
+
+/*
+ GaugeConfigurationHandler uHandler(xml_rdr);
+ cout << "uHandler header:" << uHandler.getGaugeConfigHeader()<<endl;
+ uHandler.setData();
+ const multi1d<LatticeColorMatrix>& U=uHandler.getData();
+
+ {XMLBufferWriter out_xml;
+ MesPlq(out_xml, "UnsmearedWLoops", U);
+ QDPIO::cout << out_xml.str() << endl;}
+
+ uHandler.setInfo(xml_rdr);
+ cout << uHandler.getInfo().getTimeExtent()<<endl;
+*/
+/*
+ stringstream oss;
+ oss << " <laph_dilution_scheme>" << endl;                           
+ oss << "    <time_dilution>" << endl;                               
+ oss << "       <dilution_type> full </dilution_type>" << endl;      
+ oss << "    </time_dilution>" << endl;                              
+ oss << "    <spin_dilution>" << endl;                               
+ oss << "       <dilution_type> none </dilution_type>" << endl;      
+ oss << "    </spin_dilution>" << endl;                              
+ oss << "    <eigvec_dilution>" << endl;                             
+ oss << "       <dilution_type> block </dilution_type>" << endl;     
+ oss << "       <number_projectors> 4 </number_projectors>" << endl; 
+ oss << "    </eigvec_dilution>" << endl;                            
+ oss << " </laph_dilution_scheme>" << endl;                          
+ XMLReader xml2(oss);
+ XMLReader xmlB(xml2,"/");
+
+ DilutionSchemeInfo dilB(xmlB);
+
+ cout << dilB.output() << endl;
+*/
+
 				
- QuarkSourceSinkHandler Q(xml_rdr);
-  
- QDPIO::cout << "Constructed Gauge Handler" << endl;
+
+// cout << Q.getHeader()<<endl;
  
+/*
    FieldSmearingHandler FSH(xml_rdr);
 
    QDPIO::cout << "Constructed FieldSmearing Handler" << endl;
 				
                               
-				FSH.computeSmearedGaugeField();	 
+ FSH.computeSmearedGaugeField();	 
 				
-				QDPIO::cout << "Computed Smeared Gauge Field" << endl;
-				MesPlq(xml_out, "Observables", 
-						FSH.getSmearedGaugeField() );
+QDPIO::cout << "Computed Smeared Gauge Field" << endl;
+
+
+{XMLBufferWriter out_xml;
+ MesPlq(out_xml, "SmearedWLoops", FSH.getSmearedGaugeField());
+ QDPIO::cout << out_xml.str() << endl;}
 					 
-                                //FSH.computeLaphEigenvectors();
+FSH.computeLaphEigenvectors();
                                 
-   // const multi1d<LatticeColorVector>& ev=FSH.getLaphEigenvectors();
+const multi1d<LatticeColorVector>& ev=FSH.getLaphEigenvectors();
     
-    
+  */  
 
 
-				START_CODE();
+START_CODE();
 
 				/*
 					 StopWatch snoop;
