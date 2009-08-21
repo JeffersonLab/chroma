@@ -373,9 +373,15 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise,
 
  SftMom phases(0, false, Tdir);    // needed for time dilution (masks onto a time slice)
                                    // 0 = max momentum squared, true = avg over equiv mom 
+
+ BinaryStoreDB<SerialDBKey<Key>,SerialDBData<LatticeFermion> > fsource;
+ fsource.open(fileNames[findex], O_RDWR , 0664);
+
      // loop over dilutions
  
  for (int dil=0;dil<dilProjs.size();dil++){
+ 
+    QDPIO::cout << "doing dilution "<<dil<<endl;
 
     Key kval(noise,Textent,dil);    // Textent signals a source (not a sink)
     if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=3)){   // already computed!!
@@ -391,28 +397,32 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise,
  
         //  initialize output field for sources
     LatticeFermion source = zero;
-    for (int t0=0;t0<Textent;t0++){
-       for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++)
-       for (list<int>::const_iterator vmask= on_eigs.begin(); vmask!=on_eigs.end(); vmask++){
-          Complex curr_n = laph_noise(t0,*smask,*vmask);
-          LatticeFermion addto = zero;
-          pokeSpin(addto[phases.getSet()[t0]], curr_n * Vs[*vmask], *smask);
-          source[phases.getSet()[t0]] += addto;}
+    for (list<int>::const_iterator vmask= on_eigs.begin(); vmask!=on_eigs.end(); vmask++){
+    QDPIO::cout << "new vmask"<<endl;
+       LatticeSpinVector sv = zero;
+       for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++){
+       QDPIO::cout << "new smask"<<endl;
+          LatticeComplex temp = zero;
+          for (int t0=0;t0<Textent;t0++){
+             QDPIO::cout << "t0 = "<<t0<<endl;
+             temp[phases.getSet()[t0]] = laph_noise(t0,*smask,*vmask);}
+          pokeSpin(sv,temp,*smask);}
+       source += sv * Vs[*vmask];
        }
-       
+    QDPIO::cout << "done computation: writing to file"<<endl;
+
         // output this dilution, all t0, to file
 
-    BinaryStoreDB<SerialDBKey<Key>,SerialDBData<LatticeFermion> > fsource;
-    fsource.open(fileNames[findex], O_RDWR , 0664);
     SerialDBKey<Key> dbkey;
     dbkey.key() = kval;
     SerialDBData<LatticeFermion> dbdata;
     dbdata.data() = source;
+    QDPIO::cout << "write to file starts now"<<endl;
     fsource.insert(dbkey,dbdata);
-
-    fileMap.insert(make_pair(kval,findex));
-    fsource.close();}
+    QDPIO::cout << "write to file done"<<endl;
+    fileMap.insert(make_pair(kval,findex));}
     }
+ fsource.close();
 
  rolex.stop();
  QDPIO::cout << "computeQuarkSource: one noise, all dilutions total time = "
@@ -484,6 +494,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
  SpinMatrix SnkRotate = adj(DiracToDRMat());    // rotate back to Dirac-Pauli
 
  string fermact_xml = qactionPtr->output();
+ QDPIO::cout << "fermact_xml = "<<fermact_xml<<endl;
  string fermact_id = qactionPtr->getActionId();
 
    // Typedefs to save typing
@@ -494,12 +505,15 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
  GroupXML_t solverInfo;
  solverInfo.xml =  invertPtr->output();
  solverInfo.id = invertPtr->getId();
- solverInfo.path = ".//InvertParam";
+ solverInfo.path = "//InvertParam";
+ 
+ QDPIO::cout << "inverter xml = "<<solverInfo.xml<<endl;
  
    // Initialize fermion action
    
  istringstream xml_s(fermact_xml);
- XMLReader fermacttop(xml_s);
+ XMLReader fermacttop0(xml_s);
+ XMLReader fermacttop(fermacttop0,"/");   // due to XMLReader bug
  QDPIO::cout << "FermAct = " << fermact_id << endl;
 
  Handle< FermionAction<T,P,Q> > S_f; 
@@ -507,10 +521,12 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
  Handle< SystemSolver<LatticeFermion> > PP;
 
  try{
+    QDPIO::cout << "createObject"<<endl;
     S_f=TheFermionActionFactory::Instance().createObject(fermact_id,
-                                   fermacttop,".//FermionAction");
+                                               fermacttop,"//FermionAction");
+    QDPIO::cout << "createState"<<endl;         
     state=S_f->createState(uPtr->getData());
-    PP = S_f->qprop(state,solverInfo);}
+    PP = S_f->qprop(state,solverInfo); QDPIO::cout << "createPP"<<endl;}
  catch(const string& err){
     QDPIO::cerr << " Fermion action and inverter could not be initialized"
                 << " in QuarkSourceSinkHandler"<<endl;}
@@ -518,8 +534,12 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
  
      // loop over dilutions
  
+ BinaryStoreDB<SerialDBKey<Key>,SerialDBData<LatticeFermion> > fsink;
+ fsink.open(fileNames[findex], O_RDWR , 0664);
+
  for (int dil=0;dil<dilProjs.size();dil++){
 
+    QDPIO::cout << "Starting dilution "<<dil<<endl;
     Key kval(noise,source_time,dil);
     if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=3)){   // already computed!!
        QDPIO::cout << "warning: computeQuarkSink already computed..."
@@ -531,18 +551,21 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
         
     const list<int>& on_spins=dilProjs[dil].onSpinIndices();
     const list<int>& on_eigs=dilProjs[dil].onEigvecIndices();
- 
+
         //  initialize output field for sources
     LatticeFermion source = zero;
-    for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++)
     for (list<int>::const_iterator vmask= on_eigs.begin(); vmask!=on_eigs.end(); vmask++){
-       Complex curr_n = laph_noise(source_time,*smask,*vmask);
-       LatticeFermion addto = zero;
-       pokeSpin(addto[phases.getSet()[source_time]], curr_n * Vs[*vmask], *smask);
-       source[phases.getSet()[source_time]] += addto;}
+       LatticeSpinVector sv = zero;
+       for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++){
+          LatticeComplex temp = zero;
+          temp[phases.getSet()[source_time]] = laph_noise(source_time,*smask,*vmask);
+          pokeSpin(sv,temp,*smask);}
+       source[phases.getSet()[source_time]] += sv * Vs[*vmask];
+       }
        
     source = SrcRotate * source;  // rotate to DeGrand-Rossi, mult by gamma_4
     LatticeFermion phi;
+    QDPIO::cout << "source created...starting inversion"<<endl;
              // now do the inversion
     SystemSolverResults_t res = (*PP)(phi, source);
 
@@ -561,20 +584,18 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise, int source_
        pokeSpin(sink, sink_s, s);}
     sink = SnkRotate * sink;         // rotate back to Dirac-Pauli
 
-        // output this dilution, all t0, to file
+        // output this dilution to file
 
-    BinaryStoreDB<SerialDBKey<Key>,SerialDBData<LatticeFermion> > fsink;
-    fsink.open(fileNames[findex], O_RDWR , 0664);
     SerialDBKey<Key> dbkey;
     dbkey.key() = kval;
     SerialDBData<LatticeFermion> dbdata;
     dbdata.data() = sink;
     fsink.insert(dbkey,dbdata);
 
-    fileMap.insert(make_pair(kval,findex));
-    fsink.close();}
+    fileMap.insert(make_pair(kval,findex));}
     }
 
+ fsink.close();
  rolex.stop();
  QDPIO::cout << "computeQuarkSink: one noise, all dilutions, one source time, total time = "
              << rolex.getTimeInSeconds() << " secs" << endl;
