@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.230 2009-08-21 14:53:11 colin Exp $
+# $Id: Makefile.am,v 3.231 2009-08-22 19:16:49 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -218,6 +218,7 @@ nobase_include_HEADERS = \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h meas/glue/polylp.h meas/glue/mesplq.h meas/glue/wloop.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/glue/qactden.h \
 	meas/glue/qnaive.h \
         meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
         meas/hadron/hadron.h \
@@ -1126,6 +1127,7 @@ libchroma_a_SOURCES = \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/wloop.cc  meas/glue/mesplq.cc meas/glue/polylp.cc \
 	meas/glue/wilslp.cc \
+	meas/glue/qactden.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
