@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.354 2009-08-22 19:17:06 edwards Exp $
+# $Id: Makefile.in,v 3.355 2009-08-22 20:05:20 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -660,6 +660,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
@@ -1241,8 +1242,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_glue_aggregate.$(OBJEXT) \
 	inline_apply_gaugestate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
 	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
-	inline_fuzwilp.$(OBJEXT) inline_qnaive.$(OBJEXT) \
-	inline_random_transf_gauge.$(OBJEXT) \
+	inline_fuzwilp.$(OBJEXT) inline_qactden.$(OBJEXT) \
+	inline_qnaive.$(OBJEXT) inline_random_transf_gauge.$(OBJEXT) \
 	inline_hadron_aggregate.$(OBJEXT) \
 	inline_hadron_contract.$(OBJEXT) \
 	inline_gauge_transf_obj.$(OBJEXT) \
@@ -2023,6 +2024,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_qactden.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/hadron/hadron.h \
@@ -2973,6 +2975,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_qactden.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/hadron/hadron.h \
@@ -3627,6 +3630,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
@@ -4158,6 +4162,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_propagator_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_psibarpsi_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qactden.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qio_read_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qio_write_erase_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qio_write_obj.Po@am__quote@
@@ -12940,6 +12945,20 @@ inline_fuzwilp.obj: meas/inline/glue/inline_fuzwilp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_fuzwilp.cc' object='inline_fuzwilp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_fuzwilp.obj `if test -f 'meas/inline/glue/inline_fuzwilp.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_fuzwilp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_fuzwilp.cc'; fi`
+
+inline_qactden.o: meas/inline/glue/inline_qactden.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qactden.o -MD -MP -MF $(DEPDIR)/inline_qactden.Tpo -c -o inline_qactden.o `test -f 'meas/inline/glue/inline_qactden.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_qactden.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_qactden.Tpo $(DEPDIR)/inline_qactden.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_qactden.cc' object='inline_qactden.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qactden.o `test -f 'meas/inline/glue/inline_qactden.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_qactden.cc
+
+inline_qactden.obj: meas/inline/glue/inline_qactden.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qactden.obj -MD -MP -MF $(DEPDIR)/inline_qactden.Tpo -c -o inline_qactden.obj `if test -f 'meas/inline/glue/inline_qactden.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_qactden.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_qactden.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_qactden.Tpo $(DEPDIR)/inline_qactden.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_qactden.cc' object='inline_qactden.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_qactden.obj `if test -f 'meas/inline/glue/inline_qactden.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_qactden.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_qactden.cc'; fi`
 
 inline_qnaive.o: meas/inline/glue/inline_qnaive.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_qnaive.o -MD -MP -MF $(DEPDIR)/inline_qnaive.Tpo -c -o inline_qnaive.o `test -f 'meas/inline/glue/inline_qnaive.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_qnaive.cc
