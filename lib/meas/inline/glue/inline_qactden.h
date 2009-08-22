@@ -1,13 +1,11 @@
 // -*- C++ -*-
-// $Id: inline_qnaive.h,v 3.3 2009-08-22 20:03:28 edwards Exp $
+// $Id: inline_qactden.h,v 3.1 2009-08-22 20:03:28 edwards Exp $
 /*! \file
- *  \brief Inline naive topological charge
- *
- * Author: Christian Hagen
+ *  \brief Inline action density and really naive topological charge
  */
 
-#ifndef INLINE_QNAIVE_H
-#define INLINE_QNAIVE_H
+#ifndef INLINE_QACTDEN_H
+#define INLINE_QACTDEN_H
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -16,7 +14,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlineglue */
-  namespace InlineQTopEnv 
+  namespace InlineQActDenEnv 
   {
     bool registerAll();
 
@@ -39,7 +37,7 @@ namespace Chroma
 	std::string   gauge_id;
       } named_obj;
     };
-    
+
 
     /*! \ingroup inlineglue */
     class InlineMeas : public AbsInlineMeasurement 

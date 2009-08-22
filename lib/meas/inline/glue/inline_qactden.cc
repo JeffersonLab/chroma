@@ -1,13 +1,12 @@
-// $Id: inline_qnaive.cc,v 3.4 2009-08-22 20:03:28 edwards Exp $
+// $Id: inline_qactden.cc,v 3.1 2009-08-22 20:03:28 edwards Exp $
+// $Id: inline_qactden.cc,v 3.1 2009-08-22 20:03:28 edwards Exp $
 /*! \file
- *  \brief Inline naive topological charge
- *
- * Author: Christian Hagen
+ *  \brief Inline action density and really naive topological charge
  */
 
-#include "meas/inline/glue/inline_qnaive.h"
+#include "meas/inline/glue/inline_qactden.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/glue/qnaive.h"
+#include "meas/glue/qactden.h"
 #include "meas/inline/io/named_objmap.h"
 
 #include "actions/gauge/gaugestates/gauge_createstate_factory.h"
@@ -17,7 +16,7 @@
 namespace Chroma 
 { 
 
-  namespace InlineQTopEnv 
+  namespace InlineQActDenEnv 
   { 
     namespace
     {
@@ -31,7 +30,7 @@ namespace Chroma
       //! Local registration flag
       bool registered = false;
 
-      const std::string name = "QTOP_NAIVE";
+      const std::string name = "QACTDEN";
     }
 
     //! Register all the factories
@@ -46,9 +45,10 @@ namespace Chroma
       }
       return success;
     }
+ 
   
 
-    //! QTop input
+    //! Parameter input
     void read(XMLReader& xml, const string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
@@ -74,7 +74,7 @@ namespace Chroma
       read(paramtop, "k5", param.k5);
     }
 
-    //! QTop output
+    //! Parameter output
     void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
     {
       push(xml, path);
@@ -88,7 +88,7 @@ namespace Chroma
     }
 
 
-    //! QTop input
+    //! Parameter input
     void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
@@ -96,7 +96,7 @@ namespace Chroma
       read(inputtop, "gauge_id", input.gauge_id);
     }
 
-    //! QTop output
+    //! Parameter output
     void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
@@ -138,7 +138,6 @@ namespace Chroma
       }
     }
 
-    //NEEDS CHANGES
     void 
     InlineMeas::operator()(unsigned long update_no,
 			   XMLWriter& xml_out) 
@@ -146,19 +145,20 @@ namespace Chroma
       START_CODE();
 
       // Grab the object
-      const multi1d<LatticeColorMatrix>& u = 
+      multi1d<LatticeColorMatrix> u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      push(xml_out, "QTop");
+      push(xml_out, "QActDen");
       write(xml_out, "update_no", update_no);
-      write(xml_out, "k5", params.param.k5);
 
-      Double qtop;
-      qtop_naive(u, params.param.k5, qtop);
+      LatticeReal lract;
+      LatticeReal lrqtop;
+      qactden(lract, lrqtop, u);
 
-      write(xml_out, "qtop", qtop);
+      write(xml_out, "actionDensity", lract);
+      write(xml_out, "naiveTopCharge", lrqtop);
 
-      pop(xml_out); // pop("QTop");
+      pop(xml_out);
 
       END_CODE();
     } 
