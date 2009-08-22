@@ -5,6 +5,7 @@
 #include "meas/inline/glue/inline_glue_aggregate.h"
 #include "meas/inline/glue/inline_plaquette.h"
 #include "meas/inline/glue/inline_polylp.h"
+#include "meas/inline/glue/inline_qactden.h"
 #include "meas/inline/glue/inline_qnaive.h"
 #include "meas/inline/glue/inline_wilslp.h"
 #include "meas/inline/glue/inline_fuzwilp.h"
@@ -31,6 +32,7 @@ namespace Chroma
       {
 	success &= InlinePlaquetteEnv::registerAll();
 	success &= InlinePolyakovLoopEnv::registerAll();
+        success &= InlineQActDenEnv::registerAll();
         success &= InlineQTopEnv::registerAll();
 	success &= InlineWilsonLoopEnv::registerAll();
 	success &= InlineFuzzedWilsonLoopEnv::registerAll();

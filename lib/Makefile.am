@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.231 2009-08-22 19:16:49 edwards Exp $
+# $Id: Makefile.am,v 3.232 2009-08-22 20:05:05 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -800,6 +800,7 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_polylp.h \
 	meas/inline/glue/inline_wilslp.h \
 	meas/inline/glue/inline_fuzwilp.h \
+	meas/inline/glue/inline_qactden.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/hadron/hadron.h \
@@ -1538,6 +1539,7 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_polylp.cc \
 	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
+	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
