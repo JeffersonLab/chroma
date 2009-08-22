@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.353 2009-08-04 12:43:48 bjoo Exp $
+# $Id: Makefile.in,v 3.354 2009-08-22 19:17:06 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -326,8 +326,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/wloop.cc \
 	meas/glue/mesplq.cc meas/glue/polylp.cc meas/glue/wilslp.cc \
-	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
-	meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/glue/qactden.cc meas/glue/qnaive.cc meas/glue/block.cc \
+	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -336,7 +336,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/laph/gauge_configuration_handler.cc meas/laph/xml_help.cc \
 	meas/laph/field_smearing_info.cc \
 	meas/laph/field_smearing_handler.cc \
-	meas/laph/laph_noise_info.cc meas/laph/quark_action_info.cc \
+	meas/laph/laph_noise_info.cc meas/laph/quark_info.cc \
 	meas/laph/inverter_info.cc meas/laph/dilution_scheme_info.cc \
 	meas/laph/quark_source_sink_handler.cc meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
@@ -974,15 +974,15 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
 	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
 	wloop.$(OBJEXT) mesplq.$(OBJEXT) polylp.$(OBJEXT) \
-	wilslp.$(OBJEXT) qnaive.$(OBJEXT) block.$(OBJEXT) \
-	fuzglue.$(OBJEXT) gluecor.$(OBJEXT) polycor.$(OBJEXT) \
-	dilution_scheme_aggregate.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
-	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
-	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) \
-	gauge_configuration_info.$(OBJEXT) \
+	wilslp.$(OBJEXT) qactden.$(OBJEXT) qnaive.$(OBJEXT) \
+	block.$(OBJEXT) fuzglue.$(OBJEXT) gluecor.$(OBJEXT) \
+	polycor.$(OBJEXT) dilution_scheme_aggregate.$(OBJEXT) \
+	hadron_seqsource.$(OBJEXT) hadron_contract.$(OBJEXT) \
+	hadron_contract_aggregate.$(OBJEXT) hadron_2pt.$(OBJEXT) \
+	mesQl_w.$(OBJEXT) gauge_configuration_info.$(OBJEXT) \
 	gauge_configuration_handler.$(OBJEXT) xml_help.$(OBJEXT) \
 	field_smearing_info.$(OBJEXT) field_smearing_handler.$(OBJEXT) \
-	laph_noise_info.$(OBJEXT) quark_action_info.$(OBJEXT) \
+	laph_noise_info.$(OBJEXT) quark_info.$(OBJEXT) \
 	inverter_info.$(OBJEXT) dilution_scheme_info.$(OBJEXT) \
 	quark_source_sink_handler.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
 	mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
@@ -1550,9 +1550,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/glue/wloop.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
-	meas/glue/qnaive.h meas/glue/block.h meas/glue/fuzglue.h \
-	meas/glue/gluecor.h meas/glue/polycor.h meas/hadron/hadron.h \
-	meas/hadron/baryon_operator.h meas/hadron/dilution_scheme.h \
+	meas/glue/qactden.h meas/glue/qnaive.h meas/glue/block.h \
+	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
+	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/dilution_scheme.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
@@ -1995,7 +1996,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/laph/laph.h \
 	meas/laph/pointer.h meas/laph/gauge_configuration_info.h \
-	meas/laph/laph_noise_info.h meas/laph/quark_action_info.h \
+	meas/laph/laph_noise_info.h meas/laph/quark_info.h \
 	meas/laph/inverter_info.h meas/laph/field_smearing_info.h \
 	meas/laph/field_smearing_handler.h \
 	meas/laph/gauge_configuration_handler.h meas/laph/xml_help.h \
@@ -2499,10 +2500,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
 	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
 	meas/glue/mesplq.h meas/glue/wloop.h meas/glue/fuzwilp.h \
-	meas/glue/wilslp.h meas/glue/qnaive.h meas/glue/block.h \
-	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
-	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
-	meas/hadron/dilution_scheme.h \
+	meas/glue/wilslp.h meas/glue/qactden.h meas/glue/qnaive.h \
+	meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h \
+	meas/glue/polycor.h meas/hadron/hadron.h \
+	meas/hadron/baryon_operator.h meas/hadron/dilution_scheme.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
@@ -2945,7 +2946,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/laph/laph.h \
 	meas/laph/pointer.h meas/laph/gauge_configuration_info.h \
-	meas/laph/laph_noise_info.h meas/laph/quark_action_info.h \
+	meas/laph/laph_noise_info.h meas/laph/quark_info.h \
 	meas/laph/inverter_info.h meas/laph/field_smearing_info.h \
 	meas/laph/field_smearing_handler.h \
 	meas/laph/gauge_configuration_handler.h meas/laph/xml_help.h \
@@ -3292,8 +3293,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/wloop.cc \
 	meas/glue/mesplq.cc meas/glue/polylp.cc meas/glue/wilslp.cc \
-	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
-	meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/glue/qactden.cc meas/glue/qnaive.cc meas/glue/block.cc \
+	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -3302,7 +3303,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/laph/gauge_configuration_handler.cc meas/laph/xml_help.cc \
 	meas/laph/field_smearing_info.cc \
 	meas/laph/field_smearing_handler.cc \
-	meas/laph/laph_noise_info.cc meas/laph/quark_action_info.cc \
+	meas/laph/laph_noise_info.cc meas/laph/quark_info.cc \
 	meas/laph/inverter_info.cc meas/laph/dilution_scheme_info.cc \
 	meas/laph/quark_source_sink_handler.cc meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
@@ -4369,15 +4370,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pt_sink_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pt_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pt_source_smearing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qactden.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qio_read_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qio_write_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qnaive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qprop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqbar_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/qqq_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_action_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_displacement_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_flavor_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_smearing_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quark_source_sink_handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/quarkprop4_multi_w.Po@am__quote@
@@ -7283,6 +7285,20 @@ wilslp.obj: meas/glue/wilslp.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wilslp.obj `if test -f 'meas/glue/wilslp.cc'; then $(CYGPATH_W) 'meas/glue/wilslp.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/wilslp.cc'; fi`
 
+qactden.o: meas/glue/qactden.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qactden.o -MD -MP -MF $(DEPDIR)/qactden.Tpo -c -o qactden.o `test -f 'meas/glue/qactden.cc' || echo '$(srcdir)/'`meas/glue/qactden.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/qactden.Tpo $(DEPDIR)/qactden.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/qactden.cc' object='qactden.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qactden.o `test -f 'meas/glue/qactden.cc' || echo '$(srcdir)/'`meas/glue/qactden.cc
+
+qactden.obj: meas/glue/qactden.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qactden.obj -MD -MP -MF $(DEPDIR)/qactden.Tpo -c -o qactden.obj `if test -f 'meas/glue/qactden.cc'; then $(CYGPATH_W) 'meas/glue/qactden.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/qactden.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/qactden.Tpo $(DEPDIR)/qactden.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/qactden.cc' object='qactden.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o qactden.obj `if test -f 'meas/glue/qactden.cc'; then $(CYGPATH_W) 'meas/glue/qactden.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/qactden.cc'; fi`
+
 qnaive.o: meas/glue/qnaive.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT qnaive.o -MD -MP -MF $(DEPDIR)/qnaive.Tpo -c -o qnaive.o `test -f 'meas/glue/qnaive.cc' || echo '$(srcdir)/'`meas/glue/qnaive.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/qnaive.Tpo $(DEPDIR)/qnaive.Po
@@ -7521,19 +7537,19 @@ laph_noise_info.obj: meas/laph/laph_noise_info.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o laph_noise_info.obj `if test -f 'meas/laph/laph_noise_info.cc'; then $(CYGPATH_W) 'meas/laph/laph_noise_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/laph_noise_info.cc'; fi`
 
-quark_action_info.o: meas/laph/quark_action_info.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_action_info.o -MD -MP -MF $(DEPDIR)/quark_action_info.Tpo -c -o quark_action_info.o `test -f 'meas/laph/quark_action_info.cc' || echo '$(srcdir)/'`meas/laph/quark_action_info.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/quark_action_info.Tpo $(DEPDIR)/quark_action_info.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_action_info.cc' object='quark_action_info.o' libtool=no @AMDEPBACKSLASH@
+quark_info.o: meas/laph/quark_info.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_info.o -MD -MP -MF $(DEPDIR)/quark_info.Tpo -c -o quark_info.o `test -f 'meas/laph/quark_info.cc' || echo '$(srcdir)/'`meas/laph/quark_info.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/quark_info.Tpo $(DEPDIR)/quark_info.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_info.cc' object='quark_info.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_action_info.o `test -f 'meas/laph/quark_action_info.cc' || echo '$(srcdir)/'`meas/laph/quark_action_info.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_info.o `test -f 'meas/laph/quark_info.cc' || echo '$(srcdir)/'`meas/laph/quark_info.cc
 
-quark_action_info.obj: meas/laph/quark_action_info.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_action_info.obj -MD -MP -MF $(DEPDIR)/quark_action_info.Tpo -c -o quark_action_info.obj `if test -f 'meas/laph/quark_action_info.cc'; then $(CYGPATH_W) 'meas/laph/quark_action_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_action_info.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/quark_action_info.Tpo $(DEPDIR)/quark_action_info.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_action_info.cc' object='quark_action_info.obj' libtool=no @AMDEPBACKSLASH@
+quark_info.obj: meas/laph/quark_info.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT quark_info.obj -MD -MP -MF $(DEPDIR)/quark_info.Tpo -c -o quark_info.obj `if test -f 'meas/laph/quark_info.cc'; then $(CYGPATH_W) 'meas/laph/quark_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_info.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/quark_info.Tpo $(DEPDIR)/quark_info.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_info.cc' object='quark_info.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_action_info.obj `if test -f 'meas/laph/quark_action_info.cc'; then $(CYGPATH_W) 'meas/laph/quark_action_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_action_info.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_info.obj `if test -f 'meas/laph/quark_info.cc'; then $(CYGPATH_W) 'meas/laph/quark_info.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_info.cc'; fi`
 
 inverter_info.o: meas/laph/inverter_info.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inverter_info.o -MD -MP -MF $(DEPDIR)/inverter_info.Tpo -c -o inverter_info.o `test -f 'meas/laph/inverter_info.cc' || echo '$(srcdir)/'`meas/laph/inverter_info.cc
