@@ -1,4 +1,4 @@
-// $Id: qactden.cc,v 3.1 2009-08-22 19:17:40 edwards Exp $
+// $Id: qactden.cc,v 3.2 2009-08-22 20:05:49 edwards Exp $
 /*! \file
  *  \brief Measure the lattice density of the lattice energy and the naive topological charge.
  */
@@ -18,7 +18,7 @@ namespace Chroma
    * \param u       gauge field (Read)
    */
 
-  void qactden(LatticeReal& lract, LatticeReal lrqtop, const multi1d<LatticeColorMatrix>& u)
+  void qactden(LatticeReal& lract, LatticeReal& lrqtop, const multi1d<LatticeColorMatrix>& u)
   {
     START_CODE();
   
