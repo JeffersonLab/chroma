@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Test input file for chroma program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
+        <alpha1>0.75</alpha1>
+        <alpha2>0.6</alpha2>
+        <alpha3>0.3</alpha3>
+        <num_smear>20</num_smear>
+        <no_smear_dir>-1</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>hyp_4</linksmear_id>
+      </NamedObject>
+    </elem>
+
+      <elem>
+        <Name>QACTDEN</Name>
+        <Frequency>1</Frequency>
+        <Param>
+          <version>1</version>
+        </Param>
+        <NamedObject>
+          <gauge_id>hyp_4</gauge_id>
+        </NamedObject>
+      </elem>
+
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
