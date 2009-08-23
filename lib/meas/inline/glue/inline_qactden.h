@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_qactden.h,v 3.1 2009-08-22 20:03:28 edwards Exp $
+// $Id: inline_qactden.h,v 3.2 2009-08-23 02:46:11 edwards Exp $
 /*! \file
  *  \brief Inline action density and really naive topological charge
  */
@@ -29,7 +29,6 @@ namespace Chroma
       struct Param_t
       {
 	GroupXML_t    cgs;      /*!< Gauge State */
-	Real          k5;
       } param;
 
       struct NamedObject_t
