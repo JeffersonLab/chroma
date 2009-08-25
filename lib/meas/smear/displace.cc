@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.5 2008-11-22 19:13:05 edwards Exp $
+//  $Id: displace.cc,v 3.6 2009-08-25 17:06:29 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -41,7 +41,8 @@ namespace Chroma
   template<typename T>
   T displace(const multi1d<LatticeColorMatrix>& u, 
 	     const T& psi, 
-	     int length, int dir)
+	     int length, int dir,
+	     const Subset& sub)
   {
     if (dir < 0 || dir >= Nd)
     {
@@ -49,22 +50,24 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    T chi = psi;
+    T tmp;
+    T chi;
+    chi[sub] = psi;
 
     if (length > 0)
     {
       for(int n = 0; n < length; ++n)
       {
-	T tmp = shift(chi, FORWARD, dir);
-	chi = u[dir] * tmp;
+	tmp[sub] = shift(chi, FORWARD, dir);
+	chi[sub] = u[dir] * tmp;
       }
     }
     else // If length = or < 0.  If length == 0, does nothing.
     {
       for(int n = 0; n > length; --n)
       {
-	T tmp = shift(adj(u[dir])*chi, BACKWARD, dir);
-	chi = tmp;
+	tmp[sub] = shift(adj(u[dir])*chi, BACKWARD, dir);
+	chi[sub] = tmp;
       }
     }
     return chi;
@@ -76,7 +79,7 @@ namespace Chroma
 			      const LatticeColorVector& chi, 
 			      int length, int dir)
   {
-    return displace<LatticeColorVector>(u, chi, length, dir);
+    return displace<LatticeColorVector>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -85,7 +88,7 @@ namespace Chroma
 			     const LatticePropagator& chi, 
 			     int length, int dir)
   {
-    return displace<LatticePropagator>(u, chi, length, dir);
+    return displace<LatticePropagator>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -94,7 +97,7 @@ namespace Chroma
 			  const LatticeFermion& chi, 
 			  int length, int dir)
   {
-    return displace<LatticeFermion>(u, chi, length, dir);
+    return displace<LatticeFermion>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -103,7 +106,7 @@ namespace Chroma
 				   const LatticeStaggeredFermion& chi, 
 				   int length, int dir)
   {
-    return displace<LatticeStaggeredFermion>(u, chi, length, dir);
+    return displace<LatticeStaggeredFermion>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -112,7 +115,7 @@ namespace Chroma
 				      const LatticeStaggeredPropagator& chi, 
 				      int length, int dir)
   {
-    return displace<LatticeStaggeredPropagator>(u, chi, length, dir);
+    return displace<LatticeStaggeredPropagator>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -121,7 +124,7 @@ namespace Chroma
 			      const LatticeColorMatrix& chi, 
 			      int length, int dir)
   {
-    return displace<LatticeColorMatrix>(u, chi, length, dir);
+    return displace<LatticeColorMatrix>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -136,13 +139,16 @@ namespace Chroma
    *  \param chi      color vector field ( Read )
    *  \param length   displacement length - must be greater than zero ( Read )
    *  \param path     array of direction of displacement paths - pos/neg, or zero ( Read )
+   *  \param sub      Subset of sites to act ( Read )
    *
    *  \return  displaced field
    */
   template<typename T>
   T displace(const multi1d<LatticeColorMatrix>& u, 
 	     const T& psi, 
-	     int displacement_length, const multi1d<int>& path)
+	     int displacement_length, 
+	     const multi1d<int>& path,
+	     const Subset& sub)
   {
     if (displacement_length < 0)
     {
@@ -150,7 +156,8 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    T chi = psi;
+    T chi;
+    chi[sub] = psi;
 
     for(int i=0; i < path.size(); ++i)
     {
@@ -158,13 +165,13 @@ namespace Chroma
       {
 	int disp_dir = path[i] - 1;
 	int disp_len = displacement_length;
-	chi = displace(u, chi, disp_len, disp_dir);
+	chi[sub] = displace<T>(u, chi, disp_len, disp_dir, sub);
       }
       else if (path[i] < 0)
       {
 	int disp_dir = -path[i] - 1;
 	int disp_len = -displacement_length;
-	chi = displace(u, chi, disp_len, disp_dir);
+	chi[sub] = displace<T>(u, chi, disp_len, disp_dir, sub);
       }
     }
 
@@ -177,7 +184,16 @@ namespace Chroma
 			      const LatticeColorVector& chi, 
 			      int length, const multi1d<int>& path)
   {
-    return displace<LatticeColorVector>(u, chi, length, path);
+    return displace<LatticeColorVector>(u, chi, length, path, QDP::all);
+  }
+
+  // Apply a displacement path to a lattice field
+  LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorVector& chi, 
+			      int length, const multi1d<int>& path,
+			      const Subset& sub)
+  {
+    return displace<LatticeColorVector>(u, chi, length, path, sub);
   }
 
 
@@ -186,7 +202,16 @@ namespace Chroma
 			  const LatticeFermion& chi, 
 			  int length, const multi1d<int>& path)
   {
-    return displace<LatticeFermion>(u, chi, length, path);
+    return displace<LatticeFermion>(u, chi, length, path, QDP::all);
+  }
+
+  // Apply a displacement path to a lattice field
+  LatticeFermion displace(const multi1d<LatticeColorMatrix>& u, 
+			  const LatticeFermion& chi, 
+			  int length, const multi1d<int>& path,
+			  const Subset& sub)
+  {
+    return displace<LatticeFermion>(u, chi, length, path, sub);
   }
 
 
