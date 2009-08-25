@@ -1,3 +1,9 @@
+Aug 25, 2009 - Robert Ewdards
+	Version 3.36.0
+        The start of a hybrid stochastic-distillation method (called LAPH -
+        horrible name) by Colin and John. Changed how genprops are contracted
+        in an effort to speed it up. Balint did lots of XLC cleanups.
+
 July 14, 2009 - Robert Ewdards
 	Version 3.35.0
         Balint did all this in 3.34.1, but the latter was never actually
