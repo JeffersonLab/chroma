@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.12 2009-08-25 17:08:27 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.13 2009-08-26 16:16:18 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -18,8 +18,6 @@
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
-
-#include <vector>
 
 #include "meas/inline/io/named_objmap.h"
 
@@ -195,80 +193,7 @@ namespace Chroma
 
 	return os;
       }
-
-
-      //! Function object used for constructing the plateau set
-      class PlateauFunc : public SetFunc
-      {
-      public:
-	PlateauFunc(int t_source, int t_sink, int decay_dir_, bool restrict_plateau);
-	int operator() (const multi1d<int>& coordinate) const;
-	int numSubsets() const {return 2;}
-
-	// Extra function. Return the active time slices, corresponding to color 1
-	const std::vector<int>& activeTimeSlices() const {return t_slice;}
-
-      private:
-	PlateauFunc() {}  // hide default constructor
-
-	int decay_dir;
-	multi1d<bool>    active_t;
-	std::vector<int> t_slice;
-      };
-
-
-      PlateauFunc::PlateauFunc(int t_source, int t_sink, int decay_dir_, bool restrict_plateau)
-	: decay_dir(decay_dir_) 
-      {
-	if ((decay_dir<0)||(decay_dir>=Nd)) 
-	{
-	  QDPIO::cerr << __func__ << ": invalid decay dir\n";
-	  QDP_abort(1);
-	}
-
-	// Define the start and end region for the plateau
-	int Lt = QDP::Layout::lattSize()[decay_dir];
-
-	int t_start;
-	int t_end;
-	
-	if (restrict_plateau)
-	{
-	  t_start = t_source;
-	  t_end   = t_sink;
-
-	  if (t_source > t_sink)
-	  {
-	    t_end += Lt;
-	  }
-	}
-	else
-	{
-	  t_start = 0;
-	  t_end   = Lt - 1;
-	}
-
-	// Turn on the time slices only within the plateau
-	active_t.resize(Lt);
-	active_t = false;
-
-	for(int tt=t_start; tt <= t_end; ++tt)
-	{
-	  int t = tt % Lt; // mod back into a normal interval
-
-	  active_t[t] = true;
-	  t_slice.push_back(t);
-	}
-      }
-
-
-      int
-      PlateauFunc::operator() (const multi1d<int>& coordinate) const
-      {
-	return (active_t[coordinate[decay_dir]]) ? 1 : 0;
-      }
-
-    } // end anonymous namespace
+    }
 
 
     //----------------------------------------------------------------------------
@@ -635,16 +560,27 @@ namespace Chroma
       const int t_source          = params.param.t_source;
       const int t_sink            = params.param.t_sink;
 
-      // Define an object that will hold the active time slices.
-      // Use this to define a set with only 2 colors - 0 is not active, 1 is active
-      PlateauFunc plateau_func(t_source, t_sink, decay_dir, restrict_plateau);
-      Set plateau_set;
-      plateau_set.make(plateau_func);
-      const Subset& plateau_subset = plateau_set[1];
+      // Define the start and end region for the plateau
+      int t_start;
+      int t_end;
 
-      //
+      if (restrict_plateau)
+      {
+	t_start = t_source;
+	t_end   = t_sink;
+
+	if (t_source > t_sink)
+	{
+	  t_end += phases.numSubsets();
+	}
+      }
+      else
+      {
+	t_start = 0;
+	t_end   = phases.numSubsets() - 1;
+      }
+
       // Loop over each operator 
-      //
       for(int l=0; l < params.param.disp_gamma_list.size(); ++l)
       {
 	StopWatch watch;
@@ -680,25 +616,23 @@ namespace Chroma
 	      // The keys for the spin and displacements for this particular elemental operator
 	      // No displacement for left colorvector, only displace right colorvector
 	      // Invert the time - make it an independent key
-	      const std::vector<int>& activeTimeSlices = plateau_func.activeTimeSlices();
-
-	      multi1d<KeyValGenPropElementalOperator_t> buf(activeTimeSlices.size());
-	      for(int nn=0; nn < activeTimeSlices.size(); ++nn)
+	      multi1d<KeyValGenPropElementalOperator_t> buf(phases.numSubsets());
+	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
-		buf[nn].key.key().t_slice       = activeTimeSlices[nn];
-		buf[nn].key.key().t_source      = t_source;
-		buf[nn].key.key().t_sink        = t_sink;
-		buf[nn].key.key().spin_r        = spin_r;
-		buf[nn].key.key().spin_l        = spin_l;
-		buf[nn].key.key().mass_label    = params.param.mass_label;
-		buf[nn].key.key().mom           = phases.numToMom(mom_num);
-		buf[nn].key.key().gamma         = gamma;
-		buf[nn].key.key().displacement  = disp; // only right colorvector
+		int t = tt % phases.numSubsets(); // mod back into a normal interval
 
-		buf[nn].val.data().op.resize(num_vecs, num_vecs);
+		buf[t].key.key().t_slice       = t;
+		buf[t].key.key().t_source      = t_source;
+		buf[t].key.key().t_sink        = t_sink;
+		buf[t].key.key().spin_r        = spin_r;
+		buf[t].key.key().spin_l        = spin_l;
+		buf[t].key.key().mass_label    = params.param.mass_label;
+		buf[t].key.key().mom           = phases.numToMom(mom_num);
+		buf[t].key.key().gamma         = gamma;
+		buf[t].key.key().displacement  = disp; // only right colorvector
+
+		buf[t].val.data().op.resize(num_vecs, num_vecs);
 	      }
-
-	      LatticeFermion shift_ferm;  // temporary
 
 	      for(int j = 0; j < params.param.num_vecs; ++j)
 	      {
@@ -708,11 +642,10 @@ namespace Chroma
 		key_r.spin_src     = spin_r;
 		  
 		// Displace the right vector and multiply by the momentum phase
-		shift_ferm[plateau_subset] = Gamma(gamma_tmp) * displace(u_smr, 
-									 source_ferm_map[key_r],
-									 params.param.displacement_length, 
-									 disp, 
-									 plateau_subset);
+		LatticeFermion shift_ferm = Gamma(gamma_tmp) * displace(u_smr, 
+									source_ferm_map[key_r],
+									params.param.displacement_length, 
+									disp);
 
 		for(int i = 0; i < params.param.num_vecs; ++i)
 		{
@@ -726,8 +659,7 @@ namespace Chroma
 
 		  // Contract over color indices
 		  // Do the relevant quark contraction
-		  LatticeComplex lop;
-		  lop[plateau_subset] = localInnerProduct(sink_ferm_map[key_l], shift_ferm);
+		  LatticeComplex lop = localInnerProduct(sink_ferm_map[key_l], shift_ferm);
 
 		  // Reweight the phase in case there was momentum averaging
 		  Real reweight;
@@ -736,31 +668,24 @@ namespace Chroma
 		  else
 		    reweight = 1.0;
 
-		  // Do a slow fourier-transform on each time slice in succession.
-		  // NOTE: this is potentially very inefficient. I only want to the sum
-		  // on active time slices, namely color=1 in plateau_set, but the sum
-		  // over that color will produce a single number, not an array over time
-		  // slices. If I use the phases.getSet() (a time-slice subset), then that'll
-		  // do the sum over all time-slices, even ones not participating.
-		  // SO, we hop the user has arranged to have time local or something so this
-		  // call is not slow. BTW, have time locality also helps with the plateau_subset
-		  // used above.
-		  for(int nn=0; nn < activeTimeSlices.size(); ++nn)
-		  {
-		    int t = activeTimeSlices[nn];
-
-		    // Slow fourier-transform
-		    buf[nn].val.data().op(i,j) = sum(reweight * phases[mom_num] * lop, phases.getSet()[t]);
-		  }
+		  // Slow fourier-transform
+		  multi1d<ComplexD> op_sum = sumMulti(reweight * phases[mom_num] * lop, phases.getSet());
 
 		  watch.stop();
+
+		  for(int tt=t_start; tt <= t_end; ++tt)
+		  {
+		    int t = tt % phases.numSubsets(); // mod back into a normal interval
+		    buf[t].val.data().op(i,j) = op_sum[t];
+		  }
 		} // end for i
 	      } // end for j
 
 	      QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
-	      for(int nn=0; nn < activeTimeSlices.size(); ++nn)
+	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
-		qdp_db.insert(buf[nn].key, buf[nn].val);
+		int t = tt % phases.numSubsets(); // mod back into a normal interval
+		qdp_db.insert(buf[t].key, buf[t].val);
 	      }
 
 	    } // end for spin_l
