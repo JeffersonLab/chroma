@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.13 2009-08-26 16:16:18 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.14 2009-08-27 19:22:29 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -535,8 +535,12 @@ namespace Chroma
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
 
+	// NOTE: we always write a metadata, even if the file exists. 
+	// Probably should not do this if a file already exists.
+	// Yukky, but add on a bunch of padding. 
+	// This is in case a latter task writes another metadata.
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size());
+	qdp_db.setMaxUserInfoLen(file_str.size()+1024);
 
 	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR | O_CREAT, 0664);
 
