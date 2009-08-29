@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_stoch_laph_quark_w.h,v 3.4 2009-08-21 14:54:51 colin Exp $
+// $Id: inline_stoch_laph_quark_w.h,v 3.5 2009-08-29 18:04:05 colin Exp $
 /*! \file
  * \brief Compute the laph-diluted quark sources and sinks. Write them 
  *  out to db files.  Uses a QuarkSourceSinkHandler.
@@ -35,19 +35,17 @@ class StochLaphQuarkInlineMeas : public AbsInlineMeasurement
 
    struct SinkComputation {
       LaphEnv::LaphNoiseInfo Noise;
-      int SourceTime;
-      int FileIndex; 
+      int SourceTime; 
 
-    SinkComputation(const LaphEnv::LaphNoiseInfo& in_noise, int in_time, int in_file_ind)
-       : Noise(in_noise), SourceTime(in_time), FileIndex(in_file_ind) {}
+    SinkComputation(const LaphEnv::LaphNoiseInfo& in_noise, int in_time)
+       : Noise(in_noise), SourceTime(in_time) {}
    };
 
    struct SourceComputation {
       LaphEnv::LaphNoiseInfo Noise;
-      int FileIndex; 
 
-    SourceComputation(const LaphEnv::LaphNoiseInfo& in_noise, int in_file_ind)
-       : Noise(in_noise), FileIndex(in_file_ind) {}
+    SourceComputation(const LaphEnv::LaphNoiseInfo& in_noise)
+       : Noise(in_noise) {}
    };
 
    list<SinkComputation> sinkComputations;

@@ -1,4 +1,4 @@
-// $Id: inline_stoch_laph_quark_w.cc,v 3.10 2009-08-21 14:54:51 colin Exp $
+// $Id: inline_stoch_laph_quark_w.cc,v 3.11 2009-08-29 18:04:05 colin Exp $
 /*! \file
  * \brief Compute the laph-diluted quark sources and sinks. Write them 
  *  out to db files.  Uses a QuarkSourceSinkHandler.
@@ -93,10 +93,6 @@ void StochLaphQuarkInlineMeas::setSinkComputations(int TimeExtent)
  if (xml_tag_count(xml_rdr,"SinkComputations")==1){
     XMLReader xmlrd(xml_rdr,"./descendant-or-self::SinkComputations");
 
-    int default_file_index=-1;
-    if (xml_tag_count(xmlrd,"DefaultFileIndex")==1)
-       xmlread(xmlrd,"DefaultFileIndex",default_file_index,"STOCH_LAPH_QUARK");
-
     if (xml_tag_count(xmlrd,"NoiseList_TimeList_OneFile")==1){
        XMLReader xmlr(xmlrd,"./descendant-or-self::NoiseList_TimeList_OneFile");
        multi1d<int> source_times;
@@ -114,8 +110,8 @@ void StochLaphQuarkInlineMeas::setSinkComputations(int TimeExtent)
           XMLReader xml_noise(xmlr,path.str());
           LaphNoiseInfo aNoise(xml_noise);
           for (int t=0;t<source_times.size();t++){
-             sinkComputations.push_back(SinkComputation(aNoise,source_times[t],
-                                                        default_file_index));}}}
+             sinkComputations.push_back(
+                  SinkComputation(aNoise,source_times[t]));}}}
 
     if (xml_tag_count(xmlrd,"ComputationList")==1){
        XMLReader xmlr(xmlrd,"./descendant-or-self::ComputationList");
@@ -125,13 +121,10 @@ void StochLaphQuarkInlineMeas::setSinkComputations(int TimeExtent)
           path << "./descendant::Computation["<<k<<"]";
           XMLReader xml_comp(xmlr,path.str());
           LaphNoiseInfo aNoise(xml_comp);
-          int file_index=default_file_index;
-          if (xml_tag_count(xml_comp,"FileIndex")==1)
-             xmlread(xml_comp,"FileIndex",file_index,"STOCH_LAPH_QUARK");
           int source_time;
           xmlread(xml_comp,"SourceTime",source_time,"STOCH_LAPH_QUARK");
-          sinkComputations.push_back(SinkComputation(aNoise,source_time,
-                                                     file_index));}}
+          sinkComputations.push_back(
+                SinkComputation(aNoise,source_time));}}
 
     }
 
@@ -142,8 +135,7 @@ void StochLaphQuarkInlineMeas::setSinkComputations(int TimeExtent)
       it!=sinkComputations.end();count++,it++){
     QDPIO::cout <<endl<< "SinkComputation "<<count<<":"<<endl;
     QDPIO::cout << it->Noise.output();
-    QDPIO::cout << "<SourceTime>"<<it->SourceTime<<"</SourceTime>"<<endl;
-    QDPIO::cout << "<FileIndex>"<<it->FileIndex<<"</FileIndex>"<<endl;}
+    QDPIO::cout << "<SourceTime>"<<it->SourceTime<<"</SourceTime>"<<endl;}
 
 }
 
@@ -155,10 +147,6 @@ void StochLaphQuarkInlineMeas::setSourceComputations()
  if (xml_tag_count(xml_rdr,"SourceComputations")==1){
     XMLReader xmlrd(xml_rdr,"./descendant-or-self::SourceComputations");
 
-    int default_file_index=-1;
-    if (xml_tag_count(xmlrd,"DefaultFileIndex")==1)
-       xmlread(xmlrd,"DefaultFileIndex",default_file_index,"STOCH_LAPH_QUARK");
-
     if (xml_tag_count(xmlrd,"ComputationList")==1){
        XMLReader xmlr(xmlrd,"./descendant-or-self::ComputationList");
        int ncomputations=xml_tag_count(xmlr,"Computation");
@@ -167,12 +155,8 @@ void StochLaphQuarkInlineMeas::setSourceComputations()
           path << "./descendant::Computation["<<k<<"]";
           XMLReader xml_comp(xmlr,path.str());
           LaphNoiseInfo aNoise(xml_comp);
-          int file_index=default_file_index;
-          if (xml_tag_count(xml_comp,"FileIndex")==1)
-             xmlread(xml_comp,"FileIndex",file_index,"STOCH_LAPH_QUARK");
-          sourceComputations.push_back(SourceComputation(aNoise,
-                                                         file_index));}}
-
+          sourceComputations.push_back(
+                SourceComputation(aNoise));}}
     }
 
  QDPIO::cout << endl << "STOCH_LAPH_QUARK source computations:"<<endl;
@@ -181,8 +165,7 @@ void StochLaphQuarkInlineMeas::setSourceComputations()
  for (list<SourceComputation>::const_iterator it=sourceComputations.begin();
       it!=sourceComputations.end();count++,it++){
     QDPIO::cout <<endl<< "SourceComputation "<<count<<":"<<endl;
-    QDPIO::cout << it->Noise.output();
-    QDPIO::cout << "<FileIndex>"<<it->FileIndex<<"</FileIndex>"<<endl;}
+    QDPIO::cout << it->Noise.output();}
 
 }
 
@@ -202,7 +185,12 @@ void StochLaphQuarkInlineMeas::operator()(unsigned long update_no,
     // create the handler and set up the info from the
     // XML <QuarkSourceSinkInfo> tag
 
- QuarkSourceSinkHandler Q(xml_rdr);  
+
+ QuarkSourceSinkHandler Q(xml_rdr);
+
+ XMLBufferWriter xmlout;
+ Q.getFileMap(xmlout);
+ cout << xmlout.str()<<endl;
 
     // read the list of computations (noises, time sources, file indices)
     // from xml_rdr and store in the "Computations" data member
@@ -214,13 +202,13 @@ void StochLaphQuarkInlineMeas::operator()(unsigned long update_no,
  for (list<SourceComputation>::const_iterator it=sourceComputations.begin();
       it!=sourceComputations.end();count++,it++){
     QDPIO::cout << "Now starting source computation "<<count<<":"<<endl;
-    Q.computeSource(it->Noise,it->FileIndex);}
+    Q.computeSource(it->Noise);}
 
  count=0;
  for (list<SinkComputation>::const_iterator it=sinkComputations.begin();
       it!=sinkComputations.end();count++,it++){
     QDPIO::cout << "Now starting sink computation "<<count<<":"<<endl;
-    Q.computeSink(it->Noise,it->SourceTime,it->FileIndex);}
+    Q.computeSink(it->Noise,it->SourceTime);}
 
 /*
  GaugeConfigurationInfo G(xml_rdr);
