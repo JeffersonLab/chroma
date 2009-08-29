@@ -356,6 +356,42 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
  SftMom phases(0, false, Tdir);    // needed for time dilution (masks onto a time slice)
                                    // 0 = max momentum squared, true = avg over equiv mom 
 
+/*
+ LatticeComplex f0 = zero;
+ for (int t=0;t<128;t++)
+ f0[phases.getSet()[t]] = cmplx(Real(1.0*t),Real(0.0));
+ 
+ LatticeSpinVector svv = zero;
+ pokeSpin(svv,f0,0);
+ pokeSpin(svv,f0*10,1);
+ pokeSpin(svv,f0*100,2);
+ pokeSpin(svv,f0*1000,3);
+ 
+ LatticeComplex f1 = zero;
+ for (int t=0;t<128;t++)
+ f1[phases.getSet()[t]] = cmplx(Real(1.0*t),Real(0.0));
+ 
+ LatticeColorVector cvv = zero;
+ pokeColor(cvv,f1,0);
+ pokeColor(cvv,f1*10,1);
+ pokeColor(cvv,f1*100,2);
+
+ LatticeFermion crap = zero;
+ crap[phases.getSet()[13]] += svv * cvv;
+
+ multi1d<int> site(4);
+ for (site[0]=0;site[0]<16;site[0]++)
+ for (site[1]=0;site[1]<16;site[1]++)
+ for (site[2]=0;site[2]<16;site[2]++)
+ for (site[3]=0;site[3]<128;site[3]++)
+ for (int spin=0;spin<4;spin++)
+ for (int color=0;color<3;color++){
+    Fermion fk=peekSite(crap,site);
+    ColorVector ck=peekSpin(fk,spin);
+    QDPIO::cout << site[0]<<" "<<site[1]<<" "<<site[2]<<" "<<site[3]<<" ["<<spin<<"]["<<color<<"] = "
+          << peekColor(ck,color)<<"   "<<site[3]*site[3]*pow(10.0,spin+color)<<endl;}
+*/          
+
      // loop over dilutions
  
  for (int dil=0;dil<dilProjs.size();dil++){
@@ -503,7 +539,8 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
     PP = S_f->qprop(state,solverInfo); QDPIO::cout << "createPP"<<endl;}
  catch(const string& err){
     QDPIO::cerr << " Fermion action and inverter could not be initialized"
-                << " in QuarkSourceSinkHandler"<<endl;}
+                << " in QuarkSourceSinkHandler"<<endl;
+    QDP_abort(1);}
  QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
  
      // loop over dilutions
@@ -535,13 +572,14 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
        source[phases.getSet()[source_time]] += sv * Vs[*vmask];
        }
        
-    source = SrcRotate * source;  // rotate to DeGrand-Rossi, mult by gamma_4
-    LatticeFermion phi;
+    LatticeFermion rsource = SrcRotate * source;  // rotate to DeGrand-Rossi, mult by gamma_4
+    LatticeFermion phi = zero;
     QDPIO::cout << "source created...starting inversion"<<endl;
              // now do the inversion
-    SystemSolverResults_t res = (*PP)(phi, source);
+    SystemSolverResults_t res = (*PP)(phi, rsource);
 
-//   int res.n_count   Real res.resid
+    QDPIO::cout << "Inversion done:  number of iterations = "<<res.n_count<<endl;
+    QDPIO::cout << " Residual = "<<res.resid<<endl;
 
                    // sink = Vs * Vs^dagger * phi
     LatticeFermion sink;
