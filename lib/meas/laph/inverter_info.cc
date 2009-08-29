@@ -87,6 +87,13 @@ string InverterInfo::output(int indent) const
 }
 
 
+void InverterInfo::output(XMLWriter& xmlout) const
+{
+ stringstream oss;
+ oss << inverter_xml;
+ XMLReader xmlr(oss);
+ xmlout << xmlr;
+}
 
 // *******************************************************************
   }

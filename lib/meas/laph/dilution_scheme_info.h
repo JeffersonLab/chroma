@@ -113,8 +113,11 @@ class DilutionSchemeInfo
 
   std::string output(int indent = 0) const;   // XML output
 
+  void output(XMLWriter& xmlout) const;   // write header
+
   std::string getHeader() const { return output(0); }
 
+  void getHeader(XMLWriter& xmlout) const { output(xmlout); }
 
  private:
 
@@ -122,6 +125,8 @@ class DilutionSchemeInfo
   void assign_from_reader(XMLReader& xml_in);
   void dil_in(XMLReader& xml_in, const std::string& path, int& DilType);
   std::string dil_out(int indent, int DilType, bool out_nproj = false) const;
+  void dil_out(XMLWriter& xmlout, int DilType, 
+               bool out_nproj = false) const;
   void setProjectorMasks(vector<list<int> >& projs, int dil_type, int nBasis) const;
   int findProjectorNumber(int dil_type, int nBasis) const;
 

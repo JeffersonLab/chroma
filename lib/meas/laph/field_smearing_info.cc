@@ -106,6 +106,16 @@ string FieldSmearingInfo::output(int indent) const
  return oss.str();
 }
 
+void FieldSmearingInfo::output(XMLWriter& xmlout) const
+{
+ push(xmlout,"StoutLaphSmearing");
+ write(xmlout,"LinkIterations",linkIterations);
+ write(xmlout,"LinkStapleWeight",linkStapleWeight);
+ write(xmlout,"LaphSigmaCutoff",laphSigma);
+ write(xmlout,"NumberLaphEigvecs",laphNumEigvecs);
+ pop(xmlout);
+}
+
 
 // *************************************************************
   }

@@ -112,11 +112,15 @@ class GaugeConfigurationInfo
 
   std::string output(int indent = 0) const;
 
+  void output(XMLWriter& xmlout) const;
+
   int getTrajNum() const { return traj_num; }
 
   std::string getGaugeId() const { return gauge_id; }
 
   std::string getGaugeConfigHeader() const { return output(0); }
+
+  void getGaugeConfigHeader(XMLWriter& xmlout) const { output(xmlout); }
 
   std::string getFullRecordXML() const;
 
@@ -129,8 +133,8 @@ class GaugeConfigurationInfo
 
  private:
 
-  void set_info_from_gauge_header(XMLReader& xmlg);
-  void set_info_from_header_string(const std::string& header);
+  void set_info1(XMLReader& xmlg);
+  void set_info2(XMLReader& xmlg);
 
 };
 

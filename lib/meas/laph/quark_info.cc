@@ -10,14 +10,23 @@ namespace Chroma {
 
 QuarkInfo::QuarkInfo(XMLReader& xml_in)
 { 
- if (xml_tag_count(xml_in,"QuarkInfo")!=1){
+ if (xml_tag_count(xml_in,"QuarkInfo")==1){
+    XMLReader xmlr(xml_in, "./descendant-or-self::QuarkInfo");
+    set_info1(xmlr);}
+ else if (xml_tag_count(xml_in,"ValenceQuarkHeader")==1){
+    XMLReader xmlr(xml_in, "./descendant-or-self::ValenceQuarkHeader");
+    set_info2(xmlr);}
+ else{
     QDPIO::cerr << "Bad XML input to QuarkInfo"<<endl;
-    QDPIO::cerr << "Expected one <QuarkInfo> tag"<<endl;
+    QDPIO::cerr << "Expected one <QuarkInfo> or <ValenceQuarkHeader> tag"<<endl;
     QDP_abort(1);}
- if (xml_tag_count(xml_in,"FermionAction")!=1){
+}
+
+void QuarkInfo::set_info1(XMLReader& xmlr)
+{
+ if (xml_tag_count(xmlr,"FermionAction")!=1){
     QDPIO::cerr << "QuarkInfo initialization error: no <FermionAction> tag"<<endl;
     QDP_abort(1);}
- XMLReader xmlr(xml_in, "./descendant-or-self::QuarkInfo");
  ostringstream strm;
  strm << "<ValenceQuarkHeader>"<<endl;
  xmlr.printCurrentContext(strm);
@@ -25,11 +34,11 @@ QuarkInfo::QuarkInfo(XMLReader& xml_in)
  quark_header = strm.str();
  setMass(xmlr,mass_name,mass);
  xmlread(xmlr, "FermAct", action_id, "QuarkInfo");
- QDPIO::cout << endl << endl <<"QuarkInfo constructor:"<<endl<<endl;
- QDPIO::cout << "action id = "<<action_id<<endl;
- QDPIO::cout << "action_header: "<<endl<< quark_header << endl << endl;
- QDPIO::cout << mass_name <<" = "<<mass<<endl;
- QDPIO::cout << "QuarkInfo Initialized" << endl<<endl;
+// QDPIO::cout << endl << endl <<"QuarkInfo constructor:"<<endl<<endl;
+// QDPIO::cout << "action id = "<<action_id<<endl;
+// QDPIO::cout << "action_header: "<<endl<< quark_header << endl << endl;
+// QDPIO::cout << mass_name <<" = "<<mass<<endl;
+// QDPIO::cout << "QuarkInfo Initialized" << endl<<endl;
 }
 
 void QuarkInfo::setMass(XMLReader& xmlr, string& massName, double& massValue)
@@ -95,11 +104,11 @@ QuarkInfo::QuarkInfo(XMLReader& xml_in, const GaugeConfigurationInfo& U)
                    << " in GaugeConfigurationInfo"<<endl;
        QDP_abort(1);}
     }
- QDPIO::cout << endl << endl <<"QuarkInfo constructor:"<<endl<<endl;
- QDPIO::cout << "action id = "<<action_id<<endl;
- QDPIO::cout << "action_header: "<<endl<< quark_header << endl << endl;
- QDPIO::cout << mass_name <<" = "<<mass<<endl;
- QDPIO::cout << "QuarkInfo Initialized" << endl<<endl;
+// QDPIO::cout << endl << endl <<"QuarkInfo constructor:"<<endl<<endl;
+// QDPIO::cout << "action id = "<<action_id<<endl;
+// QDPIO::cout << "action_header: "<<endl<< quark_header << endl << endl;
+// QDPIO::cout << mass_name <<" = "<<mass<<endl;
+// QDPIO::cout << "QuarkInfo Initialized" << endl<<endl;
 }
 
 
@@ -119,6 +128,11 @@ QuarkInfo::QuarkInfo(const string& header)
  xmlread(xmlr, "FermAct", action_id, "QuarkInfo");
 }
 
+void QuarkInfo::set_info2(XMLReader& xmlr)
+{
+ setMass(xmlr,mass_name,mass);
+ xmlread(xmlr, "FermAct", action_id, "QuarkInfo");
+}
 
   // ************************************************************
 
@@ -175,6 +189,16 @@ string QuarkInfo::output(int indent) const
     temp+=quark_header.substr(pos1,quark_header.length()-pos1+1);
     return temp;}
 }
+
+void QuarkInfo::output(XMLWriter& xmlout) const
+{
+ stringstream oss;
+ oss << quark_header;
+ XMLReader xmlr(oss);
+ xmlout << xmlr;
+}
+
+
 
 // ***********************************************************
   }

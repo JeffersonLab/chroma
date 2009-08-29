@@ -110,7 +110,11 @@ class QuarkInfo
 
     std::string output(int indent = 0) const;
 
+    void output(XMLWriter& xmlout) const;
+
     std::string getQuarkHeader() const { return quark_header; }
+
+    void getQuarkHeader(XMLWriter& xmlout) const { output(xmlout); }
 
     double getMass() const {return mass;}
 
@@ -122,6 +126,8 @@ class QuarkInfo
   private:
 
     void setMass(XMLReader& xmlr, string& massName, double& massValue);
+    void set_info1(XMLReader& xmlr);
+    void set_info2(XMLReader& xmlr);
 
 };
 

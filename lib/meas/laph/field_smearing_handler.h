@@ -95,6 +95,7 @@ class FieldSmearingHandler
 
    string outputInfo() const;
 
+   void outputInfo(XMLWriter& xmlout) const;
 
 
            // compute the Laph Eigenvectors and put into NamedObjMap

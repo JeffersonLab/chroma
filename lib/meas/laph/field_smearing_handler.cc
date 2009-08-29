@@ -73,7 +73,6 @@ void FieldSmearingHandler::clear()
 {
  destroy();
  create_handlers();
- QDPIO::cout << "FieldSmearingHandler cleared"<<endl;
 }
 
 void FieldSmearingHandler::destroy()
@@ -113,12 +112,21 @@ const GaugeConfigurationInfo& FieldSmearingHandler::getGaugeConfigurationInfo() 
 
 string FieldSmearingHandler::outputInfo() const
 {
- ostringstream oss;
- oss << smearPtr->output() << endl;
- oss << uPtr->outputInfo() << endl;
- return oss.str();
+ if (isInfoSet()){
+    ostringstream oss;
+    oss << smearPtr->output() << endl;
+    oss << uPtr->outputInfo() << endl;
+    return oss.str();}
+ return "";
 }
  
+void FieldSmearingHandler::outputInfo(XMLWriter& xmlout) const
+{
+ if (isInfoSet()){
+    smearPtr->output(xmlout);
+    uPtr->outputInfo(xmlout);}
+}
+
  // **********************************************************
 
 

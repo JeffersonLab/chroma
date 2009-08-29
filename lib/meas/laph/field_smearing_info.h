@@ -86,8 +86,11 @@ class FieldSmearingInfo
 
   std::string output(int indent = 0) const;
 
+  void output(XMLWriter& xmlout) const;
+
   std::string getHeader() const { return output(0); }
 
+  void getHeader(XMLWriter& xmlout) const { return output(xmlout); }
 
  private:
 

@@ -76,6 +76,8 @@ class InverterInfo
 
    std::string output(int indent = 0) const;
 
+   void output(XMLWriter& xmlout) const;
+
    double getTolerance() const {return tol;}
 
    std::string getId() const { return id;}

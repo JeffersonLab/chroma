@@ -28,6 +28,16 @@ GaugeConfigurationInfo::GaugeConfigurationInfo(XMLReader& xml_in)
       //  NamedObjMap to extract the info
 
  XMLReader xmlr(xml_in,"./descendant-or-self::GaugeConfigurationInfo");
+ if (xml_tag_count(xmlr,"gauge_id")==1) set_info1(xmlr);
+ else if (xml_tag_count(xmlr,"GaugeId")==1) set_info2(xmlr);
+ else{
+    QDPIO::cerr << "Bad XML input to GaugeConfigurationInfo"<<endl;
+    QDPIO::cerr << "Either one <gauge_id> or <GaugeId> tag is required"<<endl;
+    QDP_abort(1);}
+}
+
+void GaugeConfigurationInfo::set_info1(XMLReader& xmlr)
+{
  xmlread(xmlr, "gauge_id", gauge_id, "GaugeConfigurationInfo");
  gauge_id=tidyString(gauge_id);
  if (gauge_id.empty()){
@@ -50,17 +60,6 @@ GaugeConfigurationInfo::GaugeConfigurationInfo(XMLReader& xml_in)
  XMLReader xmlg0(gauge_header_buff);   
  XMLReader xmlg(xmlg0,"/");         // required due to XMLReader bug
 
- set_info_from_gauge_header(xmlg);
-
- QDPIO::cout << endl << endl <<"GaugeConfigurationInfo constructor:"<<endl<<endl;
- QDPIO::cout << output()<<endl;
- QDPIO::cout << "GaugeConfigurationInfo Initialized" << endl<<endl;
-}
-
-    // *************************************************************
-
-void GaugeConfigurationInfo::set_info_from_gauge_header(XMLReader& xmlg)
-{
  if (xmlg.count(".//StartUpdateNum") != 0){
     xmlread(xmlg,"StartUpdateNum",traj_num,"GaugeConfigurationInfo");
     xmlread(xmlg,"HMCTrj/MDIntegrator/t_dir",time_dir,"GaugeConfigurationInfo");
@@ -77,6 +76,10 @@ void GaugeConfigurationInfo::set_info_from_gauge_header(XMLReader& xmlg)
  number_dir=QDP::Nd;
  time_extent=QDP::Layout::lattSize()[time_dir];
  extents=QDP::Layout::lattSize();
+
+// QDPIO::cout << endl << endl <<"GaugeConfigurationInfo constructor:"<<endl<<endl;
+// QDPIO::cout << output()<<endl;
+// QDPIO::cout << "GaugeConfigurationInfo Initialized" << endl<<endl;
 }
 
  // *************************************************************
@@ -90,16 +93,14 @@ GaugeConfigurationInfo::GaugeConfigurationInfo(const string& header)
  string gauge_header;
  extract_xml_element(header,"GaugeConfigurationInfo",gauge_header,
                      "GaugeConfigurationInfo");
- set_info_from_header_string(gauge_header);
+ stringstream oss;
+ oss << gauge_header;
+ XMLReader xmlg(oss);
+ set_info2(xmlg);
 }
 
-void GaugeConfigurationInfo::set_info_from_header_string(const string& header)
+void GaugeConfigurationInfo::set_info2(XMLReader& xmlg)
 {
- stringstream oss;
- oss << header;
- XMLReader xmlg0(oss);
- XMLReader xmlg(xmlg0,"/");   // due to XMLReader bug
-
  xmlread(xmlg,"HMCTrajectoryNumber",traj_num,"GaugeConfigurationInfo");
  xmlread(xmlg,"TimeDir",time_dir,"GaugeConfigurationInfo");
  xmlread(xmlg,"ConfigType",config_type,"GaugeConfigurationInfo");
@@ -233,6 +234,19 @@ string GaugeConfigurationInfo::output(int indent) const
  return oss.str();
 }
 
+void GaugeConfigurationInfo::output(XMLWriter& xmlout) const
+{
+ push(xmlout,"GaugeConfigurationInfo");
+ write(xmlout,"GaugeId",gauge_id);
+ write(xmlout,"FileName",file_name);
+ write(xmlout,"ConfigType",config_type);
+ write(xmlout,"HMCTrajectoryNumber",traj_num);
+ write(xmlout,"TimeDir",time_dir);
+ write(xmlout,"TimeExtent",time_extent);
+ write(xmlout,"NumberOfDir",number_dir);
+ write(xmlout,"LatticeExtents",extents);
+ pop(xmlout);
+}
 
 // ******************************************************************
   }

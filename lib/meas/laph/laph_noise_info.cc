@@ -176,6 +176,17 @@ string LaphNoiseInfo::output(int indent) const
  return oss.str();
 }
 
+void LaphNoiseInfo::output(XMLWriter& xmlout) const
+{
+ push(xmlout,"LaphNoiseInfo");
+ write(xmlout,"ZNGroup",znGroup);
+ write(xmlout,"seed0",s0);
+ write(xmlout,"seed1",s1);
+ write(xmlout,"seed2",s2);
+ write(xmlout,"seed3",s3);
+ pop(xmlout);
+}
+
 void LaphNoiseInfo::binaryWrite(BinaryWriter& out) const
 {
  try{

@@ -83,6 +83,10 @@ class GaugeConfigurationHandler
 
     std::string getGaugeConfigHeader() const;
 
+    void outputInfo(XMLWriter& xmlout) const;
+
+    void getGaugeConfigHeader(XMLWriter& xmlout) const;
+
     bool isInfoSet() const { return (gauge_info!=0);}
 
     bool isDataSet() const { return (cfg!=0);}

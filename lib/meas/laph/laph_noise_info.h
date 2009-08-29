@@ -105,7 +105,11 @@ class LaphNoiseInfo
 
   std::string output(int indent = 0) const;
 
+  void output(XMLWriter& xmlout) const;
+
   std::string getHeader() const { return output(0);}
+
+  void getHeader(XMLWriter& xmlout) const { output(xmlout);}
 
   void binaryWrite(BinaryWriter& out) const;
   void binaryRead(BinaryReader& in);

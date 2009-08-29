@@ -203,6 +203,21 @@ string DilutionSchemeInfo::output(int indent) const
  return oss.str();
 }
 
+void DilutionSchemeInfo::output(XMLWriter& xmlout) const
+{
+ push(xmlout,"LaphDilutionScheme");
+ push(xmlout,"TimeDilution");
+ dil_out(xmlout,1);
+ pop(xmlout);
+ push(xmlout,"SpinDilution");
+ dil_out(xmlout,spinDilutionType,false);
+ pop(xmlout);
+ push(xmlout,"EigvecDilution");
+ dil_out(xmlout,eigvecDilutionType,true); 
+ pop(xmlout);
+ pop(xmlout);
+}
+
 
 void DilutionSchemeInfo::dil_in(XMLReader& xml_in, const std::string& path, 
                                int& DilType)
@@ -262,6 +277,23 @@ string DilutionSchemeInfo::dil_out(int indent, int DilType,
        oss << pad << "      <NumberProjectors> "<<-DilType<<" </NumberProjectors>"<<endl;
     }
  return oss.str();
+}
+
+void DilutionSchemeInfo::dil_out(XMLWriter& xmlout,
+                                 int DilType, bool out_nproj) const
+{
+ string dtype;
+ if (DilType==0) dtype="none";
+ else if (DilType==1) dtype="full";
+ else if (DilType>1) dtype="block";
+ else if (DilType<1) dtype="interlace";
+ write(xmlout,"DilutionType",dtype);
+ if (out_nproj){
+    if (DilType>1)
+       write(xmlout,"NumberProjectors",DilType);
+    else if (DilType<1)
+       write(xmlout,"NumberProjectors",-DilType);
+    }
 }
 
 

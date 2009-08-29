@@ -116,6 +116,15 @@ string GaugeConfigurationHandler::getGaugeConfigHeader() const
  return "";
 }
 
+void GaugeConfigurationHandler::outputInfo(XMLWriter& xmlout) const
+{
+ if (isInfoSet()) return gauge_info->output(xmlout);
+}
+
+void GaugeConfigurationHandler::getGaugeConfigHeader(XMLWriter& xmlout) const
+{
+ if (isInfoSet()) return gauge_info->getGaugeConfigHeader(xmlout);
+}
 
 // **********************************************************************
   }

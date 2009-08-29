@@ -15,7 +15,6 @@
 #include "laph_noise_info.h"
 #include "quark_info.h"
 #include "inverter_info.h"
-#include "util/ferm/key_val_db.h"
 
 namespace Chroma {
   namespace LaphEnv {
@@ -29,15 +28,17 @@ namespace Chroma {
 // *  Required XML input for setting the handler info:            *
 // *                                                              *
 // *   <QuarkSourceSinkInfo>                                      *
-// *      <FileNameList> ...  </FileNameList>  (required)         *
+// *      <FileNameStub> ...  </FileNameStub>  (required)         *
+// *      <MaxFileNumber> ... </MaxFileNumber> (required)         *
 // *      <InvertParam>  ...  </InvertParam>   (required)         *
+// *      <IOMode>       ...  </IOMode>   (optional)              *
 // *      <StoutLaphSmearing>      ...  </StoutLaphSmearing>      *
 // *      <GaugeConfigurationInfo> ...  </GaugeConfigurationInfo> *
 // *      <QuarkInfo>              ...  </QuarkInfo>              *
 // *      <LaphDilutionScheme>     ...  </LaphDilutionScheme>     *
 // *   </QuarkSourceSinkInfo>                                     *
 // *                                                              *
-// *  The file list and the inverter parameters are mandatory.    *
+// *  The file info and the inverter parameters are mandatory.    *
 // *  The remaining info items, if absent, are extracted from     *
 // *  the files in file list.  If no files yet exist, then these  *
 // *  info items are mandatory.                                   *
@@ -57,22 +58,18 @@ class QuarkSourceSinkHandler
 
    struct Key    // used for the file database
     {
-       LaphNoiseInfo *noise;  // pointer so can have a default constructor
+       LaphNoiseInfo noise; 
        int source_time;       // 0..Nt-1 for sinks, Nt for source
        int dilution_index;
 
-       Key();
-       Key(const LaphNoiseInfo& in_noise, int in_time, int in_dil_ind);
+       Key(XMLReader& xml_in);
        Key(const Key& in);
-       ~Key();
+       Key(const LaphNoiseInfo& in_noise, int in_time, int in_dil_ind);     
        Key& operator=(const Key& in);
+       ~Key();
 
        bool operator<(const Key& rhs) const;
-       void binaryWrite(BinaryWriter& out) const;
-       void binaryRead(BinaryReader& in);
-       
-     //  friend void write(BinaryWriter&, const QuarkSourceSinkHandler::Key&);
-     //  friend void read(BinaryReader&, QuarkSourceSinkHandler::Key&);
+       void output(XMLWriter& xmlout) const;
 
     };
 
@@ -92,11 +89,12 @@ class QuarkSourceSinkHandler
 
        // storage and/or references to internal data
 
-   vector<std::string> fileNames;            // files to handle
-   int fileMode;                // 0 = read_only, 1 = must_exist, 
-                                // 2 = create_if_not_there, 3 = overwrite
+   std::string fileStub;            // stub of files to handle
+   int maxFileNumber;
+   int fileMode;                    // 0 = protect,  1 = overwrite
    map<Key,int> fileMap;                    // key -> file index
-   map<Key,SerialDBData<LatticeFermion>* > m_storage; // storage of source/sinks
+   map<Key,LatticeFermion*> m_storage;     // storage of source/sinks
+   QDP_serialparallel_t m_serpar;
 
 
        // Prevent copying ... handler might contain large
@@ -126,6 +124,16 @@ class QuarkSourceSinkHandler
 
    string getHeader() const;
 
+   void outputInfo(XMLWriter& xmlout) const;
+
+   void getHeader(XMLWriter& xmlout) const;
+
+   void getFileMap(XMLWriter& xmlout) const;
+
+   void setParallelIO();
+
+   void setSerialIO();
+
 
 
    const GaugeConfigurationInfo& getGaugeConfigurationInfo() const;
@@ -142,28 +150,17 @@ class QuarkSourceSinkHandler
 
 
 
-        // compute for all dilution indices and dump out to file
-        // specified by "file_index";  compute sources for all source
-        // times, sinks for just one source time but all sink times
-        // (file_index == -1 means use the **last** file in the list)
+        // compute for all dilution indices and dump out to file;
+        // compute sources for all source times, sinks for just one 
+        // source time but all sink times
 
-   void computeSource(XMLReader& xml_in, int file_index = -1);
+   void computeSource(XMLReader& xml_in);
 
-   void computeSource(const LaphNoiseInfo& noise, int file_index = -1);
+   void computeSource(const LaphNoiseInfo& noise);
 
-   void computeSink(XMLReader& xml_in, int file_index = -1);
+   void computeSink(XMLReader& xml_in);
 
-   void computeSink(const LaphNoiseInfo& noise, int source_time, int file_index = -1);
-
-
-//   void eraseSink(XMLReader& xml_in);
-   
-//   void eraseSink(const LaphNoiseInfo& noise, int source_time);
-   
-//   void eraseSource(XMLReader& xml_in);
-   
-//   void eraseSource(const LaphNoiseInfo& noise);
-   
+   void computeSink(const LaphNoiseInfo& noise, int source_time);
    
 
         // read from file (loop through file list to find) for one
@@ -201,25 +198,23 @@ class QuarkSourceSinkHandler
    void destroy_handlers();
    void destroy();
    void set_info(XMLReader& xml_info);
-   void set_file_names(XMLReader& record_xml);
    void set_info_helper(XMLReader& xml_info);
    void set_info_helper(const std::string& header);
    void set_info_from_file(XMLReader& xml_in);
    void setup_file_map();
+   std::string make_file_name(int suffix);
+   int first_available_suffix();
 
-   int file_index_helper(int file_index);
    const multi1d<LatticeColorVector>& set_up_laph_eigenvectors();
 
-   friend void write(BinaryWriter& out, const QuarkSourceSinkHandler::Key& key );
-   friend void read(BinaryReader& in, QuarkSourceSinkHandler::Key& key);
-
+   bool filewrite(const std::string& fileName, XMLBufferWriter& fileHeader,
+                  XMLBufferWriter& recordHeader, const LatticeFermion& data);
+   void fileread(const std::string& fileName, XMLReader& fileHeader,
+                 XMLReader& recordHeader);
+   void fileread(const std::string& fileName, XMLReader& fileHeader,
+                 XMLReader& recordHeader, LatticeFermion& data);
 
 };
-
-
-
-void write(BinaryWriter& out, const QuarkSourceSinkHandler::Key& key );
-void read(BinaryReader& in, QuarkSourceSinkHandler::Key& key);
 
 
 // ***************************************************************
