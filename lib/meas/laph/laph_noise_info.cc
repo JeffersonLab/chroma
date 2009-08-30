@@ -144,13 +144,15 @@ void LaphNoiseInfo::calc_seed() const
    // run four sequences of linear congruential RNG
    // based on the trajectory number, the offset, and nHits
    //   -> if currTraj>trajOffset, do nHits as traj number increases by 1
-   //   -> if currTraj<trajOffset, do nHits+1 as traj number decreases by 1
+   //   -> if currTraj<trajOffset, do nHits as traj number decreases by 1
+   //        but jumble the four integers differently
    // RNG used keep i0,i1,i2 twelve bits or below, and i3 eleven bits or below
 
- for (int k=0;k<(nHits+1)*(trajOffset-currTraj);k++)
-    lcongr(i0,i1,i2,i3);
+ for (int k=0;k<nHits*(trajOffset-currTraj);k++)
+    lcongr(i1,i2,i0,i3);
  for (int k=0;k<nHits*(currTraj-trajOffset);k++)
     lcongr(i0,i1,i2,i3);
+
 
      // put results into the 47 bit seed
 

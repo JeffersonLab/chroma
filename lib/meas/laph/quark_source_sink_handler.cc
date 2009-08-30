@@ -125,18 +125,18 @@ void QuarkSourceSinkHandler::set_info(XMLReader& xml_in)
 
  setup_file_map();
 
- QDPIO::cout << "Info set in QuarkSourceSinkHandler"<<endl;
- QDPIO::cout << outputInfo() <<endl;
+// QDPIO::cout << "Info set in QuarkSourceSinkHandler"<<endl;
+// QDPIO::cout << outputInfo() <<endl;
 }
 
 void QuarkSourceSinkHandler::set_info_helper(XMLReader& xml_info)
 {
    // one GaugeConfigurationInfo tag will initialize uPtr and part of smearPtr
- smearPtr->setInfo(xml_info); cout << "smearing info done"<<endl;
- uPtr->setInfo(xml_info);  cout << "gauge info done"<<endl;  
+ smearPtr->setInfo(xml_info);
+ uPtr->setInfo(xml_info);
  try{
-    dilPtr = new DilutionSchemeInfo(xml_info); cout << "dil done"<<endl;
-    qactionPtr = new QuarkInfo(xml_info,uPtr->getInfo()); cout << "quark action"<<endl;}
+    dilPtr = new DilutionSchemeInfo(xml_info);
+    qactionPtr = new QuarkInfo(xml_info,uPtr->getInfo());}
  catch(...){
     QDPIO::cerr << "allocation problem in QuarkSourceSinkHandler"<<endl;
     QDP_abort(1);}
@@ -168,7 +168,7 @@ void QuarkSourceSinkHandler::clear()
 {
  destroy();
  create_handlers();
- QDPIO::cout << "QuarkSourceSinkHandler cleared"<<endl;
+// QDPIO::cout << "QuarkSourceSinkHandler cleared"<<endl;
 }
 
 void QuarkSourceSinkHandler::destroy()
@@ -204,6 +204,7 @@ string QuarkSourceSinkHandler::outputInfo() const
     oss << smearPtr->outputInfo() << endl;  // also outputs uPtr-> info
     oss << dilPtr->output() << endl;
     oss << qactionPtr->output() << endl;
+    oss << invertPtr->output() <<endl;
     oss << "</QuarkSourceSinkInfo>";
     return oss.str();}
  return "";
@@ -227,6 +228,7 @@ void QuarkSourceSinkHandler::outputInfo(XMLWriter& xmlout) const
     smearPtr->outputInfo(xmlout);  // also outputs uPtr-> info
     dilPtr->output(xmlout);
     qactionPtr->output(xmlout);
+    invertPtr->output(xmlout);
     pop(xmlout);}
 }
 
@@ -328,7 +330,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
  vector<DilutionSchemeInfo::Projector> dilProjs;
  dilPtr->getProjectors(smearPtr->getFieldSmearingInfo(),dilProjs);
  
- QDPIO::cout << "Quark source computation for all dilutions, one noise, beginning"<<endl;
+ QDPIO::cout <<endl << "Quark source computation for all dilutions, one noise, beginning"<<endl;
  START_CODE();
  StopWatch rolex;
  rolex.start();
@@ -350,47 +352,11 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
  for (int t=0;t<Textent;t++)
     for (int s=0;s<Nspin;s++)
        for (int v=0;v<nEigs;v++)
-          laph_noise(t,s,v) = zN_rng(Zn);
+          laph_noise(t,s,v) = zN_rng(Zn);    // same on all compute nodes
  QDP::RNG::setrn(curr_seed);      //Return the seed to its previous value
 
- SftMom phases(0, false, Tdir);    // needed for time dilution (masks onto a time slice)
-                                   // 0 = max momentum squared, true = avg over equiv mom 
-
-/*
- LatticeComplex f0 = zero;
- for (int t=0;t<128;t++)
- f0[phases.getSet()[t]] = cmplx(Real(1.0*t),Real(0.0));
- 
- LatticeSpinVector svv = zero;
- pokeSpin(svv,f0,0);
- pokeSpin(svv,f0*10,1);
- pokeSpin(svv,f0*100,2);
- pokeSpin(svv,f0*1000,3);
- 
- LatticeComplex f1 = zero;
- for (int t=0;t<128;t++)
- f1[phases.getSet()[t]] = cmplx(Real(1.0*t),Real(0.0));
- 
- LatticeColorVector cvv = zero;
- pokeColor(cvv,f1,0);
- pokeColor(cvv,f1*10,1);
- pokeColor(cvv,f1*100,2);
-
- LatticeFermion crap = zero;
- crap[phases.getSet()[13]] += svv * cvv;
-
- multi1d<int> site(4);
- for (site[0]=0;site[0]<16;site[0]++)
- for (site[1]=0;site[1]<16;site[1]++)
- for (site[2]=0;site[2]<16;site[2]++)
- for (site[3]=0;site[3]<128;site[3]++)
- for (int spin=0;spin<4;spin++)
- for (int color=0;color<3;color++){
-    Fermion fk=peekSite(crap,site);
-    ColorVector ck=peekSpin(fk,spin);
-    QDPIO::cout << site[0]<<" "<<site[1]<<" "<<site[2]<<" "<<site[3]<<" ["<<spin<<"]["<<color<<"] = "
-          << peekColor(ck,color)<<"   "<<site[3]*site[3]*pow(10.0,spin+color)<<endl;}
-*/          
+ SftMom phases(0, false, Tdir); // phases.getSet()[t0] masks onto time-slice t0
+                 // 0 = max momentum squared, false = avg over equiv mom 
 
      // loop over dilutions
  
@@ -414,13 +380,10 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
         //  initialize output field for sources
     LatticeFermion source = zero;
     for (list<int>::const_iterator vmask= on_eigs.begin(); vmask!=on_eigs.end(); vmask++){
-    QDPIO::cout << "new vmask"<<endl;
        LatticeSpinVector sv = zero;
        for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++){
-       QDPIO::cout << "new smask"<<endl;
           LatticeComplex temp = zero;
           for (int t0=0;t0<Textent;t0++){
-             QDPIO::cout << "t0 = "<<t0<<endl;
              temp[phases.getSet()[t0]] = laph_noise(t0,*smask,*vmask);}
           pokeSpin(sv,temp,*smask);}
        source += sv * Vs[*vmask];
@@ -471,7 +434,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
  vector<DilutionSchemeInfo::Projector> dilProjs;
  dilPtr->getProjectors(smearPtr->getFieldSmearingInfo(),dilProjs);
  
- QDPIO::cout << "Quark sink computation for all dilutions, one noise,"
+ QDPIO::cout <<endl<< "Quark sink computation for all dilutions, one noise,"
              << " one source time beginning"<<endl;
  QDPIO::cout << " Source time = "<<source_time<<endl;
  START_CODE();
@@ -494,17 +457,18 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
  for (int t=0;t<Textent;t++)
     for (int s=0;s<Nspin;s++)
        for (int v=0;v<nEigs;v++)
-          laph_noise(t,s,v) = zN_rng(Zn);
+          laph_noise(t,s,v) = zN_rng(Zn);   // same on all compute nodes
  QDP::RNG::setrn(curr_seed);      //Return the seed to its previous value
 
- SftMom phases(0, false, Tdir);  // needed for time dilution (masks onto a time slice)
-                                 // 0 = max momentum squared, true = avg over equiv mom 
+ SftMom phases(0, false, Tdir); // phases.getSet()[t0] masks onto time-slice t0
+                 // 0 = max momentum squared, false = avg over equiv mom 
+
                                                      // rotate to DeGrand-Rossi, then 
  SpinMatrix SrcRotate = Gamma(8) * DiracToDRMat();   //  multiply by gamma_4
  SpinMatrix SnkRotate = adj(DiracToDRMat());    // rotate back to Dirac-Pauli
 
  string fermact_xml = qactionPtr->output();
- QDPIO::cout << "fermact_xml = "<<fermact_xml<<endl;
+// QDPIO::cout << "fermact_xml = "<<fermact_xml<<endl;
  string fermact_id = qactionPtr->getActionId();
 
    // Typedefs to save typing
@@ -517,31 +481,31 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
  solverInfo.id = invertPtr->getId();
  solverInfo.path = "//InvertParam";
  
- QDPIO::cout << "inverter xml = "<<solverInfo.xml<<endl;
+// QDPIO::cout << "inverter xml = "<<solverInfo.xml<<endl;
  
    // Initialize fermion action
    
  istringstream xml_s(fermact_xml);
  XMLReader fermacttop0(xml_s);
  XMLReader fermacttop(fermacttop0,"/");   // due to XMLReader bug
- QDPIO::cout << "FermAct = " << fermact_id << endl;
+// QDPIO::cout << "FermAct = " << fermact_id << endl;
 
  Handle< FermionAction<T,P,Q> > S_f; 
  Handle< FermState<T,P,Q> > state;
  Handle< SystemSolver<LatticeFermion> > PP;
 
  try{
-    QDPIO::cout << "createObject"<<endl;
+//    QDPIO::cout << "createObject"<<endl;
     S_f=TheFermionActionFactory::Instance().createObject(fermact_id,
                                                fermacttop,"//FermionAction");
-    QDPIO::cout << "createState"<<endl;         
+//    QDPIO::cout << "createState"<<endl;         
     state=S_f->createState(uPtr->getData());
-    PP = S_f->qprop(state,solverInfo); QDPIO::cout << "createPP"<<endl;}
+    PP = S_f->qprop(state,solverInfo);}
  catch(const string& err){
     QDPIO::cerr << " Fermion action and inverter could not be initialized"
                 << " in QuarkSourceSinkHandler"<<endl;
     QDP_abort(1);}
- QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
+ QDPIO::cout << "Suitable FermionActionFactory found: Dirac matrix inversions may begin" << endl;
  
      // loop over dilutions
  
@@ -789,6 +753,12 @@ const multi1d<LatticeColorVector>& QuarkSourceSinkHandler::set_up_laph_eigenvect
           QDP_abort(1);}}}
  return smearPtr->getLaphEigenvectors();
 }
+
+void QuarkSourceSinkHandler::setLaphEigenvectors()
+{
+ set_up_laph_eigenvectors();
+}
+
 
 bool QuarkSourceSinkHandler::filewrite(const std::string& fileName, 
                                        XMLBufferWriter& fileHeader,

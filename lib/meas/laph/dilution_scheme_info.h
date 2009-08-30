@@ -119,6 +119,8 @@ class DilutionSchemeInfo
 
   void getHeader(XMLWriter& xmlout) const { output(xmlout); }
 
+
+
  private:
 
   void assign(int spin_dil_type, int eigvec_dil_type, int time_dil_type = 1);

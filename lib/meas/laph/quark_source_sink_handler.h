@@ -190,6 +190,8 @@ class QuarkSourceSinkHandler
 
 
 
+   void setLaphEigenvectors();  // called in compute/set source/sink
+
 
  private:
 

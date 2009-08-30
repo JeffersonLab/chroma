@@ -34,10 +34,10 @@ InverterInfo::InverterInfo(XMLReader& xml_in)
     ostringstream strm;
     xmlr.print(strm);
     inverter_xml = strm.str();
-    QDPIO::cout << "Inverter XML:"<<endl << inverter_xml << endl;
-    QDPIO::cout << "Tolerance = " << tol << endl;
-    QDPIO::cout << "Inverter ID = "<<id << endl;
-    QDPIO::cout << "Inverter Info Initialized" << endl;
+//    QDPIO::cout << "Inverter XML:"<<endl << inverter_xml << endl;
+//    QDPIO::cout << "Tolerance = " << tol << endl;
+//    QDPIO::cout << "Inverter ID = "<<id << endl;
+//    QDPIO::cout << "Inverter Info Initialized" << endl;
     }
  catch(std::string& err){
     QDPIO::cerr << "ERROR: "<<err<<endl;

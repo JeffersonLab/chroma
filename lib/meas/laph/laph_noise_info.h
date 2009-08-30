@@ -44,9 +44,9 @@ namespace Chroma {
 // *   times to obtain the Seed corresponding to that trajectory     *
 // *   number.  For trajectory number "k", the number of             *
 // *   applications of the RNG is                                    *
-// *      "nhits"*("k"-"traj_offset")  for "k">"traj_offset"         *
-// *   or                                                            *
-// *     ("nhits"+1)*("traj_offset"-"k") for "k"<"traj_offset"       *
+// *      "nhits"*|"k"-"traj_offset"|                                *
+// *   but different sequences are generated depending on whether    *
+// *   "k"<"traj_offset" or "k">"traj_offset"                        *
 // *   where "nhits" has a pre-set value (usually, 1).               *
 // *                                                                 *
 // *   Example usage:                                                *

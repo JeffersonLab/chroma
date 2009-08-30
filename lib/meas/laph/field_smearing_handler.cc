@@ -46,8 +46,8 @@ void FieldSmearingHandler::set_info(XMLReader& xml_in)
     QDPIO::cerr << "problem in setInfo in FieldSmearingHandler"<<endl;
     QDP_abort(1);}
  laph_eigvecs_id=tidyString(laph_eigvecs_id);
- QDPIO::cout << uPtr->outputInfo() <<endl;
- QDPIO::cout << "FieldSmearingInfo set in FieldSmearingHandler"<<endl;
+// QDPIO::cout << uPtr->outputInfo() <<endl;
+// QDPIO::cout << "FieldSmearingInfo set in FieldSmearingHandler"<<endl;
 }
 
 void FieldSmearingHandler::setInfo(const string& header)
@@ -178,7 +178,8 @@ void FieldSmearingHandler::computeLaphEigenvectors()
 
   // ***********************DUMMY*****************************
 
-// compute smeared gauge field
+  computeSmearedGaugeField();
+
   for (int k =0;k<nEigvecs;k++)
      gaussian(laph_eigvecs->getEvectors()[k]);
  
@@ -219,7 +220,7 @@ void FieldSmearingHandler::computeLaphEigenvectors()
 
  // dump out some xml log information
  QDPIO::cout << "Laplacian eigenvectors computed in FieldSmearingHandler"<<endl;
- QDPIO::cout << record_xml.str();
+// QDPIO::cout << record_xml.str();
 }
 
 
@@ -238,9 +239,9 @@ void FieldSmearingHandler::setLaphEigenvectors()
     return;}
 
  XMLReader source_record_xml;
- QDPIO::cout << "Getting Laph eigenvectors from NamedObjMap" << endl;
+// QDPIO::cout << "Getting Laph eigenvectors from NamedObjMap" << endl;
  if (!TheNamedObjMap::Instance().check(laph_eigvecs_id)){
-    QDPIO::cout << "Laph eigenvectors are not currently in NamedObjMap";
+    QDPIO::cout << "Laph eigenvectors are not currently in NamedObjMap"<<endl;
     laph_eigvecs=0;
     return;}
  try{
@@ -256,7 +257,7 @@ void FieldSmearingHandler::setLaphEigenvectors()
     QDPIO::cerr << "error in setLaphEigenvectors: " << err << endl;
     QDP_abort(1);
     }
- QDPIO::cout << "LaphEigenvectors successfully set in FieldSmearingHandler" << endl;
+// QDPIO::cout << "LaphEigenvectors successfully set in FieldSmearingHandler" << endl;
 }
 
 
@@ -288,9 +289,9 @@ void FieldSmearingHandler::clearLaphEigenvectors(bool namedobj_erase)
     TheNamedObjMap::Instance().erase(laph_eigvecs_id);
     }
  laph_eigvecs = 0;
- QDPIO::cout << "Laph Eigenvectors cleared";
- if (namedobj_erase) QDPIO::cout << " and erased from NamedObjMap";
- QDPIO::cout << "in FieldSmearingHandler"<<endl;
+// QDPIO::cout << "Laph Eigenvectors cleared";
+// if (namedobj_erase) QDPIO::cout << " and erased from NamedObjMap";
+// QDPIO::cout << "in FieldSmearingHandler"<<endl;
 }
 
 
@@ -306,7 +307,7 @@ void FieldSmearingHandler::computeSmearedGaugeField()
                 << "  computing smeared gauge field" << endl;
     QDP_abort(1);}
 
- double rho = smearPtr->getLinkStapleWeight();  cout << "rho = "<<Real(rho)<<endl;
+ double rho = smearPtr->getLinkStapleWeight();
  int niters = smearPtr->getNumberOfLinkIterations();
  int tdir = uPtr->getInfo().getTimeDir();
  int ndir = uPtr->getInfo().getNumberOfDirections();
@@ -314,8 +315,6 @@ void FieldSmearingHandler::computeSmearedGaugeField()
  QDPIO::cout << "Computation of smeared gauge field commencing in FieldSmearingHandler"<<endl;
  QDPIO::cout << smearPtr->output()<<endl;
  
- cout << "tdir = "<<tdir<<endl;
- cout << "ndir = "<<ndir<<endl;
  multi1d<bool> smear_dirs(ndir);
  for (int i=0;i<ndir;i++) smear_dirs[i] = true;
  smear_dirs[tdir]=false;
@@ -336,14 +335,14 @@ void FieldSmearingHandler::computeSmearedGaugeField()
 
  START_CODE();
  StopWatch rolex;
- rolex.start();  cout << "start fuzzing"<<endl;
+ rolex.start();
 
  if ((niters%2)==0) usmear=uPtr->getData();
  else{
-    utemp=uPtr->getData(); cout << "utemp assigned"<<endl;
+    utemp=uPtr->getData();
     Chroma::Stouting::smear_links(utemp,usmear,smear_dirs,rhomat);}
 
- for (int k=0;k<(niters/2);k++){ cout << "k = "<<k<<endl;
+ for (int k=0;k<(niters/2);k++){
     Chroma::Stouting::smear_links(usmear,utemp,smear_dirs,rhomat);
     Chroma::Stouting::smear_links(utemp,usmear,smear_dirs,rhomat);}
 
@@ -362,7 +361,7 @@ const multi1d<LatticeColorMatrix>& FieldSmearingHandler::getSmearedGaugeField() 
  if (usmear.size()==0){
     QDPIO::cerr << "error in getSmearedGaugeField: unassigned"<<endl;
     QDP_abort(1);}
- QDPIO::cout << "smeared gauge field set in FieldSmearingHandler"<<endl;
+// QDPIO::cout << "smeared gauge field set in FieldSmearingHandler"<<endl;
  return usmear;
 }
 
@@ -371,7 +370,7 @@ const multi1d<LatticeColorMatrix>& FieldSmearingHandler::getSmearedGaugeField() 
 void FieldSmearingHandler::clearGaugeField()
 { 
  usmear.resize(0);
- QDPIO::cout << "smeared gauge field clear in FieldSmearingHandler"<<endl;
+// QDPIO::cout << "smeared gauge field clear in FieldSmearingHandler"<<endl;
 }
 
 

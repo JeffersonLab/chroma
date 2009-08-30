@@ -145,11 +145,15 @@ void DilutionSchemeInfo::setProjectorMasks(vector<list<int> >& projs,
     if (nproj>(nBasis/2)){
        QDPIO::cerr << "number of blocked dilution projectors too large"<<endl;
        QDP_abort(1);}
-    int blocksize=((nBasis-1)/nproj)+1;
+    int bksize=nBasis/nproj;
+    vector<int> blocksize(nproj,bksize);
+    int tb=nBasis-bksize*nproj;
+    for (int sb=0;sb<tb;sb++)
+       blocksize[sb]++;
     int jb=0, bc=0;
     for (int k=0;k<nBasis;k++){
        projind[k]=jb; bc++;
-       if (bc==blocksize){ jb++; bc=0;}}
+       if (bc==blocksize[jb]){ jb++; bc=0;}}
     }
  else if (dil_type<-1){    // interlace dilution
     nproj=-dil_type;

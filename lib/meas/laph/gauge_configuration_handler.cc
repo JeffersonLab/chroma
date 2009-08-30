@@ -30,7 +30,7 @@ void GaugeConfigurationHandler::set_info(XMLReader& xml_in)
  catch(...){
     QDPIO::cerr << "problem allocating GaugeConfigurationInfo"<<endl;
     QDP_abort(1);}    
- QDPIO::cout << "GaugeConfig info set in GaugeConfigurationHandler"<<endl;
+// QDPIO::cout << "GaugeConfig info set in GaugeConfigurationHandler"<<endl;
 }
 
 void GaugeConfigurationHandler::setInfo(const string& header)
