@@ -31,9 +31,31 @@ InverterInfo::InverterInfo(XMLReader& xml_in)
 {
  try{
     XMLReader xmlr(xml_in, "./descendant-or-self::InvertParam");
-    read(xmlr, "RsdCG", tol);
-    read(xmlr, "invType", id);
-    max_iterations=20000;
+    xmlread(xmlr,"invType",id, "InverterInfo");
+    id=tidyString(id);
+    if (  (id!="CG_INVERTER")
+        &&(id!="BICGSTAB_INVERTER")
+        &&(id!="IBICGSTAB_INVERTER")
+        &&(id!="EIG_CG_INVERTER")){
+       QDPIO::cerr << "Bad input XML to InvertParamInfo"<<endl
+           << "Expected <invType> to have value "
+           << "CG_INVERTER, BICGSTAB_INVERTER, IBICGSTAB_INVERTER,"
+           << " or EIG_CG_INVERTER"<<endl;
+       QDP_abort(1);}
+    if (xml_tag_count(xmlr,"RsdCG")==1)
+       read(xmlr, "RsdCG", tol);
+    else if (xml_tag_count(xmlr,"RsdBiCGStab")==1)
+       read(xmlr, "RsdBiCGStab", tol);
+    else{
+       QDPIO::cerr << "No requested residuum for convergence in InverterInfo"<<endl;
+       QDP_abort(1);}
+    if (xml_tag_count(xmlr,"MaxCG")==1)
+       read(xmlr, "MaxCG", max_iterations);
+    else if (xml_tag_count(xmlr,"MaxBiCGStab")==1)
+       read(xmlr, "MaxBiCGStab", max_iterations);
+    else{
+       QDPIO::cerr << "No maximum iterations in InvertParamInfo"<<endl;
+       QDP_abort(1);}
     ostringstream strm;
     xmlr.print(strm);
     inverter_xml = strm.str();

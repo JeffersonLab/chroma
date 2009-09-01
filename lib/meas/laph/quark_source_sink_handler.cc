@@ -569,6 +569,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
        string fileName=make_file_name(findex);
        XMLBufferWriter recordheader;
        kval.output(recordheader);
+       invertPtr->output(recordheader);
        XMLBufferWriter fileheader;
        getHeader(fileheader);
 
