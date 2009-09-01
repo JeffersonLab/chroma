@@ -5,6 +5,7 @@
 #include "actions/ferm/fermacts/fermact_factory_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "util/ferm/diractodr.h"
+#include "time_slices.h"
 
 
 namespace Chroma {
@@ -355,8 +356,8 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
           laph_noise(t,s,v) = zN_rng(Zn);    // same on all compute nodes
  QDP::RNG::setrn(curr_seed);      //Return the seed to its previous value
 
- SftMom phases(0, false, Tdir); // phases.getSet()[t0] masks onto time-slice t0
-                 // 0 = max momentum squared, false = avg over equiv mom 
+ Set timeslices;                         // needed for time slice masks
+ timeslices.make(TimeSliceFunc(Tdir)); 
 
      // loop over dilutions
  
@@ -384,7 +385,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
        for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++){
           LatticeComplex temp = zero;
           for (int t0=0;t0<Textent;t0++){
-             temp[phases.getSet()[t0]] = laph_noise(t0,*smask,*vmask);}
+             temp[timeslices[t0]] = laph_noise(t0,*smask,*vmask);}
           pokeSpin(sv,temp,*smask);}
        source += sv * Vs[*vmask];
        }
@@ -460,10 +461,9 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
           laph_noise(t,s,v) = zN_rng(Zn);   // same on all compute nodes
  QDP::RNG::setrn(curr_seed);      //Return the seed to its previous value
 
- SftMom phases(0, false, Tdir); // phases.getSet()[t0] masks onto time-slice t0
-                 // 0 = max momentum squared, false = avg over equiv mom 
-
-                                                     // rotate to DeGrand-Rossi, then 
+ Set timeslices;                         // needed for time slice masks
+ timeslices.make(TimeSliceFunc(Tdir)); 
+                                                      // rotate to DeGrand-Rossi, then 
  SpinMatrix SrcRotate = Gamma(8) * DiracToDRMat();   //  multiply by gamma_4
  SpinMatrix SnkRotate = adj(DiracToDRMat());    // rotate back to Dirac-Pauli
 
@@ -526,49 +526,61 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
     const list<int>& on_eigs=dilProjs[dil].onEigvecIndices();
 
         //  initialize output field for sources
-    LatticeFermion source = zero;
+    LatticeFermion latfermA = zero;
     for (list<int>::const_iterator vmask= on_eigs.begin(); vmask!=on_eigs.end(); vmask++){
        LatticeSpinVector sv = zero;
        for (list<int>::const_iterator smask= on_spins.begin(); smask!=on_spins.end(); smask++){
           LatticeComplex temp = zero;
-          temp[phases.getSet()[source_time]] = laph_noise(source_time,*smask,*vmask);
+          temp[timeslices[source_time]] = laph_noise(source_time,*smask,*vmask);
           pokeSpin(sv,temp,*smask);}
-       source[phases.getSet()[source_time]] += sv * Vs[*vmask];
+       latfermA[timeslices[source_time]] += sv * Vs[*vmask];
        }
        
-    LatticeFermion rsource = SrcRotate * source;  // rotate to DeGrand-Rossi, mult by gamma_4
-    LatticeFermion phi = zero;
+    LatticeFermion latfermB = SrcRotate * latfermA;  // rotate to DeGrand-Rossi, mult by gamma_4
+
+    QDPIO::cout << "Norm of source vector = "<<sqrt(norm2(latfermB))<<endl;
+    latfermA = zero;
     QDPIO::cout << "source created...starting inversion"<<endl;
+
              // now do the inversion
-    SystemSolverResults_t res = (*PP)(phi, rsource);
+    SystemSolverResults_t res = (*PP)(latfermA, latfermB);  // solution in latfermA
 
     QDPIO::cout << "Inversion done:  number of iterations = "<<res.n_count<<endl;
     QDPIO::cout << " Residual = "<<res.resid<<endl;
 
+    if (res.n_count<invertPtr->getMaxIterations()){
+
                    // sink = Vs * Vs^dagger * phi
-    LatticeFermion sink;
-    for (int s=0;s<Nspin;s++){
-       LatticeColorVector phi_s = peekSpin(phi, s);
-       LatticeColorVector sink_s = zero;
-       for (int n=0;n<nEigs;n++){
-          LatticeComplex tmp = localInnerProduct( Vs[n], phi_s );
-          multi2d<DComplex> t_sum = phases.sft(tmp);
-          for (int t=0;t<Textent;t++){
-             sink_s[phases.getSet()[t]] += Vs[n] * t_sum[0][t];}}
-       pokeSpin(sink, sink_s, s);}
-    sink = SnkRotate * sink;         // rotate back to Dirac-Pauli
 
-        // output this dilution to file
+       latfermB = zero;
+       for (int s=0;s<Nspin;s++){
+          LatticeColorVector phi_s = peekSpin(latfermA, s);
+          LatticeColorVector sink_s = zero;
+          for (int n=0;n<nEigs;n++){
+             LatticeComplex tmp = localInnerProduct( Vs[n], phi_s );  // color contraction
+             multi1d<DComplex> t_sum = sumMulti(tmp,timeslices);  // spatial sums on each timeslice
+             for (int t=0;t<Textent;t++){
+                sink_s[timeslices[t]] = Vs[n] * t_sum[t];}}
+          pokeSpin(latfermB, sink_s, s);}
+       latfermA = SnkRotate * latfermB;         // rotate back to Dirac-Pauli
 
-    string fileName=make_file_name(findex);
-    XMLBufferWriter recordheader;
-    kval.output(recordheader);
-    XMLBufferWriter fileheader;
-    getHeader(fileheader);
+           // output this dilution to file
 
-    if (filewrite(fileName,fileheader,recordheader,sink)){
-       QDPIO::cout << "write to file done"<<endl;
-       fileMap.insert(make_pair(kval,findex));}
+       string fileName=make_file_name(findex);
+       XMLBufferWriter recordheader;
+       kval.output(recordheader);
+       XMLBufferWriter fileheader;
+       getHeader(fileheader);
+
+       if (filewrite(fileName,fileheader,recordheader,latfermA)){
+          QDPIO::cout << "write to file done"<<endl;
+          fileMap.insert(make_pair(kval,findex));}
+       }
+
+    else{
+    
+       QDPIO::cout << "Inversion failed to converge before max iteration reached"<<endl;
+       QDPIO::cout << "Solution NOT output to file"<<endl;}
     }}
 
  rolex.stop();

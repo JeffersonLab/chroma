@@ -7,6 +7,7 @@
 #include "meas/laph/gauge_configuration_info.h"
 #include "meas/laph/gauge_configuration_handler.h"
 #include "meas/laph/xml_help.h"
+#include "meas/laph/time_slices.h"
 #include "meas/laph/field_smearing_info.h"
 #include "meas/laph/field_smearing_handler.h"
 #include "meas/laph/dilution_scheme_info.h"

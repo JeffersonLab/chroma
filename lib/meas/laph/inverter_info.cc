@@ -13,7 +13,8 @@ namespace Chroma {
 
 InverterInfo::InverterInfo(const InverterInfo& rhs) 
              : inverter_xml(rhs.inverter_xml), 
-               tol(rhs.tol), id(rhs.id) {}
+               tol(rhs.tol), id(rhs.id), 
+               max_iterations(rhs.max_iterations) {}
   
                                         
 InverterInfo& InverterInfo::operator=(const InverterInfo& rhs)
@@ -21,6 +22,7 @@ InverterInfo& InverterInfo::operator=(const InverterInfo& rhs)
  inverter_xml = rhs.inverter_xml;
  tol = rhs.tol;
  id = rhs.id;
+ max_iterations = rhs.max_iterations;
  return *this;
 }
 
@@ -31,6 +33,7 @@ InverterInfo::InverterInfo(XMLReader& xml_in)
     XMLReader xmlr(xml_in, "./descendant-or-self::InvertParam");
     read(xmlr, "RsdCG", tol);
     read(xmlr, "invType", id);
+    max_iterations=20000;
     ostringstream strm;
     xmlr.print(strm);
     inverter_xml = strm.str();

@@ -53,6 +53,7 @@ class InverterInfo
    std::string inverter_xml;
    std::string id;
    double tol;
+   int max_iterations;
 
   public:
 
@@ -79,6 +80,8 @@ class InverterInfo
    void output(XMLWriter& xmlout) const;
 
    double getTolerance() const {return tol;}
+
+   int getMaxIterations() const {return max_iterations;}
 
    std::string getId() const { return id;}
 
