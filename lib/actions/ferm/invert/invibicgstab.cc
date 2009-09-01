@@ -1,4 +1,4 @@
-// $Id: invibicgstab.cc,v 3.1 2009-07-02 18:24:52 bjoo Exp $
+// $Id: invibicgstab.cc,v 3.2 2009-09-01 19:51:28 jbulava Exp $
 /*! \file
  *  \brief Conjugate-Gradient algorithm for a generic Linear Operator
  */
@@ -28,6 +28,7 @@ InvIBiCGStab_a(const LinearOperator<T>& A,
   flopcount.reset();
   const Subset& sub = A.subset();
   bool convP = false;
+	ret.n_count = MaxBiCGStab;
 
   swatch.reset();
   swatch.start();
