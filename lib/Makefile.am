@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.232 2009-08-22 20:05:05 edwards Exp $
+# $Id: Makefile.am,v 3.233 2009-09-01 15:40:16 colin Exp $
 #
 # Path for all files used in building the library
 
@@ -755,6 +755,7 @@ nobase_include_HEADERS += \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
 	meas/laph/laph.h \
+	meas/laph/time_slices.h \
 	meas/laph/pointer.h \
 	meas/laph/gauge_configuration_info.h \
 	meas/laph/laph_noise_info.h \
