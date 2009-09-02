@@ -88,8 +88,12 @@ string tidyString(const string& str)
 bool xmlContentIsEqual(const string& doc1, const string& doc2, 
                        float float_rel_tol)
 {
- XMLContentComparer temp;
- return temp.IsEqual(doc1,doc2,float_rel_tol);
+ bool result;
+ if (Layout::primaryNode()){
+    XMLContentComparer temp;
+    result=temp.IsEqual(doc1,doc2,float_rel_tol);}
+ Internal::broadcast(result);
+ return result;  
 }
 
 bool xmlContentIsEqual(XMLReader& xmlr1, XMLReader& xmlr2, 
@@ -153,15 +157,15 @@ bool XMLContentComparer::IsEqual(const string& doc1, const string& doc2,
 
  xmlDocPtr xml1 = xmlParseMemory(doc1.c_str(),doc1.size());
  if (xml1 == 0){
-    cerr << "Error in XMLContentComparer::IsEqual"<<endl;
-    cerr << "   ...could not parse first XML document"<<endl;
+    QDPIO::cerr << "Error in XMLContentComparer::IsEqual"<<endl;
+    QDPIO::cerr << "   ...could not parse first XML document"<<endl;
     xmlFreeDoc(xml1);
     return false;}
 
  xmlDocPtr xml2 = xmlParseMemory(doc2.c_str(),doc2.size());
  if (xml2 == 0){
-    cerr << "Error in XMLContentComparer::IsEqual"<<endl;
-    cerr << "   ...could not parse second XML document"<<endl;
+    QDPIO::cerr << "Error in XMLContentComparer::IsEqual"<<endl;
+    QDPIO::cerr << "   ...could not parse second XML document"<<endl;
     xmlFreeDoc(xml1);
     xmlFreeDoc(xml2);
     return false;}

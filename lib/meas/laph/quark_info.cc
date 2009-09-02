@@ -57,6 +57,10 @@ void QuarkInfo::setMass(XMLReader& xmlr, string& massName, double& massValue)
 
 QuarkInfo::QuarkInfo(XMLReader& xml_in, const GaugeConfigurationInfo& U)
 { 
+ if (xml_tag_count(xml_in,"ValenceQuarkHeader")==1){
+    XMLReader xmlr(xml_in, "./descendant-or-self::ValenceQuarkHeader");
+    set_info2(xmlr);
+    return;}
  if (xml_tag_count(xml_in,"QuarkInfo")!=1){
     QDPIO::cerr << "Bad XML input to QuarkInfo"<<endl;
     QDPIO::cerr << "Expected one <QuarkInfo> tag"<<endl;
@@ -132,6 +136,9 @@ void QuarkInfo::set_info2(XMLReader& xmlr)
 {
  setMass(xmlr,mass_name,mass);
  xmlread(xmlr, "FermAct", action_id, "QuarkInfo");
+ ostringstream strm;
+ xmlr.print(strm);
+ quark_header = strm.str();
 }
 
   // ************************************************************

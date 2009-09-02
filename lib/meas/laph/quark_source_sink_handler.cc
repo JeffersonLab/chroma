@@ -370,7 +370,8 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
  QDP::RNG::setrn(curr_seed);      //Return the seed to its previous value
 
  Set timeslices;                         // needed for time slice masks
- timeslices.make(TimeSliceFunc(Tdir)); 
+ timeslices.make(TimeSliceFunc(Tdir));
+ map<Key,int>::const_iterator comp;
 
      // loop over dilutions
  
@@ -379,7 +380,8 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
     QDPIO::cout <<endl << "Doing dilution "<<dil<<endl;
 
     Key kval(noise,Textent,dil);    // Textent signals a source (not a sink)
-    if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=1)){   // already computed!!
+    comp=fileMap.find(kval);
+    if ((comp!=fileMap.end())&&(fileMode!=1)){   // already computed!!
        QDPIO::cout << "warning: computeQuarkSource already computed..."
                    << "skip re-computing since fileMode is not overwrite"<<endl;}
     else{
@@ -387,7 +389,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
         // get the lists of which spins and which eigenvectors are
         // "on" for this dilution projector
         
-    int findex=first_available_suffix();
+    int findex=(comp==fileMap.end())?first_available_suffix():comp->second;
     const list<int>& on_spins=dilProjs[dil].onSpinIndices();
     const list<int>& on_eigs=dilProjs[dil].onEigvecIndices();
  
@@ -478,6 +480,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
 
  Set timeslices;                         // needed for time slice masks
  timeslices.make(TimeSliceFunc(Tdir)); 
+ map<Key,int>::const_iterator comp;
                                                       // rotate to DeGrand-Rossi, then 
  SpinMatrix SrcRotate = Gamma(8) * DiracToDRMat();   //  multiply by gamma_4
  SpinMatrix SnkRotate = adj(DiracToDRMat());    // rotate back to Dirac-Pauli
@@ -529,7 +532,8 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
 
     QDPIO::cout <<endl<< "Starting dilution "<<dil<<endl;
     Key kval(noise,source_time,dil);
-    if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=1)){   // already computed!!
+    comp=fileMap.find(kval);
+    if ((comp!=fileMap.end())&&(fileMode!=1)){   // already computed!!
        QDPIO::cout << "warning: computeQuarkSink already computed..."
                    << "skip re-computing since fileMode not overwrite"<<endl;}
     else{
@@ -537,7 +541,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
         // get the lists of which spins and which eigenvectors are
         // "on" for this dilution projector
         
-    int findex=first_available_suffix();
+    int findex=(comp==fileMap.end())?first_available_suffix():comp->second;
     const list<int>& on_spins=dilProjs[dil].onSpinIndices();
     const list<int>& on_eigs=dilProjs[dil].onEigvecIndices();
 
