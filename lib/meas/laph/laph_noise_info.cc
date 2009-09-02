@@ -102,7 +102,7 @@ bool LaphNoiseInfo::operator<(const LaphNoiseInfo& in) const
          && ((s1<in.s1) || ((s1==in.s1) 
          && ((s2<in.s2) || ((s2==in.s2) 
          && ((s3<in.s3) || ((s3==in.s3) 
-         && ((znGroup<in.znGroup))))))))));
+         &&  (znGroup<in.znGroup)))))))));
 }
 
 

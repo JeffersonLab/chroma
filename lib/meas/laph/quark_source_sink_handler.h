@@ -69,6 +69,8 @@ class QuarkSourceSinkHandler
        ~Key();
 
        bool operator<(const Key& rhs) const;
+       bool operator==(const Key& rhs) const;
+       bool operator!=(const Key& rhs) const;
        void output(XMLWriter& xmlout) const;
 
     };

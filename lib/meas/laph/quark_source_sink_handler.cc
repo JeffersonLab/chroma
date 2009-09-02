@@ -46,11 +46,24 @@ QuarkSourceSinkHandler::Key& QuarkSourceSinkHandler::Key::operator=(
 
 bool QuarkSourceSinkHandler::Key::operator<(const QuarkSourceSinkHandler::Key& rhs) const
 {
- return ((source_time<rhs.source_time)||((source_time==rhs.source_time)
-       &&(dilution_index<rhs.dilution_index)||((dilution_index==rhs.dilution_index)
-       &&(noise<rhs.noise))));
+ return   ((source_time<rhs.source_time)       || ((source_time==rhs.source_time)
+       && ((dilution_index<rhs.dilution_index) || ((dilution_index==rhs.dilution_index)
+       &&  (noise<rhs.noise)))));
 }
 
+bool QuarkSourceSinkHandler::Key::operator==(const QuarkSourceSinkHandler::Key& rhs) const
+{
+ return   ((source_time==rhs.source_time)
+         &&(dilution_index==rhs.dilution_index)
+         &&(noise==rhs.noise));
+}
+
+bool QuarkSourceSinkHandler::Key::operator!=(const QuarkSourceSinkHandler::Key& rhs) const
+{
+ return   ((source_time!=rhs.source_time)
+         ||(dilution_index!=rhs.dilution_index)
+         ||(!(noise==rhs.noise)));
+}
 
 void QuarkSourceSinkHandler::Key::output(XMLWriter& xmlout) const
 {
@@ -363,7 +376,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
  
  for (int dil=0;dil<dilProjs.size();dil++){
  
-    QDPIO::cout << "doing dilution "<<dil<<endl;
+    QDPIO::cout <<endl << "Doing dilution "<<dil<<endl;
 
     Key kval(noise,Textent,dil);    // Textent signals a source (not a sink)
     if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=1)){   // already computed!!
@@ -389,7 +402,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
           pokeSpin(sv,temp,*smask);}
        source += sv * Vs[*vmask];
        }
-    QDPIO::cout << "done computation: writing to file"<<endl;
+    QDPIO::cout << "Done computation: writing to file..."<<endl;
 
         // output this dilution, all t0, to file
 
@@ -402,7 +415,7 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
     getHeader(fileheader);
 
     if (filewrite(fileName,fileheader,recordheader,source)){
-       QDPIO::cout << "write to file done"<<endl;
+       QDPIO::cout << "write to file <"<<fileName<<"> done"<<endl;
        fileMap.insert(make_pair(kval,findex));}
     }}
 
@@ -472,6 +485,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
  string fermact_xml = qactionPtr->output();
 // QDPIO::cout << "fermact_xml = "<<fermact_xml<<endl;
  string fermact_id = qactionPtr->getActionId();
+// QDPIO::cout << "ferm id = "<<fermact_id<<endl;
 
    // Typedefs to save typing
  typedef LatticeFermion               T;
@@ -499,7 +513,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
  try{
 //    QDPIO::cout << "createObject"<<endl;
     S_f=TheFermionActionFactory::Instance().createObject(fermact_id,
-                                               fermacttop,"//FermionAction");
+                                               fermacttop,".//FermionAction");
 //    QDPIO::cout << "createState"<<endl;         
     state=S_f->createState(uPtr->getData());
     PP = S_f->qprop(state,solverInfo);}
@@ -513,7 +527,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
  
  for (int dil=0;dil<dilProjs.size();dil++){
 
-    QDPIO::cout << "Starting dilution "<<dil<<endl;
+    QDPIO::cout <<endl<< "Starting dilution "<<dil<<endl;
     Key kval(noise,source_time,dil);
     if ((fileMap.find(kval)!=fileMap.end())&&(fileMode!=1)){   // already computed!!
        QDPIO::cout << "warning: computeQuarkSink already computed..."
@@ -578,14 +592,14 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
        getHeader(fileheader);
 
        if (filewrite(fileName,fileheader,recordheader,latfermA)){
-          QDPIO::cout << "write to file done"<<endl;
+          QDPIO::cout << "write to file <"<<fileName<<"> done"<<endl;
           fileMap.insert(make_pair(kval,findex));}
        }
 
     else{
     
-       QDPIO::cout << "Inversion failed to converge before max iteration reached"<<endl;
-       QDPIO::cout << "Solution NOT output to file"<<endl;}
+       QDPIO::cout << "Inversion FAILED to converge before max iteration reached"<<endl;
+       QDPIO::cout << "Solution NOT WRITTEN to file"<<endl;}
     }}
 
  rolex.stop();
