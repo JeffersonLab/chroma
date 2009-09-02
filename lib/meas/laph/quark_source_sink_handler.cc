@@ -395,7 +395,9 @@ void QuarkSourceSinkHandler::computeSource(const LaphNoiseInfo& noise)
 
     string fileName=make_file_name(findex);
     XMLBufferWriter recordheader;
+    push(recordheader,"RecordInfo");
     kval.output(recordheader);
+    pop(recordheader);
     XMLBufferWriter fileheader;
     getHeader(fileheader);
 
@@ -548,7 +550,7 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
     QDPIO::cout << "Inversion done:  number of iterations = "<<res.n_count<<endl;
     QDPIO::cout << " Residual = "<<res.resid<<endl;
 
-    if (res.n_count<invertPtr->getMaxIterations()){
+    if ((res.n_count>0)&&(res.n_count<invertPtr->getMaxIterations())){
 
                    // sink = Vs * Vs^dagger * phi
 
@@ -568,8 +570,10 @@ void QuarkSourceSinkHandler::computeSink(const LaphNoiseInfo& noise,
 
        string fileName=make_file_name(findex);
        XMLBufferWriter recordheader;
+       push(recordheader,"RecordInfo");
        kval.output(recordheader);
        invertPtr->output(recordheader);
+       pop(recordheader);
        XMLBufferWriter fileheader;
        getHeader(fileheader);
 
