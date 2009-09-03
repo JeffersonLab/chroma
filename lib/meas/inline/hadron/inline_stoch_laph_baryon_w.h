@@ -1,9 +1,85 @@
 // -*- C++ -*-
-// $Id: inline_stoch_laph_baryon_w.h,v 3.4 2009-07-15 02:52:08 jbulava Exp $
+// $Id: inline_stoch_laph_baryon_w.h,v 3.5 2009-09-03 15:44:38 colin Exp $
 /*! \file
  * \brief Inline measurement of stochastic source and sink functions 
  * for baryons
  */
+
+#ifndef __INLINE_STOCH_LAPH_BARYON_W_H__
+#define __INLINE_STOCH_LAPH_BARYON_W_H__
+
+#include "chromabase.h"
+#include "meas/inline/abs_inline_measurement.h"
+#include "meas/laph/laph.h"
+
+
+namespace Chroma { 
+  namespace InlineStochLaphBaryonEnv {
+
+ // **************************************************************
+
+
+extern const std::string name;
+bool registerAll();
+
+    /*! \ingroup inlinehadron */
+
+class StochLaphBaryonInlineMeas : public AbsInlineMeasurement 
+{
+
+   XMLReader xml_rdr;   // holds the XML input for this inline
+                        // measurement, for use by the operator()
+                        // member below
+
+//   struct SinkComputation {
+//      LaphEnv::LaphNoiseInfo Noise;
+//      int SourceTime; 
+//
+//    SinkComputation(const LaphEnv::LaphNoiseInfo& in_noise, int in_time)
+//       : Noise(in_noise), SourceTime(in_time) {}
+//   };
+
+//   struct SourceComputation {
+//      LaphEnv::LaphNoiseInfo Noise;
+//
+//    SourceComputation(const LaphEnv::LaphNoiseInfo& in_noise)
+//       : Noise(in_noise) {}
+//   };
+
+//   list<SinkComputation> sinkComputations;
+//   list<SourceComputation> sourceComputations;
+
+ public:
+
+   StochLaphBaryonInlineMeas(XMLReader& xml_in, const std::string& path) 
+                              : xml_rdr(xml_in, path) {}
+
+   ~StochLaphBaryonInlineMeas() {}
+      
+//   void setSinkComputations(int TimeExtent);
+//   void clearSinkComputations();
+
+//   void setSourceComputations();
+//   void clearSourceComputations();
+
+      //! Do the measurement
+   void operator()(const unsigned long update_no, XMLWriter& xml_out); 
+
+   unsigned long getFrequency() const {return 0;}
+   
+};
+	
+
+// ***********************************************************
+  }
+}
+
+#endif
+
+
+
+
+/*
 
 #ifndef __inline_stoch_laph_baryon_h__
 #define __inline_stoch_laph_baryon_h__
@@ -13,7 +89,7 @@
 
 namespace Chroma 
 { 
-	/*! \ingroup inlinehadron */
+	// \ingroup inlinehadron 
 	namespace InlineStochLapHBaryonEnv 
 	{
 		extern const std::string name;
@@ -21,7 +97,7 @@ namespace Chroma
 
 
 		//! Parameter structure
-		/*! \ingroup inlinehadron */
+		// \ingroup inlinehadron
 		struct Params
 		{
 			Params();
@@ -39,11 +115,11 @@ namespace Chroma
 			struct Param_t
 			{
 
-				multi1d<BaryonOperator> bops;               /*!< Baryon operator 
+				multi1d<BaryonOperator> bops;               // Baryon operator 
 																											information 
-																											(see baryon_operator.h)*/
+																											(see baryon_operator.h)
 
-				GroupXML_t          link_smearing;         /*!< link smearing xml */
+				GroupXML_t          link_smearing;         // link smearing xml 
 
 				int nnoises;         //The number of noise source to be used (must be 
 														 //>= 3 
@@ -70,14 +146,14 @@ namespace Chroma
 			
 			};
 
-			Param_t        param;      /*!< Parameters */    
-			NamedObject_t  named_obj;  /*!< Named objects */
+			Param_t        param;      /*!< Parameters    
+			NamedObject_t  named_obj;  /*!< Named objects
 		
 		};
 
 
 		//! Inline measurement of stochastic group baryon operators
-		/*! \ingroup inlinehadron */
+		/*! \ingroup inlinehadron 
 		class InlineMeas : public AbsInlineMeasurement 
 		{
 			public:
@@ -141,10 +217,10 @@ namespace Chroma
 			multi3d<DilutionComponent_t> dilutions;
 		
 		};
-		/*Accessed as follows 
+		//Accessed as follows 
 		Sink_qqq_t snk;
 		snk.dilutions(d1,d2,d3).time(t);
-		*/
+		
 
 		struct Source_qqq_t
 		{
@@ -167,7 +243,7 @@ namespace Chroma
 		/*Acessed as follows:
 		Source_t src;
 		src.dilutions(d1,d2,d3);
-		*/
+		
 
 
 		//vector of momenta:   mutli1d< multi1d<int> > momenta( 
@@ -554,3 +630,4 @@ void write(XMLWriter& xml, const string& path, const BaryonOperator& b);
 }
 
 #endif
+*/
