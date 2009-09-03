@@ -1,4 +1,4 @@
-// $Id: inline_hadron_aggregate.cc,v 3.56 2009-07-18 02:34:47 jbulava Exp $
+// $Id: inline_hadron_aggregate.cc,v 3.57 2009-09-03 15:45:18 colin Exp $
 /*! \file
  *  \brief Inline hadron measurement aggregator
  */
@@ -18,7 +18,6 @@
 #warning "Not Building Inline Laplace Eigs"
 #endif
 
-#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
 #include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
 #include "meas/inline/hadron/inline_disco_w.h"
@@ -78,6 +77,8 @@
 #include "meas/inline/hadron/inline_stoch_group_meson_w.h"
 #include "meas/inline/hadron/inline_gauge_transf_obj.h"
 #include "meas/inline/hadron/inline_rotate_spin_w.h"
+#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
+#include "meas/inline/hadron/inline_stoch_laph_baryon_w.h"
 
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
@@ -117,7 +118,6 @@ namespace Chroma
 #ifdef BUILD_LAPACK
 	success &= InlineLaplaceEigsEnv::registerAll();
 #endif
-	success &= InlineStochLaphQuarkEnv::registerAll();
 	success &= InlineSeqPropTestEnv::registerAll();
 	success &= InlineHadSpecEnv::registerAll();
 	success &= InlineMesonSpecEnv::registerAll();
@@ -174,6 +174,8 @@ namespace Chroma
 	success &= InlineStochGroupMesonEnv::registerAll();
 	success &= InlineGridPropMatElemEnv::registerAll();
 	success &= InlineBlockPropMatElemEnv::registerAll();
+	success &= InlineStochLaphQuarkEnv::registerAll();
+	success &= InlineStochLaphBaryonEnv::registerAll();
 
 	registered = true;
       }
