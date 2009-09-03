@@ -15,6 +15,7 @@
 #include "meas/laph/quark_info.h"
 #include "meas/laph/inverter_info.h"
 #include "meas/laph/quark_source_sink_handler.h"
+#include "meas/laph/baryon_operator.h"
 
 
 

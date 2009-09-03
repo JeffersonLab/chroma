@@ -230,6 +230,9 @@ string QuarkSourceSinkHandler::getHeader() const
  oss << "<QuarkSourceSinkHeader>"<<endl;
  oss << smearPtr->outputInfo() << endl; // also outputs uPtr-> info
  oss << dilPtr->output() << endl;
+// oss << "<NumberOfDilutionProjectors>"
+//     << dilPtr->getNumberOfProjectors(smearPtr->getFieldSmearingInfo())
+//     << "</NumberOfDilutionProjectors>"<<endl;
  oss << qactionPtr->output() << endl;
  oss << "</QuarkSourceSinkHeader>";
  return oss.str();
@@ -241,6 +244,8 @@ void QuarkSourceSinkHandler::outputInfo(XMLWriter& xmlout) const
     push(xmlout,"QuarkSourceSinkInfo");
     smearPtr->outputInfo(xmlout);  // also outputs uPtr-> info
     dilPtr->output(xmlout);
+//    write(xmlout,"NumberOfDilutionProjectors",
+//          dilPtr->getNumberOfProjectors(smearPtr->getFieldSmearingInfo()));
     qactionPtr->output(xmlout);
     invertPtr->output(xmlout);
     pop(xmlout);}
@@ -741,6 +746,9 @@ void QuarkSourceSinkHandler::destroy_handlers()
 
 void QuarkSourceSinkHandler::setup_file_map()
 {
+
+ QDPIO::cout << "entering setup_file_map"<<endl;
+
  fileMap.clear();
  XMLBufferWriter header_xml;
  getHeader(header_xml);
@@ -816,8 +824,11 @@ void QuarkSourceSinkHandler::fileread(const std::string& fileName,
                                       XMLReader& fileHeader,
                                       XMLReader& recordHeader)
 {
+ QDPIO::cout << "entering fileread"<<endl;
  QDPFileReader fin(fileHeader,fileName,m_serpar);
+ QDPIO::cout << "file Header read"<<endl;
  fin.read(recordHeader);
+ cout << "record Header read"<<endl;
  bool bad=fin.bad();
  fin.close();
  if (bad){
