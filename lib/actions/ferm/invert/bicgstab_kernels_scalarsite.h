@@ -20,6 +20,7 @@ namespace Chroma {
       REAL64* y_ptr;
       REAL64* z_ptr;
       REAL64* norm_ptr;
+      int atom;
     };
 
 #include "actions/ferm/invert/ord_xmyz_normx_kernel.h"
@@ -42,8 +43,8 @@ namespace Chroma {
 	REAL64* z_ptr = (REAL64*)&(z.elem(s.start()).elem(0).elem(0).real());
 	REAL64* norms = getNormSpace();
 
-	ord_xymz_normx_arg  arg={x_ptr,y_ptr,z_ptr,norms};
-	int len = 4*3*2*(s.end()-s.start()+1);
+	ord_xymz_normx_arg  arg={x_ptr,y_ptr,z_ptr,norms,4*3*2};
+	int len = (s.end()-s.start()+1);
 	
 	dispatch_to_threads(len,arg,ord_xymz_normx_kernel);
 	norm = norms[0];
@@ -72,7 +73,7 @@ namespace Chroma {
       REAL32  a_im;
       REAL32  b_re;
       REAL32  b_im;
-
+      int atom;
     };
 
 #include "actions/ferm/invert/ord_yxpaymabz_kernel.h"
@@ -93,9 +94,9 @@ namespace Chroma {
 	REAL32 a_im = a.elem().elem().elem().imag();
 	REAL32 b_re = b.elem().elem().elem().real();
 	REAL32 b_im = b.elem().elem().elem().imag();
-	ord_yxpaymabz_arg arg={x_ptr,y_ptr,z_ptr,a_re,a_im, b_re, b_im};
+	ord_yxpaymabz_arg arg={x_ptr,y_ptr,z_ptr,a_re,a_im, b_re, b_im,4*3*2};
 
-	int len = 4*3*2*(s.end()-s.start()+1);
+	int len = (s.end()-s.start()+1);
 	dispatch_to_threads(len,arg,ord_yxpaymabz_kernel);
       }
       else {
@@ -110,7 +111,7 @@ namespace Chroma {
       REAL32* x_ptr;
       REAL32* y_ptr;
       REAL64* norm_space;
-     
+      int atom;
 
     };
 
@@ -131,8 +132,8 @@ namespace Chroma {
 	  REAL32* y_ptr = (REAL32*)&(y.elem(s.start()).elem(0).elem(0).real());
 	  REAL64* norm_space = getNormSpace();
 	  
-	  int len = 4*3*2*(s.end()-s.start()+1);
-	  ord_norm2x_cdotxy_arg arg={x_ptr,y_ptr,norm_space};
+	  int len = (s.end()-s.start()+1);
+	  ord_norm2x_cdotxy_arg arg={x_ptr,y_ptr,norm_space,4*3*2};
 	  dispatch_to_threads(len,arg, ord_norm2x_cdotxy_kernel);
 
 	  for(int i=0; i < 3*qdpNumThreads(); i+=3) { 
@@ -163,6 +164,7 @@ namespace Chroma {
       REAL32 a_im;
       REAL32 b_re;
       REAL32 b_im;
+      int atom;
     };
 
 
@@ -187,9 +189,9 @@ namespace Chroma {
 	REAL32 a_im = a.elem().elem().elem().imag();
 	REAL32 b_re = b.elem().elem().elem().real();
 	REAL32 b_im = b.elem().elem().elem().imag();
-	ord_xpaypbz_arg arg={x_ptr,y_ptr,z_ptr,a_re,a_im,b_re,b_im};
+	ord_xpaypbz_arg arg={x_ptr,y_ptr,z_ptr,a_re,a_im,b_re,b_im,4*3*2};
 
-	int len=4*3*2*(s.end()-s.start()+1);
+	int len=(s.end()-s.start()+1);
 	dispatch_to_threads(len,arg, ord_xpaypbz_kernel);
       }
       else {
@@ -209,6 +211,7 @@ namespace Chroma {
       REAL32 a_re;
       REAL32 a_im;
       REAL64* norm_space;
+      int atom;
     };
 
 
@@ -236,10 +239,10 @@ namespace Chroma {
 	REAL32 a_re = a.elem().elem().elem().real();
 	REAL32 a_im = a.elem().elem().elem().imag();
 	REAL64* norm_space = getNormSpace();
-	ord_xmay_normx_cdotzx_arg arg = {x_ptr,y_ptr,z_ptr,a_re,a_im, norm_space};
+	ord_xmay_normx_cdotzx_arg arg = {x_ptr,y_ptr,z_ptr,a_re,a_im, norm_space,4*3*2};
 
 
-	int len =4*3*2*(s.end()-s.start()+1);
+	int len =(s.end()-s.start()+1);
 	dispatch_to_threads(len,arg,ord_xmay_normx_cdotzx_kernel);
 
 	for(int i=0; i < 3*qdpNumThreads(); i+=3) { 
@@ -270,6 +273,7 @@ namespace Chroma {
       REAL32* y_ptr;
       REAL32 a_re;
       REAL32 a_im;
+      int atom;
     };
 
 
@@ -288,9 +292,9 @@ namespace Chroma {
 	REAL32* y_ptr = (REAL32*)&(y.elem(s.start()).elem(0).elem(0).real());
 	REAL32 a_re = a.elem().elem().elem().real();
 	REAL32 a_im = a.elem().elem().elem().imag();
-	ord_cxmayf_arg arg={x_ptr,y_ptr,a_re,a_im};
+	ord_cxmayf_arg arg={x_ptr,y_ptr,a_re,a_im,4*3*2};
 
-	int len=4*3*2*(s.end()-s.start()+1);
+	int len=(s.end()-s.start()+1);
 	dispatch_to_threads(len,arg, ord_cxmayf_kernel);
       }
       else {
@@ -329,6 +333,7 @@ namespace Chroma {
 
       F delta_re;
       F delta_im;
+      int atom;
     };
 
 #include "actions/ferm/invert/ord_ib_zvupdates_kernel.h"
@@ -373,9 +378,9 @@ namespace Chroma {
 	  
 	  ib_zvupdates_arg<REAL32> arg={r_ptr,z_ptr,v_ptr,u_ptr,q_ptr, 
 					a_re, a_im, arb_re, arb_im, ad_re, ad_im, 
-					beta_re, beta_im, delta_re, delta_im};
+					beta_re, beta_im, delta_re, delta_im,4*3*2};
 
-	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  int len=(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg, ord_ib_zvupdates_kernel_real32);
       }
       else {
@@ -428,9 +433,9 @@ namespace Chroma {
 	  
 	  ib_zvupdates_arg<REAL64> arg={r_ptr,z_ptr,v_ptr,u_ptr,q_ptr, 
 					a_re, a_im, arb_re, arb_im, ad_re, ad_im, 
-					beta_re, beta_im, delta_re, delta_im};
+					beta_re, beta_im, delta_re, delta_im,4*3*2};
 
-	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  int len=(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg, ord_ib_zvupdates_kernel_real64);
 	}
 	else {
@@ -452,6 +457,7 @@ namespace Chroma {
 
 	F omega_re; // omega
 	F omega_im; 
+	int atom;
       };
 
 #include "actions/ferm/invert/ord_ib_rxupdate_kernel.h"
@@ -478,9 +484,9 @@ namespace Chroma {
 	  REAL32 omega_im = (REAL32)omega.elem().elem().elem().imag();
 	  
 	  ib_rxupdate_arg<REAL32> arg={s_ptr,t_ptr,z_ptr,r_ptr,x_ptr, 
-					omega_re, omega_im};
+					omega_re, omega_im,4*3*2};
 
-	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  int len=(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg, ord_ib_rxupdate_kernel_real32);
 	}
 	else {
@@ -513,9 +519,9 @@ namespace Chroma {
 	  REAL64 omega_im = omega.elem().elem().elem().imag();
 	  
 	  ib_rxupdate_arg<REAL64> arg={s_ptr,t_ptr,z_ptr,r_ptr,x_ptr, 
-					omega_re, omega_im};
+					omega_re, omega_im, 4*3*2};
 
-	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  int len=(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg, ord_ib_rxupdate_kernel_real64);
 	}
 	else {
@@ -540,6 +546,8 @@ namespace Chroma {
 	
 	// Reduction results 
 	REAL64* norm_space; // Space for 12 doubles
+	int atom;
+
       };
 #include "actions/ferm/invert/ord_ib_stupdates_reduces.h"
 
@@ -580,14 +588,15 @@ namespace Chroma {
 	    (REAL32*)&(f0.elem(sub.start()).elem(0).elem(0).real()),
 	    (REAL32*)&(s.elem(sub.start()).elem(0).elem(0).real()),
 	    (REAL32*)&(t.elem(sub.start()).elem(0).elem(0).real()),
-	    getNormSpace() };
+	    getNormSpace(),
+	    4*3*2};
 	  
 	  for(int i=0; i < 12*qdpNumThreads(); i++) { 
 	    arg.norm_space[i] = (REAL64)0;
 	  }
 
 
-	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  int len=(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg,ord_ib_stupdates_kernel_real32);
 	  for(int i=0; i < qdpNumThreads(); i++) { 
 	    norm_array[0] += arg.norm_space[12*i];
@@ -668,13 +677,14 @@ namespace Chroma {
 	    (REAL64*)&(f0.elem(sub.start()).elem(0).elem(0).real()),
 	    (REAL64*)&(s.elem(sub.start()).elem(0).elem(0).real()),
 	    (REAL64*)&(t.elem(sub.start()).elem(0).elem(0).real()),
-	    getNormSpace() };
+	    getNormSpace(),
+	    4*3*2};
 	  
 	  for(int i=0; i < 12*qdpNumThreads(); i++) { 
 	    arg.norm_space[i] = (REAL64)0;
 	  }
 
-	  int len=4*3*2*(sub.end()-sub.start()+1);
+	  int len=(sub.end()-sub.start()+1);
 	  dispatch_to_threads(len,arg,ord_ib_stupdates_kernel_real64);
 
 	  
