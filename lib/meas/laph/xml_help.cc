@@ -1,4 +1,5 @@
 #include "xml_help.h"
+#include <DBFunc.h>
 #include <string>
 using namespace std;
 
@@ -120,13 +121,10 @@ bool headerMatch(const string& doc1, const string& doc2,
 
 bool fileExists(const std::string& file_name)
 {
-// std::ifstream f;
  bool result;
  if (Layout::primaryNode()){
-    result = (access(file_name.c_str(),F_OK) == 0) ? true : false;}
-//    f.open(file_name.c_str(), std::ifstream::in | std::ifstream::binary);
-//    result = f.is_open();
-//    f.close();}
+   result = FILEDB::fileExists(file_name);
+ }
  Internal::broadcast(result);
  return result;
 }
