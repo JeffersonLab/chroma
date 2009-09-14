@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.13 2009-04-12 22:06:13 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.14 2009-09-14 20:50:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -576,6 +576,7 @@ namespace Chroma
 	qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
+      if (! qdp_db.fileExists(params.named_obj.baryon_op_file))
       {
 	XMLBufferWriter file_xml;
 
@@ -598,6 +599,11 @@ namespace Chroma
 
 	qdp_db.insertUserdata(file_str);
       }
+      else
+      {
+	qdp_db.open(params.named_obj.baryon_op_file, O_RDWR, 0664);
+      }
+
 
 
       //

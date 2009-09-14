@@ -1,4 +1,4 @@
-// $Id: inline_prop_matelem_colorvec_w.cc,v 1.19 2009-04-12 22:06:13 edwards Exp $
+// $Id: inline_prop_matelem_colorvec_w.cc,v 1.20 2009-09-14 20:50:14 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
@@ -305,6 +305,7 @@ namespace Chroma
       BinaryStoreDB< SerialDBKey<KeyPropElementalOperator_t>, SerialDBData<ValPropElementalOperator_t> > qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
+      if (! qdp_db.fileExists(params.named_obj.prop_op_file))
       {
 	XMLBufferWriter file_xml;
 
@@ -319,11 +320,15 @@ namespace Chroma
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size() + 17);
+	qdp_db.setMaxUserInfoLen(file_str.size());
 
 	qdp_db.open(params.named_obj.prop_op_file, O_RDWR | O_CREAT, 0664);
 
 	qdp_db.insertUserdata(file_str);
+      }
+      else
+      {
+	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
       }
 
 

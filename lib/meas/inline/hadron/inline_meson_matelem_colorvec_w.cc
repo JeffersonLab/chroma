@@ -1,4 +1,4 @@
-// $Id: inline_meson_matelem_colorvec_w.cc,v 1.25 2009-04-12 22:06:13 edwards Exp $
+// $Id: inline_meson_matelem_colorvec_w.cc,v 1.26 2009-09-14 20:50:14 edwards Exp $
 /*! \file
  * \brief Inline measurement of meson operators via colorvector matrix elements
  */
@@ -477,6 +477,7 @@ namespace Chroma
 	qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
+      if (! qdp_db.fileExists(params.named_obj.meson_op_file))
       {
 	XMLBufferWriter file_xml;
 
@@ -498,6 +499,10 @@ namespace Chroma
 	qdp_db.open(params.named_obj.meson_op_file, O_RDWR | O_CREAT, 0664);
 
 	qdp_db.insertUserdata(file_str);
+      }
+      else
+      {
+	qdp_db.open(params.named_obj.meson_op_file, O_RDWR, 0664);
       }
 
 

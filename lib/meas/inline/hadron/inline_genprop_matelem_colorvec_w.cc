@@ -1,4 +1,4 @@
-// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.14 2009-08-27 19:22:29 edwards Exp $
+// $Id: inline_genprop_matelem_colorvec_w.cc,v 1.15 2009-09-14 20:50:14 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -520,6 +520,7 @@ namespace Chroma
 	qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
+      if (! qdp_db.fileExists(params.named_obj.genprop_op_file))
       {
 	XMLBufferWriter file_xml;
 
@@ -540,11 +541,15 @@ namespace Chroma
 	// Yukky, but add on a bunch of padding. 
 	// This is in case a latter task writes another metadata.
 	std::string file_str(file_xml.str());
-	qdp_db.setMaxUserInfoLen(file_str.size()+1024);
+	qdp_db.setMaxUserInfoLen(file_str.size());
 
 	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR | O_CREAT, 0664);
 
 	qdp_db.insertUserdata(file_str);
+      }
+      else
+      {
+	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR, 0664);
       }
 
 
