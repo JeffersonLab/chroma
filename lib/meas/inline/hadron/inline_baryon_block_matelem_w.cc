@@ -1,4 +1,4 @@
-// $Id: inline_baryon_block_matelem_w.cc,v 1.8 2009-03-19 17:12:20 mcneile Exp $
+// $Id: inline_baryon_block_matelem_w.cc,v 1.9 2009-09-14 21:05:54 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -586,7 +586,8 @@ namespace Chroma
       //
       // The object holding the displaced color vector maps  
       //
-      DispColorVectorMap smrd_disp_vecs(params.param.displacement_length,
+      DispColorVectorMap smrd_disp_vecs(false,
+					params.param.displacement_length,
 					u_smr,
 					eigen_source.getEvectors());
 
