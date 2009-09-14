@@ -1,4 +1,4 @@
-// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.14 2009-09-14 20:50:14 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.cc,v 3.15 2009-09-14 21:06:20 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon operators via colorvector matrix elements
  */
@@ -68,12 +68,14 @@ namespace Chroma
       switch (version) 
       {
       case 1:
-	/**************************************************************************/
+	param.use_derivP = false;
+	break;
+
+      case 2:
+	read(paramtop, "use_derivP", param.use_derivP);
 	break;
 
       default :
-	/**************************************************************************/
-
 	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
 	QDP_abort(1);
       }
@@ -94,10 +96,11 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 1;
+      int version = 2;
 
       write(xml, "version", version);
       write(xml, "mom2_max", param.mom2_max);
+      write(xml, "use_derivP", param.use_derivP);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
@@ -565,7 +568,8 @@ namespace Chroma
       //
       // The object holding the displaced color vector maps  
       //
-      DispColorVectorMap smrd_disp_vecs(params.param.displacement_length,
+      DispColorVectorMap smrd_disp_vecs(params.param.use_derivP,
+					params.param.displacement_length,
 					u_smr,
 					eigen_source.getEvectors());
 
@@ -583,7 +587,6 @@ namespace Chroma
 	push(file_xml, "DBMetaData");
 	write(file_xml, "id", string("baryonElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
-//	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
@@ -603,7 +606,6 @@ namespace Chroma
       {
 	qdp_db.open(params.named_obj.baryon_op_file, O_RDWR, 0664);
       }
-
 
 
       //

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_baryon_matelem_colorvec_w.h,v 3.2 2008-08-06 17:58:00 edwards Exp $
+// $Id: inline_baryon_matelem_colorvec_w.h,v 3.3 2009-09-14 21:06:21 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon
  operators via colorvector matrix elements
@@ -38,6 +38,7 @@ namespace Chroma
 	  multi1d<int>          right;                  /*!< Rifht quark displacement array */
 	};
 
+	bool                    use_derivP;             /*!< Are these displacements or derivatives? */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */
