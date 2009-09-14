@@ -1,11 +1,12 @@
 // -*- C++ -*-
-// $Id: disp_colvec_map.cc,v 1.1 2008-08-06 15:19:41 edwards Exp $
+// $Id: disp_colvec_map.cc,v 1.2 2009-09-14 21:05:14 edwards Exp $
 /*! \file
  * \brief Holds displaced color vectors
  */
 
 #include "meas/smear/disp_colvec_map.h"
 #include "meas/smear/displacement.h"
+#include "meas/smear/displace.h"
 
 namespace Chroma 
 { 
@@ -25,10 +26,11 @@ namespace Chroma
 
 
   // Constructor from smeared map 
-  DispColorVectorMap::DispColorVectorMap(int disp_length,
+  DispColorVectorMap::DispColorVectorMap(bool use_derivP_,
+					 int disp_length,
 					 const multi1d<LatticeColorMatrix>& u_smr,
 					 const multi1d<LatticeColorVector>& eigen_vec)
-    : displacement_length(disp_length), u(u_smr), eigen_source(eigen_vec)
+    : use_derivP(use_derivP_), displacement_length(disp_length), u(u_smr), eigen_source(eigen_vec)
   {
   }
 
@@ -83,10 +85,19 @@ namespace Chroma
 	{
 	  int disp_dir = key.displacement[i] - 1;
 	  int disp_len = displacement_length;
-	  displacement(u, disp_q.vec, disp_len, disp_dir);
+	  if (use_derivP)
+	    disp_q.vec = rightNabla(disp_q.vec, u, disp_dir, disp_len);
+	  else
+	    displacement(u, disp_q.vec, disp_len, disp_dir);
 	}
 	else if (key.displacement[i] < 0)
 	{
+	  if (use_derivP)
+	  {
+	    QDPIO::cerr << __func__ << ": do not support (rather do not want to support) negative displacements for rightNabla\n";
+	    QDP_abort(1);
+	  }
+
 	  int disp_dir = -key.displacement[i] - 1;
 	  int disp_len = -displacement_length;
 	  displacement(u, disp_q.vec, disp_len, disp_dir);

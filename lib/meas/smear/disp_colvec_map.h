@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: disp_colvec_map.h,v 1.1 2008-08-06 15:19:41 edwards Exp $
+// $Id: disp_colvec_map.h,v 1.2 2009-09-14 21:05:14 edwards Exp $
 /*! \file
  * \brief Holds displaced color vectors
  */
@@ -43,7 +43,8 @@ namespace Chroma
   {
   public:
     //! Constructor for displaced map 
-    DispColorVectorMap(int disp_length,
+    DispColorVectorMap(bool use_derivP, 
+		       int disp_length,
 		       const multi1d<LatticeColorMatrix>& u_smr,
 		       const multi1d<LatticeColorVector>& eigen_source);
 
@@ -63,6 +64,9 @@ namespace Chroma
 
     //! Gauge field 
     const multi1d<LatticeColorMatrix>& u;
+			
+    //! Displacements or derivatives?
+    int use_derivP;
 			
     //! Displacement length
     int displacement_length;
