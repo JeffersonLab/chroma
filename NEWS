@@ -1,3 +1,9 @@
+Sep 14, 2009 - Robert Ewdards
+	Version 3.36.1
+        Switched back to old inline genprop code. Changed inline colorvec codes
+        to check for DB existence. If it does not exist, insert the metadata,
+        else do not reinsert. Lots of improvements in laph codes. 
+
 Aug 25, 2009 - Robert Ewdards
 	Version 3.36.0
         The start of a hybrid stochastic-distillation method (called LAPH -
