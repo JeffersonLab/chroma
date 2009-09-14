@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.6 2009-08-25 17:06:29 edwards Exp $
+//  $Id: displace.cc,v 3.7 2009-09-14 21:04:54 edwards Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -223,6 +223,22 @@ namespace Chroma
    *
    * \return $\f \nabla_\mu F(x)\f$
    */
+  LatticeColorVector rightNabla(const LatticeColorVector& F, 
+				const multi1d<LatticeColorMatrix>& u,
+				int mu, int length)
+  {
+    return displace(u, F, length, mu) - displace(u, F, -length, mu);
+  }
+
+  //! Apply first deriv to the right onto source
+  LatticeFermion rightNabla(const LatticeFermion& F, 
+			    const multi1d<LatticeColorMatrix>& u,
+			    int mu, int length)
+  {
+    return displace(u, F, length, mu) - displace(u, F, -length, mu);
+  }
+
+  //! Apply first deriv to the right onto source
   LatticePropagator rightNabla(const LatticePropagator& F, 
 			       const multi1d<LatticeColorMatrix>& u,
 			       int mu, int length)
