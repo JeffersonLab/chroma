@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.356 2009-08-25 17:10:05 edwards Exp $
+# $Id: Makefile.in,v 3.357 2009-09-14 20:30:03 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -338,7 +338,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/laph/field_smearing_handler.cc \
 	meas/laph/laph_noise_info.cc meas/laph/quark_info.cc \
 	meas/laph/inverter_info.cc meas/laph/dilution_scheme_info.cc \
-	meas/laph/quark_source_sink_handler.cc meas/hadron/Ql_3pt_w.cc \
+	meas/laph/quark_source_sink_handler.cc \
+	meas/laph/baryon_operator.cc meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc \
 	meas/hadron/heavy_hadrons_su3_w.cc \
@@ -679,6 +680,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_stoch_laph_quark_w.cc \
+	meas/inline/hadron/inline_stoch_laph_baryon_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
@@ -985,8 +987,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	field_smearing_info.$(OBJEXT) field_smearing_handler.$(OBJEXT) \
 	laph_noise_info.$(OBJEXT) quark_info.$(OBJEXT) \
 	inverter_info.$(OBJEXT) dilution_scheme_info.$(OBJEXT) \
-	quark_source_sink_handler.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
-	mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
+	quark_source_sink_handler.$(OBJEXT) baryon_operator.$(OBJEXT) \
+	Ql_3pt_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
 	heavy_hadron_potentials_w.$(OBJEXT) \
 	heavy_hadrons_su3_w.$(OBJEXT) \
 	spin_insertion_aggregate.$(OBJEXT) no_spin_insertion.$(OBJEXT) \
@@ -1259,6 +1261,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_block_orthog_colorvec.$(OBJEXT) \
 	inline_create_colorvecs.$(OBJEXT) \
 	inline_stoch_laph_quark_w.$(OBJEXT) \
+	inline_stoch_laph_baryon_w.$(OBJEXT) \
 	inline_block_colorvecs.$(OBJEXT) inline_disco_w.$(OBJEXT) \
 	inline_disco_eoprec_w.$(OBJEXT) inline_disco_eigcg_w.$(OBJEXT) \
 	inline_disco_eo_eigcg_w.$(OBJEXT) inline_hadspec_w.$(OBJEXT) \
@@ -1996,14 +1999,15 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/laph/laph.h \
-	meas/laph/pointer.h meas/laph/gauge_configuration_info.h \
+	meas/laph/time_slices.h meas/laph/pointer.h \
+	meas/laph/gauge_configuration_info.h \
 	meas/laph/laph_noise_info.h meas/laph/quark_info.h \
 	meas/laph/inverter_info.h meas/laph/field_smearing_info.h \
 	meas/laph/field_smearing_handler.h \
 	meas/laph/gauge_configuration_handler.h meas/laph/xml_help.h \
 	meas/laph/dilution_scheme_info.h \
 	meas/laph/quark_source_sink_handler.h \
-	meas/hadron/enum_loops_s.h \
+	meas/laph/baryon_operator.h meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
@@ -2044,6 +2048,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_stoch_laph_quark_w.h \
+	meas/inline/hadron/inline_stoch_laph_baryon_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -2947,14 +2952,15 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/stag_scalars_s.h meas/sources/sources_s.h \
 	meas/hadron/pion_sing_s.h meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h meas/laph/laph.h \
-	meas/laph/pointer.h meas/laph/gauge_configuration_info.h \
+	meas/laph/time_slices.h meas/laph/pointer.h \
+	meas/laph/gauge_configuration_info.h \
 	meas/laph/laph_noise_info.h meas/laph/quark_info.h \
 	meas/laph/inverter_info.h meas/laph/field_smearing_info.h \
 	meas/laph/field_smearing_handler.h \
 	meas/laph/gauge_configuration_handler.h meas/laph/xml_help.h \
 	meas/laph/dilution_scheme_info.h \
 	meas/laph/quark_source_sink_handler.h \
-	meas/hadron/enum_loops_s.h \
+	meas/laph/baryon_operator.h meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h meas/sources/walfil_s.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
@@ -2995,6 +3001,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_stoch_laph_quark_w.h \
+	meas/inline/hadron/inline_stoch_laph_baryon_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -3308,7 +3315,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/laph/field_smearing_handler.cc \
 	meas/laph/laph_noise_info.cc meas/laph/quark_info.cc \
 	meas/laph/inverter_info.cc meas/laph/dilution_scheme_info.cc \
-	meas/laph/quark_source_sink_handler.cc meas/hadron/Ql_3pt_w.cc \
+	meas/laph/quark_source_sink_handler.cc \
+	meas/laph/baryon_operator.cc meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc meas/hadron/barQll_w.cc \
 	meas/hadron/heavy_hadron_potentials_w.cc \
 	meas/hadron/heavy_hadrons_su3_w.cc \
@@ -3649,6 +3657,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_stoch_laph_quark_w.cc \
+	meas/inline/hadron/inline_stoch_laph_baryon_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
@@ -3896,6 +3905,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barcomp_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barhqlq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/barspinmat_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_operator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_operator_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/baryon_seqsrc_w.Po@am__quote@
@@ -4192,6 +4202,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_group_baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_group_meson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_hadron_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_laph_baryon_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_laph_quark_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_stoch_meson_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_szin_read_obj.Po@am__quote@
@@ -7597,6 +7608,20 @@ quark_source_sink_handler.obj: meas/laph/quark_source_sink_handler.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/quark_source_sink_handler.cc' object='quark_source_sink_handler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o quark_source_sink_handler.obj `if test -f 'meas/laph/quark_source_sink_handler.cc'; then $(CYGPATH_W) 'meas/laph/quark_source_sink_handler.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/quark_source_sink_handler.cc'; fi`
+
+baryon_operator.o: meas/laph/baryon_operator.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT baryon_operator.o -MD -MP -MF $(DEPDIR)/baryon_operator.Tpo -c -o baryon_operator.o `test -f 'meas/laph/baryon_operator.cc' || echo '$(srcdir)/'`meas/laph/baryon_operator.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/baryon_operator.Tpo $(DEPDIR)/baryon_operator.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/baryon_operator.cc' object='baryon_operator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o baryon_operator.o `test -f 'meas/laph/baryon_operator.cc' || echo '$(srcdir)/'`meas/laph/baryon_operator.cc
+
+baryon_operator.obj: meas/laph/baryon_operator.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT baryon_operator.obj -MD -MP -MF $(DEPDIR)/baryon_operator.Tpo -c -o baryon_operator.obj `if test -f 'meas/laph/baryon_operator.cc'; then $(CYGPATH_W) 'meas/laph/baryon_operator.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/baryon_operator.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/baryon_operator.Tpo $(DEPDIR)/baryon_operator.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/laph/baryon_operator.cc' object='baryon_operator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o baryon_operator.obj `if test -f 'meas/laph/baryon_operator.cc'; then $(CYGPATH_W) 'meas/laph/baryon_operator.cc'; else $(CYGPATH_W) '$(srcdir)/meas/laph/baryon_operator.cc'; fi`
 
 Ql_3pt_w.o: meas/hadron/Ql_3pt_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT Ql_3pt_w.o -MD -MP -MF $(DEPDIR)/Ql_3pt_w.Tpo -c -o Ql_3pt_w.o `test -f 'meas/hadron/Ql_3pt_w.cc' || echo '$(srcdir)/'`meas/hadron/Ql_3pt_w.cc
@@ -13211,6 +13236,20 @@ inline_stoch_laph_quark_w.obj: meas/inline/hadron/inline_stoch_laph_quark_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stoch_laph_quark_w.cc' object='inline_stoch_laph_quark_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_laph_quark_w.obj `if test -f 'meas/inline/hadron/inline_stoch_laph_quark_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_laph_quark_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_laph_quark_w.cc'; fi`
+
+inline_stoch_laph_baryon_w.o: meas/inline/hadron/inline_stoch_laph_baryon_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stoch_laph_baryon_w.o -MD -MP -MF $(DEPDIR)/inline_stoch_laph_baryon_w.Tpo -c -o inline_stoch_laph_baryon_w.o `test -f 'meas/inline/hadron/inline_stoch_laph_baryon_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stoch_laph_baryon_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_stoch_laph_baryon_w.Tpo $(DEPDIR)/inline_stoch_laph_baryon_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stoch_laph_baryon_w.cc' object='inline_stoch_laph_baryon_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_laph_baryon_w.o `test -f 'meas/inline/hadron/inline_stoch_laph_baryon_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_stoch_laph_baryon_w.cc
+
+inline_stoch_laph_baryon_w.obj: meas/inline/hadron/inline_stoch_laph_baryon_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_stoch_laph_baryon_w.obj -MD -MP -MF $(DEPDIR)/inline_stoch_laph_baryon_w.Tpo -c -o inline_stoch_laph_baryon_w.obj `if test -f 'meas/inline/hadron/inline_stoch_laph_baryon_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_laph_baryon_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_laph_baryon_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_stoch_laph_baryon_w.Tpo $(DEPDIR)/inline_stoch_laph_baryon_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stoch_laph_baryon_w.cc' object='inline_stoch_laph_baryon_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stoch_laph_baryon_w.obj `if test -f 'meas/inline/hadron/inline_stoch_laph_baryon_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stoch_laph_baryon_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stoch_laph_baryon_w.cc'; fi`
 
 inline_block_colorvecs.o: meas/inline/hadron/inline_block_colorvecs.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_block_colorvecs.o -MD -MP -MF $(DEPDIR)/inline_block_colorvecs.Tpo -c -o inline_block_colorvecs.o `test -f 'meas/inline/hadron/inline_block_colorvecs.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_block_colorvecs.cc
