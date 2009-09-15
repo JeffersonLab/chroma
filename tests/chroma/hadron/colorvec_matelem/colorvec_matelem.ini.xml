@@ -857,7 +857,7 @@ Not used in this test, instead use create colorvecs below.
     </elem>
 
   </InlineMeasurements>
-   <nrow>4 4 4 8</nrow>
+  <nrow>4 4 4 16</nrow>
 </Param>
 
 <RNG>
