@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.234 2009-09-03 15:40:07 colin Exp $
+# $Id: Makefile.am,v 3.235 2009-09-16 21:21:05 colin Exp $
 #
 # Path for all files used in building the library
 
@@ -754,20 +754,6 @@ nobase_include_HEADERS += \
 	meas/hadron/pion_sing_s.h \
 	meas/hadron/stag_propShift_s.h \
 	meas/hadron/vector_meson_s.h \
-	meas/laph/laph.h \
-	meas/laph/time_slices.h \
-	meas/laph/pointer.h \
-	meas/laph/gauge_configuration_info.h \
-	meas/laph/laph_noise_info.h \
-	meas/laph/quark_info.h \
-	meas/laph/inverter_info.h \
-	meas/laph/field_smearing_info.h \
-	meas/laph/field_smearing_handler.h \
-	meas/laph/gauge_configuration_handler.h \
-	meas/laph/xml_help.h \
-	meas/laph/dilution_scheme_info.h \
-	meas/laph/quark_source_sink_handler.h \
-	meas/laph/baryon_operator.h \
 	meas/hadron/enum_loops_s.h \
 	meas/smear/deriv_quark_displacement_s.h \
 	meas/smear/quark_flavor_s.h \
@@ -821,8 +807,6 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_3pt_w.h \
 	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
-	meas/inline/hadron/inline_stoch_laph_quark_w.h \
-	meas/inline/hadron/inline_stoch_laph_baryon_w.h \
 	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
@@ -1140,17 +1124,6 @@ libchroma_a_SOURCES = \
 	meas/hadron/hadron_contract_aggregate.cc \
 	meas/hadron/hadron_2pt.cc \
 	meas/hadron/mesQl_w.cc \
-	meas/laph/gauge_configuration_info.cc \
-	meas/laph/gauge_configuration_handler.cc \
-	meas/laph/xml_help.cc \
-	meas/laph/field_smearing_info.cc \
-	meas/laph/field_smearing_handler.cc \
-	meas/laph/laph_noise_info.cc \
-	meas/laph/quark_info.cc \
-	meas/laph/inverter_info.cc \
-	meas/laph/dilution_scheme_info.cc \
-	meas/laph/quark_source_sink_handler.cc \
-	meas/laph/baryon_operator.cc \
 	meas/hadron/Ql_3pt_w.cc \
 	meas/hadron/mesQlPOT_w.cc \
 	meas/hadron/barQll_w.cc \
@@ -1561,8 +1534,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
-	meas/inline/hadron/inline_stoch_laph_quark_w.cc \
-	meas/inline/hadron/inline_stoch_laph_baryon_w.cc \
 	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
