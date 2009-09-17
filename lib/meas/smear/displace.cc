@@ -1,4 +1,4 @@
-//  $Id: displace.cc,v 3.7 2009-09-14 21:04:54 edwards Exp $
+//  $Id: displace.cc,v 3.8 2009-09-17 14:48:21 colin Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -82,6 +82,13 @@ namespace Chroma
     return displace<LatticeColorVector>(u, chi, length, dir, QDP::all);
   }
 
+
+  LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorVector& chi, 
+			      int length, int dir, const Subset& sub)
+  {
+    return displace<LatticeColorVector>(u, chi, length, dir, sub);
+  }
 
   // Apply a displacement operator to a lattice field
   LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
