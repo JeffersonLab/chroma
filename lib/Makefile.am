@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.235 2009-09-16 21:21:05 colin Exp $
+# $Id: Makefile.am,v 3.236 2009-09-23 17:18:14 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -911,6 +911,10 @@ AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 
 if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
+endif
+
+if BUILD_QUDA
+AM_CXXFLAGS += @QUDA_CXXFLAGS@
 endif
 
 if BUILD_SSE_WILSON_DSLASH

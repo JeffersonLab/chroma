@@ -33,6 +33,9 @@
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 
+/* Build with the BU QUDA Library */
+#undef BUILD_QUDA
+
 /* Build Scalarsite BICGStab Kernels */
 #undef BUILD_SCALARSITE_BICGSTAB
 

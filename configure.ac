@@ -1,6 +1,7 @@
 AC_INIT(chroma,3.36.1,edwards@jlab.org)
 AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
+AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE
 
 dnl stupid templates to shut up stupid autoheader
@@ -188,6 +189,25 @@ AC_ARG_WITH(qmt,
    [ qmt_enabled="yes"
      QMT_HOME=${with_qmt} ],
    [ qmt_enabled="no" ]
+)
+
+AC_ARG_WITH(quda,
+   AC_HELP_STRING(
+      [--with-quda=<DIR>],
+      [Use QUDA Library installed in DIR]
+   ),
+   [ quda_enabled="yes"
+     QUDA_HOME=${with_quda} ],
+   [ quda_enabled="no" ]
+)
+
+AC_ARG_WITH(cuda,
+   AC_HELP_STRING(
+      [--with-cuda=<DIR>],
+      [Use CUDA installation in DIR]
+   ),
+   [ CUDA_HOME=${with_cuda} ],
+   [ CUDA_HOME="/usr/local/cuda" ]
 )
 
 dnl level 3 libraries for asqtad inverter
@@ -809,6 +829,34 @@ then
      AC_MSG_WARN([xmldiff not found in your PATH. make xcheck may fail])
 fi
 
+###################################
+# 
+# QUDA Linkage etc
+# 
+###################################
+if test "X${quda_enabled}X" = "XyesX" ;
+then
+   AC_MSG_NOTICE([ Using QUDA Library in ${QUDA_HOME} ])
+
+   case "$host" in 
+   x86_64*)
+        CUDA_LIBDIR="${CUDA_HOME}/lib64"	
+	;;
+   *)	
+   CUDA_LIBDIR="${CUDA_HOME}/lib"
+   ;;	
+   esac
+	
+   AC_MSG_NOTICE([ Linking to CUDA Runtime in ${CUDA_LIBDIR}])
+
+   AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
+   AC_SUBST(QUDA_CXXFLAGS, "-I${QUDA_HOME}" )
+   AC_SUBST(QUDA_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_HOME}" )
+   AC_SUBST(QUDA_LIBS,     "-lquda -lcudart" )
+fi
+
+AM_CONDITIONAL(BUILD_QUDA,
+	[test "x${quda_enabled}x" = "xyesx" ])
 
 #######################
 # Produce output
