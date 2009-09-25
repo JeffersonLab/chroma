@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 3.1 2009-09-25 12:41:23 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 3.2 2009-09-25 19:28:59 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -44,8 +44,8 @@ void checkInverter(multi1d<LatticeColorMatrix>& u)
   boundary[0] = 1; 
   boundary[1] = 1;
   boundary[2] = 1;
-  boundary[3] = 1;
-  Real mass = 0;
+  boundary[3] = -1;
+  Real mass = 0.1;
 
   // Set Up CG Solver
   SysSolverCGParams cg_p;
@@ -55,11 +55,11 @@ void checkInverter(multi1d<LatticeColorMatrix>& u)
 
   SysSolverCGQUDAWilsonParams quda_p;
   quda_p.WilsonParams.Mass = mass;
-  quda_p.WilsonParams.anisoParam.anisoP = false;
+  quda_p.WilsonParams.anisoParam.anisoP = true;;
   quda_p.WilsonParams.anisoParam.t_dir = 3;
-  quda_p.WilsonParams.anisoParam.xi_0 = 1.0;
-  quda_p.WilsonParams.anisoParam.nu = 1.0;
-  quda_p.AntiPeriodicT = false;
+  quda_p.WilsonParams.anisoParam.xi_0 = 2.3;
+  quda_p.WilsonParams.anisoParam.nu = 0.9;
+  quda_p.AntiPeriodicT = true ;
   quda_p.MaxIter =cg_p.MaxCG;
   quda_p.RsdTarget = cg_p.RsdCG;
   quda_p.Delta = 1.0e-10;
@@ -70,7 +70,7 @@ void checkInverter(multi1d<LatticeColorMatrix>& u)
 
    // Create a FermState Creator with boundaries
   Handle<CreateFermState<T,P,Q> > cfs( new CreateSimpleFermState<T,P,Q>(fbc));
-  EvenOddPrecWilsonFermAct  S_w(cfs, mass);
+  EvenOddPrecWilsonFermAct  S_w(cfs, quda_p.WilsonParams);
 
   
   // Apply boundary to u
@@ -98,6 +98,9 @@ void checkInverter(multi1d<LatticeColorMatrix>& u)
   Double chi_norm_diff = norm2(r, rb[1]);
   QDPIO::cout << " || chi2 - chi || = " << chi_norm_diff << endl;
 
+
+  
+  
 }
 
 int main(int argc, char **argv)
@@ -107,13 +110,14 @@ int main(int argc, char **argv)
 
   multi1d<int> nrow(Nd);
   for(int i=0; i < Nd-1; i++) { 
-    nrow[i] = 4;
+    nrow[i] = 8;
   }
   nrow[Nd-1] = 16;
   Layout::setLattSize(nrow);
   Layout::create();
 
-    struct Cfg_t config = { CFG_TYPE_WEAK_FIELD, "dummy" };
+  struct Cfg_t config = { CFG_TYPE_WEAK_FIELD, "dummy" };
+  // struct Cfg_t config = { CFG_TYPE_UNIT, "dummy" };
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
   gaugeStartup(gauge_file_xml, gauge_xml, u, config);

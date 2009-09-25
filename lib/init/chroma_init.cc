@@ -5,9 +5,13 @@
 
 #include "chroma_config.h"
 
+
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
 
+#ifdef BUILD_QUDA
+#include <quda.h>
+#endif
 
 namespace Chroma 
 {
@@ -173,6 +177,12 @@ namespace Chroma
       
     }
 
+
+#ifdef BUILD_QUDA
+    QDPIO::cout << "Initializing QUDA" << endl;
+    int device = 0;
+    initQuda(device);
+#endif
 
   }
 

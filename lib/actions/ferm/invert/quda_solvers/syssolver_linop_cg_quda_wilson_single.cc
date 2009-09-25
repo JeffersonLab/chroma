@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_cg_quda_wilson_single.cc,v 1.3 2009-09-25 19:00:44 bjoo Exp $
+// $Id: syssolver_linop_cg_quda_wilson_single.cc,v 1.4 2009-09-25 19:28:59 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -79,6 +79,9 @@ namespace Chroma
  
     const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
 
+    // Convention: BC has to be applied already
+    // This flag just tells QUDA that this is so,
+    // so that QUDA can take care in the reconstruct
     if( aniso.anisoP ) {                     // Anisotropic case
       Real gamma_f = aniso.xi_0 / aniso.nu; 
       q_gauge_param.anisotropy = toDouble(gamma_f);
@@ -87,6 +90,9 @@ namespace Chroma
       q_gauge_param.anisotropy = 1.0;
     }
 
+    // Convention: BC has to be applied already
+    // This flag just tells QUDA that this is so,
+    // so that QUDA can take care in the reconstruct
     if( invParam.AntiPeriodicT ) { 
       q_gauge_param.t_boundary = QUDA_ANTI_PERIODIC_T;
     }
@@ -95,20 +101,21 @@ namespace Chroma
     }
 
 
-    q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // Could be QDP...
+    q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p, col col
     q_gauge_param.cpu_prec = QUDA_SINGLE_PRECISION;  // Single Prec G-field
     q_gauge_param.cuda_prec = QUDA_SINGLE_PRECISION; 
     q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
-    q_gauge_param.cuda_prec_sloppy = QUDA_SINGLE_PRECISION; 
-    q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
+    q_gauge_param.cuda_prec_sloppy = QUDA_SINGLE_PRECISION; // No Sloppy
+    q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12; // No Sloppy
+
+    // Do I want to Gauge Fix? -- Not yet
     q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
 
-    q_gauge_param.blockDim = 64;         // I copy these 
+    q_gauge_param.blockDim = 64;         // I copy these from invert test
     q_gauge_param.blockDim_sloppy = 64;
     
     // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
     gauge_param = &q_gauge_param;
-
 
     // Definitely no clover here...
     inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
@@ -117,7 +124,6 @@ namespace Chroma
     float massParam = 1.0 + 3.0/q_gauge_param.anisotropy+ toDouble(invParam.WilsonParams.Mass); 
     float invMassParam = 1.0/massParam;
 
-    
     inv_param.kappa = 1.0/(2*massParam);
     inv_param.tol = toDouble(invParam.RsdTarget);
     inv_param.maxiter = invParam.MaxIter;
@@ -139,23 +145,23 @@ namespace Chroma
     inv_param.dirac_order = QUDA_DIRAC_ORDER;
     inv_param.verbosity = QUDA_SUMMARIZE;
 
+    // Set up the links
     void* gauge[4];
-   
     for(int mu=0; mu < Nd; mu++) { 
       gauge[mu] = (void *)&(links[mu].elem(all.start()).elem().elem(0,0).real());
     }
 
 
     StopWatch swatch1; 
-    StopWatch swatch2;
-
-    swatch1.reset(); swatch2.reset();
+    swatch1.reset();
     swatch1.start();
     loadGaugeQuda((void *)gauge, &q_gauge_param);
     void* spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 
     invertQuda(spinorOut, spinorIn, &inv_param);
+
+    // Take care of mass normalization
     psi_s *= (invMassParam);
     swatch1.stop();
 
