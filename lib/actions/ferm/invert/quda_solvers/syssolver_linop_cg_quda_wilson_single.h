@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg_quda_wilson_single.h,v 1.2 2009-09-25 18:57:52 bjoo Exp $
+// $Id: syssolver_linop_cg_quda_wilson_single.h,v 1.3 2009-09-25 19:00:44 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
