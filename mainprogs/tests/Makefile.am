@@ -171,7 +171,8 @@ t_ritz5d_KS_SOURCES = t_ritz5d_KS.cc
 t_ov_pbp_SOURCES = t_ov_pbp.cc
 t_dwflocality_SOURCES = t_dwflocality.cc
 t_invert3_precwilson_SOURCES = t_invert3_precwilson.cc
-t_invert4_precwilson_SOURCES = t_invert4_precwilson.cc invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc invcg2_prec_wilson.h invcg2_prec_wilson.cc
+t_invert4_precwilson_SOURCES = t_invert4_precwilson.cc
+# invcg2_timing_hacks_2.h invcg2_timing_hacks_2.cc invcg2_prec_wilson.h invcg2_prec_wilson.cc
 
 t_read_eigen_SOURCES = t_read_eigen.cc
 t_bicgstab_SOURCES = t_bicgstab.cc

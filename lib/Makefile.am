@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.236 2009-09-23 17:18:14 bjoo Exp $
+# $Id: Makefile.am,v 3.237 2009-09-25 12:41:20 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1261,6 +1261,13 @@ nobase_include_HEADERS += update/molecdyn/monomial/remez_gmp.h
 libchroma_a_SOURCES += update/molecdyn/monomial/remez_gmp.cc
 endif
 
+if BUILD_QUDA
+nobase_include_HEADERS += actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.h
+
+libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.cc
+endif
 
 #
 # Object files to add if building the Wilson Builds...

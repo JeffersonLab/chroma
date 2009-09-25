@@ -1,7 +1,8 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.17 2009-07-06 19:02:34 bjoo Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.18 2009-09-25 12:41:23 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
+
 
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
@@ -16,10 +17,10 @@
 #include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.h"
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
-
 
 namespace Chroma
 {
@@ -48,6 +49,11 @@ namespace Chroma
 	success &= LinOpSysSolverReliableBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableCGCloverEnv::registerAll();
+     
+#ifdef BUILD_QUDA
+#warning REgistering QUDA
+	success &=LinOpSysSolverCGQUDAWilsonEnv::registerAll();
+#endif
 	registered = true;
       }
       return success;
