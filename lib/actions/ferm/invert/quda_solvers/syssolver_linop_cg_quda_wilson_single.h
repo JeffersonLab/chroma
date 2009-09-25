@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg_quda_wilson_single.h,v 1.1 2009-09-25 12:41:23 bjoo Exp $
+// $Id: syssolver_linop_cg_quda_wilson_single.h,v 1.2 2009-09-25 18:57:52 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -17,6 +17,7 @@
 #include "linearop.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.h"
+#include "io/aniso_io.h"
 #include <string>
 using namespace std;
 
@@ -60,54 +61,25 @@ namespace Chroma
       A(A_), invParam(invParam_) 
     {
       QDPIO::cout << "LinOpSysSolverCGQUDAWilson:" << endl;
+      const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
+      
+     
 
       // These are the links
       // They may be smeared and the BC's may be applied
-      links_floating; links_floating.resize(Nd);
       links_single; links_single.resize(Nd);
-     
-      // This whole thing doesnt work if the BC's are more sophisticated
-      // Than periodic/antiperiodic.
-      // If so, I can apply the boundaries a second time, to recreate the original links...
-      Handle< FermBC<T,Q,Q> > fbc = state_->getFermBC();
-
-      try { 
-	SimpleFermBC<T,Q,Q>& downcast = dynamic_cast< SimpleFermBC<T,Q,Q>& >(*fbc); 
-
-	// OK The user entered either periodic/antiperiodic/dirichlet BCs
-	// Ideally I'd like to go through the boundary array to see
-	// if anything other than the time is not periodic.
-	// Then I'd have to Bomb
-	// Currently the 'boundary' array cannot be exposed so 
-	// just hope the user was not stupid.
-
-
-	QDPIO::cout << "WARNING: You can only use periodic BCs in space and" << endl;
-	QDPIO::cout << "  either periodic or antiperiodic BCs in time" << endl;
-	QDPIO::cout << "  if you did something else, your answer may be incorrect" << endl;
-
-	QDPIO::cout << "BC Downcast succeeded. Undoing BCs" << endl;
-
-	// Do the BC undo in the base precision
-	for(int mu=0; mu < Nd; mu++) {
-	  links_floating[mu] = (state_->getLinks())[mu];
-	}
-	fbc->modify(links_floating);
-
-	// Now downcast to single prec fields.
-	for(int mu=0; mu < Nd; mu++) {
-	  links_single[mu] = links_floating[mu];
-	}
-      }
-      catch( std::bad_cast ) {
-	QDPIO::cout << "The Boundaries selected are not periodic/antiperiodic" << endl;
-	QDPIO::cout << "You cant use this solver" << endl;
-	QDP_abort(1);
-      }
-
-      // OK. Links Single contains the Single Prec Links Sans BC's
       
-					     
+      // Now downcast to single prec fields.
+      for(int mu=0; mu < Nd; mu++) {
+	links_single[mu] = (state_->getLinks())[mu];
+      }
+      if( aniso.anisoP ) {                     // Anisotropic case
+	multi1d<Real> cf=makeFermCoeffs(aniso);
+	for(int mu=0; mu < Nd; mu++) { 
+	  links_single[mu] *= cf[mu];
+	}
+      }
+      
     }
 
     //! Destructor is automatic
@@ -143,8 +115,8 @@ namespace Chroma
       // Call the QUDA Thingie here
       res = qudaInvert(links_single, 
 		       chi_s,
-		       psi_s,      
-		       invParam);
+		       psi_s);      
+
 
       psi = psi_s;
 
@@ -160,7 +132,7 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "CG_QUDA_WILON_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "QUDA_CG_WILSON_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
    
       
       END_CODE();
@@ -178,8 +150,8 @@ namespace Chroma
     const SysSolverCGQUDAWilsonParams invParam;
     SystemSolverResults_t qudaInvert(const QF& links, 
 				     const TF& chi_s,
-				     TF& psi_s,      
-				     const SysSolverCGQUDAWilsonParams& invParam) const;
+				     TF& psi_s     
+				     )const ;
 
 
   };

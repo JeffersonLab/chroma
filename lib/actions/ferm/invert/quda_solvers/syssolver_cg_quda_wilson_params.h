@@ -11,6 +11,7 @@ namespace Chroma
     SysSolverCGQUDAWilsonParams() {};
     SysSolverCGQUDAWilsonParams( const SysSolverCGQUDAWilsonParams& p) {
       WilsonParams = p.WilsonParams;
+      AntiPeriodicT = p.AntiPeriodicT;
       MaxIter = p.MaxIter;
       RsdTarget = p.RsdTarget;
       Delta = p.Delta;
