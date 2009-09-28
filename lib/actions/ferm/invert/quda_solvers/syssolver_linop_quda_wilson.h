@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_cg_quda_wilson_single.h,v 1.3 2009-09-25 19:00:44 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.h,v 1.1 2009-09-28 17:24:37 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -16,7 +16,7 @@
 #include "syssolver.h"
 #include "linearop.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "io/aniso_io.h"
 #include <string>
 using namespace std;
@@ -25,7 +25,7 @@ namespace Chroma
 {
 
   //! Richardson system solver namespace
-  namespace LinOpSysSolverCGQUDAWilsonEnv
+  namespace LinOpSysSolverQUDAWilsonEnv
   {
     //! Register the syssolver
     bool registerAll();
@@ -38,7 +38,7 @@ namespace Chroma
  *** WARNING THIS SOLVER WORKS FOR Wilson FERMIONS ONLY ***
    */
  
-  class LinOpSysSolverCGQUDAWilson : public LinOpSystemSolver<LatticeFermion>
+  class LinOpSysSolverQUDAWilson : public LinOpSystemSolver<LatticeFermion>
   {
   public:
     typedef LatticeFermion T;
@@ -55,12 +55,12 @@ namespace Chroma
      * \param M_        Linear operator ( Read )
      * \param invParam  inverter parameters ( Read )
      */
-    LinOpSysSolverCGQUDAWilson(Handle< LinearOperator<T> > A_,
+    LinOpSysSolverQUDAWilson(Handle< LinearOperator<T> > A_,
 					 Handle< FermState<T,Q,Q> > state_,
-					 const SysSolverCGQUDAWilsonParams& invParam_) : 
+					 const SysSolverQUDAWilsonParams& invParam_) : 
       A(A_), invParam(invParam_) 
     {
-      QDPIO::cout << "LinOpSysSolverCGQUDAWilson:" << endl;
+      QDPIO::cout << "LinOpSysSolverQUDAWilson:" << endl;
       const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
       
      
@@ -83,7 +83,7 @@ namespace Chroma
     }
 
     //! Destructor is automatic
-    ~LinOpSysSolverCGQUDAWilson() {}
+    ~LinOpSysSolverQUDAWilson() {}
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
@@ -142,12 +142,12 @@ namespace Chroma
 
   private:
     // Hide default constructor
-    LinOpSysSolverCGQUDAWilson() {}
+    LinOpSysSolverQUDAWilson() {}
     
     QF links_single;
     Q links_floating;
     Handle< LinearOperator<T> > A;
-    const SysSolverCGQUDAWilsonParams invParam;
+    const SysSolverQUDAWilsonParams invParam;
     SystemSolverResults_t qudaInvert(const QF& links, 
 				     const TF& chi_s,
 				     TF& psi_s     

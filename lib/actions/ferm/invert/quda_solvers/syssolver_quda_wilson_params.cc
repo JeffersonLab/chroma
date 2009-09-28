@@ -1,4 +1,4 @@
-#include "actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "chromabase.h"
 #include "io/xml_group_reader.h"
 
@@ -8,7 +8,7 @@ using namespace QDP;
 
 namespace Chroma {
   
-  SysSolverCGQUDAWilsonParams::SysSolverCGQUDAWilsonParams(XMLReader& xml, 
+  SysSolverQUDAWilsonParams::SysSolverQUDAWilsonParams(XMLReader& xml, 
 						       const std::string& path)
   {
     XMLReader paramtop(xml, path);
@@ -22,14 +22,14 @@ namespace Chroma {
   }
 
   void read(XMLReader& xml, const std::string& path, 
-	    SysSolverCGQUDAWilsonParams& p)
+	    SysSolverQUDAWilsonParams& p)
   {
-    SysSolverCGQUDAWilsonParams tmp(xml, path);
+    SysSolverQUDAWilsonParams tmp(xml, path);
     p = tmp;
   }
 
   void write(XMLWriter& xml, const std::string& path, 
-	     const SysSolverCGQUDAWilsonParams& p) {
+	     const SysSolverQUDAWilsonParams& p) {
     push(xml, path);
     write(xml, "MaxIter", p.MaxIter);
     write(xml, "RsdTarget", p.RsdTarget);

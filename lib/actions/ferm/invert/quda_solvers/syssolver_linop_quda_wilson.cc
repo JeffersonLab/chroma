@@ -1,12 +1,12 @@
-// $Id: syssolver_linop_cg_quda_wilson_single.cc,v 1.4 2009-09-25 19:28:59 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.cc,v 1.1 2009-09-28 17:24:37 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
 
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson_single.h"
 #include "io/aniso_io.h"
 
 
@@ -20,7 +20,7 @@
 
 namespace Chroma
 {
-  namespace LinOpSysSolverCGQUDAWilsonEnv
+  namespace LinOpSysSolverQUDAWilsonEnv
   {
 
     //! Anonymous namespace
@@ -41,7 +41,7 @@ namespace Chroma
 						  
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverCGQUDAWilson(A, state,SysSolverCGQUDAWilsonParams(xml_in, path));
+      return new LinOpSysSolverQUDAWilson(A, state,SysSolverQUDAWilsonParams(xml_in, path));
     }
 
     //! Register all the factories
@@ -58,9 +58,9 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverCGQUDAWilson::qudaInvert(const QF& links, 
-					 const TF& chi_s,
-					 TF& psi_s) const{
+  LinOpSysSolverQUDAWilson::qudaInvert(const QF& links, 
+				       const TF& chi_s,
+				       TF& psi_s) const{
 
     SystemSolverResults_t ret;
     QudaGaugeParam q_gauge_param;
