@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_wilson.cc,v 1.1 2009-09-28 17:24:37 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.cc,v 1.2 2009-09-29 11:20:03 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -6,7 +6,7 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson_single.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h"
 #include "io/aniso_io.h"
 
 
@@ -27,7 +27,7 @@ namespace Chroma
     namespace
     {
       //! Name to be used
-      const std::string name("QUDA_CG_WILSON_INVERTER");
+      const std::string name("QUDA_WILSON_INVERTER");
 
       //! Local registration flag
       bool registered = false;
