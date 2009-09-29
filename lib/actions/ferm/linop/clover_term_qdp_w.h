@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.9 2009-04-17 02:05:33 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.10 2009-09-29 23:10:30 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -22,6 +22,15 @@ namespace Chroma
     RComplex<R>  offd[2][2*Nc*Nc-Nc];
   };
 
+  template<typename R>
+  struct QUDAPackedClovSite {
+    R diag1[6];
+    R offDiag1[15][2];
+    R diag2[6];
+    R offDiag2[15][2];
+  };
+
+
   // Reader/writers
   /*! \ingroup linop */
 #if 0
@@ -42,6 +51,7 @@ namespace Chroma
   public:
     // Typedefs to save typing
     typedef typename WordType<T>::Type_t REALT;
+
     typedef OLattice< PScalar< PScalar< RScalar< typename WordType<T>::Type_t> > > > LatticeREAL;
     typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
 
@@ -100,6 +110,11 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T, multi1d<U>, multi1d<U> >& getFermBC() const {return *fbc;}
 
+    //! PACK UP the Clover term for QUDA library:
+    void packForQUDA(multi1d<QUDAPackedClovSite<REALT> >& quda_pack, int cb) const; 
+
+
+      
   protected:
     //! Create the clover term on cb
     /*!
@@ -1487,8 +1502,8 @@ namespace Chroma
   namespace QDPCloverEnv { 
 
     template<typename T>
-    struct ApplyArgs { 
-      typedef typename WordType<T>::Type_t REALT;
+    struct ApplyArgs {
+       typedef typename WordType<T>::Type_t REALT;
       T& chi;
       const T& psi;
       const multi1d<PrimitiveClovTriang<REALT> >& tri;
@@ -2072,7 +2087,68 @@ namespace Chroma
     END_CODE();
   }
 
- 
+
+  namespace QDPCloverEnv {
+    template<typename R> 
+    struct QUDAPackArgs { 
+      int cb;
+      multi1d<QUDAPackedClovSite<R> >& quda_array;
+      const multi1d<PrimitiveClovTriang< R > >& tri;
+    };
+    
+    template<typename R>
+    void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R>* a) {
+      int cb = a->cb;
+      multi1d<QUDAPackedClovSite<R> >& quda_array = a->quda_array;
+      const multi1d<PrimitiveClovTriang< R > >& tri=a->tri;
+      for(int ssite=lo; ssite < hi; ++ssite) {
+	int site = rb[cb].siteTable()[ssite];
+	// First Chiral Block
+	for(int i=0; i < 6; i++) { 
+	  quda_array[site].diag1[i] = tri[site].diag[0][i].elem();
+	}
+	for(int row=1 ; row < 6; row++) { 
+	  for(int col=0; col < row; col++) { 
+	    int elem_ij=(row*(row-1))/2 + col;
+	    int elem_ji=(col*(col-1))/2 + row;
+
+
+	    quda_array[site].offDiag1[elem_ji][0] = tri[site].offd[0][elem_ij].real();
+	    quda_array[site].offDiag1[elem_ji][1] = -tri[site].offd[0][elem_ij].imag();
+	  }
+	}
+
+	// Second Chiral Block
+	for(int i=0; i < 6; i++) { 
+	  quda_array[site].diag2[i] = tri[site].diag[1][i].elem();
+	}
+	for(int row=1; row < 6; row++){ 
+	  for(int col=0; col < row; col++){ 
+	    int elem_ij=(row*(row-1))/2 + col;
+	    int elem_ji=(col*(col-1))/2 + row;
+
+	    quda_array[site].offDiag2[elem_ji][0] = tri[site].offd[1][elem_ij].real();
+	    quda_array[site].offDiag2[elem_ji][1] = -tri[site].offd[1][elem_ij].imag();
+	  }
+	}
+      }
+    }
+  }
+
+  template<typename T, typename U>
+  void QDPCloverTermT<T,U>::packForQUDA(multi1d<QUDAPackedClovSite<typename WordType<T>::Type_t> >& quda_array, int cb) const
+    {
+      typedef typename WordType<T>::Type_t REALT;
+      int num_sites = rb[cb].siteTable().size();
+
+      QDPCloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri };
+      dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT>);
+
+
+      
+    }  
+
+
 
   typedef QDPCloverTermT<LatticeFermion, LatticeColorMatrix> QDPCloverTerm;
   typedef QDPCloverTermT<LatticeFermionF, LatticeColorMatrixF> QDPCloverTermF;

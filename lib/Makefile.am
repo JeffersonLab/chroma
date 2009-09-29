@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.237 2009-09-25 12:41:20 bjoo Exp $
+# $Id: Makefile.am,v 3.238 2009-09-29 23:10:27 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1262,11 +1262,15 @@ libchroma_a_SOURCES += update/molecdyn/monomial/remez_gmp.cc
 endif
 
 if BUILD_QUDA
-nobase_include_HEADERS += actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.h
+nobase_include_HEADERS += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
+        actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h
 
-libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_cg_quda_wilson_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.cc
+libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.cc
 endif
 
 #

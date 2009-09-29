@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.19 2009-09-29 11:20:02 bjoo Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.20 2009-09-29 23:10:29 bjoo Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -17,8 +17,13 @@
 #include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_cg_clover.h"
+
+
+#include "chroma_config.h"
+#ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h"
+#endif
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
