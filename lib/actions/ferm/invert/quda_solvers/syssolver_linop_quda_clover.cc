@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_clover.cc,v 1.1 2009-09-29 23:10:30 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.cc,v 1.2 2009-10-01 20:21:53 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -58,69 +58,13 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverQUDAClover::qudaInvert(const QF& links, 
-				       const QDPCloverTermT<TF, UF>& clover,
+  LinOpSysSolverQUDAClover::qudaInvert(const QDPCloverTermT<TF, UF>& clover,
 				       const QDPCloverTermT<TF, UF>& invclov,
 				       const TF& chi_s,
 				       TF& psi_s) const{
 
     SystemSolverResults_t ret;
-    QudaGaugeParam q_gauge_param;
     QudaInvertParam inv_param;
-    const multi1d<int>& latdims = Layout::lattSize();
-
-    QF links_trans;
-
-    // Kappa norm chi
-
-    q_gauge_param.X[0] = latdims[0];
-    q_gauge_param.X[1] = latdims[1];
-    q_gauge_param.X[2] = latdims[2];
-    q_gauge_param.X[3] = latdims[3];
-
- 
-    const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
-
-    // Convention: BC has to be applied already
-    // This flag just tells QUDA that this is so,
-    // so that QUDA can take care in the reconstruct
-#if 1
-    if( aniso.anisoP ) {                     // Anisotropic case
-      Real gamma_f = aniso.xi_0 / aniso.nu; 
-      q_gauge_param.anisotropy = toDouble(gamma_f);
-    }
-    else {
-      q_gauge_param.anisotropy = 1.0;
-    }
-#endif
-
-    // Convention: BC has to be applied already
-    // This flag just tells QUDA that this is so,
-    // so that QUDA can take care in the reconstruct
-    if( invParam.AntiPeriodicT ) { 
-      q_gauge_param.t_boundary = QUDA_ANTI_PERIODIC_T;
-    }
-    else { 
-      q_gauge_param.t_boundary = QUDA_PERIODIC_T;
-    }
-
-
-    q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p, col col
-    q_gauge_param.cpu_prec = QUDA_SINGLE_PRECISION;  // Single Prec G-field
-    q_gauge_param.cuda_prec = QUDA_SINGLE_PRECISION; 
-    q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
-    q_gauge_param.cuda_prec_sloppy = QUDA_SINGLE_PRECISION; // No Sloppy
-    q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12; // No Sloppy
-
-    // Do I want to Gauge Fix? -- Not yet
-    q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
-
-    q_gauge_param.blockDim = 64;         // I copy these from invert test
-    q_gauge_param.blockDim_sloppy = 64;
-    
-    // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
-    gauge_param = &q_gauge_param;
-
     // Definitely no clover here...
 
     inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
@@ -148,29 +92,13 @@ namespace Chroma
     inv_param.cpu_prec = QUDA_SINGLE_PRECISION;
     inv_param.cuda_prec = QUDA_SINGLE_PRECISION;
     inv_param.cuda_prec_sloppy = QUDA_SINGLE_PRECISION;
-    inv_param.preserve_source = QUDA_PRESERVE_SOURCE_YES;
+    inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
 
     // Even-odd colour inside spin
     inv_param.dirac_order = QUDA_DIRAC_ORDER;
     inv_param.verbosity = QUDA_SUMMARIZE;
 
-    // Clover configuration
-    inv_param.clover_cpu_prec = QUDA_SINGLE_PRECISION;
-    inv_param.clover_cuda_prec = QUDA_SINGLE_PRECISION;
-    inv_param.clover_cuda_prec_sloppy = QUDA_SINGLE_PRECISION;
-    inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 
-    // Set up the links
-    void* gauge[4];
-    for(int mu=0; mu < Nd; mu++) { 
-      gauge[mu] = (void *)&(links[mu].elem(all.start()).elem().elem(0,0).real());
-    }
-
-    // Set up Clover Inverse...
-    multi1d<QUDAPackedClovSite<REAL> > packed_invclov(all.siteTable().size());
-    invclov.packForQUDA(packed_invclov, 0);
-    invclov.packForQUDA(packed_invclov, 1);
-    loadCloverQuda(NULL, &(packed_invclov[0]), &inv_param);
 
     // Solving  A_oo ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = chi
     // so            ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = A^{-1}_oo chi
@@ -182,27 +110,32 @@ namespace Chroma
     StopWatch swatch1; 
     swatch1.reset();
     swatch1.start();
-    loadGaugeQuda((void *)gauge, &q_gauge_param);
  
 // DEAD Test Code
-#if 1
-   void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
+#if 0
+    void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[0].start()).elem(0).elem(0).real());
-
+    
     // OK Here I have a chance to test directly 
     // Even Target Checkerboard, No Dagger
     psi_s = zero;
+    inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix    
     dslashQuda(spinorOut, spinorIn, &inv_param, 0, 0);
 
-    // Need to create a simple ferm state from the links...
-    Handle< FermState<TF, QF, QF> > pstate(new PeriodicFermState<TF,QF,QF>(links));
+
+
+    // Need to create a simple ferm state from the links_single...
+    Handle< FermState<TF, QF, QF> > pstate(new PeriodicFermState<TF,QF,QF>(links_orig));
+    const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
     QDPWilsonDslashT<TF,QF,QF>  qdp_dslash(pstate, aniso);
     
-
-    TF tmp, psi2;
-    psi2 = zero;
+    TF tmp,psi2;
+    tmp=zero;
+    psi2=zero;
+    // qdp_dslash.apply(psi2, mod_chi, PLUS, 0);
     qdp_dslash.apply(tmp, mod_chi, PLUS, 0);
-    invclov.apply(psi2, tmp, PLUS, 0);
+    invclov.apply(psi2,tmp, PLUS, 0);
+
 
     TF r=zero;
     r = psi2 - psi_s;
@@ -233,8 +166,8 @@ namespace Chroma
 	for(int spin=0; spin < 4; spin++) { 
 	  for(int col=0; col < 3; col++) { 
 	    QDPIO::cout << "Site= " << j << " Spin= "<< spin << " Col= " << col << " spinor = ( " 
-			<< r.elem(j).elem(spin).elem(col).real()  << " , " 
-			<< r.elem(j).elem(spin).elem(col).imag()  << " )" << endl;
+			<< psi2.elem(j).elem(spin).elem(col).real()  << " , " 
+			<< psi2.elem(j).elem(spin).elem(col).imag()  << " )" << endl;
 	  }
 	}
 	QDPIO::cout << endl;

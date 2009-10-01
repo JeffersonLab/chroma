@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.10 2009-09-29 23:10:30 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.11 2009-10-01 20:21:53 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -2107,29 +2107,18 @@ namespace Chroma
 	for(int i=0; i < 6; i++) { 
 	  quda_array[site].diag1[i] = tri[site].diag[0][i].elem();
 	}
-	for(int row=1 ; row < 6; row++) { 
-	  for(int col=0; col < row; col++) { 
-	    int elem_ij=(row*(row-1))/2 + col;
-	    int elem_ji=(col*(col-1))/2 + row;
-
-
-	    quda_array[site].offDiag1[elem_ji][0] = tri[site].offd[0][elem_ij].real();
-	    quda_array[site].offDiag1[elem_ji][1] = -tri[site].offd[0][elem_ij].imag();
-	  }
+	for(int i=0; i < 15; i++) { 
+	    quda_array[site].offDiag1[i][0] = tri[site].offd[0][i].real();
+	    quda_array[site].offDiag1[i][1] = tri[site].offd[0][i].imag();
 	}
 
 	// Second Chiral Block
 	for(int i=0; i < 6; i++) { 
 	  quda_array[site].diag2[i] = tri[site].diag[1][i].elem();
 	}
-	for(int row=1; row < 6; row++){ 
-	  for(int col=0; col < row; col++){ 
-	    int elem_ij=(row*(row-1))/2 + col;
-	    int elem_ji=(col*(col-1))/2 + row;
-
-	    quda_array[site].offDiag2[elem_ji][0] = tri[site].offd[1][elem_ij].real();
-	    quda_array[site].offDiag2[elem_ji][1] = -tri[site].offd[1][elem_ij].imag();
-	  }
+	for(int i=0; i < 15; i++) { 
+	    quda_array[site].offDiag2[i][0] = tri[site].offd[1][i].real();
+	    quda_array[site].offDiag2[i][1] = tri[site].offd[1][i].imag();
 	}
       }
     }

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_wilson.h,v 1.1 2009-09-28 17:24:37 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.h,v 1.2 2009-10-01 20:21:53 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -19,6 +19,9 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "io/aniso_io.h"
 #include <string>
+
+#include <quda.h>
+#include <util_quda.h>
 using namespace std;
 
 namespace Chroma
@@ -67,7 +70,7 @@ namespace Chroma
 
       // These are the links
       // They may be smeared and the BC's may be applied
-      links_single; links_single.resize(Nd);
+      links_single.resize(Nd);
       
       // Now downcast to single prec fields.
       for(int mu=0; mu < Nd; mu++) {
@@ -79,11 +82,63 @@ namespace Chroma
 	  links_single[mu] *= cf[mu];
 	}
       }
+
+      const multi1d<int>& latdims = Layout::lattSize();
       
+      q_gauge_param.X[0] = latdims[0];
+      q_gauge_param.X[1] = latdims[1];
+      q_gauge_param.X[2] = latdims[2];
+      q_gauge_param.X[3] = latdims[3];
+      
+      if( aniso.anisoP ) {                     // Anisotropic case
+	Real gamma_f = aniso.xi_0 / aniso.nu; 
+	q_gauge_param.anisotropy = toDouble(gamma_f);
+      }
+      else {
+	q_gauge_param.anisotropy = 1.0;
+      }
+      
+      // Convention: BC has to be applied already
+      // This flag just tells QUDA that this is so,
+      // so that QUDA can take care in the reconstruct
+      if( invParam.AntiPeriodicT ) { 
+	q_gauge_param.t_boundary = QUDA_ANTI_PERIODIC_T;
+      }
+      else { 
+	q_gauge_param.t_boundary = QUDA_PERIODIC_T;
+      }
+
+      q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p, col col
+      q_gauge_param.cpu_prec = QUDA_SINGLE_PRECISION;  // Single Prec G-field
+      q_gauge_param.cuda_prec = QUDA_SINGLE_PRECISION; 
+      q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
+      q_gauge_param.cuda_prec_sloppy = QUDA_SINGLE_PRECISION; // No Sloppy
+      q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12; // No Sloppy
+      
+      // Do I want to Gauge Fix? -- Not yet
+      q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
+      
+      q_gauge_param.blockDim = 64;         // I copy these from invert test
+      q_gauge_param.blockDim_sloppy = 64;
+      
+      // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
+      gauge_param = &q_gauge_param;
+      
+      // Set up the links
+      void* gauge[4];
+      for(int mu=0; mu < Nd; mu++) { 
+	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+      }
+      loadGaugeQuda((void *)gauge, &q_gauge_param);
+      
+
     }
 
     //! Destructor is automatic
-    ~LinOpSysSolverQUDAWilson() {}
+    ~LinOpSysSolverQUDAWilson() 
+    {
+      
+    }
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
@@ -102,19 +157,12 @@ namespace Chroma
       StopWatch swatch;
       swatch.start();
 
-      //    T MdagChi;
-
-      // This is a CGNE. So create new RHS
-      //      (*A)(MdagChi, chi, MINUS);
-      // Handle< LinearOperator<T> > MM(new MdagMLinOp<T>(A));
-
       TF psi_s = psi;
       TF chi_s = chi;
 
 
       // Call the QUDA Thingie here
-      res = qudaInvert(links_single, 
-		       chi_s,
+      res = qudaInvert(chi_s,
 		       psi_s);      
 
 
@@ -145,11 +193,10 @@ namespace Chroma
     LinOpSysSolverQUDAWilson() {}
     
     QF links_single;
-    Q links_floating;
-    Handle< LinearOperator<T> > A;
+     Handle< LinearOperator<T> > A;
     const SysSolverQUDAWilsonParams invParam;
-    SystemSolverResults_t qudaInvert(const QF& links, 
-				     const TF& chi_s,
+    QudaGaugeParam q_gauge_param;
+    SystemSolverResults_t qudaInvert(const TF& chi_s,
 				     TF& psi_s     
 				     )const ;
 

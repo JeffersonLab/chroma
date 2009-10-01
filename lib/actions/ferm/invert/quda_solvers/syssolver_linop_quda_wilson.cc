@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_wilson.cc,v 1.2 2009-09-29 11:20:03 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.cc,v 1.3 2009-10-01 20:21:53 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -17,6 +17,7 @@
 // QUDA Headers
 #include <quda.h>
 #include <util_quda.h>
+#include <invert_quda.h>
 
 namespace Chroma
 {
@@ -58,16 +59,16 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverQUDAWilson::qudaInvert(const QF& links, 
-				       const TF& chi_s,
+  LinOpSysSolverQUDAWilson::qudaInvert(const TF& chi_s,
 				       TF& psi_s) const{
 
     SystemSolverResults_t ret;
-    QudaGaugeParam q_gauge_param;
+    
     QudaInvertParam inv_param;
+    
+#if 0
+    QudaGaugeParam q_gauge_param;
     const multi1d<int>& latdims = Layout::lattSize();
-
-    QF links_trans;
 
     // Kappa norm chi
 
@@ -117,6 +118,8 @@ namespace Chroma
     // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
     gauge_param = &q_gauge_param;
 
+#endif
+
     // Definitely no clover here...
     inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
     inv_param.inv_type = QUDA_CG_INVERTER;      // CG Inverter
@@ -145,17 +148,21 @@ namespace Chroma
     inv_param.dirac_order = QUDA_DIRAC_ORDER;
     inv_param.verbosity = QUDA_SUMMARIZE;
 
+#if 0
     // Set up the links
     void* gauge[4];
     for(int mu=0; mu < Nd; mu++) { 
-      gauge[mu] = (void *)&(links[mu].elem(all.start()).elem().elem(0,0).real());
+      gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
     }
+#endif
 
 
     StopWatch swatch1; 
     swatch1.reset();
     swatch1.start();
+#if 0
     loadGaugeQuda((void *)gauge, &q_gauge_param);
+#endif
     void* spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 
@@ -190,7 +197,7 @@ namespace Chroma
     dslashQuda(spinorOut, spinorIn, &inv_param, 0, 0);
 
     // Need to create a simple ferm state from the links...
-    Handle< FermState<TF, QF, QF> > pstate(new PeriodicFermState<TF,QF,QF>(links));
+    Handle< FermState<TF, QF, QF> > pstate(new PeriodicFermState<TF,QF,QF>(links_single));
     QDPWilsonDslashT<TF,QF,QF>  qdp_dslash(pstate, aniso);
     
 
