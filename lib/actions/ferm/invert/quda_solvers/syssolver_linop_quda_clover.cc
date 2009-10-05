@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_clover.cc,v 1.2 2009-10-01 20:21:53 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.cc,v 1.3 2009-10-05 20:19:13 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -58,17 +58,19 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverQUDAClover::qudaInvert(const QDPCloverTermT<TF, UF>& clover,
-				       const QDPCloverTermT<TF, UF>& invclov,
-				       const TF& chi_s,
-				       TF& psi_s) const{
+  LinOpSysSolverQUDAClover::qudaInvert(const QDPCloverTermT<T, U>& clover,
+				       const QDPCloverTermT<T, U>& invclov,
+				       const T& chi_s,
+				       T& psi_s) const{
 
     SystemSolverResults_t ret;
     QudaInvertParam inv_param;
     // Definitely no clover here...
 
     inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
-    inv_param.inv_type = QUDA_CG_INVERTER;      // CG Inverter
+    //  (1-k^2 Doe Deo)
+    inv_param.matpc_type = QUDA_MATPC_ODD_ODD; 
+    // inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
 
     // Fiendish idea from Ron. Set the kappa=1/2 and use 
     // unmodified clover term, and ask for Kappa normalization
@@ -82,30 +84,59 @@ namespace Chroma
     inv_param.maxiter = invParam.MaxIter;
     inv_param.reliable_delta = toDouble(invParam.Delta);
 
-    //  (1-k^2 Doe Deo)
-    inv_param.matpc_type = QUDA_MATPC_ODD_ODD; 
 
     // Solve the preconditioned matrix (rather than the prop
     inv_param.solution_type = QUDA_MATPC_SOLUTION;
     inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
 
-    inv_param.cpu_prec = QUDA_SINGLE_PRECISION;
-    inv_param.cuda_prec = QUDA_SINGLE_PRECISION;
-    inv_param.cuda_prec_sloppy = QUDA_SINGLE_PRECISION;
+    inv_param.cpu_prec = cpu_prec;
+    inv_param.cuda_prec = cpu_prec;
+    inv_param.cuda_prec_sloppy = half_prec;
     inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
 
     // Even-odd colour inside spin
     inv_param.dirac_order = QUDA_DIRAC_ORDER;
-    inv_param.verbosity = QUDA_SUMMARIZE;
+
+    if( invParam.verboseP ) { 
+      inv_param.verbosity = QUDA_VERBOSE;
+    }
+    else { 
+      inv_param.verbosity = QUDA_SUMMARIZE;
+    }
 
 
+
+    if ( invParam.solverType == "CG" ) { 
+       inv_param.inv_type = QUDA_CG_INVERTER;   
+    }
+    else { 
+      if( invParam.solverType == "BICGSTAB" ) { 
+	inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
+      }
+      else { 
+	QDPIO::cout << "LINOP_QUDA_CLOVER_SOLVER: Unknown solver type: " << invParam.solverType << endl;
+	QDP_abort(1);
+      }
+    }
 
     // Solving  A_oo ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = chi
     // so            ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = A^{-1}_oo chi
     // So set up A^{-1}_oo chi
 
-    TF mod_chi;
-    invclov.apply(mod_chi, chi_s, PLUS, 1);
+
+    T mod_chi;
+    if ( inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
+      // asymmetric 
+      mod_chi = chi_s;
+    }
+    else if( inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
+	invclov.apply(mod_chi, chi_s, PLUS, 1);
+    }
+    else { 
+      QDPIO::cout << "MATPC Type not allowed." << endl;
+      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << endl;
+      QDP_abort(1);
+    }
 
     StopWatch swatch1; 
     swatch1.reset();
@@ -125,11 +156,11 @@ namespace Chroma
 
 
     // Need to create a simple ferm state from the links_single...
-    Handle< FermState<TF, QF, QF> > pstate(new PeriodicFermState<TF,QF,QF>(links_orig));
+    Handle< FermState<T, Q, Q> > pstate(new PeriodicFermState<TF,QF,QF>(links_orig));
     const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
-    QDPWilsonDslashT<TF,QF,QF>  qdp_dslash(pstate, aniso);
+    QDPWilsonDslashT<T,Q,Q>  qdp_dslash(pstate, aniso);
     
-    TF tmp,psi2;
+    T tmp,psi2;
     tmp=zero;
     psi2=zero;
     // qdp_dslash.apply(psi2, mod_chi, PLUS, 0);
@@ -137,7 +168,7 @@ namespace Chroma
     invclov.apply(psi2,tmp, PLUS, 0);
 
 
-    TF r=zero;
+    T r=zero;
     r = psi2 - psi_s;
     
     QDPIO::cout << "CB=0" << endl;
@@ -190,7 +221,7 @@ namespace Chroma
     QDPIO::cout << "\t Spinor:" << inv_param.spinorGiB << " GiB" << endl;
     QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
     QDPIO::cout << "\t InvClover :" << inv_param.cloverGiB << " GiB" << endl;
-    QDPIO::cout << "QUDA_CG_CLOVER_SOLVER: time="<< inv_param.secs <<" s" ;
+    QDPIO::cout << "QUDA_"<<invParam.solverType<<"_CLOVER_SOLVER: time="<< inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  inv_param.gflops/inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
 
