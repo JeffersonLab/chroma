@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.238 2009-09-29 23:10:27 bjoo Exp $
+# $Id: Makefile.am,v 3.239 2009-10-06 20:35:46 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -1265,9 +1265,11 @@ if BUILD_QUDA
 nobase_include_HEADERS += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
         actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h
+	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h \
+	actions/ferm/invert/quda_solvers/enum_quda_io.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.cc

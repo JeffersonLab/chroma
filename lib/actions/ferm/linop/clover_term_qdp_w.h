@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: clover_term_qdp_w.h,v 3.11 2009-10-01 20:21:53 bjoo Exp $
+// $Id: clover_term_qdp_w.h,v 3.12 2009-10-06 20:35:48 bjoo Exp $
 /*! \file
  *  \brief Clover term linear operator
  */
@@ -2099,26 +2099,46 @@ namespace Chroma
     template<typename R>
     void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R>* a) {
       int cb = a->cb;
+      int Ns2 = Ns/2;
+
       multi1d<QUDAPackedClovSite<R> >& quda_array = a->quda_array;
       const multi1d<PrimitiveClovTriang< R > >& tri=a->tri;
+
+      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
+
       for(int ssite=lo; ssite < hi; ++ssite) {
 	int site = rb[cb].siteTable()[ssite];
 	// First Chiral Block
 	for(int i=0; i < 6; i++) { 
 	  quda_array[site].diag1[i] = tri[site].diag[0][i].elem();
 	}
-	for(int i=0; i < 15; i++) { 
-	    quda_array[site].offDiag1[i][0] = tri[site].offd[0][i].real();
-	    quda_array[site].offDiag1[i][1] = tri[site].offd[0][i].imag();
-	}
 
+	int target_index=0;
+	
+	for(int col=0; col < Nc*Ns2-1; col++) { 
+	  for(int row=col+1; row < Nc*Ns2; row++) {
+
+	    int source_index = row*(row-1)/2 + col;
+
+	    quda_array[site].offDiag1[target_index][0] = tri[site].offd[0][source_index].real();
+	    quda_array[site].offDiag1[target_index][1] = tri[site].offd[0][source_index].imag();
+	    target_index++;
+	  }
+	}
 	// Second Chiral Block
 	for(int i=0; i < 6; i++) { 
 	  quda_array[site].diag2[i] = tri[site].diag[1][i].elem();
 	}
-	for(int i=0; i < 15; i++) { 
-	    quda_array[site].offDiag2[i][0] = tri[site].offd[1][i].real();
-	    quda_array[site].offDiag2[i][1] = tri[site].offd[1][i].imag();
+
+	target_index=0;
+	for(int col=0; col < Nc*Ns2-1; col++) { 
+	  for(int row=col+1; row < Nc*Ns2; row++) {
+
+	    int source_index = row*(row-1)/2 + col;
+	    quda_array[site].offDiag2[target_index][0] = tri[site].offd[1][source_index].real();
+	    quda_array[site].offDiag2[target_index][1] = tri[site].offd[1][source_index].imag();
+	    target_index++;
+	  }
 	}
       }
     }

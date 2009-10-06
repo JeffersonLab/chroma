@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.360 2009-09-29 23:10:27 bjoo Exp $
+# $Id: Makefile.in,v 3.361 2009-10-06 20:35:46 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -56,9 +56,11 @@ host_triplet = @host@
 @BUILD_QUDA_TRUE@am__append_11 = actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 @BUILD_QUDA_TRUE@        actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/enum_quda_io.h
 
 @BUILD_QUDA_TRUE@am__append_12 = actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.cc
@@ -454,6 +456,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/hadron/dilution_quark_source_const_w.cc \
 	update/molecdyn/monomial/remez_gmp.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.cc \
@@ -839,6 +842,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_GMP_REMEZ_TRUE@am__objects_1 = remez_gmp.$(OBJEXT)
 @BUILD_QUDA_TRUE@am__objects_2 =  \
 @BUILD_QUDA_TRUE@	syssolver_quda_wilson_params.$(OBJEXT) \
+@BUILD_QUDA_TRUE@	enum_quda_io.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_quda_clover_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_linop_quda_wilson.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_linop_quda_clover.$(OBJEXT)
@@ -2137,6 +2141,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h \
+	actions/ferm/invert/quda_solvers/enum_quda_io.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/linop/lwldslash_array_sse_w.h \
 	actions/ferm/linop/lwldslash_3d_sse_w.h \
@@ -3991,6 +3996,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_proptype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_qdpvolfmt_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_quarkspintype_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_quda_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_simplebctype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_stochsrc_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_wavetype_io.Po@am__quote@
@@ -9426,6 +9432,20 @@ syssolver_quda_wilson_params.obj: actions/ferm/invert/quda_solvers/syssolver_qud
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc' object='syssolver_quda_wilson_params.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_quda_wilson_params.obj `if test -f 'actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc'; fi`
+
+enum_quda_io.o: actions/ferm/invert/quda_solvers/enum_quda_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_quda_io.o -MD -MP -MF "$(DEPDIR)/enum_quda_io.Tpo" -c -o enum_quda_io.o `test -f 'actions/ferm/invert/quda_solvers/enum_quda_io.cc' || echo '$(srcdir)/'`actions/ferm/invert/quda_solvers/enum_quda_io.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/enum_quda_io.Tpo" "$(DEPDIR)/enum_quda_io.Po"; else rm -f "$(DEPDIR)/enum_quda_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/quda_solvers/enum_quda_io.cc' object='enum_quda_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_quda_io.o `test -f 'actions/ferm/invert/quda_solvers/enum_quda_io.cc' || echo '$(srcdir)/'`actions/ferm/invert/quda_solvers/enum_quda_io.cc
+
+enum_quda_io.obj: actions/ferm/invert/quda_solvers/enum_quda_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_quda_io.obj -MD -MP -MF "$(DEPDIR)/enum_quda_io.Tpo" -c -o enum_quda_io.obj `if test -f 'actions/ferm/invert/quda_solvers/enum_quda_io.cc'; then $(CYGPATH_W) 'actions/ferm/invert/quda_solvers/enum_quda_io.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/quda_solvers/enum_quda_io.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/enum_quda_io.Tpo" "$(DEPDIR)/enum_quda_io.Po"; else rm -f "$(DEPDIR)/enum_quda_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/quda_solvers/enum_quda_io.cc' object='enum_quda_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_quda_io.obj `if test -f 'actions/ferm/invert/quda_solvers/enum_quda_io.cc'; then $(CYGPATH_W) 'actions/ferm/invert/quda_solvers/enum_quda_io.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/quda_solvers/enum_quda_io.cc'; fi`
 
 syssolver_quda_clover_params.o: actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_quda_clover_params.o -MD -MP -MF "$(DEPDIR)/syssolver_quda_clover_params.Tpo" -c -o syssolver_quda_clover_params.o `test -f 'actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc; \
