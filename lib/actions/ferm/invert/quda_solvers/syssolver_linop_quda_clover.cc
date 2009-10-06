@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_clover.cc,v 1.3 2009-10-05 20:19:13 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.cc,v 1.4 2009-10-06 20:34:58 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -64,13 +64,20 @@ namespace Chroma
 				       T& psi_s) const{
 
     SystemSolverResults_t ret;
-    QudaInvertParam inv_param;
+    QudaInvertParam quda_inv_param;
     // Definitely no clover here...
 
-    inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
-    //  (1-k^2 Doe Deo)
-    inv_param.matpc_type = QUDA_MATPC_ODD_ODD; 
-    // inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+    quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
+
+
+    if( invParam.asymmetricP ) { 
+      QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << endl;
+      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+    }
+    else { 
+      QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << endl;
+      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+    }
 
     // Fiendish idea from Ron. Set the kappa=1/2 and use 
     // unmodified clover term, and ask for Kappa normalization
@@ -78,40 +85,42 @@ namespace Chroma
     // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
     // op. Apart from the A_oo stuff on the antisymmetric we have
     // nothing to do...
-    inv_param.kappa = 0.5;
+    quda_inv_param.kappa = 0.5;
 
-    inv_param.tol = toDouble(invParam.RsdTarget);
-    inv_param.maxiter = invParam.MaxIter;
-    inv_param.reliable_delta = toDouble(invParam.Delta);
+    quda_inv_param.tol = toDouble(invParam.RsdTarget);
+    quda_inv_param.maxiter = invParam.MaxIter;
+    quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+
+    
 
 
     // Solve the preconditioned matrix (rather than the prop
-    inv_param.solution_type = QUDA_MATPC_SOLUTION;
-    inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+    quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+    quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
 
-    inv_param.cpu_prec = cpu_prec;
-    inv_param.cuda_prec = cpu_prec;
-    inv_param.cuda_prec_sloppy = half_prec;
-    inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
+    quda_inv_param.cpu_prec = cpu_prec;
+    quda_inv_param.cuda_prec = gpu_prec;
+    quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+    quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
 
     // Even-odd colour inside spin
-    inv_param.dirac_order = QUDA_DIRAC_ORDER;
+    quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 
     if( invParam.verboseP ) { 
-      inv_param.verbosity = QUDA_VERBOSE;
+      quda_inv_param.verbosity = QUDA_VERBOSE;
     }
     else { 
-      inv_param.verbosity = QUDA_SUMMARIZE;
+      quda_inv_param.verbosity = QUDA_SUMMARIZE;
     }
 
 
 
-    if ( invParam.solverType == "CG" ) { 
-       inv_param.inv_type = QUDA_CG_INVERTER;   
+    if ( invParam.solverType == CG ) { 
+       quda_inv_param.inv_type = QUDA_CG_INVERTER;   
     }
     else { 
-      if( invParam.solverType == "BICGSTAB" ) { 
-	inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
+      if( invParam.solverType == BICGSTAB ) { 
+	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
       }
       else { 
 	QDPIO::cout << "LINOP_QUDA_CLOVER_SOLVER: Unknown solver type: " << invParam.solverType << endl;
@@ -125,11 +134,11 @@ namespace Chroma
 
 
     T mod_chi;
-    if ( inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
+    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
       // asymmetric 
       mod_chi = chi_s;
     }
-    else if( inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
+    else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
 	invclov.apply(mod_chi, chi_s, PLUS, 1);
     }
     else { 
@@ -150,8 +159,8 @@ namespace Chroma
     // OK Here I have a chance to test directly 
     // Even Target Checkerboard, No Dagger
     psi_s = zero;
-    inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix    
-    dslashQuda(spinorOut, spinorIn, &inv_param, 0, 0);
+    quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix    
+    dslashQuda(spinorOut, spinorIn, &quda_inv_param, 0, 0);
 
 
 
@@ -210,7 +219,7 @@ namespace Chroma
    void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 
-    invertQuda(spinorOut, spinorIn, &inv_param);
+    invertQuda(spinorOut, spinorIn, &quda_inv_param);
 #endif
     // Take care of mass normalization
     //psi_s *= (invMassParam);
@@ -218,14 +227,14 @@ namespace Chroma
 
 
     QDPIO::cout << "Cuda Space Required" << endl;
-    QDPIO::cout << "\t Spinor:" << inv_param.spinorGiB << " GiB" << endl;
+    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
     QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
-    QDPIO::cout << "\t InvClover :" << inv_param.cloverGiB << " GiB" << endl;
-    QDPIO::cout << "QUDA_"<<invParam.solverType<<"_CLOVER_SOLVER: time="<< inv_param.secs <<" s" ;
-    QDPIO::cout << "\tPerformance="<<  inv_param.gflops/inv_param.secs<<" GFLOPS" ; 
+    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << endl;
+    QDPIO::cout << "QUDA_"<<invParam.solverType<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
+    QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
 
-    ret.n_count =inv_param.iter;
+    ret.n_count =quda_inv_param.iter;
 
     return ret;
 

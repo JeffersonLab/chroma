@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.3 2009-10-05 20:19:13 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.h,v 1.4 2009-10-06 20:34:58 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -115,22 +115,82 @@ namespace Chroma
       int s = sizeof( WordType<T>::Type_t );
       if (s == 4) { 
 	cpu_prec = QUDA_SINGLE_PRECISION;
-	half_prec = QUDA_SINGLE_PRECISION;  // Don't mix precisions just yet?
       }
       else { 
 	cpu_prec = QUDA_DOUBLE_PRECISION;
-	half_prec = QUDA_SINGLE_PRECISION;
       }
+
+      switch( invParam.cudaPrecision ) { 
+      case HALF:
+	gpu_prec = QUDA_HALF_PRECISION;
+	break;
+      case SINGLE:
+	gpu_prec = QUDA_SINGLE_PRECISION;
+	break;
+      case DOUBLE:
+	gpu_prec = QUDA_DOUBLE_PRECISION;
+	break;
+      default:
+	gpu_prec = cpu_prec;
+	break;
+      }
+
+      switch( invParam.cudaSloppyPrecision ) { 
+      case HALF:
+	gpu_half_prec = QUDA_HALF_PRECISION;
+	break;
+      case SINGLE:
+	gpu_half_prec = QUDA_SINGLE_PRECISION;
+	break;
+      case DOUBLE:
+	gpu_half_prec = QUDA_DOUBLE_PRECISION;
+	break;
+      default:
+	gpu_half_prec = gpu_prec;
+	break;
+      }
+      
+      
+
 
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p, col col
 
       q_gauge_param.cpu_prec = cpu_prec;
 
       // On card is always double/mixed
-      q_gauge_param.cuda_prec = cpu_prec;
-      q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
-      q_gauge_param.cuda_prec_sloppy = half_prec;
-      q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12; // No Sloppy
+      q_gauge_param.cuda_prec = gpu_prec;
+      q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+
+      switch( invParam.cudaReconstruct ) { 
+      case RECONS_NONE: 
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_NO;
+	break;
+      case RECONS_8:
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_8;
+	break;
+      case RECONS_12:
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
+	break;
+      default:
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
+	break;
+      };
+
+      switch( invParam.cudaSloppyReconstruct ) { 
+      case RECONS_NONE: 
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_NO;
+	break;
+      case RECONS_8:
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_8;
+	break;
+      case RECONS_12:
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
+	break;
+      default:
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
+	break;
+      };
+
       
       // Do I want to Gauge Fix? -- Not yet
       q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
@@ -149,7 +209,7 @@ namespace Chroma
       loadGaugeQuda((void *)gauge, &q_gauge_param);
       
 
-#if 0      
+#if 1      
       // These are the links
       // They may be smeared and the BC's may be applied
       links_orig.resize(Nd);
@@ -159,7 +219,7 @@ namespace Chroma
 	links_orig[mu] = (state_->getLinks())[mu];
       }
 
-      Handle<FermState<TF,QF,QF> > fstate( new PeriodicFermState<TF,QF,QF>(links_orig));
+      // Handle<FermState<TF,QF,QF> > fstate( new PeriodicFermState<TF,QF,QF>(links_orig));
 
 #endif
 
@@ -172,9 +232,9 @@ namespace Chroma
       invclov->choles(0);
       invclov->choles(1);
 
-      //      multi1d<QUDAPackedClovSite<REAL> > packed_clov(all.siteTable().size());
-      // clov->packForQUDA(packed_clov, 0);
-      // clov->packForQUDA(packed_clov, 1);
+      multi1d<QUDAPackedClovSite<REALT> > packed_clov(all.siteTable().size());
+      clov->packForQUDA(packed_clov, 0);
+      clov->packForQUDA(packed_clov, 1);
 
       multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
       invclov->packForQUDA(packed_invclov, 0);
@@ -182,11 +242,11 @@ namespace Chroma
 
 
       inv_param.clover_cpu_prec = cpu_prec;
-      inv_param.clover_cuda_prec = cpu_prec;
-      inv_param.clover_cuda_prec_sloppy = half_prec;
+      inv_param.clover_cuda_prec = gpu_prec;
+      inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
       inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 
-      loadCloverQuda(NULL, &(packed_invclov[0]), &inv_param);
+      loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &inv_param);
 
     }
 
@@ -255,14 +315,13 @@ namespace Chroma
     // Hide default constructor
     LinOpSysSolverQUDAClover() {}
     
-    //    Q links_single;
-
-#if 0
+#if 1
     Q links_orig;
 #endif
 
     QudaPrecision_s cpu_prec;
-    QudaPrecision_s half_prec;
+    QudaPrecision_s gpu_prec;
+    QudaPrecision_s gpu_half_prec;
 
     Handle< LinearOperator<T> > A;
     const SysSolverQUDACloverParams invParam;
