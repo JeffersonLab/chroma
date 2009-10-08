@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 3.2 2009-09-25 19:28:59 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 3.3 2009-10-08 00:52:23 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -15,113 +15,113 @@
 
 #include "actions/ferm/invert/syssolver_linop_cg.h"
 #include "actions/ferm/invert/syssolver_linop_cg.h"
+#include "io/xml_group_reader.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h"
+#include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_cg_quda_wilson_single.h"
-
+#include <string>
 using namespace Chroma;
+using namespace std;
 
-
-enum GaugeStartType { COLD_START=0, HOT_START };
-struct Params_t { 
+struct AppParams { 
   multi1d<int> nrow;
-  multi1d<int> boundary;
-  GaugeStartType gauge_start_type;
+  Cfg_t inputCfg;
+  GroupXML_t fermact;
+  GroupXML_t quda_solver;
 };
 
 
 
-void checkInverter(multi1d<LatticeColorMatrix>& u)
+void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
 {
-  LatticeFermion psi;
-  LatticeFermion psi2;
-  LatticeFermion chi;
+
   typedef LatticeFermion T;
   typedef multi1d<LatticeColorMatrix> Q;
   typedef multi1d<LatticeColorMatrix> P;
 
-
-  multi1d<int> boundary(4);
-  boundary[0] = 1; 
-  boundary[1] = 1;
-  boundary[2] = 1;
-  boundary[3] = -1;
-  Real mass = 0.1;
-
-  // Set Up CG Solver
-  SysSolverCGParams cg_p;
-  cg_p.RsdCG = 1.0e-8;
-  cg_p.MaxCG = 1000;
-  cg_p.MinCG = 5;
-
-  SysSolverCGQUDAWilsonParams quda_p;
-  quda_p.WilsonParams.Mass = mass;
-  quda_p.WilsonParams.anisoParam.anisoP = true;;
-  quda_p.WilsonParams.anisoParam.t_dir = 3;
-  quda_p.WilsonParams.anisoParam.xi_0 = 2.3;
-  quda_p.WilsonParams.anisoParam.nu = 0.9;
-  quda_p.AntiPeriodicT = true ;
-  quda_p.MaxIter =cg_p.MaxCG;
-  quda_p.RsdTarget = cg_p.RsdCG;
-  quda_p.Delta = 1.0e-10;
-
-
-  Handle<FermBC<T,P,Q> >  
-    fbc(new SimpleFermBC<T,P,Q>(boundary));
-
-   // Create a FermState Creator with boundaries
-  Handle<CreateFermState<T,P,Q> > cfs( new CreateSimpleFermState<T,P,Q>(fbc));
-  EvenOddPrecWilsonFermAct  S_w(cfs, quda_p.WilsonParams);
-
+  std::istringstream is(p.fermact.xml);
+  XMLReader fermact_xml(is);
+  Handle< EvenOddPrecCloverFermAct > S_f( 
+					 new EvenOddPrecCloverFermAct(CreateFermStateEnv::reader(fermact_xml, p.fermact.path), CloverFermActParams(fermact_xml, p.fermact.path)));
   
-  // Apply boundary to u
-  Handle< FermState<T,P,Q> > connect_state(S_w.createState(u));
+  
+  Handle< FermState<T,P,Q> > connect_state( S_f->createState(u) );
 
-  Handle< LinearOperator<LatticeFermion> > D_op( S_w.linOp(connect_state) );
+  Handle< LinearOperator<LatticeFermion> > D_op( S_f->linOp(connect_state) );
 
-  // Get Initial Vector
+  std::istringstream is2(p.quda_solver.xml);
+  XMLReader quda_xml(is2);
+
+  Handle<  LinOpSystemSolver<LatticeFermion> > QUDASolver( new LinOpSysSolverQUDAClover(D_op, connect_state, SysSolverQUDACloverParams(quda_xml, p.quda_solver.path)));
+							 
+T chi, psi;
+
+// Get Initial Vector
   chi=zero;
   gaussian(chi,rb[1]);
   psi=zero;
-  psi2=zero;
+  (*QUDASolver)(psi,chi);
 
-  QDPIO::cout << "chi_norm = " << sqrt(norm2(chi, rb[1])) << endl;
+  T r = chi;
+T tmp; 
+(*D_op)(tmp, psi, PLUS);
+r[rb[1]] -= tmp; 
 
-  
-  LinOpSysSolverCG<LatticeFermion> CGSolver(D_op,cg_p);
-  CGSolver(psi, chi);
 
-  LinOpSysSolverCGQUDAWilson QUDA_CG_Solver(D_op, connect_state, quda_p);
-  QUDA_CG_Solver(psi2,chi);
-
-  LatticeFermion r;
-  r[rb[1]] = psi2 - psi;
-  Double chi_norm_diff = norm2(r, rb[1]);
-  QDPIO::cout << " || chi2 - chi || = " << chi_norm_diff << endl;
-
+QDPIO::cout << "||r||= " << sqrt(norm2(r, rb[1])) << endl;
+QDPIO::cout << "||r||/||b||= " << sqrt(norm2(r, rb[1]))/sqrt(norm2(chi,rb[1])) << endl;
 
   
   
+}
+
+
+void read(XMLReader& r, const std::string path, AppParams& p) 
+{
+  read(r, "nrow", p.nrow);
+  read(r, "Cfg", p.inputCfg);
+  p.fermact = readXMLGroup(r, "FermionAction", "FermAct");
+  p.quda_solver = readXMLGroup(r, "InvertParam", "invType");
+}
+
+bool linkageHack(void)
+{
+  bool foo = true;
+
+  // Inline Measurements
+  foo &= InlineAggregateEnv::registerAll();
+  foo &= GaugeInitEnv::registerAll();
+
+  return foo;
 }
 
 int main(int argc, char **argv)
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
+  QDPIO::cout << "Linkage = " << linkageHack() << endl;
 
-  multi1d<int> nrow(Nd);
-  for(int i=0; i < Nd-1; i++) { 
-    nrow[i] = 8;
+
+  AppParams params;
+
+  XMLReader xml_in;
+  try
+  {
+    xml_in.open(Chroma::getXMLInputFileName());
+    read(xml_in, "/Param", params);
   }
-  nrow[Nd-1] = 16;
-  Layout::setLattSize(nrow);
+  catch(const std::string& e) 
+  {
+    QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+    QDP_abort(1);
+  }
+  Layout::setLattSize(params.nrow);
   Layout::create();
-
-  struct Cfg_t config = { CFG_TYPE_WEAK_FIELD, "dummy" };
-  // struct Cfg_t config = { CFG_TYPE_UNIT, "dummy" };
+  
   multi1d<LatticeColorMatrix> u(Nd);
   XMLReader gauge_file_xml, gauge_xml;
-  gaugeStartup(gauge_file_xml, gauge_xml, u, config);
-  // Check if the gauge field configuration is unitarized
+  gaugeStartup(gauge_file_xml, gauge_xml, u, params.inputCfg);
   unitarityCheck(u);
 
   // Setup the lattice
@@ -129,14 +129,14 @@ int main(int argc, char **argv)
   XMLFileWriter& xml_out = Chroma::getXMLOutputInstance();
   push(xml_out,"t_invert");
   push(xml_out,"params");
-  write(xml_out, "nrow", nrow);
+  write(xml_out, "nrow", params.nrow);
   pop(xml_out); // Params
 
   // Measure the plaquette on the gauge
   MesPlq(xml_out, "Observables", u);
   xml_out.flush();
 
-  checkInverter(u);
+  checkInverter(params, u);
 
   pop(xml_out);
   xml_out.close();

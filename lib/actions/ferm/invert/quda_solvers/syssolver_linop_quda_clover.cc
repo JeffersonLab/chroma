@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_clover.cc,v 1.4 2009-10-06 20:34:58 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.cc,v 1.5 2009-10-08 00:52:23 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -64,69 +64,6 @@ namespace Chroma
 				       T& psi_s) const{
 
     SystemSolverResults_t ret;
-    QudaInvertParam quda_inv_param;
-    // Definitely no clover here...
-
-    quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
-
-
-    if( invParam.asymmetricP ) { 
-      QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << endl;
-      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
-    }
-    else { 
-      QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << endl;
-      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-    }
-
-    // Fiendish idea from Ron. Set the kappa=1/2 and use 
-    // unmodified clover term, and ask for Kappa normalization
-    // This should give us A - (1/2)D as the unpreconditioned operator
-    // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
-    // op. Apart from the A_oo stuff on the antisymmetric we have
-    // nothing to do...
-    quda_inv_param.kappa = 0.5;
-
-    quda_inv_param.tol = toDouble(invParam.RsdTarget);
-    quda_inv_param.maxiter = invParam.MaxIter;
-    quda_inv_param.reliable_delta = toDouble(invParam.Delta);
-
-    
-
-
-    // Solve the preconditioned matrix (rather than the prop
-    quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
-    quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
-
-    quda_inv_param.cpu_prec = cpu_prec;
-    quda_inv_param.cuda_prec = gpu_prec;
-    quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
-    quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
-
-    // Even-odd colour inside spin
-    quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
-
-    if( invParam.verboseP ) { 
-      quda_inv_param.verbosity = QUDA_VERBOSE;
-    }
-    else { 
-      quda_inv_param.verbosity = QUDA_SUMMARIZE;
-    }
-
-
-
-    if ( invParam.solverType == CG ) { 
-       quda_inv_param.inv_type = QUDA_CG_INVERTER;   
-    }
-    else { 
-      if( invParam.solverType == BICGSTAB ) { 
-	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
-      }
-      else { 
-	QDPIO::cout << "LINOP_QUDA_CLOVER_SOLVER: Unknown solver type: " << invParam.solverType << endl;
-	QDP_abort(1);
-      }
-    }
 
     // Solving  A_oo ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = chi
     // so            ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = A^{-1}_oo chi
@@ -219,7 +156,7 @@ namespace Chroma
    void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 
-    invertQuda(spinorOut, spinorIn, &quda_inv_param);
+    invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
 #endif
     // Take care of mass normalization
     //psi_s *= (invMassParam);

@@ -39,7 +39,7 @@ namespace Chroma
 
     //! Has the input instance been created?
     // bool xmlInputP = false;
- 
+
 
     // Internal
     string constructFileName(const string& filename)
@@ -55,6 +55,10 @@ namespace Chroma
       }
       return ret_val;
     }
+
+    // For use with QUDA
+    int cuda_device = 0;
+
   }; // End anonymous namespace
 
   //! Get input file name
@@ -82,7 +86,16 @@ namespace Chroma
   //! Set current working directory
   void setCWD(const string& name) {cwd = name;}
 
+  //! Set the CUDA device
+  void setCUDADevice(const string& device) 
+  {
+#ifdef BUILD_QUDA
+    std::istringstream is(device);
+    is >> cuda_device;
+#endif
+  }
 
+  int getCUDADevice() { return cuda_device; } 
 
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
@@ -109,6 +122,10 @@ namespace Chroma
 		    << "   --chroma-l   [" << getXMLLogFileName() << "]  xml log file name\n"
 		    << "   -cwd         [" << getCWD() << "]  xml log file name\n"
 		    << "   --chroma-cwd [" << getCWD() << "]  xml log file name\n"
+
+		    << "   -cudadev         [" << getCUDADevice() << "]  CUDA Device to use by QUDA\n"
+		    << "   --chroma-cudadev [" << getCUDADevice() << "]  CUDA Device to use by QUDA\n"
+		    
 		    << endl;
 	QDP_abort(0);
       }
@@ -174,14 +191,28 @@ namespace Chroma
 	  QDP_abort(1);
 	}
       }
+
+      // Search for -cudadev --chroma-cudadev-
+      if( argv_i == string("-cudadev") || argv_i == string("--chroma-cudadev") ) 
+      {
+	if( i + 1 < *argc ) {
+	  setCUDADevice(string( (*argv)[i+1] ));
+	  // Skip over next
+	  i++;
+	}
+	else {
+	  // i + 1 is too big
+	  QDPIO::cerr << "Error: dangling -cudadev specified. " << endl;
+	  QDP_abort(1);
+	}
+      }
       
     }
 
 
 #ifdef BUILD_QUDA
-    QDPIO::cout << "Initializing QUDA" << endl;
-    int device = 0;
-    initQuda(device);
+    QDPIO::cout << "Initializing QUDA device: " << getCUDADevice() << endl;
+    initQuda(getCUDADevice());
 #endif
 
   }
