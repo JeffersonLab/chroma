@@ -33,7 +33,7 @@ namespace Chroma {
       read(paramtop, "AsymmetricLinop", asymmetricP);
     }
     else { 
-      asymmetricP = true; // Asymmetric is default 
+      asymmetricP = false; // Symmetric is default 
     }
 
     if( paramtop.count("CudaPrecision") > 0 ) {
@@ -64,6 +64,13 @@ namespace Chroma {
       cudaSloppyReconstruct = RECONS_12;
     }
 
+    if( paramtop.count("AxialGaugeFix") > 0 ) {
+      read(paramtop, "AxialGaugeFix", axialGaugeP);
+    }
+    else { 
+      axialGaugeP = false;
+    }
+
 
   }
 
@@ -89,7 +96,7 @@ namespace Chroma {
     write(xml, "CudaReconstruct", p.cudaReconstruct);
     write(xml, "CudaSloppyPrecision", p.cudaSloppyPrecision);
     write(xml, "CudaSloppyReconstruct", p.cudaSloppyReconstruct);
-
+    write(xml, "AxialGaugeFix", p.axialGaugeP);
     pop(xml);
 
   }

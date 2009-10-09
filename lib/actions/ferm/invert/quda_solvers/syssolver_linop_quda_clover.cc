@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_quda_clover.cc,v 1.5 2009-10-08 00:52:23 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.cc,v 1.6 2009-10-09 13:59:46 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -65,18 +65,27 @@ namespace Chroma
 
     SystemSolverResults_t ret;
 
-    // Solving  A_oo ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = chi
-    // so            ( 1 - A^{-1}_oo D A^{-1}_ee D ) psi = A^{-1}_oo chi
-    // So set up A^{-1}_oo chi
-
+    void *spinorIn;
 
     T mod_chi;
     if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
       // asymmetric 
-      mod_chi = chi_s;
+      //
+      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
+      // No need to transform source
+      spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
     }
     else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
-	invclov.apply(mod_chi, chi_s, PLUS, 1);
+      //
+      // symmetric
+      // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
+      //
+      // Chroma M =  A_oo ( M_symm )
+      //
+      //  So  M x = b => A_oo (M_symm) x = b 
+      //              =>       M_symm x = A^{-1}_oo b = chi_mod
+      invclov.apply(mod_chi, chi_s, PLUS, 1);
+      spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
     }
     else { 
       QDPIO::cout << "MATPC Type not allowed." << endl;
@@ -84,9 +93,34 @@ namespace Chroma
       QDP_abort(1);
     }
 
+    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+
+    // Do the solve here 
     StopWatch swatch1; 
     swatch1.reset();
     swatch1.start();
+    invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
+    swatch1.stop();
+
+
+    QDPIO::cout << "Cuda Space Required" << endl;
+    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
+    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
+    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << endl;
+    QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
+    QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
+    QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
+
+    ret.n_count =quda_inv_param.iter;
+
+    return ret;
+
+  }
+  
+
+}
+
+
  
 // DEAD Test Code
 #if 0
@@ -151,33 +185,4 @@ namespace Chroma
       }
     }
     QDP_abort(1);
-#else
-
-   void* spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
-    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
-
-    invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
 #endif
-    // Take care of mass normalization
-    //psi_s *= (invMassParam);
-    swatch1.stop();
-
-
-    QDPIO::cout << "Cuda Space Required" << endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << endl;
-    QDPIO::cout << "QUDA_"<<invParam.solverType<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
-    QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
-    QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
-
-    ret.n_count =quda_inv_param.iter;
-
-    return ret;
-
-  }
-  
-
-}
-
-

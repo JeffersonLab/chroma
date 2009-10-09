@@ -1,4 +1,4 @@
-// $Id: t_invert4_precwilson.cc,v 3.3 2009-10-08 00:52:23 bjoo Exp $
+// $Id: t_invert4_precwilson.cc,v 3.4 2009-10-09 13:59:46 bjoo Exp $
 
 #include <iostream>
 #include <sstream>
@@ -19,7 +19,7 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
-
+#include "actions/ferm/invert/syssolver_linop_factory.h"
 #include <string>
 using namespace Chroma;
 using namespace std;
@@ -42,8 +42,9 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
 
   std::istringstream is(p.fermact.xml);
   XMLReader fermact_xml(is);
-  Handle< EvenOddPrecCloverFermAct > S_f( 
-					 new EvenOddPrecCloverFermAct(CreateFermStateEnv::reader(fermact_xml, p.fermact.path), CloverFermActParams(fermact_xml, p.fermact.path)));
+  Handle< WilsonTypeFermAct<T,P,Q> > S_f ( TheWilsonTypeFermActFactory::Instance().createObject(p.fermact.id, fermact_xml, p.fermact.path) );
+    //S_f( 
+    //				 new EvenOddPrecCloverFermAct(CreateFermStateEnv::reader(fermact_xml, p.fermact.path), CloverFermActParams(fermact_xml, p.fermact.path)));
   
   
   Handle< FermState<T,P,Q> > connect_state( S_f->createState(u) );
@@ -52,8 +53,9 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
 
   std::istringstream is2(p.quda_solver.xml);
   XMLReader quda_xml(is2);
+  Handle< LinOpSystemSolver<LatticeFermion> > Solver( TheLinOpFermSystemSolverFactory::Instance().createObject(p.quda_solver.id, quda_xml, p.quda_solver.path, connect_state, D_op));
 
-  Handle<  LinOpSystemSolver<LatticeFermion> > QUDASolver( new LinOpSysSolverQUDAClover(D_op, connect_state, SysSolverQUDACloverParams(quda_xml, p.quda_solver.path)));
+  //Handle<  LinOpSystemSolver<LatticeFermion> > QUDASolver( new LinOpSysSolverQUDAClover(D_op, connect_state, SysSolverQUDACloverParams(quda_xml, p.quda_solver.path)));
 							 
 T chi, psi;
 
@@ -61,7 +63,7 @@ T chi, psi;
   chi=zero;
   gaussian(chi,rb[1]);
   psi=zero;
-  (*QUDASolver)(psi,chi);
+  (*Solver)(psi,chi);
 
   T r = chi;
 T tmp; 

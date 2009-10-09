@@ -19,6 +19,7 @@ namespace Chroma
       cudaSloppyPrecision=DEFAULT;
       cudaSloppyReconstruct=RECONS_12;
       asymmetricP = false;
+      axialGaugeP = false;
     };
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -33,6 +34,8 @@ namespace Chroma
       cudaReconstruct = p.cudaReconstruct;
       cudaSloppyPrecision = p.cudaSloppyPrecision;
       cudaSloppyReconstruct = p.cudaSloppyReconstruct;
+      axialGaugeP = p. axialGaugeP;
+
     }
 
     CloverFermActParams CloverParams;
@@ -47,6 +50,7 @@ namespace Chroma
     QudaReconsType cudaReconstruct;
     QudaPrecisionType cudaSloppyPrecision;
     QudaReconsType cudaSloppyReconstruct;
+    bool axialGaugeP;
 
 
 

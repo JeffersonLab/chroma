@@ -4,6 +4,8 @@
 #include "chromabase.h"
 #include "io/xml_group_reader.h"
 #include "actions/ferm/fermacts/wilson_fermact_params_w.h"
+#include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
+
 #include <string>
 using namespace std;
 
@@ -12,7 +14,11 @@ namespace Chroma
   struct SysSolverQUDAWilsonParams { 
     SysSolverQUDAWilsonParams(XMLReader& xml, const std::string& path);
     SysSolverQUDAWilsonParams() {
-      solverType="CG";
+      solverType=CG;
+      cudaPrecision=DEFAULT;
+      cudaReconstruct=RECONS_12;
+      cudaSloppyPrecision=DEFAULT;
+      cudaSloppyReconstruct=RECONS_12;
     };
     SysSolverQUDAWilsonParams( const SysSolverQUDAWilsonParams& p) {
       WilsonParams = p.WilsonParams;
@@ -22,14 +28,22 @@ namespace Chroma
       Delta = p.Delta;
       solverType = p.solverType;
       verboseP = p.verboseP;
+      cudaPrecision = p.cudaPrecision;
+      cudaReconstruct = p.cudaReconstruct;
+      cudaSloppyPrecision = p.cudaSloppyPrecision;
+      cudaSloppyReconstruct = p.cudaSloppyReconstruct;
     }
     WilsonFermActParams WilsonParams;
     bool AntiPeriodicT;
     int MaxIter;
     Real RsdTarget;
     Real Delta;
-    std::string solverType;
     bool verboseP;
+    QudaSolverType solverType;
+    QudaPrecisionType cudaPrecision;
+    QudaReconsType cudaReconstruct;
+    QudaPrecisionType cudaSloppyPrecision;
+    QudaReconsType cudaSloppyReconstruct;
   };
 
   void read(XMLReader& xml, const std::string& path, SysSolverQUDAWilsonParams& p);

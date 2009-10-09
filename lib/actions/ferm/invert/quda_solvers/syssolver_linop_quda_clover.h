@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.5 2009-10-08 00:52:23 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.h,v 1.6 2009-10-09 13:59:46 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -19,8 +19,11 @@
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "meas/gfix/axgauge.h"
 #include "io/aniso_io.h"
 #include <string>
+
+#include "util/gauge/reunit.h"
 
 #include <quda.h>
 #include <util_quda.h>
@@ -80,6 +83,23 @@ namespace Chroma
       for(int mu=0; mu < Nd; mu++) {
 	links_single[mu] = (state_->getLinks())[mu];
       }
+
+     // GaugeFix
+      if( invParam.axialGaugeP ) { 
+	QDPIO::cout << "Fixing Axial Gauge" << endl;
+	axGauge(links_single, GFixMat, Nd-1);
+	for(int mu=0; mu < Nd; mu++){ 
+	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
+	}
+	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_YES;
+      }
+      else { 
+	// No GaugeFix
+	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
+      }
+
+      Handle<FermState<TF,QF,QF> > fstate( new PeriodicFermState<TF,QF,QF>(links_single));
+
       if( aniso.anisoP ) {                     // Anisotropic case
 	multi1d<Real> cf=makeFermCoeffs(aniso);
 	for(int mu=0; mu < Nd; mu++) { 
@@ -112,6 +132,8 @@ namespace Chroma
 	q_gauge_param.t_boundary = QUDA_PERIODIC_T;
       }
 
+
+      // Work out CPU Precision
       int s = sizeof( WordType<T>::Type_t );
       if (s == 4) { 
 	cpu_prec = QUDA_SINGLE_PRECISION;
@@ -120,6 +142,7 @@ namespace Chroma
 	cpu_prec = QUDA_DOUBLE_PRECISION;
       }
 
+      // Work out GPU precision
       switch( invParam.cudaPrecision ) { 
       case HALF:
 	gpu_prec = QUDA_HALF_PRECISION;
@@ -135,6 +158,8 @@ namespace Chroma
 	break;
       }
 
+      // Work out GPU Sloppy precision
+      // Default: No Sloppy
       switch( invParam.cudaSloppyPrecision ) { 
       case HALF:
 	gpu_half_prec = QUDA_HALF_PRECISION;
@@ -192,9 +217,7 @@ namespace Chroma
       };
 
       
-      // Do I want to Gauge Fix? -- Not yet
-      q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
-      
+ 
       q_gauge_param.blockDim = 64;         // I copy these from invert test
       q_gauge_param.blockDim_sloppy = 64;
       
@@ -208,24 +231,12 @@ namespace Chroma
       }
       loadGaugeQuda((void *)gauge, &q_gauge_param);
       
-#if 0      
-      // These are the links
-      // They may be smeared and the BC's may be applied
-      links_orig.resize(Nd);
-      
-      // Now downcast to single prec fields.
-      for(int mu=0; mu < Nd; mu++) {
-	links_orig[mu] = (state_->getLinks())[mu];
-      }
 
-      // Handle<FermState<TF,QF,QF> > fstate( new PeriodicFermState<TF,QF,QF>(links_orig));
-
-#endif
 
       QDPIO::cout << "Creating CloverTerm" << endl;
-      clov->create(state_, invParam_.CloverParams);
+      clov->create(fstate, invParam_.CloverParams);
       // Don't recompute, just copy
-      invclov->create(state_, invParam_.CloverParams);
+      invclov->create(fstate, invParam_.CloverParams);
       
       QDPIO::cout << "Inverting CloverTerm" << endl;
       invclov->choles(0);
@@ -308,18 +319,19 @@ namespace Chroma
       }
       
       
-    
-      if ( invParam.solverType == CG ) { 
+      switch( invParam.solverType ) { 
+      case CG: 
 	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
-      }
-      else { 
-	if( invParam.solverType == BICGSTAB ) { 
-	  quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
-	}
-	else { 
-	  QDPIO::cout << "LINOP_QUDA_CLOVER_SOLVER: Unknown solver type: " << invParam.solverType << endl;
-	  QDP_abort(1);
-	}
+	solver_string = "CG";
+	break;
+      case BICGSTAB:
+	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
+	solver_string = "BICGSTAB";
+	break;
+      default:
+	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
+	solver_string = "CG";
+	break;
       }
       
     }
@@ -354,16 +366,28 @@ namespace Chroma
       // This is a CGNE. So create new RHS
       //      (*A)(MdagChi, chi, MINUS);
       // Handle< LinearOperator<T> > MM(new MdagMLinOp<T>(A));
+      if ( invParam.axialGaugeP ) { 
+	T g_chi,g_psi;
 
+	// Gauge Fix source and initial guess
+	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+        g_chi[ rb[1] ]  = GFixMat * chi;
+	g_psi[ rb[1] ]  = GFixMat * psi;
+	QDPIO::cout << "Solving" << endl;
+	res = qudaInvert(*clov,
+			 *invclov,
+			 g_chi,
+			 g_psi);      
+	QDPIO::cout << "Untransforming solution." << endl;
+	psi[ rb[1]]  = adj(GFixMat)*g_psi;
 
-      // Call the QUDA Thingie here
-      res = qudaInvert(*clov,
-		       *invclov,
-		       chi,
-		       psi);      
-
-
-      //      psi = psi_s;
+      }
+      else { 
+	res = qudaInvert(*clov,
+			 *invclov,
+			 chi,
+			 psi);      
+      }      
 
       swatch.stop();
       double time = swatch.getTimeInSeconds();
@@ -377,7 +401,8 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "QUDA_"<<invParam.solverType <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
    
       
       END_CODE();
@@ -393,6 +418,7 @@ namespace Chroma
     Q links_orig;
 #endif
 
+    U GFixMat;
     QudaPrecision_s cpu_prec;
     QudaPrecision_s gpu_prec;
     QudaPrecision_s gpu_half_prec;
@@ -411,7 +437,7 @@ namespace Chroma
 				     T& psi_s     
 				     )const ;
 
-
+    std::string solver_string;
   };
 
 

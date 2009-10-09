@@ -17,20 +17,45 @@ namespace Chroma {
     read(paramtop, "RsdTarget", RsdTarget);
     read(paramtop, "WilsonParams", WilsonParams);
     read(paramtop, "AntiPeriodicT", AntiPeriodicT);
-
     read(paramtop, "Delta", Delta);
+
     read(paramtop, "SolverType", solverType);
-    if (solverType != "CG" && solverType != "BICGSTAB" ) { 
-      QDPIO::cout << "Supported solver types are CG and BICGSTAB" << endl;
-      QDPIO::cout << "You entered " << solverType << endl;
-      QDP_abort(1);
-    }
+
     if ( paramtop.count("Verbose") > 0 ) { 
       read(paramtop, "Verbose", verboseP);
     }
     else { 
       verboseP = false;
     }
+    
+    if( paramtop.count("CudaPrecision") > 0 ) {
+      read(paramtop, "CudaPrecision", cudaPrecision);
+    }
+    else { 
+      cudaPrecision = DEFAULT;
+    }
+
+    if( paramtop.count("CudaSloppyPrecision") > 0 ) {
+      read(paramtop, "CudaSloppyPrecision", cudaSloppyPrecision);
+    }
+    else { 
+      cudaSloppyPrecision = DEFAULT;
+    }
+
+    if( paramtop.count("CudaReconstruct") > 0 ) {
+      read(paramtop, "CudaReconstruct", cudaReconstruct);
+    }
+    else { 
+      cudaReconstruct = RECONS_12;
+    }
+
+    if( paramtop.count("CudaSloppyReconstruct") > 0 ) {
+      read(paramtop, "CudaSloppyReconstruct", cudaSloppyReconstruct);
+    }
+    else { 
+      cudaSloppyReconstruct = RECONS_12;
+    }
+
 
   }
 
@@ -51,7 +76,11 @@ namespace Chroma {
     write(xml, "Delta", p.Delta);
     write(xml, "SolverType", p.solverType);
     write(xml, "Verbose", p.verboseP);
-      
+    write(xml, "CudaPrecision", p.cudaPrecision);
+    write(xml, "CudaReconstruct", p.cudaReconstruct);
+    write(xml, "CudaSloppyPrecision", p.cudaSloppyPrecision);
+    write(xml, "CudaSloppyReconstruct", p.cudaSloppyReconstruct);
+ 
 
     pop(xml);
 

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_wilson.h,v 1.3 2009-10-05 20:19:13 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.h,v 1.4 2009-10-09 13:59:46 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -115,22 +115,87 @@ namespace Chroma
 
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p, col col
 
+      // Work out CPU precision
       int s = sizeof( WordType<T>::Type_t );
       if (s == 4 ) { 
 	cpu_prec = QUDA_SINGLE_PRECISION;
-	half_prec = QUDA_SINGLE_PRECISION; 
       }
       else { 
 	cpu_prec = QUDA_DOUBLE_PRECISION;
-	half_prec = QUDA_SINGLE_PRECISION;
       }
 
+      // Work out GPU Precision
+      switch( invParam.cudaPrecision ) { 
+      case HALF:
+	gpu_prec = QUDA_HALF_PRECISION;
+	break;
+      case SINGLE:
+	gpu_prec = QUDA_SINGLE_PRECISION;
+	break;
+      case DOUBLE:
+	gpu_prec = QUDA_DOUBLE_PRECISION;
+	break;
+      default:
+	gpu_prec = cpu_prec;
+	break;
+      }
+
+      // Work out GPU Sloppy precision
+      // Default: No Sloppy
+      switch( invParam.cudaSloppyPrecision ) { 
+      case HALF:
+	gpu_half_prec = QUDA_HALF_PRECISION;
+	break;
+      case SINGLE:
+	gpu_half_prec = QUDA_SINGLE_PRECISION;
+	break;
+      case DOUBLE:
+	gpu_half_prec = QUDA_DOUBLE_PRECISION;
+	break;
+      default:
+	gpu_half_prec = gpu_prec;
+	break;
+      }
+
+      // Set precisions
       q_gauge_param.cpu_prec = cpu_prec;  // Single Prec G-field
-      q_gauge_param.cuda_prec = cpu_prec; 
-      q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
-      q_gauge_param.cuda_prec_sloppy = half_prec;
-      q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12; // No Sloppy
-      
+      q_gauge_param.cuda_prec = gpu_prec; 
+      q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+
+
+      // Work out Reconstruction scheme
+      switch( invParam.cudaReconstruct ) { 
+      case RECONS_NONE: 
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_NO;
+	break;
+      case RECONS_8:
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_8;
+	break;
+      case RECONS_12:
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
+	break;
+      default:
+	q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
+	break;
+      };
+
+
+      // Work out sloppy reconsturction scheme
+      switch( invParam.cudaSloppyReconstruct ) { 
+      case RECONS_NONE: 
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_NO;
+	break;
+      case RECONS_8:
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_8;
+	break;
+      case RECONS_12:
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
+	break;
+      default:
+	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
+	break;
+      };
+
       // Do I want to Gauge Fix? -- Not yet
       q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
       
@@ -146,6 +211,57 @@ namespace Chroma
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
       }
       loadGaugeQuda((void *)gauge, &q_gauge_param);
+      
+
+      // Definitely no clover here...
+      quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
+      
+      Real massParam = Real(1) + Real(3)/Real(q_gauge_param.anisotropy) + invParam.WilsonParams.Mass; 
+
+      invMassParam = 1.0/massParam;
+      
+      quda_inv_param.kappa = 1.0/(2*toDouble(massParam));
+      quda_inv_param.tol = toDouble(invParam.RsdTarget);
+      quda_inv_param.maxiter = invParam.MaxIter;
+      quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+      
+      //  (1-k^2 Doe Deo)
+      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD; 
+      
+      // Solve the preconditioned matrix (rather than the prop
+      quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+
+      quda_inv_param.mass_normalization = QUDA_ASYMMETRIC_MASS_NORMALIZATION;
+      //QUDA_KAPPA_NORMALIZATION;
+
+      quda_inv_param.cpu_prec = cpu_prec;
+      quda_inv_param.cuda_prec = gpu_prec;
+      quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
+      
+      // Even-odd colour inside spin
+      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+      if( invParam.verboseP ) { 
+	quda_inv_param.verbosity = QUDA_VERBOSE;
+      }
+      else { 
+	quda_inv_param.verbosity = QUDA_SUMMARIZE;
+      }
+      
+      switch( invParam.solverType ) { 
+      case CG: 
+	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
+	solver_string = "CG";
+	break;
+      case BICGSTAB:
+	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;   
+	solver_string = "BICGSTAB";
+	break;
+      default:
+	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
+	solver_string = "CG";
+	break;
+      }
       
 
     }
@@ -196,7 +312,7 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "QUDA_" << invParam.solverType << "_WILSON_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      QDPIO::cout << "QUDA_" << solver_string << "_WILSON_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
    
       
       END_CODE();
@@ -208,16 +324,22 @@ namespace Chroma
     // Hide default constructor
     LinOpSysSolverQUDAWilson() {}
     QudaPrecision_s cpu_prec;
-    QudaPrecision_s half_prec;
+    QudaPrecision_s gpu_prec;
+    QudaPrecision_s gpu_half_prec;
 
     Handle< LinearOperator<T> > A;
     const SysSolverQUDAWilsonParams invParam;
+
     QudaGaugeParam q_gauge_param;
+    QudaInvertParam quda_inv_param;
+
+    Real invMassParam;
+
     SystemSolverResults_t qudaInvert(const TD& chi_d,
 				     TD& psi_d     
 				     )const ;
 
-
+    std::string solver_string;
   };
 
 
