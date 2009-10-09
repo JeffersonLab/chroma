@@ -1,4 +1,4 @@
-// $Id: axgauge.cc,v 3.3 2009-10-09 13:59:46 bjoo Exp $
+// $Id: axgauge.cc,v 3.4 2009-10-09 15:33:43 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
@@ -24,92 +24,48 @@ namespace Chroma
    * \param decay_dir  time direction (Read) 
    */
 
-  void axGauge(multi1d<LatticeColorMatrix>& ug, LatticeColorMatrix& g, int decay_dir)
-  {
-    START_CODE();
-
-    // Sanity check
-    if (decay_dir < 0 || decay_dir >= ug.size())
-    {
-      QDPIO::cerr << __func__ << ": invalid decay_dir= " << decay_dir << std::endl;
-      QDP_abort(1);
-    }
-
-    // Initialize
-    int N_t = Layout::lattSize()[decay_dir];
-    LatticeInteger t_coord = Layout::latticeCoordinate(decay_dir);
-
-    {
-      LatticeColorMatrixD u = ug[decay_dir];
-      LatticeColorMatrixD gt = 1;
-
-      // The first shift
-      LatticeColorMatrixD U_prev = shift(u, BACKWARD, decay_dir);
-      LatticeColorMatrixD G_prev = gt; // Not shifting becuse it is unit at this point
-
-      for(int t = 1; t < N_t; ++t) {
-	// Mask timeslice t
-	LatticeBoolean btmp = (t_coord == t); 
-	LatticeColorMatrixD t1 = G_prev*U_prev ; // DO whole lattice... That Sucks
-	copymask(gt, btmp, t1);
-	
-	// Reuse t1:
-	t1 = shift(u,BACKWARD, decay_dir);
-	U_prev = t1;
-	t1 = shift(gt, BACKWARD, decay_dir);
-	G_prev = t1;
-      }
-      g=gt;
-    }
-
-    /* Now do the gauge transformation on all the links */
-    for(int mu = 0; mu < Nd; ++mu) {
-
-      LatticeColorMatrix tmp = ug[mu] * shift(adj(g), FORWARD, mu);
-      ug[mu] = g * tmp;
-    }
-
-#if 0
-    // Check temporal links (except last timeslice are unit
-    {
-      // Take a copy
-      LatticeColorMatrix u = ug[decay_dir];
-      LatticeColorMatrix g_unit = 1; // For copying into the last timeslice
-      
-      // Blast last non-unit timeslice with a unit one...
-      LatticeBoolean btmp  = (t_coord == (N_t-1) );
-      copymask(u, btmp, g_unit); // Replace last timeslice with units...
-
-      // U should now be indistinguishable from unit gauge
-      QDPIO::cout << "Norm of Unit-Gauge violation / link = " << sqrt( norm2(u-g_unit) )/ Layout::vol() << endl;
-
-    }
-#endif
-
-    END_CODE();
-  }
-
-
-  //! Axial gauge fixing
-  /*!
-   * \ingroup gfix
-   *
-   * Transfroms a gauge configuration, in place, into axial
-   *            gauge with special direction decay_dir.
-   *
-   * Note: The non-unity time-like gauge fields from the last time slice
-   *       will be copied to all other time slices.
-   *
-   * \param ug           gauge field and its axial gauge transform (Modify)
-   * \param decay_dir    time direction (Read) 
-   */
-
+ 
   void axGauge(multi1d<LatticeColorMatrix>& ug, int decay_dir)
   {
     START_CODE();
 
-    LatticeColorMatrix v;
-    axGauge(ug, v, decay_dir);
+   START_CODE();
+
+  int lsizet = Layout::lattSize()[j_decay];
+
+  LatticeColorMatrix v = 1;
+  LatticeInteger t_coord = Layout::latticeCoordinate(j_decay);
+
+  /* Transform the "time-like" links to unity, slice by slice except for the */
+  /* last slice and thereby construct the gauge transformation V. */
+  for(int t = 1; t < lsizet; ++t)
+  {
+    LatticeBoolean btmp = t_coord == t;
+
+    LatticeColorMatrix tmp_1 = shift(ug[j_decay], BACKWARD, j_decay);
+    copymask(v, btmp, tmp_1);
+    LatticeColorMatrix tmp_2 = tmp_1 * ug[j_decay];
+    copymask(ug[j_decay], btmp, tmp_2);
+  }
+
+  /* Now do the gauge transformation on the space-like links */
+  for(int mu = 0; mu < Nd; ++mu)
+  {
+    if ( mu != j_decay )
+    {
+      LatticeColorMatrix tmp_2 = ug[mu] * shift(adj(v), FORWARD, mu);
+      ug[mu] = v * tmp_2;
+    }
+  }
+
+  /* Finally "broadcast" the t-link from the last time slice to all others */
+  for(int t = lsizet-2; t >= 0; --t)
+  {
+    LatticeBoolean btmp = t_coord == t;
+    
+    copymask(ug[j_decay], btmp, LatticeColorMatrix(shift(ug[j_decay], FORWARD, j_decay)));
+  }
+
 
     END_CODE();
   }

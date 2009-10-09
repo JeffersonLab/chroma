@@ -1,18 +1,16 @@
 // -*- C++ -*-
-// $Id: axgauge.h,v 3.3 2009-10-09 15:33:43 bjoo Exp $
+// $Id: temporal_gauge.h,v 3.1 2009-10-09 15:33:43 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
 
-#ifndef __axgauge_h__
-#define __axgauge_h__
+#ifndef __temporal_gauge_h__
+#define __temporal_gauge_h__
 
 namespace Chroma 
 {
 
-
-
-  //! Axial gauge fixing
+  //! Temporal gauge fixing
   /*!
    * \ingroup gfix
    *
@@ -22,10 +20,11 @@ namespace Chroma
    * Note: The non-unity time-like gauge fields from the last time slice
    *       will be copied to all other time slices.
    *
-   * \param ug           gauge field and its axial gauge transform (Modify)
-   * \param decay_dir    time direction (Read) 
+   * \param ug         gauge field and its axial gauge transform (Modify)
+   * \param g          gauge rotation matrix (Write)
+   * \param decay_dir  time direction (Read) 
    */
-  void axGauge(multi1d<LatticeColorMatrix>& ug, int decay_dir);
+  void temporalGauge(multi1d<LatticeColorMatrix>& ug, LatticeColorMatrix& g, int decay_dir);
 
 }  // end namespace Chroma
 

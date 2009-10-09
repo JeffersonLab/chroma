@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: grelax.h,v 3.0 2006-04-03 04:58:57 edwards Exp $
+// $Id: grelax.h,v 3.1 2009-10-09 15:33:43 bjoo Exp $
 /*! \file
  *  \brief Perform a single gauge fixing iteration
  */
