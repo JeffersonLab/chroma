@@ -1,4 +1,4 @@
-// $Id: temporal_gauge.cc,v 3.1 2009-10-09 15:33:43 bjoo Exp $
+// $Id: temporal_gauge.cc,v 3.2 2009-10-09 19:03:10 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
@@ -40,36 +40,33 @@ namespace Chroma
     LatticeInteger t_coord = Layout::latticeCoordinate(decay_dir);
 
     {
+      // Upcast to double precision
       LatticeColorMatrixD u = ug[decay_dir];
-      LatticeColorMatrixD gt = 1;
+      LatticeColorMatrixD gt = 1; // Unitm matrix
 
-      // The first shift
+      // U_prev holds U_{t-1}
       LatticeColorMatrixD U_prev = shift(u, BACKWARD, decay_dir);
       LatticeColorMatrixD G_prev = gt; // Not shifting becuse it is unit at this point
 
       for(int t = 1; t < N_t; ++t) {
-	// Mask timeslice t
 	LatticeBoolean btmp = (t_coord == t); 
-	LatticeColorMatrixD t1 = G_prev*U_prev ; // DO whole lattice... That Sucks
+	LatticeColorMatrixD t1 = G_prev*U_prev ; // DO whole lattice... Sucks
 	copymask(gt, btmp, t1);
 	
-	// Reuse t1:
-	t1 = shift(u,BACKWARD, decay_dir);
-	U_prev = t1;
+	// Reuse t1, to compute G_prev for next t
 	t1 = shift(gt, BACKWARD, decay_dir);
 	G_prev = t1;
       }
-      g=gt;
+
+      g=gt; // Save gauge transform matrix (downcast to base precision)
     }
 
     /* Now do the gauge transformation on all the links */
     for(int mu = 0; mu < Nd; ++mu) {
-
       LatticeColorMatrix tmp = ug[mu] * shift(adj(g), FORWARD, mu);
       ug[mu] = g * tmp;
     }
 
-#if 0
     // Check temporal links (except last timeslice are unit
     {
       // Take a copy
@@ -84,7 +81,6 @@ namespace Chroma
       QDPIO::cout << "Norm of Unit-Gauge violation / link = " << sqrt( norm2(u-g_unit) )/ Layout::vol() << endl;
 
     }
-#endif
 
     END_CODE();
   }

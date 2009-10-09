@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.6 2009-10-09 13:59:46 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.h,v 1.7 2009-10-09 19:03:10 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -19,7 +19,7 @@
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
-#include "meas/gfix/axgauge.h"
+#include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
 
@@ -86,8 +86,8 @@ namespace Chroma
 
      // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Axial Gauge" << endl;
-	axGauge(links_single, GFixMat, Nd-1);
+	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
 	}

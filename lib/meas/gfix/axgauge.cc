@@ -1,4 +1,4 @@
-// $Id: axgauge.cc,v 3.4 2009-10-09 15:33:43 bjoo Exp $
+// $Id: axgauge.cc,v 3.5 2009-10-09 19:03:10 bjoo Exp $
 /*! \file
  *  \brief Axial gauge fixing 
  */
@@ -31,10 +31,10 @@ namespace Chroma
 
    START_CODE();
 
-  int lsizet = Layout::lattSize()[j_decay];
+  int lsizet = Layout::lattSize()[decay_dir];
 
   LatticeColorMatrix v = 1;
-  LatticeInteger t_coord = Layout::latticeCoordinate(j_decay);
+  LatticeInteger t_coord = Layout::latticeCoordinate(decay_dir);
 
   /* Transform the "time-like" links to unity, slice by slice except for the */
   /* last slice and thereby construct the gauge transformation V. */
@@ -42,16 +42,16 @@ namespace Chroma
   {
     LatticeBoolean btmp = t_coord == t;
 
-    LatticeColorMatrix tmp_1 = shift(ug[j_decay], BACKWARD, j_decay);
+    LatticeColorMatrix tmp_1 = shift(ug[decay_dir], BACKWARD, decay_dir);
     copymask(v, btmp, tmp_1);
-    LatticeColorMatrix tmp_2 = tmp_1 * ug[j_decay];
-    copymask(ug[j_decay], btmp, tmp_2);
+    LatticeColorMatrix tmp_2 = tmp_1 * ug[decay_dir];
+    copymask(ug[decay_dir], btmp, tmp_2);
   }
 
   /* Now do the gauge transformation on the space-like links */
   for(int mu = 0; mu < Nd; ++mu)
   {
-    if ( mu != j_decay )
+    if ( mu != decay_dir )
     {
       LatticeColorMatrix tmp_2 = ug[mu] * shift(adj(v), FORWARD, mu);
       ug[mu] = v * tmp_2;
@@ -63,7 +63,7 @@ namespace Chroma
   {
     LatticeBoolean btmp = t_coord == t;
     
-    copymask(ug[j_decay], btmp, LatticeColorMatrix(shift(ug[j_decay], FORWARD, j_decay)));
+    copymask(ug[decay_dir], btmp, LatticeColorMatrix(shift(ug[decay_dir], FORWARD, decay_dir)));
   }
 
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.239 2009-10-06 20:35:46 bjoo Exp $
+# $Id: Makefile.am,v 3.240 2009-10-09 19:03:02 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -214,6 +214,7 @@ nobase_include_HEADERS = \
 	meas/eig/sn_jacob_array.h \
 	meas/eig/eig_spec.h meas/eig/eig_spec_array.h \
 	meas/gfix/axgauge.h meas/gfix/coulgauge.h \
+	meas/gfix/temporal_gauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h meas/glue/polylp.h meas/glue/mesplq.h meas/glue/wloop.h \
@@ -1114,6 +1115,7 @@ libchroma_a_SOURCES = \
 	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
 	meas/eig/ritz.cc meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
+	meas/gfix/temporal_gauge.cc \
 	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \

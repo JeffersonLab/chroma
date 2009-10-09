@@ -56,6 +56,13 @@ namespace Chroma {
       cudaSloppyReconstruct = RECONS_12;
     }
 
+    if( paramtop.count("AxialGaugeFix") > 0 ) {
+      read(paramtop, "AxialGaugeFix", axialGaugeP);
+    }
+    else { 
+      axialGaugeP = false;
+    }
+
 
   }
 
@@ -80,7 +87,7 @@ namespace Chroma {
     write(xml, "CudaReconstruct", p.cudaReconstruct);
     write(xml, "CudaSloppyPrecision", p.cudaSloppyPrecision);
     write(xml, "CudaSloppyReconstruct", p.cudaSloppyReconstruct);
- 
+    write(xml, "AxialGaugeFix", p.axialGaugeP);
 
     pop(xml);
 

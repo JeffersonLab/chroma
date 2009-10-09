@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_wilson.h,v 1.4 2009-10-09 13:59:46 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.h,v 1.5 2009-10-09 19:03:10 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -19,6 +19,7 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "io/aniso_io.h"
 #include <string>
+#include "meas/gfix/temporal_gauge.h"
 
 #include <quda.h>
 #include <util_quda.h>
@@ -80,6 +81,22 @@ namespace Chroma
       for(int mu=0; mu < Nd; mu++) {
 	links_single[mu] = (state_->getLinks())[mu];
       }
+
+      // GaugeFix
+      if( invParam.axialGaugeP ) { 
+	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	temporalGauge(links_single, GFixMat, Nd-1);
+	for(int mu=0; mu < Nd; mu++){ 
+	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
+	}
+	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_YES;
+      }
+      else { 
+	// No GaugeFix
+	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
+      }
+
+      
       if( aniso.anisoP ) {                     // Anisotropic case
 	multi1d<Real> cf=makeFermCoeffs(aniso);
 	for(int mu=0; mu < Nd; mu++) { 
@@ -289,16 +306,24 @@ namespace Chroma
       StopWatch swatch;
       swatch.start();
 
-      //   TD psi_d = psi;
-      // TD chi_d = chi;
+         if ( invParam.axialGaugeP ) { 
+	T g_chi,g_psi;
 
+	// Gauge Fix source and initial guess
+	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+        g_chi[ rb[1] ]  = GFixMat * chi;
+	g_psi[ rb[1] ]  = GFixMat * psi;
+	QDPIO::cout << "Solving" << endl;
+	res = qudaInvert(g_chi,
+			 g_psi);      
+	QDPIO::cout << "Untransforming solution." << endl;
+	psi[ rb[1]]  = adj(GFixMat)*g_psi;
 
-      // Call the QUDA Thingie here
-      res = qudaInvert(chi,
-		       psi);      
-
-
-      //psi = psi_d;
+      }
+      else { 
+	res = qudaInvert(chi,
+			 psi);      
+      }      
 
       swatch.stop();
       double time = swatch.getTimeInSeconds();
@@ -326,6 +351,7 @@ namespace Chroma
     QudaPrecision_s cpu_prec;
     QudaPrecision_s gpu_prec;
     QudaPrecision_s gpu_half_prec;
+    U GFixMat;
 
     Handle< LinearOperator<T> > A;
     const SysSolverQUDAWilsonParams invParam;

@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 3.361 2009-10-06 20:35:46 bjoo Exp $
+# $Id: Makefile.in,v 3.362 2009-10-09 19:03:02 bjoo Exp $
 #
 # Path for all files used in building the library
 
@@ -341,12 +341,13 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
-	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
-	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/wloop.cc \
-	meas/glue/mesplq.cc meas/glue/polylp.cc meas/glue/wilslp.cc \
-	meas/glue/qactden.cc meas/glue/qnaive.cc meas/glue/block.cc \
-	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/gfix/temporal_gauge.cc meas/gfix/coulgauge.cc \
+	meas/gfix/grelax.cc meas/gfix/polar_dec.cc \
+	meas/gfix/rot_colvec.cc meas/glue/fuzwilp.cc \
+	meas/glue/mesfield.cc meas/glue/wloop.cc meas/glue/mesplq.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/qactden.cc \
+	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
+	meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -995,16 +996,17 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
 	sn_jacob.$(OBJEXT) sn_jacob_array.$(OBJEXT) axgauge.$(OBJEXT) \
-	coulgauge.$(OBJEXT) grelax.$(OBJEXT) polar_dec.$(OBJEXT) \
-	rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) mesfield.$(OBJEXT) \
-	wloop.$(OBJEXT) mesplq.$(OBJEXT) polylp.$(OBJEXT) \
-	wilslp.$(OBJEXT) qactden.$(OBJEXT) qnaive.$(OBJEXT) \
-	block.$(OBJEXT) fuzglue.$(OBJEXT) gluecor.$(OBJEXT) \
-	polycor.$(OBJEXT) dilution_scheme_aggregate.$(OBJEXT) \
-	hadron_seqsource.$(OBJEXT) hadron_contract.$(OBJEXT) \
-	hadron_contract_aggregate.$(OBJEXT) hadron_2pt.$(OBJEXT) \
-	mesQl_w.$(OBJEXT) Ql_3pt_w.$(OBJEXT) mesQlPOT_w.$(OBJEXT) \
-	barQll_w.$(OBJEXT) heavy_hadron_potentials_w.$(OBJEXT) \
+	temporal_gauge.$(OBJEXT) coulgauge.$(OBJEXT) grelax.$(OBJEXT) \
+	polar_dec.$(OBJEXT) rot_colvec.$(OBJEXT) fuzwilp.$(OBJEXT) \
+	mesfield.$(OBJEXT) wloop.$(OBJEXT) mesplq.$(OBJEXT) \
+	polylp.$(OBJEXT) wilslp.$(OBJEXT) qactden.$(OBJEXT) \
+	qnaive.$(OBJEXT) block.$(OBJEXT) fuzglue.$(OBJEXT) \
+	gluecor.$(OBJEXT) polycor.$(OBJEXT) \
+	dilution_scheme_aggregate.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
+	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
+	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
+	mesQlPOT_w.$(OBJEXT) barQll_w.$(OBJEXT) \
+	heavy_hadron_potentials_w.$(OBJEXT) \
 	heavy_hadrons_su3_w.$(OBJEXT) \
 	spin_insertion_aggregate.$(OBJEXT) no_spin_insertion.$(OBJEXT) \
 	stoch_var.$(OBJEXT) pt_sink_smearing.$(OBJEXT) \
@@ -1563,14 +1565,14 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
-	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
-	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
-	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/glue/wloop.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
-	meas/glue/qactden.h meas/glue/qnaive.h meas/glue/block.h \
-	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
-	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
-	meas/hadron/dilution_scheme.h \
+	meas/gfix/coulgauge.h meas/gfix/temporal_gauge.h \
+	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
+	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
+	meas/glue/mesplq.h meas/glue/polylp.h meas/glue/wloop.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/qactden.h \
+	meas/glue/qnaive.h meas/glue/block.h meas/glue/fuzglue.h \
+	meas/glue/gluecor.h meas/glue/polycor.h meas/hadron/hadron.h \
+	meas/hadron/baryon_operator.h meas/hadron/dilution_scheme.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
@@ -2549,14 +2551,15 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
-	meas/gfix/coulgauge.h meas/gfix/gfix.h meas/gfix/grelax.h \
-	meas/gfix/polar_dec.h meas/gfix/rot_colvec.h meas/glue/glue.h \
-	meas/glue/mesfield.h meas/glue/mesplq.h meas/glue/polylp.h \
-	meas/glue/mesplq.h meas/glue/wloop.h meas/glue/fuzwilp.h \
-	meas/glue/wilslp.h meas/glue/qactden.h meas/glue/qnaive.h \
-	meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h \
-	meas/glue/polycor.h meas/hadron/hadron.h \
-	meas/hadron/baryon_operator.h meas/hadron/dilution_scheme.h \
+	meas/gfix/coulgauge.h meas/gfix/temporal_gauge.h \
+	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
+	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
+	meas/glue/mesplq.h meas/glue/polylp.h meas/glue/mesplq.h \
+	meas/glue/wloop.h meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/glue/qactden.h meas/glue/qnaive.h meas/glue/block.h \
+	meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
+	meas/hadron/hadron.h meas/hadron/baryon_operator.h \
+	meas/hadron/dilution_scheme.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
@@ -3334,12 +3337,13 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
 	meas/eig/ritz_array.cc meas/eig/sn_jacob.cc \
 	meas/eig/sn_jacob_array.cc meas/gfix/axgauge.cc \
-	meas/gfix/coulgauge.cc meas/gfix/grelax.cc \
-	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
-	meas/glue/fuzwilp.cc meas/glue/mesfield.cc meas/glue/wloop.cc \
-	meas/glue/mesplq.cc meas/glue/polylp.cc meas/glue/wilslp.cc \
-	meas/glue/qactden.cc meas/glue/qnaive.cc meas/glue/block.cc \
-	meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/gfix/temporal_gauge.cc meas/gfix/coulgauge.cc \
+	meas/gfix/grelax.cc meas/gfix/polar_dec.cc \
+	meas/gfix/rot_colvec.cc meas/glue/fuzwilp.cc \
+	meas/glue/mesfield.cc meas/glue/wloop.cc meas/glue/mesplq.cc \
+	meas/glue/polylp.cc meas/glue/wilslp.cc meas/glue/qactden.cc \
+	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
+	meas/glue/gluecor.cc meas/glue/polycor.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -4562,6 +4566,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/szinqio_gauge_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taproj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tdiractodr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/temporal_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/temporal_wilson_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/twisted_fermbc_w.Po@am__quote@
@@ -7178,6 +7183,20 @@ axgauge.obj: meas/gfix/axgauge.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/gfix/axgauge.cc' object='axgauge.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o axgauge.obj `if test -f 'meas/gfix/axgauge.cc'; then $(CYGPATH_W) 'meas/gfix/axgauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/gfix/axgauge.cc'; fi`
+
+temporal_gauge.o: meas/gfix/temporal_gauge.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT temporal_gauge.o -MD -MP -MF "$(DEPDIR)/temporal_gauge.Tpo" -c -o temporal_gauge.o `test -f 'meas/gfix/temporal_gauge.cc' || echo '$(srcdir)/'`meas/gfix/temporal_gauge.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/temporal_gauge.Tpo" "$(DEPDIR)/temporal_gauge.Po"; else rm -f "$(DEPDIR)/temporal_gauge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/gfix/temporal_gauge.cc' object='temporal_gauge.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o temporal_gauge.o `test -f 'meas/gfix/temporal_gauge.cc' || echo '$(srcdir)/'`meas/gfix/temporal_gauge.cc
+
+temporal_gauge.obj: meas/gfix/temporal_gauge.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT temporal_gauge.obj -MD -MP -MF "$(DEPDIR)/temporal_gauge.Tpo" -c -o temporal_gauge.obj `if test -f 'meas/gfix/temporal_gauge.cc'; then $(CYGPATH_W) 'meas/gfix/temporal_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/gfix/temporal_gauge.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/temporal_gauge.Tpo" "$(DEPDIR)/temporal_gauge.Po"; else rm -f "$(DEPDIR)/temporal_gauge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/gfix/temporal_gauge.cc' object='temporal_gauge.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o temporal_gauge.obj `if test -f 'meas/gfix/temporal_gauge.cc'; then $(CYGPATH_W) 'meas/gfix/temporal_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/gfix/temporal_gauge.cc'; fi`
 
 coulgauge.o: meas/gfix/coulgauge.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT coulgauge.o -MD -MP -MF "$(DEPDIR)/coulgauge.Tpo" -c -o coulgauge.o `test -f 'meas/gfix/coulgauge.cc' || echo '$(srcdir)/'`meas/gfix/coulgauge.cc; \

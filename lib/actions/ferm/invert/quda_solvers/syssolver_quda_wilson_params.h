@@ -19,6 +19,7 @@ namespace Chroma
       cudaReconstruct=RECONS_12;
       cudaSloppyPrecision=DEFAULT;
       cudaSloppyReconstruct=RECONS_12;
+      axialGaugeP = false;
     };
     SysSolverQUDAWilsonParams( const SysSolverQUDAWilsonParams& p) {
       WilsonParams = p.WilsonParams;
@@ -32,6 +33,7 @@ namespace Chroma
       cudaReconstruct = p.cudaReconstruct;
       cudaSloppyPrecision = p.cudaSloppyPrecision;
       cudaSloppyReconstruct = p.cudaSloppyReconstruct;
+      axialGaugeP = p. axialGaugeP;
     }
     WilsonFermActParams WilsonParams;
     bool AntiPeriodicT;
@@ -44,6 +46,8 @@ namespace Chroma
     QudaReconsType cudaReconstruct;
     QudaPrecisionType cudaSloppyPrecision;
     QudaReconsType cudaSloppyReconstruct;
+    bool axialGaugeP;
+
   };
 
   void read(XMLReader& xml, const std::string& path, SysSolverQUDAWilsonParams& p);
