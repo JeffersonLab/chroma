@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.7 2009-10-09 19:03:10 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.h,v 1.8 2009-10-12 17:39:35 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -98,7 +98,7 @@ namespace Chroma
 	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
       }
 
-      Handle<FermState<TF,QF,QF> > fstate( new PeriodicFermState<TF,QF,QF>(links_single));
+      Handle<FermState<T,Q,Q> > fstate( new PeriodicFermState<T,Q,Q>(links_single));
 
       if( aniso.anisoP ) {                     // Anisotropic case
 	multi1d<Real> cf=makeFermCoeffs(aniso);
@@ -340,8 +340,6 @@ namespace Chroma
     //! Destructor is automatic
     ~LinOpSysSolverQUDAClover() {
       discardCloverQuda(&quda_inv_param);
-
-
     }
 
     //! Return the subset on which the operator acts

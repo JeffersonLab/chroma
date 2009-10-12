@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_wilson.h,v 1.5 2009-10-09 19:03:10 bjoo Exp $
+// $Id: syssolver_linop_quda_wilson.h,v 1.6 2009-10-12 17:39:36 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -306,7 +306,7 @@ namespace Chroma
       StopWatch swatch;
       swatch.start();
 
-         if ( invParam.axialGaugeP ) { 
+      if ( invParam.axialGaugeP ) { 
 	T g_chi,g_psi;
 
 	// Gauge Fix source and initial guess
@@ -361,8 +361,8 @@ namespace Chroma
 
     Real invMassParam;
 
-    SystemSolverResults_t qudaInvert(const TD& chi_d,
-				     TD& psi_d     
+    SystemSolverResults_t qudaInvert(const T& chi_d,
+				     T& psi_d     
 				     )const ;
 
     std::string solver_string;
