@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.240 2009-10-09 19:03:02 bjoo Exp $
+# $Id: Makefile.am,v 3.241 2009-10-13 13:56:37 edwards Exp $
 #
 # Path for all files used in building the library
 
@@ -692,6 +692,8 @@ nobase_include_HEADERS += \
 	util/ferm/etensor.h \
         util/ferm/symtensor.h \
 	util/ferm/map_obj.h \
+	util/ferm/key_hadron_2pt_corr.h \
+	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
 	util/ferm/key_laph_dil_prop.h \
 	util/ferm/key_prop_matelem.h \
@@ -1499,6 +1501,8 @@ libchroma_a_SOURCES += \
         util/ferm/antisymtensor.cc \
         util/ferm/etensor.cc \
         util/ferm/symtensor.cc \
+	util/ferm/key_hadron_2pt_corr.cc \
+	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_grid_prop.cc \
 	util/ferm/key_block_prop.cc \
 	util/ferm/key_prop_colorvec.cc \
