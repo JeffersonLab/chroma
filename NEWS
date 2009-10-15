@@ -1,16 +1,16 @@
-Sep 14, 2009 - Robert Ewdards
+Sep 14, 2009 - Robert Edwards
 	Version 3.36.1
         Switched back to old inline genprop code. Changed inline colorvec codes
         to check for DB existence. If it does not exist, insert the metadata,
         else do not reinsert. Lots of improvements in laph codes. 
 
-Aug 25, 2009 - Robert Ewdards
+Aug 25, 2009 - Robert Edwards
 	Version 3.36.0
         The start of a hybrid stochastic-distillation method (called LAPH -
         horrible name) by Colin and John. Changed how genprops are contracted
         in an effort to speed it up. Balint did lots of XLC cleanups.
 
-July 14, 2009 - Robert Ewdards
+July 14, 2009 - Robert Edwards
 	Version 3.35.0
         Balint did all this in 3.34.1, but the latter was never actually
         tagged it. John Bulava added new measurement routines related to
