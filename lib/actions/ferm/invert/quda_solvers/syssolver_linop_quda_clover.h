@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_quda_clover.h,v 1.8 2009-10-12 17:39:35 bjoo Exp $
+// $Id: syssolver_linop_quda_clover.h,v 1.9 2009-10-16 13:37:39 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by BiCGStab
  */
@@ -338,9 +338,7 @@ namespace Chroma
     
 
     //! Destructor is automatic
-    ~LinOpSysSolverQUDAClover() {
-      discardCloverQuda(&quda_inv_param);
-    }
+    ~LinOpSysSolverQUDAClover() {}
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
