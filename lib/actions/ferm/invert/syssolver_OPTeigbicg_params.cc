@@ -1,4 +1,4 @@
-// $Id: syssolver_OPTeigbicg_params.cc,v 1.1 2009-10-22 03:15:34 kostas Exp $
+// $Id: syssolver_OPTeigbicg_params.cc,v 1.2 2009-10-22 20:57:26 kostas Exp $
 /*! \file
  *  \brief Params of EigCG inverter
  */
@@ -67,15 +67,21 @@ namespace Chroma
       read(paramtop, "NormAest", param.NormAest);
     }
 
-    if( paramtop.count("updateRestartTol") > 0 ) { 
-      read(paramtop, "updateRestartTol", param.updateRestartTol);
-    }
-
     read(paramtop, "cleanUpEvecs", param.cleanUpEvecs);
 
     if(paramtop.count("FileIO")!=0){
       read(paramtop, "FileIO", param.file);
     }
+
+    if( paramtop.count("sort_option") > 0 ) { 
+      read(paramtop, "sort_option", param.sort_option);
+    }
+
+    if( paramtop.count("epsi") > 0 )
+      read(paramtop, "epsi", param.epsi);
+
+    if( paramtop.count("ConvTestOpt")>0 ) 
+      read(paramtop, "ConvTestOpt", param.ConvTestOpt);
     
   }
 
@@ -93,11 +99,15 @@ namespace Chroma
     write(xml, "Neig", param.Neig);
     write(xml, "Neig_max", param.Neig_max);
     write(xml, "restartTol", param.restartTol);
-    write(xml, "updateRestartTol", param.updateRestartTol);
+
     write(xml, "NormAest", param.NormAest);
     write(xml, "cleanUpEvecs", param.cleanUpEvecs);
     write(xml, "eigen_id", param.eigen_id);
-
+    
+    write(xml, "sort_option", param.sort_option);
+    write(xml, "epsi", param.epsi);
+    write(xml, "ConvTestOpt", param.ConvTestOpt);
+    
     write(xml, "FileIO",param.file);
 
     pop(xml);

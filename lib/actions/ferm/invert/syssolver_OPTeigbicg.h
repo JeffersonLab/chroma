@@ -1,16 +1,15 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigbicg.h,v 1.1 2009-10-22 03:22:26 kostas Exp $
+// $Id: syssolver_OPTeigbicg.h,v 1.2 2009-10-22 20:57:26 kostas Exp $
 /*! \file
- *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
+ *  \brief Solve a M*psi=chi linear system by EigBiCG
  */
 
-#ifndef __syssolver_mdagm_OPTeigcg_h__
-#define __syssolver_mdagm_OPTeigcg_h__
+#ifndef __syssolver_OPTeigbicg_h__
+#define __syssolver_OPTeigbicg_h__
 
 #include "handle.h"
 #include "syssolver.h"
 #include "linearop.h"
-#include "lmdagm.h"
 #include "named_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -23,19 +22,19 @@
 namespace Chroma
 {
 
-  //! Eigenvector accelerated CG system solver namespace
-  namespace MdagMSysSolverOptEigCGEnv
+  //! Eigenvector accelerated biCG system solver namespace
+  namespace LinOpSysSolverOptEigBiCGEnv
   {
     //! Register the syssolver
     bool registerAll();
   }
 
 
-  //! Solve a M*psi=chi linear system by CG2 with eigenvectors
+  //! Solve a M*psi=chi linear system by biCG with eigenvectors
   /*! \ingroup invert
    */
   template<typename T>
-  class MdagMSysSolverOptEigCG : public MdagMSystemSolver<T>
+  class LinOpSysSolverOptEigBiCG : public LinOpSystemSolver<T>
   {
   public:
 

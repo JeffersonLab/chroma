@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.16 2008-12-15 16:45:45 kostas Exp $
+// $Id: containers.h,v 1.17 2009-10-22 20:57:26 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -201,6 +201,61 @@ namespace Chroma
       T& operator[](int i){ return vec[i];}
     };
 
+
+    //--- OPT eigbicg space ---//
+    class OptEigBiInfo{
+    public:
+      int N   ; // vector dimension (large)
+      int ncurEvals ;
+      int lde ;
+      float restartTol ;
+      multi1d<Complex> evals ;
+      multi1d<Complex> evecsL ;
+      multi1d<Complex> evecsR ;
+      multi1d<Complex> H     ;
+      void init(int ldh,int lde_, int nn){
+	restartTol =0 ;
+	ncurEvals = 0 ;
+	N=nn;
+	lde = lde_ ;
+	evals.resize(ldh);
+	evecsL.resize(lde*ldh);
+	evecsR.resize(lde*ldh);
+	H.resize(ldh*ldh);
+      }
+      
+      void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v, const string& LR) const 
+      {// returnts the vector v as a lattice fermion
+	if(v>=evals.size()){
+	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<endl ;
+	  QDP_abort(100);
+	}
+	RComplex<float> *px ;
+	if(LR=="L") 
+	  px = (RComplex<float> *)&evecsL[v*lde];
+	else
+	  px = (RComplex<float> *)&evecsR[v*lde];
+
+	CopyToLatFerm(lf,px,s);
+      }
+
+      void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v, const string& LR)
+      {// returnts the vector v as a lattice fermion
+	if(v>=evals.size()){
+	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<endl ;
+	  QDP_abort(101);
+	}
+
+	RComplex<float> *px ;
+	if(LR=="L") 
+	  px = (RComplex<float> *)&evecsL[v*lde];
+	else
+	  px = (RComplex<float> *)&evecsR[v*lde];
+
+	CopyFromLatFerm(px,lf,s);
+      }
+
+    } ;
 
     //------------------------------------------------------------------------------
     //! Holds eigenvalues and eigenvectors
