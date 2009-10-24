@@ -1,17 +1,17 @@
-// $Id: syssolver_OPTeigbicg.cc,v 1.1 2009-10-22 03:22:26 kostas Exp $
+// $Id: syssolver_OPTeigbicg.cc,v 1.2 2009-10-24 13:47:26 kostas Exp $
 /*! \file
- *  \brief Solve a M^dag*M*psi=chi linear system by EigCG
+ *  \brief Solve a A*psi=chi linear system by EigBiCG
  */
 
 
 #include "qdp-lapack_Complex.h"
-#include "qdp-lapack_eigpcg.h"  
-#include "qdp-lapack_IncrEigpcg.h"
+#include "qdp-lapack_eigbicg.h"  
+#include "qdp-lapack_IncrEigbicg.h"
 
-#include "actions/ferm/invert/syssolver_mdagm_factory.h"
-#include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
+#include "actions/ferm/invert/syssolver_linop_factory.h"
+#include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
-#include "actions/ferm/invert/syssolver_mdagm_OPTeigcg.h"
+#include "actions/ferm/invert/syssolver_linop_OPTeigbicg.h"
 #include "containers.h"
 
 
@@ -19,30 +19,30 @@ namespace Chroma
 {
 
   //! CG1 system solver namespace
-  namespace MdagMSysSolverOptEigCGEnv
+  namespace LinOpSysSolverOptEigBiCGEnv
   {
     //! Callback function
-    MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
+    LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						  const std::string& path,
 						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new MdagMSysSolverOptEigCG<LatticeFermion>(A, SysSolverOptEigCGParams(xml_in, path));
+      return new LinOpSysSolverOptEigBiCG<LatticeFermion>(A, SysSolverOptEigBiCGParams(xml_in, path));
     }
 
 #if 0
     //! Callback function
-    MdagMSystemSolver<LatticeStaggeredFermion>* createStagFerm(
+    LinOpSystemSolver<LatticeStaggeredFermion>* createStagFerm(
       XMLReader& xml_in,
       const std::string& path,
       Handle< LinearOperator<LatticeStaggeredFermion> > A)
     {
-      return new MdagMSysSolverOptEigCG<LatticeStaggeredFermion>(A, SysSolverOptEigCGParams(xml_in, path));
+      return new LinOpSysSolverOptEigBiCG<LatticeStaggeredFermion>(A, SysSolverOptEigBiCGParams(xml_in, path));
     }
 #endif
 
     //! Name to be used
-    const std::string name("EIG_CG_INVERTER");
+    const std::string name("EIG_BiCG_INVERTER");
 
     //! Local registration flag
     static bool registered = false;
@@ -53,8 +53,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
-//	success &= Chroma::TheMdagMStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
+	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+//	success &= Chroma::TheLinOpStagFermSystemSolverFactory::Instance().registerObject(name, createStagFerm);
 	registered = true;
       }
       return success;
@@ -69,7 +69,7 @@ namespace Chroma
      struct MatVecArg{
        T XX ;
        T YY ;
-       Handle< LinearOperator<T> > MdagM;
+       Handle< LinearOperator<T> > LinOp;
     };
 
     template<typename T>
@@ -86,7 +86,7 @@ namespace Chroma
 
       //Alliws kanoume copy
       //copy x into XX
-      Subset s = arg.MdagM->subset() ; 
+      Subset s = arg.LinOp->subset() ; 
       if(s.hasOrderedRep()){
 	/**
 	int one(1);
@@ -122,9 +122,9 @@ namespace Chroma
       }
       
 
-      (*arg.MdagM)(arg.YY,arg.XX,PLUS) ;
+      (*arg.LinOp)(arg.YY,arg.XX,PLUS) ;
       //T foo,boo;
-      //*(arg.MdagM)(boo,foo,PLUS) ;
+      //*(arg.LinOp)(boo,foo,PLUS) ;
 
       //copy back..
       if(s.hasOrderedRep()){
@@ -162,8 +162,7 @@ namespace Chroma
     template<typename T>
     SystemSolverResults_t sysSolver(T& psi, const T& chi, 
 				    const LinearOperator<T>& A, 
-				    Handle< LinearOperator<T> > MdagM, 
-				    const SysSolverOptEigCGParams& invParam)
+				    const SysSolverOptEigBiCGParams& invParam)
     {
       START_CODE();
 
@@ -182,7 +181,8 @@ namespace Chroma
       Complex_C *X ; 
       Complex_C *B ; 
       Complex_C *work=NULL  ;
-      Complex_C *V=NULL     ;
+      Complex_C *VL=NULL    ;
+      Complex_C *VR=NULL    ;
       Complex_C *ework=NULL ;
 
       // OK, for now Weirdly enough psi and chi have to be
@@ -200,19 +200,19 @@ namespace Chroma
       else{//need to copy
 	//X = allocate space for them
 	//B =  allocate space for them...
-	QDPIO::cout<<"OPPS! I have not implemented OPT_EigCG for Linops with non contigius subset\n";
+	QDPIO::cout<<"OPPS! I have not implemented OPT_EigBiCG for Linops with non contigius subset\n";
 	exit(1);
       }
 
-      Complex_C *evecs = (Complex_C *) &EigInfo.evecs[0] ;
-      float *evals = (float *) &EigInfo.evals[0].elem() ;
-      Complex_C *H  = (Complex_C *) &EigInfo.H[0] ;
-      Complex_C *HU = (Complex_C *) &EigInfo.HU[0] ;
+      Complex_C *evecsL = (Complex_C *) &EigBiInfo.evecsL[0] ;
+      Complex_C *evecsR = (Complex_C *) &EigBiInfo.evecsR[0] ;
+      Complex_C *evals      = (Complex_C *) &EigInfo.evals[0].elem() ;
+      Complex_C *H      = (Complex_C *) &EigBiInfo.H[0] ;
       MatVecArg<T> arg ;
-      arg.MdagM = MdagM ;
+      arg.LinOp = A ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
 
-      QDPIO::cout<<"OPT_EIGCG_SYSSOLVER= "<<esize<<endl ;
+      QDPIO::cout<<"OPT_EIGBICG_SYSSOLVER= "<<esize<<endl ;
       //multi1d<Complex_C> ework(esize);
       float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
       float AnormEst = invParam.NormAest.elem().elem().elem().elem();
@@ -227,16 +227,24 @@ namespace Chroma
         // restartTol = EigInfo.restartTol; //or restart with tol as computed 
       }
 
-      IncrEigpcg(EigInfo.N, EigInfo.lde, 1, X, B, 
-		 &EigInfo.ncurEvals, EigInfo.evals.size(), 
-		 evecs, evals, H, HU, 
-		 MatrixMatvec<T>, NULL, (void *)&arg, work, V, 
-		 ework, esize, 
-		 resid, &restartTol,
-		 AnormEst, invParam.updateRestartTol, 
-		 invParam.MaxCG, invParam.PrintLevel, 
-		 invParam.Neig, invParam.Nmax, stdout);
-
+      IncrEigbicgC(EigInfo.N, EigInfo.lde, 1, X, B, 
+		   &EigInfo.ncurEvals, EigInfo.evals.size(), 
+		   evecsL, evecsR, evals, H, 
+		   MatrixMatvec<T>, // mat vec
+		   MatrixHMatvec<T> , // hermitian conjugate mat vec
+		   (void *)&arg, 
+		   AnormEst,
+		   work, 
+		   VL, EigInfo.lde, VR, EigInfo.lde,
+		   ework, esize, 
+		   resid, &restartTol,
+		   invParam.MaxCG, 
+		   invParam.sort_option.c_str(),
+		   invParam.epsi,
+		   invParam.ConfTestOpt,
+		   invParam.PrintLevel, 
+		   invParam.Neig, invParam.Nmax, stdout);
+      
       /* Update the restartTol in the EigInfo function */
       EigInfo.restartTol = restartTol;
 
@@ -244,7 +252,7 @@ namespace Chroma
       psi = psif;
 
       T tt;
-      (*MdagM)(tt,psi,PLUS);
+      (*LinOp)(tt,psi,PLUS);
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
@@ -252,7 +260,7 @@ namespace Chroma
 
 
       if(!s.hasOrderedRep()){
-	QDPIO::cout<<"OPPS! I have no implemented OPT_EigCG for Linops with non contigius subset\n";
+	QDPIO::cout<<"OPPS! I have no implemented OPT_EigBiCG for Linops with non contigius subset\n";
       }
       END_CODE();
 
@@ -269,17 +277,17 @@ namespace Chroma
   // LatticeFermionF
   template<>
   SystemSolverResults_t
-  MdagMSysSolverOptEigCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
+  LinOpSysSolverOptEigBiCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
   {
-    return sysSolver(psi, chi, *A, MdagM, invParam);
+    return sysSolver(psi, chi, *A, LinOp, invParam);
   }
 
   // LatticeFermionD
   template<>
   SystemSolverResults_t
-  MdagMSysSolverOptEigCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
+  LinOpSysSolverOptEigBiCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
   {
-    return sysSolver(psi, chi, *A, MdagM, invParam);
+    return sysSolver(psi, chi, *A, LinOp, invParam);
   }
 
 #if 1
@@ -289,17 +297,17 @@ namespace Chroma
   // LatticeStaggeredFermionF
   template<>
   SystemSolverResults_t
-  MdagMSysSolverOptEigCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
+  LinOpSysSolverOptEigBiCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
   {
-    return sysSolver(psi, chi, *A, MdagM, invParam);
+    return sysSolver(psi, chi, *A, LinOp, invParam);
   }
 
   // LatticeStaggeredFermionD
   template<>
   SystemSolverResults_t
-  MdagMSysSolverOptEigCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
+  LinOpSysSolverOptEigBiCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
   {
-    return sysSolver(psi, chi, *A, MdagM, invParam);
+    return sysSolver(psi, chi, *A, LinOp, invParam);
   }
 #endif
 

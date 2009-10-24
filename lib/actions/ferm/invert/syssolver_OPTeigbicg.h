@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: syssolver_OPTeigbicg.h,v 1.2 2009-10-22 20:57:26 kostas Exp $
+// $Id: syssolver_OPTeigbicg.h,v 1.3 2009-10-24 13:47:26 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by EigBiCG
  */
@@ -13,8 +13,8 @@
 #include "named_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "actions/ferm/invert/syssolver_mdagm.h"
-#include "actions/ferm/invert/syssolver_OPTeigcg_params.h"
+#include "actions/ferm/invert/syssolver_linop.h"
+#include "actions/ferm/invert/syssolver_OPTeigbicg_params.h"
 #include "actions/ferm/invert/containers.h"
 
 #include "util/info/unique_id.h"
@@ -46,11 +46,11 @@ namespace Chroma
 
       // A shorthand for the object                                      
       const LinAlg::OptEigInfo& obj =
-	TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(invParam.eigen_id);
+	TheNamedObjMap::Instance().getData<LinAlg::OptEigBiInfo>(invParam.eigen_id);
 
       // File XML                                            
       XMLBufferWriter file_xml;
-      push(file_xml, "OptEigInfo");
+      push(file_xml, "OptEigBiInfo");
       write(file_xml, "id", uniqueId());
       write(file_xml, "N", obj.N);
       write(file_xml, "ncurEvals", obj.ncurEvals);
@@ -67,12 +67,22 @@ namespace Chroma
 
       for(int v(0);v<obj.ncurEvals;v++){
 	LatticeFermion lf ;
-	obj.CvToLatFerm(lf,subset(),v);
-	XMLBufferWriter record_xml;
-	push(record_xml, "EigenVector");
-	write(record_xml,"no",v);
-	pop(record_xml);
-	write(to, record_xml, lf);
+	obj.CvToLatFerm(lf,subset(),v,"L");//left
+	{
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "LeftEigenVector");
+	  write(record_xml,"no",v);
+	  pop(record_xml);
+	  write(to, record_xml, lf);
+	}
+	obj.CvToLatFerm(lf,subset(),v,"R");//Right
+	{
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "RightEigenVector");
+	  write(record_xml,"no",v);
+	  pop(record_xml);
+	  write(to, record_xml, lf);
+	}
       }
       
       {
@@ -86,12 +96,6 @@ namespace Chroma
 	push(record_xml, "H");
 	pop(record_xml);
 	write(to, record_xml, obj.H);
-      }
-      {
-	XMLBufferWriter record_xml;
-	push(record_xml, "HU");
-	pop(record_xml);
-	write(to, record_xml, obj.HU);
       }
 
       // Close                                                 
@@ -125,11 +129,11 @@ namespace Chroma
 
       int ldh,lde,N ;
       float restartTol ;
-      read(file_xml, "/OptEigInfo/ldh", ldh);
-      read(file_xml, "/OptEigInfo/lde", lde);
-      read(file_xml, "/OptEigInfo/N",    N);
-      read(file_xml, "/OptEigInfo/ncurEvals", obj.ncurEvals);
-      read(file_xml, "/OptEigInfo/restartTol", restartTol);
+      read(file_xml, "/OptEigBiInfo/ldh", ldh);
+      read(file_xml, "/OptEigBiInfo/lde", lde);
+      read(file_xml, "/OptEigBiInfo/N",    N);
+      read(file_xml, "/OptEigBiInfo/ncurEvals", obj.ncurEvals);
+      read(file_xml, "/OptEigBiInfo/restartTol", restartTol);
 
       QDPIO::cout <<__func__ << " : Reading object with following properties"<<endl ; 
       QDPIO::cout <<__func__ << " :   lde= " << lde << endl;
@@ -148,23 +152,22 @@ namespace Chroma
         LatticeFermion lf ;
 	XMLReader record_xml;
 	read(to, record_xml, lf);
-	obj.CvToEigCGvec(lf, subset(), v) ;
+	obj.CvToEigCGvec(lf, subset(), v,"L") ;
+	read(to, record_xml, lf);
+	obj.CvToEigCGvec(lf, subset(), v,"R") ;
       }
       //this is just fine
       {
 	XMLReader record_xml;
 	multi1d<Real>    evals(ldh) ;
 	multi1d<Complex> H(ldh*ldh)     ;
-	multi1d<Complex> HU(ldh*ldh)    ;
 	read(to, record_xml, evals);
 	read(to, record_xml, H);
-	read(to, record_xml, HU);
 	if(ldh<=obj.evals.size()){
 	  for(int i(0);i<ldh;i++)
 	    obj.evals[i] = evals[i] ;
 	  for(int i(0);i<H.size();i++){
 	    obj.H[i] = H[i] ;
-	    obj.HU[i] = HU[i] ;
 	  }
 	}
 	else{
@@ -186,33 +189,33 @@ namespace Chroma
      * \param M_         Linear operator ( Read )
      * \param invParam_  inverter parameters ( Read )
      */
-    MdagMSysSolverOptEigCG(Handle< LinearOperator<T> > A_,
-			   const SysSolverOptEigCGParams& invParam_) : 
-      MdagM(new MdagMLinOp<T>(A_)), A(A_), invParam(invParam_) 
+    LinOpSysSolverOptEigBiCG(Handle< LinearOperator<T> > A_,
+			     const SysSolverOptEigBiCGParams& invParam_) : 
+      A(A_), invParam(invParam_) 
       {
 	numMatvecs = 0 ;
 	// NEED to grab the eignvectors from the named buffer here
 	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
 	{
-	  TheNamedObjMap::Instance().create< LinAlg::OptEigInfo >(invParam.eigen_id);
+	  TheNamedObjMap::Instance().create< LinAlg::OptEigBiInfo >(invParam.eigen_id);
 	  LinAlg::OptEigInfo& EigInfo = 
-	    TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(invParam.eigen_id);
+	    TheNamedObjMap::Instance().getData< LinAlg::OptEigBiInfo >(invParam.eigen_id);
 	  int N = Layout::sitesOnNode()*Nc*Ns ;
 	  int VectorSpaceSize =  Nc*Ns*(A->subset()).numSiteTable();
-	  EigInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
-	  EigInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
+	  EigBiInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
+	  EigBiInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
 	  if(invParam.file.read){
-	    QDPIO::cout<<"MdagMSysSolverOptEigCG : reading evecs from disk"<<endl ;
+	    QDPIO::cout<<"LinOpSysSolverOptEigBiCG : reading evecs from disk"<<endl ;
 	    QIOReadOptEvecs() ;
 	  }
 	}
       }
 
     //! Destructor is automatic
-    ~MdagMSysSolverOptEigCG()
+    ~LinOpSysSolverOptEigBiCG()
       {
 	if(invParam.file.write){
-	  QDPIO::cout<<"MdagMSysSolverOptEigCG : writing evecs to disk"<<endl ;
+	  QDPIO::cout<<"LinOpSysSolverOptEigBiCG : writing evecs to disk"<<endl ;
 	  QIOWriteOptEvecs() ;
 	}
 	if (invParam.cleanUpEvecs)
@@ -249,11 +252,9 @@ namespace Chroma
       
       START_CODE();
 
-      // This solver uses InvCG2, so A is just the matrix.
-      // I need to predict with A^\dagger A
+      // I need to predict with A
       {
-	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
-	predictor(psi, (*MdagM), chi);
+	predictor(psi, A, chi);
       }
       // Do solve
       SystemSolverResults_t res=(*this)(psi,chi);
@@ -268,11 +269,10 @@ namespace Chroma
   private:
 
     // Hide default constructor
-    MdagMSysSolverOptEigCG() {}
+    LinOpSysSolverOptEigBiCG() {}
     int numMatvecs ;
-    Handle< LinearOperator<T> > MdagM;
     Handle< LinearOperator<T> > A;
-    SysSolverOptEigCGParams invParam;
+    SysSolverOptEigBiCGParams invParam;
   };
 
 } // End namespace
