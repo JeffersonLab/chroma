@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.22 2009-11-02 21:36:30 kostas Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.23 2009-11-02 21:52:03 kostas Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -52,6 +52,7 @@ namespace Chroma
 	success &= LinOpSysSolverMREnv::registerAll();
 	success &= LinOpSysSolverCGTimingEnv::registerAll();
 	success &= LinOpSysSolverEigCGEnv::registerAll();
+	//	success &= LinOpSysSolverEigBiCGEnv::registerAll();
 	success &= LinOpSysSolverRichardsonCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableBiCGStabCloverEnv::registerAll();
 	success &= LinOpSysSolverReliableIBiCGStabCloverEnv::registerAll();
