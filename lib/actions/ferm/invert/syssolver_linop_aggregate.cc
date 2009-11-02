@@ -1,4 +1,4 @@
-// $Id: syssolver_linop_aggregate.cc,v 3.21 2009-11-02 21:34:08 kostas Exp $
+// $Id: syssolver_linop_aggregate.cc,v 3.22 2009-11-02 21:36:30 kostas Exp $
 /*! \file
  *  \brief All MdagM system solver constructors
  */
@@ -12,8 +12,8 @@
 #include "actions/ferm/invert/syssolver_linop_bicrstab.h"
 #include "actions/ferm/invert/syssolver_linop_mr.h"
 #include "actions/ferm/invert/syssolver_linop_cg_timing.h"
-#include "actions/ferm/invert/syssolver_linop_eigcg.h
-#include "actions/ferm/invert/syssolver_linop_OPTeigbicg.h"
+#include "actions/ferm/invert/syssolver_linop_eigcg.h"
+//#include "actions/ferm/invert/syssolver_linop_eigbicg.h"
 #include "actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h"
