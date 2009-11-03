@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: containers.h,v 1.17 2009-10-22 20:57:26 kostas Exp $
+// $Id: containers.h,v 1.18 2009-11-02 21:29:32 kostas Exp $
 
 #ifndef _INV_CONTAINERS__H
 #define _INV_CONTAINERS__H
@@ -15,7 +15,8 @@ namespace Chroma
     //! copies an EigCG vector to a LatticeFermion (Works only in single prec.
     // Robert et.al. we might want to generalizes this to work for everything
     // We will make a double prec eigCG at some point
-    inline void CopyToLatFerm(LatticeFermion& lf, RComplex<float> *px, 
+    template <class T>
+    inline void CopyToLatFerm(LatticeFermion& lf, RComplex<T> *px, 
 		       const Subset& s)
     {
       if(s.hasOrderedRep()){
@@ -46,7 +47,8 @@ namespace Chroma
     //! copies a LatticeFermion into an EigCG vector 
     //! (Works only in single prec.
     // Robert et.al. we might want to generalizes this to work for everything
-    inline void CopyFromLatFerm(RComplex<float> *px, const LatticeFermion& lf, 
+    template<class T>
+    inline void CopyFromLatFerm(RComplex<T> *px, const LatticeFermion& lf, 
 			 const Subset& s) 
     {
       if(s.hasOrderedRep()){
@@ -203,16 +205,17 @@ namespace Chroma
 
 
     //--- OPT eigbicg space ---//
+    template<class R, class C>
     class OptEigBiInfo{
     public:
       int N   ; // vector dimension (large)
       int ncurEvals ;
       int lde ;
       float restartTol ;
-      multi1d<Complex> evals ;
-      multi1d<Complex> evecsL ;
-      multi1d<Complex> evecsR ;
-      multi1d<Complex> H     ;
+      multi1d<C> evals ;
+      multi1d<C> evecsL ;
+      multi1d<C> evecsR ;
+      multi1d<C> H     ;
       void init(int ldh,int lde_, int nn){
 	restartTol =0 ;
 	ncurEvals = 0 ;
@@ -230,11 +233,11 @@ namespace Chroma
 	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<endl ;
 	  QDP_abort(100);
 	}
-	RComplex<float> *px ;
+	RComplex<R> *px ;
 	if(LR=="L") 
-	  px = (RComplex<float> *)&evecsL[v*lde];
+	  px = (RComplex<R> *)&evecsL[v*lde];
 	else
-	  px = (RComplex<float> *)&evecsR[v*lde];
+	  px = (RComplex<R> *)&evecsR[v*lde];
 
 	CopyToLatFerm(lf,px,s);
       }
@@ -246,11 +249,11 @@ namespace Chroma
 	  QDP_abort(101);
 	}
 
-	RComplex<float> *px ;
+	RComplex<R> *px ;
 	if(LR=="L") 
-	  px = (RComplex<float> *)&evecsL[v*lde];
+	  px = (RComplex<R> *)&evecsL[v*lde];
 	else
-	  px = (RComplex<float> *)&evecsR[v*lde];
+	  px = (RComplex<R> *)&evecsR[v*lde];
 
 	CopyFromLatFerm(px,lf,s);
       }
