@@ -6,6 +6,7 @@
 
 #ifndef __syssolver_mdagm_OPTeigcg_h__
 #define __syssolver_mdagm_OPTeigcg_h__
+#include "chroma_config.h"
 
 #include "handle.h"
 #include "syssolver.h"
@@ -14,7 +15,7 @@
 #include "named_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "actions/ferm/invert/syssolver_mdagm.h"
+#include "actions/ferm/invert/syssolver_linop.h"
 #include "actions/ferm/invert/syssolver_OPTeigcg_params.h"
 #include "actions/ferm/invert/containers.h"
 

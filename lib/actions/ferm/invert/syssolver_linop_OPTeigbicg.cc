@@ -83,14 +83,61 @@ namespace Chroma
       RComplex<R> *py = (RComplex<R> *) y;
 
       //copy x into XX
-      CopyToLatFerm<R>(XX,px,arg.LinOp->subset());
+      LinAlg::CopyToLatFerm<T,R>(arg.XX,px,arg.LinOp->subset());
       (*arg.LinOp)(arg.YY,arg.XX,isign) ;
 
       //copy back..
-      CopyFromLatFerm<R>(py,YY,arg.LinOp->subset());
+      LinAlg::CopyFromLatFerm<T,R>(py,arg.YY,arg.LinOp->subset());
     }
 
 
+    void IncrEigBiCG(int n, int lde,int nrhs, Complex_C* X, Complex_C* B, 
+		     int* ncurEvals, int ldh, Complex_C* evecsl, 
+		     Complex_C* evecsr, Complex_C* evals,       
+		     Complex_C* H,void (*matvec) (void*, void*, void*), 
+		     void (*mathvec)(void*, void*, void*),void* params, 
+		     float* AnormEst, Complex_C* work, Complex_C* VL,
+		     int ldvl,Complex_C* VR, int ldvr,       
+		     Complex_C* ework, int esize,float tol,float* restartTol,  
+		     int maxit, char SRT_OPT, float epsi, int ConvTestOpt,
+		     int plvl,int nev, int v_max,FILE* outputFile){
+      return IncrEigbicg_C(n, lde, nrhs, X, B, 
+			   ncurEvals, ldh, 
+			   evecsl, evecsr, evals, H,
+			   matvec,mathvec,
+			   params, AnormEst,
+			   work, VL, ldvl, VR, 
+			   ldvr, ework, esize, 
+			   tol, restartTol,   
+			   maxit, SRT_OPT, epsi, 
+			   ConvTestOpt, 
+			   plvl, nev, v_max, 
+			   outputFile);
+    }
+
+    void IncrEigBiCG(int n, int lde,int nrhs, Complex_Z* X, Complex_Z* B, 
+		     int* ncurEvals, int ldh, Complex_Z* evecsl, 
+		     Complex_Z* evecsr, Complex_Z* evals,      
+		     Complex_Z* H, void (*matvec) (void*, void*, void*), 
+		     void (*mathvec)(void*, void*, void*), void* params, 
+		     double *AnormEst, Complex_Z* work, Complex_Z* VL, 
+		     int ldvl, Complex_Z* VR, int ldvr, Complex_Z* ework, 
+		     int esize, double tol, double* restartTol,  
+		     int maxit, char SRT_OPT, double epsi, int ConvTestOpt,
+		     int plvl, int nev, int v_max,FILE *outputFile){
+    return IncrEigbicg_Z(n, lde, nrhs, X, B, 
+			 ncurEvals, ldh, 
+			 evecsl, evecsr, evals, H,
+			 matvec,mathvec,
+			 params, AnormEst,
+			 work, VL, ldvl, VR, 
+			 ldvr, ework, esize, 
+			 tol, restartTol,   
+			 maxit, SRT_OPT, epsi, 
+			 ConvTestOpt, 
+			 plvl, nev, v_max, 
+			 outputFile);
+  }
 
     //! Solver the linear system
     /*!
@@ -98,16 +145,16 @@ namespace Chroma
      * \param chi      source ( Read )
      * \return syssolver results
      */
-    template<typename T>
+    template<typename T, typename F, typename C>
     SystemSolverResults_t sysSolver(T& psi, const T& chi, 
-				    const LinearOperator<T>& A, 
+				    Handle< LinearOperator<T> > A, 
 				    const SysSolverOptEigBiCGParams& invParam)
     {
       START_CODE();
 
       SystemSolverResults_t res;  // initialized by a constructor
 
-      LinAlg::OptEigInfo& EigInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(invParam.eigen_id);
+      LinAlg::OptEigBiInfo<REAL>& EigBiInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigBiInfo<REAL> >(invParam.eigen_id);
 
       QDPIO::cout<<"EigBiInfo.N= "<<EigBiInfo.N<<endl ;
       QDPIO::cout<<"EigBiInfo.lde= "<<EigBiInfo.lde<<endl ;
@@ -115,26 +162,29 @@ namespace Chroma
       QDPIO::cout<<"EigBiInfo.ncurEvals= "<<EigBiInfo.ncurEvals<<endl ;
       QDPIO::cout<<"EigBiInfo.restartTol= "<<EigBiInfo.restartTol<<endl ;
 
-      Subset s = A.subset() ;
+      Subset s = A->subset() ;
 
-      Complex_C *X ; 
-      Complex_C *B ; 
-      Complex_C *work=NULL  ;
-      Complex_C *VL=NULL    ;
-      Complex_C *VR=NULL    ;
-      Complex_C *ework=NULL ;
+      C *X ; 
+      C *B ; 
+      C *work=NULL  ;
+      C *VL=NULL    ;
+      C *VR=NULL    ;
+      C *ework=NULL ;
 
+      /***** NO NEED FOR THIS ANY MORE
       // OK, for now Weirdly enough psi and chi have to be
       // explicit single precision, so downcast those...
       // Most generically the single prec type of say a 
       // type T should be given by the QDP++ Type trait:
       // SinglePrecType<T>::Type_t
+      
       typename SinglePrecType<T>::Type_t psif = psi;
       typename SinglePrecType<T>::Type_t chif = chi;
+      *****/
 
       if(s.hasOrderedRep()){
-	X = (Complex_C *) &psif.elem(s.start()).elem(0).elem(0).real();
-	B = (Complex_C *) &chif.elem(s.start()).elem(0).elem(0).real();
+	X = (C *) &psi.elem(s.start()).elem(0).elem(0).real();
+	B = (C *) &chi.elem(s.start()).elem(0).elem(0).real();
       }
       else{//need to copy
 	//X = allocate space for them
@@ -143,21 +193,21 @@ namespace Chroma
 	exit(1);
       }
 
-      Complex_C *evecsL = (Complex_C *) &EigBiInfo.evecsL[0] ;
-      Complex_C *evecsR = (Complex_C *) &EigBiInfo.evecsR[0] ;
-      Complex_C *evals      = (Complex_C *) &EigInfo.evals[0].elem() ;
-      Complex_C *H      = (Complex_C *) &EigBiInfo.H[0] ;
+      C *evecsL = (C *) &EigBiInfo.evecsL[0] ;
+      C *evecsR = (C *) &EigBiInfo.evecsR[0] ;
+      C *evals      = (C *) &EigBiInfo.evals[0] ;
+      C *H      = (C *) &EigBiInfo.H[0] ;
       MatVecArg<T> arg ;
       arg.LinOp = A ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
 
       QDPIO::cout<<"OPT_EIGBICG_SYSSOLVER= "<<esize<<endl ;
-      //multi1d<Complex_C> ework(esize);
-      float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
-      float AnormEst = invParam.NormAest.elem().elem().elem().elem();
+      //multi1d<C> ework(esize);
+      F resid = (F) invParam.RsdCG.elem().elem().elem().elem();
+      F AnormEst = invParam.NormAest.elem().elem().elem().elem();
 
-      float restartTol;
-      if (EigInfo.ncurEvals < EigInfo.evals.size()) 
+      F restartTol;
+      if (EigBiInfo.ncurEvals < EigBiInfo.evals.size()) 
          restartTol = 0.0; 		  // Do not restart the first phase 
       else {
         // set it to the user parameter:
@@ -165,30 +215,32 @@ namespace Chroma
 
         // restartTol = EigInfo.restartTol; //or restart with tol as computed 
       }
+      F epsi = invParam.epsi.elem().elem().elem().elem() ;
 
-      IncrEigbicgC(EigInfo.N, EigInfo.lde, 1, X, B, 
-		   &EigInfo.ncurEvals, EigInfo.evals.size(), 
-		   evecsL, evecsR, evals, H, 
-		   MatrixMatvec<float,T,PLUS>, // mat vec
-		   MatrixMatvec<float,T,MINUS> , // hermitian conjugate mat vec
-		   (void *)&arg, 
-		   AnormEst,
-		   work, 
-		   VL, EigInfo.lde, VR, EigInfo.lde,
-		   ework, esize, 
-		   resid, &restartTol,
-		   invParam.MaxCG, 
-		   invParam.sort_option.c_str(),
-		   invParam.epsi,
-		   invParam.ConfTestOpt,
-		   invParam.PrintLevel, 
-		   invParam.Neig, invParam.Nmax, stdout);
+      IncrEigBiCG(EigBiInfo.N, EigBiInfo.lde, 1, X, B, 
+		  &EigBiInfo.ncurEvals, EigBiInfo.evals.size(), 
+		  evecsL, evecsR, evals, H, 
+		  MatrixMatvec<F,T,PLUS>,  // mat vec
+		  MatrixMatvec<F,T,MINUS> ,// hermitian conjugate mat vec
+		  (void *)&arg, 
+		  &AnormEst,
+		  work, 
+		  VL, EigBiInfo.lde, VR, EigBiInfo.lde,
+		  ework, esize, 
+		  resid, &restartTol,
+		  invParam.MaxCG, 
+		  invParam.sort_option.c_str()[0],
+		  epsi,
+		  invParam.ConvTestOpt,
+		  invParam.PrintLevel, 
+		  invParam.Neig, invParam.Nmax, stdout);
       
+      // NO NEED OF THIS
       // Copy result back
-      psi = psif;
+      // psi = psif;
 
       T tt;
-      (*LinOp)(tt,psi,PLUS);
+      (*A)(tt,psi,PLUS);
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
       QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
@@ -215,7 +267,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverOptEigBiCG<LatticeFermionF>::operator()(LatticeFermionF& psi, const LatticeFermionF& chi) const
   {
-    return sysSolver(psi, chi, *A, LinOp, invParam);
+    return sysSolver<LatticeFermionF,float,Complex_C>(psi, chi, A, invParam);
   }
 
   // LatticeFermionD
@@ -223,10 +275,10 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverOptEigBiCG<LatticeFermionD>::operator()(LatticeFermionD& psi, const LatticeFermionD& chi) const
   {
-    return sysSolver(psi, chi, *A, LinOp, invParam);
+    return sysSolver<LatticeFermionD, double, Complex_Z>(psi, chi, A, invParam);
   }
 
-#if 1
+#if 0
  
 
   // Not quite ready yet for these - almost there
@@ -235,7 +287,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverOptEigBiCG<LatticeStaggeredFermionF>::operator()(LatticeStaggeredFermionF& psi, const LatticeStaggeredFermionF& chi) const
   {
-    return sysSolver(psi, chi, *A, LinOp, invParam);
+    return sysSolver(psi, chi, A, invParam);
   }
 
   // LatticeStaggeredFermionD
@@ -243,7 +295,7 @@ namespace Chroma
   SystemSolverResults_t
   LinOpSysSolverOptEigBiCG<LatticeStaggeredFermionD>::operator()(LatticeStaggeredFermionD& psi, const LatticeStaggeredFermionD& chi) const
   {
-    return sysSolver(psi, chi, *A, LinOp, invParam);
+    return sysSolver(psi, chi, A, invParam);
   }
 #endif
 

@@ -15,9 +15,8 @@ namespace Chroma
     //! copies an EigCG vector to a LatticeFermion (Works only in single prec.
     // Robert et.al. we might want to generalizes this to work for everything
     // We will make a double prec eigCG at some point
-    template <class T>
-    inline void CopyToLatFerm(LatticeFermion& lf, RComplex<T> *px, 
-		       const Subset& s)
+    template <typename T, typename R> inline
+    void CopyToLatFerm(T& lf, RComplex<R> *px, const Subset& s)
     {
       if(s.hasOrderedRep()){
 	int count=0 ;
@@ -47,9 +46,8 @@ namespace Chroma
     //! copies a LatticeFermion into an EigCG vector 
     //! (Works only in single prec.
     // Robert et.al. we might want to generalizes this to work for everything
-    template<class T>
-    inline void CopyFromLatFerm(RComplex<T> *px, const LatticeFermion& lf, 
-			 const Subset& s) 
+    template<typename T, typename R> inline 
+    void CopyFromLatFerm(RComplex<R> *px, const T&  lf, const Subset& s) 
     {
       if(s.hasOrderedRep()){
 	int count=0 ;
@@ -105,7 +103,7 @@ namespace Chroma
 	  QDP_abort(100);
 	}
 	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
-	CopyToLatFerm(lf,px,s);
+	CopyToLatFerm<LatticeFermion, float>(lf,px,s);
       }
 
       void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v)
@@ -115,7 +113,7 @@ namespace Chroma
 	  QDP_abort(101);
 	}
 	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
-	CopyFromLatFerm(px,lf,s);
+	CopyFromLatFerm<LatticeFermion, float>(px,lf,s);
       }
     } ;
 
@@ -205,17 +203,17 @@ namespace Chroma
 
 
     //--- OPT eigbicg space ---//
-    template<class R, class C>
+    template<typename R>
     class OptEigBiInfo{
     public:
       int N   ; // vector dimension (large)
       int ncurEvals ;
       int lde ;
       float restartTol ;
-      multi1d<C> evals ;
-      multi1d<C> evecsL ;
-      multi1d<C> evecsR ;
-      multi1d<C> H     ;
+      multi1d<RComplex<R> > evals ;
+      multi1d<RComplex<R> > evecsL ;
+      multi1d<RComplex<R> > evecsR ;
+      multi1d<RComplex<R> > H     ;
       void init(int ldh,int lde_, int nn){
 	restartTol =0 ;
 	ncurEvals = 0 ;
@@ -239,7 +237,7 @@ namespace Chroma
 	else
 	  px = (RComplex<R> *)&evecsR[v*lde];
 
-	CopyToLatFerm(lf,px,s);
+	CopyToLatFerm<LatticeFermion, R>(lf,px,s);
       }
 
       void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v, const string& LR)
@@ -255,7 +253,7 @@ namespace Chroma
 	else
 	  px = (RComplex<R> *)&evecsR[v*lde];
 
-	CopyFromLatFerm(px,lf,s);
+	CopyFromLatFerm<LatticeFermion, R>(px,lf,s);
       }
 
     } ;

@@ -19,9 +19,6 @@
 
 #include "util/info/unique_id.h"
 
-namespace Chroma
-{
-
 #ifdef BUILD_OPT_EIGCG
 
 #include "actions/ferm/invert/syssolver_linop_OPTeigbicg.h"

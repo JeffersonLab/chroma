@@ -90,11 +90,13 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/syssolver_bicgstab_params.h \
 	actions/ferm/invert/syssolver_eigcg_params.h \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
+	actions/ferm/invert/syssolver_OPTeigbicg_params.h \
 	actions/ferm/invert/syssolver_linop_cg.h \
 	actions/ferm/invert/syssolver_linop_cg_timing.h \
 	actions/ferm/invert/syssolver_linop_cg_array.h \
 	actions/ferm/invert/syssolver_linop_eigcg.h \
 	actions/ferm/invert/syssolver_linop_eigcg_array.h \
+	actions/ferm/invert/syssolver_linop_eigbicg.h \
 	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.h \
 	actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.h \
 	actions/ferm/invert/syssolver_linop_rel_cg_clover.h \
@@ -1023,7 +1025,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc 
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
@@ -1732,10 +1734,12 @@ if BUILD_LAPACK
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
         actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
+        actions/ferm/invert/syssolver_linop_OPTeigbicg.h \
 	meas/inline/hadron/inline_laplace_eigs.h
 libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
+	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
 	meas/inline/hadron/inline_laplace_eigs.cc
 endif
 

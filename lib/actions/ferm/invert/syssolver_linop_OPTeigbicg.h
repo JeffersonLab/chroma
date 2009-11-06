@@ -1,11 +1,11 @@
 // -*- C++ -*-
-// $Id: syssolver_linop_OPTeigbicg.h,v 3.1 2009-11-02 21:34:08 kostas Exp $
 /*! \file
  *  \brief Solve a M*psi=chi linear system by EigBiCG
  */
 
 #ifndef __syssolver_OPTeigbicg_h__
 #define __syssolver_OPTeigbicg_h__
+#include "chroma_config.h"
 
 #include "handle.h"
 #include "syssolver.h"
@@ -43,10 +43,12 @@ namespace Chroma
       StopWatch swatch;
       swatch.reset();
       swatch.start();
-
       // A shorthand for the object                                      
-      const LinAlg::OptEigInfo& obj =
-	TheNamedObjMap::Instance().getData<LinAlg::OptEigBiInfo>(invParam.eigen_id);
+      //const LinAlg::OptEigBiInfo<WordType<T>::Type_t>& obj =
+      //	TheNamedObjMap::Instance().getData<LinAlg::OptEigBiInfo<WordType<T>::Type_t> >(invParam.eigen_id);
+
+      const LinAlg::OptEigBiInfo<REAL>& obj =
+      	TheNamedObjMap::Instance().getData<LinAlg::OptEigBiInfo<REAL> >(invParam.eigen_id);
 
       // File XML                                            
       XMLBufferWriter file_xml;
@@ -89,13 +91,22 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 	push(record_xml, "EigenValues");
 	pop(record_xml);
-	write(to, record_xml, obj.evals);
+	//write(to, record_xml, obj.evals);
+	
+	multi1d<Complex> foo(obj.evals.size()) ;
+	for(int i(0);i<obj.evals.size();i++)
+	  foo[i].elem().elem().elem() = obj.evals[i] ;
+	write(to, record_xml, foo);
       }
       {
 	XMLBufferWriter record_xml;
 	push(record_xml, "H");
 	pop(record_xml);
-	write(to, record_xml, obj.H);
+	//write(to, record_xml, obj.H);
+	multi1d<Complex> foo(obj.H.size()) ;
+	for(int i(0);i<obj.H.size();i++)
+	  foo[i].elem().elem().elem() = obj.H[i] ;
+	write(to, record_xml, foo);
       }
 
       // Close                                                 
@@ -121,8 +132,8 @@ namespace Chroma
       QDPFileReader to(file_xml,invParam.file.file_name,QDPIO_SERIAL);
 
       // A shorthand for the object         
-      LinAlg::OptEigInfo& obj =
-	TheNamedObjMap::Instance().getData<LinAlg::OptEigInfo>(invParam.eigen_id);
+      LinAlg::OptEigBiInfo<REAL>& obj =
+	TheNamedObjMap::Instance().getData<LinAlg::OptEigBiInfo<REAL> >(invParam.eigen_id);
 
       XMLReader record_xml;
       //TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
@@ -164,10 +175,11 @@ namespace Chroma
 	read(to, record_xml, evals);
 	read(to, record_xml, H);
 	if(ldh<=obj.evals.size()){
-	  for(int i(0);i<ldh;i++)
-	    obj.evals[i] = evals[i] ;
+	  for(int i(0);i<ldh;i++){
+	    obj.evals[i] = evals[i].elem().elem().elem() ;
+	  }
 	  for(int i(0);i<H.size();i++){
-	    obj.H[i] = H[i] ;
+	    obj.H[i] = H[i].elem().elem().elem() ;
 	  }
 	}
 	else{
@@ -197,13 +209,13 @@ namespace Chroma
 	// NEED to grab the eignvectors from the named buffer here
 	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
 	{
-	  TheNamedObjMap::Instance().create< LinAlg::OptEigBiInfo >(invParam.eigen_id);
-	  LinAlg::OptEigBiInfo& EigInfo = 
-	    TheNamedObjMap::Instance().getData< LinAlg::OptEigBiInfo >(invParam.eigen_id);
+	  TheNamedObjMap::Instance().create< LinAlg::OptEigBiInfo<REAL> >(invParam.eigen_id);
+	  LinAlg::OptEigBiInfo<REAL>& EigInfo = 
+	    TheNamedObjMap::Instance().getData< LinAlg::OptEigBiInfo<REAL> >(invParam.eigen_id);
 	  int N = Layout::sitesOnNode()*Nc*Ns ;
 	  int VectorSpaceSize =  Nc*Ns*(A->subset()).numSiteTable();
-	  EigBiInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
-	  EigBiInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
+	  EigInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
+	  EigInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
 	  if(invParam.file.read){
 	    QDPIO::cout<<"LinOpSysSolverOptEigBiCG : reading evecs from disk"<<endl ;
 	    QIOReadOptEvecs() ;
@@ -238,6 +250,7 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
 
 
+    /*********** NO CHRONO FOR BICGSTAB ***********
     //! Solve the linear system starting with a chrono guess 
     /*! 
      * \param psi solution (Write)
@@ -245,7 +258,7 @@ namespace Chroma
      * \param predictor   a chronological predictor (Read)
      * \return syssolver results
      */
-
+    /*********** NO CHRONO FOR BICGSTAB ***********
     SystemSolverResults_t operator()(T& psi, const T& chi, 
 				     AbsChronologicalPredictor4D<T>& predictor) const 
     {
@@ -264,6 +277,7 @@ namespace Chroma
       END_CODE();
       return res;
     }
+    **********************/
 
 
   private:
