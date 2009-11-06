@@ -1007,6 +1007,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_bicgstab_params.cc \
 	actions/ferm/invert/syssolver_eigcg_params.cc \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
+	actions/ferm/invert/syssolver_OPTeigbicg_params.cc \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
