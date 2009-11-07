@@ -1026,7 +1026,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc 
+	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
@@ -1734,8 +1734,8 @@ endif
 if BUILD_LAPACK
 nobase_include_HEADERS += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.h \
-        actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
-        actions/ferm/invert/syssolver_linop_OPTeigbicg.h \
+	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
+	actions/ferm/invert/syssolver_linop_OPTeigbicg.h \
 	meas/inline/hadron/inline_laplace_eigs.h
 libchroma_a_SOURCES += \
 	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
