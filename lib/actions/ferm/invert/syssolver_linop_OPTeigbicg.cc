@@ -101,6 +101,7 @@ namespace Chroma
 		     Complex_C* ework, int esize,float tol,float* restartTol,  
 		     int maxit, char SRT_OPT, float epsi, int ConvTestOpt,
 		     int plvl,int nev, int v_max,FILE* outputFile){
+      QDPIO::cout<<"IncrEigbicg_C will be called"<<endl ;
       return IncrEigbicg_C(n, lde, nrhs, X, B, 
 			   ncurEvals, ldh, 
 			   evecsl, evecsr, evals, H,
@@ -125,18 +126,19 @@ namespace Chroma
 		     int esize, double tol, double* restartTol,  
 		     int maxit, char SRT_OPT, double epsi, int ConvTestOpt,
 		     int plvl, int nev, int v_max,FILE *outputFile){
-    return IncrEigbicg_Z(n, lde, nrhs, X, B, 
-			 ncurEvals, ldh, 
-			 evecsl, evecsr, evals, H,
-			 matvec,mathvec,
-			 params, AnormEst,
-			 work, VL, ldvl, VR, 
-			 ldvr, ework, esize, 
-			 tol, restartTol,   
-			 maxit, SRT_OPT, epsi, 
-			 ConvTestOpt, 
-			 plvl, nev, v_max, 
-			 outputFile);
+      QDPIO::cout<<"IncrEigbicg_Z will be called"<<endl ;
+      return IncrEigbicg_Z(n, lde, nrhs, X, B, 
+			   ncurEvals, ldh, 
+			   evecsl, evecsr, evals, H,
+			   matvec,mathvec,
+			   params, AnormEst,
+			   work, VL, ldvl, VR, 
+			   ldvr, ework, esize, 
+			   tol, restartTol,   
+			   maxit, SRT_OPT, epsi, 
+			   ConvTestOpt, 
+			   plvl, nev, v_max, 
+			   outputFile);
   }
 
     //! Solver the linear system
@@ -241,9 +243,9 @@ namespace Chroma
 
       T tt;
       (*A)(tt,psi,PLUS);
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
+      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
+      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
+      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
       
 
 

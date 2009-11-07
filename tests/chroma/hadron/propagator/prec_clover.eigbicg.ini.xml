@@ -73,7 +73,7 @@
         </FermionAction>
         <InvertParam>
           <invType>EIG_BiCG_INVERTER</invType>
-          <RsdCG>1.0e-8</RsdCG>
+          <RsdCG>1.0e-10</RsdCG>
           <MaxCG>1000</MaxCG>
           <Nmax>100</Nmax>
           <Neig>10</Neig>
