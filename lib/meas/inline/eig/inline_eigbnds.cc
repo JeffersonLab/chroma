@@ -246,6 +246,8 @@ namespace Chroma
   
     // Look for highest ev
     n_eig = 1;
+    psi.resize(n_eig);
+    lambda.resize(n_eig);
     for(int i =0; i < n_eig; i++)
       gaussian(psi[i]);
     
