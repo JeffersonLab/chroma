@@ -49,6 +49,7 @@ namespace Chroma
       int  Nmin;
       int  MaxCG;
       int  Nrenorm;
+      int Neig;
     } ritz;
 
     struct NamedObject_t

@@ -75,6 +75,12 @@ namespace Chroma
     read(paramtop, "Nmin", param.Nmin);
     read(paramtop, "MaxCG", param.MaxCG);
     read(paramtop, "Nrenorm", param.Nrenorm);
+    if( paramtop.count("Neig")==1 ) { 
+      read(paramtop, "Neig", param.Neig);
+    }
+    else { 
+      param.Neig=1;
+    }
   }
 
   //! Ritz output
@@ -92,7 +98,9 @@ namespace Chroma
     write(xml, "Nmin", param.Nmin);
     write(xml, "MaxCG", param.MaxCG);
     write(xml, "Nrenorm", param.Nrenorm);
-
+    if( param.Neig != 1 ) { 
+      write(xml, "Neig", param.Neig);
+    }
     pop(xml);
   }
 
@@ -206,7 +214,7 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
     params.write(xml_out, "Input");
 
-    int n_eig = 1;
+    int n_eig = params.ritz.Neig;
     multi1d<Real> lambda(n_eig);
     multi1d<Real> check_norm(n_eig);
     multi1d<LatticeFermion> psi(n_eig);
@@ -237,6 +245,7 @@ namespace Chroma
     Handle< LinearOperator<LatticeFermion> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
   
     // Look for highest ev
+    n_eig = 1;
     for(int i =0; i < n_eig; i++)
       gaussian(psi[i]);
     
