@@ -24,7 +24,8 @@ namespace Chroma
     //! Default constructor
     MapObject() {}
 
-    //! Destructor
+    //! Virtual Destructor
+    virtual	
     ~MapObject() {}
 
     //! Exists?
