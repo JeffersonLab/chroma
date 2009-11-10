@@ -11,7 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "meas/sources/zN_src.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj_memory.h"
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
@@ -434,10 +434,10 @@ namespace Chroma
 	  //
 	  // Have to hold temporarily the solution vectors
 	  //
-	  MapObject<KeyPropColorVec_t,LatticeFermion> map_obj;
+	  MapObjectMemory<KeyPropColorVec_t,LatticeFermion> map_obj;
 
 	  // The random numbers used for the stochastic combination of sources is held here
-	  MapObject<int,Complex> rng_map_obj;
+	  MapObjectMemory<int,Complex> rng_map_obj;
 
 	  // Build up list of time sources
 	  multi1d<int> t_sources(num_sources);
@@ -463,8 +463,10 @@ namespace Chroma
 	      int t = t_sources[nn];
 
 	      // Pull out a time-slice of the color vector source, give it a random weight
+	      Complex weight; rng_map_obj.lookup(t, weight);
+
 	      vec_srce[phases.getSet()[t]] = 
-		rng_map_obj[t] * eigen_source.getEvectors()[colorvec_source];
+		weight * eigen_source.getEvectors()[colorvec_source];
 	    }
 	
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
@@ -539,8 +541,13 @@ namespace Chroma
 		key.t_source     = t_source_start;
 		key.colorvec_src = colorvec_source;
 		key.spin_src     = spin_source;
-		  
-		LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
+
+		LatticeColorVector vec_source;
+		{
+		  LatticeFermion tmp;
+		  map_obj.lookup(key,tmp);
+		  vec_source=peekSpin(tmp, spin_sink);
+		}
 
 		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		{
@@ -551,8 +558,8 @@ namespace Chroma
 		  for(int nn=0; nn < t_sources.size(); ++nn)
 		  {
 		    int t = t_sources[nn];
-
-		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(rng_map_obj[t]) * hsum[t];
+		    Complex weight; rng_map_obj.lookup(t,weight);
+		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(weight) * hsum[t];
 		  }
 
 		} // for colorvec_sink

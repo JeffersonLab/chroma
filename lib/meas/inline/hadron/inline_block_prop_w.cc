@@ -10,7 +10,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj_memory.h"
 #include "util/ferm/key_block_prop.h"
 #include "util/ferm/block_subset.h"
 #include "util/ferm/transf.h"
@@ -294,7 +294,18 @@ namespace Chroma
       //
       try
       {
-	TheNamedObjMap::Instance().create< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	// Create the object as a handle. 
+	// This bit will and up changing to a Factory invocation
+	Handle< MapObject<KeyBlockProp_t, LatticeFermion> > new_map_obj_handle(new MapObjectMemory<KeyBlockProp_t, LatticeFermion>() );
+
+	// Create the entry
+	TheNamedObjMap::Instance().create< Handle< MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id);
+
+	// Insert
+	TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id) = new_map_obj_handle;
+
+
+	//	TheNamedObjMap::Instance().create< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.prop_id);
       }
       catch (std::bad_cast)
       {
@@ -309,7 +320,7 @@ namespace Chroma
 
       // Cast should be valid now
       MapObject<KeyBlockProp_t,LatticeFermion>& map_obj =
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id));
 
       // Sanity check - write out the norm2 of the source in the Nd-1 direction
       // Use this for any possible verification

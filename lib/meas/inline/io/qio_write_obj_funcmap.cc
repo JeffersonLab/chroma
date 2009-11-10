@@ -14,7 +14,9 @@
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_grid_prop.h"
 #include "util/ferm/key_block_prop.h"
+#include "handle.h"
 #include "util/ferm/map_obj.h"
+
 
 #include "actions/ferm/invert/containers.h"
 
@@ -461,7 +463,7 @@ namespace Chroma
 	XMLBufferWriter file_xml, record_xml;
 
 	// A shorthand for the object
-	MapObject<K,V>& obj = TheNamedObjMap::Instance().getData< MapObject<K,V> >(buffer_id);
+	MapObject<K,V>& obj = *(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id));
 
 	// Get the file XML and record XML out of the named buffer
 	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);

@@ -694,6 +694,7 @@ nobase_include_HEADERS += \
 	util/ferm/etensor.h \
         util/ferm/symtensor.h \
 	util/ferm/map_obj.h \
+	util/ferm/map_obj_memory.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \

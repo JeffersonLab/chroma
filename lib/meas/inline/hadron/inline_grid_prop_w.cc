@@ -11,6 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj_memory.h"
 #include "util/ferm/key_grid_prop.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
@@ -276,8 +277,17 @@ namespace Chroma
       // Create the output files
       //
       try
-	{
-	  TheNamedObjMap::Instance().create< MapObject<KeyGridProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	{	
+	// Create the object as a handle. 
+	// This bit will and up changing to a Factory invocation
+	Handle< MapObject<KeyGridProp_t, LatticeFermion> > new_map_obj_handle(new MapObjectMemory<KeyGridProp_t, LatticeFermion>() );
+
+	// Create the entry
+	TheNamedObjMap::Instance().create< Handle< MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id);
+
+	// Insert
+	TheNamedObjMap::Instance().getData< Handle<MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id) = new_map_obj_handle;
+
 	}
       catch (std::bad_cast)
 	{
@@ -292,7 +302,7 @@ namespace Chroma
 
       // Cast should be valid now
       MapObject<KeyGridProp_t,LatticeFermion>& map_obj =
-	TheNamedObjMap::Instance().getData< MapObject<KeyGridProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id));
 
 
 

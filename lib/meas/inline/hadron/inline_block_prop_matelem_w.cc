@@ -366,7 +366,7 @@ namespace Chroma
       try
       {
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id));
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
@@ -391,7 +391,9 @@ namespace Chroma
 
       // Cast should be valid now
       const MapObject<KeyBlockProp_t,LatticeFermion>& map_obj =
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	dynamic_cast< const MapObject<KeyBlockProp_t,LatticeFermion>& >( 
+									*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id))
+									 );
 
       QDPIO::cout << "Source and prop map successfully found and parsed" << endl;
 
@@ -535,7 +537,12 @@ namespace Chroma
 		    key.spin      = spin_source;
 		    key.block     = blk_source;
 
-		    LatticeColorVector vec_source(peekSpin(map_obj[key], spin_sink));
+
+		    LatticeColorVector vec_source;
+		    {
+		      LatticeFermion tmp; map_obj.lookup(key, tmp);
+		      vec_source = peekSpin(tmp, spin_sink);
+		    }
 
 		    for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		    {

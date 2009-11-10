@@ -435,8 +435,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.source_prop_id);
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.sink_prop_id);
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.source_prop_id));
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.sink_prop_id));
 
 	// Snarf the prop info. This is will throw if the prop_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.source_prop_id).getFileXML(source_prop_file_xml);
@@ -461,9 +461,12 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
       const MapObject<KeyBlockProp_t,LatticeFermion>& source_ferm_map =
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.source_prop_id);
+	dynamic_cast< const MapObject<KeyBlockProp_t,LatticeFermion>& >(
+									*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.source_prop_id)));
+
       const MapObject<KeyBlockProp_t,LatticeFermion>& sink_ferm_map =
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.sink_prop_id);
+	dynamic_cast< const MapObject<KeyBlockProp_t,LatticeFermion>& >(
+									*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.sink_prop_id)));
 
       push(xml_out, "Output_version");
       write(xml_out, "out_version", 2);
@@ -669,10 +672,15 @@ namespace Chroma
 		    key_r.block    = blk_r;
 		  
 		    // Displace the right vector and multiply by the momentum phase
-		    LatticeFermion shift_ferm = Gamma(gamma_tmp) * displace(u_smr, 
-									    source_ferm_map[key_r],
-									    params.param.displacement_length, 
-									    disp);
+
+		    LatticeFermion shift_ferm;
+		    {
+		      LatticeFermion tmpvec_source; source_ferm_map.lookup(key_r, tmpvec_source);
+		      shift_ferm = Gamma(gamma_tmp) * displace(u_smr, 
+								 tmpvec_source,
+								 params.param.displacement_length, 
+								 disp);
+		    }
 
 		    for(int colorvec_l=0; colorvec_l < num_vecs; ++colorvec_l)
 		    {
@@ -687,7 +695,8 @@ namespace Chroma
 
 		      // Contract over color indices
 		      // Do the relevant quark contraction
-		      LatticeComplex lop = localInnerProduct(sink_ferm_map[key_l], shift_ferm);
+		      LatticeFermion tmpvec_sink; sink_ferm_map.lookup(key_l,tmpvec_sink);
+		      LatticeComplex lop = localInnerProduct(tmpvec_sink, shift_ferm);
 
 		      // Reweight the phase in case there was momentum averaging
 		      Real reweight;

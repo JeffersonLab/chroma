@@ -379,7 +379,9 @@ namespace Chroma
       QDPIO::cout << "Check for the prop map" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< MapObject<KeyGridProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	// The Map now holds a Handle<> so this dereference should
+	// exercise whether there is anything in it or not
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id));
 
 	//This is will throw if the prop_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.prop_id).getFileXML(prop_file_xml);
@@ -400,8 +402,9 @@ namespace Chroma
 	QDP_abort(1);
       }
       // Cast should be valid now
+
       const MapObject<KeyGridProp_t,LatticeFermion>& map_obj =
-	TheNamedObjMap::Instance().getData< MapObject<KeyGridProp_t,LatticeFermion> >(params.named_obj.prop_id);
+	dynamic_cast<const MapObject<KeyGridProp_t,LatticeFermion>&>(*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id)));
 
       QDPIO::cout << "Prop map successfully found and parsed" << endl;
 
@@ -530,8 +533,11 @@ namespace Chroma
 		      LatticeFermion snk_vec = zero ;
 		      pokeSpin(snk_vec, 
 			       peekSpin(snk(snk_c,snk_g),snk_s), snk_s) ;
+
+		      LatticeFermion tmpvec; map_obj.lookup(key, tmpvec);
+
 		      multi1d<ComplexD> 
-		      hsum(sumMulti(localInnerProduct(snk_vec,map_obj[key]),
+			hsum(sumMulti(localInnerProduct(snk_vec,tmpvec),
 				    phases.getSet()));
 		      for(int t(0); t<hsum.size(); t++)
 			buf[t].val.data().m(snk_s,src_s)(snk_c,src_c)(snk_g,src_g)=hsum[t];  

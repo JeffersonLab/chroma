@@ -13,7 +13,9 @@
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_grid_prop.h"
 #include "util/ferm/key_block_prop.h"
+#include "handle.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj_memory.h"
 #include "actions/ferm/invert/containers.h"
 
 namespace Chroma
@@ -464,12 +466,20 @@ namespace Chroma
 	// Create object if it does not exist. Otherwise, we can continue reading into it.
 	if (! TheNamedObjMap::Instance().check(buffer_id))
         {
-	  TheNamedObjMap::Instance().create< MapObject<K,V> >(buffer_id);
+	  // Make a memory map object -- later make with factory?
+	  Handle< MapObject<K,V> > obj_map_handle( new MapObjectMemory<K,V> );
+ 
+	  // Create slot
+	  TheNamedObjMap::Instance().create< Handle<MapObject<K,V> > >(buffer_id);
+	  // Insert Handle
+	  TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id) = obj_map_handle;
+
+	  // Set up file xml
   	  TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
         }
 
-	// A shorthand for the object
-	MapObject<K,V>& obj = TheNamedObjMap::Instance().getData< MapObject<K,V> >(buffer_id);
+	// A referecnce for the object
+	MapObject<K,V>& obj = *(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id));
 
 	// The number of records should be recorded in the header
 	int num_records;

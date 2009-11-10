@@ -8,6 +8,7 @@
 #include "singleton.h"
 #include "funcmap.h"
 #include "chromabase.h"
+#include "handle.h"
 
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/named_objmap.h"
@@ -16,6 +17,7 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj_memory.h"
 
 #include "util/ft/sftmom.h"
 #include "meas/eig/gramschm.h"
@@ -192,9 +194,20 @@ namespace Chroma
       void gaussianInitMapObjKeyPropColorVecLatFerm(const string& buffer_id)
       {
 	// Create the object
-	TheNamedObjMap::Instance().create< MapObject<KeyPropColorVec_t,LatticeFermion> >(buffer_id);
+	{ 
+	  // Make a new object - for now memory. Later create with factory 
+	  Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > new_obj_handle( new MapObjectMemory<KeyPropColorVec_t,LatticeFermion>() );
+
+	  // Create slot
+	  TheNamedObjMap::Instance().create< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id);
+
+	  // Insert
+	  TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id) = new_obj_handle;
+	}
+	
+	// Now make a working reference
 	MapObject<KeyPropColorVec_t,LatticeFermion>& obj = 
-	  TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(buffer_id);
+	  *(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id));
 
 	// Fix these. Put two sources in here.
 	int N = 8;
