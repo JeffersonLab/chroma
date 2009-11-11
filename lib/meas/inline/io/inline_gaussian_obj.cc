@@ -17,7 +17,7 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj_memory.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
 
 #include "util/ft/sftmom.h"
 #include "meas/eig/gramschm.h"

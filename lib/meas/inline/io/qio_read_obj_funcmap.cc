@@ -15,7 +15,7 @@
 #include "util/ferm/key_block_prop.h"
 #include "handle.h"
 #include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj_memory.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
 #include "actions/ferm/invert/containers.h"
 
 namespace Chroma

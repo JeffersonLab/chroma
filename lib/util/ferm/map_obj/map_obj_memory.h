@@ -1,6 +1,6 @@
 // -*- C++ -*-
-/*! \file
- * \brief Wrapper over maps
+/*! \file map_obj_memory.h
+ *  \brief A memory based map object 
  */
 
 #ifndef __map_obj_memory_h__
@@ -10,6 +10,14 @@
 
 namespace Chroma
 {
+
+  //! Private Namespace 
+  namespace MapObjectMemoryEnv { 
+    
+    //! Register the MapObject in factories
+    bool registerAll();
+
+  }
 
   //----------------------------------------------------------------------------
   //! A wrapper over maps

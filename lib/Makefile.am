@@ -694,7 +694,9 @@ nobase_include_HEADERS += \
 	util/ferm/etensor.h \
         util/ferm/symtensor.h \
 	util/ferm/map_obj.h \
-	util/ferm/map_obj_memory.h \
+	util/ferm/map_obj/map_obj_factory_w.h \
+	util/ferm/map_obj/map_obj_aggregate_w.h \
+	util/ferm/map_obj/map_obj_memory.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
@@ -1511,7 +1513,10 @@ libchroma_a_SOURCES += \
 	util/ferm/key_block_prop.cc \
 	util/ferm/key_prop_colorvec.cc \
 	util/ferm/key_laph_dil_prop.cc \
-	util/ferm/key_prop_matelem.cc
+	util/ferm/key_prop_matelem.cc \
+	util/ferm/map_obj/map_obj_aggregate_w.cc \
+	util/ferm/map_obj/map_obj_memory_w.cc
+
 
 # Taken out for now
 #        meas/hadron/multipole_w.cc

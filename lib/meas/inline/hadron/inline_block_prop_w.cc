@@ -10,7 +10,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj_memory.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
 #include "util/ferm/key_block_prop.h"
 #include "util/ferm/block_subset.h"
 #include "util/ferm/transf.h"
