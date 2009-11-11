@@ -10,8 +10,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+
 #include "util/ferm/key_grid_prop.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
@@ -23,6 +22,10 @@
 #include "meas/sources/diluteGrid_source_const.h"
 
 #include "meas/inline/io/named_objmap.h"
+
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
 
 namespace Chroma 
 { 
@@ -123,7 +126,12 @@ namespace Chroma
     {
       push(xml, path);
     
-      write(xml, "Param", input.param);
+      write(xml, "Param", input.param);      
+
+      std::istringstream is( input.map_obj_params.xml );
+      XMLReader reader(is);
+      xml << reader;
+
       write(xml, "NamedObject", input.named_obj);
 
       pop(xml);
@@ -155,6 +163,7 @@ namespace Chroma
       {
 	success &= WilsonTypeFermActsEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerKeyGridPropLFAll();
 	registered = true;
       }
       return success;
@@ -187,6 +196,22 @@ namespace Chroma
 	{
 	  read(paramtop, "xml_file", xml_file);
 	}
+
+	// If possible, read an XML Group for the MapObject factory
+	if ( paramtop.count("MapObject") == 0 ) {
+	  // Default is an MapObjectMemory
+	  
+	  map_obj_params.xml = "<MapObject><MapObjType>MAP_OBJ_MEMORY</MapObjType></MapObject>";
+	  map_obj_params.path = "MapObject";
+	  map_obj_params.id = "MAP_OBJ_MEMORY";
+	}
+	else { 
+	  // User Specified MapObject tags
+	  map_obj_params = readXMLGroup(paramtop, 
+					"MapObject", 
+					"MapObjType");
+	}
+	
       }
       catch(const std::string& e) 
       {
@@ -279,8 +304,16 @@ namespace Chroma
       try
 	{	
 	// Create the object as a handle. 
+	// now with a Factory invocation
+
+	std::istringstream  xml_s(params.map_obj_params.xml);
+	XMLReader MapObjReader(xml_s);
+	// Create the object as a handle. 
 	// This bit will and up changing to a Factory invocation
-	Handle< MapObject<KeyGridProp_t, LatticeFermion> > new_map_obj_handle(new MapObjectMemory<KeyGridProp_t, LatticeFermion>() );
+	Handle< MapObject<KeyGridProp_t, LatticeFermion> >  new_map_obj_handle(
+	  TheMapObjKeyGridPropFactory::Instance().createObject(params.map_obj_params.id,
+								MapObjReader,
+								params.map_obj_params.path) );
 
 	// Create the entry
 	TheNamedObjMap::Instance().create< Handle< MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id);

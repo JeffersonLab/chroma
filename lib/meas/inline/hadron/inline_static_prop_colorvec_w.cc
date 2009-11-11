@@ -1,4 +1,4 @@
-// $Id: inline_static_prop_colorvec_w.cc,v 3.3 2009-07-17 21:34:06 edwards Exp $
+
 /*! \file
  * \brief Compute a static prop  (1/2)*(1+gamma_4)U*U*...U * multi1d<LatticeColorVector>
  *
@@ -12,7 +12,7 @@
 #include "meas/hadron/barspinmat_w.h"
 #include "meas/smear/displace.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/transf.h"
 #include "util/ft/sftmom.h"
@@ -21,6 +21,9 @@
 
 #include "meas/inline/io/named_objmap.h"
 
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
 namespace Chroma 
 { 
   namespace InlineStaticPropColorVecEnv 
@@ -103,6 +106,10 @@ namespace Chroma
       push(xml, path);
     
       write(xml, "Param", input.param);
+      std::istringstream is( input.map_obj_params.xml );
+      XMLReader reader(is);
+      xml << reader;
+
       write(xml, "NamedObject", input.named_obj);
 
       pop(xml);
@@ -133,6 +140,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerKeyPropColorVecLFAll();
 	registered = true;
       }
       return success;
@@ -165,6 +173,22 @@ namespace Chroma
 	{
 	  read(paramtop, "xml_file", xml_file);
 	}
+
+	// If possible, read an XML Group for the MapObject factory
+	if ( paramtop.count("MapObject") == 0 ) {
+	  // Default is an MapObjectMemory
+	  
+	  map_obj_params.xml = "<MapObject><MapObjType>MAP_OBJ_MEMORY</MapObjType></MapObject>";
+	  map_obj_params.path = "MapObject";
+	  map_obj_params.id = "MAP_OBJ_MEMORY";
+	}
+	else { 
+	  // User Specified MapObject tags
+	  map_obj_params = readXMLGroup(paramtop, 
+					"MapObject", 
+					"MapObjType");
+	}
+
       }
       catch(const std::string& e) 
       {
@@ -289,8 +313,14 @@ namespace Chroma
       try
       {
 	// Create the object as a handle. 
+	std::istringstream  xml_s(params.map_obj_params.xml);
+	XMLReader MapObjReader(xml_s);
+	// Create the object as a handle. 
 	// This bit will and up changing to a Factory invocation
-	Handle< MapObject<KeyPropColorVec_t, LatticeFermion> > new_map_obj_handle(new MapObjectMemory<KeyPropColorVec_t, LatticeFermion>() );
+	Handle< MapObject<KeyPropColorVec_t, LatticeFermion> >  new_map_obj_handle(
+	  TheMapObjKeyPropColorVecFactory::Instance().createObject(params.map_obj_params.id,
+								MapObjReader,
+								params.map_obj_params.path) );
 
 	// Create the entry
 	TheNamedObjMap::Instance().create< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);

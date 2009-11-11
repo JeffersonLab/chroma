@@ -19,7 +19,7 @@ namespace Chroma {
     const std::string name("MAP_OBJ_MEMORY");
 
     //! Callback function
-    MapObject<KeyBlockProp_t,LatticeFermion>* createMapObjKeyBlockProp(XMLReader& xml_in,
+    MapObject<KeyBlockProp_t,LatticeFermion>* createMapObjKeyBlockPropLF(XMLReader& xml_in,
 							   const std::string& path) 
     {
       // Doesn't need parameters...
@@ -27,7 +27,7 @@ namespace Chroma {
     }
 
     //! Callback function
-    MapObject<KeyGridProp_t,LatticeFermion>* createMapObjKeyGridProp(XMLReader& xml_in,
+    MapObject<KeyGridProp_t,LatticeFermion>* createMapObjKeyGridPropLF(XMLReader& xml_in,
 							   const std::string& path) 
     {
       // Doesn't need parameters...
@@ -36,7 +36,7 @@ namespace Chroma {
 
 
     //! Callback function
-    MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVec(XMLReader& xml_in,
+    MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
 							   const std::string& path) 
     {
       // Doesn't need parameters...
@@ -45,25 +45,47 @@ namespace Chroma {
 
     
     //! Registration flag
-    static bool registered = false;
+    static bool RegisteredKeyBlockPropLF = false;
 
     //! Registration function
-    bool registerAll()
+    bool registerKeyBlockPropLF()
     {
       bool success = true;
-      if( !registered ) {
+      if( !RegisteredKeyBlockPropLF ) {
 	// Factory: MapObject<KeyBlockProp_t,LatticeFermion>
-	success &= Chroma::TheMapObjKeyBlockPropFactory::Instance().registerObject(name, createMapObjKeyBlockProp );
+	success &= Chroma::TheMapObjKeyBlockPropFactory::Instance().registerObject(name, createMapObjKeyBlockPropLF );
 
-	// Factory: MapObject<KeyGridProp_t,LatticeFermion>
-	success &= Chroma::TheMapObjKeyGridPropFactory::Instance().registerObject(name, createMapObjKeyGridProp );
-
-	// Factory: MapObject<KeyPropColorVec_t,LatticeFermion>
-	success &= Chroma::TheMapObjKeyPropColorVecFactory::Instance().registerObject(name, createMapObjKeyPropColorVec );
-	
-	registered = true;
+	RegisteredKeyBlockPropLF = true;
       }
       return success;
     }
+
+
+    static bool RegisteredKeyGridPropLF = false;
+    bool registerKeyGridPropLF()
+    {
+      bool success = true;
+      if( !RegisteredKeyGridPropLF ) {
+	success &= Chroma::TheMapObjKeyGridPropFactory::Instance().registerObject(name, createMapObjKeyGridPropLF );
+
+	RegisteredKeyGridPropLF = true;
+      }
+      return success;
+    }
+
+    static bool RegisteredKeyPropColorVecLF = false;
+    bool registerKeyPropColorVecLF()
+    {
+      bool success = true;
+      if( !RegisteredKeyPropColorVecLF ) {
+	// Factory: MapObject<KeyPropColorVec_t,LatticeFermion>
+	success &= Chroma::TheMapObjKeyPropColorVecFactory::Instance().registerObject(name, createMapObjKeyPropColorVecLF );
+	
+	RegisteredKeyPropColorVecLF = true;
+      }
+      return success;
+    }
+
+
   } // Namespace MapObjectMemoryEnv
 } // Chroma

@@ -11,13 +11,6 @@
 namespace Chroma
 {
 
-  //! Private Namespace 
-  namespace MapObjectMemoryEnv { 
-    
-    //! Register the MapObject in factories
-    bool registerAll();
-
-  }
 
   //----------------------------------------------------------------------------
   //! A wrapper over maps
