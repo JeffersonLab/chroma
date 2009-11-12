@@ -108,7 +108,7 @@ vectors that are actually used.
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
       </NamedObject>
       <File>
         <file_name>./prop_colorvec.lime</file_name>
@@ -121,7 +121,7 @@ vectors that are actually used.
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
       </NamedObject>
       <File>
         <file_name>./prop_colorvec.lime</file_name>
@@ -247,7 +247,7 @@ Not used in this test, instead use create colorvecs below.
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
       </NamedObject>
       <File>
         <file_name>./prop_colorvec.lime</file_name>
@@ -260,7 +260,7 @@ Not used in this test, instead use create colorvecs below.
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
       </NamedObject>
       <File>
         <file_name>./prop_colorvec.lime</file_name>
