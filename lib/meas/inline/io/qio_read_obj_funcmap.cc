@@ -15,7 +15,7 @@
 #include "util/ferm/key_block_prop.h"
 #include "handle.h"
 #include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj_memory.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
 #include "actions/ferm/invert/containers.h"
 
 namespace Chroma
@@ -494,6 +494,8 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 
+	obj.openWrite(); // Prepare Object for insertion
+
 	// Use the iterators to run through the object, reading each record
 	for(int i=0; i < num_records; ++i)
 	{
@@ -511,6 +513,8 @@ namespace Chroma
 	  // Insert the key and value into the map
 	  obj.insert(key, val);
 	}
+
+	obj.closeWrite(); // Done writing into object
 
 	// Sanity check
 	if (obj.size() != num_records)

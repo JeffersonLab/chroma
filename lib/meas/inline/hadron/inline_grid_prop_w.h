@@ -12,6 +12,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -51,7 +52,9 @@ namespace Chroma
 	ChromaProp_t    prop ;
 	Sources_t       src  ;
       } param;
-
+      
+      GroupXML_t        map_obj_params; /*!< Parameters for MapObj factory */
+      
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */

@@ -403,8 +403,10 @@ namespace Chroma
       }
       // Cast should be valid now
 
-      const MapObject<KeyGridProp_t,LatticeFermion>& map_obj =
-	dynamic_cast<const MapObject<KeyGridProp_t,LatticeFermion>&>(*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id)));
+      
+      
+      MapObject<KeyGridProp_t,LatticeFermion>& map_obj =
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyGridProp_t,LatticeFermion> > >(params.named_obj.prop_id));
 
       QDPIO::cout << "Prop map successfully found and parsed" << endl;
 
@@ -470,7 +472,8 @@ namespace Chroma
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
-	
+	map_obj.openRead();
+
 	SftMom phases(0, true, src_t.decay_dir);
 	//
 	// Loop over t  color and spin, creating the sources
@@ -547,9 +550,13 @@ namespace Chroma
 	      }// g src
 	    }//c src
 	  }//s src
-	  for(int t(0); t<phases.numSubsets(); t++)
+	  for(int t(0); t<phases.numSubsets(); t++) {
 	    qdp_db.insert(buf[t].key, buf[t].val);   
+	  }
 	}//t0
+	
+	map_obj.closeRead();
+
 	swatch.stop();
 	QDPIO::cout << "Matelem computed: time= " 
 		    << swatch.getTimeInSeconds() 

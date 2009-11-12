@@ -390,10 +390,9 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       // Cast should be valid now
-      const MapObject<KeyBlockProp_t,LatticeFermion>& map_obj =
-	dynamic_cast< const MapObject<KeyBlockProp_t,LatticeFermion>& >( 
-									*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id))
-									 );
+      MapObject<KeyBlockProp_t,LatticeFermion>& map_obj =
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyBlockProp_t,LatticeFermion> > >(params.named_obj.prop_id));
+	
 
       QDPIO::cout << "Source and prop map successfully found and parsed" << endl;
 
@@ -464,6 +463,7 @@ namespace Chroma
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
+	map_obj.openRead();
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -569,6 +569,8 @@ namespace Chroma
 	
 	pop(xml_out);
 	
+	map_obj.closeRead();
+
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 

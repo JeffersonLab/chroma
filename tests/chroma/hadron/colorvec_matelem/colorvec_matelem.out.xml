@@ -882,10 +882,10 @@ Not used in this test, instead use create colorvecs below.
   <ProgramInfo>
     <code_version>
       <chroma>3.36.1</chroma>
-      <qdp>1.33.0</qdp>
+      <qdp>1.35.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>15 Sep 09 09:25:05 EDT</run_date>
+    <run_date>11 Nov 09 17:19:53 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -1000,10 +1000,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:06 EDT</run_date>
+          <run_date>11 Nov 09 17:19:54 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1170,10 +1170,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:10 EDT</run_date>
+          <run_date>11 Nov 09 17:19:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1210,7 +1210,10 @@ Not used in this test, instead use create colorvecs below.
               <t_sources>0 3</t_sources>
               <decay_dir>3</decay_dir>
             </Contractions>
-          </Param>
+          </Param><MapObject>
+      <MapObjType>MAP_OBJ_MEMORY</MapObjType>
+    </MapObject>
+
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <colorvec_id>eigeninfo_0</colorvec_id>
@@ -1360,10 +1363,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:21 EDT</run_date>
+          <run_date>11 Nov 09 17:20:03 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1554,10 +1557,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:37 EDT</run_date>
+          <run_date>11 Nov 09 17:20:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1573,7 +1576,10 @@ Not used in this test, instead use create colorvecs below.
               <t_sources>0 3</t_sources>
               <decay_dir>3</decay_dir>
             </Contractions>
-          </Param>
+          </Param><MapObject>
+      <MapObjType>MAP_OBJ_MEMORY</MapObjType>
+    </MapObject>
+
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <colorvec_id>eigeninfo_0</colorvec_id>
@@ -1708,10 +1714,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:37 EDT</run_date>
+          <run_date>11 Nov 09 17:20:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1867,10 +1873,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:37 EDT</run_date>
+          <run_date>11 Nov 09 17:20:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2026,10 +2032,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:25:37 EDT</run_date>
+          <run_date>11 Nov 09 17:20:12 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2327,10 +2333,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:26:09 EDT</run_date>
+          <run_date>11 Nov 09 17:20:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2442,10 +2448,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:26:09 EDT</run_date>
+          <run_date>11 Nov 09 17:20:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2852,10 +2858,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:26:14 EDT</run_date>
+          <run_date>11 Nov 09 17:20:41 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2975,10 +2981,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:26:15 EDT</run_date>
+          <run_date>11 Nov 09 17:20:42 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3197,10 +3203,10 @@ Not used in this test, instead use create colorvecs below.
         <ProgramInfo>
           <code_version>
             <chroma>3.36.1</chroma>
-            <qdp>1.33.0</qdp>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>15 Sep 09 09:26:34 EDT</run_date>
+          <run_date>11 Nov 09 17:20:57 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>

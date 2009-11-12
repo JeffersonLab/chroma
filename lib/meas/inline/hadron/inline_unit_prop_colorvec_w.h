@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_unit_prop_colorvec_w.h,v 1.1 2008-10-28 21:34:47 edwards Exp $
 /*! \file
  * \brief Construct a propagator element that is     I^-1 * multi1d<LatticeColorVector>
  *
@@ -13,6 +12,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -41,6 +41,8 @@ namespace Chroma
 
 	Contract_t      contract;
       } param;
+
+      GroupXML_t        map_obj_params; /*!< Parameters for MapObj factory */
 
       struct NamedObject_t
       {
