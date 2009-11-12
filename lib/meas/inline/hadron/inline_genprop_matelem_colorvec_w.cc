@@ -452,13 +452,11 @@ namespace Chroma
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      const MapObject<KeyPropColorVec_t,LatticeFermion>& source_ferm_map =
-	dynamic_cast<const MapObject<KeyPropColorVec_t,LatticeFermion>&>(
-									 *(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.source_prop_id)));
+      MapObject<KeyPropColorVec_t,LatticeFermion>& source_ferm_map =
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.source_prop_id));
 
-      const MapObject<KeyPropColorVec_t,LatticeFermion>& sink_ferm_map =
-	dynamic_cast<const MapObject<KeyPropColorVec_t,LatticeFermion>&>(
-									 *(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.sink_prop_id)));
+      MapObject<KeyPropColorVec_t,LatticeFermion>& sink_ferm_map =
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.sink_prop_id));
 
       push(xml_out, "Output_version");
       write(xml_out, "out_version", 2);
@@ -615,6 +613,9 @@ namespace Chroma
 	swiss.start();
 
 	// Big loop over the momentum projection
+	source_ferm_map.openRead();
+	sink_ferm_map.openRead();
+
 	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
 	  // Loop over spins
@@ -712,6 +713,9 @@ namespace Chroma
 	    } // end for spin_l
 	  } // end for spin_r
 	} // mom_num
+
+	source_ferm_map.closeRead();
+	sink_ferm_map.closeRead();
 
 	swiss.stop();
 

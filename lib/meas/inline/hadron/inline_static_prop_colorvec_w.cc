@@ -397,6 +397,8 @@ namespace Chroma
 	// Lattice extent
 	const int Nt = phases.numSubsets();
 
+	map_obj.openWrite(); // Prepare map obj for writing
+
 	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
@@ -460,6 +462,8 @@ namespace Chroma
 	    } // for spin_source
 	  } // for colorvec_source
 	} // for t_source
+	
+	map_obj.closeWrite();
       }
       catch (const std::string& e) 
       {

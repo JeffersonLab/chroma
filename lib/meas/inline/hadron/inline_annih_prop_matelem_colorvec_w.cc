@@ -442,6 +442,7 @@ namespace Chroma
 	  // Build up list of time sources
 	  multi1d<int> t_sources(num_sources);
 
+	  rng_map_obj.openWrite();
 	  for(int nn=0; nn < t_sources.size(); ++nn)
 	  {
 	    int t = (t_source_start + dt*nn + Lt) % Lt;
@@ -449,28 +450,31 @@ namespace Chroma
 
 	    rng_map_obj.insert(t, zN_rng(params.param.contract.N));
 	  }
-
+	  rng_map_obj.closeWrite(); // Done inserting into rng_map_obj
 
 	  // All the loops
-	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
-	  {
+	  rng_map_obj.openRead();  // Want to do lookups in rng_map_obj
+	  map_obj.openWrite();     // Want to do insertions into map_obj
+
+	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source) {
+	    
 	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
 
 	    // Accumulate the source from several time-slices
 	    LatticeColorVector vec_srce = zero;
-	    for(int nn=0; nn < t_sources.size(); ++nn)
-	    {
+	    for(int nn=0; nn < t_sources.size(); ++nn) {
 	      int t = t_sources[nn];
 
 	      // Pull out a time-slice of the color vector source, give it a random weight
+	      QDPIO::cout << "RNG MAP LOOKUP" << endl << flush;
 	      Complex weight; rng_map_obj.lookup(t, weight);
 
 	      vec_srce[phases.getSet()[t]] = 
 		weight * eigen_source.getEvectors()[colorvec_source];
 	    }
 	
-	    for(int spin_source=0; spin_source < Ns; ++spin_source)
-	    {
+	    for(int spin_source=0; spin_source < Ns; ++spin_source) {
+
 	      QDPIO::cout << "spin_source = " << spin_source << endl; 
 
 	      // Insert a ColorVector into spin index spin_source
@@ -493,6 +497,8 @@ namespace Chroma
 	    } // for spin_source
 	  } // for colorvec_source
 
+	  map_obj.closeWrite();  // Done inserting into map_obj
+
 
 	  swatch.stop();
 	  QDPIO::cout << "Propagators computed: time= " 
@@ -510,14 +516,15 @@ namespace Chroma
 	  //
 	  swatch.reset();
 	  swatch.start();
+	  map_obj.openRead();
 	  QDPIO::cout << "Extract matrix elements" << endl;
 
-	  for(int spin_source=0; spin_source < Ns; ++spin_source)
-	  {
+	  for(int spin_source=0; spin_source < Ns; ++spin_source) {
+
 	    QDPIO::cout << "spin_source = " << spin_source << endl; 
 	  
-	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
-	    {
+	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink) {
+
 	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
 
 	      // Construct the keys and values. Have to hold the buffers here given that
@@ -545,6 +552,7 @@ namespace Chroma
 		LatticeColorVector vec_source;
 		{
 		  LatticeFermion tmp;
+		  QDPIO::cout << "MAP_OBJ LOOKUP" << endl << flush;
 		  map_obj.lookup(key,tmp);
 		  vec_source=peekSpin(tmp, spin_sink);
 		}
@@ -558,6 +566,7 @@ namespace Chroma
 		  for(int nn=0; nn < t_sources.size(); ++nn)
 		  {
 		    int t = t_sources[nn];
+		    QDPIO::cout << "RNG MAP LOOKUP" << endl << flush;
 		    Complex weight; rng_map_obj.lookup(t,weight);
 		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(weight) * hsum[t];
 		  }
@@ -571,15 +580,19 @@ namespace Chroma
 		int t = t_sources[nn];
 		qdp_db.insert(buf[nn].key, buf[nn].val);
 	      }
+	      
 
 	    } // for spin_sink
 	  } // for spin_source
+	  rng_map_obj.closeRead(); // Done reading from rng_map_obj
+	  map_obj.closeRead();
 
 	  swatch.stop();
 	  QDPIO::cout << "Matrix elements computed: time= " 
 		      << swatch.getTimeInSeconds() 
 		      << " secs" << endl;
 	} // tt
+
       }
       catch (const std::string& e) 
       {

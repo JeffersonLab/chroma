@@ -385,6 +385,7 @@ namespace Chroma
       
 	QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
 	swatch.start();
+	map_obj.openWrite(); // Prepare map obj for writing into
 
 	for(int t0(0);t0<params.param.src.t_sources.size();t0++){//loop over timeslices
 	  QDPIO::cout << name << ": Doing timeslice " ;
@@ -422,6 +423,7 @@ namespace Chroma
 	    }//colors
 	  }//spins
 	}//t0
+	map_obj.closeWrite();
 
 	swatch.stop();
 	QDPIO::cout << "  Propagators computed: time= " 

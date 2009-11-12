@@ -378,7 +378,7 @@ namespace Chroma
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
-
+	map_obj.openWrite(); // Open Map Object for writing
 	//
 	// Loop over the source color and spin, creating the source
 	// and calling the relevant propagator routines.
@@ -422,6 +422,8 @@ namespace Chroma
 	    } // for spin_source
 	  } // for colorvec_source
 	} // for t_source
+	
+	map_obj.closeWrite();
 
 	swatch.stop();
 	QDPIO::cout << "Propagators initialized: time= " 

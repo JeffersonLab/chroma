@@ -436,6 +436,8 @@ namespace Chroma
 	blocks.make(BlockFunc(decay_dir, params.param.contract.block_size));
 
 	// Loop over each operator 
+	map_obj.openWrite(); // prepare map obj for writing
+
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt];
@@ -483,7 +485,8 @@ namespace Chroma
 	    }//for block 
 	  } // for colorvec_source
 	} // for t_source
-	
+	map_obj.closeWrite();
+
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 

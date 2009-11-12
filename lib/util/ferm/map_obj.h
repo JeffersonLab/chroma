@@ -28,6 +28,24 @@ namespace Chroma
     virtual	
     ~MapObject() {}
 
+    //! Open object in read mode (lookups)
+    virtual
+    bool openRead(void) = 0;
+   
+    //! Close read mode
+    virtual 
+    bool closeRead(void) = 0;
+
+    
+    //! Open write mode (inserts)
+    virtual
+    bool openWrite(void) = 0;
+    
+    //! Close write mode
+    virtual
+    bool closeWrite(void) = 0;
+
+
     //! Exists?
     virtual
     bool exist(const K& key) const = 0;

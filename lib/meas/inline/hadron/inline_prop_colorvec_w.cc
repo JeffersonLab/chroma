@@ -413,7 +413,7 @@ namespace Chroma
       
 	QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
 	swatch.start();
-
+	map_obj.openWrite();
 	//
 	// Loop over the source color and spin, creating the source
 	// and calling the relevant propagator routines.
@@ -424,6 +424,7 @@ namespace Chroma
 
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, decay_dir);
+
 
 	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
@@ -465,6 +466,7 @@ namespace Chroma
 	  } // for colorvec_source
 	} // for t_source
 
+	map_obj.closeWrite();
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 
