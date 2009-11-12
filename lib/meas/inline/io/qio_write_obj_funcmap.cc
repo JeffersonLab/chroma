@@ -16,6 +16,7 @@
 #include "util/ferm/key_block_prop.h"
 #include "handle.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
 
 
 #include "actions/ferm/invert/containers.h"
@@ -455,15 +456,16 @@ namespace Chroma
 
       //! Write out a MapObject Type
       template<typename K, typename V>
-      void QIOWriteMapObj(const string& buffer_id,
-			  const string& file,
-			  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      void QIOWriteMapObjMemory(const string& buffer_id,
+				const string& file,
+				QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO writing
 	XMLBufferWriter file_xml, record_xml;
 
 	// A shorthand for the object
-	MapObject<K,V>& obj = *(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id));
+	MapObjectMemory<K,V>& obj = 
+	  dynamic_cast<MapObjectMemory<K,V>&>(*(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id)));
 
 	// Get the file XML and record XML out of the named buffer
 	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
@@ -474,7 +476,7 @@ namespace Chroma
 
 	// Use the iterators to run through the object, saving each 
 	// in a separate record
-	for(typename MapObject<K,V>::MapType_t::const_iterator mm = obj.begin();
+	for(typename MapObjectMemory<K,V>::MapType_t::const_iterator mm = obj.begin();
 	    mm != obj.end();
 	    ++mm)
 	{
@@ -540,12 +542,12 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
 	
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
-								      QIOWriteMapObj<KeyPropColorVec_t,LatticeFermion>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
+								      QIOWriteMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyGridPropLatticeFermion"), QIOWriteMapObj<KeyGridProp_t,LatticeFermion>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyGridPropLatticeFermion"), QIOWriteMapObjMemory<KeyGridProp_t,LatticeFermion>);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyBlockPropLatticeFermion"), QIOWriteMapObj<KeyBlockProp_t,LatticeFermion>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyBlockPropLatticeFermion"), QIOWriteMapObjMemory<KeyBlockProp_t,LatticeFermion>);
 
 	registered = true;
       }

@@ -18,8 +18,6 @@ namespace Chroma
   class MapObjectMemory : public MapObject<K,V>
   {
   public:
-    //! Map type convenience
-    typedef std::map<K,V> MapType_t;
 
     //! Default constructor
     MapObjectMemory() : readMode(false), writeMode(false) {}
@@ -143,7 +141,7 @@ namespace Chroma
     }
 			
     //! The number of elements
-    typename MapType_t::size_type size() const {return src_map.size();}
+    unsigned long size() const {return static_cast<unsigned long>(src_map.size());}
 
     //! Dump keys
     std::vector<K> dump() const {
@@ -156,18 +154,33 @@ namespace Chroma
       }
       return keys;
     }
-    
-    //! Usual begin iterator
-    typename MapType_t::const_iterator begin() const {return src_map.begin();}
 
+    /*! 
+     * These extend the bacis MapObject Interface. 
+     * The iterators are used to QIO the object
+     * Need to be public for now 
+     */
+
+    //! Usual begin iterator
+    //! Map type convenience
+    typedef std::map<K,V> MapType_t;
+    
+ 
+    typename MapType_t::const_iterator begin() const {return src_map.begin();}
+    
     //! Usual end iterator
-    typename MapType_t::const_iterator end() const {return src_map.end();}
+    typename MapType_t::const_iterator  end() const {return src_map.end();}
+
 
   private:
     //! Map of objects
     mutable MapType_t src_map;
+
     mutable bool readMode;
     mutable bool writeMode;
+
+
+
   };
 
 } // namespace Chroma

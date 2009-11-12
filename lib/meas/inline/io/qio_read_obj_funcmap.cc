@@ -453,9 +453,9 @@ namespace Chroma
 
       //! Read a MapObject Type
       template<typename K, typename V>
-      void QIOReadMapObj(const string& buffer_id,
-			 const string& file,
-			 QDP_serialparallel_t serpar)
+      void QIOReadMapObjMemory(const string& buffer_id,
+			       const string& file,
+			       QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO reading
 	XMLReader file_xml;
@@ -597,12 +597,12 @@ namespace Chroma
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								     QIOReadRitzPairsLatticeFermion);
 	
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
-								     QIOReadMapObj<KeyPropColorVec_t,LatticeFermion>);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
+								     QIOReadMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
 
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyGridPropLatticeFermion"), QIOReadMapObj<KeyGridProp_t,LatticeFermion>);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyGridPropLatticeFermion"), QIOReadMapObjMemory<KeyGridProp_t,LatticeFermion>);
 
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjectKeyBlockPropLatticeFermion"), QIOReadMapObj<KeyBlockProp_t,LatticeFermion>);
+	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyBlockPropLatticeFermion"), QIOReadMapObjMemory<KeyBlockProp_t,LatticeFermion>);
 
 	registered = true;
       }

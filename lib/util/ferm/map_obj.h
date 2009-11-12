@@ -12,14 +12,13 @@
 namespace Chroma
 {
 
+
   //----------------------------------------------------------------------------
   //! A wrapper over maps
   template<typename K, typename V>
   class MapObject
   {
   public:
-    //! Map type convenience
-    typedef std::map<K,V> MapType_t;
 
     //! Default constructor
     MapObject() {}
@@ -60,19 +59,12 @@ namespace Chroma
 
     //! Size of Map
     virtual
-    typename MapType_t::size_type size() const = 0;
+    unsigned long size() const = 0;
 
     //! Dump keys
     virtual
     std::vector<K> dump() const = 0;
 
-    //! Usual begin iterator
-    virtual
-    typename MapType_t::const_iterator begin() const = 0; 
-
-    //! Usual end iterator
-    virtual
-    typename MapType_t::const_iterator end() const = 0;
   };
 
 } // namespace Chroma
