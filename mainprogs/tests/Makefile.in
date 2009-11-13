@@ -67,7 +67,7 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_dwflocality$(EXEEXT) t_precact_4d$(EXEEXT) \
 	t_precact_5d$(EXEEXT) t_gauge_force$(EXEEXT) \
 	t_stout_state$(EXEEXT) t_aniso_gaugeact$(EXEEXT) \
-	t_temp_prec$(EXEEXT)
+	t_temp_prec$(EXEEXT) t_map_obj_disk$(EXEEXT)
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -387,6 +387,13 @@ am_t_lwldslash_sse_OBJECTS = t_lwldslash_sse.$(OBJEXT)
 t_lwldslash_sse_OBJECTS = $(am_t_lwldslash_sse_OBJECTS)
 t_lwldslash_sse_LDADD = $(LDADD)
 t_lwldslash_sse_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_map_obj_disk_OBJECTS = t_map_obj_disk.$(OBJEXT)
+t_map_obj_disk_OBJECTS = $(am_t_map_obj_disk_OBJECTS)
+t_map_obj_disk_LDADD = $(LDADD)
+t_map_obj_disk_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -739,13 +746,13 @@ SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 	$(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
-	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_monomial_force_SOURCES) \
-	$(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) \
-	$(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
-	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
-	$(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) \
-	$(t_prec_nef_SOURCES) \
+	$(t_lwldslash_sse_SOURCES) $(t_map_obj_disk_SOURCES) \
+	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
+	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
+	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
+	$(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) \
+	$(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) \
 	$(t_prec_twoflav_wilson_monomial_SOURCES) \
 	$(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) \
 	$(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) \
@@ -782,13 +789,13 @@ DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
-	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
-	$(t_mesplq_SOURCES) $(t_monomial_force_SOURCES) \
-	$(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) \
-	$(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
-	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
-	$(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) \
-	$(t_prec_nef_SOURCES) \
+	$(t_lwldslash_sse_SOURCES) $(t_map_obj_disk_SOURCES) \
+	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
+	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
+	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
+	$(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) \
+	$(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) \
 	$(t_prec_twoflav_wilson_monomial_SOURCES) \
 	$(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) \
 	$(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) \
@@ -1078,6 +1085,7 @@ t_clover_SOURCES = t_clover.cc
 t_db_SOURCES = t_db.cc
 t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
+t_map_obj_disk_SOURCES = t_map_obj_disk.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
@@ -1277,6 +1285,9 @@ t_lwldslash_pab$(EXEEXT): $(t_lwldslash_pab_OBJECTS) $(t_lwldslash_pab_DEPENDENC
 t_lwldslash_sse$(EXEEXT): $(t_lwldslash_sse_OBJECTS) $(t_lwldslash_sse_DEPENDENCIES) 
 	@rm -f t_lwldslash_sse$(EXEEXT)
 	$(CXXLINK) $(t_lwldslash_sse_OBJECTS) $(t_lwldslash_sse_LDADD) $(LIBS)
+t_map_obj_disk$(EXEEXT): $(t_map_obj_disk_OBJECTS) $(t_map_obj_disk_DEPENDENCIES) 
+	@rm -f t_map_obj_disk$(EXEEXT)
+	$(CXXLINK) $(t_map_obj_disk_OBJECTS) $(t_map_obj_disk_LDADD) $(LIBS)
 t_mesons_w$(EXEEXT): $(t_mesons_w_OBJECTS) $(t_mesons_w_DEPENDENCIES) 
 	@rm -f t_mesons_w$(EXEEXT)
 	$(CXXLINK) $(t_mesons_w_OBJECTS) $(t_mesons_w_LDADD) $(LIBS)
@@ -1459,6 +1470,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_new.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_monomial_force.Po@am__quote@
