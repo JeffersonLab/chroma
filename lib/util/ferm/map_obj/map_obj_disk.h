@@ -11,7 +11,8 @@
 #include "util/ferm/map_obj.h"
 #include <string>
 
-#define DISK_OBJ_DEBUGGING 1
+//#define DISK_OBJ_DEBUGGING 1
+#undef DISK_OBJ_DEBUGGING
 
 using namespace QDP;
 
@@ -67,18 +68,25 @@ namespace Chroma
       if ( !writer.is_open() ) {
 	if( !reader.is_open() )  { 
 
+	  
+	  QDPIO::cout << "MapObjectDisk: opening file " << p.getFileName() << " for read access" << endl;
+
 	  // Open the reader
 	  reader.open(p.getFileName());
+
+	  QDPIO::cout << "MapObjectDisk: reading and checking header" << endl;
 	  BinaryReader::pos_type md_start = readCheckHeader();
 	  
 	  // Seek to metadata
-	  reader.seek(md_start);
+
+	  QDPIO::cout << "MapObjectDisk: reading key/fileposition data" << endl;
 
 	  /* Read the map in (metadata) */
-	  readMapBinary();
+	  readMapBinary(md_start);
 
 	  /* And we are done */
 	  ret_val = true;
+	  QDPIO::cout << "MapObjectDisk: openRead() successful" << endl;
 	}
 	else { 
 	  QDPIO::cerr << "MapObjectDisk: Already Open in read mode" << endl;
@@ -98,6 +106,7 @@ namespace Chroma
       bool ret_val = true;
       if( reader.is_open() ) {
 	reader.close();
+	QDPIO::cout << "MapObjectDisk: closed file " << p.getFileName() <<" for read access" << endl;
 	ret_val = true;
       }
       else {
@@ -112,6 +121,8 @@ namespace Chroma
       bool ret_val = true;
       if( !reader.is_open()  ) {
 	if( !writer.is_open() ) { 
+	  QDPIO::cout << "MapObjectDisk: opening file " << p.getFileName() << " for writing" << endl;
+
 	  writer.open(p.getFileName());
 
 	  /* Write a MAGIC NUMBER (filetype) and leave space for an
@@ -126,15 +137,15 @@ namespace Chroma
 	      write(writer, magic[tpos]);
 	    }
 	  }
-	  QDPIO::cout << "Wrote magic. Position is now: " << writer.currentPosition() << endl;
 
 #ifdef DISK_OBJ_DEBUGGING
-	  QDPIO::cout << "Writing File version number" << endl;
+	  QDPIO::cout << "Wrote magic. Current Position: " << writer.currentPosition() << endl;
 #endif
-	  write(writer, (unsigned long)file_version);
 
-	  QDPIO::cout << "Wrote Version. Current position is: " << writer.currentPosition() << endl;
-
+	  write(writer, (file_version_t)file_version);
+#ifdef DISK_OBJ_DEBUGGING
+	  QDPIO::cout << "Wrote Version. Current Position is: " << writer.currentPosition() << endl;
+#endif
 	  BinaryReader::pos_type dummypos = static_cast<BinaryReader::pos_type>(writer.currentPosition());
 
 
@@ -143,7 +154,8 @@ namespace Chroma
 	    QDPIO::cout << "Sanity Check 1" << endl; ;
 	    BinaryWriter::pos_type cur_pos = writer.currentPosition();
 	    if ( cur_pos != 
-		 file_magic.length()+sizeof(unsigned long) ) {
+		 static_cast<BinaryReader::pos_type>(file_magic.length())
+		 +static_cast<BinaryReader::pos_type>(sizeof(file_version_t)) ) {
 	      
 	      QDPIO::cout << "ERROR: Sanity Check 1 failed." << endl;
 	      QDP_abort(1);
@@ -153,22 +165,25 @@ namespace Chroma
 
 	  /* Write a dummy link - make room for it */
 	  writer.writeArray((char *)&dummypos, sizeof(BinaryReader::pos_type), 1);
-	  QDPIO::cout << "Wrote dummy link: Current position " << writer.currentPosition() << endl;
 
 #ifdef DISK_OBJ_DEBUGGING
+	  QDPIO::cout << "Wrote dummy link: Current Position " << writer.currentPosition() << endl;
 	  {
-	    QDPIO::cout << "Sanity Check 2" ;
+	    QDPIO::cout << "Sanity Check 2" << endl;
 	    BinaryWriter::pos_type cur_pos = writer.currentPosition();
 	    if ( cur_pos != 
-		 file_magic.length()+sizeof(unsigned long) + sizeof(BinaryReader::pos_type) ) {
+		 static_cast<BinaryReader::pos_type>(file_magic.length())
+		 + static_cast<BinaryReader::pos_type>(sizeof(file_version_t))
+		 + static_cast<BinaryReader::pos_type>(sizeof(BinaryReader::pos_type)) ) {
 	      QDPIO::cout << "Cur pos = " << cur_pos << endl;
-	      QDPIO::cout << "Expected: " <<  file_magic.length()+sizeof(unsigned long) + sizeof(BinaryReader::pos_type) << endl;
+	      QDPIO::cout << "Expected: " <<  file_magic.length()+sizeof(file_version_t) + sizeof(BinaryReader::pos_type) << endl;
 	      QDPIO::cout << "ERROR: Sanity Check 2 failed." << endl;
 	      QDP_abort(1);
 	    }
 	  }
 #endif
 	  /* We're done -- ready to start writing */
+	  QDPIO::cout << "MapObjectDisk: openWrite() Successful." << endl;
 	  ret_val = true;
 	}
 	else { 
@@ -191,23 +206,44 @@ namespace Chroma
 	BinaryReader::pos_type metadata_start =
 	  static_cast<BinaryReader::pos_type>( writer.currentPosition() );
 
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Beginning closeWrite: Metadata starts at position: "<<metadata_start << endl;
+#endif
 	/*
 	 *  write out metadata dump
 	 */
+	writeMapBinary();
 
 	/* Rewind and Skip header */
 	writer.rewind();
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Rewound file. Current Position: " << writer.currentPosition() << endl;
+#endif
+
 	writeSkipHeader();
 
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Skipped Header. Current Position: " << writer.currentPosition() << endl;
+#endif
+
 	/* write start position of metadata */
-	write(writer, metadata_start);
+	writer.writeArray((const char *)&metadata_start,sizeof(BinaryReader::pos_type),1);
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Wrote link to metadata. Current Position: " << writer.currentPosition() << endl;
+#endif
 
 	/* skip to end */
 	writer.seekEnd(0);
-	   
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Sought end of file" << endl;
+#endif 
 	/* Close */
 	writer.close();
-	
+
+	QDPIO::cout << "MapObjectDisk: Closed file" << p.getFileName() << " for write access" <<  endl;
+
 	ret_val = true;
       }
       else { 
@@ -247,9 +283,12 @@ namespace Chroma
 
 	// Add position to the map
 	src_map.insert(std::make_pair(key,rpos));
-
 	// Write object to disk
 	write(writer, val);
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Wrote value to disk. Current Position: " << writer.currentPosition() << endl;
+#endif
 	
       }
       else { 
@@ -291,20 +330,25 @@ namespace Chroma
     //! Dump keys
     std::vector<K> dump() const {
       std::vector<K> keys;
-      typename MapType_t::const_iterator iter;
-      for(iter  = src_map.begin();
-	  iter != src_map.end();
-	  ++iter) { 
-	keys.push_back(iter->first);
+      if( reader.is_open() || writer.is_open() ) {
+	
+	typename MapType_t::const_iterator iter;
+	for(iter  = src_map.begin();
+	    iter != src_map.end();
+	    ++iter) { 
+	  keys.push_back(iter->first);
+	}
       }
       return keys;
+
     }
     
 
   private:
+    typedef unsigned int file_version_t;
 
     std::string file_magic;
-    unsigned long file_version;
+    file_version_t file_version;
 
     //! Map type convenience
     /* NB: An interesting question is whether I should use the 
@@ -329,7 +373,7 @@ namespace Chroma
     //! Skip past header
     void writeSkipHeader(void) { 
       if ( writer.is_open() ) { 
-	writer.seek( file_magic.length() + sizeof(unsigned long) );
+	writer.seek( file_magic.length() + sizeof(file_version_t) );
       }
       else { 
 	QDPIO::cerr << "Attempting writeSkipHeader, not in write mode" <<endl;
@@ -341,24 +385,43 @@ namespace Chroma
     BinaryReader::pos_type readCheckHeader(void) {
       BinaryReader::pos_type md_position = 0;
       if( reader.is_open() ) {
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Rewinding File" << endl;
+#endif
+
 	reader.rewind();
+
+
 	char* read_magic = new char[ file_magic.length()+1 ];
-	for(int c=0; c < file_magic.length(); c++) { 
-	  read(reader, read_magic[c]);
-	}
-	unsigned long read_version;
-	read(reader, read_version);
+	reader.readArray(read_magic, sizeof(char), file_magic.length());
+	read_magic[file_magic.length()]='\0';
 
 	// Check magic
-	read_magic[file_magic.length()]='\0';
-	std::string read_magic_str(read_magic);
-	if (read_magic_str != file_magic) { 
-	  QDPIO::cerr << "Magic String Wrong: Expected: " << file_magic << " but read: " << read_magic_str << endl;
-	  QDP_abort(1);
+	{
+	  std::string read_magic_str(read_magic);
+	  if (read_magic_str != file_magic) { 
+	    QDPIO::cerr << "Magic String Wrong: Expected: " << file_magic << " but read: " << read_magic_str << endl;
+	    QDP_abort(1);
+	  }
 	}
+	delete [] read_magic;
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Read File Verion. Current Position: " << reader.currentPosition() << endl;
+#endif
+
+
+	file_version_t read_version;
+	read(reader, read_version);
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Read File Verion. Current Position: " << reader.currentPosition() << endl;
+#endif
+
 
 	// Check version
-	QDPIO::cout << "Read version#: " << read_version << endl;
+	QDPIO::cout << "MapObjectDisk: file has version: " << read_version << endl;
 
 	// No version dependent case statement for now
 
@@ -366,6 +429,11 @@ namespace Chroma
 	// Read MD location
 	char* md_pos = new char [ sizeof(BinaryReader::pos_type) ];
 	reader.readArray(md_pos, sizeof(BinaryReader::pos_type), 1);
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Read MD Location. Current position: " << reader.currentPosition() << endl;
+#endif
+
 	md_position = static_cast< BinaryReader::pos_type >(*md_pos);
 	delete [] md_pos;
 
@@ -382,49 +450,64 @@ namespace Chroma
     //! Dump the map
     void writeMapBinary(void)  
     {
+      unsigned int map_size = src_map.size();
+      write(writer, map_size);
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << "Wrote map size: " << map_size << " entries.  Current position : " << writer.currentPosition() << endl;
+#endif
+
       typename MapType_t::const_iterator iter;
       for(iter  = src_map.begin();
 	  iter != src_map.end();
 	  ++iter) { 
-	write(writer, iter->first); 
-	write(writer, iter->second);
+
+	K key = iter->first;
+	BinaryReader::pos_type pos=iter->second;
+
+	write(writer, key); 
+	writer.writeArray((char *)&pos,sizeof(BinaryReader::pos_type),1);
+
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Wrote Key/Position pair:  Current Position: " << writer.currentPosition() << endl;
+#endif
+
       }
     }
 
     //! read the map 
     // assume positioned at start of map data
     // Private utility function -- no one else should use.
-    void readMapBinary(void)
+    void readMapBinary(const BinaryReader::pos_type& md_start)
     {
-      // Continue until we fail
-      int reccount = 0;
-      char* md_pos = new char [ sizeof(BinaryReader::pos_type ) ];
 
-      while( !reader.fail() )  {
+      reader.seek(md_start);
+#ifdef DISK_OBJ_DEBUGGING
+	  QDPIO::cout << "Sought start of metadata. Current position: " << reader.currentPosition() << endl;
+#endif
+
+
+      unsigned int num_records;
+
+      read(reader, num_records);
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << "Read num of entries: " << num_records << " records. Current Position: " << reader.currentPosition() << endl;
+#endif
+
+      for(unsigned int i=0; i < num_records; i++) { 
 	BinaryReader::pos_type rpos;
 	K key;
 	read(reader, key);
-	reader.readArray( md_pos, sizeof(BinaryReader::pos_type),1);
-	rpos = static_cast<BinaryReader::pos_type>(*md_pos);
-      
+	
+	reader.readArray( (char *)&rpos, sizeof(BinaryReader::pos_type),1);
 
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Read Key/Position pair. Current position: " << reader.currentPosition() << endl;
+
+#endif
 	// Add position to the map
 	src_map.insert(std::make_pair(key,rpos));
-
-
-	XMLBufferWriter buf_xml;
-	push(buf_xml, "Record");
-	write(buf_xml, "Key", key);
-	pop(buf_xml);
-	QDPIO::cout << "Read Record: "<< reccount
-		    << " XML: " << buf_xml.str() << endl;
-
-
-	reccount++;
       }
       
-      QDPIO::cout << "Read " << reccount <<" records into map" << endl;
-      delete [] md_pos;
     }
 
   };

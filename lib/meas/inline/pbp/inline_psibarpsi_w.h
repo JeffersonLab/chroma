@@ -1,8 +1,3 @@
-
-
-
-
-
 #ifndef __inline_psibarpsi_h__
 #define __inline_psibarpsi_h__
 
@@ -67,4 +62,6 @@ namespace Chroma
 };
 
 #endif
+
   
+

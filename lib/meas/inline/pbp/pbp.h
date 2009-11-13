@@ -1,7 +1,3 @@
-
-
-
-
 #ifndef __inline_pbp_h__
 #define __inline_pbp_h__
 
