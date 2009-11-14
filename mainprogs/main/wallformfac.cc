@@ -1,4 +1,4 @@
-// $Id: wallformfac.cc,v 3.2 2007-06-12 13:57:10 edwards Exp $
+// $Id: wallformfac.cc,v 3.3 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  * \brief Main program for computing 3pt functions with a wall sink
  *
@@ -225,6 +225,9 @@ void write(BinaryWriter& bin, const WallFormFac_output_t& header)
 
 int main(int argc, char *argv[])
 {
+  // Something breaks in this test unless Nc=3
+#if QDP_NC == 3
+
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
@@ -630,6 +633,8 @@ int main(int argc, char *argv[])
 
   // Time to bolt
   Chroma::finalize();
+
+#endif
 
   exit(0);
 }

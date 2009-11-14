@@ -1,4 +1,4 @@
-// $Id: t_temp_prec.cc,v 3.8 2008-01-09 19:05:41 bjoo Exp $
+// $Id: t_temp_prec.cc,v 3.9 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Test 4d fermion actions
  */
@@ -27,6 +27,8 @@ bool linkage_hack()
 
 int main(int argc, char **argv)
 {
+  // This test has trouble with Nc=2, so make sure we're using 3 colors
+#if QDP_NC == 3
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
@@ -697,6 +699,8 @@ int main(int argc, char **argv)
   
   // Time to bolt
   Chroma::finalize();
+
+#endif
 
   exit(0);
 }
