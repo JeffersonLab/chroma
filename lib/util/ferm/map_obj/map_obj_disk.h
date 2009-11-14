@@ -26,7 +26,7 @@ namespace Chroma
     //! Constructor: From XML
     MapObjectDiskParams(XMLReader& xml_in, const std::string path) {
       XMLReader paramtop(xml_in, path);
-      read(paramtop, "fileName", filename);
+      read(paramtop, "FileName", filename);
     }
 
     //! Constructor: from filename
@@ -408,7 +408,7 @@ namespace Chroma
 	delete [] read_magic;
 
 #ifdef DISK_OBJ_DEBUGGING
-	QDPIO::cout << "Read File Verion. Current Position: " << reader.currentPosition() << endl;
+	QDPIO::cout << "Read File Magic. Current Position: " << reader.currentPosition() << endl;
 #endif
 
 
@@ -427,17 +427,16 @@ namespace Chroma
 
 
 	// Read MD location
-	char* md_pos = new char [ sizeof(BinaryReader::pos_type) ];
-	reader.readArray(md_pos, sizeof(BinaryReader::pos_type), 1);
+	reader.readArray((char *)&md_position, sizeof(BinaryReader::pos_type), 1);
 
 #ifdef DISK_OBJ_DEBUGGING
 	QDPIO::cout << "Read MD Location. Current position: " << reader.currentPosition() << endl;
 #endif
 
-	md_position = static_cast< BinaryReader::pos_type >(*md_pos);
-	delete [] md_pos;
 
+#ifdef DISK_OBJ_DEBUGGING
 	QDPIO::cout << "Metadata starts at position: " << md_position << endl;
+#endif
 	
       }
       else { 

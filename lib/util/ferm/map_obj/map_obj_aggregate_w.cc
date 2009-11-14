@@ -7,6 +7,7 @@
 
 // Individual MapObj headers
 #include "util/ferm/map_obj/map_obj_memory_w.h"
+#include "util/ferm/map_obj/map_obj_disk_w.h"
 
 
 namespace Chroma {
@@ -20,6 +21,7 @@ namespace Chroma {
       bool success = true;
       if (!registeredKeyBlockPropLF) {
 	success &= Chroma::MapObjectMemoryEnv::registerKeyBlockPropLF();
+	success &= Chroma::MapObjectDiskEnv::registerKeyBlockPropLF();
 
 	registeredKeyBlockPropLF = true;
       }
@@ -34,6 +36,7 @@ namespace Chroma {
       bool success = true;
       if (!registeredKeyGridPropLF) {
 	success &= Chroma::MapObjectMemoryEnv::registerKeyGridPropLF();
+	success &= Chroma::MapObjectDiskEnv::registerKeyGridPropLF();
 
 	registeredKeyGridPropLF = true;
       }
@@ -46,6 +49,7 @@ namespace Chroma {
       bool success = true;
       if (!registeredKeyPropColorVecLF ) {
 	success &= Chroma::MapObjectMemoryEnv::registerKeyPropColorVecLF();
+	success &= Chroma::MapObjectDiskEnv::registerKeyPropColorVecLF();
 	
 	registeredKeyPropColorVecLF = true;
       }

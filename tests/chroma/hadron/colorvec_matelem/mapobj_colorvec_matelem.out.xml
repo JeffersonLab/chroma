@@ -1,0 +1,3454 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+<annotation>
+Lots of tasks to initialize colorvecs, write and read them as well
+as propagators. The create_colorvecs below is the task that produces
+vectors that are actually used.
+</annotation>
+
+    <elem>
+      <annotation>
+        Make a fake unit subset_vectors struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>UnitSubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, write and erase this object.
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>unit_subset_vectors_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a fake gaussian subset_vectors struct
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>stuff_to_erase</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>stuff_to_erase</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a fake gaussian map object holding propagator solutions
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, write and erase this object.
+      </annotation>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+      </NamedObject>
+    </elem>
+
+<annotation>
+This task will read eigevectors produced by  chroma_eig/laplace_eigs .
+Not used in this test, instead use create colorvecs below.
+   <elem>
+      <Name>EIGENINFO_LIME_COLORVEC_READ_NAMED_OBJECT</Name>
+      <File>
+        <file_names>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec0.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec1.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec2.lime</elem>
+        </file_names>
+      </File>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+</annotation>
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>20</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Save this copy
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>SINGLEFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <MapObject>
+	<MapObjType>MAP_OBJ_DISK</MapObjType>
+	<FileName>./prop_colorvec</FileName>
+      </MapObject>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec</prop_id>
+      </NamedObject>
+    </elem>
+
+    <!--
+    <elem>
+      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+        <object_type>MapObjMemoryKeyPropColorVecLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_colorvec.lime</file_name>
+      </File>
+    </elem>
+    -->
+
+    <elem>
+      <annotation>
+        Compute annihilation propagator solution vectors
+      </annotation>
+      <Name>ANNIH_PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources_start>0 1 2 3</t_sources_start>
+          <dt>4</dt>
+          <decay_dir>3</decay_dir>
+          <N>4</N>
+          <ran_seed>
+            <Seed>	
+              <elem>13</elem>
+              <elem>14</elem>
+              <elem>15</elem>
+              <elem>17</elem>
+            </Seed>
+          </ran_seed>
+          <mass_label>U0.05-rnd1</mass_label>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.05</Mass>
+           <clovCoeff>1.17</clovCoeff>
+           <clovCoeffR>0.91</clovCoeffR>
+           <clovCoeffT>1.07</clovCoeffT>
+           <AnisoParam>
+             <anisoP>true</anisoP>
+             <t_dir>3</t_dir>
+             <xi_0>2.464</xi_0>
+             <nu>0.95</nu>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_op_file>annih_prop.sdb</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute static propagator solution vectors
+      </annotation>
+      <Name>STATIC_PROP_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Param>
+      <MapObject>
+	<MapObjType>MAP_OBJ_DISK</MapObjType>
+	<FileName>./static_prop_colorvec</FileName>
+      </MapObject>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>static_prop_colorvec</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec</prop_id>
+        <prop_op_file>prop.sdb</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+        <mass_label>STATIC</mass_label>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>static_prop_colorvec</prop_id>
+        <prop_op_file>prop.sdb</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>static_prop_colorvec</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MESON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <orthog_basis>true</orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>0</elem>
+          <elem>1</elem>
+          <elem>-1</elem>
+          <elem>2</elem>
+          <elem>-2</elem>
+          <elem>3</elem>
+          <elem>-3</elem>
+          <elem>1 1</elem>
+          <elem>-1 -1</elem>
+          <elem>2 2</elem>
+          <elem>-2 -2</elem>
+          <elem>3 3</elem>
+          <elem>-3 -3</elem>
+          <elem>1 2</elem>
+          <elem>-1 2</elem>
+          <elem>1 -2</elem>
+          <elem>-1 -2</elem>
+          <elem>1 3</elem>
+          <elem>-1 3</elem>
+          <elem>1 -3</elem>
+          <elem>-1 -3</elem>
+          <elem>2 1</elem>
+          <elem>-2 1</elem>
+          <elem>2 -1</elem>
+          <elem>-2 -1</elem>
+          <elem>2 3</elem>
+          <elem>-2 3</elem>
+          <elem>2 -3</elem>
+          <elem>-2 -3</elem>
+          <elem>3 1</elem>
+          <elem>-3 1</elem>
+          <elem>3 -1</elem>
+          <elem>-3 -1</elem>
+          <elem>3 2</elem>
+          <elem>-3 2</elem>
+          <elem>3 -2</elem>
+          <elem>-3 -2</elem>
+          <elem>-3 -3 -3</elem>
+          <elem>-3 -3 -2</elem>
+          <elem>-3 -3 -1</elem>
+          <elem>-3 -3 1</elem>
+          <elem>-3 -3 2</elem>
+          <elem>-3 -2 -3</elem>
+          <elem>-3 -2 -2</elem>
+          <elem>-3 -2 -1</elem>
+          <elem>-3 -2 1</elem>
+          <elem>-3 -2 3</elem>
+          <elem>-3 -1 -3</elem>
+          <elem>-3 -1 -2</elem>
+          <elem>-3 -1 -1</elem>
+          <elem>-3 -1 2</elem>
+          <elem>-3 -1 3</elem>
+          <elem>-3 1 -3</elem>
+          <elem>-3 1 -2</elem>
+          <elem>-3 1 1</elem>
+          <elem>-3 1 2</elem>
+          <elem>-3 1 3</elem>
+          <elem>-3 2 -3</elem>
+          <elem>-3 2 -1</elem>
+          <elem>-3 2 1</elem>
+          <elem>-3 2 2</elem>
+          <elem>-3 2 3</elem>
+          <elem>-2 -3 -3</elem>
+          <elem>-2 -3 -2</elem>
+          <elem>-2 -3 -1</elem>
+          <elem>-2 -3 1</elem>
+          <elem>-2 -3 2</elem>
+          <elem>-2 -2 -3</elem>
+          <elem>-2 -2 -2</elem>
+          <elem>-2 -2 -1</elem>
+          <elem>-2 -2 1</elem>
+          <elem>-2 -2 3</elem>
+          <elem>-2 -1 -3</elem>
+          <elem>-2 -1 -2</elem>
+          <elem>-2 -1 -1</elem>
+          <elem>-2 -1 2</elem>
+          <elem>-2 -1 3</elem>
+          <elem>-2 1 -3</elem>
+          <elem>-2 1 -2</elem>
+          <elem>-2 1 1</elem>
+          <elem>-2 1 2</elem>
+          <elem>-2 1 3</elem>
+          <elem>-2 3 -2</elem>
+          <elem>-2 3 -1</elem>
+          <elem>-2 3 1</elem>
+          <elem>-2 3 2</elem>
+          <elem>-2 3 3</elem>
+          <elem>-1 -3 -3</elem>
+          <elem>-1 -3 -2</elem>
+          <elem>-1 -3 -1</elem>
+          <elem>-1 -3 1</elem>
+          <elem>-1 -3 2</elem>
+          <elem>-1 -2 -3</elem>
+          <elem>-1 -2 -2</elem>
+          <elem>-1 -2 -1</elem>
+          <elem>-1 -2 1</elem>
+          <elem>-1 -2 3</elem>
+          <elem>-1 -1 -3</elem>
+          <elem>-1 -1 -2</elem>
+          <elem>-1 -1 -1</elem>
+          <elem>-1 -1 2</elem>
+          <elem>-1 -1 3</elem>
+          <elem>-1 2 -3</elem>
+          <elem>-1 2 -1</elem>
+          <elem>-1 2 1</elem>
+          <elem>-1 2 2</elem>
+          <elem>-1 2 3</elem>
+          <elem>-1 3 -2</elem>
+          <elem>-1 3 -1</elem>
+          <elem>-1 3 1</elem>
+          <elem>-1 3 2</elem>
+          <elem>-1 3 3</elem>
+          <elem>1 -3 -3</elem>
+          <elem>1 -3 -2</elem>
+          <elem>1 -3 -1</elem>
+          <elem>1 -3 1</elem>
+          <elem>1 -3 2</elem>
+          <elem>1 -2 -3</elem>
+          <elem>1 -2 -2</elem>
+          <elem>1 -2 -1</elem>
+          <elem>1 -2 1</elem>
+          <elem>1 -2 3</elem>
+          <elem>1 1 -3</elem>
+          <elem>1 1 -2</elem>
+          <elem>1 1 1</elem>
+          <elem>1 1 2</elem>
+          <elem>1 1 3</elem>
+          <elem>1 2 -3</elem>
+          <elem>1 2 -1</elem>
+          <elem>1 2 1</elem>
+          <elem>1 2 2</elem>
+          <elem>1 2 3</elem>
+          <elem>1 3 -2</elem>
+          <elem>1 3 -1</elem>
+          <elem>1 3 1</elem>
+          <elem>1 3 2</elem>
+          <elem>1 3 3</elem>
+          <elem>2 -3 -3</elem>
+          <elem>2 -3 -2</elem>
+          <elem>2 -3 -1</elem>
+          <elem>2 -3 1</elem>
+          <elem>2 -3 2</elem>
+          <elem>2 -1 -3</elem>
+          <elem>2 -1 -2</elem>
+          <elem>2 -1 -1</elem>
+          <elem>2 -1 2</elem>
+          <elem>2 -1 3</elem>
+          <elem>2 1 -3</elem>
+          <elem>2 1 -2</elem>
+          <elem>2 1 1</elem>
+          <elem>2 1 2</elem>
+          <elem>2 1 3</elem>
+          <elem>2 2 -3</elem>
+          <elem>2 2 -1</elem>
+          <elem>2 2 1</elem>
+          <elem>2 2 2</elem>
+          <elem>2 2 3</elem>
+          <elem>2 3 -2</elem>
+          <elem>2 3 -1</elem>
+          <elem>2 3 1</elem>
+          <elem>2 3 2</elem>
+          <elem>2 3 3</elem>
+          <elem>3 -2 -3</elem>
+          <elem>3 -2 -2</elem>
+          <elem>3 -2 -1</elem>
+          <elem>3 -2 1</elem>
+          <elem>3 -2 3</elem>
+          <elem>3 -1 -3</elem>
+          <elem>3 -1 -2</elem>
+          <elem>3 -1 -1</elem>
+          <elem>3 -1 2</elem>
+          <elem>3 -1 3</elem>
+          <elem>3 1 -3</elem>
+          <elem>3 1 -2</elem>
+          <elem>3 1 1</elem>
+          <elem>3 1 2</elem>
+          <elem>3 1 3</elem>
+          <elem>3 2 -3</elem>
+          <elem>3 2 -1</elem>
+          <elem>3 2 1</elem>
+          <elem>3 2 2</elem>
+          <elem>3 2 3</elem>
+          <elem>3 3 -2</elem>
+          <elem>3 3 -1</elem>
+          <elem>3 3 1</elem>
+          <elem>3 3 2</elem>
+          <elem>3 3 3</elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <meson_op_file>meson.sdb</meson_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MESON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <orthog_basis>true</orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>0</elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <meson_op_file>meson.sdb</meson_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>BARYON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>0</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem><left>1</left><middle>-3</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>0</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-3 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-2 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>-1 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 -3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 -2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 -1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 3</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>-3</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>1</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>2</right></elem>
+          <elem><left>0</left><middle>-3</middle><right>3</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>-2</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>1</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>2</right></elem>
+          <elem><left>0</left><middle>-2</middle><right>3</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>-1</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>1</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>2</right></elem>
+          <elem><left>0</left><middle>-1</middle><right>3</right></elem>
+          <elem><left>0</left><middle>1</middle><right>1</right></elem>
+          <elem><left>0</left><middle>1</middle><right>2</right></elem>
+          <elem><left>0</left><middle>1</middle><right>3</right></elem>
+          <elem><left>0</left><middle>2</middle><right>2</right></elem>
+          <elem><left>0</left><middle>2</middle><right>3</right></elem>
+          <elem><left>0</left><middle>3</middle><right>3</right></elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <baryon_op_file>baryon.sdb</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>BARYON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>0</right>
+          </elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <baryon_op_file>baryon.sdb</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GENPROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <restrict_plateau>true</restrict_plateau>
+        <avg_equiv_mom>false</avg_equiv_mom>
+        <num_vecs>10</num_vecs>
+        <mom2_max>2</mom2_max>
+        <mom_offset>0 0 0</mom_offset>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+        <displacement_length>1</displacement_length>
+
+        <!-- List of displacements and Gamma matrices -->
+        <DisplacementGammaList>
+          <elem>
+            <gamma>1</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
+            <displacement/>
+          </elem>
+        </DisplacementGammaList>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_prop_id>prop_colorvec</source_prop_id>
+        <sink_prop_id>prop_colorvec</sink_prop_id>
+        <genprop_op_file>genprop.sdb</genprop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GENPROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <restrict_plateau>true</restrict_plateau>
+        <avg_equiv_mom>true</avg_equiv_mom>
+        <num_vecs>10</num_vecs>
+        <mom2_max>3</mom2_max>
+        <mom_offset>0 0 0</mom_offset>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+        <displacement_length>1</displacement_length>
+
+        <!-- List of displacements and Gamma matrices -->
+        <DisplacementGammaList>
+          <elem>
+            <gamma>1</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
+            <displacement/>
+          </elem>
+        </DisplacementGammaList>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_prop_id>prop_colorvec</source_prop_id>
+        <sink_prop_id>prop_colorvec</sink_prop_id>
+        <genprop_op_file>genprop_avg.sdb</genprop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes, erase this object.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec</object_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.36.1</chroma>
+      <qdp>1.35.0</qdp>
+      <basePrecision>32</basePrecision>
+    </code_version>
+    <run_date>13 Nov 09 22:00:00 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 16</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 16</subgrid_size>
+      <total_volume>1024</total_volume>
+      <subgrid_volume>1024</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.99469234189342</w_plaq>
+    <s_plaq>0.994655949626273</s_plaq>
+    <t_plaq>0.994728734160567</t_plaq>
+    <plane_01_plaq>0.994607786861403</plane_01_plaq>
+    <plane_02_plaq>0.994706784918283</plane_02_plaq>
+    <plane_12_plaq>0.994653277099133</plane_12_plaq>
+    <plane_03_plaq>0.994816071431463</plane_03_plaq>
+    <plane_13_plaq>0.994653896176411</plane_13_plaq>
+    <plane_23_plaq>0.994716234873825</plane_23_plaq>
+    <link>0.379335756108048</link>
+    <pollp>
+      <elem>
+        <re>0.967019850271754</re>
+        <im>-0.0012544684960479</im>
+      </elem>
+      <elem>
+        <re>0.966751460218802</re>
+        <im>-0.00118624364673299</im>
+      </elem>
+      <elem>
+        <re>0.966476668661926</re>
+        <im>-0.00128317259532196</im>
+      </elem>
+      <elem>
+        <re>0.585677024607624</re>
+        <im>-0.0676213780416977</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>unit_subset_vectors_0</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>unit_subset_vectors_0</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>unit_subset_vectors_0</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>stuff_to_erase</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <gaussian_init_named_obj>
+        <update_no>0</update_no>
+      </gaussian_init_named_obj>
+    </elem>
+    <elem>
+      <qio_write_erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </qio_write_erase_named_obj>
+    </elem>
+    <elem>
+      <qio_read_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </qio_read_named_obj>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <CreateColorVecs>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:01 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <num_iter>50</num_iter>
+            <num_orthog>20</num_orthog>
+            <width>3</width><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <Source_correlators>
+          <source_corrs>
+            <elem>1.00000000217803 0.999999996419621 1.00000000288234 0.999999999020112 0.999999999140298 0.999999996678833 0.99999999730402 0.999999998255878 0.999999997356292 0.999999991888167 1.00000000172974 0.999999998265122 0.999999999583601 0.999999995652791 0.999999996123875 1.00000000293216</elem>
+            <elem>1.00000000000704 0.9999999993402 1.00000000036113 0.999999995631145 1.00000000424837 1.00000000215566 0.999999996154619 1.00000000048008 1.00000000354155 1.00000000427348 1.00000000371789 1.0000000014547 0.999999998976867 1.00000000245105 1.0000000013401 0.999999998057785</elem>
+            <elem>1.00000000168709 1.00000000132481 0.99999999815395 0.999999992564934 0.999999995920311 1.00000000648575 0.999999999697864 0.999999999455554 1.00000000531025 0.999999998905524 1.0000000018834 1.00000000202597 1.00000000259392 0.999999993780822 1.00000000189504 0.999999991355733</elem>
+            <elem>0.999999995313972 1.00000000629376 0.999999998686456 0.999999996844402 1.00000000357472 0.999999999979671 1.00000000393541 1.00000000206168 1.0000000026196 1.00000000491313 0.999999999197393 0.999999993500222 0.999999999890916 1.00000000265299 0.999999993781443 0.999999998227839</elem>
+            <elem>0.999999998074642 1.00000000077439 0.999999993633009 0.999999996862155 1.00000000201864 1.00000000375265 0.999999998485465 0.999999998266715 1.00000000173104 1.0000000021927 0.999999991419888 1.0000000038524 1.00000000033589 0.999999989351916 0.999999999885048 1.00000000115484</elem>
+            <elem>1.00000000145774 0.99999999866951 0.999999999684343 1.00000000187804 1.00000000233649 1.00000000635121 0.999999996791854 1.0000000006279 1.00000000291737 0.999999997207853 1.00000000128929 0.999999998223338 1.00000000052504 1.00000000133582 0.999999993021223 0.999999996459516</elem>
+            <elem>0.999999995560594 0.999999995864062 1.00000000201742 0.999999995664177 0.999999995151656 1.00000000394773 1.00000000269358 1.00000000359672 1.00000000215127 0.999999994317572 1.00000000181132 1.00000000518927 1.00000000028975 0.999999999535041 0.999999995524407 1.00000000639175</elem>
+            <elem>1.00000000020827 0.99999999660846 0.999999994286994 1.00000000804693 0.999999999844704 1.00000000152734 0.999999996434602 1.00000000178809 1.00000000328375 1.00000000530026 0.999999999450942 1.00000000047739 1.0000000009198 1.00000000366067 0.999999999238482 1.00000000267943</elem>
+            <elem>1.0000000057496 0.999999998842983 1.00000000118675 1.00000000211858 1.00000000124481 1.00000000090779 1.00000000563658 1.00000000583104 0.999999996078308 0.999999994408539 0.99999999407595 0.99999999876359 1.0000000063283 0.999999996156044 1.00000000042249 0.999999998127411</elem>
+            <elem>0.999999997606007 1.00000000402488 1.00000000975064 1.00000000935301 0.999999998810131 0.999999996427109 0.999999999832536 1.00000001098594 0.999999999320811 0.999999997340719 0.999999999332999 0.999999998145668 0.99999999371804 0.999999998224261 1.00000000790772 1.00000000450088</elem>
+          </source_corrs>
+        </Source_correlators>
+        <SmearingEvals>
+          <Vector>
+            <VecNo>0</VecNo>
+            <Evals>0.006179731 0.004235499 0.006890957 0.006978562 0.003369367 0.007931778 0.007618249 0.004890935 0.0037413 0.004538557 0.008431635 0.002967673 0.003943169 0.008238213 0.009129907 0.004159609</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>1</VecNo>
+            <Evals>0.01020206 0.009607747 0.01034332 0.008571605 0.01098245 0.004748584 0.01069764 0.01725223 0.01142896 0.008743392 0.01034517 0.01091543 0.01239308 0.01454897 0.01511485 0.01470429</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>2</VecNo>
+            <Evals>0.01640751 0.0181866 0.01558826 0.01676836 0.01809237 0.01961686 0.01410775 0.01019733 0.01800288 0.01860424 0.01354944 0.01804533 0.01644649 0.009748381 0.008050944 0.01364582</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>3</VecNo>
+            <Evals>1.848126 1.851043 1.846986 1.852695 1.850252 1.85172 1.848486 1.850234 1.84313 1.851207 1.851164 1.851829 1.846996 1.84747 1.851759 1.852206</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>4</VecNo>
+            <Evals>1.850837 1.85156 1.855348 1.850899 1.849834 1.853638 1.850052 1.850213 1.850737 1.856328 1.853355 1.853954 1.851293 1.865999 1.849883 1.854548</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>5</VecNo>
+            <Evals>1.864175 1.855018 1.858219 1.853238 1.881671 1.873055 1.852593 1.850777 1.851511 1.853724 1.86317 1.850236 1.849635 1.872188 1.857341 1.85141</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>6</VecNo>
+            <Evals>1.877746 1.883444 1.887583 1.886062 1.85737 1.865977 1.890448 1.887671 1.889898 1.884436 1.881958 1.887493 1.890138 1.863693 1.885126 1.879898</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>7</VecNo>
+            <Evals>1.891129 1.887644 1.886601 1.886839 1.890216 1.883526 1.886103 1.892391 1.892052 1.888443 1.879382 1.892188 1.89082 1.88767 1.888386 1.890051</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>8</VecNo>
+            <Evals>1.886428 1.889015 1.881054 1.89088 1.892033 1.895396 1.891556 1.897748 1.901863 1.885981 1.899189 1.897785 1.903919 1.882599 1.88638 1.890014</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>9</VecNo>
+            <Evals>1.94962 1.957486 1.948822 1.953934 1.951216 1.945168 1.949672 1.947115 1.934657 1.957839 1.945661 1.944682 1.939847 1.947171 1.953879 1.95649</Evals>
+          </Vector>
+        </SmearingEvals>
+      </CreateColorVecs>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigeninfo_0</object_id>
+      </qio_write_named_obj>
+    </elem>
+    <elem>
+      <PropColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:03 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <Propagator>
+              <version>9</version>
+              <quarkSpinType>FULL</quarkSpinType>
+              <obsvP>false</obsvP><FermionAction>
+      <FermAct>CLOVER</FermAct>
+      <Mass>0.1</Mass>
+      <clovCoeff>1.0</clovCoeff>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Propagator>
+            <Contractions>
+              <num_vecs>10</num_vecs>
+              <t_sources>0 3</t_sources>
+              <decay_dir>3</decay_dir>
+            </Contractions>
+          </Param><MapObject>
+      <MapObjType>MAP_OBJ_DISK</MapObjType>
+      <FileName>./prop_colorvec</FileName>
+    </MapObject>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <prop_id>prop_colorvec</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
+
+        </Source_file_info>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.006179731 0.004235499 0.006890957 0.006978562 0.003369367 0.007931778 0.007618249 0.004890935 0.0037413 0.004538557 0.008431635 0.002967673 0.003943169 0.008238213 0.009129907 0.004159609</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.01020206 0.009607747 0.01034332 0.008571605 0.01098245 0.004748584 0.01069764 0.01725223 0.01142896 0.008743392 0.01034517 0.01091543 0.01239308 0.01454897 0.01511485 0.01470429</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.01640751 0.0181866 0.01558826 0.01676836 0.01809237 0.01961686 0.01410775 0.01019733 0.01800288 0.01860424 0.01354944 0.01804533 0.01644649 0.009748381 0.008050944 0.01364582</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>1.848126 1.851043 1.846986 1.852695 1.850252 1.85172 1.848486 1.850234 1.84313 1.851207 1.851164 1.851829 1.846996 1.84747 1.851759 1.852206</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>1.850837 1.85156 1.855348 1.850899 1.849834 1.853638 1.850052 1.850213 1.850737 1.856328 1.853355 1.853954 1.851293 1.865999 1.849883 1.854548</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>1.864175 1.855018 1.858219 1.853238 1.881671 1.873055 1.852593 1.850777 1.851511 1.853724 1.86317 1.850236 1.849635 1.872188 1.857341 1.85141</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>1.877746 1.883444 1.887583 1.886062 1.85737 1.865977 1.890448 1.887671 1.889898 1.884436 1.881958 1.887493 1.890138 1.863693 1.885126 1.879898</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>1.891129 1.887644 1.886601 1.886839 1.890216 1.883526 1.886103 1.892391 1.892052 1.888443 1.879382 1.892188 1.89082 1.88767 1.888386 1.890051</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>1.886428 1.889015 1.881054 1.89088 1.892033 1.895396 1.891556 1.897748 1.901863 1.885981 1.899189 1.897785 1.903919 1.882599 1.88638 1.890014</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>1.94962 1.957486 1.948822 1.953934 1.951216 1.945168 1.949672 1.947115 1.934657 1.957839 1.945661 1.944682 1.939847 1.947171 1.953879 1.95649</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
+
+        </Source_record_info>
+        <Source_correlators>
+          <source_corrs>
+            <elem>1.00000000217803 0.999999996419621 1.00000000288234 0.999999999020112 0.999999999140298 0.999999996678833 0.99999999730402 0.999999998255878 0.999999997356292 0.999999991888167 1.00000000172974 0.999999998265122 0.999999999583601 0.999999995652791 0.999999996123875 1.00000000293216</elem>
+            <elem>1.00000000000704 0.9999999993402 1.00000000036113 0.999999995631145 1.00000000424837 1.00000000215566 0.999999996154619 1.00000000048008 1.00000000354155 1.00000000427348 1.00000000371789 1.0000000014547 0.999999998976867 1.00000000245105 1.0000000013401 0.999999998057785</elem>
+            <elem>1.00000000168709 1.00000000132481 0.99999999815395 0.999999992564934 0.999999995920311 1.00000000648575 0.999999999697864 0.999999999455554 1.00000000531025 0.999999998905524 1.0000000018834 1.00000000202597 1.00000000259392 0.999999993780822 1.00000000189504 0.999999991355733</elem>
+            <elem>0.999999995313972 1.00000000629376 0.999999998686456 0.999999996844402 1.00000000357472 0.999999999979671 1.00000000393541 1.00000000206168 1.0000000026196 1.00000000491313 0.999999999197393 0.999999993500222 0.999999999890916 1.00000000265299 0.999999993781443 0.999999998227839</elem>
+            <elem>0.999999998074642 1.00000000077439 0.999999993633009 0.999999996862155 1.00000000201864 1.00000000375265 0.999999998485465 0.999999998266715 1.00000000173104 1.0000000021927 0.999999991419888 1.0000000038524 1.00000000033589 0.999999989351916 0.999999999885048 1.00000000115484</elem>
+            <elem>1.00000000145774 0.99999999866951 0.999999999684343 1.00000000187804 1.00000000233649 1.00000000635121 0.999999996791854 1.0000000006279 1.00000000291737 0.999999997207853 1.00000000128929 0.999999998223338 1.00000000052504 1.00000000133582 0.999999993021223 0.999999996459516</elem>
+            <elem>0.999999995560594 0.999999995864062 1.00000000201742 0.999999995664177 0.999999995151656 1.00000000394773 1.00000000269358 1.00000000359672 1.00000000215127 0.999999994317572 1.00000000181132 1.00000000518927 1.00000000028975 0.999999999535041 0.999999995524407 1.00000000639175</elem>
+            <elem>1.00000000020827 0.99999999660846 0.999999994286994 1.00000000804693 0.999999999844704 1.00000000152734 0.999999996434602 1.00000000178809 1.00000000328375 1.00000000530026 0.999999999450942 1.00000000047739 1.0000000009198 1.00000000366067 0.999999999238482 1.00000000267943</elem>
+            <elem>1.0000000057496 0.999999998842983 1.00000000118675 1.00000000211858 1.00000000124481 1.00000000090779 1.00000000563658 1.00000000583104 0.999999996078308 0.999999994408539 0.99999999407595 0.99999999876359 1.0000000063283 0.999999996156044 1.00000000042249 0.999999998127411</elem>
+            <elem>0.999999997606007 1.00000000402488 1.00000000975064 1.00000000935301 0.999999998810131 0.999999996427109 0.999999999832536 1.00000001098594 0.999999999320811 0.999999997340719 0.999999999332999 0.999999998145668 0.99999999371804 0.999999998224261 1.00000000790772 1.00000000450088</elem>
+          </source_corrs>
+        </Source_correlators>
+        <Relaxation_Iterations>
+          <ncg_had>65</ncg_had>
+        </Relaxation_Iterations>
+      </PropColorVec>
+    </elem>
+    <elem>
+      <AnnihPropMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:10 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <Propagator>
+              <version>9</version>
+              <quarkSpinType>FULL</quarkSpinType>
+              <obsvP>false</obsvP><FermionAction>
+      <FermAct>CLOVER</FermAct>
+      <Mass>0.05</Mass>
+      <clovCoeff>1.17</clovCoeff>
+      <clovCoeffR>0.91</clovCoeffR>
+      <clovCoeffT>1.07</clovCoeffT>
+      <AnisoParam>
+        <anisoP>true</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>2.464</xi_0>
+        <nu>0.95</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Propagator>
+            <Contractions>
+              <num_vecs>10</num_vecs>
+              <t_sources_start>0 1 2 3</t_sources_start>
+              <dt>4</dt>
+              <decay_dir>3</decay_dir>
+              <N>4</N>
+              <ran_seed>
+                <Seed>
+                  <elem>13</elem>
+                  <elem>14</elem>
+                  <elem>15</elem>
+                  <elem>17</elem>
+                </Seed>
+              </ran_seed>
+              <mass_label>U0.05-rnd1</mass_label>
+            </Contractions>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <prop_op_file>annih_prop.sdb</prop_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
+
+        </Source_file_info>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.006179731 0.004235499 0.006890957 0.006978562 0.003369367 0.007931778 0.007618249 0.004890935 0.0037413 0.004538557 0.008431635 0.002967673 0.003943169 0.008238213 0.009129907 0.004159609</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.01020206 0.009607747 0.01034332 0.008571605 0.01098245 0.004748584 0.01069764 0.01725223 0.01142896 0.008743392 0.01034517 0.01091543 0.01239308 0.01454897 0.01511485 0.01470429</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.01640751 0.0181866 0.01558826 0.01676836 0.01809237 0.01961686 0.01410775 0.01019733 0.01800288 0.01860424 0.01354944 0.01804533 0.01644649 0.009748381 0.008050944 0.01364582</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>1.848126 1.851043 1.846986 1.852695 1.850252 1.85172 1.848486 1.850234 1.84313 1.851207 1.851164 1.851829 1.846996 1.84747 1.851759 1.852206</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>1.850837 1.85156 1.855348 1.850899 1.849834 1.853638 1.850052 1.850213 1.850737 1.856328 1.853355 1.853954 1.851293 1.865999 1.849883 1.854548</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>1.864175 1.855018 1.858219 1.853238 1.881671 1.873055 1.852593 1.850777 1.851511 1.853724 1.86317 1.850236 1.849635 1.872188 1.857341 1.85141</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>1.877746 1.883444 1.887583 1.886062 1.85737 1.865977 1.890448 1.887671 1.889898 1.884436 1.881958 1.887493 1.890138 1.863693 1.885126 1.879898</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>1.891129 1.887644 1.886601 1.886839 1.890216 1.883526 1.886103 1.892391 1.892052 1.888443 1.879382 1.892188 1.89082 1.88767 1.888386 1.890051</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>1.886428 1.889015 1.881054 1.89088 1.892033 1.895396 1.891556 1.897748 1.901863 1.885981 1.899189 1.897785 1.903919 1.882599 1.88638 1.890014</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>1.94962 1.957486 1.948822 1.953934 1.951216 1.945168 1.949672 1.947115 1.934657 1.957839 1.945661 1.944682 1.939847 1.947171 1.953879 1.95649</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
+
+        </Source_record_info>
+        <Source_correlators>
+          <source_corrs>
+            <elem>1.00000000217803 0.999999996419621 1.00000000288234 0.999999999020112 0.999999999140298 0.999999996678833 0.99999999730402 0.999999998255878 0.999999997356292 0.999999991888167 1.00000000172974 0.999999998265122 0.999999999583601 0.999999995652791 0.999999996123875 1.00000000293216</elem>
+            <elem>1.00000000000704 0.9999999993402 1.00000000036113 0.999999995631145 1.00000000424837 1.00000000215566 0.999999996154619 1.00000000048008 1.00000000354155 1.00000000427348 1.00000000371789 1.0000000014547 0.999999998976867 1.00000000245105 1.0000000013401 0.999999998057785</elem>
+            <elem>1.00000000168709 1.00000000132481 0.99999999815395 0.999999992564934 0.999999995920311 1.00000000648575 0.999999999697864 0.999999999455554 1.00000000531025 0.999999998905524 1.0000000018834 1.00000000202597 1.00000000259392 0.999999993780822 1.00000000189504 0.999999991355733</elem>
+            <elem>0.999999995313972 1.00000000629376 0.999999998686456 0.999999996844402 1.00000000357472 0.999999999979671 1.00000000393541 1.00000000206168 1.0000000026196 1.00000000491313 0.999999999197393 0.999999993500222 0.999999999890916 1.00000000265299 0.999999993781443 0.999999998227839</elem>
+            <elem>0.999999998074642 1.00000000077439 0.999999993633009 0.999999996862155 1.00000000201864 1.00000000375265 0.999999998485465 0.999999998266715 1.00000000173104 1.0000000021927 0.999999991419888 1.0000000038524 1.00000000033589 0.999999989351916 0.999999999885048 1.00000000115484</elem>
+            <elem>1.00000000145774 0.99999999866951 0.999999999684343 1.00000000187804 1.00000000233649 1.00000000635121 0.999999996791854 1.0000000006279 1.00000000291737 0.999999997207853 1.00000000128929 0.999999998223338 1.00000000052504 1.00000000133582 0.999999993021223 0.999999996459516</elem>
+            <elem>0.999999995560594 0.999999995864062 1.00000000201742 0.999999995664177 0.999999995151656 1.00000000394773 1.00000000269358 1.00000000359672 1.00000000215127 0.999999994317572 1.00000000181132 1.00000000518927 1.00000000028975 0.999999999535041 0.999999995524407 1.00000000639175</elem>
+            <elem>1.00000000020827 0.99999999660846 0.999999994286994 1.00000000804693 0.999999999844704 1.00000000152734 0.999999996434602 1.00000000178809 1.00000000328375 1.00000000530026 0.999999999450942 1.00000000047739 1.0000000009198 1.00000000366067 0.999999999238482 1.00000000267943</elem>
+            <elem>1.0000000057496 0.999999998842983 1.00000000118675 1.00000000211858 1.00000000124481 1.00000000090779 1.00000000563658 1.00000000583104 0.999999996078308 0.999999994408539 0.99999999407595 0.99999999876359 1.0000000063283 0.999999996156044 1.00000000042249 0.999999998127411</elem>
+            <elem>0.999999997606007 1.00000000402488 1.00000000975064 1.00000000935301 0.999999998810131 0.999999996427109 0.999999999832536 1.00000001098594 0.999999999320811 0.999999997340719 0.999999999332999 0.999999998145668 0.99999999371804 0.999999998224261 1.00000000790772 1.00000000450088</elem>
+          </source_corrs>
+        </Source_correlators>
+        <Relaxation_Iterations>
+          <ncg_had>50</ncg_had>
+        </Relaxation_Iterations>
+      </AnnihPropMatElemColorVec>
+    </elem>
+    <elem>
+      <PropColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:22 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <Contractions>
+              <num_vecs>10</num_vecs>
+              <t_sources>0 3</t_sources>
+              <decay_dir>3</decay_dir>
+            </Contractions>
+          </Param><MapObject>
+      <MapObjType>MAP_OBJ_DISK</MapObjType>
+      <FileName>./static_prop_colorvec</FileName>
+    </MapObject>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <prop_id>static_prop_colorvec</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
+
+        </Source_file_info>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.006179731 0.004235499 0.006890957 0.006978562 0.003369367 0.007931778 0.007618249 0.004890935 0.0037413 0.004538557 0.008431635 0.002967673 0.003943169 0.008238213 0.009129907 0.004159609</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.01020206 0.009607747 0.01034332 0.008571605 0.01098245 0.004748584 0.01069764 0.01725223 0.01142896 0.008743392 0.01034517 0.01091543 0.01239308 0.01454897 0.01511485 0.01470429</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.01640751 0.0181866 0.01558826 0.01676836 0.01809237 0.01961686 0.01410775 0.01019733 0.01800288 0.01860424 0.01354944 0.01804533 0.01644649 0.009748381 0.008050944 0.01364582</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>1.848126 1.851043 1.846986 1.852695 1.850252 1.85172 1.848486 1.850234 1.84313 1.851207 1.851164 1.851829 1.846996 1.84747 1.851759 1.852206</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>1.850837 1.85156 1.855348 1.850899 1.849834 1.853638 1.850052 1.850213 1.850737 1.856328 1.853355 1.853954 1.851293 1.865999 1.849883 1.854548</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>1.864175 1.855018 1.858219 1.853238 1.881671 1.873055 1.852593 1.850777 1.851511 1.853724 1.86317 1.850236 1.849635 1.872188 1.857341 1.85141</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>1.877746 1.883444 1.887583 1.886062 1.85737 1.865977 1.890448 1.887671 1.889898 1.884436 1.881958 1.887493 1.890138 1.863693 1.885126 1.879898</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>1.891129 1.887644 1.886601 1.886839 1.890216 1.883526 1.886103 1.892391 1.892052 1.888443 1.879382 1.892188 1.89082 1.88767 1.888386 1.890051</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>1.886428 1.889015 1.881054 1.89088 1.892033 1.895396 1.891556 1.897748 1.901863 1.885981 1.899189 1.897785 1.903919 1.882599 1.88638 1.890014</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>1.94962 1.957486 1.948822 1.953934 1.951216 1.945168 1.949672 1.947115 1.934657 1.957839 1.945661 1.944682 1.939847 1.947171 1.953879 1.95649</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
+
+        </Source_record_info>
+        <Source_correlators>
+          <source_corrs>
+            <elem>1.00000000217803 0.999999996419621 1.00000000288234 0.999999999020112 0.999999999140298 0.999999996678833 0.99999999730402 0.999999998255878 0.999999997356292 0.999999991888167 1.00000000172974 0.999999998265122 0.999999999583601 0.999999995652791 0.999999996123875 1.00000000293216</elem>
+            <elem>1.00000000000704 0.9999999993402 1.00000000036113 0.999999995631145 1.00000000424837 1.00000000215566 0.999999996154619 1.00000000048008 1.00000000354155 1.00000000427348 1.00000000371789 1.0000000014547 0.999999998976867 1.00000000245105 1.0000000013401 0.999999998057785</elem>
+            <elem>1.00000000168709 1.00000000132481 0.99999999815395 0.999999992564934 0.999999995920311 1.00000000648575 0.999999999697864 0.999999999455554 1.00000000531025 0.999999998905524 1.0000000018834 1.00000000202597 1.00000000259392 0.999999993780822 1.00000000189504 0.999999991355733</elem>
+            <elem>0.999999995313972 1.00000000629376 0.999999998686456 0.999999996844402 1.00000000357472 0.999999999979671 1.00000000393541 1.00000000206168 1.0000000026196 1.00000000491313 0.999999999197393 0.999999993500222 0.999999999890916 1.00000000265299 0.999999993781443 0.999999998227839</elem>
+            <elem>0.999999998074642 1.00000000077439 0.999999993633009 0.999999996862155 1.00000000201864 1.00000000375265 0.999999998485465 0.999999998266715 1.00000000173104 1.0000000021927 0.999999991419888 1.0000000038524 1.00000000033589 0.999999989351916 0.999999999885048 1.00000000115484</elem>
+            <elem>1.00000000145774 0.99999999866951 0.999999999684343 1.00000000187804 1.00000000233649 1.00000000635121 0.999999996791854 1.0000000006279 1.00000000291737 0.999999997207853 1.00000000128929 0.999999998223338 1.00000000052504 1.00000000133582 0.999999993021223 0.999999996459516</elem>
+            <elem>0.999999995560594 0.999999995864062 1.00000000201742 0.999999995664177 0.999999995151656 1.00000000394773 1.00000000269358 1.00000000359672 1.00000000215127 0.999999994317572 1.00000000181132 1.00000000518927 1.00000000028975 0.999999999535041 0.999999995524407 1.00000000639175</elem>
+            <elem>1.00000000020827 0.99999999660846 0.999999994286994 1.00000000804693 0.999999999844704 1.00000000152734 0.999999996434602 1.00000000178809 1.00000000328375 1.00000000530026 0.999999999450942 1.00000000047739 1.0000000009198 1.00000000366067 0.999999999238482 1.00000000267943</elem>
+            <elem>1.0000000057496 0.999999998842983 1.00000000118675 1.00000000211858 1.00000000124481 1.00000000090779 1.00000000563658 1.00000000583104 0.999999996078308 0.999999994408539 0.99999999407595 0.99999999876359 1.0000000063283 0.999999996156044 1.00000000042249 0.999999998127411</elem>
+            <elem>0.999999997606007 1.00000000402488 1.00000000975064 1.00000000935301 0.999999998810131 0.999999996427109 0.999999999832536 1.00000001098594 0.999999999320811 0.999999997340719 0.999999999332999 0.999999998145668 0.99999999371804 0.999999998224261 1.00000000790772 1.00000000450088</elem>
+          </source_corrs>
+        </Source_correlators>
+      </PropColorVec>
+    </elem>
+    <elem>
+      <PropMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:22 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <num_vecs>10</num_vecs>
+            <t_sources>0 3</t_sources>
+            <decay_dir>3</decay_dir>
+            <mass_label>U0.05</mass_label>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <prop_id>prop_colorvec</prop_id>
+            <prop_op_file>prop.sdb</prop_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
+
+        </Source_file_info>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.006179731 0.004235499 0.006890957 0.006978562 0.003369367 0.007931778 0.007618249 0.004890935 0.0037413 0.004538557 0.008431635 0.002967673 0.003943169 0.008238213 0.009129907 0.004159609</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.01020206 0.009607747 0.01034332 0.008571605 0.01098245 0.004748584 0.01069764 0.01725223 0.01142896 0.008743392 0.01034517 0.01091543 0.01239308 0.01454897 0.01511485 0.01470429</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.01640751 0.0181866 0.01558826 0.01676836 0.01809237 0.01961686 0.01410775 0.01019733 0.01800288 0.01860424 0.01354944 0.01804533 0.01644649 0.009748381 0.008050944 0.01364582</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>1.848126 1.851043 1.846986 1.852695 1.850252 1.85172 1.848486 1.850234 1.84313 1.851207 1.851164 1.851829 1.846996 1.84747 1.851759 1.852206</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>1.850837 1.85156 1.855348 1.850899 1.849834 1.853638 1.850052 1.850213 1.850737 1.856328 1.853355 1.853954 1.851293 1.865999 1.849883 1.854548</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>1.864175 1.855018 1.858219 1.853238 1.881671 1.873055 1.852593 1.850777 1.851511 1.853724 1.86317 1.850236 1.849635 1.872188 1.857341 1.85141</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>1.877746 1.883444 1.887583 1.886062 1.85737 1.865977 1.890448 1.887671 1.889898 1.884436 1.881958 1.887493 1.890138 1.863693 1.885126 1.879898</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>1.891129 1.887644 1.886601 1.886839 1.890216 1.883526 1.886103 1.892391 1.892052 1.888443 1.879382 1.892188 1.89082 1.88767 1.888386 1.890051</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>1.886428 1.889015 1.881054 1.89088 1.892033 1.895396 1.891556 1.897748 1.901863 1.885981 1.899189 1.897785 1.903919 1.882599 1.88638 1.890014</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>1.94962 1.957486 1.948822 1.953934 1.951216 1.945168 1.949672 1.947115 1.934657 1.957839 1.945661 1.944682 1.939847 1.947171 1.953879 1.95649</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
+
+        </Source_record_info>
+        <Source_correlators>
+          <source_corrs>
+            <elem>1.00000000217803 0.999999996419621 1.00000000288234 0.999999999020112 0.999999999140298 0.999999996678833 0.99999999730402 0.999999998255878 0.999999997356292 0.999999991888167 1.00000000172974 0.999999998265122 0.999999999583601 0.999999995652791 0.999999996123875 1.00000000293216</elem>
+            <elem>1.00000000000704 0.9999999993402 1.00000000036113 0.999999995631145 1.00000000424837 1.00000000215566 0.999999996154619 1.00000000048008 1.00000000354155 1.00000000427348 1.00000000371789 1.0000000014547 0.999999998976867 1.00000000245105 1.0000000013401 0.999999998057785</elem>
+            <elem>1.00000000168709 1.00000000132481 0.99999999815395 0.999999992564934 0.999999995920311 1.00000000648575 0.999999999697864 0.999999999455554 1.00000000531025 0.999999998905524 1.0000000018834 1.00000000202597 1.00000000259392 0.999999993780822 1.00000000189504 0.999999991355733</elem>
+            <elem>0.999999995313972 1.00000000629376 0.999999998686456 0.999999996844402 1.00000000357472 0.999999999979671 1.00000000393541 1.00000000206168 1.0000000026196 1.00000000491313 0.999999999197393 0.999999993500222 0.999999999890916 1.00000000265299 0.999999993781443 0.999999998227839</elem>
+            <elem>0.999999998074642 1.00000000077439 0.999999993633009 0.999999996862155 1.00000000201864 1.00000000375265 0.999999998485465 0.999999998266715 1.00000000173104 1.0000000021927 0.999999991419888 1.0000000038524 1.00000000033589 0.999999989351916 0.999999999885048 1.00000000115484</elem>
+            <elem>1.00000000145774 0.99999999866951 0.999999999684343 1.00000000187804 1.00000000233649 1.00000000635121 0.999999996791854 1.0000000006279 1.00000000291737 0.999999997207853 1.00000000128929 0.999999998223338 1.00000000052504 1.00000000133582 0.999999993021223 0.999999996459516</elem>
+            <elem>0.999999995560594 0.999999995864062 1.00000000201742 0.999999995664177 0.999999995151656 1.00000000394773 1.00000000269358 1.00000000359672 1.00000000215127 0.999999994317572 1.00000000181132 1.00000000518927 1.00000000028975 0.999999999535041 0.999999995524407 1.00000000639175</elem>
+            <elem>1.00000000020827 0.99999999660846 0.999999994286994 1.00000000804693 0.999999999844704 1.00000000152734 0.999999996434602 1.00000000178809 1.00000000328375 1.00000000530026 0.999999999450942 1.00000000047739 1.0000000009198 1.00000000366067 0.999999999238482 1.00000000267943</elem>
+            <elem>1.0000000057496 0.999999998842983 1.00000000118675 1.00000000211858 1.00000000124481 1.00000000090779 1.00000000563658 1.00000000583104 0.999999996078308 0.999999994408539 0.99999999407595 0.99999999876359 1.0000000063283 0.999999996156044 1.00000000042249 0.999999998127411</elem>
+            <elem>0.999999997606007 1.00000000402488 1.00000000975064 1.00000000935301 0.999999998810131 0.999999996427109 0.999999999832536 1.00000001098594 0.999999999320811 0.999999997340719 0.999999999332999 0.999999998145668 0.99999999371804 0.999999998224261 1.00000000790772 1.00000000450088</elem>
+          </source_corrs>
+        </Source_correlators>
+        <ColorVecMatElems>
+        </ColorVecMatElems>
+        <Relaxation_Iterations>
+          <ncg_had>0</ncg_had>
+        </Relaxation_Iterations>
+      </PropMatElemColorVec>
+    </elem>
+    <elem>
+      <PropMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:22 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <num_vecs>10</num_vecs>
+            <t_sources>0 3</t_sources>
+            <decay_dir>3</decay_dir>
+            <mass_label>STATIC</mass_label>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <prop_id>static_prop_colorvec</prop_id>
+            <prop_op_file>prop.sdb</prop_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
+
+        </Source_file_info>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.006179731 0.004235499 0.006890957 0.006978562 0.003369367 0.007931778 0.007618249 0.004890935 0.0037413 0.004538557 0.008431635 0.002967673 0.003943169 0.008238213 0.009129907 0.004159609</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.01020206 0.009607747 0.01034332 0.008571605 0.01098245 0.004748584 0.01069764 0.01725223 0.01142896 0.008743392 0.01034517 0.01091543 0.01239308 0.01454897 0.01511485 0.01470429</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.01640751 0.0181866 0.01558826 0.01676836 0.01809237 0.01961686 0.01410775 0.01019733 0.01800288 0.01860424 0.01354944 0.01804533 0.01644649 0.009748381 0.008050944 0.01364582</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>1.848126 1.851043 1.846986 1.852695 1.850252 1.85172 1.848486 1.850234 1.84313 1.851207 1.851164 1.851829 1.846996 1.84747 1.851759 1.852206</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>1.850837 1.85156 1.855348 1.850899 1.849834 1.853638 1.850052 1.850213 1.850737 1.856328 1.853355 1.853954 1.851293 1.865999 1.849883 1.854548</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>1.864175 1.855018 1.858219 1.853238 1.881671 1.873055 1.852593 1.850777 1.851511 1.853724 1.86317 1.850236 1.849635 1.872188 1.857341 1.85141</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>1.877746 1.883444 1.887583 1.886062 1.85737 1.865977 1.890448 1.887671 1.889898 1.884436 1.881958 1.887493 1.890138 1.863693 1.885126 1.879898</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>1.891129 1.887644 1.886601 1.886839 1.890216 1.883526 1.886103 1.892391 1.892052 1.888443 1.879382 1.892188 1.89082 1.88767 1.888386 1.890051</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>1.886428 1.889015 1.881054 1.89088 1.892033 1.895396 1.891556 1.897748 1.901863 1.885981 1.899189 1.897785 1.903919 1.882599 1.88638 1.890014</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>1.94962 1.957486 1.948822 1.953934 1.951216 1.945168 1.949672 1.947115 1.934657 1.957839 1.945661 1.944682 1.939847 1.947171 1.953879 1.95649</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
+
+        </Source_record_info>
+        <Source_correlators>
+          <source_corrs>
+            <elem>1.00000000217803 0.999999996419621 1.00000000288234 0.999999999020112 0.999999999140298 0.999999996678833 0.99999999730402 0.999999998255878 0.999999997356292 0.999999991888167 1.00000000172974 0.999999998265122 0.999999999583601 0.999999995652791 0.999999996123875 1.00000000293216</elem>
+            <elem>1.00000000000704 0.9999999993402 1.00000000036113 0.999999995631145 1.00000000424837 1.00000000215566 0.999999996154619 1.00000000048008 1.00000000354155 1.00000000427348 1.00000000371789 1.0000000014547 0.999999998976867 1.00000000245105 1.0000000013401 0.999999998057785</elem>
+            <elem>1.00000000168709 1.00000000132481 0.99999999815395 0.999999992564934 0.999999995920311 1.00000000648575 0.999999999697864 0.999999999455554 1.00000000531025 0.999999998905524 1.0000000018834 1.00000000202597 1.00000000259392 0.999999993780822 1.00000000189504 0.999999991355733</elem>
+            <elem>0.999999995313972 1.00000000629376 0.999999998686456 0.999999996844402 1.00000000357472 0.999999999979671 1.00000000393541 1.00000000206168 1.0000000026196 1.00000000491313 0.999999999197393 0.999999993500222 0.999999999890916 1.00000000265299 0.999999993781443 0.999999998227839</elem>
+            <elem>0.999999998074642 1.00000000077439 0.999999993633009 0.999999996862155 1.00000000201864 1.00000000375265 0.999999998485465 0.999999998266715 1.00000000173104 1.0000000021927 0.999999991419888 1.0000000038524 1.00000000033589 0.999999989351916 0.999999999885048 1.00000000115484</elem>
+            <elem>1.00000000145774 0.99999999866951 0.999999999684343 1.00000000187804 1.00000000233649 1.00000000635121 0.999999996791854 1.0000000006279 1.00000000291737 0.999999997207853 1.00000000128929 0.999999998223338 1.00000000052504 1.00000000133582 0.999999993021223 0.999999996459516</elem>
+            <elem>0.999999995560594 0.999999995864062 1.00000000201742 0.999999995664177 0.999999995151656 1.00000000394773 1.00000000269358 1.00000000359672 1.00000000215127 0.999999994317572 1.00000000181132 1.00000000518927 1.00000000028975 0.999999999535041 0.999999995524407 1.00000000639175</elem>
+            <elem>1.00000000020827 0.99999999660846 0.999999994286994 1.00000000804693 0.999999999844704 1.00000000152734 0.999999996434602 1.00000000178809 1.00000000328375 1.00000000530026 0.999999999450942 1.00000000047739 1.0000000009198 1.00000000366067 0.999999999238482 1.00000000267943</elem>
+            <elem>1.0000000057496 0.999999998842983 1.00000000118675 1.00000000211858 1.00000000124481 1.00000000090779 1.00000000563658 1.00000000583104 0.999999996078308 0.999999994408539 0.99999999407595 0.99999999876359 1.0000000063283 0.999999996156044 1.00000000042249 0.999999998127411</elem>
+            <elem>0.999999997606007 1.00000000402488 1.00000000975064 1.00000000935301 0.999999998810131 0.999999996427109 0.999999999832536 1.00000001098594 0.999999999320811 0.999999997340719 0.999999999332999 0.999999998145668 0.99999999371804 0.999999998224261 1.00000000790772 1.00000000450088</elem>
+          </source_corrs>
+        </Source_correlators>
+        <ColorVecMatElems>
+        </ColorVecMatElems>
+        <Relaxation_Iterations>
+          <ncg_had>0</ncg_had>
+        </Relaxation_Iterations>
+      </PropMatElemColorVec>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>static_prop_colorvec</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <MesonMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:23 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>1</version>
+            <mom2_max>2</mom2_max>
+            <displacement_length>1</displacement_length>
+            <displacement_list>
+              <elem>0</elem>
+              <elem>1</elem>
+              <elem>-1</elem>
+              <elem>2</elem>
+              <elem>-2</elem>
+              <elem>3</elem>
+              <elem>-3</elem>
+              <elem>1 1</elem>
+              <elem>-1 -1</elem>
+              <elem>2 2</elem>
+              <elem>-2 -2</elem>
+              <elem>3 3</elem>
+              <elem>-3 -3</elem>
+              <elem>1 2</elem>
+              <elem>-1 2</elem>
+              <elem>1 -2</elem>
+              <elem>-1 -2</elem>
+              <elem>1 3</elem>
+              <elem>-1 3</elem>
+              <elem>1 -3</elem>
+              <elem>-1 -3</elem>
+              <elem>2 1</elem>
+              <elem>-2 1</elem>
+              <elem>2 -1</elem>
+              <elem>-2 -1</elem>
+              <elem>2 3</elem>
+              <elem>-2 3</elem>
+              <elem>2 -3</elem>
+              <elem>-2 -3</elem>
+              <elem>3 1</elem>
+              <elem>-3 1</elem>
+              <elem>3 -1</elem>
+              <elem>-3 -1</elem>
+              <elem>3 2</elem>
+              <elem>-3 2</elem>
+              <elem>3 -2</elem>
+              <elem>-3 -2</elem>
+              <elem>-3 -3 -3</elem>
+              <elem>-3 -3 -2</elem>
+              <elem>-3 -3 -1</elem>
+              <elem>-3 -3 1</elem>
+              <elem>-3 -3 2</elem>
+              <elem>-3 -2 -3</elem>
+              <elem>-3 -2 -2</elem>
+              <elem>-3 -2 -1</elem>
+              <elem>-3 -2 1</elem>
+              <elem>-3 -2 3</elem>
+              <elem>-3 -1 -3</elem>
+              <elem>-3 -1 -2</elem>
+              <elem>-3 -1 -1</elem>
+              <elem>-3 -1 2</elem>
+              <elem>-3 -1 3</elem>
+              <elem>-3 1 -3</elem>
+              <elem>-3 1 -2</elem>
+              <elem>-3 1 1</elem>
+              <elem>-3 1 2</elem>
+              <elem>-3 1 3</elem>
+              <elem>-3 2 -3</elem>
+              <elem>-3 2 -1</elem>
+              <elem>-3 2 1</elem>
+              <elem>-3 2 2</elem>
+              <elem>-3 2 3</elem>
+              <elem>-2 -3 -3</elem>
+              <elem>-2 -3 -2</elem>
+              <elem>-2 -3 -1</elem>
+              <elem>-2 -3 1</elem>
+              <elem>-2 -3 2</elem>
+              <elem>-2 -2 -3</elem>
+              <elem>-2 -2 -2</elem>
+              <elem>-2 -2 -1</elem>
+              <elem>-2 -2 1</elem>
+              <elem>-2 -2 3</elem>
+              <elem>-2 -1 -3</elem>
+              <elem>-2 -1 -2</elem>
+              <elem>-2 -1 -1</elem>
+              <elem>-2 -1 2</elem>
+              <elem>-2 -1 3</elem>
+              <elem>-2 1 -3</elem>
+              <elem>-2 1 -2</elem>
+              <elem>-2 1 1</elem>
+              <elem>-2 1 2</elem>
+              <elem>-2 1 3</elem>
+              <elem>-2 3 -2</elem>
+              <elem>-2 3 -1</elem>
+              <elem>-2 3 1</elem>
+              <elem>-2 3 2</elem>
+              <elem>-2 3 3</elem>
+              <elem>-1 -3 -3</elem>
+              <elem>-1 -3 -2</elem>
+              <elem>-1 -3 -1</elem>
+              <elem>-1 -3 1</elem>
+              <elem>-1 -3 2</elem>
+              <elem>-1 -2 -3</elem>
+              <elem>-1 -2 -2</elem>
+              <elem>-1 -2 -1</elem>
+              <elem>-1 -2 1</elem>
+              <elem>-1 -2 3</elem>
+              <elem>-1 -1 -3</elem>
+              <elem>-1 -1 -2</elem>
+              <elem>-1 -1 -1</elem>
+              <elem>-1 -1 2</elem>
+              <elem>-1 -1 3</elem>
+              <elem>-1 2 -3</elem>
+              <elem>-1 2 -1</elem>
+              <elem>-1 2 1</elem>
+              <elem>-1 2 2</elem>
+              <elem>-1 2 3</elem>
+              <elem>-1 3 -2</elem>
+              <elem>-1 3 -1</elem>
+              <elem>-1 3 1</elem>
+              <elem>-1 3 2</elem>
+              <elem>-1 3 3</elem>
+              <elem>1 -3 -3</elem>
+              <elem>1 -3 -2</elem>
+              <elem>1 -3 -1</elem>
+              <elem>1 -3 1</elem>
+              <elem>1 -3 2</elem>
+              <elem>1 -2 -3</elem>
+              <elem>1 -2 -2</elem>
+              <elem>1 -2 -1</elem>
+              <elem>1 -2 1</elem>
+              <elem>1 -2 3</elem>
+              <elem>1 1 -3</elem>
+              <elem>1 1 -2</elem>
+              <elem>1 1 1</elem>
+              <elem>1 1 2</elem>
+              <elem>1 1 3</elem>
+              <elem>1 2 -3</elem>
+              <elem>1 2 -1</elem>
+              <elem>1 2 1</elem>
+              <elem>1 2 2</elem>
+              <elem>1 2 3</elem>
+              <elem>1 3 -2</elem>
+              <elem>1 3 -1</elem>
+              <elem>1 3 1</elem>
+              <elem>1 3 2</elem>
+              <elem>1 3 3</elem>
+              <elem>2 -3 -3</elem>
+              <elem>2 -3 -2</elem>
+              <elem>2 -3 -1</elem>
+              <elem>2 -3 1</elem>
+              <elem>2 -3 2</elem>
+              <elem>2 -1 -3</elem>
+              <elem>2 -1 -2</elem>
+              <elem>2 -1 -1</elem>
+              <elem>2 -1 2</elem>
+              <elem>2 -1 3</elem>
+              <elem>2 1 -3</elem>
+              <elem>2 1 -2</elem>
+              <elem>2 1 1</elem>
+              <elem>2 1 2</elem>
+              <elem>2 1 3</elem>
+              <elem>2 2 -3</elem>
+              <elem>2 2 -1</elem>
+              <elem>2 2 1</elem>
+              <elem>2 2 2</elem>
+              <elem>2 2 3</elem>
+              <elem>2 3 -2</elem>
+              <elem>2 3 -1</elem>
+              <elem>2 3 1</elem>
+              <elem>2 3 2</elem>
+              <elem>2 3 3</elem>
+              <elem>3 -2 -3</elem>
+              <elem>3 -2 -2</elem>
+              <elem>3 -2 -1</elem>
+              <elem>3 -2 1</elem>
+              <elem>3 -2 3</elem>
+              <elem>3 -1 -3</elem>
+              <elem>3 -1 -2</elem>
+              <elem>3 -1 -1</elem>
+              <elem>3 -1 2</elem>
+              <elem>3 -1 3</elem>
+              <elem>3 1 -3</elem>
+              <elem>3 1 -2</elem>
+              <elem>3 1 1</elem>
+              <elem>3 1 2</elem>
+              <elem>3 1 3</elem>
+              <elem>3 2 -3</elem>
+              <elem>3 2 -1</elem>
+              <elem>3 2 1</elem>
+              <elem>3 2 2</elem>
+              <elem>3 2 3</elem>
+              <elem>3 3 -2</elem>
+              <elem>3 3 -1</elem>
+              <elem>3 3 1</elem>
+              <elem>3 3 2</elem>
+              <elem>3 3 3</elem>
+            </displacement_list>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <orthog_basis>true</orthog_basis><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <meson_op_file>meson.sdb</meson_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <ElementalOps>
+        </ElementalOps>
+      </MesonMatElemColorVec>
+    </elem>
+    <elem>
+      <MesonMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:42 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>1</version>
+            <mom2_max>2</mom2_max>
+            <displacement_length>1</displacement_length>
+            <displacement_list>
+              <elem>0</elem>
+            </displacement_list>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <orthog_basis>true</orthog_basis><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <meson_op_file>meson.sdb</meson_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <ElementalOps>
+        </ElementalOps>
+      </MesonMatElemColorVec>
+    </elem>
+    <elem>
+      <BaryonMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:43 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>2</version>
+            <mom2_max>0</mom2_max>
+            <use_derivP>false</use_derivP>
+            <displacement_length>1</displacement_length>
+            <displacement_list>
+              <elem>
+                <left>1</left>
+                <middle>-3</middle>
+                <right>-2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>0</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-3 -3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-3 -2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-3 -1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-3 1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-3 2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-2 -3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-2 -2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-2 -1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-2 1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-2 3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-1 -3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-1 -2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-1 -1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-1 2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>-1 3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>1 -3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>1 -2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>1 1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>1 2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>1 3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>2 -3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>2 -1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>2 1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>2 2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>2 3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>3 -2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>3 -1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>3 1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>3 2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>3 3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-3</middle>
+                <right>-3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-3</middle>
+                <right>-2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-3</middle>
+                <right>-1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-3</middle>
+                <right>1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-3</middle>
+                <right>2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-3</middle>
+                <right>3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-2</middle>
+                <right>-2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-2</middle>
+                <right>-1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-2</middle>
+                <right>1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-2</middle>
+                <right>2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-2</middle>
+                <right>3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-1</middle>
+                <right>-1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-1</middle>
+                <right>1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-1</middle>
+                <right>2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>-1</middle>
+                <right>3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>1</middle>
+                <right>1</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>1</middle>
+                <right>2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>1</middle>
+                <right>3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>2</middle>
+                <right>2</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>2</middle>
+                <right>3</right>
+              </elem>
+              <elem>
+                <left>0</left>
+                <middle>3</middle>
+                <right>3</right>
+              </elem>
+            </displacement_list>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <site_orthog_basis>false</site_orthog_basis><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <baryon_op_file>baryon.sdb</baryon_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <ElementalOps>
+        </ElementalOps>
+      </BaryonMatElemColorVec>
+    </elem>
+    <elem>
+      <BaryonMatElemColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:48 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>2</version>
+            <mom2_max>2</mom2_max>
+            <use_derivP>false</use_derivP>
+            <displacement_length>1</displacement_length>
+            <displacement_list>
+              <elem>
+                <left>0</left>
+                <middle>0</middle>
+                <right>0</right>
+              </elem>
+            </displacement_list>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <site_orthog_basis>false</site_orthog_basis><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <baryon_op_file>baryon.sdb</baryon_op_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <ElementalOps>
+        </ElementalOps>
+      </BaryonMatElemColorVec>
+    </elem>
+    <elem>
+      <GenPropMatElemColorVec>
+        <update_no>0</update_no>
+        <Output_version>
+          <out_version>2</out_version>
+        </Output_version>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:00:49 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>2</version>
+            <restrict_plateau>true</restrict_plateau>
+            <avg_equiv_mom>false</avg_equiv_mom>
+            <t_source>0</t_source>
+            <t_sink>3</t_sink>
+            <mom_offset>0 0 0</mom_offset>
+            <mom2_max>2</mom2_max>
+            <displacement_length>1</displacement_length>
+            <DisplacementGammaList>
+              <elem>
+                <gamma>1</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>2</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>4</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>8</gamma>
+                <displacement></displacement>
+              </elem>
+            </DisplacementGammaList>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <mass_label>U0.05</mass_label><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_prop_id>prop_colorvec</source_prop_id>
+            <sink_prop_id>prop_colorvec</sink_prop_id>
+            <genprop_op_file>genprop.sdb</genprop_op_file>
+          </NamedObject>
+        </Input>
+        <Source_prop_file_info><PropColorVectors>
+      <num_records>80</num_records>
+      <Params>
+        <Propagator>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <FermionAction>
+            <FermAct>CLOVER</FermAct>
+            <Mass>0.1</Mass>
+            <clovCoeff>1.0</clovCoeff>
+            <AnisoParam>
+              <anisoP>false</anisoP>
+            </AnisoParam>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </PropColorVectors>
+
+        </Source_prop_file_info>
+        <Source_prop_record_info><PropColorVector>
+      <num_records>80</num_records>
+    </PropColorVector>
+
+        </Source_prop_record_info>
+        <Sink_prop_file_info><PropColorVectors>
+      <num_records>80</num_records>
+      <Params>
+        <Propagator>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <FermionAction>
+            <FermAct>CLOVER</FermAct>
+            <Mass>0.1</Mass>
+            <clovCoeff>1.0</clovCoeff>
+            <AnisoParam>
+              <anisoP>false</anisoP>
+            </AnisoParam>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </PropColorVectors>
+
+        </Sink_prop_file_info>
+        <Sink_prop_record_info><PropColorVector>
+      <num_records>80</num_records>
+    </PropColorVector>
+
+        </Sink_prop_record_info>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <ElementalOps>
+        </ElementalOps>
+      </GenPropMatElemColorVec>
+    </elem>
+    <elem>
+      <GenPropMatElemColorVec>
+        <update_no>0</update_no>
+        <Output_version>
+          <out_version>2</out_version>
+        </Output_version>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.36.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>13 Nov 09 22:03:43 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>2</version>
+            <restrict_plateau>true</restrict_plateau>
+            <avg_equiv_mom>true</avg_equiv_mom>
+            <t_source>0</t_source>
+            <t_sink>3</t_sink>
+            <mom_offset>0 0 0</mom_offset>
+            <mom2_max>3</mom2_max>
+            <displacement_length>1</displacement_length>
+            <DisplacementGammaList>
+              <elem>
+                <gamma>1</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>2</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>4</gamma>
+                <displacement></displacement>
+              </elem>
+              <elem>
+                <gamma>8</gamma>
+                <displacement></displacement>
+              </elem>
+            </DisplacementGammaList>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <mass_label>U0.05</mass_label><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_prop_id>prop_colorvec</source_prop_id>
+            <sink_prop_id>prop_colorvec</sink_prop_id>
+            <genprop_op_file>genprop_avg.sdb</genprop_op_file>
+          </NamedObject>
+        </Input>
+        <Source_prop_file_info><PropColorVectors>
+      <num_records>80</num_records>
+      <Params>
+        <Propagator>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <FermionAction>
+            <FermAct>CLOVER</FermAct>
+            <Mass>0.1</Mass>
+            <clovCoeff>1.0</clovCoeff>
+            <AnisoParam>
+              <anisoP>false</anisoP>
+            </AnisoParam>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </PropColorVectors>
+
+        </Source_prop_file_info>
+        <Source_prop_record_info><PropColorVector>
+      <num_records>80</num_records>
+    </PropColorVector>
+
+        </Source_prop_record_info>
+        <Sink_prop_file_info><PropColorVectors>
+      <num_records>80</num_records>
+      <Params>
+        <Propagator>
+          <version>9</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <FermionAction>
+            <FermAct>CLOVER</FermAct>
+            <Mass>0.1</Mass>
+            <clovCoeff>1.0</clovCoeff>
+            <AnisoParam>
+              <anisoP>false</anisoP>
+            </AnisoParam>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </PropColorVectors>
+
+        </Sink_prop_file_info>
+        <Sink_prop_record_info><PropColorVector>
+      <num_records>80</num_records>
+    </PropColorVector>
+
+        </Sink_prop_record_info>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99469234189342</w_plaq>
+          <s_plaq>0.994655949626273</s_plaq>
+          <t_plaq>0.994728734160567</t_plaq>
+          <plane_01_plaq>0.994607786861403</plane_01_plaq>
+          <plane_02_plaq>0.994706784918283</plane_02_plaq>
+          <plane_12_plaq>0.994653277099133</plane_12_plaq>
+          <plane_03_plaq>0.994816071431463</plane_03_plaq>
+          <plane_13_plaq>0.994653896176411</plane_13_plaq>
+          <plane_23_plaq>0.994716234873825</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364673299</im>
+            </elem>
+            <elem>
+              <re>0.966476668661926</re>
+              <im>-0.00128317259532196</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.99816522020976</w_plaq>
+          <s_plaq>0.999876902859089</s_plaq>
+          <t_plaq>0.99645353756043</t_plaq>
+          <plane_01_plaq>0.99987036032447</plane_01_plaq>
+          <plane_02_plaq>0.999871389183681</plane_02_plaq>
+          <plane_12_plaq>0.999888959069115</plane_12_plaq>
+          <plane_03_plaq>0.996475790181042</plane_03_plaq>
+          <plane_13_plaq>0.99640731063361</plane_13_plaq>
+          <plane_23_plaq>0.996477511866639</plane_23_plaq>
+          <link>0.37956098172314</link>
+          <pollp>
+            <elem>
+              <re>0.971444702377388</re>
+              <im>-0.00122615175403477</im>
+            </elem>
+            <elem>
+              <re>0.971606196719222</re>
+              <im>-0.00116529849283135</im>
+            </elem>
+            <elem>
+              <re>0.971521879216501</re>
+              <im>-0.00122497170980296</im>
+            </elem>
+            <elem>
+              <re>0.585677024607624</re>
+              <im>-0.0676213780416977</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <ElementalOps>
+        </ElementalOps>
+      </GenPropMatElemColorVec>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec</object_id>
+      </erase_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>
