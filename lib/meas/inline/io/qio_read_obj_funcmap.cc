@@ -514,7 +514,7 @@ namespace Chroma
 	  obj.insert(key, val);
 	}
 
-	obj.closeWrite(); // Done writing into object
+	obj.openRead(); // Done writing into object - switch to READ mode
 
 	// Sanity check
 	if (obj.size() != num_records)

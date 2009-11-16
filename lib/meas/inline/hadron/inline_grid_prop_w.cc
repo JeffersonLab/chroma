@@ -423,7 +423,7 @@ namespace Chroma
 	    }//colors
 	  }//spins
 	}//t0
-	map_obj.closeWrite();
+	map_obj.openRead();
 
 	swatch.stop();
 	QDPIO::cout << "  Propagators computed: time= " 

@@ -27,24 +27,14 @@ namespace Chroma
     virtual	
     ~MapObject() {}
 
-    //! Open object in read mode (lookups)
-    virtual
-    bool openRead(void) = 0;
-   
-    //! Close read mode
-    virtual 
-    bool closeRead(void) = 0;
-
-    
     //! Open write mode (inserts)
     virtual
-    bool openWrite(void) = 0;
-    
-    //! Close write mode
+    void openWrite(void) = 0;
+
+    //! Open object in read mode (lookups)
     virtual
-    bool closeWrite(void) = 0;
-
-
+    void openRead(void) = 0;
+   
     //! Exists?
     virtual
     bool exist(const K& key) const = 0;
@@ -59,7 +49,7 @@ namespace Chroma
 
     //! Size of Map
     virtual
-    unsigned long size() const = 0;
+    unsigned int size() const = 0;
 
     //! Dump keys
     virtual

@@ -463,7 +463,6 @@ namespace Chroma
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
-	map_obj.openRead();
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -569,8 +568,6 @@ namespace Chroma
 	
 	pop(xml_out);
 	
-	map_obj.closeRead();
-
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 

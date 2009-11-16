@@ -242,7 +242,7 @@ namespace Chroma
 	  } // colorvec_src
 	} // tt
 
-	obj.closeWrite(); // Done inserting
+	obj.openRead(); // Done inserting
 
 	// Write the meta-data for this operator
 	{

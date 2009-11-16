@@ -450,10 +450,7 @@ namespace Chroma
 
 	    rng_map_obj.insert(t, zN_rng(params.param.contract.N));
 	  }
-	  rng_map_obj.closeWrite(); // Done inserting into rng_map_obj
-
-	  // All the loops
-	  rng_map_obj.openRead();  // Want to do lookups in rng_map_obj
+	  rng_map_obj.openRead(); // Done inserting into rng_map_obj
 	  map_obj.openWrite();     // Want to do insertions into map_obj
 
 	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source) {
@@ -466,7 +463,7 @@ namespace Chroma
 	      int t = t_sources[nn];
 
 	      // Pull out a time-slice of the color vector source, give it a random weight
-	      QDPIO::cout << "RNG MAP LOOKUP" << endl << flush;
+
 	      Complex weight; rng_map_obj.lookup(t, weight);
 
 	      vec_srce[phases.getSet()[t]] = 
@@ -497,7 +494,7 @@ namespace Chroma
 	    } // for spin_source
 	  } // for colorvec_source
 
-	  map_obj.closeWrite();  // Done inserting into map_obj
+	  map_obj.openRead();  // Done inserting into map_obj
 
 
 	  swatch.stop();
@@ -516,7 +513,6 @@ namespace Chroma
 	  //
 	  swatch.reset();
 	  swatch.start();
-	  map_obj.openRead();
 	  QDPIO::cout << "Extract matrix elements" << endl;
 
 	  for(int spin_source=0; spin_source < Ns; ++spin_source) {
@@ -566,7 +562,6 @@ namespace Chroma
 		  for(int nn=0; nn < t_sources.size(); ++nn)
 		  {
 		    int t = t_sources[nn];
-		    QDPIO::cout << "RNG MAP LOOKUP" << endl << flush;
 		    Complex weight; rng_map_obj.lookup(t,weight);
 		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(weight) * hsum[t];
 		  }
@@ -584,8 +579,6 @@ namespace Chroma
 
 	    } // for spin_sink
 	  } // for spin_source
-	  rng_map_obj.closeRead(); // Done reading from rng_map_obj
-	  map_obj.closeRead();
 
 	  swatch.stop();
 	  QDPIO::cout << "Matrix elements computed: time= " 

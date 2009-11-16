@@ -613,9 +613,6 @@ namespace Chroma
 	swiss.start();
 
 	// Big loop over the momentum projection
-	source_ferm_map.openRead();
-	sink_ferm_map.openRead();
-
 	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
 	  // Loop over spins
@@ -713,9 +710,6 @@ namespace Chroma
 	    } // end for spin_l
 	  } // end for spin_r
 	} // mom_num
-
-	source_ferm_map.closeRead();
-	sink_ferm_map.closeRead();
 
 	swiss.stop();
 

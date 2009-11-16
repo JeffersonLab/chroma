@@ -472,7 +472,6 @@ namespace Chroma
 	StopWatch swatch;
 	swatch.reset();
 	swatch.start();
-	map_obj.openRead();
 
 	SftMom phases(0, true, src_t.decay_dir);
 	//
@@ -555,8 +554,6 @@ namespace Chroma
 	  }
 	}//t0
 	
-	map_obj.closeRead();
-
 	swatch.stop();
 	QDPIO::cout << "Matelem computed: time= " 
 		    << swatch.getTimeInSeconds() 

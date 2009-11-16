@@ -463,7 +463,7 @@ namespace Chroma
 	  } // for colorvec_source
 	} // for t_source
 	
-	map_obj.closeWrite();
+	map_obj.openRead();
       }
       catch (const std::string& e) 
       {

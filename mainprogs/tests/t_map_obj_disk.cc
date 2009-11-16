@@ -72,12 +72,15 @@ int main(int argc, char *argv[])
       gaussian(lf_array[i]);
     }
     
+
     
     testMapKeyPropColorVecInsterions(pc_map, lf_array);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
+    QDPIO::cout << endl << "OK" << endl;
   }
   catch(const std::string& e) { 
     QDPIO::cout << "Caught: " << e << endl;
+    fail();
   }
 
   Chroma::finalize();
@@ -89,13 +92,14 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
 {
  // Open the map for 'filling'
   QDPIO::cout << "Opening MapObjectDisk<char,float> for writing..."; 
-  if( the_map.openWrite() ) { 
+  try { 
+    the_map.openWrite();
     QDPIO::cout << "OK" << endl;
   }
-  else { 
+  catch(...) {
     fail();
   }
-
+  
   QDPIO::cout << "Inserting (key,value): " << endl;
   // store a quadratic
   for(char i=0; i < 10; i++) { 
@@ -113,10 +117,11 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
   }
   
   QDPIO::cout << "Closing MapObjectDisk<char,float> for writing..." ;
-  if( the_map.closeWrite() ) { 
+  try {
+    the_map.openRead();
     QDPIO::cout << "... OK" << endl;
   }
-  else { 
+  catch(...) {
     fail();
   }
 
@@ -127,10 +132,11 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
 {
   /* Now reopen - random access */
   QDPIO::cout << "Opening MapObjectDisk<char,float> for reading..."; 
-  if( the_map.openRead() ) { 
+  try {  
+    the_map.openRead();
     QDPIO::cout << "OK" << endl;
   }
-  else { 
+  catch(...) { 
     fail();
   }
 
@@ -219,13 +225,6 @@ void testMapObjLookups(MapObjectDisk<char, float>& the_map)
   }
   QDPIO::cout << endl << "OK" << endl;
 
-  QDPIO::cout << "Closing MapObjectDisk<char,float> for reading..."; 
-  if( the_map.closeRead() ) { 
-    QDPIO::cout << "OK" << endl;
-  }
-  else { 
-    fail();
-  }
    
   
 }
@@ -239,10 +238,11 @@ void testMapKeyPropColorVecInsterions(MapObject<KeyPropColorVec_t, LatticeFermio
 
   // OpenMap for Writing
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  if( pc_map.openWrite() ) { 
+  try { 
+    pc_map.openWrite() ;
     QDPIO::cout << "OK" << endl;
   }
-  else {
+  catch(...) {
     fail();
   }
 
@@ -260,10 +260,11 @@ void testMapKeyPropColorVecInsterions(MapObject<KeyPropColorVec_t, LatticeFermio
   }
 
   QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for writing..." << endl;
-  if( pc_map.closeWrite() ) { 
+  try { 
+    pc_map.openRead();
     QDPIO::cout << "OK" << endl;
   }
-  else { 
+  catch(...) { 
     fail();
   }
 }
@@ -274,10 +275,11 @@ void testMapKeyPropColorVecLookups(MapObject<KeyPropColorVec_t, LatticeFermion>&
   // Open map in read mode
   QDPIO::cout << "Opening Map<KeyPropColorVec_t,LF> for reading.." << endl;
 
-  if( pc_map.openRead() ) { 
+  try { 
+    pc_map.openRead();
     QDPIO::cout << "OK" << endl;
   }
-  else { 
+  catch(...) { 
     fail();
   }
 
@@ -336,17 +338,7 @@ void testMapKeyPropColorVecLookups(MapObject<KeyPropColorVec_t, LatticeFermion>&
       fail();
     }
   }
-
-  
-  QDPIO::cout << "Closing Map<KeyPropColorVec_t,LF> for reading..." << endl;
-  if( pc_map.closeRead() ) {
-    QDPIO::cout << endl << "OK"  << endl;
-  }
-  else { 
-    fail();
-  }
-
-
+  QDPIO::cout << endl << "OK" << endl;
 }
 
 

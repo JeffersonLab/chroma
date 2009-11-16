@@ -423,7 +423,7 @@ namespace Chroma
 	  } // for colorvec_source
 	} // for t_source
 	
-	map_obj.closeWrite();
+	map_obj.openRead();
 
 	swatch.stop();
 	QDPIO::cout << "Propagators initialized: time= " 
