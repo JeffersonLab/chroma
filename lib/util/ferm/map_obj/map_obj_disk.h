@@ -23,7 +23,7 @@ namespace Chroma
   class MapObjectDiskParams {
   public:
     //! Constructor: From XML
-    MapObjectDiskParams(XMLReader& xml_in, const std::string path) {
+    MapObjectDiskParams(XMLReader& xml_in, const std::string& path) {
       XMLReader paramtop(xml_in, path);
       read(paramtop, "FileName", filename);
     }
@@ -41,9 +41,26 @@ namespace Chroma
     const std::string& getFileName() const { 
       return filename;
     }
+
+    void write(XMLWriter& xml_out, const std::string& path) const;
   private:
     std::string filename;
   };
+
+ void
+ write(XMLWriter& xml_out, const std::string& path, const MapObjectDiskParams& p)
+ {
+   p.write(xml_out, path);
+ }
+
+ void
+ read(XMLReader& xml_in, const std::string& path, MapObjectDiskParams& p) 
+ {
+   MapObjectDiskParams tmp(xml_in, path);
+   p=tmp;
+ }
+
+
 
   //----------------------------------------------------------------------------
   //! A wrapper over maps

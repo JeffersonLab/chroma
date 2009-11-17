@@ -13,10 +13,12 @@
 #include "util/ferm/key_prop_colorvec.h"
 
 namespace Chroma { 
+
   
   namespace MapObjectDiskEnv {
     //! Name to be used
     const std::string name("MAP_OBJ_DISK");
+
 
     //! Callback function
     MapObject<KeyBlockProp_t,LatticeFermion>* createMapObjKeyBlockPropLF(XMLReader& xml_in,
@@ -88,4 +90,14 @@ namespace Chroma {
 
 
   } // Namespace MapObjectDiskEnv
+
+  void
+  MapObjectDiskParams::write(XMLWriter& xml_out, const std::string& path) const
+  {
+    push(xml_out, path);
+    QDP::write(xml_out, "MapObjType", MapObjectDiskEnv::name);
+    QDP::write(xml_out, "FileName", getFileName());
+    pop(xml_out);
+  }
+
 } // Chroma
