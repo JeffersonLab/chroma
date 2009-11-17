@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: lwldslash_w.h,v 3.2 2009-04-17 02:05:34 bjoo Exp $
+// $Id: lwldslash_w.h,v 3.3 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator
  */
@@ -228,7 +228,7 @@ namespace Chroma
 			  enum PlusMinus isign, int cb) const
   {
     START_CODE();
-#if QDP_NC == 3
+#if (QDP_NC == 2) || (QDP_NC == 3)
     /*     F 
      *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
      *     mu          mu                    mu

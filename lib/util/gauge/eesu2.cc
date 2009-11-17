@@ -1,10 +1,12 @@
-// $Id: eesu2.cc,v 3.1 2007-08-29 13:14:17 edwards Exp $
+// $Id: eesu2.cc,v 3.2 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Exactly exponentiate a SU(2) lie algebra element
  */
 
 #include "chromabase.h"
 #include "util/gauge/eesu2.h"
+#include "util/gauge/su2extract.h"
+#include "util/gauge/sunfill.h"
 
 namespace Chroma 
 {
@@ -30,6 +32,11 @@ namespace Chroma
     /* NOTE: r_0 should be 0 */
     multi1d<LatticeReal> r(4);
     su2Extract(r, m, 0, all);
+
+    r[0]=Real(0.5)*r[0];
+    r[1]=Real(0.5)*r[1];
+    r[2]=Real(0.5)*r[2];
+    r[3]=Real(0.5)*r[3];
 
     LatticeReal r_l = sqrt(r[1]*r[1] + r[2]*r[2] + r[3]*r[3]);
   

@@ -1,4 +1,4 @@
-// $Id: lwldslash_array_qdpopt_w.cc,v 3.5 2008-01-21 20:18:50 edwards Exp $
+// $Id: lwldslash_array_qdpopt_w.cc,v 3.6 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Wilson Dslash linear operator array
  */
@@ -134,7 +134,7 @@ namespace Chroma
 			       enum PlusMinus isign, int cb) const
   {
     START_CODE();
-#if QDP_NC == 3
+#if (QDP_NC == 2) || (QDP_NC == 3)
     /*     F 
      *   a2  (x)  :=  U  (x) (1 - isign gamma  ) psi(x)
      *     mu          mu                    mu
