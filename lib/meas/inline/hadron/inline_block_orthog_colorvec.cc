@@ -377,14 +377,16 @@ namespace Chroma
       SftMom phases(0, true, params.param.src.decay_dir);
       
       int Nvecs(3*params.param.src.spatial_masks.size()) ;
-      color_vecs.getEvectors().resize(Nvecs);
-      color_vecs.getEvalues().resize(Nvecs);
+      color_vecs.resizeEvectors(Nvecs);
+      multi1d<LatticeColorVector> evecs(Nvecs); // Temporary. Will write to map at aend
+
+	
       for(int i(0);i<Nvecs;i++){
-	color_vecs.getEvalues()[i].weights.resize(phases.numSubsets());
+	color_vecs.getEvalue(i).weights.resize(phases.numSubsets());
       }
-
+      
       color_vecs.getDecayDir() = params.param.src.decay_dir ;
-
+      
       srcParams.spin = 0;
       int count(0);
       for(int c(0);c<Nc;c++){// loop over colors
@@ -398,31 +400,32 @@ namespace Chroma
 	  DiluteGridQuarkSourceConstEnv::SourceConst<LatticeFermion>  
 	    GridSrc(srcParams);
 	  LatticeFermion chi = GridSrc(u_smr);
-	  color_vecs.getEvectors()[count] = peekSpin(chi,0) ;
+	  evecs[count] = peekSpin(chi,0);
+	  
 	  if(params.param.OrthoNormal){
 	    for(int k(0);k<count;k++){
-	      multi1d<DComplex> cc = sumMulti(localInnerProduct(color_vecs.getEvectors()[k],color_vecs.getEvectors()[count]),phases.getSet());
+	      multi1d<DComplex> cc = sumMulti(localInnerProduct(evecs[k],evecs[count]),phases.getSet());
 	      for(int t(0);t<phases.numSubsets();t++)
-		color_vecs.getEvectors()[count][phases.getSet()[t]] -= 
-		  cc[t]*color_vecs.getEvectors()[k] ;
+		evecs[count][phases.getSet()[t]] -= 
+		  cc[t]*evecs[k] ;
 	    }
 	    multi1d<Double> norm2 = 
-	      sumMulti(localNorm2(color_vecs.getEvectors()[count]),phases.getSet());
+	      sumMulti(localNorm2(evecs[count]),phases.getSet());
 	    for(int t(0);t<phases.numSubsets();t++)
-	      color_vecs.getEvectors()[count][phases.getSet()[t]] /= sqrt(norm2[t]) ;
+	      evecs[count][phases.getSet()[t]] /= sqrt(norm2[t]) ;
 	  }
-	      
+	  
 	  count ++;
 	}
       }
-
+      
       Handle< QuarkSmearing<LatticeColorVector> >  Smearing ;
       try{
 	std::istringstream  xml_l(params.param.src.smr.xml);
 	XMLReader  smrtop(xml_l);
 	QDPIO::cout << "ColorVector Smearing type = " <<params.param.src.smr.id ;
 	QDPIO::cout << endl;
-
+	
 	Smearing =
 	  TheColorVecSmearingFactory::Instance().createObject(params.param.src.smr.id,
 							      smrtop,
@@ -449,26 +452,30 @@ namespace Chroma
 	for(int i(0);i<Nvecs;i++){
 	  QDPIO::cout << name << ": Doing colorvec: "<<i
 		      << " hit no: "<<hit<<endl ;
-	  (*Smearing)(color_vecs.getEvectors()[i], u_smr);
+	  
+	  (*Smearing)(evecs[i], u_smr);
+
 	  if(params.param.OrthoNormal){
             for(int k(0);k<i;k++){
               multi1d<DComplex> cc = 
-		sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					   color_vecs.getEvectors()[i]),
+		sumMulti(localInnerProduct(evecs[k],
+					   evecs[i]),
 			 phases.getSet());
               for(int t(0);t<phases.numSubsets();t++)
-                color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-                  cc[t]*color_vecs.getEvectors()[k] ;
+                evecs[i][phases.getSet()[t]] -=
+                  cc[t]*evecs[k] ;
             }
-            multi1d<Double> norm2 =
-	      sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
-            for(int t(0);t<phases.numSubsets();t++)
-              color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]) ;
+            multi1d<Double> norm2 = sumMulti(localNorm2(evecs[i]),phases.getSet());
+            for(int t(0);t<phases.numSubsets();t++) {
+              evecs[i][phases.getSet()[t]] /= sqrt(norm2[t]) ;
+	    }
 	  }
 
 	}
 	
       }
+      
+
       if(params.param.BlockOrthoNormal){
 	//create the block dims array
 	Set blocks ;
@@ -493,21 +500,23 @@ namespace Chroma
 	for(int i(0);i<Nvecs;i++){
 	  for(int k(0);k<i;k++){
 	    multi1d<DComplex> cc =
-	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					 color_vecs.getEvectors()[i]),
+	      sumMulti(localInnerProduct(evecs[k],
+					 evecs[i]),
 		       blocks);
-	    for(int b(0);b<blocks.numSubsets();b++)
-	      color_vecs.getEvectors()[i][blocks[b]] -=
-		cc[b]*color_vecs.getEvectors()[k] ;
+	    
+	    for(int b(0);b<blocks.numSubsets();b++) {
+	      evecs[i][blocks[b]] -= cc[b]*evecs[k] ;
+	    }
 	  }
 	  multi1d<Double> norm2 =
-	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
-	  for(int b(0);b<blocks.numSubsets();b++)
-	    color_vecs.getEvectors()[i][blocks[b]] /= sqrt(norm2[b]) ;
+	    sumMulti(localNorm2(evecs[i]),blocks);
+	  for(int b(0);b<blocks.numSubsets();b++) {
+	    evecs[i][blocks[b]] /= sqrt(norm2[b]) ;
+	  }
 	}
-
+	
       }//BlockOrthoNormalize
-
+      
       //#define PRINT_SMEARING_MATRIX
 #ifdef PRINT_SMEARING_MATRIX
       if(params.param.BlockOrthoNormal)
@@ -530,12 +539,12 @@ namespace Chroma
 	for(int b(0);b<blks.numSubsets();b++){
 	  for(int i(0);i<Nvecs;i++){
 	    vec = zero ;
-	    vec[blks[b]] = color_vecs.getEvectors()[i] ;
+	    vec[blks[b]] = color_vecs.getEvector(i) ;
 	    (*Smearing)(vec, u_smr);
 	    for(int bb(b);bb<blks.numSubsets();bb++){
 	      for(int j(i);j<Nvecs;j++){
 		vecd            = zero ;
-		vecd[blks[bb]] = color_vecs.getEvectors()[j] ;
+		vecd[blks[bb]] = color_vecs.getEvector(j) ;
 		cc = sumMulti(localInnerProduct(vecd,vec),  phases.getSet());
 		for(int t(0);t<phases.numSubsets();t++){
 		  M[t](bb,b)(j,i) = cc[t] ;
@@ -567,12 +576,15 @@ namespace Chroma
 	}
 	pop(xml_out); //SmearingMatrix
       }//BlockOrthoNormalize
+
+
+
 #endif
 
       {
-	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
+	multi1d< multi1d<Double> > source_corrs(evecs.size());
 	for(int m=0; m < source_corrs.size(); ++m)
-	  source_corrs[m] = sumMulti(localNorm2(color_vecs.getEvectors()[m]), 
+	  source_corrs[m] = sumMulti(localNorm2(evecs[m]), 
 				     phases.getSet());
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
@@ -580,25 +592,29 @@ namespace Chroma
 	//compute the "eigenvalues"
 	push(xml_out,"SmearingEvals");
 	for(int i(0);i<Nvecs;i++){
-	  LatticeColorVector Svec = color_vecs.getEvectors()[i] ;
+	  LatticeColorVector Svec = evecs[i] ;
 	  (*Smearing)(Svec, u_smr);
 	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i],
+	    sumMulti(localInnerProduct(evecs[i],
 				       Svec),  phases.getSet());
 
 	  for(int t(0);t<phases.numSubsets();t++)
-	    color_vecs.getEvalues()[i].weights[t] = real(cc[t]);
+	    color_vecs.getEvalue(i).weights[t] = real(cc[t]);
 
 	  push(xml_out,"Vector") ;
 	  write(xml_out, "VecNo",i);
-	  write(xml_out, "Evals", color_vecs.getEvalues()[i].weights);
+	  write(xml_out, "Evals", color_vecs.getEvalue(i).weights);
 	  pop(xml_out);
 	}
 	pop(xml_out);
       }
       
-      
-      
+      color_vecs.openWrite();
+      for(int i=0; i < evecs.size(); i++) { 
+	color_vecs.insert(i,evecs[i]);
+      }
+      color_vecs.openRead();
+
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec contstruction = "
 		  << swatch.getTimeInSeconds() 
@@ -622,11 +638,13 @@ namespace Chroma
 	for(int i(0);i<Nvecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalues()[i].weights); 
+	  write(record_xml, "EigenValues", color_vecs.getEvalue(i).weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);
 	
+
+
 	// Write the propagator xml info
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).setRecordXML(record_xml);

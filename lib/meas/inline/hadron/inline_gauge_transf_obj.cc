@@ -104,13 +104,21 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(output_id).setRecordXML(input_record_xml);
 
 	// I'm lazy. Use the input object to initialize the output object.
-	output_obj = input_obj;
-
-	// Do the actual rotation. The evs stay the same
-	for(int n=0; n < input_obj.getNumVectors(); n++)
-	{
-	  output_obj.getEvectors()[n] = g * input_obj.getEvectors()[n];
+	//	output_obj = input_obj;
+	output_obj.resizeEvalues(input_obj.evaluesSize());
+	
+	for(int i=0; i < input_obj.evaluesSize(); i++) {
+	  output_obj.getEvalue(i) = input_obj.getEvalue(i);
 	}
+	 
+	// Do the actual rotation. The evs stay the same
+	output_obj.openWrite();
+	for(int n=0; n < input_obj.getNumVectors(); n++) {
+	  T tvec; input_obj.lookup(n,tvec);
+	  T tvec2 = g*tvec;
+	  output_obj.insert(n, tvec2);
+	}
+	output_obj.openRead(); // Read mode hereafter
       }
 
 

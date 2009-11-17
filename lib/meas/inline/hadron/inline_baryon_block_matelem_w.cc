@@ -506,7 +506,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvector(0);
       }
       catch( std::bad_cast ) 
       {
@@ -586,10 +586,23 @@ namespace Chroma
       //
       // The object holding the displaced color vector maps  
       //
+      
+
+      /* OK: Here this guy expects an array of vectors.
+       *     SO. I will hack this for now and copy
+       *     Once I get the disk map in here, I can change the 
+       *     DispColorVectorMap to deal with that directly eventually.
+       *
+       */
+      multi1d<LatticeColorVector> theVectors(eigen_source.evectorsSize());
+      for(int i=0; i < eigen_source.evectorsSize(); i++) { 
+	theVectors[i] = eigen_source.getEvector(i);
+      }
+
       DispColorVectorMap smrd_disp_vecs(false,
 					params.param.displacement_length,
 					u_smr,
-					eigen_source.getEvectors());
+					theVectors);
 
       //
       // DB storage
@@ -606,7 +619,9 @@ namespace Chroma
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+
+	multi1d<SubsetVectorWeight_t> evals; eigen_source.getEvalues(evals);
+	write(file_xml, "Weights", evals);
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info",displacement_list);

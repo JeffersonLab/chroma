@@ -252,21 +252,21 @@ namespace Chroma
 
 	  if (t == 0)
 	  {
-	    eigen.getEvalues().resize(nev);
-	    eigen.getEvectors().resize(nev);
+	    eigen.resizeEvalues(nev);
+	    eigen.resizeEvectors(nev);
 	    eigen.getDecayDir() = Nd - 1;
 						
 	    for (int v = 0 ; v < nev ; ++v)
 	    {
-	      eigen.getEvectors()[v] = zero;
-	      eigen.getEvalues()[v].weights.resize(nt);
+	      eigen.getEvector(v) = zero;
+	      eigen.getEvalue(v).weights.resize(nt);
 	    }			
 	  }
 
 	  for (int n = 0 ; n < nev ; n++)
 	  {
 
-	    eigen.getEvalues()[n].weights[t] = evals[n]; // Copies all the weights
+	    eigen.getEvalue(n).weights[t] = evals[n]; // Copies all the weights
 
 	    multi1d<Complex> temp;
 	    read(bin_rdr, temp);
@@ -277,7 +277,7 @@ namespace Chroma
 	      exit(1);
 	    }
 
-	    unserialize(eigen.getEvectors()[n], temp, t);
+	    unserialize(eigen.getEvector(n), temp, t);
 	  }
 
 	  write(final_record_xml, "elem", curr_record_xml);

@@ -398,7 +398,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvector(0);
       }
       catch( std::bad_cast ) 
       {
@@ -490,7 +490,9 @@ namespace Chroma
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Op_Info", params.param.displacement_list);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	multi1d<SubsetVectorWeight_t> evals; eigen_source.getEvalues(evals);
+
+	write(file_xml, "Weights", evals);
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
@@ -569,7 +571,7 @@ namespace Chroma
 	  {
 	    // Displace the right vector and multiply by the momentum phase
 	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
-								      eigen_source.getEvectors()[j], 
+								      eigen_source.getEvector(j), 
 								      params.param.displacement_length, 
 								      disp);
 
@@ -580,7 +582,7 @@ namespace Chroma
 
 	      // Contract over color indices
 	      // Do the relevant quark contraction
-	      LatticeComplex lop = localInnerProduct(eigen_source.getEvectors()[i], shift_vec);
+	      LatticeComplex lop = localInnerProduct(eigen_source.getEvector(i), shift_vec);
 
 	      // Slow fourier-transform
 	      multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());

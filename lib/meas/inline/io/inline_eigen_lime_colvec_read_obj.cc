@@ -148,8 +148,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
-	eigen.getEvalues().resize(params.file.file_names.size());
-	eigen.getEvectors().resize(params.file.file_names.size());
+	eigen.resizeEvalues(params.file.file_names.size());
+	eigen.resizeEvectors(params.file.file_names.size());
 	eigen.getDecayDir() = Nd-1;
 
 	// Read the object
@@ -171,7 +171,7 @@ namespace Chroma
 	  std::string filename = params.file.file_names[i];
 	  QDPFileReader rdr(curr_file_xml, filename, QDPIO_SERIAL);
 
-	  read(rdr, curr_record_xml, eigen.getEvectors()[i]);
+	  read(rdr, curr_record_xml, eigen.getEvector(i));
 		
 	  multi1d<Real> evals;
 	  if (curr_record_xml.count("/LaplaceEigInfo/EigenValues") != 0)
@@ -184,7 +184,7 @@ namespace Chroma
 	    QDP_abort(1);
 	  }
 
-	  eigen.getEvalues()[i].weights = evals; // Copies all the weights
+	  eigen.getEvalue(i).weights = evals; // Copies all the weights
 
 	  write(final_record_xml, "elem", curr_record_xml);
 

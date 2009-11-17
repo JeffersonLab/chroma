@@ -405,7 +405,7 @@ namespace Chroma
 	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
-	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvectors()[m]), phases.getSet());
+	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvector(m)), phases.getSet());
 	}
 
 	push(xml_out, "Source_correlators");
@@ -442,7 +442,8 @@ namespace Chroma
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	multi1d<SubsetVectorWeight_t> evals; eigen_source.getEvalues(evals);
+	write(file_xml, "Weights", evals);
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
@@ -545,7 +546,7 @@ namespace Chroma
 
 		    for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		    {
-		      const LatticeColorVector& vec = eigen_source.getEvectors()[colorvec_sink];
+		      const LatticeColorVector& vec = eigen_source.getEvector(colorvec_sink);
 		      LatticeColorVector vec_sink = zero;
 		      vec_sink[blocks[blk_sink]] = vec;
 
