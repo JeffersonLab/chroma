@@ -47,6 +47,7 @@ namespace Chroma
     std::string filename;
   };
 
+#if 0
  void
  write(XMLWriter& xml_out, const std::string& path, const MapObjectDiskParams& p)
  {
@@ -59,7 +60,7 @@ namespace Chroma
    MapObjectDiskParams tmp(xml_in, path);
    p=tmp;
  }
-
+#endif
 
 
   //----------------------------------------------------------------------------

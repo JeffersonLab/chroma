@@ -24,8 +24,11 @@ namespace Chroma
   /*! \ingroup inlineio */
   class InlineReadMapObjDiskParams 
   {
+  public:
+
+    //!Constructor
     InlineReadMapObjDiskParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
+
 
     unsigned long frequency;
 
@@ -36,7 +39,7 @@ namespace Chroma
       std::string   object_id;
     } named_obj;
 
-    
+    void write(XMLWriter& xml_out, const std::string& path) const;    
   };
 
   //! Inline writing of memory objects

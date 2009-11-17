@@ -906,6 +906,7 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_link_smear.h
 
 # Taken out for now
+#	meas/inline/io/inline_read_map_obj_disk.h \
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
@@ -1660,6 +1661,7 @@ libchroma_a_SOURCES += \
 	meas/inline/smear/inline_link_smear.cc
 
 # Taken out for now
+#	meas/inline/io/inline_read_map_obj_disk.cc \
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 #	meas/inline/hadron/inline_spectrumQll.cc

@@ -54,13 +54,9 @@ namespace Chroma
   }
 
   //! File output
-  void write(XMLWriter& xml, const string& path, const InlineReadMapObjDiskParams::File_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineReadMapObjDiskParams& input)
   {
-    push(xml, path);
-
-    write(xml, "MapObject", input.file_name);
-
-    pop(xml);
+    input.write(xml,path);
   }
 
 
@@ -72,18 +68,9 @@ namespace Chroma
     read(inputtop, "object_id", input.object_id);
   }
 
-  //! File output
-  void read(XMLReader& xml, const string& path, InlineReadMapObjDiskParams::File_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "file_name", input.file_name);
-  }
 
 
   // Param stuff
-  InlineReadMapObjDiskParams::InlineReadMapObjDiskParams() { frequency = 0; }
-
   InlineReadMapObjDiskParams::InlineReadMapObjDiskParams(XMLReader& xml_in, const std::string& path) 
   {
     try 
@@ -117,7 +104,7 @@ namespace Chroma
     Chroma::write(xml_out, "NamedObject", named_obj);
     
     // Write out the destination
-    Chroma::write(xml_out, "File", file);
+    Chroma::write(xml_out, "MapObject", map_obj_disk_p);
 
     pop(xml_out);
   }
@@ -129,7 +116,7 @@ namespace Chroma
   {
     START_CODE();
 
-    push(xml_out, "nersc_read_named_obj");
+    push(xml_out, "read_map_object_disk");
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << InlineReadMapObjDiskEnv::name << ": object reader" << endl;
@@ -144,22 +131,22 @@ namespace Chroma
     {
       swatch.reset();
 
-      XMLReader record_xml;
-      multi1d<LatticeColorMatrix> u(Nd);
+	// Create the object as a handle. 
+	// This bit will and up changing to a Factory invocation
+	Handle< MapObject<KeyPropColorVec_t, LatticeFermion> >  new_map_obj_handle(
+										   new MapObject
+										   )
 
-      // Read the object
-      swatch.start();
-      QDP::readArchiv(record_xml, u, params.file.file_name);
-      swatch.stop();
+	// Create the entry
+	TheNamedObjMap::Instance().create< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
 
-      XMLBufferWriter file_xml;
-      push(file_xml, "NERSC");
-      pop(file_xml);
+	// Insert
+	TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) = new_map_obj_handle;
+
 
       TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id) = u;
-      TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-      TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+
 
       QDPIO::cout << "Object successfully written: time= " 
 		  << swatch.getTimeInSeconds() 
