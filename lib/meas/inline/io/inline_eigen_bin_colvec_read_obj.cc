@@ -148,8 +148,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
-	eigen.getEvalues().resize(params.file.file_names.size());
-	eigen.getEvectors().resize(params.file.file_names.size());
+	eigen.resizeEvalues(params.file.file_names.size());
+	eigen.resizeEvectors(params.file.file_names.size());
 	eigen.getDecayDir() = Nd-1;
 
 	const int Lt = QDP::Layout::lattSize()[eigen.getDecayDir()];
@@ -160,12 +160,12 @@ namespace Chroma
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
-	  read(bin, eigen.getEvectors()[i]);
+	  read(bin, eigen.getEvector(i));
 
-	  eigen.getEvalues()[i].weights.resize(Lt);
+	  eigen.getEvalue(i).weights.resize(Lt);
 	  for(int t=0; t < Lt; ++t)
 	  {
-	    read(bin, eigen.getEvalues()[i].weights[t]);
+	    read(bin, eigen.getEvalue(i).weights[t]);
 	  }
 	}
 

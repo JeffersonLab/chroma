@@ -29,21 +29,23 @@ namespace Chroma
     int num_vecs = vecs.getNumVectors();
     int nt = vecs.getDecayExtent(); 
 
-    multi1d<LatticeColorVector> cvec = vecs.getEvectors();
+    //    multi1d<LatticeColorVector> cvec = vecs.getEvectors();
 
     SftMom phases(0, false, j_decay);
 
     for (int n = 0 ; n < num_vecs ; ++n)
     {
-      const multi1d<Real> & evals = vecs.getEvalues()[n].weights;
+      const multi1d<Real> & evals = vecs.getEvalue(n).weights;
 
-      LatticeComplex tmp = localInnerProduct( cvec[n], chi );
+      //      LatticeComplex tmp = localInnerProduct( cvec[n], chi );
+      LatticeColorVector cvec; vecs.lookup(n,cvec);
+      LatticeComplex tmp = localInnerProduct( cvec, chi );
 		
       multi2d<DComplex> t_sum = phases.sft(tmp);
 
       for (int t = 0 ; t < nt ; ++t)
       {
-	psi[phases.getSet()[t]] += cvec[n] * t_sum[0][t] * 
+	psi[phases.getSet()[t]] += cvec * t_sum[0][t] * 
 	  exp( Real(-1.0) * sigma * sigma / Real(4.0) * evals[t]);
       }
     }

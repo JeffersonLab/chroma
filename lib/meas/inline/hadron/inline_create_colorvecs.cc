@@ -301,10 +301,12 @@ namespace Chroma
       
       const int num_vecs = params.param.num_vecs;
 
-      color_vecs.getEvectors().resize(num_vecs);
-      color_vecs.getEvalues().resize(num_vecs);
+
+      color_vecs.resizeEvectors(num_vecs);
+      color_vecs.resizeEvalues(num_vecs);
+
       for(int i(0);i<num_vecs;i++){
-	color_vecs.getEvalues()[i].weights.resize(phases.numSubsets());
+	color_vecs.getEvalue(i).weights.resize(phases.numSubsets());
       }
 
       color_vecs.getDecayDir() = params.param.decay_dir;
@@ -320,31 +322,31 @@ namespace Chroma
 	  QDPIO::cout << name << ": Doing colorvec: "<<i << " hit no: "<<hit<<endl;
 	  if (hit == 0)
 	  {
-	    gaussian(color_vecs.getEvectors()[i]);
+	    gaussian(color_vecs.getEvector(i));
 	  }
 	  else
 	  {
 	    gausSmear(u_smr, 
-		      color_vecs.getEvectors()[i],
+		      color_vecs.getEvector(i),
 		      params.param.width, params.param.num_iter, params.param.decay_dir);
 	  }
 
 	  for(int k=0; k < i; ++k)
 	  {
 	    multi1d<DComplex> cc = 
-	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					 color_vecs.getEvectors()[i]),
+	      sumMulti(localInnerProduct(color_vecs.getEvector(k),
+					 color_vecs.getEvector(i)),
 		       phases.getSet());
 	    for(int t(0);t<phases.numSubsets();t++)
-	      color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-		cc[t]*color_vecs.getEvectors()[k];
+	      color_vecs.getEvector(i)[phases.getSet()[t]] -=
+		cc[t]*color_vecs.getEvector(k);
 	  }
 
 	  multi1d<Double> norm2 =
-	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
+	    sumMulti(localNorm2(color_vecs.getEvector(i)),phases.getSet());
 
 	  for(int t=0; t < phases.numSubsets(); ++t)
-	    color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]);
+	    color_vecs.getEvector(i)[phases.getSet()[t]] /= sqrt(norm2[t]);
 	}
       }
 
@@ -355,7 +357,7 @@ namespace Chroma
       {
 	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
-	  source_corrs[m] = sumMulti(localNorm2(color_vecs.getEvectors()[m]), 
+	  source_corrs[m] = sumMulti(localNorm2(color_vecs.getEvector(m)), 
 				     phases.getSet());
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
@@ -365,19 +367,19 @@ namespace Chroma
 	for(int i=0; i < num_vecs; ++i)
 	{
 	  LatticeColorVector Svec;
-	  klein_gord(u_smr, color_vecs.getEvectors()[i], Svec, Real(0), params.param.decay_dir);
+	  klein_gord(u_smr, color_vecs.getEvector(i), Svec, Real(0), params.param.decay_dir);
 
 	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i], 
+	    sumMulti(localInnerProduct(color_vecs.getEvector(i), 
 				       Svec),  
 		     phases.getSet());
 
 	  for(int t=0; t < phases.numSubsets(); ++t)
-	    color_vecs.getEvalues()[i].weights[t] = real(cc[t]);
+	    color_vecs.getEvalue(i).weights[t] = real(cc[t]);
 
 	  push(xml_out,"Vector");
 	  write(xml_out, "VecNo",i);
-	  write(xml_out, "Evals", color_vecs.getEvalues()[i].weights);
+	  write(xml_out, "Evals", color_vecs.getEvalue(i).weights);
 	  pop(xml_out);
 	}
 	pop(xml_out);
@@ -407,7 +409,7 @@ namespace Chroma
 	for(int i(0);i<num_vecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalues()[i].weights); 
+	  write(record_xml, "EigenValues", color_vecs.getEvalue(i).weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);

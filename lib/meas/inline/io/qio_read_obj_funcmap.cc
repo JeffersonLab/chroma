@@ -329,6 +329,7 @@ namespace Chroma
 
 
 	// Resize evec arrays
+	// THIS IS AN EIGEN INFO - NOT SUBSET VECTORS
 	TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(buffer_id).getEvectors().resize(evalsD.size());
 
 	// Loop and read evecs
@@ -339,7 +340,7 @@ namespace Chroma
 	  LatticeFermion evecR;
 	  evecR=evecD;
 
-	  (TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(buffer_id).getEvectors())[i]=evecR;
+	  TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(buffer_id).getEvectors()[i]=evecR;
 	}
  
 	// Set File and Record XML throw away dummy XMLs
@@ -382,16 +383,16 @@ namespace Chroma
 
 	// Resize arrays
 	const int Lt = QDP::Layout::lattSize()[decay_dir];
-	obj.getEvectors().resize(N);
-	obj.getEvalues().resize(N);
+	obj.resizeEvectors(N);
+	obj.resizeEvalues(N);
 
 	// Loop and read evecs
 	for(int n=0; n < N; n++)
 	{
 	  XMLReader record_xml_dummy;
 
-	  read(to, record_xml_dummy, obj.getEvectors()[n]);
-	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalues()[n].weights);
+	  read(to, record_xml_dummy, obj.getEvector(n));
+	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalue(n).weights);
 	}
  
 	// Set File and Record XML throw away dummy XMLs

@@ -364,7 +364,7 @@ namespace Chroma
 	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
-	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvectors()[m]), phases.getSet());
+	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvector(m)), phases.getSet());
 	}
 
 	push(xml_out, "Source_correlators");
@@ -451,7 +451,7 @@ namespace Chroma
 	    // loop over blocks                                           
 	    // Pull out a time-slice of the color vector source
 	    LatticeColorVector vec_srce = zero;
-	    vec_srce[phases.getSet()[t_source]] = eigen_source.getEvectors()[colorvec_source];
+	    vec_srce[phases.getSet()[t_source]] = eigen_source.getEvector(colorvec_source);
 
 	    for(int b=0; b < blocks.numSubsets(); b++)
 	    {

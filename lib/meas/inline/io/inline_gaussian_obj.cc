@@ -97,16 +97,29 @@ namespace Chroma
 	SftMom phases(0, false, decay_dir);
 	const int Lt = phases.numSubsets();
 
+
+
 	// Put 4 in here just for fun
 	int N = 4;
-	obj.getEvectors().resize(N);
-	obj.getEvalues().resize(N);
+
+	// I use this explicit array
+	// so I can do the Gram-Schmidt later.
+	multi1d<T> tmpvecs(N);  
+
+
+	// Resize the final evector array
+	obj.resizeEvectors(N);
+
+	// Resize the final evalues array
+	obj.resizeEvalues(N);
+
 	obj.getDecayDir() = decay_dir;
 
+	// Setup the weights, fill tmvecs(n) with Gaussian noise
  	for(int n=0; n < N; ++n)
 	{
-	  obj.getEvalues()[n].weights.resize(Lt);
-	  gaussian(obj.getEvectors()[n]);
+	  obj.getEvalue(n).weights.resize(Lt);
+	  gaussian(tmpvecs(n));
 	}
 
 	//
@@ -117,24 +130,32 @@ namespace Chroma
 	{
 	  const Subset& s = phases.getSet()[t];
 
+	  // Orthogonalize the subset for each vector
 	  for(int n=0; n < N; ++n)
 	  {
-	    random(obj.getEvalues()[n].weights[t]);
+	    random(obj.getEvalue(n).weights[t]);
 
 	    // Convenience
-	    T& v = obj.getEvectors()[n];
+	    T& v = tmpvecs(n);
 
 	    if (n > 0)
 	    {
 	      // Orthogonalize this vector against the previous "n" of them
-	      GramSchm(v, obj.getEvectors(), n, s);
+	      GramSchm(v, tmpvecs, n, s);
 	    }
 
 	    // Normalize
 	    v[s] /= sqrt(norm2(v, s));
 	  }
 	}
+	
+	// Now add in the tmpvecs (all 4 of them)
+	// Into the 'array'
+	for(int n=0; n < N; ++n) {
+	  obj.getEvector(n) = tmpvecs[n];
+	}
 
+	  
 	// I haven't figure out what to put in here
 	XMLBufferWriter file_xml, record_xml;
 
@@ -162,8 +183,9 @@ namespace Chroma
 
 	// Use Nc vectors. There are only Nc site-level orthog. vectors in SU(N)
 	int N = Nc;
-	obj.getEvectors().resize(N);
-	obj.getEvalues().resize(N);
+
+	obj.resizeEvectors(N);
+	obj.resizeEvalues(N);
 	obj.getDecayDir() = decay_dir;
 
 	for(int n=0; n < N; ++n)
@@ -171,9 +193,9 @@ namespace Chroma
 	  ColorVector vec = zero;
 	  pokeColor(vec, cmplx(Real(1),Real(0)), n);
 
-	  obj.getEvectors()[n] = vec;   // Same for all sites
-	  obj.getEvalues()[n].weights.resize(Lt);
-	  obj.getEvalues()[n].weights = zero;  // There are all zero for the constant field
+	  obj.getEvector(n) = vec;   // Same for all sites
+	  obj.getEvalue(n).weights.resize(Lt);
+	  obj.getEvalue(n).weights = zero;  // There are all zero for the constant field
 	}
 
 	// I haven't figure out what to put in here

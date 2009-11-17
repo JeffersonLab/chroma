@@ -367,6 +367,7 @@ namespace Chroma
 	write(to, record_xml, evalsD);
 
 	// Now write the evectors 1 by 1 to avoid double storing
+	// This is EigenInfo not SubsetVectors
 	multi1d<T>& evecs=obj.getEvectors();
 	for (int i=0; i<evecs.size(); i++)
 	{
@@ -407,10 +408,10 @@ namespace Chroma
 	{
 	  XMLBufferWriter record_xml;
 	  push(record_xml, "VectorInfo");
-	  write(record_xml, "weights", obj.getEvalues()[n].weights);
+	  write(record_xml, "weights", obj.getEvalue(n).weights);
 	  pop(record_xml);
 
-	  write(to, record_xml, obj.getEvectors()[n]);
+	  write(to, record_xml, obj.getEvector(n));
 	}
 
 	// Done

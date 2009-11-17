@@ -414,7 +414,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvector(0);
       }
       catch( std::bad_cast ) 
       {
@@ -501,7 +501,8 @@ namespace Chroma
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	multi1d<SubsetVectorWeight_t> evals; eigen_source.getEvalues(evals);
+	write(file_xml, "Weights", evals);
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	write(file_xml, "Op_Info",params.param.displacement_list);
@@ -599,7 +600,7 @@ namespace Chroma
 	      {
 		// Displace the right vector and multiply by the momentum phase
 		LatticeColorVector tt = zero;
-		tt[blocks[blk_right]] = eigen_source.getEvectors()[j];
+		tt[blocks[blk_right]] = eigen_source.getEvector(j);
 		LatticeColorVector shift_vec = phases[mom_num] * 
 		  displace(u_smr, tt, params.param.displacement_length, disp);
 
@@ -609,7 +610,7 @@ namespace Chroma
 		  watch.start();
 			
 		  tt = zero;
-		  tt[blocks[blk_left]] = eigen_source.getEvectors()[i];
+		  tt[blocks[blk_left]] = eigen_source.getEvector(i);
 
 		  // Contract over color indices
 		  // Do the relevant quark contraction

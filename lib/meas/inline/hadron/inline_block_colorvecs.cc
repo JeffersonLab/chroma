@@ -492,7 +492,7 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, params.param.src.decay_dir);
       
-      int Nvecs = color_vecs.getEvectors().size();
+      int Nvecs = color_vecs.evectorsSize();
       if(params.param.OrthoNormal)
       {
 	for(int i(0);i<Nvecs;i++)
@@ -500,17 +500,17 @@ namespace Chroma
 	  for(int k(0);k<i;k++)
 	  {
 	    multi1d<DComplex> cc = 
-	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					 color_vecs.getEvectors()[i]),
+	      sumMulti(localInnerProduct(color_vecs.getEvector(k),
+					 color_vecs.getEvector(i)),
 		       phases.getSet());
 	    for(int t(0);t<phases.numSubsets();t++)
-	      color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-		cc[t]*color_vecs.getEvectors()[k];
+	      color_vecs.getEvector(i)[phases.getSet()[t]] -=
+		cc[t]*color_vecs.getEvector(k);
 	  }
 	  multi1d<Double> norm2 =
-	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
+	    sumMulti(localNorm2(color_vecs.getEvector(i)),phases.getSet());
 	  for(int t(0);t<phases.numSubsets();t++)
-	    color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]);
+	    color_vecs.getEvector(i)[phases.getSet()[t]] /= sqrt(norm2[t]);
 	}
       }
 
@@ -541,17 +541,17 @@ namespace Chroma
 	for(int k(0);k<i;k++)
 	{
 	  multi1d<DComplex> cc =
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-				       color_vecs.getEvectors()[i]),
+	    sumMulti(localInnerProduct(color_vecs.getEvector(k),
+				       color_vecs.getEvector(i)),
 		     blocks);
 	  for(int b(0);b<blocks.numSubsets();b++)
-	    color_vecs.getEvectors()[i][blocks[b]] -=
-	      cc[b]*color_vecs.getEvectors()[k];
+	    color_vecs.getEvector(i)[blocks[b]] -=
+	      cc[b]*color_vecs.getEvector(k);
 	}
 	multi1d<Double> norm2 =
-	  sumMulti(localNorm2(color_vecs.getEvectors()[i]),blocks);
+	  sumMulti(localNorm2(color_vecs.getEvector(i)),blocks);
 	for(int b(0);b<blocks.numSubsets();b++)
-	  color_vecs.getEvectors()[i][blocks[b]] /= sqrt(norm2[b]);
+	  color_vecs.getEvector(i)[blocks[b]] /= sqrt(norm2[b]);
       }
 
       //#define PRINT_SMEARING_MATRIX
@@ -585,14 +585,14 @@ namespace Chroma
 	  for(int i(0);i<Nvecs;i++)
 	  {
 	    vec = zero;
-	    vec[blks[b]] = color_vecs.getEvectors()[i];
+	    vec[blks[b]] = color_vecs.getEvector(i);
 	    (*Smearing)(vec, u_smr);
 	    for(int bb(b);bb<blks.numSubsets();bb++)
 	    {
 	      for(int j(i);j<Nvecs;j++)
 	      {
 		vecd            = zero;
-		vecd[blks[bb]] = color_vecs.getEvectors()[j];
+		vecd[blks[bb]] = color_vecs.getEvector(j);
 		cc = sumMulti(localInnerProduct(vecd,vec),  phases.getSet());
 		for(int t(0);t<phases.numSubsets();t++){
 		  kv.val.data()(bb,b)(j,i) = cc[t];
@@ -609,7 +609,7 @@ namespace Chroma
       {
 	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
-	  source_corrs[m] = sumMulti(localNorm2(color_vecs.getEvectors()[m]), 
+	  source_corrs[m] = sumMulti(localNorm2(color_vecs.getEvector(m)), 
 				     phases.getSet());
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
@@ -618,18 +618,18 @@ namespace Chroma
 	push(xml_out,"SmearingEvals");
 	for(int i(0);i<Nvecs;i++)
 	{
-	  LatticeColorVector Svec = color_vecs.getEvectors()[i];
+	  LatticeColorVector Svec = color_vecs.getEvector(i);
 	  (*Smearing)(Svec, u_smr);
 	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i],
+	    sumMulti(localInnerProduct(color_vecs.getEvector(i),
 				       Svec),  phases.getSet());
 
 	  for(int t(0);t<phases.numSubsets();t++)
-	    color_vecs.getEvalues()[i].weights[t] = real(cc[t]);
+	    color_vecs.getEvalue(i).weights[t] = real(cc[t]);
 
 	  push(xml_out,"Vector");
 	  write(xml_out, "VecNo",i);
-	  write(xml_out, "Evals", color_vecs.getEvalues()[i].weights);
+	  write(xml_out, "Evals", color_vecs.getEvalue(i).weights);
 	  pop(xml_out);
 	}
 	pop(xml_out);
@@ -660,7 +660,7 @@ namespace Chroma
 	for(int i(0);i<Nvecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalues()[i].weights); 
+	  write(record_xml, "EigenValues", color_vecs.getEvalue(i).weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);
