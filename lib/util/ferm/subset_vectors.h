@@ -7,7 +7,9 @@
 #define __subset_vectors_h__
 
 #include "chromabase.h"
+#include "handle.h"
 #include "util/ferm/map_obj/map_obj_memory.h"
+#include "util/ferm/map_obj/map_obj_disk.h"
 
 namespace Chroma
 {
@@ -37,22 +39,25 @@ namespace Chroma
   public:
     typedef T Type_t;
 
-    //! Partial constructor
-    SubsetVectors() {}
+    //! Constructor -- No Filename: Use memory based map
+    SubsetVectors(): evectors(new MapObjectMemory<int,T>()) {}
+
+    //! Constructor -- Filename: Use disk pased map
+    SubsetVectors(const std::string& filename) : evectors(new MapObjectDisk<int,T>(filename)) {} 
 
     //! Full constructor
     SubsetVectors(const multi1d<SubsetVectorWeight_t>& eval, int decay_dir_, const multi1d<T>& evec) 
-      : evalues(eval), decay_dir(decay_dir_) {
+      : evalues(eval), evectors(new MapObjectMemory<int,T>()), decay_dir(decay_dir_) {
       if (eval.size() != evec.size() ) {
 	QDPIO::cout << "Eval array size not equal to evec array size" << endl;
 	QDP_abort(1);
       }
 
-      evectors.openWrite();
+      evectors->openWrite();
       for(int i=0; i < evec.size(); i++) { 
-	evectors.insert(i,evec[i]);
+	evectors->insert(i,evec[i]);
       }
-      evectors.openRead();
+      evectors->openRead();
 
     }
 
@@ -60,7 +65,7 @@ namespace Chroma
     ~SubsetVectors() {}
       
     //! Number of vectors
-    int getNumVectors() const {return evectors.size();}
+    int getNumVectors() const {return evectors->size();}
 
     //! Extent of decay direction
     int getDecayExtent() const {return QDP::Layout::lattSize()[decay_dir];}
@@ -88,13 +93,13 @@ namespace Chroma
     SubsetVectorWeight_t& getEvalue(int i) { return evalues[i];}
 
     //! Lookup vector -- must be in Read Mode
-    void lookup(int i, T& v) const { evectors.lookup(i,v); }
+    void lookup(int i, T& v) const { evectors->lookup(i,v); }
 
     //! Insert vector -- must be in Write Mode
-    void insert(int i, const T& v) { evectors.insert(i,v); }
+    void insert(int i, const T& v) { evectors->insert(i,v); }
 
     //! Update vector -- must be in Update mode
-    void update(int i, const T& v) { evectors.update(i,v); }
+    void update(int i, const T& v) { evectors->update(i,v); }
 
 
     //! Resize Evalues array 
@@ -102,24 +107,24 @@ namespace Chroma
     
 
     //! set write mode
-    void openWrite() { evectors.openWrite(); }
+    void openWrite() { evectors->openWrite(); }
 
     //! set read mode
-    void openRead() { evectors.openRead(); }
+    void openRead() { evectors->openRead(); }
 
     //! seet update mode 
-    void openUpdate() { evectors.openUpdate();}
+    void openUpdate() { evectors->openUpdate();}
 
     //! get size of Evalues array 
     int evaluesSize() const { return evalues.size(); }
 
     //! get size of Evectors array (to be removed post refactoring) 
-    int evectorsSize() const { return evectors.size(); }
+    int evectorsSize() const { return evectors->size(); }
 
   private:
     int decay_dir;
     multi1d<SubsetVectorWeight_t> evalues;
-    MapObjectMemory<int,T> evectors;
+    Handle< MapObject<int,T> > evectors;
   };
 }
 

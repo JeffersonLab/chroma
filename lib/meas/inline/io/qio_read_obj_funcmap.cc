@@ -364,8 +364,12 @@ namespace Chroma
 	// Open file
 	QDPFileReader to(file_xml,file,serpar);
 
-	// Create object
-	TheNamedObjMap::Instance().create< SubsetVectors<T> >(buffer_id);
+	// Create object -- with a disk map back end
+	// A temporary filename:
+	std::string filename_disk_map = file+".diskmap.tmp";
+	
+	// Named Map 2 param create. Second Param is filename.
+	TheNamedObjMap::Instance().create< SubsetVectors<T>,std::string >(buffer_id, filename_disk_map);
 	SubsetVectors<T>& obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(buffer_id);
 
 	// Extract number of EVs from XML

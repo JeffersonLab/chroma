@@ -1264,7 +1264,8 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc
+	meas/hadron/dilution_quark_source_const_w.cc \
+	util/ferm/map_obj/map_obj_disk.cc
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
 

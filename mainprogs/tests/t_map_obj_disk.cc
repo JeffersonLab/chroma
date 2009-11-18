@@ -112,6 +112,24 @@ int main(int argc, char *argv[])
     fail();
   }
 
+  try {
+    QDPIO::cout << "Checking typecode" << endl;
+    MapObjDiskEnv::file_typenum_t typecode = peekMapObjectDiskTypeCode("./propColorVecMapObjTest");
+    QDPIO::cout << "Type Code is: " << typecode << endl;
+    MapObjDiskEnv::file_typenum_t expected = MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::filenum;
+    QDPIO::cout << "Expected Code: " << typecode << endl;
+    if( typecode != expected ) { 
+      fail();
+    }
+    else{ 
+      QDPIO::cout << "OK" << endl;
+    }
+  }
+  catch(const std::string& e) { 
+    QDPIO::cout << "Caught: " << e << endl;
+    fail();
+  }
+
   Chroma::finalize();
   return 0;
 }
