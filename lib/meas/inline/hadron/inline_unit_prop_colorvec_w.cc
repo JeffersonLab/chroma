@@ -352,7 +352,8 @@ namespace Chroma
 	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
-	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvector(m)), phases.getSet());
+	  LatticeColorVector tmpvec ; eigen_source.lookup(m,tmpvec);
+	  source_corrs[m] = sumMulti(localNorm2(tmpvec), phases.getSet());
 	}
 
 	push(xml_out, "Source_correlators");
@@ -402,7 +403,8 @@ namespace Chroma
 	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
 
 	    // The prop color vector source will just be the color vector on all time slices
-	    LatticeColorVector vec_srce = eigen_source.getEvector(colorvec_source);
+	    
+	    LatticeColorVector vec_srce; eigen_source.lookup(colorvec_source,vec_srce);
 	
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {

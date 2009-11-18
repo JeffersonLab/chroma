@@ -108,7 +108,7 @@ namespace Chroma
 
 
 	// Resize the final evector array
-	obj.resizeEvectors(N);
+	// obj.resizeEvectors(N);
 
 	// Resize the final evalues array
 	obj.resizeEvalues(N);
@@ -151,10 +151,11 @@ namespace Chroma
 	
 	// Now add in the tmpvecs (all 4 of them)
 	// Into the 'array'
+	obj.openWrite();
 	for(int n=0; n < N; ++n) {
-	  obj.getEvector(n) = tmpvecs[n];
+	  obj.insert(n, tmpvecs[n]);
 	}
-
+	obj.openRead();
 	  
 	// I haven't figure out what to put in here
 	XMLBufferWriter file_xml, record_xml;
@@ -184,20 +185,19 @@ namespace Chroma
 	// Use Nc vectors. There are only Nc site-level orthog. vectors in SU(N)
 	int N = Nc;
 
-	obj.resizeEvectors(N);
 	obj.resizeEvalues(N);
 	obj.getDecayDir() = decay_dir;
-
+	obj.openWrite();
 	for(int n=0; n < N; ++n)
 	{
 	  ColorVector vec = zero;
 	  pokeColor(vec, cmplx(Real(1),Real(0)), n);
 
-	  obj.getEvector(n) = vec;   // Same for all sites
+	  obj.insert(n,vec);   // Same for all sites
 	  obj.getEvalue(n).weights.resize(Lt);
 	  obj.getEvalue(n).weights = zero;  // There are all zero for the constant field
 	}
-
+	obj.openRead();
 	// I haven't figure out what to put in here
 	XMLBufferWriter file_xml, record_xml;
 

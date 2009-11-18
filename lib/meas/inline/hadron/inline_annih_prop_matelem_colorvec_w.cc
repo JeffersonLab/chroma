@@ -306,7 +306,9 @@ namespace Chroma
 	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
-	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvector(m)), phases.getSet());
+	  LatticeColorVector tmpvec; eigen_source.lookup(m,tmpvec);
+
+	  source_corrs[m] = sumMulti(localNorm2(tmpvec), phases.getSet());
 	}
 
 	push(xml_out, "Source_correlators");
@@ -467,9 +469,9 @@ namespace Chroma
 	      // Pull out a time-slice of the color vector source, give it a random weight
 
 	      Complex weight; rng_map_obj.lookup(t, weight);
-
+	      LatticeColorVector tmpvec; eigen_source.lookup(colorvec_source, tmpvec);
 	      vec_srce[phases.getSet()[t]] = 
-		weight * eigen_source.getEvector(colorvec_source);
+		weight * tmpvec;
 	    }
 	
 	    for(int spin_source=0; spin_source < Ns; ++spin_source) {
@@ -557,7 +559,7 @@ namespace Chroma
 
 		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		{
-		  const LatticeColorVector& vec_sink = eigen_source.getEvector(colorvec_sink);
+		  LatticeColorVector vec_sink; eigen_source.lookup(colorvec_sink, vec_sink);
 
 		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
 		

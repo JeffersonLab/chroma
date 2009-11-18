@@ -34,7 +34,11 @@ namespace Chroma
     //! Open object in read mode (lookups)
     virtual
     void openRead(void) = 0;
-   
+
+    //! Open
+    virtual 
+    void openUpdate(void) = 0;
+
     //! Exists?
     virtual
     bool exist(const K& key) const = 0;
@@ -42,7 +46,11 @@ namespace Chroma
     //! Insert
     virtual
     void insert(const K& key, const V& val) = 0;
-			
+
+    //! Update
+    virtual 
+    void update(const K& key, const V& val) = 0;
+
     //! Other accessor
     virtual
     void lookup(const K& key, V& val) const = 0;

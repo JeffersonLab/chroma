@@ -77,6 +77,35 @@ int main(int argc, char *argv[])
     testMapKeyPropColorVecInsterions(pc_map, lf_array);
     testMapKeyPropColorVecLookups(pc_map, lf_array);
     QDPIO::cout << endl << "OK" << endl;
+
+    // Test an update 
+    QDPIO::cout << "Doing update test ..." << endl;
+    pc_map.openUpdate();
+    KeyPropColorVec_t the_key = {0,0,0};
+    the_key.colorvec_src = 5;
+    LatticeFermion f; gaussian(f);
+    QDPIO::cout << "Updating..." ;
+    pc_map.update(the_key,f);
+    QDPIO::cout << "OK" << endl;
+
+    LatticeFermion f2;
+    QDPIO::cout << "Re-Looking up...";
+    pc_map.lookup(the_key,f2);
+    QDPIO::cout << "OK" << endl;
+
+    QDPIO::cout << "Comparing..." << endl;
+    f2 -= f;
+    if( toBool( sqrt(norm2(f2)) > toDouble(1.0e-6) ) ) {
+      QDPIO::cout << "sqrt(norm2(f2))=" << sqrt(norm2(f2)) << endl;
+      fail();
+    }
+    else { 
+      QDPIO::cout << "OK" << endl ;
+    }
+    // Reinsert previous value
+    pc_map.update(the_key,lf_array[5]);
+    pc_map.openRead();
+    testMapKeyPropColorVecLookups(pc_map, lf_array);
   }
   catch(const std::string& e) { 
     QDPIO::cout << "Caught: " << e << endl;
@@ -267,6 +296,9 @@ void testMapKeyPropColorVecInsterions(MapObject<KeyPropColorVec_t, LatticeFermio
   catch(...) { 
     fail();
   }
+
+  
+
 }
 
 void testMapKeyPropColorVecLookups(MapObject<KeyPropColorVec_t, LatticeFermion>& pc_map, const multi1d<LatticeFermion>& lf_array)

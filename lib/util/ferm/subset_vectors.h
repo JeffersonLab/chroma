@@ -87,31 +87,28 @@ namespace Chroma
     //! Indexed e-Value Setter
     SubsetVectorWeight_t& getEvalue(int i) { return evalues[i];}
 
-    //! Indexed e-Vector Getter
-#if 0
-    const T& getEvector(int i) const { return evectors[i]; }
-    T& getEvector(int i)  { return evectors[i]; }
-#endif
-
+    //! Lookup vector -- must be in Read Mode
     void lookup(int i, T& v) const { evectors.lookup(i,v); }
+
+    //! Insert vector -- must be in Write Mode
     void insert(int i, const T& v) { evectors.insert(i,v); }
 
-    //! Lookup vector 
+    //! Update vector -- must be in Update mode
+    void update(int i, const T& v) { evectors.update(i,v); }
+
 
     //! Resize Evalues array 
     void resizeEvalues(int size) { evalues.resize(size); }
     
-    //! Resize Evectors array (to be removed post refactoring)
-    void resizeEvectors(int size) { 
-      // evectors.resize(size); 
-    }
-
 
     //! set write mode
     void openWrite() { evectors.openWrite(); }
 
     //! set read mode
     void openRead() { evectors.openRead(); }
+
+    //! seet update mode 
+    void openUpdate() { evectors.openUpdate();}
 
     //! get size of Evalues array 
     int evaluesSize() const { return evalues.size(); }

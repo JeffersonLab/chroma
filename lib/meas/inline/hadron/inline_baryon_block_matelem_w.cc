@@ -506,7 +506,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvector(0);
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
       }
       catch( std::bad_cast ) 
       {
@@ -596,7 +596,7 @@ namespace Chroma
        */
       multi1d<LatticeColorVector> theVectors(eigen_source.evectorsSize());
       for(int i=0; i < eigen_source.evectorsSize(); i++) { 
-	theVectors[i] = eigen_source.getEvector(i);
+	eigen_source.lookup(i,theVectors[i]);
       }
 
       DispColorVectorMap smrd_disp_vecs(false,

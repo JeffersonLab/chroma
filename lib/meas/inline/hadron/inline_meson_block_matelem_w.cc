@@ -414,7 +414,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvector(0);
+	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
       }
       catch( std::bad_cast ) 
       {
@@ -600,7 +600,8 @@ namespace Chroma
 	      {
 		// Displace the right vector and multiply by the momentum phase
 		LatticeColorVector tt = zero;
-		tt[blocks[blk_right]] = eigen_source.getEvector(j);
+		LatticeColorVector tmpvec; eigen_source.lookup(j,tmpvec);
+		tt[blocks[blk_right]] = tmpvec;
 		LatticeColorVector shift_vec = phases[mom_num] * 
 		  displace(u_smr, tt, params.param.displacement_length, disp);
 
@@ -610,7 +611,8 @@ namespace Chroma
 		  watch.start();
 			
 		  tt = zero;
-		  tt[blocks[blk_left]] = eigen_source.getEvector(i);
+		  LatticeColorVector tmpvec2; eigen_source.lookup(i,tmpvec2);
+		  tt[blocks[blk_left]] = tmpvec2;
 
 		  // Contract over color indices
 		  // Do the relevant quark contraction

@@ -225,8 +225,9 @@ namespace Chroma
 	//Plop some info into the file xml only once 
 	write(final_file_xml, "Input", file_xml);
 
-
-					
+	multi1d<T> evecs;
+	int nev;
+				
 	for (int t = 0 ; t < nt ; ++t)
 	{
 
@@ -248,17 +249,17 @@ namespace Chroma
 	    QDP_abort(1);
 	  }
 
-	  int nev = evals.size();
+	  nev = evals.size();
 
 	  if (t == 0)
 	  {
 	    eigen.resizeEvalues(nev);
-	    eigen.resizeEvectors(nev);
+	    evecs.resize(nev);
 	    eigen.getDecayDir() = Nd - 1;
 						
 	    for (int v = 0 ; v < nev ; ++v)
 	    {
-	      eigen.getEvector(v) = zero;
+	      evecs[v] = zero;
 	      eigen.getEvalue(v).weights.resize(nt);
 	    }			
 	  }
@@ -277,12 +278,18 @@ namespace Chroma
 	      exit(1);
 	    }
 
-	    unserialize(eigen.getEvector(n), temp, t);
+	    unserialize(evecs[n], temp, t);
 	  }
 
 	  write(final_record_xml, "elem", curr_record_xml);
 
 	}//t
+
+	eigen.openWrite();
+	for(int n=0; n < nev; n++) { 
+	  eigen.insert(n,evecs[n]);
+	}
+	eigen.openRead();
 
 	pop(final_record_xml);
 	pop(final_record_xml);

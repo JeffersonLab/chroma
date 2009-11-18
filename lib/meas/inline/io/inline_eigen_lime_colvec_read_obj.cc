@@ -149,7 +149,7 @@ namespace Chroma
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
 	eigen.resizeEvalues(params.file.file_names.size());
-	eigen.resizeEvectors(params.file.file_names.size());
+	//	eigen.resizeEvectors(params.file.file_names.size());
 	eigen.getDecayDir() = Nd-1;
 
 	// Read the object
@@ -162,7 +162,7 @@ namespace Chroma
 	XMLBufferWriter final_record_xml;
 	push(final_record_xml, "SubsetVectors");
 	push(final_record_xml, "InfoArray");
-
+	eigen.openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  XMLReader curr_file_xml;
@@ -170,9 +170,10 @@ namespace Chroma
 
 	  std::string filename = params.file.file_names[i];
 	  QDPFileReader rdr(curr_file_xml, filename, QDPIO_SERIAL);
+	  T readvec;
+	  read(rdr, curr_record_xml, readvec);
+	  eigen.insert(i,readvec);
 
-	  read(rdr, curr_record_xml, eigen.getEvector(i));
-		
 	  multi1d<Real> evals;
 	  if (curr_record_xml.count("/LaplaceEigInfo/EigenValues") != 0)
 	    read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
@@ -198,7 +199,8 @@ namespace Chroma
 
 	pop(final_record_xml);
 	pop(final_record_xml);
-	
+	eigen.openRead();
+
 	swatch.stop();
 
 	TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(final_file_xml);

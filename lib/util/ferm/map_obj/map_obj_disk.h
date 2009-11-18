@@ -1,4 +1,4 @@
-ot// -*- C++ -*-
+// -*- C++ -*-
 /*! \file
  *  \brief A Map Object that works lazily from Disk
  */
@@ -11,7 +11,7 @@ ot// -*- C++ -*-
 #include "util/ferm/map_obj.h"
 #include <string>
 
-#define DISK_OBJ_DEBUGGING 1
+//#define DISK_OBJ_DEBUGGING 1
 #undef DISK_OBJ_DEBUGGING
 
 using namespace QDP;
@@ -82,6 +82,8 @@ namespace Chroma
     //! Open Read mode (Lookups)
     void openRead(void);
 
+    //! Open Update mode (Updates)
+    void openUpdate(void);
 
     //! Finalizes object
     /*! Finalizes object from READ/WRITE states. 
@@ -96,6 +98,9 @@ namespace Chroma
 
     //! Lookup: Requires READ state
     void lookup(const K& key, V& val) const;
+
+    //! Update: Requires UPDATE state
+    void update(const K& key, const V& val);
 
 
     /* --- STATE AGNOSTIC METHODS: (work on in memory map structure -- */
@@ -128,7 +133,7 @@ namespace Chroma
     typedef std::map<K, QDP::BinaryReader::pos_type> MapType_t;
 
     //! State machine states
-    enum State { INIT, READ, WRITE };
+    enum State { INIT, READ, WRITE, UPDATE };
 
     //! File related stuff. Unsigned int is as close to uint32 as I can get
     typedef unsigned int file_version_t;
@@ -254,6 +259,10 @@ namespace Chroma
       state = WRITE;
       break;      
     }
+    case UPDATE: {
+      errorState("MapObjectDisk: Cannot openWrite() if in UPDATE mode");
+      break;
+    }
       
     case WRITE: {
       errorState("MapObjectDisk: Cannot openWrite() if already in write mode");
@@ -271,12 +280,14 @@ namespace Chroma
 
     return;
   }
-	  
+
+ 
 
   /*!
-   * When called from READ state, does nothing. (Multiple clients can open read 
-   * When called from INIT state, advances state machine to READ state.
-   * When called from WRITE state finalizes disk file and advances to READ 
+   * When called from READ state: does nothing. (Multiple clients can open read 
+   * When called from INIT state: advances state machine to READ state.
+   * When called from WRITE state: finalizes disk file and advances to READ 
+   * When called from UPDATE state: closes Write file and resets to READ
    *   state.
    * otherwise it throws an exception 
    */
@@ -285,6 +296,10 @@ namespace Chroma
   MapObjectDisk<K,V>::openRead()
   {  
     switch (state) { 
+    case UPDATE: {
+      state = READ;
+    }
+
     case READ:
       break ; // Multiple open reads are perfectly valid
               // they don't change data on disk or state
@@ -322,20 +337,66 @@ namespace Chroma
   }
 
 
+  /*!
+   * When called from READ state: opens Write file and sets update mode
+   * When called from UPDATE state: does nothing
+   * When called from INIT or WRITE states: throws exception
+   */
+  template<typename K, typename V>
+  void
+  MapObjectDisk<K,V>::openUpdate()
+  {  
+    switch (state) { 
+    case UPDATE: // Do nothing. Deliberate Fallthrough
+    case READ: {
+      // Opens the writer -- will this blow away existing file
+      // writer.open(param.getFileName());
+      state = UPDATE;
+      break ; 
+    }
+    case WRITE: {
+      errorState("MapObjectDisk: openUpdate() called from WRITE state.");
+      break;
+    }
+    case INIT: {
+      errorState("MapObjectDisk: openUpdate() called from INIT state.");
+      break;
+    }
+    default:
+      errorState("MapObjectDisk: openRead() called from unknown state");
+      break;
+    }
+    
+    return;
+  }
+
+
+
   
   //! Destructor
   template<typename K, typename V>
   MapObjectDisk<K,V>::~MapObjectDisk() 
   {
     switch(state) { 
-    case WRITE:
-      {
+    case UPDATE: {
+	writer.close();
+	if( reader.is_open() ) { 
+	  reader.close();
+	}
+	break;
+    }
+
+    case WRITE: {
 	closeWrite(); // This finalizes files for us
+	writer.close();
       }
       break;
     case READ:
       {
 	reader.close();
+	if( writer.is_open() ) { 
+	  writer.close();
+	}
       }
       break;
     default:
@@ -379,6 +440,49 @@ namespace Chroma
     }
   }
 
+  /*! 
+   * Update a value in the Map. Map has to be in UPDATE state
+   */
+  template<typename K, typename V>
+  void 
+  MapObjectDisk<K,V>::update(const K& key, const V& val) 
+  {
+    switch (state)  { 
+    case UPDATE : {
+      //  Find key
+      if (exist(key)){ 
+	BinaryWriter::pos_type wpos = static_cast<BinaryWriter::pos_type>(src_map[key]);
+#ifdef DISK_OBJ_DEBUGGING
+       	QDPIO::cout << "Found key to update. Position is " << wpos << endl;
+#endif
+	
+	
+	writer.seek(wpos);
+	
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Sought write position. Current Position: " << writer.currentPosition() << endl;
+#endif
+	
+	write(writer, val);
+
+#ifdef DISK_OBJ_DEBUGGING	
+	QDPIO::cout << "Wrote value to disk. Current Position: " << writer.currentPosition() << endl;
+#endif
+	writer.flush(); // Sync the file
+      }
+      else { 
+	QDPIO::cerr << "MapObjectDisk: Cannot find key to update." << endl;
+	errorState("MapObjectDisk: Cannot find key to update.");
+      }
+      break;
+      
+    }
+    default:
+      errorState("MapObjectDisk: insert attempted in non-write mode");
+      break;
+    }
+  }
+
 
   /*! 
    * Lookup an item in the map.
@@ -389,6 +493,7 @@ namespace Chroma
   MapObjectDisk<K,V>::lookup(const K& key, V& val) const 
   { 
     switch(state) { 
+    case UPDATE: // Deliberate fallthrough
     case READ: {
       
       if (! exist(key) ) {
@@ -611,7 +716,7 @@ namespace Chroma
 	
 	// skip to end and close
 	writer.seekEnd(0);
-	writer.close();
+	writer.flush();
 	
 	QDPIO::cout << "MapObjectDisk: Closed file" << param.getFileName() << " for write access" <<  endl;
       }

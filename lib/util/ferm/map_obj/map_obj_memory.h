@@ -28,6 +28,27 @@ namespace Chroma
       state = READ;
     }
 
+
+    //! open Update mode (updates)
+    void openUpdate(void) {
+      switch(state) { 
+      case UPDATE:// Deliberate fall through
+      case READ:
+	state = UPDATE;
+	break;
+      case INIT:
+	errorState("MapObjectMemory: openUpdate() cannot update from INIT mode. Write first");
+	break;
+      case WRITE:
+	errorState("MapObjectMemory: openUpdate() cannot update from WRITE mode. Finish writing first");
+	break;
+      default:
+	errorState("MapObjectMemory: openUpdate() called from unknown mode");
+	break;
+      }
+    }
+      
+
     //! open Write mode (Inserts)
     void openWrite(void) {
       switch(state) {
@@ -55,10 +76,24 @@ namespace Chroma
       }
     }
 
+    //! Update
+    void update(const K& key, const V& val) { 
+      if(state==UPDATE) {
+	if( exist(key) ) {
+	  src_map[key] = val; // Update
+	}
+	else { 
+	  errorState("MapObjectMemory: your key is not in the map. You cannot update a non existent key");
+	}
+      }
+      else { 
+	errorState("MapObjectMemory: update() can only be called from Update mode");
+      }
+    }
 
     //! Accessor
     void lookup(const K& key, V& val) const { 
-      if(state == READ) { 
+      if(state == READ || state==UPDATE) { 
 	if (! exist(key) ) {
 	  QDPIO::cout << "Couldnt find key " <<endl;
 	  dump();
@@ -72,6 +107,7 @@ namespace Chroma
       }
     }
 
+    
     //! Exists?
     bool exist(const K& key) const {
       return (src_map.find(key) == src_map.end()) ? false : true;
@@ -120,7 +156,7 @@ namespace Chroma
     mutable bool readMode;
     mutable bool writeMode;
 
-    enum State { INIT, READ, WRITE};
+    enum State { INIT, READ, WRITE, UPDATE};
     State state;
 
   };

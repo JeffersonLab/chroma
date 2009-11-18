@@ -383,18 +383,20 @@ namespace Chroma
 
 	// Resize arrays
 	const int Lt = QDP::Layout::lattSize()[decay_dir];
-	obj.resizeEvectors(N);
 	obj.resizeEvalues(N);
 
 	// Loop and read evecs
+	obj.openWrite();
 	for(int n=0; n < N; n++)
 	{
 	  XMLReader record_xml_dummy;
-
-	  read(to, record_xml_dummy, obj.getEvector(n));
+	  T readvec;
+	  read(to, record_xml_dummy, readvec);
+	  obj.insert(n, readvec);
 	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalue(n).weights);
 	}
- 
+	obj.openRead();
+
 	// Set File and Record XML throw away dummy XMLs
 	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);

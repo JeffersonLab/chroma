@@ -125,7 +125,7 @@ namespace Chroma
 //	success &= InlineSpectrumEnv::registerAll();
 	success &= InlineBlockOrthogColorVecsEnv::registerAll();
 	success &= InlineCreateColorVecsEnv::registerAll();
-	success &= InlineBlockColorVecsEnv::registerAll();
+	//	success &= InlineBlockColorVecsEnv::registerAll();
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();

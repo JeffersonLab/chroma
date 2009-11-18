@@ -377,7 +377,6 @@ namespace Chroma
       SftMom phases(0, true, params.param.src.decay_dir);
       
       int Nvecs(3*params.param.src.spatial_masks.size()) ;
-      color_vecs.resizeEvectors(Nvecs);
       multi1d<LatticeColorVector> evecs(Nvecs); // Temporary. Will write to map at aend
 
 	

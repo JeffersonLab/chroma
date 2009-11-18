@@ -405,7 +405,8 @@ namespace Chroma
 	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
-	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvector(m)), phases.getSet());
+	  LatticeColorVector tmpvec; eigen_source.lookup(m, tmpvec);
+	  source_corrs[m] = sumMulti(localNorm2(tmpvec), phases.getSet());
 	}
 
 	push(xml_out, "Source_correlators");
@@ -546,7 +547,7 @@ namespace Chroma
 
 		    for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		    {
-		      const LatticeColorVector& vec = eigen_source.getEvector(colorvec_sink);
+		      LatticeColorVector vec;  eigen_source.lookup(colorvec_sink,vec);
 		      LatticeColorVector vec_sink = zero;
 		      vec_sink[blocks[blk_sink]] = vec;
 

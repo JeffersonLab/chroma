@@ -410,8 +410,8 @@ namespace Chroma
 	  push(record_xml, "VectorInfo");
 	  write(record_xml, "weights", obj.getEvalue(n).weights);
 	  pop(record_xml);
-
-	  write(to, record_xml, obj.getEvector(n));
+	  T writevec; obj.lookup(n,writevec);
+	  write(to, record_xml, writevec);
 	}
 
 	// Done

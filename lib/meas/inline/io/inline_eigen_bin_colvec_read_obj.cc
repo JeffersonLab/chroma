@@ -149,18 +149,20 @@ namespace Chroma
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
 	eigen.resizeEvalues(params.file.file_names.size());
-	eigen.resizeEvectors(params.file.file_names.size());
+	// eigen.resizeEvectors(params.file.file_names.size());
 	eigen.getDecayDir() = Nd-1;
 
 	const int Lt = QDP::Layout::lattSize()[eigen.getDecayDir()];
 
 	// Read the object
 	swatch.start();
-
+	eigen.openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
-	  read(bin, eigen.getEvector(i));
+	  T readvec;
+	  read(bin, readvec);
+	  eigen.insert(i, readvec);
 
 	  eigen.getEvalue(i).weights.resize(Lt);
 	  for(int t=0; t < Lt; ++t)
@@ -168,6 +170,7 @@ namespace Chroma
 	    read(bin, eigen.getEvalue(i).weights[t]);
 	  }
 	}
+	eigen.openRead();
 
 	swatch.stop();
 
