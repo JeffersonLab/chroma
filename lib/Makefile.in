@@ -63,7 +63,7 @@ host_triplet = @host@
 
 
 # Taken out for now
-#	meas/inline/io/inline_read_map_obj_disk.cc \
+
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 #	meas/inline/hadron/inline_spectrumQll.cc
@@ -785,6 +785,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
+	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -1351,6 +1352,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	xml_write_obj_funcmap.$(OBJEXT) \
 	inline_usqcd_read_ddpairs_prop.$(OBJEXT) \
 	inline_usqcd_write_ddpairs_prop.$(OBJEXT) \
+	inline_read_map_obj_disk.$(OBJEXT) \
 	inline_pbp_aggregate.$(OBJEXT) inline_psibarpsi_w.$(OBJEXT) \
 	inline_schrfun_aggregate.$(OBJEXT) inline_sfpcac_w.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
@@ -2159,6 +2161,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
+	meas/inline/io/inline_read_map_obj_disk.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
@@ -3127,15 +3130,15 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h $(am__append_9) \
+	meas/inline/smear/inline_link_smear.h \
+	meas/inline/io/inline_read_map_obj_disk.h $(am__append_9) \
 	$(am__append_11) $(am__append_13) $(am__append_15) \
 	$(am__append_17) $(am__append_22) $(am__append_24) \
 	$(am__append_26) $(am__append_28) $(am__append_30) \
 	$(am__append_32) $(am__append_34) $(am__append_37)
 nodist_include_HEADERS = chroma_config_internal.h
-
 # Taken out for now
-#	meas/inline/io/inline_read_map_obj_disk.h \
+#	
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
@@ -3781,6 +3784,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
+	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -4219,6 +4223,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_diquark_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_random_transf_gauge.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_read_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ritz_H_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rng.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rotate_spin_w.Po@am__quote@
@@ -14453,6 +14458,20 @@ inline_usqcd_write_ddpairs_prop.obj: meas/inline/io/inline_usqcd_write_ddpairs_p
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_usqcd_write_ddpairs_prop.cc' object='inline_usqcd_write_ddpairs_prop.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_usqcd_write_ddpairs_prop.obj `if test -f 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_usqcd_write_ddpairs_prop.cc'; fi`
+
+inline_read_map_obj_disk.o: meas/inline/io/inline_read_map_obj_disk.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_read_map_obj_disk.o -MD -MP -MF $(DEPDIR)/inline_read_map_obj_disk.Tpo -c -o inline_read_map_obj_disk.o `test -f 'meas/inline/io/inline_read_map_obj_disk.cc' || echo '$(srcdir)/'`meas/inline/io/inline_read_map_obj_disk.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_read_map_obj_disk.Tpo $(DEPDIR)/inline_read_map_obj_disk.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_map_obj_disk.cc' object='inline_read_map_obj_disk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_map_obj_disk.o `test -f 'meas/inline/io/inline_read_map_obj_disk.cc' || echo '$(srcdir)/'`meas/inline/io/inline_read_map_obj_disk.cc
+
+inline_read_map_obj_disk.obj: meas/inline/io/inline_read_map_obj_disk.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_read_map_obj_disk.obj -MD -MP -MF $(DEPDIR)/inline_read_map_obj_disk.Tpo -c -o inline_read_map_obj_disk.obj `if test -f 'meas/inline/io/inline_read_map_obj_disk.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_map_obj_disk.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_read_map_obj_disk.Tpo $(DEPDIR)/inline_read_map_obj_disk.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_map_obj_disk.cc' object='inline_read_map_obj_disk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_map_obj_disk.obj `if test -f 'meas/inline/io/inline_read_map_obj_disk.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_map_obj_disk.cc'; fi`
 
 inline_pbp_aggregate.o: meas/inline/pbp/inline_pbp_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_pbp_aggregate.o -MD -MP -MF $(DEPDIR)/inline_pbp_aggregate.Tpo -c -o inline_pbp_aggregate.o `test -f 'meas/inline/pbp/inline_pbp_aggregate.cc' || echo '$(srcdir)/'`meas/inline/pbp/inline_pbp_aggregate.cc

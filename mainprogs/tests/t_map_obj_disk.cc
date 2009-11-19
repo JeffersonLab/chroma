@@ -13,6 +13,8 @@ using namespace QDP;
 using namespace Chroma;
 
 
+std::string inline_meas = "<elem><Name>READ_MAP_OBJECT_DISK</Name><Frequency>1</Frequency><NamedObject><object_id>test_mapobj</object_id></NamedObject><File><file_name>./propColorVecMapObjTest</file_name></File></elem>";
+
 
 void fail()
 {
@@ -35,6 +37,8 @@ int main(int argc, char *argv[])
 
   // Register
   Chroma::MapObjectWilson4DEnv::registerKeyPropColorVecLFAll();
+  Chroma::InlineIOAggregateEnv::registerAll();
+
 
   Chroma::initialize(&argc, &argv);
 
@@ -56,7 +60,12 @@ int main(int argc, char *argv[])
   testMapObjInsertions(made_map);
   testMapObjLookups(made_map);
 
-
+  // Make an array of LF-s filled with noise
+  multi1d<LatticeFermion> lf_array(10);
+  for(int i=0; i < 10; i++) { 
+    gaussian(lf_array[i]);
+  }
+  
   // Use factory to make a MapObjectDisk<KeyPropColorVec_t,LatticeFermion>
   try {
     std::istringstream is(xml_in_str);
@@ -66,11 +75,6 @@ int main(int argc, char *argv[])
     
     MapObject<KeyPropColorVec_t, LatticeFermion>& pc_map=*obj_handle;
     
-    // Make an array of LF-s filled with noise
-    multi1d<LatticeFermion> lf_array(10);
-    for(int i=0; i < 10; i++) { 
-      gaussian(lf_array[i]);
-    }
     
 
     
@@ -130,6 +134,30 @@ int main(int argc, char *argv[])
     fail();
   }
 
+
+  try { 
+    std::istringstream is(inline_meas);
+    XMLReader meas_reader(is);
+    std::string meas_id;
+    read(meas_reader, "/elem/Name", meas_id);
+
+    Handle<AbsInlineMeasurement> read_task( TheInlineMeasurementFactory::Instance().createObject(meas_id,meas_reader,"/elem") );
+    XMLBufferWriter xml_out;
+
+    // Do the read
+    (*read_task)(0, xml_out);
+
+    // Get the handle to a named object
+    Handle<MapObject<KeyPropColorVec_t, LatticeFermion> > new_pc_map = TheNamedObjMap::Instance().getData<  Handle<MapObject<KeyPropColorVec_t, LatticeFermion> > >("test_mapobj");
+
+    // Run the tests
+    testMapKeyPropColorVecLookups(*(new_pc_map), lf_array);
+    QDPIO::cout << endl << "OK" << endl;
+  }
+  catch(...) { 
+    fail();
+  }
+
   Chroma::finalize();
   return 0;
 }
@@ -171,6 +199,8 @@ void testMapObjInsertions(MapObjectDisk<char, float>& the_map)
   catch(...) {
     fail();
   }
+
+
 
 }
 

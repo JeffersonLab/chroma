@@ -22,25 +22,26 @@ namespace Chroma
 
   //! Parameter structure
   /*! \ingroup inlineio */
-  class InlineReadMapObjDiskParams 
+  struct InlineReadMapObjDiskParams 
   {
-  public:
+    unsigned int frequency;
 
-    //!Constructor
-    InlineReadMapObjDiskParams(XMLReader& xml_in, const std::string& path);
+    struct File {
+      std::string   file_name;
+    } file;
 
-
-    unsigned long frequency;
-
-    MapObjectDiskParams map_obj_disk_p;
-
-    struct NamedObject_t
-    {
+    struct NamedObject_t {
       std::string   object_id;
     } named_obj;
 
-    void write(XMLWriter& xml_out, const std::string& path) const;    
+    InlineReadMapObjDiskParams(XMLReader& xml_in, const std::string& path);
+    
   };
+
+  void read(XMLReader& xml_in, const std::string& path, InlineReadMapObjDiskParams& p) ;
+
+  void write(XMLWriter& xml_out, const std::string& path, const InlineReadMapObjDiskParams& p);
+
 
   //! Inline writing of memory objects
   /*! \ingroup inlineio */

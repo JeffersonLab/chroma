@@ -6,10 +6,14 @@
  */
 
 #include "chromabase.h"
-#include "qdp_iogauge.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/named_objmap.h"
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_disk.h"
+#include <string>
+
+using namespace QDP;
 
 namespace Chroma 
 { 
@@ -42,40 +46,12 @@ namespace Chroma
     }
   }
 
-
-  //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineReadMapObjDiskParams::NamedObject_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "object_id", input.object_id);
-
-    pop(xml);
-  }
-
-  //! File output
-  void write(XMLWriter& xml, const std::string& path, const InlineReadMapObjDiskParams& input)
-  {
-    input.write(xml,path);
-  }
-
-
-  //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineReadMapObjDiskParams::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "object_id", input.object_id);
-  }
-
-
-
-  // Param stuff
-  InlineReadMapObjDiskParams::InlineReadMapObjDiskParams(XMLReader& xml_in, const std::string& path) 
+  InlineReadMapObjDiskParams::InlineReadMapObjDiskParams(XMLReader& reader, 
+							 const std::string& path)
   {
     try 
     {
-      XMLReader paramtop(xml_in, path);
+      XMLReader paramtop(reader, path);
 
       if (paramtop.count("Frequency") == 1)
 	read(paramtop, "Frequency", frequency);
@@ -83,38 +59,157 @@ namespace Chroma
 	frequency = 1;
 
       // Parameters for source construction
-      read(paramtop, "NamedObject", named_obj);
-
-      read(paramtop, "MapObject", map_obj_disk_p );
+      read(paramtop, "NamedObject/object_id", named_obj.object_id);
+      read(paramtop, "File/file_name", file.file_name );
     }
     catch(const std::string& e) 
     {
       QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
       QDP_abort(1);
     }
+    
   }
 
+  void read(XMLReader& xml_in, const std::string& path, InlineReadMapObjDiskParams& p) 
+  {
+    InlineReadMapObjDiskParams tmp(xml_in, path);
+    p = tmp;
+  }
 
   void
-  InlineReadMapObjDiskParams::write(XMLWriter& xml_out, const std::string& path) const
+  write(XMLWriter& xml_out, const std::string& path, const InlineReadMapObjDiskParams& p)
   {
     push(xml_out, path);
     
-    // Parameters for source construction
-    Chroma::write(xml_out, "NamedObject", named_obj);
-    
-    // Write out the destination
-    Chroma::write(xml_out, "MapObject", map_obj_disk_p);
+    write(xml_out, "Frequency", p.frequency);
+
+    push(xml_out, "NamedObject");
+    write(xml_out, "object_id", p.named_obj.object_id);
+    pop(xml_out);
+
+    push(xml_out, "File");
+    write(xml_out, "file_name", p.file.file_name);
+    pop(xml_out);
 
     pop(xml_out);
   }
 
+  namespace { 
+    static bool registered = false;
+
+    int createDiskMapObjKeyPropColorVecLatticeFermion(const std::string& object_id,
+						       const std::string& file_name)
+    {
+
+      Handle<MapObject<KeyPropColorVec_t, LatticeFermion> > obj_handle = 
+	new MapObjectDisk<KeyPropColorVec_t, LatticeFermion>(file_name);
+
+      obj_handle->openRead();
+
+      TheNamedObjMap::Instance().create< 
+      Handle<MapObject<KeyPropColorVec_t, LatticeFermion> >,
+	Handle<MapObject<KeyPropColorVec_t, LatticeFermion> > >(object_id, obj_handle);
+
+      return obj_handle->size();
+
+    }
+
+    int createDiskMapObjKeyGridPropLatticeFermion(const std::string& object_id,
+						   const std::string& file_name)
+    {
+
+      Handle<MapObject<KeyGridProp_t, LatticeFermion> > obj_handle = 
+	new MapObjectDisk<KeyGridProp_t, LatticeFermion>(file_name);
+
+      obj_handle->openRead();
+
+      TheNamedObjMap::Instance().create< 
+      Handle<MapObject<KeyGridProp_t, LatticeFermion> >,
+	Handle<MapObject<KeyGridProp_t, LatticeFermion> > >(object_id, obj_handle);
+
+      return obj_handle->size();
+    }
+
+    int createDiskMapObjKeyBlockPropLatticeFermion(const std::string& object_id,
+						    const std::string& file_name)
+    {
+
+      Handle<MapObject<KeyBlockProp_t, LatticeFermion> > obj_handle = 
+	new MapObjectDisk<KeyBlockProp_t, LatticeFermion>(file_name);
+
+      obj_handle->openRead();
+
+      TheNamedObjMap::Instance().create< 
+      Handle<MapObject<KeyBlockProp_t, LatticeFermion> >,
+	Handle<MapObject<KeyBlockProp_t, LatticeFermion> > >(object_id, obj_handle);
+
+      return obj_handle->size();
+    }
+   
+    int createDiskMapObjIntLatticeColorVec(const std::string& object_id,
+					    const std::string& file_name)
+    {
+
+      Handle<MapObject<int, LatticeColorVector> > obj_handle = 
+	new MapObjectDisk<int, LatticeColorVector>(file_name);
+
+      obj_handle->openRead();
+
+      TheNamedObjMap::Instance().create< 
+      Handle<MapObject<int, LatticeColorVector> >,
+	Handle<MapObject<int, LatticeColorVector> > >(object_id, obj_handle);
+
+      return obj_handle->size();
+    }
+
+    int createDiskMapObjCharFloat(const std::string& object_id,
+				   const std::string& file_name)
+    {
+
+      Handle<MapObject<char, float> > obj_handle = 
+	new MapObjectDisk<char, float>(file_name);
+
+      obj_handle->openRead();
+
+      TheNamedObjMap::Instance().create< 
+      Handle<MapObject<char, float> >,
+	Handle<MapObject<char, float> > >(object_id, obj_handle);
+
+      return obj_handle->size();
+    }
+
+    std::map<int, int (*)(const std::string&, const std::string& )> funcmap;
+
+    void registerAll(void) {
+      if (! registered ) { 
+	funcmap.insert( make_pair( MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::filenum,
+				   createDiskMapObjKeyPropColorVecLatticeFermion ) );
+
+	funcmap.insert( make_pair( MapObjTraitsNum<KeyGridProp_t, LatticeFermion>::filenum,
+				   createDiskMapObjKeyGridPropLatticeFermion ) );
+
+	funcmap.insert( make_pair( MapObjTraitsNum<KeyBlockProp_t, LatticeFermion>::filenum,
+				   createDiskMapObjKeyBlockPropLatticeFermion ) );
+
+	funcmap.insert( make_pair( MapObjTraitsNum<int, LatticeColorVector>::filenum,
+				   createDiskMapObjIntLatticeColorVec ) );
+
+	funcmap.insert( make_pair( MapObjTraitsNum<char, float>::filenum,
+				   createDiskMapObjCharFloat ) );
+
+	registered = true;
+      }
+    }
+				   
+  };
 
   void 
   InlineReadMapObjDisk::operator()(unsigned long update_no,
-				       XMLWriter& xml_out) 
+				   XMLWriter& xml_out) 
   {
     START_CODE();
+
+    registerAll();
 
     push(xml_out, "read_map_object_disk");
     write(xml_out, "update_no", update_no);
@@ -126,29 +221,36 @@ namespace Chroma
     // ONLY SciDAC output format is supported in this task
     // Other tasks could support other disk formats
     QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+
     write(xml_out, "object_id", params.named_obj.object_id);
+    write(xml_out, "file_name", params.file.file_name);
+
     try
     {
       swatch.reset();
+      swatch.start();
 
-	// Create the object as a handle. 
-	// This bit will and up changing to a Factory invocation
-	Handle< MapObject<KeyPropColorVec_t, LatticeFermion> >  new_map_obj_handle(
-										   new MapObject
-										   )
+      MapObjDiskEnv::file_typenum_t  type_num=peekMapObjectDiskTypeCode(params.file.file_name);
 
-	// Create the entry
-	TheNamedObjMap::Instance().create< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
+      int size=(funcmap[type_num])(params.named_obj.object_id, params.file.file_name);
 
-	// Insert
-	TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) = new_map_obj_handle;
+      XMLBufferWriter file_xml_buf;
+      push(file_xml_buf, "FileXML");
+      write(file_xml_buf,  "object_id", params.named_obj.object_id);
+      write(file_xml_buf,  "file_name", params.file.file_name);
+      write(file_xml_buf,  "map_size", size);
+      pop(file_xml_buf);
 
+      XMLReader file_xml(file_xml_buf);
 
-      TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
-      TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id) = u;
+      TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML( file_xml );
 
+      // No particularly good record XML -- this after all is not QIO. So just use file_xml again
+      TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML( file_xml );
 
-      QDPIO::cout << "Object successfully written: time= " 
+      swatch.stop();
+
+      QDPIO::cout << "Object successfully read: time= " 
 		  << swatch.getTimeInSeconds() 
 		  << " secs" << endl;
     }

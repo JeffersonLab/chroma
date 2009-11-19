@@ -74,7 +74,7 @@ namespace Chroma
 	success &= InlineUSQCDWriteDDPairsPropEnv::registerAll();
 
 	// MapObjDisk reader
-	//	success &= InlineReadMapObjDiskEnv::registerAll();
+       	success &= InlineReadMapObjDiskEnv::registerAll();
 	registered = true;
       }
       return success;
