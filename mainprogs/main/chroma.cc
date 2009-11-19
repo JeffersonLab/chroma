@@ -180,7 +180,8 @@ int main(int argc, char *argv[])
   {
     // This might happen on any node, so report it
     cerr << "CHROMA: caught generic exception during gaugeInit" << endl;
-    QDP_abort(1);
+    //QDP_abort(1);
+    throw;
   }
   swatch.stop();
 
@@ -260,6 +261,12 @@ int main(int argc, char *argv[])
     QDPIO::cerr << "CHROMA: Caught Exception: " << e << endl;
     QDP_abort(1);
   }
+  catch(const char* e) 
+  { 
+    QDPIO::cout << "CHROMA: Caught const char * exception: " << endl;
+    QDPIO::cout <<  e;
+    QDPIO::cout << endl;
+  }
   catch(std::exception& e) 
   {
     QDPIO::cerr << "CHROMA: Caught standard library exception: " << e.what() << endl;
@@ -269,7 +276,8 @@ int main(int argc, char *argv[])
   {
     // This might happen on any node, so report it
     cerr << "CHROMA: caught generic exception during measurement" << endl;
-    QDP_abort(1);
+    cerr << "Rethrowing" << endl;
+    throw;
   }
   pop(xml_out);
 

@@ -239,7 +239,7 @@ namespace Chroma
       MapObjDiskEnv::file_typenum_t type_code = MapObjTraitsNum<K,V>::filenum;
     
 #ifdef DISK_OBJ_DEBUGGING
-      QDPIO::cout << "Writing Type Code=" << filenum << endl;
+      QDPIO::cout << "Writing Type Code=" << type_code << endl;
 #endif
       write(writer, type_code);
       

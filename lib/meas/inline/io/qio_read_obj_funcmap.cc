@@ -390,18 +390,28 @@ namespace Chroma
 	obj.resizeEvalues(N);
 
 	// Loop and read evecs
+	QDPIO::cout << "About to read " << N << " evectors from QIO..."<<endl;
 	obj.openWrite();
 	for(int n=0; n < N; n++)
 	{
 	  XMLReader record_xml_dummy;
 	  T readvec;
 	  read(to, record_xml_dummy, readvec);
+	  QDPIO::cout << "Inserting Vector " << n << " into Map" << endl;
 	  obj.insert(n, readvec);
 	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalue(n).weights);
 	}
 	obj.openRead();
 
+
 	// Set File and Record XML throw away dummy XMLs
+	// BJOO: Yes that's all very well. but RecordXML has to hold something
+	XMLBufferWriter dummy;
+	push(dummy,"DummyRecordXML");
+	write(dummy, "mapSize", obj.evectorsSize());
+	pop(dummy);
+	record_xml.open(dummy);
+
 	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(buffer_id).setRecordXML(record_xml);
 

@@ -197,7 +197,9 @@ namespace Chroma
 
 	typedef LatticeColorVector T;
 
-	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
+	std::string dmap_filename = params.file.file_name+".diskmap.tmp";
+
+	TheNamedObjMap::Instance().create< SubsetVectors<T>, std::string >(params.named_obj.object_id, dmap_filename);
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
 					
@@ -225,7 +227,9 @@ namespace Chroma
 	//Plop some info into the file xml only once 
 	write(final_file_xml, "Input", file_xml);
 
+#if 1
 	multi1d<T> evecs;
+#endif
 	int nev;
 				
 	for (int t = 0 ; t < nt ; ++t)
@@ -256,14 +260,14 @@ namespace Chroma
 	    eigen.resizeEvalues(nev);
 	    evecs.resize(nev);
 	    eigen.getDecayDir() = Nd - 1;
-						
+	    QDPIO::cout << "Initializing vecs" << endl;
 	    for (int v = 0 ; v < nev ; ++v)
 	    {
 	      evecs[v] = zero;
 	      eigen.getEvalue(v).weights.resize(nt);
-	    }			
+	    }		
 	  }
-
+	  QDPIO::cout << "Unserealizing evecs for timeslice " << t << endl;
 	  for (int n = 0 ; n < nev ; n++)
 	  {
 
@@ -277,16 +281,15 @@ namespace Chroma
 	      QDPIO::cerr << "Invalid array size" << endl;
 	      exit(1);
 	    }
-
 	    unserialize(evecs[n], temp, t);
 	  }
-
 	  write(final_record_xml, "elem", curr_record_xml);
 
 	}//t
 
 	eigen.openWrite();
 	for(int n=0; n < nev; n++) { 
+	  QDPIO::cout << "Inserting evec " << n << endl;
 	  eigen.insert(n,evecs[n]);
 	}
 	eigen.openRead();

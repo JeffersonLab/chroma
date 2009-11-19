@@ -289,23 +289,30 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
+
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getRecordXML(source_record_xml);
 
 	// Write out the source header
 	write(xml_out, "Source_file_info", source_file_xml);
 	write(xml_out, "Source_record_info", source_record_xml);
+
       }    
-      catch (std::bad_cast)
-      {
+      catch (std::bad_cast) {
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
-      {
+      catch (const string& e) {
 	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
 	QDP_abort(1);
       }
+      catch( const char* e) {
+	QDPIO::cerr << name <<": Caught some char* exception:" << endl;
+	QDPIO::cerr << e << endl;
+	QDPIO::cerr << "Rethrowing" << endl;
+	throw;
+      }
+
       const SubsetVectors<LatticeColorVector>& eigen_source = 
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
