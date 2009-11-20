@@ -359,7 +359,7 @@ namespace Chroma
       // Compute the version of eigenvalues (which they are not)
       // 
       {
-	multi1d< multi1d<Double> > source_corrs(color_vecs.evaluesSize());
+	multi1d< multi1d<Double> > source_corrs(evecs.size());
 	for(int m=0; m < source_corrs.size(); ++m)
 	  source_corrs[m] = sumMulti(localNorm2(evecs[m]), phases.getSet());
 	push(xml_out, "Source_correlators");
