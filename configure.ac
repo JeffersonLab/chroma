@@ -850,8 +850,8 @@ then
    AC_MSG_NOTICE([ Linking to CUDA Runtime in ${CUDA_LIBDIR}])
 
    AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
-   AC_SUBST(QUDA_CXXFLAGS, "-I${QUDA_HOME} -I${CUDA_HOME}/include" )
-   AC_SUBST(QUDA_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_HOME}" )
+   AC_SUBST(QUDA_CXXFLAGS, "-I${QUDA_HOME}/include -I${CUDA_HOME}/include" )
+   AC_SUBST(QUDA_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib" )
    AC_SUBST(QUDA_LIBS,     "-lquda -lcudart" )
 fi
 
