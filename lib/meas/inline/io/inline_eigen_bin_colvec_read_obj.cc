@@ -148,7 +148,6 @@ namespace Chroma
 	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
-	eigen.resizeEvalues(params.file.file_names.size());
 	// eigen.resizeEvectors(params.file.file_names.size());
 	eigen.getDecayDir() = Nd-1;
 
@@ -160,15 +159,23 @@ namespace Chroma
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
-	  T readvec;
-	  read(bin, readvec);
-	  eigen.insert(i, readvec);
 
-	  eigen.getEvalue(i).weights.resize(Lt);
+	  EVPair<T> read_pair;
+	  // Read the vector
+	  read(bin, read_pair.eigenVector);
+
+	  // Resize the eigenvalue.weights array
+	  read_pair.eigenValue.weights.resize(Lt);
+
+	  // Read the weights
 	  for(int t=0; t < Lt; ++t)
 	  {
-	    read(bin, eigen.getEvalue(i).weights[t]);
+	    read(bin, read_pair.eigenValue.weights[t]);
 	  }
+
+	  // Insert into new map
+	  eigen.insert(i,read_pair);
+
 	}
 	eigen.openRead();
 

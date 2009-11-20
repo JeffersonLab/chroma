@@ -9,6 +9,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/named_objmap.h"
+#include "util/ferm/subset_ev_pair.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_disk.h"
 #include <string>
@@ -146,18 +147,18 @@ namespace Chroma
       return obj_handle->size();
     }
    
-    int createDiskMapObjIntLatticeColorVec(const std::string& object_id,
+    int createDiskMapObjIntEVPairLatticeColorVec(const std::string& object_id,
 					    const std::string& file_name)
     {
 
-      Handle<MapObject<int, LatticeColorVector> > obj_handle = 
-	new MapObjectDisk<int, LatticeColorVector>(file_name);
+      Handle<MapObject<int, EVPair<LatticeColorVector> > > obj_handle = 
+	new MapObjectDisk<int, EVPair<LatticeColorVector> >(file_name);
 
       obj_handle->openRead();
 
       TheNamedObjMap::Instance().create< 
-      Handle<MapObject<int, LatticeColorVector> >,
-	Handle<MapObject<int, LatticeColorVector> > >(object_id, obj_handle);
+      Handle<MapObject<int, EVPair<LatticeColorVector> > >,
+	Handle<MapObject<int, EVPair<LatticeColorVector> > > >(object_id, obj_handle);
 
       return obj_handle->size();
     }
@@ -191,8 +192,8 @@ namespace Chroma
 	funcmap.insert( make_pair( MapObjTraitsNum<KeyBlockProp_t, LatticeFermion>::filenum,
 				   createDiskMapObjKeyBlockPropLatticeFermion ) );
 
-	funcmap.insert( make_pair( MapObjTraitsNum<int, LatticeColorVector>::filenum,
-				   createDiskMapObjIntLatticeColorVec ) );
+	funcmap.insert( make_pair( MapObjTraitsNum<int, EVPair<LatticeColorVector> >::filenum,
+				   createDiskMapObjIntEVPairLatticeColorVec ) );
 
 	funcmap.insert( make_pair( MapObjTraitsNum<char, float>::filenum,
 				   createDiskMapObjCharFloat ) );

@@ -404,14 +404,16 @@ namespace Chroma
 	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
 
 	// Loop and read evecs
-	for(int n=0; n < obj.getNumVectors(); n++)
+	for(int n=0; n < obj.size(); n++)
 	{
+	  EVPair<T> write_pair;
+	  obj.lookup(n, write_pair);
+
 	  XMLBufferWriter record_xml;
 	  push(record_xml, "VectorInfo");
-	  write(record_xml, "weights", obj.getEvalue(n).weights);
+	  write(record_xml, "weights", write_pair.eigenValue.weights);
 	  pop(record_xml);
-	  T writevec; obj.lookup(n,writevec);
-	  write(to, record_xml, writevec);
+	  write(to, record_xml, write_pair.eigenVector);
 	}
 
 	// Done

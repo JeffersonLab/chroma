@@ -314,6 +314,7 @@ nobase_include_HEADERS = \
 	meas/sources/source_smearing_aggregate.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
+	util/ferm/subset_ev_pair.h \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
 	util/ferm/block_couplings.h \

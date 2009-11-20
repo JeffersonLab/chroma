@@ -492,7 +492,7 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, params.param.src.decay_dir);
       
-      int Nvecs = color_vecs.evectorsSize();
+      int Nvecs = color_vecs.size();
 
       color_vecs.openUpdate();
 
@@ -563,7 +563,6 @@ namespace Chroma
 	}
 	color_vecs.update(i,e_i);
       }
-      color_vecs.openRead(); // Finished update mode
 
       //#define PRINT_SMEARING_MATRIX
 #ifdef PRINT_SMEARING_MATRIX
@@ -629,26 +628,37 @@ namespace Chroma
 	pop(xml_out);
 	//compute the "eigenvalues"
 	push(xml_out,"SmearingEvals");
+
+	
 	for(int i(0);i<Nvecs;i++)
 	{
-	  LatticeColorVector Svec; color_vecs.lookup(i,Svec);
-	  LatticeColorVector tmpvec=Svec;
+	  EVPair<LatticeColorVector> s_pair; color_vecs.lookup(i, s_pair);
 
+	  LatticeColorVector Svec=s_pair.eigenVector;
+	  LatticeColorVector orig_vec=s_pair.eigenVector;
+	 
 	  (*Smearing)(Svec, u_smr);
 	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(tmpvec,Svec),  phases.getSet());
+	    sumMulti(localInnerProduct(orig_vec,Svec),  phases.getSet());
 
+	  
 	  for(int t(0);t<phases.numSubsets();t++) {
-	    color_vecs.getEvalue(i).weights[t] = real(cc[t]);
+	    s_pair.eigenValue.weights[t] = real(cc[t]);
 	  }
+
+	  color_vecs.update(i,s_pair);
+
 	  push(xml_out,"Vector");
 	  write(xml_out, "VecNo",i);
-	  write(xml_out, "Evals", color_vecs.getEvalue(i).weights);
+	  write(xml_out, "Evals", s_pair.eigenValue.weights);
 	  pop(xml_out);
 	}
+
+
 	pop(xml_out);
       }
       
+      color_vecs.openRead();      
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec contstruction = "
 		  << swatch.getTimeInSeconds() 
@@ -672,7 +682,8 @@ namespace Chroma
 	for(int i(0);i<Nvecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalue(i).weights); 
+	  SubsetVectorWeight_t w; color_vecs.lookup(i,w);
+	  write(record_xml, "EigenValues", w.weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);

@@ -303,14 +303,14 @@ namespace Chroma
 
 
       // color_vecs.resizeEvectors(num_vecs);
-      color_vecs.resizeEvalues(num_vecs);
+      multi1d<SubsetVectorWeight_t> evals(num_vecs);
       // Temporary
       multi1d<LatticeColorVector> evecs(num_vecs);
 
 
       QDPIO::cout << "Got here" << endl;
       for(int i(0);i<num_vecs;i++){
-	color_vecs.getEvalue(i).weights.resize(phases.numSubsets());
+	evals[i].weights.resize(phases.numSubsets());
       }
 
       color_vecs.getDecayDir() = params.param.decay_dir;
@@ -379,12 +379,12 @@ namespace Chroma
 		     phases.getSet());
 	  
 	  for(int t=0; t < phases.numSubsets(); ++t) {
-	    color_vecs.getEvalue(i).weights[t] = real(cc[t]);
+	    evals[i].weights[t] = real(cc[t]);
 	  }
 
 	  push(xml_out,"Vector");
 	  write(xml_out, "VecNo",i);
-	  write(xml_out, "Evals", color_vecs.getEvalue(i).weights);
+	  write(xml_out, "Evals", evals[i].weights);
 	  pop(xml_out);
 	}
 	pop(xml_out);
@@ -393,7 +393,10 @@ namespace Chroma
 
       color_vecs.openWrite();
       for(int i=0; i < num_vecs; i++) { 
-	color_vecs.insert(i, evecs[i]);
+	EVPair<LatticeColorVector> pair;
+	pair.eigenValue=evals[i];
+	pair.eigenVector=evecs[i];
+	color_vecs.insert(i, pair);
       }
       color_vecs.openRead();
       
@@ -420,7 +423,7 @@ namespace Chroma
 	for(int i(0);i<num_vecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalue(i).weights); 
+	  write(record_xml, "EigenValues", evals[i].weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);

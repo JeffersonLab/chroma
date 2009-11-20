@@ -11,6 +11,7 @@
 #include "meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
+#include "util/ferm/subset_ev_pair.h"
 #include "util/ferm/subset_vectors.h"
 
 namespace Chroma 
@@ -229,9 +230,11 @@ namespace Chroma
 
 #if 1
 	multi1d<T> evecs;
+	multi1d<SubsetVectorWeight_t> evals;
 #endif
 	int nev;
-				
+			
+	// Weird storage (time slower than vector number)
 	for (int t = 0 ; t < nt ; ++t)
 	{
 
@@ -240,38 +243,39 @@ namespace Chroma
 	  read(rdr, curr_record_xml, bin_rdr);
 
 						
-
-	  multi1d<Real> evals;
+	  // Weights for all vectors on a given timeslice t
+	  multi1d<Real> evals_t;
 
 	  if (curr_record_xml.count("/LaplaceEigInfo/EigenValues") != 0)
-	    read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
+	    read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals_t);
 	  else if (curr_record_xml.count("/LaplaceEigInfo/EigParams/EigenValues") != 0)
-	    read(curr_record_xml, "/LaplaceEigInfo/EigParams/EigenValues", evals);
+	    read(curr_record_xml, "/LaplaceEigInfo/EigParams/EigenValues", evals_t);
 	  else
 	  {
 	    QDPIO::cerr << __func__ << ": LaplaceEigInfo tag for EigenValues not found\n" << std::endl;
 	    QDP_abort(1);
 	  }
 
-	  nev = evals.size();
+
 
 	  if (t == 0)
 	  {
-	    eigen.resizeEvalues(nev);
+	    nev = evals_t.size();
+	    evals.resize(nev);
 	    evecs.resize(nev);
 	    eigen.getDecayDir() = Nd - 1;
-	    QDPIO::cout << "Initializing vecs" << endl;
+	    QDPIO::cout << "Initializing eigenpairs" << endl;
 	    for (int v = 0 ; v < nev ; ++v)
 	    {
 	      evecs[v] = zero;
-	      eigen.getEvalue(v).weights.resize(nt);
+	      evals[v].weights.resize(nt);
 	    }		
 	  }
 	  QDPIO::cout << "Unserealizing evecs for timeslice " << t << endl;
 	  for (int n = 0 ; n < nev ; n++)
 	  {
 
-	    eigen.getEvalue(n).weights[t] = evals[n]; // Copies all the weights
+	    evals[n].weights[t] = evals_t[n]; // Copies all the weights
 
 	    multi1d<Complex> temp;
 	    read(bin_rdr, temp);
@@ -289,8 +293,11 @@ namespace Chroma
 
 	eigen.openWrite();
 	for(int n=0; n < nev; n++) { 
-	  QDPIO::cout << "Inserting evec " << n << endl;
-	  eigen.insert(n,evecs[n]);
+	  QDPIO::cout << "Inserting eval/evec pair " << n << endl;
+	  EVPair<T> pair;
+	  pair.eigenValue = evals[n];
+	  pair.eigenVector = evecs[n];
+	  eigen.insert(n,pair);
 	}
 	eigen.openRead();
 

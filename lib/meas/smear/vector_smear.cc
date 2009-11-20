@@ -26,7 +26,7 @@ namespace Chroma
   {
     LatticeColorVector psi = zero;
 
-    int num_vecs = vecs.getNumVectors();
+    int num_vecs = vecs.size();
     int nt = vecs.getDecayExtent(); 
 
     //    multi1d<LatticeColorVector> cvec = vecs.getEvectors();
@@ -35,10 +35,11 @@ namespace Chroma
 
     for (int n = 0 ; n < num_vecs ; ++n)
     {
-      const multi1d<Real> & evals = vecs.getEvalue(n).weights;
+      EVPair<LatticeColorVector> ev;
+      vecs.lookup(n, ev);
 
-      //      LatticeComplex tmp = localInnerProduct( cvec[n], chi );
-      LatticeColorVector cvec; vecs.lookup(n,cvec);
+      const multi1d<Real>& evals = ev.eigenValue.weights;
+      LatticeColorVector cvec = ev.eigenVector;
       LatticeComplex tmp = localInnerProduct( cvec, chi );
 		
       multi2d<DComplex> t_sum = phases.sft(tmp);

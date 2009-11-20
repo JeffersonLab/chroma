@@ -6,6 +6,8 @@
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_block_prop.h"
 #include "util/ferm/key_grid_prop.h"
+#include "util/ferm/subset_ev_pair.h"
+#include <string>
 
 namespace Chroma {
 
@@ -24,6 +26,8 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion> {
     static const unsigned int filenum=1;
+    //    static std::string type_string("KeyTKeyPropColorVec_tValTLatticeFermion");
+
   };
 
   template<>
@@ -38,6 +42,8 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<KeyBlockProp_t, LatticeFermion> {
     static const unsigned int filenum=2;
+    // static std::string type_string("KeyTKeyBlockProp_tValTLatticeFermion");
+
   };
 
   template<>
@@ -52,6 +58,7 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<KeyGridProp_t, LatticeFermion> { 
     static const unsigned int filenum=3;
+    // static std::string type_string("KeyTKeyGridProp_tValTLatticeFermion");
   };
 
   template<>
@@ -63,14 +70,15 @@ namespace Chroma {
 
   /* -------- int / LatticeColorVec ---------------------------*/
   template<>
-  struct MapObjTraitsNum<int, LatticeColorVector> {
+  struct MapObjTraitsNum<int, EVPair<LatticeColorVector> >{
     static const unsigned int filenum=4;
+    // static std::string type_string("KeyTintValTEVPairLatticeColorVector");
   };
 
   template<>
   struct MapObjTraitsKeyVal<4> {
     typedef int                KeyType_t;
-    typedef LatticeColorVector ValType_t;
+    typedef EVPair<LatticeColorVector> ValType_t;
   };
 
 
@@ -78,6 +86,7 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<char, float> {
     static const unsigned int filenum=5;
+    // static std::string type_string("KeyTcharValTfloat");
   };
 
   template<>

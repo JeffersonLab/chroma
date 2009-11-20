@@ -148,8 +148,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
 	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
 
-	eigen.resizeEvalues(params.file.file_names.size());
-	//	eigen.resizeEvectors(params.file.file_names.size());
+
 	eigen.getDecayDir() = Nd-1;
 
 	// Read the object
@@ -170,22 +169,20 @@ namespace Chroma
 
 	  std::string filename = params.file.file_names[i];
 	  QDPFileReader rdr(curr_file_xml, filename, QDPIO_SERIAL);
-	  T readvec;
-	  read(rdr, curr_record_xml, readvec);
-	  eigen.insert(i,readvec);
+	  EVPair<T> readpair;
 
-	  multi1d<Real> evals;
+	  read(rdr, curr_record_xml, readpair.eigenVector);
 	  if (curr_record_xml.count("/LaplaceEigInfo/EigenValues") != 0)
-	    read(curr_record_xml, "/LaplaceEigInfo/EigenValues", evals);
+	    read(curr_record_xml, "/LaplaceEigInfo/EigenValues", readpair.eigenValue.weights);
 	  else if (curr_record_xml.count("/LaplaceEigInfo/EigParams/EigenValues") != 0)
-	    read(curr_record_xml, "/LaplaceEigInfo/EigParams/EigenValues", evals);
+	    read(curr_record_xml, "/LaplaceEigInfo/EigParams/EigenValues", readpair.eigenValue.weights);
 	  else
 	  {
 	    QDPIO::cerr << __func__ << ": LaplaceEigInfo tag for EigenValues not found\n" << std::endl;
 	    QDP_abort(1);
 	  }
 
-	  eigen.getEvalue(i).weights = evals; // Copies all the weights
+	  eigen.insert(i,readpair);
 
 	  write(final_record_xml, "elem", curr_record_xml);
 

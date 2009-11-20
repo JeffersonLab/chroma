@@ -1656,11 +1656,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
 	util/ferm/transf.h util/ft/ft.h util/ferm/eigeninfo.h \
-	util/ferm/subset_vectors.h util/ferm/block_subset.h \
-	util/ferm/block_couplings.h util/ft/sftmom.h \
-	util/ft/single_phase.h util/gauge/eesu2.h util/gauge/eeu1.h \
-	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
-	util/gauge/eesu3.h util/gauge/gauge.h \
+	util/ferm/subset_ev_pair.h util/ferm/subset_vectors.h \
+	util/ferm/block_subset.h util/ferm/block_couplings.h \
+	util/ft/sftmom.h util/ft/single_phase.h util/gauge/eesu2.h \
+	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
+	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
 	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
@@ -2626,11 +2626,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/sources/source_smearing_factory.h \
 	meas/sources/source_smearing_aggregate.h util/ferm/ferm.h \
 	util/ferm/transf.h util/ft/ft.h util/ferm/eigeninfo.h \
-	util/ferm/subset_vectors.h util/ferm/block_subset.h \
-	util/ferm/block_couplings.h util/ft/sftmom.h \
-	util/ft/single_phase.h util/gauge/eesu2.h util/gauge/eeu1.h \
-	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
-	util/gauge/eesu3.h util/gauge/gauge.h \
+	util/ferm/subset_ev_pair.h util/ferm/subset_vectors.h \
+	util/ferm/block_subset.h util/ferm/block_couplings.h \
+	util/ft/sftmom.h util/ft/single_phase.h util/gauge/eesu2.h \
+	util/gauge/eeu1.h util/gauge/expm12.h util/gauge/expmat.h \
+	util/gauge/expsu3.h util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
 	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \

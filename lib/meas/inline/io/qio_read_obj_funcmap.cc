@@ -387,7 +387,6 @@ namespace Chroma
 
 	// Resize arrays
 	const int Lt = QDP::Layout::lattSize()[decay_dir];
-	obj.resizeEvalues(N);
 
 	// Loop and read evecs
 	QDPIO::cout << "About to read " << N << " evectors from QIO..."<<endl;
@@ -395,11 +394,15 @@ namespace Chroma
 	for(int n=0; n < N; n++)
 	{
 	  XMLReader record_xml_dummy;
-	  T readvec;
-	  read(to, record_xml_dummy, readvec);
-	  QDPIO::cout << "Inserting Vector " << n << " into Map" << endl;
-	  obj.insert(n, readvec);
-	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalue(n).weights);
+	  EVPair<T> read_pair;
+	  
+	  read(to, record_xml_dummy, read_pair.eigenVector);
+	  
+	  read_pair.eigenValue.weights.resize(Lt);
+	  read(record_xml_dummy, "/VectorInfo/weights", read_pair.eigenValue.weights);
+	  QDPIO::cout << "Inserting Pair " << n << " into Map" << endl;
+	  obj.insert(n, read_pair);
+
 	}
 	obj.openRead();
 

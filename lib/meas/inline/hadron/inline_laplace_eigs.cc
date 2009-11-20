@@ -332,8 +332,11 @@ namespace Chroma
       // Cast should be valid now
       SubsetVectors<LatticeColorVector>& color_vecs =
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+
+
       
       // The code goes here
+      
       StopWatch swatch;
       StopWatch fossil;
       fossil.reset();
@@ -345,14 +348,11 @@ namespace Chroma
       
       int num_vecs = params.param.num_vecs;
       int nt = phases.numSubsets();
-      
-      
-      // color_vecs.resizeEvectors(num_vecs);
-      
-      color_vecs.resizeEvalues(num_vecs);
-      for(int i(0);i<num_vecs;i++){
-	color_vecs.getEvalue(i).weights.resize(phases.numSubsets());
+      multi1d<EVPair<LatticeColorVector> >  ev_pairs(num_vecs);
+      for(int n=0; n < num_vecs; ++n) { 
+	ev_pairs[n].eigenValue.weights.resize(nt);
       }
+      
 	  
       color_vecs.getDecayDir() = params.param.decay_dir;
       
@@ -647,7 +647,7 @@ namespace Chroma
       
       
       //Get Eigenvectors
-      color_vecs.openWrite();
+
       QDPIO::cout << "Obtaining eigenvectors of the laplacian" << endl;
       for (int k = 0 ; k < params.param.num_vecs ; ++k) {
 	LatticeColorVector vec_k = zero;
@@ -672,7 +672,7 @@ namespace Chroma
 	  
 	}
 	    
-	color_vecs.insert(k,vec_k);
+	ev_pairs[k].eigenVector = vec_k;
 	    
 	//Test if this is an eigenvector
 	//	LatticeColorVector avec = zero;
@@ -711,7 +711,7 @@ namespace Chroma
 	  
 	  evals[t][k] = -1.0 * toDouble(Real(real(temp3)));
 	  
-	  color_vecs.getEvalue(k).weights[t] = 
+	  ev_pairs[k].eigenValue.weights[t] = 
 	    Real(evals[t][k]);
 	  
 	  QDPIO::cout << "t = " << t << endl;
@@ -739,6 +739,11 @@ namespace Chroma
 	}
 	
       }//k
+
+      color_vecs.openWrite();
+      for(int n=0; n < num_vecs; n++) { 
+	color_vecs.insert(n, ev_pairs[n]);
+      }
       color_vecs.openRead();
       
       //pop(xml_out);
@@ -767,7 +772,7 @@ namespace Chroma
 	for(int i(0);i<num_vecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalue(i).weights); 
+	  write(record_xml, "EigenValues", ev_pairs[i].eigenValue.weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);

@@ -6,8 +6,12 @@
 #include "chromabase.h"
 #include "util/ferm/subset_vectors.h"
 
+using namespace QDP;
+
 namespace Chroma 
 {
+
+
   // Reader
   void read(XMLReader& xml, const std::string& path, SubsetVectorWeight_t& param)
   {
