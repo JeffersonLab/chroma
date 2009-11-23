@@ -17,7 +17,6 @@
 // QUDA Headers
 #include <quda.h>
 #include <util_quda.h>
-#include <invert_quda.h>
 
 namespace Chroma
 {
