@@ -12,7 +12,7 @@
 #include <string>
 #include "util/ferm/map_obj/map_obj_disk_traits.h"
 
-//#define DISK_OBJ_DEBUGGING 1
+// #define DISK_OBJ_DEBUGGING 1
 #undef DISK_OBJ_DEBUGGING
 
 using namespace QDP;
@@ -23,9 +23,9 @@ namespace Chroma
 
   namespace MapObjDiskEnv { 
     typedef unsigned int file_version_t;
-    typedef unsigned int file_typenum_t;
-
+   
     extern const std::string file_magic;
+    extern const size_t maxFileTypeLength;
   };
 
 
@@ -199,7 +199,7 @@ namespace Chroma
 
   };
   
-  MapObjDiskEnv::file_typenum_t peekMapObjectDiskTypeCode(const std::string& filename);
+  std::string peekMapObjectDiskTypeCode(const std::string& filename);
   
   
   /* ****************** IMPLEMENTATIONS ********************** */
@@ -236,12 +236,12 @@ namespace Chroma
       QDPIO::cout << "Wrote Version. Current Position is: " << writer.currentPosition() << endl;
 #endif
       
-      MapObjDiskEnv::file_typenum_t type_code = MapObjTraitsNum<K,V>::filenum;
+      std::string type_string = MapObjTraitsNum<K,V>::type_string;
     
 #ifdef DISK_OBJ_DEBUGGING
-      QDPIO::cout << "Writing Type Code=" << type_code << endl;
+      QDPIO::cout << "Writing Type String=" << type_string << endl;
 #endif
-      write(writer, type_code);
+      write(writer, type_string);
       
 #ifdef DISK_OBJ_DEBUGGING
       QDPIO::cout << "Wrote Type Code. Current Position is: " << writer.currentPosition() << endl;
@@ -255,10 +255,14 @@ namespace Chroma
 	BinaryWriter::pos_type cur_pos = writer.currentPosition();
 	if ( cur_pos != 
 	     static_cast<BinaryReader::pos_type>(MapObjDiskEnv::file_magic.length())
-	     +static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_typenum_t))
+	     +static_cast<BinaryReader::pos_type>(type_string.length()+1)
 	     +static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_version_t)) ) {
 	  
 	  QDPIO::cout << "ERROR: Sanity Check 1 failed." << endl;
+	  QDPIO::cout << "cur pos=" << cur_pos << " expected " <<
+	    static_cast<BinaryReader::pos_type>(MapObjDiskEnv::file_magic.length())
+	    +static_cast<BinaryReader::pos_type>(type_string.length()+1)
+	    +static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_version_t)) << endl;
 	  QDP_abort(1);
 	}
       }
@@ -275,11 +279,11 @@ namespace Chroma
 	if ( cur_pos != 
 	     static_cast<BinaryReader::pos_type>(MapObjDiskEnv::file_magic.length())
 	     + static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_version_t))
-	     + static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_typenum_t))
+	     + static_cast<BinaryReader::pos_type>(type_string.length()+1)
 	     + static_cast<BinaryReader::pos_type>(sizeof(BinaryReader::pos_type)) ) {
 	  QDPIO::cout << "Cur pos = " << cur_pos << endl;
 	  QDPIO::cout << "Expected: " <<  MapObjDiskEnv::file_magic.length()+sizeof(MapObjDiskEnv::file_version_t) 
-	    + sizeof(MapObjDiskEnv::file_typenum_t)
+	    + type_string.length()+1
 	    + sizeof(BinaryReader::pos_type) << endl;
 
 	  QDPIO::cout << "ERROR: Sanity Check 2 failed." << endl;
@@ -461,11 +465,21 @@ template<typename K, typename V>
       
       // Add position to the map
       src_map.insert(std::make_pair(key,rpos));
+
+
       // Write object to disk
+      writer.resetChecksum();
       write(writer, val);
-      
+
 #ifdef DISK_OBJ_DEBUGGING
       QDPIO::cout << "Wrote value to disk. Current Position: " << writer.currentPosition() << endl;
+#endif
+
+      write(writer, writer.getChecksum()); // Write Checksum
+      writer.flush();
+      
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << "Wrote checksum " << writer.getChecksum() << " to disk. Current Position: " << writer.currentPosition();
 #endif
       break;
     }
@@ -497,13 +511,19 @@ template<typename K, typename V>
 #ifdef DISK_OBJ_DEBUGGING
 	QDPIO::cout << "Sought write position. Current Position: " << writer.currentPosition() << endl;
 #endif
-	
+	writer.resetChecksum(); // Reset checksum. It gets calculated on write.
 	write(writer, val);
-
+	
 #ifdef DISK_OBJ_DEBUGGING	
 	QDPIO::cout << "Wrote value to disk. Current Position: " << writer.currentPosition() << endl;
 #endif
+	write(writer, writer.getChecksum()); // Write Checksum
 	writer.flush(); // Sync the file
+	
+#ifdef DISK_OBJ_DEBUGGING
+	QDPIO::cout << "Wrote checksum " << writer.getChecksum() << " to disk. Current Position: " << writer.currentPosition();
+#endif
+	
       }
       else { 
 	QDPIO::cerr << "MapObjectDisk: Cannot find key to update." << endl;
@@ -541,7 +561,31 @@ template<typename K, typename V>
       BinaryReader::pos_type rpos = src_map.find(key)->second;
       //      reader.rewind();
       reader.seek(rpos);
+      reader.resetChecksum();
       read(reader, val);
+
+#ifdef DISK_OBJ_DEBUGGING 
+      QDPIO::cout << "Read record. Current position: " << reader.currentPosition();
+#endif
+
+
+      QDPUtil::n_uint32_t calc_checksum=reader.getChecksum();
+      QDPUtil::n_uint32_t read_checksum;
+      read(reader, read_checksum);
+
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << " Record checksum: " << read_checksum << "  Current Position: " << reader.currentPosition();
+#endif
+
+      if( read_checksum != calc_checksum ) { 
+	QDPIO::cout << "Mismatched Checksums: Expected: " << calc_checksum << " but read " << read_checksum << endl;
+	QDP_abort(1);
+      }
+
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << "  Checksum OK!" << endl;
+#endif
+      
       
       break;
     }
@@ -570,7 +614,7 @@ template<typename K, typename V>
   MapObjectDisk<K,V>::writeSkipHeader(void) 
   { 
     if ( writer.is_open() ) { 
-      writer.seek( MapObjDiskEnv::file_magic.length() + sizeof(MapObjDiskEnv::file_version_t) + sizeof(MapObjDiskEnv::file_typenum_t) );
+      writer.seek( MapObjDiskEnv::file_magic.length() + sizeof(MapObjDiskEnv::file_version_t) + MapObjTraitsNum<K,V>::type_string.length()+1 );
     }
     else { 
       QDPIO::cerr << "Attempting writeSkipHeader, not in write mode" <<endl;
@@ -619,10 +663,10 @@ template<typename K, typename V>
       // Check version
       QDPIO::cout << "MapObjectDisk: file has version: " << read_version << endl;
       
-      MapObjDiskEnv::file_typenum_t type_code;
-      read(reader, type_code);
+      std::string type_string;
+      QDP::read(reader, type_string,MapObjDiskEnv::maxFileTypeLength);
 #ifdef DISK_OBJ_DEBUGGING
-      QDPIO::cout << "Read File Type Code. Code=" << type_code << ". Current Position: " << reader.currentPosition() << endl;
+      QDPIO::cout << "Read File Type String. String=" << type_string << ". Current Position: " << reader.currentPosition() << endl;
 #endif
       
       // Read MD location
@@ -652,6 +696,8 @@ template<typename K, typename V>
   MapObjectDisk<K,V>::writeMapBinary(void)  
   {
     unsigned int map_size = src_map.size();
+
+    writer.resetChecksum();
     write(writer, map_size);
 #ifdef DISK_OBJ_DEBUGGING
     QDPIO::cout << "Wrote map size: " << map_size << " entries.  Current position : " << writer.currentPosition() << endl;
@@ -673,6 +719,10 @@ template<typename K, typename V>
 #endif
       
     }
+    write(writer, writer.getChecksum());
+    QDPIO::cout << "Wrote Checksum On Map: " << writer.getChecksum() << endl;
+    writer.flush();
+
   }
   
   //! read the map 
@@ -684,6 +734,8 @@ template<typename K, typename V>
   {
     
     reader.seek(md_start);
+    reader.resetChecksum();
+
 #ifdef DISK_OBJ_DEBUGGING
     QDPIO::cout << "Sought start of metadata. Current position: " << reader.currentPosition() << endl;
 #endif
@@ -710,7 +762,22 @@ template<typename K, typename V>
       // Add position to the map
       src_map.insert(std::make_pair(key,rpos));
     }
-    
+     QDPUtil::n_uint32_t calc_checksum=reader.getChecksum();
+     QDPUtil::n_uint32_t read_checksum;
+     read(reader, read_checksum);
+
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << "Read Map checksum: " << read_checksum << "  Current Position: " << reader.currentPosition();
+#endif
+      if( read_checksum != calc_checksum ) { 
+	QDPIO::cout << "Mismatched Checksums: Expected: " << calc_checksum << " but read " << read_checksum << endl;
+	QDP_abort(1);
+      }
+
+#ifdef DISK_OBJ_DEBUGGING
+      QDPIO::cout << " Map Checksum OK!" << endl;
+#endif
+      
   }
 
 

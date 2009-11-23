@@ -26,9 +26,11 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion> {
     static const unsigned int filenum=1;
-    //    static std::string type_string("KeyTKeyPropColorVec_tValTLatticeFermion");
-
+    static const std::string type_string;
   };
+
+ 
+
 
   template<>
   struct MapObjTraitsKeyVal<1> {
@@ -36,14 +38,14 @@ namespace Chroma {
     typedef LatticeFermion    ValType_t;
   };
 
+
   /*--------- KeyBlockProp_t/LatticeFermion ---------------------*/
 
 
   template<>
   struct MapObjTraitsNum<KeyBlockProp_t, LatticeFermion> {
     static const unsigned int filenum=2;
-    // static std::string type_string("KeyTKeyBlockProp_tValTLatticeFermion");
-
+    static const std::string type_string;
   };
 
   template<>
@@ -58,7 +60,7 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<KeyGridProp_t, LatticeFermion> { 
     static const unsigned int filenum=3;
-    // static std::string type_string("KeyTKeyGridProp_tValTLatticeFermion");
+    static const std::string type_string;
   };
 
   template<>
@@ -72,7 +74,7 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<int, EVPair<LatticeColorVector> >{
     static const unsigned int filenum=4;
-    // static std::string type_string("KeyTintValTEVPairLatticeColorVector");
+    static const std::string type_string;
   };
 
   template<>
@@ -86,7 +88,7 @@ namespace Chroma {
   template<>
   struct MapObjTraitsNum<char, float> {
     static const unsigned int filenum=5;
-    // static std::string type_string("KeyTcharValTfloat");
+    static const std::string type_string;
   };
 
   template<>

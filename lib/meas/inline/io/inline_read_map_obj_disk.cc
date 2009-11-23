@@ -179,23 +179,23 @@ namespace Chroma
       return obj_handle->size();
     }
 
-    std::map<int, int (*)(const std::string&, const std::string& )> funcmap;
+    std::map<std::string, int (*)(const std::string&, const std::string& )> funcmap;
 
     void registerAll(void) {
       if (! registered ) { 
-	funcmap.insert( make_pair( MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::filenum,
+	funcmap.insert( make_pair( MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::type_string,
 				   createDiskMapObjKeyPropColorVecLatticeFermion ) );
 
-	funcmap.insert( make_pair( MapObjTraitsNum<KeyGridProp_t, LatticeFermion>::filenum,
+	funcmap.insert( make_pair( MapObjTraitsNum<KeyGridProp_t, LatticeFermion>::type_string,
 				   createDiskMapObjKeyGridPropLatticeFermion ) );
 
-	funcmap.insert( make_pair( MapObjTraitsNum<KeyBlockProp_t, LatticeFermion>::filenum,
+	funcmap.insert( make_pair( MapObjTraitsNum<KeyBlockProp_t, LatticeFermion>::type_string,
 				   createDiskMapObjKeyBlockPropLatticeFermion ) );
 
-	funcmap.insert( make_pair( MapObjTraitsNum<int, EVPair<LatticeColorVector> >::filenum,
+	funcmap.insert( make_pair( MapObjTraitsNum<int, EVPair<LatticeColorVector> >::type_string,
 				   createDiskMapObjIntEVPairLatticeColorVec ) );
 
-	funcmap.insert( make_pair( MapObjTraitsNum<char, float>::filenum,
+	funcmap.insert( make_pair( MapObjTraitsNum<char, float>::type_string,
 				   createDiskMapObjCharFloat ) );
 
 	registered = true;
@@ -231,9 +231,9 @@ namespace Chroma
       swatch.reset();
       swatch.start();
 
-      MapObjDiskEnv::file_typenum_t  type_num=peekMapObjectDiskTypeCode(params.file.file_name);
+      std::string  type_string=peekMapObjectDiskTypeCode(params.file.file_name);
 
-      int size=(funcmap[type_num])(params.named_obj.object_id, params.file.file_name);
+      int size=(funcmap[type_string])(params.named_obj.object_id, params.file.file_name);
 
       XMLBufferWriter file_xml_buf;
       push(file_xml_buf, "FileXML");

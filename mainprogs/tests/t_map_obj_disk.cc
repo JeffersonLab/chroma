@@ -117,10 +117,10 @@ int main(int argc, char *argv[])
   }
 
   try {
-    QDPIO::cout << "Checking typecode" << endl;
-    MapObjDiskEnv::file_typenum_t typecode = peekMapObjectDiskTypeCode("./propColorVecMapObjTest");
+    QDPIO::cout << "Checking type string" << endl;
+    std::string typecode = peekMapObjectDiskTypeCode("./propColorVecMapObjTest");
     QDPIO::cout << "Type Code is: " << typecode << endl;
-    MapObjDiskEnv::file_typenum_t expected = MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::filenum;
+    std::string expected = MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::type_string;
     QDPIO::cout << "Expected Code: " << typecode << endl;
     if( typecode != expected ) { 
       fail();

@@ -4,9 +4,19 @@
 namespace Chroma { 
   namespace MapObjDiskEnv {
     const std::string file_magic="XXXXChromaLazyDiskMapObjFileXXXX";
+    const size_t maxFileTypeLength=256;
   };
 
-  MapObjDiskEnv::file_typenum_t 
+  // Disk traits.
+  const string MapObjTraitsNum<KeyPropColorVec_t,LatticeFermion>::type_string="KeyTKeyPropColorVec_tValTLatticeFermion";
+  const string MapObjTraitsNum<KeyBlockProp_t,LatticeFermion>::type_string="KeyTKeyBlockProp_tValTLatticeFermion";
+  const string MapObjTraitsNum<KeyGridProp_t,LatticeFermion>::type_string="KeyTKeyGridProp_tValTLatticeFermion";
+  const string MapObjTraitsNum<int,EVPair<LatticeColorVector> >::type_string="KeyTintValTEVPairLatticeColorVector";
+  const string MapObjTraitsNum<char,float >::type_string="KeyTcharValTfloat";
+  
+
+
+  std::string
   peekMapObjectDiskTypeCode(const std::string& filename)
   {
     BinaryFileReader reader;
@@ -39,14 +49,14 @@ namespace Chroma {
     // Check version
     QDPIO::cout << "MapObjectDisk: file has version: " << read_version << endl;
     
-    MapObjDiskEnv::file_typenum_t type_code;
-    read(reader, type_code);
+    std::string type_string;
+    read(reader, type_string, MapObjDiskEnv::maxFileTypeLength);
 #ifdef DISK_OBJ_DEBUGGING
-    QDPIO::cout << "Read File Type Code. Code=" << type_code << ". Current Position: " << reader.currentPosition() << endl;
+    QDPIO::cout << "Read File Type String. Code=" << type_string << ". Current Position: " << reader.currentPosition() << endl;
 #endif
     
     reader.close();
-    return type_code;
+    return type_string;
 
   }
 }
