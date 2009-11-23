@@ -11,90 +11,42 @@
 
 namespace Chroma {
 
+  /* Type strings are initialized in map_obj_disk.cc */
+
   //! Type trait to take Key/Value pair to unsigned int
   template<typename K, typename V> 
   struct MapObjTraitsNum {};
   
-  //! Type trait to take int to Key/Value pair 
-  template<unsigned int N> 
-  struct MapObjTraitsKeyVal {};
-  
 
   /*---------  KeyPropColorVec_t/LatticeFermion -----------------*/
-
-
   template<>
   struct MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion> {
-    static const unsigned int filenum=1;
     static const std::string type_string;
   };
-
- 
-
-
-  template<>
-  struct MapObjTraitsKeyVal<1> {
-    typedef KeyPropColorVec_t KeyType_t;
-    typedef LatticeFermion    ValType_t;
-  };
-
 
   /*--------- KeyBlockProp_t/LatticeFermion ---------------------*/
-
-
   template<>
   struct MapObjTraitsNum<KeyBlockProp_t, LatticeFermion> {
-    static const unsigned int filenum=2;
     static const std::string type_string;
   };
 
-  template<>
-  struct MapObjTraitsKeyVal<2> {
-    typedef KeyBlockProp_t KeyType_t;
-    typedef LatticeFermion ValType_t;
-  };
 
   /* -------- KeyGridProp_t/LatticeFermion ----------------------*/
-
-  
   template<>
   struct MapObjTraitsNum<KeyGridProp_t, LatticeFermion> { 
-    static const unsigned int filenum=3;
     static const std::string type_string;
   };
-
-  template<>
-  struct MapObjTraitsKeyVal<3> {
-    typedef KeyGridProp_t KeyType_t;
-    typedef LatticeFermion ValType_t;
-  };
-
 
   /* -------- int / LatticeColorVec ---------------------------*/
   template<>
   struct MapObjTraitsNum<int, EVPair<LatticeColorVector> >{
-    static const unsigned int filenum=4;
     static const std::string type_string;
   };
-
-  template<>
-  struct MapObjTraitsKeyVal<4> {
-    typedef int                KeyType_t;
-    typedef EVPair<LatticeColorVector> ValType_t;
-  };
-
 
   /* -------- char / float (test ) ---------------------------*/
   template<>
   struct MapObjTraitsNum<char, float> {
-    static const unsigned int filenum=5;
     static const std::string type_string;
-  };
-
-  template<>
-  struct MapObjTraitsKeyVal<5> {
-    typedef char                KeyType_t;
-    typedef float               ValType_t;
   };
 
 

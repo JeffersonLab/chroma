@@ -255,13 +255,13 @@ namespace Chroma
 	BinaryWriter::pos_type cur_pos = writer.currentPosition();
 	if ( cur_pos != 
 	     static_cast<BinaryReader::pos_type>(MapObjDiskEnv::file_magic.length())
-	     +static_cast<BinaryReader::pos_type>(type_string.length()+1)
+	     +static_cast<BinaryReader::pos_type>(type_string.length()+1) // +1 because of '\n' terminated strings
 	     +static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_version_t)) ) {
 	  
 	  QDPIO::cout << "ERROR: Sanity Check 1 failed." << endl;
 	  QDPIO::cout << "cur pos=" << cur_pos << " expected " <<
 	    static_cast<BinaryReader::pos_type>(MapObjDiskEnv::file_magic.length())
-	    +static_cast<BinaryReader::pos_type>(type_string.length()+1)
+	    +static_cast<BinaryReader::pos_type>(type_string.length()+1) // +1 because of '\n' terminated strings
 	    +static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_version_t)) << endl;
 	  QDP_abort(1);
 	}
@@ -279,11 +279,11 @@ namespace Chroma
 	if ( cur_pos != 
 	     static_cast<BinaryReader::pos_type>(MapObjDiskEnv::file_magic.length())
 	     + static_cast<BinaryReader::pos_type>(sizeof(MapObjDiskEnv::file_version_t))
-	     + static_cast<BinaryReader::pos_type>(type_string.length()+1)
+	     + static_cast<BinaryReader::pos_type>(type_string.length()+1) // +1 becuase of '\n' terminated strings
 	     + static_cast<BinaryReader::pos_type>(sizeof(BinaryReader::pos_type)) ) {
 	  QDPIO::cout << "Cur pos = " << cur_pos << endl;
 	  QDPIO::cout << "Expected: " <<  MapObjDiskEnv::file_magic.length()+sizeof(MapObjDiskEnv::file_version_t) 
-	    + type_string.length()+1
+	    + type_string.length()+1 // +1 because of '\n' terminated strings
 	    + sizeof(BinaryReader::pos_type) << endl;
 
 	  QDPIO::cout << "ERROR: Sanity Check 2 failed." << endl;
@@ -614,7 +614,7 @@ template<typename K, typename V>
   MapObjectDisk<K,V>::writeSkipHeader(void) 
   { 
     if ( writer.is_open() ) { 
-      writer.seek( MapObjDiskEnv::file_magic.length() + sizeof(MapObjDiskEnv::file_version_t) + MapObjTraitsNum<K,V>::type_string.length()+1 );
+      writer.seek( MapObjDiskEnv::file_magic.length() + sizeof(MapObjDiskEnv::file_version_t) + MapObjTraitsNum<K,V>::type_string.length()+1 ); // +1 because of '\n' termianted strings
     }
     else { 
       QDPIO::cerr << "Attempting writeSkipHeader, not in write mode" <<endl;

@@ -3,7 +3,10 @@
 
 namespace Chroma { 
   namespace MapObjDiskEnv {
+    // Magic string at start of file.
     const std::string file_magic="XXXXChromaLazyDiskMapObjFileXXXX";
+
+    // Type hashes have to be shorter than 256 chars for now. 
     const size_t maxFileTypeLength=256;
   };
 
