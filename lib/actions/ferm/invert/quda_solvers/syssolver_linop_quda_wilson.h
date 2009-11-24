@@ -229,6 +229,15 @@ namespace Chroma
       }
       loadGaugeQuda((void *)gauge, &q_gauge_param);
       
+      // Padding.
+      // Using auto padding code from Ron
+      unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
+      if( vol % (1<<14) == 0) { 
+	quda_inv_param.sp_pad = quda_inv_param.ga_pad = quda_inv_param.cl_pad = latdims[0]*latdims[1]*latdims[2];
+      }
+      else {
+	quda_inv_param.sp_pad = quda_inv_param.ga_pad = quda_inv_param.cl_pad =0;
+      }
 
       // Definitely no clover here...
       quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
@@ -279,7 +288,7 @@ namespace Chroma
 	solver_string = "CG";
 	break;
       }
-      
+     
 
     }
 
