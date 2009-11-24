@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 3.241 2009-10-13 13:56:37 edwards Exp $
+# $Id: Makefile.am,v 3.242 2009/11/14 20:01:43 eneil Exp $
 #
 # Path for all files used in building the library
 
@@ -1207,7 +1207,7 @@ libchroma_a_SOURCES = \
         util/ft/sftmom.cc util/ft/single_phase.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
-	util/gauge/gauge_startup.cc \
+	util/gauge/gauge_startup.cc util/gauge/eesu2.cc \
 	util/gauge/gauge_init_aggregate.cc \
 	util/gauge/milc_gauge_init.cc \
 	util/gauge/nersc_gauge_init.cc \

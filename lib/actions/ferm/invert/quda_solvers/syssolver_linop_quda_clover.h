@@ -98,6 +98,8 @@ namespace Chroma
 	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
       }
 
+  
+
       Handle<FermState<T,Q,Q> > fstate( new PeriodicFermState<T,Q,Q>(links_single));
 
       if( aniso.anisoP ) {                     // Anisotropic case
@@ -113,7 +115,18 @@ namespace Chroma
       q_gauge_param.X[1] = latdims[1];
       q_gauge_param.X[2] = latdims[2];
       q_gauge_param.X[3] = latdims[3];
-      
+  
+
+      // Padding.
+      // Using auto padding code from Ron
+      unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
+      if( vol % (1<<14) == 0) { 
+	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = (latdims[0]*latdims[1]*latdims[2])/2;
+      }
+      else {
+	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
+      }
+    
       if( aniso.anisoP ) {                     // Anisotropic case
 	Real gamma_f = aniso.xi_0 / aniso.nu; 
 	q_gauge_param.anisotropy = toDouble(gamma_f);

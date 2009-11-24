@@ -5960,9 +5960,9 @@ cat >>confdefs.h <<\_ACEOF
 #define BUILD_QUDA
 _ACEOF
 
-   QUDA_CXXFLAGS="-I${QUDA_HOME} -I${QUDA_HOME}/include -I${CUDA_HOME}/include"
+   QUDA_CXXFLAGS="-I${QUDA_HOME}/include -I${CUDA_HOME}/include"
 
-   QUDA_LDFLAGS="-L${CUDA_LIBDIR} -L${QUDA_HOME} -L${QUDA_HOME}/lib"
+   QUDA_LDFLAGS="-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib"
 
    QUDA_LIBS="-lquda -lcudart"
 

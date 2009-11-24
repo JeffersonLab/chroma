@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.am,v 3.241 2009-10-13 13:56:37 edwards Exp $
+# $Id: Makefile.am,v 3.242 2009/11/14 20:01:43 eneil Exp $
 #
 # Path for all files used in building the library
 
@@ -405,7 +405,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/ft/sftmom.cc util/ft/single_phase.cc util/gauge/eesu3.cc \
 	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
 	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
-	util/gauge/gauge_init_aggregate.cc \
+	util/gauge/eesu2.cc util/gauge/gauge_init_aggregate.cc \
 	util/gauge/milc_gauge_init.cc util/gauge/nersc_gauge_init.cc \
 	util/gauge/szin_gauge_init.cc util/gauge/szinqio_gauge_init.cc \
 	util/gauge/kyu_gauge_init.cc \
@@ -1053,26 +1053,26 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	block_couplings.$(OBJEXT) sftmom.$(OBJEXT) \
 	single_phase.$(OBJEXT) eesu3.$(OBJEXT) eeu1.$(OBJEXT) \
 	expm12.$(OBJEXT) expmat.$(OBJEXT) expsu3.$(OBJEXT) \
-	gauge_startup.$(OBJEXT) gauge_init_aggregate.$(OBJEXT) \
-	milc_gauge_init.$(OBJEXT) nersc_gauge_init.$(OBJEXT) \
-	szin_gauge_init.$(OBJEXT) szinqio_gauge_init.$(OBJEXT) \
-	kyu_gauge_init.$(OBJEXT) disordered_gauge_init.$(OBJEXT) \
-	unit_gauge_init.$(OBJEXT) cppacs_gauge_init.$(OBJEXT) \
-	weak_gauge_init.$(OBJEXT) sf_gauge_init.$(OBJEXT) \
-	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
-	shift2.$(OBJEXT) su2extract.$(OBJEXT) su3proj.$(OBJEXT) \
-	sunfill.$(OBJEXT) sun_proj.$(OBJEXT) taproj.$(OBJEXT) \
-	unit_check.$(OBJEXT) conjgauge.$(OBJEXT) constgauge.$(OBJEXT) \
-	weak_field.$(OBJEXT) stout_utils.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) unique_id.$(OBJEXT) su3over.$(OBJEXT) \
-	su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
-	exact_hamiltonian.$(OBJEXT) gauge_monomial.$(OBJEXT) \
-	force_monitors.$(OBJEXT) rat_approx_aggregate.$(OBJEXT) \
-	remez_rat_approx.$(OBJEXT) read_rat_approx.$(OBJEXT) \
-	comp_approx.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
-	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
-	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
-	lcm_integrator_leaps.$(OBJEXT) \
+	gauge_startup.$(OBJEXT) eesu2.$(OBJEXT) \
+	gauge_init_aggregate.$(OBJEXT) milc_gauge_init.$(OBJEXT) \
+	nersc_gauge_init.$(OBJEXT) szin_gauge_init.$(OBJEXT) \
+	szinqio_gauge_init.$(OBJEXT) kyu_gauge_init.$(OBJEXT) \
+	disordered_gauge_init.$(OBJEXT) unit_gauge_init.$(OBJEXT) \
+	cppacs_gauge_init.$(OBJEXT) weak_gauge_init.$(OBJEXT) \
+	sf_gauge_init.$(OBJEXT) hotst.$(OBJEXT) reunit.$(OBJEXT) \
+	rgauge.$(OBJEXT) shift2.$(OBJEXT) su2extract.$(OBJEXT) \
+	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
+	taproj.$(OBJEXT) unit_check.$(OBJEXT) conjgauge.$(OBJEXT) \
+	constgauge.$(OBJEXT) weak_field.$(OBJEXT) \
+	stout_utils.$(OBJEXT) printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
+	unique_id.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
+	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
+	gauge_monomial.$(OBJEXT) force_monitors.$(OBJEXT) \
+	rat_approx_aggregate.$(OBJEXT) remez_rat_approx.$(OBJEXT) \
+	read_rat_approx.$(OBJEXT) comp_approx.$(OBJEXT) \
+	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
+	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
+	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive_dtau.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
@@ -3413,7 +3413,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/ft/sftmom.cc util/ft/single_phase.cc util/gauge/eesu3.cc \
 	util/gauge/eeu1.cc util/gauge/expm12.cc util/gauge/expmat.cc \
 	util/gauge/expsu3.cc util/gauge/gauge_startup.cc \
-	util/gauge/gauge_init_aggregate.cc \
+	util/gauge/eesu2.cc util/gauge/gauge_init_aggregate.cc \
 	util/gauge/milc_gauge_init.cc util/gauge/nersc_gauge_init.cc \
 	util/gauge/szin_gauge_init.cc util/gauge/szinqio_gauge_init.cc \
 	util/gauge/kyu_gauge_init.cc \
@@ -4001,6 +4001,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_fermact_qprop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwffld_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eesu2.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eesu3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eeu1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/eig_spec.Po@am__quote@
@@ -8570,6 +8571,20 @@ gauge_startup.obj: util/gauge/gauge_startup.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/gauge_startup.cc' object='gauge_startup.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o gauge_startup.obj `if test -f 'util/gauge/gauge_startup.cc'; then $(CYGPATH_W) 'util/gauge/gauge_startup.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/gauge_startup.cc'; fi`
+
+eesu2.o: util/gauge/eesu2.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eesu2.o -MD -MP -MF $(DEPDIR)/eesu2.Tpo -c -o eesu2.o `test -f 'util/gauge/eesu2.cc' || echo '$(srcdir)/'`util/gauge/eesu2.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eesu2.Tpo $(DEPDIR)/eesu2.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/eesu2.cc' object='eesu2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eesu2.o `test -f 'util/gauge/eesu2.cc' || echo '$(srcdir)/'`util/gauge/eesu2.cc
+
+eesu2.obj: util/gauge/eesu2.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT eesu2.obj -MD -MP -MF $(DEPDIR)/eesu2.Tpo -c -o eesu2.obj `if test -f 'util/gauge/eesu2.cc'; then $(CYGPATH_W) 'util/gauge/eesu2.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/eesu2.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/eesu2.Tpo $(DEPDIR)/eesu2.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/eesu2.cc' object='eesu2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o eesu2.obj `if test -f 'util/gauge/eesu2.cc'; then $(CYGPATH_W) 'util/gauge/eesu2.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/eesu2.cc'; fi`
 
 gauge_init_aggregate.o: util/gauge/gauge_init_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT gauge_init_aggregate.o -MD -MP -MF $(DEPDIR)/gauge_init_aggregate.Tpo -c -o gauge_init_aggregate.o `test -f 'util/gauge/gauge_init_aggregate.cc' || echo '$(srcdir)/'`util/gauge/gauge_init_aggregate.cc

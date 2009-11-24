@@ -1,4 +1,4 @@
-// $Id: expmat.cc,v 3.2 2007-08-29 13:31:47 edwards Exp $
+// $Id: expmat.cc,v 3.3 2009/11/14 20:01:46 eneil Exp $
 /*! \file
  *  \brief Exponentiate a SU(n) lie algebra element by some method,
  */
@@ -51,12 +51,9 @@ void expmat(LatticeColorMatrix& a,
     eeu1(a);
     break;
 
-#if 0
   case 2:
-    /* Not tested yet */
     eesu2(a);
     break;
-#endif
 
   default:
     switch (opt)
