@@ -115,7 +115,12 @@ namespace Chroma
       // Using auto padding code from Ron
       unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
       if( vol % (1<<14) == 0) { 
-	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =( latdims[0]*latdims[1]*latdims[2])/2;
+	// Commended out -- padding this way seems to cause some divergence
+	// Will revert when Mike tells me to. For now
+	// I'll take the hit
+	//quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =( latdims[0]*latdims[1]*latdims[2])/2;
+	 quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
+
       }
       else {
 	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
