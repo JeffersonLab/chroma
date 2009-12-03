@@ -684,7 +684,9 @@ namespace Chroma
 
 		  // Contract over color indices
 		  // Do the relevant quark contraction
-		  LatticeComplex lop = localInnerProduct(sink_ferm_map[key_l], shift_ferm);
+		  LatticeFermion tmpvec_sink; sink_ferm_map.lookup(key_l, tmpvec_sink);
+
+		  LatticeComplex lop = localInnerProduct(tmpvec_sink, shift_ferm);
 
 		  // Reweight the phase in case there was momentum averaging
 		  Real reweight;

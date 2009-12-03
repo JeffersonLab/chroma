@@ -307,7 +307,8 @@ namespace Chroma
 	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
 	for(int m=0; m < source_corrs.size(); ++m)
 	{
-	  source_corrs[m] = sumMulti(localNorm2(eigen_source.getEvectors()[m]), phases.getSet());
+	  LatticeColorVector tmpvec; eigen_source.lookup(m,tmpvec);
+	  source_corrs[m] = sumMulti(localNorm2(tmpvec), phases.getSet());
 	}
 
 	push(xml_out, "Source_correlators");
@@ -343,7 +344,8 @@ namespace Chroma
 	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	multi1d<SubsetVectorWeight_t> evals; eigen_source.getEvalues(evals);
+	write(file_xml, "Weights", evals);	
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
@@ -414,7 +416,7 @@ namespace Chroma
 	      LatticeColorVector vec_source(peekSpin(q, spin_sink));
 	      
 	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink){
-		const LatticeColorVector& vec_sink = eigen_source.getEvectors()[colorvec_sink];
+		LatticeColorVector vec_sink; eigen_source.lookup(colorvec_sink,vec_sink);
 		
 		multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
 		
