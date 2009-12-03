@@ -843,6 +843,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_unit_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_grid_prop_matelem_w.h \
 	meas/inline/hadron/inline_block_prop_matelem_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
@@ -851,6 +852,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_meson_block_matelem_w.h \
 	meas/inline/hadron/inline_baryon_block_matelem_w.h \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_block_genprop_matelem_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
@@ -1598,6 +1600,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_unit_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_grid_prop_matelem_w.cc \
 	meas/inline/hadron/inline_block_prop_matelem_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
@@ -1606,6 +1609,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_meson_block_matelem_w.cc \
 	meas/inline/hadron/inline_baryon_block_matelem_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_block_genprop_matelem_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
