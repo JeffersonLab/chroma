@@ -391,6 +391,13 @@ namespace Chroma
 	  read(to, record_xml_dummy, obj.getEvectors()[n]);
 	  read(record_xml_dummy, "/VectorInfo/weights", obj.getEvalues()[n].weights);
 	}
+
+	// BJOO: Yes that's all very well. but RecordXML has to hold something
+	XMLBufferWriter dummy;
+	push(dummy,"DummyRecordXML");
+	write(dummy, "mapSize", obj.getEvectors().size());
+	pop(dummy);
+	record_xml.open(dummy);
  
 	// Set File and Record XML throw away dummy XMLs
 	TheNamedObjMap::Instance().get(buffer_id).setFileXML(file_xml);

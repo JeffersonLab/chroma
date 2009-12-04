@@ -281,6 +281,13 @@ namespace Chroma
 	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
 	QDP_abort(1);
       }
+      catch( const char* e) {
+	QDPIO::cerr << name <<": Caught some char* exception:" << endl;
+	QDPIO::cerr << e << endl;
+	QDPIO::cerr << "Rethrowing" << endl;
+	throw;
+      }
+
       const SubsetVectors<LatticeColorVector>& eigen_source = 
 	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
