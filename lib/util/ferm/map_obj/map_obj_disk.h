@@ -455,6 +455,8 @@ template<typename K, typename V>
   void 
   MapObjectDisk<K,V>::insert(const K& key, const V& val) 
   {
+    StopWatch swatch;
+
     switch (state)  { 
     case WRITE : {
       // Make note of current writer position
@@ -463,13 +465,25 @@ template<typename K, typename V>
       // Turn writer pos into a reader pos
       BinaryReader::pos_type rpos = static_cast<BinaryReader::pos_type>(pos);
       
-      // Add position to the map
+      // Insert pos into map
       src_map.insert(std::make_pair(key,rpos));
 
-
-      // Write object to disk
+     
       writer.resetChecksum();
-      write(writer, val);
+
+      // Add position to the map
+      swatch.reset();
+      swatch.start();
+
+      write(writer, val); // DO write
+      swatch.stop();
+     
+      // Get diagnostics.
+      BinaryReader::pos_type end_pos = static_cast<BinaryReader::pos_type>(writer.currentPosition());
+      double MiBWritten = (double)(end_pos - rpos)/(double)(1024*1024);
+      double time = swatch.getTimeInSeconds();
+
+      QDPIO::cout << " wrote: " << MiBWritten << " MiB. Time: " << time << " sec. Write Bandwidth: " << MiBWritten/time<<endl;
 
 #ifdef DISK_OBJ_DEBUGGING
       QDPIO::cout << "Wrote value to disk. Current Position: " << writer.currentPosition() << endl;
@@ -547,6 +561,10 @@ template<typename K, typename V>
   void 
   MapObjectDisk<K,V>::lookup(const K& key, V& val) const 
   { 
+    StopWatch swatch;
+    double seek_time, read_time;
+    BinaryReader::pos_type start_pos,end_pos;
+
     switch(state) { 
     case UPDATE: // Deliberate fallthrough
     case READ: {
@@ -559,10 +577,33 @@ template<typename K, typename V>
       
       // If key exists find file offset
       BinaryReader::pos_type rpos = src_map.find(key)->second;
-      //      reader.rewind();
+
+
+      // Do the seek and time it
+      swatch.reset();
+      swatch.start();
       reader.seek(rpos);
+      swatch.stop();
+      seek_time =swatch.getTimeInSeconds();
+
+      // Reset the checkums
       reader.resetChecksum();
+
+      // Grab start pos: We've just seeked it
+      start_pos = rpos;
+
+      // Time the read
+      swatch.reset();
+      swatch.start();
       read(reader, val);
+      swatch.stop();
+      read_time = swatch.getTimeInSeconds();
+      end_pos = reader.currentPosition();
+
+      // Print data
+      double MiBRead=(double)(end_pos-start_pos)/(double)(1024*1024);
+      QDPIO::cout << " seek time: " << seek_time <<" sec. read time: " << read_time << "  " << MiBRead <<" MiB, " << MiBRead/read_time << " MiB/sec" << endl;
+
 
 #ifdef DISK_OBJ_DEBUGGING 
       QDPIO::cout << "Read record. Current position: " << reader.currentPosition();
