@@ -13,7 +13,7 @@
 #include "chromabase.h"
 #include "io/overlap_state_info.h"
 #include "fermact.h"
-
+#include "actions/ferm/fermstates/periodic_fermstate.h"
 
 
 namespace Chroma
@@ -137,6 +137,14 @@ namespace Chroma
 	      const OverlapStateInfo& state_info,
 	      const LinearOperator<LatticeFermion>& H);
 
+
+    Handle<FermState<T,P, Q> >
+    getPQState(const P& mom, int n) const {
+      Q pq;
+      recursePQState(mom, getLinks(), n, pq);
+      Handle< FermState<T,P,Q> > ret_val( new PeriodicFermState<T,P,Q>(pq));
+      return ret_val;
+    }
   private:
     OverlapConnectState() {}  // hide default constructur
     void operator=(const OverlapConnectState&) {} // hide =
@@ -152,21 +160,6 @@ namespace Chroma
   };
 
 
-
-#if 0
-  // NOTE: there should be a a creator here with some of the functionality
-  // of the overlapstate moved inside. This might simply a tad bit the
-  // creation. E.g., all the funky ways to create a state would be moved
-  // here and the state itself only hold the basic stuff.
-  class CreateOverlapConnectState : public CreateFermState<LatticeFermion,
-				    multi1d<LatticeColorMatrix>,
-				    multi1d<LatticeColorMatrix> >
-  {
-  public:
-    //! Constructor with no eigenvalues
-    CreateOverlapConnectState();
-  };
-#endif
 
    
 } // namespace Chroma 

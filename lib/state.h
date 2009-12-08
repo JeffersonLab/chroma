@@ -11,13 +11,44 @@
 #ifndef __state_h__
 #define __state_h__
 
+#include "qdp.h"
 #include "chromabase.h"
 #include "gaugebc.h"
 #include "fermbc.h"
 #include "handle.h"
 
+using namespace QDP;
+
 namespace Chroma
 {
+
+  template<typename P, typename Q> 
+  void recursePQState(const P& p,
+		      const Q& q,
+		      int n,
+		      Q& pq) 
+  {
+    Q tmp(p);
+    for(int i=0; i < n-1; i++) {
+      pq = tmp*p;
+      tmp = pq;
+    }
+    pq = tmp*q;
+  }
+    
+  template<>
+  void recursePQState(const multi1d<LatticeColorMatrixF>& p, 
+		      const multi1d<LatticeColorMatrixF>& q,
+		      int n,
+		      multi1d<LatticeColorMatrixF>& pq);
+
+  template<>
+  void recursePQState(const multi1d<LatticeColorMatrixD>& p, 
+		      const multi1d<LatticeColorMatrixD>& q,
+		      int n,
+		      multi1d<LatticeColorMatrixD>& pq);
+
+
   //! Support class for fermion actions and linear operators
   /*! @ingroup state
    *
@@ -33,6 +64,8 @@ namespace Chroma
    
     //! Return the coordinates (link fields) needed in constructing linear operators
     virtual const Q& getLinks() const = 0;
+
+  
 
     /*! A virtual function to get the derivative of the state.
      *  This is useful for things like fat link states, where
@@ -60,8 +93,10 @@ namespace Chroma
     //! Return the amorphous BC object for this state
     /*! The user will supply the BC in a derived class */
     virtual const BoundCond<P,Q>& getBC() const = 0;
-  };
 
+
+    
+  };
 
 
   //! Support class for fermion actions and linear operators
@@ -80,7 +115,16 @@ namespace Chroma
     //! Return the gauge BC object for this state
     /*! The user will supply the BC in a derived class */
     virtual const GaugeBC<P,Q>& getBC() const = 0;
+
+    //! Return the coordinates (link fields) needed in constructing linear operators
+    virtual const Q& getLinks() const = 0;
+
+    //! Create a new state with momentum insertions of the form P^n Q
+    virtual
+    Handle< GaugeState<P,Q> >
+    getPQState(const P& mom, int n) const = 0;
   };
+
 
 
 
@@ -104,10 +148,19 @@ namespace Chroma
     //! Return the ferm BC object for this state
     /*! This is to help the optimized linops */
     virtual Handle< FermBC<T,P,Q> > getFermBC() const = 0;
+
+    //! Return the coordinates (link fields) needed in constructing linear operators
+    virtual const Q& getLinks() const = 0;
+
+    virtual
+    Handle< FermState<T,P,Q> >
+    getPQState(const P& mom, int n) const = 0;
    
   };
 
-}
 
+    
+
+}
 
 #endif

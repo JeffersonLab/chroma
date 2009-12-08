@@ -11,7 +11,7 @@
 #include "state.h"
 #include "create_state.h"
 #include "handle.h"
-
+#include "actions/gauge/gaugestates/periodic_gaugestate.h"
 namespace Chroma
 {
 
@@ -49,6 +49,15 @@ namespace Chroma
 
     //! Return the gauge BC object for this state
     const GaugeBC<P,Q>& getBC() const {return *gbc;}
+
+
+   Handle<GaugeState<P, Q> >
+    getPQState(const P& mom, int n) const {
+      Q pq;
+      recursePQState(mom, getLinks(), n, pq);
+      Handle< GaugeState<P,Q> > ret_val( new PeriodicGaugeState<P,Q>(pq));
+      return ret_val;
+    }
 
   private:
     SimpleGaugeState() {}  // hide default constructur

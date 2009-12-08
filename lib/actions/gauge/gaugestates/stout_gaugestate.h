@@ -14,6 +14,7 @@
 
 #include "actions/ferm/fermstates/stout_fermstate_params.h"
 #include "util/gauge/stout_utils.h"
+#include "actions/gauge/gaugestates/periodic_gaugestate.h"
 
 namespace Chroma
 {
@@ -156,6 +157,15 @@ namespace Chroma
       
       END_CODE();
     }
+
+   Handle<GaugeState<P, Q> >
+    getPQState(const P& mom, int n) const {
+      Q pq;
+      recursePQState(mom, getLinks(), n, pq);
+      Handle< GaugeState<P,Q> > ret_val( new PeriodicGaugeState<P,Q>(pq));
+      return ret_val;
+    }
+
 
   private:
     StoutGaugeState() {}  // hide default constructur

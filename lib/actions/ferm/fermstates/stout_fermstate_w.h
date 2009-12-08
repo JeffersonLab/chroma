@@ -15,6 +15,8 @@
 #include "create_state.h"
 #include "actions/ferm/fermstates/stout_fermstate_params.h"
 #include "util/gauge/stout_utils.h"
+#include "actions/ferm/fermstates/periodic_fermstate.h"
+
 
 namespace Chroma 
 {
@@ -125,6 +127,14 @@ namespace Chroma
       }
       
       END_CODE();
+    }
+
+   Handle<FermState<T,P, Q> >
+    getPQState(const P& mom, int n) const {
+      Q pq;
+      recursePQState(mom, getLinks(), n, pq);
+      Handle< FermState<T,P,Q> > ret_val( new PeriodicFermState<T,P,Q>(pq));
+      return ret_val;
     }
 
 
@@ -281,6 +291,9 @@ namespace Chroma
 	F[mu] = thin_links[mu]*F_tmp[mu];
       }
     }
+
+
+
   private:
   };
 

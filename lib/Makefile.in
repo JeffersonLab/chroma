@@ -184,7 +184,8 @@ LIBRARIES = $(lib_LIBRARIES)
 ARFLAGS = cru
 libchroma_a_AR = $(AR) $(ARFLAGS)
 libchroma_a_LIBADD =
-am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
+am__libchroma_a_SOURCES_DIST = state.cc \
+	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
@@ -888,7 +889,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_SCALARSITE_BICGSTAB_TRUE@am__objects_14 = bicgstab_kernels_scalarsite.$(OBJEXT)
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_15 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 @BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_16 = clover_term_bagel_clover.$(OBJEXT)
-am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
+am_libchroma_a_OBJECTS = state.$(OBJEXT) klein_gord.$(OBJEXT) \
 	zolotarev_coeffs.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
 	ovext_constant_strategy.$(OBJEXT) \
@@ -3200,7 +3201,7 @@ lib_LIBRARIES = libchroma.a
 # This is OK since Ns is determined at configure time 
 #
 # Staggered specific sources
-libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
+libchroma_a_SOURCES = state.cc actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
@@ -4543,6 +4544,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_scalars_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/staggered_operators_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/staggered_qprop.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/state.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_cond_cont_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stoch_var.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stout_fermstate_params.Po@am__quote@

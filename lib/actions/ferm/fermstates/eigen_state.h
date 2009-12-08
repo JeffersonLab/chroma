@@ -12,7 +12,7 @@
 #include "chromabase.h"
 #include "util/ferm/eigeninfo.h"
 #include "meas/inline/io/named_objmap.h"
-
+#include "actions/ferm/fermstates/periodic_fermstate.h"
 namespace Chroma 
 {
 
@@ -126,6 +126,14 @@ namespace Chroma
     //! Return the gauge BC object for this state
     /*! This is to help the optimized linops */
     Handle< FermBC<T,P,Q> > getFermBC() const {return fbc;}
+
+   Handle<FermState<T,P, Q> >
+    getPQState(const P& mom, int n) const {
+      Q pq;
+      recursePQState(mom, getLinks(), n, pq);
+      Handle< FermState<T,P,Q> > ret_val( new PeriodicFermState<T,P,Q>(pq));
+      return ret_val;
+    }
 
   protected:
     //! Hide default constructor
