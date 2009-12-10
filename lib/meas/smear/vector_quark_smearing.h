@@ -43,11 +43,11 @@ namespace Chroma
      * vector quark smearing object
      */
     template<typename T> 
-    class VectorQuarkSmear : public QuarkSmearing<T>
+    class QuarkSmear : public QuarkSmearing<T>
     {
     public:
       //! Full constructor
-      VectorQuarkSmear(const Params& p) :
+      QuarkSmear(const Params& p) :
 	params(p) 
 			{
 		
@@ -66,7 +66,7 @@ namespace Chroma
 
     private:
       //! Hide partial constructor
-      VectorQuarkSmear() {}
+      QuarkSmear() {}
 
     private:
       Params  params;   /*!< smearing params */

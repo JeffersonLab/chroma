@@ -34,17 +34,31 @@ namespace Chroma
     namespace
     {
       //! Callback function
+      QuarkSmearing<LatticePropagator>* createProp(XMLReader& xml_in,
+						   const std::string& path)
+      {
+	return new QuarkSmear<LatticePropagator>(Params(xml_in, path));
+      }
+
+      //! Callback function
+      QuarkSmearing<LatticeStaggeredPropagator>* createStagProp(XMLReader& xml_in,
+								const std::string& path)
+      {
+	return new QuarkSmear<LatticeStaggeredPropagator>(Params(xml_in, path));
+      }
+
+      //! Callback function
       QuarkSmearing<LatticeFermion>* createFerm(XMLReader& xml_in,
 						const std::string& path)
       {
-	return new VectorQuarkSmear<LatticeFermion>(Params(xml_in, path));
+	return new QuarkSmear<LatticeFermion>(Params(xml_in, path));
       }
     
       //! Callback function
       QuarkSmearing<LatticeColorVector>* createColorVec(XMLReader& xml_in,
 							const std::string& path)
       {
-	return new VectorQuarkSmear<LatticeColorVector>(Params(xml_in, path));
+	return new QuarkSmear<LatticeColorVector>(Params(xml_in, path));
       }
     
       //! Local registration flag
@@ -63,6 +77,8 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= Chroma::ThePropSmearingFactory::Instance().registerObject(name, createProp);
+	success &= Chroma::TheStagPropSmearingFactory::Instance().registerObject(name, createStagProp);
 	success &= Chroma::TheFermSmearingFactory::Instance().registerObject(name, createFerm);
 	success &= Chroma::TheColorVecSmearingFactory::Instance().registerObject(name, createColorVec);
 	registered = true;
@@ -98,8 +114,26 @@ namespace Chroma
     //! Smear the quark
     template<>
     void
-    VectorQuarkSmear<LatticeFermion>::operator()(LatticeFermion& quark,
-						 const multi1d<LatticeColorMatrix>& u) const
+    QuarkSmear<LatticePropagator>::operator()(LatticePropagator& quark,
+					      const multi1d<LatticeColorMatrix>& u) const
+    {
+      vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
+    }
+
+    //! Smear the quark
+    template<>
+    void
+    QuarkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark,
+						       const multi1d<LatticeColorMatrix>& u) const
+    {
+      vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
+    }
+
+    //! Smear the quark
+    template<>
+    void
+    QuarkSmear<LatticeFermion>::operator()(LatticeFermion& quark,
+					   const multi1d<LatticeColorMatrix>& u) const
     {
       vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
     }
@@ -107,8 +141,8 @@ namespace Chroma
     //! Smear the color-vector
     template<>
     void
-    VectorQuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,
-						     const multi1d<LatticeColorMatrix>& u) const
+    QuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,
+					       const multi1d<LatticeColorMatrix>& u) const
     {
       vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
     }
