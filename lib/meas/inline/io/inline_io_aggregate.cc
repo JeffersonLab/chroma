@@ -27,6 +27,7 @@
 #include "meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h"
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/inline_read_subset_vectors.h"
+#include "meas/inline/io/inline_read_subset_vectors_memory.h"
 
 namespace Chroma
 {
@@ -77,6 +78,7 @@ namespace Chroma
 	// MapObjDisk reader
        	success &= InlineReadMapObjDiskEnv::registerAll();
        	success &= InlineReadSubsetVectorsEnv::registerAll();
+       	success &= InlineReadSubsetVectorsMemoryEnv::registerAll();
 	registered = true;
       }
       return success;

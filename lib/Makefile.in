@@ -789,6 +789,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_read_subset_vectors.cc \
+	meas/inline/io/inline_read_subset_vectors_memory.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -1359,6 +1360,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_usqcd_write_ddpairs_prop.$(OBJEXT) \
 	inline_read_map_obj_disk.$(OBJEXT) \
 	inline_read_subset_vectors.$(OBJEXT) \
+	inline_read_subset_vectors_memory.$(OBJEXT) \
 	inline_pbp_aggregate.$(OBJEXT) inline_psibarpsi_w.$(OBJEXT) \
 	inline_schrfun_aggregate.$(OBJEXT) inline_sfpcac_w.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
@@ -2048,129 +2050,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
-	meas/inline/hadron_s/inline_spectrum_s.h io/inline_io.h \
-	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
-	meas/inline/abs_inline_measurement_factory.h \
-	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
-	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
-	meas/inline/eig/inline_eigbnds.h \
-	meas/inline/eig/inline_ritz_H_w.h meas/inline/gfix/gfix.h \
-	meas/inline/gfix/inline_gfix_aggregate.h \
-	meas/inline/gfix/inline_coulgauge.h meas/inline/glue/glue.h \
-	meas/inline/glue/inline_glue_aggregate.h \
-	meas/inline/glue/inline_apply_gaugestate.h \
-	meas/inline/glue/inline_plaquette.h \
-	meas/inline/glue/inline_polylp.h \
-	meas/inline/glue/inline_wilslp.h \
-	meas/inline/glue/inline_fuzwilp.h \
-	meas/inline/glue/inline_qactden.h \
-	meas/inline/glue/inline_qnaive.h \
-	meas/inline/glue/inline_random_transf_gauge.h \
-	meas/inline/hadron/hadron.h \
-	meas/inline/hadron/inline_hadron_aggregate.h \
-	meas/inline/hadron/inline_hadron_contract.h \
-	meas/inline/hadron/inline_gauge_transf_obj.h \
-	meas/inline/hadron/inline_rotate_spin_w.h \
-	meas/inline/hadron/inline_apply_fermstate_w.h \
-	meas/inline/hadron/inline_make_source_w.h \
-	meas/inline/hadron/inline_make_source_ferm_w.h \
-	meas/inline/hadron/inline_propagator_w.h \
-	meas/inline/hadron/inline_propagator_ferm_w.h \
-	meas/inline/hadron/inline_multi_propagator_w.h \
-	meas/inline/hadron/inline_seqsource_w.h \
-	meas/inline/hadron/inline_seqprop_test_w.h \
-	meas/inline/hadron/inline_prop_3pt_w.h \
-	meas/inline/hadron/inline_block_orthog_colorvec.h \
-	meas/inline/hadron/inline_block_colorvecs.h \
-	meas/inline/hadron/inline_create_colorvecs.h \
-	meas/inline/hadron/inline_disco_w.h \
-	meas/inline/hadron/inline_disco_eoprec_w.h \
-	meas/inline/hadron/inline_disco_eigcg_w.h \
-	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
-	meas/inline/hadron/inline_hadspec_w.h \
-	meas/inline/hadron/inline_mesonspec_w.h \
-	meas/inline/hadron/inline_static_light_spec_w.h \
-	meas/inline/hadron/inline_heavy_light_cont_w.h \
-	meas/inline/hadron/inline_heavyhadspec_w.h \
-	meas/inline/hadron/inline_sink_smear_w.h \
-	meas/inline/hadron/inline_diquark_w.h \
-	meas/inline/hadron/inline_qqq_w.h \
-	meas/inline/hadron/inline_qqq_diquark_w.h \
-	meas/inline/hadron/inline_qqbar_w.h \
-	meas/inline/hadron/inline_bar3ptfn_w.h \
-	meas/inline/hadron/inline_building_blocks_w.h \
-	meas/inline/hadron/inline_noisy_building_blocks_w.h \
-	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_prop_colorvec_w.h \
-	meas/inline/hadron/inline_grid_prop_w.h \
-	meas/inline/hadron/inline_block_prop_w.h \
-	meas/inline/hadron/inline_static_prop_colorvec_w.h \
-	meas/inline/hadron/inline_unit_prop_colorvec_w.h \
-	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
-	meas/inline/hadron/inline_grid_prop_matelem_w.h \
-	meas/inline/hadron/inline_block_prop_matelem_w.h \
-	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_meson_grid_matelem_w.h \
-	meas/inline/hadron/inline_meson_block_matelem_w.h \
-	meas/inline/hadron/inline_baryon_block_matelem_w.h \
-	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
-	meas/inline/hadron/inline_block_genprop_matelem_w.h \
-	meas/inline/hadron/inline_mres_w.h \
-	meas/inline/hadron/inline_qpropqio_w.h \
-	meas/inline/hadron/inline_qpropadd_w.h \
-	meas/inline/hadron/inline_qqqNucNuc_w.h \
-	meas/inline/hadron/inline_stoch_baryon_w.h \
-	meas/inline/hadron/inline_stoch_hadron_w.h \
-	meas/inline/hadron/inline_stoch_meson_w.h \
-	meas/inline/hadron/inline_stoch_group_baryon_w.h \
-	meas/inline/hadron/inline_stoch_group_meson_w.h \
-	meas/inline/hadron/inline_npr_vertex_w.h \
-	meas/inline/hadron/inline_npr_w.h \
-	meas/inline/hadron/inline_stag_to_wils.h \
-	meas/inline/hadron_s/hadron_s.h \
-	meas/inline/hadron_s/inline_make_source_s.h \
-	meas/inline/hadron_s/inline_propagator_s.h \
-	meas/inline/hadron_s/inline_sink_smear_s.h \
-	meas/inline/hadron_s/inline_apply_fermstate_s.h \
-	meas/inline/hadron_s/util_compute_quark_prop_s.h \
-	meas/inline/io/io.h meas/inline/io/named_objmap.h \
-	meas/inline/io/default_gauge_field.h \
-	meas/inline/io/inline_io_aggregate.h \
-	meas/inline/io/inline_qio_read_obj.h \
-	meas/inline/io/inline_qio_write_obj.h \
-	meas/inline/io/inline_qio_write_erase_obj.h \
-	meas/inline/io/inline_szin_read_obj.h \
-	meas/inline/io/inline_szin_write_obj.h \
-	meas/inline/io/inline_nersc_read_obj.h \
-	meas/inline/io/inline_nersc_write_obj.h \
-	meas/inline/io/inline_eigen_bin_colvec_read_obj.h \
-	meas/inline/io/inline_eigen_lime_colvec_read_obj.h \
-	meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h \
-	meas/inline/io/inline_xml_write_obj.h \
-	meas/inline/io/inline_erase_obj.h \
-	meas/inline/io/inline_list_obj.h \
-	meas/inline/io/inline_gaussian_obj.h \
-	meas/inline/io/inline_rng.h \
-	meas/inline/io/qio_read_obj_funcmap.h \
-	meas/inline/io/qio_write_obj_funcmap.h \
-	meas/inline/io/szin_read_obj_funcmap.h \
-	meas/inline/io/szin_write_obj_funcmap.h \
-	meas/inline/io/xml_write_obj_funcmap.h \
-	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
-	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
-	meas/inline/pbp/pbp.h meas/inline/pbp/inline_pbp_aggregate.h \
-	meas/inline/pbp/inline_psibarpsi_w.h \
-	meas/inline/schrfun/schrfun.h \
-	meas/inline/schrfun/inline_schrfun_aggregate.h \
-	meas/inline/schrfun/inline_sfpcac_w.h \
-	meas/inline/smear/smear.h \
-	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h \
-	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_read_subset_vectors.h \
+	meas/inline/hadron_s/inline_spectrum_s.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
@@ -2368,10 +2248,6 @@ BUILDDIR = @top_builddir@
 #	actions/ferm/linop/eoprec_flic_linop_w.h
 
 # Staggered specific headers
-
-#
-# Inline measurement headers
-#
 nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	chromainc.h common_declarations.h boundcond.h create_state.h \
 	fermact.h fermbc.h funcmap.h syssolver.h gaugeact.h gaugebc.h \
@@ -3021,134 +2897,16 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/ferm_s.h util/gauge/gauge_s.h \
 	util/gauge/stag_phases_s.h \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.h \
-	meas/inline/hadron_s/inline_spectrum_s.h io/inline_io.h \
-	meas/inline/inline.h meas/inline/abs_inline_measurement.h \
-	meas/inline/abs_inline_measurement_factory.h \
-	meas/inline/inline_aggregate.h meas/inline/make_xml_file.h \
-	meas/inline/eig/eig.h meas/inline/eig/inline_eig_aggregate.h \
-	meas/inline/eig/inline_eigbnds.h \
-	meas/inline/eig/inline_ritz_H_w.h meas/inline/gfix/gfix.h \
-	meas/inline/gfix/inline_gfix_aggregate.h \
-	meas/inline/gfix/inline_coulgauge.h meas/inline/glue/glue.h \
-	meas/inline/glue/inline_glue_aggregate.h \
-	meas/inline/glue/inline_apply_gaugestate.h \
-	meas/inline/glue/inline_plaquette.h \
-	meas/inline/glue/inline_polylp.h \
-	meas/inline/glue/inline_wilslp.h \
-	meas/inline/glue/inline_fuzwilp.h \
-	meas/inline/glue/inline_qactden.h \
-	meas/inline/glue/inline_qnaive.h \
-	meas/inline/glue/inline_random_transf_gauge.h \
-	meas/inline/hadron/hadron.h \
-	meas/inline/hadron/inline_hadron_aggregate.h \
-	meas/inline/hadron/inline_hadron_contract.h \
-	meas/inline/hadron/inline_gauge_transf_obj.h \
-	meas/inline/hadron/inline_rotate_spin_w.h \
-	meas/inline/hadron/inline_apply_fermstate_w.h \
-	meas/inline/hadron/inline_make_source_w.h \
-	meas/inline/hadron/inline_make_source_ferm_w.h \
-	meas/inline/hadron/inline_propagator_w.h \
-	meas/inline/hadron/inline_propagator_ferm_w.h \
-	meas/inline/hadron/inline_multi_propagator_w.h \
-	meas/inline/hadron/inline_seqsource_w.h \
-	meas/inline/hadron/inline_seqprop_test_w.h \
-	meas/inline/hadron/inline_prop_3pt_w.h \
-	meas/inline/hadron/inline_block_orthog_colorvec.h \
-	meas/inline/hadron/inline_block_colorvecs.h \
-	meas/inline/hadron/inline_create_colorvecs.h \
-	meas/inline/hadron/inline_disco_w.h \
-	meas/inline/hadron/inline_disco_eoprec_w.h \
-	meas/inline/hadron/inline_disco_eigcg_w.h \
-	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
-	meas/inline/hadron/inline_hadspec_w.h \
-	meas/inline/hadron/inline_mesonspec_w.h \
-	meas/inline/hadron/inline_static_light_spec_w.h \
-	meas/inline/hadron/inline_heavy_light_cont_w.h \
-	meas/inline/hadron/inline_heavyhadspec_w.h \
-	meas/inline/hadron/inline_sink_smear_w.h \
-	meas/inline/hadron/inline_diquark_w.h \
-	meas/inline/hadron/inline_qqq_w.h \
-	meas/inline/hadron/inline_qqq_diquark_w.h \
-	meas/inline/hadron/inline_qqbar_w.h \
-	meas/inline/hadron/inline_bar3ptfn_w.h \
-	meas/inline/hadron/inline_building_blocks_w.h \
-	meas/inline/hadron/inline_noisy_building_blocks_w.h \
-	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_prop_colorvec_w.h \
-	meas/inline/hadron/inline_grid_prop_w.h \
-	meas/inline/hadron/inline_block_prop_w.h \
-	meas/inline/hadron/inline_static_prop_colorvec_w.h \
-	meas/inline/hadron/inline_unit_prop_colorvec_w.h \
-	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
-	meas/inline/hadron/inline_grid_prop_matelem_w.h \
-	meas/inline/hadron/inline_block_prop_matelem_w.h \
-	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_meson_grid_matelem_w.h \
-	meas/inline/hadron/inline_meson_block_matelem_w.h \
-	meas/inline/hadron/inline_baryon_block_matelem_w.h \
-	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
-	meas/inline/hadron/inline_block_genprop_matelem_w.h \
-	meas/inline/hadron/inline_mres_w.h \
-	meas/inline/hadron/inline_qpropqio_w.h \
-	meas/inline/hadron/inline_qpropadd_w.h \
-	meas/inline/hadron/inline_qqqNucNuc_w.h \
-	meas/inline/hadron/inline_stoch_baryon_w.h \
-	meas/inline/hadron/inline_stoch_hadron_w.h \
-	meas/inline/hadron/inline_stoch_meson_w.h \
-	meas/inline/hadron/inline_stoch_group_baryon_w.h \
-	meas/inline/hadron/inline_stoch_group_meson_w.h \
-	meas/inline/hadron/inline_npr_vertex_w.h \
-	meas/inline/hadron/inline_npr_w.h \
-	meas/inline/hadron/inline_stag_to_wils.h \
-	meas/inline/hadron_s/hadron_s.h \
-	meas/inline/hadron_s/inline_make_source_s.h \
-	meas/inline/hadron_s/inline_propagator_s.h \
-	meas/inline/hadron_s/inline_sink_smear_s.h \
-	meas/inline/hadron_s/inline_apply_fermstate_s.h \
-	meas/inline/hadron_s/util_compute_quark_prop_s.h \
-	meas/inline/io/io.h meas/inline/io/named_objmap.h \
-	meas/inline/io/default_gauge_field.h \
-	meas/inline/io/inline_io_aggregate.h \
-	meas/inline/io/inline_qio_read_obj.h \
-	meas/inline/io/inline_qio_write_obj.h \
-	meas/inline/io/inline_qio_write_erase_obj.h \
-	meas/inline/io/inline_szin_read_obj.h \
-	meas/inline/io/inline_szin_write_obj.h \
-	meas/inline/io/inline_nersc_read_obj.h \
-	meas/inline/io/inline_nersc_write_obj.h \
-	meas/inline/io/inline_eigen_bin_colvec_read_obj.h \
-	meas/inline/io/inline_eigen_lime_colvec_read_obj.h \
-	meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h \
-	meas/inline/io/inline_xml_write_obj.h \
-	meas/inline/io/inline_erase_obj.h \
-	meas/inline/io/inline_list_obj.h \
-	meas/inline/io/inline_gaussian_obj.h \
-	meas/inline/io/inline_rng.h \
-	meas/inline/io/qio_read_obj_funcmap.h \
-	meas/inline/io/qio_write_obj_funcmap.h \
-	meas/inline/io/szin_read_obj_funcmap.h \
-	meas/inline/io/szin_write_obj_funcmap.h \
-	meas/inline/io/xml_write_obj_funcmap.h \
-	meas/inline/io/inline_usqcd_read_ddpairs_prop.h \
-	meas/inline/io/inline_usqcd_write_ddpairs_prop.h \
-	meas/inline/pbp/pbp.h meas/inline/pbp/inline_pbp_aggregate.h \
-	meas/inline/pbp/inline_psibarpsi_w.h \
-	meas/inline/schrfun/schrfun.h \
-	meas/inline/schrfun/inline_schrfun_aggregate.h \
-	meas/inline/schrfun/inline_sfpcac_w.h \
-	meas/inline/smear/smear.h \
-	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h \
-	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_read_subset_vectors.h $(am__append_9) \
+	meas/inline/hadron_s/inline_spectrum_s.h $(am__append_9) \
 	$(am__append_11) $(am__append_13) $(am__append_15) \
 	$(am__append_17) $(am__append_22) $(am__append_24) \
 	$(am__append_26) $(am__append_28) $(am__append_30) \
 	$(am__append_32) $(am__append_34) $(am__append_37)
 nodist_include_HEADERS = chroma_config_internal.h
+
+#
+# Inline measurement headers
+#
 # Taken out for now
 #	
 #	meas/inline/hadron/inline_spectrum_w.h
@@ -3800,6 +3558,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_read_subset_vectors.cc \
+	meas/inline/io/inline_read_subset_vectors_memory.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -4243,6 +4002,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_random_transf_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_read_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_read_subset_vectors.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_read_subset_vectors_memory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ritz_H_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rng.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rotate_spin_w.Po@am__quote@
@@ -14547,6 +14307,20 @@ inline_read_subset_vectors.obj: meas/inline/io/inline_read_subset_vectors.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_subset_vectors.cc' object='inline_read_subset_vectors.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_subset_vectors.obj `if test -f 'meas/inline/io/inline_read_subset_vectors.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_subset_vectors.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_subset_vectors.cc'; fi`
+
+inline_read_subset_vectors_memory.o: meas/inline/io/inline_read_subset_vectors_memory.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_read_subset_vectors_memory.o -MD -MP -MF $(DEPDIR)/inline_read_subset_vectors_memory.Tpo -c -o inline_read_subset_vectors_memory.o `test -f 'meas/inline/io/inline_read_subset_vectors_memory.cc' || echo '$(srcdir)/'`meas/inline/io/inline_read_subset_vectors_memory.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_read_subset_vectors_memory.Tpo $(DEPDIR)/inline_read_subset_vectors_memory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_subset_vectors_memory.cc' object='inline_read_subset_vectors_memory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_subset_vectors_memory.o `test -f 'meas/inline/io/inline_read_subset_vectors_memory.cc' || echo '$(srcdir)/'`meas/inline/io/inline_read_subset_vectors_memory.cc
+
+inline_read_subset_vectors_memory.obj: meas/inline/io/inline_read_subset_vectors_memory.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_read_subset_vectors_memory.obj -MD -MP -MF $(DEPDIR)/inline_read_subset_vectors_memory.Tpo -c -o inline_read_subset_vectors_memory.obj `if test -f 'meas/inline/io/inline_read_subset_vectors_memory.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_subset_vectors_memory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_subset_vectors_memory.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_read_subset_vectors_memory.Tpo $(DEPDIR)/inline_read_subset_vectors_memory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_subset_vectors_memory.cc' object='inline_read_subset_vectors_memory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_subset_vectors_memory.obj `if test -f 'meas/inline/io/inline_read_subset_vectors_memory.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_subset_vectors_memory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_subset_vectors_memory.cc'; fi`
 
 inline_pbp_aggregate.o: meas/inline/pbp/inline_pbp_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_pbp_aggregate.o -MD -MP -MF $(DEPDIR)/inline_pbp_aggregate.Tpo -c -o inline_pbp_aggregate.o `test -f 'meas/inline/pbp/inline_pbp_aggregate.cc' || echo '$(srcdir)/'`meas/inline/pbp/inline_pbp_aggregate.cc

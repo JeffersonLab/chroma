@@ -908,7 +908,8 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_read_subset_vectors.h
+	meas/inline/io/inline_read_subset_vectors.h \
+	meas/inline/io/inline_read_subset_vectors_memory.h \
 # Taken out for now
 #	
 #	meas/inline/hadron/inline_spectrum_w.h
@@ -1662,6 +1663,7 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_read_subset_vectors.cc \
+	meas/inline/io/inline_read_subset_vectors_memory.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \

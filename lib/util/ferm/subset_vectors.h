@@ -167,6 +167,11 @@ namespace Chroma
     //! get size of map 
     int size() const { return ev_pairs->size(); } 
 
+    //! dump function
+    std::vector<int> dump() const {
+      return ev_pairs->dump();
+    }
+
   private:
     int decay_dir;
     // multi1d<SubsetVectorWeight_t> evalues;
