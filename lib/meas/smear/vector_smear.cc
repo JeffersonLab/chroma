@@ -55,6 +55,47 @@ namespace Chroma
   }
 
 
+  //! Do a vector smearing of a color matrix
+  /*!
+   * Arguments:
+   *
+   *  \param chi      color matrix field ( Modify )
+   *  \param vecs     vectors for the smearing ( Read )
+   *  \param sigma    exponential smearing parameter ( Read )
+   *  \param j_decay  direction of decay ( Read )
+   */
+
+  void vectorSmear(LatticeColorMatrix& chi, 
+		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const Real& sigma, const int& j_decay)
+  {
+    LatticeColorMatrix col_out = zero;
+
+    // Smear a color matrix
+    for (int cc = 0 ; cc < Nc ; ++cc)
+    {
+      LatticeColorVector vec_in = zero;
+
+      // Extract column of color matrix
+      for (int cr = 0 ; cr < Nc ; ++cr)
+      {
+	pokeColor(vec_in, peekColor(chi, cr, cc), cr);
+      }
+
+      // Smear that column
+      vectorSmear(vec_in, vecs, sigma, j_decay);
+		
+      // Insert it back in
+      for (int cr = 0 ; cr < Nc ; ++cr)
+      {
+	pokeColor(col_out, peekColor(vec_in, cr), cr, cc);
+      }
+    } // cc
+
+    chi = col_out;
+  }
+
+
   //! Do a vector smearing of a lattice fermion field
   /*!
    * Arguments:
@@ -79,6 +120,59 @@ namespace Chroma
       pokeSpin(psi, chi_s, s);
     }
 	
+    chi = psi;
+  }
+
+  //! Do a vector smearing of a lattice fermion field
+  /*!
+   * Arguments:
+   *
+   *  \param chi      fermion field ( Modify )
+   *  \param vecs     vectors for the smearing ( Read )
+   *  \param sigma    exponential smearing parameter ( Read )
+   *  \param j_decay  direction of decay ( Read )
+   */
+
+  void vectorSmear(LatticeStaggeredPropagator& chi, 
+		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const Real& sigma, const int& j_decay)
+  {
+    LatticeStaggeredPropagator psi = zero;
+
+    QDPIO::cerr << __func__ << ": not implemented\n";
+    QDP_abort(1);
+
+    chi = psi;
+  }
+
+  //! Do a vector smearing of a lattice fermion field
+  /*!
+   * Arguments:
+   *
+   *  \param chi      fermion field ( Modify )
+   *  \param vecs     vectors for the smearing ( Read )
+   *  \param sigma    exponential smearing parameter ( Read )
+   *  \param j_decay  direction of decay ( Read )
+   */
+
+  void vectorSmear(LatticePropagator& chi, 
+		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const Real& sigma, const int& j_decay)
+  {
+    LatticePropagator psi = zero;
+
+    for (int sc = 0 ; sc < Ns ; ++sc)
+    {
+      for (int sr = 0 ; sr < Ns ; ++sr)
+      {
+	LatticeColorMatrix col = peekSpin(chi, sr, sc);
+
+	vectorSmear(col, vecs, sigma, j_decay);
+
+	pokeSpin(psi, col, sr, sc);
+      } // sr
+    } // sc
+
     chi = psi;
   }
 
