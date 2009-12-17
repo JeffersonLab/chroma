@@ -73,6 +73,12 @@ namespace Chroma
       A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
     {
       QDPIO::cout << "LinOpSysSolverQUDAClover:" << endl;
+      // New initialization QUDA v0.2
+
+      q_gauge_param = newQudaGaugeParam(); 
+      quda_inv_param = newQudaInvertParam(); 
+
+
       const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
       
       // These are the links
@@ -121,11 +127,11 @@ namespace Chroma
       // Using auto padding code from Ron
       unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
       if( vol % (1<<14) == 0) { 
-        // This causes some divergence. I am commenting out padding factors
+        // This causes some divergence. I am commenting out pading factors
         //  for now and using 0.
         //  I will reinstate the padding when Mike tells me
-	// quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = (latdims[0]*latdims[1]*latdims[2])/2;
-        quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0; 
+	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = (latdims[0]*latdims[1]*latdims[2])/2;
+	//        quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0; 
       }
       else {
 	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
@@ -239,7 +245,7 @@ namespace Chroma
       q_gauge_param.blockDim_sloppy = 64;
       
       // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
-      gauge_param = &q_gauge_param;
+      // gauge_param = &q_gauge_param;
       
       // Set up the links
       void* gauge[4];
@@ -290,14 +296,15 @@ namespace Chroma
 	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
       }
 
+      quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
+
       if( invParam.asymmetricP ) { 
-	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]), &quda_inv_param);
+	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
       }
       else { 
 	loadCloverQuda(NULL, &(packed_invclov[0]), &quda_inv_param);
       }
 
-      quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
 
 
 
