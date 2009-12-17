@@ -69,6 +69,9 @@ namespace Chroma
       A(A_), invParam(invParam_) 
     {
       QDPIO::cout << "LinOpSysSolverQUDAWilson:" << endl;
+      q_gauge_param = newQudaGaugeParam(); 
+      quda_inv_param = newQudaInvertParam(); 
+      
       const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
       
      
@@ -235,7 +238,7 @@ namespace Chroma
       q_gauge_param.blockDim_sloppy = 64;
       
       // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
-      gauge_param = &q_gauge_param;
+      // gauge_param = &q_gauge_param;
       
       // Set up the links
       void* gauge[4];
