@@ -39,7 +39,7 @@ namespace Chroma
       read(inputtop, "prop_id", input.prop_id);
 
       // User Specified MapObject tags
-      input.prop_obj = readXMLGroup(inputtop, "PropObject", "MapObjType");
+      input.prop_obj = readXMLGroup(inputtop, "PropMapObject", "MapObjType");
     }
 
     //! Propagator output
