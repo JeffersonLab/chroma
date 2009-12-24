@@ -48,7 +48,7 @@ namespace Chroma
 			QIOReadObject* (*)(const Params&), 
 			StringFactoryError> >
 	TheQIOReadObjectFactory;
-      }
+    }
 
       // Anonymous namespace
       namespace
@@ -261,24 +261,36 @@ namespace Chroma
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
-#if 0
 	//------------------------------------------------------------------------
 	//! Read a fermion
-	void QIOReadLatFerm(const string& buffer_id,
-			    const string& file, 
-			    QDP_serialparallel_t serpar)
+	class QIOReadLatFerm : public QIOReadObject
 	{
-	  LatticeFermion obj;
-	  XMLReader file_xml, record_xml;
+	private:
+	  Params params;
 
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
-	  read(to,record_xml,obj);
-	  close(to);
+	public:
+	  QIOReadLatFerm(const Params& p) : params(p) {}
 
-	  TheNamedObjMap::Instance().create<LatticeFermion>(params.named_obj.object_id);
-	  TheNamedObjMap::Instance().getData<LatticeFermion>(params.named_obj.object_id) = obj;
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    LatticeFermion obj;
+	    XMLReader file_xml, record_xml;
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create<LatticeFermion>(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().getData<LatticeFermion>(params.named_obj.object_id) = obj;
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  }
+	};
+
+	// Call back
+	QIOReadObject* qioReadLatFerm(const Params& p)
+	{
+	  return new QIOReadLatFerm(p);
 	}
 
 
@@ -325,355 +337,451 @@ namespace Chroma
 
 	//------------------------------------------------------------------------
 	//! Read a gauge field in floating precision
-	void QIOReadArrayLatColMat(const string& buffer_id,
-				   const string& file, 
-				   QDP_serialparallel_t serpar)
+	class QIOReadArrayLatColMat : public QIOReadObject
 	{
-	  multi1d<LatticeColorMatrix> obj;
-	  XMLReader file_xml, record_xml;
+	private:
+	  Params params;
 
-	  obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+	public:
+	  QIOReadArrayLatColMat(const Params& p) : params(p) {}
 
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
-	  read(to,record_xml,obj);
-	  close(to);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    multi1d<LatticeColorMatrix> obj;
+	    XMLReader file_xml, record_xml;
 
-	  TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
-	  TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id) = obj;
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	    obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id) = obj;
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  }
+	};
+
+	// Call back
+	QIOReadObject* qioReadArrayLatColMat(const Params& p)
+	{
+	  return new QIOReadArrayLatColMat(p);
 	}
 
+
+	//------------------------------------------------------------------------
 	//! Read a single prec Gauge fields
-	void QIOReadArrayLatColMatF(const string& buffer_id,
-				    const string& file, 
-				    QDP_serialparallel_t serpar)
+	class QIOReadArrayLatColMatF : public QIOReadObject
 	{
-	  multi1d<LatticeColorMatrixF> obj;
-	  XMLReader file_xml, record_xml;
+	private:
+	  Params params;
 
-	  obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+	public:
+	  QIOReadArrayLatColMatF(const Params& p) : params(p) {}
 
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
-	  read(to,record_xml,obj);
-	  close(to);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    multi1d<LatticeColorMatrixF> obj;
+	    XMLReader file_xml, record_xml;
 
-	  TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
-	  (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id)).resize(Nd);
-	  for(int i=0; i < Nd; i++) {
-	    (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id))[i] = obj[i];
+	    obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
+	    (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id)).resize(Nd);
+	    for(int i=0; i < Nd; i++) {
+	      (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id))[i] = obj[i];
+	    }
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
 	  }
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	};
+
+	// Call back
+	QIOReadObject* qioReadArrayLatColMatF(const Params& p)
+	{
+	  return new QIOReadArrayLatColMatF(p);
 	}
 
+
+	//------------------------------------------------------------------------
 	//! Read a Double Prec Gauge Field
-	void QIOReadArrayLatColMatD(const string& buffer_id,
-				    const string& file, 
-				    QDP_serialparallel_t serpar)
+	class QIOReadArrayLatColMatD : public QIOReadObject
 	{
-	  multi1d<LatticeColorMatrixD> obj;
-	  XMLReader file_xml, record_xml;
+	private:
+	  Params params;
 
-	  obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+	public:
+	  QIOReadArrayLatColMatD(const Params& p) : params(p) {}
 
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
-	  read(to,record_xml,obj);
-	  close(to);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    multi1d<LatticeColorMatrixD> obj;
+	    XMLReader file_xml, record_xml;
 
-	  TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
-	  (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id)).resize(Nd);
-	  for(int i=0; i < Nd;i++) {
-	    (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id))[i] = obj[i];
+	    obj.resize(Nd);    // BAD BAD BAD - FIX THIS
+
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj);
+	    close(to);
+
+	    TheNamedObjMap::Instance().create< multi1d<LatticeColorMatrix> >(params.named_obj.object_id);
+	    (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id)).resize(Nd);
+	    for(int i=0; i < Nd;i++) {
+	      (TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.object_id))[i] = obj[i];
+	    }
+
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
 	  }
+	};
 
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+
+	// Call back
+	QIOReadObject* qioReadArrayLatColMatD(const Params& p)
+	{
+	  return new QIOReadArrayLatColMatD(p);
 	}
 
 
 	//------------------------------------------------------------------------
 	//! Read a QQDiquark object in floating precision
-	void QIOReadQQDiquarkContract(const string& buffer_id,
-				      const string& file, 
-				      QDP_serialparallel_t serpar)
+	class QIOReadQQDiquarkContract : public QIOReadObject
 	{
-	  // Read the 1-d flattened array version
-	  XMLReader file_xml, record_xml;
-	  const int sz_qq = Ns*Ns*Ns*Ns*Nc*Nc;
-	  multi1d<LatticeComplex> obj_1d(sz_qq);
+	private:
+	  Params params;
 
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
-	  read(to,record_xml,obj_1d);
-	  close(to);
+	public:
+	  QIOReadQQDiquarkContract(const Params& p) : params(p) {}
 
-	  // Create the named object
-	  TheNamedObjMap::Instance().create<QQDiquarkContract_t>(params.named_obj.object_id);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    // Read the 1-d flattened array version
+	    XMLReader file_xml, record_xml;
+	    const int sz_qq = Ns*Ns*Ns*Ns*Nc*Nc;
+	    multi1d<LatticeComplex> obj_1d(sz_qq);
 
-	  // Convert the 1-d object into an N-d object
-	  QQDiquarkContract_t& obj = TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(params.named_obj.object_id);
-	  multi1d<int> sz(6);
-	  sz = Ns;
-	  sz[4] = Nc;  // cf
-	  sz[5] = Nc;  // ci
-	  obj.comp.resize(sz);
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    read(to,record_xml,obj_1d);
+	    close(to);
 
-	  int cnt = 0;
-	  multi1d<int> ranks(6);
-	  for(ranks[0]=0; ranks[0] < sz[0]; ++ranks[0])
-	    for(ranks[1]=0; ranks[1] < sz[1]; ++ranks[1])
-	      for(ranks[2]=0; ranks[2] < sz[2]; ++ranks[2])
-		for(ranks[3]=0; ranks[3] < sz[3]; ++ranks[3])
-		  for(ranks[4]=0; ranks[4] < sz[4]; ++ranks[4])
-		    for(ranks[5]=0; ranks[5] < sz[5]; ++ranks[5])
-		    {
-		      // Sanity check - the size better match
-		      if (cnt >= sz_qq)
+	    // Create the named object
+	    TheNamedObjMap::Instance().create<QQDiquarkContract_t>(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+
+	    // Convert the 1-d object into an N-d object
+	    QQDiquarkContract_t& obj = TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(params.named_obj.object_id);
+	    multi1d<int> sz(6);
+	    sz = Ns;
+	    sz[4] = Nc;  // cf
+	    sz[5] = Nc;  // ci
+	    obj.comp.resize(sz);
+
+	    int cnt = 0;
+	    multi1d<int> ranks(6);
+	    for(ranks[0]=0; ranks[0] < sz[0]; ++ranks[0])
+	      for(ranks[1]=0; ranks[1] < sz[1]; ++ranks[1])
+		for(ranks[2]=0; ranks[2] < sz[2]; ++ranks[2])
+		  for(ranks[3]=0; ranks[3] < sz[3]; ++ranks[3])
+		    for(ranks[4]=0; ranks[4] < sz[4]; ++ranks[4])
+		      for(ranks[5]=0; ranks[5] < sz[5]; ++ranks[5])
 		      {
-			QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << endl;
-			QDP_abort(1);
+			// Sanity check - the size better match
+			if (cnt >= sz_qq)
+			{
+			  QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << endl;
+			  QDP_abort(1);
+			}
+
+			obj.comp[ranks] = obj_1d[cnt++];
 		      }
+	  }
+	};
 
-		      obj.comp[ranks] = obj_1d[cnt++];
-		    }
-
+	// Call back
+	QIOReadObject* qioReadQQDiquarkContract(const Params& p)
+	{
+	  return new QIOReadQQDiquarkContract(p);
 	}
 
 
 	//------------------------------------------------------------------------
-	void QIOReadEigenInfoLatticeFermion(const string& buffer_id,
-					    const string& file,
-					    QDP_serialparallel_t serpar)
+	class QIOReadEigenInfoLatticeFermion : public QIOReadObject
 	{
-	  multi1d<Real64> evalsD;
+	private:
+	  Params params;
 
-	  // RGE: I BELIEVE ALL THE COMPLAINTS BELOW ARE NOW FIXED IN QDP++,
-	  // BUT I DO NOT WANT TO REMOVE THE CODE YET - CANNOT BE BOTHERED DEBUGGING
+	public:
+	  QIOReadEigenInfoLatticeFermion(const Params& p) : params(p) {}
 
-	  // BUG? Need to read these as an array even though there is only one
-	  // and also I need to know in advance the array size.
-	  multi1d<Real64> largestD(1);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    multi1d<Real64> evalsD;
 
-	  // Would like this to be double, but casting double prec to single prec doesn't work.
-	  LatticeFermion evecD;
+	    // RGE: I BELIEVE ALL THE COMPLAINTS BELOW ARE NOW FIXED IN QDP++,
+	    // BUT I DO NOT WANT TO REMOVE THE CODE YET - CANNOT BE BOTHERED DEBUGGING
 
-	  // Stuff 
-	  XMLReader file_xml, record_xml, largest_record_xml;
+	    // BUG? Need to read these as an array even though there is only one
+	    // and also I need to know in advance the array size.
+	    multi1d<Real64> largestD(1);
 
-	  // Open file
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
+	    // Would like this to be double, but casting double prec to single prec doesn't work.
+	    LatticeFermion evecD;
 
-	  // Create object
-	  TheNamedObjMap::Instance().create< EigenInfo<LatticeFermion> >(params.named_obj.object_id);
+	    // Stuff 
+	    XMLReader file_xml, record_xml, largest_record_xml;
 
-	  // Read largest ev plus XML file containing number of eval/evec pairs
-	  read(to, largest_record_xml, largestD);
+	    // Open file
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
 
-	  // Extract number of EVs from XML
-	  int size;
-	  try { 
-	    read(largest_record_xml, "/NumElem/n_vec", size);
-	  }
-	  catch(const std::string& e) { 
-	    QDPIO::cerr<< "Caught Exception while reading XML: " << e << endl;
-	    QDP_abort(1);
-	  }
+	    // Create object
+	    TheNamedObjMap::Instance().create< EigenInfo<LatticeFermion> >(params.named_obj.object_id);
 
-	  // Set largest EV
-	  TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getLargest()=largestD[0];
+	    // Read largest ev plus XML file containing number of eval/evec pairs
+	    read(to, largest_record_xml, largestD);
 
-	  // REsize eval arrays so that IO works correctly
-	  evalsD.resize(size);
+	    // Extract number of EVs from XML
+	    int size;
+	    try { 
+	      read(largest_record_xml, "/NumElem/n_vec", size);
+	    }
+	    catch(const std::string& e) { 
+	      QDPIO::cerr<< "Caught Exception while reading XML: " << e << endl;
+	      QDP_abort(1);
+	    }
 
-	  // Read evals
-	  read(to, record_xml, evalsD);
+	    // Set largest EV
+	    TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getLargest()=largestD[0];
 
-	  QDPIO::cout << "Read " << evalsD.size() << "Evals " << endl;
-	  for(int i=0; i < evalsD.size(); i++) { 
-	    QDPIO::cout << "Eval["<<i<<"] = " << Real(evalsD[i]) << endl;
-	  }
+	    // REsize eval arrays so that IO works correctly
+	    evalsD.resize(size);
 
-	  // Resize eval array 
-	  TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvalues().resize(evalsD.size());
+	    // Read evals
+	    read(to, record_xml, evalsD);
+
+	    QDPIO::cout << "Read " << evalsD.size() << "Evals " << endl;
+	    for(int i=0; i < evalsD.size(); i++) { 
+	      QDPIO::cout << "Eval["<<i<<"] = " << Real(evalsD[i]) << endl;
+	    }
+
+	    // Resize eval array 
+	    TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvalues().resize(evalsD.size());
       
-	  // Downcast evals to Real() precision
-	  for (int i=0; i<evalsD.size(); i++)
-	    TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvalues()[i] = Real(evalsD[i]);
+	    // Downcast evals to Real() precision
+	    for (int i=0; i<evalsD.size(); i++)
+	      TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvalues()[i] = Real(evalsD[i]);
 
 
-	  // Resize evec arrays
-	  // THIS IS AN EIGEN INFO - NOT SUBSET VECTORS
-	  TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvectors().resize(evalsD.size());
+	    // Resize evec arrays
+	    // THIS IS AN EIGEN INFO - NOT SUBSET VECTORS
+	    TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvectors().resize(evalsD.size());
 
-	  // Loop and read evecs
-	  for (int i=0; i<evalsD.size(); i++)
-	  {
-	    XMLReader record_xml_dummy;
-	    read(to, record_xml_dummy, evecD);
-	    LatticeFermion evecR;
-	    evecR=evecD;
-
-	    TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvectors()[i]=evecR;
-	  }
+	    // Loop and read evecs
+	    for (int i=0; i<evalsD.size(); i++)
+	    {
+	      XMLReader record_xml_dummy;
+	      read(to, record_xml_dummy, evecD);
+	      LatticeFermion evecR;
+	      evecR=evecD;
+	      
+	      TheNamedObjMap::Instance().getData< EigenInfo<LatticeFermion> >(params.named_obj.object_id).getEvectors()[i]=evecR;
+	    }
  
-	  // Set File and Record XML throw away dummy XMLs
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	    // Set File and Record XML throw away dummy XMLs
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
 
-	  // Done - That too was unnecessarily painful
-	  close(to);
+	    // Done - That too was unnecessarily painful
+	    close(to);
+	  }
+	};
+
+	// Call back
+	QIOReadObject* qioReadEigenInfoLatticeFermion(const Params& p)
+	{
+	  return new QIOReadEigenInfoLatticeFermion(p);
 	}
 
 
 	//-----------------------------------------------------------------------
 	//! Read a RitzPairs Type
-	void QIOReadRitzPairsLatticeFermion(const string& buffer_id,
-					    const string& file,
-					    QDP_serialparallel_t serpar)
+	class QIOReadRitzPairsLatticeFermion : public QIOReadObject
 	{
-	  // File XML
-	  XMLReader file_xml;
+	private:
+	  Params params;
 
-	  // Open file
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
+	public:
+	  QIOReadRitzPairsLatticeFermion(const Params& p) : params(p) {}
 
-	  // Create the named object
-	  TheNamedObjMap::Instance().create< LinAlg::RitzPairs<LatticeFermion> >(params.named_obj.object_id);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    // File XML
+	    XMLReader file_xml;
 
-	  // A shorthand for the object
-	  LinAlg::RitzPairs<LatticeFermion>& obj = 
-	    TheNamedObjMap::Instance().getData<LinAlg::RitzPairs< LatticeFermion> >(params.named_obj.object_id);
+	    // Open file
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
 
-	  XMLReader record_xml;
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
-	
-	  int Nmax;
-	  read(file_xml, "/RitzPairs/Nmax", Nmax);
-	  read(file_xml, "/RitzPairs/Neig", obj.Neig);
+	    // Create the named object
+	    TheNamedObjMap::Instance().create< LinAlg::RitzPairs<LatticeFermion> >(params.named_obj.object_id);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
 
-	  obj.evec.resize(Nmax);
-	  obj.eval.resize(Nmax);
+	    // A shorthand for the object
+	    LinAlg::RitzPairs<LatticeFermion>& obj = 
+	      TheNamedObjMap::Instance().getData<LinAlg::RitzPairs< LatticeFermion> >(params.named_obj.object_id);
 
-	  if (obj.Neig > Nmax)
-	  {
-	    QDPIO::cerr << __func__ << ": error, found Neig > Nmax" << endl;
-	    QDP_abort(1);
-	  }
-
-	  // Read a record for each eigenvalue (in xml) and eigenvector
-	  for(int i=0; i < obj.Neig; ++i)
-	  {
 	    XMLReader record_xml;
-	    read(to, record_xml, obj.evec.vec[i]);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+	
+	    int Nmax;
+	    read(file_xml, "/RitzPairs/Nmax", Nmax);
+	    read(file_xml, "/RitzPairs/Neig", obj.Neig);
 
-	    read(record_xml, "/Eigenvector/eigenValue", obj.eval.vec[i]);
+	    obj.evec.resize(Nmax);
+	    obj.eval.resize(Nmax);
+
+	    if (obj.Neig > Nmax)
+	    {
+	      QDPIO::cerr << __func__ << ": error, found Neig > Nmax" << endl;
+	      QDP_abort(1);
+	    }
+
+	    // Read a record for each eigenvalue (in xml) and eigenvector
+	    for(int i=0; i < obj.Neig; ++i)
+	    {
+	      XMLReader record_xml;
+	      read(to, record_xml, obj.evec.vec[i]);
+
+	      read(record_xml, "/Eigenvector/eigenValue", obj.eval.vec[i]);
+	    }
+
+	    // Close
+	    close(to);
 	  }
+	};
 
-	  // Close
-	  close(to);
+	// Call back
+	QIOReadObject* qioReadRitzPairsLatticeFermion(const Params& p)
+	{
+	  return new QIOReadRitzPairsLatticeFermion(p);
 	}
 
+
+#if 0
+	//-----------------------------------------------------------------------
 	//! Read a MapObject Type
 	template<typename K, typename V>
-	void QIOReadMapObjMemory(const string& buffer_id,
-				 const string& file,
-				 QDP_serialparallel_t serpar)
+	class QIOReadMapObjMemory : public QIOReadObject
 	{
-	  // This is needed for QIO reading
-	  XMLReader file_xml;
+	private:
+	  Params params;
 
-	  // Open file
-	  QDPFileReader to(file_xml,params.file.file_name,serpar);
+	public:
+	  QIOReadMapObjMemory(const Params& p) : params(p) {}
 
-	  // Create object if it does not exist. Otherwise, we can continue reading into it.
-	  if (! TheNamedObjMap::Instance().check(params.named_obj.object_id))
-	  {
-	    // Make a memory map object -- later make with factory?
-	    Handle< MapObject<K,V> > obj_map_handle( new MapObjectMemory<K,V> );
+	  //! Read a propagator
+	  void operator()(QDP_serialparallel_t serpar) {
+	    // This is needed for QIO reading
+	    XMLReader file_xml;
+
+	    // Open file
+	    QDPFileReader to(file_xml,params.file.file_name,serpar);
+
+	    // Create object if it does not exist. Otherwise, we can continue reading into it.
+	    if (! TheNamedObjMap::Instance().check(params.named_obj.object_id))
+	    {
+	      // Make a memory map object -- later make with factory?
+	      Handle< MapObject<K,V> > obj_map_handle( new MapObjectMemory<K,V> );
  
-	    // Create slot
-	    TheNamedObjMap::Instance().create< Handle<MapObject<K,V> > >(params.named_obj.object_id);
-	    // Insert Handle
-	    TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(params.named_obj.object_id) = obj_map_handle;
+	      // Create slot
+	      TheNamedObjMap::Instance().create< Handle<MapObject<K,V> > >(params.named_obj.object_id);
+	      // Insert Handle
+	      TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(params.named_obj.object_id) = obj_map_handle;
 
-	    // Set up file xml
+	      // Set up file xml
+	      TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    }
+
+	    // A referecnce for the object
+	    MapObject<K,V>& obj = *(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(params.named_obj.object_id));
+
+	    // The number of records should be recorded in the header
+	    int num_records;
+	    if(file_xml.count("/PropColorVectors")!=0)
+	      read(file_xml, "/PropColorVectors/num_records", num_records);
+	    else{
+	      QDPIO::cerr << __func__ << ": Can't find num_records "<< endl;
+	      QDP_abort(1);
+	    }
+
+	    obj.openWrite(); // Prepare Object for insertion
+
+	    // Use the iterators to run through the object, reading each record
+	    for(int i=0; i < num_records; ++i)
+	    {
+	      XMLReader local_record_xml;
+
+	      // The key and value
+	      K key;
+	      V val;
+
+	      read(to, local_record_xml, val);
+
+	      // Extract the key
+	      read(local_record_xml, "/MapEntry", key);
+
+	      // Insert the key and value into the map
+	      obj.insert(key, val);
+	    }
+
+	    obj.openRead(); // Done writing into object - switch to READ mode
+
+	    // Sanity check
+	    if (obj.size() != num_records)
+	    {
+	      QDPIO::cerr << __func__ << ": Error: number of object records unexpected:"
+			  << "  num_records= " << num_records
+			  << "  obj.size= " << obj.size()
+			  << endl;
+	      QDP_abort(1);
+	    }
+
+	    // Setup a record xml
+	    XMLBufferWriter record_xml;
+	    if(file_xml.count("/PropColorVectors")!=0)
+	      push(record_xml, "PropColorVector");
+	    else{
+	      push(record_xml, "NamedObjectMap");
+	    }
+
+
+	    write(record_xml, "num_records", obj.size());  // This should be the size of num_records
+	    pop(record_xml);
+
+	    // Set File and Record XML throw away dummy XMLs
 	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
+	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
+
+	    // Close and bolt
+	    close(to);
 	  }
+	};
 
-	  // A referecnce for the object
-	  MapObject<K,V>& obj = *(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(params.named_obj.object_id));
-
-	  // The number of records should be recorded in the header
-	  int num_records;
-	  if(file_xml.count("/PropColorVectors")!=0)
-	    read(file_xml, "/PropColorVectors/num_records", num_records);
-	  else{
-	    QDPIO::cerr << __func__ << ": Can't find num_records "<< endl;
-	    QDP_abort(1);
-	  }
-
-	  obj.openWrite(); // Prepare Object for insertion
-
-	  // Use the iterators to run through the object, reading each record
-	  for(int i=0; i < num_records; ++i)
-	  {
-	    XMLReader local_record_xml;
-
-	    // The key and value
-	    K key;
-	    V val;
-
-	    read(to, local_record_xml, val);
-
-	    // Extract the key
-	    read(local_record_xml, "/MapEntry", key);
-
-	    // Insert the key and value into the map
-	    obj.insert(key, val);
-	  }
-
-	  obj.openRead(); // Done writing into object - switch to READ mode
-
-	  // Sanity check
-	  if (obj.size() != num_records)
-	  {
-	    QDPIO::cerr << __func__ << ": Error: number of object records unexpected:"
-			<< "  num_records= " << num_records
-			<< "  obj.size= " << obj.size()
-			<< endl;
-	    QDP_abort(1);
-	  }
-
-	  // Setup a record xml
-	  XMLBufferWriter record_xml;
-	  if(file_xml.count("/PropColorVectors")!=0)
-	    push(record_xml, "PropColorVector");
-	  else{
-	    push(record_xml, "NamedObjectMap");
-	  }
-
-
-	  write(record_xml, "num_records", obj.size());  // This should be the size of num_records
-	  pop(record_xml);
-
-	  // Set File and Record XML throw away dummy XMLs
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	  TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
-
-	  // Close and bolt
-	  close(to);
+	// Call back
+	template<typename K, typename V>
+	QIOReadObject* qioReadMapObjMemory(const Params& p)
+	{
+	  return new QIOReadMapObjMemory<K,V>(p);
 	}
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
-	//------------------------------------------------------------------------
 #endif
+
+
+	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
 
 	//! Local registration flag
 	bool registered = false;
@@ -696,13 +804,10 @@ namespace Chroma
 
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("SubsetVectorsLatticeColorVector"),
 									qioReadSubsetVectorsLCV);
-
-#if 0
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
-									qioReadMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
-
+	  
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticeFermion"), 
 									qioReadLatFerm);
+
 //      success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticeFermionF"), 
 //								   qioReadLatFermF);
 //      success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticeFermionD"), 
@@ -725,8 +830,9 @@ namespace Chroma
 
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("RitzPairsLatticeFermion"), 
 									qioReadRitzPairsLatticeFermion);
-	
-#endif
+
+//	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
+//									qioReadMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
 
 	  registered = true;
 	}
@@ -749,7 +855,7 @@ namespace Chroma
 
       const std::string name = "QIO_READ_NAMED_OBJECT";
     }
-
+    
     //! Register all the factories
     bool registerAll() 
     {
