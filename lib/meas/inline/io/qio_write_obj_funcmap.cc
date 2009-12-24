@@ -12,8 +12,6 @@
 #include "util/ferm/eigeninfo.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/key_grid_prop.h"
-#include "util/ferm/key_block_prop.h"
 #include "handle.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_memory.h"
@@ -383,43 +381,6 @@ namespace Chroma
 	close(to);
       }
 
-      //----------------------------------------------------------------------
-      template<typename T>
-      void QIOWriteSubsetVectors(const string& buffer_id,
-				 const string& file,
-				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
-      {
-	// A shorthand for the object
-	SubsetVectors<T>& obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(buffer_id);
-
-	// Write number of EVs to XML
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "AllVectors");
-	write(file_xml, "n_vec", obj.getNumVectors());
-	write(file_xml, "decay_dir", obj.getDecayDir());
-	pop(file_xml);
-
-	// Open file
-	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
-
-	// Loop and read evecs
-	for(int n=0; n < obj.size(); n++)
-	{
-	  EVPair<T> write_pair;
-	  obj.lookup(n, write_pair);
-
-	  XMLBufferWriter record_xml;
-	  push(record_xml, "VectorInfo");
-	  write(record_xml, "weights", write_pair.eigenValue.weights);
-	  pop(record_xml);
-	  write(to, record_xml, write_pair.eigenVector);
-	}
-
-	// Done
-	close(to);
-      }
-
       //------------------------------------------------------------------------
       //! Write out an RitzPairs Type
       void QIOWriteRitzPairsLatticeFermion(const string& buffer_id,
@@ -457,6 +418,47 @@ namespace Chroma
 	close(to);
       }
 
+      //----------------------------------------------------------------------
+      void QIOWriteSubsetVectors(const string& buffer_id,
+				 const string& file,
+				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	// A shorthand for the object
+	MapObject<int,EVPair<LatticeColorVector> >& obj =
+	  *(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(buffer_id));
+
+	// Yuk. Could read this back in.
+	int decay_dir = Nd-1;
+
+	// Write number of EVs to XML
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "AllVectors");
+	write(file_xml, "n_vec", obj.size());
+	write(file_xml, "decay_dir", decay_dir);
+	pop(file_xml);
+
+	// Open file
+	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+
+	// Loop and read evecs
+	for(int n=0; n < obj.size(); n++)
+	{
+	  EVPair<LatticeColorVector> write_pair;
+	  obj.lookup(n, write_pair);
+
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "VectorInfo");
+	  write(record_xml, "weights", write_pair.eigenValue.weights);
+	  pop(record_xml);
+	  write(to, record_xml, write_pair.eigenVector);
+	}
+
+	// Done
+	close(to);
+      }
+
+      //------------------------------------------------------------------------
       //! Write out a MapObject Type
       template<typename K, typename V>
       void QIOWriteMapObjMemory(const string& buffer_id,
@@ -539,18 +541,14 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
-								      QIOWriteSubsetVectors<LatticeColorVector>);
-
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
 	
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+								      QIOWriteSubsetVectors);
+
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
 								      QIOWriteMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
-
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyGridPropLatticeFermion"), QIOWriteMapObjMemory<KeyGridProp_t,LatticeFermion>);
-
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyBlockPropLatticeFermion"), QIOWriteMapObjMemory<KeyBlockProp_t,LatticeFermion>);
 
 	registered = true;
       }

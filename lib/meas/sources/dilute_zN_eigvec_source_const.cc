@@ -221,7 +221,7 @@ namespace Chroma
       //Attempt to get eigenvectors from the named object map
       try {
 	
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.eigen_vec_id);	
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.eigen_vec_id);	
 	
 	TheNamedObjMap::Instance().get(params.eigen_vec_id).getRecordXML(eig_vecs_xml);
 	
@@ -234,12 +234,11 @@ namespace Chroma
 	QDPIO::cerr << name << ": map call failed: " << e << endl;
 	QDP_abort(1);
       }
-
       
-      const SubsetVectors<LatticeColorVector>& eigen_vecs = 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.eigen_vec_id);
+      const MapObject<int,EVPair<LatticeColorVector> >& eigen_vecs = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.eigen_vec_id));
 
-      int n_ev = eigen_vecs.evectorsSize();
+      int n_ev = eigen_vecs.size();
       
       //Sanity checks on the eigenvector dilutions
       int n_ev_dil = params.eigen_vectors.size();
@@ -280,7 +279,7 @@ namespace Chroma
       
       // Set the seed to desired value
       QDP::RNG::setrn(params.ran_seed);
-			*/
+      */
 
 
       SftMom phases(0, true, params.j_decay);
@@ -307,8 +306,8 @@ namespace Chroma
 	    LatticeFermion temp = zero;
 	    //Should only be poking on a single timeslice, Robert Help!!!
 	   
-	    LatticeColorVector tvec; eigen_vecs.lookup(curr_v, tvec);
-	    pokeSpin(temp, curr_n * tvec, curr_s);
+	    EVPair<LatticeColorVector> tvec; eigen_vecs.lookup(curr_v, tvec);
+	    pokeSpin(temp, curr_n * tvec.eigenVector, curr_s);
 	    
 	    dil_source[phases.getSet()[curr_t]] += temp;
 	  }//v

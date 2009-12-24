@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_qio_write_obj.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to write an object from a named buffer
  *
@@ -18,52 +17,51 @@ namespace Chroma
   /*! \ingroup inlineio */
   namespace InlineQIOWriteNamedObjEnv 
   {
-    extern const std::string name;
     bool registerAll();
+
+    //! Parameter structure
+    /*! \ingroup inlineio */
+    struct Params 
+    {
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
+
+      unsigned long frequency;
+
+      struct NamedObject_t
+      {
+	std::string   object_id;
+	std::string   object_type;
+      } named_obj;
+
+      struct File_t
+      {
+	std::string   file_name;
+	QDP_volfmt_t  file_volfmt;
+      } file;
+    };
+
+    //! Inline writing of memory objects
+    /*! \ingroup inlineio */
+    class InlineMeas : public AbsInlineMeasurement 
+    {
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+
+      unsigned long getFrequency(void) const {return params.frequency;}
+
+      //! Do the writing
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
+
+    private:
+      Params params;
+    };
+
   }
 
-  //! Parameter structure
-  /*! \ingroup inlineio */
-  struct InlineQIOWriteNamedObjParams 
-  {
-    InlineQIOWriteNamedObjParams();
-    InlineQIOWriteNamedObjParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
-
-    unsigned long frequency;
-
-    struct NamedObject_t
-    {
-      std::string   object_id;
-      std::string   object_type;
-    } named_obj;
-
-    struct File_t
-    {
-      std::string   file_name;
-      QDP_volfmt_t  file_volfmt;
-    } file;
-  };
-
-  //! Inline writing of memory objects
-  /*! \ingroup inlineio */
-  class InlineQIOWriteNamedObj : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineQIOWriteNamedObj() {}
-    InlineQIOWriteNamedObj(const InlineQIOWriteNamedObjParams& p) : params(p) {}
-    InlineQIOWriteNamedObj(const InlineQIOWriteNamedObj& p) : params(p.params) {}
-
-    unsigned long getFrequency(void) const {return params.frequency;}
-
-    //! Do the writing
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
-
-  private:
-    InlineQIOWriteNamedObjParams params;
-  };
-
-};
+}
 
 #endif

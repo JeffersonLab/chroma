@@ -59,25 +59,11 @@ namespace Chroma
       filename = _filename;
     }
  
-    void write(XMLWriter& xml_out, const std::string& path) const;
+    void writeXML(XMLWriter& xml_out, const std::string& path) const;
   private:
     std::string filename;
   };
 
-#if 0
- void
- write(XMLWriter& xml_out, const std::string& path, const MapObjectDiskParams& p)
- {
-   p.write(xml_out, path);
- }
-
- void
- read(XMLReader& xml_in, const std::string& path, MapObjectDiskParams& p) 
- {
-   MapObjectDiskParams tmp(xml_in, path);
-   p=tmp;
- }
-#endif
 
 
   //----------------------------------------------------------------------------

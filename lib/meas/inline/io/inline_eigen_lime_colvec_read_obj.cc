@@ -6,57 +6,63 @@
  */
 
 #include "chromabase.h"
-#include "qdp_iogauge.h"
+//#include "qdp_iogauge.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
 #include "util/ferm/subset_vectors.h"
 
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
+
 namespace Chroma 
 { 
-
-
-  //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineEigenLimeColVecReadNamedObjEnv::Params::NamedObject_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "object_id", input.object_id);
-
-    pop(xml);
-  }
-
-  //! File output
-  void write(XMLWriter& xml, const string& path, const InlineEigenLimeColVecReadNamedObjEnv::Params::File_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "file_names", input.file_names);
-
-    pop(xml);
-  }
-
-
-  //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineEigenLimeColVecReadNamedObjEnv::Params::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "object_id", input.object_id);
-  }
-
-  //! File output
-  void read(XMLReader& xml, const string& path, InlineEigenLimeColVecReadNamedObjEnv::Params::File_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "file_names", input.file_names);
-  }
-
-
   namespace InlineEigenLimeColVecReadNamedObjEnv 
   { 
+    //! Object buffer
+    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    {
+      push(xml, path);
+
+      write(xml, "object_id", input.object_id);
+      xml << input.object_map.xml;
+
+      pop(xml);
+    }
+
+    //! File output
+    void write(XMLWriter& xml, const string& path, const Params::File_t& input)
+    {
+      push(xml, path);
+      
+      write(xml, "file_names", input.file_names);
+
+      pop(xml);
+    }
+
+
+    //! Object buffer
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "object_id", input.object_id);
+
+      // User Specified MapObject tags
+      input.object_map = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
+    }
+
+    //! File output
+    void read(XMLReader& xml, const string& path, Params::File_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "file_names", input.file_names);
+    }
+
+
     namespace
     {
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
@@ -78,6 +84,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -145,11 +152,21 @@ namespace Chroma
 	
 	typedef LatticeColorVector T;
 
-	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
-	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
+	std::istringstream  xml_s(params.named_obj.object_map.xml);
+	XMLReader MapObjReader(xml_s);
+	
+	// Create the entry
+	Handle< MapObject<int,EVPair<LatticeColorVector> > > eigen(
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
+								       MapObjReader,
+								       params.named_obj.object_map.path) );
 
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;
 
-	eigen.getDecayDir() = Nd-1;
+	// Argh, burying this in here
+	const int decay_dir = Nd-1;
+	const int Lt = QDP::Layout::lattSize()[decay_dir];
 
 	// Read the object
 	swatch.start();
@@ -161,7 +178,7 @@ namespace Chroma
 	XMLBufferWriter final_record_xml;
 	push(final_record_xml, "SubsetVectors");
 	push(final_record_xml, "InfoArray");
-	eigen.openWrite();
+	eigen->openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  XMLReader curr_file_xml;
@@ -182,7 +199,7 @@ namespace Chroma
 	    QDP_abort(1);
 	  }
 
-	  eigen.insert(i,readpair);
+	  eigen->insert(i,readpair);
 
 	  write(final_record_xml, "elem", curr_record_xml);
 
@@ -196,7 +213,7 @@ namespace Chroma
 
 	pop(final_record_xml);
 	pop(final_record_xml);
-	eigen.openRead();
+	eigen->openRead();
 
 	swatch.stop();
 

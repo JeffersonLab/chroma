@@ -8,6 +8,8 @@
 #define __disp_colvec_map_h__
 
 #include "chromabase.h"
+#include "util/ferm/subset_ev_pair.h"
+#include "util/ferm/map_obj.h"
 #include <map>
 
 namespace Chroma 
@@ -46,13 +48,13 @@ namespace Chroma
     DispColorVectorMap(bool use_derivP, 
 		       int disp_length,
 		       const multi1d<LatticeColorMatrix>& u_smr,
-		       const multi1d<LatticeColorVector>& eigen_source);
+		       const MapObject<int,EVPair<LatticeColorVector> >& eigen_source);
 
     //! Destructor
     ~DispColorVectorMap() {}
 
     //! Accessor
-    const LatticeColorVector& getDispVector(const KeyDispColorVector_t& key);
+    const LatticeColorVector getDispVector(const KeyDispColorVector_t& key);
 
   protected:
     //! Displace an object
@@ -60,7 +62,7 @@ namespace Chroma
 			
   private:
     //! Lattice color vectors
-    const multi1d<LatticeColorVector>& eigen_source;
+    const MapObject<int,EVPair<LatticeColorVector> >& eigen_source;
 
     //! Gauge field 
     const multi1d<LatticeColorMatrix>& u;

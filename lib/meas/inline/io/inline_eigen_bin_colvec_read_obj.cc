@@ -13,6 +13,10 @@
 
 #include "util/ferm/subset_vectors.h"
 
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
+
 namespace Chroma 
 { 
 
@@ -23,6 +27,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "object_id", input.object_id);
+    xml << input.object_map.xml;
 
     pop(xml);
   }
@@ -44,6 +49,9 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "object_id", input.object_id);
+
+    // User Specified MapObject tags
+    input.object_map = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
   }
 
   //! File output
@@ -78,6 +86,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -145,17 +154,25 @@ namespace Chroma
 	
 	typedef LatticeColorVector T;
 
-	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
-	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
+	std::istringstream  xml_s(params.named_obj.object_map.xml);
+	XMLReader MapObjReader(xml_s);
+	
+	// Create the entry
+	Handle< MapObject<int,EVPair<LatticeColorVector> > > eigen(
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
+								       MapObjReader,
+								       params.named_obj.object_map.path) );
 
-	// eigen.resizeEvectors(params.file.file_names.size());
-	eigen.getDecayDir() = Nd-1;
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;
 
-	const int Lt = QDP::Layout::lattSize()[eigen.getDecayDir()];
+	// Argh, burying this in here
+	const int decay_dir = Nd-1;
+	const int Lt = QDP::Layout::lattSize()[decay_dir];
 
 	// Read the object
 	swatch.start();
-	eigen.openWrite();
+	eigen->openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
@@ -174,10 +191,10 @@ namespace Chroma
 	  }
 
 	  // Insert into new map
-	  eigen.insert(i,read_pair);
+	  eigen->insert(i,read_pair);
 
 	}
-	eigen.openRead();
+	eigen->openRead();
 
 	swatch.stop();
 

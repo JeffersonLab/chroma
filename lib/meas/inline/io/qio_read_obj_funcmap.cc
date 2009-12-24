@@ -11,8 +11,6 @@
 #include "util/ferm/eigeninfo.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/key_grid_prop.h"
-#include "util/ferm/key_block_prop.h"
 #include "handle.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_memory.h"
@@ -505,10 +503,6 @@ namespace Chroma
 	int num_records;
 	if(file_xml.count("/PropColorVectors")!=0)
 	  read(file_xml, "/PropColorVectors/num_records", num_records);
-	else if (file_xml.count("/GridProp")!=0)
-	  read(file_xml, "/GridProp/num_records", num_records);
-	else if (file_xml.count("/BlockProp")!=0)
-	  read(file_xml, "/BlockProp/num_records", num_records);
 	else{
 	  QDPIO::cerr << __func__ << ": Can't find num_records "<< endl;
 	  QDP_abort(1);
@@ -550,10 +544,6 @@ namespace Chroma
 	XMLBufferWriter record_xml;
 	if(file_xml.count("/PropColorVectors")!=0)
 	  push(record_xml, "PropColorVector");
-        else if (file_xml.count("/GridProp")!=0)
-	  push(record_xml, "GridProp");
-        else if (file_xml.count("/BlockProp")!=0)
-	  push(record_xml, "BlockProp");
         else{
 	  push(record_xml, "NamedObjectMap");
         }
@@ -619,10 +609,6 @@ namespace Chroma
 	
 	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
 								     QIOReadMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
-
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyGridPropLatticeFermion"), QIOReadMapObjMemory<KeyGridProp_t,LatticeFermion>);
-
-	success &= TheQIOReadObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyBlockPropLatticeFermion"), QIOReadMapObjMemory<KeyBlockProp_t,LatticeFermion>);
 
 	registered = true;
       }

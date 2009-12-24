@@ -34,6 +34,17 @@ namespace Chroma
 		  StringFunctionMapError> >
     TheQIOReadObjFuncMap;
 
+    //! MapObj factory (foundry)
+    /*! \ingroup inlineio */
+    typedef SingletonHolder< 
+      ObjectFactory<MapObject<int,EVPair<LatticeColorVector> >, 
+		    std::string,
+		    TYPELIST_2(XMLReader&, const std::string&),
+		    MapObject<int,EVPair<LatticeColorVector> >* (*)(XMLReader&,
+								    const std::string&), 
+		    StringFactoryError> >
+    TheMapObjIntKeyColorEigenVecFactory;
+
     bool registerAll();
   }
 

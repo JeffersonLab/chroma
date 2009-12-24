@@ -24,6 +24,7 @@
 #include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
+
 namespace Chroma 
 { 
   namespace InlineStaticPropColorVecEnv 
@@ -36,6 +37,9 @@ namespace Chroma
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_id", input.colorvec_id);
       read(inputtop, "prop_id", input.prop_id);
+
+      // User Specified MapObject tags
+      input.prop_obj = readXMLGroup(inputtop, "PropObject", "MapObjType");
     }
 
     //! Propagator output
@@ -46,6 +50,7 @@ namespace Chroma
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_id", input.colorvec_id);
       write(xml, "prop_id", input.prop_id);
+      xml << input.prop_obj.xml;
 
       pop(xml);
     }
@@ -106,10 +111,6 @@ namespace Chroma
       push(xml, path);
     
       write(xml, "Param", input.param);
-      std::istringstream is( input.map_obj_params.xml );
-      XMLReader reader(is);
-      xml << reader;
-
       write(xml, "NamedObject", input.named_obj);
 
       pop(xml);
@@ -140,7 +141,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
-	success &= MapObjectWilson4DEnv::registerKeyPropColorVecLFAll();
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -173,22 +174,6 @@ namespace Chroma
 	{
 	  read(paramtop, "xml_file", xml_file);
 	}
-
-	// If possible, read an XML Group for the MapObject factory
-	if ( paramtop.count("MapObject") == 0 ) {
-	  // Default is an MapObjectMemory
-	  
-	  map_obj_params.xml = "<MapObject><MapObjType>MAP_OBJ_MEMORY</MapObjType></MapObject>";
-	  map_obj_params.path = "MapObject";
-	  map_obj_params.id = "MAP_OBJ_MEMORY";
-	}
-	else { 
-	  // User Specified MapObject tags
-	  map_obj_params = readXMLGroup(paramtop, 
-					"MapObject", 
-					"MapObjType");
-	}
-
       }
       catch(const std::string& e) 
       {
@@ -282,7 +267,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a named buffer" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
@@ -302,8 +287,10 @@ namespace Chroma
 	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
 	QDP_abort(1);
       }
-      const SubsetVectors<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+
+      // Cast should be valid now
+      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
@@ -312,23 +299,15 @@ namespace Chroma
       //
       try
       {
-	// Create the object as a handle. 
-	std::istringstream  xml_s(params.map_obj_params.xml);
+	std::istringstream  xml_s(params.named_obj.prop_obj.xml);
 	XMLReader MapObjReader(xml_s);
-	// Create the object as a handle. 
-	// This bit will and up changing to a Factory invocation
-	Handle< MapObject<KeyPropColorVec_t, LatticeFermion> >  new_map_obj_handle(
-	  TheMapObjKeyPropColorVecFactory::Instance().createObject(params.map_obj_params.id,
-								MapObjReader,
-								params.map_obj_params.path) );
-
+	
 	// Create the entry
 	TheNamedObjMap::Instance().create< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
-
-	// Insert
-	TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) = new_map_obj_handle;
-
-	//	TheNamedObjMap::Instance().create< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.prop_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) =
+	  TheMapObjKeyPropColorVecFactory::Instance().createObject(params.named_obj.prop_obj.id,
+								   MapObjReader,
+								   params.named_obj.prop_obj.path);
       }
       catch (std::bad_cast)
       {
@@ -342,7 +321,7 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      MapObject<KeyPropColorVec_t,LatticeFermion>& map_obj =
+      MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
 	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
 
       // Sanity check - write out the norm2 of the source in the Nd-1 direction
@@ -351,13 +330,8 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
-	for(int m=0; m < source_corrs.size(); ++m)
-	{
-	  LatticeColorVector tmpvec; eigen_source.lookup(m, tmpvec);
-
-	  source_corrs[m] = sumMulti(localNorm2(tmpvec), phases.getSet());
-	}
+	EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(0, tmpvec);
+	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), phases.getSet());
 
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
@@ -365,11 +339,11 @@ namespace Chroma
       }
 
       // Another sanity check
-      if (params.param.contract.num_vecs > eigen_source.getNumVectors())
+      if (params.param.contract.num_vecs > eigen_source.size())
       {
 	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.contract.num_vecs
 		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.getNumVectors() << endl;
+		    << eigen_source.size() << endl;
 	QDP_abort(1);
       }
 
@@ -399,7 +373,7 @@ namespace Chroma
 	// Lattice extent
 	const int Nt = phases.numSubsets();
 
-	map_obj.openWrite(); // Prepare map obj for writing
+	prop_obj.openWrite(); // Prepare map obj for writing
 
 	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
@@ -431,8 +405,8 @@ namespace Chroma
 
 	    // Pull out a time-slice of the color vector source
 	    LatticeColorVector vec_srce = zero;
-	    LatticeColorVector tmpvec ; eigen_source.lookup(colorvec_source, tmpvec);
-	    vec_srce[phases.getSet()[t_source]] = tmpvec;
+	    EVPair<LatticeColorVector> tmpvec ; eigen_source.lookup(colorvec_source, tmpvec);
+	    vec_srce[phases.getSet()[t_source]] = tmpvec.eigenVector;
 
 	    for(int t=1; t < Nt; ++t)
 	    {
@@ -461,12 +435,12 @@ namespace Chroma
 	      key.colorvec_src = colorvec_source;
 	      key.spin_src     = spin_source;
 		  
-	      map_obj.insert(key, quark_soln);
+	      prop_obj.insert(key, quark_soln);
 	    } // for spin_source
 	  } // for colorvec_source
 	} // for t_source
 	
-	map_obj.openRead();
+	prop_obj.openRead();
       }
       catch (const std::string& e) 
       {
@@ -481,14 +455,14 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "PropColorVectors");
-	write(file_xml, "num_records", map_obj.size()); 
+	write(file_xml, "num_records", prop_obj.size()); 
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
 
 	XMLBufferWriter record_xml;
 	push(record_xml, "PropColorVector");
-	write(record_xml, "num_records", map_obj.size()); 
+	write(record_xml, "num_records", prop_obj.size()); 
 	pop(record_xml);
 
 	// Write the propagator xml info

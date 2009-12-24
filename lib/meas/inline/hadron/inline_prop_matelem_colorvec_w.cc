@@ -241,11 +241,10 @@ namespace Chroma
 
       QDPIO::cout << "Snarf the source from a named buffer. Check for the prop map" << endl;
       try
-      {
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-
+      {	
 	// NB We are just checking this is here.
-	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
@@ -265,11 +264,13 @@ namespace Chroma
 	QDPIO::cerr << name << ": error extracting source_header or prop map: " << e << endl;
 	QDP_abort(1);
       }
-      const SubsetVectors<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
 
       // Cast should be valid now
-      MapObject<KeyPropColorVec_t,LatticeFermion>& map_obj =
+      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
+
+      // Cast should be valid now
+      const MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
 	*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
 
       QDPIO::cout << "Source and prop map successfully found and parsed" << endl;
@@ -280,12 +281,8 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	multi1d< multi1d<Double> > source_corrs(eigen_source.getNumVectors());
-	for(int m=0; m < source_corrs.size(); ++m)
-	{
-	  LatticeColorVector tmpvec; eigen_source.lookup(m,tmpvec);
-	  source_corrs[m] = sumMulti(localNorm2(tmpvec), phases.getSet());
-	}
+	EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(0,tmpvec);
+	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), phases.getSet());
 
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
@@ -293,11 +290,11 @@ namespace Chroma
       }
 
       // Another sanity check
-      if (params.param.num_vecs > eigen_source.getNumVectors())
+      if (params.param.num_vecs > eigen_source.size())
       {
 	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.num_vecs
 		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.getNumVectors() << endl;
+		    << eigen_source.size() << endl;
 	QDP_abort(1);
       }
 
@@ -319,8 +316,7 @@ namespace Chroma
 	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Config_info", gauge_xml);
-	multi1d<SubsetVectorWeight_t> evals; eigen_source.getEvalues(evals);
-	write(file_xml, "Weights", evals);
+	write(file_xml, "Weights", getEigenValues(eigen_source, params.param.num_vecs));
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
@@ -406,16 +402,16 @@ namespace Chroma
 		
 		LatticeColorVector vec_source;
 		{
-		  LatticeFermion tmp; map_obj.lookup(key, tmp);
+		  LatticeFermion tmp; prop_obj.lookup(key, tmp);
 
 		  vec_source = peekSpin(tmp, spin_sink);
 		}
 
 		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		{
-		  LatticeColorVector vec_sink; eigen_source.lookup(colorvec_sink,vec_sink);
+		  EVPair<LatticeColorVector> vec_sink; eigen_source.lookup(colorvec_sink,vec_sink);
 
-		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink, vec_source), phases.getSet()));
+		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink.eigenVector, vec_source), phases.getSet()));
 
 		  for(int t=0; t < hsum.size(); ++t)
 		  {

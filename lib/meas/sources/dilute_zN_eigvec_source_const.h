@@ -33,63 +33,60 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
     
 
-      Seed                     ran_seed;             /*!< Set the seed to this value */
-      int                      N;                    /*!< Z(N) */
-     
-			std::string 						 eigen_vec_id;        /*! The ID of the eigenvectors in the named object map*/
-
-      multi1d<int>             eigen_vectors;    		/*!< Eigenvectors which have support on this dilution projector */
-
-      multi1d<int>             spin_mask;            /*!< Spins which have support on this dilution projector */
-
-      int                      j_decay;              /*!< decay direction */
+      Seed            ran_seed;             /*!< Set the seed to this value */
+      int             N;                    /*!< Z(N) */
       
-			multi1d<int>             t_sources;             /*!< timeslices on which this source has non-zero support */
+      std::string     eigen_vec_id;         /*! The ID of the eigenvectors in the named object map*/
+      multi1d<int>    eigen_vectors;        /*!< Eigenvectors which have support on this dilution projector */
+      multi1d<int>    spin_mask;            /*!< Spins which have support on this dilution projector */
+      int             j_decay;              /*!< decay direction */
+     
+      multi1d<int>    t_sources;            /*!< timeslices on which this source has non-zero support */
     };
 
 
 
-		struct LatticeLAPHSubSpace_t
-		{
+    struct LatticeLAPHSubSpace_t
+    {
 			
-			LatticeLAPHSubSpace_t(int nev, int nt)
-			{
+      LatticeLAPHSubSpace_t(int nev, int nt)
+	{
 				
-				time_slices.resize(nt);
-				for (int t = 0 ; t < nt ; ++t)
-				{
-					time_slices[t].spins.resize(Ns);
-					for (int s = 0 ; s < Ns ; ++s)
-					{
-						time_slices[t].spins[s].lap_eigs.resize(nev);
-					}
-				}
-			}
+	  time_slices.resize(nt);
+	  for (int t = 0 ; t < nt ; ++t)
+	  {
+	    time_slices[t].spins.resize(Ns);
+	    for (int s = 0 ; s < Ns ; ++s)
+	    {
+	      time_slices[t].spins[s].lap_eigs.resize(nev);
+	    }
+	  }
+	}
 
 			
-			struct Timeslice_t
-			{
-				struct Spin_t
-				{
-					struct LapEig_t
-					{
-						Complex val;
-					};
+      struct Timeslice_t
+      {
+	struct Spin_t
+	{
+	  struct LapEig_t
+	  {
+	    Complex val;
+	  };
 
-					multi1d<LapEig_t> lap_eigs;
+	  multi1d<LapEig_t> lap_eigs;
 
-				};
+	};
 
-				multi1d<Spin_t> spins;
+	multi1d<Spin_t> spins;
 
-			};
+      };
 
-			multi1d<Timeslice_t> time_slices;
+      multi1d<Timeslice_t> time_slices;
 
-		};
+    };
 
 
-		void fill_laph_subspace_zN( const LatticeLAPHSubSpace_t& laph_in, 
+    void fill_laph_subspace_zN( const LatticeLAPHSubSpace_t& laph_in, 
 				const Seed& rng_seed, const int& N);
 
 

@@ -21,17 +21,15 @@ namespace Chroma
    */
 
   void vectorSmear(LatticeColorVector& chi, 
-		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay)
   {
     LatticeColorVector psi = zero;
 
     int num_vecs = vecs.size();
-    int nt = vecs.getDecayExtent(); 
-
-    //    multi1d<LatticeColorVector> cvec = vecs.getEvectors();
 
     SftMom phases(0, false, j_decay);
+    int nt = phases.numSubsets();
 
     for (int n = 0 ; n < num_vecs ; ++n)
     {
@@ -43,6 +41,12 @@ namespace Chroma
       LatticeComplex tmp = localInnerProduct( cvec, chi );
 		
       multi2d<DComplex> t_sum = phases.sft(tmp);
+
+      if (nt != evals.size())
+      {
+	QDPIO::cerr << __func__ << ": number of evalues not decay extent\n";
+	QDP_abort(1);
+      }
 
       for (int t = 0 ; t < nt ; ++t)
       {
@@ -66,7 +70,7 @@ namespace Chroma
    */
 
   void vectorSmear(LatticeColorMatrix& chi, 
-		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay)
   {
     LatticeColorMatrix col_out = zero;
@@ -107,7 +111,7 @@ namespace Chroma
    */
 
   void vectorSmear(LatticeFermion& chi, 
-		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay)
   {
     LatticeFermion psi = zero;
@@ -134,7 +138,7 @@ namespace Chroma
    */
 
   void vectorSmear(LatticeStaggeredPropagator& chi, 
-		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay)
   {
     LatticeStaggeredPropagator psi = zero;
@@ -156,7 +160,7 @@ namespace Chroma
    */
 
   void vectorSmear(LatticePropagator& chi, 
-		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay)
   {
     LatticePropagator psi = zero;

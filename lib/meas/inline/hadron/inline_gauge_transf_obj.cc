@@ -86,6 +86,7 @@ namespace Chroma
       }
 
 
+#if 0
       //! Transform a subset_vectors object. This only works for non-array objects
       template<typename T>
       void gaugeTransfSubsetVectors(const string& output_id, const LatticeColorMatrix& g, const string& input_id)
@@ -116,6 +117,7 @@ namespace Chroma
 	}
 	output_obj.openRead(); // Read mode hereafter
       }
+#endif
 
 
       //! Local registration flag
@@ -138,8 +140,8 @@ namespace Chroma
 	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
 									 gaugeTransfObj<LatticeStaggeredFermion>);
 
-	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
-									 gaugeTransfSubsetVectors<LatticeColorVector>);
+//	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+//									 gaugeTransfSubsetVectors<LatticeColorVector>);
 	registered = true;
       }
       return success;

@@ -117,7 +117,7 @@ namespace Chroma
     QuarkSmear<LatticePropagator>::operator()(LatticePropagator& quark,
 					      const multi1d<LatticeColorMatrix>& u) const
     {
-      vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
+      vectorSmear(quark, *vecs, params.sigma, params.no_smear_dir);
     }
 
     //! Smear the quark
@@ -126,7 +126,7 @@ namespace Chroma
     QuarkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark,
 						       const multi1d<LatticeColorMatrix>& u) const
     {
-      vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
+      vectorSmear(quark, *vecs, params.sigma, params.no_smear_dir);
     }
 
     //! Smear the quark
@@ -135,7 +135,7 @@ namespace Chroma
     QuarkSmear<LatticeFermion>::operator()(LatticeFermion& quark,
 					   const multi1d<LatticeColorMatrix>& u) const
     {
-      vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
+      vectorSmear(quark, *vecs, params.sigma, params.no_smear_dir);
     }
 
     //! Smear the color-vector
@@ -144,7 +144,7 @@ namespace Chroma
     QuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,
 					       const multi1d<LatticeColorMatrix>& u) const
     {
-      vectorSmear(quark, vecs, params.sigma, params.no_smear_dir);
+      vectorSmear(quark, *vecs, params.sigma, params.no_smear_dir);
     }
 
   }  // end namespace

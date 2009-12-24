@@ -13,61 +13,23 @@
 namespace Chroma {
   
   //! Registration accregator 
-  namespace MapObjectWilson4DEnv {
+  namespace MapObjectWilson4DEnv 
+  {
 
-    static bool registeredKeyBlockPropLF = false;
-    bool registerKeyBlockPropLFAll() 
+    // Anonymous namespace
+    namespace
     {
-      bool success = true;
-      if (!registeredKeyBlockPropLF) {
-	success &= Chroma::MapObjectMemoryEnv::registerKeyBlockPropLF();
-	success &= Chroma::MapObjectDiskEnv::registerKeyBlockPropLF();
-
-	registeredKeyBlockPropLF = true;
-      }
-      return success;
+      bool registered = false;
     }
 
-    static bool registeredKeyGridPropLF = false;
-
-
-    bool registerKeyGridPropLFAll() 
-    {
-      bool success = true;
-      if (!registeredKeyGridPropLF) {
-	success &= Chroma::MapObjectMemoryEnv::registerKeyGridPropLF();
-	success &= Chroma::MapObjectDiskEnv::registerKeyGridPropLF();
-
-	registeredKeyGridPropLF = true;
-      }
-      return success;
-    }
-
-    static bool registeredKeyPropColorVecLF = false;
-    bool registerKeyPropColorVecLFAll() 
-    {
-      bool success = true;
-      if (!registeredKeyPropColorVecLF ) {
-	success &= Chroma::MapObjectMemoryEnv::registerKeyPropColorVecLF();
-	success &= Chroma::MapObjectDiskEnv::registerKeyPropColorVecLF();
-	
-	registeredKeyPropColorVecLF = true;
-      }
-
-
-      return success;
-    }
-
-
-    static bool registered = false;
     bool registerAll()
     {
       bool success = true;
-      if( !registered) { 
-	success &= registerKeyBlockPropLFAll();
-	success &= registerKeyGridPropLFAll();
-	success &= registerKeyPropColorVecLFAll();
-	
+      if (! registered) 
+      { 
+	success &= MapObjectDiskEnv::registerAll();
+	success &= MapObjectMemoryEnv::registerAll();
+
 	registered = true;
       }
       return success;

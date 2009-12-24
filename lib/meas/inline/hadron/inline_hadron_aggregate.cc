@@ -8,7 +8,6 @@
 #include "meas/inline/hadron/inline_hadron_aggregate.h"
 #include "meas/inline/hadron/inline_apply_fermstate_w.h"
 //#include "meas/inline/hadron/inline_spectrumQll.h"
-#include "meas/inline/hadron/inline_block_orthog_colorvec.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 #include "meas/inline/hadron/inline_create_colorvecs.h"
 
@@ -18,7 +17,6 @@
 #warning "Not Building Inline Laplace Eigs"
 #endif
 
-#include "meas/inline/hadron/inline_block_colorvecs.h"
 #include "meas/inline/hadron/inline_prop_3pt_w.h"
 #include "meas/inline/hadron/inline_disco_w.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
@@ -51,21 +49,12 @@
 #include "meas/inline/hadron/inline_npr_vertex_w.h"
 #include "meas/inline/hadron/inline_npr_w.h"
 #include "meas/inline/hadron/inline_prop_colorvec_w.h"
-#include "meas/inline/hadron/inline_grid_prop_w.h"
-#include "meas/inline/hadron/inline_block_prop_w.h"
 #include "meas/inline/hadron/inline_static_prop_colorvec_w.h"
-#include "meas/inline/hadron/inline_unit_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
-#include "meas/inline/hadron/inline_grid_prop_matelem_w.h"
-#include "meas/inline/hadron/inline_block_prop_matelem_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
-#include "meas/inline/hadron/inline_meson_grid_matelem_w.h"
-#include "meas/inline/hadron/inline_meson_block_matelem_w.h"
-#include "meas/inline/hadron/inline_baryon_block_matelem_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_colorvec_w.h"
-#include "meas/inline/hadron/inline_block_genprop_matelem_w.h"
 #include "meas/inline/hadron/inline_mres_w.h"
 #include "meas/inline/hadron/inline_qpropqio_w.h"
 #include "meas/inline/hadron/inline_qpropadd_w.h"
@@ -123,9 +112,7 @@ namespace Chroma
 	success &= InlineMesonSpecEnv::registerAll();
 	success &= InlineHadronContractEnv::registerAll();
 //	success &= InlineSpectrumEnv::registerAll();
-	success &= InlineBlockOrthogColorVecsEnv::registerAll();
 	success &= InlineCreateColorVecsEnv::registerAll();
-	//	success &= InlineBlockColorVecsEnv::registerAll();
 	success &= InlineProp3ptEnv::registerAll();
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();
@@ -144,19 +131,12 @@ namespace Chroma
 	success &= InlineNprVertexEnv::registerAll();
 	success &= InlineNprEnv::registerAll();
 	success &= InlinePropColorVecEnv::registerAll();
-	success &= InlineGridPropEnv::registerAll();
-	success &= InlineBlockPropEnv::registerAll();
 	success &= InlineStaticPropColorVecEnv::registerAll();
-	success &= InlineUnitPropColorVecEnv::registerAll();
 	success &= InlineAnnihPropMatElemColorVecEnv::registerAll();
 	success &= InlinePropMatElemColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
-	success &= InlineMesonGridMatElemEnv::registerAll();
-	success &= InlineMesonBlockMatElemEnv::registerAll();
-	success &= InlineBaryonBlockMatElemEnv::registerAll();
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
-	success &= InlineBlockGenPropMatElemEnv::registerAll();
 	success &= InlineMresEnv::registerAll();
 	success &= InlineGaugeTransfNamedObjEnv::registerAll();
 	success &= InlineRotateSpinEnv::registerAll();
@@ -172,8 +152,6 @@ namespace Chroma
 	success &= InlineStochHadronEnv::registerAll();
 	success &= InlineStochGroupBaryonEnv::registerAll();
 	success &= InlineStochGroupMesonEnv::registerAll();
-	success &= InlineGridPropMatElemEnv::registerAll();
-	success &= InlineBlockPropMatElemEnv::registerAll();
 //	success &= InlineStochLaphQuarkEnv::registerAll();
 //	success &= InlineStochLaphBaryonEnv::registerAll();
 
