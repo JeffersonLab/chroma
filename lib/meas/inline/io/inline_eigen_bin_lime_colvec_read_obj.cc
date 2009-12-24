@@ -6,37 +6,19 @@
  */
 
 #include "chromabase.h"
-#include "qdp_iogauge.h"
+//#include "qdp_iogauge.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h"
 #include "meas/inline/io/named_objmap.h"
 
-#include "util/ferm/subset_ev_pair.h"
 #include "util/ferm/subset_vectors.h"
+
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
 
 namespace Chroma 
 { 
-
-
-  //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineEigenBinLimeColVecReadNamedObjEnv::Params::NamedObject_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "object_id", input.object_id);
-
-    pop(xml);
-  }
-
-  //! File output
-  void write(XMLWriter& xml, const string& path, const InlineEigenBinLimeColVecReadNamedObjEnv::Params::File_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "file_name", input.file_name);
-
-    pop(xml);
-  }
 
 
   //! Object buffer
@@ -45,6 +27,9 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "object_id", input.object_id);
+
+    // User Specified MapObject tags
+    input.object_map = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
   }
 
   //! File output
@@ -119,9 +104,9 @@ namespace Chroma
 
       //! Local registration flag
       bool registered = false;
-    }
 
-    const std::string name = "EIGENINFO_BIN_LIME_COLORVEC_READ_NAMED_OBJECT";
+      const std::string name = "EIGENINFO_BIN_LIME_COLORVEC_READ_NAMED_OBJECT";
+    }
 
     //! Register all the factories
     bool registerAll() 
@@ -130,10 +115,12 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
     }
+
     // Param stuff
     Params::Params() { frequency = 0; }
 
@@ -163,21 +150,6 @@ namespace Chroma
     }
 
 
-    void
-    Params::writeXML(XMLWriter& xml_out, const std::string& path) 
-    {
-      push(xml_out, path);
-
-      // Parameters for source construction
-      write(xml_out, "NamedObject", named_obj);
-
-      // Write out the destination
-      write(xml_out, "File", file);
-
-      pop(xml_out);
-    }
-
-
     void 
     InlineMeas::operator()(unsigned long update_no, XMLWriter& xml_out) 
     {
@@ -196,14 +168,18 @@ namespace Chroma
       {
 	swatch.reset();
 
-	typedef LatticeColorVector T;
+	std::istringstream  xml_s(params.named_obj.object_map.xml);
+	XMLReader MapObjReader(xml_s);
+	
+	// Create the entry
+	Handle< MapObject<int,EVPair<LatticeColorVector> > > eigen(
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
+								       MapObjReader,
+								       params.named_obj.object_map.path) );
 
-	std::string dmap_filename = params.file.file_name+".diskmap.tmp";
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;
 
-	TheNamedObjMap::Instance().create< SubsetVectors<T>, std::string >(params.named_obj.object_id, dmap_filename);
-	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
-
-					
 	int nt = QDP::Layout::lattSize()[Nd-1];
 	int ns = QDP::Layout::lattSize()[0];
 
@@ -229,7 +205,7 @@ namespace Chroma
 	write(final_file_xml, "Input", file_xml);
 
 #if 1
-	multi1d<T> evecs;
+	multi1d<LatticeColorVector> evecs;
 	multi1d<SubsetVectorWeight_t> evals;
 #endif
 	int nev;
@@ -263,7 +239,6 @@ namespace Chroma
 	    nev = evals_t.size();
 	    evals.resize(nev);
 	    evecs.resize(nev);
-	    eigen.getDecayDir() = Nd - 1;
 	    QDPIO::cout << "Initializing eigenpairs" << endl;
 	    for (int v = 0 ; v < nev ; ++v)
 	    {
@@ -291,15 +266,15 @@ namespace Chroma
 
 	}//t
 
-	eigen.openWrite();
+	eigen->openWrite();
 	for(int n=0; n < nev; n++) { 
 	  QDPIO::cout << "Inserting eval/evec pair " << n << endl;
-	  EVPair<T> pair;
+	  EVPair<LatticeColorVector> pair;
 	  pair.eigenValue = evals[n];
 	  pair.eigenVector = evecs[n];
-	  eigen.insert(n,pair);
+	  eigen->insert(n,pair);
 	}
-	eigen.openRead();
+	eigen->openRead();
 
 	pop(final_record_xml);
 	pop(final_record_xml);

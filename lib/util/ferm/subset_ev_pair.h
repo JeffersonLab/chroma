@@ -1,4 +1,7 @@
 // -*- C++ -*-
+/*! \file
+ *  \brief Holds of vectors and eigenvalues
+ */
 
 #ifndef __EV_PAIR_H__
 #define __EV_PAIR_H__
@@ -6,7 +9,8 @@
 
 #include "chromabase.h"
 
-namespace Chroma { 
+namespace Chroma 
+{
 
   //! Weights for subset of vectors
   /*! \ingroup ferm */
@@ -35,8 +39,6 @@ namespace Chroma {
     write(bin_out, evpair.eigenVector);
     write(bin_out, evpair.eigenValue.weights);
   }
-  
-
 
 };
 

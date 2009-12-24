@@ -11,8 +11,9 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/gaus_smear.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
@@ -30,6 +31,9 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_id", input.colorvec_id);
+
+      // User Specified MapObject tags
+      input.colorvec_obj = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
     }
 
     //! Propagator output
@@ -39,6 +43,7 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_id", input.colorvec_id);
+      xml << input.colorvec_obj.xml;
 
       pop(xml);
     }
@@ -115,6 +120,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -264,7 +270,15 @@ namespace Chroma
       //
       try
       {
-	TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+	std::istringstream  xml_s(params.named_obj.colorvec_obj.xml);
+	XMLReader MapObjReader(xml_s);
+	
+	// Create the entry
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id) =
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.colorvec_obj.id,
+								       MapObjReader,
+								       params.named_obj.colorvec_obj.path);
       }
       catch (std::bad_cast)
       {
@@ -278,8 +292,8 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      SubsetVectors<LatticeColorVector>& color_vecs =
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+      MapObject<int,EVPair<LatticeColorVector> >& color_vecs = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       // The code goes here
       StopWatch swatch;
@@ -312,8 +326,6 @@ namespace Chroma
       for(int i(0);i<num_vecs;i++){
 	evals[i].weights.resize(phases.numSubsets());
       }
-
-      color_vecs.getDecayDir() = params.param.decay_dir;
 
       //
       // Initialize the color vectors with gaussian numbers

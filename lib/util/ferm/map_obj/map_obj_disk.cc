@@ -12,8 +12,6 @@ namespace Chroma {
 
   // Disk traits.
   const string MapObjTraitsNum<KeyPropColorVec_t,LatticeFermion>::type_string="KeyTKeyPropColorVec_tValTLatticeFermion";
-  const string MapObjTraitsNum<KeyBlockProp_t,LatticeFermion>::type_string="KeyTKeyBlockProp_tValTLatticeFermion";
-  const string MapObjTraitsNum<KeyGridProp_t,LatticeFermion>::type_string="KeyTKeyGridProp_tValTLatticeFermion";
   const string MapObjTraitsNum<int,EVPair<LatticeColorVector> >::type_string="KeyTintValTEVPairLatticeColorVector";
   const string MapObjTraitsNum<char,float >::type_string="KeyTcharValTfloat";
   

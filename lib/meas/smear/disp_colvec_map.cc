@@ -29,20 +29,22 @@ namespace Chroma
   DispColorVectorMap::DispColorVectorMap(bool use_derivP_,
 					 int disp_length,
 					 const multi1d<LatticeColorMatrix>& u_smr,
-					 const multi1d<LatticeColorVector>& eigen_vec)
+					 const MapObject<int,EVPair<LatticeColorVector> >& eigen_vec)
     : use_derivP(use_derivP_), displacement_length(disp_length), u(u_smr), eigen_source(eigen_vec)
   {
   }
 
 
   //! Accessor
-  const LatticeColorVector&
+  const LatticeColorVector
   DispColorVectorMap::getDispVector(const KeyDispColorVector_t& key)
   {
     //Check if any displacement is needed
     if (displacement_length == 0) 
     {
-      return eigen_source[key.colvec];
+      EVPair<LatticeColorVector> tmpvec; 
+      eigen_source.lookup(key.colvec, tmpvec);
+      return tmpvec.eigenVector;
     }
     else
     {
@@ -77,7 +79,11 @@ namespace Chroma
 
       // Modify the previous empty entry
       ValDispColorVector_t& disp_q = disp_src_map.find(key)->second;
-      disp_q.vec = eigen_source[key.colvec];
+      {
+	EVPair<LatticeColorVector> tmpvec; 
+	eigen_source.lookup(key.colvec, tmpvec);
+	disp_q.vec = tmpvec.eigenVector;
+      }
 
       for(int i=0; i < key.displacement.size(); ++i)
       {

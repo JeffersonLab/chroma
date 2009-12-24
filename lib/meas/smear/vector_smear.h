@@ -25,7 +25,7 @@ namespace Chroma
    *  \param j_decay  direction of decay ( Read )
    */
   void vectorSmear(LatticeColorVector& chi, 
-		   const SubsetVectors<LatticeColorVector>& vecs,
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay);
 
 
@@ -40,7 +40,7 @@ namespace Chroma
    */
 
   void vectorSmear(LatticeColorMatrix& chi, 
-		   const SubsetVectors<LatticeColorVector> & vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay);
 
 
@@ -57,7 +57,7 @@ namespace Chroma
    *  \param j_decay  direction of decay ( Read )
    */
   void vectorSmear(LatticeFermion& chi, 
-		   const SubsetVectors<LatticeColorVector>& vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay);
 
   //! Do a t vector smearing of a lattice Fermion field
@@ -73,7 +73,7 @@ namespace Chroma
    *  \param j_decay  direction of decay ( Read )
    */
   void vectorSmear(LatticeStaggeredPropagator& chi, 
-		   const SubsetVectors<LatticeColorVector>& vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay);
 
 
@@ -90,7 +90,7 @@ namespace Chroma
    *  \param j_decay  direction of decay ( Read )
    */
   void vectorSmear(LatticePropagator& chi, 
-		   const SubsetVectors<LatticeColorVector>& vecs, 
+		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay);
 
 }  // end namespace Chroma

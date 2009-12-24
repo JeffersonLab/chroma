@@ -12,17 +12,8 @@
 namespace Chroma {
 
   //! Registration aggregator
-  namespace MapObjectWilson4DEnv {
-
-    //! aggregate for  MapObject<KeyBlockProp_t, LatticeFermion> factory
-    bool registerKeyBlockPropLFAll();
-
-    //! aggregate for  MapObject<KeyGridProp_t, LatticeFermion> factory
-    bool registerKeyGridPropLFAll();
-
-    //! aggregate for MapObject<KeyPropColorVec_t, LatticeFermion> factory
-    bool registerKeyPropColorVecLFAll();
-
+  namespace MapObjectWilson4DEnv 
+  {
     //! aggregate everything
     bool registerAll();
 

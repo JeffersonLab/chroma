@@ -47,19 +47,17 @@ namespace Chroma
     {
     public:
       //! Full constructor
-      QuarkSmear(const Params& p) :
-	params(p) 
-			{
-		
-				try{
-	vecs = TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.vecs_id);
-				}
-				catch(std::string & e)
-				{
-					QDPIO::cerr << " Caught Exception reading vecs: " << e << endl;
-	QDP_abort(1);
-				}
-			}
+      QuarkSmear(const Params& p) : params(p) 
+	{
+	  try{
+	    vecs = TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.vecs_id);
+	  }
+	  catch(std::string & e)
+	  {
+	    QDPIO::cerr << " Caught Exception reading vecs: " << e << endl;
+	    QDP_abort(1);
+	  }
+	}
 
       //! Smear the quark
       void operator()(T& quark, const multi1d<LatticeColorMatrix>& u) const;
@@ -70,7 +68,7 @@ namespace Chroma
 
     private:
       Params  params;   /*!< smearing params */
-      SubsetVectors<LatticeColorVector> vecs; /*!< vectors to be used */
+      Handle< MapObject<int,EVPair<LatticeColorVector> > >  vecs; /*!< vectors to be used */
     };
 
   }  // end namespace

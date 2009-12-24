@@ -47,6 +47,7 @@ namespace Chroma
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
 	std::string     prop_id;        /*!< Id for output propagator solutions */
+	GroupXML_t      prop_obj;       /*!< Map for output propagator solutions */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern

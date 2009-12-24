@@ -4,8 +4,6 @@
 
 #include "chromabase.h"
 #include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/key_block_prop.h"
-#include "util/ferm/key_grid_prop.h"
 #include "util/ferm/subset_ev_pair.h"
 #include <string>
 
@@ -21,19 +19,6 @@ namespace Chroma {
   /*---------  KeyPropColorVec_t/LatticeFermion -----------------*/
   template<>
   struct MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion> {
-    static const std::string type_string;
-  };
-
-  /*--------- KeyBlockProp_t/LatticeFermion ---------------------*/
-  template<>
-  struct MapObjTraitsNum<KeyBlockProp_t, LatticeFermion> {
-    static const std::string type_string;
-  };
-
-
-  /* -------- KeyGridProp_t/LatticeFermion ----------------------*/
-  template<>
-  struct MapObjTraitsNum<KeyGridProp_t, LatticeFermion> { 
     static const std::string type_string;
   };
 

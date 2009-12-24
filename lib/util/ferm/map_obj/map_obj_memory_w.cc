@@ -8,84 +8,55 @@
 #include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ferm/map_obj/map_obj_memory.h"
-#include "util/ferm/key_block_prop.h"
-#include "util/ferm/key_grid_prop.h"
 #include "util/ferm/key_prop_colorvec.h"
 
-namespace Chroma { 
+namespace Chroma 
+{ 
   
-  namespace MapObjectMemoryEnv {
-    //! Name to be used
-    const std::string name("MAP_OBJ_MEMORY");
+  namespace MapObjectMemoryEnv 
+  {
 
-    //! Callback function
-    MapObject<KeyBlockProp_t,LatticeFermion>* createMapObjKeyBlockPropLF(XMLReader& xml_in,
-							   const std::string& path) 
+    namespace
     {
-      // Doesn't need parameters...
-      return new MapObjectMemory<KeyBlockProp_t,LatticeFermion>();
-    }
+      //! Callback function
+      MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
+								     const std::string& path) 
+      {
+	// Doesn't need parameters...
+	return new MapObjectMemory<int,EVPair<LatticeColorVector> >();
+      }
 
-    //! Callback function
-    MapObject<KeyGridProp_t,LatticeFermion>* createMapObjKeyGridPropLF(XMLReader& xml_in,
-							   const std::string& path) 
+      //! Callback function
+      MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
+										 const std::string& path) 
+      {
+	// Doesn't need parameters...
+	return new MapObjectMemory<KeyPropColorVec_t,LatticeFermion>();
+      }
+
+      //! Local registration flag
+      bool registered = false;
+
+      //! Name to be used
+      const std::string name = "MAP_OBJECT_MEMORY";
+    } // namespace anonymous
+
+    std::string getName() {return name;}
+
+    //! Register all the factories
+    bool registerAll() 
     {
-      // Doesn't need parameters...
-      return new MapObjectMemory<KeyGridProp_t,LatticeFermion>();
-    }
-
-
-    //! Callback function
-    MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
-							   const std::string& path) 
-    {
-      // Doesn't need parameters...
-      return new MapObjectMemory<KeyPropColorVec_t,LatticeFermion>();
-    }
-
-    
-    //! Registration flag
-    static bool RegisteredKeyBlockPropLF = false;
-
-    //! Registration function
-    bool registerKeyBlockPropLF()
-    {
-      bool success = true;
-      if( !RegisteredKeyBlockPropLF ) {
-	// Factory: MapObject<KeyBlockProp_t,LatticeFermion>
-	success &= Chroma::TheMapObjKeyBlockPropFactory::Instance().registerObject(name, createMapObjKeyBlockPropLF );
-
-	RegisteredKeyBlockPropLF = true;
+      bool success = true; 
+      if (! registered)
+      {
+	success &= Chroma::TheMapObjIntKeyColorEigenVecFactory::Instance().registerObject(name, createMapObjIntKeyCV);
+	success &= Chroma::TheMapObjKeyPropColorVecFactory::Instance().registerObject(name, createMapObjKeyPropColorVecLF);
+	registered = true;
       }
       return success;
     }
-
-
-    static bool RegisteredKeyGridPropLF = false;
-    bool registerKeyGridPropLF()
-    {
-      bool success = true;
-      if( !RegisteredKeyGridPropLF ) {
-	success &= Chroma::TheMapObjKeyGridPropFactory::Instance().registerObject(name, createMapObjKeyGridPropLF );
-
-	RegisteredKeyGridPropLF = true;
-      }
-      return success;
-    }
-
-    static bool RegisteredKeyPropColorVecLF = false;
-    bool registerKeyPropColorVecLF()
-    {
-      bool success = true;
-      if( !RegisteredKeyPropColorVecLF ) {
-	// Factory: MapObject<KeyPropColorVec_t,LatticeFermion>
-	success &= Chroma::TheMapObjKeyPropColorVecFactory::Instance().registerObject(name, createMapObjKeyPropColorVecLF );
-	
-	RegisteredKeyPropColorVecLF = true;
-      }
-      return success;
-    }
-
 
   } // Namespace MapObjectMemoryEnv
+
 } // Chroma
+

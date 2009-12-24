@@ -1,3 +1,10 @@
+Dec 24, 2009 - Robert Edwards
+	Version 3.37.0
+        Balint wrote a nifty MapObjectDisk and MapObjectMemory that function like
+        databases. A use is to hold lattice objects. New factory system for the
+        beasties. Removed uses of SubsetVectors in favor of MapObject's. Cleaned
+        out some old routines. Lots of other cleanups.
+
 Sep 14, 2009 - Robert Edwards
 	Version 3.36.1
         Switched back to old inline genprop code. Changed inline colorvec codes

@@ -1,21 +1,19 @@
 // -*- C++ -*-
 /*! \file
- * \brief Inline task to write an object from a named buffer
- *
- * Named object writing
+ * \brief Inline task to read an object into a named buffer
  */
 
-#ifndef __inline_nersc_write_obj_h__
-#define __inline_nersc_write_obj_h__
+#ifndef __inline_read_map_obj_memory_h__
+#define __inline_read_map_obj_memory_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/qprop_io.h"
+#include "util/ferm/map_obj.h"
 
 namespace Chroma 
 { 
   /*! \ingroup inlineio */
-  namespace InlineNERSCWriteNamedObjEnv 
+  namespace InlineReadMapObjMemoryEnv 
   {
     bool registerAll();
 
@@ -23,22 +21,19 @@ namespace Chroma
     /*! \ingroup inlineio */
     struct Params 
     {
-      Params();
       Params(XMLReader& xml_in, const std::string& path);
-      void writeXML(XMLWriter& xml_out, const std::string& path);
 
-      unsigned long frequency;
+      unsigned int frequency;
 
-      struct NamedObject_t
-      {
-	std::string   object_id;
-      } named_obj;
-
-      struct File_t
-      {
+      struct File {
 	std::string   file_name;
       } file;
+
+      struct NamedObject_t {
+	std::string   object_id;
+      } named_obj;
     };
+
 
     //! Inline writing of memory objects
     /*! \ingroup inlineio */
@@ -58,9 +53,8 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace InlineNERSCWriteNamedObjEnv 
+  }
 
-} // namespace Chroma
-
+}
 
 #endif

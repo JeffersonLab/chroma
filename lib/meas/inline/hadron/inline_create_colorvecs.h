@@ -40,7 +40,8 @@ namespace Chroma
       struct NamedObject_t
       {
 	std::string     gauge_id;      /*!< Gauge field */
-	std::string     colorvec_id;   /*!< Id for color vectors */
+	std::string     colorvec_id;   /*!< Output colorvec id */
+	GroupXML_t      colorvec_obj;  /*!< Output colorvecs */
       };
 
       Param_t        param;      /*!< Parameters */

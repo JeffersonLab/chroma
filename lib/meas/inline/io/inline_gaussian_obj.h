@@ -17,46 +17,45 @@ namespace Chroma
   /*! \ingroup inlineio */
   namespace InlineGaussianInitNamedObjEnv 
   {
-    extern const std::string name;
     bool registerAll();
+
+    //! Parameter structure
+    /*! \ingroup inlineio */
+    struct Params 
+    {
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+      void writeXML(XMLWriter& xml_out, const std::string& path);
+
+      unsigned long frequency;
+
+      struct NamedObject_t
+      {
+	std::string   object_id;
+	std::string   object_type;
+      } named_obj;
+    };
+
+    //! Inline gaussianing of memory objects
+    /*! \ingroup inlineio */
+    class InlineMeas : public AbsInlineMeasurement 
+    {
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+
+      unsigned long getFrequency(void) const {return params.frequency;}
+
+      //! Do the writing
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
+
+    private:
+      Params params;
+    };
+
   }
 
-  //! Parameter structure
-  /*! \ingroup inlineio */
-  struct InlineGaussianInitNamedObjParams 
-  {
-    InlineGaussianInitNamedObjParams();
-    InlineGaussianInitNamedObjParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
-
-    unsigned long frequency;
-
-    struct NamedObject_t
-    {
-      std::string   object_id;
-      std::string   object_type;
-    } named_obj;
-  };
-
-  //! Inline gaussianing of memory objects
-  /*! \ingroup inlineio */
-  class InlineGaussianInitNamedObj : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineGaussianInitNamedObj() {}
-    InlineGaussianInitNamedObj(const InlineGaussianInitNamedObjParams& p) : params(p) {}
-    InlineGaussianInitNamedObj(const InlineGaussianInitNamedObj& p) : params(p.params) {}
-
-    unsigned long getFrequency(void) const {return params.frequency;}
-
-    //! Do the writing
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
-
-  private:
-    InlineGaussianInitNamedObjParams params;
-  };
-
-};
+}
 
 #endif

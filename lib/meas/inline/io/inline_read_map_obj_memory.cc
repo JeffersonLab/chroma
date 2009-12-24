@@ -4,16 +4,17 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
-#include "meas/inline/io/inline_read_map_obj_disk.h"
+#include "meas/inline/io/inline_read_map_obj_memory.h"
 #include "meas/inline/io/named_objmap.h"
 #include "util/ferm/subset_ev_pair.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_disk.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
 #include <string>
 
 namespace Chroma 
 { 
-  namespace InlineReadMapObjDiskEnv 
+  namespace InlineReadMapObjMemoryEnv 
   { 
     namespace ReadMapObjCallEnv
     { 
@@ -25,11 +26,22 @@ namespace Chroma
 	int createMapObj(const std::string& object_id,
 			 const std::string& file_name)
 	{
-	  Handle<MapObject<K,V> > obj_handle(new MapObjectDisk<K,V>(file_name));
+	  MapObjectDisk<K,V> diskMap(file_name);
+	  diskMap.openRead();
+	  std::vector<K> keys = diskMap.dump();
 
-	  obj_handle->openRead();
-
+	  Handle<MapObject<K,V> > obj_handle(new MapObjectMemory<K,V>());
 	  TheNamedObjMap::Instance().create< Handle<MapObject<K,V> >, Handle<MapObject<K,V> > >(object_id, obj_handle);
+
+	  obj_handle->openWrite();
+
+	  for(int i=0; i < keys.size(); i++) 
+	  {
+	    V v;
+	    diskMap.lookup(keys[i], v);
+	    obj_handle->insert(keys[i],v);
+	  }
+	  obj_handle->openRead();
 
 	  return obj_handle->size();
 	}
@@ -117,7 +129,7 @@ namespace Chroma
       push(xml_out, "read_map_object_disk");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineReadMapObjDiskEnv::name << ": object reader" << endl;
+      QDPIO::cout << InlineReadMapObjMemoryEnv::name << ": object reader" << endl;
       StopWatch swatch;
 
       // Read the object
@@ -159,18 +171,18 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << InlineReadMapObjDiskEnv::name << ": cast error" 
+	QDPIO::cerr << InlineReadMapObjMemoryEnv::name << ": cast error" 
 		    << endl;
 	QDP_abort(1);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << InlineReadMapObjDiskEnv::name << ": error message: " << e 
+	QDPIO::cerr << InlineReadMapObjMemoryEnv::name << ": error message: " << e 
 		    << endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << InlineReadMapObjDiskEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineReadMapObjMemoryEnv::name << ": ran successfully" << endl;
 
       pop(xml_out);  // read_named_obj
 

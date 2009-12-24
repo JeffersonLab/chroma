@@ -43,13 +43,12 @@ namespace Chroma
 	Contract_t      contract;
       } param;
 
-      GroupXML_t        map_obj_params; /*!< Parameters for MapObj factory */
-
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
-	std::string     prop_id;        /*!< Id for output propagator solutions */
+	std::string     prop_id;        /*!< Output propagator solution id */
+	GroupXML_t      prop_obj;       /*!< Map for output propagator solutions */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern
