@@ -776,7 +776,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
-	meas/inline/io/inline_read_map_obj_memory.cc \
+	meas/inline/io/inline_copy_map_obj.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -1334,8 +1334,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_usqcd_read_ddpairs_prop.$(OBJEXT) \
 	inline_usqcd_write_ddpairs_prop.$(OBJEXT) \
 	inline_read_map_obj_disk.$(OBJEXT) \
-	inline_read_map_obj_memory.$(OBJEXT) \
-	inline_pbp_aggregate.$(OBJEXT) inline_psibarpsi_w.$(OBJEXT) \
+	inline_copy_map_obj.$(OBJEXT) inline_pbp_aggregate.$(OBJEXT) \
+	inline_psibarpsi_w.$(OBJEXT) \
 	inline_schrfun_aggregate.$(OBJEXT) inline_sfpcac_w.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
@@ -2133,7 +2133,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_read_map_obj_memory.h \
+	meas/inline/io/inline_copy_map_obj.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
@@ -3093,7 +3093,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_read_map_obj_memory.h $(am__append_9) \
+	meas/inline/io/inline_copy_map_obj.h $(am__append_9) \
 	$(am__append_11) $(am__append_13) $(am__append_15) \
 	$(am__append_17) $(am__append_22) $(am__append_24) \
 	$(am__append_26) $(am__append_28) $(am__append_30) \
@@ -3737,7 +3737,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
-	meas/inline/io/inline_read_map_obj_memory.cc \
+	meas/inline/io/inline_copy_map_obj.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -4103,6 +4103,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_bar3ptfn_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_baryon_matelem_colorvec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_building_blocks_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_copy_map_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_create_colorvecs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_diquark_w.Po@am__quote@
@@ -4170,7 +4171,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_qqq_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_random_transf_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_read_map_obj_disk.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_read_map_obj_memory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_ritz_H_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rng.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_rotate_spin_w.Po@am__quote@
@@ -14262,19 +14262,19 @@ inline_read_map_obj_disk.obj: meas/inline/io/inline_read_map_obj_disk.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_map_obj_disk.obj `if test -f 'meas/inline/io/inline_read_map_obj_disk.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_map_obj_disk.cc'; fi`
 
-inline_read_map_obj_memory.o: meas/inline/io/inline_read_map_obj_memory.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_read_map_obj_memory.o -MD -MP -MF $(DEPDIR)/inline_read_map_obj_memory.Tpo -c -o inline_read_map_obj_memory.o `test -f 'meas/inline/io/inline_read_map_obj_memory.cc' || echo '$(srcdir)/'`meas/inline/io/inline_read_map_obj_memory.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_read_map_obj_memory.Tpo $(DEPDIR)/inline_read_map_obj_memory.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_map_obj_memory.cc' object='inline_read_map_obj_memory.o' libtool=no @AMDEPBACKSLASH@
+inline_copy_map_obj.o: meas/inline/io/inline_copy_map_obj.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_copy_map_obj.o -MD -MP -MF $(DEPDIR)/inline_copy_map_obj.Tpo -c -o inline_copy_map_obj.o `test -f 'meas/inline/io/inline_copy_map_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_copy_map_obj.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_copy_map_obj.Tpo $(DEPDIR)/inline_copy_map_obj.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_copy_map_obj.cc' object='inline_copy_map_obj.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_map_obj_memory.o `test -f 'meas/inline/io/inline_read_map_obj_memory.cc' || echo '$(srcdir)/'`meas/inline/io/inline_read_map_obj_memory.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_copy_map_obj.o `test -f 'meas/inline/io/inline_copy_map_obj.cc' || echo '$(srcdir)/'`meas/inline/io/inline_copy_map_obj.cc
 
-inline_read_map_obj_memory.obj: meas/inline/io/inline_read_map_obj_memory.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_read_map_obj_memory.obj -MD -MP -MF $(DEPDIR)/inline_read_map_obj_memory.Tpo -c -o inline_read_map_obj_memory.obj `if test -f 'meas/inline/io/inline_read_map_obj_memory.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_map_obj_memory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_map_obj_memory.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_read_map_obj_memory.Tpo $(DEPDIR)/inline_read_map_obj_memory.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_read_map_obj_memory.cc' object='inline_read_map_obj_memory.obj' libtool=no @AMDEPBACKSLASH@
+inline_copy_map_obj.obj: meas/inline/io/inline_copy_map_obj.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_copy_map_obj.obj -MD -MP -MF $(DEPDIR)/inline_copy_map_obj.Tpo -c -o inline_copy_map_obj.obj `if test -f 'meas/inline/io/inline_copy_map_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_copy_map_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_copy_map_obj.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_copy_map_obj.Tpo $(DEPDIR)/inline_copy_map_obj.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_copy_map_obj.cc' object='inline_copy_map_obj.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_read_map_obj_memory.obj `if test -f 'meas/inline/io/inline_read_map_obj_memory.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_read_map_obj_memory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_read_map_obj_memory.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_copy_map_obj.obj `if test -f 'meas/inline/io/inline_copy_map_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_copy_map_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_copy_map_obj.cc'; fi`
 
 inline_pbp_aggregate.o: meas/inline/pbp/inline_pbp_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_pbp_aggregate.o -MD -MP -MF $(DEPDIR)/inline_pbp_aggregate.Tpo -c -o inline_pbp_aggregate.o `test -f 'meas/inline/pbp/inline_pbp_aggregate.cc' || echo '$(srcdir)/'`meas/inline/pbp/inline_pbp_aggregate.cc

@@ -22,7 +22,7 @@ namespace Chroma
       MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
 								     const std::string& path) 
       {
-	// Doesn't need parameters...
+	// Needs parameters...
 	return new MapObjectDisk<int,EVPair<LatticeColorVector> >(MapObjectDiskParams(xml_in, path));
       }
 
