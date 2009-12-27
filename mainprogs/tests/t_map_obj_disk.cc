@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
 
   // Register
-  Chroma::MapObjectWilson4DEnv::registerKeyPropColorVecLFAll();
+  Chroma::MapObjectWilson4DEnv::registerAll();
   Chroma::InlineIOAggregateEnv::registerAll();
 
 
