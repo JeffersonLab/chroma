@@ -133,7 +133,7 @@ namespace Chroma
       read(inputtop, "object_type", input.object_type);
       read(inputtop, "input_id", input.input_id);
       read(inputtop, "output_id", input.output_id);
-      GroupXML_t output_obj = readXMLGroup(inputtop, "MapObject", "MapObjType");
+      input.output_obj = readXMLGroup(inputtop, "MapObject", "MapObjType");
     }
 
     // Param stuff
@@ -179,6 +179,7 @@ namespace Chroma
       // Other tasks could support other disk formats
       QDPIO::cout << "Attempt to copy input object name = " << params.named_obj.input_id << endl;
 
+      write(xml_out, "object_type", params.named_obj.object_type);
       write(xml_out, "input_id", params.named_obj.input_id);
       write(xml_out, "output_id", params.named_obj.output_id);
 
@@ -188,16 +189,15 @@ namespace Chroma
 	swatch.start();
 
 	// Copy the object
-	swatch.start();
 	CopyMapObjCallEnv::TheCopyMapObjFuncMap::Instance().callFunction(params.named_obj.object_type, params);
 
 	// Use the xml from the first object
 	XMLReader file_xml, record_xml;
-	TheNamedObjMap::Instance().get(params.named_obj.input_id).getFileXML( file_xml );
-	TheNamedObjMap::Instance().get(params.named_obj.input_id).getRecordXML( file_xml );
+	TheNamedObjMap::Instance().get(params.named_obj.input_id).getFileXML(file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.input_id).getRecordXML(record_xml);
 
-	TheNamedObjMap::Instance().get(params.named_obj.output_id).setFileXML( file_xml );
-	TheNamedObjMap::Instance().get(params.named_obj.output_id).setRecordXML( file_xml );
+	TheNamedObjMap::Instance().get(params.named_obj.output_id).setFileXML(file_xml);
+	TheNamedObjMap::Instance().get(params.named_obj.output_id).setRecordXML(record_xml);
 
 	swatch.stop();
 
@@ -207,14 +207,20 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": cast error" 
+	QDPIO::cerr << name 
+		    << ": cast error for input_id= " << params.named_obj.input_id 
+		    << " with type= " << params.named_obj.object_type 
 		    << endl;
 	QDP_abort(1);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+	QDPIO::cerr << name << ": error message: " << e << endl;
+	QDP_abort(1);
+      }
+      catch(const char* e) 
+      { 
+	QDPIO::cout << name << ": Caught const char * exception: " << e << endl;
 	QDP_abort(1);
       }
     
