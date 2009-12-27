@@ -9,7 +9,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-//#include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
