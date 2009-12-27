@@ -1,9 +1,10 @@
-Dec 24, 2009 - Robert Edwards
+Dec 27, 2009 - Robert Edwards
 	Version 3.37.0
         Balint wrote a nifty MapObjectDisk and MapObjectMemory that function like
         databases. A use is to hold lattice objects. New factory system for the
         beasties. Removed uses of SubsetVectors in favor of MapObject's. Cleaned
-        out some old routines. Lots of other cleanups.
+        out some old routines. Lots of other cleanups. Rearranged more the MapObject
+        task system.
 
 Sep 14, 2009 - Robert Edwards
 	Version 3.36.1
