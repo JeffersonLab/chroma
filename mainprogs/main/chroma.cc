@@ -263,9 +263,8 @@ int main(int argc, char *argv[])
   }
   catch(const char* e) 
   { 
-    QDPIO::cout << "CHROMA: Caught const char * exception: " << endl;
-    QDPIO::cout <<  e;
-    QDPIO::cout << endl;
+    QDPIO::cout << "CHROMA: Caught const char * exception: " << e << endl;
+    QDP_abort(1);
   }
   catch(std::exception& e) 
   {
