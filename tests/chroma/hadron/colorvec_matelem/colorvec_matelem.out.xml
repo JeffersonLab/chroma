@@ -60,7 +60,7 @@ Not used in this test, instead use create colorvecs below.
 
     <elem>
       <annotation>
-        Save this copy
+        For testing purposes. Save this copy in LIME format.
       </annotation>
       <Name>QIO_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
@@ -74,6 +74,34 @@ Not used in this test, instead use create colorvecs below.
       </File>
     </elem>
 
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object. 
+        In this case, it will be saved as a disk map object.
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_id>eigeninfo_1</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./colorvec.mod</FileName>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_1</object_id>
+      </NamedObject>
+    </elem>
 
     <elem>
       <annotation>
@@ -114,10 +142,42 @@ Not used in this test, instead use create colorvecs below.
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_id>prop_colorvec</prop_id>
+        <prop_id>prop_colorvec_tmp</prop_id>
         <PropMapObject>
-          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+          <annotation>
+            Write to a disk. Later, will read back into memory as a test. 
+            Will remove original copy.
+          </annotation>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./prop.mod</FileName>
         </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object back into a memory object. 
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject> 
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
+        <input_id>prop_colorvec_tmp</input_id>
+        <output_id>prop_colorvec</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
       </NamedObject>
     </elem>
 
@@ -742,7 +802,7 @@ Not used in this test, instead use create colorvecs below.
       <qdp>1.35.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>24 Dec 09 14:53:45 EST</run_date>
+    <run_date>27 Dec 09 13:34:06 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -803,7 +863,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:53:45 EST</run_date>
+          <run_date>27 Dec 09 13:34:06 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -967,6 +1027,20 @@ Not used in this test, instead use create colorvecs below.
       </qio_write_named_obj>
     </elem>
     <elem>
+      <read_map_object_disk>
+        <update_no>0</update_no>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type>
+        <input_id>eigeninfo_0</input_id>
+        <output_id>eigeninfo_1</output_id>
+      </read_map_object_disk>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigeninfo_1</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
       <PropColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -975,7 +1049,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:53:52 EST</run_date>
+          <run_date>27 Dec 09 13:34:13 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1016,8 +1090,13 @@ Not used in this test, instead use create colorvecs below.
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
             <colorvec_id>eigeninfo_0</colorvec_id>
-            <prop_id>prop_colorvec</prop_id><PropMapObject>
-      <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+            <prop_id>prop_colorvec_tmp</prop_id><PropMapObject>
+      <annotation>
+            Write to a disk. Later, will read back into memory as a test. 
+            Will remove original copy.
+          </annotation>
+      <MapObjType>MAP_OBJECT_DISK</MapObjType>
+      <FileName>./prop.mod</FileName>
     </PropMapObject>
 </NamedObject>
         </Input>
@@ -1136,6 +1215,20 @@ Not used in this test, instead use create colorvecs below.
       </PropColorVec>
     </elem>
     <elem>
+      <read_map_object_disk>
+        <update_no>0</update_no>
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
+        <input_id>prop_colorvec_tmp</input_id>
+        <output_id>prop_colorvec</output_id>
+      </read_map_object_disk>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>prop_colorvec_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
       <AnnihPropMatElemColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -1144,7 +1237,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:54:12 EST</run_date>
+          <run_date>27 Dec 09 13:34:35 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1324,7 +1417,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:54:45 EST</run_date>
+          <run_date>27 Dec 09 13:35:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1469,7 +1562,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:54:45 EST</run_date>
+          <run_date>27 Dec 09 13:35:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1617,7 +1710,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:54:46 EST</run_date>
+          <run_date>27 Dec 09 13:35:08 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1765,7 +1858,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:54:46 EST</run_date>
+          <run_date>27 Dec 09 13:35:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2066,7 +2159,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:55:54 EST</run_date>
+          <run_date>27 Dec 09 13:36:20 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2181,7 +2274,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:55:56 EST</run_date>
+          <run_date>27 Dec 09 13:36:24 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2591,7 +2684,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:56:18 EST</run_date>
+          <run_date>27 Dec 09 13:36:48 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2714,7 +2807,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:56:25 EST</run_date>
+          <run_date>27 Dec 09 13:36:53 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2936,7 +3029,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Dec 09 14:56:58 EST</run_date>
+          <run_date>27 Dec 09 13:37:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>

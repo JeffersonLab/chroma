@@ -57,7 +57,7 @@ Not used in this test, instead use create colorvecs below.
 
     <elem>
       <annotation>
-        Save this copy
+        For testing purposes. Save this copy in LIME format.
       </annotation>
       <Name>QIO_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
@@ -71,6 +71,34 @@ Not used in this test, instead use create colorvecs below.
       </File>
     </elem>
 
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object. 
+        In this case, it will be saved as a disk map object.
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_id>eigeninfo_1</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./colorvec.mod</FileName>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_1</object_id>
+      </NamedObject>
+    </elem>
 
     <elem>
       <annotation>
@@ -111,10 +139,42 @@ Not used in this test, instead use create colorvecs below.
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_id>prop_colorvec</prop_id>
+        <prop_id>prop_colorvec_tmp</prop_id>
         <PropMapObject>
-          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+          <annotation>
+            Write to a disk. Later, will read back into memory as a test. 
+            Will remove original copy.
+          </annotation>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./prop.mod</FileName>
         </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object back into a memory object. 
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject> 
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
+        <input_id>prop_colorvec_tmp</input_id>
+        <output_id>prop_colorvec</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
       </NamedObject>
     </elem>
 
