@@ -13,6 +13,8 @@
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
@@ -33,6 +35,9 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_id", input.colorvec_id);
+
+      // User Specified MapObject tags
+      input.colorvec_obj = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
     }
 
     //! Propagator output
@@ -42,6 +47,7 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_id", input.colorvec_id);
+      xml << input.colorvec_obj.xml;
 
       pop(xml);
     }
@@ -116,6 +122,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -183,19 +190,18 @@ namespace Chroma
     }
     
     template<typename T> 
-    void partitionedInnerProduct(const T& phi, const T& chi, multi1d<DComplex>& inner_prod, const Set& product_set){                       
-      
-      inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);                                                                                            
+    void partitionedInnerProduct(const T& phi, const T& chi, multi1d<DComplex>& inner_prod, const Set& product_set)
+    {
+      inner_prod = sumMulti(localInnerProduct(phi,chi),product_set);
     }
     
-    template<typename T>                                                                                                                                           
+    template<typename T>
     void laplacian(const multi1d<LatticeColorMatrix>& u, const T& psi, T& chi, int j_decay)
-    {                                                                                                                                                               
-      T temp;              
-      Real minus_one = -1.;                                                                                                                                
-      temp = psi * minus_one;                                                                                                                
-      klein_gord(u, temp, chi, 0.0, j_decay);                               
-      
+    {
+      T temp;
+      Real minus_one = -1.;
+      temp = psi * minus_one;
+      klein_gord(u, temp, chi, 0.0, j_decay);
     }  
 
 
@@ -215,7 +221,7 @@ namespace Chroma
 		   LatticeColorVector& chi,
 		   int j_decay)
     {
-      int n = 12;                                                                                                                                               
+      int n = 12;
       double chebCo[6] = {-72.0, 840.0, -3584.0, 6912.0, -6144.0, 2048.0};
       LatticeColorVector tmp = psi;
       LatticeColorVector prev;
@@ -253,10 +259,10 @@ namespace Chroma
       multi1d<LatticeColorMatrix> u;
       XMLBufferWriter gauge_xml;
       try
-	{
-	  u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
-	  TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
-	}
+      {
+	u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
+	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
+      }
       catch( std::bad_cast )  {
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
 	QDP_abort(1);
@@ -316,8 +322,15 @@ namespace Chroma
       // Create the output files
       //
       try {
+	std::istringstream  xml_s(params.named_obj.colorvec_obj.xml);
+	XMLReader MapObjReader(xml_s);
 	
-	TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+	// Create the entry
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id) =
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.colorvec_obj.id,
+								       MapObjReader,
+								       params.named_obj.colorvec_obj.path);
       }
       catch (std::bad_cast) {
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
@@ -330,13 +343,12 @@ namespace Chroma
       }
       
       // Cast should be valid now
-      SubsetVectors<LatticeColorVector>& color_vecs =
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
-
+      // Cast should be valid now
+      MapObject<int,EVPair<LatticeColorVector> >& color_vecs = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       
       // The code goes here
-      
       StopWatch swatch;
       StopWatch fossil;
       fossil.reset();
@@ -354,8 +366,6 @@ namespace Chroma
       }
       
 	  
-      color_vecs.getDecayDir() = params.param.decay_dir;
-      
       // Choose the starting eigenvectors to have identical 
       // components and unit norm. 
       // The norm is evaluated time slice by time slice
