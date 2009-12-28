@@ -37,7 +37,8 @@ Not used in this test, instead use create colorvecs below.
         <decay_dir>3</decay_dir>
         <num_iter>50</num_iter>
         <width>3.0</width>
-        <num_orthog>20</num_orthog>
+        <!-- num_orthog>20</num_orthog -->
+        <num_orthog>1</num_orthog>
         <LinkSmearing>
           <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
@@ -149,6 +150,31 @@ Not used in this test, instead use create colorvecs below.
           <FileName>./prop.mod</FileName>
         </PropMapObject>
       </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase for testing.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read back in for testing.
+      </annotation>
+      <Name>READ_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
+      </NamedObject>
+      <File>
+        <file_name>./prop.mod</file_name>
+      </File>
     </elem>
 
     <elem>
