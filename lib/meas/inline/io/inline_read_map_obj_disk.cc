@@ -3,6 +3,9 @@
  */
 
 #include "chromabase.h"
+#include "singleton.h"
+#include "funcmap.h"
+
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/named_objmap.h"
@@ -17,13 +20,24 @@ namespace Chroma
   { 
     namespace ReadMapObjCallEnv
     { 
+      struct DumbDisambiguator {};
+
+      typedef SingletonHolder< 
+	FunctionMap<DumbDisambiguator,
+		    int,
+		    std::string,
+		    TYPELIST_2(const std::string&, const std::string&),
+		    int (*)(const std::string&, const std::string&),
+		    StringFunctionMapError> >
+      TheReadMapObjFuncMap;
+
       namespace 
       { 
 	static bool registered = false;
 
 	template<typename K, typename V>
-	int createMapObj(const std::string& object_id,
-			 const std::string& file_name)
+	int readMapObj(const std::string& object_id,
+		       const std::string& file_name)
 	{
 	  Handle<MapObject<K,V> > obj_handle(new MapObjectDisk<K,V>(file_name));
 
@@ -34,24 +48,22 @@ namespace Chroma
 	  return obj_handle->size();
 	}
 
-
-	std::map<std::string, int (*)(const std::string&, const std::string& )> funcmap;
-
-	void registerAll(void) 
+	bool registerAll(void) 
 	{
+	  bool success = true; 
 	  if (! registered ) 
 	  { 
-	    funcmap.insert( make_pair( MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::type_string,
-				       createMapObj<KeyPropColorVec_t, LatticeFermion> ) );
+	    success &= TheReadMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::type_string,
+									 readMapObj<KeyPropColorVec_t, LatticeFermion>);
 
-	    funcmap.insert( make_pair( MapObjTraitsNum<int, EVPair<LatticeColorVector> >::type_string,
-				       createMapObj<int, EVPair<LatticeColorVector> > ) );
+	    success &= TheReadMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<int, EVPair<LatticeColorVector> >::type_string,
+									 readMapObj<int, EVPair<LatticeColorVector> >);
 
-	    funcmap.insert( make_pair( MapObjTraitsNum<char, float>::type_string,
-				       createMapObj<char, float> ) );
-
+	    success &= TheReadMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<char, float>::type_string,
+									 readMapObj<char, float>);
 	    registered = true;
 	  }
+	  return success;
 	}
       }
     }
@@ -78,6 +90,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= ReadMapObjCallEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -112,16 +125,14 @@ namespace Chroma
     {
       START_CODE();
 
-      registerAll();
-
       push(xml_out, "read_map_object_disk");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineReadMapObjDiskEnv::name << ": object reader" << endl;
+      QDPIO::cout << name << ": object reader" << endl;
       StopWatch swatch;
 
       // Read the object
-      // ONLY SciDAC output format is supported in this task
+      // ONLY MapObject output format is supported in this task
       // Other tasks could support other disk formats
       QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
 
@@ -133,9 +144,10 @@ namespace Chroma
 	swatch.reset();
 	swatch.start();
 
-	std::string  type_string=peekMapObjectDiskTypeCode(params.file.file_name);
+	std::string type_string = peekMapObjectDiskTypeCode(params.file.file_name);
 
-	int size=(ReadMapObjCallEnv::funcmap[type_string])(params.named_obj.object_id, params.file.file_name);
+        // Read the object
+        int size = ReadMapObjCallEnv::TheReadMapObjFuncMap::Instance().callFunction(type_string, params.named_obj.object_id, params.file.file_name);
 
 	XMLBufferWriter file_xml_buf;
 	push(file_xml_buf, "FileXML");
@@ -159,18 +171,18 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << InlineReadMapObjDiskEnv::name << ": cast error" 
+	QDPIO::cerr << name << ": cast error" 
 		    << endl;
 	QDP_abort(1);
       }
       catch (const string& e) 
       {
-	QDPIO::cerr << InlineReadMapObjDiskEnv::name << ": error message: " << e 
+	QDPIO::cerr << name << ": error message: " << e 
 		    << endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << InlineReadMapObjDiskEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << endl;
 
       pop(xml_out);  // read_named_obj
 
