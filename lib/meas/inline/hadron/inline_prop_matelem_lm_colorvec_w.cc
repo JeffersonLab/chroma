@@ -5,7 +5,7 @@
  */
 
 #include "fermact.h"
-#include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
+#include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
@@ -21,7 +21,7 @@
 
 namespace Chroma 
 { 
-  namespace InlinePropMatElemColorVecEnv 
+  namespace InlinePropMatElemLowMemoryColorVecEnv 
   {
     //! Propagator input
     void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
@@ -92,7 +92,7 @@ namespace Chroma
     }
 
 
-    //---------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------
     namespace
     {
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
@@ -105,7 +105,7 @@ namespace Chroma
       bool registered = false;
     }
       
-    const std::string name = "PROP_MATELEM_COLORVEC";
+    const std::string name = "PROP_MATELEM_LOW_MEMORY_COLORVEC";
 
     //! Register all the factories
     bool registerAll() 
@@ -355,7 +355,7 @@ namespace Chroma
 	// Binary output
 	push(xml_out, "ColorVecMatElems");
 
-	// Loop over each time source
+	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt];
@@ -369,69 +369,62 @@ namespace Chroma
 	  // too big, but are big enough to make the IO efficient, and the DB efficient
 	  // on reading. For N=32 and Lt=128, the mats are 2MB.
 	  //
-	  // Another NOTE: the colorvec_source is pulled all the way out as far as possible.
-          // This means there is the minimal number of lookups of the fermion solution vector.
-          // However, it also means that all spin_sink worth of a perambulator must be
-          // held in memory.
-	  //
 	  for(int spin_source=0; spin_source < Ns; ++spin_source)
 	  {
 	    QDPIO::cout << "spin_source = " << spin_source << endl; 
 
-	    //
-	    // Initialize all the keys for this spin spin and all spin sinks on all t-slices
-	    //
-	    multi2d<KeyValPropElementalOperator_t> buf(phases.numSubsets(),Ns);
 	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	    {
+	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
+
+	      // Invert the time - make it an independent key
+	      multi1d<KeyValPropElementalOperator_t> buf(phases.numSubsets());
 	      for(int t=0; t < phases.numSubsets(); ++t)
 	      {
-		buf(t,spin_sink).key.key().t_slice      = t;
-		buf(t,spin_sink).key.key().t_source     = t_source;
-		buf(t,spin_sink).key.key().spin_src     = spin_source;
-		buf(t,spin_sink).key.key().spin_snk     = spin_sink;
-		buf(t,spin_sink).key.key().mass_label   = params.param.mass_label;
-		buf(t,spin_sink).val.data().mat.resize(num_vecs,num_vecs);
+		buf[t].key.key().t_slice      = t;
+		buf[t].key.key().t_source     = t_source;
+		buf[t].key.key().spin_src     = spin_source;
+		buf[t].key.key().spin_snk     = spin_sink;
+		buf[t].key.key().mass_label   = params.param.mass_label;
+		buf[t].val.data().mat.resize(num_vecs,num_vecs);
 	      }
-	    }
 
-	    for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
-	    {
-	      KeyPropColorVec_t key;
-	      key.t_source     = t_source;
-	      key.colorvec_src = colorvec_source;
-	      key.spin_src     = spin_source;
-		  
-	      LatticeFermion ferm_source; prop_obj.lookup(key, ferm_source);
-
-	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
+	      for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
 	      {
-		EVPair<LatticeColorVector> vec_sink; eigen_source.lookup(colorvec_sink,vec_sink);
-
-		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+		KeyPropColorVec_t key;
+		key.t_source     = t_source;
+		key.colorvec_src = colorvec_source;
+		key.spin_src     = spin_source;
+		  
+		
+		LatticeColorVector vec_source;
 		{
-		  LatticeColorVector vec_source = peekSpin(ferm_source, spin_sink);
+		  LatticeFermion tmp; prop_obj.lookup(key, tmp);
+
+		  vec_source = peekSpin(tmp, spin_sink);
+		}
+
+		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
+		{
+		  EVPair<LatticeColorVector> vec_sink; eigen_source.lookup(colorvec_sink,vec_sink);
 
 		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink.eigenVector, vec_source), phases.getSet()));
 
 		  for(int t=0; t < hsum.size(); ++t)
 		  {
-		    buf(t,spin_sink).val.data().mat(colorvec_sink,colorvec_source) = hsum[t];
+		    buf[t].val.data().mat(colorvec_sink,colorvec_source) = hsum[t];
 		  }
 
-		} // for spin_sink
-	      } // for colorvec_sink
-	    } // for colorvec_source
+		} // for colorvec_sink
+	      } // for colorvec_source
 	      
-	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
-	    {
 	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
 	      for(int t=0; t < phases.numSubsets(); ++t)
 	      {
-		qdp_db.insert(buf(t,spin_sink).key, buf(t,spin_sink).val);
+		qdp_db.insert(buf[t].key, buf[t].val);
 	      }
-	    } // for spin_sink
 
+	    } // for spin_sink
 	  } // for spin_source
 	} // for t_source
 

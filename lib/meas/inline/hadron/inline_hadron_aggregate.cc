@@ -52,6 +52,7 @@
 #include "meas/inline/hadron/inline_static_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_prop_matelem_colorvec_w.h"
+#include "meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h"
 #include "meas/inline/hadron/inline_baryon_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_meson_matelem_colorvec_w.h"
 #include "meas/inline/hadron/inline_genprop_matelem_colorvec_w.h"
@@ -134,6 +135,7 @@ namespace Chroma
 	success &= InlineStaticPropColorVecEnv::registerAll();
 	success &= InlineAnnihPropMatElemColorVecEnv::registerAll();
 	success &= InlinePropMatElemColorVecEnv::registerAll();
+	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();
 	success &= InlineGenPropMatElemColorVecEnv::registerAll();
