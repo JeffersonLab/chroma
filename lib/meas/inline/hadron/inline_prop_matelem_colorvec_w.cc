@@ -402,7 +402,14 @@ namespace Chroma
 	      key.colorvec_src = colorvec_source;
 	      key.spin_src     = spin_source;
 		  
-	      LatticeFermion ferm_source; prop_obj.lookup(key, ferm_source);
+              multi1d<LatticeColorVector> vec_source(Ns);
+              {
+	        LatticeFermion tmp; prop_obj.lookup(key, tmp);
+		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+		{
+                  vec_source[spin_sink] = peekSpin(tmp, spin_sink);
+                }
+              }
 
 	      for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 	      {
@@ -410,9 +417,7 @@ namespace Chroma
 
 		for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 		{
-		  LatticeColorVector vec_source = peekSpin(ferm_source, spin_sink);
-
-		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink.eigenVector, vec_source), phases.getSet()));
+		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink.eigenVector, vec_source[spin_sink]), phases.getSet()));
 
 		  for(int t=0; t < hsum.size(); ++t)
 		  {
