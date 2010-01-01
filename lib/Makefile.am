@@ -699,7 +699,10 @@ nobase_include_HEADERS += \
 	util/ferm/map_obj/map_obj_aggregate_w.h \
 	util/ferm/map_obj/map_obj_memory.h \
 	util/ferm/map_obj/map_obj_memory_w.h \
+	util/ferm/map_obj/map_obj_disk.h \
 	util/ferm/map_obj/map_obj_disk_w.h \
+	util/ferm/map_obj/map_obj_null.h \
+	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
@@ -835,6 +838,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_colorvec_w.h \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
+	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
@@ -1509,7 +1513,8 @@ libchroma_a_SOURCES += \
 	util/ferm/key_prop_matelem.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
-	util/ferm/map_obj/map_obj_disk_w.cc
+	util/ferm/map_obj/map_obj_disk_w.cc \
+	util/ferm/map_obj/map_obj_null_w.cc
 
 
 # Taken out for now
@@ -1580,6 +1585,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
