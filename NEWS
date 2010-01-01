@@ -1,3 +1,15 @@
+Jan 01, 2010 - Robert Edwards
+	Version 3.37.2
+        Made a combined prop_colorvec and prop_matelem_colorvec that saves
+        prop dbs and combines in the peram construction. Can avoid using
+        lookups for solution vectors or storing all the solutions in memory/disk.
+
+Dec 31, 2009 - Robert Edwards
+	Version 3.37.1
+        Moved old inline_prop_matelem_colorvec to a low-memory version.
+        New inline_prop_matelem_colorvec reorganizes the loops to cut-down
+        on lookups.
+
 Dec 27, 2009 - Robert Edwards
 	Version 3.37.0
         Balint wrote a nifty MapObjectDisk and MapObjectMemory that function like
