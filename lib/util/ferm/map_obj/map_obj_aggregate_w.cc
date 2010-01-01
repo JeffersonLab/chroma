@@ -8,6 +8,7 @@
 // Individual MapObj headers
 #include "util/ferm/map_obj/map_obj_memory_w.h"
 #include "util/ferm/map_obj/map_obj_disk_w.h"
+#include "util/ferm/map_obj/map_obj_null_w.h"
 
 
 namespace Chroma {
@@ -29,6 +30,7 @@ namespace Chroma {
       { 
 	success &= MapObjectDiskEnv::registerAll();
 	success &= MapObjectMemoryEnv::registerAll();
+	success &= MapObjectNullEnv::registerAll();
 
 	registered = true;
       }

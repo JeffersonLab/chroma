@@ -208,6 +208,59 @@ Not used in this test, instead use create colorvecs below.
 
     <elem>
       <annotation>
+        Compute propagator solution vectors.
+        This is an identical calculation, just testing we can write the perams
+	and throw away the solutions
+      </annotation>
+      <Name>PROP_AND_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+          <mass_label>U0.05</mass_label>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec_will_not_keep</prop_id>
+        <prop_op_file>prop.copy.sdb</prop_op_file>
+        <PropMapObject>
+          <annotation>
+            Throw away
+          </annotation>
+          <MapObjType>MAP_OBJECT_NULL</MapObjType>
+        </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
         Compute annihilation propagator solution vectors
       </annotation>
       <Name>ANNIH_PROP_MATELEM_COLORVEC</Name>
@@ -827,7 +880,7 @@ Not used in this test, instead use create colorvecs below.
       <qdp>1.35.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>31 Dec 09 00:26:10 EST</run_date>
+    <run_date>01 Jan 10 13:25:27 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -888,7 +941,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:26:10 EST</run_date>
+          <run_date>01 Jan 10 13:25:27 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1074,7 +1127,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:26:16 EST</run_date>
+          <run_date>01 Jan 10 13:25:34 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1267,6 +1320,180 @@ Not used in this test, instead use create colorvecs below.
       </erase_named_obj>
     </elem>
     <elem>
+      <PropColorVec>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.37.1</chroma>
+            <qdp>1.35.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>01 Jan 10 13:25:56 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <Propagator>
+              <version>9</version>
+              <quarkSpinType>FULL</quarkSpinType>
+              <obsvP>false</obsvP><FermionAction>
+      <FermAct>CLOVER</FermAct>
+      <Mass>0.1</Mass>
+      <clovCoeff>1.0</clovCoeff>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Propagator>
+            <Contractions>
+              <num_vecs>10</num_vecs>
+              <t_sources>0 3</t_sources>
+              <decay_dir>3</decay_dir>
+              <mass_label>U0.05</mass_label>
+            </Contractions>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id>
+            <prop_id>prop_colorvec_will_not_keep</prop_id>
+            <prop_op_file>prop.copy.sdb</prop_op_file><PropMapObject>
+      <annotation>
+            Throw away
+          </annotation>
+      <MapObjType>MAP_OBJECT_NULL</MapObjType>
+    </PropMapObject>
+</NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234169616</w_plaq>
+          <s_plaq>0.994655949141209</s_plaq>
+          <t_plaq>0.994728734251112</t_plaq>
+          <plane_01_plaq>0.994607786182314</plane_01_plaq>
+          <plane_02_plaq>0.994706784375012</plane_02_plaq>
+          <plane_12_plaq>0.994653276866302</plane_12_plaq>
+          <plane_03_plaq>0.994816071121022</plane_03_plaq>
+          <plane_13_plaq>0.994653895186881</plane_13_plaq>
+          <plane_23_plaq>0.994716236445432</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364552034</im>
+            </elem>
+            <elem>
+              <re>0.966476668700731</re>
+              <im>-0.00128317258683334</im>
+            </elem>
+            <elem>
+              <re>0.585677024481508</re>
+              <im>-0.0676213782235967</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><LaplaceEigInfo>
+      <num_vecs>10</num_vecs>
+      <Params>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <num_orthog>20</num_orthog>
+        <width>3</width>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Params>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </LaplaceEigInfo>
+
+        </Source_file_info>
+        <Source_record_info><SubsetVectors>
+      <EigenPair>
+        <EigenPairNumber>0</EigenPairNumber>
+        <EigenValues>0.009868173 0.01595039 0.01689978 0.004492248 0.007270212 0.003762743 0.008073494 0.01354526 0.004165306 0.009902139 0.004845457 0.00259698 0.01038998 0.00355529 0.007615858 0.006038088</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>1</EigenPairNumber>
+        <EigenValues>0.00891169 0.005788043 0.01335133 0.01062918 0.006413053 0.01237466 0.01544236 0.01021731 0.01159753 0.01201873 0.01114067 0.01771058 0.009450382 0.01658357 0.008159852 0.00762657</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>2</EigenPairNumber>
+        <EigenValues>0.01400937 0.0102914 0.002571591 0.01719709 0.01876096 0.01615976 0.008907816 0.008577869 0.01741039 0.009965297 0.01634013 0.01162088 0.01294247 0.01239671 0.01652001 0.01884508</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>3</EigenPairNumber>
+        <EigenValues>1.845745 1.854372 1.84841 1.849017 1.850169 1.850363 1.850715 1.849872 1.846231 1.852283 1.848303 1.85133 1.84762 1.846188 1.851274 1.852068</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>4</EigenPairNumber>
+        <EigenValues>1.85257 1.866958 1.851725 1.865966 1.849389 1.850749 1.853211 1.850455 1.847406 1.852933 1.86245 1.848032 1.850751 1.855485 1.848401 1.850705</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>5</EigenPairNumber>
+        <EigenValues>1.857048 1.861589 1.880228 1.865808 1.854673 1.864538 1.849098 1.854351 1.853058 1.852801 1.865593 1.864323 1.855985 1.854238 1.857581 1.860232</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>6</EigenPairNumber>
+        <EigenValues>1.88059 1.860815 1.856141 1.874952 1.884006 1.874469 1.883542 1.885735 1.89289 1.887834 1.875229 1.881755 1.885355 1.889616 1.883472 1.875784</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>7</EigenPairNumber>
+        <EigenValues>1.889951 1.886572 1.885435 1.876323 1.89064 1.889477 1.891763 1.890416 1.888686 1.887652 1.875872 1.892081 1.888891 1.882114 1.888258 1.888107</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>8</EigenPairNumber>
+        <EigenValues>1.89659 1.887317 1.892872 1.888187 1.892009 1.888681 1.896122 1.891452 1.895614 1.886507 1.891704 1.894177 1.903474 1.892347 1.888801 1.888402</EigenValues>
+      </EigenPair>
+      <EigenPair>
+        <EigenPairNumber>9</EigenPairNumber>
+        <EigenValues>1.944242 1.958795 1.948591 1.953682 1.951662 1.951739 1.948554 1.951891 1.945471 1.957256 1.949708 1.942933 1.938565 1.945679 1.955897 1.954976</EigenValues>
+      </EigenPair>
+    </SubsetVectors>
+
+        </Source_record_info>
+        <Source_correlators>
+          <source_corrs>1.00000000734618 0.999999995303248 0.999999996722851 0.999999998712849 0.9999999966963 0.999999999790131 0.999999993754991 1.00000000178219 0.99999999811564 0.999999999255052 0.999999998963064 0.999999998356298 1.00000000093269 1.00000000240252 0.999999997467278 0.999999998382441</source_corrs>
+        </Source_correlators>
+        <Relaxation_Iterations>
+          <ncg_had>70</ncg_had>
+        </Relaxation_Iterations>
+      </PropColorVec>
+    </elem>
+    <elem>
       <AnnihPropMatElemColorVec>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -1275,7 +1502,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:26:38 EST</run_date>
+          <run_date>01 Jan 10 13:26:18 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1455,7 +1682,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:27:10 EST</run_date>
+          <run_date>01 Jan 10 13:26:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1600,7 +1827,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:27:10 EST</run_date>
+          <run_date>01 Jan 10 13:26:50 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1748,7 +1975,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:27:11 EST</run_date>
+          <run_date>01 Jan 10 13:26:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1896,7 +2123,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:27:11 EST</run_date>
+          <run_date>01 Jan 10 13:26:51 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2197,7 +2424,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:28:24 EST</run_date>
+          <run_date>01 Jan 10 13:28:04 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2312,7 +2539,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:28:27 EST</run_date>
+          <run_date>01 Jan 10 13:28:07 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2722,7 +2949,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:28:48 EST</run_date>
+          <run_date>01 Jan 10 13:28:30 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2845,7 +3072,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:28:54 EST</run_date>
+          <run_date>01 Jan 10 13:28:36 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3009,7 +3236,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>31 Dec 09 00:29:25 EST</run_date>
+          <run_date>01 Jan 10 13:29:09 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
