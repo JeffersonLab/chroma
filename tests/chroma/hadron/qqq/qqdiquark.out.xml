@@ -266,11 +266,11 @@ QQQ on props
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.30.0</chroma>
-      <qdp>1.27.0</qdp>
+      <chroma>3.37.2</chroma>
+      <qdp>1.35.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>04 Jun 08 23:12:55 EDT</run_date>
+    <run_date>07 Jan 10 10:43:10 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -327,11 +327,11 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.37.2</chroma>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:55 EDT</run_date>
+          <run_date>07 Jan 10 10:43:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -429,11 +429,11 @@ QQQ on props
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.37.2</chroma>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:55 EDT</run_date>
+          <run_date>07 Jan 10 10:43:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -512,7 +512,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Source_file_info><make_source>
-      <id>271203175</id>
+      <id>321446590</id>
     </make_source>
 
         </Source_file_info>
@@ -562,80 +562,80 @@ QQQ on props
             <color_source>0</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.30004e-07</resid>
+            <resid>1.244258e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.052915e-07</resid>
+            <resid>1.134232e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.169015e-07</resid>
+            <resid>1.104652e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>0</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.164681e-07</resid>
+            <resid>1.031863e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.186296e-07</resid>
+            <resid>1.259049e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.150916e-07</resid>
+            <resid>1.054714e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.085187e-07</resid>
+            <resid>1.068315e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>1</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.134755e-07</resid>
+            <resid>1.026836e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>0</spin_source>
             <n_count>45</n_count>
-            <resid>1.536571e-07</resid>
+            <resid>1.524175e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>1</spin_source>
             <n_count>45</n_count>
-            <resid>1.1217e-07</resid>
+            <resid>1.090217e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>2</spin_source>
             <n_count>45</n_count>
-            <resid>1.407204e-07</resid>
+            <resid>1.230266e-07</resid>
           </Qprop>
           <Qprop>
             <color_source>2</color_source>
             <spin_source>3</spin_source>
             <n_count>45</n_count>
-            <resid>1.29451e-07</resid>
+            <resid>1.271699e-07</resid>
           </Qprop>
         </QuarkProp4>
         <Relaxation_Iterations>
           <ncg_had>540</ncg_had>
         </Relaxation_Iterations>
         <Prop_correlator>
-          <prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</prop_corr>
+          <prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</prop_corr>
         </Prop_correlator>
       </propagator>
     </elem>
@@ -699,7 +699,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271203175</id>
+      <id>321446590</id>
     </propagator>
 
         </Prop_file_info>
@@ -766,10 +766,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</forward_prop_corr>
+          <forward_prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -847,7 +847,7 @@ QQQ on props
           </pollp>
         </Observables>
         <Prop_file_info><propagator>
-      <id>271203175</id>
+      <id>321446590</id>
     </propagator>
 
         </Prop_file_info>
@@ -914,10 +914,10 @@ QQQ on props
 
         </Prop_record_info>
         <Forward_prop_correlator>
-          <forward_prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</forward_prop_corr>
+          <forward_prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</forward_prop_corr>
         </Forward_prop_correlator>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778878.58779 25152147.4903784 447414.279821469 8781.31484434231 582.135019118305 8346.18847965514 447542.892952715 25144703.1882335</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778860.35458 25152147.3081596 447414.199566562 8781.32030916741 582.134491527224 8346.18613055665 447542.890378334 25144702.6635592</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </sink_smear>
     </elem>
@@ -940,11 +940,11 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.37.2</chroma>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:55 EDT</run_date>
+          <run_date>07 Jan 10 10:43:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1162,11 +1162,11 @@ QQQ on props
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </diquark>
@@ -1190,11 +1190,11 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.37.2</chroma>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:55 EDT</run_date>
+          <run_date>07 Jan 10 10:43:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1440,11 +1440,11 @@ QQQ on props
         <SinkSmearedProp_correlator>
           <elem>
             <correlator_num>0</correlator_num>
-            <sink_smeared_prop_corr>2837778878.58779 25152147.4903784 447414.279821469 8781.31484434231 582.135019118305 8346.18847965514 447542.892952715 25144703.1882335</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778860.35458 25152147.3081596 447414.199566562 8781.32030916741 582.134491527224 8346.18613055665 447542.890378334 25144702.6635592</sink_smeared_prop_corr>
           </elem>
           <elem>
             <correlator_num>1</correlator_num>
-            <sink_smeared_prop_corr>2837778878.58779 25152147.4903784 447414.279821469 8781.31484434231 582.135019118305 8346.18847965514 447542.892952715 25144703.1882335</sink_smeared_prop_corr>
+            <sink_smeared_prop_corr>2837778860.35458 25152147.3081596 447414.199566562 8781.32030916741 582.134491527224 8346.18613055665 447542.890378334 25144702.6635592</sink_smeared_prop_corr>
           </elem>
         </SinkSmearedProp_correlator>
       </diquark>
@@ -1453,6 +1453,10 @@ QQQ on props
       <qio_write_erase_named_obj>
         <update_no>0</update_no>
         <object_id>sh_sh_diquark</object_id>
+        <qio_write_named_obj>
+          <update_no>0</update_no>
+          <object_id>sh_sh_diquark</object_id>
+        </qio_write_named_obj>
       </qio_write_erase_named_obj>
     </elem>
     <elem>
@@ -1479,11 +1483,11 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.37.2</chroma>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:56 EDT</run_date>
+          <run_date>07 Jan 10 10:43:10 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1768,7 +1772,7 @@ QQQ on props
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>0.191409111252783 0.015839687330169 0.00612670437398005 0.0028177478355503 0.00196730091434856 0.00281711309715927 0.00612162672333501 0.0158367229149183</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>0.191409109186595 0.0158396870091896 0.00612670412853768 0.00281774771994274 0.00196730085050983 0.00281711311754748 0.00612162689899148 0.0158367235140414</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq_diquark>
     </elem>
@@ -1800,11 +1804,11 @@ QQQ on props
         </Input>
         <ProgramInfo>
           <code_version>
-            <chroma>3.30.0</chroma>
-            <qdp>1.27.0</qdp>
+            <chroma>3.37.2</chroma>
+            <qdp>1.35.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>04 Jun 08 23:12:56 EDT</run_date>
+          <run_date>07 Jan 10 10:43:11 EST</run_date>
           <Setgeom>
             <latt_size>4 4 4 8</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2141,7 +2145,7 @@ QQQ on props
           </ForwardProps>
         </Propagator_input>
         <SinkSmearedProp_correlator>
-          <sink_smeared_prop_corr>2837778878.58779 25152147.4903784 447414.279821469 8781.31484434231 582.135019118305 8346.18847965514 447542.892952715 25144703.1882335</sink_smeared_prop_corr>
+          <sink_smeared_prop_corr>2837778860.35458 25152147.3081596 447414.199566562 8781.32030916741 582.134491527224 8346.18613055665 447542.890378334 25144702.6635592</sink_smeared_prop_corr>
         </SinkSmearedProp_correlator>
       </qqq_diquark>
     </elem>
