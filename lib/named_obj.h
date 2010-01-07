@@ -15,7 +15,7 @@
 #define __named_obj_h__
 
 #include "chromabase.h"
-
+#include "handle.h"
 #include <map>
 #include <string>
 
@@ -68,8 +68,11 @@ namespace Chroma
   {
   public:
     //! Constructor
-    NamedObject() {}
+    NamedObject() : data(new T) {}
   
+    template<typename P1>
+    NamedObject(const P1& p1) : data(new T(p1)) {}
+ 
     //! Destructor
     ~NamedObject() {}
 
@@ -129,16 +132,16 @@ namespace Chroma
 
     //! Mutable data ref
     virtual T& getData() {
-      return data;
+      return *data;
     }
 
     //! Const data ref
     virtual const T& getData() const {
-      return data;
+      return *data;
     }
 
   private:
-    T           data;
+    Handle<T>   data;
     std::string file_xml;
     std::string record_xml;
   };
@@ -190,6 +193,33 @@ namespace Chroma
       // Note multi1d's need to be loked up and resized appropriately
       // and no XML files are added at this point
       the_map[id] = dynamic_cast<NamedObjectBase*>(new NamedObject<T>());
+      if (NULL == the_map[id])
+      {
+	ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : error creating NamedObject for id= " << id << endl;
+        throw error_stream.str();
+      }
+    }
+
+    //! Create an entry of arbitrary type, with 1 parameter
+    template<typename T, typename P1>
+    void create(const std::string& id, const P1& p1) 
+    {
+      // Lookup and throw exception if duplicate found
+      typedef std::map<std::string, NamedObjectBase*>::iterator I;
+      I iter = the_map.find(id);
+      if( iter != the_map.end()) 
+      {
+	ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : duplicate id = " << id << endl;
+        throw error_stream.str();
+      }
+
+      // Create a new object of specified type (empty)
+      // Dynamic cast to Typeless base clasee.
+      // Note multi1d's need to be loked up and resized appropriately
+      // and no XML files are added at this point
+      the_map[id] = dynamic_cast<NamedObjectBase*>(new NamedObject<T>(p1));
       if (NULL == the_map[id])
       {
 	ostringstream error_stream;

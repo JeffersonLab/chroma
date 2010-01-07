@@ -1,12 +1,12 @@
 // -*- C++ -*-
-// $Id: inline_baryon_block_matelem_w.h,v 1.2 2009-02-23 19:52:02 edwards Exp $
 /*! \file
- * \brief Inline measurement of baryon
- operators via colorvector matrix elements
+ * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
+ *
+ * Generalized propagator calculation on a colorvector
  */
 
-#ifndef __inline_baryon_block_matelem_h__
-#define __inline_baryon_block_matelem_h__
+#ifndef __inline_genprop_matelem_pt_colorvec_h__
+#define __inline_genprop_matelem_pt_colorvec_h__
 
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/xml_group_reader.h"
@@ -14,10 +14,9 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineBaryonBlockMatElemEnv 
+  namespace InlineGenPropMatElemPtColorVecEnv 
   {
     bool registerAll();
-
 
     //! Parameter structure
     /*! \ingroup inlinehadron */
@@ -31,31 +30,32 @@ namespace Chroma
 
       struct Param_t
       {
-	struct Displacement_t
-	{
-	  multi1d<int>          left;                   /*!< Left quark displacement array */
-	  multi1d<int>          middle;                 /*!< Middle quark displacement array */
-	  multi1d<int>          right;                  /*!< Rifht quark displacement array */
-	};
-
+	bool                    restrict_plateau;       /*!< Restrict the time slices save to the plateau region */
+	bool                    avg_equiv_mom;          /*!< Average the genprop over rotations of momenta at fixed mom^2 */
+	int                     t_sink;                 /*!< Sink time slice for props */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
+	multi1d<int>            mom_offset;             /*!< Momentum origin - the mom2_max will be around here */
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */
-	int                     decay_dir;              /*!< Decay direction */
-	multi1d<Displacement_t> displacement_list;      /*!< Array of displacements list to generate */
+	std::string             mass_label;             /*!< Some kind of mass label */
+
+	struct DispGamma_t
+	{
+	  int                   gamma;                  /*!< The gamma matrix for this displacement */
+	  multi1d<int>          displacement;           /*!< The displacement path for this gamma */
+	};
+
+	multi1d<DispGamma_t>    disp_gamma_list;        /*!< Array of displacements and gammas to generate */
+
 	GroupXML_t              link_smearing;          /*!< link smearing xml */
-
-	multi1d<int>            block_size;             /*!< describes the block */
-
-	// This all may need some work
-	bool                    site_orthog_basis;      /*!< Whether all the basis vectors are site level orthog */
       };
 
       struct NamedObject_t
       {
 	std::string         gauge_id;               /*!< Gauge field */
-	std::string         colorvec_id;            /*!< LatticeColorVector EigenInfo */
-	std::string         baryon_op_file;          /*!< File name for creation operators */
+	std::string         source_prop_id;         /*!< Id for input propagator solutions */
+	std::string         sink_prop_id;           /*!< Id for input propagator solutions */
+	std::string         genprop_op_file;        /*!< File for generalized propagators operators */
       };
 
       Param_t        param;      /*!< Parameters */    
@@ -64,7 +64,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of baryon operators via colorvector matrix elements
+    //! Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {
@@ -88,7 +88,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace InlineBaryonBlockMatElemEnv 
+  } // namespace InlineGenPropMatElemPtColorVecEnv 
 }
 
 #endif

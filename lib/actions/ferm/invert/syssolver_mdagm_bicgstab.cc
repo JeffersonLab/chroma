@@ -1,4 +1,4 @@
-// $Id: syssolver_mdagm_bicgstab.cc,v 3.2 2009-04-17 02:05:32 bjoo Exp $
+// -*- C++ -*-
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */

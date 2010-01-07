@@ -1,4 +1,3 @@
-// $Id: inline_block_genprop_matelem_w.cc,v 1.2 2009-03-05 04:01:06 edwards Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
@@ -6,21 +5,23 @@
  */
 
 #include "handle.h"
-#include "meas/inline/hadron/inline_block_genprop_matelem_w.h"
+//#include "meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h"
+#include "inline_genprop_matelem_pt_colorvec_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 #include "meas/smear/displace.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/block_subset.h"
 #include "util/ferm/map_obj.h"
 #include "util/ferm/key_val_db.h"
-#include "util/ferm/key_block_prop.h"
+#include "util/ferm/key_prop_colorvec.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
 
 #include "meas/inline/io/named_objmap.h"
+#include "io/qprop_io.h"
+#include "util/ferm/transf.h"
 
 namespace Chroma 
 { 
@@ -29,7 +30,7 @@ namespace Chroma
    *
    * @{
    */
-  namespace InlineBlockGenPropMatElemEnv 
+  namespace InlineGenPropMatElemPtColorVecEnv 
   { 
     // Reader for input parameters
     void read(XMLReader& xml, const string& path, Params::Param_t::DispGamma_t& param)
@@ -65,15 +66,12 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      read(paramtop, "t_source", param.t_source);
       read(paramtop, "t_sink", param.t_sink);
       read(paramtop, "mom2_max", param.mom2_max);
       read(paramtop, "mom_offset", param.mom_offset);
       read(paramtop, "displacement_length", param.displacement_length);
       read(paramtop, "DisplacementGammaList", param.disp_gamma_list);
       read(paramtop, "num_vecs", param.num_vecs);
-      read(paramtop, "block_size", param.block_size);
-      read(paramtop, "decay_dir", param.decay_dir);
       read(paramtop, "mass_label", param.mass_label);
 
       param.link_smearing  = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
@@ -101,15 +99,12 @@ namespace Chroma
       write(xml, "version", version);
       write(xml, "restrict_plateau", param.restrict_plateau);
       write(xml, "avg_equiv_mom", param.avg_equiv_mom);
-      write(xml, "t_source", param.t_source);
       write(xml, "t_sink", param.t_sink);
       write(xml, "mom_offset", param.mom_offset);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "DisplacementGammaList", param.disp_gamma_list);
       write(xml, "num_vecs", param.num_vecs);
-      write(xml, "decay_dir", param.decay_dir);
-      write(xml, "block_size", param.block_size);
       write(xml, "mass_label", param.mass_label);
 
       xml << param.link_smearing.xml;
@@ -149,7 +144,7 @@ namespace Chroma
   }
 
 
-  namespace InlineBlockGenPropMatElemEnv 
+  namespace InlineGenPropMatElemPtColorVecEnv 
   { 
     // Anonymous namespace for registration
     namespace
@@ -164,7 +159,7 @@ namespace Chroma
       bool registered = false;
     }
 
-    const std::string name = "BLOCK_GENPROP_MATELEM";
+    const std::string name = "GENPROP_MATELEM_PT_COLORVEC";
 
     //! Register all the factories
     bool registerAll() 
@@ -260,8 +255,6 @@ namespace Chroma
       int                t_slice;       /*!< Propagator time slice */
       int                t_source;      /*!< Source time slice */
       int                t_sink;        /*!< Source time slice */
-      int                blk_l;         /*!< Left block index */
-      int                blk_r;         /*!< Right block index */
       int                spin_l;        /*!< Source spin index */
       int                spin_r;        /*!< Sink spin index */
       int                gamma;         /*!< The gamma matrix number - [0,Ns^2) */
@@ -293,8 +286,6 @@ namespace Chroma
       read(bin, param.t_slice);
       read(bin, param.t_source);
       read(bin, param.t_sink);
-      read(bin, param.blk_l);
-      read(bin, param.blk_r);
       read(bin, param.spin_l);
       read(bin, param.spin_r);
       read(bin, param.gamma);
@@ -309,8 +300,6 @@ namespace Chroma
       write(bin, param.t_slice);
       write(bin, param.t_source);
       write(bin, param.t_sink);
-      write(bin, param.blk_l);
-      write(bin, param.blk_r);
       write(bin, param.spin_l);
       write(bin, param.spin_r);
       write(bin, param.gamma);
@@ -393,7 +382,7 @@ namespace Chroma
       {
 	string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "BlockGenPropMatElem");
+	push(xml_out, "GenPropMatElemPtColorVec");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
@@ -421,7 +410,7 @@ namespace Chroma
 
       StopWatch swiss;
 			
-      push(xml_out, "BlockGenPropMatElem");
+      push(xml_out, "GenPropMatElemPtColorVec");
       write(xml_out, "update_no", update_no);
 
       QDPIO::cout << name << ": Generalized propagator color-vector matrix element" << endl;
@@ -435,8 +424,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.source_prop_id);
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.sink_prop_id);
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_prop_id);
+	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.sink_prop_id);
 
 	// Snarf the prop info. This is will throw if the prop_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.source_prop_id).getFileXML(source_prop_file_xml);
@@ -460,10 +449,10 @@ namespace Chroma
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      const MapObject<KeyBlockProp_t,LatticeFermion>& source_ferm_map =
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.source_prop_id);
-      const MapObject<KeyBlockProp_t,LatticeFermion>& sink_ferm_map =
-	TheNamedObjMap::Instance().getData< MapObject<KeyBlockProp_t,LatticeFermion> >(params.named_obj.sink_prop_id);
+      const LatticePropagator& source_prop =
+	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_prop_id);
+      const MapObject<KeyPropColorVec_t,LatticeFermion>& sink_ferm_map =
+	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.sink_prop_id);
 
       push(xml_out, "Output_version");
       write(xml_out, "out_version", 2);
@@ -487,18 +476,34 @@ namespace Chroma
       //This is really cheap.
       MesPlq(xml_out, "Observables", u);
 
+
+      PropSourceConst_t source_header;
+      
+      read(source_prop_record_xml, "/Propagator/PropSource", source_header);
+      
+      
+      QDPIO::cout << "Point Propagator successfully found and parsed" << endl;
+      
+      //multi1d<int> source = prop_header.source_header.getTSrce();
+      multi1d<int> source = source_header.getTSrce();
+      
+      int decay_dir = source_header.j_decay ;
+      int t_source = source_header.t_source;
+      
+      //Real Mass =  getMass(source_header.fermact);
+      //QDPIO::cout << "Mass = " << Mass << endl;
+      QDPIO::cout << "source = "
+                  << source[0]<<" "
+                  << source[1]<<" "
+                  << source[2]<<" "
+                  << source[3]<< endl;
+
+
       //
       // Initialize the slow Fourier transform phases
       //
-      multi1d<int> origin_offset(Nd);
-      origin_offset = 0;
-      SftMom phases(params.param.mom2_max, origin_offset, params.param.mom_offset, 
-		    params.param.avg_equiv_mom, params.param.decay_dir);
-
-      // Make the block Set                                                        
-      Set blocks;
-      blocks.make(BlockFunc(params.param.decay_dir, params.param.block_size));
-      int num_blks = blocks.numSubsets();
+      SftMom phases(params.param.mom2_max,source, params.param.mom_offset, 
+		    params.param.avg_equiv_mom, decay_dir);
 
       //
       // Smear the gauge field if needed
@@ -527,7 +532,6 @@ namespace Chroma
 
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
-
       //
       // DB storage
       //
@@ -535,27 +539,37 @@ namespace Chroma
 	qdp_db;
 
       // Open the file, and write the meta-data and the binary for this operator
+      if (! qdp_db.fileExists(params.named_obj.genprop_op_file))
       {
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("blockGenPropElemOp"));
+	write(file_xml, "id", string("genPropElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "blockSize", params.param.block_size);
-	write(file_xml, "decay_dir", params.param.decay_dir);
+	write(file_xml, "decay_dir", decay_dir);
+	proginfo(file_xml);    // Print out basic program info
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Op_Info", params.param.disp_gamma_list);
 	write(file_xml, "Source_prop_record_info", source_prop_record_xml);
 	write(file_xml, "Sink_prop_record_info", sink_prop_record_xml);
 	write(file_xml, "Config_info", gauge_xml);
+	write(file_xml, "source", source);
 	pop(file_xml);
 
+	// NOTE: we always write a metadata, even if the file exists. 
+	// Probably should not do this if a file already exists.
+	// Yukky, but add on a bunch of padding. 
+	// This is in case a latter task writes another metadata.
 	std::string file_str(file_xml.str());
 	qdp_db.setMaxUserInfoLen(file_str.size());
 
 	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR | O_CREAT, 0664);
 
 	qdp_db.insertUserdata(file_str);
+      }
+      else
+      {
+	qdp_db.open(params.named_obj.genprop_op_file, O_RDWR, 0664);
       }
 
 
@@ -571,8 +585,6 @@ namespace Chroma
 
       const bool restrict_plateau = params.param.restrict_plateau;
       const int num_vecs          = params.param.num_vecs;
-      const int decay_dir         = params.param.decay_dir;
-      const int t_source          = params.param.t_source;
       const int t_sink            = params.param.t_sink;
 
       // Define the start and end region for the plateau
@@ -617,109 +629,94 @@ namespace Chroma
 	swiss.start();
 
 	// Big loop over the momentum projection
-	for(int mom_num = 0; mom_num < phases.numMom(); ++mom_num) 
+	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
-	  // Loop over blocks
-	  for(int blk_r=0; blk_r < num_blks; ++blk_r)
+	  // Loop over spins
+	  for(int spin_r=0; spin_r < Ns; ++spin_r)
 	  {
-	    // QDPIO::cout << "blk_r = " << blk_r << endl;
+	    QDPIO::cout << "spin_r = " << spin_r << endl; 
 
-	    for(int blk_l=0; blk_l < num_blks; ++blk_l)
+	    for(int spin_l=0; spin_l < Ns; ++spin_l)
 	    {
-	      // QDPIO::cout << "blk_l = " << blk_l << endl;
+	      QDPIO::cout << "spin_l = " << spin_l << endl; 
 
-	      // Loop over spins
-	      for(int spin_r=0; spin_r < Ns; ++spin_r)
+	      // The keys for the spin and displacements for this particular elemental operator
+	      // No displacement for left colorvector, only displace right colorvector
+	      // Invert the time - make it an independent key
+	      multi1d<KeyValGenPropElementalOperator_t> buf(phases.numSubsets());
+	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
-		QDPIO::cout << "spin_r = " << spin_r << endl; 
+		int t = tt % phases.numSubsets(); // mod back into a normal interval
 
-		for(int spin_l=0; spin_l < Ns; ++spin_l)
+		buf[t].key.key().t_slice       = t;
+		buf[t].key.key().t_source      = t_source;
+		buf[t].key.key().t_sink        = t_sink;
+		buf[t].key.key().spin_r        = spin_r;
+		buf[t].key.key().spin_l        = spin_l;
+		buf[t].key.key().mass_label    = params.param.mass_label;
+		buf[t].key.key().mom           = phases.numToMom(mom_num);
+		buf[t].key.key().gamma         = gamma;
+		buf[t].key.key().displacement  = disp; // only right colorvector
+
+		buf[t].val.data().op.resize(num_vecs, Nc);
+	      }
+
+	      for(int color_r = 0; color_r < Nc; ++color_r)
+	      {
+
+		LatticeFermion q ;
+		PropToFerm(source_prop, q, color_r, spin_r);
+		
+		// Displace the right vector and multiply by the momentum phase
+		LatticeFermion shift_ferm = Gamma(gamma_tmp) * displace(u_smr, q,
+									params.param.displacement_length,
+ 									disp);
+
+		for(int i = 0; i < params.param.num_vecs; ++i)
 		{
-		  QDPIO::cout << "spin_l = " << spin_l << endl; 
+		  KeyPropColorVec_t key_l;
+		  key_l.t_source     = t_sink;
+		  key_l.colorvec_src = i;
+		  key_l.spin_src     = spin_l;
+		  
+		  watch.reset();
+		  watch.start();
 
-		  // The keys for the spin and displacements for this particular elemental operator
-		  // No displacement for left colorvector, only displace right colorvector
-		  // Invert the time - make it an independent key
-		  multi1d<KeyValGenPropElementalOperator_t> buf(phases.numSubsets());
+		  // Contract over color indices
+		  // Do the relevant quark contraction
+		  LatticeFermion tmpvec_sink; sink_ferm_map.lookup(key_l, tmpvec_sink);
+
+		  LatticeComplex lop = localInnerProduct(tmpvec_sink, shift_ferm);
+
+		  // Reweight the phase in case there was momentum averaging
+		  Real reweight;
+		  if (phases.multiplicity(mom_num) > 0)
+		    reweight = Real(phases.multiplicity(mom_num));
+		  else
+		    reweight = 1.0;
+
+		  // Slow fourier-transform
+		  multi1d<ComplexD> op_sum = sumMulti(reweight * phases[mom_num] * lop, phases.getSet());
+
+		  watch.stop();
+
 		  for(int tt=t_start; tt <= t_end; ++tt)
 		  {
 		    int t = tt % phases.numSubsets(); // mod back into a normal interval
-
-		    buf[t].key.key().t_slice       = t;
-		    buf[t].key.key().t_source      = t_source;
-		    buf[t].key.key().t_sink        = t_sink;
-		    buf[t].key.key().blk_l         = blk_l;
-		    buf[t].key.key().blk_r         = blk_r;
-		    buf[t].key.key().spin_l        = spin_l;
-		    buf[t].key.key().spin_r        = spin_r;
-		    buf[t].key.key().mass_label    = params.param.mass_label;
-		    buf[t].key.key().mom           = phases.numToMom(mom_num);
-		    buf[t].key.key().gamma         = gamma;
-		    buf[t].key.key().displacement  = disp; // only right colorvector
-
-		    buf[t].val.data().op.resize(num_vecs, num_vecs);
+		    buf[t].val.data().op(i,color_r) = op_sum[t];
 		  }
+		} // end for i
+	      } // end for j
 
-		  for(int colorvec_r=0; colorvec_r < num_vecs; ++colorvec_r)
-		  {
-		    KeyBlockProp_t key_r;
-		    key_r.t_source = t_source;
-		    key_r.color    = colorvec_r;
-		    key_r.spin     = spin_r;
-		    key_r.block    = blk_r;
-		  
-		    // Displace the right vector and multiply by the momentum phase
-		    LatticeFermion shift_ferm = Gamma(gamma_tmp) * displace(u_smr, 
-									    source_ferm_map[key_r],
-									    params.param.displacement_length, 
-									    disp);
+	      QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
+	      for(int tt=t_start; tt <= t_end; ++tt)
+	      {
+		int t = tt % phases.numSubsets(); // mod back into a normal interval
+		qdp_db.insert(buf[t].key, buf[t].val);
+	      }
 
-		    for(int colorvec_l=0; colorvec_l < num_vecs; ++colorvec_l)
-		    {
-		      KeyBlockProp_t key_l;
-		      key_l.t_source = t_sink;
-		      key_l.color    = colorvec_l;
-		      key_l.spin     = spin_l;
-		      key_l.block    = blk_l;
-		  
-		      watch.reset();
-		      watch.start();
-
-		      // Contract over color indices
-		      // Do the relevant quark contraction
-		      LatticeComplex lop = localInnerProduct(sink_ferm_map[key_l], shift_ferm);
-
-		      // Reweight the phase in case there was momentum averaging
-		      Real reweight;
-		      if (phases.multiplicity(mom_num) > 0)
-			reweight = Real(phases.multiplicity(mom_num));
-		      else
-			reweight = 1.0;
-
-		      // Slow fourier-transform
-		      multi1d<ComplexD> op_sum = sumMulti(reweight * phases[mom_num] * lop, phases.getSet());
-
-		      watch.stop();
-
-		      for(int tt=t_start; tt <= t_end; ++tt)
-		      {
-			int t = tt % phases.numSubsets(); // mod back into a normal interval
-			buf[t].val.data().op(colorvec_l,colorvec_r) = op_sum[t];
-		      }
-		    } // end for colorvec_l
-		  } // end for colorvec_r
-
-		  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
-		  for(int tt=t_start; tt <= t_end; ++tt)
-		  {
-		    int t = tt % phases.numSubsets(); // mod back into a normal interval
-		    qdp_db.insert(buf[t].key, buf[t].val);
-		  }
-
-		} // end for spin_l
-	      } // end for spin_r
-	    } // blk_l
-	  } // blk_r
+	    } // end for spin_l
+	  } // end for spin_r
 	} // mom_num
 
 	swiss.stop();
@@ -734,7 +731,7 @@ namespace Chroma
       pop(xml_out); // ElementalOps
 
       // Close the namelist output file XMLDAT
-      pop(xml_out);     // BlockGenPropMatElemtor
+      pop(xml_out);     // GenPropMatElemColorVector
 
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
@@ -745,7 +742,7 @@ namespace Chroma
 
       END_CODE();
     } // func
-  } // namespace InlineBlockGenPropMatElemEnv
+  } // namespace InlineGenPropMatElemPtColorVecEnv
 
   /*! @} */  // end of group hadron
 

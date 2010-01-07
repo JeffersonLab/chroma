@@ -123,7 +123,7 @@ namespace Chroma
     flopcount.addSiteFlops(4*Nc*Ns, s);
 
 
-#if 1
+#if 0
     QDPIO::cout << "InvCG: k = 0  || r ||= " <<sqrt(cp) << endl;
 #endif
 

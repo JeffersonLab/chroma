@@ -314,6 +314,7 @@ nobase_include_HEADERS = \
 	meas/sources/source_smearing_aggregate.h \
 	util/ferm/ferm.h util/ferm/transf.h util/ft/ft.h \
 	util/ferm/eigeninfo.h \
+	util/ferm/subset_ev_pair.h \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
 	util/ferm/block_couplings.h \
@@ -694,13 +695,19 @@ nobase_include_HEADERS += \
 	util/ferm/etensor.h \
         util/ferm/symtensor.h \
 	util/ferm/map_obj.h \
+	util/ferm/map_obj/map_obj_factory_w.h \
+	util/ferm/map_obj/map_obj_aggregate_w.h \
+	util/ferm/map_obj/map_obj_memory.h \
+	util/ferm/map_obj/map_obj_memory_w.h \
+	util/ferm/map_obj/map_obj_disk.h \
+	util/ferm/map_obj/map_obj_disk_w.h \
+	util/ferm/map_obj/map_obj_null.h \
+	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
 	util/ferm/key_laph_dil_prop.h \
 	util/ferm/key_prop_matelem.h \
-	util/ferm/key_grid_prop.h \
-	util/ferm/key_block_prop.h \
 	util/ferm/key_val_db.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
@@ -810,9 +817,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_seqsource_w.h \
 	meas/inline/hadron/inline_seqprop_test_w.h \
 	meas/inline/hadron/inline_prop_3pt_w.h \
-	meas/inline/hadron/inline_block_orthog_colorvec.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
-	meas/inline/hadron/inline_block_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
@@ -832,20 +837,15 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_colorvec_w.h \
-	meas/inline/hadron/inline_grid_prop_w.h \
-	meas/inline/hadron/inline_block_prop_w.h \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
-	meas/inline/hadron/inline_unit_prop_colorvec_w.h \
+	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_grid_prop_matelem_w.h \
-	meas/inline/hadron/inline_block_prop_matelem_w.h \
+	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
+	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_meson_grid_matelem_w.h \
-	meas/inline/hadron/inline_meson_block_matelem_w.h \
-	meas/inline/hadron/inline_baryon_block_matelem_w.h \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.h \
-	meas/inline/hadron/inline_block_genprop_matelem_w.h \
+	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.h \
 	meas/inline/hadron/inline_mres_w.h \
 	meas/inline/hadron/inline_qpropqio_w.h \
 	meas/inline/hadron/inline_qpropadd_w.h \
@@ -883,7 +883,6 @@ nobase_include_HEADERS += \
 	meas/inline/io/inline_list_obj.h \
 	meas/inline/io/inline_gaussian_obj.h \
 	meas/inline/io/inline_rng.h \
-        meas/inline/io/qio_read_obj_funcmap.h \
         meas/inline/io/qio_write_obj_funcmap.h \
         meas/inline/io/szin_read_obj_funcmap.h \
         meas/inline/io/szin_write_obj_funcmap.h \
@@ -898,9 +897,11 @@ nobase_include_HEADERS += \
 	meas/inline/schrfun/inline_sfpcac_w.h \
 	meas/inline/smear/smear.h \
 	meas/inline/smear/inline_smear_aggregate.h \
-	meas/inline/smear/inline_link_smear.h
-
+	meas/inline/smear/inline_link_smear.h \
+	meas/inline/io/inline_read_map_obj_disk.h \
+	meas/inline/io/inline_copy_map_obj.h
 # Taken out for now
+#	
 #	meas/inline/hadron/inline_spectrum_w.h
 #	meas/hadron/multipole_w.h
 #	meas/inline/hadron/inline_multipole_w.h
@@ -1258,7 +1259,8 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc
+	meas/hadron/dilution_quark_source_const_w.cc \
+	util/ferm/map_obj/map_obj_disk.cc
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
 
@@ -1506,11 +1508,14 @@ libchroma_a_SOURCES += \
         util/ferm/symtensor.cc \
 	util/ferm/key_hadron_2pt_corr.cc \
 	util/ferm/key_hadron_3pt_corr.cc \
-	util/ferm/key_grid_prop.cc \
-	util/ferm/key_block_prop.cc \
 	util/ferm/key_prop_colorvec.cc \
 	util/ferm/key_laph_dil_prop.cc \
-	util/ferm/key_prop_matelem.cc
+	util/ferm/key_prop_matelem.cc \
+	util/ferm/map_obj/map_obj_aggregate_w.cc \
+	util/ferm/map_obj/map_obj_memory_w.cc \
+	util/ferm/map_obj/map_obj_disk_w.cc \
+	util/ferm/map_obj/map_obj_null_w.cc
+
 
 # Taken out for now
 #        meas/hadron/multipole_w.cc
@@ -1558,9 +1563,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqsource_w.cc \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
-	meas/inline/hadron/inline_block_orthog_colorvec.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
-	meas/inline/hadron/inline_block_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
@@ -1580,20 +1583,15 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_noisy_building_blocks_w.cc \
 	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_colorvec_w.cc \
-	meas/inline/hadron/inline_grid_prop_w.cc \
-	meas/inline/hadron/inline_block_prop_w.cc \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
-	meas/inline/hadron/inline_unit_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
-	meas/inline/hadron/inline_grid_prop_matelem_w.cc \
-	meas/inline/hadron/inline_block_prop_matelem_w.cc \
+	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_meson_matelem_colorvec_w.cc \
-	meas/inline/hadron/inline_meson_grid_matelem_w.cc \
-	meas/inline/hadron/inline_meson_block_matelem_w.cc \
-	meas/inline/hadron/inline_baryon_block_matelem_w.cc \
 	meas/inline/hadron/inline_genprop_matelem_colorvec_w.cc \
-	meas/inline/hadron/inline_block_genprop_matelem_w.cc \
+	meas/inline/hadron/inline_genprop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_mres_w.cc \
 	meas/inline/hadron/inline_qpropqio_w.cc \
 	meas/inline/hadron/inline_qpropadd_w.cc \
@@ -1636,13 +1634,14 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_list_obj.cc \
 	meas/inline/io/inline_gaussian_obj.cc \
 	meas/inline/io/inline_rng.cc \
-        meas/inline/io/qio_read_obj_funcmap.cc \
         meas/inline/io/qio_write_obj_funcmap.cc \
         meas/inline/io/szin_read_obj_funcmap.cc \
         meas/inline/io/szin_write_obj_funcmap.cc \
         meas/inline/io/xml_write_obj_funcmap.cc \
 	meas/inline/io/inline_usqcd_read_ddpairs_prop.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
+	meas/inline/io/inline_read_map_obj_disk.cc \
+	meas/inline/io/inline_copy_map_obj.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -1651,6 +1650,7 @@ libchroma_a_SOURCES += \
 	meas/inline/smear/inline_link_smear.cc
 
 # Taken out for now
+
 #	meas/inline/hadron/inline_spectrum_w.cc
 #	meas/inline/hadron/inline_multipole_w.cc
 #	meas/inline/hadron/inline_spectrumQll.cc

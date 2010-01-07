@@ -11,8 +11,9 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/gaus_smear.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/subset_vectors.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
@@ -30,6 +31,9 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "colorvec_id", input.colorvec_id);
+
+      // User Specified MapObject tags
+      input.colorvec_obj = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
     }
 
     //! Propagator output
@@ -39,6 +43,7 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "colorvec_id", input.colorvec_id);
+      xml << input.colorvec_obj.xml;
 
       pop(xml);
     }
@@ -115,6 +120,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -264,7 +270,15 @@ namespace Chroma
       //
       try
       {
-	TheNamedObjMap::Instance().create< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+	std::istringstream  xml_s(params.named_obj.colorvec_obj.xml);
+	XMLReader MapObjReader(xml_s);
+	
+	// Create the entry
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id) =
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.colorvec_obj.id,
+								       MapObjReader,
+								       params.named_obj.colorvec_obj.path);
       }
       catch (std::bad_cast)
       {
@@ -278,8 +292,8 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      SubsetVectors<LatticeColorVector>& color_vecs =
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+      MapObject<int,EVPair<LatticeColorVector> >& color_vecs = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       // The code goes here
       StopWatch swatch;
@@ -301,13 +315,17 @@ namespace Chroma
       
       const int num_vecs = params.param.num_vecs;
 
-      color_vecs.getEvectors().resize(num_vecs);
-      color_vecs.getEvalues().resize(num_vecs);
-      for(int i(0);i<num_vecs;i++){
-	color_vecs.getEvalues()[i].weights.resize(phases.numSubsets());
-      }
 
-      color_vecs.getDecayDir() = params.param.decay_dir;
+      // color_vecs.resizeEvectors(num_vecs);
+      multi1d<SubsetVectorWeight_t> evals(num_vecs);
+      // Temporary
+      multi1d<LatticeColorVector> evecs(num_vecs);
+
+
+      QDPIO::cout << "Got here" << endl;
+      for(int i(0);i<num_vecs;i++){
+	evals[i].weights.resize(phases.numSubsets());
+      }
 
       //
       // Initialize the color vectors with gaussian numbers
@@ -318,33 +336,33 @@ namespace Chroma
 	for(int i=0; i < num_vecs; ++i)
 	{
 	  QDPIO::cout << name << ": Doing colorvec: "<<i << " hit no: "<<hit<<endl;
-	  if (hit == 0)
-	  {
-	    gaussian(color_vecs.getEvectors()[i]);
+	  if (hit == 0) {
+	    gaussian(evecs[i]);
 	  }
-	  else
-	  {
+	  else {
 	    gausSmear(u_smr, 
-		      color_vecs.getEvectors()[i],
+		      evecs[i],
 		      params.param.width, params.param.num_iter, params.param.decay_dir);
 	  }
 
-	  for(int k=0; k < i; ++k)
-	  {
+	  for(int k=0; k < i; ++k) {
 	    multi1d<DComplex> cc = 
-	      sumMulti(localInnerProduct(color_vecs.getEvectors()[k],
-					 color_vecs.getEvectors()[i]),
+	      sumMulti(localInnerProduct(evecs[k],
+					 evecs[i]),
 		       phases.getSet());
-	    for(int t(0);t<phases.numSubsets();t++)
-	      color_vecs.getEvectors()[i][phases.getSet()[t]] -=
-		cc[t]*color_vecs.getEvectors()[k];
+
+	    for(int t(0);t<phases.numSubsets();t++) {
+	      evecs[i][phases.getSet()[t]] -= cc[t]*evecs[k];
+	    }
+
 	  }
 
-	  multi1d<Double> norm2 =
-	    sumMulti(localNorm2(color_vecs.getEvectors()[i]),phases.getSet());
+	  multi1d<Double> norm2 = sumMulti(localNorm2(evecs[i]),phases.getSet());
 
-	  for(int t=0; t < phases.numSubsets(); ++t)
-	    color_vecs.getEvectors()[i][phases.getSet()[t]] /= sqrt(norm2[t]);
+	  for(int t=0; t < phases.numSubsets(); ++t) {
+	    evecs[i][phases.getSet()[t]] /= sqrt(norm2[t]);
+	  }
+
 	}
       }
 
@@ -353,36 +371,46 @@ namespace Chroma
       // Compute the version of eigenvalues (which they are not)
       // 
       {
-	multi1d< multi1d<Double> > source_corrs(color_vecs.getNumVectors());
+	multi1d< multi1d<Double> > source_corrs(evecs.size());
 	for(int m=0; m < source_corrs.size(); ++m)
-	  source_corrs[m] = sumMulti(localNorm2(color_vecs.getEvectors()[m]), 
-				     phases.getSet());
+	  source_corrs[m] = sumMulti(localNorm2(evecs[m]), phases.getSet());
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
 	pop(xml_out);
 	//compute the "eigenvalues"
 	push(xml_out,"SmearingEvals");
-	for(int i=0; i < num_vecs; ++i)
-	{
+
+
+	for(int i=0; i < num_vecs; ++i) {
 	  LatticeColorVector Svec;
-	  klein_gord(u_smr, color_vecs.getEvectors()[i], Svec, Real(0), params.param.decay_dir);
+	  klein_gord(u_smr, evecs[i], Svec, Real(0), params.param.decay_dir);
 
 	  multi1d<DComplex> cc = 
-	    sumMulti(localInnerProduct(color_vecs.getEvectors()[i], 
+	    sumMulti(localInnerProduct(evecs[i], 
 				       Svec),  
 		     phases.getSet());
-
-	  for(int t=0; t < phases.numSubsets(); ++t)
-	    color_vecs.getEvalues()[i].weights[t] = real(cc[t]);
+	  
+	  for(int t=0; t < phases.numSubsets(); ++t) {
+	    evals[i].weights[t] = real(cc[t]);
+	  }
 
 	  push(xml_out,"Vector");
 	  write(xml_out, "VecNo",i);
-	  write(xml_out, "Evals", color_vecs.getEvalues()[i].weights);
+	  write(xml_out, "Evals", evals[i].weights);
 	  pop(xml_out);
 	}
 	pop(xml_out);
       }
       
+
+      color_vecs.openWrite();
+      for(int i=0; i < num_vecs; i++) { 
+	EVPair<LatticeColorVector> pair;
+	pair.eigenValue=evals[i];
+	pair.eigenVector=evecs[i];
+	color_vecs.insert(i, pair);
+      }
+      color_vecs.openRead();
       
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec construction = "
@@ -407,7 +435,7 @@ namespace Chroma
 	for(int i(0);i<num_vecs;i++){
 	  push(record_xml, "EigenPair");
 	  write(record_xml, "EigenPairNumber", i); 
-	  write(record_xml, "EigenValues", color_vecs.getEvalues()[i].weights); 
+	  write(record_xml, "EigenValues", evals[i].weights); 
 	  pop(record_xml);
 	}
 	pop(record_xml);

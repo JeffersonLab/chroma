@@ -19,14 +19,14 @@ namespace Chroma
       AbsInlineMeasurement* createMeasurement(XMLReader& xml_in, 
 					      const std::string& path) 
       {
-	return new InlineSZINReadNamedObj(InlineSZINReadNamedObjParams(xml_in, path));
+	return new InlineMeas(Params(xml_in, path));
       }
 
       //! Local registration flag
       bool registered = false;
-    }
 
-    const std::string name = "SZIN_READ_NAMED_OBJECT";
+      const std::string name = "SZIN_READ_NAMED_OBJECT";
+    }
 
     //! Register all the factories
     bool registerAll() 
@@ -44,146 +44,110 @@ namespace Chroma
       }
       return success;
     }
-  }
 
 
-  //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineSZINReadNamedObjParams::NamedObject_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "object_id", input.object_id);
-    write(xml, "object_type", input.object_type);
-
-    pop(xml);
-  }
-
-  //! File output
-  void write(XMLWriter& xml, const string& path, const InlineSZINReadNamedObjParams::File_t& input)
-  {
-    push(xml, path);
-
-    write(xml, "file_name", input.file_name);
-
-    pop(xml);
-  }
-
-
-  //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineSZINReadNamedObjParams::NamedObject_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "object_id", input.object_id);
-    read(inputtop, "object_type", input.object_type);
-  }
-
-  //! File output
-  void read(XMLReader& xml, const string& path, InlineSZINReadNamedObjParams::File_t& input)
-  {
-    XMLReader inputtop(xml, path);
-
-    read(inputtop, "file_name", input.file_name);
-  }
-
-
-  // Param stuff
-  InlineSZINReadNamedObjParams::InlineSZINReadNamedObjParams() { frequency = 0; }
-
-  InlineSZINReadNamedObjParams::InlineSZINReadNamedObjParams(XMLReader& xml_in, const std::string& path) 
-  {
-    try 
+    //! Object buffer
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
-      XMLReader paramtop(xml_in, path);
+      XMLReader inputtop(xml, path);
 
-      if (paramtop.count("Frequency") == 1)
-	read(paramtop, "Frequency", frequency);
-      else
-	frequency = 1;
-
-      // Parameters for source construction
-      read(paramtop, "NamedObject", named_obj);
-
-      // Read in the destination
-      read(paramtop, "File", file);
+      read(inputtop, "object_id", input.object_id);
+      read(inputtop, "object_type", input.object_type);
     }
-    catch(const std::string& e) 
+
+    //! File output
+    void read(XMLReader& xml, const string& path, Params::File_t& input)
     {
-      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
-      QDP_abort(1);
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "file_name", input.file_name);
     }
-  }
 
 
-  void
-  InlineSZINReadNamedObjParams::write(XMLWriter& xml_out, const std::string& path) 
-  {
-    push(xml_out, path);
-    
-    // Parameters for source construction
-    Chroma::write(xml_out, "NamedObject", named_obj);
+    // Param stuff
+    Params::Params() { frequency = 0; }
 
-    // Write out the destination
-    Chroma::write(xml_out, "File", file);
-
-    pop(xml_out);
-  }
-
-
-  void 
-  InlineSZINReadNamedObj::operator()(unsigned long update_no,
-				     XMLWriter& xml_out) 
-  {
-    START_CODE();
-
-    push(xml_out, "szin_read_named_obj");
-    write(xml_out, "update_no", update_no);
-
-    QDPIO::cout << InlineSZINReadNamedObjEnv::name << ": object reader" << endl;
-    StopWatch swatch;
-
-    // Read the object
-    // ONLY SZIN output format is supported in this task
-    // Other tasks could support other disk formats
-    QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
-    QDPIO::cout << "Attempt to read file name = " << params.file.file_name << endl;
-    write(xml_out, "object_id", params.named_obj.object_id);
-    try
+    Params::Params(XMLReader& xml_in, const std::string& path) 
     {
-      swatch.reset();
+      try 
+      {
+	XMLReader paramtop(xml_in, path);
+
+	if (paramtop.count("Frequency") == 1)
+	  read(paramtop, "Frequency", frequency);
+	else
+	  frequency = 1;
+
+	// Parameters for source construction
+	read(paramtop, "NamedObject", named_obj);
+
+	// Read in the destination
+	read(paramtop, "File", file);
+      }
+      catch(const std::string& e) 
+      {
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDP_abort(1);
+      }
+    }
+
+
+    void 
+    InlineMeas::operator()(unsigned long update_no,
+			   XMLWriter& xml_out) 
+    {
+      START_CODE();
+
+      push(xml_out, "szin_read_named_obj");
+      write(xml_out, "update_no", update_no);
+
+      QDPIO::cout << name << ": object reader" << endl;
+      StopWatch swatch;
+
+      // Read the object
+      // ONLY SZIN output format is supported in this task
+      // Other tasks could support other disk formats
+      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+      QDPIO::cout << "Attempt to read file name = " << params.file.file_name << endl;
+      write(xml_out, "object_id", params.named_obj.object_id);
+      try
+      {
+	swatch.reset();
 
 //      // Read the object
 //      TheSZINReadObjFuncMap::Instance().dump();
 
-      // Read the object
-      swatch.start();
-      SZINReadObjCallMapEnv::TheSZINReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
-									    params.named_obj.object_id,
-									    params.file.file_name);
-      swatch.stop();
+	// Read the object
+	swatch.start();
+	SZINReadObjCallMapEnv::TheSZINReadObjFuncMap::Instance().callFunction(params.named_obj.object_type,
+									      params.named_obj.object_id,
+									      params.file.file_name);
+	swatch.stop();
 
-      QDPIO::cout << "SZIN Object successfully read: time= " 
-		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
-    }
-    catch( std::bad_cast ) 
-    {
-      QDPIO::cerr << InlineSZINReadNamedObjEnv::name << ": cast error" 
-		  << endl;
-      QDP_abort(1);
-    }
-    catch (const string& e) 
-    {
-      QDPIO::cerr << InlineSZINReadNamedObjEnv::name << ": error message: " << e 
-		  << endl;
-      QDP_abort(1);
-    }
+	QDPIO::cout << "SZIN Object successfully read: time= " 
+		    << swatch.getTimeInSeconds() 
+		    << " secs" << endl;
+      }
+      catch( std::bad_cast ) 
+      {
+	QDPIO::cerr << name << ": cast error" 
+		    << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) 
+      {
+	QDPIO::cerr << name << ": error message: " << e 
+		    << endl;
+	QDP_abort(1);
+      }
     
-    QDPIO::cout << InlineSZINReadNamedObjEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << endl;
 
-    pop(xml_out);  // read_named_obj
+      pop(xml_out);  // read_named_obj
 
-    END_CODE();
-  } 
+      END_CODE();
+    } 
 
-};
+  }
+
+}

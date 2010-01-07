@@ -488,7 +488,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
+	// NB We are just checking this is here.
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
       }
       catch( std::bad_cast ) 
       {
@@ -500,11 +501,13 @@ namespace Chroma
 	QDPIO::cerr << name << ": map call failed: " << e << endl;
 	QDP_abort(1);
       }
+
+      // Cast should be valid now
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      const SubsetVectors<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       push(xml_out, "BaryonMatElemColorVec");
       write(xml_out, "update_no", update_no);
@@ -571,7 +574,7 @@ namespace Chroma
       DispColorVectorMap smrd_disp_vecs(params.param.use_derivP,
 					params.param.displacement_length,
 					u_smr,
-					eigen_source.getEvectors());
+					eigen_source);
 
       //
       // DB storage
@@ -592,7 +595,7 @@ namespace Chroma
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Op_Info",displacement_list);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	write(file_xml, "Weights", getEigenValues(eigen_source, params.param.num_vecs));
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());

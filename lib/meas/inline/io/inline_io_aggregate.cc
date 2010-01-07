@@ -25,6 +25,8 @@
 #include "meas/inline/io/inline_eigen_bin_colvec_read_obj.h"
 #include "meas/inline/io/inline_eigen_lime_colvec_read_obj.h"
 #include "meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h"
+#include "meas/inline/io/inline_read_map_obj_disk.h"
+#include "meas/inline/io/inline_copy_map_obj.h"
 
 namespace Chroma
 {
@@ -71,6 +73,10 @@ namespace Chroma
 	// QIO USQCD DD PAIRS Reader
 	success &= InlineUSQCDReadDDPairsPropEnv::registerAll();
 	success &= InlineUSQCDWriteDDPairsPropEnv::registerAll();
+
+	// MapObjDisk reader
+       	success &= InlineReadMapObjDiskEnv::registerAll();
+       	success &= InlineCopyMapObjEnv::registerAll();
 
 	registered = true;
       }

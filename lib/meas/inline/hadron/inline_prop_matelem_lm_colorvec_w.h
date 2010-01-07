@@ -1,13 +1,12 @@
 // -*- C++ -*-
-// $Id: inline_block_colorvecs.h,v 3.2 2009-02-23 17:39:35 kostas Exp $
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
- * Propagator calculation on a colorvector
+ * Propagator calculation on a colorvector. Low memory version.
  */
 
-#ifndef __inline_block_colorvecs_h__
-#define __inline_block_colorvecs_h__
+#ifndef __inline_prop_matelem_lm_colorvec_w_h__
+#define __inline_prop_matelem_lm_colorvec_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
@@ -16,7 +15,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineBlockColorVecsEnv 
+  namespace InlinePropMatElemLowMemoryColorVecEnv 
   {
     bool registerAll();
 
@@ -31,23 +30,18 @@ namespace Chroma
 
       struct Param_t
       {
-
-	struct Sources_t {
-	  int decay_dir;            /*!< Decay direction */
-	  GroupXML_t  smr; /*!< xml holding smearing params */
-	  GroupXML_t  link_smear;  /*!< link smearing xml */
-	};
-
-	Sources_t       src  ;
-       	bool OrthoNormal ; // if set to true will first do a global orthonormilization. Default is false
-	multi1d<int> block ;
+	int             num_vecs;       /*!< Number of color vectors to use */
+	int             decay_dir;      /*!< Decay direction */
+	multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
+	std::string     mass_label;     /*!< Some kind of mass label */
       } param;
 
       struct NamedObject_t
       {
-	std::string     gauge_id;      /*!< Gauge field */
-	std::string     colorvec_id;   /*!< Id for color vectors */
-	std::string     smearing_matrix_file; /*!< smearing matrix data base */
+	std::string     gauge_id;       /*!< Gauge field */
+	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
+	std::string     prop_id;        /*!< Id for input propagator solutions */
+	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern
@@ -78,7 +72,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace BlockColorVecsEnv
+  } // namespace PropMatElemColorVec
 
 }
 

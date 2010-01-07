@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_qio_read_obj.h,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
  * \brief Inline task to read an object from a named buffer
  *
@@ -11,58 +10,60 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
   /*! \ingroup inlineio */
   namespace InlineQIOReadNamedObjEnv 
   {
-    extern const std::string name;
     bool registerAll();
-  }
 
-  //! Parameter structure
-  /*! \ingroup inlineio */
-  struct InlineQIOReadNamedObjParams 
-  {
-    InlineQIOReadNamedObjParams();
-    InlineQIOReadNamedObjParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
-
-    unsigned long frequency;
-
-    struct NamedObject_t
+    //! Parameter structure
+    /*! \ingroup inlineio */
+    struct Params 
     {
-      std::string   object_id;
-      std::string   object_type;
-    } named_obj;
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
 
-    struct File_t
+      unsigned long frequency;
+
+      struct NamedObject_t
+      {
+	std::string   object_id;
+	std::string   object_type;
+      };
+
+      struct File_t
+      {
+	std::string   file_name;
+      };
+
+      File_t file;
+      NamedObject_t named_obj;
+      GroupXML_t    named_obj_xml;  /*!< Holds standard named objects */
+    };
+
+    //! Inline reading of qio objects
+    /*! \ingroup inlineio */
+    class InlineMeas : public AbsInlineMeasurement 
     {
-      std::string   file_name;
-    } file;
-  };
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
 
-  //! Inline writing of memory objects
-  /*! \ingroup inlineio */
-  class InlineQIOReadNamedObj : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineQIOReadNamedObj() {}
-    InlineQIOReadNamedObj(const InlineQIOReadNamedObjParams& p) : params(p) {}
-    InlineQIOReadNamedObj(const InlineQIOReadNamedObj& p) : params(p.params) {}
+      unsigned long getFrequency(void) const {return params.frequency;}
 
-    unsigned long getFrequency(void) const {return params.frequency;}
+      //! Do the writing
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
 
-    //! Do the writing
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
+    private:
+      Params params;
+    };
 
-  private:
-    InlineQIOReadNamedObjParams params;
-  };
+  } // namespace InlineQIOReadNamedObjEnv 
 
-};
+} // namespace Chroma
 
 #endif

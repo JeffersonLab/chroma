@@ -77,6 +77,8 @@ Write some QIO objects
       </File>
     </elem>
 
+    <!-- This Object is now gone -->
+    <!--
     <elem>
       <annotation>
         Make a fake gaussian eigeninfo struct
@@ -104,6 +106,7 @@ Write some QIO objects
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
+     -->
 
     <elem>
       <annotation>
@@ -130,11 +133,11 @@ Write some QIO objects
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.31.0</chroma>
-      <qdp>1.29.0</qdp>
+      <chroma>3.37.2</chroma>
+      <qdp>1.35.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>14 Sep 08 11:33:38 EDT</run_date>
+    <run_date>07 Jan 10 11:04:54 EST</run_date>
     <Setgeom>
       <latt_size>4 4 4 8</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -212,17 +215,10 @@ Write some QIO objects
       <qio_write_erase_named_obj>
         <update_no>0</update_no>
         <object_id>prop_0</object_id>
-      </qio_write_erase_named_obj>
-    </elem>
-    <elem>
-      <gaussian_init_named_obj>
-        <update_no>0</update_no>
-      </gaussian_init_named_obj>
-    </elem>
-    <elem>
-      <qio_write_erase_named_obj>
-        <update_no>0</update_no>
-        <object_id>eigeninfo_0</object_id>
+        <qio_write_named_obj>
+          <update_no>0</update_no>
+          <object_id>prop_0</object_id>
+        </qio_write_named_obj>
       </qio_write_erase_named_obj>
     </elem>
     <elem>

@@ -1,5 +1,5 @@
 // -*- C++ -*-
-// $Id: inline_prop_colorvec_w.h,v 1.1 2008-07-21 02:16:09 edwards Exp $
+
 /*! \file
  * \brief Compute the propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
@@ -12,6 +12,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -46,7 +47,8 @@ namespace Chroma
       {
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
-	std::string     prop_id;        /*!< Id for output propagator solutions */
+	std::string     prop_id;        /*!< Output propagator solution id */
+	GroupXML_t      prop_obj;       /*!< Map for output propagator solutions */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern

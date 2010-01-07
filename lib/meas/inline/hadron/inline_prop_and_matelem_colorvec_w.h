@@ -1,23 +1,23 @@
 // -*- C++ -*-
-// $Id: inline_unit_prop_colorvec_w.h,v 1.1 2008-10-28 21:34:47 edwards Exp $
 /*! \file
- * \brief Construct a propagator element that is     I^-1 * multi1d<LatticeColorVector>
- *
- * Test setup for a unit matrix applied to a colorvector.
- * The structure makes it look like a prop_colorvector
+ * \brief Compute the perambulators
+ * 
+ * Compute propagator elements    M^-1 * multi1d<LatticeColorVector>
+ * and the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  */
 
-#ifndef __inline_unit_prop_colorvec_w_h__
-#define __inline_unit_prop_colorvec_w_h__
+#ifndef __inline_prop_and_matelem_colorvec_w_h__
+#define __inline_prop_and_matelem_colorvec_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
   /*! \ingroup inlinehadron */
-  namespace InlineUnitPropColorVecEnv 
+  namespace InlinePropAndMatElemColorVecEnv 
   {
     bool registerAll();
 
@@ -34,22 +34,28 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int num_vecs;             /*!< Number of color vectors to use */
-	  int decay_dir;            /*!< Decay direction */
-	  multi1d<int> t_sources;   /*!< Array of time slice sources for props */
+	  int           num_vecs;       /*!< Number of color vectors to use */
+	  int           decay_dir;      /*!< Decay direction */
+	  multi1d<int>  t_sources;      /*!< Array of time slice sources for props */
+	  std::string   mass_label;     /*!< Some kind of mass label */
 	};
 
+	ChromaProp_t    prop;
 	Contract_t      contract;
-      } param;
+      };
 
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
-	std::string     prop_id;        /*!< Id for output propagator solutions */
-      } named_obj;
+	std::string     prop_id;        /*!< Output propagator solution id */
+	GroupXML_t      prop_obj;       /*!< Map for output propagator solutions */
+	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
+      };
 
-      std::string xml_file;  // Alternate XML file pattern
+      Param_t           param;
+      NamedObject_t     named_obj;
+      std::string       xml_file;       /*!< Alternate XML file pattern */
     };
 
 

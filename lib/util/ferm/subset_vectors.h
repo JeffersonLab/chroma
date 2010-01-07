@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: subset_vectors.h,v 1.2 2009-05-21 02:39:13 jbulava Exp $
 /*! \file
  *  \brief Holds of vectors and weights
  */
@@ -8,16 +7,13 @@
 #define __subset_vectors_h__
 
 #include "chromabase.h"
+#include "util/ferm/subset_ev_pair.h"
+#include "util/ferm/map_obj.h"
+
 
 namespace Chroma
 {
-  //! Weights for subset of vectors
-  /*! \ingroup ferm */
-  struct SubsetVectorWeight_t
-  {
-    multi1d<Real> weights;
-  };
-
+ 
   //! Reader
   /*! \ingroup ferm */
   void read(XMLReader& xml, const std::string& path, SubsetVectorWeight_t& param);
@@ -25,74 +21,13 @@ namespace Chroma
   //! Writer
   /*! \ingroup ferm */
   void write(XMLWriter& xml, const std::string& path, const SubsetVectorWeight_t& param);
- 
 
-  //! Holds of vectors and weights
-  /*!
-   * \ingroup ferm
-   */
-  template<typename T>
-  class SubsetVectors
-  {
-  public:
-    //! Partial constructor
-    SubsetVectors() {}
 
-    //! Full constructor
-    SubsetVectors(const multi1d<SubsetVectorWeight_t>& eval, int decay_dir_, const multi1d<T>& evec) 
-      : evalues(eval), decay_dir(decay_dir_), evectors(evec) {
-      if (eval.size() != evec.size() ) {
-	QDPIO::cout << "Eval array size not equal to evec array size" << endl;
-	QDP_abort(1);
-      }
-    }
-
-    //! Destructor
-    ~SubsetVectors() {}
-      
-    //! Number of vectors
-    int getNumVectors() const {return evectors.size();}
-
-    //! Extent of decay direction
-    int getDecayExtent() const {return QDP::Layout::lattSize()[decay_dir];}
-
-    //! Get decay direction
-    int getDecayDir() const {return decay_dir;}
-
-    //! Set decay direction
-    int& getDecayDir() {return decay_dir;}
-
-    //! Getter
-    const multi1d<SubsetVectorWeight_t>& getEvalues() const {return evalues;}
-    //! Setter
-    multi1d<SubsetVectorWeight_t>& getEvalues() {return evalues;}
-
-    //! Getter
-    const multi1d<T>& getEvectors() const {return evectors;}
-    //! Setter
-    multi1d<T>& getEvectors() {return evectors;}
-
-  private:
-    int decay_dir;
-    multi1d<SubsetVectorWeight_t> evalues;
-    multi1d<T> evectors;
-  };
+  //! Extract eigenvalues from a map, and arrange them in a different format
+  multi1d<SubsetVectorWeight_t> getEigenValues(const MapObject<int,EVPair<LatticeColorVector> >& eigen_source, int num_vecs);
+  
+  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif

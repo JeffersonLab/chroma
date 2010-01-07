@@ -15,6 +15,9 @@
 
 #include "util/ferm/subset_vectors.h"
 
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
+
 namespace Chroma 
 { 
   //! Object buffer
@@ -87,30 +90,35 @@ namespace Chroma
 
 
       //! Transform a subset_vectors object. This only works for non-array objects
-      template<typename T>
       void gaugeTransfSubsetVectors(const string& output_id, const LatticeColorMatrix& g, const string& input_id)
       {
 	// A shorthand for the object
-	SubsetVectors<T>& input_obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(input_id);
+	Handle< MapObject<int,EVPair<LatticeColorVector> > > input_obj =
+	  TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(input_id);
 
 	XMLReader input_file_xml, input_record_xml;
 	TheNamedObjMap::Instance().get(input_id).getFileXML(input_file_xml);
 	TheNamedObjMap::Instance().get(input_id).getRecordXML(input_record_xml);
 
 	// Create space for the target
-	TheNamedObjMap::Instance().create< SubsetVectors<T> >(output_id);
-	SubsetVectors<T>& output_obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(output_id);
+	Handle< MapObject<int,EVPair<LatticeColorVector> > > output_obj(new MapObjectMemory<int,EVPair<LatticeColorVector> >());
+
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > >, Handle< MapObject<int,EVPair<LatticeColorVector> > > >(output_id, output_obj);
 	TheNamedObjMap::Instance().get(output_id).setFileXML(input_file_xml);
 	TheNamedObjMap::Instance().get(output_id).setRecordXML(input_record_xml);
 
-	// I'm lazy. Use the input object to initialize the output object.
-	output_obj = input_obj;
-
+	 
 	// Do the actual rotation. The evs stay the same
-	for(int n=0; n < input_obj.getNumVectors(); n++)
-	{
-	  output_obj.getEvectors()[n] = g * input_obj.getEvectors()[n];
+	output_obj->openWrite();
+	for(int n=0; n < input_obj->size(); n++) {
+	  EVPair<LatticeColorVector> pair;
+	  input_obj->lookup(n,pair);
+
+	  EVPair<LatticeColorVector> pair2 = pair; 
+	  pair2.eigenVector  = g*pair.eigenVector;
+	  output_obj->insert(n, pair2);
 	}
+	output_obj->openRead(); // Read mode hereafter
       }
 
 
@@ -133,9 +141,8 @@ namespace Chroma
 									 gaugeTransfObj<LatticeStaggeredPropagator>);
 	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
 									 gaugeTransfObj<LatticeStaggeredFermion>);
-
 	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
-									 gaugeTransfSubsetVectors<LatticeColorVector>);
+									 gaugeTransfSubsetVectors);
 	registered = true;
       }
       return success;

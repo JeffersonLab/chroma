@@ -11,7 +11,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-//#include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -43,6 +43,7 @@ namespace Chroma
       {
 	std::string     gauge_id;      /*!< Gauge field */
 	std::string     colorvec_id;   /*!< Id for color vectors */
+	GroupXML_t      colorvec_obj;  /*!< Output colorvecs */
       };
 
       Param_t        param;      /*!< Parameters */

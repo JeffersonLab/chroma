@@ -18,51 +18,49 @@ namespace Chroma
   /*! \ingroup inlineio */
   namespace InlineSZINReadNamedObjEnv 
   {
-    extern const std::string name;
     bool registerAll();
+
+    //! Parameter structure
+    /*! \ingroup inlineio */
+    struct Params 
+    {
+      Params();
+      Params(XMLReader& xml_in, const std::string& path);
+
+      unsigned long frequency;
+
+      struct NamedObject_t
+      {
+	std::string   object_id;
+	std::string   object_type;
+      } named_obj;
+
+      struct File_t
+      {
+	std::string   file_name;
+      } file;
+    };
+
+    //! Inline writing of memory objects
+    /*! \ingroup inlineio */
+    class InlineMeas : public AbsInlineMeasurement 
+    {
+    public:
+      ~InlineMeas() {}
+      InlineMeas(const Params& p) : params(p) {}
+
+      unsigned long getFrequency(void) const {return params.frequency;}
+
+      //! Do the writing
+      void operator()(const unsigned long update_no,
+		      XMLWriter& xml_out); 
+
+    private:
+      Params params;
+    };
+
   }
 
-  //! Parameter structure
-  /*! \ingroup inlineio */
-  struct InlineSZINReadNamedObjParams 
-  {
-    InlineSZINReadNamedObjParams();
-    InlineSZINReadNamedObjParams(XMLReader& xml_in, const std::string& path);
-    void write(XMLWriter& xml_out, const std::string& path);
-
-    unsigned long frequency;
-
-    struct NamedObject_t
-    {
-      std::string   object_id;
-      std::string   object_type;
-    } named_obj;
-
-    struct File_t
-    {
-      std::string   file_name;
-    } file;
-  };
-
-  //! Inline writing of memory objects
-  /*! \ingroup inlineio */
-  class InlineSZINReadNamedObj : public AbsInlineMeasurement 
-  {
-  public:
-    ~InlineSZINReadNamedObj() {}
-    InlineSZINReadNamedObj(const InlineSZINReadNamedObjParams& p) : params(p) {}
-    InlineSZINReadNamedObj(const InlineSZINReadNamedObj& p) : params(p.params) {}
-
-    unsigned long getFrequency(void) const {return params.frequency;}
-
-    //! Do the writing
-    void operator()(const unsigned long update_no,
-		    XMLWriter& xml_out); 
-
-  private:
-    InlineSZINReadNamedObjParams params;
-  };
-
-};
+}
 
 #endif

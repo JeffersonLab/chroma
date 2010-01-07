@@ -13,6 +13,10 @@
 
 #include "util/ferm/subset_vectors.h"
 
+#include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_aggregate_w.h"
+#include "util/ferm/map_obj/map_obj_factory_w.h"
+
 namespace Chroma 
 { 
 
@@ -23,6 +27,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "object_id", input.object_id);
+    xml << input.object_map.xml;
 
     pop(xml);
   }
@@ -44,6 +49,9 @@ namespace Chroma
     XMLReader inputtop(xml, path);
 
     read(inputtop, "object_id", input.object_id);
+
+    // User Specified MapObject tags
+    input.object_map = readXMLGroup(inputtop, "ColorVecMapObject", "MapObjType");
   }
 
   //! File output
@@ -78,6 +86,7 @@ namespace Chroma
       if (! registered)
       {
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
+	success &= MapObjectWilson4DEnv::registerAll();
 	registered = true;
       }
       return success;
@@ -145,29 +154,47 @@ namespace Chroma
 	
 	typedef LatticeColorVector T;
 
-	TheNamedObjMap::Instance().create< SubsetVectors<T> >(params.named_obj.object_id);
-	SubsetVectors<T>& eigen = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(params.named_obj.object_id);
+	std::istringstream  xml_s(params.named_obj.object_map.xml);
+	XMLReader MapObjReader(xml_s);
+	
+	// Create the entry
+	Handle< MapObject<int,EVPair<LatticeColorVector> > > eigen(
+	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
+								       MapObjReader,
+								       params.named_obj.object_map.path) );
 
-	eigen.getEvalues().resize(params.file.file_names.size());
-	eigen.getEvectors().resize(params.file.file_names.size());
-	eigen.getDecayDir() = Nd-1;
+	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;
 
-	const int Lt = QDP::Layout::lattSize()[eigen.getDecayDir()];
+	// Argh, burying this in here
+	const int decay_dir = Nd-1;
+	const int Lt = QDP::Layout::lattSize()[decay_dir];
 
 	// Read the object
 	swatch.start();
-
+	eigen->openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
-	  read(bin, eigen.getEvectors()[i]);
 
-	  eigen.getEvalues()[i].weights.resize(Lt);
+	  EVPair<T> read_pair;
+	  // Read the vector
+	  read(bin, read_pair.eigenVector);
+
+	  // Resize the eigenvalue.weights array
+	  read_pair.eigenValue.weights.resize(Lt);
+
+	  // Read the weights
 	  for(int t=0; t < Lt; ++t)
 	  {
-	    read(bin, eigen.getEvalues()[i].weights[t]);
+	    read(bin, read_pair.eigenValue.weights[t]);
 	  }
+
+	  // Insert into new map
+	  eigen->insert(i,read_pair);
+
 	}
+	eigen->openRead();
 
 	swatch.stop();
 

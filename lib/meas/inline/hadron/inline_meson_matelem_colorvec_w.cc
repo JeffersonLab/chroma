@@ -398,7 +398,8 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id).getEvectors();
+	// NB We are just checking this is here.
+	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
       }
       catch( std::bad_cast ) 
       {
@@ -410,11 +411,13 @@ namespace Chroma
 	QDPIO::cerr << name << ": map call failed: " << e << endl;
 	QDP_abort(1);
       }
+
+      // Cast should be valid now
       const multi1d<LatticeColorMatrix>& u = 
 	TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
-      const SubsetVectors<LatticeColorVector>& eigen_source = 
-	TheNamedObjMap::Instance().getData< SubsetVectors<LatticeColorVector> >(params.named_obj.colorvec_id);
+      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
@@ -490,7 +493,7 @@ namespace Chroma
 	write(file_xml, "Params", params.param);
 	write(file_xml, "Op_Info", params.param.displacement_list);
 	write(file_xml, "Config_info", gauge_xml);
-	write(file_xml, "Weights", eigen_source.getEvalues());
+	write(file_xml, "Weights", getEigenValues(eigen_source, params.param.num_vecs));
 	pop(file_xml);
 
 	std::string file_str(file_xml.str());
@@ -519,6 +522,7 @@ namespace Chroma
       QDPIO::cout << "Building meson operators" << endl;
 
       push(xml_out, "ElementalOps");
+
 
       // Loop over all time slices for the source. This is the same 
       // as the subsets for  phases
@@ -568,8 +572,9 @@ namespace Chroma
 	  for(int j = 0 ; j < params.param.num_vecs; ++j)
 	  {
 	    // Displace the right vector and multiply by the momentum phase
+	    EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(j,tmpvec);
 	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
-								      eigen_source.getEvectors()[j], 
+								      tmpvec.eigenVector, 
 								      params.param.displacement_length, 
 								      disp);
 
@@ -580,7 +585,8 @@ namespace Chroma
 
 	      // Contract over color indices
 	      // Do the relevant quark contraction
-	      LatticeComplex lop = localInnerProduct(eigen_source.getEvectors()[i], shift_vec);
+	      EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(i,tmpvec);
+	      LatticeComplex lop = localInnerProduct(tmpvec.eigenVector, shift_vec);
 
 	      // Slow fourier-transform
 	      multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());

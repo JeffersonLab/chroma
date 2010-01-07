@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: inline_static_prop_colorvec_w.h,v 3.1 2008-11-22 19:14:34 edwards Exp $
 /*! \file
  * \brief Compute a static prop  (1/2)*(1+gamma_4)U*U*...U * multi1d<LatticeColorVector>
  *
@@ -12,6 +11,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -40,12 +40,14 @@ namespace Chroma
 
 	Contract_t      contract;
       } param;
-
+      
+      GroupXML_t        map_obj_params; /*!< Parameters for MapObj factory */
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
 	std::string     prop_id;        /*!< Id for output propagator solutions */
+	GroupXML_t      prop_obj;       /*!< Map for output propagator solutions */
       } named_obj;
 
       std::string xml_file;  // Alternate XML file pattern

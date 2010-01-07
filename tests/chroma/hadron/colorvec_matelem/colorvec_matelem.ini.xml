@@ -9,137 +9,6 @@
   <InlineMeasurements>
 
 <annotation>
-Lots of tasks to initialize colorvecs, write and read them as well
-as propagators. The create_colorvecs below is the task that produces
-vectors that are actually used.
-</annotation>
-
-    <elem>
-      <annotation>
-        Make a fake unit subset_vectors struct
-      </annotation>
-      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>unit_subset_vectors_0</object_id>
-        <object_type>UnitSubsetVectorsLatticeColorVector</object_type>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        For testing purposes, write and erase this object.
-      </annotation>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>unit_subset_vectors_0</object_id>
-        <object_type>SubsetVectorsLatticeColorVector</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./colorvec.lime</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-
-    <elem>
-      <Name>QIO_READ_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>unit_subset_vectors_0</object_id>
-        <object_type>SubsetVectorsLatticeColorVector</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./colorvec.lime</file_name>
-      </File>
-    </elem>
-    
-    <elem>
-      <annotation>
-        For testing purposes, erase this object.
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>unit_subset_vectors_0</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Make a fake gaussian subset_vectors struct
-      </annotation>
-      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>stuff_to_erase</object_id>
-        <object_type>SubsetVectorsLatticeColorVector</object_type>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        For testing purposes, erase this object.
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>stuff_to_erase</object_id>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Make a fake gaussian map object holding propagator solutions
-      </annotation>
-      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        For testing purposes, write and erase this object.
-      </annotation>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./prop_colorvec.lime</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
-      </File>
-    </elem>
-
-    <elem>
-      <Name>QIO_READ_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
-      </NamedObject>
-      <File>
-        <file_name>./prop_colorvec.lime</file_name>
-      </File>
-    </elem>
-    
-    <elem>
-      <annotation>
-        For testing purposes, erase this object.
-      </annotation>
-      <Name>ERASE_NAMED_OBJECT</Name>
-      <Frequency>1</Frequency>
-      <NamedObject>
-        <object_id>prop_colorvec</object_id>
-      </NamedObject>
-    </elem>
-
-<annotation>
 This task will read eigevectors produced by  chroma_eig/laplace_eigs .
 Not used in this test, instead use create colorvecs below.
    <elem>
@@ -180,12 +49,15 @@ Not used in this test, instead use create colorvecs below.
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
+        <ColorVecMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </ColorVecMapObject>
       </NamedObject>
     </elem>
 
     <elem>
       <annotation>
-        Save this copy
+        For testing purposes. Save this copy in LIME format.
       </annotation>
       <Name>QIO_WRITE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
@@ -197,6 +69,35 @@ Not used in this test, instead use create colorvecs below.
         <file_name>./colorvec.lime</file_name>
         <file_volfmt>SINGLEFILE</file_volfmt>
       </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object. 
+        In this case, it will be saved as a disk map object.
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_id>eigeninfo_1</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./colorvec.mod</FileName>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_1</object_id>
+      </NamedObject>
     </elem>
 
     <elem>
@@ -238,35 +139,123 @@ Not used in this test, instead use create colorvecs below.
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_id>prop_colorvec</prop_id>
+        <prop_id>prop_colorvec_tmp</prop_id>
+        <PropMapObject>
+          <annotation>
+            Write to a disk. Later, will read back into memory as a test. 
+            Will remove original copy.
+          </annotation>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./prop.mod</FileName>
+        </PropMapObject>
       </NamedObject>
     </elem>
 
     <elem>
-      <Name>QIO_WRITE_ERASE_NAMED_OBJECT</Name>
+      <annotation>
+        Erase for testing.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+        <object_id>prop_colorvec_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read back in for testing.
+      </annotation>
+      <Name>READ_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
       </NamedObject>
       <File>
-        <file_name>./prop_colorvec.lime</file_name>
-        <file_volfmt>MULTIFILE</file_volfmt>
+        <file_name>./prop.mod</file_name>
       </File>
     </elem>
 
     <elem>
-      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <annotation>
+        For testing purposes. Copy this map object back into a memory object. 
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject> 
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
+        <input_id>prop_colorvec_tmp</input_id>
+        <output_id>prop_colorvec</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_id>prop_colorvec</object_id>
-        <object_type>MapObjectKeyPropColorVecLatticeFermion</object_type>
+        <object_id>prop_colorvec_tmp</object_id>
       </NamedObject>
-      <File>
-        <file_name>./prop_colorvec.lime</file_name>
-      </File>
     </elem>
-    
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors.
+        This is an identical calculation, just testing we can write the perams
+	and throw away the solutions
+      </annotation>
+      <Name>PROP_AND_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+          <mass_label>U0.05</mass_label>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec_will_not_keep</prop_id>
+        <prop_op_file>prop.copy.sdb</prop_op_file>
+        <PropMapObject>
+          <annotation>
+            Throw away
+          </annotation>
+          <MapObjType>MAP_OBJECT_NULL</MapObjType>
+        </PropMapObject>
+      </NamedObject>
+    </elem>
+
     <elem>
       <annotation>
         Compute annihilation propagator solution vectors
@@ -323,6 +312,9 @@ Not used in this test, instead use create colorvecs below.
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_op_file>annih_prop.sdb</prop_op_file>
+        <PropMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </PropMapObject>
       </NamedObject>
     </elem>
 
@@ -343,6 +335,9 @@ Not used in this test, instead use create colorvecs below.
         <gauge_id>default_gauge_field</gauge_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
         <prop_id>static_prop_colorvec</prop_id>
+        <PropMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </PropMapObject>
       </NamedObject>
     </elem>
 

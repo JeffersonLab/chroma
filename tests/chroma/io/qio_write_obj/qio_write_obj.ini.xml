@@ -74,6 +74,8 @@ Write some QIO objects
       </File>
     </elem>
 
+    <!-- This Object is now gone -->
+    <!--
     <elem>
       <annotation>
         Make a fake gaussian eigeninfo struct
@@ -101,6 +103,7 @@ Write some QIO objects
         <file_volfmt>MULTIFILE</file_volfmt>
       </File>
     </elem>
+     -->
 
     <elem>
       <annotation>

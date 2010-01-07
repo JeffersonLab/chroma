@@ -12,9 +12,10 @@
 #include "util/ferm/eigeninfo.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/key_grid_prop.h"
-#include "util/ferm/key_block_prop.h"
+#include "handle.h"
 #include "util/ferm/map_obj.h"
+#include "util/ferm/map_obj/map_obj_memory.h"
+
 
 #include "actions/ferm/invert/containers.h"
 
@@ -364,6 +365,7 @@ namespace Chroma
 	write(to, record_xml, evalsD);
 
 	// Now write the evectors 1 by 1 to avoid double storing
+	// This is EigenInfo not SubsetVectors
 	multi1d<T>& evecs=obj.getEvectors();
 	for (int i=0; i<evecs.size(); i++)
 	{
@@ -376,41 +378,6 @@ namespace Chroma
 	}
 
 	// Done! That was unnecessarily painful
-	close(to);
-      }
-
-      //----------------------------------------------------------------------
-      template<typename T>
-      void QIOWriteSubsetVectors(const string& buffer_id,
-				 const string& file,
-				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
-      {
-	// A shorthand for the object
-	SubsetVectors<T>& obj = TheNamedObjMap::Instance().getData< SubsetVectors<T> >(buffer_id);
-
-	// Write number of EVs to XML
-	XMLBufferWriter file_xml;
-
-	push(file_xml, "AllVectors");
-	write(file_xml, "n_vec", obj.getNumVectors());
-	write(file_xml, "decay_dir", obj.getDecayDir());
-	pop(file_xml);
-
-	// Open file
-	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
-
-	// Loop and read evecs
-	for(int n=0; n < obj.getNumVectors(); n++)
-	{
-	  XMLBufferWriter record_xml;
-	  push(record_xml, "VectorInfo");
-	  write(record_xml, "weights", obj.getEvalues()[n].weights);
-	  pop(record_xml);
-
-	  write(to, record_xml, obj.getEvectors()[n]);
-	}
-
-	// Done
 	close(to);
       }
 
@@ -451,17 +418,59 @@ namespace Chroma
 	close(to);
       }
 
+      //----------------------------------------------------------------------
+      void QIOWriteSubsetVectors(const string& buffer_id,
+				 const string& file,
+				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      {
+	// A shorthand for the object
+	MapObject<int,EVPair<LatticeColorVector> >& obj =
+	  *(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(buffer_id));
+
+	// Yuk. Could read this back in.
+	int decay_dir = Nd-1;
+
+	// Write number of EVs to XML
+	XMLBufferWriter file_xml;
+
+	push(file_xml, "AllVectors");
+	write(file_xml, "n_vec", obj.size());
+	write(file_xml, "decay_dir", decay_dir);
+	pop(file_xml);
+
+	// Open file
+	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
+
+	// Loop and read evecs
+	for(int n=0; n < obj.size(); n++)
+	{
+	  EVPair<LatticeColorVector> write_pair;
+	  obj.lookup(n, write_pair);
+
+	  XMLBufferWriter record_xml;
+	  push(record_xml, "VectorInfo");
+	  write(record_xml, "weights", write_pair.eigenValue.weights);
+	  pop(record_xml);
+	  write(to, record_xml, write_pair.eigenVector);
+	}
+
+	// Done
+	close(to);
+      }
+
+      //------------------------------------------------------------------------
       //! Write out a MapObject Type
       template<typename K, typename V>
-      void QIOWriteMapObj(const string& buffer_id,
-			  const string& file,
-			  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
+      void QIOWriteMapObjMemory(const string& buffer_id,
+				const string& file,
+				QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO writing
 	XMLBufferWriter file_xml, record_xml;
 
 	// A shorthand for the object
-	MapObject<K,V>& obj = TheNamedObjMap::Instance().getData< MapObject<K,V> >(buffer_id);
+	MapObjectMemory<K,V>& obj = 
+	  dynamic_cast<MapObjectMemory<K,V>&>(*(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id)));
 
 	// Get the file XML and record XML out of the named buffer
 	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
@@ -472,7 +481,7 @@ namespace Chroma
 
 	// Use the iterators to run through the object, saving each 
 	// in a separate record
-	for(typename MapObject<K,V>::MapType_t::const_iterator mm = obj.begin();
+	for(typename MapObjectMemory<K,V>::MapType_t::const_iterator mm = obj.begin();
 	    mm != obj.end();
 	    ++mm)
 	{
@@ -532,18 +541,14 @@ namespace Chroma
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
-								      QIOWriteSubsetVectors<LatticeColorVector>);
-
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
 	
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
-								      QIOWriteMapObj<KeyPropColorVec_t,LatticeFermion>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+								      QIOWriteSubsetVectors);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyGridPropLatticeFermion"), QIOWriteMapObj<KeyGridProp_t,LatticeFermion>);
-
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjectKeyBlockPropLatticeFermion"), QIOWriteMapObj<KeyBlockProp_t,LatticeFermion>);
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
+								      QIOWriteMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
 
 	registered = true;
       }

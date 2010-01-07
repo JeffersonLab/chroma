@@ -11,6 +11,7 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -31,7 +32,8 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	std::string   object_id;
+	std::string   object_id;   /*!< Output object id */
+	GroupXML_t    object_map;  /*!< Output colorvecs */
       } named_obj;
 
       struct File_t
