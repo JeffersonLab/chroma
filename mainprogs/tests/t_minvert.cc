@@ -166,6 +166,13 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
 
   SystemSolverResults_t res2;
   res2.n_count = 0;
+  multi1d<RealF> shifts_r(shifts.size());
+  multi1d<RealF> modRsdCG_r(shifts.size());
+  for(int i=0; i < shifts.size(); i++ ) {
+    shifts_r[i] = shifts[i];
+    modRsdCG_r[i] = modRsdCG[i];
+  }
+
 
   QDPIO::cout << "Calling Single Prec Solve" << endl;
   swatch.reset();
@@ -174,8 +181,8 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   MInvCG2(*M_single,
 	  chi_f, 
 	  psi_f,
-	  shifts, 
-	  modRsdCG,
+	  shifts_r, 
+	  modRsdCG_r,
 	  MaxCG,
 	  res2.n_count);
 
@@ -209,7 +216,7 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
     res_tmp= InvCGReliable(*(Ms),*(Ms_single), chi, psi[i], RsdCG[i],Delta, MaxCG);
 
     chrono.replaceXHead(psi[i]);
-    QDPIO::cout << "n_count = " << res_tmp.n_count;
+    QDPIO::cout << "n_count = " << res_tmp.n_count << endl;
     res2.n_count += res_tmp.n_count;
   }
   swatch.stop();

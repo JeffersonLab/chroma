@@ -62,7 +62,7 @@ RelInvCG_a(const LinearOperator<T>& A,
     flopcount.addSiteFlops(4*Nc*Ns,s);
 
 
-    QDPIO::cout << "|| r0 || = " << sqrt(r_sq) << endl;
+    QDPIO::cout << "|| r0 ||^2=" << r_sq << endl;
 
 
     Double rNorm = sqrt(r_sq);
