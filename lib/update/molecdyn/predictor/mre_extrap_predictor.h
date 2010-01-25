@@ -35,26 +35,25 @@ namespace Chroma
     Handle< CircularBuffer<T> > chrono_bufX;
     Handle< CircularBuffer<T> > chrono_bufY;
 
-
   void 
   find_extrap_solution(
 		       T& psi,
-		       const LinearOperator<T>& A,
+		       const LinearOperator<T>& M,
 		       const T& chi,
 		       const Handle<CircularBuffer<T> >& chrono_buf, 
 		       enum PlusMinus isign) 
     {
       START_CODE();
       
-      const Subset& s= A.subset();
+      const Subset& s= M.subset();
       
       
-#if 1
+#if 0
       {
 	T r;
 	r[s] = chi;
 	T tmp;
-	A(tmp, psi, isign);
+	M(tmp, psi, isign);
 	r[s] -= tmp;
 	Double norm_r = sqrt(norm2(r,s));
 	Double norm_chi = sqrt(norm2(chi,s));
@@ -105,7 +104,7 @@ namespace Chroma
       
       for(int m = 0 ; m < Nvec; m++) { 
 	T tmpvec;
-	A(tmpvec, v[m], isign);
+	M(tmpvec, v[m], isign);
 	
 	for(int n = 0; n < Nvec; n++) { 
 	  G(n,m) = innerProduct(v[n], tmpvec, s);
@@ -155,12 +154,12 @@ namespace Chroma
       }
       
       
-#if 1
+#if 0
       {
 	T r;
 	r[s] = chi;
 	T tmp;
-	A(tmp, psi, isign);
+	M(tmp, psi, isign);
 	r[s] -= tmp;
 	Double norm_r = sqrt(norm2(r,s));
 	Double norm_chi = sqrt(norm2(chi,s));
@@ -296,7 +295,7 @@ namespace Chroma
 
     void replaceYHead(const T& v)
     {
-      chrono_bufX->replaceHead(v);
+      chrono_bufY->replaceHead(v);
     }
 
 

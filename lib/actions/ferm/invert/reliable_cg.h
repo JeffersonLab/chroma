@@ -34,6 +34,7 @@ namespace Chroma
 		const Real& RsdCG, 
 		const Real& Delta,
 		int MaxCG);
+
   
    // single double
   SystemSolverResults_t

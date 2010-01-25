@@ -23,14 +23,12 @@
 namespace Chroma
 {
 
-#if 0
   //! CG2 system solver namespace
   namespace MdagMMultiSysSolverCGChronoCloverEnv
   {
     //! Register the syssolver
     bool registerAll();
   }
-#endif
 
   struct MultiSysSolverCGChronoCloverParams { 
     MultiSysSolverCGChronoCloverParams(XMLReader& xml, const std::string& path);
@@ -187,6 +185,8 @@ namespace Chroma
 		invParam.MaxIter,
 		res.n_count);
 	
+	psi.resize(shifts.size());
+
 	for(int i=0; i < shifts.size(); i++) { 
 	  psi[i] = psi_f[i];
 	}

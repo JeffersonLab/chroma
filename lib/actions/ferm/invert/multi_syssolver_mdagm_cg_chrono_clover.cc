@@ -11,20 +11,21 @@
 namespace Chroma
 {
 
-#if 0
+
   //! CG2 system solver namespace
-  namespace MdagMMultiSysSolverCGChronoEnv
+  namespace MdagMMultiSysSolverCGChronoCloverEnv
   {
     //! Callback function
     MdagMMultiSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						       const std::string& path,
+						       Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						       Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new MdagMMultiSysSolverCGChrono<LatticeFermion>(A, MultiSysSolverCGParams(xml_in, path));
+      return new MdagMMultiSysSolverCGChronoClover(A, state,MultiSysSolverCGChronoCloverParams(xml_in, path));
     }
 
     //! Name to be used
-    const std::string name("CG_CHRONO_INVERTER");
+    const std::string name("CG_CHRONO_CLOVER_INVERTER");
 
     //! Local registration flag
     static bool registered = false;
@@ -41,18 +42,24 @@ namespace Chroma
       return success;
     }
   }
-#endif
+
 
   MultiSysSolverCGChronoCloverParams::MultiSysSolverCGChronoCloverParams(XMLReader& xml, 
 						       const std::string& path)
   {
     XMLReader paramtop(xml, path);
-    read(paramtop, "CloverParams", clovParams);
-    read(paramtop, "MaxIter", MaxIter);
-    read(paramtop, "MaxChrono", MaxChrono);
-    read(paramtop, "Delta", Delta);
-    read(paramtop, "CutoffRsd", CutoffRsd);
-    read(paramtop, "RsdTarget", RsdTarget);
+    try {
+      read(paramtop, "CloverParams", clovParams);
+      read(paramtop, "MaxIter", MaxIter);
+      read(paramtop, "MaxChrono", MaxChrono);
+      read(paramtop, "Delta", Delta);
+      read(paramtop, "CutoffRsd", CutoffRsd);
+      read(paramtop, "RsdTarget", RsdTarget);
+    }
+    catch(const std::string e ) {
+      QDPIO::cout << "Caught: " << e << endl;
+      throw;
+    }
   }
 
   void read(XMLReader& xml, const std::string& path, 

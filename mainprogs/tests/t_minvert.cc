@@ -13,22 +13,15 @@
 
 #include "chroma.h"
 
-#include "actions/ferm/invert/syssolver_linop_cg.h"
-#include "actions/ferm/invert/syssolver_linop_cg.h"
 #include "io/xml_group_reader.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include <string>
 
-#include "actions/ferm/invert/minvcg.h"
-#include "actions/ferm/invert/reliable_cg.h"
 #include "actions/ferm/invert/minvcg2.h"
-#include "actions/ferm/linop/lopishift.h"
-#include "lmdagm.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/eoprec_clover_dumb_linop_w.h"
+#include "actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.h"
 using namespace Chroma;
 using namespace std;
 
@@ -36,10 +29,7 @@ struct AppParams {
   multi1d<int> nrow;
   Cfg_t inputCfg;
   GroupXML_t fermact;
-  CloverFermActParams cl_param;
-  int MaxChrono;
-  Real cutoffRsd;
-  Real PAD;
+  MultiSysSolverCGChronoCloverParams invParam;
 };
 
 
@@ -65,8 +55,10 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   
   
   Handle< FermState<T,P,Q> > connect_state( S_f->createState(u) );
-
   Handle< LinearOperator<LatticeFermion> > D_op( S_f->linOp(connect_state) );
+  
+
+  MdagMMultiSysSolverCGChronoClover mprec(D_op, connect_state, p.invParam);
 
   int n_shifts=12;
   multi1d<Real> shifts(n_shifts);
@@ -83,21 +75,22 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   shifts[10] = 5.78532483906374   ;
   shifts[11] = 30.6835527589452  ;
 
-  multi1d<Real> RsdCG(n_shifts);
-  RsdCG[0] =  1e-7;
-  RsdCG[1] =  1e-7;
-  RsdCG[2] =  1e-7;
-  RsdCG[3] =  1e-8; 
-  RsdCG[4] =  1e-8;
-  RsdCG[5] =  1e-8;
-  RsdCG[6] =  1e-8;
-  RsdCG[7] =  1e-8;
-  RsdCG[8] =  1e-9;
-  RsdCG[9] =  1e-9 ; 
-  RsdCG[10] =  1e-9;
-  RsdCG[11] =  1e-9;
+  multi1d<Real> RsdCG(shifts.size());
+  if (p.invParam.RsdTarget.size() == 1) {
+    RsdCG = p.invParam.RsdTarget[0];
+  }
+  else if (p.invParam.RsdTarget.size() == RsdCG.size()) {
+    
+    RsdCG = p.invParam.RsdTarget;
+  }
+  else {
+    
+    QDPIO::cerr << "MdagMMultiSysSolverCGChronoClover: shifts incompatible" << endl;
+    QDP_abort(1);
+  }
 
-  int MaxCG=10000;
+
+  
   LatticeFermion chi; 
   gaussian(chi, D_op->subset());
 
@@ -111,7 +104,7 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   StopWatch swatch;
   swatch.reset();
   swatch.start();
-  MInvCG2(*D_op, chi, psi, shifts, RsdCG, MaxCG, res.n_count);
+  MInvCG2(*D_op, chi, psi, shifts, RsdCG, p.invParam.MaxIter, res.n_count);
   swatch.stop();
 
   // Check solutions
@@ -129,99 +122,12 @@ void checkInverter(const AppParams& p, multi1d<LatticeColorMatrix>& u)
   }
   QDPIO::cout << "MinvCG: n_count = " << res.n_count << "  Time=" << swatch.getTimeInSeconds() << endl; 
 
-
-
-  QDPIO::cout << "Setting UP SP residua" << endl;
-
-  multi1d<Real> modRsdCG(n_shifts);
-  for(int i=0; i < n_shifts; i++) { 
-    if( toBool(  RsdCG[i] < p.cutoffRsd ) ) { 
-      modRsdCG[i] = p.cutoffRsd;
-    }
-    else {
-      modRsdCG[i] = RsdCG[i];
-    }
-  }
-
-  QDPIO::cout << "Creating Single Prec FermState and LinOp" << endl;
-  multi1d<LatticeFermionF> psi_f(n_shifts);
-  LatticeFermionF chi_f;
-  const Q& links = connect_state->getLinks();
-  QF links_single; links_single.resize(Nd);
-  for(int mu=0; mu < Nd; mu++) { 
-    links_single[mu] = links[mu];
-  }
-  Handle< FermState<TF, QF, QF> > fstate_single;
-  fstate_single = new PeriodicFermState<TF,QF,QF>(links_single);
-  Handle< LinearOperator<TF> > M_single(new EvenOddPrecDumbCloverFLinOp( fstate_single, p.cl_param ));
-
-  QDPIO::cout << " Setting up SP Source and zero guesses" << endl;
-  chi_f = chi;
-  for(int i=0; i < n_shifts; i++) { 
-    psi_f[i] = zero;
-  }
-  for(int i=0; i < n_shifts; i++) { 
-    QDPIO::cout << "RsdCG: " << modRsdCG[i] << endl;
-  }
-
-  SystemSolverResults_t res2;
-  res2.n_count = 0;
-  multi1d<RealF> shifts_r(shifts.size());
-  multi1d<RealF> modRsdCG_r(shifts.size());
-  for(int i=0; i < shifts.size(); i++ ) {
-    shifts_r[i] = shifts[i];
-    modRsdCG_r[i] = modRsdCG[i];
-  }
-
-
-  QDPIO::cout << "Calling Single Prec Solve" << endl;
   swatch.reset();
   swatch.start();
-  
-  MInvCG2(*M_single,
-	  chi_f, 
-	  psi_f,
-	  shifts_r, 
-	  modRsdCG_r,
-	  MaxCG,
-	  res2.n_count);
 
-  QDPIO::cout << "Copying back solution " << endl;
-  for(int i=0; i < n_shifts; i++) { 
-    psi[i] = psi_f[i];
-  }
-
-  MinimalResidualExtrapolation4DChronoPredictor<T> chrono(p.MaxChrono);
-  
-  chrono.reset();
-
-  // Avoid getting a zero guess -- first solution 
-  // will get last solution -ie itself. Subsequent solutions will get chronology
-  
-
-  for(int i=shifts.size()-1; i >= 0; i--) { 
-    Real rshift = sqrt(shifts[i]);
-    RealF rshift_s = rshift;
-
-
-    SystemSolverResults_t res_tmp;
-    Handle< LinearOperator<T> > Ms(new lopishift<T,Real>(D_op, rshift));
-    Handle< LinearOperator<TF> > Ms_single( new lopishift<TF,RealF>(M_single, rshift_s) );
-    Handle<LinearOperator<T> > MM( new MdagMLinOp<T>(Ms ));
-
-    chrono.newXVector(psi[i]);
-    chrono.predictX(psi[i], *(MM), chi);
-
-    Real Delta = 1.0e-3;
-    res_tmp= InvCGReliable(*(Ms),*(Ms_single), chi, psi[i], RsdCG[i],Delta, MaxCG);
-
-    chrono.replaceXHead(psi[i]);
-    QDPIO::cout << "n_count = " << res_tmp.n_count << endl;
-    res2.n_count += res_tmp.n_count;
-  }
+  SystemSolverResults_t res2 = mprec(psi, shifts, chi);
+    
   swatch.stop();
-  // Check solutions
-  
   for(int i=0; i < n_shifts; i++) { 
     LatticeFermion r;
     r[D_op->subset()]= chi;
@@ -244,9 +150,7 @@ void read(XMLReader& r, const std::string path, AppParams& p)
   read(r, "nrow", p.nrow);
   read(r, "Cfg", p.inputCfg);
   p.fermact = readXMLGroup(r, "FermionAction", "FermAct");
-  read(r, "CloverParams", p.cl_param);
-  read(r, "MaxChrono", p.MaxChrono);
-  read(r, "cutoffRsd", p.cutoffRsd);
+  read(r, "InvertParam", p.invParam);
 
 }
 

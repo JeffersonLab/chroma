@@ -345,7 +345,7 @@ namespace Chroma
 
     swatch.stop();
 
-#if 1
+#if 0
     // Check answers 
     for(int s=0; s < n_shift; s++) { 
       r[sub] = chi;

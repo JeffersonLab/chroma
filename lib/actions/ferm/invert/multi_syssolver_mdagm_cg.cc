@@ -17,6 +17,7 @@ namespace Chroma
     //! Callback function
     MdagMMultiSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
 						       const std::string& path,
+						       Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > >,
 						       Handle< LinearOperator<LatticeFermion> > A)
     {
       return new MdagMMultiSysSolverCG<LatticeFermion>(A, MultiSysSolverCGParams(xml_in, path));

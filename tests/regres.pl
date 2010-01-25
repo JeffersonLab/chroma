@@ -14,14 +14,14 @@ sub regresDirs
     # includes other files (in subdirs) is not how the perl "do" works.
     # So, spell out all the many regression dirs and source them individually.
     #
-#    return (
+#   return (
 #	"$test_dir/chroma/hadron/hadron_contract/regres.pl",
 #	"$test_dir/chroma/hadron/colorvec_matelem/regres.pl"
 #	);
 #
-    #	"$test_dir/t_leapfrog/regres.pl",
+#   	"$test_dir/t_leapfrog/regres.pl",
 #     	"$test_dir/chroma/hadron/propagator/regres.pl",
-#    );
+#   );
 
      return ( 
  	    "$test_dir/chroma/io/szin_write_obj/regres.pl",

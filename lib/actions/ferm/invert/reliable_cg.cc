@@ -62,7 +62,7 @@ RelInvCG_a(const LinearOperator<T>& A,
     flopcount.addSiteFlops(4*Nc*Ns,s);
 
 
-    QDPIO::cout << "|| r0 ||^2=" << r_sq << endl;
+    QDPIO::cout << "Reliable CG: || r0 ||/|| b ||=" << sqrt(r_sq/chi_norm) << endl;
 
 
     Double rNorm = sqrt(r_sq);
