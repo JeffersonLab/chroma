@@ -157,9 +157,9 @@ namespace Chroma
       
       
       Handle< LinearOperator<TF> > M_single(new EvenOddPrecDumbCloverFLinOp( fstate_single, invParam.clovParams ));
-      // Single prec solutions
+      multi1d<TF> psi_f(shifts.size());
       {
-	multi1d<TF> psi_f(shifts.size());
+
 	TF chi_f;
 	
 	// Single Prec RHC
@@ -174,9 +174,6 @@ namespace Chroma
 	  shifts_r[i] = shifts[i];
 	}
 	
-
-	
-	
 	MInvCG2(*M_single,
 		chi_f, 
 		psi_f,
@@ -185,38 +182,42 @@ namespace Chroma
 		invParam.MaxIter,
 		res.n_count);
 	
-	psi.resize(shifts.size());
-
-	for(int i=0; i < shifts.size(); i++) { 
-	  psi[i] = psi_f[i];
-	}
       }
 
-      Handle<LinearOperator<T> > MM( new MdagMLinOp<T>(M));
+
+      psi.resize(shifts.size());
+
+      Handle< LinearOperator<TD> > M_double(new EvenOddPrecDumbCloverDLinOp( fstate_double, invParam.clovParams ));
+
+      Handle<LinearOperator<TD> > MM( new MdagMLinOp<TD>(M_double));
       
-      MinimalResidualExtrapolationShifted4DChronoPredictor<T,Real> chrono(invParam.MaxChrono,*MM);
+      MinimalResidualExtrapolationShifted4DChronoPredictor<TD,RealD> chrono(invParam.MaxChrono,*MM);
 
       chrono.reset();
-      
+      TD chi_d; chi_d[M->subset()] = chi;
+      TD psi_d;
       for(int i=shifts.size()-1; i >= 0; i--) { 
-	Real rshift = sqrt(shifts[i]);
+	RealD rshift = sqrt(shifts[i]);
 	RealF rshift_s = rshift;
-	
+	RealD dshift = shifts[i];
 	SystemSolverResults_t res_tmp;
-	Handle< LinearOperator<T> > Ms(new lopishift<T,Real>(M, rshift));
+	Handle< LinearOperator<TD> > Ms(new lopishift<TD,RealD>(M_double, rshift));
 	Handle< LinearOperator<TF> > Ms_single( new lopishift<TF,RealF>(M_single, rshift_s) );
 	
+
+	psi_d[M->subset()] = psi_f[i];
+
+	chrono.predictX(psi_d, dshift, chi_d);
 	
-	chrono.predictX(psi[i], shifts[i], chi);
+	res_tmp= InvCGReliable(*(Ms),*(Ms_single), chi_d, psi_d, RsdCG[i],invParam.Delta, invParam.MaxIter);
 	
-	res_tmp= InvCGReliable(*(Ms),*(Ms_single), chi, psi[i], RsdCG[i],invParam.Delta, invParam.MaxIter);
-	
-	chrono.newXVector(psi[i]);
-	
+	chrono.newXVector(psi_d);
+	psi[i][M->subset()] = psi_d;
 	QDPIO::cout << "n_count = " << res_tmp.n_count << endl;
 	res.n_count += res_tmp.n_count;
       }
-	
+      
+
 #if 0
       XMLFileWriter& log = Chroma::getXMLLogInstance();
       push(log, "MultiCG");
