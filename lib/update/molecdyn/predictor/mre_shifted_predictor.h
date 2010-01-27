@@ -57,9 +57,9 @@ namespace Chroma
 	M(tmp, psi, isign);
 	tmp[s] += shift*psi;
 	rvec[s] -= tmp;
-	Double norm_r = sqrt(norm2(rvec,s));
-	Double norm_chi = sqrt(norm2(chi,s));
-	QDPIO::cout << "MRE Predictor: before prediction || r || / || b || =" << norm_r/norm_chi << endl;
+	// Double norm_r = sqrt(norm2(rvec,s));
+	// Double norm_chi = sqrt(norm2(chi,s));
+	// QDPIO::cout << "MRE Predictor: before prediction || r || / || b || =" << norm_r/norm_chi << endl;
       }
 #endif
       
@@ -134,7 +134,7 @@ namespace Chroma
 	}
       }
       
-#if 1
+#if 0
       {
 	//	T rvec;
 	rvec[s] = chi;
