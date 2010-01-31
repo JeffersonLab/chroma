@@ -742,6 +742,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
+	meas/inline/hadron/inline_barspec_db_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
@@ -1310,7 +1311,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_stoch_group_baryon_w.$(OBJEXT) \
 	inline_stoch_group_meson_w.$(OBJEXT) \
 	inline_npr_vertex_w.$(OBJEXT) inline_npr_w.$(OBJEXT) \
-	inline_stag_to_wils.$(OBJEXT) \
+	inline_stag_to_wils.$(OBJEXT) inline_barspec_db_w.$(OBJEXT) \
 	inline_hadron_aggregate_s.$(OBJEXT) \
 	inline_make_source_s.$(OBJEXT) inline_propagator_s.$(OBJEXT) \
 	inline_sink_smear_s.$(OBJEXT) \
@@ -2079,6 +2080,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_qqq_diquark_w.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
+	meas/inline/hadron/inline_barspec_db_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
@@ -3044,6 +3046,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_qqq_diquark_w.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
+	meas/inline/hadron/inline_barspec_db_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
@@ -3718,6 +3721,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
+	meas/inline/hadron/inline_barspec_db_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
@@ -4119,6 +4123,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_apply_fermstate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_apply_gaugestate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_bar3ptfn_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_barspec_db_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_baryon_matelem_colorvec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_building_blocks_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_copy_map_obj.Po@am__quote@
@@ -13806,6 +13811,20 @@ inline_stag_to_wils.obj: meas/inline/hadron/inline_stag_to_wils.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_stag_to_wils.cc' object='inline_stag_to_wils.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_stag_to_wils.obj `if test -f 'meas/inline/hadron/inline_stag_to_wils.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_stag_to_wils.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_stag_to_wils.cc'; fi`
+
+inline_barspec_db_w.o: meas/inline/hadron/inline_barspec_db_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_barspec_db_w.o -MD -MP -MF $(DEPDIR)/inline_barspec_db_w.Tpo -c -o inline_barspec_db_w.o `test -f 'meas/inline/hadron/inline_barspec_db_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_barspec_db_w.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_barspec_db_w.Tpo $(DEPDIR)/inline_barspec_db_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_barspec_db_w.cc' object='inline_barspec_db_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_barspec_db_w.o `test -f 'meas/inline/hadron/inline_barspec_db_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_barspec_db_w.cc
+
+inline_barspec_db_w.obj: meas/inline/hadron/inline_barspec_db_w.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_barspec_db_w.obj -MD -MP -MF $(DEPDIR)/inline_barspec_db_w.Tpo -c -o inline_barspec_db_w.obj `if test -f 'meas/inline/hadron/inline_barspec_db_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_barspec_db_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_barspec_db_w.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/inline_barspec_db_w.Tpo $(DEPDIR)/inline_barspec_db_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_barspec_db_w.cc' object='inline_barspec_db_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_barspec_db_w.obj `if test -f 'meas/inline/hadron/inline_barspec_db_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_barspec_db_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_barspec_db_w.cc'; fi`
 
 inline_hadron_aggregate_s.o: meas/inline/hadron_s/inline_hadron_aggregate_s.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_aggregate_s.o -MD -MP -MF $(DEPDIR)/inline_hadron_aggregate_s.Tpo -c -o inline_hadron_aggregate_s.o `test -f 'meas/inline/hadron_s/inline_hadron_aggregate_s.cc' || echo '$(srcdir)/'`meas/inline/hadron_s/inline_hadron_aggregate_s.cc

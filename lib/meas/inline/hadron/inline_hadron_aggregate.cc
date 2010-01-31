@@ -71,6 +71,8 @@
 //#include "meas/inline/hadron/inline_stoch_laph_quark_w.h"
 //#include "meas/inline/hadron/inline_stoch_laph_baryon_w.h"
 
+#include "meas/inline/hadron/inline_barspec_db_w.h"
+
 // Grab all fermacts to make sure they are registered
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
@@ -147,6 +149,7 @@ namespace Chroma
 	success &= InlineQpropQIOEnv::registerAll();
 	success &= InlineQpropAddEnv::registerAll();
 	success &= InlineQQQNucNucEnv::registerAll();
+	success &= InlineBarSpecEnv::registerAll();
 //	success &= InlineSpectrumQllEnv::registerAll();
 	success &= InlineStaticLightSpecEnv::registerAll();
 	success &= InlineHeavyLightContEnv::registerAll();
