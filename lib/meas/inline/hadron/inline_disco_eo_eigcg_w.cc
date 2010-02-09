@@ -272,7 +272,7 @@ namespace Chroma{
       read(bin,d.mom);
     }
     //! KeyOperator writer
-    void write(BinaryWriter& bin, KeyOperator_t& d){
+    void write(BinaryWriter& bin, const KeyOperator_t& d){
       write(bin,d.t_slice);
       unsigned short int n ;
       n = d.disp.size();
@@ -287,7 +287,7 @@ namespace Chroma{
       read(bin,d.op);
     }
     //! ValOperator writer
-    void write(BinaryWriter& bin, ValOperator_t& d){
+    void write(BinaryWriter& bin, const ValOperator_t& d){
       write(bin,d.op);
     }
 
