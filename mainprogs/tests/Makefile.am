@@ -80,7 +80,7 @@ check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_dwf4d t_propagator_s t_disc_loop_s \
     t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d \
     t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec \
-	t_map_obj_disk t_tower
+	t_map_obj_disk
 
 
 #
@@ -111,7 +111,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_clover \
     t_db \
     t_solver_accum \
-    t_eigcginv
+    t_eigcginv \
+    t_tower
 
 #
 # The programs and their dependencies
