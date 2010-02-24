@@ -10,7 +10,7 @@
 #include "gaugeact.h"
 #include "gaugebc.h"
 #include "io/aniso_io.h"
-
+#include "tower.h"
 namespace Chroma
 {
 
@@ -93,6 +93,10 @@ namespace Chroma
     void deriv(multi1d<LatticeColorMatrix>& result,
 	       const Handle< GaugeState<P,Q> >& state) const;
 
+
+    void deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,
+		 
+		      const multi1d<Tower<LatticeColorMatrix> >& u) const;
     //! compute spatial dS/dU given a time direction
     void derivSpatial(multi1d<LatticeColorMatrix>& result,
 		      const Handle< GaugeState<P,Q> >& state,

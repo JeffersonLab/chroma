@@ -441,6 +441,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
+	update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.cc \
@@ -1074,6 +1075,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive_dtau.$(OBJEXT) \
 	lcm_sts_leapfrog_recursive.$(OBJEXT) \
+	lcm_sts_test_leapfrog_recursive.$(OBJEXT) \
 	lcm_tst_leapfrog_recursive.$(OBJEXT) \
 	lcm_4mn5fv_recursive.$(OBJEXT) lcm_4mn5fp_recursive.$(OBJEXT) \
 	lcm_4mn4fp_recursive.$(OBJEXT) \
@@ -1393,9 +1395,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	singleton.h state.h typeinfo.h typelist.h typemanip.h \
 	typetraits.h named_obj.h polylinop.h tprec_linop.h \
 	central_tprec_linop.h tprec_logdet_linop.h teoprec_linop.h \
-	teoprec_logdet_linop.h actions/actions.h actions/boson/boson.h \
-	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
-	actions/ferm/fermacts/fermacts.h \
+	teoprec_logdet_linop.h tower.h actions/actions.h \
+	actions/boson/boson.h actions/boson/operator/klein_gord.h \
+	actions/ferm/ferm.h actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
 	actions/ferm/fermbcs/fermbcs.h \
 	actions/ferm/fermbcs/periodic_fermbc.h \
@@ -1689,6 +1691,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.h \
 	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
@@ -2360,7 +2363,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	typeinfo.h typelist.h typemanip.h typetraits.h named_obj.h \
 	polylinop.h tprec_linop.h central_tprec_linop.h \
 	tprec_logdet_linop.h teoprec_linop.h teoprec_logdet_linop.h \
-	actions/actions.h actions/boson/boson.h \
+	tower.h actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h actions/ferm/ferm.h \
 	actions/ferm/fermacts/fermacts.h \
 	actions/ferm/fermacts/zolotarev.h \
@@ -2657,6 +2660,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.h \
 	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
@@ -3431,6 +3435,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
+	update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.cc \
@@ -4280,6 +4285,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_leapfrog_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_min_norm2_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_min_norm2_recursive_dtau.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_test_leapfrog_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_toplevel_integrator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_tst_leapfrog_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_tst_min_norm2_recursive.Po@am__quote@
@@ -9255,6 +9261,20 @@ lcm_sts_leapfrog_recursive.obj: update/molecdyn/integrator/lcm_sts_leapfrog_recu
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc' object='lcm_sts_leapfrog_recursive.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_leapfrog_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc'; fi`
+
+lcm_sts_test_leapfrog_recursive.o: update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_test_leapfrog_recursive.o -MD -MP -MF $(DEPDIR)/lcm_sts_test_leapfrog_recursive.Tpo -c -o lcm_sts_test_leapfrog_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_sts_test_leapfrog_recursive.Tpo $(DEPDIR)/lcm_sts_test_leapfrog_recursive.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc' object='lcm_sts_test_leapfrog_recursive.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_test_leapfrog_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc
+
+lcm_sts_test_leapfrog_recursive.obj: update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_test_leapfrog_recursive.obj -MD -MP -MF $(DEPDIR)/lcm_sts_test_leapfrog_recursive.Tpo -c -o lcm_sts_test_leapfrog_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_sts_test_leapfrog_recursive.Tpo $(DEPDIR)/lcm_sts_test_leapfrog_recursive.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc' object='lcm_sts_test_leapfrog_recursive.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_test_leapfrog_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc'; fi`
 
 lcm_tst_leapfrog_recursive.o: update/molecdyn/integrator/lcm_tst_leapfrog_recursive.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_tst_leapfrog_recursive.o -MD -MP -MF $(DEPDIR)/lcm_tst_leapfrog_recursive.Tpo -c -o lcm_tst_leapfrog_recursive.o `test -f 'update/molecdyn/integrator/lcm_tst_leapfrog_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_tst_leapfrog_recursive.cc

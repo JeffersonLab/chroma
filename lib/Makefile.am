@@ -23,6 +23,7 @@ nobase_include_HEADERS = \
 	central_tprec_linop.h \
 	tprec_logdet_linop.h \
         teoprec_linop.h teoprec_logdet_linop.h \
+	tower.h \
 	actions/actions.h actions/boson/boson.h \
 	actions/boson/operator/klein_gord.h \
 	actions/ferm/ferm.h \
@@ -374,6 +375,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h \
+	update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.h \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.h\
 	update/molecdyn/integrator/lcm_4mn4fp_recursive.h \
@@ -1249,6 +1251,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_sts_leapfrog_recursive.cc \
+	update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_leapfrog_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fv_recursive.cc \
 	update/molecdyn/integrator/lcm_4mn5fp_recursive.cc \

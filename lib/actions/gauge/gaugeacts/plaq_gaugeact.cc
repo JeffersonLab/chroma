@@ -10,6 +10,7 @@
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 #include "meas/glue/mesplq.h"
 
+#include "tower.h"
 
 namespace Chroma
 {
@@ -343,64 +344,50 @@ namespace Chroma
     for(int mu = 0; mu < Nd; mu++)
     {
       for(int nu=mu+1; nu < Nd; nu++) 
-      {
-	for(int cb=0; cb < 2; cb++) 
-	{ 
-	  tmp_0[rb[cb]] = shift(u[mu], FORWARD, nu)*shift(adj(u[nu]), FORWARD, mu);
-	  tmp_0[rb[cb]] *= param.coeffs[mu][nu];   // c[mu][nu] = c[nu][mu]
-	  tmp_1[rb[cb]] = tmp_0*adj(u[mu]);
-	  tmp_2[rb[cb]] = u[nu]*tmp_1;
-	  ds_u[nu][rb[cb]] += tmp_2;
-	  ds_u[mu][rb[cb]] += adj(tmp_2);
-	  ds_u[mu][rb[1-cb]] += shift(tmp_1, BACKWARD, nu)*shift(u[nu], BACKWARD, nu);
-	  tmp_1[rb[cb]] = adj(u[nu])*u[mu];
-	  ds_u[nu][rb[1-cb]] += shift(adj(tmp_0),BACKWARD,mu)*shift(tmp_1, BACKWARD, mu);
-	}
-      }
-      
-      // It is 1/(4Nc) to account for normalisation relevant to fermions
-      // in the taproj, which is a factor of 2 different from the 
-      // one used here.
-      ds_u[mu] *= Real(-1)/(Real(2*Nc));
-    }
-
-#if 0
-    ds_u.resize(Nd);
-    ds_u =zero;
-
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
-
-    for(int mu=0; mu < Nd; mu++) 
-    {
-      LatticeColorMatrix G;
-      G = zero;
-      
-      for(int nu = mu+1; nu < Nd; nu++) 
       { 
-	LatticeColorMatrix up_staple;
-	LatticeColorMatrix down_staple;
-	
-	LatticeColorMatrix tmp_1;
-	LatticeColorMatrix tmp_2;
-	
-	tmp_1 = shift( u[nu], FORWARD, mu);
-	tmp_2 = shift( u[mu], FORWARD, nu);
+	// tmp_0 = adj(shift(u[mu],FORWARD, nu))*adj(u[nu])
+	tmp_1 = shift(u[mu],FORWARD, nu);
+	tmp_2 = adj(tmp_1);
+	tmp_1 = adj(u[nu]);
+	tmp_0 = tmp_2*tmp_1;
 
-	up_staple = tmp_1*adj(tmp_2)*adj(u[nu]);
-	down_staple = adj(tmp_1)*adj(u[mu])*u[nu];
+	tmp_0 *= param.coeffs[mu][nu];
 
-	G += up_staple + shift(down_staple, BACKWARD, nu);
+	// F[mu] += shift(u[nu], FORWARD, mu)*tmp_0
+	tmp_1 = shift(u[nu], FORWARD, mu);
+	tmp_2 = tmp_1*tmp_0;
+	ds_u[mu] += tmp_2;
+
+	// F[nu] += shift(tmp_0*u[mu], BACKWARD, mu);
+	tmp_1 = tmp_0*u[mu];
+	tmp_2 = shift(tmp_1, BACKWARD, mu);
+	ds_u[nu] += tmp_2;
+	
+	// tmp_0 = adj(shift(u[nu],FORWARD, mu))*adj(U[mu])
+	tmp_1 = shift(u[nu], FORWARD,mu);
+	tmp_2 = adj(tmp_1);
+	tmp_1 = adj(u[mu]);
+	tmp_0 = tmp_2*tmp_1;
+	tmp_0 *= param.coeffs[mu][nu];
+
+	// F[mu] += shift(tmp_0*u[nu], BACKWARD, nu);
+	tmp_1 = tmp_0*u[nu];
+	tmp_2 = shift( tmp_1, BACKWARD, nu);
+	ds_u[mu] += tmp_2;
+
+	// F[nu] += shift(u[mu], FORWARd, nu)*tmp_0
+	tmp_2 = shift(u[mu], FORWARD, nu);
+	tmp_1 = tmp_2*tmp_0;
+        ds_u[nu] += tmp_1;
       }
-
-      ds_u[mu] = u[mu]*G;
+      
     }
 
-    // Pure Gauge factor (-coeff/Nc and a factor of 2 because of the forward
-    // and backward staple of the force)
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] *= Real(-param.coeff)/(Real(2*Nc));
+      tmp_0 = ds_u[mu]*Real(-1)/(Real(2*Nc));
+      ds_u[mu] = u[mu]*tmp_0;
     }
-#endif
+
 
     // Zero the force on any fixed boundaries
     getGaugeBC().zero(ds_u);
@@ -408,6 +395,100 @@ namespace Chroma
     END_CODE();
   }
 
+
+  //! Computes the derivative of the fermionic action respect to the link field
+  /*!
+   *         |  dS
+   * ds_u -- | ----   ( Write )
+   *         |  dU  
+   *
+   * \param ds_u       result      ( Write )
+   * \param state      gauge field ( Read )
+   */
+#if 1
+
+  void
+  PlaqGaugeAct::deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,
+		 
+		      const multi1d<Tower<LatticeColorMatrix> >& u) const
+  {
+    START_CODE();
+    
+    int height = u[0].size();
+
+    ds_u.resize(Nd);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu].resize(height);
+      zeroTower(ds_u[mu]);
+    }
+
+    // Temporary tower.
+    Tower<LatticeColorMatrix> tmp_0(height);
+    Tower<LatticeColorMatrix> tmp_1(height);
+    Tower<LatticeColorMatrix> tmp_2(height);
+
+
+   
+    for(int mu = 0; mu < Nd; mu++)
+    {
+      for(int nu=mu+1; nu < Nd; nu++) 
+      { 	
+	// tmp_0 = adj(shift(u[mu],FORWARD, nu))*adj(u[nu])
+	tmp_1 = shiftTower(u[mu],FORWARD, nu);
+	tmp_2 = adj(tmp_1);
+	tmp_1 = adj(u[nu]);
+	tmp_0 = tmp_2*tmp_1;
+
+	tmp_0 *= param.coeffs[mu][nu];
+
+	// F[mu] += shift(u[nu], FORWARD, mu)*tmp_0
+	tmp_1 = shiftTower(u[nu], FORWARD, mu);
+	tmp_2 = tmp_1*tmp_0;
+	ds_u[mu] += tmp_2;
+
+	// F[nu] += shift(tmp_0*u[mu], BACKWARD, mu);
+	tmp_1 = tmp_0*u[mu];
+	tmp_2 = shiftTower(tmp_1, BACKWARD, mu);
+	ds_u[nu] += tmp_2;
+	
+	// tmp_0 = adj(shift(u[nu],FORWARD, mu))*adj(U[mu])
+	tmp_1 = shiftTower(u[nu], FORWARD,mu);
+	tmp_2 = adj(tmp_1);
+	tmp_1 = adj(u[mu]);
+	tmp_0 = tmp_2*tmp_1;
+	tmp_0 *= param.coeffs[mu][nu];
+
+	// F[mu] += shift(tmp_0*u[nu], BACKWARD, nu);
+	tmp_1 = tmp_0*u[nu];
+	tmp_2 = shiftTower( tmp_1, BACKWARD, nu);
+	ds_u[mu] += tmp_2;
+
+	// F[nu] += shift(u[mu], FORWARd, nu)*tmp_0
+	tmp_2 = shiftTower(u[mu], FORWARD, nu);
+	tmp_1 = tmp_2*tmp_0;
+        ds_u[nu] += tmp_1;
+
+      }
+      
+    }
+
+    for(int mu=0; mu < Nd; mu++) { 
+      Real f = (Real(-1)/(Real(2*Nc))); 
+      tmp_0 = ds_u[mu];
+      tmp_0 *= f;
+      ds_u[mu] = u[mu]*tmp_0;
+    }
+
+
+    // Zero the force on any fixed boundaries
+    // getGaugeBC().zero(ds_u);
+
+
+   
+    END_CODE();
+  }
+
+#endif
 
   //! compute spatial dS/dU given a time direction
   void 

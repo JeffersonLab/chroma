@@ -12,6 +12,9 @@ template<typename T>
 class Tower { 
 public: 
 
+  //! Base
+  Tower() {}
+
   //! Create empty
   Tower(int n) { 
     tower_data.resize(n);
@@ -169,11 +172,11 @@ private:
   }
 
   template<typename T>
-  Tower<T> shift(const Tower<T>& a, int mu, int dir) 
+  Tower<T> shiftTower(const Tower<T>& a, int mu, int dir) 
   {
     Tower<T> ret_val(a.size());
     for(int i=0; i < a.size(); i++) { 
-      ret_val[i] = shift(a[i], mu, dir);
+      ret_val[i] = QDP::shift(a[i], mu, dir);
     }
     return ret_val;
   }
@@ -198,6 +201,14 @@ private:
   void print(Tower<T>& t) { 
     for(int i=0; i < t.size(); i++) {
       cout << "Level["<<i<<" ]"<< t[i] << endl;
+    }
+  }
+
+  template<typename T>
+  void zeroTower(Tower<T>& t)
+  {
+    for(int i=0; i < t.size(); i++) { 
+      t[i] = zero;
     }
   }
 
