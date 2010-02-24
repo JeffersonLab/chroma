@@ -1,3 +1,5 @@
+// -*- C++ -*-
+
 #ifndef __TOWER_H__
 #define __TOWER_H__
 
@@ -7,7 +9,7 @@ using namespace QDP;
 namespace Chroma { 
 
 template<typename T>
-class Tower<T> { 
+class Tower { 
 public: 
 
   //! Create empty
@@ -22,7 +24,7 @@ public:
     tower_data.resize(n);
   }
 
-  int size(int n) const { 
+  int size() const { 
     return tower_data.size();
   }
 
@@ -84,7 +86,7 @@ public:
   template<typename T1>
   Tower<T>& operator*=(const OScalar<T1>& alpha)
   {
-    for(int i=0; i < a.size(); i++) {
+    for(int i=0; i < this->size(); i++) {
       (*this)[i] *= alpha;
     }
     return *this;
@@ -93,7 +95,7 @@ public:
   Tower<T>& operator*=(const Tower<T>& b)
   {
 
-    for(int level=a.size()-1; level >=0; --level) { 
+    for(int level=b.size()-1; level >=0; --level) { 
       T tmp = (*this)[0]*b[level];
       for(int i=1; i <= level; i++) { 
 	T tmp2 = (*this)[i]*b[level-i];
@@ -101,56 +103,62 @@ public:
       }
       (*this)[level] = tmp;
     }
-    return (*thia);
+    return (*this);
     
   }
 
-  private:
+
+private:
   //! Evaluate (m,n) binomial coefficient recursively
-  unsigned int Choose(unsigned int m, unsigned int n) 
+  int Choose(int m, int n) 
   {
-    if( m==0 ) return 1;
-    if( n==m ) return 1;
-    return Choose(n-1,m)+Choose(n-1,m-1);
+    if ( m==0 && n==0 ) return 1;  // Pinnacle
+
+    if ( m==0 ) return 0; 
+
+    return Choose(m-1,n-1)+Choose(m-1,n);
   }
+
 
   multi1d<T> tower_data;
 };
  
 
 
-
-  Tower<T> operator*(const Tower<T>& a, const Tower<T>& b) const
+  template<typename T>
+  Tower<T> operator*(const Tower<T>& a, const Tower<T>& b) 
   {
     Tower<T> ret_val(a);
     ret_val *= b;
     return ret_val;
   }
    
-
-  Tower<T> operator+(const Tower<T>& a, const Tower<T>& b) const
+  template<typename T>
+  Tower<T> operator+(const Tower<T>& a, const Tower<T>& b)
   {
     Tower<T> ret_val(a);
     ret_val += b;
     return ret_val;
   }
 
-  Tower<T> operator-(const Tower<T>& a, const Tower<T>& b) const
+  template<typename T>
+  Tower<T> operator-(const Tower<T>& a, const Tower<T>& b)
   {
     Tower<T> ret_val(a);
-    ret_val += b;
+    ret_val -= b;
     return ret_val;
 
   }
 
-  template<typename T1>
-  Tower<T> operator*(const OScalar<T1>& a, const Tower<T>& b) const
+  template<typename T, typename T1>
+  Tower<T> operator*(const OScalar<T1>& a, const Tower<T>& b)
   {
     Tower<T> ret_val(b);
     ret_val *= a;
     return ret_val;
   }
 
+  template<typename T>
   Tower<T> adj(const Tower<T>& a) 
   {
     Tower<T> ret_val(a.size());
@@ -160,6 +168,7 @@ public:
     return ret_val;
   }
 
+  template<typename T>
   Tower<T> shift(const Tower<T>& a, int mu, int dir) 
   {
     Tower<T> ret_val(a.size());
@@ -169,7 +178,29 @@ public:
     return ret_val;
   }
 
-  
+  template<typename T>
+  void random(Tower<T>& t) 
+  {
+    for(int i=0; i < t.size(); i++) {
+      random(t[i]);
+    }
+  }
+
+  template<typename T>
+  void gaussian(Tower<T>& t) 
+  {
+    for(int i=0; i < t.size(); i++) {
+      gaussian(t[i]);
+    }
+  }
+
+  template<typename T>
+  void print(Tower<T>& t) { 
+    for(int i=0; i < t.size(); i++) {
+      cout << "Level["<<i<<" ]"<< t[i] << endl;
+    }
+  }
+
 }
 
 #endif
