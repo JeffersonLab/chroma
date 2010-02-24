@@ -66,7 +66,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new
 
 #
 # add the programs to build in here
@@ -80,7 +80,7 @@ check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_dwf4d t_propagator_s t_disc_loop_s \
     t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d \
     t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec \
-	t_map_obj_disk
+	t_map_obj_disk t_tower
 
 
 #
@@ -209,8 +209,7 @@ t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc
-t_minvert_SOURCES = t_minvert.cc
-
+t_tower_SOURCES=t_tower.cc
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target
