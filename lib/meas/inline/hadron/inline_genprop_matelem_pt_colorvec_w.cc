@@ -425,7 +425,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_prop_id);
-	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.sink_prop_id);
+	TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.sink_prop_id);
 
 	// Snarf the prop info. This is will throw if the prop_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.source_prop_id).getFileXML(source_prop_file_xml);
@@ -452,7 +452,7 @@ namespace Chroma
       const LatticePropagator& source_prop =
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.source_prop_id);
       const MapObject<KeyPropColorVec_t,LatticeFermion>& sink_ferm_map =
-	TheNamedObjMap::Instance().getData< MapObject<KeyPropColorVec_t,LatticeFermion> >(params.named_obj.sink_prop_id);
+	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.sink_prop_id));
 
       push(xml_out, "Output_version");
       write(xml_out, "out_version", 2);

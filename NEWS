@@ -1,3 +1,13 @@
+Jan 07, 2010 - Robert Edwards
+        Version 3.38.0
+        New FILEDB interface down in QDP++. Changed Chroma's SerialDBKey/Data to match 
+        accordingly.
+
+Jan 07, 2010 - Balint Joo
+        Version 3.38.0
+        Merged 3.37.2 devel branch onto master. Fixed regression checks.
+        Ready to go into stable
+
 Jan 01, 2010 - Robert Edwards
 	Version 3.37.2
         Made a combined prop_colorvec and prop_matelem_colorvec that saves

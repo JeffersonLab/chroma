@@ -18,8 +18,8 @@ least g++-4.X or above.
 In JLab CVS module name and tag-ology, the current compatibility is
 
 module        tag                          description
-chroma        chroma3-34-X   or higher
-qdp++         qdp1-31-0      or higher
+chroma        chroma3-38-X   or higher
+qdp++         qdp1-36-0      or higher
 qmp           qmp2-3-X       or higher     MPI and single node versions
 qmp-mvia-mesh qmp-mvia-mesh-2-0  or higher GigE version
 

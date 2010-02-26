@@ -835,6 +835,7 @@ nobase_include_HEADERS += \
         meas/inline/hadron/inline_qqq_diquark_w.h \
 	meas/inline/hadron/inline_qqbar_w.h \
 	meas/inline/hadron/inline_bar3ptfn_w.h \
+	meas/inline/hadron/inline_barspec_db_w.h \
 	meas/inline/hadron/inline_building_blocks_w.h \
 	meas/inline/hadron/inline_noisy_building_blocks_w.h \
 	meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h \
@@ -1607,6 +1608,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_npr_vertex_w.cc \
 	meas/inline/hadron/inline_npr_w.cc \
 	meas/inline/hadron/inline_stag_to_wils.cc \
+	meas/inline/hadron/inline_barspec_db_w.cc \
 	meas/inline/hadron_s/inline_hadron_aggregate_s.cc \
 	meas/inline/hadron_s/inline_make_source_s.cc \
 	meas/inline/hadron_s/inline_propagator_s.cc \
