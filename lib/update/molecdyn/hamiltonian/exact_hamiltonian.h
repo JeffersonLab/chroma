@@ -86,7 +86,8 @@ namespace Chroma
       /* Now add on the local Norm2 of the momenta for each link */
       for(int mu=0; mu < Nd; mu++) { 
 	ke_per_site[mu] = -Double(4);
-	ke_per_site[mu] += localNorm2(s.getP()[mu]);
+	ke_per_site[mu] += localNorm2(s.getP()[mu]); 
+	//ke_per_site[mu] -= real(trace(s.getP()[mu]*s.getP()[mu]));
       }
 
       /* Sum up the differences */

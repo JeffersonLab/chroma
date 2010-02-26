@@ -481,7 +481,9 @@ namespace Chroma
 
 
     // Zero the force on any fixed boundaries
-    // getGaugeBC().zero(ds_u);
+    // I defined this (possibly incorrectly) for towers
+    // in GaugeBC
+    getGaugeBC().zero(ds_u);
 
 
    

@@ -76,6 +76,18 @@ namespace Chroma
       plaq->deriv(result,state);
     }
 
+
+    //! Beastly hack -- because we don't really know at this point that
+    //  Q is in fact a lattice color matrix of U. Just to make prototype 
+    //  compile. Paulo! All is forigven! (Almost)
+
+    void deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,		 
+		      const multi1d<Tower<LatticeColorMatrix> >& u) const
+    {
+      plaq->deriv(ds_u, u);
+    }
+
+
     //! Compute the actions
     Double S(const Handle< GaugeState<P,Q> >& state) const
     {

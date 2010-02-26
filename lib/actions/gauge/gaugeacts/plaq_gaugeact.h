@@ -94,9 +94,10 @@ namespace Chroma
 	       const Handle< GaugeState<P,Q> >& state) const;
 
 
-    void deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,
-		 
+    void deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,		 
 		      const multi1d<Tower<LatticeColorMatrix> >& u) const;
+
+
     //! compute spatial dS/dU given a time direction
     void derivSpatial(multi1d<LatticeColorMatrix>& result,
 		      const Handle< GaugeState<P,Q> >& state,

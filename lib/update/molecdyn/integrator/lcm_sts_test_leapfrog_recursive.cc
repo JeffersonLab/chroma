@@ -105,6 +105,49 @@ namespace Chroma
   }
 
   
+  void LatColMatSTSTestLeapfrogRecursiveIntegrator::getShadow( AbsFieldState<multi1d<LatticeColorMatrix>,
+								  multi1d<LatticeColorMatrix> >& s,
+								  const Real& dt,
+								  Double& H, 
+								  Double& Hs) const
+  {
+    multi1d<Poisson> pb(monomials.size());
+    multi1d<Double> shadow(monomials.size());
+    
+    for(int i =0; i < monomials.size(); i++) {
+      ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& the_monomial
+	= dynamic_cast<ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >&>(*monomials[i]);
+      pb[i] = the_monomial.poissonBracket(s);
+      shadow[i] = Double(0);
+      shadow -= Real(1.0/24.0)*real(pb[i].sst);
+      shadow -= Real(1.0/12.0)*real(pb[i].tst);
+    }
+
+    H=Double(0);
+
+    // Kinetic Piece
+    for(int mu=0; mu < Nd; mu++) { 
+      H += norm2(s.getP()[mu]);
+    }
+    
+    // Action Piece
+    for(int i=0; i < monomials.size(); i++) { 
+      ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& the_monomial
+	= dynamic_cast<ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >&>(*monomials[i]);
+
+      H += the_monomial.S(s);
+    }
+
+    // Shadow piece
+    Hs = H;
+    for(int i=0; i < monomials.size(); i++) { 
+      Hs -= shadow[i]*dt*dt;
+    }
+
+
+  }
+
+  
   void LatColMatSTSTestLeapfrogRecursiveIntegrator::operator()( 
 					     AbsFieldState<multi1d<LatticeColorMatrix>,
 					     multi1d<LatticeColorMatrix> >& s, 
@@ -124,13 +167,22 @@ namespace Chroma
     Real dtau = traj_length / n_steps;
     Real dtauby2 = dtau/2;
 
-    // Its sts so:
+    // It's sts so:
+    Double H_0, Hs_0;
+    Double H, Hs;
+
+    getShadow(s,dtau,H_0,Hs_0) ;
 
     for(int i=0; i < n_steps; i++) {  // N-1 full steps
       expSdt(s, dtauby2);  // First half step
       subIntegrator(s, dtau); 
       expSdt(s, dtauby2);
+
+      getShadow(s,dtau,H,Hs);
+      QDPIO::cout << "LEAPFROG: " << H-H_0 << " " << Hs - Hs_0 << endl;
     }
+
+    QDPIO::cout << "LEAPFROG: " << endl;
 
     END_CODE();
 

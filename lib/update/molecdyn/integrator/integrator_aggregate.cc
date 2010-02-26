@@ -5,6 +5,7 @@
 #include "update/molecdyn/integrator/lcm_sts_test_leapfrog_recursive.h"
 #include "update/molecdyn/integrator/lcm_tst_leapfrog_recursive.h"
 #include "update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h"
+#include "update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.h"
 #include "update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h"
 #include "update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h"
 #include "update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h"
@@ -34,6 +35,7 @@ namespace Chroma
 	success &=  LatColMatSTSTestLeapfrogRecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatTSTLeapfrogRecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatSTSMinNorm2RecursiveIntegratorEnv::registerAll();
+	success &=  LatColMatSTSTestMinNorm2RecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatSTSMinNorm2DTauRecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatTSTMinNorm2RecursiveIntegratorEnv::registerAll();
 	success &=  LatColMatTSTMinNorm2DTauRecursiveIntegratorEnv::registerAll();

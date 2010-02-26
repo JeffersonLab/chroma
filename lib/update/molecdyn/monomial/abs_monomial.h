@@ -8,11 +8,13 @@
 #ifndef __abs_monomial_h__
 #define __abs_monomial_h__
 
+#include "chromabase.h"
 #include "wilstype_fermact_w.h"
 #include "gaugeact.h"
 
 #include "update/molecdyn/field_state.h"
 #include "io/xmllog_io.h"
+#include "poisson.h"
 
 namespace Chroma
 {
@@ -58,6 +60,15 @@ namespace Chroma
 
     //! Reset predictors
     virtual void resetPredictors(void) { /* Nop for most */ }
+
+    //! Compute the poisson brackets for the monomial.
+    virtual Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
+      Poisson r;
+      QDP::QDPIO::cout << "Not Implemented" << endl;
+      QDP_abort(1);
+      return r;
+    }
+
   };
 
 
@@ -82,6 +93,7 @@ namespace Chroma
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
+
     // Compute the energies 
 
     //! Compute the total action
@@ -95,6 +107,15 @@ namespace Chroma
 
     //! Reset predictors
     virtual void resetPredictors(void) { /* Nop for most */ }
+
+    //! Compute the poisson brackets for the monomial.
+    virtual Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
+      Poisson r;
+      QDP::QDPIO::cout << "Not Implemented" << endl;
+      QDP_abort(1);
+      return r;
+    }
+
   };
 
   //-------------------------------------------------------------------------------------------

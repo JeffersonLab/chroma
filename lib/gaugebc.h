@@ -11,6 +11,8 @@
 #include "boundcond.h"
 
 
+#include "tower.h"
+
 namespace Chroma
 {
   //! Base class for all gauge action boundary conditions
@@ -38,6 +40,22 @@ namespace Chroma
 
     //! Zero some gauge-like field in place on the masked links
     virtual void zero(P& ds_u) const = 0;
+
+    //! Zero out boundaries on a tower explicit signature for now
+    virtual void zero(multi1d<Tower<LatticeColorMatrix> >& towers) const {
+      //Trivial lift.
+      P ds_u(Nd);
+      for(int l=0; l < towers[0].size(); l++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  ds_u[mu] = (towers[mu])[l];
+	}
+	zero(ds_u);
+	for(int mu=0; mu < Nd; mu++) { 
+	  (towers[mu])[l] =  ds_u[mu];
+	}
+      }
+    }
+
 
     //! Says if there are fixed links within the lattice
     virtual bool nontrivialP() const = 0;

@@ -13,6 +13,11 @@
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
 #include "io/xmllog_io.h"
+#include "util/gauge/taproj.h"
+
+
+#include "tower.h"
+#include "poisson.h"
 
 namespace Chroma 
 {
@@ -67,7 +72,22 @@ namespace Chroma
       // Make a gauge connect state
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
-      getGaugeAct().deriv(F, g_state);
+      multi1d<Tower<LatticeColorMatrix> > u_in(Nd);
+      multi1d<Tower<LatticeColorMatrix> > u_out(Nd);
+
+      for(int mu=0; mu < Nd; mu++) { 
+	(u_in[mu]).resize(1); // single tower
+	(u_out[mu]).resize(1);
+	(u_in[mu])[0] = (g_state->getLinks())[mu];
+      }
+
+      getGaugeAct().deriv(u_out, u_in);
+
+      for(int mu=0; mu < Nd; mu++){ 
+	F[mu] = u_out[mu][0];
+      }
+      // Try to compute gauge action with the tower deriv as a hack.
+
 
       monitorForces(xml_out, "Forces", F);
       pop(xml_out);
@@ -75,6 +95,75 @@ namespace Chroma
       END_CODE();
     }
 
+
+    //! Compute the poisson brackets for the monomial.
+    Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
+      // First compute the F (ing) tower
+      multi1d<Tower<LatticeColorMatrix> > F(Nd);
+      multi1d<Tower<LatticeColorMatrix> > G(Nd);
+      
+      for(int mu=0; mu < Nd; mu++){ 
+	F[mu].resize(4);
+	G[mu].resize(2);
+      }
+
+      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
+
+      
+      {
+	QDPIO::cout << "Lifting U" << endl;
+	multi1d< Tower<LatticeColorMatrix> > U(Nd);
+	for(int mu=0; mu < Nd; mu++) {
+	  U[mu].resize(4);
+	  U[mu][0] = g_state->getLinks()[mu];
+	}
+
+	for(int i=1; i < 4; i++) { 
+	  for(int mu=0; mu < Nd; mu++) { 
+	    U[mu][i]  = -s.getP()[mu]*U[mu][i-1];
+	  }
+	}
+
+	QDPIO::cout << "Computing F-tower" << endl;
+	getGaugeAct().deriv(F, U);
+	
+	for(int i=0; i < 4; i++) { 
+	  for(int mu=0; mu < Nd; mu++) { 
+	    taproj(F[mu][i]);
+	  }
+	}
+
+
+      }
+
+      {
+	// Lift the Us
+	QDPIO::cout << "Re-Lifting U" << endl;
+
+	multi1d<Tower<LatticeColorMatrix> > U(Nd);
+	for(int mu=0; mu < Nd; mu++) {
+	  U[mu].resize(2);
+	  U[mu][0] = g_state->getLinks()[mu];
+	  U[mu][1]  = -F[mu][0] * U[mu][0];
+	}
+	
+	QDPIO::cout << "Computing G-tower" << endl;
+	getGaugeAct().deriv(G, U);
+	for(int i=0; i < 2; i++) { 
+	  for(int mu=0; mu < Nd; mu++) { 
+	    taproj(G[mu][i]);
+	  }
+	}
+
+      }
+
+      
+      // Make up poisson bracket
+      Poisson ret_val(F,G,s.getP());
+      return ret_val;
+
+
+    }
 
     //! Gauge action value
     Double S(const AbsFieldState<P,Q>& s)  
