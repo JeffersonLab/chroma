@@ -15,6 +15,7 @@
 #include "update/molecdyn/field_state.h"
 #include "io/xmllog_io.h"
 #include "poisson.h"
+#include "tower.h"
 
 namespace Chroma
 {
@@ -51,6 +52,11 @@ namespace Chroma
     //! Compute dsdq for the system... 
     /*! Not specified how to actually do this s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
+
+    // Compute forces with towers
+    virtual void dsdq(multi1d<Tower< LatticeColorMatrix> >& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+    }
 
     //! Refresh pseudofermion fields if any
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) =0 ;
@@ -93,7 +99,10 @@ namespace Chroma
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
-
+   // Compute forces with towers
+    virtual void dsdq(multi1d< Tower<LatticeColorMatrix> >& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+    }
     // Compute the energies 
 
     //! Compute the total action

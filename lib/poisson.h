@@ -7,7 +7,6 @@
 namespace Chroma {
  
   struct Poisson { 
-    ComplexD st;
     ComplexD sst;
     ComplexD tst;
     ComplexD tsst;
@@ -22,7 +21,7 @@ namespace Chroma {
 
     Poisson() 
     {
-      st = sst = tst = tsst = ssst = ttst = ttsst 
+      sst = tst = tsst = ssst = ttst = ttsst 
 	= sttst = tssst = stsst = tttst = sssst = zero;
     }
 
@@ -37,30 +36,27 @@ namespace Chroma {
 			const multi1d<LatticeColorMatrix>& P)
     {
 
-      st = sst = tst = tsst = ssst = ttst = ttsst 
+      sst = tst = tsst = ssst = ttst = ttsst 
 	= sttst = tssst = stsst = tttst = sssst = zero;
 
       for(int mu=0; mu < Nd; mu++) {
-	// {S,T} = - tr(F1 P) 
-	st       -= sum(trace( F[mu][0]*P[mu] ));
-	
-	// {S,{S,T}}  =  tr(F1^2)
-	sst       += sum(trace( F[mu][0]*F[mu][0] ));
+	// {S,{S,T}}  = tr(F1^2) 
+	sst       -= Real(2)*sum(trace( F[mu][0]*F[mu][0] ));
 
-	// {T,{S,T}}  = -2 tr(F2 P)  // The 2 is  a magic b factor from Tony
-	tst       -= Real(2)*sum(trace( F[mu][1]*P[mu] ));
+	// {T,{S,T}}  = - tr(F2 P)  
+	tst       += Real(2)*sum(trace( F[mu][1]*P[mu] ));
 
 	// {T,{S,{S,T}}} = 2 tr(F1 F2)
-	tsst      += Real(2)*sum(trace( F[mu][0]*F[mu][1] ));
+	tsst      -= Real(2)*sum(trace( F[mu][0]*F[mu][1] ));
 
 	// {S,{S,{S,T}}} = 0 - so don't recompute
 
 	// {T,{T,{S,T}}} = -tr( F3 P) 
-	ttst      -= sum(trace( F[mu][2]*P[mu]));
+	ttst      += Real(1)*sum(trace( F[mu][2]*P[mu]));
 
 	// {T,{T,{S,{S,T}}}} = 2( tr(F1 F3} + tr(F2^2) )
-	ttsst      += Real(4)*sum(trace( F[mu][0]*F[mu][2]));  // F1 F3 term
-	ttsst      += Real(4)*sum(trace( F[mu][1]*F[mu][1]));  // F2^2 term
+	ttsst      -= Real(4)*sum(trace( F[mu][0]*F[mu][2]));  // F1 F3 term
+	ttsst      -= Real(4)*sum(trace( F[mu][1]*F[mu][1]));  // F2^2 term
 
 
 	// {{S,T},{T,{S,T}}} = -3 tr ( [F1,F2] P )
@@ -77,15 +73,15 @@ namespace Chroma {
 	commut2 -= P[mu]*F[mu][0];
 
 
-	sttst -= Real(6)*sum(trace(commut1*P[mu]));  // -3 tr ( [F1,F2] P )
-	sttst -= Real(2)*sum(trace(commut2*commut2));    // -  tr ( [F1,P] [F1,P] )
-	sttst += Real(2)*sum(trace(F[mu][0]*F[mu][2]));  // +  tr ( F1,F3 )
-	sttst -= Real(4)*sum(trace(F[mu][1]*F[mu][1])); //  -2 tr ( F2,F2 )
+	sttst += Real(6)*sum(trace(commut1*P[mu]));  // -3 tr ( [F1,F2] P )
+	sttst += Real(2)*sum(trace(commut2*commut2));    // -  tr ( [F1,P] [F1,P] )
+	sttst -= Real(2)*sum(trace(F[mu][0]*F[mu][2]));  // +  tr ( F1,F3 )
+	sttst += Real(4)*sum(trace(F[mu][1]*F[mu][1])); //  -2 tr ( F2,F2 )
 
 	// {T,{S,{S,{S,T}}}} = 0 so dont compute
 
 	// {{S,T}, {S,{S,T}}} = -2 tr (F1 G1)
-	stsst -= Real(2)*sum(trace(F[mu][0]*G[mu][0]));
+	stsst -= Real(4)*sum(trace(F[mu][0]*G[mu][0]));
 	
 	// {T,{T,{T,{S,T}}}} = -tr( F4 P )
 	tttst -= Real(4)*sum(trace(F[mu][3]*P[mu]));
@@ -102,7 +98,6 @@ namespace Chroma {
     void print(void) { 
       QDPIO::cout << "PoissonBrackets: " << endl;
       QDPIO::cout << "================="  << endl;
-      QDPIO::cout << "             {S,T} = " << st << endl;
       QDPIO::cout << "         {S,{S,T}} = " << sst << endl;
       QDPIO::cout << "         {T,{S,T}} = " << tst << endl;
       QDPIO::cout << "     {T,{S,{S,T}}} = " << tsst << endl;

@@ -89,7 +89,57 @@ namespace Chroma
       // Try to compute gauge action with the tower deriv as a hack.
 
 
-      monitorForces(xml_out, "Forces", F);
+      // monitorForces(xml_out, "Forces", F);
+      pop(xml_out);
+
+      END_CODE();
+    }
+
+    //! Create a suitable state and compute F
+    //! On entry the height of u_out[0] is the desired tower height.
+    void dsdq(multi1d<Tower<LatticeColorMatrix> >& u_out, const AbsFieldState<P,Q>& s) 
+    {
+      START_CODE();
+
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+      push(xml_out, "GaugeMonomial");
+
+      // Make a gauge connect state
+      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
+
+      // Tower to start with.
+      multi1d<Tower<LatticeColorMatrix> > u_in(Nd);
+
+      // Make the tower to start with the right height and add guage field
+      for(int mu=0; mu < Nd; mu++) { 
+	(u_in[mu]).resize(u_out[mu].size()); // single tower
+      }
+
+      for(int mu=0; mu < Nd; mu++) { 
+	// Always to this
+	(u_in[mu])[0] = (g_state->getLinks())[mu];
+      }
+
+      // If u_out is of size 2, we need to lift
+      if( u_out[0].size() == 2 ) { 
+	for(int mu=0; mu < Nd; mu++) {
+	  u_in[mu][1] = - u_out[mu][0]*(g_state->getLinks())[mu];
+	}
+      }
+
+      // Do the terivative with towers
+      // FIXME: How to avoid extra work, and not redo level 0 here ?
+      getGaugeAct().deriv(u_out, u_in);
+
+      // Taproj it
+      for(int i=0; i < u_out[0].size(); i++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  taproj(u_out[mu][i]);
+	}
+      }
+
+      // and done
+
       pop(xml_out);
 
       END_CODE();

@@ -82,6 +82,7 @@ namespace Chroma
    
     START_CODE();
     Real dtau = traj_length / n_steps;
+    Real dtau2 = 0;
     for(int i=0; i < n_steps; i++) { 
       LCMMDIntegratorSteps::leapP( monomials,
 				   dtau,

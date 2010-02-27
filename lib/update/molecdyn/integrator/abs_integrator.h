@@ -28,8 +28,21 @@ namespace Chroma
     virtual ~AbsComponentIntegrator(void) {} 
 
     //! Do an integration of length n*delta tau in n steps.
+    //! One timestep version
     virtual void operator()(AbsFieldState<P,Q>& s, 
-			    const Real& traj_length) const = 0;
+			    const Real& traj_length) const {
+      QDPIO::cout << "Not Implemented" << endl;
+      QDP_abort(1);
+
+
+    };
+
+    virtual void operator()(AbsFieldState<P,Q>& s, 
+			    const Real& t1,
+			    const Real& t2) const {
+      QDPIO::cout << "Not Implemented" << endl;
+      QDP_abort(1);
+    };
 
     //! Refresh fields in this level of the integrator (for R like algorithms)
     virtual void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,

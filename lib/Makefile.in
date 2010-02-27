@@ -434,10 +434,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
+	update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc \
-	update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc \
+	update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.cc \
@@ -1070,9 +1071,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	read_rat_approx.$(OBJEXT) comp_approx.$(OBJEXT) \
 	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
 	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
-	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
+	lcm_exp_sdt_sstdt3.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
+	lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
-	lcm_sts_test_min_norm2_recursive.$(OBJEXT) \
+	lcm_sts_force_gradient_recursive.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive_dtau.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive_dtau.$(OBJEXT) \
@@ -1686,9 +1688,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/integrator/integrator_shared.h \
 	update/molecdyn/integrator/lcm_integrator_leaps.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
+	update/molecdyn/integrator/lcm_exp_sdt_sstdt3.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
-	update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_sts_force_gradient_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
@@ -2656,9 +2659,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/integrator/integrator_shared.h \
 	update/molecdyn/integrator/lcm_integrator_leaps.h \
 	update/molecdyn/integrator/lcm_exp_sdt.h \
+	update/molecdyn/integrator/lcm_exp_sdt_sstdt3.h \
 	update/molecdyn/integrator/lcm_exp_tdt.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.h \
-	update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.h \
+	update/molecdyn/integrator/lcm_sts_force_gradient_recursive.h \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.h \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.h \
@@ -3432,10 +3436,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/integrator/integrator_shared.cc \
 	update/molecdyn/integrator/lcm_toplevel_integrator.cc \
 	update/molecdyn/integrator/lcm_exp_sdt.cc \
+	update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc \
 	update/molecdyn/integrator/lcm_exp_tdt.cc \
 	update/molecdyn/integrator/lcm_integrator_leaps.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc \
-	update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc \
+	update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc \
 	update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive.cc \
 	update/molecdyn/integrator/lcm_tst_min_norm2_recursive_dtau.cc \
@@ -4285,13 +4290,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_4mn5fv_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_creutz_gocksch_4_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_exp_sdt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_exp_sdt_sstdt3.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_exp_tdt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_integrator_leaps.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_force_gradient_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_leapfrog_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_min_norm2_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_min_norm2_recursive_dtau.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_test_leapfrog_recursive.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_sts_test_min_norm2_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_toplevel_integrator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_tst_leapfrog_recursive.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lcm_tst_min_norm2_recursive.Po@am__quote@
@@ -9170,6 +9176,20 @@ lcm_exp_sdt.obj: update/molecdyn/integrator/lcm_exp_sdt.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_exp_sdt.obj `if test -f 'update/molecdyn/integrator/lcm_exp_sdt.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_exp_sdt.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_exp_sdt.cc'; fi`
 
+lcm_exp_sdt_sstdt3.o: update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_exp_sdt_sstdt3.o -MD -MP -MF $(DEPDIR)/lcm_exp_sdt_sstdt3.Tpo -c -o lcm_exp_sdt_sstdt3.o `test -f 'update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_exp_sdt_sstdt3.Tpo $(DEPDIR)/lcm_exp_sdt_sstdt3.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc' object='lcm_exp_sdt_sstdt3.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_exp_sdt_sstdt3.o `test -f 'update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc
+
+lcm_exp_sdt_sstdt3.obj: update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_exp_sdt_sstdt3.obj -MD -MP -MF $(DEPDIR)/lcm_exp_sdt_sstdt3.Tpo -c -o lcm_exp_sdt_sstdt3.obj `if test -f 'update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_exp_sdt_sstdt3.Tpo $(DEPDIR)/lcm_exp_sdt_sstdt3.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc' object='lcm_exp_sdt_sstdt3.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_exp_sdt_sstdt3.obj `if test -f 'update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_exp_sdt_sstdt3.cc'; fi`
+
 lcm_exp_tdt.o: update/molecdyn/integrator/lcm_exp_tdt.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_exp_tdt.o -MD -MP -MF $(DEPDIR)/lcm_exp_tdt.Tpo -c -o lcm_exp_tdt.o `test -f 'update/molecdyn/integrator/lcm_exp_tdt.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_exp_tdt.cc
 @am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_exp_tdt.Tpo $(DEPDIR)/lcm_exp_tdt.Po
@@ -9212,19 +9232,19 @@ lcm_sts_min_norm2_recursive.obj: update/molecdyn/integrator/lcm_sts_min_norm2_re
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_min_norm2_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_min_norm2_recursive.cc'; fi`
 
-lcm_sts_test_min_norm2_recursive.o: update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_test_min_norm2_recursive.o -MD -MP -MF $(DEPDIR)/lcm_sts_test_min_norm2_recursive.Tpo -c -o lcm_sts_test_min_norm2_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_sts_test_min_norm2_recursive.Tpo $(DEPDIR)/lcm_sts_test_min_norm2_recursive.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc' object='lcm_sts_test_min_norm2_recursive.o' libtool=no @AMDEPBACKSLASH@
+lcm_sts_force_gradient_recursive.o: update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_force_gradient_recursive.o -MD -MP -MF $(DEPDIR)/lcm_sts_force_gradient_recursive.Tpo -c -o lcm_sts_force_gradient_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_sts_force_gradient_recursive.Tpo $(DEPDIR)/lcm_sts_force_gradient_recursive.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc' object='lcm_sts_force_gradient_recursive.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_test_min_norm2_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_force_gradient_recursive.o `test -f 'update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc
 
-lcm_sts_test_min_norm2_recursive.obj: update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_test_min_norm2_recursive.obj -MD -MP -MF $(DEPDIR)/lcm_sts_test_min_norm2_recursive.Tpo -c -o lcm_sts_test_min_norm2_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc'; fi`
-@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_sts_test_min_norm2_recursive.Tpo $(DEPDIR)/lcm_sts_test_min_norm2_recursive.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc' object='lcm_sts_test_min_norm2_recursive.obj' libtool=no @AMDEPBACKSLASH@
+lcm_sts_force_gradient_recursive.obj: update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_force_gradient_recursive.obj -MD -MP -MF $(DEPDIR)/lcm_sts_force_gradient_recursive.Tpo -c -o lcm_sts_force_gradient_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc'; fi`
+@am__fastdepCXX_TRUE@	mv -f $(DEPDIR)/lcm_sts_force_gradient_recursive.Tpo $(DEPDIR)/lcm_sts_force_gradient_recursive.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc' object='lcm_sts_force_gradient_recursive.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_test_min_norm2_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_test_min_norm2_recursive.cc'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o lcm_sts_force_gradient_recursive.obj `if test -f 'update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc'; then $(CYGPATH_W) 'update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc'; else $(CYGPATH_W) '$(srcdir)/update/molecdyn/integrator/lcm_sts_force_gradient_recursive.cc'; fi`
 
 lcm_sts_min_norm2_recursive_dtau.o: update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT lcm_sts_min_norm2_recursive_dtau.o -MD -MP -MF $(DEPDIR)/lcm_sts_min_norm2_recursive_dtau.Tpo -c -o lcm_sts_min_norm2_recursive_dtau.o `test -f 'update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc' || echo '$(srcdir)/'`update/molecdyn/integrator/lcm_sts_min_norm2_recursive_dtau.cc

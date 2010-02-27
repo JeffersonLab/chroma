@@ -141,7 +141,7 @@ namespace Chroma
     // Shadow piece
     Hs = H;
     for(int i=0; i < monomials.size(); i++) { 
-      Hs -= shadow[i]*dt*dt;
+      Hs += shadow[i]*dt*dt;
     }
 
 
@@ -170,7 +170,8 @@ namespace Chroma
     // It's sts so:
     Double H_0, Hs_0;
     Double H, Hs;
-
+    Double rms_dH=0;
+    Double rms_dHs=0;
     getShadow(s,dtau,H_0,Hs_0) ;
 
     for(int i=0; i < n_steps; i++) {  // N-1 full steps
@@ -180,9 +181,14 @@ namespace Chroma
 
       getShadow(s,dtau,H,Hs);
       QDPIO::cout << "LEAPFROG: " << H-H_0 << " " << Hs - Hs_0 << endl;
+      rms_dH += (H-H_0)*(H-H_0);
+      rms_dHs += (Hs-Hs_0)*(Hs -Hs_0);
     }
+    rms_dH /= Double(n_steps);
+    rms_dHs /= Double(n_steps);
 
-    QDPIO::cout << "LEAPFROG: " << endl;
+    QDPIO::cout << "%LEAPFROG: log(dt) = " << log10(dtau) << " log dH = " << log10(sqrt(rms_dH)) << " log dHs = " << log10(sqrt(rms_dHs)) << endl;
+
 
     END_CODE();
 

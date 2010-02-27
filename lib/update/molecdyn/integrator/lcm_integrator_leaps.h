@@ -73,6 +73,15 @@ namespace Chroma
 	       multi1d<LatticeColorMatrix> >& s); 
 
 
+        //! LeapP for just a selected list of monomials
+    void leapFG(const multi1d< 
+		Handle<   Monomial< multi1d<LatticeColorMatrix>, 
+		multi1d<LatticeColorMatrix> > >
+		> monomials,
+		
+		const Real& dt,  // coeff * dt
+		AbsFieldState<multi1d<LatticeColorMatrix>,
+		multi1d<LatticeColorMatrix> >& s);
 
   } // End Namespace MDIntegratorSteps
 
