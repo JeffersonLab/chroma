@@ -31,7 +31,7 @@ namespace Chroma
       bool registered = false;
     }
 
-    const std::string name = "LCM_TST_FORCE_GRADIENT";
+    const std::string name = "LCM_STS_FORCE_GRADIENT";
 
     //! Register all the factories
     bool registerAll() 
@@ -117,12 +117,15 @@ namespace Chroma
 	= dynamic_cast<ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >&>(*monomials[i]);
       pb[i] = the_monomial.poissonBracket(s);
       shadow[i] = Double(0);
-      shadow += Real(7.0/15360.0)*real(pb[i].stsst);
-      shadow += Real(13.0/15360.0)*real(pb[i].tssst);
-      shadow += Real(7.0/51840.0)*real(pb[i].tttst);
-      shadow += Real(11.0/17280.0)*real(pb[i].ttsst);
-      shadow += Real(251.0/737280.0)*real(pb[i].sssst);
-      shadow += Real(1.0/8640.0)*real(pb[i].sttst);
+      shadow -= Real(36)/Real(155520)*real(pb[i].stsst);
+      shadow -= Real(72)/Real(155520)*real(pb[i].sttst);
+      shadow -= Real(126.0)/Real(155520)*real(pb[i].ttsst);
+      shadow -= Real(54.0)/Real(155520)*real(pb[i].tttst);
+
+
+
+      //      shadow += Real(251.0/737280.0)*real(pb[i].sssst);
+      // shadow += Real(13.0/15360.0)*real(pb[i].tssst);
     }
 
     H=Double(0);
@@ -169,11 +172,9 @@ namespace Chroma
     				    
     Real dtau = traj_length / Real(n_steps);
     Real dtau_1_6 = dtau / Real(6);
-    Real dtau_3_8 = Real(3)*dtau/Real(8);
-    Real dtau_1_3 = dtau/Real(3);
-
-    Real dtau_1_4 = dtau/Real(4);
-    Real dtau_cubed_192 = -(dtau*dtau*dtau)/Real(192);
+    Real dtau_1_2 = dtau / Real(2);
+    Real dtau_48_72 = Real(48)*dtau/Real(72);
+    Real m_dtau_cubed_72 = -(dtau*dtau*dtau)/Real(72);
 
     // It's sts so:
     Double H_0, Hs_0;
@@ -182,15 +183,13 @@ namespace Chroma
     Double rms_dHs=0;
     getShadow(s,dtau,H_0,Hs_0) ;
 
-    for(int i=0; i < n_steps; i++) {  
-      subIntegrator(s, dtau_1_6);
-      expSdt(s, dtau_3_8);
-      subIntegrator(s, dtau_1_3);
-      expSdt(s, dtau_1_4);
-      expSdtSSTdt3(s, dtau_cubed_192);
-      subIntegrator(s, dtau_1_3);
-      expSdt(s, dtau_3_8);
-      subIntegrator(s, dtau_1_6);
+    for(int i=0; i < n_steps; i++) { 
+      expSdt(s, dtau_1_6);
+      subIntegrator(s, dtau_1_2);
+      expSdt(s, dtau_48_72);
+      expSdtSSTdt3(s, m_dtau_cubed_72);
+      subIntegrator(s, dtau_1_2);
+      expSdt(s, dtau_1_6);
 
       getShadow(s,dtau,H,Hs);
       QDPIO::cout << "FORCE_GRADIENT: " << H-H_0 << " " << Hs - Hs_0 << endl;

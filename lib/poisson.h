@@ -9,20 +9,15 @@ namespace Chroma {
   struct Poisson { 
     ComplexD sst;
     ComplexD tst;
-    ComplexD tsst;
-    ComplexD ssst;
-    ComplexD ttst;
     ComplexD ttsst;
     ComplexD sttst;
-    ComplexD tssst; 
     ComplexD stsst;
     ComplexD tttst;
-    ComplexD sssst;
+
 
     Poisson() 
     {
-      sst = tst = tsst = ssst = ttst = ttsst 
-	= sttst = tssst = stsst = tttst = sssst = zero;
+      sst = tst = ttsst = sttst = stsst = tttst = zero;
     }
 
     Poisson(const multi1d<Tower<LatticeColorMatrix> >& F,
@@ -36,8 +31,7 @@ namespace Chroma {
 			const multi1d<LatticeColorMatrix>& P)
     {
 
-      sst = tst = tsst = ssst = ttst = ttsst 
-	= sttst = tssst = stsst = tttst = sssst = zero;
+      sst = tst = ttsst = sttst = stsst = tttst = zero;
 
       for(int mu=0; mu < Nd; mu++) {
 	// {S,{S,T}}  = tr(F1^2) 
@@ -45,14 +39,6 @@ namespace Chroma {
 
 	// {T,{S,T}}  = - tr(F2 P)  
 	tst       += Real(2)*sum(trace( F[mu][1]*P[mu] ));
-
-	// {T,{S,{S,T}}} = 2 tr(F1 F2)
-	tsst      -= Real(2)*sum(trace( F[mu][0]*F[mu][1] ));
-
-	// {S,{S,{S,T}}} = 0 - so don't recompute
-
-	// {T,{T,{S,T}}} = -tr( F3 P) 
-	ttst      += Real(1)*sum(trace( F[mu][2]*P[mu]));
 
 	// {T,{T,{S,{S,T}}}} = 2( tr(F1 F3} + tr(F2^2) )
 	ttsst      -= Real(4)*sum(trace( F[mu][0]*F[mu][2]));  // F1 F3 term
@@ -78,13 +64,11 @@ namespace Chroma {
 	sttst -= Real(2)*sum(trace(F[mu][0]*F[mu][2]));  // +  tr ( F1,F3 )
 	sttst += Real(4)*sum(trace(F[mu][1]*F[mu][1])); //  -2 tr ( F2,F2 )
 
-	// {T,{S,{S,{S,T}}}} = 0 so dont compute
-
 	// {{S,T}, {S,{S,T}}} = -2 tr (F1 G1)
-	stsst -= Real(4)*sum(trace(F[mu][0]*G[mu][0]));
+	stsst += Real(4)*sum(trace(F[mu][0]*G[mu][1]));
 	
 	// {T,{T,{T,{S,T}}}} = -tr( F4 P )
-	tttst -= Real(4)*sum(trace(F[mu][3]*P[mu]));
+	tttst += Real(2)*sum(trace(F[mu][3]*P[mu]));
 
 	// {S,{S,{S,{S,T}}}} = 0 so don't compute
       }
@@ -100,15 +84,11 @@ namespace Chroma {
       QDPIO::cout << "================="  << endl;
       QDPIO::cout << "         {S,{S,T}} = " << sst << endl;
       QDPIO::cout << "         {T,{S,T}} = " << tst << endl;
-      QDPIO::cout << "     {T,{S,{S,T}}} = " << tsst << endl;
-      QDPIO::cout << "     {S,{S,{S,T}}} = " << ssst << endl;
-      QDPIO::cout << "     {T,{T,{S,T}}} = " << ttst << endl;
       QDPIO::cout << " {T,{T,{S,{S,T}}}} = " << ttsst << endl;
       QDPIO::cout << " {{S,T},{T,{S,T}}} = " << sttst << endl;
-      QDPIO::cout << " {T,{S,{S,{S,T}}}} = " << tssst << endl;
       QDPIO::cout << " {{S,T},{S,{S,T}}} = " << stsst << endl;
       QDPIO::cout << " {T,{T,{T,{S,T}}}} = " << tttst << endl;
-      QDPIO::cout << " {S,{S,{S,{S,T}}}} = " << sssst << endl;
+
       QDPIO::cout << "=================" << endl;
     }
 
