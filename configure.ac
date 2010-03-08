@@ -166,7 +166,7 @@ AC_ARG_ENABLE(enable_sse_scalarsite_bicgstab_kernels,
 
 AC_ARG_ENABLE(testcase-runner,
   AC_HELP_STRING([--enable-testcase-runner=script],
-    [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh]),
+    [Use <script> to run testcases: trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh]),
     [chroma_testcase_runner=${enable_testcase_runner}],
     [chroma_testcase_runner="trivial_runner.sh"]
 )
@@ -745,6 +745,10 @@ trivial)
 	AC_MSG_NOTICE([Using 7n_mpirun_rsh Testcase Runner: 7n_mpirun_rsh_runner.sh])
 	chroma_testcase_runner_script="7n_mpirun_rsh_runner.sh"
 	;;
+9q_mpirun_rsh)
+	AC_MSG_NOTICE([Using 9q_mpirun_rsh Testcase Runner: 9q_mpirun_rsh_runner.sh])
+	chroma_testcase_runner_script="9q_mpirun_rsh_runner.sh"
+	;;
 cobalt)
 	AC_MSG_NOTICE([Using the BG/L Cobalt Testcase Runner: cobalt_runner.sh])
 	chroma_testcase_runner_script="cobalt_runner.sh"
@@ -886,6 +890,7 @@ dnl later with extre --enable options etc
 AC_CONFIG_FILES(scripts/test_runners/trivial_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/6n_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/7n_mpirun_rsh_runner.sh)
+AC_CONFIG_FILES(scripts/test_runners/9q_mpirun_rsh_runner.sh)
 AC_CONFIG_FILES(scripts/test_runners/cobalt_runner.sh)
 
 dnl Copy - dont symlink - the chosen testcase runner to the top builddir for
