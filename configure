@@ -1395,7 +1395,7 @@ Optional Features:
 
   --enable-testcase-runner=script
                           Use <script> to run testcases:
-                          trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh
+                          trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -5568,6 +5568,11 @@ echo "$as_me: Using 6n_mpirun_rsh Testcase Runner: 6n_mpirun_rsh_runner.sh" >&6;
 echo "$as_me: Using 7n_mpirun_rsh Testcase Runner: 7n_mpirun_rsh_runner.sh" >&6;}
 	chroma_testcase_runner_script="7n_mpirun_rsh_runner.sh"
 	;;
+9q_mpirun_rsh)
+	{ echo "$as_me:$LINENO: Using 9q_mpirun_rsh Testcase Runner: 9q_mpirun_rsh_runner.sh" >&5
+echo "$as_me: Using 9q_mpirun_rsh Testcase Runner: 9q_mpirun_rsh_runner.sh" >&6;}
+	chroma_testcase_runner_script="9q_mpirun_rsh_runner.sh"
+	;;
 cobalt)
 	{ echo "$as_me:$LINENO: Using the BG/L Cobalt Testcase Runner: cobalt_runner.sh" >&5
 echo "$as_me: Using the BG/L Cobalt Testcase Runner: cobalt_runner.sh" >&6;}
@@ -6010,6 +6015,8 @@ ac_config_files="$ac_config_files scripts/test_runners/trivial_runner.sh"
 ac_config_files="$ac_config_files scripts/test_runners/6n_mpirun_rsh_runner.sh"
 
 ac_config_files="$ac_config_files scripts/test_runners/7n_mpirun_rsh_runner.sh"
+
+ac_config_files="$ac_config_files scripts/test_runners/9q_mpirun_rsh_runner.sh"
 
 ac_config_files="$ac_config_files scripts/test_runners/cobalt_runner.sh"
 
@@ -6741,6 +6748,7 @@ do
     "scripts/test_runners/trivial_runner.sh") CONFIG_FILES="$CONFIG_FILES scripts/test_runners/trivial_runner.sh" ;;
     "scripts/test_runners/6n_mpirun_rsh_runner.sh") CONFIG_FILES="$CONFIG_FILES scripts/test_runners/6n_mpirun_rsh_runner.sh" ;;
     "scripts/test_runners/7n_mpirun_rsh_runner.sh") CONFIG_FILES="$CONFIG_FILES scripts/test_runners/7n_mpirun_rsh_runner.sh" ;;
+    "scripts/test_runners/9q_mpirun_rsh_runner.sh") CONFIG_FILES="$CONFIG_FILES scripts/test_runners/9q_mpirun_rsh_runner.sh" ;;
     "scripts/test_runners/cobalt_runner.sh") CONFIG_FILES="$CONFIG_FILES scripts/test_runners/cobalt_runner.sh" ;;
     "RUN") CONFIG_COMMANDS="$CONFIG_COMMANDS RUN" ;;
 
