@@ -38,6 +38,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/configure \
 	$(top_srcdir)/scripts/test_runners/6n_mpirun_rsh_runner.sh.in \
 	$(top_srcdir)/scripts/test_runners/7n_mpirun_rsh_runner.sh.in \
+	$(top_srcdir)/scripts/test_runners/9q_mpirun_rsh_runner.sh.in \
 	$(top_srcdir)/scripts/test_runners/cobalt_runner.sh.in \
 	$(top_srcdir)/scripts/test_runners/trivial_runner.sh.in \
 	./config/config.guess ./config/config.sub ./config/depcomp \
@@ -56,6 +57,7 @@ CONFIG_CLEAN_FILES = chroma-config \
 	scripts/test_runners/trivial_runner.sh \
 	scripts/test_runners/6n_mpirun_rsh_runner.sh \
 	scripts/test_runners/7n_mpirun_rsh_runner.sh \
+	scripts/test_runners/9q_mpirun_rsh_runner.sh \
 	scripts/test_runners/cobalt_runner.sh
 am__installdirs = "$(DESTDIR)$(bindir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
@@ -290,6 +292,8 @@ scripts/test_runners/trivial_runner.sh: $(top_builddir)/config.status $(top_srcd
 scripts/test_runners/6n_mpirun_rsh_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/6n_mpirun_rsh_runner.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 scripts/test_runners/7n_mpirun_rsh_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/7n_mpirun_rsh_runner.sh.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+scripts/test_runners/9q_mpirun_rsh_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/9q_mpirun_rsh_runner.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 scripts/test_runners/cobalt_runner.sh: $(top_builddir)/config.status $(top_srcdir)/scripts/test_runners/cobalt_runner.sh.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
