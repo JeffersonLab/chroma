@@ -11,7 +11,7 @@
 #include "boundcond.h"
 
 
-#include "tower.h"
+#include "tower_array.h"
 
 namespace Chroma
 {
@@ -42,16 +42,17 @@ namespace Chroma
     virtual void zero(P& ds_u) const = 0;
 
     //! Zero out boundaries on a tower explicit signature for now
-    virtual void zero(multi1d<Tower<LatticeColorMatrix> >& towers) const {
+    virtual void zero(TowerArray<LatticeColorMatrix>& tower) const {
       //Trivial lift.
       P ds_u(Nd);
-      for(int l=0; l < towers[0].size(); l++) { 
+
+      for(int l=0; l < tower.getHeight(); l++) { 
 	for(int mu=0; mu < Nd; mu++) { 
-	  ds_u[mu] = (towers[mu])[l];
+	  ds_u[mu] = (tower[mu])[l];
 	}
 	zero(ds_u);
 	for(int mu=0; mu < Nd; mu++) { 
-	  (towers[mu])[l] =  ds_u[mu];
+	  (tower[mu])[l] =  ds_u[mu];
 	}
       }
     }

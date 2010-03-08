@@ -16,7 +16,7 @@
 #include "util/gauge/taproj.h"
 
 
-#include "tower.h"
+#include "tower_array.h"
 #include "poisson.h"
 
 namespace Chroma 
@@ -54,6 +54,7 @@ namespace Chroma
   public: 
     typedef multi1d<LatticeColorMatrix>  P;
     typedef multi1d<LatticeColorMatrix>  Q;
+    typedef PQTraits<Q>::Base_t U;
 
     //! Construct out of a parameter struct. Check against the desired GaugeAct name
     GaugeMonomial(const GaugeMonomialParams& param_);
@@ -72,12 +73,10 @@ namespace Chroma
       // Make a gauge connect state
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
-      multi1d<Tower<LatticeColorMatrix> > u_in(Nd);
-      multi1d<Tower<LatticeColorMatrix> > u_out(Nd);
+      TowerArray<LatticeColorMatrix> u_in(1);
+      TowerArray<LatticeColorMatrix> u_out(1);
 
       for(int mu=0; mu < Nd; mu++) { 
-	(u_in[mu]).resize(1); // single tower
-	(u_out[mu]).resize(1);
 	(u_in[mu])[0] = (g_state->getLinks())[mu];
       }
 
@@ -97,7 +96,7 @@ namespace Chroma
 
     //! Create a suitable state and compute F
     //! On entry the height of u_out[0] is the desired tower height.
-    void dsdq(multi1d<Tower<LatticeColorMatrix> >& u_out, const AbsFieldState<P,Q>& s) 
+    void dsdq(TowerArray<U>& u_out, const AbsFieldState<P,Q>& s) 
     {
       START_CODE();
 
@@ -108,12 +107,8 @@ namespace Chroma
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
       // Tower to start with.
-      multi1d<Tower<LatticeColorMatrix> > u_in(Nd);
+      TowerArray<U> u_in(u_out.getHeight());
 
-      // Make the tower to start with the right height and add guage field
-      for(int mu=0; mu < Nd; mu++) { 
-	(u_in[mu]).resize(u_out[mu].size()); // single tower
-      }
 
       for(int mu=0; mu < Nd; mu++) { 
 	// Always to this
@@ -121,7 +116,7 @@ namespace Chroma
       }
 
       // If u_out is of size 2, we need to lift
-      if( u_out[0].size() == 2 ) { 
+      if( u_out.getHeight() == 2 ) { 
 	for(int mu=0; mu < Nd; mu++) {
 	  u_in[mu][1] = - u_out[mu][0]*(g_state->getLinks())[mu];
 	}
@@ -145,26 +140,18 @@ namespace Chroma
       END_CODE();
     }
 
-
-    //! Compute the poisson brackets for the monomial.
-    Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
-      // First compute the F (ing) tower
-      multi1d<Tower<LatticeColorMatrix> > F(Nd);
-      multi1d<Tower<LatticeColorMatrix> > G(Nd);
-      
-      for(int mu=0; mu < Nd; mu++){ 
-	F[mu].resize(4);
-	G[mu].resize(2);
-      }
-
+    void computePBVectorField(TowerArray<U>& F,
+			      TowerArray<U>& G, 
+			      const AbsFieldState<P,Q>& s) const 
+    { 
+      // Assume F and G are suitably sized
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
       
       {
 	QDPIO::cout << "Lifting U" << endl;
-	multi1d< Tower<LatticeColorMatrix> > U(Nd);
+	TowerArray<U> U(4);
 	for(int mu=0; mu < Nd; mu++) {
-	  U[mu].resize(4);
 	  U[mu][0] = g_state->getLinks()[mu];
 	}
 
@@ -190,9 +177,65 @@ namespace Chroma
 	// Lift the Us
 	QDPIO::cout << "Re-Lifting U" << endl;
 
-	multi1d<Tower<LatticeColorMatrix> > U(Nd);
+	TowerArray<U> U(2);
 	for(int mu=0; mu < Nd; mu++) {
-	  U[mu].resize(2);
+	  U[mu][0] = g_state->getLinks()[mu];
+	  U[mu][1]  = -F[mu][0] * U[mu][0];
+	}
+	
+	QDPIO::cout << "Computing G-tower" << endl;
+	getGaugeAct().deriv(G, U);
+	for(int i=0; i < 2; i++) { 
+	  for(int mu=0; mu < Nd; mu++) { 
+	    taproj(G[mu][i]);
+	  }
+	}
+
+      }
+    }
+
+#if 0
+    //! Compute the poisson brackets for the monomial.
+    Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
+      // First compute the F (ing) tower
+      TowerArray<U> F(4);
+      TowerArray<U> G(2);
+      
+
+      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
+
+      
+      {
+	QDPIO::cout << "Lifting U" << endl;
+	TowerArray<U> U(4);
+	for(int mu=0; mu < Nd; mu++) {
+	  U[mu][0] = g_state->getLinks()[mu];
+	}
+
+	for(int i=1; i < 4; i++) { 
+	  for(int mu=0; mu < Nd; mu++) { 
+	    U[mu][i]  = -s.getP()[mu]*U[mu][i-1];
+	  }
+	}
+
+	QDPIO::cout << "Computing F-tower" << endl;
+	getGaugeAct().deriv(F, U);
+	
+	for(int i=0; i < 4; i++) { 
+	  for(int mu=0; mu < Nd; mu++) { 
+	    taproj(F[mu][i]);
+	  }
+	}
+
+
+      }
+
+      {
+	// Lift the Us
+	QDPIO::cout << "Re-Lifting U" << endl;
+
+	TowerArray<U> U(2);
+	for(int mu=0; mu < Nd; mu++) {
 	  U[mu][0] = g_state->getLinks()[mu];
 	  U[mu][1]  = -F[mu][0] * U[mu][0];
 	}
@@ -214,6 +257,8 @@ namespace Chroma
 
 
     }
+#endif
+
 
     //! Gauge action value
     Double S(const AbsFieldState<P,Q>& s)  

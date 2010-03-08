@@ -12,7 +12,7 @@
 #include "state.h"
 #include "gaugebc.h"
 #include "create_state.h"
-#include "tower.h"
+#include "tower_array.h"
 
 namespace Chroma
 {
@@ -65,8 +65,8 @@ namespace Chroma
     //  Q is in fact a lattice color matrix of U. Just to make prototype 
     //  compile. Paulo! All is forigven! (Almost)
 
-    virtual void deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,		 
-		      const multi1d<Tower<LatticeColorMatrix> >& u) const
+    virtual void deriv(TowerArray<LatticeColorMatrix>& ds_u,		 
+		      const TowerArray<LatticeColorMatrix>& u) const
     {
       QDPIO::cerr << "GaugeAction::deriv not implemented" << endl;
       QDP_abort(1);

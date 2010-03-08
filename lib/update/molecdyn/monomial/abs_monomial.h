@@ -15,7 +15,8 @@
 #include "update/molecdyn/field_state.h"
 #include "io/xmllog_io.h"
 #include "poisson.h"
-#include "tower.h"
+#include "tower_array.h"
+#include "pq_traits.h"
 
 namespace Chroma
 {
@@ -54,9 +55,7 @@ namespace Chroma
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
     // Compute forces with towers
-    virtual void dsdq(multi1d<Tower< LatticeColorMatrix> >& u_out, const AbsFieldState<P,Q>& s) {
-      QDPIO::cout << "Not iimplemented" << endl;
-    }
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) = 0;
 
     //! Refresh pseudofermion fields if any
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) =0 ;
@@ -67,13 +66,11 @@ namespace Chroma
     //! Reset predictors
     virtual void resetPredictors(void) { /* Nop for most */ }
 
-    //! Compute the poisson brackets for the monomial.
-    virtual Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
-      Poisson r;
-      QDP::QDPIO::cout << "Not Implemented" << endl;
-      QDP_abort(1);
-      return r;
-    }
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const = 0;
+
 
   };
 
@@ -99,10 +96,21 @@ namespace Chroma
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
-   // Compute forces with towers
-    virtual void dsdq(multi1d< Tower<LatticeColorMatrix> >& u_out, const AbsFieldState<P,Q>& s) {
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) {
       QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
     }
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
     // Compute the energies 
 
     //! Compute the total action
@@ -117,13 +125,8 @@ namespace Chroma
     //! Reset predictors
     virtual void resetPredictors(void) { /* Nop for most */ }
 
-    //! Compute the poisson brackets for the monomial.
-    virtual Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
-      Poisson r;
-      QDP::QDPIO::cout << "Not Implemented" << endl;
-      QDP_abort(1);
-      return r;
-    }
+
+
 
   };
 
@@ -148,6 +151,21 @@ namespace Chroma
     //! Compute dsdq for the system... Not specified how to actually do this
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) = 0;
+
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
 
     // Refresh all pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0 ;
@@ -185,6 +203,22 @@ namespace Chroma
     /*! s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
+
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
 
@@ -217,6 +251,22 @@ namespace Chroma
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
+
+
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -251,6 +301,16 @@ namespace Chroma
     //  s is the state, F is the computed force
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
 
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) = 0 ;
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const = 0;
+
+
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
 
@@ -282,6 +342,22 @@ namespace Chroma
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
+
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;
@@ -319,6 +395,21 @@ namespace Chroma
     //! Compute dsdq for the system... Not specified how to actually do this
     /*! s is the state, F is the computed force */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)  = 0;
+
+    //! Compute dsdq for the system... Not specified how to do this
+    /*! s is the state, u_out is a Tower */
+    virtual void dsdq(TowerArray< typename PQTraits<Q>::Base_t>& u_out, const AbsFieldState<P,Q>& s) {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
+
+    //! Compute vector fields F and G for the Poisson Brackets
+    virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s) const {
+      QDPIO::cout << "Not iimplemented" << endl;
+      QDP_abort(1);
+    }
 
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) = 0;

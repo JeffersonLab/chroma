@@ -51,7 +51,17 @@ public:
       (*this)[i] = a[i];
     }
   }
-      
+
+
+  //! Unary zero:
+  Tower(int size_, const QDP::Zero& z)
+  {
+    tower_data.resize(size_);
+    for(int i=0; i < size_; i++) { 
+      tower_data[i] = zero;
+    }
+  }
+
   //! assign 
   Tower<T>& operator=(const Tower<T>&a) 
   {
@@ -65,6 +75,16 @@ public:
       (*this)[i] = a[i];
     }
 
+    return *this;
+  }
+
+
+  //! assign zero
+  Tower<T>& operator=(const QDP::Zero& z)
+  {
+    for(int i=0; i < size(); i++) { 
+      tower_data[i] = zero;
+    }
     return *this;
   }
 
@@ -204,13 +224,7 @@ private:
     }
   }
 
-  template<typename T>
-  void zeroTower(Tower<T>& t)
-  {
-    for(int i=0; i < t.size(); i++) { 
-      t[i] = zero;
-    }
-  }
+
 
 }
 

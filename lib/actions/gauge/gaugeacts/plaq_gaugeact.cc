@@ -10,7 +10,7 @@
 #include "actions/gauge/gaugestates/gauge_createstate_aggregate.h"
 #include "meas/glue/mesplq.h"
 
-#include "tower.h"
+#include "tower_array.h"
 
 namespace Chroma
 {
@@ -408,24 +408,20 @@ namespace Chroma
 #if 1
 
   void
-  PlaqGaugeAct::deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,
+  PlaqGaugeAct::deriv(TowerArray<LatticeColorMatrix>& ds_u,
 		 
-		      const multi1d<Tower<LatticeColorMatrix> >& u) const
+		      const TowerArray<LatticeColorMatrix>& u) const
   {
     START_CODE();
     
-    int height = u[0].size();
 
     ds_u.resize(Nd);
-    for(int mu=0; mu < Nd; mu++) {
-      ds_u[mu].resize(height);
-      zeroTower(ds_u[mu]);
-    }
+    ds_u=zero;
 
     // Temporary tower.
-    Tower<LatticeColorMatrix> tmp_0(height);
-    Tower<LatticeColorMatrix> tmp_1(height);
-    Tower<LatticeColorMatrix> tmp_2(height);
+    Tower<LatticeColorMatrix> tmp_0(u.getHeight());
+    Tower<LatticeColorMatrix> tmp_1(u.getHeight());
+    Tower<LatticeColorMatrix> tmp_2(u.getHeight());
 
 
    

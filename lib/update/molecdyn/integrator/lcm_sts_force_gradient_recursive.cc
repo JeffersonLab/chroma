@@ -115,7 +115,14 @@ namespace Chroma
     for(int i =0; i < monomials.size(); i++) {
       ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >& the_monomial
 	= dynamic_cast<ExactMonomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >&>(*monomials[i]);
-      pb[i] = the_monomial.poissonBracket(s);
+
+      TowerArray<LatticeColorMatrix> F(4);
+      TowerArray<LatticeColorMatrix> G(2);
+      
+      the_monomial.computePBVectorField(F,G,s);
+      Poisson p(F,G,s.getP());
+
+      pb[i] = p;
       shadow[i] = Double(0);
       shadow -= Real(36)/Real(155520)*real(pb[i].stsst);
       shadow -= Real(72)/Real(155520)*real(pb[i].sttst);

@@ -81,8 +81,8 @@ namespace Chroma
     //  Q is in fact a lattice color matrix of U. Just to make prototype 
     //  compile. Paulo! All is forigven! (Almost)
 
-    void deriv(multi1d< Tower<LatticeColorMatrix> >& ds_u,		 
-		      const multi1d<Tower<LatticeColorMatrix> >& u) const
+    void deriv(TowerArray<LatticeColorMatrix>& ds_u,		 
+		      const TowerArray<LatticeColorMatrix>& u) const
     {
       plaq->deriv(ds_u, u);
     }

@@ -2,7 +2,7 @@
 #define __POISSON_H__
 
 #include "chromabase.h"
-#include "tower.h"
+#include "tower_array.h"
 
 namespace Chroma {
  
@@ -20,14 +20,14 @@ namespace Chroma {
       sst = tst = ttsst = sttst = stsst = tttst = zero;
     }
 
-    Poisson(const multi1d<Tower<LatticeColorMatrix> >& F,
-	    const multi1d<Tower<LatticeColorMatrix> >& G,
+    Poisson(const TowerArray<LatticeColorMatrix>& F,
+	    const TowerArray<LatticeColorMatrix>& G,
 	    const multi1d<LatticeColorMatrix>& P) {
       computePoisson(F,G,P);
     }
 
-    void computePoisson(const multi1d<Tower<LatticeColorMatrix> >& F,
-			const multi1d<Tower<LatticeColorMatrix> >& G,
+    void computePoisson(const TowerArray<LatticeColorMatrix>& F,
+			const TowerArray<LatticeColorMatrix>& G,
 			const multi1d<LatticeColorMatrix>& P)
     {
 

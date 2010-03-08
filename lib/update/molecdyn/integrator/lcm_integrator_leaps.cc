@@ -37,14 +37,8 @@ namespace Chroma
       write(xml_out, "dt_actual_per_dir", real_step_size);
       
       // Force Term
-      multi1d<Tower<LatticeColorMatrix> > dsdQ(Nd);
-      multi1d<Tower<LatticeColorMatrix> > cur_F(Nd);
-
-      // Just need a force term so towers of height 1 are adequate
-      for(int mu=0; mu < Nd; mu++) { 
-	dsdQ[mu].resize(1);
-	cur_F[mu].resize(1);
-      }
+      TowerArray<LatticeColorMatrix> dsdQ(1);
+      TowerArray<LatticeColorMatrix> cur_F(1);
 
       push(xml_out, "AbsHamiltonianForce"); // Backward compatibility
       write(xml_out, "num_terms", monomials.size());
@@ -110,21 +104,12 @@ namespace Chroma
       write(xml_out, "dt_actual_per_dir", real_step_size);
       
       // Force Gradient Term
-      multi1d<Tower<LatticeColorMatrix> > G(Nd);
+      TowerArray<LatticeColorMatrix>  G(2);
 
       {
-	multi1d<Tower<LatticeColorMatrix> > cur_F(Nd);
-	multi1d<Tower<LatticeColorMatrix> > cur_F2(Nd);
+	TowerArray<LatticeColorMatrix> cur_F(1);
+	TowerArray<LatticeColorMatrix> cur_F2(2);
 
-	// Just need a force term so towers of height 1 are adequate
-	for(int mu=0; mu < Nd; mu++) { 
-	  G[mu].resize(2);
-	  
-	  cur_F[mu].resize(1);
-	  cur_F2[mu].resize(2);
-
-	}
-	
 	push(xml_out, "AbsHamiltonianForce"); // Backward compatibility
 	write(xml_out, "num_terms", monomials.size());
 	push(xml_out, "ForcesByMonomial");
