@@ -10,6 +10,7 @@
 
 #include "chromabase.h"
 #include "fermbc.h"
+#include "tower.h"
 
 using namespace QDP::Hints;
 
@@ -224,6 +225,19 @@ namespace Chroma
      * apply instead of operator()
      */
     virtual void apply (T& chi, const T& psi, enum PlusMinus isign, int cb) const = 0;
+
+    //! Apply checkerboarded linear operator to tower
+    virtual void applyTower( Tower<T>& chi, 
+			     const Tower<T>& psi,
+			     const P& p,
+			     enum PlusMinus isign, 
+			     int cb) {
+      QDPIO::cout << "Not Implemented" << endl;
+      QDP_abort(1);
+    }
+
+    
+
 
 
     //! Take deriv of D

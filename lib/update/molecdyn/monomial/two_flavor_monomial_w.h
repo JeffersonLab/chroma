@@ -16,6 +16,8 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
+#include "tower_array.h"
+
 using namespace std;
 
 namespace Chroma

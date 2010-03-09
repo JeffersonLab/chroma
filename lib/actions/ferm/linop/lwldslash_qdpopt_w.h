@@ -95,10 +95,20 @@ namespace Chroma
   protected:
     //! Get the anisotropy parameters
     const multi1d<Real>& getCoeffs() const {return coeffs;}
-
+    Handle<FermState<T,P,Q> > getState() const { 
+      if( created ) {
+	return fs;
+      }
+      else { 
+	QDPIO::cout << "Attempting to get state from uninitialized  dslash" << endl;
+	QDP_abort(1);
+      }
+    }
   private:
     multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
-    Handle< FermBC<T,P,Q> >  fbc;
+    Handle< FermBC<T,P,Q> >  fbc; 
+    Handle< FermState<T,P,Q> > fs;
+    bool created;
     Q   u;
   };
 
@@ -150,7 +160,7 @@ namespace Chroma
 
   //! Empty constructor
   template<typename T, typename P, typename Q>
-  QDPWilsonDslashOptT<T,P,Q>::QDPWilsonDslashOptT() {}
+  QDPWilsonDslashOptT<T,P,Q>::QDPWilsonDslashOptT() {created=false;}
   
   //! Full constructor
   template<typename T, typename P, typename Q>
@@ -205,6 +215,7 @@ namespace Chroma
 
     // Save a copy of the aniso params original fields and with aniso folded in
     coeffs = coeffs_;
+    fs = state;
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
@@ -226,6 +237,7 @@ namespace Chroma
     {
       u[mu] *= coeffs[mu];
     }
+    created = true;
   }
 
 

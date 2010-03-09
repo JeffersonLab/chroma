@@ -9,7 +9,8 @@
 
 #include "chromabase.h"
 #include "boundcond.h"
-
+#include "tower_array.h"
+#include "pq_traits.h"
 namespace Chroma
 {
   //! Base class for all fermion action boundary conditions
@@ -42,6 +43,22 @@ namespace Chroma
 
     //! Zero some gauge-like field in place on the masked links
     virtual void zero(P& ds_u) const = 0;
+
+    //! Zero out boundaries on a tower explicit signature for now
+    virtual void zero(TowerArray<typename PQTraits<Q>::Base_t>& tower) const {
+      //Trivial lift.
+      P ds_u(Nd);
+
+      for(int l=0; l < tower.getHeight(); l++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  ds_u[mu] = (tower[mu])[l];
+	}
+	zero(ds_u);
+	for(int mu=0; mu < Nd; mu++) { 
+	  (tower[mu])[l] =  ds_u[mu];
+	}
+      }
+    }
 
     //! Says if there are fermion non-trivial 
     virtual bool nontrivialP() const = 0;

@@ -26,7 +26,7 @@ namespace Chroma
 			Layout::QDPXX_getSiteCoords,
                         Layout::QDPXX_getLinearSiteIndex,
                         Layout::QDPXX_nodeNumber);
-      
+      created = false;
   }
 
 
@@ -86,7 +86,7 @@ namespace Chroma
 
     // Save a copy of the aniso params original fields and with aniso folded in
     coeffs = coeffs_;
-
+    fs = state;
     // Save a copy of the fermbc
     fbc = state->getFermBC();
 
@@ -116,7 +116,7 @@ namespace Chroma
 #endif
 
     qdp_pack_gauge(u, packed_gauge);
-  
+    created=true;
 #if 0
     QDPIO::cout << "Done" << endl << flush;
 #endif

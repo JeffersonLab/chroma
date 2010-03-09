@@ -12,6 +12,7 @@
 
 
 #include "tower_array.h"
+#include "pq_traits.h"
 
 namespace Chroma
 {
@@ -42,7 +43,7 @@ namespace Chroma
     virtual void zero(P& ds_u) const = 0;
 
     //! Zero out boundaries on a tower explicit signature for now
-    virtual void zero(TowerArray<LatticeColorMatrix>& tower) const {
+    virtual void zero(TowerArray<typename PQTraits<Q>::Base_t>& tower) const {
       //Trivial lift.
       P ds_u(Nd);
 

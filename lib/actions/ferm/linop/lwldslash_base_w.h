@@ -8,6 +8,9 @@
 #define __lwldslash_base_h__
 
 #include "linearop.h"
+#include "actions/ferm/fermstates/periodic_fermstate.h"
+#include "tower_array.h"
+#include "pq_traits.h"
 
 namespace Chroma 
 { 
@@ -64,6 +67,11 @@ namespace Chroma
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign) const;
 
+    virtual void
+    deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	  const Tower<T>& chi, const Tower<T>& psi, 
+	  enum PlusMinus isign) const;
+
     //! Take deriv of D
     /*!
      * \param chi     left vector on cb                           (Read)
@@ -77,12 +85,79 @@ namespace Chroma
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign, int cb) const ;
 
+
+
+    virtual void 
+    deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+				 const Tower<T>& chi, const Tower<T>& psi, 
+	  enum PlusMinus isign, int cb) const;
+
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
+
+    //! Creation routine
+    virtual void create(Handle< FermState<T,P,Q> > state) =0;
+
+    //! Apply checkerboarded linear operator
+    /*! 
+     * To avoid confusion (especially of the compilers!), call the checkerboarded
+     * apply instead of operator()
+     */
+
+    //! Apply checkerboarded linear operator to tower
+    void applyTower( Tower<T>& chi, 
+			const Tower<T>& psi,
+			const P& mom,
+			enum PlusMinus isign, 
+			int cb)  {
+      // Get at the state
+      Handle< FermState<T,P,Q> > state=getState();
+      Q links(Nd);
+      for(int mu=0; mu < Nd; mu++) { 
+	links[mu]=Real(1);
+      }
+
+      int N=psi.size();
+
+      for(int i=0; i < N; i++) { 
+	Q tmp_links(Nd);
+
+	for(int mu=0; mu < Nd; mu++){ 
+	  tmp_links[mu] = links[mu]*state->getLinks()[mu];
+	}
+
+	Handle< FermState<T,P,Q> > newfs( new PeriodicFermState<T,P,Q>(tmp_links));
+	// Make dslash on the correct PU thingie
+	create(newfs);
+
+	// Do all the applies with this FS
+	for(int j=0; j < N-i; j++) { 
+	  T result;
+	  apply(result, psi[j], isign, cb);
+	  Real coeff = Real(psi.Choose(j+i,i));
+	  // QDPIO::cout << "i=" << i << " j="<< j << " Coeff="<< coeff << endl;
+	  chi[i+j][rb[cb]] += coeff*result;
+
+
+	}
+
+	// -P U for next level
+	for(int mu=0; mu < Nd; mu++) {
+	  tmp_links[mu] = links[mu];
+	  links[mu] = -mom[mu]*links[mu];
+	}
+      }
+      
+      create(getState());
+    }
 
   protected:
     //! Get the anisotropy parameters
     virtual const multi1d<Real>& getCoeffs() const = 0;
+    
+    //! Get at the state
+    virtual Handle<FermState<T,P,Q> > getState() const = 0;
+
   };
 
   template<typename T>
@@ -124,6 +199,25 @@ namespace Chroma
     deriv(ds_tmp, chi, psi, isign, 1);
     ds_u += ds_tmp;
 
+    END_CODE();
+  }
+  template<typename T, typename P, typename Q>
+  void
+  WilsonDslashBase<T,P,Q>::deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+				 const Tower<T>& chi, const Tower<T>& psi, 
+				 enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    // ds_u.resize(Nd);
+
+    TowerArray<typename PQTraits<Q>::Base_t> ds_tmp(ds_u.getHeight());
+    deriv(ds_u, chi, psi, isign, 0);
+    deriv(ds_tmp, chi, psi, isign, 1);
+
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] += ds_tmp[mu];
+    }
     END_CODE();
   }
 
@@ -226,6 +320,118 @@ namespace Chroma
 
     END_CODE();
   }
+
+
+  //! Take deriv of D
+  /*! \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$  */
+  template<typename T, typename P, typename Q>
+  void 
+  WilsonDslashBase<T,P,Q>::deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+				 const Tower<T>& chi, const Tower<T>& psi, 
+				 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+
+    ds_u = zero;
+
+    const multi1d<Real>& anisoWeights = getCoeffs();
+
+    Tower<T> temp_ferm1(psi.size());
+
+
+    for(int mu = 0; mu < Nd; ++mu) {
+      for(int level =0; level < psi.size(); level++ ) { 
+
+	typename HalfFermionType<T>::Type_t tmp_h;
+
+	switch (isign) {
+
+	case PLUS:
+	  {
+	    // Undaggered: Minus Projectors
+	    switch(mu) {
+
+	    case 0:
+		tmp_h[rb[1-cb]] = spinProjectDir0Minus(psi[level]);
+		temp_ferm1[level][rb[1-cb]] = spinReconstructDir0Minus(tmp_h);
+		break;
+	    case 1:
+	      tmp_h[rb[1-cb]] = spinProjectDir1Minus(psi[level]);
+	      temp_ferm1[level][rb[1-cb]] = spinReconstructDir1Minus(tmp_h);
+	      break;
+	    case 2:
+	      tmp_h[rb[1-cb]] = spinProjectDir2Minus(psi[level]);
+	      temp_ferm1[level][rb[1-cb]] = spinReconstructDir2Minus(tmp_h);
+	      break;
+	    case 3:
+	      tmp_h[rb[1-cb]] = spinProjectDir3Minus(psi[level]);
+	      temp_ferm1[level][rb[1-cb]] = spinReconstructDir3Minus(tmp_h);
+	      break;
+	    default:
+	      break;
+	    };
+	    
+	  }
+	  break;
+
+	case MINUS:
+	  {
+	    // Daggered: Plus Projectors
+	    typename HalfFermionType<T>::Type_t tmp_h;
+	    switch(mu) 
+	      {
+	      case 0:
+		tmp_h[rb[1-cb]] = spinProjectDir0Plus(psi[level]);
+		temp_ferm1[level][rb[1-cb]] = spinReconstructDir0Plus(tmp_h);
+		break;
+	      case 1:
+		tmp_h[rb[1-cb]] = spinProjectDir1Plus(psi[level]);
+		temp_ferm1[level][rb[1-cb]] = spinReconstructDir1Plus(tmp_h);
+		break;
+	      case 2:
+		tmp_h[rb[1-cb]] = spinProjectDir2Plus(psi[level]);
+		temp_ferm1[level][rb[1-cb]] = spinReconstructDir2Plus(tmp_h);
+		break;
+	      case 3:
+		tmp_h[rb[1-cb]] = spinProjectDir3Plus(psi[level]);
+		temp_ferm1[level][rb[1-cb]] = spinReconstructDir3Plus(tmp_h);
+		break;
+	      default:
+		break;
+	      };
+	  }
+	  break;
+
+	default:
+	  QDP_error_exit("unknown case");
+	}
+      }
+
+      // QDP Shifts the whole darn thing anyhow
+      Tower<T> temp_ferm2(temp_ferm1.size());
+      temp_ferm2 = shiftTower(temp_ferm1, FORWARD, mu);
+      
+      Tower<typename PQTraits<Q>::Base_t> temp_mat(temp_ferm2.size());
+      spinTraceOuterProduct(temp_mat, temp_ferm2, chi, rb[cb]);
+	
+      //      // This step supposedly optimised in QDP++
+      //  (temp_mat[0])[rb[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
+      
+      // Just do the bit we need.
+      for(int level=0; level < psi.size(); level++) { 
+	ds_u[mu][level][rb[cb]] = anisoWeights[mu] * temp_mat[level];
+	ds_u[mu][level][rb[1-cb]] = zero;    
+
+      }
+    }
+    
+    (*this).getFermBC().zero(ds_u);
+
+    END_CODE();
+  }
+
+
 
 
   //! Return flops performed by the operator()

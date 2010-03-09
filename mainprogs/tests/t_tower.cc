@@ -8,6 +8,10 @@ int main(int argc, char **argv)
 {
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
+  typedef LatticeFermion T;
+  typedef multi1d<LatticeColorMatrix> P;
+  typedef multi1d<LatticeColorMatrix> Q;
+  typedef LatticeColorMatrix U;
 
   // Setup the layout
   const int foo[] = {2,2,2,2};
@@ -16,45 +20,49 @@ int main(int argc, char **argv)
   Layout::setLattSize(nrow);
   Layout::create();
 
-  Tower<float> a(5);
-  a[0] = 1; a[1]=1; a[2]=1; a[3]=1; a[4]=1;
+  Tower<T> psi(4);
+  Tower<T> chi(4);
+  Q u(Nd);
+  P p(Nd);
 
-  Tower<float> b(5);
-  b = a;
-
-  Tower<float> c = a*b;
-
-  for(int i=0; i < 5; i++) {
-    QDPIO::cout << "c["<<i<<"]=" << c[i] << endl;
+  for(int mu=0; mu < Nd; mu++) {
+    gaussian(u[mu]);
+    gaussian(p[mu]);
+    reunit(u[mu]);
   }
 
-  Tower<float> d(3);
-  d[0] = 1; d[1]=2; d[2]=3;
+  Handle<FermState<T,P,Q> > fs(new PeriodicFermState<T,P,Q>(u));
 
-  Tower<float> e(3);
-  e[0] = 4; e[1]=5; e[2]=6;
+  WilsonDslash dslash(fs);
 
-  Tower<float> f=d*e;
 
-  QDPIO::cout << endl;
-  for(int i=0; i < 3; i++) {
-    QDPIO::cout << "f["<<i<<"]=" << f[i] << endl;
+  chi = zero;
+  psi = zero;
+  gaussian(psi[0]);
+
+  dslash.applyTower(chi,psi,p,PLUS,1);
+
+  T X, Y;
+  Tower<T> Xt(2);
+  Tower<T> Yt(2);
+  gaussian(X);
+  gaussian(Y);
+  Xt[0] = X;
+  Yt[0] = Y;
+
+  Q ds_u(Nd);
+  ds_u = zero;
+  dslash.deriv(ds_u, X, Y, PLUS);
+
+  TowerArray<U> ds_t(2);
+  dslash.deriv(ds_t, Xt, Yt, PLUS);
+
+  for(int mu=0; mu < Nd; mu++) { 
+    U diff = zero;
+    diff = ds_u[mu]-ds_t[mu][0];
+    QDPIO::cout << "mu = " << mu << " norm2(diff) = " << norm2(diff) << endl;
   }
 
-  Tower<ComplexD> c1(3);
-  Tower<ComplexD> c2(3);
-  Tower<ComplexD> c3(3);
-
-  random(c1);
-  random(c2);
-  random(c3);
-
-  Tower<ComplexD> cf=(c1*c2)*c3;
-  Tower<ComplexD> cf2=c1*(c2*c3);
-  Tower<ComplexD> diff=cf-cf2;
-
-  QDPIO::cout << "Diff of towers" << endl;
-  print(diff);
 
   // Time to bolt
   Chroma::finalize();

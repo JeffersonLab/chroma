@@ -130,10 +130,8 @@ public:
     
   }
 
-
-private:
   //! Evaluate (m,n) binomial coefficient recursively
-  int Choose(int m, int n) 
+  int Choose(int m, int n) const
   {
     if ( m==0 && n==0 ) return 1;  // Pinnacle
 
@@ -141,6 +139,8 @@ private:
 
     return Choose(m-1,n-1)+Choose(m-1,n);
   }
+
+private:
 
 
   multi1d<T> tower_data;
@@ -224,7 +224,29 @@ private:
     }
   }
 
+  template<typename T, typename P>
+  void spinTraceOuterProduct(Tower<P>& result, 
+			     const Tower<T>& X, 
+			     const Tower<T>& Y,
+			     const Subset& s)
+  {
+    // Zero result
+    result = zero;
+    
+    int N=X.size();
+    for(int level=N-1; level >=0; --level) { 
 
+      P tmp;
+      tmp[s] = traceSpin(outerProduct(X[0],Y[level]));
+
+      for(int i=1; i <= level; i++) { 
+	P tmp2;
+	tmp2[s]  = traceSpin(outerProduct(X[i],Y[level-i]));
+        tmp [s] += X.Choose(level,i)*tmp2;
+      }
+      result[level] = tmp;
+    }
+  }
 
 }
 
