@@ -77,6 +77,53 @@ namespace Chroma
     END_CODE();
   }
 
+    //! Apply operator with towers
+  void UnprecWilsonLinOp::operator()(Tower<T>& chi, const Tower<T>& psi,
+				     const P& p,
+				     enum PlusMinus isign)
+  {
+ //
+    //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
+    //
+    Real mhalf = -0.5;
+    Tower<T> tmp(chi.size());
+
+    // D is a Dslash - must apply to both CB-s
+    D(tmp, psi, p, isign);
+
+    chi = mhalf*tmp;
+
+    // This is an optimization
+    // Really it should be a sum of 2 towers
+    //
+    //  [0,...,0,fact] psi + mhalft [ tmp_N,...,tmp_1, tmp_0 ]
+    //
+    //  but that would just end up adding a lot of zeros.
+    //  so I am hacking it.
+    chi[0] += fact*psi[0];
+
+    
+    getFermBC().modifyF(chi);
+  
+    END_CODE();
+  }
+
+  void UnprecWilsonLinOp::deriv(TowerArray<PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+      ds_u = zero;
+
+      // This does both parities
+      D.deriv(ds_u, chi, psi, isign);
+
+      // Factor from the -1/2 in front of the dslash
+      for(int mu = 0; mu < Nd; ++mu)
+	ds_u[mu] *= Real(-0.5);
+
+
+    }
 
 
   //! Derivative of unpreconditioned Wilson dM/dU
@@ -94,7 +141,6 @@ namespace Chroma
 			   enum PlusMinus isign) const
   {
     START_CODE();
-
     // This does both parities
     D.deriv(ds_u, chi, psi, isign);
 

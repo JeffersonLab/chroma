@@ -56,7 +56,32 @@ namespace Chroma
 	F[mu] = getLinks()[mu]*F_tmp[mu];
       }
     }
-   
+
+    virtual void deriv(TowerArray<typename PQTraits<Q>::Base_t>& F, const P& p) const { 
+      int N = F.getHeight();
+      TowerArray<typename PQTraits<Q>::Base_t> F_tmp(N);
+
+      // Lift U
+      TowerArray<typename PQTraits<Q>::Base_t> tmp(N);
+      
+      // Simultaneously lift U->tmp=[U, -PU, P^2U, etc]
+      // and copy F into F_tmp
+      for(int mu=0; mu < Nd; mu++) { 
+	tmp[mu][0] = getLinks()[mu];
+	F_tmp[mu][0] =F[mu][0];
+
+	for(int i=1; i < N; i++) { 
+	  tmp[mu][i] = -p[mu]*tmp[mu][i-1];
+	  F_tmp[mu][i] = F[mu][i];
+	}
+      }
+
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] = tmp[mu]*F_tmp[mu];
+      }
+
+
+    }
     //! Return the amorphous BC object for this state
     /*! The user will supply the BC in a derived class */
     virtual const BoundCond<P,Q>& getBC() const = 0;

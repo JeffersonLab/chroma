@@ -103,7 +103,16 @@ namespace Chroma
   protected:
     //! Get the anisotropy parameters
     const multi1d<Real>& getCoeffs() const {return coeffs;}
-
+    Handle<FermState<T,P,Q> > getState() const 
+    { 
+      if( created ) {
+	return fs;
+      }
+      else { 
+	QDPIO::cout << "Attempting to get state from uninitialized  dslash" << endl;
+	QDP_abort(1);
+      }
+    }
     //! Init internals
     void init();
 
@@ -111,6 +120,8 @@ namespace Chroma
     multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     multi1d<PrimitiveSU3Matrix> packed_gauge;  // fold in anisotropy
     Handle< FermBC<T,P,Q> > fbc;
+    Handle< FermState<T,P,Q> > fs;
+    bool created;
   };
 
 

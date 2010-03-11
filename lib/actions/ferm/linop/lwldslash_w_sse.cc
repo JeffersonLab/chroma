@@ -37,6 +37,8 @@ namespace Chroma
   SSEWilsonDslash::SSEWilsonDslash()
   {
     init();
+    created = false;
+
   }
   
   //! Full constructor
@@ -89,6 +91,7 @@ namespace Chroma
 
     // Save a copy of the aniso params original fields and with aniso folded in
     coeffs = coeffs_;
+    fs = state;
 
     // Save a copy of the fermbc
     fbc = state->getFermBC();
@@ -123,7 +126,7 @@ namespace Chroma
 #if 0
     QDPIO::cout << "Done" << endl << flush;
 #endif
-
+    created = true;
     END_CODE();
   }
 

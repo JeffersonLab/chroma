@@ -27,6 +27,11 @@ namespace Chroma
     //! Modify fermion fields in place
     virtual void modifyF(T& psi) const = 0;
 
+    //! Modify fields in tower
+    virtual void modifyF(Tower<T>& psi) const {
+      for(int l=0; l < psi.size(); l++) modifyF( psi[l] );
+    }
+
     //! Modify fermion fields in place under a subset
     virtual void modifyF(T& psi, const Subset& s) const = 0;
 

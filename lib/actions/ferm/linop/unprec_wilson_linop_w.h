@@ -77,6 +77,17 @@ namespace Chroma
     //! Apply the operator onto a source vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
+
+    //! Apply operator with towers
+    void operator()(Tower<T>& chi, const Tower<T>& psi,
+		    const P& p,
+		    enum PlusMinus isign);
+
+    void deriv(TowerArray<PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign);
+
     //! Derivative of unpreconditioned Wilson dM/dU
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 

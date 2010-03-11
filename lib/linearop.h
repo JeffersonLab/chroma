@@ -30,8 +30,8 @@ namespace Chroma
   public:
     //! Virtual destructor to help with cleanup;
     virtual ~LinearOperator() {}
-
-    //! Apply the operator onto a source vector
+ 
+   //! Apply the operator onto a source vector
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
     //! Apply the operator onto a source vector to some precision
@@ -121,7 +121,41 @@ namespace Chroma
     {
       deriv(ds_u,chi,psi,isign);
     }
+
+   //! Apply the operator onto a source vector
+    virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
+
+    //! Apply the operator onto a source vector to some precision
+    virtual void operator() (T& chi, const T& psi, enum PlusMinus isign, 
+			     Real epsilon) const
+    {
+      (*this)(chi,psi,isign);
+    }
+    //! Apply operator with towers
+    virtual
+    void operator()(Tower<T>& chi, const Tower<T>& psi,
+		    const P& p,
+		    enum PlusMinus isign) 
+    {
+      QDPIO::cout << "Not implemented " << endl;
+      QDP_abort(1);
+    }
+
+    virtual
+    void deriv(TowerArray<typename PQTraits<Q>::Base_t> ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+      QDPIO::cout << "Not implemented " << endl;
+      QDP_abort(1);
+    }
+
+
+
   };
+
+
 
 
   //-----------------------------------------------------------------------------------
@@ -175,6 +209,8 @@ namespace Chroma
 
     //! Only defined on the entire lattice
     const Subset& subset() const {return all;}
+
+
   };
 
 
@@ -217,6 +253,12 @@ namespace Chroma
     {
       apply(d, psi, isign, 0);
       apply(d, psi, isign, 1);
+    }
+
+    virtual void operator() (Tower<T>& d, const Tower<T>& psi, const P& p, enum PlusMinus isign) 
+    {
+      applyTower(d, psi, p, isign, 0);
+      applyTower(d, psi, p, isign, 1);
     }
 
     //! Apply checkerboarded linear operator

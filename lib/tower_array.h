@@ -55,7 +55,7 @@ public:
 
     @param[in] t   The tower to copy from
   */
-  TowerArray(const TowerArray<T>& t) : towerHeight(t.height())
+  TowerArray(const TowerArray<T>& t) : towerHeight(t.getHeight())
   {
     t_array.resize(t.size());
     for(int mu=0; mu < t_array.size(); mu++) { 

@@ -109,6 +109,15 @@ namespace Chroma
   protected:
     //! Get the anisotropy parameters
     const multi1d<Real>& getCoeffs() const {return coeffs;}
+    Handle<FermState<T,P,Q> > getState() const { 
+      if( created ) {
+	return fs;
+      }
+      else { 
+	QDPIO::cout << "Attempting to get state from uninitialized  dslash" << endl;
+	QDP_abort(1);
+      }
+    }
 
   private:
     multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
@@ -116,6 +125,8 @@ namespace Chroma
     WilsonArg wil;
     unsigned long wil_cbsize;
     Handle< FermBC<T,P,Q> > fbc;
+    Handle< FermState<T,P,Q> > fs;
+    bool created;
   };
 
 

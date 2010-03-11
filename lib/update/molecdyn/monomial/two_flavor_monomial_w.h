@@ -17,6 +17,7 @@
 
 #include <typeinfo>
 #include "tower_array.h"
+#include "pq_traits.h"
 
 using namespace std;
 
@@ -43,6 +44,211 @@ namespace Chroma
     //! Compute the total action
     virtual Double S(const AbsFieldState<P,Q>& s) = 0;
 
+    //! Compute dsdq for the system... 
+    /*! Monomial of the form  chi^dag*(M^dag*M)*chi */
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
+    {
+      START_CODE();
+
+      // Self Description/Encapsulation Rule
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+      push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial");
+
+      /**** Identical code for unprec and even-odd prec case *****/
+      
+      // S_f  chi^dag*(M^dag*M)^(-1)*chi     
+      // Here, M is some operator.
+      //
+      // Need
+      // dS_f/dU = - psi^dag * [d(M^dag)*M + M^dag*dM] * psi,  psi = (M^dag*M)^(-1)*chi
+      //
+      // In Balint's notation, the result is  
+      // \dot{S} = -X^dag*\dot{M}^\dag*Y - Y^dag\dot{M}*X
+      // where
+      //    X = (M^dag*M)^(-1)*chi   Y = M*X = (M^dag)^(-1)*chi
+      // In Robert's notation,  X -> psi .
+      //
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      
+      // Create a state for linop
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+	
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+
+      int N=1;
+      Tower<Phi> X(N);
+      Tower<Phi> Qt(N);
+
+      Tower<Phi> Tt(N);
+      Tower<Phi> Y(N);
+
+
+      // Get X_0
+      SystemSolverResults_t res = (*invMdagM)(X[0], getPhi(), getMDSolutionPredictor());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      
+      Qt=zero;
+      // Lift the inversions
+    
+      for(int i=1; i < N; i++) {
+	// Put 
+	Qt[i-1] = X[i-1];
+	Tower<Phi> tmp(N);
+	(*M)(tmp, Qt, s.getP(), PLUS);
+	(*M)(Tt, tmp, s.getP(), MINUS);
+	SystemSolverResults_t res2 = (*invMdagM)(X[i], Tt[i], getMDSolutionPredictor());
+	QDPIO::cout << "2Flav::invert,  n_count = " << res2.n_count << endl;
+      }
+
+      
+      // Solution to linear system using chrono predictor.
+      // Phi X;
+
+      // CG Chrono predictor needs MdagM
+      //Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      //      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+
+
+      // Insert vector --  Now done in the syssolver_mdagm
+      //(getMDSolutionPredictor()).newVector(X);
+      
+      // Phi Y;
+      TowerArray<typename PQTraits<Q>::Base_t> F_tmp1(N);
+      TowerArray<typename PQTraits<Q>::Base_t> F_tmp2(N);
+
+      (*M)(Y, X, s.getP(), PLUS);
+
+      M->deriv(F_tmp1, X, Y, MINUS);
+
+      // fold M^dag into X^dag ->  Y  !!
+      M->deriv(F_tmp2, Y, X, PLUS);
+
+      for(int mu=0; mu < F.size(); ++mu) {
+	F_tmp1[mu] += F_tmp2[mu];
+	F_tmp1[mu] *= Real(-1);
+	F[mu] = F_tmp1[mu][0];
+      }
+
+      // Old tech from here.
+
+
+
+      // F now holds derivative with respect to possibly fat links
+      // now derive it with respect to the thin links if needs be
+      state->deriv(F);
+      
+      write(xml_out, "n_count", res.n_count);
+      monitorForces(xml_out, "Forces", F);
+
+      pop(xml_out);
+
+      END_CODE();
+    }
+    //! Compute dsdq for the system... 
+    /*! Monomial of the form  chi^dag*(M^dag*M)*chi */
+    virtual void dsdq(TowerArray<typename PQTraits<Q>::Base_t>& F, const AbsFieldState<P,Q>& s)
+    {
+      START_CODE();
+
+      // Self Description/Encapsulation Rule
+      XMLWriter& xml_out = TheXMLLogWriter::Instance();
+      push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial");
+
+      /**** Identical code for unprec and even-odd prec case *****/
+      
+      // S_f  chi^dag*(M^dag*M)^(-1)*chi     
+      // Here, M is some operator.
+      //
+      // Need
+      // dS_f/dU = - psi^dag * [d(M^dag)*M + M^dag*dM] * psi,  psi = (M^dag*M)^(-1)*chi
+      //
+      // In Balint's notation, the result is  
+      // \dot{S} = -X^dag*\dot{M}^\dag*Y - Y^dag\dot{M}*X
+      // where
+      //    X = (M^dag*M)^(-1)*chi   Y = M*X = (M^dag)^(-1)*chi
+      // In Robert's notation,  X -> psi .
+      //
+      const WilsonTypeFermAct<Phi,P,Q>& FA = getFermAct();
+      
+      // Create a state for linop
+      Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
+	
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
+
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+
+      int N=1;
+      Tower<Phi> X(N);
+      Tower<Phi> Qt(N);
+
+      Tower<Phi> Tt(N);
+      Tower<Phi> Y(N);
+
+
+      // Get X_0
+      SystemSolverResults_t res = (*invMdagM)(X[0], getPhi(), getMDSolutionPredictor());
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      
+      Qt=zero;
+      // Lift the inversions
+    
+      for(int i=1; i < N; i++) {
+	// Put 
+	Qt[i-1] = X[i-1];
+	Tower<Phi> tmp(N);
+	(*M)(tmp, Qt, s.getP(), PLUS);
+	(*M)(Tt, tmp, s.getP(), MINUS);
+	SystemSolverResults_t res2 = (*invMdagM)(X[i], Tt[i], getMDSolutionPredictor());
+	QDPIO::cout << "2Flav::invert,  n_count = " << res2.n_count << endl;
+      }
+
+      
+      // Solution to linear system using chrono predictor.
+      // Phi X;
+
+      // CG Chrono predictor needs MdagM
+      //Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      //      (getMDSolutionPredictor())(X, *MdagM, getPhi());
+
+
+      // Insert vector --  Now done in the syssolver_mdagm
+      //(getMDSolutionPredictor()).newVector(X);
+      
+      // Phi Y;
+      //TowerArray<typename PQTraits<Q>::Base_t> F_tmp1(N);
+      TowerArray<typename PQTraits<Q>::Base_t> F_tmp2(N);
+
+      (*M)(Y, X, s.getP(), PLUS);
+
+      M->deriv(F, X, Y, MINUS);
+
+      // fold M^dag into X^dag ->  Y  !!
+      M->deriv(F_tmp2, Y, X, PLUS);
+
+      for(int mu=0; mu < F.size(); ++mu) {
+	F[mu] += F_tmp2[mu];
+	F[mu] *= Real(-1);
+      }
+
+      // F now holds derivative with respect to possibly fat links
+      // now derive it with respect to the thin links if needs be
+      state->deriv(F,s.getP());
+   
+      // write(xml_out, "n_count", res.n_count);
+      //monitorForces(xml_out, "Forces", F);
+
+      pop(xml_out);
+
+      END_CODE();
+    }
+
+#if 0
     //! Compute dsdq for the system... 
     /*! Monomial of the form  chi^dag*(M^dag*M)*chi */
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
@@ -117,6 +323,7 @@ namespace Chroma
 
       END_CODE();
     }
+#endif
  
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) 

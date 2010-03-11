@@ -16,7 +16,7 @@ namespace Chroma
   };
  
   //! Empty constructor
-  PABWilsonDslash::PABWilsonDslash() {}
+  PABWilsonDslash::PABWilsonDslash() {created = false; }
   
   //! Full constructor
   PABWilsonDslash::PABWilsonDslash(Handle< FermState<T,P,Q> > state)
@@ -66,7 +66,7 @@ namespace Chroma
 
     // Save a copy of the aniso params original fields and with aniso folded in
     coeffs = coeffs_;
-
+    fs = state;
     // Save a copy of the fermbc
     fbc = state->getFermBC();
 
@@ -160,7 +160,7 @@ namespace Chroma
     // Always increase the refcount
     PABDslashEnv::refcount++;
 #endif
-
+    created = true;
     END_CODE();
   }
 

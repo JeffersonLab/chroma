@@ -31,6 +31,10 @@ public:
     return tower_data.size();
   }
 
+  int getHeight() const { 
+    return tower_data.size();
+  }
+
   //! get
   const T& operator[](int i) const { 
     return tower_data[i];

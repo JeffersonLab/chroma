@@ -95,11 +95,22 @@ namespace Chroma
   protected:
     //! Get the anisotropy parameters
     const multi1d<Real>& getCoeffs() const {return coeffs;}
+    Handle<FermState<T,P,Q> > getState() const { 
+      if( created ) {
+	return fs;
+      }
+      else { 
+	QDPIO::cout << "Attempting to get state from uninitialized  dslash" << endl;
+	QDP_abort(1);
+      }
+    }
 
   private:
     multi1d<Real> coeffs;  /*!< Nd array of coefficients of terms in the action */
     Handle< FermBC<T,P,Q> >  fbc;
     Q  u;
+    Handle< FermState<T,P,Q> > fs;
+    bool created;
   };
 
   //! General Wilson-Dirac dslash
@@ -132,7 +143,7 @@ namespace Chroma
 
   //! Empty constructor
   template<typename T, typename P, typename Q>
-  QDPWilsonDslashT<T,P,Q>::QDPWilsonDslashT() {}
+  QDPWilsonDslashT<T,P,Q>::QDPWilsonDslashT() {created = false;}
   
   //! Full constructor
   template<typename T, typename P, typename Q>
@@ -208,6 +219,7 @@ namespace Chroma
     {
       u[mu] *= coeffs[mu];
     }
+    created = true;
   }
 
 

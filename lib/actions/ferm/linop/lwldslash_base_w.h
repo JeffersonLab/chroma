@@ -110,45 +110,50 @@ namespace Chroma
 			const P& mom,
 			enum PlusMinus isign, 
 			int cb)  {
-      // Get at the state
-      Handle< FermState<T,P,Q> > state=getState();
-      Q links(Nd);
-      for(int mu=0; mu < Nd; mu++) { 
-	links[mu]=Real(1);
+
+      QDPIO::cout << "Applying with cb="<<cb<<endl;
+      if( psi.getHeight() != chi.getHeight() ) { 
+	QDPIO::cout << "chi and psi have incompatible heights" << endl;
+	QDP_abort(1);
       }
 
-      int N=psi.size();
+      int N = psi.getHeight();
 
-      for(int i=0; i < N; i++) { 
-	Q tmp_links(Nd);
-
-	for(int mu=0; mu < Nd; mu++){ 
-	  tmp_links[mu] = links[mu]*state->getLinks()[mu];
-	}
-
-	Handle< FermState<T,P,Q> > newfs( new PeriodicFermState<T,P,Q>(tmp_links));
-	// Make dslash on the correct PU thingie
-	create(newfs);
-
-	// Do all the applies with this FS
-	for(int j=0; j < N-i; j++) { 
-	  T result;
-	  apply(result, psi[j], isign, cb);
-	  Real coeff = Real(psi.Choose(j+i,i));
-	  // QDPIO::cout << "i=" << i << " j="<< j << " Coeff="<< coeff << endl;
-	  chi[i+j][rb[cb]] += coeff*result;
-
-
-	}
-
-	// -P U for next level
-	for(int mu=0; mu < Nd; mu++) {
-	  tmp_links[mu] = links[mu];
-	  links[mu] = -mom[mu]*links[mu];
-	}
+      // This uses the original state
+      for(int j=0; j < N; j++) {
+	apply(chi[j], psi[j], isign, cb);
       }
-      
-      create(getState());
+
+      if( N > 1 ) { 
+	Handle<FermState<T,P,Q> >  old_state  = getState();
+	Q links(Nd);
+	for(int mu=0; mu < Nd; mu++) { 
+	  links[mu] = -mom[mu]*old_state->getLinks()[mu];
+	}
+	  
+	for(int i = 1; i < N; i++) { 
+	  
+	  Handle< FermState<T,P,Q> > newfs( new PeriodicFermState<T,P,Q>(links));
+	  // Make dslash on the correct PU thingie
+	  create(newfs);
+
+	  // Do all the applies with this FS
+	  for(int j=0; j < N-i; j++) { 
+	    T result;
+	    apply(result, psi[j], isign, cb);
+	    Real coeff = Real(psi.Choose(j+i,i));
+	    // QDPIO::cout << "i=" << i << " j="<< j << " Coeff="<< coeff << endl;
+	    chi[i+j][rb[cb]] += coeff*result;
+	  }
+	  // -P U for next level
+	  for(int mu=0; mu < Nd; mu++) {
+	    links[mu] = -mom[mu]*links[mu];
+	  }
+	  
+	}
+	create(old_state);
+      }
+
     }
 
   protected:
@@ -208,8 +213,7 @@ namespace Chroma
 				 enum PlusMinus isign) const
   {
     START_CODE();
-
-    // ds_u.resize(Nd);
+    
 
     TowerArray<typename PQTraits<Q>::Base_t> ds_tmp(ds_u.getHeight());
     deriv(ds_u, chi, psi, isign, 0);
@@ -332,16 +336,24 @@ namespace Chroma
   {
     START_CODE();
 
+    if(chi.getHeight() != psi.getHeight() ) { 
+      QDPIO::cout << "chi and psi towers have incompatible heights: chi.getHeight()= " << chi.getHeight() << " psi.getHeight()=" << psi.getHeight() << endl; 
+      QDP_abort(1);
+    }
+    if(ds_u.getHeight() != psi.getHeight()) { 
+      QDPIO::cout << "ds_u and psi have incompatible heights: dsu.getHeight() = " << ds_u.getHeight() <<  "  psi.getHeight()=" << psi.getHeight() << endl;
+      QDP_abort(1);
+    }
 
-    ds_u = zero;
-
+    int N=psi.getHeight();
+     
     const multi1d<Real>& anisoWeights = getCoeffs();
 
-    Tower<T> temp_ferm1(psi.size());
+    Tower<T> temp_ferm1(N);
 
 
     for(int mu = 0; mu < Nd; ++mu) {
-      for(int level =0; level < psi.size(); level++ ) { 
+      for(int level =0; level < N; level++ ) { 
 
 	typename HalfFermionType<T>::Type_t tmp_h;
 
@@ -406,20 +418,22 @@ namespace Chroma
 	default:
 	  QDP_error_exit("unknown case");
 	}
-      }
+      } // end loop over levels - spin projections all done
 
       // QDP Shifts the whole darn thing anyhow
-      Tower<T> temp_ferm2(temp_ferm1.size());
+      Tower<T> temp_ferm2(N);
       temp_ferm2 = shiftTower(temp_ferm1, FORWARD, mu);
       
-      Tower<typename PQTraits<Q>::Base_t> temp_mat(temp_ferm2.size());
+      Tower<typename PQTraits<Q>::Base_t> temp_mat(N);
+
+      // Funky outer product 
       spinTraceOuterProduct(temp_mat, temp_ferm2, chi, rb[cb]);
 	
       //      // This step supposedly optimised in QDP++
       //  (temp_mat[0])[rb[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
       
       // Just do the bit we need.
-      for(int level=0; level < psi.size(); level++) { 
+      for(int level=0; level < N; level++) { 
 	ds_u[mu][level][rb[cb]] = anisoWeights[mu] * temp_mat[level];
 	ds_u[mu][level][rb[1-cb]] = zero;    
 
