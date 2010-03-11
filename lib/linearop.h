@@ -142,7 +142,7 @@ namespace Chroma
     }
 
     virtual
-    void deriv(TowerArray<typename PQTraits<Q>::Base_t> ds_u,
+    void deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
 	       const Tower<T>& chi,
 	       const Tower<T>& psi,
 	       enum PlusMinus isign)
@@ -209,7 +209,6 @@ namespace Chroma
 
     //! Only defined on the entire lattice
     const Subset& subset() const {return all;}
-
 
   };
 

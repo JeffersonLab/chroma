@@ -197,7 +197,7 @@ namespace Chroma
       
       Qt=zero;
       // Lift the inversions
-    
+
       for(int i=1; i < N; i++) {
 	// Put 
 	Qt[i-1] = X[i-1];
@@ -225,8 +225,9 @@ namespace Chroma
       TowerArray<typename PQTraits<Q>::Base_t> F_tmp2(N);
 
       (*M)(Y, X, s.getP(), PLUS);
-
+      QDPIO::cout << "Here 2" << endl;
       M->deriv(F, X, Y, MINUS);
+      QDPIO::cout << "Here 3" << endl;
 
       // fold M^dag into X^dag ->  Y  !!
       M->deriv(F_tmp2, Y, X, PLUS);
@@ -235,6 +236,7 @@ namespace Chroma
 	F[mu] += F_tmp2[mu];
 	F[mu] *= Real(-1);
       }
+      
 
       // F now holds derivative with respect to possibly fat links
       // now derive it with respect to the thin links if needs be
