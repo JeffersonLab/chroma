@@ -228,8 +228,8 @@ private:
     }
   }
 
-  template<typename T, typename P>
-  void spinTraceOuterProduct(Tower<P>& result, 
+  template<typename T, typename U>
+  void spinTraceOuterProduct(Tower<U>& result, 
 			     const Tower<T>& X, 
 			     const Tower<T>& Y,
 			     const Subset& s)
@@ -238,20 +238,19 @@ private:
     result = zero;
     
     int N=X.size();
-    for(int level=N-1; level >=0; --level) { 
-
-      P tmp;
-      tmp[s] = traceSpin(outerProduct(X[0],Y[level]));
-
-      for(int i=1; i <= level; i++) { 
-	P tmp2;
-	tmp2[s]  = traceSpin(outerProduct(X[i],Y[level-i]));
-        tmp [s] += X.Choose(level,i)*tmp2;
+    
+    // Level 0 -- Always
+    result[0][s] = traceSpin(outerProduct(X[0],Y[0]));
+    for(int i=1; i < N; i++) {
+      result[i][s] = traceSpin(outerProduct(X[i], Y[0]));
+      for(int j=1; j <= i; j++) { 
+	U tmp;
+	tmp[s] = traceSpin(outerProduct(X[i-j],Y[j]));
+	result[i][s] += Real(Y.Choose(i,j))*tmp;
       }
-      result[level] = tmp;
     }
   }
-
 }
+
 
 #endif

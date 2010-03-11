@@ -142,7 +142,7 @@ namespace Chroma
 
     void computePBVectorField(TowerArray<U>& F,
 			      TowerArray<U>& G, 
-			      const AbsFieldState<P,Q>& s) const 
+			      const AbsFieldState<P,Q>& s) 
     { 
       // Assume F and G are suitably sized
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));

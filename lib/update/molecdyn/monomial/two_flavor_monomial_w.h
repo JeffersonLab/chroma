@@ -18,6 +18,7 @@
 #include <typeinfo>
 #include "tower_array.h"
 #include "pq_traits.h"
+#include "util/gauge/taproj.h"
 
 using namespace std;
 
@@ -183,7 +184,7 @@ namespace Chroma
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
 
-      int N=1;
+      int N=F.getHeight();
       Tower<Phi> X(N);
       Tower<Phi> Qt(N);
 
@@ -192,15 +193,17 @@ namespace Chroma
 
 
       // Get X_0
+      //QDPIO::cout << "Doing Tower Level 0" << endl;
+
       SystemSolverResults_t res = (*invMdagM)(X[0], getPhi(), getMDSolutionPredictor());
       QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
       
       Qt=zero;
+      
       // Lift the inversions
-
       for(int i=1; i < N; i++) {
 	// Put 
-	Qt[i-1] = X[i-1];
+	Qt[i-1] = -X[i-1];
 	Tower<Phi> tmp(N);
 	(*M)(tmp, Qt, s.getP(), PLUS);
 	(*M)(Tt, tmp, s.getP(), MINUS);
@@ -225,10 +228,7 @@ namespace Chroma
       TowerArray<typename PQTraits<Q>::Base_t> F_tmp2(N);
 
       (*M)(Y, X, s.getP(), PLUS);
-      QDPIO::cout << "Here 2" << endl;
       M->deriv(F, X, Y, MINUS);
-      QDPIO::cout << "Here 3" << endl;
-
       // fold M^dag into X^dag ->  Y  !!
       M->deriv(F_tmp2, Y, X, PLUS);
 
@@ -248,6 +248,39 @@ namespace Chroma
       pop(xml_out);
 
       END_CODE();
+    }
+
+    virtual
+    void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
+			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
+			      const AbsFieldState<P,Q>& s)
+    {
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] = zero;
+	G[mu] = zero;
+      }
+
+      dsdq(F,s);
+      for(int i=0; i < 4; i++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  taproj(F[mu][i]);
+	}
+      }
+
+      Handle< AbsFieldState<P,Q> > s_new(s.clone());
+
+      for(int mu=0; mu < Nd; mu++) { 
+	s_new->getP()[mu] = F[mu][0];
+      }
+
+      dsdq(G, (*s_new));
+
+      for(int i=0; i < 2; i++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  taproj(G[mu][i]);
+	}
+      }
+
     }
 
 #if 0

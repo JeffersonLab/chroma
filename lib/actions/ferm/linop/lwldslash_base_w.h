@@ -119,42 +119,55 @@ namespace Chroma
 
       int N = psi.getHeight();
 
-      // This uses the original state
-      for(int j=0; j < N; j++) {
-	apply(chi[j], psi[j], isign, cb);
-      }
+      // Always do this for now.
+      apply(chi[0], psi[0], isign,cb);
 
-      if( N > 1 ) { 
-	Handle<FermState<T,P,Q> >  old_state  = getState();
+      // Preserve the links 
+      Handle<FermState<T,P,Q> >  old_state  = getState();
+      
+      // Now do chi[i] = Sum_{j=0}^i Binom(i,j)  D^{j} psi{i-j}
+      // Where D^{j} is D^j = (-P)^j U
+
+      for(int i=1; i < N; i++) { 
+
+	create(old_state);
+
+	// Start off with 
+	// J=0 step. Original state so D(U) = D(old_state), psi[i]
+	apply(chi[i], psi[i], isign,cb);
+
+	// Get the links from the old state
 	Q links(Nd);
 	for(int mu=0; mu < Nd; mu++) { 
-	  links[mu] = -mom[mu]*old_state->getLinks()[mu];
+	  links[mu] = old_state->getLinks()[mu];
 	}
+
+	// J=1...i
+	for(int j=1; j <= i; j++) { 
 	  
-	for(int i = 1; i < N; i++) { 
-	  
+	  // Lift: Make D( (-P)^j U ): multiply links by -P
+	  for(int mu=0; mu < Nd; mu++) { 
+	    Q tmp_u(1);
+	    tmp_u[0]= links[mu];
+	    links[mu] = -mom[mu]*tmp_u[0];
+	  }
+
 	  Handle< FermState<T,P,Q> > newfs( new PeriodicFermState<T,P,Q>(links));
-	  // Make dslash on the correct PU thingie
+     
 	  create(newfs);
 
-	  // Do all the applies with this FS
-	  for(int j=0; j < N-i; j++) { 
-	    T result;
-	    apply(result, psi[j], isign, cb);
-	    Real coeff = Real(psi.Choose(j+i,i));
-	    // QDPIO::cout << "i=" << i << " j="<< j << " Coeff="<< coeff << endl;
-	    chi[i+j][rb[cb]] += coeff*result;
-	  }
-	  // -P U for next level
-	  for(int mu=0; mu < Nd; mu++) {
-	    links[mu] = -mom[mu]*links[mu];
-	  }
-	  
-	}
-	create(old_state);
-      }
+	  // Get D_j psi[ i - j]
+	  T result=zero;
+	  apply(result, psi[i-j], isign,cb);
 
+	  // Add with Binom Coeff
+	  chi[i][rb[cb]] += Real(psi.Choose(i,j))*result;
+	} // Next j
+      } // Next i
+
+      create(old_state); // Restore Operator 
     }
+
 
   protected:
     //! Get the anisotropy parameters
@@ -349,10 +362,12 @@ namespace Chroma
      
     const multi1d<Real>& anisoWeights = getCoeffs();
 
-    Tower<T> temp_ferm1(N);
+    
 
 
     for(int mu = 0; mu < Nd; ++mu) {
+
+      Tower<T> temp_ferm1(N);
       for(int level =0; level < N; level++ ) { 
 
 	typename HalfFermionType<T>::Type_t tmp_h;

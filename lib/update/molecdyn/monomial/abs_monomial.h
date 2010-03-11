@@ -69,7 +69,8 @@ namespace Chroma
     //! Compute vector fields F and G for the Poisson Brackets
     virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
 			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
-			      const AbsFieldState<P,Q>& s) const = 0;
+				      const AbsFieldState<P,Q>& s)  = 0;
+
 
 
   };
@@ -106,7 +107,7 @@ namespace Chroma
     //! Compute vector fields F and G for the Poisson Brackets
     virtual void computePBVectorField(TowerArray<typename PQTraits<Q>::Base_t>& F,
 			      TowerArray<typename PQTraits<Q>::Base_t>& G, 
-			      const AbsFieldState<P,Q>& s) const {
+			      const AbsFieldState<P,Q>& s)  {
       QDPIO::cout << "Not iimplemented" << endl;
       QDP_abort(1);
     }
