@@ -119,11 +119,18 @@ namespace Chroma
 
 	  monomials[0]->dsdq(cur_F,s);  // Height 1
 
-	  // Pass this in, so it can be lifted from
+	  //Pass this in, so it can be lifted from
 	  for(int mu=0; mu < Nd; mu++) { 
 	    G[mu][0]=cur_F[mu][0];
 	  }
-	  monomials[0]->dsdq(G, s);  // Height 2
+	  
+	  Handle< AbsFieldState<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > > s_new(s.clone());
+	  for(int mu=0; mu < Nd; mu++) { 
+	    s_new->getP()[mu] = cur_F[mu][0];
+	  }
+
+
+	  monomials[0]->dsdq(G, *s_new);  // Height 2
 	  pop(xml_out); //elem
 
 
@@ -131,14 +138,14 @@ namespace Chroma
 	  for(int i=1; i < monomials.size(); i++) { 
 	    push(xml_out, "elem");
 	    
-	    monomials[i]->dsdq(cur_F, s);  // Height 1
+	    monomials[i]->dsdq(cur_F, s);  // Height 1                  
 
 	    // Pass this in so it can be lifted from 
 	    for(int mu=0; mu < Nd; mu++) { 
 	      cur_F2[mu][0] = cur_F[mu][0];
 	    }
 
-	    monomials[i]->dsdq(cur_F2,s); // Height 2
+	    monomials[i]->dsdq(cur_F2, *s_new); // Height 2
 
 	    // Accumulate
 	    for(int mu=0; mu < Nd; mu++) { 
@@ -147,6 +154,7 @@ namespace Chroma
 	    pop(xml_out); // elem
 	  }
 	}
+
       }
 
       

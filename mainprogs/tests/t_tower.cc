@@ -134,6 +134,77 @@ int main(int argc, char **argv)
     QDPIO::cout << "mu = " << mu << " norm2(diff) = " << norm2(diff) << endl;
   }
 
+  // Test tower Apply
+  {
+    QDPIO::cout << "Tower Apply" << endl;
+    multi1d<T> n_phi(3);
+    gaussian(n_phi[0]);
+    gaussian(n_phi[1]);
+    gaussian(n_phi[2]);
+    
+    Tower<T> src_tower(3);
+    Tower<T> res_tower(3);
+    for(int i=0; i < 3; i++) { 
+      src_tower[i]=n_phi[i];
+    }
+
+    // Make some momenta
+    P p(Nd);
+    for(int mu=0; mu < Nd; mu++) { 
+      gaussian(p[mu]);  // Noise
+      reunit(p[mu]);    // SU(3)
+      taproj(p[mu]);    // LieAlgebra
+    }
+
+    res_tower = zero;
+    // Apply 3 level tower 
+    W(res_tower,src_tower,p, PLUS);
+
+
+    // Now construct 
+
+    Q q1(Nd);
+    Q q2(Nd);
+    for(int mu=0; mu < Nd; mu++) { 
+      q1[mu] = -p[mu]*fs->getLinks()[mu];
+      q2[mu] = -p[mu]*q1[mu];
+    }
+
+    Handle< FermState<T,P,Q> > qs1(new PeriodicFermState<T,P,Q>(q1));
+    Handle< FermState<T,P,Q> > qs2(new PeriodicFermState<T,P,Q>(q2));
+    WilsonDslash D1(qs1);
+    WilsonDslash D2(qs2);
+
+    // Lowest level: M phi_0
+    multi1d<T> rs(3);
+    rs[0] = zero; rs[1]=zero; rs[2]=zero;
+
+    W(rs[0], n_phi[0], PLUS);
+
+    // Next level -1/2 D1 n_phi 0 + W n_phi[1]
+    W(rs[1], n_phi[1], PLUS);
+
+    T tmp;
+    D1(tmp, n_phi[0], PLUS);
+    rs[1] -= Real(0.5)*tmp;
+
+    // Next level -1/2 D_2 n_phi 0 -(2/2) D_1 n_phi1 + W n_phi_2
+    
+    W(rs[2], n_phi[2] ,PLUS);
+
+    D1(tmp, n_phi[1], PLUS);
+    rs[2] -= tmp;
+    D2(tmp, n_phi[0], PLUS);
+    rs[2] -= Real(0.5)*tmp;
+    
+    for(int i=0; i<3; i++ ) { 
+      T ddiff = res_tower[i] - rs[i];
+      QDPIO::cout << "level = i:  diff = " << norm2(ddiff) << endl ;
+    }
+
+
+  }
+
   // Time to bolt
   Chroma::finalize();
 

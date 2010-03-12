@@ -50,13 +50,13 @@ namespace Chroma
     UnprecWilsonLinOp() {}
 
     //! Full constructor
-    UnprecWilsonLinOp(Handle< FermState<T,P,Q> > fs, const Real& Mass_)
+    UnprecWilsonLinOp(Handle< FermState<T,P,Q> > fs, const Real& Mass_): my_fs(fs)
       {create(fs,Mass_);}
 
     //! Full constructor with Anisotropy
     UnprecWilsonLinOp(Handle< FermState<T,P,Q> > fs,
 		      const Real& Mass_,
-		      const AnisoParam_t& aniso)
+		      const AnisoParam_t& aniso) : my_fs(fs) 
       {create(fs,Mass_,aniso);}
 
     //! Destructor is automatic
@@ -101,6 +101,7 @@ namespace Chroma
 
     Real Mass;
     WilsonDslash D;
+    Handle<FermState<T,P,Q> > my_fs;
   };
 
 } // End Namespace Chroma

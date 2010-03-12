@@ -50,7 +50,7 @@ namespace Chroma
     virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
     {
       START_CODE();
-
+#if 0
       // Self Description/Encapsulation Rule
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial");
@@ -146,7 +146,7 @@ namespace Chroma
       monitorForces(xml_out, "Forces", F);
 
       pop(xml_out);
-
+#endif
       END_CODE();
     }
     //! Compute dsdq for the system... 
@@ -181,14 +181,13 @@ namespace Chroma
       // Get system solver
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
+
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      const Subset sub = M->subset();
 
       int N=F.getHeight();
       Tower<Phi> X(N);
-      Tower<Phi> Qt(N);
-
-      Tower<Phi> Tt(N);
       Tower<Phi> Y(N);
 
 
@@ -198,16 +197,23 @@ namespace Chroma
       SystemSolverResults_t res = (*invMdagM)(X[0], getPhi(), getMDSolutionPredictor());
       QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
       
-      Qt=zero;
-      
       // Lift the inversions
       for(int i=1; i < N; i++) {
-	// Put 
-	Qt[i-1] = -X[i-1];
-	Tower<Phi> tmp(N);
+	Tower<Phi> Qt(i+1);
+	for(int j=0; j < i; j++) { 
+	  Qt[j] = X[j];
+	}
+	Qt[i] = zero;
+	
+	Tower<Phi> tmp(i+1);
+	Tower<Phi> Tt(i+1);
+	tmp=zero;
+	Tt=zero;
+
 	(*M)(tmp, Qt, s.getP(), PLUS);
 	(*M)(Tt, tmp, s.getP(), MINUS);
 	SystemSolverResults_t res2 = (*invMdagM)(X[i], Tt[i], getMDSolutionPredictor());
+	X[i][sub] *= Real(-1);
 	QDPIO::cout << "2Flav::invert,  n_count = " << res2.n_count << endl;
       }
 
@@ -241,6 +247,12 @@ namespace Chroma
       // F now holds derivative with respect to possibly fat links
       // now derive it with respect to the thin links if needs be
       state->deriv(F,s.getP());
+
+      for(int i=0; i < N; i++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  taproj(F[mu][i]);
+	}
+      }
    
       // write(xml_out, "n_count", res.n_count);
       //monitorForces(xml_out, "Forces", F);
@@ -261,11 +273,6 @@ namespace Chroma
       }
 
       dsdq(F,s);
-      for(int i=0; i < 4; i++) { 
-	for(int mu=0; mu < Nd; mu++) { 
-	  taproj(F[mu][i]);
-	}
-      }
 
       Handle< AbsFieldState<P,Q> > s_new(s.clone());
 
@@ -275,11 +282,7 @@ namespace Chroma
 
       dsdq(G, (*s_new));
 
-      for(int i=0; i < 2; i++) { 
-	for(int mu=0; mu < Nd; mu++) { 
-	  taproj(G[mu][i]);
-	}
-      }
+     
 
     }
 

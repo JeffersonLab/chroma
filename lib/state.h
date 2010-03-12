@@ -68,11 +68,12 @@ namespace Chroma
       // and copy F into F_tmp
       for(int mu=0; mu < Nd; mu++) { 
 	tmp[mu][0] = getLinks()[mu];
-	F_tmp[mu][0] =F[mu][0];
+	F_tmp[mu] = F[mu];
+      }
 
-	for(int i=1; i < N; i++) { 
+      for(int i=1; i < N; i++) { 
+	for(int mu=0; mu < Nd; mu++) {
 	  tmp[mu][i] = -p[mu]*tmp[mu][i-1];
-	  F_tmp[mu][i] = F[mu][i];
 	}
       }
 

@@ -4,6 +4,8 @@
  */
 
 #include "chromabase.h"
+#include "handle.h"
+#include "state.h"
 #include "actions/ferm/linop/unprec_wilson_linop_w.h"
 
 using namespace QDP::Hints;
@@ -82,26 +84,24 @@ namespace Chroma
 				     const P& p,
 				     enum PlusMinus isign)
   {
- //
-    //  Chi   =  (Nd+Mass)*Psi  -  (1/2) * D' Psi
-    //
+ 
+    if( chi.size() != psi.size() ) { 
+      QDPIO::cout << "Error towers are incompatible" << endl;
+      QDP_abort(1);
+    }
+    int N = chi.size();
     Real mhalf = -0.5;
-    Tower<T> tmp(chi.size());
 
-    // D is a Dslash - must apply to both CB-s
-    D(tmp, psi, p, isign);
+    D(chi, psi, p, isign);   // All the fun stuff is in here.
+    chi *= mhalf;
 
-    chi = mhalf*tmp;
-
-    // This is an optimization
-    // Really it should be a sum of 2 towers
+    // This is an optimized tower addition. Really it corresponds to
+    // [ 0, 0,..., fact ] * [ psi_N, psi_N-1, ..., psi_0 ]
+    // = [fact*psi_N, fact*psi_N-1,..., fact*psi_N ]
     //
-    //  [0,...,0,fact] psi + mhalft [ tmp_N,...,tmp_1, tmp_0 ]
-    //
-    //  but that would just end up adding a lot of zeros.
-    //  so I am hacking it.
-    chi[0] += fact*psi[0];
-
+    for(int i=0; i < N; i++) {
+      chi[i] += fact*psi[i];
+    }
     
     getFermBC().modifyF(chi);
   
@@ -113,8 +113,7 @@ namespace Chroma
 	       const Tower<T>& psi,
 	       enum PlusMinus isign)
     {
-      ds_u = zero;
-
+      
       // This does both parities
       D.deriv(ds_u, chi, psi, isign);
 
