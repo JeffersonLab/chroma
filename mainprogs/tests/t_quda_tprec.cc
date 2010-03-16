@@ -97,28 +97,36 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
   QF links_single(Nd);
   
   // Repack gauge, so that for links_single[mu] has gauge field with 3d cb being contiguous
-  int lin;
   for(int mu=0; mu < Nd; mu++) {
-    lin=0;
-    for(int cb3=0; cb3 < 2; cb3++) { 
-      const int* tab=rb3[cb3].siteTable().slice();
+    for(int t=0; t < latdims[3]; t++) { 
+      for(int z=0; z < latdims[2]; z++) { 
+	for(int y=0; y < latdims[1]; y++) { 
+	  for(int x=0; x < latdims[0]; x++) { 
+	    int xh=x/2;
+	    int par=(x + y + z) & 1;
+	    int par4d=(x + y + z + t) & 1;
+	    // Weirdly, this is the same offset in both 3 and 4d
+	    int off=xh+(latdims[0]/2)*(y + latdims[1]*(z+latdims[2]*t));
 
-      for(int site=0; site < vol2; site++) {
-	for(int r=0; r < 3; r++) { 
-	  for(int c=0; c < 3; c++) { 
-	    links_single[mu].elem(lin).elem().elem(r,c).real() = ((fs_handle->getLinks())[mu]).elem(tab[site]).elem().elem(r,c).real();
-	    links_single[mu].elem(lin).elem().elem(r,c).imag() = ((fs_handle->getLinks())[mu]).elem(tab[site]).elem().elem(r,c).imag();
+	    for(int r=0; r < Nc; r++) { 
+	      for(int c=0; c < Nc; c++) { 
+		links_single[mu].elem(vol2*par+off).elem().elem(r,c).real()
+		  = (fs_handle->getLinks())[mu].elem(vol2*par4d+off).elem().elem(r,c).real();
 
+		links_single[mu].elem(vol2*par+off).elem().elem(r,c).imag()
+		  =(fs_handle->getLinks())[mu].elem(vol2*par4d+off).elem().elem(r,c).imag();
+	      }
+	    }
 	  }
 	}
-	lin++;
       }
     }
   }
+
   // Set up the links
   void* gauge[4];
   for(int mu=0; mu < Nd; mu++) { 
-    gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+    gauge[mu] = (void *)&(links_single[mu].elem(0).elem().elem(0,0).real());
   }
   loadGaugeQuda((void *)gauge, &q_gauge_param);
   
@@ -147,12 +155,26 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
   int daggerBit = (isign == MINUS ? 1 : 0);
 
   // Pack buffer_in: output cb = rb3[0], input cb=rb3[1]
-  lin=0;
-  for(int site=0; site < rb3[1].siteTable().size(); site++) { 
-    for(int spin=0; spin < 4; spin++) {		      
-      for(int col=0; col < 3; col++) {
-	buffer_in[lin++] = src.elem(rb3[otherCB].siteTable()[site]).elem(spin).elem(col).real();
-	buffer_in[lin++] = src.elem(rb3[otherCB].siteTable()[site]).elem(spin).elem(col).imag();
+  int lin;
+  for(int t=0; t < latdims[3]; t++) { 
+    for(int z=0; z < latdims[2]; z++) { 
+      for(int y=0; y < latdims[1]; y++) { 
+	for(int x=0; x < latdims[0]; x++) { 
+	  int xh=x/2;
+	  int par=(x + y + z) & 1;
+	  if( par == otherCB ) {
+	    int par4d=(x + y + z + t) & 1;
+	    // Weirdly, this is the same offset in both 3 and 4d
+	    int off=xh+(latdims[0]/2)*(y + latdims[1]*(z+latdims[2]*t));
+	    int lin=0;
+	    for(int spin=0; spin < 4; spin++) {		      
+	      for(int col=0; col < 3; col++) {
+		buffer_in[24*off+(lin++)] = src.elem(vol2*par4d+off).elem(spin).elem(col).real();
+		buffer_in[24*off+(lin++)] = src.elem(vol2*par4d+off).elem(spin).elem(col).imag();
+	      }
+	    }
+	  }
+	}
       }
     }
   }
@@ -164,13 +186,25 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
 	       cb,      // source parity =1, dst parity=0
 	       daggerBit);     // no dagger
 
-  // Unpack
-  lin=0;
-  for(int site=0; site < rb3[1].siteTable().size(); site++) { 
-    for(int spin=0; spin < 4; spin++) {		      
-      for(int col=0; col < 3; col++) {
-	dst2.elem(rb3[cb].siteTable()[site]).elem(spin).elem(col).real() = buffer_out[lin++];
-	dst2.elem(rb3[cb].siteTable()[site]).elem(spin).elem(col).imag() = buffer_out[lin++];
+  for(int t=0; t < latdims[3]; t++) { 
+    for(int z=0; z < latdims[2]; z++) { 
+      for(int y=0; y < latdims[1]; y++) { 
+	for(int x=0; x < latdims[0]; x++) { 
+	  int xh=x/2;
+	  int par=(x + y + z) & 1;
+	  if( par == cb ) { 
+	    int par4d=(x + y + z + t) & 1;
+	    // Weirdly, this is the same offset in both 3 and 4d
+	    int off=xh+(latdims[0]/2)*(y + latdims[1]*(z+latdims[2]*t));
+	    int lin=0;
+	    for(int spin=0; spin < 4; spin++) {		      
+	      for(int col=0; col < 3; col++) {
+		dst2.elem(vol2*par4d+off).elem(spin).elem(col).real()= buffer_out[24*off+(lin++)] ;
+		dst2.elem(vol2*par4d+off).elem(spin).elem(col).imag()=buffer_out[24*off+(lin++)];
+	      }
+	    }
+	  }
+	}
       }
     }
   }
