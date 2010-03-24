@@ -241,11 +241,17 @@ namespace Chroma
       // gauge_param = &q_gauge_param;
       
       // Set up the links
+      QF links_minus(Nd);
+      for(int mu=0; mu < Nd; mu++) {
+	links_minus[mu] =  shift(links_single[mu], BACKWARD, mu);
+      }
       void* gauge[4];
+      void* gauge_minus[4];
       for(int mu=0; mu < Nd; mu++) { 
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+	gauge_minus[mu] = (void *)&(links_minus[mu].elem(all.start()).elem().elem(0,0).real());
       }
-      loadGaugeQuda((void *)gauge, &q_gauge_param);
+      loadGaugeQuda((void *)gauge,(void *)gauge_minus, &q_gauge_param);
       
 
       // Definitely no clover here...

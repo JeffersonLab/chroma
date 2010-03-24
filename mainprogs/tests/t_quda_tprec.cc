@@ -74,20 +74,14 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
   // Setup gauge fixing
   q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;
 
+
+
   // Setup padding
   unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
   unsigned int vol2 = vol/2;
-  if( vol % (1<<14) == 0) { 
-    // Commended out -- padding this way seems to cause some divergence
-    // Will revert when Mike tells me to. For now
-    // I'll take the hit
-    //quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =( latdims[0]*latdims[1]*latdims[2])/2;
-    quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
-    
-  }
-  else {
-    quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
-  }
+  unsigned int padding=latdims[0]*latdims[1]*latdims[2]/2;
+  quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = padding;
+
 
   // Setup gauge anisotropy
   q_gauge_param.anisotropy = 1.0;
@@ -95,40 +89,63 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
   
   // Make the links
   QF links_single(Nd);
-  
-  // Repack gauge, so that for links_single[mu] has gauge field with 3d cb being contiguous
-  for(int mu=0; mu < Nd; mu++) {
-    for(int t=0; t < latdims[3]; t++) { 
-      for(int z=0; z < latdims[2]; z++) { 
-	for(int y=0; y < latdims[1]; y++) { 
-	  for(int x=0; x < latdims[0]; x++) { 
-	    int xh=x/2;
-	    int par=(x + y + z) & 1;
-	    int par4d=(x + y + z + t) & 1;
-	    // Weirdly, this is the same offset in both 3 and 4d
-	    int off=xh+(latdims[0]/2)*(y + latdims[1]*(z+latdims[2]*t));
+  QF links_minus(Nd);
 
-	    for(int r=0; r < Nc; r++) { 
-	      for(int c=0; c < Nc; c++) { 
-		links_single[mu].elem(vol2*par+off).elem().elem(r,c).real()
-		  = (fs_handle->getLinks())[mu].elem(vol2*par4d+off).elem().elem(r,c).real();
+  {
+    QF tmp_links(Nd);
+    QF tmp_links_minus(Nd);
+    
+    for(int mu=0; mu < Nd; mu++){ 
+      tmp_links[mu] = fs_handle->getLinks()[mu];
+      tmp_links_minus[mu] = shift(tmp_links[mu], BACKWARD, mu);
+    }
 
-		links_single[mu].elem(vol2*par+off).elem().elem(r,c).imag()
-		  =(fs_handle->getLinks())[mu].elem(vol2*par4d+off).elem().elem(r,c).imag();
+
+    // Repack gauge, so that for links_single[mu] has gauge field with 3d cb being contiguous
+    for(int mu=0; mu < Nd; mu++) {
+      for(int t=0; t < latdims[3]; t++) { 
+	for(int z=0; z < latdims[2]; z++) { 
+	  for(int y=0; y < latdims[1]; y++) { 
+	    for(int x=0; x < latdims[0]; x++) { 
+	      int xh=x/2;
+	      int par=(x + y + z) & 1;
+	      int par4d=(x + y + z + t) & 1;
+	      // Weirdly, this is the same offset in both 3 and 4d
+	      int off=xh+(latdims[0]/2)*(y + latdims[1]*(z+latdims[2]*t));
+	      
+	      for(int r=0; r < Nc; r++) { 
+		for(int c=0; c < Nc; c++) { 
+		  links_single[mu].elem(vol2*par+off).elem().elem(r,c).real()
+		    = tmp_links[mu].elem(vol2*par4d+off).elem().elem(r,c).real();
+		  
+		  
+		  
+		  links_single[mu].elem(vol2*par+off).elem().elem(r,c).imag()
+		    = tmp_links[mu].elem(vol2*par4d+off).elem().elem(r,c).imag();
+		  
+		  
+		  links_minus[mu].elem(vol2*par+off).elem().elem(r,c).real()
+		    = tmp_links_minus[mu].elem(vol2*par4d+off).elem().elem(r,c).real();
+		links_minus[mu].elem(vol2*par+off).elem().elem(r,c).imag()
+		  = tmp_links_minus[mu].elem(vol2*par4d+off).elem().elem(r,c).imag();
+		}
 	      }
 	    }
 	  }
 	}
       }
     }
-  }
 
+  }
   // Set up the links
   void* gauge[4];
+  void* gauge_minus[4];
+
   for(int mu=0; mu < Nd; mu++) { 
     gauge[mu] = (void *)&(links_single[mu].elem(0).elem().elem(0,0).real());
+    gauge_minus[mu] = (void *)&(links_minus[mu].elem(0).elem().elem(0,0).real());
   }
-  loadGaugeQuda((void *)gauge, &q_gauge_param);
+  loadGaugeQuda((void *)gauge,(void *)gauge_minus, &q_gauge_param);
   
   // Now set up inverter params.
   quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
@@ -214,7 +231,7 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
 
   // Free QUDA data structures
   Double diff_norm = sqrt(norm2(diff,rb3[cb]))/Double(vol2);
-  
+  QDPIO::cout << "\t diff = " << diff_norm << " per site \t"; 
   bool ret_val;
   if ( toBool( diff_norm < Double(2.0e-8)  ) ) {
     ret_val = true;
@@ -232,7 +249,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   // I want to test the QUDA dslash
   // First make a reference dslash: 4D for now
   multi1d<int> boundary(4); boundary[0]=boundary[1]=boundary[2]=1;
-  boundary[3]=-1;
+  boundary[3]=+1;
 
   Handle< FermBC<TF,PF,QF> > bc_handle(new SimpleFermBC<TF,PF,QF>(boundary));
 
@@ -268,7 +285,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   q_gauge_param.cuda_prec_sloppy=gpu_half_prec;
 
   // Setup lattice size
-  const multi1d<int>& latdims = Layout::lattSize();      
+  const multi1d<int>& latdims = Layout::subgridLattSize();      
   q_gauge_param.X[0] = latdims[0];
   q_gauge_param.X[1] = latdims[1];
   q_gauge_param.X[2] = latdims[2];
@@ -279,34 +296,32 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
 
   // Setup padding
   unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
-  if( vol % (1<<14) == 0) { 
-    // Commended out -- padding this way seems to cause some divergence
-    // Will revert when Mike tells me to. For now
-    // I'll take the hit
-    //quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =( latdims[0]*latdims[1]*latdims[2])/2;
-    quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
-    
-  }
-  else {
-    quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
-  }
-
+  unsigned int padding=latdims[0]*latdims[1]*latdims[2]/2;
+  quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = padding;
   // Setup gauge anisotropy
   q_gauge_param.anisotropy = 1.0;
 
 
   // Make the links
   QF links_single(Nd);
+  QF links_minus(Nd);
   
   for(int mu=0; mu < Nd; mu++) {
-    links_single[mu] = (fs_handle->getLinks())[mu];
+    links_single[mu] = fs_handle->getLinks()[mu];
+    links_minus[mu] =  shift(links_single[mu], BACKWARD, mu);
+    //gaussian(links_minus[mu]);
   }
+
+ 
   // Set up the links
   void* gauge[4];
+  void* gauge_minus[4];
+
   for(int mu=0; mu < Nd; mu++) { 
     gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+    gauge_minus[mu] = (void *)&(links_minus[mu].elem(all.start()).elem().elem(0,0).real());
   }
-  loadGaugeQuda((void *)gauge, &q_gauge_param);
+  loadGaugeQuda((void *)gauge, (void *)gauge_minus, &q_gauge_param);
   
   // Now set up inverter params.
   quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
@@ -366,9 +381,9 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
 
   // Free QUDA data structures
   Double diff_norm = sqrt(norm2(diff,rb[cb]))/Double(vol2);
-  
-  bool ret_val;
-  if ( toBool( diff_norm < Double(2.0e-8)  ) ) {
+  QDPIO::cout << "\t\t diff = " << diff_norm << " per site \t"; 
+  bool ret_val; 
+  if ( toBool( diff_norm < Double(5.0e-8)  ) ) {
     ret_val = true;
   }
   else {
@@ -377,7 +392,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
 
   return ret_val;
 }
-
+ 
 bool linkageHack(void)
 {
   bool foo = true;
@@ -397,7 +412,7 @@ int main(int argc, char **argv)
 
 
   //  AppParams params;
-  const int lsize[4]={12,12,12,32};
+  const int lsize[4]={32,32,32,128};
   multi1d<int> nrow(4);
   nrow=lsize;
   Layout::setLattSize(nrow);
@@ -432,10 +447,10 @@ int main(int argc, char **argv)
   // Write code here?
   QDPIO::cout << "Howdy" << endl;
   bool result;
+ 
 
-
-  QDPIO::cout << "Test: Dslash PLUS, cb=0";
-  if ( ! testQudaDslash(u, PLUS, 0)  ) { 
+  QDPIO::cout << "Test: Dslash MINUS, cb=0";
+  if ( ! testQudaDslash(u, MINUS, 0)  ) { 
     QDPIO::cout << "\t FAILED" << endl;
     QDP_abort(1);
   }
@@ -443,8 +458,18 @@ int main(int argc, char **argv)
     QDPIO::cout << "\t OK" << endl;
   }
 
-  QDPIO::cout << "Test: Dslash MINUS, cb=0";
-  if ( ! testQudaDslash(u, MINUS, 0)  ) { 
+
+  QDPIO::cout << "Test: Dslash MINUS, cb=1" ;
+  if ( ! testQudaDslash(u, MINUS, 1)  ) { 
+    QDPIO::cout << "\t FAILED" << endl;
+    QDP_abort(1);
+  }
+  else { 
+    QDPIO::cout << "\t OK" << endl;
+  }
+
+ QDPIO::cout << "Test: Dslash PLUS, cb=0";
+  if ( ! testQudaDslash(u, PLUS, 0)  ) { 
     QDPIO::cout << "\t FAILED" << endl;
     QDP_abort(1);
   }
@@ -461,15 +486,7 @@ int main(int argc, char **argv)
     QDPIO::cout << "\t OK" << endl;
   }
 
-  QDPIO::cout << "Test: Dslash MINUS, cb=1" ;
-  if ( ! testQudaDslash(u, MINUS, 1)  ) { 
-    QDPIO::cout << "\t FAILED" << endl;
-    QDP_abort(1);
-  }
-  else { 
-    QDPIO::cout << "\t OK" << endl;
-  }
-
+#if 0
   // 3D Dslash testsd
 
   QDPIO::cout << "Test: Dslash3D PLUS, cb=0";
@@ -507,7 +524,7 @@ int main(int argc, char **argv)
   else { 
     QDPIO::cout << "\t OK" << endl;
   }
-
+#endif
 
 
 
