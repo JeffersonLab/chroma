@@ -115,7 +115,7 @@ namespace Chroma
 	}
       }
 
-      const multi1d<int>& latdims = Layout::lattSize();
+      const multi1d<int>& latdims = Layout::subgridLattSize();
       
       q_gauge_param.X[0] = latdims[0];
       q_gauge_param.X[1] = latdims[1];
@@ -126,16 +126,7 @@ namespace Chroma
       // Padding.
       // Using auto padding code from Ron
       unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
-      if( vol % (1<<14) == 0) { 
-        // This causes some divergence. I am commenting out pading factors
-        //  for now and using 0.
-        //  I will reinstate the padding when Mike tells me
-	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = (latdims[0]*latdims[1]*latdims[2])/2;
-	//        quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0; 
-      }
-      else {
-	quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad =0;
-      }
+      quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = (latdims[0]*latdims[1]*latdims[2])/2;
     
       if( aniso.anisoP ) {                     // Anisotropic case
 	Real gamma_f = aniso.xi_0 / aniso.nu; 
@@ -248,19 +239,31 @@ namespace Chroma
       // gauge_param = &q_gauge_param;
       
       // Set up the links     
+#if 0
       QF links_minus(Nd);
       for(int mu=0; mu < Nd; mu++) {
 	links_minus[mu] =  shift(links_single[mu], BACKWARD, mu);
       }
+#endif
+
       void* gauge[4]; 
+
+#if 0
       void* gauge_minus[4];
+#endif
+
       for(int mu=0; mu < Nd; mu++) { 
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+#if 0
 	gauge_minus[mu] = (void *)&(links_minus[mu].elem(all.start()).elem().elem(0,0).real());
+#endif
       }
-      loadGaugeQuda((void *)gauge, (void *)gauge_minus, &q_gauge_param);
-      
 
+#if 0
+      loadGaugeQuda((void *)gauge, (void *)gauge_minus, &q_gauge_param);
+#else
+      loadGaugeQuda((void *)gauge, &q_gauge_param); 
+#endif
 
       QDPIO::cout << "Creating CloverTerm" << endl;
       clov->create(fstate, invParam_.CloverParams);
