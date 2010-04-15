@@ -210,9 +210,6 @@ t_eigcginv_SOURCES = t_eigcginv.cc
 
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc
 t_minvert_SOURCES = t_minvert.cc
-
-t_quda_tprec_SOURCES = t_quda_tprec.cc
-
 t_quda_tprec_SOURCES = t_quda_tprec.cc
 
 # build lib is a target that goes to the build dir of the library and 
