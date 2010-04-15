@@ -31,9 +31,9 @@ namespace Chroma {
     double getTime() { return time_spent; }
   };
 
-  template<typename S>
+  template<typename Q, typename C, typename R, typename S>
   inline
-  void reunit_t(LatticeColorMatrix& xa, 
+  void reunit_t(Q& xa, 
 		LatticeBoolean& bad, 
 		int& numbad, 
 		enum Reunitarize ruflag,
@@ -45,20 +45,20 @@ namespace Chroma {
     swatch.reset();
     swatch.start();
 
-    multi2d<LatticeComplex> a(Nc, Nc);
-    multi2d<LatticeComplex> b(Nc, Nc);
-    LatticeReal t1;
-    LatticeComplex t2;
-    LatticeReal t3;
-    LatticeReal t4;
-    LatticeReal sigmasq = 0;
-    multi1d<LatticeComplex> row(Nc);
+    multi2d<C> a(Nc, Nc);
+    multi2d<C> b(Nc, Nc);
+    R t1;
+    C t2;
+    R t3;
+    R t4;
+    R sigmasq = 0;
+    multi1d<C> row(Nc);
     
     // The initial number of matrices violating unitarity.
     numbad = 0;
     
     // some kind of small floating point number, should be prec. dep.
-    Real fuzz = 1.0e-5; 
+    R fuzz = 1.0e-5; 
     
     // Extract initial components 
     for(int i=0; i < Nc; ++i)
@@ -450,19 +450,36 @@ namespace Chroma {
   }
   
   // Overloaded definitions
-  void reunit(LatticeColorMatrix& xa)
+  // SINGLE
+  void reunit(LatticeColorMatrixF3& xa)
   {
     START_CODE();
 
     LatticeBoolean bad;
     int numbad;
     
-    reunit_t(xa, bad, numbad, REUNITARIZE, all);
+    reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, REUNITARIZE, all);
     
     END_CODE();
   }
-  
-  void reunit(LatticeColorMatrix& xa,
+
+   // Overloaded definitions
+  // DOUBLE
+  void reunit(LatticeColorMatrixD3& xa)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    int numbad;
+    
+    reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, REUNITARIZE, all);
+    
+    END_CODE();
+  }
+
+
+  // SINGLE
+  void reunit(LatticeColorMatrixF3& xa,
 	      const Subset& mstag)
   {
     START_CODE();
@@ -470,13 +487,29 @@ namespace Chroma {
     LatticeBoolean bad;
     int numbad;
     
-    reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
+    reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
+  }
+
+  // DOUBLE
+  void reunit(LatticeColorMatrixD3& xa,
+	      const Subset& mstag)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    int numbad;
+    
+    reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
     
     END_CODE();
   }
 
   // Overloaded definitions, with numbad and ruflag
-  void reunit(LatticeColorMatrix& xa,
+  // Single
+
+  void reunit(LatticeColorMatrixF3& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag)
   {
@@ -484,12 +517,28 @@ namespace Chroma {
 
     LatticeBoolean bad;
     
-    reunit_t(xa, bad, numbad, REUNITARIZE, all);
+    reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, REUNITARIZE, all);
+    
+    END_CODE();
+  }
+
+  // DOUBLE
+  void reunit(LatticeColorMatrixD3& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    
+    reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, REUNITARIZE, all);
     
     END_CODE();
   }
   
-  void reunit(LatticeColorMatrix& xa,
+
+  // SINGLE
+  void reunit(LatticeColorMatrixF3& xa,
 	      int& numbad, 
 	      enum Reunitarize ruflag,
 	      const Subset& mstag)
@@ -498,29 +547,63 @@ namespace Chroma {
 
     LatticeBoolean bad;
     
-    reunit_t(xa, bad, numbad, REUNITARIZE, mstag);
+    reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
     
     END_CODE();
   }
   
-  
+   // DOUBLE
+   void reunit(LatticeColorMatrixD3& xa,
+	      int& numbad, 
+	      enum Reunitarize ruflag,
+	      const Subset& mstag)
+  {
+    START_CODE();
+
+    LatticeBoolean bad;
+    
+    reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
+    
+    END_CODE();
+  }
   // Overloaded definitions, with bad, numbad and ruflag
-  void reunit(LatticeColorMatrix& xa, 
+  // SINGLE
+  void reunit(LatticeColorMatrixF3& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag)
   {
-    reunit_t(xa, bad, numbad, ruflag, all);
+    reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, ruflag, all);
   }
-  
-  void reunit(LatticeColorMatrix& xa, 
+
+  // DOUBLE
+  void reunit(LatticeColorMatrixD3& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag)
+  {
+    reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, ruflag, all);
+  }
+
+  // Single
+  void reunit(LatticeColorMatrixF3& xa, 
 	      LatticeBoolean& bad, 
 	      int& numbad, 
 	      enum Reunitarize ruflag,
 	      const Subset& mstag)
   {
-    reunit_t(xa, bad, numbad, ruflag, mstag);
+    reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, ruflag, mstag);
   }
   
   
+ // Double
+  void reunit(LatticeColorMatrixD3& xa, 
+	      LatticeBoolean& bad, 
+	      int& numbad, 
+	      enum Reunitarize ruflag,
+	      const Subset& mstag)
+  {
+    reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, ruflag, mstag);
+  }
+
 } // End namespace

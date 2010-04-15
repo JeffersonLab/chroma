@@ -17,8 +17,8 @@ namespace Chroma
    * \param poly_loop  Polyakov loop average in direction mu (Write) 
    * \param mu         direction of Polyakov loop (Read)
    */
-
-  void polylp(const multi1d<LatticeColorMatrix>& u, DComplex& poly_loop, int mu)
+  template<typename Q> 
+  void polylp_t(const multi1d<Q>& u, DComplex& poly_loop, int mu)
   {
     START_CODE();
         
@@ -38,6 +38,16 @@ namespace Chroma
   }
 
 
+  void polylp(const multi1d<LatticeColorMatrixF3>& u, DComplex& poly_loop, int mu) 
+  {
+     polylp_t( u, poly_loop, mu);
+  }
+
+  void polylp(const multi1d<LatticeColorMatrixD3>& u, DComplex& poly_loop, int mu)
+  {
+     polylp_t(u, poly_loop, mu);
+  }
+
   //! Compute Polyakov loop
   /*!
    * \ingroup glue
@@ -45,8 +55,8 @@ namespace Chroma
    * \param u          gauge field (Read)
    * \param poly_loop  Polyakov loop average (Write) 
    */
-
-  void polylp(const multi1d<LatticeColorMatrix>& u, multi1d<DComplex>& poly_loop)
+  template<typename Q>
+  void polylp_t(const multi1d<Q>& u, multi1d<DComplex>& poly_loop)
   {
     START_CODE();
  
@@ -59,4 +69,13 @@ namespace Chroma
   }
 
 
+  void polylp(const multi1d<LatticeColorMatrixF3>& u, multi1d<DComplex>& poly_loop)
+  { 
+      polylp_t(u,poly_loop);
+  }
+
+  void polylp(const multi1d<LatticeColorMatrixD3>& u, multi1d<DComplex>& poly_loop)
+  {
+      polylp_t(u,poly_loop);
+  }
 }  // end namespace Chroma

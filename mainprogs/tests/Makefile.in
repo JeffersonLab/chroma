@@ -69,8 +69,8 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_dwflocality$(EXEEXT) t_precact_4d$(EXEEXT) \
 	t_precact_5d$(EXEEXT) t_gauge_force$(EXEEXT) \
 	t_stout_state$(EXEEXT) t_aniso_gaugeact$(EXEEXT) \
-	t_temp_prec$(EXEEXT) t_map_obj_disk$(EXEEXT) \
-	t_quda_tprec$(EXEEXT)
+	t_temp_prec$(EXEEXT) t_map_obj_disk$(EXEEXT) $(am__EXEEXT_1)
+@BUILD_QUDA_TRUE@am__append_22 = t_quda_tprec
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -111,6 +111,7 @@ CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
+@BUILD_QUDA_TRUE@am__EXEEXT_1 = t_quda_tprec$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_t_aniso_gaugeact_OBJECTS = t_aniso_gaugeact.$(OBJEXT)
 t_aniso_gaugeact_OBJECTS = $(am_t_aniso_gaugeact_OBJECTS)
@@ -607,7 +608,8 @@ t_propagator_w_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_t_quda_tprec_OBJECTS = t_quda_tprec.$(OBJEXT)
+am__t_quda_tprec_SOURCES_DIST = t_quda_tprec.cc
+@BUILD_QUDA_TRUE@am_t_quda_tprec_OBJECTS = t_quda_tprec.$(OBJEXT)
 t_quda_tprec_OBJECTS = $(am_t_quda_tprec_OBJECTS)
 t_quda_tprec_LDADD = $(LDADD)
 t_quda_tprec_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -820,7 +822,7 @@ DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_propagator_fuzz_baryon_s_SOURCES) \
 	$(t_propagator_fuzz_s_SOURCES) $(t_propagator_nrqcd_SOURCES) \
 	$(t_propagator_s_SOURCES) $(t_propagator_twisted_SOURCES) \
-	$(t_propagator_w_SOURCES) $(t_quda_tprec_SOURCES) \
+	$(t_propagator_w_SOURCES) $(am__t_quda_tprec_SOURCES_DIST) \
 	$(t_read_eigen_SOURCES) $(t_rel_gmresr_SOURCES) \
 	$(t_remez_SOURCES) $(t_ritz_SOURCES) $(t_ritz5d_KS_SOURCES) \
 	$(t_ritz_KS_SOURCES) $(t_seqsource_SOURCES) \
@@ -1129,7 +1131,7 @@ t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc
 t_minvert_SOURCES = t_minvert.cc
-t_quda_tprec_SOURCES = t_quda_tprec.cc
+@BUILD_QUDA_TRUE@t_quda_tprec_SOURCES = t_quda_tprec.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order

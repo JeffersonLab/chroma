@@ -640,13 +640,17 @@ int main(int argc, char **argv)
   gaugeStartup(gauge_file_xml, gauge_xml, u, params.inputCfg);
 #endif
   for(int mu=0; mu < Nd; mu++){ 
+    gaussian(u[mu]);
+    reunit(u[mu]);
     gaussian(ud[mu]);
     reunit(ud[mu]);
+
     //u[mu] = Real(1);
     //ud[mu] = u[mu];
 
   }
 
+  unitarityCheck(u);
   unitarityCheck(ud);
 
   // Setup the lattice
@@ -706,6 +710,7 @@ int main(int argc, char **argv)
   }
 
 #endif
+ 
 
 #if 1
   // Double Precision tests 
