@@ -1128,7 +1128,10 @@ t_db_SOURCES = t_db.cc
 t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc
+<<<<<<< HEAD
 t_minvert_SOURCES = t_minvert.cc
+=======
+>>>>>>> quda-tprec
 t_quda_tprec_SOURCES = t_quda_tprec.cc
 
 # build lib is a target that goes to the build dir of the library and 
@@ -1323,9 +1326,12 @@ t_mesons_w$(EXEEXT): $(t_mesons_w_OBJECTS) $(t_mesons_w_DEPENDENCIES)
 t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES) 
 	@rm -f t_mesplq$(EXEEXT)
 	$(CXXLINK) $(t_mesplq_LDFLAGS) $(t_mesplq_OBJECTS) $(t_mesplq_LDADD) $(LIBS)
+<<<<<<< HEAD
 t_minvert$(EXEEXT): $(t_minvert_OBJECTS) $(t_minvert_DEPENDENCIES) 
 	@rm -f t_minvert$(EXEEXT)
 	$(CXXLINK) $(t_minvert_LDFLAGS) $(t_minvert_OBJECTS) $(t_minvert_LDADD) $(LIBS)
+=======
+>>>>>>> quda-tprec
 t_monomial_force$(EXEEXT): $(t_monomial_force_OBJECTS) $(t_monomial_force_DEPENDENCIES) 
 	@rm -f t_monomial_force$(EXEEXT)
 	$(CXXLINK) $(t_monomial_force_LDFLAGS) $(t_monomial_force_OBJECTS) $(t_monomial_force_LDADD) $(LIBS)
