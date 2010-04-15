@@ -134,6 +134,7 @@ nobase_include_HEADERS = \
 	actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate.h \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate_array.h \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.h \
 	actions/ferm/linop/asqtad_dslash.h actions/ferm/linop/linop.h \
 	actions/ferm/linop/llincomb.h \
 	actions/ferm/linop/lopscl.h \
@@ -409,6 +410,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h \
+	update/molecdyn/predictor/mre_shifted_predictor.h \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
@@ -1042,6 +1044,7 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/multi_syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate_array.cc \

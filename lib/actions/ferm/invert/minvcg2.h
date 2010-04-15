@@ -23,6 +23,24 @@ namespace Chroma
 	      int MaxCG,
 	      int &n_count);
 
+
+  void MInvCG2(const LinearOperator<LatticeFermionF>& M, 
+	      const LatticeFermionF& chi, 
+	      multi1d<LatticeFermionF>& psi,
+	      const multi1d<RealF>& shifts, 
+	      const multi1d<RealF>& RsdCG,
+	      int MaxCG,
+	      int &n_count);
+
+
+  void MInvCG2(const LinearOperator<LatticeFermionD>& M, 
+	      const LatticeFermionD& chi, 
+	      multi1d<LatticeFermionD>& psi,
+	      const multi1d<RealD>& shifts, 
+	      const multi1d<RealD>& RsdCG,
+	      int MaxCG,
+	      int &n_count);
+
   /*! \ingroup invert */
   template<typename T, typename P, typename Q>
   void MInvCG2(const DiffLinearOperator<T,P,Q>& M,
@@ -30,6 +48,22 @@ namespace Chroma
 	      multi1d<T>& psi,
 	      const multi1d<Real>& shifts, 
 	      const multi1d<Real>& RsdCG,
+	      int MaxCG,
+	      int &n_count);
+
+  void MInvCG2(const DiffLinearOperator<LatticeFermionF,multi1d<LatticeColorMatrixF>,multi1d<LatticeColorMatrixF> >& M,
+	      const LatticeFermionF& chi, 
+	      multi1d<LatticeFermionF>& psi,
+	      const multi1d<RealF>& shifts, 
+	      const multi1d<RealF>& RsdCG,
+	      int MaxCG,
+	      int &n_count);
+
+  void MInvCG2(const DiffLinearOperator<LatticeFermionD,multi1d<LatticeColorMatrixD>,multi1d<LatticeColorMatrixD> >& M,
+	      const LatticeFermionD& chi, 
+	      multi1d<LatticeFermionD>& psi,
+	      const multi1d<RealD>& shifts, 
+	      const multi1d<RealD>& RsdCG,
 	      int MaxCG,
 	      int &n_count);
 

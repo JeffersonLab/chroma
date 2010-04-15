@@ -336,6 +336,7 @@ namespace Chroma
     return TheMdagMFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
+									 state,
 									 linOp(state));
   }
 
@@ -441,6 +442,7 @@ namespace Chroma
     return TheMdagMFermMultiSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									      paramtop,
 									      invParam.path,
+									      state,
 									      lMdagM(state));
   }
 
@@ -478,6 +480,7 @@ namespace Chroma
       invParam.id,
       paramtop,
       invParam.path,
+      state,
       MdagM);
   }
 

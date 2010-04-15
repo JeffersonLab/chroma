@@ -9,7 +9,7 @@
 
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg_array.h"
-
+#include "actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.h"
 namespace Chroma
 {
   //! Registration aggregator
@@ -26,6 +26,7 @@ namespace Chroma
       {
 	// Sources
 	success &= MdagMMultiSysSolverCGEnv::registerAll();
+	success &= MdagMMultiSysSolverCGChronoCloverEnv::registerAll();
 	registered = true;
       }
       return success;

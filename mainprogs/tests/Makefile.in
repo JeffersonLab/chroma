@@ -57,7 +57,7 @@ host_triplet = @host@
 bin_PROGRAMS = t_mesplq$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_ritz_KS$(EXEEXT) \
 	t_lwldslash_array$(EXEEXT) t_leapfrog$(EXEEXT) \
-	t_lwldslash_new$(EXEEXT)
+	t_lwldslash_new$(EXEEXT) t_minvert$(EXEEXT)
 check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_ape_smear$(EXEEXT) \
 	t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
@@ -409,6 +409,13 @@ t_mesplq_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am_t_minvert_OBJECTS = t_minvert.$(OBJEXT)
+t_minvert_OBJECTS = $(am_t_minvert_OBJECTS)
+t_minvert_LDADD = $(LDADD)
+t_minvert_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_monomial_force_OBJECTS = t_monomial_force.$(OBJEXT)
 t_monomial_force_OBJECTS = $(am_t_monomial_force_OBJECTS)
 t_monomial_force_LDADD = $(LDADD)
@@ -744,7 +751,7 @@ SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_map_obj_disk_SOURCES) \
-	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_minvert_SOURCES) \
 	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
 	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
 	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
@@ -787,7 +794,7 @@ DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_map_obj_disk_SOURCES) \
-	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) \
+	$(t_mesons_w_SOURCES) $(t_mesplq_SOURCES) $(t_minvert_SOURCES) \
 	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
 	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
 	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
@@ -1081,6 +1088,7 @@ t_db_SOURCES = t_db.cc
 t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc
+t_minvert_SOURCES = t_minvert.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
@@ -1274,6 +1282,9 @@ t_mesons_w$(EXEEXT): $(t_mesons_w_OBJECTS) $(t_mesons_w_DEPENDENCIES)
 t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES) 
 	@rm -f t_mesplq$(EXEEXT)
 	$(CXXLINK) $(t_mesplq_OBJECTS) $(t_mesplq_LDADD) $(LIBS)
+t_minvert$(EXEEXT): $(t_minvert_OBJECTS) $(t_minvert_DEPENDENCIES) 
+	@rm -f t_minvert$(EXEEXT)
+	$(CXXLINK) $(t_minvert_OBJECTS) $(t_minvert_LDADD) $(LIBS)
 t_monomial_force$(EXEEXT): $(t_monomial_force_OBJECTS) $(t_monomial_force_DEPENDENCIES) 
 	@rm -f t_monomial_force$(EXEEXT)
 	$(CXXLINK) $(t_monomial_force_OBJECTS) $(t_monomial_force_LDADD) $(LIBS)
@@ -1453,6 +1464,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_minvert.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_monomial_force.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mres_4d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_msumr.Po@am__quote@

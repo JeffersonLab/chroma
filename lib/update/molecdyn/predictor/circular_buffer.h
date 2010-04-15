@@ -187,7 +187,11 @@ namespace Chroma
       END_CODE();
     }
     
-    
+    void replaceHead(const T& x)
+    {
+      q[start]=x;
+    }
+
     
   private:
     unsigned int size_max;

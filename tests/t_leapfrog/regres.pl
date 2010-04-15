@@ -10,6 +10,14 @@
 #
 @regres_list = 
     (  
+     {
+	 exec_path   => "$top_builddir/mainprogs/tests" , 
+	 execute     => "t_leapfrog" , 
+	 input       => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson_cg_chrono.ini.xml" , 
+	 log         => "t_leapfrog.prec_1flav_wilson_cg_chrono.candidate.xml",
+	 metric      => "$test_dir/t_leapfrog/t_leapfrog.metric.xml",
+	 controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_wilson_cg_chrono.log.xml" ,
+     },
        {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 

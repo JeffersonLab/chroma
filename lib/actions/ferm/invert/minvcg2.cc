@@ -72,12 +72,12 @@ namespace Chroma
    *  A	       Apply matrix hermitian A to vector 
    */
 
-  template<typename T>
+  template<typename T, typename R>
   void MInvCG2_a(const LinearOperator<T>& M, 
 		 const T& chi, 
 		 multi1d<T>& psi,
-		 const multi1d<Real>& shifts, 
-		 const multi1d<Real>& RsdCG, 
+		 const multi1d<R>& shifts, 
+		 const multi1d<R>& RsdCG, 
 		 int MaxCG,
 		 int& n_count)
   {
@@ -192,7 +192,8 @@ namespace Chroma
     Double b = -cp/d;
 
     //  r[1] += b[0] A . p[0]; 
-    r[sub] += Real(b)*MMp;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
+    R b_r = b;
+    r[sub] += b_r*MMp;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
 
     /* Compute the shifted bs and z */
     multi1d<Double> bs(n_shift);
@@ -219,7 +220,8 @@ namespace Chroma
 
     //  Psi[1] -= b[0] p[0] = - b[0] chi;
     for(s = 0; s < n_shift; ++s) {
-      psi[s][sub] = - Real(bs[s])*chi_internal;  flopcount.addSiteFlops(2*Nc*Ns,sub);
+      R bs_r = bs[s];
+      psi[s][sub] = - bs_r*chi_internal;  flopcount.addSiteFlops(2*Nc*Ns,sub);
     }
   
     //  c = |r[1]|^2   
@@ -253,7 +255,8 @@ namespace Chroma
       a = c/cp;
 
       // Update p
-      p_0[sub] = r + Real(a)*p_0;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
+      R a_r = a;
+      p_0[sub] = r + a_r*p_0;                        flopcount.addSiteFlops(4*Nc*Ns,sub);
       //  p[k+1] := r[k+1] + a[k+1] p[k]; 
       //  Compute the shifted as */
       //  ps[k+1] := zs[k+1] r[k+1] + a[k+1] ps[k];
@@ -263,7 +266,9 @@ namespace Chroma
 	if( ! convsP[s] ) {
 
 	  as = a * z[iz][s]*bs[s] / (z[1-iz][s]*b);
-	  p[s][sub] = Real(z[iz][s])*r + Real(as)*p[s];  flopcount.addSiteFlops(6*Nc*Ns,sub);
+	  R zizs= z[iz][s];
+	  R as_r = as;
+	  p[s][sub] = zizs*r + as_r*p[s];  flopcount.addSiteFlops(6*Nc*Ns,sub);
 	}
       }
 
@@ -283,7 +288,8 @@ namespace Chroma
       bp = b;
       b = -cp/d;
       //  r[k+1] += b[k] A . p[k] ; 
-      r[sub] += Real(b)*MMp;                                flopcount.addSiteFlops(4*Nc*Ns,sub);
+      b_r = b;
+      r[sub] += b_r*MMp;                                flopcount.addSiteFlops(4*Nc*Ns,sub);
       //  c  =  | r[k] |**2 
       c = norm2(r,sub);	                                   flopcount.addSiteFlops(4*Nc*Ns,sub);
 
@@ -306,7 +312,9 @@ namespace Chroma
       {
 	if (! convsP[s] ) 
 	{
-	  psi[s][sub] -= Real(bs[s])*p[s];                 flopcount.addSiteFlops(2*Nc*Ns,sub);
+	  R bs_r = bs[s];
+
+	  psi[s][sub] -= bs_r*p[s];                 flopcount.addSiteFlops(2*Nc*Ns,sub);
 	}
       }
 
@@ -363,13 +371,32 @@ namespace Chroma
   }
 
 
+
   /*! \ingroup invert */
-  template<>
-  void MInvCG2(const LinearOperator<LatticeFermion>& M,
-	      const LatticeFermion& chi, 
-	      multi1d<LatticeFermion>& psi, 
-	      const multi1d<Real>& shifts,
-	      const multi1d<Real>& RsdCG, 
+
+  void MInvCG2(const LinearOperator<LatticeFermionF>& M,
+	      const LatticeFermionF& chi, 
+	      multi1d<LatticeFermionF>& psi, 
+	      const multi1d<RealF>& shifts,
+	      const multi1d<RealF>& RsdCG, 
+	      int MaxCG,
+	      int &n_count)
+  {
+#ifdef PAT
+    int ierr=PAT_region_begin(22, "MInvCG2LinOp");
+#endif
+    MInvCG2_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
+#ifdef PAT
+    ierr=PAT_region_end(22);
+#endif
+  }
+
+  /*! \ingroup invert */
+  void MInvCG2(const LinearOperator<LatticeFermionD>& M,
+	      const LatticeFermionD& chi, 
+	      multi1d<LatticeFermionD>& psi, 
+	      const multi1d<RealD>& shifts,
+	      const multi1d<RealD>& RsdCG, 
 	      int MaxCG,
 	      int &n_count)
   {
@@ -384,14 +411,34 @@ namespace Chroma
 
 
   /*! \ingroup invert */
-  template<>
-  void MInvCG2(const DiffLinearOperator<LatticeFermion,
-	                               multi1d<LatticeColorMatrix>,
-	                               multi1d<LatticeColorMatrix> >& M,
-	      const LatticeFermion& chi, 
-	      multi1d<LatticeFermion>& psi, 
-	      const multi1d<Real>& shifts,
-	      const multi1d<Real>& RsdCG, 
+
+  void MInvCG2(const DiffLinearOperator<LatticeFermionF,
+	                               multi1d<LatticeColorMatrixF>,
+	                               multi1d<LatticeColorMatrixF> >& M,
+	      const LatticeFermionF& chi, 
+	      multi1d<LatticeFermionF>& psi, 
+	      const multi1d<RealF>& shifts,
+	      const multi1d<RealF>& RsdCG, 
+	      int MaxCG,
+	      int &n_count)
+  {
+#ifdef PAT
+     int ierr=PAT_region_begin(23,"MInvCG2DiffLinOp");
+#endif
+    MInvCG2_a(M, chi, psi, shifts, RsdCG, MaxCG, n_count);
+#ifdef PAT
+     ierr=PAT_region_end(23);
+#endif
+  }
+
+
+  void MInvCG2(const DiffLinearOperator<LatticeFermionD,
+	                               multi1d<LatticeColorMatrixD>,
+	                               multi1d<LatticeColorMatrixD> >& M,
+	      const LatticeFermionD& chi, 
+	      multi1d<LatticeFermionD>& psi, 
+	      const multi1d<RealD>& shifts,
+	      const multi1d<RealD>& RsdCG, 
 	      int MaxCG,
 	      int &n_count)
   {
