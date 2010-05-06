@@ -8,7 +8,8 @@
 
 #include "chromabase.h"
 #include "linearop.h"
-
+#include "tower.h"
+#include "tower_array.h"
 using namespace QDP::Hints;
 
 namespace Chroma 
@@ -104,22 +105,65 @@ namespace Chroma
     /*! This does not need to be optimized */
     virtual void evenEvenLinOp(T& chi, const T& psi, 
 			       enum PlusMinus isign) const = 0;
+
+    virtual void evenEvenLinOp(Tower<T>& chi, const Tower<T>& psi,
+	                       const P& p, 
+			       enum PlusMinus isign) const
+    {
+	QDPIO::cout << "Not implemented: EvenOddPrecLinearOperator::evenEvenLinOp" << endl;
+	QDP_abort(1);
+    }
   
     //! Apply the inverse of the even-even block onto a source vector
     virtual void evenEvenInvLinOp(T& chi, const T& psi, 
 				  enum PlusMinus isign) const = 0;
+
+    virtual void evenEvenInvLinOp(Tower<T>& chi, const Tower<T>& psi, 
+				  const P& p, 
+	                          enum PlusMinus isign) const
+    {
+	QDPIO::cout << "Not implemented: EvenOddPrecLinearOperator::evenEvenInvLinOp" << endl;
+	QDP_abort(1);
+    }
+ 
   
     //! Apply the the even-odd block onto a source vector
     virtual void evenOddLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
+    //! Apply the the even-odd block onto a source vector
+    virtual void evenOddLinOp(Tower<T>& chi, const Tower<T>& psi, 
+			      const P& p, 
+		              enum PlusMinus isign) const
+    {
+	QDPIO::cout << "Not implemented: EvenOddPrecLinearOperator::evenOddLinOp" << endl;
+	QDP_abort(1);
+    }
+ 
+
     //! Apply the the odd-even block onto a source vector
     virtual void oddEvenLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
+    virtual void oddEvenLinOp(Tower<T>& chi, const Tower<T>& psi, 
+			      const P& p, 
+		              enum PlusMinus isign) const 
+    {
+	QDPIO::cout << "Not implemented: EvenOddPrecLinearOperator::oddEvenLinOp" << endl;
+	QDP_abort(1);
+    }
+ 
     //! Apply the the odd-odd block onto a source vector
     virtual void oddOddLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const = 0;
+
+    virtual void oddOddLinOp(Tower<T>& chi, const Tower<T>& psi, 
+			      const P& p, 
+		              enum PlusMinus isign) const 
+    {
+	QDPIO::cout << "Not implemented: EvenOddPrecLinearOperator::oddOddLinOp" << endl;
+	QDP_abort(1);
+    }
 
     //! Apply the operator onto a source vector
     virtual void operator() (T& chi, const T& psi, 
@@ -141,6 +185,29 @@ namespace Chroma
       getFermBC().modifyF(chi, rb[1]);
     }
 
+        //! Apply the operator onto a source vector
+    virtual void operator() (Tower<T>& chi, const Tower<T>& psi,
+	                     const P& p, 
+			     enum PlusMinus isign)
+    {
+      Tower<T> tmp1(chi.size());
+      Tower<T> tmp2(chi.size());
+ 
+      /*  Tmp1   =  D     A^(-1)     D    Psi  */
+      /*      O      O,E        E,E   E,O    O */
+      evenOddLinOp(tmp1, psi, p, isign);
+      evenEvenInvLinOp(tmp2, tmp1, p, isign);
+      oddEvenLinOp(tmp1, tmp2, p, isign);
+
+      /*  Chi   =  A    Psi  -  Tmp1  */
+      /*     O      O,O    O        O */
+      oddOddLinOp(chi, psi, p, isign);
+      for(int i=0; i < chi.getHeight(); i++) {
+        chi[i][rb[1]] -= tmp1[i];
+      }
+
+      getFermBC().modifyF(chi, rb[1]);
+    }
 
     //! Apply the UNPRECONDITIONED operator onto a source vector
     /*! Mainly intended for debugging */
@@ -169,17 +236,53 @@ namespace Chroma
     virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
 				    enum PlusMinus isign) const = 0;
    
+    virtual void derivEvenEvenLinOp(TowerArray< typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+          QDPIO::cerr << "Not implemented EvenOddPrecLinearOperator::derivEvenEvenLinOp" << endl;
+	  QDP_abort(1);
+    } 
+    
     //! Apply the the even-odd block onto a source vector
     virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
  
+    virtual void derivEvenOddLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+          QDPIO::cerr << "Not implemented: EvenOddPrecLinearOperator:derivEvenOddLinOp " << endl;
+	  QDP_abort(1);
+    } 
+    
     //! Apply the the odd-even block onto a source vector
     virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
 
+    virtual void derivOddEvenLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+          QDPIO::cerr << "Not implemented: EvenOddPrecLinearOperator::derivOddEvenLinOp " << endl;
+	  QDP_abort(1);
+    } 
+
     //! Apply the the odd-odd block onto a source vector
     virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, 
 				  enum PlusMinus isign) const = 0;
+ 
+    virtual void derivOddOddLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign) 
+    {
+          QDPIO::cerr << "Not implemented: EvenOddPrecLinearOperator::derivOddOddLinOp " << endl;
+	  QDP_abort(1);
+    } 
 
     /*! Mainly intended for debugging */
     virtual void derivUnprecLinOp(P& ds_u, const T& chi, const T& psi, 
@@ -206,6 +309,32 @@ namespace Chroma
       getFermBC().zero(ds_u);
     }
 
+    virtual void derivUnprecLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+      Tower<T>  tmp1(chi.size());
+      Tower<T>  tmp2(chi.size()); 
+      TowerArray<typename PQTraits<Q>::Base_t> ds_tmp(Nd,chi.size());
+
+      //  ds_u  =  chi^dag * A'_ee * psi
+      derivEvenEvenLinOp(ds_u, chi, psi, isign);
+
+      //  ds_u +=  chi^dag * D'_eo * psi
+      derivEvenOddLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      //  ds_u +=  chi^dag * D'_oe * psi
+      derivOddEvenLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      //  ds_u +=  chi^dag * A'_oo * psi
+      derivOddOddLinOp(ds_tmp, chi, psi, isign);
+      ds_u += ds_tmp;
+
+      getFermBC().zero(ds_u);
+    }
 
     //! Apply the derivative of the operator onto a source vector
     /*! User should make sure deriv routines do a resize.
@@ -215,6 +344,15 @@ namespace Chroma
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const = 0;
 
+    virtual void deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+               const P& p,
+	       enum PlusMinus isign) {
+
+          QDPIO::cerr << "Not implemented: EvenOddPrecLinOp::deriv " << endl;
+	  QDP_abort(1);
+    } 
 
     //! Return flops performed by the evenEvenLinOp
     virtual unsigned long evenEvenNFlops() const { return 0; }

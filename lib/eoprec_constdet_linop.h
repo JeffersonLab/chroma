@@ -141,6 +141,53 @@ namespace Chroma
       getFermBC().zero(ds_u);
     }
 
+
+    //! Apply the derivative of the operator onto a source vector
+    /*! User should make sure deriv routines do a resize  */
+    virtual void deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+               const P& p,
+	       enum PlusMinus isign)
+    {
+      // Need deriv of  (A_oo - D_oe*Ainv_ee*D_eo*psi_e)
+      enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+      //
+      // Make sure the deriv routines do a resize !!!
+      //
+      Tower<T>   tmp1(chi.size());
+      Tower<T>   tmp2(chi.size());  // if an array is used here, the space is not reserved
+    
+      TowerArray<typename PQTraits<Q>::Base_t>  ds_1(Nd,chi.size());  // deriv routines should resize
+
+      //
+      // NOTE: even with even-odd decomposition, the ds_u will still have contributions
+      // on all cb. So, no adding of ds_1 onto ds_u under a subset
+      //
+            
+      //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+      evenOddLinOp(tmp1, psi, p, isign);
+      evenEvenInvLinOp(tmp2, tmp1, p, isign);
+      derivOddEvenLinOp(ds_u, chi, tmp2, isign);
+      
+
+      //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+      evenOddLinOp(tmp1, chi, p, msign);
+      evenEvenInvLinOp(tmp2, tmp1, p, msign);
+      derivEvenOddLinOp(ds_1, tmp2, psi, isign);
+      ds_u += ds_1;
+
+      // This is yucky and ws should have a *= function 
+      // so that I wouldn't have to expose the fact that I expect
+      // ds_u to be an Nd dimensional array
+      for(int mu=0; mu < Nd; mu++) { 
+	ds_u[mu] *= Real(-1);
+      }
+
+      getFermBC().zero(ds_u);
+    }
+
     //! Apply the even-even block onto a source vector
     virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
 				    enum PlusMinus isign) const
@@ -148,7 +195,16 @@ namespace Chroma
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
     }
-  
+
+    virtual void derivEvenEvenLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+	QDPIO::cerr << "Not Implemented" << endl;
+	QDP_abort(1);
+    }
+
     //! Apply the the even-odd block onto a source vector
     virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
@@ -156,10 +212,29 @@ namespace Chroma
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
     }
- 
+
+    virtual void derivEvenOddLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+
     //! Apply the the odd-even block onto a source vector
     virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
+    {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
+
+ 
+    virtual void derivOddEvenLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
@@ -173,7 +248,14 @@ namespace Chroma
       QDP_abort(1);
     }
 
-
+    virtual void derivOddOddLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+   {
+      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDP_abort(1);
+    }
   };
 
 

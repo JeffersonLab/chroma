@@ -137,7 +137,7 @@ namespace Chroma
 		    const P& p,
 		    enum PlusMinus isign) 
     {
-      QDPIO::cout << "Not implemented " << endl;
+      QDPIO::cout << "Not implemented: DiffLinearOperator::operator()" << endl;
       QDP_abort(1);
     }
 
@@ -145,9 +145,10 @@ namespace Chroma
     void deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
 	       const Tower<T>& chi,
 	       const Tower<T>& psi,
+	       const P& p,
 	       enum PlusMinus isign)
     {
-      QDPIO::cout << "Not implemented " << endl;
+      QDPIO::cout << "Not implemented: DiffLinearOperator::deriv() " << endl;
       QDP_abort(1);
     }
 

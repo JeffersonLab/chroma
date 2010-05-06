@@ -94,10 +94,26 @@ namespace Chroma
 
     D.apply(chi, psi, isign, 0);
     chi[rb[0]] *= mhalf;
-  
+    
+
     END_CODE();
   }
 
+  void 
+  EvenOddPrecWilsonLinOp::evenOddLinOp(Tower<T>& chi, const Tower<T>& psi,
+				       const P& p,
+				       enum PlusMinus isign) const
+  { 
+     START_CODE();
+     Real mhalf = -0.5;
+       
+    D.applyTower(chi, psi, p, isign, 0);
+    for(int i=0; i < chi.size(); i++) {
+      chi[i][rb[0]] *= mhalf;
+    }
+
+    END_CODE();
+  }
   //! Apply odd-even linop component
   /*!
    * The operator acts on the entire odd sublattice
@@ -121,7 +137,21 @@ namespace Chroma
     END_CODE();
   }
 
+  void 
+  EvenOddPrecWilsonLinOp::oddEvenLinOp(Tower<T>& chi, const Tower<T>& psi,
+				       const P& p,
+				       enum PlusMinus isign) const
+  { 
+     START_CODE();
+     Real mhalf = -0.5;
+       
+    D.applyTower(chi, psi, p, isign, 1);
+    for(int i=0; i < chi.size(); i++) {
+      chi[i][rb[1]] *= mhalf;
+    }
 
+    END_CODE();
+  }
 
   //! Override inherited one with a few more funkies
   void EvenOddPrecWilsonLinOp::operator()(LatticeFermion & chi, 
@@ -167,6 +197,50 @@ namespace Chroma
     END_CODE();
   }
 
+//! Override inherited one with a few more funkies
+  void EvenOddPrecWilsonLinOp::operator()(Tower<T>& chi, const Tower<T>& psi,
+				       const P& p,
+				       enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    int N = psi.size();
+    Tower<T> tmp1(N);
+    Tower<T> tmp2(N);
+    Tower<T> tmp3(N);
+  
+
+    Real mquarterinvfact = -0.25*invfact;
+
+    // tmp1[0] = D_eo psi[1]
+    D.applyTower(tmp1, psi, p, isign, 0);
+
+    // tmp2[1] = D_oe tmp1[0]
+    D.applyTower(tmp2, tmp1, p, isign, 1);
+
+    // Now we have tmp2[1] = D_oe D_eo psi[1]
+
+    // now scale tmp2[1] with (-1/4)/fact = (-1/4)*(1/(Nd + m))
+    // with a vscale -- using tmp2 on both sides should be OK, but
+    // just to be safe use tmp3
+    for(int i=0; i < N; i++) {  
+      tmp3[i][rb[1]] = mquarterinvfact*tmp2[i];
+    }
+    // now tmp3[1] should be = (-1/4)*(1/(Nd + m) D_oe D_eo psi[1]
+
+    // Now get chi[1] = fact*psi[1] + tmp3[1]
+    // with a vaxpy3 
+    // chi[1] = (Nd + m) - (1/4)*(1/(Nd + m)) D_oe D_eo psi[1]
+    //
+    // in this order, this last job could be replaced with a 
+    // vaxpy3_norm if we wanted the || M psi ||^2 over the subset.
+    for(int i=0; i < N; i++){ 
+      chi[i][rb[1]] = fact*psi[i] + tmp3[i];
+    }
+    getFermBC().modifyF(chi, rb[1]);
+    
+    END_CODE();
+  }
 
   //! Derivative of even-odd linop component
   void 
@@ -187,6 +261,23 @@ namespace Chroma
     END_CODE();
   }
 
+  void 
+  EvenOddPrecWilsonLinOp::derivEvenOddLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
+	                                    const Tower<T>& chi,
+	                                    const Tower<T>& psi,
+	                                    enum PlusMinus isign)
+  {
+    START_CODE();
+
+    D.deriv(ds_u, chi, psi, isign, 0);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *=  Real(-0.5);
+    }
+
+    END_CODE();
+ 
+  }
+
 
   //! Derivative of odd-even linop component
   void 
@@ -204,6 +295,23 @@ namespace Chroma
       ds_u[mu]  *= Real(-0.5);
     }
     END_CODE();
+  }
+
+ void 
+  EvenOddPrecWilsonLinOp::derivOddEvenLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
+	                                    const Tower<T>& chi,
+	                                    const Tower<T>& psi,
+	                                    enum PlusMinus isign)
+  {
+    START_CODE();
+
+    D.deriv(ds_u, chi, psi, isign, 1);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *=  Real(-0.5);
+    }
+
+    END_CODE();
+ 
   }
 
   //! Return flops performed by the operator()

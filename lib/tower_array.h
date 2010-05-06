@@ -11,6 +11,7 @@
 
 
 using namespace QDP;
+using namespace std;
 
 namespace Chroma { 
 
@@ -101,6 +102,17 @@ public:
     // Resize my t_array
     for(int mu=0; mu < t_array.size(); mu++) { 
       t_array[mu] = zero;
+    }
+    return *this;
+  }
+
+  TowerArray<T>& operator+=(const TowerArray<T>& rhs) {
+    if( t_array.size() != rhs.size() ) {
+	QDPIO::cerr << "Mismatched towerArrays in TowerArray+=" << endl;
+        QDP_abort(1);
+    }
+    for(int mu=0; mu < rhs.size(); mu++) { 
+        t_array[mu] += rhs[mu];
     }
     return *this;
   }

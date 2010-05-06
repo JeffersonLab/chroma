@@ -111,6 +111,7 @@ namespace Chroma
   void UnprecWilsonLinOp::deriv(TowerArray<PQTraits<Q>::Base_t>& ds_u,
 	       const Tower<T>& chi,
 	       const Tower<T>& psi,
+	       const P& p,
 	       enum PlusMinus isign)
     {
       

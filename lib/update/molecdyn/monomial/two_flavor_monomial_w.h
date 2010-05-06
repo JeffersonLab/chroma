@@ -234,9 +234,9 @@ namespace Chroma
       TowerArray<typename PQTraits<Q>::Base_t> F_tmp2(N);
 
       (*M)(Y, X, s.getP(), PLUS);
-      M->deriv(F, X, Y, MINUS);
+      M->deriv(F, X, Y, s.getP(), MINUS);
       // fold M^dag into X^dag ->  Y  !!
-      M->deriv(F_tmp2, Y, X, PLUS);
+      M->deriv(F_tmp2, Y, X, s.getP(), PLUS);
 
       for(int mu=0; mu < F.size(); ++mu) {
 	F[mu] += F_tmp2[mu];
