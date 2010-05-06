@@ -55,26 +55,52 @@ namespace Chroma
     void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		       enum PlusMinus isign) const;
 
+    void evenEvenLinOp(Tower<T>& chi, const Tower<T>& psi,
+  				     const P& p,
+				     enum PlusMinus isign) const;
+ 
     //! Apply the inverse of the even-even block onto a source vector
     void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const;
+ 
+    
+    void evenEvenInvLinOp(Tower<T>& chi, const Tower<T>& psi,
+				     const P& p,
+				     enum PlusMinus isign) const;
   
-    //! Apply the the even-odd block onto a source vector
+  //! Apply the the even-odd block onto a source vector
     void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		      enum PlusMinus isign) const;
+
+    void evenOddLinOp(Tower<T>& chi, const Tower<T>& psi,
+				     const P& p,
+				     enum PlusMinus isign) const ;
 
     //! Apply the the odd-even block onto a source vector
     void oddEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		      enum PlusMinus isign) const;
+ 
+    void oddEvenLinOp(Tower<T>& chi, const Tower<T>& psi,
+				     const P& p,
+				     enum PlusMinus isign) const ;
+
 
     //! Apply the the odd-odd block onto a source vector
     void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		     enum PlusMinus isign) const;
+  
+    void oddOddLinOp(Tower<T>& chi, const Tower<T>& psi,
+				     const P& p,
+				     enum PlusMinus isign) const;
+
 
     //! Override inherited one with a few more funkies
     void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
 		    enum PlusMinus isign) const;
 
+    void  operator()(Tower<T>& chi, const Tower<T>& psi,
+				     const P& p,
+				     enum PlusMinus isign) const;
     //! Apply the even-even block onto a source vector
     inline
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
@@ -85,15 +111,35 @@ namespace Chroma
       ds_u = zero;
     }
 
+   void derivEvenEvenLinOp(TowerArray<PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+      for(int mu=0; mu < Nd; mu++) { 
+	ds_u[mu] = zero;
+      }
+    } 
+
     //! Apply the the even-odd block onto a source vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const;
  
+    void derivEvenOddLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign);
+
     //! Apply the the odd-even block onto a source vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const;
+
+    void derivOddEvenLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign);
 
     //! Apply the the odd-odd block onto a source vector
     inline 
@@ -105,6 +151,15 @@ namespace Chroma
       ds_u = zero;
     }
 
+    void derivOddOddLinOp(TowerArray<PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       enum PlusMinus isign)
+    {
+      for(int mu=0; mu < Nd; mu++) { 
+	ds_u[mu] = zero;
+      }
+    } 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 
@@ -116,7 +171,7 @@ namespace Chroma
     Real Mass;
     Real H;
 //    multi1d<LatticeColorMatrix> u;
-    WilsonDslash D;
+    mutable WilsonDslash D;
   };
 
 } // End Namespace Chroma
