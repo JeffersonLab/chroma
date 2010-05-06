@@ -82,6 +82,10 @@ check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec \
 	t_map_obj_disk
 
+if BUILD_QUDA
+check_PROGRAMS += t_quda_tprec
+endif
+
 
 #
 ## Move programs under development to EXTRA_PROGRAMS if they currently
@@ -112,7 +116,8 @@ EXTRA_PROGRAMS  = t_dslashm t_lwldslash t_spprod \
     t_db \
     t_solver_accum \
     t_eigcginv \
-    t_tower
+    t_tower \
+    t_minvert
 
 #
 # The programs and their dependencies
@@ -211,6 +216,11 @@ t_eigcginv_SOURCES = t_eigcginv.cc
 
 t_map_obj_disk_SOURCES = t_map_obj_disk.cc
 t_tower_SOURCES=t_tower.cc
+t_minvert_SOURCES = t_minvert.cc
+if BUILD_QUDA
+t_quda_tprec_SOURCES = t_quda_tprec.cc
+endif
+
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
 # for it to be done every time, we have to make it a 'phony' target

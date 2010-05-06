@@ -9,8 +9,8 @@
 ##########################################################
 
 # Hardwire MPI for now
-MPI_HOME=/usr/local/mvapich-0.9.9
-NODES="qcd7n1411 qcd7n1411 qcd7n0122 qcd7n0122"
+MPI_HOME="/usr/mpi/gcc/mvapich-1.1.0"
+NODES="qcd9q0308 qcd9q0308 qcd9q0732 qcd9q0732"
 # Nex is the name of the program
 PROG=$1
 
