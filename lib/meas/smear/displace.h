@@ -46,6 +46,21 @@ namespace Chroma
 
   //! Apply a displacement path to a lattice field
   /*! \ingroup smear */
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, const multi1d<int>& path,
+			      const Subset& sub);
+
+
+  //! Apply a displacement path to a lattice field
+  /*! \ingroup smear */
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, const multi1d<int>& path);
+
+
+  //! Apply a displacement path to a lattice field
+  /*! \ingroup smear */
   LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
 			      const LatticeColorVector& chi, 
 			      int length, const multi1d<int>& path,

@@ -90,6 +90,24 @@ namespace Chroma
     return displace<LatticeColorVector>(u, chi, length, dir, sub);
   }
 
+
+  // Apply a displacement operator to a lattice field
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, int dir)
+  {
+    return displace<LatticeColorMatrix>(u, chi, length, dir, QDP::all);
+  }
+
+
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, int dir, const Subset& sub)
+  {
+    return displace<LatticeColorMatrix>(u, chi, length, dir, sub);
+  }
+
+
   // Apply a displacement operator to a lattice field
   LatticePropagator displace(const multi1d<LatticeColorMatrix>& u, 
 			     const LatticePropagator& chi, 
@@ -107,7 +125,6 @@ namespace Chroma
     return displace<LatticeFermion>(u, chi, length, dir, QDP::all);
   }
 
-
   // Apply a displacement operator to a lattice field
   LatticeStaggeredFermion displace(const multi1d<LatticeColorMatrix>& u, 
 				   const LatticeStaggeredFermion& chi, 
@@ -123,15 +140,6 @@ namespace Chroma
 				      int length, int dir)
   {
     return displace<LatticeStaggeredPropagator>(u, chi, length, dir, QDP::all);
-  }
-
-
-  // Apply a displacement operator to a lattice field
-  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
-			      const LatticeColorMatrix& chi, 
-			      int length, int dir)
-  {
-    return displace<LatticeColorMatrix>(u, chi, length, dir, QDP::all);
   }
 
 
@@ -201,6 +209,24 @@ namespace Chroma
 			      const Subset& sub)
   {
     return displace<LatticeColorVector>(u, chi, length, path, sub);
+  }
+
+
+  // Apply a displacement path to a lattice field
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, const multi1d<int>& path)
+  {
+    return displace<LatticeColorMatrix>(u, chi, length, path, QDP::all);
+  }
+
+  // Apply a displacement path to a lattice field
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, const multi1d<int>& path,
+			      const Subset& sub)
+  {
+    return displace<LatticeColorMatrix>(u, chi, length, path, sub);
   }
 
 
