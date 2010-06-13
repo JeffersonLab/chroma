@@ -17,6 +17,8 @@
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
 
+#include "meas/smear/disp_colvec_map.h"
+
 #include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
@@ -331,6 +333,16 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
       //
+      // Hack for the moment. Can only support 0-momentum. For non-zero momentum, 
+      // we need leftNabla-s that have proper momentum.
+      //
+      if (params.param.mom2_max != 0)
+      {
+	QDPIO::cerr << name << ": only support zero momentum at the moment. Need generalizatin for left derivs\n";
+	QDP_abort(1);
+      }
+
+      //
       // Initialize the slow Fourier transform phases
       //
       SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
@@ -362,6 +374,14 @@ namespace Chroma
 
       // Record the smeared observables
       MesPlq(xml_out, "Smeared_Observables", u_smr);
+
+      //
+      // The object holding the displaced color vector maps  
+      //
+      DispColorVectorMap smrd_disp_vecs(true,
+					params.param.displacement_length,
+					u_smr,
+					eigen_source);
 
       //
       // DB storage
@@ -424,6 +444,12 @@ namespace Chroma
 
 	QDPIO::cout << "displacement = " << disp << endl;
 
+	// The keys for the spin and displacements for this particular elemental operator
+	KeyDispColorVector_t keyDispColorVector;
+
+	// Can displace each colorvector
+	keyDispColorVector.displacement = disp;
+
 	// Build the operator
 	swiss.reset();
 	swiss.start();
@@ -450,18 +476,15 @@ namespace Chroma
 	    watch.reset();
 	    watch.start();
 	    
+	    keyDispColorVector.colvec = j;
+	    LatticeColorVector shift_vec = phases[mom_num] * smrd_disp_vecs.getDispVector(keyDispColorVector);
+
 	    // Displace the right vector and multiply by the momentum phase
 	    EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(j,tmpvec);
-	    LatticeColorVector lvec(tmpvec.eigenVector);
-
-	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
-								      tmpvec.eigenVector, 
-								      params.param.displacement_length, 
-								      disp);
 
 	    // Contract over color indices
 	    // Do the relevant quark contraction
-	    LatticeComplex lop = localInnerProduct(lvec, shift_vec);
+	    LatticeComplex lop = localInnerProduct(tmpvec.eigenVector, shift_vec);
 
 	    // Slow fourier-transform
 	    multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());
