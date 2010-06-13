@@ -1,4 +1,3 @@
-//  $Id: displace.cc,v 3.8 2009-09-17 14:48:21 colin Exp $
 /*! \file
  *  \brief Parallel transport a lattice field
  *
@@ -277,6 +276,63 @@ namespace Chroma
 			       int mu, int length)
   {
     return displace(u, F, length, mu) - displace(u, F, -length, mu);
+  }
+
+
+  //! Apply a right derivative path to a lattice field
+  /*! \ingroup smear */
+  template<typename T>
+  T rightNablaT(const multi1d<LatticeColorMatrix>& u, 
+		const T& psi, 
+		int displacement_length, 
+		const multi1d<int>& path,
+		const Subset& sub)
+  {
+    if (displacement_length < 0)
+    {
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << endl;
+      QDP_abort(1);
+    }
+
+    T chi;
+    chi[sub] = psi;
+
+    for(int i=0; i < path.size(); ++i)
+    {
+      if (path[i] > 0)
+      {
+	int disp_dir = path[i] - 1;
+	int disp_len = displacement_length;
+	chi[sub]  = displace<T>(u, chi,  disp_len, disp_dir, sub);
+	chi[sub] -= displace<T>(u, chi, -disp_len, disp_dir, sub);
+      }
+      else if (path[i] < 0)
+      {
+	int disp_dir = -path[i] - 1;
+	int disp_len = -displacement_length;
+	chi[sub]  = displace<T>(u, chi,  disp_len, disp_dir, sub);
+	chi[sub] -= displace<T>(u, chi, -disp_len, disp_dir, sub);
+      }
+    }
+
+    return chi;
+  }
+
+
+  //! Apply first deriv to the right onto source
+  LatticeColorVector rightNabla(const multi1d<LatticeColorMatrix>& u, 
+				const LatticeColorVector& chi, 
+				int length, const multi1d<int>& path)
+  {
+    return rightNablaT<LatticeColorVector>(u, chi, length, path, QDP::all);
+  }
+
+  //! Apply first deriv to the right onto source
+  LatticeColorMatrix rightNabla(const multi1d<LatticeColorMatrix>& u, 
+				const LatticeColorMatrix& chi, 
+				int length, const multi1d<int>& path)
+  {
+    return rightNablaT<LatticeColorMatrix>(u, chi, length, path, QDP::all);
   }
 
 
