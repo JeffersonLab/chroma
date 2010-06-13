@@ -323,6 +323,16 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
       //
+      // Hack for the moment. Can only support 0-momentum. For non-zero momentum, 
+      // we need leftNabla-s that have proper momentum.
+      //
+      if (params.param.mom2_max != 0)
+      {
+	QDPIO::cerr << name << ": only support zero momentum at the moment. Need generalizatin for left derivs\n";
+	QDP_abort(1);
+      }
+
+      //
       // Initialize the slow Fourier transform phases
       //
       SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
@@ -470,10 +480,10 @@ namespace Chroma
 	for(int j = 0 ; j < B_mag.size(); ++j)
 	{
 	  // Displace the right vector
-	  LatticeColorMatrix shift_vec = displace(u_smr, 
-						  B_mag[j],
-						  params.param.displacement_length, 
-						  disp);
+	  LatticeColorMatrix shift_vec = rightNabla(u_smr, 
+						    B_mag[j],
+						    params.param.displacement_length, 
+						    disp);
 
 	  // Left mag field
 	  for(int i = 0 ; i < B_mag.size(); ++i)

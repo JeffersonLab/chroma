@@ -17,8 +17,6 @@
 #include "util/info/proginfo.h"
 #include "meas/inline/make_xml_file.h"
 
-#include "meas/smear/disp_colvec_map.h"
-
 #include "meas/inline/io/named_objmap.h"
 
 namespace Chroma 
@@ -376,14 +374,6 @@ namespace Chroma
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       //
-      // The object holding the displaced color vector maps  
-      //
-      DispColorVectorMap smrd_disp_vecs(true,
-					params.param.displacement_length,
-					u_smr,
-					eigen_source);
-
-      //
       // DB storage
       //
       BinaryStoreDB< SerialDBKey<KeyGlueElementalOperator_t>, SerialDBData<ValGlueElementalOperator_t> > 
@@ -444,12 +434,6 @@ namespace Chroma
 
 	QDPIO::cout << "displacement = " << disp << endl;
 
-	// The keys for the spin and displacements for this particular elemental operator
-	KeyDispColorVector_t keyDispColorVector;
-
-	// Can displace each colorvector
-	keyDispColorVector.displacement = disp;
-
 	// Build the operator
 	swiss.reset();
 	swiss.start();
@@ -476,15 +460,18 @@ namespace Chroma
 	    watch.reset();
 	    watch.start();
 	    
-	    keyDispColorVector.colvec = j;
-	    LatticeColorVector shift_vec = phases[mom_num] * smrd_disp_vecs.getDispVector(keyDispColorVector);
-
 	    // Displace the right vector and multiply by the momentum phase
 	    EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(j,tmpvec);
+	    LatticeColorVector lvec(tmpvec.eigenVector);
+
+	    LatticeColorVector shift_vec = phases[mom_num] * rightNabla(u_smr, 
+									lvec,
+									params.param.displacement_length, 
+									disp);
 
 	    // Contract over color indices
 	    // Do the relevant quark contraction
-	    LatticeComplex lop = localInnerProduct(tmpvec.eigenVector, shift_vec);
+	    LatticeComplex lop = localInnerProduct(lvec, shift_vec);
 
 	    // Slow fourier-transform
 	    multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());
