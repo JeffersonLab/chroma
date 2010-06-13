@@ -464,17 +464,17 @@ namespace Chroma
 	    EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(j,tmpvec);
 	    LatticeColorVector lvec(tmpvec.eigenVector);
 
-	    LatticeColorVector shift_vec = phases[mom_num] * rightNabla(u_smr, 
-									lvec,
-									params.param.displacement_length, 
-									disp);
+	    LatticeColorVector shift_vec = rightNabla(u_smr, 
+						      lvec,
+						      params.param.displacement_length, 
+						      disp);
 
 	    // Contract over color indices
 	    // Do the relevant quark contraction
 	    LatticeComplex lop = localInnerProduct(lvec, shift_vec);
 
 	    // Slow fourier-transform
-	    multi1d<ComplexD> op_sum = sumMulti(lop, phases.getSet());
+	    multi1d<ComplexD> op_sum = sumMulti(phases[mom_num] * lop, phases.getSet());
 
 	    watch.stop();
 
