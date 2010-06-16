@@ -247,6 +247,17 @@ namespace Chroma
   }
 
 
+  //! Apply a right derivative path to a lattice field
+  /*! \ingroup smear */
+  template<typename T>
+  T rightNablaT(const T& F,
+                const multi1d<LatticeColorMatrix>& u,
+                int mu, int length)
+  {
+    return displace<T>(u, F, length, mu, QDP::all) - displace<T>(u, F, -length, mu, QDP::all);
+  }
+
+
   //! Apply first deriv to the right onto source
   /*!
    * \ingroup sources
@@ -259,7 +270,7 @@ namespace Chroma
 				const multi1d<LatticeColorMatrix>& u,
 				int mu, int length)
   {
-    return displace(u, F, length, mu) - displace(u, F, -length, mu);
+    return rightNablaT<LatticeColorVector>(F, u, mu, length);
   }
 
   //! Apply first deriv to the right onto source
@@ -267,7 +278,7 @@ namespace Chroma
 			    const multi1d<LatticeColorMatrix>& u,
 			    int mu, int length)
   {
-    return displace(u, F, length, mu) - displace(u, F, -length, mu);
+    return rightNablaT<LatticeFermion>(F, u, mu, length);
   }
 
   //! Apply first deriv to the right onto source
@@ -275,7 +286,7 @@ namespace Chroma
 			       const multi1d<LatticeColorMatrix>& u,
 			       int mu, int length)
   {
-    return displace(u, F, length, mu) - displace(u, F, -length, mu);
+    return rightNablaT<LatticePropagator>(F, u, mu, length);
   }
 
 
@@ -285,8 +296,7 @@ namespace Chroma
   T rightNablaT(const multi1d<LatticeColorMatrix>& u, 
 		const T& psi, 
 		int displacement_length, 
-		const multi1d<int>& path,
-		const Subset& sub)
+		const multi1d<int>& path)
   {
     if (displacement_length < 0)
     {
@@ -295,7 +305,7 @@ namespace Chroma
     }
 
     T chi;
-    chi[sub] = psi;
+    chi = psi;
 
     for(int i=0; i < path.size(); ++i)
     {
@@ -303,15 +313,12 @@ namespace Chroma
       {
 	int disp_dir = path[i] - 1;
 	int disp_len = displacement_length;
-	chi[sub]  = displace<T>(u, chi,  disp_len, disp_dir, sub);
-	chi[sub] -= displace<T>(u, chi, -disp_len, disp_dir, sub);
+	chi  = rightNablaT<T>(chi, u, disp_dir, disp_len);
       }
-      else if (path[i] < 0)
+      else if (path[i] <= 0)
       {
-	int disp_dir = -path[i] - 1;
-	int disp_len = -displacement_length;
-	chi[sub]  = displace<T>(u, chi,  disp_len, disp_dir, sub);
-	chi[sub] -= displace<T>(u, chi, -disp_len, disp_dir, sub);
+        QDPIO::cerr << __func__ << ": invalid path dir=" << path[i] << endl;
+        QDP_abort(1);
       }
     }
 
@@ -324,7 +331,7 @@ namespace Chroma
 				const LatticeColorVector& chi, 
 				int length, const multi1d<int>& path)
   {
-    return rightNablaT<LatticeColorVector>(u, chi, length, path, QDP::all);
+    return rightNablaT<LatticeColorVector>(u, chi, length, path);
   }
 
   //! Apply first deriv to the right onto source
@@ -332,7 +339,7 @@ namespace Chroma
 				const LatticeColorMatrix& chi, 
 				int length, const multi1d<int>& path)
   {
-    return rightNablaT<LatticeColorMatrix>(u, chi, length, path, QDP::all);
+    return rightNablaT<LatticeColorMatrix>(u, chi, length, path);
   }
 
 
