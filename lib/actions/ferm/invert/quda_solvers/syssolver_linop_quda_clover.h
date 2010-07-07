@@ -431,9 +431,18 @@ namespace Chroma
 	res.resid = sqrt(norm2(r, A->subset()));
       }
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+      Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
    
-      
+      // Convergence Check/Blow Up
+      if ( ! invParam.SilentFailP ) { 
+	      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
+        	QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
+        	QDP_abort(1);
+      	      }
+      }
+
       END_CODE();
       return res;
     }

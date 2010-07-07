@@ -18,8 +18,10 @@ namespace Chroma
       cudaReconstruct=RECONS_12;
       cudaSloppyPrecision=DEFAULT;
       cudaSloppyReconstruct=RECONS_12;
-      asymmetricP = false;
-      axialGaugeP = false;
+      asymmetricP = false; //< Use asymmetric version of the linear operator
+      axialGaugeP = false; //< Fix Axial Gauge?
+      SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
+      RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
     };
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -34,8 +36,9 @@ namespace Chroma
       cudaReconstruct = p.cudaReconstruct;
       cudaSloppyPrecision = p.cudaSloppyPrecision;
       cudaSloppyReconstruct = p.cudaSloppyReconstruct;
-      axialGaugeP = p. axialGaugeP;
-
+      axialGaugeP = p.axialGaugeP;
+      SilentFailP = p.SilentFailP;
+      RsdToleranceFactor = p.RsdToleranceFactor;
     }
 
     CloverFermActParams CloverParams;
@@ -51,7 +54,8 @@ namespace Chroma
     QudaPrecisionType cudaSloppyPrecision;
     QudaReconsType cudaSloppyReconstruct;
     bool axialGaugeP;
-
+    bool SilentFailP;
+    Real RsdToleranceFactor;
 
 
   };
