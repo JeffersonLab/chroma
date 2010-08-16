@@ -71,6 +71,19 @@ namespace Chroma {
       axialGaugeP = false;
     }
 
+    if( paramtop.count("SilentFail") > 0) {
+      read(paramtop, "SilentFail", SilentFailP);
+    }
+    else { 
+      SilentFailP = false;
+    }
+
+    if( paramtop.count("RsdToleranceFactor") > 0 ) { 
+       read(paramtop, "RsdToleranceFactor", RsdToleranceFactor);
+    }
+    else { 
+       RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
+    }
 
   }
 
@@ -97,6 +110,9 @@ namespace Chroma {
     write(xml, "CudaSloppyPrecision", p.cudaSloppyPrecision);
     write(xml, "CudaSloppyReconstruct", p.cudaSloppyReconstruct);
     write(xml, "AxialGaugeFix", p.axialGaugeP);
+    write(xml, "SilentFail", p.SilentFailP);
+    write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
+
     pop(xml);
 
   }

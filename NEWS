@@ -1,3 +1,8 @@
+June 30, 2010 - Robert Edwards
+        Version 3.38.2
+        Added new glue measurements. Cleaned out obsolete regression test input.
+        Balint merged cuda-tprec and multi-prec shift solvers.
+
 Jan 07, 2010 - Robert Edwards
         Version 3.38.0
         New FILEDB interface down in QDP++. Changed Chroma's SerialDBKey/Data to match 

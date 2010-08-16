@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Simple plaquette measurement. NOTE: this measurement is done
+; by default, so not really needed.
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Plaquette loops -->
+      <Name>PLAQUETTE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+<annotation>
+<!-- One can optionally use a GAUGE_STATE -->
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>PERIODIC_GAUGEBC</Name>
+          </GaugeBC>
+        </GaugeState>
+</annotation>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

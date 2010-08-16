@@ -20,6 +20,8 @@ namespace Chroma
       cudaSloppyPrecision=DEFAULT;
       cudaSloppyReconstruct=RECONS_12;
       axialGaugeP = false;
+      SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
+      RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
     };
     SysSolverQUDAWilsonParams( const SysSolverQUDAWilsonParams& p) {
       WilsonParams = p.WilsonParams;
@@ -34,6 +36,8 @@ namespace Chroma
       cudaSloppyPrecision = p.cudaSloppyPrecision;
       cudaSloppyReconstruct = p.cudaSloppyReconstruct;
       axialGaugeP = p. axialGaugeP;
+      SilentFailP = p.SilentFailP;
+      RsdToleranceFactor = p.RsdToleranceFactor;
     }
     WilsonFermActParams WilsonParams;
     bool AntiPeriodicT;
@@ -47,7 +51,8 @@ namespace Chroma
     QudaPrecisionType cudaSloppyPrecision;
     QudaReconsType cudaSloppyReconstruct;
     bool axialGaugeP;
-
+    bool SilentFailP;
+    Real RsdToleranceFactor;
   };
 
   void read(XMLReader& xml, const std::string& path, SysSolverQUDAWilsonParams& p);
