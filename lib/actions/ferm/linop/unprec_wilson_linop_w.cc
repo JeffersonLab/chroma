@@ -116,7 +116,7 @@ namespace Chroma
     {
       
       // This does both parities
-      D.deriv(ds_u, chi, psi, isign);
+      D.deriv(ds_u, chi, psi, p, isign);
 
       // Factor from the -1/2 in front of the dslash
       for(int mu = 0; mu < Nd; ++mu)

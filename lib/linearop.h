@@ -290,7 +290,7 @@ namespace Chroma
      *
      * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
      */
-    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+    virtual void deriv(P& ds_u, const T& chi, const T& psi,
 		       enum PlusMinus isign) const
     {
       QDPIO::cerr << "deriv: not implemented" << endl;
@@ -306,7 +306,7 @@ namespace Chroma
      *
      * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
      */
-    virtual void deriv(P& ds_u, const T& chi, const T& psi, 
+    virtual void deriv(P& ds_u, const T& chi, const T& psi,
 		       enum PlusMinus isign, int cb) const
     {
       QDPIO::cerr << "deriv: not implemented" << endl;

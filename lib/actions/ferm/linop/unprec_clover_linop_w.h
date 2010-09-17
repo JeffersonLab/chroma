@@ -56,6 +56,18 @@ namespace Chroma
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
 	       enum PlusMinus isign) const;
 
+    //! Apply operator with Towers
+    void operator()(Tower<T>& chi, const Tower<T>& psi, 
+		    const P& p,
+		    enum PlusMinus isign);
+
+    //! Deriv with Towers
+    void deriv(TowerArray<PQTraits<Q>::Base_t>& ds_u,
+	       const Tower<T>& chi,
+	       const Tower<T>& psi,
+	       const P& p,
+	       enum PlusMinus isign);
+
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
 

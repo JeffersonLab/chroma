@@ -82,4 +82,29 @@ namespace Chroma
     return site_flops*Layout::sitesOnNode();
   }
 
+    //! Apply operator with Towers
+    void 
+    UnprecCloverLinOp::operator()(Tower<T>& chi, const Tower<T>& psi, 
+				  const P& p,
+				  enum PlusMinus isign)
+    {
+      QDPIO::cerr << "Work in progress" << endl;
+      QDP_abort(1);
+
+    }
+
+    //! Deriv with Towers
+    void
+    UnprecCloverLinOp::deriv(TowerArray<PQTraits<Q>::Base_t>& ds_u,
+			     const Tower<T>& chi,
+			     const Tower<T>& psi,
+			     const P& p,
+			     enum PlusMinus isign)
+    {
+      QDPIO::cerr << "Work in progress" << endl;
+      QDP_abort(1);
+
+    }
+
+
 } // End Namespace Chroma

@@ -8,6 +8,10 @@ using namespace QDP;
 
 namespace Chroma { 
 
+  // Forward Declarationxsxs
+  template<typename T>
+  class SubTower;
+
 template<typename T>
 class Tower { 
 public: 
@@ -43,6 +47,11 @@ public:
   //! add item
   T& operator[](int i) {
     return tower_data[i];
+  }
+
+  SubTower<T>& operator[](Subset& s) { 
+    SubTower<T> ret_val(*this, s);
+    return ret_val;
   }
 
   //! Copy
@@ -250,6 +259,100 @@ private:
       }
     }
   }
+
+
+  // Sub Tower -- towers with subsets
+  template<typename T>
+  class SubTower { 
+  public: 
+
+    // SubTower just holds a reference to a Tower and a subset
+    SubTower(Tower<T>& t_, Subset& s_) : t(t_), s(s_) {} 
+
+    // Destroy
+    ~SubTower() {}
+
+    //! Copy
+    SubTower(const SubTower<T>& a) { 
+      // Avoid self assignment
+      if( this == &a ) return;
+      t=a.t;
+      s=a.s;
+    }
+
+    //! assign 
+    SubTower<T>& operator=(const Tower<T>&a) 
+    {
+      
+      t.resize(a.size());
+      for(int i=0; i < a.size(); i++) {
+	// Assign Under Subset
+	(t[i])[s] = a[i];
+      }
+      
+      return *this;
+    }
+    
+#if 0
+    // This is dangerous... we don't yet know the height of the tower necessarily.
+    //! assign zero
+    SubTower<T>& operator=(const QDP::Zero& z)
+    {
+      for(int i=0; i < t.size(); i++) { 
+	(t[i])[s] = zero;
+      }
+      return *this;
+    }
+#endif
+    // Add: Assumes types T and T1 have += operation
+    SubTower<T>& operator+=(const Tower<T>& a)
+    {
+      for(int i=0; i < a.size(); i++) {
+	(t[i])[s] += a[i];
+      }
+      return *this;
+    }
+
+    SubTower<T>& operator-=(const Tower<T>& a)
+    {
+      for(int i=0; i < a.size(); i++) {
+	(t[i])[s] -= a[i];
+      }
+      return *this;
+    }
+    
+    //! Scalar multiply?
+    template<typename T1>
+    SubTower<T>& operator*=(const OScalar<T1>& alpha)
+    {
+      for(int i=0; i < this->size(); i++) {
+	(t[i])[s] *= alpha;
+      }
+      return *this;
+    }
+ 
+    SubTower<T>& operator*=(const Tower<T>& b)
+    {
+      
+      for(int level=b.size()-1; level >=0; --level) { 
+	T tmp;
+	tmp[s] = t[0]*b[level];
+	for(int i=1; i <= level; i++) { 
+	  T tmp2;
+	  tmp2[s] =t[i]*b[level-i];
+	  tmp[s] += t.Choose(level,i)*tmp2;
+	}
+	(t[level])[s] = tmp;
+      }
+      return (*this);
+      
+    }
+
+  private:
+    Tower<T>& t;
+    Subset& s;
+  };
+ 
 }
 
 

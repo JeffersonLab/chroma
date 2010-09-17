@@ -70,6 +70,7 @@ namespace Chroma
     virtual void
     deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
 	  const Tower<T>& chi, const Tower<T>& psi, 
+	  const P& p,
 	  enum PlusMinus isign) const;
 
     //! Take deriv of D
@@ -89,7 +90,8 @@ namespace Chroma
 
     virtual void 
     deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-				 const Tower<T>& chi, const Tower<T>& psi, 
+	  const Tower<T>& chi, const Tower<T>& psi, 
+	  const P& p,
 	  enum PlusMinus isign, int cb) const;
 
     //! Return flops performed by the operator()
@@ -223,14 +225,15 @@ namespace Chroma
   void
   WilsonDslashBase<T,P,Q>::deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
 				 const Tower<T>& chi, const Tower<T>& psi, 
+				 const P& p,
 				 enum PlusMinus isign) const
   {
     START_CODE();
     
 
     TowerArray<typename PQTraits<Q>::Base_t> ds_tmp(ds_u.getHeight());
-    deriv(ds_u, chi, psi, isign, 0);
-    deriv(ds_tmp, chi, psi, isign, 1);
+    deriv(ds_u, chi, psi, p, isign, 0);
+    deriv(ds_tmp, chi, psi, p, isign, 1);
 
     for(int mu=0; mu < Nd; mu++) {
       ds_u[mu] += ds_tmp[mu];
@@ -345,6 +348,7 @@ namespace Chroma
   void 
   WilsonDslashBase<T,P,Q>::deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
 				 const Tower<T>& chi, const Tower<T>& psi, 
+				 const P& p,
 				 enum PlusMinus isign, int cb) const
   {
     START_CODE();

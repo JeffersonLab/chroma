@@ -265,11 +265,12 @@ namespace Chroma
   EvenOddPrecWilsonLinOp::derivEvenOddLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
 	                                    const Tower<T>& chi,
 	                                    const Tower<T>& psi,
+					    const P& p,
 	                                    enum PlusMinus isign)
   {
     START_CODE();
 
-    D.deriv(ds_u, chi, psi, isign, 0);
+    D.deriv(ds_u, chi, psi, p, isign, 0);
     for(int mu=0; mu < Nd; mu++) {
       ds_u[mu] *=  Real(-0.5);
     }
@@ -301,11 +302,12 @@ namespace Chroma
   EvenOddPrecWilsonLinOp::derivOddEvenLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
 	                                    const Tower<T>& chi,
 	                                    const Tower<T>& psi,
+					    const P& p,
 	                                    enum PlusMinus isign)
   {
     START_CODE();
 
-    D.deriv(ds_u, chi, psi, isign, 1);
+    D.deriv(ds_u, chi, psi, p, isign, 1);
     for(int mu=0; mu < Nd; mu++) {
       ds_u[mu] *=  Real(-0.5);
     }

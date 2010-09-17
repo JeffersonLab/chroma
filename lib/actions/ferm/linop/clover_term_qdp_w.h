@@ -65,7 +65,7 @@ namespace Chroma
     void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
 		const CloverFermActParams& param_);
 
-    virtual void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
+    void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
 			const CloverFermActParams& param_,
 			const QDPCloverTermT<T,U>& from_);
 

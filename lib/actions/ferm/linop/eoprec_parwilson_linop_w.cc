@@ -368,13 +368,14 @@ namespace Chroma
 
   void 
   EvenOddPrecParWilsonLinOp::derivEvenOddLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
-	                                    const Tower<T>& chi,
-	                                    const Tower<T>& psi,
-	                                    enum PlusMinus isign)
+					       const Tower<T>& chi,
+					       const Tower<T>& psi,
+					       const P& p,
+					       enum PlusMinus isign)
   {
     START_CODE();
 
-    D.deriv(ds_u, chi, psi, isign, 0);
+    D.deriv(ds_u, chi, psi, p, isign, 0);
     for(int mu=0; mu < Nd; mu++) {
       ds_u[mu] *=  Real(-0.5);
     }
@@ -403,13 +404,14 @@ namespace Chroma
 
  void 
   EvenOddPrecParWilsonLinOp::derivOddEvenLinOp(TowerArray< PQTraits<Q>::Base_t>& ds_u,
-	                                    const Tower<T>& chi,
-	                                    const Tower<T>& psi,
-	                                    enum PlusMinus isign)
+					       const Tower<T>& chi,
+					       const Tower<T>& psi,
+					       const P& p,
+					       enum PlusMinus isign)
   {
     START_CODE();
 
-    D.deriv(ds_u, chi, psi, isign, 1);
+    D.deriv(ds_u, chi, psi, p, isign, 1);
     for(int mu=0; mu < Nd; mu++) {
       ds_u[mu] *=  Real(-0.5);
     }
@@ -418,118 +420,6 @@ namespace Chroma
  
   }
 
-#if 0
-// Code is here only as a reference. It should be deleted at some point.
-// This is converted szin code.
-// The above derivs will work, calling evenEvenInvLinOp to get that
-// contribution. 
-// However, for more performance, one should copy the regular Wilson
-// deriv() routine and modify it.
-
-#error "ANCIENT SZIN CODE"
-#error "Not quite correct implementation"
-
-
-  //! Computes the derivative of the fermionic action respect to the link field
-  /*!
-   *         |  dS      dS_f
-   * ds_u -- | ----   + -----   ( Write )
-   *         |  dU       dU
-   *
-   * psi -- [1./(M_dag*M)]*chi_  ( read ) 
-   *
-   * \param ds_u     result      ( Write )
-   * \param state    gauge field ( Read )
-   * \param psi      solution to linear system ( Read )
-   */
-
-  void
-  EvenOddPrecParWilsonFermAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
-				     const LatticeFermion& chi, 
-				     const LatticeFermion& psi,
-				     enum PlusMinus isign) const
-  {
-    START_CODE();
-  
-    QDPIO::cerr << "EvenOddPrecParWilsonFermAct::dsdu not implemented" << endl;
-    QDP_abort(1);
-
-    const multi1d<LatticeColorMatrix>& u = state->getLinks();
-				 
-    LatticeColorMatrix utmp_1;      moveToFastMemoryHint(utmp_1);
-    LatticeFermion phi;             moveToFastMemoryHint(phi);
-    LatticeFermion rho;             moveToFastMemoryHint(rho);
-    LatticeFermion sigma;           moveToFastMemoryHint(sigma);
-    LatticeFermion ftmp_1;          moveToFastMemoryHint(ftmp_1);
-    LatticeFermion ftmp_2;          moveToFastMemoryHint(ftmp_2);
-    Double ddummy;
-    Real dummy;
-    int nu;
-    int cb;
-  
-    /* Do the Wilson fermion dS_f/dU with parity breaking term */
-    
-//  CONSTRUCT_LINEAR_OPERATOR(A, lwlhmpsi, u, KappaMD);
-
-    /*  phi = M(u)*psi  */
-    A (A, psi, phi, 1, PLUS);
-    
-    /* rho = (1-i H gamma_5) * Dslash(0<-1) * psi */
-    dslash (u, psi, ftmp_1, PLUS, 1);
-    PARBREAK(ftmp_1, H_parity, rho, MINUS);
-    
-    /* phi = (KappaMD^2)*phi/(1+h^2) = -(KappaMD^2)*M*psi/(1+h^2) */
-    dummy = -(KappaMD*KappaMD) / (WORD_VALUE(WORD_H_parity, ONE) + H_parity*H_parity);
-    phi = phi * dummy;
-    
-    /* sigma = (1+i H gamma_5) * Dslash_dag(0<-1) * phi */
-    dslash (u, phi, ftmp_1, MINUS, 1);
-    PARBREAK(ftmp_1, H_parity, sigma, PLUS);
-    
-        
-    for(int mu = 0; mu < Nd; ++mu)
-    {
-      cb = 0;
-
-      /* ftmp_2 = (gamma(mu))*psi */
-      SPIN_PRODUCT(psi,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-      /* ftmp_2(x) = -(psi(x) - ftmp_2(x)) = -(1 - gamma(mu))*psi( x )  */
-      ftmp_2 -= psi;
-      utmp_1 = -(shift(ftmp_2, cb, FORWARD, mu) * adj(sigma));
-
-      /* ftmp_2 = (gamma(mu))*phi */
-      SPIN_PRODUCT(phi,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-      /* ftmp_2 = phi + ftmp_2 = (1 + gamma(mu))*phi( x)  */
-      ftmp_2 += phi;
-      utmp_1 += shift(ftmp_2, cb, FORWARD, mu) * adj(rho);
-
-      /* THIS NEEDS TO BE CHANGED (removed) */
-      ds_u[mu][cb] += u[mu][cb] * utmp_1;
-      
-      cb = 1;
-
-      /* ftmp_2 = (gamma(mu))*ftmp_1 */
-      SPIN_PRODUCT(rho,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-      /* ftmp_2 = -(rho - ftmp_2) = -(1 - gamma(mu))*rho( x )  */
-      ftmp_2 -= rho;
-      utmp_1 = -(shift(ftmp_2, cb, FORWARD, mu) * adj(phi));
-      
-      /* ftmp_2 = (gamma(mu))*sigma */
-      SPIN_PRODUCT(sigma,(INTEGER_LSHIFT_FUNCTION(1,mu)),ftmp_2);
-      /* ftmp_1 = ftmp_1 + ftmp_2 = (1 + gamma(mu))*sigma( x + mu)  */
-      ftmp_2 += sigma;
-      utmp_1 += shift(ftmp_2, cb, FORWARD, mu) * adj(psi);
-
-      /* THIS NEEDS TO BE CHANGED (removed) */
-      ds_u[mu][cb] += u[mu][cb] * utmp_1;
-      
-    }
-        
-    getFermBC().zero(ds_u);
-
-    END_CODE();
-  }
-#endif
 
 } // End Namespace Chroma
 
