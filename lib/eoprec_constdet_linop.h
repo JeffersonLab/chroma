@@ -169,13 +169,13 @@ namespace Chroma
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
       evenOddLinOp(tmp1, psi, p, isign);
       evenEvenInvLinOp(tmp2, tmp1, p, isign);
-      derivOddEvenLinOp(ds_u, chi, tmp2, isign);
+      derivOddEvenLinOp(ds_u, chi, tmp2, p, isign);
       
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
       evenOddLinOp(tmp1, chi, p, msign);
       evenEvenInvLinOp(tmp2, tmp1, p, msign);
-      derivEvenOddLinOp(ds_1, tmp2, psi, isign);
+      derivEvenOddLinOp(ds_1, tmp2, psi, p, isign);
       ds_u += ds_1;
 
       // This is yucky and ws should have a *= function 
@@ -197,9 +197,10 @@ namespace Chroma
     }
 
     virtual void derivEvenEvenLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-	       const Tower<T>& chi,
-	       const Tower<T>& psi,
-	       enum PlusMinus isign)
+				    const Tower<T>& chi,
+				    const Tower<T>& psi,
+				    const P& p,
+				    enum PlusMinus isign)
     {
 	QDPIO::cerr << "Not Implemented" << endl;
 	QDP_abort(1);
@@ -214,9 +215,10 @@ namespace Chroma
     }
 
     virtual void derivEvenOddLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-	       const Tower<T>& chi,
-	       const Tower<T>& psi,
-	       enum PlusMinus isign)
+				   const Tower<T>& chi,
+				   const Tower<T>& psi,
+				   const P& p,
+				   enum PlusMinus isign)
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
@@ -232,9 +234,10 @@ namespace Chroma
 
  
     virtual void derivOddEvenLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-	       const Tower<T>& chi,
-	       const Tower<T>& psi,
-	       enum PlusMinus isign)
+				   const Tower<T>& chi,
+				   const Tower<T>& psi,
+				   const P& p,
+				   enum PlusMinus isign)
     {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
@@ -249,9 +252,10 @@ namespace Chroma
     }
 
     virtual void derivOddOddLinOp(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-	       const Tower<T>& chi,
-	       const Tower<T>& psi,
-	       enum PlusMinus isign)
+				  const Tower<T>& chi,
+				  const Tower<T>& psi,
+				  const P& p,
+				  enum PlusMinus isign)
    {
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
