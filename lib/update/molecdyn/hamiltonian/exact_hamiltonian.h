@@ -16,6 +16,9 @@
 #include "io/monomial_io.h"
 #include "meas/inline/io/named_objmap.h"
 
+//PSILVA
+#include "tower_array.h"
+
 namespace Chroma 
 {
 
@@ -143,14 +146,77 @@ namespace Chroma
  //PSILVA
      void mesPB(const AbsFieldState< multi1d<LatticeColorMatrix>,
               multi1d<LatticeColorMatrix> >& s, string& state) const {
+
+       START_CODE();
+
+
+      typedef multi1d<LatticeColorMatrix>  P;
+      typedef multi1d<LatticeColorMatrix>  Q;
  
        QDPIO::cout << "PSILVA: computing PB " << state << endl;
 
+       int nmon = monomials.size();
+
+       QDPIO::cout << "PSILVA: number of monomials = " << nmon << endl;
+
+       //TowerArray<LatticeColorMatrix> F(4);
+      //TowerArray<LatticeColorMatrix> G(2);
+       //TowerArray<LatticeColorMatrix> hhh;
+
+       multi1d< Handle< TowerArray<LatticeColorMatrix> > > F(nmon);
+       multi2d< Handle< TowerArray<LatticeColorMatrix> > > G(nmon, nmon);
+ 
+       for (int i=0; i< nmon; i++){
+	 F[i] = new TowerArray<LatticeColorMatrix>(4);
+         
+         for(int mu=0; mu < Nd; mu++) { 
+          (*F[i])[mu] = zero;
+	 }
+        
+         for (int j=0; j< nmon; j++){
+           G[i][j] = new TowerArray<LatticeColorMatrix>(2);
+
+           for(int mu=0; mu < Nd; mu++) { 
+            (*G[i][j])[mu] = zero;
+	   }
+         }
+       }
+
+ 
+      // Computing F towers
+      for (int i=0; i< nmon; i++) {
+        monomials[i]->dsdq(*F[i],s);
+      }
+
+      //Computing G towers
+      for (int i=0; i< nmon; i++) {
+
+        Handle< AbsFieldState<P,Q> > s_new(s.clone());
+
+        for(int mu=0; mu < Nd; mu++) { 
+          s_new->getP()[mu] = (*F[i])[0][mu];
+        }
+
+        for (int j=0; j< nmon; j++){
+	  monomials[i]->dsdq(*G[i][j],(*s_new)); 
+        }
+      }
 
 
 
 
 
+//       Handle< AbsFieldState<P,Q> > s_new(s.clone());
+
+//       for(int mu=0; mu < Nd; mu++) { 
+// 	s_new->getP()[mu] = F[mu][0];
+//       }
+
+//       dsdq(G, (*s_new));
+
+     
+
+      END_CODE();
 
  
      }
