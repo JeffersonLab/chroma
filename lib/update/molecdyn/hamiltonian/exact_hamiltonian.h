@@ -139,6 +139,24 @@ namespace Chroma
       return PE;
     }
 
+
+ //PSILVA
+     void mesPB(const AbsFieldState< multi1d<LatticeColorMatrix>,
+              multi1d<LatticeColorMatrix> >& s, string& state) const {
+ 
+       QDPIO::cout << "PSILVA: computing PB " << state << endl;
+
+
+
+
+
+
+
+ 
+     }
+
+
+
   private:
     //! Convenience 
     typedef ExactMonomial< multi1d<LatticeColorMatrix>, 

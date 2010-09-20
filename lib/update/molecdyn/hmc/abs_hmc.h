@@ -77,6 +77,17 @@ namespace Chroma
 
       pop(xml_log); // pop H_old
       pop(xml_out); // pop H_old
+
+
+
+      // PSILVA
+      // Measuring Poisson Brackets at the start of the trajectory
+      string stateold("old ");
+      string statenew("new ");
+      QDPIO::cout << "PPSS energy old  " << KE_old+PE_old << endl;  
+
+      H_MC.mesPB(s, stateold);
+
       
       
       // Copy in fields from the Hamiltonian as needed using the
@@ -149,6 +160,13 @@ namespace Chroma
       write(xml_log, "PE_new", PE);
       pop(xml_log);
       pop(xml_out);
+
+
+      // PSILVA 
+      // measuring PB at the end of trajectory
+      QDPIO::cout << "PPSS energy      " << KE+PE << endl;
+      H_MC.mesPB(s, statenew);
+      
 
       // Work out energy differences
       Double DeltaKE = KE - KE_old;

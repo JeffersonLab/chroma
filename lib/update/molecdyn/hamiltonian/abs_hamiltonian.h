@@ -74,6 +74,11 @@ namespace Chroma
     
     //! The Potential Energy 
     virtual Double mesPE(const AbsFieldState<P,Q>& s) const = 0;
+
+
+   //PSILVA
+    virtual void mesPB(const AbsFieldState<P,Q>& s, string& state) const = 0;
+
    
   };
 
