@@ -15,6 +15,9 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
+#include "tower_array.h"
+#include "pq_traits.h"
+#include "util/gauge/taproj.h"
 using namespace std;
 
 namespace Chroma
@@ -43,7 +46,9 @@ namespace Chroma
 
     //! Compute dsdq for the system... 
     /*! Monomial of the form  chi^dag*M_prec(M^dag*M)^{-1}M^{dag}_prec*chi */
-    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s)
+    virtual void dsdq(P& F, const AbsFieldState<P,Q>& s) {}
+
+    virtual void dsdq(TowerArray<typename PQTraits<P>::Base_t>& F, const AbsFieldState<P,Q>& s)
     {
       START_CODE();
 
@@ -81,54 +86,125 @@ namespace Chroma
       // Need way to get gauge state from AbsFieldState<P,Q>
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));	
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
+      const Subset& sub = M->subset();
 
-      Phi X=zero;
-      Phi Y=zero;
+      int N = F.getHeight();
+      Tower<Phi> X(N);
+      Tower<Phi> Y(N);
 
+      X=zero;
+      Y=zero;
+
+      // Get X[0] 
+     
       // Need MdagM for CG based predictor
       Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      Phi M_dag_prec_phi;
+      Phi M_dag_prec_phi=zero;
 
       // M_dag_prec phi = M^{dag}_prec \phi - the RHS
       (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
 
-      //(getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
+      // Solve MdagM X[0] = M_prec^\dagger phi
+      SystemSolverResults_t res = (*invMdagM)(X[0], M_dag_prec_phi, getMDSolutionPredictor());
 
-      // Solve MdagM X = eta
-      SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi, getMDSolutionPredictor());
+      // Now Lift the Inversions
+      for(int i=1; i < N; i++) { 
 
-      // (getMDSolutionPredictor()).newVector(X);
-      
-      (*M)(Y, X, PLUS);
+	Tower<Phi> Qt(i+1);
+
+	for(int j=0; j < i; j++)  {
+	  Qt[j] = X[j];
+	}
+	Qt[ i ] = zero;
+	
+	Tower<Phi> tmp(i+1);
+	Tower<Phi> Tt(i+1);
+	
+	tmp = zero;
+	Tt = zero;
+	(*M)(tmp, Qt, s.getP(), PLUS);
+	(*M)(Tt, tmp, s.getP(), MINUS);
+
+	SystemSolverResults_t res2 = (*invMdagM)(X[i], Tt[i], getMDSolutionPredictor());
+	X[i][sub] *= Real(-1);
+	QDPIO::cout << "2Flav::Invert, n_count = " << res2.n_count << endl;
+      }
+
+
+      (*M)(Y, X, s.getP(), PLUS);
+
+      Tower<Phi> phi(N);
+      phi = zero;
+      phi[0] = getPhi();
+
+      TowerArray<typename PQTraits<Q>::Base_t> F_tmp(N);
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] = zero;
+	F_tmp[mu] = zero;
+      }
 
       // \phi^{\dagger} \dot(M_prec) X
-      M_prec->deriv(F, getPhi(), X, PLUS);
+      M_prec->deriv(F, phi, X, s.getP(), PLUS);
       
       // - X^{\dagger} \dot( M^{\dagger}) Y
-      P F_tmp;
-      M->deriv(F_tmp, X, Y, MINUS);
-      F -= F_tmp;
- 
+
+      M->deriv(F_tmp, X, Y, s.getP(), MINUS);
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] -= F_tmp[mu];
+	// Re zero F_tmp
+	F_tmp[mu] = zero;
+      }      
       // - Y^{\dagger} \dot( M ) X
-      M->deriv(F_tmp, Y, X, PLUS);
-      F -= F_tmp;
+      M->deriv(F_tmp, Y, X, s.getP(), PLUS);
+      for(int mu=0; mu < Nd; mu++ ) {
+	F[mu] -= F_tmp[mu];
+	F_tmp[mu] = zero;
+      }
 
       // + X^{\dagger} \dot(M_prec)^dagger \phi
-      M_prec->deriv(F_tmp, X, getPhi(), MINUS);
-      F += F_tmp;
+      M_prec->deriv(F_tmp, X, phi, s.getP(), MINUS);
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] += F_tmp[mu];
+      }
 
       // F now holds derivative with respect to possibly fat links
       // now derive it with respect to the thin links if needs be
-      state->deriv(F);
+      state->deriv(F,s.getP());
 
-      write(xml_out, "n_count", res.n_count);
-      monitorForces(xml_out, "Forces", F);
+      // Taproj F here.
+      for(int i=0; i < N; i++) { 
+	for(int mu=0; mu < Nd; mu++) { 
+	  taproj(F[mu][i]);
+	}
+      }
+
+      //      write(xml_out, "n_count", res.n_count);
+      // monitorForces(xml_out, "Forces", F[0);
 
       pop(xml_out);
 
       END_CODE();
     }
   
+    virtual void computePBVectorField(TowerArray<typename PQTraits<P>::Base_t>& F, 
+				      TowerArray<typename PQTraits<P>::Base_t>& G, 
+				      const AbsFieldState<P,Q>& s)
+    {
+      for(int mu=0; mu < Nd; mu++){ 
+	F[mu] = zero;
+	G[mu] = zero;
+      }
+      dsdq(F,s);
+      Handle<AbsFieldState<P,Q> > s_new(s.clone());
+      for(int mu=0; mu < Nd; mu++) {
+	s_new->getP()[mu] = F[mu][0];
+      }
+      dsdq(G, (*s_new));
+    }
+
+
+
+
     //! Refresh pseudofermions
     virtual void refreshInternalFields(const AbsFieldState<P,Q>& field_state) 
     {
