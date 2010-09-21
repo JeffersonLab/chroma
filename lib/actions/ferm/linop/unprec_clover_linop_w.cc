@@ -88,9 +88,25 @@ namespace Chroma
 				  const P& p,
 				  enum PlusMinus isign)
     {
-      QDPIO::cerr << "Work in progress" << endl;
-      QDP_abort(1);
+      if( chi.size() != psi.size() ) { 
+	QDPIO::cout << "Error towers are incompatible" << endl;
+	QDP_abort(1);
+      }     
+      
+      int N = psi.getHeight();
+      Tower<T> tmp(N); 
+      Real mhalf = -0.5;
+      
+      //  chi   =  A . psi - 0.5 * D' . psi  */
+      A.applyTower(chi, psi,p, isign,0); 
+      A.applyTower(chi, psi,p, isign,1); 
 
+      D.applyTower(tmp, psi, p,isign,0);
+      D.applyTower(tmp, psi, p,isign,1);
+
+      chi += mhalf * tmp;
+
+      getFermBC().modifyF(chi);
     }
 
     //! Deriv with Towers
@@ -101,8 +117,23 @@ namespace Chroma
 			     const P& p,
 			     enum PlusMinus isign)
     {
-      QDPIO::cerr << "Work in progress" << endl;
-      QDP_abort(1);
+    // A. deriv will resize
+      int N = psi.size();
+      ds_u.resize(N);
+
+      A.deriv(ds_u, chi, psi,p, isign);
+
+      TowerArray<PQTraits<Q>::Base_t> ds_tmp(N);
+      for(int mu = 0; mu < Nd; mu++) { 
+	ds_tmp[mu] = zero;
+      }
+      D.deriv(ds_tmp, chi, psi, p, isign);
+      
+      for(int mu=0; mu < Nd; mu++) { 
+	ds_u[mu] -= Real(0.5)*ds_tmp[mu];
+      }
+    
+      //      getFermBC().zero(ds_u);
 
     }
 

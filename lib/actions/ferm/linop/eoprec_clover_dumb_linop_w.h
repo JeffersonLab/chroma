@@ -56,6 +56,7 @@ namespace Chroma
 		const CloverFermActParams& param_) {
 
       param = param_;
+      state = fs;
       clov.create(fs, param);
       invclov.create(fs,param,clov);  // make a copy
       invclov.choles(0);  // invert the cb=0 part
@@ -121,9 +122,15 @@ namespace Chroma
 
   private:
     CloverFermActParams param;
+    Handle< FermState<T, P, Q> > state;
+
     WilsonDslashF D;
     CloverTermF   clov;
     CloverTermF   invclov;  // uggh, only needed for evenEvenLinOp
+
+  protected: 
+    CloverFermActParams getParam() const { return param; }
+    Handle<FermState< T, P, Q> > getState() const  { return state; }
   };
 
 #endif
@@ -168,6 +175,8 @@ namespace Chroma
       // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
       
       param = param_;
+      state = fs;
+
       clov.create(fs, param);
       invclov.create(fs,param,clov);  // make a copy
       invclov.choles(0);  // invert the cb=0 part
@@ -237,9 +246,14 @@ namespace Chroma
 
   private:
     CloverFermActParams param;
+    Handle< FermState< T, P, Q> > state;
     WilsonDslashD D;
     CloverTermD   clov;
     CloverTermD   invclov;  // uggh, only needed for evenEvenLinOp
+    
+  protected:
+    CloverFermActParams getParams() const { return param; }
+    Handle< FermState<T, P, Q> > getState() const { return state; } 
   };
 
 #endif

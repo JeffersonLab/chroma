@@ -49,7 +49,7 @@ public:
     return tower_data[i];
   }
 
-  SubTower<T>& operator[](Subset& s) { 
+  SubTower<T> operator[](const Subset& s) { 
     SubTower<T> ret_val(*this, s);
     return ret_val;
   }
@@ -267,18 +267,13 @@ private:
   public: 
 
     // SubTower just holds a reference to a Tower and a subset
-    SubTower(Tower<T>& t_, Subset& s_) : t(t_), s(s_) {} 
+    SubTower(Tower<T>& t_, const Subset& s_) : t(t_), s(s_) {} 
 
     // Destroy
     ~SubTower() {}
 
     //! Copy
-    SubTower(const SubTower<T>& a) { 
-      // Avoid self assignment
-      if( this == &a ) return;
-      t=a.t;
-      s=a.s;
-    }
+    SubTower(const SubTower<T>& a) : t(a.t), s(a.s) {     }
 
     //! assign 
     SubTower<T>& operator=(const Tower<T>&a) 
@@ -288,6 +283,19 @@ private:
       for(int i=0; i < a.size(); i++) {
 	// Assign Under Subset
 	(t[i])[s] = a[i];
+      }
+      
+      return *this;
+    }
+    
+   //! assign 
+    SubTower<T>& operator=(const SubTower<T>&a) 
+    {
+      
+      t.resize(a.t.size());
+      for(int i=0; i < a.t.size(); i++) {
+	// Assign Under Subset
+	(t[i])[s] = a.t[i];
       }
       
       return *this;
@@ -350,7 +358,7 @@ private:
 
   private:
     Tower<T>& t;
-    Subset& s;
+    const Subset& s;
   };
  
 }
