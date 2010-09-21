@@ -99,17 +99,23 @@ namespace Chroma
      
       // Need MdagM for CG based predictor
       Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
-      Phi M_dag_prec_phi=zero;
+ 
+      // Lift RHS... We'll need this eventually
+      Tower<Phi> phi(N);
+      phi = zero;
+      phi[0] = getPhi();   
 
-      // M_dag_prec phi = M^{dag}_prec \phi - the RHS
-      (*M_prec)(M_dag_prec_phi, getPhi(), MINUS);
+      Tower<Phi> M_dag_prec_phi(N);
+      M_dag_prec_phi=zero;
+      (*M_prec)(M_dag_prec_phi, phi, s.getP(), MINUS);
 
       // Solve MdagM X[0] = M_prec^\dagger phi
-      SystemSolverResults_t res = (*invMdagM)(X[0], M_dag_prec_phi, getMDSolutionPredictor());
+      SystemSolverResults_t res = (*invMdagM)(X[0], M_dag_prec_phi[0], getMDSolutionPredictor());
 
       // Now Lift the Inversions
+      
       for(int i=1; i < N; i++) { 
-
+	
 	Tower<Phi> Qt(i+1);
 
 	for(int j=0; j < i; j++)  {
@@ -122,20 +128,28 @@ namespace Chroma
 	
 	tmp = zero;
 	Tt = zero;
+
+	// This tower applcation evaluates
+	// X[i] = sum_j=i downto 1 (binom coeff) M_j X_{i-j}  
+	// However X[i] = zero, and only X[0] to X[i-1] are filled
+	// So the sum in Tt[i] is exactly the sum required to be taken
+	// away from the RHS
+
 	(*M)(tmp, Qt, s.getP(), PLUS);
 	(*M)(Tt, tmp, s.getP(), MINUS);
 
-	SystemSolverResults_t res2 = (*invMdagM)(X[i], Tt[i], getMDSolutionPredictor());
-	X[i][sub] *= Real(-1);
+	Phi rhs;
+	rhs[sub] = M_dag_prec_phi[i] - Tt[i];
+	
+	SystemSolverResults_t res2 = (*invMdagM)(X[i], rhs, getMDSolutionPredictor());
+	
 	QDPIO::cout << "2Flav::Invert, n_count = " << res2.n_count << endl;
       }
 
 
       (*M)(Y, X, s.getP(), PLUS);
 
-      Tower<Phi> phi(N);
-      phi = zero;
-      phi[0] = getPhi();
+    
 
       TowerArray<typename PQTraits<Q>::Base_t> F_tmp(N);
       for(int mu=0; mu < Nd; mu++) { 
@@ -190,6 +204,7 @@ namespace Chroma
 				      TowerArray<typename PQTraits<P>::Base_t>& G, 
 				      const AbsFieldState<P,Q>& s)
     {
+
       for(int mu=0; mu < Nd; mu++){ 
 	F[mu] = zero;
 	G[mu] = zero;
