@@ -106,8 +106,11 @@ namespace Chroma
       // Make a gauge connect state
       Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
 
+      // get height of tower:
+      int N = u_out.getHeight();
+
       // Tower to start with.
-      TowerArray<U> u_in(u_out.getHeight());
+      TowerArray<U> u_in(N);
 
 
       for(int mu=0; mu < Nd; mu++) { 
@@ -115,10 +118,12 @@ namespace Chroma
 	(u_in[mu])[0] = (g_state->getLinks())[mu];
       }
 
-      // If u_out is of size 2, we need to lift
-      if( u_out.getHeight() == 2 ) { 
-	for(int mu=0; mu < Nd; mu++) {
-	  u_in[mu][1] = - u_out[mu][0]*(g_state->getLinks())[mu];
+      if( N > 1) {
+	// Lift U-s
+	for(int i=1; i < N; i++) {  
+	  for(int mu=0; mu < Nd; mu++) {
+	    u_in[mu][i] = -s.getP()[mu]*u_in[mu][i-1];
+	  }
 	}
       }
 
@@ -127,7 +132,7 @@ namespace Chroma
       getGaugeAct().deriv(u_out, u_in);
 
       // Taproj it
-      for(int i=0; i < u_out[0].size(); i++) { 
+      for(int i=0; i < N; i++) { 
 	for(int mu=0; mu < Nd; mu++) { 
 	  taproj(u_out[mu][i]);
 	}
@@ -142,122 +147,26 @@ namespace Chroma
 
     void computePBVectorField(TowerArray<U>& F,
 			      TowerArray<U>& G, 
-			      const AbsFieldState<P,Q>& s) 
-    { 
-      // Assume F and G are suitably sized
-      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
-
-      
-      {
-	QDPIO::cout << "Lifting U" << endl;
-	TowerArray<U> U(4);
-	for(int mu=0; mu < Nd; mu++) {
-	  U[mu][0] = g_state->getLinks()[mu];
-	}
-
-	for(int i=1; i < 4; i++) { 
-	  for(int mu=0; mu < Nd; mu++) { 
-	    U[mu][i]  = -s.getP()[mu]*U[mu][i-1];
-	  }
-	}
-
-	QDPIO::cout << "Computing F-tower" << endl;
-	getGaugeAct().deriv(F, U);
-	
-	for(int i=0; i < 4; i++) { 
-	  for(int mu=0; mu < Nd; mu++) { 
-	    taproj(F[mu][i]);
-	  }
-	}
-
-
+			      const AbsFieldState<P,Q>& s)
+    {
+      for(int mu=0; mu < Nd; mu++) { 
+	F[mu] = zero;
+	G[mu] = zero;
       }
 
-      {
-	// Lift the Us
-	QDPIO::cout << "Re-Lifting U" << endl;
+      dsdq(F,s);
 
-	TowerArray<U> U(2);
-	for(int mu=0; mu < Nd; mu++) {
-	  U[mu][0] = g_state->getLinks()[mu];
-	  U[mu][1]  = -F[mu][0] * U[mu][0];
-	}
-	
-	QDPIO::cout << "Computing G-tower" << endl;
-	getGaugeAct().deriv(G, U);
-	for(int i=0; i < 2; i++) { 
-	  for(int mu=0; mu < Nd; mu++) { 
-	    taproj(G[mu][i]);
-	  }
-	}
+      Handle< AbsFieldState<P,Q> > s_new(s.clone());
 
-      }
-    }
-
-#if 0
-    //! Compute the poisson brackets for the monomial.
-    Poisson poissonBracket(const AbsFieldState<P,Q>&s ) const {
-      // First compute the F (ing) tower
-      TowerArray<U> F(4);
-      TowerArray<U> G(2);
-      
-
-      Handle< GaugeState<P,Q> > g_state(getGaugeAct().createState(s.getQ()));
-
-      
-      {
-	QDPIO::cout << "Lifting U" << endl;
-	TowerArray<U> U(4);
-	for(int mu=0; mu < Nd; mu++) {
-	  U[mu][0] = g_state->getLinks()[mu];
-	}
-
-	for(int i=1; i < 4; i++) { 
-	  for(int mu=0; mu < Nd; mu++) { 
-	    U[mu][i]  = -s.getP()[mu]*U[mu][i-1];
-	  }
-	}
-
-	QDPIO::cout << "Computing F-tower" << endl;
-	getGaugeAct().deriv(F, U);
-	
-	for(int i=0; i < 4; i++) { 
-	  for(int mu=0; mu < Nd; mu++) { 
-	    taproj(F[mu][i]);
-	  }
-	}
-
-
+      for(int mu=0; mu < Nd; mu++) { 
+	s_new->getP()[mu] = F[mu][0];
       }
 
-      {
-	// Lift the Us
-	QDPIO::cout << "Re-Lifting U" << endl;
+      dsdq(G, (*s_new));
 
-	TowerArray<U> U(2);
-	for(int mu=0; mu < Nd; mu++) {
-	  U[mu][0] = g_state->getLinks()[mu];
-	  U[mu][1]  = -F[mu][0] * U[mu][0];
-	}
-	
-	QDPIO::cout << "Computing G-tower" << endl;
-	getGaugeAct().deriv(G, U);
-	for(int i=0; i < 2; i++) { 
-	  for(int mu=0; mu < Nd; mu++) { 
-	    taproj(G[mu][i]);
-	  }
-	}
-
-      }
-
-      
-      // Make up poisson bracket
-      Poisson ret_val(F,G,s.getP());
-      return ret_val;
-
+     
 
     }
-#endif
 
 
     //! Gauge action value
