@@ -11,7 +11,8 @@
 #include "linearop.h"
 #include "handle.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
-
+#include "actions/ferm/fermstates/periodic_fermstate.h"
+#include "tower_array.h"
 namespace Chroma 
 { 
   //! Clover term
@@ -68,9 +69,9 @@ namespace Chroma
 	       enum PlusMinus isign) const;
 
     /* Derivative with Towers */
-    void deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+    void deriv(TowerArray<U>& ds_u,
 	       const Tower<T>& chi, const Tower<T>& psi, 
-	       const P& p,
+	       const multi1d<U>& p,
 	       enum PlusMinus isign) const;
 
     //! Take deriv of D
@@ -88,9 +89,9 @@ namespace Chroma
 
 
     /* Derivative with Towers */
-    void deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+    void deriv(TowerArray<U>& ds_u,
 	       const Tower<T>& chi, const Tower<T>& psi, 
-	       const P& p, 
+	       const multi1d<U>& p, 
 	       enum PlusMinus isign, int cb) const;
        
     //! Take derivative of TrLn D
@@ -98,8 +99,8 @@ namespace Chroma
 		   enum PlusMinus isign, int cb) const;
 
     /* Derivative with Towers */
-    void derivTrLn(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-		   const P& p,
+    void derivTrLn(TowerArray<U>& ds_u,
+		   const multi1d<U>& p,
 		   enum PlusMinus isign, int cb) const;
 
 
@@ -113,11 +114,11 @@ namespace Chroma
 		     Tower<U>& ds_u_mu,
 		     Tower<U>& ds_u_nu,
 		     const Tower<U>& Lambda,
-		     const P& p) const;
+		     const multi1d<U>& p) const;
 
     void applyTower( Tower<T>& chi, 
 		     const Tower<T>& psi, 
-		     const P& mom, 
+		     const multi1d<U>& mom, 
 		     enum PlusMinus isign,
 		     int cb);
 
@@ -135,6 +136,12 @@ namespace Chroma
 
     //! get the clover coefficient 
     virtual Real getCloverCoeff(int mu, int nu) const = 0;
+
+    //! get the current Ferm State
+    virtual Handle<FermState<T,multi1d<U>,multi1d<U> > > getState() const = 0;
+
+    //! get the params
+    virtual CloverFermActParams getParams() const = 0;
 
   };
 
@@ -174,7 +181,7 @@ namespace Chroma
 
   template<typename T, typename U>
   void
-  CloverTermBase<T,U>::deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
+  CloverTermBase<T,U>::deriv(TowerArray<U>& ds_u,
 			     const Tower<T>& chi, 
 			     const Tower<T>& psi, 
 			     const P& p,
@@ -553,11 +560,10 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
 				 Tower<U>& ds_u_mu,
 				 Tower<U>& ds_u_nu,
 				 const Tower<U>& Lambda,
-				 const P& p) const
+				 const multi1d<U>& p) const
 {
    START_CODE();
-#if 0
-    const multi1d<U>& u = getU();
+   //const multi1d<U>& u = getU();
 
     int N = ds_u_mu.getHeight();
     TowerArray<U> u(Nd, N);
@@ -604,6 +610,8 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
 
     // Sites with CB first:
     //
+    const Subset& rbcb=rb[cb];
+    const Subset& oppcb=rb[1-cb];
 
     Tower<U> staple_for(N);
     Tower<U> staple_back(N);
@@ -628,7 +636,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     Tower<U> u_tmp3(N);
 
     Tower<U> ds_tmp_mu(N);
-    Tower<U< ds_tmp_nu(N);
+    Tower<U> ds_tmp_nu(N);
     {
       Tower<U> up_left_corner(N);
       Tower<U> up_right_corner(N);
@@ -681,8 +689,8 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //    |         |        re  use  u_tmp1 =  | 
       //    V         |                           V
       //   CB       1-CB       
-      u_tmp3[rb[cb]] = u_nu_for_mu*Lambda_xplus_muplusnu;
-      ds_u_mu[rb[cb]] = u_tmp3*up_left_corner;
+      u_tmp3[(rbcb)] = u_nu_for_mu*Lambda_xplus_muplusnu;
+      ds_u_mu[(rbcb)] = u_tmp3*up_left_corner;
       
       //    nu links
       //    X
@@ -693,10 +701,10 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //     V-----> CB
       //   (1-CB)   
       //
-      u_tmp3[rb[1-cb]] = adj(u_mu_for_nu)*Lambda_xplus_nu;
+      u_tmp3[oppcb] = adj(u_mu_for_nu)*Lambda_xplus_nu;
       
       // accumulate into ds_tmp_nu and shift everything together at the end
-      ds_tmp_nu[rb[1-cb]] = u_tmp3*adj(low_left_corner);
+      ds_tmp_nu[oppcb] = u_tmp3*adj(low_left_corner);
       
       
       
@@ -708,8 +716,8 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //    |        |       re use u[mu](x+nu) = u_mu_for_nu
       //    V        |
       //    1-CB    CB        
-      u_tmp3[rb[1-cb]] = Lambda_xplus_nu*adj(u[nu]);
-      ds_u_mu[rb[1-cb]] = up_right_corner * u_tmp3;
+      u_tmp3[oppcb] = Lambda_xplus_nu*adj(u[nu]);
+      ds_u_mu[oppcb] = up_right_corner * u_tmp3;
       
       //      nu_links
       //    
@@ -720,10 +728,10 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //   X V----->1-CB
       //   (CB)   
       //
-      u_tmp3[rb[cb]] = up_left_corner*Lambda;
+      u_tmp3[rbcb] = up_left_corner*Lambda;
       //
       // accumulate into ds_tmp_nu and shift everything together at the end
-      ds_tmp_nu[rb[cb]] = u_tmp3*u[mu];
+      ds_tmp_nu[rbcb] = u_tmp3*u[mu];
       
       
       
@@ -747,10 +755,10 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //               low_left_corner    =  |           | 
       //                                     |           V
       //                              (1-CB) <--------   X CB
-      u_tmp3[rb[1-cb]] = adj(u_nu_for_mu)*Lambda_xplus_mu;
+      u_tmp3[oppcb] = adj(u_nu_for_mu)*Lambda_xplus_mu;
       //
       // accumulate into ds_tmp_mu and shift at the end.
-      ds_tmp_mu[rb[1-cb]] = u_tmp3*low_left_corner;
+      ds_tmp_mu[oppcb] = u_tmp3*low_left_corner;
       
       // Nu links
       // 
@@ -760,8 +768,8 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //                |                                          |
       //                V                                          V
       //  1-CB   <------X
-      u_tmp3[rb[1-cb]] = adj(up_right_corner)*Lambda_xplus_mu;
-      ds_u_nu[rb[1-cb]] = u_tmp3*adj(u[mu]);
+      u_tmp3[oppcb] = adj(up_right_corner)*Lambda_xplus_mu;
+      ds_u_nu[oppcb] = u_tmp3*adj(u[mu]);
       
       
       
@@ -773,10 +781,10 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //   |        |
       //   X <----- V 1-CB
       //   CB
-      u_tmp3[rb[cb]] = low_right_corner*Lambda;
+      u_tmp3[rbcb] = low_right_corner*Lambda;
       //
       // accumulate into ds_tmp_mu and shift at the end.
-      ds_tmp_mu[rb[cb]] = u_tmp3*u[nu];
+      ds_tmp_mu[rbcb] = u_tmp3*u[nu];
       
       
       
@@ -788,8 +796,8 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
       //               |                                          |
       //               V                                          V
       //   CB   <------                                    <------
-      u_tmp3[rb[cb]] =    u_mu_for_nu*Lambda_xplus_muplusnu;
-      ds_u_nu[rb[cb]] =   u_tmp3*low_right_corner;
+      u_tmp3[rbcb] =    u_mu_for_nu*Lambda_xplus_muplusnu;
+      ds_u_nu[rbcb] =   u_tmp3*low_right_corner;
       
       
       //  ds_tmp_mu now holds the last 2 terms, one on each of its checkerboards, but Now I need
@@ -846,7 +854,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //    V        |
     //    x        
     //   CB       1-CB  
-    ds_u_mu[rb[cb]] += staple_for*Lambda;
+    ds_u_mu[rbcb] += staple_for*Lambda;
 
 
     //  Nu links
@@ -859,7 +867,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //
     //  Accumulate into ds_tmp_nu and shift at the end.
 
-    ds_tmp_nu[rb[1-cb]] += staple_right*Lambda_xplus_mu;
+    ds_tmp_nu[oppcb] += staple_right*Lambda_xplus_mu;
 
 
     // 6)  Mu links
@@ -870,7 +878,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //    V        |
     //   1-CB      X CB	  
 
-    ds_u_mu[rb[1-cb]] += Lambda_xplus_mu*staple_for;
+    ds_u_mu[oppcb] += Lambda_xplus_mu*staple_for;
 
 
 
@@ -881,7 +889,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //     |                     use adj(staple_right)
     //     |
     // CB  V ----> (1-CB)
-    ds_tmp_nu[rb[cb]] += Lambda_xplus_muplusnu * staple_right;
+    ds_tmp_nu[rbcb] += Lambda_xplus_muplusnu * staple_right;
 
 
     // 7) Mu links
@@ -894,7 +902,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //    <-------V 
     //
     //  Accumulate into ds_tmp_mu and shift at the end.
-    ds_tmp_mu[rb[1-cb]] += staple_back*Lambda_xplus_nu;
+    ds_tmp_mu[oppcb] += staple_back*Lambda_xplus_nu;
 
     //   Now for nu
     //
@@ -904,7 +912,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //                V
     //      CB X <----
     //
-    ds_u_nu[rb[cb]] += staple_left*Lambda;
+    ds_u_nu[rbcb] += staple_left*Lambda;
 
     // 8) Mu links
     //
@@ -915,7 +923,7 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //    <-------V
     //
     // Accumulate into ds_tmp_mu and shift at the end
-    ds_tmp_mu[rb[cb]] += Lambda_xplus_muplusnu * staple_back;
+    ds_tmp_mu[rbcb] += Lambda_xplus_muplusnu * staple_back;
 
     // Now for Nu
     // 
@@ -925,14 +933,17 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
     //               |
     //               V
     // 1-CB  <------- CB
-    ds_u_nu[rb[1-cb]] += Lambda_xplus_nu * staple_left;
+    ds_u_nu[oppcb] += Lambda_xplus_nu * staple_left;
 
     // Now shift the accumulated pieces to mu and nu
     // 
     // Hope that this is not too slow as an expression
-    ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
-    ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu); 
-#endif
+    Tower<U> tmp;
+    tmp = shiftTower(ds_tmp_mu, BACKWARD, nu);
+    ds_u_mu -= tmp;
+    tmp = shiftTower(ds_tmp_nu, BACKWARD, mu);
+    ds_u_nu -= tmp;
+
     END_CODE();
 }
 
@@ -1005,10 +1016,10 @@ CloverTermBase<T,U>::deriv_loops(const int mu, const int nu, const int cb,
   }
 
   template<typename T, typename U>
-  void CloverTermBase<T,U>::deriv(TowerArray<typename PQTraits<Q>::Base_t>& ds_u, 
+  void CloverTermBase<T,U>::deriv(TowerArray<U>& ds_u, 
 				  const Tower<T>& chi, 
 				  const Tower<T>& psi,
-				  const P& p,
+				  const multi1d<U>& p,
 				  enum PlusMinus isign, int cb) const
   {
     START_CODE();
@@ -1148,18 +1159,76 @@ template<typename T, typename U>
 void 
 CloverTermBase<T,U>::applyTower( Tower<T>& chi, 
 				 const Tower<T>& psi, 
-				 const P& p, 
+				 const multi1d<U>& p, 
 				 enum PlusMinus isign,
 				 int cb)
 {
-  QDPIO::cerr << "Not yet implemented" <<endl;
+  QDPIO::cout << "Applying with cb=" << cb << endl;
+  if( psi.getHeight() != chi.getHeight() ) { 
+    QDPIO::cout << "chi and psi have incompatible heights" << endl;
+    QDP_abort(1);
+  }
+  
+  int N = psi.getHeight();
+  
+  // Always do this for now.
+  apply(chi[0], psi[0], isign,cb);
+  
+  // Preserve the links 
+  Handle<FermState<T,P,Q> >  old_state  = getState();
+  CloverFermActParams param = getParams();
+
+  // Now do chi[i] = Sum_{j=0}^i Binom(i,j)  D^{j} psi{i-j}
+  // Where D^{j} is D^j = (-P)^j U
+  
+  for(int i=1; i < N; i++) { 
+    
+    create(old_state, param);
+    
+    // Start off with 
+    // J=0 step. Original state so D(U) = D(old_state), psi[i]
+    apply(chi[i], psi[i], isign,cb);
+    
+    // Get the links from the old state
+    Q links(Nd);
+    for(int mu=0; mu < Nd; mu++) { 
+      links[mu] = old_state->getLinks()[mu];
+    }
+    
+    // J=1...i
+    for(int j=1; j <= i; j++) { 
+      
+      // Lift: Make D( (-P)^j U ): multiply links by -P
+      for(int mu=0; mu < Nd; mu++) { 
+	Q tmp_u(1);
+	tmp_u[0]= links[mu];
+	links[mu] = -p[mu]*tmp_u[0];
+      }
+      
+      Handle< FermState<T,P,Q> > newfs( new PeriodicFermState<T,P,Q>(links));
+      
+      create(newfs, param);
+      
+      // Get D_j psi[ i - j]
+      T result=zero;
+      apply(result, psi[i-j], isign,cb);
+      
+      // Add with Binom Coeff
+      chi[i][rb[cb]] += Real(psi.Choose(i,j))*result;
+    } // Next j
+  } // Next i
+  
+  create(old_state, param); // Restore Operator 
 }
+
+
+
 
     /* Derivative with Towers */
 template<typename T, typename U>
 void 
-CloverTermBase<T,U>::derivTrLn(TowerArray<typename PQTraits<Q>::Base_t>& ds_u,
-			       const P& p,
+CloverTermBase<T,U>::derivTrLn(TowerArray<U>& ds_u,
+			       const multi1d<U>& p,
 			       enum PlusMinus isign, int cb) const
 {
   QDPIO::cerr << "Not yet implemenetd" << endl;

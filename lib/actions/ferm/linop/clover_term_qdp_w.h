@@ -63,11 +63,11 @@ namespace Chroma
 
     //! Creation routine
     void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
-		const CloverFermActParams& param_);
+		const CloverFermActParams& param_) ;
 
     void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
 			const CloverFermActParams& param_,
-			const QDPCloverTermT<T,U>& from_);
+		const QDPCloverTermT<T,U>& from_) ;
 
     //! Computes the inverse of the term on cb using Cholesky
     /*!
@@ -133,8 +133,13 @@ namespace Chroma
     //! Calculates Tr_D ( Gamma_mat L )
     Real getCloverCoeff(int mu, int nu) const;
 
+    Handle< FermState<T,multi1d<U>,multi1d<U> > > getState() const  { return state; }
+    CloverFermActParams getParams() const { return param; }
+
   private:
 			Handle< FermBC<T,multi1d<U>,multi1d<U> > >      fbc;
+    Handle< FermState<T,multi1d<U>, multi1d<U> > > state;
+
     multi1d<U>  u;
     CloverFermActParams          param;
     LatticeREAL                  tr_log_diag_; // Fill this out during create
@@ -155,7 +160,7 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::create(Handle< FermState<T,multi1d<U>,multi1d<U> > > fs,
 				   const CloverFermActParams& param_,
-				   const QDPCloverTermT<T,U>& from)
+				   const QDPCloverTermT<T,U>& from) 
   {
     START_CODE();
     u.resize(Nd);
@@ -163,7 +168,8 @@ namespace Chroma
     u = fs->getLinks();
     fbc = fs->getFermBC();
     param = param_;
-    
+    state = fs;
+
     // Sanity check
     if (fbc.operator->() == 0) {
       QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << endl;
@@ -217,7 +223,7 @@ namespace Chroma
     u = fs->getLinks();
     fbc = fs->getFermBC();
     param = param_;
-    
+    state = fs;
     // Sanity check
     if (fbc.operator->() == 0) {
       QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << endl;
