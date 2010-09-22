@@ -4,20 +4,18 @@
 #include "util/gauge/expmat.h"
 #include "update/molecdyn/monomial/force_monitors.h"
 #include "tower.h"
-namespace Chroma 
-{ 
-
-  namespace LCMMDIntegratorSteps 
-  { 
+namespace Chroma  { 
+  
+  namespace LCMMDIntegratorSteps { 
 
     //! LeapP for just a selected list of monomials
     void leapP(const multi1d< 
 	       Handle<   Monomial< multi1d<LatticeColorMatrix>, 
-	                           multi1d<LatticeColorMatrix> > >
+	       multi1d<LatticeColorMatrix> > >
 	       > monomials,
-	                                       
+	       
 	       const Real& dt, 
-	       	       
+	       
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
 	       multi1d<LatticeColorMatrix> >& s) 
     {
@@ -28,10 +26,9 @@ namespace Chroma
       push(xml_out, "leapP");
       write(xml_out, "dt", dt);
       multi1d<Real> real_step_size(Nd);
-
+      
       // Work out the array of step sizes (including all scaling factors
-      for(int mu =0; mu < Nd; mu++) 
-      {
+      for(int mu =0; mu < Nd; mu++) {
 	real_step_size[mu] = dt * theAnisoStepSizeArray::Instance().getStepSizeFactor(mu);
       }
       write(xml_out, "dt_actual_per_dir", real_step_size);
@@ -39,11 +36,11 @@ namespace Chroma
       // Force Term
       TowerArray<LatticeColorMatrix> dsdQ(1);
       TowerArray<LatticeColorMatrix> cur_F(1);
-
+      
       push(xml_out, "AbsHamiltonianForce"); // Backward compatibility
       write(xml_out, "num_terms", monomials.size());
       push(xml_out, "ForcesByMonomial");
-
+      
       if( monomials.size() > 0 ) { 
 	push(xml_out, "elem");
 	monomials[0]->dsdq(dsdQ,s);
@@ -61,10 +58,10 @@ namespace Chroma
       pop(xml_out); // ForcesByMonomial
       //monitorForces(xml_out, "TotalForcesThisLevel", dsdQ);
       pop(xml_out); // AbsHamiltonianForce 
-
-
+      
+      
       for(int mu =0; mu < Nd; mu++) {
-
+	
 	(s.getP())[mu] += real_step_size[mu] * dsdQ[mu][0];
 	
 	// taproj it...
@@ -72,10 +69,10 @@ namespace Chroma
       }
       
       pop(xml_out); // pop("leapP");
-    
+      
       END_CODE();
     }
-
+    
     //! LeapP for just a selected list of monomials
     void leapFG(const multi1d< 
 		Handle<   Monomial< multi1d<LatticeColorMatrix>, 
@@ -92,12 +89,11 @@ namespace Chroma
       // Self Description rule
       push(xml_out, "leapFG");
       write(xml_out, "dt", dt);
-
+      
       multi1d<Real> real_step_size(Nd);
-
+      
       // Work out the array of step sizes (including all scaling factors
-      for(int mu =0; mu < Nd; mu++) 
-      {
+      for(int mu =0; mu < Nd; mu++) {
 	Real factor = theAnisoStepSizeArray::Instance().getStepSizeFactor(mu);
 	real_step_size[mu] = dt * factor*factor*factor;
       }
@@ -105,76 +101,83 @@ namespace Chroma
       
       // Force Gradient Term
       TowerArray<LatticeColorMatrix>  G(2);
-
+      
+      
+      //PHASE 1: Computing the sum of the forces from each monomial
+      TowerArray<LatticeColorMatrix> totalF(1);
       {
 	TowerArray<LatticeColorMatrix> cur_F(1);
-	TowerArray<LatticeColorMatrix> cur_F2(2);
-
+	
 	push(xml_out, "AbsHamiltonianForce"); // Backward compatibility
 	write(xml_out, "num_terms", monomials.size());
 	push(xml_out, "ForcesByMonomial");
 	
 	if( monomials.size() > 0 ) { 
 	  push(xml_out, "elem");
-
-	  monomials[0]->dsdq(cur_F,s);  // Height 1
-
-	  //Pass this in, so it can be lifted from
-	  for(int mu=0; mu < Nd; mu++) { 
-	    G[mu][0]=cur_F[mu][0];
-	  }
 	  
-	  Handle< AbsFieldState<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > > s_new(s.clone());
-	  for(int mu=0; mu < Nd; mu++) { 
-	    s_new->getP()[mu] = cur_F[mu][0];
-	  }
-
-
-	  monomials[0]->dsdq(G, *s_new);  // Height 2
-	  pop(xml_out); //elem
-
-
-
+	  monomials[0]->dsdq(totalF,s);  // Height 1
+	  
+          pop(xml_out); // elem
+	  
 	  for(int i=1; i < monomials.size(); i++) { 
 	    push(xml_out, "elem");
 	    
-	    monomials[i]->dsdq(cur_F, s);  // Height 1                  
-
-	    // Pass this in so it can be lifted from 
+	    monomials[i]->dsdq(cur_F, s);  // Height 1  
+	    
 	    for(int mu=0; mu < Nd; mu++) { 
-	      cur_F2[mu][0] = cur_F[mu][0];
+	      totalF[mu][0] += cur_F[mu][0];
 	    }
-
-	    monomials[i]->dsdq(cur_F2, *s_new); // Height 2
-
-	    // Accumulate
-	    for(int mu=0; mu < Nd; mu++) { 
-	      G[mu] += cur_F2[mu];
-	    }
-	    pop(xml_out); // elem
-	  }
+	    
+            pop(xml_out); // elem
+          }
 	}
-
       }
 
+
+      // PHASE 2: Computing the force gradient by 'inserting' the total force
+      // computed before
+	  
+      Handle< AbsFieldState<multi1d<LatticeColorMatrix>,multi1d<LatticeColorMatrix> > > s_new(s.clone());
+      for(int mu=0; mu < Nd; mu++) { 
+	s_new->getP()[mu] = totalF[mu][0];
+      }
+
+
+      push(xml_out, "elem");
+      monomials[0]->dsdq(G, *s_new);  // Height 2
+      pop(xml_out); //elem
+
       
-
-
+      
+      for(int i=1; i < monomials.size(); i++) { 
+	push(xml_out, "elem");
+	
+	TowerArray<LatticeColorMatrix> cur_F2(2);    
+	
+	monomials[i]->dsdq(cur_F2, *s_new); // Height 2
+	
+	// Accumulate
+	for(int mu=0; mu < Nd; mu++) { 
+	  G[mu] += cur_F2[mu];
+	}
+	pop(xml_out); // elem
+      }
+    
       pop(xml_out); // ForcesByMonomial
       //monitorForces(xml_out, "TotalForcesThisLevel", dsdQ);
       pop(xml_out); // AbsHamiltonianForce 
-
-
+      
+      
       for(int mu =0; mu < Nd; mu++) {
-
+	
 	(s.getP())[mu] += Real(2)*real_step_size[mu]* G[mu][1];
-
+	
 	// taproj it...
 	taproj( (s.getP())[mu] );
       }
       
-      pop(xml_out); // pop("leapP");
-    
+      pop(xml_out); // pop("leapFG");
+      
       END_CODE();
     }
 
@@ -185,7 +188,7 @@ namespace Chroma
 	       multi1d<LatticeColorMatrix> >& s) 
     {
       START_CODE();
-
+      
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
       
@@ -194,10 +197,9 @@ namespace Chroma
       push(xml_out, "leapQ");
       write(xml_out, "dt", dt);
       multi1d<Real> real_step_size(Nd);
-
+      
       // Work out the array of step sizes (including all scaling factors
-      for(int mu =0; mu < Nd; mu++) 
-      {
+      for(int mu =0; mu < Nd; mu++) {
 	real_step_size[mu] = dt * theAnisoStepSizeArray::Instance().getStepSizeFactor(mu);
       }
       write(xml_out, "dt_actual_per_dir", real_step_size);
@@ -208,15 +210,14 @@ namespace Chroma
       // Mutable
       multi1d<LatticeColorMatrix>& u = s.getQ();
       
-      for(int mu = 0; mu < Nd; mu++) 
-      {
+      for(int mu = 0; mu < Nd; mu++) {
 	//  dt*p[mu]
 	tmp_1 = real_step_size[mu]*(s.getP())[mu];
 	
 	// tmp_1 = exp(dt*p[mu])  
 	// expmat(tmp_1, EXP_TWELFTH_ORDER);
 	expmat(tmp_1, EXP_EXACT);
-	
+    
 	// tmp_2 = exp(dt*p[mu]) u[mu] = tmp_1 * u[mu]
 	tmp_2 = tmp_1*(s.getQ())[mu];
 	
@@ -227,11 +228,10 @@ namespace Chroma
 	int numbad;
 	reunit((s.getQ())[mu], numbad, REUNITARIZE_ERROR);
       }
-
+      
       pop(xml_out);
-    
+      
       END_CODE();
     }
-
   }
 }

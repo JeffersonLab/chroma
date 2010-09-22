@@ -107,7 +107,7 @@ namespace Chroma
      START_CODE();
      Real mhalf = -0.5;
        
-    D.applyTower(chi, psi, p, isign, 0);
+     D.applyTower(chi, psi, p, isign, 0);
     for(int i=0; i < chi.size(); i++) {
       chi[i][rb[0]] *= mhalf;
     }
