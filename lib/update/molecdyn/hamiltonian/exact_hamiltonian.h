@@ -170,8 +170,7 @@ namespace Chroma
 
        multi1d< Handle< TowerArray<LatticeColorMatrix> > > F(nmon);
        multi2d< Handle< TowerArray<LatticeColorMatrix> > > G(nmon, nmon);
-       // multi1d< Handle< TowerArray<typename PQTraits<Q>::Base_t> > > F(nmon);
-       //multi2d< Handle< TowerArray<typename PQTraits<Q>::Base_t> > > G(nmon, nmon);
+
        for (int i=0; i< nmon; i++){
 	 F[i] = new TowerArray<LatticeColorMatrix>(4);
          
@@ -195,28 +194,6 @@ namespace Chroma
 	QDPIO::cout << " PSILVA: Computing F towers: " << i  << endl;
         monomials[i]->dsdq(*(F[i]),s);
 
-
-        LatticeColorMatrix tet;
-
-        tet=(*(F[i]))[3][0];
-
-        Double rrr;
-        rrr=sum(real(trace(tet*adj(tet))));
-
-	QDPIO::cout << "TESTPSILVA: 0  " << rrr << endl;
-
-        tet=(*(F[i]))[3][1];
-        rrr=sum(real(trace(tet*adj(tet))));
-	QDPIO::cout << "TESTPSILVA: 1  " << rrr << endl;
-
-        tet=(*(F[i]))[3][2];
-        rrr=sum(real(trace(tet*adj(tet))));
-	QDPIO::cout << "TESTPSILVA: 2  " << rrr << endl;
-
-        tet=(*(F[i]))[3][3];
-        rrr=sum(real(trace(tet*adj(tet))));
-	QDPIO::cout << "TESTPSILVA: 3  " << rrr << endl;
-
       }
 
       //Computing G towers
@@ -235,12 +212,10 @@ namespace Chroma
         }
       }
 
-      //Getting momenta
-      P pp;
-      pp.resize(Nd);
-      pp=s.getP();
-
-       QDPIO::cout << " PSILVA: Got momenta, now computing PB's "  << endl;
+       //Getting momenta
+       P pp;
+       pp.resize(Nd);
+       pp=s.getP();
 
        //***** Computation of the Poisson Brackets
        //Declaring...
@@ -265,7 +240,7 @@ namespace Chroma
 	}}}
 
 
-       //NEED FOR AN ADDITIONAL FACTOR OF ( -2 ) ... NOT YET IMPLEMENTED
+       //Computing the Poisson Brackets
 
       for(int mu=0; mu < Nd; mu++) {
 
@@ -273,7 +248,10 @@ namespace Chroma
 
            QDPIO::cout << " PSILVA: computing PBs i = " << i  << endl;
 
+           // {T,{S_i,T}}  = - tr(F2_i P)  
 	   tst[i] += Double(-1.0)*sum(real(trace((*F[i])[mu][1]*pp[mu]))); 
+
+           // {T,{T,{T,{S_i,T}}}} = -tr( F4_i P )
            tttst[i] += Double(-1.0)*sum(real(trace((*F[i])[mu][3]*pp[mu])));
 
 	   for (int j=0; j<nmon; j++) {
@@ -281,14 +259,20 @@ namespace Chroma
              QDPIO::cout << " PSILVA: computing PBs j = " << j  << endl;
 
              LatticeColorMatrix com_i, com_j, com1p, com2p;
-           
+
+             // {S_i,{S_j,T}}  = tr(F1_i F1_j)         
 	     sst[i][j] += Double(1.0)*sum(real(trace((*F[i])[mu][0]*(*F[j])[mu][0])));
 
+             // {T,{T,{S_i,{S_j,T}}}} = tr(F1_i F3_j) + tr(F3_i F1_j) + 2 tr(F2_i F2_j) 
              ttsst[i][j] += Double(2.0)*sum(real(trace((*F[i])[mu][1]*(*F[j])[mu][1])));
              ttsst[i][j] += Double(1.0)*sum(real(trace((*F[i])[mu][0]*(*F[j])[mu][2])));
              ttsst[i][j] += Double(1.0)*sum(real(trace((*F[i])[mu][2]*(*F[j])[mu][0]))); 
 
- 
+             // {{S_i,T},{T,{S_j,T}}} = -2 tr ( [F1_i,F2_j] P )
+	     //                          + tr ( [F2_i,F1_j] P )
+             //                          - tr ( [F1_i,P] [F1_j,P]  )
+             //                          + tr ( F1_i F3_j )
+             //                         -2 tr ( F2_i F2_j )
 	     com1p = (*F[i])[mu][0]*(*F[j])[mu][1]-(*F[j])[mu][1]*(*F[i])[mu][0];
 	     com2p = (*F[i])[mu][1]*(*F[j])[mu][0]-(*F[j])[mu][0]*(*F[i])[mu][1];  
 
@@ -305,39 +289,50 @@ namespace Chroma
  	     for (int k=0; k<nmon; k++) {
 
                 QDPIO::cout << " PSILVA: computing PBs k = " << k  << endl;
-
-                LatticeColorMatrix aux1, aux2, aux3, aux4;
-                aux1=(*F[j])[mu][0];
-                aux2=(*G[i][k])[mu][1];
-
-                aux3=(*F[k])[mu][0];
-                aux4=(*G[i][j])[mu][1];
-
-                stsst[i][j][k] += Double(-1.0)*sum(real(trace(aux1*aux2+aux3*aux4)));   
+                
+                // {{S_i,T}, {S_j,{S_k,T}}} = - tr (F1_j G1^i_k) - tr (F1_k G1^i_j)
+                stsst[i][j][k] += Double(-1.0)*sum(real(trace((*F[j])[mu][0]*(*G[i][k])[mu][1])));                  
+                stsst[i][j][k] += Double(-1.0)*sum(real(trace((*F[k])[mu][0]*(*G[i][j])[mu][1])));
+ 
 
  	     }
 	   }
 	 }
+
+	 //{T,{S,{S,{S,T}}}} = 0
+         //{S,{S,{S,{S,T}}}} = 0
 
 
        }//mu
 
 
 
-      //NOW, OUTPUT THIS HUGE AMOUNT OF STUFF...
-       for (int i=0; i<nmon; i++) {    
-         QDPIO::cout << " PPGFsep " << state << " tst" << i << "  " << tst[i] << endl;
-         QDPIO::cout << " PPGFsep " << state << " tttst" << i << "  " << tttst[i] << endl;
-         for (int j=0; j<nmon; j++) {           
-           QDPIO::cout << " PPGFsep " << state << " sst" << i << j << "  " << sst[i][j] << endl;
-	    QDPIO::cout << " PPGFsep " << state << " ttsst" << i << j << "  " << ttsst[i][j] << endl;
-           QDPIO::cout << " PPGFsep " << state << " sttst" << i << j << "  " << sttst[i][j] << endl;
-           for (int k=0; k<nmon; k++) {
-             QDPIO::cout << " PPGFsep " << state << " stsst" << i << j << k << "  " << stsst[i][j][k] << endl;
-	}}} 
+       //Factor of -2 needed to accomplish with Chroma MD conventions
+      for (int i=0; i<nmon; i++) {
+	tst[i]*=Double(-2); tttst[i]*=Double(-2);
+	for (int j=0; j<nmon; j++) {           
+	  sst[i][j]*=Double(-2); ttsst[i][j]*=Double(-2); sttst[i][j]*=Double(-2);
+	  for (int k=0; k<nmon; k++) {
+	    stsst[i][j][k]*=Double(-2);
+	  }
+	}
+      }
 
 
 
+      //Finally, the output of this huge amount of stuff...
+      for (int i=0; i<nmon; i++) {    
+	QDPIO::cout << " PPGFsep " << state << " tst" << i << "  " << tst[i] << endl;
+	QDPIO::cout << " PPGFsep " << state << " tttst" << i << "  " << tttst[i] << endl;
+	for (int j=0; j<nmon; j++) {           
+	  QDPIO::cout << " PPGFsep " << state << " sst" << i << j << "  " << sst[i][j] << endl;
+	  QDPIO::cout << " PPGFsep " << state << " ttsst" << i << j << "  " << ttsst[i][j] << endl;
+	  QDPIO::cout << " PPGFsep " << state << " sttst" << i << j << "  " << sttst[i][j] << endl;
+	  for (int k=0; k<nmon; k++) {
+	    QDPIO::cout << " PPGFsep " << state << " stsst" << i << j << k << "  " << stsst[i][j][k] << endl;
+	  }
+	}
+      } 
 
 
       END_CODE();
