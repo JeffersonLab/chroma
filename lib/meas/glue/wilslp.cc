@@ -132,7 +132,7 @@ namespace Chroma
     }
 
 //    lengthr = lsizer/2;    // Old style with measurement on L/2
-    lengthr = lsizer/2;      // Now use all L
+    lengthr = lsizer;      // Now use all L
 
     /* Compute "space-like" planar Wilson loops, if desired */
     if ( (kind & 1) != 0 )
