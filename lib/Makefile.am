@@ -702,6 +702,7 @@ nobase_include_HEADERS += \
 	util/ferm/map_obj/map_obj_memory.h \
 	util/ferm/map_obj/map_obj_memory_w.h \
 	util/ferm/map_obj/map_obj_disk.h \
+	util/ferm/map_obj/map_obj_disk_traits.h \
 	util/ferm/map_obj/map_obj_disk_w.h \
 	util/ferm/map_obj/map_obj_null.h \
 	util/ferm/map_obj/map_obj_null_w.h \
