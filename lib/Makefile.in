@@ -423,10 +423,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/sun_proj.cc util/gauge/taproj.cc \
 	util/gauge/unit_check.cc util/gauge/conjgauge.cc \
 	util/gauge/constgauge.cc util/gauge/weak_field.cc \
-	util/gauge/stout_utils.cc util/info/printgeom.cc \
-	util/info/proginfo.cc util/info/unique_id.cc \
-	update/heatbath/su3over.cc update/heatbath/su2_hb_update.cc \
-	update/heatbath/mciter.cc \
+	util/gauge/stout_utils.cc util/gauge/key_glue_matelem.cc \
+	util/info/printgeom.cc util/info/proginfo.cc \
+	util/info/unique_id.cc update/heatbath/su3over.cc \
+	update/heatbath/su2_hb_update.cc update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
@@ -693,6 +693,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
+	meas/inline/glue/inline_glue_matelem_colorvec.cc \
+	meas/inline/glue/inline_glueball_ops.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
@@ -1064,15 +1066,16 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
 	taproj.$(OBJEXT) unit_check.$(OBJEXT) conjgauge.$(OBJEXT) \
 	constgauge.$(OBJEXT) weak_field.$(OBJEXT) \
-	stout_utils.$(OBJEXT) printgeom.$(OBJEXT) proginfo.$(OBJEXT) \
-	unique_id.$(OBJEXT) su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) \
-	mciter.$(OBJEXT) exact_hamiltonian.$(OBJEXT) \
-	gauge_monomial.$(OBJEXT) force_monitors.$(OBJEXT) \
-	rat_approx_aggregate.$(OBJEXT) remez_rat_approx.$(OBJEXT) \
-	read_rat_approx.$(OBJEXT) comp_approx.$(OBJEXT) \
-	integrator_aggregate.$(OBJEXT) integrator_shared.$(OBJEXT) \
-	lcm_toplevel_integrator.$(OBJEXT) lcm_exp_sdt.$(OBJEXT) \
-	lcm_exp_tdt.$(OBJEXT) lcm_integrator_leaps.$(OBJEXT) \
+	stout_utils.$(OBJEXT) key_glue_matelem.$(OBJEXT) \
+	printgeom.$(OBJEXT) proginfo.$(OBJEXT) unique_id.$(OBJEXT) \
+	su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
+	exact_hamiltonian.$(OBJEXT) gauge_monomial.$(OBJEXT) \
+	force_monitors.$(OBJEXT) rat_approx_aggregate.$(OBJEXT) \
+	remez_rat_approx.$(OBJEXT) read_rat_approx.$(OBJEXT) \
+	comp_approx.$(OBJEXT) integrator_aggregate.$(OBJEXT) \
+	integrator_shared.$(OBJEXT) lcm_toplevel_integrator.$(OBJEXT) \
+	lcm_exp_sdt.$(OBJEXT) lcm_exp_tdt.$(OBJEXT) \
+	lcm_integrator_leaps.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive.$(OBJEXT) \
 	lcm_sts_min_norm2_recursive_dtau.$(OBJEXT) \
 	lcm_tst_min_norm2_recursive.$(OBJEXT) \
@@ -1276,6 +1279,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
 	inline_fuzwilp.$(OBJEXT) inline_qactden.$(OBJEXT) \
 	inline_qnaive.$(OBJEXT) inline_random_transf_gauge.$(OBJEXT) \
+	inline_glue_matelem_colorvec.$(OBJEXT) \
+	inline_glueball_ops.$(OBJEXT) \
 	inline_hadron_aggregate.$(OBJEXT) \
 	inline_hadron_contract.$(OBJEXT) \
 	inline_gauge_transf_obj.$(OBJEXT) \
@@ -1670,13 +1675,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
-	util/gauge/stout_utils.h util/info/info.h util/info/proginfo.h \
-	util/info/printgeom.h util/info/unique_id.h util/util.h \
-	update/update.h update/heatbath/heatbath.h \
-	update/heatbath/su3over.h update/heatbath/su3hb.h \
-	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
-	update/heatbath/mciter.h update/molecdyn/molecdyn.h \
-	update/molecdyn/field_state.h \
+	util/gauge/stout_utils.h util/gauge/key_glue_matelem.h \
+	util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+	util/info/unique_id.h util/util.h update/update.h \
+	update/heatbath/heatbath.h update/heatbath/su3over.h \
+	update/heatbath/su3hb.h update/heatbath/hb_params.h \
+	update/heatbath/su2_hb_update.h update/heatbath/mciter.h \
+	update/molecdyn/molecdyn.h update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -2059,6 +2064,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/glue/inline_qactden.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
+	meas/inline/glue/inline_glue_matelem_colorvec.h \
+	meas/inline/glue/inline_glueball_ops.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
@@ -2671,13 +2678,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/sun_proj.h util/gauge/taproj.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
-	util/gauge/stout_utils.h util/info/info.h util/info/proginfo.h \
-	util/info/printgeom.h util/info/unique_id.h util/util.h \
-	update/update.h update/heatbath/heatbath.h \
-	update/heatbath/su3over.h update/heatbath/su3hb.h \
-	update/heatbath/hb_params.h update/heatbath/su2_hb_update.h \
-	update/heatbath/mciter.h update/molecdyn/molecdyn.h \
-	update/molecdyn/field_state.h \
+	util/gauge/stout_utils.h util/gauge/key_glue_matelem.h \
+	util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+	util/info/unique_id.h util/util.h update/update.h \
+	update/heatbath/heatbath.h update/heatbath/su3over.h \
+	update/heatbath/su3hb.h update/heatbath/hb_params.h \
+	update/heatbath/su2_hb_update.h update/heatbath/mciter.h \
+	update/molecdyn/molecdyn.h update/molecdyn/field_state.h \
 	update/molecdyn/hamiltonian/hamiltonian.h \
 	update/molecdyn/hamiltonian/abs_hamiltonian.h \
 	update/molecdyn/hamiltonian/exact_hamiltonian.h \
@@ -3060,6 +3067,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/glue/inline_qactden.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
+	meas/inline/glue/inline_glue_matelem_colorvec.h \
+	meas/inline/glue/inline_glueball_ops.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
@@ -3447,10 +3456,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/sun_proj.cc util/gauge/taproj.cc \
 	util/gauge/unit_check.cc util/gauge/conjgauge.cc \
 	util/gauge/constgauge.cc util/gauge/weak_field.cc \
-	util/gauge/stout_utils.cc util/info/printgeom.cc \
-	util/info/proginfo.cc util/info/unique_id.cc \
-	update/heatbath/su3over.cc update/heatbath/su2_hb_update.cc \
-	update/heatbath/mciter.cc \
+	util/gauge/stout_utils.cc util/gauge/key_glue_matelem.cc \
+	util/info/printgeom.cc util/info/proginfo.cc \
+	util/info/unique_id.cc update/heatbath/su3over.cc \
+	update/heatbath/su2_hb_update.cc update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
@@ -3712,6 +3721,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
+	meas/inline/glue/inline_glue_matelem_colorvec.cc \
+	meas/inline/glue/inline_glueball_ops.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
@@ -4192,6 +4203,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_genprop_matelem_pt_colorvec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_gfix_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glue_matelem_colorvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_glueball_ops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_aggregate_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_hadron_contract.Po@am__quote@
@@ -4293,6 +4306,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ischiral_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jacobi_quark_smearing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/jacobi_smear.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_glue_matelem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_hadron_2pt_corr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_hadron_3pt_corr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_laph_dil_prop.Po@am__quote@
@@ -8958,6 +8972,20 @@ stout_utils.obj: util/gauge/stout_utils.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o stout_utils.obj `if test -f 'util/gauge/stout_utils.cc'; then $(CYGPATH_W) 'util/gauge/stout_utils.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/stout_utils.cc'; fi`
 
+key_glue_matelem.o: util/gauge/key_glue_matelem.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_glue_matelem.o -MD -MP -MF "$(DEPDIR)/key_glue_matelem.Tpo" -c -o key_glue_matelem.o `test -f 'util/gauge/key_glue_matelem.cc' || echo '$(srcdir)/'`util/gauge/key_glue_matelem.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/key_glue_matelem.Tpo" "$(DEPDIR)/key_glue_matelem.Po"; else rm -f "$(DEPDIR)/key_glue_matelem.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/key_glue_matelem.cc' object='key_glue_matelem.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_glue_matelem.o `test -f 'util/gauge/key_glue_matelem.cc' || echo '$(srcdir)/'`util/gauge/key_glue_matelem.cc
+
+key_glue_matelem.obj: util/gauge/key_glue_matelem.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_glue_matelem.obj -MD -MP -MF "$(DEPDIR)/key_glue_matelem.Tpo" -c -o key_glue_matelem.obj `if test -f 'util/gauge/key_glue_matelem.cc'; then $(CYGPATH_W) 'util/gauge/key_glue_matelem.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/key_glue_matelem.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/key_glue_matelem.Tpo" "$(DEPDIR)/key_glue_matelem.Po"; else rm -f "$(DEPDIR)/key_glue_matelem.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/key_glue_matelem.cc' object='key_glue_matelem.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_glue_matelem.obj `if test -f 'util/gauge/key_glue_matelem.cc'; then $(CYGPATH_W) 'util/gauge/key_glue_matelem.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/key_glue_matelem.cc'; fi`
+
 printgeom.o: util/info/printgeom.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT printgeom.o -MD -MP -MF "$(DEPDIR)/printgeom.Tpo" -c -o printgeom.o `test -f 'util/info/printgeom.cc' || echo '$(srcdir)/'`util/info/printgeom.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/printgeom.Tpo" "$(DEPDIR)/printgeom.Po"; else rm -f "$(DEPDIR)/printgeom.Tpo"; exit 1; fi
@@ -13115,6 +13143,34 @@ inline_random_transf_gauge.obj: meas/inline/glue/inline_random_transf_gauge.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_random_transf_gauge.cc' object='inline_random_transf_gauge.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_random_transf_gauge.obj `if test -f 'meas/inline/glue/inline_random_transf_gauge.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_random_transf_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_random_transf_gauge.cc'; fi`
+
+inline_glue_matelem_colorvec.o: meas/inline/glue/inline_glue_matelem_colorvec.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_glue_matelem_colorvec.o -MD -MP -MF "$(DEPDIR)/inline_glue_matelem_colorvec.Tpo" -c -o inline_glue_matelem_colorvec.o `test -f 'meas/inline/glue/inline_glue_matelem_colorvec.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_glue_matelem_colorvec.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_glue_matelem_colorvec.Tpo" "$(DEPDIR)/inline_glue_matelem_colorvec.Po"; else rm -f "$(DEPDIR)/inline_glue_matelem_colorvec.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_glue_matelem_colorvec.cc' object='inline_glue_matelem_colorvec.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_glue_matelem_colorvec.o `test -f 'meas/inline/glue/inline_glue_matelem_colorvec.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_glue_matelem_colorvec.cc
+
+inline_glue_matelem_colorvec.obj: meas/inline/glue/inline_glue_matelem_colorvec.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_glue_matelem_colorvec.obj -MD -MP -MF "$(DEPDIR)/inline_glue_matelem_colorvec.Tpo" -c -o inline_glue_matelem_colorvec.obj `if test -f 'meas/inline/glue/inline_glue_matelem_colorvec.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_glue_matelem_colorvec.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_glue_matelem_colorvec.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_glue_matelem_colorvec.Tpo" "$(DEPDIR)/inline_glue_matelem_colorvec.Po"; else rm -f "$(DEPDIR)/inline_glue_matelem_colorvec.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_glue_matelem_colorvec.cc' object='inline_glue_matelem_colorvec.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_glue_matelem_colorvec.obj `if test -f 'meas/inline/glue/inline_glue_matelem_colorvec.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_glue_matelem_colorvec.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_glue_matelem_colorvec.cc'; fi`
+
+inline_glueball_ops.o: meas/inline/glue/inline_glueball_ops.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_glueball_ops.o -MD -MP -MF "$(DEPDIR)/inline_glueball_ops.Tpo" -c -o inline_glueball_ops.o `test -f 'meas/inline/glue/inline_glueball_ops.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_glueball_ops.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_glueball_ops.Tpo" "$(DEPDIR)/inline_glueball_ops.Po"; else rm -f "$(DEPDIR)/inline_glueball_ops.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_glueball_ops.cc' object='inline_glueball_ops.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_glueball_ops.o `test -f 'meas/inline/glue/inline_glueball_ops.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_glueball_ops.cc
+
+inline_glueball_ops.obj: meas/inline/glue/inline_glueball_ops.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_glueball_ops.obj -MD -MP -MF "$(DEPDIR)/inline_glueball_ops.Tpo" -c -o inline_glueball_ops.obj `if test -f 'meas/inline/glue/inline_glueball_ops.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_glueball_ops.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_glueball_ops.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_glueball_ops.Tpo" "$(DEPDIR)/inline_glueball_ops.Po"; else rm -f "$(DEPDIR)/inline_glueball_ops.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_glueball_ops.cc' object='inline_glueball_ops.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_glueball_ops.obj `if test -f 'meas/inline/glue/inline_glueball_ops.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_glueball_ops.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_glueball_ops.cc'; fi`
 
 inline_hadron_aggregate.o: meas/inline/hadron/inline_hadron_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_hadron_aggregate.Tpo" -c -o inline_hadron_aggregate.o `test -f 'meas/inline/hadron/inline_hadron_aggregate.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadron_aggregate.cc; \

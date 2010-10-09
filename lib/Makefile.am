@@ -345,6 +345,7 @@ nobase_include_HEADERS = \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
 	util/gauge/stout_utils.h \
+	util/gauge/key_glue_matelem.h \
         util/info/info.h \
         util/info/proginfo.h \
         util/info/printgeom.h \
@@ -806,6 +807,8 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_qactden.h \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
+	meas/inline/glue/inline_glue_matelem_colorvec.h \
+	meas/inline/glue/inline_glueball_ops.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
@@ -1226,6 +1229,7 @@ libchroma_a_SOURCES = \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
 	util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc \
+	util/gauge/key_glue_matelem.cc \
 	util/info/printgeom.cc \
         util/info/proginfo.cc \
         util/info/unique_id.cc \
@@ -1555,6 +1559,8 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
+	meas/inline/glue/inline_glue_matelem_colorvec.cc \
+	meas/inline/glue/inline_glueball_ops.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \

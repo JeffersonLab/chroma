@@ -11,6 +11,8 @@
 #include "meas/inline/glue/inline_fuzwilp.h"
 #include "meas/inline/glue/inline_apply_gaugestate.h"
 #include "meas/inline/glue/inline_random_transf_gauge.h"
+#include "meas/inline/glue/inline_glue_matelem_colorvec.h"
+#include "meas/inline/glue/inline_glueball_ops.h"
 
 namespace Chroma
 {
@@ -38,6 +40,9 @@ namespace Chroma
 	success &= InlineFuzzedWilsonLoopEnv::registerAll();
 	success &= InlineRandomTransfGaugeEnv::registerAll();
 	success &= InlineGaugeStateEnv::registerAll();
+	success &= InlineGaugeStateEnv::registerAll();
+	success &= InlineGlueMatElemColorVecEnv::registerAll();
+	success &= InlineGlueballOpsEnv::registerAll();
 
 	registered = true;
       }

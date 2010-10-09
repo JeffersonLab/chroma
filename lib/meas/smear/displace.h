@@ -46,6 +46,21 @@ namespace Chroma
 
   //! Apply a displacement path to a lattice field
   /*! \ingroup smear */
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, const multi1d<int>& path,
+			      const Subset& sub);
+
+
+  //! Apply a displacement path to a lattice field
+  /*! \ingroup smear */
+  LatticeColorMatrix displace(const multi1d<LatticeColorMatrix>& u, 
+			      const LatticeColorMatrix& chi, 
+			      int length, const multi1d<int>& path);
+
+
+  //! Apply a displacement path to a lattice field
+  /*! \ingroup smear */
   LatticeColorVector displace(const multi1d<LatticeColorMatrix>& u, 
 			      const LatticeColorVector& chi, 
 			      int length, const multi1d<int>& path,
@@ -116,22 +131,37 @@ namespace Chroma
 			      int length, int dir);  
 
   //! Apply a displacement operator to a lattice field
+  /*! \ingroup smear */
+  LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
+				 const LatticePropagator& chi, 
+				 int length, int dir);
+  
+
+  //! Apply a right nabla path to a lattice field
   /*!
    * \ingroup smear
    *
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
-   *  \param length   length of displacement ( Read )
-   *  \param dir      direction of displacement ( Read )
+   *  \param chi      color vector field ( Read )
+   *  \param length   displacement length - must be greater than zero ( Read )
+   *  \param path     array of direction of derivative paths - pos or zero ( Read )
    *
-   *  \return  displaced field
+   *  \return  deriv field
    */
-  LatticePropagator displacement(const multi1d<LatticeColorMatrix>& u, 
-				 const LatticePropagator& chi, 
-				 int length, int dir);
-  
+  LatticeColorVector rightNabla(const multi1d<LatticeColorMatrix>& u, 
+				const LatticeColorVector& chi, 
+				int length, const multi1d<int>& path);
+
+
+  //! Apply a right nabla path to a lattice field
+  /*! \ingroup smear */
+  LatticeColorMatrix rightNabla(const multi1d<LatticeColorMatrix>& u, 
+				const LatticeColorMatrix& chi, 
+				int length, const multi1d<int>& path);
+
+
 
   //! Apply first deriv to the right onto source
   /*!
