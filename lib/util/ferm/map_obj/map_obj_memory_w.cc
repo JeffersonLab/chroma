@@ -5,33 +5,34 @@
 
 #include <string>
 #include "chromabase.h"
-#include "util/ferm/map_obj.h"
+#include "qdp_map_obj_memory.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+#include "util/ferm/map_obj/map_obj_memory_w.h"
 #include "util/ferm/key_prop_colorvec.h"
 
 namespace Chroma 
 { 
-  
+  using namespace QDP;
+
   namespace MapObjectMemoryEnv 
   {
 
     namespace
     {
       //! Callback function
-      MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
-								     const std::string& path) 
+      QDP::MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
+									    const std::string& path) 
       {
 	// Doesn't need parameters...
-	return new MapObjectMemory<int,EVPair<LatticeColorVector> >();
+	return new QDP::MapObjectMemory<int,EVPair<LatticeColorVector> >();
       }
 
       //! Callback function
-      MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
-										 const std::string& path) 
+      QDP::MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
+										      const std::string& path) 
       {
 	// Doesn't need parameters...
-	return new MapObjectMemory<KeyPropColorVec_t,LatticeFermion>();
+	return new QDP::MapObjectMemory<KeyPropColorVec_t,LatticeFermion>();
       }
 
       //! Local registration flag

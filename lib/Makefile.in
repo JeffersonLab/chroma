@@ -41,6 +41,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+LIBOBJDIR =
 @BUILD_GMP_REMEZ_TRUE@am__append_1 = @GMP_CXXFLAGS@
 @BUILD_QUDA_TRUE@am__append_2 = @QUDA_CXXFLAGS@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
@@ -460,7 +461,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
 	meas/hadron/dilution_quark_source_const_w.cc \
-	util/ferm/map_obj/map_obj_disk.cc \
 	update/molecdyn/monomial/remez_gmp.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
@@ -1092,9 +1092,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	linear_extrap_predictor.$(OBJEXT) lu_solve.$(OBJEXT) \
 	mre_extrap_predictor.$(OBJEXT) \
 	mre_initcg_extrap_predictor.$(OBJEXT) \
-	dilution_quark_source_const_w.$(OBJEXT) map_obj_disk.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) \
-	fermacts_aggregate_w.$(OBJEXT) \
+	dilution_quark_source_const_w.$(OBJEXT) $(am__objects_1) \
+	$(am__objects_2) fermacts_aggregate_w.$(OBJEXT) \
 	overlap_fermact_base_w.$(OBJEXT) \
 	ovlap_partfrac4d_fermact_w.$(OBJEXT) \
 	eoprec_dwf_fermact_array_w.$(OBJEXT) \
@@ -1987,14 +1986,11 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/gammasgn_w.h util/ferm/gamma5_herm_w.h \
 	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h util/ferm/antisymtensor.h \
-	util/ferm/etensor.h util/ferm/symtensor.h util/ferm/map_obj.h \
+	util/ferm/etensor.h util/ferm/symtensor.h \
 	util/ferm/map_obj/map_obj_factory_w.h \
 	util/ferm/map_obj/map_obj_aggregate_w.h \
-	util/ferm/map_obj/map_obj_memory.h \
 	util/ferm/map_obj/map_obj_memory_w.h \
-	util/ferm/map_obj/map_obj_disk.h \
 	util/ferm/map_obj/map_obj_disk_w.h \
-	util/ferm/map_obj/map_obj_null.h \
 	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h util/ferm/key_prop_colorvec.h \
@@ -2298,6 +2294,7 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
+PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 QDPC_DIR = @QDPC_DIR@
@@ -2325,11 +2322,8 @@ SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 XMLDIFF = @XMLDIFF@
-ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_RANLIB = @ac_ct_RANLIB@
-ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -2346,23 +2340,30 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
+datarootdir = @datarootdir@
+docdir = @docdir@
+dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
+htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
+localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
+pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
+psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 subdirs = @subdirs@
@@ -2985,14 +2986,11 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/gammasgn_w.h util/ferm/gamma5_herm_w.h \
 	util/ferm/tdiractodr.h util/ferm/paulitodr.h \
 	util/ferm/staggered_operators_s.h util/ferm/antisymtensor.h \
-	util/ferm/etensor.h util/ferm/symtensor.h util/ferm/map_obj.h \
+	util/ferm/etensor.h util/ferm/symtensor.h \
 	util/ferm/map_obj/map_obj_factory_w.h \
 	util/ferm/map_obj/map_obj_aggregate_w.h \
-	util/ferm/map_obj/map_obj_memory.h \
 	util/ferm/map_obj/map_obj_memory_w.h \
-	util/ferm/map_obj/map_obj_disk.h \
 	util/ferm/map_obj/map_obj_disk_w.h \
-	util/ferm/map_obj/map_obj_null.h \
 	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h util/ferm/key_prop_colorvec.h \
@@ -3486,8 +3484,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc \
-	util/ferm/map_obj/map_obj_disk.cc $(am__append_10) \
+	meas/hadron/dilution_quark_source_const_w.cc $(am__append_10) \
 	$(am__append_12) actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
@@ -4359,7 +4356,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lwldslash_w_sse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_xml_file.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_obj_aggregate_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_obj_disk_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_obj_memory_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/map_obj_null_w.Po@am__quote@
@@ -9525,20 +9521,6 @@ dilution_quark_source_const_w.obj: meas/hadron/dilution_quark_source_const_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/dilution_quark_source_const_w.cc' object='dilution_quark_source_const_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o dilution_quark_source_const_w.obj `if test -f 'meas/hadron/dilution_quark_source_const_w.cc'; then $(CYGPATH_W) 'meas/hadron/dilution_quark_source_const_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/dilution_quark_source_const_w.cc'; fi`
-
-map_obj_disk.o: util/ferm/map_obj/map_obj_disk.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT map_obj_disk.o -MD -MP -MF "$(DEPDIR)/map_obj_disk.Tpo" -c -o map_obj_disk.o `test -f 'util/ferm/map_obj/map_obj_disk.cc' || echo '$(srcdir)/'`util/ferm/map_obj/map_obj_disk.cc; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/map_obj_disk.Tpo" "$(DEPDIR)/map_obj_disk.Po"; else rm -f "$(DEPDIR)/map_obj_disk.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/map_obj/map_obj_disk.cc' object='map_obj_disk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o map_obj_disk.o `test -f 'util/ferm/map_obj/map_obj_disk.cc' || echo '$(srcdir)/'`util/ferm/map_obj/map_obj_disk.cc
-
-map_obj_disk.obj: util/ferm/map_obj/map_obj_disk.cc
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT map_obj_disk.obj -MD -MP -MF "$(DEPDIR)/map_obj_disk.Tpo" -c -o map_obj_disk.obj `if test -f 'util/ferm/map_obj/map_obj_disk.cc'; then $(CYGPATH_W) 'util/ferm/map_obj/map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/map_obj/map_obj_disk.cc'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/map_obj_disk.Tpo" "$(DEPDIR)/map_obj_disk.Po"; else rm -f "$(DEPDIR)/map_obj_disk.Tpo"; exit 1; fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/map_obj/map_obj_disk.cc' object='map_obj_disk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o map_obj_disk.obj `if test -f 'util/ferm/map_obj/map_obj_disk.cc'; then $(CYGPATH_W) 'util/ferm/map_obj/map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/map_obj/map_obj_disk.cc'; fi`
 
 remez_gmp.o: update/molecdyn/monomial/remez_gmp.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT remez_gmp.o -MD -MP -MF "$(DEPDIR)/remez_gmp.Tpo" -c -o remez_gmp.o `test -f 'update/molecdyn/monomial/remez_gmp.cc' || echo '$(srcdir)/'`update/molecdyn/monomial/remez_gmp.cc; \

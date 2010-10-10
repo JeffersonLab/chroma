@@ -11,10 +11,8 @@
 #include "meas/inline/io/named_objmap.h"
 
 #include "util/ferm/subset_ev_pair.h"
-#include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
-#include "util/ferm/map_obj/map_obj_disk_traits.h"
 
 namespace Chroma 
 { 
@@ -44,24 +42,24 @@ namespace Chroma
 	void copyMapObj(const Params& params)
 	{
 	  // Input object
-	  Handle< MapObject<K,V> > input_obj = TheNamedObjMap::Instance().getData< Handle< MapObject<K,V> > >(params.named_obj.input_id);
-	  std::vector<K> keys = input_obj->dump();
+	  Handle< QDP::MapObject<K,V> > input_obj = TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<K,V> > >(params.named_obj.input_id);
+	  std::vector<K> keys = input_obj->keys();
 
 	  // Create output object
 	  std::istringstream  xml_s(params.named_obj.output_obj.xml);
 	  XMLReader MapObjReader(xml_s);
 	
 	  // Create the entry
-	  Handle< MapObject<K,V> > output_obj(
-	    SingletonHolder< ObjectFactory<MapObject<K,V>, 
+	  Handle< QDP::MapObject<K,V> > output_obj(
+	    SingletonHolder< ObjectFactory<QDP::MapObject<K,V>, 
 	    std::string,
 	    TYPELIST_2(XMLReader&, const std::string&),
-	    MapObject<K,V>* (*)(XMLReader&, const std::string&), 
+	    QDP::MapObject<K,V>* (*)(XMLReader&, const std::string&), 
 	    StringFactoryError> >::Instance().createObject(params.named_obj.output_obj.id,
 							   MapObjReader,
 							   params.named_obj.output_obj.path) );
 
-	  TheNamedObjMap::Instance().create< Handle< MapObject<K,V> >, Handle< MapObject<K,V> > >(params.named_obj.output_id, output_obj);
+	  TheNamedObjMap::Instance().create< Handle< QDP::MapObject<K,V> >, Handle< QDP::MapObject<K,V> > >(params.named_obj.output_id, output_obj);
 
 	  // Copy the key/value-s
 	  output_obj->openWrite();
@@ -81,13 +79,13 @@ namespace Chroma
 	  bool success = true; 
 	  if (! registered ) 
 	  { 
-	    success &= TheCopyMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::type_string,
+	    success &= TheCopyMapObjFuncMap::Instance().registerFunction("KeyTKeyPropColorVec_tValTLatticeFermion",
 									 copyMapObj<KeyPropColorVec_t, LatticeFermion>);
 
-	    success &= TheCopyMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<int, EVPair<LatticeColorVector> >::type_string,
+	    success &= TheCopyMapObjFuncMap::Instance().registerFunction("KeyTintValTEVPairLatticeColorVector",
 									 copyMapObj<int, EVPair<LatticeColorVector> >);
 
-	    success &= TheCopyMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<char, float>::type_string,
+	    success &= TheCopyMapObjFuncMap::Instance().registerFunction("KeyTcharValTfloat",
 									 copyMapObj<char, float>);
 	    registered = true;
 	  }

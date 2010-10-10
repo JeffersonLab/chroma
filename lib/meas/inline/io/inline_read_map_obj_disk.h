@@ -8,7 +8,6 @@
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-#include "util/ferm/map_obj.h"
 
 namespace Chroma 
 { 
@@ -30,8 +29,9 @@ namespace Chroma
       } file;
 
       struct NamedObject_t {
+	std::string   object_type; 
 	std::string   object_id;
-      } named_obj;
+     } named_obj;
     };
 
 

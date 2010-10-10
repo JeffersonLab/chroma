@@ -13,7 +13,6 @@
 
 #include "util/ferm/subset_vectors.h"
 
-#include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 
@@ -156,13 +155,13 @@ namespace Chroma
 	XMLReader MapObjReader(xml_s);
 	
 	// Create the entry
-	Handle< MapObject<int,EVPair<LatticeColorVector> > > eigen(
+	Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > eigen(
 	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.object_map.id,
 								       MapObjReader,
 								       params.named_obj.object_map.path) );
 
-	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
-	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;
+	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.object_id) = eigen;
 
 	// Argh, burying this in here
 	const int decay_dir = Nd-1;

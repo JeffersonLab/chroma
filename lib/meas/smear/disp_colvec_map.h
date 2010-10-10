@@ -9,7 +9,7 @@
 
 #include "chromabase.h"
 #include "util/ferm/subset_ev_pair.h"
-#include "util/ferm/map_obj.h"
+#include "qdp_map_obj.h"
 #include <map>
 
 namespace Chroma 
@@ -48,7 +48,7 @@ namespace Chroma
     DispColorVectorMap(bool use_derivP, 
 		       int disp_length,
 		       const multi1d<LatticeColorMatrix>& u_smr,
-		       const MapObject<int,EVPair<LatticeColorVector> >& eigen_source);
+		       const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source);
 
     //! Destructor
     ~DispColorVectorMap() {}
@@ -62,7 +62,7 @@ namespace Chroma
 			
   private:
     //! Lattice color vectors
-    const MapObject<int,EVPair<LatticeColorVector> >& eigen_source;
+    const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source;
 
     //! Gauge field 
     const multi1d<LatticeColorMatrix>& u;

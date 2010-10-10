@@ -15,6 +15,8 @@ namespace Chroma
     //! Registrations
     bool registerAll();
   }
+
+
 }
 
 #endif

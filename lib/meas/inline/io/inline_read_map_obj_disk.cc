@@ -9,9 +9,9 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/named_objmap.h"
+#include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/subset_ev_pair.h"
-#include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj/map_obj_disk.h"
+#include "qdp_map_obj_disk.h"
 #include <string>
 
 namespace Chroma 
@@ -39,11 +39,12 @@ namespace Chroma
 	int readMapObj(const std::string& object_id,
 		       const std::string& file_name)
 	{
-	  Handle<MapObject<K,V> > obj_handle(new MapObjectDisk<K,V>(file_name));
+	  std::string user_data = "USER_DATA";
+	  Handle<QDP::MapObject<K,V> > obj_handle(new QDP::MapObjectDisk<K,V>(file_name, user_data));
 
 	  obj_handle->openRead();
 
-	  TheNamedObjMap::Instance().create< Handle<MapObject<K,V> >, Handle<MapObject<K,V> > >(object_id, obj_handle);
+	  TheNamedObjMap::Instance().create< Handle<QDP::MapObject<K,V> >, Handle<QDP::MapObject<K,V> > >(object_id, obj_handle);
 
 	  return obj_handle->size();
 	}
@@ -53,13 +54,13 @@ namespace Chroma
 	  bool success = true; 
 	  if (! registered ) 
 	  { 
-	    success &= TheReadMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<KeyPropColorVec_t, LatticeFermion>::type_string,
+	    success &= TheReadMapObjFuncMap::Instance().registerFunction("KeyTKeyPropColorVec_tValTLatticeFermion",
 									 readMapObj<KeyPropColorVec_t, LatticeFermion>);
 
-	    success &= TheReadMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<int, EVPair<LatticeColorVector> >::type_string,
+	    success &= TheReadMapObjFuncMap::Instance().registerFunction("KeyTintValTEVPairLatticeColorVector",
 									 readMapObj<int, EVPair<LatticeColorVector> >);
 
-	    success &= TheReadMapObjFuncMap::Instance().registerFunction(MapObjTraitsNum<char, float>::type_string,
+	    success &= TheReadMapObjFuncMap::Instance().registerFunction("KeyTcharValTfloat",
 									 readMapObj<char, float>);
 	    registered = true;
 	  }
@@ -97,6 +98,23 @@ namespace Chroma
     }
 
 
+    //! Object buffer
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "object_type", input.object_type);
+      read(inputtop, "object_id", input.object_id);
+    }
+
+    //! Object buffer
+    void read(XMLReader& xml, const string& path, Params::File& input)
+    {
+      XMLReader inputtop(xml, path);
+
+      read(inputtop, "file_name", input.file_name);
+    }
+
     Params::Params(XMLReader& reader, const std::string& path)
     {
       try 
@@ -108,9 +126,8 @@ namespace Chroma
 	else
 	  frequency = 1;
 
-	// Parameters for source construction
-	read(paramtop, "NamedObject/object_id", named_obj.object_id);
-	read(paramtop, "File/file_name", file.file_name );
+	read(paramtop, "NamedObject", named_obj);
+	read(paramtop, "File", file);
       }
       catch(const std::string& e) 
       {
@@ -136,6 +153,7 @@ namespace Chroma
       // Other tasks could support other disk formats
       QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
 
+      write(xml_out, "object_type", params.named_obj.object_type);
       write(xml_out, "object_id", params.named_obj.object_id);
       write(xml_out, "file_name", params.file.file_name);
 
@@ -144,13 +162,12 @@ namespace Chroma
 	swatch.reset();
 	swatch.start();
 
-	std::string type_string = peekMapObjectDiskTypeCode(params.file.file_name);
-
         // Read the object
-        int size = ReadMapObjCallEnv::TheReadMapObjFuncMap::Instance().callFunction(type_string, params.named_obj.object_id, params.file.file_name);
+        int size = ReadMapObjCallEnv::TheReadMapObjFuncMap::Instance().callFunction(params.named_obj.object_type, params.named_obj.object_id, params.file.file_name);
 
 	XMLBufferWriter file_xml_buf;
 	push(file_xml_buf, "FileXML");
+	write(file_xml_buf,  "object_type", params.named_obj.object_type);
 	write(file_xml_buf,  "object_id", params.named_obj.object_id);
 	write(file_xml_buf,  "file_name", params.file.file_name);
 	write(file_xml_buf,  "map_size", size);

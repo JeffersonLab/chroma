@@ -10,7 +10,6 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ferm/key_prop_colorvec.h"
@@ -272,7 +271,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a named buffer" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 
@@ -299,8 +298,8 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
-	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
+      const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
@@ -313,8 +312,8 @@ namespace Chroma
 	XMLReader MapObjReader(xml_s);
 	
 	// Create the entry
-	TheNamedObjMap::Instance().create< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
-	TheNamedObjMap::Instance().getData< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) =
+	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id) =
 	  TheMapObjKeyPropColorVecFactory::Instance().createObject(params.named_obj.prop_obj.id,
 								   MapObjReader,
 								   params.named_obj.prop_obj.path);
@@ -331,8 +330,8 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
-	*(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
+      QDP::MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
+	*(TheNamedObjMap::Instance().getData< Handle<QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
 
       // Sanity check - write out the norm2 of the source in the Nd-1 direction
       // Use this for any possible verification

@@ -14,8 +14,7 @@
 #include "meas/inline/io/inline_gaussian_obj.h"
 
 #include "util/ferm/key_prop_colorvec.h"
-#include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+#include "qdp_map_obj_memory.h"
 
 #include "util/ft/sftmom.h"
 #include "meas/eig/gramschm.h"
@@ -94,18 +93,18 @@ namespace Chroma
 	  // Create the object
 	  { 
 	    // Make a new object - for now memory. Later create with factory 
-	    Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > new_obj_handle( new MapObjectMemory<KeyPropColorVec_t,LatticeFermion>() );
+	    Handle<QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > new_obj_handle( new MapObjectMemory<KeyPropColorVec_t,LatticeFermion>() );
 
 	    // Create slot
-	    TheNamedObjMap::Instance().create< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id);
+	    TheNamedObjMap::Instance().create< Handle<QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id);
 
 	    // Insert
-	    TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id) = new_obj_handle;
+	    TheNamedObjMap::Instance().getData< Handle<QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id) = new_obj_handle;
 	  }
 	
 	  // Now make a working reference
-	  MapObject<KeyPropColorVec_t,LatticeFermion>& obj = 
-	    *(TheNamedObjMap::Instance().getData< Handle<MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id));
+	  QDP::MapObject<KeyPropColorVec_t,LatticeFermion>& obj = 
+	    *(TheNamedObjMap::Instance().getData< Handle<QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(buffer_id));
 
 	  // Fix these. Put two sources in here.
 	  int N = 8;
