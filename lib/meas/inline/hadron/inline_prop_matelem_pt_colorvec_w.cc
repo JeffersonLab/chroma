@@ -10,7 +10,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
+#include "qdp_map_obj.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
 #include "util/ferm/key_val_db.h"
@@ -242,7 +242,7 @@ namespace Chroma
       try
       {
 	// NB We are just checking this is here.
-	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
@@ -272,8 +272,8 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
-	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
+      QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       // Cast should be valid now
       const LatticePropagator& prop =

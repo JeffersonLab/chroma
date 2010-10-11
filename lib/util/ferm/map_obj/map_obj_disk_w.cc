@@ -5,9 +5,9 @@
 
 #include <string>
 #include "chromabase.h"
-#include "util/ferm/map_obj.h"
+#include "qdp_map_obj_disk.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
-#include "util/ferm/map_obj/map_obj_disk.h"
+#include "util/ferm/map_obj/map_obj_disk_w.h"
 #include "util/ferm/key_prop_colorvec.h"
 
 namespace Chroma 
@@ -18,20 +18,45 @@ namespace Chroma
 
     namespace
     {
+      // Parameter structure
+      struct Params
+      {
+	Params() {}
+	Params(XMLReader& xml_in, const std::string& path);
+
+	std::string   file_name;
+      };
+
+      // Reader for input parameters
+      Params::Params(XMLReader& xml, const string& path)
+      {
+	XMLReader paramtop(xml, path);
+
+	read(paramtop, "FileName", file_name);
+      }
+
+
+
       //! Callback function
-      MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
-								     const std::string& path) 
+      QDP::MapObject<int,EVPair<LatticeColorVector> >* createMapObjIntKeyCV(XMLReader& xml_in,
+									    const std::string& path) 
       {
 	// Needs parameters...
-	return new MapObjectDisk<int,EVPair<LatticeColorVector> >(MapObjectDiskParams(xml_in, path));
+	Params params(xml_in, path);
+	std::string  user_data;
+	
+	return new QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >(params.file_name, user_data);
       }
 
       //! Callback function
-      MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
-										 const std::string& path) 
+      QDP::MapObject<KeyPropColorVec_t,LatticeFermion>* createMapObjKeyPropColorVecLF(XMLReader& xml_in,
+										      const std::string& path) 
       {
 	// Needs parameters...
-	return new MapObjectDisk<KeyPropColorVec_t,LatticeFermion>(MapObjectDiskParams(xml_in, path));
+	Params params(xml_in, path);
+	std::string  user_data;
+
+	return new QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>(params.file_name, user_data);
       }
 
       //! Local registration flag
@@ -56,15 +81,6 @@ namespace Chroma
       return success;
     }
   } // Namespace MapObjectDiskEnv
-
-  void
-  MapObjectDiskParams::writeXML(XMLWriter& xml_out, const std::string& path) const
-  {
-    push(xml_out, path);
-    write(xml_out, "MapObjType", MapObjectDiskEnv::name);
-    write(xml_out, "FileName", getFileName());
-    pop(xml_out);
-  }
 
 
 } // Chroma

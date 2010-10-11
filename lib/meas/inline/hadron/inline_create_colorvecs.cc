@@ -11,7 +11,6 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/gaus_smear.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/map_obj.h"
 #include "util/ferm/map_obj/map_obj_aggregate_w.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ft/sftmom.h"
@@ -274,8 +273,8 @@ namespace Chroma
 	XMLReader MapObjReader(xml_s);
 	
 	// Create the entry
-	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
-	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id) =
+	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id) =
 	  TheMapObjIntKeyColorEigenVecFactory::Instance().createObject(params.named_obj.colorvec_obj.id,
 								       MapObjReader,
 								       params.named_obj.colorvec_obj.path);

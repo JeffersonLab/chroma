@@ -11,8 +11,7 @@
 #include "meas/glue/mesplq.h"
 #include "meas/sources/zN_src.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+#include "qdp_map_obj_memory.h"
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
@@ -273,7 +272,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a named buffer" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
@@ -295,8 +294,8 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
-	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
+      const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 

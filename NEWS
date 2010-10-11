@@ -1,12 +1,7 @@
 Oct 09, 2010 - Robert Edwards
-        Version 3.38.3
-        Fixed/added some glue measurements. Balint added some resiliency flags in
-        cuda inverter drivers.
-
-June 30, 2010 - Robert Edwards
-        Version 3.38.2
-        Added new glue measurements. Cleaned out obsolete regression test input.
-        Balint merged cuda-tprec and multi-prec shift solvers.
+        Version 3.39.0
+        Pulled out the MapObject classes, made them more general, and put them in QDP.
+        Cleaned out some old regression tests.
 
 Jan 07, 2010 - Robert Edwards
         Version 3.38.0

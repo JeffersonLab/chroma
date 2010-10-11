@@ -172,6 +172,7 @@ Not used in this test, instead use create colorvecs below.
       <Name>READ_MAP_OBJECT_DISK</Name>
       <Frequency>1</Frequency>
       <NamedObject>
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
         <object_id>prop_colorvec_tmp</object_id>
       </NamedObject>
       <File>
@@ -837,11 +838,11 @@ Not used in this test, instead use create colorvecs below.
   </Input>
   <ProgramInfo>
     <code_version>
-      <chroma>3.37.3</chroma>
-      <qdp>1.35.0</qdp>
+      <chroma>3.38.0</chroma>
+      <qdp>1.37.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>23 Jan 10 20:51:52 EST</run_date>
+    <run_date>09 Oct 10 21:56:13 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -898,11 +899,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:51:52 EST</run_date>
+          <run_date>09 Oct 10 21:56:13 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1084,11 +1085,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:51:59 EST</run_date>
+          <run_date>09 Oct 10 21:56:20 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1262,6 +1263,7 @@ Not used in this test, instead use create colorvecs below.
     <elem>
       <read_map_object_disk>
         <update_no>0</update_no>
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
         <object_id>prop_colorvec_tmp</object_id>
         <file_name>./prop.mod</file_name>
       </read_map_object_disk>
@@ -1285,11 +1287,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:52:20 EST</run_date>
+          <run_date>09 Oct 10 21:56:44 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1459,11 +1461,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:52:41 EST</run_date>
+          <run_date>09 Oct 10 21:57:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1639,11 +1641,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:53:12 EST</run_date>
+          <run_date>09 Oct 10 21:57:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1784,11 +1786,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:53:12 EST</run_date>
+          <run_date>09 Oct 10 21:57:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1932,11 +1934,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:53:12 EST</run_date>
+          <run_date>09 Oct 10 21:57:42 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2080,11 +2082,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:53:13 EST</run_date>
+          <run_date>09 Oct 10 21:57:43 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2381,11 +2383,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:54:23 EST</run_date>
+          <run_date>09 Oct 10 21:59:11 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2496,11 +2498,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:54:26 EST</run_date>
+          <run_date>09 Oct 10 21:59:16 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2706,11 +2708,11 @@ Not used in this test, instead use create colorvecs below.
         <update_no>0</update_no>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:54:33 EST</run_date>
+          <run_date>09 Oct 10 21:59:24 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2829,11 +2831,11 @@ Not used in this test, instead use create colorvecs below.
         </Output_version>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:54:38 EST</run_date>
+          <run_date>09 Oct 10 21:59:30 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2888,6 +2890,7 @@ Not used in this test, instead use create colorvecs below.
           </NamedObject>
         </Input>
         <Source_prop_file_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -2895,6 +2898,7 @@ Not used in this test, instead use create colorvecs below.
 
         </Source_prop_file_info>
         <Source_prop_record_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -2902,6 +2906,7 @@ Not used in this test, instead use create colorvecs below.
 
         </Source_prop_record_info>
         <Sink_prop_file_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -2909,6 +2914,7 @@ Not used in this test, instead use create colorvecs below.
 
         </Sink_prop_file_info>
         <Sink_prop_record_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -2993,11 +2999,11 @@ Not used in this test, instead use create colorvecs below.
         </Output_version>
         <ProgramInfo>
           <code_version>
-            <chroma>3.37.3</chroma>
-            <qdp>1.35.0</qdp>
+            <chroma>3.38.0</chroma>
+            <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>23 Jan 10 20:55:12 EST</run_date>
+          <run_date>09 Oct 10 22:00:05 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3052,6 +3058,7 @@ Not used in this test, instead use create colorvecs below.
           </NamedObject>
         </Input>
         <Source_prop_file_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -3059,6 +3066,7 @@ Not used in this test, instead use create colorvecs below.
 
         </Source_prop_file_info>
         <Source_prop_record_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -3066,6 +3074,7 @@ Not used in this test, instead use create colorvecs below.
 
         </Source_prop_record_info>
         <Sink_prop_file_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>
@@ -3073,6 +3082,7 @@ Not used in this test, instead use create colorvecs below.
 
         </Sink_prop_file_info>
         <Sink_prop_record_info><FileXML>
+      <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
       <object_id>prop_colorvec_tmp</object_id>
       <file_name>./prop.mod</file_name>
       <map_size>80</map_size>

@@ -12,14 +12,14 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/inline/hadron/inline_gauge_transf_obj.h"
-
 #include "util/ferm/subset_vectors.h"
 
-#include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+#include "qdp_map_obj_memory.h"
 
 namespace Chroma 
 { 
+  using namespace QDP;
+
   //! Object buffer
   void write(XMLWriter& xml, const string& path, const InlineGaugeTransfNamedObjEnv::Params::NamedObject_t& input)
   {
@@ -101,9 +101,9 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(input_id).getRecordXML(input_record_xml);
 
 	// Create space for the target
-	Handle< MapObject<int,EVPair<LatticeColorVector> > > output_obj(new MapObjectMemory<int,EVPair<LatticeColorVector> >());
+	Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > output_obj(new MapObjectMemory<int,EVPair<LatticeColorVector> >());
 
-	TheNamedObjMap::Instance().create< Handle< MapObject<int,EVPair<LatticeColorVector> > >, Handle< MapObject<int,EVPair<LatticeColorVector> > > >(output_id, output_obj);
+	TheNamedObjMap::Instance().create< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > >, Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(output_id, output_obj);
 	TheNamedObjMap::Instance().get(output_id).setFileXML(input_file_xml);
 	TheNamedObjMap::Instance().get(output_id).setRecordXML(input_record_xml);
 

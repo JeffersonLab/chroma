@@ -8,7 +8,7 @@
 
 #include "chromabase.h"
 #include "util/ferm/subset_ev_pair.h"
-#include "util/ferm/map_obj.h"
+#include "qdp_map_obj.h"
 
 
 namespace Chroma
@@ -24,7 +24,7 @@ namespace Chroma
 
 
   //! Extract eigenvalues from a map, and arrange them in a different format
-  multi1d<SubsetVectorWeight_t> getEigenValues(const MapObject<int,EVPair<LatticeColorVector> >& eigen_source, int num_vecs);
+  multi1d<SubsetVectorWeight_t> getEigenValues(const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source, int num_vecs);
   
   
 }

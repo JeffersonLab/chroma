@@ -9,7 +9,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj.h"
+#include "qdp_map_obj.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "util/ferm/key_prop_matelem.h"
 #include "util/ferm/key_val_db.h"
@@ -240,8 +240,8 @@ namespace Chroma
       try
       {	
 	// NB We are just checking this is here.
-	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
-	TheNamedObjMap::Instance().getData< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
+	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id);
 
 	// Snarf the source info. This is will throw if the colorvec_id is not there
 	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
@@ -263,12 +263,12 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
-	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
+      const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
+	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       // Cast should be valid now
-      const MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
-	*(TheNamedObjMap::Instance().getData< Handle< MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
+      const QDP::MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
+	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
 
       QDPIO::cout << "Source and prop map successfully found and parsed" << endl;
 

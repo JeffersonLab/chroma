@@ -697,15 +697,10 @@ nobase_include_HEADERS += \
 	util/ferm/antisymtensor.h \
 	util/ferm/etensor.h \
         util/ferm/symtensor.h \
-	util/ferm/map_obj.h \
 	util/ferm/map_obj/map_obj_factory_w.h \
 	util/ferm/map_obj/map_obj_aggregate_w.h \
-	util/ferm/map_obj/map_obj_memory.h \
 	util/ferm/map_obj/map_obj_memory_w.h \
-	util/ferm/map_obj/map_obj_disk.h \
-	util/ferm/map_obj/map_obj_disk_traits.h \
 	util/ferm/map_obj/map_obj_disk_w.h \
-	util/ferm/map_obj/map_obj_null.h \
 	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h \
@@ -1268,8 +1263,7 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc \
-	util/ferm/map_obj/map_obj_disk.cc
+	meas/hadron/dilution_quark_source_const_w.cc
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
 

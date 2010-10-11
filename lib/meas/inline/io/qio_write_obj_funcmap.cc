@@ -13,8 +13,7 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "handle.h"
-#include "util/ferm/map_obj.h"
-#include "util/ferm/map_obj/map_obj_memory.h"
+#include "qdp_map_obj_memory.h"
 
 
 #include "actions/ferm/invert/containers.h"
@@ -424,8 +423,8 @@ namespace Chroma
 				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// A shorthand for the object
-	MapObject<int,EVPair<LatticeColorVector> >& obj =
-	  *(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(buffer_id));
+	QDP::MapObject<int,EVPair<LatticeColorVector> >& obj =
+	  *(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(buffer_id));
 
 	// Yuk. Could read this back in.
 	int decay_dir = Nd-1;
@@ -470,7 +469,7 @@ namespace Chroma
 
 	// A shorthand for the object
 	MapObjectMemory<K,V>& obj = 
-	  dynamic_cast<MapObjectMemory<K,V>&>(*(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(buffer_id)));
+	  dynamic_cast<MapObjectMemory<K,V>&>(*(TheNamedObjMap::Instance().getData< Handle<QDP::MapObject<K,V> > >(buffer_id)));
 
 	// Get the file XML and record XML out of the named buffer
 	TheNamedObjMap::Instance().get(buffer_id).getFileXML(file_xml);
