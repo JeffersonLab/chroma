@@ -10,6 +10,22 @@ namespace Chroma
   namespace
   {
     //----------------------------------------------------------------------------
+    //! Concatenate two Array's
+    template<typename T>
+    inline std::vector<T> concat(const std::vector<T>& l, const std::vector<T>& r)
+    {
+      std::vector<int> nz(l.size() + r.size());
+      int j = 0;
+      for(int i=0; i < l.size(); ++i)
+	nz[j++] = l[i];
+  
+      for(int i=0; i < r.size(); ++i)
+	nz[j++] = r[i];
+
+      return nz;
+    }
+
+    //----------------------------------------------------------------------------
     //! a < b
     /*! This definition follows that of string comparison */
     template<typename T>
@@ -48,24 +64,24 @@ namespace Chroma
   bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b)
   {
     std::vector<int> lgaa;
-    lgaa.push_back(stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(a.line_type)));
     lgaa.push_back(a.t_source);
     lgaa.push_back(a.t_slice);
     lgaa.push_back(a.dist_src);
     lgaa.push_back(a.spin_src);
     lgaa.push_back(a.spin_snk);
     lgaa.push_back(a.quark_line);
-    lgaa.push_back(stringToArrayInt(a.mass));
+    lgaa = concat(lgaa, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(a.line_type)));
+    lgaa = concat(lgaa, stringToArrayInt(a.mass));
 
     std::vector<int> lgbb;
-    lgbb.push_back(stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(b.line_type)));
     lgbb.push_back(b.t_source);
     lgbb.push_back(b.t_slice);
     lgbb.push_back(b.dist_src);
     lgbb.push_back(b.spin_src);
     lgbb.push_back(b.spin_snk);
     lgbb.push_back(b.quark_line);
-    lgbb.push_back(stringToArrayInt(b.mass));
+    lgbb = concat(lgbb, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(b.line_type)));
+    lgbb = concat(lgbb, stringToArrayInt(b.mass));
 
     return (lgaa < lgbb);
   }
@@ -83,7 +99,7 @@ namespace Chroma
     read(bin, param.spin_src);
     read(bin, param.spin_snk);
     read(bin, param.quark_line);
-    read(bin, param.mass);
+    readDesc(bin, param.mass);
   }
 
   // KeyPropDist write
@@ -96,7 +112,7 @@ namespace Chroma
     write(bin, param.spin_src);
     write(bin, param.spin_snk);
     write(bin, param.quark_line);
-    write(bin, param.mass);
+    writeDesc(bin, param.mass);
   }
 
   //! KeyPropDist reader

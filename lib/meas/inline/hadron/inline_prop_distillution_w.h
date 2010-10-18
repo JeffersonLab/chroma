@@ -48,7 +48,7 @@ namespace Chroma
 	std::string     gauge_id;       /*!< Gauge field */
 	std::string     distillution_id;/*!< Distillution noise */
 	std::string     colorvec_id;    /*!< LatticeColorVector EigenInfo */
-	std::string     prop_id;        /*!< Map for output propagator solutions */
+	std::string     prop_file;      /*!< Map for output propagator solutions */
       };
 
 

@@ -10,7 +10,7 @@
 #include "meas/glue/mesplq.h"
 #include "util/ferm/distillution_noise.h"
 #include "util/ferm/subset_vectors.h"
-#include "qdp_map_obj.h"
+#include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
 #include "io/enum_io/enum_prop_dist_io.h"
 #include "util/ferm/key_prop_distillution.h"
@@ -35,7 +35,7 @@ namespace Chroma
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "distillution_id", input.distillution_id);
       read(inputtop, "colorvec_id", input.colorvec_id);
-      read(inputtop, "prop_id", input.prop_id);
+      read(inputtop, "prop_file", input.prop_file);
     }
 
     //! Propagator output
@@ -46,7 +46,7 @@ namespace Chroma
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "distillution_id", input.distillution_id);
       write(xml, "colorvec_id", input.colorvec_id);
-      write(xml, "prop_id", input.prop_id);
+      write(xml, "prop_file", input.prop_file);
 
       pop(xml);
     }
@@ -142,7 +142,6 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= PropDistTypeEnv::registerAll();
 	success &= WilsonTypeFermActsEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
@@ -349,27 +348,62 @@ namespace Chroma
       }
 
 
-      //
-      // Create the output files
-      //
-      try
-      {
-	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id);
-      }
-      catch (std::bad_cast)
-      {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
-	QDP_abort(1);
-      }
-      catch (const string& e) 
-      {
-	QDPIO::cerr << name << ": error creating prop: " << e << endl;
-	QDP_abort(1);
-      }
+//      //
+//      // Create the output files
+//      //
+//      try
+//      {
+//	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id);
+//      }
+//      catch (std::bad_cast)
+//      {
+//	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+//	QDP_abort(1);
+//      }
+//      catch (const string& e) 
+//      {
+//	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+//	QDP_abort(1);
+//      }
+//
+//      // Cast should be valid now
+//      QDP::MapObject< KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& prop_obj =
+//	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id));
 
-      // Cast should be valid now
-      QDP::MapObject< KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& prop_obj =
-	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id));
+      //
+      // DB storage
+      //
+      // Open the file, and write the meta-data and the binary for this operator
+      XMLBufferWriter file_xml;
+
+//      if (! qdp_db.fileExists(params.named_obj.prop_op_file))
+      {
+	push(file_xml, "MODMetaData");
+	write(file_xml, "id", string("propDist"));
+	write(file_xml, "lattSize", QDP::Layout::lattSize());
+	write(file_xml, "decay_dir", decay_dir);
+	write(file_xml, "num_vecs", params.param.contract.num_vecs);
+	write(file_xml, "num_vec_dils", params.param.contract.num_vec_dils);
+	write(file_xml, "ensemble", dist_noise_obj.getEnsemble());
+	write(file_xml, "sequence", dist_noise_obj.getSequence());
+	write(file_xml, "t_origin", dist_noise_obj.getOrigin());
+	write(file_xml, "quark_line", params.param.contract.quark_line);
+	proginfo(file_xml);    // Print out basic program info
+	write(file_xml, "Params", params.param);
+	write(file_xml, "Config_info", gauge_xml);
+	pop(file_xml);
+
+//	std::string file_str(file_xml.str());
+
+//	qdp_db.open(params.named_obj.prop_op_file);
+//	qdp_db.insertUserdata(file_str);
+      }
+//      else
+//      {
+//	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
+//      }
+
+      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj(params.named_obj.prop_file, file_xml.str());
 
 
 

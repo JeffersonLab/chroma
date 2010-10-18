@@ -709,6 +709,7 @@ nobase_include_HEADERS += \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
 	util/ferm/key_prop_matelem.h \
+	util/ferm/key_prop_distillution.h \
 	util/ferm/key_val_db.h \
 	util/ferm/distillution_noise.h
 
@@ -1522,6 +1523,7 @@ libchroma_a_SOURCES += \
 	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_prop_colorvec.cc \
 	util/ferm/key_prop_matelem.cc \
+	util/ferm/key_prop_distillution.cc \
 	util/ferm/distillution_noise.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \

@@ -100,10 +100,6 @@ namespace Chroma
   }
 
   //---------------------------------------------------------------------
-  //! Return the actual time origin
-  int DistillutionNoise::getOrigin() const {return t_origin;}
-
-  //---------------------------------------------------------------------
   //! Convenience - get shifted time
   /*!< Returns the shifted time taking account of periodicity */
   int DistillutionNoise::getTime(int t_slice) const

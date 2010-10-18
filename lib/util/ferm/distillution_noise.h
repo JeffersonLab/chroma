@@ -37,11 +37,17 @@ namespace Chroma
     //! Destructor
     ~DistillutionNoise() {} 
 
+    //! Return the ensemble
+    virtual string getEnsemble() const {return ensemble;}
+
+    //! Return the sequence
+    virtual string getSequence() const {return seqno;}
+
     //! Return the decay direction
     virtual int getDecayDir() const {return decay_dir;}
 
     //! Return the actual time origin
-    virtual int getOrigin() const;
+    virtual int getOrigin() const {return t_origin;}
 
     //! Convenience - get shifted time
     /*!< Returns the shifted time taking account of periodicity */

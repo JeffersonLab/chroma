@@ -39,6 +39,22 @@
 
     <elem>
       <annotation>
+        Distillution noise
+      </annotation>
+      <Name>DISTILLUTION_NOISE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <ensemble>some ensemble label here</ensemble>
+        <sequence>traj 10</sequence>
+        <decay_dir>3</decay_dir>
+      </Param>
+      <NamedObject>
+        <distillution_id>dist_obj</distillution_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
         Compute propagator solution vectors
       </annotation>
       <Name>PROP_DISTILLUTION</Name>
@@ -48,7 +64,8 @@
           <num_vecs>10</num_vecs>
           <num_vec_dils>5</num_vec_dils>
           <t_sources>0 3</t_sources>
-          <decay_dir>3</decay_dir>
+          <quark_line>3</quark_line>
+          <mass>u</mass>
         </Contractions>
         <Propagator>
           <version>10</version>
@@ -76,16 +93,9 @@
       </Param>
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
+        <distillution_id>dist_obj</distillution_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_id>prop_colorvec_tmp</prop_id>
-        <PropMapObject>
-          <annotation>
-            Write to a disk. Later, will read back into memory as a test. 
-            Will remove original copy.
-          </annotation>
-          <MapObjType>MAP_OBJECT_DISK</MapObjType>
-          <FileName>./prop.mod</FileName>
-        </PropMapObject>
+        <prop_file>prop.single.mod</prop_file>
       </NamedObject>
     </elem>
 

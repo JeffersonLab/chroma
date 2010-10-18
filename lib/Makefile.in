@@ -675,6 +675,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/ferm/key_hadron_2pt_corr.cc \
 	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_prop_colorvec.cc util/ferm/key_prop_matelem.cc \
+	util/ferm/key_prop_distillution.cc \
 	util/ferm/distillution_noise.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
@@ -1273,13 +1274,14 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	etensor.$(OBJEXT) symtensor.$(OBJEXT) \
 	key_hadron_2pt_corr.$(OBJEXT) key_hadron_3pt_corr.$(OBJEXT) \
 	key_prop_colorvec.$(OBJEXT) key_prop_matelem.$(OBJEXT) \
-	distillution_noise.$(OBJEXT) map_obj_aggregate_w.$(OBJEXT) \
-	map_obj_memory_w.$(OBJEXT) map_obj_disk_w.$(OBJEXT) \
-	map_obj_null_w.$(OBJEXT) inline_io.$(OBJEXT) \
-	inline_aggregate.$(OBJEXT) make_xml_file.$(OBJEXT) \
-	inline_eig_aggregate.$(OBJEXT) inline_eigbnds.$(OBJEXT) \
-	inline_ritz_H_w.$(OBJEXT) inline_gfix_aggregate.$(OBJEXT) \
-	inline_coulgauge.$(OBJEXT) inline_glue_aggregate.$(OBJEXT) \
+	key_prop_distillution.$(OBJEXT) distillution_noise.$(OBJEXT) \
+	map_obj_aggregate_w.$(OBJEXT) map_obj_memory_w.$(OBJEXT) \
+	map_obj_disk_w.$(OBJEXT) map_obj_null_w.$(OBJEXT) \
+	inline_io.$(OBJEXT) inline_aggregate.$(OBJEXT) \
+	make_xml_file.$(OBJEXT) inline_eig_aggregate.$(OBJEXT) \
+	inline_eigbnds.$(OBJEXT) inline_ritz_H_w.$(OBJEXT) \
+	inline_gfix_aggregate.$(OBJEXT) inline_coulgauge.$(OBJEXT) \
+	inline_glue_aggregate.$(OBJEXT) \
 	inline_apply_gaugestate.$(OBJEXT) inline_plaquette.$(OBJEXT) \
 	inline_polylp.$(OBJEXT) inline_wilslp.$(OBJEXT) \
 	inline_fuzwilp.$(OBJEXT) inline_qactden.$(OBJEXT) \
@@ -2004,9 +2006,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h util/ferm/key_prop_colorvec.h \
-	util/ferm/key_prop_matelem.h util/ferm/key_val_db.h \
-	util/ferm/distillution_noise.h stagtype_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
+	util/ferm/key_prop_matelem.h util/ferm/key_prop_distillution.h \
+	util/ferm/key_val_db.h util/ferm/distillution_noise.h \
+	stagtype_fermact_s.h actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
@@ -3007,9 +3009,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/map_obj/map_obj_null_w.h \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h util/ferm/key_prop_colorvec.h \
-	util/ferm/key_prop_matelem.h util/ferm/key_val_db.h \
-	util/ferm/distillution_noise.h stagtype_fermact_s.h \
-	actions/ferm/fermacts/fermacts_s.h \
+	util/ferm/key_prop_matelem.h util/ferm/key_prop_distillution.h \
+	util/ferm/key_val_db.h util/ferm/distillution_noise.h \
+	stagtype_fermact_s.h actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
 	actions/ferm/fermacts/asqtad_fermact_params_s.h \
@@ -3709,6 +3711,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/ferm/key_hadron_2pt_corr.cc \
 	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_prop_colorvec.cc util/ferm/key_prop_matelem.cc \
+	util/ferm/key_prop_distillution.cc \
 	util/ferm/distillution_noise.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
@@ -4324,6 +4327,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_hadron_2pt_corr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_hadron_3pt_corr.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_colorvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_distillution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_matelem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gordon_fermact_s.Po@am__quote@
@@ -12862,6 +12866,20 @@ key_prop_matelem.obj: util/ferm/key_prop_matelem.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/key_prop_matelem.cc' object='key_prop_matelem.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_prop_matelem.obj `if test -f 'util/ferm/key_prop_matelem.cc'; then $(CYGPATH_W) 'util/ferm/key_prop_matelem.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/key_prop_matelem.cc'; fi`
+
+key_prop_distillution.o: util/ferm/key_prop_distillution.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_prop_distillution.o -MD -MP -MF "$(DEPDIR)/key_prop_distillution.Tpo" -c -o key_prop_distillution.o `test -f 'util/ferm/key_prop_distillution.cc' || echo '$(srcdir)/'`util/ferm/key_prop_distillution.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/key_prop_distillution.Tpo" "$(DEPDIR)/key_prop_distillution.Po"; else rm -f "$(DEPDIR)/key_prop_distillution.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/key_prop_distillution.cc' object='key_prop_distillution.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_prop_distillution.o `test -f 'util/ferm/key_prop_distillution.cc' || echo '$(srcdir)/'`util/ferm/key_prop_distillution.cc
+
+key_prop_distillution.obj: util/ferm/key_prop_distillution.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_prop_distillution.obj -MD -MP -MF "$(DEPDIR)/key_prop_distillution.Tpo" -c -o key_prop_distillution.obj `if test -f 'util/ferm/key_prop_distillution.cc'; then $(CYGPATH_W) 'util/ferm/key_prop_distillution.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/key_prop_distillution.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/key_prop_distillution.Tpo" "$(DEPDIR)/key_prop_distillution.Po"; else rm -f "$(DEPDIR)/key_prop_distillution.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/key_prop_distillution.cc' object='key_prop_distillution.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_prop_distillution.obj `if test -f 'util/ferm/key_prop_distillution.cc'; then $(CYGPATH_W) 'util/ferm/key_prop_distillution.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/key_prop_distillution.cc'; fi`
 
 distillution_noise.o: util/ferm/distillution_noise.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT distillution_noise.o -MD -MP -MF "$(DEPDIR)/distillution_noise.Tpo" -c -o distillution_noise.o `test -f 'util/ferm/distillution_noise.cc' || echo '$(srcdir)/'`util/ferm/distillution_noise.cc; \
