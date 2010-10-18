@@ -128,7 +128,7 @@
       <qdp>1.37.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>17 Oct 10 22:19:19 EDT</run_date>
+    <run_date>17 Oct 10 22:38:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -189,7 +189,7 @@
             <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>17 Oct 10 22:19:19 EDT</run_date>
+          <run_date>17 Oct 10 22:38:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -355,7 +355,7 @@
             <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>17 Oct 10 22:19:20 EDT</run_date>
+          <run_date>17 Oct 10 22:38:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -385,7 +385,7 @@
             <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>17 Oct 10 22:19:20 EDT</run_date>
+          <run_date>17 Oct 10 22:38:22 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -542,7 +542,7 @@
           <source_corrs>0.999999999917008 1.00000000416624 1.0000000005445 1.00000000131598 1.00000000043586 0.999999994276139 1.0000000012483 1.00000000182138 0.999999998544684 1.00000000314777 0.999999999788352 1.0000000053718 1.00000000089086 0.999999996107293 1.00000000568466 1.00000000451101</source_corrs>
         </Source_correlators>
         <Relaxation_Iterations>
-          <ncg_had>80</ncg_had>
+          <ncg_had>66</ncg_had>
         </Relaxation_Iterations>
       </PropDistillution>
     </elem>

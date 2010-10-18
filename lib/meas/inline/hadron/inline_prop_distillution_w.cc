@@ -305,6 +305,12 @@ namespace Chroma
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
+      // Some diagnostics
+      QDPIO::cout << "Distillution noise: ensemble= XX" << dist_noise_obj.getEnsemble() << "XX  "
+		  << "sequence= XX" << dist_noise_obj.getSequence() << "XX\n"
+		  << "t_origin= " << dist_noise_obj.getOrigin() << "\n";
+
+
       // Will use TimeSliceSet-s a lot
       const int decay_dir = dist_noise_obj.getDecayDir();
 
@@ -406,7 +412,6 @@ namespace Chroma
       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj(params.named_obj.prop_file, file_xml.str());
 
 
-
       //
       // The noise for this quark line.
       // NOTE: the noise is fixed for a type of source, but given for all time-slices
@@ -489,7 +494,7 @@ namespace Chroma
 	    // with other vectors
 	    LatticeColorVector vec_srce = zero;
 
-	    for(int colorvec_source=0; colorvec_source < num_vecs; colorvec_source += num_vec_dils)
+	    for(int colorvec_source=dist_src; colorvec_source < num_vecs; colorvec_source += num_vec_dils)
 	    {
 	      QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
 
@@ -535,6 +540,7 @@ namespace Chroma
 	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
 	      ncg_had = res.n_count;
 
+	      // Write out each time-slice chunk of a lattice colorvec soln to disk
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	      {
 		LatticeColorVector quark_vec = peekSpin(quark_soln, spin_sink);
