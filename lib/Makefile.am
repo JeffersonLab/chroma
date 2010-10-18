@@ -220,7 +220,7 @@ nobase_include_HEADERS = \
 	meas/gfix/temporal_gauge.h \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
-        meas/glue/mesplq.h meas/glue/polylp.h meas/glue/mesplq.h meas/glue/wloop.h \
+        meas/glue/mesplq.h meas/glue/polylp.h meas/glue/wloop.h \
 	meas/glue/fuzwilp.h meas/glue/wilslp.h \
 	meas/glue/qactden.h \
 	meas/glue/qnaive.h \
