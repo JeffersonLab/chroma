@@ -47,7 +47,7 @@ DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(top_srcdir)/scripts/test_runners/trivial_runner.sh.in \
 	./config/config.guess ./config/config.sub ./config/depcomp \
 	./config/install-sh ./config/missing ./config/mkinstalldirs \
-	AUTHORS COPYING ChangeLog INSTALL NEWS TODO
+	AUTHORS COPYING ChangeLog INSTALL NEWS
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/acinclude.m4 \
