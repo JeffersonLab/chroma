@@ -4,7 +4,6 @@
  * Setup for distillution
  */
 
-#include "fermact.h"
 #include "meas/inline/hadron/inline_distillution_noise.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "util/ferm/distillution_noise.h"

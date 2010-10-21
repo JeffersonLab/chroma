@@ -7,6 +7,7 @@
 #define __key_prop_distillution_h__
 
 #include "io/enum_io/enum_prop_dist_io.h"
+#include "io/enum_io/enum_prop_line_io.h"
 
 namespace Chroma
 {
@@ -20,7 +21,8 @@ namespace Chroma
   //! Distillution propagators
   struct KeyPropDist_t
   {
-    PropDistType       line_type;     /*!< Distillution source/solution type */
+    PropDistType       prop_type;     /*!< Distillution source/solution type */
+    PropLineType       line_type;     /*!< Whether connected or disconnected */
     int                t_source;      /*!< Propagator source time slice */
     int                t_slice;       /*!< Propagator sink time slice */
     int                dist_src;      /*!< Source dist index */

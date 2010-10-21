@@ -506,7 +506,8 @@ namespace Chroma
 	    {
 	      KeyPropDist_t key;
 
-	      key.line_type    = PROP_DIST_TYPE_SINGLE_SOURCE;
+	      key.prop_type    = PROP_DIST_TYPE_SOURCE;
+	      key.line_type    = PROP_LINE_TYPE_CONN;
 	      key.t_source     = t_source;
 	      key.t_slice      = t_source;
 	      key.dist_src     = dist_src;
@@ -549,7 +550,8 @@ namespace Chroma
 		{
 		  KeyPropDist_t key;
 
-		  key.line_type    = PROP_DIST_TYPE_SINGLE_SOLUTION;
+		  key.prop_type    = PROP_DIST_TYPE_SOLUTION;
+		  key.line_type    = PROP_LINE_TYPE_CONN;
 		  key.t_source     = t_source;
 		  key.t_slice      = t;
 		  key.dist_src     = dist_src;

@@ -27,6 +27,7 @@
 #include "meas/inline/io/inline_eigen_bin_lime_colvec_read_obj.h"
 #include "meas/inline/io/inline_read_map_obj_disk.h"
 #include "meas/inline/io/inline_copy_map_obj.h"
+#include "meas/inline/io/inline_write_timeslice_map_obj_disk.h"
 
 namespace Chroma
 {
@@ -77,6 +78,7 @@ namespace Chroma
 	// MapObjDisk reader
        	success &= InlineReadMapObjDiskEnv::registerAll();
        	success &= InlineCopyMapObjEnv::registerAll();
+       	success &= InlineWriteTimeSliceMapObjDiskEnv::registerAll();
 
 	registered = true;
       }

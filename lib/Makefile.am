@@ -192,6 +192,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_coeffs_io.h \
 	io/enum_io/enum_mesonop_io.h \
 	io/enum_io/enum_prop_dist_io.h \
+	io/enum_io/enum_prop_line_io.h \
 	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
@@ -907,7 +908,9 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_copy_map_obj.h
+	meas/inline/io/inline_copy_map_obj.h \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.h
+
 # Taken out for now
 #	
 #	meas/inline/hadron/inline_spectrum_w.h
@@ -1114,6 +1117,7 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_plusminus_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
 	io/enum_io/enum_prop_dist_io.cc \
+	io/enum_io/enum_prop_line_io.cc \
 	io/enum_io/enum_proptype_io.cc \
         io/enum_io/enum_qdpvolfmt_io.cc \
 	io/enum_io/enum_quarkspintype_io.cc \
@@ -1661,6 +1665,7 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_copy_map_obj.cc \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \

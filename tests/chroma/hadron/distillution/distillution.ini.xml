@@ -39,6 +39,33 @@
 
     <elem>
       <annotation>
+        For testing purposes. Copy this map object. 
+        In this case, it will be saved as a disk map object.
+      </annotation>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_file>./colorvec.timeslice.mod</output_file>
+      </NamedObject>
+    </elem>
+
+<annotation>
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+</annotation>
+
+    <elem>
+      <annotation>
         Distillution noise
       </annotation>
       <Name>DISTILLUTION_NOISE</Name>
@@ -95,7 +122,7 @@
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_id>eigeninfo_0</colorvec_id>
-        <prop_file>prop.single.mod</prop_file>
+        <prop_file>prop.conn.mod</prop_file>
       </NamedObject>
     </elem>
 

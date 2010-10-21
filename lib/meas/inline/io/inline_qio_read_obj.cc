@@ -671,114 +671,6 @@ namespace Chroma
 	}
 
 
-#if 0
-	//-----------------------------------------------------------------------
-	//! Read a MapObject Type
-	template<typename K, typename V>
-	class QIOReadMapObjMemory : public QIOReadObject
-	{
-	private:
-	  Params params;
-
-	public:
-	  QIOReadMapObjMemory(const Params& p) : params(p) {}
-
-	  //! Read a propagator
-	  void operator()(QDP_serialparallel_t serpar) {
-	    // This is needed for QIO reading
-	    XMLReader file_xml;
-
-	    // Open file
-	    QDPFileReader to(file_xml,params.file.file_name,serpar);
-
-	    // Create object if it does not exist. Otherwise, we can continue reading into it.
-	    if (! TheNamedObjMap::Instance().check(params.named_obj.object_id))
-	    {
-	      // Make a memory map object -- later make with factory?
-	      Handle< MapObject<K,V> > obj_map_handle( new MapObjectMemory<K,V> );
- 
-	      // Create slot
-	      TheNamedObjMap::Instance().create< Handle<MapObject<K,V> > >(params.named_obj.object_id);
-	      // Insert Handle
-	      TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(params.named_obj.object_id) = obj_map_handle;
-
-	      // Set up file xml
-	      TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	    }
-
-	    // A referecnce for the object
-	    MapObject<K,V>& obj = *(TheNamedObjMap::Instance().getData< Handle<MapObject<K,V> > >(params.named_obj.object_id));
-
-	    // The number of records should be recorded in the header
-	    int num_records;
-	    if(file_xml.count("/PropColorVectors")!=0)
-	      read(file_xml, "/PropColorVectors/num_records", num_records);
-	    else{
-	      QDPIO::cerr << __func__ << ": Can't find num_records "<< endl;
-	      QDP_abort(1);
-	    }
-
-	    obj.openWrite(); // Prepare Object for insertion
-
-	    // Use the iterators to run through the object, reading each record
-	    for(int i=0; i < num_records; ++i)
-	    {
-	      XMLReader local_record_xml;
-
-	      // The key and value
-	      K key;
-	      V val;
-
-	      read(to, local_record_xml, val);
-
-	      // Extract the key
-	      read(local_record_xml, "/MapEntry", key);
-
-	      // Insert the key and value into the map
-	      obj.insert(key, val);
-	    }
-
-	    obj.openRead(); // Done writing into object - switch to READ mode
-
-	    // Sanity check
-	    if (obj.size() != num_records)
-	    {
-	      QDPIO::cerr << __func__ << ": Error: number of object records unexpected:"
-			  << "  num_records= " << num_records
-			  << "  obj.size= " << obj.size()
-			  << endl;
-	      QDP_abort(1);
-	    }
-
-	    // Setup a record xml
-	    XMLBufferWriter record_xml;
-	    if(file_xml.count("/PropColorVectors")!=0)
-	      push(record_xml, "PropColorVector");
-	    else{
-	      push(record_xml, "NamedObjectMap");
-	    }
-
-
-	    write(record_xml, "num_records", obj.size());  // This should be the size of num_records
-	    pop(record_xml);
-
-	    // Set File and Record XML throw away dummy XMLs
-	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setFileXML(file_xml);
-	    TheNamedObjMap::Instance().get(params.named_obj.object_id).setRecordXML(record_xml);
-
-	    // Close and bolt
-	    close(to);
-	  }
-	};
-
-	// Call back
-	template<typename K, typename V>
-	QIOReadObject* qioReadMapObjMemory(const Params& p)
-	{
-	  return new QIOReadMapObjMemory<K,V>(p);
-	}
-#endif
-
 
 	//------------------------------------------------------------------------
 	//------------------------------------------------------------------------
@@ -830,9 +722,6 @@ namespace Chroma
 
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("RitzPairsLatticeFermion"), 
 									qioReadRitzPairsLatticeFermion);
-
-//	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
-//									qioReadMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
 
 	  registered = true;
 	}

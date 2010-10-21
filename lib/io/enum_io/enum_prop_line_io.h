@@ -2,8 +2,8 @@
 /*! \file
  * \brief Type of lines for distillution
  */
-#ifndef enum_prop_dist_io_h
-#define enum_prop_dist_io_h
+#ifndef enum_prop_line_io_h
+#define enum_prop_line_io_h
 
 #include "chromabase.h"
 #include <string>
@@ -21,32 +21,32 @@ namespace Chroma
    * @{
    */
   //! Distillution line types
-  enum PropDistType 
+  enum PropLineType 
   {
-    PROP_DIST_TYPE_SOURCE = 19,
-    PROP_DIST_TYPE_SOLUTION = 41,
+    PROP_LINE_TYPE_CONN = 43,
+    PROP_LINE_TYPE_DISC = 47,
   };
 
 
-  namespace PropDistTypeEnv 
+  namespace PropLineTypeEnv 
   {
     bool registerAll(void);   // Forward declaration
   }
 
   // A singleton to hold the typemap
-  typedef SingletonHolder< EnumTypeMap<PropDistType> > thePropDistTypeMap;
+  typedef SingletonHolder< EnumTypeMap<PropLineType> > thePropLineTypeMap;
 
   //! Reader
-  void read(XMLReader& r, const string& path, PropDistType& t);
+  void read(XMLReader& r, const string& path, PropLineType& t);
 
   //! Writer
-  void write(XMLWriter& w, const string& path, const PropDistType& t);
+  void write(XMLWriter& w, const string& path, const PropLineType& t);
 
   //! Reader
-  void read(BinaryReader& r, PropDistType& t);
+  void read(BinaryReader& r, PropLineType& t);
 
   //! Writer
-  void write(BinaryWriter& w, const PropDistType& t);
+  void write(BinaryWriter& w, const PropLineType& t);
 
   /*! @} */   // end of group io
 

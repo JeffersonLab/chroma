@@ -14,10 +14,8 @@ namespace Chroma {
     bool registerAll(void) 
     {
       bool success = true; 
-      success &= thePropDistTypeMap::Instance().registerPair(string("SINGLE-SOURCE"), PROP_DIST_TYPE_SINGLE_SOURCE);
-      success &= thePropDistTypeMap::Instance().registerPair(string("MULTI-SOURCE"), PROP_DIST_TYPE_MULTI_SOURCE);
-      success &= thePropDistTypeMap::Instance().registerPair(string("SINGLE-SOLUTION"), PROP_DIST_TYPE_SINGLE_SOLUTION);
-      success &= thePropDistTypeMap::Instance().registerPair(string("MULTI-SOLUTION"), PROP_DIST_TYPE_MULTI_SOLUTION);
+      success &= thePropDistTypeMap::Instance().registerPair(string("SRC"), PROP_DIST_TYPE_SOURCE);
+      success &= thePropDistTypeMap::Instance().registerPair(string("SNK"), PROP_DIST_TYPE_SOLUTION);
       return success;
     }
 

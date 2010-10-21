@@ -333,7 +333,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	io/enum_io/enum_inner_solver_type_io.cc \
 	io/enum_io/enum_plusminus_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
-	io/enum_io/enum_prop_dist_io.cc io/enum_io/enum_proptype_io.cc \
+	io/enum_io/enum_prop_dist_io.cc \
+	io/enum_io/enum_prop_line_io.cc io/enum_io/enum_proptype_io.cc \
 	io/enum_io/enum_qdpvolfmt_io.cc \
 	io/enum_io/enum_quarkspintype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
@@ -793,6 +794,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_copy_map_obj.cc \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -1000,12 +1002,12 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	enum_inner_solver_type_io.$(OBJEXT) \
 	enum_plusminus_io.$(OBJEXT) \
 	enum_md_integrator_type_io.$(OBJEXT) \
-	enum_prop_dist_io.$(OBJEXT) enum_proptype_io.$(OBJEXT) \
-	enum_qdpvolfmt_io.$(OBJEXT) enum_quarkspintype_io.$(OBJEXT) \
-	enum_simplebctype_io.$(OBJEXT) enum_wavetype_io.$(OBJEXT) \
-	enum_stochsrc_io.$(OBJEXT) aniso_io.$(OBJEXT) \
-	cfgtype_io.$(OBJEXT) gauge_io.$(OBJEXT) kyugauge_io.$(OBJEXT) \
-	kyuqprop_io.$(OBJEXT) milc_io.$(OBJEXT) \
+	enum_prop_dist_io.$(OBJEXT) enum_prop_line_io.$(OBJEXT) \
+	enum_proptype_io.$(OBJEXT) enum_qdpvolfmt_io.$(OBJEXT) \
+	enum_quarkspintype_io.$(OBJEXT) enum_simplebctype_io.$(OBJEXT) \
+	enum_wavetype_io.$(OBJEXT) enum_stochsrc_io.$(OBJEXT) \
+	aniso_io.$(OBJEXT) cfgtype_io.$(OBJEXT) gauge_io.$(OBJEXT) \
+	kyugauge_io.$(OBJEXT) kyuqprop_io.$(OBJEXT) milc_io.$(OBJEXT) \
 	overlap_state_info.$(OBJEXT) readcppacs.$(OBJEXT) \
 	cppacs_io.$(OBJEXT) param_io.$(OBJEXT) qprop_io.$(OBJEXT) \
 	readmilc.$(OBJEXT) readszin.$(OBJEXT) szin_io.$(OBJEXT) \
@@ -1361,8 +1363,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_usqcd_read_ddpairs_prop.$(OBJEXT) \
 	inline_usqcd_write_ddpairs_prop.$(OBJEXT) \
 	inline_read_map_obj_disk.$(OBJEXT) \
-	inline_copy_map_obj.$(OBJEXT) inline_pbp_aggregate.$(OBJEXT) \
-	inline_psibarpsi_w.$(OBJEXT) \
+	inline_copy_map_obj.$(OBJEXT) \
+	inline_write_timeslice_map_obj_disk.$(OBJEXT) \
+	inline_pbp_aggregate.$(OBJEXT) inline_psibarpsi_w.$(OBJEXT) \
 	inline_schrfun_aggregate.$(OBJEXT) inline_sfpcac_w.$(OBJEXT) \
 	inline_smear_aggregate.$(OBJEXT) inline_link_smear.$(OBJEXT) \
 	$(am__objects_3) $(am__objects_4) $(am__objects_5) \
@@ -1571,7 +1574,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	init/chroma_init.h io/io.h io/xmllog_io.h io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
 	io/enum_io/enum_coeffs_io.h io/enum_io/enum_mesonop_io.h \
-	io/enum_io/enum_prop_dist_io.h io/enum_io/enum_proptype_io.h \
+	io/enum_io/enum_prop_dist_io.h io/enum_io/enum_prop_line_io.h \
+	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
@@ -2171,6 +2175,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
 	meas/inline/io/inline_copy_map_obj.h \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
@@ -2573,7 +2578,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	init/chroma_init.h io/io.h io/xmllog_io.h io/enum_io/enum_io.h \
 	io/enum_io/enum_type_map.h io/enum_io/enum_cfgtype_io.h \
 	io/enum_io/enum_coeffs_io.h io/enum_io/enum_mesonop_io.h \
-	io/enum_io/enum_prop_dist_io.h io/enum_io/enum_proptype_io.h \
+	io/enum_io/enum_prop_dist_io.h io/enum_io/enum_prop_line_io.h \
+	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
 	io/enum_io/enum_simplebctype_io.h \
@@ -3173,12 +3179,15 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_copy_map_obj.h $(am__append_9) \
-	$(am__append_11) $(am__append_13) $(am__append_15) \
-	$(am__append_17) $(am__append_22) $(am__append_24) \
-	$(am__append_26) $(am__append_28) $(am__append_30) \
-	$(am__append_32) $(am__append_34) $(am__append_37)
+	meas/inline/io/inline_copy_map_obj.h \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.h \
+	$(am__append_9) $(am__append_11) $(am__append_13) \
+	$(am__append_15) $(am__append_17) $(am__append_22) \
+	$(am__append_24) $(am__append_26) $(am__append_28) \
+	$(am__append_30) $(am__append_32) $(am__append_34) \
+	$(am__append_37)
 nodist_include_HEADERS = chroma_config_internal.h
+
 # Taken out for now
 #	
 #	meas/inline/hadron/inline_spectrum_w.h
@@ -3374,7 +3383,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	io/enum_io/enum_inner_solver_type_io.cc \
 	io/enum_io/enum_plusminus_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
-	io/enum_io/enum_prop_dist_io.cc io/enum_io/enum_proptype_io.cc \
+	io/enum_io/enum_prop_dist_io.cc \
+	io/enum_io/enum_prop_line_io.cc io/enum_io/enum_proptype_io.cc \
 	io/enum_io/enum_qdpvolfmt_io.cc \
 	io/enum_io/enum_quarkspintype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
@@ -3829,6 +3839,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_copy_map_obj.cc \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
@@ -4058,6 +4069,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_mesonop_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_plusminus_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_prop_dist_io.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_prop_line_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_proptype_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_qdpvolfmt_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/enum_quarkspintype_io.Po@am__quote@
@@ -4295,6 +4307,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_usqcd_read_ddpairs_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_usqcd_write_ddpairs_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_wilslp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_write_timeslice_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_xml_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_aggregate.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_shared.Po@am__quote@
@@ -6846,6 +6859,20 @@ enum_prop_dist_io.obj: io/enum_io/enum_prop_dist_io.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/enum_io/enum_prop_dist_io.cc' object='enum_prop_dist_io.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_prop_dist_io.obj `if test -f 'io/enum_io/enum_prop_dist_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_prop_dist_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_prop_dist_io.cc'; fi`
+
+enum_prop_line_io.o: io/enum_io/enum_prop_line_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_prop_line_io.o -MD -MP -MF "$(DEPDIR)/enum_prop_line_io.Tpo" -c -o enum_prop_line_io.o `test -f 'io/enum_io/enum_prop_line_io.cc' || echo '$(srcdir)/'`io/enum_io/enum_prop_line_io.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/enum_prop_line_io.Tpo" "$(DEPDIR)/enum_prop_line_io.Po"; else rm -f "$(DEPDIR)/enum_prop_line_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/enum_io/enum_prop_line_io.cc' object='enum_prop_line_io.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_prop_line_io.o `test -f 'io/enum_io/enum_prop_line_io.cc' || echo '$(srcdir)/'`io/enum_io/enum_prop_line_io.cc
+
+enum_prop_line_io.obj: io/enum_io/enum_prop_line_io.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_prop_line_io.obj -MD -MP -MF "$(DEPDIR)/enum_prop_line_io.Tpo" -c -o enum_prop_line_io.obj `if test -f 'io/enum_io/enum_prop_line_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_prop_line_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_prop_line_io.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/enum_prop_line_io.Tpo" "$(DEPDIR)/enum_prop_line_io.Po"; else rm -f "$(DEPDIR)/enum_prop_line_io.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/enum_io/enum_prop_line_io.cc' object='enum_prop_line_io.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o enum_prop_line_io.obj `if test -f 'io/enum_io/enum_prop_line_io.cc'; then $(CYGPATH_W) 'io/enum_io/enum_prop_line_io.cc'; else $(CYGPATH_W) '$(srcdir)/io/enum_io/enum_prop_line_io.cc'; fi`
 
 enum_proptype_io.o: io/enum_io/enum_proptype_io.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT enum_proptype_io.o -MD -MP -MF "$(DEPDIR)/enum_proptype_io.Tpo" -c -o enum_proptype_io.o `test -f 'io/enum_io/enum_proptype_io.cc' || echo '$(srcdir)/'`io/enum_io/enum_proptype_io.cc; \
@@ -14546,6 +14573,20 @@ inline_copy_map_obj.obj: meas/inline/io/inline_copy_map_obj.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_copy_map_obj.cc' object='inline_copy_map_obj.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_copy_map_obj.obj `if test -f 'meas/inline/io/inline_copy_map_obj.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_copy_map_obj.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_copy_map_obj.cc'; fi`
+
+inline_write_timeslice_map_obj_disk.o: meas/inline/io/inline_write_timeslice_map_obj_disk.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_write_timeslice_map_obj_disk.o -MD -MP -MF "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Tpo" -c -o inline_write_timeslice_map_obj_disk.o `test -f 'meas/inline/io/inline_write_timeslice_map_obj_disk.cc' || echo '$(srcdir)/'`meas/inline/io/inline_write_timeslice_map_obj_disk.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Tpo" "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Po"; else rm -f "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_write_timeslice_map_obj_disk.cc' object='inline_write_timeslice_map_obj_disk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_write_timeslice_map_obj_disk.o `test -f 'meas/inline/io/inline_write_timeslice_map_obj_disk.cc' || echo '$(srcdir)/'`meas/inline/io/inline_write_timeslice_map_obj_disk.cc
+
+inline_write_timeslice_map_obj_disk.obj: meas/inline/io/inline_write_timeslice_map_obj_disk.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_write_timeslice_map_obj_disk.obj -MD -MP -MF "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Tpo" -c -o inline_write_timeslice_map_obj_disk.obj `if test -f 'meas/inline/io/inline_write_timeslice_map_obj_disk.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_write_timeslice_map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_write_timeslice_map_obj_disk.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Tpo" "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Po"; else rm -f "$(DEPDIR)/inline_write_timeslice_map_obj_disk.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/io/inline_write_timeslice_map_obj_disk.cc' object='inline_write_timeslice_map_obj_disk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_write_timeslice_map_obj_disk.obj `if test -f 'meas/inline/io/inline_write_timeslice_map_obj_disk.cc'; then $(CYGPATH_W) 'meas/inline/io/inline_write_timeslice_map_obj_disk.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/io/inline_write_timeslice_map_obj_disk.cc'; fi`
 
 inline_pbp_aggregate.o: meas/inline/pbp/inline_pbp_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_pbp_aggregate.o -MD -MP -MF "$(DEPDIR)/inline_pbp_aggregate.Tpo" -c -o inline_pbp_aggregate.o `test -f 'meas/inline/pbp/inline_pbp_aggregate.cc' || echo '$(srcdir)/'`meas/inline/pbp/inline_pbp_aggregate.cc; \

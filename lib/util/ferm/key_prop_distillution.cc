@@ -70,7 +70,8 @@ namespace Chroma
     lgaa.push_back(a.spin_src);
     lgaa.push_back(a.spin_snk);
     lgaa.push_back(a.quark_line);
-    lgaa = concat(lgaa, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(a.line_type)));
+    lgaa = concat(lgaa, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(a.prop_type)));
+    lgaa = concat(lgaa, stringToArrayInt(thePropLineTypeMap::Instance().lookUpString(a.line_type)));
     lgaa = concat(lgaa, stringToArrayInt(a.mass));
 
     std::vector<int> lgbb;
@@ -80,7 +81,8 @@ namespace Chroma
     lgbb.push_back(b.spin_src);
     lgbb.push_back(b.spin_snk);
     lgbb.push_back(b.quark_line);
-    lgbb = concat(lgbb, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(b.line_type)));
+    lgbb = concat(lgbb, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(b.prop_type)));
+    lgbb = concat(lgbb, stringToArrayInt(thePropLineTypeMap::Instance().lookUpString(b.line_type)));
     lgbb = concat(lgbb, stringToArrayInt(b.mass));
 
     return (lgaa < lgbb);
@@ -92,6 +94,7 @@ namespace Chroma
   // KeyPropDist read
   void read(BinaryReader& bin, KeyPropDist_t& param)
   {
+    read(bin, param.prop_type);
     read(bin, param.line_type);
     read(bin, param.t_source);
     read(bin, param.t_slice);
@@ -105,6 +108,7 @@ namespace Chroma
   // KeyPropDist write
   void write(BinaryWriter& bin, const KeyPropDist_t& param)
   {
+    write(bin, param.prop_type);
     write(bin, param.line_type);
     write(bin, param.t_source);
     write(bin, param.t_slice);
@@ -120,6 +124,7 @@ namespace Chroma
   {
     XMLReader paramtop(xml, path);
     
+    read(paramtop, "prop_type", param.prop_type);
     read(paramtop, "line_type", param.line_type);
     read(paramtop, "t_source", param.t_source);
     read(paramtop, "t_slice", param.t_slice);
@@ -135,6 +140,7 @@ namespace Chroma
   {
     push(xml, path);
 
+    write(xml, "prop_type", param.prop_type);
     write(xml, "line_type", param.line_type);
     write(xml, "t_source", param.t_source);
     write(xml, "t_slice", param.t_slice);
