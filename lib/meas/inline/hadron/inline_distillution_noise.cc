@@ -190,9 +190,7 @@ namespace Chroma
       //
       // Read in the source along with relevant information.
       // 
-      XMLReader source_file_xml, source_record_xml;
-
-      QDPIO::cout << "Snarf the source from a named buffer. Check for the prop map" << endl;
+      QDPIO::cout << "Create a distillution factory" << endl;
       try
       {	
 	// Build new object

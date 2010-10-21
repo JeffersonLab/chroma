@@ -51,7 +51,6 @@
       </NamedObject>
     </elem>
 
-<annotation>
     <elem>
       <annotation>
         The named_object is erased, but the disk file remains.
@@ -62,7 +61,6 @@
         <object_id>eigeninfo_0</object_id>
       </NamedObject>
     </elem>
-</annotation>
 
     <elem>
       <annotation>
@@ -121,7 +119,7 @@
       <NamedObject>
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
-        <colorvec_id>eigeninfo_0</colorvec_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
         <prop_file>prop.conn.mod</prop_file>
       </NamedObject>
     </elem>

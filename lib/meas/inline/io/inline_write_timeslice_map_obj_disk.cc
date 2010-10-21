@@ -16,6 +16,7 @@
 #include "util/info/proginfo.h"
 #include "util/ferm/subset_ev_pair.h"
 #include "util/ferm/subset_vectors.h"
+#include "util/ferm/key_timeslice_colorvec.h"
 
 namespace Chroma 
 { 
@@ -62,7 +63,7 @@ namespace Chroma
 	  pop(file_xml);
 
 	  // Create the entry
-	  QDP::MapObjectDisk<int,TimeSliceIO<LatticeColorVector> > output_obj(params.named_obj.output_file, file_xml.str());
+	  QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > output_obj(params.named_obj.output_file, file_xml.str());
 
 	  // Copy the key/value-s
 	  output_obj.openWrite();
@@ -71,11 +72,18 @@ namespace Chroma
 
 	  for(int i=0; i < keys.size(); i++) 
 	  {
+	    // Get the value
 	    EVPair<LatticeColorVector> tmpvec; input_obj.lookup(keys[i], tmpvec);
 
+	    // We know the keys are simple integers from 0 to N-1.
+	    // Write with a time-slice key.
 	    for(int t=0; t < Lt; t++) 
 	    {
-	      output_obj.insert(keys[i], TimeSliceIO<LatticeColorVector>(tmpvec.eigenVector,t));
+	      KeyTimeSliceColorVec_t time_key;
+	      time_key.t_slice = t;
+	      time_key.colorvec = keys[i];
+
+	      output_obj.insert(time_key, TimeSliceIO<LatticeColorVector>(tmpvec.eigenVector,t));
 	    }
 	  }
 
@@ -172,13 +180,11 @@ namespace Chroma
       push(xml_out, "write_timeslice_map_object_disk");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": map object copy" << endl;
+      QDPIO::cout << name << ": map object write to a time-slice format" << endl;
       StopWatch swatch;
 
       // Write the object
-      // ONLY named object format is supported in this task
-      // Other tasks could support other disk formats
-      QDPIO::cout << "Attempt to copy input object name = " << params.named_obj.input_id << endl;
+      QDPIO::cout << "Attempt to time-slice write the input object name = " << params.named_obj.input_id << endl;
 
       write(xml_out, "object_type", params.named_obj.object_type);
       write(xml_out, "input_id", params.named_obj.input_id);

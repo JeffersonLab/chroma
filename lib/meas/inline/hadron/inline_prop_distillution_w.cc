@@ -9,7 +9,7 @@
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
 #include "util/ferm/distillution_noise.h"
-#include "util/ferm/subset_vectors.h"
+#include "util/ferm/key_timeslice_colorvec.h"
 #include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
 #include "io/enum_io/enum_prop_dist_io.h"
@@ -34,7 +34,7 @@ namespace Chroma
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "distillution_id", input.distillution_id);
-      read(inputtop, "colorvec_id", input.colorvec_id);
+      read(inputtop, "colorvec_file", input.colorvec_file);
       read(inputtop, "prop_file", input.prop_file);
     }
 
@@ -45,7 +45,7 @@ namespace Chroma
 
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "distillution_id", input.distillution_id);
-      write(xml, "colorvec_id", input.colorvec_id);
+      write(xml, "colorvec_file", input.colorvec_file);
       write(xml, "prop_file", input.prop_file);
 
       pop(xml);
@@ -264,21 +264,10 @@ namespace Chroma
       //
       // Read in the source along with relevant information.
       // 
-      XMLReader source_file_xml, source_record_xml;
-
-      QDPIO::cout << "Snarf the source from a named buffer" << endl;
+      QDPIO::cout << "Snarf the distillution factory from a named buffer" << endl;
       try
       {
-	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
 	TheNamedObjMap::Instance().getData< Handle< DistillutionNoise > >(params.named_obj.distillution_id);
-
-	// Snarf the source info. This is will throw if the colorvec_id is not there
-	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getFileXML(source_file_xml);
-	TheNamedObjMap::Instance().get(params.named_obj.colorvec_id).getRecordXML(source_record_xml);
-
-	// Write out the source header
-	write(xml_out, "Source_file_info", source_file_xml);
-	write(xml_out, "Source_record_info", source_record_xml);
       }    
       catch (std::bad_cast) {
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
@@ -296,44 +285,99 @@ namespace Chroma
       }
 
       // Cast should be valid now
-      const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
-	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
-
-      // Cast should be valid now
       const DistillutionNoise& dist_noise_obj =
 	*(TheNamedObjMap::Instance().getData< Handle<DistillutionNoise> >(params.named_obj.distillution_id));
 
-      QDPIO::cout << "Source successfully read and parsed" << endl;
-
       // Some diagnostics
-      QDPIO::cout << "Distillution noise: ensemble= XX" << dist_noise_obj.getEnsemble() << "XX  "
+      QDPIO::cout << "Distillution factory: ensemble= XX" << dist_noise_obj.getEnsemble() << "XX  "
 		  << "sequence= XX" << dist_noise_obj.getSequence() << "XX\n"
 		  << "t_origin= " << dist_noise_obj.getOrigin() << "\n";
 
 
       // Will use TimeSliceSet-s a lot
       const int decay_dir = dist_noise_obj.getDecayDir();
+      const int Lt        = Layout::lattSize()[decay_dir];
 
+      // A sanity check
+      if (decay_dir != Nd-1)
+      {
+	QDPIO::cerr << __func__ << ": TimeSliceIO only supports decay_dir= " << Nd-1 << "\n";
+	QDP_abort(1);
+      }
+
+      // The time-slice set
       TimeSliceSet time_slice_set(decay_dir);
 
 
-      // Sanity check - write out the norm2 of the source in the Nd-1 direction
+      //
+      // Read in the source along with relevant information.
+      // 
+      QDPIO::cout << "Snarf the source from a map object disk file" << endl;
+
+      QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > eigen_source;
+
+      try
+      {
+	// Open
+	QDPIO::cout << "Open file= " << params.named_obj.colorvec_file << endl;
+	eigen_source.open(params.named_obj.colorvec_file);
+
+	// Snarf the source info. 
+	string user_str;
+	QDPIO::cout << "Get user data" << endl;
+	eigen_source.getUserdata(user_str);
+	QDPIO::cout << "User data= " << user_str << endl;
+
+	// Write it
+	QDPIO::cout << "Write to an xml file" << endl;
+	XMLBufferWriter xml_buf(user_str);
+	write(xml_out, "Source_info", xml_buf);
+      }    
+      catch (std::bad_cast) {
+	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDP_abort(1);
+      }
+      catch (const string& e) {
+	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
+	QDP_abort(1);
+      }
+      catch( const char* e) {
+	QDPIO::cerr << name <<": Caught some char* exception:" << endl;
+	QDPIO::cerr << e << endl;
+	QDPIO::cerr << "Rethrowing" << endl;
+	throw;
+      }
+
+      QDPIO::cout << "Set source mod file to read" << endl;
+      eigen_source.openRead();
+
+      QDPIO::cout << "Source successfully read and parsed" << endl;
+
+
+      // Sanity check - write out the norm2 of the source in the decay_dir direction
       // Use this for any possible verification
       {
-	EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(0,tmpvec);
-	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), time_slice_set.getSet());
+	QDPIO::cout << "Lookup source 0" << endl;
+	LatticeColorVector tmpvec;
+
+	for(int t=0; t < Lt; ++t)
+	{
+	  KeyTimeSliceColorVec_t key_vec;
+	  key_vec.t_slice = t;
+	  key_vec.colorvec = 0;
+
+	  TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t);
+	  eigen_source.lookup(key_vec, time_slice_io);
+	}
+
+	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec), time_slice_set.getSet());
 
 	push(xml_out, "Source_correlators");
 	write(xml_out, "source_corrs", source_corrs);
 	pop(xml_out);
       }
 
-      // Another sanity check
-      if (decay_dir != Nd-1)
-      {
-	QDPIO::cerr << __func__ << ": TimeSliceIO only supports decay_dir= " << Nd-1 << "\n";
-	QDP_abort(1);
-      }
+      QDPIO::cout << "Source studied: do some other sanity checks" << endl;
 
       // Another sanity check
       if (params.param.contract.num_vecs > eigen_source.size())
@@ -376,6 +420,8 @@ namespace Chroma
 //      QDP::MapObject< KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& prop_obj =
 //	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id));
 
+      QDPIO::cout << "Open output mod" << endl;
+
       //
       // DB storage
       //
@@ -416,8 +462,6 @@ namespace Chroma
       // The noise for this quark line.
       // NOTE: the noise is fixed for a type of source, but given for all time-slices
       // 
-      int Lt = Layout::lattSize()[decay_dir];
-
       // FIX ME: for the moment, hardwired for only single-ended sources
       multi2d<Complex> eta;
       {
@@ -481,7 +525,7 @@ namespace Chroma
 	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
-	  int t_source = t_sources[tt];
+	  int t_source = t_sources[tt];  // This is the pretend time-slice. There actual value is shifted.
 	  QDPIO::cout << "t_source = " << t_source << endl; 
 
 	  // All the loops
@@ -498,8 +542,19 @@ namespace Chroma
 	    {
 	      QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
 
-	      EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(colorvec_source, tmpvec);
-	      vec_srce[time_slice_set.getSet()[dist_noise_obj.getTime(t_source)]] += eta(t_source, colorvec_source) * tmpvec.eigenVector;
+	      // Get the actual time slice
+	      int t_actual = dist_noise_obj.getTime(t_source);
+
+	      KeyTimeSliceColorVec_t key_vec;
+	      key_vec.t_slice = t_actual;
+	      key_vec.colorvec = colorvec_source;
+
+	      LatticeColorVector tmpvec = zero;
+	      TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
+
+	      eigen_source.lookup(key_vec, time_slice_io);
+
+	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
 	    }
 	
 	    // Insert this source
@@ -516,9 +571,7 @@ namespace Chroma
 	      key.quark_line   = params.param.contract.quark_line;
 	      key.mass         = params.param.contract.mass;
 
-	      TimeSliceIO<LatticeColorVector> time_slice_io(vec_srce, dist_noise_obj.getTime(t_source));
-
-	      prop_obj.insert(key, time_slice_io);
+	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
 	    }
 
 
@@ -560,9 +613,8 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-		  TimeSliceIO<LatticeColorVector> time_slice_io(quark_vec, dist_noise_obj.getTime(t));
+		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(quark_vec, dist_noise_obj.getTime(t)));
 
-		  prop_obj.insert(key, time_slice_io);
 		} // for t
 	      } // for spin_sink
 	    } // for spin_source
