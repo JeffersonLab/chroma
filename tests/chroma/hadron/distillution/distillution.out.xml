@@ -41,14 +41,10 @@
     </elem>
 
     <elem>
-      <annotation>
-        For testing purposes. Copy this map object. 
-        In this case, it will be saved as a disk map object.
-      </annotation>
       <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <object_type>KeyTintValTLatticeColorVector</object_type> 
         <input_id>eigeninfo_0</input_id>
         <output_file>./colorvec.timeslice.mod</output_file>
       </NamedObject>
@@ -62,6 +58,16 @@
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>ArrayLatticeColorMatrix</object_type> 
+        <input_id>default_gauge_field</input_id>
+        <output_file>./gauge.timeslice.mod</output_file>
       </NamedObject>
     </elem>
 
@@ -153,7 +159,7 @@
       <qdp>1.37.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>21 Oct 10 15:59:21 EDT</run_date>
+    <run_date>21 Oct 10 17:12:28 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -214,7 +220,7 @@
             <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>21 Oct 10 15:59:21 EDT</run_date>
+          <run_date>21 Oct 10 17:12:28 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -374,7 +380,7 @@
     <elem>
       <write_timeslice_map_object_disk>
         <update_no>0</update_no>
-        <object_type>KeyTintValTEVPairLatticeColorVector</object_type>
+        <object_type>KeyTintValTLatticeColorVector</object_type>
         <input_id>eigeninfo_0</input_id>
         <output_file>./colorvec.timeslice.mod</output_file>
       </write_timeslice_map_object_disk>
@@ -386,6 +392,14 @@
       </erase_named_obj>
     </elem>
     <elem>
+      <write_timeslice_map_object_disk>
+        <update_no>0</update_no>
+        <object_type>ArrayLatticeColorMatrix</object_type>
+        <input_id>default_gauge_field</input_id>
+        <output_file>./gauge.timeslice.mod</output_file>
+      </write_timeslice_map_object_disk>
+    </elem>
+    <elem>
       <DistillutionNoise>
         <update_no>0</update_no>
         <ProgramInfo>
@@ -394,7 +408,7 @@
             <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>21 Oct 10 15:59:22 EDT</run_date>
+          <run_date>21 Oct 10 17:12:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -424,7 +438,7 @@
             <qdp>1.37.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>21 Oct 10 15:59:22 EDT</run_date>
+          <run_date>21 Oct 10 17:12:29 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>

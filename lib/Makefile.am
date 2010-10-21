@@ -350,6 +350,7 @@ nobase_include_HEADERS = \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
 	util/gauge/stout_utils.h \
 	util/gauge/key_glue_matelem.h \
+	util/gauge/key_timeslice_gauge.h \
         util/info/info.h \
         util/info/proginfo.h \
         util/info/printgeom.h \
@@ -1240,6 +1241,7 @@ libchroma_a_SOURCES = \
 	util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc \
 	util/gauge/key_glue_matelem.cc \
+	util/gauge/key_timeslice_gauge.cc \
 	util/info/printgeom.cc \
         util/info/proginfo.cc \
         util/info/unique_id.cc \

@@ -428,9 +428,10 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/unit_check.cc util/gauge/conjgauge.cc \
 	util/gauge/constgauge.cc util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc util/gauge/key_glue_matelem.cc \
-	util/info/printgeom.cc util/info/proginfo.cc \
-	util/info/unique_id.cc update/heatbath/su3over.cc \
-	update/heatbath/su2_hb_update.cc update/heatbath/mciter.cc \
+	util/gauge/key_timeslice_gauge.cc util/info/printgeom.cc \
+	util/info/proginfo.cc util/info/unique_id.cc \
+	update/heatbath/su3over.cc update/heatbath/su2_hb_update.cc \
+	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
@@ -1076,9 +1077,9 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	sunfill.$(OBJEXT) sun_proj.$(OBJEXT) taproj.$(OBJEXT) \
 	unit_check.$(OBJEXT) conjgauge.$(OBJEXT) constgauge.$(OBJEXT) \
 	weak_field.$(OBJEXT) stout_utils.$(OBJEXT) \
-	key_glue_matelem.$(OBJEXT) printgeom.$(OBJEXT) \
-	proginfo.$(OBJEXT) unique_id.$(OBJEXT) su3over.$(OBJEXT) \
-	su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
+	key_glue_matelem.$(OBJEXT) key_timeslice_gauge.$(OBJEXT) \
+	printgeom.$(OBJEXT) proginfo.$(OBJEXT) unique_id.$(OBJEXT) \
+	su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
 	exact_hamiltonian.$(OBJEXT) gauge_monomial.$(OBJEXT) \
 	force_monitors.$(OBJEXT) rat_approx_aggregate.$(OBJEXT) \
 	remez_rat_approx.$(OBJEXT) read_rat_approx.$(OBJEXT) \
@@ -1693,7 +1694,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
 	util/gauge/stout_utils.h util/gauge/key_glue_matelem.h \
-	util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+	util/gauge/key_timeslice_gauge.h util/info/info.h \
+	util/info/proginfo.h util/info/printgeom.h \
 	util/info/unique_id.h util/util.h update/update.h \
 	update/heatbath/heatbath.h update/heatbath/su3over.h \
 	update/heatbath/su3hb.h update/heatbath/hb_params.h \
@@ -2700,7 +2702,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/unit_check.h util/gauge/weak_field.h \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
 	util/gauge/stout_utils.h util/gauge/key_glue_matelem.h \
-	util/info/info.h util/info/proginfo.h util/info/printgeom.h \
+	util/gauge/key_timeslice_gauge.h util/info/info.h \
+	util/info/proginfo.h util/info/printgeom.h \
 	util/info/unique_id.h util/util.h update/update.h \
 	update/heatbath/heatbath.h update/heatbath/su3over.h \
 	update/heatbath/su3hb.h update/heatbath/hb_params.h \
@@ -3484,9 +3487,10 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/unit_check.cc util/gauge/conjgauge.cc \
 	util/gauge/constgauge.cc util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc util/gauge/key_glue_matelem.cc \
-	util/info/printgeom.cc util/info/proginfo.cc \
-	util/info/unique_id.cc update/heatbath/su3over.cc \
-	update/heatbath/su2_hb_update.cc update/heatbath/mciter.cc \
+	util/gauge/key_timeslice_gauge.cc util/info/printgeom.cc \
+	util/info/proginfo.cc util/info/unique_id.cc \
+	update/heatbath/su3over.cc update/heatbath/su2_hb_update.cc \
+	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
@@ -4350,6 +4354,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_distillution.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_prop_matelem.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_timeslice_colorvec.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/key_timeslice_gauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gord.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gordon_fermact_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/klein_gordon_linop_s.Po@am__quote@
@@ -9065,6 +9070,20 @@ key_glue_matelem.obj: util/gauge/key_glue_matelem.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/key_glue_matelem.cc' object='key_glue_matelem.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_glue_matelem.obj `if test -f 'util/gauge/key_glue_matelem.cc'; then $(CYGPATH_W) 'util/gauge/key_glue_matelem.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/key_glue_matelem.cc'; fi`
+
+key_timeslice_gauge.o: util/gauge/key_timeslice_gauge.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_timeslice_gauge.o -MD -MP -MF "$(DEPDIR)/key_timeslice_gauge.Tpo" -c -o key_timeslice_gauge.o `test -f 'util/gauge/key_timeslice_gauge.cc' || echo '$(srcdir)/'`util/gauge/key_timeslice_gauge.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/key_timeslice_gauge.Tpo" "$(DEPDIR)/key_timeslice_gauge.Po"; else rm -f "$(DEPDIR)/key_timeslice_gauge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/key_timeslice_gauge.cc' object='key_timeslice_gauge.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_timeslice_gauge.o `test -f 'util/gauge/key_timeslice_gauge.cc' || echo '$(srcdir)/'`util/gauge/key_timeslice_gauge.cc
+
+key_timeslice_gauge.obj: util/gauge/key_timeslice_gauge.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT key_timeslice_gauge.obj -MD -MP -MF "$(DEPDIR)/key_timeslice_gauge.Tpo" -c -o key_timeslice_gauge.obj `if test -f 'util/gauge/key_timeslice_gauge.cc'; then $(CYGPATH_W) 'util/gauge/key_timeslice_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/key_timeslice_gauge.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/key_timeslice_gauge.Tpo" "$(DEPDIR)/key_timeslice_gauge.Po"; else rm -f "$(DEPDIR)/key_timeslice_gauge.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/key_timeslice_gauge.cc' object='key_timeslice_gauge.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o key_timeslice_gauge.obj `if test -f 'util/gauge/key_timeslice_gauge.cc'; then $(CYGPATH_W) 'util/gauge/key_timeslice_gauge.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/key_timeslice_gauge.cc'; fi`
 
 printgeom.o: util/info/printgeom.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT printgeom.o -MD -MP -MF "$(DEPDIR)/printgeom.Tpo" -c -o printgeom.o `test -f 'util/info/printgeom.cc' || echo '$(srcdir)/'`util/info/printgeom.cc; \

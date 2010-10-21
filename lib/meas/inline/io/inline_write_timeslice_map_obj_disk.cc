@@ -14,9 +14,12 @@
 #include "meas/inline/io/named_objmap.h"
 
 #include "util/info/proginfo.h"
+
 #include "util/ferm/subset_ev_pair.h"
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_timeslice_colorvec.h"
+
+#include "util/gauge/key_timeslice_gauge.h"
 
 namespace Chroma 
 { 
@@ -91,13 +94,61 @@ namespace Chroma
 	}
 
 
+	void writeMapObjArrayLatColMat(const Params& params)
+	{
+	  // Input object
+	  XMLBufferWriter gauge_xml;
+
+	  // Make a copy because the TimeSliceIO critter wants a modifiable reference
+	  multi1d<LatticeColorMatrix> u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.input_id);
+	  TheNamedObjMap::Instance().get(params.named_obj.input_id).getRecordXML(gauge_xml);
+
+	  const int decay_dir = Nd-1;
+
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", string("gaugeFieldTimeSlice"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  proginfo(file_xml);    // Print out basic program info
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  // Create the entry
+	  QDP::MapObjectDisk<KeyTimeSliceGauge_t,TimeSliceIO<LatticeColorMatrix> > output_obj(params.named_obj.output_file, file_xml.str());
+
+	  // Copy the key/value-s
+	  output_obj.openWrite();
+
+	  int Lt = Layout::lattSize()[decay_dir];
+
+	  for(int mu=0; mu < u.size(); mu++) 
+	  {
+	    // Write with a time-slice key.
+	    for(int t=0; t < Lt; t++) 
+	    {
+	      KeyTimeSliceGauge_t time_key;
+	      time_key.t_slice = t;
+	      time_key.dir     = mu;
+
+	      output_obj.insert(time_key, TimeSliceIO<LatticeColorMatrix>(u[mu],t));
+	    }
+	  }
+
+	  output_obj.openRead();
+	}
+
+
 	bool registerAll(void) 
 	{
 	  bool success = true; 
 	  if (! registered ) 
 	  { 
-	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyTintValTEVPairLatticeColorVector",
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyTintValTLatticeColorVector",
 									  writeMapObjEVPairLCV);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("ArrayLatticeColorMatrix",
+									  writeMapObjArrayLatColMat);
 
 	    registered = true;
 	  }

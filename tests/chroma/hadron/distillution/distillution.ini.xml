@@ -38,14 +38,10 @@
     </elem>
 
     <elem>
-      <annotation>
-        For testing purposes. Copy this map object. 
-        In this case, it will be saved as a disk map object.
-      </annotation>
       <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
       <Frequency>1</Frequency>
       <NamedObject>
-        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <object_type>KeyTintValTLatticeColorVector</object_type> 
         <input_id>eigeninfo_0</input_id>
         <output_file>./colorvec.timeslice.mod</output_file>
       </NamedObject>
@@ -59,6 +55,16 @@
       <Frequency>1</Frequency>
       <NamedObject>
         <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>ArrayLatticeColorMatrix</object_type> 
+        <input_id>default_gauge_field</input_id>
+        <output_file>./gauge.timeslice.mod</output_file>
       </NamedObject>
     </elem>
 
