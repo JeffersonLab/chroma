@@ -22,7 +22,6 @@ namespace Chroma
   struct KeyPropDist_t
   {
     PropDistType       prop_type;     /*!< Distillution source/solution type */
-    PropLineType       line_type;     /*!< Whether connected or disconnected */
     int                t_source;      /*!< Propagator source time slice */
     int                t_slice;       /*!< Propagator sink time slice */
     int                dist_src;      /*!< Source dist index */

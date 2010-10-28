@@ -46,7 +46,7 @@ namespace Chroma
       struct NamedObject_t
       {
 	std::string     gauge_id;       /*!< Gauge field */
-	std::string     distillution_id;/*!< Distillution noise */
+	std::string     distillution_id;/*!< Distillution factory */
 	std::string     colorvec_file;  /*!< Eigenvector file */
 	std::string     prop_file;      /*!< Map for output propagator solutions */
       };
