@@ -265,7 +265,6 @@ namespace Chroma
 
 	}//t
 
-	eigen->openWrite();
 	for(int n=0; n < nev; n++) { 
 	  QDPIO::cout << "Inserting eval/evec pair " << n << endl;
 	  EVPair<LatticeColorVector> pair;
@@ -273,7 +272,7 @@ namespace Chroma
 	  pair.eigenVector = evecs[n];
 	  eigen->insert(n,pair);
 	}
-	eigen->openRead();
+	eigen->flush();
 
 	pop(final_record_xml);
 	pop(final_record_xml);

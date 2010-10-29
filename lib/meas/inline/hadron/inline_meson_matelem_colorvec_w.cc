@@ -572,7 +572,7 @@ namespace Chroma
 	  for(int j = 0 ; j < params.param.num_vecs; ++j)
 	  {
 	    // Displace the right vector and multiply by the momentum phase
-	    EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(j,tmpvec);
+	    EVPair<LatticeColorVector> tmpvec; eigen_source.get(j,tmpvec);
 	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
 								      tmpvec.eigenVector, 
 								      params.param.displacement_length, 
@@ -585,7 +585,7 @@ namespace Chroma
 
 	      // Contract over color indices
 	      // Do the relevant quark contraction
-	      EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(i,tmpvec);
+	      EVPair<LatticeColorVector> tmpvec; eigen_source.get(i,tmpvec);
 	      LatticeComplex lop = localInnerProduct(tmpvec.eigenVector, shift_vec);
 
 	      // Slow fourier-transform

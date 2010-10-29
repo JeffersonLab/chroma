@@ -315,11 +315,13 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a map object disk file" << endl;
 
       QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > eigen_source;
+      eigen_source.setDebug(1);
 
       try
       {
 	// Open
 	QDPIO::cout << "Open file= " << params.named_obj.colorvec_file << endl;
+//	eigen_source.open(params.named_obj.colorvec_file, std::ios_base::in);
 	eigen_source.open(params.named_obj.colorvec_file);
 
 	// Snarf the source info. 
@@ -349,7 +351,6 @@ namespace Chroma
       }
 
       QDPIO::cout << "Set source mod file to read" << endl;
-      eigen_source.openRead();
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
@@ -367,7 +368,7 @@ namespace Chroma
 	  key_vec.colorvec = 0;
 
 	  TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t);
-	  eigen_source.lookup(key_vec, time_slice_io);
+	  eigen_source.get(key_vec, time_slice_io);
 	}
 
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec), time_slice_set.getSet());
@@ -398,38 +399,18 @@ namespace Chroma
       }
 
 
-//      //
-//      // Create the output files
-//      //
-//      try
-//      {
-//	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id);
-//      }
-//      catch (std::bad_cast)
-//      {
-//	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
-//	QDP_abort(1);
-//      }
-//      catch (const string& e) 
-//      {
-//	QDPIO::cerr << name << ": error creating prop: " << e << endl;
-//	QDP_abort(1);
-//      }
-//
-//      // Cast should be valid now
-//      QDP::MapObject< KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& prop_obj =
-//	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropDist_t,TimeSliceIO<LatticeColorVector> > > >(params.named_obj.prop_id));
-
-      QDPIO::cout << "Open output mod" << endl;
-
       //
       // DB storage
       //
       // Open the file, and write the meta-data and the binary for this operator
-      XMLBufferWriter file_xml;
+      //
+      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj;
+//      prop_obj.setDebug(1);
 
-//      if (! qdp_db.fileExists(params.named_obj.prop_op_file))
+      if (! prop_obj.fileExists(params.named_obj.prop_file))
       {
+	XMLBufferWriter file_xml;
+
 	push(file_xml, "MODMetaData");
 	write(file_xml, "id", string("propDist"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
@@ -445,17 +426,15 @@ namespace Chroma
 	write(file_xml, "Config_info", gauge_xml);
 	pop(file_xml);
 
-//	std::string file_str(file_xml.str());
+	std::string file_str(file_xml.str());
 
-//	qdp_db.open(params.named_obj.prop_op_file);
-//	qdp_db.insertUserdata(file_str);
+	prop_obj.insertUserdata(file_xml.str());
+	prop_obj.open(params.named_obj.prop_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
       }
-//      else
-//      {
-//	qdp_db.open(params.named_obj.prop_op_file, O_RDWR, 0664);
-//      }
-
-      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj(params.named_obj.prop_file, file_xml.str());
+      else
+      {
+	prop_obj.open(params.named_obj.prop_file);
+      }
 
 
       //
@@ -511,7 +490,6 @@ namespace Chroma
       
 	QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
 	swatch.start();
-	prop_obj.openWrite();
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -552,7 +530,7 @@ namespace Chroma
 	      LatticeColorVector tmpvec = zero;
 	      TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
 
-	      eigen_source.lookup(key_vec, time_slice_io);
+	      eigen_source.get(key_vec, time_slice_io);
 
 	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
 	    }
@@ -619,7 +597,7 @@ namespace Chroma
 	  } // for colorvec_source
 	} // for t_source
 
-	prop_obj.openRead();
+	prop_obj.flush();
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 

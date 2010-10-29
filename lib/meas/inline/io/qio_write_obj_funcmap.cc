@@ -444,7 +444,7 @@ namespace Chroma
 	for(int n=0; n < obj.size(); n++)
 	{
 	  EVPair<LatticeColorVector> write_pair;
-	  obj.lookup(n, write_pair);
+	  obj.get(n, write_pair);
 
 	  XMLBufferWriter record_xml;
 	  push(record_xml, "VectorInfo");

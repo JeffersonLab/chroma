@@ -215,7 +215,6 @@ namespace Chroma
 
 	    // Loop and read evecs
 	    QDPIO::cout << "About to read " << N << " evectors from QIO..."<<endl;
-	    obj->openWrite();
 	    for(int n=0; n < N; n++)
 	    {
 	      XMLReader record_xml_dummy;
@@ -229,7 +228,7 @@ namespace Chroma
 	      obj->insert(n, read_pair);
 
 	    }
-	    obj->openRead();
+	    obj->flush();
 
 	    // Set File and Record XML throw away dummy XMLs
 	    // BJOO: Yes that's all very well. but RecordXML has to hold something

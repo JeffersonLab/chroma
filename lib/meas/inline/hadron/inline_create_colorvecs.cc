@@ -402,14 +402,13 @@ namespace Chroma
       }
       
 
-      color_vecs.openWrite();
       for(int i=0; i < num_vecs; i++) { 
 	EVPair<LatticeColorVector> pair;
 	pair.eigenValue=evals[i];
 	pair.eigenVector=evecs[i];
 	color_vecs.insert(i, pair);
       }
-      color_vecs.openRead();
+      color_vecs.flush();
       
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec construction = "

@@ -684,7 +684,7 @@ namespace Chroma
 
 		  // Contract over color indices
 		  // Do the relevant quark contraction
-		  LatticeFermion tmpvec_sink; sink_ferm_map.lookup(key_l, tmpvec_sink);
+		  LatticeFermion tmpvec_sink; sink_ferm_map.get(key_l, tmpvec_sink);
 
 		  LatticeComplex lop = localInnerProduct(tmpvec_sink, shift_ferm);
 

@@ -105,7 +105,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-			read(paramtop, "ran_seed", ran_seed);
+      read(paramtop, "ran_seed", ran_seed);
       read(paramtop, "N", N);
       read(paramtop, "j_decay", j_decay);
       read(paramtop, "t_sources", t_sources);
@@ -137,32 +137,32 @@ namespace Chroma
     }
 
 	
-		void fill_laph_subspace_zN( LatticeLAPHSubSpace_t& laph_in, 
+    void fill_laph_subspace_zN( LatticeLAPHSubSpace_t& laph_in, 
 				const Seed& rng_seed, const int& N)
-		{
+    {
 
-		//Obtain the current seed
-		Seed curr_seed;
-		QDP::RNG::savern(curr_seed);
+      //Obtain the current seed
+      Seed curr_seed;
+      QDP::RNG::savern(curr_seed);
 
-		//Seed the random number generator
-		QDP::RNG::setrn(rng_seed);
+      //Seed the random number generator
+      QDP::RNG::setrn(rng_seed);
 	
 
-		//Fill the struct
-		for (int t = 0 ; t < laph_in.time_slices.size(); ++t)
-		{
-			for (int s = 0 ; s < laph_in.time_slices[t].spins.size() ; ++s)
-				for (int v = 0 ; v < laph_in.time_slices[t].spins[s].lap_eigs.size() ; ++v)
-				{
-					laph_in.time_slices[t].spins[s].lap_eigs[v].val = zN_rng(N);
-				}
+      //Fill the struct
+      for (int t = 0 ; t < laph_in.time_slices.size(); ++t)
+      {
+	for (int s = 0 ; s < laph_in.time_slices[t].spins.size() ; ++s)
+	  for (int v = 0 ; v < laph_in.time_slices[t].spins[s].lap_eigs.size() ; ++v)
+	  {
+	    laph_in.time_slices[t].spins[s].lap_eigs[v].val = zN_rng(N);
+	  }
 
-		//Return the seed to its previous value
-		QDP::RNG::setrn(curr_seed);
+	//Return the seed to its previous value
+	QDP::RNG::setrn(curr_seed);
 
-	}
-		}
+      }
+    }
 
     //! Construct the source
     template<>
@@ -171,9 +171,9 @@ namespace Chroma
     {
       QDPIO::cout << "Eigenvector-Diluted random complex ZN source" << endl;
 
-			int Nt = QDP::Layout::lattSize()[params.j_decay];
+      int Nt = QDP::Layout::lattSize()[params.j_decay];
       
-			//
+      //
       // Sanity checks
       //
       if (params.spin_mask.size() > Ns)
@@ -188,7 +188,7 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-			 if (params.t_sources.size() > Nt)
+      if (params.t_sources.size() > Nt)
       {
 	QDPIO::cerr << name << ": time sources size incorrect 1" << endl;
 	QDP_abort(1);
@@ -300,13 +300,12 @@ namespace Chroma
 	  for (int v = 0 ; v < params.eigen_vectors.size() ; ++v) {
 	    int curr_v = params.eigen_vectors[v];
 	    
-	    const Complex& curr_n = laph_noise.time_slices[curr_t].spins[ 
-									 curr_s].lap_eigs[curr_v].val;
+	    const Complex& curr_n = laph_noise.time_slices[curr_t].spins[curr_s].lap_eigs[curr_v].val;
 	    
 	    LatticeFermion temp = zero;
 	    //Should only be poking on a single timeslice, Robert Help!!!
 	   
-	    EVPair<LatticeColorVector> tvec; eigen_vecs.lookup(curr_v, tvec);
+	    EVPair<LatticeColorVector> tvec; eigen_vecs.get(curr_v, tvec);
 	    pokeSpin(temp, curr_n * tvec.eigenVector, curr_s);
 	    
 	    dil_source[phases.getSet()[curr_t]] += temp;

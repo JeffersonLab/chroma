@@ -50,7 +50,7 @@ namespace Chroma
 	  // Input object
 	  QDP::MapObject<int,EVPair<LatticeColorVector> >& input_obj = 
 	    *(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.input_id));
-	  std::vector<int> keys = input_obj.keys();
+	  std::vector<int> keys; input_obj.keys(keys);
 
 	  const int decay_dir = Nd-1;
 
@@ -66,17 +66,18 @@ namespace Chroma
 	  pop(file_xml);
 
 	  // Create the entry
-	  QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > output_obj(params.named_obj.output_file, file_xml.str());
+	  QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > output_obj;
+
+	  output_obj.insertUserdata(file_xml.str());
+	  output_obj.open(params.named_obj.output_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 	  // Copy the key/value-s
-	  output_obj.openWrite();
-
 	  int Lt = Layout::lattSize()[decay_dir];
 
 	  for(int i=0; i < keys.size(); i++) 
 	  {
 	    // Get the value
-	    EVPair<LatticeColorVector> tmpvec; input_obj.lookup(keys[i], tmpvec);
+	    EVPair<LatticeColorVector> tmpvec; input_obj.get(keys[i], tmpvec);
 
 	    // We know the keys are simple integers from 0 to N-1.
 	    // Write with a time-slice key.
@@ -90,7 +91,7 @@ namespace Chroma
 	    }
 	  }
 
-	  output_obj.openRead();
+	  output_obj.flush();
 	}
 
 
@@ -116,11 +117,12 @@ namespace Chroma
 	  pop(file_xml);
 
 	  // Create the entry
-	  QDP::MapObjectDisk<KeyTimeSliceGauge_t,TimeSliceIO<LatticeColorMatrix> > output_obj(params.named_obj.output_file, file_xml.str());
+	  QDP::MapObjectDisk<KeyTimeSliceGauge_t,TimeSliceIO<LatticeColorMatrix> > output_obj;
+
+	  output_obj.insertUserdata(file_xml.str());
+	  output_obj.open(params.named_obj.output_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 
 	  // Copy the key/value-s
-	  output_obj.openWrite();
-
 	  int Lt = Layout::lattSize()[decay_dir];
 
 	  for(int mu=0; mu < u.size(); mu++) 
@@ -136,7 +138,7 @@ namespace Chroma
 	    }
 	  }
 
-	  output_obj.openRead();
+	  output_obj.flush();
 	}
 
 

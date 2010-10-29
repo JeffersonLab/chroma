@@ -329,7 +329,7 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(0, tmpvec);
+	EVPair<LatticeColorVector> tmpvec; eigen_source.get(0, tmpvec);
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), phases.getSet());
 
 	push(xml_out, "Source_correlators");
@@ -372,8 +372,6 @@ namespace Chroma
 	// Lattice extent
 	const int Nt = phases.numSubsets();
 
-	prop_obj.openWrite(); // Prepare map obj for writing
-
 	// Loop over each operator 
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
@@ -404,7 +402,7 @@ namespace Chroma
 
 	    // Pull out a time-slice of the color vector source
 	    LatticeColorVector vec_srce = zero;
-	    EVPair<LatticeColorVector> tmpvec ; eigen_source.lookup(colorvec_source, tmpvec);
+	    EVPair<LatticeColorVector> tmpvec ; eigen_source.get(colorvec_source, tmpvec);
 	    vec_srce[phases.getSet()[t_source]] = tmpvec.eigenVector;
 
 	    for(int t=1; t < Nt; ++t)
@@ -439,7 +437,7 @@ namespace Chroma
 	  } // for colorvec_source
 	} // for t_source
 	
-	prop_obj.openRead();
+	prop_obj.flush();
       }
       catch (const std::string& e) 
       {

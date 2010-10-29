@@ -427,7 +427,6 @@ namespace Chroma
 	  // Build up list of time sources
 	  multi1d<int> t_sources(num_sources);
 
-	  rng_map_obj.openWrite();
 	  for(int nn=0; nn < t_sources.size(); ++nn)
 	  {
 	    int t = (t_source_start + dt*nn + Lt) % Lt;
@@ -435,8 +434,6 @@ namespace Chroma
 
 	    rng_map_obj.insert(t, zN_rng(params.param.contract.N));
 	  }
-	  rng_map_obj.openRead(); // Done inserting into rng_map_obj
-	  map_obj.openWrite();     // Want to do insertions into map_obj
 
 	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source) {
 	    
@@ -449,8 +446,8 @@ namespace Chroma
 
 	      // Pull out a time-slice of the color vector source, give it a random weight
 
-	      Complex weight; rng_map_obj.lookup(t, weight);
-	      EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(colorvec_source, tmpvec);
+	      Complex weight; rng_map_obj.get(t, weight);
+	      EVPair<LatticeColorVector> tmpvec; eigen_source.get(colorvec_source, tmpvec);
 	      vec_srce[phases.getSet()[t]] = weight * tmpvec.eigenVector;
 	    }
 	
@@ -477,8 +474,6 @@ namespace Chroma
 	      map_obj.insert(key, quark_soln);
 	    } // for spin_source
 	  } // for colorvec_source
-
-	  map_obj.openRead();  // Done inserting into map_obj
 
 
 	  swatch.stop();
@@ -533,20 +528,20 @@ namespace Chroma
 		{
 		  LatticeFermion tmp;
 		  QDPIO::cout << "MAP_OBJ LOOKUP" << endl << flush;
-		  map_obj.lookup(key,tmp);
+		  map_obj.get(key,tmp);
 		  vec_source=peekSpin(tmp, spin_sink);
 		}
 
 		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		{
-		  EVPair<LatticeColorVector> vec_sink; eigen_source.lookup(colorvec_sink, vec_sink);
+		  EVPair<LatticeColorVector> vec_sink; eigen_source.get(colorvec_sink, vec_sink);
 
 		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink.eigenVector, vec_source), phases.getSet()));
 		
 		  for(int nn=0; nn < t_sources.size(); ++nn)
 		  {
 		    int t = t_sources[nn];
-		    Complex weight; rng_map_obj.lookup(t,weight);
+		    Complex weight; rng_map_obj.get(t,weight);
 		    buf[nn].val.data().mat(colorvec_sink,colorvec_source) = conj(weight) * hsum[t];
 		  }
 

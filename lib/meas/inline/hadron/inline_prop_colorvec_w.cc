@@ -334,7 +334,7 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(0, tmpvec);
+	EVPair<LatticeColorVector> tmpvec; eigen_source.get(0, tmpvec);
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), phases.getSet());
 
 	push(xml_out, "Source_correlators");
@@ -389,7 +389,6 @@ namespace Chroma
       
 	QDPIO::cout << "Suitable factory found: compute all the quark props" << endl;
 	swatch.start();
-	prop_obj.openWrite();
 
 	//
 	// Loop over the source color and spin, creating the source
@@ -417,7 +416,7 @@ namespace Chroma
 	    // Pull out a time-slice of the color vector source
 	    LatticeColorVector vec_srce = zero;
 	    EVPair<LatticeColorVector> tmpvec;
-	    eigen_source.lookup(colorvec_source, tmpvec);
+	    eigen_source.get(colorvec_source, tmpvec);
 	    vec_srce[phases.getSet()[t_source]] = tmpvec.eigenVector;
 	
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
@@ -445,7 +444,6 @@ namespace Chroma
 	  } // for colorvec_source
 	} // for t_source
 
-	prop_obj.openRead();
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 
@@ -462,6 +460,9 @@ namespace Chroma
       pop(xml_out);
 
       pop(xml_out);  // prop_colorvec
+
+      // Flush the object-map 
+      prop_obj.flush();
 
       // Write the meta-data for this operator
       {

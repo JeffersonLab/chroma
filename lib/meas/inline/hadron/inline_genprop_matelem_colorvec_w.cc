@@ -656,7 +656,7 @@ namespace Chroma
 
 		LatticeFermion shift_ferm;
 		{
-		  LatticeFermion tmpvec; source_ferm_map.lookup(key_r, tmpvec);
+		  LatticeFermion tmpvec; source_ferm_map.get(key_r, tmpvec);
 
 		  shift_ferm = Gamma(gamma_tmp) * displace(u_smr, 
 							   tmpvec,
@@ -676,7 +676,7 @@ namespace Chroma
 
 		  // Contract over color indices
 		  // Do the relevant quark contraction
-		  LatticeFermion tmpvec_sink; sink_ferm_map.lookup(key_l, tmpvec_sink);
+		  LatticeFermion tmpvec_sink; sink_ferm_map.get(key_l, tmpvec_sink);
 
 		  LatticeComplex lop = localInnerProduct(tmpvec_sink, shift_ferm);
 

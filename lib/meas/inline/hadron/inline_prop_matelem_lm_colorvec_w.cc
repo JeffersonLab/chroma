@@ -278,7 +278,7 @@ namespace Chroma
 	// Initialize the slow Fourier transform phases
 	SftMom phases(0, true, Nd-1);
 
-	EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(0,tmpvec);
+	EVPair<LatticeColorVector> tmpvec; eigen_source.get(0,tmpvec);
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec.eigenVector), phases.getSet());
 
 	push(xml_out, "Source_correlators");
@@ -399,14 +399,14 @@ namespace Chroma
 		
 		LatticeColorVector vec_source;
 		{
-		  LatticeFermion tmp; prop_obj.lookup(key, tmp);
+		  LatticeFermion tmp; prop_obj.get(key, tmp);
 
 		  vec_source = peekSpin(tmp, spin_sink);
 		}
 
 		for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		{
-		  EVPair<LatticeColorVector> vec_sink; eigen_source.lookup(colorvec_sink,vec_sink);
+		  EVPair<LatticeColorVector> vec_sink; eigen_source.get(colorvec_sink,vec_sink);
 
 		  multi1d<ComplexD> hsum(sumMulti(localInnerProduct(vec_sink.eigenVector, vec_source), phases.getSet()));
 
