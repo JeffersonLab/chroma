@@ -12,7 +12,6 @@
 #include "util/ferm/key_timeslice_colorvec.h"
 #include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
-#include "io/enum_io/enum_prop_dist_io.h"
 #include "util/ferm/key_prop_distillution.h"
 #include "util/ferm/transf.h"
 #include "util/ft/time_slice_set.h"
@@ -539,7 +538,7 @@ namespace Chroma
 	    {
 	      KeyPropDist_t key;
 
-	      key.prop_type    = PROP_DIST_TYPE_SOURCE;
+	      key.prop_type    = "SRC";
 	      key.t_source     = t_source;
 	      key.t_slice      = t_source;
 	      key.dist_src     = dist_src;
@@ -576,11 +575,11 @@ namespace Chroma
 	      {
 		LatticeColorVector quark_vec = peekSpin(quark_soln, spin_sink);
 
-		for(int t=0; t < time_slice_set.numSubsets(); ++t)
+		for(int t=0; t < Lt; ++t)
 		{
 		  KeyPropDist_t key;
 
-		  key.prop_type    = PROP_DIST_TYPE_SOLUTION;
+		  key.prop_type    = "SNK";
 		  key.t_source     = t_source;
 		  key.t_slice      = t;
 		  key.dist_src     = dist_src;

@@ -60,6 +60,24 @@ namespace Chroma
 
 
   //----------------------------------------------------------------------------
+  //! Diagnostics
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDist_t& param)
+  {
+    os << "KeyPropDist_t:";
+    os << " prop_type= " << param.prop_type;
+    os << " t_source= " << param.t_source;
+    os << " t_slice= " << param.t_slice;
+    os << " dist_src= " << param.dist_src;
+    os << " spin_src= " << param.spin_src;
+    os << " spin_snk= " << param.spin_snk;
+    os << " quark_line= " << param.quark_line;
+    os << " mass= " << param.mass;
+    os << endl;
+
+    return os;
+  }
+
+  //----------------------------------------------------------------------------
   // Support for the keys of prop colo
   bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b)
   {
@@ -69,8 +87,8 @@ namespace Chroma
     lgaa.push_back(a.dist_src);
     lgaa.push_back(a.spin_src);
     lgaa.push_back(a.spin_snk);
-    lgaa.push_back(a.quark_line);
-    lgaa = concat(lgaa, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(a.prop_type)));
+    lgaa = concat(lgaa, stringToArrayInt(a.quark_line));
+    lgaa = concat(lgaa, stringToArrayInt(a.prop_type));
     lgaa = concat(lgaa, stringToArrayInt(a.mass));
 
     std::vector<int> lgbb;
@@ -79,8 +97,8 @@ namespace Chroma
     lgbb.push_back(b.dist_src);
     lgbb.push_back(b.spin_src);
     lgbb.push_back(b.spin_snk);
-    lgbb.push_back(b.quark_line);
-    lgbb = concat(lgbb, stringToArrayInt(thePropDistTypeMap::Instance().lookUpString(b.prop_type)));
+    lgbb = concat(lgbb, stringToArrayInt(b.quark_line));
+    lgbb = concat(lgbb, stringToArrayInt(b.prop_type));
     lgbb = concat(lgbb, stringToArrayInt(b.mass));
 
     return (lgaa < lgbb);
@@ -92,26 +110,26 @@ namespace Chroma
   // KeyPropDist read
   void read(BinaryReader& bin, KeyPropDist_t& param)
   {
-    read(bin, param.prop_type);
+    readDesc(bin, param.prop_type);
     read(bin, param.t_source);
     read(bin, param.t_slice);
     read(bin, param.dist_src);
     read(bin, param.spin_src);
     read(bin, param.spin_snk);
-    read(bin, param.quark_line);
+    readDesc(bin, param.quark_line);
     readDesc(bin, param.mass);
   }
 
   // KeyPropDist write
   void write(BinaryWriter& bin, const KeyPropDist_t& param)
   {
-    write(bin, param.prop_type);
+    writeDesc(bin, param.prop_type);
     write(bin, param.t_source);
     write(bin, param.t_slice);
     write(bin, param.dist_src);
     write(bin, param.spin_src);
     write(bin, param.spin_snk);
-    write(bin, param.quark_line);
+    writeDesc(bin, param.quark_line);
     writeDesc(bin, param.mass);
   }
 

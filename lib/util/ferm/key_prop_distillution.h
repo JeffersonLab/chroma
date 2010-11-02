@@ -21,17 +21,22 @@ namespace Chroma
   //! Distillution propagators
   struct KeyPropDist_t
   {
-    PropDistType       prop_type;     /*!< Distillution source/solution type */
+    std::string        prop_type;     /*!< Distillution source/solution type */
     int                t_source;      /*!< Propagator source time slice */
     int                t_slice;       /*!< Propagator sink time slice */
     int                dist_src;      /*!< Source dist index */
     int                spin_src;      /*!< Source spin index */
     int                spin_snk;      /*!< Sink spin index */
-    int                quark_line;    /*!< The quark line number */
+    std::string        quark_line;    /*!< The quark line */
     std::string        mass;          /*!< Quark mass label */
   };
 
 
+  //----------------------------------------------------------------------------
+  //! Diagnostics
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDist_t& a);
+
+  //----------------------------------------------------------------------------
   //! Support for the distillution keys
   bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b);
 
@@ -47,6 +52,7 @@ namespace Chroma
 
   //! KeyPropDist writer
   void write(XMLWriter& xml, const std::string& path, const KeyPropDist_t& param);
+
   /*! @} */  // end of group ferm
 
 } // namespace Chroma
