@@ -419,6 +419,13 @@ namespace Chroma
       const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
 	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
+      // Sanity check
+      if (params.param.num_vecs < eigen_source.size())
+      {
+	QDPIO::cerr << name << ": number of available eigenvectors is too small\n";
+	QDP_abort(1);
+      }
+
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
