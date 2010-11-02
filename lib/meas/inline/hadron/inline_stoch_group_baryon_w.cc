@@ -1,4 +1,3 @@
-// $Id: inline_stoch_group_baryon_w.cc,v 1.28 2009-05-19 20:43:05 jbulava Exp $
 /*! \file
  * \brief Inline measurement of stochastic group baryon operator
  *
@@ -48,71 +47,71 @@ namespace Chroma
     {
       XMLReader paramtop(xml, path);
 
-			int version;
-			read(paramtop, "version", version);
+      int version;
+      read(paramtop, "version", version);
 
-					multi1d< multi1d<int> > temp;
-			switch (version) 
-			{
-				case 1:
+      multi1d< multi1d<int> > temp;
+      switch (version) 
+      {
+      case 1:
 					
-					QDPIO::cerr << "version 1 no longer supported. " << endl;
-					exit(0);
-					/*
-					read(paramtop, "mom2_max", param.mom2_max);
+	QDPIO::cerr << "version 1 no longer supported. " << endl;
+	exit(0);
+	/*
+	  read(paramtop, "mom2_max", param.mom2_max);
 
 
 				
-					param.moms.resize(1,3);
+	  param.moms.resize(1,3);
 				
-					param.moms[0][0] = 0;
-					param.moms[0][1] = 0;
-					param.moms[0][2] = 0;
+	  param.moms[0][0] = 0;
+	  param.moms[0][1] = 0;
+	  param.moms[0][2] = 0;
 					
-					*/
+	*/
 
-					break;
+	break;
 
-				case 2:
+      case 2:
 
-					read(paramtop, "moms" , temp);
+	read(paramtop, "moms" , temp);
 
-					param.mom2_max = 0;
-					param.moms.resize(temp.size(), temp[0].size() );
+	param.mom2_max = 0;
+	param.moms.resize(temp.size(), temp[0].size() );
 
-					for (int i = 0 ; i < temp.size() ; ++i) 
-						param.moms[i] = temp[i];
+	for (int i = 0 ; i < temp.size() ; ++i) 
+	  param.moms[i] = temp[i];
 
 
-					break;
+	break;
 				
-				default :
+      default :
 
-					QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
-					QDP_abort(1);
-			}
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDP_abort(1);
+      }
 
-			read(paramtop, "displacement_length", param.displacement_length);
+      read(paramtop, "displacement_length", param.displacement_length);
 
-			param.quark_smearing = readXMLGroup(paramtop, "QuarkSmearing", "wvf_kind");
-			param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
-			param.quark_dils             = readXMLArrayGroup(paramtop, "QuarkDilutions", "DilutionType");
-
-
-		}
+      param.quark_smearing = readXMLGroup(paramtop, "QuarkSmearing", "wvf_kind");
+      param.link_smearing         = readXMLGroup(paramtop, "LinkSmearing", "LinkSmearingType");
+      param.quark_dils             = readXMLArrayGroup(paramtop, "QuarkDilutions", "DilutionType");
 
 
-		// Writer for input parameters
-		void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
-		{
-			push(xml, path);
+    }
 
-			int version = 1;
 
-			write(xml, "version", version);
-			write(xml, "mom2_max", param.mom2_max);
-			write(xml, "displacement_length", param.displacement_length);
-			xml << param.quark_smearing.xml;
+    // Writer for input parameters
+    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
+    {
+      push(xml, path);
+
+      int version = 1;
+
+      write(xml, "version", version);
+      write(xml, "mom2_max", param.mom2_max);
+      write(xml, "displacement_length", param.displacement_length);
+      xml << param.quark_smearing.xml;
       xml << param.link_smearing.xml;
 
       push(xml, "QuarkDilutions");
@@ -1131,15 +1130,15 @@ namespace Chroma
       int decay_dir = diluted_quarks[0]->getDecayDir();
 
       //SftMom phases(params.param.mom2_max, false, decay_dir);
-     //Changed this to cut down on the size of the files created 
-		//Stupid way to do this.....
-		//phases1 is the instance to be used if version one has been selected
+      //Changed this to cut down on the size of the files created 
+      //Stupid way to do this.....
+      //phases1 is the instance to be used if version one has been selected
 //likewise for phases2
-			//Idea: make a constructor for SftMom that takes a bit of 
-			//xml and handles the problem. 
+      //Idea: make a constructor for SftMom that takes a bit of 
+      //xml and handles the problem. 
 
 			
-			SftMom phases(params.param.moms, decay_dir);
+      SftMom phases(params.param.moms, decay_dir);
 
       // Sanity check - if this doesn't work we have serious problems
       if (phases.numSubsets() != QDP::Layout::lattSize()[decay_dir])
@@ -1487,15 +1486,15 @@ namespace Chroma
 		    watch.start();
 
 		    /*
-				 multi2d<DComplex> c_sum(phases.sft(c_oper, 
-						       participating_timeslices[t0] ));
-				*/
+		      multi2d<DComplex> c_sum(phases.sft(c_oper, 
+		      participating_timeslices[t0] ));
+		    */
 
- 				multi2d<DComplex> c_sum;
-				int num_mom;
+		    multi2d<DComplex> c_sum;
+		    int num_mom;
 
-					c_sum = phases.sft(c_oper, participating_timeslices[t0]);
-					num_mom = phases.numMom();
+		    c_sum = phases.sft(c_oper, participating_timeslices[t0]);
+		    num_mom = phases.numMom();
 			
 		    watch.stop();
 
@@ -1509,7 +1508,7 @@ namespace Chroma
 		    for(int mom_num = 0 ; mom_num < num_mom ; ++mom_num) 
 		    {
 		      cop.dilutions(i,j,k).mom_projs[mom_num].mom = 
-						params.param.moms[mom_num];
+			params.param.moms[mom_num];
 
 		      cop.dilutions(i,j,k).mom_projs[mom_num].op.resize(1);
 
@@ -1690,7 +1689,7 @@ namespace Chroma
 	    annih_oper.time_slices[0].orderings.resize(1);
 
 
-			int ord = 0;
+	    int ord = 0;
 	    //for(int ord = 0 ; ord < num_orderings ; ++ord)
 	    {
 	      QDPIO::cout << "Ordering = " << ord << endl;
@@ -1791,11 +1790,11 @@ namespace Chroma
 
 		    // Slow fourier-transform
 		    multi2d<DComplex> a_sum;
-				int num_mom;
+		    int num_mom;
 
-					a_sum = phases.sft(
-							a_oper);
-					num_mom = phases.numMom();
+		    a_sum = phases.sft(
+		      a_oper);
+		    num_mom = phases.numMom();
 
 		    watch.stop();
 		    /*
