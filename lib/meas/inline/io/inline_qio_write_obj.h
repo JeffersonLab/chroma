@@ -39,6 +39,7 @@ namespace Chroma
       {
 	std::string   file_name;
 	QDP_volfmt_t  file_volfmt;
+	bool          parallel_io;
       } file;
     };
 

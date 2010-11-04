@@ -64,6 +64,7 @@ namespace Chroma
 
       write(xml, "file_name", input.file_name);
       write(xml, "file_volfmt", input.file_volfmt);
+      write(xml, "parallel_io", input.parallel_io);
 
       pop(xml);
     }
@@ -85,6 +86,13 @@ namespace Chroma
 
       read(inputtop, "file_name", input.file_name);
       Chroma::read(inputtop, "file_volfmt", input.file_volfmt);
+      if( inputtop.count("parallel_io") > 0 ) {
+	read(inputtop, "parallel_io", input.parallel_io);
+      }
+      else { 
+	input.parallel_io = false;
+      }
+
     }
 
 
@@ -148,6 +156,16 @@ namespace Chroma
       // Other tasks could support other disk formats
       QDPIO::cout << "Attempt to write object name = " << params.named_obj.object_id << endl;
       write(xml_out, "object_id", params.named_obj.object_id);
+      QDP_serialparallel_t parallel_io_type = QDPIO_SERIAL;
+      if ( params.file.parallel_io ) { 
+	QDPIO::cout << "Attempting to write with Parallel IO" << endl;
+	parallel_io_type = QDPIO_PARALLEL;
+      }
+      else { 
+	QDPIO::cout << "Attempting to write without parallel IO" << endl;
+	parallel_io_type = QDPIO_SERIAL;
+      }
+
       try
       {
 	swatch.reset();
@@ -157,7 +175,7 @@ namespace Chroma
 	QIOWriteObjCallMapEnv::TheQIOWriteObjFuncMap::Instance().callFunction(params.named_obj.object_type,
 									      params.named_obj.object_id,
 									      params.file.file_name, 
-									      params.file.file_volfmt, QDPIO_SERIAL);
+									      params.file.file_volfmt, parallel_io_type);
 	swatch.stop();
 
 	QDPIO::cout << "Object successfully written: time= " 
