@@ -177,7 +177,6 @@ namespace Chroma
 	XMLBufferWriter final_record_xml;
 	push(final_record_xml, "SubsetVectors");
 	push(final_record_xml, "InfoArray");
-	eigen->openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  XMLReader curr_file_xml;
@@ -212,7 +211,7 @@ namespace Chroma
 
 	pop(final_record_xml);
 	pop(final_record_xml);
-	eigen->openRead();
+	eigen->flush();
 
 	swatch.stop();
 

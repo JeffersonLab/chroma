@@ -34,7 +34,7 @@ namespace Chroma
     for (int n = 0 ; n < num_vecs ; ++n)
     {
       EVPair<LatticeColorVector> ev;
-      vecs.lookup(n, ev);
+      vecs.get(n, ev);
 
       const multi1d<Real>& evals = ev.eigenValue.weights;
       LatticeColorVector cvec = ev.eigenVector;

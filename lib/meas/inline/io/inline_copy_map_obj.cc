@@ -43,7 +43,7 @@ namespace Chroma
 	{
 	  // Input object
 	  Handle< QDP::MapObject<K,V> > input_obj = TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<K,V> > >(params.named_obj.input_id);
-	  std::vector<K> keys = input_obj->keys();
+	  std::vector<K> keys; input_obj->keys(keys);
 
 	  // Create output object
 	  std::istringstream  xml_s(params.named_obj.output_obj.xml);
@@ -62,15 +62,13 @@ namespace Chroma
 	  TheNamedObjMap::Instance().create< Handle< QDP::MapObject<K,V> >, Handle< QDP::MapObject<K,V> > >(params.named_obj.output_id, output_obj);
 
 	  // Copy the key/value-s
-	  output_obj->openWrite();
-
 	  for(int i=0; i < keys.size(); i++) 
 	  {
 	    V v;
-	    input_obj->lookup(keys[i],v);
+	    input_obj->get(keys[i],v);
 	    output_obj->insert(keys[i],v);
 	  }
-	  output_obj->openRead();
+	  output_obj->flush();
 	}
 
 

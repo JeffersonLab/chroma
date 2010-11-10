@@ -191,6 +191,8 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_cfgtype_io.h \
 	io/enum_io/enum_coeffs_io.h \
 	io/enum_io/enum_mesonop_io.h \
+	io/enum_io/enum_prop_dist_io.h \
+	io/enum_io/enum_prop_line_io.h \
 	io/enum_io/enum_proptype_io.h \
 	io/enum_io/enum_eigenvectype_io.h \
 	io/enum_io/enum_fermtype_io.h \
@@ -319,7 +321,9 @@ nobase_include_HEADERS = \
 	util/ferm/subset_vectors.h \
 	util/ferm/block_subset.h \
 	util/ferm/block_couplings.h \
-	util/ft/sftmom.h util/ft/single_phase.h \
+	util/ft/sftmom.h \
+        util/ft/single_phase.h \
+	util/ft/time_slice_set.h \
         util/gauge/eesu2.h util/gauge/eeu1.h \
 	util/gauge/expm12.h util/gauge/expmat.h util/gauge/expsu3.h \
 	util/gauge/eesu3.h \
@@ -346,6 +350,7 @@ nobase_include_HEADERS = \
 	util/gauge/conjgauge.h util/gauge/constgauge.h \
 	util/gauge/stout_utils.h \
 	util/gauge/key_glue_matelem.h \
+	util/gauge/key_timeslice_gauge.h \
         util/info/info.h \
         util/info/proginfo.h \
         util/info/printgeom.h \
@@ -705,9 +710,11 @@ nobase_include_HEADERS += \
 	util/ferm/key_hadron_2pt_corr.h \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
-	util/ferm/key_laph_dil_prop.h \
 	util/ferm/key_prop_matelem.h \
-	util/ferm/key_val_db.h
+	util/ferm/key_timeslice_colorvec.h \
+	util/ferm/key_prop_distillution.h \
+	util/ferm/key_val_db.h \
+	util/ferm/distillution_noise.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
 #	actions/ferm/fermacts/eoprec_flic_fermact_w.h
@@ -823,6 +830,8 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
+	meas/inline/hadron/inline_distillution_noise.h \
+	meas/inline/hadron/inline_prop_distillution_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
         meas/inline/hadron/inline_static_light_spec_w.h \
@@ -901,7 +910,9 @@ nobase_include_HEADERS += \
 	meas/inline/smear/inline_smear_aggregate.h \
 	meas/inline/smear/inline_link_smear.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
-	meas/inline/io/inline_copy_map_obj.h
+	meas/inline/io/inline_copy_map_obj.h \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.h
+
 # Taken out for now
 #	
 #	meas/inline/hadron/inline_spectrum_w.h
@@ -1107,7 +1118,10 @@ libchroma_a_SOURCES = \
 	io/enum_io/enum_inner_solver_type_io.cc \
 	io/enum_io/enum_plusminus_io.cc \
 	io/enum_io/enum_md_integrator_type_io.cc \
-	io/enum_io/enum_proptype_io.cc io/enum_io/enum_qdpvolfmt_io.cc \
+	io/enum_io/enum_prop_dist_io.cc \
+	io/enum_io/enum_prop_line_io.cc \
+	io/enum_io/enum_proptype_io.cc \
+        io/enum_io/enum_qdpvolfmt_io.cc \
 	io/enum_io/enum_quarkspintype_io.cc \
 	io/enum_io/enum_simplebctype_io.cc \
 	io/enum_io/enum_wavetype_io.cc \
@@ -1200,7 +1214,9 @@ libchroma_a_SOURCES = \
 	util/ferm/tdiractodr.cc util/ferm/transf.cc \
 	util/ferm/subset_vectors.cc \
 	util/ferm/block_couplings.cc \
-        util/ft/sftmom.cc util/ft/single_phase.cc \
+        util/ft/sftmom.cc \
+        util/ft/single_phase.cc \
+	util/ft/time_slice_set.cc \
 	util/gauge/eesu3.cc util/gauge/eeu1.cc \
 	util/gauge/expm12.cc util/gauge/expmat.cc util/gauge/expsu3.cc \
 	util/gauge/gauge_startup.cc util/gauge/eesu2.cc \
@@ -1225,6 +1241,7 @@ libchroma_a_SOURCES = \
 	util/gauge/weak_field.cc \
 	util/gauge/stout_utils.cc \
 	util/gauge/key_glue_matelem.cc \
+	util/gauge/key_timeslice_gauge.cc \
 	util/info/printgeom.cc \
         util/info/proginfo.cc \
         util/info/unique_id.cc \
@@ -1512,8 +1529,10 @@ libchroma_a_SOURCES += \
 	util/ferm/key_hadron_2pt_corr.cc \
 	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_prop_colorvec.cc \
-	util/ferm/key_laph_dil_prop.cc \
 	util/ferm/key_prop_matelem.cc \
+	util/ferm/key_timeslice_colorvec.cc \
+	util/ferm/key_prop_distillution.cc \
+	util/ferm/distillution_noise.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
 	util/ferm/map_obj/map_obj_disk_w.cc \
@@ -1573,6 +1592,8 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
+	meas/inline/hadron/inline_distillution_noise.cc \
+	meas/inline/hadron/inline_prop_distillution_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \
 	meas/inline/hadron/inline_heavyhadspec_w.cc \
@@ -1648,6 +1669,7 @@ libchroma_a_SOURCES += \
 	meas/inline/io/inline_usqcd_write_ddpairs_prop.cc \
 	meas/inline/io/inline_read_map_obj_disk.cc \
 	meas/inline/io/inline_copy_map_obj.cc \
+	meas/inline/io/inline_write_timeslice_map_obj_disk.cc \
 	meas/inline/pbp/inline_pbp_aggregate.cc \
 	meas/inline/pbp/inline_psibarpsi_w.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \

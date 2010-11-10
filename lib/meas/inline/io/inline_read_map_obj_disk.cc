@@ -39,11 +39,10 @@ namespace Chroma
 	int readMapObj(const std::string& object_id,
 		       const std::string& file_name)
 	{
-	  std::string user_data = "USER_DATA";
-	  Handle<QDP::MapObject<K,V> > obj_handle(new QDP::MapObjectDisk<K,V>(file_name, user_data));
+	  QDP::MapObjectDisk<K,V>* obj_obj = new QDP::MapObjectDisk<K,V>();
+	  obj_obj->open(file_name);
 
-	  obj_handle->openRead();
-
+	  Handle<QDP::MapObject<K,V> > obj_handle(obj_obj);
 	  TheNamedObjMap::Instance().create< Handle<QDP::MapObject<K,V> >, Handle<QDP::MapObject<K,V> > >(object_id, obj_handle);
 
 	  return obj_handle->size();

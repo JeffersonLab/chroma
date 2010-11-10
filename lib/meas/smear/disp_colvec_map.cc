@@ -43,7 +43,7 @@ namespace Chroma
     if (displacement_length == 0) 
     {
       EVPair<LatticeColorVector> tmpvec; 
-      eigen_source.lookup(key.colvec, tmpvec);
+      eigen_source.get(key.colvec, tmpvec);
       return tmpvec.eigenVector;
     }
     else
@@ -81,7 +81,7 @@ namespace Chroma
       ValDispColorVector_t& disp_q = disp_src_map.find(key)->second;
       {
 	EVPair<LatticeColorVector> tmpvec; 
-	eigen_source.lookup(key.colvec, tmpvec);
+	eigen_source.get(key.colvec, tmpvec);
 	disp_q.vec = tmpvec.eigenVector;
       }
 

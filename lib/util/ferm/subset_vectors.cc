@@ -41,7 +41,7 @@ namespace Chroma
     // A straight lookup is fine - will fail if not right number of eigenvalues
     for(int i=0; i < num_vecs; ++i)
     {
-      EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(i, tmpvec);
+      EVPair<LatticeColorVector> tmpvec; eigen_source.get(i, tmpvec);
 
       evals[i] = tmpvec.eigenValue;
     }

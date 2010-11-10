@@ -180,6 +180,57 @@ namespace Chroma
       }
     }
     
+    //! "Reader"
+    void read(const string& typeIDString, 
+	      BinaryReader& bin_in, 
+	      EnumType& t) {
+      // Try to read a string for the enum
+      string string_in;
+      try { 
+	QDP::readDesc(bin_in, string_in);
+      }
+      catch( const string& bin_e ) { 
+	QDPIO::cerr << "Caught Exception parsing BIN: " << bin_e << endl;
+	QDP_abort(1);
+      }
+
+      // Try to look up the enum for the string
+      try { 
+	t = lookUpEnum(string_in);
+      }
+      catch( EnumLookupException& e ) {
+	QDPIO::cerr << "No enum " << typeIDString << " registered for string " << e.val_str << " while parsing Binary lookup" << endl;
+	dumpMapStrings(typeIDString);
+	QDP_abort(1);
+      }
+    }
+   
+
+    //! Writer
+    void write(const string& typeIDString,
+	       BinaryWriter& bin_out, 
+	       const EnumType& t)  {
+      string string_out;
+      // Try to look up the string for the enum
+      try { 
+	string_out = lookUpString(t);
+      }
+      catch( StringLookupException& e) { 
+	QDPIO::cerr << "No string found for enum " << typeIDString << " with value " << t << " while attempting to write BIN " << endl;
+	dumpMapStrings(typeIDString);
+	QDP_abort(1);
+      }
+
+      // Try writing the string
+      try { 
+	QDP::writeDesc(bin_out, string_out);
+      }
+      catch( const string& bin_e ) { 
+	QDPIO::cerr << "Caught Exception writing BIN: " << bin_e << endl;
+	QDP_abort(1);
+      }
+    }
+    
   };	      
   
 

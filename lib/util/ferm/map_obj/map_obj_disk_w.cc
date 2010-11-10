@@ -45,7 +45,11 @@ namespace Chroma
 	Params params(xml_in, path);
 	std::string  user_data;
 	
-	return new QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >(params.file_name, user_data);
+	QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >* obj = new QDP::MapObjectDisk<int,EVPair<LatticeColorVector> >();
+	obj->insertUserdata(user_data);
+	obj->open(params.file_name, std::ios_base::in |  std::ios_base::out |  std::ios_base::trunc);
+
+	return obj;
       }
 
       //! Callback function
@@ -56,7 +60,11 @@ namespace Chroma
 	Params params(xml_in, path);
 	std::string  user_data;
 
-	return new QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>(params.file_name, user_data);
+	QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>* obj = new QDP::MapObjectDisk<KeyPropColorVec_t,LatticeFermion>();
+	obj->insertUserdata(user_data);
+	obj->open(params.file_name, std::ios_base::in |  std::ios_base::out |  std::ios_base::trunc);
+
+	return obj;
       }
 
       //! Local registration flag

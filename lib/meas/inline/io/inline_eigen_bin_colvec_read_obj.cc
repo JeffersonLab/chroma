@@ -171,7 +171,6 @@ namespace Chroma
 
 	// Read the object
 	swatch.start();
-	eigen->openWrite();
 	for(int i=0; i < params.file.file_names.size(); ++i)
 	{
 	  BinaryFileReader bin(params.file.file_names[i]);
@@ -193,7 +192,7 @@ namespace Chroma
 	  eigen->insert(i,read_pair);
 
 	}
-	eigen->openRead();
+	eigen->flush();
 
 	swatch.stop();
 

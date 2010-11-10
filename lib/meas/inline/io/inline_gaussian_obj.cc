@@ -112,8 +112,6 @@ namespace Chroma
 	  t_sources[0] = 0;
 	  t_sources[1] = QDP::Layout::lattSize()[Nd-1] / 2;
 
-	  obj.openWrite(); // Prepare MapObject for writing into.
-
 	  // Loop over each source and create a fake set of propagators
 	  for(int tt=0; tt < t_sources.size(); ++tt)
 	  {
@@ -139,7 +137,7 @@ namespace Chroma
 	    } // colorvec_src
 	  } // tt
 
-	  obj.openRead(); // Done inserting
+	  obj.flush(); // Done inserting
 
 	  // Write the meta-data for this operator
 	  {

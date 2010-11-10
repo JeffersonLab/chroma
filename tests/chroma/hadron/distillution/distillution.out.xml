@@ -1,0 +1,763 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>2</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <ColorVecMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </ColorVecMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_file>./colorvec.timeslice.mod</output_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>ArrayLatticeColorMatrix</object_type> 
+        <input_id>default_gauge_field</input_id>
+        <output_file>./gauge.timeslice.mod</output_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Distillution noise
+      </annotation>
+      <Name>DISTILLUTION_NOISE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <ensemble>some ensemble label here</ensemble>
+        <sequence>traj 10</sequence>
+        <decay_dir>3</decay_dir>
+      </Param>
+      <NamedObject>
+        <distillution_id>dist_obj</distillution_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_DISTILLUTION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <num_vec_dils>5</num_vec_dils>
+          <t_sources>0 3</t_sources>
+          <quark_line>1</quark_line>
+          <mass>u</mass>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <distillution_id>dist_obj</distillution_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <prop_file>prop.conn.mod</prop_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_DISTILLUTION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <num_vec_dils>5</num_vec_dils>
+          <t_sources>0 3</t_sources>
+          <quark_line>2</quark_line>
+          <mass>u</mass>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <distillution_id>dist_obj</distillution_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <prop_file>prop.conn.mod</prop_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.40.0</chroma>
+      <qdp>1.38.0</qdp>
+      <basePrecision>32</basePrecision>
+    </code_version>
+    <run_date>02 Nov 10 14:31:16 CDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 16</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 16</subgrid_size>
+      <total_volume>1024</total_volume>
+      <subgrid_volume>1024</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.99469234169616</w_plaq>
+    <s_plaq>0.994655949141209</s_plaq>
+    <t_plaq>0.994728734251112</t_plaq>
+    <plane_01_plaq>0.994607786182314</plane_01_plaq>
+    <plane_02_plaq>0.994706784375012</plane_02_plaq>
+    <plane_12_plaq>0.994653276866302</plane_12_plaq>
+    <plane_03_plaq>0.994816071121022</plane_03_plaq>
+    <plane_13_plaq>0.994653895186881</plane_13_plaq>
+    <plane_23_plaq>0.994716236445432</plane_23_plaq>
+    <link>0.379335756108048</link>
+    <pollp>
+      <elem>
+        <re>0.967019850271754</re>
+        <im>-0.0012544684960479</im>
+      </elem>
+      <elem>
+        <re>0.966751460218802</re>
+        <im>-0.00118624364552034</im>
+      </elem>
+      <elem>
+        <re>0.966476668700731</re>
+        <im>-0.00128317258683334</im>
+      </elem>
+      <elem>
+        <re>0.585677024481508</re>
+        <im>-0.0676213782235967</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <CreateColorVecs>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.40.0</chroma>
+            <qdp>1.38.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>02 Nov 10 14:31:16 CDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <num_vecs>10</num_vecs>
+            <decay_dir>3</decay_dir>
+            <num_iter>50</num_iter>
+            <num_orthog>2</num_orthog>
+            <width>3</width><LinkSmearing>
+      <!-- LinkSmearingType>NONE</LinkSmearingType -->
+      <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+      <link_smear_fact>0.1625</link_smear_fact>
+      <link_smear_num>4</link_smear_num>
+      <no_smear_dir>3</no_smear_dir>
+    </LinkSmearing>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <colorvec_id>eigeninfo_0</colorvec_id><ColorVecMapObject>
+      <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+    </ColorVecMapObject>
+</NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234169616</w_plaq>
+          <s_plaq>0.994655949141209</s_plaq>
+          <t_plaq>0.994728734251112</t_plaq>
+          <plane_01_plaq>0.994607786182314</plane_01_plaq>
+          <plane_02_plaq>0.994706784375012</plane_02_plaq>
+          <plane_12_plaq>0.994653276866302</plane_12_plaq>
+          <plane_03_plaq>0.994816071121022</plane_03_plaq>
+          <plane_13_plaq>0.994653895186881</plane_13_plaq>
+          <plane_23_plaq>0.994716236445432</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364552034</im>
+            </elem>
+            <elem>
+              <re>0.966476668700731</re>
+              <im>-0.00128317258683334</im>
+            </elem>
+            <elem>
+              <re>0.585677024481508</re>
+              <im>-0.0676213782235967</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Smeared_Observables>
+          <w_plaq>0.998165218689893</w_plaq>
+          <s_plaq>0.999876899722343</s_plaq>
+          <t_plaq>0.996453537657443</t_plaq>
+          <plane_01_plaq>0.999870356715595</plane_01_plaq>
+          <plane_02_plaq>0.999871385749429</plane_02_plaq>
+          <plane_12_plaq>0.999888956702004</plane_12_plaq>
+          <plane_03_plaq>0.996475789463148</plane_03_plaq>
+          <plane_13_plaq>0.996407312185814</plane_13_plaq>
+          <plane_23_plaq>0.996477511323368</plane_23_plaq>
+          <link>0.379560981496373</link>
+          <pollp>
+            <elem>
+              <re>0.971444695625299</re>
+              <im>-0.0012261513084771</im>
+            </elem>
+            <elem>
+              <re>0.971606201181809</re>
+              <im>-0.00116529937956026</im>
+            </elem>
+            <elem>
+              <re>0.971521877567284</re>
+              <im>-0.00122497218634029</im>
+            </elem>
+            <elem>
+              <re>0.585677024481508</re>
+              <im>-0.0676213782235967</im>
+            </elem>
+          </pollp>
+        </Smeared_Observables>
+        <Source_correlators>
+          <source_corrs>
+            <elem>0.999999999917008 1.00000000416624 1.0000000005445 1.00000000131598 1.00000000043586 0.999999994276139 1.0000000012483 1.00000000182138 0.999999998544684 1.00000000314777 0.999999999788352 1.0000000053718 1.00000000089086 0.999999996107293 1.00000000568466 1.00000000451101</elem>
+            <elem>0.99999999789289 1.00000000260512 1.0000000055314 1.00000000245842 0.999999997656348 0.999999999839315 1.00000000262453 0.999999999967679 1.00000000240056 0.99999999402538 0.99999999993778 0.999999994017107 1.00000000465002 1.00000000040788 1.00000000673718 0.999999997016306</elem>
+            <elem>0.999999994797435 1.00000000174646 0.999999993332138 1.0000000010219 0.999999998708223 0.999999996602549 0.999999995251677 1.00000000244037 1.00000000109677 0.999999991863429 0.999999998241204 1.00000000374772 1.00000000416378 0.99999999858422 0.999999999160361 1.00000000562876</elem>
+            <elem>1.00000000510156 0.999999994816893 0.999999995525597 1.00000000264986 1.00000000437656 1.00000000016938 1.00000000447987 1.00000000285431 0.999999996105612 1.00000000571803 0.999999995916437 0.99999999641254 1.00000000186759 1.0000000061815 0.999999999447139 0.999999998774499</elem>
+            <elem>0.999999999935913 0.999999993304482 1.00000000284819 1.00000000028977 0.999999996142391 1.00000000191274 0.99999999322173 0.999999997410591 0.99999999945423 0.999999991456949 0.999999997749902 1.00000000269086 0.999999997244959 1.00000000571805 1.00000000553329 0.999999997826781</elem>
+            <elem>1.00000000946825 1.00000000475382 0.999999999592083 0.999999992391424 1.00000000268855 1.00000000101726 1.00000000596526 1.00000000272669 0.999999995882431 1.0000000035263 0.999999996731395 1.00000000907652 1.00000000158748 0.999999999187277 0.999999991437195 1.0000000030471</elem>
+            <elem>0.999999995121947 0.999999999639533 0.999999999044427 1.00000000516281 1.00000000578573 1.00000000548186 0.999999999984604 1.00000000163768 1.00000000141843 0.999999999337134 0.999999990741684 1.000000004949 1.00000000679466 0.999999997047143 1.00000000224626 0.999999993073174</elem>
+            <elem>1.00000000182865 0.999999999808873 1.00000000287323 0.999999998784052 1.00000000502801 0.999999998640897 1.00000000802711 1.00000000275644 1.00000000202107 0.999999998808417 0.999999998929433 1.00000000261597 0.999999992997824 1.00000000087743 1.00000000209656 1.00000000440048</elem>
+            <elem>1.00000000072742 0.999999995618759 0.999999998180464 0.999999996019442 0.99999999583749 1.00000000021302 0.999999999837948 0.999999992320912 1.00000000332729 1.00000000289733 0.999999996849703 1.00000000312722 1.00000000342959 0.999999999116502 0.999999997168217 0.999999995648635</elem>
+            <elem>0.999999993646963 1.00000000133168 0.99999999589532 0.999999997085253 0.999999999960423 0.999999995839373 0.999999997105994 0.999999998651545 1.00000000323042 1.00000000372871 1.00000000368216 0.999999998342155 1.00000000235562 1.00000000029605 1.00000000270977 0.999999993800989</elem>
+          </source_corrs>
+        </Source_correlators>
+        <SmearingEvals>
+          <Vector>
+            <VecNo>0</VecNo>
+            <Evals>0.01213517 0.01858117 0.01879583 0.008703579 0.008912668 0.006195861 0.01331205 0.01793014 0.006757148 0.01457102 0.008066056 0.004392463 0.01635891 0.006181789 0.01225311 0.009576377</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>1</VecNo>
+            <Evals>0.01235896 0.005506243 0.01185446 0.008952653 0.00845116 0.01426578 0.01369452 0.009202897 0.01385344 0.01153291 0.01309756 0.01704397 0.005418888 0.01687165 0.009121639 0.006994178</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>2</VecNo>
+            <Evals>0.008299999 0.007944546 0.002176104 0.01466401 0.0150857 0.01183647 0.005417794 0.005249294 0.01256895 0.005783692 0.01116473 0.01050068 0.01100648 0.009483605 0.01092503 0.01594077</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>3</VecNo>
+            <Evals>1.901989 1.931857 1.915712 1.912856 1.90257 1.88314 1.931008 1.913069 1.893439 1.913544 1.910737 1.891987 1.881577 1.909315 1.909833 1.913173</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>4</VecNo>
+            <Evals>1.909239 1.923691 1.921211 1.923828 1.921509 1.914726 1.937961 1.906819 1.944907 1.930056 1.908469 1.905354 1.89584 1.906191 1.924822 1.920196</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>5</VecNo>
+            <Evals>1.927009 1.870406 1.896657 1.905282 1.900585 1.930858 1.924662 1.887584 1.907508 1.908227 1.927002 1.943557 1.911559 1.910335 1.928493 1.909372</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>6</VecNo>
+            <Evals>1.966007 1.935519 1.923917 1.912853 1.899448 1.93169 1.929317 1.90476 1.943803 1.939883 1.937617 1.927968 1.936259 1.954746 1.972985 1.922364</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>7</VecNo>
+            <Evals>1.924661 1.984466 1.95653 1.913111 2.000277 1.912951 1.937923 1.902906 1.995436 1.963423 1.94598 1.941676 1.97653 1.932773 1.89117 1.922893</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>8</VecNo>
+            <Evals>1.978971 1.936927 1.95173 1.932666 1.975983 1.967524 1.931901 1.924001 1.937189 1.939711 1.951959 1.959562 1.919399 1.952193 1.949863 1.989235</Evals>
+          </Vector>
+          <Vector>
+            <VecNo>9</VecNo>
+            <Evals>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985653 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</Evals>
+          </Vector>
+        </SmearingEvals>
+      </CreateColorVecs>
+    </elem>
+    <elem>
+      <write_timeslice_map_object_disk>
+        <update_no>0</update_no>
+        <object_type>KeyTintValTLatticeColorVector</object_type>
+        <input_id>eigeninfo_0</input_id>
+        <output_file>./colorvec.timeslice.mod</output_file>
+      </write_timeslice_map_object_disk>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>eigeninfo_0</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <write_timeslice_map_object_disk>
+        <update_no>0</update_no>
+        <object_type>ArrayLatticeColorMatrix</object_type>
+        <input_id>default_gauge_field</input_id>
+        <output_file>./gauge.timeslice.mod</output_file>
+      </write_timeslice_map_object_disk>
+    </elem>
+    <elem>
+      <DistillutionNoise>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.40.0</chroma>
+            <qdp>1.38.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>02 Nov 10 14:31:17 CDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <decay_dir>3</decay_dir>
+            <ensemble>some ensemble label here</ensemble>
+            <sequence>traj 10</sequence>
+          </Param>
+          <NamedObject>
+            <distillution_id>dist_obj</distillution_id>
+          </NamedObject>
+        </Input>
+      </DistillutionNoise>
+    </elem>
+    <elem>
+      <PropDistillution>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.40.0</chroma>
+            <qdp>1.38.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>02 Nov 10 14:31:17 CDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <Propagator>
+              <version>9</version>
+              <quarkSpinType>FULL</quarkSpinType>
+              <obsvP>false</obsvP><FermionAction>
+      <FermAct>CLOVER</FermAct>
+      <Mass>0.1</Mass>
+      <clovCoeff>1.0</clovCoeff>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Propagator>
+            <Contractions>
+              <num_vecs>10</num_vecs>
+              <num_vec_dils>5</num_vec_dils>
+              <t_sources>0 3</t_sources>
+              <quark_line>1</quark_line>
+              <mass>u</mass>
+            </Contractions>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <distillution_id>dist_obj</distillution_id>
+            <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+            <prop_file>prop.conn.mod</prop_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234169616</w_plaq>
+          <s_plaq>0.994655949141209</s_plaq>
+          <t_plaq>0.994728734251112</t_plaq>
+          <plane_01_plaq>0.994607786182314</plane_01_plaq>
+          <plane_02_plaq>0.994706784375012</plane_02_plaq>
+          <plane_12_plaq>0.994653276866302</plane_12_plaq>
+          <plane_03_plaq>0.994816071121022</plane_03_plaq>
+          <plane_13_plaq>0.994653895186881</plane_13_plaq>
+          <plane_23_plaq>0.994716236445432</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364552034</im>
+            </elem>
+            <elem>
+              <re>0.966476668700731</re>
+              <im>-0.00128317258683334</im>
+            </elem>
+            <elem>
+              <re>0.585677024481508</re>
+              <im>-0.0676213782235967</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_info><?xml version="1.0"?>
+
+
+<MODMetaData>
+  <id>eigenVecsTimeSlice</id>
+  <lattSize>4 4 4 16</lattSize>
+  <decay_dir>3</decay_dir>
+  <num_vecs>10</num_vecs>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.40.0</chroma>
+      <qdp>1.38.0</qdp>
+      <basePrecision>32</basePrecision>
+    </code_version>
+    <run_date>02 Nov 10 14:31:17 CDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 16</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 16</subgrid_size>
+      <total_volume>1024</total_volume>
+      <subgrid_volume>1024</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <Weights>
+    <elem>0.01213517 0.01858117 0.01879583 0.008703579 0.008912668 0.006195861 0.01331205 0.01793014 0.006757148 0.01457102 0.008066056 0.004392463 0.01635891 0.006181789 0.01225311 0.009576377</elem>
+    <elem>0.01235896 0.005506243 0.01185446 0.008952653 0.00845116 0.01426578 0.01369452 0.009202897 0.01385344 0.01153291 0.01309756 0.01704397 0.005418888 0.01687165 0.009121639 0.006994178</elem>
+    <elem>0.008299999 0.007944546 0.002176104 0.01466401 0.0150857 0.01183647 0.005417794 0.005249294 0.01256895 0.005783692 0.01116473 0.01050068 0.01100648 0.009483605 0.01092503 0.01594077</elem>
+    <elem>1.901989 1.931857 1.915712 1.912856 1.90257 1.88314 1.931008 1.913069 1.893439 1.913544 1.910737 1.891987 1.881577 1.909315 1.909833 1.913173</elem>
+    <elem>1.909239 1.923691 1.921211 1.923828 1.921509 1.914726 1.937961 1.906819 1.944907 1.930056 1.908469 1.905354 1.89584 1.906191 1.924822 1.920196</elem>
+    <elem>1.927009 1.870406 1.896657 1.905282 1.900585 1.930858 1.924662 1.887584 1.907508 1.908227 1.927002 1.943557 1.911559 1.910335 1.928493 1.909372</elem>
+    <elem>1.966007 1.935519 1.923917 1.912853 1.899448 1.93169 1.929317 1.90476 1.943803 1.939883 1.937617 1.927968 1.936259 1.954746 1.972985 1.922364</elem>
+    <elem>1.924661 1.984466 1.95653 1.913111 2.000277 1.912951 1.937923 1.902906 1.995436 1.963423 1.94598 1.941676 1.97653 1.932773 1.89117 1.922893</elem>
+    <elem>1.978971 1.936927 1.95173 1.932666 1.975983 1.967524 1.931901 1.924001 1.937189 1.939711 1.951959 1.959562 1.919399 1.952193 1.949863 1.989235</elem>
+    <elem>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985653 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</elem>
+  </Weights>
+</MODMetaData>
+
+
+        </Source_info>
+        <Source_correlators>
+          <source_corrs>0.999999999917008 1.00000000416624 1.0000000005445 1.00000000131598 1.00000000043586 0.999999994276139 1.0000000012483 1.00000000182138 0.999999998544684 1.00000000314777 0.999999999788352 1.0000000053718 1.00000000089086 0.999999996107293 1.00000000568466 1.00000000451101</source_corrs>
+        </Source_correlators>
+        <Relaxation_Iterations>
+          <ncg_had>71</ncg_had>
+        </Relaxation_Iterations>
+      </PropDistillution>
+    </elem>
+    <elem>
+      <PropDistillution>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.40.0</chroma>
+            <qdp>1.38.0</qdp>
+            <basePrecision>32</basePrecision>
+          </code_version>
+          <run_date>02 Nov 10 14:31:36 CDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 16</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 16</subgrid_size>
+            <total_volume>1024</total_volume>
+            <subgrid_volume>1024</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <Propagator>
+              <version>9</version>
+              <quarkSpinType>FULL</quarkSpinType>
+              <obsvP>false</obsvP><FermionAction>
+      <FermAct>CLOVER</FermAct>
+      <Mass>0.1</Mass>
+      <clovCoeff>1.0</clovCoeff>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Propagator>
+            <Contractions>
+              <num_vecs>10</num_vecs>
+              <num_vec_dils>5</num_vec_dils>
+              <t_sources>0 3</t_sources>
+              <quark_line>2</quark_line>
+              <mass>u</mass>
+            </Contractions>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <distillution_id>dist_obj</distillution_id>
+            <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+            <prop_file>prop.conn.mod</prop_file>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.99469234169616</w_plaq>
+          <s_plaq>0.994655949141209</s_plaq>
+          <t_plaq>0.994728734251112</t_plaq>
+          <plane_01_plaq>0.994607786182314</plane_01_plaq>
+          <plane_02_plaq>0.994706784375012</plane_02_plaq>
+          <plane_12_plaq>0.994653276866302</plane_12_plaq>
+          <plane_03_plaq>0.994816071121022</plane_03_plaq>
+          <plane_13_plaq>0.994653895186881</plane_13_plaq>
+          <plane_23_plaq>0.994716236445432</plane_23_plaq>
+          <link>0.379335756108048</link>
+          <pollp>
+            <elem>
+              <re>0.967019850271754</re>
+              <im>-0.0012544684960479</im>
+            </elem>
+            <elem>
+              <re>0.966751460218802</re>
+              <im>-0.00118624364552034</im>
+            </elem>
+            <elem>
+              <re>0.966476668700731</re>
+              <im>-0.00128317258683334</im>
+            </elem>
+            <elem>
+              <re>0.585677024481508</re>
+              <im>-0.0676213782235967</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_info><?xml version="1.0"?>
+
+
+<MODMetaData>
+  <id>eigenVecsTimeSlice</id>
+  <lattSize>4 4 4 16</lattSize>
+  <decay_dir>3</decay_dir>
+  <num_vecs>10</num_vecs>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.40.0</chroma>
+      <qdp>1.38.0</qdp>
+      <basePrecision>32</basePrecision>
+    </code_version>
+    <run_date>02 Nov 10 14:31:17 CDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 16</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 16</subgrid_size>
+      <total_volume>1024</total_volume>
+      <subgrid_volume>1024</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <Weights>
+    <elem>0.01213517 0.01858117 0.01879583 0.008703579 0.008912668 0.006195861 0.01331205 0.01793014 0.006757148 0.01457102 0.008066056 0.004392463 0.01635891 0.006181789 0.01225311 0.009576377</elem>
+    <elem>0.01235896 0.005506243 0.01185446 0.008952653 0.00845116 0.01426578 0.01369452 0.009202897 0.01385344 0.01153291 0.01309756 0.01704397 0.005418888 0.01687165 0.009121639 0.006994178</elem>
+    <elem>0.008299999 0.007944546 0.002176104 0.01466401 0.0150857 0.01183647 0.005417794 0.005249294 0.01256895 0.005783692 0.01116473 0.01050068 0.01100648 0.009483605 0.01092503 0.01594077</elem>
+    <elem>1.901989 1.931857 1.915712 1.912856 1.90257 1.88314 1.931008 1.913069 1.893439 1.913544 1.910737 1.891987 1.881577 1.909315 1.909833 1.913173</elem>
+    <elem>1.909239 1.923691 1.921211 1.923828 1.921509 1.914726 1.937961 1.906819 1.944907 1.930056 1.908469 1.905354 1.89584 1.906191 1.924822 1.920196</elem>
+    <elem>1.927009 1.870406 1.896657 1.905282 1.900585 1.930858 1.924662 1.887584 1.907508 1.908227 1.927002 1.943557 1.911559 1.910335 1.928493 1.909372</elem>
+    <elem>1.966007 1.935519 1.923917 1.912853 1.899448 1.93169 1.929317 1.90476 1.943803 1.939883 1.937617 1.927968 1.936259 1.954746 1.972985 1.922364</elem>
+    <elem>1.924661 1.984466 1.95653 1.913111 2.000277 1.912951 1.937923 1.902906 1.995436 1.963423 1.94598 1.941676 1.97653 1.932773 1.89117 1.922893</elem>
+    <elem>1.978971 1.936927 1.95173 1.932666 1.975983 1.967524 1.931901 1.924001 1.937189 1.939711 1.951959 1.959562 1.919399 1.952193 1.949863 1.989235</elem>
+    <elem>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985653 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</elem>
+  </Weights>
+</MODMetaData>
+
+
+        </Source_info>
+        <Source_correlators>
+          <source_corrs>0.999999999917008 1.00000000416624 1.0000000005445 1.00000000131598 1.00000000043586 0.999999994276139 1.0000000012483 1.00000000182138 0.999999998544684 1.00000000314777 0.999999999788352 1.0000000053718 1.00000000089086 0.999999996107293 1.00000000568466 1.00000000451101</source_corrs>
+        </Source_correlators>
+        <Relaxation_Iterations>
+          <ncg_had>71</ncg_had>
+        </Relaxation_Iterations>
+      </PropDistillution>
+    </elem>
+  </InlineObservables>
+</chroma>

@@ -749,11 +749,10 @@ namespace Chroma
 	
       }//k
 
-      color_vecs.openWrite();
       for(int n=0; n < num_vecs; n++) { 
 	color_vecs.insert(n, ev_pairs[n]);
       }
-      color_vecs.openRead();
+      color_vecs.flush();
       
       //pop(xml_out);
       

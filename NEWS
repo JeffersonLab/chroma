@@ -1,3 +1,8 @@
+Oct 29, 2010 - Robert Edwards
+        Version 3.40.0
+        Overhauled usage of MapObject classes to match new QDP++ interface. The
+        MapObjectDisk now supports multiple closure/openings/insertions.
+
 Oct 09, 2010 - Robert Edwards
         Version 3.39.0
         Pulled out the MapObject classes, made them more general, and put them in QDP.

@@ -109,16 +109,15 @@ namespace Chroma
 
 	 
 	// Do the actual rotation. The evs stay the same
-	output_obj->openWrite();
 	for(int n=0; n < input_obj->size(); n++) {
 	  EVPair<LatticeColorVector> pair;
-	  input_obj->lookup(n,pair);
+	  input_obj->get(n,pair);
 
 	  EVPair<LatticeColorVector> pair2 = pair; 
 	  pair2.eigenVector  = g*pair.eigenVector;
 	  output_obj->insert(n, pair2);
 	}
-	output_obj->openRead(); // Read mode hereafter
+	output_obj->flush();
       }
 
 

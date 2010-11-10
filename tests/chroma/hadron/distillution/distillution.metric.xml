@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[13]/PropMatElemColorVec/Source_correlators/source_corrs" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[15]/MesonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[17]/BaryonMatElemColorVec/Smeared_Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

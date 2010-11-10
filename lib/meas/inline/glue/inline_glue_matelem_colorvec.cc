@@ -461,7 +461,7 @@ namespace Chroma
 	    watch.start();
 	    
 	    // Displace the right vector and multiply by the momentum phase
-	    EVPair<LatticeColorVector> tmpvec; eigen_source.lookup(j,tmpvec);
+	    EVPair<LatticeColorVector> tmpvec; eigen_source.get(j,tmpvec);
 	    LatticeColorVector lvec(tmpvec.eigenVector);
 
 	    LatticeColorVector shift_vec = rightNabla(u_smr, 
