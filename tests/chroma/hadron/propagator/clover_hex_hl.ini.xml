@@ -1,0 +1,481 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+<annotation>
+all operators without derivative
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+<!-- POINT SOURCE LIGHT PROPAGATOR -->  
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Mass>0.05</Mass>
+<clovCoeff>1.0</clovCoeff>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+  <FermState>
+           <Name>HEX_FERM_STATE</Name>
+           <n_smear>2</n_smear>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+         </FermState>
+
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_0</source_id>
+        <prop_id>light_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>light_prop</prop_id>
+        <smeared_prop_id>light_prop_pt_pt</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+<!-- POINT HEAVY PROPAGATOR -->
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_1</source_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Mass>0.05</Mass>
+<clovCoeff>1.0</clovCoeff>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+  <FermState>
+           <Name>HEX_FERM_STATE</Name>
+           <n_smear>2</n_smear>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+         </FermState>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_1</source_id>
+        <prop_id>heavy_prop</prop_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>SINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <Sink>
+          <version>2</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+        </Sink>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_id>heavy_prop</prop_id>
+        <smeared_prop_id>heavy_prop_pt_pt</smeared_prop_id>
+      </NamedObject>
+    </elem>
+
+
+    <elem>
+      <Name>MESON_SPECTRUM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>0</mom2_max>
+        <avg_equiv_mom>true</avg_equiv_mom>
+       </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <correlators>
+	
+          <elem>
+            <source_particle> a0 </source_particle>
+            <source_wavetype> point </source_wavetype>
+            <sink_particle> a0 </sink_particle>
+            <sink_wavetype> point </sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>0</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>0</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	    </correlator_terms>
+          </elem>
+	      
+	  <elem>
+            <source_particle> pion </source_particle>
+            <source_wavetype> point </source_wavetype>
+            <sink_particle> pion </sink_particle>
+            <sink_wavetype> point </sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>15</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>15</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+            </correlator_terms>
+          </elem>
+	
+	  <elem>
+            <source_particle> rho </source_particle>
+            <source_wavetype> point </source_wavetype>
+            <sink_particle> rho </sink_particle>
+            <sink_wavetype> point </sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>0</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>0</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>1</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>1</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>2</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>2</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+            </correlator_terms>
+          </elem>
+	  
+	  <elem>
+            <source_particle> a1 </source_particle>
+            <source_wavetype> point </source_wavetype>
+            <sink_particle> a1 </sink_particle>
+            <sink_wavetype> point </sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>14</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>14</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>13</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>13</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>11</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>11</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+            </correlator_terms>
+          </elem>
+	  
+	  <elem>
+            <source_particle> b1 </source_particle>
+            <source_wavetype> point </source_wavetype>
+            <sink_particle> b1 </sink_particle>
+            <sink_wavetype> point </sink_wavetype>
+            <correlator_terms>
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>3</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>3</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>5</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>5</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+              <elem>
+                <first_id>light_prop_pt_pt</first_id>
+                <second_id>heavy_prop_pt_pt</second_id>
+                <factor>1.0</factor>
+
+                <SourceSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>6</gamma>
+                </SourceSpinInsertion>
+
+                <SinkSpinInsertion>
+                  <version>1</version>
+                  <SpinInsertionType>RIGHT_GAMMA_INSERTION</SpinInsertionType>
+                  <gamma>6</gamma>
+                </SinkSpinInsertion>
+		
+              </elem>
+	      
+            </correlator_terms>
+          </elem>
+	  	  
+        </correlators>
+	
+      </NamedObject>
+    </elem>
+    
+    
+  </InlineMeasurements>
+   <nrow>4 4 4 4</nrow>
+</Param>
+
+<RNG>
+  <Seed>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+
+</chroma>
