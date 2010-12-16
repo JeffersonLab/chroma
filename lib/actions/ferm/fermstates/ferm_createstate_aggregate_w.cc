@@ -11,6 +11,7 @@
 #include "actions/ferm/fermstates/periodic_fermstate_w.h"
 #include "actions/ferm/fermstates/simple_fermstate_w.h"
 #include "actions/ferm/fermstates/stout_fermstate_w.h"
+#include "actions/ferm/fermstates/hex_fermstate_w.h"
 #include "actions/ferm/fermstates/extfield_fermstate_w.h"
 
 namespace Chroma
@@ -35,6 +36,7 @@ namespace Chroma
 	success &= CreatePeriodicFermStateEnv::registerAll();
 	success &= CreateSimpleFermStateEnv::registerAll();
 	success &= CreateStoutFermStateEnv::registerAll();
+	success &= CreateHexFermStateEnv::registerAll();
 	success &= CreateSLICFermStateEnv::registerAll();
 	success &= CreateExtFieldFermStateEnv::registerAll();
 

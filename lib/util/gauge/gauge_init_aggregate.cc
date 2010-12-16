@@ -15,6 +15,7 @@
 #include "util/gauge/cppacs_gauge_init.h"
 #include "util/gauge/weak_gauge_init.h"
 #include "util/gauge/sf_gauge_init.h"
+#include "util/gauge/wupp_gauge_init.h"
 
 namespace Chroma
 {
@@ -42,6 +43,7 @@ namespace Chroma
 	success &= CPPACSGaugeInitEnv::registerAll();
 	success &= WeakGaugeInitEnv::registerAll();
 	success &= SFGaugeInitEnv::registerAll();
+	success &= WUPPGaugeInitEnv::registerAll();
 
 	registered = true;
       }

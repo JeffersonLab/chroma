@@ -22,6 +22,9 @@
 #include "stout_fermstate_w.h"
 #include "extfield_fermstate_w.h"
 
+
+#include "hex_fermstate_w.h"
+
 #endif
 
 

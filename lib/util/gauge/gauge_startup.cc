@@ -11,6 +11,7 @@
 #include "io/param_io.h"
 #include "io/gauge_io.h"
 #include "io/readszin.h"
+#include "io/readwupp.h"
 #include "io/readmilc.h"
 #include "io/kyugauge_io.h"
 #include "io/readcppacs.h"
@@ -63,6 +64,11 @@ namespace Chroma
     case CFG_TYPE_CPPACS :
       readCPPACS(gauge_xml, u, cfg.cfg_file);
       break;
+
+    case CFG_TYPE_WUPP :
+      readWupp(gauge_xml, u, cfg.cfg_file);
+      break;
+
 
     case CFG_TYPE_KYU:
     {

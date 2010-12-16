@@ -55,6 +55,15 @@
      {
 	 exec_path   => "$top_builddir/mainprogs/main" , 
 	 execute     => "chroma" , 
+	 input       => "$test_dir/chroma/hadron/propagator/clover_hex_hl.ini.xml" , 
+	 output      => "clover_hex.ferm.candidate.xml",
+	 metric      => "$test_dir/chroma/hadron/propagator/unprec_hex.metric.xml" ,
+	 controlfile => "$test_dir/chroma/hadron/propagator/clover_hex_hl.out.xml" ,
+     },
+
+     {
+	 exec_path   => "$top_builddir/mainprogs/main" , 
+	 execute     => "chroma" , 
 	 input       => "$test_dir/chroma/hadron/propagator/prec_parwilson.ini.xml" , 
 	 output      => "prec_parwilson.candidate.xml",
 	 metric      => "$test_dir/chroma/hadron/propagator/prec_parwilson.metric.xml" ,

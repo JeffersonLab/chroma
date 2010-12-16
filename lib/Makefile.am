@@ -39,6 +39,7 @@ nobase_include_HEADERS = \
 	actions/ferm/fermstates/eigen_state.h \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
+	actions/ferm/fermstates/hex_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_eigcg2_array.h \
@@ -207,7 +208,7 @@ nobase_include_HEADERS = \
 	io/enum_io/enum_inner_solver_type_io.h \
         io/enum_io/enum_stochsrc_io.h\
         io/aniso_io.h io/cfgtype_io.h io/eigen_io.h \
-	io/gauge_io.h io/kyugauge_io.h  \
+	io/gauge_io.h io/kyugauge_io.h io/readwupp.h \
         io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
         io/readcppacs.h io/cppacs_io.h \
 	io/readszin.h io/szin_io.h \
@@ -266,6 +267,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
+      meas/smear/hex_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
@@ -332,6 +334,7 @@ nobase_include_HEADERS = \
 	util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
 	util/gauge/gauge_init_aggregate.h \
+        util/gauge/wupp_gauge_init.h \
 	util/gauge/milc_gauge_init.h \
 	util/gauge/nersc_gauge_init.h \
 	util/gauge/szin_gauge_init.h \
@@ -509,6 +512,7 @@ nobase_include_HEADERS += \
         actions/ferm/fermstates/ferm_createstate_factory_w.h \
         actions/ferm/fermstates/ferm_createstate_reader_w.h \
 	actions/ferm/fermstates/stout_fermstate_w.h \
+        actions/ferm/fermstates/hex_fermstate_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h \
 	actions/ferm/linop/lg5Rherm_w.h \
@@ -971,6 +975,7 @@ lib_LIBRARIES = libchroma.a
 libchroma_a_SOURCES = \
 	actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+        actions/ferm/fermstates/hex_fermstate_params.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
@@ -1133,6 +1138,7 @@ libchroma_a_SOURCES = \
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc \
 	io/readszin.cc io/szin_io.cc \
 	io/writemilc.cc io/writeszin.cc \
+        io/readwupp.cc \
 	io/xml_group_reader.cc \
 	meas/eig/eig_spec.cc meas/eig/eig_spec_array.cc \
 	meas/eig/gramschm.cc meas/eig/gramschm_array.cc \
@@ -1176,6 +1182,7 @@ libchroma_a_SOURCES = \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc \
+        meas/smear/hex_smear.cc \
 	meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
@@ -1227,6 +1234,7 @@ libchroma_a_SOURCES = \
 	util/gauge/szinqio_gauge_init.cc \
 	util/gauge/kyu_gauge_init.cc \
 	util/gauge/disordered_gauge_init.cc \
+        util/gauge/wupp_gauge_init.cc \
 	util/gauge/unit_gauge_init.cc \
 	util/gauge/cppacs_gauge_init.cc \
 	util/gauge/weak_gauge_init.cc \
@@ -1371,6 +1379,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermstates/stout_fermstate_w.cc \
 	actions/ferm/fermstates/extfield_aggregate_w.cc \
 	actions/ferm/fermstates/extfield_fermstate_w.cc \
+        actions/ferm/fermstates/hex_fermstate_w.cc \
 	actions/ferm/fermstates/extfield_aggregate_w.cc \
         actions/ferm/fermstates/periodic_fermstate_w.cc \
         actions/ferm/fermstates/simple_fermstate_w.cc \
