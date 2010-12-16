@@ -41,7 +41,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-LIBOBJDIR =
 @BUILD_GMP_REMEZ_TRUE@am__append_1 = @GMP_CXXFLAGS@
 @BUILD_QUDA_TRUE@am__append_2 = @QUDA_CXXFLAGS@
 @BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
@@ -191,6 +190,7 @@ libchroma_a_AR = $(AR) $(ARFLAGS)
 libchroma_a_LIBADD =
 am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermstates/hex_fermstate_params.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
@@ -343,7 +343,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	io/kyugauge_io.cc io/kyuqprop_io.cc io/milc_io.cc \
 	io/overlap_state_info.cc io/readcppacs.cc io/cppacs_io.cc \
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc io/readszin.cc \
-	io/szin_io.cc io/writemilc.cc io/writeszin.cc \
+	io/szin_io.cc io/writemilc.cc io/writeszin.cc io/readwupp.cc \
 	io/xml_group_reader.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
@@ -376,7 +376,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
-	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
+	meas/smear/hyp_link_smearing.cc meas/smear/hex_smear.cc \
+	meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
@@ -419,15 +420,16 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/gauge/szin_gauge_init.cc util/gauge/szinqio_gauge_init.cc \
 	util/gauge/kyu_gauge_init.cc \
 	util/gauge/disordered_gauge_init.cc \
-	util/gauge/unit_gauge_init.cc util/gauge/cppacs_gauge_init.cc \
-	util/gauge/weak_gauge_init.cc util/gauge/sf_gauge_init.cc \
-	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
-	util/gauge/shift2.cc util/gauge/su2extract.cc \
-	util/gauge/su3proj.cc util/gauge/sunfill.cc \
-	util/gauge/sun_proj.cc util/gauge/taproj.cc \
-	util/gauge/unit_check.cc util/gauge/conjgauge.cc \
-	util/gauge/constgauge.cc util/gauge/weak_field.cc \
-	util/gauge/stout_utils.cc util/gauge/key_glue_matelem.cc \
+	util/gauge/wupp_gauge_init.cc util/gauge/unit_gauge_init.cc \
+	util/gauge/cppacs_gauge_init.cc util/gauge/weak_gauge_init.cc \
+	util/gauge/sf_gauge_init.cc util/gauge/hotst.cc \
+	util/gauge/reunit.cc util/gauge/rgauge.cc util/gauge/shift2.cc \
+	util/gauge/su2extract.cc util/gauge/su3proj.cc \
+	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
+	util/gauge/taproj.cc util/gauge/unit_check.cc \
+	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
+	util/gauge/weak_field.cc util/gauge/stout_utils.cc \
+	util/gauge/key_glue_matelem.cc \
 	util/gauge/key_timeslice_gauge.cc util/info/printgeom.cc \
 	util/info/proginfo.cc util/info/unique_id.cc \
 	update/heatbath/su3over.cc update/heatbath/su2_hb_update.cc \
@@ -532,6 +534,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermstates/stout_fermstate_w.cc \
 	actions/ferm/fermstates/extfield_aggregate_w.cc \
 	actions/ferm/fermstates/extfield_fermstate_w.cc \
+	actions/ferm/fermstates/hex_fermstate_w.cc \
 	actions/ferm/fermstates/periodic_fermstate_w.cc \
 	actions/ferm/fermstates/simple_fermstate_w.cc \
 	actions/ferm/invert/inv_borici_w.cc \
@@ -897,7 +900,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_15 = asqtad_cps_wrapper_qprop.$(OBJEXT)
 @BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_16 = clover_term_bagel_clover.$(OBJEXT)
 am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
-	zolotarev_coeffs.$(OBJEXT) \
+	zolotarev_coeffs.$(OBJEXT) hex_fermstate_params.$(OBJEXT) \
 	ovext_tuning_strategy_aggregate.$(OBJEXT) \
 	ovext_constant_strategy.$(OBJEXT) \
 	ovext_const_div_by_resp_strategy.$(OBJEXT) \
@@ -1013,7 +1016,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	overlap_state_info.$(OBJEXT) readcppacs.$(OBJEXT) \
 	cppacs_io.$(OBJEXT) param_io.$(OBJEXT) qprop_io.$(OBJEXT) \
 	readmilc.$(OBJEXT) readszin.$(OBJEXT) szin_io.$(OBJEXT) \
-	writemilc.$(OBJEXT) writeszin.$(OBJEXT) \
+	writemilc.$(OBJEXT) writeszin.$(OBJEXT) readwupp.$(OBJEXT) \
 	xml_group_reader.$(OBJEXT) eig_spec.$(OBJEXT) \
 	eig_spec_array.$(OBJEXT) gramschm.$(OBJEXT) \
 	gramschm_array.$(OBJEXT) ritz.$(OBJEXT) ritz_array.$(OBJEXT) \
@@ -1039,7 +1042,8 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	gaus_smear.$(OBJEXT) hyp_smear.$(OBJEXT) hyp_smear3d.$(OBJEXT) \
 	laplacian.$(OBJEXT) link_smearing_aggregate.$(OBJEXT) \
 	ape_link_smearing.$(OBJEXT) hyp_link_smearing.$(OBJEXT) \
-	no_link_smearing.$(OBJEXT) stout_link_smearing.$(OBJEXT) \
+	hex_smear.$(OBJEXT) no_link_smearing.$(OBJEXT) \
+	stout_link_smearing.$(OBJEXT) \
 	quark_smearing_aggregate.$(OBJEXT) no_quark_smearing.$(OBJEXT) \
 	gaus_quark_smearing.$(OBJEXT) jacobi_quark_smearing.$(OBJEXT) \
 	vector_quark_smearing.$(OBJEXT) \
@@ -1070,16 +1074,17 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	milc_gauge_init.$(OBJEXT) nersc_gauge_init.$(OBJEXT) \
 	szin_gauge_init.$(OBJEXT) szinqio_gauge_init.$(OBJEXT) \
 	kyu_gauge_init.$(OBJEXT) disordered_gauge_init.$(OBJEXT) \
-	unit_gauge_init.$(OBJEXT) cppacs_gauge_init.$(OBJEXT) \
-	weak_gauge_init.$(OBJEXT) sf_gauge_init.$(OBJEXT) \
-	hotst.$(OBJEXT) reunit.$(OBJEXT) rgauge.$(OBJEXT) \
-	shift2.$(OBJEXT) su2extract.$(OBJEXT) su3proj.$(OBJEXT) \
-	sunfill.$(OBJEXT) sun_proj.$(OBJEXT) taproj.$(OBJEXT) \
-	unit_check.$(OBJEXT) conjgauge.$(OBJEXT) constgauge.$(OBJEXT) \
-	weak_field.$(OBJEXT) stout_utils.$(OBJEXT) \
-	key_glue_matelem.$(OBJEXT) key_timeslice_gauge.$(OBJEXT) \
-	printgeom.$(OBJEXT) proginfo.$(OBJEXT) unique_id.$(OBJEXT) \
-	su3over.$(OBJEXT) su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
+	wupp_gauge_init.$(OBJEXT) unit_gauge_init.$(OBJEXT) \
+	cppacs_gauge_init.$(OBJEXT) weak_gauge_init.$(OBJEXT) \
+	sf_gauge_init.$(OBJEXT) hotst.$(OBJEXT) reunit.$(OBJEXT) \
+	rgauge.$(OBJEXT) shift2.$(OBJEXT) su2extract.$(OBJEXT) \
+	su3proj.$(OBJEXT) sunfill.$(OBJEXT) sun_proj.$(OBJEXT) \
+	taproj.$(OBJEXT) unit_check.$(OBJEXT) conjgauge.$(OBJEXT) \
+	constgauge.$(OBJEXT) weak_field.$(OBJEXT) \
+	stout_utils.$(OBJEXT) key_glue_matelem.$(OBJEXT) \
+	key_timeslice_gauge.$(OBJEXT) printgeom.$(OBJEXT) \
+	proginfo.$(OBJEXT) unique_id.$(OBJEXT) su3over.$(OBJEXT) \
+	su2_hb_update.$(OBJEXT) mciter.$(OBJEXT) \
 	exact_hamiltonian.$(OBJEXT) gauge_monomial.$(OBJEXT) \
 	force_monitors.$(OBJEXT) rat_approx_aggregate.$(OBJEXT) \
 	remez_rat_approx.$(OBJEXT) read_rat_approx.$(OBJEXT) \
@@ -1158,9 +1163,10 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	ferm_createstate_aggregate_w.$(OBJEXT) \
 	ferm_createstate_reader_w.$(OBJEXT) \
 	stout_fermstate_w.$(OBJEXT) extfield_aggregate_w.$(OBJEXT) \
-	extfield_fermstate_w.$(OBJEXT) extfield_aggregate_w.$(OBJEXT) \
-	periodic_fermstate_w.$(OBJEXT) simple_fermstate_w.$(OBJEXT) \
-	inv_borici_w.$(OBJEXT) dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
+	extfield_fermstate_w.$(OBJEXT) hex_fermstate_w.$(OBJEXT) \
+	extfield_aggregate_w.$(OBJEXT) periodic_fermstate_w.$(OBJEXT) \
+	simple_fermstate_w.$(OBJEXT) inv_borici_w.$(OBJEXT) \
+	dwffld_w.$(OBJEXT) lDeltaLs_w.$(OBJEXT) \
 	lg5eps_double_pass_w.$(OBJEXT) lg5eps_w.$(OBJEXT) \
 	lovddag_double_pass_w.$(OBJEXT) lovddag_w.$(OBJEXT) \
 	lovlapms_w.$(OBJEXT) lovlap_double_pass_w.$(OBJEXT) \
@@ -1433,6 +1439,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermstates/eigen_state.h \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
+	actions/ferm/fermstates/hex_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_eigcg2_array.h \
@@ -1590,12 +1597,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	io/enum_io/enum_md_integrator_type_io.h \
 	io/enum_io/enum_inner_solver_type_io.h \
 	io/enum_io/enum_stochsrc_io.h io/aniso_io.h io/cfgtype_io.h \
-	io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/milc_io.h \
-	io/param_io.h io/qprop_io.h io/readmilc.h io/readcppacs.h \
-	io/cppacs_io.h io/readszin.h io/szin_io.h io/writemilc.h \
-	io/writeszin.h io/monomial_io.h io/xml_group_reader.h \
-	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
-	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
+	io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/readwupp.h \
+	io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
+	io/readcppacs.h io/cppacs_io.h io/readszin.h io/szin_io.h \
+	io/writemilc.h io/writeszin.h io/monomial_io.h \
+	io/xml_group_reader.h meas/eig/eig.h meas/eig/gramschm.h \
+	meas/eig/gramschm_array.h meas/eig/ritz.h \
+	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
 	meas/gfix/coulgauge.h meas/gfix/temporal_gauge.h \
@@ -1630,8 +1638,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/smear/jacobi_smear.h meas/smear/displace.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
-	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
-	meas/smear/smear.h meas/smear/link_smearing.h \
+	meas/smear/hyp_smear3d.h meas/smear/hex_smear.h \
+	meas/smear/laplacian.h meas/smear/smear.h \
+	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
 	meas/smear/link_smearing_factory.h \
 	meas/smear/ape_link_smearing.h meas/smear/hyp_link_smearing.h \
@@ -1681,10 +1690,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
-	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
-	util/gauge/nersc_gauge_init.h util/gauge/szin_gauge_init.h \
-	util/gauge/szinqio_gauge_init.h util/gauge/kyu_gauge_init.h \
-	util/gauge/disordered_gauge_init.h \
+	util/gauge/gauge_init_aggregate.h util/gauge/wupp_gauge_init.h \
+	util/gauge/milc_gauge_init.h util/gauge/nersc_gauge_init.h \
+	util/gauge/szin_gauge_init.h util/gauge/szinqio_gauge_init.h \
+	util/gauge/kyu_gauge_init.h util/gauge/disordered_gauge_init.h \
 	util/gauge/unit_gauge_init.h util/gauge/cppacs_gauge_init.h \
 	util/gauge/weak_gauge_init.h util/gauge/sf_gauge_init.h \
 	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
@@ -1837,6 +1846,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermstates/ferm_createstate_factory_w.h \
 	actions/ferm/fermstates/ferm_createstate_reader_w.h \
 	actions/ferm/fermstates/stout_fermstate_w.h \
+	actions/ferm/fermstates/hex_fermstate_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -2319,7 +2329,6 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
-PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 QDPC_DIR = @QDPC_DIR@
@@ -2347,8 +2356,11 @@ SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 XMLDIFF = @XMLDIFF@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -2365,30 +2377,23 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 subdirs = @subdirs@
@@ -2440,6 +2445,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermstates/eigen_state.h \
 	actions/ferm/fermstates/extfield.h \
 	actions/ferm/fermstates/stout_fermstate_params.h \
+	actions/ferm/fermstates/hex_fermstate_params.h \
 	actions/ferm/invert/invcg1.h actions/ferm/invert/invcg2.h \
 	actions/ferm/invert/inv_eigcg2.h \
 	actions/ferm/invert/inv_eigcg2_array.h \
@@ -2597,12 +2603,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	io/enum_io/enum_md_integrator_type_io.h \
 	io/enum_io/enum_inner_solver_type_io.h \
 	io/enum_io/enum_stochsrc_io.h io/aniso_io.h io/cfgtype_io.h \
-	io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/milc_io.h \
-	io/param_io.h io/qprop_io.h io/readmilc.h io/readcppacs.h \
-	io/cppacs_io.h io/readszin.h io/szin_io.h io/writemilc.h \
-	io/writeszin.h io/monomial_io.h io/xml_group_reader.h \
-	meas/eig/eig.h meas/eig/gramschm.h meas/eig/gramschm_array.h \
-	meas/eig/ritz.h meas/eig/ritz_array.h meas/eig/sn_jacob.h \
+	io/eigen_io.h io/gauge_io.h io/kyugauge_io.h io/readwupp.h \
+	io/milc_io.h io/param_io.h io/qprop_io.h io/readmilc.h \
+	io/readcppacs.h io/cppacs_io.h io/readszin.h io/szin_io.h \
+	io/writemilc.h io/writeszin.h io/monomial_io.h \
+	io/xml_group_reader.h meas/eig/eig.h meas/eig/gramschm.h \
+	meas/eig/gramschm_array.h meas/eig/ritz.h \
+	meas/eig/ritz_array.h meas/eig/sn_jacob.h \
 	meas/eig/sn_jacob_array.h meas/eig/eig_spec.h \
 	meas/eig/eig_spec_array.h meas/gfix/axgauge.h \
 	meas/gfix/coulgauge.h meas/gfix/temporal_gauge.h \
@@ -2637,8 +2644,9 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/smear/jacobi_smear.h meas/smear/displace.h \
 	meas/smear/displacement.h meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h meas/smear/hyp_smear.h \
-	meas/smear/hyp_smear3d.h meas/smear/laplacian.h \
-	meas/smear/smear.h meas/smear/link_smearing.h \
+	meas/smear/hyp_smear3d.h meas/smear/hex_smear.h \
+	meas/smear/laplacian.h meas/smear/smear.h \
+	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
 	meas/smear/link_smearing_factory.h \
 	meas/smear/ape_link_smearing.h meas/smear/hyp_link_smearing.h \
@@ -2688,10 +2696,10 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/gauge/eesu3.h util/gauge/gauge.h \
 	util/gauge/gauge_startup.h util/gauge/gauge_init.h \
 	util/gauge/gauge_init_factory.h \
-	util/gauge/gauge_init_aggregate.h util/gauge/milc_gauge_init.h \
-	util/gauge/nersc_gauge_init.h util/gauge/szin_gauge_init.h \
-	util/gauge/szinqio_gauge_init.h util/gauge/kyu_gauge_init.h \
-	util/gauge/disordered_gauge_init.h \
+	util/gauge/gauge_init_aggregate.h util/gauge/wupp_gauge_init.h \
+	util/gauge/milc_gauge_init.h util/gauge/nersc_gauge_init.h \
+	util/gauge/szin_gauge_init.h util/gauge/szinqio_gauge_init.h \
+	util/gauge/kyu_gauge_init.h util/gauge/disordered_gauge_init.h \
 	util/gauge/unit_gauge_init.h util/gauge/cppacs_gauge_init.h \
 	util/gauge/weak_gauge_init.h util/gauge/sf_gauge_init.h \
 	util/gauge/hotst.h util/gauge/reunit.h util/gauge/rgauge.h \
@@ -2844,6 +2852,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermstates/ferm_createstate_factory_w.h \
 	actions/ferm/fermstates/ferm_createstate_reader_w.h \
 	actions/ferm/fermstates/stout_fermstate_w.h \
+	actions/ferm/fermstates/hex_fermstate_w.h \
 	actions/ferm/invert/inv_borici_w.h \
 	actions/ferm/linop/lgherm_w.h actions/ferm/linop/lg5Rherm_w.h \
 	actions/ferm/linop/unprec_ovlap_contfrac5d_linop_array_w.h \
@@ -3249,6 +3258,7 @@ lib_LIBRARIES = libchroma.a
 # Staggered specific sources
 libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/zolotarev_coeffs.cc \
+	actions/ferm/fermstates/hex_fermstate_params.cc \
 	actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc \
 	actions/ferm/fermacts/ovext_constant_strategy.cc \
 	actions/ferm/fermacts/ovext_const_div_by_resp_strategy.cc \
@@ -3401,7 +3411,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	io/kyugauge_io.cc io/kyuqprop_io.cc io/milc_io.cc \
 	io/overlap_state_info.cc io/readcppacs.cc io/cppacs_io.cc \
 	io/param_io.cc io/qprop_io.cc io/readmilc.cc io/readszin.cc \
-	io/szin_io.cc io/writemilc.cc io/writeszin.cc \
+	io/szin_io.cc io/writemilc.cc io/writeszin.cc io/readwupp.cc \
 	io/xml_group_reader.cc meas/eig/eig_spec.cc \
 	meas/eig/eig_spec_array.cc meas/eig/gramschm.cc \
 	meas/eig/gramschm_array.cc meas/eig/ritz.cc \
@@ -3434,7 +3444,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/smear/hyp_smear3d.cc meas/smear/laplacian.cc \
 	meas/smear/link_smearing_aggregate.cc \
 	meas/smear/ape_link_smearing.cc \
-	meas/smear/hyp_link_smearing.cc meas/smear/no_link_smearing.cc \
+	meas/smear/hyp_link_smearing.cc meas/smear/hex_smear.cc \
+	meas/smear/no_link_smearing.cc \
 	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
@@ -3477,15 +3488,16 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/gauge/szin_gauge_init.cc util/gauge/szinqio_gauge_init.cc \
 	util/gauge/kyu_gauge_init.cc \
 	util/gauge/disordered_gauge_init.cc \
-	util/gauge/unit_gauge_init.cc util/gauge/cppacs_gauge_init.cc \
-	util/gauge/weak_gauge_init.cc util/gauge/sf_gauge_init.cc \
-	util/gauge/hotst.cc util/gauge/reunit.cc util/gauge/rgauge.cc \
-	util/gauge/shift2.cc util/gauge/su2extract.cc \
-	util/gauge/su3proj.cc util/gauge/sunfill.cc \
-	util/gauge/sun_proj.cc util/gauge/taproj.cc \
-	util/gauge/unit_check.cc util/gauge/conjgauge.cc \
-	util/gauge/constgauge.cc util/gauge/weak_field.cc \
-	util/gauge/stout_utils.cc util/gauge/key_glue_matelem.cc \
+	util/gauge/wupp_gauge_init.cc util/gauge/unit_gauge_init.cc \
+	util/gauge/cppacs_gauge_init.cc util/gauge/weak_gauge_init.cc \
+	util/gauge/sf_gauge_init.cc util/gauge/hotst.cc \
+	util/gauge/reunit.cc util/gauge/rgauge.cc util/gauge/shift2.cc \
+	util/gauge/su2extract.cc util/gauge/su3proj.cc \
+	util/gauge/sunfill.cc util/gauge/sun_proj.cc \
+	util/gauge/taproj.cc util/gauge/unit_check.cc \
+	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
+	util/gauge/weak_field.cc util/gauge/stout_utils.cc \
+	util/gauge/key_glue_matelem.cc \
 	util/gauge/key_timeslice_gauge.cc util/info/printgeom.cc \
 	util/info/proginfo.cc util/info/unique_id.cc \
 	update/heatbath/su3over.cc update/heatbath/su2_hb_update.cc \
@@ -3584,6 +3596,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermstates/stout_fermstate_w.cc \
 	actions/ferm/fermstates/extfield_aggregate_w.cc \
 	actions/ferm/fermstates/extfield_fermstate_w.cc \
+	actions/ferm/fermstates/hex_fermstate_w.cc \
 	actions/ferm/fermstates/extfield_aggregate_w.cc \
 	actions/ferm/fermstates/periodic_fermstate_w.cc \
 	actions/ferm/fermstates/simple_fermstate_w.cc \
@@ -4194,6 +4207,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hadron_seqsource.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/heavy_hadron_potentials_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/heavy_hadrons_su3_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hex_fermstate_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hex_fermstate_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hex_smear.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hisq_fermact_params_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hisq_fermact_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hisq_qprop.Po@am__quote@
@@ -4519,6 +4535,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinferm_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readszinqprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/readwupp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rect_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reliable_bicgstab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/reliable_cg.Po@am__quote@
@@ -4751,6 +4768,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writemilc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/writeszinqprop_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wupp_gauge_init.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_group_reader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml_write_obj_funcmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/z2_src.Po@am__quote@
@@ -4799,6 +4817,20 @@ zolotarev_coeffs.obj: actions/ferm/fermacts/zolotarev_coeffs.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermacts/zolotarev_coeffs.cc' object='zolotarev_coeffs.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o zolotarev_coeffs.obj `if test -f 'actions/ferm/fermacts/zolotarev_coeffs.cc'; then $(CYGPATH_W) 'actions/ferm/fermacts/zolotarev_coeffs.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermacts/zolotarev_coeffs.cc'; fi`
+
+hex_fermstate_params.o: actions/ferm/fermstates/hex_fermstate_params.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hex_fermstate_params.o -MD -MP -MF "$(DEPDIR)/hex_fermstate_params.Tpo" -c -o hex_fermstate_params.o `test -f 'actions/ferm/fermstates/hex_fermstate_params.cc' || echo '$(srcdir)/'`actions/ferm/fermstates/hex_fermstate_params.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hex_fermstate_params.Tpo" "$(DEPDIR)/hex_fermstate_params.Po"; else rm -f "$(DEPDIR)/hex_fermstate_params.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermstates/hex_fermstate_params.cc' object='hex_fermstate_params.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hex_fermstate_params.o `test -f 'actions/ferm/fermstates/hex_fermstate_params.cc' || echo '$(srcdir)/'`actions/ferm/fermstates/hex_fermstate_params.cc
+
+hex_fermstate_params.obj: actions/ferm/fermstates/hex_fermstate_params.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hex_fermstate_params.obj -MD -MP -MF "$(DEPDIR)/hex_fermstate_params.Tpo" -c -o hex_fermstate_params.obj `if test -f 'actions/ferm/fermstates/hex_fermstate_params.cc'; then $(CYGPATH_W) 'actions/ferm/fermstates/hex_fermstate_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermstates/hex_fermstate_params.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hex_fermstate_params.Tpo" "$(DEPDIR)/hex_fermstate_params.Po"; else rm -f "$(DEPDIR)/hex_fermstate_params.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermstates/hex_fermstate_params.cc' object='hex_fermstate_params.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hex_fermstate_params.obj `if test -f 'actions/ferm/fermstates/hex_fermstate_params.cc'; then $(CYGPATH_W) 'actions/ferm/fermstates/hex_fermstate_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermstates/hex_fermstate_params.cc'; fi`
 
 ovext_tuning_strategy_aggregate.o: actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT ovext_tuning_strategy_aggregate.o -MD -MP -MF "$(DEPDIR)/ovext_tuning_strategy_aggregate.Tpo" -c -o ovext_tuning_strategy_aggregate.o `test -f 'actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc' || echo '$(srcdir)/'`actions/ferm/fermacts/ovext_tuning_strategy_aggregate.cc; \
@@ -7194,6 +7226,20 @@ writeszin.obj: io/writeszin.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o writeszin.obj `if test -f 'io/writeszin.cc'; then $(CYGPATH_W) 'io/writeszin.cc'; else $(CYGPATH_W) '$(srcdir)/io/writeszin.cc'; fi`
 
+readwupp.o: io/readwupp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT readwupp.o -MD -MP -MF "$(DEPDIR)/readwupp.Tpo" -c -o readwupp.o `test -f 'io/readwupp.cc' || echo '$(srcdir)/'`io/readwupp.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/readwupp.Tpo" "$(DEPDIR)/readwupp.Po"; else rm -f "$(DEPDIR)/readwupp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/readwupp.cc' object='readwupp.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o readwupp.o `test -f 'io/readwupp.cc' || echo '$(srcdir)/'`io/readwupp.cc
+
+readwupp.obj: io/readwupp.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT readwupp.obj -MD -MP -MF "$(DEPDIR)/readwupp.Tpo" -c -o readwupp.obj `if test -f 'io/readwupp.cc'; then $(CYGPATH_W) 'io/readwupp.cc'; else $(CYGPATH_W) '$(srcdir)/io/readwupp.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/readwupp.Tpo" "$(DEPDIR)/readwupp.Po"; else rm -f "$(DEPDIR)/readwupp.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='io/readwupp.cc' object='readwupp.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o readwupp.obj `if test -f 'io/readwupp.cc'; then $(CYGPATH_W) 'io/readwupp.cc'; else $(CYGPATH_W) '$(srcdir)/io/readwupp.cc'; fi`
+
 xml_group_reader.o: io/xml_group_reader.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT xml_group_reader.o -MD -MP -MF "$(DEPDIR)/xml_group_reader.Tpo" -c -o xml_group_reader.o `test -f 'io/xml_group_reader.cc' || echo '$(srcdir)/'`io/xml_group_reader.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/xml_group_reader.Tpo" "$(DEPDIR)/xml_group_reader.Po"; else rm -f "$(DEPDIR)/xml_group_reader.Tpo"; exit 1; fi
@@ -8006,6 +8052,20 @@ hyp_link_smearing.obj: meas/smear/hyp_link_smearing.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hyp_link_smearing.obj `if test -f 'meas/smear/hyp_link_smearing.cc'; then $(CYGPATH_W) 'meas/smear/hyp_link_smearing.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hyp_link_smearing.cc'; fi`
 
+hex_smear.o: meas/smear/hex_smear.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hex_smear.o -MD -MP -MF "$(DEPDIR)/hex_smear.Tpo" -c -o hex_smear.o `test -f 'meas/smear/hex_smear.cc' || echo '$(srcdir)/'`meas/smear/hex_smear.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hex_smear.Tpo" "$(DEPDIR)/hex_smear.Po"; else rm -f "$(DEPDIR)/hex_smear.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hex_smear.cc' object='hex_smear.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hex_smear.o `test -f 'meas/smear/hex_smear.cc' || echo '$(srcdir)/'`meas/smear/hex_smear.cc
+
+hex_smear.obj: meas/smear/hex_smear.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hex_smear.obj -MD -MP -MF "$(DEPDIR)/hex_smear.Tpo" -c -o hex_smear.obj `if test -f 'meas/smear/hex_smear.cc'; then $(CYGPATH_W) 'meas/smear/hex_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hex_smear.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hex_smear.Tpo" "$(DEPDIR)/hex_smear.Po"; else rm -f "$(DEPDIR)/hex_smear.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/smear/hex_smear.cc' object='hex_smear.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hex_smear.obj `if test -f 'meas/smear/hex_smear.cc'; then $(CYGPATH_W) 'meas/smear/hex_smear.cc'; else $(CYGPATH_W) '$(srcdir)/meas/smear/hex_smear.cc'; fi`
+
 no_link_smearing.o: meas/smear/no_link_smearing.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT no_link_smearing.o -MD -MP -MF "$(DEPDIR)/no_link_smearing.Tpo" -c -o no_link_smearing.o `test -f 'meas/smear/no_link_smearing.cc' || echo '$(srcdir)/'`meas/smear/no_link_smearing.cc; \
 @am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/no_link_smearing.Tpo" "$(DEPDIR)/no_link_smearing.Po"; else rm -f "$(DEPDIR)/no_link_smearing.Tpo"; exit 1; fi
@@ -8803,6 +8863,20 @@ disordered_gauge_init.obj: util/gauge/disordered_gauge_init.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/disordered_gauge_init.cc' object='disordered_gauge_init.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o disordered_gauge_init.obj `if test -f 'util/gauge/disordered_gauge_init.cc'; then $(CYGPATH_W) 'util/gauge/disordered_gauge_init.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/disordered_gauge_init.cc'; fi`
+
+wupp_gauge_init.o: util/gauge/wupp_gauge_init.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wupp_gauge_init.o -MD -MP -MF "$(DEPDIR)/wupp_gauge_init.Tpo" -c -o wupp_gauge_init.o `test -f 'util/gauge/wupp_gauge_init.cc' || echo '$(srcdir)/'`util/gauge/wupp_gauge_init.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wupp_gauge_init.Tpo" "$(DEPDIR)/wupp_gauge_init.Po"; else rm -f "$(DEPDIR)/wupp_gauge_init.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/wupp_gauge_init.cc' object='wupp_gauge_init.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wupp_gauge_init.o `test -f 'util/gauge/wupp_gauge_init.cc' || echo '$(srcdir)/'`util/gauge/wupp_gauge_init.cc
+
+wupp_gauge_init.obj: util/gauge/wupp_gauge_init.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT wupp_gauge_init.obj -MD -MP -MF "$(DEPDIR)/wupp_gauge_init.Tpo" -c -o wupp_gauge_init.obj `if test -f 'util/gauge/wupp_gauge_init.cc'; then $(CYGPATH_W) 'util/gauge/wupp_gauge_init.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/wupp_gauge_init.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/wupp_gauge_init.Tpo" "$(DEPDIR)/wupp_gauge_init.Po"; else rm -f "$(DEPDIR)/wupp_gauge_init.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/gauge/wupp_gauge_init.cc' object='wupp_gauge_init.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o wupp_gauge_init.obj `if test -f 'util/gauge/wupp_gauge_init.cc'; then $(CYGPATH_W) 'util/gauge/wupp_gauge_init.cc'; else $(CYGPATH_W) '$(srcdir)/util/gauge/wupp_gauge_init.cc'; fi`
 
 unit_gauge_init.o: util/gauge/unit_gauge_init.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT unit_gauge_init.o -MD -MP -MF "$(DEPDIR)/unit_gauge_init.Tpo" -c -o unit_gauge_init.o `test -f 'util/gauge/unit_gauge_init.cc' || echo '$(srcdir)/'`util/gauge/unit_gauge_init.cc; \
@@ -10567,6 +10641,20 @@ extfield_fermstate_w.obj: actions/ferm/fermstates/extfield_fermstate_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermstates/extfield_fermstate_w.cc' object='extfield_fermstate_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o extfield_fermstate_w.obj `if test -f 'actions/ferm/fermstates/extfield_fermstate_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermstates/extfield_fermstate_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermstates/extfield_fermstate_w.cc'; fi`
+
+hex_fermstate_w.o: actions/ferm/fermstates/hex_fermstate_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hex_fermstate_w.o -MD -MP -MF "$(DEPDIR)/hex_fermstate_w.Tpo" -c -o hex_fermstate_w.o `test -f 'actions/ferm/fermstates/hex_fermstate_w.cc' || echo '$(srcdir)/'`actions/ferm/fermstates/hex_fermstate_w.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hex_fermstate_w.Tpo" "$(DEPDIR)/hex_fermstate_w.Po"; else rm -f "$(DEPDIR)/hex_fermstate_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermstates/hex_fermstate_w.cc' object='hex_fermstate_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hex_fermstate_w.o `test -f 'actions/ferm/fermstates/hex_fermstate_w.cc' || echo '$(srcdir)/'`actions/ferm/fermstates/hex_fermstate_w.cc
+
+hex_fermstate_w.obj: actions/ferm/fermstates/hex_fermstate_w.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT hex_fermstate_w.obj -MD -MP -MF "$(DEPDIR)/hex_fermstate_w.Tpo" -c -o hex_fermstate_w.obj `if test -f 'actions/ferm/fermstates/hex_fermstate_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermstates/hex_fermstate_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermstates/hex_fermstate_w.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/hex_fermstate_w.Tpo" "$(DEPDIR)/hex_fermstate_w.Po"; else rm -f "$(DEPDIR)/hex_fermstate_w.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/fermstates/hex_fermstate_w.cc' object='hex_fermstate_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o hex_fermstate_w.obj `if test -f 'actions/ferm/fermstates/hex_fermstate_w.cc'; then $(CYGPATH_W) 'actions/ferm/fermstates/hex_fermstate_w.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/fermstates/hex_fermstate_w.cc'; fi`
 
 periodic_fermstate_w.o: actions/ferm/fermstates/periodic_fermstate_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT periodic_fermstate_w.o -MD -MP -MF "$(DEPDIR)/periodic_fermstate_w.Tpo" -c -o periodic_fermstate_w.o `test -f 'actions/ferm/fermstates/periodic_fermstate_w.cc' || echo '$(srcdir)/'`actions/ferm/fermstates/periodic_fermstate_w.cc; \
