@@ -11,9 +11,6 @@ namespace Chroma {
     RationalApprox* createApprox(XMLReader& xml_in,
 				 const std::string& path)
     {
-      QDPIO::cout << " XML Is: " << endl;
-      xml_in.print(std::cout);
-      QDPIO::cout << endl <<flush ;
       return new ReadRatApprox(Params(xml_in, path));
     }
 
