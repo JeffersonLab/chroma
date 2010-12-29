@@ -191,14 +191,14 @@ AC_ARG_WITH(qmt,
    [ qmt_enabled="no" ]
 )
 
-AC_ARG_WITH(quda,
+AC_ARG_WITH(quda-0-2,
    AC_HELP_STRING(
-      [--with-quda=<DIR>],
+      [--with-quda-0-2=<DIR>],
       [Use QUDA Library installed in DIR]
    ),
-   [ quda_enabled="yes"
-     QUDA_HOME=${with_quda} ],
-   [ quda_enabled="no" ]
+   [ quda_0_2_enabled="yes"
+     QUDA_0_2_HOME=${with_quda_0_2} ],
+   [ quda_0_2_enabled="no" ]
 )
 
 AC_ARG_WITH(cuda,
@@ -838,9 +838,9 @@ fi
 # QUDA Linkage etc
 # 
 ###################################
-if test "X${quda_enabled}X" = "XyesX" ;
+if test "X${quda_0_2_enabled}X" = "XyesX" ;
 then
-   AC_MSG_NOTICE([ Using QUDA Library in ${QUDA_HOME} ])
+   AC_MSG_NOTICE([ Using QUDA v0.2 Library in ${QUDA_0_2_HOME} ])
 
    case "$host" in 
    x86_64*)
@@ -853,14 +853,14 @@ then
 	
    AC_MSG_NOTICE([ Linking to CUDA Runtime in ${CUDA_LIBDIR}])
 
-   AC_DEFINE([BUILD_QUDA],[], [Build with the BU QUDA Library])  
-   AC_SUBST(QUDA_CXXFLAGS, "-I${QUDA_HOME}/include -I${CUDA_HOME}/include" )
-   AC_SUBST(QUDA_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib" )
-   AC_SUBST(QUDA_LIBS,     "-lquda -lcudart" )
+   AC_DEFINE([BUILD_QUDA_0_2],[], [Build with the BU QUDA Library v0.2])  
+   AC_SUBST(QUDA_0_2_CXXFLAGS, "-I${QUDA_0_2_HOME}/include -I${CUDA_HOME}/include" )
+   AC_SUBST(QUDA_0_2_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_0_2_HOME}/lib" )
+   AC_SUBST(QUDA_0_2_LIBS,     "-lquda -lcudart" )
 fi
 
-AM_CONDITIONAL(BUILD_QUDA,
-	[test "x${quda_enabled}x" = "xyesx" ])
+AM_CONDITIONAL(BUILD_QUDA_0_2,
+	[test "x${quda_0_2_enabled}x" = "xyesx" ])
 
 #######################
 # Produce output

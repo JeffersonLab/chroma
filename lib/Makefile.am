@@ -936,8 +936,8 @@ if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
 endif
 
-if BUILD_QUDA
-AM_CXXFLAGS += @QUDA_CXXFLAGS@
+if BUILD_QUDA_0_2
+AM_CXXFLAGS += @QUDA_0_2_CXXFLAGS@
 endif
 
 if BUILD_SSE_WILSON_DSLASH
@@ -1298,18 +1298,18 @@ nobase_include_HEADERS += update/molecdyn/monomial/remez_gmp.h
 libchroma_a_SOURCES += update/molecdyn/monomial/remez_gmp.cc
 endif
 
-if BUILD_QUDA
+if BUILD_QUDA_0_2
 nobase_include_HEADERS += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
         actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.cc
 endif
 
 #

@@ -21,8 +21,8 @@
 
 #include "chroma_config.h"
 #ifdef BUILD_QUDA
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_wilson.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.h"
 #endif
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
