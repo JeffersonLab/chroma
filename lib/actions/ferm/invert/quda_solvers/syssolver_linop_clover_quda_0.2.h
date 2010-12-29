@@ -9,7 +9,7 @@
 
 #include "chroma_config.h"
 
-#ifdef BUILD_QUDA
+#ifdef BUILD_QUDA_0_2
 
 #include "handle.h"
 #include "state.h"
