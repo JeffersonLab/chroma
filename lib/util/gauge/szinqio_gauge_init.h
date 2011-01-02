@@ -28,6 +28,7 @@ namespace Chroma
       void writeXML(XMLWriter& in, const std::string& path) const;
     
       string cfg_file;		/*!< File name */
+      QDP_serialparallel_t    cfg_pario;  /*!< QIO Parallel IO flag */
     };
 
 

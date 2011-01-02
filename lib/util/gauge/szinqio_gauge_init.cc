@@ -63,8 +63,17 @@ namespace Chroma
       XMLReader paramtop(xml, path);
 
       read(paramtop, "cfg_file", cfg_file);
-    }
+      // Default
+      cfg_pario = QDPIO_SERIAL;
 
+      bool pario;
+      if ( paramtop.count("ParallelIO") > 0 ) { 
+        read(paramtop, "ParallelIO", pario);
+        if( pario ) { 
+	  cfg_pario = QDPIO_PARALLEL;;
+        }
+      }
+    }
 
     //! Parameters for running code
     void Params::writeXML(XMLWriter& xml, const string& path) const
@@ -74,7 +83,10 @@ namespace Chroma
       int version = 1;
       write(xml, "cfg_type", SZINQIOGaugeInitEnv::name);
       write(xml, "cfg_file", cfg_file);
-
+      if ( cfg_pario == QDPIO_PARALLEL ) { 
+	bool pario = true;
+	write(xml, "ParallelIO", pario);
+      }
       pop(xml);
     }
 
@@ -101,7 +113,10 @@ namespace Chroma
 			    multi1d<LatticeColorMatrix>& u) const
     {
       u.resize(Nd);
-      readGauge(gauge_file_xml, gauge_xml, u, params.cfg_file, QDPIO_SERIAL);
+      if( params.cfg_pario == QDPIO_PARALLEL ) { 
+	QDPIO::cout << "Parallel IO read" << endl;
+      }
+      readGauge(gauge_file_xml, gauge_xml, u, params.cfg_file, params.cfg_pario);
     }
   }
 }

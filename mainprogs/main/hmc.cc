@@ -22,6 +22,7 @@ namespace Chroma
     unsigned int  save_interval;
     std::string   save_prefix;
     QDP_volfmt_t  save_volfmt;
+    QDP_serialparallel_t save_pario;
     std::string   inline_measurement_xml;
     bool          repro_checkP;
     int           repro_check_frequency;
@@ -47,6 +48,19 @@ namespace Chroma
       read(paramtop, "./SavePrefix", p.save_prefix);
       read(paramtop, "./SaveVolfmt", p.save_volfmt);
 
+      // -- Deal with parallel IO
+      p.save_pario = QDPIO_SERIAL; // Default
+
+      // If there is a ParalelIO tag 
+      if ( paramtop.count("./ParallelIO") > 0 ) {
+
+	bool parioP=false;
+	read(paramtop, "./ParallelIO", parioP);
+	if ( parioP ) {
+	  QDPIO::cout << "Setting parallel write mode" << endl;
+	  p.save_pario = QDPIO_PARALLEL;
+	}
+      }
 
       // Default values: repro check is on, frequency is 10%
       p.repro_checkP = true;
@@ -133,6 +147,10 @@ namespace Chroma
       write(xml, "SaveInterval", p.save_interval);
       write(xml, "SavePrefix", p.save_prefix);
       write(xml, "SaveVolfmt", p.save_volfmt);
+      { 
+	bool pario = ( p.save_pario == QDPIO_PARALLEL );
+	write(xml, "ParallelIO", pario);
+      }
       write(xml, "ReproCheckP", p.repro_checkP);
       if( p.repro_checkP ) { 
 	write(xml, "ReproCheckFrequency", p.repro_check_frequency);
@@ -288,11 +306,6 @@ namespace Chroma
     write(restart_data_buffer, "HMCTrj", update_params);
     pop(restart_data_buffer);
 
-    // Write a restart DATA file from the buffer XML
-    
-    XMLFileWriter restart_xml(restart_data_filename.str().c_str());
-    restart_xml << restart_data_buffer;
-    restart_xml.close();
 
     // Save the config
 
@@ -309,7 +322,18 @@ namespace Chroma
 	       u,
 	       restart_config_filename.str(),
 	       p_new.save_volfmt,
-	       QDPIO_SERIAL);    
+	       p_new.save_pario);    
+
+
+    // Write a restart DATA file from the buffer XML 
+    // Do this after the config is written, so that if the cfg
+    // write fails, there is no restart file...
+    //
+    // production will then likely fall back to last good pair.
+
+    XMLFileWriter restart_xml(restart_data_filename.str().c_str());
+    restart_xml << restart_data_buffer;
+    restart_xml.close();
     
     END_CODE();
   }
