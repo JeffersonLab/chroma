@@ -23,7 +23,7 @@
 #ifdef BUILD_QUDA_0_2
 
 #ifdef BUILD_QUDA_0_3
-#error "Cannot have both QUDA_0.2 and QUDA_0.3 going on at the same time
+#error "Cannot have both QUDA_0.2 and QUDA_0.3 going on at the same time"
 #endif
 
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.h"
@@ -32,7 +32,7 @@
 
 #ifdef BUILD_QUDA_0_3
 #ifdef BUILD_QUDA_0_2
-#error "Cannot have both QUDA_0.2 and QUDA_0.3 going on at the same time
+#error "Cannot have both QUDA_0.2 and QUDA_0.3 going on at the same time"
 #endif
 
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.h"

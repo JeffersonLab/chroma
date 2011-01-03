@@ -73,84 +73,10 @@ namespace Chroma
       A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
     {
       QDPIO::cout << "LinOpSysSolverQUDAClover:" << endl;
-      // New initialization QUDA v0.2
 
-      q_gauge_param = newQudaGaugeParam(); 
-      quda_inv_param = newQudaInvertParam(); 
+      // FOLLOWING INITIALIZATION in test QUDA program
 
-
-      // This is in the invert test:
-      q_gauge_param.type = QUDA_WILSON_LINKS;
-      q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p, col col 
-      const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
-      
-      // These are the links
-      // They may be smeared and the BC's may be applied
-      Q links_single(Nd);
-
-      // Now downcast to single prec fields.
-      for(int mu=0; mu < Nd; mu++) {
-	links_single[mu] = (state_->getLinks())[mu];
-      }
-
-     // GaugeFix
-      if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
-	temporalGauge(links_single, GFixMat, Nd-1);
-	for(int mu=0; mu < Nd; mu++){ 
-	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
-	}
-	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_YES;
-      }
-      else { 
-	// No GaugeFix
-	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
-      }
-
-  
-
-      Handle<FermState<T,Q,Q> > fstate( new PeriodicFermState<T,Q,Q>(links_single));
-
-      if( aniso.anisoP ) {                     // Anisotropic case
-	multi1d<Real> cf=makeFermCoeffs(aniso);
-	for(int mu=0; mu < Nd; mu++) { 
-	  links_single[mu] *= cf[mu];
-	}
-      }
-
-      const multi1d<int>& latdims = Layout::subgridLattSize();
-      
-      q_gauge_param.X[0] = latdims[0];
-      q_gauge_param.X[1] = latdims[1];
-      q_gauge_param.X[2] = latdims[2];
-      q_gauge_param.X[3] = latdims[3];
-  
-
-      // Padding.
-      // Using auto padding code from Ron
-      unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
-      quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = (latdims[0]*latdims[1]*latdims[2])/2;
-    
-      if( aniso.anisoP ) {                     // Anisotropic case
-	Real gamma_f = aniso.xi_0 / aniso.nu; 
-	q_gauge_param.anisotropy = toDouble(gamma_f);
-      }
-      else {
-	q_gauge_param.anisotropy = 1.0;
-      }
-      
-      // Convention: BC has to be applied already
-      // This flag just tells QUDA that this is so,
-      // so that QUDA can take care in the reconstruct
-      if( invParam.AntiPeriodicT ) { 
-	q_gauge_param.t_boundary = QUDA_ANTI_PERIODIC_T;
-      }
-      else { 
-	q_gauge_param.t_boundary = QUDA_PERIODIC_T;
-      }
-
-
-      // Work out CPU Precision
+      // 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
       int s = sizeof( WordType<T>::Type_t );
       if (s == 4) { 
 	cpu_prec = QUDA_SINGLE_PRECISION;
@@ -159,6 +85,7 @@ namespace Chroma
 	cpu_prec = QUDA_DOUBLE_PRECISION;
       }
 
+  
       // Work out GPU precision
       switch( invParam.cudaPrecision ) { 
       case HALF:
@@ -191,17 +118,40 @@ namespace Chroma
 	gpu_half_prec = gpu_prec;
 	break;
       }
+          
+      // 2) pull 'new; GAUGE and Invert params
+      q_gauge_param = newQudaGaugeParam(); 
+      quda_inv_param = newQudaInvertParam(); 
+
+      // 3) set lattice size
+      const multi1d<int>& latdims = Layout::subgridLattSize();
       
-      
+      q_gauge_param.X[0] = latdims[0];
+      q_gauge_param.X[1] = latdims[1];
+      q_gauge_param.X[2] = latdims[2];
+      q_gauge_param.X[3] = latdims[3];
 
+      // 4) - deferred (anisotropy)
 
+      // 5) - set QUDA_WILSON_LINKS, QUDA_GAUGE_ORDER
+      q_gauge_param.type = QUDA_WILSON_LINKS;
+      q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 
+      // 6) - set t_boundary
+      // Convention: BC has to be applied already
+      // This flag just tells QUDA that this is so,
+      // so that QUDA can take care in the reconstruct
+      if( invParam.AntiPeriodicT ) { 
+	q_gauge_param.t_boundary = QUDA_ANTI_PERIODIC_T;
+      }
+      else { 
+	q_gauge_param.t_boundary = QUDA_PERIODIC_T;
+      }
 
+      // Set cpu_prec, cuda_prec, reconstruct and sloppy versions
       q_gauge_param.cpu_prec = cpu_prec;
-
-      // On card is always double/mixed
       q_gauge_param.cuda_prec = gpu_prec;
-      q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+
 
       switch( invParam.cudaReconstruct ) { 
       case RECONS_NONE: 
@@ -218,6 +168,8 @@ namespace Chroma
 	break;
       };
 
+      q_gauge_param.cuda_prec_sloppy = gpu_half_prec;
+
       switch( invParam.cudaSloppyReconstruct ) { 
       case RECONS_NONE: 
 	q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_NO;
@@ -233,11 +185,138 @@ namespace Chroma
 	break;
       };
 
+      // Gauge fixing:
+
+      // These are the links
+      // They may be smeared and the BC's may be applied
+      Q links_single(Nd);
+
+      // Now downcast to single prec fields.
+      for(int mu=0; mu < Nd; mu++) {
+	links_single[mu] = (state_->getLinks())[mu];
+      }
+
+     // GaugeFix
+      if( invParam.axialGaugeP ) { 
+	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	temporalGauge(links_single, GFixMat, Nd-1);
+	for(int mu=0; mu < Nd; mu++){ 
+	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
+	}
+	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_YES;
+      }
+      else { 
+	// No GaugeFix
+	q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;  // No Gfix yet
+      }
+
+      // deferred 4) Gauge Anisotropy
+      const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
+      if( aniso.anisoP ) {                     // Anisotropic case
+	Real gamma_f = aniso.xi_0 / aniso.nu; 
+	q_gauge_param.anisotropy = toDouble(gamma_f);
+      }
+      else {
+	q_gauge_param.anisotropy = 1.0;
+      }
       
- 
+      // MAKE FSTATE BEFORE RESCALING links_single
+      // Because the clover term expects the unrescaled links...
+      Handle<FermState<T,Q,Q> > fstate( new PeriodicFermState<T,Q,Q>(links_single));
+
+      if( aniso.anisoP ) {                     // Anisotropic case
+	multi1d<Real> cf=makeFermCoeffs(aniso);
+	for(int mu=0; mu < Nd; mu++) { 
+	  links_single[mu] *= cf[mu];
+	}
+      }
+  
+      // Now onto the inv param:
+      // Dslash type
+      quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+
+      // Invert type:
+   switch( invParam.solverType ) { 
+      case CG: 
+	quda_inv_param.inv_type = QUDA_CG_INVERTER;
+	solver_string = "CG";
+	break;
+      case BICGSTAB:
+	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;
+	solver_string = "BICGSTAB";
+	break;
+      default:
+	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
+	solver_string = "CG";
+	break;
+      }
+
+      // Mass
+
+      // Fiendish idea from Ron. Set the kappa=1/2 and use 
+      // unmodified clover term, and ask for Kappa normalization
+      // This should give us A - (1/2)D as the unpreconditioned operator
+      // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
+      // op. Apart from the A_oo stuff on the antisymmetric we have
+      // nothing to do...
+      quda_inv_param.kappa = 0.5;
       
-      // OK! This is ugly: gauge_param is an 'extern' in dslash_quda.h
-      // gauge_param = &q_gauge_param;
+      quda_inv_param.tol = toDouble(invParam.RsdTarget);
+      quda_inv_param.maxiter = invParam.MaxIter;
+      quda_inv_param.reliable_delta = toDouble(invParam.Delta);
+
+      // Solution type
+      quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+
+      // Solve type
+      switch( invParam.solverType ) { 
+      case CG: 
+	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;
+	break;
+      case BICGSTAB:
+	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+	break;
+      default:
+	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;   
+	
+	break;
+      }
+
+      if( invParam.asymmetricP ) { 
+	QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << endl;
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+      }
+      else { 
+	QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << endl;
+	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+      }
+
+      quda_inv_param.dagger = QUDA_DAG_NO;
+      quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+
+      quda_inv_param.cpu_prec = cpu_prec;
+      quda_inv_param.cuda_prec = gpu_prec;
+      quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
+      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+
+      // PADDING
+      q_gauge_param.ga_pad = 0;
+      quda_inv_param.sp_pad = 0;
+      quda_inv_param.cl_pad = 0;
+
+      // Clover precision and order
+      quda_inv_param.clover_cpu_prec = cpu_prec;
+      quda_inv_param.clover_cuda_prec = gpu_prec;
+      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+      quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
+    
+      if( invParam.verboseP ) { 
+	quda_inv_param.verbosity = QUDA_VERBOSE;
+      }
+      else { 
+	quda_inv_param.verbosity = QUDA_SUMMARIZE;
+      }
       
       // Set up the links     
       void* gauge[4]; 
@@ -249,7 +328,7 @@ namespace Chroma
 
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
 
-
+      //      Setup the clover term...
       QDPIO::cout << "Creating CloverTerm" << endl;
       clov->create(fstate, invParam_.CloverParams);
       // Don't recompute, just copy
@@ -276,87 +355,16 @@ namespace Chroma
 
 
 
-      quda_inv_param.clover_cpu_prec = cpu_prec;
-      quda_inv_param.clover_cuda_prec = gpu_prec;
-      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-      quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 
-      if( invParam.asymmetricP ) { 
-	QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << endl;
-	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
-      }
-      else { 
-	QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << endl;
-	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
-      }
 
-      quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH; // Sets Clover Matrix
-
+      
       if( invParam.asymmetricP ) { 
 	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
       }
       else { 
 	loadCloverQuda(NULL, &(packed_invclov[0]), &quda_inv_param);
       }
-
-
-
-
-      // Fiendish idea from Ron. Set the kappa=1/2 and use 
-      // unmodified clover term, and ask for Kappa normalization
-      // This should give us A - (1/2)D as the unpreconditioned operator
-      // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
-      // op. Apart from the A_oo stuff on the antisymmetric we have
-      // nothing to do...
-      quda_inv_param.kappa = 0.5;
-      
-      quda_inv_param.tol = toDouble(invParam.RsdTarget);
-      quda_inv_param.maxiter = invParam.MaxIter;
-      quda_inv_param.reliable_delta = toDouble(invParam.Delta);
-      
-      
-      
-      
-      // Solve the preconditioned matrix (rather than the prop
-      quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
-
-      
-      quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
-      
-      quda_inv_param.cpu_prec = cpu_prec;
-      quda_inv_param.cuda_prec = gpu_prec;
-      quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
-      quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
-      
-      // Even-odd colour inside spin
-      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
-      
-      if( invParam.verboseP ) { 
-	quda_inv_param.verbosity = QUDA_VERBOSE;
-      }
-      else { 
-	quda_inv_param.verbosity = QUDA_SUMMARIZE;
-      }
-      
-      quda_inv_param.dagger = QUDA_DAG_NO;
-      
-      switch( invParam.solverType ) { 
-      case CG: 
-	quda_inv_param.inv_type = QUDA_CG_INVERTER;
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;
-	solver_string = "CG";
-	break;
-      case BICGSTAB:
-	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;
-	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-
-	solver_string = "BICGSTAB";
-	break;
-      default:
-	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
-	solver_string = "CG";
-	break;
-      }
+   
       
     }
     
