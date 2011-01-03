@@ -201,6 +201,16 @@ AC_ARG_WITH(quda-0-2,
    [ quda_0_2_enabled="no" ]
 )
 
+AC_ARG_WITH(quda-0-3,
+   AC_HELP_STRING(
+      [--with-quda-0-3=<DIR>],
+      [Use QUDA Library installed in DIR]
+   ),
+   [ quda_0_3_enabled="yes"
+     QUDA_0_3_HOME=${with_quda_0_3} ],
+   [ quda_0_3_enabled="no" ]
+)
+
 AC_ARG_WITH(cuda,
    AC_HELP_STRING(
       [--with-cuda=<DIR>],
@@ -840,6 +850,11 @@ fi
 ###################################
 if test "X${quda_0_2_enabled}X" = "XyesX" ;
 then
+   if test "X${quda_0_3_enabled}X" = "XyesX";
+   then
+     AC_MSG_ERROR([ Cannot have both QUDA v0.3 and QUDA v0.2 enabled ])
+   fi
+
    AC_MSG_NOTICE([ Using QUDA v0.2 Library in ${QUDA_0_2_HOME} ])
 
    case "$host" in 
@@ -861,6 +876,40 @@ fi
 
 AM_CONDITIONAL(BUILD_QUDA_0_2,
 	[test "x${quda_0_2_enabled}x" = "xyesx" ])
+
+###############################################
+# 
+# QUDA v0.3 support
+#
+################################################
+if test "X${quda_0_3_enabled}X" = "XyesX" ;
+then
+   if test "X${quda_0_2_enabled}X" = "XyesX";
+   then
+     AC_MSG_ERROR([ Cannot have both QUDA v0.3 and QUDA v0.2 enabled ])
+   fi
+
+   AC_MSG_NOTICE([ Using QUDA v0.3 Library in ${QUDA_0_3_HOME} ])
+
+   case "$host" in 
+   x86_64*)
+        CUDA_LIBDIR="${CUDA_HOME}/lib64"	
+	;;
+   *)	
+   CUDA_LIBDIR="${CUDA_HOME}/lib"
+   ;;	
+   esac
+	
+   AC_MSG_NOTICE([ Linking to CUDA Runtime in ${CUDA_LIBDIR}])
+
+   AC_DEFINE([BUILD_QUDA_0_3],[], [Build with the BU QUDA Library v0.3])  
+   AC_SUBST(QUDA_0_3_CXXFLAGS, "-I${QUDA_0_3_HOME}/include -I${CUDA_HOME}/include" )
+   AC_SUBST(QUDA_0_3_LDFLAGS,  "-L${CUDA_LIBDIR} -L${QUDA_0_3_HOME}/lib" )
+   AC_SUBST(QUDA_0_3_LIBS,     "-lquda -lcudart" )
+fi
+
+AM_CONDITIONAL(BUILD_QUDA_0_3,
+	[test "x${quda_0_3_enabled}x" = "xyesx" ])
 
 #######################
 # Produce output

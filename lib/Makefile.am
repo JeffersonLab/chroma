@@ -940,6 +940,10 @@ if BUILD_QUDA_0_2
 AM_CXXFLAGS += @QUDA_0_2_CXXFLAGS@
 endif
 
+if BUILD_QUDA_0_3
+AM_CXXFLAGS += @QUDA_0_3_CXXFLAGS@
+endif
+
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
@@ -1310,6 +1314,16 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_quda_wilson
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.cc
+endif
+
+if BUILD_QUDA_0_3
+nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.h \
+	actions/ferm/invert/quda_solvers/enum_quda_io.h
+
+libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.cc
 endif
 
 #

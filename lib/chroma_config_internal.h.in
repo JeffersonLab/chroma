@@ -36,6 +36,9 @@
 /* Build with the BU QUDA Library v0.2 */
 #undef BUILD_QUDA_0_2
 
+/* Build with the BU QUDA Library v0.3 */
+#undef BUILD_QUDA_0_3
+
 /* Build Scalarsite BICGStab Kernels */
 #undef BUILD_SCALARSITE_BICGSTAB
 
