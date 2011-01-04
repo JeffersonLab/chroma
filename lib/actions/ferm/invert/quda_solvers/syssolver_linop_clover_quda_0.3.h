@@ -301,7 +301,7 @@ namespace Chroma
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 
       // PADDING
-      q_gauge_param.ga_pad = 0;
+      q_gauge_param.ga_pad = (latdims[0]*latdims[1]*latdims[2])/2;
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
 
