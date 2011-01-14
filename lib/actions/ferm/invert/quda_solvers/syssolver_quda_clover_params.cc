@@ -1,6 +1,7 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
 #include "chromabase.h"
 #include "io/xml_group_reader.h"
+#include "chroma_config.h"
 
 
 
@@ -85,6 +86,24 @@ namespace Chroma {
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
 
+#ifdef BUILD_QUDA_0_3
+    if( paramtop.count("AutotuneDslash") > 0 ) { 
+      read(paramtop, "AutotuneDslash", tuneDslashP);
+    }
+    else { 
+      tuneDslashP = false;
+    }
+    QDPIO::cout << "tuneDslasP = " << tuneDslashP << endl;
+
+    if( paramtop.count("CacheAutotuningResults") > 0 ) { 
+      read(paramtop, "CacheAutotuningResults", cacheDslashTuningP);
+    }
+    else { 
+      cacheDslashTuningP = true;
+    }
+    QDPIO::cout << "cacheDslashTuning = " << cacheDslashTuningP << endl;
+
+#endif 
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -112,6 +131,11 @@ namespace Chroma {
     write(xml, "AxialGaugeFix", p.axialGaugeP);
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
+
+#ifdef BUILD_QUDA_0_3
+    write(xml, "AutotuneDslash", p.tuneDslashP);
+    write(xml, "CacheAutotuningResults", p.cacheDslashTuningP);
+#endif
 
     pop(xml);
 

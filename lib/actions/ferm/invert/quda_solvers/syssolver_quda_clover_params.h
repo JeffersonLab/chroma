@@ -22,6 +22,8 @@ namespace Chroma
       axialGaugeP = false; //< Fix Axial Gauge?
       SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
+      tuneDslashP = false ; //< v0.3 autotune feature
+      cacheDslashTuningP = true; //< v0.3 autotune feature.
     };
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -39,6 +41,8 @@ namespace Chroma
       axialGaugeP = p.axialGaugeP;
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
+      tuneDslashP = p.tuneDslashP;
+      cacheDslashTuningP = p.cacheDslashTuningP;
     }
 
     CloverFermActParams CloverParams;
@@ -56,7 +60,8 @@ namespace Chroma
     bool axialGaugeP;
     bool SilentFailP;
     Real RsdToleranceFactor;
-
+    bool tuneDslashP;
+    bool cacheDslashTuningP;
 
   };
 

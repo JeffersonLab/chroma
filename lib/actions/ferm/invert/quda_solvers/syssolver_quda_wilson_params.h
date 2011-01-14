@@ -22,6 +22,8 @@ namespace Chroma
       axialGaugeP = false;
       SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
+      tuneDslashP = false ; //< v0.3 autotune feature
+      cacheDslashTuningP = false; //< v0.3 autotune feature.
     };
     SysSolverQUDAWilsonParams( const SysSolverQUDAWilsonParams& p) {
       WilsonParams = p.WilsonParams;
@@ -38,6 +40,8 @@ namespace Chroma
       axialGaugeP = p. axialGaugeP;
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
+      tuneDslashP = p.tuneDslashP;
+      cacheDslashTuningP = p.cacheDslashTuningP;
     }
     WilsonFermActParams WilsonParams;
     bool AntiPeriodicT;
@@ -53,6 +57,9 @@ namespace Chroma
     bool axialGaugeP;
     bool SilentFailP;
     Real RsdToleranceFactor;
+    bool tuneDslashP;
+    bool cacheDslashTuningP;
+
   };
 
   void read(XMLReader& xml, const std::string& path, SysSolverQUDAWilsonParams& p);

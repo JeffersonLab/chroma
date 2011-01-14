@@ -300,6 +300,28 @@ namespace Chroma
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 
+      // Autotuning
+      if( invParam.tuneDslashP ) { 
+	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+
+	quda_inv_param.dirac_tune = QUDA_TUNE_YES;
+      }
+      else { 
+	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+       
+	quda_inv_param.dirac_tune = QUDA_TUNE_NO;
+      }
+
+      if( invParam.cacheDslashTuningP) { 
+	// Retune for every solve
+	QDPIO::cout << "Will cache Dslash tuning params accross solves" << endl;
+	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_YES;
+      }
+      else { 
+	
+	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_NO;
+      }
+
       // PADDING
       q_gauge_param.ga_pad = (latdims[0]*latdims[1]*latdims[2])/2;
       quda_inv_param.sp_pad = 0;
