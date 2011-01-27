@@ -284,7 +284,8 @@ namespace Chroma
       }
 
       if( ! invParam.asymmetricP ) { 
-	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D" << endl;
+	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << endl;
+	
       }
       // Only support Asymmetric linop
       quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
@@ -362,30 +363,17 @@ namespace Chroma
       multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
       // Only compute clover if we're using asymmetric preconditioner
-      if( invParam.asymmetricP ) { 
-	packed_clov.resize(all.siteTable().size());
+      packed_clov.resize(all.siteTable().size());
 
-	clov->packForQUDA(packed_clov, 0);
-	clov->packForQUDA(packed_clov, 1);
-      }
+      clov->packForQUDA(packed_clov, 0);
+      clov->packForQUDA(packed_clov, 1);
 
       // Always need inverse
       multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
       invclov->packForQUDA(packed_invclov, 0);
       invclov->packForQUDA(packed_invclov, 1);
 
-
-
-
-
-      
-      if( invParam.asymmetricP ) { 
-	loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
-      }
-      else { 
-	loadCloverQuda(NULL, &(packed_invclov[0]), &quda_inv_param);
-      }
-   
+      loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
       
     }
     
@@ -448,7 +436,7 @@ namespace Chroma
 	T tmp,tmp2;
 	(*A)(tmp, psi, PLUS);
 	(*A)(tmp2, tmp, MINUS);
-	r[A->subset()] -= tmp;
+	r[A->subset()] -= tmp2;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
 
