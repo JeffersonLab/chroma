@@ -1319,11 +1319,13 @@ endif
 if BUILD_QUDA_0_3
 nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.h \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_0.3.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.cc
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.cc \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_0.3.cc
 endif
 
 #
