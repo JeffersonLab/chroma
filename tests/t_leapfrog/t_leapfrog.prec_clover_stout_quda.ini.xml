@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL</Name>
+	<!--
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-14</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+	-->
+       <InvertParam>
+	 <invType>QUDA_CLOVER_INVERTER</invType>
+         <CloverParams>
+	  <Kappa>0.115</Kappa>
+	  <clovCoeff>1.2</clovCoeff>
+	  <AnisoParam>
+	    <anisoP>false</anisoP>
+	    <t_dir>3</t_dir>
+	    <xi_0>1</xi_0>
+	    <nu>1</nu>
+	  </AnisoParam>
+	 </CloverParams>
+	 
+	 <RsdTarget>1.0e-7</RsdTarget>
+	 <Delta>0.1</Delta>
+	 <MaxIter>10000</MaxIter>
+	 <AntiPeriodicT>true</AntiPeriodicT>
+	 <SolverType>CG</SolverType>
+	 <Verbose>false</Verbose>
+	 <AsymmetricLinop>true</AsymmetricLinop>
+	 <CudaReconstruct>RECONS_12</CudaReconstruct>
+	 <CudaSloppyPrecision>HALF</CudaSloppyPrecision>
+	 <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>
+	 <AxialGaugeFix>false</AxialGaugeFix>
+       </InvertParam>
+
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+	  <Kappa>0.115</Kappa>
+	  <clovCoeff>1.2</clovCoeff>
+	  <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>3</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+	    <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+          </FermState>
+	  <ChronologicalPredictor>
+	    <Name>ZERO_SOLUTION_4D_PREDICTOR</Name>
+	  </ChronologicalPredictor>
+        </FermionAction>
+	<NamedObject>
+	  <monomial_id>clover</monomial_id>
+        </NamedObject>
+      </elem>
+
+    </Monomials>
+   <Hamiltonian>
+     <monomial_ids><elem>clover</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+	<tau0>0.1</tau0>
+	<Integrator>
+  	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>4</n_steps>
+          <monomial_ids><elem>clover</elem></monomial_ids>
+	</Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>UNIT</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>8 8 8 8</nrow>
+</LeapfrogTest>
