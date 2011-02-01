@@ -21,7 +21,6 @@ namespace Chroma
   //! Read a anisotropy param struct
   void read(XMLReader& xml, const string& path, AnisoParam_t& param)
   {
-    QDPIO::cout << "Reading an AnisoParam_t" << endl;
 
     XMLReader paramtop(xml, path);
 

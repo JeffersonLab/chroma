@@ -782,6 +782,12 @@ namespace Chroma
       XMLReader inputtop(xml, path);
 
       read(inputtop, "file_name", input.file_name);
+      if( inputtop.count("parallel_io") == 1 ) { 
+	read(inputtop, "parallel_io", input.parallel_io);
+      }
+      else { 
+	input.parallel_io = false; 
+      }
     }
 
 
@@ -840,11 +846,18 @@ namespace Chroma
 	Handle<QIOReadObjectEnv::QIOReadObject> qioReadObject(
 	  QIOReadObjectEnv::TheQIOReadObjectFactory::Instance().createObject(params.named_obj.object_type,
 									     params));
+	QDP_serialparallel_t serpar;
+	if ( params.file.parallel_io ) { 
+	  serpar = QDPIO_PARALLEL;
+	}
+	else { 
+	  serpar = QDPIO_SERIAL;
+	}
 
 	// Read the object
 	swatch.start();
 
-	(*qioReadObject)(QDPIO_SERIAL);
+	(*qioReadObject)(serpar);
 
 	swatch.stop();
 

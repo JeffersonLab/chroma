@@ -75,9 +75,6 @@ namespace Chroma
       read(paramtop, "clovCoeff", clovCoeff);
       clovCoeffR = clovCoeff;
       clovCoeffT = clovCoeff;
-      QDPIO::cout << "clovCoeff=" << clovCoeff << endl;
-      QDPIO::cout << "clovCoeffR=" << clovCoeffR << endl;
-      QDPIO::cout << "clovCOeffT=" << clovCoeffT << endl;
     }
 
     if( paramtop.count("MaxNorm") != 0 ){
@@ -92,7 +89,6 @@ namespace Chroma
 
     if( paramtop.count("ZeroEnergy") != 0 ) { 
       read(paramtop, "ZeroEnergy", sub_zero);
-      QDPIO::cout << "ZeroEnergy=" <<sub_zero << endl;
       sub_zero_usedP=true;
     }
     else { 

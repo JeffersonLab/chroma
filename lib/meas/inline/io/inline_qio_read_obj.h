@@ -37,6 +37,7 @@ namespace Chroma
       struct File_t
       {
 	std::string   file_name;
+	bool parallel_io;
       };
 
       File_t file;

@@ -67,8 +67,8 @@ namespace Chroma
       cfg_pario = QDPIO_SERIAL;
 
       bool pario;
-      if ( paramtop.count("ParallelIO") > 0 ) { 
-        read(paramtop, "ParallelIO", pario);
+      if ( paramtop.count("parallel_io") > 0 ) { 
+        read(paramtop, "parallel_io", pario);
         if( pario ) { 
 	  cfg_pario = QDPIO_PARALLEL;;
         }
@@ -85,7 +85,7 @@ namespace Chroma
       write(xml, "cfg_file", cfg_file);
       if ( cfg_pario == QDPIO_PARALLEL ) { 
 	bool pario = true;
-	write(xml, "ParallelIO", pario);
+	write(xml, "parallel_io", pario);
       }
       pop(xml);
     }
