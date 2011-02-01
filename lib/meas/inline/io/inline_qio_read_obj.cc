@@ -848,6 +848,7 @@ namespace Chroma
 									     params));
 	QDP_serialparallel_t serpar;
 	if ( params.file.parallel_io ) { 
+	  QDPIO::cout << "Attempting Parallel IO read" << endl;
 	  serpar = QDPIO_PARALLEL;
 	}
 	else { 
