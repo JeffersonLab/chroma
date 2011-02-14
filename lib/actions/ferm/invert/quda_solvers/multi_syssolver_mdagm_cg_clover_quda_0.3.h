@@ -255,13 +255,11 @@ namespace Chroma
       // Solve type
       switch( invParam.solverType ) { 
       case CG: 
-	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-	break;
-      case BICGSTAB:
-	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;
 	break;
       default:
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;   
+	QDPIO::cerr << "Only CG Is currently implemented for multi-shift" << endl;
+	QDP_abort(1);
 	
 	break;
       }
