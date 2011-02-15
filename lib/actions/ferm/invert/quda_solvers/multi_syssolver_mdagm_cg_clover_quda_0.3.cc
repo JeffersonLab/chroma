@@ -96,7 +96,7 @@ namespace Chroma
     swatch1.reset();
     swatch1.start();
     QDPIO::cout << "CALLING QUDA SOLVER" << endl << flush ; 
-    invertMultiShiftQudaGeneric(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param, shift_d, shifts.size(), &resid_sq);
+    invertMultiShiftQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param, shift_d, shifts.size(), &resid_sq);
     swatch1.stop();
 
     // Tidy Up
