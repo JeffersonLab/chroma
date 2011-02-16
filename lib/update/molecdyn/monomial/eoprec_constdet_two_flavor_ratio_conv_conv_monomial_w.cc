@@ -61,7 +61,20 @@ namespace Chroma
 
     QDPIO::cout << "Constructor: " << __func__ << endl;
 
+    if ( param.numer.invParam.id == "NULL" ) { 
+      QDPIO::cerr << "Numerator inverter parameter is NULL" << endl;
+      QDP_abort(1);
+    }
     invParam_num = param.numer.invParam;
+
+    if( param.denom.invParam.id == "NULL" ) { 
+      QDPIO::cerr << "WARNING: Denominator inverter parameter is NULL." << endl;
+      QDPIO::cerr << "WARNING: Assuming it is same as numerator " << endl;
+      invParam_den = param.numer.invParam;
+    }
+    else {
+      invParam_den = param.denom.invParam;
+    }
 
     //*********************************************************************
     // Fermion action

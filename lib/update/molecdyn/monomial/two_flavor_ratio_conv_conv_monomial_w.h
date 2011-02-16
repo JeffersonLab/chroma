@@ -186,7 +186,7 @@ namespace Chroma
       (*M)(eta_tmp, eta, MINUS);  // M^\dag \eta
 
       // Get system solver
-      Handle< MdagMSystemSolver<Phi> > invMdagM(FA_prec.invMdagM(state, getNumerInvParams()));
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA_prec.invMdagM(state, getDenomInvParams()));
 
       // Solve MdagM_prec X = eta
       SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
@@ -248,8 +248,15 @@ namespace Chroma
     //! Get at fermion action for preconditioner
     virtual const WilsonTypeFermAct<Phi,P,Q>& getDenomFermAct() const = 0;
 
-    //! Do an inversion of the type 
+    //! Parameters for inverting with the action of the numerator
     virtual const GroupXML_t& getNumerInvParams() const = 0;
+
+    //! Parameters for inverting with the action of the denominator
+    // NB: This is needed, because for some optimized solvers, the ferm act params
+    // are actually in part of the solver params. Calling the invMdagM factory
+    // function of the Preconditioning Ferm Act may not be sufficient
+    // (Also in this case num and denom refer to the final determinant numerator/denominator)
+    virtual const GroupXML_t& getDenomInvParams() const = 0;
 
     //! Get the initial guess predictor
     virtual AbsChronologicalPredictor4D<Phi>& getMDSolutionPredictor() = 0;

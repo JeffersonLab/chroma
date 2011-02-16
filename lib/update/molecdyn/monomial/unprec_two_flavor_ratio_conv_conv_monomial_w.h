@@ -69,6 +69,11 @@ namespace Chroma
 	return invParam_num;
       }
 
+      //! Do an inversion of the type 
+      const GroupXML_t& getDenomInvParams() const {
+	return invParam_den;
+      }
+
     private:
       // Hide empty constructor and =
       UnprecTwoFlavorRatioConvConvWilsonTypeFermMonomial();
@@ -85,6 +90,7 @@ namespace Chroma
 
       // The parameters for the inversion
       GroupXML_t invParam_num;
+      GroupXML_t invParam_den;
       
       // A handle for the chrono predictor
       Handle< AbsChronologicalPredictor4D<T> > chrono_predictor;

@@ -22,7 +22,7 @@ namespace Chroma
     // Read monomial from some root path
     TwoFlavorRatioConvConvWilsonTypeFermMonomialParams(XMLReader& in, const std::string&  path);
     CompActionInv_t   numer;         /*!< Fermion action and invert params for numerator */
-    CompAction_t      denom;         /*!< Fermion action for denominator */
+    CompActionInv_t   denom;         /*!< Fermion action for denominator */
     GroupXML_t        predictor;     /*!< The Chrono Predictor XML */
   };
 

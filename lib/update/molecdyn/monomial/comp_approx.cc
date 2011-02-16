@@ -90,7 +90,17 @@ namespace Chroma
     XMLReader paramtop(xml, path);
 
     param.fermact  = readXMLGroup(paramtop, "FermionAction", "FermAct");
-    param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
+
+    if( paramtop.count("InvertParam") == 0) { 
+      // No invert param provided.
+      param.invParam.xml = "";
+      param.invParam.id = "NULL";
+      param.invParam.path = "";
+    }
+    else { 
+      param.invParam = readXMLGroup(paramtop, "InvertParam", "invType");
+    }
+
   }
 
 

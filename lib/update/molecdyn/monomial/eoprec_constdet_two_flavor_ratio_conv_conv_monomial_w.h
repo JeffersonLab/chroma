@@ -69,6 +69,10 @@ namespace Chroma
       return invParam_num;
     }
 
+    const GroupXML_t& getDenomInvParams() const { 
+      return invParam_den;
+    }
+
   private:
  
     // Hide empty constructor and =
@@ -85,6 +89,7 @@ namespace Chroma
 
     // The parameters for the inversion
     GroupXML_t invParam_num;
+    GroupXML_t invParam_den;
 
     Handle<AbsChronologicalPredictor4D<T> > chrono_predictor;
   };
