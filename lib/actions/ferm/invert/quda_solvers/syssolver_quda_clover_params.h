@@ -24,6 +24,7 @@ namespace Chroma
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
       tuneDslashP = false ; //< v0.3 autotune feature
       cacheDslashTuningP = true; //< v0.3 autotune feature.
+      verboseP = false;
     };
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;

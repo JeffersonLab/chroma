@@ -71,8 +71,6 @@ namespace Chroma
       QDP_abort(1);
     }
 
-
-    QDPIO::cout << "N_shift = " << shifts.size() << endl;
     void** spinorOut;
     spinorOut = (void **)malloc(shifts.size()*sizeof(void *));
     if (spinorOut == NULL) { 
@@ -90,7 +88,6 @@ namespace Chroma
       spinorOut[s] = (void *)&(psi_s[s].elem(rb[1].start()).elem(0).elem(0).real());
       shift_d[s] = toDouble(shifts[s]);
     }
-    QDPIO:: cout << "Here 3" << endl;
    // Do the solve here 
     StopWatch swatch1; 
     swatch1.reset();
