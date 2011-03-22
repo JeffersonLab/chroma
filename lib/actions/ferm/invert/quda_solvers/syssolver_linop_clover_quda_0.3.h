@@ -392,7 +392,12 @@ namespace Chroma
     
 
     //! Destructor is automatic
-    ~LinOpSysSolverQUDAClover() {}
+    ~LinOpSysSolverQUDAClover() 
+    {
+      QDPIO::cout << "Destructing" << endl;
+      freeGaugeQuda();
+      freeCloverQuda();
+    }
 
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
