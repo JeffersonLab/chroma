@@ -46,6 +46,12 @@ namespace Chroma
       {
       case 1:
 	/**************************************************************************/
+	param.mom2_min = 0;
+	break;
+
+      case 2:
+	/**************************************************************************/
+	read(paramtop, "mom2_min", param.mom2_min);
 	break;
 
       default :
@@ -71,9 +77,10 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 1;
+      int version = 2;
 
       write(xml, "version", version);
+      write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
@@ -170,6 +177,7 @@ namespace Chroma
     Params::Params()
     { 
       frequency = 0; 
+      param.mom2_min = 0;
       param.mom2_max = 0;
     }
 
@@ -553,6 +561,8 @@ namespace Chroma
 	// Big loop over the momentum projection
 	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
+	  if ( norm2(phases.numToMom(mom_num)) < params.param.mom2_min ) continue;
+
 	  // The keys for the spin and displacements for this particular elemental operator
 	  // No displacement for left colorvector, only displace right colorvector
 	  // Invert the time - make it an independent key
