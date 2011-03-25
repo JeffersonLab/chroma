@@ -28,7 +28,14 @@ typedef multi1d<LatticeColorMatrixD> PD;
 
 
 #include "quda.h"
-#include "util_quda.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+  void commDimPartitionedSet(int);
+#ifdef __cplusplus
+};
+#endif
 
 
 
@@ -37,7 +44,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   // I want to test the QUDA dslash
   // First make a reference dslash: 4D for now
   multi1d<int> boundary(4); boundary[0]=boundary[1]=boundary[2]=1;
-  boundary[3]=1;
+  boundary[3]=-1;
 
   Handle< FermBC<TF,PF,QF> > bc_handle(new SimpleFermBC<TF,PF,QF>(boundary));
 
@@ -50,11 +57,24 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   QudaGaugeParam q_gauge_param=newQudaGaugeParam();
   QudaInvertParam quda_inv_param=newQudaInvertParam();
 
-  QudaPrecision_s cpu_prec=QUDA_SINGLE_PRECISION;
-  QudaPrecision_s gpu_prec=QUDA_SINGLE_PRECISION;
-  QudaPrecision_s gpu_half_prec=QUDA_SINGLE_PRECISION;
+  const multi1d<int>& latdims = Layout::subgridLattSize();      
+  q_gauge_param.X[0] = latdims[0];
+  q_gauge_param.X[1] = latdims[1];
+  q_gauge_param.X[2] = latdims[2];
+  q_gauge_param.X[3] = latdims[3];
+  int vol=latdims[0]*latdims[1]*latdims[2]*latdims[3];
 
-  // Setup Boundaries
+  //
+  //  setDims(q_gauge_param.X);
+
+  // Setup gauge anisotropy
+  q_gauge_param.anisotropy = 1.0;
+
+  q_gauge_param.type = QUDA_WILSON_LINKS;
+  // Setup Gauge Order 
+  q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER;
+
+  // Setp Boundaries
   if(boundary[3]==-1){ 
     q_gauge_param.t_boundary = QUDA_ANTI_PERIODIC_T;
   }
@@ -62,77 +82,67 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
     q_gauge_param.t_boundary = QUDA_PERIODIC_T;
   }
 
-  // Setup Gauge Order 
-  q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER;
-  q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
-  q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
+  QudaPrecision_s cpu_prec=QUDA_SINGLE_PRECISION;
+  QudaPrecision_s gpu_prec=QUDA_SINGLE_PRECISION;
+  QudaPrecision_s gpu_half_prec=QUDA_SINGLE_PRECISION;
 
-  // Setup precisions
   q_gauge_param.cpu_prec=cpu_prec;
   q_gauge_param.cuda_prec=gpu_prec;
-  q_gauge_param.cuda_prec_sloppy=gpu_half_prec;
-
-  // Setup lattice size
-  const multi1d<int>& latdims = Layout::subgridLattSize();      
-  q_gauge_param.X[0] = latdims[0];
-  q_gauge_param.X[1] = latdims[1];
-  q_gauge_param.X[2] = latdims[2];
-  q_gauge_param.X[3] = latdims[3];
-  
-  // Setup gauge fixing
+  q_gauge_param.reconstruct = QUDA_RECONSTRUCT_NO;
+  q_gauge_param.reconstruct_sloppy = q_gauge_param.reconstruct;
+  q_gauge_param.cuda_prec_sloppy=q_gauge_param.cuda_prec;
   q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;
 
-  // Setup padding
-  unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
-  unsigned int padding=latdims[0]*latdims[1]*latdims[2]/2;
-  quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = padding;
-  // Setup gauge anisotropy
-  q_gauge_param.anisotropy = 1.0;
+  quda_inv_param.kappa=1;
+  quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
+  quda_inv_param.dagger = (isign == PLUS) ? QUDA_DAG_NO : QUDA_DAG_YES;
 
+   // Setup padding
+  multi1d<int> face_size(4);
+  face_size[0] = latdims[1]*latdims[2]*latdims[3]/2;
+  face_size[1] = latdims[0]*latdims[2]*latdims[3]/2;
+  face_size[2] = latdims[0]*latdims[1]*latdims[3]/2;
+  face_size[3] = latdims[0]*latdims[1]*latdims[2]/2;
+
+  int max_face = face_size[0];
+  for(int i=1; i <=3; i++) { 
+    if ( face_size[i] > max_face ) { 
+      max_face = face_size[i]; 
+    }
+  }
+  q_gauge_param.ga_pad = max_face;
+  quda_inv_param.sp_pad = 0;
+  quda_inv_param.cl_pad = 0;
+
+  quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+   // Now set up inverter params.
+  quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
+  quda_inv_param.cpu_prec = cpu_prec;
+  quda_inv_param.cuda_prec = gpu_prec;
+  quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
+ 
+  commDimPartitionedSet(3);
 
   // Make the links
   QF links_single(Nd);
 
-#if 0
-  QF links_minus(Nd);
-#endif 
 
   for(int mu=0; mu < Nd; mu++) {
     links_single[mu] = fs_handle->getLinks()[mu];
-#if 0
-    links_minus[mu] =  shift(links_single[mu], BACKWARD, mu);
-#endif    
-
   }
 
  
   // Set up the links
   void* gauge[4];
 
-#if 0
-  void* gauge_minus[4];
-#endif
-
   for(int mu=0; mu < Nd; mu++) { 
     gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
-#if 0
-    gauge_minus[mu] = (void *)&(links_minus[mu].elem(all.start()).elem().elem(0,0).real());
-#endif
-
   }
-
-#if 0
-  loadGaugeQuda((void *)gauge, (void *)gauge_minus, &q_gauge_param);
-#endif
 
   loadGaugeQuda((void *)gauge, &q_gauge_param);
   
-  // Now set up inverter params.
-  quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
-  quda_inv_param.cpu_prec = cpu_prec;
-  quda_inv_param.cuda_prec = gpu_prec;
-  quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
-  quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+
+ 
 
   TF src, dst1,dst2;
   gaussian(src);
@@ -168,8 +178,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   dslashQuda((void *)buffer_out.slice(),
 	     (void *)buffer_in.slice(),
 	     &quda_inv_param,
-	     cb,      // source parity =1, dst parity=0
-	     daggerBit);     // no dagger
+	     (QudaParity)cb);     // source parity =1, dst parity=0
 
   // Unpack
   lin=0;
@@ -195,6 +204,8 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   else {
     ret_val = false; 
   }
+
+  freeGaugeQuda();
 
   return ret_val;
 }
@@ -265,17 +276,36 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
   q_gauge_param.X[1] = latdims[1];
   q_gauge_param.X[2] = latdims[2];
   q_gauge_param.X[3] = latdims[3];
-  
+  int vol=latdims[0]*latdims[1]*latdims[2]*latdims[3];
+  q_gauge_param.type = QUDA_WILSON_LINKS;
+  q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER;
+
   // Setup gauge fixing
   q_gauge_param.gauge_fix = QUDA_GAUGE_FIXED_NO;
 
   // Setup padding
-  unsigned int vol = latdims[0]*latdims[1]*latdims[2]*latdims[3];
-  unsigned int padding=latdims[0]*latdims[1]*latdims[2]/2;
-  quda_inv_param.sp_pad = q_gauge_param.ga_pad = quda_inv_param.cl_pad = padding;
+  multi1d<int> face_size(4);
+  face_size[0] = latdims[1]*latdims[2]*latdims[3]/2;
+  face_size[1] = latdims[0]*latdims[2]*latdims[3]/2;
+  face_size[2] = latdims[0]*latdims[1]*latdims[3]/2;
+  face_size[3] = latdims[0]*latdims[1]*latdims[2]/2;
+
+  int max_face = face_size[0];
+  for(int i=1; i <=3; i++) { 
+    if ( face_size[i] > max_face ) { 
+      max_face = face_size[i]; 
+    }
+  }
+
+
+  q_gauge_param.ga_pad = max_face;
+  quda_inv_param.sp_pad = 0;
+  quda_inv_param.cl_pad = 0;
+
   // Setup gauge anisotropy
   q_gauge_param.anisotropy = 1.0;
 
+  commDimPartitionedSet(3);
 
   // Make the links
   QD links_single(Nd);
@@ -318,7 +348,7 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
   quda_inv_param.cuda_prec = gpu_prec;
   quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
   quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
-
+  quda_inv_param.dagger = (isign == PLUS) ? QUDA_DAG_NO : QUDA_DAG_YES;
   TD src, dst1,dst2;
   gaussian(src);
   //src.elem(rb[1].end()).elem(0).elem(0).real() = 1.0;
@@ -336,7 +366,6 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
 
 
   int otherCB=1-cb;
-  int daggerBit = (isign == MINUS ? 1 : 0);
 
   // Pack buffer_in: output cb = rb[0], input cb=rb[1]
   int lin=0;
@@ -353,8 +382,8 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
   dslashQuda((void *)buffer_out.slice(),
 	     (void *)buffer_in.slice(),
 	     &quda_inv_param,
-	     cb,      // source parity =1, dst parity=0
-	     daggerBit);     // no dagger
+	     (QudaParity)cb);      // source parity =1, dst parity=0
+
 
   // Unpack
   lin=0;
@@ -381,6 +410,7 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
     ret_val = false; 
   }
 
+  freeGaugeQuda();
   return ret_val;
 }
 
@@ -416,7 +446,6 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
   }
 
   // Setup Gauge Order 
-  q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER;
   q_gauge_param.reconstruct = QUDA_RECONSTRUCT_12;
   q_gauge_param.reconstruct_sloppy = QUDA_RECONSTRUCT_12;
 
@@ -625,7 +654,7 @@ int main(int argc, char **argv)
 
 
   //  AppParams params;
-  const int lsize[4]={24,24,24,16};
+  const int lsize[4]={24,24,24,48};
   multi1d<int> nrow(4);
   nrow=lsize;
   Layout::setLattSize(nrow);
@@ -669,7 +698,7 @@ int main(int argc, char **argv)
   QDPIO::cout << "Howdy" << endl;
   bool result;
 
-#if 0
+#if 1
   // Single Precision tests 
   QDPIO::cout << "Test: Dslash PLUS, cb=0";
   if ( ! testQudaDslash(u, PLUS, 0)  ) { 

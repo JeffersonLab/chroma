@@ -27,6 +27,14 @@
 #include "util/gauge/reunit.h"
 
 #include <quda.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+  void commDimPartitionedSet(int);
+#ifdef __cplusplus
+};
+#endif
+
 //#include <util_quda.h>
 using namespace std;
 
@@ -321,11 +329,27 @@ namespace Chroma
 	
 	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_NO;
       }
-
-      // PADDING
-      q_gauge_param.ga_pad = (latdims[0]*latdims[1]*latdims[2])/2;
+      
+      // Setup padding
+      multi1d<int> face_size(4);
+      face_size[0] = latdims[1]*latdims[2]*latdims[3]/2;
+      face_size[1] = latdims[0]*latdims[2]*latdims[3]/2;
+      face_size[2] = latdims[0]*latdims[1]*latdims[3]/2;
+      face_size[3] = latdims[0]*latdims[1]*latdims[2]/2;
+      
+      int max_face = face_size[0];
+      for(int i=1; i <=3; i++) { 
+	if ( face_size[i] > max_face ) { 
+	  max_face = face_size[i]; 
+	}
+      }
+      
+      
+      q_gauge_param.ga_pad = max_face;
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
+
+      commDimPartitionedSet(3);
 
       // Clover precision and order
       quda_inv_param.clover_cpu_prec = cpu_prec;

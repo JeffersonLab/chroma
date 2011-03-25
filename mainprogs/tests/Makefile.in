@@ -73,7 +73,7 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_precact_5d$(EXEEXT) t_gauge_force$(EXEEXT) \
 	t_stout_state$(EXEEXT) t_aniso_gaugeact$(EXEEXT) \
 	t_temp_prec$(EXEEXT) $(am__EXEEXT_1)
-@BUILD_QUDA_0_2_TRUE@am__append_25 = t_quda_tprec
+@BUILD_QUDA_0_3_TRUE@am__append_25 = t_quda_tprec
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -114,7 +114,7 @@ CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
-@BUILD_QUDA_0_2_TRUE@am__EXEEXT_1 = t_quda_tprec$(EXEEXT)
+@BUILD_QUDA_0_3_TRUE@am__EXEEXT_1 = t_quda_tprec$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_t_aniso_gaugeact_OBJECTS = t_aniso_gaugeact.$(OBJEXT)
 t_aniso_gaugeact_OBJECTS = $(am_t_aniso_gaugeact_OBJECTS)
@@ -639,7 +639,7 @@ t_propagator_w_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am__t_quda_tprec_SOURCES_DIST = t_quda_tprec.cc
-@BUILD_QUDA_0_2_TRUE@am_t_quda_tprec_OBJECTS = t_quda_tprec.$(OBJEXT)
+@BUILD_QUDA_0_3_TRUE@am_t_quda_tprec_OBJECTS = t_quda_tprec.$(OBJEXT)
 t_quda_tprec_OBJECTS = $(am_t_quda_tprec_OBJECTS)
 t_quda_tprec_LDADD = $(LDADD)
 t_quda_tprec_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -1174,7 +1174,7 @@ t_db_SOURCES = t_db.cc
 t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 t_minvert_SOURCES = t_minvert.cc
-@BUILD_QUDA_0_2_TRUE@t_quda_tprec_SOURCES = t_quda_tprec.cc
+@BUILD_QUDA_0_3_TRUE@t_quda_tprec_SOURCES = t_quda_tprec.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
