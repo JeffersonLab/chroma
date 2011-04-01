@@ -252,9 +252,13 @@ namespace Chroma
 	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;
 	solver_string = "BICGSTAB";
 	break;
+      case GCR:
+	quda_inv_param.inv_type = QUDA_GCR_INVERTER;
+	solver_string = "GCR";
+	break;
       default:
-	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
-	solver_string = "CG";
+	QDPIO::cerr << "Unknown SOlver type" << endl;
+	QDP_abort(1);
 	break;
       }
 
@@ -350,6 +354,39 @@ namespace Chroma
       quda_inv_param.cl_pad = 0;
 
       commDimPartitionedSet(3);
+
+
+      if( invParam.innerParamsP ) {
+	QDPIO::cout << "Setting inner solver params" << endl;
+	// Dereference handle
+	GCRInnerSolverParams ip = *(invParam.innerParams);
+	quda_inv_param.tol_sloppy = toDouble(ip.tolSloppy);
+	quda_inv_param.maxiter_sloppy = ip.maxIterSloppy;
+	quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
+	for(int i=0; i < Nd; i++) { 
+	  quda_inv_param.commDim[i] = ip.commDim[i];
+	  quda_inv_param.commDimSloppy[i] = ip.commDimSloppy[i];
+	}
+	if( ip.verboseInner ) { 
+	  quda_inv_param.verbosity_sloppy = QUDA_VERBOSE;
+	}
+	else { 
+	  quda_inv_param.verbosity_sloppy = QUDA_SILENT;
+	}
+
+	switch( ip.invTypeSloppy ) { 
+	case CG: 
+	  quda_inv_param.inv_type_sloppy = QUDA_CG_INVERTER;
+	  break;
+	case BICGSTAB:
+	  quda_inv_param.inv_type_sloppy = QUDA_BICGSTAB_INVERTER;
+
+	  break;
+	default:
+	  quda_inv_param.inv_type_sloppy = QUDA_CG_INVERTER;   
+	  break;
+	}
+      }
 
       // Clover precision and order
       quda_inv_param.clover_cpu_prec = cpu_prec;

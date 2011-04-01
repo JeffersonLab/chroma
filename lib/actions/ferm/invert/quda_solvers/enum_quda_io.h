@@ -19,7 +19,8 @@ namespace Chroma
   //! Quda Solver type
   enum QudaSolverType { 
     CG,
-    BICGSTAB
+    BICGSTAB,
+    GCR,
   };
   
   namespace QudaSolverTypeEnv { 

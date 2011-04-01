@@ -8,7 +8,51 @@
 using namespace QDP;
 
 namespace Chroma {
+  GCRInnerSolverParams::GCRInnerSolverParams(XMLReader& xml, 
+					     const std::string& path)
+  {
+    XMLReader paramtop(xml, path);
+    read(paramtop, "RsdSloppy", tolSloppy);
+    read(paramtop, "MaxIterSloppy", maxIterSloppy);
+    read(paramtop, "NKrylov", gcrNkrylov);
+    // Assume commDim is comms from QDP++
+    multi1d<int> mach_size = Layout::logicalSize();
+    commDim.resize(Nd);
+    for(int mu=0; mu < Nd; mu++) {
+      commDim[mu] = 0; // 
+      if( mach_size[mu] > 1 ) { 
+	commDim[mu] = 1; 
+      }
+    }
+
+    commDimSloppy.resize(Nd);
+    read(paramtop, "CommDimSloppy", commDimSloppy);
+    read(paramtop, "VerboseP", verboseInner);
+    read(paramtop, "InvTypeSloppy", invTypeSloppy);
+  };
+
+  void read(XMLReader& xml, const std::string& path, 
+	    GCRInnerSolverParams& p)
+  {
+    GCRInnerSolverParams tmp(xml, path);
+    p = tmp;
+  }
+
   
+  
+  void write(XMLWriter& xml, const std::string& path, 
+	     const GCRInnerSolverParams& p) {
+    push(xml, path);
+    write(xml, "RsdSloppy", p.tolSloppy);
+    write(xml, "MaxIterSloppy", p.maxIterSloppy);
+    write(xml, "NKrylov", p.gcrNkrylov);
+    write(xml, "CommDimSloppy", p.commDimSloppy);
+    write(xml, "VerboseP", p.verboseInner);
+    write(xml, "InvTypeSloppy", p.invTypeSloppy);
+    pop(xml);
+
+  }
+
   SysSolverQUDACloverParams::SysSolverQUDACloverParams(XMLReader& xml, 
 						       const std::string& path)
   {
@@ -103,6 +147,13 @@ namespace Chroma {
     }
     QDPIO::cout << "cacheDslashTuning = " << cacheDslashTuningP << endl;
 
+    if( paramtop.count("GCRInnerParams") > 0 ) {
+      innerParams = new GCRInnerSolverParams(paramtop, "./GCRInnerParams");
+      innerParamsP = true;
+    }
+    else { 
+      innerParamsP = false;
+    }
 #endif 
   }
 
@@ -135,6 +186,9 @@ namespace Chroma {
 #ifdef BUILD_QUDA_0_3
     write(xml, "AutotuneDslash", p.tuneDslashP);
     write(xml, "CacheAutotuningResults", p.cacheDslashTuningP);
+    if( p.innerParamsP ) { 
+      write(xml, "GCRInnerParams", *(p.innerParams));
+    }
 #endif
 
     pop(xml);

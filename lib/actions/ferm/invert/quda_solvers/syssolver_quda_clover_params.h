@@ -6,10 +6,52 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/invert/quda_solvers/enum_quda_io.h"
 #include <string>
+#include "handle.h"
 using namespace std;
 
 namespace Chroma 
 {
+
+  struct GCRInnerSolverParams {
+
+    Real tolSloppy;
+    int  maxIterSloppy;
+    int  gcrNkrylov;
+    multi1d<int> commDim;
+    multi1d<int> commDimSloppy;
+    bool verboseInner;
+    QudaSolverType invTypeSloppy;
+
+    GCRInnerSolverParams(XMLReader& xml, const std::string& path);
+    GCRInnerSolverParams() {
+      tolSloppy=0;
+      maxIterSloppy=0;
+      gcrNkrylov=0;
+      commDim.resize(Nd);
+      commDimSloppy.resize(Nd);
+      for(int i=0; i < Nd; i++) { 
+	commDim[i] = 0;
+	commDimSloppy[i]=0;
+      }
+
+      multi1d<int> mach_size = Layout::logicalSize();
+      for(int mu=0; mu < Nd; mu++) {
+	if( mach_size[mu] > 1 ) { 
+	  commDim[mu] = 1; 
+	}
+      }
+
+      verboseInner=false;
+      invTypeSloppy=CG;
+    };
+
+  };
+  void read(XMLReader& xml, const std::string& path, GCRInnerSolverParams& p);
+ 
+  void write(XMLWriter& xml, const std::string& path, 
+	     const GCRInnerSolverParams& param);
+
+
   struct SysSolverQUDACloverParams { 
     SysSolverQUDACloverParams(XMLReader& xml, const std::string& path);
     SysSolverQUDACloverParams() {
@@ -25,6 +67,10 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       cacheDslashTuningP = true; //< v0.3 autotune feature.
       verboseP = false;
+      innerParamsP = false;
+      //innerParams = 0x0; // Null pointer
+
+      
     };
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -44,8 +90,11 @@ namespace Chroma
       RsdToleranceFactor = p.RsdToleranceFactor;
       tuneDslashP = p.tuneDslashP;
       cacheDslashTuningP = p.cacheDslashTuningP;
+      innerParamsP = p.innerParamsP;
+      innerParams = p.innerParams;
     }
 
+   
     CloverFermActParams CloverParams;
     bool AntiPeriodicT;
     int MaxIter;
@@ -63,6 +112,8 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool cacheDslashTuningP;
+    bool innerParamsP;
+    Handle<GCRInnerSolverParams> innerParams;
 
   };
 
