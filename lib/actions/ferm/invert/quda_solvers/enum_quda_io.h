@@ -21,6 +21,7 @@ namespace Chroma
     CG,
     BICGSTAB,
     GCR,
+    MR
   };
   
   namespace QudaSolverTypeEnv { 

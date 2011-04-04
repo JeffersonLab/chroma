@@ -382,6 +382,8 @@ namespace Chroma
 	  quda_inv_param.inv_type_sloppy = QUDA_BICGSTAB_INVERTER;
 
 	  break;
+	case MR:
+	  quda_inv_param.inv_type_sloppy= QUDA_MR_INVERTER;
 	default:
 	  quda_inv_param.inv_type_sloppy = QUDA_CG_INVERTER;   
 	  break;

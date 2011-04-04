@@ -16,6 +16,7 @@ namespace Chroma {
       success = theQudaSolverTypeMap::Instance().registerPair(string("CG"),CG);
       success &= theQudaSolverTypeMap::Instance().registerPair(string("BICGSTAB"),BICGSTAB);
       success &= theQudaSolverTypeMap::Instance().registerPair(string("GCR"),GCR);
+      success &= theQudaSolverTypeMap::Instance().registerPair(string("MR"),MR);
       return success;
     }
     const string typeIDString = "QudaSolverType";
