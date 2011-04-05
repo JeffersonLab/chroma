@@ -15,18 +15,6 @@ namespace Chroma {
     read(paramtop, "RsdSloppy", tolSloppy);
     read(paramtop, "MaxIterSloppy", maxIterSloppy);
     read(paramtop, "NKrylov", gcrNkrylov);
-    // Assume commDim is comms from QDP++
-    multi1d<int> mach_size = Layout::logicalSize();
-    commDim.resize(Nd);
-    for(int mu=0; mu < Nd; mu++) {
-      commDim[mu] = 0; // 
-      if( mach_size[mu] > 1 ) { 
-	commDim[mu] = 1; 
-      }
-    }
-
-    commDimSloppy.resize(Nd);
-    read(paramtop, "CommDimSloppy", commDimSloppy);
     read(paramtop, "VerboseP", verboseInner);
     read(paramtop, "InvTypeSloppy", invTypeSloppy);
   };
@@ -46,7 +34,6 @@ namespace Chroma {
     write(xml, "RsdSloppy", p.tolSloppy);
     write(xml, "MaxIterSloppy", p.maxIterSloppy);
     write(xml, "NKrylov", p.gcrNkrylov);
-    write(xml, "CommDimSloppy", p.commDimSloppy);
     write(xml, "VerboseP", p.verboseInner);
     write(xml, "InvTypeSloppy", p.invTypeSloppy);
     pop(xml);

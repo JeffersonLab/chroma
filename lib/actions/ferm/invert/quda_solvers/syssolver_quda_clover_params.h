@@ -17,8 +17,6 @@ namespace Chroma
     Real tolSloppy;
     int  maxIterSloppy;
     int  gcrNkrylov;
-    multi1d<int> commDim;
-    multi1d<int> commDimSloppy;
     bool verboseInner;
     QudaSolverType invTypeSloppy;
 
@@ -27,20 +25,6 @@ namespace Chroma
       tolSloppy=0;
       maxIterSloppy=0;
       gcrNkrylov=0;
-      commDim.resize(Nd);
-      commDimSloppy.resize(Nd);
-      for(int i=0; i < Nd; i++) { 
-	commDim[i] = 0;
-	commDimSloppy[i]=0;
-      }
-
-      multi1d<int> mach_size = Layout::logicalSize();
-      for(int mu=0; mu < Nd; mu++) {
-	if( mach_size[mu] > 1 ) { 
-	  commDim[mu] = 1; 
-	}
-      }
-
       verboseInner=false;
       invTypeSloppy=CG;
     };

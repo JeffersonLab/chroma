@@ -363,10 +363,6 @@ namespace Chroma
 	quda_inv_param.tol_sloppy = toDouble(ip.tolSloppy);
 	quda_inv_param.maxiter_sloppy = ip.maxIterSloppy;
 	quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
-	for(int i=0; i < Nd; i++) { 
-	  quda_inv_param.commDim[i] = ip.commDim[i];
-	  quda_inv_param.commDimSloppy[i] = ip.commDimSloppy[i];
-	}
 	if( ip.verboseInner ) { 
 	  quda_inv_param.verbosity_sloppy = QUDA_VERBOSE;
 	}
@@ -384,6 +380,8 @@ namespace Chroma
 	  break;
 	case MR:
 	  quda_inv_param.inv_type_sloppy= QUDA_MR_INVERTER;
+	  break;
+
 	default:
 	  quda_inv_param.inv_type_sloppy = QUDA_CG_INVERTER;   
 	  break;
