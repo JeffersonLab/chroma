@@ -360,33 +360,44 @@ namespace Chroma
 	QDPIO::cout << "Setting inner solver params" << endl;
 	// Dereference handle
 	GCRInnerSolverParams ip = *(invParam.innerParams);
-	quda_inv_param.tol_sloppy = toDouble(ip.tolSloppy);
-	quda_inv_param.maxiter_sloppy = ip.maxIterSloppy;
+        quda_inv_param.prec_precondition = quda_inv_param.cuda_prec_sloppy;
+	quda_inv_param.tol_precondition = toDouble(ip.tolSloppy);
+	quda_inv_param.maxiter_precondition = ip.maxIterSloppy;
 	quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
 	if( ip.verboseInner ) { 
-	  quda_inv_param.verbosity_sloppy = QUDA_VERBOSE;
+	  quda_inv_param.verbosity_precondition = QUDA_VERBOSE;
+
 	}
 	else { 
-	  quda_inv_param.verbosity_sloppy = QUDA_SILENT;
+	  quda_inv_param.verbosity_precondition = QUDA_SILENT;
 	}
 
 	switch( ip.invTypeSloppy ) { 
 	case CG: 
-	  quda_inv_param.inv_type_sloppy = QUDA_CG_INVERTER;
+	  quda_inv_param.inv_type_precondition = QUDA_CG_INVERTER;
 	  break;
 	case BICGSTAB:
-	  quda_inv_param.inv_type_sloppy = QUDA_BICGSTAB_INVERTER;
+	  quda_inv_param.inv_type_precondition = QUDA_BICGSTAB_INVERTER;
 
 	  break;
 	case MR:
-	  quda_inv_param.inv_type_sloppy= QUDA_MR_INVERTER;
+	  quda_inv_param.inv_type_precondition= QUDA_MR_INVERTER;
 	  break;
 
 	default:
-	  quda_inv_param.inv_type_sloppy = QUDA_CG_INVERTER;   
+	  quda_inv_param.inv_type_precondition = QUDA_CG_INVERTER;   
 	  break;
 	}
       }
+      else { 
+         QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+	quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
+	quda_inv_param.tol_precondition = 1.0e-1;
+	quda_inv_param.maxiter_precondition = 1000;
+	quda_inv_param.verbosity_precondition = QUDA_SILENT;
+	quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
+      }
+	
 
       // Clover precision and order
       quda_inv_param.clover_cpu_prec = cpu_prec;
