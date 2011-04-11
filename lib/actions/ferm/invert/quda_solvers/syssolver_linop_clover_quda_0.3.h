@@ -396,7 +396,8 @@ namespace Chroma
 	quda_inv_param.maxiter_precondition = 1000;
 	quda_inv_param.verbosity_precondition = QUDA_SILENT;
 	quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
-      }
+        quda_inv_param.gcrNkrylov = 1;
+    }
 	
 
       // Clover precision and order
