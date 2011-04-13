@@ -28,13 +28,14 @@ typedef multi1d<LatticeColorMatrixD> PD;
 
 
 #include "quda.h"
-
+#if 0
 #ifdef __cplusplus
 extern "C" {
 #endif
   void commDimPartitionedSet(int);
 #ifdef __cplusplus
 };
+#endif
 #endif
 
 
@@ -83,8 +84,8 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   }
 
   QudaPrecision_s cpu_prec=QUDA_SINGLE_PRECISION;
-  QudaPrecision_s gpu_prec=QUDA_SINGLE_PRECISION;
-  QudaPrecision_s gpu_half_prec=QUDA_SINGLE_PRECISION;
+  QudaPrecision_s gpu_prec=QUDA_HALF_PRECISION;
+  QudaPrecision_s gpu_half_prec=QUDA_HALF_PRECISION;
 
   q_gauge_param.cpu_prec=cpu_prec;
   q_gauge_param.cuda_prec=gpu_prec;
@@ -121,7 +122,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   quda_inv_param.cuda_prec = gpu_prec;
   quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
  
-  commDimPartitionedSet(3);
+  //commDimPartitionedSet(3);
 
   // Make the links
   QF links_single(Nd);
@@ -305,7 +306,7 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
   // Setup gauge anisotropy
   q_gauge_param.anisotropy = 1.0;
 
-  commDimPartitionedSet(3);
+  //commDimPartitionedSet(3);
 
   // Make the links
   QD links_single(Nd);
