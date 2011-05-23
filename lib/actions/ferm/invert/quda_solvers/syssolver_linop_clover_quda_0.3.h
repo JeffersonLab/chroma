@@ -11,15 +11,6 @@
 
 #ifdef BUILD_QUDA_0_3
 #include <quda.h>
-#if 0
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void commDimPartitionedSet(int);
-#ifdef __cplusplus
-};
-#endif
-#endif
 
 #include "handle.h"
 #include "state.h"
@@ -354,9 +345,6 @@ namespace Chroma
       // PADDING
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
-
-      //commDimPartitionedSet(3);
-
 
       if( invParam.innerParamsP ) {
 	QDPIO::cout << "Setting inner solver params" << endl;

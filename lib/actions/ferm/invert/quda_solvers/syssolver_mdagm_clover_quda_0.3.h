@@ -27,13 +27,6 @@
 #include "util/gauge/reunit.h"
 
 #include <quda.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void commDimPartitionedSet(int);
-#ifdef __cplusplus
-};
-#endif
 
 //#include <util_quda.h>
 using namespace std;
@@ -246,19 +239,23 @@ namespace Chroma
 
       // Invert type:
    switch( invParam.solverType ) { 
-      case CG: 
-	quda_inv_param.inv_type = QUDA_CG_INVERTER;
-	solver_string = "CG";
-	break;
-      case BICGSTAB:
-	quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;
-	solver_string = "BICGSTAB";
-	break;
-      default:
-	quda_inv_param.inv_type = QUDA_CG_INVERTER;   
-	solver_string = "CG";
-	break;
-      }
+   case CG: 
+     quda_inv_param.inv_type = QUDA_CG_INVERTER;
+     solver_string = "CG";
+     break;
+   case BICGSTAB:
+     quda_inv_param.inv_type = QUDA_BICGSTAB_INVERTER;
+     solver_string = "BICGSTAB";
+     break;
+   case GCR:
+     quda_inv_param.inv_type = QUDA_GCR_INVERTER;
+     solver_string = "GCR";
+     break;
+   default:
+     quda_inv_param.inv_type = QUDA_CG_INVERTER;   
+     solver_string = "CG";
+     break;
+   }
 
       // Mass
 
@@ -349,14 +346,55 @@ namespace Chroma
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
 
-      commDimPartitionedSet(3);
-
+      if( invParam.innerParamsP ) {
+	QDPIO::cout << "Setting inner solver params" << endl;
+	// Dereference handle
+	GCRInnerSolverParams ip = *(invParam.innerParams);
+        quda_inv_param.prec_precondition = quda_inv_param.cuda_prec_sloppy;
+	quda_inv_param.tol_precondition = toDouble(ip.tolSloppy);
+	quda_inv_param.maxiter_precondition = ip.maxIterSloppy;
+	quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
+	if( ip.verboseInner ) { 
+	  quda_inv_param.verbosity_precondition = QUDA_VERBOSE;
+	  
+	}
+	else { 
+	  quda_inv_param.verbosity_precondition = QUDA_SILENT;
+	}
+	
+	switch( ip.invTypeSloppy ) { 
+	case CG: 
+	  quda_inv_param.inv_type_precondition = QUDA_CG_INVERTER;
+	  break;
+	case BICGSTAB:
+	  quda_inv_param.inv_type_precondition = QUDA_BICGSTAB_INVERTER;
+	  
+	  break;
+	case MR:
+	  quda_inv_param.inv_type_precondition= QUDA_MR_INVERTER;
+	  break;
+	  
+	default:
+	  quda_inv_param.inv_type_precondition = QUDA_CG_INVERTER;   
+	  break;
+	}
+      }
+      else { 
+	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+	quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
+	quda_inv_param.tol_precondition = 1.0e-1;
+	quda_inv_param.maxiter_precondition = 1000;
+	quda_inv_param.verbosity_precondition = QUDA_SILENT;
+	quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
+        quda_inv_param.gcrNkrylov = 1;
+      }
+      
       // Clover precision and order
       quda_inv_param.clover_cpu_prec = cpu_prec;
       quda_inv_param.clover_cuda_prec = gpu_prec;
       quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-    
+      
       if( invParam.verboseP ) { 
 	quda_inv_param.verbosity = QUDA_VERBOSE;
       }
@@ -371,11 +409,9 @@ namespace Chroma
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 
       }
-      QDPIO::cout << "Loading Gauge" << endl;
-
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
-      QDPIO::cout << "GAuge loaded" << endl; 
-      //      Setup the clover term...
+      
+      // Setup Clover Term
       QDPIO::cout << "Creating CloverTerm" << endl;
       clov->create(fstate, invParam_.CloverParams);
       // Don't recompute, just copy

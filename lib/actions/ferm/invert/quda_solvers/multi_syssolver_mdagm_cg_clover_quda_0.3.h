@@ -25,13 +25,6 @@
 #include "util/gauge/reunit.h"
 
 #include <quda.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
-  void commDimPartitionedSet(int);
-#ifdef __cplusplus
-};
-#endif
 
 namespace Chroma
 {
@@ -330,7 +323,17 @@ namespace Chroma
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
 
-      commDimPartitionedSet(3);
+
+      // Setting GCR Preconditioner to defaults, as we don't use it..
+      // This is kinda yucky.
+
+      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+      quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
+      quda_inv_param.tol_precondition = 1.0e-1;
+      quda_inv_param.maxiter_precondition = 1000;
+      quda_inv_param.verbosity_precondition = QUDA_SILENT;
+      quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
+      quda_inv_param.gcrNkrylov = 1;
 
       // Clover precision and order
       quda_inv_param.clover_cpu_prec = cpu_prec;
