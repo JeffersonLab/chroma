@@ -30,9 +30,7 @@ namespace Chroma {
     }
 
     void bindMonomials(const multi1d<std::string>& monomial_ids,
-		       multi1d< Handle< Monomial<
-		       multi1d<LatticeColorMatrix>, 
-		       multi1d<LatticeColorMatrix> > > > & monomials) {
+		       multi1d< MonomialPair >& monomials ) { 
       QDPIO::cout << "Binding Monomials" << endl;
       QDPIO::cout << "There are " << monomial_ids.size() << " IDs to bind " << endl; 
 
@@ -40,9 +38,10 @@ namespace Chroma {
       for(int i=0; i < monomial_ids.size(); i++) { 
 	try { 
 
-	  monomials[i]=
+	  monomials[i].mon=
 	    TheNamedObjMap::Instance().getData< Handle< Monomial< multi1d<LatticeColorMatrix> , multi1d<LatticeColorMatrix> > > >(monomial_ids[i]);
 
+	  monomials[i].id = monomial_ids[i];
 
 	  QDPIO::cout << "Monomial with ID = " << monomial_ids[i] << " bound" << endl;
 	}

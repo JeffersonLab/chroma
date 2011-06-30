@@ -85,7 +85,7 @@ namespace Chroma
     for(int i=0; i < n_steps; i++) { 
       LCMMDIntegratorSteps::leapP( monomials,
 				   dtau,
-				   s  );
+				   s );
     }
 
     END_CODE();

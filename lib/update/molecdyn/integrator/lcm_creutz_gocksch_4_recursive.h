@@ -90,7 +90,7 @@ namespace Chroma
     void refreshFieldsThisLevel(AbsFieldState<multi1d<LatticeColorMatrix>,
 				multi1d<LatticeColorMatrix> >& s) const {
       for(int i=0; i < monomials.size(); i++) { 
-	monomials[i]->refreshInternalFields(s);
+	monomials[i].mon->refreshInternalFields(s);
       }
     }
 
@@ -98,7 +98,7 @@ namespace Chroma
     //! Reset Predictors in just this level
     void resetPredictorsThisLevel(void) const {
       for(int i=0; i < monomials.size(); ++i) {
-	monomials[i]->resetPredictors();
+	monomials[i].mon->resetPredictors();
       }
     }
 
@@ -106,8 +106,7 @@ namespace Chroma
     LatColMatCreutzGocksch4RecursiveIntegratorParams params;
 
 
-    multi1d< Handle< Monomial< multi1d<LatticeColorMatrix>,
-			       multi1d<LatticeColorMatrix> > > > monomials;
+  multi1d< IntegratorShared::MonomialPair > monomials;
 
     Handle< AbsComponentIntegrator<multi1d<LatticeColorMatrix>,
 				   multi1d<LatticeColorMatrix> > > SubIntegrator;

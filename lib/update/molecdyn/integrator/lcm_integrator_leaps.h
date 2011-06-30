@@ -10,7 +10,7 @@
 
 #include "singleton.h"
 #include "update/molecdyn/hamiltonian/abs_hamiltonian.h"
-
+#include "update/molecdyn/integrator/integrator_shared.h"
 namespace Chroma 
 {
 
@@ -62,15 +62,13 @@ namespace Chroma
 
 
     // LeapP update for just a list of Monomials in an array of handles
-    void leapP(const multi1d< 
-	       Handle<Monomial< multi1d<LatticeColorMatrix>, 
-	                        multi1d<LatticeColorMatrix> > >
-	       > monomials,
+    void leapP(const multi1d< IntegratorShared::MonomialPair >& monomials,
 	                                       
 	       const Real& dt, 
 	       	       
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s); 
+			     multi1d<LatticeColorMatrix> >& s);
+
 
 
 

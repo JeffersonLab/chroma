@@ -68,7 +68,7 @@ namespace Chroma
 
     // Construct from nsteps and monomial_handle array
     LatColMatExpSdtIntegrator(const int n_steps_,
-      const multi1d< Handle< Monomial< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > > monomials_) : n_steps(n_steps_), monomials(monomials_) {}
+			      const multi1d< IntegratorShared::MonomialPair>& monomials_) : n_steps(n_steps_), monomials(monomials_) {}
 
     // Construct from params struct and Hamiltonian
     LatColMatExpSdtIntegrator(const LatColMatExpSdtIntegratorParams& p) : n_steps(p.n_steps) { 
@@ -90,14 +90,14 @@ namespace Chroma
     void refreshFields(AbsFieldState<multi1d<LatticeColorMatrix>,
 		                   multi1d<LatticeColorMatrix> >& s) const { 
       for(int i=0; i < monomials.size(); i++) { 
-	monomials[i]->refreshInternalFields(s);
+	monomials[i].mon->refreshInternalFields(s);
       }
     }
 
     //! Reset Predictors in just this level
     void resetPredictors(void) const {
       for(int i=0; i < monomials.size(); ++i) {
-	monomials[i]->resetPredictors();
+	monomials[i].mon->resetPredictors();
       }
     }
 
@@ -106,16 +106,13 @@ namespace Chroma
 
     typedef multi1d<LatticeColorMatrix> LCM;
     // Use the shared routine to bind the monomial list 
-    void create(multi1d<std::string> monomial_id_list) { 
+    void create(const multi1d<std::string>& monomial_id_list) { 
       IntegratorShared::bindMonomials(monomial_id_list, monomials);
     }
 
    
 
-    multi1d< Handle< Monomial<multi1d<LatticeColorMatrix>, 
-			      multi1d<LatticeColorMatrix> > > > monomials;
-    
-    
+    multi1d< IntegratorShared::MonomialPair > monomials;
   };
 
 }

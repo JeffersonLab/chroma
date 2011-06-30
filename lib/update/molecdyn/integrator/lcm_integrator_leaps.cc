@@ -11,18 +11,17 @@ namespace Chroma
   { 
 
     //! LeapP for just a selected list of monomials
-    void leapP(const multi1d< 
-	       Handle<   Monomial< multi1d<LatticeColorMatrix>, 
-	                           multi1d<LatticeColorMatrix> > >
-	       > monomials,
+    void leapP(const multi1d< IntegratorShared::MonomialPair >& monomials,
 	                                       
 	       const Real& dt, 
 	       	       
 	       AbsFieldState<multi1d<LatticeColorMatrix>,
-	       multi1d<LatticeColorMatrix> >& s) 
+	       multi1d<LatticeColorMatrix> >& s)
     {
       START_CODE();
-      
+      StopWatch swatch;
+
+
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       // Self Description rule
       push(xml_out, "leapP");
@@ -44,13 +43,21 @@ namespace Chroma
 
       if( monomials.size() > 0 ) { 
 	push(xml_out, "elem");
-	monomials[0]->dsdq(dsdQ,s);
+	swatch.reset(); swatch.start();
+	monomials[0].mon->dsdq(dsdQ,s);
+	swatch.stop();
+	QDPIO::cout << "FORCE TIME: " << monomials[0].id <<  " : " << swatch.getTimeInSeconds() << endl;
 	pop(xml_out); //elem
 	for(int i=1; i < monomials.size(); i++) { 
 	  push(xml_out, "elem");
 	  multi1d<LatticeColorMatrix> cur_F(Nd);
-	  monomials[i]->dsdq(cur_F, s);
+	  swatch.reset(); swatch.start();
+	  monomials[i].mon->dsdq(cur_F, s);
+	  swatch.stop();
 	  dsdQ += cur_F;
+
+	  //	  QDPIO::cout << "FORCE TIME: " << monomial_ids[i].id << " : " << swatch.getTimeInSeconds() << "\n";
+ 
 	  pop(xml_out); // elem
 	}
       }

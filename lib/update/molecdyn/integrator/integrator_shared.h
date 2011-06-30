@@ -17,15 +17,15 @@ using namespace QDP;
 namespace Chroma { 
 
   namespace IntegratorShared {
+    struct MonomialPair {
+	Handle< Monomial< multi1d<LatticeColorMatrix>, 
+	                  multi1d<LatticeColorMatrix> > > mon;
+	std::string id;
+    };
     
     //! A routine to bind Monomial IDs to an array of Monomial Handles
     void bindMonomials(const multi1d<std::string>& monomial_ids,
-		       multi1d< Handle< Monomial<
-		                              multi1d<LatticeColorMatrix>, 
-		                              multi1d<LatticeColorMatrix> 
-		                        > 
-                                 >
-                       > & monomials);
+		       multi1d< MonomialPair >& monomials);
 
     //! A routine to create a sub integrator from a generic piece of subintegrator XML
     AbsComponentIntegrator< multi1d<LatticeColorMatrix>,
