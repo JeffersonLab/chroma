@@ -84,7 +84,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   }
 
   QudaPrecision_s cpu_prec=QUDA_SINGLE_PRECISION;
-  QudaPrecision_s gpu_prec=QUDA_HALF_PRECISION;
+  QudaPrecision_s gpu_prec=QUDA_SINGLE_PRECISION;
   QudaPrecision_s gpu_half_prec=QUDA_HALF_PRECISION;
 
   q_gauge_param.cpu_prec=cpu_prec;
@@ -655,7 +655,7 @@ int main(int argc, char **argv)
 
 
   //  AppParams params;
-  const int lsize[4]={24,24,24,48};
+  const int lsize[4]={24,24,24,128};
   multi1d<int> nrow(4);
   nrow=lsize;
   Layout::setLattSize(nrow);
