@@ -116,6 +116,7 @@ bool testQudaDslash(const QF& u, enum PlusMinus isign, int cb)
   quda_inv_param.cl_pad = 0;
 
   quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+  quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
    // Now set up inverter params.
   quda_inv_param.dslash_type = QUDA_WILSON_DSLASH; // Sets Wilson Matrix
   quda_inv_param.cpu_prec = cpu_prec;
@@ -349,6 +350,7 @@ bool testQudaDslashD(const QD& u, enum PlusMinus isign, int cb)
   quda_inv_param.cuda_prec = gpu_prec;
   quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
   quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+  quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
   quda_inv_param.dagger = (isign == PLUS) ? QUDA_DAG_NO : QUDA_DAG_YES;
   TD src, dst1,dst2;
   gaussian(src);
@@ -545,7 +547,7 @@ bool testQudaDslash3D(const QF& u, enum PlusMinus isign, int cb)
   quda_inv_param.cuda_prec = gpu_prec;
   quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
   quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
-
+  quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
   TF src, dst1,dst2;
   gaussian(src);
   gaussian(dst1); // Junk these
@@ -655,7 +657,7 @@ int main(int argc, char **argv)
 
 
   //  AppParams params;
-  const int lsize[4]={24,24,24,128};
+  const int lsize[4]={12,12,12,48};
   multi1d<int> nrow(4);
   nrow=lsize;
   Layout::setLattSize(nrow);
