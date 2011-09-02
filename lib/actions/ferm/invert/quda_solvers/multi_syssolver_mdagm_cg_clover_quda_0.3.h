@@ -279,6 +279,7 @@ namespace Chroma
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+      quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
