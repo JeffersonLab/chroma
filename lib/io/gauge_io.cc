@@ -30,17 +30,21 @@ void readGauge(XMLReader& file_xml,
    * come from the read - a resize. Currently, QDPIO does not 
    * support this
    */
+#if 0
   multi1d<LatticeColorMatrixF> u_f(u.size());
-  read(to,record_xml,u_f);      // Always read in single precision!
+  read(to, record_xml, u_f); // Always read in single precision
+#endif
+  read(to,record_xml,u);
   if (to.bad())
   {
     QDPIO::cerr << __func__ << ": error reading file " << file << endl;
     QDP_abort(1);
   }
-  
+ 
+#if 0 
   for(int mu=0; mu < u.size(); ++mu)
     u[mu] = u_f[mu];
-
+#endif
   close(to);
 }
 
@@ -68,11 +72,14 @@ void writeGauge(XMLBufferWriter& file_xml,
     QDP_abort(1);
   }
 
+#if 0
   multi1d<LatticeColorMatrixF> u_f(u.size());
   for(int mu=0; mu < u.size(); ++mu)
     u_f[mu] = u[mu];
 
   write(to,record_xml,u_f);         // Always save in single precision!
+#endif
+  write(to, record_xml, u);         // Write in native precision
   close(to);
 }
 
