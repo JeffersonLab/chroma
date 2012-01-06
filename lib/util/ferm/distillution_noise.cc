@@ -116,7 +116,7 @@ namespace Chroma
     BinaryBufferWriter bin;
     write(bin, ensemble);
     write(bin, seqno);
-    writeDesc(bin, info.quark_line);
+    write(bin, info.quark_line);
     write(bin, (info.annih) ? 1 : 0);
 
     // Use the no-side-effect version of the RNG with input state, and output random num.
