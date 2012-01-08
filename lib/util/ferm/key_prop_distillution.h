@@ -27,7 +27,7 @@ namespace Chroma
     int                dist_src;      /*!< Source dist index */
     int                spin_src;      /*!< Source spin index */
     int                spin_snk;      /*!< Sink spin index */
-    std::string        quark_line;    /*!< The quark line */
+    int                quark_line;    /*!< The quark line */
     std::string        mass;          /*!< Quark mass label */
   };
 

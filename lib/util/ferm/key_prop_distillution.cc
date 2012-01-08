@@ -87,7 +87,7 @@ namespace Chroma
     lgaa.push_back(a.dist_src);
     lgaa.push_back(a.spin_src);
     lgaa.push_back(a.spin_snk);
-    lgaa = concat(lgaa, stringToArrayInt(a.quark_line));
+    lgaa.push_back(a.quark_line);
     lgaa = concat(lgaa, stringToArrayInt(a.prop_type));
     lgaa = concat(lgaa, stringToArrayInt(a.mass));
 
@@ -97,7 +97,7 @@ namespace Chroma
     lgbb.push_back(b.dist_src);
     lgbb.push_back(b.spin_src);
     lgbb.push_back(b.spin_snk);
-    lgbb = concat(lgbb, stringToArrayInt(b.quark_line));
+    lgbb.push_back(b.quark_line);
     lgbb = concat(lgbb, stringToArrayInt(b.prop_type));
     lgbb = concat(lgbb, stringToArrayInt(b.mass));
 
@@ -116,7 +116,7 @@ namespace Chroma
     read(bin, param.dist_src);
     read(bin, param.spin_src);
     read(bin, param.spin_snk);
-    readDesc(bin, param.quark_line);
+    read(bin, param.quark_line);
     readDesc(bin, param.mass);
   }
 
@@ -129,7 +129,7 @@ namespace Chroma
     write(bin, param.dist_src);
     write(bin, param.spin_src);
     write(bin, param.spin_snk);
-    writeDesc(bin, param.quark_line);
+    write(bin, param.quark_line);
     writeDesc(bin, param.mass);
   }
 
