@@ -480,14 +480,17 @@ namespace Chroma
 
 	// Use the iterators to run through the object, saving each 
 	// in a separate record
-	for(typename MapObjectMemory<K,V>::MapType_t::const_iterator mm = obj.begin();
-	    mm != obj.end();
+	std::vector<K> keys;
+	obj.keys(keys);
+
+	for(typename std::vector<K>::const_iterator mm = keys.begin();
+	    mm != keys.end();
 	    ++mm)
 	{
 	  XMLBufferWriter local_record_xml;
-	  write(local_record_xml, "MapEntry", mm->first);
+	  write(local_record_xml, "MapEntry", *mm);
 	
-	  write(to, local_record_xml, mm->second);
+	  write(to, local_record_xml, obj[*mm]);
 	}
 
 	// Close and bolt
