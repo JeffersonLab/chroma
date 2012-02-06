@@ -14,6 +14,9 @@
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/key_prop_distillution.h"
 #include "util/ferm/transf.h"
+#include "util/ferm/spin_rep.h"
+#include "util/ferm/diractodr.h"
+#include "util/ferm/twoquark_contract_ops.h"
 #include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -455,6 +458,13 @@ namespace Chroma
       // Total number of iterations
       int ncg_had = 0;
 
+
+      // Rotation from DR to DP
+      SpinMatrix diracToDRMat(DiracToDRMat());
+      std::vector<MatrixSpinRep_t> diracToDrMatPlus = convertTwoQuarkSpin(diracToDRMat);
+      std::vector<MatrixSpinRep_t> diracToDrMatMinus = convertTwoQuarkSpin(adj(diracToDRMat));
+
+
       //
       // Try the factories
       //
@@ -499,7 +509,7 @@ namespace Chroma
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
 
-	// Loop over each operator 
+	// Loop over each time-source
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt];  // This is the pretend time-slice. There actual value is shifted.
@@ -555,6 +565,8 @@ namespace Chroma
 	    // Loop over each spin source and invert. 
 	    // Use the same colorvector source. No spin dilution will be used.
 	    //
+	    multi2d<LatticeColorVector> ferm_out(Ns,Ns);
+
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {
 	      QDPIO::cout << "spin_source = " << spin_source << endl; 
@@ -570,11 +582,28 @@ namespace Chroma
 	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
 	      ncg_had = res.n_count;
 
-	      // Write out each time-slice chunk of a lattice colorvec soln to disk
+	      // Extract into the temporary output array
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	      {
-		LatticeColorVector quark_vec = peekSpin(quark_soln, spin_sink);
+		ferm_out(spin_sink,spin_source) = peekSpin(quark_soln, spin_sink);
+	      }
+	    } // for spin_source
 
+
+	    // Rotate from DeGrand-Rossi (DR) to Dirac-Pauli (DP)
+	    {
+	      multi2d<LatticeColorVector> ferm_tmp;
+
+	      multiplyRep(ferm_tmp, diracToDrMatMinus, ferm_out);
+	      multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
+	    }
+
+
+	    // Write out each time-slice chunk of a lattice colorvec soln to disk
+	    for(int spin_source=0; spin_source < Ns; ++spin_source)
+	    {
+	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	      {
 		for(int t=0; t < Lt; ++t)
 		{
 		  KeyPropDist_t key;
@@ -588,13 +617,13 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(quark_vec, dist_noise_obj.getTime(t)));
-
+		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
+								       dist_noise_obj.getTime(t)));
 		} // for t
 	      } // for spin_sink
 	    } // for spin_source
-	  } // for colorvec_source
-	} // for t_source
+	  } // for dist_source
+	} // for tt
 
 	prop_obj.flush();
 	swatch.stop();
