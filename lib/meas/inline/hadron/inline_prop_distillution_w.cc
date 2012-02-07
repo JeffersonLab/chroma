@@ -62,6 +62,8 @@ namespace Chroma
       read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "num_vec_dils", input.num_vec_dils);
       read(inputtop, "t_sources", input.t_sources);
+      read(inputtop, "Nt_forward", input.Nt_forward);
+      read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "quark_line", input.quark_line);
       read(inputtop, "mass", input.mass);
     }
@@ -74,6 +76,8 @@ namespace Chroma
       write(xml, "num_vecs", input.num_vecs);
       write(xml, "num_vec_dils", input.num_vec_dils);
       write(xml, "t_sources", input.t_sources);
+      write(xml, "Nt_forward", input.Nt_forward);
+      write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "quark_line", input.quark_line);
       write(xml, "mass", input.mass);
 
@@ -512,8 +516,32 @@ namespace Chroma
 	// Loop over each time-source
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
-	  int t_source = t_sources[tt];  // This is the pretend time-slice. There actual value is shifted.
+	  int t_source = t_sources[tt];  // This is the pretend time-slice. The actual value is shifted.
 	  QDPIO::cout << "t_source = " << t_source << endl; 
+
+	  // Find the active time-slices to save
+	  std::vector<bool> active_t_slices(Lt);
+	  for(int t=0; t < Lt; ++t)
+	  {
+	    active_t_slices[t] = false;
+	  }
+
+	  // Forward
+	  for(int dt=0; dt < params.param.contract.Nt_forward; ++dt)
+	  {
+	    int t = t_source + dt;
+	    active_t_slices[t % Lt] = true;
+	  }
+
+	  // Backward
+	  for(int dt=0; dt < params.param.contract.Nt_backward; ++dt)
+	  {
+	    int t = t_source - dt;
+	    while (t < 0) {t += Lt;} 
+
+	    active_t_slices[t % Lt] = true;
+	  }
+
 
 	  // All the loops
 	  for(int dist_src=0; dist_src < num_vec_dils; ++dist_src)
@@ -606,6 +634,8 @@ namespace Chroma
 	      {
 		for(int t=0; t < Lt; ++t)
 		{
+		  if (! active_t_slices[t]) {continue;}
+
 		  KeyPropDist_t key;
 
 		  key.prop_type    = "SNK";
@@ -619,6 +649,7 @@ namespace Chroma
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
 								       dist_noise_obj.getTime(t)));
+
 		} // for t
 	      } // for spin_sink
 	    } // for spin_source

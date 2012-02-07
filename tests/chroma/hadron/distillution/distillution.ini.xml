@@ -95,6 +95,8 @@
           <num_vecs>10</num_vecs>
           <num_vec_dils>10</num_vec_dils>
           <t_sources>0 5</t_sources>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>5</Nt_backward>
           <quark_line>3</quark_line>
           <mass>U0.05</mass>
         </Contractions>
@@ -141,6 +143,8 @@
           <num_vecs>10</num_vecs>
           <num_vec_dils>10</num_vec_dils>
           <t_sources>0 5</t_sources>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>5</Nt_backward>
           <quark_line>4</quark_line>
           <mass>U0.05</mass>
         </Contractions>
@@ -187,6 +191,8 @@
           <num_vecs>10</num_vecs>
           <num_vec_dils>10</num_vec_dils>
           <t_sources>0 5</t_sources>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>5</Nt_backward>
           <quark_line>5</quark_line>
           <mass>U0.05</mass>
         </Contractions>
@@ -233,6 +239,8 @@
           <num_vecs>10</num_vecs>
           <num_vec_dils>10</num_vec_dils>
           <t_sources>0 5</t_sources>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>5</Nt_backward>
           <quark_line>6</quark_line>
           <mass>U0.05</mass>
         </Contractions>
