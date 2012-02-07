@@ -41,7 +41,6 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-LIBOBJDIR =
 @BUILD_GMP_REMEZ_TRUE@am__append_1 = @GMP_CXXFLAGS@
 @BUILD_QUDA_0_2_TRUE@am__append_2 = @QUDA_0_2_CXXFLAGS@
 @BUILD_QUDA_0_3_TRUE@am__append_3 = @QUDA_0_3_CXXFLAGS@
@@ -699,7 +698,8 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	util/ferm/key_prop_colorvec.cc util/ferm/key_prop_matelem.cc \
 	util/ferm/key_timeslice_colorvec.cc \
 	util/ferm/key_prop_distillution.cc \
-	util/ferm/distillution_noise.cc \
+	util/ferm/distillution_noise.cc util/ferm/spin_rep.cc \
+	util/ferm/twoquark_contract_ops.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
 	util/ferm/map_obj/map_obj_disk_w.cc \
@@ -1309,6 +1309,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	key_prop_colorvec.$(OBJEXT) key_prop_matelem.$(OBJEXT) \
 	key_timeslice_colorvec.$(OBJEXT) \
 	key_prop_distillution.$(OBJEXT) distillution_noise.$(OBJEXT) \
+	spin_rep.$(OBJEXT) twoquark_contract_ops.$(OBJEXT) \
 	map_obj_aggregate_w.$(OBJEXT) map_obj_memory_w.$(OBJEXT) \
 	map_obj_disk_w.$(OBJEXT) map_obj_null_w.$(OBJEXT) \
 	inline_io.$(OBJEXT) inline_aggregate.$(OBJEXT) \
@@ -2050,7 +2051,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	util/ferm/key_prop_matelem.h \
 	util/ferm/key_timeslice_colorvec.h \
 	util/ferm/key_prop_distillution.h util/ferm/key_val_db.h \
-	util/ferm/distillution_noise.h stagtype_fermact_s.h \
+	util/ferm/distillution_noise.h util/ferm/spin_rep.h \
+	util/ferm/twoquark_contract_ops.h stagtype_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
@@ -2357,7 +2359,6 @@ PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
-PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 QDPC_DIR = @QDPC_DIR@
@@ -2388,8 +2389,11 @@ SSE_DSLASH_ENABLED = @SSE_DSLASH_ENABLED@
 STRIP = @STRIP@
 VERSION = @VERSION@
 XMLDIFF = @XMLDIFF@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_RANLIB = @ac_ct_RANLIB@
+ac_ct_STRIP = @ac_ct_STRIP@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -2406,30 +2410,23 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 datadir = @datadir@
-datarootdir = @datarootdir@
-docdir = @docdir@
-dvidir = @dvidir@
 exec_prefix = @exec_prefix@
 host = @host@
 host_alias = @host_alias@
 host_cpu = @host_cpu@
 host_os = @host_os@
 host_vendor = @host_vendor@
-htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
 install_sh = @install_sh@
 libdir = @libdir@
 libexecdir = @libexecdir@
-localedir = @localedir@
 localstatedir = @localstatedir@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
-pdfdir = @pdfdir@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
-psdir = @psdir@
 sbindir = @sbindir@
 sharedstatedir = @sharedstatedir@
 subdirs = @subdirs@
@@ -3069,7 +3066,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	util/ferm/key_prop_matelem.h \
 	util/ferm/key_timeslice_colorvec.h \
 	util/ferm/key_prop_distillution.h util/ferm/key_val_db.h \
-	util/ferm/distillution_noise.h stagtype_fermact_s.h \
+	util/ferm/distillution_noise.h util/ferm/spin_rep.h \
+	util/ferm/twoquark_contract_ops.h stagtype_fermact_s.h \
 	actions/ferm/fermacts/fermacts_s.h \
 	actions/ferm/fermacts/fermacts_aggregate_s.h \
 	actions/ferm/fermacts/fermact_factory_s.h \
@@ -3783,7 +3781,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	util/ferm/key_prop_colorvec.cc util/ferm/key_prop_matelem.cc \
 	util/ferm/key_timeslice_colorvec.cc \
 	util/ferm/key_prop_distillution.cc \
-	util/ferm/distillution_noise.cc \
+	util/ferm/distillution_noise.cc util/ferm/spin_rep.cc \
+	util/ferm/twoquark_contract_ops.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
 	util/ferm/map_obj/map_obj_disk_w.cc \
@@ -4644,6 +4643,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spatial_two_plaq_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spatial_wilson_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spin_insertion_aggregate.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/spin_rep.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/srcfil.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_phases_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/stag_propShift_s.Po@am__quote@
@@ -4725,6 +4725,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_ratio_conv_conv_monomial_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/two_flavor_ratio_conv_rat_monomial_params_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/twoquark_contract_ops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unique_id.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_check.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unit_gauge_init.Po@am__quote@
@@ -13132,6 +13133,34 @@ distillution_noise.obj: util/ferm/distillution_noise.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/distillution_noise.cc' object='distillution_noise.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o distillution_noise.obj `if test -f 'util/ferm/distillution_noise.cc'; then $(CYGPATH_W) 'util/ferm/distillution_noise.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/distillution_noise.cc'; fi`
+
+spin_rep.o: util/ferm/spin_rep.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT spin_rep.o -MD -MP -MF "$(DEPDIR)/spin_rep.Tpo" -c -o spin_rep.o `test -f 'util/ferm/spin_rep.cc' || echo '$(srcdir)/'`util/ferm/spin_rep.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/spin_rep.Tpo" "$(DEPDIR)/spin_rep.Po"; else rm -f "$(DEPDIR)/spin_rep.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/spin_rep.cc' object='spin_rep.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o spin_rep.o `test -f 'util/ferm/spin_rep.cc' || echo '$(srcdir)/'`util/ferm/spin_rep.cc
+
+spin_rep.obj: util/ferm/spin_rep.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT spin_rep.obj -MD -MP -MF "$(DEPDIR)/spin_rep.Tpo" -c -o spin_rep.obj `if test -f 'util/ferm/spin_rep.cc'; then $(CYGPATH_W) 'util/ferm/spin_rep.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/spin_rep.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/spin_rep.Tpo" "$(DEPDIR)/spin_rep.Po"; else rm -f "$(DEPDIR)/spin_rep.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/spin_rep.cc' object='spin_rep.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o spin_rep.obj `if test -f 'util/ferm/spin_rep.cc'; then $(CYGPATH_W) 'util/ferm/spin_rep.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/spin_rep.cc'; fi`
+
+twoquark_contract_ops.o: util/ferm/twoquark_contract_ops.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT twoquark_contract_ops.o -MD -MP -MF "$(DEPDIR)/twoquark_contract_ops.Tpo" -c -o twoquark_contract_ops.o `test -f 'util/ferm/twoquark_contract_ops.cc' || echo '$(srcdir)/'`util/ferm/twoquark_contract_ops.cc; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/twoquark_contract_ops.Tpo" "$(DEPDIR)/twoquark_contract_ops.Po"; else rm -f "$(DEPDIR)/twoquark_contract_ops.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/twoquark_contract_ops.cc' object='twoquark_contract_ops.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o twoquark_contract_ops.o `test -f 'util/ferm/twoquark_contract_ops.cc' || echo '$(srcdir)/'`util/ferm/twoquark_contract_ops.cc
+
+twoquark_contract_ops.obj: util/ferm/twoquark_contract_ops.cc
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT twoquark_contract_ops.obj -MD -MP -MF "$(DEPDIR)/twoquark_contract_ops.Tpo" -c -o twoquark_contract_ops.obj `if test -f 'util/ferm/twoquark_contract_ops.cc'; then $(CYGPATH_W) 'util/ferm/twoquark_contract_ops.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/twoquark_contract_ops.cc'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/twoquark_contract_ops.Tpo" "$(DEPDIR)/twoquark_contract_ops.Po"; else rm -f "$(DEPDIR)/twoquark_contract_ops.Tpo"; exit 1; fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='util/ferm/twoquark_contract_ops.cc' object='twoquark_contract_ops.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o twoquark_contract_ops.obj `if test -f 'util/ferm/twoquark_contract_ops.cc'; then $(CYGPATH_W) 'util/ferm/twoquark_contract_ops.cc'; else $(CYGPATH_W) '$(srcdir)/util/ferm/twoquark_contract_ops.cc'; fi`
 
 map_obj_aggregate_w.o: util/ferm/map_obj/map_obj_aggregate_w.cc
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT map_obj_aggregate_w.o -MD -MP -MF "$(DEPDIR)/map_obj_aggregate_w.Tpo" -c -o map_obj_aggregate_w.o `test -f 'util/ferm/map_obj/map_obj_aggregate_w.cc' || echo '$(srcdir)/'`util/ferm/map_obj/map_obj_aggregate_w.cc; \
