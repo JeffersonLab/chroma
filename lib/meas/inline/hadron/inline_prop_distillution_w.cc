@@ -456,6 +456,17 @@ namespace Chroma
 	info.annih      = false;
 
 	eta = dist_noise_obj.getRNG(info);
+
+	for(int i=0; i < eta.size1(); ++i)
+	  for(int j=0; j < eta.size2(); ++j)
+	  {
+	    if (i == j)
+	      eta(i,j) = 1.0;
+	    else
+	      eta(i,j) = zero;
+
+	    QDPIO::cout << name << ": line= " << info.quark_line << "  eta("<<i<<","<<j<<")= "<< eta(i,j) << std::endl;
+	  }
       }
 
 
@@ -558,7 +569,8 @@ namespace Chroma
 	      QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
 
 	      // Get the actual time slice
-	      int t_actual = dist_noise_obj.getTime(t_source);
+//	      int t_actual = dist_noise_obj.getTime(t_source);
+	      int t_actual = t_source;
 
 	      KeyTimeSliceColorVec_t key_vec;
 	      key_vec.t_slice = t_actual;
@@ -569,7 +581,8 @@ namespace Chroma
 
 	      eigen_source.get(key_vec, time_slice_io);
 
-	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
+//	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
+	      vec_srce[time_slice_set.getSet()[t_actual]] = tmpvec;
 	    }
 	
 	    // Insert this source
@@ -585,7 +598,8 @@ namespace Chroma
 	      key.quark_line   = params.param.contract.quark_line;
 	      key.mass         = params.param.contract.mass;
 
-	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
+//	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
+	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, t_source));
 	    }
 
 
@@ -648,7 +662,8 @@ namespace Chroma
 		  key.mass         = params.param.contract.mass;
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
-								       dist_noise_obj.getTime(t)));
+								       t));
+//								       dist_noise_obj.getTime(t)));
 
 		} // for t
 	      } // for spin_sink
