@@ -69,6 +69,19 @@ namespace Chroma
       return hashToSeed(hash);
     }
 
+
+    //---------------------------------------------------------------------
+    // Z(N)-rng
+    Complex z4rng(RANNYU::RNGState_t& rng)
+    {
+      RANNYU::random(rng);
+
+      Real twopiN = 0.25 * Chroma::twopi;
+      Real theta = twopiN * floor(4*rng.ran);
+
+      return cmplx(cos(theta),sin(theta));
+    }
+
   } // end namespace
 
 
@@ -132,8 +145,7 @@ namespace Chroma
     {
       for(int i=0; i < info.num_vecs; ++i)
       {
-	RANNYU::random(rng);
-	eta(t,i) = rng.ran;
+	eta(t,i) = z4rng(rng);
       }
     }
 
