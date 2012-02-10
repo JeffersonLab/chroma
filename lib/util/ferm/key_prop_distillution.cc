@@ -67,9 +67,9 @@ namespace Chroma
     os << " prop_type= " << param.prop_type;
     os << " t_source= " << param.t_source;
     os << " t_slice= " << param.t_slice;
-    os << " dist_src= " << param.dist_src;
-    os << " spin_src= " << param.spin_src;
     os << " spin_snk= " << param.spin_snk;
+    os << " spin_src= " << param.spin_src;
+    os << " dist_src= " << param.dist_src;
     os << " quark_line= " << param.quark_line;
     os << " mass= " << param.mass;
     os << endl;
