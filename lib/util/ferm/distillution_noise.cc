@@ -107,6 +107,10 @@ namespace Chroma
     rng.seed = stringToSeed(bin.str());
     RANNYU::random(rng);
 
+    // Throw out the first few RNG's
+    for(int i=0; i < 10; ++i)
+      RANNYU::random(rng);
+
     // Make a new origin
     int Lt = Layout::lattSize()[decay_dir];
     t_origin = int(Lt * rng.ran) % Lt;  // The mod makes sure the RNG cannot be 1.000
@@ -136,6 +140,10 @@ namespace Chroma
     // Use the no-side-effect version of the RNG with input state, and output random num.
     RANNYU::RNGState_t rng;
     rng.seed = stringToSeed(bin.str());
+
+    // Throw out the first few RNG's
+    for(int i=0; i < 20; ++i)
+      RANNYU::random(rng);
 
     // Loop over the time and vectors to produce the full random numbers
     int Lt = Layout::lattSize()[decay_dir];
