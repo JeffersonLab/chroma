@@ -121,8 +121,8 @@ namespace Chroma
   /*!< Returns the shifted time taking account of periodicity */
   int DistillutionNoise::getTime(int t_slice) const
   {
-//    return (t_slice + t_origin) % Layout::lattSize()[decay_dir];
-    return t_slice;
+    return (t_slice + t_origin) % Layout::lattSize()[decay_dir];
+//    return t_slice;
   }
 
 
