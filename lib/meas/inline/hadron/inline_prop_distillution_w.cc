@@ -457,16 +457,20 @@ namespace Chroma
 
 	eta = dist_noise_obj.getRNG(info);
 
-	for(int i=0; i < eta.size1(); ++i)
-	  for(int j=0; j < eta.size2(); ++j)
+#if 0
+	// Just for debugging
+	for(int i=0; i < eta.nrows(); ++i)
+	  for(int j=0; j < eta.ncols(); ++j)
 	  {
-	    if (i == j)
-	      eta(i,j) = 1.0;
-	    else
-	      eta(i,j) = zero;
+	    float re = toFloat(real(eta(i,j)));
+	    float im = toFloat(imag(eta(i,j)));
 
-	    QDPIO::cout << name << ": line= " << info.quark_line << "  eta("<<i<<","<<j<<")= "<< eta(i,j) << std::endl;
+	    QDPIO::cout << name << ": line= " << info.quark_line 
+			<< "  eta("<<i<<","<<j<<")= ( "
+			<< (fabs(re)<0.1?0:re) << " , " 
+			<< (fabs(im)<0.1?0:im) << " )\n";
 	  }
+#endif
       }
 
 
@@ -580,8 +584,7 @@ namespace Chroma
 
 	      eigen_source.get(key_vec, time_slice_io);
 
-//	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
-	      vec_srce[time_slice_set.getSet()[t_actual]] += tmpvec;
+	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
 	    }
 	
 	    // Insert this source
