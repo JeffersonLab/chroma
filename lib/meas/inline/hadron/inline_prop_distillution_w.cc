@@ -665,7 +665,7 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-	          QDPIO::cout << key << std::endl;
+	          QDPIO::cout << key << std::flush;
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
 								       dist_noise_obj.getTime(t)));
