@@ -652,8 +652,6 @@ namespace Chroma
 		{
 		  if (! active_t_slices[t]) {continue;}
 
-//	          QDPIO::cout << "t= " << t << " dist_src= " << dist_src << "  spin_src= " << spin_source << "  spin_snk= " << spin_sink << endl; 
-
 		  KeyPropDist_t key;
 
 		  key.prop_type    = "SNK";
@@ -665,7 +663,7 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-	          QDPIO::cout << key << std::flush;
+//	          QDPIO::cout << key << std::flush;
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
 								       dist_noise_obj.getTime(t)));
