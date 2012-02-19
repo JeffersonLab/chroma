@@ -321,7 +321,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a map object disk file" << endl;
 
       QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > eigen_source;
-      eigen_source.setDebug(1);
+      eigen_source.setDebug(0);
 
       try
       {
@@ -334,7 +334,7 @@ namespace Chroma
 	string user_str;
 	QDPIO::cout << "Get user data" << endl;
 	eigen_source.getUserdata(user_str);
-	QDPIO::cout << "User data= " << user_str << endl;
+//	QDPIO::cout << "User data= " << user_str << endl;
 
 	// Write it
 	QDPIO::cout << "Write to an xml file" << endl;
@@ -411,7 +411,7 @@ namespace Chroma
       // Open the file, and write the meta-data and the binary for this operator
       //
       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj;
-//      prop_obj.setDebug(1);
+      prop_obj.setDebug(0);
 
       if (! prop_obj.fileExists(params.named_obj.prop_file))
       {
@@ -643,6 +643,7 @@ namespace Chroma
 
 
 	    // Write out each time-slice chunk of a lattice colorvec soln to disk
+	    QDPIO::cout << "Write propagator solutions to disk" << std::endl;
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
@@ -650,6 +651,8 @@ namespace Chroma
 		for(int t=0; t < Lt; ++t)
 		{
 		  if (! active_t_slices[t]) {continue;}
+
+//	          QDPIO::cout << "t= " << t << " dist_src= " << dist_src << "  spin_src= " << spin_source << "  spin_snk= " << spin_sink << endl; 
 
 		  KeyPropDist_t key;
 
@@ -661,6 +664,8 @@ namespace Chroma
 		  key.spin_snk     = spin_sink;
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
+
+	          QDPIO::cout << key << std::endl;
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
 								       dist_noise_obj.getTime(t)));
