@@ -561,6 +561,8 @@ namespace Chroma
 	  // All the loops
 	  for(int dist_src=0; dist_src < num_vec_dils; ++dist_src)
 	  {
+	    StopWatch sniss;
+    	    sniss.reset();
 	    QDPIO::cout << "dist_src = " << dist_src << endl; 
 
 	    // Prepare a distilluted source
@@ -587,23 +589,6 @@ namespace Chroma
 	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
 	    }
 	
-	    // Insert this source
-	    {
-	      KeyPropDist_t key;
-
-	      key.prop_type    = "SRC";
-	      key.t_source     = t_source;
-	      key.t_slice      = t_source;
-	      key.dist_src     = dist_src;
-	      key.spin_src     = -1;
-	      key.spin_snk     = -1;
-	      key.quark_line   = params.param.contract.quark_line;
-	      key.mass         = params.param.contract.mass;
-
-	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
-	    }
-
-
 	    //
 	    // Loop over each spin source and invert. 
 	    // Use the same colorvector source. No spin dilution will be used.
@@ -641,9 +626,33 @@ namespace Chroma
 	      multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
 	    }
 
+	    sniss.stop();
+	    QDPIO::cout << "Time to assemble and transmogrify propagators for dist_src= " << dist_src << "  time = " 
+		        << sniss.getTimeInSeconds() 
+		        << " secs" << endl;
+
 
 	    // Write out each time-slice chunk of a lattice colorvec soln to disk
-	    QDPIO::cout << "Write propagator solutions to disk" << std::endl;
+    	    sniss.reset();
+	    QDPIO::cout << "Write propagator source and solutions to disk" << std::endl;
+
+	    // Insert this source
+	    {
+	      KeyPropDist_t key;
+
+	      key.prop_type    = "SRC";
+	      key.t_source     = t_source;
+	      key.t_slice      = t_source;
+	      key.dist_src     = dist_src;
+	      key.spin_src     = -1;
+	      key.spin_snk     = -1;
+	      key.quark_line   = params.param.contract.quark_line;
+	      key.mass         = params.param.contract.mass;
+
+	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
+	    }
+
+	    // Write the solutions
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
@@ -671,6 +680,12 @@ namespace Chroma
 		} // for t
 	      } // for spin_sink
 	    } // for spin_source
+
+	    sniss.stop();
+	    QDPIO::cout << "Time to write propagators for dist_src= " << dist_src << "  time = " 
+		        << sniss.getTimeInSeconds() 
+		        << " secs" << endl;
+
 	  } // for dist_source
 	} // for tt
 
