@@ -39,7 +39,7 @@ namespace Chroma
     void writeObject (std::string& output) const throw (SerializeException) {
       BinaryBufferWriter bin;
       write(bin, key());
-      output = bin.str();
+      output = bin.strPrimaryNode();
     }
 
     void readObject (const std::string& input) throw (SerializeException) {
@@ -87,7 +87,7 @@ namespace Chroma
     void writeObject (std::string& output) const throw (SerializeException) {
       BinaryBufferWriter bin;
       write(bin, data());
-      output = bin.str();
+      output = bin.strPrimaryNode();
     }
 
     void readObject (const std::string& input) throw (SerializeException) {
