@@ -297,8 +297,7 @@ namespace Chroma
       // Some diagnostics
       QDPIO::cout << "Distillution factory: ensemble= XX" << dist_noise_obj.getEnsemble() << "XX  "
 		  << "sequence= XX" << dist_noise_obj.getSequence() << "XX\n"
-		  << "t_origin= " << dist_noise_obj.getOrigin() << "\n";
-
+		  << "t_origin= " << dist_noise_obj.getOrigin() << std::endl;
 
       // Will use TimeSliceSet-s a lot
       const int decay_dir = dist_noise_obj.getDecayDir();
@@ -561,8 +560,9 @@ namespace Chroma
 	  // All the loops
 	  for(int dist_src=0; dist_src < num_vec_dils; ++dist_src)
 	  {
-	    StopWatch sniss;
-    	    sniss.reset();
+	    StopWatch sniss1;
+    	    sniss1.reset();
+	    sniss1.start();
 	    QDPIO::cout << "dist_src = " << dist_src << endl; 
 
 	    // Prepare a distilluted source
@@ -626,16 +626,19 @@ namespace Chroma
 	      multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
 	    }
 
-	    sniss.stop();
+	    sniss1.stop();
 	    QDPIO::cout << "Time to assemble and transmogrify propagators for dist_src= " << dist_src << "  time = " 
-		        << sniss.getTimeInSeconds() 
+		        << sniss1.getTimeInSeconds() 
 		        << " secs" << endl;
 
 
 	    // Write out each time-slice chunk of a lattice colorvec soln to disk
-    	    sniss.reset();
+	    StopWatch sniss2;
+    	    sniss2.reset();
+	    sniss2.start();
 	    QDPIO::cout << "Write propagator source and solutions to disk" << std::endl;
 
+#if 1
 	    // Insert this source
 	    {
 	      KeyPropDist_t key;
@@ -649,8 +652,11 @@ namespace Chroma
 	      key.quark_line   = params.param.contract.quark_line;
 	      key.mass         = params.param.contract.mass;
 
+	      QDPIO::cout << key << std::flush;
+
 	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
 	    }
+#endif
 
 	    // Write the solutions
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
@@ -672,7 +678,7 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-//	          QDPIO::cout << key << std::flush;
+	          QDPIO::cout << key << std::flush;
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
 								       dist_noise_obj.getTime(t)));
@@ -681,9 +687,9 @@ namespace Chroma
 	      } // for spin_sink
 	    } // for spin_source
 
-	    sniss.stop();
+	    sniss2.stop();
 	    QDPIO::cout << "Time to write propagators for dist_src= " << dist_src << "  time = " 
-		        << sniss.getTimeInSeconds() 
+		        << sniss2.getTimeInSeconds() 
 		        << " secs" << endl;
 
 	  } // for dist_source
