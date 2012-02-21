@@ -638,7 +638,6 @@ namespace Chroma
 	    sniss2.start();
 	    QDPIO::cout << "Write propagator source and solutions to disk" << std::endl;
 
-#if 1
 	    // Insert this source
 	    {
 	      KeyPropDist_t key;
@@ -652,11 +651,10 @@ namespace Chroma
 	      key.quark_line   = params.param.contract.quark_line;
 	      key.mass         = params.param.contract.mass;
 
-	      QDPIO::cout << key << std::flush;
+//	      QDPIO::cout << key << std::flush;
 
 	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
 	    }
-#endif
 
 	    // Write the solutions
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
@@ -678,7 +676,7 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-	          QDPIO::cout << key << std::flush;
+//	          QDPIO::cout << key << std::flush;
 
 		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
 								       dist_noise_obj.getTime(t)));
