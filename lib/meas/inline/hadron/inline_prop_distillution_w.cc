@@ -64,7 +64,7 @@ namespace Chroma
       read(inputtop, "t_sources", input.t_sources);
       read(inputtop, "Nt_forward", input.Nt_forward);
       read(inputtop, "Nt_backward", input.Nt_backward);
-      read(inputtop, "quark_line", input.quark_line);
+      read(inputtop, "quark_lines", input.quark_lines);
       read(inputtop, "mass", input.mass);
     }
 
@@ -78,7 +78,7 @@ namespace Chroma
       write(xml, "t_sources", input.t_sources);
       write(xml, "Nt_forward", input.Nt_forward);
       write(xml, "Nt_backward", input.Nt_backward);
-      write(xml, "quark_line", input.quark_line);
+      write(xml, "quark_lines", input.quark_lines);
       write(xml, "mass", input.mass);
 
       pop(xml);
