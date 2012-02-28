@@ -66,7 +66,7 @@ endif
 HDRS =
 
 ## Production tests:
-bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert
+bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_array t_leapfrog t_lwldslash_new t_minvert t_meas_wilson_flow
 
 #
 # add the programs to build in here
@@ -79,7 +79,7 @@ bin_PROGRAMS = t_mesplq t_lwldslash_sse t_lwldslash_pab t_ritz_KS t_lwldslash_ar
 check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_ape_smear t_dwf4d t_propagator_s t_disc_loop_s \
     t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d \
-    t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec
+    t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec t_meas_wilson_flow_loop
 
 if BUILD_QUDA
 check_PROGRAMS += t_quda_tprec
@@ -210,6 +210,9 @@ t_clover_SOURCES = t_clover.cc
 t_db_SOURCES = t_db.cc
 t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
+
+t_meas_wilson_flow_SOURCES  = t_meas_wilson_flow.cc
+t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
 
 t_minvert_SOURCES = t_minvert.cc
 if BUILD_QUDA

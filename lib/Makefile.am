@@ -224,7 +224,7 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h meas/glue/polylp.h meas/glue/wloop.h \
-	meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/wilson_flow_w.h \
 	meas/glue/qactden.h \
 	meas/glue/qnaive.h \
         meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
@@ -1149,7 +1149,7 @@ libchroma_a_SOURCES = \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/wloop.cc  meas/glue/mesplq.cc meas/glue/polylp.cc \
-	meas/glue/wilslp.cc \
+	meas/glue/wilslp.cc meas/glue/wilson_flow_w.cc  \
 	meas/glue/qactden.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
