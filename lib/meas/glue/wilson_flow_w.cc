@@ -15,7 +15,7 @@
  *    The code calls the existing stout smearing routines
  *    -- which already exist in chroma.
  *
- *   The Wilson flow can be used to set the lattice spacing.
+ *   The Wilson flow can be used to determine the lattice spacing.
  *
  *
  * See below for additional information about the Wilson flow.
@@ -187,25 +187,50 @@ void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
 }
 
 
-void wilson_flow(multi1d<LatticeColorMatrix> & u, int nstep, 
-		 Real  wflow_eps, int jomit)
+  void wilson_flow(XMLWriter& xml,
+		   multi1d<LatticeColorMatrix> & u, int nstep, 
+		   Real  wflow_eps, int jomit)
 {
   Real gact4i, gactij;
+  int dim = nstep + 1 ;
+  multi1d<Real> gact4i_vec(dim);
+  multi1d<Real> gactij_vec(dim);
+  multi1d<Real> step_vec(dim);
+
+
 
   measure_wilson_gauge(u,gactij,gact4i,jomit) ;
-  QDPIO::cout << "WILSON_FLOW " << 0.0 << " " << gact4i << " " << gactij <<  endl ; 
+  gact4i_vec[0] = gact4i ;
+  gactij_vec[0] = gactij ;
+  step_vec[0] = 0.0 ;
+
+  //  QDPIO::cout << "WFLOW " << 0.0 << " " << gact4i << " " << gactij <<  endl ; 
+
+  QDPIO::cout << "START_ANALYZE_wflow" << endl ; 
+  QDPIO::cout << "WFLOW time gact4i gactij" << endl ; 
 
   for(int i=0 ; i < nstep ; ++i)
     {
       wilson_flow_one_step(u,wflow_eps) ;
 
       measure_wilson_gauge(u,gactij,gact4i,jomit) ;
+      gact4i_vec[i+1] = gact4i ;
+      gactij_vec[i+1] = gactij ;
+
+
       Real xx = (i + 1) * wflow_eps ;
-      QDPIO::cout << "WILSON_FLOW " << xx << " " << gact4i << " " << gactij <<  endl ; 
+      QDPIO::cout << "WFLOW " << xx << " " << gact4i << " " << gactij <<  endl ; 
+
+      step_vec[i+1] = xx ;
 
     }
+  QDPIO::cout << "END_ANALYZE_wflow" << endl ; 
 
-
+  push(xml, "wilson_flow_results");
+  write(xml,"wflow_step",step_vec) ; 
+  write(xml,"wflow_gact4i",gact4i_vec) ; 
+  write(xml,"wflow_gactij",gactij_vec) ; 
+  pop(xml);  // elem
 
 }
 

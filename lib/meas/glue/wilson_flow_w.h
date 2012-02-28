@@ -8,19 +8,22 @@ namespace Chroma
 {
 
 
-  //! Print the value of the average plaquette normalized to 1
+  //! Compute the Wilson flow
   /*!
    * \ingroup glue
    *
-   * \param xml    plaquette average (Write)
+   * \param xml    wilson flow (Write)
    * \param u      gauge field      (Read)
    * \param nstep  number of steps  (Read)
    * \param wflow_eps  size of step (Read)
    * \param time direction (Read)
 
    */
-  void wilson_flow(multi1d<LatticeColorMatrix> & u, int nstep, 
-		   Real  wflow_eps, int jomit) ;
+
+  void wilson_flow(XMLWriter& xml,
+		   multi1d<LatticeColorMatrix> & u, int nstep, 
+		   Real  wflow_eps, int jomit)  ;
+
 
 }  // end namespace Chroma
 
