@@ -96,9 +96,13 @@ namespace Chroma
 
     //! Do a sumMulti(cf*phases,getSet())
     multi2d<DComplex> sft(const LatticeComplex& cf) const;
+    multi2d<DComplex> sft(const LatticeComplexD& cf) const;
 
     //! Do a sum(cf*phases,getSet()[my_subset])
     multi2d<DComplex> sft(const LatticeComplex& cf, int subset_color) const;
+
+    //! Do a sum(cf*phases,getSet()[my_subset])
+    multi2d<DComplex> sft(const LatticeComplexD& cf, int subset_color) const;
 
     //! Do a sumMulti(cf*phases,getSet())
     multi2d<DComplex> sft(const LatticeReal& cf) const;
