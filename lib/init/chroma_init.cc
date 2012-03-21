@@ -9,9 +9,7 @@
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
 
-#undef QUDA_ENABLED
-#if defined(BUILD_QUDA_0_2) || defined(BUILD_QUDA_0_3)
-#define QUDA_ENABLED
+#ifdef BUILD_QUDA
 #include <quda.h>
 #endif
 
@@ -91,7 +89,7 @@ namespace Chroma
   //! Set the CUDA device
   void setCUDADevice(const string& device) 
   {
-#ifdef QUDA_ENABLED
+#ifdef BUILD_QUDA
     std::istringstream is(device);
     is >> cuda_device;
 #endif
@@ -212,7 +210,7 @@ namespace Chroma
     }
 
 
-#ifdef QUDA_ENABLED
+#ifdef BUILD_QUDA
     QDPIO::cout << "Initializing QUDA device: " << getCUDADevice() << endl;
     initQuda(getCUDADevice());
 #endif

@@ -19,8 +19,9 @@
 #include "actions/ferm/invert/syssolver_mdagm_cg_lf_clover.h"
 
 #include "chroma_config.h"
-#ifdef BUILD_QUDA_0_3
-#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_0.3.h"
+#ifdef BUILD_QUDA
+#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h"
 #endif
 
 namespace Chroma
@@ -49,8 +50,9 @@ namespace Chroma
 	success &= MdagMSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableCGCloverEnv::registerAll();
 	success &= MdagMSysSolverCGLFCloverEnv::registerAll();
-#ifdef BUILD_QUDA_0_3
+#ifdef BUILD_QUDA
 	success &= MdagMSysSolverQUDACloverEnv::registerAll();
+	success &= MdagMSysSolverQUDAWilsonEnv::registerAll();
 #endif
 	registered = true;
       }

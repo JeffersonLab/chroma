@@ -277,7 +277,7 @@ ac_subdirs_all="$ac_subdirs_all other_libs/sse_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/cpp_wilson_dslash"
 ac_subdirs_all="$ac_subdirs_all other_libs/cg-dwf"
 ac_subdirs_all="$ac_subdirs_all other_libs/qdp-lapack"
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPC_DIR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE CPP_DSLASH_DIR CPP_DSLASH_ENABLED BUILD_CPP_WILSON_DSLASH_TRUE BUILD_CPP_WILSON_DSLASH_FALSE BUILD_SCALARSITE_BICGSTAB_TRUE BUILD_SCALARSITE_BICGSTAB_FALSE CG_DWF_DIR CG_DWF_ENABLED BUILD_CG_DWF_TRUE BUILD_CG_DWF_FALSE BUILD_CG_DWF_SSE_TRUE BUILD_CG_DWF_SSE_FALSE BUILD_CG_DWF_BLUELIGHT_TRUE BUILD_CG_DWF_BLUELIGHT_FALSE BUILD_CG_DWF_ALTIVEC_TRUE BUILD_CG_DWF_ALTIVEC_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BAGEL_CLOVER_CONFIG BAGEL_CLOVER_DSLASH_CXXFLAGS BAGEL_CLOVER_DSLASH_LDFLAGS BAGEL_CLOVER_DSLASH_LIBS BAGEL_CLOVER_CXXFLAGS BAGEL_CLOVER_LDFLAGS BAGEL_CLOVER_LIBS BUILD_BAGEL_CLOVER_APPLY_TRUE BUILD_BAGEL_CLOVER_APPLY_FALSE BUILD_SSED_CLOVER_APPLY_TRUE BUILD_SSED_CLOVER_APPLY_FALSE LAPACK_ENABLED BUILD_LAPACK_TRUE BUILD_LAPACK_FALSE OPT_EIGCG_ENABLED BUILD_OPT_EIGCG_TRUE BUILD_OPT_EIGCG_FALSE BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE QMT_CXXFLAGS QMT_LDFLAGS QMT_LIBS BUILD_QMT_TRUE BUILD_QMT_FALSE QDP_LAPACK_DIR MDWF_CONFIG MDWF_CXXFLAGS MDWF_LDFLAGS MDWF_LIBS MDWF_ENABLED BUILD_MDWF_TRUE BUILD_MDWF_FALSE LATEX DVIPS DVIPDF DOXYGEN XMLDIFF QUDA_0_2_CXXFLAGS QUDA_0_2_LDFLAGS QUDA_0_2_LIBS BUILD_QUDA_0_2_TRUE BUILD_QUDA_0_2_FALSE QUDA_0_3_CXXFLAGS QUDA_0_3_LDFLAGS QUDA_0_3_LIBS BUILD_QUDA_0_3_TRUE BUILD_QUDA_0_3_FALSE LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS build build_cpu build_vendor build_os host host_cpu host_vendor host_os INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA CYGPATH_W PACKAGE VERSION ACLOCAL AUTOCONF AUTOMAKE AUTOHEADER MAKEINFO install_sh STRIP ac_ct_STRIP INSTALL_STRIP_PROGRAM mkdir_p AWK SET_MAKE am__leading_dot AMTAR am__tar am__untar CXX CXXFLAGS LDFLAGS CPPFLAGS ac_ct_CXX EXEEXT OBJEXT DEPDIR am__include am__quote AMDEP_TRUE AMDEP_FALSE AMDEPBACKSLASH CXXDEPMODE am__fastdepCXX_TRUE am__fastdepCXX_FALSE CC CFLAGS ac_ct_CC CCDEPMODE am__fastdepCC_TRUE am__fastdepCC_FALSE RANLIB ac_ct_RANLIB AR ac_ct_AR QDPC_DIR QDPXX_CONFIG QDPXX_CXXFLAGS QDPXX_LDFLAGS QDPXX_LIBS QDPXX_ND QDPXX_NC QDPXX_NS QDPXX_PARALLEL_ARCH QDPXX_PRECISION subdirs SSE_DSLASH_DIR SSE_DSLASH_ENABLED BUILD_SSE_WILSON_DSLASH_TRUE BUILD_SSE_WILSON_DSLASH_FALSE CPP_DSLASH_DIR CPP_DSLASH_ENABLED BUILD_CPP_WILSON_DSLASH_TRUE BUILD_CPP_WILSON_DSLASH_FALSE BUILD_SCALARSITE_BICGSTAB_TRUE BUILD_SCALARSITE_BICGSTAB_FALSE CG_DWF_DIR CG_DWF_ENABLED BUILD_CG_DWF_TRUE BUILD_CG_DWF_FALSE BUILD_CG_DWF_SSE_TRUE BUILD_CG_DWF_SSE_FALSE BUILD_CG_DWF_BLUELIGHT_TRUE BUILD_CG_DWF_BLUELIGHT_FALSE BUILD_CG_DWF_ALTIVEC_TRUE BUILD_CG_DWF_ALTIVEC_FALSE BAGEL_WILSON_DSLASH_CONFIG BAGEL_WILSON_DSLASH_CXXFLAGS BAGEL_WILSON_DSLASH_LDFLAGS BAGEL_WILSON_DSLASH_LIBS BUILD_PAB_WILSON_DSLASH_TRUE BUILD_PAB_WILSON_DSLASH_FALSE BAGEL_CLOVER_CONFIG BAGEL_CLOVER_DSLASH_CXXFLAGS BAGEL_CLOVER_DSLASH_LDFLAGS BAGEL_CLOVER_DSLASH_LIBS BAGEL_CLOVER_CXXFLAGS BAGEL_CLOVER_LDFLAGS BAGEL_CLOVER_LIBS BUILD_BAGEL_CLOVER_APPLY_TRUE BUILD_BAGEL_CLOVER_APPLY_FALSE BUILD_SSED_CLOVER_APPLY_TRUE BUILD_SSED_CLOVER_APPLY_FALSE LAPACK_ENABLED BUILD_LAPACK_TRUE BUILD_LAPACK_FALSE OPT_EIGCG_ENABLED BUILD_OPT_EIGCG_TRUE BUILD_OPT_EIGCG_FALSE BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_FALSE BUILD_OPT_CFZ_LINOP_TRUE BUILD_OPT_CFZ_LINOP_FALSE GMP_CXXFLAGS GMP_LDFLAGS GMP_LIBS BUILD_GMP_REMEZ_TRUE BUILD_GMP_REMEZ_FALSE QMT_CXXFLAGS QMT_LDFLAGS QMT_LIBS BUILD_QMT_TRUE BUILD_QMT_FALSE QDP_LAPACK_DIR MDWF_CONFIG MDWF_CXXFLAGS MDWF_LDFLAGS MDWF_LIBS MDWF_ENABLED BUILD_MDWF_TRUE BUILD_MDWF_FALSE LATEX DVIPS DVIPDF DOXYGEN XMLDIFF QUDA_CXXFLAGS QUDA_LDFLAGS QUDA_LIBS BUILD_QUDA_TRUE BUILD_QUDA_FALSE LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -883,8 +883,7 @@ Optional Packages:
   --with-gmp=<DIR>        Enable use of GMP - GNU Multi-Precision library,
                           installed in DIR
   --with-qmt=<DIR>        Enable use of QMT Threads library installed in DIR
-  --with-quda-0-2=<DIR>   Use QUDA Library installed in DIR
-  --with-quda-0-3=<DIR>   Use QUDA Library installed in DIR
+  --with-quda=<DIR>       Use QUDA Library installed in DIR
   --with-cuda=<DIR>       Use CUDA installation in DIR
   --with-asqtadlevel3=DIR Build Chroma on top of the level3 asqtad libraries,
                           where the libraries installed in DIR.
@@ -3544,24 +3543,14 @@ else
 fi;
 
 
-# Check whether --with-quda-0-2 or --without-quda-0-2 was given.
-if test "${with_quda_0_2+set}" = set; then
-  withval="$with_quda_0_2"
-   quda_0_2_enabled="yes"
-     QUDA_0_2_HOME=${with_quda_0_2}
+
+# Check whether --with-quda or --without-quda was given.
+if test "${with_quda+set}" = set; then
+  withval="$with_quda"
+   quda_enabled="yes"
+     QUDA_HOME=${with_quda}
 else
-   quda_0_2_enabled="no"
-
-fi;
-
-
-# Check whether --with-quda-0-3 or --without-quda-0-3 was given.
-if test "${with_quda_0_3+set}" = set; then
-  withval="$with_quda_0_3"
-   quda_0_3_enabled="yes"
-     QUDA_0_3_HOME=${with_quda_0_3}
-else
-   quda_0_3_enabled="no"
+   quda_enabled="no"
 
 fi;
 
@@ -5359,75 +5348,17 @@ then
 echo "$as_me: WARNING: xmldiff not found in your PATH. make xcheck may fail" >&2;}
 fi
 
-###################################
-#
-# QUDA Linkage etc
-#
-###################################
-if test "X${quda_0_2_enabled}X" = "XyesX" ;
-then
-   if test "X${quda_0_3_enabled}X" = "XyesX";
-   then
-     { { echo "$as_me:$LINENO: error:  Cannot have both QUDA v0.3 and QUDA v0.2 enabled " >&5
-echo "$as_me: error:  Cannot have both QUDA v0.3 and QUDA v0.2 enabled " >&2;}
-   { (exit 1); exit 1; }; }
-   fi
-
-   { echo "$as_me:$LINENO:  Using QUDA v0.2 Library in ${QUDA_0_2_HOME} " >&5
-echo "$as_me:  Using QUDA v0.2 Library in ${QUDA_0_2_HOME} " >&6;}
-
-   case "$host" in
-   x86_64*)
-        CUDA_LIBDIR="${CUDA_HOME}/lib64"
-	;;
-   *)
-   CUDA_LIBDIR="${CUDA_HOME}/lib"
-   ;;
-   esac
-
-   { echo "$as_me:$LINENO:  Linking to CUDA Runtime in ${CUDA_LIBDIR}" >&5
-echo "$as_me:  Linking to CUDA Runtime in ${CUDA_LIBDIR}" >&6;}
-
-
-cat >>confdefs.h <<\_ACEOF
-#define BUILD_QUDA_0_2
-_ACEOF
-
-   QUDA_0_2_CXXFLAGS="-I${QUDA_0_2_HOME}/include -I${CUDA_HOME}/include"
-
-   QUDA_0_2_LDFLAGS="-L${CUDA_LIBDIR} -L${QUDA_0_2_HOME}/lib"
-
-   QUDA_0_2_LIBS="-lquda -lcudart"
-
-fi
-
-
-
-if test "x${quda_0_2_enabled}x" = "xyesx" ; then
-  BUILD_QUDA_0_2_TRUE=
-  BUILD_QUDA_0_2_FALSE='#'
-else
-  BUILD_QUDA_0_2_TRUE='#'
-  BUILD_QUDA_0_2_FALSE=
-fi
-
 
 ###############################################
 #
-# QUDA v0.3 support
+# QUDA upport
 #
 ################################################
-if test "X${quda_0_3_enabled}X" = "XyesX" ;
+if test "X${quda_enabled}X" = "XyesX" ;
 then
-   if test "X${quda_0_2_enabled}X" = "XyesX";
-   then
-     { { echo "$as_me:$LINENO: error:  Cannot have both QUDA v0.3 and QUDA v0.2 enabled " >&5
-echo "$as_me: error:  Cannot have both QUDA v0.3 and QUDA v0.2 enabled " >&2;}
-   { (exit 1); exit 1; }; }
-   fi
 
-   { echo "$as_me:$LINENO:  Using QUDA v0.3 Library in ${QUDA_0_3_HOME} " >&5
-echo "$as_me:  Using QUDA v0.3 Library in ${QUDA_0_3_HOME} " >&6;}
+   { echo "$as_me:$LINENO:  Using QUDA Library in ${QUDA_HOME} " >&5
+echo "$as_me:  Using QUDA Library in ${QUDA_HOME} " >&6;}
 
    case "$host" in
    x86_64*)
@@ -5443,25 +5374,25 @@ echo "$as_me:  Linking to CUDA Runtime in ${CUDA_LIBDIR}" >&6;}
 
 
 cat >>confdefs.h <<\_ACEOF
-#define BUILD_QUDA_0_3
+#define BUILD_QUDA
 _ACEOF
 
-   QUDA_0_3_CXXFLAGS="-I${QUDA_0_3_HOME}/include -I${CUDA_HOME}/include"
+   QUDA_CXXFLAGS="-I${QUDA_HOME}/include -I${CUDA_HOME}/include"
 
-   QUDA_0_3_LDFLAGS="-L${CUDA_LIBDIR} -L${QUDA_0_3_HOME}/lib"
+   QUDA_LDFLAGS="-L${CUDA_LIBDIR} -L${QUDA_HOME}/lib"
 
-   QUDA_0_3_LIBS="-lquda -lcudart"
+   QUDA_LIBS="-lquda -lcudart"
 
 fi
 
 
 
-if test "x${quda_0_3_enabled}x" = "xyesx" ; then
-  BUILD_QUDA_0_3_TRUE=
-  BUILD_QUDA_0_3_FALSE='#'
+if test "x${quda_enabled}x" = "xyesx" ; then
+  BUILD_QUDA_TRUE=
+  BUILD_QUDA_FALSE='#'
 else
-  BUILD_QUDA_0_3_TRUE='#'
-  BUILD_QUDA_0_3_FALSE=
+  BUILD_QUDA_TRUE='#'
+  BUILD_QUDA_FALSE=
 fi
 
 
@@ -5738,17 +5669,10 @@ echo "$as_me: error: conditional \"BUILD_MDWF\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
-if test -z "${BUILD_QUDA_0_2_TRUE}" && test -z "${BUILD_QUDA_0_2_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_QUDA_0_2\" was never defined.
+if test -z "${BUILD_QUDA_TRUE}" && test -z "${BUILD_QUDA_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_QUDA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_QUDA_0_2\" was never defined.
-Usually this means the macro was only invoked conditionally." >&2;}
-   { (exit 1); exit 1; }; }
-fi
-if test -z "${BUILD_QUDA_0_3_TRUE}" && test -z "${BUILD_QUDA_0_3_FALSE}"; then
-  { { echo "$as_me:$LINENO: error: conditional \"BUILD_QUDA_0_3\" was never defined.
-Usually this means the macro was only invoked conditionally." >&5
-echo "$as_me: error: conditional \"BUILD_QUDA_0_3\" was never defined.
+echo "$as_me: error: conditional \"BUILD_QUDA\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -6435,16 +6359,11 @@ s,@DVIPS@,$DVIPS,;t t
 s,@DVIPDF@,$DVIPDF,;t t
 s,@DOXYGEN@,$DOXYGEN,;t t
 s,@XMLDIFF@,$XMLDIFF,;t t
-s,@QUDA_0_2_CXXFLAGS@,$QUDA_0_2_CXXFLAGS,;t t
-s,@QUDA_0_2_LDFLAGS@,$QUDA_0_2_LDFLAGS,;t t
-s,@QUDA_0_2_LIBS@,$QUDA_0_2_LIBS,;t t
-s,@BUILD_QUDA_0_2_TRUE@,$BUILD_QUDA_0_2_TRUE,;t t
-s,@BUILD_QUDA_0_2_FALSE@,$BUILD_QUDA_0_2_FALSE,;t t
-s,@QUDA_0_3_CXXFLAGS@,$QUDA_0_3_CXXFLAGS,;t t
-s,@QUDA_0_3_LDFLAGS@,$QUDA_0_3_LDFLAGS,;t t
-s,@QUDA_0_3_LIBS@,$QUDA_0_3_LIBS,;t t
-s,@BUILD_QUDA_0_3_TRUE@,$BUILD_QUDA_0_3_TRUE,;t t
-s,@BUILD_QUDA_0_3_FALSE@,$BUILD_QUDA_0_3_FALSE,;t t
+s,@QUDA_CXXFLAGS@,$QUDA_CXXFLAGS,;t t
+s,@QUDA_LDFLAGS@,$QUDA_LDFLAGS,;t t
+s,@QUDA_LIBS@,$QUDA_LIBS,;t t
+s,@BUILD_QUDA_TRUE@,$BUILD_QUDA_TRUE,;t t
+s,@BUILD_QUDA_FALSE@,$BUILD_QUDA_FALSE,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

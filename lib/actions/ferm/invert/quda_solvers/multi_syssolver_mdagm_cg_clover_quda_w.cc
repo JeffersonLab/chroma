@@ -5,7 +5,7 @@
 
 #include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
-#include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_0.3.h"
+#include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
 #include "quda.h"
 

@@ -39,18 +39,15 @@ host_triplet = @host@
 @BUILD_MDWF_TRUE@am__append_1 = @MDWF_CXXFLAGS@
 @BUILD_MDWF_TRUE@am__append_2 = @MDWF_LDFLAGS@
 @BUILD_MDWF_TRUE@am__append_3 = @MDWF_LIBS@
-@BUILD_QUDA_0_2_TRUE@am__append_4 = @QUDA_0_2_CXXFLAGS@
-@BUILD_QUDA_0_2_TRUE@am__append_5 = @QUDA_0_2_LDFLAGS@
-@BUILD_QUDA_0_2_TRUE@am__append_6 = @QUDA_0_2_LIBS@
-@BUILD_QUDA_0_3_TRUE@am__append_7 = @QUDA_0_3_CXXFLAGS@
-@BUILD_QUDA_0_3_TRUE@am__append_8 = @QUDA_0_3_LDFLAGS@
-@BUILD_QUDA_0_3_TRUE@am__append_9 = @QUDA_0_3_LIBS@
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_10 = -I@QDPC_DIR@/qmp/include \
+@BUILD_QUDA_TRUE@am__append_4 = @QUDA_CXXFLAGS@
+@BUILD_QUDA_TRUE@am__append_5 = @QUDA_LDFLAGS@
+@BUILD_QUDA_TRUE@am__append_6 = @QUDA_LIBS@
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_7 = -I@QDPC_DIR@/qmp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qio/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qla/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qdp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qopqdp/include
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_11 = -L@QDPC_DIR@/qopqdp/lib \
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_8 = -L@QDPC_DIR@/qopqdp/lib \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-lqopqdp \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-L@QDPC_DIR@/qdp/lib \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-lqdp_d3 -lqdp_df3 \
@@ -72,23 +69,23 @@ host_triplet = @host@
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-lqla_int -lqla_q3 \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-lqla_q \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-lqla_random
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_12 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_13 = -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_14 = -llevel3 @QDPXX_LIBS@
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_15 = -I$(TOPDIR)/other_libs/@CPP_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/include
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_16 = -L$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/lib
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_17 = -ldslash @QDPXX_LIBS@
-@BUILD_CG_DWF_TRUE@am__append_18 =  \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_9 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_10 = -L$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/lib
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_11 = -llevel3 @QDPXX_LIBS@
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_12 = -I$(TOPDIR)/other_libs/@CPP_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/include
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_13 = -L$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/lib
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_14 = -ldslash @QDPXX_LIBS@
+@BUILD_CG_DWF_TRUE@am__append_15 =  \
 @BUILD_CG_DWF_TRUE@	-I$(TOPDIR)/other_libs/@CG_DWF_DIR@ \
 @BUILD_CG_DWF_TRUE@	-I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
-@BUILD_CG_DWF_TRUE@am__append_19 = -L$(BUILDDIR)/other_libs/@CG_DWF_DIR@
-@BUILD_CG_DWF_TRUE@am__append_20 = -lcg-dwf
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_21 = @BAGEL_CLOVER_CXXFLAGS@
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_22 = @BAGEL_CLOVER_LDFLAGS@
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_23 = @BAGEL_CLOVER_LIBS@
-@BUILD_QMT_TRUE@am__append_24 = @QMT_CXXFLAGS@
-@BUILD_QMT_TRUE@am__append_25 = @QMT_LDFLAGS@
-@BUILD_QMT_TRUE@am__append_26 = @QMT_LIBS@
+@BUILD_CG_DWF_TRUE@am__append_16 = -L$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+@BUILD_CG_DWF_TRUE@am__append_17 = -lcg-dwf
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_18 = @BAGEL_CLOVER_CXXFLAGS@
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_19 = @BAGEL_CLOVER_LDFLAGS@
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_20 = @BAGEL_CLOVER_LIBS@
+@BUILD_QMT_TRUE@am__append_21 = @QMT_CXXFLAGS@
+@BUILD_QMT_TRUE@am__append_22 = @QMT_LDFLAGS@
+@BUILD_QMT_TRUE@am__append_23 = @QMT_LIBS@
 bin_PROGRAMS = chroma$(EXEEXT) purgaug$(EXEEXT) cfgtransf$(EXEEXT) \
 	hmc$(EXEEXT) spectrum_s$(EXEEXT)
 check_PROGRAMS = collect_propcomp$(EXEEXT) qpropgfix$(EXEEXT) \
@@ -119,23 +116,21 @@ baryon_ops_red_dil_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_cfgtransf_OBJECTS = cfgtransf.$(OBJEXT)
 cfgtransf_OBJECTS = $(am_cfgtransf_OBJECTS)
 cfgtransf_LDADD = $(LDADD)
 cfgtransf_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_chroma_OBJECTS = chroma.$(OBJEXT)
 chroma_OBJECTS = $(am_chroma_OBJECTS)
 chroma_LDADD = $(LDADD)
 chroma_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_collect_multi_propcomp_OBJECTS = collect_multi_propcomp.$(OBJEXT)
 collect_multi_propcomp_OBJECTS = $(am_collect_multi_propcomp_OBJECTS)
 collect_multi_propcomp_LDADD = $(LDADD)
@@ -143,7 +138,7 @@ collect_multi_propcomp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_collect_propcomp_OBJECTS = collect_propcomp.$(OBJEXT)
 collect_propcomp_OBJECTS = $(am_collect_propcomp_OBJECTS)
 collect_propcomp_LDADD = $(LDADD)
@@ -151,15 +146,14 @@ collect_propcomp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_hmc_OBJECTS = hmc.$(OBJEXT)
 hmc_OBJECTS = $(am_hmc_OBJECTS)
 hmc_LDADD = $(LDADD)
 hmc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_make_baryon_ops_OBJECTS = make_baryon_ops.$(OBJEXT)
 make_baryon_ops_OBJECTS = $(am_make_baryon_ops_OBJECTS)
 make_baryon_ops_LDADD = $(LDADD)
@@ -167,7 +161,7 @@ make_baryon_ops_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_make_meson_ops_OBJECTS = make_meson_ops.$(OBJEXT)
 make_meson_ops_OBJECTS = $(am_make_meson_ops_OBJECTS)
 make_meson_ops_LDADD = $(LDADD)
@@ -175,7 +169,7 @@ make_meson_ops_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 multi_propagator_SOURCES = multi_propagator.c
 multi_propagator_OBJECTS = multi_propagator.$(OBJEXT)
 multi_propagator_LDADD = $(LDADD)
@@ -183,7 +177,7 @@ multi_propagator_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_multi_propagator_comp_OBJECTS = multi_propagator_comp.$(OBJEXT)
 multi_propagator_comp_OBJECTS = $(am_multi_propagator_comp_OBJECTS)
 multi_propagator_comp_LDADD = $(LDADD)
@@ -191,7 +185,7 @@ multi_propagator_comp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_propagator_comp_OBJECTS = propagator_comp.$(OBJEXT)
 propagator_comp_OBJECTS = $(am_propagator_comp_OBJECTS)
 propagator_comp_LDADD = $(LDADD)
@@ -199,71 +193,63 @@ propagator_comp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1)
 am_purgaug_OBJECTS = purgaug.$(OBJEXT)
 purgaug_OBJECTS = $(am_purgaug_OBJECTS)
 purgaug_LDADD = $(LDADD)
 purgaug_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qpropadd_OBJECTS = qpropadd.$(OBJEXT)
 qpropadd_OBJECTS = $(am_qpropadd_OBJECTS)
 qpropadd_LDADD = $(LDADD)
 qpropadd_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qpropgfix_OBJECTS = qpropgfix.$(OBJEXT)
 qpropgfix_OBJECTS = $(am_qpropgfix_OBJECTS)
 qpropgfix_LDADD = $(LDADD)
 qpropgfix_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qpropqio_OBJECTS = qpropqio.$(OBJEXT)
 qpropqio_OBJECTS = $(am_qpropqio_OBJECTS)
 qpropqio_LDADD = $(LDADD)
 qpropqio_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qproptransf_OBJECTS = qproptransf.$(OBJEXT)
 qproptransf_OBJECTS = $(am_qproptransf_OBJECTS)
 qproptransf_LDADD = $(LDADD)
 qproptransf_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_qproptrev_OBJECTS = qproptrev.$(OBJEXT)
 qproptrev_OBJECTS = $(am_qproptrev_OBJECTS)
 qproptrev_LDADD = $(LDADD)
 qproptrev_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_spectrum_s_OBJECTS = spectrum_s.$(OBJEXT)
 spectrum_s_OBJECTS = $(am_spectrum_s_OBJECTS)
 spectrum_s_LDADD = $(LDADD)
 spectrum_s_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_wallformfac_OBJECTS = wallformfac.$(OBJEXT)
 wallformfac_OBJECTS = $(am_wallformfac_OBJECTS)
 wallformfac_LDADD = $(LDADD)
 wallformfac_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
@@ -345,10 +331,8 @@ BUILD_PAB_WILSON_DSLASH_FALSE = @BUILD_PAB_WILSON_DSLASH_FALSE@
 BUILD_PAB_WILSON_DSLASH_TRUE = @BUILD_PAB_WILSON_DSLASH_TRUE@
 BUILD_QMT_FALSE = @BUILD_QMT_FALSE@
 BUILD_QMT_TRUE = @BUILD_QMT_TRUE@
-BUILD_QUDA_0_2_FALSE = @BUILD_QUDA_0_2_FALSE@
-BUILD_QUDA_0_2_TRUE = @BUILD_QUDA_0_2_TRUE@
-BUILD_QUDA_0_3_FALSE = @BUILD_QUDA_0_3_FALSE@
-BUILD_QUDA_0_3_TRUE = @BUILD_QUDA_0_3_TRUE@
+BUILD_QUDA_FALSE = @BUILD_QUDA_FALSE@
+BUILD_QUDA_TRUE = @BUILD_QUDA_TRUE@
 BUILD_SCALARSITE_BICGSTAB_FALSE = @BUILD_SCALARSITE_BICGSTAB_FALSE@
 BUILD_SCALARSITE_BICGSTAB_TRUE = @BUILD_SCALARSITE_BICGSTAB_TRUE@
 BUILD_SSED_CLOVER_APPLY_FALSE = @BUILD_SSED_CLOVER_APPLY_FALSE@
@@ -418,12 +402,9 @@ QDP_LAPACK_DIR = @QDP_LAPACK_DIR@
 QMT_CXXFLAGS = @QMT_CXXFLAGS@
 QMT_LDFLAGS = @QMT_LDFLAGS@
 QMT_LIBS = @QMT_LIBS@
-QUDA_0_2_CXXFLAGS = @QUDA_0_2_CXXFLAGS@
-QUDA_0_2_LDFLAGS = @QUDA_0_2_LDFLAGS@
-QUDA_0_2_LIBS = @QUDA_0_2_LIBS@
-QUDA_0_3_CXXFLAGS = @QUDA_0_3_CXXFLAGS@
-QUDA_0_3_LDFLAGS = @QUDA_0_3_LDFLAGS@
-QUDA_0_3_LIBS = @QUDA_0_3_LIBS@
+QUDA_CXXFLAGS = @QUDA_CXXFLAGS@
+QUDA_LDFLAGS = @QUDA_LDFLAGS@
+QUDA_LIBS = @QUDA_LIBS@
 RANLIB = @RANLIB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
@@ -491,19 +472,18 @@ INCFLAGS = -I$(TOPDIR)/mainprogs/main -I$(TOPDIR)/lib -I$(BUILDDIR)/lib
 AM_CXXFLAGS = $(INCFLAGS) @QDPXX_CXXFLAGS@ \
 	@BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ @CXXFLAGS@ \
 	$(am__append_1) $(am__append_4) $(am__append_7) \
-	$(am__append_10) $(am__append_12) $(am__append_15) \
-	$(am__append_18) $(am__append_21) $(am__append_24)
+	$(am__append_9) $(am__append_12) $(am__append_15) \
+	$(am__append_18) $(am__append_21)
 AM_LDFLAGS = -L$(BUILDDIR)/lib @QDPXX_LDFLAGS@ \
 	@BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@ \
-	$(am__append_2) $(am__append_5) $(am__append_8) \
-	-L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib $(am__append_13) \
-	$(am__append_16) $(am__append_19) $(am__append_22) \
-	$(am__append_25)
+	$(am__append_2) $(am__append_5) \
+	-L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib $(am__append_10) \
+	$(am__append_13) $(am__append_16) $(am__append_19) \
+	$(am__append_22)
 LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@ \
-	@LIBS@ $(am__append_3) $(am__append_6) $(am__append_9) \
-	$(am__append_11) -lqdp-lapack $(am__append_14) \
-	$(am__append_17) $(am__append_20) $(am__append_23) \
-	$(am__append_26)
+	@LIBS@ $(am__append_3) $(am__append_6) $(am__append_8) \
+	-lqdp-lapack $(am__append_11) $(am__append_14) \
+	$(am__append_17) $(am__append_20) $(am__append_23)
 
 #
 # Local Headers

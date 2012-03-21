@@ -1,4 +1,3 @@
-// $Id: syssolver_linop_quda_wilson.cc,v 1.5 2009-10-09 13:59:46 bjoo Exp $
 /*! \file
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
@@ -6,7 +5,7 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
 #include "io/aniso_io.h"
 
 
@@ -16,7 +15,7 @@
 #include "meas/glue/mesplq.h"
 // QUDA Headers
 #include <quda.h>
-#include <util_quda.h>
+// #include <util_quda.h>
 
 namespace Chroma
 {
@@ -62,24 +61,30 @@ namespace Chroma
 				       T& psi_s) const{
 
     SystemSolverResults_t ret;
+
+    void *spinorIn;
+
+    T mod_chi;
+
     
- 
+    spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
+    
+    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+
+    // Do the solve here 
     StopWatch swatch1; 
     swatch1.reset();
     swatch1.start();
-
-    void* spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
-    void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
-
     invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
-
     swatch1.stop();
 
+    chi_s[rb[1]] *= invMassParam;
 
     QDPIO::cout << "Cuda Space Required" << endl;
     QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
     QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
-    QDPIO::cout << "QUDA_" << solver_string << "_WILSON_SOLVER: time="<< quda_inv_param.secs <<" s" ;
+    QDPIO::cout << "\t InvWilson :" << quda_inv_param.cloverGiB << " GiB" << endl;
+    QDPIO::cout << "QUDA_"<<solver_string<<"_WILSON_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
 
@@ -92,3 +97,5 @@ namespace Chroma
 
 }
 
+
+ 

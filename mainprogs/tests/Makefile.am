@@ -42,16 +42,10 @@ AM_LDFLAGS  += @MDWF_LDFLAGS@
 LDADD     += @MDWF_LIBS@
 endif
 
-if BUILD_QUDA_0_2
-AM_CXXFLAGS += @QUDA_0_2_CXXFLAGS@
-AM_LDFLAGS += @QUDA_0_2_LDFLAGS@
-LDADD	+= @QUDA_0_2_LIBS@
-endif
-
-if BUILD_QUDA_0_3
-AM_CXXFLAGS += @QUDA_0_3_CXXFLAGS@
-AM_LDFLAGS += @QUDA_0_3_LDFLAGS@
-LDADD	+= @QUDA_0_3_LIBS@
+if BUILD_QUDA
+AM_CXXFLAGS += @QUDA_CXXFLAGS@
+AM_LDFLAGS += @QUDA_LDFLAGS@
+LDADD	+= @QUDA_LIBS@
 endif
 
 if BUILD_BAGEL_CLOVER_APPLY
@@ -87,7 +81,7 @@ check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_remez t_ritz t_dwflocality t_precact_4d t_precact_5d \
     t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec
 
-if BUILD_QUDA_0_3
+if BUILD_QUDA
 check_PROGRAMS += t_quda_tprec
 endif
 
@@ -218,7 +212,7 @@ t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
 
 t_minvert_SOURCES = t_minvert.cc
-if BUILD_QUDA_0_3
+if BUILD_QUDA
 t_quda_tprec_SOURCES = t_quda_tprec.cc
 endif
 
