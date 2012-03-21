@@ -14,6 +14,7 @@
 #include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h"
 #endif
 
 namespace Chroma
@@ -35,6 +36,7 @@ namespace Chroma
 	success &= MdagMMultiSysSolverCGChronoCloverEnv::registerAll();
 #ifdef BUILD_QUDA
 	success &= MdagMMultiSysSolverCGQudaCloverEnv::registerAll();
+	success &= MdagMMultiSysSolverCGQudaWilsonEnv::registerAll();
 #endif
 
 	registered = true;
