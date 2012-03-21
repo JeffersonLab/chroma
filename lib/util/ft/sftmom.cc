@@ -572,4 +572,32 @@ namespace Chroma
     return hsum ;
   }
 
+#if BASE_PRECISION==32
+  multi2d<DComplex>
+  SftMom::sft(const LatticeComplexD& cf) const
+  {
+    multi2d<DComplex> hsum(num_mom, sft_set.numSubsets()) ;
+
+    for (int mom_num=0; mom_num < num_mom; ++mom_num)
+      hsum[mom_num] = sumMulti(phases[mom_num]*cf, sft_set) ;
+
+    return hsum ;
+  }
+
+  multi2d<DComplex>
+  SftMom::sft(const LatticeComplexD& cf, int subset_color) const
+  {
+    int length = sft_set.numSubsets();
+    multi2d<DComplex> hsum(num_mom, length);
+
+    for (int mom_num=0; mom_num < num_mom; ++mom_num)
+    {
+      hsum[mom_num] = zero;
+      hsum[mom_num][subset_color] = sum(phases[mom_num]*cf, sft_set[subset_color]);
+    }
+
+    return hsum ;
+  }
+#endif
+
 }  // end namespace Chroma
