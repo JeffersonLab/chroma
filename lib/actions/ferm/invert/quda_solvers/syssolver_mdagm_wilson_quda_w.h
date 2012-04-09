@@ -301,12 +301,12 @@ namespace Chroma
       if( invParam.tuneDslashP ) { 
 	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
 
-	quda_inv_param.dirac_tune = QUDA_TUNE_YES;
+	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
 	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
        
-	quda_inv_param.dirac_tune = QUDA_TUNE_NO;
+	quda_inv_param.tune = QUDA_TUNE_NO;
       }
 
       if( invParam.cacheDslashTuningP) { 
