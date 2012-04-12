@@ -192,6 +192,10 @@ namespace Chroma
   //! Chroma finalization routine
   void finalize(void)
   {
+
+#ifdef BUILD_QUDA
+    endQuda();
+#endif
     if (! QDP_isInitialized())
       return;
 
