@@ -42,8 +42,19 @@ namespace Chroma {
   typedef QDPCloverTermF CloverTermF;
   typedef SSEDCloverTerm CloverTermD;
 
-} 
+}
+#elif defined(BUILD_JIT_CLOVER_TERM)
+
+# include "clover_term_jit_w.h"
+namespace Chroma {
+ 
+  typedef JitCloverTerm CloverTerm;
+  typedef JitCloverTermF CloverTermF;
+  typedef JitCloverTermD CloverTermD;
+
+}
 #else 
+
 
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash
 // becomes the WilsonDslash

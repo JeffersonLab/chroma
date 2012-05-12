@@ -126,6 +126,7 @@ AC_ARG_WITH(bagel_clover,
      BAGEL_CLOVER_HOME="${with_bagel_clover}"]
 )
 
+
 AC_ARG_ENABLE(ssed_clover,
 	AC_HELP_STRING(
         [--enable-ssed-clover], 
@@ -133,6 +134,15 @@ AC_ARG_ENABLE(ssed_clover,
 	[ssed_clover_enabled="${enableval}"],
 	[ssed_clover_enabled="no"]
 )
+
+AC_ARG_ENABLE(jit_clover,
+	AC_HELP_STRING(
+        [--enable-jit-clover], 
+	[Enable QDP-JIT clover operator]),
+	[jit_clover_enabled="${enableval}"],
+	[jit_clover_enabled="no"]
+)
+
 
 AC_ARG_ENABLE(lapack,
   AC_HELP_STRING([--enable-lapack=<type>],
@@ -588,6 +598,19 @@ else
 fi
 
 AM_CONDITIONAL(BUILD_SSED_CLOVER_APPLY, [test "x${ssed_clover_enabled}x" = "xyesx" ])
+
+dnl ************************************************************************
+dnl **** QDP-JIT clover                                                 ****
+dnl ************************************************************************
+if test "X${jit_clover_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with QDP-JIT Clover] )   
+   AC_DEFINE([BUILD_JIT_CLOVER_TERM],[], [ Use JIT Clover Term Apply, requires to build on top of QDP-JIT ])
+else
+   AC_MSG_NOTICE( [Not using QDP-JIT Clover] )
+fi
+
+AM_CONDITIONAL(BUILD_JIT_CLOVER_APPLY, [test "x${jit_clover_enabled}x" = "xyesx" ])
 
 
 dnl ************************************************************************
