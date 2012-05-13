@@ -35,11 +35,11 @@
 	  if (!getCodeString( codeF[2] , f[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[3]"); break;}
 	  if (dobs) {
 	    if (!getCodeString( codeB1[0] , b1[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[0]"); break;} 
-	    if (!getCodeString( codeB1[1] , b1[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[2]"); break;}
-	    if (!getCodeString( codeB1[2] , b1[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[3]"); break;}
+	    if (!getCodeString( codeB1[1] , b1[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[1]"); break;}
+	    if (!getCodeString( codeB1[2] , b1[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[2]"); break;}
 	    if (!getCodeString( codeB2[0] , b2[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[0]"); break;} 
-	    if (!getCodeString( codeB2[1] , b2[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[2]"); break;}
-	    if (!getCodeString( codeB2[2] , b2[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[3]"); break;}
+	    if (!getCodeString( codeB2[1] , b2[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[1]"); break;}
+	    if (!getCodeString( codeB2[2] , b2[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[2]"); break;}
 	  }
 
 	  if (!mapVolumes) {
@@ -476,7 +476,6 @@
 	  const int nodeSites = QDP::Layout::sitesOnNode();
 
 	  cudaArgs.getArgs().numSiteTable = nodeSites;
-	  cudaArgs.getArgs().indirection  = arg->dobs;
    
 	  StopWatch watch0;
 	  watch0.start();
@@ -493,11 +492,10 @@
 	      b2[i].setModified(true);
 	    }
 	  }
-	      
 
 	  watch0.stop();
-	  DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	  DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
+	  DeviceStats::Instance().incMicroSecondsKernelExec( STOUTING,watch0.getTimeInMicroseconds() );
+	  DeviceStats::Instance().incEvalDev(STOUTING);
 	
 	  QDP::theCacheDispatch::Instance().unLock();
 
