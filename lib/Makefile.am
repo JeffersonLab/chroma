@@ -1798,7 +1798,8 @@ libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
 endif
 
 if BUILD_JIT_CLOVER_APPLY
-nobase_include_HEADERS += actions/ferm/linop/clover_term_jit_w.h
+nobase_include_HEADERS += actions/ferm/linop/clover_term_jit_w.h \
+	util/gauge/stout_utils_jit.h
 endif
 
 

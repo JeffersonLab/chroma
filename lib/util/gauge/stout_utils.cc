@@ -7,6 +7,7 @@
 #include "chromabase.h"
 #include "util/gauge/stout_utils.h"
 
+
 namespace Chroma 
 { 
 
@@ -356,6 +357,12 @@ namespace Chroma
 	multi1d<LatticeComplex>& b2;
 	bool dobs;
       };
+
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+#include "util/gauge/stout_utils_jit.h"
+#endif
+
       
     inline 
     void getFsAndBsSiteLoop(int lo, int hi, int myId, 
@@ -812,6 +819,11 @@ namespace Chroma
       } // End site loop
     } // End Function
 
+
+
+
+
+
     } // End Namespace
 	
     /*! \ingroup gauge */
@@ -835,9 +847,12 @@ namespace Chroma
       
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+      StoutUtils::getFsAndBsSiteLoop( &args );
+#else
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
-      
-      // Drop into a site loop here...
+#endif
 
       swatch.stop();
       StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();
