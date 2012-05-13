@@ -4,6 +4,7 @@
  *  \brief Stout utilities
  */
 
+#include "chroma_config.h"
 #include "chromabase.h"
 #include "util/gauge/stout_utils.h"
 
@@ -849,7 +850,7 @@ namespace Chroma
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-      StoutUtils::getFsAndBsSiteLoop( &args );
+      StoutUtils::getFsAndBsJIT( &args );
 #else
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
 #endif
