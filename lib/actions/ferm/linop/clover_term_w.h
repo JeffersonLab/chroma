@@ -52,7 +52,14 @@ namespace Chroma {
   typedef JitCloverTermF CloverTermF;
   typedef JitCloverTermD CloverTermD;
 
+template<typename T,typename U>
+struct CloverTermT {
+  typedef JitCloverTermT<T,U> Type_t;
+};
+
 }
+
+
 #else 
 
 
@@ -62,8 +69,20 @@ namespace Chroma {
   typedef QDPCloverTerm CloverTerm;
   typedef QDPCloverTermF CloverTermF;
   typedef QDPCloverTermD CloverTermD;
+
+template<typename T,typename U>
+struct CloverTermT {
+  typedef QDPCloverTermT<T,U> Type_t;
+};
+
 }  // end namespace Chroma
+
+
 #endif
+
+
+
+
 
 
 #endif
