@@ -47,11 +47,19 @@ namespace Chroma
       case 1:
 	/**************************************************************************/
 	param.mom2_min = 0;
+	param.mom_list.resize(0);
 	break;
 
       case 2:
 	/**************************************************************************/
 	read(paramtop, "mom2_min", param.mom2_min);
+	param.mom_list.resize(0);
+	break;
+
+      case 3:
+	/**************************************************************************/
+	read(paramtop, "mom2_min", param.mom2_min);
+	read(paramtop, "mom_list", param.mom_list);
 	break;
 
       default :
@@ -77,11 +85,12 @@ namespace Chroma
     {
       push(xml, path);
 
-      int version = 2;
+      int version = 3;
 
       write(xml, "version", version);
       write(xml, "mom2_min", param.mom2_min);
       write(xml, "mom2_max", param.mom2_max);
+      write(xml, "mom_list", param.mom_list);
       write(xml, "displacement_length", param.displacement_length);
       write(xml, "displacement_list", param.displacement_list);
       write(xml, "num_vecs", param.num_vecs);
@@ -179,6 +188,7 @@ namespace Chroma
       frequency = 0; 
       param.mom2_min = 0;
       param.mom2_max = 0;
+      param.mom_list.resize(0);
     }
 
     Params::Params(XMLReader& xml_in, const std::string& path) 
@@ -459,6 +469,23 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       //
       SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
+
+      //
+      // If a list of momenta has been specified only need phases corresponding to these
+      //
+      if (params.param.mom_list.size() > 0)
+      {
+	int num_mom = params.param.mom_list.size();
+	int mom_size = params.param.mom_list[0].size();
+	multi2d<int> moms(num_mom,mom_size);
+	for(int i = 0; i < num_mom; i++)
+	  {
+	    moms[i] = params.param.mom_list[i];
+	  }
+	SftMom temp_phases(moms, params.param.decay_dir);
+	phases = temp_phases;
+	params.param.mom2_min = 0;
+      }
 
       //
       // Smear the gauge field if needed
