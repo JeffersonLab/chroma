@@ -438,7 +438,7 @@ namespace Chroma
 	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
       // Sanity check
-      if (params.param.num_vecs < eigen_source.size())
+      if (params.param.num_vecs > eigen_source.size())
       {
 	QDPIO::cerr << name << ": number of available eigenvectors is too small\n";
 	QDP_abort(1);
