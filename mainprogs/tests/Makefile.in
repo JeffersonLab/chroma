@@ -61,7 +61,8 @@ host_triplet = @host@
 bin_PROGRAMS = t_mesplq$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_ritz_KS$(EXEEXT) \
 	t_lwldslash_array$(EXEEXT) t_leapfrog$(EXEEXT) \
-	t_lwldslash_new$(EXEEXT) t_minvert$(EXEEXT)
+	t_lwldslash_new$(EXEEXT) t_minvert$(EXEEXT) \
+	t_meas_wilson_flow$(EXEEXT)
 check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_conslinop$(EXEEXT) t_hypsmear$(EXEEXT) t_ape_smear$(EXEEXT) \
 	t_dwf4d$(EXEEXT) t_propagator_s$(EXEEXT) \
@@ -69,7 +70,8 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_dwflocality$(EXEEXT) t_precact_4d$(EXEEXT) \
 	t_precact_5d$(EXEEXT) t_gauge_force$(EXEEXT) \
 	t_stout_state$(EXEEXT) t_aniso_gaugeact$(EXEEXT) \
-	t_temp_prec$(EXEEXT) $(am__EXEEXT_1)
+	t_temp_prec$(EXEEXT) t_meas_wilson_flow_loop$(EXEEXT) \
+	$(am__EXEEXT_1)
 @BUILD_QUDA_TRUE@am__append_22 = t_quda_tprec
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
@@ -391,6 +393,22 @@ am_t_lwldslash_sse_OBJECTS = t_lwldslash_sse.$(OBJEXT)
 t_lwldslash_sse_OBJECTS = $(am_t_lwldslash_sse_OBJECTS)
 t_lwldslash_sse_LDADD = $(LDADD)
 t_lwldslash_sse_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_meas_wilson_flow_OBJECTS = t_meas_wilson_flow.$(OBJEXT)
+t_meas_wilson_flow_OBJECTS = $(am_t_meas_wilson_flow_OBJECTS)
+t_meas_wilson_flow_LDADD = $(LDADD)
+t_meas_wilson_flow_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_t_meas_wilson_flow_loop_OBJECTS =  \
+	t_meas_wilson_flow_loop.$(OBJEXT)
+t_meas_wilson_flow_loop_OBJECTS =  \
+	$(am_t_meas_wilson_flow_loop_OBJECTS)
+t_meas_wilson_flow_loop_LDADD = $(LDADD)
+t_meas_wilson_flow_loop_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -757,7 +775,8 @@ SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 	$(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
-	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
+	$(t_lwldslash_sse_SOURCES) $(t_meas_wilson_flow_SOURCES) \
+	$(t_meas_wilson_flow_loop_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_minvert_SOURCES) \
 	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
 	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
@@ -800,7 +819,8 @@ DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_io_SOURCES) $(t_leapfrog_SOURCES) $(t_lower_tests_SOURCES) \
 	$(t_lwldslash_SOURCES) $(t_lwldslash_array_SOURCES) \
 	$(t_lwldslash_new_SOURCES) $(t_lwldslash_pab_SOURCES) \
-	$(t_lwldslash_sse_SOURCES) $(t_mesons_w_SOURCES) \
+	$(t_lwldslash_sse_SOURCES) $(t_meas_wilson_flow_SOURCES) \
+	$(t_meas_wilson_flow_loop_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_minvert_SOURCES) \
 	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
 	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
@@ -1122,6 +1142,8 @@ t_clover_SOURCES = t_clover.cc
 t_db_SOURCES = t_db.cc
 t_solver_accum_SOURCES = t_solver_accum.cc
 t_eigcginv_SOURCES = t_eigcginv.cc
+t_meas_wilson_flow_SOURCES = t_meas_wilson_flow.cc
+t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
 t_minvert_SOURCES = t_minvert.cc
 @BUILD_QUDA_TRUE@t_quda_tprec_SOURCES = t_quda_tprec.cc
 
@@ -1308,6 +1330,12 @@ t_lwldslash_pab$(EXEEXT): $(t_lwldslash_pab_OBJECTS) $(t_lwldslash_pab_DEPENDENC
 t_lwldslash_sse$(EXEEXT): $(t_lwldslash_sse_OBJECTS) $(t_lwldslash_sse_DEPENDENCIES) 
 	@rm -f t_lwldslash_sse$(EXEEXT)
 	$(CXXLINK) $(t_lwldslash_sse_LDFLAGS) $(t_lwldslash_sse_OBJECTS) $(t_lwldslash_sse_LDADD) $(LIBS)
+t_meas_wilson_flow$(EXEEXT): $(t_meas_wilson_flow_OBJECTS) $(t_meas_wilson_flow_DEPENDENCIES) 
+	@rm -f t_meas_wilson_flow$(EXEEXT)
+	$(CXXLINK) $(t_meas_wilson_flow_LDFLAGS) $(t_meas_wilson_flow_OBJECTS) $(t_meas_wilson_flow_LDADD) $(LIBS)
+t_meas_wilson_flow_loop$(EXEEXT): $(t_meas_wilson_flow_loop_OBJECTS) $(t_meas_wilson_flow_loop_DEPENDENCIES) 
+	@rm -f t_meas_wilson_flow_loop$(EXEEXT)
+	$(CXXLINK) $(t_meas_wilson_flow_loop_LDFLAGS) $(t_meas_wilson_flow_loop_OBJECTS) $(t_meas_wilson_flow_loop_LDADD) $(LIBS)
 t_mesons_w$(EXEEXT): $(t_mesons_w_OBJECTS) $(t_mesons_w_DEPENDENCIES) 
 	@rm -f t_mesons_w$(EXEEXT)
 	$(CXXLINK) $(t_mesons_w_LDFLAGS) $(t_mesons_w_OBJECTS) $(t_mesons_w_LDADD) $(LIBS)
@@ -1496,6 +1524,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_new.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_pab.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_lwldslash_sse.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_meas_wilson_flow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_meas_wilson_flow_loop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_minvert.Po@am__quote@

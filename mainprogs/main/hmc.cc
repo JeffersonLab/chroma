@@ -948,7 +948,7 @@ namespace Chroma {
     }
     
     // Sum up the number of diffs found globally
-    Internal::globalSum(diffs_found);
+    QDPInternal::globalSum(diffs_found);
     
     if( diffs_found != 0 ) { 
       QDPIO::cout << "Found " << diffs_found << " different bytes in momentum repro check" << endl;
@@ -967,7 +967,7 @@ namespace Chroma {
     }
     
     // Sum up the number of diffs found globally
-    Internal::globalSum(diffs_found);
+    QDPInternal::globalSum(diffs_found);
     
     if( diffs_found != 0 ) { 
       QDPIO::cout << "Found " << diffs_found << " different bytes in gauge repro check" << endl;

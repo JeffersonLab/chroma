@@ -138,7 +138,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
 
   // Do DP sum. Could save function call overhead here
   AT_REAL(sum) = (DOUBLE)cp; 
-  Internal::globalSum(sum);
+  QDPInternal::globalSum(sum);
   cp = (REAL)AT_REAL(sum); 
 
   //  p[1]  :=  r[0]
@@ -194,7 +194,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
   
      // Global sum the local norm 
      AT_REAL(sum) = (DOUBLE)d;
-     Internal::globalSum(sum);
+     QDPInternal::globalSum(sum);
      d = (REAL)AT_REAL(sum);
 
     // Disable this. Set a = 1 to stop convergence
@@ -227,7 +227,7 @@ void InvCG2EvenOddPrecWilsLinOpTHack(const WilsonDslash &D,
 
      // Global sum the local norm
      AT_REAL(sum)=(DOUBLE)cp;
-     Internal::globalSum(sum);
+     QDPInternal::globalSum(sum);
      cp = (REAL)AT_REAL(sum);
 
 

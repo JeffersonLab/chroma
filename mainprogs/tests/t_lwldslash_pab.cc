@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
       swatch.stop();
       
       mydt=swatch.getTimeInSeconds();
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
 
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
           if (mydt > 1) {
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
       swatch.stop();
       
       mydt=swatch.getTimeInSeconds();
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
       

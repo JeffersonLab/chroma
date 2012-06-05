@@ -69,6 +69,19 @@ namespace Chroma
       return hashToSeed(hash);
     }
 
+
+    //---------------------------------------------------------------------
+    // Z(N)-rng
+    Complex z4rng(RANNYU::RNGState_t& rng)
+    {
+      RANNYU::random(rng);
+
+      Real twopiN = 0.25 * Chroma::twopi;
+      Real theta = twopiN * floor(4*rng.ran);
+
+      return cmplx(cos(theta),sin(theta));
+    }
+
   } // end namespace
 
 
@@ -94,6 +107,10 @@ namespace Chroma
     rng.seed = stringToSeed(bin.str());
     RANNYU::random(rng);
 
+    // Throw out the first few RNG's
+    for(int i=0; i < 10; ++i)
+      RANNYU::random(rng);
+
     // Make a new origin
     int Lt = Layout::lattSize()[decay_dir];
     t_origin = int(Lt * rng.ran) % Lt;  // The mod makes sure the RNG cannot be 1.000
@@ -105,6 +122,7 @@ namespace Chroma
   int DistillutionNoise::getTime(int t_slice) const
   {
     return (t_slice + t_origin) % Layout::lattSize()[decay_dir];
+//    return t_slice;
   }
 
 
@@ -116,12 +134,16 @@ namespace Chroma
     BinaryBufferWriter bin;
     write(bin, ensemble);
     write(bin, seqno);
-    writeDesc(bin, info.quark_line);
+    write(bin, info.quark_line);
     write(bin, (info.annih) ? 1 : 0);
 
     // Use the no-side-effect version of the RNG with input state, and output random num.
     RANNYU::RNGState_t rng;
     rng.seed = stringToSeed(bin.str());
+
+    // Throw out the first few RNG's
+    for(int i=0; i < 20; ++i)
+      RANNYU::random(rng);
 
     // Loop over the time and vectors to produce the full random numbers
     int Lt = Layout::lattSize()[decay_dir];
@@ -132,8 +154,7 @@ namespace Chroma
     {
       for(int i=0; i < info.num_vecs; ++i)
       {
-	RANNYU::random(rng);
-	eta(t,i) = rng.ran;
+	eta(t,i) = z4rng(rng);
       }
     }
 

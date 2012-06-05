@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
     QDPIO::cout << "." << flush;
   }
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     // Flopcount
@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
     QDPIO::cout << "." << flush;
   }
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     // Flopcount
@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
     QDPIO::cout << "." << flush;
   }
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     time=swatch.getTimeInSeconds();
-    Internal::globalSum(time);
+    QDPInternal::globalSum(time);
     time /= (double)Layout::numNodes();
 
     FlopCounter fc;

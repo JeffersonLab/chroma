@@ -58,7 +58,7 @@ namespace Chroma {
 	QDP_abort(1);
       }
 
-      Internal::globalSum(norm);
+      QDPInternal::globalSum(norm);
       x_norm = Double(norm);
 
     }
@@ -147,7 +147,7 @@ namespace Chroma {
 	  QDP_abort(1);
 	}
 	
-	Internal::globalSumArray(norm_array,3);
+	QDPInternal::globalSumArray(norm_array,3);
 	
 	norm2x.elem().elem().elem().elem()  =norm_array[0];
 	cdotxy.elem().elem().elem().real()= norm_array[1];
@@ -257,7 +257,7 @@ namespace Chroma {
 	QDP_abort(1);
       }
 
-      Internal::globalSumArray(norm_array,3);
+      QDPInternal::globalSumArray(norm_array,3);
       normx.elem().elem().elem().elem()  =norm_array[0];
       cdotzx.elem().elem().elem().real()= norm_array[1];
       cdotzx.elem().elem().elem().imag() = norm_array[2];
@@ -612,7 +612,7 @@ namespace Chroma {
 	    norm_array[10] += arg.norm_space[12*i+10];
 	    norm_array[11] += arg.norm_space[12*i+11];
 	  }
-	  Internal::globalSumArray(norm_array,12);
+	  QDPInternal::globalSumArray(norm_array,12);
 	 
 	  phi.elem().elem().elem().real() = norm_array[0];
 	  phi.elem().elem().elem().imag() = norm_array[1];
@@ -702,7 +702,7 @@ namespace Chroma {
 	    norm_array[10] += arg.norm_space[12*i+10];
 	    norm_array[11] += arg.norm_space[12*i+11];
 	  }
-	  Internal::globalSumArray(norm_array,12);
+	  QDPInternal::globalSumArray(norm_array,12);
 	 
 	  phi.elem().elem().elem().real() = norm_array[0];
 	  phi.elem().elem().elem().imag() = norm_array[1];

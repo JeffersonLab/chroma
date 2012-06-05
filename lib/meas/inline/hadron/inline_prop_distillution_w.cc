@@ -14,6 +14,9 @@
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/key_prop_distillution.h"
 #include "util/ferm/transf.h"
+#include "util/ferm/spin_rep.h"
+#include "util/ferm/diractodr.h"
+#include "util/ferm/twoquark_contract_ops.h"
 #include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"
 #include "actions/ferm/fermacts/fermact_factory_w.h"
@@ -59,6 +62,8 @@ namespace Chroma
       read(inputtop, "num_vecs", input.num_vecs);
       read(inputtop, "num_vec_dils", input.num_vec_dils);
       read(inputtop, "t_sources", input.t_sources);
+      read(inputtop, "Nt_forward", input.Nt_forward);
+      read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "quark_line", input.quark_line);
       read(inputtop, "mass", input.mass);
     }
@@ -71,6 +76,8 @@ namespace Chroma
       write(xml, "num_vecs", input.num_vecs);
       write(xml, "num_vec_dils", input.num_vec_dils);
       write(xml, "t_sources", input.t_sources);
+      write(xml, "Nt_forward", input.Nt_forward);
+      write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "quark_line", input.quark_line);
       write(xml, "mass", input.mass);
 
@@ -290,8 +297,7 @@ namespace Chroma
       // Some diagnostics
       QDPIO::cout << "Distillution factory: ensemble= XX" << dist_noise_obj.getEnsemble() << "XX  "
 		  << "sequence= XX" << dist_noise_obj.getSequence() << "XX\n"
-		  << "t_origin= " << dist_noise_obj.getOrigin() << "\n";
-
+		  << "t_origin= " << dist_noise_obj.getOrigin() << std::endl;
 
       // Will use TimeSliceSet-s a lot
       const int decay_dir = dist_noise_obj.getDecayDir();
@@ -314,7 +320,7 @@ namespace Chroma
       QDPIO::cout << "Snarf the source from a map object disk file" << endl;
 
       QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > eigen_source;
-      eigen_source.setDebug(1);
+      eigen_source.setDebug(0);
 
       try
       {
@@ -327,7 +333,7 @@ namespace Chroma
 	string user_str;
 	QDPIO::cout << "Get user data" << endl;
 	eigen_source.getUserdata(user_str);
-	QDPIO::cout << "User data= " << user_str << endl;
+//	QDPIO::cout << "User data= " << user_str << endl;
 
 	// Write it
 	QDPIO::cout << "Write to an xml file" << endl;
@@ -404,7 +410,7 @@ namespace Chroma
       // Open the file, and write the meta-data and the binary for this operator
       //
       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj;
-//      prop_obj.setDebug(1);
+      prop_obj.setDebug(0);
 
       if (! prop_obj.fileExists(params.named_obj.prop_file))
       {
@@ -449,11 +455,33 @@ namespace Chroma
 	info.annih      = false;
 
 	eta = dist_noise_obj.getRNG(info);
+
+#if 0
+	// Just for debugging
+	for(int i=0; i < eta.nrows(); ++i)
+	  for(int j=0; j < eta.ncols(); ++j)
+	  {
+	    float re = toFloat(real(eta(i,j)));
+	    float im = toFloat(imag(eta(i,j)));
+
+	    QDPIO::cout << name << ": line= " << info.quark_line 
+			<< "  eta("<<i<<","<<j<<")= ( "
+			<< (fabs(re)<0.1?0:re) << " , " 
+			<< (fabs(im)<0.1?0:im) << " )\n";
+	  }
+#endif
       }
 
 
       // Total number of iterations
       int ncg_had = 0;
+
+
+      // Rotation from DR to DP
+      SpinMatrix diracToDRMat(DiracToDRMat());
+      std::vector<MatrixSpinRep_t> diracToDrMatPlus = convertTwoQuarkSpin(diracToDRMat);
+      std::vector<MatrixSpinRep_t> diracToDrMatMinus = convertTwoQuarkSpin(adj(diracToDRMat));
+
 
       //
       // Try the factories
@@ -499,15 +527,42 @@ namespace Chroma
 	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
 
-	// Loop over each operator 
+	// Loop over each time-source
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
-	  int t_source = t_sources[tt];  // This is the pretend time-slice. There actual value is shifted.
+	  int t_source = t_sources[tt];  // This is the pretend time-slice. The actual value is shifted.
 	  QDPIO::cout << "t_source = " << t_source << endl; 
+
+	  // Find the active time-slices to save
+	  std::vector<bool> active_t_slices(Lt);
+	  for(int t=0; t < Lt; ++t)
+	  {
+	    active_t_slices[t] = false;
+	  }
+
+	  // Forward
+	  for(int dt=0; dt < params.param.contract.Nt_forward; ++dt)
+	  {
+	    int t = t_source + dt;
+	    active_t_slices[t % Lt] = true;
+	  }
+
+	  // Backward
+	  for(int dt=0; dt < params.param.contract.Nt_backward; ++dt)
+	  {
+	    int t = t_source - dt;
+	    while (t < 0) {t += Lt;} 
+
+	    active_t_slices[t % Lt] = true;
+	  }
+
 
 	  // All the loops
 	  for(int dist_src=0; dist_src < num_vec_dils; ++dist_src)
 	  {
+	    StopWatch sniss1;
+    	    sniss1.reset();
+	    sniss1.start();
 	    QDPIO::cout << "dist_src = " << dist_src << endl; 
 
 	    // Prepare a distilluted source
@@ -534,27 +589,12 @@ namespace Chroma
 	      vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
 	    }
 	
-	    // Insert this source
-	    {
-	      KeyPropDist_t key;
-
-	      key.prop_type    = "SRC";
-	      key.t_source     = t_source;
-	      key.t_slice      = t_source;
-	      key.dist_src     = dist_src;
-	      key.spin_src     = -1;
-	      key.spin_snk     = -1;
-	      key.quark_line   = params.param.contract.quark_line;
-	      key.mass         = params.param.contract.mass;
-
-	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
-	    }
-
-
 	    //
 	    // Loop over each spin source and invert. 
 	    // Use the same colorvector source. No spin dilution will be used.
 	    //
+	    multi2d<LatticeColorVector> ferm_out(Ns,Ns);
+
 	    for(int spin_source=0; spin_source < Ns; ++spin_source)
 	    {
 	      QDPIO::cout << "spin_source = " << spin_source << endl; 
@@ -570,13 +610,61 @@ namespace Chroma
 	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
 	      ncg_had = res.n_count;
 
-	      // Write out each time-slice chunk of a lattice colorvec soln to disk
+	      // Extract into the temporary output array
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	      {
-		LatticeColorVector quark_vec = peekSpin(quark_soln, spin_sink);
+		ferm_out(spin_sink,spin_source) = peekSpin(quark_soln, spin_sink);
+	      }
+	    } // for spin_source
 
+
+	    // Rotate from DeGrand-Rossi (DR) to Dirac-Pauli (DP)
+	    {
+	      multi2d<LatticeColorVector> ferm_tmp;
+
+	      multiplyRep(ferm_tmp, diracToDrMatMinus, ferm_out);
+	      multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
+	    }
+
+	    sniss1.stop();
+	    QDPIO::cout << "Time to assemble and transmogrify propagators for dist_src= " << dist_src << "  time = " 
+		        << sniss1.getTimeInSeconds() 
+		        << " secs" << endl;
+
+
+	    // Write out each time-slice chunk of a lattice colorvec soln to disk
+	    StopWatch sniss2;
+    	    sniss2.reset();
+	    sniss2.start();
+	    QDPIO::cout << "Write propagator source and solutions to disk" << std::endl;
+
+	    // Insert this source
+	    {
+	      KeyPropDist_t key;
+
+	      key.prop_type    = "SRC";
+	      key.t_source     = t_source;
+	      key.t_slice      = t_source;
+	      key.dist_src     = dist_src;
+	      key.spin_src     = -1;
+	      key.spin_snk     = -1;
+	      key.quark_line   = params.param.contract.quark_line;
+	      key.mass         = params.param.contract.mass;
+
+//	      QDPIO::cout << key << std::flush;
+
+	      prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(t_source)));
+	    }
+
+	    // Write the solutions
+	    for(int spin_source=0; spin_source < Ns; ++spin_source)
+	    {
+	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	      {
 		for(int t=0; t < Lt; ++t)
 		{
+		  if (! active_t_slices[t]) {continue;}
+
 		  KeyPropDist_t key;
 
 		  key.prop_type    = "SNK";
@@ -588,13 +676,22 @@ namespace Chroma
 		  key.quark_line   = params.param.contract.quark_line;
 		  key.mass         = params.param.contract.mass;
 
-		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(quark_vec, dist_noise_obj.getTime(t)));
+//	          QDPIO::cout << key << std::flush;
+
+		  prop_obj.insert(key, TimeSliceIO<LatticeColorVector>(ferm_out(spin_sink,spin_source), 
+								       dist_noise_obj.getTime(t)));
 
 		} // for t
 	      } // for spin_sink
 	    } // for spin_source
-	  } // for colorvec_source
-	} // for t_source
+
+	    sniss2.stop();
+	    QDPIO::cout << "Time to write propagators for dist_src= " << dist_src << "  time = " 
+		        << sniss2.getTimeInSeconds() 
+		        << " secs" << endl;
+
+	  } // for dist_source
+	} // for tt
 
 	prop_obj.flush();
 	swatch.stop();

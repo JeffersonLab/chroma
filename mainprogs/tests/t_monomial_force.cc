@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
       }
       swatch.stop();
       seconds = swatch.getTimeInSeconds();
-      Internal::globalSum(seconds);
+      QDPInternal::globalSum(seconds);
       seconds /= (double)Layout::numNodes();
       QDPIO::cout << "." << flush;
     }
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds(); 
-    Internal::globalSum(seconds);
+    QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
    
     QDPIO::cout << "monomial_id = " << monomial_test_ids[mon]
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds();
-    Internal::globalSum(seconds);
+    QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
     QDPIO::cout << "." << flush;
   }
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
   seconds = swatch.getTimeInSeconds();
-  Internal::globalSum(seconds);
+  QDPInternal::globalSum(seconds);
   seconds /= (double)Layout::numNodes();
 
   QDPIO::cout << "taproj"
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds();
-    Internal::globalSum(seconds);
+    QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
 
     QDPIO::cout << "." << flush;
@@ -265,7 +265,7 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
   seconds = swatch.getTimeInSeconds();
-  Internal::globalSum(seconds);
+  QDPInternal::globalSum(seconds);
   seconds /= (double)Layout::numNodes();
     
   QDPIO::cout << "expmat"
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
     }
     swatch.stop();
     seconds = swatch.getTimeInSeconds();
-    Internal::globalSum(seconds);
+    QDPInternal::globalSum(seconds);
     seconds /= (double)Layout::numNodes();
 
     QDPIO::cout << "." << flush;
@@ -314,7 +314,7 @@ int main(int argc, char *argv[])
   }
   swatch.stop();
   seconds = swatch.getTimeInSeconds();
-  Internal::globalSum(seconds);
+  QDPInternal::globalSum(seconds);
   seconds /= (double)Layout::numNodes();
     
   QDPIO::cout << "reunit" 

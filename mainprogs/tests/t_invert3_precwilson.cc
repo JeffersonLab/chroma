@@ -152,7 +152,7 @@ int main(int argc, char **argv)
     }
     swatch.stop();
     mydt = swatch.getTimeInSeconds();
-    Internal::globalSum(mydt);
+    QDPInternal::globalSum(mydt);
     mydt /= Double(Layout::numNodes());
     
     if( toBool(mydt > Double(1)) ) break;
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
     swatch.stop();
                                                                                 
     mydt=Double(swatch.getTimeInSeconds());
-    Internal::globalSum(mydt);
+    QDPInternal::globalSum(mydt);
     mydt /= Double(Layout::numNodes());
                                                                                 
     QDPIO::cout << "Time was " << mydt << " seconds" << endl;
@@ -229,9 +229,9 @@ int main(int argc, char **argv)
 			iter);
 
     swatch.stop();
-										    mydt=Double(swatch.getTimeInSeconds());
-
-    Internal::globalSum(mydt);
+    mydt=Double(swatch.getTimeInSeconds());
+										    
+    QDPInternal::globalSum(mydt);
 
     mydt /= Double(Layout::numNodes());
                                                                                 
