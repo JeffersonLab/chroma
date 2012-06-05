@@ -14,10 +14,9 @@
 #include "chroma.h"
 
 #include "actions/ferm/invert/syssolver_linop_cg.h"
-#include "actions/ferm/invert/syssolver_linop_cg.h"
-#include "io/xml_group_reader.h"
+
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_quda_clover.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include <string>

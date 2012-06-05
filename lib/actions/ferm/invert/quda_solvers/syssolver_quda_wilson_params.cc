@@ -1,14 +1,14 @@
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "chromabase.h"
 #include "io/xml_group_reader.h"
-
 #include "chroma_config.h"
+
 
 
 using namespace QDP;
 
 namespace Chroma {
-  
+ 
   SysSolverQUDAWilsonParams::SysSolverQUDAWilsonParams(XMLReader& xml, 
 						       const std::string& path)
   {
@@ -18,7 +18,9 @@ namespace Chroma {
     read(paramtop, "RsdTarget", RsdTarget);
     read(paramtop, "WilsonParams", WilsonParams);
     read(paramtop, "AntiPeriodicT", AntiPeriodicT);
+
     read(paramtop, "Delta", Delta);
+  
 
     read(paramtop, "SolverType", solverType);
 
@@ -28,7 +30,13 @@ namespace Chroma {
     else { 
       verboseP = false;
     }
-    
+    if ( paramtop.count("AsymmetricLinop") > 0 ) { 
+      read(paramtop, "AsymmetricLinop", asymmetricP);
+    }
+    else { 
+      asymmetricP = false; // Symmetric is default 
+    }
+
     if( paramtop.count("CudaPrecision") > 0 ) {
       read(paramtop, "CudaPrecision", cudaPrecision);
     }
@@ -77,13 +85,14 @@ namespace Chroma {
     else { 
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
-#ifdef BUILD_QUDA_0_3
+
     if( paramtop.count("AutotuneDslash") > 0 ) { 
       read(paramtop, "AutotuneDslash", tuneDslashP);
     }
     else { 
       tuneDslashP = false;
     }
+    QDPIO::cout << "tuneDslasP = " << tuneDslashP << endl;
 
     if( paramtop.count("CacheAutotuningResults") > 0 ) { 
       read(paramtop, "CacheAutotuningResults", cacheDslashTuningP);
@@ -91,7 +100,15 @@ namespace Chroma {
     else { 
       cacheDslashTuningP = true;
     }
-#endif 
+    QDPIO::cout << "cacheDslashTuning = " << cacheDslashTuningP << endl;
+
+    if( paramtop.count("GCRInnerParams") > 0 ) {
+      innerParams = new GCRInnerSolverParams(paramtop, "./GCRInnerParams");
+      innerParamsP = true;
+    }
+    else { 
+      innerParamsP = false;
+    }
 
   }
 
@@ -112,6 +129,7 @@ namespace Chroma {
     write(xml, "Delta", p.Delta);
     write(xml, "SolverType", p.solverType);
     write(xml, "Verbose", p.verboseP);
+    write(xml, "AsymmetricLinop", p.asymmetricP);
     write(xml, "CudaPrecision", p.cudaPrecision);
     write(xml, "CudaReconstruct", p.cudaReconstruct);
     write(xml, "CudaSloppyPrecision", p.cudaSloppyPrecision);
@@ -119,10 +137,11 @@ namespace Chroma {
     write(xml, "AxialGaugeFix", p.axialGaugeP);
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
-#ifdef BUILD_QUDA_0_3
     write(xml, "AutotuneDslash", p.tuneDslashP);
     write(xml, "CacheAutotuningResults", p.cacheDslashTuningP);
-#endif
+    if( p.innerParamsP ) { 
+      write(xml, "GCRInnerParams", *(p.innerParams));
+    }
     pop(xml);
 
   }

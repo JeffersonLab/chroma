@@ -106,6 +106,12 @@ namespace Chroma
     //! Do a sumMulti(cf*phases,getSet()[my_subset])
     multi2d<DComplex> sft(const LatticeReal& cf, int subset_color) const;
 
+#if BASE_PRECISION==32
+    multi2d<DComplex> sft(const LatticeComplexD& cf) const;
+    //! Do a sum(cf*phases,getSet()[my_subset])
+    multi2d<DComplex> sft(const LatticeComplexD& cf, int subset_color) const;
+#endif
+
   private:
     SftMom() {} // hide default constructor
 

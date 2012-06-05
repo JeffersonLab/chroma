@@ -6,7 +6,7 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "io/aniso_io.h"
 
 

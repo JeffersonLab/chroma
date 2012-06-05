@@ -3,12 +3,12 @@
  *  \brief Solve a MdagM*psi=chi linear system by CG2 using CG
  */
 
-#ifndef __multi_syssolver_mdagm_cg_clover_quda_0_3_h__
-#define __multi_syssolver_mdagm_cg_clover_quda_0_3_h__
+#ifndef __multi_syssolver_mdagm_cg_wilson_quda_w_h__
+#define __multi_syssolver_mdagm_cg_wilson_quda_w_h__
 
 #include "chroma_config.h"
 
-#ifdef BUILD_QUDA_0_3
+#ifdef BUILD_QUDA
 
 #include "handle.h"
 #include "syssolver.h"
@@ -16,8 +16,7 @@
 #include "lmdagm.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
@@ -30,7 +29,7 @@ namespace Chroma
 {
 
   //! CG2 system solver namespace
-  namespace MdagMMultiSysSolverCGQudaCloverEnv
+  namespace MdagMMultiSysSolverCGQudaWilsonEnv
   {
     //! Register the syssolver
     bool registerAll();
@@ -39,7 +38,7 @@ namespace Chroma
   //! Solve a CG2 system. Here, the operator is NOT assumed to be hermitian
   /*! \ingroup invert
    */
-  class MdagMMultiSysSolverCGQudaClover : public MdagMMultiSystemSolver<LatticeFermion>
+  class MdagMMultiSysSolverCGQudaWilson : public MdagMMultiSystemSolver<LatticeFermion>
   {
   public:
     typedef LatticeFermion T;
@@ -63,13 +62,13 @@ namespace Chroma
      * \param M_        Linear operator ( Read )
      * \param invParam  inverter parameters ( Read )
      */
-    MdagMMultiSysSolverCGQudaClover(Handle< LinearOperator<T> > M_,
+    MdagMMultiSysSolverCGQudaWilson(Handle< LinearOperator<T> > M_,
 				      Handle< FermState<T,P,Q> > state_,
-				      const SysSolverQUDACloverParams& invParam_) : 
-      A(M_), invParam(invParam_), clov(new QDPCloverTermT<T,U>()), invclov(new QDPCloverTermT<T,U>())
+				      const SysSolverQUDAWilsonParams& invParam_) : 
+      A(M_), invParam(invParam_)
 
     {
-      QDPIO::cout << "MdagMMultiSysSolverCGQUDAClover: " << endl;
+      QDPIO::cout << "MdagMMultiSysSolverCGQUDAWilson: " << endl;
       // FOLLOWING INITIALIZATION in test QUDA program
 
       // 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
@@ -98,22 +97,7 @@ namespace Chroma
 	break;
       }
 
-      // Work out GPU Sloppy precision
-      // Default: No Sloppy
-      switch( invParam.cudaSloppyPrecision ) { 
-      case HALF:
-	gpu_half_prec = QUDA_HALF_PRECISION;
-	break;
-      case SINGLE:
-	gpu_half_prec = QUDA_SINGLE_PRECISION;
-	break;
-      case DOUBLE:
-	gpu_half_prec = QUDA_DOUBLE_PRECISION;
-	break;
-      default:
-	gpu_half_prec = gpu_prec;
-	break;
-      }
+      gpu_half_prec = gpu_prec;
           
       // 2) pull 'new; GAUGE and Invert params
       // 
@@ -209,7 +193,7 @@ namespace Chroma
       }
 
       // deferred 4) Gauge Anisotropy
-      const AnisoParam_t& aniso = invParam.CloverParams.anisoParam;
+      const AnisoParam_t& aniso = invParam.WilsonParams.anisoParam;
       if( aniso.anisoP ) {                     // Anisotropic case
 	Real gamma_f = aniso.xi_0 / aniso.nu; 
 	q_gauge_param.anisotropy = toDouble(gamma_f);
@@ -231,19 +215,15 @@ namespace Chroma
   
       // Now onto the inv param:
       // Dslash type
-      quda_inv_param.dslash_type = QUDA_CLOVER_WILSON_DSLASH;
+      quda_inv_param.dslash_type = QUDA_WILSON_DSLASH;
       solver_string = "MULTI_CG";
       quda_inv_param.inv_type = QUDA_CG_INVERTER;
-      // Mass
 
-      // Fiendish idea from Ron. Set the kappa=1/2 and use 
-      // unmodified clover term, and ask for Kappa normalization
-      // This should give us A - (1/2)D as the unpreconditioned operator
-      // and probabl 1 - {1/4} A^{-1} D A^{-1} D as the preconditioned
-      // op. Apart from the A_oo stuff on the antisymmetric we have
-      // nothing to do...
-      quda_inv_param.kappa = 0.5;
-      
+      // Mass
+      Real massParam = Real(1) + Real(3)/Real(q_gauge_param.anisotropy) + invParam.WilsonParams.Mass;
+      quda_inv_param.kappa = 1.0/(2*toDouble(massParam));
+      quda_inv_param.mass_normalization = QUDA_ASYMMETRIC_MASS_NORMALIZATION;
+   
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
@@ -263,21 +243,17 @@ namespace Chroma
 	break;
       }
 
-      if( ! invParam.asymmetricP ) { 
-	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << endl;
-	
-      }
       // Only support Asymmetric linop
-      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
+      quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
 
 
       quda_inv_param.dagger = QUDA_DAG_NO;
-      quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
+
 
       quda_inv_param.cpu_prec = cpu_prec;
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
-      quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
+      quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_YES;
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
 
@@ -285,12 +261,12 @@ namespace Chroma
       if( invParam.tuneDslashP ) { 
 	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
 
-	quda_inv_param.dirac_tune = QUDA_TUNE_YES;
+	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
 	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
        
-	quda_inv_param.dirac_tune = QUDA_TUNE_NO;
+	quda_inv_param.tune = QUDA_TUNE_NO;
       }
 
       if( invParam.cacheDslashTuningP) { 
@@ -336,12 +312,6 @@ namespace Chroma
       quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
       quda_inv_param.gcrNkrylov = 1;
 
-      // Clover precision and order
-      quda_inv_param.clover_cpu_prec = cpu_prec;
-      quda_inv_param.clover_cuda_prec = gpu_prec;
-      quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
-      quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-    
       if( invParam.verboseP ) { 
 	quda_inv_param.verbosity = QUDA_VERBOSE;
       }
@@ -359,37 +329,12 @@ namespace Chroma
 
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
 
-      //      Setup the clover term...
-      QDPIO::cout << "Creating CloverTerm" << endl;
-      clov->create(fstate, invParam_.CloverParams);
-      // Don't recompute, just copy
-      invclov->create(fstate, invParam_.CloverParams);
-      
-      QDPIO::cout << "Inverting CloverTerm" << endl;
-      invclov->choles(0);
-      invclov->choles(1);
-
-      multi1d<QUDAPackedClovSite<REALT> > packed_clov;
-
-      // Only compute clover if we're using asymmetric preconditioner
-      packed_clov.resize(all.siteTable().size());
-
-      clov->packForQUDA(packed_clov, 0);
-      clov->packForQUDA(packed_clov, 1);
- 
-      // Always need inverse
-      multi1d<QUDAPackedClovSite<REALT> > packed_invclov(all.siteTable().size());
-      invclov->packForQUDA(packed_invclov, 0);
-      invclov->packForQUDA(packed_invclov, 1);
-
-      loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
     }
 
     //! Destructor is automatic
-    ~MdagMMultiSysSolverCGQudaClover() {
+    ~MdagMMultiSysSolverCGQudaWilson() {
       QDPIO::cout << "Destructing" << endl;
       freeGaugeQuda();
-      freeCloverQuda();
     }
     
     //! Return the subset on which the operator acts
@@ -433,9 +378,11 @@ namespace Chroma
 
       }
       else { 
+
 	res = qudaInvertMulti(chi,
 			 psi,
 			 shifts);      
+
       }      
 
       swatch.stop();
@@ -447,15 +394,18 @@ namespace Chroma
       
         for(int i=0; i < shifts.size(); i++) { 
 	  T tmp1,tmp2;
+	  tmp1 = zero;
+	  tmp2 = zero;
+
 	  (*A)(tmp1, psi[i], PLUS);
 	  (*A)(tmp2, tmp1, MINUS);  // tmp2 = A^\dagger A psi
-	  tmp2[ A->subset() ] +=  shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
+	  tmp2[ A->subset() ] += shifts[i]* psi[i]; // tmp2 = ( A^\dagger A + shift_i ) psi
 	  T r;
+	  r = zero;
+
 	  r[ A->subset() ] = chi - tmp2;
 	  r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
-#if 1
   	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << endl;
-#endif
         }
       }
       QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << endl;
@@ -468,19 +418,16 @@ namespace Chroma
     
   private:
     // Hide default constructor
-    MdagMMultiSysSolverCGQudaClover() {}
+    MdagMMultiSysSolverCGQudaWilson() {}
     U GFixMat;
     QudaPrecision_s cpu_prec;
     QudaPrecision_s gpu_prec;
     QudaPrecision_s gpu_half_prec;
 
     Handle< LinearOperator<T> > A;
-    const SysSolverQUDACloverParams invParam;
+    const SysSolverQUDAWilsonParams invParam;
     QudaGaugeParam q_gauge_param;
     QudaInvertParam quda_inv_param;
-
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,

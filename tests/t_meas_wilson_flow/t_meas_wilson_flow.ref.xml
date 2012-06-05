@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+
+<wilsonFlow>
+  <Input><WilsonFlow>
+  <IO_version>
+    <version>2</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+
+    <nrow>4 4 4 4</nrow>
+    <wflow_eps>0.01</wflow_eps>
+    <nstep>10</nstep>
+ 
+    <gauge_trans>true</gauge_trans>
+
+  </param>
+<Cfg>
+ <cfg_type>DISORDERED</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+
+
+</WilsonFlow>
+
+  </Input>
+  <Output_version>
+    <out_version>1</out_version>
+  </Output_version>
+  <Observables>
+    <w_plaq>-0.00209272940773252</w_plaq>
+    <s_plaq>0.00514882749675084</s_plaq>
+    <t_plaq>-0.00933428631221588</t_plaq>
+    <plane_01_plaq>0.0128677012506295</plane_01_plaq>
+    <plane_02_plaq>-0.00939101245237744</plane_02_plaq>
+    <plane_12_plaq>0.0119697936920004</plane_12_plaq>
+    <plane_03_plaq>-0.000631502226287475</plane_03_plaq>
+    <plane_13_plaq>-0.0186812206781686</plane_13_plaq>
+    <plane_23_plaq>-0.00869013603219158</plane_23_plaq>
+    <link>0.121381096412457</link>
+    <pollp>
+      <elem>
+        <re>-0.0317309479294072</re>
+        <im>0.0278903085784643</im>
+      </elem>
+      <elem>
+        <re>0.0355060000418983</re>
+        <im>-0.016327946429654</im>
+      </elem>
+      <elem>
+        <re>0.0152873027740744</re>
+        <im>0.0110389769457816</im>
+      </elem>
+      <elem>
+        <re>-0.0445635860237005</re>
+        <im>-0.00138358858581543</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <wilson_flow_results>
+    <wflow_step>0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1</wflow_step>
+    <wflow_gact4i>1.12543636501968 1.14601716864881 1.16630680680981 1.18620977779834 1.20563805207632 1.22451238727801 1.24276302827747 1.26032978446947 1.27716155363737 1.29321542871904 1.30845556806451</wflow_gact4i>
+    <wflow_gactij>1.12254233311078 1.14304291792315 1.16318841777896 1.18287062508113 1.20198975531584 1.22045723817336 1.2381980278158 1.25515224969536 1.27127605771806 1.28654164973972 1.30093647082356</wflow_gactij>
+  </wilson_flow_results>
+</wilsonFlow>

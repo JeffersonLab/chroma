@@ -8,37 +8,6 @@
 using namespace QDP;
 
 namespace Chroma {
-  GCRInnerSolverParams::GCRInnerSolverParams(XMLReader& xml, 
-					     const std::string& path)
-  {
-    XMLReader paramtop(xml, path);
-    read(paramtop, "RsdSloppy", tolSloppy);
-    read(paramtop, "MaxIterSloppy", maxIterSloppy);
-    read(paramtop, "NKrylov", gcrNkrylov);
-    read(paramtop, "VerboseP", verboseInner);
-    read(paramtop, "InvTypeSloppy", invTypeSloppy);
-  };
-
-  void read(XMLReader& xml, const std::string& path, 
-	    GCRInnerSolverParams& p)
-  {
-    GCRInnerSolverParams tmp(xml, path);
-    p = tmp;
-  }
-
-  
-  
-  void write(XMLWriter& xml, const std::string& path, 
-	     const GCRInnerSolverParams& p) {
-    push(xml, path);
-    write(xml, "RsdSloppy", p.tolSloppy);
-    write(xml, "MaxIterSloppy", p.maxIterSloppy);
-    write(xml, "NKrylov", p.gcrNkrylov);
-    write(xml, "VerboseP", p.verboseInner);
-    write(xml, "InvTypeSloppy", p.invTypeSloppy);
-    pop(xml);
-
-  }
 
   SysSolverQUDACloverParams::SysSolverQUDACloverParams(XMLReader& xml, 
 						       const std::string& path)
@@ -117,7 +86,6 @@ namespace Chroma {
        RsdToleranceFactor = Real(10); // Tolerate an order of magnitude difference by default.
     }
 
-#ifdef BUILD_QUDA_0_3
     if( paramtop.count("AutotuneDslash") > 0 ) { 
       read(paramtop, "AutotuneDslash", tuneDslashP);
     }
@@ -141,7 +109,7 @@ namespace Chroma {
     else { 
       innerParamsP = false;
     }
-#endif 
+
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -170,13 +138,11 @@ namespace Chroma {
     write(xml, "SilentFail", p.SilentFailP);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
 
-#ifdef BUILD_QUDA_0_3
     write(xml, "AutotuneDslash", p.tuneDslashP);
     write(xml, "CacheAutotuningResults", p.cacheDslashTuningP);
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
     }
-#endif
 
     pop(xml);
 

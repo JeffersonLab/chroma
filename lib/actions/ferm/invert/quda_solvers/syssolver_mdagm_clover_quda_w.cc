@@ -3,10 +3,10 @@
  *  \brief Solve a MdagM*psi=chi linear system by CG2
  */
 
-#include "actions/ferm/invert/syssolver_linop_factory.h"
-#include "actions/ferm/invert/syssolver_linop_aggregate.h"
+#include "actions/ferm/invert/syssolver_mdagm_factory.h"
+#include "actions/ferm/invert/syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h"
 #include "io/aniso_io.h"
 
 
@@ -16,11 +16,11 @@
 #include "meas/glue/mesplq.h"
 // QUDA Headers
 #include <quda.h>
-#include <util_quda.h>
+// #include <util_quda.h>
 
 namespace Chroma
 {
-  namespace LinOpSysSolverQUDACloverEnv
+  namespace MdagMSysSolverQUDACloverEnv
   {
 
     //! Anonymous namespace
@@ -35,13 +35,13 @@ namespace Chroma
 
 
 
-    LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,	
+    MdagMSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,	
 						  const std::string& path,
 						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						  
 						  Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new LinOpSysSolverQUDAClover(A, state,SysSolverQUDACloverParams(xml_in, path));
+      return new MdagMSysSolverQUDAClover(A, state,SysSolverQUDACloverParams(xml_in, path));
     }
 
     //! Register all the factories
@@ -50,7 +50,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+	success &= Chroma::TheMdagMFermSystemSolverFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
       return success;
@@ -58,7 +58,7 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  LinOpSysSolverQUDAClover::qudaInvert(const QDPCloverTermT<T, U>& clover,
+  MdagMSysSolverQUDAClover::qudaInvert(const QDPCloverTermT<T, U>& clover,
 				       const QDPCloverTermT<T, U>& invclov,
 				       const T& chi_s,
 				       T& psi_s) const{
@@ -69,27 +69,18 @@ namespace Chroma
 
     T mod_chi;
     if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
+
+      // Because of the vaguaries of our HMC Formulation we need to 
+      // solve the Asymmetric system. Symmetric won't work unless we change
+      // preconditioning strategy
       // asymmetric 
       //
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
       // No need to transform source
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
     }
-    else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
-      //
-      // symmetric
-      // Solve with M_symm = 1 - A^{-1}_oo D A^{-1}ee D 
-      //
-      // Chroma M =  A_oo ( M_symm )
-      //
-      //  So  M x = b => A_oo (M_symm) x = b 
-      //              =>       M_symm x = A^{-1}_oo b = chi_mod
-      invclov.apply(mod_chi, chi_s, PLUS, 1);
-      spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
-    }
     else { 
       QDPIO::cout << "MATPC Type not allowed." << endl;
-      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << endl;
       QDP_abort(1);
     }
 

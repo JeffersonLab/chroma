@@ -5,8 +5,8 @@
 
 #include "actions/ferm/invert/multi_syssolver_mdagm_factory.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
-#include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_0.3.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
+#include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h"
 #include "quda.h"
 
 #include <cstdlib>
@@ -16,7 +16,7 @@ namespace Chroma
 {
 
   //! CG2 system solver namespace
-  namespace MdagMMultiSysSolverCGQudaCloverEnv
+  namespace MdagMMultiSysSolverCGQudaWilsonEnv
   {
     //! Callback function
     MdagMMultiSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,
@@ -24,11 +24,11 @@ namespace Chroma
 						       Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						       Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new MdagMMultiSysSolverCGQudaClover(A, state,SysSolverQUDACloverParams(xml_in, path));
+      return new MdagMMultiSysSolverCGQudaWilson(A, state,SysSolverQUDAWilsonParams(xml_in, path));
     }
 
     //! Name to be used
-    const std::string name("MULTI_CG_QUDA_INVERTER");
+    const std::string name("MULTI_CG_QUDA_WILSON_INVERTER");
 
     //! Local registration flag
     static bool registered = false;
@@ -47,31 +47,18 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  MdagMMultiSysSolverCGQudaClover::qudaInvertMulti(const T& chi_s,
+  MdagMMultiSysSolverCGQudaWilson::qudaInvertMulti(const T& chi_s,
 				       multi1d<T>& psi_s,
 				       const multi1d<Real> shifts) const{
 
     SystemSolverResults_t ret;
 
-    void *spinorIn;
 
-    if ( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD_ASYMMETRIC ) {
+    void *spinorIn=(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 
-      // Because of the vaguaries of our HMC Formulation we need to 
-      // solve the Asymmetric system. Symmetric won't work unless we change
-      // preconditioning strategy
-      // asymmetric 
-      //
-      // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
-      // No need to transform source
-      spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
-    }
-    else { 
-      QDPIO::cout << "MATPC Type not allowed." << endl;
-      QDP_abort(1);
-    }
 
     void** spinorOut;
+
     spinorOut = (void **)malloc(shifts.size()*sizeof(void *));
     if (spinorOut == NULL) { 
       QDPIO::cerr << "Couldn't allocate spinorOut" << endl;
@@ -103,8 +90,7 @@ namespace Chroma
     QDPIO::cout << "Cuda Space Required" << endl;
     QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
     QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << endl;
-    QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
+    QDPIO::cout << "QUDA_"<<solver_string<<"_WILSON_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
     QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
 

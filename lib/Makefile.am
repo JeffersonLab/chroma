@@ -224,7 +224,7 @@ nobase_include_HEADERS = \
 	meas/gfix/gfix.h meas/gfix/grelax.h meas/gfix/polar_dec.h \
 	meas/gfix/rot_colvec.h meas/glue/glue.h meas/glue/mesfield.h \
         meas/glue/mesplq.h meas/glue/polylp.h meas/glue/wloop.h \
-	meas/glue/fuzwilp.h meas/glue/wilslp.h \
+	meas/glue/fuzwilp.h meas/glue/wilslp.h meas/glue/wilson_flow_w.h \
 	meas/glue/qactden.h \
 	meas/glue/qnaive.h \
         meas/glue/block.h meas/glue/fuzglue.h meas/glue/gluecor.h meas/glue/polycor.h \
@@ -938,12 +938,8 @@ if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
 endif
 
-if BUILD_QUDA_0_2
-AM_CXXFLAGS += @QUDA_0_2_CXXFLAGS@
-endif
-
-if BUILD_QUDA_0_3
-AM_CXXFLAGS += @QUDA_0_3_CXXFLAGS@
+if BUILD_QUDA
+AM_CXXFLAGS += @QUDA_CXXFLAGS@
 endif
 
 if BUILD_SSE_WILSON_DSLASH
@@ -1155,7 +1151,7 @@ libchroma_a_SOURCES = \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/wloop.cc  meas/glue/mesplq.cc meas/glue/polylp.cc \
-	meas/glue/wilslp.cc \
+	meas/glue/wilslp.cc meas/glue/wilson_flow_w.cc  \
 	meas/glue/qactden.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
@@ -1304,32 +1300,28 @@ nobase_include_HEADERS += update/molecdyn/monomial/remez_gmp.h
 libchroma_a_SOURCES += update/molecdyn/monomial/remez_gmp.cc
 endif
 
-if BUILD_QUDA_0_2
-nobase_include_HEADERS += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
-        actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.h \
-	actions/ferm/invert/quda_solvers/enum_quda_io.h
-
-libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
-	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
-	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_0.2.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.2.cc
-endif
-
-if BUILD_QUDA_0_3
-nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.h \
-	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_0.3.h \
-	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_0.3.h \
-	actions/ferm/invert/quda_solvers/enum_quda_io.h
+if BUILD_QUDA
+nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
+	actions/ferm/invert/quda_solvers/enum_quda_io.h \
+	actions/ferm/invert/quda_solvers/quda_gcr_params.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
+	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_0.3.cc \
-	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_0.3.cc \
-	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_0.3.cc
+	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
 endif
 
 #
