@@ -35,7 +35,7 @@ namespace Chroma
 	  int             num_vecs;       /*!< Number of vectors */
 	  int             num_vec_dils;   /*!< Number of eigenvector dilutions to use */
 	  multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
-	  int             quark_line;     /*!< Quark line number */
+	  multi1d<int>    quark_lines;    /*!< Quark line numbers */
 	  std::string     mass;           /*!< Some kind of mass label */
 	  int             Nt_forward;     /*!< Time-slices in the forward direction */
 	  int             Nt_backward;    /*!< Time-slices in the backward direction */
