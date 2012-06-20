@@ -157,6 +157,112 @@ namespace Chroma
 
 
     //----------------------------------------------------------------------------
+    // The noise for this quark line.
+    // NOTE: the noise is fixed for a type of source, but given for all time-slices
+    // 
+    multi2d<Complex> generateNoise(const DistillutionNoise& dist_noise_obj, int num_vecs, int quark_line, bool annih)
+    {
+      DistQuarkLines_t info;
+      info.num_vecs   = num_vecs;
+      info.quark_line = quark_line;
+      info.annih      = false;
+
+      multi2d<Complex> eta(dist_noise_obj.getRNG(info));
+
+#if 0
+      // Just for debugging
+      for(int i=0; i < eta.nrows(); ++i)
+	for(int j=0; j < eta.ncols(); ++j)
+	{
+	  float re = toFloat(real(eta(i,j)));
+	  float im = toFloat(imag(eta(i,j)));
+
+	  QDPIO::cout << name << ": line= " << info.quark_line 
+		      << "  eta("<<i<<","<<j<<")= ( "
+		      << (fabs(re)<0.1?0:re) << " , " 
+		      << (fabs(im)<0.1?0:im) << " )\n";
+	}
+#endif
+
+      return eta;
+    }
+
+	  
+    //----------------------------------------------------------------------------
+    // Prepare a distilluted source
+    // Pull out a time-slice of the color vector source, and add it in a crystal fashion
+    // with other vectors
+    void generateConnSrc(LatticeColorVector& vec_srce,
+			 const DistillutionNoise& dist_noise_obj, 
+			 QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source,
+			 const TimeSliceSet& time_slice_set,
+			 int dist_src,
+			 int quark_line,
+			 int t_source, int num_vecs, int num_space_dils)
+    {
+      multi2d<Complex> eta(generateNoise(dist_noise_obj, num_vecs, quark_line, false));
+
+      vec_srce = zero;
+
+      for(int colorvec_source=dist_src; colorvec_source < num_vecs; colorvec_source += num_space_dils)
+      {
+	QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
+
+	// Get the actual time slice
+	int t_actual = dist_noise_obj.getTime(t_source);
+
+	KeyTimeSliceColorVec_t key_vec;
+	key_vec.t_slice = t_actual;
+	key_vec.colorvec = colorvec_source;
+
+	LatticeColorVector tmpvec = zero;
+	TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
+
+	eigen_source.get(key_vec, time_slice_io);
+
+	vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
+      }
+    }
+
+	
+    //----------------------------------------------------------------------------
+    // Prepare a distilluted source
+    // Pull out a time-slice of the color vector source, and add it in a crystal fashion
+    // with other vectors
+    void generateAnnihSrc(LatticeColorVector& vec_srce,
+			  const DistillutionNoise& dist_noise_obj, 
+			  QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source,
+			  const TimeSliceSet& time_slice_set,
+			  int dist_src,
+			  int quark_line,
+			  int t_source, int num_vecs, int num_space_dils, int num_time_dils)
+    {
+      multi2d<Complex> eta(generateNoise(dist_noise_obj, num_vecs, quark_line, true));
+
+      vec_srce = zero;
+
+      for(int colorvec_source=dist_src; colorvec_source < num_vecs; colorvec_source += num_space_dils)
+      {
+	QDPIO::cout << "colorvec_source = " << colorvec_source << endl;
+
+	// Get the actual time slice
+	int t_actual = dist_noise_obj.getTime(t_source);
+
+	KeyTimeSliceColorVec_t key_vec;
+	key_vec.t_slice = t_actual;
+	key_vec.colorvec = colorvec_source;
+
+	LatticeColorVector tmpvec = zero;
+	TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
+
+	eigen_source.get(key_vec, time_slice_io);
+
+	vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
+      }
+    }
+
+	
+    //----------------------------------------------------------------------------
     // Param stuff
     Params::Params() { frequency = 0; }
 
@@ -493,7 +599,6 @@ namespace Chroma
 	//
 	const int num_vecs            = params.param.contract.num_vecs;
 	const int num_vec_dils        = params.param.contract.num_vec_dils;
-	const multi1d<int>& t_sources = params.param.contract.t_sources;
 
 
 	//
@@ -508,36 +613,13 @@ namespace Chroma
 	  // NOTE: the noise is fixed for a type of source, but given for all time-slices
 	  // 
 	  // FIX ME: for the moment, hardwired for only single-ended sources
-	  multi2d<Complex> eta;
-	  {
-	    DistQuarkLines_t info;
-	    info.num_vecs   = params.param.contract.num_vecs;
-	    info.quark_line = quark_line;
-	    info.annih      = false;
-
-	    eta = dist_noise_obj.getRNG(info);
-
-#if 0
-	    // Just for debugging
-	    for(int i=0; i < eta.nrows(); ++i)
-	      for(int j=0; j < eta.ncols(); ++j)
-	      {
-		float re = toFloat(real(eta(i,j)));
-		float im = toFloat(imag(eta(i,j)));
-
-		QDPIO::cout << name << ": line= " << info.quark_line 
-			    << "  eta("<<i<<","<<j<<")= ( "
-			    << (fabs(re)<0.1?0:re) << " , " 
-			    << (fabs(im)<0.1?0:im) << " )\n";
-	      }
-#endif
-	  }
+	  multi2d<Complex> eta(generateNoise(dist_noise_obj, params.param.contract.num_vecs, quark_line, false));
 
 	  
 	  // Loop over each time-source
-	  for(int tt=0; tt < t_sources.size(); ++tt)
+	  for(int tt=0; tt < params.param.contract.t_sources.size(); ++tt)
 	  {
-	    int t_source = t_sources[tt];  // This is the pretend time-slice. The actual value is shifted.
+	    int t_source = params.param.contract.t_sources[tt];  // This is the pretend time-slice. The actual value is shifted.
 	    QDPIO::cout << "t_source = " << t_source << endl; 
 
 	    // Find the active time-slices to save
