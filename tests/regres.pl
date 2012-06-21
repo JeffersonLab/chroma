@@ -17,9 +17,7 @@ sub regresDirs
 #   return (
 #	"$test_dir/chroma/hadron/hadron_contract/regres.pl",
 #	"$test_dir/chroma/hadron/colorvec_matelem/regres.pl"
-#	);
-#
-#   	"$test_dir/t_leapfrog/regres.pl",
+# 	"$test_dir/t_leapfrog/regres.pl",
 #     	"$test_dir/chroma/hadron/propagator/regres.pl",
 #   );
 

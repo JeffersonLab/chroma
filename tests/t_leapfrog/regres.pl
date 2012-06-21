@@ -8,8 +8,20 @@
 # Each test has a name, input file name, output file name,
 # and the good output that is tested against.
 #
+
+
+
 @regres_list = 
     (  
+    {
+         exec_path   => "$top_builddir/mainprogs/tests" ,
+         execute     => "t_leapfrog" ,
+         input       => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_clover.ini.xml",
+         log         => "t_leapfrog.prec_1flav_clover.candidate.xml",
+         metric      => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_clover.metric.xml",
+         controlfile => "$test_dir/t_leapfrog/t_leapfrog.prec_1flav_clover.log.xml" ,
+     },
+
      {
 	 exec_path   => "$top_builddir/mainprogs/tests" , 
 	 execute     => "t_leapfrog" , 

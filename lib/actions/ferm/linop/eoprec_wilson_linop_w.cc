@@ -206,6 +206,46 @@ namespace Chroma
     END_CODE();
   }
 
+#if 0
+ //! Derivative of even-odd linop component
+  void 
+  EvenOddPrecWilsonLinOp::derivEvenOddLinOpMP(multi1d<LatticeColorMatrix>& ds_u,
+					      const LatticeFermion& chi, 
+					      const LatticeFermion& psi, 
+					      enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 0);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *=  Real(-0.5);
+    }
+
+    END_CODE();
+  }
+
+
+  //! Derivative of odd-even linop component
+  void 
+  EvenOddPrecWilsonLinOp::derivOddEvenLinOpMP(multi1d<LatticeColorMatrix>& ds_u,
+					      const LatticeFermion& chi, 
+					      const LatticeFermion& psi, 
+					      enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    ds_u.resize(Nd);
+
+    D.deriv(ds_u, chi, psi, isign, 1);
+    for(int mu=0; mu < Nd; mu++) { 
+      ds_u[mu]  *= Real(-0.5);
+    }
+    END_CODE();
+  }
+#endif
+
   //! Return flops performed by the operator()
   unsigned long EvenOddPrecWilsonLinOp::nFlops() const
   { 

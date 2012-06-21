@@ -72,6 +72,34 @@ namespace Chroma
 	       const T& chi, const T& psi, 
 	       enum PlusMinus isign, int cb) const;
 
+    //! Take deriv of D
+    /*!
+     * \param chi     left vectors                           (Read)
+     * \param psi     right vectors                         (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of chi vector                  (Read)
+     *
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
+     */
+    void derivMultipole(multi1d<U>& ds_u,
+			const multi1d<T>& chi, const multi1d<T>& psi,
+			enum PlusMinus isign) const;
+
+    //! Take deriv of D
+    /*!
+     * \param chi     left vectors on cb                           (Read)
+     * \param psi     right vectors on cb                        (Read)
+     * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
+     * \param cb      Checkerboard of chi vector                  (Read)
+     *
+     * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
+     */
+
+    void derivMultipole(multi1d<U>& ds_u,
+			const multi1d<T>& chi, const multi1d<T>& psi,
+			enum PlusMinus isign, int cb) const;
+
+
     //! Take derivative of TrLn D
     void derivTrLn(multi1d<U>& ds_u, 
 		   enum PlusMinus isign, int cb) const;
@@ -126,6 +154,26 @@ namespace Chroma
     // Odd Odd checkerboard
     multi1d<U> ds_tmp;
     deriv(ds_tmp, chi, psi, isign,1);
+    
+    ds_u += ds_tmp;
+    
+    END_CODE();
+  }
+
+  template<typename T, typename U>
+  void CloverTermBase<T,U>::derivMultipole(multi1d<U>& ds_u, 
+			     const multi1d<T>& chi, const multi1d<T>& psi, 
+			     enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    // base deriv resizes.
+    // Even even checkerboard
+    derivMultipole(ds_u, chi, psi, isign,0);
+    
+    // Odd Odd checkerboard
+    multi1d<U> ds_tmp;
+    derivMultipole(ds_tmp, chi, psi, isign,1);
     
     ds_u += ds_tmp;
     
@@ -537,6 +585,71 @@ namespace Chroma
 	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
 	T ferm_tmp = Gamma(mu_nu_index)*psi;
 	U s_xy_dag = traceSpin( outerProduct(ferm_tmp,chi));
+	s_xy_dag *= Real(factor);
+
+	// Compute contributions
+	deriv_loops(mu, nu, cb, ds_tmp_mu, ds_tmp_nu, s_xy_dag);
+
+	// Accumulate them
+	ds_u[mu] += ds_tmp_mu;
+	ds_u[nu] -= ds_tmp_nu;
+
+
+      }
+    }
+
+
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+    END_CODE();
+  }
+
+  template<typename T, typename U>
+  void CloverTermBase<T,U>::derivMultipole(multi1d<U>& ds_u, 
+					   const multi1d<T>& chi, const multi1d<T>& psi, 
+					   enum PlusMinus isign, int cb) const
+  {
+    // Multipole deriv
+    START_CODE();
+    
+    // Do I still need to do this?
+    if( ds_u.size() != Nd ) { 
+      ds_u.resize(Nd);
+    }
+
+    ds_u = zero;
+
+    // Get the links
+    const multi1d<U>& u = getU();
+
+
+    // Now compute the insertions
+    for(int mu=0; mu < Nd; mu++) {
+      for(int nu = mu+1; nu < Nd; nu++) {
+	
+	// These will be appropriately overwritten - no need to zero them.
+	// Contributions to mu links from mu-nu clover piece
+	U ds_tmp_mu; 
+
+	// -ve contribs  to the nu_links from the mu-nu clover piece 
+	// -ve because of the exchange of gamma_mu gamma_nu <-> gamma_nu gamma_mu
+	U ds_tmp_nu;
+
+	// The weight for the terms
+	Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
+
+	// Get gamma_mu gamma_nu psi -- no saving here, from storing shifts because
+	// I now only do every mu, nu pair only once.
+
+	int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
+
+	// Accumulate all the trace spin outer products 
+	U s_xy_dag = zero;
+	for(int i=0; i < chi.size(); i++) { 
+	  T ferm_tmp = Gamma(mu_nu_index)*psi[i];
+	  s_xy_dag += traceSpin( outerProduct(ferm_tmp,chi[i]));
+	}
+
 	s_xy_dag *= Real(factor);
 
 	// Compute contributions

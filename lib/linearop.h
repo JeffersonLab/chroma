@@ -113,6 +113,8 @@ namespace Chroma
       QDP_abort(1);
     }
 
+
+
     //! Apply the derivative of the operator onto a source vector to some precision
     /*! Default implementation */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
@@ -120,6 +122,21 @@ namespace Chroma
     {
       deriv(ds_u,chi,psi,isign);
     }
+
+    //! Return the force for multiple poles
+    virtual void derivMultipole(P& ds_u, const multi1d<T>& chi, const multi1d<T>&psi, enum PlusMinus isign) const
+    {
+      // Code up in terms of derivs for category default
+      ds_u.resize(Nd);     
+      ds_u = zero;
+
+      P F_tmp;
+      for(int i=0; i < chi.size(); i++) { 
+	deriv(F_tmp, chi[i], psi[i], isign);
+	ds_u += F_tmp;
+      }
+    }
+
   };
 
 
@@ -255,6 +272,35 @@ namespace Chroma
     {
       QDPIO::cerr << "deriv: not implemented" << endl;
       QDP_abort(1);
+    }
+
+    virtual void derivMultipole(P& ds_u, const multi1d<T>& chi, const multi1d<T>&psi, enum PlusMinus isign) const
+    {
+      // Code up in terms of derivs for category default
+      ds_u.resize(Nd);
+      ds_u = zero;
+
+      P F_tmp;
+      for(int i=0; i < chi.size(); i++) { 
+	deriv(F_tmp, chi[i], psi[i], isign);
+	ds_u += F_tmp;
+      }
+
+    }
+
+
+    virtual void derivMultipole(P& ds_u, const multi1d<T>& chi, const multi1d<T>&psi, enum PlusMinus isign,int cb) const
+    {
+      // Code up in terms of derivs for category default
+      ds_u.resize(Nd);
+      ds_u = zero;
+
+      P F_tmp;
+      for(int i=0; i < chi.size(); i++) { 
+	deriv(F_tmp, chi[i], psi[i], isign,cb);
+	ds_u += F_tmp;
+      }
+
     }
   };
 

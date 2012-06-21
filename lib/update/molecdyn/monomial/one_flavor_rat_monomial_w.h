@@ -86,7 +86,7 @@ namespace Chroma
       multi1d<Phi> X;
       Phi Y;
 
-      P  F_1, F_2, F_tmp(Nd);
+      P  F_1;
       F.resize(Nd);
       F = zero;
 
@@ -101,6 +101,13 @@ namespace Chroma
 	n_count[n] = res.n_count;
 
 	// Loop over solns and accumulate force contributions
+
+
+#if 0 
+
+	P F_2;
+	P F_tmp(Nd);
+
 	F_tmp = zero;
 	for(int i=0; i < X.size(); ++i)
 	{
@@ -114,13 +121,27 @@ namespace Chroma
 	  F_1 += F_2;
 
 	  // Reweight each contribution in partial fraction
-	  for(int mu=0; mu < F.size(); mu++)
+	  for(int mu=0; mu < F.size(); mu++) {
 	    F_tmp[mu] -= fpfe.res[i] * F_1[mu];
+	  }
+	}
+	F += F_tmp;
+#else
+	// New code with new force term
+	multi1d<Phi> Y(X.size());
+	for(int i=0; i < X.size(); i++) {
+	  (*lin)(Y[i], X[i], PLUS);
+	  Y[i]*= -fpfe.res[i];
 	}
 
+	lin->derivMultipole(F_1, X, Y, MINUS);
+	F += F_1;
+	lin->derivMultipole(F_1, Y, X, PLUS);
+	F += F_1;
+#endif
 	// Concious choice. Don't monitor forces by pole 
 	// Just accumulate it
-	F += F_tmp;
+	
       }
 
       state->deriv(F);

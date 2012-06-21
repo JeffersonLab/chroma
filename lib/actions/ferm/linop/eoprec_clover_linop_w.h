@@ -87,6 +87,11 @@ namespace Chroma
 			    const LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign) const;
 
+  //! Apply the even-even block onto a source vector
+    void derivEvenEvenLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
+			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			    enum PlusMinus isign) const;
+
     void derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 				  enum PlusMinus isign) const;
 
@@ -104,6 +109,10 @@ namespace Chroma
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const;
+
+    void derivOddOddLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
+			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+			    enum PlusMinus isign) const;
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
