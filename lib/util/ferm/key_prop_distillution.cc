@@ -65,6 +65,7 @@ namespace Chroma
   {
     os << "KeyPropDist_t:";
     os << " prop_type= " << param.prop_type;
+    os << " annihP= " << param.annihP;
     os << " t_source= " << param.t_source;
     os << " t_slice= " << param.t_slice;
     os << " spin_snk= " << param.spin_snk;
@@ -82,6 +83,7 @@ namespace Chroma
   bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b)
   {
     std::vector<int> lgaa;
+    lgaa.push_back((a.annihP) ? 1 : 0);
     lgaa.push_back(a.t_source);
     lgaa.push_back(a.t_slice);
     lgaa.push_back(a.dist_src);
@@ -92,6 +94,7 @@ namespace Chroma
     lgaa = concat(lgaa, stringToArrayInt(a.mass));
 
     std::vector<int> lgbb;
+    lgbb.push_back((b.annihP) ? 1 : 0);
     lgbb.push_back(b.t_source);
     lgbb.push_back(b.t_slice);
     lgbb.push_back(b.dist_src);
@@ -111,6 +114,7 @@ namespace Chroma
   void read(BinaryReader& bin, KeyPropDist_t& param)
   {
     readDesc(bin, param.prop_type);
+    read(bin, param.annihP);
     read(bin, param.t_source);
     read(bin, param.t_slice);
     read(bin, param.dist_src);
@@ -124,6 +128,7 @@ namespace Chroma
   void write(BinaryWriter& bin, const KeyPropDist_t& param)
   {
     writeDesc(bin, param.prop_type);
+    write(bin, param.annihP);
     write(bin, param.t_source);
     write(bin, param.t_slice);
     write(bin, param.dist_src);
@@ -139,6 +144,7 @@ namespace Chroma
     XMLReader paramtop(xml, path);
     
     read(paramtop, "prop_type", param.prop_type);
+    read(paramtop, "annihP", param.annihP);
     read(paramtop, "t_source", param.t_source);
     read(paramtop, "t_slice", param.t_slice);
     read(paramtop, "dist_src", param.dist_src);
@@ -154,6 +160,7 @@ namespace Chroma
     push(xml, path);
 
     write(xml, "prop_type", param.prop_type);
+    write(xml, "annihP", param.annihP);
     write(xml, "t_source", param.t_source);
     write(xml, "t_slice", param.t_slice);
     write(xml, "dist_src", param.dist_src);

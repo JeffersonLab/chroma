@@ -22,6 +22,7 @@ namespace Chroma
   struct KeyPropDist_t
   {
     std::string        prop_type;     /*!< Distillution source/solution type */
+    bool               annihP;        /*!< An annihilation line? */
     int                t_source;      /*!< Propagator source time slice */
     int                t_slice;       /*!< Propagator sink time slice */
     int                dist_src;      /*!< Source dist index */

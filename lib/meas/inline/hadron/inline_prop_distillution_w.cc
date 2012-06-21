@@ -192,6 +192,36 @@ namespace Chroma
     // Prepare a distilluted source
     // Pull out a time-slice of the color vector source, and add it in a crystal fashion
     // with other vectors
+    class AbsQuarkLine
+    {
+    public:
+      AbsQuarkLine(const DistillutionNoise& dist_noise_obj, 
+		   QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source,
+		   const TimeSliceSet& time_slice_set,
+		   int num_vecs) {}
+
+      //! Get a source
+      virtual LatticeColorVector getSrc(int dist_src, int quark_line) const = 0;
+
+      //! Get active time-slices
+      virtual std::vector<bool> getActiveTSlices() const = 0;
+
+      //! Get a solution
+//      virtual LatticeColorVector getSrc(int dist_src, int quark_line) const = 0;
+
+    private:
+      virtual const DistillutionNoise& getDistNoise() const = 0;
+      virtual QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& getEigenSource() const = 0;
+      virtual const TimeSliceSet& getTimeSliceSet() const = 0;
+      virtual int getNumVecs() const = 0;
+    };
+
+
+
+    //----------------------------------------------------------------------------
+    // Prepare a distilluted source
+    // Pull out a time-slice of the color vector source, and add it in a crystal fashion
+    // with other vectors
     void generateConnSrc(LatticeColorVector& vec_srce,
 			 const DistillutionNoise& dist_noise_obj, 
 			 QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source,
@@ -732,6 +762,7 @@ namespace Chroma
 		KeyPropDist_t key;
 
 		key.prop_type    = "SRC";
+		key.annihP       = false;
 		key.t_source     = t_source;
 		key.t_slice      = t_source;
 		key.dist_src     = dist_src;
@@ -757,6 +788,7 @@ namespace Chroma
 		    KeyPropDist_t key;
 
 		    key.prop_type    = "SNK";
+		    key.annihP       = false;
 		    key.t_source     = t_source;
 		    key.t_slice      = t;
 		    key.dist_src     = dist_src;
