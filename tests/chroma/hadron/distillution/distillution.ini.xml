@@ -92,6 +92,56 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
+          <quark_lines>1 6</quark_lines>
+          <mass>U0.05</mass>
+          <QuarkLine>
+            <QuarkLineType>ANNIH</QuarkLineType>
+            <num_vecs>10</num_vecs>
+            <num_space_dils>10</num_space_dils>
+            <num_time_dils>8</num_time_dils>
+          </QuarkLine>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <distillution_id>dist_obj</distillution_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <prop_file>prop.conn.mod</prop_file>
+      </NamedObject>
+    </elem>
+
+<annotation>
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_DISTILLUTION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
           <quark_lines>3 4 5 6</quark_lines>
           <mass>U0.05</mass>
           <QuarkLine>
@@ -134,6 +184,7 @@
         <prop_file>prop.conn.mod</prop_file>
       </NamedObject>
     </elem>
+</annotation>
 
   </InlineMeasurements>
   <nrow>4 4 4 16</nrow>

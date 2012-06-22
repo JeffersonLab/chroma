@@ -95,6 +95,56 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
+          <quark_lines>1 6</quark_lines>
+          <mass>U0.05</mass>
+          <QuarkLine>
+            <QuarkLineType>ANNIH</QuarkLineType>
+            <num_vecs>10</num_vecs>
+            <num_space_dils>10</num_space_dils>
+            <num_time_dils>8</num_time_dils>
+          </QuarkLine>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <distillution_id>dist_obj</distillution_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <prop_file>prop.conn.mod</prop_file>
+      </NamedObject>
+    </elem>
+
+<annotation>
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_DISTILLUTION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
           <quark_lines>3 4 5 6</quark_lines>
           <mass>U0.05</mass>
           <QuarkLine>
@@ -137,6 +187,7 @@
         <prop_file>prop.conn.mod</prop_file>
       </NamedObject>
     </elem>
+</annotation>
 
   </InlineMeasurements>
   <nrow>4 4 4 16</nrow>
@@ -164,7 +215,7 @@
       <qdp>1.40.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>22 Jun 12 16:24:51 EDT</run_date>
+    <run_date>22 Jun 12 16:34:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -225,7 +276,7 @@
             <qdp>1.40.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Jun 12 16:24:51 EDT</run_date>
+          <run_date>22 Jun 12 16:34:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -413,7 +464,7 @@
             <qdp>1.40.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Jun 12 16:24:51 EDT</run_date>
+          <run_date>22 Jun 12 16:34:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -443,7 +494,7 @@
             <qdp>1.40.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Jun 12 16:24:51 EDT</run_date>
+          <run_date>22 Jun 12 16:34:21 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -476,14 +527,12 @@
     </InvertParam>
 </Propagator>
             <Contractions>
-              <quark_lines>3 4 5 6</quark_lines>
+              <quark_lines>1 6</quark_lines>
               <mass>U0.05</mass><QuarkLine>
-      <QuarkLineType>CONN</QuarkLineType>
+      <QuarkLineType>ANNIH</QuarkLineType>
       <num_vecs>10</num_vecs>
       <num_space_dils>10</num_space_dils>
-      <t_sources>0 5</t_sources>
-      <Nt_forward>16</Nt_forward>
-      <Nt_backward>5</Nt_backward>
+      <num_time_dils>8</num_time_dils>
     </QuarkLine>
 </Contractions>
           </Param>
@@ -547,7 +596,7 @@
       <qdp>1.40.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>22 Jun 12 16:24:51 EDT</run_date>
+    <run_date>22 Jun 12 16:34:21 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -576,7 +625,7 @@
           <source_corrs>0.999999997767758 1.00000000611249 1.00000000600949 1.0000000061505 1.00000000019016 1.00000000112133 0.999999989937606 0.999999998384674 0.999999994292315 1.00000000284854 1.00000000236219 0.999999997446139 1.00000000638947 1.00000000607315 0.999999998521695 1.00000000002444</source_corrs>
         </Source_correlators>
         <Relaxation_Iterations>
-          <ncg_had>66</ncg_had>
+          <ncg_had>65</ncg_had>
         </Relaxation_Iterations>
       </PropDistillution>
     </elem>

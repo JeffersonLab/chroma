@@ -85,6 +85,66 @@ namespace Chroma
   //! Utilities
   namespace PropDistillutionUtilEnv
   {
+    // More utilities
+    namespace
+    {
+      //! Check space dilutions
+      int checkSpaceDils(int num_space_dils, int num_vecs)
+      {
+	int num = 0;
+
+	// Reset/barf if bogus
+	if (num_space_dils == 0)
+	{
+	  num = num_vecs;
+	}
+	else if (num_space_dils < 0 || num_space_dils > num_vecs)
+	{
+	  QDPIO::cerr << __func__ << ": invalid size of num_space_dils = " << num_space_dils << std::endl;
+	  QDP_abort(1);
+	}
+	else if ((num_vecs % num_space_dils) != 0)
+	{
+	  QDPIO::cerr << __func__ 
+		      << ": num_space_dils = " << num_space_dils 
+		      << "  not a divisor of num_vecs = " << num_vecs
+		      << std::endl;
+	  QDP_abort(1);
+	}
+
+	return num;
+      }
+
+
+      //! Check time dilutions
+      int checkTimeDils(int num_time_dils, int Lt)
+      {
+	int num = 0;
+
+	// Reset/barf if bogus
+	if (num_time_dils == 0)
+	{
+	  num = Lt;
+	}
+	else if (num_time_dils < 0 || num_time_dils > Lt)
+	{
+	  QDPIO::cerr << __func__ << ": invalid size of num_time_dils = " << num_time_dils << std::endl;
+	  QDP_abort(1);
+	}
+	else if ((Lt % num_time_dils) != 0)
+	{
+	  QDPIO::cerr << __func__ 
+		      << ": num_time_dils = " << num_time_dils 
+		      << "  not a divisor of the time extent = " << Lt 
+			  << std::endl;
+	  QDP_abort(1);
+	}
+
+	return num;
+      }
+    } // anonymous namespace
+
+
     //----------------------------------------------------------------------------
     // The noise for this quark line.
     // NOTE: the noise is fixed for a type of source, but given for all time-slices
@@ -198,6 +258,9 @@ namespace Chroma
 	  {
 	    // Initialize the noise for this quark line
 	    eta = generateNoise(dist_noise_obj, params.num_vecs, quark_line, false);
+
+	    // Reset/barf if bogus
+	    params.num_space_dils = checkSpaceDils(params.num_space_dils, params.num_vecs);
 	  }
 
 	//! Get a source
@@ -444,6 +507,10 @@ namespace Chroma
 	  {
 	    // Initialize the noise for this quark line
 	    eta = generateNoise(dist_noise_obj, params.num_vecs, quark_line, true);
+
+	    // Reset/barf if bogus
+	    params.num_space_dils = checkSpaceDils(params.num_space_dils, params.num_vecs);
+	    params.num_time_dils  = checkTimeDils(params.num_time_dils, Layout::lattSize()[dist_noise_obj.getDecayDir()]);
 	  }
 
 	//! Get a source
