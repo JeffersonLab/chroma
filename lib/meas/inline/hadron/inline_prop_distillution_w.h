@@ -11,6 +11,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -32,13 +33,9 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int             num_vecs;       /*!< Number of vectors */
-	  int             num_vec_dils;   /*!< Number of eigenvector dilutions to use */
-	  multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
-	  multi1d<int>    quark_lines;    /*!< Quark line numbers */
-	  std::string     mass;           /*!< Some kind of mass label */
-	  int             Nt_forward;     /*!< Time-slices in the forward direction */
-	  int             Nt_backward;    /*!< Time-slices in the backward direction */
+	  std::vector<int>    quark_lines;        /*!< Quark line numbers */
+	  std::string         mass;               /*!< Some kind of mass label */
+	  GroupXML_t          quark_line_xml;     /*!< Quark line xml */
 	};
 
 	ChromaProp_t    prop;

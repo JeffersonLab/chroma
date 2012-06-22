@@ -95,149 +95,16 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <num_vecs>10</num_vecs>
-          <num_vec_dils>10</num_vec_dils>
-          <t_sources>0 5</t_sources>
-          <quark_line>3</quark_line>
+          <quark_lines>3 4 5 6</quark_lines>
           <mass>U0.05</mass>
-        </Contractions>
-        <Propagator>
-          <version>10</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP>
-          <numRetries>1</numRetries>
-          <FermionAction>
-           <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
-           <clovCoeff>1.0</clovCoeff>
-           <AnisoParam>
-             <anisoP>false</anisoP>
-           </AnisoParam>
-           <FermionBC>
-             <FermBC>SIMPLE_FERMBC</FermBC>
-             <boundary>1 1 1 -1</boundary>
-           </FermionBC>
-          </FermionAction>
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1.0e-8</RsdCG>
-            <MaxCG>1000</MaxCG>
-          </InvertParam>
-        </Propagator>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <prop_file>prop.conn.mod</prop_file>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Compute propagator solution vectors
-      </annotation>
-      <Name>PROP_DISTILLUTION</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <Contractions>
-          <num_vecs>10</num_vecs>
-          <num_vec_dils>10</num_vec_dils>
-          <t_sources>0 5</t_sources>
-          <quark_line>4</quark_line>
-          <mass>U0.05</mass>
-        </Contractions>
-        <Propagator>
-          <version>10</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP>
-          <numRetries>1</numRetries>
-          <FermionAction>
-           <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
-           <clovCoeff>1.0</clovCoeff>
-           <AnisoParam>
-             <anisoP>false</anisoP>
-           </AnisoParam>
-           <FermionBC>
-             <FermBC>SIMPLE_FERMBC</FermBC>
-             <boundary>1 1 1 -1</boundary>
-           </FermionBC>
-          </FermionAction>
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1.0e-8</RsdCG>
-            <MaxCG>1000</MaxCG>
-          </InvertParam>
-        </Propagator>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <prop_file>prop.conn.mod</prop_file>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Compute propagator solution vectors
-      </annotation>
-      <Name>PROP_DISTILLUTION</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <Contractions>
-          <num_vecs>10</num_vecs>
-          <num_vec_dils>10</num_vec_dils>
-          <t_sources>0 5</t_sources>
-          <quark_line>5</quark_line>
-          <mass>U0.05</mass>
-        </Contractions>
-        <Propagator>
-          <version>10</version>
-          <quarkSpinType>FULL</quarkSpinType>
-          <obsvP>false</obsvP>
-          <numRetries>1</numRetries>
-          <FermionAction>
-           <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
-           <clovCoeff>1.0</clovCoeff>
-           <AnisoParam>
-             <anisoP>false</anisoP>
-           </AnisoParam>
-           <FermionBC>
-             <FermBC>SIMPLE_FERMBC</FermBC>
-             <boundary>1 1 1 -1</boundary>
-           </FermionBC>
-          </FermionAction>
-          <InvertParam>
-            <invType>CG_INVERTER</invType>
-            <RsdCG>1.0e-8</RsdCG>
-            <MaxCG>1000</MaxCG>
-          </InvertParam>
-        </Propagator>
-      </Param>
-      <NamedObject>
-        <gauge_id>default_gauge_field</gauge_id>
-        <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <prop_file>prop.conn.mod</prop_file>
-      </NamedObject>
-    </elem>
-
-    <elem>
-      <annotation>
-        Compute propagator solution vectors
-      </annotation>
-      <Name>PROP_DISTILLUTION</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <Contractions>
-          <num_vecs>10</num_vecs>
-          <num_vec_dils>10</num_vec_dils>
-          <t_sources>0 5</t_sources>
-          <quark_line>6</quark_line>
-          <mass>U0.05</mass>
+          <QuarkLine>
+            <QuarkLineType>CONN</QuarkLineType>
+            <num_vecs>10</num_vecs>
+            <num_space_dils>10</num_space_dils>
+            <t_sources>0 5</t_sources>
+            <Nt_forward>16</Nt_forward>
+            <Nt_backward>5</Nt_backward>
+          </QuarkLine>
         </Contractions>
         <Propagator>
           <version>10</version>
@@ -294,10 +161,10 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.40.0</chroma>
-      <qdp>1.38.3</qdp>
+      <qdp>1.40.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>22 Jan 12 23:15:15 EST</run_date>
+    <run_date>22 Jun 12 13:35:07 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -355,10 +222,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <qdp>1.40.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Jan 12 23:15:15 EST</run_date>
+          <run_date>22 Jun 12 13:35:07 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -543,10 +410,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <qdp>1.40.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Jan 12 23:15:16 EST</run_date>
+          <run_date>22 Jun 12 13:35:08 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -573,10 +440,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
+            <qdp>1.40.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>22 Jan 12 23:15:16 EST</run_date>
+          <run_date>22 Jun 12 13:35:08 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -609,12 +476,16 @@
     </InvertParam>
 </Propagator>
             <Contractions>
-              <num_vecs>10</num_vecs>
-              <num_vec_dils>10</num_vec_dils>
-              <t_sources>0 5</t_sources>
-              <quark_line>3</quark_line>
-              <mass>U0.05</mass>
-            </Contractions>
+              <quark_lines>3 4 5 6</quark_lines>
+              <mass>U0.05</mass><QuarkLine>
+      <QuarkLineType>CONN</QuarkLineType>
+      <num_vecs>10</num_vecs>
+      <num_space_dils>10</num_space_dils>
+      <t_sources>0 5</t_sources>
+      <Nt_forward>16</Nt_forward>
+      <Nt_backward>5</Nt_backward>
+    </QuarkLine>
+</Contractions>
           </Param>
           <NamedObject>
             <gauge_id>default_gauge_field</gauge_id>
@@ -673,10 +544,10 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.40.0</chroma>
-      <qdp>1.38.3</qdp>
+      <qdp>1.40.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>22 Jan 12 23:15:16 EST</run_date>
+    <run_date>22 Jun 12 13:35:08 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -698,442 +569,3 @@
     <elem>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985652 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</elem>
   </Weights>
 </MODMetaData>
-
-
-        </Source_info>
-        <Source_correlators>
-          <source_corrs>0.999999997767758 1.00000000611249 1.00000000600949 1.0000000061505 1.00000000019016 1.00000000112133 0.999999989937606 0.999999998384674 0.999999994292315 1.00000000284854 1.00000000236219 0.999999997446139 1.00000000638947 1.00000000607315 0.999999998521695 1.00000000002444</source_corrs>
-        </Source_correlators>
-        <Relaxation_Iterations>
-          <ncg_had>71</ncg_had>
-        </Relaxation_Iterations>
-      </PropDistillution>
-    </elem>
-    <elem>
-      <PropDistillution>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
-            <basePrecision>32</basePrecision>
-          </code_version>
-          <run_date>22 Jan 12 23:15:23 EST</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 16</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 16</subgrid_size>
-            <total_volume>1024</total_volume>
-            <subgrid_volume>1024</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <Propagator>
-              <version>9</version>
-              <quarkSpinType>FULL</quarkSpinType>
-              <obsvP>false</obsvP><FermionAction>
-      <FermAct>CLOVER</FermAct>
-      <Mass>0.1</Mass>
-      <clovCoeff>1.0</clovCoeff>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-8</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</Propagator>
-            <Contractions>
-              <num_vecs>10</num_vecs>
-              <num_vec_dils>10</num_vec_dils>
-              <t_sources>0 5</t_sources>
-              <quark_line>4</quark_line>
-              <mass>U0.05</mass>
-            </Contractions>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <distillution_id>dist_obj</distillution_id>
-            <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-            <prop_file>prop.conn.mod</prop_file>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994692339872321</w_plaq>
-          <s_plaq>0.994655948002926</s_plaq>
-          <t_plaq>0.994728731741715</t_plaq>
-          <plane_01_plaq>0.994607783776397</plane_01_plaq>
-          <plane_02_plaq>0.99470678375413</plane_02_plaq>
-          <plane_12_plaq>0.994653276478251</plane_12_plaq>
-          <plane_03_plaq>0.994816068637495</plane_03_plaq>
-          <plane_13_plaq>0.994653892625744</plane_13_plaq>
-          <plane_23_plaq>0.994716233961905</plane_23_plaq>
-          <link>0.379335755521121</link>
-          <pollp>
-            <elem>
-              <re>0.967019849379236</re>
-              <im>-0.00125446870909703</im>
-            </elem>
-            <elem>
-              <re>0.966751456338291</re>
-              <im>-0.00118624337566568</im>
-            </elem>
-            <elem>
-              <re>0.966476671708127</re>
-              <im>-0.00128317339499517</im>
-            </elem>
-            <elem>
-              <re>0.585677029176926</re>
-              <im>-0.0676213772943205</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_info><?xml version="1.0"?>
-
-
-<MODMetaData>
-  <id>eigenVecsTimeSlice</id>
-  <lattSize>4 4 4 16</lattSize>
-  <decay_dir>3</decay_dir>
-  <num_vecs>10</num_vecs>
-  <ProgramInfo>
-    <code_version>
-      <chroma>3.40.0</chroma>
-      <qdp>1.38.3</qdp>
-      <basePrecision>32</basePrecision>
-    </code_version>
-    <run_date>22 Jan 12 23:15:16 EST</run_date>
-    <Setgeom>
-      <latt_size>4 4 4 16</latt_size>
-      <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 16</subgrid_size>
-      <total_volume>1024</total_volume>
-      <subgrid_volume>1024</subgrid_volume>
-    </Setgeom>
-  </ProgramInfo>
-  <Weights>
-    <elem>0.01213515 0.01858112 0.01879579 0.00870365 0.008912652 0.006195859 0.01331207 0.0179301 0.006757222 0.01457102 0.008065979 0.004392435 0.01635889 0.006181813 0.0122531 0.009576402</elem>
-    <elem>0.01235893 0.005506219 0.01185439 0.008952627 0.0084511 0.01426579 0.01369448 0.009202825 0.01385343 0.01153293 0.01309753 0.01704391 0.005418865 0.01687163 0.009121619 0.00699414</elem>
-    <elem>0.008299972 0.007944492 0.002176114 0.01466399 0.01508569 0.01183646 0.005417783 0.005249253 0.01256898 0.005783668 0.01116468 0.0105007 0.01100645 0.00948363 0.01092497 0.01594073</elem>
-    <elem>1.901989 1.931857 1.915712 1.912856 1.90257 1.88314 1.931008 1.913069 1.89344 1.913544 1.910737 1.891987 1.881577 1.909315 1.909833 1.913173</elem>
-    <elem>1.909239 1.923691 1.921211 1.923828 1.921509 1.914726 1.937961 1.906819 1.944907 1.930056 1.908469 1.905355 1.89584 1.906191 1.924822 1.920196</elem>
-    <elem>1.927009 1.870406 1.896657 1.905282 1.900585 1.930858 1.924662 1.887584 1.907508 1.908227 1.927002 1.943557 1.911559 1.910334 1.928493 1.909372</elem>
-    <elem>1.966007 1.935519 1.923917 1.912853 1.899448 1.93169 1.929317 1.90476 1.943803 1.939883 1.937617 1.927969 1.936259 1.954746 1.972985 1.922364</elem>
-    <elem>1.924661 1.984466 1.95653 1.913111 2.000277 1.912951 1.937923 1.902906 1.995436 1.963423 1.94598 1.941676 1.97653 1.932773 1.89117 1.922893</elem>
-    <elem>1.978971 1.936927 1.95173 1.932666 1.975983 1.967524 1.931901 1.924001 1.937189 1.939711 1.951959 1.959562 1.919399 1.952193 1.949863 1.989235</elem>
-    <elem>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985652 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</elem>
-  </Weights>
-</MODMetaData>
-
-
-        </Source_info>
-        <Source_correlators>
-          <source_corrs>0.999999997767758 1.00000000611249 1.00000000600949 1.0000000061505 1.00000000019016 1.00000000112133 0.999999989937606 0.999999998384674 0.999999994292315 1.00000000284854 1.00000000236219 0.999999997446139 1.00000000638947 1.00000000607315 0.999999998521695 1.00000000002444</source_corrs>
-        </Source_correlators>
-        <Relaxation_Iterations>
-          <ncg_had>71</ncg_had>
-        </Relaxation_Iterations>
-      </PropDistillution>
-    </elem>
-    <elem>
-      <PropDistillution>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
-            <basePrecision>32</basePrecision>
-          </code_version>
-          <run_date>22 Jan 12 23:15:30 EST</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 16</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 16</subgrid_size>
-            <total_volume>1024</total_volume>
-            <subgrid_volume>1024</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <Propagator>
-              <version>9</version>
-              <quarkSpinType>FULL</quarkSpinType>
-              <obsvP>false</obsvP><FermionAction>
-      <FermAct>CLOVER</FermAct>
-      <Mass>0.1</Mass>
-      <clovCoeff>1.0</clovCoeff>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-8</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</Propagator>
-            <Contractions>
-              <num_vecs>10</num_vecs>
-              <num_vec_dils>10</num_vec_dils>
-              <t_sources>0 5</t_sources>
-              <quark_line>5</quark_line>
-              <mass>U0.05</mass>
-            </Contractions>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <distillution_id>dist_obj</distillution_id>
-            <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-            <prop_file>prop.conn.mod</prop_file>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994692339872321</w_plaq>
-          <s_plaq>0.994655948002926</s_plaq>
-          <t_plaq>0.994728731741715</t_plaq>
-          <plane_01_plaq>0.994607783776397</plane_01_plaq>
-          <plane_02_plaq>0.99470678375413</plane_02_plaq>
-          <plane_12_plaq>0.994653276478251</plane_12_plaq>
-          <plane_03_plaq>0.994816068637495</plane_03_plaq>
-          <plane_13_plaq>0.994653892625744</plane_13_plaq>
-          <plane_23_plaq>0.994716233961905</plane_23_plaq>
-          <link>0.379335755521121</link>
-          <pollp>
-            <elem>
-              <re>0.967019849379236</re>
-              <im>-0.00125446870909703</im>
-            </elem>
-            <elem>
-              <re>0.966751456338291</re>
-              <im>-0.00118624337566568</im>
-            </elem>
-            <elem>
-              <re>0.966476671708127</re>
-              <im>-0.00128317339499517</im>
-            </elem>
-            <elem>
-              <re>0.585677029176926</re>
-              <im>-0.0676213772943205</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_info><?xml version="1.0"?>
-
-
-<MODMetaData>
-  <id>eigenVecsTimeSlice</id>
-  <lattSize>4 4 4 16</lattSize>
-  <decay_dir>3</decay_dir>
-  <num_vecs>10</num_vecs>
-  <ProgramInfo>
-    <code_version>
-      <chroma>3.40.0</chroma>
-      <qdp>1.38.3</qdp>
-      <basePrecision>32</basePrecision>
-    </code_version>
-    <run_date>22 Jan 12 23:15:16 EST</run_date>
-    <Setgeom>
-      <latt_size>4 4 4 16</latt_size>
-      <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 16</subgrid_size>
-      <total_volume>1024</total_volume>
-      <subgrid_volume>1024</subgrid_volume>
-    </Setgeom>
-  </ProgramInfo>
-  <Weights>
-    <elem>0.01213515 0.01858112 0.01879579 0.00870365 0.008912652 0.006195859 0.01331207 0.0179301 0.006757222 0.01457102 0.008065979 0.004392435 0.01635889 0.006181813 0.0122531 0.009576402</elem>
-    <elem>0.01235893 0.005506219 0.01185439 0.008952627 0.0084511 0.01426579 0.01369448 0.009202825 0.01385343 0.01153293 0.01309753 0.01704391 0.005418865 0.01687163 0.009121619 0.00699414</elem>
-    <elem>0.008299972 0.007944492 0.002176114 0.01466399 0.01508569 0.01183646 0.005417783 0.005249253 0.01256898 0.005783668 0.01116468 0.0105007 0.01100645 0.00948363 0.01092497 0.01594073</elem>
-    <elem>1.901989 1.931857 1.915712 1.912856 1.90257 1.88314 1.931008 1.913069 1.89344 1.913544 1.910737 1.891987 1.881577 1.909315 1.909833 1.913173</elem>
-    <elem>1.909239 1.923691 1.921211 1.923828 1.921509 1.914726 1.937961 1.906819 1.944907 1.930056 1.908469 1.905355 1.89584 1.906191 1.924822 1.920196</elem>
-    <elem>1.927009 1.870406 1.896657 1.905282 1.900585 1.930858 1.924662 1.887584 1.907508 1.908227 1.927002 1.943557 1.911559 1.910334 1.928493 1.909372</elem>
-    <elem>1.966007 1.935519 1.923917 1.912853 1.899448 1.93169 1.929317 1.90476 1.943803 1.939883 1.937617 1.927969 1.936259 1.954746 1.972985 1.922364</elem>
-    <elem>1.924661 1.984466 1.95653 1.913111 2.000277 1.912951 1.937923 1.902906 1.995436 1.963423 1.94598 1.941676 1.97653 1.932773 1.89117 1.922893</elem>
-    <elem>1.978971 1.936927 1.95173 1.932666 1.975983 1.967524 1.931901 1.924001 1.937189 1.939711 1.951959 1.959562 1.919399 1.952193 1.949863 1.989235</elem>
-    <elem>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985652 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</elem>
-  </Weights>
-</MODMetaData>
-
-
-        </Source_info>
-        <Source_correlators>
-          <source_corrs>0.999999997767758 1.00000000611249 1.00000000600949 1.0000000061505 1.00000000019016 1.00000000112133 0.999999989937606 0.999999998384674 0.999999994292315 1.00000000284854 1.00000000236219 0.999999997446139 1.00000000638947 1.00000000607315 0.999999998521695 1.00000000002444</source_corrs>
-        </Source_correlators>
-        <Relaxation_Iterations>
-          <ncg_had>71</ncg_had>
-        </Relaxation_Iterations>
-      </PropDistillution>
-    </elem>
-    <elem>
-      <PropDistillution>
-        <update_no>0</update_no>
-        <ProgramInfo>
-          <code_version>
-            <chroma>3.40.0</chroma>
-            <qdp>1.38.3</qdp>
-            <basePrecision>32</basePrecision>
-          </code_version>
-          <run_date>22 Jan 12 23:15:38 EST</run_date>
-          <Setgeom>
-            <latt_size>4 4 4 16</latt_size>
-            <logical_size>1 1 1 1</logical_size>
-            <subgrid_size>4 4 4 16</subgrid_size>
-            <total_volume>1024</total_volume>
-            <subgrid_volume>1024</subgrid_volume>
-          </Setgeom>
-        </ProgramInfo>
-        <Input>
-          <Param>
-            <Propagator>
-              <version>9</version>
-              <quarkSpinType>FULL</quarkSpinType>
-              <obsvP>false</obsvP><FermionAction>
-      <FermAct>CLOVER</FermAct>
-      <Mass>0.1</Mass>
-      <clovCoeff>1.0</clovCoeff>
-      <AnisoParam>
-        <anisoP>false</anisoP>
-      </AnisoParam>
-      <FermionBC>
-        <FermBC>SIMPLE_FERMBC</FermBC>
-        <boundary>1 1 1 -1</boundary>
-      </FermionBC>
-    </FermionAction>
-<InvertParam>
-      <invType>CG_INVERTER</invType>
-      <RsdCG>1.0e-8</RsdCG>
-      <MaxCG>1000</MaxCG>
-    </InvertParam>
-</Propagator>
-            <Contractions>
-              <num_vecs>10</num_vecs>
-              <num_vec_dils>10</num_vec_dils>
-              <t_sources>0 5</t_sources>
-              <quark_line>6</quark_line>
-              <mass>U0.05</mass>
-            </Contractions>
-          </Param>
-          <NamedObject>
-            <gauge_id>default_gauge_field</gauge_id>
-            <distillution_id>dist_obj</distillution_id>
-            <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-            <prop_file>prop.conn.mod</prop_file>
-          </NamedObject>
-        </Input>
-        <Config_info><weak_field>
-</weak_field>
-
-
-
-        </Config_info>
-        <Output_version>
-          <out_version>1</out_version>
-        </Output_version>
-        <Observables>
-          <w_plaq>0.994692339872321</w_plaq>
-          <s_plaq>0.994655948002926</s_plaq>
-          <t_plaq>0.994728731741715</t_plaq>
-          <plane_01_plaq>0.994607783776397</plane_01_plaq>
-          <plane_02_plaq>0.99470678375413</plane_02_plaq>
-          <plane_12_plaq>0.994653276478251</plane_12_plaq>
-          <plane_03_plaq>0.994816068637495</plane_03_plaq>
-          <plane_13_plaq>0.994653892625744</plane_13_plaq>
-          <plane_23_plaq>0.994716233961905</plane_23_plaq>
-          <link>0.379335755521121</link>
-          <pollp>
-            <elem>
-              <re>0.967019849379236</re>
-              <im>-0.00125446870909703</im>
-            </elem>
-            <elem>
-              <re>0.966751456338291</re>
-              <im>-0.00118624337566568</im>
-            </elem>
-            <elem>
-              <re>0.966476671708127</re>
-              <im>-0.00128317339499517</im>
-            </elem>
-            <elem>
-              <re>0.585677029176926</re>
-              <im>-0.0676213772943205</im>
-            </elem>
-          </pollp>
-        </Observables>
-        <Source_info><?xml version="1.0"?>
-
-
-<MODMetaData>
-  <id>eigenVecsTimeSlice</id>
-  <lattSize>4 4 4 16</lattSize>
-  <decay_dir>3</decay_dir>
-  <num_vecs>10</num_vecs>
-  <ProgramInfo>
-    <code_version>
-      <chroma>3.40.0</chroma>
-      <qdp>1.38.3</qdp>
-      <basePrecision>32</basePrecision>
-    </code_version>
-    <run_date>22 Jan 12 23:15:16 EST</run_date>
-    <Setgeom>
-      <latt_size>4 4 4 16</latt_size>
-      <logical_size>1 1 1 1</logical_size>
-      <subgrid_size>4 4 4 16</subgrid_size>
-      <total_volume>1024</total_volume>
-      <subgrid_volume>1024</subgrid_volume>
-    </Setgeom>
-  </ProgramInfo>
-  <Weights>
-    <elem>0.01213515 0.01858112 0.01879579 0.00870365 0.008912652 0.006195859 0.01331207 0.0179301 0.006757222 0.01457102 0.008065979 0.004392435 0.01635889 0.006181813 0.0122531 0.009576402</elem>
-    <elem>0.01235893 0.005506219 0.01185439 0.008952627 0.0084511 0.01426579 0.01369448 0.009202825 0.01385343 0.01153293 0.01309753 0.01704391 0.005418865 0.01687163 0.009121619 0.00699414</elem>
-    <elem>0.008299972 0.007944492 0.002176114 0.01466399 0.01508569 0.01183646 0.005417783 0.005249253 0.01256898 0.005783668 0.01116468 0.0105007 0.01100645 0.00948363 0.01092497 0.01594073</elem>
-    <elem>1.901989 1.931857 1.915712 1.912856 1.90257 1.88314 1.931008 1.913069 1.89344 1.913544 1.910737 1.891987 1.881577 1.909315 1.909833 1.913173</elem>
-    <elem>1.909239 1.923691 1.921211 1.923828 1.921509 1.914726 1.937961 1.906819 1.944907 1.930056 1.908469 1.905355 1.89584 1.906191 1.924822 1.920196</elem>
-    <elem>1.927009 1.870406 1.896657 1.905282 1.900585 1.930858 1.924662 1.887584 1.907508 1.908227 1.927002 1.943557 1.911559 1.910334 1.928493 1.909372</elem>
-    <elem>1.966007 1.935519 1.923917 1.912853 1.899448 1.93169 1.929317 1.90476 1.943803 1.939883 1.937617 1.927969 1.936259 1.954746 1.972985 1.922364</elem>
-    <elem>1.924661 1.984466 1.95653 1.913111 2.000277 1.912951 1.937923 1.902906 1.995436 1.963423 1.94598 1.941676 1.97653 1.932773 1.89117 1.922893</elem>
-    <elem>1.978971 1.936927 1.95173 1.932666 1.975983 1.967524 1.931901 1.924001 1.937189 1.939711 1.951959 1.959562 1.919399 1.952193 1.949863 1.989235</elem>
-    <elem>2.006569 1.907625 1.975993 2.02172 1.913484 1.990664 1.976724 1.985652 1.954057 1.995532 1.951457 1.955934 1.96444 1.94021 2.009749 1.995038</elem>
-  </Weights>
-</MODMetaData>
-
-
-        </Source_info>
-        <Source_correlators>
-          <source_corrs>0.999999997767758 1.00000000611249 1.00000000600949 1.0000000061505 1.00000000019016 1.00000000112133 0.999999989937606 0.999999998384674 0.999999994292315 1.00000000284854 1.00000000236219 0.999999997446139 1.00000000638947 1.00000000607315 0.999999998521695 1.00000000002444</source_corrs>
-        </Source_correlators>
-        <Relaxation_Iterations>
-          <ncg_had>71</ncg_had>
-        </Relaxation_Iterations>
-      </PropDistillution>
-    </elem>
-  </InlineObservables>
-</chroma>
