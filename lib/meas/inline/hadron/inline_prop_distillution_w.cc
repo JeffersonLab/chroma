@@ -28,6 +28,60 @@
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
+  //! Abstract type for quarkline construction
+  class AbsQuarkLine
+  {
+  public:
+    //! Virtual destructor
+    virtual ~AbsQuarkLine() {}
+
+    //! Get a source
+    virtual LatticeColorVector getSrc(int t_source, int dist_src) const = 0;
+
+    //! Get number of space dilutions
+    virtual int getNumSpaceDils() const = 0;
+
+    //! Get number of time dilutions
+    virtual int getNumTimeDils() const = 0;
+
+    //! Get quark line number
+    virtual int getQuarkLine() const = 0;
+
+    //! Get the time sources
+    virtual std::vector<int> getTimeSources() const = 0;
+
+    //! Get source keys
+    virtual std::list<KeyPropDist_t> getSrcKeys(int t_source, int dist_src, const std::string& mass) const = 0;
+
+    //! Get sink keys
+    virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src, const std::string& mass) const = 0;
+  };
+
+
+  //----------------------------------------------------------------------------
+  typedef QDP::MapObjectDisk< KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > MOD_t;
+
+  //----------------------------------------------------------------------------
+  //! Quark line factory (foundry)
+  typedef SingletonHolder< 
+    ObjectFactory<AbsQuarkLine,
+		  std::string,
+		  TYPELIST_6(XMLReader&, const std::string&,
+			     const DistillutionNoise&, 
+			     MOD_t&,
+			     const TimeSliceSet&,
+			     int),
+		  AbsQuarkLine* (*)(XMLReader&,
+				    const std::string&,
+				    const DistillutionNoise&, 
+				    MOD_t&,
+				    const TimeSliceSet&,
+				    int), StringFactoryError> >
+  TheQuarkLineFactory;
+
+
+
+  //----------------------------------------------------------------------------
   //! Utilities
   namespace PropDistillutionUtilEnv
   {
@@ -64,36 +118,7 @@ namespace Chroma
 
 	  
     //----------------------------------------------------------------------------
-    //! Abstract type for quarkline construction
-    class AbsQuarkLine
-    {
-    public:
-      //! Virtual destructor
-      virtual ~AbsQuarkLine() {}
-
-      //! Get a source
-      virtual LatticeColorVector getSrc(int t_source, int dist_src) const = 0;
-
-      //! Get number of space dilutions
-      virtual int getNumSpaceDils() const = 0;
-
-      //! Get number of time dilutions
-      virtual int getNumTimeDils() const = 0;
-
-      //! Get quark line number
-      virtual int getQuarkLine() const = 0;
-
-      //! Get the time sources
-      virtual std::vector<int> getTimeSources() const = 0;
-
-      //! Get source keys
-      virtual std::list<KeyPropDist_t> getSrcKeys(int t_source, int dist_src, const std::string& mass) const = 0;
-
-      //! Get sink keys
-      virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src, const std::string& mass) const = 0;
-    };
-
-
+    //----------------------------------------------------------------------------
     //----------------------------------------------------------------------------
     namespace Connected
     {
@@ -162,13 +187,14 @@ namespace Chroma
       class QuarkLineFact : public AbsQuarkLine
       {
       public:
-	QuarkLineFact(const DistillutionNoise& dist_noise_obj_, 
+	QuarkLineFact(const Params& params_,
+		      const DistillutionNoise& dist_noise_obj_, 
 		      QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source_,
 		      const TimeSliceSet& time_slice_set_,
-		      const Params& params_,
 		      int quark_line_)
-	: dist_noise_obj(dist_noise_obj_), eigen_source(eigen_source_), time_slice_set(time_slice_set_), 
-	  params(params_), quark_line(quark_line_)
+	: params(params_), 
+	  dist_noise_obj(dist_noise_obj_), eigen_source(eigen_source_), time_slice_set(time_slice_set_), 
+	  quark_line(quark_line_)
 	  {
 	    // Initialize the noise for this quark line
 	    eta = generateNoise(dist_noise_obj, params.num_vecs, quark_line, false);
@@ -200,10 +226,10 @@ namespace Chroma
 
       private:
 	// Arguments
+	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
 	QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source;
 	const TimeSliceSet&       time_slice_set;
-	Params                    params;
 	int                       quark_line;
 
 	// Local
@@ -249,7 +275,6 @@ namespace Chroma
 	const int decay_dir = dist_noise_obj.getDecayDir();
 	const int Lt = Layout::lattSize()[decay_dir];
 
-	// Find the active time-slices to save
 	std::vector<bool> active_t_slices(Lt);
 	for(int t=0; t < Lt; ++t)
 	{
@@ -341,6 +366,281 @@ namespace Chroma
       }
       
     } // namespace Connected
+
+
+
+
+    //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    //----------------------------------------------------------------------------
+    namespace Annihilation
+    {
+      //! Parameter structure
+      struct Params 
+      {
+	Params();
+	Params(XMLReader& xml_in, const std::string& path);
+	void writeXML(XMLWriter& xml_out, const std::string& path) const;
+	
+	int               num_vecs;         /*!< Number of vectors */
+	int               num_space_dils;   /*!< Number of eigenvector dilutions to use in space direction */
+	int               num_time_dils;    /*!< Number of eigenvector dilutions to use in time direction */
+      };
+
+
+      //! Propagator input
+      Params::Params(XMLReader& xml, const string& path)
+      {
+	XMLReader inputtop(xml, path);
+
+	read(inputtop, "num_vecs", num_vecs);
+	read(inputtop, "num_space_dils", num_space_dils);
+	read(inputtop, "num_time_dils", num_time_dils);
+      }
+
+      //! Propagator output
+      void Params::writeXML(XMLWriter& xml, const string& path) const
+      {
+	push(xml, path);
+
+	write(xml, "num_vecs", num_vecs);
+	write(xml, "num_space_dils", num_space_dils);
+	write(xml, "num_time_dils", num_time_dils);
+
+	pop(xml);
+      }
+
+      //! Propagator input
+      void read(XMLReader& xml, const string& path, Params& input)
+      {
+	Params tmp(xml, path);
+	input = tmp;
+      }
+
+      //! Propagator output
+      void write(XMLWriter& xml, const string& path, const Params& input)
+      {
+	input.writeXML(xml, path);
+      }
+
+
+      //----------------------------------------------------------------------------
+      //! Annihilation quark lines
+      /*!< 
+       * Pull out a time-slice of the color vector source, and add it in a crystal fashion
+       * with other vectors
+       */
+      class QuarkLineFact : public AbsQuarkLine
+      {
+      public:
+	QuarkLineFact(const Params& params_,
+		      const DistillutionNoise& dist_noise_obj_, 
+		      QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source_,
+		      const TimeSliceSet& time_slice_set_,
+		      int quark_line_)
+	: params(params_), 
+	  dist_noise_obj(dist_noise_obj_), eigen_source(eigen_source_), time_slice_set(time_slice_set_), 
+	  quark_line(quark_line_)
+	  {
+	    // Initialize the noise for this quark line
+	    eta = generateNoise(dist_noise_obj, params.num_vecs, quark_line, true);
+	  }
+
+	//! Get a source
+	virtual LatticeColorVector getSrc(int t_source, int dist_src) const;
+
+	//! Get number of space dilutions
+	virtual int getNumSpaceDils() const {return params.num_space_dils;}
+
+	//! Get number of time dilutions
+	virtual int getNumTimeDils() const {return Layout::lattSize()[dist_noise_obj.getDecayDir()];}
+
+	//! Get quark line number
+	virtual int getQuarkLine() const {return quark_line;}
+
+	//! Get the time sources
+	virtual std::vector<int> getTimeSources() const;
+
+	//! Get source keys
+	virtual std::list<KeyPropDist_t> getSrcKeys(int t_source, int dist_src, const std::string& mass) const;
+
+	//! Get sink keys
+	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src, const std::string& mass) const;
+
+      private:
+	// Arguments
+	Params                    params;
+	const DistillutionNoise&  dist_noise_obj;
+	QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source;
+	const TimeSliceSet&       time_slice_set;
+	int                       quark_line;
+
+	// Local
+	multi2d<Complex>          eta;
+      };
+
+
+
+      //----------------------------------------------------------------------------
+      //! Get the time sources
+      std::vector<int> QuarkLineFact::getTimeSources() const
+      {
+	std::vector<int> t_sources;
+
+	for(int t=0; t < params.num_time_dils; ++t)
+	{
+	  t_sources.push_back(t);
+	}
+
+	return t_sources;
+      }
+
+
+      //----------------------------------------------------------------------------
+      //! Prepare a distilluted source
+      LatticeColorVector QuarkLineFact::getSrc(int t_src, int dist_src) const
+      {
+	LatticeColorVector vec_srce = zero;
+
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int time_source=t_src; time_source < Lt; time_source += params.num_time_dils)
+	{
+	  for(int colorvec_source=dist_src; colorvec_source < params.num_vecs; colorvec_source += params.num_space_dils)
+	  {
+	    // Get the actual time slice
+	    int t_actual = dist_noise_obj.getTime(time_source);
+
+	    KeyTimeSliceColorVec_t key_vec;
+	    key_vec.t_slice = t_actual;
+	    key_vec.colorvec = colorvec_source;
+
+	    LatticeColorVector tmpvec = zero;
+	    TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
+
+	    eigen_source.get(key_vec, time_slice_io);
+
+	    vec_srce[time_slice_set.getSet()[t_actual]] += eta(time_source, colorvec_source) * tmpvec;
+	  }
+	} // for time_source
+
+	return vec_srce;
+      }
+
+
+      //----------------------------------------------------------------------------
+      //! Get source keys
+      std::list<KeyPropDist_t> QuarkLineFact::getSrcKeys(int t_source, int dist_src, const std::string& mass) const
+      {
+	std::list<KeyPropDist_t> keys;
+
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int t=t_source; t < Lt; t += params.num_time_dils)
+	{
+	  KeyPropDist_t key;
+
+	  key.prop_type    = "SRC";
+	  key.annihP       = true;
+	  key.t_source     = t;
+	  key.t_slice      = t;
+	  key.dist_src     = dist_src;
+	  key.spin_src     = -1;
+	  key.spin_snk     = -1;
+	  key.quark_line   = quark_line;
+	  key.mass         = mass;
+
+	  keys.push_back(key);
+	}
+
+	return keys;
+      }
+
+	
+      //----------------------------------------------------------------------------
+      //! Get sink keys
+      std::list<KeyPropDist_t> QuarkLineFact::getSnkKeys(int t_source, int dist_src, const std::string& mass) const
+      {
+	std::list<KeyPropDist_t> keys;
+
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int spin_source=0; spin_source < Ns; ++spin_source)
+	{
+	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	  {
+	    for(int t=t_source; t < Lt; t += params.num_time_dils)
+	    {
+	      KeyPropDist_t key;
+
+	      key.prop_type    = "SNK";
+	      key.annihP       = true;
+	      key.t_source     = t;
+	      key.t_slice      = t;
+	      key.dist_src     = dist_src;
+	      key.spin_src     = spin_source;
+	      key.spin_snk     = spin_sink;
+	      key.quark_line   = quark_line;
+	      key.mass         = mass;
+
+//            QDPIO::cout << key << std::flush;
+
+	      keys.push_back(key);
+	    } // for t
+	  } // for spin_sink
+	} // for spin_source
+
+	return keys;
+      }
+      
+    } // namespace Annihilation
+
+
+    //----------------------------------------------------------------------------
+    namespace
+    {
+      AbsQuarkLine* createConn(XMLReader& xml_in, 
+			       const std::string& path,
+			       const DistillutionNoise& dist_noise_obj, 
+			       MOD_t& eigen_source,
+			       const TimeSliceSet& time_slice_set,
+			       int quark_line)
+      {
+	return new Connected::QuarkLineFact(Connected::Params(xml_in, path),
+					    dist_noise_obj, eigen_source, time_slice_set, 
+					    quark_line);
+      }
+
+      AbsQuarkLine* createAnnih(XMLReader& xml_in, 
+				const std::string& path,
+				const DistillutionNoise& dist_noise_obj, 
+				MOD_t& eigen_source,
+				const TimeSliceSet& time_slice_set,
+				int quark_line)
+      {
+	return new Annihilation::QuarkLineFact(Annihilation::Params(xml_in, path),
+					       dist_noise_obj, eigen_source, time_slice_set, 
+					       quark_line);
+      }
+
+      //! Local registration flag
+      bool registered = false;
+    }
+
+    //----------------------------------------------------------------------------
+    //! Register all the factories
+    bool registerAll() 
+    {
+      bool success = true; 
+      if (! registered)
+      {
+	success &= TheQuarkLineFactory::Instance().registerObject(std::string("CONN"), createConn);
+	success &= TheQuarkLineFactory::Instance().registerObject(std::string("ANNIH"), createAnnih);
+	registered = true;
+      }
+      return success;
+    }
+    
   } // anonymous namespace
 
 
@@ -462,6 +762,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
+	success &= PropDistillutionUtilEnv::registerAll();
 	success &= WilsonTypeFermActsEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
@@ -814,7 +1115,7 @@ namespace Chroma
 	  //
 	  // Factory for quark line
 	  //
-	  Handle<PropDistillutionUtilEnv::AbsQuarkLine> quark_line_fact;
+	  Handle<AbsQuarkLine> quark_line_fact;
 
 	  try 
 	  {
@@ -823,13 +1124,15 @@ namespace Chroma
 	    QDPIO::cout << "Quark line type = " << params.param.contract.quark_line_xml.id << endl;
 	    QDPIO::cout << "Quark line xml = XX" << params.param.contract.quark_line_xml.xml << "XX" << endl;
 	    
-	    PropDistillutionUtilEnv::Connected::Params quark_line_params(linktop, params.param.contract.quark_line_xml.path);
-
 	    QDPIO::cout << "Create factory" << std::endl;
 
-	    quark_line_fact = new PropDistillutionUtilEnv::Connected::QuarkLineFact(dist_noise_obj, eigen_source, 
-										    time_slice_set, 
-										    quark_line_params, *quark_line);
+	    quark_line_fact = 
+	      TheQuarkLineFactory::Instance().createObject(params.param.contract.quark_line_xml.id,
+							   linktop,
+							   params.param.contract.quark_line_xml.path,
+							   dist_noise_obj, eigen_source, 
+							   time_slice_set, 
+							   int(*quark_line));
 
 	    QDPIO::cout << "Factory created" << std::endl;
 	  }
