@@ -91,7 +91,7 @@ namespace Chroma
       //! Check space dilutions
       int checkSpaceDils(int num_space_dils, int num_vecs)
       {
-	int num = 0;
+	int num = num_space_dils;
 
 	// Reset/barf if bogus
 	if (num_space_dils == 0)
@@ -119,7 +119,7 @@ namespace Chroma
       //! Check time dilutions
       int checkTimeDils(int num_time_dils, int Lt)
       {
-	int num = 0;
+	int num = num_time_dils;
 
 	// Reset/barf if bogus
 	if (num_time_dils == 0)
