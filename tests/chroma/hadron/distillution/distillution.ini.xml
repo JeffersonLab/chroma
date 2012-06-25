@@ -92,7 +92,7 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <quark_lines>1 5</quark_lines>
+          <quark_lines>1 2</quark_lines>
           <mass>U0.05</mass>
           <QuarkLine>
             <QuarkLineType>ANNIH</QuarkLineType>
@@ -141,7 +141,7 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <quark_lines>3 4</quark_lines>
+          <quark_lines>1 2</quark_lines>
           <mass>U0.05</mass>
           <QuarkLine>
             <QuarkLineType>CONN</QuarkLineType>

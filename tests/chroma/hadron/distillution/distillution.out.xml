@@ -95,7 +95,7 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <quark_lines>1 5</quark_lines>
+          <quark_lines>1 2</quark_lines>
           <mass>U0.05</mass>
           <QuarkLine>
             <QuarkLineType>ANNIH</QuarkLineType>
@@ -144,7 +144,7 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <quark_lines>3 4</quark_lines>
+          <quark_lines>1 2</quark_lines>
           <mass>U0.05</mass>
           <QuarkLine>
             <QuarkLineType>CONN</QuarkLineType>
@@ -213,7 +213,7 @@
       <qdp>1.40.1</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>25 Jun 12 16:19:40 EDT</run_date>
+    <run_date>25 Jun 12 16:25:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -274,7 +274,7 @@
             <qdp>1.40.1</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Jun 12 16:19:40 EDT</run_date>
+          <run_date>25 Jun 12 16:25:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -462,7 +462,7 @@
             <qdp>1.40.1</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Jun 12 16:19:41 EDT</run_date>
+          <run_date>25 Jun 12 16:25:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -492,7 +492,7 @@
             <qdp>1.40.1</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Jun 12 16:19:41 EDT</run_date>
+          <run_date>25 Jun 12 16:25:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -525,7 +525,7 @@
     </InvertParam>
 </Propagator>
             <Contractions>
-              <quark_lines>1 5</quark_lines>
+              <quark_lines>1 2</quark_lines>
               <mass>U0.05</mass><QuarkLine>
       <QuarkLineType>ANNIH</QuarkLineType>
       <num_vecs>10</num_vecs>
@@ -594,7 +594,7 @@
       <qdp>1.40.1</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>25 Jun 12 16:19:41 EDT</run_date>
+    <run_date>25 Jun 12 16:25:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -623,7 +623,7 @@
           <source_corrs>0.999999997767758 1.00000000611249 1.00000000600949 1.0000000061505 1.00000000019016 1.00000000112133 0.999999989937606 0.999999998384674 0.999999994292315 1.00000000284854 1.00000000236219 0.999999997446139 1.00000000638947 1.00000000607315 0.999999998521695 1.00000000002444</source_corrs>
         </Source_correlators>
         <Relaxation_Iterations>
-          <ncg_had>80</ncg_had>
+          <ncg_had>79</ncg_had>
         </Relaxation_Iterations>
       </PropDistillution>
     </elem>
@@ -636,7 +636,7 @@
             <qdp>1.40.1</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>25 Jun 12 16:19:45 EDT</run_date>
+          <run_date>25 Jun 12 16:25:51 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -669,7 +669,7 @@
     </InvertParam>
 </Propagator>
             <Contractions>
-              <quark_lines>3 4</quark_lines>
+              <quark_lines>1 2</quark_lines>
               <mass>U0.05</mass><QuarkLine>
       <QuarkLineType>CONN</QuarkLineType>
       <num_vecs>10</num_vecs>
@@ -740,7 +740,7 @@
       <qdp>1.40.1</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>25 Jun 12 16:19:41 EDT</run_date>
+    <run_date>25 Jun 12 16:25:47 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
