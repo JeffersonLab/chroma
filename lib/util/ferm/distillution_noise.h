@@ -19,9 +19,10 @@ namespace Chroma
    */
   struct DistQuarkLines_t
   {
-    int   num_vecs;       /*!< Number of eigenvectors */
-    int   quark_line;     /*!< Quark line */
-    bool  annih;          /*!< Annihilation quark line */
+    int          num_vecs;       /*!< Number of eigenvectors */
+    int          quark_line;     /*!< Quark line */
+    bool         annih;          /*!< Annihilation quark line */
+    std::string  mass;           /*!< Mass label */
   };
 
  
