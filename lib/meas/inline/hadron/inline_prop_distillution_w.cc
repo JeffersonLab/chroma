@@ -261,7 +261,7 @@ namespace Chroma
       public:
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source_,
+		      MOD_t& eigen_source_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_)
@@ -321,7 +321,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source;
+	MOD_t&                    eigen_source;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -568,7 +568,7 @@ namespace Chroma
       public:
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source_,
+		      MOD_t& eigen_source_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_)
@@ -626,7 +626,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	QDP::MapObjectDisk<KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> >& eigen_source;
+	MOD_t&                    eigen_source;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -1378,6 +1378,26 @@ namespace Chroma
 	    int t_source = t_sources[tt];  // This is the pretend time-slice. The actual value is shifted.
 	    QDPIO::cout << "t_source = " << t_source << endl; 
 
+	    //
+	    // Initialize all the perambulator keys
+	    //
+	    multi3d<KeyValPropDistElemOp_t> buf;
+
+	    if (params.named_obj.save_peramP)
+	    {
+	      buf.resize(Lt,Ns,Ns);
+
+	      std::list<KeyPropDistElemOp_t> keys(quark_line_fact->getPeramKeys(t_source));
+
+	      for(std::list<KeyPropDistElemOp_t>::const_iterator key= keys.begin();
+		  key != keys.end();
+		  ++key)
+	      {
+		buf(key->t_slice,key->spin_snk,key->spin_src).key.key() = *key;
+		buf(key->t_slice,key->spin_snk,key->spin_src).val.data().mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
+	      }
+	    }
+
 	    // The space distillution loop
 	    for(int dist_src=0; dist_src < quark_line_fact->getNumSpaceDils(); ++dist_src)
 	    {
@@ -1466,13 +1486,63 @@ namespace Chroma
 									dist_noise_obj.getTime(key->t_slice)));
 		} // for key
 	      }
-	  
+
+	      // Compute perambulators
+	      if (params.named_obj.save_peramP)
+	      {
+		QDPIO::cout << "Computing perambulators" << std::endl;
+		std::list<KeyPropDistElemOp_t> keys(quark_line_fact->getPeramKeys(t_source));
+
+		for(std::list<KeyPropDistElemOp_t>::const_iterator key= keys.begin();
+		    key != keys.end();
+		    ++key)
+		{
+		  // Get the actual time slice
+		  int t_actual = dist_noise_obj.getTime(key->t_slice);
+
+		  for(int colorvec_sink=0; colorvec_sink < quark_line_fact->getNumVecs(); ++colorvec_sink)
+		  {
+		    KeyTimeSliceColorVec_t key_vec;
+		    key_vec.t_slice  = t_actual;
+		    key_vec.colorvec = colorvec_sink;
+
+		    LatticeColorVector tmpvec = zero;
+		    TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
+
+		    eigen_source.get(key_vec, time_slice_io);
+
+		    ComplexD hsum = sum(localInnerProduct(tmpvec, ferm_out(key->spin_snk,key->spin_src)), 
+					time_slice_set.getSet()[t_actual]);
+
+		    buf(key->t_slice,key->spin_snk,key->spin_src).val.data().mat(colorvec_sink,dist_src) = hsum;
+
+		  } // for colorvec_sink
+		} // for key
+	      }
+
 	      sniss2.stop();
 	      QDPIO::cout << "Time to write propagators for dist_src= " << dist_src << "  time = " 
 			  << sniss2.getTimeInSeconds() 
 			  << " secs" << endl;
 
 	    } // for dist_src
+
+	  
+	    // Write perambulators
+	    if (params.named_obj.save_peramP)
+	    {
+	      QDPIO::cout << "Write perambulators to disk" << std::endl;
+	      std::list<KeyPropDistElemOp_t> keys(quark_line_fact->getPeramKeys(t_source));
+
+	      for(std::list<KeyPropDistElemOp_t>::const_iterator key= keys.begin();
+		  key != keys.end();
+		  ++key)
+	      {
+		qdp_db.insert(buf(key->t_slice,key->spin_snk,key->spin_src).key, 
+			      buf(key->t_slice,key->spin_snk,key->spin_src).val);
+	      } // for key
+	    }
+
 	  } // for tt
 	} // for quark_line
 
