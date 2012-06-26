@@ -38,22 +38,26 @@ namespace Chroma
 	  GroupXML_t          quark_line_xml;     /*!< Quark line xml */
 	};
 
-	ChromaProp_t    prop;
 	Contract_t      contract;
+	ChromaProp_t    prop;
       };
 
       struct NamedObject_t
       {
-	std::string     gauge_id;       /*!< Gauge field */
-	std::string     distillution_id;/*!< Distillution factory */
-	std::string     colorvec_file;  /*!< Eigenvector file */
-	std::string     prop_file;      /*!< Map for output propagator solutions */
+	bool            save_peramP;        /*!< Save perambulators */
+	bool            save_srcP;          /*!< Save sources */
+	bool            save_solnP;         /*!< Save solutions */
+	std::string     gauge_id;           /*!< Gauge field */
+	std::string     distillution_id;    /*!< Distillution factory */
+	std::string     colorvec_file;      /*!< Eigenvector file */
+	std::string     soln_file;          /*!< File output propagator solutions */
+	std::string     peram_file;         /*!< File for perambulators */
       };
 
 
       Param_t           param;
       NamedObject_t     named_obj;
-      std::string       xml_file;       /*!< Alternate XML file pattern */
+      std::string       xml_file;           /*!< Alternate XML file pattern */
     };
 
 

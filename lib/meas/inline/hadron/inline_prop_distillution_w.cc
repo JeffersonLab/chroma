@@ -10,8 +10,10 @@
 #include "meas/glue/mesplq.h"
 #include "util/ferm/distillution_noise.h"
 #include "util/ferm/key_timeslice_colorvec.h"
+#include "qdp_map_obj.h"
 #include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
+#include "util/ferm/key_prop_dist_matelem.h"
 #include "util/ferm/key_prop_distillution.h"
 #include "util/ferm/transf.h"
 #include "util/ferm/spin_rep.h"
@@ -38,6 +40,9 @@ namespace Chroma
     //! Get a source
     virtual LatticeColorVector getSrc(int t_source, int dist_src) const = 0;
 
+    //! Get number of vectors
+    virtual int getNumVecs() const = 0;
+
     //! Get number of space dilutions
     virtual int getNumSpaceDils() const = 0;
 
@@ -55,6 +60,9 @@ namespace Chroma
 
     //! Get sink keys
     virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const = 0;
+
+    //! Get perambulator keys
+    virtual std::list<KeyPropDistElemOp_t> getPeramKeys(int t_source) const = 0;
   };
 
 
@@ -266,10 +274,24 @@ namespace Chroma
 
 	    // Reset/barf if bogus
 	    params.num_space_dils = checkSpaceDils(params.num_space_dils, params.num_vecs);
+
+#if 0
+	    // Another sanity check
+	    if (params.num_vecs > eigen_source.size())
+	    {
+	      QDPIO::cerr << __func__ << ": num_vecs= " << params.num_vecs
+			  << " is greater than the number of available colorvectors= "
+			  << eigen_source.size() << endl;
+	      QDP_abort(1);
+	    }
+#endif
 	  }
 
 	//! Get a source
 	virtual LatticeColorVector getSrc(int t_source, int dist_src) const;
+
+	//! Get number of vectors
+	virtual int getNumVecs() const {return params.num_vecs;}
 
 	//! Get number of space dilutions
 	virtual int getNumSpaceDils() const {return params.num_space_dils;}
@@ -288,6 +310,9 @@ namespace Chroma
 
 	//! Get sink keys
 	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const;
+
+	//! Get perambulator keys
+	virtual std::list<KeyPropDistElemOp_t> getPeramKeys(int t_source) const;
 
       private:
 	std::vector<bool> getActiveTSlices(int t_source) const;
@@ -434,6 +459,45 @@ namespace Chroma
 	return keys;
       }
       
+      //----------------------------------------------------------------------------
+      //! Get perambulator keys
+      std::list<KeyPropDistElemOp_t> QuarkLineFact::getPeramKeys(int t_source) const
+      {
+	std::list<KeyPropDistElemOp_t> keys;
+
+	std::vector<bool> active_t_slices = getActiveTSlices(t_source);
+	
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int spin_source=0; spin_source < Ns; ++spin_source)
+	{
+	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	  {
+	    for(int t=0; t < Lt; ++t)
+	    {
+	      if (! active_t_slices[t]) {continue;}
+
+	      KeyPropDistElemOp_t key;
+
+	      key.quark_line   = quark_line;
+	      key.annihP       = false;
+	      key.t_slice      = t;
+	      key.t_source     = t_source;
+	      key.spin_src     = spin_source;
+	      key.spin_snk     = spin_sink;
+	      key.mass         = mass;
+
+//            QDPIO::cout << key << std::flush;
+
+	      keys.push_back(key);
+	    } // for t
+	  } // for spin_sink
+	} // for spin_source
+
+	return keys;
+      }
+
+	
     } // namespace Connected
 
 
@@ -518,10 +582,24 @@ namespace Chroma
 	    // Reset/barf if bogus
 	    params.num_space_dils = checkSpaceDils(params.num_space_dils, params.num_vecs);
 	    params.num_time_dils  = checkTimeDils(params.num_time_dils, Layout::lattSize()[dist_noise_obj.getDecayDir()]);
+
+#if 0
+	    // Another sanity check
+	    if (params.num_vecs > eigen_source.size())
+	    {
+	      QDPIO::cerr << __func__ << ": num_vecs= " << params.num_vecs
+			  << " is greater than the number of available colorvectors= "
+			  << eigen_source.size() << endl;
+	      QDP_abort(1);
+	    }
+#endif
 	  }
 
 	//! Get a source
 	virtual LatticeColorVector getSrc(int t_source, int dist_src) const;
+
+	//! Get number of vectors
+	virtual int getNumVecs() const {return params.num_vecs;}
 
 	//! Get number of space dilutions
 	virtual int getNumSpaceDils() const {return params.num_space_dils;}
@@ -540,6 +618,9 @@ namespace Chroma
 
 	//! Get sink keys
 	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const;
+
+	//! Get perambulator keys
+	virtual std::list<KeyPropDistElemOp_t> getPeramKeys(int t_source) const;
 
       private:
 	// Arguments
@@ -668,6 +749,41 @@ namespace Chroma
 	return keys;
       }
       
+      //----------------------------------------------------------------------------
+      //! Get perambulator keys
+      std::list<KeyPropDistElemOp_t> QuarkLineFact::getPeramKeys(int t_source) const
+      {
+	std::list<KeyPropDistElemOp_t> keys;
+
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int spin_source=0; spin_source < Ns; ++spin_source)
+	{
+	  for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
+	  {
+	    for(int t=t_source; t < Lt; t += params.num_time_dils)
+	    {
+	      KeyPropDistElemOp_t key;
+
+	      key.quark_line   = quark_line;
+	      key.annihP       = true;
+	      key.t_slice      = t;
+	      key.t_source     = t;
+	      key.spin_src     = spin_source;
+	      key.spin_snk     = spin_sink;
+	      key.mass         = mass;
+
+//            QDPIO::cout << key << std::flush;
+
+	      keys.push_back(key);
+	    } // for t
+	  } // for spin_sink
+	} // for spin_source
+
+	return keys;
+      }
+
+	
     } // namespace Annihilation
 
 
@@ -730,10 +846,14 @@ namespace Chroma
     {
       XMLReader inputtop(xml, path);
 
+      read(inputtop, "save_peramP", input.save_peramP);
+      read(inputtop, "save_srcP", input.save_srcP);
+      read(inputtop, "save_solnP", input.save_solnP);
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "distillution_id", input.distillution_id);
       read(inputtop, "colorvec_file", input.colorvec_file);
-      read(inputtop, "prop_file", input.prop_file);
+      read(inputtop, "soln_file", input.soln_file);
+      read(inputtop, "peram_file", input.peram_file);
     }
 
     //! Propagator output
@@ -741,10 +861,14 @@ namespace Chroma
     {
       push(xml, path);
 
+      write(xml, "save_peramP", input.save_peramP);
+      write(xml, "save_srcP", input.save_srcP);
+      write(xml, "save_solnP", input.save_solnP);
       write(xml, "gauge_id", input.gauge_id);
       write(xml, "distillution_id", input.distillution_id);
       write(xml, "colorvec_file", input.colorvec_file);
-      write(xml, "prop_file", input.prop_file);
+      write(xml, "soln_file", input.soln_file);
+      write(xml, "peram_file", input.peram_file);
 
       pop(xml);
     }
@@ -1018,14 +1142,12 @@ namespace Chroma
       {
 	// Open
 	QDPIO::cout << "Open file= " << params.named_obj.colorvec_file << endl;
-//	eigen_source.open(params.named_obj.colorvec_file, std::ios_base::in);
 	eigen_source.open(params.named_obj.colorvec_file);
 
 	// Snarf the source info. 
 	string user_str;
 	QDPIO::cout << "Get user data" << endl;
 	eigen_source.getUserdata(user_str);
-//	QDPIO::cout << "User data= " << user_str << endl;
 
 	// Write it
 	QDPIO::cout << "Write to an xml file" << endl;
@@ -1077,60 +1199,82 @@ namespace Chroma
 
       QDPIO::cout << "Source studied: do some other sanity checks" << endl;
 
-#if 0
-      // Another sanity check
-      if (params.param.contract.num_vecs > eigen_source.size())
-      {
-	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.contract.num_vecs
-		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.size() << endl;
-	QDP_abort(1);
-      }
-
-      // Another sanity check
-      if ((params.param.contract.num_vecs % params.param.contract.num_vec_dils) != 0)
-      {
-	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.contract.num_vecs
-		    << " is not a multiple of number of dilutions = "
-		    << params.param.contract.num_vec_dils << endl;
-	QDP_abort(1);
-      }
-#endif
-
       //
       // DB storage
       //
-      // Open the file, and write the meta-data and the binary for this operator
+      BinaryStoreDB< SerialDBKey<KeyPropDistElemOp_t>, SerialDBData<ValPropDistElemOp_t> > qdp_db;
+
+      if (params.named_obj.save_peramP)
+      {
+	if (! qdp_db.fileExists(params.named_obj.peram_file))
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "DBMetaData");
+	  write(file_xml, "id", string("propDistElemOp"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  proginfo(file_xml);    // Print out basic program info
+//	  write(file_xml, "Weights", getEigenValues(eigen_source, eigen_source.size()));
+	  write(file_xml, "ensemble", dist_noise_obj.getEnsemble());
+	  write(file_xml, "sequence", dist_noise_obj.getSequence());
+	  file_xml << params.param.contract.quark_line_xml.xml;
+	  write(file_xml, "t_origin", dist_noise_obj.getOrigin());
+	  write(file_xml, "quark_line", params.param.contract.quark_lines[0]);
+	  proginfo(file_xml);    // Print out basic program info
+	  write(file_xml, "Params", params.param);
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  std::string file_str(file_xml.str());
+	  qdp_db.setMaxUserInfoLen(file_str.size());
+	  
+	  qdp_db.open(params.named_obj.peram_file, O_RDWR | O_CREAT, 0664);
+	  
+	  qdp_db.insertUserdata(file_str);
+	}
+	else
+	{
+	  qdp_db.open(params.named_obj.peram_file, O_RDWR, 0664);
+	}
+      }
+
+
+      //
+      // Map-object-disk storage
       //
       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj;
       prop_obj.setDebug(0);
 
-      if (! prop_obj.fileExists(params.named_obj.prop_file))
+      if (params.named_obj.save_srcP || params.named_obj.save_solnP)
       {
-	XMLBufferWriter file_xml;
+	if (! prop_obj.fileExists(params.named_obj.soln_file))
+	{
+	  XMLBufferWriter file_xml;
 
-	push(file_xml, "MODMetaData");
-	write(file_xml, "id", string("propDist"));
-	write(file_xml, "lattSize", QDP::Layout::lattSize());
-	write(file_xml, "decay_dir", decay_dir);
-	write(file_xml, "ensemble", dist_noise_obj.getEnsemble());
-	write(file_xml, "sequence", dist_noise_obj.getSequence());
-	write(file_xml, "t_origin", dist_noise_obj.getOrigin());
-	file_xml << params.param.contract.quark_line_xml.xml;
-	write(file_xml, "quark_line", params.param.contract.quark_lines[0]);
-	proginfo(file_xml);    // Print out basic program info
-	write(file_xml, "Params", params.param);
-	write(file_xml, "Config_info", gauge_xml);
-	pop(file_xml);
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", string("propDist"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  write(file_xml, "ensemble", dist_noise_obj.getEnsemble());
+	  write(file_xml, "sequence", dist_noise_obj.getSequence());
+	  write(file_xml, "t_origin", dist_noise_obj.getOrigin());
+	  file_xml << params.param.contract.quark_line_xml.xml;
+	  write(file_xml, "quark_line", params.param.contract.quark_lines[0]);
+	  proginfo(file_xml);    // Print out basic program info
+	  write(file_xml, "Params", params.param);
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
 
-	std::string file_str(file_xml.str());
-
-	prop_obj.insertUserdata(file_xml.str());
-	prop_obj.open(params.named_obj.prop_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
-      }
-      else
-      {
-	prop_obj.open(params.named_obj.prop_file);
+	  std::string file_str(file_xml.str());
+	  
+	  prop_obj.insertUserdata(file_xml.str());
+	  prop_obj.open(params.named_obj.soln_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+	}
+	else
+	{
+	  prop_obj.open(params.named_obj.soln_file);
+	}
       }
 
 
@@ -1289,32 +1433,39 @@ namespace Chroma
 
 
 	      // Write out each time-slice chunk of a lattice colorvec soln to disk
+	      QDPIO::cout << "Potentially write propagator source and solutions to disk" << std::endl;
 	      StopWatch sniss2;
 	      sniss2.reset();
 	      sniss2.start();
-	      QDPIO::cout << "Write propagator source and solutions to disk" << std::endl;
 
 	      // Write the source
-	      std::list<KeyPropDist_t> src_keys(quark_line_fact->getSrcKeys(t_source, dist_src));
-
-	      for(std::list<KeyPropDist_t>::const_iterator key= src_keys.begin();
-		  key != src_keys.end();
-		  ++key)
+	      if (params.named_obj.save_srcP)
 	      {
-		prop_obj.insert(*key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(key->t_slice)));
+		QDPIO::cout << "Write propagator source to disk" << std::endl;
+		std::list<KeyPropDist_t> src_keys(quark_line_fact->getSrcKeys(t_source, dist_src));
+
+		for(std::list<KeyPropDist_t>::const_iterator key= src_keys.begin();
+		    key != src_keys.end();
+		    ++key)
+		{
+		  prop_obj.insert(*key, TimeSliceIO<LatticeColorVector>(vec_srce, dist_noise_obj.getTime(key->t_slice)));
+		}
 	      }
 
 	      // Write the solutions
-	      std::list<KeyPropDist_t> snk_keys(quark_line_fact->getSnkKeys(t_source, dist_src));
-
-	      for(std::list<KeyPropDist_t>::const_iterator key= snk_keys.begin();
-		  key != snk_keys.end();
-		  ++key)
+	      if (params.named_obj.save_solnP)
 	      {
-		prop_obj.insert(*key, TimeSliceIO<LatticeColorVector>(ferm_out(key->spin_snk,key->spin_src), 
-								      dist_noise_obj.getTime(key->t_slice)));
+		QDPIO::cout << "Write propagator solution to disk" << std::endl;
+		std::list<KeyPropDist_t> snk_keys(quark_line_fact->getSnkKeys(t_source, dist_src));
 
-	      } // for key
+		for(std::list<KeyPropDist_t>::const_iterator key= snk_keys.begin();
+		    key != snk_keys.end();
+		    ++key)
+		{
+		  prop_obj.insert(*key, TimeSliceIO<LatticeColorVector>(ferm_out(key->spin_snk,key->spin_src), 
+									dist_noise_obj.getTime(key->t_slice)));
+		} // for key
+	      }
 	  
 	      sniss2.stop();
 	      QDPIO::cout << "Time to write propagators for dist_src= " << dist_src << "  time = " 
@@ -1325,7 +1476,6 @@ namespace Chroma
 	  } // for tt
 	} // for quark_line
 
-	prop_obj.flush();
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 
