@@ -1340,6 +1340,8 @@ namespace Chroma
 	    quark_line != params.param.contract.quark_lines.end();
 	    ++quark_line)
 	{
+	  QDPIO::cout << "quark_line = " << *quark_line << "  type= " << params.param.contract.quark_line_xml.id << endl; 
+
 	  //
 	  // Factory for quark line
 	  //
