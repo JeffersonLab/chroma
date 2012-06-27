@@ -21,9 +21,9 @@ namespace Chroma
   };
 
 
-  //! Support for the keys of prop color vectors
-  /*! \ingroup ferm */
-  bool operator<(const KeyTimeSliceColorVec_t& a, const KeyTimeSliceColorVec_t& b);
+  //----------------------------------------------------------------------------
+  //! Diagnostics
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyTimeSliceColorVec_t& param);
 
   //----------------------------------------------------------------------------
   /*!

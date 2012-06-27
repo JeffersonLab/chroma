@@ -14,8 +14,8 @@ namespace Chroma
     os << "KeyPropDist_t:";
     os << " prop_type= " << param.prop_type;
     os << " annihP= " << param.annihP;
-    os << " t_source= " << param.t_source;
     os << " t_slice= " << param.t_slice;
+    os << " t_source= " << param.t_source;
     os << " spin_snk= " << param.spin_snk;
     os << " spin_src= " << param.spin_src;
     os << " dist_src= " << param.dist_src;

@@ -37,10 +37,6 @@ namespace Chroma
   StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDist_t& a);
 
   //----------------------------------------------------------------------------
-  //! Support for the distillution keys
-  bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b);
-
-  //----------------------------------------------------------------------------
   //! KeyPropDist read
   void read(BinaryReader& bin, KeyPropDist_t& param);
 
