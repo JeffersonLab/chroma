@@ -45,6 +45,10 @@ namespace Chroma
   };
 
   //----------------------------------------------------------------------------
+  //! Diagnostics
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDistElemOp_t& a);
+
+  //----------------------------------------------------------------------------
   //! PropDistElemOp reader
   void read(BinaryReader& bin, KeyPropDistElemOp_t& param);
 

@@ -137,8 +137,8 @@
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <soln_file>prop.conn.mod</soln_file>
-        <peram_file>peram.ssdb</peram_file>
+        <soln_file>prop.mod</soln_file>
+        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 
@@ -190,8 +190,8 @@
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <soln_file>prop.conn.mod</soln_file>
-        <peram_file>peram.ssdb</peram_file>
+        <soln_file>prop.mod</soln_file>
+        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 
@@ -218,10 +218,10 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.40.0</chroma>
-      <qdp>1.40.1</qdp>
+      <qdp>1.41.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>26 Jun 12 17:02:54 EDT</run_date>
+    <run_date>27 Jun 12 10:09:27 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -279,10 +279,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.40.1</qdp>
+            <qdp>1.41.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>26 Jun 12 17:02:54 EDT</run_date>
+          <run_date>27 Jun 12 10:09:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -467,10 +467,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.40.1</qdp>
+            <qdp>1.41.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>26 Jun 12 17:02:55 EDT</run_date>
+          <run_date>27 Jun 12 10:09:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -497,10 +497,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.40.1</qdp>
+            <qdp>1.41.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>26 Jun 12 17:02:55 EDT</run_date>
+          <run_date>27 Jun 12 10:09:27 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -551,8 +551,8 @@
             <gauge_id>default_gauge_field</gauge_id>
             <distillution_id>dist_obj</distillution_id>
             <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-            <soln_file>prop.conn.mod</soln_file>
-            <peram_file>peram.ssdb</peram_file>
+            <soln_file>prop.mod</soln_file>
+            <peram_file>peram.mod</peram_file>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -605,10 +605,10 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.40.0</chroma>
-      <qdp>1.40.1</qdp>
+      <qdp>1.41.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>26 Jun 12 17:02:55 EDT</run_date>
+    <run_date>27 Jun 12 10:09:27 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -647,10 +647,10 @@
         <ProgramInfo>
           <code_version>
             <chroma>3.40.0</chroma>
-            <qdp>1.40.1</qdp>
+            <qdp>1.41.0</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>26 Jun 12 17:03:02 EDT</run_date>
+          <run_date>27 Jun 12 10:09:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -699,8 +699,8 @@
             <gauge_id>default_gauge_field</gauge_id>
             <distillution_id>dist_obj</distillution_id>
             <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-            <soln_file>prop.conn.mod</soln_file>
-            <peram_file>peram.ssdb</peram_file>
+            <soln_file>prop.mod</soln_file>
+            <peram_file>peram.mod</peram_file>
           </NamedObject>
         </Input>
         <Config_info><weak_field>
@@ -753,10 +753,10 @@
   <ProgramInfo>
     <code_version>
       <chroma>3.40.0</chroma>
-      <qdp>1.40.1</qdp>
+      <qdp>1.41.0</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>26 Jun 12 17:02:55 EDT</run_date>
+    <run_date>27 Jun 12 10:09:27 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>

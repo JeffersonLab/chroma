@@ -1200,47 +1200,6 @@ namespace Chroma
       QDPIO::cout << "Source studied: do some other sanity checks" << endl;
 
       //
-      // DB storage
-      //
-      BinaryStoreDB< SerialDBKey<KeyPropDistElemOp_t>, SerialDBData<ValPropDistElemOp_t> > qdp_db;
-
-      if (params.named_obj.save_peramP)
-      {
-	if (! qdp_db.fileExists(params.named_obj.peram_file))
-	{
-	  XMLBufferWriter file_xml;
-
-	  push(file_xml, "DBMetaData");
-	  write(file_xml, "id", string("propDistElemOp"));
-	  write(file_xml, "lattSize", QDP::Layout::lattSize());
-	  write(file_xml, "decay_dir", decay_dir);
-	  proginfo(file_xml);    // Print out basic program info
-//	  write(file_xml, "Weights", getEigenValues(eigen_source, eigen_source.size()));
-	  write(file_xml, "ensemble", dist_noise_obj.getEnsemble());
-	  write(file_xml, "sequence", dist_noise_obj.getSequence());
-	  file_xml << params.param.contract.quark_line_xml.xml;
-	  write(file_xml, "t_origin", dist_noise_obj.getOrigin());
-	  write(file_xml, "quark_line", params.param.contract.quark_lines[0]);
-	  proginfo(file_xml);    // Print out basic program info
-	  write(file_xml, "Params", params.param);
-	  write(file_xml, "Config_info", gauge_xml);
-	  pop(file_xml);
-
-	  std::string file_str(file_xml.str());
-	  qdp_db.setMaxUserInfoLen(file_str.size());
-	  
-	  qdp_db.open(params.named_obj.peram_file, O_RDWR | O_CREAT, 0664);
-	  
-	  qdp_db.insertUserdata(file_str);
-	}
-	else
-	{
-	  qdp_db.open(params.named_obj.peram_file, O_RDWR, 0664);
-	}
-      }
-
-
-      //
       // Map-object-disk storage
       //
       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj;
@@ -1248,6 +1207,8 @@ namespace Chroma
 
       if (params.named_obj.save_srcP || params.named_obj.save_solnP)
       {
+	QDPIO::cout << "Open solution file" << endl;
+
 	if (! prop_obj.fileExists(params.named_obj.soln_file))
 	{
 	  XMLBufferWriter file_xml;
@@ -1275,6 +1236,52 @@ namespace Chroma
 	{
 	  prop_obj.open(params.named_obj.soln_file);
 	}
+
+	QDPIO::cout << "Finished opening solution file" << endl;
+      }
+
+
+      //
+      // DB storage
+      //
+      QDP::MapObjectDisk<KeyPropDistElemOp_t, ValPropDistElemOp_t> qdp_db;
+      qdp_db.setDebug(0);
+
+      if (params.named_obj.save_peramP)
+      {
+	QDPIO::cout << "Open peram file" << endl;
+
+	if (! qdp_db.fileExists(params.named_obj.peram_file))
+	{
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", string("propDistElemOp"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  proginfo(file_xml);    // Print out basic program info
+//	  write(file_xml, "Weights", getEigenValues(eigen_source, eigen_source.size()));
+	  write(file_xml, "ensemble", dist_noise_obj.getEnsemble());
+	  write(file_xml, "sequence", dist_noise_obj.getSequence());
+	  file_xml << params.param.contract.quark_line_xml.xml;
+	  write(file_xml, "t_origin", dist_noise_obj.getOrigin());
+	  write(file_xml, "quark_line", params.param.contract.quark_lines[0]);
+	  proginfo(file_xml);    // Print out basic program info
+	  write(file_xml, "Params", params.param);
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  std::string file_str(file_xml.str());
+	  
+	  qdp_db.insertUserdata(file_xml.str());
+	  qdp_db.open(params.named_obj.peram_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+	}
+	else
+	{
+	  qdp_db.open(params.named_obj.peram_file);
+	}
+
+	QDPIO::cout << "Finished opening peram file" << endl;
       }
 
 
@@ -1381,7 +1388,7 @@ namespace Chroma
 	    //
 	    // Initialize all the perambulator keys
 	    //
-	    multi3d<KeyValPropDistElemOp_t> buf;
+	    multi3d<ValPropDistElemOp_t> buf;
 
 	    if (params.named_obj.save_peramP)
 	    {
@@ -1393,8 +1400,7 @@ namespace Chroma
 		  key != keys.end();
 		  ++key)
 	      {
-		buf(key->t_slice,key->spin_snk,key->spin_src).key.key() = *key;
-		buf(key->t_slice,key->spin_snk,key->spin_src).val.data().mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
+		buf(key->t_slice,key->spin_snk,key->spin_src).mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
 	      }
 	    }
 
@@ -1514,7 +1520,7 @@ namespace Chroma
 		    ComplexD hsum = sum(localInnerProduct(tmpvec, ferm_out(key->spin_snk,key->spin_src)), 
 					time_slice_set.getSet()[t_actual]);
 
-		    buf(key->t_slice,key->spin_snk,key->spin_src).val.data().mat(colorvec_sink,dist_src) = hsum;
+		    buf(key->t_slice,key->spin_snk,key->spin_src).mat(colorvec_sink,dist_src) = hsum;
 
 		  } // for colorvec_sink
 		} // for key
@@ -1538,8 +1544,7 @@ namespace Chroma
 		  key != keys.end();
 		  ++key)
 	      {
-		qdp_db.insert(buf(key->t_slice,key->spin_snk,key->spin_src).key, 
-			      buf(key->t_slice,key->spin_snk,key->spin_src).val);
+		qdp_db.insert(*key, buf(key->t_slice,key->spin_snk,key->spin_src));
 	      } // for key
 	    }
 

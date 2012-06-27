@@ -6,8 +6,7 @@
 #ifndef __key_prop_distillution_h__
 #define __key_prop_distillution_h__
 
-#include "io/enum_io/enum_prop_dist_io.h"
-#include "io/enum_io/enum_prop_line_io.h"
+#include "chromabase.h"
 
 namespace Chroma
 {

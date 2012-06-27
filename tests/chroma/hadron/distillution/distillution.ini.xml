@@ -134,8 +134,8 @@
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <soln_file>prop.conn.mod</soln_file>
-        <peram_file>peram.ssdb</peram_file>
+        <soln_file>prop.mod</soln_file>
+        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 
@@ -187,8 +187,8 @@
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <soln_file>prop.conn.mod</soln_file>
-        <peram_file>peram.ssdb</peram_file>
+        <soln_file>prop.mod</soln_file>
+        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 

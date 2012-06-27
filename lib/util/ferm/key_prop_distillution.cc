@@ -7,58 +7,6 @@
 
 namespace Chroma 
 { 
-  namespace
-  {
-    //----------------------------------------------------------------------------
-    //! Concatenate two Array's
-    template<typename T>
-    inline std::vector<T> concat(const std::vector<T>& l, const std::vector<T>& r)
-    {
-      std::vector<int> nz(l.size() + r.size());
-      int j = 0;
-      for(int i=0; i < l.size(); ++i)
-	nz[j++] = l[i];
-  
-      for(int i=0; i < r.size(); ++i)
-	nz[j++] = r[i];
-
-      return nz;
-    }
-
-    //----------------------------------------------------------------------------
-    //! a < b
-    /*! This definition follows that of string comparison */
-    template<typename T>
-    inline bool operator<(const std::vector<T>& a, const std::vector<T>& b)
-    {
-      bool ret = false;
-      int  len = (a.size() < b.size()) ? a.size() : b.size();
-
-      for(int i=0; i < len; ++i)
-      {
-	if (a[i] != b[i])
-	  return (a[i] < b[i]) ? true : false;
-      }
-    
-      return (a.size() == b.size()) ? false : (a.size() < b.size()) ? true : false;
-    }
-
-
-    //----------------------------------------------------------------------------
-    // Beastly hack - convert a string into a number sequence in an array
-    std::vector<int> stringToArrayInt(const std::string& s)
-    {
-      std::vector<int> d;
-
-      for(int i=0; i < s.size(); ++i)
-	d.push_back(s[i]);
-
-      return d;
-    }
-
-  } // end anonymous namespace
-
-
   //----------------------------------------------------------------------------
   //! Diagnostics
   StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDist_t& param)
@@ -77,37 +25,6 @@ namespace Chroma
 
     return os;
   }
-
-  //----------------------------------------------------------------------------
-  // Support for the keys of prop colo
-  bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b)
-  {
-    std::vector<int> lgaa;
-    lgaa.push_back((a.annihP) ? 1 : 0);
-    lgaa.push_back(a.t_source);
-    lgaa.push_back(a.t_slice);
-    lgaa.push_back(a.dist_src);
-    lgaa.push_back(a.spin_src);
-    lgaa.push_back(a.spin_snk);
-    lgaa.push_back(a.quark_line);
-    lgaa = concat(lgaa, stringToArrayInt(a.prop_type));
-    lgaa = concat(lgaa, stringToArrayInt(a.mass));
-
-    std::vector<int> lgbb;
-    lgbb.push_back((b.annihP) ? 1 : 0);
-    lgbb.push_back(b.t_source);
-    lgbb.push_back(b.t_slice);
-    lgbb.push_back(b.dist_src);
-    lgbb.push_back(b.spin_src);
-    lgbb.push_back(b.spin_snk);
-    lgbb.push_back(b.quark_line);
-    lgbb = concat(lgbb, stringToArrayInt(b.prop_type));
-    lgbb = concat(lgbb, stringToArrayInt(b.mass));
-
-    return (lgaa < lgbb);
-  }
-
-
 
   //----------------------------------------------------------------------------
   // KeyPropDist read

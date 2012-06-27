@@ -8,6 +8,23 @@
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
+  //! Diagnostics
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDistElemOp_t& param)
+  {
+    os << "KeyPropDistElemOp_t:";
+    os << " quark_line= " << param.quark_line;
+    os << " annihP= " << param.annihP;
+    os << " t_slice= " << param.t_slice;
+    os << " t_source= " << param.t_source;
+    os << " spin_snk= " << param.spin_snk;
+    os << " spin_src= " << param.spin_src;
+    os << " mass= " << param.mass;
+    os << endl;
+
+    return os;
+  }
+
+  //----------------------------------------------------------------------------
   //! PropDistElemOp reader
   void read(BinaryReader& bin, KeyPropDistElemOp_t& param)
   {
