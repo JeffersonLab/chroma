@@ -19,7 +19,7 @@
         <decay_dir>3</decay_dir>
         <num_iter>50</num_iter>
         <width>3.0</width>
-        <num_orthog>2</num_orthog>
+        <num_orthog>20</num_orthog>
         <LinkSmearing>
           <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
