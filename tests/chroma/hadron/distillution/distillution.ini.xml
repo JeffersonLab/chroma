@@ -110,7 +110,7 @@
           <numRetries>1</numRetries>
           <FermionAction>
            <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
+           <Mass>0.05</Mass>
            <clovCoeff>1.0</clovCoeff>
            <AnisoParam>
              <anisoP>false</anisoP>
@@ -163,7 +163,7 @@
           <numRetries>1</numRetries>
           <FermionAction>
            <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
+           <Mass>0.05</Mass>
            <clovCoeff>1.0</clovCoeff>
            <AnisoParam>
              <anisoP>false</anisoP>
