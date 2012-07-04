@@ -3,8 +3,8 @@
  * \brief Key for propagator distillution matrix elements
  */
 
-#ifndef __key_prop_dist_matelem_h__
-#define __key_prop_dist_matelem_h__
+#ifndef __key_peram_dist_h__
+#define __key_peram_dist_h__
 
 #include "chromabase.h"
 #include "util/ferm/key_val_db.h"
@@ -17,7 +17,7 @@ namespace Chroma
    * @{
    */
   //! Prop operator
-  struct KeyPropDistElemOp_t
+  struct KeyPeramDist_t
   {
     int                quark_line;    /*!< The quark line */
     bool               annihP;        /*!< An annihilation line? */
@@ -30,7 +30,7 @@ namespace Chroma
 
 
   //! Prop operator
-  struct ValPropDistElemOp_t
+  struct ValPeramDist_t
   {
     multi2d<ComplexD>  mat;               /*!< Distillution source and colorvector sink */
   };
@@ -38,36 +38,36 @@ namespace Chroma
 
   //----------------------------------------------------------------------------
   //! Holds key and value as temporaries
-  struct KeyValPropDistElemOp_t
+  struct KeyValPeramDist_t
   {
-    SerialDBKey<KeyPropDistElemOp_t>  key;
-    SerialDBData<ValPropDistElemOp_t> val;
+    SerialDBKey<KeyPeramDist_t>  key;
+    SerialDBData<ValPeramDist_t> val;
   };
 
   //----------------------------------------------------------------------------
   //! Diagnostics
-  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDistElemOp_t& a);
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPeramDist_t& a);
 
   //----------------------------------------------------------------------------
-  //! PropDistElemOp reader
-  void read(BinaryReader& bin, KeyPropDistElemOp_t& param);
+  //! PeramDist reader
+  void read(BinaryReader& bin, KeyPeramDist_t& param);
 
-  //! PropDistElemOp write
-  void write(BinaryWriter& bin, const KeyPropDistElemOp_t& param);
+  //! PeramDist write
+  void write(BinaryWriter& bin, const KeyPeramDist_t& param);
 
-  //! PropDistElemOp reader
-  void read(XMLReader& xml, const std::string& path, KeyPropDistElemOp_t& param);
+  //! PeramDist reader
+  void read(XMLReader& xml, const std::string& path, KeyPeramDist_t& param);
 
-  //! PropDistElemOp writer
-  void write(XMLWriter& xml, const std::string& path, const KeyPropDistElemOp_t& param);
+  //! PeramDist writer
+  void write(XMLWriter& xml, const std::string& path, const KeyPeramDist_t& param);
 
 
   //----------------------------------------------------------------------------
-  //! PropDistElemOp reader
-  void read(BinaryReader& bin, ValPropDistElemOp_t& param);
+  //! PeramDist reader
+  void read(BinaryReader& bin, ValPeramDist_t& param);
 
-  //! PropDistElemOp write
-  void write(BinaryWriter& bin, const ValPropDistElemOp_t& param);
+  //! PeramDist write
+  void write(BinaryWriter& bin, const ValPeramDist_t& param);
 
   /*! @} */  // end of group ferm
 

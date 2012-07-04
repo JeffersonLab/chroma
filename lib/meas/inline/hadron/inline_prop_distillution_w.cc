@@ -13,7 +13,7 @@
 #include "qdp_map_obj.h"
 #include "qdp_map_obj_disk.h"
 #include "qdp_disk_map_slice.h"
-#include "util/ferm/key_prop_dist_matelem.h"
+#include "util/ferm/key_peram_dist.h"
 #include "util/ferm/key_prop_distillution.h"
 #include "util/ferm/transf.h"
 #include "util/ferm/spin_rep.h"
@@ -62,7 +62,7 @@ namespace Chroma
     virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const = 0;
 
     //! Get perambulator keys
-    virtual std::list<KeyPropDistElemOp_t> getPeramKeys(int t_source) const = 0;
+    virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const = 0;
   };
 
 
@@ -312,7 +312,7 @@ namespace Chroma
 	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const;
 
 	//! Get perambulator keys
-	virtual std::list<KeyPropDistElemOp_t> getPeramKeys(int t_source) const;
+	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
 
       private:
 	std::vector<bool> getActiveTSlices(int t_source) const;
@@ -461,9 +461,9 @@ namespace Chroma
       
       //----------------------------------------------------------------------------
       //! Get perambulator keys
-      std::list<KeyPropDistElemOp_t> QuarkLineFact::getPeramKeys(int t_source) const
+      std::list<KeyPeramDist_t> QuarkLineFact::getPeramKeys(int t_source) const
       {
-	std::list<KeyPropDistElemOp_t> keys;
+	std::list<KeyPeramDist_t> keys;
 
 	std::vector<bool> active_t_slices = getActiveTSlices(t_source);
 	
@@ -477,7 +477,7 @@ namespace Chroma
 	    {
 	      if (! active_t_slices[t]) {continue;}
 
-	      KeyPropDistElemOp_t key;
+	      KeyPeramDist_t key;
 
 	      key.quark_line   = quark_line;
 	      key.annihP       = false;
@@ -620,7 +620,7 @@ namespace Chroma
 	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const;
 
 	//! Get perambulator keys
-	virtual std::list<KeyPropDistElemOp_t> getPeramKeys(int t_source) const;
+	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
 
       private:
 	// Arguments
@@ -751,9 +751,9 @@ namespace Chroma
       
       //----------------------------------------------------------------------------
       //! Get perambulator keys
-      std::list<KeyPropDistElemOp_t> QuarkLineFact::getPeramKeys(int t_source) const
+      std::list<KeyPeramDist_t> QuarkLineFact::getPeramKeys(int t_source) const
       {
-	std::list<KeyPropDistElemOp_t> keys;
+	std::list<KeyPeramDist_t> keys;
 
 	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
 
@@ -763,7 +763,7 @@ namespace Chroma
 	  {
 	    for(int t=t_source; t < Lt; t += params.num_time_dils)
 	    {
-	      KeyPropDistElemOp_t key;
+	      KeyPeramDist_t key;
 
 	      key.quark_line   = quark_line;
 	      key.annihP       = true;
@@ -1244,7 +1244,7 @@ namespace Chroma
       //
       // DB storage
       //
-      QDP::MapObjectDisk<KeyPropDistElemOp_t, ValPropDistElemOp_t> qdp_db;
+      QDP::MapObjectDisk<KeyPeramDist_t, ValPeramDist_t> qdp_db;
       qdp_db.setDebug(0);
 
       if (params.named_obj.save_peramP)
@@ -1256,7 +1256,7 @@ namespace Chroma
 	  XMLBufferWriter file_xml;
 
 	  push(file_xml, "MODMetaData");
-	  write(file_xml, "id", string("propDistElemOp"));
+	  write(file_xml, "id", string("peramDist"));
 	  write(file_xml, "lattSize", QDP::Layout::lattSize());
 	  write(file_xml, "decay_dir", decay_dir);
 	  proginfo(file_xml);    // Print out basic program info
@@ -1390,15 +1390,15 @@ namespace Chroma
 	    //
 	    // Initialize all the perambulator keys
 	    //
-	    multi3d<ValPropDistElemOp_t> buf;
+	    multi3d<ValPeramDist_t> buf;
 
 	    if (params.named_obj.save_peramP)
 	    {
 	      buf.resize(Lt,Ns,Ns);
 
-	      std::list<KeyPropDistElemOp_t> keys(quark_line_fact->getPeramKeys(t_source));
+	      std::list<KeyPeramDist_t> keys(quark_line_fact->getPeramKeys(t_source));
 
-	      for(std::list<KeyPropDistElemOp_t>::const_iterator key= keys.begin();
+	      for(std::list<KeyPeramDist_t>::const_iterator key= keys.begin();
 		  key != keys.end();
 		  ++key)
 	      {
@@ -1499,9 +1499,9 @@ namespace Chroma
 	      if (params.named_obj.save_peramP)
 	      {
 		QDPIO::cout << "Computing perambulators" << std::endl;
-		std::list<KeyPropDistElemOp_t> keys(quark_line_fact->getPeramKeys(t_source));
+		std::list<KeyPeramDist_t> keys(quark_line_fact->getPeramKeys(t_source));
 
-		for(std::list<KeyPropDistElemOp_t>::const_iterator key= keys.begin();
+		for(std::list<KeyPeramDist_t>::const_iterator key= keys.begin();
 		    key != keys.end();
 		    ++key)
 		{
@@ -1540,9 +1540,9 @@ namespace Chroma
 	    if (params.named_obj.save_peramP)
 	    {
 	      QDPIO::cout << "Write perambulators to disk" << std::endl;
-	      std::list<KeyPropDistElemOp_t> keys(quark_line_fact->getPeramKeys(t_source));
+	      std::list<KeyPeramDist_t> keys(quark_line_fact->getPeramKeys(t_source));
 
-	      for(std::list<KeyPropDistElemOp_t>::const_iterator key= keys.begin();
+	      for(std::list<KeyPeramDist_t>::const_iterator key= keys.begin();
 		  key != keys.end();
 		  ++key)
 	      {

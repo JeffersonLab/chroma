@@ -3,15 +3,15 @@
  * \brief Key for propagator distillution matrix elements
  */
 
-#include "util/ferm/key_prop_dist_matelem.h"
+#include "util/ferm/key_peram_dist.h"
 
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
   //! Diagnostics
-  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDistElemOp_t& param)
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPeramDist_t& param)
   {
-    os << "KeyPropDistElemOp_t:";
+    os << "KeyPeramDist_t:";
     os << " quark_line= " << param.quark_line;
     os << " annihP= " << param.annihP;
     os << " t_slice= " << param.t_slice;
@@ -25,8 +25,8 @@ namespace Chroma
   }
 
   //----------------------------------------------------------------------------
-  //! PropDistElemOp reader
-  void read(BinaryReader& bin, KeyPropDistElemOp_t& param)
+  //! PeramDist reader
+  void read(BinaryReader& bin, KeyPeramDist_t& param)
   {
     read(bin, param.quark_line);
     read(bin, param.annihP);
@@ -37,8 +37,8 @@ namespace Chroma
     readDesc(bin, param.mass);
   }
 
-  //! PropDistElemOp write
-  void write(BinaryWriter& bin, const KeyPropDistElemOp_t& param)
+  //! PeramDist write
+  void write(BinaryWriter& bin, const KeyPeramDist_t& param)
   { 
     write(bin, param.quark_line);
     write(bin, param.annihP);
@@ -49,8 +49,8 @@ namespace Chroma
     writeDesc(bin, param.mass);
   }
 
-  //! PropDistElemOp reader
-  void read(XMLReader& xml, const std::string& path, KeyPropDistElemOp_t& param)
+  //! PeramDist reader
+  void read(XMLReader& xml, const std::string& path, KeyPeramDist_t& param)
   {
     XMLReader paramtop(xml, path);
     
@@ -63,8 +63,8 @@ namespace Chroma
     read(paramtop, "mass", param.mass);
   }
 
-  //! PropDistElemOp writer
-  void write(XMLWriter& xml, const std::string& path, const KeyPropDistElemOp_t& param)
+  //! PeramDist writer
+  void write(XMLWriter& xml, const std::string& path, const KeyPeramDist_t& param)
   {
     push(xml, path);
 
@@ -81,8 +81,8 @@ namespace Chroma
 
 
   //----------------------------------------------------------------------------
-  //! PropDistElemOp reader
-  void read(BinaryReader& bin, ValPropDistElemOp_t& param)
+  //! PeramDist reader
+  void read(BinaryReader& bin, ValPeramDist_t& param)
   {
     int nrows;
     int ncols;
@@ -99,8 +99,8 @@ namespace Chroma
     }
   }
 
-  //! PropDistElemOp write
-  void write(BinaryWriter& bin, const ValPropDistElemOp_t& param)
+  //! PeramDist write
+  void write(BinaryWriter& bin, const ValPeramDist_t& param)
   {
     write(bin, param.mat.nrows());    // always write the size
     write(bin, param.mat.ncols());    // always write the size
