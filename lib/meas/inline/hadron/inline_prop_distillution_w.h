@@ -11,6 +11,7 @@
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
+#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 
@@ -32,31 +33,31 @@ namespace Chroma
       {
 	struct Contract_t
 	{
-	  int             num_vecs;       /*!< Number of vectors */
-	  int             num_vec_dils;   /*!< Number of eigenvector dilutions to use */
-	  multi1d<int>    t_sources;      /*!< Array of time slice sources for props */
-	  int             quark_line;     /*!< Quark line number */
-	  std::string     mass;           /*!< Some kind of mass label */
-	  int             Nt_forward;     /*!< Time-slices in the forward direction */
-	  int             Nt_backward;    /*!< Time-slices in the backward direction */
+	  std::vector<int>    quark_lines;        /*!< Quark line numbers */
+	  std::string         mass;               /*!< Some kind of mass label */
+	  GroupXML_t          quark_line_xml;     /*!< Quark line xml */
 	};
 
-	ChromaProp_t    prop;
 	Contract_t      contract;
+	ChromaProp_t    prop;
       };
 
       struct NamedObject_t
       {
-	std::string     gauge_id;       /*!< Gauge field */
-	std::string     distillution_id;/*!< Distillution factory */
-	std::string     colorvec_file;  /*!< Eigenvector file */
-	std::string     prop_file;      /*!< Map for output propagator solutions */
+	bool            save_peramP;        /*!< Save perambulators */
+	bool            save_srcP;          /*!< Save sources */
+	bool            save_solnP;         /*!< Save solutions */
+	std::string     gauge_id;           /*!< Gauge field */
+	std::string     distillution_id;    /*!< Distillution factory */
+	std::string     colorvec_file;      /*!< Eigenvector file */
+	std::string     soln_file;          /*!< File output propagator solutions */
+	std::string     peram_file;         /*!< File for perambulators */
       };
 
 
       Param_t           param;
       NamedObject_t     named_obj;
-      std::string       xml_file;       /*!< Alternate XML file pattern */
+      std::string       xml_file;           /*!< Alternate XML file pattern */
     };
 
 

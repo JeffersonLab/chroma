@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: key_prop_matelem.h,v 1.1 2009-04-12 20:54:11 edwards Exp $
 /*! \file
  * \brief Key for propagator colorvector matrix elements
  */

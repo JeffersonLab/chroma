@@ -136,6 +136,7 @@ namespace Chroma
     write(bin, seqno);
     write(bin, info.quark_line);
     write(bin, (info.annih) ? 1 : 0);
+    write(bin, info.mass);
 
     // Use the no-side-effect version of the RNG with input state, and output random num.
     RANNYU::RNGState_t rng;

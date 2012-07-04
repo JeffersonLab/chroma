@@ -1,4 +1,3 @@
-// $Id: key_hadron_3pt_corr.cc,v 1.1 2009-10-13 13:56:38 edwards Exp $
 /*! \file
  * \brief Hadron 3pt correlators
  */

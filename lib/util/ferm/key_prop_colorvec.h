@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: key_prop_colorvec.h,v 1.1 2008-07-21 02:32:24 edwards Exp $
 /*! \file
  * \brief Key for propagator colorvector sources
  */
@@ -22,10 +21,6 @@ namespace Chroma
     int        spin_src;      /*!< Source spin index */
   };
 
-
-  //! Support for the keys of prop color vectors
-  /*! \ingroup ferm */
-  bool operator<(const KeyPropColorVec_t& a, const KeyPropColorVec_t& b);
 
   //----------------------------------------------------------------------------
   /*!

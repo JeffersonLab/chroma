@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: key_val_db.h,v 1.2 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Key and values for DB
  */
