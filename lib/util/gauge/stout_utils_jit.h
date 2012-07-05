@@ -1,5 +1,6 @@
 
 
+      inline 
       void getFsAndBsJIT( GetFsAndBsArgs* arg )
       {
 	const LatticeColorMatrix& Q = arg->Q;
@@ -11,12 +12,16 @@
 
         while (1) {
 
-	  static QDPJit<>::SharedLibEntry sharedLibEntry;
+	  static QDPJit::SharedLibEntry sharedLibEntry;
 	  static MapVolumes*              mapVolumes;
 	  static string                   strId;
 	  static string                   prg;
 
 	  QDPJitArgs cudaArgs;
+
+	  const int nodeSites = QDP::Layout::sitesOnNode();
+
+	  int argNum = cudaArgs.addInt( nodeSites );
 
 	  string strREALT;
 	  string codeQ,codeQQ;
@@ -35,11 +40,11 @@
 	  if (!getCodeString( codeF[2] , f[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[3]"); break;}
 	  if (dobs) {
 	    if (!getCodeString( codeB1[0] , b1[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[0]"); break;} 
-	    if (!getCodeString( codeB1[1] , b1[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[1]"); break;}
-	    if (!getCodeString( codeB1[2] , b1[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[2]"); break;}
+	    if (!getCodeString( codeB1[1] , b1[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[2]"); break;}
+	    if (!getCodeString( codeB1[2] , b1[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[3]"); break;}
 	    if (!getCodeString( codeB2[0] , b2[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[0]"); break;} 
-	    if (!getCodeString( codeB2[1] , b2[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[1]"); break;}
-	    if (!getCodeString( codeB2[2] , b2[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[2]"); break;}
+	    if (!getCodeString( codeB2[1] , b2[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[2]"); break;}
+	    if (!getCodeString( codeB2[2] , b2[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[3]"); break;}
 	  }
 
 	  if (!mapVolumes) {
@@ -57,7 +62,7 @@
 	    sprg << " const int Nc = " << Nc << ";" << endl;
 
 	    sprg << "int site = blockDim.x * blockIdx.x + blockDim.x * gridDim.x * blockIdx.y + threadIdx.x;" << endl;
-	    sprg << "if (site >= args->numSiteTable) return;" << endl;
+	    sprg << "if (site >= " << cudaArgs.getCode(argNum) << ") return;" << endl;
 
 	    sprg << "   // Get the traces " << endl;
 	    sprg << "   PColorMatrix<QDP::RComplex<REAL>, Nc>  Q_site = " << codeQ << ".elem(); " << endl;
@@ -463,9 +468,6 @@
 	    sprg << " 	   " << endl;
 	    sprg << "     } // End of if( corner_caseP ) else {} " << endl;
 
-
-
-
 	    prg = sprg.str();
 
 #ifdef GPU_DEBUG_DEEP
@@ -473,39 +475,36 @@
 #endif
 	  }
 
-	  const int nodeSites = QDP::Layout::sitesOnNode();
-
-	  cudaArgs.getArgs().numSiteTable = nodeSites;
-   
 	  StopWatch watch0;
 	  watch0.start();
 
-	  if (!QDPJit<>::Instance()( strId , prg , cudaArgs , nodeSites , sharedLibEntry  , mapVolumes )) {
+	  if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes )) {
 	    QDP_info("getFsAndBsJIT: call to cuda jitter failed");
 	    break;
 	  }
 
 	  for ( int i = 0 ; i < 3 ; i++) {
-	    f[i].setModified(true);
+	    f[i].setModified();
 	    if (dobs) {
-	      b1[i].setModified(true);
-	      b2[i].setModified(true);
+	      b1[i].setModified();
+	      b2[i].setModified();
 	    }
 	  }
+	      
 
 	  watch0.stop();
-	  DeviceStats::Instance().incMicroSecondsKernelExec( STOUTING,watch0.getTimeInMicroseconds() );
-	  DeviceStats::Instance().incEvalDev(STOUTING);
+	  DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
+	  DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 	
-	  QDP::theCacheDispatch::Instance().unLock();
-
 	  return;
 	}
 
-	QDP::theCacheDispatch::Instance().unLock();
-  
 	QDP_error("getFsAndBsJIT: host not implemented");
       }
+
+
+
+
 
 
 

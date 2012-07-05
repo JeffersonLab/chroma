@@ -359,10 +359,10 @@ namespace Chroma
 
     template<typename U>
     inline 
-    void makeClovJIT(int nodeSites, QDPCloverMakeClovArg<U> *a)
+    void makeClovJIT(int nodeSites, JITCloverMakeClovArg<U> *a)
     {
-      typedef typename QDPCloverMakeClovArg<U>::RealT RealT;
-      typedef typename QDPCloverMakeClovArg<U>::REALT REALT;
+      typedef typename JITCloverMakeClovArg<U>::RealT RealT;
+      typedef typename JITCloverMakeClovArg<U>::REALT REALT;
       
       const RealT& diag_mass = a->diag_mass;
       const U& f0=a->f0;
@@ -623,7 +623,8 @@ namespace Chroma
     inline 
     void LDagDLInvJIT(LDagDLInvArgs<U>* a) 
     {
-      typedef U REALT;
+      typedef typename LDagDLInvArgs<U>::REALT REALT;
+      typedef typename LDagDLInvArgs<U>::RealT RealT;
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
 
       LatticeRealT& tr_log_diag = a->tr_log_diag;
