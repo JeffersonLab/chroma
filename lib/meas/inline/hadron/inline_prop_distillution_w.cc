@@ -1390,19 +1390,19 @@ namespace Chroma
 	    //
 	    // Initialize all the perambulator keys
 	    //
-	    multi3d<ValPeramDist_t> buf;
+	    std::list<KeyPeramDist_t> peram_keys;
+	    multi3d<ValPeramDist_t>   peram_buf;
 
 	    if (params.named_obj.save_peramP)
 	    {
-	      buf.resize(Lt,Ns,Ns);
+	      peram_keys = quark_line_fact->getPeramKeys(t_source);
+	      peram_buf.resize(Lt,Ns,Ns);
 
-	      std::list<KeyPeramDist_t> keys(quark_line_fact->getPeramKeys(t_source));
-
-	      for(std::list<KeyPeramDist_t>::const_iterator key= keys.begin();
-		  key != keys.end();
+	      for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
+		  key != peram_keys.end();
 		  ++key)
 	      {
-		buf(key->t_slice,key->spin_snk,key->spin_src).mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
+		peram_buf(key->t_slice,key->spin_snk,key->spin_src).mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
 	      }
 	    }
 
@@ -1499,10 +1499,9 @@ namespace Chroma
 	      if (params.named_obj.save_peramP)
 	      {
 		QDPIO::cout << "Computing perambulators" << std::endl;
-		std::list<KeyPeramDist_t> keys(quark_line_fact->getPeramKeys(t_source));
 
-		for(std::list<KeyPeramDist_t>::const_iterator key= keys.begin();
-		    key != keys.end();
+		for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
+		    key != peram_keys.end();
 		    ++key)
 		{
 		  // Get the actual time slice
@@ -1522,7 +1521,7 @@ namespace Chroma
 		    ComplexD hsum = sum(localInnerProduct(tmpvec, ferm_out(key->spin_snk,key->spin_src)), 
 					time_slice_set.getSet()[t_actual]);
 
-		    buf(key->t_slice,key->spin_snk,key->spin_src).mat(colorvec_sink,dist_src) = hsum;
+		    peram_buf(key->t_slice,key->spin_snk,key->spin_src).mat(colorvec_sink,dist_src) = hsum;
 
 		  } // for colorvec_sink
 		} // for key
@@ -1540,13 +1539,12 @@ namespace Chroma
 	    if (params.named_obj.save_peramP)
 	    {
 	      QDPIO::cout << "Write perambulators to disk" << std::endl;
-	      std::list<KeyPeramDist_t> keys(quark_line_fact->getPeramKeys(t_source));
 
-	      for(std::list<KeyPeramDist_t>::const_iterator key= keys.begin();
-		  key != keys.end();
+	      for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
+		  key != peram_keys.end();
 		  ++key)
 	      {
-		qdp_db.insert(*key, buf(key->t_slice,key->spin_snk,key->spin_src));
+		qdp_db.insert(*key, peram_buf(key->t_slice,key->spin_snk,key->spin_src));
 	      } // for key
 	    }
 
