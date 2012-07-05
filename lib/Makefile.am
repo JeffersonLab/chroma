@@ -715,10 +715,13 @@ nobase_include_HEADERS += \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
 	util/ferm/key_prop_matelem.h \
+	util/ferm/key_peram_dist.h \
 	util/ferm/key_timeslice_colorvec.h \
 	util/ferm/key_prop_distillution.h \
 	util/ferm/key_val_db.h \
-	util/ferm/distillution_noise.h
+	util/ferm/distillution_noise.h \
+        util/ferm/spin_rep.h \
+        util/ferm/twoquark_contract_ops.h
 
 #	actions/ferm/fermacts/flic_fermact_params_w.h
 #	actions/ferm/fermacts/eoprec_flic_fermact_w.h
@@ -1549,9 +1552,12 @@ libchroma_a_SOURCES += \
 	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_prop_colorvec.cc \
 	util/ferm/key_prop_matelem.cc \
+	util/ferm/key_peram_dist.cc \
 	util/ferm/key_timeslice_colorvec.cc \
 	util/ferm/key_prop_distillution.cc \
 	util/ferm/distillution_noise.cc \
+        util/ferm/spin_rep.cc \
+        util/ferm/twoquark_contract_ops.cc \
 	util/ferm/map_obj/map_obj_aggregate_w.cc \
 	util/ferm/map_obj/map_obj_memory_w.cc \
 	util/ferm/map_obj/map_obj_disk_w.cc \

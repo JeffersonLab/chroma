@@ -89,7 +89,7 @@ int main(int argc, char **argv)
 	  swatch.stop();
 	  
 	  mydt=swatch.getTimeInSeconds();
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
       
       mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f/mydt);
@@ -159,7 +159,7 @@ int main(int argc, char **argv)
 
 	  mydt=swatch.getTimeInSeconds();
 
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
       
       mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f/mydt);
@@ -292,7 +292,7 @@ int main(int argc, char **argv)
 
 	  mydt=swatch.getTimeInSeconds();
 
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
@@ -313,7 +313,7 @@ int main(int argc, char **argv)
       
       mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f*N5/mydt);
@@ -361,7 +361,7 @@ int main(int argc, char **argv)
 	  swatch.stop();
 
 	  mydt=swatch.getTimeInSeconds();
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
@@ -384,7 +384,7 @@ int main(int argc, char **argv)
       
       mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f*N5/mydt);
@@ -433,7 +433,7 @@ int main(int argc, char **argv)
 
 	  mydt=swatch.getTimeInSeconds();
 
-	  Internal::globalSum(mydt);
+	  QDPInternal::globalSum(mydt);
 	  mydt /= Layout::numNodes();
 
 	  if (mydt > 1) {
@@ -454,7 +454,7 @@ int main(int argc, char **argv)
       
       mydt=swatch.getTimeInSeconds();
       mydt=1.0e6*mydt/double(iter*(Layout::sitesOnNode()/2));
-      Internal::globalSum(mydt);
+      QDPInternal::globalSum(mydt);
       mydt /= Layout::numNodes();
  
       float mflops = float(1320.0f*N5/mydt);

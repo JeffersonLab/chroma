@@ -6,8 +6,7 @@
 #ifndef __key_prop_distillution_h__
 #define __key_prop_distillution_h__
 
-#include "io/enum_io/enum_prop_dist_io.h"
-#include "io/enum_io/enum_prop_line_io.h"
+#include "chromabase.h"
 
 namespace Chroma
 {
@@ -22,12 +21,13 @@ namespace Chroma
   struct KeyPropDist_t
   {
     std::string        prop_type;     /*!< Distillution source/solution type */
+    bool               annihP;        /*!< An annihilation line? */
     int                t_source;      /*!< Propagator source time slice */
     int                t_slice;       /*!< Propagator sink time slice */
     int                dist_src;      /*!< Source dist index */
     int                spin_src;      /*!< Source spin index */
     int                spin_snk;      /*!< Sink spin index */
-    std::string        quark_line;    /*!< The quark line */
+    int                quark_line;    /*!< The quark line */
     std::string        mass;          /*!< Quark mass label */
   };
 
@@ -35,10 +35,6 @@ namespace Chroma
   //----------------------------------------------------------------------------
   //! Diagnostics
   StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPropDist_t& a);
-
-  //----------------------------------------------------------------------------
-  //! Support for the distillution keys
-  bool operator<(const KeyPropDist_t& a, const KeyPropDist_t& b);
 
   //----------------------------------------------------------------------------
   //! KeyPropDist read

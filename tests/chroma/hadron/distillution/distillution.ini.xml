@@ -19,7 +19,7 @@
         <decay_dir>3</decay_dir>
         <num_iter>50</num_iter>
         <width>3.0</width>
-        <num_orthog>2</num_orthog>
+        <num_orthog>20</num_orthog>
         <LinkSmearing>
           <!-- LinkSmearingType>NONE</LinkSmearingType -->
           <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
@@ -92,11 +92,16 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <num_vecs>10</num_vecs>
-          <num_vec_dils>5</num_vec_dils>
-          <t_sources>0 3</t_sources>
-          <quark_line>1</quark_line>
-          <mass>u</mass>
+          <quark_lines>1 2</quark_lines>
+          <mass>U0.05</mass>
+          <QuarkLine>
+            <QuarkLineType>CONN</QuarkLineType>
+            <num_vecs>10</num_vecs>
+            <num_space_dils>10</num_space_dils>
+            <t_sources>0</t_sources>
+            <Nt_forward>16</Nt_forward>
+            <Nt_backward>5</Nt_backward>
+          </QuarkLine>
         </Contractions>
         <Propagator>
           <version>10</version>
@@ -105,7 +110,7 @@
           <numRetries>1</numRetries>
           <FermionAction>
            <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
+           <Mass>0.05</Mass>
            <clovCoeff>1.0</clovCoeff>
            <AnisoParam>
              <anisoP>false</anisoP>
@@ -123,10 +128,14 @@
         </Propagator>
       </Param>
       <NamedObject>
+        <save_peramP>true</save_peramP>
+        <save_srcP>true</save_srcP>
+        <save_solnP>true</save_solnP>
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <prop_file>prop.conn.mod</prop_file>
+        <soln_file>prop.mod</soln_file>
+        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 
@@ -138,11 +147,14 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <num_vecs>10</num_vecs>
-          <num_vec_dils>5</num_vec_dils>
-          <t_sources>0 3</t_sources>
-          <quark_line>2</quark_line>
-          <mass>u</mass>
+          <quark_lines>1 2</quark_lines>
+          <mass>U0.05</mass>
+          <QuarkLine>
+            <QuarkLineType>ANNIH</QuarkLineType>
+            <num_vecs>10</num_vecs>
+            <num_space_dils>2</num_space_dils>
+            <num_time_dils>4</num_time_dils>
+          </QuarkLine>
         </Contractions>
         <Propagator>
           <version>10</version>
@@ -151,7 +163,7 @@
           <numRetries>1</numRetries>
           <FermionAction>
            <FermAct>CLOVER</FermAct>
-           <Mass>0.1</Mass>
+           <Mass>0.05</Mass>
            <clovCoeff>1.0</clovCoeff>
            <AnisoParam>
              <anisoP>false</anisoP>
@@ -169,10 +181,14 @@
         </Propagator>
       </Param>
       <NamedObject>
+        <save_peramP>true</save_peramP>
+        <save_srcP>true</save_srcP>
+        <save_solnP>false</save_solnP>
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <prop_file>prop.conn.mod</prop_file>
+        <soln_file>prop.mod</soln_file>
+        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 

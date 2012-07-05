@@ -842,7 +842,7 @@ Not used in this test, instead use create colorvecs below.
       <qdp>1.38.3</qdp>
       <basePrecision>32</basePrecision>
     </code_version>
-    <run_date>24 Mar 11 06:33:20 EDT</run_date>
+    <run_date>03 Jun 12 15:17:45 EDT</run_date>
     <Setgeom>
       <latt_size>4 4 4 16</latt_size>
       <logical_size>1 1 1 1</logical_size>
@@ -903,7 +903,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:20 EDT</run_date>
+          <run_date>03 Jun 12 15:17:45 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1089,7 +1089,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:25 EDT</run_date>
+          <run_date>03 Jun 12 15:17:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1291,7 +1291,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:32 EDT</run_date>
+          <run_date>03 Jun 12 15:17:54 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1465,7 +1465,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:38 EDT</run_date>
+          <run_date>03 Jun 12 15:18:00 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1645,7 +1645,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:48 EDT</run_date>
+          <run_date>03 Jun 12 15:18:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1790,7 +1790,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:48 EDT</run_date>
+          <run_date>03 Jun 12 15:18:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -1938,7 +1938,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:48 EDT</run_date>
+          <run_date>03 Jun 12 15:18:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2086,7 +2086,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:33:48 EDT</run_date>
+          <run_date>03 Jun 12 15:18:10 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2097,9 +2097,11 @@ Not used in this test, instead use create colorvecs below.
         </ProgramInfo>
         <Input>
           <Param>
-            <version>2</version>
+            <version>3</version>
             <mom2_min>0</mom2_min>
             <mom2_max>2</mom2_max>
+            <mom_list>
+            </mom_list>
             <displacement_length>1</displacement_length>
             <displacement_list>
               <elem>0</elem>
@@ -2388,7 +2390,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:34:11 EDT</run_date>
+          <run_date>03 Jun 12 15:18:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2399,9 +2401,11 @@ Not used in this test, instead use create colorvecs below.
         </ProgramInfo>
         <Input>
           <Param>
-            <version>2</version>
+            <version>3</version>
             <mom2_min>0</mom2_min>
             <mom2_max>2</mom2_max>
+            <mom_list>
+            </mom_list>
             <displacement_length>1</displacement_length>
             <displacement_list>
               <elem>0</elem>
@@ -2504,7 +2508,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:34:11 EDT</run_date>
+          <run_date>03 Jun 12 15:18:32 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2714,7 +2718,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:34:13 EDT</run_date>
+          <run_date>03 Jun 12 15:18:34 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -2837,7 +2841,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:34:14 EDT</run_date>
+          <run_date>03 Jun 12 15:18:35 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>
@@ -3005,7 +3009,7 @@ Not used in this test, instead use create colorvecs below.
             <qdp>1.38.3</qdp>
             <basePrecision>32</basePrecision>
           </code_version>
-          <run_date>24 Mar 11 06:34:27 EDT</run_date>
+          <run_date>03 Jun 12 15:18:47 EDT</run_date>
           <Setgeom>
             <latt_size>4 4 4 16</latt_size>
             <logical_size>1 1 1 1</logical_size>

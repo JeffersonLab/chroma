@@ -142,22 +142,70 @@ namespace Chroma
       ds_u -= ds_1;
 
       //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
+
+      // Reuse tmp2 = Ainv_ee D_eo psi_o
       evenOddLinOp(tmp1, chi, msign);
       evenEvenInvLinOp(tmp3, tmp1, msign);
       derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
       ds_u += ds_1;
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
-      evenOddLinOp(tmp1, chi, msign);
-      evenEvenInvLinOp(tmp3, tmp1, msign);
+      // Reuse tmp3^dag = chi^\dag D_oe Ainv_ee
       derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
 
       getFermBC().zero(ds_u);
     }
 
+    //! Apply the derivative of the operator onto a source vector
+    /*! User should make sure deriv routines do a resize  */
+    virtual void derivMultipole(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
+		       enum PlusMinus isign) const
+    {
+      // Need deriv of  (A_oo - D_oe*Ainv_ee*D_eo*psi_e)
+      enum PlusMinus msign = (isign == PLUS) ? MINUS : PLUS;
+
+      //
+      // Make sure the deriv routines do a resize !!!
+      //
+      T   tmp1;
+      multi1d<T> tmp2(chi.size());
+      multi1d<T> tmp3(chi.size());  // if an array is used here, the space is not reserved
+
+      P   ds_1;  // deriv routines should resize
+
+      //
+      // NOTE: even with even-odd decomposition, the ds_u will still have contributions
+      // on all cb. So, no adding of ds_1 onto ds_u under a subset
+      //
+      //  ds_u  =  chi^dag * A'_oo * psi
+      derivOddOddLinOpMP(ds_u, chi, psi, isign);
+
+      //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
+      for(int i=0; i < chi.size(); i++) { 
+	evenOddLinOp(tmp1, psi[i], isign);
+	evenEvenInvLinOp(tmp2[i], tmp1, isign);
+      }
+      derivOddEvenLinOpMP(ds_1, chi, tmp2, isign);
+      ds_u -= ds_1;
+
+
+      //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
+      for(int i=0; i < chi.size(); i++) { 
+	// Reuse tmp2 = Ainv_ee D_eo psi_o
+	evenOddLinOp(tmp1, chi[i], msign);
+	evenEvenInvLinOp(tmp3[i], tmp1, msign);
+      }
+      derivEvenEvenLinOpMP(ds_1, tmp3, tmp2, isign);
+      ds_u += ds_1;
+
+      //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
+      // Reuse tmp3^dag = chi^\dag D_oe Ainv_ee
+      derivEvenOddLinOpMP(ds_1, tmp3, psi, isign);
+      ds_u -= ds_1;
+
+      getFermBC().zero(ds_u);
+    }
 
     //! Apply the even-even block onto a source vector
     virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
@@ -190,6 +238,64 @@ namespace Chroma
       QDPIO::cerr << "EvenOdd: not implemented" << endl;
       QDP_abort(1);
     }
+
+
+    // Multipole derivatives
+    virtual void derivEvenEvenLinOpMP(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
+				       enum PlusMinus isign) const 
+   {
+     ds_u.resize(Nd);
+     ds_u = zero;
+     
+     P F_tmp; // deriv will resize
+     for(int i=0; i < chi.size(); i++) { 
+       derivEvenEvenLinOp(F_tmp, chi[i], psi[i], isign);
+       ds_u += F_tmp;
+     }
+   }
+
+    // Multipole derivatives
+    virtual void derivEvenOddLinOpMP(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
+				       enum PlusMinus isign) const 
+   {
+     // implement in terms existing derivatives:
+     ds_u.resize(Nd);
+     ds_u = zero;
+     
+     P F_tmp; // deriv will resize
+     for(int i=0; i < chi.size(); i++) { 
+       derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
+       ds_u += F_tmp;
+     }
+   }
+
+    virtual void derivOddEvenLinOpMP(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
+				       enum PlusMinus isign) const 
+   {
+     // implement in terms existing derivatives:
+     ds_u.resize(Nd);
+     ds_u = zero;
+     
+     P F_tmp; // deriv will resize
+     for(int i=0; i < chi.size(); i++) { 
+       derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
+       ds_u += F_tmp;
+     }
+   }
+
+    virtual void derivOddOddLinOpMP(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
+				       enum PlusMinus isign) const 
+   {
+     // Trivially zero since we are constdet?
+     ds_u.resize(Nd);
+     ds_u = zero;
+     
+     P F_tmp;
+     for(int i=0; i < chi.size(); i++) { 
+       derivOddOddLinOp(F_tmp, chi[i], psi[i], isign);
+       ds_u += F_tmp;
+     }
+   }
 
     //! Get the force from the EvenEven Trace Log
     virtual void derivLogDetEvenEvenLinOp(P& ds_u, enum PlusMinus isign) const

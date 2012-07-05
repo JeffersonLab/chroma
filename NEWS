@@ -1,3 +1,7 @@
+July 4, 2012 - Robert Edwards
+        Version 3.42.0
+        Imported changes from devel branch (new propagator support).
+
 Oct 29, 2010 - Robert Edwards
         Version 3.40.0
         Overhauled usage of MapObject classes to match new QDP++ interface. The

@@ -207,6 +207,22 @@ namespace Chroma
 
   //! Apply the even-even block onto a source vector
   void 
+  EvenOddPrecCloverLinOp::derivEvenEvenLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
+					       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+					       enum PlusMinus isign) const
+  {
+    START_CODE();
+    
+    swatch.reset(); swatch.start();
+    clov.derivMultipole(ds_u, chi, psi, isign, 0);
+    swatch.stop();
+    clov_deriv_time  += swatch.getTimeInSeconds();
+
+    END_CODE();
+  }
+
+  //! Apply the even-even block onto a source vector
+  void 
   EvenOddPrecCloverLinOp::derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u,
 						   enum PlusMinus isign) const
   {
@@ -266,6 +282,20 @@ namespace Chroma
     END_CODE();
   }
 
+  void 
+  EvenOddPrecCloverLinOp::derivOddOddLinOpMP(multi1d<LatticeColorMatrix>& ds_u, 
+					       const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
+					       enum PlusMinus isign) const
+  {
+    START_CODE();
+    
+    swatch.reset(); swatch.start();
+    clov.derivMultipole(ds_u, chi, psi, isign, 1);
+    swatch.stop();
+    clov_deriv_time  += swatch.getTimeInSeconds();
+
+    END_CODE();
+  }
 
   //! Return flops performed by the operator()
   unsigned long EvenOddPrecCloverLinOp::nFlops() const

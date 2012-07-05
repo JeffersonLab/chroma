@@ -32,6 +32,7 @@ namespace Chroma
       {
 	int                     mom2_min;               /*!< (mom)^2 >= mom2_min */
 	int                     mom2_max;               /*!< (mom)^2 <= mom2_max */
+	multi1d< multi1d<int> > mom_list;               /*!< Array of momenta to generate */
 	int                     displacement_length;    /*!< Displacement length for creat. and annih. ops */
 	int                     num_vecs;               /*!< Number of color vectors to use */
 	int                     decay_dir;              /*!< Decay direction */

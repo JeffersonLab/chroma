@@ -34,7 +34,7 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
     myt2=clock();
 
     mydt=double(myt2-myt1)/double(CLOCKS_PER_SEC);
-    Internal::globalSum(mydt);
+    QDPInternal::globalSum(mydt);
     mydt /= Layout::numNodes();
 
     if (mydt > 1)
@@ -48,7 +48,7 @@ double time_func(const EvenOddPrecLinearOperator< MLF, LCM > *p, EO_mem A,
 
   mydt = (double)(myt2-myt1)/((double)(CLOCKS_PER_SEC));
   mydt *= 1.0e6/((double)(iter*(Layout::sitesOnNode()/2)));
-  Internal::globalSum(mydt);
+  QDPInternal::globalSum(mydt);
   mydt /= Layout::numNodes();
   return mydt;
 }

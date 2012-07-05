@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: key_val_db.h,v 1.2 2009-03-05 04:01:07 edwards Exp $
 /*! \file
  * \brief Key and values for DB
  */
@@ -39,7 +38,7 @@ namespace Chroma
     void writeObject (std::string& output) const throw (SerializeException) {
       BinaryBufferWriter bin;
       write(bin, key());
-      output = bin.str();
+      output = bin.strPrimaryNode();
     }
 
     void readObject (const std::string& input) throw (SerializeException) {
@@ -87,7 +86,7 @@ namespace Chroma
     void writeObject (std::string& output) const throw (SerializeException) {
       BinaryBufferWriter bin;
       write(bin, data());
-      output = bin.str();
+      output = bin.strPrimaryNode();
     }
 
     void readObject (const std::string& input) throw (SerializeException) {

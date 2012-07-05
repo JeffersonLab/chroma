@@ -7,20 +7,16 @@
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
-  // Support for the keys of prop colo
-  bool operator<(const KeyTimeSliceColorVec_t& a, const KeyTimeSliceColorVec_t& b)
+  //! Diagnostics
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyTimeSliceColorVec_t& param)
   {
-    multi1d<int> lgaa(2);
-    lgaa[0] = a.t_slice;
-    lgaa[1] = a.colorvec;
+    os << "KeyTimeSliceColorVec_t:";
+    os << " t_slice= " << param.t_slice;
+    os << " colorvec= " << param.colorvec;
+    os << endl;
 
-    multi1d<int> lgbb(2);
-    lgbb[0] = b.t_slice;
-    lgbb[1] = b.colorvec;
-
-    return (lgaa < lgbb);
+    return os;
   }
-
 
 
   //----------------------------------------------------------------------------
