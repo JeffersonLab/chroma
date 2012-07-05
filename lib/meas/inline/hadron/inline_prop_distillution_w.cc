@@ -30,6 +30,103 @@
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
+  typedef QDP::MapObjectDisk< KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > MOD_t;
+
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
+  //! Cache for holding time slice eigenvectors
+  class TimeSliceIOCache
+  {
+  public:
+    //! Constructor
+    TimeSliceIOCache(MOD_t& eigen_source_);
+
+    //! Virtual destructor
+    virtual ~TimeSliceIOCache() {}
+
+    //! Get number of vectors
+    virtual int getNumVecs() const {return num_vecs;}
+
+    //! Get a vector
+    virtual LatticeColorVector& getVec(int t_actual, int colorvec);
+
+  private:
+    // Arguments
+    MOD_t&                       eigen_source;
+
+    // Local
+    multi1d<LatticeColorVector>  eigen_cache;
+    multi2d<bool>                cache_marker;
+    int                          num_vecs;
+  };
+
+  
+  //----------------------------------------------------------------------------
+  // Constructor
+  TimeSliceIOCache::TimeSliceIOCache(MOD_t& eigen_source_)
+    : eigen_source(eigen_source_)
+  {
+    const int Lt = Layout::lattSize()[Nd-1];
+
+    // Figure out how many vectors are in the source
+    // We know time slice 0 has to be a part of the sources
+    num_vecs = 0;
+    while(1)
+    {
+      KeyTimeSliceColorVec_t key;
+      key.t_slice  = 0;
+      key.colorvec = num_vecs;
+
+      if (! eigen_source.exist(key)) {break;}
+
+      ++num_vecs;
+    }
+
+    if (num_vecs == 0)
+    {
+      QDPIO::cerr << __func__ << ": this is bad - did not find any eigenvectors in eigen_source\n";
+      QDP_abort(1);
+    }
+    else
+    {
+      QDPIO::cout << __func__ << ": found in eigenvector source num_vecs= " << num_vecs << std::endl;
+    }
+
+    eigen_cache.resize(num_vecs);
+    cache_marker.resize(Lt,num_vecs);
+
+    for(int n=0; n < num_vecs; ++n)
+    {
+      eigen_cache[n] = zero;
+      
+      for(int t=0; t < Lt; ++t)
+	cache_marker(t,n) = false;
+    }
+  }
+
+
+  // Get a vector
+  LatticeColorVector& TimeSliceIOCache::getVec(int t_actual, int colorvec)
+  {
+    // If not in cache, then retrieve
+    if (! cache_marker(t_actual,colorvec))
+    {
+      KeyTimeSliceColorVec_t key_vec;
+      key_vec.t_slice  = t_actual;
+      key_vec.colorvec = colorvec;
+
+      TimeSliceIO<LatticeColorVector> time_slice_io(eigen_cache[colorvec], t_actual);
+
+      eigen_source.get(key_vec, time_slice_io);
+      cache_marker(t_actual,colorvec) = true;
+    }
+
+    return eigen_cache[colorvec];
+  }
+
+
+  //----------------------------------------------------------------------------
+  //----------------------------------------------------------------------------
   //! Abstract type for quarkline construction
   class AbsQuarkLine
   {
@@ -67,23 +164,20 @@ namespace Chroma
 
 
   //----------------------------------------------------------------------------
-  typedef QDP::MapObjectDisk< KeyTimeSliceColorVec_t,TimeSliceIO<LatticeColorVector> > MOD_t;
-
-  //----------------------------------------------------------------------------
   //! Quark line factory (foundry)
   typedef SingletonHolder< 
     ObjectFactory<AbsQuarkLine,
 		  std::string,
 		  TYPELIST_7(XMLReader&, const std::string&,
 			     const DistillutionNoise&, 
-			     MOD_t&,
+			     TimeSliceIOCache&,
 			     const TimeSliceSet&,
 			     int,
 			     const std::string&),
 		  AbsQuarkLine* (*)(XMLReader&,
 				    const std::string&,
 				    const DistillutionNoise&, 
-				    MOD_t&,
+				    TimeSliceIOCache&,
 				    const TimeSliceSet&,
 				    int,
 				    const std::string&), StringFactoryError> >
@@ -91,6 +185,7 @@ namespace Chroma
 
 
 
+  //----------------------------------------------------------------------------
   //----------------------------------------------------------------------------
   //! Utilities
   namespace PropDistillutionUtilEnv
@@ -261,12 +356,12 @@ namespace Chroma
       public:
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      MOD_t& eigen_source_,
+		      TimeSliceIOCache& eigen_source_cache_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_)
 	: params(params_), 
-	  dist_noise_obj(dist_noise_obj_), eigen_source(eigen_source_), time_slice_set(time_slice_set_), 
+	  dist_noise_obj(dist_noise_obj_), eigen_source_cache(eigen_source_cache_), time_slice_set(time_slice_set_), 
 	  quark_line(quark_line_), mass(mass_)
 	  {
 	    // Initialize the noise for this quark line
@@ -275,16 +370,14 @@ namespace Chroma
 	    // Reset/barf if bogus
 	    params.num_space_dils = checkSpaceDils(params.num_space_dils, params.num_vecs);
 
-#if 0
 	    // Another sanity check
-	    if (params.num_vecs > eigen_source.size())
+	    if (params.num_vecs > eigen_source_cache.getNumVecs())
 	    {
 	      QDPIO::cerr << __func__ << ": num_vecs= " << params.num_vecs
 			  << " is greater than the number of available colorvectors= "
-			  << eigen_source.size() << endl;
+			  << eigen_source_cache.getNumVecs() << endl;
 	      QDP_abort(1);
 	    }
-#endif
 	  }
 
 	//! Get a source
@@ -321,7 +414,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	MOD_t&                    eigen_source;
+	TimeSliceIOCache&         eigen_source_cache;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -345,16 +438,7 @@ namespace Chroma
 	  // Get the actual time slice
 	  int t_actual = dist_noise_obj.getTime(t_source);
 
-	  KeyTimeSliceColorVec_t key_vec;
-	  key_vec.t_slice = t_actual;
-	  key_vec.colorvec = colorvec_source;
-
-	  LatticeColorVector tmpvec = zero;
-	  TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
-
-	  eigen_source.get(key_vec, time_slice_io);
-
-	  vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * tmpvec;
+	  vec_srce[time_slice_set.getSet()[t_actual]] += eta(t_source, colorvec_source) * eigen_source_cache.getVec(t_actual, colorvec_source);
 	}
 
 	return vec_srce;
@@ -568,12 +652,12 @@ namespace Chroma
       public:
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      MOD_t& eigen_source_,
+		      TimeSliceIOCache& eigen_source_cache_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_)
 	: params(params_), 
-	  dist_noise_obj(dist_noise_obj_), eigen_source(eigen_source_), time_slice_set(time_slice_set_), 
+	  dist_noise_obj(dist_noise_obj_), eigen_source_cache(eigen_source_cache_), time_slice_set(time_slice_set_), 
 	  quark_line(quark_line_), mass(mass_)
 	  {
 	    // Initialize the noise for this quark line
@@ -583,16 +667,14 @@ namespace Chroma
 	    params.num_space_dils = checkSpaceDils(params.num_space_dils, params.num_vecs);
 	    params.num_time_dils  = checkTimeDils(params.num_time_dils, Layout::lattSize()[dist_noise_obj.getDecayDir()]);
 
-#if 0
 	    // Another sanity check
-	    if (params.num_vecs > eigen_source.size())
+	    if (params.num_vecs > eigen_source_cache.getNumVecs())
 	    {
 	      QDPIO::cerr << __func__ << ": num_vecs= " << params.num_vecs
 			  << " is greater than the number of available colorvectors= "
-			  << eigen_source.size() << endl;
+			  << eigen_source_cache.getNumVecs() << endl;
 	      QDP_abort(1);
 	    }
-#endif
 	  }
 
 	//! Get a source
@@ -626,7 +708,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	MOD_t&                    eigen_source;
+	TimeSliceIOCache&         eigen_source_cache;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -667,16 +749,7 @@ namespace Chroma
 	    // Get the actual time slice
 	    int t_actual = dist_noise_obj.getTime(time_source);
 
-	    KeyTimeSliceColorVec_t key_vec;
-	    key_vec.t_slice = t_actual;
-	    key_vec.colorvec = colorvec_source;
-
-	    LatticeColorVector tmpvec = zero;
-	    TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
-
-	    eigen_source.get(key_vec, time_slice_io);
-
-	    vec_srce[time_slice_set.getSet()[t_actual]] += eta(time_source, colorvec_source) * tmpvec;
+	    vec_srce[time_slice_set.getSet()[t_actual]] += eta(time_source, colorvec_source) * eigen_source_cache.getVec(t_actual, colorvec_source);
 	  }
 	} // for time_source
 
@@ -793,26 +866,26 @@ namespace Chroma
       AbsQuarkLine* createConn(XMLReader& xml_in, 
 			       const std::string& path,
 			       const DistillutionNoise& dist_noise_obj, 
-			       MOD_t& eigen_source,
+			       TimeSliceIOCache& eigen_source_cache,
 			       const TimeSliceSet& time_slice_set,
 			       int quark_line,
 			       const std::string& mass)
       {
 	return new Connected::QuarkLineFact(Connected::Params(xml_in, path),
-					    dist_noise_obj, eigen_source, time_slice_set, 
+					    dist_noise_obj, eigen_source_cache, time_slice_set, 
 					    quark_line, mass);
       }
 
       AbsQuarkLine* createAnnih(XMLReader& xml_in, 
 				const std::string& path,
 				const DistillutionNoise& dist_noise_obj, 
-				MOD_t& eigen_source,
+				TimeSliceIOCache& eigen_source_cache,
 				const TimeSliceSet& time_slice_set,
 				int quark_line,
 			       const std::string& mass)
       {
 	return new Annihilation::QuarkLineFact(Annihilation::Params(xml_in, path),
-					       dist_noise_obj, eigen_source, time_slice_set, 
+					       dist_noise_obj, eigen_source_cache, time_slice_set, 
 					       quark_line, mass);
       }
 
@@ -1169,27 +1242,29 @@ namespace Chroma
 	throw;
       }
 
-      QDPIO::cout << "Set source mod file to read" << endl;
+      QDPIO::cout << "Source vectors initialized" << endl;
 
-      QDPIO::cout << "Source successfully read and parsed" << endl;
+      //
+      // Hold the eigenvectors
+      // 
+      TimeSliceIOCache eigen_source_cache(eigen_source);
+
+      QDPIO::cout << "Eigenvector source cache initialized" << endl;
 
 
+      //
       // Sanity check - write out the norm2 of the source in the decay_dir direction
       // Use this for any possible verification
+      //
       {
-	QDPIO::cout << "Lookup source 0" << endl;
-	LatticeColorVector tmpvec;
+	QDPIO::cout << "Do some sanity checks with the eigenvectors" << endl;
 
 	for(int t=0; t < Lt; ++t)
 	{
-	  KeyTimeSliceColorVec_t key_vec;
-	  key_vec.t_slice = t;
-	  key_vec.colorvec = 0;
-
-	  TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t);
-	  eigen_source.get(key_vec, time_slice_io);
+	  LatticeColorVector& stuff = eigen_source_cache.getVec(t,0);
 	}
 
+	LatticeColorVector& tmpvec = eigen_source_cache.getVec(0,0);
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec), time_slice_set.getSet());
 
 	push(xml_out, "Source_correlators");
@@ -1360,7 +1435,7 @@ namespace Chroma
 	      TheQuarkLineFactory::Instance().createObject(params.param.contract.quark_line_xml.id,
 							   linktop,
 							   params.param.contract.quark_line_xml.path,
-							   dist_noise_obj, eigen_source, 
+							   dist_noise_obj, eigen_source_cache, 
 							   time_slice_set, 
 							   *quark_line,
 							   params.param.contract.mass);
@@ -1509,16 +1584,8 @@ namespace Chroma
 
 		  for(int colorvec_sink=0; colorvec_sink < quark_line_fact->getNumVecs(); ++colorvec_sink)
 		  {
-		    KeyTimeSliceColorVec_t key_vec;
-		    key_vec.t_slice  = t_actual;
-		    key_vec.colorvec = colorvec_sink;
-
-		    LatticeColorVector tmpvec = zero;
-		    TimeSliceIO<LatticeColorVector> time_slice_io(tmpvec, t_actual);
-
-		    eigen_source.get(key_vec, time_slice_io);
-
-		    ComplexD hsum = sum(localInnerProduct(tmpvec, ferm_out(key->spin_snk,key->spin_src)), 
+		    ComplexD hsum = sum(localInnerProduct(eigen_source_cache.getVec(t_actual, colorvec_sink),
+							  ferm_out(key->spin_snk,key->spin_src)), 
 					time_slice_set.getSet()[t_actual]);
 
 		    peram_buf(key->t_slice,key->spin_snk,key->spin_src).mat(colorvec_sink,dist_src) = hsum;
