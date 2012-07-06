@@ -56,11 +56,15 @@ namespace Chroma
     typedef OLattice< PScalar< PScalar< RScalar< typename WordType<T>::Type_t> > > > LatticeREAL;
     typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
 
-    //! Empty constructor. Must use create later
+    //! Constructor.
     JitCloverTermT();
 
-    //! No real need for cleanup here
-    ~JitCloverTermT() {}
+    //! Real need for cleanup here
+    ~JitCloverTermT() {
+      if (Layout::primaryNode())
+	QDP_info("JIT Clover: Signing off triangular field tri_id=%u",(unsigned)tri_id);
+      QDPCache::Instance().signoff( tri_id );
+    }
 
     //! Creation routine
     void create(Handle< FermState<T, multi1d<U>, multi1d<U> > > fs,
@@ -143,14 +147,24 @@ namespace Chroma
     multi1d<bool> choles_done;   // Keep note of whether the decomposition has been done
                                  // on a particular checkerboard. 
 
-    multi1d<PrimitiveClovTriang<REALT> >  tri;
+    //multi1d<PrimitiveClovTriang<REALT> >  tri;
+
+    int tri_id;
     
   };
 
 
-   // Empty constructor. Must use create later
+  // Constructor.
   template<typename T, typename U>
-  JitCloverTermT<T,U>::JitCloverTermT() {}
+  JitCloverTermT<T,U>::JitCloverTermT() 
+  {
+    const int nodeSites = QDP::Layout::sitesOnNode();
+    size_t bytes_total = sizeof( PrimitiveClovTriang< typename JitCloverTermT::REALT > ) * nodeSites;
+    tri_id = QDPCache::Instance().registrate( bytes_total , 1 );
+    if (Layout::primaryNode())
+      QDP_info("JIT Clover: Registering triangular field for clover %u  tri_id=%u",(unsigned)bytes_total,(unsigned)tri_id);
+  }
+
 
   // Now copy
   template<typename T, typename U>
@@ -200,8 +214,16 @@ namespace Chroma
     }
     
     tr_log_diag_ = from.tr_log_diag_;
-    
-    tri = from.tri;
+
+    const int nodeSites = QDP::Layout::sitesOnNode();
+    size_t bytes_total = sizeof( PrimitiveClovTriang< typename JitCloverTermT::REALT > ) * nodeSites;
+
+    CudaMemcpy( QDPCache::Instance().getDevicePtr( tri_id ),
+	        QDPCache::Instance().getDevicePtr( from.tri_id ), 
+	        bytes_total );
+
+    QDPCache::Instance().setModDev( tri_id );
+
     END_CODE();  
   }
 
@@ -353,7 +375,7 @@ namespace Chroma
       const U& f3;
       const U& f4;
       const U& f5;
-      multi1d< PrimitiveClovTriang < REALT > >& tri;
+      int tri_id;
     };
 
 
@@ -371,8 +393,7 @@ namespace Chroma
       const U& f3=a->f3;
       const U& f4=a->f4;
       const U& f5=a->f5;
-      multi1d<PrimitiveClovTriang < REALT > >& tri=a->tri;
-
+      int tri_id=a->tri_id;
 
       while (1) {
 
@@ -381,18 +402,10 @@ namespace Chroma
 	static string                   strId;
 	static string                   prg;
 
-	void* tri_dev;
-
-	QDP_info("Clover JIT: allocating %lu bytes for tri field",nodeSites * sizeof(PrimitiveClovTriang < REALT >));
-	if (!QDPCache::Instance().allocate_device_static( &tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) )) {
-	  QDP_debug("Clover JIT: no GPU memory left for tri field");
-	  break;
-	}
-
 	QDPJitArgs cudaArgs;
 	string typeU,strREALT,codeDiagMass;
 
-	int argDestPtr = cudaArgs.addPtr( tri_dev );
+	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 	int argNum = cudaArgs.addInt( nodeSites );
 
 	string codeF0;
@@ -508,13 +521,12 @@ namespace Chroma
 	  break;
 	}
 
-	CudaMemcpy( (void*)tri.slice() , tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) );
+	QDPCache::Instance().setModDev( tri_id );
 
 	watch0.stop();
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
-	QDPCache::Instance().free_device_static( tri_dev );
 	return;
       }
       QDP_error("makeClov host not implemented");
@@ -547,9 +559,9 @@ namespace Chroma
 
     const int nodeSites = QDP::Layout::sitesOnNode();
 
-    tri.resize(nodeSites);  // hold local lattice
+    //tri.resize(nodeSites);  // hold local lattice
 
-    JITCloverEnv::JITCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri };
+    JITCloverEnv::JITCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri_id };
     makeClovJIT( nodeSites , &arg );
 
     END_CODE();
@@ -614,7 +626,7 @@ namespace Chroma
       typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
       typedef OLattice< PScalar< PScalar< RScalar<REALT> > > > LatticeRealT;
       LatticeRealT& tr_log_diag;
-      multi1d<PrimitiveClovTriang<REALT> >& tri;
+      int tri_id;
       int cb;
     };
 
@@ -628,7 +640,7 @@ namespace Chroma
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
 
       LatticeRealT& tr_log_diag = a->tr_log_diag;
-      multi1d<PrimitiveClovTriang < REALT> >& tri = a->tri;
+      int tri_id = a->tri_id;
       int cb = a->cb;
 
       int num_sites = rb[cb].siteTable().size();
@@ -642,14 +654,6 @@ namespace Chroma
 
 	const int nodeSites = QDP::Layout::sitesOnNode();
 
-	void* tri_dev;
-
-	QDP_info("LDagDLInvJIT: allocating %lu bytes for tri field",nodeSites * sizeof(PrimitiveClovTriang < REALT >));
-	if (!QDPCache::Instance().allocate_device_static( &tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) )) {
-	  QDP_info("LDagDLInvJIT: no GPU memory left for tri field");
-	  break;
-	}
-
 	QDPJitArgs cudaArgs;
 
 	int argNum = cudaArgs.addInt( rb[cb].numSiteTable() );
@@ -657,7 +661,7 @@ namespace Chroma
 	int argStart = cudaArgs.addInt( rb[cb].start() );
 	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
 
-	int argDestPtr = cudaArgs.addPtr( tri_dev );   
+	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
 	string strREALT;
 	string codeSubset,codeTr;
@@ -938,8 +942,6 @@ namespace Chroma
 #endif
 	}
 
-	CudaMemcpy( tri_dev , (void*)tri.slice() , nodeSites * sizeof(PrimitiveClovTriang < REALT >) );
-
 	StopWatch watch0;
 	watch0.start();
 
@@ -948,13 +950,12 @@ namespace Chroma
 	  break;
 	}
 
-	CudaMemcpy( (void*)tri.slice() , tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) );
+	QDPCache::Instance().setModDev( tri_id );
 
 	watch0.stop();
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
-	QDPCache::Instance().free_device_static( tri_dev );
 	return;
       }
       QDP_error("packClov host not implemented");
@@ -980,7 +981,7 @@ namespace Chroma
     // Zero trace log
     tr_log_diag = zero;
 
-    JITCloverEnv::LDagDLInvArgs<U> a = { tr_log_diag, tri, cb };
+    JITCloverEnv::LDagDLInvArgs<U> a = { tr_log_diag, tri_id, cb };
     LDagDLInvJIT(&a);
 
     
@@ -1006,6 +1007,8 @@ namespace Chroma
     inline 
     void cholesSiteLoop(int lo, int hi, int myId, LDagDLInvArgs<U>* a)
     {
+      QDP_error_exit("Clover: cholesSiteLoop n.i.");
+#if 0
       typedef typename LDagDLInvArgs<U>::REALT REALT;
       typedef typename LDagDLInvArgs<U>::RealT RealT;
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
@@ -1152,6 +1155,7 @@ namespace Chroma
 	// Overwrite original element
 	tri[site] = invcl;
       }
+#endif
     } // End function
 
   } // End Namespace
@@ -1160,6 +1164,8 @@ namespace Chroma
   template<typename T, typename U>
   void JitCloverTermT<T,U>::chlclovms(LatticeREAL& tr_log_diag, int cb)
   {
+    QDP_error_exit("Clover: chlclovms n.i.");
+#if 0
     START_CODE();
 
     if ( 2*Nc < 3 )
@@ -1174,6 +1180,7 @@ namespace Chroma
     
     choles_done[cb] = true;
     END_CODE();
+#endif
   }
 
 
@@ -1199,6 +1206,8 @@ namespace Chroma
   void JitCloverTermT<T,U>::applySite(T& chi, const T& psi, 
 			    enum PlusMinus isign, int site) const
   {
+    QDP_error_exit("Clover: applySite n.i.");
+#if 0
     START_CODE();
 
     if ( Ns != 4 )
@@ -1299,6 +1308,7 @@ namespace Chroma
 
 
     END_CODE();
+#endif
   }
 
 
@@ -1343,7 +1353,7 @@ namespace Chroma
       typedef typename WordType<U>::Type_t REALT;
       
       U& B;
-      const multi1d<PrimitiveClovTriang< REALT > >& tri;
+      int tri_id;
       int mat;
       int cb;
     };
@@ -1356,7 +1366,7 @@ namespace Chroma
     {
       typedef typename WordType<U>::Type_t REALT;
       U& B = a->B;
-      const multi1d<PrimitiveClovTriang< REALT > >& tri = a->tri;
+      int tri_id = a->tri_id;
       int mat = a->mat;
       int cb  = a->cb;
 
@@ -1384,20 +1394,13 @@ namespace Chroma
 	QDPJitArgs cudaArgs;
 
 	const int nodeSites = QDP::Layout::sitesOnNode();
-	void* tri_dev;
-	QDP_info("LDagDLInvJIT: allocating %lu bytes for tri field",nodeSites * sizeof(PrimitiveClovTriang < REALT >));
-	if (!QDPCache::Instance().allocate_device_static( &tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) )) {
-	  QDP_info("LDagDLInvJIT: no GPU memory left for tri field");
-	  break;
-	}
-	CudaMemcpy( tri_dev , (void*)tri.slice() , nodeSites * sizeof(PrimitiveClovTriang < REALT >) );
 
 	int argNum = cudaArgs.addInt( rb[cb].numSiteTable() );
 	int argOrd = cudaArgs.addBool( rb[cb].hasOrderedRep() );
 	int argStart = cudaArgs.addInt( rb[cb].start() );
 	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
 
-	int argDestPtr = cudaArgs.addPtr( tri_dev );
+	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 	int argMat = cudaArgs.addInt( mat );
 
 	string strREALT,typeT;
@@ -1733,7 +1736,6 @@ namespace Chroma
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
-	QDPCache::Instance().free_device_static( tri_dev );
 	return;
       }
       QDP_error("Clover: triaCntrJIT: host not implemented");
@@ -1758,7 +1760,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    JITCloverEnv::TriaCntrArgs<U> a = { B, tri, mat, cb };
+    JITCloverEnv::TriaCntrArgs<U> a = { B, tri_id , mat, cb };
     triaCntrJIT( &a );
 
     END_CODE();
@@ -1797,7 +1799,7 @@ namespace Chroma
       typedef typename WordType<T>::Type_t REALT;
       T& chi;
       const T& psi;
-      const multi1d<PrimitiveClovTriang<REALT> >& tri;
+      int tri_id;
       int cb;
     };
 
@@ -1810,7 +1812,7 @@ namespace Chroma
 
       T& chi=arg->chi;
       const T& psi=arg->psi;
-      const multi1d<PrimitiveClovTriang<REALT> >& tri = arg->tri;
+      int tri_id = arg->tri_id;
       int cb = arg->cb;
 
       while (1) {
@@ -1821,13 +1823,6 @@ namespace Chroma
 	static string                   prg;
 
 	const int nodeSites = QDP::Layout::sitesOnNode();
-	void* tri_dev;
-	QDP_info("LDagDLInvJIT: allocating %lu bytes for tri field",nodeSites * sizeof(PrimitiveClovTriang < REALT >));
-	if (!QDPCache::Instance().allocate_device_static( &tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) )) {
-	  QDP_info("LDagDLInvJIT: no GPU memory left for tri field");
-	  break;
-	}
-	CudaMemcpy( tri_dev , (void*)tri.slice() , nodeSites * sizeof(PrimitiveClovTriang < REALT >) );
 
 	QDPJitArgs cudaArgs;
 
@@ -1836,7 +1831,7 @@ namespace Chroma
 	int argStart = cudaArgs.addInt( rb[cb].start() );
 	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
 
-	int argDestPtr = cudaArgs.addPtr( tri_dev );
+	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
 	string strREALT,typeT;
 	string codeSubset,codeChi,codePsi;
@@ -2212,7 +2207,6 @@ namespace Chroma
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
-	QDPCache::Instance().free_device_static( tri_dev );
 	return;
       }
       QDP_error("Clover: applyJIT host not implemented");
@@ -2253,7 +2247,7 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    JITCloverEnv::ApplyArgs<T> arg = { chi,psi,tri,cb };
+    JITCloverEnv::ApplyArgs<T> arg = { chi,psi,tri_id,cb };
     int num_sites = rb[cb].siteTable().size();
 
     // The dispatch function is at the end of the file
@@ -2271,7 +2265,7 @@ namespace Chroma
     struct QUDAPackArgs { 
       int cb;
       multi1d<QUDAPackedClovSite<R> >& quda_array;
-      const multi1d<PrimitiveClovTriang< R > >& tri;
+      int tri_id;
     };
     
 
@@ -2287,7 +2281,7 @@ namespace Chroma
       int Ns2 = Ns/2;
 
       multi1d<QUDAPackedClovSite<U> >& quda_array = a->quda_array;
-      const multi1d<PrimitiveClovTriang< U > >& tri=a->tri;
+      int tri_id = a->tri_id;
 
       while (1) {
 
@@ -2298,19 +2292,8 @@ namespace Chroma
 
 	const int nodeSites = QDP::Layout::sitesOnNode();
 
-	void* tri_dev;
-
-	QDP_info("Pack Clover JIT: allocating %lu bytes for tri field",nodeSites * sizeof(PrimitiveClovTriang < REALT >));
-	if (!QDPCache::Instance().allocate_device_static( &tri_dev , nodeSites * sizeof(PrimitiveClovTriang < REALT >) )) {
-	  QDP_debug("Pack Clover JIT: no GPU memory left for tri field");
-	  break;
-	}
-
-	CudaMemcpy( tri_dev , (void*)tri.slice() , nodeSites * sizeof(PrimitiveClovTriang < REALT >) );
-
 	void* quda_array_dev;
 
-	QDP_info("Pack Clover JIT: allocating %lu bytes for quda_array field",nodeSites * sizeof(QUDAPackedClovSite<U>));
 	if (!QDPCache::Instance().allocate_device_static( &quda_array_dev , nodeSites * sizeof(QUDAPackedClovSite<U>) )) {
 	  QDP_debug("Pack Clover JIT: no GPU memory left for quda_array field");
 	  break;
@@ -2326,7 +2309,7 @@ namespace Chroma
 	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
 
 	int argDestPtr = cudaArgs.addPtr( quda_array_dev );
-	int argMiscPtr = cudaArgs.addPtr( tri_dev );
+	int argMiscPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
 	string strREALT;
 	string codeSubset;
@@ -2426,7 +2409,6 @@ namespace Chroma
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 	
-	QDPCache::Instance().free_device_static( tri_dev );
 	QDPCache::Instance().free_device_static( quda_array_dev );
 	return;
       }
@@ -2443,7 +2425,7 @@ namespace Chroma
       typedef typename WordType<T>::Type_t REALT;
       int num_sites = rb[cb].siteTable().size();
 
-      JITCloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri };
+      JITCloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri_id };
       qudaPackJIT( &args );
       
     }  
