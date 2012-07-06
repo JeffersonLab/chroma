@@ -151,27 +151,30 @@ host_triplet = @host@
 @BUILD_SSED_CLOVER_APPLY_TRUE@am__append_31 = actions/ferm/linop/clover_term_ssed.cc \
 @BUILD_SSED_CLOVER_APPLY_TRUE@	actions/ferm/linop/clover_apply_ssed.cc
 
+@BUILD_JIT_CLOVER_APPLY_TRUE@am__append_32 = actions/ferm/linop/clover_term_jit_w.h \
+@BUILD_JIT_CLOVER_APPLY_TRUE@	util/gauge/stout_utils_jit.h
+
 
 #
 # BICGSTAB Kernels Testing:
-@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_32 = 
-@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_33 = actions/ferm/invert/bicgstab_kernels_scalarsite.cc
+@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_33 = 
+@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_34 = actions/ferm/invert/bicgstab_kernels_scalarsite.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_34 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_35 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_35 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_36 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
 # include files for scidac libaries
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_36 = -I@QDPC_DIR@/qmp/include \
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_37 = -I@QDPC_DIR@/qmp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qio/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qla/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qdp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qopqdp/include
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_37 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_38 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_38 = actions/ferm/linop/clover_term_bagel_clover.h
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_39 = actions/ferm/linop/clover_term_bagel_clover.cc
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -2262,6 +2265,8 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/syssolver_linop_OPTeigbicg.h \
 	meas/inline/hadron/inline_laplace_eigs.h \
 	actions/ferm/linop/clover_term_ssed.h \
+	actions/ferm/linop/clover_term_jit_w.h \
+	util/gauge/stout_utils_jit.h \
 	actions/ferm/qprop/asqtad_cps_wrapper_qprop.h \
 	actions/ferm/linop/clover_term_bagel_clover.h
 HEADERS = $(nobase_include_HEADERS) $(nodist_include_HEADERS)
@@ -3218,8 +3223,8 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	$(am__append_9) $(am__append_11) $(am__append_13) \
 	$(am__append_15) $(am__append_17) $(am__append_22) \
 	$(am__append_24) $(am__append_26) $(am__append_28) \
-	$(am__append_30) $(am__append_32) $(am__append_34) \
-	$(am__append_37)
+	$(am__append_30) $(am__append_32) $(am__append_33) \
+	$(am__append_35) $(am__append_38)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -3238,7 +3243,7 @@ AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
-	$(am__append_7) $(am__append_8) $(am__append_36)
+	$(am__append_7) $(am__append_8) $(am__append_37)
 lib_LIBRARIES = libchroma.a
 
 #
@@ -3892,7 +3897,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	$(am__append_16) $(am__append_18) $(am__append_19) \
 	$(am__append_20) $(am__append_21) $(am__append_23) \
 	$(am__append_25) $(am__append_27) $(am__append_29) \
-	$(am__append_31) $(am__append_33) \
+	$(am__append_31) $(am__append_34) \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
@@ -3925,7 +3930,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_35) $(am__append_38)
+	util/gauge/stag_phases_s.cc $(am__append_36) $(am__append_39)
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
