@@ -47,6 +47,9 @@ namespace Chroma
     //! Get number of vectors
     virtual int getNumVecs() const {return num_vecs;}
 
+    //! Get the whole vector
+    virtual LatticeColorVector& getVec(int colorvec);
+
     //! Get a vector
     virtual LatticeColorVector& getVec(int t_actual, int colorvec);
 
@@ -106,6 +109,12 @@ namespace Chroma
 
 
   // Get a vector
+  LatticeColorVector& TimeSliceIOCache::getVec(int colorvec)
+  {
+    return eigen_cache[colorvec];
+  }
+
+  // Get a vector
   LatticeColorVector& TimeSliceIOCache::getVec(int t_actual, int colorvec)
   {
     // If not in cache, then retrieve
@@ -149,6 +158,12 @@ namespace Chroma
     //! Get quark line number
     virtual int getQuarkLine() const = 0;
 
+    //! Get mass
+    virtual std::string getMass() const = 0;
+
+    //! Get annihilation flag
+    virtual bool getAnnihP() const = 0;
+
     //! Get the time sources
     virtual std::vector<int> getTimeSources() const = 0;
 
@@ -160,6 +175,9 @@ namespace Chroma
 
     //! Get perambulator keys
     virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const = 0;
+
+    //! Get perambulator key time slices
+    virtual std::list<int> getTslices(int t_source) const = 0;
   };
 
 
@@ -395,6 +413,12 @@ namespace Chroma
 	//! Get quark line number
 	virtual int getQuarkLine() const {return quark_line;}
 
+	//! Get mass
+	virtual std::string getMass() const {return mass;}
+
+	//! Get annihilation flag
+	virtual bool getAnnihP() const {return false;}
+
 	//! Get the time sources
 	virtual std::vector<int> getTimeSources() const {return params.t_sources;}
 
@@ -406,6 +430,9 @@ namespace Chroma
 
 	//! Get perambulator keys
 	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
+
+	//! Get perambulator key time slices
+	virtual std::list<int> getTslices(int t_source) const;
 
       private:
 	std::vector<bool> getActiveTSlices(int t_source) const;
@@ -582,6 +609,28 @@ namespace Chroma
       }
 
 	
+      //----------------------------------------------------------------------------
+      //! Get perambulator key time slices
+      std::list<int> QuarkLineFact::getTslices(int t_source) const
+      {
+	std::list<int> keys;
+
+	std::vector<bool> active_t_slices = getActiveTSlices(t_source);
+	
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int t=0; t < Lt; ++t)
+	{
+	  if (active_t_slices[t])
+	  {
+	    keys.push_back(t);
+	  }
+	} // for t
+
+	return keys;
+      }
+
+	
     } // namespace Connected
 
 
@@ -692,6 +741,12 @@ namespace Chroma
 	//! Get quark line number
 	virtual int getQuarkLine() const {return quark_line;}
 
+	//! Get mass
+	virtual std::string getMass() const {return mass;}
+
+	//! Get annihilation flag
+	virtual bool getAnnihP() const {return true;}
+
 	//! Get the time sources
 	virtual std::vector<int> getTimeSources() const;
 
@@ -703,6 +758,9 @@ namespace Chroma
 
 	//! Get perambulator keys
 	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
+
+	//! Get perambulator key time slices
+	virtual std::list<int> getTslices(int t_source) const;
 
       private:
 	// Arguments
@@ -852,6 +910,22 @@ namespace Chroma
 	    } // for t
 	  } // for spin_sink
 	} // for spin_source
+
+	return keys;
+      }
+
+      //----------------------------------------------------------------------------
+      //! Get perambulator key time slices
+      std::list<int> QuarkLineFact::getTslices(int t_source) const
+      {
+	std::list<int> keys;
+
+	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
+
+	for(int t=t_source; t < Lt; t += params.num_time_dils)
+	{
+	  keys.push_back(t);
+	} // for t
 
 	return keys;
       }
@@ -1264,7 +1338,7 @@ namespace Chroma
 	  LatticeColorVector& stuff = eigen_source_cache.getVec(t,0);
 	}
 
-	LatticeColorVector& tmpvec = eigen_source_cache.getVec(0,0);
+	LatticeColorVector& tmpvec = eigen_source_cache.getVec(0);
 	multi1d<Double> source_corrs = sumMulti(localNorm2(tmpvec), time_slice_set.getSet());
 
 	push(xml_out, "Source_correlators");
@@ -1465,19 +1539,33 @@ namespace Chroma
 	    //
 	    // Initialize all the perambulator keys
 	    //
-	    std::list<KeyPeramDist_t> peram_keys;
+	    std::list<int>            peram_tslices;
 	    multi3d<ValPeramDist_t>   peram_buf;
 
 	    if (params.named_obj.save_peramP)
 	    {
-	      peram_keys = quark_line_fact->getPeramKeys(t_source);
+	      peram_tslices = quark_line_fact->getTslices(t_source);
 	      peram_buf.resize(Lt,Ns,Ns);
 
-	      for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
-		  key != peram_keys.end();
-		  ++key)
+	      for(std::list<int>::const_iterator t_slice= peram_tslices.begin();
+		  t_slice != peram_tslices.end();
+		  ++t_slice)
 	      {
-		peram_buf(key->t_slice,key->spin_snk,key->spin_src).mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
+		// Load the necessary time-slices 
+		for(int colorvec_sink=0; colorvec_sink < quark_line_fact->getNumVecs(); ++colorvec_sink)
+		{
+		  LatticeColorVector& foobar = eigen_source_cache.getVec(dist_noise_obj.getTime(*t_slice), colorvec_sink);
+		}
+
+		// Initialize the perams
+		for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
+		{
+		  for(int spin_src=0; spin_src < Ns; ++spin_src)
+		  {
+		    peram_buf(*t_slice,spin_snk,spin_src).mat.resize(quark_line_fact->getNumVecs(),quark_line_fact->getNumSpaceDils());
+		    peram_buf(*t_slice,spin_snk,spin_src).mat = zero;
+		  }
+		}
 	      }
 	    }
 
@@ -1575,23 +1663,27 @@ namespace Chroma
 	      {
 		QDPIO::cout << "Computing perambulators" << std::endl;
 
-		for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
-		    key != peram_keys.end();
-		    ++key)
+		for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
 		{
-		  // Get the actual time slice
-		  int t_actual = dist_noise_obj.getTime(key->t_slice);
-
-		  for(int colorvec_sink=0; colorvec_sink < quark_line_fact->getNumVecs(); ++colorvec_sink)
+		  for(int spin_src=0; spin_src < Ns; ++spin_src)
 		  {
-		    ComplexD hsum = sum(localInnerProduct(eigen_source_cache.getVec(t_actual, colorvec_sink),
-							  ferm_out(key->spin_snk,key->spin_src)), 
-					time_slice_set.getSet()[t_actual]);
+		    for(int colorvec_sink=0; colorvec_sink < quark_line_fact->getNumVecs(); ++colorvec_sink)
+		    {
+		      // Sum over all time-slices. The colorvectors should all be loaded for the desired time slices.
+		      multi1d<ComplexD> hsum = sumMulti(localInnerProduct(eigen_source_cache.getVec(colorvec_sink),
+									  ferm_out(spin_snk,spin_src)),
+							time_slice_set.getSet());
 
-		    peram_buf(key->t_slice,key->spin_snk,key->spin_src).mat(colorvec_sink,dist_src) = hsum;
-
-		  } // for colorvec_sink
-		} // for key
+		      // Pull off the desired time slices
+		      for(std::list<int>::const_iterator t_slice= peram_tslices.begin();
+			  t_slice != peram_tslices.end();
+			  ++t_slice)
+		      {
+			peram_buf(*t_slice,spin_snk,spin_src).mat(colorvec_sink,dist_src) = hsum[dist_noise_obj.getTime(*t_slice)];
+		      } // for key
+		    } // for colorvec_sink
+		  } // for spin_src
+		} // for spin_snk
 	      }
 
 	      sniss2.stop();
@@ -1607,14 +1699,29 @@ namespace Chroma
 	    {
 	      QDPIO::cout << "Write perambulators to disk" << std::endl;
 
-	      for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
-		  key != peram_keys.end();
-		  ++key)
+	      for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
 	      {
-		qdp_db.insert(*key, peram_buf(key->t_slice,key->spin_snk,key->spin_src));
-	      } // for key
-	    }
+		for(int spin_src=0; spin_src < Ns; ++spin_src)
+		{
+		  for(std::list<int>::const_iterator t_slice= peram_tslices.begin();
+		      t_slice != peram_tslices.end();
+		      ++t_slice)
+		  {
+		    KeyPeramDist_t key;
+		    key.quark_line = quark_line_fact->getQuarkLine();
+		    key.annihP     = quark_line_fact->getAnnihP();
+		    key.t_slice    = *t_slice;
+		    key.t_source   = t_source;
+		    key.spin_src   = spin_src;
+		    key.spin_snk   = spin_snk;
+		    key.mass       = quark_line_fact->getMass();
 
+		    qdp_db.insert(key, peram_buf(*t_slice,spin_snk,spin_src));
+
+		  } // for key
+		} // for spin_src
+	      } // for spin_snk
+	    }
 	  } // for tt
 	} // for quark_line
 
