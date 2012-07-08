@@ -1539,11 +1539,13 @@ namespace Chroma
 	    //
 	    // Initialize all the perambulator keys
 	    //
-	    std::list<int>            peram_tslices;
-	    multi3d<ValPeramDist_t>   peram_buf;
+	    std::list<int>              peram_tslices;
+	    std::list<KeyPeramDist_t>   peram_keys;
+	    multi3d<ValPeramDist_t>     peram_buf;
 
 	    if (params.named_obj.save_peramP)
 	    {
+	      peram_keys    = quark_line_fact->getPeramKeys(t_source);
 	      peram_tslices = quark_line_fact->getTslices(t_source);
 	      peram_buf.resize(Lt,Ns,Ns);
 
@@ -1699,28 +1701,12 @@ namespace Chroma
 	    {
 	      QDPIO::cout << "Write perambulators to disk" << std::endl;
 
-	      for(int spin_snk=0; spin_snk < Ns; ++spin_snk)
+	      for(std::list<KeyPeramDist_t>::const_iterator key= peram_keys.begin();
+		  key != peram_keys.end();
+		  ++key)
 	      {
-		for(int spin_src=0; spin_src < Ns; ++spin_src)
-		{
-		  for(std::list<int>::const_iterator t_slice= peram_tslices.begin();
-		      t_slice != peram_tslices.end();
-		      ++t_slice)
-		  {
-		    KeyPeramDist_t key;
-		    key.quark_line = quark_line_fact->getQuarkLine();
-		    key.annihP     = quark_line_fact->getAnnihP();
-		    key.t_slice    = *t_slice;
-		    key.t_source   = t_source;
-		    key.spin_src   = spin_src;
-		    key.spin_snk   = spin_snk;
-		    key.mass       = quark_line_fact->getMass();
-
-		    qdp_db.insert(key, peram_buf(*t_slice,spin_snk,spin_src));
-
-		  } // for key
-		} // for spin_src
-	      } // for spin_snk
+		qdp_db.insert(*key, peram_buf(key->t_slice,key->spin_snk,key->spin_src));
+	      } // for key
 	    }
 	  } // for tt
 	} // for quark_line
