@@ -222,8 +222,6 @@ namespace Chroma
 	        QDPCache::Instance().getDevicePtr( from.tri_id ), 
 	        bytes_total );
 
-    QDPCache::Instance().setModDev( tri_id );
-
     END_CODE();  
   }
 
@@ -520,8 +518,6 @@ namespace Chroma
 	  QDP_info("makeClov call to cuda jitter failed");
 	  break;
 	}
-
-	QDPCache::Instance().setModDev( tri_id );
 
 	watch0.stop();
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
@@ -949,8 +945,6 @@ namespace Chroma
 	  QDP_info("packClov call to cuda jitter failed");
 	  break;
 	}
-
-	QDPCache::Instance().setModDev( tri_id );
 
 	watch0.stop();
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
@@ -1730,8 +1724,6 @@ namespace Chroma
 	  break;
 	}
 
-	B.setModified();
-
 	watch0.stop();
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
@@ -2200,8 +2192,6 @@ namespace Chroma
 	  QDP_info("packClov call to cuda jitter failed");
 	  break;
 	}
-
-	chi.setModified();
 
 	watch0.stop();
 	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );

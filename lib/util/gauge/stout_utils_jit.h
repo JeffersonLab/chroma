@@ -483,15 +483,6 @@
 	    break;
 	  }
 
-	  for ( int i = 0 ; i < 3 ; i++) {
-	    f[i].setModified();
-	    if (dobs) {
-	      b1[i].setModified();
-	      b2[i].setModified();
-	    }
-	  }
-	      
-
 	  watch0.stop();
 	  DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
 	  DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
