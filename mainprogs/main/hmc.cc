@@ -294,9 +294,17 @@ namespace Chroma
 
     // Set the name and type of the config 
     {
+      // Parse the cfg XML including the parallel IO part
       SZINQIOGaugeInitEnv::Params  cfg;
-      cfg.cfg_file = restart_config_filename.str();
 
+      // Reset the filename in it
+      cfg.cfg_file = restart_config_filename.str();
+      if( mc_control.save_pario ) { 
+	// Assume if we save parallel, we should start up again in parallel
+        cfg.cfg_pario = QDPIO_PARALLEL;
+      }
+
+      // Prepare to write out
       p_new.cfg = SZINQIOGaugeInitEnv::createXMLGroup(cfg);
     }
 
