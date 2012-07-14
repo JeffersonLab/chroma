@@ -299,10 +299,7 @@ namespace Chroma
 
       // Reset the filename in it
       cfg.cfg_file = restart_config_filename.str();
-      if( mc_control.save_pario ) { 
-	// Assume if we save parallel, we should start up again in parallel
-        cfg.cfg_pario = QDPIO_PARALLEL;
-      }
+      cfg.cfg_pario = mc_control.save_pario;
 
       // Prepare to write out
       p_new.cfg = SZINQIOGaugeInitEnv::createXMLGroup(cfg);
