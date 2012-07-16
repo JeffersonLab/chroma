@@ -475,17 +475,10 @@
 #endif
 	  }
 
-	  StopWatch watch0;
-	  watch0.start();
-
 	  if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes )) {
 	    QDP_info("getFsAndBsJIT: call to cuda jitter failed");
 	    break;
 	  }
-
-	  watch0.stop();
-	  DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	  DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 	
 	  return;
 	}

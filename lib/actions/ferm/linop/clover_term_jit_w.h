@@ -511,17 +511,10 @@ namespace Chroma
 #endif
 	}
 
-	StopWatch watch0;
-	watch0.start();
-
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes )) {
 	  QDP_info("makeClov call to cuda jitter failed");
 	  break;
 	}
-
-	watch0.stop();
-	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
 	return;
       }
@@ -655,8 +648,7 @@ namespace Chroma
 	int argNum = cudaArgs.addInt( rb[cb].numSiteTable() );
 	int argOrd = cudaArgs.addBool( rb[cb].hasOrderedRep() );
 	int argStart = cudaArgs.addInt( rb[cb].start() );
-	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
-
+	int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( rb[cb].getId() ) );
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
 	string strREALT;
@@ -938,17 +930,10 @@ namespace Chroma
 #endif
 	}
 
-	StopWatch watch0;
-	watch0.start();
-
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
 	  QDP_info("packClov call to cuda jitter failed");
 	  break;
 	}
-
-	watch0.stop();
-	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
 	return;
       }
@@ -1392,8 +1377,7 @@ namespace Chroma
 	int argNum = cudaArgs.addInt( rb[cb].numSiteTable() );
 	int argOrd = cudaArgs.addBool( rb[cb].hasOrderedRep() );
 	int argStart = cudaArgs.addInt( rb[cb].start() );
-	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
-
+	int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( rb[cb].getId() ) );
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 	int argMat = cudaArgs.addInt( mat );
 
@@ -1716,17 +1700,10 @@ namespace Chroma
 #endif
 	}
 
-	StopWatch watch0;
-	watch0.start();
-
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
 	  QDP_info("packClov call to cuda jitter failed");
 	  break;
 	}
-
-	watch0.stop();
-	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
 	return;
       }
@@ -1821,8 +1798,7 @@ namespace Chroma
 	int argNum = cudaArgs.addInt( rb[cb].numSiteTable() );
 	int argOrd = cudaArgs.addBool( rb[cb].hasOrderedRep() );
 	int argStart = cudaArgs.addInt( rb[cb].start() );
-	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
-
+	int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( rb[cb].getId() ) );
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
 	string strREALT,typeT;
@@ -2184,18 +2160,10 @@ namespace Chroma
 #endif
 	}
 
-
-	StopWatch watch0;
-	watch0.start();
-
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
 	  QDP_info("packClov call to cuda jitter failed");
 	  break;
 	}
-
-	watch0.stop();
-	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
 
 	return;
       }
@@ -2296,8 +2264,7 @@ namespace Chroma
 	int argNum = cudaArgs.addInt( rb[cb].numSiteTable() );
 	int argOrd = cudaArgs.addBool( rb[cb].hasOrderedRep() );
 	int argStart = cudaArgs.addInt( rb[cb].start() );
-	int argSubset = cudaArgs.addPtr( rb[cb].getDevPtr() );
-
+	int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( rb[cb].getId() ) );
 	int argDestPtr = cudaArgs.addPtr( quda_array_dev );
 	int argMiscPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
@@ -2384,10 +2351,6 @@ namespace Chroma
 #endif
 	}
 
-
-	StopWatch watch0;
-	watch0.start();
-
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
 	  QDP_info("packClov call to cuda jitter failed");
 	  break;
@@ -2395,10 +2358,6 @@ namespace Chroma
 
 	CudaMemcpy( (void*)quda_array.slice() , quda_array_dev , nodeSites * sizeof(QUDAPackedClovSite<U>) );
 
-	watch0.stop();
-	DeviceStats::Instance().incMicroSecondsKernelExec( EVAL_LAT_LAT,watch0.getTimeInMicroseconds() );
-	DeviceStats::Instance().incEvalDev(EVAL_LAT_LAT);
-	
 	QDPCache::Instance().free_device_static( quda_array_dev );
 	return;
       }
