@@ -1545,6 +1545,8 @@ namespace Chroma
 
 	    if (params.named_obj.save_peramP)
 	    {
+	      QDPIO::cout << "Initialize peram keys and load colorvecs" << endl; 
+
 	      peram_keys    = quark_line_fact->getPeramKeys(t_source);
 	      peram_tslices = quark_line_fact->getTslices(t_source);
 	      peram_buf.resize(Lt,Ns,Ns);
@@ -1553,6 +1555,8 @@ namespace Chroma
 		  t_slice != peram_tslices.end();
 		  ++t_slice)
 	      {
+		QDPIO::cout << "t_slice = " << *t_slice << endl; 
+
 		// Load the necessary time-slices 
 		for(int colorvec_sink=0; colorvec_sink < quark_line_fact->getNumVecs(); ++colorvec_sink)
 		{
@@ -1569,6 +1573,8 @@ namespace Chroma
 		  }
 		}
 	      }
+
+	      QDPIO::cout << "Finished initializing peram keys" << endl; 
 	    }
 
 	    // The space distillution loop
