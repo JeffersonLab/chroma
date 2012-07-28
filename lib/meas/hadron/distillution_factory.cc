@@ -769,7 +769,7 @@ namespace Chroma
       return success;
     }
     
-  } // anonymous namespace
+  } // namespace DistillutionFactoryEnv
 
 
 } // namespace Chroma
