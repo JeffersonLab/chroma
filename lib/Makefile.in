@@ -380,6 +380,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/glue/wilson_flow_w.cc meas/glue/qactden.cc \
 	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
 	meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/distillution_factory.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -1062,6 +1063,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	polylp.$(OBJEXT) wilslp.$(OBJEXT) wilson_flow_w.$(OBJEXT) \
 	qactden.$(OBJEXT) qnaive.$(OBJEXT) block.$(OBJEXT) \
 	fuzglue.$(OBJEXT) gluecor.$(OBJEXT) polycor.$(OBJEXT) \
+	distillution_factory.$(OBJEXT) \
 	dilution_scheme_aggregate.$(OBJEXT) hadron_seqsource.$(OBJEXT) \
 	hadron_contract.$(OBJEXT) hadron_contract_aggregate.$(OBJEXT) \
 	hadron_2pt.$(OBJEXT) mesQl_w.$(OBJEXT) Ql_3pt_w.$(OBJEXT) \
@@ -1655,6 +1657,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
+	meas/hadron/distillution_factory.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
@@ -2639,6 +2642,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
+	meas/hadron/distillution_factory.h \
 	meas/hadron/hadron_seqsource.h meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
 	meas/hadron/hadron_contract_factory.h meas/hadron/hadron_2pt.h \
@@ -3442,6 +3446,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/glue/wilson_flow_w.cc meas/glue/qactden.cc \
 	meas/glue/qnaive.cc meas/glue/block.cc meas/glue/fuzglue.cc \
 	meas/glue/gluecor.cc meas/glue/polycor.cc \
+	meas/hadron/distillution_factory.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc meas/hadron/hadron_contract.cc \
 	meas/hadron/hadron_contract_aggregate.cc \
@@ -4096,6 +4101,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/disp_colvec_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/displacement.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/distillution_factory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/distillution_noise.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_fermact_qprop_array_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dwf_quarkprop4_w.Po@am__quote@
@@ -7665,6 +7671,20 @@ polycor.obj: meas/glue/polycor.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/glue/polycor.cc' object='polycor.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o polycor.obj `if test -f 'meas/glue/polycor.cc'; then $(CYGPATH_W) 'meas/glue/polycor.cc'; else $(CYGPATH_W) '$(srcdir)/meas/glue/polycor.cc'; fi`
+
+distillution_factory.o: meas/hadron/distillution_factory.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT distillution_factory.o -MD -MP -MF $(DEPDIR)/distillution_factory.Tpo -c -o distillution_factory.o `test -f 'meas/hadron/distillution_factory.cc' || echo '$(srcdir)/'`meas/hadron/distillution_factory.cc
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/distillution_factory.Tpo $(DEPDIR)/distillution_factory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/distillution_factory.cc' object='distillution_factory.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o distillution_factory.o `test -f 'meas/hadron/distillution_factory.cc' || echo '$(srcdir)/'`meas/hadron/distillution_factory.cc
+
+distillution_factory.obj: meas/hadron/distillution_factory.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT distillution_factory.obj -MD -MP -MF $(DEPDIR)/distillution_factory.Tpo -c -o distillution_factory.obj `if test -f 'meas/hadron/distillution_factory.cc'; then $(CYGPATH_W) 'meas/hadron/distillution_factory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/distillution_factory.cc'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/distillution_factory.Tpo $(DEPDIR)/distillution_factory.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/hadron/distillution_factory.cc' object='distillution_factory.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o distillution_factory.obj `if test -f 'meas/hadron/distillution_factory.cc'; then $(CYGPATH_W) 'meas/hadron/distillution_factory.cc'; else $(CYGPATH_W) '$(srcdir)/meas/hadron/distillution_factory.cc'; fi`
 
 dilution_scheme_aggregate.o: meas/hadron/dilution_scheme_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT dilution_scheme_aggregate.o -MD -MP -MF $(DEPDIR)/dilution_scheme_aggregate.Tpo -c -o dilution_scheme_aggregate.o `test -f 'meas/hadron/dilution_scheme_aggregate.cc' || echo '$(srcdir)/'`meas/hadron/dilution_scheme_aggregate.cc
