@@ -128,14 +128,11 @@
         </Propagator>
       </Param>
       <NamedObject>
-        <save_peramP>true</save_peramP>
-        <save_srcP>true</save_srcP>
         <save_solnP>true</save_solnP>
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <src_file>src.mod</src_file>
         <soln_file>prop.mod</soln_file>
-        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 
@@ -181,14 +178,11 @@
         </Propagator>
       </Param>
       <NamedObject>
-        <save_peramP>true</save_peramP>
-        <save_srcP>true</save_srcP>
         <save_solnP>false</save_solnP>
         <gauge_id>default_gauge_field</gauge_id>
         <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <src_file>src.mod</src_file>
         <soln_file>prop.mod</soln_file>
-        <peram_file>peram.mod</peram_file>
       </NamedObject>
     </elem>
 
