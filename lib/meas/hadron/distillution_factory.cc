@@ -178,9 +178,6 @@ namespace Chroma
 	//! Get perambulator keys
 	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
 
-	//! Get sink key
-	virtual KeyPeramDist_t getSnkKey(const KeyPeramDist_t& peram_key) const;
-
 	//! Get perambulator key time slices
 	virtual std::list<int> getTslices(int t_source) const;
 
@@ -512,9 +509,6 @@ namespace Chroma
 
 	//! Get perambulator keys
 	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
-
-	//! Get sink key
-	virtual KeyPeramDist_t getSnkKey(const KeyPeramDist_t& peram_key) const;
 
 	//! Get perambulator key time slices
 	virtual std::list<int> getTslices(int t_source) const;
