@@ -234,6 +234,7 @@ nobase_include_HEADERS = \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
+        meas/hadron/distillution_factory.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
@@ -1157,6 +1158,7 @@ libchroma_a_SOURCES = \
 	meas/glue/qactden.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+        meas/hadron/distillution_factory.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/hadron_contract.cc \
