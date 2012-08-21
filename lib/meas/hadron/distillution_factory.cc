@@ -192,7 +192,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	mutable QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj;
+	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -521,7 +521,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	mutable QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj;
+	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
