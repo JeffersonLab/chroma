@@ -28,7 +28,6 @@ namespace Chroma
       SilentFailP = false; //< If set to true ignore lack of convergence. Default is 'loud' 
       RsdToleranceFactor = Real(10); //< Tolerate if the solution achived is better (less) than rsdToleranceFactor*RsdTarget
       tuneDslashP = false ; //< v0.3 autotune feature
-      cacheDslashTuningP = true; //< v0.3 autotune feature.
       verboseP = false;
       innerParamsP = false;
       //innerParams = 0x0; // Null pointer
@@ -52,7 +51,6 @@ namespace Chroma
       SilentFailP = p.SilentFailP;
       RsdToleranceFactor = p.RsdToleranceFactor;
       tuneDslashP = p.tuneDslashP;
-      cacheDslashTuningP = p.cacheDslashTuningP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
     }
@@ -74,7 +72,6 @@ namespace Chroma
     bool SilentFailP;
     Real RsdToleranceFactor;
     bool tuneDslashP;
-    bool cacheDslashTuningP;
     bool innerParamsP;
     Handle<GCRInnerSolverParams> innerParams;
 
