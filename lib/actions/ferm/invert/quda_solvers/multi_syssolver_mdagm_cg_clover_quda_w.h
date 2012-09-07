@@ -468,7 +468,7 @@ namespace Chroma
     Handle< LinearOperator<T> > A;
     const SysSolverQUDACloverParams invParam;
     QudaGaugeParam q_gauge_param;
-    QudaInvertParam quda_inv_param;
+    mutable QudaInvertParam quda_inv_param;
 
     Handle< QDPCloverTermT<T, U> > clov;
     Handle< QDPCloverTermT<T, U> > invclov;

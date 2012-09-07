@@ -417,7 +417,7 @@ namespace Chroma
     Handle< LinearOperator<T> > A;
     const SysSolverQUDAWilsonParams invParam;
     QudaGaugeParam q_gauge_param;
-    QudaInvertParam quda_inv_param;
+    mutable QudaInvertParam quda_inv_param;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,
