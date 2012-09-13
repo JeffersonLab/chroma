@@ -94,13 +94,6 @@ namespace Chroma {
     }
     QDPIO::cout << "tuneDslasP = " << tuneDslashP << endl;
 
-    if( paramtop.count("CacheAutotuningResults") > 0 ) { 
-      read(paramtop, "CacheAutotuningResults", cacheDslashTuningP);
-    }
-    else { 
-      cacheDslashTuningP = true;
-    }
-    QDPIO::cout << "cacheDslashTuning = " << cacheDslashTuningP << endl;
 
     if( paramtop.count("GCRInnerParams") > 0 ) {
       innerParams = new GCRInnerSolverParams(paramtop, "./GCRInnerParams");
@@ -139,7 +132,6 @@ namespace Chroma {
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
 
     write(xml, "AutotuneDslash", p.tuneDslashP);
-    write(xml, "CacheAutotuningResults", p.cacheDslashTuningP);
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
     }

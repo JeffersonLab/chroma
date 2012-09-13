@@ -293,15 +293,6 @@ namespace Chroma
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
 
-      if( invParam.cacheDslashTuningP) { 
-	// Retune for every solve
-	QDPIO::cout << "Will cache Dslash tuning params accross solves" << endl;
-	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_YES;
-      }
-      else { 
-	
-	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_NO;
-      }
 
       // PADDING
       
@@ -477,7 +468,7 @@ namespace Chroma
     Handle< LinearOperator<T> > A;
     const SysSolverQUDACloverParams invParam;
     QudaGaugeParam q_gauge_param;
-    QudaInvertParam quda_inv_param;
+    mutable QudaInvertParam quda_inv_param;
 
     Handle< QDPCloverTermT<T, U> > clov;
     Handle< QDPCloverTermT<T, U> > invclov;

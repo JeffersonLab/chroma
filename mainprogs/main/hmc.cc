@@ -294,9 +294,14 @@ namespace Chroma
 
     // Set the name and type of the config 
     {
+      // Parse the cfg XML including the parallel IO part
       SZINQIOGaugeInitEnv::Params  cfg;
-      cfg.cfg_file = restart_config_filename.str();
 
+      // Reset the filename in it
+      cfg.cfg_file = restart_config_filename.str();
+      cfg.cfg_pario = mc_control.save_pario;
+
+      // Prepare to write out
       p_new.cfg = SZINQIOGaugeInitEnv::createXMLGroup(cfg);
     }
 

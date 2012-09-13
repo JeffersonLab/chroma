@@ -234,6 +234,7 @@ nobase_include_HEADERS = \
 	meas/hadron/dilution_quark_source_const_w.h \
 	meas/hadron/dilution_scheme_aggregate.h \
 	meas/hadron/dilution_scheme_factory.h \
+        meas/hadron/distillution_factory.h \
 	meas/hadron/hadron_seqsource.h \
 	meas/hadron/hadron_contract.h \
 	meas/hadron/hadron_contract_aggregate.h \
@@ -719,6 +720,7 @@ nobase_include_HEADERS += \
 	util/ferm/key_timeslice_colorvec.h \
 	util/ferm/key_prop_distillution.h \
 	util/ferm/key_val_db.h \
+	util/ferm/crc48.h \
 	util/ferm/distillution_noise.h \
         util/ferm/spin_rep.h \
         util/ferm/twoquark_contract_ops.h
@@ -1156,6 +1158,7 @@ libchroma_a_SOURCES = \
 	meas/glue/qactden.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
+        meas/hadron/distillution_factory.cc \
 	meas/hadron/dilution_scheme_aggregate.cc \
 	meas/hadron/hadron_seqsource.cc \
 	meas/hadron/hadron_contract.cc \
@@ -1555,6 +1558,7 @@ libchroma_a_SOURCES += \
 	util/ferm/key_peram_dist.cc \
 	util/ferm/key_timeslice_colorvec.cc \
 	util/ferm/key_prop_distillution.cc \
+	util/ferm/crc48.cc \
 	util/ferm/distillution_noise.cc \
         util/ferm/spin_rep.cc \
         util/ferm/twoquark_contract_ops.cc \

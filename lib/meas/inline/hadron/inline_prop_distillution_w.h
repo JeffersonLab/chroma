@@ -44,14 +44,11 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	bool            save_peramP;        /*!< Save perambulators */
-	bool            save_srcP;          /*!< Save sources */
 	bool            save_solnP;         /*!< Save solutions */
 	std::string     gauge_id;           /*!< Gauge field */
 	std::string     distillution_id;    /*!< Distillution factory */
-	std::string     colorvec_file;      /*!< Eigenvector file */
+	std::string     src_file;           /*!< File output propagator sources */
 	std::string     soln_file;          /*!< File output propagator solutions */
-	std::string     peram_file;         /*!< File for perambulators */
       };
 
 

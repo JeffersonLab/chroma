@@ -3,59 +3,50 @@
  */
 
 #include "util/ferm/distillution_noise.h"
+#include "util/ferm/crc48.h"
 #include "qdp_rannyu.h"
 
 namespace Chroma 
 {
   namespace
   {
-    //---------------------------------------------------------------------
-    // NOTE: snarfed this from  filedb/filehash/ffdb_file_hash.c
-    /*
-     * Fowler/Noll/Vo hash
-     *
-     * The basis of the hash algorithm was taken from an idea sent by email to the
-     * IEEE Posix P1003.2 mailing list from Phong Vo (kpv@research.att.com) and
-     * Glenn Fowler (gsf@research.att.com).  Landon Curt Noll (chongo@toad.com)
-     * later improved on their algorithm.
-     *
-     * The magic is in the interesting relationship between the special prime
-     * 16777619 (2^24 + 403) and 2^32 and 2^8.
-     *
-     * This hash produces the fewest collisions of any function that we've seen so
-     * far, and works well on both numbers and strings.
-     *
-     * PUBLIC: unsigned int __ham_func5 __P((DB *, const void *, unsigned int));
-     */
-    unsigned int
-    __ham_func5(const void* key, unsigned int len)
+    //! Error output
+    StandardOutputStream& operator<<(StandardOutputStream& os, const multi1d<int>& d)
     {
-      const unsigned char* k = (const unsigned char*)key;
-      const unsigned char* e = k + len;
+      if (d.size() > 0)
+      {
+	os << d[0];
 
-      unsigned int h;
-      for (h = 0; k < e; ++k) {
-	h *= 16777619;
-	h ^= *k;
+	for(int i=1; i < d.size(); ++i)
+	  os << " " << d[i];
       }
-      return (h);
-    }
 
+      return os;
+    }
 
 
     //---------------------------------------------------------------------
     //! Convert a hash to a rannyu seed
-    multi1d<int> hashToSeed(unsigned int hash)
+    multi1d<int> hashToSeed(const CRC48::CRC48_t& hash)
     {
       multi1d<int> seed(4);
 
-      // Hash is only 32 bits but the seed is 48 bits, so fake a bit
-      seed[0] = hash & 4095;
-      seed[1] = 17;
-      hash >>= 12;
-      seed[2] = hash & 4095;
-      hash >>= 12;
-      seed[3] = hash & 4095;
+      // The CRC48 is six units of 8-bits. Pack this into four 12-bit units
+      // First pack two-sets of 8-bits into 16-bit units
+      unsigned int h01 = hash.crc[0] | (hash.crc[1] << 8); 
+      unsigned int h23 = hash.crc[2] | (hash.crc[3] << 8);
+      unsigned int h45 = hash.crc[4] | (hash.crc[5] << 8);
+
+      seed[0]  = h01 & 0xfff;   // use first 12
+      h01    >>= 12;            // now only have 4 bits
+      h23    <<= 4;             // bump up by 4 bits
+      h23     |= h01;           // now have 20 bits
+      seed[1]  = h23 & 0xfff;   // use first 12
+      h23    >>= 12;            // now only have 8 bits
+      h45    <<= 8;             // bump up by 8 bits
+      h45     |= h23;           // now have 24 bits
+      seed[2]  = h45 & 0xfff;   // used first 12 bits
+      seed[3]  = (h45 >> 12);   // use remaining 12 bits
 
       return seed;
     }
@@ -65,8 +56,12 @@ namespace Chroma
     //! Convert a string to a rannyu seed
     multi1d<int> stringToSeed(const string& output)
     {
-      unsigned int hash = __ham_func5(output.c_str(), output.length());
-      return hashToSeed(hash);
+      CRC48::CRC48_t crc;
+
+      CRC48::initCRC48(crc);
+      CRC48::calcCRC48(crc, output.c_str(), output.length());
+
+      return hashToSeed(crc);
     }
 
 
