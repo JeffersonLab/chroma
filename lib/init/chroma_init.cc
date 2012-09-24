@@ -198,12 +198,10 @@ namespace Chroma
   void finalize(void)
   {
 
-#ifdef BUILD_QUDA
-    endQuda();
-#endif
+#if 0
     if (! QDP_isInitialized())
       return;
-
+#endif
     
     /*
     if( xmlInputP ) { 
@@ -218,6 +216,10 @@ namespace Chroma
     }
 
     QDP_finalize();
+
+#ifdef BUILD_QUDA
+    endQuda();
+#endif
   }
 
 
