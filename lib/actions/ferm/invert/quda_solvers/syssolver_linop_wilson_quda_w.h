@@ -278,6 +278,9 @@ namespace Chroma
       case BICGSTAB:
 	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 	break;
+      case GCR: 
+	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+	break;
       default:
 	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;   
 	
@@ -339,6 +342,9 @@ namespace Chroma
 	quda_inv_param.tol_precondition = toDouble(ip.tolSloppy);
 	quda_inv_param.maxiter_precondition = ip.maxIterSloppy;
 	quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
+        quda_inv_param.schwarz_type = QUDA_ADDITIVE_SCHWARZ;
+        quda_inv_param.precondition_cycle = 1;
+
 	if( ip.verboseInner ) { 
 	  quda_inv_param.verbosity_precondition = QUDA_VERBOSE;
 
