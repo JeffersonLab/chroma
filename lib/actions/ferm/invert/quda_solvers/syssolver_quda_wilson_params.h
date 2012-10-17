@@ -30,7 +30,6 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
-      //innerParams = 0x0; // Null pointer
 
       
     };
@@ -53,6 +52,7 @@ namespace Chroma
       tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
+
     }
 
    
@@ -73,7 +73,10 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool innerParamsP;
+
+    // Params for preconditioner
     Handle<GCRInnerSolverParams> innerParams;
+
 
   };
 
