@@ -331,16 +331,6 @@ namespace Chroma
       MesPlq(xml_out, "Observables", u);
 
       //
-      // Hack for the moment. Can only support 0-momentum. For non-zero momentum, 
-      // we need leftNabla-s that have proper momentum.
-      //
-      if (params.param.mom2_max != 0)
-      {
-	QDPIO::cerr << name << ": only support zero momentum at the moment. Need generalizatin for left derivs\n";
-	QDP_abort(1);
-      }
-
-      //
       // Initialize the slow Fourier transform phases
       //
       SftMom phases(params.param.mom2_max, false, params.param.decay_dir);
@@ -434,6 +424,12 @@ namespace Chroma
 
 	QDPIO::cout << "displacement = " << disp << endl;
 
+	// The first version of this code used just rightNabla instead of leftRightNabla. 
+	// Account for the change in normalization. Namely, for each derivative, multiply by -1/2.
+	Real fnorm = 1.0;
+	for(int mu=0; mu < disp.size(); ++mu)
+	  fnorm *= -Real(0.5);
+
 	// Build the operator
 	swiss.reset();
 	swiss.start();
@@ -442,7 +438,7 @@ namespace Chroma
 	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
 	  // The keys for the spin and displacements for this particular elemental operator
-	  // No displacement for left colorvector, only displace right colorvector
+	  // Note: the "disp" is actually left-right derivatives. Apply them to the right vector.
 	  // Invert the time - make it an independent key
 	  multi1d<KeyValGlueElementalOperator_t> buf(phases.numSubsets());
 	  for(int t=0; t < phases.numSubsets(); ++t)
@@ -460,14 +456,16 @@ namespace Chroma
 	    watch.reset();
 	    watch.start();
 	    
-	    // Displace the right vector and multiply by the momentum phase
+	    // Apply a left-right derivative onto the right vector. The momentum is required.
+	    // Multiply by the momentum phase to project onto a definite momentum.
 	    EVPair<LatticeColorVector> tmpvec; eigen_source.get(j,tmpvec);
 	    LatticeColorVector lvec(tmpvec.eigenVector);
 
-	    LatticeColorVector shift_vec = rightNabla(u_smr, 
-						      lvec,
-						      params.param.displacement_length, 
-						      disp);
+	    LatticeColorVector shift_vec = leftRightNabla(u_smr, 
+							  lvec,
+							  params.param.displacement_length, 
+							  disp,
+							  phases.numToMom(mom_num));
 
 	    // Contract over color indices
 	    // Do the relevant quark contraction
@@ -480,7 +478,7 @@ namespace Chroma
 
 	    for(int t=0; t < op_sum.size(); ++t)
 	    {
-	      buf[t].val.data().op(j) = op_sum[t];
+	      buf[t].val.data().op(j) = fnorm * op_sum[t];
 	    }
 	  } // end for j
 

@@ -343,6 +343,118 @@ namespace Chroma
   }
 
 
+  //----------------------------------------------------------------------------------
+  //! Apply a left-right derivative to a lattice field
+  /*! \ingroup smear */
+  template<typename T>
+  T leftRightNablaT(const T& F,
+		    const multi1d<LatticeColorMatrix>& u,
+		    int mu, int length,
+		    int mom)
+  {
+    Real angle = twopi*mom / Real(Layout::lattSize()[mu]);
+    Complex phase = cmplx(cos(angle),sin(angle));
+
+    return (Real(1) + conj(phase))*displace<T>(u, F, -length, mu, QDP::all) - (Real(1) + phase)*displace<T>(u, F, length, mu, QDP::all);
+  }
+
+
+  //! Apply left-right deriv to the right onto source
+  /*!
+   * \ingroup sources
+   *
+   * \f$\right\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
+   * \f$\left\nabla_\mu f(x) = f(x+\mu)U_{-\mu}(x) - f(x-\mu)U_\mu(x-\mu)\f$
+   *
+   * \return $\f (\left\nabla_\mu - \right\nabla_\mu) F(x)\f$
+   */
+  LatticeColorVector leftRightNabla(const LatticeColorVector& F, 
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu, int length,
+				    int mom)
+  {
+    return leftRightNablaT<LatticeColorVector>(F, u, mu, length, mom);
+  }
+
+  //! Apply left-right deriv to the right onto source
+  LatticeFermion leftRightNabla(const LatticeFermion& F, 
+				const multi1d<LatticeColorMatrix>& u,
+				int mu, int length,
+				int mom)
+  {
+    return leftRightNablaT<LatticeFermion>(F, u, mu, length, mom);
+  }
+
+  //! Apply first deriv to the right onto source
+  LatticePropagator leftRightNabla(const LatticePropagator& F, 
+				   const multi1d<LatticeColorMatrix>& u,
+				   int mu, int length,
+				   int mom)
+  {
+    return leftRightNablaT<LatticePropagator>(F, u, mu, length, mom);
+  }
+
+
+  //! Apply a right derivative path to a lattice field
+  /*! \ingroup smear */
+  template<typename T>
+  T leftRightNablaT(const multi1d<LatticeColorMatrix>& u, 
+		    const T& psi, 
+		    int displacement_length, 
+		    const multi1d<int>& path,
+		    const multi1d<int>& mom)
+  {
+    if (displacement_length < 0)
+    {
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << endl;
+      QDP_abort(1);
+    }
+
+    T chi;
+    chi = psi;
+
+    for(int i=0; i < path.size(); ++i)
+    {
+      if (path[i] > 0)
+      {
+	int disp_dir = path[i] - 1;
+	int disp_len = displacement_length;
+	chi  = leftRightNablaT<T>(chi, u, disp_dir, disp_len, mom[disp_dir]);
+      }
+      else if (path[i] <= 0)
+      {
+        QDPIO::cerr << __func__ << ": invalid path dir=" << path[i] << endl;
+        QDP_abort(1);
+      }
+    }
+    
+    return chi;
+  }
+
+
+  //! Apply first deriv to the right onto source
+  LatticeColorVector leftRightNabla(const multi1d<LatticeColorMatrix>& u, 
+				    const LatticeColorVector& chi, 
+				    int length, 
+				    const multi1d<int>& path,
+				    const multi1d<int>& mom)
+  {
+    return leftRightNablaT<LatticeColorVector>(u, chi, length, path, mom);
+  }
+
+  //! Apply first deriv to the right onto source
+  LatticeColorMatrix leftRightNabla(const multi1d<LatticeColorMatrix>& u, 
+				    const LatticeColorMatrix& chi, 
+				    int length, 
+				    const multi1d<int>& path,
+				    const multi1d<int>& mom)
+  {
+    return leftRightNablaT<LatticeColorMatrix>(u, chi, length, path, mom);
+  }
+
+
+
+  //----------------------------------------------------------------------------------
   //! Apply "D_i" operator to the right onto source
   /*!
    * \ingroup sources

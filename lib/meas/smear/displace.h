@@ -137,6 +137,7 @@ namespace Chroma
 				 int length, int dir);
   
 
+  //----------------------------------------------------------------------------------
   //! Apply a right nabla path to a lattice field
   /*!
    * \ingroup smear
@@ -186,6 +187,50 @@ namespace Chroma
 			       int mu, int length);
 
 
+  //----------------------------------------------------------------------------------
+  //! Apply left-right deriv to the right onto source
+  /*!
+   * \ingroup sources
+   *
+   * \f$\right\nabla_\mu f(x) = U_\mu(x)f(x+\mu) - U_{-\mu}(x)f(x-\mu)\f$
+   * \f$\left\nabla_\mu f(x) = f(x+\mu)U_{-\mu}(x) - f(x-\mu)U_\mu(x-\mu)\f$
+   *
+   * \return $\f (\left\nabla_\mu - \right\nabla_\mu) F(x)\f$
+   */
+  LatticeColorVector leftRightNabla(const LatticeColorVector& F, 
+				    const multi1d<LatticeColorMatrix>& u,
+				    int mu, int length,
+				    int mom);
+
+  //! Apply left-right deriv to the right onto source
+  LatticeFermion leftRightNabla(const LatticeFermion& F, 
+				const multi1d<LatticeColorMatrix>& u,
+				int mu, int length,
+				int mom);
+
+  //! Apply left-right deriv to the right onto source
+  LatticePropagator leftRightNabla(const LatticePropagator& F, 
+				   const multi1d<LatticeColorMatrix>& u,
+				   int mu, int length,
+				   int mom);
+
+
+  //! Apply left-right deriv to the right onto source
+  LatticeColorVector leftRightNabla(const multi1d<LatticeColorMatrix>& u, 
+				    const LatticeColorVector& chi, 
+				    int length, 
+				    const multi1d<int>& path,
+				    const multi1d<int>& mom);
+
+  //! Apply left-right deriv to the right onto source
+  LatticeColorMatrix leftRightNabla(const multi1d<LatticeColorMatrix>& u, 
+				    const LatticeColorMatrix& chi, 
+				    int length, 
+				    const multi1d<int>& path,
+				    const multi1d<int>& mom);
+
+
+  //----------------------------------------------------------------------------------
   //! Apply "D_i" operator to the right onto source
   /*!
    * \ingroup smear
