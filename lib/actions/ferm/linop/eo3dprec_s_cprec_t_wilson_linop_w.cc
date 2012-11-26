@@ -28,6 +28,8 @@ namespace Chroma
 					const Real& Mass_,
 					const AnisoParam_t& anisoParam_)
   {
+    QDP_error_exit("EO3DPrecSCprecTWilsonLinOp::create(Handle< FermState<T,P,Q> > fs_");
+#if 0
     START_CODE();
 
     // Check we are in 4D
@@ -177,6 +179,7 @@ namespace Chroma
     Dw3D.create(fs_, anisoParam_);
 
     END_CODE();
+#endif
   }
 
   //! Apply (C_L)^{-1}

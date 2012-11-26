@@ -124,6 +124,8 @@ namespace Chroma
 		const int  t_max,
 		const bool schroedingerTP=false)
     {
+      QDP_error_exit("invTOp(LatticeHalfFermion& chi, ");
+#if 0
       const int t_index=3;
       int Nt=tsite.size1();
 
@@ -246,6 +248,7 @@ namespace Chroma
 	  QDP_abort(1);
 	}       
       }
+#endif
     }
 		
 
@@ -253,6 +256,8 @@ namespace Chroma
     inline 
     void invert3by3( CMat& M_inv, const CMat& M )
     { 
+      QDP_error_exit("void invert3by3( CMat& M_inv, const CMat& M )");
+#if 0
       START_CODE();
     
       int Nvec = 3;
@@ -400,10 +405,13 @@ namespace Chroma
 	}
 	
       }
+#endif
     }
 
     inline
     Double logDet(const CMat& M) {
+      QDP_error_exit("Double logDet(const CMat& M)");
+#if 0
      // Possibly this is the Dumb way but it is only a small matrix
      // This is to be done by the matrix of cofactors:
      //
@@ -430,6 +438,7 @@ namespace Chroma
      ret_val.elem().elem().elem() +=  M.elem().elem(0,2)*( M.elem().elem(1,0)*M.elem().elem(2,1) - M.elem().elem(2,0)*M.elem().elem(1,1) );
      
      return Double(log(real(ret_val)));
+#endif
    }
     
 
@@ -442,8 +451,8 @@ namespace Chroma
 		     const Real NdPlusM,
 		     const bool schroedingerTP=false)
     {
-
-
+      QDP_error_exit("derivLogDet(multi1d<LatticeColorMatrix>& F, ");
+#if 0
       F.resize(Nd);
 
       // Initial setup. Zero out all the non-time directions
@@ -524,6 +533,7 @@ namespace Chroma
 	// and generate no_force
 	F[t_dir] = zero;
       }
+#endif
     }
 
 
@@ -537,7 +547,8 @@ namespace Chroma
 		     const Real NdPlusM,
 		     const bool schroedingerTP=false)
     {
-
+      QDP_error_exit("void derivLogDet(multi1d<LatticeColorMatrix>& F, ");
+#if 0
 
       F.resize(Nd);
 
@@ -620,6 +631,7 @@ namespace Chroma
 	// and generate no_force
 	F[t_dir] = zero;
       }
+#endif
     }
   } // Namespace 
   

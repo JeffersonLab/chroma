@@ -27,6 +27,8 @@ namespace Chroma
 					  const CloverFermActParams& param_)
 					
   {
+    QDP_error_exit("EO3DPrecSCprecTCloverLinOp::create(Handle< FermState<T,P,Q> > fs");
+#if 0
     START_CODE();
 
     param = param_;
@@ -178,6 +180,7 @@ namespace Chroma
     Dw3D.create(fs_, param_.anisoParam);
 
     END_CODE();
+#endif
   }
 
   //! Apply (C_L)^{-1}

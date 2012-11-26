@@ -28,6 +28,8 @@ namespace Chroma
   void ILU2PrecSCprecTCloverLinOp::create(Handle< FermState<T,P,Q> > fs_,
 					const CloverFermActParams& param_)
   {
+    QDP_error_exit("ILU2PrecSCprecTCloverLinOp::create(Handle< FermState<T,P,Q> > fs_");
+#if 0
     START_CODE();
 
     // Copy Params
@@ -250,6 +252,7 @@ namespace Chroma
     }
 #endif		 
 
+#endif
     END_CODE();
   }
 
