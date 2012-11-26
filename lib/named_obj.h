@@ -278,10 +278,10 @@ namespace Chroma
   
   
     //! Look something up and return a NamedObjectBase reference
-    NamedObjectBase& get(const std::string& id) 
+    NamedObjectBase& get(const std::string& id) const
     {
       // Find it
-      typedef std::map<std::string, NamedObjectBase*>::iterator I;
+      typedef std::map<std::string, NamedObjectBase*>::const_iterator I;
       I iter = the_map.find(id);
       if (iter == the_map.end()) 
       {

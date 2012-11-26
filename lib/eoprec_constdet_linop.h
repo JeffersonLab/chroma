@@ -120,15 +120,15 @@ namespace Chroma
       //
             
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      derivOddEvenLinOp(ds_u, chi, tmp2, isign);
+      this->evenOddLinOp(tmp1, psi, isign);
+      this->evenEvenInvLinOp(tmp2, tmp1, isign);
+      this->derivOddEvenLinOp(ds_u, chi, tmp2, isign);
       
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
-      evenOddLinOp(tmp1, chi, msign);
-      evenEvenInvLinOp(tmp2, tmp1, msign);
-      derivEvenOddLinOp(ds_1, tmp2, psi, isign);
+      this->evenOddLinOp(tmp1, chi, msign);
+      this->evenEvenInvLinOp(tmp2, tmp1, msign);
+      this->derivEvenOddLinOp(ds_1, tmp2, psi, isign);
       ds_u += ds_1;
 
       // This is yucky and ws should have a *= function 
@@ -202,7 +202,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }
@@ -216,7 +216,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }
@@ -261,21 +261,21 @@ namespace Chroma
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
       for(int i=0; i < chi.size(); i++) { 
 	T   tmp1;
-	evenOddLinOp(tmp1, psi[i], isign);
-	evenEvenInvLinOp(tmp2[i], tmp1, isign);
+	this->evenOddLinOp(tmp1, psi[i], isign);
+	this->evenEvenInvLinOp(tmp2[i], tmp1, isign);
       }
 
-      derivOddEvenLinOpMP(ds_u, chi, tmp2, isign);
+      this->derivOddEvenLinOpMP(ds_u, chi, tmp2, isign);
 
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
       for(int i=0; i < chi.size(); i++) { 
 	T tmp1;
-	evenOddLinOp(tmp1, chi[i], msign);
-	evenEvenInvLinOp(tmp2[i], tmp1, msign);
+	this->evenOddLinOp(tmp1, chi[i], msign);
+	this->evenEvenInvLinOp(tmp2[i], tmp1, msign);
       }
 
-      derivEvenOddLinOpMP(ds_1, tmp2, psi, isign);
+      this->derivEvenOddLinOpMP(ds_1, tmp2, psi, isign);
       ds_u += ds_1;
 
       // This is yucky and ws should have a *= function 
@@ -404,14 +404,14 @@ namespace Chroma
 
 
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      derivOddEvenLinOp(ds_u, chi, tmp2, isign);
+      this->evenOddLinOp(tmp1, psi, isign);
+      this->evenEvenInvLinOp(tmp2, tmp1, isign);
+      this->derivOddEvenLinOp(ds_u, chi, tmp2, isign);
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
-      evenOddLinOp(tmp1, chi, msign);
-      evenEvenInvLinOp(tmp2, tmp1, msign);
-      derivEvenOddLinOp(ds_1, tmp2, psi, isign);
+      this->evenOddLinOp(tmp1, chi, msign);
+      this->evenEvenInvLinOp(tmp2, tmp1, msign);
+      this->derivEvenOddLinOp(ds_1, tmp2, psi, isign);
       ds_u += ds_1;
 
       // This is yucky and ws should have a *= function 

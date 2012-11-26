@@ -15,6 +15,7 @@
 #include "update/molecdyn/predictor/chrono_predictor_factory.h"
 #include "update/molecdyn/predictor/circular_buffer.h"
 #include "update/molecdyn/predictor/lu_solve.h"
+#include "meas/eig/gramschm.h"
 namespace Chroma 
 { 
   

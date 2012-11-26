@@ -423,7 +423,7 @@ namespace Chroma
 	XMLWriter& xml_out=TheXMLLogWriter::Instance();
 	push(xml_out, "OneFlavorRatioRatRatExactUnprecWilsonTypeFermMonomial5D");
 
-	Double action = S_subset(s);
+	Double action = this->S_subset(s);
 
 	write(xml_out, "S", action);
 	pop(xml_out);
@@ -463,7 +463,7 @@ namespace Chroma
     //! Compute the odd odd contribution (eg
     virtual Double S_odd_odd(const AbsFieldState<P,Q>& s) 
       {
-	return S_subset(s);
+	return this->S_subset(s);
       }
 
     //! Compute the total action

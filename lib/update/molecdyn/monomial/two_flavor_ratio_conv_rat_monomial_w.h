@@ -85,7 +85,7 @@ namespace Chroma
       Phi Y=zero;
 
       // Get X out here
-      int n_count = getX(X,s);
+      int n_count = this->getX(X,s);
       
       (*lin)(Y, X, PLUS);
 
@@ -346,7 +346,7 @@ namespace Chroma
       QDPIO::cout << "TwoFlavRatioConvRatWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
-      int n_count = getX(X,s);
+      int n_count = this->getX(X,s);
 
 
       // Get the fermion action for the preconditioner
@@ -430,7 +430,7 @@ namespace Chroma
       QDPIO::cout << "TwoFlavRatioConvRatWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
 
-      int n_count = getX(X, s);
+      int n_count = this->getX(X, s);
 
       const WilsonTypeFermAct<Phi,P,Q>& S_prec = getDenomFermAct();
       Handle< FermState<Phi,P,Q> > f_state(S_prec.createState(s.getQ()));
