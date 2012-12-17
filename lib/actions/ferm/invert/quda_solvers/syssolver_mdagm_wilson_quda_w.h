@@ -341,22 +341,22 @@ namespace Chroma
 	// Set preconditioner precision
 	switch( ip.precPrecondition ) { 
 	case HALF:
-	  quda_inv_param.prec_precondition = QUDA_HALF_PRECISION;
+	  quda_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  q_gauge_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  break;
 
 	case SINGLE:
-	  quda_inv_param.prec_precondition = QUDA_SINGLE_PRECISION;
+	  quda_inv_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
 	  q_gauge_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
 	  break;
 
 	case DOUBLE:
-	  quda_inv_param.prec_precondition = QUDA_DOUBLE_PRECISION;
+	  quda_inv_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
 	   q_gauge_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
 	  break;
 	default:
-	  quda_inv_param.prec_precondition = quda_inv_param.cuda_prec_sloppy;
-	  q_gauge_param.cuda_prec_precondition = quda_inv_param.prec_precondition;
+	  quda_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
+	  q_gauge_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
 	  break;
 	}
 
@@ -421,7 +421,6 @@ namespace Chroma
 	quda_inv_param.tol_precondition = 1.0e-1;
 	quda_inv_param.maxiter_precondition = 1000;
 	quda_inv_param.verbosity_precondition = QUDA_SILENT;
-	quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
         quda_inv_param.gcrNkrylov = 1;
       }
       
