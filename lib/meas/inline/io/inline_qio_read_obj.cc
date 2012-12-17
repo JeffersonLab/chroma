@@ -213,9 +213,24 @@ namespace Chroma
 	    // Resize arrays
 	    const int Lt = QDP::Layout::lattSize()[decay_dir];
 
+	    // Determine if number of eigenvectors to read is specified in input xml
+	    int num_vecs = 0;
+	    std::istringstream xml_nam(params.named_obj_xml.xml);
+	    XMLReader param_xml_top(xml_nam);
+	    XMLReader param_xml(param_xml_top, "MapObject");
+	    if(param_xml.count("num_vecs") > 0)
+	      read(param_xml, "num_vecs", num_vecs);
+	    else
+	      num_vecs = N;
+	    if(num_vecs > N)
+	      {
+		QDPIO::cerr<< "Error: number of vectors to read, num_vecs= " << num_vecs << ", is greater than number in file, N= " << N << endl;
+		QDP_abort(1);
+	      }
+
 	    // Loop and read evecs
-	    QDPIO::cout << "About to read " << N << " evectors from QIO..."<<endl;
-	    for(int n=0; n < N; n++)
+	    QDPIO::cout << "About to read " << num_vecs << " out of " << N << " evectors from QIO..."<<endl;
+	    for(int n=0; n < num_vecs; n++)
 	    {
 	      XMLReader record_xml_dummy;
 	      EVPair<LatticeColorVector> read_pair;
@@ -234,7 +249,7 @@ namespace Chroma
 	    // BJOO: Yes that's all very well. but RecordXML has to hold something
 	    XMLBufferWriter dummy;
 	    push(dummy,"DummyRecordXML");
-	    write(dummy, "mapSize", N);
+	    write(dummy, "mapSize", num_vecs);
 	    pop(dummy);
 	    record_xml.open(dummy);
 
