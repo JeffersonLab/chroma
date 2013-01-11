@@ -142,6 +142,52 @@ namespace Chroma
 	}
 
 
+
+	template<typename V>
+	void writeMapObjKeyIntValLat(const Params& params)
+	{
+	  // Input object
+	  XMLBufferWriter gauge_xml;
+
+	  // Make a copy because the TimeSliceIO critter wants a modifiable reference
+	  V u = TheNamedObjMap::Instance().getData<V>(params.named_obj.input_id);
+	  TheNamedObjMap::Instance().get(params.named_obj.input_id).getRecordXML(gauge_xml);
+
+	  const int decay_dir = Nd-1;
+
+	  XMLBufferWriter file_xml;
+
+	  push(file_xml, "MODMetaData");
+	  write(file_xml, "id", string("gaugeFieldTimeSlice"));
+	  write(file_xml, "lattSize", QDP::Layout::lattSize());
+	  write(file_xml, "decay_dir", decay_dir);
+	  proginfo(file_xml);    // Print out basic program info
+	  write(file_xml, "Config_info", gauge_xml);
+	  pop(file_xml);
+
+	  // Create the entry
+	  QDP::MapObjectDisk<int,TimeSliceIO<V> > output_obj;
+
+	  output_obj.insertUserdata(file_xml.str());
+
+	  // Open file. Note, a trunc is used. Doesn't have to be here, but if only time-slices are written as the key,
+	  // there isn't any other way to disambiguate the keys. So, not much use in allowing multiple writes to the
+	  // file
+	  output_obj.open(params.named_obj.output_file, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
+
+	  // Copy the key/value-s
+	  int Lt = Layout::lattSize()[decay_dir];
+
+	  // Write with a time-slice key.
+	  for(int t=0; t < Lt; t++) 
+	  {
+	    output_obj.insert(t, TimeSliceIO<V>(u,t));
+	  }
+
+	  output_obj.flush();
+	}
+
+
 	bool registerAll(void) 
 	{
 	  bool success = true; 
@@ -151,6 +197,14 @@ namespace Chroma
 									  writeMapObjEVPairLCV);
 	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("ArrayLatticeColorMatrix",
 									  writeMapObjArrayLatColMat);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticePropagator",
+									  writeMapObjKeyIntValLat<LatticePropagator>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeFermion",
+									  writeMapObjKeyIntValLat<LatticeFermion>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorMatrix",
+									  writeMapObjKeyIntValLat<LatticeColorMatrix>);
+	    success &= TheWriteMapObjFuncMap::Instance().registerFunction("KeyIntValLatticeColorVector",
+									  writeMapObjKeyIntValLat<LatticeColorVector>);
 
 	    registered = true;
 	  }

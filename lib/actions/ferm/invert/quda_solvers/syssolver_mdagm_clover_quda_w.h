@@ -283,6 +283,10 @@ namespace Chroma
       case BICGSTAB:
 	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 	break;
+     case GCR:
+        quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+        break;
+
       default:
 	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;   
 	

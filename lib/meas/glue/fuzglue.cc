@@ -1,4 +1,3 @@
-// $Id: fuzglue.cc,v 3.1 2006-08-24 02:33:52 edwards Exp $
 /*! \file
  *  \brief Compute 'fuzzy' (blocked) glueball correlation functions
  */
@@ -62,7 +61,7 @@ namespace Chroma
       {
 	block_latt = QDP::Layout::lattSize()[mu];
 	bl_level = 0;
-	while( (block_latt > 2) && (block_latt & 1 == 0) )
+	while( (block_latt > 2) && ((block_latt & 1) == 0) )
 	{
 	  block_latt = block_latt / 2;
 	  bl_level = bl_level + 1;
