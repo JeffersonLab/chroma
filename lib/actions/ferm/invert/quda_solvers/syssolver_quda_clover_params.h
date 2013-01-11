@@ -28,9 +28,6 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
-      //innerParams = 0x0; // Null pointer
-
-      
     };
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
@@ -71,7 +68,11 @@ namespace Chroma
     Real RsdToleranceFactor;
     bool tuneDslashP;
     bool innerParamsP;
+
+    // GCR Specific params
+    // Params for the preconditioner
     Handle<GCRInnerSolverParams> innerParams;
+
 
   };
 

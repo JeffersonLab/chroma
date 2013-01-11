@@ -75,7 +75,7 @@ namespace Chroma
 
 
   //----------------------------------------------------------------------------
-  typedef QDP::MapObjectDisk< KeyPropDist_t,TimeSliceIO<LatticeColorVector> > MOD_t;
+  typedef QDP::MapObjectDisk< KeyPropDist_t,TimeSliceIO<LatticeColorVectorF> > MOD_t;
 
   //----------------------------------------------------------------------------
   //! Quark line factory (foundry)
@@ -84,14 +84,12 @@ namespace Chroma
 		  std::string,
 		  TYPELIST_7(XMLReader&, const std::string&,
 			     const DistillutionNoise&, 
-//			     QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >&,
 			     MOD_t&,
 			     const TimeSliceSet&,
 			     int,
 			     const std::string&),
 		  AbsQuarkLine* (*)(XMLReader&, const std::string&,
 				    const DistillutionNoise&, 
-//				    QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >&,
 				    MOD_t&,
 				    const TimeSliceSet&,
 				    int,

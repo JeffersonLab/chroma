@@ -9,20 +9,28 @@ namespace Chroma
 {
 
   struct GCRInnerSolverParams {
-
-    Real tolSloppy;
-    int  maxIterSloppy;
+    
+    Real tolPrecondition;
+    int  maxIterPrecondition;
     int  gcrNkrylov;
     bool verboseInner;
-    QudaSolverType invTypeSloppy;
-
+    QudaSolverType invTypePrecondition;
+    QudaPrecisionType precPrecondition;
+    QudaReconsType reconstructPrecondition;
+    QudaSchwarzMethod schwarzType;
+    int preconditionCycle;
+    
     GCRInnerSolverParams(XMLReader& xml, const std::string& path);
     GCRInnerSolverParams() {
-      tolSloppy=0;
-      maxIterSloppy=0;
+      tolPrecondition=0;
+      maxIterPrecondition=0;
       gcrNkrylov=0;
       verboseInner=false;
-      invTypeSloppy=CG;
+      invTypePrecondition=MR;
+      precPrecondition=DEFAULT;
+      reconstructPrecondition=RECONS_NONE;
+      schwarzType = ADDITIVE_SCHWARZ;
+      preconditionCycle = 1;
     };
 
   };

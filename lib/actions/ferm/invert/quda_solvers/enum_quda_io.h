@@ -23,6 +23,7 @@ namespace Chroma
     GCR,
     MR
   };
+
   
   namespace QudaSolverTypeEnv { 
     extern const string typeIDString;
@@ -91,6 +92,32 @@ namespace Chroma
 
   //! Write an QudaReconsType enum
   void write(XMLWriter& w, const string& path, const QudaReconsType& t);
+
+
+  enum QudaSchwarzMethod { 
+    ADDITIVE_SCHWARZ,
+    MULTIPLICATIVE_SCHWARZ
+  };
+  
+  namespace QudaSchwarzMethodEnv { 
+    extern const string typeIDString;
+    extern bool registered; 
+    bool registerAll(void);   // Forward declaration
+  }
+
+  // A singleton to hold the typemap
+  typedef SingletonHolder<EnumTypeMap<QudaSchwarzMethod> > theQudaSchwarzMethodMap;
+
+  // Reader and writer
+
+  //! Read an QudaSchwarzMethod enum
+  void read(XMLReader& r, const string& path, QudaSchwarzMethod& t);
+
+  //! Write an QudaSchwarzMethod enum
+  void write(XMLWriter& w, const string& path, const QudaSchwarzMethod& t);
+
+
+
   /*! @} */   // end of group io
 
 
