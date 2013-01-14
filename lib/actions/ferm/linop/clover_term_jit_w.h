@@ -62,7 +62,7 @@ namespace Chroma
     //! Real need for cleanup here
     ~JitCloverTermT() {
       if (Layout::primaryNode())
-	QDP_info("JIT Clover: Signing off triangular field tri_id=%u",(unsigned)tri_id);
+	QDP_info_primary("JIT Clover: Signing off triangular field tri_id=%u",(unsigned)tri_id);
       QDPCache::Instance().signoff( tri_id );
     }
 
@@ -162,7 +162,7 @@ namespace Chroma
     size_t bytes_total = sizeof( PrimitiveClovTriang< typename JitCloverTermT::REALT > ) * nodeSites;
     tri_id = QDPCache::Instance().registrate( bytes_total , 1 );
     if (Layout::primaryNode())
-      QDP_info("JIT Clover: Registering triangular field for clover %u  tri_id=%u",(unsigned)bytes_total,(unsigned)tri_id);
+      QDP_info_primary("JIT Clover: Registering triangular field for clover %u  tri_id=%u",(unsigned)bytes_total,(unsigned)tri_id);
   }
 
 
