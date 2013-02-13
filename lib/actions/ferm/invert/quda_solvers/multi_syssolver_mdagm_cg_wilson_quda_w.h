@@ -269,16 +269,6 @@ namespace Chroma
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
 
-      if( invParam.cacheDslashTuningP) { 
-	// Retune for every solve
-	QDPIO::cout << "Will cache Dslash tuning params accross solves" << endl;
-	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_YES;
-      }
-      else { 
-	
-	quda_inv_param.preserve_dirac = QUDA_PRESERVE_DIRAC_NO;
-      }
-
       // PADDING
       
       // Setup padding
@@ -309,7 +299,6 @@ namespace Chroma
       quda_inv_param.tol_precondition = 1.0e-1;
       quda_inv_param.maxiter_precondition = 1000;
       quda_inv_param.verbosity_precondition = QUDA_SILENT;
-      quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
       quda_inv_param.gcrNkrylov = 1;
 
       if( invParam.verboseP ) { 
@@ -427,7 +416,7 @@ namespace Chroma
     Handle< LinearOperator<T> > A;
     const SysSolverQUDAWilsonParams invParam;
     QudaGaugeParam q_gauge_param;
-    QudaInvertParam quda_inv_param;
+    mutable QudaInvertParam quda_inv_param;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,

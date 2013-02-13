@@ -65,27 +65,34 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    double* shift_d = new double [ shifts.size() ];
     double resid_sq;
     
     psi_s.resize( shifts.size());
 
+    if ( shifts.size() > QUDA_MAX_MULTI_SHIFT ) { 
+       QDPIO::cerr << "You want more shifts than QUDA_MAX_MULTI_SHIFT" << endl;
+       QDPIO::cerr << "Requested : " << shifts.size() << " QUDA_MAX_MULTI_SHIFT=" << QUDA_MAX_MULTI_SHIFT << endl;
+       QDP_abort(1);
+    }
+ 
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
       spinorOut[s] = (void *)&(psi_s[s].elem(rb[1].start()).elem(0).elem(0).real());
-      shift_d[s] = toDouble(shifts[s]);
+      quda_inv_param.offset[s] = toDouble(shifts[s]);
     }
+    quda_inv_param.num_offset = shifts.size();
+
+    for (int i=0; i< quda_inv_param.num_offset; i++) quda_inv_param.tol_offset[i] = quda_inv_param.tol;
    // Do the solve here 
     StopWatch swatch1; 
     swatch1.reset();
     swatch1.start();
     QDPIO::cout << "CALLING QUDA SOLVER" << endl << flush ; 
-    invertMultiShiftQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param, shift_d, shifts.size(), &resid_sq);
+    invertMultiShiftQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
     swatch1.stop();
 
     // Tidy Up
     delete [] spinorOut;
-    delete [] shift_d;
 
     QDPIO::cout << "Cuda Space Required" << endl;
     QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
