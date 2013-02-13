@@ -254,7 +254,7 @@ namespace Chroma
       // Solve type
       switch( invParam.solverType ) { 
       case CG: 
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;
+	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
 	break;
       default:
 	QDPIO::cerr << "Only CG Is currently implemented for multi-shift" << endl;

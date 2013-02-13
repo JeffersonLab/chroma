@@ -277,7 +277,7 @@ namespace Chroma
       // Solve type
       switch( invParam.solverType ) { 
       case CG: 
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;
+	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
 	break;
       case BICGSTAB:
 	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
@@ -287,8 +287,12 @@ namespace Chroma
 	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 	break;
 
+      case MR:
+	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+	break;
+
       default:
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;   
+	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;   
 	
 	break;
       }
