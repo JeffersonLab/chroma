@@ -140,7 +140,7 @@ namespace Chroma
 	//! Constructor
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj_,
+		      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_);
@@ -192,7 +192,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj;
+	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -204,7 +204,7 @@ namespace Chroma
       //! Constructor
       QuarkLineFact::QuarkLineFact(const Params& params_,
 				   const DistillutionNoise& dist_noise_obj_, 
-				   QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj_,
+				   QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 				   const TimeSliceSet& time_slice_set_,
 				   int quark_line_,
 				   const std::string& mass_)
@@ -225,9 +225,9 @@ namespace Chroma
 
 	// Get the source vector
 	KeyPropDist_t src_key = getSrcKey(t_source, dist_src);
-	LatticeColorVector vec_srce = zero;
+	LatticeColorVectorF vec_srce = zero;
 
-	TimeSliceIO<LatticeColorVector> time_slice_io(vec_srce, t_actual);
+	TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_actual);
 	source_obj.get(src_key, time_slice_io);
 
 	return vec_srce;
@@ -472,7 +472,7 @@ namespace Chroma
 	//! Constructor
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj_,
+		      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_);
@@ -521,7 +521,7 @@ namespace Chroma
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj;
+	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -533,7 +533,7 @@ namespace Chroma
       //! Constructor
       QuarkLineFact::QuarkLineFact(const Params& params_,
 				   const DistillutionNoise& dist_noise_obj_, 
-				   QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj_,
+				   QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 				   const TimeSliceSet& time_slice_set_,
 				   int quark_line_,
 				   const std::string& mass_)
@@ -578,9 +578,9 @@ namespace Chroma
 
 	  // Get the source vector
 	  KeyPropDist_t src_key = getSrcKey(time_source, dist_src);
-	  LatticeColorVector vec_tmp = zero;
+	  LatticeColorVectorF vec_tmp = zero;
 	  
-	  TimeSliceIO<LatticeColorVector> time_slice_io(vec_tmp, t_actual);
+	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_tmp, t_actual);
 	  source_obj.get(src_key, time_slice_io);
 
 	  vec_srce[time_slice_set.getSet()[t_actual]] += vec_tmp;
@@ -722,7 +722,7 @@ namespace Chroma
       AbsQuarkLine* createConn(XMLReader& xml_in, 
 			       const std::string& path,
 			       const DistillutionNoise& dist_noise_obj, 
-			       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj,
+			       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj,
 			       const TimeSliceSet& time_slice_set,
 			       int quark_line,
 			       const std::string& mass)
@@ -735,7 +735,7 @@ namespace Chroma
       AbsQuarkLine* createAnnih(XMLReader& xml_in, 
 				const std::string& path,
 				const DistillutionNoise& dist_noise_obj, 
-				QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> >& source_obj,
+				QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj,
 				const TimeSliceSet& time_slice_set,
 				int quark_line,
 				const std::string& mass)

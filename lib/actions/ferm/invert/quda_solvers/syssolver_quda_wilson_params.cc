@@ -133,6 +133,7 @@ namespace Chroma {
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
     }
+
     pop(xml);
 
   }

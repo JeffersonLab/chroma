@@ -103,6 +103,7 @@ namespace Chroma {
       innerParamsP = false;
     }
 
+
   }
 
   void read(XMLReader& xml, const std::string& path, 
@@ -135,7 +136,6 @@ namespace Chroma {
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
     }
-
     pop(xml);
 
   }

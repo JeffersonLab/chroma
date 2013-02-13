@@ -317,7 +317,7 @@ namespace Chroma
       //
       // Map-object-disk storage of the source file
       //
-      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > source_obj;
+      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
       source_obj.setDebug(0);
 
       QDPIO::cout << "Open source file" << endl;
@@ -338,7 +338,7 @@ namespace Chroma
       //
       // Map-object-disk storage
       //
-      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVector> > prop_obj;
+      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> > prop_obj;
       prop_obj.setDebug(0);
 
       if (params.named_obj.save_solnP)
@@ -550,8 +550,9 @@ namespace Chroma
 		    key != snk_keys.end();
 		    ++key)
 		{
-		  prop_obj.insert(*key, TimeSliceIO<LatticeColorVector>(ferm_out(key->spin_snk,key->spin_src), 
-									dist_noise_obj.getTime(key->t_slice)));
+		  LatticeColorVectorF tmptmp = ferm_out(key->spin_snk,key->spin_src); 
+
+		  prop_obj.insert(*key, TimeSliceIO<LatticeColorVectorF>(tmptmp, dist_noise_obj.getTime(key->t_slice)));
 		} // for key
 	      }
 

@@ -275,21 +275,22 @@ namespace Chroma
       // Solution type
       quda_inv_param.solution_type = QUDA_MATPCDAG_MATPC_SOLUTION;
 
-      // Solve type
+
       switch( invParam.solverType ) { 
       case CG: 
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;
+	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
 	break;
       case BICGSTAB:
 	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
 	break;
-     case GCR:
-        quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
-        break;
-
+      case GCR: 
+	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+	break;
+      case MR: 
+	quda_inv_param.solve_type = QUDA_DIRECT_PC_SOLVE;
+	break;
       default:
-	quda_inv_param.solve_type = QUDA_NORMEQ_PC_SOLVE;   
-	
+	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;   
 	break;
       }
 
@@ -343,23 +344,75 @@ namespace Chroma
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
 
-      if( invParam.innerParamsP ) {
+     if( invParam.innerParamsP ) {
 	QDPIO::cout << "Setting inner solver params" << endl;
 	// Dereference handle
 	GCRInnerSolverParams ip = *(invParam.innerParams);
-        quda_inv_param.prec_precondition = quda_inv_param.cuda_prec_sloppy;
-	quda_inv_param.tol_precondition = toDouble(ip.tolSloppy);
-	quda_inv_param.maxiter_precondition = ip.maxIterSloppy;
+
+       switch( ip.precPrecondition ) {
+        case HALF:
+          quda_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
+          quda_inv_param.clover_cuda_prec_precondition = QUDA_HALF_PRECISION;
+          q_gauge_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
+          break;
+
+        case SINGLE:
+          quda_inv_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
+          quda_inv_param.clover_cuda_prec_precondition = QUDA_SINGLE_PRECISION;
+          q_gauge_param.cuda_prec_precondition = QUDA_SINGLE_PRECISION;
+          break;
+
+        case DOUBLE:
+          quda_inv_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
+          quda_inv_param.clover_cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
+          q_gauge_param.cuda_prec_precondition = QUDA_DOUBLE_PRECISION;
+          break;
+        default:
+          quda_inv_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
+          quda_inv_param.clover_cuda_prec_precondition = QUDA_HALF_PRECISION;
+          q_gauge_param.cuda_prec_precondition = QUDA_HALF_PRECISION;
+          break;
+        }
+
+       switch( ip.reconstructPrecondition ) {
+        case RECONS_NONE:
+          q_gauge_param.reconstruct_precondition = QUDA_RECONSTRUCT_NO;
+          break;
+        case RECONS_8:
+          q_gauge_param.reconstruct_precondition = QUDA_RECONSTRUCT_8;
+          break;
+        case RECONS_12:
+          q_gauge_param.reconstruct_precondition = QUDA_RECONSTRUCT_12;
+          break;
+        default:
+          q_gauge_param.reconstruct_precondition = QUDA_RECONSTRUCT_12;
+          break;
+        };
+
+	quda_inv_param.tol_precondition = toDouble(ip.tolPrecondition);
+	quda_inv_param.maxiter_precondition = ip.maxIterPrecondition;
 	quda_inv_param.gcrNkrylov = ip.gcrNkrylov;
+	switch( ip.schwarzType ) { 
+	case ADDITIVE_SCHWARZ : 
+	  quda_inv_param.schwarz_type = QUDA_ADDITIVE_SCHWARZ;
+	  break;
+	case MULTIPLICATIVE_SCHWARZ :
+	  quda_inv_param.schwarz_type = QUDA_MULTIPLICATIVE_SCHWARZ;
+	  break;
+	default: 
+	  quda_inv_param.schwarz_type = QUDA_ADDITIVE_SCHWARZ;
+	  break;
+	}
+        quda_inv_param.precondition_cycle = ip.preconditionCycle;
+	
 	if( ip.verboseInner ) { 
 	  quda_inv_param.verbosity_precondition = QUDA_VERBOSE;
-	  
 	}
 	else { 
 	  quda_inv_param.verbosity_precondition = QUDA_SILENT;
 	}
 	
-	switch( ip.invTypeSloppy ) { 
+	switch( ip.invTypePrecondition ) { 
 	case CG: 
 	  quda_inv_param.inv_type_precondition = QUDA_CG_INVERTER;
 	  break;
@@ -372,7 +425,7 @@ namespace Chroma
 	  break;
 	  
 	default:
-	  quda_inv_param.inv_type_precondition = QUDA_CG_INVERTER;   
+	  quda_inv_param.inv_type_precondition = QUDA_MR_INVERTER;   
 	  break;
 	}
       }
@@ -382,7 +435,6 @@ namespace Chroma
 	quda_inv_param.tol_precondition = 1.0e-1;
 	quda_inv_param.maxiter_precondition = 1000;
 	quda_inv_param.verbosity_precondition = QUDA_SILENT;
-	quda_inv_param.prec_precondition=quda_inv_param.cuda_prec_sloppy;
         quda_inv_param.gcrNkrylov = 1;
       }
       

@@ -87,4 +87,28 @@ namespace Chroma {
     theQudaReconsTypeMap::Instance().write(QudaReconsTypeEnv::typeIDString, xml_out, path, t);
   }
 
+  namespace  QudaSchwarzMethodEnv {
+    bool registerAll(void)
+    {
+      bool success;
+      success = theQudaSchwarzMethodMap::Instance().registerPair(string("ADDITIVE_SCHWARZ"),ADDITIVE_SCHWARZ);
+      success &= theQudaSchwarzMethodMap::Instance().registerPair(string("MULTIPLICATIVE_SCHWARZ"),MULTIPLICATIVE_SCHWARZ);
+      return success;
+    }
+    const string typeIDString = "QudaSchwarzMethod";
+    bool regisered = registerAll();
+  };
+
+  //! Read an QudaSolverType enum
+  void read(XMLReader& xml_in, const string& path, QudaSchwarzMethod& t) 
+  {
+    theQudaSchwarzMethodMap::Instance().read(QudaSchwarzMethodEnv::typeIDString, xml_in, path, t);
+  }
+
+  //! Write an QudaSolverType enum
+  void write(XMLWriter& xml_out, const string& path, const QudaSchwarzMethod& t)
+  {
+    theQudaSchwarzMethodMap::Instance().write(QudaSchwarzMethodEnv::typeIDString, xml_out, path, t);
+  }
+
 }
