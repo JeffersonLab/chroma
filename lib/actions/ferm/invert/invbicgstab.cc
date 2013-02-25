@@ -15,7 +15,8 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 	      T& psi,
 	      const Real& RsdBiCGStab,
 	      int MaxBiCGStab, 
-	      enum PlusMinus isign)
+	      enum PlusMinus isign, 
+	      bool VerboseP)
 
 {
   SystemSolverResults_t ret;
@@ -160,8 +161,9 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
     Double r_norm = norm2(r,s);
 
-
-    //    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
+    if( VerboseP ) { 
+      QDPIO::cout << "Iteration " << k << " : ||r||^2 = " << r_norm << endl;
+    }
     if( toBool(r_norm < rsd_sq ) ) {
       convP = true;
       ret.resid = sqrt(r_norm);
@@ -225,10 +227,11 @@ InvBiCGStab(const LinearOperator<LatticeFermionF>& A,
 	    LatticeFermionF& psi,
 	    const Real& RsdBiCGStab, 
 	    int MaxBiCGStab, 
-	    enum PlusMinus isign)
+	    enum PlusMinus isign, 
+	    bool VerboseP)
 
 {
-  return InvBiCGStab_a<LatticeFermionF, ComplexF>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeFermionF, ComplexF>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign, VerboseP);
 }
 
 template<>
@@ -238,10 +241,10 @@ InvBiCGStab(const LinearOperator<LatticeFermionD>& A,
 	    LatticeFermionD& psi,
 	    const Real& RsdBiCGStab, 
 	    int MaxBiCGStab, 
-	    enum PlusMinus isign)
+	    enum PlusMinus isign, bool VerboseP)
 
 {
-  return InvBiCGStab_a<LatticeFermionD, ComplexD>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeFermionD, ComplexD>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign, VerboseP);
 }
 
 // Staggered
@@ -252,10 +255,10 @@ InvBiCGStab(const LinearOperator<LatticeStaggeredFermion>& A,
 	    LatticeStaggeredFermion& psi,
 	    const Real& RsdBiCGStab, 
 	    int MaxBiCGStab, 
-	    enum PlusMinus isign)
+	    enum PlusMinus isign, bool VerboseP)
 
 {
-  return InvBiCGStab_a<LatticeStaggeredFermion, Complex>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign);
+  return InvBiCGStab_a<LatticeStaggeredFermion, Complex>(A, chi, psi, RsdBiCGStab, MaxBiCGStab, isign, VerboseP);
 }
 
 }  // end namespace Chroma

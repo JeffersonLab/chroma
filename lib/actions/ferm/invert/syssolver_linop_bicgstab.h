@@ -70,7 +70,8 @@ namespace Chroma
 			psi, 
 			invParam.RsdBiCGStab, 
 			invParam.MaxBiCGStab, 
-			PLUS);
+			PLUS, 
+			invParam.VerboseP);
       
       swatch.stop();
       double time = swatch.getTimeInSeconds();

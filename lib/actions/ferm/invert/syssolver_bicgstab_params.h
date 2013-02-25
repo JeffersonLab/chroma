@@ -21,6 +21,7 @@ namespace Chroma
     SysSolverBiCGStabParams(XMLReader& in, const std::string& path);
     Real          RsdBiCGStab;           /*!< BiCGStab residual */
     int           MaxBiCGStab;           /*!< Maximum BiCGStab iterations */
+    bool          VerboseP;
   };
 
 

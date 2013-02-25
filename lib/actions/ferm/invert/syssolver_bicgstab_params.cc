@@ -15,7 +15,13 @@ namespace Chroma
 
     read(paramtop, "RsdBiCGStab", param.RsdBiCGStab);
     read(paramtop, "MaxBiCGStab", param.MaxBiCGStab);
-
+    if ( paramtop.count("Verbose") == 1 ) { 
+	read(paramtop, "Verbose", param.VerboseP );
+    }
+    else { 
+	// default
+ 	param.VerboseP = false;
+    }
   }
 
   // Writer parameters
@@ -28,6 +34,7 @@ namespace Chroma
     write(xml, "invType", "BICGSTAB_INVERTER");
     write(xml, "RsdBiCGStab", param.RsdBiCGStab);
     write(xml, "MaxBiCGStab", param.MaxBiCGStab);
+    write(xml, "Verbose", param.VerboseP );
     pop(xml);
   }
 

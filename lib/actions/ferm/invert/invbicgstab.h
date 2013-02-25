@@ -25,7 +25,7 @@ namespace Chroma
 	      T& psi,
 	      const Real& RsdBiCGStab,
 	      int MaxBiCGStab,
-	      enum PlusMinus isign);
+	      enum PlusMinus isign, bool VerboseP);
 
  
 
