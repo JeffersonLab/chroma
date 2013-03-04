@@ -16,7 +16,7 @@
 #include "lmdagm.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
-#include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
+#include "actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
@@ -65,7 +65,7 @@ namespace Chroma
      */
     MdagMMultiSysSolverCGQudaClover(Handle< LinearOperator<T> > M_,
 				      Handle< FermState<T,P,Q> > state_,
-				      const SysSolverQUDACloverParams& invParam_) : 
+				      const MultiSysSolverQUDACloverParams& invParam_) : 
       A(M_), invParam(invParam_), clov(new QDPCloverTermT<T,U>()), invclov(new QDPCloverTermT<T,U>())
 
     {
@@ -243,8 +243,7 @@ namespace Chroma
       // op. Apart from the A_oo stuff on the antisymmetric we have
       // nothing to do...
       quda_inv_param.kappa = 0.5;
-      
-      quda_inv_param.tol = toDouble(invParam.RsdTarget);
+      quda_inv_param.tol = toDouble(invParam.RsdTarget[0]);
       quda_inv_param.maxiter = invParam.MaxIter;
       quda_inv_param.reliable_delta = toDouble(invParam.Delta);
 
@@ -400,6 +399,13 @@ namespace Chroma
       SystemSolverResults_t res;
       res.n_count = 0; 
 
+      if( invParam.RsdTarget.size() > 1 ) {
+	if( invParam.RsdTarget.size() != shifts.size()) { 
+	  QDPIO::cerr << "There are: " << invParam.RsdTarget.size() << " values for RsdTarget but " << shifts.size() << " shifts" << endl;
+	  QDPIO::cerr << "This doesnt match. Aborting" << endl;
+	}
+      }
+      
       if ( invParam.axialGaugeP ) { 
 	T g_chi;
 	multi1d<T> g_psi(psi.size());
@@ -465,7 +471,7 @@ namespace Chroma
     QudaPrecision_s gpu_half_prec;
 
     Handle< LinearOperator<T> > A;
-    const SysSolverQUDACloverParams invParam;
+    const MultiSysSolverQUDACloverParams invParam;
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
