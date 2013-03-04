@@ -53,6 +53,7 @@ host_triplet = @host@
 @BUILD_GMP_REMEZ_TRUE@am__append_10 = update/molecdyn/monomial/remez_gmp.cc
 @BUILD_QUDA_TRUE@am__append_11 = actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
@@ -65,6 +66,7 @@ host_triplet = @host@
 @BUILD_QUDA_TRUE@am__append_12 = actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
@@ -499,6 +501,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
@@ -900,6 +903,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 @BUILD_QUDA_TRUE@am__objects_2 = enum_quda_io.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	quda_gcr_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_quda_clover_params.$(OBJEXT) \
+@BUILD_QUDA_TRUE@	multi_syssolver_quda_clover_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_quda_wilson_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_linop_clover_quda_w.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	syssolver_linop_wilson_quda_w.$(OBJEXT) \
@@ -2240,6 +2244,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
@@ -4504,6 +4509,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_syssolver_mdagm_cg_clover_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_syssolver_mdagm_cg_wilson_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_syssolver_mr_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/multi_syssolver_quda_clover_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/naik_term_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nef_quarkprop4_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nersc_gauge_init.Po@am__quote@
@@ -9832,6 +9838,20 @@ syssolver_quda_clover_params.obj: actions/ferm/invert/quda_solvers/syssolver_qud
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc' object='syssolver_quda_clover_params.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o syssolver_quda_clover_params.obj `if test -f 'actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc'; fi`
+
+multi_syssolver_quda_clover_params.o: actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT multi_syssolver_quda_clover_params.o -MD -MP -MF $(DEPDIR)/multi_syssolver_quda_clover_params.Tpo -c -o multi_syssolver_quda_clover_params.o `test -f 'actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/multi_syssolver_quda_clover_params.Tpo $(DEPDIR)/multi_syssolver_quda_clover_params.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc' object='multi_syssolver_quda_clover_params.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o multi_syssolver_quda_clover_params.o `test -f 'actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc
+
+multi_syssolver_quda_clover_params.obj: actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT multi_syssolver_quda_clover_params.obj -MD -MP -MF $(DEPDIR)/multi_syssolver_quda_clover_params.Tpo -c -o multi_syssolver_quda_clover_params.obj `if test -f 'actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/multi_syssolver_quda_clover_params.Tpo $(DEPDIR)/multi_syssolver_quda_clover_params.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc' object='multi_syssolver_quda_clover_params.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o multi_syssolver_quda_clover_params.obj `if test -f 'actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc'; then $(CYGPATH_W) 'actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc'; else $(CYGPATH_W) '$(srcdir)/actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc'; fi`
 
 syssolver_quda_wilson_params.o: actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT syssolver_quda_wilson_params.o -MD -MP -MF $(DEPDIR)/syssolver_quda_wilson_params.Tpo -c -o syssolver_quda_wilson_params.o `test -f 'actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc' || echo '$(srcdir)/'`actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc

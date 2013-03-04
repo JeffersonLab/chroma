@@ -70,7 +70,7 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_stout_state$(EXEEXT) t_aniso_gaugeact$(EXEEXT) \
 	t_temp_prec$(EXEEXT) t_meas_wilson_flow_loop$(EXEEXT) \
 	$(am__EXEEXT_1)
-@BUILD_QUDA_TRUE@am__append_22 = t_quda_tprec
+@BUILD_QUDA_TRUE@am__append_22 = t_quda_tprec t_minvert_quda
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -111,7 +111,8 @@ CONFIG_HEADER = $(top_builddir)/lib/chroma_config_internal.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
-@BUILD_QUDA_TRUE@am__EXEEXT_1 = t_quda_tprec$(EXEEXT)
+@BUILD_QUDA_TRUE@am__EXEEXT_1 = t_quda_tprec$(EXEEXT) \
+@BUILD_QUDA_TRUE@	t_minvert_quda$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_t_aniso_gaugeact_OBJECTS = t_aniso_gaugeact.$(OBJEXT)
 t_aniso_gaugeact_OBJECTS = $(am_t_aniso_gaugeact_OBJECTS)
@@ -431,6 +432,14 @@ t_minvert_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
+am__t_minvert_quda_SOURCES_DIST = t_minvert_quda.cc
+@BUILD_QUDA_TRUE@am_t_minvert_quda_OBJECTS = t_minvert_quda.$(OBJEXT)
+t_minvert_quda_OBJECTS = $(am_t_minvert_quda_OBJECTS)
+t_minvert_quda_LDADD = $(LDADD)
+t_minvert_quda_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_monomial_force_OBJECTS = t_monomial_force.$(OBJEXT)
 t_monomial_force_OBJECTS = $(am_t_monomial_force_OBJECTS)
 t_monomial_force_LDADD = $(LDADD)
@@ -777,11 +786,12 @@ SOURCES = $(t_aniso_gaugeact_SOURCES) $(t_aniso_sym_force_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_meas_wilson_flow_SOURCES) \
 	$(t_meas_wilson_flow_loop_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_minvert_SOURCES) \
-	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
-	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
-	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
-	$(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) \
-	$(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) \
+	$(t_minvert_quda_SOURCES) $(t_monomial_force_SOURCES) \
+	$(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) \
+	$(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
+	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
+	$(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) \
+	$(t_prec_nef_SOURCES) \
 	$(t_prec_twoflav_wilson_monomial_SOURCES) \
 	$(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) \
 	$(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) \
@@ -821,11 +831,12 @@ DIST_SOURCES = $(t_aniso_gaugeact_SOURCES) \
 	$(t_lwldslash_sse_SOURCES) $(t_meas_wilson_flow_SOURCES) \
 	$(t_meas_wilson_flow_loop_SOURCES) $(t_mesons_w_SOURCES) \
 	$(t_mesplq_SOURCES) $(t_minvert_SOURCES) \
-	$(t_monomial_force_SOURCES) $(t_mres_4d_SOURCES) \
-	$(t_msumr_SOURCES) $(t_neflinop_SOURCES) $(t_ov_pbp_SOURCES) \
-	$(t_overbu_SOURCES) $(t_ovlap5d_bj_SOURCES) \
-	$(t_ovlap_bj_SOURCES) $(t_ovlap_double_pass_SOURCES) \
-	$(t_prec_contfrac_SOURCES) $(t_prec_nef_SOURCES) \
+	$(am__t_minvert_quda_SOURCES_DIST) $(t_monomial_force_SOURCES) \
+	$(t_mres_4d_SOURCES) $(t_msumr_SOURCES) $(t_neflinop_SOURCES) \
+	$(t_ov_pbp_SOURCES) $(t_overbu_SOURCES) \
+	$(t_ovlap5d_bj_SOURCES) $(t_ovlap_bj_SOURCES) \
+	$(t_ovlap_double_pass_SOURCES) $(t_prec_contfrac_SOURCES) \
+	$(t_prec_nef_SOURCES) \
 	$(t_prec_twoflav_wilson_monomial_SOURCES) \
 	$(t_prec_wilson_force_SOURCES) $(t_precact_4d_SOURCES) \
 	$(t_precact_5d_SOURCES) $(t_precact_sse_SOURCES) \
@@ -1118,6 +1129,7 @@ t_meas_wilson_flow_SOURCES = t_meas_wilson_flow.cc
 t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
 t_minvert_SOURCES = t_minvert.cc
 @BUILD_QUDA_TRUE@t_quda_tprec_SOURCES = t_quda_tprec.cc
+@BUILD_QUDA_TRUE@t_minvert_quda_SOURCES = t_minvert_quda.cc
 
 # build lib is a target that goes to the build dir of the library and 
 # does a make to make sure all those dependencies are OK. In order
@@ -1332,6 +1344,9 @@ t_mesplq$(EXEEXT): $(t_mesplq_OBJECTS) $(t_mesplq_DEPENDENCIES)
 t_minvert$(EXEEXT): $(t_minvert_OBJECTS) $(t_minvert_DEPENDENCIES) 
 	@rm -f t_minvert$(EXEEXT)
 	$(CXXLINK) $(t_minvert_OBJECTS) $(t_minvert_LDADD) $(LIBS)
+t_minvert_quda$(EXEEXT): $(t_minvert_quda_OBJECTS) $(t_minvert_quda_DEPENDENCIES) 
+	@rm -f t_minvert_quda$(EXEEXT)
+	$(CXXLINK) $(t_minvert_quda_OBJECTS) $(t_minvert_quda_LDADD) $(LIBS)
 t_monomial_force$(EXEEXT): $(t_monomial_force_OBJECTS) $(t_monomial_force_DEPENDENCIES) 
 	@rm -f t_monomial_force$(EXEEXT)
 	$(CXXLINK) $(t_monomial_force_OBJECTS) $(t_monomial_force_LDADD) $(LIBS)
@@ -1516,6 +1531,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesons_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mesplq.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_minvert.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_minvert_quda.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_monomial_force.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_mres_4d.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/t_msumr.Po@am__quote@

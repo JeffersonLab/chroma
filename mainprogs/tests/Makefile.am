@@ -82,7 +82,7 @@ check_PROGRAMS  = t_io t_mesons_w  t_conslinop t_hypsmear \
     t_gauge_force t_stout_state t_aniso_gaugeact t_temp_prec t_meas_wilson_flow_loop
 
 if BUILD_QUDA
-check_PROGRAMS += t_quda_tprec
+check_PROGRAMS += t_quda_tprec t_minvert_quda
 endif
 
 
@@ -217,6 +217,7 @@ t_meas_wilson_flow_loop_SOURCES = t_meas_wilson_flow_loop.cc
 t_minvert_SOURCES = t_minvert.cc
 if BUILD_QUDA
 t_quda_tprec_SOURCES = t_quda_tprec.cc
+t_minvert_quda_SOURCES = t_minvert_quda.cc
 endif
 
 # build lib is a target that goes to the build dir of the library and 

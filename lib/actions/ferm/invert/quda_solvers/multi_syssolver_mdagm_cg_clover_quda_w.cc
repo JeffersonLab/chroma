@@ -24,7 +24,7 @@ namespace Chroma
 						       Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
 						       Handle< LinearOperator<LatticeFermion> > A)
     {
-      return new MdagMMultiSysSolverCGQudaClover(A, state,SysSolverQUDACloverParams(xml_in, path));
+      return new MdagMMultiSysSolverCGQudaClover(A, state,MultiSysSolverQUDACloverParams(xml_in, path));
     }
 
     //! Name to be used
@@ -86,14 +86,21 @@ namespace Chroma
  
     psi_s.resize( shifts.size());
 
+    
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
       spinorOut[s] = (void *)&(psi_s[s].elem(rb[1].start()).elem(0).elem(0).real());
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
+
    quda_inv_param.num_offset = shifts.size();
 
-    for (int i=0; i< quda_inv_param.num_offset; i++) quda_inv_param.tol_offset[i] = quda_inv_param.tol;
+   if( invParam.RsdTarget.size() == 1 ) { 
+     for (int i=0; i< quda_inv_param.num_offset; i++) quda_inv_param.tol_offset[i] = toDouble(invParam.RsdTarget[0]);
+   }
+   else { 
+     for (int i=0; i< quda_inv_param.num_offset; i++) quda_inv_param.tol_offset[i] = toDouble(invParam.RsdTarget[i]);
+   }
 
    // Do the solve here 
     StopWatch swatch1; 
