@@ -21,35 +21,34 @@
 
 	  const int nodeSites = QDP::Layout::sitesOnNode();
 
-	  int argNum = cudaArgs.addInt( nodeSites );
+	  int argNum  = cudaArgs.addInt( nodeSites );
+	  int argDobs = cudaArgs.addBool( dobs );
 
-	  string strREALT;
-	  string codeQ,codeQQ;
+	  if (!mapVolumes) {
+	    string strREALT;
+	    string codeQ,codeQQ;
 
-          string codeF[3];
-          string codeB1[3];
-          string codeB2[3];
+	    string codeF[3];
+	    string codeB1[3];
+	    string codeB2[3];
 
+	    getTypeString( strREALT , REAL(0) );
+	    if (!getCodeString( codeQ , Q , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache Q"); break;  }      
+	    if (!getCodeString( codeQQ , QQ , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache QQ"); break;  }
+	    if (!getCodeString( codeF[0] , f[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[0]"); break;}      
+	    if (!getCodeString( codeF[1] , f[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[2]"); break;}
+	    if (!getCodeString( codeF[2] , f[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[3]"); break;}
 
-	  getTypeString( strREALT , REAL(0) );
-
-	  if (!getCodeString( codeQ , Q , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache Q"); break;  }      
-	  if (!getCodeString( codeQQ , QQ , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache QQ"); break;  }
-	  if (!getCodeString( codeF[0] , f[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[0]"); break;}      
-	  if (!getCodeString( codeF[1] , f[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[2]"); break;}
-	  if (!getCodeString( codeF[2] , f[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache f[3]"); break;}
-	  if (dobs) {
 	    if (!getCodeString( codeB1[0] , b1[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[0]"); break;} 
 	    if (!getCodeString( codeB1[1] , b1[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[2]"); break;}
 	    if (!getCodeString( codeB1[2] , b1[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b1[3]"); break;}
 	    if (!getCodeString( codeB2[0] , b2[0] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[0]"); break;} 
 	    if (!getCodeString( codeB2[1] , b2[1] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[2]"); break;}
 	    if (!getCodeString( codeB2[2] , b2[2] , "site", cudaArgs )) { QDP_info("getFsAndBsJIT: could not cache b2[3]"); break;}
-	  }
 
-	  if (!mapVolumes) {
+
 	    ostringstream osId;
-	    osId << "getFsAndBsJIT1 "  << strREALT << " dobs=" << dobs;
+	    osId << "getFsAndBsJIT1 "  << strREALT;
 	    strId = osId.str();
 	    xmlready(strId);
 #ifdef GPU_DEBUG_DEEP
@@ -162,7 +161,9 @@
 	    sprg << "       " << codeF[2] << ".elem().elem().real() = 0.5*(-1.0+c1/12.0*(1.0-c1/30.0*(1.0-c1/56.0))+c0*c0/20160.0); " << endl;
 	    sprg << "       " << codeF[2] << ".elem().elem().imag() = 0.5*(c0/60.0*(1.0-c1/21.0*(1.0-c1/48.0))); " << endl;
 	    sprg << " 	   " << endl;
-	    if (dobs) {
+	    sprg << " 	   if (" << cudaArgs.getCode(argDobs) << ")" << endl;
+	    sprg << " 	     {" << endl;
+	    //	    if (dobs) {
 	      sprg << " 	//  partial f0/ partial c0 " << endl;
 	      sprg << " 	" << codeB2[0] << ".elem().elem().real() = -c0/360.0; " << endl;
 	      sprg << " 	" << codeB2[0] << ".elem().elem().imag() =  -(1.0/6.0)*(1.0-(c1/20.0)*(1.0-c1/42.0)); " << endl;
@@ -190,7 +191,8 @@
 	      sprg << " 	" << codeB1[2] << ".elem().elem().real() = 0.5*(  1.0/12.0*(1.0-(2.0*c1/30.0)*(1.0-3.0*c1/112.0)) );  " << endl;
 	      sprg << " 	" << codeB1[2] << ".elem().elem().imag() = 0.5*( -c0/1260.0*(1.0-c1/24.0) ); " << endl;
 	      sprg << " 	     " << endl;
-	    }
+	    sprg << " 	   }" << endl;
+	    //	    }
 	    sprg << "     } " << endl;
 	    sprg << "   else  " << endl;
 	    sprg << "     {  " << endl;
@@ -264,14 +266,17 @@
 	    sprg << " 	  xi0 = sin(w)/w; " << endl;
 	    sprg << " 	} " << endl;
 	    sprg << " 	     " << endl;
-	    if (dobs) {
+	    sprg << " 	   if (" << cudaArgs.getCode(argDobs) << ")" << endl;
+	    sprg << " 	     {" << endl;
+	    //	    if (dobs) {
 	      sprg << " 	  if( w_smallP  ) {  " << endl;
 	      sprg << " 	    xi1 = -1*( ((REAL)1/(REAL)3) - ((REAL)1/(REAL)30)*w_sq*( (REAL)1 - ((REAL)1/(REAL)28)*w_sq*( (REAL)1 - ((REAL)1/(REAL)54)*w_sq ) ) ); " << endl;
 	      sprg << " 	  } " << endl;
 	      sprg << " 	  else {  " << endl;
 	      sprg << " 	    xi1 = cos(w)/w_sq - sin(w)/(w_sq*w); " << endl;
 	      sprg << " 	  } " << endl;
-	    }
+	    sprg << " 	     }" << endl;
+	      //	    }
 	    sprg << "       } " << endl;
 	    sprg << " 	   " << endl;
 	    sprg << "       REAL cosu = cos(u); " << endl;
@@ -310,7 +315,9 @@
 	    sprg << " 	f_site_im[2] = (sin2u + sinu*cosw -ucosu*subexp) /denum ; " << endl;
 	    sprg << "       } " << endl;
 	    sprg << " 	   " << endl;
-	    if (dobs) {
+	    sprg << " 	   if (" << cudaArgs.getCode(argDobs) << ")" << endl;
+	    sprg << " 	     {" << endl;
+	    //	    if (dobs) {
 	      sprg << " 	{ " << endl;
 	      sprg << " 	  REAL r_1_re[3]; " << endl;
 	      sprg << " 	  REAL r_1_im[3]; " << endl;
@@ -440,7 +447,8 @@
 	      sprg << " 	    " << codeB2[2] << ".elem().elem().imag() = b2_site_im[2]; " << endl;
 
 	      sprg << " 	   }" << endl;
-	    }
+	      sprg << " 	 }" << endl;
+	      //	    }
 	    sprg << " 	   " << endl;
 	    sprg << "       // Now when everything is done flip signs of the b-s (can't do this before " << endl;
 	    sprg << "       // as the unflipped f-s are needed to find the b-s " << endl;
@@ -473,6 +481,19 @@
 #ifdef GPU_DEBUG_DEEP
 	    cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
+	  } else {
+	    if (!cacheLock(  Q , cudaArgs )) { QDP_info("eval: could not cache Q");  break;   }
+	    if (!cacheLock(  QQ , cudaArgs )) { QDP_info("eval: could not cache QQ");  break;   }
+	    if (!cacheLock(  f[0] , cudaArgs )) { QDP_info("eval: could not cache f0");  break;   }
+	    if (!cacheLock(  f[1] , cudaArgs )) { QDP_info("eval: could not cache f1");  break;   }
+	    if (!cacheLock(  f[2] , cudaArgs )) { QDP_info("eval: could not cache f2");  break;   }
+
+	    if (!cacheLock(  b1[0] , cudaArgs )) { QDP_info("eval: could not cache b10");  break;   }
+	    if (!cacheLock(  b1[1] , cudaArgs )) { QDP_info("eval: could not cache b11");  break;   }
+	    if (!cacheLock(  b1[2] , cudaArgs )) { QDP_info("eval: could not cache b12");  break;   }
+	    if (!cacheLock(  b2[0] , cudaArgs )) { QDP_info("eval: could not cache b20");  break;   }
+	    if (!cacheLock(  b2[1] , cudaArgs )) { QDP_info("eval: could not cache b21");  break;   }
+	    if (!cacheLock(  b2[2] , cudaArgs )) { QDP_info("eval: could not cache b22");  break;   }
 	  }
 
 	  if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes )) {

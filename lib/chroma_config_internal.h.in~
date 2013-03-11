@@ -1,0 +1,85 @@
+/* lib/chroma_config_internal.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Use the BAGEL Clover Term Apply library */
+#undef BUILD_BAGEL_CLOVER_TERM
+
+/* Build optimized Continued Frac. (CFZ) LinOp */
+#undef BUILD_CFZ_CFZ_LINOP
+
+/* Build CG DWF */
+#undef BUILD_CG_DWF
+
+/* Build CPP Dslash Ops */
+#undef BUILD_CPP_WILSON_DSLASH
+
+/* Build CPS ASQTAD INVERTER */
+#undef BUILD_CPS_ASQTAD_INVERTER
+
+/* Use Generic Kernels */
+#undef BUILD_GENERIC_SCALARSITE_BICGSTAB
+
+/* Build GMP Remez code */
+#undef BUILD_GMP_REMEZ
+
+/* Use JIT Clover Term Apply, requires to build on top of QDP-JIT */
+#undef BUILD_JIT_CLOVER_TERM
+
+/* Using Lapack */
+#undef BUILD_LAPACK
+
+/* Build with the MDWF (Moebious DFW) library */
+#undef BUILD_MDWF
+
+/* Configuring to use optimized eigcg */
+#undef BUILD_OPT_EIGCG
+
+/* Use Peter Boyles BAGEL Wilson Dslash library */
+#undef BUILD_PAB_WILSON_DSLASH
+
+/* Build with the BU QUDA Library */
+#undef BUILD_QUDA
+
+/* Build Scalarsite BICGStab Kernels */
+#undef BUILD_SCALARSITE_BICGSTAB
+
+/* Use SSED Clover Term Apply */
+#undef BUILD_SSED_CLOVER_TERM
+
+/* Use Generic Kernels */
+#undef BUILD_SSE_SCALARSITE_BICGSTAB
+
+/* Build SSE Dslash Op */
+#undef BUILD_SSE_WILSON_DSLASH
+
+/* Enable Restart in linop syssolvers */
+#undef CHROMA_DO_ONE_CG_RESTART
+
+/* Switch in Lower Memory File */
+#undef CHROMA_USE_CG_DWF_LOWMEM
+
+/* Use QMT Threads library */
+#undef CHROMA_USE_QMT_THREADS
+
+/* Enable Sloppy Precision in Bagel Wilson Dslash */
+#undef CHROMA_USE_SLOPPY_BAGEL_DSLASH
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Version number of package */
+#undef VERSION

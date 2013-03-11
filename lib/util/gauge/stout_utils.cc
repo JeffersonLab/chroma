@@ -841,10 +841,10 @@ namespace Chroma
       swatch.start();
       
       f.resize(3);
-      if( dobs ) { 
-	b1.resize(3);
-	b2.resize(3);
-      }
+
+      b1.resize(3);
+      b2.resize(3);
+
       
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
