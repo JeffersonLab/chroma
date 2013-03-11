@@ -406,27 +406,28 @@ namespace Chroma
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 	int argNum = cudaArgs.addInt( nodeSites );
 
-	string codeF0;
-	string codeF1;
-	string codeF2;
-	string codeF3;
-	string codeF4;
-	string codeF5;
-
-	getTypeString( typeU , f1 , cudaArgs );
-	getTypeString( strREALT , REALT(0) );
-
-	if (!getCodeString( codeDiagMass , diag_mass , "idx", cudaArgs )) { QDP_info(": could not cache diag_mass"); break;  }      
-	if (!getCodeString( codeF0 , f0 , "idx", cudaArgs )) { QDP_info(": could not cache f0"); break;  }
-	if (!getCodeString( codeF1 , f1 , "idx", cudaArgs )) { QDP_info(": could not cache f1"); break;  }
-	if (!getCodeString( codeF2 , f2 , "idx", cudaArgs )) { QDP_info(": could not cache f2"); break;  }
-	if (!getCodeString( codeF3 , f3 , "idx", cudaArgs )) { QDP_info(": could not cache f3"); break;  }
-	if (!getCodeString( codeF4 , f4 , "idx", cudaArgs )) { QDP_info(": could not cache f4"); break;  }
-	if (!getCodeString( codeF5 , f5 , "idx", cudaArgs )) { QDP_info(": could not cache f5"); break;  }
-
 	QDP_debug("makeClov dev!");
 
 	if (!mapVolumes) {
+
+	  string codeF0;
+	  string codeF1;
+	  string codeF2;
+	  string codeF3;
+	  string codeF4;
+	  string codeF5;
+
+	  getTypeString( typeU , f1 , cudaArgs );
+	  getTypeString( strREALT , REALT(0) );
+
+	  if (!getCodeString( codeDiagMass , diag_mass , "idx", cudaArgs )) {QDP_info(": could not cache diag_mass");break;}
+	  if (!getCodeString( codeF0 , f0 , "idx", cudaArgs )) { QDP_info(": could not cache f0"); break;  }
+	  if (!getCodeString( codeF1 , f1 , "idx", cudaArgs )) { QDP_info(": could not cache f1"); break;  }
+	  if (!getCodeString( codeF2 , f2 , "idx", cudaArgs )) { QDP_info(": could not cache f2"); break;  }
+	  if (!getCodeString( codeF3 , f3 , "idx", cudaArgs )) { QDP_info(": could not cache f3"); break;  }
+	  if (!getCodeString( codeF4 , f4 , "idx", cudaArgs )) { QDP_info(": could not cache f4"); break;  }
+	  if (!getCodeString( codeF5 , f5 , "idx", cudaArgs )) { QDP_info(": could not cache f5"); break;  }	  
+
 	  ostringstream osId;
 	  osId << "makeClov "  << typeU;
 	  strId = osId.str();
@@ -509,6 +510,14 @@ namespace Chroma
 #ifdef GPU_DEBUG_DEEP
 	  cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
+	} else {
+	  if (!cacheLock( diag_mass  , cudaArgs )) { QDP_info("eval: could not cache diag_mass");  break;   }
+	  if (!cacheLock( f0 , cudaArgs )) { QDP_info("eval: could not cache f0");  break;   }
+	  if (!cacheLock( f1 , cudaArgs )) { QDP_info("eval: could not cache f1");  break;   }
+	  if (!cacheLock( f2 , cudaArgs )) { QDP_info("eval: could not cache f2");  break;   }
+	  if (!cacheLock( f3 , cudaArgs )) { QDP_info("eval: could not cache f3");  break;   }
+	  if (!cacheLock( f4 , cudaArgs )) { QDP_info("eval: could not cache f4");  break;   }
+	  if (!cacheLock( f5 , cudaArgs )) { QDP_info("eval: could not cache f5");  break;   }
 	}
 
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , nodeSites , sharedLibEntry  , mapVolumes )) {
@@ -651,15 +660,13 @@ namespace Chroma
 	int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( rb[cb].getId() ) );
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
-	string strREALT;
-	string codeSubset,codeTr;
-
-	getTypeString( strREALT , REALT(0) );
-
-	//    if (!getCodeString( codeSubset , rb[cb] , "idx", cudaArgs )) { QDP_info("LDagDLInvJIT: could not cache Subset"); break;  }      
-	if (!getCodeString( codeTr , tr_log_diag , "site", cudaArgs )) { QDP_info("LDagDLInvJIT: could not cache tr_log_diag"); break;  }      
-
 	if (!mapVolumes) {
+	  string strREALT;
+	  string codeTr;
+
+	  getTypeString( strREALT , REALT(0) );
+	  if (!getCodeString( codeTr , tr_log_diag , "site", cudaArgs )) { QDP_info("LDagDLInvJIT: could not cache tr_log_diag"); break;  }      
+
 	  ostringstream osId;
 	  osId << "LDagDLInv "  << strREALT;
 	  strId = osId.str();
@@ -928,6 +935,8 @@ namespace Chroma
 #ifdef GPU_DEBUG_DEEP
 	  cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
+	} else {
+	  if (!cacheLock( tr_log_diag , cudaArgs )) { QDP_info("eval: could not cache tr_log_diag");  break;   }
 	}
 
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
@@ -1381,15 +1390,15 @@ namespace Chroma
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 	int argMat = cudaArgs.addInt( mat );
 
-	string strREALT,typeT;
-	string codeSubset,codeB;
-
-	getTypeString( strREALT , REALT(0) );
-	getTypeString( typeT , B, cudaArgs );
-
-	if (!getCodeString( codeB , B , "site", cudaArgs )) { QDP_info("Clover: triaCntrJIT: could not cache B"); break;  }      
-
 	if (!mapVolumes) {
+	  string strREALT,typeT;
+	  string codeB;
+
+	  getTypeString( strREALT , REALT(0) );
+	  getTypeString( typeT , B, cudaArgs );
+
+	  if (!getCodeString( codeB , B , "site", cudaArgs )) { QDP_info("Clover: triaCntrJIT: could not cache B"); break;  }      
+
 	  ostringstream osId;
 	  osId << "triaCntrJIT "  << typeT;
 	  strId = osId.str();
@@ -1698,6 +1707,8 @@ namespace Chroma
 #ifdef GPU_DEBUG_DEEP
 	  cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
+	} else {
+	  if (!cacheLock(  B , cudaArgs )) { QDP_info("eval: could not cache B");  break;   }
 	}
 
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
@@ -1801,16 +1812,16 @@ namespace Chroma
 	int argSubset = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( rb[cb].getId() ) );
 	int argDestPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
-	string strREALT,typeT;
-	string codeSubset,codeChi,codePsi;
-
-	getTypeString( strREALT , REALT(0) );
-	getTypeString( typeT , chi, cudaArgs );
-
-	if (!getCodeString( codePsi , psi , "site", cudaArgs )) { QDP_info("Clover: applyJIT: could not cache psi"); break;  }      
-	if (!getCodeString( codeChi , chi , "site", cudaArgs )) { QDP_info("Clover: applyJIT: could not cache chi"); break;  }      
-
 	if (!mapVolumes) {
+	  string strREALT,typeT;
+	  string codeChi,codePsi;
+
+	  getTypeString( strREALT , REALT(0) );
+	  getTypeString( typeT , chi, cudaArgs );
+
+	  if (!getCodeString( codePsi , psi , "site", cudaArgs )) { QDP_info("Clover: applyJIT: could not cache psi");break;}
+	  if (!getCodeString( codeChi , chi , "site", cudaArgs )) { QDP_info("Clover: applyJIT: could not cache chi");break;}
+
 	  ostringstream osId;
 	  osId << "applyJIT "  << typeT;
 	  strId = osId.str();
@@ -2158,6 +2169,9 @@ namespace Chroma
 #ifdef GPU_DEBUG_DEEP
 	  cout << "Cuda kernel code = " << endl << prg << endl << endl;
 #endif
+	} else {
+	  if (!cacheLock( psi , cudaArgs )) { QDP_info("eval: could not cache psi");  break;   }
+	  if (!cacheLock( chi , cudaArgs )) { QDP_info("eval: could not cache chi");  break;   }
 	}
 
 	if (!QDPJit::Instance()( strId , prg , cudaArgs.getDevPtr() , rb[cb].numSiteTable() , sharedLibEntry  , mapVolumes )) {
@@ -2268,14 +2282,10 @@ namespace Chroma
 	int argDestPtr = cudaArgs.addPtr( quda_array_dev );
 	int argMiscPtr = cudaArgs.addPtr( QDPCache::Instance().getDevicePtr( tri_id ) );
 
-	string strREALT;
-	string codeSubset;
-
-	getTypeString( strREALT , REALT(0) );
-
-	//if (!getCodeString( codeSubset , rb[cb] , "idx", cudaArgs )) { QDP_info(": could not cache Subset"); break;  }      
-
 	if (!mapVolumes) {
+	  string strREALT;
+	  getTypeString( strREALT , REALT(0) );
+
 	  ostringstream osId;
 	  osId << "packClov "  << strREALT;
 	  strId = osId.str();
