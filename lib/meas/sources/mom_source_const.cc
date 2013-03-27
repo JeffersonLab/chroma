@@ -166,7 +166,7 @@ namespace Chroma
 	SftMom phases(0, params.t_srce, mom3, params.av_mom, params.j_decay);
 	mom3 = phases.canonicalOrder(mom3);
 	Real fact = twopi * Real(params.mom[params.j_decay]) / Real(Layout::lattSize()[params.j_decay]);
-	phase = cos(QDP::Layout::latticeCoordinate(params.j_decay)*fact) ;
+	phase = cos( fact * QDP::Layout::latticeCoordinate(params.j_decay) );
 	/**
 	for (int sink_mom_num=0; sink_mom_num < phases.numMom(); ++sink_mom_num){
 	  multi1d<int> mom = phases.canonicalOrder(phases.numToMom(sink_mom_num));
