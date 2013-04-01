@@ -361,6 +361,8 @@ namespace Chroma
     void getFsAndBsSiteLoop(int lo, int hi, int myId, 
 			      GetFsAndBsArgs* arg)
     {
+      QDP_error_exit("void getFsAndBsSiteLoop(int lo, int hi, int myId, ");
+#if 0
       const LatticeColorMatrix& Q = arg->Q;
       const LatticeColorMatrix& QQ = arg->QQ;
       multi1d<LatticeComplex>& f = arg->f;
@@ -810,6 +812,7 @@ namespace Chroma
 	  
 	} // End of if( corner_caseP ) else {}
       } // End site loop
+#endif
     } // End Function
 
     } // End Namespace

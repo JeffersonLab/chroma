@@ -184,7 +184,12 @@ namespace Chroma
 #ifdef BUILD_QUDA
     QDPIO::cout << "Initializing QUDA" << endl;
     initQuda(-1);
+#else
+#ifdef QDP_IS_QDPJIT
+    QDP_setGPU();
 #endif
+#endif
+
 #ifdef QDP_IS_QDPJIT
     QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
     QDP_startGPU();

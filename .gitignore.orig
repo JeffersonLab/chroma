@@ -1,0 +1,32 @@
+*~
+*.h.in
+<<<<<<< HEAD
+=======
+Makefile.in
+>>>>>>> origin/gcc-4.7-compat
+Makefile
+configure
+aclocal.m4
+autom4te.cache/
+<<<<<<< HEAD
+./Makefile.in
+./mainprogs/Makefile.in
+./mainprogs/main/Makefile.in
+./mainprogs/tests/Makefile.in
+./docs/Makefile.in
+./lib/Makefile.in
+./other_libs/Makefile.in
+./other_libs/cg-dwf/Makefile.in
+./other_libs/sse_wilson_dslash/Makefile.in
+./other_libs/sse_wilson_dslash/tests/Makefile.in
+./other_libs/sse_wilson_dslash/include/Makefile.in
+./other_libs/sse_wilson_dslash/lib/Makefile.in
+./other_libs/cpp_wilson_dslash/Makefile.in
+./other_libs/cpp_wilson_dslash/tests/Makefile.in
+./other_libs/cpp_wilson_dslash/include/Makefile.in
+./other_libs/cpp_wilson_dslash/lib/Makefile.in
+./other_libs/qdp-lapack/Makefile.in
+./other_libs/qdp-lapack/include/Makefile.in
+./other_libs/qdp-lapack/lib/Makefile.in
+=======
+>>>>>>> origin/gcc-4.7-compat

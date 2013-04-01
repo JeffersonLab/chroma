@@ -49,6 +49,8 @@ namespace Chroma
     template<typename T, typename R> inline 
     void CopyFromLatFerm(RComplex<R> *px, const T&  lf, const Subset& s) 
     {
+      QDP_error_exit("void CopyFromLatFerm(RComplex<R> *px, const T&  lf, const Subset& s)");
+#if 0
       if(s.hasOrderedRep()){
 	int count=0 ;
 	//can be done with ccopy for speed...   
@@ -72,6 +74,7 @@ namespace Chroma
 	    }
 	}
       }//else        
+#endif
     }
       
     //--- OPT eigcg space ---//

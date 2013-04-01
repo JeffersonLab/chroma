@@ -139,7 +139,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)();
@@ -165,7 +165,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)(p1);
@@ -192,7 +192,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2);
@@ -220,7 +220,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3);
@@ -250,7 +250,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4);
@@ -281,7 +281,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5);
@@ -313,7 +313,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return OnUnknownType(id);
+	return this->OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5, p6);
