@@ -1809,6 +1809,11 @@ libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
 	actions/ferm/linop/clover_apply_ssed.cc
 endif
 
+if BUILD_JIT_CLOVER_APPLY
+nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h
+libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc
+endif
+
 
 #
 # BICGSTAB Kernels Testing:
