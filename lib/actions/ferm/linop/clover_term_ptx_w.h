@@ -902,7 +902,7 @@ namespace Chroma
   {
     typedef typename WordType<U>::Type_t REALT;
 
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    //std::cout << __PRETTY_FUNCTION__ << "\n";
 
     CUfunction func;
 
@@ -1240,7 +1240,7 @@ namespace Chroma
   {
     typedef typename WordType<U>::Type_t REALT;
 
-    std::cout << __PRETTY_FUNCTION__ << "\n";
+    //std::cout << __PRETTY_FUNCTION__ << "\n";
 
     CUfunction func;
 
