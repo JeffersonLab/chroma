@@ -34,7 +34,7 @@ namespace QDP
   {
     template<class T1>
     PCompJIT& operator=( const PCompREG<T1>& rhs) {
-      std::cout << __PRETTY_FUNCTION__ << "\n";
+      //std::cout << __PRETTY_FUNCTION__ << "\n";
       elem(0) = rhs.elem(0);
       elem(1) = rhs.elem(1);
       return *this;
@@ -109,6 +109,7 @@ namespace QDP
   {
     template<class T1>
     PTriDiaJIT& operator=( const PTriDiaREG<T1>& rhs) {
+      //std::cout << __PRETTY_FUNCTION__ << "\n";
       for ( int i = 0 ; i < 2 * Nc ; i++ )
 	elem(i) = rhs.elem(i);
       return *this;
@@ -180,6 +181,7 @@ namespace QDP
   {
     template<class T1>
     PTriOffJIT& operator=( const PTriOffREG<T1>& rhs) {
+      //std::cout << __PRETTY_FUNCTION__ << "\n";
       for ( int i = 0 ; i < 2*Nc*Nc-Nc ; i++ )
 	elem(i) = rhs.elem(i);
       return *this;
@@ -360,6 +362,9 @@ namespace Chroma
 				   const PTXCloverTermT<T,U>& from)
   {
     START_CODE();
+
+    //std::cout << "PTX Clover create from other "  << (void*)this << "\n";
+
     u.resize(Nd);
 
     u = fs->getLinks();
@@ -404,6 +409,7 @@ namespace Chroma
     
     tri_dia = from.tri_dia;
     tri_off = from.tri_off;
+
     END_CODE();  
   }
 
@@ -414,6 +420,8 @@ namespace Chroma
 				   const CloverFermActParams& param_)
   {
     START_CODE();
+
+    //std::cout << "PTX Clover create "  << (void*)this << "\n";
    
     u.resize(Nd);
     
@@ -549,8 +557,8 @@ namespace Chroma
 				     const U& f3,
 				     const U& f4,
 				     const U& f5,
-				     const X& tri_dia,
-				     const Y& tri_off)
+				     X& tri_dia,
+				     Y& tri_off)
   {
     AddressLeaf addr_leaf;
 
@@ -760,7 +768,8 @@ namespace Chroma
     U f4 = f[4] * getCloverCoeff(1,3);
     U f5 = f[5] * getCloverCoeff(2,3);    
 
-    QDPIO::cout << "PTX Clover make\n";
+    //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
+    //std::cout << "PTX Clover make "  << (void*)this << "\n";
     static CUfunction function;
 
     if (function == NULL)
@@ -828,9 +837,9 @@ namespace Chroma
 
   template<typename T,typename X,typename Y>
   CUfunction function_ldagdlinv_exec( CUfunction function,
-				      const T& tr_log_diag,
-				      const X& tri_dia,
-				      const Y& tri_off,
+				      T& tr_log_diag,
+				      X& tri_dia,
+				      Y& tri_off,
 				      const Subset& s)
   {
     if (!s.hasOrderedRep())
@@ -864,7 +873,13 @@ namespace Chroma
 
     if (!threadsPerBlock) {
       // Auto tuning
+      T save_tr_log_diag = tr_log_diag;
+      X save_tri_dia = tri_dia;
+      Y save_tri_off = tri_off;
       threadsPerBlock = jit_autotuning(function,lo,hi,&addr[0]);
+      tr_log_diag = save_tr_log_diag;
+      tri_dia = save_tri_dia;
+      tri_off = save_tri_off;
     } else {
       //QDP_info_primary("Previous auto-tuning result = %d",threadsPerBlock);
     }
@@ -1093,7 +1108,8 @@ namespace Chroma
     // Zero trace log
     tr_log_diag = zero;
 
-    QDPIO::cout << "PTX Clover ldagdlinv\n";
+    //QDPIO::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
+    //std::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
     static CUfunction function;
 
     if (function == NULL)
@@ -1102,7 +1118,6 @@ namespace Chroma
     // Execute the function
     function_ldagdlinv_exec(function, tr_log_diag, tri_dia, tri_off, rb[cb] );
 
-    
     // This comes from the days when we used to do Cholesky
     choles_done[cb] = true;
     END_CODE();
@@ -1160,7 +1175,7 @@ namespace Chroma
 
   template<typename U,typename X,typename Y>
   CUfunction function_triacntr_exec( CUfunction function,
-				     const U& B,
+				     U& B,
 				     const X& tri_dia,
 				     const Y& tri_off,
 				     int mat,
@@ -1200,7 +1215,9 @@ namespace Chroma
 
     if (!threadsPerBlock) {
       // Auto tuning
+      U save_B = B;
       threadsPerBlock = jit_autotuning(function,lo,hi,&addr[0]);
+      B = save_B;
     } else {
       //QDP_info_primary("Previous auto-tuning result = %d",threadsPerBlock);
     }
@@ -1570,7 +1587,8 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-    QDPIO::cout << "PTX Clover triacntr\n";
+    //QDPIO::cout << "PTX Clover triacntr " << (void*)this << "\n";
+    //std::cout << "PTX Clover triacntr " << (void*)this << "\n";
     static CUfunction function;
 
     if (function == NULL)
@@ -1611,7 +1629,7 @@ namespace Chroma
 
   template<typename T,typename X,typename Y>
   void function_apply_clov_exec(CUfunction function,
-				const T& chi,
+				T& chi,
 				const T& psi,
 				const X& tri_dia,
 				const Y& tri_off,
@@ -1726,7 +1744,7 @@ namespace Chroma
 
     for(int i = 0; i < n; ++i)
       {
-	chi_j.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i);// * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	chi_j.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
 	// cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
 
 	chi_j.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
@@ -1792,7 +1810,8 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    QDPIO::cout << "PTX Clover apply\n";
+    //QDPIO::cout << "PTX Clover apply"  << (void*)this << "\n";
+    //std::cout << "PTX Clover apply"  << (void*)this << "\n";
     static CUfunction function;
 
     if (function == NULL)
@@ -1800,6 +1819,8 @@ namespace Chroma
 
     // Execute the function
     function_apply_clov_exec(function, chi, psi, tri_dia, tri_off, rb[cb] );
+
+    (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
   }
