@@ -848,7 +848,7 @@ namespace Chroma
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-      QDPIO::cout << "PTX getFsAndBs\n";
+      //QDPIO::cout << "PTX getFsAndBs dobs = " << dobs << "\n";
       static CUfunction function;
       
       if (function == NULL)
