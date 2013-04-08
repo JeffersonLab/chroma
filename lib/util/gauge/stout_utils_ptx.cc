@@ -79,16 +79,15 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 				    multi1d<LatticeComplex>& b2,
 				    bool dobs)
 {
+  //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+
   CUfunction func;
 
   jit_start_new_function();
 
   jit_value r_lo     = jit_add_param( jit_ptx_type::s32 );
   jit_value r_hi     = jit_add_param( jit_ptx_type::s32 );
-  jit_value r_dobs_u8= jit_add_param( jit_ptx_type::u8 );
-
-  jit_value r_dobs_u32=jit_val_convert( jit_ptx_type::u32 , r_dobs_u8 );
-  jit_value r_dobs   = jit_ins_ne( r_dobs_u32 , jit_value(0) );
+  jit_value r_dobs   = jit_add_param( jit_ptx_type::pred );
   jit_value r_nobs   = jit_ins_not( r_dobs );
       
   jit_value r_idx = jit_geom_get_linear_th_idx();  

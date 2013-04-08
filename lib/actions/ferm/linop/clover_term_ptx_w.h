@@ -618,6 +618,8 @@ namespace Chroma
 				      const X& tri_dia,
 				      const Y& tri_off)
   {
+    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+
     typedef typename WordType<RealT>::Type_t REALT;
 
     CUfunction func;
@@ -1238,6 +1240,8 @@ namespace Chroma
 				      int mat,
 				      const Subset& s)
   {
+    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+
     typedef typename WordType<U>::Type_t REALT;
 
     //std::cout << __PRETTY_FUNCTION__ << "\n";
@@ -1690,6 +1694,7 @@ namespace Chroma
 				       const Y& tri_off,
 				       const Subset& s)
   {
+    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
     //typedef typename WordType<RealT>::Type_t REALT;
 
     CUfunction func;
