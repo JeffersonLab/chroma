@@ -644,23 +644,23 @@ namespace Chroma
     UJIT f3_jit(forEach(f3, param_leaf, TreeCombine()));
     UJIT f4_jit(forEach(f4, param_leaf, TreeCombine()));
     UJIT f5_jit(forEach(f5, param_leaf, TreeCombine()));
-    auto& f0_j = f0_jit.elem(QDPTypeJITBase::Coalesced);
-    auto& f1_j = f1_jit.elem(QDPTypeJITBase::Coalesced);
-    auto& f2_j = f2_jit.elem(QDPTypeJITBase::Coalesced);
-    auto& f3_j = f3_jit.elem(QDPTypeJITBase::Coalesced);
-    auto& f4_j = f4_jit.elem(QDPTypeJITBase::Coalesced);
-    auto& f5_j = f5_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced);
+    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced);
+    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced);
+    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced);
+    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced);
+    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    auto& tri_dia_j = tri_dia_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
-    diag_mass_reg.setup( diag_mass_jit.elem( QDPTypeJITBase::Scalar ) );
+    diag_mass_reg.setup( diag_mass_jit.elem( JitDeviceLayout::Scalar ) );
 
     for(int jj = 0; jj < 2; jj++) {
       for(int ii = 0; ii < 2*Nc; ii++) {
@@ -923,23 +923,23 @@ namespace Chroma
 
     typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
     TJIT tr_log_diag_jit(forEach(tr_log_diag, param_leaf, TreeCombine()));
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    auto& tri_dia_j = tri_dia_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     tri_dia_r.setup( tri_dia_j );
-    //  tri_dia_r.setup( tri_dia_jit.elem(QDPTypeJITBase::Coalesced) );
+    //  tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced) );
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
     tri_off_r.setup( tri_off_j );
-    //  tri_off_r.setup( tri_off_jit.elem(QDPTypeJITBase::Coalesced) );
+    //  tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced) );
 
 
     RScalarREG<WordREG<REALT> > zip;
@@ -1262,23 +1262,23 @@ namespace Chroma
 
     typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
     UJIT B_jit(forEach(B, param_leaf, TreeCombine()));
-    auto& B_j = B_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    auto& tri_dia_j = tri_dia_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     tri_dia_r.setup( tri_dia_j );
-    //  tri_dia_r.setup( tri_dia_jit.elem(QDPTypeJITBase::Coalesced) );
+    //  tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced) );
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
     tri_off_r.setup( tri_off_j );
-    //  tri_off_r.setup( tri_off_jit.elem(QDPTypeJITBase::Coalesced) );
+    //  tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced) );
 
 
     jit_label_t case_0;
@@ -1712,27 +1712,27 @@ namespace Chroma
     typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
     TJIT chi_jit(forEach(chi, param_leaf, TreeCombine()));
     TJIT psi_jit(forEach(psi, param_leaf, TreeCombine()));
-    auto& chi_j = chi_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename TJIT::Subtype_t >::Type_t psi_r;
-    psi_r.setup( psi_jit.elem(QDPTypeJITBase::Coalesced) );
+    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced) );
 
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
-    tri_dia_r.setup( tri_dia_jit.elem(QDPTypeJITBase::Coalesced) );
+    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced) );
 
 
 
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(QDPTypeJITBase::Coalesced);
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
 
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
-    tri_off_r.setup( tri_off_jit.elem(QDPTypeJITBase::Coalesced) );
+    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced) );
 
 
 

@@ -113,19 +113,19 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   LCJIT  b21_jit(forEach(b2[1], param_leaf, TreeCombine()));
   LCJIT  b22_jit(forEach(b2[2], param_leaf, TreeCombine()));
 
-  auto& Q_j  = Q_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& QQ_j = QQ_jit.elem(QDPTypeJITBase::Coalesced);
+  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced);
+  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced);
 
-  auto& f0_j = f0_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& f1_j = f1_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& f2_j = f2_jit.elem(QDPTypeJITBase::Coalesced);
+  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced);
+  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced);
+  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced);
   
-  auto& b10_j = b10_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& b11_j = b11_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& b12_j = b12_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& b20_j = b20_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& b21_j = b21_jit.elem(QDPTypeJITBase::Coalesced);
-  auto& b22_j = b22_jit.elem(QDPTypeJITBase::Coalesced);
+  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced);
+  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced);
+  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced);
+  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced);
+  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced);
+  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced);
 
 
   { 
