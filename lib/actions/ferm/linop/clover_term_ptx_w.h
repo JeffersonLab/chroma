@@ -1722,6 +1722,8 @@ namespace Chroma
     typename REGType< typename TJIT::Subtype_t >::Type_t psi_r;
     psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced) );
 
+    typename REGType< typename TJIT::Subtype_t >::Type_t chi_r;
+
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
@@ -1749,10 +1751,10 @@ namespace Chroma
 
     for(int i = 0; i < n; ++i)
       {
-	chi_j.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	chi_r.elem((0*n+i)/3).elem((0*n+i)%3) = tri_dia_r.elem(0).elem(i) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
 	// cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
 
-	chi_j.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	chi_r.elem((1*n+i)/3).elem((1*n+i)%3) = tri_dia_r.elem(1).elem(i) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
 	// cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
       }
 
@@ -1761,22 +1763,23 @@ namespace Chroma
       {
 	for(int j = 0; j < i; j++)
 	  {
-#if 1
-	    chi_j.elem((0*n+i)/3).elem((0*n+i)%3) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/3).elem((0*n+j)%3);
+	    chi_r.elem((0*n+i)/3).elem((0*n+i)%3) += tri_off_r.elem(0).elem(kij) * psi_r.elem((0*n+j)/3).elem((0*n+j)%3);
 	    // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
 
-	    chi_j.elem((0*n+j)/3).elem((0*n+j)%3) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
+	    chi_r.elem((0*n+j)/3).elem((0*n+j)%3) += conj(tri_off_r.elem(0).elem(kij)) * psi_r.elem((0*n+i)/3).elem((0*n+i)%3);
 	    // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
 
-	    chi_j.elem((1*n+i)/3).elem((1*n+i)%3) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/3).elem((1*n+j)%3);
+	    chi_r.elem((1*n+i)/3).elem((1*n+i)%3) += tri_off_r.elem(1).elem(kij) * psi_r.elem((1*n+j)/3).elem((1*n+j)%3);
 	    // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
 
-	    chi_j.elem((1*n+j)/3).elem((1*n+j)%3) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
+	    chi_r.elem((1*n+j)/3).elem((1*n+j)%3) += conj(tri_off_r.elem(1).elem(kij)) * psi_r.elem((1*n+i)/3).elem((1*n+i)%3);
 	    // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
-#endif
+
 	    kij++;
 	  }
       }
+
+    chi_j = chi_r;
 
     return jit_get_cufunction("ptx_apply_clov.ptx");
   }
