@@ -1835,18 +1835,82 @@ namespace Chroma
 
 
 
+
+
+  namespace QDPCloverEnv {
+    template<typename R,typename TD,typename TO> 
+    struct QUDAPackArgs { 
+      int cb;
+      multi1d<QUDAPackedClovSite<R> >& quda_array;
+      const TD&  tri_dia;
+      const TO&  tri_off;
+    };
+    
+    template<typename R,typename TD,typename TO>
+    void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R,TD,TO>* a) {
+      int cb = a->cb;
+      int Ns2 = Ns/2;
+
+      multi1d<QUDAPackedClovSite<R> >& quda_array = a->quda_array;
+
+      const TD& tri_dia = a->tri_dia;
+      const TO& tri_off = a->tri_off;
+
+      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
+
+      for(int ssite=lo; ssite < hi; ++ssite) {
+	int site = rb[cb].siteTable()[ssite];
+	// First Chiral Block
+	for(int i=0; i < 6; i++) { 
+	  quda_array[site].diag1[i] = tri_dia.elem(site).comp[0].diag[i].elem().elem();
+	}
+
+	int target_index=0;
+	
+	for(int col=0; col < Nc*Ns2-1; col++) { 
+	  for(int row=col+1; row < Nc*Ns2; row++) {
+
+	    int source_index = row*(row-1)/2 + col;
+
+	    quda_array[site].offDiag1[target_index][0] = tri_off.elem(site).comp[0].offd[source_index].real().elem();
+	    quda_array[site].offDiag1[target_index][1] = tri_off.elem(site).comp[0].offd[source_index].imag().elem();
+	    target_index++;
+	  }
+	}
+	// Second Chiral Block
+	for(int i=0; i < 6; i++) { 
+	  quda_array[site].diag2[i] = tri_dia.elem(site).comp[1].diag[i].elem().elem();
+	}
+
+	target_index=0;
+	for(int col=0; col < Nc*Ns2-1; col++) { 
+	  for(int row=col+1; row < Nc*Ns2; row++) {
+
+	    int source_index = row*(row-1)/2 + col;
+
+	    quda_array[site].offDiag2[target_index][0] = tri_off.elem(site).comp[1].offd[source_index].real().elem();
+	    quda_array[site].offDiag2[target_index][1] = tri_off.elem(site).comp[1].offd[source_index].imag().elem();
+	    target_index++;
+	  }
+	}
+      }
+      QDPIO::cout << "\n";
+    }
+  }
+
   template<typename T, typename U>
   void PTXCloverTermT<T,U>::packForQUDA(multi1d<QUDAPackedClovSite<typename WordType<T>::Type_t> >& quda_array, int cb) const
-  {
-    QDP_error_exit("PTXCloverTermT<T,U>::packForQUDA");
-#if 0
-    typedef typename WordType<T>::Type_t REALT;
-    int num_sites = rb[cb].siteTable().size();
-    
-    QDPCloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri };
-    dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT>);
-#endif
-  }  
+    {
+      typedef typename WordType<T>::Type_t REALT;
+      int num_sites = rb[cb].siteTable().size();
+
+      typedef OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > > TD;
+      typedef OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > > TO;
+
+      QDPCloverEnv::QUDAPackArgs<REALT,TD,TO> args = { cb, quda_array , tri_dia , tri_off };
+      dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT,TD,TO>);
+    }
+
 
 
   template<typename T, typename U>

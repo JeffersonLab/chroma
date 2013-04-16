@@ -17,7 +17,7 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/linop/clover_term_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
@@ -66,7 +66,7 @@ namespace Chroma
     MdagMMultiSysSolverCGQudaClover(Handle< LinearOperator<T> > M_,
 				      Handle< FermState<T,P,Q> > state_,
 				      const MultiSysSolverQUDACloverParams& invParam_) : 
-      A(M_), invParam(invParam_), clov(new QDPCloverTermT<T,U>()), invclov(new QDPCloverTermT<T,U>())
+      A(M_), invParam(invParam_), clov(new CloverTermT<T,U>::Type_t()), invclov(new CloverTermT<T,U>::Type_t())
 
     {
       QDPIO::cout << "MdagMMultiSysSolverCGQUDAClover: " << endl;
@@ -475,8 +475,8 @@ namespace Chroma
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+    Handle< typename CloverTermT<T, U>::Type_t > clov;
+    Handle< typename CloverTermT<T, U>::Type_t > invclov;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,

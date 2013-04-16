@@ -56,6 +56,8 @@ namespace Chroma {
   struct CloverTermT {
     typedef PTXCloverTermT<T,U> Type_t;
   };
+
+
 }
 #else 
 
