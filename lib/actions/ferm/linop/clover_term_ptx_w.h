@@ -601,7 +601,7 @@ namespace Chroma
 
     //QDP_info("Launching kernel with %d threads",hi-lo);
 
-    kernel_geom_t now = getGeom( hi-lo , threadsPerBlock );
+    kernel_geom_t now = getGeom( Layout::sitesOnNode() , threadsPerBlock );
     CudaLaunchKernel(function,   now.Nblock_x,now.Nblock_y,1,    threadsPerBlock,1,1,    0, 0, &addr[0] , 0);
   }
 
@@ -878,7 +878,7 @@ namespace Chroma
       T save_tr_log_diag = tr_log_diag;
       X save_tri_dia = tri_dia;
       Y save_tri_off = tri_off;
-      threadsPerBlock = jit_autotuning(function,lo,hi,&addr[0]);
+      threadsPerBlock = jit_autotuning(function,0,s.numSiteTable(),&addr[0]);
       tr_log_diag = save_tr_log_diag;
       tri_dia = save_tri_dia;
       tri_off = save_tri_off;
@@ -888,7 +888,7 @@ namespace Chroma
 
     //QDP_info("Launching kernel with %d threads",hi-lo);
 
-    kernel_geom_t now = getGeom( hi-lo , threadsPerBlock );
+    kernel_geom_t now = getGeom( s.numSiteTable() , threadsPerBlock );
     CudaLaunchKernel(function,   now.Nblock_x,now.Nblock_y,1,    threadsPerBlock,1,1,    0, 0, &addr[0] , 0);
   }
 
@@ -1218,7 +1218,7 @@ namespace Chroma
     if (!threadsPerBlock) {
       // Auto tuning
       U save_B = B;
-      threadsPerBlock = jit_autotuning(function,lo,hi,&addr[0]);
+      threadsPerBlock = jit_autotuning(function,0,s.numSiteTable(),&addr[0]);
       B = save_B;
     } else {
       //QDP_info_primary("Previous auto-tuning result = %d",threadsPerBlock);
@@ -1226,7 +1226,7 @@ namespace Chroma
 
     //QDP_info("Launching kernel with %d threads",hi-lo);
 
-    kernel_geom_t now = getGeom( hi-lo , threadsPerBlock );
+    kernel_geom_t now = getGeom( s.numSiteTable() , threadsPerBlock );
     CudaLaunchKernel(function,   now.Nblock_x,now.Nblock_y,1,    threadsPerBlock,1,1,    0, 0, &addr[0] , 0);
   }
 
@@ -1673,14 +1673,14 @@ namespace Chroma
 
     if (!threadsPerBlock) {
       // Auto tuning
-      threadsPerBlock = jit_autotuning(function,lo,hi,&addr[0]);
+      threadsPerBlock = jit_autotuning(function,0,s.numSiteTable(),&addr[0]);
     } else {
       //QDP_info_primary("Previous auto-tuning result = %d",threadsPerBlock);
     }
 
     //QDP_info("Launching kernel with %d threads",hi-lo);
 
-    kernel_geom_t now = getGeom( hi-lo , threadsPerBlock );
+    kernel_geom_t now = getGeom( s.numSiteTable() , threadsPerBlock );
     CudaLaunchKernel(function,   now.Nblock_x,now.Nblock_y,1,    threadsPerBlock,1,1,    0, 0, &addr[0] , 0);
   }
 
