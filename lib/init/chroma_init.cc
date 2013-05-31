@@ -5,6 +5,9 @@
 
 #include "chroma_config.h"
 
+#if defined(BUILD_JIT_CLOVER_TERM)
+#include "../actions/ferm/linop/clover_term_ptx_w.h"
+#endif
 
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
@@ -213,6 +216,11 @@ namespace Chroma
 #ifdef BUILD_QUDA
     endQuda();
 #endif
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+    QDP_info_primary("Time for packForQUDA: %f sec",PackForQUDATimer::Instance().get() / 1.0e6);
+#endif
+
     if (! QDP_isInitialized())
       return;
 

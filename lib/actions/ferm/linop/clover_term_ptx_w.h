@@ -18,6 +18,19 @@
 
 namespace QDP
 {
+  class PackForQUDATimer {
+    double acc_time;
+    PackForQUDATimer(): acc_time(0.0) {}
+  public:
+    static PackForQUDATimer& Instance() {
+      static PackForQUDATimer singleton;
+      return singleton;
+    }
+
+    double&        get()       { return acc_time; }
+    const double&  get() const { return acc_time; }
+  };
+
 
   template<typename T>
   struct PComp
@@ -1907,8 +1920,14 @@ namespace Chroma
       typedef OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > > TD;
       typedef OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > > TO;
 
+      StopWatch watch;
+      watch.start();
+
       QDPCloverEnv::QUDAPackArgs<REALT,TD,TO> args = { cb, quda_array , tri_dia , tri_off };
       dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT,TD,TO>);
+
+      watch.stop();
+      PackForQUDATimer::Instance().get() += watch.getTimeInMicroseconds();
     }
 
 
