@@ -249,7 +249,7 @@ fi
 AC_MSG_NOTICE([Found QDP++ configuration program ${QDPXX_CONFIG}])
 AC_SUBST(CXX, "`${QDPXX_CONFIG} --cxx`")
 AC_MSG_NOTICE([QDP++ compiler: ${CXX}])
-AC_SUBST(QDPXX_CXXFLAGS, "`${QDPXX_CONFIG} --cxxflags`")
+AC_SUBST(QDPXX_CXXFLAGS, "`${QDPXX_CONFIG} --cxxflags` -fexceptions -frtti")
 AC_MSG_NOTICE([QDP++ compile flags: ${QDPXX_CXXFLAGS}])
 AC_SUBST(QDPXX_LDFLAGS,  "`${QDPXX_CONFIG} --ldflags`")
 AC_MSG_NOTICE([QDP++ linking flags: ${QDPXX_LDFLAGS}])
