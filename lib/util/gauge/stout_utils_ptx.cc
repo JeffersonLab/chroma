@@ -1,6 +1,6 @@
 #include "qdp.h"
 
-#ifdef QDP_IS_QDPJIT
+#ifdef QDP_IS_QDPJIT_1
 
 using namespace QDP;
 
@@ -81,21 +81,13 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 {
   //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
-  CUfunction func;
+  llvm_start_new_function();
 
-  jit_start_new_function();
+  ParamRef  p_lo     = jit_add_param<int>();
+  ParamRef  p_hi     = jit_add_param<int>();
+  ParamRef  p_dobs   = jit_add_param<bool>();
 
-  jit_value r_lo     = jit_add_param( jit_ptx_type::s32 );
-  jit_value r_hi     = jit_add_param( jit_ptx_type::s32 );
-  jit_value r_dobs   = jit_add_param( jit_ptx_type::pred );
-  jit_value r_nobs   = jit_ins_not( r_dobs );
-      
-  jit_value r_idx = jit_geom_get_linear_th_idx();  
-      
-  jit_value r_out_of_range       = jit_ins_ge( r_idx , r_hi );
-  jit_ins_exit( r_out_of_range );
-      
-  ParamLeaf param_leaf( r_idx );
+  ParamLeaf param_leaf;
   
   typedef typename LeafFunctor<LatticeColorMatrix, ParamLeaf>::Type_t  LCMJIT;
   typedef typename LeafFunctor<LatticeComplex    , ParamLeaf>::Type_t  LCJIT;
@@ -112,19 +104,29 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   LCJIT  b21_jit(forEach(b2[1], param_leaf, TreeCombine()));
   LCJIT  b22_jit(forEach(b2[2], param_leaf, TreeCombine()));
 
-  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced);
-  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced);
+  llvm::Value*  r_lo     = llvm_derefParam( p_lo );
+  llvm::Value*  r_hi     = llvm_derefParam( p_hi );
+  llvm::Value*  r_dobs   = llvm_derefParam( p_dobs );
+  llvm::Value*  r_nobs   = llvm_not( r_dobs );
+      
+  llvm::Value*  r_idx = llvm_thread_idx();  
+      
+  llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
 
-  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced);
-  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced);
-  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced);
+
+  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+
+  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,r_idx);
   
-  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced);
-  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced);
-  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced);
-  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced);
-  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced);
-  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced);
+  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
 
   { 
@@ -149,7 +151,7 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 
     jit_label_t not_c1_lt;
     jit_label_t label_exit;
-    jit_ins_branch( not_c1_lt , jit_ins_ge( c1.get_val() , jit_value( 4.0e-3 ) ) );
+    jit_ins_branch( not_c1_lt , jit_ins_ge( c1.get_val() , llvm::Value* ( 4.0e-3 ) ) );
 
     { //    if( c1 < 4.0e-3  ) 
       f0_j.elem().elem().real() = jit_constant(1.0) - c0 * c0 / jit_constant(720.0);
@@ -199,7 +201,7 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
     jit_ins_label( not_c1_lt );
 
 
-    jit_value c0_negativeP = jit_ins_lt( c0.get_val() , jit_value(0.0) );
+    llvm::Value*  c0_negativeP = jit_ins_lt( c0.get_val() , llvm::Value* (0.0) );
     WordREG<REAL> c0abs = fabs(c0);
     WordREG<REAL> c0max = jit_constant(2.0) * pow( c1 / jit_constant(3.0) , jit_constant(1.5) );
     WordREG<REAL> theta;
@@ -208,7 +210,7 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 
     jit_label_t cont_1;
     jit_label_t label_theta_exit;
-    jit_ins_branch( cont_1 , jit_ins_ge( eps.get_val() , jit_value( 0.0 ) ) );
+    jit_ins_branch( cont_1 , jit_ins_ge( eps.get_val() , llvm::Value* ( 0.0 ) ) );
     // if( eps < 0 ) {
     // ===============================================================================
     // Corner Case 2: Handle case when c0abs is bigger than c0max. 
@@ -221,7 +223,7 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
     jit_ins_branch( label_theta_exit );
     jit_ins_label( cont_1 );
     jit_label_t cont_2;
-    jit_ins_branch( cont_2 , jit_ins_ge( eps.get_val() , jit_value( 1.0e-3 ) ) );
+    jit_ins_branch( cont_2 , jit_ins_ge( eps.get_val() , llvm::Value* ( 1.0e-3 ) ) );
     // else if ( eps < 1.0e-3 ) {
     // ===============================================================================
     // Corner Case 3: c0->c0max even though c1 may be actually quite reasonable.
@@ -280,7 +282,7 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
       {
 	jit_label_t label_90;
 	jit_label_t cont_4;
-	jit_value Nw_smallP = jit_ins_ge( (fabs( w )).get_val() , jit_value( 0.05 ) );
+	llvm::Value*  Nw_smallP = jit_ins_ge( (fabs( w )).get_val() , llvm_create_value( 0.05 ) );
 	jit_ins_branch( label_90 , Nw_smallP );
 	{
 

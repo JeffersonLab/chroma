@@ -18,6 +18,19 @@
 
 namespace QDP
 {
+  class PackForQUDATimer {
+    double acc_time;
+    PackForQUDATimer(): acc_time(0.0) {}
+  public:
+    static PackForQUDATimer& Instance() {
+      static PackForQUDATimer singleton;
+      return singleton;
+    }
+
+    double&        get()       { return acc_time; }
+    const double&  get() const { return acc_time; }
+  };
+
 
   template<typename T>
   struct PComp
@@ -622,19 +635,12 @@ namespace Chroma
 
     typedef typename WordType<RealT>::Type_t REALT;
 
-    CUfunction func;
+    llvm_start_new_function();
 
-    jit_start_new_function();
+    ParamRef  p_lo     = llvm_add_param<int>();
+    ParamRef  p_hi     = llvm_add_param<int>();
 
-    jit_value r_lo     = jit_add_param( jit_ptx_type::s32 );
-    jit_value r_hi     = jit_add_param( jit_ptx_type::s32 );
-      
-    jit_value r_idx = jit_geom_get_linear_th_idx();  
-      
-    jit_value r_out_of_range       = jit_ins_ge( r_idx , r_hi );
-    jit_ins_exit( r_out_of_range );
-      
-    ParamLeaf param_leaf( r_idx );
+    ParamLeaf param_leaf;
   
     typedef typename LeafFunctor<RealT, ParamLeaf>::Type_t  RealTJIT;
     RealTJIT diag_mass_jit(forEach(diag_mass, param_leaf, TreeCombine()));
@@ -646,23 +652,35 @@ namespace Chroma
     UJIT f3_jit(forEach(f3, param_leaf, TreeCombine()));
     UJIT f4_jit(forEach(f4, param_leaf, TreeCombine()));
     UJIT f5_jit(forEach(f5, param_leaf, TreeCombine()));
-    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced);
-    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced);
-    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced);
-    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced);
-    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced);
-    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
+
+
+    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
+    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
+    llvm::Value *  r_idx = llvm_thread_idx();
+    
+    llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
+
+    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
-    diag_mass_reg.setup( diag_mass_jit.elem( JitDeviceLayout::Scalar ) );
+    diag_mass_reg.setup( diag_mass_jit.elem() );
+
+      
+
 
     for(int jj = 0; jj < 2; jj++) {
       for(int ii = 0; ii < 2*Nc; ii++) {
@@ -741,7 +759,9 @@ namespace Chroma
       }
     }
 
-    return jit_get_cufunction("ptx_make_clov.ptx");
+    //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
+
+    return jit_function_epilogue_get_cuf("jit_make_clov.ptx");
   }
 
 
@@ -904,44 +924,41 @@ namespace Chroma
   {
     typedef typename WordType<U>::Type_t REALT;
 
-    //std::cout << __PRETTY_FUNCTION__ << "\n";
+    //std::cout << __PRETTY_FUNCTION__ << " entering\n";
 
-    CUfunction func;
+    llvm_start_new_function();
 
-    jit_start_new_function();
+    ParamRef  p_lo     = llvm_add_param<int>();
+    ParamRef  p_hi     = llvm_add_param<int>();
 
-    jit_value r_lo     = jit_add_param( jit_ptx_type::s32 );
-    jit_value r_hi     = jit_add_param( jit_ptx_type::s32 );
-
-    jit_value r_idx_thread = jit_geom_get_linear_th_idx();
-
-    jit_value r_out_of_range       = jit_ins_gt( r_idx_thread , jit_ins_sub( r_hi , r_lo ) );
-    jit_ins_exit( r_out_of_range );
-
-    jit_value r_idx = jit_ins_add( r_lo , r_idx_thread );
-
-    ParamLeaf param_leaf( r_idx );
-
+    ParamLeaf param_leaf;
 
     typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
     TJIT tr_log_diag_jit(forEach(tr_log_diag, param_leaf, TreeCombine()));
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced);
-
-    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
-    tri_dia_r.setup( tri_dia_j );
-    //  tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced) );
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
 
+    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
+    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
+    llvm::Value *  r_idx_thread    = llvm_thread_idx();
+
+    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
+
+    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
+
+    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+
+    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
+
+    tri_dia_r.setup( tri_dia_j );
     tri_off_r.setup( tri_off_j );
-    //  tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced) );
 
 
     RScalarREG<WordREG<REALT> > zip;
@@ -1088,7 +1105,9 @@ namespace Chroma
       }
     }
 
-    return jit_get_cufunction("ptx_ldagdlinv.ptx");
+    //    std::cout << __PRETTY_FUNCTION__ << " leaving\n";
+
+    return jit_function_epilogue_get_cuf("jit_ldagdlinv.ptx");
   }
 
 
@@ -1244,72 +1263,70 @@ namespace Chroma
 
     typedef typename WordType<U>::Type_t REALT;
 
-    //std::cout << __PRETTY_FUNCTION__ << "\n";
+    llvm_start_new_function();
 
-    CUfunction func;
+    ParamRef  p_lo     = llvm_add_param<int>();
+    ParamRef  p_hi     = llvm_add_param<int>();
 
-    jit_start_new_function();
+    ParamRef p_mat    = llvm_add_param<int>();
 
-    jit_value r_lo     = jit_add_param( jit_ptx_type::s32 );
-    jit_value r_hi     = jit_add_param( jit_ptx_type::s32 );
-    jit_value r_mat    = jit_add_param( jit_ptx_type::s32 );
-
-    jit_value r_idx_thread = jit_geom_get_linear_th_idx();
-
-    jit_value r_out_of_range       = jit_ins_gt( r_idx_thread , jit_ins_sub( r_hi , r_lo ) );
-    jit_ins_exit( r_out_of_range );
-
-    jit_value r_idx = jit_ins_add( r_lo , r_idx_thread );
-
-    ParamLeaf param_leaf( r_idx );
+    ParamLeaf param_leaf;
 
 
     typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
     UJIT B_jit(forEach(B, param_leaf, TreeCombine()));
-    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced);
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced);
-
-    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
-    tri_dia_r.setup( tri_dia_j );
-    //  tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced) );
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
 
+    llvm::Value * r_mat    = llvm_derefParam( p_mat );
+    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
+    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
+    llvm::Value *  r_idx_thread    = llvm_thread_idx();
+
+    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
+
+    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
+
+    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+
+    typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
+
+    tri_dia_r.setup( tri_dia_j );
     tri_off_r.setup( tri_off_j );
-    //  tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced) );
 
 
-    jit_label_t case_0;
-    jit_label_t case_3;
-    jit_label_t case_5;
-    jit_label_t case_6;
-    jit_label_t case_9;
-    jit_label_t case_10;
-    jit_label_t case_12;
+    llvm::BasicBlock * case_0 = llvm_new_basic_block();
+    llvm::BasicBlock * case_3 = llvm_new_basic_block();
+    llvm::BasicBlock * case_5 = llvm_new_basic_block();
+    llvm::BasicBlock * case_6 = llvm_new_basic_block();
+    llvm::BasicBlock * case_9 = llvm_new_basic_block();
+    llvm::BasicBlock * case_10 = llvm_new_basic_block();
+    llvm::BasicBlock * case_12 = llvm_new_basic_block();
+    llvm::BasicBlock * case_default = llvm_new_basic_block();
 
+    llvm::SwitchInst * mat_sw = llvm_switch( r_mat , case_default );
 
-    jit_ins_branch(  case_0 , jit_ins_eq( r_mat , jit_value(0) ) );
-    jit_ins_branch(  case_3 , jit_ins_eq( r_mat , jit_value(3) ) );
-    jit_ins_branch(  case_5 , jit_ins_eq( r_mat , jit_value(5) ) );
-    jit_ins_branch(  case_6 , jit_ins_eq( r_mat , jit_value(6) ) );
-    jit_ins_branch(  case_9 , jit_ins_eq( r_mat , jit_value(9) ) );
-    jit_ins_branch(  case_10 , jit_ins_eq( r_mat , jit_value(10) ) );
-    jit_ins_branch(  case_12 , jit_ins_eq( r_mat , jit_value(12) ) );
-    jit_ins_exit();
-
+    mat_sw->addCase( llvm_create_const_int(0) , case_0 );
+    mat_sw->addCase( llvm_create_const_int(3) , case_3 );
+    mat_sw->addCase( llvm_create_const_int(5) , case_5 );
+    mat_sw->addCase( llvm_create_const_int(6) , case_6 );
+    mat_sw->addCase( llvm_create_const_int(9) , case_9 );
+    mat_sw->addCase( llvm_create_const_int(10) , case_10 );
+    mat_sw->addCase( llvm_create_const_int(12) , case_12 );
 
     /*# gamma(   0)   1  0  0  0            # ( 0000 )  --> 0 */
     /*#               0  1  0  0 */
     /*#               0  0  1  0 */
     /*#               0  0  0  1 */
     /*# From diagonal part */
-    jit_ins_label(  case_0 );
+    llvm_set_insert_point(  case_0 );
     {
       RComplexREG<WordREG<REALT> > lctmp0;
       RScalarREG< WordREG<REALT> > lr_zero0;
@@ -1346,11 +1363,11 @@ namespace Chroma
 	  elem_ijb0++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
 
-    jit_ins_label(  case_3 );
+    llvm_set_insert_point(  case_3 );
     {
       /*# gamma(  12)  -i  0  0  0            # ( 0011 )  --> 3 */
       /*#               0  i  0  0 */
@@ -1393,11 +1410,11 @@ namespace Chroma
 	  elem_ijb3++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
 
-    jit_ins_label(  case_5 );
+    llvm_set_insert_point(  case_5 );
     {
       /*# gamma(  13)   0 -1  0  0            # ( 0101 )  --> 5 */
       /*#               1  0  0  0 */
@@ -1426,11 +1443,11 @@ namespace Chroma
 	  elem_ij5++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
 
-    jit_ins_label(  case_6 );
+    llvm_set_insert_point(  case_6 );
     {
       /*# gamma(  23)   0 -i  0  0            # ( 0110 )  --> 6 */
       /*#              -i  0  0  0 */
@@ -1458,11 +1475,11 @@ namespace Chroma
 	  elem_ij6++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
 
-    jit_ins_label(  case_9 );
+    llvm_set_insert_point(  case_9 );
     {
       /*# gamma(  14)   0  i  0  0            # ( 1001 )  --> 9 */
       /*#               i  0  0  0 */
@@ -1490,11 +1507,11 @@ namespace Chroma
 	  elem_ij9++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
 
-    jit_ins_label(  case_10 );
+    llvm_set_insert_point(  case_10 );
     {
       /*# gamma(  24)   0 -1  0  0            # ( 1010 )  --> 10 */
       /*#               1  0  0  0 */
@@ -1522,11 +1539,11 @@ namespace Chroma
 	  elem_ij10++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
 
-    jit_ins_label(  case_12 );
+    llvm_set_insert_point(  case_12 );
     {
       /*# gamma(  34)   i  0  0  0            # ( 1100 )  --> 12 */
       /*#               0 -i  0  0 */
@@ -1569,10 +1586,12 @@ namespace Chroma
 	  elem_ijb12++;
 	}
       }
-      jit_ins_exit( );
+      llvm_exit( );
     }
 
-    return jit_get_cufunction("ptx_triacntr.ptx");
+    llvm_set_insert_point( case_default );
+
+    return jit_function_epilogue_get_cuf("jit_triacntr.ptx");
   }
 
 
@@ -1697,52 +1716,48 @@ namespace Chroma
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
     //typedef typename WordType<RealT>::Type_t REALT;
 
-    CUfunction func;
+    //CUfunction func;
 
-    jit_start_new_function();
+    llvm_start_new_function();
 
-    jit_value r_lo     = jit_add_param(  jit_ptx_type::s32 );
-    jit_value r_hi     = jit_add_param(  jit_ptx_type::s32 );
+    //std::vector<ParamRef> params = jit_function_preamble_param();
 
-    jit_value r_idx_thread = jit_geom_get_linear_th_idx();
+    ParamRef  p_lo     = llvm_add_param<int>();
+    ParamRef  p_hi     = llvm_add_param<int>();
 
-    jit_value r_out_of_range       = jit_ins_gt( r_idx_thread , jit_ins_sub( r_hi , r_lo ) );
-    jit_ins_exit(  r_out_of_range );
 
-    jit_value r_idx = jit_ins_add( r_lo , r_idx_thread );
 
-    ParamLeaf param_leaf(  r_idx );
 
+    ParamLeaf param_leaf;
 
     typedef typename LeafFunctor<T, ParamLeaf>::Type_t  TJIT;
     TJIT chi_jit(forEach(chi, param_leaf, TreeCombine()));
     TJIT psi_jit(forEach(psi, param_leaf, TreeCombine()));
-    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced);
-
     typename REGType< typename TJIT::Subtype_t >::Type_t psi_r;
-    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced) );
-
     typename REGType< typename TJIT::Subtype_t >::Type_t chi_r;
-
 
     typedef typename LeafFunctor<X, ParamLeaf>::Type_t  XJIT;
     XJIT tri_dia_jit(forEach(tri_dia, param_leaf, TreeCombine()));
-
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
-    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced) );
-
-
-
 
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced);
-
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
-    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced) );
 
+    //llvm::Value * r_idx = jit_function_preamble_get_idx( params );
 
+    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
+    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
+    llvm::Value *  r_idx_thread    = llvm_thread_idx();
 
+    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
+
+    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
+
+    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
+    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
+    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
 
     // RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     // const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
@@ -1781,7 +1796,7 @@ namespace Chroma
 
     chi_j = chi_r;
 
-    return jit_get_cufunction("ptx_apply_clov.ptx");
+    return jit_function_epilogue_get_cuf("jit_apply_clov.ptx");
   }
 
 
@@ -1907,8 +1922,14 @@ namespace Chroma
       typedef OLattice<PComp<PTriDia<RScalar <Word<REALT> > > > > TD;
       typedef OLattice<PComp<PTriOff<RComplex<Word<REALT> > > > > TO;
 
+      StopWatch watch;
+      watch.start();
+
       QDPCloverEnv::QUDAPackArgs<REALT,TD,TO> args = { cb, quda_array , tri_dia , tri_off };
       dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT,TD,TO>);
+
+      watch.stop();
+      PackForQUDATimer::Instance().get() += watch.getTimeInMicroseconds();
     }
 
 

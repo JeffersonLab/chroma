@@ -847,7 +847,7 @@ namespace Chroma
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
-#if defined(BUILD_JIT_CLOVER_TERM)
+#if defined(BUILD_JIT_CLOVER_TERM_1)
       //QDPIO::cout << "PTX getFsAndBs dobs = " << dobs << "\n";
       static CUfunction function;
       
