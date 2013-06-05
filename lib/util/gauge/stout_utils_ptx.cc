@@ -77,7 +77,7 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 				    multi1d<LatticeComplex>& b1,
 				    multi1d<LatticeComplex>& b2)
 {
-  std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+  //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
   llvm_start_new_function();
 

@@ -860,7 +860,7 @@ namespace Chroma
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-      QDPIO::cout << "LLVM getFsAndBs dobs = " << dobs << "\n";
+      //QDPIO::cout << "LLVM getFsAndBs dobs = " << dobs << "\n";
       static CUfunction function;
       
       if (function == NULL)
