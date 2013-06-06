@@ -184,21 +184,25 @@ namespace Chroma
     }
 
 
+
 #ifdef QDP_IS_QDPJIT
 #ifdef BUILD_QUDA
-  QDPIO::cout << "Initializing QUDA" << endl;
+  std::cout << "Initializing QUDA" << endl;
   initQudaDevice(-1);
-  QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
+  std::cout << "Initializing QDP-JIT GPUs" << endl;
   QDP_startGPU();
   initQudaMemory();
 #else
+  std::cout << "Setting device" << endl;
   QDP_setGPU();
-  QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
+  std::cout << "Initializing QMP part" << endl;
+  QDP_initialize_QMP(argc, argv);
+  QDPIO::cout << "Initializing start GPUs" << endl;
   QDP_startGPU();
 #endif
 #else
 #ifdef BUILD_QUDA
-  QDPIO::cout << "Initializing QUDA" << endl;
+  std::cout << "Initializing QUDA" << endl;
   initQuda(-1);
 #endif
 #endif
