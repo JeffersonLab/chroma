@@ -5,6 +5,9 @@
 
 #include "chroma_config.h"
 
+#if defined(BUILD_JIT_CLOVER_TERM)
+#include "../actions/ferm/linop/clover_term_ptx_w.h"
+#endif
 
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
@@ -181,21 +184,30 @@ namespace Chroma
     }
 
 
+
 #ifdef QDP_IS_QDPJIT
 #ifdef BUILD_QUDA
-  QDPIO::cout << "Initializing QUDA" << endl;
-  initQudaDevice(-1);
-  QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
+  std::cout << "Setting CUDA device" << endl;
+  int cuda_device = QDP_setGPU();
+  std::cout << "Initializing QMP part" << endl;
+  QDP_initialize_QMP(argc, argv);
+  std::cout << "Skipping Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << endl;
+  initQudaDevice(cuda_device,false);
+  std::cout << "Initializing QDP-JIT GPUs" << endl;
   QDP_startGPU();
+  std::cout << "Initializing QUDA memory" << endl;
   initQudaMemory();
 #else
+  std::cout << "Setting device" << endl;
   QDP_setGPU();
-  QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
+  std::cout << "Initializing QMP part" << endl;
+  QDP_initialize_QMP(argc, argv);
+  QDPIO::cout << "Initializing start GPUs" << endl;
   QDP_startGPU();
 #endif
 #else
 #ifdef BUILD_QUDA
-  QDPIO::cout << "Initializing QUDA" << endl;
+  std::cout << "Initializing QUDA" << endl;
   initQuda(-1);
 #endif
 #endif
@@ -213,6 +225,11 @@ namespace Chroma
 #ifdef BUILD_QUDA
     endQuda();
 #endif
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+    QDP_info_primary("Time for packForQUDA: %f sec",PackForQUDATimer::Instance().get() / 1.0e6);
+#endif
+
     if (! QDP_isInitialized())
       return;
 
