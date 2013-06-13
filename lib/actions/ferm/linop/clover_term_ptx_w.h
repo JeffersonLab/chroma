@@ -105,8 +105,6 @@ namespace QDP
 
 
 
-
-
   template<typename T>
   struct PTriDia
   {
@@ -245,6 +243,42 @@ namespace QDP
   {
     typedef typename WordType<T>::Type_t  Type_t;
   };
+
+
+#if defined(QDP_USE_PROFILING)   
+template<class T>
+struct LeafFunctor<PComp<T>, PrintTag>
+{
+  typedef int Type_t;
+  static int apply(const PComp<T> &s, const PrintTag &f)
+    { 
+      //LeafFunctor<T,PrintTag>::apply(s.elem(),f);
+      return 0;
+    }
+};
+template<class T>
+struct LeafFunctor<PTriDia<T>, PrintTag>
+{
+  typedef int Type_t;
+  static int apply(const PTriDia<T> &s, const PrintTag &f)
+    { 
+      //LeafFunctor<T,PrintTag>::apply(s.elem(),f);
+      return 0;
+    }
+};
+template<class T>
+struct LeafFunctor<PTriOff<T>, PrintTag>
+{
+  typedef int Type_t;
+  static int apply(const PTriOff<T> &s, const PrintTag &f)
+    { 
+      //LeafFunctor<T,PrintTag>::apply(s.elem(),f);
+      return 0;
+    }
+};
+#endif
+
+
 
 }
 
