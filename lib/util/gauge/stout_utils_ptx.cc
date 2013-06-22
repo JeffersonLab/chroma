@@ -48,19 +48,7 @@ CUfunction function_get_fs_bs_exec(CUfunction function,
     //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
   }
 
-  static int threadsPerBlock = 0;
-
-  if (!threadsPerBlock) {
-    // Auto tuning
-    threadsPerBlock = jit_autotuning(function,lo,hi,&addr[0]);
-  } else {
-    //QDP_info_primary("Previous auto-tuning result = %d",threadsPerBlock);
-  }
-
-  //QDP_info("Launching kernel with %d threads",hi-lo);
-
-  kernel_geom_t now = getGeom( hi-lo , threadsPerBlock );
-  CudaLaunchKernel(function,   now.Nblock_x,now.Nblock_y,1,    threadsPerBlock,1,1,    0, 0, &addr[0] , 0);
+  jit_launch(function,hi-lo,&addr[0]);
 }
 
 
