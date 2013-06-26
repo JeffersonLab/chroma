@@ -637,7 +637,7 @@ namespace Chroma
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
 
-    jit_launch(function,Layout::sitesOnNode(),&addr[0]);
+    jit_launch(function,Layout::sitesOnNode(),addr);
   }
 
 
@@ -906,7 +906,7 @@ namespace Chroma
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
 
-    jit_launch(function,s.numSiteTable(),&addr[0]);
+    jit_launch(function,s.numSiteTable(),addr);
   }
 
 
@@ -1230,7 +1230,7 @@ namespace Chroma
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
 
-    jit_launch(function,s.numSiteTable(),&addr[0]);
+    jit_launch(function,s.numSiteTable(),addr);
   }
 
 
@@ -1672,7 +1672,7 @@ namespace Chroma
       //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
     }
 
-    jit_launch(function,s.numSiteTable(),&addr[0]);
+    jit_launch(function,s.numSiteTable(),addr);
   }
 
 

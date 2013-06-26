@@ -49,7 +49,7 @@ CUfunction function_get_fs_bs_exec(CUfunction function,
     //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
   }
 
-  jit_launch(function,hi-lo,&addr[0]);
+  jit_launch(function,hi-lo,addr);
 }
 
 
