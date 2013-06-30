@@ -16,6 +16,7 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
+          <mass_label>U0.05</mass_label>
           <num_vecs>10</num_vecs>
           <t_sources>0 3</t_sources>
           <decay_dir>3</decay_dir>

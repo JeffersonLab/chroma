@@ -31,32 +31,6 @@
       </NamedObject>
     </elem>
 
-    <elem>
-      <annotation>
-        Construct perambulators from propagator solution vectors
-      </annotation>
-      <Name>PERAM_DIST</Name>
-      <Frequency>1</Frequency>
-      <Param>
-        <Contractions>
-          <quark_lines>1 2</quark_lines>
-          <mass>U0.05</mass>
-          <QuarkLine>
-            <QuarkLineType>ANNIH</QuarkLineType>
-            <num_vecs>10</num_vecs>
-            <num_space_dils>2</num_space_dils>
-            <num_time_dils>4</num_time_dils>
-          </QuarkLine>
-        </Contractions>
-      </Param>
-      <NamedObject>
-        <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <soln_file>./prop.mod</soln_file>
-        <peram_file>./peram.mod</peram_file>
-      </NamedObject>
-    </elem>
-
   </InlineMeasurements>
   <nrow>4 4 4 16</nrow>
 </Param>
