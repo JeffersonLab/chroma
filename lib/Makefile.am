@@ -716,8 +716,9 @@ nobase_include_HEADERS += \
 	util/ferm/key_hadron_3pt_corr.h \
 	util/ferm/key_prop_colorvec.h \
 	util/ferm/key_prop_matelem.h \
-	util/ferm/key_peram_dist.h \
+	util/ferm/key_peram_distillution.h \
 	util/ferm/key_timeslice_colorvec.h \
+	util/ferm/key_prop_distillation.h \
 	util/ferm/key_prop_distillution.h \
 	util/ferm/key_val_db.h \
 	util/ferm/crc48.h \
@@ -840,6 +841,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
 	meas/inline/hadron/inline_distillution_noise.h \
+	meas/inline/hadron/inline_prop_distillation_w.h \
 	meas/inline/hadron/inline_prop_distillution_w.h \
 	meas/inline/hadron/inline_hadspec_w.h \
 	meas/inline/hadron/inline_mesonspec_w.h \
@@ -1557,8 +1559,9 @@ libchroma_a_SOURCES += \
 	util/ferm/key_hadron_3pt_corr.cc \
 	util/ferm/key_prop_colorvec.cc \
 	util/ferm/key_prop_matelem.cc \
-	util/ferm/key_peram_dist.cc \
+	util/ferm/key_peram_distillution.cc \
 	util/ferm/key_timeslice_colorvec.cc \
+	util/ferm/key_prop_distillation.cc \
 	util/ferm/key_prop_distillution.cc \
 	util/ferm/crc48.cc \
 	util/ferm/distillution_noise.cc \
@@ -1624,6 +1627,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
+	meas/inline/hadron/inline_prop_distillation_w.cc \
 	meas/inline/hadron/inline_prop_distillution_w.cc \
 	meas/inline/hadron/inline_hadspec_w.cc \
 	meas/inline/hadron/inline_mesonspec_w.cc \

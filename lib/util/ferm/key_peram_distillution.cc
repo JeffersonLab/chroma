@@ -3,15 +3,15 @@
  * \brief Key for propagator distillution matrix elements
  */
 
-#include "util/ferm/key_peram_dist.h"
+#include "util/ferm/key_peram_distillution.h"
 
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
   //! Diagnostics
-  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPeramDist_t& param)
+  StandardOutputStream& operator<<(StandardOutputStream& os, const KeyPeramDistillution_t& param)
   {
-    os << "KeyPeramDist_t:";
+    os << "KeyPeramDistillution_t:";
     os << " quark_line= " << param.quark_line;
     os << " annihP= " << param.annihP;
     os << " t_slice= " << param.t_slice;
@@ -26,7 +26,7 @@ namespace Chroma
 
   //----------------------------------------------------------------------------
   //! PeramDist reader
-  void read(BinaryReader& bin, KeyPeramDist_t& param)
+  void read(BinaryReader& bin, KeyPeramDistillution_t& param)
   {
     read(bin, param.quark_line);
     read(bin, param.annihP);
@@ -38,7 +38,7 @@ namespace Chroma
   }
 
   //! PeramDist write
-  void write(BinaryWriter& bin, const KeyPeramDist_t& param)
+  void write(BinaryWriter& bin, const KeyPeramDistillution_t& param)
   { 
     write(bin, param.quark_line);
     write(bin, param.annihP);
@@ -50,7 +50,7 @@ namespace Chroma
   }
 
   //! PeramDist reader
-  void read(XMLReader& xml, const std::string& path, KeyPeramDist_t& param)
+  void read(XMLReader& xml, const std::string& path, KeyPeramDistillution_t& param)
   {
     XMLReader paramtop(xml, path);
     
@@ -64,7 +64,7 @@ namespace Chroma
   }
 
   //! PeramDist writer
-  void write(XMLWriter& xml, const std::string& path, const KeyPeramDist_t& param)
+  void write(XMLWriter& xml, const std::string& path, const KeyPeramDistillution_t& param)
   {
     push(xml, path);
 
@@ -82,7 +82,7 @@ namespace Chroma
 
   //----------------------------------------------------------------------------
   //! PeramDist reader
-  void read(BinaryReader& bin, ValPeramDist_t& param)
+  void read(BinaryReader& bin, ValPeramDistillution_t& param)
   {
     int nrows;
     int ncols;
@@ -100,7 +100,7 @@ namespace Chroma
   }
 
   //! PeramDist write
-  void write(BinaryWriter& bin, const ValPeramDist_t& param)
+  void write(BinaryWriter& bin, const ValPeramDistillution_t& param)
   {
     write(bin, param.mat.nrows());    // always write the size
     write(bin, param.mat.ncols());    // always write the size

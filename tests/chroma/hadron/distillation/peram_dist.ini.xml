@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<harom>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Construct perambulators from propagator solution vectors
+      </annotation>
+      <Name>PERAM_DISTILLATION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <mass>U0.05</mass>
+          <num_vecs>10</num_vecs>
+          <t_sources>0</t_sources>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>5</Nt_backward>
+        </Contractions>
+      </Param>
+      <NamedObject>
+        <distillution_id>dist_obj</distillution_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <soln_file>./prop.mod</soln_file>
+        <peram_file>./peram.sdb</peram_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Construct perambulators from propagator solution vectors
+      </annotation>
+      <Name>PERAM_DIST</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <quark_lines>1 2</quark_lines>
+          <mass>U0.05</mass>
+          <QuarkLine>
+            <QuarkLineType>ANNIH</QuarkLineType>
+            <num_vecs>10</num_vecs>
+            <num_space_dils>2</num_space_dils>
+            <num_time_dils>4</num_time_dils>
+          </QuarkLine>
+        </Contractions>
+      </Param>
+      <NamedObject>
+        <distillution_id>dist_obj</distillution_id>
+        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <soln_file>./prop.mod</soln_file>
+        <peram_file>./peram.mod</peram_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+</harom>
+
+
