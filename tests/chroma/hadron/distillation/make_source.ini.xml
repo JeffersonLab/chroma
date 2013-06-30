@@ -10,24 +10,21 @@
 
     <elem>
       <annotation>
-        Construct perambulators from propagator solution vectors
+        Construct propagator source vectors
       </annotation>
-      <Name>PERAM_DISTILLATION</Name>
+      <Name>MAKE_SOURCE_DISTILLATION</Name>
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
           <mass>U0.05</mass>
           <num_vecs>10</num_vecs>
           <t_sources>0</t_sources>
-          <Nt_forward>16</Nt_forward>
-          <Nt_backward>5</Nt_backward>
         </Contractions>
       </Param>
       <NamedObject>
         <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
-        <soln_file>./prop.mod</soln_file>
-        <peram_file>./peram.sdb</peram_file>
+        <src_file>./src.mod</src_file>
       </NamedObject>
     </elem>
 
