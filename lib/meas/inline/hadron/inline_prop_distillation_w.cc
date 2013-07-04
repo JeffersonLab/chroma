@@ -13,6 +13,8 @@
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/key_prop_distillation.h"
 #include "util/ferm/transf.h"
+#include "util/ferm/spin_rep.h"
+#include "util/ferm/diractodr.h"
 #include "util/ferm/twoquark_contract_ops.h"
 #include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"
@@ -473,6 +475,15 @@ namespace Chroma
       int ncg_had = 0;
 
 
+#if 0
+      // NOTE: not doing this spin rotation, but leaving the code here for reference
+      // Rotation from DR to DP
+      SpinMatrix diracToDRMat(DiracToDRMat());
+      std::vector<MatrixSpinRep_t> diracToDrMatPlus = convertTwoQuarkSpin(diracToDRMat);
+      std::vector<MatrixSpinRep_t> diracToDrMatMinus = convertTwoQuarkSpin(adj(diracToDRMat));
+#endif
+
+
       //
       // Try the factories
       //
@@ -560,6 +571,21 @@ namespace Chroma
 		ferm_out(spin_sink,spin_source) = peekSpin(quark_soln, spin_sink);
 	      }
 	    } // for spin_source
+
+
+#if 0
+	    // NOTE: not doing this spin rotation, but leaving the code here for reference
+	    // Instead, leave the code in the DR basis - the convention for all the perambulators
+	    // written
+
+	    // Rotate from DeGrand-Rossi (DR) to Dirac-Pauli (DP)
+	    {
+	      multi2d<LatticeColorVector> ferm_tmp;
+
+	      multiplyRep(ferm_tmp, diracToDrMatMinus, ferm_out);
+	      multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
+	    }
+#endif
 
 	    sniss1.stop();
 	    QDPIO::cout << "Time to assemble and transmogrify propagators for colorvec_src= " << colorvec_src << "  time = " 
