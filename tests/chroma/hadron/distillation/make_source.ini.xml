@@ -2,7 +2,7 @@
 <harom>
 <annotation>
 ;
-; Test input file for chroma main program
+; Test input file for harom main program
 ;
 </annotation>
 <Param> 
@@ -23,7 +23,7 @@
       </Param>
       <NamedObject>
         <distillution_id>dist_obj</distillution_id>
-        <colorvec_file>./colorvec.timeslice.mod</colorvec_file>
+        <colorvec_file>./colorvec.mod</colorvec_file>
         <src_file>./src.mod</src_file>
       </NamedObject>
     </elem>
