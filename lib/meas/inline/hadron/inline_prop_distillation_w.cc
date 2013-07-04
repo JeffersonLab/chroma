@@ -13,8 +13,6 @@
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/key_prop_distillation.h"
 #include "util/ferm/transf.h"
-#include "util/ferm/spin_rep.h"
-#include "util/ferm/diractodr.h"
 #include "util/ferm/twoquark_contract_ops.h"
 #include "util/ft/time_slice_set.h"
 #include "util/info/proginfo.h"
@@ -475,12 +473,6 @@ namespace Chroma
       int ncg_had = 0;
 
 
-      // Rotation from DR to DP
-      SpinMatrix diracToDRMat(DiracToDRMat());
-      std::vector<MatrixSpinRep_t> diracToDrMatPlus = convertTwoQuarkSpin(diracToDRMat);
-      std::vector<MatrixSpinRep_t> diracToDrMatMinus = convertTwoQuarkSpin(adj(diracToDRMat));
-
-
       //
       // Try the factories
       //
@@ -569,15 +561,6 @@ namespace Chroma
 	      }
 	    } // for spin_source
 
-
-	      // Rotate from DeGrand-Rossi (DR) to Dirac-Pauli (DP)
-	    {
-	      multi2d<LatticeColorVector> ferm_tmp;
-
-	      multiplyRep(ferm_tmp, diracToDrMatMinus, ferm_out);
-	      multiplyRep(ferm_out, ferm_tmp, diracToDrMatPlus);
-	    }
-
 	    sniss1.stop();
 	    QDPIO::cout << "Time to assemble and transmogrify propagators for colorvec_src= " << colorvec_src << "  time = " 
 			<< sniss1.getTimeInSeconds() 
@@ -585,7 +568,7 @@ namespace Chroma
 
 
 	    // Write out each time-slice chunk of a lattice colorvec soln to disk
-	    QDPIO::cout << "Potentially write propagator solutions to disk" << std::endl;
+	    QDPIO::cout << "Write propagator solutions to disk" << std::endl;
 	    StopWatch sniss2;
 	    sniss2.reset();
 	    sniss2.start();

@@ -16,7 +16,6 @@
       <Frequency>1</Frequency>
       <Param>
         <Contractions>
-          <mass>U0.05</mass>
           <num_vecs>10</num_vecs>
           <t_sources>0 3</t_sources>
         </Contractions>

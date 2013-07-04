@@ -20,7 +20,7 @@
           <num_vecs>10</num_vecs>
           <t_sources>0 3</t_sources>
           <Nt_forward>16</Nt_forward>
-          <Nt_backward>5</Nt_backward>
+          <Nt_backward>0</Nt_backward>
         </Contractions>
       </Param>
       <NamedObject>
