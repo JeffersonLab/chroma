@@ -24,7 +24,6 @@
         </Contractions>
       </Param>
       <NamedObject>
-        <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.mod</colorvec_file>
         <soln_file>./prop.mod</soln_file>
         <peram_file>./peram.sdb</peram_file>

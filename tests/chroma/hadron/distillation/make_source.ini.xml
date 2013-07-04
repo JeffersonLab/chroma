@@ -22,7 +22,6 @@
         </Contractions>
       </Param>
       <NamedObject>
-        <distillution_id>dist_obj</distillution_id>
         <colorvec_file>./colorvec.mod</colorvec_file>
         <src_file>./src.mod</src_file>
       </NamedObject>
