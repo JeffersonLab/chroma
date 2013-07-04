@@ -18,7 +18,7 @@
         <Contractions>
           <mass>U0.05</mass>
           <num_vecs>10</num_vecs>
-          <t_sources>0</t_sources>
+          <t_sources>0 3</t_sources>
         </Contractions>
       </Param>
       <NamedObject>
