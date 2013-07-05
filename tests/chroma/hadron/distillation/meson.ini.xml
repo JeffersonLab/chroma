@@ -12,203 +12,62 @@
       <Name>MESON_MATELEM_COLORVEC</Name>
       <Frequency>1</Frequency>
       <Param>
-        <version>1</version>
+        <version>4</version>
+        <mom2_min>0</mom2_min>
         <mom2_max>2</mom2_max>
+        <mom_list></mom_list>
         <num_vecs>10</num_vecs>
         <displacement_length>1</displacement_length>
         <decay_dir>3</decay_dir>
-        <orthog_basis>true</orthog_basis>
+        <use_derivP>true</use_derivP>
 
         <!-- List of displacement arrays -->
-        <displacement_list>
-          <elem>0</elem>
+        <deriv_list>
+          <elem></elem>
           <elem>1</elem>
-          <elem>-1</elem>
           <elem>2</elem>
-          <elem>-2</elem>
           <elem>3</elem>
-          <elem>-3</elem>
+
           <elem>1 1</elem>
-          <elem>-1 -1</elem>
-          <elem>2 2</elem>
-          <elem>-2 -2</elem>
-          <elem>3 3</elem>
-          <elem>-3 -3</elem>
-          <elem>1 2</elem>
-          <elem>-1 2</elem>
-          <elem>1 -2</elem>
-          <elem>-1 -2</elem>
-          <elem>1 3</elem>
-          <elem>-1 3</elem>
-          <elem>1 -3</elem>
-          <elem>-1 -3</elem>
           <elem>2 1</elem>
-          <elem>-2 1</elem>
-          <elem>2 -1</elem>
-          <elem>-2 -1</elem>
-          <elem>2 3</elem>
-          <elem>-2 3</elem>
-          <elem>2 -3</elem>
-          <elem>-2 -3</elem>
           <elem>3 1</elem>
-          <elem>-3 1</elem>
-          <elem>3 -1</elem>
-          <elem>-3 -1</elem>
+          <elem>1 2</elem>
+          <elem>2 2</elem>
           <elem>3 2</elem>
-          <elem>-3 2</elem>
-          <elem>3 -2</elem>
-          <elem>-3 -2</elem>
-          <elem>-3 -3 -3</elem>
-          <elem>-3 -3 -2</elem>
-          <elem>-3 -3 -1</elem>
-          <elem>-3 -3 1</elem>
-          <elem>-3 -3 2</elem>
-          <elem>-3 -2 -3</elem>
-          <elem>-3 -2 -2</elem>
-          <elem>-3 -2 -1</elem>
-          <elem>-3 -2 1</elem>
-          <elem>-3 -2 3</elem>
-          <elem>-3 -1 -3</elem>
-          <elem>-3 -1 -2</elem>
-          <elem>-3 -1 -1</elem>
-          <elem>-3 -1 2</elem>
-          <elem>-3 -1 3</elem>
-          <elem>-3 1 -3</elem>
-          <elem>-3 1 -2</elem>
-          <elem>-3 1 1</elem>
-          <elem>-3 1 2</elem>
-          <elem>-3 1 3</elem>
-          <elem>-3 2 -3</elem>
-          <elem>-3 2 -1</elem>
-          <elem>-3 2 1</elem>
-          <elem>-3 2 2</elem>
-          <elem>-3 2 3</elem>
-          <elem>-2 -3 -3</elem>
-          <elem>-2 -3 -2</elem>
-          <elem>-2 -3 -1</elem>
-          <elem>-2 -3 1</elem>
-          <elem>-2 -3 2</elem>
-          <elem>-2 -2 -3</elem>
-          <elem>-2 -2 -2</elem>
-          <elem>-2 -2 -1</elem>
-          <elem>-2 -2 1</elem>
-          <elem>-2 -2 3</elem>
-          <elem>-2 -1 -3</elem>
-          <elem>-2 -1 -2</elem>
-          <elem>-2 -1 -1</elem>
-          <elem>-2 -1 2</elem>
-          <elem>-2 -1 3</elem>
-          <elem>-2 1 -3</elem>
-          <elem>-2 1 -2</elem>
-          <elem>-2 1 1</elem>
-          <elem>-2 1 2</elem>
-          <elem>-2 1 3</elem>
-          <elem>-2 3 -2</elem>
-          <elem>-2 3 -1</elem>
-          <elem>-2 3 1</elem>
-          <elem>-2 3 2</elem>
-          <elem>-2 3 3</elem>
-          <elem>-1 -3 -3</elem>
-          <elem>-1 -3 -2</elem>
-          <elem>-1 -3 -1</elem>
-          <elem>-1 -3 1</elem>
-          <elem>-1 -3 2</elem>
-          <elem>-1 -2 -3</elem>
-          <elem>-1 -2 -2</elem>
-          <elem>-1 -2 -1</elem>
-          <elem>-1 -2 1</elem>
-          <elem>-1 -2 3</elem>
-          <elem>-1 -1 -3</elem>
-          <elem>-1 -1 -2</elem>
-          <elem>-1 -1 -1</elem>
-          <elem>-1 -1 2</elem>
-          <elem>-1 -1 3</elem>
-          <elem>-1 2 -3</elem>
-          <elem>-1 2 -1</elem>
-          <elem>-1 2 1</elem>
-          <elem>-1 2 2</elem>
-          <elem>-1 2 3</elem>
-          <elem>-1 3 -2</elem>
-          <elem>-1 3 -1</elem>
-          <elem>-1 3 1</elem>
-          <elem>-1 3 2</elem>
-          <elem>-1 3 3</elem>
-          <elem>1 -3 -3</elem>
-          <elem>1 -3 -2</elem>
-          <elem>1 -3 -1</elem>
-          <elem>1 -3 1</elem>
-          <elem>1 -3 2</elem>
-          <elem>1 -2 -3</elem>
-          <elem>1 -2 -2</elem>
-          <elem>1 -2 -1</elem>
-          <elem>1 -2 1</elem>
-          <elem>1 -2 3</elem>
-          <elem>1 1 -3</elem>
-          <elem>1 1 -2</elem>
+          <elem>1 3</elem>
+          <elem>2 3</elem>
+          <elem>3 3</elem>
+
           <elem>1 1 1</elem>
-          <elem>1 1 2</elem>
-          <elem>1 1 3</elem>
-          <elem>1 2 -3</elem>
-          <elem>1 2 -1</elem>
           <elem>1 2 1</elem>
-          <elem>1 2 2</elem>
-          <elem>1 2 3</elem>
-          <elem>1 3 -2</elem>
-          <elem>1 3 -1</elem>
           <elem>1 3 1</elem>
+          <elem>1 1 2</elem>
+          <elem>1 2 2</elem>
           <elem>1 3 2</elem>
+          <elem>1 1 3</elem>
+          <elem>1 2 3</elem>
           <elem>1 3 3</elem>
-          <elem>2 -3 -3</elem>
-          <elem>2 -3 -2</elem>
-          <elem>2 -3 -1</elem>
-          <elem>2 -3 1</elem>
-          <elem>2 -3 2</elem>
-          <elem>2 -1 -3</elem>
-          <elem>2 -1 -2</elem>
-          <elem>2 -1 -1</elem>
-          <elem>2 -1 2</elem>
-          <elem>2 -1 3</elem>
-          <elem>2 1 -3</elem>
-          <elem>2 1 -2</elem>
+
           <elem>2 1 1</elem>
-          <elem>2 1 2</elem>
-          <elem>2 1 3</elem>
-          <elem>2 2 -3</elem>
-          <elem>2 2 -1</elem>
           <elem>2 2 1</elem>
-          <elem>2 2 2</elem>
-          <elem>2 2 3</elem>
-          <elem>2 3 -2</elem>
-          <elem>2 3 -1</elem>
           <elem>2 3 1</elem>
+          <elem>2 1 2</elem>
+          <elem>2 2 2</elem>
           <elem>2 3 2</elem>
+          <elem>2 1 3</elem>
+          <elem>2 2 3</elem>
           <elem>2 3 3</elem>
-          <elem>3 -2 -3</elem>
-          <elem>3 -2 -2</elem>
-          <elem>3 -2 -1</elem>
-          <elem>3 -2 1</elem>
-          <elem>3 -2 3</elem>
-          <elem>3 -1 -3</elem>
-          <elem>3 -1 -2</elem>
-          <elem>3 -1 -1</elem>
-          <elem>3 -1 2</elem>
-          <elem>3 -1 3</elem>
-          <elem>3 1 -3</elem>
-          <elem>3 1 -2</elem>
+
           <elem>3 1 1</elem>
-          <elem>3 1 2</elem>
-          <elem>3 1 3</elem>
-          <elem>3 2 -3</elem>
-          <elem>3 2 -1</elem>
           <elem>3 2 1</elem>
-          <elem>3 2 2</elem>
-          <elem>3 2 3</elem>
-          <elem>3 3 -2</elem>
-          <elem>3 3 -1</elem>
           <elem>3 3 1</elem>
+          <elem>3 1 2</elem>
+          <elem>3 2 2</elem>
           <elem>3 3 2</elem>
+          <elem>3 1 3</elem>
+          <elem>3 2 3</elem>
           <elem>3 3 3</elem>
-        </displacement_list>
+        </deriv_list>
 
         <LinkSmearing>
           <!-- LinkSmearingType>NONE</LinkSmearingType -->
