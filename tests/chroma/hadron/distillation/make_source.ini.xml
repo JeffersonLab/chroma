@@ -17,7 +17,7 @@
       <Param>
         <Contractions>
           <num_vecs>10</num_vecs>
-          <t_sources>0 3</t_sources>
+          <t_sources>0 6</t_sources>
         </Contractions>
       </Param>
       <NamedObject>
