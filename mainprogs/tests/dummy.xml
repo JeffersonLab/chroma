@@ -40,7 +40,7 @@
      </AnisoParam>
    </CloverParams>
    <RsdTarget>1.0e-10</RsdTarget>
-   <Delta>1.0e-12</Delta>
+   <Delta>0.1</Delta>
    <MaxIter>10000</MaxIter>
    <AntiPeriodicT>true</AntiPeriodicT>
    <SolverType>CG</SolverType>
