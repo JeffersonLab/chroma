@@ -10,9 +10,9 @@ namespace Chroma
 { 
   //----------------------------------------------------------------------------
   //! Get sink key
-  KeyPropDist_t AbsQuarkLine::getSnkKey(const KeyPeramDist_t& peram_key, int dist_src) const
+  KeyPropDistillution_t AbsQuarkLine::getSnkKey(const KeyPeramDistillution_t& peram_key, int dist_src) const
   {
-    KeyPropDist_t snk_key;
+    KeyPropDistillution_t snk_key;
 
     snk_key.prop_type  = "SNK";
     snk_key.annihP     = peram_key.annihP;
@@ -140,7 +140,7 @@ namespace Chroma
 	//! Constructor
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
+		      QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_);
@@ -170,13 +170,13 @@ namespace Chroma
 	virtual std::vector<int> getTimeSources() const {return params.t_sources;}
 
 	//! Get source keys
-	virtual std::list<KeyPropDist_t> getSrcKeys(int t_source, int dist_src) const;
+	virtual std::list<KeyPropDistillution_t> getSrcKeys(int t_source, int dist_src) const;
 
 	//! Get sink keys
-	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const;
+	virtual std::list<KeyPropDistillution_t> getSnkKeys(int t_source, int dist_src) const;
 
 	//! Get perambulator keys
-	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
+	virtual std::list<KeyPeramDistillution_t> getPeramKeys(int t_source) const;
 
 	//! Get perambulator key time slices
 	virtual std::list<int> getTslices(int t_source) const;
@@ -186,13 +186,13 @@ namespace Chroma
 	virtual std::vector<bool> getActiveTSlices(int t_source) const;
 
 	//! Get source key
-	virtual KeyPropDist_t getSrcKey(int t_source, int dist_src) const;
+	virtual KeyPropDistillution_t getSrcKey(int t_source, int dist_src) const;
 
       private:
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj;
+	QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -204,7 +204,7 @@ namespace Chroma
       //! Constructor
       QuarkLineFact::QuarkLineFact(const Params& params_,
 				   const DistillutionNoise& dist_noise_obj_, 
-				   QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
+				   QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 				   const TimeSliceSet& time_slice_set_,
 				   int quark_line_,
 				   const std::string& mass_)
@@ -224,7 +224,7 @@ namespace Chroma
 	int t_actual = dist_noise_obj.getTime(t_source);
 
 	// Get the source vector
-	KeyPropDist_t src_key = getSrcKey(t_source, dist_src);
+	KeyPropDistillution_t src_key = getSrcKey(t_source, dist_src);
 	LatticeColorVectorF vec_srce = zero;
 
 	TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_actual);
@@ -270,9 +270,9 @@ namespace Chroma
 
       //----------------------------------------------------------------------------
       //! Get source key
-      KeyPropDist_t QuarkLineFact::getSrcKey(int t_source, int dist_src) const
+      KeyPropDistillution_t QuarkLineFact::getSrcKey(int t_source, int dist_src) const
       {
-	KeyPropDist_t key;
+	KeyPropDistillution_t key;
 
 	key.prop_type    = "SRC";
 	key.annihP       = false;
@@ -290,9 +290,9 @@ namespace Chroma
 	
       //----------------------------------------------------------------------------
       //! Get source keys
-      std::list<KeyPropDist_t> QuarkLineFact::getSrcKeys(int t_source, int dist_src) const
+      std::list<KeyPropDistillution_t> QuarkLineFact::getSrcKeys(int t_source, int dist_src) const
       {
-	std::list<KeyPropDist_t> keys;
+	std::list<KeyPropDistillution_t> keys;
 
 	keys.push_back(getSrcKey(t_source,dist_src));
 
@@ -302,9 +302,9 @@ namespace Chroma
 	
       //----------------------------------------------------------------------------
       //! Get sink keys
-      std::list<KeyPropDist_t> QuarkLineFact::getSnkKeys(int t_source, int dist_src) const
+      std::list<KeyPropDistillution_t> QuarkLineFact::getSnkKeys(int t_source, int dist_src) const
       {
-	std::list<KeyPropDist_t> keys;
+	std::list<KeyPropDistillution_t> keys;
 
 	std::vector<bool> active_t_slices = getActiveTSlices(t_source);
 	
@@ -318,7 +318,7 @@ namespace Chroma
 	    {
 	      if (! active_t_slices[t]) {continue;}
 
-	      KeyPropDist_t key;
+	      KeyPropDistillution_t key;
 
 	      key.prop_type    = "SNK";
 	      key.annihP       = false;
@@ -342,9 +342,9 @@ namespace Chroma
       
       //----------------------------------------------------------------------------
       //! Get perambulator keys
-      std::list<KeyPeramDist_t> QuarkLineFact::getPeramKeys(int t_source) const
+      std::list<KeyPeramDistillution_t> QuarkLineFact::getPeramKeys(int t_source) const
       {
-	std::list<KeyPeramDist_t> keys;
+	std::list<KeyPeramDistillution_t> keys;
 
 	std::vector<bool> active_t_slices = getActiveTSlices(t_source);
 	
@@ -358,7 +358,7 @@ namespace Chroma
 	    {
 	      if (! active_t_slices[t]) {continue;}
 
-	      KeyPeramDist_t key;
+	      KeyPeramDistillution_t key;
 
 	      key.quark_line   = quark_line;
 	      key.annihP       = false;
@@ -472,7 +472,7 @@ namespace Chroma
 	//! Constructor
 	QuarkLineFact(const Params& params_,
 		      const DistillutionNoise& dist_noise_obj_, 
-		      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
+		      QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 		      const TimeSliceSet& time_slice_set_,
 		      int quark_line_,
 		      const std::string& mass_);
@@ -502,26 +502,26 @@ namespace Chroma
 	virtual std::vector<int> getTimeSources() const;
 
 	//! Get source keys
-	virtual std::list<KeyPropDist_t> getSrcKeys(int t_source, int dist_src) const;
+	virtual std::list<KeyPropDistillution_t> getSrcKeys(int t_source, int dist_src) const;
 
 	//! Get sink keys
-	virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const;
+	virtual std::list<KeyPropDistillution_t> getSnkKeys(int t_source, int dist_src) const;
 
 	//! Get perambulator keys
-	virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const;
+	virtual std::list<KeyPeramDistillution_t> getPeramKeys(int t_source) const;
 
 	//! Get perambulator key time slices
 	virtual std::list<int> getTslices(int t_source) const;
 
       private:
 	//! Get source key
-	virtual KeyPropDist_t getSrcKey(int t_source, int dist_src) const;
+	virtual KeyPropDistillution_t getSrcKey(int t_source, int dist_src) const;
 
       private:
 	// Arguments
 	Params                    params;
 	const DistillutionNoise&  dist_noise_obj;
-	QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj;
+	QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj;
 	const TimeSliceSet&       time_slice_set;
 	int                       quark_line;
 	std::string               mass;
@@ -533,7 +533,7 @@ namespace Chroma
       //! Constructor
       QuarkLineFact::QuarkLineFact(const Params& params_,
 				   const DistillutionNoise& dist_noise_obj_, 
-				   QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
+				   QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj_,
 				   const TimeSliceSet& time_slice_set_,
 				   int quark_line_,
 				   const std::string& mass_)
@@ -577,7 +577,7 @@ namespace Chroma
 	  int t_actual = dist_noise_obj.getTime(time_source);
 
 	  // Get the source vector
-	  KeyPropDist_t src_key = getSrcKey(time_source, dist_src);
+	  KeyPropDistillution_t src_key = getSrcKey(time_source, dist_src);
 	  LatticeColorVectorF vec_tmp = zero;
 	  
 	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_tmp, t_actual);
@@ -592,9 +592,9 @@ namespace Chroma
 
       //----------------------------------------------------------------------------
       //! Get source keys
-      KeyPropDist_t QuarkLineFact::getSrcKey(int t_source, int dist_src) const
+      KeyPropDistillution_t QuarkLineFact::getSrcKey(int t_source, int dist_src) const
       {
-	KeyPropDist_t key;
+	KeyPropDistillution_t key;
 
 	key.prop_type    = "SRC";
 	key.annihP       = true;
@@ -612,9 +612,9 @@ namespace Chroma
 	
       //----------------------------------------------------------------------------
       //! Get source keys
-      std::list<KeyPropDist_t> QuarkLineFact::getSrcKeys(int t_source, int dist_src) const
+      std::list<KeyPropDistillution_t> QuarkLineFact::getSrcKeys(int t_source, int dist_src) const
       {
-	std::list<KeyPropDist_t> keys;
+	std::list<KeyPropDistillution_t> keys;
 
 	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
 
@@ -629,9 +629,9 @@ namespace Chroma
 	
       //----------------------------------------------------------------------------
       //! Get sink keys
-      std::list<KeyPropDist_t> QuarkLineFact::getSnkKeys(int t_source, int dist_src) const
+      std::list<KeyPropDistillution_t> QuarkLineFact::getSnkKeys(int t_source, int dist_src) const
       {
-	std::list<KeyPropDist_t> keys;
+	std::list<KeyPropDistillution_t> keys;
 
 	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
 
@@ -641,7 +641,7 @@ namespace Chroma
 	  {
 	    for(int t=t_source; t < Lt; t += params.num_time_dils)
 	    {
-	      KeyPropDist_t key;
+	      KeyPropDistillution_t key;
 
 	      key.prop_type    = "SNK";
 	      key.annihP       = true;
@@ -665,9 +665,9 @@ namespace Chroma
       
       //----------------------------------------------------------------------------
       //! Get perambulator keys
-      std::list<KeyPeramDist_t> QuarkLineFact::getPeramKeys(int t_source) const
+      std::list<KeyPeramDistillution_t> QuarkLineFact::getPeramKeys(int t_source) const
       {
-	std::list<KeyPeramDist_t> keys;
+	std::list<KeyPeramDistillution_t> keys;
 
 	const int Lt = Layout::lattSize()[dist_noise_obj.getDecayDir()];
 
@@ -677,7 +677,7 @@ namespace Chroma
 	  {
 	    for(int t=t_source; t < Lt; t += params.num_time_dils)
 	    {
-	      KeyPeramDist_t key;
+	      KeyPeramDistillution_t key;
 
 	      key.quark_line   = quark_line;
 	      key.annihP       = true;
@@ -722,7 +722,7 @@ namespace Chroma
       AbsQuarkLine* createConn(XMLReader& xml_in, 
 			       const std::string& path,
 			       const DistillutionNoise& dist_noise_obj, 
-			       QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj,
+			       QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj,
 			       const TimeSliceSet& time_slice_set,
 			       int quark_line,
 			       const std::string& mass)
@@ -735,7 +735,7 @@ namespace Chroma
       AbsQuarkLine* createAnnih(XMLReader& xml_in, 
 				const std::string& path,
 				const DistillutionNoise& dist_noise_obj, 
-				QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> >& source_obj,
+				QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> >& source_obj,
 				const TimeSliceSet& time_slice_set,
 				int quark_line,
 				const std::string& mass)

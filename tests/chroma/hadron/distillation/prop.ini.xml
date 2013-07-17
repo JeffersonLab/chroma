@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_DISTILLATION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <mass_label>U0.05</mass_label>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 6</t_sources>
+          <decay_dir>3</decay_dir>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>0</Nt_backward>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.05</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <src_file>./src.mod</src_file>
+        <soln_file>./prop.mod</soln_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_DISTILLATION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <mass_label>U0.1</mass_label>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 6</t_sources>
+          <decay_dir>3</decay_dir>
+          <Nt_forward>16</Nt_forward>
+          <Nt_backward>0</Nt_backward>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <src_file>./src.mod</src_file>
+        <soln_file>./prop.mod</soln_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

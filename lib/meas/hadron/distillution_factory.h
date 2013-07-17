@@ -16,7 +16,7 @@
 #include "objfactory.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "util/ferm/key_prop_distillution.h"
-#include "util/ferm/key_peram_dist.h"
+#include "util/ferm/key_peram_distillution.h"
 #include "util/ferm/distillution_noise.h"
 #include "util/ft/time_slice_set.h"
 #include <list>
@@ -58,16 +58,16 @@ namespace Chroma
     virtual std::vector<int> getTimeSources() const = 0;
 
     //! Get source keys
-    virtual std::list<KeyPropDist_t> getSrcKeys(int t_source, int dist_src) const = 0;
+    virtual std::list<KeyPropDistillution_t> getSrcKeys(int t_source, int dist_src) const = 0;
 
     //! Get sink keys
-    virtual std::list<KeyPropDist_t> getSnkKeys(int t_source, int dist_src) const = 0;
+    virtual std::list<KeyPropDistillution_t> getSnkKeys(int t_source, int dist_src) const = 0;
 
     //! Get perambulator keys
-    virtual std::list<KeyPeramDist_t> getPeramKeys(int t_source) const = 0;
+    virtual std::list<KeyPeramDistillution_t> getPeramKeys(int t_source) const = 0;
 
     //! Get sink key
-    virtual KeyPropDist_t getSnkKey(const KeyPeramDist_t& peram_key, int dist_src) const;
+    virtual KeyPropDistillution_t getSnkKey(const KeyPeramDistillution_t& peram_key, int dist_src) const;
 
     //! Get perambulator key time slices
     virtual std::list<int> getTslices(int t_source) const = 0;
@@ -75,7 +75,7 @@ namespace Chroma
 
 
   //----------------------------------------------------------------------------
-  typedef QDP::MapObjectDisk< KeyPropDist_t,TimeSliceIO<LatticeColorVectorF> > MOD_t;
+  typedef QDP::MapObjectDisk< KeyPropDistillution_t,TimeSliceIO<LatticeColorVectorF> > MOD_t;
 
   //----------------------------------------------------------------------------
   //! Quark line factory (foundry)

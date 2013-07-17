@@ -317,7 +317,7 @@ namespace Chroma
       //
       // Map-object-disk storage of the source file
       //
-      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
+      QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> > source_obj;
       source_obj.setDebug(0);
 
       QDPIO::cout << "Open source file" << endl;
@@ -338,7 +338,7 @@ namespace Chroma
       //
       // Map-object-disk storage
       //
-      QDP::MapObjectDisk<KeyPropDist_t, TimeSliceIO<LatticeColorVectorF> > prop_obj;
+      QDP::MapObjectDisk<KeyPropDistillution_t, TimeSliceIO<LatticeColorVectorF> > prop_obj;
       prop_obj.setDebug(0);
 
       if (params.named_obj.save_solnP)
@@ -544,9 +544,9 @@ namespace Chroma
 	      if (params.named_obj.save_solnP)
 	      {
 		QDPIO::cout << "Write propagator solution to disk" << std::endl;
-		std::list<KeyPropDist_t> snk_keys(quark_line_fact->getSnkKeys(t_source, dist_src));
+		std::list<KeyPropDistillution_t> snk_keys(quark_line_fact->getSnkKeys(t_source, dist_src));
 
-		for(std::list<KeyPropDist_t>::const_iterator key= snk_keys.begin();
+		for(std::list<KeyPropDistillution_t>::const_iterator key= snk_keys.begin();
 		    key != snk_keys.end();
 		    ++key)
 		{

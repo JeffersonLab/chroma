@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<harom>
+<annotation>
+;
+; Test input file for harom main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Construct propagator source vectors
+      </annotation>
+      <Name>MAKE_SOURCE_DISTILLATION</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 6</t_sources>
+        </Contractions>
+      </Param>
+      <NamedObject>
+        <colorvec_file>./colorvec.mod</colorvec_file>
+        <src_file>./src.mod</src_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+</harom>
+
+

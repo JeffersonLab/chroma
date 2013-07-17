@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>20</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <ColorVecMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </ColorVecMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_file>./colorvec.mod</output_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>WRITE_TIMESLICE_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>ArrayLatticeColorMatrix</object_type> 
+        <input_id>default_gauge_field</input_id>
+        <output_file>./gauge.mod</output_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
