@@ -161,8 +161,6 @@ namespace Chroma
       // Set the seed to desired value
       QDP::RNG::setrn(params.ran_seed);
       
-      
-
       // Create the quark source
       LatticePropagator quark_source;
 
@@ -218,19 +216,23 @@ namespace Chroma
 	    tmp_color_vec[i] = zero;
 	    pokeColor(tmp_color_vec[i], z, i);
 	  }
-	  
+
 	  for(int color_source = 0; color_source < Nc; ++color_source)
 	    {
 	      QDPIO::cout << "color = " << color_source << endl; 
-	      
-	      LatticeColorVector src_color_vec = zero;
-	      
 	      int mu = params.j_decay;
 	      int slice = params.t_source;
-	      src_color_vec = where( Layout::latticeCoordinate(mu) == slice,
-				     tmp_color_vec[color_source],
-				     LatticeColorVector(zero));
-	      
+	      LatticeColorVector src_color_vec ;
+	      if((slice>=Layout::lattSize()[mu])||(slice<0)){
+		QDPIO::cout<<"Doing the full Volume source"<<endl ;
+		src_color_vec = tmp_color_vec[color_source] ;
+	      }
+	      else{
+		//QDPIO::cout<<"Doing Wall source on timeslice "<<slice<<endl ;
+		src_color_vec = where( Layout::latticeCoordinate(mu) == slice,
+				       tmp_color_vec[color_source],
+				       LatticeColorVector(zero));
+	      }
 	      for(int spin_source = 0; spin_source < Ns; ++spin_source)
 		{
 		  QDPIO::cout << "spin = " << spin_source << endl; 

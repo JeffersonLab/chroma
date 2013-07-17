@@ -50,6 +50,7 @@
 #include "meas/inline/hadron/inline_npr_w.h"
 #include "meas/inline/hadron/inline_distillution_noise.h"
 #include "meas/inline/hadron/inline_prop_distillution_w.h"
+#include "meas/inline/hadron/inline_prop_distillation_w.h"
 #include "meas/inline/hadron/inline_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_static_prop_colorvec_w.h"
 #include "meas/inline/hadron/inline_annih_prop_matelem_colorvec_w.h"
@@ -140,6 +141,7 @@ namespace Chroma
 	success &= InlineNprEnv::registerAll();
 	success &= InlineDistillutionNoiseEnv::registerAll();
 	success &= InlinePropDistillutionEnv::registerAll();
+	success &= InlinePropDistillationEnv::registerAll();
 	success &= InlinePropColorVecEnv::registerAll();
 	success &= InlineStaticPropColorVecEnv::registerAll();
 	success &= InlineAnnihPropMatElemColorVecEnv::registerAll();
