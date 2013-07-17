@@ -29,9 +29,9 @@
 
 #include <quda.h>
 
-#undef BUILD_QUDA_DEVIFACE_GAUGE
-#undef BUILD_QUDA_DEVIFACE_SPINOR
-#undef BUILD_QUDA_DEVIFACE_CLOVER
+//#undef BUILD_QUDA_DEVIFACE_GAUGE
+//#undef BUILD_QUDA_DEVIFACE_SPINOR
+//#undef BUILD_QUDA_DEVIFACE_CLOVER
 
 //#include <util_quda.h>
 using namespace std;
