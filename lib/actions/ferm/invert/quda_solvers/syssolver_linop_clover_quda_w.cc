@@ -73,7 +73,12 @@ namespace Chroma
       //
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
       // No need to transform source
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+      std::cout << "MDAGM spinor in = " << spinorIn << "\n";
+#endif
     }
     else if( quda_inv_param.matpc_type == QUDA_MATPC_ODD_ODD) { 
       //
@@ -85,7 +90,12 @@ namespace Chroma
       //  So  M x = b => A_oo (M_symm) x = b 
       //              =>       M_symm x = A^{-1}_oo b = chi_mod
       invclov.apply(mod_chi, chi_s, PLUS, 1);
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(mod_chi.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+      spinorIn = QDPCache::Instance().getDevicePtr( mod_chi.getId() );
+      std::cout << "MDAGM spinor in = " << spinorIn << "\n";
+#endif
     }
     else { 
       QDPIO::cout << "MATPC Type not allowed." << endl;
@@ -93,7 +103,12 @@ namespace Chroma
       QDP_abort(1);
     }
 
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
+    std::cout << "MDAGM spinor out = " << spinorOut << "\n";
+#endif
 
     // Do the solve here 
     StopWatch swatch1; 
