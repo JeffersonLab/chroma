@@ -363,6 +363,8 @@ namespace Chroma
     //! PACK UP the Clover term for QUDA library:
     void packForQUDA(multi1d<QUDAPackedClovSite<REALT> >& quda_pack, int cb) const; 
 
+    int getDiaId() const { return tri_dia.getId(); }
+    int getOffId() const { return tri_off.getId(); }
 
       
   protected:
@@ -382,6 +384,7 @@ namespace Chroma
 
     //! Calculates Tr_D ( Gamma_mat L )
     Real getCloverCoeff(int mu, int nu) const;
+
 
   private:
     Handle< FermBC<T,multi1d<U>,multi1d<U> > >      fbc;

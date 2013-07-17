@@ -18,6 +18,12 @@
 #include <quda.h>
 // #include <util_quda.h>
 
+
+#undef BUILD_QUDA_DEVIFACE_GAUGE
+#undef BUILD_QUDA_DEVIFACE_SPINOR
+#undef BUILD_QUDA_DEVIFACE_CLOVER
+
+
 namespace Chroma
 {
   namespace MdagMSysSolverQUDACloverEnv
@@ -77,14 +83,24 @@ namespace Chroma
       //
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
       // No need to transform source
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+      std::cout << "MDAGM spinor in = " << spinorIn << "\n";
+#endif
     }
     else { 
       QDPIO::cout << "MATPC Type not allowed." << endl;
       QDP_abort(1);
     }
 
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
+    std::cout << "MDAGM spinor out = " << spinorOut << "\n";
+#endif
 
     // Do the solve here 
     StopWatch swatch1; 

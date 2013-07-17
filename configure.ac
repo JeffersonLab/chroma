@@ -142,6 +142,14 @@ AC_ARG_ENABLE(jit_clover,
 	[jit_clover_enabled="no"]
 )
 
+AC_ARG_ENABLE(quda_deviface,
+	AC_HELP_STRING(
+        [--enable-quda-deviface], 
+	[Enable QUDA device pointer interface]),
+	[quda_deviface_enabled="${enableval}"],
+	[quda_deviface_enabled="no"]
+)
+
 
 AC_ARG_ENABLE(lapack,
   AC_HELP_STRING([--enable-lapack=<type>],
@@ -610,6 +618,24 @@ else
 fi
 
 AM_CONDITIONAL(BUILD_JIT_CLOVER_APPLY, [test "x${jit_clover_enabled}x" = "xyesx" ])
+
+
+dnl ************************************************************************
+dnl **** QUDA device interface                                          ****
+dnl ************************************************************************
+if test "X${quda_deviface_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with QUDA device pointer interface] )
+   AC_DEFINE([BUILD_QUDA_DEVIFACE_SPINOR],[], [ Use of QUDA device pointer interface SPINOR, requires to build on top of QDP-JIT/PTX ])
+   AC_DEFINE([BUILD_QUDA_DEVIFACE_GAUGE],[], [ Use of QUDA device pointer interface GAUGE, requires to build on top of QDP-JIT/PTX ])
+   AC_DEFINE([BUILD_QUDA_DEVIFACE_CLOVER],[], [ Use of QUDA device pointer interface CLOVER, requires to build on top of QDP-JIT/PTX ])
+else
+   AC_MSG_NOTICE( [Not using QUDA device pointer interface] )
+fi
+
+
+
+
 
 
 dnl ************************************************************************
