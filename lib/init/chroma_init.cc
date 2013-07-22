@@ -188,8 +188,12 @@ namespace Chroma
 #ifdef BUILD_QUDA
   std::cout << "Setting CUDA device" << endl;
   int cuda_device = QDP_setGPU();
+  std::cout << "Setting QUDA verbosity to silent" << endl;
+  setVerbosityQuda(QUDA_SILENT, "", stdout);
   std::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << endl;
   initQudaDevice(cuda_device);
+  std::cout << "Setting QUDA verbosity to summarize" << endl;
+  setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
   std::cout << "Initializing QMP part" << endl;
   QDP_initialize_QMP(argc, argv);
   std::cout << "Initializing QDP-JIT GPUs" << endl;
