@@ -92,7 +92,7 @@ namespace Chroma
   void initialize(int* argc, char ***argv) 
   {
     if (! QDP_isInitialized())
-      QDP_initialize(argc, argv);
+      QDP_initialize_CUDA(argc, argv);
     
     for(int i=0; i < *argc; i++) 
     {
