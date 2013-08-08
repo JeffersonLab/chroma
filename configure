@@ -804,6 +804,7 @@ enable_bagel_wilson_dslash_sloppy
 with_bagel_clover
 enable_ssed_clover
 enable_jit_clover
+enable_quda_deviface
 enable_lapack
 enable_opt_eigcg
 enable_opt_cfz_linop
@@ -1489,6 +1490,7 @@ Optional Features:
                           internal and external precisions
   --enable-ssed-clover    Enable SSE Double Prec clover operator
   --enable-jit-clover     Enable QDP-JIT clover operator
+  --enable-quda-deviface  Enable QUDA device pointer interface
   --enable-lapack=<type>  Use the type of lapack bindings specified by <type>.
                           Currently, this can be lapack
   --enable-opt-eigcg      Build optimized eigcg
@@ -4341,6 +4343,15 @@ else
 fi
 
 
+# Check whether --enable-quda_deviface was given.
+if test "${enable_quda_deviface+set}" = set; then
+  enableval=$enable_quda_deviface; quda_deviface_enabled="${enableval}"
+else
+  quda_deviface_enabled="no"
+
+fi
+
+
 
 # Check whether --enable-lapack was given.
 if test "${enable_lapack+set}" = set; then
@@ -5515,6 +5526,35 @@ else
   BUILD_JIT_CLOVER_APPLY_TRUE='#'
   BUILD_JIT_CLOVER_APPLY_FALSE=
 fi
+
+
+
+if test "X${quda_deviface_enabled}X" = "XyesX";
+then
+   { $as_echo "$as_me:$LINENO: Building with QUDA device pointer interface " >&5
+$as_echo "$as_me: Building with QUDA device pointer interface " >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_QUDA_DEVIFACE_SPINOR /**/
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_QUDA_DEVIFACE_GAUGE /**/
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_QUDA_DEVIFACE_CLOVER /**/
+_ACEOF
+
+else
+   { $as_echo "$as_me:$LINENO: Not using QUDA device pointer interface " >&5
+$as_echo "$as_me: Not using QUDA device pointer interface " >&6;}
+fi
+
+
+
 
 
 
