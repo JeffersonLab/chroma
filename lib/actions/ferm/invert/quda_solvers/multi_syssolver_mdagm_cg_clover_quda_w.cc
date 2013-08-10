@@ -68,7 +68,6 @@ namespace Chroma
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
       spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
-      QDPIO::cout << "MULTI MDAGM spinor in = " << spinorIn << "\n";
 #endif
 
     }
@@ -102,7 +101,6 @@ namespace Chroma
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
       spinorOut[s] = QDPCache::Instance().getDevicePtr( psi_s[s].getId() );
-      std::cout << "MULTI MDAGM CUDA spinorOut[" << s << "] = " << spinorOut[s] << "\n";
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
 #endif

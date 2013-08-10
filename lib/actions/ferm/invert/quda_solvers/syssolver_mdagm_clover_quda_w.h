@@ -146,7 +146,6 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 #else
-#warning "GAUGE CUDA"
       QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
       q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
       q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
@@ -471,8 +470,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 #else      
-      #warning "USING QUDA DEVICE IFACE"
-      std::cout << "MDAGM clover CUDA location\n";
+      QDPIO::cout << "MDAGM Clover CUDA location\n";
       quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
 #endif
@@ -492,7 +490,7 @@ namespace Chroma
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
 #else
 	gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
-	std::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
+	//std::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
 #endif
       }
 
@@ -534,11 +532,11 @@ namespace Chroma
       cloverInv[0] = QDPCache::Instance().getDevicePtr( invclov->getOffId() );
       cloverInv[1] = QDPCache::Instance().getDevicePtr( invclov->getDiaId() );
 
-      std::cout << "MDAGM clover CUDA pointers: " 
-		<< clover[0] << " "
-		<< clover[1] << " "
-		<< cloverInv[0] << " "
-		<< cloverInv[1] << "\n";
+      // std::cout << "MDAGM clover CUDA pointers: " 
+      // 		<< clover[0] << " "
+      // 		<< clover[1] << " "
+      // 		<< cloverInv[0] << " "
+      // 		<< cloverInv[1] << "\n";
 
       loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
 #endif
