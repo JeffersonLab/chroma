@@ -87,7 +87,6 @@ namespace Chroma
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
       spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
-      std::cout << "MDAGM spinor in = " << spinorIn << "\n";
 #endif
     }
     else { 
@@ -99,7 +98,6 @@ namespace Chroma
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
 #else
     void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
-    std::cout << "MDAGM spinor out = " << spinorOut << "\n";
 #endif
 
     // Do the solve here 
