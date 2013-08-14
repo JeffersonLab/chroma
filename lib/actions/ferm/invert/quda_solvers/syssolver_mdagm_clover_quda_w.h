@@ -602,27 +602,6 @@ namespace Chroma
       double time = swatch.getTimeInSeconds();
 
 
-      { 
-	T r;
-	r[A->subset()]=chi;
-	T tmp,tmp2;
-	(*A)(tmp, psi, PLUS);
-	(*A)(tmp2, tmp, MINUS);
-	r[A->subset()] -= tmp2;
-	res.resid = sqrt(norm2(r, A->subset()));
-      }
-
-      Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
-
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
-   
-      // Convergence Check/Blow Up
-      if ( ! invParam.SilentFailP ) { 
-	      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-        	QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
-        	QDP_abort(1);
-      	      }
-      }
 
       END_CODE();
       return res;
@@ -632,18 +611,137 @@ namespace Chroma
    SystemSolverResults_t operator() (T& psi, const T& chi, Chroma::AbsChronologicalPredictor4D<T>& predictor ) const
     {
       SystemSolverResults_t res;
+      SystemSolverResults_t res1;
+      SystemSolverResults_t res2;
 
       START_CODE();
+      // This is a solve with initial guess. So reset the policy  (quda_inv_param is mutable)
+      QudaUseInitGuess old_guess_policy = quda_inv_param.use_init_guess;
+      quda_inv_param.use_init_guess = QUDA_USE_INIT_GUESS_YES;
+
+
       StopWatch swatch;
       swatch.start();
-      {
-	Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+
+      // Determine if 2 step solve is needed
+      bool two_step=false;
+      switch(  invParam.solverType  ) { 
+      case BICGSTAB:
+	two_step = true;
+	break;
+      case GCR:
+	two_step = true;
+	break;
+      case MR:
+	two_step = true;
+	break;
+      case CG:
+	two_step = false;
+	break;
+      default:
+	two_step = false;
+	break;
+      };
+
+      // This is a solver whic will use an initial guess:
+
+      // Create MdagM op
+      Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
+
+      if ( ! two_step ) { 
+
+	// Single Step Solve
+	QDPIO::cout << "Single Step Solve" << endl;
 	predictor(psi, (*MdagM), chi);
+	res = (*this)(psi, chi);
+	predictor.newVector(psi);
+      
       }
-      res = (*this)(psi, chi);
-      predictor.newVector(psi);
+      else { 
+
+	// TWO STEP SOLVE
+	try {
+	  QDPIO::cout << "Two Step Solve" << endl;
+
+	  T Y;
+	  Y[ A->subset() ] = psi; // Y is initial guess
+
+	  // Try to cast the predictor to a two step predictor 
+	  AbsTwoStepChronologicalPredictor4D<T>& two_step_predictor = 
+	     dynamic_cast<AbsTwoStepChronologicalPredictor4D<T>& >(predictor);
+
+	  // Predict Y
+	  two_step_predictor.predictY(Y,*A,chi);
+
+	  // Now want to solve with M^\dagger on this.
+	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+	  quda_inv_param.dagger = QUDA_DAG_YES;
+	  res1 = (*this)(Y,chi);
+	  two_step_predictor.newYVector(Y);
+
+	  // Step 2: Solve M X = Y
+	  // Predict X 
+	  two_step_predictor.predictX(psi,*MdagM, chi);
+	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
+	  res2 = (*this)(psi,Y);
+	  two_step_predictor.newXVector(psi);
+	  
+	}
+	catch( std::bad_cast ) { 
+	  // Failed to cast the predictor to a two step predictor
+	  // In this case we do not predict Y directly, but 
+	  // try to predict  X ~ (MdagM)^{-1} chi => X ~ M^{-1} M^\dag{-1} chi
+	  // we get Y from M X ~ M^\dag{-1} chi 
+	  // 
+	  T Y;
+	  Y[ A->subset() ] = psi;  // Set Y to what the user first gave (in case of NULL predictor)
+	  predictor(psi, (*MdagM), chi); // We can only predict X
+	  (*A)(Y, psi, PLUS); // and then Y = M X is a good guess for Y
+	
+	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
+	  quda_inv_param.dagger = QUDA_DAG_YES;
+	  res1 = (*this)(Y,chi);
+
+	  // Step 2: Solve M X = Y
+	  // Predict X 
+	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
+	  res2 = (*this)(psi,Y);
+	  predictor.newVector(psi);
+	}
+
+	// reset params to their default value
+	quda_inv_param.solution_type = QUDA_MATPCDAG_MATPC_SOLUTION;
+	quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
+	res.n_count = res1.n_count + res2.n_count;  // Two step solve so combine iteration count
+      }
       swatch.stop();
       double time = swatch.getTimeInSeconds();
+
+      // reset init guess policy
+      quda_inv_param.use_init_guess = old_guess_policy;
+
+      // Check solution 
+      { 
+	T r;
+	r[A->subset()]=chi;
+	T tmp;
+	(*MdagM)(tmp, psi, PLUS);
+	r[A->subset()] -= tmp;
+	res.resid = sqrt(norm2(r, A->subset()));
+      }
+
+      Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
+   
+      // Convergence Check/Blow Up
+      if ( ! invParam.SilentFailP ) { 
+	if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
+	  QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
+	  QDP_abort(1);
+	}
+      }
+
       QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << endl;
       END_CODE();
       return res;
@@ -666,7 +764,7 @@ namespace Chroma
     Handle< LinearOperator<T> > A;
     const SysSolverQUDACloverParams invParam;
     QudaGaugeParam q_gauge_param;
-    QudaInvertParam quda_inv_param;
+    mutable QudaInvertParam quda_inv_param;
 
     Handle< typename CloverTermT<T, U>::Type_t > clov;
     Handle< typename CloverTermT<T, U>::Type_t > invclov;
