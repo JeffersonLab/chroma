@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<harom>
+<annotation>
+;
+; Test input file for harom main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MESON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>4</version>
+        <mom2_min>0</mom2_min>
+        <mom2_max>2</mom2_max>
+        <mom_list></mom_list>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <use_derivP>false</use_derivP>
+
+        <!-- List of displacement arrays -->
+        <deriv_list>
+          <elem>0</elem>
+          <elem>1</elem>
+          <elem>-1</elem>
+          <elem>2</elem>
+          <elem>-2</elem>
+          <elem>3</elem>
+          <elem>-3</elem>
+          <elem>1 1</elem>
+          <elem>-1 -1</elem>
+          <elem>2 2</elem>
+          <elem>-2 -2</elem>
+          <elem>3 3</elem>
+          <elem>-3 -3</elem>
+          <elem>1 2</elem>
+          <elem>-1 2</elem>
+          <elem>1 -2</elem>
+          <elem>-1 -2</elem>
+          <elem>1 3</elem>
+          <elem>-1 3</elem>
+          <elem>1 -3</elem>
+          <elem>-1 -3</elem>
+          <elem>2 1</elem>
+          <elem>-2 1</elem>
+          <elem>2 -1</elem>
+          <elem>-2 -1</elem>
+          <elem>2 3</elem>
+          <elem>-2 3</elem>
+          <elem>2 -3</elem>
+          <elem>-2 -3</elem>
+          <elem>3 1</elem>
+          <elem>-3 1</elem>
+          <elem>3 -1</elem>
+          <elem>-3 -1</elem>
+          <elem>3 2</elem>
+          <elem>-3 2</elem>
+          <elem>3 -2</elem>
+          <elem>-3 -2</elem>
+          <elem>-3 -3 -3</elem>
+          <elem>-3 -3 -2</elem>
+          <elem>-3 -3 -1</elem>
+          <elem>-3 -3 1</elem>
+          <elem>-3 -3 2</elem>
+          <elem>-3 -2 -3</elem>
+          <elem>-3 -2 -2</elem>
+          <elem>-3 -2 -1</elem>
+          <elem>-3 -2 1</elem>
+          <elem>-3 -2 3</elem>
+          <elem>-3 -1 -3</elem>
+          <elem>-3 -1 -2</elem>
+          <elem>-3 -1 -1</elem>
+          <elem>-3 -1 2</elem>
+          <elem>-3 -1 3</elem>
+          <elem>-3 1 -3</elem>
+          <elem>-3 1 -2</elem>
+          <elem>-3 1 1</elem>
+          <elem>-3 1 2</elem>
+          <elem>-3 1 3</elem>
+          <elem>-3 2 -3</elem>
+          <elem>-3 2 -1</elem>
+          <elem>-3 2 1</elem>
+          <elem>-3 2 2</elem>
+          <elem>-3 2 3</elem>
+          <elem>-2 -3 -3</elem>
+          <elem>-2 -3 -2</elem>
+          <elem>-2 -3 -1</elem>
+          <elem>-2 -3 1</elem>
+          <elem>-2 -3 2</elem>
+          <elem>-2 -2 -3</elem>
+          <elem>-2 -2 -2</elem>
+          <elem>-2 -2 -1</elem>
+          <elem>-2 -2 1</elem>
+          <elem>-2 -2 3</elem>
+          <elem>-2 -1 -3</elem>
+          <elem>-2 -1 -2</elem>
+          <elem>-2 -1 -1</elem>
+          <elem>-2 -1 2</elem>
+          <elem>-2 -1 3</elem>
+          <elem>-2 1 -3</elem>
+          <elem>-2 1 -2</elem>
+          <elem>-2 1 1</elem>
+          <elem>-2 1 2</elem>
+          <elem>-2 1 3</elem>
+          <elem>-2 3 -2</elem>
+          <elem>-2 3 -1</elem>
+          <elem>-2 3 1</elem>
+          <elem>-2 3 2</elem>
+          <elem>-2 3 3</elem>
+          <elem>-1 -3 -3</elem>
+          <elem>-1 -3 -2</elem>
+          <elem>-1 -3 -1</elem>
+          <elem>-1 -3 1</elem>
+          <elem>-1 -3 2</elem>
+          <elem>-1 -2 -3</elem>
+          <elem>-1 -2 -2</elem>
+          <elem>-1 -2 -1</elem>
+          <elem>-1 -2 1</elem>
+          <elem>-1 -2 3</elem>
+          <elem>-1 -1 -3</elem>
+          <elem>-1 -1 -2</elem>
+          <elem>-1 -1 -1</elem>
+          <elem>-1 -1 2</elem>
+          <elem>-1 -1 3</elem>
+          <elem>-1 2 -3</elem>
+          <elem>-1 2 -1</elem>
+          <elem>-1 2 1</elem>
+          <elem>-1 2 2</elem>
+          <elem>-1 2 3</elem>
+          <elem>-1 3 -2</elem>
+          <elem>-1 3 -1</elem>
+          <elem>-1 3 1</elem>
+          <elem>-1 3 2</elem>
+          <elem>-1 3 3</elem>
+          <elem>1 -3 -3</elem>
+          <elem>1 -3 -2</elem>
+          <elem>1 -3 -1</elem>
+          <elem>1 -3 1</elem>
+          <elem>1 -3 2</elem>
+          <elem>1 -2 -3</elem>
+          <elem>1 -2 -2</elem>
+          <elem>1 -2 -1</elem>
+          <elem>1 -2 1</elem>
+          <elem>1 -2 3</elem>
+          <elem>1 1 -3</elem>
+          <elem>1 1 -2</elem>
+          <elem>1 1 1</elem>
+          <elem>1 1 2</elem>
+          <elem>1 1 3</elem>
+          <elem>1 2 -3</elem>
+          <elem>1 2 -1</elem>
+          <elem>1 2 1</elem>
+          <elem>1 2 2</elem>
+          <elem>1 2 3</elem>
+          <elem>1 3 -2</elem>
+          <elem>1 3 -1</elem>
+          <elem>1 3 1</elem>
+          <elem>1 3 2</elem>
+          <elem>1 3 3</elem>
+          <elem>2 -3 -3</elem>
+          <elem>2 -3 -2</elem>
+          <elem>2 -3 -1</elem>
+          <elem>2 -3 1</elem>
+          <elem>2 -3 2</elem>
+          <elem>2 -1 -3</elem>
+          <elem>2 -1 -2</elem>
+          <elem>2 -1 -1</elem>
+          <elem>2 -1 2</elem>
+          <elem>2 -1 3</elem>
+          <elem>2 1 -3</elem>
+          <elem>2 1 -2</elem>
+          <elem>2 1 1</elem>
+          <elem>2 1 2</elem>
+          <elem>2 1 3</elem>
+          <elem>2 2 -3</elem>
+          <elem>2 2 -1</elem>
+          <elem>2 2 1</elem>
+          <elem>2 2 2</elem>
+          <elem>2 2 3</elem>
+          <elem>2 3 -2</elem>
+          <elem>2 3 -1</elem>
+          <elem>2 3 1</elem>
+          <elem>2 3 2</elem>
+          <elem>2 3 3</elem>
+          <elem>3 -2 -3</elem>
+          <elem>3 -2 -2</elem>
+          <elem>3 -2 -1</elem>
+          <elem>3 -2 1</elem>
+          <elem>3 -2 3</elem>
+          <elem>3 -1 -3</elem>
+          <elem>3 -1 -2</elem>
+          <elem>3 -1 -1</elem>
+          <elem>3 -1 2</elem>
+          <elem>3 -1 3</elem>
+          <elem>3 1 -3</elem>
+          <elem>3 1 -2</elem>
+          <elem>3 1 1</elem>
+          <elem>3 1 2</elem>
+          <elem>3 1 3</elem>
+          <elem>3 2 -3</elem>
+          <elem>3 2 -1</elem>
+          <elem>3 2 1</elem>
+          <elem>3 2 2</elem>
+          <elem>3 2 3</elem>
+          <elem>3 3 -2</elem>
+          <elem>3 3 -1</elem>
+          <elem>3 3 1</elem>
+          <elem>3 3 2</elem>
+          <elem>3 3 3</elem>
+        </deriv_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_file>./gauge.mod</gauge_file>
+        <colorvec_file>./colorvec.mod</colorvec_file>
+        <meson_op_file>meson.disp.sdb</meson_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+</harom>
+
+

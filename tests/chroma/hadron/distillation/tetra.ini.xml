@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<harom>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Tetraquark colorvecs
+      </annotation>
+      <Name>TETRAQUARK_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_min>0</mom2_min>
+        <mom2_max>0</mom2_max>
+        <mom_list></mom_list>
+        <decay_dir>3</decay_dir>
+        <num_vecs>10</num_vecs>
+      </Param>
+      <NamedObject>
+        <colorvec_file>./colorvec.mod</colorvec_file>
+        <tetraquark_op_file>./tetra.sdb</tetraquark_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+</harom>
+
+
