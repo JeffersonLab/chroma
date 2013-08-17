@@ -133,25 +133,25 @@ namespace Chroma
       // on all cb. So, no adding of ds_1 onto ds_u under a subset
       //
       //  ds_u  =  chi^dag * A'_oo * psi
-      derivOddOddLinOp(ds_u, chi, psi, isign);
+      this->derivOddOddLinOp(ds_u, chi, psi, isign);
 
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      derivOddEvenLinOp(ds_1, chi, tmp2, isign);
+      this->evenOddLinOp(tmp1, psi, isign);
+      this->evenEvenInvLinOp(tmp2, tmp1, isign);
+      this->derivOddEvenLinOp(ds_1, chi, tmp2, isign);
       ds_u -= ds_1;
 
       //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
 
       // Reuse tmp2 = Ainv_ee D_eo psi_o
-      evenOddLinOp(tmp1, chi, msign);
-      evenEvenInvLinOp(tmp3, tmp1, msign);
-      derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
+      this->evenOddLinOp(tmp1, chi, msign);
+      this->evenEvenInvLinOp(tmp3, tmp1, msign);
+      this->derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
       ds_u += ds_1;
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
       // Reuse tmp3^dag = chi^\dag D_oe Ainv_ee
-      derivEvenOddLinOp(ds_1, tmp3, psi, isign);
+      this->derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
 
       getFermBC().zero(ds_u);
@@ -179,29 +179,29 @@ namespace Chroma
       // on all cb. So, no adding of ds_1 onto ds_u under a subset
       //
       //  ds_u  =  chi^dag * A'_oo * psi
-      derivOddOddLinOpMP(ds_u, chi, psi, isign);
+      this->derivOddOddLinOpMP(ds_u, chi, psi, isign);
 
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
       for(int i=0; i < chi.size(); i++) { 
-	evenOddLinOp(tmp1, psi[i], isign);
-	evenEvenInvLinOp(tmp2[i], tmp1, isign);
+	this->evenOddLinOp(tmp1, psi[i], isign);
+	this->evenEvenInvLinOp(tmp2[i], tmp1, isign);
       }
-      derivOddEvenLinOpMP(ds_1, chi, tmp2, isign);
+      this->derivOddEvenLinOpMP(ds_1, chi, tmp2, isign);
       ds_u -= ds_1;
 
 
       //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
       for(int i=0; i < chi.size(); i++) { 
 	// Reuse tmp2 = Ainv_ee D_eo psi_o
-	evenOddLinOp(tmp1, chi[i], msign);
-	evenEvenInvLinOp(tmp3[i], tmp1, msign);
+	this->evenOddLinOp(tmp1, chi[i], msign);
+	this->evenEvenInvLinOp(tmp3[i], tmp1, msign);
       }
-      derivEvenEvenLinOpMP(ds_1, tmp3, tmp2, isign);
+      this->derivEvenEvenLinOpMP(ds_1, tmp3, tmp2, isign);
       ds_u += ds_1;
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
       // Reuse tmp3^dag = chi^\dag D_oe Ainv_ee
-      derivEvenOddLinOpMP(ds_1, tmp3, psi, isign);
+      this->derivEvenOddLinOpMP(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
 
       getFermBC().zero(ds_u);
@@ -249,7 +249,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivEvenEvenLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivEvenEvenLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }
@@ -278,7 +278,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }
@@ -292,7 +292,7 @@ namespace Chroma
      
      P F_tmp;
      for(int i=0; i < chi.size(); i++) { 
-       derivOddOddLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivOddOddLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }

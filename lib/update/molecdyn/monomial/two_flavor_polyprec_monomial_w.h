@@ -74,7 +74,7 @@ namespace Chroma
       Phi X;
 
       // Get X out here
-      int n_count = getX(X,s);
+      int n_count = this->getX(X,s);
 
       lin->deriv(F, X, X, PLUS);
       
@@ -235,7 +235,7 @@ namespace Chroma
       X = zero;
       QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
-      int n_count = getX(X,s);
+      int n_count = this->getX(X,s);
 
       // Action on the entire lattice
       Double action = innerProductReal(getPhi(), X);
@@ -308,7 +308,7 @@ namespace Chroma
       // getX noe always uses chrono predictor. Best to Nuke it therefore
       QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
       (getMDSolutionPredictor()).reset();
-      int n_count = getX(X, s);
+      int n_count = this->getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());
       
       write(xml_out, "n_count", n_count);

@@ -95,7 +95,7 @@ namespace Chroma
       multi1d<Phi> X(FA.size()), Y(FA.size());
 
       // Move these to get X
-      int n_count = getX(X,s);
+      int n_count = this->getX(X,s);
 
       (*M)(Y, X, PLUS);
 
@@ -347,7 +347,7 @@ namespace Chroma
       // energy calcs
       QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
       getMDSolutionPredictor().reset();
-      int n_count = getX(X,s);
+      int n_count = this->getX(X,s);
 
       // tmp is now V (M^dag M)^{-1} V^{dag} phi
       (*M_prec)(tmp, X, PLUS);
@@ -430,7 +430,7 @@ namespace Chroma
       // Get X now always uses predictor. Best to nuke it therefore
       QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
       getMDSolutionPredictor().reset();
-      int n_count = getX(X, s);
+      int n_count = this->getX(X, s);
 
       multi1d<Phi> tmp(FA.size());
       (*M_prec)(tmp, X, PLUS);

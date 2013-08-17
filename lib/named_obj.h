@@ -206,9 +206,8 @@ namespace Chroma
     void create(const std::string& id, const P1& p1) 
     {
       // Lookup and throw exception if duplicate found
-      typedef std::map<std::string, NamedObjectBase*>::iterator I;
-      I iter = the_map.find(id);
-      if( iter != the_map.end()) 
+      MapType_t::iterator iter = the_map.find(id);
+      if(iter != the_map.end()) 
       {
 	ostringstream error_stream;
         error_stream << "NamedObjectMap::create : duplicate id = " << id << endl;
@@ -230,11 +229,10 @@ namespace Chroma
 
 
     //! Check if an id exists
-    bool check(const std::string& id) 
+    bool check(const std::string& id) const
     {
       // Do a lookup
-      typedef std::map<std::string, NamedObjectBase*>::iterator I;
-      I iter = the_map.find(id);
+      MapType_t::const_iterator iter = the_map.find(id);
     
       // If found then return true
       return (iter != the_map.end()) ? true : false;
@@ -245,8 +243,7 @@ namespace Chroma
     void erase(const std::string& id) 
     {
       // Do a lookup
-      typedef std::map<std::string, NamedObjectBase*>::iterator I;
-      I iter = the_map.find(id);
+      MapType_t::iterator iter = the_map.find(id);
     
       // If found then delete it.
       if( iter != the_map.end() ) 
@@ -268,21 +265,19 @@ namespace Chroma
   
   
     //! Dump out all objects
-    void dump() 
+    void dump() const
     {
-      typedef std::map<std::string, NamedObjectBase*>::iterator CI;
       QDPIO::cout << "Available Keys are : " << endl;
-	for(CI j = the_map.begin(); j != the_map.end(); j++) 
-	  QDPIO::cout << j->first << endl;
+      for(MapType_t::const_iterator j = the_map.begin(); j != the_map.end(); j++) 
+	QDPIO::cout << j->first << endl;
     }
   
   
     //! Look something up and return a NamedObjectBase reference
-    NamedObjectBase& get(const std::string& id) 
+    NamedObjectBase& get(const std::string& id) const
     {
       // Find it
-      typedef std::map<std::string, NamedObjectBase*>::iterator I;
-      I iter = the_map.find(id);
+      MapType_t::const_iterator iter = the_map.find(id);
       if (iter == the_map.end()) 
       {
 	// Not found -- lookup exception
@@ -326,7 +321,8 @@ namespace Chroma
     }
 
   private:
-    std::map<std::string, NamedObjectBase*> the_map;
+    typedef std::map<std::string, NamedObjectBase*> MapType_t;
+    MapType_t the_map;
   };
 
 }

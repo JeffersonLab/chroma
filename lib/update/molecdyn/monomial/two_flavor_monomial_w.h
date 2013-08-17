@@ -438,9 +438,8 @@ namespace Chroma
       XMLWriter& xml_out=TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactEvenOddPrecLogDetWilsonTypeFermMonomial");
 
-      Double S_ee = S_even_even(s);
-
-      Double S_oo = S_odd_odd(s);
+      Double S_ee = this->S_even_even(s);
+      Double S_oo = this->S_odd_odd(s);
 
       Double action = S_ee + S_oo;
 
