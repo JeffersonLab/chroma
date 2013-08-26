@@ -39,6 +39,18 @@
 /* Build with the BU QUDA Library */
 #undef BUILD_QUDA
 
+/* Use of QUDA device pointer interface CLOVER, requires to build on top of
+   QDP-JIT/PTX */
+#undef BUILD_QUDA_DEVIFACE_CLOVER
+
+/* Use of QUDA device pointer interface GAUGE, requires to build on top of
+   QDP-JIT/PTX */
+#undef BUILD_QUDA_DEVIFACE_GAUGE
+
+/* Use of QUDA device pointer interface SPINOR, requires to build on top of
+   QDP-JIT/PTX */
+#undef BUILD_QUDA_DEVIFACE_SPINOR
+
 /* Build Scalarsite BICGStab Kernels */
 #undef BUILD_SCALARSITE_BICGSTAB
 
