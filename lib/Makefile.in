@@ -764,6 +764,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/glue/inline_glue_matelem_colorvec.cc \
 	meas/inline/glue/inline_glueball_ops.cc \
+	meas/inline/glue/inline_wilson_flow.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
@@ -1368,7 +1369,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_fuzwilp.$(OBJEXT) inline_qactden.$(OBJEXT) \
 	inline_qnaive.$(OBJEXT) inline_random_transf_gauge.$(OBJEXT) \
 	inline_glue_matelem_colorvec.$(OBJEXT) \
-	inline_glueball_ops.$(OBJEXT) \
+	inline_glueball_ops.$(OBJEXT) inline_wilson_flow.$(OBJEXT) \
 	inline_hadron_aggregate.$(OBJEXT) \
 	inline_hadron_contract.$(OBJEXT) \
 	inline_gauge_transf_obj.$(OBJEXT) \
@@ -2175,6 +2176,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/glue/inline_glue_matelem_colorvec.h \
 	meas/inline/glue/inline_glueball_ops.h \
+	meas/inline/glue/inline_wilson_flow.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
@@ -3165,6 +3167,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/glue/inline_glue_matelem_colorvec.h \
 	meas/inline/glue/inline_glueball_ops.h \
+	meas/inline/glue/inline_wilson_flow.h \
 	meas/inline/hadron/hadron.h \
 	meas/inline/hadron/inline_hadron_aggregate.h \
 	meas/inline/hadron/inline_hadron_contract.h \
@@ -3839,6 +3842,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/glue/inline_glue_matelem_colorvec.cc \
 	meas/inline/glue/inline_glueball_ops.cc \
+	meas/inline/glue/inline_wilson_flow.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \
 	meas/inline/hadron/inline_hadron_contract.cc \
 	meas/inline/hadron/inline_gauge_transf_obj.cc \
@@ -4410,6 +4414,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_usqcd_read_ddpairs_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_usqcd_write_ddpairs_prop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_wilslp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_wilson_flow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_write_timeslice_map_obj_disk.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_xml_write_obj.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/integrator_aggregate.Po@am__quote@
@@ -13641,6 +13646,20 @@ inline_glueball_ops.obj: meas/inline/glue/inline_glueball_ops.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_glueball_ops.cc' object='inline_glueball_ops.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_glueball_ops.obj `if test -f 'meas/inline/glue/inline_glueball_ops.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_glueball_ops.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_glueball_ops.cc'; fi`
+
+inline_wilson_flow.o: meas/inline/glue/inline_wilson_flow.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_wilson_flow.o -MD -MP -MF $(DEPDIR)/inline_wilson_flow.Tpo -c -o inline_wilson_flow.o `test -f 'meas/inline/glue/inline_wilson_flow.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_wilson_flow.cc
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/inline_wilson_flow.Tpo $(DEPDIR)/inline_wilson_flow.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_wilson_flow.cc' object='inline_wilson_flow.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_wilson_flow.o `test -f 'meas/inline/glue/inline_wilson_flow.cc' || echo '$(srcdir)/'`meas/inline/glue/inline_wilson_flow.cc
+
+inline_wilson_flow.obj: meas/inline/glue/inline_wilson_flow.cc
+@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_wilson_flow.obj -MD -MP -MF $(DEPDIR)/inline_wilson_flow.Tpo -c -o inline_wilson_flow.obj `if test -f 'meas/inline/glue/inline_wilson_flow.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_wilson_flow.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_wilson_flow.cc'; fi`
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/inline_wilson_flow.Tpo $(DEPDIR)/inline_wilson_flow.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/glue/inline_wilson_flow.cc' object='inline_wilson_flow.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_wilson_flow.obj `if test -f 'meas/inline/glue/inline_wilson_flow.cc'; then $(CYGPATH_W) 'meas/inline/glue/inline_wilson_flow.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/glue/inline_wilson_flow.cc'; fi`
 
 inline_hadron_aggregate.o: meas/inline/hadron/inline_hadron_aggregate.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_hadron_aggregate.o -MD -MP -MF $(DEPDIR)/inline_hadron_aggregate.Tpo -c -o inline_hadron_aggregate.o `test -f 'meas/inline/hadron/inline_hadron_aggregate.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_hadron_aggregate.cc

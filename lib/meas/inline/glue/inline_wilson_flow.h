@@ -6,14 +6,11 @@
  *  ---More documentation here--- 
  */
 
-#ifndef __inline_wilson_flow_w_h__
-#define __inline_wilson_flow_w_h__
+#ifndef __inline_wilson_flow_h__
+#define __inline_wilson_flow_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
-//Do we need qprop_io.h ?
-#include "io/qprop_io.h"  
-#include "io/xml_group_reader.h"
 
 namespace Chroma 
 { 

@@ -29,12 +29,9 @@
  *
  */
 
-#include <iostream>
-#include <cstdio>
-
-// Include everything...
-#include "chroma.h"
-
+#include "meas/glue/wilson_flow_w.h"
+#include "meas/glue/mesfield.h"
+#include "util/gauge/stout_utils.h"
 #include "util/gauge/expmat.h"
 #include "util/gauge/taproj.h"
 

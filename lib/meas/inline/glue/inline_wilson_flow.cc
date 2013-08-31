@@ -4,18 +4,10 @@
  *
  */
 
-#include "fermact.h"
-#include "inline_wilson_flow_w.h"
+#include "inline_wilson_flow.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/glue/mesplq.h"
-#include "util/ferm/subset_vectors.h"
-#include "util/ferm/map_obj/map_obj_aggregate_w.h"
-#include "util/ferm/map_obj/map_obj_factory_w.h"
-#include "util/ferm/transf.h"
-#include "util/ft/sftmom.h"
 #include "util/info/proginfo.h"
-#include "actions/ferm/fermacts/fermact_factory_w.h"
-#include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 
@@ -29,7 +21,7 @@ namespace Chroma
   namespace InlineWilsonFlowEnv 
   {
     //! read input -- gauge fields
-    void read(XMLReader& xml, const string& path, InlineWilsonFlowEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -38,7 +30,7 @@ namespace Chroma
     }
 
     //! write output -- gauge fields
-    void write(XMLWriter& xml, const string& path, const InlineWilsonFlowEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -50,7 +42,7 @@ namespace Chroma
 
 
     //! read input
-    void read(XMLReader& xml, const string& path, InlineWilsonFlowEnv::Params::Param_t& input)
+    void read(XMLReader& xml, const string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -62,7 +54,7 @@ namespace Chroma
     }
 
     //! write output
-    void write(XMLWriter& xml, const string& path, const InlineWilsonFlowEnv::Params::Param_t& input)
+    void write(XMLWriter& xml, const string& path, const Params::Param_t& input)
     {
       push(xml, path);
     
@@ -76,14 +68,14 @@ namespace Chroma
 
 
     //! read input
-    void read(XMLReader& xml, const string& path, InlineWilsonFlowEnv::Params& input)
+    void read(XMLReader& xml, const string& path, Params& input)
     {
       InlineWilsonFlowEnv::Params tmp(xml, path);
       input = tmp;
     }
 
     //! write output
-    void write(XMLWriter& xml, const string& path, const InlineWilsonFlowEnv::Params& input)
+    void write(XMLWriter& xml, const string& path, const Params& input)
     {
       push(xml, path);
     
@@ -117,7 +109,6 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= WilsonTypeFermActsEnv::registerAll();
 	success &= TheInlineMeasurementFactory::Instance().registerObject(name, createMeasurement);
 	registered = true;
       }

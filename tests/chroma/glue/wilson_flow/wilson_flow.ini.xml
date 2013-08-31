@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Sample WilsonFlow input
+      </annotation>
+      <Name>WILSON_FLOW</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<nstep>100</nstep>
+	<wtime>1.0</wtime>
+	<t_dir>3</t_dir>
+      </Param>
+      <NamedObject>
+	  <gauge_in>default_gauge_field</gauge_in>
+	  <gauge_out>wflow_gflied</gauge_out>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>8 8 8 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+

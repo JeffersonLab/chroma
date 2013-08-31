@@ -13,6 +13,7 @@
 #include "meas/inline/glue/inline_random_transf_gauge.h"
 #include "meas/inline/glue/inline_glue_matelem_colorvec.h"
 #include "meas/inline/glue/inline_glueball_ops.h"
+#include "meas/inline/glue/inline_wilson_flow.h"
 
 namespace Chroma
 {
@@ -43,6 +44,7 @@ namespace Chroma
 	success &= InlineGaugeStateEnv::registerAll();
 	success &= InlineGlueMatElemColorVecEnv::registerAll();
 	success &= InlineGlueballOpsEnv::registerAll();
+	success &= InlineWilsonFlowEnv::registerAll();
 
 	registered = true;
       }
