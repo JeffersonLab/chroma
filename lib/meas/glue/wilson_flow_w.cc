@@ -41,105 +41,105 @@ namespace Chroma
 
 
 
-/**
+  /**
 
- **/
+   **/
 
 
-void measure_wilson_gauge(multi1d<LatticeColorMatrix> & u,
-			  Real & gspace, Real & gtime,
-			  int jomit)
-{
+  void measure_wilson_gauge(multi1d<LatticeColorMatrix> & u,
+			    Real & gspace, Real & gtime,
+			    int jomit)
+  {
 
-  multi1d<LatticeColorMatrix> field_st(10) ;
-  LatticeColorMatrix tmp ; 
+    multi1d<LatticeColorMatrix> field_st(10) ;
+    LatticeColorMatrix tmp ; 
 
-  mesField( field_st,u); 
+    mesField( field_st,u); 
 
-  int offset = 0;
+    int offset = 0;
 
-  gtime  = 0.0 ;
-  gspace = 0.0 ;
+    gtime  = 0.0 ;
+    gspace = 0.0 ;
 
-  Double tr ; 
+    Double tr ; 
 
-  //  for(int mu=0; mu < Nd-1; ++mu)
+    //  for(int mu=0; mu < Nd-1; ++mu)
 
-  for(int mu=0; mu < Nd; ++mu)
+    for(int mu=0; mu < Nd; ++mu)
     {
       for(int nu=mu+1; nu < Nd; ++nu)
+      {
+	//	  tr = real(sum(trace(field_st[offset]))) ;
+	//	  tr = imag(sum(trace(field_st[offset]))) ;
+	tmp = field_st[offset] * field_st[offset] ;
+	tr = real(sum(trace(tmp))) ; 
+
+	// Real tt = 2.0 * tr ; 
+	//	  cout << "DEBUG " << mu << " " << nu  << " " << tt << endl ;
+
+	if (nu==jomit)
 	{
-	  //	  tr = real(sum(trace(field_st[offset]))) ;
-	  //	  tr = imag(sum(trace(field_st[offset]))) ;
-	  tmp = field_st[offset] * field_st[offset] ;
-	  tr = real(sum(trace(tmp))) ; 
-
-	  // Real tt = 2.0 * tr ; 
-	  //	  cout << "DEBUG " << mu << " " << nu  << " " << tt << endl ;
-
-	  if (nu==jomit)
-            {
-	      gtime += 2.0*(tr);
-            }
-	  else
-            {
-	      gspace += 2.0*(tr);
-            }
-
-	  ++offset  ; 
+	  gtime += 2.0*(tr);
 	}
+	else
+	{
+	  gspace += 2.0*(tr);
+	}
+
+	++offset  ; 
+      }
     }
 
-  gspace /= -2.0*Layout::vol() ;
-  gtime /= -2.0*Layout::vol() ;
+    gspace /= -2.0*Layout::vol() ;
+    gtime /= -2.0*Layout::vol() ;
 
-}
-
-
-void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
-{
-  int mu, dir;
-  multi1d<LatticeColorMatrix> dest(Nd);
-  multi1d<LatticeColorMatrix> next(Nd);
+  }
 
 
-  // -------------------------------------
+  void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
+  {
+    int mu, dir;
+    multi1d<LatticeColorMatrix> dest(Nd);
+    multi1d<LatticeColorMatrix> next(Nd);
 
-  multi1d<bool> smear_in_this_dirP(4) ;
-  multi2d<Real> rho_a(4,4) ;
-  multi2d<Real> rho_b1(4,4) ;
-  multi2d<Real> rho_b2(4,4) ;
-  multi2d<Real> rho_c(4,4) ;
 
-  for (mu = 0; mu <= Nd-1; mu++)
+    // -------------------------------------
+
+    multi1d<bool> smear_in_this_dirP(4) ;
+    multi2d<Real> rho_a(4,4) ;
+    multi2d<Real> rho_b1(4,4) ;
+    multi2d<Real> rho_b2(4,4) ;
+    multi2d<Real> rho_c(4,4) ;
+
+    for (mu = 0; mu <= Nd-1; mu++)
     {
       smear_in_this_dirP(mu) = true ;
       for (dir = 0; dir <= Nd-1; dir++)
-	{
-	  rho_a[mu][dir] = rho * 0.25 ;
+      {
+	rho_a[mu][dir] = rho * 0.25 ;
 
-	  rho_b1[mu][dir] = rho * 8.0/9.0 ;
-	  rho_b2[mu][dir] = rho * 17.0/36.0 ;
+	rho_b1[mu][dir] = rho * 8.0/9.0 ;
+	rho_b2[mu][dir] = rho * 17.0/36.0 ;
 
-	  rho_c[mu][dir] = rho * 3.0/4.0 ;
+	rho_c[mu][dir] = rho * 3.0/4.0 ;
 
-	}
+      }
     }
 
 
-  Stouting::smear_links(u, dest,smear_in_this_dirP, rho_a);
+    Stouting::smear_links(u, dest,smear_in_this_dirP, rho_a);
 
-  LatticeColorMatrix  Q, QQ, C ;
-  LatticeColorMatrix  Q2, QQ2  ;
+    LatticeColorMatrix  Q, QQ, C ;
+    LatticeColorMatrix  Q2, QQ2  ;
 
-  multi1d<LatticeColorMatrix> Q0(Nd);
-  multi1d<LatticeColorMatrix> Q1(Nd);
-
-
-  multi1d<LatticeComplex> f;   // routine will resize these
+    multi1d<LatticeColorMatrix> Q0(Nd);
+    multi1d<LatticeColorMatrix> Q1(Nd);
 
 
-  for (mu = 0; mu <= Nd-1; mu++)
+    multi1d<LatticeComplex> f;   // routine will resize these
+
+
+    for (mu = 0; mu <= Nd-1; mu++)
     {
       Stouting::getQsandCs(dest, Q1[mu],QQ,C,mu,smear_in_this_dirP,rho_b1) ;
       Stouting::getQsandCs(u   , Q0[mu],QQ,C,mu,smear_in_this_dirP,rho_b2) ;
@@ -153,14 +153,14 @@ void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
 
     }
 
-  for (mu = 0; mu <= Nd-1; mu++)
+    for (mu = 0; mu <= Nd-1; mu++)
     {
       u[mu]    =  next[mu] ;
       dest[mu] =  next[mu] ;      
     }
 
 
-  for (mu = 0; mu <= Nd-1; mu++)
+    for (mu = 0; mu <= Nd-1; mu++)
     {
       Stouting::getQsandCs(dest, Q2,QQ,C,mu,smear_in_this_dirP,rho_c) ;
 
@@ -174,39 +174,39 @@ void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
     }
 
 
-  for (mu = 0; mu <= Nd-1; mu++)
+    for (mu = 0; mu <= Nd-1; mu++)
     {
       u[mu]    =  next[mu] ;
     }
 
 
 
-}
+  }
 
 
   void wilson_flow(XMLWriter& xml,
 		   multi1d<LatticeColorMatrix> & u, int nstep, 
 		   Real  wflow_eps, int jomit)
-{
-  Real gact4i, gactij;
-  int dim = nstep + 1 ;
-  multi1d<Real> gact4i_vec(dim);
-  multi1d<Real> gactij_vec(dim);
-  multi1d<Real> step_vec(dim);
+  {
+    Real gact4i, gactij;
+    int dim = nstep + 1 ;
+    multi1d<Real> gact4i_vec(dim);
+    multi1d<Real> gactij_vec(dim);
+    multi1d<Real> step_vec(dim);
 
 
 
-  measure_wilson_gauge(u,gactij,gact4i,jomit) ;
-  gact4i_vec[0] = gact4i ;
-  gactij_vec[0] = gactij ;
-  step_vec[0] = 0.0 ;
+    measure_wilson_gauge(u,gactij,gact4i,jomit) ;
+    gact4i_vec[0] = gact4i ;
+    gactij_vec[0] = gactij ;
+    step_vec[0] = 0.0 ;
 
-  //  QDPIO::cout << "WFLOW " << 0.0 << " " << gact4i << " " << gactij <<  endl ; 
+    //  QDPIO::cout << "WFLOW " << 0.0 << " " << gact4i << " " << gactij <<  endl ; 
 
-  QDPIO::cout << "START_ANALYZE_wflow" << endl ; 
-  QDPIO::cout << "WFLOW time gact4i gactij" << endl ; 
+    QDPIO::cout << "START_ANALYZE_wflow" << endl ; 
+    QDPIO::cout << "WFLOW time gact4i gactij" << endl ; 
 
-  for(int i=0 ; i < nstep ; ++i)
+    for(int i=0 ; i < nstep ; ++i)
     {
       wilson_flow_one_step(u,wflow_eps) ;
 
@@ -221,15 +221,15 @@ void wilson_flow_one_step(multi1d<LatticeColorMatrix> & u, Real rho)
       step_vec[i+1] = xx ;
 
     }
-  QDPIO::cout << "END_ANALYZE_wflow" << endl ; 
+    QDPIO::cout << "END_ANALYZE_wflow" << endl ; 
 
-  push(xml, "wilson_flow_results");
-  write(xml,"wflow_step",step_vec) ; 
-  write(xml,"wflow_gact4i",gact4i_vec) ; 
-  write(xml,"wflow_gactij",gactij_vec) ; 
-  pop(xml);  // elem
+    push(xml, "wilson_flow_results");
+    write(xml,"wflow_step",step_vec) ; 
+    write(xml,"wflow_gact4i",gact4i_vec) ; 
+    write(xml,"wflow_gactij",gactij_vec) ; 
+    pop(xml);  // elem
 
-}
+  }
 
 
 }  // end namespace Chroma
