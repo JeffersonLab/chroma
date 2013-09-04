@@ -46,7 +46,6 @@ sub regresDirs
 	    "$test_dir/chroma/hadron/gauge_transf/regres.pl",
 	    "$test_dir/chroma/hadron/hadspec/regres.pl",
 	    "$test_dir/chroma/hadron/mesonspec/regres.pl",
-	    "$test_dir/chroma/hadron/mres/regres.pl",
 	    "$test_dir/chroma/hadron/hadron_contract/regres.pl",
 	    "$test_dir/chroma/hadron/colorvec_matelem/regres.pl",
 	    "$test_dir/chroma/hadron/qqq/regres.pl",
