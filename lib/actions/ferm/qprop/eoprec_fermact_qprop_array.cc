@@ -214,7 +214,7 @@ namespace Chroma
   {
     return new PrecFermAct5DQprop<LF,LCM,LCM>(
       Handle< EvenOddPrecLinearOperatorArray<LF,LCM,LCM> >(linOp(state)), 
-      Handle< LinOpSystemSolverArray<LF> >(invLinOp(state,invParam)));
+      Handle< LinOpSystemSolverArray<LF> >((*this).invLinOp(state,invParam)));
   }
   
 

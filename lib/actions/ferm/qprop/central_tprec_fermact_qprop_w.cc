@@ -181,8 +181,8 @@ namespace Chroma
   UnprecSpaceCentralPrecTimeWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 								 const GroupXML_t& invParam) const
   {
-    return new CentralPrecTimeFermActQprop<LF,LCM,LCM,UnprecSpaceCentralPrecTimeLinearOperator>(Handle< UnprecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
-												Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+    return new CentralPrecTimeFermActQprop<LF,LCM,LCM,UnprecSpaceCentralPrecTimeLinearOperator>(Handle< UnprecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >((*this).linOp(state)), 
+												Handle< LinOpSystemSolver<LF> >((*this).invLinOp(state,invParam)));
   }
 
   template<>
@@ -190,8 +190,8 @@ namespace Chroma
   ILUPrecSpaceCentralPrecTimeWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 								 const GroupXML_t& invParam) const
   {
-    return new CentralPrecTimeFermActQprop<LF,LCM,LCM,ILUPrecSpaceCentralPrecTimeLinearOperator>(Handle< ILUPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
-												 Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+    return new CentralPrecTimeFermActQprop<LF,LCM,LCM,ILUPrecSpaceCentralPrecTimeLinearOperator>(Handle< ILUPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >((*this).linOp(state)), 
+												 Handle< LinOpSystemSolver<LF> >((*this).invLinOp(state,invParam)));
   }
   
 
@@ -200,8 +200,8 @@ namespace Chroma
   ILU2PrecSpaceCentralPrecTimeWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 								 const GroupXML_t& invParam) const
   {
-    return new Central2PrecTimeFermActQprop<LF,LCM,LCM,ILU2PrecSpaceCentralPrecTimeLinearOperator>(Handle< ILU2PrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
-												 Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+    return new Central2PrecTimeFermActQprop<LF,LCM,LCM,ILU2PrecSpaceCentralPrecTimeLinearOperator>(Handle< ILU2PrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >((*this).linOp(state)), 
+												 Handle< LinOpSystemSolver<LF> >((*this).invLinOp(state,invParam)));
   }
   
 
@@ -302,8 +302,8 @@ namespace Chroma
   EO3DPrecSpaceCentralPrecTimeConstDetWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 									   const GroupXML_t& invParam) const
   {
-    return new EO3DPrecCentralPrecTimeFermActQprop<LF,LCM,LCM,EO3DPrecSpaceCentralPrecTimeLinearOperator>(Handle< EO3DPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >(linOp(state)), 
-												      Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+    return new EO3DPrecCentralPrecTimeFermActQprop<LF,LCM,LCM,EO3DPrecSpaceCentralPrecTimeLinearOperator>(Handle< EO3DPrecSpaceCentralPrecTimeLinearOperator<LF,LCM,LCM> >((*this).linOp(state)), 
+												      Handle< LinOpSystemSolver<LF> >((*this).invLinOp(state,invParam)));
   }
 
 

@@ -117,9 +117,9 @@ namespace Chroma
   EvenOddPrecDWFermActBaseArray<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 						   const GroupXML_t& invParam) const
   {
-    return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
-			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,getQuarkMass())),
-			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,Real(1))),
+    return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(this->qpropT(state,invParam)), 
+			    Handle< LinearOperatorArray<LF> >(this->unprecLinOp(state,getQuarkMass())),
+			    Handle< LinearOperatorArray<LF> >(this->unprecLinOp(state,Real(1))),
 			    getQuarkMass());
   }
   
@@ -131,9 +131,9 @@ namespace Chroma
   UnprecDWFermActBaseArray<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 					      const GroupXML_t& invParam) const
   { 
-    return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(qpropT(state,invParam)), 
-			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,getQuarkMass())),
-			    Handle< LinearOperatorArray<LF> >(unprecLinOp(state,Real(1))),
+    return new DWFQprop<LF>(Handle< SystemSolverArray<LF> >(this->qpropT(state,invParam)), 
+			    Handle< LinearOperatorArray<LF> >(this->unprecLinOp(state,getQuarkMass())),
+			    Handle< LinearOperatorArray<LF> >(this->unprecLinOp(state,Real(1))),
 			    getQuarkMass());
   }
   

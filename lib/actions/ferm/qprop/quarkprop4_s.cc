@@ -188,7 +188,7 @@ namespace Chroma
     return TheLinOpStagFermSystemSolverFactory::Instance().createObject(invParam.id,
 									paramtop,
 									invParam.path,
-									linOp(state));
+									this->linOp(state));
   }
 
 
@@ -206,7 +206,7 @@ namespace Chroma
     return TheMdagMStagFermSystemSolverFactory::Instance().createObject(invParam.id,
 									paramtop,
 									invParam.path,
-									linOp(state));
+									this->linOp(state));
   }
 
 
@@ -223,7 +223,7 @@ namespace Chroma
     return TheLinOpStagFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
 									     paramtop,
 									     invParam.path,
-									     linOp(state));
+									     this->linOp(state));
   }
 
 
@@ -241,7 +241,7 @@ namespace Chroma
     return TheMdagMStagFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOp(state));
+									 this->linOp(state));
   }
 
   //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
@@ -258,7 +258,7 @@ namespace Chroma
     return TheMdagMStagFermMultiSystemSolverAccumulateFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOp(state));
+									 this->linOp(state));
   }
 
 

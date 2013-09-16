@@ -98,8 +98,8 @@ namespace Chroma
   EvenOddPrecWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 						  const GroupXML_t& invParam) const
   {
-    return new PrecFermActQprop<LF,LCM,LCM>(Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> >(linOp(state)), 
-					    Handle< LinOpSystemSolver<LF> >(invLinOp(state,invParam)));
+    return new PrecFermActQprop<LF,LCM,LCM>(Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> >((*this).linOp(state)), 
+					    Handle< LinOpSystemSolver<LF> >((*this).invLinOp(state,invParam)));
   }
   
 } // namespace Chroma 

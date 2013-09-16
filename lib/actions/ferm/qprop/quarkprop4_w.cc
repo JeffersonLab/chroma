@@ -284,7 +284,7 @@ namespace Chroma
 								    paramtop,
 								    invParam.path,
 								    state,
-								    linOp(state));
+								    this->linOp(state));
   }
 
 
@@ -302,7 +302,7 @@ namespace Chroma
 								    paramtop,
 								    invParam.path,
 								    state,
-								    linOp(state));
+								    this->linOp(state));
   }
 
 
@@ -319,7 +319,7 @@ namespace Chroma
     return TheLinOpFermMultiSystemSolverFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOp(state));
+									 this->linOp(state));
   }
 
 
@@ -337,7 +337,7 @@ namespace Chroma
 									 paramtop,
 									 invParam.path,
 									 state,
-									 linOp(state));
+									 this->linOp(state));
   }
 
   //! Return a linear operator solver for this action to solve (MdagM+shift_i)*psi_i = chi 
@@ -353,7 +353,7 @@ namespace Chroma
     return TheMdagMFermMultiSystemSolverAccumulateFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOp(state));
+									 this->linOp(state));
   }
 
 
@@ -373,7 +373,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOp(state));
+									 this->linOp(state));
   }
 
 
@@ -390,7 +390,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOp(state));
+									 this->linOp(state));
   }
 
 
@@ -408,7 +408,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOpPV(state));
+									 this->linOpPV(state));
   }
 
 
@@ -425,7 +425,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
-									 linOpPV(state));
+									 this->linOpPV(state));
   }
 
 
@@ -473,7 +473,7 @@ namespace Chroma
     std::istringstream  xml(invParam.xml);
     XMLReader  paramtop(xml);
 
-    Handle< LinearOperatorArray<LF> > PV(linOpPV(state));
+    Handle< LinearOperatorArray<LF> > PV(this->linOpPV(state));
     Handle< LinearOperatorArray<LF> > MdagM(new MdagMLinOpArray<LF>(PV));
 
     return TheMdagMFermMultiSystemSolverArrayFactory::Instance().createObject(
@@ -494,7 +494,7 @@ namespace Chroma
     std::istringstream  xml(invParam.xml);
     XMLReader  paramtop(xml);
 
-    Handle< LinearOperatorArray<LF> > PV(linOpPV(state));
+    Handle< LinearOperatorArray<LF> > PV(this->linOpPV(state));
     Handle< LinearOperatorArray<LF> > MdagM(new MdagMLinOpArray<LF>(PV));
 
     return TheMdagMFermMultiSystemSolverAccumulateArrayFactory::Instance().createObject(
