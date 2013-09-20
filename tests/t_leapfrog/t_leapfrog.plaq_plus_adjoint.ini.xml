@@ -21,10 +21,10 @@
       <monomial_ids><elem>gauge</elem></monomial_ids>
    </Hamiltonian>
    <MDIntegrator>
-	<tau0>0.005</tau0>
+	<tau0>0.1</tau0>
 	<Integrator>
   	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>20</n_steps>
+	  <n_steps>32</n_steps>
           <monomial_ids>
             <elem>gauge</elem>
           </monomial_ids>
