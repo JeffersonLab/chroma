@@ -47,8 +47,7 @@
 	<GaugeAction>
 	   <Name>PLAQ_PLUS_ADJOINT_GAUGEACT</Name>
 	   <beta_F>5.6</beta_F>
-	   <!-- beta_A>-1.4</beta_A -->
-	   <beta_A>0.0</beta_A>
+	   <beta_A>-1.4</beta_A>
 	   <GaugeBC>
 		<Name>PERIODIC_GAUGEBC</Name>
            </GaugeBC>
