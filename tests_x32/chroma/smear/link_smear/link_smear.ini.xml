@@ -1,0 +1,105 @@
+<chroma>
+<annotation>
+Stout smear task
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>1</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>ape</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
+        <alpha1>0.75</alpha1>
+        <alpha2>0.6</alpha2>
+        <alpha3>0.3</alpha3>
+        <num_smear>1</num_smear>
+        <no_smear_dir>3</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>5.0e-6</BlkAccu>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>hyp_3</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>5</version>
+        <LinkSmearingType>HYP_SMEAR</LinkSmearingType>
+        <alpha1>0.75</alpha1>
+        <alpha2>0.6</alpha2>
+        <alpha3>0.3</alpha3>
+        <num_smear>1</num_smear>
+        <no_smear_dir>-1</no_smear_dir>
+        <BlkMax>100</BlkMax>
+        <BlkAccu>1.0e-5</BlkAccu>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>hyp_4</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>3</version>
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.15625</link_smear_fact>
+        <link_smear_num>16</link_smear_num>
+        <smear_dirs>1 1 1 0</smear_dirs>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>stout</linksmear_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>LINK_SMEAR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>3</version>
+        <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+        <link_smear_fact>0.15625</link_smear_fact>
+        <link_smear_num>16</link_smear_num>
+        <smear_dirs>1 1 0 0</smear_dirs>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <linksmear_id>stout2</linksmear_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

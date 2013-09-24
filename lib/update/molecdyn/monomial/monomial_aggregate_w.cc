@@ -93,7 +93,7 @@ namespace Chroma
 #if QDP_NS == 4
 #if QDP_NC == 3
 #if QDP_ND == 4
-	success &=  CentralTimePrecLogDetTTMonomial4DEnv::registerAll();
+	//	success &=  CentralTimePrecLogDetTTMonomial4DEnv::registerAll();
 #endif
 #endif
 #endif

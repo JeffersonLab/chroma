@@ -16,7 +16,7 @@
 #include "util/ferm/subset_vectors.h"
 #include "util/ferm/key_prop_colorvec.h"
 #include "handle.h"
-#include "actions/ferm/invert/containers.h"
+// #include "actions/ferm/invert/containers.h"
 
 namespace Chroma 
 { 
@@ -621,7 +621,7 @@ namespace Chroma
 	  return new QIOReadEigenInfoLatticeFermion(p);
 	}
 
-
+#if 0
 	//-----------------------------------------------------------------------
 	//! Read a RitzPairs Type
 	class QIOReadRitzPairsLatticeFermion : public QIOReadObject
@@ -683,7 +683,7 @@ namespace Chroma
 	{
 	  return new QIOReadRitzPairsLatticeFermion(p);
 	}
-
+#endif
 
 
 	//------------------------------------------------------------------------
@@ -734,8 +734,9 @@ namespace Chroma
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("EigenInfoLatticeFermion"),
 									qioReadEigenInfoLatticeFermion);
 
+#if 0
 	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("RitzPairsLatticeFermion"), 
-									qioReadRitzPairsLatticeFermion);
+#endif									qioReadRitzPairsLatticeFermion);
 
 	  registered = true;
 	}

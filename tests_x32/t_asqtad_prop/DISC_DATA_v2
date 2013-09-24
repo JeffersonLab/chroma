@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<propagator>
+  <IO_version>
+    <version>2</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>STAGGERED</FermTypeP>
+    <Mass>0.50</Mass>
+    <u0>0.463032</u0>
+    <prop_type>SZIN</prop_type>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>10000</MaxCG>
+    <Nsamples>2</Nsamples>
+    <CFGNO>66</CFGNO>
+    <GFAccu>2.0e-6</GFAccu>
+    <OrPara>1.8</OrPara>
+    <GFMax>500</GFMax>
+    <nrow>4 4 4 4</nrow>
+    <boundary>1 1 1 -1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+    <use_gauge_invar_oper>false</use_gauge_invar_oper>
+<volume_source>Z2NOISE</volume_source>
+  </param>
+  <Cfg>
+    <cfg_type>NERSC</cfg_type>
+    <cfg_file>../../tests/t_asqtad_prop/t_nersc.cfg</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+</propagator>
+

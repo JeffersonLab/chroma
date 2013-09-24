@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/apply_ferm_state/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/apply_ferm_state/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[3]/apply_ferm_state/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

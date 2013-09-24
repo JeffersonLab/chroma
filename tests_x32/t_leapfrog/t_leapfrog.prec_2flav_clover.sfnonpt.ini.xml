@@ -1,0 +1,76 @@
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_LOGDET_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-7</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+	  <Kappa>0.12</Kappa>
+	  <clovCoeffR>0.9</clovCoeffR>
+	  <clovCoeffT>1.3</clovCoeffT>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+	  <FermionBC>
+	    <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+	    <SchrPhiMult>2.0</SchrPhiMult>
+	    <loop_extent>1</loop_extent>
+	    <decay_dir>3</decay_dir>
+	    <theta>0 0 0</theta>
+          </FermionBC>
+	  <ChronologicalPredictor>
+	    <Name>ZERO_SOLUTION_4D_PREDICTOR</Name>
+	  </ChronologicalPredictor>
+        </FermionAction>
+	<NamedObject>
+	  <monomial_id>clover</monomial_id>
+	</NamedObject>
+      </elem>
+
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	  <Name>WILSON_GAUGEACT</Name>
+	  <beta>5.5</beta>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+          </AnisoParam>
+	  <GaugeBC>
+	    <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+	    <SchrPhiMult>2.0</SchrPhiMult>
+	    <loop_extent>1</loop_extent>
+	    <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeAction>
+	<NamedObject>
+	  <monomial_id>gauge</monomial_id>
+	</NamedObject>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+     <monomial_ids><elem>clover</elem><elem>gauge</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+        <tau0>1.0</tau0>
+	<Integrator>
+	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>5</n_steps>
+          <monomial_ids><elem>clover</elem><elem>gauge</elem></monomial_ids>
+	</Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>32 4 4 8</nrow>
+</LeapfrogTest>

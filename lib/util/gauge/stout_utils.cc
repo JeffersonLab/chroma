@@ -368,20 +368,34 @@ namespace Chroma
       multi1d<LatticeComplex>& b2 = arg->b2;
       bool dobs=arg->dobs;
       
+      // This loop needs to change to a loop over blocks. 
+      // Each thread should be forced to start on a block boundary.
       for(int site=lo; site < hi; site++)  
       { 
+	int oblock = site >> INNER_LOG;
+	int isite = site & (INNER_LEN - 1);
+
 	// Get the traces
+#if 0
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  Q_site = Q.elem(site).elem();
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  QQ_site = QQ.elem(site).elem();
 	PColorMatrix<QDP::RComplex<REAL>, Nc>  QQQ = QQ_site*Q_site;
+#endif
+
+	typename UnaryReturn< LatticeColorMatrix, FnGetSite >::Type_t Q_site;
+	Q_site.elem()= getSite(Q.elem(oblock), isite);
+	typename UnaryReturn< LatticeColorMatrix, FnGetSite >::Type_t QQ_site;
+	QQ_site.elem() = getSite(QQ.elem(oblock), isite);
+	typename UnaryReturn< LatticeColorMatrix, FnGetSite >::Type_t  QQQ = QQ_site*Q_site;
+
 	
 	Real trQQQ; 
-	trQQQ.elem()  = realTrace(QQQ);
+	trQQQ  = realTrace(QQQ);
 	Real trQQ;
-	trQQ.elem()   = realTrace(QQ_site);
+	trQQ   = realTrace(QQ_site);
 	
-	REAL c0    = ((REAL)1/(REAL)3) * trQQQ.elem().elem().elem().elem();  // eq 13
-	REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem();	 // eq 15 
+	REAL c0    = ((REAL)1/(REAL)3) * trQQQ.elem().elem().elem().elem().elem();  // eq 13
+	REAL c1    = ((REAL)1/(REAL)2) * trQQ.elem().elem().elem().elem().elem();	 // eq 15 
 	
 	
 	if( c1 < 4.0e-3  ) 
@@ -458,42 +472,42 @@ namespace Chroma
 	  //  differences to be zero. At this point in time maple seems happy.
 	  //  ==================================================================================
 	  
-	  f[0].elem(site).elem().elem().real() = 1.0-c0*c0/720.0;
-	  f[0].elem(site).elem().elem().imag() =  -(c0/6.0)*(1.0-(c1/20.0)*(1.0-(c1/42.0))) ;
+	  f[0].elem(oblock).elem().elem().real().elem(isite) = 1.0-c0*c0/720.0;
+	  f[0].elem(oblock).elem().elem().imag().elem(isite) =  -(c0/6.0)*(1.0-(c1/20.0)*(1.0-(c1/42.0))) ;
 	  
-	  f[1].elem(site).elem().elem().real() =  c0/24.0*(1.0-c1/15.0*(1.0-3.0*c1/112.0)) ;
-	  f[1].elem(site).elem().elem().imag() =  1.0-c1/6.0*(1.0-c1/20.0*(1.0-c1/42.0))-c0*c0/5040.0 ;
+	  f[1].elem(oblock).elem().elem().real().elem(isite) =  c0/24.0*(1.0-c1/15.0*(1.0-3.0*c1/112.0)) ;
+	  f[1].elem(oblock).elem().elem().imag().elem(isite) =  1.0-c1/6.0*(1.0-c1/20.0*(1.0-c1/42.0))-c0*c0/5040.0 ;
 	  
-	  f[2].elem(site).elem().elem().real() = 0.5*(-1.0+c1/12.0*(1.0-c1/30.0*(1.0-c1/56.0))+c0*c0/20160.0);
-	  f[2].elem(site).elem().elem().imag() = 0.5*(c0/60.0*(1.0-c1/21.0*(1.0-c1/48.0)));
+	  f[2].elem(oblock).elem().elem().real().elem(isite) = 0.5*(-1.0+c1/12.0*(1.0-c1/30.0*(1.0-c1/56.0))+c0*c0/20160.0);
+	  f[2].elem(oblock).elem().elem().imag().elem(isite) = 0.5*(c0/60.0*(1.0-c1/21.0*(1.0-c1/48.0)));
 	  
 	  if( dobs == true ) {
 	    //  partial f0/ partial c0
-	    b2[0].elem(site).elem().elem().real() = -c0/360.0;
-	    b2[0].elem(site).elem().elem().imag() =  -(1.0/6.0)*(1.0-(c1/20.0)*(1.0-c1/42.0));
+	    b2[0].elem(oblock).elem().elem().real().elem(isite) = -c0/360.0;
+	    b2[0].elem(oblock).elem().elem().imag().elem(isite) =  -(1.0/6.0)*(1.0-(c1/20.0)*(1.0-c1/42.0));
 	    
 	    // partial f0 / partial c1
 	    //
-	    b1[0].elem(site).elem().elem().real() = 0;
-	    b1[0].elem(site).elem().elem().imag() = (c0/120.0)*(1.0-c1/21.0);
+	    b1[0].elem(oblock).elem().elem().real().elem(isite) = 0;
+	    b1[0].elem(oblock).elem().elem().imag().elem(isite) = (c0/120.0)*(1.0-c1/21.0);
 	    
 	    // partial f1 / partial c0
 	    //
-	    b2[1].elem(site).elem().elem().real() = (1.0/24.0)*(1.0-c1/15.0*(1.0-3.0*c1/112.0));
-	    b2[1].elem(site).elem().elem().imag() = -c0/2520.0;
+	    b2[1].elem(oblock).elem().elem().real().elem(isite) = (1.0/24.0)*(1.0-c1/15.0*(1.0-3.0*c1/112.0));
+	    b2[1].elem(oblock).elem().elem().imag() = -c0/2520.0;
 	    
 	    
 	    // partial f1 / partial c1
-	    b1[1].elem(site).elem().elem().real() = -c0/360.0*(1.0 - 3.0*c1/56.0 );
-	    b1[1].elem(site).elem().elem().imag() = -1.0/6.0*(1.0-c1/10.0*(1.0-c1/28.0));
+	    b1[1].elem(oblock).elem().elem().real().elem(isite) = -c0/360.0*(1.0 - 3.0*c1/56.0 );
+	    b1[1].elem(oblock).elem().elem().imag().elem(isite) = -1.0/6.0*(1.0-c1/10.0*(1.0-c1/28.0));
 	    
 	    // partial f2/ partial c0
-	    b2[2].elem(site).elem().elem().real() = 0.5*c0/10080.0;
-	    b2[2].elem(site).elem().elem().imag() = 0.5*(  1.0/60.0*(1.0-c1/21.0*(1.0-c1/48.0)) );
+	    b2[2].elem(oblock).elem().elem().real().elem(isite) = 0.5*c0/10080.0;
+	    b2[2].elem(oblock).elem().elem().imag().elem(isite) = 0.5*(  1.0/60.0*(1.0-c1/21.0*(1.0-c1/48.0)) );
 	    
 	    // partial f2/ partial c1
-	    b1[2].elem(site).elem().elem().real() = 0.5*(  1.0/12.0*(1.0-(2.0*c1/30.0)*(1.0-3.0*c1/112.0)) ); 
-	    b1[2].elem(site).elem().elem().imag() = 0.5*( -c0/1260.0*(1.0-c1/24.0) );
+	    b1[2].elem(oblock).elem().elem().real().elem(isite) = 0.5*(  1.0/12.0*(1.0-(2.0*c1/30.0)*(1.0-3.0*c1/112.0)) ); 
+	    b1[2].elem(oblock).elem().elem().imag().elem(isite) = 0.5*( -c0/1260.0*(1.0-c1/24.0) );
 	    
 #if 0
 	    {
@@ -503,15 +517,15 @@ namespace Chroma
 			  "%s: corner; site=%d coord=[%d,%d,%d,%d] f[0]=%g f[1]=%g f[2]=%g b1[0]=%g b1[1]=%g b1[2]=%g b2[0]=%g b2[1]=%g b2[2]=%g c0=%g c1=%g",
 			  
 			  __func__, site, coord[0], coord[1], coord[2], coord[3],
-			  toDouble(localNorm2(f[0].elem(site))),
-			  toDouble(localNorm2(f[1].elem(site))),
-			  toDouble(localNorm2(f[2].elem(site))),
-			  toDouble(localNorm2(b1[0].elem(site))),
-			  toDouble(localNorm2(b1[1].elem(site))),
-			  toDouble(localNorm2(b1[2].elem(site))),
-			  toDouble(localNorm2(b2[0].elem(site))),
-			  toDouble(localNorm2(b2[1].elem(site))),
-			  toDouble(localNorm2(b2[2].elem(site))),
+			  toDouble(localNorm2(f[0].elem(oblock))),
+			  toDouble(localNorm2(f[1].elem(oblock))),
+			  toDouble(localNorm2(f[2].elem(oblock))),
+			  toDouble(localNorm2(b1[0].elem(oblock))),
+			  toDouble(localNorm2(b1[1].elem(oblock))),
+			  toDouble(localNorm2(b1[2].elem(oblock))),
+			  toDouble(localNorm2(b2[0].elem(oblock))),
+			  toDouble(localNorm2(b2[1].elem(oblock))),
+			  toDouble(localNorm2(b2[2].elem(oblock))),
 			  c0, c1);
 	    }
 #endif
@@ -754,11 +768,11 @@ namespace Chroma
 	      // Load back into the lattice sized object
 	      for(int j=0; j < 3; j++) {
 		
-		b1[j].elem(site).elem().elem().real() = b1_site_re[j];
-		b1[j].elem(site).elem().elem().imag() = b1_site_im[j];
+		b1[j].elem(oblock).elem().elem().real().elem(isite) = b1_site_re[j];
+		b1[j].elem(oblock).elem().elem().imag().elem(isite) = b1_site_im[j];
 		
-		b2[j].elem(site).elem().elem().real() = b2_site_re[j];
-		b2[j].elem(site).elem().elem().imag() = b2_site_im[j];
+		b2[j].elem(oblock).elem().elem().real().elem(isite) = b2_site_re[j];
+		b2[j].elem(oblock).elem().elem().imag().elem(isite) = b2_site_im[j];
 	      }
 #if 0
 	      {
@@ -772,12 +786,12 @@ namespace Chroma
 			    toDouble(localNorm2(cmplx(Real(f_site_re[0]),Real(f_site_im[0])))),
 			    toDouble(localNorm2(cmplx(Real(f_site_re[1]),Real(f_site_im[1])))),
 			    toDouble(localNorm2(cmplx(Real(f_site_re[2]),Real(f_site_im[2])))),
-			    toDouble(localNorm2(b1[0].elem(site))),
-			    toDouble(localNorm2(b1[1].elem(site))),
-			    toDouble(localNorm2(b1[2].elem(site))),
-			    toDouble(localNorm2(b2[0].elem(site))),
-			    toDouble(localNorm2(b2[1].elem(site))),
-			    toDouble(localNorm2(b2[2].elem(site))),
+			    toDouble(localNorm2(b1[0].elem(oblock))),
+			    toDouble(localNorm2(b1[1].elem(oblock))),
+			    toDouble(localNorm2(b1[2].elem(oblock))),
+			    toDouble(localNorm2(b2[0].elem(oblock))),
+			    toDouble(localNorm2(b2[1].elem(oblock))),
+			    toDouble(localNorm2(b2[2].elem(oblock))),
 			    denum, 
 			    c0, c1, c0max,
 			    rat, theta);
@@ -804,8 +818,8 @@ namespace Chroma
 	
 	  // Load back into the lattice sized object
 	  for(int j=0; j < 3; j++) { 
-	    f[j].elem(site).elem().elem().real() = f_site_re[j];
-	    f[j].elem(site).elem().elem().imag() = f_site_im[j];
+	    f[j].elem(oblock).elem().elem().real().elem(isite) = f_site_re[j];
+	    f[j].elem(oblock).elem().elem().imag().elem(isite) = f_site_im[j];
 	  }
 	  
 	} // End of if( corner_caseP ) else {}

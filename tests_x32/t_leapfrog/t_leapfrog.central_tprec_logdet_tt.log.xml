@@ -1,0 +1,2061 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <mesE>
+    <mesKE>
+      <KE>19.9983580563764</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>1</num_terms>
+      <PEByMonomials>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <S>-0.451485544106598</S>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <leapP>
+    <dt>0.00625</dt>
+    <dt_actual_per_dir>0.00625 0.00625 0.00625 0.00625</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210610236073631</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0446330491748856</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563935188627998</F_max_per_direction>
+              <F_sq>0.000526525590184078</F_sq>
+              <F_avg>0.0111582622937214</F_avg>
+              <F_max>0.0563935188627998</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210574944181976</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0446265658690028</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564088940219306</F_max_per_direction>
+              <F_sq>0.000526437360454939</F_sq>
+              <F_avg>0.0111566414672507</F_avg>
+              <F_max>0.0564088940219306</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210548510716015</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0446201142990091</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056445670645901</F_max_per_direction>
+              <F_sq>0.000526371276790037</F_sq>
+              <F_avg>0.0111550285747523</F_avg>
+              <F_max>0.056445670645901</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0021052897537118</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0446139102049546</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564665613493951</F_max_per_direction>
+              <F_sq>0.00052632243842795</F_sq>
+              <F_avg>0.0111534775512387</F_avg>
+              <F_max>0.0564665613493951</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210514253016341</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0446081639827356</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056471974010086</F_max_per_direction>
+              <F_sq>0.000526285632540853</F_sq>
+              <F_avg>0.0111520409956839</F_avg>
+              <F_max>0.056471974010086</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210502186978221</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0446028635771896</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564623365656801</F_max_per_direction>
+              <F_sq>0.000526255467445553</F_sq>
+              <F_avg>0.0111507158942974</F_avg>
+              <F_max>0.0564623365656801</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210490608955756</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445977154275914</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564380888810303</F_max_per_direction>
+              <F_sq>0.00052622652238939</F_sq>
+              <F_avg>0.0111494288568978</F_avg>
+              <F_max>0.0564380888810303</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0021047740400119</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445923211283221</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563996763007326</F_max_per_direction>
+              <F_sq>0.000526193510002975</F_sq>
+              <F_avg>0.0111480802820805</F_avg>
+              <F_max>0.0563996763007326</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210460578420169</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445864616710264</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563475448809183</F_max_per_direction>
+              <F_sq>0.000526151446050422</F_sq>
+              <F_avg>0.0111466154177566</F_avg>
+              <F_max>0.0563475448809183</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210438327929823</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445802260080979</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0562821382511554</F_max_per_direction>
+              <F_sq>0.000526095819824556</F_sq>
+              <F_avg>0.0111450565020245</F_avg>
+              <F_max>0.0562821382511554</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210409103022332</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445737429124982</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563241518608928</F_max_per_direction>
+              <F_sq>0.000526022757555831</F_sq>
+              <F_avg>0.0111434357281246</F_avg>
+              <F_max>0.0563241518608928</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210371668255586</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445668221926884</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563917592446792</F_max_per_direction>
+              <F_sq>0.000525929170638966</F_sq>
+              <F_avg>0.0111417055481721</F_avg>
+              <F_max>0.0563917592446792</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210325152165929</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445591987107596</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564354742654098</F_max_per_direction>
+              <F_sq>0.000525812880414823</F_sq>
+              <F_avg>0.0111397996776899</F_avg>
+              <F_max>0.0564354742654098</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210269084690325</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445509744958611</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564552019232649</F_max_per_direction>
+              <F_sq>0.000525672711725811</F_sq>
+              <F_avg>0.0111377436239653</F_avg>
+              <F_max>0.0564552019232649</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210203419400009</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445426640842121</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564511151509451</F_max_per_direction>
+              <F_sq>0.000525508548500021</F_sq>
+              <F_avg>0.011135666021053</F_avg>
+              <F_max>0.0564511151509451</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210128538471343</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445349498111469</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564236699250249</F_max_per_direction>
+              <F_sq>0.000525321346178358</F_sq>
+              <F_avg>0.0111337374527867</F_avg>
+              <F_max>0.0564236699250249</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00210045239121622</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445283391943454</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563736149742075</F_max_per_direction>
+              <F_sq>0.000525113097804055</F_sq>
+              <F_avg>0.0111320847985864</F_avg>
+              <F_max>0.0563736149742075</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209954701173099</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445229694910351</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563019955733469</F_max_per_direction>
+              <F_sq>0.000524886752932749</F_sq>
+              <F_avg>0.0111307423727588</F_avg>
+              <F_max>0.0563019955733469</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209858436420508</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445187327256196</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563172286347098</F_max_per_direction>
+              <F_sq>0.000524646091051271</F_sq>
+              <F_avg>0.0111296831814049</F_avg>
+              <F_max>0.0563172286347098</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0020975822150161</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445154942239774</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563634931920167</F_max_per_direction>
+              <F_sq>0.000524395553754025</F_sq>
+              <F_avg>0.0111288735559943</F_avg>
+              <F_max>0.0563634931920167</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209656016939419</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445131692392072</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563851582703877</F_max_per_direction>
+              <F_sq>0.000524140042348547</F_sq>
+              <F_avg>0.0111282923098018</F_avg>
+              <F_max>0.0563851582703877</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209553875873738</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.044511686792644</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563800340749145</F_max_per_direction>
+              <F_sq>0.000523884689684346</F_sq>
+              <F_avg>0.011127921698161</F_avg>
+              <F_max>0.0563800340749145</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209453846669988</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.044510961253969</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564473692920549</F_max_per_direction>
+              <F_sq>0.000523634616674969</F_sq>
+              <F_avg>0.0111277403134923</F_avg>
+              <F_max>0.0564473692920549</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209357874037852</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445109188012437</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564321792310105</F_max_per_direction>
+              <F_sq>0.00052339468509463</F_sq>
+              <F_avg>0.0111277297003109</F_avg>
+              <F_max>0.0564321792310105</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209267703478167</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445115309576285</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564196532547422</F_max_per_direction>
+              <F_sq>0.000523169258695417</F_sq>
+              <F_avg>0.0111278827394071</F_avg>
+              <F_max>0.0564196532547422</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0020918479378762</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445128194913641</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564552115685616</F_max_per_direction>
+              <F_sq>0.000522961984469051</F_sq>
+              <F_avg>0.011128204872841</F_avg>
+              <F_max>0.0564552115685616</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209110241989004</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445148507593803</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564743825055847</F_max_per_direction>
+              <F_sq>0.000522775604972509</F_sq>
+              <F_avg>0.0111287126898451</F_avg>
+              <F_max>0.0564743825055847</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00209044724439633</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445177270496659</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564875827323664</F_max_per_direction>
+              <F_sq>0.000522611811099083</F_sq>
+              <F_avg>0.0111294317624165</F_avg>
+              <F_max>0.0564875827323664</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208988457037981</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445215562004767</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565187532933257</F_max_per_direction>
+              <F_sq>0.000522471142594952</F_sq>
+              <F_avg>0.0111303890501192</F_avg>
+              <F_max>0.0565187532933257</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208941176448663</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445264046028187</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565323547655641</F_max_per_direction>
+              <F_sq>0.000522352941121658</F_sq>
+              <F_avg>0.0111316011507047</F_avg>
+              <F_max>0.0565323547655641</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208902143159459</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445322742865607</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565334873531059</F_max_per_direction>
+              <F_sq>0.000522255357898648</F_sq>
+              <F_avg>0.0111330685716402</F_avg>
+              <F_max>0.0565334873531059</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208870166038415</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445391140180434</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056526730824726</F_max_per_direction>
+              <F_sq>0.000522175415096038</F_sq>
+              <F_avg>0.0111347785045109</F_avg>
+              <F_max>0.056526730824726</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208843646943806</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445468057481272</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565160359542828</F_max_per_direction>
+              <F_sq>0.000522109117359515</F_sq>
+              <F_avg>0.0111367014370318</F_avg>
+              <F_max>0.0565160359542828</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208820642922271</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445550826650369</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565046437633787</F_max_per_direction>
+              <F_sq>0.000522051607305678</F_sq>
+              <F_avg>0.0111387706662592</F_avg>
+              <F_max>0.0565046437633787</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208798942670818</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.044563446011312</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564950347052677</F_max_per_direction>
+              <F_sq>0.000521997356677045</F_sq>
+              <F_avg>0.011140861502828</F_avg>
+              <F_max>0.0564950347052677</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208776153286273</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445711983366201</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564889086436548</F_max_per_direction>
+              <F_sq>0.000521940383215683</F_sq>
+              <F_avg>0.011142799584155</F_avg>
+              <F_max>0.0564889086436548</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208749792916254</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445775937905152</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564871950809417</F_max_per_direction>
+              <F_sq>0.000521874482290635</F_sq>
+              <F_avg>0.0111443984476288</F_avg>
+              <F_max>0.0564871950809417</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208717384777919</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.044581978537466</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564900916955268</F_max_per_direction>
+              <F_sq>0.000521793461944797</F_sq>
+              <F_avg>0.0111454946343665</F_avg>
+              <F_max>0.0564900916955268</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208676548125686</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445838317487545</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564971279781853</F_max_per_direction>
+              <F_sq>0.000521691370314216</F_sq>
+              <F_avg>0.0111459579371886</F_avg>
+              <F_max>0.0564971279781853</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208625082111268</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445827298880846</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056507249720458</F_max_per_direction>
+              <F_sq>0.00052156270527817</F_sq>
+              <F_avg>0.0111456824720211</F_avg>
+              <F_max>0.056507249720458</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0020856103905655</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445783071348336</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565189193816547</F_max_per_direction>
+              <F_sq>0.000521402597641376</F_sq>
+              <F_avg>0.0111445767837084</F_avg>
+              <F_max>0.0565189193816547</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208482784407375</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445702550182002</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565302269856801</F_max_per_direction>
+              <F_sq>0.000521206961018437</F_sq>
+              <F_avg>0.0111425637545501</F_avg>
+              <F_max>0.0565302269856801</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208389041499386</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445583483472468</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565390061742125</F_max_per_direction>
+              <F_sq>0.000520972603748465</F_sq>
+              <F_avg>0.0111395870868117</F_avg>
+              <F_max>0.0565390061742125</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208278920185733</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445424624034875</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565429503326635</F_max_per_direction>
+              <F_sq>0.000520697300464333</F_sq>
+              <F_avg>0.0111356156008719</F_avg>
+              <F_max>0.0565429503326635</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208151929289789</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0445225613956724</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056539724247282</F_max_per_direction>
+              <F_sq>0.000520379823224473</F_sq>
+              <F_avg>0.0111306403489181</F_avg>
+              <F_max>0.056539724247282</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00208007973696783</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0444986623703424</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565270674687736</F_max_per_direction>
+              <F_sq>0.000520019934241958</F_sq>
+              <F_avg>0.0111246655925856</F_avg>
+              <F_max>0.0565270674687736</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00207847337636812</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0444708017934834</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056502886370411</F_max_per_direction>
+              <F_sq>0.00051961834409203</F_sq>
+              <F_avg>0.0111177004483708</F_avg>
+              <F_max>0.056502886370411</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00207670656299205</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0444390409378732</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056465332724563</F_max_per_direction>
+              <F_sq>0.000519176640748013</F_sq>
+              <F_avg>0.0111097602344683</F_avg>
+              <F_max>0.056465332724563</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00207478878328991</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0444035188469726</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564128674224004</F_max_per_direction>
+              <F_sq>0.000518697195822478</F_sq>
+              <F_avg>0.0111008797117431</F_avg>
+              <F_max>0.0564128674224004</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00207273221978608</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0443645181155662</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563637588760325</F_max_per_direction>
+              <F_sq>0.000518183054946519</F_sq>
+              <F_avg>0.0110911295288915</F_avg>
+              <F_max>0.0563637588760325</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00207055127724285</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0443224961529138</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564176557490557</F_max_per_direction>
+              <F_sq>0.000517637819310713</F_sq>
+              <F_avg>0.0110806240382285</F_avg>
+              <F_max>0.0564176557490557</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00206826210021617</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0442780549273562</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564903087187722</F_max_per_direction>
+              <F_sq>0.000517065525054042</F_sq>
+              <F_avg>0.011069513731839</F_avg>
+              <F_max>0.0564903087187722</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00206588210594107</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0442318560411424</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565090225234881</F_max_per_direction>
+              <F_sq>0.000516470526485267</F_sq>
+              <F_avg>0.0110579640102856</F_avg>
+              <F_max>0.0565090225234881</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00206342955254666</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0441845302150791</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564707791377039</F_max_per_direction>
+              <F_sq>0.000515857388136664</F_sq>
+              <F_avg>0.0110461325537698</F_avg>
+              <F_max>0.0564707791377039</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0020609231579072</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.044136642088845</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563729152718417</F_max_per_direction>
+              <F_sq>0.0005152307894768</F_sq>
+              <F_avg>0.0110341605222113</F_avg>
+              <F_max>0.0563729152718417</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00205838177936452</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0440887152247384</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563519847727741</F_max_per_direction>
+              <F_sq>0.00051459544484113</F_sq>
+              <F_avg>0.0110221788061846</F_avg>
+              <F_max>0.0563519847727741</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00205582415947899</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0440412721618533</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564196095461607</F_max_per_direction>
+              <F_sq>0.000513956039869748</F_sq>
+              <F_avg>0.0110103180404633</F_avg>
+              <F_max>0.0564196095461607</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00205326873819555</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0439948713990024</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564596355830495</F_max_per_direction>
+              <F_sq>0.000513317184548888</F_sq>
+              <F_avg>0.0109987178497506</F_avg>
+              <F_max>0.0564596355830495</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00205073352761278</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0439501983615249</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056476618270896</F_max_per_direction>
+              <F_sq>0.000512683381903194</F_sq>
+              <F_avg>0.0109875495903812</F_avg>
+              <F_max>0.056476618270896</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00204823604210294</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0439083647752198</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564750527368798</F_max_per_direction>
+              <F_sq>0.000512059010525735</F_sq>
+              <F_avg>0.0109770911938049</F_avg>
+              <F_max>0.0564750527368798</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00204579327396559</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.043870919641173</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564592103474513</F_max_per_direction>
+              <F_sq>0.000511448318491399</F_sq>
+              <F_avg>0.0109677299102933</F_avg>
+              <F_max>0.0564592103474513</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00204342170315186</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0438377767264184</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564329927440207</F_max_per_direction>
+              <F_sq>0.000510855425787964</F_sq>
+              <F_avg>0.0109594441816046</F_avg>
+              <F_max>0.0564329927440207</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00204113732885495</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0438075647402295</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563998110900137</F_max_per_direction>
+              <F_sq>0.000510284332213738</F_sq>
+              <F_avg>0.0109518911850574</F_avg>
+              <F_max>0.0563998110900137</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203895571085808</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0437795313321483</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564072273697455</F_max_per_direction>
+              <F_sq>0.000509738927714519</F_sq>
+              <F_avg>0.0109448828330371</F_avg>
+              <F_max>0.0564072273697455</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203689200936175</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0437533826697861</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564606709570828</F_max_per_direction>
+              <F_sq>0.000509223002340438</F_sq>
+              <F_avg>0.0109383456674465</F_avg>
+              <F_max>0.0564606709570828</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203496101345094</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0437290259810986</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564456154337707</F_max_per_direction>
+              <F_sq>0.000508740253362736</F_sq>
+              <F_avg>0.0109322564952746</F_avg>
+              <F_max>0.0564456154337707</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203317715026571</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0437065157230877</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563587904056517</F_max_per_direction>
+              <F_sq>0.000508294287566426</F_sq>
+              <F_avg>0.0109266289307719</F_avg>
+              <F_max>0.0563587904056517</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203155446916473</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436860691866668</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564017067443946</F_max_per_direction>
+              <F_sq>0.000507888617291182</F_sq>
+              <F_avg>0.0109215172966667</F_avg>
+              <F_max>0.0564017067443946</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203010659757114</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436680837717803</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564973323786827</F_max_per_direction>
+              <F_sq>0.000507526649392786</F_sq>
+              <F_avg>0.0109170209429451</F_avg>
+              <F_max>0.0564973323786827</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202884666762947</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.043653110981697</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565516946167184</F_max_per_direction>
+              <F_sq>0.000507211666907367</F_sq>
+              <F_avg>0.0109132777454243</F_avg>
+              <F_max>0.0565516946167184</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202778721515179</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436417573973103</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565736318052325</F_max_per_direction>
+              <F_sq>0.000506946803787947</F_sq>
+              <F_avg>0.0109104393493276</F_avg>
+              <F_max>0.0565736318052325</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202694005447392</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436345157779502</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565713383189754</F_max_per_direction>
+              <F_sq>0.00050673501361848</F_sq>
+              <F_avg>0.0109086289444875</F_avg>
+              <F_max>0.0565713383189754</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202631613467766</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436316034080727</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565522167837618</F_max_per_direction>
+              <F_sq>0.000506579033669415</F_sq>
+              <F_avg>0.0109079008520182</F_avg>
+              <F_max>0.0565522167837618</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.0020259253840765</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436329338015817</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0565227621099514</F_max_per_direction>
+              <F_sq>0.000506481346019125</F_sq>
+              <F_avg>0.0109082334503954</F_avg>
+              <F_max>0.0565227621099514</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202577655084861</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436382327984316</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564884806342648</F_max_per_direction>
+              <F_sq>0.000506444137712153</F_sq>
+              <F_avg>0.0109095581996079</F_avg>
+              <F_max>0.0564884806342648</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202587704818837</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436471725766083</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.056453846260113</F_max_per_direction>
+              <F_sq>0.000506469262047093</F_sq>
+              <F_avg>0.0109117931441521</F_avg>
+              <F_max>0.056453846260113</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202623281232555</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436594389348912</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564222938397075</F_max_per_direction>
+              <F_sq>0.000506558203081386</F_sq>
+              <F_avg>0.0109148597337228</F_avg>
+              <F_max>0.0564222938397075</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202684818124163</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436747414982634</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563962482941623</F_max_per_direction>
+              <F_sq>0.000506712045310407</F_sq>
+              <F_avg>0.0109186853745658</F_avg>
+              <F_max>0.0563962482941623</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202772580094154</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0436928064015694</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0563771862816357</F_max_per_direction>
+              <F_sq>0.000506931450235385</F_sq>
+              <F_avg>0.0109232016003924</F_avg>
+              <F_max>0.0563771862816357</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00202886656478322</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0437133766783189</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564194766709701</F_max_per_direction>
+              <F_sq>0.000507216641195804</F_sq>
+              <F_avg>0.0109283441695797</F_avg>
+              <F_max>0.0564194766709701</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0125</dt>
+    <dt_actual_per_dir>0.0125 0.0125 0.0125 0.0125</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.00625</dt>
+    <dt_actual_per_dir>0.00625 0.00625 0.00625 0.00625</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0.00203026958972352</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0.0437362212323296</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 0.0564486635724775</F_max_per_direction>
+              <F_sq>0.00050756739743088</F_sq>
+              <F_avg>0.0109340553080824</F_avg>
+              <F_max>0.0564486635724775</F_max>
+            </Forces>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <mesE>
+    <mesKE>
+      <KE>18.3569884122982</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>1</num_terms>
+      <PEByMonomials>
+        <elem>
+          <CentralTimePrecLogDetTTMonomial>
+            <S>1.19023725575151</S>
+          </CentralTimePrecLogDetTTMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <DeltaE>
+    <DeltaKE>-1.64136964407817</DeltaKE>
+    <DeltaPE>1.6417227998581</DeltaPE>
+    <DeltaH>0.000353155779936998</DeltaH>
+  </DeltaE>
+</t_leapfrog>

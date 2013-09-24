@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/make_source_stag/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/make_source_stag/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[3]/make_source_stag/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/RitzEigenHw/eigFix/lambda_Hw" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/RitzEigenHw/Highest/lambda_hi" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+
+</assertions>

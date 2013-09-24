@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[20]/hadspec/Wilson_hadron_measurements/elem[1]/Point_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop/elem[2]/re" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[20]/hadspec/Wilson_hadron_measurements/elem[2]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop/elem[2]/re" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[20]/hadspec/Wilson_hadron_measurements/elem[3]/Wall_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop/elem[2]/re" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[21]/hadspec/Wilson_hadron_measurements/elem[1]/Point_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop/elem[1]/re" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[21]/hadspec/Wilson_hadron_measurements/elem[2]/Shell_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop/elem[1]/re" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[21]/hadspec/Wilson_hadron_measurements/elem[3]/Wall_Point_Wilson_Mesons/elem[16]/momenta/elem[1]/mesprop/elem[1]/re" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+</assertions>

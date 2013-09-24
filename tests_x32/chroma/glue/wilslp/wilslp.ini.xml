@@ -1,0 +1,65 @@
+<chroma>
+<annotation>
+; $Id: wilslp.ini.xml,v 3.9 2006-09-21 19:45:55 edwards Exp $
+;
+; Test input file for chroma program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Wilson loops -->
+      <Name>WILSLP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>3</version>
+        <kind>7</kind>
+        <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
+<annotation>
+<!-- One can optionally use a GAUGE_STATE -->
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>PERIODIC_GAUGEBC</Name>
+          </GaugeBC>
+        </GaugeState>
+</annotation>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- Wilson loops -->
+      <Name>WILSLP</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>3</version>
+        <kind>7</kind>
+        <j_decay>3</j_decay>
+        <t_dir>3</t_dir>
+        <GaugeState>
+          <Name>SIMPLE_GAUGE_STATE</Name>
+          <GaugeBC>
+            <Name>SCHROEDINGER_ZERO_GAUGEBC</Name>
+            <SchrPhiMult>2.0</SchrPhiMult>
+            <loop_extent>1</loop_extent>
+            <decay_dir>3</decay_dir>
+          </GaugeBC>
+        </GaugeState>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

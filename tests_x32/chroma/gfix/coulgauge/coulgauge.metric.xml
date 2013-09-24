@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/CoulGauge/Observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/CoulGauge/Observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/CoulGauge/Gfix_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/CoulGauge/Gfix_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

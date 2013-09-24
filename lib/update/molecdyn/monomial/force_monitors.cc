@@ -77,7 +77,8 @@ namespace Chroma
       forces.F_avg_dir[mu] = sum(f1[mu])/num_sites;
 
       // Get max force for direction mu - this is already 'per site'
-      forces.F_max_dir[mu] = globalMax(f1[mu]);
+#warning NO GLOBAL MAX yet in PARSCALARVEC
+      forces.F_max_dir[mu] = 0;
     
       //Sum up squares and averages
       forces.F_sq  += forces.F_sq_dir[mu];

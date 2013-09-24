@@ -1,0 +1,87 @@
+<chroma>
+<annotation>
+Write some SZIN objects
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+        Write the config
+      </annotation>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin.cfg</file_name>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read the config back again
+      </annotation>
+      <Name>SZIN_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>redo_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin.cfg</file_name>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a gaussian prop 
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the prop
+      </annotation>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_0</file_name>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read the prop
+      </annotation>
+      <Name>SZIN_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>redo_prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_0</file_name>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

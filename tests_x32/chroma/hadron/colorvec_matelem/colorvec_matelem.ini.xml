@@ -1,0 +1,832 @@
+<chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+<annotation>
+This task will read eigevectors produced by  chroma_eig/laplace_eigs .
+Not used in this test, instead use create colorvecs below.
+   <elem>
+      <Name>EIGENINFO_LIME_COLORVEC_READ_NAMED_OBJECT</Name>
+      <File>
+        <file_names>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec0.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec1.lime</elem>
+          <elem>/scratch/10000/szscl21_16_128_b1p50_t_x4p300_um0p0840_sm0p0743_n1p265_per.eigs_vec2.lime</elem>
+        </file_names>
+      </File>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+      </NamedObject>
+    </elem>
+</annotation>
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>20</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <ColorVecMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </ColorVecMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes. Save this copy in LIME format.
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>SINGLEFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object. 
+        In this case, it will be saved as a disk map object.
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTintValTEVPairLatticeColorVector</object_type> 
+        <input_id>eigeninfo_0</input_id>
+        <output_id>eigeninfo_1</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./colorvec.mod</FileName>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_1</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors
+      </annotation>
+      <Name>PROP_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec_tmp</prop_id>
+        <PropMapObject>
+          <annotation>
+            Write to a disk. Later, will read back into memory as a test. 
+            Will remove original copy.
+          </annotation>
+          <MapObjType>MAP_OBJECT_DISK</MapObjType>
+          <FileName>./prop.mod</FileName>
+        </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase for testing.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Read back in for testing.
+      </annotation>
+      <Name>READ_MAP_OBJECT_DISK</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
+        <object_id>prop_colorvec_tmp</object_id>
+      </NamedObject>
+      <File>
+        <file_name>./prop.mod</file_name>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        For testing purposes. Copy this map object back into a memory object. 
+      </annotation>
+      <Name>COPY_MAP_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject> 
+        <object_type>KeyTKeyPropColorVec_tValTLatticeFermion</object_type>
+        <input_id>prop_colorvec_tmp</input_id>
+        <output_id>prop_colorvec</output_id>
+        <MapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </MapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        The named_object is erased, but the disk file remains.
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_colorvec_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute propagator solution vectors.
+        This is an identical calculation, just testing we can write the perams
+	and throw away the solutions
+      </annotation>
+      <Name>PROP_AND_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+          <mass_label>U0.05</mass_label>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.1</Mass>
+           <clovCoeff>1.0</clovCoeff>
+           <AnisoParam>
+             <anisoP>false</anisoP>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec_will_not_keep</prop_id>
+        <prop_op_file>prop.copy.sdb</prop_op_file>
+        <PropMapObject>
+          <annotation>
+            Throw away
+          </annotation>
+          <MapObjType>MAP_OBJECT_NULL</MapObjType>
+        </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute annihilation propagator solution vectors
+      </annotation>
+      <Name>ANNIH_PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources_start>0 1 2 3</t_sources_start>
+          <dt>4</dt>
+          <decay_dir>3</decay_dir>
+          <N>4</N>
+          <ran_seed>
+            <Seed>	
+              <elem>13</elem>
+              <elem>14</elem>
+              <elem>15</elem>
+              <elem>17</elem>
+            </Seed>
+          </ran_seed>
+          <mass_label>U0.05-rnd1</mass_label>
+        </Contractions>
+        <Propagator>
+          <version>10</version>
+          <quarkSpinType>FULL</quarkSpinType>
+          <obsvP>false</obsvP>
+          <numRetries>1</numRetries>
+          <FermionAction>
+           <FermAct>CLOVER</FermAct>
+           <Mass>0.05</Mass>
+           <clovCoeff>1.17</clovCoeff>
+           <clovCoeffR>0.91</clovCoeffR>
+           <clovCoeffT>1.07</clovCoeffT>
+           <AnisoParam>
+             <anisoP>true</anisoP>
+             <t_dir>3</t_dir>
+             <xi_0>2.464</xi_0>
+             <nu>0.95</nu>
+           </AnisoParam>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 -1</boundary>
+           </FermionBC>
+          </FermionAction>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+        </Propagator>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_op_file>annih_prop.sdb</prop_op_file>
+        <PropMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Compute static propagator solution vectors
+      </annotation>
+      <Name>STATIC_PROP_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <Contractions>
+          <num_vecs>10</num_vecs>
+          <t_sources>0 3</t_sources>
+          <decay_dir>3</decay_dir>
+        </Contractions>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>static_prop_colorvec</prop_id>
+        <PropMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </PropMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>prop_colorvec</prop_id>
+        <prop_op_file>prop.sdb</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <t_sources>0 3</t_sources>
+        <decay_dir>3</decay_dir>
+        <mass_label>STATIC</mass_label>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <prop_id>static_prop_colorvec</prop_id>
+        <prop_op_file>prop.sdb</prop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MESON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <orthog_basis>true</orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>0</elem>
+          <elem>1</elem>
+          <elem>-1</elem>
+          <elem>2</elem>
+          <elem>-2</elem>
+          <elem>3</elem>
+          <elem>-3</elem>
+          <elem>1 1</elem>
+          <elem>-1 -1</elem>
+          <elem>2 2</elem>
+          <elem>-2 -2</elem>
+          <elem>3 3</elem>
+          <elem>-3 -3</elem>
+          <elem>1 2</elem>
+          <elem>-1 2</elem>
+          <elem>1 -2</elem>
+          <elem>-1 -2</elem>
+          <elem>1 3</elem>
+          <elem>-1 3</elem>
+          <elem>1 -3</elem>
+          <elem>-1 -3</elem>
+          <elem>2 1</elem>
+          <elem>-2 1</elem>
+          <elem>2 -1</elem>
+          <elem>-2 -1</elem>
+          <elem>2 3</elem>
+          <elem>-2 3</elem>
+          <elem>2 -3</elem>
+          <elem>-2 -3</elem>
+          <elem>3 1</elem>
+          <elem>-3 1</elem>
+          <elem>3 -1</elem>
+          <elem>-3 -1</elem>
+          <elem>3 2</elem>
+          <elem>-3 2</elem>
+          <elem>3 -2</elem>
+          <elem>-3 -2</elem>
+          <elem>-3 -3 -3</elem>
+          <elem>-3 -3 -2</elem>
+          <elem>-3 -3 -1</elem>
+          <elem>-3 -3 1</elem>
+          <elem>-3 -3 2</elem>
+          <elem>-3 -2 -3</elem>
+          <elem>-3 -2 -2</elem>
+          <elem>-3 -2 -1</elem>
+          <elem>-3 -2 1</elem>
+          <elem>-3 -2 3</elem>
+          <elem>-3 -1 -3</elem>
+          <elem>-3 -1 -2</elem>
+          <elem>-3 -1 -1</elem>
+          <elem>-3 -1 2</elem>
+          <elem>-3 -1 3</elem>
+          <elem>-3 1 -3</elem>
+          <elem>-3 1 -2</elem>
+          <elem>-3 1 1</elem>
+          <elem>-3 1 2</elem>
+          <elem>-3 1 3</elem>
+          <elem>-3 2 -3</elem>
+          <elem>-3 2 -1</elem>
+          <elem>-3 2 1</elem>
+          <elem>-3 2 2</elem>
+          <elem>-3 2 3</elem>
+          <elem>-2 -3 -3</elem>
+          <elem>-2 -3 -2</elem>
+          <elem>-2 -3 -1</elem>
+          <elem>-2 -3 1</elem>
+          <elem>-2 -3 2</elem>
+          <elem>-2 -2 -3</elem>
+          <elem>-2 -2 -2</elem>
+          <elem>-2 -2 -1</elem>
+          <elem>-2 -2 1</elem>
+          <elem>-2 -2 3</elem>
+          <elem>-2 -1 -3</elem>
+          <elem>-2 -1 -2</elem>
+          <elem>-2 -1 -1</elem>
+          <elem>-2 -1 2</elem>
+          <elem>-2 -1 3</elem>
+          <elem>-2 1 -3</elem>
+          <elem>-2 1 -2</elem>
+          <elem>-2 1 1</elem>
+          <elem>-2 1 2</elem>
+          <elem>-2 1 3</elem>
+          <elem>-2 3 -2</elem>
+          <elem>-2 3 -1</elem>
+          <elem>-2 3 1</elem>
+          <elem>-2 3 2</elem>
+          <elem>-2 3 3</elem>
+          <elem>-1 -3 -3</elem>
+          <elem>-1 -3 -2</elem>
+          <elem>-1 -3 -1</elem>
+          <elem>-1 -3 1</elem>
+          <elem>-1 -3 2</elem>
+          <elem>-1 -2 -3</elem>
+          <elem>-1 -2 -2</elem>
+          <elem>-1 -2 -1</elem>
+          <elem>-1 -2 1</elem>
+          <elem>-1 -2 3</elem>
+          <elem>-1 -1 -3</elem>
+          <elem>-1 -1 -2</elem>
+          <elem>-1 -1 -1</elem>
+          <elem>-1 -1 2</elem>
+          <elem>-1 -1 3</elem>
+          <elem>-1 2 -3</elem>
+          <elem>-1 2 -1</elem>
+          <elem>-1 2 1</elem>
+          <elem>-1 2 2</elem>
+          <elem>-1 2 3</elem>
+          <elem>-1 3 -2</elem>
+          <elem>-1 3 -1</elem>
+          <elem>-1 3 1</elem>
+          <elem>-1 3 2</elem>
+          <elem>-1 3 3</elem>
+          <elem>1 -3 -3</elem>
+          <elem>1 -3 -2</elem>
+          <elem>1 -3 -1</elem>
+          <elem>1 -3 1</elem>
+          <elem>1 -3 2</elem>
+          <elem>1 -2 -3</elem>
+          <elem>1 -2 -2</elem>
+          <elem>1 -2 -1</elem>
+          <elem>1 -2 1</elem>
+          <elem>1 -2 3</elem>
+          <elem>1 1 -3</elem>
+          <elem>1 1 -2</elem>
+          <elem>1 1 1</elem>
+          <elem>1 1 2</elem>
+          <elem>1 1 3</elem>
+          <elem>1 2 -3</elem>
+          <elem>1 2 -1</elem>
+          <elem>1 2 1</elem>
+          <elem>1 2 2</elem>
+          <elem>1 2 3</elem>
+          <elem>1 3 -2</elem>
+          <elem>1 3 -1</elem>
+          <elem>1 3 1</elem>
+          <elem>1 3 2</elem>
+          <elem>1 3 3</elem>
+          <elem>2 -3 -3</elem>
+          <elem>2 -3 -2</elem>
+          <elem>2 -3 -1</elem>
+          <elem>2 -3 1</elem>
+          <elem>2 -3 2</elem>
+          <elem>2 -1 -3</elem>
+          <elem>2 -1 -2</elem>
+          <elem>2 -1 -1</elem>
+          <elem>2 -1 2</elem>
+          <elem>2 -1 3</elem>
+          <elem>2 1 -3</elem>
+          <elem>2 1 -2</elem>
+          <elem>2 1 1</elem>
+          <elem>2 1 2</elem>
+          <elem>2 1 3</elem>
+          <elem>2 2 -3</elem>
+          <elem>2 2 -1</elem>
+          <elem>2 2 1</elem>
+          <elem>2 2 2</elem>
+          <elem>2 2 3</elem>
+          <elem>2 3 -2</elem>
+          <elem>2 3 -1</elem>
+          <elem>2 3 1</elem>
+          <elem>2 3 2</elem>
+          <elem>2 3 3</elem>
+          <elem>3 -2 -3</elem>
+          <elem>3 -2 -2</elem>
+          <elem>3 -2 -1</elem>
+          <elem>3 -2 1</elem>
+          <elem>3 -2 3</elem>
+          <elem>3 -1 -3</elem>
+          <elem>3 -1 -2</elem>
+          <elem>3 -1 -1</elem>
+          <elem>3 -1 2</elem>
+          <elem>3 -1 3</elem>
+          <elem>3 1 -3</elem>
+          <elem>3 1 -2</elem>
+          <elem>3 1 1</elem>
+          <elem>3 1 2</elem>
+          <elem>3 1 3</elem>
+          <elem>3 2 -3</elem>
+          <elem>3 2 -1</elem>
+          <elem>3 2 1</elem>
+          <elem>3 2 2</elem>
+          <elem>3 2 3</elem>
+          <elem>3 3 -2</elem>
+          <elem>3 3 -1</elem>
+          <elem>3 3 1</elem>
+          <elem>3 3 2</elem>
+          <elem>3 3 3</elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <meson_op_file>meson.sdb</meson_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MESON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <orthog_basis>true</orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>0</elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <meson_op_file>meson.sdb</meson_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>BARYON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <use_derivP>true</use_derivP>
+        <mom2_max>0</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem><left>0</left><middle>0</middle><right>0</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>1 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>2 3</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 1</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 2</right></elem>
+          <elem><left>0</left><middle>0</middle><right>3 3</right></elem>
+          <elem><left>0</left><middle>1</middle><right>1</right></elem>
+          <elem><left>0</left><middle>1</middle><right>2</right></elem>
+          <elem><left>0</left><middle>1</middle><right>3</right></elem>
+          <elem><left>0</left><middle>2</middle><right>2</right></elem>
+          <elem><left>0</left><middle>2</middle><right>3</right></elem>
+          <elem><left>0</left><middle>3</middle><right>3</right></elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <baryon_op_file>baryon.sdb</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>BARYON_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_max>2</mom2_max>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+        <site_orthog_basis>false</site_orthog_basis>
+
+        <!-- List of displacement arrays -->
+        <displacement_list>
+          <elem>
+             <left>0</left>
+             <middle>0</middle>
+             <right>0</right>
+          </elem>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <baryon_op_file>baryon.sdb</baryon_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GENPROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <restrict_plateau>true</restrict_plateau>
+        <avg_equiv_mom>false</avg_equiv_mom>
+        <num_vecs>10</num_vecs>
+        <mom2_max>2</mom2_max>
+        <mom_offset>0 0 0</mom_offset>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+        <displacement_length>1</displacement_length>
+
+        <!-- List of displacements and Gamma matrices -->
+        <DisplacementGammaList>
+          <elem>
+            <gamma>1</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
+            <displacement/>
+          </elem>
+        </DisplacementGammaList>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_prop_id>prop_colorvec</source_prop_id>
+        <sink_prop_id>prop_colorvec</sink_prop_id>
+        <genprop_op_file>genprop.sdb</genprop_op_file>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GENPROP_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <restrict_plateau>true</restrict_plateau>
+        <avg_equiv_mom>true</avg_equiv_mom>
+        <num_vecs>10</num_vecs>
+        <mom2_max>3</mom2_max>
+        <mom_offset>0 0 0</mom_offset>
+        <t_source>0</t_source>
+        <t_sink>3</t_sink>
+        <decay_dir>3</decay_dir>
+        <mass_label>U0.05</mass_label>
+        <displacement_length>1</displacement_length>
+
+        <!-- List of displacements and Gamma matrices -->
+        <DisplacementGammaList>
+          <elem>
+            <gamma>1</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>2</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>4</gamma>
+            <displacement/>
+          </elem>
+          <elem>
+            <gamma>8</gamma>
+            <displacement/>
+          </elem>
+        </DisplacementGammaList>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_prop_id>prop_colorvec</source_prop_id>
+        <sink_prop_id>prop_colorvec</sink_prop_id>
+        <genprop_op_file>genprop_avg.sdb</genprop_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

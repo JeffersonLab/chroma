@@ -1,0 +1,71 @@
+<chroma>
+<annotation>
+; $Id: ritz_Hw-v1.ini.xml,v 3.2 2008-06-17 21:05:21 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>RITZ_KS_HERM_WILSON</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<FermionAction>
+          <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+          <Mass>-1.4</Mass>
+	  <boundary>1 1 1 -1</boundary>
+	</FermionAction>
+	<RitzParams>
+	  <Neig>8</Neig>
+	  <Ndummy>4</Ndummy>
+	  <RsdR>1.0e-3</RsdR>
+	  <RsdA>1.0e-4</RsdA>
+	  <RsdZero>5.0e-6</RsdZero>
+	  <ProjApsiP>false</ProjApsiP>
+	  <GammaFactor>0.1</GammaFactor>
+	  <MaxKS>200</MaxKS>
+	  <MaxCG>10000</MaxCG>
+	  <MinKSIter>5</MinKSIter>
+	  <MaxKSIter>200</MaxKSIter>
+	  <Nrenorm>10</Nrenorm>
+	</RitzParams>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <eigen_id>eigen_info_0</eigen_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfoLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eig</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

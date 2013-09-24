@@ -18,17 +18,10 @@ namespace Chroma
   template<typename R>
   struct PrimitiveClovTriang
   {
-    RScalar<R>   diag[2][2*Nc];
-    RComplex<R>  offd[2][2*Nc*Nc-Nc];
+    RScalar<ILattice<R,INNER_LEN> >   diag[2][2*Nc];
+    RComplex<ILattice<R,INNER_LEN> >  offd[2][2*Nc*Nc-Nc];
   };
 
-  template<typename R>
-  struct QUDAPackedClovSite {
-    R diag1[6];
-    R offDiag1[15][2];
-    R diag2[6];
-    R offDiag2[15][2];
-  };
 
 
   // Reader/writers
@@ -52,9 +45,18 @@ namespace Chroma
     // Typedefs to save typing
     typedef typename WordType<T>::Type_t REALT;
 
-    typedef OLattice< PScalar< PScalar< RScalar< typename WordType<T>::Type_t> > > > LatticeREAL;
+#if 0
+    // Previous scalarsite types
+    typedef OLattice< PScalar< PScalar< RScalar<REALT > > > > LatticeREAL;
     typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
+#else
+    // A lattice of REALs for holding Trace stuff
+    typedef OLattice< PScalar< PScalar< RScalar< ILattice< REALT, INNER_LEN > > > > > LatticeREAL;
 
+    // The type of the REAL 
+    typedef OScalar < PScalar< PScalar< RScalar< IScalar< REALT > > > > > RealT; 
+
+#endif
     //! Empty constructor. Must use create later
     QDPCloverTermT();
 
@@ -110,11 +112,6 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T, multi1d<U>, multi1d<U> >& getFermBC() const {return *fbc;}
 
-    //! PACK UP the Clover term for QUDA library:
-    void packForQUDA(multi1d<QUDAPackedClovSite<REALT> >& quda_pack, int cb) const; 
-
-
-      
   protected:
     //! Create the clover term on cb
     /*!
@@ -157,6 +154,8 @@ namespace Chroma
 				   const CloverFermActParams& param_,
 				   const QDPCloverTermT<T,U>& from)
   {
+    QDPIO::cout << "Entering CloverTerm::create \n" << flush;
+
     START_CODE();
     u.resize(Nd);
 
@@ -202,7 +201,9 @@ namespace Chroma
     
     tri = from.tri;
     END_CODE();  
+    QDPIO::cout << "Leaving CloverTerm::create \n" << flush;
   }
+
 
 
   //! Creation routine
@@ -210,6 +211,10 @@ namespace Chroma
   void QDPCloverTermT<T,U>::create(Handle< FermState<T,multi1d<U>,multi1d<U> > > fs,
 				   const CloverFermActParams& param_)
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Entering CloverTerm::create2 \n" << flush;
+#endif
+
     START_CODE();
    
     u.resize(Nd);
@@ -253,6 +258,9 @@ namespace Chroma
     
 
     END_CODE();
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Leaving CloverTerm::create2 \n" << flush;
+#endif
   }
 
 
@@ -344,7 +352,7 @@ namespace Chroma
     template<typename U>
     struct QDPCloverMakeClovArg {
       typedef typename WordType<U>::Type_t REALT;
-      typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
+      typedef OScalar< PScalar< PScalar< RScalar< IScalar< REALT > > > > > RealT;
       const RealT& diag_mass;
       const U& f0;
       const U& f1;
@@ -359,8 +367,11 @@ namespace Chroma
     /* This is the extracted site loop for makeClover */
     template<typename U>
     inline 
-    void makeClovSiteLoop(int lo, int hi, int myId, QDPCloverMakeClovArg<U> *a)
+    void makeClovBlockLoop(int lo, int hi, int myId, QDPCloverMakeClovArg<U> *a)
     {
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "Tid= " << myId << "Entering CloverTerm::makeClovBlockLoop. \n" << flush;
+#endif
       typedef typename QDPCloverMakeClovArg<U>::RealT RealT;
       typedef typename QDPCloverMakeClovArg<U>::REALT REALT;
       
@@ -373,50 +384,48 @@ namespace Chroma
       const U& f5=a->f5;
       multi1d<PrimitiveClovTriang < REALT > >& tri=a->tri;
 
-      // SITE LOOP STARTS HERE
-      for(int site = lo; site < hi; ++site)  {
+      // BLOCK LOOP STARTS HERE
+      for(int block = lo; block < hi; ++block)  {
+
 	/*# Construct diagonal */
-	
 	for(int jj = 0; jj < 2; jj++) {
-	  
 	  for(int ii = 0; ii < 2*Nc; ii++) {
-	    
-	    tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
+	    tri[block].diag[jj][ii] = diag_mass.elem().elem().elem();
 	  }
 	}
 	
        
-
-	RComplex<REALT> E_minus;
-	RComplex<REALT> B_minus;
-	RComplex<REALT> ctmp_0;
-	RComplex<REALT> ctmp_1;
-	RScalar<REALT> rtmp_0;
-	RScalar<REALT> rtmp_1;
+	// These are now all vector quantities
+	RComplex<ILattice<REALT, INNER_LEN> > E_minus;
+	RComplex<ILattice<REALT, INNER_LEN> > B_minus;
+	RComplex<ILattice<REALT, INNER_LEN> > ctmp_0;
+	RComplex<ILattice<REALT, INNER_LEN> > ctmp_1;
+	RScalar<ILattice<REALT,INNER_LEN> > rtmp_0;
+	RScalar<ILattice<REALT,INNER_LEN> > rtmp_1;
 	
 	for(int i = 0; i < Nc; ++i) {
 	  
 	  /*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
 	  /*#             = 1 - i*diag(F(3,2) - F(1,0)) */
-	  ctmp_0 = f5.elem(site).elem().elem(i,i);
-	  ctmp_0 -= f0.elem(site).elem().elem(i,i);
+	  ctmp_0 = f5.elem(block).elem().elem(i,i);
+	  ctmp_0 -= f0.elem(block).elem().elem(i,i);
 	  rtmp_0 = imag(ctmp_0);
-	  tri[site].diag[0][i] += rtmp_0;
+	  tri[block].diag[0][i] += rtmp_0;
 	  
 	  /*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
 	  /*#                = 1 + i*diag(F(3,2) - F(1,0)) */
-	  tri[site].diag[0][i+Nc] -= rtmp_0;
+	  tri[block].diag[0][i+Nc] -= rtmp_0;
 	  
 	  /*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
 	  /*#             = 1 + i*diag(F(3,2) + F(1,0)) */
-	  ctmp_1 = f5.elem(site).elem().elem(i,i);
-	  ctmp_1 += f0.elem(site).elem().elem(i,i);
+	  ctmp_1 = f5.elem(block).elem().elem(i,i);
+	  ctmp_1 += f0.elem(block).elem().elem(i,i);
 	  rtmp_1 = imag(ctmp_1);
-	  tri[site].diag[1][i] -= rtmp_1;
+	  tri[block].diag[1][i] -= rtmp_1;
 	  
 	  /*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
 	  /*#                = 1 - i*diag(F(3,2) + F(1,0)) */
-	  tri[site].diag[1][i+Nc] += rtmp_1;
+	  tri[block].diag[1][i+Nc] += rtmp_1;
 	}
 	
 	/*# Construct lower triangular portion */
@@ -430,23 +439,23 @@ namespace Chroma
 	    
 	    /*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
 	    /*#          = -i*(F(3,2) - F(1,0)) */
-	    ctmp_0 = f0.elem(site).elem().elem(i,j);
-	    ctmp_0 -= f5.elem(site).elem().elem(i,j);
-	    tri[site].offd[0][elem_ij] = timesI(ctmp_0);
+	    ctmp_0 = f0.elem(block).elem().elem(i,j);
+	    ctmp_0 -= f5.elem(block).elem().elem(i,j);
+	    tri[block].offd[0][elem_ij] = timesI(ctmp_0);
 	    
 	    /*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
 	    /*#                = +i*(F(3,2) - F(1,0)) */
-	    tri[site].offd[0][elem_tmp] = -tri[site].offd[0][elem_ij];
+	    tri[block].offd[0][elem_tmp] = -tri[block].offd[0][elem_ij];
 	    
 	    /*# L(i,j,1) = i*(E_z + B_z)[i,j] */
 	    /*#          = i*(F(3,2) + F(1,0)) */
-	    ctmp_1 = f5.elem(site).elem().elem(i,j);
-	    ctmp_1 += f0.elem(site).elem().elem(i,j);
-	    tri[site].offd[1][elem_ij] = timesI(ctmp_1);
+	    ctmp_1 = f5.elem(block).elem().elem(i,j);
+	    ctmp_1 += f0.elem(block).elem().elem(i,j);
+	    tri[block].offd[1][elem_ij] = timesI(ctmp_1);
 	    
 	    /*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
 	    /*#                = -i*(F(3,2) + F(1,0)) */
-	    tri[site].offd[1][elem_tmp] = -tri[site].offd[1][elem_ij];
+	    tri[block].offd[1][elem_tmp] = -tri[block].offd[1][elem_ij];
 	  }
 	}
 	
@@ -462,29 +471,37 @@ namespace Chroma
 	    
 	    /*# i*E_- = (i*E_x + E_y) */
 	    /*#       = (i*F(3,0) + F(3,1)) */
-	    E_minus = timesI(f2.elem(site).elem().elem(i,j));
-	    E_minus += f4.elem(site).elem().elem(i,j);
+	    E_minus = timesI(f2.elem(block).elem().elem(i,j));
+	    E_minus += f4.elem(block).elem().elem(i,j);
 	    
 	    /*# i*B_- = (i*B_x + B_y) */
 	    /*#       = (i*F(2,1) - F(2,0)) */
-	    B_minus = timesI(f3.elem(site).elem().elem(i,j));
-	    B_minus -= f1.elem(site).elem().elem(i,j);
+	    B_minus = timesI(f3.elem(block).elem().elem(i,j));
+	    B_minus -= f1.elem(block).elem().elem(i,j);
 	    
 	    /*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
-	    tri[site].offd[0][elem_ij] = B_minus - E_minus;
+	    tri[block].offd[0][elem_ij] = B_minus - E_minus;
 	    
 	    /*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
-	    tri[site].offd[1][elem_ij] = E_minus + B_minus;
+	    tri[block].offd[1][elem_ij] = E_minus + B_minus;
 	  }
 	}
-      } /* End Site loop */
+      } /* End Block loop */
+
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID= " << myId << "Leaving CloverTerm::makeClovBlockLoop. \n" << flush;
+#endif
     } /* Function */
+
   }
   
   /* This now just sets up and dispatches... */
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::makeClov(const multi1d<U>& f, const RealT& diag_mass)
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Entering  CloverTerm::makeClov. \n" << flush;
+#endif
     START_CODE();
     
     if ( Nd != 4 ){
@@ -505,14 +522,19 @@ namespace Chroma
     U f5 = f[5] * getCloverCoeff(2,3);    
 
     const int nodeSites = QDP::Layout::sitesOnNode();
+    const int nodeBlocks = nodeSites >> INNER_LOG;
 
-    tri.resize(nodeSites);  // hold local lattice
+    tri.resize(nodeBlocks);  // hold local lattice
 
     QDPCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri };
-    dispatch_to_threads(nodeSites, arg, QDPCloverEnv::makeClovSiteLoop<U>);
+    dispatch_to_threads(nodeBlocks, arg, QDPCloverEnv::makeClovBlockLoop<U>);
               
 
     END_CODE();
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Leaving  CloverTerm::makeClov. \n" << flush;
+#endif
+
   }
   
 
@@ -523,6 +545,9 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::choles(int cb)
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Entering  CloverTerm::choles. \n" << flush;
+#endif
     START_CODE();
 
     // When you are doing the cholesky - also fill out the trace_log_diag piece)
@@ -531,6 +556,10 @@ namespace Chroma
     ldagdlinv(tr_log_diag_,cb);
 
     END_CODE();
+
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Leaving CloverTerm::choles. \n" << flush;
+#endif
   }
 
 
@@ -543,6 +572,9 @@ namespace Chroma
   template<typename T, typename U>
   Double QDPCloverTermT<T,U>::cholesDet(int cb) const
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Entering CloverTerm::cholesDet. \n" << flush;
+#endif
     START_CODE();
 
     if( choles_done[cb] == false ) 
@@ -565,14 +597,17 @@ namespace Chroma
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
     return sum(ff, rb[cb]);
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Leaving CloverTerm::cholesDet. \n" << flush;
+#endif
   }
 
   namespace QDPCloverEnv { 
     template<typename U>
     struct LDagDLInvArgs { 
       typedef typename WordType<U>::Type_t REALT;
-      typedef OScalar< PScalar< PScalar< RScalar<REALT> > > > RealT;
-      typedef OLattice< PScalar< PScalar< RScalar<REALT> > > > LatticeRealT;
+      typedef OScalar< PScalar< PScalar< RScalar< IScalar<REALT> > > > > RealT;
+      typedef OLattice< PScalar< PScalar< RScalar< ILattice<REALT, INNER_LEN > > > > > LatticeRealT;
       LatticeRealT& tr_log_diag;
       multi1d<PrimitiveClovTriang<REALT> >& tri;
       int cb;
@@ -580,8 +615,11 @@ namespace Chroma
 
     template<typename U>
     inline 
-    void LDagDLInvSiteLoop(int lo, int hi, int myId, LDagDLInvArgs<U>* a) 
+    void LDagDLInvBlockLoop(int lo, int hi, int myId, LDagDLInvArgs<U>* a) 
     {
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID=" << myId << " Entering CloverTerm::LDagDLInvBlockLoop \n" << flush;
+#endif
       typedef typename LDagDLInvArgs<U>::REALT REALT;
       typedef typename LDagDLInvArgs<U>::RealT RealT;
       typedef typename LDagDLInvArgs<U>::LatticeRealT LatticeRealT;
@@ -591,31 +629,35 @@ namespace Chroma
       int cb = a->cb;
       
       
-      RScalar<REALT> zip=0;
+      RScalar<ILattice<REALT,INNER_LEN> > zip;
+      zero_rep(zip);
       int N = 2*Nc;
       
       // Loop through the sites.
-      for(int ssite=lo; ssite < hi; ++ssite)  {
+      for(int svec=lo; svec < hi; ++svec)  {
 
-	int site = rb[cb].siteTable()[ssite];
+	int vec = rb[cb].getBlockTable()[svec];
 	
 	int site_neg_logdet=0;
+
 	// Loop through the blocks on the site.
 	for(int block=0; block < 2; block++) { 
 	  
 	  // Triangular storage 
-	  RScalar<REALT> inv_d[6] QDP_ALIGN16;
-	  RComplex<REALT> inv_offd[15] QDP_ALIGN16;
-	  RComplex<REALT> v[6] QDP_ALIGN16;
-	  RScalar<REALT>  diag_g[6] QDP_ALIGN16;
+	  // These now become inner vectors
+	  RScalar<ILattice<REALT, INNER_LEN> > inv_d[6] QDP_ALIGN16;
+	  RComplex<ILattice<REALT, INNER_LEN> > inv_offd[15] QDP_ALIGN16;
+	  RComplex<ILattice<REALT, INNER_LEN> > v[6] QDP_ALIGN16;
+	  RScalar<ILattice<REALT, INNER_LEN> >  diag_g[6] QDP_ALIGN16;
+
 	  // Algorithm 4.1.2 LDL^\dagger Decomposition
 	  // From Golub, van Loan 3rd ed, page 139
 	  for(int i=0; i < N; i++) { 
-	    inv_d[i] = tri[site].diag[block][i];
+	    inv_d[i] = tri[vec].diag[block][i];
 	  }
 	  
 	  for(int i=0; i < 15; i++) { 
-	    inv_offd[i]  =tri[site].offd[block][i];
+	    inv_offd[i]  =tri[vec].offd[block][i];
 	  }
 	  
 	  for(int j=0; j < N; ++j) { 
@@ -630,7 +672,7 @@ namespace Chroma
 	    for(int i=0; i < j; i++) { 
 	      int elem_ji = j*(j-1)/2 + i;
 	      
-	      RComplex<REALT> A_ii = cmplx( inv_d[i], zip );
+	      RComplex<ILattice<REALT, INNER_LEN> > A_ii = cmplx( inv_d[i], zip );
 	      v[i] = A_ii*adj(inv_offd[elem_ji]);
 	    }
 	    
@@ -680,7 +722,7 @@ namespace Chroma
 	  }
 	  
 	  // Now fix up the inverse
-	  RScalar<REALT> one;
+	  RScalar<ILattice<REALT, INNER_LEN > > one;
 	  one.elem() = (REALT)1;
 	  
 	  for(int i=0; i < N; i++) { 
@@ -690,13 +732,9 @@ namespace Chroma
 	    // NB we are always doing trace log | A | 
 	    // (because we are always working with actually A^\dagger A
 	    //  even in one flavour case where we square root)
-	    tr_log_diag.elem(site).elem().elem().elem() += log(fabs(inv_d[i].elem()));
-	    // However, it is worth counting just the no of negative logdets
-	    // on site
-	    if( inv_d[i].elem() < 0 ) { 
-	      site_neg_logdet++;
-	    }
+	    tr_log_diag.elem(vec).elem().elem() += log(fabs(inv_d[i]));
 	  }
+
 	  // Now we need to invert the L D L^\dagger 
 	  // We can do this by solving:
 	  //
@@ -711,7 +749,7 @@ namespace Chroma
 	  //
 	  // Likewise L^\dagger is strictly upper triagonal and so
 	  // L^\dagger M^{-1} = X can be solved by forward substitution.
-	  RComplex<REALT> sum;
+	  RComplex<ILattice<REALT, INNER_LEN> > sum;
 	  for(int k = 0; k < N; ++k) {
 
 	    for(int i = 0; i < k; ++i) {
@@ -762,19 +800,17 @@ namespace Chroma
 	  
 	  // Overwrite original data
 	  for(int i=0; i < N; i++) { 
-	    tri[site].diag[block][i] = inv_d[i];
+	    tri[vec].diag[block][i] = inv_d[i];
 	  }
 	  for(int i=0; i < 15; i++) { 
-	    tri[site].offd[block][i] = inv_offd[i];
+	    tri[vec].offd[block][i] = inv_offd[i];
 	  }
 	}
 	
-	if( site_neg_logdet != 0 ) { 
-	  // Report if site has any negative terms. (-ve def)
-	  std::cout << "WARNING: found " << site_neg_logdet
-		    << " negative eigenvalues in Clover DET at site: " << site << endl;
-	}
       }/* End Site Loop */
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID=" << myId << " Leaving CloverTerm::LDagDLInvBlockLoop \n" << flush;
+#endif
     } /* End Function */
   } /* End Namespace */
 
@@ -783,6 +819,9 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::ldagdlinv(LatticeREAL& tr_log_diag, int cb)
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << " Entering CloverTerm::ldagdlinv \n" << flush;
+#endif
     START_CODE();
 
     if ( 2*Nc < 3 )
@@ -795,14 +834,18 @@ namespace Chroma
     tr_log_diag = zero;
 
     QDPCloverEnv::LDagDLInvArgs<U> a = { tr_log_diag, tri, cb };
-    dispatch_to_threads(rb[cb].numSiteTable(), a, QDPCloverEnv::LDagDLInvSiteLoop<U>);
+    dispatch_to_threads(rb[cb].getBlockTable().size(), a, QDPCloverEnv::LDagDLInvBlockLoop<U>);
 
     
     // This comes from the days when we used to do Cholesky
     choles_done[cb] = true;
     END_CODE();
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << " Leaving CloverTerm::ldagdlinv \n" << flush;
+#endif
   }
  
+#if 0
   /*! CHLCLOVMS - Cholesky decompose the clover mass term and uses it to
    *              compute  lower(A^-1) = lower((L.L^dag)^-1)
    *              Adapted from Golub and Van Loan, Matrix Computations, 2nd, Sec 4.2.4
@@ -990,7 +1033,7 @@ namespace Chroma
     END_CODE();
   }
 
-
+#endif
 
   /**
    * Apply a dslash
@@ -1013,6 +1056,9 @@ namespace Chroma
   void QDPCloverTermT<T,U>::applySite(T& chi, const T& psi, 
 			    enum PlusMinus isign, int site) const
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << " Entering CloverTerm::applySite \n" << flush;
+#endif
     START_CODE();
 
     if ( Ns != 4 )
@@ -1023,96 +1069,115 @@ namespace Chroma
 
     int n = 2*Nc;
 
-    RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-    const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
+    // OK. In this vectorized version, applying a single site is kind of dumb, but here goes.
+    typedef OScalar< PSpinVector< PColorVector< RComplex< ILattice< REALT, INNER_LEN> >, 3>, 4> > Spinor_t;
+
+    Spinor_t temporary_block;
+    int osite = site >> INNER_LOG;
+    int isite = site & (INNER_LEN - 1);
+    
+    
+    RComplex<ILattice<REALT, INNER_LEN> >* cchi = ( RComplex<ILattice<REALT, INNER_LEN> >*)&(temporary_block.elem().elem(0).elem(0));
+    const RComplex<ILattice<REALT, INNER_LEN> >* ppsi = (const RComplex<ILattice<REALT, INNER_LEN> >*)&(psi.elem(osite).elem(0).elem(0));
+				   
+
+    cchi[ 0] = tri[osite].diag[0][ 0]  * ppsi[ 0]
+      +   conj(tri[osite].offd[0][ 0]) * ppsi[ 1]
+      +   conj(tri[osite].offd[0][ 1]) * ppsi[ 2]
+      +   conj(tri[osite].offd[0][ 3]) * ppsi[ 3]
+      +   conj(tri[osite].offd[0][ 6]) * ppsi[ 4]
+      +   conj(tri[osite].offd[0][10]) * ppsi[ 5];
+    
+    cchi[ 1] = tri[osite].diag[0][ 1]  * ppsi[ 1]
+      +        tri[osite].offd[0][ 0]  * ppsi[ 0]
+      +   conj(tri[osite].offd[0][ 2]) * ppsi[ 2]
+      +   conj(tri[osite].offd[0][ 4]) * ppsi[ 3]
+      +   conj(tri[osite].offd[0][ 7]) * ppsi[ 4]
+      +   conj(tri[osite].offd[0][11]) * ppsi[ 5];
+    
+    cchi[ 2] = tri[osite].diag[0][ 2]  * ppsi[ 2]
+      +        tri[osite].offd[0][ 1]  * ppsi[ 0]
+      +        tri[osite].offd[0][ 2]  * ppsi[ 1]
+      +   conj(tri[osite].offd[0][ 5]) * ppsi[ 3]
+      +   conj(tri[osite].offd[0][ 8]) * ppsi[ 4]
+      +   conj(tri[osite].offd[0][12]) * ppsi[ 5];
+    
+    cchi[ 3] = tri[osite].diag[0][ 3]  * ppsi[ 3]
+      +        tri[osite].offd[0][ 3]  * ppsi[ 0]
+      +        tri[osite].offd[0][ 4]  * ppsi[ 1]
+      +        tri[osite].offd[0][ 5]  * ppsi[ 2]
+      +   conj(tri[osite].offd[0][ 9]) * ppsi[ 4]
+      +   conj(tri[osite].offd[0][13]) * ppsi[ 5];
+    
+    cchi[ 4] = tri[osite].diag[0][ 4]  * ppsi[ 4]
+      +        tri[osite].offd[0][ 6]  * ppsi[ 0]
+      +        tri[osite].offd[0][ 7]  * ppsi[ 1]
+      +        tri[osite].offd[0][ 8]  * ppsi[ 2]
+      +        tri[osite].offd[0][ 9]  * ppsi[ 3]
+      +   conj(tri[osite].offd[0][14]) * ppsi[ 5];
+    
+    cchi[ 5] = tri[osite].diag[0][ 5]  * ppsi[ 5]
+      +        tri[osite].offd[0][10]  * ppsi[ 0]
+      +        tri[osite].offd[0][11]  * ppsi[ 1]
+      +        tri[osite].offd[0][12]  * ppsi[ 2]
+      +        tri[osite].offd[0][13]  * ppsi[ 3]
+      +        tri[osite].offd[0][14]  * ppsi[ 4];
+    
+    cchi[ 6] = tri[osite].diag[1][ 0]  * ppsi[ 6]
+      +   conj(tri[osite].offd[1][ 0]) * ppsi[ 7]
+      +   conj(tri[osite].offd[1][ 1]) * ppsi[ 8]
+      +   conj(tri[osite].offd[1][ 3]) * ppsi[ 9]
+      +   conj(tri[osite].offd[1][ 6]) * ppsi[10]
+      +   conj(tri[osite].offd[1][10]) * ppsi[11];
+    
+    cchi[ 7] = tri[osite].diag[1][ 1]  * ppsi[ 7]
+      +        tri[osite].offd[1][ 0]  * ppsi[ 6]
+      +   conj(tri[osite].offd[1][ 2]) * ppsi[ 8]
+      +   conj(tri[osite].offd[1][ 4]) * ppsi[ 9]
+      +   conj(tri[osite].offd[1][ 7]) * ppsi[10]
+      +   conj(tri[osite].offd[1][11]) * ppsi[11];
+    
+    cchi[ 8] = tri[osite].diag[1][ 2]  * ppsi[ 8]
+      +        tri[osite].offd[1][ 1]  * ppsi[ 6]
+      +        tri[osite].offd[1][ 2]  * ppsi[ 7]
+      +   conj(tri[osite].offd[1][ 5]) * ppsi[ 9]
+      +   conj(tri[osite].offd[1][ 8]) * ppsi[10]
+      +   conj(tri[osite].offd[1][12]) * ppsi[11];
+    
+    cchi[ 9] = tri[osite].diag[1][ 3]  * ppsi[ 9]
+      +        tri[osite].offd[1][ 3]  * ppsi[ 6]
+      +        tri[osite].offd[1][ 4]  * ppsi[ 7]
+      +        tri[osite].offd[1][ 5]  * ppsi[ 8]
+      +   conj(tri[osite].offd[1][ 9]) * ppsi[10]
+      +   conj(tri[osite].offd[1][13]) * ppsi[11];
+    
+    cchi[10] = tri[osite].diag[1][ 4]  * ppsi[10]
+      +        tri[osite].offd[1][ 6]  * ppsi[ 6]
+      +        tri[osite].offd[1][ 7]  * ppsi[ 7]
+      +        tri[osite].offd[1][ 8]  * ppsi[ 8]
+      +        tri[osite].offd[1][ 9]  * ppsi[ 9]
+      +   conj(tri[osite].offd[1][14]) * ppsi[11];
+    
+    cchi[11] = tri[osite].diag[1][ 5]  * ppsi[11]
+      +        tri[osite].offd[1][10]  * ppsi[ 6]
+      +        tri[osite].offd[1][11]  * ppsi[ 7]
+      +        tri[osite].offd[1][12]  * ppsi[ 8]
+      +        tri[osite].offd[1][13]  * ppsi[ 9]
+      +        tri[osite].offd[1][14]  * ppsi[10];
 
 
-    cchi[ 0] = tri[site].diag[0][ 0]  * ppsi[ 0]
-      +   conj(tri[site].offd[0][ 0]) * ppsi[ 1]
-      +   conj(tri[site].offd[0][ 1]) * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 3]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 6]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][10]) * ppsi[ 5];
-    
-    cchi[ 1] = tri[site].diag[0][ 1]  * ppsi[ 1]
-      +        tri[site].offd[0][ 0]  * ppsi[ 0]
-      +   conj(tri[site].offd[0][ 2]) * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 4]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 7]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][11]) * ppsi[ 5];
-    
-    cchi[ 2] = tri[site].diag[0][ 2]  * ppsi[ 2]
-      +        tri[site].offd[0][ 1]  * ppsi[ 0]
-      +        tri[site].offd[0][ 2]  * ppsi[ 1]
-      +   conj(tri[site].offd[0][ 5]) * ppsi[ 3]
-      +   conj(tri[site].offd[0][ 8]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][12]) * ppsi[ 5];
-    
-    cchi[ 3] = tri[site].diag[0][ 3]  * ppsi[ 3]
-      +        tri[site].offd[0][ 3]  * ppsi[ 0]
-      +        tri[site].offd[0][ 4]  * ppsi[ 1]
-      +        tri[site].offd[0][ 5]  * ppsi[ 2]
-      +   conj(tri[site].offd[0][ 9]) * ppsi[ 4]
-      +   conj(tri[site].offd[0][13]) * ppsi[ 5];
-    
-    cchi[ 4] = tri[site].diag[0][ 4]  * ppsi[ 4]
-      +        tri[site].offd[0][ 6]  * ppsi[ 0]
-      +        tri[site].offd[0][ 7]  * ppsi[ 1]
-      +        tri[site].offd[0][ 8]  * ppsi[ 2]
-      +        tri[site].offd[0][ 9]  * ppsi[ 3]
-      +   conj(tri[site].offd[0][14]) * ppsi[ 5];
-    
-    cchi[ 5] = tri[site].diag[0][ 5]  * ppsi[ 5]
-      +        tri[site].offd[0][10]  * ppsi[ 0]
-      +        tri[site].offd[0][11]  * ppsi[ 1]
-      +        tri[site].offd[0][12]  * ppsi[ 2]
-      +        tri[site].offd[0][13]  * ppsi[ 3]
-      +        tri[site].offd[0][14]  * ppsi[ 4];
-    
-    cchi[ 6] = tri[site].diag[1][ 0]  * ppsi[ 6]
-      +   conj(tri[site].offd[1][ 0]) * ppsi[ 7]
-      +   conj(tri[site].offd[1][ 1]) * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 3]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 6]) * ppsi[10]
-      +   conj(tri[site].offd[1][10]) * ppsi[11];
-    
-    cchi[ 7] = tri[site].diag[1][ 1]  * ppsi[ 7]
-      +        tri[site].offd[1][ 0]  * ppsi[ 6]
-      +   conj(tri[site].offd[1][ 2]) * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 4]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 7]) * ppsi[10]
-      +   conj(tri[site].offd[1][11]) * ppsi[11];
-    
-    cchi[ 8] = tri[site].diag[1][ 2]  * ppsi[ 8]
-      +        tri[site].offd[1][ 1]  * ppsi[ 6]
-      +        tri[site].offd[1][ 2]  * ppsi[ 7]
-      +   conj(tri[site].offd[1][ 5]) * ppsi[ 9]
-      +   conj(tri[site].offd[1][ 8]) * ppsi[10]
-      +   conj(tri[site].offd[1][12]) * ppsi[11];
-    
-    cchi[ 9] = tri[site].diag[1][ 3]  * ppsi[ 9]
-      +        tri[site].offd[1][ 3]  * ppsi[ 6]
-      +        tri[site].offd[1][ 4]  * ppsi[ 7]
-      +        tri[site].offd[1][ 5]  * ppsi[ 8]
-      +   conj(tri[site].offd[1][ 9]) * ppsi[10]
-      +   conj(tri[site].offd[1][13]) * ppsi[11];
-    
-    cchi[10] = tri[site].diag[1][ 4]  * ppsi[10]
-      +        tri[site].offd[1][ 6]  * ppsi[ 6]
-      +        tri[site].offd[1][ 7]  * ppsi[ 7]
-      +        tri[site].offd[1][ 8]  * ppsi[ 8]
-      +        tri[site].offd[1][ 9]  * ppsi[ 9]
-      +   conj(tri[site].offd[1][14]) * ppsi[11];
-    
-    cchi[11] = tri[site].diag[1][ 5]  * ppsi[11]
-      +        tri[site].offd[1][10]  * ppsi[ 6]
-      +        tri[site].offd[1][11]  * ppsi[ 7]
-      +        tri[site].offd[1][12]  * ppsi[ 8]
-      +        tri[site].offd[1][13]  * ppsi[ 9]
-      +        tri[site].offd[1][14]  * ppsi[10];
+    typedef typename UnaryReturn<T, FnGetSite>::Type_t Site_t;
 
+    // OK Get the one site out of the block
+    Site_t applied_site = getSite(temporary_block, isite);
+
+				   // Copy it into the appropriate place in copy_site
+    copy_site(chi.elem(osite), isite, applied_site.elem());
 
     END_CODE();
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << " Leaving CloverTerm::applySite \n" << flush;
+#endif
   }
 
 
@@ -1164,17 +1229,20 @@ namespace Chroma
   
     template<typename U>
     inline 
-    void triaCntrSiteLoop(int lo, int hi, int myId, TriaCntrArgs<U>* a)
+    void triaCntrBlockLoop(int lo, int hi, int myId, TriaCntrArgs<U>* a)
     {
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID=" << myId << " Entering CloverTerm::triaCntrBlockLoop \n" << flush;
+#endif
       typedef typename WordType<U>::Type_t REALT;
       U& B = a->B;
       const multi1d<PrimitiveClovTriang< REALT > >& tri = a->tri;
       int mat = a->mat;
       int cb  = a->cb;
       
-      for(int ssite=lo; ssite < hi; ++ssite) {
+      for(int svec=lo; svec < hi; ++svec) {
 	
-	int site = rb[cb].siteTable()[ssite];
+	int vec = rb[cb].getBlockTable()[svec];
 	
 	switch( mat ){
 	  
@@ -1185,19 +1253,19 @@ namespace Chroma
 	  /*#               0  0  0  1 */
 	  /*# From diagonal part */
 	  {
-	    RComplex<REALT> lctmp0;
-	    RScalar<REALT> lr_zero0;
-	    RScalar<REALT> lrtmp0;
+	    RComplex<ILattice<REALT,INNER_LEN >  > lctmp0;
+	    RScalar<ILattice<REALT, INNER_LEN > > lr_zero0;
+	    RScalar<ILattice<REALT, INNER_LEN> > lrtmp0;
 	    
 	    lr_zero0 = 0;
 	    
 	    for(int i0 = 0; i0 < Nc; ++i0) {
 	      
-	      lrtmp0 = tri[site].diag[0][i0];
-	      lrtmp0 += tri[site].diag[0][i0+Nc];
-	      lrtmp0 += tri[site].diag[1][i0];
-	      lrtmp0 += tri[site].diag[1][i0+Nc];
-	      B.elem(site).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
+	      lrtmp0 = tri[vec].diag[0][i0];
+	      lrtmp0 += tri[vec].diag[0][i0+Nc];
+	      lrtmp0 += tri[vec].diag[1][i0];
+	      lrtmp0 += tri[vec].diag[1][i0+Nc];
+	      B.elem(vec).elem().elem(i0,i0) = cmplx(lrtmp0,lr_zero0);
 	    }
 	    
 	    /*# From lower triangular portion */
@@ -1208,13 +1276,13 @@ namespace Chroma
 	      
 	      for(int j0 = 0; j0 < i0; ++j0) {
 		
-		lctmp0 = tri[site].offd[0][elem_ij0];
-		lctmp0 += tri[site].offd[0][elem_ijb0];
-		lctmp0 += tri[site].offd[1][elem_ij0];
-		lctmp0 += tri[site].offd[1][elem_ijb0];
+		lctmp0 = tri[vec].offd[0][elem_ij0];
+		lctmp0 += tri[vec].offd[0][elem_ijb0];
+		lctmp0 += tri[vec].offd[1][elem_ij0];
+		lctmp0 += tri[vec].offd[1][elem_ijb0];
 		
-		B.elem(site).elem().elem(j0,i0) = lctmp0;
-		B.elem(site).elem().elem(i0,j0) = adj(lctmp0);
+		B.elem(vec).elem().elem(j0,i0) = lctmp0;
+		B.elem(vec).elem().elem(i0,j0) = adj(lctmp0);
 		
 		
 		elem_ij0++;
@@ -1233,19 +1301,19 @@ namespace Chroma
 	  /*# From diagonal part */
 	  
 	  {
-	    RComplex<REALT> lctmp3;
-	    RScalar<REALT> lr_zero3;
-	    RScalar<REALT> lrtmp3;
+	    RComplex<ILattice<REALT, INNER_LEN> > lctmp3;
+	    RScalar<ILattice<REALT, INNER_LEN > > lr_zero3;
+	    RScalar<ILattice<REALT, INNER_LEN > > lrtmp3;
 	    
 	    lr_zero3 = 0;
 	    
 	    for(int i3 = 0; i3 < Nc; ++i3) {
 	      
-	      lrtmp3 = tri[site].diag[0][i3+Nc];
-	      lrtmp3 -= tri[site].diag[0][i3];
-	      lrtmp3 -= tri[site].diag[1][i3];
-	      lrtmp3 += tri[site].diag[1][i3+Nc];
-	      B.elem(site).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
+	      lrtmp3 = tri[vec].diag[0][i3+Nc];
+	      lrtmp3 -= tri[vec].diag[0][i3];
+	      lrtmp3 -= tri[vec].diag[1][i3];
+	      lrtmp3 += tri[vec].diag[1][i3+Nc];
+	      B.elem(vec).elem().elem(i3,i3) = cmplx(lr_zero3,lrtmp3);
 	    }
 	    
 	    /*# From lower triangular portion */
@@ -1256,13 +1324,13 @@ namespace Chroma
 	      
 	      for(int j3 = 0; j3 < i3; ++j3) {
 		
-		lctmp3 = tri[site].offd[0][elem_ijb3];
-		lctmp3 -= tri[site].offd[0][elem_ij3];
-		lctmp3 -= tri[site].offd[1][elem_ij3];
-		lctmp3 += tri[site].offd[1][elem_ijb3];
+		lctmp3 = tri[vec].offd[0][elem_ijb3];
+		lctmp3 -= tri[vec].offd[0][elem_ij3];
+		lctmp3 -= tri[vec].offd[1][elem_ij3];
+		lctmp3 += tri[vec].offd[1][elem_ijb3];
 		
-		B.elem(site).elem().elem(j3,i3) = timesI(adj(lctmp3));
-		B.elem(site).elem().elem(i3,j3) = timesI(lctmp3);
+		B.elem(vec).elem().elem(j3,i3) = timesI(adj(lctmp3));
+		B.elem(vec).elem().elem(i3,j3) = timesI(lctmp3);
 		
 		elem_ij3++;
 		elem_ijb3++;
@@ -1279,8 +1347,8 @@ namespace Chroma
 	  
 	  {
 	    
-	    RComplex<REALT> lctmp5;
-	    RScalar<REALT> lrtmp5;
+	    RComplex<ILattice<REALT, INNER_LEN> > lctmp5;
+	    RScalar<ILattice<REALT, INNER_LEN> > lrtmp5;
 	    
 	    for(int i5 = 0; i5 < Nc; ++i5) {
 	      
@@ -1291,13 +1359,13 @@ namespace Chroma
 		int elem_ji5 = (j5+Nc)*(j5+Nc-1)/2 + i5;
 		
 		
-		lctmp5 = adj(tri[site].offd[0][elem_ji5]);
-		lctmp5 -= tri[site].offd[0][elem_ij5];
-		lctmp5 += adj(tri[site].offd[1][elem_ji5]);
-		lctmp5 -= tri[site].offd[1][elem_ij5];
+		lctmp5 = adj(tri[vec].offd[0][elem_ji5]);
+		lctmp5 -= tri[vec].offd[0][elem_ij5];
+		lctmp5 += adj(tri[vec].offd[1][elem_ji5]);
+		lctmp5 -= tri[vec].offd[1][elem_ij5];
 		
 		
-		B.elem(site).elem().elem(i5,j5) = lctmp5;
+		B.elem(vec).elem().elem(i5,j5) = lctmp5;
 		
 		elem_ij5++;
 	      }
@@ -1312,8 +1380,8 @@ namespace Chroma
 	  /*#               0  0 -i  0 */
 	  
 	  {
-	    RComplex<REALT> lctmp6;
-	    RScalar<REALT> lrtmp6;
+	    RComplex<ILattice<REALT, INNER_LEN> > lctmp6;
+	    RScalar<ILattice<REALT, INNER_LEN> > lrtmp6;
 	    
 	    for(int i6 = 0; i6 < Nc; ++i6) {
 	      
@@ -1323,12 +1391,12 @@ namespace Chroma
 		
 		int elem_ji6 = (j6+Nc)*(j6+Nc-1)/2 + i6;
 		
-		lctmp6 = adj(tri[site].offd[0][elem_ji6]);
-		lctmp6 += tri[site].offd[0][elem_ij6];
-		lctmp6 += adj(tri[site].offd[1][elem_ji6]);
-		lctmp6 += tri[site].offd[1][elem_ij6];
+		lctmp6 = adj(tri[vec].offd[0][elem_ji6]);
+		lctmp6 += tri[vec].offd[0][elem_ij6];
+		lctmp6 += adj(tri[vec].offd[1][elem_ji6]);
+		lctmp6 += tri[vec].offd[1][elem_ij6];
 		
-		B.elem(site).elem().elem(i6,j6) = timesMinusI(lctmp6);
+		B.elem(vec).elem().elem(i6,j6) = timesMinusI(lctmp6);
 		
 		elem_ij6++;
 	      }
@@ -1343,8 +1411,8 @@ namespace Chroma
 	  /*#               0  0 -i  0 */
 	  
 	  {
-	    RComplex<REALT> lctmp9;
-	    RScalar<REALT> lrtmp9;
+	    RComplex<ILattice<REALT, INNER_LEN> > lctmp9;
+	    RScalar<ILattice<REALT, INNER_LEN> > lrtmp9;
 	    
 	    for(int i9 = 0; i9 < Nc; ++i9) {
 	      
@@ -1354,12 +1422,12 @@ namespace Chroma
 		
 		int elem_ji9 = (j9+Nc)*(j9+Nc-1)/2 + i9;
 		
-		lctmp9 = adj(tri[site].offd[0][elem_ji9]);
-		lctmp9 += tri[site].offd[0][elem_ij9];
-		lctmp9 -= adj(tri[site].offd[1][elem_ji9]);
-		lctmp9 -= tri[site].offd[1][elem_ij9];
+		lctmp9 = adj(tri[vec].offd[0][elem_ji9]);
+		lctmp9 += tri[vec].offd[0][elem_ij9];
+		lctmp9 -= adj(tri[vec].offd[1][elem_ji9]);
+		lctmp9 -= tri[vec].offd[1][elem_ij9];
 		
-		B.elem(site).elem().elem(i9,j9) = timesI(lctmp9);
+		B.elem(vec).elem().elem(i9,j9) = timesI(lctmp9);
 		
 		elem_ij9++;
 	      }
@@ -1373,8 +1441,8 @@ namespace Chroma
 	  /*#               0  0  0  1 */
 	  /*#               0  0 -1  0 */
 	  {
-	    RComplex<REALT> lctmp10;
-	    RScalar<REALT> lrtmp10;
+	    RComplex<ILattice<REALT, INNER_LEN > > lctmp10;
+	    RScalar<ILattice<REALT, INNER_LEN > > lrtmp10;
 	    
 	    for(int i10 = 0; i10 < Nc; ++i10) {
 	      
@@ -1384,12 +1452,12 @@ namespace Chroma
 		
 		int elem_ji10 = (j10+Nc)*(j10+Nc-1)/2 + i10;
 		
-		lctmp10 = adj(tri[site].offd[0][elem_ji10]);
-		lctmp10 -= tri[site].offd[0][elem_ij10];
-		lctmp10 -= adj(tri[site].offd[1][elem_ji10]);
-		lctmp10 += tri[site].offd[1][elem_ij10];
+		lctmp10 = adj(tri[vec].offd[0][elem_ji10]);
+		lctmp10 -= tri[vec].offd[0][elem_ij10];
+		lctmp10 -= adj(tri[vec].offd[1][elem_ji10]);
+		lctmp10 += tri[vec].offd[1][elem_ij10];
 		
-		B.elem(site).elem().elem(i10,j10) = lctmp10;
+		B.elem(vec).elem().elem(i10,j10) = lctmp10;
 		
 		elem_ij10++;
 	      }
@@ -1405,19 +1473,19 @@ namespace Chroma
 	  /*# From diagonal part */
 	  {
 	    
-	    RComplex<REALT> lctmp12;
-	    RScalar<REALT> lr_zero12;
-	    RScalar<REALT> lrtmp12;
+	    RComplex<ILattice<REALT, INNER_LEN> >  lctmp12;
+	    RScalar<ILattice<REALT, INNER_LEN> > lr_zero12;
+	    RScalar<ILattice<REALT, INNER_LEN> > lrtmp12;
 	    
 	    lr_zero12 = 0;
 	    
 	    for(int i12 = 0; i12 < Nc; ++i12) {
 	      
-	      lrtmp12 = tri[site].diag[0][i12];
-	      lrtmp12 -= tri[site].diag[0][i12+Nc];
-	      lrtmp12 -= tri[site].diag[1][i12];
-	      lrtmp12 += tri[site].diag[1][i12+Nc];
-	      B.elem(site).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
+	      lrtmp12 = tri[vec].diag[0][i12];
+	      lrtmp12 -= tri[vec].diag[0][i12+Nc];
+	      lrtmp12 -= tri[vec].diag[1][i12];
+	      lrtmp12 += tri[vec].diag[1][i12+Nc];
+	      B.elem(vec).elem().elem(i12,i12) = cmplx(lr_zero12,lrtmp12);
 	    }
 	    
 	    /*# From lower triangular portion */
@@ -1428,13 +1496,13 @@ namespace Chroma
 	      
 	      for(int j12 = 0; j12 < i12; ++j12) {
 		
-		lctmp12 = tri[site].offd[0][elem_ij12];
-		lctmp12 -= tri[site].offd[0][elem_ijb12];
-		lctmp12 -= tri[site].offd[1][elem_ij12];
-		lctmp12 += tri[site].offd[1][elem_ijb12];
+		lctmp12 = tri[vec].offd[0][elem_ij12];
+		lctmp12 -= tri[vec].offd[0][elem_ijb12];
+		lctmp12 -= tri[vec].offd[1][elem_ij12];
+		lctmp12 += tri[vec].offd[1][elem_ijb12];
 		
-		B.elem(site).elem().elem(i12,j12) = timesI(lctmp12);
-		B.elem(site).elem().elem(j12,i12) = timesI(adj(lctmp12));
+		B.elem(vec).elem().elem(i12,j12) = timesI(lctmp12);
+		B.elem(vec).elem().elem(j12,i12) = timesI(adj(lctmp12));
 		
 		elem_ij12++;
 		elem_ijb12++;
@@ -1448,7 +1516,10 @@ namespace Chroma
 	  QDP_abort(1);
 	}
 	
-      } // END Site Loop
+      } // END Vec Loop
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID=" << myId << "Leaving CloverTerm::triaCntrBlockLoop \n" << flush;
+#endif
     } // End Function
   } // End Namespace
 
@@ -1456,6 +1527,9 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::triacntr(U& B, int mat, int cb) const
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Entering CloverTerm::triacntr \n" << flush;
+#endif
     START_CODE();
 
     B = zero;
@@ -1467,10 +1541,13 @@ namespace Chroma
     }
 
     QDPCloverEnv::TriaCntrArgs<U> a = { B, tri, mat, cb };
-    dispatch_to_threads(rb[cb].numSiteTable(), a, 
-			QDPCloverEnv::triaCntrSiteLoop<U>);
+    dispatch_to_threads(rb[cb].getBlockTable().size(), a, 
+			QDPCloverEnv::triaCntrBlockLoop<U>);
 
     END_CODE();
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Leaving CloverTerm::triacntr \n" << flush;
+#endif
   }
 
   //! Returns the appropriate clover coefficient for indices mu and nu
@@ -1512,11 +1589,13 @@ namespace Chroma
 
 
     template<typename T>
-    void applySiteLoop(int lo, int hi, int MyId,
+    void applyBlockLoop(int lo, int hi, int MyId,
 		       ApplyArgs<T>* arg)
       
     {
-      
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID=" << MyId << " Entering CloverTerm::applyBlockLoop \n" << flush;
+#endif
       // This is essentially the body of the previous "Apply"
       // but now the args are handed in through user arg struct...
       
@@ -1532,519 +1611,331 @@ namespace Chroma
 
       int n = 2*Nc;
       
-      const multi1d<int>& tab = rb[cb].siteTable();
+      const multi1d<int>& tab = rb[cb].getBlockTable();
       
       // Now just loop from low to high sites...
-      for(int ssite=lo; ssite < hi; ++ssite)  {
+      for(int svec=lo; svec < hi; ++svec)  {
 	
-	int site = tab[ssite];
+	int vec = tab[svec];
 	
-	RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
-	const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
-#if 0
-#warning "Using unrolled clover term"
-      // Rolled version
-      for(int i = 0; i < n; ++i)
-      {
-	cchi[0*n+i] = tri[site].diag[0][i] * ppsi[0*n+i];
-	cchi[1*n+i] = tri[site].diag[1][i] * ppsi[1*n+i];
-      }
-
-      int kij = 0;  
-      for(int i = 0; i < n; ++i)
-      {
-	for(int j = 0; j < i; j++)
-	{
-	  cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-	  cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
-	  cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-	  cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
-	  kij++;
-	}
-      }
-#elif 0
-#warning "Using unrolled clover term - version 1"
-      // Unrolled version - basically copying the loop structure
-      cchi[ 0] = tri[site].diag[0][0] * ppsi[ 0];
-      cchi[ 1] = tri[site].diag[0][1] * ppsi[ 1];
-      cchi[ 2] = tri[site].diag[0][2] * ppsi[ 2];
-      cchi[ 3] = tri[site].diag[0][3] * ppsi[ 3];
-      cchi[ 4] = tri[site].diag[0][4] * ppsi[ 4];
-      cchi[ 5] = tri[site].diag[0][5] * ppsi[ 5];
-      cchi[ 6] = tri[site].diag[1][0] * ppsi[ 6];
-      cchi[ 7] = tri[site].diag[1][1] * ppsi[ 7];
-      cchi[ 8] = tri[site].diag[1][2] * ppsi[ 8];
-      cchi[ 9] = tri[site].diag[1][3] * ppsi[ 9];
-      cchi[10] = tri[site].diag[1][4] * ppsi[10];
-      cchi[11] = tri[site].diag[1][5] * ppsi[11];
-
-      // cchi[0*n+i] += tri[site].offd[0][kij] * ppsi[0*n+j];
-      cchi[ 1] += tri[site].offd[0][ 0] * ppsi[ 0];
-      cchi[ 2] += tri[site].offd[0][ 1] * ppsi[ 0];
-      cchi[ 2] += tri[site].offd[0][ 2] * ppsi[ 1];
-      cchi[ 3] += tri[site].offd[0][ 3] * ppsi[ 0];
-      cchi[ 3] += tri[site].offd[0][ 4] * ppsi[ 1];
-      cchi[ 3] += tri[site].offd[0][ 5] * ppsi[ 2];
-      cchi[ 4] += tri[site].offd[0][ 6] * ppsi[ 0];
-      cchi[ 4] += tri[site].offd[0][ 7] * ppsi[ 1];
-      cchi[ 4] += tri[site].offd[0][ 8] * ppsi[ 2];
-      cchi[ 4] += tri[site].offd[0][ 9] * ppsi[ 3];
-      cchi[ 5] += tri[site].offd[0][10] * ppsi[ 0];
-      cchi[ 5] += tri[site].offd[0][11] * ppsi[ 1];
-      cchi[ 5] += tri[site].offd[0][12] * ppsi[ 2];
-      cchi[ 5] += tri[site].offd[0][13] * ppsi[ 3];
-      cchi[ 5] += tri[site].offd[0][14] * ppsi[ 4];
-
-      // cchi[0*n+j] += conj(tri[site].offd[0][kij]) * ppsi[0*n+i];
-      cchi[ 0] += conj(tri[site].offd[0][ 0]) * ppsi[ 1];
-      cchi[ 0] += conj(tri[site].offd[0][ 1]) * ppsi[ 2];
-      cchi[ 1] += conj(tri[site].offd[0][ 2]) * ppsi[ 2];
-      cchi[ 0] += conj(tri[site].offd[0][ 3]) * ppsi[ 3];
-      cchi[ 1] += conj(tri[site].offd[0][ 4]) * ppsi[ 3];
-      cchi[ 2] += conj(tri[site].offd[0][ 5]) * ppsi[ 3];
-      cchi[ 0] += conj(tri[site].offd[0][ 6]) * ppsi[ 4];
-      cchi[ 1] += conj(tri[site].offd[0][ 7]) * ppsi[ 4];
-      cchi[ 2] += conj(tri[site].offd[0][ 8]) * ppsi[ 4];
-      cchi[ 3] += conj(tri[site].offd[0][ 9]) * ppsi[ 4];
-      cchi[ 0] += conj(tri[site].offd[0][10]) * ppsi[ 5];
-      cchi[ 1] += conj(tri[site].offd[0][11]) * ppsi[ 5];
-      cchi[ 2] += conj(tri[site].offd[0][12]) * ppsi[ 5];
-      cchi[ 3] += conj(tri[site].offd[0][13]) * ppsi[ 5];
-      cchi[ 4] += conj(tri[site].offd[0][14]) * ppsi[ 5];
-
-      // cchi[1*n+i] += tri[site].offd[1][kij] * ppsi[1*n+j];
-      cchi[ 7] += tri[site].offd[1][ 0] * ppsi[ 6];
-      cchi[ 8] += tri[site].offd[1][ 1] * ppsi[ 6];
-      cchi[ 8] += tri[site].offd[1][ 2] * ppsi[ 7];
-      cchi[ 9] += tri[site].offd[1][ 3] * ppsi[ 6];
-      cchi[ 9] += tri[site].offd[1][ 4] * ppsi[ 7];
-      cchi[ 9] += tri[site].offd[1][ 5] * ppsi[ 8];
-      cchi[10] += tri[site].offd[1][ 6] * ppsi[ 6];
-      cchi[10] += tri[site].offd[1][ 7] * ppsi[ 7];
-      cchi[10] += tri[site].offd[1][ 8] * ppsi[ 8];
-      cchi[10] += tri[site].offd[1][ 9] * ppsi[ 9];
-      cchi[11] += tri[site].offd[1][10] * ppsi[ 6];
-      cchi[11] += tri[site].offd[1][11] * ppsi[ 7];
-      cchi[11] += tri[site].offd[1][12] * ppsi[ 8];
-      cchi[11] += tri[site].offd[1][13] * ppsi[ 9];
-      cchi[11] += tri[site].offd[1][14] * ppsi[10];
-
-      // cchi[1*n+j] += conj(tri[site].offd[1][kij]) * ppsi[1*n+i];
-      cchi[ 6] += conj(tri[site].offd[1][ 0]) * ppsi[ 7];
-      cchi[ 6] += conj(tri[site].offd[1][ 1]) * ppsi[ 8];
-      cchi[ 7] += conj(tri[site].offd[1][ 2]) * ppsi[ 8];
-      cchi[ 6] += conj(tri[site].offd[1][ 3]) * ppsi[ 9];
-      cchi[ 7] += conj(tri[site].offd[1][ 4]) * ppsi[ 9];
-      cchi[ 8] += conj(tri[site].offd[1][ 5]) * ppsi[ 9];
-      cchi[ 6] += conj(tri[site].offd[1][ 6]) * ppsi[10];
-      cchi[ 7] += conj(tri[site].offd[1][ 7]) * ppsi[10];
-      cchi[ 8] += conj(tri[site].offd[1][ 8]) * ppsi[10];
-      cchi[ 9] += conj(tri[site].offd[1][ 9]) * ppsi[10];
-      cchi[ 6] += conj(tri[site].offd[1][10]) * ppsi[11];
-      cchi[ 7] += conj(tri[site].offd[1][11]) * ppsi[11];
-      cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
-      cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
-      cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
-#elif 0
-#warning "Using unrolled clover term - version 2"
-      // Unrolled version - collect all LHS terms into 1 expression
-      cchi[ 0]  =      tri[site].diag[0][ 0]  * ppsi[ 0];
-      cchi[ 0] += conj(tri[site].offd[0][ 0]) * ppsi[ 1];
-      cchi[ 0] += conj(tri[site].offd[0][ 1]) * ppsi[ 2];
-      cchi[ 0] += conj(tri[site].offd[0][ 3]) * ppsi[ 3];
-      cchi[ 0] += conj(tri[site].offd[0][ 6]) * ppsi[ 4];
-      cchi[ 0] += conj(tri[site].offd[0][10]) * ppsi[ 5];
-
-      cchi[ 1]  = tri[site].diag[0][ 1]  * ppsi[ 1];
-      cchi[ 1] += tri[site].offd[0][ 0]  * ppsi[ 0];
-      cchi[ 1] += conj(tri[site].offd[0][ 2]) * ppsi[ 2];
-      cchi[ 1] += conj(tri[site].offd[0][ 4]) * ppsi[ 3];
-      cchi[ 1] += conj(tri[site].offd[0][ 7]) * ppsi[ 4];
-      cchi[ 1] += conj(tri[site].offd[0][11]) * ppsi[ 5];
-
-      cchi[ 2]  = tri[site].diag[0][ 2]  * ppsi[ 2];
-      cchi[ 2] += tri[site].offd[0][ 1]  * ppsi[ 0];
-      cchi[ 2] += tri[site].offd[0][ 2]  * ppsi[ 1];
-      cchi[ 2] += conj(tri[site].offd[0][ 5]) * ppsi[ 3];
-      cchi[ 2] += conj(tri[site].offd[0][ 8]) * ppsi[ 4];
-      cchi[ 2] += conj(tri[site].offd[0][12]) * ppsi[ 5];
-
-      cchi[ 3]  = tri[site].diag[0][ 3]  * ppsi[ 3];
-      cchi[ 3] += tri[site].offd[0][ 3]  * ppsi[ 0];
-      cchi[ 3] += tri[site].offd[0][ 4]  * ppsi[ 1];
-      cchi[ 3] += tri[site].offd[0][ 5]  * ppsi[ 2];
-      cchi[ 3] += conj(tri[site].offd[0][ 9]) * ppsi[ 4];
-      cchi[ 3] += conj(tri[site].offd[0][13]) * ppsi[ 5];
-
-      cchi[ 4]  = tri[site].diag[0][ 4]  * ppsi[ 4];
-      cchi[ 4] += tri[site].offd[0][ 6]  * ppsi[ 0];
-      cchi[ 4] += tri[site].offd[0][ 7]  * ppsi[ 1];
-      cchi[ 4] += tri[site].offd[0][ 8]  * ppsi[ 2];
-      cchi[ 4] += tri[site].offd[0][ 9]  * ppsi[ 3];
-      cchi[ 4] += conj(tri[site].offd[0][14]) * ppsi[ 5];
-
-      cchi[ 5]  = tri[site].diag[0][ 5]  * ppsi[ 5];
-      cchi[ 5] += tri[site].offd[0][10]  * ppsi[ 0];
-      cchi[ 5] += tri[site].offd[0][11]  * ppsi[ 1];
-      cchi[ 5] += tri[site].offd[0][12]  * ppsi[ 2];
-      cchi[ 5] += tri[site].offd[0][13]  * ppsi[ 3];
-      cchi[ 5] += tri[site].offd[0][14]  * ppsi[ 4];
-
-      cchi[ 6]  = tri[site].diag[1][ 0]  * ppsi[ 6];
-      cchi[ 6] += conj(tri[site].offd[1][ 0]) * ppsi[ 7];
-      cchi[ 6] += conj(tri[site].offd[1][ 1]) * ppsi[ 8];
-      cchi[ 6] += conj(tri[site].offd[1][ 3]) * ppsi[ 9];
-      cchi[ 6] += conj(tri[site].offd[1][ 6]) * ppsi[10];
-      cchi[ 6] += conj(tri[site].offd[1][10]) * ppsi[11];
-
-      cchi[ 7]  = tri[site].diag[1][ 1]  * ppsi[ 7];
-      cchi[ 7] += tri[site].offd[1][ 0]  * ppsi[ 6];
-      cchi[ 7] += conj(tri[site].offd[1][ 2]) * ppsi[ 8];
-      cchi[ 7] += conj(tri[site].offd[1][ 4]) * ppsi[ 9];
-      cchi[ 7] += conj(tri[site].offd[1][ 7]) * ppsi[10];
-      cchi[ 7] += conj(tri[site].offd[1][11]) * ppsi[11];
-
-      cchi[ 8]  = tri[site].diag[1][ 2]  * ppsi[ 8];
-      cchi[ 8] += tri[site].offd[1][ 1]  * ppsi[ 6];
-      cchi[ 8] += tri[site].offd[1][ 2]  * ppsi[ 7];
-      cchi[ 8] += conj(tri[site].offd[1][ 5]) * ppsi[ 9];
-      cchi[ 8] += conj(tri[site].offd[1][ 8]) * ppsi[10];
-      cchi[ 8] += conj(tri[site].offd[1][12]) * ppsi[11];
-
-      cchi[ 9]  = tri[site].diag[1][ 3]  * ppsi[ 9];
-      cchi[ 9] += tri[site].offd[1][ 3]  * ppsi[ 6];
-      cchi[ 9] += tri[site].offd[1][ 4]  * ppsi[ 7];
-      cchi[ 9] += tri[site].offd[1][ 5]  * ppsi[ 8];
-      cchi[ 9] += conj(tri[site].offd[1][ 9]) * ppsi[10];
-      cchi[ 9] += conj(tri[site].offd[1][13]) * ppsi[11];
-
-      cchi[10]  = tri[site].diag[1][ 4]  * ppsi[10];
-      cchi[10] += tri[site].offd[1][ 6]  * ppsi[ 6];
-      cchi[10] += tri[site].offd[1][ 7]  * ppsi[ 7];
-      cchi[10] += tri[site].offd[1][ 8]  * ppsi[ 8];
-      cchi[10] += tri[site].offd[1][ 9]  * ppsi[ 9];
-      cchi[10] += conj(tri[site].offd[1][14]) * ppsi[11];
-
-      cchi[11]  = tri[site].diag[1][ 5]  * ppsi[11];
-      cchi[11] += tri[site].offd[1][10]  * ppsi[ 6];
-      cchi[11] += tri[site].offd[1][11]  * ppsi[ 7];
-      cchi[11] += tri[site].offd[1][12]  * ppsi[ 8];
-      cchi[11] += tri[site].offd[1][13]  * ppsi[ 9];
-      cchi[11] += tri[site].offd[1][14]  * ppsi[10];
-#elif 1
+	RComplex< ILattice<REALT, INNER_LEN> >* cchi = (RComplex< ILattice<REALT, INNER_LEN> >*) &(chi.elem(vec).elem(0).elem(0));
+	const RComplex<ILattice<REALT, INNER_LEN> >* ppsi = (const RComplex<ILattice<REALT, INNER_LEN> >*)&(psi.elem(vec).elem(0).elem(0));
 	// Unrolled version 3. 
 	// Took unrolled version 2 and wrote out in real() and imag() 
 	// parts. Rearranged so that all the reals follow each other
 	//  in the output so that we can write linearly
 
 
-	cchi[ 0].real()  = tri[site].diag[0][0].elem()  * ppsi[0].real();
-	cchi[ 0].real() += tri[site].offd[0][0].real()  * ppsi[1].real();
-	cchi[ 0].real() += tri[site].offd[0][0].imag()  * ppsi[1].imag();
-	cchi[ 0].real() += tri[site].offd[0][1].real()  * ppsi[2].real();
-	cchi[ 0].real() += tri[site].offd[0][1].imag()  * ppsi[2].imag();
-	cchi[ 0].real() += tri[site].offd[0][3].real()  * ppsi[3].real();
-	cchi[ 0].real() += tri[site].offd[0][3].imag()  * ppsi[3].imag();
-	cchi[ 0].real() += tri[site].offd[0][6].real()  * ppsi[4].real();
-	cchi[ 0].real() += tri[site].offd[0][6].imag()  * ppsi[4].imag();
-	cchi[ 0].real() += tri[site].offd[0][10].real() * ppsi[5].real();
-	cchi[ 0].real() += tri[site].offd[0][10].imag() * ppsi[5].imag();
+	cchi[ 0].real()  = tri[vec].diag[0][0].elem()  * ppsi[0].real();
+	cchi[ 0].real() += tri[vec].offd[0][0].real()  * ppsi[1].real();
+	cchi[ 0].real() += tri[vec].offd[0][0].imag()  * ppsi[1].imag();
+	cchi[ 0].real() += tri[vec].offd[0][1].real()  * ppsi[2].real();
+	cchi[ 0].real() += tri[vec].offd[0][1].imag()  * ppsi[2].imag();
+	cchi[ 0].real() += tri[vec].offd[0][3].real()  * ppsi[3].real();
+	cchi[ 0].real() += tri[vec].offd[0][3].imag()  * ppsi[3].imag();
+	cchi[ 0].real() += tri[vec].offd[0][6].real()  * ppsi[4].real();
+	cchi[ 0].real() += tri[vec].offd[0][6].imag()  * ppsi[4].imag();
+	cchi[ 0].real() += tri[vec].offd[0][10].real() * ppsi[5].real();
+	cchi[ 0].real() += tri[vec].offd[0][10].imag() * ppsi[5].imag();
 	
-	cchi[ 0].imag()  = tri[site].diag[0][0].elem()  * ppsi[ 0].imag();
-	cchi[ 0].imag() += tri[site].offd[0][0].real()  * ppsi[1].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][0].imag()  * ppsi[1].real();
-	cchi[ 0].imag() += tri[site].offd[0][3].real()  * ppsi[3].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][3].imag()  * ppsi[3].real();
-	cchi[ 0].imag() += tri[site].offd[0][1].real()  * ppsi[2].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][1].imag()  * ppsi[2].real();
-	cchi[ 0].imag() += tri[site].offd[0][6].real()  * ppsi[4].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][6].imag()  * ppsi[4].real();
-	cchi[ 0].imag() += tri[site].offd[0][10].real() * ppsi[5].imag();
-	cchi[ 0].imag() -= tri[site].offd[0][10].imag() * ppsi[5].real();
-	
-	
-	cchi[ 1].real()  = tri[site].diag[0][ 1].elem() * ppsi[ 1].real();
-	cchi[ 1].real() += tri[site].offd[0][ 0].real() * ppsi[ 0].real();
-	cchi[ 1].real() -= tri[site].offd[0][ 0].imag() * ppsi[ 0].imag();
-	cchi[ 1].real() += tri[site].offd[0][ 2].real() * ppsi[ 2].real();
-	cchi[ 1].real() += tri[site].offd[0][ 2].imag() * ppsi[ 2].imag();
-	cchi[ 1].real() += tri[site].offd[0][ 4].real() * ppsi[ 3].real();
-	cchi[ 1].real() += tri[site].offd[0][ 4].imag() * ppsi[ 3].imag();
-	cchi[ 1].real() += tri[site].offd[0][ 7].real() * ppsi[ 4].real();
-	cchi[ 1].real() += tri[site].offd[0][ 7].imag() * ppsi[ 4].imag();
-	cchi[ 1].real() += tri[site].offd[0][11].real() * ppsi[ 5].real();
-	cchi[ 1].real() += tri[site].offd[0][11].imag() * ppsi[ 5].imag();
+	cchi[ 0].imag()  = tri[vec].diag[0][0].elem()  * ppsi[ 0].imag();
+	cchi[ 0].imag() += tri[vec].offd[0][0].real()  * ppsi[1].imag();
+	cchi[ 0].imag() -= tri[vec].offd[0][0].imag()  * ppsi[1].real();
+	cchi[ 0].imag() += tri[vec].offd[0][3].real()  * ppsi[3].imag();
+	cchi[ 0].imag() -= tri[vec].offd[0][3].imag()  * ppsi[3].real();
+	cchi[ 0].imag() += tri[vec].offd[0][1].real()  * ppsi[2].imag();
+	cchi[ 0].imag() -= tri[vec].offd[0][1].imag()  * ppsi[2].real();
+	cchi[ 0].imag() += tri[vec].offd[0][6].real()  * ppsi[4].imag();
+	cchi[ 0].imag() -= tri[vec].offd[0][6].imag()  * ppsi[4].real();
+	cchi[ 0].imag() += tri[vec].offd[0][10].real() * ppsi[5].imag();
+	cchi[ 0].imag() -= tri[vec].offd[0][10].imag() * ppsi[5].real();
 	
 	
-	cchi[ 1].imag()  = tri[site].diag[0][ 1].elem() * ppsi[ 1].imag();
-	cchi[ 1].imag() += tri[site].offd[0][ 0].real() * ppsi[ 0].imag();
-	cchi[ 1].imag() += tri[site].offd[0][ 0].imag() * ppsi[ 0].real();
-	cchi[ 1].imag() += tri[site].offd[0][ 2].real() * ppsi[ 2].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][ 2].imag() * ppsi[ 2].real();
-	cchi[ 1].imag() += tri[site].offd[0][ 4].real() * ppsi[ 3].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][ 4].imag() * ppsi[ 3].real();
-	cchi[ 1].imag() += tri[site].offd[0][ 7].real() * ppsi[ 4].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][ 7].imag() * ppsi[ 4].real();
-	cchi[ 1].imag() += tri[site].offd[0][11].real() * ppsi[ 5].imag();
-	cchi[ 1].imag() -= tri[site].offd[0][11].imag() * ppsi[ 5].real();
+	cchi[ 1].real()  = tri[vec].diag[0][ 1].elem() * ppsi[ 1].real();
+	cchi[ 1].real() += tri[vec].offd[0][ 0].real() * ppsi[ 0].real();
+	cchi[ 1].real() -= tri[vec].offd[0][ 0].imag() * ppsi[ 0].imag();
+	cchi[ 1].real() += tri[vec].offd[0][ 2].real() * ppsi[ 2].real();
+	cchi[ 1].real() += tri[vec].offd[0][ 2].imag() * ppsi[ 2].imag();
+	cchi[ 1].real() += tri[vec].offd[0][ 4].real() * ppsi[ 3].real();
+	cchi[ 1].real() += tri[vec].offd[0][ 4].imag() * ppsi[ 3].imag();
+	cchi[ 1].real() += tri[vec].offd[0][ 7].real() * ppsi[ 4].real();
+	cchi[ 1].real() += tri[vec].offd[0][ 7].imag() * ppsi[ 4].imag();
+	cchi[ 1].real() += tri[vec].offd[0][11].real() * ppsi[ 5].real();
+	cchi[ 1].real() += tri[vec].offd[0][11].imag() * ppsi[ 5].imag();
 	
 	
-	cchi[ 2].real() = tri[site].diag[0][ 2].elem()  * ppsi[ 2].real();
-	cchi[ 2].real() += tri[site].offd[0][ 1].real() * ppsi[ 0].real();
-	cchi[ 2].real() -= tri[site].offd[0][ 1].imag() * ppsi[ 0].imag();
-	cchi[ 2].real() += tri[site].offd[0][ 2].real() * ppsi[ 1].real();
-	cchi[ 2].real() -= tri[site].offd[0][ 2].imag() * ppsi[ 1].imag();
-	cchi[ 2].real() += tri[site].offd[0][5].real()  * ppsi[ 3].real();
-	cchi[ 2].real() += tri[site].offd[0][5].imag()  * ppsi[ 3].imag();
-	cchi[ 2].real() += tri[site].offd[0][8].real()  * ppsi[ 4].real();
-	cchi[ 2].real() += tri[site].offd[0][8].imag()  * ppsi[ 4].imag();
-	cchi[ 2].real() += tri[site].offd[0][12].real() * ppsi[ 5].real();
-	cchi[ 2].real() += tri[site].offd[0][12].imag() * ppsi[ 5].imag();
+	cchi[ 1].imag()  = tri[vec].diag[0][ 1].elem() * ppsi[ 1].imag();
+	cchi[ 1].imag() += tri[vec].offd[0][ 0].real() * ppsi[ 0].imag();
+	cchi[ 1].imag() += tri[vec].offd[0][ 0].imag() * ppsi[ 0].real();
+	cchi[ 1].imag() += tri[vec].offd[0][ 2].real() * ppsi[ 2].imag();
+	cchi[ 1].imag() -= tri[vec].offd[0][ 2].imag() * ppsi[ 2].real();
+	cchi[ 1].imag() += tri[vec].offd[0][ 4].real() * ppsi[ 3].imag();
+	cchi[ 1].imag() -= tri[vec].offd[0][ 4].imag() * ppsi[ 3].real();
+	cchi[ 1].imag() += tri[vec].offd[0][ 7].real() * ppsi[ 4].imag();
+	cchi[ 1].imag() -= tri[vec].offd[0][ 7].imag() * ppsi[ 4].real();
+	cchi[ 1].imag() += tri[vec].offd[0][11].real() * ppsi[ 5].imag();
+	cchi[ 1].imag() -= tri[vec].offd[0][11].imag() * ppsi[ 5].real();
 	
 	
-	cchi[ 2].imag() = tri[site].diag[0][ 2].elem()  * ppsi[ 2].imag();
-	cchi[ 2].imag() += tri[site].offd[0][ 1].real() * ppsi[ 0].imag();
-	cchi[ 2].imag() += tri[site].offd[0][ 1].imag() * ppsi[ 0].real();
-	cchi[ 2].imag() += tri[site].offd[0][ 2].real() * ppsi[ 1].imag();
-	cchi[ 2].imag() += tri[site].offd[0][ 2].imag() * ppsi[ 1].real();
-	cchi[ 2].imag() += tri[site].offd[0][5].real()  * ppsi[ 3].imag();
-	cchi[ 2].imag() -= tri[site].offd[0][5].imag()  * ppsi[ 3].real();
-	cchi[ 2].imag() += tri[site].offd[0][8].real()  * ppsi[ 4].imag();
-	cchi[ 2].imag() -= tri[site].offd[0][8].imag()  * ppsi[ 4].real();
-	cchi[ 2].imag() += tri[site].offd[0][12].real() * ppsi[ 5].imag();
-	cchi[ 2].imag() -= tri[site].offd[0][12].imag() * ppsi[ 5].real();
+	cchi[ 2].real() = tri[vec].diag[0][ 2].elem()  * ppsi[ 2].real();
+	cchi[ 2].real() += tri[vec].offd[0][ 1].real() * ppsi[ 0].real();
+	cchi[ 2].real() -= tri[vec].offd[0][ 1].imag() * ppsi[ 0].imag();
+	cchi[ 2].real() += tri[vec].offd[0][ 2].real() * ppsi[ 1].real();
+	cchi[ 2].real() -= tri[vec].offd[0][ 2].imag() * ppsi[ 1].imag();
+	cchi[ 2].real() += tri[vec].offd[0][5].real()  * ppsi[ 3].real();
+	cchi[ 2].real() += tri[vec].offd[0][5].imag()  * ppsi[ 3].imag();
+	cchi[ 2].real() += tri[vec].offd[0][8].real()  * ppsi[ 4].real();
+	cchi[ 2].real() += tri[vec].offd[0][8].imag()  * ppsi[ 4].imag();
+	cchi[ 2].real() += tri[vec].offd[0][12].real() * ppsi[ 5].real();
+	cchi[ 2].real() += tri[vec].offd[0][12].imag() * ppsi[ 5].imag();
 	
 	
-	cchi[ 3].real()  = tri[site].diag[0][ 3].elem() * ppsi[ 3].real();
-	cchi[ 3].real() += tri[site].offd[0][ 3].real() * ppsi[ 0].real();
-	cchi[ 3].real() -= tri[site].offd[0][ 3].imag() * ppsi[ 0].imag();
-	cchi[ 3].real() += tri[site].offd[0][ 4].real() * ppsi[ 1].real();
-	cchi[ 3].real() -= tri[site].offd[0][ 4].imag() * ppsi[ 1].imag();
-	cchi[ 3].real() += tri[site].offd[0][ 5].real() * ppsi[ 2].real();
-	cchi[ 3].real() -= tri[site].offd[0][ 5].imag() * ppsi[ 2].imag();
-	cchi[ 3].real() += tri[site].offd[0][ 9].real() * ppsi[ 4].real();
-	cchi[ 3].real() += tri[site].offd[0][ 9].imag() * ppsi[ 4].imag();
-	cchi[ 3].real() += tri[site].offd[0][13].real() * ppsi[ 5].real();
-	cchi[ 3].real() += tri[site].offd[0][13].imag() * ppsi[ 5].imag();
+	cchi[ 2].imag() = tri[vec].diag[0][ 2].elem()  * ppsi[ 2].imag();
+	cchi[ 2].imag() += tri[vec].offd[0][ 1].real() * ppsi[ 0].imag();
+	cchi[ 2].imag() += tri[vec].offd[0][ 1].imag() * ppsi[ 0].real();
+	cchi[ 2].imag() += tri[vec].offd[0][ 2].real() * ppsi[ 1].imag();
+	cchi[ 2].imag() += tri[vec].offd[0][ 2].imag() * ppsi[ 1].real();
+	cchi[ 2].imag() += tri[vec].offd[0][5].real()  * ppsi[ 3].imag();
+	cchi[ 2].imag() -= tri[vec].offd[0][5].imag()  * ppsi[ 3].real();
+	cchi[ 2].imag() += tri[vec].offd[0][8].real()  * ppsi[ 4].imag();
+	cchi[ 2].imag() -= tri[vec].offd[0][8].imag()  * ppsi[ 4].real();
+	cchi[ 2].imag() += tri[vec].offd[0][12].real() * ppsi[ 5].imag();
+	cchi[ 2].imag() -= tri[vec].offd[0][12].imag() * ppsi[ 5].real();
 	
 	
-	cchi[ 3].imag()  = tri[site].diag[0][ 3].elem() * ppsi[ 3].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 3].real() * ppsi[ 0].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 3].imag() * ppsi[ 0].real();
-	cchi[ 3].imag() += tri[site].offd[0][ 4].real() * ppsi[ 1].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 4].imag() * ppsi[ 1].real();
-	cchi[ 3].imag() += tri[site].offd[0][ 5].real() * ppsi[ 2].imag();
-	cchi[ 3].imag() += tri[site].offd[0][ 5].imag() * ppsi[ 2].real();
-	cchi[ 3].imag() += tri[site].offd[0][ 9].real() * ppsi[ 4].imag();
-	cchi[ 3].imag() -= tri[site].offd[0][ 9].imag() * ppsi[ 4].real();
-	cchi[ 3].imag() += tri[site].offd[0][13].real() * ppsi[ 5].imag();
-	cchi[ 3].imag() -= tri[site].offd[0][13].imag() * ppsi[ 5].real();
+	cchi[ 3].real()  = tri[vec].diag[0][ 3].elem() * ppsi[ 3].real();
+	cchi[ 3].real() += tri[vec].offd[0][ 3].real() * ppsi[ 0].real();
+	cchi[ 3].real() -= tri[vec].offd[0][ 3].imag() * ppsi[ 0].imag();
+	cchi[ 3].real() += tri[vec].offd[0][ 4].real() * ppsi[ 1].real();
+	cchi[ 3].real() -= tri[vec].offd[0][ 4].imag() * ppsi[ 1].imag();
+	cchi[ 3].real() += tri[vec].offd[0][ 5].real() * ppsi[ 2].real();
+	cchi[ 3].real() -= tri[vec].offd[0][ 5].imag() * ppsi[ 2].imag();
+	cchi[ 3].real() += tri[vec].offd[0][ 9].real() * ppsi[ 4].real();
+	cchi[ 3].real() += tri[vec].offd[0][ 9].imag() * ppsi[ 4].imag();
+	cchi[ 3].real() += tri[vec].offd[0][13].real() * ppsi[ 5].real();
+	cchi[ 3].real() += tri[vec].offd[0][13].imag() * ppsi[ 5].imag();
 	
 	
-	cchi[ 4].real()  = tri[site].diag[0][ 4].elem() * ppsi[ 4].real();
-	cchi[ 4].real() += tri[site].offd[0][ 6].real() * ppsi[ 0].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 6].imag() * ppsi[ 0].imag();
-	cchi[ 4].real() += tri[site].offd[0][ 7].real() * ppsi[ 1].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 7].imag() * ppsi[ 1].imag();
-	cchi[ 4].real() += tri[site].offd[0][ 8].real() * ppsi[ 2].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 8].imag() * ppsi[ 2].imag();
-	cchi[ 4].real() += tri[site].offd[0][ 9].real() * ppsi[ 3].real();
-	cchi[ 4].real() -= tri[site].offd[0][ 9].imag() * ppsi[ 3].imag();
-	cchi[ 4].real() += tri[site].offd[0][14].real() * ppsi[ 5].real();
-	cchi[ 4].real() += tri[site].offd[0][14].imag() * ppsi[ 5].imag();
+	cchi[ 3].imag()  = tri[vec].diag[0][ 3].elem() * ppsi[ 3].imag();
+	cchi[ 3].imag() += tri[vec].offd[0][ 3].real() * ppsi[ 0].imag();
+	cchi[ 3].imag() += tri[vec].offd[0][ 3].imag() * ppsi[ 0].real();
+	cchi[ 3].imag() += tri[vec].offd[0][ 4].real() * ppsi[ 1].imag();
+	cchi[ 3].imag() += tri[vec].offd[0][ 4].imag() * ppsi[ 1].real();
+	cchi[ 3].imag() += tri[vec].offd[0][ 5].real() * ppsi[ 2].imag();
+	cchi[ 3].imag() += tri[vec].offd[0][ 5].imag() * ppsi[ 2].real();
+	cchi[ 3].imag() += tri[vec].offd[0][ 9].real() * ppsi[ 4].imag();
+	cchi[ 3].imag() -= tri[vec].offd[0][ 9].imag() * ppsi[ 4].real();
+	cchi[ 3].imag() += tri[vec].offd[0][13].real() * ppsi[ 5].imag();
+	cchi[ 3].imag() -= tri[vec].offd[0][13].imag() * ppsi[ 5].real();
 	
 	
-	cchi[ 4].imag()  = tri[site].diag[0][ 4].elem() * ppsi[ 4].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 6].real() * ppsi[ 0].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 6].imag() * ppsi[ 0].real();
-	cchi[ 4].imag() += tri[site].offd[0][ 7].real() * ppsi[ 1].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 7].imag() * ppsi[ 1].real();
-	cchi[ 4].imag() += tri[site].offd[0][ 8].real() * ppsi[ 2].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 8].imag() * ppsi[ 2].real();
-	cchi[ 4].imag() += tri[site].offd[0][ 9].real() * ppsi[ 3].imag();
-	cchi[ 4].imag() += tri[site].offd[0][ 9].imag() * ppsi[ 3].real();
-	cchi[ 4].imag() += tri[site].offd[0][14].real() * ppsi[ 5].imag();
-	cchi[ 4].imag() -= tri[site].offd[0][14].imag() * ppsi[ 5].real();
+	cchi[ 4].real()  = tri[vec].diag[0][ 4].elem() * ppsi[ 4].real();
+	cchi[ 4].real() += tri[vec].offd[0][ 6].real() * ppsi[ 0].real();
+	cchi[ 4].real() -= tri[vec].offd[0][ 6].imag() * ppsi[ 0].imag();
+	cchi[ 4].real() += tri[vec].offd[0][ 7].real() * ppsi[ 1].real();
+	cchi[ 4].real() -= tri[vec].offd[0][ 7].imag() * ppsi[ 1].imag();
+	cchi[ 4].real() += tri[vec].offd[0][ 8].real() * ppsi[ 2].real();
+	cchi[ 4].real() -= tri[vec].offd[0][ 8].imag() * ppsi[ 2].imag();
+	cchi[ 4].real() += tri[vec].offd[0][ 9].real() * ppsi[ 3].real();
+	cchi[ 4].real() -= tri[vec].offd[0][ 9].imag() * ppsi[ 3].imag();
+	cchi[ 4].real() += tri[vec].offd[0][14].real() * ppsi[ 5].real();
+	cchi[ 4].real() += tri[vec].offd[0][14].imag() * ppsi[ 5].imag();
 	
 	
-	cchi[ 5].real()  = tri[site].diag[0][ 5].elem() * ppsi[ 5].real();
-	cchi[ 5].real() += tri[site].offd[0][10].real() * ppsi[ 0].real();
-	cchi[ 5].real() -= tri[site].offd[0][10].imag() * ppsi[ 0].imag();
-	cchi[ 5].real() += tri[site].offd[0][11].real() * ppsi[ 1].real();
-	cchi[ 5].real() -= tri[site].offd[0][11].imag() * ppsi[ 1].imag();
-	cchi[ 5].real() += tri[site].offd[0][12].real() * ppsi[ 2].real();
-	cchi[ 5].real() -= tri[site].offd[0][12].imag() * ppsi[ 2].imag();
-	cchi[ 5].real() += tri[site].offd[0][13].real() * ppsi[ 3].real();
-	cchi[ 5].real() -= tri[site].offd[0][13].imag() * ppsi[ 3].imag();
-	cchi[ 5].real() += tri[site].offd[0][14].real() * ppsi[ 4].real();
-	cchi[ 5].real() -= tri[site].offd[0][14].imag() * ppsi[ 4].imag();
+	cchi[ 4].imag()  = tri[vec].diag[0][ 4].elem() * ppsi[ 4].imag();
+	cchi[ 4].imag() += tri[vec].offd[0][ 6].real() * ppsi[ 0].imag();
+	cchi[ 4].imag() += tri[vec].offd[0][ 6].imag() * ppsi[ 0].real();
+	cchi[ 4].imag() += tri[vec].offd[0][ 7].real() * ppsi[ 1].imag();
+	cchi[ 4].imag() += tri[vec].offd[0][ 7].imag() * ppsi[ 1].real();
+	cchi[ 4].imag() += tri[vec].offd[0][ 8].real() * ppsi[ 2].imag();
+	cchi[ 4].imag() += tri[vec].offd[0][ 8].imag() * ppsi[ 2].real();
+	cchi[ 4].imag() += tri[vec].offd[0][ 9].real() * ppsi[ 3].imag();
+	cchi[ 4].imag() += tri[vec].offd[0][ 9].imag() * ppsi[ 3].real();
+	cchi[ 4].imag() += tri[vec].offd[0][14].real() * ppsi[ 5].imag();
+	cchi[ 4].imag() -= tri[vec].offd[0][14].imag() * ppsi[ 5].real();
 	
 	
-	cchi[ 5].imag()  = tri[site].diag[0][ 5].elem() * ppsi[ 5].imag();
-	cchi[ 5].imag() += tri[site].offd[0][10].real() * ppsi[ 0].imag();
-	cchi[ 5].imag() += tri[site].offd[0][10].imag() * ppsi[ 0].real();
-	cchi[ 5].imag() += tri[site].offd[0][11].real() * ppsi[ 1].imag();
-	cchi[ 5].imag() += tri[site].offd[0][11].imag() * ppsi[ 1].real();
-	cchi[ 5].imag() += tri[site].offd[0][12].real() * ppsi[ 2].imag();
-	cchi[ 5].imag() += tri[site].offd[0][12].imag() * ppsi[ 2].real();
-	cchi[ 5].imag() += tri[site].offd[0][13].real() * ppsi[ 3].imag();
-	cchi[ 5].imag() += tri[site].offd[0][13].imag() * ppsi[ 3].real();
-	cchi[ 5].imag() += tri[site].offd[0][14].real() * ppsi[ 4].imag();
-	cchi[ 5].imag() += tri[site].offd[0][14].imag() * ppsi[ 4].real();
+	cchi[ 5].real()  = tri[vec].diag[0][ 5].elem() * ppsi[ 5].real();
+	cchi[ 5].real() += tri[vec].offd[0][10].real() * ppsi[ 0].real();
+	cchi[ 5].real() -= tri[vec].offd[0][10].imag() * ppsi[ 0].imag();
+	cchi[ 5].real() += tri[vec].offd[0][11].real() * ppsi[ 1].real();
+	cchi[ 5].real() -= tri[vec].offd[0][11].imag() * ppsi[ 1].imag();
+	cchi[ 5].real() += tri[vec].offd[0][12].real() * ppsi[ 2].real();
+	cchi[ 5].real() -= tri[vec].offd[0][12].imag() * ppsi[ 2].imag();
+	cchi[ 5].real() += tri[vec].offd[0][13].real() * ppsi[ 3].real();
+	cchi[ 5].real() -= tri[vec].offd[0][13].imag() * ppsi[ 3].imag();
+	cchi[ 5].real() += tri[vec].offd[0][14].real() * ppsi[ 4].real();
+	cchi[ 5].real() -= tri[vec].offd[0][14].imag() * ppsi[ 4].imag();
 	
 	
-	cchi[ 6].real()  = tri[site].diag[1][0].elem()  * ppsi[6].real();
-	cchi[ 6].real() += tri[site].offd[1][0].real()  * ppsi[7].real();
-	cchi[ 6].real() += tri[site].offd[1][0].imag()  * ppsi[7].imag();
-	cchi[ 6].real() += tri[site].offd[1][1].real()  * ppsi[8].real();
-	cchi[ 6].real() += tri[site].offd[1][1].imag()  * ppsi[8].imag();
-	cchi[ 6].real() += tri[site].offd[1][3].real()  * ppsi[9].real();
-	cchi[ 6].real() += tri[site].offd[1][3].imag()  * ppsi[9].imag();
-	cchi[ 6].real() += tri[site].offd[1][6].real()  * ppsi[10].real();
-	cchi[ 6].real() += tri[site].offd[1][6].imag()  * ppsi[10].imag();
-	cchi[ 6].real() += tri[site].offd[1][10].real() * ppsi[11].real();
-	cchi[ 6].real() += tri[site].offd[1][10].imag() * ppsi[11].imag();
-	
-	cchi[ 6].imag()  = tri[site].diag[1][0].elem()  * ppsi[6].imag();
-	cchi[ 6].imag() += tri[site].offd[1][0].real()  * ppsi[7].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][0].imag()  * ppsi[7].real();
-	cchi[ 6].imag() += tri[site].offd[1][1].real()  * ppsi[8].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][1].imag()  * ppsi[8].real();
-	cchi[ 6].imag() += tri[site].offd[1][3].real()  * ppsi[9].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][3].imag()  * ppsi[9].real();
-	cchi[ 6].imag() += tri[site].offd[1][6].real()  * ppsi[10].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][6].imag()  * ppsi[10].real();
-	cchi[ 6].imag() += tri[site].offd[1][10].real() * ppsi[11].imag();
-	cchi[ 6].imag() -= tri[site].offd[1][10].imag() * ppsi[11].real();
+	cchi[ 5].imag()  = tri[vec].diag[0][ 5].elem() * ppsi[ 5].imag();
+	cchi[ 5].imag() += tri[vec].offd[0][10].real() * ppsi[ 0].imag();
+	cchi[ 5].imag() += tri[vec].offd[0][10].imag() * ppsi[ 0].real();
+	cchi[ 5].imag() += tri[vec].offd[0][11].real() * ppsi[ 1].imag();
+	cchi[ 5].imag() += tri[vec].offd[0][11].imag() * ppsi[ 1].real();
+	cchi[ 5].imag() += tri[vec].offd[0][12].real() * ppsi[ 2].imag();
+	cchi[ 5].imag() += tri[vec].offd[0][12].imag() * ppsi[ 2].real();
+	cchi[ 5].imag() += tri[vec].offd[0][13].real() * ppsi[ 3].imag();
+	cchi[ 5].imag() += tri[vec].offd[0][13].imag() * ppsi[ 3].real();
+	cchi[ 5].imag() += tri[vec].offd[0][14].real() * ppsi[ 4].imag();
+	cchi[ 5].imag() += tri[vec].offd[0][14].imag() * ppsi[ 4].real();
 	
 	
-	cchi[ 7].real()  = tri[site].diag[1][ 1].elem()  * ppsi[ 7].real();
-	cchi[ 7].real() += tri[site].offd[1][ 0].real()  * ppsi[ 6].real();
-	cchi[ 7].real() -= tri[site].offd[1][ 0].imag()  * ppsi[ 6].imag();
-	cchi[ 7].real() += tri[site].offd[1][ 2].real()  * ppsi[ 8].real();
-	cchi[ 7].real() += tri[site].offd[1][ 2].imag()  * ppsi[ 8].imag();
-	cchi[ 7].real() += tri[site].offd[1][ 4].real()  * ppsi[ 9].real();
-	cchi[ 7].real() += tri[site].offd[1][ 4].imag()  * ppsi[ 9].imag();
-	cchi[ 7].real() += tri[site].offd[1][ 7].real()  * ppsi[10].real();
-	cchi[ 7].real() += tri[site].offd[1][ 7].imag()  * ppsi[10].imag();
-	cchi[ 7].real() += tri[site].offd[1][11].real()  * ppsi[11].real();
-	cchi[ 7].real() += tri[site].offd[1][11].imag()  * ppsi[11].imag();
+	cchi[ 6].real()  = tri[vec].diag[1][0].elem()  * ppsi[6].real();
+	cchi[ 6].real() += tri[vec].offd[1][0].real()  * ppsi[7].real();
+	cchi[ 6].real() += tri[vec].offd[1][0].imag()  * ppsi[7].imag();
+	cchi[ 6].real() += tri[vec].offd[1][1].real()  * ppsi[8].real();
+	cchi[ 6].real() += tri[vec].offd[1][1].imag()  * ppsi[8].imag();
+	cchi[ 6].real() += tri[vec].offd[1][3].real()  * ppsi[9].real();
+	cchi[ 6].real() += tri[vec].offd[1][3].imag()  * ppsi[9].imag();
+	cchi[ 6].real() += tri[vec].offd[1][6].real()  * ppsi[10].real();
+	cchi[ 6].real() += tri[vec].offd[1][6].imag()  * ppsi[10].imag();
+	cchi[ 6].real() += tri[vec].offd[1][10].real() * ppsi[11].real();
+	cchi[ 6].real() += tri[vec].offd[1][10].imag() * ppsi[11].imag();
 	
-	cchi[ 7].imag()  = tri[site].diag[1][ 1].elem()  * ppsi[ 7].imag();
-	cchi[ 7].imag() += tri[site].offd[1][ 0].real()  * ppsi[ 6].imag();
-	cchi[ 7].imag() += tri[site].offd[1][ 0].imag()  * ppsi[ 6].real();
-	cchi[ 7].imag() += tri[site].offd[1][ 2].real()  * ppsi[ 8].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][ 2].imag()  * ppsi[ 8].real();
-	cchi[ 7].imag() += tri[site].offd[1][ 4].real()  * ppsi[ 9].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][ 4].imag()  * ppsi[ 9].real();
-	cchi[ 7].imag() += tri[site].offd[1][ 7].real()  * ppsi[10].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][ 7].imag()  * ppsi[10].real();
-	cchi[ 7].imag() += tri[site].offd[1][11].real()  * ppsi[11].imag();
-	cchi[ 7].imag() -= tri[site].offd[1][11].imag()  * ppsi[11].real();
-	
-	
-	cchi[ 8].real()  = tri[site].diag[1][ 2].elem()  * ppsi[ 8].real();
-	cchi[ 8].real() += tri[site].offd[1][ 1].real()  * ppsi[ 6].real();
-	cchi[ 8].real() -= tri[site].offd[1][ 1].imag()  * ppsi[ 6].imag();
-	cchi[ 8].real() += tri[site].offd[1][ 2].real()  * ppsi[ 7].real();
-	cchi[ 8].real() -= tri[site].offd[1][ 2].imag()  * ppsi[ 7].imag();
-	cchi[ 8].real() += tri[site].offd[1][5].real()   * ppsi[ 9].real();
-	cchi[ 8].real() += tri[site].offd[1][5].imag()   * ppsi[ 9].imag();
-	cchi[ 8].real() += tri[site].offd[1][8].real()   * ppsi[10].real();
-	cchi[ 8].real() += tri[site].offd[1][8].imag()   * ppsi[10].imag();
-	cchi[ 8].real() += tri[site].offd[1][12].real()  * ppsi[11].real();
-	cchi[ 8].real() += tri[site].offd[1][12].imag()  * ppsi[11].imag();
-	
-	cchi[ 8].imag() = tri[site].diag[1][ 2].elem()   * ppsi[ 8].imag();
-	cchi[ 8].imag() += tri[site].offd[1][ 1].real()  * ppsi[ 6].imag();
-	cchi[ 8].imag() += tri[site].offd[1][ 1].imag()  * ppsi[ 6].real();
-	cchi[ 8].imag() += tri[site].offd[1][ 2].real()  * ppsi[ 7].imag();
-	cchi[ 8].imag() += tri[site].offd[1][ 2].imag()  * ppsi[ 7].real();
-	cchi[ 8].imag() += tri[site].offd[1][5].real()   * ppsi[ 9].imag();
-	cchi[ 8].imag() -= tri[site].offd[1][5].imag()   * ppsi[ 9].real();
-	cchi[ 8].imag() += tri[site].offd[1][8].real()   * ppsi[10].imag();
-	cchi[ 8].imag() -= tri[site].offd[1][8].imag()   * ppsi[10].real();
-	cchi[ 8].imag() += tri[site].offd[1][12].real()  * ppsi[11].imag();
-	cchi[ 8].imag() -= tri[site].offd[1][12].imag()  * ppsi[11].real();
+	cchi[ 6].imag()  = tri[vec].diag[1][0].elem()  * ppsi[6].imag();
+	cchi[ 6].imag() += tri[vec].offd[1][0].real()  * ppsi[7].imag();
+	cchi[ 6].imag() -= tri[vec].offd[1][0].imag()  * ppsi[7].real();
+	cchi[ 6].imag() += tri[vec].offd[1][1].real()  * ppsi[8].imag();
+	cchi[ 6].imag() -= tri[vec].offd[1][1].imag()  * ppsi[8].real();
+	cchi[ 6].imag() += tri[vec].offd[1][3].real()  * ppsi[9].imag();
+	cchi[ 6].imag() -= tri[vec].offd[1][3].imag()  * ppsi[9].real();
+	cchi[ 6].imag() += tri[vec].offd[1][6].real()  * ppsi[10].imag();
+	cchi[ 6].imag() -= tri[vec].offd[1][6].imag()  * ppsi[10].real();
+	cchi[ 6].imag() += tri[vec].offd[1][10].real() * ppsi[11].imag();
+	cchi[ 6].imag() -= tri[vec].offd[1][10].imag() * ppsi[11].real();
 	
 	
-	cchi[ 9].real()  = tri[site].diag[1][ 3].elem()  * ppsi[ 9].real();
-	cchi[ 9].real() += tri[site].offd[1][ 3].real()  * ppsi[ 6].real();
-	cchi[ 9].real() -= tri[site].offd[1][ 3].imag()  * ppsi[ 6].imag();
-	cchi[ 9].real() += tri[site].offd[1][ 4].real()  * ppsi[ 7].real();
-	cchi[ 9].real() -= tri[site].offd[1][ 4].imag()  * ppsi[ 7].imag();
-	cchi[ 9].real() += tri[site].offd[1][ 5].real()  * ppsi[ 8].real();
-	cchi[ 9].real() -= tri[site].offd[1][ 5].imag()  * ppsi[ 8].imag();
-	cchi[ 9].real() += tri[site].offd[1][ 9].real()  * ppsi[10].real();
-	cchi[ 9].real() += tri[site].offd[1][ 9].imag()  * ppsi[10].imag();
-	cchi[ 9].real() += tri[site].offd[1][13].real()  * ppsi[11].real();
-	cchi[ 9].real() += tri[site].offd[1][13].imag()  * ppsi[11].imag();
+	cchi[ 7].real()  = tri[vec].diag[1][ 1].elem()  * ppsi[ 7].real();
+	cchi[ 7].real() += tri[vec].offd[1][ 0].real()  * ppsi[ 6].real();
+	cchi[ 7].real() -= tri[vec].offd[1][ 0].imag()  * ppsi[ 6].imag();
+	cchi[ 7].real() += tri[vec].offd[1][ 2].real()  * ppsi[ 8].real();
+	cchi[ 7].real() += tri[vec].offd[1][ 2].imag()  * ppsi[ 8].imag();
+	cchi[ 7].real() += tri[vec].offd[1][ 4].real()  * ppsi[ 9].real();
+	cchi[ 7].real() += tri[vec].offd[1][ 4].imag()  * ppsi[ 9].imag();
+	cchi[ 7].real() += tri[vec].offd[1][ 7].real()  * ppsi[10].real();
+	cchi[ 7].real() += tri[vec].offd[1][ 7].imag()  * ppsi[10].imag();
+	cchi[ 7].real() += tri[vec].offd[1][11].real()  * ppsi[11].real();
+	cchi[ 7].real() += tri[vec].offd[1][11].imag()  * ppsi[11].imag();
 	
-	cchi[ 9].imag()  = tri[site].diag[1][ 3].elem()  * ppsi[ 9].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 3].real()  * ppsi[ 6].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 3].imag()  * ppsi[ 6].real();
-	cchi[ 9].imag() += tri[site].offd[1][ 4].real()  * ppsi[ 7].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 4].imag()  * ppsi[ 7].real();
-	cchi[ 9].imag() += tri[site].offd[1][ 5].real()  * ppsi[ 8].imag();
-	cchi[ 9].imag() += tri[site].offd[1][ 5].imag()  * ppsi[ 8].real();
-	cchi[ 9].imag() += tri[site].offd[1][ 9].real()  * ppsi[10].imag();
-	cchi[ 9].imag() -= tri[site].offd[1][ 9].imag()  * ppsi[10].real();
-	cchi[ 9].imag() += tri[site].offd[1][13].real()  * ppsi[11].imag();
-	cchi[ 9].imag() -= tri[site].offd[1][13].imag()  * ppsi[11].real();
-	
-	
-	cchi[10].real()  = tri[site].diag[1][ 4].elem()  * ppsi[10].real();
-	cchi[10].real() += tri[site].offd[1][ 6].real()  * ppsi[ 6].real();
-	cchi[10].real() -= tri[site].offd[1][ 6].imag()  * ppsi[ 6].imag();
-	cchi[10].real() += tri[site].offd[1][ 7].real()  * ppsi[ 7].real();
-	cchi[10].real() -= tri[site].offd[1][ 7].imag()  * ppsi[ 7].imag();
-	cchi[10].real() += tri[site].offd[1][ 8].real()  * ppsi[ 8].real();
-	cchi[10].real() -= tri[site].offd[1][ 8].imag()  * ppsi[ 8].imag();
-	cchi[10].real() += tri[site].offd[1][ 9].real()  * ppsi[ 9].real();
-	cchi[10].real() -= tri[site].offd[1][ 9].imag()  * ppsi[ 9].imag();
-	cchi[10].real() += tri[site].offd[1][14].real()  * ppsi[11].real();
-	cchi[10].real() += tri[site].offd[1][14].imag()  * ppsi[11].imag();
-	
-	cchi[10].imag()  = tri[site].diag[1][ 4].elem()  * ppsi[10].imag();
-	cchi[10].imag() += tri[site].offd[1][ 6].real()  * ppsi[ 6].imag();
-	cchi[10].imag() += tri[site].offd[1][ 6].imag()  * ppsi[ 6].real();
-	cchi[10].imag() += tri[site].offd[1][ 7].real()  * ppsi[ 7].imag();
-	cchi[10].imag() += tri[site].offd[1][ 7].imag()  * ppsi[ 7].real();
-	cchi[10].imag() += tri[site].offd[1][ 8].real()  * ppsi[ 8].imag();
-	cchi[10].imag() += tri[site].offd[1][ 8].imag()  * ppsi[ 8].real();
-	cchi[10].imag() += tri[site].offd[1][ 9].real()  * ppsi[ 9].imag();
-	cchi[10].imag() += tri[site].offd[1][ 9].imag()  * ppsi[ 9].real();
-	cchi[10].imag() += tri[site].offd[1][14].real()  * ppsi[11].imag();
-	cchi[10].imag() -= tri[site].offd[1][14].imag()  * ppsi[11].real();
+	cchi[ 7].imag()  = tri[vec].diag[1][ 1].elem()  * ppsi[ 7].imag();
+	cchi[ 7].imag() += tri[vec].offd[1][ 0].real()  * ppsi[ 6].imag();
+	cchi[ 7].imag() += tri[vec].offd[1][ 0].imag()  * ppsi[ 6].real();
+	cchi[ 7].imag() += tri[vec].offd[1][ 2].real()  * ppsi[ 8].imag();
+	cchi[ 7].imag() -= tri[vec].offd[1][ 2].imag()  * ppsi[ 8].real();
+	cchi[ 7].imag() += tri[vec].offd[1][ 4].real()  * ppsi[ 9].imag();
+	cchi[ 7].imag() -= tri[vec].offd[1][ 4].imag()  * ppsi[ 9].real();
+	cchi[ 7].imag() += tri[vec].offd[1][ 7].real()  * ppsi[10].imag();
+	cchi[ 7].imag() -= tri[vec].offd[1][ 7].imag()  * ppsi[10].real();
+	cchi[ 7].imag() += tri[vec].offd[1][11].real()  * ppsi[11].imag();
+	cchi[ 7].imag() -= tri[vec].offd[1][11].imag()  * ppsi[11].real();
 	
 	
-	cchi[11].real()  = tri[site].diag[1][ 5].elem()  * ppsi[11].real();
-	cchi[11].real() += tri[site].offd[1][10].real()  * ppsi[ 6].real();
-	cchi[11].real() -= tri[site].offd[1][10].imag()  * ppsi[ 6].imag();
-	cchi[11].real() += tri[site].offd[1][11].real()  * ppsi[ 7].real();
-	cchi[11].real() -= tri[site].offd[1][11].imag()  * ppsi[ 7].imag();
-	cchi[11].real() += tri[site].offd[1][12].real()  * ppsi[ 8].real();
-	cchi[11].real() -= tri[site].offd[1][12].imag()  * ppsi[ 8].imag();
-	cchi[11].real() += tri[site].offd[1][13].real()  * ppsi[ 9].real();
-	cchi[11].real() -= tri[site].offd[1][13].imag()  * ppsi[ 9].imag();
-	cchi[11].real() += tri[site].offd[1][14].real()  * ppsi[10].real();
-	cchi[11].real() -= tri[site].offd[1][14].imag()  * ppsi[10].imag();
+	cchi[ 8].real()  = tri[vec].diag[1][ 2].elem()  * ppsi[ 8].real();
+	cchi[ 8].real() += tri[vec].offd[1][ 1].real()  * ppsi[ 6].real();
+	cchi[ 8].real() -= tri[vec].offd[1][ 1].imag()  * ppsi[ 6].imag();
+	cchi[ 8].real() += tri[vec].offd[1][ 2].real()  * ppsi[ 7].real();
+	cchi[ 8].real() -= tri[vec].offd[1][ 2].imag()  * ppsi[ 7].imag();
+	cchi[ 8].real() += tri[vec].offd[1][5].real()   * ppsi[ 9].real();
+	cchi[ 8].real() += tri[vec].offd[1][5].imag()   * ppsi[ 9].imag();
+	cchi[ 8].real() += tri[vec].offd[1][8].real()   * ppsi[10].real();
+	cchi[ 8].real() += tri[vec].offd[1][8].imag()   * ppsi[10].imag();
+	cchi[ 8].real() += tri[vec].offd[1][12].real()  * ppsi[11].real();
+	cchi[ 8].real() += tri[vec].offd[1][12].imag()  * ppsi[11].imag();
 	
-	cchi[11].imag()  = tri[site].diag[1][ 5].elem()  * ppsi[11].imag();
-	cchi[11].imag() += tri[site].offd[1][10].real()  * ppsi[ 6].imag();
-	cchi[11].imag() += tri[site].offd[1][10].imag()  * ppsi[ 6].real();
-	cchi[11].imag() += tri[site].offd[1][11].real()  * ppsi[ 7].imag();
-	cchi[11].imag() += tri[site].offd[1][11].imag()  * ppsi[ 7].real();
-	cchi[11].imag() += tri[site].offd[1][12].real()  * ppsi[ 8].imag();
-	cchi[11].imag() += tri[site].offd[1][12].imag()  * ppsi[ 8].real();
-	cchi[11].imag() += tri[site].offd[1][13].real()  * ppsi[ 9].imag();
-	cchi[11].imag() += tri[site].offd[1][13].imag()  * ppsi[ 9].real();
-	cchi[11].imag() += tri[site].offd[1][14].real()  * ppsi[10].imag();
-	cchi[11].imag() += tri[site].offd[1][14].imag()  * ppsi[10].real();
-#endif
+	cchi[ 8].imag() = tri[vec].diag[1][ 2].elem()   * ppsi[ 8].imag();
+	cchi[ 8].imag() += tri[vec].offd[1][ 1].real()  * ppsi[ 6].imag();
+	cchi[ 8].imag() += tri[vec].offd[1][ 1].imag()  * ppsi[ 6].real();
+	cchi[ 8].imag() += tri[vec].offd[1][ 2].real()  * ppsi[ 7].imag();
+	cchi[ 8].imag() += tri[vec].offd[1][ 2].imag()  * ppsi[ 7].real();
+	cchi[ 8].imag() += tri[vec].offd[1][5].real()   * ppsi[ 9].imag();
+	cchi[ 8].imag() -= tri[vec].offd[1][5].imag()   * ppsi[ 9].real();
+	cchi[ 8].imag() += tri[vec].offd[1][8].real()   * ppsi[10].imag();
+	cchi[ 8].imag() -= tri[vec].offd[1][8].imag()   * ppsi[10].real();
+	cchi[ 8].imag() += tri[vec].offd[1][12].real()  * ppsi[11].imag();
+	cchi[ 8].imag() -= tri[vec].offd[1][12].imag()  * ppsi[11].real();
+	
+	
+	cchi[ 9].real()  = tri[vec].diag[1][ 3].elem()  * ppsi[ 9].real();
+	cchi[ 9].real() += tri[vec].offd[1][ 3].real()  * ppsi[ 6].real();
+	cchi[ 9].real() -= tri[vec].offd[1][ 3].imag()  * ppsi[ 6].imag();
+	cchi[ 9].real() += tri[vec].offd[1][ 4].real()  * ppsi[ 7].real();
+	cchi[ 9].real() -= tri[vec].offd[1][ 4].imag()  * ppsi[ 7].imag();
+	cchi[ 9].real() += tri[vec].offd[1][ 5].real()  * ppsi[ 8].real();
+	cchi[ 9].real() -= tri[vec].offd[1][ 5].imag()  * ppsi[ 8].imag();
+	cchi[ 9].real() += tri[vec].offd[1][ 9].real()  * ppsi[10].real();
+	cchi[ 9].real() += tri[vec].offd[1][ 9].imag()  * ppsi[10].imag();
+	cchi[ 9].real() += tri[vec].offd[1][13].real()  * ppsi[11].real();
+	cchi[ 9].real() += tri[vec].offd[1][13].imag()  * ppsi[11].imag();
+	
+	cchi[ 9].imag()  = tri[vec].diag[1][ 3].elem()  * ppsi[ 9].imag();
+	cchi[ 9].imag() += tri[vec].offd[1][ 3].real()  * ppsi[ 6].imag();
+	cchi[ 9].imag() += tri[vec].offd[1][ 3].imag()  * ppsi[ 6].real();
+	cchi[ 9].imag() += tri[vec].offd[1][ 4].real()  * ppsi[ 7].imag();
+	cchi[ 9].imag() += tri[vec].offd[1][ 4].imag()  * ppsi[ 7].real();
+	cchi[ 9].imag() += tri[vec].offd[1][ 5].real()  * ppsi[ 8].imag();
+	cchi[ 9].imag() += tri[vec].offd[1][ 5].imag()  * ppsi[ 8].real();
+	cchi[ 9].imag() += tri[vec].offd[1][ 9].real()  * ppsi[10].imag();
+	cchi[ 9].imag() -= tri[vec].offd[1][ 9].imag()  * ppsi[10].real();
+	cchi[ 9].imag() += tri[vec].offd[1][13].real()  * ppsi[11].imag();
+	cchi[ 9].imag() -= tri[vec].offd[1][13].imag()  * ppsi[11].real();
+	
+	
+	cchi[10].real()  = tri[vec].diag[1][ 4].elem()  * ppsi[10].real();
+	cchi[10].real() += tri[vec].offd[1][ 6].real()  * ppsi[ 6].real();
+	cchi[10].real() -= tri[vec].offd[1][ 6].imag()  * ppsi[ 6].imag();
+	cchi[10].real() += tri[vec].offd[1][ 7].real()  * ppsi[ 7].real();
+	cchi[10].real() -= tri[vec].offd[1][ 7].imag()  * ppsi[ 7].imag();
+	cchi[10].real() += tri[vec].offd[1][ 8].real()  * ppsi[ 8].real();
+	cchi[10].real() -= tri[vec].offd[1][ 8].imag()  * ppsi[ 8].imag();
+	cchi[10].real() += tri[vec].offd[1][ 9].real()  * ppsi[ 9].real();
+	cchi[10].real() -= tri[vec].offd[1][ 9].imag()  * ppsi[ 9].imag();
+	cchi[10].real() += tri[vec].offd[1][14].real()  * ppsi[11].real();
+	cchi[10].real() += tri[vec].offd[1][14].imag()  * ppsi[11].imag();
+	
+	cchi[10].imag()  = tri[vec].diag[1][ 4].elem()  * ppsi[10].imag();
+	cchi[10].imag() += tri[vec].offd[1][ 6].real()  * ppsi[ 6].imag();
+	cchi[10].imag() += tri[vec].offd[1][ 6].imag()  * ppsi[ 6].real();
+	cchi[10].imag() += tri[vec].offd[1][ 7].real()  * ppsi[ 7].imag();
+	cchi[10].imag() += tri[vec].offd[1][ 7].imag()  * ppsi[ 7].real();
+	cchi[10].imag() += tri[vec].offd[1][ 8].real()  * ppsi[ 8].imag();
+	cchi[10].imag() += tri[vec].offd[1][ 8].imag()  * ppsi[ 8].real();
+	cchi[10].imag() += tri[vec].offd[1][ 9].real()  * ppsi[ 9].imag();
+	cchi[10].imag() += tri[vec].offd[1][ 9].imag()  * ppsi[ 9].real();
+	cchi[10].imag() += tri[vec].offd[1][14].real()  * ppsi[11].imag();
+	cchi[10].imag() -= tri[vec].offd[1][14].imag()  * ppsi[11].real();
+	
+	
+	cchi[11].real()  = tri[vec].diag[1][ 5].elem()  * ppsi[11].real();
+	cchi[11].real() += tri[vec].offd[1][10].real()  * ppsi[ 6].real();
+	cchi[11].real() -= tri[vec].offd[1][10].imag()  * ppsi[ 6].imag();
+	cchi[11].real() += tri[vec].offd[1][11].real()  * ppsi[ 7].real();
+	cchi[11].real() -= tri[vec].offd[1][11].imag()  * ppsi[ 7].imag();
+	cchi[11].real() += tri[vec].offd[1][12].real()  * ppsi[ 8].real();
+	cchi[11].real() -= tri[vec].offd[1][12].imag()  * ppsi[ 8].imag();
+	cchi[11].real() += tri[vec].offd[1][13].real()  * ppsi[ 9].real();
+	cchi[11].real() -= tri[vec].offd[1][13].imag()  * ppsi[ 9].imag();
+	cchi[11].real() += tri[vec].offd[1][14].real()  * ppsi[10].real();
+	cchi[11].real() -= tri[vec].offd[1][14].imag()  * ppsi[10].imag();
+	
+	cchi[11].imag()  = tri[vec].diag[1][ 5].elem()  * ppsi[11].imag();
+	cchi[11].imag() += tri[vec].offd[1][10].real()  * ppsi[ 6].imag();
+	cchi[11].imag() += tri[vec].offd[1][10].imag()  * ppsi[ 6].real();
+	cchi[11].imag() += tri[vec].offd[1][11].real()  * ppsi[ 7].imag();
+	cchi[11].imag() += tri[vec].offd[1][11].imag()  * ppsi[ 7].real();
+	cchi[11].imag() += tri[vec].offd[1][12].real()  * ppsi[ 8].imag();
+	cchi[11].imag() += tri[vec].offd[1][12].imag()  * ppsi[ 8].real();
+	cchi[11].imag() += tri[vec].offd[1][13].real()  * ppsi[ 9].imag();
+	cchi[11].imag() += tri[vec].offd[1][13].imag()  * ppsi[ 9].real();
+	cchi[11].imag() += tri[vec].offd[1][14].real()  * ppsi[10].imag();
+	cchi[11].imag() += tri[vec].offd[1][14].imag()  * ppsi[10].real();
+
       }
 
       END_CODE();
+#ifdef CLOVER_DEBUG
+      QDPIO::cout << "TID=" << MyId << " Leaving CloverTerm::applyBlockLoop \n" << flush;
+#endif
     }// Function
   } // Namespace 
 
@@ -2069,6 +1960,9 @@ namespace Chroma
   void QDPCloverTermT<T,U>::apply(T& chi, const T& psi, 
 			    enum PlusMinus isign, int cb) const
   {
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Entering ClovertTerm::appply \n" << flush;
+#endif
     START_CODE();
     
     if ( Ns != 4 ) {
@@ -2077,87 +1971,18 @@ namespace Chroma
     }
 
     QDPCloverEnv::ApplyArgs<T> arg = { chi,psi,tri,cb };
-    int num_sites = rb[cb].siteTable().size();
+    int num_sites = rb[cb].getBlockTable().size();
 
     // The dispatch function is at the end of the file
     // ought to work for non-threaded targets too...
-    dispatch_to_threads(num_sites, arg, QDPCloverEnv::applySiteLoop<T>);
+    dispatch_to_threads(num_sites, arg, QDPCloverEnv::applyBlockLoop<T>);
     (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
+#ifdef CLOVER_DEBUG
+    QDPIO::cout << "Leaving ClovertTerm::appply \n" << flush;
+#endif
   }
-
-
-  namespace QDPCloverEnv {
-    template<typename R> 
-    struct QUDAPackArgs { 
-      int cb;
-      multi1d<QUDAPackedClovSite<R> >& quda_array;
-      const multi1d<PrimitiveClovTriang< R > >& tri;
-    };
-    
-    template<typename R>
-    void qudaPackSiteLoop(int lo, int hi, int myId, QUDAPackArgs<R>* a) {
-      int cb = a->cb;
-      int Ns2 = Ns/2;
-
-      multi1d<QUDAPackedClovSite<R> >& quda_array = a->quda_array;
-      const multi1d<PrimitiveClovTriang< R > >& tri=a->tri;
-
-      const int idtab[15]={0,1,3,6,10,2,4,7,11,5,8,12,9,13,14};
-
-      for(int ssite=lo; ssite < hi; ++ssite) {
-	int site = rb[cb].siteTable()[ssite];
-	// First Chiral Block
-	for(int i=0; i < 6; i++) { 
-	  quda_array[site].diag1[i] = tri[site].diag[0][i].elem();
-	}
-
-	int target_index=0;
-	
-	for(int col=0; col < Nc*Ns2-1; col++) { 
-	  for(int row=col+1; row < Nc*Ns2; row++) {
-
-	    int source_index = row*(row-1)/2 + col;
-
-	    quda_array[site].offDiag1[target_index][0] = tri[site].offd[0][source_index].real();
-	    quda_array[site].offDiag1[target_index][1] = tri[site].offd[0][source_index].imag();
-	    target_index++;
-	  }
-	}
-	// Second Chiral Block
-	for(int i=0; i < 6; i++) { 
-	  quda_array[site].diag2[i] = tri[site].diag[1][i].elem();
-	}
-
-	target_index=0;
-	for(int col=0; col < Nc*Ns2-1; col++) { 
-	  for(int row=col+1; row < Nc*Ns2; row++) {
-
-	    int source_index = row*(row-1)/2 + col;
-	    quda_array[site].offDiag2[target_index][0] = tri[site].offd[1][source_index].real();
-	    quda_array[site].offDiag2[target_index][1] = tri[site].offd[1][source_index].imag();
-	    target_index++;
-	  }
-	}
-      }
-    }
-  }
-
-  template<typename T, typename U>
-  void QDPCloverTermT<T,U>::packForQUDA(multi1d<QUDAPackedClovSite<typename WordType<T>::Type_t> >& quda_array, int cb) const
-    {
-      typedef typename WordType<T>::Type_t REALT;
-      int num_sites = rb[cb].siteTable().size();
-
-      QDPCloverEnv::QUDAPackArgs<REALT> args = { cb, quda_array,tri };
-      dispatch_to_threads(num_sites, args, QDPCloverEnv::qudaPackSiteLoop<REALT>);
-
-
-      
-    }  
-
-
 
   typedef QDPCloverTermT<LatticeFermion, LatticeColorMatrix> QDPCloverTerm;
   typedef QDPCloverTermT<LatticeFermionF, LatticeColorMatrixF> QDPCloverTermF;

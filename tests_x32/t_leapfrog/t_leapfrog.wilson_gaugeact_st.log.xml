@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <mesE>
+    <mesKE>
+      <KE>58.1953556388021</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>2</num_terms>
+      <PEByMonomials>
+        <elem>
+          <GaugeMonomial>
+            <S>-68631.8848126069</S>
+          </GaugeMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-54986.6673357975</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <leapP>
+    <dt>0.05</dt>
+    <dt_actual_per_dir>0.05 0.05 0.05 0.05</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>0.190495604754224 0.190352441833627 0.194260131704796 0</F_sq_per_direction>
+              <F_avg_per_direction>0.294754368788453 0.294134475825092 0.296279260558249 0</F_avg_per_direction>
+              <F_max_per_direction>1.19688671434898 1.24217986976384 1.40328793661797 -0</F_max_per_direction>
+              <F_sq>0.143777044573162</F_sq>
+              <F_avg>0.221292026292948</F_avg>
+              <F_max>1.40328793661797</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>0.917643595544708 0.923702717125014 0.923534097402252 5.62406712412068</F_sq_per_direction>
+              <F_avg_per_direction>0.55769103594141 0.559598790191944 0.558995381489582 1.37473767568325</F_avg_per_direction>
+              <F_max_per_direction>1.96628647842433 2.14797241415276 2.18187944341288 6.5133528283699</F_max_per_direction>
+              <F_sq>2.09723688354816</F_sq>
+              <F_avg>0.762755720826547</F_avg>
+              <F_max>6.5133528283699</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.1</dt>
+    <dt_actual_per_dir>0.1 0.1 0.1 0.1</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.05</dt>
+    <dt_actual_per_dir>0.05 0.05 0.05 0.05</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>1.07977329755032 1.10712422455184 1.08905747631692 0</F_sq_per_direction>
+              <F_avg_per_direction>0.713066547718688 0.721502891613205 0.713909343604456 0</F_avg_per_direction>
+              <F_max_per_direction>3.06092877507486 2.76389045343231 2.82485023414713 -0</F_max_per_direction>
+              <F_sq>0.818988749604771</F_sq>
+              <F_avg>0.537119695734087</F_avg>
+              <F_max>3.06092877507486</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>1.13878676222644 1.15523966725532 1.1578314827025 7.0051082050111</F_sq_per_direction>
+              <F_avg_per_direction>0.696227462805848 0.702836605256126 0.705103516422518 1.83173522455075</F_avg_per_direction>
+              <F_max_per_direction>2.38431046045099 2.53122385996955 2.6330920099826 6.89144720191542</F_max_per_direction>
+              <F_sq>2.61424152929884</F_sq>
+              <F_avg>0.983975702258811</F_avg>
+              <F_max>6.89144720191542</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <mesE>
+    <mesKE>
+      <KE>-1415.3825490229</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>2</num_terms>
+      <PEByMonomials>
+        <elem>
+          <GaugeMonomial>
+            <S>-67744.8206328077</S>
+          </GaugeMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-54350.6059287667</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <DeltaE>
+    <DeltaKE>-1473.5779046617</DeltaKE>
+    <DeltaPE>1523.12558683005</DeltaPE>
+    <DeltaH>49.5476821683519</DeltaH>
+  </DeltaE>
+</t_leapfrog>

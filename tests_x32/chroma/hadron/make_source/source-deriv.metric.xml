@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<!-- SOURCE-PIONxNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[1]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A0xNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[3]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A0_2xNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[5]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxNABLA_A1 -->
+<assertion xpath="/chroma/InlineObservables/elem[7]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[9]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxNABLA_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[11]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xNABLA_A1 -->
+<assertion xpath="/chroma/InlineObservables/elem[13]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xNABLA_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[15]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xNABLA_E -->
+<assertion xpath="/chroma/InlineObservables/elem[17]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[19]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A0_2xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[21]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_A2 -->
+<assertion xpath="/chroma/InlineObservables/elem[23]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_E -->
+<assertion xpath="/chroma/InlineObservables/elem[25]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[27]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[29]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_A2 -->
+<assertion xpath="/chroma/InlineObservables/elem[31]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_E -->
+<assertion xpath="/chroma/InlineObservables/elem[33]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[35]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[37]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxD_A2 -->
+<assertion xpath="/chroma/InlineObservables/elem[39]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[41]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[43]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-PIONxD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[45]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-PIONxB_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[47]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxB_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[49]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxB_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[51]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xB_A1 -->
+<assertion xpath="/chroma/InlineObservables/elem[53]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xB_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[55]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xB_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[57]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+
+<t_stout_state>
+  <lattis>
+    <Nd>4</Nd>
+    <Nc>3</Nc>
+    <nrow>4 4 4 8</nrow>
+  </lattis>
+  <Observables>
+    <w_plaq>0.00127763246129891</w_plaq>
+    <link>0.0123963931534187</link>
+    <pollp>
+      <elem>
+        <re>-0.00952459035761422</re>
+        <im>-0.00532677990850061</im>
+      </elem>
+      <elem>
+        <re>-0.0191909439521017</re>
+        <im>0.00290038415793485</im>
+      </elem>
+      <elem>
+        <re>-0.0122829901374644</re>
+        <im>-0.0154811202179796</im>
+      </elem>
+      <elem>
+        <re>-0.0309101889961312</re>
+        <im>0.0208537950529717</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <SmearingParams>
+    <rho>0.5</rho>
+    <n_smear>2</n_smear>
+    <orthog_dir>4</orthog_dir>
+  </SmearingParams>
+  <new_smearing_from_state>0.126692303214643</new_smearing_from_state>
+  <new_smearing_from_state_gtrans>0.126692062840852</new_smearing_from_state_gtrans>
+  <ForcesCheck>
+    <forceNormPreGaugeDeriv>109.244121299763</forceNormPreGaugeDeriv>
+    <forceNormPreGaugeDerivGt>109.244168800473</forceNormPreGaugeDerivGt>
+    <ForceNormPostGaugeDeriv>829.621532894606</ForceNormPostGaugeDeriv>
+    <ForceNormPostGaugeDerivGt>829.622962622209</ForceNormPostGaugeDerivGt>
+    <force_diff_norm_0>2.71386026676062e-05</force_diff_norm_0>
+    <force_diff_norm_1>2.65969407092762e-05</force_diff_norm_1>
+    <force_diff_norm_2>2.72364901954072e-05</force_diff_norm_2>
+    <force_diff_norm_3>2.70207792621777e-05</force_diff_norm_3>
+  </ForcesCheck>
+  <ForceDiffNorm>
+    <totalForceDiffNorm>5.399861035196e-05</totalForceDiffNorm>
+  </ForceDiffNorm>

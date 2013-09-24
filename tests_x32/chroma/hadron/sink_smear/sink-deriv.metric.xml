@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<!-- SOURCE-PIONxNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[3]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A0xNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[5]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A0_2xNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[7]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxNABLA_A1 -->
+<assertion xpath="/chroma/InlineObservables/elem[9]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[11]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxNABLA_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[13]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xNABLA_A1 -->
+<assertion xpath="/chroma/InlineObservables/elem[15]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xNABLA_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[17]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xNABLA_E -->
+<assertion xpath="/chroma/InlineObservables/elem[19]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xNABLA_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[21]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A0_2xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[23]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_A2 -->
+<assertion xpath="/chroma/InlineObservables/elem[25]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_E -->
+<assertion xpath="/chroma/InlineObservables/elem[27]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[29]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[31]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_A2 -->
+<assertion xpath="/chroma/InlineObservables/elem[33]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_E -->
+<assertion xpath="/chroma/InlineObservables/elem[35]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[37]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[39]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxD_A2 -->
+<assertion xpath="/chroma/InlineObservables/elem[41]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[43]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-B1xD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[45]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-PIONxD_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[47]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-PIONxB_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[49]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxB_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[51]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-RHOxB_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[53]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xB_A1 -->
+<assertion xpath="/chroma/InlineObservables/elem[55]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xB_T1 -->
+<assertion xpath="/chroma/InlineObservables/elem[57]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<!-- SOURCE-A1xB_T2 -->
+<assertion xpath="/chroma/InlineObservables/elem[59]/sink_smear/SinkSmearedProp_correlator/sink_smeared_prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

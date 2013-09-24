@@ -20,19 +20,23 @@
 #include "unprec_dwf4d_linop_w.h"
 #include "unprec_pdwf4d_linop_w.h"
 #include "unprec_ppdwf4d_linop_w.h"
+#if 0
 #include "unprec_clover_linop_w.h"
+#endif 
 
 #include "eoprec_wilson_linop_w.h"
+#if 0
 #include "eoprec_clover_linop_w.h"
+#endif 
+
 #include "eoprec_parwilson_linop_w.h"
-
+#if 0
 #include "unprec_s_cprec_t_wilson_linop_w.h"
-
 #include "iluprec_s_cprec_t_wilson_linop_w.h"
 #include "iluprec_s_cprec_t_clover_linop_w.h"
-
 #include "ilu2prec_s_cprec_t_wilson_linop_w.h"
 #include "ilu2prec_s_cprec_t_clover_linop_w.h"
+#endif
 
 #include "unprec_dwflike_linop_base_array_w.h"
 #include "unprec_dwf_linop_array_w.h"

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/purgaug/doHB/MCUpdates/elem[2]/Update/InlineObservables/elem[1]/Plaquette/w_plaq" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="/purgaug/doHB/MCUpdates/elem[2]/Update/InlineObservables/elem[1]/Plaquette/link" type="double" comparison="relative" tolerance="2.0e-5"/>
+
+<!-- 
+This doesn't work. The "im" tag is "img" in xmldiff. Grrhh.
+<assertion xpath="/purgaug/doHB/MCUpdates/elem[2]/Update/InlineObservables/elem[2]/PolyakovLoop/poly_loop" type="complex_array" comparison="absolute" tolerance="1.0e-5"/> 
+-->
+
+</assertions>

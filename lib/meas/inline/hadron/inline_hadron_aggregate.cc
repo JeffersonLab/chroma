@@ -123,10 +123,13 @@ namespace Chroma
 //	success &= InlineSpectrumEnv::registerAll();
 	success &= InlineCreateColorVecsEnv::registerAll();
 	success &= InlineProp3ptEnv::registerAll();
+#if 0
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();
 	success &= InlineDiscoEoEigCGEnv::registerAll();
 	success &= InlineDiscoEigCGEnv::registerAll();
+#endif
+
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
 	success &= InlineDiquarkEnv::registerAll();

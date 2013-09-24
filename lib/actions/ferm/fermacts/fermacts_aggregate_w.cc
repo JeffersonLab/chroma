@@ -6,29 +6,15 @@
 #include "actions/ferm/fermbcs/fermbcs_aggregate_w.h"
 #include "actions/ferm/fermacts/fermacts_aggregate_w.h"
 
-#include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_parwilson_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_graphene_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_hamberwu_fermact_w.h"
 #include "actions/ferm/fermacts/unprec_dwftransf_fermact_w.h"
-#include "actions/ferm/fermacts/unprec_w12_fermact_w.h"
 
-#include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
-#include "actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h"
-#include "actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_wilson_coarse_fine_fermact_w.h"
 #include "actions/ferm/fermacts/eoprec_parwilson_fermact_w.h"
-#include "actions/ferm/fermacts/eoprec_slic_fermact_w.h"
-#include "actions/ferm/fermacts/eoprec_slrc_fermact_w.h"
-#include "actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h"
-#include "actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.h"
-#include "actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h"
-#include "actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h"
 
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
@@ -59,6 +45,25 @@
 #include "actions/ferm/invert/multi_syssolver_mdagm_aggregate.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_accumulate_aggregate.h"
 #include "actions/ferm/fermstates/ferm_createstate_aggregate_w.h"
+
+
+#include "actions/ferm/fermacts/unprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/unprec_w12_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_slic_fermact_w.h"
+#include "actions/ferm/fermacts/eoprec_slrc_fermact_w.h"
+
+#if 0
+#include "actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.h"
+#include "actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.h"
+#include "actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.h"
+#include "actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.h"
+#include "actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.h"
+#include "actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h"
+#include "actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h"
+#endif
 
 
 namespace Chroma
@@ -103,23 +108,23 @@ namespace Chroma
 	success &= EvenOddPrecSLICFermActEnv::registerAll();
 	success &= EvenOddPrecSLRCFermActEnv::registerAll();
 	
-//      success &= EvenOddPrecCloverExtFieldFermActEnv::registerAll();
+	success &= EvenOddPrecCloverExtFieldFermActEnv::registerAll();
 
 	success &= UnprecHamberWuFermActEnv::registerAll();
-//      success &= UnprecW12FermActEnv::registerAll();
+	success &= UnprecW12FermActEnv::registerAll();
 
 	success &= PolyChebFermActEnv::registerAll();
 
 #if QDP_NS == 4
 #if QDP_NC == 3
 #if QDP_ND == 4
-	success &= UnprecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
-	success &= ILUPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
-	success &= ILUPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
-	success &= ILU2PrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
-	success &= ILU2PrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
-	success &= EO3DPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
-	success &= EO3DPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
+	//	success &= UnprecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
+	//      success &= ILUPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
+	//      success &= ILUPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
+	//      success &= ILU2PrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
+	//      success &= ILU2PrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
+	//      success &= EO3DPrecSpaceCentralPrecTimeWilsonFermActEnv::registerAll();
+	//      success &= EO3DPrecSpaceCentralPrecTimeCloverFermActEnv::registerAll();
 #endif
 #endif
 #endif

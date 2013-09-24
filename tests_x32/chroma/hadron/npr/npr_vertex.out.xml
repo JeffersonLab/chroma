@@ -1,0 +1,736 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: npr_vertex.out.xml,v 1.4 2007-11-30 05:09:00 kostas Exp $
+;
+; Coulomb gauge fixing
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Coulomb gauge fix -->
+      <Name>COULOMB_GAUGEFIX</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GFAccu>1.0e-5</GFAccu>
+        <GFMax>200</GFMax>
+        <OrDo>false</OrDo>
+        <OrPara>1.0</OrPara>
+        <j_decay>-3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <gfix_id>landau_cfg</gfix_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>MOMENTUM_VOLUME_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <mom> 1  0 0 0</mom>
+          <t_srce>0 0 0 0</t_srce>
+          <!-- Needs to be false for NPR -->
+	  <av_mom>false</av_mom>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>landau_cfg</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.12</Kappa>
+         <clovCoeff>1.17</clovCoeff>
+         <clovCoeffR>0.91</clovCoeffR>
+         <clovCoeffT>1.07</clovCoeffT>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+<annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-10</RsdCG>
+          <MaxCG>1000</MaxCG>
+          <Nmax>30</Nmax>
+          <Neig>10</Neig>
+          <Neig_max>120</Neig_max>
+          <eigen_id>linop_evs</eigen_id>
+          <cleanUpEvecs>false</cleanUpEvecs>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>landau_cfg</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+     <Name>NPR_VERTEX</Name>
+     <Frequency>1</Frequency>
+     <Param>
+       <version>1</version>
+       <links_max>2</links_max>
+       <file_name>npr-vertex</file_name>
+     </Param>
+     <NamedObject>
+        <gauge_id>landau_cfg</gauge_id>
+        <prop_id>sh_prop_0</prop_id>
+     </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.27.0</chroma>
+      <qdp>1.25.0</qdp>
+    </code_version>
+    <run_date>30 Nov 07 00:08:08 EST</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994764811229996</w_plaq>
+    <s_plaq>0.994800868133704</s_plaq>
+    <t_plaq>0.994728754326287</t_plaq>
+    <plane_01_plaq>0.994752410954485</plane_01_plaq>
+    <plane_02_plaq>0.995051669888198</plane_02_plaq>
+    <plane_12_plaq>0.994598523558428</plane_12_plaq>
+    <plane_03_plaq>0.994927932818731</plane_03_plaq>
+    <plane_13_plaq>0.994742131947229</plane_13_plaq>
+    <plane_23_plaq>0.994516198212902</plane_23_plaq>
+    <link>0.379317688096004</link>
+    <pollp>
+      <elem>
+        <re>0.96722258736069</re>
+        <im>-0.00121316528187284</im>
+      </elem>
+      <elem>
+        <re>0.967032058009257</re>
+        <im>-0.00129616999978073</im>
+      </elem>
+      <elem>
+        <re>0.96746751650547</re>
+        <im>-0.00114548282635951</im>
+      </elem>
+      <elem>
+        <re>0.879538941662759</re>
+        <im>-0.0104402848846803</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <CoulGauge>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.27.0</chroma>
+            <qdp>1.25.0</qdp>
+          </code_version>
+          <run_date>30 Nov 07 00:08:08 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>1</version>
+            <GFAccu>1e-05</GFAccu>
+            <GFMax>200</GFMax>
+            <OrDo>false</OrDo>
+            <OrPara>1</OrPara>
+            <j_decay>-3</j_decay>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <gfix_id>landau_cfg</gfix_id>
+            <gauge_rot_id>gauge_rot</gauge_rot_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994764811229996</w_plaq>
+          <s_plaq>0.994800868133704</s_plaq>
+          <t_plaq>0.994728754326287</t_plaq>
+          <plane_01_plaq>0.994752410954485</plane_01_plaq>
+          <plane_02_plaq>0.995051669888198</plane_02_plaq>
+          <plane_12_plaq>0.994598523558428</plane_12_plaq>
+          <plane_03_plaq>0.994927932818731</plane_03_plaq>
+          <plane_13_plaq>0.994742131947229</plane_13_plaq>
+          <plane_23_plaq>0.994516198212902</plane_23_plaq>
+          <link>0.379317688096004</link>
+          <pollp>
+            <elem>
+              <re>0.96722258736069</re>
+              <im>-0.00121316528187284</im>
+            </elem>
+            <elem>
+              <re>0.967032058009257</re>
+              <im>-0.00129616999978073</im>
+            </elem>
+            <elem>
+              <re>0.96746751650547</re>
+              <im>-0.00114548282635951</im>
+            </elem>
+            <elem>
+              <re>0.879538941662759</re>
+              <im>-0.0104402848846803</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Gauge_fixing_parameters>
+          <GFAccu>1e-05</GFAccu>
+          <GFMax>200</GFMax>
+          <iterations>29</iterations>
+        </Gauge_fixing_parameters>
+        <Gfix_observables>
+          <w_plaq>0.994765201454154</w_plaq>
+          <s_plaq>0.994801256133036</s_plaq>
+          <t_plaq>0.994729146775272</t_plaq>
+          <plane_01_plaq>0.994752793572843</plane_01_plaq>
+          <plane_02_plaq>0.995052060422798</plane_02_plaq>
+          <plane_12_plaq>0.994598914403468</plane_12_plaq>
+          <plane_03_plaq>0.994928321956346</plane_03_plaq>
+          <plane_13_plaq>0.994742523102711</plane_13_plaq>
+          <plane_23_plaq>0.994516595266759</plane_23_plaq>
+          <link>0.997226723547404</link>
+          <pollp>
+            <elem>
+              <re>0.967222972307354</re>
+              <im>-0.00121315854964147</im>
+            </elem>
+            <elem>
+              <re>0.967032432245711</re>
+              <im>-0.00129616895401341</im>
+            </elem>
+            <elem>
+              <re>0.967467904556543</re>
+              <im>-0.00114548379421346</im>
+            </elem>
+            <elem>
+              <re>0.879539626184851</re>
+              <im>-0.0104402942494441</im>
+            </elem>
+          </pollp>
+        </Gfix_observables>
+      </CoulGauge>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.27.0</chroma>
+            <qdp>1.25.0</qdp>
+          </code_version>
+          <run_date>30 Nov 07 00:08:09 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>1656</elem>
+            <elem>1907</elem>
+            <elem>1774</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>MOMENTUM_VOLUME_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <mom> 1  0 0 0</mom>
+      <t_srce>0 0 0 0</t_srce>
+      <!-- Needs to be false for NPR -->
+      <av_mom>false</av_mom>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>landau_cfg</gauge_id>
+            <source_id>sh_source_0</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994765201454154</w_plaq>
+          <s_plaq>0.994801256133036</s_plaq>
+          <t_plaq>0.994729146775272</t_plaq>
+          <plane_01_plaq>0.994752793572843</plane_01_plaq>
+          <plane_02_plaq>0.995052060422798</plane_02_plaq>
+          <plane_12_plaq>0.994598914403468</plane_12_plaq>
+          <plane_03_plaq>0.994928321956346</plane_03_plaq>
+          <plane_13_plaq>0.994742523102711</plane_13_plaq>
+          <plane_23_plaq>0.994516595266759</plane_23_plaq>
+          <link>0.997226723547404</link>
+          <pollp>
+            <elem>
+              <re>0.967222972307354</re>
+              <im>-0.00121315854964147</im>
+            </elem>
+            <elem>
+              <re>0.967032432245711</re>
+              <im>-0.00129616895401341</im>
+            </elem>
+            <elem>
+              <re>0.967467904556543</re>
+              <im>-0.00114548379421346</im>
+            </elem>
+            <elem>
+              <re>0.879539626184851</re>
+              <im>-0.0104402942494441</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.27.0</chroma>
+            <qdp>1.25.0</qdp>
+          </code_version>
+          <run_date>30 Nov 07 00:08:09 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>CLOVER</FermAct>
+      <Kappa>0.12</Kappa>
+      <clovCoeff>1.17</clovCoeff>
+      <clovCoeffR>0.91</clovCoeffR>
+      <clovCoeffT>1.07</clovCoeffT>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>2.464</xi_0>
+        <nu>0.95</nu>
+      </AnisoParam>
+      <annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 1</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-10</RsdCG>
+      <MaxCG>1000</MaxCG>
+      <Nmax>30</Nmax>
+      <Neig>10</Neig>
+      <Neig_max>120</Neig_max>
+      <eigen_id>linop_evs</eigen_id>
+      <cleanUpEvecs>false</cleanUpEvecs>
+    </InvertParam>
+</Param>
+          <NamedObject>
+            <gauge_id>landau_cfg</gauge_id>
+            <source_id>sh_source_0</source_id>
+            <prop_id>sh_prop_0</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994765201454154</w_plaq>
+          <s_plaq>0.994801256133036</s_plaq>
+          <t_plaq>0.994729146775272</t_plaq>
+          <plane_01_plaq>0.994752793572843</plane_01_plaq>
+          <plane_02_plaq>0.995052060422798</plane_02_plaq>
+          <plane_12_plaq>0.994598914403468</plane_12_plaq>
+          <plane_03_plaq>0.994928321956346</plane_03_plaq>
+          <plane_13_plaq>0.994742523102711</plane_13_plaq>
+          <plane_23_plaq>0.994516595266759</plane_23_plaq>
+          <link>0.997226723547404</link>
+          <pollp>
+            <elem>
+              <re>0.967222972307354</re>
+              <im>-0.00121315854964147</im>
+            </elem>
+            <elem>
+              <re>0.967032432245711</re>
+              <im>-0.00129616895401341</im>
+            </elem>
+            <elem>
+              <re>0.967467904556543</re>
+              <im>-0.00114548379421346</im>
+            </elem>
+            <elem>
+              <re>0.879539626184851</re>
+              <im>-0.0104402942494441</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>254966889</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <version>1</version>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>MOMENTUM_VOLUME_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <mom> 1  0 0 0</mom>
+          <t_srce>0 0 0 0</t_srce>
+          <!-- Needs to be false for NPR -->
+          <av_mom>false</av_mom>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002 768.000000000002</source_corr>
+        </Source_correlator>
+        <QuarkProp4>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <n_count>67</n_count>
+            <resid>6.111869e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <n_count>67</n_count>
+            <resid>5.712873e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <n_count>67</n_count>
+            <resid>5.777637e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <n_count>67</n_count>
+            <resid>5.654816e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <n_count>67</n_count>
+            <resid>5.861096e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <n_count>67</n_count>
+            <resid>6.420873e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <n_count>67</n_count>
+            <resid>6.066828e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <n_count>67</n_count>
+            <resid>5.926453e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <n_count>67</n_count>
+            <resid>5.645079e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <n_count>60</n_count>
+            <resid>6.287995e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <n_count>67</n_count>
+            <resid>5.654984e-07</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <n_count>67</n_count>
+            <resid>5.975241e-07</resid>
+          </Qprop>
+        </QuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>797</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>323.183475528273 323.24122000931 323.361399698081 323.403478100871 323.402779858882 323.299058156711 323.135592944006 323.131521639683</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <NprVertex>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.27.0</chroma>
+            <qdp>1.25.0</qdp>
+          </code_version>
+          <run_date>30 Nov 07 00:08:09 EST</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Output_version>
+          <out_version>2</out_version>
+        </Output_version>
+        <Input>
+          <Param>
+            <version>1</version>
+            <links_max>2</links_max>
+            <file_name>npr-vertex</file_name><?xml version="1.0"?>
+
+
+<FermState>
+  <Name>PERIODIC_FERM_STATE</Name>
+</FermState>
+</Param>
+          <NamedObject>
+            <gauge_id>landau_cfg</gauge_id>
+            <prop_id>sh_prop_0</prop_id>
+          </NamedObject>
+          <xml_file></xml_file>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994765201454154</w_plaq>
+          <s_plaq>0.994801256133036</s_plaq>
+          <t_plaq>0.994729146775272</t_plaq>
+          <plane_01_plaq>0.994752793572843</plane_01_plaq>
+          <plane_02_plaq>0.995052060422798</plane_02_plaq>
+          <plane_12_plaq>0.994598914403468</plane_12_plaq>
+          <plane_03_plaq>0.994928321956346</plane_03_plaq>
+          <plane_13_plaq>0.994742523102711</plane_13_plaq>
+          <plane_23_plaq>0.994516595266759</plane_23_plaq>
+          <link>0.997226723547404</link>
+          <pollp>
+            <elem>
+              <re>0.967222972307354</re>
+              <im>-0.00121315854964147</im>
+            </elem>
+            <elem>
+              <re>0.967032432245711</re>
+              <im>-0.00129616895401341</im>
+            </elem>
+            <elem>
+              <re>0.967467904556543</re>
+              <im>-0.00114548379421346</im>
+            </elem>
+            <elem>
+              <re>0.879539626184851</re>
+              <im>-0.0104402942494441</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <ForwardProp>
+          <PropXML><propagator>
+      <id>254966889</id>
+    </propagator>
+
+          </PropXML>
+          <PropRecordXML><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Kappa>0.12</Kappa>
+          <clovCoeff>1.17</clovCoeff>
+          <clovCoeffR>0.91</clovCoeffR>
+          <clovCoeffT>1.07</clovCoeffT>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.95</nu>
+          </AnisoParam>
+          <annotation>
+ only periodic BC works for NPR. This is because the source constructor does
+not know about antiperiodic BC. For NPR this should not matter.
+</annotation>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-10</RsdCG>
+          <MaxCG>1000</MaxCG>
+          <Nmax>30</Nmax>
+          <Neig>10</Neig>
+          <Neig_max>120</Neig_max>
+          <eigen_id>linop_evs</eigen_id>
+          <cleanUpEvecs>false</cleanUpEvecs>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>MOMENTUM_VOLUME_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <mom> 1  0 0 0</mom>
+          <t_srce>0 0 0 0</t_srce>
+          <!-- Needs to be false for NPR -->
+          <av_mom>false</av_mom>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </Propagator>
+
+          </PropRecordXML>
+          <PropCheck>323.183475528273 323.24122000931 323.361399698081 323.403478100871 323.402779858882 323.299058156711 323.135592944006 323.131521639683</PropCheck>
+        </ForwardProp>
+      </NprVertex>
+    </elem>
+  </InlineObservables>
+</chroma>

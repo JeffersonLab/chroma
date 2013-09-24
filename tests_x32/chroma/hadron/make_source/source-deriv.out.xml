@@ -1,0 +1,4075 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+  
+<annotation>
+Make a derivative propagator source
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+       PionxNabla_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>PIONxNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       A0xNabla_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        a0_2 x Nabla_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A0_2xNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x Nabla_A1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>RHOxNABLA_A1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x Nabla_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>RHOxNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x Nabla_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>RHOxNABLA_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x Nabla_A1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xNABLA_A1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x Nabla_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xNABLA_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x Nabla_E
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xNABLA_E-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x Nabla_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version> 
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xNABLA_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A0_2 x D_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A0_2xD_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_A2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xD_A2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_E
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xD_E-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xD_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x D_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xD_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_A2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xD_A2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_E
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xD_E-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xD_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xD_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x D_A2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>RHOxD_A2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xD_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        B1 x D_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>B1xD_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Pion x D_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>PIONxD_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Pion x B_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>PIONxD_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Rho x B_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>RHOxB_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        RHO x B_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>RHOxB_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x B_A1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xB_A1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x B_T1
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xB_T1-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        A1 x B_T2
+      </annotation>
+
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>A1xB_T2-DERIV</DisplacementType>
+            <deriv_dir>0</deriv_dir>
+            <deriv_length>2</deriv_length>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>source_tmp</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>source_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.42.0</chroma>
+      <qdp>1.42.0</qdp>
+      <basePrecision>64</basePrecision>
+    </code_version>
+    <run_date>06 Sep 13 14:13:06 EDT</run_date>
+    <Setgeom>
+      <latt_size>32 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>32 4 4 8</subgrid_size>
+      <total_volume>4096</total_volume>
+      <subgrid_volume>4096</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><weak_field>
+</weak_field>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>0.99472511164961</w_plaq>
+    <s_plaq>0.994693399517977</s_plaq>
+    <t_plaq>0.994756823781242</t_plaq>
+    <plane_01_plaq>0.994726523987075</plane_01_plaq>
+    <plane_02_plaq>0.994671849040413</plane_02_plaq>
+    <plane_12_plaq>0.994681825526444</plane_12_plaq>
+    <plane_03_plaq>0.994718400256658</plane_03_plaq>
+    <plane_13_plaq>0.994757177007763</plane_13_plaq>
+    <plane_23_plaq>0.994794894079307</plane_23_plaq>
+    <link>0.379311955778734</link>
+    <pollp>
+      <elem>
+        <re>-0.130200684902073</re>
+        <im>-0.368436648872495</im>
+      </elem>
+      <elem>
+        <re>0.96688246607274</re>
+        <im>-0.00124646793242613</im>
+      </elem>
+      <elem>
+        <re>0.96656441705045</re>
+        <im>-0.00124600331468087</im>
+      </elem>
+      <elem>
+        <re>0.881279148701281</re>
+        <im>-0.00918712946803999</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:06 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>PIONxNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>10.8452464703484 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:07 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>24 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:07 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0_2xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:07 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>RHOxNABLA_A1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>25.6831714428342 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:08 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>RHOxNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.68317144283419 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:08 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>RHOxNABLA_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.68317144283419 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:08 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xNABLA_A1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>25.6831714428342 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:09 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xNABLA_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.68317144283419 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:09 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xNABLA_E-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4469791744616 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:09 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xNABLA_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:10 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A0_2xD_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>0.217982984363417 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:11 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xD_A2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.6449047036098 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:12 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xD_E-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>3.06876003435778 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:13 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xD_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:13 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xD_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:14 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xD_A2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.6449047036098 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:15 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xD_E-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>3.06876003435778 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:16 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xD_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:17 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xD_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:18 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>RHOxD_A2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.6449047036098 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:19 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xD_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:20 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>B1xD_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12.4269217192464 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:21 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>PIONxD_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>0.217982984363417 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:21 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>PIONxD_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>0.217982984363417 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:22 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>RHOxB_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:22 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>RHOxB_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.172923336303 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:22 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xB_A1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.2326882714693 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:24 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xB_T1-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.172923336303 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:13:24 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3359</elem>
+            <elem>1221</elem>
+            <elem>1551</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>A1xB_T2-DERIV</DisplacementType>
+        <deriv_dir>0</deriv_dir>
+        <deriv_length>2</deriv_length>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>source_tmp</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.99472511164961</w_plaq>
+          <s_plaq>0.994693399517977</s_plaq>
+          <t_plaq>0.994756823781242</t_plaq>
+          <plane_01_plaq>0.994726523987075</plane_01_plaq>
+          <plane_02_plaq>0.994671849040413</plane_02_plaq>
+          <plane_12_plaq>0.994681825526444</plane_12_plaq>
+          <plane_03_plaq>0.994718400256658</plane_03_plaq>
+          <plane_13_plaq>0.994757177007763</plane_13_plaq>
+          <plane_23_plaq>0.994794894079307</plane_23_plaq>
+          <link>0.379311955778734</link>
+          <pollp>
+            <elem>
+              <re>-0.130200684902073</re>
+              <im>-0.368436648872495</im>
+            </elem>
+            <elem>
+              <re>0.96688246607274</re>
+              <im>-0.00124646793242613</im>
+            </elem>
+            <elem>
+              <re>0.96656441705045</re>
+              <im>-0.00124600331468087</im>
+            </elem>
+            <elem>
+              <re>0.881279148701281</re>
+              <im>-0.00918712946803999</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>1.172923336303 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>source_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>

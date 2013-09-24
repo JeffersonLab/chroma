@@ -35,7 +35,7 @@ namespace Chroma
 	// Register all gauge states
 	success &= CreatePeriodicGaugeStateEnv::registerAll();
 	success &= CreateSimpleGaugeStateEnv::registerAll();
-	success &= CreateStoutGaugeStateEnv::registerAll();
+       	success &= CreateStoutGaugeStateEnv::registerAll();
 
 	registered = true;
       }

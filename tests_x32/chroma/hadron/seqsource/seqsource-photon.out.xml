@@ -1,0 +1,909 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+Photon sequential source
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Mass>-0.1</Mass>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.901</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 0</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       Photon sequential source
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-PHOTON</SeqSourceType>
+          <pol_dir>0</pol_dir>
+          <Q_sq>0.0</Q_sq>
+          <c_sq>1.0</c_sq>
+          <xi>3.0</xi>
+          <j_decay>3</j_decay>
+          <t_sink_start>1</t_sink_start>
+          <t_sink_end>6</t_sink_end>
+          <sink_mom>1 0 0</sink_mom>
+          <t_sink>0</t_sink>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+       Photon sequential source
+      </annotation>
+
+      <Name>SEQSOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>2</version>
+        <SeqSource>
+          <version>1</version>
+          <SeqSourceType>PION-POINT_SPLIT_PHOTON</SeqSourceType>
+          <pol_dir>0</pol_dir>
+          <Q_sq>0.0</Q_sq>
+          <c_sq>1.0</c_sq>
+          <xi>3.0</xi>
+          <j_decay>3</j_decay>
+          <t_sink_start>1</t_sink_start>
+          <t_sink_end>6</t_sink_end>
+          <sink_mom>1 0 0</sink_mom>
+          <t_sink>0</t_sink>
+        </SeqSource>
+      </Param>
+      <PropSink>
+        <version>5</version>
+        <Sink>
+          <version>1</version>
+          <SinkType>POINT_SINK</SinkType>
+          <j_decay>3</j_decay>
+        </Sink>
+      </PropSink>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+        <seqsource_id>seqsource_tmp</seqsource_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Erase the object
+      </annotation>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>seqsource_tmp</object_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>UNIT</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.42.0</chroma>
+      <qdp>1.42.0</qdp>
+      <basePrecision>64</basePrecision>
+    </code_version>
+    <run_date>06 Sep 13 14:44:00 EDT</run_date>
+    <Setgeom>
+      <latt_size>32 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>32 4 4 8</subgrid_size>
+      <total_volume>4096</total_volume>
+      <subgrid_volume>4096</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><unit>
+</unit>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>1</w_plaq>
+    <s_plaq>1</s_plaq>
+    <t_plaq>1</t_plaq>
+    <plane_01_plaq>1</plane_01_plaq>
+    <plane_02_plaq>1</plane_02_plaq>
+    <plane_12_plaq>1</plane_12_plaq>
+    <plane_03_plaq>1</plane_03_plaq>
+    <plane_13_plaq>1</plane_13_plaq>
+    <plane_23_plaq>1</plane_23_plaq>
+    <link>1</link>
+    <pollp>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:44:00 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>0</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>sh_source_0</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>5.9203055616 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:44:01 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Mass>-0.1</Mass>
+      <AnisoParam>
+        <anisoP>true</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>2.464</xi_0>
+        <nu>0.901</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 0</boundary>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-12</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>sh_source_0</source_id>
+            <prop_id>sh_prop_0</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>437060641</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <version>1</version>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <unit>
+</unit>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>5.9203055616 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+        <QuarkProp4>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31149979976664e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31149979976664e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31151988433019e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31151988433019e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31150736266767e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31150736266767e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31154594178518e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31154594178518e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31149979976664e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31149979976664e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31151988433019e-13</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <n_count>60</n_count>
+            <resid>2.31151988433019e-13</resid>
+          </Qprop>
+        </QuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>720</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.847805356840558 0.14950623455471 0.101451619911168 0.0907817204228476 0.0905772763758438 0.0972116586957372 0.110230585416205 0.130017823197335</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <seqsource>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:44:04 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>PION-PHOTON</SeqSourceType>
+      <pol_dir>0</pol_dir>
+      <Q_sq>0.0</Q_sq>
+      <c_sq>1.0</c_sq>
+      <xi>3.0</xi>
+      <j_decay>3</j_decay>
+      <t_sink_start>1</t_sink_start>
+      <t_sink_end>6</t_sink_end>
+      <sink_mom>1 0 0</sink_mom>
+      <t_sink>0</t_sink>
+    </SeqSource>
+</Param>
+          <PropSink>
+            <version>5</version><Sink>
+      <version>1</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+    </Sink>
+
+            <j_decay>3</j_decay>
+          </PropSink>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <prop_ids>
+              <elem>sh_prop_0</elem>
+            </prop_ids>
+            <seqsource_id>seqsource_tmp</seqsource_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Forward_prop_infos>
+          <elem>
+            <Propagator_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Mass>-0.1</Mass>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.901</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 0</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <unit>
+</unit>
+      </Config_info>
+    </Propagator>
+
+            </Propagator_info>
+          </elem>
+        </Forward_prop_infos>
+        <Forward_prop_correlators>
+          <elem>
+            <forward_prop_corr>0.847805356840558 0.14950623455471 0.101451619911168 0.0907817204228476 0.0905772763758438 0.0972116586957372 0.110230585416205 0.130017823197335</forward_prop_corr>
+          </elem>
+        </Forward_prop_correlators>
+        <SeqSource_correlator>
+          <seqsource_corr>0 0.170415195956554 0.131812626973229 0.134445246926293 0.152902757060291 0.187052461296153 0.241766543974535 0</seqsource_corr>
+        </SeqSource_correlator>
+      </seqsource>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>seqsource_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+    <elem>
+      <seqsource>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:44:04 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>2</version><SeqSource>
+      <version>1</version>
+      <SeqSourceType>PION-POINT_SPLIT_PHOTON</SeqSourceType>
+      <pol_dir>0</pol_dir>
+      <Q_sq>0.0</Q_sq>
+      <c_sq>1.0</c_sq>
+      <xi>3.0</xi>
+      <j_decay>3</j_decay>
+      <t_sink_start>1</t_sink_start>
+      <t_sink_end>6</t_sink_end>
+      <sink_mom>1 0 0</sink_mom>
+      <t_sink>0</t_sink>
+    </SeqSource>
+</Param>
+          <PropSink>
+            <version>5</version><Sink>
+      <version>1</version>
+      <SinkType>POINT_SINK</SinkType>
+      <j_decay>3</j_decay>
+    </Sink>
+
+            <j_decay>3</j_decay>
+          </PropSink>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <prop_ids>
+              <elem>sh_prop_0</elem>
+            </prop_ids>
+            <seqsource_id>seqsource_tmp</seqsource_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Forward_prop_infos>
+          <elem>
+            <Propagator_info><Propagator>
+      <version>1</version>
+      <ForwardProp>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>WILSON</FermAct>
+          <Mass>-0.1</Mass>
+          <AnisoParam>
+            <anisoP>true</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>2.464</xi_0>
+            <nu>0.901</nu>
+          </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 0</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </ForwardProp>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <unit>
+</unit>
+      </Config_info>
+    </Propagator>
+
+            </Propagator_info>
+          </elem>
+        </Forward_prop_infos>
+        <Forward_prop_correlators>
+          <elem>
+            <forward_prop_corr>0.847805356840558 0.14950623455471 0.101451619911168 0.0907817204228476 0.0905772763758438 0.0972116586957372 0.110230585416205 0.130017823197335</forward_prop_corr>
+          </elem>
+        </Forward_prop_correlators>
+        <SeqSource_correlator>
+          <seqsource_corr>0 0.170415195956554 0.131812626973229 0.134445246926293 0.152902757060291 0.187052461296154 0.241766543974535 0</seqsource_corr>
+        </SeqSource_correlator>
+      </seqsource>
+    </elem>
+    <elem>
+      <erase_named_obj>
+        <update_no>0</update_no>
+        <object_id>seqsource_tmp</object_id>
+      </erase_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>

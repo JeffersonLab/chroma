@@ -1,0 +1,96 @@
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>N_FLAVOR_LOGDET_EVEN_EVEN_FERM_MONOMIAL</Name>
+        <FermionAction>
+	 <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.078</clovCoeffR>
+         <clovCoeffT>0.991</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+	<num_flavors>2</num_flavors>
+	<NamedObject>
+	   <monomial_id>logdet_clover_2flav_ee</monomial_id>
+	</NamedObject>
+      </elem>
+      <elem>
+	<Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
+	<InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+	 <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.078</clovCoeffR>
+         <clovCoeffT>0.991</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.464</xi_0>
+           <nu>0.95</nu>
+         </AnisoParam>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+	<NamedObject>
+	   <monomial_id>clover_2flav_oo</monomial_id>
+	</NamedObject>
+
+      </elem>
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+	   <Name>WILSON_GAUGEACT</Name>
+	   <beta>5.2</beta>
+	   <GaugeBC>
+		<Name>PERIODIC_GAUGEBC</Name>
+           </GaugeBC>
+        </GaugeAction>
+	<NamedObject>
+	   <monomial_id>gauge</monomial_id>
+	</NamedObject>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+     <monomial_ids>
+        <elem>logdet_clover_2flav_ee</elem>
+	<elem>clover_2flav_oo</elem>
+	<elem>gauge</elem>
+     </monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+	<tau0>0.5</tau0>
+	<Integrator>
+	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>20</n_steps>
+          <monomial_ids>
+            <elem>logdet_clover_2flav_ee</elem>
+	    <elem>clover_2flav_oo</elem>
+	    <elem>gauge</elem>
+          </monomial_ids>
+        </Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+	<cfg_type>DISORDERED</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>32 4 4 8</nrow>
+
+</LeapfrogTest>

@@ -35,7 +35,7 @@ LatticePropagator nonlocalCurrentProp(const multi1d<LatticeColorMatrix>& u,
 
   LatticePropagator S = 0.5*(shift(anti_prop, FORWARD, mu) * adj(u[mu])
     * (forw_prop + Gamma(gamma_value)*forw_prop)
-    - anti_prop * u[mu] * shift(forw_prop - Gamma(gamma_value)*forw_prop, FORWARD, mu));
+			     - anti_prop * u[mu] * shift((forw_prop - Gamma(gamma_value)*forw_prop), FORWARD, mu));
 
   return S;
 }

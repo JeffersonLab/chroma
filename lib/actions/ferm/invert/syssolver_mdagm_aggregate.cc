@@ -11,17 +11,26 @@
 #include "actions/ferm/invert/syssolver_mdagm_ibicgstab.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_timing.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_array.h"
-#include "actions/ferm/invert/syssolver_mdagm_eigcg.h"
 #include "actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.h"
 #include "actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.h"
 #include "actions/ferm/invert/syssolver_mdagm_rel_cg_clover.h"
 #include "actions/ferm/invert/syssolver_mdagm_cg_lf_clover.h"
 
+
+// No EigCG just now
+#if 0
+#include "actions/ferm/invert/syssolver_mdagm_eigcg.h"
+#endif
+
 #include "chroma_config.h"
+
+// No QUDA just now
+#if 0
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h"
+#endif
 #endif
 
 namespace Chroma
@@ -44,15 +53,20 @@ namespace Chroma
 	success &= MdagMSysSolverCGTimingsEnv::registerAll();
 	success &= MdagMSysSolverBiCGStabEnv::registerAll();
 	success &= MdagMSysSolverIBiCGStabEnv::registerAll();
-	success &= MdagMSysSolverEigCGEnv::registerAll();
-	success &= MdagMSysSolverRichardsonCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableBiCGStabCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableIBiCGStabCloverEnv::registerAll();
 	success &= MdagMSysSolverReliableCGCloverEnv::registerAll();
 	success &= MdagMSysSolverCGLFCloverEnv::registerAll();
+	success &= MdagMSysSolverRichardsonCloverEnv::registerAll();
+
+#if 0
+	success &= MdagMSysSolverEigCGEnv::registerAll();
+	success &= MdagMSysSolverRichardsonCloverEnv::registerAll();
+
 #ifdef BUILD_QUDA
 	success &= MdagMSysSolverQUDACloverEnv::registerAll();
 	success &= MdagMSysSolverQUDAWilsonEnv::registerAll();
+#endif
 #endif
 	registered = true;
       }

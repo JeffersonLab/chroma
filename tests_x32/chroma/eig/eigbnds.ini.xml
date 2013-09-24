@@ -1,0 +1,178 @@
+<chroma>
+<annotation>
+; $Id: eigbnds.ini.xml,v 3.1 2006-09-21 19:45:55 edwards Exp $
+;
+; Test input file for chroma program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- This measures lowest/highest ev of prec. Wilson -->
+      <Name>EIGBNDSMDAGM</Name>
+      <Frequency>1</Frequency>
+      <Ritz>
+        <RsdR>1.0e-2</RsdR>
+        <RsdA>1.0e-3</RsdA>
+        <RsdZero>5.0e-6</RsdZero>
+        <ProjApsiP>false</ProjApsiP>
+        <Nmin>5</Nmin>
+        <MaxCG>10000</MaxCG>
+        <Nrenorm>10</Nrenorm>
+      </Ritz>
+      <FermionAction>
+        <FermAct>WILSON</FermAct>
+        <Kappa>0.11</Kappa>
+        <boundary>1 1 1 -1</boundary>
+      </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- This measures lowest/highest ev of prec. DWF -->
+      <Name>EIGBNDSMDAGM</Name>
+      <Frequency>1</Frequency>
+      <usePV>false</usePV>
+      <Ritz>
+        <RsdR>1.0e-2</RsdR>
+        <RsdA>1.0e-3</RsdA>
+        <RsdZero>5.0e-6</RsdZero>
+        <ProjApsiP>false</ProjApsiP>
+        <Nmin>5</Nmin>
+        <MaxCG>10000</MaxCG>
+        <Nrenorm>10</Nrenorm>
+      </Ritz>
+      <FermionAction>
+        <FermAct>DWF</FermAct>
+        <Mass>0.06</Mass>
+        <OverMass>1.4</OverMass>
+        <N5>6</N5>
+        <boundary>1 1 1 -1</boundary>
+      </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- This measures lowest/highest ev of prec. DWF -->
+      <Name>EIGBNDSMDAGM</Name>
+      <Frequency>1</Frequency>
+      <usePV>true</usePV>
+      <Ritz>
+        <RsdR>1.0e-2</RsdR>
+        <RsdA>1.0e-3</RsdA>
+        <RsdZero>5.0e-6</RsdZero>
+        <ProjApsiP>false</ProjApsiP>
+        <Nmin>5</Nmin>
+        <MaxCG>10000</MaxCG>
+        <Nrenorm>10</Nrenorm>
+      </Ritz>
+      <FermionAction>
+        <FermAct>DWF</FermAct>
+        <Mass>0.06</Mass>
+        <OverMass>1.4</OverMass>
+        <N5>6</N5>
+        <boundary>1 1 1 -1</boundary>
+      </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- This measures lowest/highest ev of prec. DWF -->
+      <Name>EIGBNDSMDAGM</Name>
+      <Frequency>1</Frequency>
+      <usePV>false</usePV>
+      <Ritz>
+        <RsdR>1.0e-2</RsdR>
+        <RsdA>1.0e-3</RsdA>
+        <RsdZero>5.0e-6</RsdZero>
+        <ProjApsiP>false</ProjApsiP>
+        <Nmin>5</Nmin>
+        <MaxCG>10000</MaxCG>
+        <Nrenorm>10</Nrenorm>
+      </Ritz>
+      <FermionAction>
+        <FermAct>DWF</FermAct>
+        <Mass>1.0</Mass>
+        <OverMass>1.4</OverMass>
+        <N5>6</N5>
+        <boundary>1 1 1 -1</boundary>
+      </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- This measures lowest/highest ev of prec. CFZ -->
+      <Name>EIGBNDSMDAGM</Name>
+      <Frequency>1</Frequency>
+      <usePV>false</usePV>
+      <Ritz>
+        <RsdR>1.0e-2</RsdR>
+        <RsdA>1.0e-3</RsdA>
+        <RsdZero>5.0e-6</RsdZero>
+        <ProjApsiP>false</ProjApsiP>
+        <Nmin>5</Nmin>
+        <MaxCG>10000</MaxCG>
+        <Nrenorm>10</Nrenorm>
+      </Ritz>
+      <FermionAction>
+        <FermAct>OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+        <ApproximationType>ZOLOTAREV</ApproximationType>
+        <Mass>0.06</Mass>
+        <RatPolyDeg>6</RatPolyDeg>
+        <OverMass>1.4</OverMass>
+        <boundary>1 1 1 -1</boundary>
+        <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
+        <ApproxMin>0.66</ApproxMin>
+        <ApproxMax>6.46357</ApproxMax>
+      </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <!-- This measures lowest/highest ev of prec. CFZ -->
+      <Name>EIGBNDSMDAGM</Name>
+      <Frequency>1</Frequency>
+      <usePV>true</usePV>
+      <Ritz>
+        <RsdR>1.0e-2</RsdR>
+        <RsdA>1.0e-3</RsdA>
+        <RsdZero>5.0e-6</RsdZero>
+        <ProjApsiP>false</ProjApsiP>
+        <Nmin>5</Nmin>
+        <MaxCG>10000</MaxCG>
+        <Nrenorm>10</Nrenorm>
+      </Ritz>
+      <FermionAction>
+        <FermAct>OVERLAP_CONTINUED_FRACTION_5D</FermAct>
+        <ApproximationType>ZOLOTAREV</ApproximationType>
+        <Mass>0.06</Mass>
+        <RatPolyDeg>6</RatPolyDeg>
+        <OverMass>1.4</OverMass>
+        <boundary>1 1 1 -1</boundary>
+        <!-- The ApproxMin and ApproxMax are superceded by StateInfo if NWilsVec &gt 0 -->
+        <ApproxMin>0.66</ApproxMin>
+        <ApproxMax>6.46357</ApproxMax>
+      </FermionAction>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

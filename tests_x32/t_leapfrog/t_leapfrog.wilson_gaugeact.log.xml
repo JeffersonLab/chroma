@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <mesE>
+    <mesKE>
+      <KE>58.1953556388021</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>1</num_terms>
+      <PEByMonomials>
+        <elem>
+          <GaugeMonomial>
+            <S>-123618.552148404</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <leapP>
+    <dt>0.05</dt>
+    <dt_actual_per_dir>0.05 0.05 0.05 0.05</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>1.19732398611598 1.21083242510105 1.20386132434728 5.62406712412068</F_sq_per_direction>
+              <F_avg_per_direction>0.706577705431203 0.706990013836651 0.70610716114198 1.37473767568325</F_avg_per_direction>
+              <F_max_per_direction>2.46266452233809 2.93449467751706 3.02779825946872 6.5133528283699</F_max_per_direction>
+              <F_sq>2.30902121492125</F_sq>
+              <F_avg>0.873603139023271</F_avg>
+              <F_max>6.5133528283699</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.1</dt>
+    <dt_actual_per_dir>0.1 0.1 0.1 0.1</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.05</dt>
+    <dt_actual_per_dir>0.05 0.05 0.05 0.05</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>1</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>2.73178236547643 2.77189035608737 2.76159045903992 7.0051082050111</F_sq_per_direction>
+              <F_avg_per_direction>1.13227879502274 1.13762112293551 1.13588990677638 1.83173522455075</F_avg_per_direction>
+              <F_max_per_direction>4.21035306225375 4.19796384538122 4.39522057428523 6.89144720191542</F_max_per_direction>
+              <F_sq>3.81759284640371</F_sq>
+              <F_avg>1.30938126232135</F_avg>
+              <F_max>6.89144720191542</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <mesE>
+    <mesKE>
+      <KE>-1415.3825490229</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>1</num_terms>
+      <PEByMonomials>
+        <elem>
+          <GaugeMonomial>
+            <S>-122095.426561574</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <DeltaE>
+    <DeltaKE>-1473.5779046617</DeltaKE>
+    <DeltaPE>1523.12558683007</DeltaPE>
+    <DeltaH>49.5476821683665</DeltaH>
+  </DeltaE>
+</t_leapfrog>

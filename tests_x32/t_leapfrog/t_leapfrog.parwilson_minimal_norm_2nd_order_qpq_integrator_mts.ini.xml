@@ -1,0 +1,101 @@
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+        <Name>TWO_FLAVOR_EOPREC_CONSTDET_FERM_MONOMIAL</Name>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <FermionAction>
+          <FermAct>PARWILSON</FermAct>
+          <Kappa>0.177</Kappa>
+          <H> 0.8 </H>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <ChronologicalPredictor>
+          <Name>LAST_SOLUTION_4D_PREDICTOR</Name>
+        </ChronologicalPredictor>
+        <NamedObject><monomial_id>ferm_2flav_light</monomial_id></NamedObject>
+      </elem>
+      <elem>
+        <Name>TWO_FLAVOR_EOPREC_CONSTDET_RATIO_CONV_CONV_FERM_MONOMIAL</Name>
+        <Action>
+          <InvertParam>
+            <invType>CG_INVERTER</invType>
+            <RsdCG>1.0e-8</RsdCG>
+            <MaxCG>1000</MaxCG>
+          </InvertParam>
+          <FermionAction>
+            <FermAct>PARWILSON</FermAct>
+            <Kappa>0.11</Kappa>
+            <H>0.5</H>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermionAction>
+        </Action>
+        <PrecAction>
+          <FermionAction>
+            <FermAct>PARWILSON</FermAct>
+            <Kappa>0.11</Kappa>
+            <H>0.8</H>
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </FermionAction>
+        </PrecAction>
+        <NamedObject><monomial_id>ferm_2flav_hasen</monomial_id></NamedObject>
+      </elem>
+      <elem>
+        <Name>GAUGE_MONOMIAL</Name>
+        <GaugeAction>
+           <Name>WILSON_GAUGEACT</Name>
+           <beta>5.2</beta>
+           <GaugeBC>
+                <Name>PERIODIC_GAUGEBC</Name>
+           </GaugeBC>
+        </GaugeAction>
+        <NamedObject><monomial_id>gauge</monomial_id></NamedObject>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+     <monomial_ids><elem>ferm_2flav_light</elem>
+                   <elem>ferm_2flav_hasen</elem>
+                   <elem>gauge</elem>
+     </monomial_ids> 
+  </Hamiltonian>
+   <MDIntegrator>
+        <tau0>1.0</tau0>
+        <Integrator>
+           <Name>LCM_TST_MIN_NORM_2</Name>
+          <n_steps>1</n_steps>
+          <monomial_ids><elem>ferm_2flav_light</elem></monomial_ids>
+          <lambda>0.19</lambda>
+          <SubIntegrator>
+             <Name>LCM_TST_MIN_NORM_2</Name>
+            <n_steps>1</n_steps>
+            <monomial_ids><elem>ferm_2flav_hasen</elem></monomial_ids>
+            <lambda>0.19</lambda>
+
+              <SubIntegrator>
+               <Name>LCM_TST_MIN_NORM_2</Name>
+              <n_steps>1</n_steps>
+              <monomial_ids><elem>gauge</elem></monomial_ids>
+              <lambda>0.19</lambda>
+            </SubIntegrator>
+          </SubIntegrator>
+        </Integrator>
+   </MDIntegrator>
+   <GaugeStartup>
+        <cfg_type>UNIT</cfg_type>
+        <cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>32 4 4 8</nrow>
+</LeapfrogTest>

@@ -234,8 +234,10 @@ namespace Chroma
       // Initialize the slow Fourier transform phases
       SftMom phases(0, true, Nd-1);
 
+      QDPIO::cout << "HERE1" << endl;
       multi1d<Double> source_corr = sumMulti(localNorm2(quark_source),
 					     phases.getSet());
+      QDPIO::cout << "HERE2" << endl;
 
       push(xml_out, "Source_correlator");
       write(xml_out, "source_corr", source_corr);

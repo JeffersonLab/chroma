@@ -10,7 +10,7 @@
 #include "update/molecdyn/predictor/last_solution_predictor.h"
 #include "update/molecdyn/predictor/linear_extrap_predictor.h"
 #include "update/molecdyn/predictor/mre_extrap_predictor.h"
-#include "update/molecdyn/predictor/mre_initcg_extrap_predictor.h"
+// #include "update/molecdyn/predictor/mre_initcg_extrap_predictor.h"
 
 namespace Chroma
 {
@@ -40,7 +40,7 @@ namespace Chroma
 	success &= LinearExtrapolation5DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation4DChronoPredictorEnv::registerAll();
 	success &= MinimalResidualExtrapolation5DChronoPredictorEnv::registerAll();
-	success &= MREInitCG4DChronoPredictorEnv::registerAll();
+	//	success &= MREInitCG4DChronoPredictorEnv::registerAll();
 
 	registered = true;
       }

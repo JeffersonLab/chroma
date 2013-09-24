@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/chroma/InlineObservables/elem[1]/make_source/Source_correlator/source_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[2]/propagator/Prop_correlator/prop_corr" type="double_array" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[7]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[11]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[15]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[19]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[23]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[27]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[31]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[35]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[39]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[43]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[47]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[51]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[55]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[59]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[63]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[67]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[71]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[75]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[79]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[83]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[87]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[91]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[95]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[99]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[103]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[107]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[111]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[115]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+<assertion xpath="/chroma/InlineObservables/elem[119]/ExampleBuildingBlocks/SequentialSource/elem[1]/DiagnosticTest/formFactor_G8/elem[7]/re" type="double" comparison="absolute" tolerance="1.0e-5"/>
+
+</assertions>

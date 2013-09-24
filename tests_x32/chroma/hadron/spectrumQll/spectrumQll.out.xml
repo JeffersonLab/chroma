@@ -1,0 +1,468 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+SpectrumQll input
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>9</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+         <Kappa>0.11</Kappa>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1.0</xi_0>
+           <nu>1.0</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-12</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+    <annotation>
+      This is the input block  for the task SPECTRUM_QLL test run
+      on Wilson-type propagators
+    </annotation>
+    <Name>SPECTRUM_QLL</Name>
+    <Frequency>1</Frequency>
+    <Param>
+       <version>3</version>
+       <Pt_snk>true</Pt_snk>
+       <Sl_snk>true</Sl_snk>
+       <Wl_snk>false</Wl_snk>
+       <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+       <wvf_param>2.0</wvf_param>
+       <wvfIntPar>5</wvfIntPar>
+       <link_smear_fact>0</link_smear_fact>
+       <link_smear_num>0</link_smear_num>
+       <Qsrc_coord>0 0 0 0</Qsrc_coord>
+    </Param>
+    <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <prop_ids>
+          <elem>sh_prop_0</elem>
+        </prop_ids>
+    </NamedObject>
+    <xml_file>spectrumQll.dat.xml</xml_file>
+   </elem>
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.4.3</chroma>
+      <qdp>1.20.2</qdp>
+    </code_version>
+    <run_date>18 May 06 14:31:22 EDT</run_date>
+    <Setgeom>
+      <latt_size>4 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>4 4 4 8</subgrid_size>
+      <total_volume>512</total_volume>
+      <subgrid_volume>512</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info>
+    <file_xml><gauge>
+      <id>0</id>
+    </gauge>
+
+    </file_xml>
+    <gauge_xml><weak_field>
+</weak_field>
+
+    </gauge_xml>
+  </Config_info>
+  <Observables>
+    <w_plaq>0.994804</w_plaq>
+    <s_plaq>0.994798</s_plaq>
+    <t_plaq>0.99481</t_plaq>
+    <link>0.379449</link>
+    <pollp>
+      <elem>
+        <re>0.966586</re>
+        <im>-0.00132089</im>
+      </elem>
+      <elem>
+        <re>0.966366</re>
+        <im>-0.00123499</im>
+      </elem>
+      <elem>
+        <re>0.967146</re>
+        <im>-0.0011231</im>
+      </elem>
+      <elem>
+        <re>0.878769</re>
+        <im>-0.00991386</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.4.3</chroma>
+            <qdp>1.20.2</qdp>
+          </code_version>
+          <run_date>18 May 06 14:31:22 EDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>1835</elem>
+            <elem>3491</elem>
+            <elem>1302</elem>
+            <elem>1242</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>1</version>
+      <SourceType>SHELL_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <SmearingParam>
+        <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+        <wvf_param>2.0</wvf_param>
+        <wvfIntPar>5</wvfIntPar>
+        <no_smear_dir>3</no_smear_dir>
+      </SmearingParam>
+      <disp_length>0</disp_length>
+      <disp_dir>0</disp_dir>
+      <LinkSmearing>
+        <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+        <link_smear_fact>2.5</link_smear_fact>
+        <link_smear_num>0</link_smear_num>
+        <no_smear_dir>3</no_smear_dir>
+      </LinkSmearing>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>sh_source_0</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>6.634 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.4.3</chroma>
+            <qdp>1.20.2</qdp>
+          </code_version>
+          <run_date>18 May 06 14:31:22 EDT</run_date>
+          <Setgeom>
+            <latt_size>4 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>4 4 4 8</subgrid_size>
+            <total_volume>512</total_volume>
+            <subgrid_volume>512</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <Kappa>0.11</Kappa>
+      <AnisoParam>
+        <anisoP>false</anisoP>
+        <t_dir>3</t_dir>
+        <xi_0>1.0</xi_0>
+        <nu>1.0</nu>
+      </AnisoParam>
+      <FermionBC>
+        <FermBC>SIMPLE_FERMBC</FermBC>
+        <boundary>1 1 1 -1</boundary>
+      </FermionBC>
+    </FermionAction>
+
+            <InvertParam>
+              <invType>CG_INVERTER</invType>
+              <RsdCG>1e-12</RsdCG>
+              <MaxCG>1000</MaxCG>
+              <MROver>1</MROver>
+              <RsdCGPrec>1e-12</RsdCGPrec>
+              <MaxCGPrec>1000</MaxCGPrec>
+            </InvertParam>
+          </Param><StateInfo>
+</StateInfo>
+
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>sh_source_0</source_id>
+            <prop_id>sh_prop_0</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><weak_field>
+</weak_field>
+
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>0.994804</w_plaq>
+          <s_plaq>0.994798</s_plaq>
+          <t_plaq>0.99481</t_plaq>
+          <link>0.379449</link>
+          <pollp>
+            <elem>
+              <re>0.966586</re>
+              <im>-0.00132089</im>
+            </elem>
+            <elem>
+              <re>0.966366</re>
+              <im>-0.00123499</im>
+            </elem>
+            <elem>
+              <re>0.967146</re>
+              <im>-0.0011231</im>
+            </elem>
+            <elem>
+              <re>0.878769</re>
+              <im>-0.00991386</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>0</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>1</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+          <disp_length>0</disp_length>
+          <disp_dir>0</disp_dir>
+          <LinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>0</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </LinkSmearing>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <RNG>
+        <Seed>
+          <elem>1835</elem>
+          <elem>3491</elem>
+          <elem>1302</elem>
+          <elem>1242</elem>
+        </Seed>
+      </RNG>
+      <Config_info>
+        <weak_field>
+</weak_field>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>6.634 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+        <QuarkProp4>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+          <Qprop>
+            <n_count>45</n_count>
+          </Qprop>
+        </QuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>540</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.191061 0.0158202 0.00611666 0.00281238 0.00196224 0.00280976 0.00611275 0.015805</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <spectrumQll_w>
+        <update_no>0</update_no>
+        <xml_file>spectrumQll.dat.xml</xml_file>
+      </spectrumQll_w>
+    </elem>
+  </InlineObservables>
+</chroma>

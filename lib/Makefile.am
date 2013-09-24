@@ -268,7 +268,7 @@ nobase_include_HEADERS = \
 	meas/smear/fuzz_smear.h \
 	meas/smear/gaus_smear.h \
 	meas/smear/hyp_smear.h meas/smear/hyp_smear3d.h \
-      meas/smear/hex_smear.h \
+	meas/smear/hex_smear.h \
 	meas/smear/laplacian.h meas/smear/smear.h \
 	meas/smear/link_smearing.h \
 	meas/smear/link_smearing_aggregate.h \
@@ -420,8 +420,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/predictor/linear_extrap_predictor.h \
 	update/molecdyn/predictor/lu_solve.h \
 	update/molecdyn/predictor/mre_extrap_predictor.h \
-	update/molecdyn/predictor/mre_shifted_predictor.h \
-	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
+	update/molecdyn/predictor/mre_shifted_predictor.h
 
 nodist_include_HEADERS=chroma_config_internal.h
 
@@ -440,13 +439,6 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/fermacts_w.h \
 	actions/ferm/fermacts/fermacts_aggregate_w.h \
 	actions/ferm/fermacts/fermact_factory_w.h \
-	actions/ferm/fermacts/clover_fermact_params_w.h \
-	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
-	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
-	actions/ferm/fermacts/unprec_clover_fermact_w.h \
-	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
-	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
-	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
 	actions/ferm/fermacts/overlap_fermact_base_w.h \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/eoprec_nef_fermact_array_w.h \
@@ -459,6 +451,13 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/eoprec_wilson_fermact_w.h \
 	actions/ferm/fermacts/eoprec_wilson_coarse_fine_fermact_w.h \
 	actions/ferm/fermacts/eoprec_parwilson_fermact_w.h \
+	actions/ferm/fermacts/clover_fermact_params_w.h \
+	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
+	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
+	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
+	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_nef_fermact_array_w.h \
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.h \
@@ -540,14 +539,6 @@ nobase_include_HEADERS += \
 	actions/ferm/linop/lwldslash_array_qdpopt_w.h \
 	actions/ferm/linop/lwldslash_base_3d_w.h \
 	actions/ferm/linop/lwldslash_3d_qdp_w.h \
-	actions/ferm/linop/clover_term_w.h \
-	actions/ferm/linop/clover_term_base_w.h \
-	actions/ferm/linop/clover_term_qdp_w.h \
-	actions/ferm/linop/eoprec_clover_linop_w.h \
-	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
-	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
-	actions/ferm/linop/unprec_clover_linop_w.h \
-	actions/ferm/linop/eoprec_clover_extfield_linop_w.h \
 	actions/ferm/linop/eoprec_dwflike_linop_base_array_w.h \
 	actions/ferm/linop/eoprec_dwf_linop_array_w.h \
 	actions/ferm/linop/eoprec_ovdwf_linop_array_w.h \
@@ -724,13 +715,16 @@ nobase_include_HEADERS += \
 	util/ferm/crc48.h \
 	util/ferm/distillution_noise.h \
         util/ferm/spin_rep.h \
-        util/ferm/twoquark_contract_ops.h
-
-#	actions/ferm/fermacts/flic_fermact_params_w.h
-#	actions/ferm/fermacts/eoprec_flic_fermact_w.h
-#	actions/ferm/fermacts/flic_fermstate_w.h
-#	actions/ferm/linop/eoprec_flic_linop_w.h
-
+        util/ferm/twoquark_contract_ops.h \
+	actions/ferm/linop/clover_term_w.h \
+	actions/ferm/linop/clover_term_base_w.h \
+	actions/ferm/linop/clover_term_qdp_w.h \
+	actions/ferm/linop/eoprec_clover_linop_w.h \
+	actions/ferm/linop/eoprec_clover_dumb_linop_w.h \
+	actions/ferm/linop/eoprec_clover_orbifold_linop_w.h \
+	actions/ferm/linop/unprec_clover_linop_w.h \
+	actions/ferm/linop/eoprec_clover_extfield_linop_w.h \
+	update/molecdyn/predictor/mre_initcg_extrap_predictor.h
 
 # Staggered specific headers
 nobase_include_HEADERS += \
@@ -1003,8 +997,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/invsumr.cc \
 	actions/ferm/invert/inv_gmresr_cg_array.cc \
 	actions/ferm/invert/inv_minres_array.cc \
-	actions/ferm/invert/inv_eigcg2.cc \
-	actions/ferm/invert/inv_eigcg2_array.cc \
 	actions/ferm/invert/inv_rel_cg1.cc \
 	actions/ferm/invert/inv_rel_cg2.cc \
 	actions/ferm/invert/inv_rel_gmresr_cg.cc \
@@ -1029,6 +1021,16 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_mr_params.cc \
 	actions/ferm/invert/syssolver_richardson_clover_params.cc \
 	actions/ferm/invert/syssolver_rel_bicgstab_clover_params.cc \
+	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
+	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.cc \
+	actions/ferm/invert/syssolver_linop_rel_cg_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
+	actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.cc \
+	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
 	actions/ferm/invert/syssolver_cg_clover_params.cc \
 	actions/ferm/invert/syssolver_bicgstab_params.cc \
 	actions/ferm/invert/syssolver_eigcg_params.cc \
@@ -1037,24 +1039,11 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/syssolver_linop_cg.cc \
 	actions/ferm/invert/syssolver_linop_cg_timing.cc \
 	actions/ferm/invert/syssolver_linop_cg_array.cc \
-	actions/ferm/invert/syssolver_linop_eigcg.cc \
-	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
-	actions/ferm/invert/syssolver_linop_richardson_multiprec_clover.cc \
-	actions/ferm/invert/syssolver_linop_rel_bicgstab_clover.cc \
-	actions/ferm/invert/syssolver_linop_rel_ibicgstab_clover.cc \
-	actions/ferm/invert/syssolver_linop_rel_cg_clover.cc \
 	actions/ferm/invert/syssolver_mdagm_cg.cc \
 	actions/ferm/invert/syssolver_mdagm_bicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_ibicgstab.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_timing.cc \
 	actions/ferm/invert/syssolver_mdagm_cg_array.cc \
-	actions/ferm/invert/syssolver_mdagm_richardson_multiprec_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_rel_bicgstab_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_rel_ibicgstab_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_rel_cg_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_cg_lf_clover.cc \
-	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
-	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc \
 	actions/ferm/invert/syssolver_polyprec_cg.cc \
 	actions/ferm/invert/syssolver_linop_bicgstab.cc \
 	actions/ferm/invert/syssolver_linop_bicrstab.cc \
@@ -1066,7 +1055,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/invert/multi_syssolver_linop_mr.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_aggregate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg.cc \
-	actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_array.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate.cc \
 	actions/ferm/invert/multi_syssolver_mdagm_cg_accumulate_array.cc \
@@ -1075,7 +1063,6 @@ libchroma_a_SOURCES = \
 	actions/ferm/qprop/fermact_qprop.cc \
 	actions/ferm/qprop/fermact_qprop_array.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop.cc \
-	actions/ferm/qprop/central_tprec_fermact_qprop_w.cc \
 	actions/ferm/qprop/eoprec_fermact_qprop_array.cc \
 	actions/ferm/qprop/staggered_qprop.cc \
 	actions/ferm/qprop/asqtad_qprop.cc \
@@ -1116,7 +1103,6 @@ libchroma_a_SOURCES = \
 	actions/gauge/gaugestates/gauge_createstate_aggregate.cc \
 	actions/gauge/gaugestates/periodic_gaugestate.cc \
 	actions/gauge/gaugestates/simple_gaugestate.cc \
-	actions/gauge/gaugestates/stout_gaugestate.cc \
 	init/chroma_init.cc \
 	io/eigen_io.cc \
 	io/monomial_io.cc \
@@ -1156,7 +1142,6 @@ libchroma_a_SOURCES = \
 	meas/gfix/polar_dec.cc meas/gfix/rot_colvec.cc \
 	meas/glue/fuzwilp.cc meas/glue/mesfield.cc \
         meas/glue/wloop.cc  meas/glue/mesplq.cc meas/glue/polylp.cc \
-	meas/glue/wilslp.cc meas/glue/wilson_flow_w.cc  \
 	meas/glue/qactden.cc \
 	meas/glue/qnaive.cc \
         meas/glue/block.cc meas/glue/fuzglue.cc meas/glue/gluecor.cc meas/glue/polycor.cc \
@@ -1177,8 +1162,8 @@ libchroma_a_SOURCES = \
 	meas/hadron/stoch_var.cc \
         meas/sinks/pt_sink_smearing.cc \
         meas/sinks/sh_sink_smearing.cc \
+	meas/sinks/wall_sink_smearing.cc \
         meas/sinks/norm_sh_sink_smearing.cc \
-        meas/sinks/wall_sink_smearing.cc \
 	meas/sinks/sink_smearing_aggregate.cc \
 	meas/smear/ape_smear.cc \
 	meas/smear/jacobi_smear.cc \
@@ -1187,12 +1172,11 @@ libchroma_a_SOURCES = \
 	meas/smear/fuzz_smear.cc meas/smear/gaus_smear.cc \
 	meas/smear/hyp_smear.cc meas/smear/hyp_smear3d.cc \
 	meas/smear/laplacian.cc \
-	meas/smear/link_smearing_aggregate.cc \
+	meas/smear/link_smearing_aggregate.cc  \
 	meas/smear/ape_link_smearing.cc \
 	meas/smear/hyp_link_smearing.cc \
         meas/smear/hex_smear.cc \
 	meas/smear/no_link_smearing.cc \
-	meas/smear/stout_link_smearing.cc \
 	meas/smear/quark_smearing_aggregate.cc \
 	meas/smear/no_quark_smearing.cc \
 	meas/smear/gaus_quark_smearing.cc \
@@ -1209,7 +1193,6 @@ libchroma_a_SOURCES = \
         meas/sources/sh_source_const.cc \
         meas/sources/norm_sh_source_const.cc \
 	meas/sources/sh_source_smearing.cc \
-	meas/sources/sf_pt_source_const.cc \
 	meas/sources/sf_sh_source_const.cc \
 	meas/sources/sf_wall_source_const.cc \
         meas/sources/dilutezN_source_const.cc \
@@ -1255,7 +1238,6 @@ libchroma_a_SOURCES = \
 	util/gauge/taproj.cc util/gauge/unit_check.cc \
 	util/gauge/conjgauge.cc util/gauge/constgauge.cc \
 	util/gauge/weak_field.cc \
-	util/gauge/stout_utils.cc \
 	util/gauge/key_glue_matelem.cc \
 	util/gauge/key_timeslice_gauge.cc \
 	util/info/printgeom.cc \
@@ -1295,7 +1277,6 @@ libchroma_a_SOURCES = \
 	update/molecdyn/predictor/linear_extrap_predictor.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
-	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
 	meas/hadron/dilution_quark_source_const_w.cc
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
@@ -1308,28 +1289,30 @@ endif
 
 if BUILD_QUDA
 nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
-	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
-	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
-	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h
+#	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+#	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
+#	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h
+#	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
+#	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h
 
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
-	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
-	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
+
+#	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+#	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
+#	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
+#	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
+#	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc
+
 endif
 
 #
@@ -1339,6 +1322,23 @@ endif
 # Wilson specific sources
 libchroma_a_SOURCES += \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
+	actions/ferm/linop/clover_term_base_w.cc \
+	actions/ferm/linop/clover_term_qdp_w.cc \
+	actions/ferm/linop/eoprec_clover_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
+	actions/ferm/linop/unprec_clover_linop_w.cc \
+	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
+	actions/ferm/linop/eoprec_slic_linop_w.cc \
+	actions/ferm/linop/eoprec_slrc_linop_w.cc \
+	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
+	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
+	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
+	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
+	actions/ferm/linop/unprec_w12_linop_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.cc \
@@ -1354,12 +1354,6 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/eoprec_ovext_fermact_array_w.cc \
 	actions/ferm/fermacts/clover_fermact_params_w.cc \
-	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
-	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
-	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
-	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
-	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
-	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwftransf_fermact_w.cc \
 	actions/ferm/fermacts/unprec_dwf_fermact_array_w.cc \
 	actions/ferm/fermacts/unprec_ht_contfrac5d_fermact_array_w.cc \
@@ -1371,15 +1365,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/unprec_parwilson_fermact_w.cc \
 	actions/ferm/fermacts/unprec_graphene_fermact_w.cc \
 	actions/ferm/fermacts/unprec_hamberwu_fermact_w.cc \
-	actions/ferm/fermacts/unprec_w12_fermact_w.cc \
 	actions/ferm/fermacts/unprec_wilson_fermact_w.cc \
-	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
-	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
-	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc\
-	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc \
-	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc\
-	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc\
-	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc\
 	actions/ferm/fermacts/unprec_zolo_nef_fermact_array_w.cc \
 	actions/ferm/fermacts/poly_cheb_fermact_w.cc \
 	actions/ferm/fermbcs/fermbcs_aggregate_w.cc \
@@ -1396,7 +1382,6 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermbcs/schr_dirich_fermbc_w.cc \
         actions/ferm/fermstates/ferm_createstate_aggregate_w.cc \
         actions/ferm/fermstates/ferm_createstate_reader_w.cc \
-	actions/ferm/fermstates/stout_fermstate_w.cc \
 	actions/ferm/fermstates/extfield_aggregate_w.cc \
 	actions/ferm/fermstates/extfield_fermstate_w.cc \
         actions/ferm/fermstates/hex_fermstate_w.cc \
@@ -1443,24 +1428,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/linop/unprec_ppdwf4d_linop_w.cc \
 	actions/ferm/linop/unprec_graphene_linop_w.cc \
 	actions/ferm/linop/unprec_hamberwu_linop_w.cc \
-	actions/ferm/linop/unprec_w12_linop_w.cc \
 	actions/ferm/linop/unprec_wilson_linop_w.cc \
-	actions/ferm/linop/clover_term_base_w.cc \
-	actions/ferm/linop/clover_term_qdp_w.cc \
-	actions/ferm/linop/eoprec_clover_linop_w.cc \
-	actions/ferm/linop/eoprec_clover_dumb_linop_w.cc \
-	actions/ferm/linop/eoprec_clover_orbifold_linop_w.cc \
-	actions/ferm/linop/unprec_clover_linop_w.cc \
-	actions/ferm/linop/eoprec_clover_extfield_linop_w.cc \
-	actions/ferm/linop/eoprec_slic_linop_w.cc \
-	actions/ferm/linop/eoprec_slrc_linop_w.cc \
-	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
-	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
-	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
-	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
-	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc \
-	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc \
-	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
 	actions/ferm/qprop/dwf_fermact_qprop_array_w.cc \
 	actions/ferm/qprop/dwf_quarkprop4_w.cc \
 	actions/ferm/qprop/nef_quarkprop4_w.cc \
@@ -1547,8 +1515,6 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/eoprec_logdet_ee_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polynomial_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_two_flavor_polyprec_monomial_w.cc \
-	update/molecdyn/monomial/fixed_random_ferm_monomial.cc \
-	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.cc \
 	util/ferm/staggered_operators_s.cc \
 	util/ferm/gammasgn_w.cc \
 	util/ferm/gamma5_herm_w.cc \
@@ -1579,6 +1545,10 @@ libchroma_a_SOURCES += \
 # Stuff not yet incorporated but lying around
 #	meas/pbp/mespbg5p_w.cc meas/pbp/mespbp_w.cc
 #	meas/pbp/ovpbg5p_w.cc meas/pbp/pbg5p_w.cc
+#	actions/ferm/fermacts/flic_fermact_params_w.h
+#	actions/ferm/fermacts/eoprec_flic_fermact_w.h
+#	actions/ferm/fermacts/flic_fermstate_w.h
+#	actions/ferm/linop/eoprec_flic_linop_w.h
 #	actions/ferm/fermstates/flic_fermact_params_w.cc
 #	actions/ferm/fermstates/eoprec_flic_fermact_w.cc
 #	actions/ferm/fermstates/flic_fermstate_w.cc
@@ -1601,7 +1571,6 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_apply_gaugestate.cc \
 	meas/inline/glue/inline_plaquette.cc \
 	meas/inline/glue/inline_polylp.cc \
-	meas/inline/glue/inline_wilslp.cc \
 	meas/inline/glue/inline_fuzwilp.cc \
 	meas/inline/glue/inline_qactden.cc \
 	meas/inline/glue/inline_qnaive.cc \
@@ -1622,10 +1591,6 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_seqprop_test_w.cc \
 	meas/inline/hadron/inline_prop_3pt_w.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
-	meas/inline/hadron/inline_disco_w.cc \
-	meas/inline/hadron/inline_disco_eoprec_w.cc \
-	meas/inline/hadron/inline_disco_eigcg_w.cc \
-	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
 	meas/inline/hadron/inline_prop_distillution_w.cc \
@@ -1710,7 +1675,58 @@ libchroma_a_SOURCES += \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc
+	meas/inline/smear/inline_link_smear.cc \
+	meas/glue/wilslp.cc \
+	meas/inline/glue/inline_wilslp.cc \
+	util/gauge/stout_utils.cc \
+	meas/glue/wilson_flow_w.cc \
+	actions/gauge/gaugestates/stout_gaugestate.cc \
+	meas/smear/stout_link_smearing.cc \
+	actions/ferm/fermstates/stout_fermstate_w.cc \
+	update/molecdyn/monomial/fixed_random_ferm_monomial.cc
+
+# PARSCALARVEC CASUALTIES
+#
+#
+#    Because of stouting 
+#
+#    Because of elem() access 
+#
+#     No temporal preconditioning
+#	update/molecdyn/monomial/central_tprec_logdet_tt_monomial_w.cc \
+#	actions/ferm/qprop/central_tprec_fermact_qprop_w.cc \
+#	actions/ferm/fermacts/unprec_s_cprec_t_wilson_fermact_w.cc \
+#	actions/ferm/fermacts/iluprec_s_cprec_t_wilson_fermact_w.cc \
+#	actions/ferm/fermacts/iluprec_s_cprec_t_clover_fermact_w.cc\
+#	actions/ferm/fermacts/ilu2prec_s_cprec_t_wilson_fermact_w.cc \
+#	actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.cc \
+#     	actions/ferm/linop/iluprec_s_cprec_t_clover_linop_w.cc \
+#	actions/ferm/linop/ilu2prec_s_cprec_t_clover_linop_w.cc \
+#	actions/ferm/linop/eo3dprec_s_cprec_t_clover_linop_w.cc \
+#	actions/ferm/fermacts/ilu2prec_s_cprec_t_clover_fermact_w.cc\
+#	actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.cc \
+#	actions/ferm/linop/unprec_s_cprec_t_wilson_linop_w.cc \
+#	actions/ferm/linop/iluprec_s_cprec_t_wilson_linop_w.cc \
+#	actions/ferm/linop/ilu2prec_s_cprec_t_wilson_linop_w.cc \
+#	actions/ferm/linop/eo3dprec_s_cprec_t_wilson_linop_w.cc
+
+# Not sure what the issue is here maybe EigCG?
+#
+#	meas/inline/hadron/inline_disco_w.cc \
+#	meas/inline/hadron/inline_disco_eoprec_w.cc \
+#	meas/inline/hadron/inline_disco_eigcg_w.cc \
+#	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
+#
+# No EigCG
+#
+#	actions/ferm/invert/inv_eigcg2.cc \
+#	actions/ferm/invert/inv_eigcg2_array.cc
+#	actions/ferm/invert/syssolver_linop_eigcg.cc \
+#	actions/ferm/invert/syssolver_linop_eigcg_array.cc \
+#	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
+#	actions/ferm/invert/syssolver_mdagm_eigcg_qdp.cc
+#	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc
+
 
 # Taken out for now
 
@@ -1899,7 +1915,7 @@ libchroma_a_SOURCES += \
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-
+#	meas/sources/sf_pt_source_const.cc
 
 
 if BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER

@@ -1,0 +1,606 @@
+<?xml version="1.0"?>
+
+
+<hadron_corr>
+  <Input><propagator>
+  <IO_version>
+    <version>2</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>STAGGERED</FermTypeP>
+    <Mass>0.5</Mass>
+    <u0>0.463032</u0>
+    <prop_type>SZIN</prop_type>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>1000</MaxCG>
+    <GFAccu>2.0e-6</GFAccu>
+    <GFMax>10000</GFMax>
+    <OrPara>1.8</OrPara>
+    <nrow>4 4 4 4</nrow>
+    <boundary>1 1 1 -1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+  </param>
+  <Cfg>
+    <cfg_type>NERSC</cfg_type>
+    <cfg_file>./t_nersc.cfg</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+</propagator>
+
+  </Input>
+  <Config_info><NERSC>
+      <mat_size>12</mat_size>
+      <nrow>4 4 4 4</nrow>
+      <boundary>1 1 1 1</boundary>
+      <ensemble_id>X1078240663</ensemble_id>
+      <ensemble_label>SZIN</ensemble_label>
+      <creator>SZIN</creator>
+      <creator_hardware>(Tue</creator_hardware>
+      <creation_date>Fri</creation_date>
+      <archive_date>Fri</archive_date>
+    </NERSC>
+
+  </Config_info>
+  <Source_info>
+
+  </Source_info>
+  <Output_version>
+    <out_version>1</out_version>
+  </Output_version>
+  <Observables>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.463032</link>
+  </Observables>
+  <Is_this_gauge_invariant>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.554149</link>
+  </Is_this_gauge_invariant>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>140</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>143</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>144</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>111</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>113</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>116</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>113</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>115</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>114</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>139</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>144</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>144</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>111</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>115</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>117</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>140</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>145</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>145</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>139</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>142</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>144</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>110</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>116</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>114</n_count>
+  </Qprop>
+  <Here_are_all_16_pions>
+    <re_pion0>
+      <Pi>0.726487 0.373194 0.308243 0.388616</Pi>
+    </re_pion0>
+    <re_pion1>
+      <Pi>0.146607 -0.0148181 0.00208566 -0.00985105</Pi>
+    </re_pion1>
+    <re_pion2>
+      <Pi>0.13166 -0.00517614 -0.00436221 -0.010863</Pi>
+    </re_pion2>
+    <re_pion3>
+      <Pi>0.165676 0.0025131 0.0119575 0.014581</Pi>
+    </re_pion3>
+    <re_pion4>
+      <Pi>0.00371805 -0.0165257 -0.00277875 -0.0206307</Pi>
+    </re_pion4>
+    <re_pion5>
+      <Pi>0.138889 0.0161758 -0.00853056 0.00399824</Pi>
+    </re_pion5>
+    <re_pion6>
+      <Pi>0.156039 0.00671178 -0.016686 -0.0046872</Pi>
+    </re_pion6>
+    <re_pion7>
+      <Pi>0.123456 0.000798527 0.00269447 0.0110371</Pi>
+    </re_pion7>
+    <re_pion8>
+      <Pi>0.137763 0.0186581 -0.00778534 0.0103033</Pi>
+    </re_pion8>
+    <re_pion9>
+      <Pi>0.128581 -0.00392188 0.0133397 0.00550386</Pi>
+    </re_pion9>
+    <re_pion10>
+      <Pi>0.136086 0.00569804 0.00839052 -0.00825391</Pi>
+    </re_pion10>
+    <re_pion11>
+      <Pi>0.136704 -0.0157289 0.0107171 0.0112992</Pi>
+    </re_pion11>
+    <re_pion12>
+      <Pi>-0.125028 -0.00253434 0.00324005 0.0259793</Pi>
+    </re_pion12>
+    <re_pion13>
+      <Pi>-0.12379 0.00558562 -0.00566231 -0.00426985</Pi>
+    </re_pion13>
+    <re_pion14>
+      <Pi>-0.143871 -0.0161742 0.00958769 0.0186624</Pi>
+    </re_pion14>
+    <re_pion15>
+      <Pi>-0.117163 -0.00418831 -0.00726641 -0.00878699</Pi>
+    </re_pion15>
+  </Here_are_all_16_pions>
+  <Here_are_all_16_scalars>
+    <re_sc0>
+      <Sc>0.00371805 0.0165257 -0.00277875 0.0206307</Sc>
+    </re_sc0>
+    <re_sc1>
+      <Sc>-0.137763 0.0186581 0.00778534 0.0103033</Sc>
+    </re_sc1>
+    <re_sc2>
+      <Sc>-0.128581 -0.00392188 -0.0133397 0.00550387</Sc>
+    </re_sc2>
+    <re_sc3>
+      <Sc>-0.136086 0.00569804 -0.00839052 -0.00825391</Sc>
+    </re_sc3>
+    <re_sc4>
+      <Sc>-0.726487 0.373194 -0.308243 0.388616</Sc>
+    </re_sc4>
+    <re_sc5>
+      <Sc>-0.125028 0.00253434 0.00324005 -0.0259793</Sc>
+    </re_sc5>
+    <re_sc6>
+      <Sc>-0.12379 -0.00558562 -0.00566231 0.00426985</Sc>
+    </re_sc6>
+    <re_sc7>
+      <Sc>-0.143871 0.0161742 0.00958769 -0.0186624</Sc>
+    </re_sc7>
+    <re_sc8>
+      <Sc>-0.146607 -0.0148181 -0.00208566 -0.00985105</Sc>
+    </re_sc8>
+    <re_sc9>
+      <Sc>-0.13166 -0.00517614 0.00436221 -0.010863</Sc>
+    </re_sc9>
+    <re_sc10>
+      <Sc>-0.165676 0.0025131 -0.0119575 0.014581</Sc>
+    </re_sc10>
+    <re_sc11>
+      <Sc>-0.117163 0.00418831 -0.00726641 0.00878699</Sc>
+    </re_sc11>
+    <re_sc12>
+      <Sc>-0.138889 0.0161758 0.00853056 0.00399824</Sc>
+    </re_sc12>
+    <re_sc13>
+      <Sc>-0.156039 0.00671178 0.016686 -0.0046872</Sc>
+    </re_sc13>
+    <re_sc14>
+      <Sc>-0.123456 0.000798527 -0.00269447 0.0110371</Sc>
+    </re_sc14>
+    <re_sc15>
+      <Sc>-0.136704 -0.0157289 -0.0107171 0.0112992</Sc>
+    </re_sc15>
+  </Here_are_all_16_scalars>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>140</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>143</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>144</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>114</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>113</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>115</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>113</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>115</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>115</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>139</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>143</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>143</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>111</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>116</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>117</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>140</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>144</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>143</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>141</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>146</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>142</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>112</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>116</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.5</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>117</n_count>
+  </Qprop>
+  <Here_are_all_16_pions>
+    <re_pion0>
+      <Pi>0.913937 0.449608 0.343053 0.433235</Pi>
+    </re_pion0>
+    <re_pion1>
+      <Pi>0.180576 0.0192582 0.000840666 0.00772042</Pi>
+    </re_pion1>
+    <re_pion2>
+      <Pi>0.173992 0.0268513 0.0103149 -0.0142436</Pi>
+    </re_pion2>
+    <re_pion3>
+      <Pi>0.142004 0.0164104 0.0143475 0.00537183</Pi>
+    </re_pion3>
+    <re_pion4>
+      <Pi>-0.169163 0.015464 -0.030573 0.0300856</Pi>
+    </re_pion4>
+    <re_pion5>
+      <Pi>0.156962 -0.00754044 0.020876 0.00601734</Pi>
+    </re_pion5>
+    <re_pion6>
+      <Pi>0.200475 -0.00894645 -0.000174616 -0.0103559</Pi>
+    </re_pion6>
+    <re_pion7>
+      <Pi>0.149577 0.0033061 0.0218788 0.011437</Pi>
+    </re_pion7>
+    <re_pion8>
+      <Pi>0.174538 -0.0167068 0.00621939 -0.00597196</Pi>
+    </re_pion8>
+    <re_pion9>
+      <Pi>0.146202 -0.023647 0.00534698 -0.0073865</Pi>
+    </re_pion9>
+    <re_pion10>
+      <Pi>0.168661 -0.0187942 0.00488031 0.0063816</Pi>
+    </re_pion10>
+    <re_pion11>
+      <Pi>0.196696 0.021225 -0.00733426 0.00515334</Pi>
+    </re_pion11>
+    <re_pion12>
+      <Pi>-0.157134 0.00203992 0.00347855 0.00313858</Pi>
+    </re_pion12>
+    <re_pion13>
+      <Pi>-0.214213 0.011225 -0.00810952 -0.0113385</Pi>
+    </re_pion13>
+    <re_pion14>
+      <Pi>-0.145556 -0.0179657 0.0118161 0.00186088</Pi>
+    </re_pion14>
+    <re_pion15>
+      <Pi>-0.217652 -0.00378247 0.0128217 0.00548657</Pi>
+    </re_pion15>
+  </Here_are_all_16_pions>
+  <Here_are_all_16_scalars>
+    <re_sc0>
+      <Sc>-0.169163 -0.015464 -0.030573 -0.0300856</Sc>
+    </re_sc0>
+    <re_sc1>
+      <Sc>-0.174538 -0.0167068 -0.00621939 -0.00597195</Sc>
+    </re_sc1>
+    <re_sc2>
+      <Sc>-0.146202 -0.023647 -0.00534698 -0.0073865</Sc>
+    </re_sc2>
+    <re_sc3>
+      <Sc>-0.168661 -0.0187942 -0.00488031 0.0063816</Sc>
+    </re_sc3>
+    <re_sc4>
+      <Sc>-0.913937 0.449608 -0.343053 0.433235</Sc>
+    </re_sc4>
+    <re_sc5>
+      <Sc>-0.157134 -0.00203992 0.00347855 -0.00313858</Sc>
+    </re_sc5>
+    <re_sc6>
+      <Sc>-0.214213 -0.011225 -0.00810952 0.0113385</Sc>
+    </re_sc6>
+    <re_sc7>
+      <Sc>-0.145556 0.0179657 0.0118161 -0.00186088</Sc>
+    </re_sc7>
+    <re_sc8>
+      <Sc>-0.180576 0.0192582 -0.000840666 0.00772042</Sc>
+    </re_sc8>
+    <re_sc9>
+      <Sc>-0.173992 0.0268513 -0.0103149 -0.0142436</Sc>
+    </re_sc9>
+    <re_sc10>
+      <Sc>-0.142004 0.0164104 -0.0143475 0.00537183</Sc>
+    </re_sc10>
+    <re_sc11>
+      <Sc>-0.217652 0.00378247 0.0128217 -0.00548657</Sc>
+    </re_sc11>
+    <re_sc12>
+      <Sc>-0.156962 -0.00754044 -0.020876 0.00601734</Sc>
+    </re_sc12>
+    <re_sc13>
+      <Sc>-0.200475 -0.00894645 0.000174616 -0.0103559</Sc>
+    </re_sc13>
+    <re_sc14>
+      <Sc>-0.149577 0.0033061 -0.0218788 0.011437</Sc>
+    </re_sc14>
+    <re_sc15>
+      <Sc>-0.196696 0.021225 0.00733426 0.00515334</Sc>
+    </re_sc15>
+  </Here_are_all_16_scalars>
+  <Here_are_all_16_pions_averaged_over_the_2_sources>
+    <pi_corr0>
+      <Pi>0.820212 0.411401 0.325648 0.410926</Pi>
+    </pi_corr0>
+    <pi_corr1>
+      <Pi>0.163592 0.00222002 0.00146316 -0.00106531</Pi>
+    </pi_corr1>
+    <pi_corr2>
+      <Pi>0.152826 0.0108376 0.00297637 -0.0125533</Pi>
+    </pi_corr2>
+    <pi_corr3>
+      <Pi>0.15384 0.00946174 0.0131525 0.00997642</Pi>
+    </pi_corr3>
+    <pi_corr4>
+      <Pi>-0.0827225 -0.000530825 -0.0166759 0.00472746</Pi>
+    </pi_corr4>
+    <pi_corr5>
+      <Pi>0.147925 0.0043177 0.00617274 0.00500779</Pi>
+    </pi_corr5>
+    <pi_corr6>
+      <Pi>0.178257 -0.00111733 -0.00843031 -0.00752157</Pi>
+    </pi_corr6>
+    <pi_corr7>
+      <Pi>0.136516 0.00205231 0.0122867 0.0112371</Pi>
+    </pi_corr7>
+    <pi_corr8>
+      <Pi>0.15615 0.00097568 -0.000782975 0.00216566</Pi>
+    </pi_corr8>
+    <pi_corr9>
+      <Pi>0.137392 -0.0137845 0.00934335 -0.000941315</Pi>
+    </pi_corr9>
+    <pi_corr10>
+      <Pi>0.152373 -0.00654808 0.00663541 -0.000936158</Pi>
+    </pi_corr10>
+    <pi_corr11>
+      <Pi>0.1667 0.00274807 0.00169142 0.00822625</Pi>
+    </pi_corr11>
+    <pi_corr12>
+      <Pi>-0.141081 -0.000247209 0.0033593 0.0145589</Pi>
+    </pi_corr12>
+    <pi_corr13>
+      <Pi>-0.169002 0.00840532 -0.00688591 -0.00780418</Pi>
+    </pi_corr13>
+    <pi_corr14>
+      <Pi>-0.144714 -0.0170699 0.0107019 0.0102616</Pi>
+    </pi_corr14>
+    <pi_corr15>
+      <Pi>-0.167408 -0.00398539 0.00277765 -0.00165021</Pi>
+    </pi_corr15>
+  </Here_are_all_16_pions_averaged_over_the_2_sources>
+  <And_the_same_for_the_scalars>
+    <sc_corr0>
+      <Sc>-0.0827225 0.000530825 -0.0166759 -0.00472746</Sc>
+    </sc_corr0>
+    <sc_corr1>
+      <Sc>-0.15615 0.00097568 0.000782975 0.00216566</Sc>
+    </sc_corr1>
+    <sc_corr2>
+      <Sc>-0.137392 -0.0137845 -0.00934335 -0.000941314</Sc>
+    </sc_corr2>
+    <sc_corr3>
+      <Sc>-0.152373 -0.00654808 -0.00663541 -0.000936158</Sc>
+    </sc_corr3>
+    <sc_corr4>
+      <Sc>-0.820212 0.411401 -0.325648 0.410926</Sc>
+    </sc_corr4>
+    <sc_corr5>
+      <Sc>-0.141081 0.000247209 0.0033593 -0.0145589</Sc>
+    </sc_corr5>
+    <sc_corr6>
+      <Sc>-0.169002 -0.00840532 -0.00688591 0.00780418</Sc>
+    </sc_corr6>
+    <sc_corr7>
+      <Sc>-0.144714 0.0170699 0.0107019 -0.0102616</Sc>
+    </sc_corr7>
+    <sc_corr8>
+      <Sc>-0.163592 0.00222002 -0.00146316 -0.00106531</Sc>
+    </sc_corr8>
+    <sc_corr9>
+      <Sc>-0.152826 0.0108376 -0.00297637 -0.0125533</Sc>
+    </sc_corr9>
+    <sc_corr10>
+      <Sc>-0.15384 0.00946174 -0.0131525 0.00997642</Sc>
+    </sc_corr10>
+    <sc_corr11>
+      <Sc>-0.167408 0.00398539 0.00277765 0.00165021</Sc>
+    </sc_corr11>
+    <sc_corr12>
+      <Sc>-0.147925 0.0043177 -0.00617274 0.00500779</Sc>
+    </sc_corr12>
+    <sc_corr13>
+      <Sc>-0.178257 -0.00111733 0.00843031 -0.00752157</Sc>
+    </sc_corr13>
+    <sc_corr14>
+      <Sc>-0.136516 0.00205231 -0.0122867 0.0112371</Sc>
+    </sc_corr14>
+    <sc_corr15>
+      <Sc>-0.1667 0.00274807 -0.00169142 0.00822625</Sc>
+    </sc_corr15>
+  </And_the_same_for_the_scalars>
+</hadron_corr>

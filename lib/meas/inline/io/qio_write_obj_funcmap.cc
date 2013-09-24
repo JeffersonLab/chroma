@@ -15,8 +15,8 @@
 #include "handle.h"
 #include "qdp_map_obj_memory.h"
 
-
-#include "actions/ferm/invert/containers.h"
+//EigCG
+//#include "actions/ferm/invert/containers.h"
 
 namespace Chroma
 {
@@ -380,6 +380,7 @@ namespace Chroma
 	close(to);
       }
 
+#if 0
       //------------------------------------------------------------------------
       //! Write out an RitzPairs Type
       void QIOWriteRitzPairsLatticeFermion(const string& buffer_id,
@@ -416,6 +417,7 @@ namespace Chroma
 	// Close
 	close(to);
       }
+#endif
 
       //----------------------------------------------------------------------
       void QIOWriteSubsetVectors(const string& buffer_id,
@@ -542,9 +544,10 @@ namespace Chroma
 
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
-
+#if 0
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
+#endif
 	
 	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
 								      QIOWriteSubsetVectors);

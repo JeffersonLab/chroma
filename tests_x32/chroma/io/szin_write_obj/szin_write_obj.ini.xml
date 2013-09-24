@@ -1,0 +1,83 @@
+<chroma>
+<annotation>
+Write a SZIN config
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin1.cfg</file_name>
+        <trunc>false</trunc>
+        <j_decay>3</j_decay>
+        <t_start>0</t_start>
+        <t_end>7</t_end>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>default_gauge_field</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>szin2.cfg</file_name>
+        <trunc>true</trunc>
+        <j_decay>3</j_decay>
+        <t_start>7</t_start>
+        <t_end>2</t_end>
+      </File>
+    </elem>
+
+    <elem>
+      <annotation>
+        Make a gaussian prop 
+      </annotation>
+      <Name>GAUSSIAN_INIT_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        List all objects
+      </annotation>
+      <Name>LIST_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the named object and then erase the memory object
+      </annotation>
+      <Name>SZIN_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

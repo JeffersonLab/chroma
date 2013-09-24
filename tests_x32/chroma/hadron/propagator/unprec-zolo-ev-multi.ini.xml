@@ -1,0 +1,225 @@
+<chroma>
+<annotation>
+; $Id: unprec-zolo-ev-multi.ini.xml,v 3.3 2008-06-18 15:00:48 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+
+    <elem>
+      <Name>RITZ_KS_HERM_WILSON</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+	<FermionAction>
+          <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+          <Mass>-1.4</Mass>
+        <boundary>1 1 1 -1</boundary>
+        </FermionAction>
+	<RitzParams>
+	  <Neig>8</Neig>
+	  <Ndummy>4</Ndummy>
+	  <RsdR>1.0e-3</RsdR>
+	  <RsdA>1.0e-4</RsdA>
+	  <RsdZero>5.0e-6</RsdZero>
+	  <ProjApsiP>false</ProjApsiP>
+	  <GammaFactor>0.1</GammaFactor>
+	  <MaxKS>200</MaxKS>
+	  <MaxCG>10000</MaxCG>
+	  <MinKSIter>5</MinKSIter>
+	  <MaxKSIter>200</MaxKSIter>
+	  <Nrenorm>10</Nrenorm>
+	</RitzParams>
+      </Param>     
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <eigen_id>eigen_info_0</eigen_id>
+      </NamedObject>
+    </elem>
+    
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfoLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eig</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+   
+    <elem> 
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfo</object_type>
+      </NamedObject>
+    </elem>
+
+   
+    <elem>
+      <Name>QIO_READ_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigen_info_0</object_id>
+        <object_type>EigenInfoLatticeFermion</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./eig</file_name>
+      </File>
+    </elem>
+    
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>MULTI_PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>8</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <nonRelProp>false</nonRelProp>
+        <obsvP>false</obsvP>
+        <FermionAction>
+          <FermAct>OVERLAP_PARTIAL_FRACTION_4D</FermAct>
+          <IsChiral>true</IsChiral>
+          <ApproximationType>ZOLOTAREV</ApproximationType>
+          <Mass>0</Mass>
+          <RatPolyDeg>12</RatPolyDeg>
+          <ApproxMin>0.648</ApproxMin>
+          <ApproxMax>6.55</ApproxMax>
+          <InnerSolve>
+            <MaxCG>1000</MaxCG>
+            <RsdCG>1.0e-5</RsdCG>
+            <ReorthFreq>6</ReorthFreq>
+          </InnerSolve>	
+          <AuxFermAct>
+            <FermAct>UNPRECONDITIONED_WILSON</FermAct>
+            <Mass>-1.4</Mass>   
+            <FermionBC>
+              <FermBC>SIMPLE_FERMBC</FermBC>
+              <boundary>1 1 1 -1</boundary>
+            </FermionBC>
+          </AuxFermAct>
+          <FermionBC>
+            <FermBC>SIMPLE_FERMBC</FermBC>
+            <boundary>1 1 1 -1</boundary>
+          </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-2 1.0e-2 1.0e-2</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        <StateInfo>
+          
+	  <eigen_info_id>eigen_info_0</eigen_info_id>
+        </StateInfo>
+	<MultiMasses>0.1 0.2 0.3</MultiMasses>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0_000</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0_001</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_1</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>sh_prop_0_002</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./sh_prop_2</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+   
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+
+
+<fuzzed_hadron_corr>
+  <Input><propagator>
+  <IO_version>
+    <version>1</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>STAGGERED</FermTypeP>
+    <Mass>0.1</Mass>
+    <u0>0.463032</u0>
+    <cfg_type>NERSC</cfg_type>
+    <prop_type>SZIN</prop_type>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>1000</MaxCG>
+    <GFAccu>1.0e-5</GFAccu>
+    <GFMax>10000</GFMax>
+    <OrPara>1.1</OrPara>
+    <nrow>4 4 4 4</nrow>
+    <boundary>1 1 1 -1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+  </param>
+  <Cfg>
+    <cfg_file>../../tests/t_asqtad_prop/t_nersc.cfg</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+</propagator>
+
+  </Input>
+  <Config_info><NERSC>
+      <mat_size>12</mat_size>
+      <nrow>4 4 4 4</nrow>
+      <boundary>1 1 1 1</boundary>
+      <ensemble_id>X1102263805</ensemble_id>
+      <ensemble_label>SZIN</ensemble_label>
+      <creator>SZIN</creator>
+      <creator_hardware>(Tue</creator_hardware>
+      <creation_date>Fri</creation_date>
+      <archive_date>Fri</archive_date>
+    </NERSC>
+
+  </Config_info>
+  <Output_version>
+    <out_version>1</out_version>
+  </Output_version>
+  <Observables>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.463032</link>
+  </Observables>
+  <Is_this_gauge_invariant>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.463032</link>
+  </Is_this_gauge_invariant>
+  <Qprop>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>603</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>646</n_count>
+  </Qprop>
+  <Qprop>
+    <Mass>0.1</Mass>
+    <RsdCG>1e-05</RsdCG>
+    <n_count>654</n_count>
+  </Qprop>
+  <Hadrons_from_time_source>
+    <source_time>0</source_time>
+    <Pseudoscalar>
+      <gamma5_CROSS_gamma5>
+        <Pi>0.405543 0.317851 0.292172 0.279666</Pi>
+      </gamma5_CROSS_gamma5>
+      <gamma5_CROSS_gamma0_gamma5>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma0_gamma5>
+      <gamma5_CROSS_gamma1_gamma5>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma1_gamma5>
+      <gamma5_CROSS_gamma2_gamma5>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma2_gamma5>
+      <gamma3_gamma5_CROSS_gamma3_gamma5>
+        <Pi>-0.154203 0.118305 -0.0711927 0.0611631</Pi>
+      </gamma3_gamma5_CROSS_gamma3_gamma5>
+      <gamma5_CROSS_gamma2_gamma3>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma2_gamma3>
+      <gamma5_CROSS_gamma1_gamma3>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma1_gamma3>
+      <gamma5_CROSS_gamma0_gamma3>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma0_gamma3>
+      <gamma3_gamma5_CROSS_gamma1_gamma2>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_gamma1_gamma2>
+      <gamma3_gamma5_CROSS_gamma0_gamma2>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_gamma0_gamma2>
+      <gamma3_gamma5_CROSS_gamma0_gamma1>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_gamma0_gamma1>
+      <gamma5_CROSS_gamma3>
+        <Pi>0 0 0 0</Pi>
+      </gamma5_CROSS_gamma3>
+      <gamma3_gamma5_CROSS_gamma2>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_gamma2>
+      <gamma3_gamma5_CROSS_gamma1>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_gamma1>
+      <gamma3_gamma5_CROSS_gamma0>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_gamma0>
+      <gamma3_gamma5_CROSS_one>
+        <Pi>0 0 0 0</Pi>
+      </gamma3_gamma5_CROSS_one>
+    </Pseudoscalar>
+  </Hadrons_from_time_source>
+  <baryon>
+    <nucleon>
+      <elem>
+        <re>0.000225954</re>
+        <im>1.27716e-05</im>
+      </elem>
+      <elem>
+        <re>3.87133e-05</re>
+        <im>9.75861e-05</im>
+      </elem>
+      <elem>
+        <re>-4.15247e-05</re>
+        <im>6.57269e-05</im>
+      </elem>
+      <elem>
+        <re>8.03904e-05</re>
+        <im>6.87906e-05</im>
+      </elem>
+    </nucleon>
+  </baryon>
+</fuzzed_hadron_corr>

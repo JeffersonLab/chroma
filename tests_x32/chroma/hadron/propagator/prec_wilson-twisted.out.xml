@@ -1,0 +1,455 @@
+<?xml version="1.0"?>
+
+
+<chroma>
+  <Input><chroma>
+<annotation>
+; $Id: prec_wilson-twisted.ini.xml,v 3.3 2006-09-21 19:45:55 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>WILSON</FermAct>
+	 <N5>6</N5>
+         <Kappa>0.1</Kappa>
+	 <OverMass>1.4</OverMass>
+         <FermionBC>
+           <FermBC>TWISTED_FERMBC</FermBC>
+	   <boundary>1 1 1 1</boundary>
+           <phases_by_pi>0.2 0.4 0</phases_by_pi>
+	   <phases_dir>0 1 2</phases_dir>
+         </FermionBC>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>pt_source_0</source_id>
+        <prop_id>pt_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>pt_prop_0</object_id>
+        <object_type>LatticePropagator</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./pt_prop_0</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>UNIT</cfg_type>
+ <cfg_file>../test_purgaug.cfg1</cfg_file>
+</Cfg>
+</chroma>
+
+  </Input>
+  <ProgramInfo>
+    <code_version>
+      <chroma>3.42.0</chroma>
+      <qdp>1.42.0</qdp>
+      <basePrecision>64</basePrecision>
+    </code_version>
+    <run_date>06 Sep 13 14:22:09 EDT</run_date>
+    <Setgeom>
+      <latt_size>32 4 4 8</latt_size>
+      <logical_size>1 1 1 1</logical_size>
+      <subgrid_size>32 4 4 8</subgrid_size>
+      <total_volume>4096</total_volume>
+      <subgrid_volume>4096</subgrid_volume>
+    </Setgeom>
+  </ProgramInfo>
+  <RNG>
+    <Seed>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>11</elem>
+      <elem>0</elem>
+    </Seed>
+  </RNG>
+  <Config_info><unit>
+</unit>
+
+  </Config_info>
+  <Observables>
+    <w_plaq>1</w_plaq>
+    <s_plaq>1</s_plaq>
+    <t_plaq>1</t_plaq>
+    <plane_01_plaq>1</plane_01_plaq>
+    <plane_02_plaq>1</plane_02_plaq>
+    <plane_12_plaq>1</plane_12_plaq>
+    <plane_03_plaq>1</plane_03_plaq>
+    <plane_13_plaq>1</plane_13_plaq>
+    <plane_23_plaq>1</plane_23_plaq>
+    <link>1</link>
+    <pollp>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+      <elem>
+        <re>1</re>
+        <im>0</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <InlineObservables>
+    <elem>
+      <make_source>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:22:09 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <RNG>
+          <Seed>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>11</elem>
+            <elem>0</elem>
+          </Seed>
+        </RNG>
+        <Input>
+          <Param>
+            <version>6</version><Source>
+      <version>2</version>
+      <SourceType>POINT_SOURCE</SourceType>
+      <j_decay>3</j_decay>
+      <t_srce>0 0 0 0</t_srce>
+      <Displacement>
+        <version>1</version>
+        <DisplacementType>NONE</DisplacementType>
+      </Displacement>
+    </Source>
+
+            <j_decay>3</j_decay>
+            <t_source>0</t_source>
+          </Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>pt_source_0</source_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+        </Config_info>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_correlator>
+          <source_corr>12 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+      </make_source>
+    </elem>
+    <elem>
+      <propagator>
+        <update_no>0</update_no>
+        <ProgramInfo>
+          <code_version>
+            <chroma>3.42.0</chroma>
+            <qdp>1.42.0</qdp>
+            <basePrecision>64</basePrecision>
+          </code_version>
+          <run_date>06 Sep 13 14:22:09 EDT</run_date>
+          <Setgeom>
+            <latt_size>32 4 4 8</latt_size>
+            <logical_size>1 1 1 1</logical_size>
+            <subgrid_size>32 4 4 8</subgrid_size>
+            <total_volume>4096</total_volume>
+            <subgrid_volume>4096</subgrid_volume>
+          </Setgeom>
+        </ProgramInfo>
+        <Input>
+          <Param>
+            <version>9</version>
+            <quarkSpinType>FULL</quarkSpinType>
+            <obsvP>false</obsvP><FermionAction>
+      <FermAct>WILSON</FermAct>
+      <N5>6</N5>
+      <Kappa>0.1</Kappa>
+      <OverMass>1.4</OverMass>
+      <FermionBC>
+        <FermBC>TWISTED_FERMBC</FermBC>
+        <boundary>1 1 1 1</boundary>
+        <phases_by_pi>0.2 0.4 0</phases_by_pi>
+        <phases_dir>0 1 2</phases_dir>
+      </FermionBC>
+    </FermionAction>
+<InvertParam>
+      <invType>CG_INVERTER</invType>
+      <RsdCG>1.0e-8</RsdCG>
+      <MaxCG>1000</MaxCG>
+    </InvertParam>
+</Param>
+          <NamedObject>
+            <gauge_id>default_gauge_field</gauge_id>
+            <source_id>pt_source_0</source_id>
+            <prop_id>pt_prop_0</prop_id>
+          </NamedObject>
+        </Input>
+        <Config_info><unit>
+</unit>
+
+
+
+        </Config_info>
+        <Output_version>
+          <out_version>1</out_version>
+        </Output_version>
+        <Observables>
+          <w_plaq>1</w_plaq>
+          <s_plaq>1</s_plaq>
+          <t_plaq>1</t_plaq>
+          <plane_01_plaq>1</plane_01_plaq>
+          <plane_02_plaq>1</plane_02_plaq>
+          <plane_12_plaq>1</plane_12_plaq>
+          <plane_03_plaq>1</plane_03_plaq>
+          <plane_13_plaq>1</plane_13_plaq>
+          <plane_23_plaq>1</plane_23_plaq>
+          <link>1</link>
+          <pollp>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+            <elem>
+              <re>1</re>
+              <im>0</im>
+            </elem>
+          </pollp>
+        </Observables>
+        <Source_file_info><make_source>
+      <id>437059329</id>
+    </make_source>
+
+        </Source_file_info>
+        <Source_record_info><MakeSource>
+      <version>1</version>
+      <PropSource>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+        </Source>
+        <j_decay>3</j_decay>
+        <t_source>0</t_source>
+      </PropSource>
+      <Config_info>
+        <unit>
+</unit>
+      </Config_info>
+    </MakeSource>
+
+        </Source_record_info>
+        <Source_correlator>
+          <source_corr>12 0 0 0 0 0 0 0</source_corr>
+        </Source_correlator>
+        <QuarkProp4>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>0</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242624232e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>1</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242604264e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>2</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242570194e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>0</color_source>
+            <spin_source>3</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242599731e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>0</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242592415e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>1</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242600277e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>2</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242595063e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>1</color_source>
+            <spin_source>3</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242581001e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>0</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242624232e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>1</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242604264e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>2</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242570194e-09</resid>
+          </Qprop>
+          <Qprop>
+            <color_source>2</color_source>
+            <spin_source>3</spin_source>
+            <n_count>25</n_count>
+            <resid>3.45109242599731e-09</resid>
+          </Qprop>
+        </QuarkProp4>
+        <Relaxation_Iterations>
+          <ncg_had>300</ncg_had>
+        </Relaxation_Iterations>
+        <Prop_correlator>
+          <prop_corr>0.546807977947153 0.0180315541195562 0.00165312447357014 0.000227151493606026 7.39294201543647e-05 0.000227151493606026 0.00165312447357014 0.0180315541195562</prop_corr>
+        </Prop_correlator>
+      </propagator>
+    </elem>
+    <elem>
+      <qio_write_named_obj>
+        <update_no>0</update_no>
+        <object_id>pt_prop_0</object_id>
+      </qio_write_named_obj>
+    </elem>
+  </InlineObservables>
+</chroma>

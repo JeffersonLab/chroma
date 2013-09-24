@@ -1,0 +1,81 @@
+<chroma>
+<annotation>
+; $Id: schrfun-pcac.ini.xml,v 1.1 2007-08-27 22:53:51 edwards Exp $
+;
+; Schroedinger input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <Name>SCHROEDINGER_FUNCTIONAL_PCAC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+          <FermAct>CLOVER</FermAct>
+          <Mass>0.01</Mass>
+          <clovCoeff>1.17</clovCoeff>
+          <AnisoParam>
+            <anisoP>false</anisoP>
+            <t_dir>3</t_dir>
+            <xi_0>1.0</xi_0>
+            <nu>1.0</nu>
+          </AnisoParam>
+          <FermState>
+            <Name>SIMPLE_FERM_STATE</Name>
+            <FermionBC>
+              <FermBC>SCHROEDINGER_NONPERT_FERMBC</FermBC>
+              <SchrPhiMult>1.0</SchrPhiMult>
+              <decay_dir>3</decay_dir>
+              <loop_extent>1</loop_extent>
+              <theta>0 0 0</theta>
+            </FermionBC>
+          </FermState>
+        </FermionAction>
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+      </Param>
+      <SFpcac>
+        <decay_dir>3</decay_dir>
+        <ZVfactP>true</ZVfactP>
+        <ZAfactP>true</ZAfactP>
+        <x0>5</x0>
+        <y0>3</y0>
+      </SFpcac>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+      </NamedObject>
+    </elem>
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>CLASSICAL_SF</cfg_type>
+ <GaugeState>
+   <Name>SIMPLE_GAUGE_STATE</Name>
+   <GaugeBC>
+     <Name>SCHROEDINGER_NONPERT_GAUGEBC</Name>
+     <SchrPhiMult>1.0</SchrPhiMult>
+     <decay_dir>3</decay_dir>
+     <loop_extent>1</loop_extent>
+   </GaugeBC>
+ </GaugeState>
+</Cfg>
+</chroma>

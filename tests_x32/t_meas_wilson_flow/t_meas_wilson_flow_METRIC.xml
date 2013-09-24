@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/wilsonFlow/wilson_flow_results/wflow_gact4i" type="real_array" comparison="relative" tolerance="0.001"/>
+
+<assertion xpath="/wilsonFlow/wilson_flow_results/wflow_gactij" type="real_array" comparison="relative" tolerance="0.001"/>
+
+</assertions>

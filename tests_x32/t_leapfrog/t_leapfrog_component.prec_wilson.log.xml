@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <mesE>
+    <mesKE>
+      <KE>-471.952773208738</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>2</num_terms>
+      <PEByMonomials>
+        <elem>
+          <TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
+            <S_odd_odd>
+              <n_count>21</n_count>
+              <S_oo>116.928929193846</S_oo>
+            </S_odd_odd>
+            <S>116.928929193846</S>
+          </TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-183376.153932468</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <leapP>
+    <dt>0.1</dt>
+    <dt_actual_per_dir>0.1 0.1 0.1 0.1</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactWilsonTypeFermMonomial>
+            <n_count>21</n_count>
+            <Forces>
+              <F_sq_per_direction>0.143227016886551 0.141927059547688 0.142671741243145 0.943622005572405</F_sq_per_direction>
+              <F_avg_per_direction>0.361101459479456 0.359908030408981 0.360426936648227 0.926563208622485</F_avg_per_direction>
+              <F_max_per_direction>0.958823877612712 0.973273926679706 0.865007312901516 2.36012656546165</F_max_per_direction>
+              <F_sq>0.342861955812447</F_sq>
+              <F_avg>0.501999908789787</F_avg>
+              <F_max>2.36012656546165</F_max>
+            </Forces>
+          </TwoFlavorExactWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 -0</F_max_per_direction>
+              <F_sq>0</F_sq>
+              <F_avg>0</F_avg>
+              <F_max>-0</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactWilsonTypeFermMonomial>
+            <n_count>20</n_count>
+            <Forces>
+              <F_sq_per_direction>0.142153173216061 0.140788469315845 0.141744187189969 0.945931869683554</F_sq_per_direction>
+              <F_avg_per_direction>0.359604255360133 0.35861256962148 0.359215075220864 0.926468501497883</F_avg_per_direction>
+              <F_max_per_direction>0.939318456779382 0.922196028108419 0.94327403770624 2.34780518326111</F_max_per_direction>
+              <F_sq>0.342654424851357</F_sq>
+              <F_avg>0.50097510042509</F_avg>
+              <F_max>2.34780518326111</F_max>
+            </Forces>
+          </TwoFlavorExactWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>16.4368579666213 16.3926367960427 16.402016495228 65.768328856791</F_sq_per_direction>
+              <F_avg_per_direction>3.93875513383108 3.94014116984326 3.93867958704309 7.88140391390326</F_avg_per_direction>
+              <F_max_per_direction>7.35642997163526 7.36262843690755 7.24983182509695 16.1036887821105</F_max_per_direction>
+              <F_sq>28.7499600286707</F_sq>
+              <F_avg>4.92474495115517</F_avg>
+              <F_max>16.1036887821105</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactWilsonTypeFermMonomial>
+            <n_count>20</n_count>
+            <Forces>
+              <F_sq_per_direction>0.139018712143632 0.137759737079017 0.138617090344197 0.920890230071894</F_sq_per_direction>
+              <F_avg_per_direction>0.355866168069252 0.354836970426175 0.355239945504709 0.913643105547619</F_avg_per_direction>
+              <F_max_per_direction>0.896846679773973 0.831050238537806 0.929752789904791 2.31238493774002</F_max_per_direction>
+              <F_sq>0.334071442409685</F_sq>
+              <F_avg>0.494896547386939</F_avg>
+              <F_max>2.31238493774002</F_max>
+            </Forces>
+          </TwoFlavorExactWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>29.2083833710655 29.1313584554313 29.2465489547187 81.853985480955</F_sq_per_direction>
+              <F_avg_per_direction>5.26586525301779 5.2632126953969 5.27474881154636 8.79080578081342</F_avg_per_direction>
+              <F_max_per_direction>9.569145894627 9.32404685986936 9.11011680063115 17.3739337269595</F_max_per_direction>
+              <F_sq>42.3600690655426</F_sq>
+              <F_avg>6.14865813519362</F_avg>
+              <F_max>17.3739337269595</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactWilsonTypeFermMonomial>
+            <n_count>19</n_count>
+            <Forces>
+              <F_sq_per_direction>0.134787097209289 0.133689885926858 0.134145734589786 0.87043637174548</F_sq_per_direction>
+              <F_avg_per_direction>0.350674993844929 0.349673375577053 0.349563424701878 0.888800465703112</F_avg_per_direction>
+              <F_max_per_direction>0.852035200322189 0.813357439324083 0.869510029720845 2.24720759930355</F_max_per_direction>
+              <F_sq>0.318264772367853</F_sq>
+              <F_avg>0.484678064956743</F_avg>
+              <F_max>2.24720759930355</F_max>
+            </Forces>
+          </TwoFlavorExactWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>26.3226332224582 26.2231100704471 26.5830970069822 33.2670462054082</F_sq_per_direction>
+              <F_avg_per_direction>4.98994660933509 4.98248477691686 5.01926024047601 5.58061329304714</F_avg_per_direction>
+              <F_max_per_direction>9.22817067256151 9.58401614633599 8.87848057730208 12.9498480667662</F_max_per_direction>
+              <F_sq>28.0989716263239</F_sq>
+              <F_avg>5.14307622994378</F_avg>
+              <F_max>12.9498480667662</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactWilsonTypeFermMonomial>
+            <n_count>19</n_count>
+            <Forces>
+              <F_sq_per_direction>0.131873424816479 0.131003251081608 0.130571473682389 0.84055375801814</F_sq_per_direction>
+              <F_avg_per_direction>0.346945711809911 0.346092550289195 0.344942224572949 0.874059025866265</F_avg_per_direction>
+              <F_max_per_direction>0.788554800389597 0.853364413965215 0.834274022753663 2.23944657378224</F_max_per_direction>
+              <F_sq>0.308500476899654</F_sq>
+              <F_avg>0.47800987813458</F_avg>
+              <F_max>2.23944657378224</F_max>
+            </Forces>
+          </TwoFlavorExactWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>19.8839349240243 19.8087140550238 20.189456261443 32.8713380889965</F_sq_per_direction>
+              <F_avg_per_direction>4.32899990916767 4.32335066179792 4.36649668850838 5.56615598469135</F_avg_per_direction>
+              <F_max_per_direction>7.86798010467327 8.55716543541742 8.72532331240074 11.9635446506783</F_max_per_direction>
+              <F_sq>23.1883608323719</F_sq>
+              <F_avg>4.64625081104133</F_avg>
+              <F_max>11.9635446506783</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.2</dt>
+    <dt_actual_per_dir>0.2 0.2 0.2 0.2</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.1</dt>
+    <dt_actual_per_dir>0.1 0.1 0.1 0.1</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>2</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactWilsonTypeFermMonomial>
+            <n_count>20</n_count>
+            <Forces>
+              <F_sq_per_direction>0.131804152214036 0.1313235628376 0.129797206322486 0.858152537455706</F_sq_per_direction>
+              <F_avg_per_direction>0.346854781167281 0.34640771714558 0.34399075803855 0.883147575349407</F_avg_per_direction>
+              <F_max_per_direction>0.808834129074208 0.867379262709044 0.865955051935272 2.24735085084626</F_max_per_direction>
+              <F_sq>0.312769364707457</F_sq>
+              <F_avg>0.480100207925205</F_avg>
+              <F_max>2.24735085084626</F_max>
+            </Forces>
+          </TwoFlavorExactWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>16.3732510433556 16.3714157364896 16.4411204331667 65.6094670854234</F_sq_per_direction>
+              <F_avg_per_direction>3.93096695536943 3.93469345418837 3.9381360684241 7.87861466421398</F_avg_per_direction>
+              <F_max_per_direction>7.60885873594023 7.42236885963622 8.09775057272336 15.0785308669914</F_max_per_direction>
+              <F_sq>28.6988135746089</F_sq>
+              <F_avg>4.92060278554897</F_avg>
+              <F_max>15.0785308669914</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <mesE>
+    <mesKE>
+      <KE>-26703.6268757785</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>2</num_terms>
+      <PEByMonomials>
+        <elem>
+          <TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
+            <S_odd_odd>
+              <n_count>20</n_count>
+              <S_oo>-305.564186121779</S_oo>
+            </S_odd_odd>
+            <S>-305.564186121779</S>
+          </TwoFlavorExactEvenOddPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-153517.194666403</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <DeltaE>
+    <DeltaKE>-26231.6741025698</DeltaKE>
+    <DeltaPE>29436.4661507486</DeltaPE>
+    <DeltaH>3204.79204817883</DeltaH>
+  </DeltaE>
+</t_leapfrog>

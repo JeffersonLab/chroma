@@ -1,0 +1,52 @@
+<chroma>
+<annotation>
+; $Id: coulgauge.ini.xml,v 3.3 2007-11-09 20:57:34 edwards Exp $
+;
+; Coulomb gauge fixing
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+    <elem>
+      <!-- Coulomb gauge fix -->
+      <Name>COULOMB_GAUGEFIX</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <GFAccu>1.0e-5</GFAccu>
+        <GFMax>200</GFMax>
+        <OrDo>false</OrDo>
+        <OrPara>1.0</OrPara>
+        <j_decay>3</j_decay>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <gfix_id>coul_cfg</gfix_id>
+        <gauge_rot_id>gauge_rot</gauge_rot_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <annotation>
+        Write the config
+      </annotation>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>coul_cfg</object_id>
+        <object_type>Multi1dLatticeColorMatrix</object_type>
+      </NamedObject>
+      <File>
+        <file_name>qio.cfg</file_name>
+        <file_volfmt>MULTIFILE</file_volfmt>
+      </File>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>32 4 4 8</nrow>
+</Param>
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>

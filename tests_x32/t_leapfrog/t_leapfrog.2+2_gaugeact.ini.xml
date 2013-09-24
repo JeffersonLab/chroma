@@ -1,0 +1,41 @@
+<LeapfrogTest>
+
+    <Monomials>
+      <elem>
+	<Name>GAUGE_MONOMIAL</Name>
+	<GaugeAction>
+          <Name>WILSON_COARSE_FINE_GAUGEACT</Name>
+          <coarse_dirs>1 1 0 0</coarse_dirs>
+          <coeff_ff>0.1</coeff_ff>
+          <coeff_cf>0.2</coeff_cf>
+          <coeff_cc>0.3</coeff_cc>
+          <GaugeState>
+            <Name>SIMPLE_GAUGE_STATE</Name>
+            <GaugeBC>
+              <Name>PERIODIC_GAUGEBC</Name>
+            </GaugeBC>
+          </GaugeState>
+        </GaugeAction>
+	<NamedObject>
+	  <monomial_id>gauge</monomial_id>
+	</NamedObject>
+      </elem>
+    </Monomials>
+   <Hamiltonian>
+      <monomial_ids><elem>gauge</elem></monomial_ids>
+   </Hamiltonian>
+   <MDIntegrator>
+	<tau0>1.0</tau0>
+	<Integrator>
+  	  <Name>LCM_STS_LEAPFROG</Name>
+	  <n_steps>20</n_steps>
+          <monomial_ids><elem>gauge</elem></monomial_ids>
+	</Integrator>
+   </MDIntegrator>
+
+   <GaugeStartup>
+	<cfg_type>WEAK_FIELD</cfg_type>
+	<cfg_file>DUMMY</cfg_file>
+   </GaugeStartup>
+   <nrow>32 4 4 8</nrow>
+</LeapfrogTest>

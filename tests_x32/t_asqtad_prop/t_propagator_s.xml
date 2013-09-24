@@ -1,0 +1,583 @@
+<?xml version="1.0"?>
+
+
+<hadron_corr>
+  <Input><propagator>
+  <IO_version>
+    <version>2</version>
+  </IO_version>
+  <param>
+    <Nc>3</Nc>
+    <Nd>4</Nd>
+    <FermTypeP>STAGGERED</FermTypeP>
+    <Mass>0.5</Mass>
+    <u0>0.463032</u0>
+    <prop_type>SZIN</prop_type>
+    <RsdCG>1.0e-5</RsdCG>
+    <MaxCG>1000</MaxCG>
+    <GFAccu>2.0e-6</GFAccu>
+    <GFMax>10000</GFMax>
+    <OrPara>1.8</OrPara>
+    <nrow>4 4 4 4</nrow>
+    <boundary>1 1 1 -1</boundary>
+    <t_srce>0 0 0 0</t_srce>
+  </param>
+  <Cfg>
+    <cfg_type>NERSC</cfg_type>
+    <cfg_file>../../tests/t_asqtad_prop/t_nersc.cfg</cfg_file>
+  </Cfg>
+  <Prop>
+    <prop_file>prop.out</prop_file>
+  </Prop>
+</propagator>
+
+  </Input>
+  <Config_info><NERSC>
+      <mat_size>12</mat_size>
+      <float_size>4</float_size>
+      <nrow>4 4 4 4</nrow>
+      <boundary>1 1 1 1</boundary>
+      <ensemble_id>X1114341623</ensemble_id>
+      <ensemble_label>SZIN</ensemble_label>
+      <creator>SZIN</creator>
+      <creator_hardware>(Tue</creator_hardware>
+      <creation_date>Fri</creation_date>
+      <archive_date>Fri</archive_date>
+    </NERSC>
+
+  </Config_info>
+  <Source_info>
+
+  </Source_info>
+  <Output_version>
+    <out_version>1</out_version>
+  </Output_version>
+  <Observables>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.463032</link>
+    <pollp>
+      <elem>
+        <re>0.0247176</re>
+        <im>-0.0208892</im>
+      </elem>
+      <elem>
+        <re>0.0327367</re>
+        <im>0.038797</im>
+      </elem>
+      <elem>
+        <re>0.078216</re>
+        <im>-0.0532593</im>
+      </elem>
+      <elem>
+        <re>0.0422812</re>
+        <im>-0.026516</im>
+      </elem>
+    </pollp>
+  </Observables>
+  <Is_this_gauge_invariant>
+    <w_plaq>0.0382423</w_plaq>
+    <s_plaq>0.0441657</s_plaq>
+    <t_plaq>0.0323189</t_plaq>
+    <link>0.554133</link>
+    <pollp>
+      <elem>
+        <re>0.0247176</re>
+        <im>-0.0208893</im>
+      </elem>
+      <elem>
+        <re>0.0327367</re>
+        <im>0.0387971</im>
+      </elem>
+      <elem>
+        <re>0.078216</re>
+        <im>-0.0532594</im>
+      </elem>
+      <elem>
+        <re>0.0422812</re>
+        <im>-0.0265161</im>
+      </elem>
+    </pollp>
+  </Is_this_gauge_invariant>
+  <Wall_source>
+    <Inverter_properties>
+      <Mass>0.5</Mass>
+      <RsdCG>1e-05</RsdCG>
+    </Inverter_properties>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>0</staggered_src>
+      <iterations>140</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>0</staggered_src>
+      <iterations>143</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>0</staggered_src>
+      <iterations>144</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>1</staggered_src>
+      <iterations>112</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>1</staggered_src>
+      <iterations>113</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>1</staggered_src>
+      <iterations>117</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>2</staggered_src>
+      <iterations>113</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>2</staggered_src>
+      <iterations>116</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>2</staggered_src>
+      <iterations>116</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>3</staggered_src>
+      <iterations>139</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>3</staggered_src>
+      <iterations>144</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>3</staggered_src>
+      <iterations>144</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>4</staggered_src>
+      <iterations>111</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>4</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>4</staggered_src>
+      <iterations>117</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>5</staggered_src>
+      <iterations>140</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>5</staggered_src>
+      <iterations>145</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>5</staggered_src>
+      <iterations>145</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>6</staggered_src>
+      <iterations>139</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>6</staggered_src>
+      <iterations>142</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>6</staggered_src>
+      <iterations>144</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>7</staggered_src>
+      <iterations>110</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>7</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>7</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Hadrons_from_time_source>
+      <source_time>0</source_time>
+      <Pseudoscalar>
+        <gamma5_CROSS_gamma5>
+          <Pi>0.72674 0.373338 0.308337 0.388621</Pi>
+        </gamma5_CROSS_gamma5>
+        <gamma5_CROSS_gamma0_gamma5>
+          <Pi>0.146601 -0.0148322 0.00206423 -0.00977838</Pi>
+        </gamma5_CROSS_gamma0_gamma5>
+        <gamma5_CROSS_gamma1_gamma5>
+          <Pi>0.131673 -0.00518961 -0.00435998 -0.010841</Pi>
+        </gamma5_CROSS_gamma1_gamma5>
+        <gamma5_CROSS_gamma2_gamma5>
+          <Pi>0.165722 0.00252557 0.0120456 0.0147065</Pi>
+        </gamma5_CROSS_gamma2_gamma5>
+        <gamma3_gamma5_CROSS_gamma3_gamma5>
+          <Pi>0.00342289 -0.016471 -0.00285989 -0.0205585</Pi>
+        </gamma3_gamma5_CROSS_gamma3_gamma5>
+        <gamma5_CROSS_gamma2_gamma3>
+          <Pi>0.138719 0.0162002 -0.00856654 0.00401832</Pi>
+        </gamma5_CROSS_gamma2_gamma3>
+        <gamma5_CROSS_gamma1_gamma3>
+          <Pi>0.155813 0.00669486 -0.0166919 -0.00469467</Pi>
+        </gamma5_CROSS_gamma1_gamma3>
+        <gamma5_CROSS_gamma0_gamma3>
+          <Pi>0.123619 0.000846151 0.00273426 0.0110107</Pi>
+        </gamma5_CROSS_gamma0_gamma3>
+        <gamma3_gamma5_CROSS_gamma1_gamma2>
+          <Pi>0.137767 0.0186433 -0.00775752 0.0102443</Pi>
+        </gamma3_gamma5_CROSS_gamma1_gamma2>
+        <gamma3_gamma5_CROSS_gamma0_gamma2>
+          <Pi>0.128616 -0.00391887 0.0133363 0.00548541</Pi>
+        </gamma3_gamma5_CROSS_gamma0_gamma2>
+        <gamma3_gamma5_CROSS_gamma0_gamma1>
+          <Pi>0.136138 0.00572124 0.00840226 -0.00824316</Pi>
+        </gamma3_gamma5_CROSS_gamma0_gamma1>
+        <gamma5_CROSS_gamma3>
+          <Pi>0.136724 -0.0156976 0.0107273 0.0112505</Pi>
+        </gamma5_CROSS_gamma3>
+        <gamma3_gamma5_CROSS_gamma2>
+          <Pi>-0.12525 -0.00254617 0.00324378 0.0259969</Pi>
+        </gamma3_gamma5_CROSS_gamma2>
+        <gamma3_gamma5_CROSS_gamma1>
+          <Pi>-0.123742 0.00553609 -0.00564672 -0.00430972</Pi>
+        </gamma3_gamma5_CROSS_gamma1>
+        <gamma3_gamma5_CROSS_gamma0>
+          <Pi>-0.143717 -0.0161742 0.00961138 0.0187171</Pi>
+        </gamma3_gamma5_CROSS_gamma0>
+        <gamma3_gamma5_CROSS_one>
+          <Pi>-0.117139 -0.00415523 -0.00724571 -0.00876608</Pi>
+        </gamma3_gamma5_CROSS_one>
+      </Pseudoscalar>
+      <Here_are_all_16_scalars>
+        <re_sc0>
+          <Sc>0.00342289 0.016471 -0.00285989 0.0205585</Sc>
+        </re_sc0>
+        <re_sc1>
+          <Sc>-0.137767 0.0186433 0.00775752 0.0102443</Sc>
+        </re_sc1>
+        <re_sc2>
+          <Sc>-0.128616 -0.00391887 -0.0133363 0.00548542</Sc>
+        </re_sc2>
+        <re_sc3>
+          <Sc>-0.136138 0.00572124 -0.00840226 -0.00824316</Sc>
+        </re_sc3>
+        <re_sc4>
+          <Sc>-0.72674 0.373338 -0.308337 0.388621</Sc>
+        </re_sc4>
+        <re_sc5>
+          <Sc>-0.12525 0.00254617 0.00324378 -0.0259969</Sc>
+        </re_sc5>
+        <re_sc6>
+          <Sc>-0.123742 -0.00553609 -0.00564672 0.00430972</Sc>
+        </re_sc6>
+        <re_sc7>
+          <Sc>-0.143717 0.0161742 0.00961138 -0.0187171</Sc>
+        </re_sc7>
+        <re_sc8>
+          <Sc>-0.146601 -0.0148322 -0.00206423 -0.00977838</Sc>
+        </re_sc8>
+        <re_sc9>
+          <Sc>-0.131673 -0.00518961 0.00435998 -0.010841</Sc>
+        </re_sc9>
+        <re_sc10>
+          <Sc>-0.165722 0.00252557 -0.0120456 0.0147065</Sc>
+        </re_sc10>
+        <re_sc11>
+          <Sc>-0.117139 0.00415523 -0.00724571 0.00876608</Sc>
+        </re_sc11>
+        <re_sc12>
+          <Sc>-0.138719 0.0162002 0.00856654 0.00401832</Sc>
+        </re_sc12>
+        <re_sc13>
+          <Sc>-0.155813 0.00669486 0.0166919 -0.00469467</Sc>
+        </re_sc13>
+        <re_sc14>
+          <Sc>-0.123619 0.000846151 -0.00273426 0.0110107</Sc>
+        </re_sc14>
+        <re_sc15>
+          <Sc>-0.136724 -0.0156976 -0.0107273 0.0112505</Sc>
+        </re_sc15>
+      </Here_are_all_16_scalars>
+      <Vector_meson>
+        <gamma_x_CROSS_gamma_x>
+          <Vec>-0.137767 0.0186433 0.00775752 0.0102443</Vec>
+        </gamma_x_CROSS_gamma_x>
+        <gamma_y_CROSS_gamma_y>
+          <Vec>0.169504 0.00685213 0.0045952 0.0194821</Vec>
+        </gamma_y_CROSS_gamma_y>
+        <gamma_z_CROSS_gamma_z>
+          <Vec>0.142108 -0.0119957 -0.00690743 0.00266359</Vec>
+        </gamma_z_CROSS_gamma_z>
+        <M_VT>
+          <Vec>-6.05916e-21 8.96049e-26 -4.70944e-24 -4.12678e-30</Vec>
+        </M_VT>
+      </Vector_meson>
+    </Hadrons_from_time_source>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>0</staggered_src>
+      <iterations>139</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>0</staggered_src>
+      <iterations>143</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>0</staggered_src>
+      <iterations>144</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>1</staggered_src>
+      <iterations>114</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>1</staggered_src>
+      <iterations>113</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>1</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>2</staggered_src>
+      <iterations>113</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>2</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>2</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>3</staggered_src>
+      <iterations>139</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>3</staggered_src>
+      <iterations>142</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>3</staggered_src>
+      <iterations>143</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>4</staggered_src>
+      <iterations>112</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>4</staggered_src>
+      <iterations>116</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>4</staggered_src>
+      <iterations>117</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>5</staggered_src>
+      <iterations>140</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>5</staggered_src>
+      <iterations>144</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>5</staggered_src>
+      <iterations>143</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>6</staggered_src>
+      <iterations>141</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>6</staggered_src>
+      <iterations>145</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>6</staggered_src>
+      <iterations>141</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>0</color>
+      <staggered_src>7</staggered_src>
+      <iterations>112</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>1</color>
+      <staggered_src>7</staggered_src>
+      <iterations>115</iterations>
+    </Inverter_performance>
+    <Inverter_performance>
+      <color>2</color>
+      <staggered_src>7</staggered_src>
+      <iterations>117</iterations>
+    </Inverter_performance>
+    <Hadrons_from_time_source>
+      <source_time>2</source_time>
+      <Pseudoscalar>
+        <gamma5_CROSS_gamma5>
+          <Pi>0.913992 0.449642 0.343059 0.433247</Pi>
+        </gamma5_CROSS_gamma5>
+        <gamma5_CROSS_gamma0_gamma5>
+          <Pi>0.180577 0.019245 0.000852137 0.00769976</Pi>
+        </gamma5_CROSS_gamma0_gamma5>
+        <gamma5_CROSS_gamma1_gamma5>
+          <Pi>0.173994 0.0268358 0.0103036 -0.0142342</Pi>
+        </gamma5_CROSS_gamma1_gamma5>
+        <gamma5_CROSS_gamma2_gamma5>
+          <Pi>0.142003 0.0163953 0.0143349 0.00535235</Pi>
+        </gamma5_CROSS_gamma2_gamma5>
+        <gamma3_gamma5_CROSS_gamma3_gamma5>
+          <Pi>-0.169166 0.0154865 -0.0305599 0.0300875</Pi>
+        </gamma3_gamma5_CROSS_gamma3_gamma5>
+        <gamma5_CROSS_gamma2_gamma3>
+          <Pi>0.156919 -0.00756092 0.0209459 0.00600718</Pi>
+        </gamma5_CROSS_gamma2_gamma3>
+        <gamma5_CROSS_gamma1_gamma3>
+          <Pi>0.200505 -0.00894354 -0.000135442 -0.0103878</Pi>
+        </gamma5_CROSS_gamma1_gamma3>
+        <gamma5_CROSS_gamma0_gamma3>
+          <Pi>0.149559 0.00328575 0.0219174 0.0114319</Pi>
+        </gamma5_CROSS_gamma0_gamma3>
+        <gamma3_gamma5_CROSS_gamma1_gamma2>
+          <Pi>0.174544 -0.0167312 0.00620464 -0.0059806</Pi>
+        </gamma3_gamma5_CROSS_gamma1_gamma2>
+        <gamma3_gamma5_CROSS_gamma0_gamma2>
+          <Pi>0.146191 -0.0236557 0.00534121 -0.00739239</Pi>
+        </gamma3_gamma5_CROSS_gamma0_gamma2>
+        <gamma3_gamma5_CROSS_gamma0_gamma1>
+          <Pi>0.16869 -0.0188188 0.00485063 0.00639283</Pi>
+        </gamma3_gamma5_CROSS_gamma0_gamma1>
+        <gamma5_CROSS_gamma3>
+          <Pi>0.196675 0.0211681 -0.00732557 0.00516138</Pi>
+        </gamma5_CROSS_gamma3>
+        <gamma3_gamma5_CROSS_gamma2>
+          <Pi>-0.157162 0.00205325 0.00346126 0.00313683</Pi>
+        </gamma3_gamma5_CROSS_gamma2>
+        <gamma3_gamma5_CROSS_gamma1>
+          <Pi>-0.214189 0.0111874 -0.00805939 -0.0113517</Pi>
+        </gamma3_gamma5_CROSS_gamma1>
+        <gamma3_gamma5_CROSS_gamma0>
+          <Pi>-0.145564 -0.0179956 0.0117874 0.00186924</Pi>
+        </gamma3_gamma5_CROSS_gamma0>
+        <gamma3_gamma5_CROSS_one>
+          <Pi>-0.217643 -0.00377443 0.0128385 0.00551624</Pi>
+        </gamma3_gamma5_CROSS_one>
+      </Pseudoscalar>
+      <Here_are_all_16_scalars>
+        <re_sc0>
+          <Sc>-0.169166 -0.0154865 -0.0305599 -0.0300875</Sc>
+        </re_sc0>
+        <re_sc1>
+          <Sc>-0.174544 -0.0167312 -0.00620464 -0.0059806</Sc>
+        </re_sc1>
+        <re_sc2>
+          <Sc>-0.146191 -0.0236557 -0.00534121 -0.00739239</Sc>
+        </re_sc2>
+        <re_sc3>
+          <Sc>-0.16869 -0.0188188 -0.00485063 0.00639283</Sc>
+        </re_sc3>
+        <re_sc4>
+          <Sc>-0.913992 0.449642 -0.343059 0.433247</Sc>
+        </re_sc4>
+        <re_sc5>
+          <Sc>-0.157162 -0.00205325 0.00346126 -0.00313683</Sc>
+        </re_sc5>
+        <re_sc6>
+          <Sc>-0.214189 -0.0111874 -0.00805939 0.0113517</Sc>
+        </re_sc6>
+        <re_sc7>
+          <Sc>-0.145564 0.0179956 0.0117874 -0.00186924</Sc>
+        </re_sc7>
+        <re_sc8>
+          <Sc>-0.180577 0.019245 -0.000852137 0.00769976</Sc>
+        </re_sc8>
+        <re_sc9>
+          <Sc>-0.173994 0.0268358 -0.0103036 -0.0142342</Sc>
+        </re_sc9>
+        <re_sc10>
+          <Sc>-0.142003 0.0163953 -0.0143349 0.00535235</Sc>
+        </re_sc10>
+        <re_sc11>
+          <Sc>-0.217643 0.00377443 0.0128385 -0.00551624</Sc>
+        </re_sc11>
+        <re_sc12>
+          <Sc>-0.156919 -0.00756092 -0.0209459 0.00600718</Sc>
+        </re_sc12>
+        <re_sc13>
+          <Sc>-0.200505 -0.00894354 0.000135442 -0.0103878</Sc>
+        </re_sc13>
+        <re_sc14>
+          <Sc>-0.149559 0.00328575 -0.0219174 0.0114319</Sc>
+        </re_sc14>
+        <re_sc15>
+          <Sc>-0.196675 0.0211681 0.00732557 0.00516138</Sc>
+        </re_sc15>
+      </Here_are_all_16_scalars>
+      <Vector_meson>
+        <gamma_x_CROSS_gamma_x>
+          <Vec>-0.174544 -0.0167312 -0.00620464 -0.0059806</Vec>
+        </gamma_x_CROSS_gamma_x>
+        <gamma_y_CROSS_gamma_y>
+          <Vec>0.175804 -0.0300033 -0.00201424 0.00193147</Vec>
+        </gamma_y_CROSS_gamma_y>
+        <gamma_z_CROSS_gamma_z>
+          <Vec>0.188077 -0.0125235 0.00597039 -0.0109812</Vec>
+        </gamma_z_CROSS_gamma_z>
+        <M_VT>
+          <Vec>-1.47924e-25 -2.41928e-33 1.70786e-29 3.38169e-31</Vec>
+        </M_VT>
+      </Vector_meson>
+    </Hadrons_from_time_source>
+  </Wall_source>
+</hadron_corr>

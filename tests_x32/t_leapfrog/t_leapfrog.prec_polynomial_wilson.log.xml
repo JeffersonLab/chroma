@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+
+<t_leapfrog>
+  <TwoFlavorExactPolynomialWilsonTypeFermMonomial>
+    <n_count>319</n_count>
+  </TwoFlavorExactPolynomialWilsonTypeFermMonomial>
+  <mesE>
+    <mesKE>
+      <KE>-471.952773208738</KE>
+    </mesKE>
+    <mesPE>
+      <num_terms>3</num_terms>
+      <PEByMonomials>
+        <elem>
+          <TwoFlavorExactPolynomialEvenOddPrecWilsonTypeFermMonomial>
+            <S_odd_odd>
+              <n_count>0</n_count>
+              <S_oo>7.75956273627254e+19</S_oo>
+            </S_odd_odd>
+            <S>7.75956273627254e+19</S>
+          </TwoFlavorExactPolynomialEvenOddPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial>
+            <S_odd_odd>
+              <n_count>319</n_count>
+              <S_oo>896671458315.148</S_oo>
+            </S_odd_odd>
+            <S>896671458315.148</S>
+          </TwoFlavorExactPolyPrecEvenOddPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <S>-127795.2</S>
+          </GaugeMonomial>
+        </elem>
+      </PEByMonomials>
+    </mesPE>
+  </mesE>
+  <leapP>
+    <dt>0.00025</dt>
+    <dt_actual_per_dir>0.00025 0.00025 0.00025 0.00025</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>3</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactPolynomialWilsonTypeFermMonomial>
+            <Forces>
+              <F_sq_per_direction>5.63861189083122e+31 5.61734102989458e+31 5.49376791075306e+31 1.91815335664975e+32</F_sq_per_direction>
+              <F_avg_per_direction>7.17658741847651e+15 7.14756356352268e+15 7.0624402405701e+15 1.3163689658791e+16</F_avg_per_direction>
+              <F_max_per_direction>2.14054378499051e+16 1.72537520243858e+16 2.19982666944717e+16 3.575901367146e+16</F_max_per_direction>
+              <F_sq>8.98281359949408e+31</F_sq>
+              <F_avg>8.63757022034007e+15</F_avg>
+              <F_max>3.575901367146e+16</F_max>
+            </Forces>
+          </TwoFlavorExactPolynomialWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <TwoFlavorExactPolyPrecWilsonTypeFermMonomial>
+            <n_count>319</n_count>
+            <Forces>
+              <F_sq_per_direction>6.53051629081673e+31 6.34673907506031e+31 6.42628185563555e+31 2.21049335479158e+32</F_sq_per_direction>
+              <F_avg_per_direction>7.72442948751461e+15 7.59028755427299e+15 7.64786580050663e+15 1.41996605911778e+16</F_avg_per_direction>
+              <F_max_per_direction>1.87576494069696e+16 1.83806462391404e+16 1.97455319863318e+16 3.43435600287399e+16</F_max_per_direction>
+              <F_sq>1.03521176923571e+32</F_sq>
+              <F_avg>9.29056085836801e+15</F_avg>
+              <F_max>3.43435600287399e+16</F_max>
+            </Forces>
+          </TwoFlavorExactPolyPrecWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <GaugeMonomial>
+            <Forces>
+              <F_sq_per_direction>0 0 0 0</F_sq_per_direction>
+              <F_avg_per_direction>0 0 0 0</F_avg_per_direction>
+              <F_max_per_direction>-0 -0 -0 -0</F_max_per_direction>
+              <F_sq>0</F_sq>
+              <F_avg>0</F_avg>
+              <F_max>-0</F_max>
+            </Forces>
+          </GaugeMonomial>
+        </elem>
+      </ForcesByMonomial>
+    </AbsHamiltonianForce>
+  </leapP>
+  <leapQ>
+    <dt>0.0005</dt>
+    <dt_actual_per_dir>0.0005 0.0005 0.0005 0.0005</dt_actual_per_dir>
+  </leapQ>
+  <leapP>
+    <dt>0.0005</dt>
+    <dt_actual_per_dir>0.0005 0.0005 0.0005 0.0005</dt_actual_per_dir>
+    <AbsHamiltonianForce>
+      <num_terms>3</num_terms>
+      <ForcesByMonomial>
+        <elem>
+          <TwoFlavorExactPolynomialWilsonTypeFermMonomial>
+            <Forces>
+              <F_sq_per_direction>5.02139716341022e+31 5.15514815693477e+31 5.04425679216051e+31 2.50896816237729e+32</F_sq_per_direction>
+              <F_avg_per_direction>6.7345782740125e+15 6.81999272473359e+15 6.73793423965279e+15 1.4960167355835e+16</F_avg_per_direction>
+              <F_max_per_direction>1.8311472894419e+16 1.71553734660954e+16 1.74655755169844e+16 4.05392470406807e+16</F_max_per_direction>
+              <F_sq>1.00776209340696e+32</F_sq>
+              <F_avg>8.81316814855846e+15</F_avg>
+              <F_max>4.05392470406807e+16</F_max>
+            </Forces>
+          </TwoFlavorExactPolynomialWilsonTypeFermMonomial>
+        </elem>
+        <elem>
+          <TwoFlavorExactPolyPrecWilsonTypeFermMonomial>

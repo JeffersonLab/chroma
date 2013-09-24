@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<!-- ape smear -->
+<assertion xpath="chroma/InlineObservables/elem[1]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+
+<!-- hyp smear 3d -->
+<assertion xpath="chroma/InlineObservables/elem[2]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+
+<!-- hyp smear 4d -->
+<assertion xpath="chroma/InlineObservables/elem[3]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[3]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[3]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+
+<!-- stout smear -->
+<assertion xpath="chroma/InlineObservables/elem[4]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[4]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[4]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+
+<!-- 3d stout smear -->
+<assertion xpath="chroma/InlineObservables/elem[5]/linksmear/Link_observables/w_plaq" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[5]/linksmear/Link_observables/link" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[5]/linksmear/Link_observables/pollp/elem[1]/re" type="double" comparison="relative" tolerance="1.0e-5"/>
+
+</assertions>

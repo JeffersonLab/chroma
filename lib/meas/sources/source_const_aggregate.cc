@@ -51,7 +51,7 @@ namespace Chroma
 
 	success &= DiluteGridQuarkSourceConstEnv::registerAll();
 
-	success &= SFPointQuarkSourceConstEnv::registerAll();
+	//	success &= SFPointQuarkSourceConstEnv::registerAll();
 	success &= SFShellQuarkSourceConstEnv::registerAll();
 	success &= SFWallQuarkSourceConstEnv::registerAll();
 

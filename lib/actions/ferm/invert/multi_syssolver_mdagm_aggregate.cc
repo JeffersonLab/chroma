@@ -11,10 +11,12 @@
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg_array.h"
 #include "actions/ferm/invert/multi_syssolver_mdagm_cg_chrono_clover.h"
 
+#if 0
 #include "chroma_config.h"
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h"
+#endif
 #endif
 
 namespace Chroma
@@ -34,11 +36,12 @@ namespace Chroma
 	// Sources
 	success &= MdagMMultiSysSolverCGEnv::registerAll();
 	success &= MdagMMultiSysSolverCGChronoCloverEnv::registerAll();
+#if 0
 #ifdef BUILD_QUDA
 	success &= MdagMMultiSysSolverCGQudaCloverEnv::registerAll();
 	success &= MdagMMultiSysSolverCGQudaWilsonEnv::registerAll();
 #endif
-
+#endif
 	registered = true;
       }
       return success;

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop1/wloop1/elem[1]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop1/wloop1/elem[2]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop2/wloop2/elem[1]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop2/wloop2/elem[2]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop3/wloop3/elem[1]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop3/wloop3/elem[2]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop3/wloop3/elem[3]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop3/wloop3/elem[4]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[1]/WilsonLoop/wils_loop3/wloop3/elem[5]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop1/wloop1/elem[1]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop1/wloop1/elem[2]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop2/wloop2/elem[1]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop2/wloop2/elem[2]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop3/wloop3/elem[1]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop3/wloop3/elem[2]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop3/wloop3/elem[3]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop3/wloop3/elem[4]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+<assertion xpath="chroma/InlineObservables/elem[2]/WilsonLoop/wils_loop3/wloop3/elem[5]/loop" type="double_array" comparison="relative" tolerance="2.0e-5"/>
+
+
+
+
+</assertions>

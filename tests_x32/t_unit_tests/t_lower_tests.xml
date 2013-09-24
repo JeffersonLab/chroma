@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+
+<collection_of_unit_tests>
+  <lattis>
+    <Nd>4</Nd>
+    <Nc>3</Nc>
+    <nrow>4 4 4 4</nrow>
+  </lattis>
+  <gauge_observables>
+    <config_type>hot</config_type>
+    <w_plaq>-0.00175385</w_plaq>
+    <link>0.0125175</link>
+  </gauge_observables>
+  <simple_test>
+    <testname>displacement</testname>
+    <sumorg>1086.62</sumorg>
+    <sum>153.568</sum>
+  </simple_test>
+</collection_of_unit_tests>

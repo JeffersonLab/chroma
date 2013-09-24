@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<assertions>
+
+<assertion xpath="/fuzzed_hadron_corr/Hadrons_from_time_source/Pseudoscalar/gamma5_CROSS_gamma5/Pi"
+type="real_array" comparison="relative_comparison" tolerance="0.001"/>
+
+</assertions>
