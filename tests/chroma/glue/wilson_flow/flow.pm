@@ -100,6 +100,18 @@ sub compute_w0{
 	}
     }
     
+    # print the ensemble file
+    if (1){
+      my $ens_file = "w0.dat";
+      open(FILE, "> $ens_file");
+      printf FILE "%d 1 0 1 1\n", $Ncnf;
+      for $c (0..$Ncnf-1){
+        printf FILE "0 %s\n", $w0[$c];
+      }
+      close(FILE);
+    }
+
+    # averages
     my $avW0 = statistics::mean(@w0) ; 
     my $erW0 = statistics::std(@w0)*($Ncnf-1)/sqrt($Ncnf) ; 
 
