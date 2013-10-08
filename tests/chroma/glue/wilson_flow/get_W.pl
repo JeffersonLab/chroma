@@ -1,7 +1,11 @@
 #!/usr/bin/perl -w
-use flow ;
-use statistics ;
-$tt = shift ;
+
+use File::Basename;
+my $basedir = dirname($0);
+
+require "${basedir}/flow.pm" ;
+require "${basedir}/statistics.pm" ;
+my $tt = shift ;
 
 my $c=0;
 while($file = shift){
