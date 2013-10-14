@@ -114,7 +114,9 @@ namespace Chroma
     void packForQUDA(multi1d<QUDAPackedClovSite<REALT> >& quda_pack, int cb) const; 
 
 
-      
+  const multi1d<PrimitiveClovTriang<REALT> >& getTriBuffer() const {
+    return tri;
+  }      
   protected:
     //! Create the clover term on cb
     /*!

@@ -937,7 +937,7 @@ nobase_include_HEADERS += \
 # Include path and any other compiler flags
 # 
 AM_CXXFLAGS  = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
-AM_CXXFLAGS += @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
+AM_CXXFLAGS += @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ 
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
@@ -947,6 +947,10 @@ endif
 
 if BUILD_QUDA
 AM_CXXFLAGS += @QUDA_CXXFLAGS@
+endif
+
+if BUILD_ISOLVER
+AM_CXXFLAGS += @ISOLVER_CXXFLAGS@
 endif
 
 if BUILD_SSE_WILSON_DSLASH
@@ -1335,6 +1339,14 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
 endif
 
+if BUILD_ISOLVER
+nobase_include_HEADERS += actions/ferm/invert/intel_solvers/syssolver_intel_clover_params.h \
+	actions/ferm/invert/intel_solvers/syssolver_linop_clover_intel_w.h
+
+libchroma_a_SOURCES += actions/ferm/invert/intel_solvers/syssolver_intel_clover_params.cc \
+	actions/ferm/invert/intel_solvers/syssolver_linop_clover_intel_w.cc
+
+endif
 #
 # Object files to add if building the Wilson Builds...
 # This is OK, since Ns is determined at configure time

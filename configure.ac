@@ -38,11 +38,8 @@ AC_ARG_WITH(qdp,
   [QDPXX_HOME="$with_qdp"]
 )
 
-AC_ARG_ENABLE(sse_wilson_dslash,
-  AC_HELP_STRING( 
-    [--enable-sse-wilson-dslash],
-    [Build and Use the SSE2 Wilson Dslash Library])
-)
+
+
 
 dnl CPP_WILSON_DSLASH_OPTIONS
 AC_ARG_ENABLE(cpp_wilson_dslash,
@@ -209,6 +206,16 @@ AC_ARG_WITH(cuda,
    ),
    [ CUDA_HOME=${with_cuda} ],
    [ CUDA_HOME="/usr/local/cuda" ]
+)
+
+AC_ARG_WITH(intel-solver,
+  AC_HELP_STRING(
+    [--with-intel-solver=DIR],
+    [Build Chroma with the Intel L3 solver installed in DIR]
+  ),
+  [isolver_enabled="yes"
+   ISOLVER_HOME="$with_intel_solver"],
+  [isolver_enabled="no"]
 )
 
 dnl level 3 libraries for asqtad inverter
@@ -864,6 +871,22 @@ fi
 
 AM_CONDITIONAL(BUILD_QUDA,
 	[test "x${quda_enabled}x" = "xyesx" ])
+
+
+###########
+#
+# ISOLVER (Intel Level 3 -- needs a better name ) support
+#
+###########
+if test "X${isolver_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE([ Enabling Intel L3 Solver in ${ISOLVER_HOME}])
+  AC_DEFINE([BUILD_ISOLVER], [], [Build with the ISOLVER_IBRARY])
+  AC_SUBST(ISOLVER_CXXFLAGS, "-I${ISOLVER_HOME}/include" ) 
+fi
+
+AM_CONDITIONAL(BUILD_ISOLVER,
+	[test "x${isolver_enabled}x" = "xyesx" ])
 
 #######################
 # Produce output

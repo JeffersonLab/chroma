@@ -21,6 +21,9 @@
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 
+/* Build with the ISOLVER_IBRARY */
+#undef BUILD_ISOLVER
+
 /* Using Lapack */
 #undef BUILD_LAPACK
 

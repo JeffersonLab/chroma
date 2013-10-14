@@ -28,6 +28,11 @@
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
 
+#ifdef BUILD_ISOLVER
+#include "actions/ferm/invert/intel_solvers/syssolver_linop_clover_intel_w.h"
+#endif
+
+
 namespace Chroma
 {
 
@@ -59,6 +64,9 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
+#endif
+#ifdef BUILD_ISOLVER
+	success &= LinOpSysSolverIntelCloverEnv::registerAll();
 #endif
 	registered = true;
       }
