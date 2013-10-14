@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: prec_clover-stout3d.ini.xml,v 1.2 2006-08-04 23:56:02 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>SHELL_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+
+          <SmearingParam>
+            <wvf_kind>GAUGE_INV_GAUSSIAN</wvf_kind>
+            <wvf_param>2.0</wvf_param>
+            <wvfIntPar>5</wvfIntPar>
+            <no_smear_dir>3</no_smear_dir>
+          </SmearingParam>
+
+          <Displacement>
+            <version>1</version>
+            <DisplacementType>NONE</DisplacementType>
+          </Displacement>
+
+          <noLinkSmearing>
+            <LinkSmearingType>APE_SMEAR</LinkSmearingType>
+            <link_smear_fact>2.5</link_smear_fact>
+            <link_smear_num>1</link_smear_num>
+            <no_smear_dir>3</no_smear_dir>
+          </noLinkSmearing>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.0171</clovCoeffR>
+         <clovCoeffT>0.95</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.9</xi_0>
+           <nu>0.94</nu>
+         </AnisoParam>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 1</boundary>
+           </FermionBC>
+         </FermState>
+        </FermionAction>
+        <!--
+        <InvertParam>
+          <invType>CG_INVERTER</invType>
+          <RsdCG>1.0e-8</RsdCG>
+          <MaxCG>1000</MaxCG>
+        </InvertParam>
+        --> 
+        <InvertParam>
+          <invType>INTEL_CLOVER_INVERTER</invType>
+          <MaxIter>1000</MaxIter>
+          <RsdTarget>1.0e-7</RsdTarget>
+	  <CloverParams>
+	    <Kappa>0.115</Kappa>
+	    <clovCoeff>2.0171</clovCoeff>
+	    <clovCoeffR>2.0171</clovCoeffR>
+	    <clovCoeffT>0.95</clovCoeffT>
+	    <AnisoParam>
+	      <anisoP>true</anisoP>
+	      <t_dir>3</t_dir>
+	      <xi_0>2.9</xi_0>
+	      <nu>0.94</nu>
+	    </AnisoParam>
+          </CloverParams>
+	  <AntiPeriodicT>false</AntiPeriodicT>
+	  <Verbose>true</Verbose>
+	  <NCores>16</NCores>
+	  <ThreadsPerCore>2</ThreadsPerCore>
+	  <By>8</By>
+	  <Bz>4</Bz>
+	  <Sy>1</Sy>
+	  <Sz>2</Sz>
+	  <PadXY>1</PadXY>
+	  <PadXYZ>0</PadXYZ>
+	  <SOALEN>8</SOALEN>
+	  <VECLEN>8</VECLEN>
+	  <MinCt>2</MinCt>
+	  <RsdToleranceFactor>1</RsdToleranceFactor>
+	  <Compress>true</Compress>
+	  <Tune>true</Tune>
+	</InvertParam>
+	
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+   <nrow>16 16 16 32</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
