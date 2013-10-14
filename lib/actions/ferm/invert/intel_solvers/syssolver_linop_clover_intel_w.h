@@ -22,6 +22,7 @@
 #include "io/aniso_io.h"
 #include <string>
 
+#include "chroma_config.h"
 #include "util/gauge/reunit.h"
 #include "io/aniso_io.h"
 #include "cpp_dslash_qdp_packer.h"
@@ -289,8 +290,8 @@ namespace Chroma
     LinOpSysSolverIntelClover() {}
     
     // Somehow, I need to take care of this...
-    static const int Veclen=8;
-    static const int Soalen=8;
+    static const int Veclen=ISOLVER_VECLEN;
+    static const int Soalen=ISOLVER_SOALEN;
 
 
     Handle< LinearOperator<T> > A;

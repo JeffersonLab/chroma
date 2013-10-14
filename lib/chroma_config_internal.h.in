@@ -63,6 +63,12 @@
 /* Enable Sloppy Precision in Bagel Wilson Dslash */
 #undef CHROMA_USE_SLOPPY_BAGEL_DSLASH
 
+/* The SOA length for Isolver */
+#undef ISOLVER_SOALEN
+
+/* The vector length for Isolver */
+#undef ISOLVER_VECLEN
+
 /* Name of package */
 #undef PACKAGE
 

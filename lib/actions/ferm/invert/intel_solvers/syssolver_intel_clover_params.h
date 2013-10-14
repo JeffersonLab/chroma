@@ -35,8 +35,6 @@ namespace Chroma
       Sz=p.Sz;
       PadXY = p.PadXY;
       PadXYZ = p.PadXYZ;
-      Soalen = p.Soalen;
-      Veclen = p.Veclen;
       RsdToleranceFactor = p.RsdToleranceFactor;
       TuneP = p.TuneP;
       CompressP = p.CompressP;
@@ -57,8 +55,6 @@ namespace Chroma
     int Sz;
     int PadXY;
     int PadXYZ;
-    int Soalen;
-    int Veclen;
     int MinCt;
     Real RsdToleranceFactor;
     bool TuneP;

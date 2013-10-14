@@ -7,7 +7,7 @@ AM_INIT_AUTOMAKE
 dnl stupid templates to shut up stupid autoheader
 dnl AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[],[Build Pab Wilson Dslash])
 dnl AC_DEFINE([BUILD_SSE_WILSON_DSLASH],[],[Build SSE wilson Dslash])
-dnl AC_DEFINE([CHROMA_BUILD_STAGGERED],[], [Build Staggered version of Chroma])
+dnl AC_DEFINE([CHROMA_BUILD_STACGGERED],[], [Build Staggered version of Chroma])
 dnl AC_DEFINE([CHROMA_BUILD_WILSON],[],[Build Wilson version of Chroma])
 
 AC_CONFIG_HEADERS([lib/chroma_config_internal.h])
@@ -217,6 +217,25 @@ AC_ARG_WITH(intel-solver,
    ISOLVER_HOME="$with_intel_solver"],
   [isolver_enabled="no"]
 )
+
+AC_ARG_ENABLE(intel-solver-veclen,
+  AC_HELP_STRING(
+    [--intel-solver-veclen=V], 
+    [Set VECLEN for the Intel solver]
+  ),
+  [ isolver_veclen="${enable_intel_solver_veclen}" ],
+  [ isolver_veclen="4" ]
+)
+
+AC_ARG_ENABLE(intel-solver-soalen,
+  AC_HELP_STRING(
+    [--intel-solver-soalen=S], 
+    [Set VECLEN for the Intel solver]
+  ),
+  [ isolver_soalen="${enable_intel_solver_soalen}" ],
+  [ isolver_soalen="4" ]
+)
+
 
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
@@ -883,6 +902,11 @@ then
   AC_MSG_NOTICE([ Enabling Intel L3 Solver in ${ISOLVER_HOME}])
   AC_DEFINE([BUILD_ISOLVER], [], [Build with the ISOLVER_IBRARY])
   AC_SUBST(ISOLVER_CXXFLAGS, "-I${ISOLVER_HOME}/include" ) 
+
+  AC_DEFINE_UNQUOTED(ISOLVER_VECLEN, ${isolver_veclen}, [ The vector length for Isolver ])
+  AC_MSG_NOTICE([ Enabling Intel L3 Solver Veclen: ${isolver_veclen}]	)
+  AC_DEFINE_UNQUOTED(ISOLVER_SOALEN, ${isolver_soalen}, [ The SOA length for Isolver ])
+  AC_MSG_NOTICE([ Enabling Intel L3 Solver Soalen: ${isolver_soalen}]	)	
 fi
 
 AM_CONDITIONAL(BUILD_ISOLVER,

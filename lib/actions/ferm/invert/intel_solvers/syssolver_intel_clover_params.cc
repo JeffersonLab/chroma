@@ -46,10 +46,11 @@ namespace Chroma {
     else { 
       PadXYZ = 0;
     }
-    
+#if 0    
     read(paramtop, "SOALEN", Soalen);
     read(paramtop, "VECLEN", Veclen);
-    
+#endif
+
     if( paramtop.count("MinCt") > 0 ) {
       read(paramtop, "MinCt", MinCt);
     }
@@ -101,8 +102,11 @@ namespace Chroma {
     write(xml, "Sz", p.Sz);
     write(xml, "PadXY", p.PadXY);
     write(xml, "PadXYZ", p.PadXYZ);
+#if 0
     write(xml, "Soalen", p.Soalen);
     write(xml, "Veclen", p.Veclen);
+#endif
+
     write(xml, "MinCt", p.MinCt);
     write(xml, "Compress", p.CompressP);
     write(xml, "Tune", p.TuneP);
