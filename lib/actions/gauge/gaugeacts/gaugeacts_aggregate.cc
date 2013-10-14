@@ -1,6 +1,5 @@
-// $Id: gaugeacts_aggregate.cc,v 3.15 2008-01-23 15:41:51 edwards Exp $
 /*! \file
- *  \brief Generic gauge action wrapper
+ *  \brief All gauge actions
  */
 
 #include "chromabase.h"
@@ -12,6 +11,7 @@
 #include "actions/gauge/gaugeacts/rect_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.h"
+#include "actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/pg_gaugeact.h"
 #include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/spatial_wilson_gaugeact.h"
@@ -67,6 +67,7 @@ namespace Chroma
 	success &= SpatialTwoPlaqGaugeActEnv::registerAll();
 	success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registerAll();
 	success &= PlaqPlusAdjointGaugeActEnv::registerAll();
+	success &= PlaqPlusTwoPlaqGaugeActEnv::registerAll();
 	success &= AnisoSpectrumGaugeActEnv::registerAll();
 	success &= AnisoSymSpatialGaugeActEnv::registerAll();	
 	success &= AnisoSymTemporalGaugeActEnv::registerAll();
