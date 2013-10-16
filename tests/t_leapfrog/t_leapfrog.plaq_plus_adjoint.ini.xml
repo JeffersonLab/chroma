@@ -6,8 +6,8 @@
 	<Name>GAUGE_MONOMIAL</Name>
 	<GaugeAction>
 	  <Name>PLAQ_PLUS_ADJOINT_GAUGEACT</Name>
-	  <beta_F>5.6</beta_F>
-	  <beta_A>-1.4</beta_A>
+	  <beta_F>0</beta_F>
+	  <beta_A>5</beta_A>
           <GaugeBC>
 	    <Name>PERIODIC_GAUGEBC</Name>
           </GaugeBC>
@@ -24,7 +24,7 @@
 	<tau0>0.1</tau0>
 	<Integrator>
   	  <Name>LCM_STS_LEAPFROG</Name>
-	  <n_steps>32</n_steps>
+	  <n_steps>16</n_steps>
           <monomial_ids>
             <elem>gauge</elem>
           </monomial_ids>

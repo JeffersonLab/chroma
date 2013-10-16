@@ -63,7 +63,7 @@ namespace Chroma
     Double GaugeAct::S(const Handle< GaugeState<P,Q> >& state) const
     {
       // Action at the site level
-      multi2d<LatticeReal> plaq_site;
+      multi2d<LatticeComplex> plaq_site;
       this->siteAction(plaq_site, state);
 
       // Total action
@@ -75,31 +75,33 @@ namespace Chroma
 	for(int nu=0; nu < mu; ++nu)
 	{
 	  // Sum over plaquettes
-	  act_F += sum(plaq_site[mu][nu]);
+	  act_F += sum(real(plaq_site[mu][nu]));
 	}
       }
 
       // Adjoint part
       Double act_A = zero;
+      Double one = 1.0;
 
       for(int mu=1; mu < Nd; ++mu)
       {
 	for(int nu=0; nu < mu; ++nu)
 	{
 	  // Sum over plaquettes
-	  act_A += sum(plaq_site[mu][nu] * plaq_site[mu][nu]);
+	  // NOTE: do the subtraction per site to mitigate loss of precision in subtracting big numbers
+	  act_A += sum(localNorm2(plaq_site[mu][nu]) - one);
 	}
       }
 
       // Normalize
-      Real act = -param.beta_F * act_F - Real(0.5)*param.beta_A * act_A;
+      Real act = -(param.beta_F / Real(Nc)) * act_F - (param.beta_A / Real(Nc*Nc-1)) * act_A;
 
       return act;
     }
  
 
     //! Compute the site-level action
-    void GaugeAct::siteAction(multi2d<LatticeReal>& site_act, const Handle< GaugeState<P,Q> >& state) const
+    void GaugeAct::siteAction(multi2d<LatticeComplex>& site_act, const Handle< GaugeState<P,Q> >& state) const
     {
       START_CODE();
 
@@ -119,11 +121,8 @@ namespace Chroma
 	  /* tmp_0 = u(x+mu,nu)*u_dag(x+nu,mu) */
 	  /* tmp_1 = tmp_0*u_dag(x,nu)=u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu) */
 	  /* wplaq_tmp = tr(u(x,mu)*tmp_1=u(x,mu)*u(x+mu,nu)*u_dag(x+nu,mu)*u_dag(x,nu)) */
-	  site_act[mu][nu] += real(trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu])));
+	  site_act[mu][nu] += trace(u[mu]*shift(u[nu],FORWARD,mu)*adj(shift(u[mu],FORWARD,nu))*adj(u[nu]));
 	  
-	  // Account for normalization
-	  site_act[mu][nu] *= Real(1) / Real(Nc);
-
 	  // Keep a copy
 	  site_act[nu][mu] = site_act[mu][nu];
 	}
@@ -179,7 +178,6 @@ namespace Chroma
     {
       START_CODE();
 
-      LatticeColorMatrix tmp_0;
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
 
@@ -232,11 +230,10 @@ namespace Chroma
       START_CODE();
 
       // Action at the site level
-      multi2d<LatticeReal> plaq_site;
+      multi2d<LatticeComplex> plaq_site;
       this->siteAction(plaq_site, state);
 
       // Derivative part
-      LatticeColorMatrix tmp_0;
       LatticeColorMatrix tmp_1;
       LatticeColorMatrix tmp_2;
 
@@ -260,19 +257,19 @@ namespace Chroma
 	  LatticeColorMatrix up_staple   = tmp_1*adj(tmp_2)*adj(u[nu]);
 	  LatticeColorMatrix down_staple = adj(tmp_1)*adj(u[mu])*u[nu];
 
-	  G += up_staple * plaq_site[mu][nu];
+	  G += up_staple * adj(plaq_site[mu][nu]);
 	  G += shift(down_staple * plaq_site[mu][nu], BACKWARD, nu);
 	}
-	
+
 	ds_u[mu] = u[mu]*G;
       }
 
-      // It is 1/(4Nc) to account for normalisation relevant to fermions
-      // in the taproj, which is a factor of 2 different from the 
-      // one used here.
+      // Normalize with 1/(Nc^2-1) . Would normally have an additional 1/2.
+      // However, only took deriv. of the tr(U_p) and not the adj(tr(U_p)),
+      // so need to multiply by 2.
       for(int mu=0; mu < Nd; mu++)
       {
-	ds_u[mu] *= Real(1)/(Real(2*Nc));
+	ds_u[mu] *= Real(1)/ Real(1*(Nc*Nc-1));
       }
 
       // Zero the force on any fixed boundaries

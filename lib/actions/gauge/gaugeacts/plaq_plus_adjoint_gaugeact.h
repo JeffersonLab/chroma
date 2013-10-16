@@ -77,7 +77,7 @@ namespace Chroma
       void operator=(const GaugeAct& a) {}
       
       //! Compute the site-level action
-      void siteAction(multi2d<LatticeReal>& site_act, const Handle< GaugeState<P,Q> >& state) const;
+      void siteAction(multi2d<LatticeComplex>& site_act, const Handle< GaugeState<P,Q> >& state) const;
 
       //! Compute dS/dU
       void derivPlaqFun(multi1d<LatticeColorMatrix>& ds_u,
