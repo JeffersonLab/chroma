@@ -78,9 +78,35 @@ namespace Chroma
       A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
     {
       QDPIO::cout << "LinOpSysSolverIntelClover:" << endl;
+      QDPIO::cout << "Compression is: " << invParam.CompressP << endl;
+      QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << endl;
+
+
+      multi1d<LatticeColorMatrix> u(Nd);
+      for(int mu=0; mu < Nd; mu++) {
+	u[mu] = state_->getLinks()[mu];
+      }
+
+      // Set up aniso coefficients
+      multi1d<Real> aniso_coeffs(Nd);
+      for(int mu=0; mu < Nd; mu++) aniso_coeffs[mu] = Real(1);
+
+      bool anisotropy = invParam.CloverParams.anisoParam.anisoP;
+      if( anisotropy ) { 
+	aniso_coeffs = makeFermCoeffs( invParam.CloverParams.anisoParam );
+      }
       
-      // Get the Links
-      
+      float t_boundary=(float)(1);
+      // NB: In this case, the state will have boundaries applied.
+      // So we only need to apply our own boundaries if Compression is enabled
+      //
+      if (invParam.AntiPeriodicT) {
+	t_boundary=(float)(-1);
+	// Flip off the boundaries -- Dslash expects them off..
+	u[3] *= where(Layout::latticeCoordinate(3) == (Layout::lattSize()[3]-1),
+  			Real(t_boundary), Real(1));
+      }
+
       // Create the Clover Op
       QDPIO::cout << "Creating the Clover Op" << endl;
       M = new EvenOddCloverOperator<float, Veclen, Soalen>(Layout::subgridLattSize().slice(), 
@@ -92,7 +118,11 @@ namespace Chroma
 							   invParam.PadXY,
 							   invParam.PadXYZ,
 							   invParam.MinCt, 
-							   invParam.CompressP);
+							   invParam.CompressP,
+							   t_boundary,
+							   toFloat(aniso_coeffs[0]),
+							   toFloat(aniso_coeffs[3])
+							   );
       
       QDPIO::cout << "Allocating Packed Gauge Field" << endl;
       ClovDslash<float,Veclen,Soalen>::SU3MatrixBlockF* packed_gauge_cb0 = (ClovDslash<float,Veclen,Soalen>::SU3MatrixBlockF*)(*M).allocCBGauge();
@@ -130,6 +160,8 @@ namespace Chroma
       clov_packed[1] = A_cb1;
           
       // Clover stuff
+      // Clover term uses u from state (with potentially antiperiodic BCs on)
+      // However I am not doing anything regarding anisotropy, as QDP++ takes care of that.
       QDPIO::cout << "Creating Clover Term" << endl;
       QDPCloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
@@ -151,35 +183,13 @@ namespace Chroma
       QDPIO::cout << "Done" << endl;
 
 
-      // Fold anisotropy into U fields
-      bool anisotropy = invParam.CloverParams.anisoParam.anisoP;
-      multi1d<LatticeColorMatrix> u(Nd);
-      if( anisotropy ) { 
-
-	QDPIO::cout << "Computing anisotropy coefficients: ";
-	multi1d<Real> cf(Nd);
-	cf = makeFermCoeffs( invParam.CloverParams.anisoParam );
-	for(int mu=0; mu < Nd; mu++) { 
-	  QDPIO::cout << cf[mu] << " ";
-	}
-	QDPIO::cout << endl;
-
-        // Fold in anisotropy
-	for(int mu=0; mu < u.size(); ++mu) {
-	  u[mu] = cf[mu]*(state_->getLinks())[mu];
-	}
-      }
-      else { 	
-	for(int mu=0; mu < u.size(); ++mu) {
-	  u[mu] = (state_->getLinks())[mu];
-	}
-      }
     
       QDPIO::cout << "Packing Gauge Field" << endl;
       qdp_pack_gauge<float,Veclen,Soalen,multi1d< LatticeColorMatrixF > >(u,
-									  packed_gauge_cb0,
-									  packed_gauge_cb1, 
-									  (*M).getGeometry());
+	packed_gauge_cb0,
+	packed_gauge_cb1, 
+	(*M).getGeometry());
+;
       QDPIO::cout << "Done" << endl;
       
       u_packed[0] = packed_gauge_cb0;
@@ -257,13 +267,10 @@ namespace Chroma
       unsigned long mv_apps=0;
       
       double start = omp_get_wtime();
-      
-      // Solve M^\dag M psi  = M^\dag 
-
       (*solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps);
-      QDPIO::cout << "INTEL_CLOVER_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;
       double end = omp_get_wtime();
-      
+
+      QDPIO::cout << "INTEL_CLOVER_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
       qdp_unpack_spinor<float, Veclen, Soalen, LatticeFermionF3 >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
@@ -275,10 +282,21 @@ namespace Chroma
 
       Double r2 = norm2(r,A->subset());
       Double b2 = norm2(chi, A->subset());
+      Double rel_resid = sqrt(r2/b2);
 
-      QDPIO::cout << "INTEL_CLOVER_SOLVER: || r || / || b || = " << sqrt(r2/b2) << endl;
+      QDPIO::cout << "INTEL_CLOVER_SOLVER: || r || / || b || = " << rel_resid << endl;
 
+      if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
+	QDPIO::cout << "SOLVE FAILED" << endl;
+	QDP_abort(1);
+      }
 
+      int num_cb_sites = Layout::vol()/2;
+      unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
+      double gflops = (double)(total_flops)/(1.0e9);
+
+      double total_time = end - start;
+      QDPIO::cout << "INTEL_CLOVER_SOLVER: Performance = " << gflops / total_time << " GFLOPS" << endl;
 
       END_CODE();
       return res;
