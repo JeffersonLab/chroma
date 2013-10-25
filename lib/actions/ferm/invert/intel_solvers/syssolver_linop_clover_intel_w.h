@@ -201,6 +201,22 @@ namespace Chroma
       
       QDPIO::cout << "Creating the CG Solver" << endl;
       solver = new InvCG<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF>((*M), toFloat(invParam.RsdTarget), invParam.MaxIter);
+
+#if defined __MIC__
+#warning setting hacked MIC params
+      int copyThreads=1;
+      int aypxThreads=2;
+      int xmyNormThreads=2;
+      int rmammpNorm2rxpapThreads=1;
+      int norm2Threads=4;
+
+
+      solver->setCopyThreads(copyThreads);
+      solver->setAypxThreads(aypxThreads);
+      solver->setXmyNormThreads(xmyNormThreads);
+      solver->setRmammpNorm2rxpapThreads(rmammpNorm2rxpapThreads);
+      solver->setNorm2Threads(norm2Threads);
+#endif 
     }
 
     
