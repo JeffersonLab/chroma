@@ -344,7 +344,7 @@ namespace Chroma
       unsigned long mv_apps=0;
       
       double start = omp_get_wtime();
-      (*cg_solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps);
+      (*cg_solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
@@ -395,7 +395,7 @@ namespace Chroma
       
       QDPIO::cout << "Starting solve" << endl << flush ;
       double start = omp_get_wtime();
-      (*bicgstab_solver)(psi_s[1],chi_s[1], 1, res.n_count, rsd_final, site_flops, mv_apps);
+      (*bicgstab_solver)(psi_s[1],chi_s[1], 1, res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
       QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      

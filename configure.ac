@@ -902,6 +902,8 @@ then
   AC_MSG_NOTICE([ Enabling Intel L3 Solver in ${ISOLVER_HOME}])
   AC_DEFINE([BUILD_ISOLVER], [], [Build with the ISOLVER_IBRARY])
   AC_SUBST(ISOLVER_CXXFLAGS, "-I${ISOLVER_HOME}/include" ) 
+  AC_SUBST(ISOLVER_LDFLAGS, "-L${ISOLVER_HOME}/lib" )
+  AC_SUBST(ISOLVER_LIBS,"-lintel_solver")
 
   AC_DEFINE_UNQUOTED(ISOLVER_VECLEN, ${isolver_veclen}, [ The vector length for Isolver ])
   AC_MSG_NOTICE([ Enabling Intel L3 Solver Veclen: ${isolver_veclen}]	)
