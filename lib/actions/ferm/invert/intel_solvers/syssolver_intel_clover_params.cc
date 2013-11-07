@@ -9,6 +9,37 @@ using namespace QDP;
 
 namespace Chroma {
 
+  namespace IntelSolverTypeEnv { 
+
+    bool registerAll(void) 
+    {
+      bool success; 
+      success = theIntelSolverTypeMap::Instance().registerPair(string("CG"),
+							   CG);
+
+      success &=theIntelSolverTypeMap::Instance().registerPair(string("BICGSTAB" ), 
+							       BICGSTAB);
+
+      return success;
+    }
+
+    const string typeIDString = "IntelSolverType";
+    bool registered = registerAll();
+  };
+  
+  using namespace IntelSolverTypeEnv;
+  //! Read an WaveType enum
+  void read(XMLReader& xml_in,  const string& path, IntelSolverType& t) {
+    theIntelSolverTypeMap::Instance().read(typeIDString, xml_in, path,t);
+  }
+  
+  //! Write an WaveType enum
+  void write(XMLWriter& xml_out, const string& path, const IntelSolverType& t) {
+    theIntelSolverTypeMap::Instance().write(typeIDString, xml_out, path, t);
+  }
+
+
+
   SysSolverIntelCloverParams::SysSolverIntelCloverParams(XMLReader& xml, 
 							 const std::string& path)
   {
@@ -17,6 +48,7 @@ namespace Chroma {
     read(paramtop, "MaxIter", MaxIter);
     read(paramtop, "RsdTarget", RsdTarget);
     read(paramtop, "CloverParams", CloverParams);
+    read(paramtop, "SolverType", SolverType);
     read(paramtop, "AntiPeriodicT", AntiPeriodicT);
     
     if ( paramtop.count("Verbose") > 0 ) { 
@@ -27,7 +59,6 @@ namespace Chroma {
     }
     
     read(paramtop, "NCores", NCores);
-    read(paramtop, "ThreadsPerCore", ThreadsPerCore);
     read(paramtop, "By", By);
     read(paramtop, "Bz", Bz);
     read(paramtop, "Sy", Sy);
@@ -92,10 +123,10 @@ namespace Chroma {
     write(xml, "RsdTarget", p.RsdTarget);
     write(xml, "Verbose", p.VerboseP);
     write(xml, "CloverParams", p.CloverParams);
+    write(xml, "SolverType", p.SolverType);
     write(xml, "AntiPeriodicT", p.AntiPeriodicT);
     write(xml, "RsdToleranceFactor", p.RsdToleranceFactor);
     write(xml, "NCores", p.NCores);
-    write(xml, "ThreadsPerCore", p.ThreadsPerCore);
     write(xml, "By", p.By);
     write(xml, "Bz", p.Bz);
     write(xml, "Sy", p.Sy);

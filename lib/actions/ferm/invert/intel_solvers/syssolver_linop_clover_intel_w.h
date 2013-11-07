@@ -25,10 +25,12 @@
 #include "chroma_config.h"
 #include "util/gauge/reunit.h"
 #include "io/aniso_io.h"
+
+#include "geometry.h"
 #include "cpp_dslash_qdp_packer.h"
 #include "clover.h"
 #include "invcg.h"
-
+#include "invbicgstab.h"
 
 using namespace std;
 using namespace CPlusPlusWilsonDslash;
@@ -138,10 +140,6 @@ namespace Chroma
       c_even=(ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF*)(*M).allocCBFourSpinor();
       c_odd=(ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF*)(*M).allocCBFourSpinor();
 
-      //ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* psi_even=p_even+1;
-      //ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* psi_odd=p_odd+1;
-      //ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* chi_even=c_even+1;
-      //ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* chi_odd=c_odd+1;
       psi_s[0] = p_even + 1;
       psi_s[1] = p_odd + 1;
 
@@ -199,24 +197,29 @@ namespace Chroma
 
       (*M).setFields(u_packed, clov_packed[1], invclov_packed[0]);
       
-      QDPIO::cout << "Creating the CG Solver" << endl;
-      solver = new InvCG<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF>((*M), toFloat(invParam.RsdTarget), invParam.MaxIter);
+      switch( invParam.SolverType ) { 
+      case CG: 
+	{
+	  QDPIO::cout << "Creating the CG Solver" << endl;
+	  cg_solver = new InvCG<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF>((*M), toFloat(invParam.RsdTarget), invParam.MaxIter);
+	  if( invParam.TuneP ) cg_solver->tune();
+	}
+	break;
+      case BICGSTAB:
+	{
+	  QDPIO::cout << "Creating the BiCGStab Solver" << endl;
+	  bicgstab_solver = new CPlusPlusWilsonDslash::InvBiCGStab<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF>((*M), toFloat(invParam.RsdTarget), invParam.MaxIter);
 
-#if defined __MIC__
-#warning setting hacked MIC params
-      int copyThreads=1;
-      int aypxThreads=2;
-      int xmyNormThreads=2;
-      int rmammpNorm2rxpapThreads=1;
-      int norm2Threads=4;
+#if 1
+	  if( invParam.TuneP ) bicgstab_solver->tune();
+#endif
 
-
-      solver->setCopyThreads(copyThreads);
-      solver->setAypxThreads(aypxThreads);
-      solver->setXmyNormThreads(xmyNormThreads);
-      solver->setRmammpNorm2rxpapThreads(rmammpNorm2rxpapThreads);
-      solver->setNorm2Threads(norm2Threads);
-#endif 
+	}
+	break;
+      default:
+	QDPIO::cerr << "UNKNOWN Solver Type" << endl;
+	QDP_abort(1);
+      }
     }
 
     
@@ -255,16 +258,74 @@ namespace Chroma
     //! Return the subset on which the operator acts
     const Subset& subset() const {return A->subset();}
     
+
+    
     //! Solver the linear system
     /*!
      * \param psi      solution ( Modify )
      * \param chi      source ( Read )
      * \return syssolver results
      */
-    SystemSolverResults_t operator() (T& psi, const T& chi) const
+    SystemSolverResults_t operator()(T& psi, const T& chi) const
+    {
+      /* Factories here later? */
+      SystemSolverResults_t res;
+      switch( invParam.SolverType ) { 
+      case CG:
+	{
+	  res = cgSolve(psi,chi);
+	}
+	break;
+      case BICGSTAB:
+	{
+	  res = biCGStabSolve(psi,chi);
+	}
+	break;
+      default:
+	QDPIO::cout << "Unknown Solver " << endl;
+	break;
+      }
+      
+      return res;
+    }
+
+
+
+
+
+  private:
+    // Hide default constructor
+    LinOpSysSolverIntelClover() {}
+    
+    // Somehow, I need to take care of this...
+    static const int Veclen=ISOLVER_VECLEN;
+    static const int Soalen=ISOLVER_SOALEN;
+
+
+    Handle< LinearOperator<T> > A;
+    const SysSolverIntelCloverParams invParam;
+    Handle< QDPCloverTermT<T, U> > clov;
+    Handle< QDPCloverTermT<T, U> > invclov;
+
+    Handle< EvenOddCloverOperator<float, Veclen, Soalen> > M;
+    Handle< InvCG<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF> > cg_solver;
+    Handle< CPlusPlusWilsonDslash::InvBiCGStab<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF > > bicgstab_solver;
+
+    ClovDslash<float, Veclen, Soalen>::CloverBlockF* invclov_packed[2];
+    ClovDslash<float, Veclen, Soalen>::CloverBlockF* clov_packed[2];
+    ClovDslash<float,Veclen,Soalen>::SU3MatrixBlockF* u_packed[2];
+
+    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* p_even;
+    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* p_odd;
+    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* c_even;
+    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* c_odd;
+    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* psi_s[2];
+    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* chi_s[2];
+
+    SystemSolverResults_t cgSolve(T& psi, const T& chi) const
     {
       SystemSolverResults_t res;
-      
+      psi = zero;
 
         // This is LinOpSolver so CGNE
       // Step 1 tranform RHS: chi -> M^\dagger chi
@@ -283,10 +344,10 @@ namespace Chroma
       unsigned long mv_apps=0;
       
       double start = omp_get_wtime();
-      (*solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps);
+      (*cg_solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "INTEL_CLOVER_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
       qdp_unpack_spinor<float, Veclen, Soalen, LatticeFermionF3 >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
@@ -300,7 +361,7 @@ namespace Chroma
       Double b2 = norm2(chi, A->subset());
       Double rel_resid = sqrt(r2/b2);
 
-      QDPIO::cout << "INTEL_CLOVER_SOLVER: || r || / || b || = " << rel_resid << endl;
+      QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << endl;
 
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << endl;
@@ -312,42 +373,63 @@ namespace Chroma
       double gflops = (double)(total_flops)/(1.0e9);
 
       double total_time = end - start;
-      QDPIO::cout << "INTEL_CLOVER_SOLVER: Performance = " << gflops / total_time << " GFLOPS" << endl;
+      QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
 
       END_CODE();
       return res;
     }
 
+    SystemSolverResults_t biCGStabSolve(T& psi, const T& chi) const
+    {
+      SystemSolverResults_t res;
+      psi=zero;
 
-  private:
-    // Hide default constructor
-    LinOpSysSolverIntelClover() {}
-    
-    // Somehow, I need to take care of this...
-    static const int Veclen=ISOLVER_VECLEN;
-    static const int Soalen=ISOLVER_SOALEN;
+      // Pack Spinors psi and chi
+      QDPIO::cout << "PAcking" << endl << flush ;
+      qdp_pack_spinor<float,Veclen,Soalen,LatticeFermionF3>(psi, psi_s[0], psi_s[1], (*M).getGeometry());
+      qdp_pack_spinor<float,Veclen,Soalen,LatticeFermionF3>(chi, chi_s[0], chi_s[1], (*M).getGeometry());
+      QDPIO::cout << "Done" << endl << flush;
+      double rsd_final;
+      unsigned long site_flops=0;
+      unsigned long mv_apps=0;
+      
+      QDPIO::cout << "Starting solve" << endl << flush ;
+      double start = omp_get_wtime();
+      (*bicgstab_solver)(psi_s[1],chi_s[1], 1, res.n_count, rsd_final, site_flops, mv_apps);
+      double end = omp_get_wtime();
 
+      QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      qdp_unpack_spinor<float, Veclen, Soalen, LatticeFermionF3 >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
-    Handle< LinearOperator<T> > A;
-    const SysSolverIntelCloverParams invParam;
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+      // Chi Should now hold the result spinor 
+      // Check it against chroma.
+      LatticeFermion r = chi;
+      LatticeFermion tmp;
+      (*A)(tmp, psi, PLUS);
+      r[ A->subset() ] -= tmp;
 
-    Handle< EvenOddCloverOperator<float, Veclen, Soalen> > M;
-    Handle< InvCG<float,Veclen, Soalen, ClovDslash<float,Veclen, Soalen>::FourSpinorBlockF> > solver;
+      Double r2 = norm2(r,A->subset());
+      Double b2 = norm2(chi, A->subset());
+      Double rel_resid = sqrt(r2/b2);
 
-    ClovDslash<float, Veclen, Soalen>::CloverBlockF* invclov_packed[2];
-    ClovDslash<float, Veclen, Soalen>::CloverBlockF* clov_packed[2];
-    ClovDslash<float,Veclen,Soalen>::SU3MatrixBlockF* u_packed[2];
+      QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: || r || / || b || = " << rel_resid << endl;
 
-    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* p_even;
-    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* p_odd;
-    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* c_even;
-    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF* c_odd;
-    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF *psi_s[2];
-    ClovDslash<float,Veclen,Soalen>::FourSpinorBlockF *chi_s[2];
+      if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
+	QDPIO::cout << "SOLVE FAILED" << endl;
+	QDP_abort(1);
+      }
 
-    std::string solver_string;
+      int num_cb_sites = Layout::vol()/2;
+      unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
+      double gflops = (double)(total_flops)/(1.0e9);
+
+      double total_time = end - start;
+      QDPIO::cout << "INTEL_CLOVER_BICGTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
+
+      END_CODE();
+      return res;
+    }
+
   };
 
 

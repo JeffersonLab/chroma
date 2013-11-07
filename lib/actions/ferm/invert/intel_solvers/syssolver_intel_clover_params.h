@@ -3,7 +3,7 @@
 
 #include "chromabase.h"
 #include "io/xml_group_reader.h"
-
+#include "io/enum_io/enum_type_map.h"
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include <string>
 #include "handle.h"
@@ -11,6 +11,30 @@ using namespace std;
 
 namespace Chroma 
 {
+
+  enum IntelSolverType 
+  { 
+    CG, 
+    BICGSTAB 
+  };
+
+  namespace IntelSolverTypeEnv { 
+    extern const string typeIDString;
+    extern bool registered;
+    bool registerAll(void);
+  }
+
+  // A singleton to hold the typemap
+  typedef SingletonHolder<EnumTypeMap<IntelSolverType> > theIntelSolverTypeMap;
+
+  //! Read an WaveStateType enum
+  void read(XMLReader& r, const string& path, IntelSolverType& t);
+
+  //! Write an WaveStateType enum
+  void write(XMLWriter& w, const string& path, const IntelSolverType& t);
+
+
+
   struct SysSolverIntelCloverParams { 
     SysSolverIntelCloverParams(XMLReader& xml, const std::string& path);
     SysSolverIntelCloverParams() {
@@ -19,6 +43,7 @@ namespace Chroma
       VerboseP = false;
       MinCt = 1;
       CompressP = false;
+      SolverType = CG;
     };
 
     SysSolverIntelCloverParams( const SysSolverIntelCloverParams& p) {
@@ -28,7 +53,6 @@ namespace Chroma
       RsdTarget = p.RsdTarget;
       VerboseP = p.VerboseP;
       NCores = p.NCores;
-      ThreadsPerCore = p.ThreadsPerCore;
       By=p.By;
       Bz=p.Bz;
       Sy=p.Sy;
@@ -39,16 +63,17 @@ namespace Chroma
       TuneP = p.TuneP;
       CompressP = p.CompressP;
       MinCt = p.MinCt;
+      SolverType = p.SolverType;
     }
 
    
     CloverFermActParams CloverParams;
+    IntelSolverType SolverType;
     bool AntiPeriodicT;
     int MaxIter;
     Real RsdTarget;
     bool VerboseP;
     int NCores;
-    int ThreadsPerCore;
     int By;
     int Bz;
     int Sy;
