@@ -767,7 +767,6 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
-	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
@@ -1374,7 +1373,6 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_seqsource_w.$(OBJEXT) inline_seqprop_test_w.$(OBJEXT) \
 	inline_prop_3pt_w.$(OBJEXT) inline_create_colorvecs.$(OBJEXT) \
 	inline_disco_w.$(OBJEXT) inline_disco_eoprec_w.$(OBJEXT) \
-	inline_disco_eigcg_w.$(OBJEXT) \
 	inline_disco_eo_eigcg_w.$(OBJEXT) \
 	inline_distillution_noise.$(OBJEXT) \
 	inline_prop_distillation_w.$(OBJEXT) \
@@ -2181,7 +2179,6 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
-	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
 	meas/inline/hadron/inline_distillution_noise.h \
 	meas/inline/hadron/inline_prop_distillation_w.h \
@@ -3177,7 +3174,6 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_create_colorvecs.h \
 	meas/inline/hadron/inline_disco_w.h \
 	meas/inline/hadron/inline_disco_eoprec_w.h \
-	meas/inline/hadron/inline_disco_eigcg_w.h \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.h \
 	meas/inline/hadron/inline_distillution_noise.h \
 	meas/inline/hadron/inline_prop_distillation_w.h \
@@ -3854,7 +3850,6 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_create_colorvecs.cc \
 	meas/inline/hadron/inline_disco_w.cc \
 	meas/inline/hadron/inline_disco_eoprec_w.cc \
-	meas/inline/hadron/inline_disco_eigcg_w.cc \
 	meas/inline/hadron/inline_disco_eo_eigcg_w.cc \
 	meas/inline/hadron/inline_distillution_noise.cc \
 	meas/inline/hadron/inline_prop_distillation_w.cc \
@@ -4317,7 +4312,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_coulgauge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_create_colorvecs.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_diquark_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_disco_eigcg_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_disco_eo_eigcg_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_disco_eoprec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_disco_w.Po@am__quote@
@@ -13927,20 +13921,6 @@ inline_disco_eoprec_w.obj: meas/inline/hadron/inline_disco_eoprec_w.cc
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_disco_eoprec_w.cc' object='inline_disco_eoprec_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_disco_eoprec_w.obj `if test -f 'meas/inline/hadron/inline_disco_eoprec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_disco_eoprec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_disco_eoprec_w.cc'; fi`
-
-inline_disco_eigcg_w.o: meas/inline/hadron/inline_disco_eigcg_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_disco_eigcg_w.o -MD -MP -MF $(DEPDIR)/inline_disco_eigcg_w.Tpo -c -o inline_disco_eigcg_w.o `test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_disco_eigcg_w.cc
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/inline_disco_eigcg_w.Tpo $(DEPDIR)/inline_disco_eigcg_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_disco_eigcg_w.cc' object='inline_disco_eigcg_w.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_disco_eigcg_w.o `test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_disco_eigcg_w.cc
-
-inline_disco_eigcg_w.obj: meas/inline/hadron/inline_disco_eigcg_w.cc
-@am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_disco_eigcg_w.obj -MD -MP -MF $(DEPDIR)/inline_disco_eigcg_w.Tpo -c -o inline_disco_eigcg_w.obj `if test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_disco_eigcg_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_disco_eigcg_w.cc'; fi`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/inline_disco_eigcg_w.Tpo $(DEPDIR)/inline_disco_eigcg_w.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='meas/inline/hadron/inline_disco_eigcg_w.cc' object='inline_disco_eigcg_w.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_disco_eigcg_w.obj `if test -f 'meas/inline/hadron/inline_disco_eigcg_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_disco_eigcg_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_disco_eigcg_w.cc'; fi`
 
 inline_disco_eo_eigcg_w.o: meas/inline/hadron/inline_disco_eo_eigcg_w.cc
 @am__fastdepCXX_TRUE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_disco_eo_eigcg_w.o -MD -MP -MF $(DEPDIR)/inline_disco_eo_eigcg_w.Tpo -c -o inline_disco_eo_eigcg_w.o `test -f 'meas/inline/hadron/inline_disco_eo_eigcg_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_disco_eo_eigcg_w.cc

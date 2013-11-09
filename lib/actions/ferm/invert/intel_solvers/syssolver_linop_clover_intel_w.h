@@ -52,23 +52,12 @@ namespace Chroma
   /*! \ingroup invert
  *** WARNING THIS SOLVER WORKS FOR Clover FERMIONS ONLY ***
    */
- 
-  class LinOpSysSolverIntelClover : public LinOpSystemSolver<LatticeFermion>
+  template<typename T, typename U>  
+  class LinOpSysSolverIntelClover : public LinOpSystemSolver<T>
   {
   public:
-    typedef LatticeFermion T;
-    typedef LatticeColorMatrix U;
-    typedef multi1d<LatticeColorMatrix> Q;
- 
-    typedef LatticeFermionF TF;
-    typedef LatticeColorMatrixF UF;
-    typedef multi1d<LatticeColorMatrixF> QF;
-
-    typedef LatticeFermionF TD;
-    typedef LatticeColorMatrixF UD;
-    typedef multi1d<LatticeColorMatrixF> QD;
-
-    typedef WordType<T>::Type_t REALT;
+    typedef multi1d<U> Q;
+    typedef typename WordType<T>::Type_t REALT;
     //! Constructor
     /*!
      * \param M_        Linear operator ( Read )
@@ -84,7 +73,7 @@ namespace Chroma
       QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << endl;
 
 
-      multi1d<LatticeColorMatrix> u(Nd);
+      Q u(Nd);
       for(int mu=0; mu < Nd; mu++) {
 	u[mu] = state_->getLinks()[mu];
       }
@@ -183,7 +172,7 @@ namespace Chroma
 
     
       QDPIO::cout << "Packing Gauge Field" << endl;
-      qdp_pack_gauge<float,Veclen,Soalen,multi1d< LatticeColorMatrixF > >(u,
+      qdp_pack_gauge<float,Veclen,Soalen, Q >(u,
 	packed_gauge_cb0,
 	packed_gauge_cb1, 
 	(*M).getGeometry());
@@ -336,8 +325,8 @@ namespace Chroma
       
       //      QDPIO::cout << "Allocating Spinor fields" << endl;
       // Pack Spinors psi and chi
-      qdp_pack_spinor<float,Veclen,Soalen, LatticeFermionF3>(psi, psi_s[0], psi_s[1], (*M).getGeometry());
-      qdp_pack_spinor< float, Veclen, Soalen, LatticeFermionF3 >(mdag_chi, chi_s[0], chi_s[1], (*M).getGeometry());
+      qdp_pack_spinor<float,Veclen,Soalen, T>(psi, psi_s[0], psi_s[1], (*M).getGeometry());
+      qdp_pack_spinor< float, Veclen, Soalen,T >(mdag_chi, chi_s[0], chi_s[1], (*M).getGeometry());
       
       double rsd_final;
       unsigned long site_flops=0;
@@ -348,12 +337,12 @@ namespace Chroma
       double end = omp_get_wtime();
 
       QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
-      qdp_unpack_spinor<float, Veclen, Soalen, LatticeFermionF3 >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
+      qdp_unpack_spinor<float, Veclen, Soalen, T >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
-      LatticeFermion r = chi;
-      LatticeFermion tmp;
+      T r = chi;
+      T tmp;
       (*A)(tmp, psi, PLUS);
       r[ A->subset() ] -= tmp;
 
@@ -363,10 +352,12 @@ namespace Chroma
 
       QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << endl;
 
+#if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << endl;
 	QDP_abort(1);
       }
+#endif
 
       int num_cb_sites = Layout::vol()/2;
       unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;
@@ -386,8 +377,8 @@ namespace Chroma
 
       // Pack Spinors psi and chi
       QDPIO::cout << "PAcking" << endl << flush ;
-      qdp_pack_spinor<float,Veclen,Soalen,LatticeFermionF3>(psi, psi_s[0], psi_s[1], (*M).getGeometry());
-      qdp_pack_spinor<float,Veclen,Soalen,LatticeFermionF3>(chi, chi_s[0], chi_s[1], (*M).getGeometry());
+      qdp_pack_spinor<float,Veclen,Soalen,T>(psi, psi_s[0], psi_s[1], (*M).getGeometry());
+      qdp_pack_spinor<float,Veclen,Soalen,T>(chi, chi_s[0], chi_s[1], (*M).getGeometry());
       QDPIO::cout << "Done" << endl << flush;
       double rsd_final;
       unsigned long site_flops=0;
@@ -399,12 +390,12 @@ namespace Chroma
       double end = omp_get_wtime();
 
       QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
-      qdp_unpack_spinor<float, Veclen, Soalen, LatticeFermionF3 >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
+      qdp_unpack_spinor<float, Veclen, Soalen, T >(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
-      LatticeFermion r = chi;
-      LatticeFermion tmp;
+      T r = chi;
+      T tmp;
       (*A)(tmp, psi, PLUS);
       r[ A->subset() ] -= tmp;
 
@@ -414,10 +405,12 @@ namespace Chroma
 
       QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: || r || / || b || = " << rel_resid << endl;
 
+#if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
 	QDPIO::cout << "SOLVE FAILED" << endl;
 	QDP_abort(1);
       }
+#endif
 
       int num_cb_sites = Layout::vol()/2;
       unsigned long total_flops = (site_flops + (1320+504+1320+504+48)*mv_apps)*num_cb_sites;

@@ -31,13 +31,13 @@ namespace Chroma
 
 
 
-    LinOpSystemSolver<LatticeFermion>* createFerm(XMLReader& xml_in,	
+    LinOpSystemSolver<LatticeFermionF>* createFerm(XMLReader& xml_in,	
 						  const std::string& path,
-						  Handle< FermState< LatticeFermion, multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > state, 
+						  Handle< FermState< LatticeFermionF, multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> > > state, 
 						  
-						  Handle< LinearOperator<LatticeFermion> > A)
+						  Handle< LinearOperator<LatticeFermionF> > A)
     {
-      return new LinOpSysSolverIntelClover(A, state,SysSolverIntelCloverParams(xml_in, path));
+      return new LinOpSysSolverIntelClover<LatticeFermionF, LatticeColorMatrixF>(A, state,SysSolverIntelCloverParams(xml_in, path));
     }
 
     //! Register all the factories
@@ -46,7 +46,7 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= Chroma::TheLinOpFermSystemSolverFactory::Instance().registerObject(name, createFerm);
+	success &= Chroma::TheLinOpFFermSystemSolverFactory::Instance().registerObject(name, createFerm);
 	registered = true;
       }
       return success;

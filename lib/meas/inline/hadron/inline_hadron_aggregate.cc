@@ -126,7 +126,7 @@ namespace Chroma
 	success &= InlineDiscoEnv::registerAll();
 	success &= InlineDiscoEOPrecEnv::registerAll();
 	success &= InlineDiscoEoEigCGEnv::registerAll();
-	success &= InlineDiscoEigCGEnv::registerAll();
+//	success &= InlineDiscoEigCGEnv::registerAll();
 	success &= InlineStagToWilsEnv::registerAll();
 	success &= InlineSinkSmearEnv::registerAll();
 	success &= InlineDiquarkEnv::registerAll();
