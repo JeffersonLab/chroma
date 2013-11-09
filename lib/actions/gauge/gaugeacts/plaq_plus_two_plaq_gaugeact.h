@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- *  \brief Plaquette plus adjoint (plaquette squared) gauge action
+ *  \brief Plaquette plus two-plaquette (plaquette squared) gauge action
  */
 
 #ifndef __plaq_plus_two_plaq_gaugeact_h__

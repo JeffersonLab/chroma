@@ -100,7 +100,7 @@ namespace Chroma
       }
       else { 
 	QDPIO::cout << "NO source XML in Parameter file. Will look in Prop Info" << endl;
-	prop_xml == "";
+	prop_xml = "";
       }
 
       
@@ -111,7 +111,7 @@ namespace Chroma
 	read(paramtop, "./xml_file", xml_file);
       }
       else { 
-	xml_file="";
+	xml_file = "";
       }
     }
     catch(const std::string& e) 

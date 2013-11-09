@@ -54,7 +54,7 @@ namespace Chroma
    */
 
   template<typename T, typename P, typename Q>
-  class TimePrecLogDetLinearOperator : public TimePrecLogDetLinearOperator<T,P,Q>
+  class TimePrecLogDetLinearOperator : public TimePrecLinearOperator<T,P,Q>
   {
   public:
     //! Virtual destructor to help with cleanup;

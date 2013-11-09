@@ -376,6 +376,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc \
+	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc \
 	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc \
@@ -1082,6 +1083,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	plaq_plus_spatial_two_plaq_gaugeact.$(OBJEXT) \
 	plaq_plus_adjoint_gaugeact.$(OBJEXT) \
 	plaq_plus_two_plaq_gaugeact.$(OBJEXT) \
+	sf_plaq_plus_adjoint_gaugeact.$(OBJEXT) \
 	aniso_spectrum_gaugeact.$(OBJEXT) \
 	aniso_sym_gaugeact_params.$(OBJEXT) \
 	aniso_sym_spatial_gaugeact.$(OBJEXT) \
@@ -1687,6 +1689,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h \
+	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.h \
 	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h \
@@ -2699,6 +2702,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.h \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h \
+	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.h \
 	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.h \
 	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.h \
@@ -3516,6 +3520,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.cc \
 	actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc \
+	actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc \
 	actions/gauge/gaugeacts/aniso_sym_gaugeact_params.cc \
 	actions/gauge/gaugeacts/aniso_sym_spatial_gaugeact.cc \
@@ -4748,6 +4753,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqpiontest_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/seqsource_aggregate_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_gauge_init.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_pt_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_sh_source_const.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sf_wall_source_const.Po@am__quote@
@@ -6483,6 +6489,20 @@ plaq_plus_two_plaq_gaugeact.obj: actions/gauge/gaugeacts/plaq_plus_two_plaq_gaug
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc' object='plaq_plus_two_plaq_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o plaq_plus_two_plaq_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.cc'; fi`
+
+sf_plaq_plus_adjoint_gaugeact.o: actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_plaq_plus_adjoint_gaugeact.o -MD -MP -MF $(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Tpo -c -o sf_plaq_plus_adjoint_gaugeact.o `test -f 'actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Tpo $(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc' object='sf_plaq_plus_adjoint_gaugeact.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_plaq_plus_adjoint_gaugeact.o `test -f 'actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc
+
+sf_plaq_plus_adjoint_gaugeact.obj: actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT sf_plaq_plus_adjoint_gaugeact.obj -MD -MP -MF $(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Tpo -c -o sf_plaq_plus_adjoint_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Tpo $(DEPDIR)/sf_plaq_plus_adjoint_gaugeact.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc' object='sf_plaq_plus_adjoint_gaugeact.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o sf_plaq_plus_adjoint_gaugeact.obj `if test -f 'actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc'; then $(CYGPATH_W) 'actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc'; else $(CYGPATH_W) '$(srcdir)/actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.cc'; fi`
 
 aniso_spectrum_gaugeact.o: actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT aniso_spectrum_gaugeact.o -MD -MP -MF $(DEPDIR)/aniso_spectrum_gaugeact.Tpo -c -o aniso_spectrum_gaugeact.o `test -f 'actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc' || echo '$(srcdir)/'`actions/gauge/gaugeacts/aniso_spectrum_gaugeact.cc

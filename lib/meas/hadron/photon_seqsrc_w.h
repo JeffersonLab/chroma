@@ -65,6 +65,7 @@ namespace Chroma
 	{
 	  QDPIO::cerr << __func__ << ": not implemented" << endl;
 	  QDP_abort(1);
+	  return 0.0;
 	}
 
     protected:
@@ -114,6 +115,7 @@ namespace Chroma
 	{
 	  QDPIO::cerr << __func__ << ": not implemented" << endl;
 	  QDP_abort(1);
+	  return 0.0;
 	}
 
     protected:

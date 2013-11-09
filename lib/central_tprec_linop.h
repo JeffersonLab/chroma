@@ -1157,6 +1157,7 @@ namespace Chroma
     {
       QDPIO::cerr << "Not Yet Implemented " << endl;
       QDP_abort(1);
+      return 0.0;
     }
 
     //! Get the force due to the det T^\dag T bit

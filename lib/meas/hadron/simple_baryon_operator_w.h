@@ -57,27 +57,27 @@ namespace Chroma
       multi1d<LatticeComplex> operator()(const LatticeFermion& quark1, 
 					 const LatticeFermion& quark2, 
 					 const LatticeFermion& quark3,
-           int* qindices,
+					 int* qindices,
 					 enum PlusMinus isign) const
-           {
-            QDPIO::cerr << "Not implemented yet\n";
-           }
+      {
+	QDPIO::cerr << "Not implemented yet\n";
+      }
       LatticeComplex operator()(const LatticeFermion& quark1, 
-					 const LatticeFermion& quark2, 
-					 const LatticeFermion& quark3,
-           int* qindices ) const
-           {
-            QDPIO::cerr << "Not implemented yet\n";
-           }
+				const LatticeFermion& quark2, 
+				const LatticeFermion& quark3,
+				int* qindices ) const
+      {
+	QDPIO::cerr << "Not implemented yet\n";
+      }
 
       //! Add this hack for the moment
       LatticeComplex operator()(const LatticeFermion& quark1, 
 				const LatticeFermion& quark2, 
 				const LatticeFermion& quark3) const
-	{
-	  QDPIO::cerr << "BarNuclCg5 operator not implemented at this moment\n";
-	  QDP_abort(1);
-	}
+      {
+	QDPIO::cerr << "BarNuclCg5 operator not implemented at this moment\n";
+	QDP_abort(1);
+      }
 
     protected:
       //! Manipulate the quark fields

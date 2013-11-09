@@ -12,6 +12,7 @@
 #include "actions/gauge/gaugeacts/plaq_plus_spatial_two_plaq_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_adjoint_gaugeact.h"
 #include "actions/gauge/gaugeacts/plaq_plus_two_plaq_gaugeact.h"
+#include "actions/gauge/gaugeacts/sf_plaq_plus_adjoint_gaugeact.h"
 #include "actions/gauge/gaugeacts/pg_gaugeact.h"
 #include "actions/gauge/gaugeacts/wilson_gaugeact.h"
 #include "actions/gauge/gaugeacts/spatial_wilson_gaugeact.h"
@@ -68,6 +69,7 @@ namespace Chroma
 	success &= PlaqPlusSpatialTwoPlaqGaugeActEnv::registerAll();
 	success &= PlaqPlusAdjointGaugeActEnv::registerAll();
 	success &= PlaqPlusTwoPlaqGaugeActEnv::registerAll();
+	success &= SFPlaqPlusAdjointGaugeActEnv::registerAll();
 	success &= AnisoSpectrumGaugeActEnv::registerAll();
 	success &= AnisoSymSpatialGaugeActEnv::registerAll();	
 	success &= AnisoSymTemporalGaugeActEnv::registerAll();

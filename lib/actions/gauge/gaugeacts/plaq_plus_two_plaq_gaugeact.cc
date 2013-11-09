@@ -1,5 +1,5 @@
 /*! \file
- *  \brief Plaquette gauge action
+ *  \brief Plaquette plus two-plaquette (plaquette squared) gauge action
  */
 
 #include "chromabase.h"

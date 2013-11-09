@@ -1154,7 +1154,7 @@ namespace Chroma
 				    const Real& RsdCG, int MaxCG,
 				    const int PrintLevel)
     {
-      InvEigCG2_T<LatticeFermionF>(A, x, b, eval, evec, Neig, Nmax, RsdCG, MaxCG, PrintLevel);
+      return InvEigCG2_T<LatticeFermionF>(A, x, b, eval, evec, Neig, Nmax, RsdCG, MaxCG, PrintLevel);
     }
   
     SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionF>& A, 
@@ -1165,7 +1165,7 @@ namespace Chroma
 				       int startV, int endV,
 				       const Real& RsdCG, int MaxCG)
     {
-      vecPrecondCG_T<LatticeFermionF>(A, x, b, eval, evec, startV, endV, RsdCG, MaxCG);
+      return vecPrecondCG_T<LatticeFermionF>(A, x, b, eval, evec, startV, endV, RsdCG, MaxCG);
     }
 
     void InitGuess(const LinearOperator<LatticeFermionF>& A, 
@@ -1218,7 +1218,7 @@ namespace Chroma
 				    const Real& RsdCG, int MaxCG,
 				    const int plvl)
     {
-      InvEigCG2_T<LatticeFermionD>(A, x, b, eval, evec, Neig, Nmax, RsdCG, MaxCG,plvl);
+      return InvEigCG2_T<LatticeFermionD>(A, x, b, eval, evec, Neig, Nmax, RsdCG, MaxCG,plvl);
     }
   
     SystemSolverResults_t vecPrecondCG(const LinearOperator<LatticeFermionD>& A, 
@@ -1229,7 +1229,7 @@ namespace Chroma
 				       int startV, int endV,
 				       const Real& RsdCG, int MaxCG)
     {
-      vecPrecondCG_T<LatticeFermionD>(A, x, b, eval, evec, startV, endV, RsdCG, MaxCG);
+      return vecPrecondCG_T<LatticeFermionD>(A, x, b, eval, evec, startV, endV, RsdCG, MaxCG);
     }
 
     void InitGuess(const LinearOperator<LatticeFermionD>& A, 
