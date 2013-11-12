@@ -1,6 +1,4 @@
 // -*- C++ -*-
-// $Id: objfactory.h,v 3.0 2006-04-03 04:58:44 edwards Exp $
-
 /*! @file
  * @brief Factory class for objects from XML input
  */
@@ -136,7 +134,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)();
@@ -162,7 +160,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)(p1);
@@ -182,7 +180,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	  return (i->second)(p1, p2);
@@ -202,7 +200,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	  return (i->second)(p1, p2, p3);
@@ -223,7 +221,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4);
@@ -244,7 +242,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5);
@@ -265,7 +263,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5, p6);
@@ -286,7 +284,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5, p6, p7);
@@ -307,7 +305,7 @@ namespace Chroma
 	  QDPIO::cerr << j->first << endl << flush;
 	}
 	
-	return this->OnUnknownType(id);
+	return OnUnknownType(id);
       }
       else {
 	return (i->second)(p1, p2, p3, p4, p5, p6, p7, p8);
