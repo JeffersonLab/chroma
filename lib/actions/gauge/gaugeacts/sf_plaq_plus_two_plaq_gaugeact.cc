@@ -51,6 +51,7 @@ namespace Chroma
       {	
 	read(paramtop, "beta_F", beta_F);
 	read(paramtop, "beta_A", beta_A);
+	read(paramtop, "decay_dir", decay_dir);
       }
       catch( const std::string& e ) { 
 	QDPIO::cerr << "Error reading XML: " <<  e << endl;
