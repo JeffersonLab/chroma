@@ -859,6 +859,8 @@ namespace Chroma
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
+      assert(!"ni");
+#if 0
 #if defined(BUILD_JIT_CLOVER_TERM)
       //QDPIO::cout << "LLVM getFsAndBs dobs = " << dobs << "\n";
       static CUfunction function;
@@ -870,6 +872,7 @@ namespace Chroma
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
 #else
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+#endif
 #endif
 
       swatch.stop();

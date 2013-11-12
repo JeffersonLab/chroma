@@ -178,6 +178,7 @@ namespace Chroma
 	  if(vec.N==Nmax){
 	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
 #ifdef DEBUG
+#if 0
 	    {
 	      stringstream tag ;
 	      tag<<"H"<<k ;
@@ -191,11 +192,13 @@ namespace Chroma
 	      OctavePrintOut(tmp.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    multi2d<DComplex> Hevecs(H.mat) ;
 	    multi1d<Double> Heval ;
 	    char V = 'V' ; char U = 'U' ;
 	    QDPLapack::zheev(V,U,Nmax,Hevecs,Heval);
 #ifdef DEBUG
+#if 0
 	    {
 	      stringstream tag ;
 	      tag<<"Hevecs"<<k ;
@@ -203,6 +206,7 @@ namespace Chroma
 	    }
 	    for(int i(0);i<Nmax;i++)
 	      QDPIO::cout<<" eignvalue: "<<Heval[i]<<endl ;
+#endif
 #endif
 	    multi2d<DComplex> Hevecs_old(H.mat) ;
 	    multi1d<Double> Heval_old ;
@@ -229,30 +233,36 @@ namespace Chroma
 
 	    QDPLapack::zheev(V,U,2*Neig,Htmp,Heval);
 #ifdef DEBUG
+#if 0
 	    {
 	      stringstream tag ;
 	      tag<<"Htmp"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    for(int i(Neig); i< 2*Neig;i++ ) // mhpws prepei na einai 0..2*Neig
 	      for(int j(2*Neig); j<Nmax; j++) 
 		Htmp(i,j) =0.0;
 
 #ifdef DEBUG
+#if 0
 	    {
 	      stringstream tag ;
 	      tag<<"HtmpBeforeZUM"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    QDPLapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
 #ifdef DEBUG
+#if 0
 	    {
 	      stringstream tag ;
 	      tag<<"HtmpAfeterZUM"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
+#endif
 #endif
 	    
 #ifndef USE_BLAS_FOR_LATTICEFERMIONS
