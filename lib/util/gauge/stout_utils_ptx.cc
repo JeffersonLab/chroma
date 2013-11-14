@@ -1,18 +1,20 @@
 #include "qdp.h"
 
-#ifdef QDP_IS_QDPJIT
 using namespace QDP;
 
+#warning "BUILDING JIT_CLOVER_TERM"
 
-CUfunction function_get_fs_bs_exec(CUfunction function, 
-				   const LatticeColorMatrix& Q,
-				   const LatticeColorMatrix& QQ,
-				   multi1d<LatticeComplex>& f,
-				   multi1d<LatticeComplex>& b1,
-				   multi1d<LatticeComplex>& b2,
-				   bool dobs)
+void function_get_fs_bs_exec(void *function, 
+			     const LatticeColorMatrix& Q,
+			     const LatticeColorMatrix& QQ,
+			     multi1d<LatticeComplex>& f,
+			     multi1d<LatticeComplex>& b1,
+			     multi1d<LatticeComplex>& b2,
+			     bool dobs)
 {
   AddressLeaf addr_leaf;
+
+  addr_leaf.setLit( dobs );
 
   int junk_0 = forEach(Q, addr_leaf, NullCombine());
   int junk_1 = forEach(QQ, addr_leaf, NullCombine());
@@ -26,29 +28,9 @@ CUfunction function_get_fs_bs_exec(CUfunction function,
   int junk_9 = forEach(b2[1], addr_leaf, NullCombine());
   int junk_10= forEach(b2[2], addr_leaf, NullCombine());
 
+  //QDPIO::cerr << "calling getFsBs\n";
 
-  // lo <= idx < hi
-  int lo = 0;
-  int hi = Layout::sitesOnNode();
-  unsigned char dobs_u8 = dobs ? 1 : 0;
-
-  std::vector<void*> addr;
-
-  addr.push_back( &lo );
-  //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
-  addr.push_back( &hi );
-  //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-  addr.push_back( &dobs_u8 );
-
-  int addr_dest=addr.size();
-  for(int i=0; i < addr_leaf.addr.size(); ++i) {
-    addr.push_back( &addr_leaf.addr[i] );
-    //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
-  }
-
-  jit_launch(function,hi-lo,addr);
+  jit_dispatch(function,Layout::sitesOnNode(),true,0,addr_leaf);
 }
 
 
@@ -59,18 +41,16 @@ WordREG<REAL> jit_constant( double f )
 }
 
 
-CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
-				    const LatticeColorMatrix& QQ,
-				    multi1d<LatticeComplex>& f,
-				    multi1d<LatticeComplex>& b1,
-				    multi1d<LatticeComplex>& b2)
+void *function_get_fs_bs_build(const LatticeColorMatrix& Q,
+			       const LatticeColorMatrix& QQ,
+			       multi1d<LatticeComplex>& f,
+			       multi1d<LatticeComplex>& b1,
+			       multi1d<LatticeComplex>& b2)
 {
   //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
-  llvm_start_new_function();
+  JitMainLoop loop;
 
-  ParamRef  p_lo     = llvm_add_param<int>();
-  ParamRef  p_hi     = llvm_add_param<int>();
   ParamRef  p_dobs   = llvm_add_param<bool>();
 
   ParamLeaf param_leaf;
@@ -90,29 +70,23 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   LCJIT  b21_jit(forEach(b2[1], param_leaf, TreeCombine()));
   LCJIT  b22_jit(forEach(b2[2], param_leaf, TreeCombine()));
 
-  llvm::Value*  r_lo     = llvm_derefParam( p_lo );
-  llvm::Value*  r_hi     = llvm_derefParam( p_hi );
   llvm::Value*  r_dobs   = llvm_derefParam( p_dobs );
-  //llvm::Value*  r_nobs   = llvm_not( r_dobs );
+
+  IndexDomainVector idx = loop.getIdx();
       
-  llvm::Value*  r_idx = llvm_thread_idx();
-      
-  llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
+  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,idx);
 
-
-  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-
-  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,idx);
   
-  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,idx);
+  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,idx);
 
   llvm::BasicBlock * block_exit = llvm_new_basic_block();
   { 
@@ -277,8 +251,8 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
     WordREG<REAL> xi0,xi1;
 
     llvm::Value *w_smallP = llvm_lt( (fabs( w )).get_val() , llvm_create_value( 0.05 ) );
+    llvm::BasicBlock * block_xi0_exit = llvm_new_basic_block();
     { // xi0
-      llvm::BasicBlock * block_xi0_exit = llvm_new_basic_block();
       llvm::BasicBlock * block_xi0_small = llvm_new_basic_block();
       llvm::BasicBlock * block_xi0_not_small = llvm_new_basic_block();
       llvm::Value* xi0_phi0;
@@ -313,12 +287,12 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
     llvm::BasicBlock * block_dobs1_exit = llvm_new_basic_block();
     llvm_cond_branch( r_dobs , block_dobs1 , block_dobs1_exit );
     llvm_set_insert_point( block_dobs1 );
+    //llvm::BasicBlock * block_xi1_exit = llvm_new_basic_block();
+    llvm::BasicBlock * block_xi1_small = llvm_new_basic_block();
+    llvm::BasicBlock * block_xi1_not_small = llvm_new_basic_block();
+    llvm::Value* xi1_phi0;
+    llvm::Value* xi1_phi1;
     { // xi1
-      llvm::BasicBlock * block_xi1_exit = llvm_new_basic_block();
-      llvm::BasicBlock * block_xi1_small = llvm_new_basic_block();
-      llvm::BasicBlock * block_xi1_not_small = llvm_new_basic_block();
-      llvm::Value* xi1_phi0;
-      llvm::Value* xi1_phi1;
 
       llvm_cond_branch( w_smallP , block_xi1_small , block_xi1_not_small );
 
@@ -330,24 +304,26 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 						jit_constant((REAL)1/(REAL)28)*w_sq*( jit_constant((REAL)1) - 
 										      jit_constant((REAL)1/(REAL)54)*w_sq ) ) );
       xi1_phi0 = xi1_tmp0.get_val();
-
-      llvm_branch( block_xi1_exit );
+      //llvm_branch( block_xi1_exit );
+      llvm_branch( block_dobs1_exit );
 
       llvm_set_insert_point( block_xi1_not_small ); 
       WordREG<REAL> xi1_tmp1 = cos(w)/w_sq - sin(w)/(w_sq*w);
       xi1_phi1 = xi1_tmp1.get_val();
-      llvm_branch( block_xi1_exit );
-
-      llvm_set_insert_point( block_xi1_exit ); 
-
-      llvm::PHINode* xi1_phi = llvm_phi( llvm_type<REAL>::value , 2 );
-      xi1_phi->addIncoming( xi1_phi0 , block_xi1_small );
-      xi1_phi->addIncoming( xi1_phi1 , block_xi1_not_small );
-      xi1.setup( xi1_phi );
+      //llvm_branch( block_xi1_exit );
       llvm_branch( block_dobs1_exit );
+
+      //llvm_set_insert_point( block_xi1_exit ); 
+
+      //llvm_branch( block_dobs1_exit );
     } // xi1
     llvm_set_insert_point( block_dobs1_exit );
 
+    llvm::PHINode* xi1_phi = llvm_phi( llvm_type<REAL>::value , 3 );
+    xi1_phi->addIncoming( xi1_phi0 , block_xi1_small );
+    xi1_phi->addIncoming( xi1_phi1 , block_xi1_not_small );
+    xi1_phi->addIncoming( llvm_cast( llvm_type<REAL>::value , llvm_create_value(0.0) ) , block_xi0_exit );
+    xi1.setup( xi1_phi );
 
     WordREG<REAL> cosu = cos(u);
     WordREG<REAL> sinu = sin(u);
@@ -618,12 +594,16 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
 	    
     //}
 
-} // End of if( corner_caseP ) else {}
+  } // End of if( corner_caseP ) else {}
+
   llvm_branch( block_exit );
   llvm_set_insert_point( block_exit );
 
-  return jit_function_epilogue_get_cuf("jit_get_fs_bs.ptx");
+
+  loop.done();
+
+  return jit_function_epilogue_get("jit_get_fs_bs.ptx");
 }
 
 
-#endif
+

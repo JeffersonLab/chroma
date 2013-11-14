@@ -9,18 +9,18 @@
 #include "util/gauge/stout_utils.h"
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-CUfunction function_get_fs_bs_exec(CUfunction function,
-                                   const LatticeColorMatrix& Q,
-                                   const LatticeColorMatrix& QQ,
-                                   multi1d<LatticeComplex>& f,
-                                   multi1d<LatticeComplex>& b1,
-                                   multi1d<LatticeComplex>& b2,
-                                   bool dobs);
-CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
-                                    const LatticeColorMatrix& QQ,
-                                    multi1d<LatticeComplex>& f,
-                                    multi1d<LatticeComplex>& b1,
-                                    multi1d<LatticeComplex>& b2);
+void function_get_fs_bs_exec(void *function,
+			     const LatticeColorMatrix& Q,
+			     const LatticeColorMatrix& QQ,
+			     multi1d<LatticeComplex>& f,
+			     multi1d<LatticeComplex>& b1,
+			     multi1d<LatticeComplex>& b2,
+			     bool dobs);
+void *function_get_fs_bs_build(const LatticeColorMatrix& Q,
+			       const LatticeColorMatrix& QQ,
+			       multi1d<LatticeComplex>& f,
+			       multi1d<LatticeComplex>& b1,
+			       multi1d<LatticeComplex>& b2);
 //#include "util/gauge/stout_utils_ptx.h"
 #endif
 
@@ -859,11 +859,9 @@ namespace Chroma
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
-      assert(!"ni");
-#if 0
 #if defined(BUILD_JIT_CLOVER_TERM)
-      //QDPIO::cout << "LLVM getFsAndBs dobs = " << dobs << "\n";
-      static CUfunction function;
+      QDPIO::cout << "JIT getFsAndBs dobs = " << dobs << "\n";
+      static void *function;
       
       if (function == NULL)
 	function = function_get_fs_bs_build( Q,QQ,f,b1,b2 );
@@ -872,7 +870,6 @@ namespace Chroma
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
 #else
       dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
-#endif
 #endif
 
       swatch.stop();

@@ -599,16 +599,16 @@ namespace Chroma
    */
 
   template<typename RealT,typename U,typename X,typename Y>
-  CUfunction function_make_clov_exec(CUfunction function, 
-				     const RealT& diag_mass, 
-				     const U& f0,
-				     const U& f1,
-				     const U& f2,
-				     const U& f3,
-				     const U& f4,
-				     const U& f5,
-				     X& tri_dia,
-				     Y& tri_off)
+  void function_make_clov_exec(void *function, 
+			       const RealT& diag_mass, 
+			       const U& f0,
+			       const U& f1,
+			       const U& f2,
+			       const U& f3,
+			       const U& f4,
+			       const U& f5,
+			       X& tri_dia,
+			       Y& tri_off)
   {
     AddressLeaf addr_leaf;
 
@@ -622,51 +622,30 @@ namespace Chroma
     int junk_7 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_8 = forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = 0;
-    int hi = Layout::sitesOnNode();
-
-    std::vector<void*> addr;
-
-    addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
-    addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
-    }
-
-    jit_launch(function,Layout::sitesOnNode(),addr);
+    jit_dispatch(function,Layout::sitesOnNode(),true,0,addr_leaf);
   }
 
 
 
   template<typename RealT,typename U,typename X,typename Y>
-  CUfunction function_make_clov_build(const RealT& diag_mass, 
-				      const U& f0,
-				      const U& f1,
-				      const U& f2,
-				      const U& f3,
-				      const U& f4,
-				      const U& f5,
-				      const X& tri_dia,
-				      const Y& tri_off)
+  void *function_make_clov_build(const RealT& diag_mass, 
+				 const U& f0,
+				 const U& f1,
+				 const U& f2,
+				 const U& f3,
+				 const U& f4,
+				 const U& f5,
+				 const X& tri_dia,
+				 const Y& tri_off)
   {
-    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+    std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+
+    JitMainLoop loop;
+
+    ParamLeaf param_leaf;
 
     typedef typename WordType<RealT>::Type_t REALT;
 
-    llvm_start_new_function();
-
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
-
-    ParamLeaf param_leaf;
-  
     typedef typename LeafFunctor<RealT, ParamLeaf>::Type_t  RealTJIT;
     RealTJIT diag_mass_jit(forEach(diag_mass, param_leaf, TreeCombine()));
 
@@ -684,22 +663,17 @@ namespace Chroma
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
+    IndexDomainVector idx = loop.getIdx();
 
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx = llvm_thread_idx();
-    
-    llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
+    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , idx );
+    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , idx );
+    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , idx );
+    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , idx );
+    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , idx );
+    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , idx );
 
-    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , r_idx );
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , r_idx );
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , idx );
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
     diag_mass_reg.setup( diag_mass_jit.elem() );
@@ -784,9 +758,11 @@ namespace Chroma
       }
     }
 
+    loop.done();
+
     //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
 
-    return jit_function_epilogue_get_cuf("jit_make_clov.ptx");
+    return jit_function_epilogue_get("jit_make_clov.ptx");
   }
 
 
@@ -817,7 +793,7 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
     //std::cout << "PTX Clover make "  << (void*)this << "\n";
-    static CUfunction function;
+    static void *function;
 
     if (function == NULL)
       function = function_make_clov_build(diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
@@ -883,11 +859,11 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  CUfunction function_ldagdlinv_exec( CUfunction function,
-				      T& tr_log_diag,
-				      X& tri_dia,
-				      Y& tri_off,
-				      const Subset& s)
+  void  function_ldagdlinv_exec( void *function,
+				 T& tr_log_diag,
+				 X& tri_dia,
+				 Y& tri_off,
+				 const Subset& s)
   {
     if (!s.hasOrderedRep())
       QDP_error_exit("ldagdlinv on subset with unordered representation not implemented");
@@ -898,25 +874,7 @@ namespace Chroma
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = s.start();
-    int hi = s.end();
-
-    std::vector<void*> addr;
-
-    addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
-    addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
-    }
-
-    jit_launch(function,s.numSiteTable(),addr);
+    jit_dispatch(function,s.numSiteTable(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
 
 
@@ -924,19 +882,16 @@ namespace Chroma
 
 
   template<typename U,typename T,typename X,typename Y>
-  CUfunction function_ldagdlinv_build( const T& tr_log_diag,
-				       const X& tri_dia,
-				       const Y& tri_off,
-				       const Subset& s)
+  void *function_ldagdlinv_build( const T& tr_log_diag,
+				  const X& tri_dia,
+				  const Y& tri_off,
+				  const Subset& s)
   {
     typedef typename WordType<U>::Type_t REALT;
 
     //std::cout << __PRETTY_FUNCTION__ << " entering\n";
 
-    llvm_start_new_function();
-
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
+    JitMainLoop loop;
 
     ParamLeaf param_leaf;
 
@@ -949,17 +904,11 @@ namespace Chroma
     typedef typename LeafFunctor<Y, ParamLeaf>::Type_t  YJIT;
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx_thread    = llvm_thread_idx();
+    IndexDomainVector idx = loop.getIdx();
 
-    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
-
-    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
-
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,idx);
+    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,idx);
+    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1113,8 +1062,9 @@ namespace Chroma
     }
 
     //    std::cout << __PRETTY_FUNCTION__ << " leaving\n";
+    loop.done();
 
-    return jit_function_epilogue_get_cuf("jit_ldagdlinv.ptx");
+    return jit_function_epilogue_get("jit_ldagdlinv.ptx");
   }
 
 
@@ -1138,7 +1088,7 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
     //std::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
-    static CUfunction function;
+    static void *function;
 
     if (function == NULL)
       function = function_ldagdlinv_build<U>(tr_log_diag, tri_dia, tri_off, rb[cb] );
@@ -1202,69 +1152,46 @@ namespace Chroma
 
 
   template<typename U,typename X,typename Y>
-  CUfunction function_triacntr_exec( CUfunction function,
-				     U& B,
-				     const X& tri_dia,
-				     const Y& tri_off,
-				     int mat,
-				     const Subset& s)
+  void function_triacntr_exec( void *function,
+			       U& B,
+			       const X& tri_dia,
+			       const Y& tri_off,
+			       int mat,
+			       const Subset& s)
   {
     if (!s.hasOrderedRep())
       QDP_error_exit("triacntr on subset with unordered representation not implemented");
 
     AddressLeaf addr_leaf;
 
+    addr_leaf.setLit( mat );
+
     int junk_0 = forEach(B, addr_leaf, NullCombine());
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = s.start();
-    int hi = s.end();
-
-    std::vector<void*> addr;
-
-    addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
-    addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    addr.push_back( &mat );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
-    }
-
-    jit_launch(function,s.numSiteTable(),addr);
+    jit_dispatch(function,s.numSiteTable(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
 
 
 
 
   template<typename U,typename X,typename Y>
-  CUfunction function_triacntr_build( const U& B,
-				      const X& tri_dia,
-				      const Y& tri_off,
-				      int mat,
-				      const Subset& s)
+  void *function_triacntr_build( const U& B,
+				 const X& tri_dia,
+				 const Y& tri_off,
+				 int mat,
+				 const Subset& s)
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
     typedef typename WordType<U>::Type_t REALT;
 
-    llvm_start_new_function();
-
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
+    JitMainLoop loop;
 
     ParamRef p_mat    = llvm_add_param<int>();
 
     ParamLeaf param_leaf;
-
 
     typedef typename LeafFunctor<U, ParamLeaf>::Type_t  UJIT;
     UJIT B_jit(forEach(B, param_leaf, TreeCombine()));
@@ -1276,24 +1203,18 @@ namespace Chroma
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
 
     llvm::Value * r_mat    = llvm_derefParam( p_mat );
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx_thread    = llvm_thread_idx();
 
-    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
+    IndexDomainVector idx = loop.getIdx();
 
-    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
-
-    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,idx);
+    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,idx);
+    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
 
     tri_dia_r.setup( tri_dia_j );
     tri_off_r.setup( tri_off_j );
-
 
     llvm::BasicBlock * case_0 = llvm_new_basic_block();
     llvm::BasicBlock * case_3 = llvm_new_basic_block();
@@ -1584,7 +1505,9 @@ namespace Chroma
 
     llvm_set_insert_point( case_default );
 
-    return jit_function_epilogue_get_cuf("jit_triacntr.ptx");
+    loop.done();
+
+    return jit_function_epilogue_get("jit_triacntr.ptx");
   }
 
 
@@ -1605,7 +1528,7 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover triacntr " << (void*)this << "\n";
     //std::cout << "PTX Clover triacntr " << (void*)this << "\n";
-    static CUfunction function;
+    static void *function;
 
     if (function == NULL)
       function = function_triacntr_build<U>( B, tri_dia, tri_off, mat, rb[cb] );
@@ -1644,7 +1567,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void function_apply_clov_exec(CUfunction function,
+  void function_apply_clov_exec(void *function,
 				T& chi,
 				const T& psi,
 				const X& tri_dia,
@@ -1663,51 +1586,23 @@ namespace Chroma
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
 
-    // lo <= idx < hi
-    int lo = s.start();
-    int hi = s.end();
-
-    std::vector<void*> addr;
-
-    addr.push_back( &lo );
-    //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
-
-    addr.push_back( &hi );
-    //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
-
-    int addr_dest=addr.size();
-    for(int i=0; i < addr_leaf.addr.size(); ++i) {
-      addr.push_back( &addr_leaf.addr[i] );
-      //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
-    }
-
-    jit_launch(function,s.numSiteTable(),addr);
+    jit_dispatch(function,s.numSiteTable(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
 
 
 
 
   template<typename T,typename X,typename Y>
-  CUfunction function_apply_clov_build(const T& chi,
-				       const T& psi,
-				       const X& tri_dia,
-				       const Y& tri_off,
-				       const Subset& s)
+  void *function_apply_clov_build(const T& chi,
+				  const T& psi,
+				  const X& tri_dia,
+				  const Y& tri_off,
+				  const Subset& s)
   {
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
     //typedef typename WordType<RealT>::Type_t REALT;
 
-    //CUfunction func;
-
-    llvm_start_new_function();
-
-    //std::vector<ParamRef> params = jit_function_preamble_param();
-
-    ParamRef  p_lo     = llvm_add_param<int>();
-    ParamRef  p_hi     = llvm_add_param<int>();
-
-
-
+    JitMainLoop loop;
 
     ParamLeaf param_leaf;
 
@@ -1725,20 +1620,12 @@ namespace Chroma
     YJIT tri_off_jit(forEach(tri_off, param_leaf, TreeCombine()));
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
 
-    //llvm::Value * r_idx = jit_function_preamble_get_idx( params );
+    IndexDomainVector idx = loop.getIdx();
 
-    llvm::Value *  r_lo     = llvm_derefParam( p_lo );
-    llvm::Value *  r_hi     = llvm_derefParam( p_hi );
-    llvm::Value *  r_idx_thread    = llvm_thread_idx();
-
-    llvm_cond_exit(  llvm_gt( r_idx_thread , llvm_sub( r_hi , r_lo ) ) );
-
-    llvm::Value *  r_idx = llvm_add( r_lo , r_idx_thread );
-
-    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,r_idx);
-    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
-    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
-    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,r_idx) );
+    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,idx);
+    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,idx) );
+    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,idx) );
+    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,idx) );
 
     // RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     // const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
@@ -1777,7 +1664,9 @@ namespace Chroma
 
     chi_j = chi_r;
 
-    return jit_function_epilogue_get_cuf("jit_apply_clov.ptx");
+    loop.done();
+
+    return jit_function_epilogue_get("jit_apply_clov.ptx");
   }
 
 
@@ -1816,7 +1705,7 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover apply"  << (void*)this << "\n";
     //std::cout << "PTX Clover apply"  << (void*)this << "\n";
-    static CUfunction function;
+    static void *function;
 
     if (function == NULL)
       function = function_apply_clov_build(chi, psi, tri_dia, tri_off, rb[cb] );
