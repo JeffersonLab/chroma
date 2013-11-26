@@ -13,26 +13,20 @@ int main(int argc, char **argv)
   // Put the machine into a known state
   Chroma::initialize(&argc, &argv);
 
-
-  // Lattice Size
+  // Setup the layout
+  const int foo[] = {4,6,8,10};
   multi1d<int> nrow(Nd);
+  nrow = foo;  // Use only Nd elements
 
-  /*
-  try {
-  XMLReader xml_in(Chroma::getXMLInputFileName());
-    read(xml_in, "/param/nrow", nrow);
-    xml_in.close(); 
-  }
-  catch( const std::string&e ) { 
-    QDPIO::cerr << "Caught Exception while reading XML " << e << endl;
-    QDP_abort(1);
-  }
-  */
-  nrow.resize(4);
-  nrow[0]=4;
-  nrow[1]=6;
-  nrow[2]=8;
-  nrow[3]=10;
+  for (int i=1; i<argc; i++) 
+    {
+      if (strcmp((argv)[i], "-lat")==0) 
+	{
+	  int lat;
+	  sscanf((argv)[++i], "%d", &lat);
+	  nrow[0]=nrow[1]=nrow[2]=nrow[3]=lat;
+	}
+    }
 
   // Setup the layout
   Layout::setLattSize(nrow);
