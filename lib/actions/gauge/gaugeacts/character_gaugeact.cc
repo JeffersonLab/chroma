@@ -157,6 +157,7 @@ namespace Chroma
       {
 	deriv_fun[mu] = zero ;
 	deriv_adj[mu] = zero ;
+	deriv_sex[mu] = zero ;
 	for(int nu = 0; nu < Nd; nu++) 
 	{ 
 	  if (mu == nu) continue;
@@ -178,9 +179,9 @@ namespace Chroma
 	
 	}// nu
 	// Fold in the normalization from the action
-	ds_u[mu]  = (-param.beta_F/Real(2*Nc)    ) * deriv_fun[mu];
-	ds_u[mu] += (-param.beta_A/Real(Nc*Nc)   ) * deriv_adj[mu];
-	ds_u[mu] += (-param.beta_S/Real(Nc*Nc+Nc)) * deriv_sex[mu];
+	ds_u[mu]  = (-param.beta_F/Real(2*Nc)        ) * deriv_fun[mu];
+	ds_u[mu] += (-param.beta_A/Real(Nc*Nc)       ) * deriv_adj[mu];
+	ds_u[mu] += (-param.beta_S/Real(2*(Nc*Nc+Nc))) * deriv_sex[mu];
       }// mu
 
       // Zero the force on any fixed boundaries
