@@ -665,15 +665,15 @@ namespace Chroma
 
     IndexDomainVector idx = loop.getIdx();
 
-    auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced , idx );
-    auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced , idx );
-    auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced , idx );
-    auto& f3_j = f3_jit.elem(JitDeviceLayout::Coalesced , idx );
-    auto& f4_j = f4_jit.elem(JitDeviceLayout::Coalesced , idx );
-    auto& f5_j = f5_jit.elem(JitDeviceLayout::Coalesced , idx );
+    typename UJIT::Subtype_t& f0_j = f0_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
+    typename UJIT::Subtype_t& f1_j = f1_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
+    typename UJIT::Subtype_t& f2_j = f2_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
+    typename UJIT::Subtype_t& f3_j = f3_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
+    typename UJIT::Subtype_t& f4_j = f4_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
+    typename UJIT::Subtype_t& f5_j = f5_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
 
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced , idx );
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced , idx );
+    typename XJIT::Subtype_t& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
+    typename YJIT::Subtype_t& tri_off_j = tri_off_jit.elem(JitDeviceLayout::LayoutCoalesced , idx );
 
     typename REGType< typename RealTJIT::Subtype_t >::Type_t diag_mass_reg;
     diag_mass_reg.setup( diag_mass_jit.elem() );
@@ -906,9 +906,9 @@ namespace Chroma
 
     IndexDomainVector idx = loop.getIdx();
 
-    auto& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::Coalesced,idx);
-    auto& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::Coalesced,idx);
-    auto& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::Coalesced,idx);
+    typename TJIT::Subtype_t& tr_log_diag_j = tr_log_diag_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+    typename XJIT::Subtype_t& tri_dia_j     = tri_dia_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+    typename YJIT::Subtype_t& tri_off_j     = tri_off_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1206,9 +1206,9 @@ namespace Chroma
 
     IndexDomainVector idx = loop.getIdx();
 
-    auto& B_j = B_jit.elem(JitDeviceLayout::Coalesced,idx);
-    auto& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::Coalesced,idx);
-    auto& tri_off_j = tri_off_jit.elem(JitDeviceLayout::Coalesced,idx);
+    typename UJIT::Subtype_t& B_j = B_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+    typename XJIT::Subtype_t& tri_dia_j = tri_dia_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+    typename YJIT::Subtype_t& tri_off_j = tri_off_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
 
     typename REGType< typename XJIT::Subtype_t >::Type_t tri_dia_r;
     typename REGType< typename YJIT::Subtype_t >::Type_t tri_off_r;
@@ -1622,10 +1622,10 @@ namespace Chroma
 
     IndexDomainVector idx = loop.getIdx();
 
-    auto& chi_j = chi_jit.elem(JitDeviceLayout::Coalesced,idx);
-    psi_r.setup( psi_jit.elem(JitDeviceLayout::Coalesced,idx) );
-    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::Coalesced,idx) );
-    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::Coalesced,idx) );
+    typename TJIT::Subtype_t& chi_j = chi_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+    psi_r.setup( psi_jit.elem(JitDeviceLayout::LayoutCoalesced,idx) );
+    tri_dia_r.setup( tri_dia_jit.elem(JitDeviceLayout::LayoutCoalesced,idx) );
+    tri_off_r.setup( tri_off_jit.elem(JitDeviceLayout::LayoutCoalesced,idx) );
 
     // RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
     // const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));

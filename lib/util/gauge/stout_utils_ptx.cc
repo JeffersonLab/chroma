@@ -74,19 +74,19 @@ void *function_get_fs_bs_build(const LatticeColorMatrix& Q,
 
   IndexDomainVector idx = loop.getIdx();
       
-  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,idx);
+  typename LCMJIT::Subtype_t& Q_j  = Q_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCMJIT::Subtype_t& QQ_j = QQ_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
 
-  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,idx);
+  typename LCJIT::Subtype_t& f0_j = f0_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& f1_j = f1_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& f2_j = f2_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
   
-  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,idx);
-  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,idx);
+  typename LCJIT::Subtype_t& b10_j = b10_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& b11_j = b11_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& b12_j = b12_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& b20_j = b20_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& b21_j = b21_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  typename LCJIT::Subtype_t& b22_j = b22_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
 
   llvm::BasicBlock * block_exit = llvm_new_basic_block();
   { 
