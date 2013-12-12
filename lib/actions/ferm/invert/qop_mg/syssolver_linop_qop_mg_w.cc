@@ -227,7 +227,7 @@ namespace Chroma
     namespace
     {
       //! Name to be used
-      const std::string name("QDP_WILSON_MULTIGRID");
+      const std::string name("QOP_CLOVER_MULTIGRID_INVERTER");
 
       //! Local registration flag
       bool registered = false;
