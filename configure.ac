@@ -267,12 +267,11 @@ AC_ARG_WITH(qio,
   [QIO_DIR="not_given"]
 )
 
-AC_ARG_WITH(qop-mg,
+AC_ARG_ENABLE(qop-mg,
    AC_HELP_STRING(
-     [--with-qop-mg], [ Enable QDP MultiGrid. Needs --with-qla --with-qdp and --with-qdpqop arguments ]
+     [--enable-qop-mg], [ Enable QDP MultiGrid. Needs --with-qla --with-qdp and --with-qdpqop arguments ]
    ),
-   [BUILD_QOP_MG="yes"; QOP_MG_DIR="${with_qop_mg}"],
-   [BUILD_QOP_MG="no"]
+   [BUILD_QOP_MG=${enableval}]
 )
 
 if test "X${QDPCVER_HOME}X" = "XX" ; then
@@ -961,16 +960,13 @@ then
      AC_MSG_NOTICE([QOPQDP dir is ${QOPQDP_DIR}])
   fi
 
-  if test "X${QOP_MG_DIR}X" = "Xnot_givenX";
-  then 
-     AC_MSG_ERROR([QOP_MG_DIR is ${QOP_MG_DIR}])
-  else 
-     AC_MSG_NOTICE([QOP_MG_DIR is ${QOP_MG_DIR}])
-  fi
+  dnl configure subdirectory
+  AC_CONFIG_SUBDIRS(other_libs/wilsonmg)
 
+  AC_SUBST(QOP_MG_DIR, [wilsonmg])
   dnl if we got here then we have the requisite directories
-  AC_SUBST(QOP_MG_CXXFLAGS, "-I${QOP_MG_DIR}/include -I${QLA_DIR}/include -I${QOP_DIR}/include")
-  AC_SUBST(QOP_MG_LDFLAGS, "-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib -L${QOP_MG_DIR}/lib")
+  AC_SUBST(QOP_MG_CXXFLAGS, "-I${QLA_DIR}/include -I${QOP_DIR}/include")
+  AC_SUBST(QOP_MG_LDFLAGS, "-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib")
   AC_SUBST(QOP_MG_LIBS, " -lwilsonmg -lqopqdp -lqdp_common -lqdp_d2 -lqdp_d3 -lqdp_d -lqdp_df2 -lqdp_df3 -lqdp_f2 -lqdp_f3 -lqdp_f -lqdp_fn -lqdp_int -lqla_c99 -lqla_cmath -lqla_d2 -lqla_d3 -lqla_d -lqla_df2 -lqla_df3 -lqla_df -lqla_dfn -lqla_dn -lqla_dq2 -lqla_dq3 -lqla_dq -lqla_dqn -lqla_f2 -lqla_f3 -lqla_f -lqla_fn -lqla_int -lqla_q2 -lqla_q3 -lqla_q -lqla_qn -lqla_random")
 
  AC_DEFINE([BUILD_QOP_MG],[], [Build with the QDP MG Library])  	

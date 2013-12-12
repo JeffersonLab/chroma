@@ -610,6 +610,7 @@ BUILD_QOP_MG_TRUE
 QOP_MG_LIBS
 QOP_MG_LDFLAGS
 QOP_MG_CXXFLAGS
+QOP_MG_DIR
 BUILD_QUDA_FALSE
 BUILD_QUDA_TRUE
 QUDA_LIBS
@@ -822,7 +823,7 @@ with_qmp
 with_qla
 with_qopqdp
 with_qio
-with_qop_mg
+enable_qop_mg
 '
       ac_precious_vars='build_alias
 host_alias
@@ -838,7 +839,8 @@ CFLAGS'
 ac_subdirs_all='other_libs/sse_wilson_dslash
 other_libs/cpp_wilson_dslash
 other_libs/cg-dwf
-other_libs/qdp-lapack'
+other_libs/qdp-lapack
+other_libs/wilsonmg'
 
 # Initialize some variables set by options.
 ac_init_help=
@@ -1513,6 +1515,8 @@ Optional Features:
   --enable-testcase-runner=script
                           Use <script> to run testcases:
                           trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh
+  --enable-qop-mg         Enable QDP MultiGrid. Needs --with-qla --with-qdp
+                          and --with-qdpqop arguments
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1537,8 +1541,6 @@ Optional Packages:
   --with-qla=DIR          Use QLA in directory DOR
   --with-qopqdp=DIR       Use QOPQDP in directory DOR
   --with-qio=DIR          Use QIO for header includes in directory DOR
-  --with-qop-mg           Enable QDP MultiGrid. Needs --with-qla --with-qdp
-                          and --with-qdpqop arguments
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -4490,12 +4492,9 @@ else
 fi
 
 
-
-# Check whether --with-qop-mg was given.
-if test "${with_qop_mg+set}" = set; then
-  withval=$with_qop_mg; BUILD_QOP_MG="yes"; QOP_MG_DIR="${with_qop_mg}"
-else
-  BUILD_QOP_MG="no"
+# Check whether --enable-qop-mg was given.
+if test "${enable_qop_mg+set}" = set; then
+  enableval=$enable_qop_mg; BUILD_QOP_MG=${enableval}
 
 fi
 
@@ -6356,19 +6355,14 @@ $as_echo "$as_me: error: QOPQDP dir is ${QOPQDP_DIR}" >&2;}
 $as_echo "$as_me: QOPQDP dir is ${QOPQDP_DIR}" >&6;}
   fi
 
-  if test "X${QOP_MG_DIR}X" = "Xnot_givenX";
-  then
-     { { $as_echo "$as_me:$LINENO: error: QOP_MG_DIR is ${QOP_MG_DIR}" >&5
-$as_echo "$as_me: error: QOP_MG_DIR is ${QOP_MG_DIR}" >&2;}
-   { (exit 1); exit 1; }; }
-  else
-     { $as_echo "$as_me:$LINENO: QOP_MG_DIR is ${QOP_MG_DIR}" >&5
-$as_echo "$as_me: QOP_MG_DIR is ${QOP_MG_DIR}" >&6;}
-  fi
+    subdirs="$subdirs other_libs/wilsonmg"
 
-    QOP_MG_CXXFLAGS="-I${QOP_MG_DIR}/include -I${QLA_DIR}/include -I${QOP_DIR}/include"
 
-  QOP_MG_LDFLAGS="-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib -L${QOP_MG_DIR}/lib"
+  QOP_MG_DIR=wilsonmg
+
+    QOP_MG_CXXFLAGS="-I${QLA_DIR}/include -I${QOP_DIR}/include"
+
+  QOP_MG_LDFLAGS="-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib"
 
   QOP_MG_LIBS=" -lwilsonmg -lqopqdp -lqdp_common -lqdp_d2 -lqdp_d3 -lqdp_d -lqdp_df2 -lqdp_df3 -lqdp_f2 -lqdp_f3 -lqdp_f -lqdp_fn -lqdp_int -lqla_c99 -lqla_cmath -lqla_d2 -lqla_d3 -lqla_d -lqla_df2 -lqla_df3 -lqla_df -lqla_dfn -lqla_dn -lqla_dq2 -lqla_dq3 -lqla_dq -lqla_dqn -lqla_f2 -lqla_f3 -lqla_f -lqla_fn -lqla_int -lqla_q2 -lqla_q3 -lqla_q -lqla_qn -lqla_random"
 

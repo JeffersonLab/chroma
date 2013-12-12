@@ -171,6 +171,7 @@ QMT_CXXFLAGS = @QMT_CXXFLAGS@
 QMT_LDFLAGS = @QMT_LDFLAGS@
 QMT_LIBS = @QMT_LIBS@
 QOP_MG_CXXFLAGS = @QOP_MG_CXXFLAGS@
+QOP_MG_DIR = @QOP_MG_DIR@
 QOP_MG_LDFLAGS = @QOP_MG_LDFLAGS@
 QOP_MG_LIBS = @QOP_MG_LIBS@
 QUDA_CXXFLAGS = @QUDA_CXXFLAGS@
@@ -236,7 +237,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = qdp-lapack @SSE_DSLASH_DIR@ @CPP_DSLASH_DIR@ @CG_DWF_DIR@
+SUBDIRS = qdp-lapack @SSE_DSLASH_DIR@ @CPP_DSLASH_DIR@ @CG_DWF_DIR@ @QOP_MG_DIR@
 EXTRA_DIST = cpp_wilson_dslash sse_wilson_dslash cg-dwf
 all: all-recursive
 
