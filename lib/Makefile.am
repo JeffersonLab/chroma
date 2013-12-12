@@ -939,10 +939,16 @@ nobase_include_HEADERS += \
 #
 # Include path and any other compiler flags
 # 
-AM_CXXFLAGS  = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
-AM_CXXFLAGS += @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
+AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
+AM_CXXFLAGS += @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @QOP_MG_CXXFLAGS@
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
+
+AM_CFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
+AM_CFLAGS += @CFLAGS@ @QOP_MG_CXXFLAGS@
+AM_CFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
+               -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
+
 
 if BUILD_GMP_REMEZ
 AM_CXXFLAGS += @GMP_CXXFLAGS@
@@ -1911,6 +1917,16 @@ libchroma_a_SOURCES += \
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
 
 
+if BUILD_QOP_MG
+nobase_include_HEADERS += \
+	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.h \
+	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h
+
+libchroma_a_SOURCES += \
+	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.cc \
+	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc
+endif
+
 
 if BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER
 nobase_include_HEADERS += actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
@@ -1918,7 +1934,7 @@ libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
-# include files for scidac libaries
+# include files for scidac libariesg
 AM_CXXFLAGS += -I@QDPC_DIR@/qmp/include
 AM_CXXFLAGS += -I@QDPC_DIR@/qio/include
 AM_CXXFLAGS += -I@QDPC_DIR@/qla/include

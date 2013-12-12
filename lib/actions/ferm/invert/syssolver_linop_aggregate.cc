@@ -28,6 +28,10 @@
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
 #include "actions/ferm/invert/syssolver_linop_eigcg_array.h"
 
+#ifdef BUILD_QOP_MG
+#include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
+#endif
+
 namespace Chroma
 {
 
@@ -59,6 +63,9 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
+#endif
+#ifdef BUILD_QDP_MG
+	success &= LinOpSysSolverQOPMGEnv::registerAll();
 #endif
 	registered = true;
       }

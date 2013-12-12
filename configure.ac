@@ -220,6 +220,61 @@ AC_ARG_WITH(asqtadlevel3,
   [QDPCVER_HOME="$with_asqtadlevel3"]
 )
 
+
+dnl support for MG Solver from QDP/C
+AC_ARG_WITH(qdpc,
+  AC_HELP_STRING(
+    [--with-qdpc=DIR], 
+    [Use QDPC in directory DOR]
+  ), 
+  [QDPC_DIR="${with_qdpc}"],
+  [QDPC_DIR="not_given"]
+)
+
+AC_ARG_WITH(qmp,
+  AC_HELP_STRING(
+    [--with-qmp=DIR], 
+    [Use QMP in directory DIR]
+  ), 
+  [QMP_DIR="${with_qmp}"],
+  [QMP_DIR="not_given"]
+)
+
+AC_ARG_WITH(qla,
+  AC_HELP_STRING(
+    [--with-qla=DIR], 
+    [Use QLA in directory DOR]
+  ), 
+  [QLA_DIR="${with_qla}"],
+  [QLA_DIR="not_given"]
+)
+
+AC_ARG_WITH(qopqdp,
+  AC_HELP_STRING(
+    [--with-qopqdp=DIR], 
+    [Use QOPQDP in directory DOR]
+  ), 
+  [QOPQDP_DIR="${with_qopqdp}"],
+  [QOPQDP_DIR="not_given"]
+)
+
+AC_ARG_WITH(qio,
+  AC_HELP_STRING(
+    [--with-qio=DIR], 
+    [Use QIO for header includes in directory DOR]
+  ), 
+  [QIO_DIR="${with_qio}"],
+  [QIO_DIR="not_given"]
+)
+
+AC_ARG_WITH(qop-mg,
+   AC_HELP_STRING(
+     [--with-qop-mg], [ Enable QDP MultiGrid. Needs --with-qla --with-qdp and --with-qdpqop arguments ]
+   ),
+   [BUILD_QOP_MG="yes"; QOP_MG_DIR="${with_qop_mg}"],
+   [BUILD_QOP_MG="no"]
+)
+
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
@@ -864,6 +919,65 @@ fi
 
 AM_CONDITIONAL(BUILD_QUDA,
 	[test "x${quda_enabled}x" = "xyesx" ])
+
+
+
+if test "X${BUILD_QOP_MG}X" = "XyesX";
+then
+  AC_MSG_NOTICE([  Configuring QOP_MG Solver ])
+
+  if  test "X${QLA_DIR}X" = "Xnot_givenX"; 
+  then 
+     AC_MSG_ERROR([QLA dir is ${QLA_DIR}])
+  else
+     AC_MSG_NOTICE([QLA dir is ${QLA_DIR}])
+  fi
+
+  if  test "X${QMP_DIR}X" = "Xnot_givenX"; 
+  then 
+     AC_MSG_ERROR([QMP dir is ${QMP_DIR}])
+  else
+     AC_MSG_NOTICE([QMP dir is ${QMP_DIR}])
+  fi
+
+  if  test "X${QIO_DIR}X" = "Xnot_givenX"; 
+  then 
+     AC_MSG_ERROR([QIO dir is ${QIO_DIR}])
+  else
+     AC_MSG_NOTICE([QIO dir is ${QIO_DIR}])
+  fi
+
+  if  test "X${QDPC_DIR}X" = "Xnot_givenX"; 
+  then 
+     AC_MSG_ERROR([QDPC dir is ${QDPC_DIR}])
+  else
+     AC_MSG_NOTICE([QDPC dir is ${QDPC_DIR}])
+  fi
+   
+  if  test "X${QOPQDP_DIR}X" = "Xnot_givenX"; 
+  then 
+     AC_MSG_ERROR([QOPQDP dir is ${QOPQDP_DIR}])
+  else
+     AC_MSG_NOTICE([QOPQDP dir is ${QOPQDP_DIR}])
+  fi
+
+  if test "X${QOP_MG_DIR}X" = "Xnot_givenX";
+  then 
+     AC_MSG_ERROR([QOP_MG_DIR is ${QOP_MG_DIR}])
+  else 
+     AC_MSG_NOTICE([QOP_MG_DIR is ${QOP_MG_DIR}])
+  fi
+
+  dnl if we got here then we have the requisite directories
+  AC_SUBST(QOP_MG_CXXFLAGS, "-I${QOP_MG_DIR}/include -I${QLA_DIR}/include -I${QOP_DIR}/include")
+  AC_SUBST(QOP_MG_LDFLAGS, "-L${QLA_DIR}/lib -L${QDPC_DIR}/lib -L${QOPQDP_DIR}/lib -L${QOP_MG_DIR}/lib")
+  AC_SUBST(QOP_MG_LIBS, " -lwilsonmg -lqopqdp -lqdp_common -lqdp_d2 -lqdp_d3 -lqdp_d -lqdp_df2 -lqdp_df3 -lqdp_f2 -lqdp_f3 -lqdp_f -lqdp_fn -lqdp_int -lqla_c99 -lqla_cmath -lqla_d2 -lqla_d3 -lqla_d -lqla_df2 -lqla_df3 -lqla_df -lqla_dfn -lqla_dn -lqla_dq2 -lqla_dq3 -lqla_dq -lqla_dqn -lqla_f2 -lqla_f3 -lqla_f -lqla_fn -lqla_int -lqla_q2 -lqla_q3 -lqla_q -lqla_qn -lqla_random")
+
+ AC_DEFINE([BUILD_QOP_MG],[], [Build with the QDP MG Library])  	
+fi
+
+AM_CONDITIONAL(BUILD_QOP_MG,
+	[test "x${BUILD_QOP_MG}x" = "xyesx" ])
 
 #######################
 # Produce output
