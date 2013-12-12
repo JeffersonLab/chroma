@@ -33,6 +33,9 @@
 /* Use Peter Boyles BAGEL Wilson Dslash library */
 #undef BUILD_PAB_WILSON_DSLASH
 
+/* Build with the QDP MG Library */
+#undef BUILD_QOP_MG
+
 /* Build with the BU QUDA Library */
 #undef BUILD_QUDA
 
@@ -74,9 +77,6 @@
 
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
-
-/* Define to the home page for this package. */
-#undef PACKAGE_URL
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
