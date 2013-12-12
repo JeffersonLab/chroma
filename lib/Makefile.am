@@ -940,12 +940,12 @@ nobase_include_HEADERS += \
 # Include path and any other compiler flags
 # 
 AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
-AM_CXXFLAGS += @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@ @QOP_MG_CXXFLAGS@
+AM_CXXFLAGS += @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
 AM_CFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
-AM_CFLAGS += @CFLAGS@ @QOP_MG_CXXFLAGS@
+AM_CFLAGS += @CFLAGS@
 AM_CFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
@@ -980,6 +980,10 @@ endif
 
 if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
+endif
+
+if BUILD_QOP_MG
+AM_CXXFLAGS += -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
 endif
 
 lib_LIBRARIES = libchroma.a
