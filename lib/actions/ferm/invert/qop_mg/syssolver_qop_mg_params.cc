@@ -15,7 +15,9 @@ namespace Chroma
 
 #define defaultread(PARAM,DEFAULT) if (paramtop.count(#PARAM)) {read(paramtop, #PARAM, param.PARAM);} else {param.PARAM = DEFAULT;}
 
+#if 0
     defaultread( GaugeID, "default_gauge_field" );
+#endif
 
     if (paramtop.count("Boundary")) {
       read(paramtop, "Boundary", param.Boundary);

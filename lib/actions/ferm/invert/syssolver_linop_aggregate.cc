@@ -64,7 +64,7 @@ namespace Chroma
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
 #endif
-#ifdef BUILD_QDP_MG
+#ifdef BUILD_QOP_MG
 	success &= LinOpSysSolverQOPMGEnv::registerAll();
 #endif
 	registered = true;

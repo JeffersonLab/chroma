@@ -28,7 +28,10 @@ namespace Chroma
      */
     
     // Lattice Action Parameters
+#if 0
     string GaugeID;  /*!< Gauge-field identifier */
+#endif
+
     multi1d<Real> Boundary; /*!< Boundary conditions */
     Real AnisoXi;    /*!< Lattice bare anisotropy (xi_0) */
     Real AnisoNu;    /*!< Lattice bare dispersion parameter (nu_s) */

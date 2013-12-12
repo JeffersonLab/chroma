@@ -105,7 +105,11 @@ namespace Chroma
 // at each site of the QDP lattice
     if (invParam.Levels>0) {
       /* We're going to pull the gauge field out of Chroma's aether */
+#if 0
       u = TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(invParam.GaugeID);
+#else
+      u = state_->getLinks();
+#endif
       int machsize[4], latsize[4];
       for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
       for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
