@@ -22,6 +22,10 @@ namespace Chroma
 
     sub_zero=0;
     sub_zero_usedP=false;
+
+		twisted_m = Real(0);
+		twisted_m_usedP = false;
+
   }
 
   //! Read parameters
