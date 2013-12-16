@@ -8,6 +8,7 @@
 #include "actions/ferm/invert/syssolver_linop_factory.h"
 #include "actions/ferm/invert/syssolver_linop_aggregate.h"
 
+
 #if BASE_PRECISION == 32
 #define QDP_Precision 'F'
 #define QLA_Precision 'F'
@@ -24,6 +25,8 @@ extern "C" {
   // This should be placed on the include path.
 #include "wilsonmg-interface.h"
 }
+
+#include "meas/glue/mesplq.h"
 
 namespace Chroma
 {
@@ -70,7 +73,7 @@ namespace Chroma
   {
     if (invParam.Levels>0 && PC(g_param).levels>0) MGP(finalize)();
   // Copy the parameters read from XML into the QDP global structure
-    for (int d=0; d<4; d++) PC(g_param).bc[d]  = toReal(invParam.Boundary[d]);
+    for (int d=0; d<4; d++) PC(g_param).bc[d]  = 1;
     PC(g_param).aniso_xi = toReal(invParam.AnisoXi);
     PC(g_param).aniso_nu = toReal(invParam.AnisoNu);
     PC(g_param).kappa    = toReal(invParam.Kappa);
@@ -110,6 +113,18 @@ namespace Chroma
 #else
       u = state_->getLinks();
 #endif
+      // Compute the plaquette for comparison with MG code
+      {
+      	Double w_plaq, s_plaq, t_plaq, link;
+
+      	MesPlq(u, w_plaq, s_plaq, t_plaq, link);
+      	QDPIO::cout << "Plaquette from State: " << endl;
+      	QDPIO::cout << "  w_plaq = " << w_plaq << endl;
+      	QDPIO::cout << "  s_plaq = " << s_plaq << endl;
+      	QDPIO::cout << "  t_plaq = " << t_plaq << endl;
+      	QDPIO::cout << "  link trace =  " << link << endl;
+      }
+
       int machsize[4], latsize[4];
       for (int d=0;d<4;d++) machsize[d] = Layout::logicalSize()[d];
       for (int d=0;d<4;d++) latsize[d]  = Layout::lattSize()[d];
@@ -204,7 +219,6 @@ namespace Chroma
  
     swatch.stop();
     double time = swatch.getTimeInSeconds();
-
     { 
       T r;
       r[A->subset()] = chi;
@@ -213,6 +227,7 @@ namespace Chroma
       r[A->subset()] -= tmp;
       res.resid = sqrt(norm2(r, A->subset()));
     }
+
     QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
                 << " Rsd = " << res.resid
                 << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))

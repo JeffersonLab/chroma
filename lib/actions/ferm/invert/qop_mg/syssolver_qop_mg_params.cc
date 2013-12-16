@@ -15,18 +15,6 @@ namespace Chroma
 
 #define defaultread(PARAM,DEFAULT) if (paramtop.count(#PARAM)) {read(paramtop, #PARAM, param.PARAM);} else {param.PARAM = DEFAULT;}
 
-#if 0
-    defaultread( GaugeID, "default_gauge_field" );
-#endif
-
-    if (paramtop.count("Boundary")) {
-      read(paramtop, "Boundary", param.Boundary);
-    } else {
-      param.Boundary.resize(4);
-      param.Boundary[0] = param.Boundary[1] = param.Boundary[2] = 1;
-      param.Boundary[3] = -1;
-    }
-
     defaultread( AnisoXi, 1.0 );
     defaultread( AnisoNu, 1.0 );
 
@@ -105,7 +93,6 @@ namespace Chroma
     write(xml, "invType", "QDP_WILSON_MULTIGRID");
     
 #define writeparam(PARAM) write(xml, #PARAM, param.PARAM)
-    writeparam(Boundary);
     writeparam(AnisoXi);
     writeparam(AnisoNu);
     writeparam(Kappa);
