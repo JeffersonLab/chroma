@@ -28,6 +28,7 @@ namespace Chroma
 					const Real& Mass_,
 					const AnisoParam_t& anisoParam_)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     // Check we are in 4D
@@ -201,6 +202,7 @@ namespace Chroma
     }
     Dw3D.create(fs_, anisoParam_);    
     END_CODE();
+#endif
   }
 
 } // End Namespace Chroma

@@ -157,6 +157,7 @@ namespace Chroma
 				   const CloverFermActParams& param_,
 				   const QDPCloverTermT<T,U>& from)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
     u.resize(Nd);
 
@@ -202,6 +203,7 @@ namespace Chroma
     
     tri = from.tri;
     END_CODE();  
+#endif
   }
 
 
@@ -210,6 +212,7 @@ namespace Chroma
   void QDPCloverTermT<T,U>::create(Handle< FermState<T,multi1d<U>,multi1d<U> > > fs,
 				   const CloverFermActParams& param_)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
    
     u.resize(Nd);
@@ -253,6 +256,7 @@ namespace Chroma
     
 
     END_CODE();
+#endif
   }
 
 
@@ -361,6 +365,7 @@ namespace Chroma
     inline 
     void makeClovSiteLoop(int lo, int hi, int myId, QDPCloverMakeClovArg<U> *a)
     {
+#ifndef QDP_IS_QDPJIT
       typedef typename QDPCloverMakeClovArg<U>::RealT RealT;
       typedef typename QDPCloverMakeClovArg<U>::REALT REALT;
       
@@ -478,6 +483,7 @@ namespace Chroma
 	  }
 	}
       } /* End Site loop */
+#endif
     } /* Function */
   }
   
@@ -543,6 +549,7 @@ namespace Chroma
   template<typename T, typename U>
   Double QDPCloverTermT<T,U>::cholesDet(int cb) const
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     if( choles_done[cb] == false ) 
@@ -565,6 +572,7 @@ namespace Chroma
     // Need to thread generic sums in QDP++?
     // Need to thread generic norm2() in QDP++?
     return sum(ff, rb[cb]);
+#endif
   }
 
   namespace QDPCloverEnv { 
@@ -783,6 +791,7 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::ldagdlinv(LatticeREAL& tr_log_diag, int cb)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     if ( 2*Nc < 3 )
@@ -801,6 +810,7 @@ namespace Chroma
     // This comes from the days when we used to do Cholesky
     choles_done[cb] = true;
     END_CODE();
+#endif
   }
  
   /*! CHLCLOVMS - Cholesky decompose the clover mass term and uses it to
@@ -974,6 +984,7 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::chlclovms(LatticeREAL& tr_log_diag, int cb)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     if ( 2*Nc < 3 )
@@ -988,6 +999,7 @@ namespace Chroma
     
     choles_done[cb] = true;
     END_CODE();
+#endif
   }
 
 
@@ -1013,6 +1025,7 @@ namespace Chroma
   void QDPCloverTermT<T,U>::applySite(T& chi, const T& psi, 
 			    enum PlusMinus isign, int site) const
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     if ( Ns != 4 )
@@ -1113,6 +1126,7 @@ namespace Chroma
 
 
     END_CODE();
+#endif
   }
 
 
@@ -1456,6 +1470,7 @@ namespace Chroma
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::triacntr(U& B, int mat, int cb) const
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     B = zero;
@@ -1471,6 +1486,7 @@ namespace Chroma
 			QDPCloverEnv::triaCntrSiteLoop<U>);
 
     END_CODE();
+#endif
   }
 
   //! Returns the appropriate clover coefficient for indices mu and nu
@@ -2069,6 +2085,7 @@ namespace Chroma
   void QDPCloverTermT<T,U>::apply(T& chi, const T& psi, 
 			    enum PlusMinus isign, int cb) const
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
     
     if ( Ns != 4 ) {
@@ -2085,6 +2102,7 @@ namespace Chroma
     (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
+#endif
   }
 
 

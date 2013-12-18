@@ -28,7 +28,10 @@ namespace Chroma
       tuneDslashP = false ; //< v0.3 autotune feature
       verboseP = false;
       innerParamsP = false;
+      backup_invP = false;
+      dump_on_failP = false;
     };
+
     SysSolverQUDACloverParams( const SysSolverQUDACloverParams& p) {
       CloverParams = p.CloverParams;
       AntiPeriodicT = p.AntiPeriodicT;
@@ -48,6 +51,9 @@ namespace Chroma
       tuneDslashP = p.tuneDslashP;
       innerParamsP = p.innerParamsP;
       innerParams = p.innerParams;
+      backup_invP = p.backup_invP;
+      backup_inv_param = p.backup_inv_param;
+      dump_on_failP = p.dump_on_failP;
     }
 
    
@@ -73,6 +79,11 @@ namespace Chroma
     // Params for the preconditioner
     Handle<GCRInnerSolverParams> innerParams;
 
+    // XML for Backup Solver
+    bool backup_invP;
+    GroupXML_t backup_inv_param;
+    bool dump_on_failP;
+    
 
   };
 

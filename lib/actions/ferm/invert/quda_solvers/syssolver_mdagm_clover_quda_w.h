@@ -9,6 +9,7 @@
 
 #include "chroma_config.h"
 
+
 #ifdef BUILD_QUDA
 
 #include "handle.h"
@@ -19,14 +20,19 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/linop/clover_term_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
+#include "update/molecdyn/predictor/null_predictor.h"
 
 #include "util/gauge/reunit.h"
 
 #include <quda.h>
+
+//#undef BUILD_QUDA_DEVIFACE_GAUGE
+//#undef BUILD_QUDA_DEVIFACE_SPINOR
+//#undef BUILD_QUDA_DEVIFACE_CLOVER
 
 //#include <util_quda.h>
 using namespace std;
@@ -72,7 +78,7 @@ namespace Chroma
     MdagMSysSolverQUDAClover(Handle< LinearOperator<T> > A_,
 					 Handle< FermState<T,Q,Q> > state_,
 					 const SysSolverQUDACloverParams& invParam_) : 
-      A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
+      A(A_), state(state_), invParam(invParam_), clov(new CloverTermT<T, U>::Type_t()), invclov(new CloverTermT<T, U>::Type_t())
     {
       QDPIO::cout << "MdagMSysSolverQUDAClover:" << endl;
 
@@ -137,7 +143,14 @@ namespace Chroma
 
       // 5) - set QUDA_WILSON_LINKS, QUDA_GAUGE_ORDER
       q_gauge_param.type = QUDA_WILSON_LINKS;
+
+#ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
+#else
+      QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
+      q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
+      q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
+#endif
 
       // 6) - set t_boundary
       // Convention: BC has to be applied already
@@ -312,8 +325,17 @@ namespace Chroma
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
-      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
+
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
+      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+#else
+      QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << endl;
+      quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
+      quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
+      quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
+#endif
+
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
@@ -445,8 +467,15 @@ namespace Chroma
       quda_inv_param.clover_cpu_prec = cpu_prec;
       quda_inv_param.clover_cuda_prec = gpu_prec;
       quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+
+#ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
-      
+#else      
+      QDPIO::cout << "MDAGM Clover CUDA location\n";
+      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
+      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
+#endif
+
       if( invParam.verboseP ) { 
 	quda_inv_param.verbosity = QUDA_VERBOSE;
       }
@@ -458,9 +487,15 @@ namespace Chroma
       void* gauge[4]; 
 
       for(int mu=0; mu < Nd; mu++) { 
+#ifndef BUILD_QUDA_DEVIFACE_GAUGE
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
-
+#else
+	gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
+	//std::cout << "MDAGM CUDA gauge[" << mu << "] in = " << gauge[mu] << "\n";
+#endif
       }
+
+
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
       
       // Setup Clover Term
@@ -473,6 +508,7 @@ namespace Chroma
       invclov->choles(0);
       invclov->choles(1);
 
+#ifndef BUILD_QUDA_DEVIFACE_CLOVER
       multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
       // Only compute clover if we're using asymmetric preconditioner
@@ -487,6 +523,24 @@ namespace Chroma
       invclov->packForQUDA(packed_invclov, 1);
 
       loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
+#else
+      void *clover[2];
+      void *cloverInv[2];
+
+      clover[0] = QDPCache::Instance().getDevicePtr( clov->getOffId() );
+      clover[1] = QDPCache::Instance().getDevicePtr( clov->getDiaId() );
+
+      cloverInv[0] = QDPCache::Instance().getDevicePtr( invclov->getOffId() );
+      cloverInv[1] = QDPCache::Instance().getDevicePtr( invclov->getDiaId() );
+
+      // std::cout << "MDAGM clover CUDA pointers: " 
+      // 		<< clover[0] << " "
+      // 		<< clover[1] << " "
+      // 		<< cloverInv[0] << " "
+      // 		<< cloverInv[1] << "\n";
+
+      loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
+#endif
       
     }
     
@@ -511,45 +565,9 @@ namespace Chroma
     SystemSolverResults_t operator() (T& psi, const T& chi ) const
     {
       SystemSolverResults_t res;
-
+      Null4DChronoPredictor not_predicting;
+      (*this)(psi,chi, not_predicting);
       START_CODE();
-      StopWatch swatch;
-      swatch.start();
-
-      //    T MdagChi;
-
-      // This is a CGNE. So create new RHS
-      //      (*A)(MdagChi, chi, MINUS);
-      // Handle< LinearOperator<T> > MM(new MdagMMdagM<T>(A));
-      if ( invParam.axialGaugeP ) { 
-	T g_chi,g_psi;
-
-	// Gauge Fix source and initial guess
-	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
-        g_chi[ rb[1] ]  = GFixMat * chi;
-	g_psi[ rb[1] ]  = GFixMat * psi;
-	QDPIO::cout << "Solving" << endl;
-	res = qudaInvert(*clov,
-			 *invclov,
-			 g_chi,
-			 g_psi);      
-	QDPIO::cout << "Untransforming solution." << endl;
-	psi[ rb[1]]  = adj(GFixMat)*g_psi;
-
-      }
-      else { 
-	QDPIO::cout << "Calling QUDA Invert" << endl;
-	res = qudaInvert(*clov,
-			 *invclov,
-			 chi,
-			 psi);      
-      }      
-
-      swatch.stop();
-      double time = swatch.getTimeInSeconds();
-
-
-
       END_CODE();
       return res;
     }
@@ -595,14 +613,20 @@ namespace Chroma
       // Create MdagM op
       Handle< LinearOperator<T> > MdagM( new MdagMLinOp<T>(A) );
 
+      bool failP = false;
+
       if ( ! two_step ) { 
 
 	// Single Step Solve
 	QDPIO::cout << "Single Step Solve" << endl;
 	predictor(psi, (*MdagM), chi);
-	res = (*this)(psi, chi);
+	res = qudaInvert(*clov,
+			 *invclov,
+			 chi,
+			 psi);      
 	predictor.newVector(psi);
-      
+
+	
       }
       else { 
 
@@ -623,14 +647,20 @@ namespace Chroma
 	  // Now want to solve with M^\dagger on this.
 	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 	  quda_inv_param.dagger = QUDA_DAG_YES;
-	  res1 = (*this)(Y,chi);
+	  res1 = qudaInvert(*clov,
+			    *invclov,
+			    chi,
+			    Y);  
 	  two_step_predictor.newYVector(Y);
 
 	  // Step 2: Solve M X = Y
 	  // Predict X 
 	  two_step_predictor.predictX(psi,*MdagM, chi);
 	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
-	  res2 = (*this)(psi,Y);
+	  res2 = qudaInvert(*clov,
+			    *invclov,
+			    Y,
+			    psi);  
 	  two_step_predictor.newXVector(psi);
 	  
 	}
@@ -647,12 +677,18 @@ namespace Chroma
 	
 	  quda_inv_param.solution_type = QUDA_MATPC_SOLUTION;
 	  quda_inv_param.dagger = QUDA_DAG_YES;
-	  res1 = (*this)(Y,chi);
+	  res1 = qudaInvert(*clov,
+			    *invclov,
+			    chi,
+			    Y);  
 
 	  // Step 2: Solve M X = Y
 	  // Predict X 
 	  quda_inv_param.dagger = QUDA_DAG_NO; // Solve without dagger
-	  res2 = (*this)(psi,Y);
+	  res2 = qudaInvert(*clov,
+			    *invclov,
+			    Y,
+			    psi);  
 	  predictor.newVector(psi);
 	}
 
@@ -680,16 +716,124 @@ namespace Chroma
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
       QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
-   
-      // Convergence Check/Blow Up
-      if ( ! invParam.SilentFailP ) { 
-	if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << endl;
+
+
+      // Check for failure
+      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
+	if ( ! invParam.SilentFailP ) { 
+
+	  // If we are here we are meant to be verbose about it. 
 	  QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
-	  QDP_abort(1);
+
+	  // Check if we need to dump...
+	  if ( invParam.dump_on_failP ) { 
+
+	    // Dump config
+	    int my_random_int = rand();
+	    XMLBufferWriter rhs_filebuf;
+	    XMLBufferWriter rhs_recbuf;
+	    XMLBufferWriter gauge_filebuf;
+	    XMLBufferWriter gauge_recbuf;
+
+	    // Complete nonsense for the metadata
+	    int foo=5;
+	    push(rhs_filebuf, "RHSFile");
+	    write(rhs_filebuf, "dummyInt", foo++);
+	    pop(rhs_filebuf);
+
+	    push(rhs_recbuf, "RHSRecord");
+	    write(rhs_recbuf, "dummyInt", foo++);
+	    pop(rhs_recbuf);
+
+	    push(gauge_filebuf, "GAUGEFile");
+	    write(gauge_filebuf, "dummyInt", foo++);
+	    pop(gauge_filebuf);
+
+	    push(gauge_recbuf, "GAUGERecord");
+	    write(gauge_recbuf, "dummyInt", foo++);
+	    pop(gauge_recbuf);
+
+	    // Filenames
+	    std::ostringstream rhs_filename;
+	    rhs_filename << "./rhs_diagnostic_" << my_random_int <<".lime";
+
+	    std::ostringstream gauge_filename;
+	    gauge_filename << "./gauge_diagnostic_" << my_random_int <<".lime";
+
+	    // Hardwired QDPIO_PARALLEL now, as it seems to work even in a single file write :)
+	    QDPFileWriter rhs_writer(rhs_filebuf, rhs_filename.str(), QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+	    QDPFileWriter gauge_writer(gauge_filebuf,gauge_filename.str(), QDPIO_SINGLEFILE, QDPIO_PARALLEL);
+
+	    // DUMP RHS (will anyone ever read it?)
+	    QDPIO::cout << "DUMPING RHS to " << rhs_filename.str() << endl;
+	    write(rhs_writer, rhs_recbuf, chi);
+
+	    // DUMP Gauge (fill anyone ever read it?)
+	    QDPIO::cout << "DUMPING GAUGE FIELD to " << gauge_filename.str() << endl;
+	    write(gauge_writer, gauge_recbuf, state->getLinks());
+	    
+	    rhs_writer.close();
+	    gauge_writer.close();
+	  }
+
+	  if( invParam.backup_invP) { 
+	    // Create the Backup Solver...
+	    QDPIO::cout << "CREATING BACKUP SOLVER" << endl;
+	    std::istringstream is( invParam.backup_inv_param.xml );
+	    XMLReader backup_solver_reader( is );
+	    
+	    Handle< MdagMSystemSolver< T > > backup_solver;
+
+	    try { 
+	      backup_solver = TheMdagMFermSystemSolverFactory::Instance().createObject(
+										       invParam.backup_inv_param.id,  
+										       backup_solver_reader,
+										       "/BackupSolverParam", 
+										       state,
+										       A );
+
+	    }
+	    catch(const std::string e) {
+	      backup_solver_reader.print(std::cout);
+	      QDPIO::cout << "Caught exception: " << e << endl;
+	      QDP_abort(1);
+	    }
+
+	    QDPIO::cout << "PERFORMING BACKUP SOLVE" << endl;
+
+	    // Backup solver will re-predict
+	    res =  (*backup_solver)(psi, chi, predictor);
+
+	    // Check solution 
+	    { 
+	      T r;
+	      r[A->subset()]=chi;
+	      T tmp;
+	      (*MdagM)(tmp, psi, PLUS);
+	      r[A->subset()] -= tmp;
+	      res.resid = sqrt(norm2(r, A->subset()));
+	    }
+
+	    rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
+	    if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
+	      QDPIO::cout << "ERROR: BACKUP SOLVE FAILED" << endl;
+	      QDP_abort(1);
+	    }
+	  }
+	  else { 
+	    // No backup solve 
+	    QDPIO::cout << "SOLVER FAILED: Aborting" << endl;
+	    QDP_abort(1);
+	  }
 	}
+	else { 
+	  // (not so)SILENT FAILURE:
+	  QDPIO::cout << "WARNING: Solver failed but SILENT FAILURE is ENABLED. Continuing" << endl;
+	}
+
       }
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << endl;
       END_CODE();
       return res;
     }
@@ -699,9 +843,7 @@ namespace Chroma
     // Hide default constructor
     MdagMSysSolverQUDAClover() {}
     
-#if 1
     Q links_orig;
-#endif
 
     U GFixMat;
     QudaPrecision_s cpu_prec;
@@ -709,15 +851,16 @@ namespace Chroma
     QudaPrecision_s gpu_half_prec;
 
     Handle< LinearOperator<T> > A;
+    Handle< FermState<T,Q,Q> > state;
     const SysSolverQUDACloverParams invParam;
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+    Handle< typename CloverTermT<T, U>::Type_t > clov;
+    Handle< typename CloverTermT<T, U>::Type_t > invclov;
 
-    SystemSolverResults_t qudaInvert(const QDPCloverTermT<T, U>& clover,
-				     const QDPCloverTermT<T, U>& inv_clov,
+    SystemSolverResults_t qudaInvert(const CloverTermT<T, U>::Type_t& clover,
+				     const CloverTermT<T, U>::Type_t& inv_clov,
 				     const T& chi_s,
 				     T& psi_s     
 				     )const ;

@@ -103,6 +103,24 @@ namespace Chroma {
       innerParamsP = false;
     }
 
+    if ( paramtop.count("BackupSolverParam") > 0 ) { 
+      // If user specified a backup solver, let's read it
+      backup_invP = true;
+      backup_inv_param = readXMLGroup(paramtop, "./BackupSolverParam", "invType");
+    }
+    else { 
+      // No backup
+      backup_invP = false;
+      backup_inv_param.xml = "";
+    }
+
+    if ( paramtop.count("DumpOnFail") > 0 ) { 
+      read(paramtop, "DumpOnFail", dump_on_failP);
+    }
+    else { 
+      dump_on_failP  = false;
+    }
+    
 
   }
 
@@ -135,6 +153,17 @@ namespace Chroma {
     write(xml, "AutotuneDslash", p.tuneDslashP);
     if( p.innerParamsP ) { 
       write(xml, "GCRInnerParams", *(p.innerParams));
+    }
+
+    write(xml, "DumpOnFail", p.dump_on_failP);
+
+    if( p.backup_invP ) { 
+      // Need to dump out the XML for the back up solver here...
+      // Turn XML into an istringstream
+      std::istringstream is( p.backup_inv_param.xml);
+      XMLReader tmp_reader(is);
+      // I wonder if this method works....
+      write(xml, "BackupSolverParam", tmp_reader);
     }
     pop(xml);
 

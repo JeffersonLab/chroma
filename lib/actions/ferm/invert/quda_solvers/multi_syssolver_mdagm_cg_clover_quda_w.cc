@@ -64,7 +64,12 @@ namespace Chroma
       //
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
       // No need to transform source
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+#endif
+
     }
     else { 
       QDPIO::cout << "MATPC Type not allowed." << endl;
@@ -86,12 +91,19 @@ namespace Chroma
  
     psi_s.resize( shifts.size());
 
-    
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
     for(int s=0; s < shifts.size(); s++) {
       psi_s[s][ rb[1] ] = zero;
       spinorOut[s] = (void *)&(psi_s[s].elem(rb[1].start()).elem(0).elem(0).real());
       quda_inv_param.offset[s] = toDouble(shifts[s]);
    } 
+#else
+    for(int s=0; s < shifts.size(); s++) {
+      psi_s[s][ rb[1] ] = zero;
+      spinorOut[s] = QDPCache::Instance().getDevicePtr( psi_s[s].getId() );
+      quda_inv_param.offset[s] = toDouble(shifts[s]);
+   } 
+#endif
 
    quda_inv_param.num_offset = shifts.size();
 

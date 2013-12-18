@@ -192,6 +192,7 @@ namespace Chroma
 			   const SysSolverOptEigCGParams& invParam_) : 
       MdagM(new MdagMLinOp<T>(A_)), A(A_), invParam(invParam_) 
       {
+#ifndef QDP_IS_QDPJIT
 	numMatvecs = 0 ;
 	// NEED to grab the eignvectors from the named buffer here
 	if (! TheNamedObjMap::Instance().check(invParam.eigen_id))
@@ -208,6 +209,7 @@ namespace Chroma
 	    QIOReadOptEvecs() ;
 	  }
 	}
+#endif
       }
 
     //! Destructor is automatic

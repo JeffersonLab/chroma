@@ -165,6 +165,7 @@ namespace Chroma
 				    Handle< LinearOperator<T> > MdagM, 
 				    const SysSolverOptEigCGParams& invParam)
     {
+#ifndef QDP_IS_QDPJIT
       START_CODE();
 
       SystemSolverResults_t res;  // initialized by a constructor
@@ -257,6 +258,7 @@ namespace Chroma
       END_CODE();
 
       return res;
+#endif
     }
 
   } // anonymous namespace

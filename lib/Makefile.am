@@ -939,8 +939,8 @@ nobase_include_HEADERS += \
 #
 # Include path and any other compiler flags
 # 
-AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
-AM_CXXFLAGS += @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
+AM_CXXFLAGS  = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib 
+AM_CXXFLAGS += @CXXFLAGS@ @QDPXX_CXXFLAGS@ @BAGEL_WILSON_DSLASH_CXXFLAGS@
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
                -I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
 
@@ -1832,6 +1832,11 @@ if BUILD_SSED_CLOVER_APPLY
 nobase_include_HEADERS += actions/ferm/linop/clover_term_ssed.h
 libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
 	actions/ferm/linop/clover_apply_ssed.cc
+endif
+
+if BUILD_JIT_CLOVER_APPLY
+nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h
+libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc
 endif
 
 

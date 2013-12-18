@@ -134,6 +134,23 @@ AC_ARG_ENABLE(ssed_clover,
 	[ssed_clover_enabled="no"]
 )
 
+AC_ARG_ENABLE(jit_clover,
+	AC_HELP_STRING(
+        [--enable-jit-clover], 
+	[Enable QDP-JIT clover operator]),
+	[jit_clover_enabled="${enableval}"],
+	[jit_clover_enabled="no"]
+)
+
+AC_ARG_ENABLE(quda_deviface,
+	AC_HELP_STRING(
+        [--enable-quda-deviface], 
+	[Enable QUDA device pointer interface]),
+	[quda_deviface_enabled="${enableval}"],
+	[quda_deviface_enabled="no"]
+)
+
+
 AC_ARG_ENABLE(lapack,
   AC_HELP_STRING([--enable-lapack=<type>],
     [Use the type of lapack bindings specified by <type>. Currently, this can be lapack]),
@@ -642,6 +659,37 @@ else
 fi
 
 AM_CONDITIONAL(BUILD_SSED_CLOVER_APPLY, [test "x${ssed_clover_enabled}x" = "xyesx" ])
+
+dnl ************************************************************************
+dnl **** QDP-JIT clover                                                 ****
+dnl ************************************************************************
+if test "X${jit_clover_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with QDP-JIT Clover] )   
+   AC_DEFINE([BUILD_JIT_CLOVER_TERM],[], [ Use JIT Clover Term Apply, requires to build on top of QDP-JIT/PTX ])
+else
+   AC_MSG_NOTICE( [Not using QDP-JIT Clover] )
+fi
+
+AM_CONDITIONAL(BUILD_JIT_CLOVER_APPLY, [test "x${jit_clover_enabled}x" = "xyesx" ])
+
+
+dnl ************************************************************************
+dnl **** QUDA device interface                                          ****
+dnl ************************************************************************
+if test "X${quda_deviface_enabled}X" = "XyesX";
+then
+   AC_MSG_NOTICE( [Building with QUDA device pointer interface] )
+   AC_DEFINE([BUILD_QUDA_DEVIFACE_SPINOR],[], [ Use of QUDA device pointer interface SPINOR, requires to build on top of QDP-JIT/PTX ])
+   AC_DEFINE([BUILD_QUDA_DEVIFACE_GAUGE],[], [ Use of QUDA device pointer interface GAUGE, requires to build on top of QDP-JIT/PTX ])
+   AC_DEFINE([BUILD_QUDA_DEVIFACE_CLOVER],[], [ Use of QUDA device pointer interface CLOVER, requires to build on top of QDP-JIT/PTX ])
+else
+   AC_MSG_NOTICE( [Not using QUDA device pointer interface] )
+fi
+
+
+
+
 
 
 dnl ************************************************************************

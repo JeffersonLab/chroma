@@ -11,7 +11,7 @@
 #include "qdp_config.h"
 
 // The QDP naive clover term
-#include "clover_term_qdp_w.h"
+//
 
 
 // The following is an ifdef lis that switches in optimised
@@ -42,15 +42,38 @@ namespace Chroma {
   typedef QDPCloverTermF CloverTermF;
   typedef SSEDCloverTerm CloverTermD;
 
-} 
+}
+#elif defined(BUILD_JIT_CLOVER_TERM)
+
+# include "clover_term_ptx_w.h"
+namespace Chroma {
+ 
+  typedef PTXCloverTerm CloverTerm;
+  typedef PTXCloverTermF CloverTermF;
+  typedef PTXCloverTermD CloverTermD;
+
+  template<typename T,typename U>
+  struct CloverTermT {
+    typedef PTXCloverTermT<T,U> Type_t;
+  };
+
+
+}
 #else 
 
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash
 // becomes the WilsonDslash
+
+#include "clover_term_qdp_w.h"
 namespace Chroma {
   typedef QDPCloverTerm CloverTerm;
   typedef QDPCloverTermF CloverTermF;
   typedef QDPCloverTermD CloverTermD;
+
+  template<typename T,typename U>
+  struct CloverTermT {
+    typedef QDPCloverTermT<T,U> Type_t;
+  };
 }  // end namespace Chroma
 #endif
 

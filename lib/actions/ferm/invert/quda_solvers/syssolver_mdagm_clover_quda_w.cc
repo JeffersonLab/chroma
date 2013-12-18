@@ -18,6 +18,12 @@
 #include <quda.h>
 // #include <util_quda.h>
 
+
+//#undef BUILD_QUDA_DEVIFACE_GAUGE
+//#undef BUILD_QUDA_DEVIFACE_SPINOR
+//#undef BUILD_QUDA_DEVIFACE_CLOVER
+
+
 namespace Chroma
 {
   namespace MdagMSysSolverQUDACloverEnv
@@ -58,8 +64,8 @@ namespace Chroma
   }
 
   SystemSolverResults_t 
-  MdagMSysSolverQUDAClover::qudaInvert(const QDPCloverTermT<T, U>& clover,
-				       const QDPCloverTermT<T, U>& invclov,
+  MdagMSysSolverQUDAClover::qudaInvert(const typename CloverTermT<T, U>::Type_t& clover,
+				       const typename CloverTermT<T, U>::Type_t& invclov,
 				       const T& chi_s,
 				       T& psi_s) const{
 
@@ -77,14 +83,22 @@ namespace Chroma
       //
       // Solve A_oo - D A^{-1}_ee D -- chroma conventions.
       // No need to transform source
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
       spinorIn =(void *)&(chi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+      spinorIn = QDPCache::Instance().getDevicePtr( chi_s.getId() );
+#endif
     }
     else { 
       QDPIO::cout << "MATPC Type not allowed." << endl;
       QDP_abort(1);
     }
 
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
     void* spinorOut =(void *)&(psi_s.elem(rb[1].start()).elem(0).elem(0).real());
+#else
+    void* spinorOut = QDPCache::Instance().getDevicePtr( psi_s.getId() );
+#endif
 
     // Do the solve here 
     StopWatch swatch1; 

@@ -17,7 +17,7 @@
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
 #include "actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h"
-#include "actions/ferm/linop/clover_term_qdp_w.h"
+#include "actions/ferm/linop/clover_term_w.h"
 #include "meas/gfix/temporal_gauge.h"
 #include "io/aniso_io.h"
 #include <string>
@@ -66,7 +66,7 @@ namespace Chroma
     MdagMMultiSysSolverCGQudaClover(Handle< LinearOperator<T> > M_,
 				      Handle< FermState<T,P,Q> > state_,
 				      const MultiSysSolverQUDACloverParams& invParam_) : 
-      A(M_), invParam(invParam_), clov(new QDPCloverTermT<T,U>()), invclov(new QDPCloverTermT<T,U>())
+      A(M_), invParam(invParam_), clov(new CloverTermT<T,U>::Type_t()), invclov(new CloverTermT<T,U>::Type_t())
 
     {
       QDPIO::cout << "MdagMMultiSysSolverCGQUDAClover: " << endl;
@@ -133,7 +133,14 @@ namespace Chroma
 
       // 5) - set QUDA_WILSON_LINKS, QUDA_GAUGE_ORDER
       q_gauge_param.type = QUDA_WILSON_LINKS;
+
+#ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
+#else
+      QDPIO::cout << "MULTI MDAGM Using QDP-JIT gauge order" << endl;
+      q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
+      q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
+#endif
 
       // 6) - set t_boundary
       // Convention: BC has to be applied already
@@ -277,8 +284,17 @@ namespace Chroma
       quda_inv_param.cuda_prec = gpu_prec;
       quda_inv_param.cuda_prec_sloppy = gpu_half_prec;
       quda_inv_param.preserve_source = QUDA_PRESERVE_SOURCE_NO;
-      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
       quda_inv_param.gamma_basis = QUDA_DEGRAND_ROSSI_GAMMA_BASIS;
+
+#ifndef BUILD_QUDA_DEVIFACE_SPINOR
+      quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
+#else
+      QDPIO::cout << "MULTI MDAGM Using QDP-JIT spinor order" << endl;
+      quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
+      quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
+      quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
+#endif
+
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
@@ -329,7 +345,15 @@ namespace Chroma
       quda_inv_param.clover_cpu_prec = cpu_prec;
       quda_inv_param.clover_cuda_prec = gpu_prec;
       quda_inv_param.clover_cuda_prec_sloppy = gpu_half_prec;
+
+#ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
+#else      
+      QDPIO::cout << "MULTI MDAGM clover CUDA location\n";
+      quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
+      quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
+#endif
+
     
       if( invParam.verboseP ) { 
 	quda_inv_param.verbosity = QUDA_VERBOSE;
@@ -342,7 +366,11 @@ namespace Chroma
       void* gauge[4]; 
 
       for(int mu=0; mu < Nd; mu++) { 
+#ifndef BUILD_QUDA_DEVIFACE_GAUGE
 	gauge[mu] = (void *)&(links_single[mu].elem(all.start()).elem().elem(0,0).real());
+#else
+	gauge[mu] = QDPCache::Instance().getDevicePtr( links_single[mu].getId() );
+#endif
 
       }
 
@@ -358,6 +386,8 @@ namespace Chroma
       invclov->choles(0);
       invclov->choles(1);
 
+
+#ifndef BUILD_QUDA_DEVIFACE_CLOVER
       multi1d<QUDAPackedClovSite<REALT> > packed_clov;
 
       // Only compute clover if we're using asymmetric preconditioner
@@ -372,6 +402,25 @@ namespace Chroma
       invclov->packForQUDA(packed_invclov, 1);
 
       loadCloverQuda(&(packed_clov[0]), &(packed_invclov[0]),&quda_inv_param);
+#else
+      void *clover[2];
+      void *cloverInv[2];
+
+      clover[0] = QDPCache::Instance().getDevicePtr( clov->getOffId() );
+      clover[1] = QDPCache::Instance().getDevicePtr( clov->getDiaId() );
+
+      cloverInv[0] = QDPCache::Instance().getDevicePtr( invclov->getOffId() );
+      cloverInv[1] = QDPCache::Instance().getDevicePtr( invclov->getDiaId() );
+
+      // std::cout << "MDAGM clover CUDA pointers: " 
+      // 		<< clover[0] << " "
+      // 		<< clover[1] << " "
+      // 		<< cloverInv[0] << " "
+      // 		<< cloverInv[1] << "\n";
+
+      loadCloverQuda( (void*)(clover) , (void*)(cloverInv) ,&quda_inv_param);
+#endif
+
     }
 
     //! Destructor is automatic
@@ -475,8 +524,8 @@ namespace Chroma
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
-    Handle< QDPCloverTermT<T, U> > clov;
-    Handle< QDPCloverTermT<T, U> > invclov;
+    Handle< typename CloverTermT<T, U>::Type_t > clov;
+    Handle< typename CloverTermT<T, U>::Type_t > invclov;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,

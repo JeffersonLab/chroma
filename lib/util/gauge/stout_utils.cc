@@ -4,8 +4,13 @@
  *  \brief Stout utilities
  */
 
+#include "chroma_config.h"
 #include "chromabase.h"
 #include "util/gauge/stout_utils.h"
+
+//#if defined(BUILD_JIT_CLOVER_TERM)
+//#include "util/gauge/stout_utils_ptx.h"
+//#endif
 
 namespace Chroma 
 { 
@@ -356,11 +361,15 @@ namespace Chroma
 	multi1d<LatticeComplex>& b2;
 	bool dobs;
       };
+
+
+
       
     inline 
     void getFsAndBsSiteLoop(int lo, int hi, int myId, 
 			      GetFsAndBsArgs* arg)
     {
+#ifndef QDP_IS_QDPJIT
       const LatticeColorMatrix& Q = arg->Q;
       const LatticeColorMatrix& QQ = arg->QQ;
       multi1d<LatticeComplex>& f = arg->f;
@@ -810,6 +819,7 @@ namespace Chroma
 	  
 	} // End of if( corner_caseP ) else {}
       } // End site loop
+#endif
     } // End Function
 
     } // End Namespace
@@ -828,16 +838,26 @@ namespace Chroma
       swatch.start();
       
       f.resize(3);
-      if( dobs ) { 
-	b1.resize(3);
-	b2.resize(3);
-      }
+
+      b1.resize(3);
+      b2.resize(3);
+
       
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
-      dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+      //QDPIO::cout << "PTX getFsAndBs dobs = " << dobs << "\n";
+      static CUfunction function;
       
-      // Drop into a site loop here...
+      if (function == NULL)
+	function = function_get_fs_bs_build( Q,QQ,f,b1,b2,dobs );
+      
+      // Execute the function
+      function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
+#else
+      dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+#endif
 
       swatch.stop();
       StoutLinkTimings::functions_secs += swatch.getTimeInSeconds();

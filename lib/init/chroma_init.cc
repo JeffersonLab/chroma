@@ -5,6 +5,9 @@
 
 #include "chroma_config.h"
 
+#if defined(BUILD_JIT_CLOVER_TERM)
+#include "../actions/ferm/linop/clover_term_ptx_w.h"
+#endif
 
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
@@ -88,9 +91,14 @@ namespace Chroma
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
   {
+#ifndef QDP_IS_QDPJIT
     if (! QDP_isInitialized())
       QDP_initialize(argc, argv);
-    
+#else
+    if (! QDP_isInitialized())
+      QDP_initialize_CUDA(argc, argv);
+#endif
+
     for(int i=0; i < *argc; i++) 
     {
       // Get argv[i] into a string
@@ -181,14 +189,38 @@ namespace Chroma
     }
 
 
-#ifdef BUILD_QUDA
-    QDPIO::cout << "Initializing QUDA" << endl;
-    initQuda(-1);
-#endif
 #ifdef QDP_IS_QDPJIT
-    QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
-    QDP_startGPU();
+#ifdef BUILD_QUDA
+  std::cout << "Setting CUDA device" << endl;
+  int cuda_device = QDP_setGPU();
+  std::cout << "Setting QUDA verbosity to silent" << endl;
+  setVerbosityQuda(QUDA_SILENT, "", stdout);
+  //std::cout << "Setting QUDA verbosity to summarize" << endl;
+  //setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
+  std::cout << "Initializing QMP part" << endl;
+  QDP_initialize_QMP(argc, argv);
+  std::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << endl;
+  initQudaDevice(cuda_device);
+  std::cout << "Initializing QDP-JIT GPUs" << endl;
+  QDP_startGPU();
+  std::cout << "Initializing QUDA memory" << endl;
+  initQudaMemory();
+#else
+  std::cout << "Setting device" << endl;
+  QDP_setGPU();
+  std::cout << "Initializing QMP part" << endl;
+  QDP_initialize_QMP(argc, argv);
+  QDPIO::cout << "Initializing start GPUs" << endl;
+  QDP_startGPU();
 #endif
+#else
+#ifdef BUILD_QUDA
+  std::cout << "Initializing QUDA" << endl;
+  initQuda(-1);
+#endif
+#endif
+
+
 
 
   }
@@ -201,6 +233,11 @@ namespace Chroma
 #ifdef BUILD_QUDA
     endQuda();
 #endif
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+    QDP_info_primary("Time for packForQUDA: %f sec",PackForQUDATimer::Instance().get() / 1.0e6);
+#endif
+
     if (! QDP_isInitialized())
       return;
 

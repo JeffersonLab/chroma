@@ -28,6 +28,7 @@ namespace Chroma
   void ILUPrecSCprecTCloverLinOp::create(Handle< FermState<T,P,Q> > fs_,
 					const CloverFermActParams& param_)
   {
+#ifndef QDP_IS_QDPJIT
     START_CODE();
 
     // Copy Params
@@ -251,6 +252,7 @@ namespace Chroma
 #endif		 
 
     END_CODE();
+#endif
   }
 
 
