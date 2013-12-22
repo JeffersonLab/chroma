@@ -30,6 +30,7 @@ namespace Chroma {
 #elif defined(BUILD_SSED_CLOVER_TERM)
 
 # include "clover_term_ssed.h"
+#include "clover_term_qdp_w.h"
 namespace Chroma {
  
 
@@ -37,6 +38,10 @@ namespace Chroma {
   typedef QDPCloverTerm CloverTerm;
 #else
   typedef SSEDCloverTerm CloverTerm;
+  template<typename T,typename U>
+  struct CloverTermT {
+    typedef QDPCloverTermT<T,U> Type_t;
+  };
 #endif
 
   typedef QDPCloverTermF CloverTermF;
