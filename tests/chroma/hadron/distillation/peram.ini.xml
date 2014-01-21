@@ -25,7 +25,7 @@
       </Param>
       <NamedObject>
         <colorvec_file>./colorvec.mod</colorvec_file>
-        <soln_file>./prop.mod</soln_file>
+        <soln_files><elem>./prop.mod</elem></soln_files>
         <peram_file>./prop.sdb</peram_file>
       </NamedObject>
     </elem>
@@ -47,7 +47,7 @@
       </Param>
       <NamedObject>
         <colorvec_file>./colorvec.mod</colorvec_file>
-        <soln_file>./prop.mod</soln_file>
+        <soln_files><elem>./prop.mod</elem></soln_files>
         <peram_file>./prop.sdb</peram_file>
       </NamedObject>
     </elem>
