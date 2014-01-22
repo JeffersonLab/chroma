@@ -41,25 +41,28 @@ namespace Chroma
       write(xml_out, "num_terms", monomials.size());
       push(xml_out, "ForcesByMonomial");
 
-      if( monomials.size() > 0 ) { 
-	push(xml_out, "elem");
-	swatch.reset(); swatch.start();
-	monomials[0].mon->dsdq(dsdQ,s);
-	swatch.stop();
-	QDPIO::cout << "FORCE TIME: " << monomials[0].id <<  " : " << swatch.getTimeInSeconds() << endl;
-	pop(xml_out); //elem
-	for(int i=1; i < monomials.size(); i++) { 
-	  push(xml_out, "elem");
-	  multi1d<LatticeColorMatrix> cur_F(Nd);
-	  swatch.reset(); swatch.start();
-	  monomials[i].mon->dsdq(cur_F, s);
-	  swatch.stop();
-	  dsdQ += cur_F;
+      // Simon:
+      // The way this was previously written we need two temporaries, and one of
+      // them was constantly reallocated, which is expensive.
+      // I changed this into adding to s right away.
+      // Note that this way we do more flops, but we should be bound by memory
+      // bandwidth anyway, i.e.,
+      //     s + tau(f_1 + f_2 + ... + f_n)
+      // vs.
+      //     s + tau f_1 + tau f_2 + ... + tau f_n
+      // should perform similarly fast.
+      for(int i=0; i < monomials.size(); i++) {
+        push(xml_out, "elem");
+        swatch.reset();
+        swatch.start();
+        monomials[i].mon->dsdq(dsdQ, s);
+        swatch.stop();
+        for(int mu=0; mu<Nd; mu++)
+          (s.getP())[mu] += real_step_size[mu] * dsdQ[mu];
 
-	  QDPIO::cout << "FORCE TIME: " << monomials[i].id << " : " << swatch.getTimeInSeconds() << "\n";
- 
-	  pop(xml_out); // elem
-	}
+        QDPIO::cout << "FORCE TIME: " << monomials[i].id << " : " << swatch.getTimeInSeconds() << "\n";
+
+        pop(xml_out); // elem
       }
       pop(xml_out); // ForcesByMonomial
       //monitorForces(xml_out, "TotalForcesThisLevel", dsdQ);
@@ -67,9 +70,6 @@ namespace Chroma
 
 
       for(int mu =0; mu < Nd; mu++) {
-
-	(s.getP())[mu] += real_step_size[mu] * dsdQ[mu];
-	
 	// taproj it...
 	taproj( (s.getP())[mu] );
       }
