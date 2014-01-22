@@ -390,6 +390,10 @@ namespace Chroma
       
       // Create a field state
       GaugeFieldState gauge_state(p,u);
+
+      // Simon: p and u not needed after this
+      p.resize(0);
+      u.resize(0);
       
       // Set the update number
       unsigned long cur_update=mc_control.start_update_num;
