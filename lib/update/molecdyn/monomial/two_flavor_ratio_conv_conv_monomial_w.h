@@ -147,7 +147,6 @@ namespace Chroma
       
       // Create a linear operator for the Expensive op
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
 
       Phi eta = zero;
       
@@ -191,6 +190,9 @@ namespace Chroma
       // Solve MdagM_prec X = eta
       SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
 
+      // Simon: we do not need M anymore => "delete" it, to save memory
+      M = Handle< DiffLinearOperator<Phi,P,Q> > (0);
+      Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
       (*M_prec)(getPhi(), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
 
       // Now invert M_prec^{dagger} on it
