@@ -74,19 +74,16 @@ namespace Chroma
 
       // Create a state for linop
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
-	
-      // Get system solver
-      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,getNumerInvParams()));
 
       // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));	
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
 
       Phi X=zero;
       Phi Y=zero;
 
       // Need MdagM for CG based predictor
-      Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
+      // Simon: unused, so I remove the alloc
+      //Handle< DiffLinearOperator<Phi,P,Q> > MdagM(FA.lMdagM(state));
       Phi M_dag_prec_phi;
 
       // M_dag_prec phi = M^{dag}_prec \phi - the RHS
@@ -94,11 +91,17 @@ namespace Chroma
 
       //(getMDSolutionPredictor())(X, *MdagM, M_dag_prec_phi);
 
+      // Get system solver
+      Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state,getNumerInvParams()));
       // Solve MdagM X = eta
       SystemSolverResults_t res = (*invMdagM)(X, M_dag_prec_phi, getMDSolutionPredictor());
 
+      // Simon: we do not need invMdagM anymore => "delete" it, to save memory
+      invMdagM = Handle< MdagMSystemSolver<Phi> > (0);
+
       // (getMDSolutionPredictor()).newVector(X);
       
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
       (*M)(Y, X, PLUS);
 
       // \phi^{\dagger} \dot(M_prec) X
