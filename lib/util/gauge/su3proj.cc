@@ -28,6 +28,61 @@ namespace Chroma
   {
     START_CODE();
 
+#ifdef __MIC
+	  void su2Extract_index(const int su2_index, int &i1, int &i2);
+	  int i1, i2;
+	  su2Extract_index(su2_index, i1, i2);
+	  
+		const Subset &s=mstag;
+ 		const int* tab = s.siteTable().slice();
+
+ #pragma omp parallel for
+		for(int j=0; j < s.numSiteTable(); ++j)
+		{
+			int i = tab[j];
+			
+			PColorMatrix<RComplex<REAL>, Nc> v;
+			//ColorMatrix v;
+			v = u.elem(i).elem() * w.elem(i).elem();
+			
+			multi1d<REAL> r(4);
+		  void su2Extract(multi1d<REAL>& r,
+	       const PColorMatrix<RComplex<REAL>, Nc>& source, 
+	       const int i1, const int i2);
+			su2Extract(r, v, i1, i2);
+
+			REAL r_l = 0;
+	    r_l = sqrt(r[0]*r[0] + r[1]*r[1] + r[2]*r[2] + r[3]*r[3]);
+
+    	// Normalize
+			LOGICAL lbtmp = false;
+	    lbtmp = r_l > toDouble(fuzz);
+			REAL lftmp = 1.0 / (lbtmp ? r_l : 1.0);
+
+			// Fill   (r[0]/r_l, -r[1]/r_l, -r[2]/r_l, -r[3]/r_l) for r_l > fuzz
+			//  and   (1,0,0,0)  for sites with r_l < fuzz
+			multi1d<REAL> a(4);
+			a[0] = lbtmp ? r[0] * lftmp : 1.0;
+			a[1] = lbtmp ? -(r[1] * lftmp) : 0.0;
+			a[2] = lbtmp ? -(r[2] * lftmp) : 0.0;
+			a[3] = lbtmp ? -(r[3] * lftmp) : 0.0;
+
+    /*
+     * Now fill an SU(3) matrix V with the SU(2) submatrix su2_index
+     * paramtrized by a_k in the sigma matrix basis.
+     */
+			void sunFill(PColorMatrix<QDP::RComplex<REAL>, Nc>& dest, const multi1d<REAL>& r,	const int i1, const int i2);
+			//void sunFill(ColorMatrix& dest, const multi1d<Real>& r,	const int i1, const int i2);
+			sunFill(v, a, i1, i2);
+
+			// U = V*U
+			//ColorMatrix tmp;
+			PColorMatrix<RComplex<REAL>, Nc> tmp;
+			tmp = v * u.elem(i).elem();
+			u.elem(i).elem() = tmp;
+		}
+		
+#else
     // V = U*W
     LatticeColorMatrix v;
     v[mstag] = u * w;
@@ -69,6 +124,7 @@ namespace Chroma
     LatticeColorMatrix tmp;
     tmp[mstag] = v * u;
     u[mstag] = tmp;
+#endif
 
     END_CODE();
   }
