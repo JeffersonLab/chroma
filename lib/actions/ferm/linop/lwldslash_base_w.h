@@ -160,11 +160,12 @@ namespace Chroma
 
     const multi1d<Real>& anisoWeights = getCoeffs();
 
+		T temp_ferm1, temp_ferm2;
+		typename HalfFermionType<T>::Type_t tmp_h;
+		P temp_mat(1);
+
     for(int mu = 0; mu < Nd; ++mu) 
     {
-      // Break this up to use fewer expressions:
-      T temp_ferm1;
-      typename HalfFermionType<T>::Type_t tmp_h;
 
       switch (isign) 
       {
@@ -199,7 +200,6 @@ namespace Chroma
       case MINUS:
       {
 	// Daggered: Plus Projectors
-	typename HalfFermionType<T>::Type_t tmp_h;
 	switch(mu) 
 	{
 	case 0:
@@ -229,10 +229,7 @@ namespace Chroma
       }
 
       // QDP Shifts the whole darn thing anyhow
-      T temp_ferm2 = shift(temp_ferm1, FORWARD, mu);
-      P temp_mat;
-      temp_mat.resize(1);
-
+      temp_ferm2 = shift(temp_ferm1, FORWARD, mu);
       // This step supposedly optimised in QDP++
       (temp_mat[0])[rb[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
     
