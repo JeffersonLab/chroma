@@ -1594,7 +1594,7 @@ namespace Chroma
 	RComplex<REALT>* cchi = (RComplex<REALT>*)&(chi.elem(site).elem(0).elem(0));
 	const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(psi.elem(site).elem(0).elem(0));
 #if 0
-#warning "Using unrolled clover term"
+#warning "Using rolled clover term"
       // Rolled version
       for(int i = 0; i < n; ++i)
       {
