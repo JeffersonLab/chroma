@@ -399,6 +399,125 @@ namespace Chroma
     /* This is the extracted site loop for makeClover */
     template<typename U>
     inline 
+    void makeClovOMPSiteLoop(const int nodeSites, QDPCloverMakeClovArg<U> &a)
+    {
+      typedef typename QDPCloverMakeClovArg<U>::RealT RealT;
+      typedef typename QDPCloverMakeClovArg<U>::REALT REALT;
+      
+      const RealT& diag_mass = a.diag_mass;
+      const U& f0=a.f0;
+      const U& f1=a.f1;
+      const U& f2=a.f2;
+      const U& f3=a.f3;
+      const U& f4=a.f4;
+      const U& f5=a.f5;
+      multi1d<PrimitiveClovTriang < REALT > >& tri=a.tri;
+
+      // SITE LOOP STARTS HERE
+#pragma omp parallel for
+      for(int site = 0; site < nodeSites; ++site)  
+      {
+				/*# Construct diagonal */
+	
+				for(int jj = 0; jj < 2; jj++) 
+					for(int ii = 0; ii < 2*Nc; ii++) 
+						tri[site].diag[jj][ii] = diag_mass.elem().elem().elem();
+	
+				RComplex<REALT> E_minus;
+				RComplex<REALT> B_minus;
+				RComplex<REALT> ctmp_0;
+				RComplex<REALT> ctmp_1;
+				RScalar<REALT> rtmp_0;
+				RScalar<REALT> rtmp_1;
+	
+				for(int i = 0; i < Nc; ++i) 
+				{
+					/*# diag_L(i,0) = 1 - i*diag(E_z - B_z) */
+					/*#             = 1 - i*diag(F(3,2) - F(1,0)) */
+					ctmp_0 = f5.elem(site).elem().elem(i,i);
+					ctmp_0 -= f0.elem(site).elem().elem(i,i);
+					rtmp_0 = imag(ctmp_0);
+					tri[site].diag[0][i] += rtmp_0;
+		
+					/*# diag_L(i+Nc,0) = 1 + i*diag(E_z - B_z) */
+					/*#                = 1 + i*diag(F(3,2) - F(1,0)) */
+					tri[site].diag[0][i+Nc] -= rtmp_0;
+		
+					/*# diag_L(i,1) = 1 + i*diag(E_z + B_z) */
+					/*#             = 1 + i*diag(F(3,2) + F(1,0)) */
+					ctmp_1 = f5.elem(site).elem().elem(i,i);
+					ctmp_1 += f0.elem(site).elem().elem(i,i);
+					rtmp_1 = imag(ctmp_1);
+					tri[site].diag[1][i] -= rtmp_1;
+		
+					/*# diag_L(i+Nc,1) = 1 - i*diag(E_z + B_z) */
+					/*#                = 1 - i*diag(F(3,2) + F(1,0)) */
+					tri[site].diag[1][i+Nc] += rtmp_1;
+				}
+	
+				/*# Construct lower triangular portion */
+				/*# Block diagonal terms */
+				for(int i = 1; i < Nc; ++i) 
+				{
+					for(int j = 0; j < i; ++j) 
+					{
+						int elem_ij  = i*(i-1)/2 + j;
+						int elem_tmp = (i+Nc)*(i+Nc-1)/2 + j+Nc;
+			
+						/*# L(i,j,0) = -i*(E_z - B_z)[i,j] */
+						/*#          = -i*(F(3,2) - F(1,0)) */
+						ctmp_0 = f0.elem(site).elem().elem(i,j);
+						ctmp_0 -= f5.elem(site).elem().elem(i,j);
+						tri[site].offd[0][elem_ij] = timesI(ctmp_0);
+			
+						/*# L(i+Nc,j+Nc,0) = +i*(E_z - B_z)[i,j] */
+						/*#                = +i*(F(3,2) - F(1,0)) */
+						tri[site].offd[0][elem_tmp] = -tri[site].offd[0][elem_ij];
+			
+						/*# L(i,j,1) = i*(E_z + B_z)[i,j] */
+						/*#          = i*(F(3,2) + F(1,0)) */
+						ctmp_1 = f5.elem(site).elem().elem(i,j);
+						ctmp_1 += f0.elem(site).elem().elem(i,j);
+						tri[site].offd[1][elem_ij] = timesI(ctmp_1);
+			
+						/*# L(i+Nc,j+Nc,1) = -i*(E_z + B_z)[i,j] */
+						/*#                = -i*(F(3,2) + F(1,0)) */
+						tri[site].offd[1][elem_tmp] = -tri[site].offd[1][elem_ij];
+					}
+				}
+	
+				/*# Off-diagonal */
+				for(int i = 0; i < Nc; ++i) 
+				{
+					for(int j = 0; j < Nc; ++j) 
+					{
+						// Flipped index
+						// by swapping i <-> j. In the past i would run slow
+						// and now j runs slow
+						int elem_ij  = (i+Nc)*(i+Nc-1)/2 + j;
+			
+						/*# i*E_- = (i*E_x + E_y) */
+						/*#       = (i*F(3,0) + F(3,1)) */
+						E_minus = timesI(f2.elem(site).elem().elem(i,j));
+						E_minus += f4.elem(site).elem().elem(i,j);
+			
+						/*# i*B_- = (i*B_x + B_y) */
+						/*#       = (i*F(2,1) - F(2,0)) */
+						B_minus = timesI(f3.elem(site).elem().elem(i,j));
+						B_minus -= f1.elem(site).elem().elem(i,j);
+			
+						/*# L(i+Nc,j,0) = -i*(E_- - B_-)  */
+						tri[site].offd[0][elem_ij] = B_minus - E_minus;
+			
+						/*# L(i+Nc,j,1) = +i*(E_- + B_-)  */
+						tri[site].offd[1][elem_ij] = E_minus + B_minus;
+					}
+				}
+      } /* End Site loop */
+    } /* Function */
+
+    template<typename U>
+    inline 
     void makeClovSiteLoop(int lo, int hi, int myId, QDPCloverMakeClovArg<U> *a)
     {
 #ifndef QDP_IS_QDPJIT
@@ -551,8 +670,13 @@ namespace Chroma
     tri.resize(nodeSites);  // hold local lattice
 
     QDPCloverEnv::QDPCloverMakeClovArg<U> arg = {diag_mass, f0,f1,f2,f3,f4,f5,tri };
+
+#ifdef __MIC
+		QDPCloverEnv::makeClovOMPSiteLoop<U>(nodeSites, arg);
+#else
     dispatch_to_threads(nodeSites, arg, QDPCloverEnv::makeClovSiteLoop<U>);
               
+#endif              
 
     END_CODE();
   }
@@ -1562,6 +1686,69 @@ namespace Chroma
       int cb;
     };
 
+    template<typename T>
+    void applyOMPSiteLoop(int nodeSites, ApplyArgs<T> &arg)
+    {
+      START_CODE();
+
+      typedef typename WordType<T>::Type_t REALT;
+      
+      const int n = 2*Nc;
+      
+      const multi1d<int>& tab = rb[arg.cb].siteTable();
+      
+      // Now just loop over sites...
+#pragma omp parallel for
+      for(int ssite=0; ssite<nodeSites; ++ssite)  
+      {
+				const int site = tab[ssite];
+	
+				RComplex<REALT>* cchi = (RComplex<REALT>*)&(arg.chi.elem(site).elem(0).elem(0));
+				const RComplex<REALT>* ppsi = (const RComplex<REALT>*)&(arg.psi.elem(site).elem(0).elem(0));
+				const PrimitiveClovTriang<REALT>& _tri = arg.tri[site];
+
+				// Rolled version
+				const RScalar<REALT> *diag = (RScalar<REALT>*)_tri.diag;
+				const RComplex<REALT> *offd = (RComplex<REALT>*)_tri.offd;
+				const RComplex<REALT> *_ppsi=ppsi;
+				RComplex<REALT> *_cchi=cchi;
+
+				for(int i = 0; i < n; ++i)
+				{
+					RComplex<REALT> *_cchiconj=cchi;
+					const RComplex<REALT> *_ppsiconj=ppsi;
+					
+ 					*_cchi = (*(diag++)) * (*_ppsi);
+ 					
+					for(int j = 0; j < i; ++j)
+					{
+						*_cchi += (*offd) * (*(_ppsiconj++));
+						*(_cchiconj++) += conj(*(offd++)) * (*_ppsi);
+					}
+					_cchi++;
+					_ppsi++;
+				}
+
+				for(int i = 0; i < n; ++i)
+				{
+					RComplex<REALT> *_cchiconj=cchi+n;
+					const RComplex<REALT> *_ppsiconj=ppsi+n;
+					
+ 					*_cchi = (*(diag++)) * (*_ppsi);
+
+					for(int j = 0; j < i; ++j)
+					{
+						*_cchi += (*offd) * (*(_ppsiconj++));
+						*(_cchiconj++) += conj(*(offd++)) * (*_ppsi);
+					}
+					_cchi++;
+					_ppsi++;
+				}
+      }
+
+      END_CODE();
+    }// Function
+    
 
     template<typename T>
     void applySiteLoop(int lo, int hi, int MyId,
@@ -2134,7 +2321,11 @@ namespace Chroma
 
     // The dispatch function is at the end of the file
     // ought to work for non-threaded targets too...
+#if __MIC
+		QDPCloverEnv::applyOMPSiteLoop<T>(num_sites, arg);
+#else
     dispatch_to_threads(num_sites, arg, QDPCloverEnv::applySiteLoop<T>);
+#endif
     (*this).getFermBC().modifyF(chi, QDP::rb[cb]);
 
     END_CODE();
