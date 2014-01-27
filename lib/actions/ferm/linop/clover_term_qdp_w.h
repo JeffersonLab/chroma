@@ -156,6 +156,17 @@ namespace Chroma
 
     multi1d<PrimitiveClovTriang<REALT> >  tri;
     
+		// threaded copy of the clover triangle
+		inline void copytri(const multi1d<PrimitiveClovTriang<REALT> >& tri)
+		{
+			this->tri.resize(tri.size());
+				
+		#pragma omp parallel for
+			for (int site=0; site<tri.size(); ++site)
+				this->tri[site] = tri[site];
+
+		}
+
   };
 
 
@@ -217,7 +228,8 @@ namespace Chroma
     
     tr_log_diag_ = from.tr_log_diag_;
     
-    tri = from.tri;
+//    tri = from.tri;			// this copy of a multi1d of size LatticeVolume is NOT automatically threaded
+		copytri(from.tri);
     END_CODE();  
 #endif
   }
