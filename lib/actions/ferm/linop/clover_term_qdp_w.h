@@ -11,6 +11,9 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/linop/clover_term_base_w.h"
 #include "meas/glue/mesfield.h"
+
+#define CLOVER_TERM_QDP__DO_NOT_COPY_GAUGE_FIELD
+
 namespace Chroma 
 { 
 
@@ -128,14 +131,23 @@ namespace Chroma
     void ldagdlinv(LatticeREAL& tr_log_diag, int cb);
 
     //! Get the u field
+#ifndef CLOVER_TERM_QDP__DO_NOT_COPY_GAUGE_FIELD
     const multi1d<U>& getU() const {return u;}
+#else
+    const multi1d<U>& getU() const {return fs->getLinks();}
+#endif
 
     //! Calculates Tr_D ( Gamma_mat L )
     Real getCloverCoeff(int mu, int nu) const;
 
   private:
 			Handle< FermBC<T,multi1d<U>,multi1d<U> > >      fbc;
+    // Simon: keep handle to fs instead of making a copy of u
+#ifndef CLOVER_TERM_QDP__DO_NOT_COPY_GAUGE_FIELD
     multi1d<U>  u;
+#else
+    Handle< FermState<T,multi1d<U>,multi1d<U> > > fs;
+#endif
     CloverFermActParams          param;
     LatticeREAL                  tr_log_diag_; // Fill this out during create
                                                   // but save the global sum until needed.
@@ -159,9 +171,13 @@ namespace Chroma
   {
 #ifndef QDP_IS_QDPJIT
     START_CODE();
+#ifndef CLOVER_TERM_QDP__DO_NOT_COPY_GAUGE_FIELD
     u.resize(Nd);
 
     u = fs->getLinks();
+#else
+    this->fs = fs;
+#endif
     fbc = fs->getFermBC();
     param = param_;
     
@@ -215,9 +231,13 @@ namespace Chroma
 #ifndef QDP_IS_QDPJIT
     START_CODE();
    
+#ifndef CLOVER_TERM_QDP__DO_NOT_COPY_GAUGE_FIELD
     u.resize(Nd);
     
     u = fs->getLinks();
+#else
+    this->fs = fs;
+#endif
     fbc = fs->getFermBC();
     param = param_;
     
@@ -246,7 +266,11 @@ namespace Chroma
     
     /* Calculate F(mu,nu) */
     multi1d<U> f;
+#ifndef CLOVER_TERM_QDP__DO_NOT_COPY_GAUGE_FIELD
     mesField(f, u);
+#else
+    mesField(f, fs->getLinks());
+#endif
     makeClov(f, diag_mass);
     
     choles_done.resize(rb.numSubsets());
