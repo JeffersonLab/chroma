@@ -450,16 +450,25 @@ namespace Chroma {
   }
   
   // Overloaded definitions
+  
+	template<typename Rsize> void reunit_t_JB(OLattice< PScalar< PColorMatrix< RComplex<Rsize>, 3> > > &xa, const Subset& mstag);
+  
   // SINGLE
   void reunit(LatticeColorMatrixF3& xa)
   {
     START_CODE();
 
+    #ifdef __MIC    
+    reunit_t_JB<REAL32>(xa, all);
+		#else
+		
     LatticeBoolean bad;
     int numbad;
     
     reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, REUNITARIZE, all);
     
+		#endif
+		    
     END_CODE();
   }
 
@@ -469,10 +478,14 @@ namespace Chroma {
   {
     START_CODE();
 
+    #ifdef __MIC
+    reunit_t_JB<REAL64>(xa, all);
+		#else
     LatticeBoolean bad;
     int numbad;
     
     reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, REUNITARIZE, all);
+  	#endif
     
     END_CODE();
   }
@@ -484,10 +497,14 @@ namespace Chroma {
   {
     START_CODE();
 
+    #ifdef __MIC    
+    reunit_t_JB<REAL32>(xa, mstag);
+		#else
     LatticeBoolean bad;
     int numbad;
     
     reunit_t<LatticeColorMatrixF3, LatticeComplexF, LatticeRealF, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
+    #endif
     
     END_CODE();
   }
@@ -498,11 +515,16 @@ namespace Chroma {
   {
     START_CODE();
 
+    #ifdef __MIC 
+    reunit_t_JB<REAL64>(xa, mstag);
+		#else
     LatticeBoolean bad;
     int numbad;
     
     reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, REUNITARIZE, mstag);
     
+  	#endif
+  	  
     END_CODE();
   }
 
@@ -605,5 +627,99 @@ namespace Chroma {
   {
     reunit_t<LatticeColorMatrixD3, LatticeComplexD, LatticeRealD, Subset>(xa, bad, numbad, ruflag, mstag);
   }
+  
+#ifdef __MIC
+
+ 
+template<typename Rsize> void reunit_t_JB(OLattice< PScalar< PColorMatrix< RComplex<Rsize>, 3> > > &xa, const Subset& mstag)
+{
+	START_CODE();
+
+	QDP::StopWatch swatch;
+	swatch.reset();
+	swatch.start();
+
+	const Subset &s=mstag;
+	const int* tab = s.siteTable().slice();
+
+#pragma omp parallel for
+	for(int sj=0; sj < s.numSiteTable(); ++sj)
+	{
+		int si = tab[sj];
+			
+		multi2d<RComplex<Rsize> > a(Nc, Nc);
+		RScalar<Rsize> t1, t3, t4;
+		RComplex<Rsize> t2;
+
+		// Extract initial components 
+		for(int i=0; i < Nc; ++i)
+			for(int j=0; j < Nc; ++j)
+				a[i][j] = xa.elem(si).elem().elem(i,j);
+	
+		/* normalise the first row */
+		/* t1 = sqrt(u^t . u) */
+		t1 = localNorm2(a[0][0]);
+		for(int c = 1; c < Nc; ++c)
+			t1 += localNorm2(a[c][0]);
+		t1 = sqrt(t1);
+
+
+		/* overwrite the first row with the rescaled value */
+		/* u <- u/t1 */
+		t4 = RScalar<Rsize>(1.0) / t1;
+		for(int c = 0; c < Nc; ++c)
+			a[c][0] *= t4;
+
+		/* calculate the orthogonal component to the second row */
+		/* t2 <- u^t.v */
+		t2 = adj(a[0][0]) * a[0][1];
+		for(int c = 1; c < Nc; ++c)
+			t2 += adj(a[c][0]) * a[c][1];
+
+		/* orthogonalize the second row relative to the first row */
+		/* v <- v - t2*u */
+		for(int c = 0; c < Nc; ++c)
+			a[c][1] -= t2 * a[c][0]; 
+
+		/* normalise the second row */
+		/* t3 = sqrt(u^t . u) */
+		t3 = localNorm2(a[0][1]);
+		for(int c = 1; c < Nc; ++c)
+			t3 += localNorm2(a[c][1]);
+		t3 = sqrt(t3);
+
+		/* overwrite the second row with the rescaled value */
+		/* v <- v/t3 */
+		t4 = RScalar<Rsize>(1.0) / t3;
+		for(int c = 0; c < Nc; ++c)
+			a[c][1] *= t4;
+
+
+		/* the third row is the cross product of the new first and second rows */
+		/* column 1: w(0) = u(1)*v(2) - u(2)*v(1) */
+		a[0][2] = adj(a[1][0]) * adj(a[2][1]) - 
+			adj(a[2][0]) * adj(a[1][1]);
+
+		/* column 2: w(1) = u(2)*v(0) - u(0)*v(2) */
+		a[1][2] = adj(a[2][0]) * adj(a[0][1]) - 
+			adj(a[0][0]) * adj(a[2][1]);
+
+		/* column 3: w(3) = u(1)*v(2) - u(2)*v(1) */
+		a[2][2] = adj(a[0][0]) * adj(a[1][1]) - 
+			adj(a[1][0]) * adj(a[0][1]);
+	
+	
+		// Insert final reunitarized components 
+		for(int i=0; i < Nc; ++i)
+			for(int j=0; j < Nc; ++j)
+					xa.elem(si).elem().elem(i,j) = a[i][j];
+	
+	}    
+	swatch.stop();
+	ReunitEnv::time_spent += swatch.getTimeInSeconds();
+	END_CODE();
+}
+  
+  #endif
 
 } // End namespace
