@@ -59,17 +59,15 @@ namespace Chroma
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const
   {
-    // A. deriv will resize
-    
-    A.deriv(ds_u, chi, psi, isign);
+    ds_u.resize(Nd);
+    ds_u = zero;
 
-    multi1d<LatticeColorMatrix> ds_tmp(Nd);
-
-    ds_tmp = zero;
-    D.deriv(ds_tmp, chi, psi, isign);
+    D.deriv(ds_u, chi, psi, isign);
     for(int mu=0; mu < Nd; mu++) { 
-      ds_u[mu] -= Real(0.5)*ds_tmp[mu];
+      ds_u[mu] *= Real(-0.5);
     }
+
+    A.derivAdd(ds_u, chi, psi, isign);
     
     getFermBC().zero(ds_u);
   }
