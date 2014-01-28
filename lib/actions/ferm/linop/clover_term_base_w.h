@@ -58,6 +58,9 @@ namespace Chroma
     void deriv(multi1d<U>& ds_u, 
 	       const T& chi, const T& psi, 
 	       enum PlusMinus isign) const;
+    void derivAdd(multi1d<U>& ds_u,
+	       const T& chi, const T& psi,
+	       enum PlusMinus isign) const;
 
     //! Take deriv of D
     /*!
@@ -157,6 +160,21 @@ namespace Chroma
     // Odd Odd checkerboard
     derivAdd(ds_u, chi, psi, isign,1);
     
+    END_CODE();
+  }
+  template<typename T, typename U>
+  void CloverTermBase<T,U>::derivAdd(multi1d<U>& ds_u,
+			     const T& chi, const T& psi,
+			     enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    // Even even checkerboard
+    derivAdd(ds_u, chi, psi, isign,0);
+
+    // Odd Odd checkerboard
+    derivAdd(ds_u, chi, psi, isign,1);
+
     END_CODE();
   }
 

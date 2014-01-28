@@ -71,6 +71,45 @@ namespace Chroma
     
     getFermBC().zero(ds_u);
   }
+  void
+  UnprecCloverLinOp::derivAdd(multi1d<LatticeColorMatrix>& ds_u,
+			   const LatticeFermion& chi, const LatticeFermion& psi,
+			   enum PlusMinus isign) const
+  {
+      QDPIO::cout << "using derivAdd clover-dslash\n";
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *= Real(-2.0);
+    }
+    D.derivAdd(ds_u, chi, psi, isign);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *= Real(-0.5);
+    }
+
+    A.derivAdd(ds_u, chi, psi, isign);
+
+    getFermBC().zero(ds_u);
+  }
+  void
+  UnprecCloverLinOp::derivSub(multi1d<LatticeColorMatrix>& ds_u,
+			   const LatticeFermion& chi, const LatticeFermion& psi,
+			   enum PlusMinus isign) const
+  {
+      QDPIO::cout << "using derivSub clover-dslash\n";
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *= Real(2.0);
+    }
+    D.derivAdd(ds_u, chi, psi, isign);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *= Real(-0.5);
+    }
+
+    A.derivAdd(ds_u, chi, psi, isign);
+    for(int mu=0; mu < Nd; mu++) {
+      ds_u[mu] *= Real(-1.0);
+    }
+
+    getFermBC().zero(ds_u);
+  }
 
 
   //! Return flops performed by the operator()

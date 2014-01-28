@@ -63,6 +63,9 @@ namespace Chroma
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign) const;
+    virtual void derivAdd(P& ds_u,
+		       const T& chi, const T& psi,
+		       enum PlusMinus isign) const;
 
     //! Take deriv of D
     /*!
@@ -102,6 +105,20 @@ namespace Chroma
   public:
     typedef LatticeHalfFermionD Type_t;
   };
+
+  template<typename T, typename P, typename Q>
+  void
+  WilsonDslashBase<T,P,Q>::derivAdd(P& ds_u,
+			  const T& chi, const T& psi,
+			  enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    derivAdd(ds_u, chi, psi, isign, 0);
+    derivAdd(ds_u, chi, psi, isign, 1);
+
+    END_CODE();
+  }
 
 
   //! Take deriv of D

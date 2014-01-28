@@ -55,6 +55,12 @@ namespace Chroma
     void deriv(multi1d<LatticeColorMatrix>& ds_u, 
 	       const LatticeFermion& chi, const LatticeFermion& psi, 
 	       enum PlusMinus isign) const;
+    void derivAdd(multi1d<LatticeColorMatrix>& ds_u,
+	       const LatticeFermion& chi, const LatticeFermion& psi,
+	       enum PlusMinus isign) const;
+    void derivSub(multi1d<LatticeColorMatrix>& ds_u,
+	       const LatticeFermion& chi, const LatticeFermion& psi,
+	       enum PlusMinus isign) const;
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;

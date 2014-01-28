@@ -137,6 +137,34 @@ namespace Chroma
       }
     }
 
+    //! Add derivative of the operator to an input vector
+    virtual void derivAdd(P& ds_u, const T& chi, const T& psi,
+		       enum PlusMinus isign) const
+    {
+      P F_tmp;
+      deriv(F_tmp, chi, psi, isign);
+      ds_u += F_tmp;
+    }
+    //! Subtract derivative of the operator from an input vector
+    virtual void derivSub(P& ds_u, const T& chi, const T& psi,
+		       enum PlusMinus isign) const
+    {
+      P F_tmp;
+      deriv(F_tmp, chi, psi, isign);
+      ds_u -= F_tmp;
+    }
+
+    virtual void derivAdd(P& ds_u, const T& chi, const T& psi,
+		       enum PlusMinus isign, const Real& epsilon) const
+    {
+      derivAdd(ds_u,chi,psi,isign);
+    }
+    virtual void derivSub(P& ds_u, const T& chi, const T& psi,
+		       enum PlusMinus isign, const Real& epsilon) const
+    {
+      derivSub(ds_u,chi,psi,isign);
+    }
+
   };
 
 
