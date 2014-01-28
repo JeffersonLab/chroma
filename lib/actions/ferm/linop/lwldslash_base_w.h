@@ -76,6 +76,9 @@ namespace Chroma
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign, int cb) const ;
+    virtual void derivAdd(P& ds_u,
+		       const T& chi, const T& psi,
+		       enum PlusMinus isign, int cb) const ;
 
     //! Return flops performed by the operator()
     unsigned long nFlops() const;
@@ -119,10 +122,8 @@ namespace Chroma
 
     ds_u.resize(Nd);
 
-    P ds_tmp; 
     deriv(ds_u, chi, psi, isign, 0);
-    deriv(ds_tmp, chi, psi, isign, 1);
-    ds_u += ds_tmp;
+    derivAdd(ds_u, chi, psi, isign, 1);
 
     END_CODE();
   }
@@ -221,6 +222,93 @@ namespace Chroma
       // Just do the bit we need.
       ds_u[mu][rb[cb]] = anisoWeights[mu] * temp_mat[0];
       ds_u[mu][rb[1-cb]] = zero;    
+    }
+    (*this).getFermBC().zero(ds_u);
+
+    END_CODE();
+  }
+
+  template<typename T, typename P, typename Q>
+  void
+  WilsonDslashBase<T,P,Q>::derivAdd(P& ds_u,
+				 const T& chi, const T& psi,
+				 enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    const multi1d<Real>& anisoWeights = getCoeffs();
+
+    T temp_ferm1, temp_ferm2;
+    typename HalfFermionType<T>::Type_t tmp_h;
+    P temp_mat(1);
+
+    for(int mu = 0; mu < Nd; ++mu)
+    {
+      switch (isign)
+      {
+      case PLUS:
+      {
+	// Undaggered: Minus Projectors
+	switch(mu)
+	{
+	case 0:
+	  tmp_h[rb[1-cb]] = spinProjectDir0Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir0Minus(tmp_h);
+	  break;
+	case 1:
+	  tmp_h[rb[1-cb]] = spinProjectDir1Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir1Minus(tmp_h);
+	  break;
+	case 2:
+	  tmp_h[rb[1-cb]] = spinProjectDir2Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir2Minus(tmp_h);
+	  break;
+	case 3:
+	  tmp_h[rb[1-cb]] = spinProjectDir3Minus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir3Minus(tmp_h);
+	  break;
+	default:
+	  break;
+	};
+
+      }
+      break;
+
+      case MINUS:
+      {
+	// Daggered: Plus Projectors
+	switch(mu)
+	{
+	case 0:
+	  tmp_h[rb[1-cb]] = spinProjectDir0Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir0Plus(tmp_h);
+	  break;
+	case 1:
+	  tmp_h[rb[1-cb]] = spinProjectDir1Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir1Plus(tmp_h);
+	  break;
+	case 2:
+	  tmp_h[rb[1-cb]] = spinProjectDir2Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir2Plus(tmp_h);
+	  break;
+	case 3:
+	  tmp_h[rb[1-cb]] = spinProjectDir3Plus(psi);
+	  temp_ferm1[rb[1-cb]] = spinReconstructDir3Plus(tmp_h);
+	  break;
+	default:
+	  break;
+	};
+      }
+      break;
+
+      default:
+	QDP_error_exit("unknown case");
+      }
+
+      temp_ferm2 = shift(temp_ferm1, FORWARD, mu);
+      (temp_mat[0])[rb[cb]] = traceSpin(outerProduct(temp_ferm2,chi));
+
+      ds_u[mu][rb[cb]] += anisoWeights[mu] * temp_mat[0];
     }
     (*this).getFermBC().zero(ds_u);
 
