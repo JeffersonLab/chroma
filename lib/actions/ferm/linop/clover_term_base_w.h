@@ -71,6 +71,9 @@ namespace Chroma
     void deriv(multi1d<U>& ds_u, 
 	       const T& chi, const T& psi, 
 	       enum PlusMinus isign, int cb) const;
+    void derivAdd(multi1d<U>& ds_u,
+	       const T& chi, const T& psi,
+	       enum PlusMinus isign, int cb) const;
 
     //! Take deriv of D
     /*!
@@ -152,10 +155,7 @@ namespace Chroma
     deriv(ds_u, chi, psi, isign,0);
     
     // Odd Odd checkerboard
-    multi1d<U> ds_tmp;
-    deriv(ds_tmp, chi, psi, isign,1);
-    
-    ds_u += ds_tmp;
+    derivAdd(ds_u, chi, psi, isign,1);
     
     END_CODE();
   }
@@ -728,6 +728,58 @@ namespace Chroma
     // Not sure this is needed here, but will be sure
     (*this).getFermBC().zero(ds_u);
     
+    END_CODE();
+  }
+
+  template<typename T, typename U>
+  void CloverTermBase<T,U>::derivAdd(multi1d<U>& ds_u,
+			     const T& chi, const T& psi,
+			     enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    // Get the links
+    const multi1d<U>& u = getU();
+
+    // Now compute the insertions
+    for(int mu=0; mu < Nd; mu++) {
+      for(int nu = mu+1; nu < Nd; nu++) {
+
+        // These will be appropriately overwritten - no need to zero them.
+        // Contributions to mu links from mu-nu clover piece
+        // Simon: deriv_loop modified, we do not overwrite and accumulate here,
+        // instead we pass ds_u directly and add to it
+        U ds_tmp_mu;
+
+        // -ve contribs  to the nu_links from the mu-nu clover piece
+        // -ve because of the exchange of gamma_mu gamma_nu <-> gamma_nu gamma_mu
+        U ds_tmp_nu;
+
+        // The weight for the terms
+        Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
+
+        // Get gamma_mu gamma_nu psi -- no saving here, from storing shifts because
+        // I now only do every mu, nu pair only once.
+
+        int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
+        T ferm_tmp;
+        ferm_tmp = Gamma(mu_nu_index)*psi;
+        U s_xy_dag;
+        s_xy_dag = traceSpin( outerProduct(ferm_tmp,chi));
+        s_xy_dag *= Real(factor);
+
+        // Compute contributions
+        deriv_loops(mu, nu, cb, ds_tmp_mu, ds_tmp_nu, s_xy_dag);
+
+        // Accumulate them
+        ds_u[mu] += ds_tmp_mu;
+        ds_u[nu] -= ds_tmp_nu;
+      }
+    }
+
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+
     END_CODE();
   }
       
