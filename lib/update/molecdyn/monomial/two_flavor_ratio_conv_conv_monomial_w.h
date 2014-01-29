@@ -47,6 +47,9 @@ namespace Chroma
     {
       START_CODE();
 
+      // Simon: to save memory during Operator construction, we resize F
+      F.resize(0);
+
       // Self Description/Encapsulation Rule
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactRatioConvConvWilsonTypeFermMonomial");
@@ -100,25 +103,28 @@ namespace Chroma
       invMdagM = Handle< MdagMSystemSolver<Phi> > (0);
 
       // (getMDSolutionPredictor()).newVector(X);
-      
+
+      // Simon: we want to construct M before resizing F, because construction of Clover
+      // needs many temps. Since we have two operators at a time before, but invMdagM
+      // has already been deleted, doing this here instead of later should not increase
+      // the max operator count
       Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-      (*M)(Y, X, PLUS);
 
       // \phi^{\dagger} \dot(M_prec) X
+      F.resize(Nd);
       M_prec->deriv(F, getPhi(), X, PLUS);
-      
-      // - X^{\dagger} \dot( M^{\dagger}) Y
-      P F_tmp;
-      M->deriv(F_tmp, X, Y, MINUS);
-      F -= F_tmp;
- 
-      // - Y^{\dagger} \dot( M ) X
-      M->deriv(F_tmp, Y, X, PLUS);
-      F -= F_tmp;
 
       // + X^{\dagger} \dot(M_prec)^dagger \phi
-      M_prec->deriv(F_tmp, X, getPhi(), MINUS);
-      F += F_tmp;
+      M_prec->derivAdd(F, X, getPhi(), MINUS);
+      M_prec = Handle< DiffLinearOperator<Phi,P,Q> > (0);
+
+      (*M)(Y, X, PLUS);
+      
+      // - X^{\dagger} \dot( M^{\dagger}) Y
+      M->derivSub(F, X, Y, MINUS);
+ 
+      // - Y^{\dagger} \dot( M ) X
+      M->derivSub(F, Y, X, PLUS);
 
       // F now holds derivative with respect to possibly fat links
       // now derive it with respect to the thin links if needs be
@@ -186,15 +192,16 @@ namespace Chroma
       getPhi() = zero;
 
       (*M)(eta_tmp, eta, MINUS);  // M^\dag \eta
+      // Simon: we do not need M anymore => "delete" it, to save memory
+      M = Handle< DiffLinearOperator<Phi,P,Q> > (0);
 
       // Get system solver
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA_prec.invMdagM(state, getDenomInvParams()));
 
       // Solve MdagM_prec X = eta
       SystemSolverResults_t res = (*invMdagM)(phi_tmp, eta_tmp);
+      invMdagM = Handle< MdagMSystemSolver<Phi> > (0);
 
-      // Simon: we do not need M anymore => "delete" it, to save memory
-      M = Handle< DiffLinearOperator<Phi,P,Q> > (0);
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
       (*M_prec)(getPhi(), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
 
@@ -300,7 +307,6 @@ namespace Chroma
       Handle< FermState<Phi,P,Q> > state(FA.createState(s.getQ()));
 	
       // Get the fermion action for the preconditioner
-      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));	
       Handle< DiffLinearOperator<Phi,P,Q> > M_prec(FA_prec.linOp(state));
 
       Phi X;
