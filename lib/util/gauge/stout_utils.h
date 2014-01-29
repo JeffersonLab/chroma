@@ -9,22 +9,6 @@
 
 #include "chromabase.h"
 
-#ifdef QDP_IS_QDPJIT
-CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
-                                    const LatticeColorMatrix& QQ,
-                                    multi1d<LatticeComplex>& f,
-                                    multi1d<LatticeComplex>& b1,
-                                    multi1d<LatticeComplex>& b2,
-                                    bool dobs);
-CUfunction function_get_fs_bs_exec(CUfunction function,
-                                   const LatticeColorMatrix& Q,
-                                   const LatticeColorMatrix& QQ,
-                                   multi1d<LatticeComplex>& f,
-                                   multi1d<LatticeComplex>& b1,
-                                   multi1d<LatticeComplex>& b2,
-                                   bool dobs);
-#endif
-
 
 namespace Chroma 
 {

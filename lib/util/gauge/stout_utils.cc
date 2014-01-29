@@ -8,20 +8,21 @@
 #include "chromabase.h"
 #include "util/gauge/stout_utils.h"
 
+
 #if defined(BUILD_JIT_CLOVER_TERM)
-void function_get_fs_bs_exec(void *function,
+void function_get_fs_bs_exec(const JitFunction& func,
 			     const LatticeColorMatrix& Q,
 			     const LatticeColorMatrix& QQ,
 			     multi1d<LatticeComplex>& f,
 			     multi1d<LatticeComplex>& b1,
 			     multi1d<LatticeComplex>& b2,
 			     bool dobs);
-void *function_get_fs_bs_build(const LatticeColorMatrix& Q,
+void *function_get_fs_bs_build(JitFunction& function,
+			       const LatticeColorMatrix& Q,
 			       const LatticeColorMatrix& QQ,
 			       multi1d<LatticeComplex>& f,
 			       multi1d<LatticeComplex>& b1,
 			       multi1d<LatticeComplex>& b2);
-//#include "util/gauge/stout_utils_ptx.h"
 #endif
 
 namespace Chroma 
@@ -860,11 +861,13 @@ namespace Chroma
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
 #if defined(BUILD_JIT_CLOVER_TERM)
-      QDPIO::cout << "JIT getFsAndBs dobs = " << dobs << "\n";
-      static void *function;
-      
-      if (function == NULL)
-	function = function_get_fs_bs_build( Q,QQ,f,b1,b2 );
+      //QDPIO::cout << "JIT getFsAndBs dobs = " << dobs << "\n";
+      static JitFunction function;
+
+      if (!function.built()) {
+	QDPIO::cout << "Building JIT stouting function\n";
+	function_get_fs_bs_build( function,Q,QQ,f,b1,b2 );
+      }
       
       // Execute the function
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );

@@ -7,7 +7,7 @@
 #ifndef __clover_term_ptx_w_h__
 #define __clover_term_ptx_w_h__
 
-#warning "PTX clover include"
+#warning "Using JIT clover"
 
 
 #include "state.h"
@@ -599,7 +599,7 @@ namespace Chroma
    */
 
   template<typename RealT,typename U,typename X,typename Y>
-  void function_make_clov_exec(void *function, 
+  void function_make_clov_exec(const JitFunction& function, 
 			       const RealT& diag_mass, 
 			       const U& f0,
 			       const U& f1,
@@ -610,7 +610,7 @@ namespace Chroma
 			       X& tri_dia,
 			       Y& tri_off)
   {
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(all);
 
     int junk_0 = forEach(diag_mass, addr_leaf, NullCombine());
     int junk_1 = forEach(f0, addr_leaf, NullCombine());
@@ -622,13 +622,14 @@ namespace Chroma
     int junk_7 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_8 = forEach(tri_off, addr_leaf, NullCombine());
 
-    jit_dispatch(function,Layout::sitesOnNode(),true,0,addr_leaf);
+    jit_dispatch(function.func().at(0),Layout::sitesOnNode(),getDataLayoutInnerSize(),true,0,addr_leaf);
   }
 
 
 
   template<typename RealT,typename U,typename X,typename Y>
-  void *function_make_clov_build(const RealT& diag_mass, 
+  void function_make_clov_build( JitFunction& func,
+				 const RealT& diag_mass, 
 				 const U& f0,
 				 const U& f1,
 				 const U& f2,
@@ -638,7 +639,7 @@ namespace Chroma
 				 const X& tri_dia,
 				 const Y& tri_off)
   {
-    std::cout << __PRETTY_FUNCTION__ << ": entering\n";
+    //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
     JitMainLoop loop;
 
@@ -762,7 +763,7 @@ namespace Chroma
 
     //    std::cout << __PRETTY_FUNCTION__ << ": leaving\n";
 
-    return jit_function_epilogue_get("jit_make_clov.ptx");
+    func.func().push_back( jit_function_epilogue_get("jit_make_clov.ptx") );
   }
 
 
@@ -793,10 +794,12 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover make "  << (void*)this << "\n";
     //std::cout << "PTX Clover make "  << (void*)this << "\n";
-    static void *function;
+    static JitFunction function;
 
-    if (function == NULL)
-      function = function_make_clov_build(diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
+    if (!function.built()) {
+      QDPIO::cout << "Building JIT make clover function\n";
+      function_make_clov_build(function, diag_mass, f0,f1,f2,f3,f4,f5, tri_dia , tri_off );
+    }
 
     // Execute the function
     function_make_clov_exec(function, diag_mass, f0,f1,f2,f3,f4,f5,tri_dia, tri_off);
@@ -859,7 +862,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void  function_ldagdlinv_exec( void *function,
+  void  function_ldagdlinv_exec( const JitFunction& function,
 				 T& tr_log_diag,
 				 X& tri_dia,
 				 Y& tri_off,
@@ -868,13 +871,13 @@ namespace Chroma
     if (!s.hasOrderedRep())
       QDP_error_exit("ldagdlinv on subset with unordered representation not implemented");
 
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(s);
 
     int junk_0 = forEach(tr_log_diag, addr_leaf, NullCombine());
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
 
-    jit_dispatch(function,s.numSiteTable(),s.hasOrderedRep(),s.start(),addr_leaf);
+    jit_dispatch(function.func().at(0),s.numSiteTable(),getDataLayoutInnerSize(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
 
 
@@ -882,10 +885,11 @@ namespace Chroma
 
 
   template<typename U,typename T,typename X,typename Y>
-  void *function_ldagdlinv_build( const T& tr_log_diag,
-				  const X& tri_dia,
-				  const Y& tri_off,
-				  const Subset& s)
+  void function_ldagdlinv_build( JitFunction& func,
+				 const T& tr_log_diag,
+				 const X& tri_dia,
+				 const Y& tri_off,
+				 const Subset& s)
   {
     typedef typename WordType<U>::Type_t REALT;
 
@@ -1064,7 +1068,7 @@ namespace Chroma
     //    std::cout << __PRETTY_FUNCTION__ << " leaving\n";
     loop.done();
 
-    return jit_function_epilogue_get("jit_ldagdlinv.ptx");
+    func.func().push_back( jit_function_epilogue_get("jit_ldagdlinv.ptx") );
   }
 
 
@@ -1088,10 +1092,12 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
     //std::cout << "PTX Clover ldagdlinv " << (void*)this << "\n";
-    static void *function;
+    static JitFunction function;
 
-    if (function == NULL)
-      function = function_ldagdlinv_build<U>(tr_log_diag, tri_dia, tri_off, rb[cb] );
+    if (!function.built()) {
+      QDPIO::cout << "Building JIT ldagdlinv\n";
+      function_ldagdlinv_build<U>(function, tr_log_diag, tri_dia, tri_off, rb[cb] );
+    }
 
     // Execute the function
     function_ldagdlinv_exec(function, tr_log_diag, tri_dia, tri_off, rb[cb] );
@@ -1152,7 +1158,7 @@ namespace Chroma
 
 
   template<typename U,typename X,typename Y>
-  void function_triacntr_exec( void *function,
+  void function_triacntr_exec( const JitFunction& function,
 			       U& B,
 			       const X& tri_dia,
 			       const Y& tri_off,
@@ -1162,7 +1168,7 @@ namespace Chroma
     if (!s.hasOrderedRep())
       QDP_error_exit("triacntr on subset with unordered representation not implemented");
 
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(s);
 
     addr_leaf.setLit( mat );
 
@@ -1170,14 +1176,15 @@ namespace Chroma
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
 
-    jit_dispatch(function,s.numSiteTable(),s.hasOrderedRep(),s.start(),addr_leaf);
+    jit_dispatch(function.func().at(0),s.numSiteTable(),getDataLayoutInnerSize(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
 
 
 
 
   template<typename U,typename X,typename Y>
-  void *function_triacntr_build( const U& B,
+  void function_triacntr_build( JitFunction& func,
+				 const U& B,
 				 const X& tri_dia,
 				 const Y& tri_off,
 				 int mat,
@@ -1507,7 +1514,7 @@ namespace Chroma
 
     loop.done();
 
-    return jit_function_epilogue_get("jit_triacntr.ptx");
+    func.func().push_back( jit_function_epilogue_get("jit_triacntr.ptx") );
   }
 
 
@@ -1528,10 +1535,12 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover triacntr " << (void*)this << "\n";
     //std::cout << "PTX Clover triacntr " << (void*)this << "\n";
-    static void *function;
+    static JitFunction function;
 
-    if (function == NULL)
-      function = function_triacntr_build<U>( B, tri_dia, tri_off, mat, rb[cb] );
+    if (!function.built()) {
+      QDPIO::cout << "Building JIT triacntr\n";
+      function_triacntr_build<U>(function, B, tri_dia, tri_off, mat, rb[cb] );
+    }
 
     // Execute the function
     function_triacntr_exec(function, B, tri_dia, tri_off, mat, rb[cb] );
@@ -1567,7 +1576,7 @@ namespace Chroma
 
 
   template<typename T,typename X,typename Y>
-  void function_apply_clov_exec(void *function,
+  void function_apply_clov_exec(const JitFunction& function,
 				T& chi,
 				const T& psi,
 				const X& tri_dia,
@@ -1579,21 +1588,22 @@ namespace Chroma
 
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(s);
 
     int junk_0 = forEach(chi, addr_leaf, NullCombine());
     int junk_1 = forEach(psi, addr_leaf, NullCombine());
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
     int junk_3 = forEach(tri_off, addr_leaf, NullCombine());
 
-    jit_dispatch(function,s.numSiteTable(),s.hasOrderedRep(),s.start(),addr_leaf);
+    jit_dispatch(function.func().at(0),s.numSiteTable(),getDataLayoutInnerSize(),s.hasOrderedRep(),s.start(),addr_leaf);
   }
 
 
 
 
   template<typename T,typename X,typename Y>
-  void *function_apply_clov_build(const T& chi,
+  void function_apply_clov_build(JitFunction& func,
+				  const T& chi,
 				  const T& psi,
 				  const X& tri_dia,
 				  const Y& tri_off,
@@ -1666,7 +1676,7 @@ namespace Chroma
 
     loop.done();
 
-    return jit_function_epilogue_get("jit_apply_clov.ptx");
+    func.func().push_back( jit_function_epilogue_get("jit_apply_clov.ptx") );
   }
 
 
@@ -1705,10 +1715,12 @@ namespace Chroma
 
     //QDPIO::cout << "PTX Clover apply"  << (void*)this << "\n";
     //std::cout << "PTX Clover apply"  << (void*)this << "\n";
-    static void *function;
+    static JitFunction function;
 
-    if (function == NULL)
-      function = function_apply_clov_build(chi, psi, tri_dia, tri_off, rb[cb] );
+    if (!function.built()) {
+      QDPIO::cout << "Building JIT clover apply function\n";
+      function_apply_clov_build(function, chi, psi, tri_dia, tri_off, rb[cb] );
+    }
 
     // Execute the function
     function_apply_clov_exec(function, chi, psi, tri_dia, tri_off, rb[cb] );

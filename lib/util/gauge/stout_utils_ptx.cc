@@ -4,7 +4,7 @@ using namespace QDP;
 
 #warning "BUILDING JIT_CLOVER_TERM"
 
-void function_get_fs_bs_exec(void *function, 
+void function_get_fs_bs_exec(const JitFunction& function, 
 			     const LatticeColorMatrix& Q,
 			     const LatticeColorMatrix& QQ,
 			     multi1d<LatticeComplex>& f,
@@ -12,7 +12,7 @@ void function_get_fs_bs_exec(void *function,
 			     multi1d<LatticeComplex>& b2,
 			     bool dobs)
 {
-  AddressLeaf addr_leaf;
+  AddressLeaf addr_leaf(all);
 
   addr_leaf.setLit( dobs );
 
@@ -30,7 +30,7 @@ void function_get_fs_bs_exec(void *function,
 
   //QDPIO::cerr << "calling getFsBs\n";
 
-  jit_dispatch(function,Layout::sitesOnNode(),true,0,addr_leaf);
+  jit_dispatch(function.func().at(0),Layout::sitesOnNode(),getDataLayoutInnerSize(),true,0,addr_leaf);
 }
 
 
@@ -41,7 +41,8 @@ WordREG<REAL> jit_constant( double f )
 }
 
 
-void *function_get_fs_bs_build(const LatticeColorMatrix& Q,
+void function_get_fs_bs_build( JitFunction& func,
+			       const LatticeColorMatrix& Q,
 			       const LatticeColorMatrix& QQ,
 			       multi1d<LatticeComplex>& f,
 			       multi1d<LatticeComplex>& b1,
@@ -602,7 +603,7 @@ void *function_get_fs_bs_build(const LatticeColorMatrix& Q,
 
   loop.done();
 
-  return jit_function_epilogue_get("jit_get_fs_bs.ptx");
+  func.func().push_back( jit_function_epilogue_get("jit_get_fs_bs.ptx") );
 }
 
 
