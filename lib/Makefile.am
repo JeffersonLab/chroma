@@ -824,6 +824,7 @@ nobase_include_HEADERS += \
 	meas/inline/glue/inline_qnaive.h \
 	meas/inline/glue/inline_random_transf_gauge.h \
 	meas/inline/glue/inline_glue_matelem_colorvec.h \
+	meas/inline/glue/inline_glue_diag_matelem_colorvec.h \
 	meas/inline/glue/inline_glueball_ops.h \
 	meas/inline/glue/inline_wilson_flow.h \
 	meas/inline/hadron/hadron.h \
@@ -1627,6 +1628,7 @@ libchroma_a_SOURCES += \
 	meas/inline/glue/inline_qnaive.cc \
 	meas/inline/glue/inline_random_transf_gauge.cc \
 	meas/inline/glue/inline_glue_matelem_colorvec.cc \
+	meas/inline/glue/inline_glue_diag_matelem_colorvec.cc \
 	meas/inline/glue/inline_glueball_ops.cc \
 	meas/inline/glue/inline_wilson_flow.cc \
 	meas/inline/hadron/inline_hadron_aggregate.cc \

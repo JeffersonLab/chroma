@@ -21,6 +21,9 @@
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 
+/* Use JIT Clover Term Apply, requires to build on top of QDP-JIT/PTX */
+#undef BUILD_JIT_CLOVER_TERM
+
 /* Using Lapack */
 #undef BUILD_LAPACK
 
@@ -38,6 +41,18 @@
 
 /* Build with the BU QUDA Library */
 #undef BUILD_QUDA
+
+/* Use of QUDA device pointer interface CLOVER, requires to build on top of
+   QDP-JIT/PTX */
+#undef BUILD_QUDA_DEVIFACE_CLOVER
+
+/* Use of QUDA device pointer interface GAUGE, requires to build on top of
+   QDP-JIT/PTX */
+#undef BUILD_QUDA_DEVIFACE_GAUGE
+
+/* Use of QUDA device pointer interface SPINOR, requires to build on top of
+   QDP-JIT/PTX */
+#undef BUILD_QUDA_DEVIFACE_SPINOR
 
 /* Build Scalarsite BICGStab Kernels */
 #undef BUILD_SCALARSITE_BICGSTAB
@@ -77,6 +92,9 @@
 
 /* Define to the one symbol short name of this package. */
 #undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
