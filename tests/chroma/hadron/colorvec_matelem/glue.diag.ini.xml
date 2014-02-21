@@ -1,0 +1,1187 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+
+    <elem>
+      <annotation>
+        Iterate the smearing operator to produce near eigenvectors
+      </annotation>
+      <Name>CREATE_COLORVECS</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <num_vecs>10</num_vecs>
+        <decay_dir>3</decay_dir>
+        <num_iter>50</num_iter>
+        <width>3.0</width>
+        <num_orthog>20</num_orthog>
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <ColorVecMapObject>
+          <MapObjType>MAP_OBJECT_MEMORY</MapObjType>
+        </ColorVecMapObject>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>GLUEBALL_DIAG_MATELEM_COLORVEC</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>1</version>
+        <mom2_min>0</mom2_min>
+        <mom2_max>0</mom2_max>
+        <mom_list></mom_list>
+        <num_vecs>10</num_vecs>
+        <displacement_length>1</displacement_length>
+        <decay_dir>3</decay_dir>
+
+        <!-- List of displacement arrays --> 
+        <displacement_list>
+          <elem></elem>
+          <elem>1</elem>
+          <elem>2</elem>
+          <elem>3</elem>
+          <elem>1 1</elem>
+          <elem>1 2</elem>
+          <elem>1 3</elem>
+          <elem>2 1</elem>
+          <elem>2 2</elem>
+          <elem>2 3</elem>
+          <elem>3 1</elem>
+          <elem>3 2</elem>
+          <elem>3 3</elem>
+          <elem>1 1 1</elem>
+          <elem>1 1 2</elem>
+          <elem>1 1 3</elem>
+          <elem>1 2 1</elem>
+          <elem>1 2 2</elem>
+          <elem>1 2 3</elem>
+          <elem>1 3 1</elem>
+          <elem>1 3 2</elem>
+          <elem>1 3 3</elem>
+          <elem>2 1 1</elem>
+          <elem>2 1 2</elem>
+          <elem>2 1 3</elem>
+          <elem>2 2 1</elem>
+          <elem>2 2 2</elem>
+          <elem>2 2 3</elem>
+          <elem>2 3 1</elem>
+          <elem>2 3 2</elem>
+          <elem>2 3 3</elem>
+          <elem>3 1 1</elem>
+          <elem>3 1 2</elem>
+          <elem>3 1 3</elem>
+          <elem>3 2 1</elem>
+          <elem>3 2 2</elem>
+          <elem>3 2 3</elem>
+          <elem>3 3 1</elem>
+          <elem>3 3 2</elem>
+          <elem>3 3 3</elem>
+          <elem>1 1 1 1</elem>
+          <elem>1 1 1 2</elem>
+          <elem>1 1 1 3</elem>
+          <elem>1 1 2 1</elem>
+          <elem>1 1 2 2</elem>
+          <elem>1 1 2 3</elem>
+          <elem>1 1 3 1</elem>
+          <elem>1 1 3 2</elem>
+          <elem>1 1 3 3</elem>
+          <elem>1 2 1 1</elem>
+          <elem>1 2 1 2</elem>
+          <elem>1 2 1 3</elem>
+          <elem>1 2 2 1</elem>
+          <elem>1 2 2 2</elem>
+          <elem>1 2 2 3</elem>
+          <elem>1 2 3 1</elem>
+          <elem>1 2 3 2</elem>
+          <elem>1 2 3 3</elem>
+          <elem>1 3 1 1</elem>
+          <elem>1 3 1 2</elem>
+          <elem>1 3 1 3</elem>
+          <elem>1 3 2 1</elem>
+          <elem>1 3 2 2</elem>
+          <elem>1 3 2 3</elem>
+          <elem>1 3 3 1</elem>
+          <elem>1 3 3 2</elem>
+          <elem>1 3 3 3</elem>
+          <elem>2 1 1 1</elem>
+          <elem>2 1 1 2</elem>
+          <elem>2 1 1 3</elem>
+          <elem>2 1 2 1</elem>
+          <elem>2 1 2 2</elem>
+          <elem>2 1 2 3</elem>
+          <elem>2 1 3 1</elem>
+          <elem>2 1 3 2</elem>
+          <elem>2 1 3 3</elem>
+          <elem>2 2 1 1</elem>
+          <elem>2 2 1 2</elem>
+          <elem>2 2 1 3</elem>
+          <elem>2 2 2 1</elem>
+          <elem>2 2 2 2</elem>
+          <elem>2 2 2 3</elem>
+          <elem>2 2 3 1</elem>
+          <elem>2 2 3 2</elem>
+          <elem>2 2 3 3</elem>
+          <elem>2 3 1 1</elem>
+          <elem>2 3 1 2</elem>
+          <elem>2 3 1 3</elem>
+          <elem>2 3 2 1</elem>
+          <elem>2 3 2 2</elem>
+          <elem>2 3 2 3</elem>
+          <elem>2 3 3 1</elem>
+          <elem>2 3 3 2</elem>
+          <elem>2 3 3 3</elem>
+          <elem>3 1 1 1</elem>
+          <elem>3 1 1 2</elem>
+          <elem>3 1 1 3</elem>
+          <elem>3 1 2 1</elem>
+          <elem>3 1 2 2</elem>
+          <elem>3 1 2 3</elem>
+          <elem>3 1 3 1</elem>
+          <elem>3 1 3 2</elem>
+          <elem>3 1 3 3</elem>
+          <elem>3 2 1 1</elem>
+          <elem>3 2 1 2</elem>
+          <elem>3 2 1 3</elem>
+          <elem>3 2 2 1</elem>
+          <elem>3 2 2 2</elem>
+          <elem>3 2 2 3</elem>
+          <elem>3 2 3 1</elem>
+          <elem>3 2 3 2</elem>
+          <elem>3 2 3 3</elem>
+          <elem>3 3 1 1</elem>
+          <elem>3 3 1 2</elem>
+          <elem>3 3 1 3</elem>
+          <elem>3 3 2 1</elem>
+          <elem>3 3 2 2</elem>
+          <elem>3 3 2 3</elem>
+          <elem>3 3 3 1</elem>
+          <elem>3 3 3 2</elem>
+          <elem>3 3 3 3</elem>
+          <elem>1 1 1 1 1</elem>
+          <elem>1 1 1 1 2</elem>
+          <elem>1 1 1 1 3</elem>
+          <elem>1 1 1 2 1</elem>
+          <elem>1 1 1 2 2</elem>
+          <elem>1 1 1 2 3</elem>
+          <elem>1 1 1 3 1</elem>
+          <elem>1 1 1 3 2</elem>
+          <elem>1 1 1 3 3</elem>
+          <elem>1 1 2 1 1</elem>
+          <elem>1 1 2 1 2</elem>
+          <elem>1 1 2 1 3</elem>
+          <elem>1 1 2 2 1</elem>
+          <elem>1 1 2 2 2</elem>
+          <elem>1 1 2 2 3</elem>
+          <elem>1 1 2 3 1</elem>
+          <elem>1 1 2 3 2</elem>
+          <elem>1 1 2 3 3</elem>
+          <elem>1 1 3 1 1</elem>
+          <elem>1 1 3 1 2</elem>
+          <elem>1 1 3 1 3</elem>
+          <elem>1 1 3 2 1</elem>
+          <elem>1 1 3 2 2</elem>
+          <elem>1 1 3 2 3</elem>
+          <elem>1 1 3 3 1</elem>
+          <elem>1 1 3 3 2</elem>
+          <elem>1 1 3 3 3</elem>
+          <elem>1 2 1 1 1</elem>
+          <elem>1 2 1 1 2</elem>
+          <elem>1 2 1 1 3</elem>
+          <elem>1 2 1 2 1</elem>
+          <elem>1 2 1 2 2</elem>
+          <elem>1 2 1 2 3</elem>
+          <elem>1 2 1 3 1</elem>
+          <elem>1 2 1 3 2</elem>
+          <elem>1 2 1 3 3</elem>
+          <elem>1 2 2 1 1</elem>
+          <elem>1 2 2 1 2</elem>
+          <elem>1 2 2 1 3</elem>
+          <elem>1 2 2 2 1</elem>
+          <elem>1 2 2 2 2</elem>
+          <elem>1 2 2 2 3</elem>
+          <elem>1 2 2 3 1</elem>
+          <elem>1 2 2 3 2</elem>
+          <elem>1 2 2 3 3</elem>
+          <elem>1 2 3 1 1</elem>
+          <elem>1 2 3 1 2</elem>
+          <elem>1 2 3 1 3</elem>
+          <elem>1 2 3 2 1</elem>
+          <elem>1 2 3 2 2</elem>
+          <elem>1 2 3 2 3</elem>
+          <elem>1 2 3 3 1</elem>
+          <elem>1 2 3 3 2</elem>
+          <elem>1 2 3 3 3</elem>
+          <elem>1 3 1 1 1</elem>
+          <elem>1 3 1 1 2</elem>
+          <elem>1 3 1 1 3</elem>
+          <elem>1 3 1 2 1</elem>
+          <elem>1 3 1 2 2</elem>
+          <elem>1 3 1 2 3</elem>
+          <elem>1 3 1 3 1</elem>
+          <elem>1 3 1 3 2</elem>
+          <elem>1 3 1 3 3</elem>
+          <elem>1 3 2 1 1</elem>
+          <elem>1 3 2 1 2</elem>
+          <elem>1 3 2 1 3</elem>
+          <elem>1 3 2 2 1</elem>
+          <elem>1 3 2 2 2</elem>
+          <elem>1 3 2 2 3</elem>
+          <elem>1 3 2 3 1</elem>
+          <elem>1 3 2 3 2</elem>
+          <elem>1 3 2 3 3</elem>
+          <elem>1 3 3 1 1</elem>
+          <elem>1 3 3 1 2</elem>
+          <elem>1 3 3 1 3</elem>
+          <elem>1 3 3 2 1</elem>
+          <elem>1 3 3 2 2</elem>
+          <elem>1 3 3 2 3</elem>
+          <elem>1 3 3 3 1</elem>
+          <elem>1 3 3 3 2</elem>
+          <elem>1 3 3 3 3</elem>
+          <elem>2 1 1 1 1</elem>
+          <elem>2 1 1 1 2</elem>
+          <elem>2 1 1 1 3</elem>
+          <elem>2 1 1 2 1</elem>
+          <elem>2 1 1 2 2</elem>
+          <elem>2 1 1 2 3</elem>
+          <elem>2 1 1 3 1</elem>
+          <elem>2 1 1 3 2</elem>
+          <elem>2 1 1 3 3</elem>
+          <elem>2 1 2 1 1</elem>
+          <elem>2 1 2 1 2</elem>
+          <elem>2 1 2 1 3</elem>
+          <elem>2 1 2 2 1</elem>
+          <elem>2 1 2 2 2</elem>
+          <elem>2 1 2 2 3</elem>
+          <elem>2 1 2 3 1</elem>
+          <elem>2 1 2 3 2</elem>
+          <elem>2 1 2 3 3</elem>
+          <elem>2 1 3 1 1</elem>
+          <elem>2 1 3 1 2</elem>
+          <elem>2 1 3 1 3</elem>
+          <elem>2 1 3 2 1</elem>
+          <elem>2 1 3 2 2</elem>
+          <elem>2 1 3 2 3</elem>
+          <elem>2 1 3 3 1</elem>
+          <elem>2 1 3 3 2</elem>
+          <elem>2 1 3 3 3</elem>
+          <elem>2 2 1 1 1</elem>
+          <elem>2 2 1 1 2</elem>
+          <elem>2 2 1 1 3</elem>
+          <elem>2 2 1 2 1</elem>
+          <elem>2 2 1 2 2</elem>
+          <elem>2 2 1 2 3</elem>
+          <elem>2 2 1 3 1</elem>
+          <elem>2 2 1 3 2</elem>
+          <elem>2 2 1 3 3</elem>
+          <elem>2 2 2 1 1</elem>
+          <elem>2 2 2 1 2</elem>
+          <elem>2 2 2 1 3</elem>
+          <elem>2 2 2 2 1</elem>
+          <elem>2 2 2 2 2</elem>
+          <elem>2 2 2 2 3</elem>
+          <elem>2 2 2 3 1</elem>
+          <elem>2 2 2 3 2</elem>
+          <elem>2 2 2 3 3</elem>
+          <elem>2 2 3 1 1</elem>
+          <elem>2 2 3 1 2</elem>
+          <elem>2 2 3 1 3</elem>
+          <elem>2 2 3 2 1</elem>
+          <elem>2 2 3 2 2</elem>
+          <elem>2 2 3 2 3</elem>
+          <elem>2 2 3 3 1</elem>
+          <elem>2 2 3 3 2</elem>
+          <elem>2 2 3 3 3</elem>
+          <elem>2 3 1 1 1</elem>
+          <elem>2 3 1 1 2</elem>
+          <elem>2 3 1 1 3</elem>
+          <elem>2 3 1 2 1</elem>
+          <elem>2 3 1 2 2</elem>
+          <elem>2 3 1 2 3</elem>
+          <elem>2 3 1 3 1</elem>
+          <elem>2 3 1 3 2</elem>
+          <elem>2 3 1 3 3</elem>
+          <elem>2 3 2 1 1</elem>
+          <elem>2 3 2 1 2</elem>
+          <elem>2 3 2 1 3</elem>
+          <elem>2 3 2 2 1</elem>
+          <elem>2 3 2 2 2</elem>
+          <elem>2 3 2 2 3</elem>
+          <elem>2 3 2 3 1</elem>
+          <elem>2 3 2 3 2</elem>
+          <elem>2 3 2 3 3</elem>
+          <elem>2 3 3 1 1</elem>
+          <elem>2 3 3 1 2</elem>
+          <elem>2 3 3 1 3</elem>
+          <elem>2 3 3 2 1</elem>
+          <elem>2 3 3 2 2</elem>
+          <elem>2 3 3 2 3</elem>
+          <elem>2 3 3 3 1</elem>
+          <elem>2 3 3 3 2</elem>
+          <elem>2 3 3 3 3</elem>
+          <elem>3 1 1 1 1</elem>
+          <elem>3 1 1 1 2</elem>
+          <elem>3 1 1 1 3</elem>
+          <elem>3 1 1 2 1</elem>
+          <elem>3 1 1 2 2</elem>
+          <elem>3 1 1 2 3</elem>
+          <elem>3 1 1 3 1</elem>
+          <elem>3 1 1 3 2</elem>
+          <elem>3 1 1 3 3</elem>
+          <elem>3 1 2 1 1</elem>
+          <elem>3 1 2 1 2</elem>
+          <elem>3 1 2 1 3</elem>
+          <elem>3 1 2 2 1</elem>
+          <elem>3 1 2 2 2</elem>
+          <elem>3 1 2 2 3</elem>
+          <elem>3 1 2 3 1</elem>
+          <elem>3 1 2 3 2</elem>
+          <elem>3 1 2 3 3</elem>
+          <elem>3 1 3 1 1</elem>
+          <elem>3 1 3 1 2</elem>
+          <elem>3 1 3 1 3</elem>
+          <elem>3 1 3 2 1</elem>
+          <elem>3 1 3 2 2</elem>
+          <elem>3 1 3 2 3</elem>
+          <elem>3 1 3 3 1</elem>
+          <elem>3 1 3 3 2</elem>
+          <elem>3 1 3 3 3</elem>
+          <elem>3 2 1 1 1</elem>
+          <elem>3 2 1 1 2</elem>
+          <elem>3 2 1 1 3</elem>
+          <elem>3 2 1 2 1</elem>
+          <elem>3 2 1 2 2</elem>
+          <elem>3 2 1 2 3</elem>
+          <elem>3 2 1 3 1</elem>
+          <elem>3 2 1 3 2</elem>
+          <elem>3 2 1 3 3</elem>
+          <elem>3 2 2 1 1</elem>
+          <elem>3 2 2 1 2</elem>
+          <elem>3 2 2 1 3</elem>
+          <elem>3 2 2 2 1</elem>
+          <elem>3 2 2 2 2</elem>
+          <elem>3 2 2 2 3</elem>
+          <elem>3 2 2 3 1</elem>
+          <elem>3 2 2 3 2</elem>
+          <elem>3 2 2 3 3</elem>
+          <elem>3 2 3 1 1</elem>
+          <elem>3 2 3 1 2</elem>
+          <elem>3 2 3 1 3</elem>
+          <elem>3 2 3 2 1</elem>
+          <elem>3 2 3 2 2</elem>
+          <elem>3 2 3 2 3</elem>
+          <elem>3 2 3 3 1</elem>
+          <elem>3 2 3 3 2</elem>
+          <elem>3 2 3 3 3</elem>
+          <elem>3 3 1 1 1</elem>
+          <elem>3 3 1 1 2</elem>
+          <elem>3 3 1 1 3</elem>
+          <elem>3 3 1 2 1</elem>
+          <elem>3 3 1 2 2</elem>
+          <elem>3 3 1 2 3</elem>
+          <elem>3 3 1 3 1</elem>
+          <elem>3 3 1 3 2</elem>
+          <elem>3 3 1 3 3</elem>
+          <elem>3 3 2 1 1</elem>
+          <elem>3 3 2 1 2</elem>
+          <elem>3 3 2 1 3</elem>
+          <elem>3 3 2 2 1</elem>
+          <elem>3 3 2 2 2</elem>
+          <elem>3 3 2 2 3</elem>
+          <elem>3 3 2 3 1</elem>
+          <elem>3 3 2 3 2</elem>
+          <elem>3 3 2 3 3</elem>
+          <elem>3 3 3 1 1</elem>
+          <elem>3 3 3 1 2</elem>
+          <elem>3 3 3 1 3</elem>
+          <elem>3 3 3 2 1</elem>
+          <elem>3 3 3 2 2</elem>
+          <elem>3 3 3 2 3</elem>
+          <elem>3 3 3 3 1</elem>
+          <elem>3 3 3 3 2</elem>
+          <elem>3 3 3 3 3</elem>
+<annotation>
+          <elem>1 1 1 1 1 1</elem>
+          <elem>1 1 1 1 1 2</elem>
+          <elem>1 1 1 1 1 3</elem>
+          <elem>1 1 1 1 2 1</elem>
+          <elem>1 1 1 1 2 2</elem>
+          <elem>1 1 1 1 2 3</elem>
+          <elem>1 1 1 1 3 1</elem>
+          <elem>1 1 1 1 3 2</elem>
+          <elem>1 1 1 1 3 3</elem>
+          <elem>1 1 1 2 1 1</elem>
+          <elem>1 1 1 2 1 2</elem>
+          <elem>1 1 1 2 1 3</elem>
+          <elem>1 1 1 2 2 1</elem>
+          <elem>1 1 1 2 2 2</elem>
+          <elem>1 1 1 2 2 3</elem>
+          <elem>1 1 1 2 3 1</elem>
+          <elem>1 1 1 2 3 2</elem>
+          <elem>1 1 1 2 3 3</elem>
+          <elem>1 1 1 3 1 1</elem>
+          <elem>1 1 1 3 1 2</elem>
+          <elem>1 1 1 3 1 3</elem>
+          <elem>1 1 1 3 2 1</elem>
+          <elem>1 1 1 3 2 2</elem>
+          <elem>1 1 1 3 2 3</elem>
+          <elem>1 1 1 3 3 1</elem>
+          <elem>1 1 1 3 3 2</elem>
+          <elem>1 1 1 3 3 3</elem>
+          <elem>1 1 2 1 1 1</elem>
+          <elem>1 1 2 1 1 2</elem>
+          <elem>1 1 2 1 1 3</elem>
+          <elem>1 1 2 1 2 1</elem>
+          <elem>1 1 2 1 2 2</elem>
+          <elem>1 1 2 1 2 3</elem>
+          <elem>1 1 2 1 3 1</elem>
+          <elem>1 1 2 1 3 2</elem>
+          <elem>1 1 2 1 3 3</elem>
+          <elem>1 1 2 2 1 1</elem>
+          <elem>1 1 2 2 1 2</elem>
+          <elem>1 1 2 2 1 3</elem>
+          <elem>1 1 2 2 2 1</elem>
+          <elem>1 1 2 2 2 2</elem>
+          <elem>1 1 2 2 2 3</elem>
+          <elem>1 1 2 2 3 1</elem>
+          <elem>1 1 2 2 3 2</elem>
+          <elem>1 1 2 2 3 3</elem>
+          <elem>1 1 2 3 1 1</elem>
+          <elem>1 1 2 3 1 2</elem>
+          <elem>1 1 2 3 1 3</elem>
+          <elem>1 1 2 3 2 1</elem>
+          <elem>1 1 2 3 2 2</elem>
+          <elem>1 1 2 3 2 3</elem>
+          <elem>1 1 2 3 3 1</elem>
+          <elem>1 1 2 3 3 2</elem>
+          <elem>1 1 2 3 3 3</elem>
+          <elem>1 1 3 1 1 1</elem>
+          <elem>1 1 3 1 1 2</elem>
+          <elem>1 1 3 1 1 3</elem>
+          <elem>1 1 3 1 2 1</elem>
+          <elem>1 1 3 1 2 2</elem>
+          <elem>1 1 3 1 2 3</elem>
+          <elem>1 1 3 1 3 1</elem>
+          <elem>1 1 3 1 3 2</elem>
+          <elem>1 1 3 1 3 3</elem>
+          <elem>1 1 3 2 1 1</elem>
+          <elem>1 1 3 2 1 2</elem>
+          <elem>1 1 3 2 1 3</elem>
+          <elem>1 1 3 2 2 1</elem>
+          <elem>1 1 3 2 2 2</elem>
+          <elem>1 1 3 2 2 3</elem>
+          <elem>1 1 3 2 3 1</elem>
+          <elem>1 1 3 2 3 2</elem>
+          <elem>1 1 3 2 3 3</elem>
+          <elem>1 1 3 3 1 1</elem>
+          <elem>1 1 3 3 1 2</elem>
+          <elem>1 1 3 3 1 3</elem>
+          <elem>1 1 3 3 2 1</elem>
+          <elem>1 1 3 3 2 2</elem>
+          <elem>1 1 3 3 2 3</elem>
+          <elem>1 1 3 3 3 1</elem>
+          <elem>1 1 3 3 3 2</elem>
+          <elem>1 1 3 3 3 3</elem>
+          <elem>1 2 1 1 1 1</elem>
+          <elem>1 2 1 1 1 2</elem>
+          <elem>1 2 1 1 1 3</elem>
+          <elem>1 2 1 1 2 1</elem>
+          <elem>1 2 1 1 2 2</elem>
+          <elem>1 2 1 1 2 3</elem>
+          <elem>1 2 1 1 3 1</elem>
+          <elem>1 2 1 1 3 2</elem>
+          <elem>1 2 1 1 3 3</elem>
+          <elem>1 2 1 2 1 1</elem>
+          <elem>1 2 1 2 1 2</elem>
+          <elem>1 2 1 2 1 3</elem>
+          <elem>1 2 1 2 2 1</elem>
+          <elem>1 2 1 2 2 2</elem>
+          <elem>1 2 1 2 2 3</elem>
+          <elem>1 2 1 2 3 1</elem>
+          <elem>1 2 1 2 3 2</elem>
+          <elem>1 2 1 2 3 3</elem>
+          <elem>1 2 1 3 1 1</elem>
+          <elem>1 2 1 3 1 2</elem>
+          <elem>1 2 1 3 1 3</elem>
+          <elem>1 2 1 3 2 1</elem>
+          <elem>1 2 1 3 2 2</elem>
+          <elem>1 2 1 3 2 3</elem>
+          <elem>1 2 1 3 3 1</elem>
+          <elem>1 2 1 3 3 2</elem>
+          <elem>1 2 1 3 3 3</elem>
+          <elem>1 2 2 1 1 1</elem>
+          <elem>1 2 2 1 1 2</elem>
+          <elem>1 2 2 1 1 3</elem>
+          <elem>1 2 2 1 2 1</elem>
+          <elem>1 2 2 1 2 2</elem>
+          <elem>1 2 2 1 2 3</elem>
+          <elem>1 2 2 1 3 1</elem>
+          <elem>1 2 2 1 3 2</elem>
+          <elem>1 2 2 1 3 3</elem>
+          <elem>1 2 2 2 1 1</elem>
+          <elem>1 2 2 2 1 2</elem>
+          <elem>1 2 2 2 1 3</elem>
+          <elem>1 2 2 2 2 1</elem>
+          <elem>1 2 2 2 2 2</elem>
+          <elem>1 2 2 2 2 3</elem>
+          <elem>1 2 2 2 3 1</elem>
+          <elem>1 2 2 2 3 2</elem>
+          <elem>1 2 2 2 3 3</elem>
+          <elem>1 2 2 3 1 1</elem>
+          <elem>1 2 2 3 1 2</elem>
+          <elem>1 2 2 3 1 3</elem>
+          <elem>1 2 2 3 2 1</elem>
+          <elem>1 2 2 3 2 2</elem>
+          <elem>1 2 2 3 2 3</elem>
+          <elem>1 2 2 3 3 1</elem>
+          <elem>1 2 2 3 3 2</elem>
+          <elem>1 2 2 3 3 3</elem>
+          <elem>1 2 3 1 1 1</elem>
+          <elem>1 2 3 1 1 2</elem>
+          <elem>1 2 3 1 1 3</elem>
+          <elem>1 2 3 1 2 1</elem>
+          <elem>1 2 3 1 2 2</elem>
+          <elem>1 2 3 1 2 3</elem>
+          <elem>1 2 3 1 3 1</elem>
+          <elem>1 2 3 1 3 2</elem>
+          <elem>1 2 3 1 3 3</elem>
+          <elem>1 2 3 2 1 1</elem>
+          <elem>1 2 3 2 1 2</elem>
+          <elem>1 2 3 2 1 3</elem>
+          <elem>1 2 3 2 2 1</elem>
+          <elem>1 2 3 2 2 2</elem>
+          <elem>1 2 3 2 2 3</elem>
+          <elem>1 2 3 2 3 1</elem>
+          <elem>1 2 3 2 3 2</elem>
+          <elem>1 2 3 2 3 3</elem>
+          <elem>1 2 3 3 1 1</elem>
+          <elem>1 2 3 3 1 2</elem>
+          <elem>1 2 3 3 1 3</elem>
+          <elem>1 2 3 3 2 1</elem>
+          <elem>1 2 3 3 2 2</elem>
+          <elem>1 2 3 3 2 3</elem>
+          <elem>1 2 3 3 3 1</elem>
+          <elem>1 2 3 3 3 2</elem>
+          <elem>1 2 3 3 3 3</elem>
+          <elem>1 3 1 1 1 1</elem>
+          <elem>1 3 1 1 1 2</elem>
+          <elem>1 3 1 1 1 3</elem>
+          <elem>1 3 1 1 2 1</elem>
+          <elem>1 3 1 1 2 2</elem>
+          <elem>1 3 1 1 2 3</elem>
+          <elem>1 3 1 1 3 1</elem>
+          <elem>1 3 1 1 3 2</elem>
+          <elem>1 3 1 1 3 3</elem>
+          <elem>1 3 1 2 1 1</elem>
+          <elem>1 3 1 2 1 2</elem>
+          <elem>1 3 1 2 1 3</elem>
+          <elem>1 3 1 2 2 1</elem>
+          <elem>1 3 1 2 2 2</elem>
+          <elem>1 3 1 2 2 3</elem>
+          <elem>1 3 1 2 3 1</elem>
+          <elem>1 3 1 2 3 2</elem>
+          <elem>1 3 1 2 3 3</elem>
+          <elem>1 3 1 3 1 1</elem>
+          <elem>1 3 1 3 1 2</elem>
+          <elem>1 3 1 3 1 3</elem>
+          <elem>1 3 1 3 2 1</elem>
+          <elem>1 3 1 3 2 2</elem>
+          <elem>1 3 1 3 2 3</elem>
+          <elem>1 3 1 3 3 1</elem>
+          <elem>1 3 1 3 3 2</elem>
+          <elem>1 3 1 3 3 3</elem>
+          <elem>1 3 2 1 1 1</elem>
+          <elem>1 3 2 1 1 2</elem>
+          <elem>1 3 2 1 1 3</elem>
+          <elem>1 3 2 1 2 1</elem>
+          <elem>1 3 2 1 2 2</elem>
+          <elem>1 3 2 1 2 3</elem>
+          <elem>1 3 2 1 3 1</elem>
+          <elem>1 3 2 1 3 2</elem>
+          <elem>1 3 2 1 3 3</elem>
+          <elem>1 3 2 2 1 1</elem>
+          <elem>1 3 2 2 1 2</elem>
+          <elem>1 3 2 2 1 3</elem>
+          <elem>1 3 2 2 2 1</elem>
+          <elem>1 3 2 2 2 2</elem>
+          <elem>1 3 2 2 2 3</elem>
+          <elem>1 3 2 2 3 1</elem>
+          <elem>1 3 2 2 3 2</elem>
+          <elem>1 3 2 2 3 3</elem>
+          <elem>1 3 2 3 1 1</elem>
+          <elem>1 3 2 3 1 2</elem>
+          <elem>1 3 2 3 1 3</elem>
+          <elem>1 3 2 3 2 1</elem>
+          <elem>1 3 2 3 2 2</elem>
+          <elem>1 3 2 3 2 3</elem>
+          <elem>1 3 2 3 3 1</elem>
+          <elem>1 3 2 3 3 2</elem>
+          <elem>1 3 2 3 3 3</elem>
+          <elem>1 3 3 1 1 1</elem>
+          <elem>1 3 3 1 1 2</elem>
+          <elem>1 3 3 1 1 3</elem>
+          <elem>1 3 3 1 2 1</elem>
+          <elem>1 3 3 1 2 2</elem>
+          <elem>1 3 3 1 2 3</elem>
+          <elem>1 3 3 1 3 1</elem>
+          <elem>1 3 3 1 3 2</elem>
+          <elem>1 3 3 1 3 3</elem>
+          <elem>1 3 3 2 1 1</elem>
+          <elem>1 3 3 2 1 2</elem>
+          <elem>1 3 3 2 1 3</elem>
+          <elem>1 3 3 2 2 1</elem>
+          <elem>1 3 3 2 2 2</elem>
+          <elem>1 3 3 2 2 3</elem>
+          <elem>1 3 3 2 3 1</elem>
+          <elem>1 3 3 2 3 2</elem>
+          <elem>1 3 3 2 3 3</elem>
+          <elem>1 3 3 3 1 1</elem>
+          <elem>1 3 3 3 1 2</elem>
+          <elem>1 3 3 3 1 3</elem>
+          <elem>1 3 3 3 2 1</elem>
+          <elem>1 3 3 3 2 2</elem>
+          <elem>1 3 3 3 2 3</elem>
+          <elem>1 3 3 3 3 1</elem>
+          <elem>1 3 3 3 3 2</elem>
+          <elem>1 3 3 3 3 3</elem>
+          <elem>2 1 1 1 1 1</elem>
+          <elem>2 1 1 1 1 2</elem>
+          <elem>2 1 1 1 1 3</elem>
+          <elem>2 1 1 1 2 1</elem>
+          <elem>2 1 1 1 2 2</elem>
+          <elem>2 1 1 1 2 3</elem>
+          <elem>2 1 1 1 3 1</elem>
+          <elem>2 1 1 1 3 2</elem>
+          <elem>2 1 1 1 3 3</elem>
+          <elem>2 1 1 2 1 1</elem>
+          <elem>2 1 1 2 1 2</elem>
+          <elem>2 1 1 2 1 3</elem>
+          <elem>2 1 1 2 2 1</elem>
+          <elem>2 1 1 2 2 2</elem>
+          <elem>2 1 1 2 2 3</elem>
+          <elem>2 1 1 2 3 1</elem>
+          <elem>2 1 1 2 3 2</elem>
+          <elem>2 1 1 2 3 3</elem>
+          <elem>2 1 1 3 1 1</elem>
+          <elem>2 1 1 3 1 2</elem>
+          <elem>2 1 1 3 1 3</elem>
+          <elem>2 1 1 3 2 1</elem>
+          <elem>2 1 1 3 2 2</elem>
+          <elem>2 1 1 3 2 3</elem>
+          <elem>2 1 1 3 3 1</elem>
+          <elem>2 1 1 3 3 2</elem>
+          <elem>2 1 1 3 3 3</elem>
+          <elem>2 1 2 1 1 1</elem>
+          <elem>2 1 2 1 1 2</elem>
+          <elem>2 1 2 1 1 3</elem>
+          <elem>2 1 2 1 2 1</elem>
+          <elem>2 1 2 1 2 2</elem>
+          <elem>2 1 2 1 2 3</elem>
+          <elem>2 1 2 1 3 1</elem>
+          <elem>2 1 2 1 3 2</elem>
+          <elem>2 1 2 1 3 3</elem>
+          <elem>2 1 2 2 1 1</elem>
+          <elem>2 1 2 2 1 2</elem>
+          <elem>2 1 2 2 1 3</elem>
+          <elem>2 1 2 2 2 1</elem>
+          <elem>2 1 2 2 2 2</elem>
+          <elem>2 1 2 2 2 3</elem>
+          <elem>2 1 2 2 3 1</elem>
+          <elem>2 1 2 2 3 2</elem>
+          <elem>2 1 2 2 3 3</elem>
+          <elem>2 1 2 3 1 1</elem>
+          <elem>2 1 2 3 1 2</elem>
+          <elem>2 1 2 3 1 3</elem>
+          <elem>2 1 2 3 2 1</elem>
+          <elem>2 1 2 3 2 2</elem>
+          <elem>2 1 2 3 2 3</elem>
+          <elem>2 1 2 3 3 1</elem>
+          <elem>2 1 2 3 3 2</elem>
+          <elem>2 1 2 3 3 3</elem>
+          <elem>2 1 3 1 1 1</elem>
+          <elem>2 1 3 1 1 2</elem>
+          <elem>2 1 3 1 1 3</elem>
+          <elem>2 1 3 1 2 1</elem>
+          <elem>2 1 3 1 2 2</elem>
+          <elem>2 1 3 1 2 3</elem>
+          <elem>2 1 3 1 3 1</elem>
+          <elem>2 1 3 1 3 2</elem>
+          <elem>2 1 3 1 3 3</elem>
+          <elem>2 1 3 2 1 1</elem>
+          <elem>2 1 3 2 1 2</elem>
+          <elem>2 1 3 2 1 3</elem>
+          <elem>2 1 3 2 2 1</elem>
+          <elem>2 1 3 2 2 2</elem>
+          <elem>2 1 3 2 2 3</elem>
+          <elem>2 1 3 2 3 1</elem>
+          <elem>2 1 3 2 3 2</elem>
+          <elem>2 1 3 2 3 3</elem>
+          <elem>2 1 3 3 1 1</elem>
+          <elem>2 1 3 3 1 2</elem>
+          <elem>2 1 3 3 1 3</elem>
+          <elem>2 1 3 3 2 1</elem>
+          <elem>2 1 3 3 2 2</elem>
+          <elem>2 1 3 3 2 3</elem>
+          <elem>2 1 3 3 3 1</elem>
+          <elem>2 1 3 3 3 2</elem>
+          <elem>2 1 3 3 3 3</elem>
+          <elem>2 2 1 1 1 1</elem>
+          <elem>2 2 1 1 1 2</elem>
+          <elem>2 2 1 1 1 3</elem>
+          <elem>2 2 1 1 2 1</elem>
+          <elem>2 2 1 1 2 2</elem>
+          <elem>2 2 1 1 2 3</elem>
+          <elem>2 2 1 1 3 1</elem>
+          <elem>2 2 1 1 3 2</elem>
+          <elem>2 2 1 1 3 3</elem>
+          <elem>2 2 1 2 1 1</elem>
+          <elem>2 2 1 2 1 2</elem>
+          <elem>2 2 1 2 1 3</elem>
+          <elem>2 2 1 2 2 1</elem>
+          <elem>2 2 1 2 2 2</elem>
+          <elem>2 2 1 2 2 3</elem>
+          <elem>2 2 1 2 3 1</elem>
+          <elem>2 2 1 2 3 2</elem>
+          <elem>2 2 1 2 3 3</elem>
+          <elem>2 2 1 3 1 1</elem>
+          <elem>2 2 1 3 1 2</elem>
+          <elem>2 2 1 3 1 3</elem>
+          <elem>2 2 1 3 2 1</elem>
+          <elem>2 2 1 3 2 2</elem>
+          <elem>2 2 1 3 2 3</elem>
+          <elem>2 2 1 3 3 1</elem>
+          <elem>2 2 1 3 3 2</elem>
+          <elem>2 2 1 3 3 3</elem>
+          <elem>2 2 2 1 1 1</elem>
+          <elem>2 2 2 1 1 2</elem>
+          <elem>2 2 2 1 1 3</elem>
+          <elem>2 2 2 1 2 1</elem>
+          <elem>2 2 2 1 2 2</elem>
+          <elem>2 2 2 1 2 3</elem>
+          <elem>2 2 2 1 3 1</elem>
+          <elem>2 2 2 1 3 2</elem>
+          <elem>2 2 2 1 3 3</elem>
+          <elem>2 2 2 2 1 1</elem>
+          <elem>2 2 2 2 1 2</elem>
+          <elem>2 2 2 2 1 3</elem>
+          <elem>2 2 2 2 2 1</elem>
+          <elem>2 2 2 2 2 2</elem>
+          <elem>2 2 2 2 2 3</elem>
+          <elem>2 2 2 2 3 1</elem>
+          <elem>2 2 2 2 3 2</elem>
+          <elem>2 2 2 2 3 3</elem>
+          <elem>2 2 2 3 1 1</elem>
+          <elem>2 2 2 3 1 2</elem>
+          <elem>2 2 2 3 1 3</elem>
+          <elem>2 2 2 3 2 1</elem>
+          <elem>2 2 2 3 2 2</elem>
+          <elem>2 2 2 3 2 3</elem>
+          <elem>2 2 2 3 3 1</elem>
+          <elem>2 2 2 3 3 2</elem>
+          <elem>2 2 2 3 3 3</elem>
+          <elem>2 2 3 1 1 1</elem>
+          <elem>2 2 3 1 1 2</elem>
+          <elem>2 2 3 1 1 3</elem>
+          <elem>2 2 3 1 2 1</elem>
+          <elem>2 2 3 1 2 2</elem>
+          <elem>2 2 3 1 2 3</elem>
+          <elem>2 2 3 1 3 1</elem>
+          <elem>2 2 3 1 3 2</elem>
+          <elem>2 2 3 1 3 3</elem>
+          <elem>2 2 3 2 1 1</elem>
+          <elem>2 2 3 2 1 2</elem>
+          <elem>2 2 3 2 1 3</elem>
+          <elem>2 2 3 2 2 1</elem>
+          <elem>2 2 3 2 2 2</elem>
+          <elem>2 2 3 2 2 3</elem>
+          <elem>2 2 3 2 3 1</elem>
+          <elem>2 2 3 2 3 2</elem>
+          <elem>2 2 3 2 3 3</elem>
+          <elem>2 2 3 3 1 1</elem>
+          <elem>2 2 3 3 1 2</elem>
+          <elem>2 2 3 3 1 3</elem>
+          <elem>2 2 3 3 2 1</elem>
+          <elem>2 2 3 3 2 2</elem>
+          <elem>2 2 3 3 2 3</elem>
+          <elem>2 2 3 3 3 1</elem>
+          <elem>2 2 3 3 3 2</elem>
+          <elem>2 2 3 3 3 3</elem>
+          <elem>2 3 1 1 1 1</elem>
+          <elem>2 3 1 1 1 2</elem>
+          <elem>2 3 1 1 1 3</elem>
+          <elem>2 3 1 1 2 1</elem>
+          <elem>2 3 1 1 2 2</elem>
+          <elem>2 3 1 1 2 3</elem>
+          <elem>2 3 1 1 3 1</elem>
+          <elem>2 3 1 1 3 2</elem>
+          <elem>2 3 1 1 3 3</elem>
+          <elem>2 3 1 2 1 1</elem>
+          <elem>2 3 1 2 1 2</elem>
+          <elem>2 3 1 2 1 3</elem>
+          <elem>2 3 1 2 2 1</elem>
+          <elem>2 3 1 2 2 2</elem>
+          <elem>2 3 1 2 2 3</elem>
+          <elem>2 3 1 2 3 1</elem>
+          <elem>2 3 1 2 3 2</elem>
+          <elem>2 3 1 2 3 3</elem>
+          <elem>2 3 1 3 1 1</elem>
+          <elem>2 3 1 3 1 2</elem>
+          <elem>2 3 1 3 1 3</elem>
+          <elem>2 3 1 3 2 1</elem>
+          <elem>2 3 1 3 2 2</elem>
+          <elem>2 3 1 3 2 3</elem>
+          <elem>2 3 1 3 3 1</elem>
+          <elem>2 3 1 3 3 2</elem>
+          <elem>2 3 1 3 3 3</elem>
+          <elem>2 3 2 1 1 1</elem>
+          <elem>2 3 2 1 1 2</elem>
+          <elem>2 3 2 1 1 3</elem>
+          <elem>2 3 2 1 2 1</elem>
+          <elem>2 3 2 1 2 2</elem>
+          <elem>2 3 2 1 2 3</elem>
+          <elem>2 3 2 1 3 1</elem>
+          <elem>2 3 2 1 3 2</elem>
+          <elem>2 3 2 1 3 3</elem>
+          <elem>2 3 2 2 1 1</elem>
+          <elem>2 3 2 2 1 2</elem>
+          <elem>2 3 2 2 1 3</elem>
+          <elem>2 3 2 2 2 1</elem>
+          <elem>2 3 2 2 2 2</elem>
+          <elem>2 3 2 2 2 3</elem>
+          <elem>2 3 2 2 3 1</elem>
+          <elem>2 3 2 2 3 2</elem>
+          <elem>2 3 2 2 3 3</elem>
+          <elem>2 3 2 3 1 1</elem>
+          <elem>2 3 2 3 1 2</elem>
+          <elem>2 3 2 3 1 3</elem>
+          <elem>2 3 2 3 2 1</elem>
+          <elem>2 3 2 3 2 2</elem>
+          <elem>2 3 2 3 2 3</elem>
+          <elem>2 3 2 3 3 1</elem>
+          <elem>2 3 2 3 3 2</elem>
+          <elem>2 3 2 3 3 3</elem>
+          <elem>2 3 3 1 1 1</elem>
+          <elem>2 3 3 1 1 2</elem>
+          <elem>2 3 3 1 1 3</elem>
+          <elem>2 3 3 1 2 1</elem>
+          <elem>2 3 3 1 2 2</elem>
+          <elem>2 3 3 1 2 3</elem>
+          <elem>2 3 3 1 3 1</elem>
+          <elem>2 3 3 1 3 2</elem>
+          <elem>2 3 3 1 3 3</elem>
+          <elem>2 3 3 2 1 1</elem>
+          <elem>2 3 3 2 1 2</elem>
+          <elem>2 3 3 2 1 3</elem>
+          <elem>2 3 3 2 2 1</elem>
+          <elem>2 3 3 2 2 2</elem>
+          <elem>2 3 3 2 2 3</elem>
+          <elem>2 3 3 2 3 1</elem>
+          <elem>2 3 3 2 3 2</elem>
+          <elem>2 3 3 2 3 3</elem>
+          <elem>2 3 3 3 1 1</elem>
+          <elem>2 3 3 3 1 2</elem>
+          <elem>2 3 3 3 1 3</elem>
+          <elem>2 3 3 3 2 1</elem>
+          <elem>2 3 3 3 2 2</elem>
+          <elem>2 3 3 3 2 3</elem>
+          <elem>2 3 3 3 3 1</elem>
+          <elem>2 3 3 3 3 2</elem>
+          <elem>2 3 3 3 3 3</elem>
+          <elem>3 1 1 1 1 1</elem>
+          <elem>3 1 1 1 1 2</elem>
+          <elem>3 1 1 1 1 3</elem>
+          <elem>3 1 1 1 2 1</elem>
+          <elem>3 1 1 1 2 2</elem>
+          <elem>3 1 1 1 2 3</elem>
+          <elem>3 1 1 1 3 1</elem>
+          <elem>3 1 1 1 3 2</elem>
+          <elem>3 1 1 1 3 3</elem>
+          <elem>3 1 1 2 1 1</elem>
+          <elem>3 1 1 2 1 2</elem>
+          <elem>3 1 1 2 1 3</elem>
+          <elem>3 1 1 2 2 1</elem>
+          <elem>3 1 1 2 2 2</elem>
+          <elem>3 1 1 2 2 3</elem>
+          <elem>3 1 1 2 3 1</elem>
+          <elem>3 1 1 2 3 2</elem>
+          <elem>3 1 1 2 3 3</elem>
+          <elem>3 1 1 3 1 1</elem>
+          <elem>3 1 1 3 1 2</elem>
+          <elem>3 1 1 3 1 3</elem>
+          <elem>3 1 1 3 2 1</elem>
+          <elem>3 1 1 3 2 2</elem>
+          <elem>3 1 1 3 2 3</elem>
+          <elem>3 1 1 3 3 1</elem>
+          <elem>3 1 1 3 3 2</elem>
+          <elem>3 1 1 3 3 3</elem>
+          <elem>3 1 2 1 1 1</elem>
+          <elem>3 1 2 1 1 2</elem>
+          <elem>3 1 2 1 1 3</elem>
+          <elem>3 1 2 1 2 1</elem>
+          <elem>3 1 2 1 2 2</elem>
+          <elem>3 1 2 1 2 3</elem>
+          <elem>3 1 2 1 3 1</elem>
+          <elem>3 1 2 1 3 2</elem>
+          <elem>3 1 2 1 3 3</elem>
+          <elem>3 1 2 2 1 1</elem>
+          <elem>3 1 2 2 1 2</elem>
+          <elem>3 1 2 2 1 3</elem>
+          <elem>3 1 2 2 2 1</elem>
+          <elem>3 1 2 2 2 2</elem>
+          <elem>3 1 2 2 2 3</elem>
+          <elem>3 1 2 2 3 1</elem>
+          <elem>3 1 2 2 3 2</elem>
+          <elem>3 1 2 2 3 3</elem>
+          <elem>3 1 2 3 1 1</elem>
+          <elem>3 1 2 3 1 2</elem>
+          <elem>3 1 2 3 1 3</elem>
+          <elem>3 1 2 3 2 1</elem>
+          <elem>3 1 2 3 2 2</elem>
+          <elem>3 1 2 3 2 3</elem>
+          <elem>3 1 2 3 3 1</elem>
+          <elem>3 1 2 3 3 2</elem>
+          <elem>3 1 2 3 3 3</elem>
+          <elem>3 1 3 1 1 1</elem>
+          <elem>3 1 3 1 1 2</elem>
+          <elem>3 1 3 1 1 3</elem>
+          <elem>3 1 3 1 2 1</elem>
+          <elem>3 1 3 1 2 2</elem>
+          <elem>3 1 3 1 2 3</elem>
+          <elem>3 1 3 1 3 1</elem>
+          <elem>3 1 3 1 3 2</elem>
+          <elem>3 1 3 1 3 3</elem>
+          <elem>3 1 3 2 1 1</elem>
+          <elem>3 1 3 2 1 2</elem>
+          <elem>3 1 3 2 1 3</elem>
+          <elem>3 1 3 2 2 1</elem>
+          <elem>3 1 3 2 2 2</elem>
+          <elem>3 1 3 2 2 3</elem>
+          <elem>3 1 3 2 3 1</elem>
+          <elem>3 1 3 2 3 2</elem>
+          <elem>3 1 3 2 3 3</elem>
+          <elem>3 1 3 3 1 1</elem>
+          <elem>3 1 3 3 1 2</elem>
+          <elem>3 1 3 3 1 3</elem>
+          <elem>3 1 3 3 2 1</elem>
+          <elem>3 1 3 3 2 2</elem>
+          <elem>3 1 3 3 2 3</elem>
+          <elem>3 1 3 3 3 1</elem>
+          <elem>3 1 3 3 3 2</elem>
+          <elem>3 1 3 3 3 3</elem>
+          <elem>3 2 1 1 1 1</elem>
+          <elem>3 2 1 1 1 2</elem>
+          <elem>3 2 1 1 1 3</elem>
+          <elem>3 2 1 1 2 1</elem>
+          <elem>3 2 1 1 2 2</elem>
+          <elem>3 2 1 1 2 3</elem>
+          <elem>3 2 1 1 3 1</elem>
+          <elem>3 2 1 1 3 2</elem>
+          <elem>3 2 1 1 3 3</elem>
+          <elem>3 2 1 2 1 1</elem>
+          <elem>3 2 1 2 1 2</elem>
+          <elem>3 2 1 2 1 3</elem>
+          <elem>3 2 1 2 2 1</elem>
+          <elem>3 2 1 2 2 2</elem>
+          <elem>3 2 1 2 2 3</elem>
+          <elem>3 2 1 2 3 1</elem>
+          <elem>3 2 1 2 3 2</elem>
+          <elem>3 2 1 2 3 3</elem>
+          <elem>3 2 1 3 1 1</elem>
+          <elem>3 2 1 3 1 2</elem>
+          <elem>3 2 1 3 1 3</elem>
+          <elem>3 2 1 3 2 1</elem>
+          <elem>3 2 1 3 2 2</elem>
+          <elem>3 2 1 3 2 3</elem>
+          <elem>3 2 1 3 3 1</elem>
+          <elem>3 2 1 3 3 2</elem>
+          <elem>3 2 1 3 3 3</elem>
+          <elem>3 2 2 1 1 1</elem>
+          <elem>3 2 2 1 1 2</elem>
+          <elem>3 2 2 1 1 3</elem>
+          <elem>3 2 2 1 2 1</elem>
+          <elem>3 2 2 1 2 2</elem>
+          <elem>3 2 2 1 2 3</elem>
+          <elem>3 2 2 1 3 1</elem>
+          <elem>3 2 2 1 3 2</elem>
+          <elem>3 2 2 1 3 3</elem>
+          <elem>3 2 2 2 1 1</elem>
+          <elem>3 2 2 2 1 2</elem>
+          <elem>3 2 2 2 1 3</elem>
+          <elem>3 2 2 2 2 1</elem>
+          <elem>3 2 2 2 2 2</elem>
+          <elem>3 2 2 2 2 3</elem>
+          <elem>3 2 2 2 3 1</elem>
+          <elem>3 2 2 2 3 2</elem>
+          <elem>3 2 2 2 3 3</elem>
+          <elem>3 2 2 3 1 1</elem>
+          <elem>3 2 2 3 1 2</elem>
+          <elem>3 2 2 3 1 3</elem>
+          <elem>3 2 2 3 2 1</elem>
+          <elem>3 2 2 3 2 2</elem>
+          <elem>3 2 2 3 2 3</elem>
+          <elem>3 2 2 3 3 1</elem>
+          <elem>3 2 2 3 3 2</elem>
+          <elem>3 2 2 3 3 3</elem>
+          <elem>3 2 3 1 1 1</elem>
+          <elem>3 2 3 1 1 2</elem>
+          <elem>3 2 3 1 1 3</elem>
+          <elem>3 2 3 1 2 1</elem>
+          <elem>3 2 3 1 2 2</elem>
+          <elem>3 2 3 1 2 3</elem>
+          <elem>3 2 3 1 3 1</elem>
+          <elem>3 2 3 1 3 2</elem>
+          <elem>3 2 3 1 3 3</elem>
+          <elem>3 2 3 2 1 1</elem>
+          <elem>3 2 3 2 1 2</elem>
+          <elem>3 2 3 2 1 3</elem>
+          <elem>3 2 3 2 2 1</elem>
+          <elem>3 2 3 2 2 2</elem>
+          <elem>3 2 3 2 2 3</elem>
+          <elem>3 2 3 2 3 1</elem>
+          <elem>3 2 3 2 3 2</elem>
+          <elem>3 2 3 2 3 3</elem>
+          <elem>3 2 3 3 1 1</elem>
+          <elem>3 2 3 3 1 2</elem>
+          <elem>3 2 3 3 1 3</elem>
+          <elem>3 2 3 3 2 1</elem>
+          <elem>3 2 3 3 2 2</elem>
+          <elem>3 2 3 3 2 3</elem>
+          <elem>3 2 3 3 3 1</elem>
+          <elem>3 2 3 3 3 2</elem>
+          <elem>3 2 3 3 3 3</elem>
+          <elem>3 3 1 1 1 1</elem>
+          <elem>3 3 1 1 1 2</elem>
+          <elem>3 3 1 1 1 3</elem>
+          <elem>3 3 1 1 2 1</elem>
+          <elem>3 3 1 1 2 2</elem>
+          <elem>3 3 1 1 2 3</elem>
+          <elem>3 3 1 1 3 1</elem>
+          <elem>3 3 1 1 3 2</elem>
+          <elem>3 3 1 1 3 3</elem>
+          <elem>3 3 1 2 1 1</elem>
+          <elem>3 3 1 2 1 2</elem>
+          <elem>3 3 1 2 1 3</elem>
+          <elem>3 3 1 2 2 1</elem>
+          <elem>3 3 1 2 2 2</elem>
+          <elem>3 3 1 2 2 3</elem>
+          <elem>3 3 1 2 3 1</elem>
+          <elem>3 3 1 2 3 2</elem>
+          <elem>3 3 1 2 3 3</elem>
+          <elem>3 3 1 3 1 1</elem>
+          <elem>3 3 1 3 1 2</elem>
+          <elem>3 3 1 3 1 3</elem>
+          <elem>3 3 1 3 2 1</elem>
+          <elem>3 3 1 3 2 2</elem>
+          <elem>3 3 1 3 2 3</elem>
+          <elem>3 3 1 3 3 1</elem>
+          <elem>3 3 1 3 3 2</elem>
+          <elem>3 3 1 3 3 3</elem>
+          <elem>3 3 2 1 1 1</elem>
+          <elem>3 3 2 1 1 2</elem>
+          <elem>3 3 2 1 1 3</elem>
+          <elem>3 3 2 1 2 1</elem>
+          <elem>3 3 2 1 2 2</elem>
+          <elem>3 3 2 1 2 3</elem>
+          <elem>3 3 2 1 3 1</elem>
+          <elem>3 3 2 1 3 2</elem>
+          <elem>3 3 2 1 3 3</elem>
+          <elem>3 3 2 2 1 1</elem>
+          <elem>3 3 2 2 1 2</elem>
+          <elem>3 3 2 2 1 3</elem>
+          <elem>3 3 2 2 2 1</elem>
+          <elem>3 3 2 2 2 2</elem>
+          <elem>3 3 2 2 2 3</elem>
+          <elem>3 3 2 2 3 1</elem>
+          <elem>3 3 2 2 3 2</elem>
+          <elem>3 3 2 2 3 3</elem>
+          <elem>3 3 2 3 1 1</elem>
+          <elem>3 3 2 3 1 2</elem>
+          <elem>3 3 2 3 1 3</elem>
+          <elem>3 3 2 3 2 1</elem>
+          <elem>3 3 2 3 2 2</elem>
+          <elem>3 3 2 3 2 3</elem>
+          <elem>3 3 2 3 3 1</elem>
+          <elem>3 3 2 3 3 2</elem>
+          <elem>3 3 2 3 3 3</elem>
+          <elem>3 3 3 1 1 1</elem>
+          <elem>3 3 3 1 1 2</elem>
+          <elem>3 3 3 1 1 3</elem>
+          <elem>3 3 3 1 2 1</elem>
+          <elem>3 3 3 1 2 2</elem>
+          <elem>3 3 3 1 2 3</elem>
+          <elem>3 3 3 1 3 1</elem>
+          <elem>3 3 3 1 3 2</elem>
+          <elem>3 3 3 1 3 3</elem>
+          <elem>3 3 3 2 1 1</elem>
+          <elem>3 3 3 2 1 2</elem>
+          <elem>3 3 3 2 1 3</elem>
+          <elem>3 3 3 2 2 1</elem>
+          <elem>3 3 3 2 2 2</elem>
+          <elem>3 3 3 2 2 3</elem>
+          <elem>3 3 3 2 3 1</elem>
+          <elem>3 3 3 2 3 2</elem>
+          <elem>3 3 3 2 3 3</elem>
+          <elem>3 3 3 3 1 1</elem>
+          <elem>3 3 3 3 1 2</elem>
+          <elem>3 3 3 3 1 3</elem>
+          <elem>3 3 3 3 2 1</elem>
+          <elem>3 3 3 3 2 2</elem>
+          <elem>3 3 3 3 2 3</elem>
+          <elem>3 3 3 3 3 1</elem>
+          <elem>3 3 3 3 3 2</elem>
+          <elem>3 3 3 3 3 3</elem>
+</annotation>
+        </displacement_list>
+
+        <LinkSmearing>
+          <!-- LinkSmearingType>NONE</LinkSmearingType -->
+          <LinkSmearingType>STOUT_SMEAR</LinkSmearingType>
+          <link_smear_fact>0.1625</link_smear_fact>
+          <link_smear_num>4</link_smear_num>
+          <no_smear_dir>3</no_smear_dir>
+        </LinkSmearing>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <colorvec_id>eigeninfo_0</colorvec_id>
+        <glue_op_file>glue.diag.sdb</glue_op_file>
+      </NamedObject>
+    </elem>
+
+  </InlineMeasurements>
+  <nrow>4 4 4 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+
+</chroma>
+
+

@@ -4,7 +4,7 @@
 
 
 #include "handle.h"
-#include "meas/inline/glue/inline_glue_matelem_colorvec.h"
+#include "meas/inline/glue/inline_glue_diag_matelem_colorvec.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
@@ -26,7 +26,7 @@ namespace Chroma
    *
    * @{
    */
-  namespace InlineGlueMatElemColorVecEnv 
+  namespace InlineGlueDiagMatElemColorVecEnv 
   { 
     // Reader for input parameters
     void read(XMLReader& xml, const string& path, Params::Param_t& param)
@@ -107,7 +107,7 @@ namespace Chroma
   }
 
 
-  namespace InlineGlueMatElemColorVecEnv 
+  namespace InlineGlueDiagMatElemColorVecEnv 
   { 
     // Anonymous namespace for registration
     namespace
@@ -252,7 +252,7 @@ namespace Chroma
       {
 	string xml_file = makeXMLFileName(params.xml_file, update_no);
 
-	push(xml_out, "GlueMatElemColorVec");
+	push(xml_out, "GlueDiagMatElemColorVec");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
 	pop(xml_out);
@@ -309,7 +309,7 @@ namespace Chroma
       const MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
 	*(TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
-      push(xml_out, "GlueMatElemColorVec");
+      push(xml_out, "GlueDiagMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
       QDPIO::cout << name << ": Glue color-vector matrix element" << endl;
@@ -504,7 +504,7 @@ namespace Chroma
       pop(xml_out); // ElementalOps
 
       // Close the namelist output file XMLDAT
-      pop(xml_out);     // GlueMatElemColorVector
+      pop(xml_out);     // GlueDiagMatElemColorVector
 
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
@@ -515,7 +515,7 @@ namespace Chroma
 
       END_CODE();
     } // func
-  } // namespace InlineGlueMatElemColorVecEnv
+  } // namespace InlineGlueDiagMatElemColorVecEnv
 
   /*! @} */  // end of group inlineglue
 

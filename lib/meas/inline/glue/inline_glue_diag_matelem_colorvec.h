@@ -12,7 +12,7 @@
 namespace Chroma 
 { 
   /*! \ingroup inlineglue */
-  namespace InlineGlueMatElemColorVecEnv 
+  namespace InlineGlueDiagMatElemColorVecEnv 
   {
     bool registerAll();
 
@@ -74,7 +74,7 @@ namespace Chroma
       Params params;
     };
 
-  } // namespace InlineGlueMatElemColorVecEnv 
+  } // namespace InlineGlueDiagMatElemColorVecEnv 
 }
 
 #endif
