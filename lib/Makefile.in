@@ -854,6 +854,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
@@ -1465,6 +1466,7 @@ am_libchroma_a_OBJECTS = klein_gord.$(OBJEXT) \
 	inline_static_prop_colorvec_w.$(OBJEXT) \
 	inline_prop_matelem_colorvec_w.$(OBJEXT) \
 	inline_prop_and_matelem_colorvec_w.$(OBJEXT) \
+	inline_prop_and_matelem_distillation_w.$(OBJEXT) \
 	inline_prop_matelem_lm_colorvec_w.$(OBJEXT) \
 	inline_prop_matelem_pt_colorvec_w.$(OBJEXT) \
 	inline_baryon_matelem_colorvec_w.$(OBJEXT) \
@@ -2309,6 +2311,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	meas/inline/hadron/inline_prop_colorvec_w.h \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_prop_and_matelem_distillation_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
@@ -3331,6 +3334,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/hadron/inline_prop_colorvec_w.h \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_prop_and_matelem_distillation_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
@@ -4015,6 +4019,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
@@ -4504,6 +4509,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_polylp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_prop_3pt_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_prop_and_matelem_colorvec_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_prop_and_matelem_distillation_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_prop_colorvec_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_prop_distillation_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/inline_prop_distillution_w.Po@am__quote@
@@ -14434,6 +14440,20 @@ inline_prop_and_matelem_colorvec_w.obj: meas/inline/hadron/inline_prop_and_matel
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc' object='inline_prop_and_matelem_colorvec_w.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_prop_and_matelem_colorvec_w.obj `if test -f 'meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc'; fi`
+
+inline_prop_and_matelem_distillation_w.o: meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_prop_and_matelem_distillation_w.o -MD -MP -MF $(DEPDIR)/inline_prop_and_matelem_distillation_w.Tpo -c -o inline_prop_and_matelem_distillation_w.o `test -f 'meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/inline_prop_and_matelem_distillation_w.Tpo $(DEPDIR)/inline_prop_and_matelem_distillation_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc' object='inline_prop_and_matelem_distillation_w.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_prop_and_matelem_distillation_w.o `test -f 'meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc
+
+inline_prop_and_matelem_distillation_w.obj: meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_prop_and_matelem_distillation_w.obj -MD -MP -MF $(DEPDIR)/inline_prop_and_matelem_distillation_w.Tpo -c -o inline_prop_and_matelem_distillation_w.obj `if test -f 'meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/inline_prop_and_matelem_distillation_w.Tpo $(DEPDIR)/inline_prop_and_matelem_distillation_w.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc' object='inline_prop_and_matelem_distillation_w.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o inline_prop_and_matelem_distillation_w.obj `if test -f 'meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc'; then $(CYGPATH_W) 'meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc'; else $(CYGPATH_W) '$(srcdir)/meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc'; fi`
 
 inline_prop_matelem_lm_colorvec_w.o: meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT inline_prop_matelem_lm_colorvec_w.o -MD -MP -MF $(DEPDIR)/inline_prop_matelem_lm_colorvec_w.Tpo -c -o inline_prop_matelem_lm_colorvec_w.o `test -f 'meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc' || echo '$(srcdir)/'`meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc

@@ -867,6 +867,7 @@ nobase_include_HEADERS += \
 	meas/inline/hadron/inline_prop_colorvec_w.h \
 	meas/inline/hadron/inline_static_prop_colorvec_w.h \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.h \
+	meas/inline/hadron/inline_prop_and_matelem_distillation_w.h \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.h \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.h \
@@ -1670,6 +1671,7 @@ libchroma_a_SOURCES += \
 	meas/inline/hadron/inline_static_prop_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_and_matelem_colorvec_w.cc \
+	meas/inline/hadron/inline_prop_and_matelem_distillation_w.cc \
 	meas/inline/hadron/inline_prop_matelem_lm_colorvec_w.cc \
 	meas/inline/hadron/inline_prop_matelem_pt_colorvec_w.cc \
 	meas/inline/hadron/inline_baryon_matelem_colorvec_w.cc \
