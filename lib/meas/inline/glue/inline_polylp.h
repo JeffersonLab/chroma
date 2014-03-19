@@ -4,7 +4,7 @@
  *  \brief Inline polyakov loop
  */
 
-#ifndef INLINE_POLYLOOP_LOOP_H
+#ifndef INLINE_POLYAKOV_LOOP_H
 #define INLINE_POLYAKOV_LOOP_H
 
 #include "chromabase.h"
