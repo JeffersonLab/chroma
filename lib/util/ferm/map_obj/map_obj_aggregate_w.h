@@ -5,7 +5,7 @@
  */
 
 #ifndef __map_obj_aggregate_w_h__
-#define __map_obj_aggregage_w_h__
+#define __map_obj_aggregate_w_h__
 
 #include "chromabase.h"
 
