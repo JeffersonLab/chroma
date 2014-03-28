@@ -15,7 +15,7 @@
  *
  */
 
-/* alpha -- KS phases (Write)
+/* alpha -- KS phases (Write) */
 /* beta  -- the beta phase factors ( Write ) */
 
 

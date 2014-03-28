@@ -88,7 +88,7 @@ namespace Chroma {
     if( gauge_shift ){
 
       //      if((type_of_src == LOCAL_SRC) || (type_of_src == FUZZED_SRC)){
-      if((type_of_src == LOCAL_SRC)){
+      if(type_of_src == LOCAL_SRC){
 	problem = true;
 	more_info = 
 	  "Source type not gauge invariant.\nProbably not what you want.";
@@ -510,7 +510,7 @@ static int flag=1;
 	  "util_compute_quark_prop_s.cc" <<endl;
 	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
 		    << endl;
-	cout << "DEBUG type_of_src = " << type_of_src << cout ;
+	cout << "DEBUG type_of_src = " << type_of_src << endl;
 	exit(0);
 
       }
@@ -631,7 +631,7 @@ static int flag=1;
 	  "util_compute_quark_prop_s.cc" <<endl;
 	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
 		    << endl;
-	cout << "DEBUG type_of_src = " << type_of_src << cout ;
+	cout << "DEBUG type_of_src = " << type_of_src << endl;
 	exit(0);
 
       }

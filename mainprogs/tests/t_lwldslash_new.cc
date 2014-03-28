@@ -1,9 +1,9 @@
 // $Id: t_lwldslash_new.cc,v 3.1 2007-02-06 15:27:38 bjoo Exp $
 
-#include <iostream>
-#include <cstdio>
 
 #include "chroma.h"
+#include <iostream>
+#include <cstdio>
 
 using namespace Chroma;
 

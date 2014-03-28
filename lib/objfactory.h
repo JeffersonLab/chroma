@@ -12,8 +12,6 @@
 
 #include "typeinfo.h"
 #include "typelist.h"
-#include <map>
-#include <exception>
 
 
 namespace Chroma

@@ -7,6 +7,8 @@
 #ifndef __singleton_h__
 #define __singleton_h__
 
+#include "qdp.h"
+
 #include <algorithm>
 #include <stdexcept>
 #include <cassert>

@@ -6,8 +6,6 @@
  * This uses eo-preconditioning on the noise vector side as well as
  * with the eig-cg vectors. NOTE THIS CODE DOES NOT WORK.          
  */
-#include <vector> 
-#include <map> 
 #include <qdp-lapack.h>
 #include <qdp_config.h>
 
@@ -48,6 +46,9 @@
 #include "actions/ferm/linop/linop_w.h"
 
 #include "util/ferm/key_val_db.h"
+
+#include <vector> 
+#include <map> 
 
 namespace Chroma{
   namespace InlineDiscoEoEigCGEnv{ 

@@ -1,5 +1,6 @@
 // $Id: t_invert4_precwilson.cc,v 3.4 2009-10-09 13:59:46 bjoo Exp $
 
+#include "chroma.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -11,7 +12,6 @@
 #include <sys/time.h>
 #include <math.h>
 
-#include "chroma.h"
 
 #include "io/xml_group_reader.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"

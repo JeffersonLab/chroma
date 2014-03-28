@@ -4,14 +4,14 @@
  * @brief  Read an old SZIN-style (checkerboarded) quark propagator
  */
 
-#include <iostream>
-#include <string>
-#include <sstream>
-
 #include "chromabase.h"
 #include "io/readszinqprop_w.h"
 
 #include "qdp_util.h"   // from QDP++
+
+#include <iostream>
+#include <string>
+#include <sstream>
 
 namespace Chroma {
 

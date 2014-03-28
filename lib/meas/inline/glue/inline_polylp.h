@@ -5,7 +5,7 @@
  */
 
 #ifndef INLINE_POLYLOOP_LOOP_H
-#define INLINE_POLYAKOV_LOOP_H
+#define INLINE_POLYLOOP_LOOP_H
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"

@@ -2,11 +2,10 @@
 /*! \file
  *  \brief 4D Zolotarev variant of Overlap-Dirac operator
  */
-#include <iostream>
-#include <sstream>
+
 #include <chromabase.h>
 #include <linearop.h>
-#include <string>
+
 #include "io/enum_io/enum_io.h"  // Read/Write OverlapInnerSolver Type
 // #include "io/overlap_state_info.h"
 
@@ -33,6 +32,10 @@
 #include "actions/ferm/fermstates/simple_fermstate.h"
 #include "actions/ferm/fermstates/ferm_createstate_reader_w.h"
 #include "actions/ferm/fermbcs/fermbcs_reader_w.h"
+
+#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace Chroma
 {

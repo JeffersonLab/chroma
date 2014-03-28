@@ -100,7 +100,7 @@ namespace Chroma
       }
       else { 
 	QDPIO::cout << "NO source XML in Parameter file. Will look in Prop Info" << endl;
-	prop_xml == "";
+	prop_xml = "";
       }
 
       

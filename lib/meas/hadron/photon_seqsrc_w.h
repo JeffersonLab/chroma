@@ -65,6 +65,8 @@ namespace Chroma
 	{
 	  QDPIO::cerr << __func__ << ": not implemented" << endl;
 	  QDP_abort(1);
+	  Complex tmp; // Make Compiler happy
+	  return tmp;
 	}
 
     protected:
@@ -114,6 +116,8 @@ namespace Chroma
 	{
 	  QDPIO::cerr << __func__ << ": not implemented" << endl;
 	  QDP_abort(1);
+	  Complex tmp; // Make Compiler happy
+	  return tmp;
 	}
 
     protected:

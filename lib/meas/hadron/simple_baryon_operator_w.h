@@ -61,6 +61,9 @@ namespace Chroma
 					 enum PlusMinus isign) const
            {
             QDPIO::cerr << "Not implemented yet\n";
+	    QDP_abort(1);
+	    multi1d<LatticeComplex> tmp; // Happy compilers
+	    return tmp;
            }
       LatticeComplex operator()(const LatticeFermion& quark1, 
 					 const LatticeFermion& quark2, 
@@ -68,6 +71,9 @@ namespace Chroma
            int* qindices ) const
            {
             QDPIO::cerr << "Not implemented yet\n";
+	    QDP_abort(1);
+	    LatticeComplex tmp;
+	    return tmp;
            }
 
       //! Add this hack for the moment
@@ -77,6 +83,8 @@ namespace Chroma
 	{
 	  QDPIO::cerr << "BarNuclCg5 operator not implemented at this moment\n";
 	  QDP_abort(1);
+	  LatticeComplex tmp;
+	  return tmp;
 	}
 
     protected:

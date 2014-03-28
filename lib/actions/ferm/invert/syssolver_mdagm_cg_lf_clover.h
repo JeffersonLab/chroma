@@ -5,7 +5,7 @@
  */
 
 #ifndef __syssolver_mdagm_cg_lf_clover_h__
-#define __syssolver_mdadm_cg_lf_clover_h__
+#define __syssolver_mdagm_cg_lf_clover_h__
 #include "chroma_config.h"
 
 #include "handle.h"

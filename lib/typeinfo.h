@@ -7,8 +7,6 @@
 #ifndef __typeinfo_h__
 #define __typeinfo_h__
 
-#include <typeinfo>
-#include <cassert>
 #include "typelist.h"
 
 namespace Chroma

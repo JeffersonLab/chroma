@@ -7,8 +7,6 @@
  * but it does for the eigcg pieces, as it must.
  *
  */
-#include <vector> 
-#include <map> 
 #include <qdp-lapack.h>
 #include <qdp_config.h>
 #include "handle.h"
@@ -50,6 +48,8 @@
 
 #include "util/ferm/key_val_db.h"
 
+#include <vector> 
+#include <map> 
 
 
 namespace Chroma{ 
