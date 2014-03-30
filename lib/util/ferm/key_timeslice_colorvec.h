@@ -16,6 +16,9 @@ namespace Chroma
   /*! \ingroup ferm */
   struct KeyTimeSliceColorVec_t
   {
+    KeyTimeSliceColorVec_t() {}
+    KeyTimeSliceColorVec_t(int t_slice_, int colorvec_) : t_slice(t_slice_), colorvec(colorvec_) {}
+
     int        t_slice;       /*!< Source time slice */
     int        colorvec;      /*!< Colorvector index */
   };

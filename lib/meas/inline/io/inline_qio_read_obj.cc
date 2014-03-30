@@ -30,7 +30,7 @@ namespace Chroma
       class QIOReadObject
       {
       public:
-	~QIOReadObject() {}
+	virtual ~QIOReadObject() {}
 
 	//! Read the object
 	virtual void operator()(QDP_serialparallel_t serpar) = 0;
