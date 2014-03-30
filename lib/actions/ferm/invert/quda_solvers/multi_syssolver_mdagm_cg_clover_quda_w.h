@@ -524,8 +524,8 @@ namespace Chroma
     QudaGaugeParam q_gauge_param;
     mutable QudaInvertParam quda_inv_param;
 
-    Handle< typename CloverTermT<T, U>::Type_t > clov;
-    Handle< typename CloverTermT<T, U>::Type_t > invclov;
+    Handle< CloverTermT<T, U>::Type_t > clov;
+    Handle< CloverTermT<T, U>::Type_t > invclov;
 
     SystemSolverResults_t qudaInvertMulti(const T& chi_s,
 				     multi1d<T>& psi_s,

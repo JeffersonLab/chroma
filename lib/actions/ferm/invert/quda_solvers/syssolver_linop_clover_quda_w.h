@@ -658,8 +658,8 @@ namespace Chroma
     Handle< CloverTermT<T, U>::Type_t > clov;
     Handle< CloverTermT<T, U>::Type_t > invclov;
 
-    SystemSolverResults_t qudaInvert(const typename CloverTermT<T, U>::Type_t& clover,
-				     const typename CloverTermT<T, U>::Type_t& inv_clov,
+    SystemSolverResults_t qudaInvert(const CloverTermT<T, U>::Type_t& clover,
+				     const CloverTermT<T, U>::Type_t& inv_clov,
 				     const T& chi_s,
 				     T& psi_s     
 				     )const ;
