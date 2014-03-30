@@ -102,6 +102,7 @@ namespace Chroma
       read(inputtop, "Nt_forward", input.Nt_forward);
       read(inputtop, "Nt_backward", input.Nt_backward);
       read(inputtop, "mass_label", input.mass_label);
+      read(inputtop, "num_tries", input.num_tries);
     }
 
     //! Propagator output
@@ -115,6 +116,7 @@ namespace Chroma
       write(xml, "Nt_forward", input.Nt_forward);
       write(xml, "Nt_backward", input.Nt_backward);
       write(xml, "mass_label", input.mass_label);
+      write(xml, "num_tries", input.num_tries);
 
       pop(xml);
     }
@@ -409,12 +411,18 @@ namespace Chroma
       // A sanity check
       if (decay_dir != Nd-1)
       {
-	QDPIO::cerr << __func__ << ": TimeSliceIO only supports decay_dir= " << Nd-1 << "\n";
+	QDPIO::cerr << name << ": TimeSliceIO only supports decay_dir= " << Nd-1 << "\n";
 	QDP_abort(1);
       }
 
       // The time-slice set
       TimeSliceSet time_slice_set(decay_dir);
+
+      // Reset
+      if (params.param.contract.num_tries <= 0)
+      {
+	params.param.contract.num_tries = 1;
+      }
 
 
       //
@@ -616,8 +624,57 @@ namespace Chroma
 	      LatticeFermion quark_soln = zero;
 
 	      // Do the propagator inversion
-	      SystemSolverResults_t res = (*PP)(quark_soln, chi);
-	      ncg_had = res.n_count;
+	      // Check if bad things are happening
+	      bool badP = false;
+	      for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
+	      {	
+		// Reset
+		badP = false;
+	      
+		// Solve for the solution vector
+		SystemSolverResults_t res = (*PP)(quark_soln, chi);
+		ncg_had += res.n_count;
+
+		// Check for NaN-s
+		if (isnan(quark_soln))
+		{
+		  badP |= true;
+		}
+
+		// Check for Inf-s
+		if (isinf(quark_soln))
+		{
+		  badP |= true;
+		}
+
+		// Check for finite values
+		if (! isfinite(quark_soln))
+		{
+		  badP |= true;
+		}
+
+		// Check for normal values
+		if (! isnormal(quark_soln))
+		{
+		  badP |= true;
+		}
+
+		// Jump out if this is okay
+		if (! badP) {break;}
+
+		// Warn
+		if (badP)
+		{
+		  QDPIO::cerr << name << ": WARNING - have a bad solution - may retry\n";
+		}
+	      }
+
+	      // Sanity check
+	      if (badP)
+	      {
+		QDPIO::cerr << name << ": this is bad - did not get a clean solution vector" << std::endl;
+		QDP_abort(1);
+	      }
 
 	      // Extract into the temporary output array
 	      for(int spin_sink=0; spin_sink < Ns; ++spin_sink)

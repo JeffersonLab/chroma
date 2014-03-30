@@ -39,6 +39,8 @@ namespace Chroma
 	  int           Nt_forward;     /*!< Time-slices in the forward direction */
 	  int           Nt_backward;    /*!< Time-slices in the backward direction */
 	  std::string   mass_label;     /*!< Some kind of mass label */
+
+	  int           num_tries;      /*!< In case of bad things happening in the solution vectors, do retries */
 	};
 
 	ChromaProp_t    prop;
