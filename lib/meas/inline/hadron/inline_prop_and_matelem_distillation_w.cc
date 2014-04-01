@@ -167,16 +167,16 @@ namespace Chroma
   //----------------------------------------------------------------------------
   namespace InlinePropAndMatElemDistillationEnv 
   {
+    //----------------------------------------------------------------------------
+    // Convenience type
+    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+
     // Anonymous namespace
     namespace
     {
       //----------------------------------------------------------------------------
-      // Convenience type
-      typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > MOD_t;
-
-      //----------------------------------------------------------------------------
       //! Read a source vector
-      LatticeColorVector getSrc(MOD_t& eigen_source, int t_source, int colorvec_src)
+      LatticeColorVectorF getSrc(MOD_t& eigen_source, int t_source, int colorvec_src)
       {
 	//	QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << endl;
 
@@ -430,7 +430,7 @@ namespace Chroma
       // 
       QDPIO::cout << "Snarf the source from a map object disk file" << endl;
 
-      QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > eigen_source;
+      MOD_t eigen_source;
       eigen_source.setDebug(0);
 
       std::string eigen_meta_data;   // holds the eigenvalues
