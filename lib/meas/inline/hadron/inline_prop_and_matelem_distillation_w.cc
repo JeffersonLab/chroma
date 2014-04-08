@@ -625,54 +625,35 @@ namespace Chroma
 
 	      // Do the propagator inversion
 	      // Check if bad things are happening
-	      bool badP = false;
+	      bool badP = true;
 	      for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
 	      {	
 		// Reset
+		quark_soln = zero;
 		badP = false;
 	      
 		// Solve for the solution vector
 		SystemSolverResults_t res = (*PP)(quark_soln, chi);
 		ncg_had += res.n_count;
 
-		// Check for NaN-s
-		if (isnan(quark_soln))
+		// Check for finite values - neither NaN nor Inf
+		if (isfinite(quark_soln))
 		{
-		  badP |= true;
+		  // Okay
+		  break;
 		}
-
-		// Check for Inf-s
-		if (isinf(quark_soln))
+		else
 		{
-		  badP |= true;
-		}
-
-		// Check for finite values
-		if (! isfinite(quark_soln))
-		{
-		  badP |= true;
-		}
-
-		// Check for normal values
-		if (! isnormal(quark_soln))
-		{
-		  badP |= true;
-		}
-
-		// Jump out if this is okay
-		if (! badP) {break;}
-
-		// Warn
-		if (badP)
-		{
-		  QDPIO::cerr << name << ": WARNING - have a bad solution - may retry\n";
+		  QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
+		  badP = true;
 		}
 	      }
 
 	      // Sanity check
 	      if (badP)
 	      {
-		QDPIO::cerr << name << ": this is bad - did not get a clean solution vector" << std::endl;
+		QDPIO::cerr << name << ": this is bad - did not get a finite solution vector after num_tries= " 
+			    << params.param.contract.num_tries << std::endl;
 		QDP_abort(1);
 	      }
 
