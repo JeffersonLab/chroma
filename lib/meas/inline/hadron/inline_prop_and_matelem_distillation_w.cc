@@ -447,9 +447,9 @@ namespace Chroma
 	//	QDPIO::cout << "User data= " << eigen_meta_data << endl;
 
 	// Write it
-	QDPIO::cout << "Write to an xml file" << endl;
-	XMLBufferWriter xml_buf(eigen_meta_data);
-	write(xml_out, "Source_info", xml_buf);
+	//	QDPIO::cout << "Write to an xml file" << endl;
+	//	XMLBufferWriter xml_buf(eigen_meta_data);
+	//	write(xml_out, "Source_info", xml_buf);
       }    
       catch (std::bad_cast) {
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
