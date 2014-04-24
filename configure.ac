@@ -666,7 +666,7 @@ dnl ************************************************************************
 if test "X${jit_clover_enabled}X" = "XyesX";
 then
    AC_MSG_NOTICE( [Building with QDP-JIT Clover] )   
-   AC_DEFINE([BUILD_JIT_CLOVER_TERM],[], [ Use JIT Clover Term Apply, requires to build on top of QDP-JIT/PTX ])
+   AC_DEFINE([BUILD_JIT_CLOVER_TERM],[], [ Use JIT Clover Term Apply, requires to build on top of QDP-JIT ])
 else
    AC_MSG_NOTICE( [Not using QDP-JIT Clover] )
 fi

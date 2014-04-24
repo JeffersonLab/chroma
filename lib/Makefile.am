@@ -1839,8 +1839,10 @@ libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
 endif
 
 if BUILD_JIT_CLOVER_APPLY
-nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h
-libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc
+nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h \
+	actions/ferm/linop/clover_term_llvm_w.h
+libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc \
+	util/gauge/stout_utils_llvm.cc
 endif
 
 
@@ -1948,7 +1950,7 @@ libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
-# include files for scidac libariesg
+# include files for scidac libaries
 AM_CXXFLAGS += -I@QDPC_DIR@/qmp/include
 AM_CXXFLAGS += -I@QDPC_DIR@/qio/include
 AM_CXXFLAGS += -I@QDPC_DIR@/qla/include

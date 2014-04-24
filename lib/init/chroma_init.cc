@@ -5,12 +5,14 @@
 
 #include "chroma_config.h"
 
-#if defined(BUILD_JIT_CLOVER_TERM)
-#include "../actions/ferm/linop/clover_term_ptx_w.h"
-#endif
-
 #include "init/chroma_init.h"
 #include "io/xmllog_io.h"
+
+#if defined(BUILD_JIT_CLOVER_TERM)
+#if defined(QDPJIT_IS_QDPJITPTX)
+#include "../actions/ferm/linop/clover_term_ptx_w.h"
+#endif
+#endif
 
 #ifdef BUILD_QUDA
 #include <quda.h>
@@ -91,7 +93,7 @@ namespace Chroma
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
   {
-#ifndef QDP_IS_QDPJIT
+#ifndef QDPJIT_IS_QDPJITPTX
     if (! QDP_isInitialized())
       QDP_initialize(argc, argv);
 #else
@@ -189,7 +191,7 @@ namespace Chroma
     }
 
 
-#ifdef QDP_IS_QDPJIT
+#ifdef QDPJIT_IS_QDPJITPTX
 #ifdef BUILD_QUDA
   std::cout << "Setting CUDA device" << endl;
   int cuda_device = QDP_setGPU();
@@ -235,7 +237,9 @@ namespace Chroma
 #endif
 
 #if defined(BUILD_JIT_CLOVER_TERM)
+#if defined(QDPJIT_IS_QDPJITPTX)
     QDP_info_primary("Time for packForQUDA: %f sec",PackForQUDATimer::Instance().get() / 1.0e6);
+#endif
 #endif
 
     if (! QDP_isInitialized())

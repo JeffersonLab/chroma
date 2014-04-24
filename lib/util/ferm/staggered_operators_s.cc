@@ -90,7 +90,7 @@ namespace Chroma
       LatticeReal sign = 1.0 ;
     
       for(int c(mu+1);c<Nd;c++){
-	where(QDP::Layout::latticeCoordinate(c) & 1 == 1, -1.0*sign, sign);
+	where( (QDP::Layout::latticeCoordinate(c) & 1) == 1, -1.0*sign, sign);
       }
       dest *= sign ;
     }
@@ -101,7 +101,7 @@ namespace Chroma
       LatticeReal sign = 1.0 ;
     
       for(int c(0);c<mu;c++){
-	where(QDP::Layout::latticeCoordinate(c) & 1 == 1, -1.0*sign, sign);
+	where( (QDP::Layout::latticeCoordinate(c) & 1) == 1, -1.0*sign, sign);
       }
 
       dest *= sign ;

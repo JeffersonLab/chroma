@@ -202,7 +202,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }
@@ -216,7 +216,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivOddEvenLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }

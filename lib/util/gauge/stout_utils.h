@@ -10,6 +10,7 @@
 #include "chromabase.h"
 
 #ifdef QDP_IS_QDPJIT
+#ifdef QDPJIT_IS_QDPJITPTX
 CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
                                     const LatticeColorMatrix& QQ,
                                     multi1d<LatticeComplex>& f,
@@ -23,6 +24,7 @@ CUfunction function_get_fs_bs_exec(CUfunction function,
                                    multi1d<LatticeComplex>& b1,
                                    multi1d<LatticeComplex>& b2,
                                    bool dobs);
+#endif
 #endif
 
 

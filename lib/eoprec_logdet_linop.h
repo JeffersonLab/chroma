@@ -264,7 +264,7 @@ namespace Chroma
      
      P F_tmp; // deriv will resize
      for(int i=0; i < chi.size(); i++) { 
-       derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
+       this->derivEvenOddLinOp(F_tmp, chi[i], psi[i], isign);
        ds_u += F_tmp;
      }
    }
@@ -431,26 +431,26 @@ namespace Chroma
       // on all cb. So, no adding of ds_1 onto ds_u under a subset
       //
       //  ds_u  =  chi^dag * A'_oo * psi
-      derivOddOddLinOp(ds_u, chi, psi, isign);
+      this->derivOddOddLinOp(ds_u, chi, psi, isign);
 
       //  ds_u  -=  chi^dag * D'_oe * Ainv_ee * D_eo * psi_o
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      derivOddEvenLinOp(ds_1, chi, tmp2, isign);
+      this->evenOddLinOp(tmp1, psi, isign);
+      this->evenEvenInvLinOp(tmp2, tmp1, isign);
+      this->derivOddEvenLinOp(ds_1, chi, tmp2, isign);
       ds_u -= ds_1;
 
       //  ds_u  +=  chi^dag * D_oe * Ainv_ee * A'_ee * Ainv_ee * D_eo * psi_o
-      evenOddLinOp(tmp1, psi, isign);
-      evenEvenInvLinOp(tmp2, tmp1, isign);
-      evenOddLinOp(tmp1, chi, msign);
-      evenEvenInvLinOp(tmp3, tmp1, msign);
-      derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
+      this->evenOddLinOp(tmp1, psi, isign);
+      this->evenEvenInvLinOp(tmp2, tmp1, isign);
+      this->evenOddLinOp(tmp1, chi, msign);
+      this->evenEvenInvLinOp(tmp3, tmp1, msign);
+      this->derivEvenEvenLinOp(ds_1, tmp3, tmp2, isign);
       ds_u += ds_1;
 
       //  ds_u  -=  chi^dag * D_oe * Ainv_ee * D'_eo * psi_o
-      evenOddLinOp(tmp1, chi, msign);
-      evenEvenInvLinOp(tmp3, tmp1, msign);
-      derivEvenOddLinOp(ds_1, tmp3, psi, isign);
+      this->evenOddLinOp(tmp1, chi, msign);
+      this->evenEvenInvLinOp(tmp3, tmp1, msign);
+      this->derivEvenOddLinOp(ds_1, tmp3, psi, isign);
       ds_u -= ds_1;
 
       getFermBC().zero(ds_u);

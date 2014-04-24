@@ -152,6 +152,7 @@ namespace Chroma
 	  {
 	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl;
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"H"<<k;
@@ -165,11 +166,13 @@ namespace Chroma
 	      OctavePrintOut(tmp.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    multi2d<DComplex> Hevecs(H.mat);
 	    multi1d<Double> Heval;
 	    char V = 'V'; char U = 'U';
 	    QDPLapack::zheev(V,U,Nmax,Hevecs,Heval);
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"Hevecs"<<k;
@@ -177,6 +180,7 @@ namespace Chroma
 	    }
 	    for(int i(0);i<Nmax;i++)
 	      QDPIO::cout<<" eignvalue: "<<Heval[i]<<endl;
+#endif
 #endif
 	    multi2d<DComplex> Hevecs_old(H.mat);
 	    multi1d<Double> Heval_old;
@@ -203,30 +207,36 @@ namespace Chroma
 
 	    QDPLapack::zheev(V,U,2*Neig,Htmp,Heval);
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"Htmp"<<k;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    for(int i(Neig); i< 2*Neig;i++ ) // mhpws prepei na einai 0..2*Neig
 	      for(int j(2*Neig); j<Nmax; j++) 
 		Htmp(i,j) =0.0;
 
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"HtmpBeforeZUM"<<k;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    QDPLapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"HtmpAfeterZUM"<<k;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
+#endif
 #endif
 	    
 #ifndef USE_BLAS_FOR_LATTICEFERMIONS
@@ -459,6 +469,7 @@ namespace Chroma
 	    H(Nmax-1,Nmax-1) = 1/alpha + beta/alphaprev;
 
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"H"<<k;
@@ -472,6 +483,7 @@ namespace Chroma
 	      OctavePrintOut(tmp.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    //exit(1);
 	    multi2d<DComplex> Hevecs(H.mat);
 	    multi1d<Double> Heval;
@@ -480,6 +492,7 @@ namespace Chroma
 	    multi2d<DComplex> Hevecs_old(H.mat);
 
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      multi1d<T> tt_vec(vec.size());
 	      for(int i(0);i<Nmax;i++){
@@ -503,11 +516,13 @@ namespace Chroma
 	      }
 	    }
 #endif
+#endif
 	    multi1d<Double> Heval_old;
 	    QDPLapack::zheev(V,U,Nmax-1,Hevecs_old,Heval_old);
 	    for(int i(0);i<Nmax;i++)	    
 	      Hevecs_old(i,Nmax-1) = Hevecs_old(Nmax-1,i) = 0.0;
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"Hevecs_old"<<k;
@@ -515,17 +530,20 @@ namespace Chroma
 	    }
 	  
 #endif
+#endif
 	    tr = Neig + Neig; // v_old = Neig optimal choice
 	   
 	    for(int i(Neig);i<tr;i++)
 	      for(int j(0);j<Nmax;j++)	    
 		Hevecs(i,j) = Hevecs_old(i-Neig,j);
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"Hevecs"<<k;
 	      OctavePrintOut(Hevecs,Nmax,tag.str(),"Hmatrix.m");
 	    }
+#endif
 #endif
 
 	    // Orthogonalize the last Neig vecs (keep the first Neig fixed)
@@ -540,30 +558,36 @@ namespace Chroma
 	    // Notice that now H is of size 2Neig x 2Neig, 
 	    // but still with LDA = Nmax 
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"Htmp"<<k;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    QDPLapack::zheev(V,U,2*Neig,Htmp,Heval);
 	    for(int i(Neig); i< 2*Neig;i++ ) 
 	      for(int j(2*Neig); j<Nmax; j++)
 		Htmp(i,j) =0.0;
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"evecstmp"<<k;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
+#endif
 	    QDPLapack::zunmqr(L,N,Nmax,2*Neig,Hevecs,TAU,Htmp);
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"Yevecstmp"<<k;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
+#endif
 #endif
 	    // Here I need the restart_X bit
 	    multi1d<T> tt_vec = vec.vec;
@@ -574,6 +598,7 @@ namespace Chroma
 	    }
 
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    // CHECK IF vec are eigenvectors...
 	    {
 	      multi1d<T> Av;
@@ -589,6 +614,7 @@ namespace Chroma
 	      }
 
 	    }
+#endif
 #endif
 	    H.mat = 0.0; // zero out H 
 	    for (int i=0;i<2*Neig;i++) H(i,i) = Heval[i];
@@ -618,11 +644,13 @@ namespace Chroma
 	    from_restart = true;
 	    vec.N = 2*Neig; // only keep the lowest Neig. Is this correct???
 #ifdef DEBUG
+#ifndef QDP_IS_QDPJIT
 	    {
 	      stringstream tag;
 	      tag<<"finalH"<<k;
 	      OctavePrintOut(H.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
+#endif
 #endif
 	  }
 	  // Here we add a vector in the list

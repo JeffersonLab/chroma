@@ -267,7 +267,7 @@ namespace Chroma
   RectGaugeAct::deriv(multi1d<LatticeColorMatrix>& ds_u,
 		      const Handle< GaugeState<P,Q> >& state) const
   {
-    START_CODE()
+    START_CODE();
 
 
 #if 1

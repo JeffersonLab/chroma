@@ -1,6 +1,7 @@
 #include "qdp.h"
 
 #ifdef QDP_IS_QDPJIT
+#ifdef QDPJIT_IS_QDPJITPTX
 
 using namespace QDP;
 
@@ -523,4 +524,5 @@ CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
   return jit_get_cufunction("ptx_get_fs_bs.ptx");
 }
 
+#endif
 #endif

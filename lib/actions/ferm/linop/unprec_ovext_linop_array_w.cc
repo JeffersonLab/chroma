@@ -1,6 +1,6 @@
 /* $Id: unprec_ovext_linop_array_w.cc,v 3.0 2006-04-03 04:58:52 edwards Exp $
-/*! \file
-*  \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
+* \file
+* \brief Unpreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
 
 #include "chromabase.h"

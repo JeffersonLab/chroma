@@ -1,3 +1,6 @@
+// $Id: mesphas_follana_s.cc,v 3.0 2006-04-03 04:59:00 edwards Exp $
+
+
 /* This routine is specific to staggered fermions! */
 
 /* This routine will calculate the Kogus-Sussking Phases (alpha)

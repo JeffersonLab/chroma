@@ -1,5 +1,5 @@
 /* $Id: eoprec_ovext_linop_array_w.cc,v 3.2 2007-09-01 23:44:10 uid3790 Exp $
-/*! \file
+*  \file
 *  \brief EvenOddPreconditioned extended-Overlap (5D) (Naryanan&Neuberger) linear operator
 */
 

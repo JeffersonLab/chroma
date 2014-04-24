@@ -637,6 +637,7 @@ namespace Chroma
 		ncg_had += res.n_count;
 
 		// Check for finite values - neither NaN nor Inf
+#ifndef QDP_IS_QDPJIT
 		if (isfinite(quark_soln))
 		{
 		  // Okay
@@ -647,6 +648,7 @@ namespace Chroma
 		  QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
 		  badP = true;
 		}
+#endif
 	      }
 
 	      // Sanity check

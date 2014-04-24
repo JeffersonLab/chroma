@@ -5,7 +5,7 @@
  */
 
 #ifndef __syssolver_mdagm_richardson_multiprec_h__
-#define __syssolver_mdadm_richardson_multiprec_h__
+#define __syssolver_mdagm_richardson_multiprec_h__
 #include "chroma_config.h"
 
 #include "handle.h"
