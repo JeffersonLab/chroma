@@ -1283,7 +1283,7 @@ namespace Chroma
 	  elem_ijb0++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
 
@@ -1330,7 +1330,7 @@ namespace Chroma
 	  elem_ijb3++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
 
@@ -1363,7 +1363,7 @@ namespace Chroma
 	  elem_ij5++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
 
@@ -1395,7 +1395,7 @@ namespace Chroma
 	  elem_ij6++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
 
@@ -1427,7 +1427,7 @@ namespace Chroma
 	  elem_ij9++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
 
@@ -1459,7 +1459,7 @@ namespace Chroma
 	  elem_ij10++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
 
@@ -1506,7 +1506,7 @@ namespace Chroma
 	  elem_ijb12++;
 	}
       }
-      llvm_exit( );
+      llvm_branch(case_default);
     }
 
     llvm_set_insert_point( case_default );
