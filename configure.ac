@@ -3,6 +3,7 @@ AC_PREREQ([2.57])
 AC_CONFIG_AUX_DIR(./config)
 AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([subdir-objects])
 
 dnl stupid templates to shut up stupid autoheader
 dnl AC_DEFINE([BUILD_PAB_WILSON_DSLASH],[],[Build Pab Wilson Dslash])

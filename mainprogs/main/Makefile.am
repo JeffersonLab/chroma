@@ -105,7 +105,7 @@ HDRS =
 bin_PROGRAMS = chroma  \
         purgaug \
         cfgtransf \
-        hmc spectrum_s
+        const_hmc hmc spectrum_s
 
 # Wilson specific programs
 check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac \
@@ -142,6 +142,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_s_SOURCES= spectrum_s.cc
 hmc_SOURCES= hmc.cc
+const_hmc_SOURCES= const_hmc.cc
 purgaug_SOURCES= purgaug.cc
 wallformfac_SOURCES= wallformfac.cc
 qproptransf_SOURCES= qproptransf.cc

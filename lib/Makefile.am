@@ -397,6 +397,7 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/hmc.h \
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
@@ -668,6 +669,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
@@ -1545,6 +1547,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
