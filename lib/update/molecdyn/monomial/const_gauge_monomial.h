@@ -40,7 +40,7 @@ ConstGaugeMonomial(const GaugeMonomialParams& param_):GaugeMonomial(param_){}
       GaugeMonomial::dsdq(F,s);
       ColorMatrix CF ;
       for(int mu(0);mu<Nd;mu++){
-	CF=sum(F[mu]);F[mu]=CF;
+	CF=sum(F[mu])/toDouble(Layout::vol());F[mu]=CF;
       }
     }
 

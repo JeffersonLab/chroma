@@ -37,7 +37,7 @@ virtual void dsdq(P& F, const AbsFieldState<P,Q>& s){
 EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::dsdq(F,s);
  ColorMatrix CF ;
  for(int mu(0);mu<Nd;mu++){
-   CF=sum(F[mu]);F[mu]=CF;
+   CF=sum(F[mu])/Double(Layout::vol());F[mu]=CF;
  }
 } 
 
