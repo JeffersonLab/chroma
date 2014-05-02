@@ -540,6 +540,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/monomial/const_gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
 	update/molecdyn/monomial/rat_approx_aggregate.cc \
 	update/molecdyn/monomial/remez_rat_approx.cc \
@@ -758,6 +759,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
@@ -1309,6 +1311,7 @@ am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	update/heatbath/mciter.$(OBJEXT) \
 	update/molecdyn/hamiltonian/exact_hamiltonian.$(OBJEXT) \
 	update/molecdyn/monomial/gauge_monomial.$(OBJEXT) \
+	update/molecdyn/monomial/const_gauge_monomial.$(OBJEXT) \
 	update/molecdyn/monomial/force_monitors.$(OBJEXT) \
 	update/molecdyn/monomial/rat_approx_aggregate.$(OBJEXT) \
 	update/molecdyn/monomial/remez_rat_approx.$(OBJEXT) \
@@ -1530,6 +1533,7 @@ am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.$(OBJEXT) \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.$(OBJEXT) \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.$(OBJEXT) \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.$(OBJEXT) \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.$(OBJEXT) \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.$(OBJEXT) \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.$(OBJEXT) \
@@ -2107,11 +2111,13 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/const_gauge_monomial.h \
 	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/monomial/bigfloat.h \
 	update/molecdyn/monomial/remez.h \
@@ -2351,6 +2357,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
@@ -3131,11 +3138,13 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/integrator/md_integrator_factory.h \
 	update/molecdyn/hmc/hmc.h update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/const_gauge_monomial.h \
 	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/monomial/bigfloat.h \
 	update/molecdyn/monomial/remez.h \
@@ -3375,6 +3384,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
@@ -3913,6 +3923,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/monomial/const_gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
 	update/molecdyn/monomial/rat_approx_aggregate.cc \
 	update/molecdyn/monomial/remez_rat_approx.cc \
@@ -4120,6 +4131,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
@@ -5384,6 +5396,9 @@ update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp):
 update/molecdyn/monomial/gauge_monomial.$(OBJEXT):  \
 	update/molecdyn/monomial/$(am__dirstamp) \
 	update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp)
+update/molecdyn/monomial/const_gauge_monomial.$(OBJEXT):  \
+	update/molecdyn/monomial/$(am__dirstamp) \
+	update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp)
 update/molecdyn/monomial/force_monitors.$(OBJEXT):  \
 	update/molecdyn/monomial/$(am__dirstamp) \
 	update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp)
@@ -6092,6 +6107,9 @@ update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.$(OBJEXT):
 	update/molecdyn/monomial/$(am__dirstamp) \
 	update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp)
 update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.$(OBJEXT):  \
+	update/molecdyn/monomial/$(am__dirstamp) \
+	update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp)
+update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.$(OBJEXT):  \
 	update/molecdyn/monomial/$(am__dirstamp) \
 	update/molecdyn/monomial/$(DEPDIR)/$(am__dirstamp)
 update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.$(OBJEXT):  \
@@ -7583,6 +7601,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/integrator/$(DEPDIR)/lcm_tst_min_norm2_recursive_dtau.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/central_tprec_logdet_tt_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/comp_approx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/const_gauge_monomial.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial5d_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/eoprec_constdet_one_flavor_rat_monomial_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@update/molecdyn/monomial/$(DEPDIR)/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.Po@am__quote@

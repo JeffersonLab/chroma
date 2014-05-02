@@ -131,7 +131,7 @@ host_triplet = @host@
 @BUILD_QMT_TRUE@am__append_24 = @QMT_LDFLAGS@
 @BUILD_QMT_TRUE@am__append_25 = @QMT_LIBS@
 bin_PROGRAMS = chroma$(EXEEXT) purgaug$(EXEEXT) cfgtransf$(EXEEXT) \
-	hmc$(EXEEXT) spectrum_s$(EXEEXT)
+	const_hmc$(EXEEXT) hmc$(EXEEXT) spectrum_s$(EXEEXT)
 check_PROGRAMS = collect_propcomp$(EXEEXT) qpropgfix$(EXEEXT) \
 	qproptrev$(EXEEXT) qpropqio$(EXEEXT) qproptransf$(EXEEXT) \
 	wallformfac$(EXEEXT) make_meson_ops$(EXEEXT) \
@@ -195,6 +195,14 @@ collect_propcomp_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_const_hmc_OBJECTS = const_hmc.$(OBJEXT)
+const_hmc_OBJECTS = $(am_const_hmc_OBJECTS)
+const_hmc_LDADD = $(LDADD)
+const_hmc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_hmc_OBJECTS = hmc.$(OBJEXT)
 hmc_OBJECTS = $(am_hmc_OBJECTS)
 hmc_LDADD = $(LDADD)
@@ -350,22 +358,24 @@ am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
 SOURCES = $(baryon_ops_red_dil_SOURCES) $(cfgtransf_SOURCES) \
 	$(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) \
-	$(collect_propcomp_SOURCES) $(hmc_SOURCES) \
-	$(make_baryon_ops_SOURCES) $(make_meson_ops_SOURCES) \
-	multi_propagator.c $(multi_propagator_comp_SOURCES) \
-	$(propagator_comp_SOURCES) $(purgaug_SOURCES) \
-	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
-	$(qproptransf_SOURCES) $(qproptrev_SOURCES) \
-	$(spectrum_s_SOURCES) $(wallformfac_SOURCES)
+	$(collect_propcomp_SOURCES) $(const_hmc_SOURCES) \
+	$(hmc_SOURCES) $(make_baryon_ops_SOURCES) \
+	$(make_meson_ops_SOURCES) multi_propagator.c \
+	$(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) \
+	$(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
+	$(qpropqio_SOURCES) $(qproptransf_SOURCES) \
+	$(qproptrev_SOURCES) $(spectrum_s_SOURCES) \
+	$(wallformfac_SOURCES)
 DIST_SOURCES = $(baryon_ops_red_dil_SOURCES) $(cfgtransf_SOURCES) \
 	$(chroma_SOURCES) $(collect_multi_propcomp_SOURCES) \
-	$(collect_propcomp_SOURCES) $(hmc_SOURCES) \
-	$(make_baryon_ops_SOURCES) $(make_meson_ops_SOURCES) \
-	multi_propagator.c $(multi_propagator_comp_SOURCES) \
-	$(propagator_comp_SOURCES) $(purgaug_SOURCES) \
-	$(qpropadd_SOURCES) $(qpropgfix_SOURCES) $(qpropqio_SOURCES) \
-	$(qproptransf_SOURCES) $(qproptrev_SOURCES) \
-	$(spectrum_s_SOURCES) $(wallformfac_SOURCES)
+	$(collect_propcomp_SOURCES) $(const_hmc_SOURCES) \
+	$(hmc_SOURCES) $(make_baryon_ops_SOURCES) \
+	$(make_meson_ops_SOURCES) multi_propagator.c \
+	$(multi_propagator_comp_SOURCES) $(propagator_comp_SOURCES) \
+	$(purgaug_SOURCES) $(qpropadd_SOURCES) $(qpropgfix_SOURCES) \
+	$(qpropqio_SOURCES) $(qproptransf_SOURCES) \
+	$(qproptrev_SOURCES) $(spectrum_s_SOURCES) \
+	$(wallformfac_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -588,6 +598,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_s_SOURCES = spectrum_s.cc
 hmc_SOURCES = hmc.cc
+const_hmc_SOURCES = const_hmc.cc
 purgaug_SOURCES = purgaug.cc
 wallformfac_SOURCES = wallformfac.cc
 qproptransf_SOURCES = qproptransf.cc
@@ -710,6 +721,10 @@ collect_propcomp$(EXEEXT): $(collect_propcomp_OBJECTS) $(collect_propcomp_DEPEND
 	@rm -f collect_propcomp$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(collect_propcomp_OBJECTS) $(collect_propcomp_LDADD) $(LIBS)
 
+const_hmc$(EXEEXT): $(const_hmc_OBJECTS) $(const_hmc_DEPENDENCIES) $(EXTRA_const_hmc_DEPENDENCIES) 
+	@rm -f const_hmc$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(const_hmc_OBJECTS) $(const_hmc_LDADD) $(LIBS)
+
 hmc$(EXEEXT): $(hmc_OBJECTS) $(hmc_DEPENDENCIES) $(EXTRA_hmc_DEPENDENCIES) 
 	@rm -f hmc$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(hmc_OBJECTS) $(hmc_LDADD) $(LIBS)
@@ -777,6 +792,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chroma.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_multi_propcomp.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/collect_propcomp.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/const_hmc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hmc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_baryon_ops.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/make_meson_ops.Po@am__quote@

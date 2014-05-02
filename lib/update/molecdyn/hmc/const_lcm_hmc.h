@@ -62,7 +62,7 @@ namespace Chroma
     {
       START_CODE();
       
-      ColorMatrix P ;
+      LatticeColorMatrix P ;
       // Loop over direcsions
       for(int mu = 0; mu < Nd; mu++) 
       {
@@ -71,7 +71,7 @@ namespace Chroma
 	
 	gaussian(P);
        
-	s.getP()[mu] = P ;
+	s.getP()[mu] = sum(P)/toDouble(Layout::vol()) ;
 	// Old conventions
 	//s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
 

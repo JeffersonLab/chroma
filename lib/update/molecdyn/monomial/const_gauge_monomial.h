@@ -38,7 +38,10 @@ ConstGaugeMonomial(const GaugeMonomialParams& param_):GaugeMonomial(param_){}
     void dsdq(P& F, const AbsFieldState<P,Q>& s) 
     {
       GaugeMonomial::dsdq(F,s);
-      ColorMatrix CF=sum(F);F=CF;
+      ColorMatrix CF ;
+      for(int mu(0);mu<Nd;mu++){
+	CF=sum(F[mu]);F[mu]=CF;
+      }
     }
 
     private:

@@ -11,7 +11,7 @@
 namespace Chroma{
 
 /*! @ingroup monomial */
-namespace EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomialEnv {
+namespace EvenOddPrecConstDetConstGaugeOneFlavorWilsonTypeFermRatMonomialEnv {
 bool registerAll();
 }
 
@@ -35,7 +35,10 @@ EvenOddPrecConstDetConstGaugeOneFlavorWilsonTypeFermRatMonomial(const OneFlavorW
 
 virtual void dsdq(P& F, const AbsFieldState<P,Q>& s){
 EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::dsdq(F,s);
-ColorMatrix CF=sum(F);F=CF;
+ ColorMatrix CF ;
+ for(int mu(0);mu<Nd;mu++){
+   CF=sum(F[mu]);F[mu]=CF;
+ }
 } 
 
   private:
