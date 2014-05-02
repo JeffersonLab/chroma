@@ -71,7 +71,7 @@ namespace Chroma
 	
 	gaussian(P);
        
-	s.getP()[mu] = sum(P)/toDouble(Layout::vol()) ;
+	s.getP()[mu] = sum(P)/sqrt(toDouble(Layout::vol())) ;
 	// Old conventions
 	//s.getP()[mu] *= sqrt(0.5);  // Gaussian Normalisation
 
