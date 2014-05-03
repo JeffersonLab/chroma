@@ -35,6 +35,11 @@ EvenOddPrecConstDetConstGaugeOneFlavorWilsonTypeFermRatMonomial(const OneFlavorW
 
 virtual void dsdq(P& F, const AbsFieldState<P,Q>& s){
 EvenOddPrecConstDetOneFlavorWilsonTypeFermRatMonomial::dsdq(F,s);
+
+// Get at the ferion action 
+ const WilsonTypeFermAct<T,P,Q>& FA = getFermAct();
+
+ //FA.getFermBC().modify(F);
  ColorMatrix CF ;
  for(int mu(0);mu<Nd;mu++){
    CF=sum(F[mu])/Double(Layout::vol());F[mu]=CF;
