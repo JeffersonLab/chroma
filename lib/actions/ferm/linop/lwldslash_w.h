@@ -183,6 +183,8 @@ namespace Chroma
   void QDPWilsonDslashT<T,P,Q>::create(Handle< FermState<T,P,Q> > state,
 			       const multi1d<Real>& coeffs_)
   {
+    //QDPIO::cout << "Setting up QDP Wilson Dslash\n";
+
     // Save a copy of the aniso params original fields and with aniso folded in
     coeffs = coeffs_;
 

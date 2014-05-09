@@ -987,6 +987,10 @@ if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
 endif
 
+if USE_LLVM_WD
+AM_CXXFLAGS += @LLVM_WD_CXXFLAGS@
+endif
+
 if BUILD_QOP_MG
 AM_CXXFLAGS += -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
 endif

@@ -39,6 +39,25 @@ typedef CPPWilsonDslashD WilsonDslash;
 
 } // End Namespace Chroma
 
+#elif defined BUILD_LLVM_WILSON_DSLASH
+
+#warning "Using LLVM Dslash"
+
+#include "lwldslash_llvm_w.h"
+#include "lwldslash_w.h"
+
+namespace Chroma {
+typedef LLVMWilsonDslashD WilsonDslashD;
+typedef QDPWilsonDslashF WilsonDslashF;
+
+#if BASE_PRECISION == 32
+typedef QDPWilsonDslashF WilsonDslash;
+#else 
+typedef LLVMWilsonDslashD WilsonDslash;
+#endif
+}
+
+
 #elif defined BUILD_SSE_WILSON_DSLASH
 // The lwldslash_w_sse.h defines the SSE Dslash class
 // The following typedef switches it in.

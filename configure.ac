@@ -93,6 +93,18 @@ AC_ARG_WITH(mdwf,
 	[mdwf_path=""
 	 build_mdwf="no"]
 )
+
+AC_ARG_WITH(llvm-wilson-dslash,
+	AC_HELP_STRING([--with-llvm-wilson-dslash=<install location>]),
+	[llvm_wd_path=${withval}
+	 build_llvm_wd="yes"],
+	[llvm_wd_path=""
+	 build_llvm_wd="no"]
+)
+
+
+
+
 AC_ARG_ENABLE(asqtad_level3_inverter,
    AC_HELP_STRING(
     [--enable-asqtad-level3-inverter],
@@ -922,6 +934,32 @@ fi
 dnl set a conditional in automake for MDWF Specific files etc.
 AM_CONDITIONAL(BUILD_MDWF,
 	[test "x${build_mdwf}x" = "xyesx" ])
+
+
+
+
+
+if [ test "x${build_llvm_wd}x" = "xyesx" ];
+then
+  AC_MSG_NOTICE([Configuring to use LLVM wilson dslash])
+  AC_DEFINE([BUILD_LLVM_WILSON_DSLASH],[], [ Build with the LLVM wilson library ])
+
+  AC_SUBST(LLVM_WD_CXXFLAGS, "-I${llvm_wd_path}/include")
+  AC_SUBST(LLVM_WD_LDFLAGS,  "-L${llvm_wd_path}/lib")
+  AC_SUBST(LLVM_WD_LIBS,     "-ldslash_llvm")
+  
+  dnl for the chroma-config file
+  AC_SUBST(LLVM_WILSON_DSLASH_ENABLED, [yes])
+fi
+
+dnl set a conditional in automake for MDWF Specific files etc.
+AM_CONDITIONAL(USE_LLVM_WD,
+	[test "x${build_llvm_wd}x" = "xyesx" ])
+
+
+
+
+
 
 ##################################
 # Check for programs to build docs
