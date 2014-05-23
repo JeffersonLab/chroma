@@ -1,0 +1,69 @@
+HTML {
+	FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+BODY {
+	FONT-FAMILY: Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #ffffff
+}
+TD {
+	FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+H1 {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%; FONT-FAMILY: Times, 'New Century Schoolbook', Palatino, serif
+}
+H2 {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+H3 {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+H4 {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+A:visited {
+	COLOR: #111188; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+A:link {
+	COLOR: #003399; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+A:active {
+	COLOR: #003399; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+TR {
+	FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+TD {
+	FONT-SIZE: 12px; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+TBODY {
+	FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+TABLE {
+	FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+P {
+	FONT-SIZE: 12px; MARGIN-LEFT: 4%; MARGIN-RIGHT: 4%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+P.med {
+	FONT-SIZE: 13px; MARGIN-LEFT: 4%; MARGIN-RIGHT: 4%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+P.small {
+	FONT-SIZE: 11px; MARGIN-LEFT: 4%; MARGIN-RIGHT: 4%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+PRE {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%
+}
+BR {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+UL {
+	MARGIN-LEFT: 10%; FONT-FAMILY: Arial, Helvetica, sans-serif; http: //www.ccs.tsukuba.ac.jp/workshop/ILFT05/program.html    margin-right: 10%
+}
+DT {
+	MARGIN-LEFT: 10%; MARGIN-RIGHT: 10%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+DD {
+	MARGIN-LEFT: 10%; MARGIN-RIGHT: 10%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+OL {
+	MARGIN-LEFT: 7%; MARGIN-RIGHT: 7%; FONT-FAMILY: Arial, Helvetica, sans-serif
+}
