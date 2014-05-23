@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml11-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <title>The Chroma Library for Lattice Field Theory</title>
+
+
+  <link href="./USQCDsoftware_files/style.css" type="text/css" rel="stylesheet">
+
+  <style type="text/css"></style>
+</head>
+
+
+
+<body>
+
+<a style="font-size: 40px; font-family: arial,sans-serif; text-decoration: none;" href="http://www.usqcd.org"><img src="./USQCDsoftware_files/logocolor4.png" border="0"></a><br>
+
+<table bgcolor="#ffffff" cellspacing="0" width="800">
+
+  <tbody>
+
+    <tr>
+
+<!-- menu column --> <td bordercolor="#0000ff" bgcolor="#f0f0f0" valign="top" width="125">
+      <h4>Quick Links</h4>
+      <p><a href="http://usqcd-software.github.io">USQCD Software Home</a></br></p>
+
+      <p><a href="#Ack">Acknowledging Chroma in publications</a></p>
+      <h4>Chroma Tutorials through the ages </h4>
+      <p><a href="./HackLatt12/index.html">StrongNet 2012 Summer School (HackLatt'12)</a><br/></p>
+      <p><a href="http://qcdsfware.uni-r.de/chroma-tutorial">2011 Lattice Practices Chroma Tutorial</a></p>
+      <p><a href="./HackLatt08/index.html">HackLatt'08 Chroma Tutorial</a><br/></p>
+      <p><a href="http://www.jlab.org/~dgr/HackLatt07">HackLatt'07 Chroma Tutorial</a><br/></p>
+      <p><a href="./HackLatt06/index.html">HackLatt'06 Chroma Tutorial</a><br/></p>
+      <p><a href="http://www.int.washington.edu/talks/WorkShops/int_07_2b">Numerical methods lecture 
+      <p><a href="https://indico.desy.de/conferenceTimeTable.py?confId=1113">Lattice Practices 2008 tutorials
+by A.Juettner and C.Urbach</a><br/></p>
+
+      <h4>Developer Resources</h4>
+      <p><a href="http://usqcd.jlab.org/usqcd-software/chroma/chroma/docs/doxygen/html">Doxygen Documentation</a><br/></p>
+
+      <p><a href="https://github.com/JeffersonLab/chroma/tree/master">Gitweb: Chroma Master branch</a><br/></p>
+      <p><a href="https://github.com/JeffersonLab/chroma/tree/devel">Gitweb: Chroma devel branch</a><br/></p>
+
+      <h4>Application Code Web Pages</h4>
+      <p><a href="https://github.com/JeffersonLab/chroma">Chroma</a></p>
+
+      <h4>Individual Packages from USQCD</h4>
+      <p><a href="http://usqcd-software.github.io/qmp">QMP</a><br></p>
+      <p><a href="http://usqcd-software.github.io/qmt">QMT</a></p>
+      <p><a href="http://usqcd-software.github.io/qla">QLA</a></p>
+      <p><a href="http://usqcd-software.github.io/qio">QIO</a><br></p>
+      <p><a href="http://usqcd-software.github.io/qdp/">QDP/C</a><br></p>
+      <p><a href="http://usqcd-software.github.io/qdpxx/">QDP/C++</a></p>
+      <p><a href="http://usqcd-software.github.io/qopqdp">QOP</a></p>
+      <p><a href="http://www.mit.edu/%7Eavp/sse/">CG DWF</a></p>
+      <p><a href="http://usqcd-software.github.io/c-lime">C-LIME</a></p>
+      <p><a href="http://usqcd-software.github.io/adat">ADAT</a></p>
+      <p><a href="http://usqcd-software.github.io/bagel_qdp/">BAGEL QDP</a><br></p>
+      <p><a href="http://www.mit.edu/~avp/mdwf">MDWF</a></p>
+      <p><a href="http://www.mit.edu/~avp/qa0">QA0</a></p>
+      
+      <h4>Third party package Web Pages</h4>
+
+      <p><a href="http://www.ph.ed.ac.uk/%7Epaboyle/bagel/Bagel.html">BAGEL</a></p> 
+      <p><a href="http://lattice.bu.edu/quda">QUDA (GPU)</a></p>
+      <br>
+
+      <p></p>
+
+      </td>
+
+<!-- begin content table --> <td valign="top"><!-- begin top content table -->
+      <table style="width: 665px; height: 707px;" cellspacing="8">
+
+        <tbody>
+
+          <tr>
+
+            <td style="vertical-align: top; text-align: left;">
+            <h1 align="center">The Chroma Library for
+Lattice Field
+Theory</h1>
+
+            <hr>
+            <p>The Chroma package supports data-parallel
+programming
+constructs for
+lattice field theory and in particular lattice QCD. It uses the SciDAC
+QDP++ data-parallel programming (in C++) that presents a single
+high-level code image to the user, but can generate highly optimized
+code for many architectural systems including single node
+workstations, multi-threaded SMP workstations (soon to come), clusters
+of workstations via QMP, and classic vector computers.
+            </p>
+
+            <hr>
+            <h2>Code releases:</h2>
+            <p>
+
+
+            <h3>Source Code</h3>
+	    <p>Chroma source code  is available via <a href="http://usqcd.jlab.org/usqcd-software/lattice-git.html">the JLab Git Server</a>. You can also see the <a href="http://usqcd.jlab.org/usqcd-software/lattice-git-faq.html">the Git FAQ</a>. Currently the following branches are availble:
+	      <ul>
+		<li>The <a href="https://github.com/JeffersonLab/chroma/tree/master"><em>master</em></a> is the canonical stable branch</li>
+		<li>The <a href="https://github.com/JeffersonLab/chroma/tree/devel"><em>devel</em></a> branch is the branch with the proposed changes for the next version</li>
+	      </ul>
+	    </p>
+
+            <p>
+Previous versions can be found in the <a href="https://github.com/usqcd-software/downloads/chroma">release
+directory</a>
+            </p>
+
+<h3>What? No RPMS?</h3>
+<p>
+As it turned out the packaging of RPMs is not really as straightforward to automate as we'd like. Also there are worries about availability of shared libraries on some systems. Therefore we have currently suspended the rolling of RPM distributions
+ </p>
+
+           <h3>Dependencies</h3>
+
+            <p>
+In order to build Chroma you'll need to have installed
+            </p>
+
+            <ul>
+
+              <li><a href="http://usqcd-software.github.io/qdpxx">QDP++
+and its dependencies</a>. You may need the following tarballs:
+                <ul>
+
+                  <li>QDP++ itself: The current recommended version is 1.43.0</li>
+
+                  <li>Libxml2: If you don't have this, you
+can use this <a href="http://usqcd.jlab.org/usqcd-software/qdp++/libxml2-2.6.19.tar.gz">copy
+of the source</a>. 
+On Linux and Cygwin Systems there is a package for libxml2. On RedHat
+systems it is called "libxml2-devel".</li>
+
+                  <li>QMP Message Passing for parallel
+builds: The current
+version of the source for QMP is <a href="http://usqcd-software.github.io/qmp">here</a>.
+                  </li>
+
+                  <li>if you want to work on the BlueGene or
+the QCDOC you
+may want some of the optimizations from <a href="http://usqcd-software.github.io/bagel_qdp">bagel_qdp</a>.
+For this you will also need the BAGEL assembler generator package from <a href="http://www.ph.ed.ac.uk/%7Epaboyle/bagel/Bagel.html">Peter
+Boyle</a> and agree to all his requests on his web page.</li>
+
+                </ul>
+
+              </li>
+
+              <li>For RHMC coefficients you may want <a href="http://www.swox.com/gmp">The Gnu Multiple Precision
+Library GMP</a>. On Linux systems you may have this pacakged as <tt>gmp-devel</tt>
+or <tt>gmp3-dev</tt></li>
+
+              <li>For BlueGene you will need the <a href="http://www.ph.ed.ac.uk/%7Epaboyle/bagel/bagel_wilson_dslash-1.4.6.tar.gz">bagel_wilson_dslash-1.4.6.tar.gz</a>
+to provide a BAGEL generated Wilson Dslash. For this you will also need
+the BAGEL assembler generator package from <a href="http://www.ph.ed.ac.uk/%7Epaboyle/bagel/Bagel.html">Peter
+Boyle</a> and agree to all his requests on his web page. Remember to <a href="#Ack">acknowledge and cite as appropriate</a></li>
+
+              <li>GPU: You need to download and install  <a href="http://lattice.github.com/quda">QUDA: A Wilson/Clover inverter package for CUDA based GPU devices</a>. Then point out its existence to chroma with a <tt>--with-quda=&lt;quda-install-dir&gt;</tt> configure option. Remember to check the <a href="http://lattice.github.com/quda">QUDA web page</a> and/or the <a href="#Ack">acknowledgement info</a> to cite the authors appropriately</li>
+
+            </ul>
+
+            <h3>Relevant source code links:</h3>
+
+            <ul>
+
+              <li><a href="http://usqcd-software.github.io/qdp++">QDP++</a>
+- SciDAC C++ data-parallel programming interface </li>
+
+              <li><a href="http://usqcd-software.github.io/qmp">QMP</a>
+- SciDAC message passing programming interface</li>
+
+              <li><a href="http://usqcd-software.github.io">USQCD
+Software</a> - home page for software distributions</li>
+
+            </ul>
+
+            <h3>User Information</h3>
+
+            <p>
+Tutorials from 
+<a href="http://www.ph.ed.ac.uk/%7Ebj/HackLatt05">2005</a>,
+<a href="http://www.ph.ed.ac.uk/%7Ebj/HackLatt06">2006</a>,
+<a href="http://www.jlab.org/%7Edgr/HackLatt07">2007</a>, and
+<a href="http://www.liv.ac.uk/%7Eurbach/hacklatt07">2007</a>
+are available.
+There is also a
+collection of <a href="http://usqcd.jlab.org/usqcd-software/chroma/chroma/docs/notes">notes</a>
+in the source distribution.
+            </p>
+
+	    <a name="Ack"></a>
+	    <h3>Acknowledging Chroma: Must Cite Papers, Web-Sites</h3>
+     <p>
+     In order to give credit and recognition to those who have put humongous effort into writing software
+ for you, we require that if you use Chroma results in your papers you <b>MUST</b> cite the following und
+er the appropriate circumstances:
+     <dl>
+        <dt><b>Always:</b></dt>
+        <dd><ul><li>R. G. Edwards (LHPC Collaboration), B. Jo&oacute; (UKQCD Collaboration), 
+         <em>"The Chroma Soft ware System for Lattice QCD"</em>, 
+         <a href="http://arxiv.org/abs/hep-lat/0409003">arXiv:hep-lat/0409003</a>, 
+         Proceedings of the 22nd International Symposium for Lattice Field Theory (Lattice2004), 
+         Nucl. Phys B1 40 (Proc. Suppl) p832, 2005.</li></ul></dd>
+        <dt><b>If using SSE Optimised Dslash code (Intel P4 and other SSE compliant  hardware):</b></dt>
+        <dd>
+           <ul><li>C. McClendon, <em>"Optimized Lattice QCD Kernels for a Pentium 4 Cluster"</em>, Jlab preprint,
+ JLAB-THY-01-29, <a href="http://www.jlab.org/~edwards/qcdapi/reports/dslash_p4.pdf">http://www.jlab.org/
+~edwards/qcdapi/reports/dslash_p4.pdf</a></li></ul></dd>
+        <dt><b>If using output from the BAGEL assembly generator (IBM Power, UltraSPARC and Alpha 
+ hardware):</b></dt>
+        <dd><ul><li> P. A. Boyle <em>"The BAGEL assembler generation library"</em>.<a href="http://www.sciencedirect.com/science/article/pii/S0010465509002616">Computer Physics Communications. v180, 12, 2739-2748, doi:10.1016/j.cpc.2009.08.010</a>. Also see references within the
+          <a href="http://www.ph.ed.ac.uk/~paboyle/bagel/Bagel.html">Bagel</a>
+          home page.</li></ul>
+        </dd>
+	<dt><b>If using the <a href="http://lattice.bu.edu/quda">QUDA GPU Library</a> with Chroma</b></dt>
+	<dd>
+	  <ul><li>M. A. Clark, R. Babich, K. Barros, R. C. Brower, C. Rebbi,
+	  <em>Solving Lattice QCD systems of equations using mixed precision solvers on GPUs</em>
+	  <a href="http://arxiv.org/abs/0911.3191">arXiv:0911.3191v1 [hep-lat]</a></li></ul>
+	  </dd>
+     </dl>
+     <p>
+     This list may change as new citations may appear or preprints work their way through the publication
+ process. Please revisit this list to get the latest version for your paper before publishing.
+
+
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      </td>
+
+    </tr>
+
+  </tbody>
+</table>
+
+</body>
+</html>
