@@ -171,23 +171,62 @@ namespace Chroma
     // Convenience type
     typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
 
+    // Convenience type
+    typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVectorF> SUB_MOD_t;
+
     // Anonymous namespace
     namespace
     {
       //----------------------------------------------------------------------------
-      //! Read a source vector
-      LatticeColorVectorF getSrc(MOD_t& eigen_source, int t_source, int colorvec_src)
+      //! Class to hold map of eigenvectors
+      class SubEigenMap
       {
-	//	QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << endl;
+      public:
+	//! Constructor
+	SubEigenMap(MOD_t& eigen_source_, int decay_dir) : eigen_source(eigen_source_), time_slice_set(decay_dir) {}
 
-	// Get the source vector
+	//! Getter
+	const SubLatticeColorVectorF& getVec(int t_source, int colorvec_src) const;
+
+	//! The set to be used in sumMulti
+	const Set& getSet() const {return time_slice_set.getSet();}
+
+      private:
+	//! Eigenvectors
+	MOD_t& eigen_source;
+
+	// The time-slice set
+	TimeSliceSet time_slice_set;
+
+      private:
+	//! Where we store the sublattice versions
+	mutable SUB_MOD_t sub_eigen;
+      };
+    
+
+      //----------------------------------------------------------------------------
+      //! Getter
+      const SubLatticeColorVectorF& SubEigenMap::getVec(int t_source, int colorvec_src) const
+      {
+	// The key
 	KeyTimeSliceColorVec_t src_key(t_source, colorvec_src);
-	LatticeColorVectorF vec_srce = zero;
 
-	TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
-	eigen_source.get(src_key, time_slice_io);
+	// If item does not exist, read from original map and put in memory map
+	if (! sub_eigen.exist(src_key))
+	{
+	  QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << endl;
 
-	return vec_srce;
+	  LatticeColorVectorF vec_srce = zero;
+
+	  TimeSliceIO<LatticeColorVectorF> time_slice_io(vec_srce, t_source);
+	  eigen_source.get(src_key, time_slice_io);
+
+	  SubLatticeColorVectorF tmp(getSet()[t_source], vec_srce);
+
+	  sub_eigen.insert(src_key, tmp);
+	}
+
+	return sub_eigen[src_key];
       }
 
 
@@ -415,9 +454,6 @@ namespace Chroma
 	QDP_abort(1);
       }
 
-      // The time-slice set
-      TimeSliceSet time_slice_set(decay_dir);
-
       // Reset
       if (params.param.contract.num_tries <= 0)
       {
@@ -476,6 +512,12 @@ namespace Chroma
       }
 
       QDPIO::cout << "Number of vecs available is large enough" << endl;
+
+      // The sub-lattice eigenvector map
+      QDPIO::cout << "Initialize sub-lattice map" << endl;
+      SubEigenMap sub_eigen_map(eigen_source, decay_dir);
+      QDPIO::cout << "Finished initializing sub-lattice map" << endl;
+
 
       //
       // DB storage
@@ -608,7 +650,8 @@ namespace Chroma
 	      QDPIO::cout << "Do spin_source= " << spin_source << "  colorvec_src= " << colorvec_src << endl; 
 
 	      // Get the source vector
-	      LatticeColorVector vec_srce = getSrc(eigen_source, t_source, colorvec_src);
+	      LatticeColorVector vec_srce = zero;
+	      vec_srce = sub_eigen_map.getVec(t_source, colorvec_src);
 
 	      //
 	      // Loop over each spin source and invert. 
@@ -684,13 +727,9 @@ namespace Chroma
 		  // Loop over the sink colorvec, form the innerproduct and the resulting perambulator
 		  for(int colorvec_sink=0; colorvec_sink < num_vecs; ++colorvec_sink)
 		  {
-		    // Get the sink solution vector
-		    const LatticeColorVector& ferm_snk = ferm_out(key->spin_snk);
+		    peram[*key].mat(colorvec_sink,colorvec_src) = innerProduct(sub_eigen_map.getVec(t_slice, colorvec_sink), 
+									       ferm_out(key->spin_snk));
 
-		    // Get the sink vector - use the same cache method
-		    const LatticeColorVector& vec_snk = getSrc(eigen_source, t_slice, colorvec_sink);
-
-		    peram[*key].mat(colorvec_sink,colorvec_src) = sum(localInnerProduct(vec_snk, ferm_snk), time_slice_set.getSet()[t_slice]);
 		  } // for colorvec_sink
 		} // for key
 	      } // for t_slice
