@@ -15,6 +15,11 @@
 #include "qdp.h"
 // #include "chroma_config.h"   // turn off by default using config file
 
+#include <map>
+#include <exception>
+#include <typeinfo>
+#include <cassert>
+
 using namespace QDP;
 
 namespace Chroma {

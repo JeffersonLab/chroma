@@ -3,11 +3,11 @@
  *  \brief Null based map object, factory registration
  */
 
-#include <string>
 #include "chromabase.h"
 #include "qdp_map_obj_null.h"
 #include "util/ferm/map_obj/map_obj_factory_w.h"
 #include "util/ferm/key_prop_colorvec.h"
+#include <string>
 
 namespace Chroma 
 { 

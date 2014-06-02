@@ -545,7 +545,11 @@ int main(int argc, char **argv)
     for(int mu = 0; mu < Nd; mu++){
 
       multi1d<int> posn(Nd);
-      posn = (0,0,0,0);
+      assert( Nd == 4 );
+      posn[0] = 0;
+      posn[1] = 0;
+      posn[2] = 0;
+      posn[3] = 0;
       ColorMatrix uin;
       ColorMatrix uout;
       u_tmp = adj(u[mu]);

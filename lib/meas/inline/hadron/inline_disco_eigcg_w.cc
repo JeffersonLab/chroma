@@ -7,10 +7,7 @@
  * but it does for the eigcg pieces, as it must.
  *
  */
-#include <vector> 
-#include <map> 
-#include <qdp-lapack.h>
-#include <qdp_config.h>
+
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_eigcg_w.h"
 #include "meas/inline/abs_inline_measurement_factory.h"
@@ -47,9 +44,13 @@
 #include "actions/ferm/fermacts/wilson_fermact_params_w.h"
 #include "actions/ferm/linop/linop_w.h"
 
-
 #include "util/ferm/key_val_db.h"
 
+#include <qdp-lapack.h>
+#include <qdp_config.h>
+
+#include <vector> 
+#include <map> 
 
 
 namespace Chroma{ 

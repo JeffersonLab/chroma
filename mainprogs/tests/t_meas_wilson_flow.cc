@@ -6,13 +6,13 @@
  *
  */
 
-#include <iostream>
-#include <cstdio>
 
 #define MAIN
 
 // Include everything...
 #include "chroma.h"
+#include <iostream>
+#include <cstdio>
 
 #include "meas/glue/wilson_flow_w.h"
 

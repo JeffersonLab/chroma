@@ -3,8 +3,6 @@
  * \brief Inline measurement 3pt_prop
  *
  */
-#include <vector> 
-#include <map> 
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_w.h"
@@ -32,6 +30,8 @@
 #include "meas/inline/io/named_objmap.h"
 
 #include "util/ferm/key_val_db.h"
+#include <vector> 
+#include <map> 
 
 namespace Chroma{ 
   namespace InlineDiscoEnv{ 

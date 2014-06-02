@@ -20,6 +20,13 @@ AM_LDFLAGS  += @MDWF_LDFLAGS@
 LDADD     += @MDWF_LIBS@
 endif
 
+if USE_LLVM_WD
+AM_CXXFLAGS += @LLVM_WD_CXXFLAGS@
+AM_LDFLAGS += @LLVM_WD_LDFLAGS@
+LDADD += @LLVM_WD_LIBS@
+endif
+
+
 
 if BUILD_QUDA
 AM_CXXFLAGS += @QUDA_CXXFLAGS@
@@ -105,7 +112,7 @@ HDRS =
 bin_PROGRAMS = chroma  \
         purgaug \
         cfgtransf \
-        hmc spectrum_s
+        const_hmc hmc spectrum_s
 
 # Wilson specific programs
 check_PROGRAMS = collect_propcomp qpropgfix qproptrev qpropqio qproptransf wallformfac \
@@ -142,6 +149,7 @@ collect_propcomp_SOURCES = collect_propcomp.cc
 collect_multi_propcomp_SOURCES = collect_multi_propcomp.cc
 spectrum_s_SOURCES= spectrum_s.cc
 hmc_SOURCES= hmc.cc
+const_hmc_SOURCES= const_hmc.cc
 purgaug_SOURCES= purgaug.cc
 wallformfac_SOURCES= wallformfac.cc
 qproptransf_SOURCES= qproptransf.cc

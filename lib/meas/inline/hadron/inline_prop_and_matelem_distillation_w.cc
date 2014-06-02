@@ -167,16 +167,16 @@ namespace Chroma
   //----------------------------------------------------------------------------
   namespace InlinePropAndMatElemDistillationEnv 
   {
+    //----------------------------------------------------------------------------
+    // Convenience type
+    typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
+
     // Anonymous namespace
     namespace
     {
       //----------------------------------------------------------------------------
-      // Convenience type
-      typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > MOD_t;
-
-      //----------------------------------------------------------------------------
       //! Read a source vector
-      LatticeColorVector getSrc(MOD_t& eigen_source, int t_source, int colorvec_src)
+      LatticeColorVectorF getSrc(MOD_t& eigen_source, int t_source, int colorvec_src)
       {
 	//	QDPIO::cout << __func__ << ": on t_source= " << t_source << "  colorvec_src= " << colorvec_src << endl;
 
@@ -430,7 +430,7 @@ namespace Chroma
       // 
       QDPIO::cout << "Snarf the source from a map object disk file" << endl;
 
-      QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVector> > eigen_source;
+      MOD_t eigen_source;
       eigen_source.setDebug(0);
 
       std::string eigen_meta_data;   // holds the eigenvalues
@@ -447,9 +447,9 @@ namespace Chroma
 	//	QDPIO::cout << "User data= " << eigen_meta_data << endl;
 
 	// Write it
-	QDPIO::cout << "Write to an xml file" << endl;
-	XMLBufferWriter xml_buf(eigen_meta_data);
-	write(xml_out, "Source_info", xml_buf);
+	//	QDPIO::cout << "Write to an xml file" << endl;
+	//	XMLBufferWriter xml_buf(eigen_meta_data);
+	//	write(xml_out, "Source_info", xml_buf);
       }    
       catch (std::bad_cast) {
 	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
@@ -625,54 +625,37 @@ namespace Chroma
 
 	      // Do the propagator inversion
 	      // Check if bad things are happening
-	      bool badP = false;
+	      bool badP = true;
 	      for(int nn = 1; nn <= params.param.contract.num_tries; ++nn)
 	      {	
 		// Reset
+		quark_soln = zero;
 		badP = false;
 	      
 		// Solve for the solution vector
 		SystemSolverResults_t res = (*PP)(quark_soln, chi);
 		ncg_had += res.n_count;
 
-		// Check for NaN-s
-		if (isnan(quark_soln))
+		// Check for finite values - neither NaN nor Inf
+#ifndef QDP_IS_QDPJIT
+		if (isfinite(quark_soln))
 		{
-		  badP |= true;
+		  // Okay
+		  break;
 		}
-
-		// Check for Inf-s
-		if (isinf(quark_soln))
+		else
 		{
-		  badP |= true;
+		  QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
+		  badP = true;
 		}
-
-		// Check for finite values
-		if (! isfinite(quark_soln))
-		{
-		  badP |= true;
-		}
-
-		// Check for normal values
-		if (! isnormal(quark_soln))
-		{
-		  badP |= true;
-		}
-
-		// Jump out if this is okay
-		if (! badP) {break;}
-
-		// Warn
-		if (badP)
-		{
-		  QDPIO::cerr << name << ": WARNING - have a bad solution - may retry\n";
-		}
+#endif
 	      }
 
 	      // Sanity check
 	      if (badP)
 	      {
-		QDPIO::cerr << name << ": this is bad - did not get a clean solution vector" << std::endl;
+		QDPIO::cerr << name << ": this is bad - did not get a finite solution vector after num_tries= " 
+			    << params.param.contract.num_tries << std::endl;
 		QDP_abort(1);
 	      }
 

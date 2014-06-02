@@ -4,8 +4,8 @@
  *  \brief Even-odd preconditioned Wilson fermion action supporting 2+2 anisotropy
  */
 
-#ifndef __prec_wilson_coarse_fine_fermact_w_h__1
-#define __prec_wilson_coarse_fine_fermact_w_h__
+#ifndef __eoprec_wilson_coarse_fine_fermact_w_h__
+#define __eoprec_wilson_coarse_fine_fermact_w_h__
 
 #include "eoprec_constdet_wilstype_fermact_w.h"
 #include "actions/ferm/fermacts/wilson_coarse_fine_fermact_params_w.h"

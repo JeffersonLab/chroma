@@ -5,8 +5,6 @@
  */
 
 
-#include <sstream>
-
 #include "util/ferm/key_val_db.h"
 #include "util/ferm/key_hadron_2pt_corr.h"
 
@@ -23,6 +21,9 @@
 #include "meas/inline/make_xml_file.h"
 #include "meas/inline/io/named_objmap.h"
 #include "meas/smear/no_quark_displacement.h"
+
+#include <sstream>
+
 
 namespace Chroma 
 { 

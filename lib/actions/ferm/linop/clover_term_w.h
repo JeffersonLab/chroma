@@ -50,20 +50,30 @@ namespace Chroma {
 }
 #elif defined(BUILD_JIT_CLOVER_TERM)
 
-# include "clover_term_ptx_w.h"
+#if defined(QDPJIT_IS_QDPJITPTX)
+#include "clover_term_ptx_w.h"
 namespace Chroma {
- 
   typedef PTXCloverTerm CloverTerm;
   typedef PTXCloverTermF CloverTermF;
   typedef PTXCloverTermD CloverTermD;
-
   template<typename T,typename U>
   struct CloverTermT {
     typedef PTXCloverTermT<T,U> Type_t;
   };
-
-
 }
+#else
+#include "clover_term_llvm_w.h"
+namespace Chroma {
+  typedef LLVMCloverTerm CloverTerm;
+  typedef LLVMCloverTermF CloverTermF;
+  typedef LLVMCloverTermD CloverTermD;
+  template<typename T,typename U>
+  struct CloverTermT {
+    typedef LLVMCloverTermT<T,U> Type_t;
+  };
+}
+#endif
+
 #else 
 
 // Bottom line, if no optimised Dslash-s exist then the naive QDP Dslash

@@ -1,3 +1,4 @@
+// $Id: gaugeacts_aggregate.cc,v 3.15 2008-01-23 15:41:51 edwards Exp $
 /*! \file
  *  \brief All gauge actions
  */

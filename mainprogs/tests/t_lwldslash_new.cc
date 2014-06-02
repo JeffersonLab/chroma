@@ -1,9 +1,10 @@
 // $Id: t_lwldslash_new.cc,v 3.1 2007-02-06 15:27:38 bjoo Exp $
 
+
+#include "chroma.h"
 #include <iostream>
 #include <cstdio>
 
-#include "chroma.h"
 
 using namespace Chroma;
 
@@ -28,12 +29,7 @@ int main(int argc, char **argv)
     QDP_abort(1);
   }
   */
-  nrow.resize(4);
-  nrow[0]=4;
-  nrow[1]=6;
-  nrow[2]=8;
-  nrow[3]=10;
-
+  
   // Setup the layout
   Layout::setLattSize(nrow);
   Layout::create();

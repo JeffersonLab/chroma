@@ -2,8 +2,8 @@
  * \brief Key for vanilla distillation propagator sources and solutions
  */
 
-#include <vector>
 #include "util/ferm/key_prop_distillation.h"
+#include <vector>
 
 namespace Chroma 
 { 

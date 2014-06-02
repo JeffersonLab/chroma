@@ -436,6 +436,8 @@ namespace Chroma
      
      return Double(log(real(ret_val)));
 #endif
+      Double tmp;  // Make compiler happy
+      return tmp;
    }
     
 

@@ -100,22 +100,26 @@ namespace Chroma
       
       void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v) const 
       {// returnts the vector v as a lattice fermion
+#ifndef QDP_IS_QDPJIT
 	if(v>=evals.size()){
 	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<endl ;
 	  QDP_abort(100);
 	}
 	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
 	CopyToLatFerm<LatticeFermion, float>(lf,px,s);
+#endif
       }
 
       void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v)
       {// returnts the vector v as a lattice fermion
+#ifndef QDP_IS_QDPJIT
 	if(v>=evals.size()){
 	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<endl ;
 	  QDP_abort(101);
 	}
 	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
 	CopyFromLatFerm<LatticeFermion, float>(px,lf,s);
+#endif
       }
     } ;
 

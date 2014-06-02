@@ -510,7 +510,7 @@ static int flag=1;
 	  "util_compute_quark_prop_s.cc" <<endl;
 	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
 		    << endl;
-	//	cout << "DEBUG type_of_src = " << (int)type_of_src << cout ;
+	cout << "DEBUG type_of_src = " << type_of_src << endl;
 	exit(0);
 
       }
@@ -631,7 +631,7 @@ static int flag=1;
 	  "util_compute_quark_prop_s.cc" <<endl;
 	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
 		    << endl;
-	//	cout << "DEBUG type_of_src = " << type_of_src << cout ;
+	cout << "DEBUG type_of_src = " << type_of_src << endl;
 	exit(0);
 
       }

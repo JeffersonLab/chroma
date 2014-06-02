@@ -28,10 +28,11 @@
 //###################################################################################//
 //###################################################################################//
 
-#include <iostream>
 #include "chromabase.h"
 #include "util/ft/sftmom.h"
 #include "meas/hadron/BuildingBlocks_w.h"
+
+#include <iostream>
 
 namespace Chroma {
 

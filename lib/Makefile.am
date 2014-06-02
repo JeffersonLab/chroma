@@ -397,11 +397,13 @@ nobase_include_HEADERS = \
 	update/molecdyn/hmc/hmc.h \
 	update/molecdyn/hmc/abs_hmc.h \
 	update/molecdyn/hmc/lcm_hmc.h \
+	update/molecdyn/hmc/const_lcm_hmc.h \
 	update/molecdyn/hmc/global_metropolis_accrej.h \
 	update/molecdyn/monomial/monomial.h \
 	update/molecdyn/monomial/abs_monomial.h \
 	update/molecdyn/monomial/monomial_factory.h \
 	update/molecdyn/monomial/gauge_monomial.h \
+	update/molecdyn/monomial/const_gauge_monomial.h \
 	update/molecdyn/monomial/force_monitors.h \
 	update/molecdyn/monomial/bigfloat.h \
 	update/molecdyn/monomial/remez.h \
@@ -668,6 +670,7 @@ nobase_include_HEADERS += \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.h \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.h \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.h \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.h \
@@ -984,6 +987,10 @@ if BUILD_MDWF
 AM_CXXFLAGS += @MDWF_CXXFLAGS@
 endif
 
+if USE_LLVM_WD
+AM_CXXFLAGS += @LLVM_WD_CXXFLAGS@
+endif
+
 if BUILD_QOP_MG
 AM_CXXFLAGS += -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
 endif
@@ -1288,6 +1295,7 @@ libchroma_a_SOURCES = \
 	update/heatbath/mciter.cc \
 	update/molecdyn/hamiltonian/exact_hamiltonian.cc \
 	update/molecdyn/monomial/gauge_monomial.cc \
+	update/molecdyn/monomial/const_gauge_monomial.cc \
 	update/molecdyn/monomial/force_monitors.cc \
 	update/molecdyn/monomial/rat_approx_aggregate.cc \
 	update/molecdyn/monomial/remez_rat_approx.cc \
@@ -1545,6 +1553,7 @@ libchroma_a_SOURCES += \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial_w.cc \
 	update/molecdyn/monomial/unprec_one_flavor_ratio_rat_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial_w.cc \
+	update/molecdyn/monomial/eoprec_constdet_constgauge_one_flavor_rat_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_rat_monomial5d_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial_w.cc \
 	update/molecdyn/monomial/eoprec_constdet_one_flavor_ratio_rat_conv_monomial5d_w.cc \
@@ -1839,8 +1848,10 @@ libchroma_a_SOURCES += actions/ferm/linop/clover_term_ssed.cc \
 endif
 
 if BUILD_JIT_CLOVER_APPLY
-nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h
-libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc
+nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h \
+	actions/ferm/linop/clover_term_llvm_w.h
+libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc \
+	util/gauge/stout_utils_llvm.cc
 endif
 
 
@@ -1948,7 +1959,7 @@ libchroma_a_SOURCES += actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
-# include files for scidac libariesg
+# include files for scidac libaries
 AM_CXXFLAGS += -I@QDPC_DIR@/qmp/include
 AM_CXXFLAGS += -I@QDPC_DIR@/qio/include
 AM_CXXFLAGS += -I@QDPC_DIR@/qla/include

@@ -7,7 +7,7 @@
  */
 
 #ifndef __inline_rotate_spin_w_h__
-#define __inline_rotate_spin_h__
+#define __inline_rotate_spin_w_h__
 
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"

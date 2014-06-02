@@ -3,8 +3,6 @@
  * \brief Inline measurement 3pt_prop
  *
  */
-#include <vector> 
-#include <map> 
 
 #include "handle.h"
 #include "meas/inline/hadron/inline_disco_eoprec_w.h"
@@ -41,6 +39,9 @@
 
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include "actions/ferm/fermacts/wilson_fermact_params_w.h"
+
+#include <vector> 
+#include <map> 
 
 namespace Chroma{ 
   namespace InlineDiscoEOPrecEnv{ 

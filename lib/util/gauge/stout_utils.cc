@@ -12,6 +12,25 @@
 //#include "util/gauge/stout_utils_ptx.h"
 //#endif
 
+#if defined(BUILD_JIT_CLOVER_TERM)
+#ifndef QDPJIT_IS_QDPJITPTX
+void function_get_fs_bs_exec(const JitFunction& func,
+			     const LatticeColorMatrix& Q,
+			     const LatticeColorMatrix& QQ,
+			     multi1d<LatticeComplex>& f,
+			     multi1d<LatticeComplex>& b1,
+			     multi1d<LatticeComplex>& b2,
+			     bool dobs);
+void *function_get_fs_bs_build(JitFunction& function,
+			       const LatticeColorMatrix& Q,
+			       const LatticeColorMatrix& QQ,
+			       multi1d<LatticeComplex>& f,
+			       multi1d<LatticeComplex>& b1,
+			       multi1d<LatticeComplex>& b2);
+#endif
+#endif
+
+
 namespace Chroma 
 { 
 
@@ -846,7 +865,12 @@ namespace Chroma
       int num_sites = Layout::sitesOnNode();
       StoutUtils::GetFsAndBsArgs args={Q,QQ,f,b1,b2,dobs};
 
-#if defined(BUILD_JIT_CLOVER_TERM)
+#if !defined(BUILD_JIT_CLOVER_TERM)
+      #warning "Using vanilla clover term"
+      dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+#else
+#if defined(QDPJIT_IS_QDPJITPTX)
+      #warning "Using QDP-JIT/PTX clover term"
       //QDPIO::cout << "PTX getFsAndBs dobs = " << dobs << "\n";
       static CUfunction function;
       
@@ -856,7 +880,17 @@ namespace Chroma
       // Execute the function
       function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
 #else
-      dispatch_to_threads(num_sites, args, StoutUtils::getFsAndBsSiteLoop);
+      #warning "Using QDP-JIT/LLVM clover term"
+      static JitFunction function;
+
+      if (!function.built()) {
+	QDPIO::cout << "Building JIT stouting function\n";
+	function_get_fs_bs_build( function,Q,QQ,f,b1,b2 );
+      }
+      
+      // Execute the function
+      function_get_fs_bs_exec(function, Q,QQ,f,b1,b2,dobs );
+#endif
 #endif
 
       swatch.stop();

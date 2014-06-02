@@ -21,7 +21,7 @@
 /* Build GMP Remez code */
 #undef BUILD_GMP_REMEZ
 
-/* Use JIT Clover Term Apply, requires to build on top of QDP-JIT/PTX */
+/* Use JIT Clover Term Apply, requires to build on top of QDP-JIT */
 #undef BUILD_JIT_CLOVER_TERM
 
 /* Using Lapack */

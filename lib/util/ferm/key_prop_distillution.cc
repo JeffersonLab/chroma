@@ -2,8 +2,8 @@
  * \brief Key for distillution propagator sources and solutions
  */
 
-#include <vector>
 #include "util/ferm/key_prop_distillution.h"
+#include <vector>
 
 namespace Chroma 
 { 
