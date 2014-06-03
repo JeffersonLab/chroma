@@ -8,24 +8,19 @@ with cvs tags labelled as
 
     major-minor-maintenance 
 
-Chroma version 3.40 or higher requires QDP++ 1.38.0 or higher and
+Chroma version 3.43 or higher requires QDP++ 1.44.0 or higher and
 QMP 2.X or higher . The latter follows the version 2.X specification
 of the API. QDP++ and Chroma no longer support the 1.X QMP API.
 
 As of these recent versions, both Chroma and QDP++ now require at 
-least g++-4.X or above.
+least g++-4.X or above, and use the C++-11 standard called C++0x.
 
 In JLab CVS module name and tag-ology, the current compatibility is
 
 module        tag                          description
-chroma        chroma3-40-X   or higher
-qdp++         qdp1-38-0      or higher
+chroma        chroma3-43-X   or higher
+qdp++         qdp1-44-0      or higher
 qmp           qmp2-3-X       or higher     MPI and single node versions
-qmp-mvia-mesh qmp-mvia-mesh-2-0  or higher GigE version
-
-QCDOC QMP - whatever is the current version for V2 of the API (?). We have
-been using   /qcdoc/sfw/qos/devel/v2.6.0-CJ/aix5.2f
-
 
 
 Quick installations instructions for CHROMA

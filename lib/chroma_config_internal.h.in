@@ -27,6 +27,9 @@
 /* Using Lapack */
 #undef BUILD_LAPACK
 
+/* Build with the LLVM wilson library */
+#undef BUILD_LLVM_WILSON_DSLASH
+
 /* Build with the MDWF (Moebious DFW) library */
 #undef BUILD_MDWF
 
