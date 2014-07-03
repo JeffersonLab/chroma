@@ -373,6 +373,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
+									 state,
 									 this->linOp(state));
   }
 
@@ -390,6 +391,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
+									 state,
 									 this->linOp(state));
   }
 
@@ -408,6 +410,7 @@ namespace Chroma
     return TheLinOpFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
+									 state,
 									 this->linOpPV(state));
   }
 
@@ -425,6 +428,7 @@ namespace Chroma
     return TheMdagMFermSystemSolverArrayFactory::Instance().createObject(invParam.id,
 									 paramtop,
 									 invParam.path,
+									 state,
 									 this->linOpPV(state));
   }
 

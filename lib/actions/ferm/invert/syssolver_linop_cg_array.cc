@@ -17,6 +17,12 @@ namespace Chroma
     //! Callback function
     LinOpSystemSolverArray<LatticeFermion>* createFerm(XMLReader& xml_in,
 						       const std::string& path,
+						       Handle< FermState<
+					                                 LatticeFermion, 
+						                         multi1d<LatticeColorMatrix>,
+						                         multi1d<LatticeColorMatrix> 
+						             > 
+							  > state, 
 						       Handle< LinearOperatorArray<LatticeFermion> > A)
     {
       return new LinOpSysSolverCGArray<LatticeFermion>(A, SysSolverCGParams(xml_in, path));
