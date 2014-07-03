@@ -9,6 +9,7 @@
 
 #include "chromabase.h"
 
+#if 0
 #ifdef QDP_IS_QDPJIT
 #ifdef QDPJIT_IS_QDPJITPTX
 CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
@@ -26,7 +27,7 @@ CUfunction function_get_fs_bs_exec(CUfunction function,
                                    bool dobs);
 #endif
 #endif
-
+#endif
 
 namespace Chroma 
 {

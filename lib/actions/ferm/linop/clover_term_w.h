@@ -61,6 +61,17 @@ namespace Chroma {
     typedef PTXCloverTermT<T,U> Type_t;
   };
 }
+#elif defined(QDPJIT_IS_QDPJITNVVM)
+#include "clover_term_nvvm_w.h"
+namespace Chroma {
+  typedef NVVMCloverTerm CloverTerm;
+  typedef NVVMCloverTermF CloverTermF;
+  typedef NVVMCloverTermD CloverTermD;
+  template<typename T,typename U>
+  struct CloverTermT {
+    typedef NVVMCloverTermT<T,U> Type_t;
+  };
+}
 #else
 #include "clover_term_llvm_w.h"
 namespace Chroma {
