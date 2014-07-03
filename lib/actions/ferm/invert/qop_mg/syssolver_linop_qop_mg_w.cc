@@ -200,6 +200,21 @@ namespace Chroma
   SystemSolverResults_t
     LinOpSysSolverQOPMG<T>::operator() (T& psi, const T& chi) const
   {
+    return (*this)(psi,chi,PLUS);
+  }
+
+
+  //! Solve the linear system
+  /*!
+   * \param psi      solution ( Modify )
+   * \param chi      source ( Read )
+   * \param isign    solve with dagger or not
+   * \return syssolver results
+   */
+  template<typename T> // T is the Lattice Fermion type
+  SystemSolverResults_t
+  LinOpSysSolverQOPMG<T>::operator() (T& psi, const T& chi, enum PlusMinus isign) const
+  {
     START_CODE();
     
     SystemSolverResults_t res;
@@ -208,27 +223,72 @@ namespace Chroma
     swatch.reset();
     swatch.start();
 
+    // If isign == PLUS solve as normal
+    // Otherwise solve gamma_5 M gamma_5 psi = chi
+    //  => M gamma_5 psi = gamma_5 chi
+    //  => M q = gamma_5 chi
+    // with q = gamma5_psi
+
+    T psi_internal=zero;
+    T chi_internal=zero;
+
+    // psi_internal=zero;
+    //    chi_internal=zero;
+
+    if ( isign == PLUS ) {
+      psi_internal[ A->subset() ] = psi; // psi is initial guess
+      chi_internal[ A->subset() ] = chi;
+    }
+    else { 
+      // Set psi_internal to Gamma_5 psi
+      // Set chi_internal to Gamma_5 chi
+      psi_internal[ A->subset() ] = Gamma(15)*psi;  // gamma_psi is initial guess
+      chi_internal[ A->subset() ] = Gamma(15)*chi;
+    }
+
+
+
     // Set global pointers to our source and solution fermion fields
-    fermionsrc = (void*)&chi;
-    fermionsol = (void*)&psi;
-    double bsq = norm2(chi,all).elem().elem().elem().elem();
+    fermionsrc = (void*)&chi_internal;
+    fermionsol = (void*)&psi_internal;
+    // Sum over 'all' should still be good since we zeroed at start
+    double bsq = norm2(chi_internal,all).elem().elem().elem().elem();
     QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << endl;
     res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>);
-    bsq = norm2(psi,all).elem().elem().elem().elem();
+
+    //  Sum over 'all' should still be good since we zeroed at start
+    bsq = norm2(psi_internal,all).elem().elem().elem().elem();
     QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << endl;
- 
+
+    if( isign == PLUS ) {
+      psi = psi_internal;
+    }
+    else { 
+      // In this case we are doing daggered solve
+      // and solved M q = gamma_5 chi, so gamma_5 M q = chi
+      // now psi_internal = q = gamma5 psi => gamma 5 q = gammma 5 psi_internal = psi
+      psi = Gamma(15)*psi_internal;
+    }
+
     swatch.stop();
     double time = swatch.getTimeInSeconds();
     { 
       T r;
       r[A->subset()] = chi;
       T tmp;
-      (*A)(tmp, psi, PLUS);
+      (*A)(tmp, psi, isign);
       r[A->subset()] -= tmp;
       res.resid = sqrt(norm2(r, A->subset()));
     }
 
-    QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
+    if ( isign == PLUS ) { 
+      QDPIO::cout << "QOPMG_SOLVER (Mat): ";
+    }
+    else {
+      QDPIO::cout << "QOPMG_SOLVER (MatDag): ";
+    }
+
+    QDPIO::cout << res.n_count << " iterations."
                 << " Rsd = " << res.resid
                 << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))
                 << endl;

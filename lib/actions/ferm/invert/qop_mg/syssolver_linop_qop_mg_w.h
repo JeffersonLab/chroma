@@ -46,6 +46,7 @@ namespace Chroma
 			Handle< FermState<T,Q,Q> > state_,
                         const SysSolverQOPMGParams& invParam_);
 
+    
     //! Destructor finalizes the QDP environment
     ~LinOpSysSolverQOPMG();
 
@@ -60,6 +61,14 @@ namespace Chroma
      */
     SystemSolverResults_t operator() (T& psi, const T& chi) const;
 
+
+    //! Solver the linear system -- allow solution with dagger
+    /*!
+     * \param psi      solution ( Modify )
+     * \param chi      source ( Read )
+     * \return syssolver results
+     */
+    SystemSolverResults_t operator() (T& psi, const T& chi, enum PlusMinus isign) const;
 
   private:
     // Hide default constructor
