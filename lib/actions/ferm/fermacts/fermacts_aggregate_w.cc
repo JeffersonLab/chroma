@@ -30,6 +30,8 @@
 #include "actions/ferm/fermacts/eo3dprec_s_cprec_t_wilson_fermact_w.h"
 #include "actions/ferm/fermacts/eo3dprec_s_cprec_t_clover_fermact_w.h"
 
+#include "actions/ferm/fermacts/clover_mdwf_fermact_params_w.h"
+
 #include "actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.h"
 
 #include "actions/ferm/fermacts/poly_cheb_fermact_w.h"
