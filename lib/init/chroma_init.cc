@@ -93,12 +93,12 @@ namespace Chroma
   //! Chroma initialisation routine
   void initialize(int* argc, char ***argv) 
   {
-#ifndef QDPJIT_IS_QDPJITPTX
-    if (! QDP_isInitialized())
-      QDP_initialize(argc, argv);
-#else
+#if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
     if (! QDP_isInitialized())
       QDP_initialize_CUDA(argc, argv);
+#else
+    if (! QDP_isInitialized())
+      QDP_initialize(argc, argv);
 #endif
 
     for(int i=0; i < *argc; i++) 
@@ -191,21 +191,21 @@ namespace Chroma
     }
 
 
-#ifdef QDPJIT_IS_QDPJITPTX
+#if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
 #ifdef BUILD_QUDA
   std::cout << "Setting CUDA device" << endl;
   int cuda_device = QDP_setGPU();
-  std::cout << "Setting QUDA verbosity to silent" << endl;
-  setVerbosityQuda(QUDA_SILENT, "", stdout);
+  //std::cout << "Setting QUDA verbosity to silent" << endl;
+  //setVerbosityQuda(QUDA_SILENT, "", stdout);
   //std::cout << "Setting QUDA verbosity to summarize" << endl;
   //setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
   std::cout << "Initializing QMP part" << endl;
   QDP_initialize_QMP(argc, argv);
-  std::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << endl;
+  QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << endl;
   initQudaDevice(cuda_device);
-  std::cout << "Initializing QDP-JIT GPUs" << endl;
+  QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
   QDP_startGPU();
-  std::cout << "Initializing QUDA memory" << endl;
+  QDPIO::cout << "Initializing QUDA memory" << endl;
   initQudaMemory();
 #else
   std::cout << "Setting device" << endl;
