@@ -1,15 +1,15 @@
 [submodule "other_libs/cpp_wilson_dslash"]
 	path = other_libs/cpp_wilson_dslash
-	url = git@github.com:JeffersonLab/cpp_wilson_dslash.git
+	url = https://github.com/JeffersonLab/cpp_wilson_dslash.git
 [submodule "other_libs/sse_wilson_dslash"]
 	path = other_libs/sse_wilson_dslash
-	url = git@github.com:JeffersonLab/sse_wilson_dslash.git
+	url = https://github.com/JeffersonLab/sse_wilson_dslash.git
 [submodule "other_libs/cg-dwf"]
 	path = other_libs/cg-dwf
-	url = git@github.com:JeffersonLab/cg-dwf.git
+	url = https://github.com/JeffersonLab/cg-dwf.git
 [submodule "other_libs/qdp-lapack"]
 	path = other_libs/qdp-lapack
-	url = git@github.com:JeffersonLab/qdp-lapack.git
+	url = https://github.com/JeffersonLab/qdp-lapack.git
 [submodule "other_libs/wilsonmg"]
 	path = other_libs/wilsonmg
-	url = git@github.com:JeffersonLab/wilsonmg.git
+	url = https://github.com/JeffersonLab/wilsonmg.git
