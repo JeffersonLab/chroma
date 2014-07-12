@@ -82,6 +82,16 @@ namespace Chroma
       applyDiagInv(chi, psi, isign, 0);
     }
 
+
+    //! Apply the inverse of the even-even block onto a source vector
+    inline
+    void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
+			  const multi1d<LatticeFermion>& psi, 
+			  enum PlusMinus isign) const
+    {
+      applyDiagInv(chi, psi, isign, 1);
+    }
+
     //! Apply the the even-odd block onto a source vector
     void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
