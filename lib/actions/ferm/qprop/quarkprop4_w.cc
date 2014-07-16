@@ -366,7 +366,7 @@ namespace Chroma
   LinOpSystemSolverArray<LF>*
   WilsonTypeFermAct5D<LF,LCM,LCM>::invLinOp(Handle< FermState<LF,LCM,LCM> > state,
 					    const GroupXML_t& invParam) const
-  {
+  {	  
     std::istringstream  xml(invParam.xml);
     XMLReader  paramtop(xml);
 	

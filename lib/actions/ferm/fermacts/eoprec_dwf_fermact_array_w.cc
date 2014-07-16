@@ -220,7 +220,7 @@ namespace Chroma
 				       QuarkSpinType quarkSpinType,
 				       bool obsvP,
 				       int& ncg_had) const
-  {
+  {	  
     if (obsvP && (quarkSpinType == QUARK_SPIN_TYPE_FULL))
     {
       Handle< SystemSolverArray<LatticeFermion> > qpropT(this->qpropT(state, invParam));

@@ -99,10 +99,10 @@ host_triplet = @host@
 @BUILD_GMP_REMEZ_TRUE@am__append_12 = update/molecdyn/monomial/remez_gmp.cc
 @BUILD_QUDA_TRUE@am__append_13 = actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_mdwf_params.h \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_mdwf_quda_w.h \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
@@ -114,11 +114,11 @@ host_triplet = @host@
 @BUILD_QUDA_TRUE@am__append_14 = actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_mdwf_params.cc \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_mdwf_quda_w.cc \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
@@ -581,11 +581,11 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
-	actions/ferm/invert/quda_solvers/syssolver_quda_clover_mdwf_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_mdwf_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
@@ -610,7 +610,7 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
-	actions/ferm/fermacts/clover_mdwf_fermact_params_w.cc \
+	actions/ferm/fermacts/nef_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
@@ -997,11 +997,11 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @BUILD_QUDA_TRUE@am__objects_2 = actions/ferm/invert/quda_solvers/enum_quda_io.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/quda_gcr_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.$(OBJEXT) \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_mdwf_params.$(OBJEXT) \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.$(OBJEXT) \
-@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_clover_mdwf_quda_w.$(OBJEXT) \
+@BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.$(OBJEXT) \
@@ -1375,7 +1375,7 @@ am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.$(OBJEXT) \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.$(OBJEXT) \
 	actions/ferm/fermacts/unprec_clover_fermact_w.$(OBJEXT) \
-	actions/ferm/fermacts/clover_mdwf_fermact_params_w.$(OBJEXT) \
+	actions/ferm/fermacts/nef_fermact_params_w.$(OBJEXT) \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.$(OBJEXT) \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.$(OBJEXT) \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.$(OBJEXT) \
@@ -2169,7 +2169,7 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
-	actions/ferm/fermacts/clover_mdwf_fermact_params_w.h \
+	actions/ferm/fermacts/nef_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
@@ -2596,10 +2596,10 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	update/molecdyn/monomial/remez_gmp.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
-	actions/ferm/invert/quda_solvers/syssolver_quda_clover_mdwf_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
-	actions/ferm/invert/quda_solvers/syssolver_linop_clover_mdwf_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
@@ -3204,7 +3204,7 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
-	actions/ferm/fermacts/clover_mdwf_fermact_params_w.h \
+	actions/ferm/fermacts/nef_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
@@ -3996,7 +3996,7 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
-	actions/ferm/fermacts/clover_mdwf_fermact_params_w.cc \
+	actions/ferm/fermacts/nef_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
@@ -5551,7 +5551,7 @@ actions/ferm/invert/quda_solvers/quda_gcr_params.$(OBJEXT):  \
 actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.$(OBJEXT):  \
 	actions/ferm/invert/quda_solvers/$(am__dirstamp) \
 	actions/ferm/invert/quda_solvers/$(DEPDIR)/$(am__dirstamp)
-actions/ferm/invert/quda_solvers/syssolver_quda_clover_mdwf_params.$(OBJEXT):  \
+actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.$(OBJEXT):  \
 	actions/ferm/invert/quda_solvers/$(am__dirstamp) \
 	actions/ferm/invert/quda_solvers/$(DEPDIR)/$(am__dirstamp)
 actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.$(OBJEXT):  \
@@ -5563,7 +5563,7 @@ actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.$(OBJEXT):  \
 actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.$(OBJEXT):  \
 	actions/ferm/invert/quda_solvers/$(am__dirstamp) \
 	actions/ferm/invert/quda_solvers/$(DEPDIR)/$(am__dirstamp)
-actions/ferm/invert/quda_solvers/syssolver_linop_clover_mdwf_quda_w.$(OBJEXT):  \
+actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.$(OBJEXT):  \
 	actions/ferm/invert/quda_solvers/$(am__dirstamp) \
 	actions/ferm/invert/quda_solvers/$(DEPDIR)/$(am__dirstamp)
 actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.$(OBJEXT):  \
@@ -5638,7 +5638,7 @@ actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.$(OBJEXT):  \
 actions/ferm/fermacts/unprec_clover_fermact_w.$(OBJEXT):  \
 	actions/ferm/fermacts/$(am__dirstamp) \
 	actions/ferm/fermacts/$(DEPDIR)/$(am__dirstamp)
-actions/ferm/fermacts/clover_mdwf_fermact_params_w.$(OBJEXT):  \
+actions/ferm/fermacts/nef_fermact_params_w.$(OBJEXT):  \
 	actions/ferm/fermacts/$(am__dirstamp) \
 	actions/ferm/fermacts/$(DEPDIR)/$(am__dirstamp)
 actions/ferm/fermacts/eoprec_slic_fermact_w.$(OBJEXT):  \
@@ -6957,7 +6957,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/asqtad_fermact_params_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/asqtad_fermact_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/clover_fermact_params_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/clover_mdwf_fermact_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/eo3dprec_s_cprec_t_clover_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/eo3dprec_s_cprec_t_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/eoprec_clover_extfield_fermact_w.Po@am__quote@
@@ -6985,6 +6984,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/iluprec_s_cprec_t_clover_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/iluprec_s_cprec_t_wilson_fermact_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/klein_gordon_fermact_s.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/nef_fermact_params_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/overlap_fermact_base_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/ovext_const_div_by_resp_strategy.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/fermacts/$(DEPDIR)/ovext_constant_strategy.Po@am__quote@
@@ -7133,13 +7133,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/multi_syssolver_mdagm_cg_wilson_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/multi_syssolver_quda_clover_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/quda_gcr_params.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_linop_clover_mdwf_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_linop_clover_quda_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_linop_nef_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_linop_wilson_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_mdagm_clover_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_mdagm_wilson_quda_w.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_quda_clover_mdwf_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_quda_clover_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_quda_nef_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/syssolver_quda_wilson_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/linop/$(DEPDIR)/asq_dsl_s.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/linop/$(DEPDIR)/asqtad_linop_s.Po@am__quote@

@@ -167,10 +167,14 @@ namespace Chroma
       for(int n=0; n < N5; ++n)
 	chi_tmp[n][rb[1]] = chi[n] - tmp2[n];
     }
+	
+	QDPIO::cout << "HIER VOR RES" << std::endl;
 
     // Call inverter
     // psi = M^(-1) psi
     SystemSolverResults_t res = (*invA)(psi, chi_tmp);
+  
+  QDPIO::cout << "HIER NACH RES" << std::endl;
   
     /* Step (ii) */
     /* psi_e = A_ee^-1 * [chi_e  -  D_eo * psi_o] */
