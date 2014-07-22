@@ -14,7 +14,7 @@ CUfunction function_get_fs_bs_exec(CUfunction function,
 				   multi1d<LatticeComplex>& b2,
 				   bool dobs)
 {
-  AddressLeaf addr_leaf;
+  AddressLeaf addr_leaf(all);
 
   int junk_0 = forEach(Q, addr_leaf, NullCombine());
   int junk_1 = forEach(QQ, addr_leaf, NullCombine());

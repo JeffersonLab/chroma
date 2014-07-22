@@ -609,7 +609,7 @@ namespace Chroma
 				     X& tri_dia,
 				     Y& tri_off)
   {
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(all);
 
     int junk_0 = forEach(diag_mass, addr_leaf, NullCombine());
     int junk_1 = forEach(f0, addr_leaf, NullCombine());
@@ -891,7 +891,7 @@ namespace Chroma
     if (!s.hasOrderedRep())
       QDP_error_exit("ldagdlinv on subset with unordered representation not implemented");
 
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(s);
 
     int junk_0 = forEach(tr_log_diag, addr_leaf, NullCombine());
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
@@ -1211,7 +1211,7 @@ namespace Chroma
     if (!s.hasOrderedRep())
       QDP_error_exit("triacntr on subset with unordered representation not implemented");
 
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(s);
 
     int junk_0 = forEach(B, addr_leaf, NullCombine());
     int junk_2 = forEach(tri_dia, addr_leaf, NullCombine());
@@ -1655,7 +1655,7 @@ namespace Chroma
 
     //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
-    AddressLeaf addr_leaf;
+    AddressLeaf addr_leaf(s);
 
     int junk_0 = forEach(chi, addr_leaf, NullCombine());
     int junk_1 = forEach(psi, addr_leaf, NullCombine());
