@@ -1809,8 +1809,14 @@ endif
 
 
 if BUILD_MDWF
-nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h
-libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc
+nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h \
+	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.h \
+	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.h
+
+
+libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc \
+	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.cc \
+	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.cc
 endif
 
 
