@@ -18,28 +18,13 @@ namespace Chroma
     NEFFermActParams();
     NEFFermActParams(XMLReader& in, const std::string& path);
     
-    Real Mass;
-	Real OverMass;
-	multi1d<Real> b5;
-	multi1d<Real> c5;
-	int N5;
-    Real clovCoeffR;
-    Real clovCoeffT;
-    Real u0;
+    Real Mass;  /* The fermion Mass m_f */
+    Real OverMass; /* The domain wall height. In our convention it is positive */
 
-    // Optional Anisotropy
-    AnisoParam_t anisoParam;
-    Real max_norm;
-    bool max_norm_usedP;
+    multi1d<Real> b5; /* For general construction these need to be arrays */
+    multi1d<Real> c5;
 
-    // Zero point energy
-    Real sub_zero;
-    bool sub_zero_usedP;
-
-    // Optional mass twist...
-    Real twisted_m;
-    bool twisted_m_usedP;
-
+    int N5;  /* Length of 5th dim */
   };
 
 
