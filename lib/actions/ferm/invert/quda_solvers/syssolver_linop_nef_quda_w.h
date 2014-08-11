@@ -398,7 +398,7 @@ namespace Chroma
       Real twoKappaB = Real(1)/invTwoKappaB;
       Real twoKappaC = Real(1)/invTwoKappaC;
 
-#if 1
+#if 0
       // Test code....
       {
 	const multi1d<int>& latdims = Layout::subgridLattSize();
