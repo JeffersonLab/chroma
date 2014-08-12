@@ -1,3 +1,9 @@
+Aug 12, 2014 - Balint Joo
+	 MDWF solver can now do NEF type (Moebius solves) as a LinOpSysSolverArray
+         QUDA Mobius solver integrated for props as a LinOpSysSolverArray 
+         (tested with QUDA, quda-0.7 branch commit ID: b79f883658f780d587bc1e6f3e494d6ed937b506 )
+
+
 July 4, 2012 - Robert Edwards
         Version 3.42.0
         Imported changes from devel branch (new propagator support).
