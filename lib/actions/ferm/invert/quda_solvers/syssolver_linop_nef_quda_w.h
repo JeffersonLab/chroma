@@ -394,9 +394,7 @@ namespace Chroma
 
       // 1/( 2 kappa_b ) =  b5 * ( Nd - M5 ) + 1
       Real invTwoKappaB = invParam.NEFParams.b5[0]*( Nd - invParam.NEFParams.OverMass) + Real(1);
-      Real invTwoKappaC = invParam.NEFParams.c5[0]*( Nd - invParam.NEFParams.OverMass) - Real(1);
       Real twoKappaB = Real(1)/invTwoKappaB;
-      Real twoKappaC = Real(1)/invTwoKappaC;
 
 #if 0
       // Test code....
@@ -472,26 +470,12 @@ namespace Chroma
 	  delete [] spinorIn;
 	  delete [] spinorOut;
 	}
-	exit(1);
 
 
-      }
-#endif
-
-#if 0
-      // Rescale source -- to take account of normalization
-      multi1d<T> source_resc( this->size() ); 
-      for(int s=0; s < this->size(); s++) { 
-	source_resc[s][rb[0]] = zero;
-	source_resc[s][rb[1]] = twoKappaB*chi[s]; /* Account for Mass Normalization */
       }
 #endif
 
       QDPIO::cout << "Norm of chi = " << norm2(chi,rb[1]) << endl;
-
-#if 0
-      QDPIO::cout << "Norm of rescaled chi = " << norm2(source_resc,rb[1]) << endl;
-#endif
       QDPIO::cout << "TwoKappa = " << twoKappaB << "   invTwoKappa_b = " << invTwoKappaB << endl;
     
       if ( invParam.axialGaugeP ) { 
@@ -507,7 +491,7 @@ namespace Chroma
 	QDPIO::cout << "Solving" << endl;
 	res = qudaInvert(g_chi,g_psi);      
 	for(int s=0; s < this->size(); s++) {
-	  g_psi[s][rb[1]] *= invTwoKappaB;
+	  g_psi[s][rb[1]] *= twoKappaB;
 	}
 
 	QDPIO::cout << "Untransforming solution." << endl;
