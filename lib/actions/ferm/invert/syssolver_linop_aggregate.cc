@@ -32,6 +32,10 @@
 #include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
 #endif
 
+#ifdef BUILD_MDWF
+#include "actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.h"
+#endif
+
 namespace Chroma
 {
 
@@ -88,6 +92,10 @@ namespace Chroma
       {
 	// 5D system solvers
 	success &= LinOpSysSolverCGArrayEnv::registerAll();
+
+#ifdef BUILD_MDWF
+	success &= LinOpSysSolverMDWFArrayEnv::registerAll();
+#endif
 	success &= LinOpSysSolverEigCGArrayEnv::registerAll();
 	registered = true;
       }

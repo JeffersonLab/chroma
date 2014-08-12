@@ -1,25 +1,20 @@
 #include "qdp.h"
 
+#ifdef QDP_IS_QDPJIT
+#ifdef QDPJIT_IS_QDPJITNVVM
+
 using namespace QDP;
 
 
-#ifdef QDP_IS_QDPJIT
-#ifndef QDPJIT_IS_QDPJITPTX
-#ifndef QDPJIT_IS_QDPJITNVVM
-
-#warning "Using QDP-JIT/LLVM stouting routines"
-
-void function_get_fs_bs_exec(const JitFunction& function, 
-			     const LatticeColorMatrix& Q,
-			     const LatticeColorMatrix& QQ,
-			     multi1d<LatticeComplex>& f,
-			     multi1d<LatticeComplex>& b1,
-			     multi1d<LatticeComplex>& b2,
-			     bool dobs)
+CUfunction function_get_fs_bs_exec(CUfunction function, 
+				   const LatticeColorMatrix& Q,
+				   const LatticeColorMatrix& QQ,
+				   multi1d<LatticeComplex>& f,
+				   multi1d<LatticeComplex>& b1,
+				   multi1d<LatticeComplex>& b2,
+				   bool dobs)
 {
   AddressLeaf addr_leaf(all);
-
-  addr_leaf.setLit( dobs );
 
   int junk_0 = forEach(Q, addr_leaf, NullCombine());
   int junk_1 = forEach(QQ, addr_leaf, NullCombine());
@@ -33,9 +28,29 @@ void function_get_fs_bs_exec(const JitFunction& function,
   int junk_9 = forEach(b2[1], addr_leaf, NullCombine());
   int junk_10= forEach(b2[2], addr_leaf, NullCombine());
 
-  //QDPIO::cerr << "calling getFsBs\n";
 
-  jit_dispatch(function.func().at(0),Layout::sitesOnNode(),getDataLayoutInnerSize(),true,0,addr_leaf);
+  // lo <= idx < hi
+  int lo = 0;
+  int hi = Layout::sitesOnNode();
+  unsigned char dobs_u8 = dobs ? 1 : 0;
+
+  std::vector<void*> addr;
+
+  addr.push_back( &lo );
+  //std::cout << "addr lo = " << addr[0] << " lo=" << lo << "\n";
+
+  addr.push_back( &hi );
+  //std::cout << "addr hi = " << addr[1] << " hi=" << hi << "\n";
+
+  addr.push_back( &dobs_u8 );
+
+  int addr_dest=addr.size();
+  for(int i=0; i < addr_leaf.addr.size(); ++i) {
+    addr.push_back( &addr_leaf.addr[i] );
+    //std::cout << "addr = " << addr_leaf.addr[i] << "\n";
+  }
+
+  jit_launch(function,hi-lo,addr);
 }
 
 
@@ -46,17 +61,18 @@ WordREG<REAL> jit_constant( double f )
 }
 
 
-void function_get_fs_bs_build( JitFunction& func,
-			       const LatticeColorMatrix& Q,
-			       const LatticeColorMatrix& QQ,
-			       multi1d<LatticeComplex>& f,
-			       multi1d<LatticeComplex>& b1,
-			       multi1d<LatticeComplex>& b2)
+CUfunction function_get_fs_bs_build(const LatticeColorMatrix& Q,
+				    const LatticeColorMatrix& QQ,
+				    multi1d<LatticeComplex>& f,
+				    multi1d<LatticeComplex>& b1,
+				    multi1d<LatticeComplex>& b2)
 {
   //std::cout << __PRETTY_FUNCTION__ << ": entering\n";
 
-  JitMainLoop loop;
+  llvm_start_new_function();
 
+  ParamRef  p_lo     = llvm_add_param<int>();
+  ParamRef  p_hi     = llvm_add_param<int>();
   ParamRef  p_dobs   = llvm_add_param<bool>();
 
   ParamLeaf param_leaf;
@@ -76,23 +92,29 @@ void function_get_fs_bs_build( JitFunction& func,
   LCJIT  b21_jit(forEach(b2[1], param_leaf, TreeCombine()));
   LCJIT  b22_jit(forEach(b2[2], param_leaf, TreeCombine()));
 
+  llvm::Value*  r_lo     = llvm_derefParam( p_lo );
+  llvm::Value*  r_hi     = llvm_derefParam( p_hi );
   llvm::Value*  r_dobs   = llvm_derefParam( p_dobs );
-
-  IndexDomainVector idx = loop.getIdx();
+  //llvm::Value*  r_nobs   = llvm_not( r_dobs );
       
-  typename LCMJIT::Subtype_t& Q_j  = Q_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCMJIT::Subtype_t& QQ_j = QQ_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  llvm::Value*  r_idx = llvm_thread_idx();
+      
+  llvm_cond_exit( llvm_ge( r_idx , r_hi ) );
 
-  typename LCJIT::Subtype_t& f0_j = f0_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& f1_j = f1_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& f2_j = f2_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+
+  auto& Q_j  = Q_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& QQ_j = QQ_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+
+  auto& f0_j = f0_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& f1_j = f1_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& f2_j = f2_jit.elem(JitDeviceLayout::Coalesced,r_idx);
   
-  typename LCJIT::Subtype_t& b10_j = b10_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& b11_j = b11_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& b12_j = b12_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& b20_j = b20_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& b21_j = b21_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
-  typename LCJIT::Subtype_t& b22_j = b22_jit.elem(JitDeviceLayout::LayoutCoalesced,idx);
+  auto& b10_j = b10_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b11_j = b11_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b12_j = b12_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b20_j = b20_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b21_j = b21_jit.elem(JitDeviceLayout::Coalesced,r_idx);
+  auto& b22_j = b22_jit.elem(JitDeviceLayout::Coalesced,r_idx);
 
   llvm::BasicBlock * block_exit = llvm_new_basic_block();
   { 
@@ -605,12 +627,9 @@ void function_get_fs_bs_build( JitFunction& func,
   llvm_branch( block_exit );
   llvm_set_insert_point( block_exit );
 
-
-  loop.done();
-
-  func.func().push_back( jit_function_epilogue_get("jit_get_fs_bs.ptx") );
+  return jit_function_epilogue_get_cuf("jit_get_fs_bs.ptx");
 }
 
-#endif
+
 #endif
 #endif

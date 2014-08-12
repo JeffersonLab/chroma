@@ -78,7 +78,7 @@ namespace Chroma
     invertQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
     swatch1.stop();
 
-    chi_s[rb[1]] *= invMassParam;
+    //chi_s[rb[1]] *= invMassParam;
 
     QDPIO::cout << "Cuda Space Required" << endl;
     QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;

@@ -8,6 +8,8 @@
 #ifndef __inline_prop_and_matelem_distillation_w_h__
 #define __inline_prop_and_matelem_distillation_w_h__
 
+#ifndef QDP_IS_QDPJIT
+
 #include "chromabase.h"
 #include "meas/inline/abs_inline_measurement.h"
 #include "io/qprop_io.h"
@@ -89,4 +91,6 @@ namespace Chroma
 
 }
 
-#endif
+#endif // QDPJIT
+
+#endif // Chroma
