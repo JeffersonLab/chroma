@@ -1,0 +1,325 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+; $Id: prec_dwf.ini.xml,v 3.9 2006-10-15 05:59:46 edwards Exp $
+;
+; Test input file for chroma main program
+;
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <Name>MAKE_SOURCE</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <version>2</version>
+          <SourceType>POINT_SOURCE</SourceType>
+          <j_decay>3</j_decay>
+          <t_srce>0 0 0 0</t_srce>
+        </Source>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+      </NamedObject>
+    </elem>
+<!--
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>true</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>DWF</FermAct>
+         <OverMass>1.2</OverMass>
+         <Mass>0.4</Mass>
+         <N5>4</N5>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+	<InvertParam>
+	   <invType>CG_INVERTER</invType>
+	   <RsdCG>1.0e-7</RsdCG>
+	   <MaxCG>100</MaxCG>
+	</InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+      <xml_file>dwf.xml</xml_file>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+
+      <object_id>sh_prop_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>true</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>NEF</FermAct>
+         <OverMass>1.2</OverMass>
+         <Mass>0.4</Mass>
+         <N5>4</N5>
+	 <b5>1</b5>
+	 <c5>0</c5>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+	<InvertParam>
+	   <invType>CG_INVERTER</invType>
+	   <RsdCG>1.0e-7</RsdCG>
+	   <MaxCG>100</MaxCG>
+	</InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+      <xml_file>nef.xml</xml_file>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+
+      <object_id>sh_prop_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>true</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>NEF</FermAct>
+         <OverMass>1.2</OverMass>
+         <Mass>0.4</Mass>
+         <N5>4</N5>
+	 <b5>1</b5>
+	 <c5>0</c5>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+
+	<InvertParam>
+          <invType>QUDA_NEF_INVERTER</invType>
+          <NEFParams>
+            <b5>1.0</b5>
+            <c5>0.0</c5>
+            <OverMass>1.2</OverMass>
+            <Mass>0.4</Mass>
+            <N5>4</N5>
+          </NEFParams>
+	  
+          <RsdTarget>1.0e-7</RsdTarget>
+          <Delta>1.0e-8</Delta>
+          <MaxIter>1000</MaxIter>
+          <RsdToleranceFactor>100</RsdToleranceFactor>
+          <SilentFail>true</SilentFail>
+          <AntiPeriodicT>true</AntiPeriodicT>
+          <SolverType>CG</SolverType>
+          <Verbose>true</Verbose>
+          <AsymmetricLinop>true</AsymmetricLinop>
+          <CudaReconstruct>RECONS_NONE</CudaReconstruct>
+          <CudaSloppyPrecision>DOUBLE</CudaSloppyPrecision>
+          <CudaSloppyReconstruct>RECONS_NONE</CudaSloppyReconstruct>
+          <AxialGaugeFix>false</AxialGaugeFix>
+          <AutotuneDslash>false</AutotuneDslash>
+        </InvertParam>
+	
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+      <xml_file>qudanef.xml</xml_file>
+    </elem>
+ 
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+
+      <object_id>sh_prop_0</object_id>
+      </NamedObject>
+    </elem>
+-->
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>true</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>NEF</FermAct>
+         <OverMass>1.2</OverMass>
+         <Mass>0.4</Mass>
+         <N5>4</N5>
+	 <b5>1.2</b5>
+	 <c5>0.8</c5>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+	<InvertParam>
+	   <invType>CG_INVERTER</invType>
+	   <RsdCG>1.0e-7</RsdCG>
+	   <MaxCG>100</MaxCG>
+	</InvertParam>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+      <xml_file>nef2.xml</xml_file>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+
+      <object_id>sh_prop_0</object_id>
+      </NamedObject>
+    </elem>
+    <elem>
+      <Name>PROPAGATOR</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>true</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>NEF</FermAct>
+         <OverMass>1.2</OverMass>
+         <Mass>0.4</Mass>
+         <N5>4</N5>
+	 <b5>1.2</b5>
+	 <c5>0.8</c5>
+         <AnisoParam>
+           <anisoP>false</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>1</xi_0>
+           <nu>1</nu>
+         </AnisoParam>
+         <FermionBC>
+           <FermBC>SIMPLE_FERMBC</FermBC>
+           <boundary>1 1 1 -1</boundary>
+         </FermionBC>
+        </FermionAction>
+
+	<InvertParam>
+          <invType>QUDA_NEF_INVERTER</invType>
+          <NEFParams>
+	    <OverMass>1.2</OverMass>
+            <Mass>0.4</Mass>
+            <N5>4</N5>
+	    <b5>1.2</b5>
+	    <c5>0.8</c5>
+          </NEFParams>
+	  
+          <RsdTarget>1.0e-7</RsdTarget>
+          <Delta>1.0e-1</Delta>
+          <MaxIter>1000</MaxIter>
+          <RsdToleranceFactor>100</RsdToleranceFactor>
+          <SilentFail>true</SilentFail>
+          <AntiPeriodicT>true</AntiPeriodicT>
+          <SolverType>CG</SolverType>
+          <Verbose>false</Verbose>
+          <AsymmetricLinop>true</AsymmetricLinop>
+          <CudaReconstruct>RECONS_12</CudaReconstruct>
+          <CudaSloppyPrecision>HALF</CudaSloppyPrecision>
+          <CudaSloppyReconstruct>RECONS_12</CudaSloppyReconstruct>
+          <AxialGaugeFix>false</AxialGaugeFix>
+          <AutotuneDslash>true</AutotuneDslash>
+        </InvertParam>
+	
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>sh_source_0</source_id>
+        <prop_id>sh_prop_0</prop_id>
+      </NamedObject>
+      <xml_file>qudanef2.xml</xml_file>
+    </elem>
+  </InlineMeasurements>
+   <nrow>4 4 4 8</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
