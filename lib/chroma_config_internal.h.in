@@ -42,6 +42,9 @@
 /* Build with the QDP MG Library */
 #undef BUILD_QOP_MG
 
+/* Build with the QPHIX_LIBRARY */
+#undef BUILD_QPHIX
+
 /* Build with the BU QUDA Library */
 #undef BUILD_QUDA
 
@@ -71,6 +74,24 @@
 
 /* Enable Restart in linop syssolvers */
 #undef CHROMA_DO_ONE_CG_RESTART
+
+/* QPhiX Arch is AVX */
+#undef CHROMA_QPHIX_ARCH_AVX
+
+/* QPhiX Arch is MIC */
+#undef CHROMA_QPHIX_ARCH_MIC
+
+/* Disable Intel Solver Compression */
+#undef CHROMA_QPHIX_COMPRESS12
+
+/* The SOA length for inner solvers for mixed prec QPhiX */
+#undef CHROMA_QPHIX_INNER_SOALEN
+
+/* QPhiX Inner Type is float */
+#undef CHROMA_QPHIX_INNER_TYPE
+
+/* The SOA length for QPhiX */
+#undef CHROMA_QPHIX_SOALEN
 
 /* Switch in Lower Memory File */
 #undef CHROMA_USE_CG_DWF_LOWMEM

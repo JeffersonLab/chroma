@@ -61,6 +61,9 @@ host_triplet = @host@
 @BUILD_QMT_TRUE@am__append_24 = @QMT_CXXFLAGS@
 @BUILD_QMT_TRUE@am__append_25 = @QMT_LDFLAGS@
 @BUILD_QMT_TRUE@am__append_26 = @QMT_LIBS@
+@BUILD_QPHIX_TRUE@am__append_27 = @QPHIX_CXXFLAGS@
+@BUILD_QPHIX_TRUE@am__append_28 = @QPHIX_LDFLAGS@
+@BUILD_QPHIX_TRUE@am__append_29 = @QPHIX_LIBS@
 bin_PROGRAMS = t_mesplq$(EXEEXT) t_lwldslash_sse$(EXEEXT) \
 	t_lwldslash_pab$(EXEEXT) t_ritz_KS$(EXEEXT) \
 	t_lwldslash_array$(EXEEXT) t_leapfrog$(EXEEXT) \
@@ -75,7 +78,7 @@ check_PROGRAMS = t_io$(EXEEXT) t_mesons_w$(EXEEXT) \
 	t_stout_state$(EXEEXT) t_aniso_gaugeact$(EXEEXT) \
 	t_temp_prec$(EXEEXT) t_meas_wilson_flow_loop$(EXEEXT) \
 	$(am__EXEEXT_1)
-@BUILD_QUDA_TRUE@am__append_27 = t_quda_tprec t_minvert_quda
+@BUILD_QUDA_TRUE@am__append_30 = t_quda_tprec t_minvert_quda
 EXTRA_PROGRAMS = t_dslashm$(EXEEXT) t_lwldslash$(EXEEXT) \
 	t_spprod$(EXEEXT) t_follana_io_s$(EXEEXT) t_formfac$(EXEEXT) \
 	t_follana_pion_s$(EXEEXT) t_dwflinop$(EXEEXT) \
@@ -127,7 +130,8 @@ t_aniso_gaugeact_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_aniso_sym_force_OBJECTS = t_aniso_sym_force.$(OBJEXT)
 t_aniso_sym_force_OBJECTS = $(am_t_aniso_sym_force_OBJECTS)
 t_aniso_sym_force_LDADD = $(LDADD)
@@ -135,7 +139,8 @@ t_aniso_sym_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_ape_smear_OBJECTS = t_ape_smear.$(OBJEXT)
 t_ape_smear_OBJECTS = $(am_t_ape_smear_OBJECTS)
 t_ape_smear_LDADD = $(LDADD)
@@ -143,7 +148,7 @@ t_ape_smear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_bicgstab_OBJECTS = t_bicgstab.$(OBJEXT)
 t_bicgstab_OBJECTS = $(am_t_bicgstab_OBJECTS)
 t_bicgstab_LDADD = $(LDADD)
@@ -151,7 +156,7 @@ t_bicgstab_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_circular_buffer_OBJECTS = t_circular_buffer.$(OBJEXT)
 t_circular_buffer_OBJECTS = $(am_t_circular_buffer_OBJECTS)
 t_circular_buffer_LDADD = $(LDADD)
@@ -159,7 +164,8 @@ t_circular_buffer_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_clover_OBJECTS = t_clover.$(OBJEXT)
 t_clover_OBJECTS = $(am_t_clover_OBJECTS)
 t_clover_LDADD = $(LDADD)
@@ -167,7 +173,7 @@ t_clover_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_conslinop_OBJECTS = t_conslinop.$(OBJEXT)
 t_conslinop_OBJECTS = $(am_t_conslinop_OBJECTS)
 t_conslinop_LDADD = $(LDADD)
@@ -175,7 +181,7 @@ t_conslinop_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_db_OBJECTS = t_db.$(OBJEXT)
 t_db_OBJECTS = $(am_t_db_OBJECTS)
 t_db_LDADD = $(LDADD)
@@ -183,7 +189,7 @@ t_db_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_disc_loop_s_OBJECTS = t_disc_loop_s.$(OBJEXT)
 t_disc_loop_s_OBJECTS = $(am_t_disc_loop_s_OBJECTS)
 t_disc_loop_s_LDADD = $(LDADD)
@@ -191,7 +197,8 @@ t_disc_loop_s_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_dslashm_OBJECTS = t_dslashm.$(OBJEXT)
 t_dslashm_OBJECTS = $(am_t_dslashm_OBJECTS)
 t_dslashm_LDADD = $(LDADD)
@@ -199,7 +206,7 @@ t_dslashm_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_dwf4d_OBJECTS = t_dwf4d.$(OBJEXT)
 t_dwf4d_OBJECTS = $(am_t_dwf4d_OBJECTS)
 t_dwf4d_LDADD = $(LDADD)
@@ -207,7 +214,7 @@ t_dwf4d_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_dwflinop_OBJECTS = t_dwflinop.$(OBJEXT)
 t_dwflinop_OBJECTS = $(am_t_dwflinop_OBJECTS)
 t_dwflinop_LDADD = $(LDADD)
@@ -215,7 +222,7 @@ t_dwflinop_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_dwflocality_OBJECTS = t_dwflocality.$(OBJEXT)
 t_dwflocality_OBJECTS = $(am_t_dwflocality_OBJECTS)
 t_dwflocality_LDADD = $(LDADD)
@@ -223,7 +230,8 @@ t_dwflocality_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_eigcginv_OBJECTS = t_eigcginv.$(OBJEXT)
 t_eigcginv_OBJECTS = $(am_t_eigcginv_OBJECTS)
 t_eigcginv_LDADD = $(LDADD)
@@ -231,7 +239,7 @@ t_eigcginv_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_fermion_loop_w_OBJECTS = t_fermion_loop_w.$(OBJEXT)
 t_fermion_loop_w_OBJECTS = $(am_t_fermion_loop_w_OBJECTS)
 t_fermion_loop_w_LDADD = $(LDADD)
@@ -239,7 +247,8 @@ t_fermion_loop_w_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_follana_io_s_OBJECTS = t_follana_io_s.$(OBJEXT)
 t_follana_io_s_OBJECTS = $(am_t_follana_io_s_OBJECTS)
 t_follana_io_s_LDADD = $(LDADD)
@@ -247,7 +256,8 @@ t_follana_io_s_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_follana_pion_s_OBJECTS = t_follana_pion_s.$(OBJEXT)
 t_follana_pion_s_OBJECTS = $(am_t_follana_pion_s_OBJECTS)
 t_follana_pion_s_LDADD = $(LDADD)
@@ -255,7 +265,8 @@ t_follana_pion_s_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_formfac_OBJECTS = t_formfac.$(OBJEXT)
 t_formfac_OBJECTS = $(am_t_formfac_OBJECTS)
 t_formfac_LDADD = $(LDADD)
@@ -263,7 +274,7 @@ t_formfac_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_fuzwilp_OBJECTS = t_fuzwilp.$(OBJEXT)
 t_fuzwilp_OBJECTS = $(am_t_fuzwilp_OBJECTS)
 t_fuzwilp_LDADD = $(LDADD)
@@ -271,7 +282,7 @@ t_fuzwilp_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_g5eps_bj_OBJECTS = t_g5eps_bj.$(OBJEXT)
 t_g5eps_bj_OBJECTS = $(am_t_g5eps_bj_OBJECTS)
 t_g5eps_bj_LDADD = $(LDADD)
@@ -279,7 +290,7 @@ t_g5eps_bj_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_gauge_force_OBJECTS = t_gauge_force.$(OBJEXT)
 t_gauge_force_OBJECTS = $(am_t_gauge_force_OBJECTS)
 t_gauge_force_LDADD = $(LDADD)
@@ -287,7 +298,8 @@ t_gauge_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_gfix_OBJECTS = t_gfix.$(OBJEXT)
 t_gfix_OBJECTS = $(am_t_gfix_OBJECTS)
 t_gfix_LDADD = $(LDADD)
@@ -295,7 +307,7 @@ t_gfix_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_hamiltonian_OBJECTS = t_hamiltonian.$(OBJEXT)
 t_hamiltonian_OBJECTS = $(am_t_hamiltonian_OBJECTS)
 t_hamiltonian_LDADD = $(LDADD)
@@ -303,7 +315,8 @@ t_hamiltonian_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_hamsys_OBJECTS = t_hamsys.$(OBJEXT)
 t_hamsys_OBJECTS = $(am_t_hamsys_OBJECTS)
 t_hamsys_LDADD = $(LDADD)
@@ -311,7 +324,7 @@ t_hamsys_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_hamsys_ferm_OBJECTS = t_hamsys_ferm.$(OBJEXT)
 t_hamsys_ferm_OBJECTS = $(am_t_hamsys_ferm_OBJECTS)
 t_hamsys_ferm_LDADD = $(LDADD)
@@ -319,7 +332,8 @@ t_hamsys_ferm_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_hmc_OBJECTS = t_hmc.$(OBJEXT)
 t_hmc_OBJECTS = $(am_t_hmc_OBJECTS)
 t_hmc_LDADD = $(LDADD)
@@ -327,7 +341,7 @@ t_hmc_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_hmc_pg_OBJECTS = t_hmc_pg.$(OBJEXT)
 t_hmc_pg_OBJECTS = $(am_t_hmc_pg_OBJECTS)
 t_hmc_pg_LDADD = $(LDADD)
@@ -335,7 +349,7 @@ t_hmc_pg_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_hypsmear_OBJECTS = t_hypsmear.$(OBJEXT)
 t_hypsmear_OBJECTS = $(am_t_hypsmear_OBJECTS)
 t_hypsmear_LDADD = $(LDADD)
@@ -343,7 +357,7 @@ t_hypsmear_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_invborici_OBJECTS = t_invborici.$(OBJEXT)
 t_invborici_OBJECTS = $(am_t_invborici_OBJECTS)
 t_invborici_LDADD = $(LDADD)
@@ -351,7 +365,7 @@ t_invborici_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_invert3_precwilson_OBJECTS = t_invert3_precwilson.$(OBJEXT)
 t_invert3_precwilson_OBJECTS = $(am_t_invert3_precwilson_OBJECTS)
 t_invert3_precwilson_LDADD = $(LDADD)
@@ -359,7 +373,8 @@ t_invert3_precwilson_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_invert4_precwilson_OBJECTS = t_invert4_precwilson.$(OBJEXT)
 t_invert4_precwilson_OBJECTS = $(am_t_invert4_precwilson_OBJECTS)
 t_invert4_precwilson_LDADD = $(LDADD)
@@ -367,7 +382,8 @@ t_invert4_precwilson_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_invrelcg_OBJECTS = t_invrelcg.$(OBJEXT)
 t_invrelcg_OBJECTS = $(am_t_invrelcg_OBJECTS)
 t_invrelcg_LDADD = $(LDADD)
@@ -375,7 +391,7 @@ t_invrelcg_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_io_OBJECTS = t_io.$(OBJEXT)
 t_io_OBJECTS = $(am_t_io_OBJECTS)
 t_io_LDADD = $(LDADD)
@@ -383,7 +399,7 @@ t_io_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_leapfrog_OBJECTS = t_leapfrog.$(OBJEXT)
 t_leapfrog_OBJECTS = $(am_t_leapfrog_OBJECTS)
 t_leapfrog_LDADD = $(LDADD)
@@ -391,7 +407,7 @@ t_leapfrog_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_lower_tests_OBJECTS = t_lower_tests.$(OBJEXT)
 t_lower_tests_OBJECTS = $(am_t_lower_tests_OBJECTS)
 t_lower_tests_LDADD = $(LDADD)
@@ -399,7 +415,8 @@ t_lower_tests_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_lwldslash_OBJECTS = t_lwldslash.$(OBJEXT)
 t_lwldslash_OBJECTS = $(am_t_lwldslash_OBJECTS)
 t_lwldslash_LDADD = $(LDADD)
@@ -407,7 +424,7 @@ t_lwldslash_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_lwldslash_array_OBJECTS = t_lwldslash_array.$(OBJEXT)
 t_lwldslash_array_OBJECTS = $(am_t_lwldslash_array_OBJECTS)
 t_lwldslash_array_LDADD = $(LDADD)
@@ -415,7 +432,8 @@ t_lwldslash_array_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_lwldslash_new_OBJECTS = t_lwldslash_new.$(OBJEXT)
 t_lwldslash_new_OBJECTS = $(am_t_lwldslash_new_OBJECTS)
 t_lwldslash_new_LDADD = $(LDADD)
@@ -423,7 +441,8 @@ t_lwldslash_new_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_lwldslash_pab_OBJECTS = t_lwldslash_pab.$(OBJEXT)
 t_lwldslash_pab_OBJECTS = $(am_t_lwldslash_pab_OBJECTS)
 t_lwldslash_pab_LDADD = $(LDADD)
@@ -431,7 +450,8 @@ t_lwldslash_pab_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_lwldslash_sse_OBJECTS = t_lwldslash_sse.$(OBJEXT)
 t_lwldslash_sse_OBJECTS = $(am_t_lwldslash_sse_OBJECTS)
 t_lwldslash_sse_LDADD = $(LDADD)
@@ -439,7 +459,8 @@ t_lwldslash_sse_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_meas_wilson_flow_OBJECTS = t_meas_wilson_flow.$(OBJEXT)
 t_meas_wilson_flow_OBJECTS = $(am_t_meas_wilson_flow_OBJECTS)
 t_meas_wilson_flow_LDADD = $(LDADD)
@@ -447,7 +468,8 @@ t_meas_wilson_flow_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_meas_wilson_flow_loop_OBJECTS =  \
 	t_meas_wilson_flow_loop.$(OBJEXT)
 t_meas_wilson_flow_loop_OBJECTS =  \
@@ -457,7 +479,8 @@ t_meas_wilson_flow_loop_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_mesons_w_OBJECTS = t_mesons_w.$(OBJEXT)
 t_mesons_w_OBJECTS = $(am_t_mesons_w_OBJECTS)
 t_mesons_w_LDADD = $(LDADD)
@@ -465,7 +488,7 @@ t_mesons_w_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_mesplq_OBJECTS = t_mesplq.$(OBJEXT)
 t_mesplq_OBJECTS = $(am_t_mesplq_OBJECTS)
 t_mesplq_LDADD = $(LDADD)
@@ -473,7 +496,7 @@ t_mesplq_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_minvert_OBJECTS = t_minvert.$(OBJEXT)
 t_minvert_OBJECTS = $(am_t_minvert_OBJECTS)
 t_minvert_LDADD = $(LDADD)
@@ -481,7 +504,7 @@ t_minvert_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am__t_minvert_quda_SOURCES_DIST = t_minvert_quda.cc
 @BUILD_QUDA_TRUE@am_t_minvert_quda_OBJECTS = t_minvert_quda.$(OBJEXT)
 t_minvert_quda_OBJECTS = $(am_t_minvert_quda_OBJECTS)
@@ -490,7 +513,8 @@ t_minvert_quda_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_monomial_force_OBJECTS = t_monomial_force.$(OBJEXT)
 t_monomial_force_OBJECTS = $(am_t_monomial_force_OBJECTS)
 t_monomial_force_LDADD = $(LDADD)
@@ -498,7 +522,8 @@ t_monomial_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_mres_4d_OBJECTS = t_mres_4d.$(OBJEXT)
 t_mres_4d_OBJECTS = $(am_t_mres_4d_OBJECTS)
 t_mres_4d_LDADD = $(LDADD)
@@ -506,7 +531,7 @@ t_mres_4d_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_msumr_OBJECTS = t_msumr.$(OBJEXT)
 t_msumr_OBJECTS = $(am_t_msumr_OBJECTS)
 t_msumr_LDADD = $(LDADD)
@@ -514,7 +539,7 @@ t_msumr_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_neflinop_OBJECTS = t_neflinop.$(OBJEXT)
 t_neflinop_OBJECTS = $(am_t_neflinop_OBJECTS)
 t_neflinop_LDADD = $(LDADD)
@@ -522,7 +547,7 @@ t_neflinop_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_ov_pbp_OBJECTS = t_ov_pbp.$(OBJEXT)
 t_ov_pbp_OBJECTS = $(am_t_ov_pbp_OBJECTS)
 t_ov_pbp_LDADD = $(LDADD)
@@ -530,7 +555,7 @@ t_ov_pbp_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_overbu_OBJECTS = t_overbu.$(OBJEXT)
 t_overbu_OBJECTS = $(am_t_overbu_OBJECTS)
 t_overbu_LDADD = $(LDADD)
@@ -538,7 +563,7 @@ t_overbu_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_ovlap5d_bj_OBJECTS = t_ovlap5d_bj.$(OBJEXT)
 t_ovlap5d_bj_OBJECTS = $(am_t_ovlap5d_bj_OBJECTS)
 t_ovlap5d_bj_LDADD = $(LDADD)
@@ -546,7 +571,8 @@ t_ovlap5d_bj_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_ovlap_bj_OBJECTS = t_ovlap_bj.$(OBJEXT)
 t_ovlap_bj_OBJECTS = $(am_t_ovlap_bj_OBJECTS)
 t_ovlap_bj_LDADD = $(LDADD)
@@ -554,7 +580,7 @@ t_ovlap_bj_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_ovlap_double_pass_OBJECTS = t_ovlap_double_pass.$(OBJEXT)
 t_ovlap_double_pass_OBJECTS = $(am_t_ovlap_double_pass_OBJECTS)
 t_ovlap_double_pass_LDADD = $(LDADD)
@@ -562,7 +588,8 @@ t_ovlap_double_pass_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_prec_contfrac_OBJECTS = t_prec_contfrac.$(OBJEXT)
 t_prec_contfrac_OBJECTS = $(am_t_prec_contfrac_OBJECTS)
 t_prec_contfrac_LDADD = $(LDADD)
@@ -570,7 +597,8 @@ t_prec_contfrac_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_prec_nef_OBJECTS = t_prec_nef.$(OBJEXT)
 t_prec_nef_OBJECTS = $(am_t_prec_nef_OBJECTS)
 t_prec_nef_LDADD = $(LDADD)
@@ -578,7 +606,7 @@ t_prec_nef_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_prec_twoflav_wilson_monomial_OBJECTS =  \
 	t_prec_twoflav_wilson_monomial.$(OBJEXT)
 t_prec_twoflav_wilson_monomial_OBJECTS =  \
@@ -588,7 +616,8 @@ t_prec_twoflav_wilson_monomial_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_prec_wilson_force_OBJECTS = t_prec_wilson_force.$(OBJEXT)
 t_prec_wilson_force_OBJECTS = $(am_t_prec_wilson_force_OBJECTS)
 t_prec_wilson_force_LDADD = $(LDADD)
@@ -596,7 +625,8 @@ t_prec_wilson_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_precact_4d_OBJECTS = t_precact_4d.$(OBJEXT)
 t_precact_4d_OBJECTS = $(am_t_precact_4d_OBJECTS)
 t_precact_4d_LDADD = $(LDADD)
@@ -604,7 +634,8 @@ t_precact_4d_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_precact_5d_OBJECTS = t_precact_5d.$(OBJEXT)
 t_precact_5d_OBJECTS = $(am_t_precact_5d_OBJECTS)
 t_precact_5d_LDADD = $(LDADD)
@@ -612,7 +643,8 @@ t_precact_5d_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_precact_sse_OBJECTS = t_precact_sse.$(OBJEXT)
 t_precact_sse_OBJECTS = $(am_t_precact_sse_OBJECTS)
 t_precact_sse_LDADD = $(LDADD)
@@ -620,7 +652,8 @@ t_precact_sse_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_preccfz_OBJECTS = t_preccfz.$(OBJEXT)
 t_preccfz_OBJECTS = $(am_t_preccfz_OBJECTS)
 t_preccfz_LDADD = $(LDADD)
@@ -628,7 +661,7 @@ t_preccfz_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_preccfz_opt_OBJECTS = t_preccfz_opt.$(OBJEXT)
 t_preccfz_opt_OBJECTS = $(am_t_preccfz_opt_OBJECTS)
 t_preccfz_opt_LDADD = $(LDADD)
@@ -636,7 +669,8 @@ t_preccfz_opt_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_precdwf_OBJECTS = t_precdwf.$(OBJEXT)
 t_precdwf_OBJECTS = $(am_t_precdwf_OBJECTS)
 t_precdwf_LDADD = $(LDADD)
@@ -644,7 +678,7 @@ t_precdwf_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_precnef_OBJECTS = t_precnef.$(OBJEXT)
 t_precnef_OBJECTS = $(am_t_precnef_OBJECTS)
 t_precnef_LDADD = $(LDADD)
@@ -652,7 +686,7 @@ t_precnef_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_propagator_fuzz_baryon_s_OBJECTS =  \
 	t_propagator_fuzz_baryon_s.$(OBJEXT)
 t_propagator_fuzz_baryon_s_OBJECTS =  \
@@ -662,7 +696,8 @@ t_propagator_fuzz_baryon_s_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_propagator_fuzz_s_OBJECTS = t_propagator_fuzz_s.$(OBJEXT)
 t_propagator_fuzz_s_OBJECTS = $(am_t_propagator_fuzz_s_OBJECTS)
 t_propagator_fuzz_s_LDADD = $(LDADD)
@@ -670,7 +705,8 @@ t_propagator_fuzz_s_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_propagator_nrqcd_OBJECTS = t_propagator_nrqcd.$(OBJEXT)
 t_propagator_nrqcd_OBJECTS = $(am_t_propagator_nrqcd_OBJECTS)
 t_propagator_nrqcd_LDADD = $(LDADD)
@@ -678,7 +714,8 @@ t_propagator_nrqcd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_propagator_s_OBJECTS = t_propagator_s.$(OBJEXT)
 t_propagator_s_OBJECTS = $(am_t_propagator_s_OBJECTS)
 t_propagator_s_LDADD = $(LDADD)
@@ -686,7 +723,8 @@ t_propagator_s_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_propagator_twisted_OBJECTS = t_propagator_twisted.$(OBJEXT)
 t_propagator_twisted_OBJECTS = $(am_t_propagator_twisted_OBJECTS)
 t_propagator_twisted_LDADD = $(LDADD)
@@ -694,7 +732,8 @@ t_propagator_twisted_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_propagator_w_OBJECTS = t_propagator_w.$(OBJEXT)
 t_propagator_w_OBJECTS = $(am_t_propagator_w_OBJECTS)
 t_propagator_w_LDADD = $(LDADD)
@@ -702,7 +741,8 @@ t_propagator_w_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am__t_quda_tprec_SOURCES_DIST = t_quda_tprec.cc
 @BUILD_QUDA_TRUE@am_t_quda_tprec_OBJECTS = t_quda_tprec.$(OBJEXT)
 t_quda_tprec_OBJECTS = $(am_t_quda_tprec_OBJECTS)
@@ -711,7 +751,8 @@ t_quda_tprec_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_read_eigen_OBJECTS = t_read_eigen.$(OBJEXT)
 t_read_eigen_OBJECTS = $(am_t_read_eigen_OBJECTS)
 t_read_eigen_LDADD = $(LDADD)
@@ -719,7 +760,8 @@ t_read_eigen_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_rel_gmresr_OBJECTS = t_rel_gmresr.$(OBJEXT)
 t_rel_gmresr_OBJECTS = $(am_t_rel_gmresr_OBJECTS)
 t_rel_gmresr_LDADD = $(LDADD)
@@ -727,7 +769,8 @@ t_rel_gmresr_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_remez_OBJECTS = t_remez.$(OBJEXT)
 t_remez_OBJECTS = $(am_t_remez_OBJECTS)
 t_remez_LDADD = $(LDADD)
@@ -735,7 +778,7 @@ t_remez_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_ritz_OBJECTS = t_ritz.$(OBJEXT)
 t_ritz_OBJECTS = $(am_t_ritz_OBJECTS)
 t_ritz_LDADD = $(LDADD)
@@ -743,7 +786,7 @@ t_ritz_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_ritz5d_KS_OBJECTS = t_ritz5d_KS.$(OBJEXT)
 t_ritz5d_KS_OBJECTS = $(am_t_ritz5d_KS_OBJECTS)
 t_ritz5d_KS_LDADD = $(LDADD)
@@ -751,7 +794,7 @@ t_ritz5d_KS_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_ritz_KS_OBJECTS = t_ritz_KS.$(OBJEXT)
 t_ritz_KS_OBJECTS = $(am_t_ritz_KS_OBJECTS)
 t_ritz_KS_LDADD = $(LDADD)
@@ -759,7 +802,7 @@ t_ritz_KS_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_seqsource_OBJECTS = t_seqsource.$(OBJEXT)
 t_seqsource_OBJECTS = $(am_t_seqsource_OBJECTS)
 t_seqsource_LDADD = $(LDADD)
@@ -767,7 +810,7 @@ t_seqsource_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_solver_accum_OBJECTS = t_solver_accum.$(OBJEXT)
 t_solver_accum_OBJECTS = $(am_t_solver_accum_OBJECTS)
 t_solver_accum_LDADD = $(LDADD)
@@ -775,7 +818,8 @@ t_solver_accum_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_spprod_OBJECTS = t_spprod.$(OBJEXT)
 t_spprod_OBJECTS = $(am_t_spprod_OBJECTS)
 t_spprod_LDADD = $(LDADD)
@@ -783,7 +827,7 @@ t_spprod_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_stagg_baryon_OBJECTS = t_stagg_baryon.$(OBJEXT)
 t_stagg_baryon_OBJECTS = $(am_t_stagg_baryon_OBJECTS)
 t_stagg_baryon_LDADD = $(LDADD)
@@ -791,7 +835,8 @@ t_stagg_baryon_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_stout_state_OBJECTS = t_stout_state.$(OBJEXT)
 t_stout_state_OBJECTS = $(am_t_stout_state_OBJECTS)
 t_stout_state_LDADD = $(LDADD)
@@ -799,7 +844,8 @@ t_stout_state_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_su3_OBJECTS = t_su3.$(OBJEXT)
 t_su3_OBJECTS = $(am_t_su3_OBJECTS)
 t_su3_LDADD = $(LDADD)
@@ -807,7 +853,7 @@ t_su3_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_sumr_OBJECTS = t_sumr.$(OBJEXT)
 t_sumr_OBJECTS = $(am_t_sumr_OBJECTS)
 t_sumr_LDADD = $(LDADD)
@@ -815,7 +861,7 @@ t_sumr_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_temp_prec_OBJECTS = t_temp_prec.$(OBJEXT)
 t_temp_prec_OBJECTS = $(am_t_temp_prec_OBJECTS)
 t_temp_prec_LDADD = $(LDADD)
@@ -823,7 +869,7 @@ t_temp_prec_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_t_unprec_twoflav_wilson_monomial_OBJECTS =  \
 	t_unprec_twoflav_wilson_monomial.$(OBJEXT)
 t_unprec_twoflav_wilson_monomial_OBJECTS =  \
@@ -833,7 +879,8 @@ t_unprec_twoflav_wilson_monomial_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_unprec_wilson_force_OBJECTS = t_unprec_wilson_force.$(OBJEXT)
 t_unprec_wilson_force_OBJECTS = $(am_t_unprec_wilson_force_OBJECTS)
 t_unprec_wilson_force_LDADD = $(LDADD)
@@ -841,7 +888,8 @@ t_unprec_wilson_force_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 am_t_wilslp_OBJECTS = t_wilslp.$(OBJEXT)
 t_wilslp_OBJECTS = $(am_t_wilslp_OBJECTS)
 t_wilslp_LDADD = $(LDADD)
@@ -849,7 +897,7 @@ t_wilslp_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/lib
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
 am__depfiles_maybe = depfiles
@@ -1043,6 +1091,9 @@ QOP_MG_CXXFLAGS = @QOP_MG_CXXFLAGS@
 QOP_MG_DIR = @QOP_MG_DIR@
 QOP_MG_LDFLAGS = @QOP_MG_LDFLAGS@
 QOP_MG_LIBS = @QOP_MG_LIBS@
+QPHIX_CXXFLAGS = @QPHIX_CXXFLAGS@
+QPHIX_LDFLAGS = @QPHIX_LDFLAGS@
+QPHIX_LIBS = @QPHIX_LIBS@
 QUDA_CXXFLAGS = @QUDA_CXXFLAGS@
 QUDA_LDFLAGS = @QUDA_LDFLAGS@
 QUDA_LIBS = @QUDA_LIBS@
@@ -1123,18 +1174,19 @@ AM_CXXFLAGS = $(INCFLAGS) @QDPXX_CXXFLAGS@ \
 	@BAGEL_WILSON_DSLASH_CXXFLAGS@ @GMP_CXXFLAGS@ \
 	@QOP_MG_CXXFLAGS@ @CXXFLAGS@ $(am__append_1) $(am__append_4) \
 	$(am__append_7) $(am__append_10) $(am__append_13) \
-	$(am__append_16) $(am__append_21) $(am__append_24)
+	$(am__append_16) $(am__append_21) $(am__append_24) \
+	$(am__append_27)
 AM_LDFLAGS = -L$(BUILDDIR)/lib @QDPXX_LDFLAGS@ \
 	@BAGEL_WILSON_DSLASH_LDFLAGS@ @GMP_LDFLAGS@ @LDFLAGS@ \
 	-L$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/lib $(am__append_2) \
 	$(am__append_5) $(am__append_8) $(am__append_11) \
 	$(am__append_14) $(am__append_17) $(am__append_19) \
-	$(am__append_22) $(am__append_25)
+	$(am__append_22) $(am__append_25) $(am__append_28)
 LDADD = -lchroma @QDPXX_LIBS@ @BAGEL_WILSON_DSLASH_LIBS@ @GMP_LIBS@ \
 	@LIBS@ -lqdp-lapack $(am__append_3) $(am__append_6) \
 	$(am__append_9) $(am__append_12) $(am__append_15) \
 	$(am__append_18) $(am__append_20) $(am__append_23) \
-	$(am__append_26)
+	$(am__append_26) $(am__append_29)
 
 #
 # Local Headers

@@ -41,19 +41,20 @@ build_triplet = @build@
 host_triplet = @host@
 @BUILD_GMP_REMEZ_TRUE@am__append_1 = @GMP_CXXFLAGS@
 @BUILD_QUDA_TRUE@am__append_2 = @QUDA_CXXFLAGS@
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_3 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@CPP_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/include
-@BUILD_CG_DWF_TRUE@am__append_5 = -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
-@BUILD_QMT_TRUE@am__append_6 = @QMT_CXXFLAGS@
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_7 = @BAGEL_CLOVER_CXXFLAGS@
-@BUILD_MDWF_TRUE@am__append_8 = @MDWF_CXXFLAGS@
-@USE_LLVM_WD_TRUE@am__append_9 = @LLVM_WD_CXXFLAGS@
-@BUILD_QOP_MG_TRUE@am__append_10 = -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
+@BUILD_QPHIX_TRUE@am__append_3 = @QPHIX_CXXFLAGS@
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_4 = -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_5 = -I$(TOPDIR)/other_libs/@CPP_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@CPP_DSLASH_DIR@/include
+@BUILD_CG_DWF_TRUE@am__append_6 = -I$(TOPDIR)/other_libs/@CG_DWF_DIR@ -I$(BUILDDIR)/other_libs/@CG_DWF_DIR@
+@BUILD_QMT_TRUE@am__append_7 = @QMT_CXXFLAGS@
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_8 = @BAGEL_CLOVER_CXXFLAGS@
+@BUILD_MDWF_TRUE@am__append_9 = @MDWF_CXXFLAGS@
+@USE_LLVM_WD_TRUE@am__append_10 = @LLVM_WD_CXXFLAGS@
+@BUILD_QOP_MG_TRUE@am__append_11 = -I@top_srcdir@/other_libs/wilsonmg/include @QOP_MG_CXXFLAGS@
 #	actions/ferm/invert/invbicg.cc
 #       util/gauge/eesu2.cc 
-@BUILD_GMP_REMEZ_TRUE@am__append_11 = update/molecdyn/monomial/remez_gmp.h
-@BUILD_GMP_REMEZ_TRUE@am__append_12 = update/molecdyn/monomial/remez_gmp.cc
-@BUILD_QUDA_TRUE@am__append_13 = actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
+@BUILD_GMP_REMEZ_TRUE@am__append_12 = update/molecdyn/monomial/remez_gmp.h
+@BUILD_GMP_REMEZ_TRUE@am__append_13 = update/molecdyn/monomial/remez_gmp.cc
+@BUILD_QUDA_TRUE@am__append_14 = actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
@@ -67,7 +68,7 @@ host_triplet = @host@
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/enum_quda_io.h \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/quda_gcr_params.h
 
-@BUILD_QUDA_TRUE@am__append_14 = actions/ferm/invert/quda_solvers/enum_quda_io.cc \
+@BUILD_QUDA_TRUE@am__append_15 = actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc \
@@ -81,6 +82,14 @@ host_triplet = @host@
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
 
+@BUILD_QPHIX_TRUE@am__append_16 = actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
+@BUILD_QPHIX_TRUE@	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
+@BUILD_QPHIX_TRUE@	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h	
+
+@BUILD_QPHIX_TRUE@am__append_17 = actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
+@BUILD_QPHIX_TRUE@	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
+@BUILD_QPHIX_TRUE@	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc
+
 
 # Taken out for now
 
@@ -91,25 +100,25 @@ host_triplet = @host@
 #
 # Hooks for optimized code
 #
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_15 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_18 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.h \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_3d_sse_w.h
 
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_16 = \
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__append_19 = \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_sse.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_sse_w.cc \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_3d_sse_w.cc
 
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_17 = \
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_20 = \
 @BUILD_CPP_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_cppf.h \
 @BUILD_CPP_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_cppd.h
 
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_18 = \
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__append_21 = \
 @BUILD_CPP_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_cppf.cc \
 @BUILD_CPP_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_cppd.cc
 
-@BUILD_CG_DWF_TRUE@am__append_19 = \
+@BUILD_CG_DWF_TRUE@am__append_22 = \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_w.h \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/eoprec_dwf_qprop_array_cg_dwf_lowmem_w.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_inverter_interface.h \
@@ -119,87 +128,87 @@ host_triplet = @host@
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_bgld_solver.h \
 @BUILD_CG_DWF_TRUE@	actions/ferm/qprop/avp_altivecf_solver.h
 
-@BUILD_CG_DWF_TRUE@am__append_20 = \
+@BUILD_CG_DWF_TRUE@am__append_23 = \
 @BUILD_CG_DWF_TRUE@        actions/ferm/qprop/avp_inverter_interface.cc
 
-@BUILD_CG_DWF_SSE_TRUE@am__append_21 = \
+@BUILD_CG_DWF_SSE_TRUE@am__append_24 = \
 @BUILD_CG_DWF_SSE_TRUE@        actions/ferm/qprop/avp_ssef_solver.cc \
 @BUILD_CG_DWF_SSE_TRUE@	actions/ferm/qprop/avp_ssed_solver.cc
 
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_22 = \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__append_25 = \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@        actions/ferm/qprop/avp_bglf_solver.cc \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	actions/ferm/qprop/avp_bgld_solver.cc
 
-@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_23 = actions/ferm/qprop/avp_altivecf_solver.cc
-@BUILD_MDWF_TRUE@am__append_24 = actions/ferm/qprop/mdwf_solver.h \
+@BUILD_CG_DWF_ALTIVEC_TRUE@am__append_26 = actions/ferm/qprop/avp_altivecf_solver.cc
+@BUILD_MDWF_TRUE@am__append_27 = actions/ferm/qprop/mdwf_solver.h \
 @BUILD_MDWF_TRUE@	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.h \
 @BUILD_MDWF_TRUE@	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.h
 
-@BUILD_MDWF_TRUE@am__append_25 = actions/ferm/qprop/mdwf_solver.cc \
+@BUILD_MDWF_TRUE@am__append_28 = actions/ferm/qprop/mdwf_solver.cc \
 @BUILD_MDWF_TRUE@	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.cc \
 @BUILD_MDWF_TRUE@	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.cc
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_26 = \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_29 = \
 @BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_pab.h \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_array_pab_w.h
 
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_27 = \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__append_30 = \
 @BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_w_pab.cc \
 @BUILD_PAB_WILSON_DSLASH_TRUE@        actions/ferm/linop/lwldslash_array_pab_w.cc
 
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_28 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
-@BUILD_OPT_CFZ_LINOP_TRUE@am__append_29 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
-@BUILD_LAPACK_TRUE@am__append_30 = \
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_31 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.h
+@BUILD_OPT_CFZ_LINOP_TRUE@am__append_32 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.cc
+@BUILD_LAPACK_TRUE@am__append_33 = \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_OPTeigcg_params.h \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_mdagm_OPTeigcg.h \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_linop_OPTeigbicg.h \
 @BUILD_LAPACK_TRUE@	meas/inline/hadron/inline_laplace_eigs.h
 
-@BUILD_LAPACK_TRUE@am__append_31 = \
+@BUILD_LAPACK_TRUE@am__append_34 = \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_OPTeigcg_params.cc \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_mdagm_OPTeigcg.cc \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_linop_OPTeigbicg.cc \
 @BUILD_LAPACK_TRUE@	meas/inline/hadron/inline_laplace_eigs.cc
 
-@BUILD_SSED_CLOVER_APPLY_TRUE@am__append_32 = actions/ferm/linop/clover_term_ssed.h
-@BUILD_SSED_CLOVER_APPLY_TRUE@am__append_33 = actions/ferm/linop/clover_term_ssed.cc \
+@BUILD_SSED_CLOVER_APPLY_TRUE@am__append_35 = actions/ferm/linop/clover_term_ssed.h
+@BUILD_SSED_CLOVER_APPLY_TRUE@am__append_36 = actions/ferm/linop/clover_term_ssed.cc \
 @BUILD_SSED_CLOVER_APPLY_TRUE@	actions/ferm/linop/clover_apply_ssed.cc
 
-@BUILD_JIT_CLOVER_APPLY_TRUE@am__append_34 = actions/ferm/linop/clover_term_ptx_w.h \
+@BUILD_JIT_CLOVER_APPLY_TRUE@am__append_37 = actions/ferm/linop/clover_term_ptx_w.h \
 @BUILD_JIT_CLOVER_APPLY_TRUE@	actions/ferm/linop/clover_term_llvm_w.h actions/ferm/linop/clover_term_nvvm_w.h
 
-@BUILD_JIT_CLOVER_APPLY_TRUE@am__append_35 = util/gauge/stout_utils_ptx.cc \
+@BUILD_JIT_CLOVER_APPLY_TRUE@am__append_38 = util/gauge/stout_utils_ptx.cc \
 @BUILD_JIT_CLOVER_APPLY_TRUE@	util/gauge/stout_utils_llvm.cc util/gauge/stout_utils_nvvm.cc
 
 
 #
 # BICGSTAB Kernels Testing:
-@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_36 = 
-@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_37 = actions/ferm/invert/bicgstab_kernels_scalarsite.cc
+@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_39 = 
+@BUILD_SCALARSITE_BICGSTAB_TRUE@am__append_40 = actions/ferm/invert/bicgstab_kernels_scalarsite.cc
 
 #	actions/ferm/fermacts/stag_fermact_s.cc
 #	meas/pbp/mespbp_s.cc meas/pbp/stagpbp_s.cc
-@BUILD_QOP_MG_TRUE@am__append_38 = \
+@BUILD_QOP_MG_TRUE@am__append_41 = \
 @BUILD_QOP_MG_TRUE@	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.h \
 @BUILD_QOP_MG_TRUE@	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h
 
-@BUILD_QOP_MG_TRUE@am__append_39 = \
+@BUILD_QOP_MG_TRUE@am__append_42 = \
 @BUILD_QOP_MG_TRUE@	actions/ferm/invert/qop_mg/syssolver_qop_mg_params.cc \
 @BUILD_QOP_MG_TRUE@	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.cc
 
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_40 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_41 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_43 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.h
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_44 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.cc
 
 # level 3 libraries for asqtad
 
 # include files for scidac libaries
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_42 = -I@QDPC_DIR@/qmp/include \
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__append_45 = -I@QDPC_DIR@/qmp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qio/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qla/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qdp/include \
 @BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@	-I@QDPC_DIR@/qopqdp/include
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_43 = actions/ferm/linop/clover_term_bagel_clover.h
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_44 = actions/ferm/linop/clover_term_bagel_clover.cc
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_46 = actions/ferm/linop/clover_term_bagel_clover.h
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__append_47 = actions/ferm/linop/clover_term_bagel_clover.cc
 subdir = lib
 DIST_COMMON = $(am__nobase_include_HEADERS_DIST) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/chroma_config_internal.h.in
@@ -540,6 +549,9 @@ am__libchroma_a_SOURCES_DIST = actions/boson/operator/klein_gord.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc \
+	actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc \
 	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
@@ -958,38 +970,41 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.$(OBJEXT) \
 @BUILD_QUDA_TRUE@	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.$(OBJEXT)
-@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_3 = actions/ferm/linop/lwldslash_w_sse.$(OBJEXT) \
+@BUILD_QPHIX_TRUE@am__objects_3 = actions/ferm/invert/qphix/syssolver_qphix_clover_params.$(OBJEXT) \
+@BUILD_QPHIX_TRUE@	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.$(OBJEXT) \
+@BUILD_QPHIX_TRUE@	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.$(OBJEXT)
+@BUILD_SSE_WILSON_DSLASH_TRUE@am__objects_4 = actions/ferm/linop/lwldslash_w_sse.$(OBJEXT) \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_array_sse_w.$(OBJEXT) \
 @BUILD_SSE_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_3d_sse_w.$(OBJEXT)
-@BUILD_CPP_WILSON_DSLASH_TRUE@am__objects_4 = actions/ferm/linop/lwldslash_w_cppf.$(OBJEXT) \
+@BUILD_CPP_WILSON_DSLASH_TRUE@am__objects_5 = actions/ferm/linop/lwldslash_w_cppf.$(OBJEXT) \
 @BUILD_CPP_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_w_cppd.$(OBJEXT)
-@BUILD_CG_DWF_TRUE@am__objects_5 = actions/ferm/qprop/avp_inverter_interface.$(OBJEXT)
-@BUILD_CG_DWF_SSE_TRUE@am__objects_6 = actions/ferm/qprop/avp_ssef_solver.$(OBJEXT) \
+@BUILD_CG_DWF_TRUE@am__objects_6 = actions/ferm/qprop/avp_inverter_interface.$(OBJEXT)
+@BUILD_CG_DWF_SSE_TRUE@am__objects_7 = actions/ferm/qprop/avp_ssef_solver.$(OBJEXT) \
 @BUILD_CG_DWF_SSE_TRUE@	actions/ferm/qprop/avp_ssed_solver.$(OBJEXT)
-@BUILD_CG_DWF_BLUELIGHT_TRUE@am__objects_7 = actions/ferm/qprop/avp_bglf_solver.$(OBJEXT) \
+@BUILD_CG_DWF_BLUELIGHT_TRUE@am__objects_8 = actions/ferm/qprop/avp_bglf_solver.$(OBJEXT) \
 @BUILD_CG_DWF_BLUELIGHT_TRUE@	actions/ferm/qprop/avp_bgld_solver.$(OBJEXT)
-@BUILD_CG_DWF_ALTIVEC_TRUE@am__objects_8 = actions/ferm/qprop/avp_altivecf_solver.$(OBJEXT)
-@BUILD_MDWF_TRUE@am__objects_9 =  \
+@BUILD_CG_DWF_ALTIVEC_TRUE@am__objects_9 = actions/ferm/qprop/avp_altivecf_solver.$(OBJEXT)
+@BUILD_MDWF_TRUE@am__objects_10 =  \
 @BUILD_MDWF_TRUE@	actions/ferm/qprop/mdwf_solver.$(OBJEXT) \
 @BUILD_MDWF_TRUE@	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.$(OBJEXT) \
 @BUILD_MDWF_TRUE@	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.$(OBJEXT)
-@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_10 = actions/ferm/linop/lwldslash_w_pab.$(OBJEXT) \
+@BUILD_PAB_WILSON_DSLASH_TRUE@am__objects_11 = actions/ferm/linop/lwldslash_w_pab.$(OBJEXT) \
 @BUILD_PAB_WILSON_DSLASH_TRUE@	actions/ferm/linop/lwldslash_array_pab_w.$(OBJEXT)
-@BUILD_OPT_CFZ_LINOP_TRUE@am__objects_11 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
-@BUILD_LAPACK_TRUE@am__objects_12 = actions/ferm/invert/syssolver_OPTeigcg_params.$(OBJEXT) \
+@BUILD_OPT_CFZ_LINOP_TRUE@am__objects_12 = actions/ferm/linop/eoprec_ovlap_contfrac5d_linop_array_opt_w.$(OBJEXT)
+@BUILD_LAPACK_TRUE@am__objects_13 = actions/ferm/invert/syssolver_OPTeigcg_params.$(OBJEXT) \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_mdagm_OPTeigcg.$(OBJEXT) \
 @BUILD_LAPACK_TRUE@	actions/ferm/invert/syssolver_linop_OPTeigbicg.$(OBJEXT) \
 @BUILD_LAPACK_TRUE@	meas/inline/hadron/inline_laplace_eigs.$(OBJEXT)
-@BUILD_SSED_CLOVER_APPLY_TRUE@am__objects_13 = actions/ferm/linop/clover_term_ssed.$(OBJEXT) \
+@BUILD_SSED_CLOVER_APPLY_TRUE@am__objects_14 = actions/ferm/linop/clover_term_ssed.$(OBJEXT) \
 @BUILD_SSED_CLOVER_APPLY_TRUE@	actions/ferm/linop/clover_apply_ssed.$(OBJEXT)
-@BUILD_JIT_CLOVER_APPLY_TRUE@am__objects_14 = util/gauge/stout_utils_ptx.$(OBJEXT) \
+@BUILD_JIT_CLOVER_APPLY_TRUE@am__objects_15 = util/gauge/stout_utils_ptx.$(OBJEXT) \
 @BUILD_JIT_CLOVER_APPLY_TRUE@	util/gauge/stout_utils_llvm.$(OBJEXT) \
 @BUILD_JIT_CLOVER_APPLY_TRUE@	util/gauge/stout_utils_nvvm.$(OBJEXT)
-@BUILD_SCALARSITE_BICGSTAB_TRUE@am__objects_15 = actions/ferm/invert/bicgstab_kernels_scalarsite.$(OBJEXT)
-@BUILD_QOP_MG_TRUE@am__objects_16 = actions/ferm/invert/qop_mg/syssolver_qop_mg_params.$(OBJEXT) \
+@BUILD_SCALARSITE_BICGSTAB_TRUE@am__objects_16 = actions/ferm/invert/bicgstab_kernels_scalarsite.$(OBJEXT)
+@BUILD_QOP_MG_TRUE@am__objects_17 = actions/ferm/invert/qop_mg/syssolver_qop_mg_params.$(OBJEXT) \
 @BUILD_QOP_MG_TRUE@	actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.$(OBJEXT)
-@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_17 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.$(OBJEXT)
-@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_18 = actions/ferm/linop/clover_term_bagel_clover.$(OBJEXT)
+@BUILD_ASQTAD_LEVEL3_INVERTER_WRAPPER_TRUE@am__objects_18 = actions/ferm/qprop/asqtad_cps_wrapper_qprop.$(OBJEXT)
+@BUILD_BAGEL_CLOVER_APPLY_TRUE@am__objects_19 = actions/ferm/linop/clover_term_bagel_clover.$(OBJEXT)
 am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	actions/ferm/fermacts/zolotarev_coeffs.$(OBJEXT) \
 	actions/ferm/fermstates/hex_fermstate_params.$(OBJEXT) \
@@ -1308,7 +1323,7 @@ am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	update/molecdyn/predictor/mre_extrap_predictor.$(OBJEXT) \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.$(OBJEXT) \
 	meas/hadron/dilution_quark_source_const_w.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2) \
+	$(am__objects_1) $(am__objects_2) $(am__objects_3) \
 	actions/ferm/fermacts/fermacts_aggregate_w.$(OBJEXT) \
 	actions/ferm/fermacts/overlap_fermact_base_w.$(OBJEXT) \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.$(OBJEXT) \
@@ -1670,11 +1685,11 @@ am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	meas/inline/schrfun/inline_schrfun_aggregate.$(OBJEXT) \
 	meas/inline/schrfun/inline_sfpcac_w.$(OBJEXT) \
 	meas/inline/smear/inline_smear_aggregate.$(OBJEXT) \
-	meas/inline/smear/inline_link_smear.$(OBJEXT) $(am__objects_3) \
-	$(am__objects_4) $(am__objects_5) $(am__objects_6) \
-	$(am__objects_7) $(am__objects_8) $(am__objects_9) \
-	$(am__objects_10) $(am__objects_11) $(am__objects_12) \
-	$(am__objects_13) $(am__objects_14) $(am__objects_15) \
+	meas/inline/smear/inline_link_smear.$(OBJEXT) $(am__objects_4) \
+	$(am__objects_5) $(am__objects_6) $(am__objects_7) \
+	$(am__objects_8) $(am__objects_9) $(am__objects_10) \
+	$(am__objects_11) $(am__objects_12) $(am__objects_13) \
+	$(am__objects_14) $(am__objects_15) $(am__objects_16) \
 	actions/ferm/fermacts/fermacts_aggregate_s.$(OBJEXT) \
 	actions/ferm/fermacts/asqtad_fermact_params_s.$(OBJEXT) \
 	actions/ferm/fermacts/asqtad_fermact_s.$(OBJEXT) \
@@ -1713,8 +1728,8 @@ am_libchroma_a_OBJECTS = actions/boson/operator/klein_gord.$(OBJEXT) \
 	meas/smear/deriv_quark_displacement_s.$(OBJEXT) \
 	meas/smear/quark_flavor_s.$(OBJEXT) \
 	meas/sources/walfil_s.$(OBJEXT) \
-	util/gauge/stag_phases_s.$(OBJEXT) $(am__objects_16) \
-	$(am__objects_17) $(am__objects_18)
+	util/gauge/stag_phases_s.$(OBJEXT) $(am__objects_17) \
+	$(am__objects_18) $(am__objects_19)
 libchroma_a_OBJECTS = $(am_libchroma_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/./config/depcomp
@@ -2535,6 +2550,9 @@ am__nobase_include_HEADERS_DIST = chroma_config.h chroma.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/enum_quda_io.h \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.h \
+	actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h \
 	actions/ferm/linop/lwldslash_w_sse.h \
 	actions/ferm/linop/lwldslash_array_sse_w.h \
 	actions/ferm/linop/lwldslash_3d_sse_w.h \
@@ -2659,6 +2677,9 @@ QOP_MG_CXXFLAGS = @QOP_MG_CXXFLAGS@
 QOP_MG_DIR = @QOP_MG_DIR@
 QOP_MG_LDFLAGS = @QOP_MG_LDFLAGS@
 QOP_MG_LIBS = @QOP_MG_LIBS@
+QPHIX_CXXFLAGS = @QPHIX_CXXFLAGS@
+QPHIX_LDFLAGS = @QPHIX_LDFLAGS@
+QPHIX_LIBS = @QPHIX_LIBS@
 QUDA_CXXFLAGS = @QUDA_CXXFLAGS@
 QUDA_LDFLAGS = @QUDA_LDFLAGS@
 QUDA_LIBS = @QUDA_LIBS@
@@ -3538,11 +3559,12 @@ nobase_include_HEADERS = chroma_config.h chroma.h chromabase.h \
 	meas/inline/io/inline_read_map_obj_disk.h \
 	meas/inline/io/inline_copy_map_obj.h \
 	meas/inline/io/inline_write_timeslice_map_obj_disk.h \
-	$(am__append_11) $(am__append_13) $(am__append_15) \
-	$(am__append_17) $(am__append_19) $(am__append_24) \
-	$(am__append_26) $(am__append_28) $(am__append_30) \
-	$(am__append_32) $(am__append_34) $(am__append_36) \
-	$(am__append_38) $(am__append_40) $(am__append_43)
+	$(am__append_12) $(am__append_14) $(am__append_16) \
+	$(am__append_18) $(am__append_20) $(am__append_22) \
+	$(am__append_27) $(am__append_29) $(am__append_31) \
+	$(am__append_33) $(am__append_35) $(am__append_37) \
+	$(am__append_39) $(am__append_41) $(am__append_43) \
+	$(am__append_46)
 nodist_include_HEADERS = chroma_config_internal.h
 
 # Taken out for now
@@ -3562,7 +3584,7 @@ AM_CXXFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CXXFLAGS@ \
 	$(am__append_1) $(am__append_2) $(am__append_3) \
 	$(am__append_4) $(am__append_5) $(am__append_6) \
 	$(am__append_7) $(am__append_8) $(am__append_9) \
-	$(am__append_10) $(am__append_42)
+	$(am__append_10) $(am__append_11) $(am__append_45)
 AM_CFLAGS = -I$(TOPDIR)/lib -I$(BUILDDIR)/lib @CFLAGS@ \
 	-I$(TOPDIR)/other_libs/@QDP_LAPACK_DIR@/include \
 	-I$(BUILDDIR)/other_libs/@QDP_LAPACK_DIR@/include
@@ -3886,8 +3908,9 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	update/molecdyn/predictor/lu_solve.cc \
 	update/molecdyn/predictor/mre_extrap_predictor.cc \
 	update/molecdyn/predictor/mre_initcg_extrap_predictor.cc \
-	meas/hadron/dilution_quark_source_const_w.cc $(am__append_12) \
-	$(am__append_14) actions/ferm/fermacts/fermacts_aggregate_w.cc \
+	meas/hadron/dilution_quark_source_const_w.cc $(am__append_13) \
+	$(am__append_15) $(am__append_17) \
+	actions/ferm/fermacts/fermacts_aggregate_w.cc \
 	actions/ferm/fermacts/overlap_fermact_base_w.cc \
 	actions/ferm/fermacts/ovlap_partfrac4d_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_dwf_fermact_array_w.cc \
@@ -4229,11 +4252,11 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/inline/schrfun/inline_schrfun_aggregate.cc \
 	meas/inline/schrfun/inline_sfpcac_w.cc \
 	meas/inline/smear/inline_smear_aggregate.cc \
-	meas/inline/smear/inline_link_smear.cc $(am__append_16) \
-	$(am__append_18) $(am__append_20) $(am__append_21) \
-	$(am__append_22) $(am__append_23) $(am__append_25) \
-	$(am__append_27) $(am__append_29) $(am__append_31) \
-	$(am__append_33) $(am__append_35) $(am__append_37) \
+	meas/inline/smear/inline_link_smear.cc $(am__append_19) \
+	$(am__append_21) $(am__append_23) $(am__append_24) \
+	$(am__append_25) $(am__append_26) $(am__append_28) \
+	$(am__append_30) $(am__append_32) $(am__append_34) \
+	$(am__append_36) $(am__append_38) $(am__append_40) \
 	actions/ferm/fermacts/fermacts_aggregate_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_params_s.cc \
 	actions/ferm/fermacts/asqtad_fermact_s.cc \
@@ -4266,8 +4289,8 @@ libchroma_a_SOURCES = actions/boson/operator/klein_gord.cc \
 	meas/hadron/pseudoscalar_stoch_conn_s.cc \
 	meas/smear/deriv_quark_displacement_s.cc \
 	meas/smear/quark_flavor_s.cc meas/sources/walfil_s.cc \
-	util/gauge/stag_phases_s.cc $(am__append_39) $(am__append_41) \
-	$(am__append_44)
+	util/gauge/stag_phases_s.cc $(am__append_42) $(am__append_44) \
+	$(am__append_47)
 all: chroma_config_internal.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -5494,6 +5517,21 @@ actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.$(OBJEXT
 actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.$(OBJEXT):  \
 	actions/ferm/invert/quda_solvers/$(am__dirstamp) \
 	actions/ferm/invert/quda_solvers/$(DEPDIR)/$(am__dirstamp)
+actions/ferm/invert/qphix/$(am__dirstamp):
+	@$(MKDIR_P) actions/ferm/invert/qphix
+	@: > actions/ferm/invert/qphix/$(am__dirstamp)
+actions/ferm/invert/qphix/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) actions/ferm/invert/qphix/$(DEPDIR)
+	@: > actions/ferm/invert/qphix/$(DEPDIR)/$(am__dirstamp)
+actions/ferm/invert/qphix/syssolver_qphix_clover_params.$(OBJEXT):  \
+	actions/ferm/invert/qphix/$(am__dirstamp) \
+	actions/ferm/invert/qphix/$(DEPDIR)/$(am__dirstamp)
+actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.$(OBJEXT):  \
+	actions/ferm/invert/qphix/$(am__dirstamp) \
+	actions/ferm/invert/qphix/$(DEPDIR)/$(am__dirstamp)
+actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.$(OBJEXT):  \
+	actions/ferm/invert/qphix/$(am__dirstamp) \
+	actions/ferm/invert/qphix/$(DEPDIR)/$(am__dirstamp)
 actions/ferm/fermacts/fermacts_aggregate_w.$(OBJEXT):  \
 	actions/ferm/fermacts/$(am__dirstamp) \
 	actions/ferm/fermacts/$(DEPDIR)/$(am__dirstamp)
@@ -6963,6 +7001,9 @@ mostlyclean-compile:
 	-rm -f actions/ferm/invert/norm_gram_schm.$(OBJEXT)
 	-rm -f actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.$(OBJEXT)
 	-rm -f actions/ferm/invert/qop_mg/syssolver_qop_mg_params.$(OBJEXT)
+	-rm -f actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.$(OBJEXT)
+	-rm -f actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.$(OBJEXT)
+	-rm -f actions/ferm/invert/qphix/syssolver_qphix_clover_params.$(OBJEXT)
 	-rm -f actions/ferm/invert/quda_solvers/enum_quda_io.$(OBJEXT)
 	-rm -f actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.$(OBJEXT)
 	-rm -f actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.$(OBJEXT)
@@ -7821,6 +7862,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/mdwf_solver/$(DEPDIR)/syssolver_mdwf_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/qop_mg/$(DEPDIR)/syssolver_linop_qop_mg_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/qop_mg/$(DEPDIR)/syssolver_qop_mg_params.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/qphix/$(DEPDIR)/syssolver_linop_clover_qphix_iter_refine_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/qphix/$(DEPDIR)/syssolver_linop_clover_qphix_w.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/qphix/$(DEPDIR)/syssolver_qphix_clover_params.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/enum_quda_io.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/multi_syssolver_mdagm_cg_clover_quda_w.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@actions/ferm/invert/quda_solvers/$(DEPDIR)/multi_syssolver_mdagm_cg_wilson_quda_w.Po@am__quote@
@@ -8640,6 +8684,8 @@ distclean-generic:
 	-rm -f actions/ferm/invert/mdwf_solver/$(am__dirstamp)
 	-rm -f actions/ferm/invert/qop_mg/$(DEPDIR)/$(am__dirstamp)
 	-rm -f actions/ferm/invert/qop_mg/$(am__dirstamp)
+	-rm -f actions/ferm/invert/qphix/$(DEPDIR)/$(am__dirstamp)
+	-rm -f actions/ferm/invert/qphix/$(am__dirstamp)
 	-rm -f actions/ferm/invert/quda_solvers/$(DEPDIR)/$(am__dirstamp)
 	-rm -f actions/ferm/invert/quda_solvers/$(am__dirstamp)
 	-rm -f actions/ferm/linop/$(DEPDIR)/$(am__dirstamp)
@@ -8727,7 +8773,7 @@ clean: clean-am
 clean-am: clean-generic clean-libLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-	-rm -rf actions/boson/operator/$(DEPDIR) actions/ferm/fermacts/$(DEPDIR) actions/ferm/fermbcs/$(DEPDIR) actions/ferm/fermstates/$(DEPDIR) actions/ferm/invert/$(DEPDIR) actions/ferm/invert/mdwf_solver/$(DEPDIR) actions/ferm/invert/qop_mg/$(DEPDIR) actions/ferm/invert/quda_solvers/$(DEPDIR) actions/ferm/linop/$(DEPDIR) actions/ferm/qprop/$(DEPDIR) actions/gauge/gaugeacts/$(DEPDIR) actions/gauge/gaugebcs/$(DEPDIR) actions/gauge/gaugestates/$(DEPDIR) init/$(DEPDIR) io/$(DEPDIR) io/enum_io/$(DEPDIR) meas/eig/$(DEPDIR) meas/gfix/$(DEPDIR) meas/glue/$(DEPDIR) meas/hadron/$(DEPDIR) meas/inline/$(DEPDIR) meas/inline/eig/$(DEPDIR) meas/inline/gfix/$(DEPDIR) meas/inline/glue/$(DEPDIR) meas/inline/hadron/$(DEPDIR) meas/inline/hadron_s/$(DEPDIR) meas/inline/io/$(DEPDIR) meas/inline/pbp/$(DEPDIR) meas/inline/schrfun/$(DEPDIR) meas/inline/smear/$(DEPDIR) meas/pbp/$(DEPDIR) meas/schrfun/$(DEPDIR) meas/sinks/$(DEPDIR) meas/smear/$(DEPDIR) meas/sources/$(DEPDIR) update/heatbath/$(DEPDIR) update/molecdyn/hamiltonian/$(DEPDIR) update/molecdyn/hmc/$(DEPDIR) update/molecdyn/integrator/$(DEPDIR) update/molecdyn/monomial/$(DEPDIR) update/molecdyn/predictor/$(DEPDIR) util/ferm/$(DEPDIR) util/ferm/map_obj/$(DEPDIR) util/ft/$(DEPDIR) util/gauge/$(DEPDIR) util/info/$(DEPDIR)
+	-rm -rf actions/boson/operator/$(DEPDIR) actions/ferm/fermacts/$(DEPDIR) actions/ferm/fermbcs/$(DEPDIR) actions/ferm/fermstates/$(DEPDIR) actions/ferm/invert/$(DEPDIR) actions/ferm/invert/mdwf_solver/$(DEPDIR) actions/ferm/invert/qop_mg/$(DEPDIR) actions/ferm/invert/qphix/$(DEPDIR) actions/ferm/invert/quda_solvers/$(DEPDIR) actions/ferm/linop/$(DEPDIR) actions/ferm/qprop/$(DEPDIR) actions/gauge/gaugeacts/$(DEPDIR) actions/gauge/gaugebcs/$(DEPDIR) actions/gauge/gaugestates/$(DEPDIR) init/$(DEPDIR) io/$(DEPDIR) io/enum_io/$(DEPDIR) meas/eig/$(DEPDIR) meas/gfix/$(DEPDIR) meas/glue/$(DEPDIR) meas/hadron/$(DEPDIR) meas/inline/$(DEPDIR) meas/inline/eig/$(DEPDIR) meas/inline/gfix/$(DEPDIR) meas/inline/glue/$(DEPDIR) meas/inline/hadron/$(DEPDIR) meas/inline/hadron_s/$(DEPDIR) meas/inline/io/$(DEPDIR) meas/inline/pbp/$(DEPDIR) meas/inline/schrfun/$(DEPDIR) meas/inline/smear/$(DEPDIR) meas/pbp/$(DEPDIR) meas/schrfun/$(DEPDIR) meas/sinks/$(DEPDIR) meas/smear/$(DEPDIR) meas/sources/$(DEPDIR) update/heatbath/$(DEPDIR) update/molecdyn/hamiltonian/$(DEPDIR) update/molecdyn/hmc/$(DEPDIR) update/molecdyn/integrator/$(DEPDIR) update/molecdyn/monomial/$(DEPDIR) update/molecdyn/predictor/$(DEPDIR) util/ferm/$(DEPDIR) util/ferm/map_obj/$(DEPDIR) util/ft/$(DEPDIR) util/gauge/$(DEPDIR) util/info/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -8774,7 +8820,7 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-	-rm -rf actions/boson/operator/$(DEPDIR) actions/ferm/fermacts/$(DEPDIR) actions/ferm/fermbcs/$(DEPDIR) actions/ferm/fermstates/$(DEPDIR) actions/ferm/invert/$(DEPDIR) actions/ferm/invert/mdwf_solver/$(DEPDIR) actions/ferm/invert/qop_mg/$(DEPDIR) actions/ferm/invert/quda_solvers/$(DEPDIR) actions/ferm/linop/$(DEPDIR) actions/ferm/qprop/$(DEPDIR) actions/gauge/gaugeacts/$(DEPDIR) actions/gauge/gaugebcs/$(DEPDIR) actions/gauge/gaugestates/$(DEPDIR) init/$(DEPDIR) io/$(DEPDIR) io/enum_io/$(DEPDIR) meas/eig/$(DEPDIR) meas/gfix/$(DEPDIR) meas/glue/$(DEPDIR) meas/hadron/$(DEPDIR) meas/inline/$(DEPDIR) meas/inline/eig/$(DEPDIR) meas/inline/gfix/$(DEPDIR) meas/inline/glue/$(DEPDIR) meas/inline/hadron/$(DEPDIR) meas/inline/hadron_s/$(DEPDIR) meas/inline/io/$(DEPDIR) meas/inline/pbp/$(DEPDIR) meas/inline/schrfun/$(DEPDIR) meas/inline/smear/$(DEPDIR) meas/pbp/$(DEPDIR) meas/schrfun/$(DEPDIR) meas/sinks/$(DEPDIR) meas/smear/$(DEPDIR) meas/sources/$(DEPDIR) update/heatbath/$(DEPDIR) update/molecdyn/hamiltonian/$(DEPDIR) update/molecdyn/hmc/$(DEPDIR) update/molecdyn/integrator/$(DEPDIR) update/molecdyn/monomial/$(DEPDIR) update/molecdyn/predictor/$(DEPDIR) util/ferm/$(DEPDIR) util/ferm/map_obj/$(DEPDIR) util/ft/$(DEPDIR) util/gauge/$(DEPDIR) util/info/$(DEPDIR)
+	-rm -rf actions/boson/operator/$(DEPDIR) actions/ferm/fermacts/$(DEPDIR) actions/ferm/fermbcs/$(DEPDIR) actions/ferm/fermstates/$(DEPDIR) actions/ferm/invert/$(DEPDIR) actions/ferm/invert/mdwf_solver/$(DEPDIR) actions/ferm/invert/qop_mg/$(DEPDIR) actions/ferm/invert/qphix/$(DEPDIR) actions/ferm/invert/quda_solvers/$(DEPDIR) actions/ferm/linop/$(DEPDIR) actions/ferm/qprop/$(DEPDIR) actions/gauge/gaugeacts/$(DEPDIR) actions/gauge/gaugebcs/$(DEPDIR) actions/gauge/gaugestates/$(DEPDIR) init/$(DEPDIR) io/$(DEPDIR) io/enum_io/$(DEPDIR) meas/eig/$(DEPDIR) meas/gfix/$(DEPDIR) meas/glue/$(DEPDIR) meas/hadron/$(DEPDIR) meas/inline/$(DEPDIR) meas/inline/eig/$(DEPDIR) meas/inline/gfix/$(DEPDIR) meas/inline/glue/$(DEPDIR) meas/inline/hadron/$(DEPDIR) meas/inline/hadron_s/$(DEPDIR) meas/inline/io/$(DEPDIR) meas/inline/pbp/$(DEPDIR) meas/inline/schrfun/$(DEPDIR) meas/inline/smear/$(DEPDIR) meas/pbp/$(DEPDIR) meas/schrfun/$(DEPDIR) meas/sinks/$(DEPDIR) meas/smear/$(DEPDIR) meas/sources/$(DEPDIR) update/heatbath/$(DEPDIR) update/molecdyn/hamiltonian/$(DEPDIR) update/molecdyn/hmc/$(DEPDIR) update/molecdyn/integrator/$(DEPDIR) update/molecdyn/monomial/$(DEPDIR) update/molecdyn/predictor/$(DEPDIR) util/ferm/$(DEPDIR) util/ferm/map_obj/$(DEPDIR) util/ft/$(DEPDIR) util/gauge/$(DEPDIR) util/info/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

@@ -704,6 +704,11 @@ QDPXX_LIBS
 QDPXX_LDFLAGS
 QDPXX_CXXFLAGS
 QDPXX_CONFIG
+BUILD_QPHIX_FALSE
+BUILD_QPHIX_TRUE
+QPHIX_LIBS
+QPHIX_LDFLAGS
+QPHIX_CXXFLAGS
 QDPC_DIR
 AR
 RANLIB
@@ -828,6 +833,12 @@ with_gmp
 with_qmt
 with_quda
 with_cuda
+with_qphix_solver
+enable_qphix_solver_arch
+enable_qphix_solver_soalen
+enable_qphix_solver_inner_soalen
+enable_qphix_solver_inner_type
+enable_qphix_solver_compress12
 with_asqtadlevel3
 with_qdpc
 with_qmp
@@ -1528,6 +1539,18 @@ Optional Features:
   --enable-testcase-runner=script
                           Use <script> to run testcases:
                           trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh
+  --qphix-solver-arch=avx|mic
+                          Set Architecture for the QPhiX solver (avx or mic)
+  --qphix-solver-soalen=S Set Soalen for the QPhiX solver
+  --qphix-solver-inner-soalen=S
+                          Set Inner Solver Soalen for Mixed precision QPhiX
+                          solvers
+  --qphix-solver-inner-type=half,float,double
+                          Set Inner Solver Type for Mixed precision QPhiX
+                          solvers
+  --qphix-solver-compress12
+                          If enabled will employ compression in the QPhiX
+                          solver
   --enable-qop-mg         Enable QDP MultiGrid. Needs --with-qla --with-qdp
                           and --with-qdpqop arguments
 
@@ -1549,6 +1572,8 @@ Optional Packages:
   --with-qmt=<DIR>        Enable use of QMT Threads library installed in DIR
   --with-quda=<DIR>       Use QUDA Library installed in DIR
   --with-cuda=<DIR>       Use CUDA installation in DIR
+  --with-qphix-solver=DIR Build Chroma with the QPhiX L3 solver installed in
+                          DIR
   --with-asqtadlevel3=DIR Build Chroma on top of the level3 asqtad libraries,
                           where the libraries installed in DIR.
   --with-qdpc=DIR         Use QDPC in directory DOR
@@ -4802,6 +4827,65 @@ fi
 
 
 
+
+# Check whether --with-qphix-solver was given.
+if test "${with_qphix_solver+set}" = set; then
+  withval=$with_qphix_solver; qphix_enabled="yes"
+   QPHIX_HOME="$with_qphix_solver"
+else
+  qphix_enabled="no"
+
+fi
+
+
+
+# Check whether --enable-qphix-solver-arch was given.
+if test "${enable_qphix_solver_arch+set}" = set; then
+  enableval=$enable_qphix_solver_arch;  qphix_arch="${enable_qphix_solver_arch}"
+else
+   qphix_arch="avx"
+
+fi
+
+
+# Check whether --enable-qphix-solver-soalen was given.
+if test "${enable_qphix_solver_soalen+set}" = set; then
+  enableval=$enable_qphix_solver_soalen;  qphix_soalen="${enable_qphix_solver_soalen}"
+else
+   qphix_soalen="4"
+
+fi
+
+
+# Check whether --enable-qphix-solver-inner-soalen was given.
+if test "${enable_qphix_solver_inner_soalen+set}" = set; then
+  enableval=$enable_qphix_solver_inner_soalen;  qphix_inner_soalen="${enable_qphix_solver_inner_soalen}"
+else
+   qphix_inner_soalen="4"
+
+fi
+
+
+# Check whether --enable-qphix-solver-inner-type was given.
+if test "${enable_qphix_solver_inner_type+set}" = set; then
+  enableval=$enable_qphix_solver_inner_type;  qphix_inner_type="${enable_qphix_solver_inner_type}"
+else
+   qphix_inner_type="none"
+
+fi
+
+
+# Check whether --enable-qphix-solver-compress12 was given.
+if test "${enable_qphix_solver_compress12+set}" = set; then
+  enableval=$enable_qphix_solver_compress12;  qphix_compress12="${enable_qphix_solver_compress12}"
+else
+   qphix_sompress12="no"
+
+fi
+
+
+
+
 # Check whether --with-asqtadlevel3 was given.
 if test "${with_asqtadlevel3+set}" = set; then
   withval=$with_asqtadlevel3; QDPCVER_HOME="$with_asqtadlevel3"
@@ -4867,6 +4951,7 @@ if test "${enable_qop_mg+set}" = set; then
 fi
 
 
+
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   { $as_echo "$as_me:$LINENO: QDPCVER_HOME variable not set." >&5
 $as_echo "$as_me: QDPCVER_HOME variable not set." >&6;}
@@ -4874,6 +4959,138 @@ else
   QDPC_DIR="${QDPCVER_HOME}"
 
 fi
+
+
+###########
+#
+# ISOLVER (Intel Level 3 -- needs a better name ) support
+#
+###########
+if test "X${qphix_enabled}X" = "XyesX";
+then
+  { $as_echo "$as_me:$LINENO:  Enabling QPhiX L3 Solver in ${QPHIX_HOME}" >&5
+$as_echo "$as_me:  Enabling QPhiX L3 Solver in ${QPHIX_HOME}" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define BUILD_QPHIX /**/
+_ACEOF
+
+  QPHIX_CXXFLAGS="-I${QPHIX_HOME}/include"
+
+  QPHIX_LDFLAGS="-L${QPHIX_HOME}/lib"
+
+  QPHIX_LIBS="-lqphix_solver"
+
+
+  case "${qphix_arch}" in
+  avx|AVX)
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_ARCH_AVX /**/
+_ACEOF
+
+     ;;
+  mic|MIC)
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_ARCH_MIC /**/
+_ACEOF
+
+     ;;
+  *)
+     { $as_echo "$as_me:$LINENO: WARNING:  QPhiX Arch not specified: Defaulting to AVX " >&5
+$as_echo "$as_me: WARNING:  QPhiX Arch not specified: Defaulting to AVX " >&2;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_ARCH_AVX /**/
+_ACEOF
+
+     ;;
+  esac
+
+  { $as_echo "$as_me:$LINENO:  Enabling Intel L3 Solver Soalen: ${qphix_soalen}	" >&5
+$as_echo "$as_me:  Enabling Intel L3 Solver Soalen: ${qphix_soalen}	" >&6;}
+
+cat >>confdefs.h <<_ACEOF
+#define CHROMA_QPHIX_SOALEN ${qphix_soalen}
+_ACEOF
+
+
+  if test "X${qphix_compress12}X" == "XyesX";
+  then
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_COMPRESS12 true
+_ACEOF
+
+  else
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_COMPRESS12 false
+_ACEOF
+
+  fi
+
+
+
+  { $as_echo "$as_me:$LINENO:  Enabling Intel L3 Solver Inner Soalen: ${qphix_inner_soalen}	" >&5
+$as_echo "$as_me:  Enabling Intel L3 Solver Inner Soalen: ${qphix_inner_soalen}	" >&6;}
+
+cat >>confdefs.h <<_ACEOF
+#define CHROMA_QPHIX_INNER_SOALEN ${qphix_inner_soalen}
+_ACEOF
+
+
+  case "${qphix_inner_type}" in
+  h|half)
+     { $as_echo "$as_me:$LINENO: Setting Intel Solver Type to: half" >&5
+$as_echo "$as_me: Setting Intel Solver Type to: half" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_INNER_TYPE half
+_ACEOF
+
+     ;;
+  f|float|single)
+     { $as_echo "$as_me:$LINENO: Setting Intel Solver Type to: float" >&5
+$as_echo "$as_me: Setting Intel Solver Type to: float" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_INNER_TYPE float
+_ACEOF
+
+     ;;
+  d|double)
+     { $as_echo "$as_me:$LINENO: Setting Intel Solver Type to: double" >&5
+$as_echo "$as_me: Setting Intel Solver Type to: double" >&6;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_INNER_TYPE double
+_ACEOF
+
+     ;;
+  *)
+     { $as_echo "$as_me:$LINENO: WARNING:  QPhiX inner type not specified: Defaulting to float " >&5
+$as_echo "$as_me: WARNING:  QPhiX inner type not specified: Defaulting to float " >&2;}
+
+cat >>confdefs.h <<\_ACEOF
+#define CHROMA_QPHIX_INNER_TYPE float
+_ACEOF
+
+     ;;
+  esac
+fi
+
+ if test "x${qphix_enabled}x" = "xyesx" ; then
+  BUILD_QPHIX_TRUE=
+  BUILD_QPHIX_FALSE='#'
+else
+  BUILD_QPHIX_TRUE='#'
+  BUILD_QPHIX_FALSE=
+fi
+
+
+
 
 
 if test "X${QDPXX_HOME}X" = "XX" ; then
@@ -7029,6 +7246,13 @@ if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   { { $as_echo "$as_me:$LINENO: error: conditional \"am__fastdepCC\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 $as_echo "$as_me: error: conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_QPHIX_TRUE}" && test -z "${BUILD_QPHIX_FALSE}"; then
+  { { $as_echo "$as_me:$LINENO: error: conditional \"BUILD_QPHIX\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+$as_echo "$as_me: error: conditional \"BUILD_QPHIX\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi

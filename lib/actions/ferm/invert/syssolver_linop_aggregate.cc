@@ -37,6 +37,11 @@
 #include "actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.h"
 #endif
 
+#ifdef BUILD_QPHIX
+#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h"
+#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h"
+#endif
+
 namespace Chroma
 {
 
@@ -73,6 +78,12 @@ namespace Chroma
 #ifdef BUILD_QOP_MG
 	success &= LinOpSysSolverQOPMGEnv::registerAll();
 #endif
+
+#ifdef BUILD_QPHIX
+	success &= LinOpSysSolverQPhiXCloverEnv::registerAll();
+	success &= LinOpSysSolverQPhiXCloverIterRefineEnv::registerAll();
+#endif
+
 	registered = true;
       }
       return success;

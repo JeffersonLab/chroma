@@ -964,6 +964,10 @@ if BUILD_QUDA
 AM_CXXFLAGS += @QUDA_CXXFLAGS@
 endif
 
+if BUILD_QPHIX
+AM_CXXFLAGS += @QPHIX_CXXFLAGS@
+endif
+
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
@@ -1366,6 +1370,19 @@ libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
 endif
+
+if BUILD_QPHIX
+nobase_include_HEADERS += actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h	
+
+
+libchroma_a_SOURCES += actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc
+
+endif
+
 
 #
 # Object files to add if building the Wilson Builds...
