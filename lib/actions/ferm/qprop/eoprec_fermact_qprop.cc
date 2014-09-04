@@ -98,8 +98,28 @@ namespace Chroma
   EvenOddPrecWilsonTypeFermAct<LF,LCM,LCM>::qprop(Handle< FermState<LF,LCM,LCM> > state,
 						  const GroupXML_t& invParam) const
   {
-    return new PrecFermActQprop<LF,LCM,LCM>(Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> >((*this).linOp(state)), 
-					    Handle< LinOpSystemSolver<LF> >((*this).invLinOp(state,invParam)));
-  }
+    StopWatch swatch2;
+    
+    QDPIO::cout << "  ... constructing linop " ;
+    swatch2.reset(); swatch2.start();
+    Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> > lh( (*this).linOp(state) );
+    swatch2.stop();
+    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << endl;
+  
+  
+    QDPIO::cout << "  ... constructing invLinOp " ;
+    swatch2.reset(); swatch2.start();
+    Handle< LinOpSystemSolver<LF> > ilh((*this).invLinOp(state,invParam));
+    swatch2.stop(); 
+    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << endl;
+  
+    QDPIO::cout << "  ... constructing PrecFermActQprop " ;
+    swatch2.reset(); swatch2.start();
+    PrecFermActQprop<LF,LCM,LCM>* ret_val = new PrecFermActQprop<LF,LCM,LCM>(lh , ilh);
+    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << endl;
+
+    return ret_val;
+  
+}
   
 } // namespace Chroma 

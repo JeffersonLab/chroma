@@ -235,7 +235,13 @@ namespace Chroma
     QuarkSpinType quarkSpinType,
     int& ncg_had) const
   {
+    QDPIO::cout << "In quarkProp()" << endl;
+    StopWatch swatch;
+    swatch.start();
     Handle< SystemSolver<LF> > qprop(this->qprop(state,invParam));
+    swatch.stop();
+    QDPIO::cout << "Creating qprop took " << swatch.getTimeInSeconds() 
+		<< "sec " << endl;
     quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
   }
 

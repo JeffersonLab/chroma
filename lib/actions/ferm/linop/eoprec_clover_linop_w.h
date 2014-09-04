@@ -42,7 +42,9 @@ namespace Chroma
     //! Full constructor
     EvenOddPrecCloverLinOp(Handle< FermState<T,P,Q> > fs,
 			   const CloverFermActParams& param_)
-      {create(fs,param_);}
+      {
+	create(fs,param_);
+      }
 
     //! Destructor is automatic
     ~EvenOddPrecCloverLinOp() {
