@@ -104,6 +104,13 @@ namespace Chroma
 
     void applySite(T& chi, const T& psi, enum PlusMinus isign, int site) const;
 
+#ifdef BUILD_QPHIX
+    // Access the clover tri-buffer for packing
+    const multi1d<PrimitiveClovTriang<REALT> >& getTriBuffer() const {
+      return tri;
+    }
+#endif
+
     //! Calculates Tr_D ( Gamma_mat L )
     void triacntr(U& B, int mat, int cb) const;
 

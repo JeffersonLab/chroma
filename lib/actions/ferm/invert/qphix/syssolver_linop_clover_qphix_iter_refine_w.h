@@ -15,7 +15,7 @@
 #include "linearop.h"
 #include "actions/ferm/fermbcs/simple_fermbc.h"
 #include "actions/ferm/fermstates/periodic_fermstate.h"
-#include "actions/ferm/invert/qphix_solvers/syssolver_qphix_clover_params.h"
+#include "actions/ferm/invert/qphix/syssolver_qphix_clover_params.h"
 #include "actions/ferm/linop/clover_term_qdp_w.h"
 #include "actions/ferm/linop/eoprec_clover_linop_w.h"
 #include "meas/gfix/temporal_gauge.h"
@@ -57,7 +57,7 @@ namespace Chroma
 
     // Templates
 #if defined CHROMA_QPHIX_ARCH_AVX
-#warning ISolver AVX
+#warning QPhix Solver AVX
     // AVX Traits:
     template<>
     struct MixedVecTraits<double,double> { 
@@ -90,7 +90,7 @@ namespace Chroma
 #endif
 
 #if defined CHROMA_QPHIX_ARCH_MIC
-#warning ISolver MIC
+#warning QPhix solver MIC
     // MIC Traits
     template<>
     struct MixedVecTraits<double,double> { 
@@ -110,7 +110,7 @@ namespace Chroma
       static const int SoaInner=CHROMA_QPHIX_INNER_SOALEN;
     };
     template<>
-    struct MixedVecTraits<double,half> { 
+    struct MixedVecTraits<double,QPhiX::half> { 
       static const int Vec=8;
       static const int Soa=CHROMA_QPHIX_SOALEN;
       static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
@@ -127,7 +127,7 @@ namespace Chroma
 
     };
     template<>
-    struct MixedVecTraits<float,half> { 
+    struct MixedVecTraits<float,QPhiX::half> { 
       static const int Vec=16;
       static const int Soa=CHROMA_QPHIX_SOALEN;
       static const bool compress12=CHROMA_QPHIX_COMPRESS12; 
@@ -154,19 +154,19 @@ namespace Chroma
     typedef typename WordType<T>::Type_t REALT;
     typedef CHROMA_QPHIX_INNER_TYPE  InnerReal;
 
-    typedef typename Geometry<REALT,MixedVecTraits<REALT,InnerReal>::Vec,MixedVecTraits<REALT,InnerReal>::Soa,MixedVecTraits<REALT,InnerReal>::compress12>::FourSpinorBlock QPhiX_Spinor;
-    typedef typename Geometry<REALT,MixedVecTraits<REALT,InnerReal>::Vec,MixedVecTraits<REALT,InnerReal>::Soa,MixedVecTraits<REALT,InnerReal>::compress12>::SU3MatrixBlock QPhiX_Gauge;
-    typedef typename Geometry<REALT,MixedVecTraits<REALT,InnerReal>::Vec,MixedVecTraits<REALT,InnerReal>::Soa,MixedVecTraits<REALT,InnerReal>::compress12>::CloverBlock  QPhiX_Clover;
+    typedef typename QPhiX::Geometry<REALT,MixedVecTraits<REALT,InnerReal>::Vec,MixedVecTraits<REALT,InnerReal>::Soa,MixedVecTraits<REALT,InnerReal>::compress12>::FourSpinorBlock QPhiX_Spinor;
+    typedef typename QPhiX::Geometry<REALT,MixedVecTraits<REALT,InnerReal>::Vec,MixedVecTraits<REALT,InnerReal>::Soa,MixedVecTraits<REALT,InnerReal>::compress12>::SU3MatrixBlock QPhiX_Gauge;
+    typedef typename QPhiX::Geometry<REALT,MixedVecTraits<REALT,InnerReal>::Vec,MixedVecTraits<REALT,InnerReal>::Soa,MixedVecTraits<REALT,InnerReal>::compress12>::CloverBlock  QPhiX_Clover;
 
-    typedef typename Geometry<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner,
+    typedef typename QPhiX::Geometry<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner,
 			                 MixedVecTraits<REALT,InnerReal>::SoaInner,
                                          MixedVecTraits<REALT,InnerReal>::compress12>::FourSpinorBlock QPhiX_InnerSpinor;
 
-    typedef typename Geometry<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner,
+  typedef typename QPhiX::Geometry<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner,
 			                 MixedVecTraits<REALT,InnerReal>::SoaInner,
                                          MixedVecTraits<REALT,InnerReal>::compress12>::SU3MatrixBlock QPhiX_InnerGauge;
 
-    typedef typename Geometry<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner,
+    typedef typename QPhiX::Geometry<InnerReal,MixedVecTraits<REALT,InnerReal>::VecInner,
 			                 MixedVecTraits<REALT,InnerReal>::SoaInner,
                                          MixedVecTraits<REALT,InnerReal>::compress12>::CloverBlock QPhiX_InnerClover;
 

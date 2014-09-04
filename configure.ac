@@ -255,7 +255,7 @@ AC_ARG_WITH(qphix-solver,
 
 AC_ARG_ENABLE(qphix-solver-arch,
   AC_HELP_STRING(
-   [--qphix-solver-arch=avx|mic],
+   [--enable-qphix-solver-arch=avx|mic],
    [Set Architecture for the QPhiX solver (avx or mic)]
   ),
   [ qphix_arch="${enable_qphix_solver_arch}" ],
@@ -264,7 +264,7 @@ AC_ARG_ENABLE(qphix-solver-arch,
 
 AC_ARG_ENABLE(qphix-solver-soalen,
   AC_HELP_STRING(
-    [--qphix-solver-soalen=S], 
+    [--enable-qphix-solver-soalen=S], 
     [Set Soalen for the QPhiX solver]
   ),
   [ qphix_soalen="${enable_qphix_solver_soalen}" ],
@@ -273,7 +273,7 @@ AC_ARG_ENABLE(qphix-solver-soalen,
 
 AC_ARG_ENABLE(qphix-solver-inner-soalen,
   AC_HELP_STRING(
-    [--qphix-solver-inner-soalen=S], 
+    [--enable-qphix-solver-inner-soalen=S], 
     [Set Inner Solver Soalen for Mixed precision QPhiX solvers]
   ),
   [ qphix_inner_soalen="${enable_qphix_solver_inner_soalen}" ],
@@ -282,7 +282,7 @@ AC_ARG_ENABLE(qphix-solver-inner-soalen,
 
 AC_ARG_ENABLE(qphix-solver-inner-type,
   AC_HELP_STRING(
-    [--qphix-solver-inner-type=half,float,double], 
+    [--enable-qphix-solver-inner-type=half,float,double], 
     [Set Inner Solver Type for Mixed precision QPhiX solvers]
   ),
   [ qphix_inner_type="${enable_qphix_solver_inner_type}" ],
@@ -291,7 +291,7 @@ AC_ARG_ENABLE(qphix-solver-inner-type,
 
 AC_ARG_ENABLE(qphix-solver-compress12,
   AC_HELP_STRING(
-    [--qphix-solver-compress12], 
+    [--enable-qphix-solver-compress12], 
     [If enabled will employ compression in the QPhiX solver]
   ),
   [ qphix_compress12="${enable_qphix_solver_compress12}" ],
@@ -414,7 +414,7 @@ then
   case "${qphix_inner_type}" in
   h|half)
      AC_MSG_NOTICE([Setting Intel Solver Type to: half])
-     AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[half],[QPhiX Inner Type is half prec])
+     AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[QPhiX::half],[QPhiX Inner Type is half prec])
      ;;
   f|float|single)
      AC_MSG_NOTICE([Setting Intel Solver Type to: float])

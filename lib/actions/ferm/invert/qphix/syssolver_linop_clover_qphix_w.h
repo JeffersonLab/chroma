@@ -8,7 +8,7 @@
 
 #include "chroma_config.h"
 
-#ifdef CHROMA_QPHIX
+#ifdef BUILD_QPHIX
 #include "handle.h"
 #include "state.h"
 #include "syssolver.h"
@@ -27,11 +27,11 @@
 #include "io/aniso_io.h"
 
 // Header files from the dslash package
-#include "qpihx/geometry.h"
+#include "qphix/geometry.h"
 #include "qphix/qdp_packer.h"
 #include "qphix/clover.h"
 #include "qphix/invcg.h"
-#include "qpxhi/invbicgstab.h"
+#include "qphix/invbicgstab.h"
 
 using namespace std;
 using namespace QDP;
@@ -166,10 +166,7 @@ namespace Chroma
 												      invParam.Sz,
 												      invParam.PadXY,
 												      invParam.PadXYZ,
-												      invParam.MinCt, 
-												      t_boundary,
-												      toDouble(aniso_coeffs[0]),
-												      toDouble(aniso_coeffs[3]));
+														   invParam.MinCt);
       
       QDPIO::cout << " Allocating p and c" << endl << flush ;
       p_even=(QPhiX_Spinor *)geom->allocCBFourSpinor();
@@ -198,7 +195,7 @@ namespace Chroma
       QPhiX_Gauge* packed_gauge_cb0=(QPhiX_Gauge *)geom->allocCBGauge();
       QPhiX_Gauge* packed_gauge_cb1=(QPhiX_Gauge *)geom->allocCBGauge();
 
-      QPhiX::qdp_pack_gauge<>(u, packed_gauge_cb0,packed_gauge_cb1, geom);
+      QPhiX::qdp_pack_gauge<>(u, packed_gauge_cb0,packed_gauge_cb1, *geom);
       u_packed[0] = packed_gauge_cb0;
       u_packed[1] = packed_gauge_cb1;
 
@@ -215,11 +212,11 @@ namespace Chroma
       QDPIO::cout << "Packing Clover term..." << endl;
       
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed[cb], geom, cb);
+	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed[cb], *geom, cb);
       }
     
       for(int cb=0; cb < 2; cb++) { 
-	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed[cb], geom, cb);
+	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed[cb], *geom, cb);
       }
       QDPIO::cout << "Done" << endl;
 
@@ -259,7 +256,7 @@ namespace Chroma
       
       // Need to unalloc all the memory...
       QDPIO::cout << "Destructing" << endl;
-      Geometry<REALT,VecTraits<REALT>::Vec,VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>& geom=(*M).getGeometry();
+
       geom->free(p_even);
       geom->free(p_odd);
       geom->free(c_even);
@@ -372,8 +369,8 @@ namespace Chroma
       
       //      QDPIO::cout << "Allocating Spinor fields" << endl;
       // Pack Spinors psi and chi
-      qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], (*M).getGeometry());
-      qdp_pack_spinor<>(mdag_chi, chi_s[0], chi_s[1], (*M).getGeometry());
+      QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], *geom);
+      QPhiX::qdp_pack_spinor<>(mdag_chi, chi_s[0], chi_s[1], *geom);
       
       double rsd_final;
       unsigned long site_flops=0;
@@ -384,7 +381,7 @@ namespace Chroma
       double end = omp_get_wtime();
 
       QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
-      qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M).getGeometry());
+      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.
@@ -438,7 +435,7 @@ namespace Chroma
       double end = omp_get_wtime();
 
       QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
-      qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
+      QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
 
       // Chi Should now hold the result spinor 
       // Check it against chroma.

@@ -1539,16 +1539,17 @@ Optional Features:
   --enable-testcase-runner=script
                           Use <script> to run testcases:
                           trivial|cobalt|6n_mpirun_rsh|7n_mpirun_rsh|9q_mpirun_rsh
-  --qphix-solver-arch=avx|mic
+  --enable-qphix-solver-arch=avx|mic
                           Set Architecture for the QPhiX solver (avx or mic)
-  --qphix-solver-soalen=S Set Soalen for the QPhiX solver
-  --qphix-solver-inner-soalen=S
+  --enable-qphix-solver-soalen=S
+                          Set Soalen for the QPhiX solver
+  --enable-qphix-solver-inner-soalen=S
                           Set Inner Solver Soalen for Mixed precision QPhiX
                           solvers
-  --qphix-solver-inner-type=half,float,double
+  --enable-qphix-solver-inner-type=half,float,double
                           Set Inner Solver Type for Mixed precision QPhiX
                           solvers
-  --qphix-solver-compress12
+  --enable-qphix-solver-compress12
                           If enabled will employ compression in the QPhiX
                           solver
   --enable-qop-mg         Enable QDP MultiGrid. Needs --with-qla --with-qdp
@@ -5047,7 +5048,7 @@ _ACEOF
 $as_echo "$as_me: Setting Intel Solver Type to: half" >&6;}
 
 cat >>confdefs.h <<\_ACEOF
-#define CHROMA_QPHIX_INNER_TYPE half
+#define CHROMA_QPHIX_INNER_TYPE QPhiX::half
 _ACEOF
 
      ;;
