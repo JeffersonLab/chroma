@@ -1,0 +1,302 @@
+<?xml version="1.0"?>
+<chroma>
+<annotation>
+Single Vector solve test for QPHIX solver. 
+To save memory, this test uses MAKE_SOURCE_FERM and PROPAGATOR_FERM
+rather than MAKE_SOURCE and PROPAGATOR.
+
+The Setup of the QPHIX Solvers in this example is for Xeon Phi 5110P
+Using 59 out of 60 cores, 4 threads per core, and By andBz blocing
+of 4x4 blocks
+</annotation>
+<Param> 
+  <InlineMeasurements>
+
+    <elem>
+      <annotation>
+         Diluted complex Z(2) = Z(4) random source
+      </annotation>
+      <Name>MAKE_SOURCE_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>6</version>
+        <Source>
+          <SourceType>RAND_DILUTE_ZN_SOURCE</SourceType>
+          <version>1</version>
+          <N>4</N>
+          <j_decay>3</j_decay>
+          <t_source>0</t_source>
+          <ran_seed>
+            <Seed>	
+              <elem>11</elem>
+              <elem>13</elem>
+              <elem>17</elem>
+              <elem>19</elem>
+            </Seed>
+          </ran_seed>
+
+          <spatial_mask_size>2 2 2</spatial_mask_size>
+          <spatial_mask>
+             <elem>0 0 0</elem>
+             <elem>1 1 0</elem>
+             <elem>0 1 1</elem>
+             <elem>1 0 1</elem>
+          </spatial_mask>
+
+          <color_mask>0  2</color_mask>
+          <spin_mask>0 1  3</spin_mask>
+        </Source>
+        <nrow>4 4 4 8</nrow>
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source_0</source_id>
+      </NamedObject>
+    </elem>
+
+    <!--  Native PROPAGATOR -->
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.0171</clovCoeffR>
+         <clovCoeffT>0.95</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.9</xi_0>
+           <nu>0.94</nu>
+         </AnisoParam>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 1</boundary>
+           </FermionBC>
+         </FermState>
+        </FermionAction>
+
+        <InvertParam>
+          <invType>BICGSTAB_INVERTER</invType>
+          <RsdBiCGStab>1.0e-7</RsdBiCGStab>
+          <MaxBiCGStab>1000</MaxBiCGStab>
+        </InvertParam>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source_0</source_id>
+        <prop_id>zN_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <NamedObject>
+	<object_id>zN_prop_0</object_id>
+      </NamedObject>
+    </elem>
+
+
+    <!-- QPHIX PROPAGATOR SOLVE: Regular BICGSTAB
+	 NB: This is a KNC Setup for 5110P
+	 NCores=59, ThreadsPerCore=2, By=Bz=4, Sy=1,Sz=1
+	 -->
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.0171</clovCoeffR>
+         <clovCoeffT>0.95</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.9</xi_0>
+           <nu>0.94</nu>
+         </AnisoParam>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 1</boundary>
+           </FermionBC>
+         </FermState>
+        </FermionAction>
+
+        <InvertParam>
+          <invType>QPHIX_CLOVER_INVERTER</invType>
+          <SolverType>BICGSTAB</SolverType>
+          <MaxIter>1000</MaxIter>
+          <RsdTarget>1.0e-7</RsdTarget>
+	  <CloverParams>
+	    <Kappa>0.115</Kappa>
+	    <clovCoeff>2.0171</clovCoeff>
+	    <clovCoeffR>2.0171</clovCoeffR>
+	    <clovCoeffT>0.95</clovCoeffT>
+	    <AnisoParam>
+	      <anisoP>true</anisoP>
+	      <t_dir>3</t_dir>
+	      <xi_0>2.9</xi_0>
+	      <nu>0.94</nu>
+	    </AnisoParam>
+          </CloverParams>
+	  <AntiPeriodicT>false</AntiPeriodicT>
+	  <Verbose>false</Verbose>
+	  <NCores>59</NCores>
+	  <ThreadsPerCore>4</ThreadsPerCore>
+	  <By>4</By>
+	  <Bz>4</Bz>
+	  <Sy>1</Sy>
+	  <Sz>4</Sz>
+	  <PadXY>1</PadXY>
+	  <PadXYZ>0</PadXYZ>
+	  <MinCt>1</MinCt>
+	  <RsdToleranceFactor>5.0</RsdToleranceFactor>
+	  <Tune>true</Tune>
+	</InvertParam>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source_0</source_id>
+        <prop_id>zN_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <NamedObject>
+	<object_id>zN_prop_0</object_id>
+      </NamedObject>
+    </elem>
+
+    <!-- QPHIX PROPAGATOR SOLVE: Iterative refinement BICGSTAB.
+	 Inner precision and inner/outer SOALEN are controlled by
+	 configure time options.
+
+	 NB: This is a KNC Setup for 5110P
+	 NCores=59, ThreadsPerCore=2, By=Bz=4, Sy=1,Sz=1
+	 -->
+    <elem>
+      <Name>PROPAGATOR_FERM</Name>
+      <Frequency>1</Frequency>
+      <Param>
+        <version>10</version>
+        <quarkSpinType>FULL</quarkSpinType>
+        <obsvP>false</obsvP>
+        <numRetries>1</numRetries>
+        <FermionAction>
+         <FermAct>CLOVER</FermAct>
+         <Kappa>0.115</Kappa>
+         <clovCoeff>2.0171</clovCoeff>
+         <clovCoeffR>2.0171</clovCoeffR>
+         <clovCoeffT>0.95</clovCoeffT>
+         <AnisoParam>
+           <anisoP>true</anisoP>
+           <t_dir>3</t_dir>
+           <xi_0>2.9</xi_0>
+           <nu>0.94</nu>
+         </AnisoParam>
+         <FermState>
+           <Name>STOUT_FERM_STATE</Name>
+           <rho>0.22</rho>
+           <n_smear>2</n_smear>
+           <orthog_dir>3</orthog_dir>
+           <FermionBC>
+             <FermBC>SIMPLE_FERMBC</FermBC>
+             <boundary>1 1 1 1</boundary>
+           </FermionBC>
+         </FermState>
+        </FermionAction>
+
+	<InvertParam>
+          <invType>QPHIX_CLOVER_ITER_REFINE_BICGSTAB_INVERTER</invType>
+	  <SolverType>BICGSTAB</SolverType>
+          <MaxIter>1000</MaxIter>
+          <RsdTarget>1.0e-7</RsdTarget>
+	  <Delta>0.1</Delta>
+	  <CloverParams>
+	    <Kappa>0.115</Kappa>
+	    <clovCoeff>2.0171</clovCoeff>
+	    <clovCoeffR>2.0171</clovCoeffR>
+	    <clovCoeffT>0.95</clovCoeffT>
+	    <AnisoParam>
+	      <anisoP>true</anisoP>
+	      <t_dir>3</t_dir>
+	      <xi_0>2.9</xi_0>
+	      <nu>0.94</nu>
+	    </AnisoParam>
+          </CloverParams>
+	  <AntiPeriodicT>false</AntiPeriodicT>
+	  <Verbose>false</Verbose>
+	  <NCores>59</NCores>
+	  <ThreadsPerCore>4</ThreadsPerCore>
+	  <By>4</By>
+	  <Bz>4</Bz>
+	  <Sy>1</Sy>
+	  <Sz>4</Sz>
+	  <PadXY>1</PadXY>
+	  <PadXYZ>0</PadXYZ>
+	  <MinCt>1</MinCt>
+	  <RsdToleranceFactor>5.0</RsdToleranceFactor>
+	  <Tune>true</Tune>
+	</InvertParam>
+
+      </Param>
+      <NamedObject>
+        <gauge_id>default_gauge_field</gauge_id>
+        <source_id>zN_source_0</source_id>
+        <prop_id>zN_prop_0</prop_id>
+      </NamedObject>
+    </elem>
+
+    <elem>
+      <Name>ERASE_NAMED_OBJECT</Name>
+      <NamedObject>
+	<object_id>zN_prop_0</object_id>
+      </NamedObject>
+    </elem>
+
+
+  </InlineMeasurements>
+  <nrow>48 24 24 16</nrow>
+</Param>
+
+<RNG>
+  <Seed>	
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>11</elem>
+    <elem>0</elem>
+  </Seed>
+</RNG>
+
+<Cfg>
+ <cfg_type>WEAK_FIELD</cfg_type>
+ <cfg_file>dummy</cfg_file>
+</Cfg>
+</chroma>
+
+
