@@ -475,7 +475,7 @@ namespace Chroma
       (*mixed_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "INTEL_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M_outer).getGeometry());
       
 #if 1

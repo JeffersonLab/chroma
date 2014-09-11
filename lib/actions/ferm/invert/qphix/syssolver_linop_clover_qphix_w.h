@@ -380,7 +380,7 @@ namespace Chroma
       (*cg_solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
@@ -394,7 +394,7 @@ namespace Chroma
       Double b2 = norm2(chi, A->subset());
       Double rel_resid = sqrt(r2/b2);
 
-      QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << endl;
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << endl;
 
 #if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
@@ -408,7 +408,7 @@ namespace Chroma
       double gflops = (double)(total_flops)/(1.0e9);
 
       double total_time = end - start;
-      QDPIO::cout << "INTEL_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
 
       END_CODE();
       return res;
@@ -434,7 +434,7 @@ namespace Chroma
       (*bicgstab_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "INTEL_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
 
       // Chi Should now hold the result spinor 
