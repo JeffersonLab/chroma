@@ -1,3 +1,7 @@
+Sept 11, 2014 - Balint Joo
+         QPhiX library for Xeon and Xeon Phi (re) integrated. 
+	 See https://http://jeffersonlab.github.io/qphix
+         
 Aug 12, 2014 - Balint Joo
 	 MDWF solver can now do NEF type (Moebius solves) as a LinOpSysSolverArray
          QUDA Mobius solver integrated for props as a LinOpSysSolverArray 
