@@ -24,8 +24,8 @@ namespace Chroma
   {
     int               magic;     // magic number for sanity checks
     multi1d<int>      inser_mom;
-    multi1d<ComplexD> local_current;
-    multi1d<ComplexD> nonlocal_current;
+    multi1d<ComplexF> local_current;
+    multi1d<ComplexF> nonlocal_current;
   };
 
   struct FormFac_insertion_t
