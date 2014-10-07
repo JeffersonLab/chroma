@@ -69,9 +69,10 @@ namespace Chroma
   typedef SingletonHolder< 
     ObjectFactory<LinOpSystemSolverArray<LatticeFermion>, 
 		  std::string,
-		  TYPELIST_3(XMLReader&, const std::string&, Handle< LinearOperatorArray<LatticeFermion> >),
+		  TYPELIST_4(XMLReader&, const std::string&, FSHandle, Handle< LinearOperatorArray<LatticeFermion> >),
 		  LinOpSystemSolverArray<LatticeFermion>* (*)(XMLReader&,
 							      const std::string&,
+							      FSHandle,
 							      Handle< LinearOperatorArray<LatticeFermion> >), 
 		  StringFactoryError> >
   TheLinOpFermSystemSolverArrayFactory;

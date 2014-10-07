@@ -32,7 +32,7 @@ namespace Chroma
 						                     LatticeFermion, 
 						                     multi1d<LatticeColorMatrix>,
 						                     multi1d<LatticeColorMatrix> 
-						  > 
+					 	  > 
 							  > state, 
 
 						  Handle< LinearOperator<LatticeFermion> > A)

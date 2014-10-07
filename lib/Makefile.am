@@ -450,6 +450,7 @@ nobase_include_HEADERS += \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.h \
 	actions/ferm/fermacts/unprec_clover_fermact_w.h \
+	actions/ferm/fermacts/nef_fermact_params_w.h \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.h \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.h \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.h \
@@ -963,6 +964,10 @@ if BUILD_QUDA
 AM_CXXFLAGS += @QUDA_CXXFLAGS@
 endif
 
+if BUILD_QPHIX
+AM_CXXFLAGS += @QPHIX_CXXFLAGS@
+endif
+
 if BUILD_SSE_WILSON_DSLASH
 AM_CXXFLAGS += -I$(TOPDIR)/other_libs/@SSE_DSLASH_DIR@/include -I$(BUILDDIR)/other_libs/@SSE_DSLASH_DIR@/include
 endif
@@ -1339,8 +1344,10 @@ endif
 if BUILD_QUDA
 nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.h \
+	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.h \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h \
+	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.h \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.h \
@@ -1352,15 +1359,30 @@ nobase_include_HEADERS +=  actions/ferm/invert/quda_solvers/syssolver_quda_wilso
 libchroma_a_SOURCES    += actions/ferm/invert/quda_solvers/enum_quda_io.cc \
 	actions/ferm/invert/quda_solvers/quda_gcr_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_clover_params.cc \
+	actions/ferm/invert/quda_solvers/syssolver_quda_nef_params.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_quda_clover_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_quda_wilson_params.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.cc \
+	actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/syssolver_mdagm_wilson_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_clover_quda_w.cc \
 	actions/ferm/invert/quda_solvers/multi_syssolver_mdagm_cg_wilson_quda_w.cc
 endif
+
+if BUILD_QPHIX
+nobase_include_HEADERS += actions/ferm/invert/qphix/syssolver_qphix_clover_params.h \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h	
+
+
+libchroma_a_SOURCES += actions/ferm/invert/qphix/syssolver_qphix_clover_params.cc \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.cc \
+	actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.cc
+
+endif
+
 
 #
 # Object files to add if building the Wilson Builds...
@@ -1387,6 +1409,7 @@ libchroma_a_SOURCES += \
 	actions/ferm/fermacts/eoprec_clover_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_orbifold_fermact_w.cc \
 	actions/ferm/fermacts/unprec_clover_fermact_w.cc \
+	actions/ferm/fermacts/nef_fermact_params_w.cc \
 	actions/ferm/fermacts/eoprec_slic_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_slrc_fermact_w.cc \
 	actions/ferm/fermacts/eoprec_clover_extfield_fermact_w.cc \
@@ -1809,8 +1832,14 @@ endif
 
 
 if BUILD_MDWF
-nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h
-libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc
+nobase_include_HEADERS += actions/ferm/qprop/mdwf_solver.h \
+	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.h \
+	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.h
+
+
+libchroma_a_SOURCES += actions/ferm/qprop/mdwf_solver.cc \
+	actions/ferm/invert/mdwf_solver/syssolver_mdwf_params.cc \
+	actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.cc
 endif
 
 
@@ -1849,9 +1878,9 @@ endif
 
 if BUILD_JIT_CLOVER_APPLY
 nobase_include_HEADERS += actions/ferm/linop/clover_term_ptx_w.h \
-	actions/ferm/linop/clover_term_llvm_w.h
+	actions/ferm/linop/clover_term_llvm_w.h actions/ferm/linop/clover_term_nvvm_w.h
 libchroma_a_SOURCES += util/gauge/stout_utils_ptx.cc \
-	util/gauge/stout_utils_llvm.cc
+	util/gauge/stout_utils_llvm.cc util/gauge/stout_utils_nvvm.cc
 endif
 
 

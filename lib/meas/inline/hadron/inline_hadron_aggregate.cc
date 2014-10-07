@@ -149,7 +149,9 @@ namespace Chroma
 	success &= InlinePropMatElemColorVecEnv::registerAll();
 	success &= InlinePropMatElemPtColorVecEnv::registerAll();
 	success &= InlinePropAndMatElemColorVecEnv::registerAll();
+#ifndef QDP_IS_QDPJIT
 	success &= InlinePropAndMatElemDistillationEnv::registerAll();
+#endif
 	success &= InlinePropMatElemLowMemoryColorVecEnv::registerAll();
 	success &= InlineBaryonMatElemColorVecEnv::registerAll();
 	success &= InlineMesonMatElemColorVecEnv::registerAll();

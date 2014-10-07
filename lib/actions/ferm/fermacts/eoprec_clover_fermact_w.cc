@@ -58,7 +58,6 @@ namespace Chroma
     }
   }
 
-
   //! Produce a linear operator for this action
   /*!
    * The operator acts on the odd subset

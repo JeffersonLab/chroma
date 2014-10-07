@@ -57,6 +57,19 @@
       </NamedObject>
     </elem>
 
+    <elem>
+      <Name>QIO_WRITE_NAMED_OBJECT</Name>
+      <Frequency>1</Frequency>
+      <NamedObject>
+        <object_id>eigeninfo_0</object_id>
+        <object_type>SubsetVectorsLatticeColorVector</object_type>
+      </NamedObject>
+      <File>
+        <file_name>./colorvec.lime</file_name>
+        <file_volfmt>SINGLEFILE</file_volfmt>
+      </File>
+    </elem>
+
   </InlineMeasurements>
   <nrow>4 4 4 16</nrow>
 </Param>

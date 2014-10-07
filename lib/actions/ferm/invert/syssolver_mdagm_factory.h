@@ -67,9 +67,10 @@ namespace Chroma
   typedef SingletonHolder< 
     ObjectFactory<MdagMSystemSolverArray<LatticeFermion>, 
 		  std::string,
-		  TYPELIST_3(XMLReader&, const std::string&, Handle< LinearOperatorArray<LatticeFermion> >),
+		  TYPELIST_4(XMLReader&, const std::string&, FactoryEnv::FSHandle, Handle< LinearOperatorArray<LatticeFermion> >),
 		  MdagMSystemSolverArray<LatticeFermion>* (*)(XMLReader&,
 							      const std::string&,
+							      FactoryEnv::FSHandle,
 							      Handle< LinearOperatorArray<LatticeFermion> >), 
 		  StringFactoryError> >
   TheMdagMFermSystemSolverArrayFactory;

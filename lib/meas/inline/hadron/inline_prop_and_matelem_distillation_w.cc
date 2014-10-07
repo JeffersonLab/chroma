@@ -33,6 +33,8 @@
 
 #include "meas/inline/io/named_objmap.h"
 
+#ifndef QDP_IS_QDPJIT
+
 namespace Chroma 
 { 
   //----------------------------------------------------------------------------
@@ -214,7 +216,6 @@ namespace Chroma
       {
 	// The key
 	KeyTimeSliceColorVec_t src_key(t_source, colorvec_src);
-
 	// If item does not exist, read from original map and put in memory map
 	if (! sub_eigen.exist(src_key))
 	{
@@ -229,7 +230,6 @@ namespace Chroma
 
 	  sub_eigen.insert(src_key, tmp);
 	}
-
 	return sub_eigen[src_key];
       }
 
@@ -686,7 +686,7 @@ namespace Chroma
 		ncg_had += res.n_count;
 
 		// Check for finite values - neither NaN nor Inf
-#ifndef QDP_IS_QDPJIT
+
 		if (isfinite(quark_soln))
 		{
 		  // Okay
@@ -697,7 +697,6 @@ namespace Chroma
 		  QDPIO::cerr << name << ": WARNING - found something not finite, may retry\n";
 		  badP = true;
 		}
-#endif
 	      }
 
 	      // Sanity check
@@ -795,8 +794,10 @@ namespace Chroma
       QDPIO::cout << name << ": ran successfully" << endl;
 
       END_CODE();
-    } 
+    }
 
   }
 
 } // namespace Chroma
+
+#endif

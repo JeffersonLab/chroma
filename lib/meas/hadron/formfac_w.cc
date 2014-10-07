@@ -188,8 +188,8 @@ namespace Chroma
       {
 	form.formFac[gamma_value].momenta[inser_mom_num].inser_mom = phases.numToMom(inser_mom_num);
 
-	multi1d<Complex> local_cur3ptfn(length); // always compute
-	multi1d<Complex> nonlocal_cur3ptfn;
+	multi1d<ComplexF> local_cur3ptfn(length); // always compute
+	multi1d<ComplexF> nonlocal_cur3ptfn;
 	if (compute_nonlocal)
 	  nonlocal_cur3ptfn.resize(length);      // possibly compute
 

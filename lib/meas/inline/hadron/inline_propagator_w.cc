@@ -348,6 +348,8 @@ namespace Chroma
 
 	QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
 	swatch.start();
+	
+	QDPIO::cout << "Calling quarkProp" << endl;
 	S_f->quarkProp(quark_propagator, 
 		       xml_out, 
 		       quark_prop_source,

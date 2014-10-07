@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: formfac_w.h,v 3.1 2006-05-05 03:07:20 edwards Exp $
 /*! \file
  *  \brief Form-factors 
  *
@@ -23,10 +22,10 @@ namespace Chroma
   */
   struct FormFac_momenta_t
   {
-    int              magic;     // magic number for sanity checks
-    multi1d<int>     inser_mom;
-    multi1d<Complex> local_current;
-    multi1d<Complex> nonlocal_current;
+    int               magic;     // magic number for sanity checks
+    multi1d<int>      inser_mom;
+    multi1d<ComplexF> local_current;
+    multi1d<ComplexF> nonlocal_current;
   };
 
   struct FormFac_insertion_t

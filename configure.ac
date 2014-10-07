@@ -241,6 +241,64 @@ AC_ARG_WITH(cuda,
    [ CUDA_HOME="/usr/local/cuda" ]
 )
 
+
+AC_ARG_WITH(qphix-solver,
+  AC_HELP_STRING(
+    [--with-qphix-solver=DIR],
+    [Build Chroma with the QPhiX L3 solver installed in DIR]
+  ),
+  [qphix_enabled="yes"
+   QPHIX_HOME="$with_qphix_solver"],
+  [qphix_enabled="no"]
+)
+
+
+AC_ARG_ENABLE(qphix-solver-arch,
+  AC_HELP_STRING(
+   [--enable-qphix-solver-arch=avx|mic],
+   [Set Architecture for the QPhiX solver (avx or mic)]
+  ),
+  [ qphix_arch="${enable_qphix_solver_arch}" ],
+  [ qphix_arch="avx"]
+)
+
+AC_ARG_ENABLE(qphix-solver-soalen,
+  AC_HELP_STRING(
+    [--enable-qphix-solver-soalen=S], 
+    [Set Soalen for the QPhiX solver]
+  ),
+  [ qphix_soalen="${enable_qphix_solver_soalen}" ],
+  [ qphix_soalen="4" ]
+)
+
+AC_ARG_ENABLE(qphix-solver-inner-soalen,
+  AC_HELP_STRING(
+    [--enable-qphix-solver-inner-soalen=S], 
+    [Set Inner Solver Soalen for Mixed precision QPhiX solvers]
+  ),
+  [ qphix_inner_soalen="${enable_qphix_solver_inner_soalen}" ],
+  [ qphix_inner_soalen="4" ]
+)
+
+AC_ARG_ENABLE(qphix-solver-inner-type,
+  AC_HELP_STRING(
+    [--enable-qphix-solver-inner-type=half,float,double], 
+    [Set Inner Solver Type for Mixed precision QPhiX solvers]
+  ),
+  [ qphix_inner_type="${enable_qphix_solver_inner_type}" ],
+  [ qphix_inner_type="none" ]
+)
+
+AC_ARG_ENABLE(qphix-solver-compress12,
+  AC_HELP_STRING(
+    [--enable-qphix-solver-compress12], 
+    [If enabled will employ compression in the QPhiX solver]
+  ),
+  [ qphix_compress12="${enable_qphix_solver_compress12}" ],
+  [ qphix_sompress12="no" ]
+)
+
+
 dnl level 3 libraries for asqtad inverter
 AC_ARG_WITH(asqtadlevel3,
   AC_HELP_STRING(
@@ -304,11 +362,79 @@ AC_ARG_ENABLE(qop-mg,
    [BUILD_QOP_MG=${enableval}]
 )
 
+
 if test "X${QDPCVER_HOME}X" = "XX" ; then
   AC_MSG_NOTICE([QDPCVER_HOME variable not set.])
 else
   AC_SUBST(QDPC_DIR, "${QDPCVER_HOME}")
 fi
+
+
+###########
+#
+# ISOLVER (Intel Level 3 -- needs a better name ) support
+#
+###########
+if test "X${qphix_enabled}X" = "XyesX";
+then
+  AC_MSG_NOTICE([ Enabling QPhiX L3 Solver in ${QPHIX_HOME}])
+  AC_DEFINE([BUILD_QPHIX], [], [Build with the QPHIX_LIBRARY])
+  AC_SUBST(QPHIX_CXXFLAGS, "-I${QPHIX_HOME}/include" ) 
+  AC_SUBST(QPHIX_LDFLAGS, "-L${QPHIX_HOME}/lib" )
+  AC_SUBST(QPHIX_LIBS,"-lqphix_solver")
+
+  case "${qphix_arch}" in
+  avx|AVX)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX,[], [QPhiX Arch is AVX])
+     ;;
+  mic|MIC)
+     AC_DEFINE(CHROMA_QPHIX_ARCH_MIC,[], [QPhiX Arch is MIC])
+     ;;
+  *) 
+     AC_MSG_WARN([ QPhiX Arch not specified: Defaulting to AVX ])
+     AC_DEFINE(CHROMA_QPHIX_ARCH_AVX,[], [QPhiX Arch is AVX])
+     ;;
+  esac
+
+  AC_MSG_NOTICE([ Enabling Intel L3 Solver Soalen: ${qphix_soalen}]	)	
+  AC_DEFINE_UNQUOTED(CHROMA_QPHIX_SOALEN, ${qphix_soalen}, [ The SOA length for QPhiX ])
+
+  if test "X${qphix_compress12}X" == "XyesX";
+  then 
+    AC_DEFINE(CHROMA_QPHIX_COMPRESS12,[true], [Enable Intel Solver Compression])
+  else
+    AC_DEFINE(CHROMA_QPHIX_COMPRESS12,[false], [Disable Intel Solver Compression])
+  fi
+
+
+
+  AC_MSG_NOTICE([ Enabling Intel L3 Solver Inner Soalen: ${qphix_inner_soalen}]	)	
+  AC_DEFINE_UNQUOTED(CHROMA_QPHIX_INNER_SOALEN, ${qphix_inner_soalen}, [ The SOA length for inner solvers for mixed prec QPhiX] )
+
+  case "${qphix_inner_type}" in
+  h|half)
+     AC_MSG_NOTICE([Setting Intel Solver Type to: half])
+     AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[QPhiX::half],[QPhiX Inner Type is half prec])
+     ;;
+  f|float|single)
+     AC_MSG_NOTICE([Setting Intel Solver Type to: float])
+     AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[float],[QPhiX Inner Type is float ])
+     ;;
+  d|double)
+     AC_MSG_NOTICE([Setting Intel Solver Type to: double])
+     AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[double],[QPhiX Inner Type is double ] )
+     ;;
+  *)
+     AC_MSG_WARN([ QPhiX inner type not specified: Defaulting to float ])
+     AC_DEFINE(CHROMA_QPHIX_INNER_TYPE,[float], [QPhiX Inner Type is float ] )
+     ;;
+  esac
+fi
+
+AM_CONDITIONAL(BUILD_QPHIX,
+	[test "x${qphix_enabled}x" = "xyesx" ])
+
+
 
 
 if test "X${QDPXX_HOME}X" = "XX" ; then

@@ -21,7 +21,6 @@ namespace Chroma
 				      const CloverFermActParams& param_)
   {
     START_CODE();
-
     // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
 
     param = param_;

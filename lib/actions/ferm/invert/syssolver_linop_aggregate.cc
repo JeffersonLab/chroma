@@ -23,6 +23,7 @@
 #ifdef BUILD_QUDA
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_clover_quda_w.h"
 #include "actions/ferm/invert/quda_solvers/syssolver_linop_wilson_quda_w.h"
+#include "actions/ferm/invert/quda_solvers/syssolver_linop_nef_quda_w.h"
 #endif
 
 #include "actions/ferm/invert/syssolver_linop_cg_array.h"
@@ -30,6 +31,15 @@
 
 #ifdef BUILD_QOP_MG
 #include "actions/ferm/invert/qop_mg/syssolver_linop_qop_mg_w.h"
+#endif
+
+#ifdef BUILD_MDWF
+#include "actions/ferm/invert/mdwf_solver/syssolver_linop_mdwf_array.h"
+#endif
+
+#ifdef BUILD_QPHIX
+#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_w.h"
+#include "actions/ferm/invert/qphix/syssolver_linop_clover_qphix_iter_refine_w.h"
 #endif
 
 namespace Chroma
@@ -63,10 +73,17 @@ namespace Chroma
 #ifdef BUILD_QUDA
 	success &= LinOpSysSolverQUDACloverEnv::registerAll();
 	success &= LinOpSysSolverQUDAWilsonEnv::registerAll();
+	success &= LinOpSysSolverQUDANEFEnv::registerAll();
 #endif
 #ifdef BUILD_QOP_MG
 	success &= LinOpSysSolverQOPMGEnv::registerAll();
 #endif
+
+#ifdef BUILD_QPHIX
+	success &= LinOpSysSolverQPhiXCloverEnv::registerAll();
+	success &= LinOpSysSolverQPhiXCloverIterRefineEnv::registerAll();
+#endif
+
 	registered = true;
       }
       return success;
@@ -88,6 +105,10 @@ namespace Chroma
       {
 	// 5D system solvers
 	success &= LinOpSysSolverCGArrayEnv::registerAll();
+
+#ifdef BUILD_MDWF
+	success &= LinOpSysSolverMDWFArrayEnv::registerAll();
+#endif
 	success &= LinOpSysSolverEigCGArrayEnv::registerAll();
 	registered = true;
       }

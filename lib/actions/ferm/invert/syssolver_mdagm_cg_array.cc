@@ -17,11 +17,18 @@ namespace Chroma
     //! Callback function
     MdagMSystemSolverArray<LatticeFermion>* createFerm(XMLReader& xml_in,
 						       const std::string& path,
+						       Handle< FermState<
+					                                 LatticeFermion, 
+						                         multi1d<LatticeColorMatrix>,
+						                         multi1d<LatticeColorMatrix> 
+						             > 
+							  > state, 
+			       
 						       Handle< LinearOperatorArray<LatticeFermion> > A)
     {
       return new MdagMSysSolverCGArray<LatticeFermion>(A, SysSolverCGParams(xml_in, path));
     }
-
+ 
     //! Name to be used
     const std::string name("CG_INVERTER");
 

@@ -17,12 +17,11 @@ namespace Chroma
   //! Initialization routine
   void CPPWilsonDslashF::init()
   {
-
-      // Initialize using the total problem size
-      D = new Dslash<float>(Layout::lattSize().slice(),
-			    Layout::QDPXX_getSiteCoords,
-			    Layout::QDPXX_getLinearSiteIndex,
-			    Layout::QDPXX_nodeNumber);
+    // Initialize using the total problem size
+    D = new Dslash<float>(Layout::lattSize().slice(),
+			  Layout::QDPXX_getSiteCoords,
+			  Layout::QDPXX_getLinearSiteIndex,
+			  Layout::QDPXX_nodeNumber);
   }
 
 

@@ -2,8 +2,10 @@
 
 using namespace QDP;
 
+
 #ifdef QDP_IS_QDPJIT
 #ifndef QDPJIT_IS_QDPJITPTX
+#ifndef QDPJIT_IS_QDPJITNVVM
 
 #warning "Using QDP-JIT/LLVM stouting routines"
 
@@ -609,5 +611,6 @@ void function_get_fs_bs_build( JitFunction& func,
   func.func().push_back( jit_function_epilogue_get("jit_get_fs_bs.ptx") );
 }
 
+#endif
 #endif
 #endif

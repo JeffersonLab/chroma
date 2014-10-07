@@ -147,7 +147,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 #else
-      QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
+      //QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
       q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
       q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
 #endif
@@ -330,7 +330,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 #else
-      QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << endl;
+      //QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << endl;
       quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
       quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
@@ -471,7 +471,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_CLOVER
       quda_inv_param.clover_order = QUDA_PACKED_CLOVER_ORDER;
 #else      
-      QDPIO::cout << "MDAGM Clover CUDA location\n";
+      //QDPIO::cout << "MDAGM Clover CUDA location\n";
       quda_inv_param.clover_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.clover_order = QUDA_QDPJIT_CLOVER_ORDER;
 #endif

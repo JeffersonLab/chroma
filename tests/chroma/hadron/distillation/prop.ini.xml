@@ -18,7 +18,7 @@
         <Contractions>
           <mass_label>U0.05</mass_label>
           <num_vecs>10</num_vecs>
-          <t_sources>0 6</t_sources>
+          <t_sources>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</t_sources>
           <decay_dir>3</decay_dir>
           <Nt_forward>16</Nt_forward>
           <Nt_backward>0</Nt_backward>
@@ -64,7 +64,7 @@
         <Contractions>
           <mass_label>U0.1</mass_label>
           <num_vecs>10</num_vecs>
-          <t_sources>0 6</t_sources>
+          <t_sources>0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15</t_sources>
           <decay_dir>3</decay_dir>
           <Nt_forward>16</Nt_forward>
           <Nt_backward>0</Nt_backward>
