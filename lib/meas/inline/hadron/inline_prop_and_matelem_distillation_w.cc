@@ -10,6 +10,7 @@
 #include "meas/glue/mesplq.h"
 #include "qdp_map_obj.h"
 #include "qdp_map_obj_disk.h"
+#include "qdp_map_obj_disk_multiple.h"
 #include "qdp_map_obj_memory.h"
 #include "qdp_disk_map_slice.h"
 #include "util/ferm/subset_vectors.h"
@@ -74,7 +75,7 @@ namespace Chroma
       XMLReader inputtop(xml, path);
 
       read(inputtop, "gauge_id", input.gauge_id);
-      read(inputtop, "colorvec_file", input.colorvec_file);
+      read(inputtop, "colorvec_files", input.colorvec_files);
       read(inputtop, "prop_op_file", input.prop_op_file);
     }
 
@@ -84,7 +85,7 @@ namespace Chroma
       push(xml, path);
 
       write(xml, "gauge_id", input.gauge_id);
-      write(xml, "colorvec_file", input.colorvec_file);
+      write(xml, "colorvec_files", input.colorvec_files);
       write(xml, "prop_op_file", input.prop_op_file);
 
       pop(xml);
@@ -172,6 +173,9 @@ namespace Chroma
     typedef QDP::MapObjectDisk<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MOD_t;
 
     // Convenience type
+    typedef QDP::MapObjectDiskMultiple<KeyTimeSliceColorVec_t, TimeSliceIO<LatticeColorVectorF> > MODS_t;
+
+    // Convenience type
     typedef QDP::MapObjectMemory<KeyTimeSliceColorVec_t, SubLatticeColorVectorF> SUB_MOD_t;
 
     // Anonymous namespace
@@ -183,7 +187,7 @@ namespace Chroma
       {
       public:
 	//! Constructor
-	SubEigenMap(MOD_t& eigen_source_, int decay_dir) : eigen_source(eigen_source_), time_slice_set(decay_dir) {}
+	SubEigenMap(MODS_t& eigen_source_, int decay_dir) : eigen_source(eigen_source_), time_slice_set(decay_dir) {}
 
 	//! Getter
 	const SubLatticeColorVectorF& getVec(int t_source, int colorvec_src) const;
@@ -193,7 +197,7 @@ namespace Chroma
 
       private:
 	//! Eigenvectors
-	MOD_t& eigen_source;
+	MODS_t& eigen_source;
 
 	// The time-slice set
 	TimeSliceSet time_slice_set;
@@ -466,7 +470,7 @@ namespace Chroma
       // 
       QDPIO::cout << "Snarf the source from a map object disk file" << endl;
 
-      MOD_t eigen_source;
+      MODS_t eigen_source;
       eigen_source.setDebug(0);
 
       std::string eigen_meta_data;   // holds the eigenvalues
@@ -474,8 +478,8 @@ namespace Chroma
       try
       {
 	// Open
-	QDPIO::cout << "Open file= " << params.named_obj.colorvec_file << endl;
-	eigen_source.open(params.named_obj.colorvec_file, std::ios_base::in);
+	QDPIO::cout << "Open file= " << params.named_obj.colorvec_files[0] << endl;
+	eigen_source.open(params.named_obj.colorvec_files);
 
 	// Snarf the source info. 
 	QDPIO::cout << "Get user data" << endl;
@@ -504,12 +508,14 @@ namespace Chroma
 
       QDPIO::cout << "Source successfully read and parsed" << endl;
 
+#if 0
       // Sanity check
       if (params.param.contract.num_vecs > eigen_source.size())
       {
 	QDPIO::cerr << name << ": number of available eigenvectors is too small\n";
 	QDP_abort(1);
       }
+#endif
 
       QDPIO::cout << "Number of vecs available is large enough" << endl;
 

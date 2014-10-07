@@ -49,9 +49,9 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	std::string     gauge_id;       /*!< Gauge field */
-	std::string     colorvec_file;  /*!< Eigenvectors in mod format */
-	std::string     prop_op_file;   /*!< File name for propagator matrix elements */
+	std::string                 gauge_id;        /*!< Gauge field */
+	std::vector<std::string>    colorvec_files;  /*!< Eigenvectors in mod format */
+	std::string                 prop_op_file;    /*!< File name for propagator matrix elements */
       };
 
       Param_t           param;
