@@ -616,7 +616,7 @@ namespace Chroma
 		  // the source into the interpolating field
 		  LatticeFermion snk=Gamma(Nd*Nd-1)*tt;
 		  LatticeComplex lop = localInnerProduct(snk, shift_ferm);
-		  LatticeReal foo = Layout::latticeCoordinate(z_dir);
+		  LatticeReal foo = phi*Layout::latticeCoordinate(z_dir);
 		  LatticeComplex phase = cmplx(cos(foo),sin(foo));
 		  // Slow fourier-transform
 		  multi1d<ComplexD> op_sum=sumMulti(phase*lop,phases.getSet());
