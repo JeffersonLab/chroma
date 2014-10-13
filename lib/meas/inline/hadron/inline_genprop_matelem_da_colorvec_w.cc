@@ -581,23 +581,22 @@ namespace Chroma
 	      buf[t].key.key().gamma         = gamma;
 	      buf[t].val.data().op.resize(num_vecs, num_vecs);
 	    }
-	    for(int j = 0; j < params.param.num_vecs; ++j){
-	      KeyPropColorVec_t key_r;
-	      key_r.t_source     = t_source;
-	      key_r.colorvec_src = j;
-	      key_r.spin_src     = spin_r;
+	    for( int z(0);z<Layout::lattSize()[z_dir];z++){
+	      multi1d<int> disp(Nd-1); disp=0 ; disp[z_dir]=z;
 	      
-	      // Displace the right vector and multiply by the momentum phase
+	      for(int j = 0; j < params.param.num_vecs; ++j){
+		KeyPropColorVec_t key_r;
+		key_r.t_source     = t_source;
+		key_r.colorvec_src = j;
+		key_r.spin_src     = spin_r;
+	      
+		// Displace the right vector and multiply by the momentum phase
 
-	      LatticeFermion shift_ferm;
-	      LatticeFermion src_ferm; source_ferm_map.get(key_r, src_ferm);
-	      for( int z(0);z<Layout::lattSize()[z_dir];z++){
-		multi1d<int> disp(Nd-1); disp=0 ; disp[z_dir]=z;
-		if(z==0)
-		  shift_ferm=src_ferm ;
-		else{
-		  LatticeFermion tt = shift(shift_ferm,BACKWARD,z_dir);
-		  shift_ferm=u_smr[z_dir]*tt;
+		LatticeFermion shift_ferm;
+		LatticeFermion src_ferm; source_ferm_map.get(key_r, src_ferm);
+		shift_ferm = displace(u_smr,src_ferm,1,disp);
+		for(int tt=t_start; tt <= t_end; ++tt){
+		  buf[t].key.key().displacement  = disp; 
 		}
 		for(int i = 0; i < params.param.num_vecs; ++i){
 		  KeyPropColorVec_t key_l;
@@ -626,7 +625,6 @@ namespace Chroma
 		    int t = tt % phases.numSubsets(); 
 		    buf[t].val.data().op(i,j) = op_sum[t];
 		    // only right colorvector
-		    buf[t].key.key().displacement  = disp; 
 		  }// loop over time
 		  
 		  QDPIO::cout << "insert: mom= " << mom 
