@@ -567,19 +567,23 @@ namespace Chroma
 	    // only displace right colorvector
 	    
 	    // Invert the time - make it an independent key
-	    multi1d<KeyValGenPropElementalOperator_t> buf(phases.numSubsets());
-	    for(int tt=t_start; tt <= t_end; ++tt){
-	      // mod back into a normal interval
-	      int t = tt % phases.numSubsets(); 
-	      buf[t].key.key().t_slice       = t;
-	      buf[t].key.key().t_source      = t_source;
-	      buf[t].key.key().t_sink        = t_sink;
-	      buf[t].key.key().spin_r        = spin_r;
-	      buf[t].key.key().spin_l        = spin_l;
-	      buf[t].key.key().mass_label    = params.param.mass_label;
-	      buf[t].key.key().mom           = mom;
-	      buf[t].key.key().gamma         = gamma;
-	      buf[t].val.data().op.resize(num_vecs, num_vecs);
+	    multi2d<KeyValGenPropElementalOperator_t> buf(Layout::lattSize()[z_dir],phases.numSubsets());
+	    for( int z(0);z<Layout::lattSize()[z_dir];z++){
+	      multi1d<int> disp(Nd-1); disp=0 ; disp[z_dir]=z;
+	      for(int tt=t_start; tt <= t_end; ++tt){
+		// mod back into a normal interval
+		int t = tt % phases.numSubsets(); 
+		buf(z,t).key.key().t_slice       = t;
+		buf(z,t).key.key().t_source      = t_source;
+		buf(z,t).key.key().t_sink        = t_sink;
+		buf(z,t).key.key().spin_r        = spin_r;
+		buf(z,t).key.key().spin_l        = spin_l;
+		buf(z,t).key.key().mass_label    = params.param.mass_label;
+		buf(z,t).key.key().mom           = mom;
+		buf(z,t).key.key().gamma         = gamma;
+		buf(z,t).key.key().displacement  = disp; 
+		buf(z,t).val.data().op.resize(num_vecs, num_vecs);
+	      }
 	    }
 	    for(int j = 0; j < params.param.num_vecs; ++j){
 	      KeyPropColorVec_t key_r;
@@ -588,7 +592,7 @@ namespace Chroma
 	      key_r.spin_src     = spin_r;
 	      
 	      // Displace the right vector and multiply by the momentum phase
-
+	      
 	      LatticeFermion shift_ferm;
 	      LatticeFermion src_ferm; source_ferm_map.get(key_r, src_ferm);
 	      for( int z(0);z<Layout::lattSize()[z_dir];z++){
@@ -611,12 +615,12 @@ namespace Chroma
 		  // Contract over color indices
 		  // Do the relevant quark contraction
 		  LatticeFermion tt; sink_ferm_map.get(key_l, tt);
-
+		  
 		  // I need to rember to fold the Gamma_5 on 
 		  // the source into the interpolating field
 		  LatticeFermion snk=Gamma(Nd*Nd-1)*tt;
 		  LatticeComplex lop = localInnerProduct(snk, shift_ferm);
-		  LatticeReal foo = Layout::latticeCoordinate(z_dir);
+		  LatticeReal foo = phi*Layout::latticeCoordinate(z_dir);
 		  LatticeComplex phase = cmplx(cos(foo),sin(foo));
 		  // Slow fourier-transform
 		  multi1d<ComplexD> op_sum=sumMulti(phase*lop,phases.getSet());
@@ -624,22 +628,20 @@ namespace Chroma
 		  for(int tt=t_start; tt <= t_end; ++tt){
 		    // mod back into a normal interval
 		    int t = tt % phases.numSubsets(); 
-		    buf[t].val.data().op(i,j) = op_sum[t];
-		    // only right colorvector
-		    buf[t].key.key().displacement  = disp; 
+		    buf(z,t).val.data().op(i,j) = op_sum[t];
 		  }// loop over time
-		  
-		  QDPIO::cout << "insert: mom= " << mom 
-			      << " displacement= " << disp << endl; 
-		  for(int tt=t_start; tt <= t_end; ++tt){
-		    // mod back into a normal interval
-		    int t = tt % phases.numSubsets(); 
-		    qdp_db.insert(buf[t].key, buf[t].val);
-		  }
-		} // end for i
-	      }// loop over displacements
-	    } // end for j
-       	  } // end for spin_l
+		}// loop over left (i)
+	      }// loop over displacements 
+	    }//loop over right (j)
+	    QDPIO::cout << "insert: mom= " << mom << endl ;
+	    for( int z(0);z<Layout::lattSize()[z_dir];z++){
+	      for(int tt=t_start; tt <= t_end; ++tt){
+		// mod back into a normal interval
+		int t = tt % phases.numSubsets(); 
+		qdp_db.insert(buf(z,t).key, buf(z,t).val);
+	      } // loop over tt
+	    }// loop over z
+	  } // end for spin_l
 	} // end for spin_r
 	QDPIO::cout << "GenProp mom= "<<p  
 		    << "  time= "
@@ -647,7 +649,7 @@ namespace Chroma
 		    << " secs" << endl;
 	swiss.stop();
       } // loop over momenta
-
+      
       
       pop(xml_out); // ElementalOps
 
