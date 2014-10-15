@@ -42,20 +42,22 @@ namespace Chroma
       switch (version) 
       {
       case 1:
+	read(paramtop, "t_source", param.t_source);
+	read(paramtop, "t_sink", param.t_sink);
+	read(paramtop, "mom_max", param.mom_max);
+	read(paramtop, "boost_dir", param.boost_dir);
+	read(paramtop, "gamma", param.gamma);
+	read(paramtop, "num_vecs", param.num_vecs);
+	read(paramtop, "decay_dir", param.decay_dir);
+	read(paramtop, "mass_label", param.mass_label);
+	read(paramtop, "restrict_plateau", param.restrict_plateau);
+	break ;
       default :
 	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
 	QDP_abort(1);
       }
 
-      read(paramtop, "t_source", param.t_source);
-      read(paramtop, "t_sink", param.t_sink);
-      read(paramtop, "mom_max", param.mom_max);
-      read(paramtop, "boost_dir", param.boost_dir);
-      read(paramtop, "gamma", param.gamma);
-      read(paramtop, "num_vecs", param.num_vecs);
-      read(paramtop, "decay_dir", param.decay_dir);
-      read(paramtop, "mass_label", param.mass_label);
-      read(paramtop, "restrict_plateau", param.restrict_plateau);
+
     }
 
 
@@ -643,11 +645,11 @@ namespace Chroma
 	    }// loop over z
 	  } // end for spin_l
 	} // end for spin_r
+	swiss.stop();
 	QDPIO::cout << "GenProp mom= "<<p  
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
 		    << " secs" << endl;
-	swiss.stop();
       } // loop over momenta
       
       
