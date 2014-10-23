@@ -58,6 +58,9 @@ namespace Chroma
     void deriv(multi1d<U>& ds_u, 
 	       const T& chi, const T& psi, 
 	       enum PlusMinus isign) const;
+    void derivAdd(multi1d<U>& ds_u,
+	       const T& chi, const T& psi,
+	       enum PlusMinus isign) const;
 
     //! Take deriv of D
     /*!
@@ -70,6 +73,9 @@ namespace Chroma
      */
     void deriv(multi1d<U>& ds_u, 
 	       const T& chi, const T& psi, 
+	       enum PlusMinus isign, int cb) const;
+    void derivAdd(multi1d<U>& ds_u,
+	       const T& chi, const T& psi,
 	       enum PlusMinus isign, int cb) const;
 
     //! Take deriv of D
@@ -152,11 +158,23 @@ namespace Chroma
     deriv(ds_u, chi, psi, isign,0);
     
     // Odd Odd checkerboard
-    multi1d<U> ds_tmp;
-    deriv(ds_tmp, chi, psi, isign,1);
+    derivAdd(ds_u, chi, psi, isign,1);
     
-    ds_u += ds_tmp;
-    
+    END_CODE();
+  }
+  template<typename T, typename U>
+  void CloverTermBase<T,U>::derivAdd(multi1d<U>& ds_u,
+			     const T& chi, const T& psi,
+			     enum PlusMinus isign) const
+  {
+    START_CODE();
+
+    // Even even checkerboard
+    derivAdd(ds_u, chi, psi, isign,0);
+
+    // Odd Odd checkerboard
+    derivAdd(ds_u, chi, psi, isign,1);
+
     END_CODE();
   }
 
@@ -192,6 +210,9 @@ namespace Chroma
 
     const multi1d<U>& u = getU();
 
+#ifdef __MIC
+		mic_deriv_loops(u,mu,nu,cb,ds_u_mu,ds_u_nu,Lambda);
+#else
     // New thingie - now assume Lambda lives only on sites with checkerboard 
     // CB
     //            Lambda
@@ -532,8 +553,269 @@ namespace Chroma
     ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
     ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu); 
 
+#endif
+
     END_CODE();
   }
+
+#ifdef __MIC
+  template<typename U> void mic_deriv_loops(const multi1d<U>& u, 
+  		const int mu, const int nu, const int cb,
+			U& ds_u_mu, U& ds_u_nu, const U& Lambda);
+
+	typedef LatticeColorMatrixF U32;
+  template<> void mic_deriv_loops<U32>(const multi1d<U32>& u, 
+  		const int mu, const int nu, const int cb,
+			U32& ds_u_mu, U32& ds_u_nu, const U32& Lambda)
+  {
+		// shifted input
+		U32 tmp;
+
+    U32 Lambda_xplus_mu;
+    Lambda_xplus_mu = shift(Lambda, FORWARD, mu);
+
+		// output to be shifted
+    U32 ds_tmp_mu;
+    U32 ds_tmp_nu;
+
+    U32 u_nu_for_mu;
+    u_nu_for_mu = shift(u[nu],FORWARD, mu);
+    U32 u_mu_for_nu;
+    u_mu_for_nu = shift(u[mu],FORWARD, nu);
+
+		typedef PColorMatrix<RComplex<REAL32>, 3> MatSU3;
+		#define _elem(x,i) (x.elem(i).elem())
+
+    MatSU3 staple_for;
+    MatSU3 staple_back;
+    MatSU3 staple_left;
+    MatSU3 staple_right;
+
+    MatSU3 u_tmp3;
+		MatSU3 up_left_corner;
+		MatSU3 up_right_corner;
+		MatSU3 low_right_corner;
+		MatSU3 low_left_corner;
+
+		// EVEN
+		{
+			const Subset &s=rb[cb];
+			const int* tab = s.siteTable().slice();
+
+			U32 &Lambda_xplus_muplusnu=tmp;
+			Lambda_xplus_muplusnu[s] = shift(Lambda_xplus_mu, FORWARD, nu);
+
+	#pragma omp parallel for private(staple_for, staple_back, staple_left, staple_right, u_tmp3, up_left_corner, up_right_corner, low_right_corner, low_left_corner)
+			for(int j=0; j < s.numSiteTable(); ++j)
+			{
+				int i = tab[j];
+
+				up_left_corner = adj(_elem(u_mu_for_nu,i))*adj(_elem(u[nu],i)); 
+				low_right_corner = adj(_elem(u_nu_for_mu,i))*adj(_elem(u[mu],i)); 
+	 			low_left_corner = adj(_elem(u[mu],i))*_elem(u[nu],i); 
+	 		
+	 			u_tmp3 = _elem(u_nu_for_mu,i)*_elem(Lambda_xplus_muplusnu,i); 
+	 			_elem(ds_u_mu,i) = u_tmp3*up_left_corner; 
+
+	 			u_tmp3 = up_left_corner*_elem(Lambda,i); 
+	 			_elem(ds_tmp_nu,i) = u_tmp3*_elem(u[mu],i); 
+
+	 			u_tmp3 = low_right_corner*_elem(Lambda,i); 
+	 			_elem(ds_tmp_mu,i) = u_tmp3*_elem(u[nu],i);
+	 			 
+	 			u_tmp3 = _elem(u_mu_for_nu,i)*_elem(Lambda_xplus_muplusnu,i); 
+	 			_elem(ds_u_nu,i) = u_tmp3*low_right_corner; 
+
+	 			staple_for = _elem(u_nu_for_mu,i)*up_left_corner; 
+	 			staple_right = up_left_corner*_elem(u[mu],i);
+	 			staple_left  = _elem(u_mu_for_nu,i)*low_right_corner; 
+	 			staple_back = adj(_elem(u_nu_for_mu,i))*low_left_corner; 
+
+	 			_elem(ds_u_mu,i) += staple_for*_elem(Lambda,i); 
+	 			_elem(ds_tmp_nu,i) += _elem(Lambda_xplus_muplusnu,i)*staple_right; 
+	 			_elem(ds_u_nu,i) += staple_left*_elem(Lambda,i); 
+	 			_elem(ds_tmp_mu,i) += _elem(Lambda_xplus_muplusnu,i)*staple_back;
+			}
+		}
+
+		// ODD
+		{
+			const Subset &s=rb[1-cb];
+			const int* tab = s.siteTable().slice();
+
+			U32 &Lambda_xplus_nu=tmp;
+			Lambda_xplus_nu[s] = shift(Lambda, FORWARD, nu);
+
+	#pragma omp parallel for private(staple_for, staple_back, staple_left, staple_right, u_tmp3, up_left_corner, up_right_corner, low_right_corner, low_left_corner)
+			for (int j=0; j < s.numSiteTable(); ++j)
+			{
+				int i = tab[j];
+
+				up_left_corner = adj(_elem(u_mu_for_nu,i))*adj(_elem(u[nu],i));
+	 			up_right_corner = _elem(u_nu_for_mu,i)*adj(_elem(u_mu_for_nu,i)); 
+				low_right_corner = adj(_elem(u_nu_for_mu,i))*adj(_elem(u[mu],i)); 
+	 			low_left_corner = adj(_elem(u[mu],i))*_elem(u[nu],i); 
+
+	 			u_tmp3 = adj(_elem(u_mu_for_nu,i))*_elem(Lambda_xplus_nu,i); 
+	 			_elem(ds_tmp_nu,i) = u_tmp3*adj(low_left_corner);
+	 			 
+	 			u_tmp3 = _elem(Lambda_xplus_nu,i)*adj(_elem(u[nu],i)); 
+	 			_elem(ds_u_mu,i) = up_right_corner * u_tmp3; 
+
+	 			u_tmp3 = adj(_elem(u_nu_for_mu,i))*_elem(Lambda_xplus_mu,i); 
+	 			_elem(ds_tmp_mu,i) = u_tmp3*low_left_corner; 
+	 			
+	 			u_tmp3 = adj(up_right_corner)*_elem(Lambda_xplus_mu,i); 
+	 			_elem(ds_u_nu,i) = u_tmp3*adj(_elem(u[mu],i)); 
+
+	 			staple_for = _elem(u_nu_for_mu,i)*up_left_corner; 
+	 			staple_right = up_left_corner*_elem(u[mu],i);
+	 			staple_left  = _elem(u_mu_for_nu,i)*low_right_corner; 
+	 			staple_back = adj(_elem(u_nu_for_mu,i))*low_left_corner; 
+
+	 			_elem(ds_tmp_nu,i) += staple_right*_elem(Lambda_xplus_mu,i); 
+	 			_elem(ds_u_mu,i) += _elem(Lambda_xplus_mu,i)*staple_for; 
+	 			_elem(ds_tmp_mu,i) += staple_back*_elem(Lambda_xplus_nu,i); 
+	 			_elem(ds_u_nu,i) += _elem(Lambda_xplus_nu,i)*staple_left; 
+		}
+	}
+
+    // Now shift the accumulated pieces to mu and nu
+    // 
+    // Hope that this is not too slow as an expression
+    ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
+    ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu); 
+
+    END_CODE();
+  }
+
+	typedef LatticeColorMatrixD U64;
+  template<> void mic_deriv_loops<U64>(const multi1d<U64>& u, 
+  		const int mu, const int nu, const int cb,
+			U64& ds_u_mu, U64& ds_u_nu, const U64& Lambda)
+  {
+		// shifted input
+		U64 tmp;
+
+    U64 Lambda_xplus_mu;
+    Lambda_xplus_mu = shift(Lambda, FORWARD, mu);
+
+		// output to be shifted
+    U64 ds_tmp_mu;
+    U64 ds_tmp_nu;
+
+    U64 u_nu_for_mu;
+    u_nu_for_mu = shift(u[nu],FORWARD, mu);
+    U64 u_mu_for_nu;
+    u_mu_for_nu = shift(u[mu],FORWARD, nu);
+
+		typedef PColorMatrix<RComplex<REAL64>, 3> MatSU3;
+		#define _elem(x,i) (x.elem(i).elem())
+
+    MatSU3 staple_for;
+    MatSU3 staple_back;
+    MatSU3 staple_left;
+    MatSU3 staple_right;
+
+    MatSU3 u_tmp3;
+		MatSU3 up_left_corner;
+		MatSU3 up_right_corner;
+		MatSU3 low_right_corner;
+		MatSU3 low_left_corner;
+
+		// EVEN
+		{
+			const Subset &s=rb[cb];
+			const int* tab = s.siteTable().slice();
+
+			U64 &Lambda_xplus_muplusnu=tmp;
+			Lambda_xplus_muplusnu[s] = shift(Lambda_xplus_mu, FORWARD, nu);
+		
+	#pragma omp parallel for private(staple_for, staple_back, staple_left, staple_right, u_tmp3, up_left_corner, up_right_corner, low_right_corner, low_left_corner)
+			for(int j=0; j < s.numSiteTable(); ++j)
+			{
+				int i = tab[j];
+
+				mic_MatAdjMultAdj(up_left_corner,_elem(u_mu_for_nu,i),_elem(u[nu],i));
+				mic_MatAdjMultAdj(low_right_corner,_elem(u_nu_for_mu,i),_elem(u[mu],i)); 
+	 			mic_MatAdjMult(low_left_corner,_elem(u[mu],i),_elem(u[nu],i)); 
+	 		
+	 			mic_MatMult(u_tmp3,_elem(u_nu_for_mu,i),_elem(Lambda_xplus_muplusnu,i)); 
+	 			mic_MatMult(_elem(ds_u_mu,i),u_tmp3,up_left_corner); 
+
+	 			mic_MatMult(u_tmp3,up_left_corner,_elem(Lambda,i)); 
+	 			mic_MatMult(_elem(ds_tmp_nu,i),u_tmp3,_elem(u[mu],i)); 
+
+	 			mic_MatMult(u_tmp3,low_right_corner,_elem(Lambda,i)); 
+	 			mic_MatMult(_elem(ds_tmp_mu,i),u_tmp3,_elem(u[nu],i)); 
+	 			
+	 			mic_MatMult(u_tmp3,_elem(u_mu_for_nu,i),_elem(Lambda_xplus_muplusnu,i)); 
+	 			mic_MatMult(_elem(ds_u_nu,i),u_tmp3,low_right_corner); 
+
+	 			mic_MatMult(staple_for,_elem(u_nu_for_mu,i),up_left_corner); 
+	 			mic_MatMult(staple_right,up_left_corner,_elem(u[mu],i));
+	 			mic_MatMult(staple_left,_elem(u_mu_for_nu,i),low_right_corner); 
+	 			mic_MatAdjMult(staple_back,_elem(u_nu_for_mu,i),low_left_corner);
+
+	 			mic_AddMatMult(_elem(ds_u_mu,i),staple_for,_elem(Lambda,i)); 
+	 			mic_AddMatMult(_elem(ds_tmp_nu,i),_elem(Lambda_xplus_muplusnu,i),staple_right); 
+	 			mic_AddMatMult(_elem(ds_u_nu,i),staple_left,_elem(Lambda,i)); 
+	 			mic_AddMatMult(_elem(ds_tmp_mu,i),_elem(Lambda_xplus_muplusnu,i),staple_back);
+			}
+		}
+
+		// ODD
+		{
+			const Subset &s=rb[1-cb];
+			const int* tab = s.siteTable().slice();
+
+			U64 &Lambda_xplus_nu=tmp;
+			Lambda_xplus_nu[s] = shift(Lambda, FORWARD, nu);
+
+	#pragma omp parallel for private(staple_for, staple_back, staple_left, staple_right, u_tmp3, up_left_corner, up_right_corner, low_right_corner, low_left_corner)
+			for (int j=0; j < s.numSiteTable(); ++j)
+			{
+				int i = tab[j];
+
+				mic_MatAdjMultAdj(up_left_corner,_elem(u_mu_for_nu,i),_elem(u[nu],i));
+				mic_MatMultAdj(up_right_corner,_elem(u_nu_for_mu,i),_elem(u_mu_for_nu,i)); 
+				mic_MatAdjMultAdj(low_right_corner,_elem(u_nu_for_mu,i),_elem(u[mu],i)); 
+	 			mic_MatAdjMult(low_left_corner,_elem(u[mu],i),_elem(u[nu],i)); 
+	 		
+	 			mic_MatAdjMult(u_tmp3,_elem(u_mu_for_nu,i),_elem(Lambda_xplus_nu,i)); 
+	 			mic_MatMultAdj(_elem(ds_tmp_nu,i),u_tmp3,low_left_corner); 
+	 			
+	 			mic_MatMultAdj(u_tmp3,_elem(Lambda_xplus_nu,i),_elem(u[nu],i)); 
+	 			mic_MatMult(_elem(ds_u_mu,i),up_right_corner,u_tmp3); 
+
+	 			mic_MatAdjMult(u_tmp3,_elem(u_nu_for_mu,i),_elem(Lambda_xplus_mu,i)); 
+	 			mic_MatMult(_elem(ds_tmp_mu,i),u_tmp3,low_left_corner); 
+	 			
+	 			mic_MatAdjMult(u_tmp3,up_right_corner,_elem(Lambda_xplus_mu,i)); 
+	 			mic_MatMultAdj(_elem(ds_u_nu,i),u_tmp3,_elem(u[mu],i)); 
+
+	 			mic_MatMult(staple_for,_elem(u_nu_for_mu,i),up_left_corner); 
+	 			mic_MatMult(staple_right,up_left_corner,_elem(u[mu],i));
+	 			mic_MatMult(staple_left,_elem(u_mu_for_nu,i),low_right_corner); 
+	 			mic_MatAdjMult(staple_back,_elem(u_nu_for_mu,i),low_left_corner);
+
+	 			mic_AddMatMult(_elem(ds_tmp_nu,i),staple_right,_elem(Lambda_xplus_mu,i)); 
+	 			mic_AddMatMult(_elem(ds_u_mu,i),_elem(Lambda_xplus_mu,i),staple_for); 
+	 			mic_AddMatMult(_elem(ds_tmp_mu,i),staple_back,_elem(Lambda_xplus_nu,i)); 
+	 			mic_AddMatMult(_elem(ds_u_nu,i),_elem(Lambda_xplus_nu,i),staple_left); 
+		}
+	}
+
+    // Now shift the accumulated pieces to mu and nu
+    // 
+    // Hope that this is not too slow as an expression
+    ds_u_mu -= shift(ds_tmp_mu, BACKWARD, nu);
+    ds_u_nu -= shift(ds_tmp_nu, BACKWARD, mu); 
+
+    END_CODE();
+  }
+
+#endif
 
 
   //! Take deriv of D
@@ -728,6 +1010,58 @@ namespace Chroma
     // Not sure this is needed here, but will be sure
     (*this).getFermBC().zero(ds_u);
     
+    END_CODE();
+  }
+
+  template<typename T, typename U>
+  void CloverTermBase<T,U>::derivAdd(multi1d<U>& ds_u,
+			     const T& chi, const T& psi,
+			     enum PlusMinus isign, int cb) const
+  {
+    START_CODE();
+
+    // Get the links
+    const multi1d<U>& u = getU();
+
+    // Now compute the insertions
+    for(int mu=0; mu < Nd; mu++) {
+      for(int nu = mu+1; nu < Nd; nu++) {
+
+        // These will be appropriately overwritten - no need to zero them.
+        // Contributions to mu links from mu-nu clover piece
+        // Simon: deriv_loop modified, we do not overwrite and accumulate here,
+        // instead we pass ds_u directly and add to it
+        U ds_tmp_mu;
+
+        // -ve contribs  to the nu_links from the mu-nu clover piece
+        // -ve because of the exchange of gamma_mu gamma_nu <-> gamma_nu gamma_mu
+        U ds_tmp_nu;
+
+        // The weight for the terms
+        Real factor = (Real(-1)/Real(8))*getCloverCoeff(mu,nu);
+
+        // Get gamma_mu gamma_nu psi -- no saving here, from storing shifts because
+        // I now only do every mu, nu pair only once.
+
+        int mu_nu_index = (1 << mu) + (1 << nu); // 2^{mu} 2^{nu}
+        T ferm_tmp;
+        ferm_tmp = Gamma(mu_nu_index)*psi;
+        U s_xy_dag;
+        s_xy_dag = traceSpin( outerProduct(ferm_tmp,chi));
+        s_xy_dag *= Real(factor);
+
+        // Compute contributions
+        deriv_loops(mu, nu, cb, ds_tmp_mu, ds_tmp_nu, s_xy_dag);
+
+        // Accumulate them
+        ds_u[mu] += ds_tmp_mu;
+        ds_u[nu] -= ds_tmp_nu;
+      }
+    }
+
+    // Clear out the deriv on any fixed links
+    (*this).getFermBC().zero(ds_u);
+
     END_CODE();
   }
       

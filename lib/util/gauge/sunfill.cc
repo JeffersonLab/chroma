@@ -80,5 +80,28 @@ namespace Chroma
     END_CODE();
   }
 
+  void
+  sunFill(PColorMatrix<RComplex<REAL>, Nc>& dest,
+	  const multi1d<REAL>& r,
+	  const int i1, const int i2)
+  {
+    START_CODE();
+
+    /* 
+     * Insert the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k 
+     * back into the SU(N) matrix
+     */ 
+
+		PScalar<RComplex<REAL> > one=RComplex<REAL>(1.0, 0.0);  
+		dest = one;
+
+		dest.elem(i1, i1) = RComplex<REAL>( r[0], r[3]);
+		dest.elem(i1, i2) = RComplex<REAL>( r[2], r[1]);
+		dest.elem(i2, i1) = RComplex<REAL>(-r[2], r[1]);
+		dest.elem(i2, i2) = RComplex<REAL>( r[0],-r[3]);
+		
+    END_CODE();
+  }
+
 }  // end namespace Chroma
 

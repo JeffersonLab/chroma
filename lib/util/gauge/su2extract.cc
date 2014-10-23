@@ -9,6 +9,66 @@
 namespace Chroma  
 {
 
+//=========== JB ===============
+
+  void su2Extract_index(const int su2_index, int &i1, int &i2)
+  {
+    /* Determine the SU(N) indices corresponding to the SU(2) indices */
+    /* of the SU(2) subgroup $3 */
+    int found = 0;
+    int del_i = 0;
+    int index = -1;
+
+    while ( del_i < (Nc-1) && found == 0 )
+    {
+      del_i++;
+      for ( i1 = 0; i1 < (Nc-del_i); i1++ )
+      {
+				index++;
+				if ( index == su2_index )
+				{
+					found = 1;
+					break;
+				}
+      }
+    }
+    i2 = i1 + del_i;
+
+    if ( found == 0 )
+    {
+      QDPIO::cerr << __func__ << ": trouble with SU2 subgroup index" << endl;
+      QDP_abort(1);
+    }
+
+  }
+
+  void su2Extract(multi1d<REAL>& r, const PColorMatrix<RComplex<REAL>, Nc>& source,
+	       const int i1, const int i2)
+  {
+    START_CODE();
+
+    if (r.size() != 4)
+    {
+      QDPIO::cerr << "su2Extract: return result invalid size" << endl;
+      QDP_abort(1);
+    }
+
+    /* Compute the b(k) of A_SU(2) = b0 + i sum_k bk sigma_k */ 
+		RComplex<REAL> s11,s12,s21,s22;
+		s11 = source.elem(i1,i1);
+		s12 = source.elem(i1,i2);
+		s21 = source.elem(i2,i1);
+		s22 = source.elem(i2,i2);
+		r[0] = s11.real() + s22.real();
+		r[1] = s12.imag() + s21.imag();
+		r[2] = s12.real() - s21.real();
+		r[3] = s11.imag() - s22.imag();
+		
+    END_CODE();
+  }
+
+//==========================
+
   //! Su2_extract: r_0,r_1,r_2,r_3 <- source(su2_index)  [SU(N) field]  under a subset
   /*! 
    * \ingroup gauge

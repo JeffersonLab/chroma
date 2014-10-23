@@ -38,7 +38,6 @@ namespace Chroma
     
     U tmp_0;
     U tmp_1;
-    U tmp_2;
     U tmp_3;
     U tmp_4;
 
@@ -51,20 +50,21 @@ namespace Chroma
       for(int nu=mu+1; nu < Nd; ++nu)
       {
 	tmp_3 = shift(u[nu], FORWARD, mu);
-	tmp_4 = shift(u[mu], FORWARD, nu);
-	tmp_0 = u[nu] * tmp_4;
+	f[offset] = shift(u[mu], FORWARD, nu);
+	tmp_0 = u[nu] * f[offset];
 	tmp_1 = u[mu] * tmp_3;
+	tmp_4 = f[offset] * adj(tmp_3);
 
 	f[offset] = tmp_1 * adj(tmp_0);
 
-	tmp_2 = adj(tmp_0) * tmp_1;
-	tmp_1 = shift(tmp_2, BACKWARD, nu);
+	tmp_3 = adj(tmp_0) * tmp_1;
+	tmp_1 = shift(tmp_3, BACKWARD, nu);
 	f[offset] += shift(tmp_1, BACKWARD, mu);
-	tmp_1 = tmp_4 * adj(tmp_3);
+
 	tmp_0 = adj(u[nu]) * u[mu];
 
-	f[offset] += shift(tmp_0*adj(tmp_1), BACKWARD, nu);
-	f[offset] += shift(adj(tmp_1)*tmp_0, BACKWARD, mu);
+	f[offset] += shift(tmp_0*adj(tmp_4), BACKWARD, nu);
+	f[offset] += shift(adj(tmp_4)*tmp_0, BACKWARD, mu);
 
 	tmp_0 = adj(f[offset]);
 	f[offset] -= tmp_0;

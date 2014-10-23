@@ -51,6 +51,10 @@ namespace Chroma
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
       push(xml_out, "TwoFlavorExactWilsonTypeFermMonomial");
 
+      // Simon: we do not need this yet, I resize it to 0 to avoid a peak
+      // in memory consumption during linop construction
+      F.resize(0);
+
       /**** Identical code for unprec and even-odd prec case *****/
       
       // S_f  chi^dag*(M^dag*M)^(-1)*chi     
@@ -73,9 +77,6 @@ namespace Chroma
       // Get system solver
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
-      // Need way to get gauge state from AbsFieldState<P,Q>
-      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-
       // Solution to linear system using chrono predictor.
       Phi X;
 
@@ -87,19 +88,26 @@ namespace Chroma
       SystemSolverResults_t res = (*invMdagM)(X, getPhi(), getMDSolutionPredictor());
       QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
 
+      // Simon: not needed anymore, delete it before constructing next linop
+      invMdagM = Handle< MdagMSystemSolver<Phi> > (0);
+
       // Insert vector --  Now done in the syssolver_mdagm
       //(getMDSolutionPredictor()).newVector(X);
       
       Phi Y;
 
+      // Need way to get gauge state from AbsFieldState<P,Q>
+      Handle< DiffLinearOperator<Phi,P,Q> > M(FA.linOp(state));
+      QDPIO::cout << "TwoFlavorExactWilsonTypeFermMonomial->dsdq 4\n";
+
       (*M)(Y, X, PLUS);
 
+      F.resize(Nd);
       M->deriv(F, X, Y, MINUS);
 
       // fold M^dag into X^dag ->  Y  !!
-      P F_tmp;
-      M->deriv(F_tmp, Y, X, PLUS);
-      F += F_tmp;
+      // Simon: we use the new "derivAdd()" to avoid the creating of a temporary
+      M->derivAdd(F, Y, X, PLUS);
  
       for(int mu=0; mu < F.size(); ++mu)
 	F[mu] *= Real(-1);
@@ -481,9 +489,6 @@ namespace Chroma
       // Get system solver
       Handle< MdagMSystemSolver<Phi> > invMdagM(FA.invMdagM(state, getInvParams()));
 
-      //Create LinOp
-      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
-
       P F_tmp;
 
       // Do the force computation. deriv() in these linops refers only
@@ -499,8 +504,14 @@ namespace Chroma
       SystemSolverResults_t res = (*invMdagM)(X, getPhi(),getMDSolutionPredictor());
       QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
 
+      // Simon: we do not need invMdagM anymore => "delete" it, to save memory
+      invMdagM = Handle< MdagMSystemSolver<Phi> > (0);
+
       // Insert vector -- now done in syssolver
       //(getMDSolutionPredictor()).newVector(X);
+
+      //Create LinOp
+      Handle< EvenOddPrecLogDetLinearOperator<Phi,P,Q> > M(FA.linOp(state));
       
       Phi Y;
       (*M)(Y, X, PLUS);
