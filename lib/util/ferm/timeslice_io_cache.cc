@@ -36,7 +36,7 @@ namespace Chroma
     }
     else
     {
-      QDPIO::cout << __func__ << ": found in eigenvector source num_vecs= " << num_vecs << std::endl;
+      QDPIO::cout << __func__ << ": found in eigenstd::vector source num_vecs= " << num_vecs << std::endl;
     }
 
     eigen_cache.resize(num_vecs);
@@ -52,13 +52,13 @@ namespace Chroma
   }
 
 
-  // Get a vector
+  // Get a std::vector
   LatticeColorVector& TimeSliceIOCache::getVec(int colorvec)
   {
     return eigen_cache[colorvec];
   }
 
-  // Get a vector
+  // Get a std::vector
   LatticeColorVector& TimeSliceIOCache::getVec(int t_actual, int colorvec)
   {
     // If not in cache, then retrieve

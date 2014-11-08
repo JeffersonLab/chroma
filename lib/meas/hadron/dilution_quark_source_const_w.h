@@ -144,10 +144,10 @@ namespace Chroma
 	  return quark.time_slices[t0].dilutions[dil].source_header.source.xml;
 	}
 
-      //! Return the diluted source vector
+      //! Return the diluted source std::vector
       LatticeFermion dilutedSource(int t0, int dil) const;
     
-      //! Return the solution vector corresponding to the diluted source
+      //! Return the solution std::vector corresponding to the diluted source
       LatticeFermion dilutedSolution(int t0, int dil) const;
 
     protected:
@@ -168,11 +168,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup hadron */
-  void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, DilutionQuarkSourceConstEnv::Params& param);
 
   //! Writer
   /*! @ingroup hadron */
-  void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const DilutionQuarkSourceConstEnv::Params& param);
 
 } // namespace Chroma
 

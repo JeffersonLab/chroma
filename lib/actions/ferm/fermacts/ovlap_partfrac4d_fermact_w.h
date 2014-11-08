@@ -59,9 +59,9 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup fermacts */
-  void read(XMLReader& xml, const string& path, OvlapPartFrac4DFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, OvlapPartFrac4DFermActParams& param);
   /*! \ingroup fermacts */
-  void write(XMLWriter& xml, const string& path, const OvlapPartFrac4DFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const OvlapPartFrac4DFermActParams& param);
 
 
   //! 4D Zolotarev variant of Overlap-Dirac operator
@@ -108,7 +108,7 @@ namespace Chroma
     EigenConnectState* 
     createState(const multi1d<LatticeColorMatrix>& u, 
 		XMLReader& state_info_xml,
-		const string& state_info_path) const;
+		const std::string& state_info_path) const;
     
     //! Given links, create the state needed for the linear operators
     /*! Override the parent */
@@ -136,7 +136,7 @@ namespace Chroma
     DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action to be applied
-    //  to a vector of known chirality. Chirality is passed in
+    //  to a std::vector of known chirality. Chirality is passed in
     DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state, 
 				      const Chirality& chirality) const;
 
@@ -149,7 +149,7 @@ namespace Chroma
     LinearOperator<T>* lMdagMPrecondition(Handle< FermState<T,P,Q> > state) const;
 
     //! Produce a linear operator M^dag.M for this action to be applied
-    //  to a vector of known chirality. Chirality is passed in
+    //  to a std::vector of known chirality. Chirality is passed in
     LinearOperator<T>* lMdagMPrecondition(Handle< FermState<T,P,Q> > state, 
 					  const Chirality& chirality) const;
 

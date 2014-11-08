@@ -7,7 +7,6 @@
 #include "io/aniso_io.h"
 
 #include "handle.h"
-using namespace std;
 
 namespace Chroma 
 {

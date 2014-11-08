@@ -53,7 +53,7 @@ namespace Chroma
       read(paramtop, "./monomial_list", monomial_list);
     }
     catch ( const std::string& e ) { 
-      QDPIO::cout << "Error reading XML in LatColMatExpSdtIntegratorParams " << e << endl;
+      QDPIO::cout << "Error reading XML in LatColMatExpSdtIntegratorParams " << e << std::endl;
       QDP_abort(1);
     }
   }

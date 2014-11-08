@@ -5,16 +5,15 @@
 
 #include "meas/inline/make_xml_file.h"
 #include <ostream>
-using namespace std;
 
 namespace Chroma
 {
   // Return a xml file name for inline measurements
-  string makeXMLFileName(std::string xml_file, unsigned long update_no)
+  std::string makeXMLFileName(std::string xml_file, unsigned long update_no)
   {
     if (xml_file == "")
     {
-      QDPIO::cerr << __func__ << ": empty xml file" << endl;
+      QDPIO::cerr << __func__ << ": empty xml file" << std::endl;
       QDP_abort(1);
     }
 

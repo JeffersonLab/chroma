@@ -46,9 +46,9 @@ namespace Chroma
     }
     HadronOperator(){;}
   private:
-    string type ;
-    string file ;
-    string name ;
+    std::string type ;
+    std::string file ;
+    std::string name ;
   };
 
 
@@ -61,7 +61,7 @@ namespace Chroma
     public:
       //! Full constructor
       Baryon(const GroupXML_t& p);
-      // Just hand in an identifying string that tells us the  diquark operator
+      // Just hand in an identifying std::string that tells us the  diquark operator
       // The permutations are going to be done at post processing.
 
       //! Compute the operator (no permutations are done)
@@ -74,7 +74,7 @@ namespace Chroma
       Baryon() {}
 
     private:
-      //      string name ;
+      //      std::string name ;
       SpinMatrix DiqGamma ;
     };
 

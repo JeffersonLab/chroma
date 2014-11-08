@@ -33,7 +33,7 @@ void readQpropFollana(char file[], LatticePropagator& quark_prop, bool swap)
   /* Read the file somehow */
 
   for( t = 0; t < latt_size[3]; t++) {  
-    QDPIO::cout << "Reading timeslice: " << t << endl;
+    QDPIO::cout << "Reading timeslice: " << t << std::endl;
 
     for( z = 0; z < latt_size[2]; z++) { 
       for( y = 0; y < latt_size[1]; y++ ) {

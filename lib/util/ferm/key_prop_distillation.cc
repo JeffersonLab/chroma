@@ -18,7 +18,7 @@ namespace Chroma
     os << " spin_src= " << param.spin_src;
     os << " colorvec_src= " << param.colorvec_src;
     os << " mass= " << param.mass;
-    os << endl;
+    os << std::endl;
 
     return os;
   }

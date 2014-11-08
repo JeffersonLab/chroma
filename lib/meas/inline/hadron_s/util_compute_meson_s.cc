@@ -92,7 +92,7 @@ push(xml_out,"Meson_correlators");
   // ---------------------------------------
   pop(xml_out);
 
-  QDPIO::cout << "Computed variational fuzzed mesons"  << endl;
+  QDPIO::cout << "Computed variational fuzzed mesons"  << std::endl;
 
   }
 

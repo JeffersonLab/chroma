@@ -153,18 +153,18 @@ namespace Chroma
       START_CODE();
      
       if( phases_by_pi.size() != (Nd-1) ) { 
-	QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_by_pi. Should be " << Nd-1 << "  but is " << phases_by_pi.size() << endl;
+	QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_by_pi. Should be " << Nd-1 << "  but is " << phases_by_pi.size() << std::endl;
 	QDP_abort(1);
       }
       
       if( phases_dir.size() != (Nd-1) ) { 
-	QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_dir. Should be " << Nd-1 << "  but is " << phases_dir.size() << endl;
+	QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_dir. Should be " << Nd-1 << "  but is " << phases_dir.size() << std::endl;
 	QDP_abort(1);
       }
       
       for(int i=0; i < Nd-1; i++) { 
 	if( toBool( phases_dir[i] < 0 || phases_dir[i] > Nd-1 ) ) { 
-	  QDPIO::cerr << "Invalid value in phases_dir, direction " << i << " should be between 0 and " << Nd-1 << " but is " << phases_dir[i] << endl;
+	  QDPIO::cerr << "Invalid value in phases_dir, direction " << i << " should be between 0 and " << Nd-1 << " but is " << phases_dir[i] << std::endl;
 	}
       }
     

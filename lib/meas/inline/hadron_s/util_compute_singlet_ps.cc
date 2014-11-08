@@ -59,7 +59,7 @@ namespace Chroma {
 
       if((type_of_src == LOCAL_SRC) || (type_of_src == FUZZED_SRC)){
 	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
+	  "util_compute_quark_prop_s.cc" <<std::endl;
 	exit(0);
       }
 
@@ -68,15 +68,15 @@ namespace Chroma {
 
       if (sym_shift){
 	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_singlet_s.cc" <<endl;
+	  "util_compute_singlet_s.cc" <<std::endl;
 	QDPIO::cerr << "symmetric shifts not implemented for LLL " <<
-	  "non-gauge-invariant sources" << endl;
+	  "non-gauge-invariant sources" << std::endl;
 
 	if(type_of_src == LOCAL_SRC){
-	  QDPIO::cerr << "You asked for LOCAL_SRC, sym_shift" << endl;
+	  QDPIO::cerr << "You asked for LOCAL_SRC, sym_shift" << std::endl;
 	}
 	if(type_of_src == FUZZED_SRC){
-	  QDPIO::cerr << "You asked for FUZZED_SRC, sym_shift" << endl;
+	  QDPIO::cerr << "You asked for FUZZED_SRC, sym_shift" << std::endl;
 	}
 
 	exit(0);
@@ -85,7 +85,7 @@ namespace Chroma {
     
       if(type_of_src == GAUGE_INVAR_LOCAL_SOURCE){
 	QDPIO::cout << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
+	  "util_compute_quark_prop_s.cc" <<std::endl;
 	exit(0);
       }
     }
@@ -198,7 +198,7 @@ namespace Chroma {
 
       if((type_of_src == LOCAL_SRC) || (type_of_src == FUZZED_SRC)){
 	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
+	  "util_compute_quark_prop_s.cc" <<std::endl;
 	exit(0);
       }
 
@@ -207,15 +207,15 @@ namespace Chroma {
 
       if (sym_shift){
 	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_singlet_s.cc" <<endl;
+	  "util_compute_singlet_s.cc" <<std::endl;
 	QDPIO::cerr << "symmetric shifts not implemented for LLL " <<
-	  "non-gauge-invariant sources" << endl;
+	  "non-gauge-invariant sources" << std::endl;
 
 	if(type_of_src == LOCAL_SRC){
-	  QDPIO::cerr << "You asked for LOCAL_SRC, sym_shift" << endl;
+	  QDPIO::cerr << "You asked for LOCAL_SRC, sym_shift" << std::endl;
 	}
 	if(type_of_src == FUZZED_SRC){
-	  QDPIO::cerr << "You asked for FUZZED_SRC, sym_shift" << endl;
+	  QDPIO::cerr << "You asked for FUZZED_SRC, sym_shift" << std::endl;
 	}
 
 	exit(0);
@@ -224,7 +224,7 @@ namespace Chroma {
     
       if(type_of_src == GAUGE_INVAR_LOCAL_SOURCE){
 	QDPIO::cout << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
+	  "util_compute_quark_prop_s.cc" <<std::endl;
 	exit(0);
       }
     }

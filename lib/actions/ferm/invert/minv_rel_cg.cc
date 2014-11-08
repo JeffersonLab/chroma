@@ -30,14 +30,14 @@ namespace Chroma {
  *  z[0]   := 1 / (1 - (shift - shift(0))*b) 
  *  bs[0]  := b[0] * z[0]  
  *  r[1] += b[k] A . p[0] ; 	       	      New residual
- *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution vector
+ *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution std::vector
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;        Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       	       CG iterations
  *      a[k] := |r[k]|**2 / |r[k-1]|**2 ;
  *      p[k] := r[k] + a[k] p[k-1];   	       New direction
  *      b[k+1] := |r[k]|**2 / <p[k],Ap[k]> ;
  *      r[k+1] += b[k+1] A . p[k] ; 	       	       New residual
- *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution vector
+ *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution std::vector
  *      IF |[k+1]| <= RsdCG |Chi| THEN RETURN;    Converged?
 
  * Arguments:
@@ -51,8 +51,8 @@ namespace Chroma {
 
   * Local Variables:
 
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -64,7 +64,7 @@ namespace Chroma {
  *  MaxCG       Maximum number of CG iterations allowed
 
  * Subroutines:
- *  A	       Apply matrix hermitian A to vector 
+ *  A	       Apply matrix hermitian A to std::vector 
  */
 
 template<typename T>
@@ -96,7 +96,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
   }
 
 #if 0 
-  QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << endl;
+  QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << std::endl;
 #endif
 
   // We need to make sure, that psi is at least as big as the number
@@ -219,7 +219,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
   bool convP = toBool( c < rsd_sq[isz] );
 
 #if 0 
-  QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << endl;
+  QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << std::endl;
 #endif
 
   //  FOR k FROM 1 TO MaxCG DO
@@ -339,7 +339,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
 
 #if 0	
 	QDPIO::cout << "MInvCG (shift=" << s << ") k = " << k <<"  r =  " 
-		    << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << endl;
+		    << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << std::endl;
 #endif 
 
 	convsP[s] = toBool(  css < rsd_sq[s] );
@@ -365,7 +365,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
 
 #if 0
 	QDPIO::cout  << "MInvCG (shift=" << s << ") k = " << k << " cs = " 
-		     << cs << " d = " << d << endl;
+		     << cs << " d = " << d << std::endl;
 #endif
 #endif
 
@@ -389,7 +389,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
 
     QDPIO::cout << "MInvCG (conv): s = " << s 
                 << " shift = " << shifts[s]
-		<< " r = " <<  Real(sqrt(c)/chi_norm) << endl;
+		<< " r = " <<  Real(sqrt(c)/chi_norm) << std::endl;
 		
   }
   /* end */
@@ -399,7 +399,7 @@ void MInvRelCG_a(const LinearOperator<T>& A,
     QDP_error_exit("too many CG iterationns: %d\n", n_count);
   }
   else {
-    QDPIO::cout << "MinvCG: " << n_count << " iterations" << endl;
+    QDPIO::cout << "MinvCG: " << n_count << " iterations" << std::endl;
   }
 
   END_CODE();

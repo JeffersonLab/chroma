@@ -400,7 +400,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       chi_sq_diff = norm2(tmp1);      // the diff of old and new soln
 
 #if 0
-      QDPIO::cout << "Iter " << k << " || delta Sgn() || " << sqrt(chi_sq_diff) << endl;
+      QDPIO::cout << "Iter " << k << " || delta Sgn() || " << sqrt(chi_sq_diff) << std::endl;
 #endif 
       // Check convergence
       bool btmp = toBool(chi_sq_diff < chi_sq_new);
@@ -423,7 +423,7 @@ void lg5eps::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   }
 
 
-  QDPIO::cout << "Overlap Inner Solve (lg5eps): " << k << " iterations " << endl;
+  QDPIO::cout << "Overlap Inner Solve (lg5eps): " << k << " iterations " << std::endl;
   // End of MULTI SHIFTERY 
 
   END_CODE();

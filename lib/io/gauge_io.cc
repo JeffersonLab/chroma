@@ -20,7 +20,7 @@ namespace Chroma {
 void readGauge(XMLReader& file_xml,
 	       XMLReader& record_xml, 
 	       multi1d<LatticeColorMatrix>& u, 
-	       const string& file, 
+	       const std::string& file, 
 	       QDP_serialparallel_t serpar)
 {
   QDPFileReader to(file_xml,file,serpar);
@@ -37,7 +37,7 @@ void readGauge(XMLReader& file_xml,
   read(to,record_xml,u);
   if (to.bad())
   {
-    QDPIO::cerr << __func__ << ": error reading file " << file << endl;
+    QDPIO::cerr << __func__ << ": error reading file " << file << std::endl;
     QDP_abort(1);
   }
  
@@ -61,14 +61,14 @@ void readGauge(XMLReader& file_xml,
 void writeGauge(XMLBufferWriter& file_xml,
 		XMLBufferWriter& record_xml, 
 		const multi1d<LatticeColorMatrix>& u, 
-		const string& file, 
+		const std::string& file, 
 		QDP_volfmt_t volfmt, 
 		QDP_serialparallel_t serpar)
 {
   QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
   if (to.bad())
   {
-    QDPIO::cerr << __func__ << ": error writing file " << file << endl;
+    QDPIO::cerr << __func__ << ": error writing file " << file << std::endl;
     QDP_abort(1);
   }
 

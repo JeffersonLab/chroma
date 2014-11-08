@@ -31,8 +31,8 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
 
-      GroupXML_t       source_quark_smearing;       /*!< xml string holding smearing params */
-      GroupXML_t       sink_quark_smearing;         /*!< xml string holding smearing params */
+      GroupXML_t       source_quark_smearing;       /*!< xml std::string holding smearing params */
+      GroupXML_t       sink_quark_smearing;         /*!< xml std::string holding smearing params */
       GroupXML_t       link_smearing;               /*!< link smearing xml */
     };
 
@@ -112,11 +112,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup hadron */
-  void read(XMLReader& xml, const string& path, SimpleBaryonOperatorEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, SimpleBaryonOperatorEnv::Params& param);
 
   //! Writer
   /*! @ingroup hadron */
-  void write(XMLWriter& xml, const string& path, const SimpleBaryonOperatorEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const SimpleBaryonOperatorEnv::Params& param);
 
 }  // end namespace Chroma
 

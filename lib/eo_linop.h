@@ -37,23 +37,23 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void evenEvenLinOp(T& chi, const T& psi, 
 			       enum PlusMinus isign) const = 0;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void evenOddLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void oddEvenLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void oddOddLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! User should make sure deriv routines do a resize  */
     virtual void operator() (T& chi, const T& psi, 
 			     enum PlusMinus isign) const
@@ -77,43 +77,43 @@ namespace Chroma
       getFermBC().modifyF(chi, rb[1]);
     }
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void derivEvenEvenLinOp(P& ds_u, 
 				    const T& chi, const T& psi, 
 				    enum PlusMinus isign) const 
     {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDPIO::cerr << "EvenOdd: not implemented" << std::endl;
       QDP_abort(1);
     }
  
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void derivEvenOddLinOp(P& ds_u, 
 				   const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDPIO::cerr << "EvenOdd: not implemented" << std::endl;
       QDP_abort(1);
     }
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void derivOddEvenLinOp(P& ds_u, 
 				   const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDPIO::cerr << "EvenOdd: not implemented" << std::endl;
       QDP_abort(1);
     }
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void derivOddOddLinOp(P& ds_u, 
 				  const T& chi, const T& psi, 
 				  enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDPIO::cerr << "EvenOdd: not implemented" << std::endl;
       QDP_abort(1);
     }
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign) const

@@ -1,5 +1,5 @@
 /*! \file
- * \brief Inline measurement of glueball operators via colorvector matrix elements
+ * \brief Inline measurement of glueball operators via colorstd::vector matrix elements
  */
 
 
@@ -29,7 +29,7 @@ namespace Chroma
   namespace InlineGlueMatElemColorVecEnv 
   { 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -45,7 +45,7 @@ namespace Chroma
       default :
 	/**************************************************************************/
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -60,7 +60,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param)
     {
       push(xml, path);
 
@@ -78,7 +78,7 @@ namespace Chroma
     }
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -88,7 +88,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -100,7 +100,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params& param)
+    void write(XMLWriter& xml, const std::string& path, const Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -190,7 +190,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -250,7 +250,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "GlueMatElemColorVec");
 	write(xml_out, "update_no", update_no);
@@ -293,12 +293,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -312,7 +312,7 @@ namespace Chroma
       push(xml_out, "GlueMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Glue color-vector matrix element" << endl;
+      QDPIO::cout << name << ": Glue color-std::vector matrix element" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -344,7 +344,7 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.param.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << endl;
+	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
 	
 	
 	Handle< LinkSmearing >
@@ -356,7 +356,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -375,7 +375,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("glueElemOp"));
+	write(file_xml, "id", std::string("glueElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -404,7 +404,7 @@ namespace Chroma
       // The creation and annihilation operators are the same without the
       // spin matrices.
       //
-      QDPIO::cout << "Building glue operators" << endl;
+      QDPIO::cout << "Building glue operators" << std::endl;
 
       push(xml_out, "ElementalOps");
 
@@ -417,12 +417,12 @@ namespace Chroma
       {
 	StopWatch watch;
 
-	QDPIO::cout << "Elemental operator: op = " << l << endl;
+	QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
 	// Make sure displacement is something sensible
 	multi1d<int> disp = normDisp(params.param.displacement_list[l]);
 
-	QDPIO::cout << "displacement = " << disp << endl;
+	QDPIO::cout << "displacement = " << disp << std::endl;
 
 	// The first version of this code used just rightNabla instead of leftRightNabla. 
 	// Account for the change in normalization. Namely, for each derivative, multiply by -1/2.
@@ -438,7 +438,7 @@ namespace Chroma
 	for(int mom_num = 0 ; mom_num < phases.numMom() ; ++mom_num) 
 	{
 	  // The keys for the spin and displacements for this particular elemental operator
-	  // Note: the "disp" is actually left-right derivatives. Apply them to the right vector.
+	  // Note: the "disp" is actually left-right derivatives. Apply them to the right std::vector.
 	  // Invert the time - make it an independent key
 	  multi1d<KeyValGlueElementalOperator_t> buf(phases.numSubsets());
 	  for(int t=0; t < phases.numSubsets(); ++t)
@@ -447,7 +447,7 @@ namespace Chroma
 	    buf[t].key.key().mom           = phases.numToMom(mom_num);
 	    buf[t].key.key().left          = 0;    // not used
 	    buf[t].key.key().right         = 0;    // not used
-	    buf[t].key.key().displacement  = disp; // only right colorvector
+	    buf[t].key.key().displacement  = disp; // only right colorstd::vector
 	    buf[t].val.data().op.resize(params.param.num_vecs);
 	  }
 
@@ -456,7 +456,7 @@ namespace Chroma
 	    watch.reset();
 	    watch.start();
 	    
-	    // Apply a left-right derivative onto the right vector. The momentum is required.
+	    // Apply a left-right derivative onto the right std::vector. The momentum is required.
 	    // Multiply by the momentum phase to project onto a definite momentum.
 	    EVPair<LatticeColorVector> tmpvec; eigen_source.get(j,tmpvec);
 	    LatticeColorVector lvec(tmpvec.eigenVector);
@@ -482,7 +482,7 @@ namespace Chroma
 	    }
 	  } // end for j
 
-//	  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
+//	  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << std::endl; 
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
 	    qdp_db.insert(buf[t].key, buf[t].val);
@@ -495,7 +495,7 @@ namespace Chroma
 	QDPIO::cout << "Glue operator= " << l 
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
       } // for l
 
@@ -507,9 +507,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } // func

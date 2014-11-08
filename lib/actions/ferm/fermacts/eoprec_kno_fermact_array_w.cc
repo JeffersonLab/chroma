@@ -78,14 +78,14 @@ namespace Chroma
       //read(paramtop, "N5", N5);
       N5 = coefs.size();
     }
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception : " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception : " << e << std::endl;
     }
   }
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, EvenOddPrecKNOFermActArrayParams& param)
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecKNOFermActArrayParams& param)
   {
     EvenOddPrecKNOFermActArrayParams tmp(xml, path);
     param = tmp;
@@ -105,10 +105,10 @@ namespace Chroma
     c5_arr.resize(N5);
 
 
-    QDPIO::cout << "Initing General NEF Linop: N5=" << N5 <<endl ;
-    QDPIO::cout << "                           a5=" << a5 <<endl ;
+    QDPIO::cout << "Initing General NEF Linop: N5=" << N5 <<std::endl ;
+    QDPIO::cout << "                           a5=" << a5 <<std::endl ;
     for(int i = 0; i < N5; i++)
-      QDPIO::cout<<"                           coef("<<i<<") = "<<coefs[i]<<endl ;
+      QDPIO::cout<<"                           coef("<<i<<") = "<<coefs[i]<<std::endl ;
 
     
     for(int i = 0; i < N5; i++) { 
@@ -116,7 +116,7 @@ namespace Chroma
       c5_arr[i] = Real(0.5)*( coefs[i] -  a5 );
     
       QDPIO::cout << " b5["<< i << "] ="<< b5_arr[i] 
-		  << " c5["<< i << "] ="<< c5_arr[i] << endl;
+		  << " c5["<< i << "] ="<< c5_arr[i] << std::endl;
     }
 
   }

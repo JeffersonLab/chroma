@@ -26,7 +26,7 @@ namespace Chroma
    *  FOR k FROM 1 TO MaxCG DO                    MR iterations
    *      a[k-1]  := <M.r[k-1],r[k-1]> / <M.r[k-1],M.r[k-1]> ;
    *      ap[k-1] := MRovpar * a[k] ;             Overrelaxtion step
-   *      Psi[k]  += ap[k-1] r[k-1] ;   	        New solution vector
+   *      Psi[k]  += ap[k-1] r[k-1] ;   	        New solution std::vector
    *      r[k]    -= ap[k-1] A . r[k-1] ;         New residual
    *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;   Converged?
 
@@ -41,7 +41,7 @@ namespace Chroma
 
    * Local Variables:
 
-   *  r   	Residual vector
+   *  r   	Residual std::vector
    *  cp  	| r[k] |**2
    *  c   	| r[k-1] |**2
    *  k   	MR iteration counter
@@ -57,7 +57,7 @@ namespace Chroma
    *
    * Subroutines:
    *
-   *  M           Apply matrix to vector
+   *  M           Apply matrix to std::vector
    *
    * @{
    */
@@ -88,7 +88,7 @@ namespace Chroma
     Double d;
     int k;
 
-    QDPIO::cout << "InvMR: starting" << endl;
+    QDPIO::cout << "InvMR: starting" << std::endl;
     FlopCounter flopcount;
     flopcount.reset();
     StopWatch swatch;
@@ -111,7 +111,7 @@ namespace Chroma
     Double cp = norm2(r, s);                 /* 2 Nc Ns  flops */
     flopcount.addSiteFlops(4*Nc*Ns, s);
 
-//  QDPIO::cout << "InvMR: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+//  QDPIO::cout << "InvMR: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
 
     /*  IF |r[0]| <= RsdMR |Chi| THEN RETURN; */
     if ( toBool(cp  <=  rsd_sq) )
@@ -156,12 +156,12 @@ namespace Chroma
       /*  cp  =  | r[k] |**2 */
       cp = norm2(r, s);    flopcount.addSiteFlops(4*Nc*Ns,s);
 
-//    QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << endl;
+//    QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << std::endl;
     }
     res.n_count = k;
     res.resid   = sqrt(cp);
     swatch.stop();
-    QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << endl;
+    QDPIO::cout << "InvMR: k = " << k << "  cp = " << cp << std::endl;
     flopcount.report("invmr", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
 
@@ -173,7 +173,7 @@ namespace Chroma
     }
 
     if ( res.n_count == MaxMR )
-      QDPIO::cerr << "Nonconvergence Warning" << endl;
+      QDPIO::cerr << "Nonconvergence Warning" << std::endl;
     
     END_CODE();
     return res;

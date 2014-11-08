@@ -94,20 +94,20 @@ namespace Chroma
       tuning_strategy_xml = os.str();      
     }
     catch( const std::string& e) { 
-      QDPIO::cout << "Caught Exception while reading XML: " << e << endl;
+      QDPIO::cout << "Caught Exception while reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, UnprecOvExtFermActArrayParams& param)
+  void read(XMLReader& xml, const std::string& path, UnprecOvExtFermActArrayParams& param)
   {
     UnprecOvExtFermActArrayParams tmp(xml, path);
     param = tmp;
   }
 
-  void write(XMLWriter& xml, const string& path, const UnprecOvExtFermActArrayParams& p) {
+  void write(XMLWriter& xml, const std::string& path, const UnprecOvExtFermActArrayParams& p) {
     push(xml, path);
     write(xml, "OverMass", p.OverMass);
     write(xml, "b5" , p.b5);
@@ -140,7 +140,7 @@ namespace Chroma
       read(tuning_xml, "/TuningStrategy/Name", strategy_name);
     }
     catch(const std::string& e) { 
-      QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << endl;
+      QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << std::endl;
     }
 
     theTuningStrategy = TheAbsOvExtTuningStrategyFactory::Instance().createObject(strategy_name, tuning_xml, "/TuningStrategy");
@@ -205,7 +205,7 @@ namespace Chroma
 	scale_fac = Real(1) / (param.ApproxMax);
 	eps = (param.ApproxMin) / (param.ApproxMax);
 	
-	QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
+	QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << std::endl;
 	
 	/* Below, when we fill in the coefficents for the partial fraction, 
 	   we include this factor, say t, appropriately, i.e.
@@ -228,7 +228,7 @@ namespace Chroma
 	type = 0;
 	rdata = zolotarev(toFloat(eps), param.RatPolyDeg, type);
 	if( rdata == 0x0 ) { 
-	  QDPIO::cerr << "Failed to get Zolo Coeffs" << endl;
+	  QDPIO::cerr << "Failed to get Zolo Coeffs" << std::endl;
 	  QDP_abort(1);
 	} 
       }
@@ -239,7 +239,7 @@ namespace Chroma
 	scale_fac = Real(1) ;
 	eps = param.ApproxMin;
 	
-	QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << endl;
+	QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << std::endl;
 	
 	/* Below, when we fill in the coefficents for the partial fraction, 
 	   we include this factor, say t, appropriately, i.e.
@@ -258,15 +258,15 @@ namespace Chroma
       break;
 
     default:
-      // The map system should ensure that we never get here but 
+      // The std::map system should ensure that we never get here but 
       // just for style
       QDPIO::cerr << "Unknown coefficient type: " << param.approximation_type
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
     maxerr = (Real)(rdata -> Delta);
-    QDPIO::cout << "Maxerr " << maxerr << flush << endl; 
+    QDPIO::cout << "Maxerr " << maxerr << std::flush << std::endl; 
 
       /* The number of residuals and poles */
       /* Allocate the roots and residua */
@@ -275,7 +275,7 @@ namespace Chroma
     if ( (2*Npoles+1) != getN5FromRatPolyDeg(param.RatPolyDeg)) { 
       QDPIO::cout << "Oops. 2Npoles+1 = " << (2*Npoles+1)
 		  << " but N5=" << getN5FromRatPolyDeg(param.RatPolyDeg)
-		  << " this is inconsitent" << endl;
+		  << " this is inconsitent" << std::endl;
       QDP_abort(1);
     }
 
@@ -303,45 +303,45 @@ namespace Chroma
     QDPIO::cout << "PartFracApprox n=" << param.RatPolyDeg 
 		<<" scale=" << scale_fac
 		<<" Mass=" << param.Mass
-		<< endl;
+		<< std::endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
-      endl;
-    QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << endl;
+      std::endl;
+    QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << std::endl;
   
     switch( param.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
-      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+      QDPIO::cout << "Coefficients from Zolotarev" << std::endl;
 
       if(type == 0) {
 	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
-		    << endl;
+		    << std::endl;
       }
       else {
-	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << std::endl;
       }
 
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
-      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << std::endl;
       break;
 
     default:
       QDPIO::cerr << "Unknown coefficient type " << param.approximation_type 
-		  << endl;
+		  << std::endl;
       break;
     }
 
-    QDPIO::cout << "Number of poles= " << Npoles << endl;
-    QDPIO::cout << "Overall Factor=  " << coeffP << endl;
-    QDPIO::cout << "Numerator coefficients:" << endl;
+    QDPIO::cout << "Number of poles= " << Npoles << std::endl;
+    QDPIO::cout << "Overall Factor=  " << coeffP << std::endl;
+    QDPIO::cout << "Numerator coefficients:" << std::endl;
     for(int n=0; n < Npoles; n++) { 
-      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << endl;
+      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << std::endl;
     }
-    QDPIO::cout << "Denominator roots: " << endl;
+    QDPIO::cout << "Denominator roots: " << std::endl;
     for(int n=0; n < Npoles; n++) { 
-      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
+      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << std::endl;
     }
  
     // Free the arrays allocate by Tony's zolo
@@ -378,7 +378,7 @@ namespace Chroma
       read(tuning_xml, "/TuningStrategy/Name", strategy_name);
     }
     catch(const std::string& e) { 
-      QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << endl;
+      QDPIO::cerr << "Caught exception processing TuningStrategy: " << e << std::endl;
     }
 
 
@@ -462,7 +462,7 @@ namespace Chroma
 //      else
 //      {
 //	QDPIO::cerr << UnprecOvExtFermActArrayEnv::name 
-//		    << "Unsupported inverter type =" << invType << endl;
+//		    << "Unsupported inverter type =" << invType << std::endl;
 //	QDP_abort(1);
 //      }
       

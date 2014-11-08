@@ -62,13 +62,13 @@ namespace Chroma
 
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
 
-  void read(XMLReader& xml, const string& path, PlaqPlusSpatialTwoPlaqGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, PlaqPlusSpatialTwoPlaqGaugeActParams& p) 
   {
     PlaqPlusSpatialTwoPlaqGaugeActParams tmp(xml, path);
     p=tmp;
@@ -90,7 +90,7 @@ namespace Chroma
       param.coeff_plaq_t *= param.aniso.xi_0;
 
     }
-    QDPIO::cout << "aniso.t_dir" << param.aniso.t_dir << endl;
+    QDPIO::cout << "aniso.t_dir" << param.aniso.t_dir << std::endl;
     
     END_CODE();
   }
@@ -108,7 +108,7 @@ namespace Chroma
 		       const Handle< GaugeState<P,Q> >& state,
 		       int mu, int cb) const
   {
-    QDPIO::cerr << "Not implemented " << endl;
+    QDPIO::cerr << "Not implemented " << std::endl;
   }
 
 

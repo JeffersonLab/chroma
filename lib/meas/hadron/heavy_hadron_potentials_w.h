@@ -39,7 +39,7 @@ namespace Chroma
 		 const multi1d<int>& src2, 
 		 const SftMom& phases,
 		 XMLWriter& xml,
-		 const string& xml_group);
+		 const std::string& xml_group);
 
 
   // Data classes
@@ -83,7 +83,7 @@ namespace Chroma
 
       if (ind.size() != 6)
       {
-	QDPIO::cerr << "Incorrect QllBlock index" << endl;
+	QDPIO::cerr << "Incorrect QllBlock index" << std::endl;
 	QDP_abort(1);
       }
     
@@ -186,7 +186,7 @@ namespace Chroma
 
       if (ind.size() != 5)
       {
-	QDPIO::cerr << "Incorrect HeavyMesonBlock index" << endl;
+	QDPIO::cerr << "Incorrect HeavyMesonBlock index" << std::endl;
 	QDP_abort(1);
       }
     

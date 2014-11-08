@@ -9,7 +9,7 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, MultiSysSolverCGParams& param)
+  void read(XMLReader& xml, const std::string& path, MultiSysSolverCGParams& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -18,7 +18,7 @@ namespace Chroma
   }
 
   // Writer parameters
-  void write(XMLWriter& xml, const string& path, const MultiSysSolverCGParams& param)
+  void write(XMLWriter& xml, const std::string& path, const MultiSysSolverCGParams& param)
   {
     push(xml, path);
 
@@ -39,7 +39,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  MultiSysSolverCGParams::MultiSysSolverCGParams(XMLReader& xml, const string& path)
+  MultiSysSolverCGParams::MultiSysSolverCGParams(XMLReader& xml, const std::string& path)
   {
     read(xml, path, *this);
   }

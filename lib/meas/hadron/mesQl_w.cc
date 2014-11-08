@@ -35,7 +35,7 @@ void Qlbar(const multi1d<LatticeColorMatrix>& u,
 	   const multi1d<int>& src_coord, 
 	   const SftMom& phases,
 	   XMLWriter& xml,
-	   const string& xml_group,
+	   const std::string& xml_group,
 	   const int bc)
 {
   START_CODE();
@@ -114,7 +114,7 @@ void QlbarBACK(const multi1d<LatticeColorMatrix>& u,
 	   const multi1d<int>& src_coord, 
 	   const SftMom& phases,
 	   XMLWriter& xml,
-	   const string& xml_group,
+	   const std::string& xml_group,
 	   const int bc)
 {
   START_CODE();

@@ -12,7 +12,7 @@ namespace Chroma
  
   //! Writes a ForceCalc_t
   /*! @ingroup monomial */
-  void write(XMLWriter& xml_out, const string& path, const ForceMonitors& param)
+  void write(XMLWriter& xml_out, const std::string& path, const ForceMonitors& param)
   {
     push(xml_out, path);
     
@@ -114,10 +114,10 @@ namespace Chroma
   }
 
 
-  void monitorForces(XMLWriter& xml_out, const string& path, const multi1d<LatticeColorMatrix>& F)
+  void monitorForces(XMLWriter& xml_out, const std::string& path, const multi1d<LatticeColorMatrix>& F)
   {
     if( ForceMonitorEnv::monitorForcesP == true ) { 
-      QDPIO::cout << "Monitoring force" << endl;
+      QDPIO::cout << "Monitoring force" << std::endl;
       ForceMonitors mon;
       forceMonitorCalc(F, mon);
       write(xml_out, path, mon);

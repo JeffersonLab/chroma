@@ -32,7 +32,7 @@ namespace Chroma {
   };
 
   namespace WaveStateTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -41,10 +41,10 @@ namespace Chroma {
   typedef SingletonHolder<EnumTypeMap<WaveStateType> > theWaveStateTypeMap;
 
   //! Read an WaveStateType enum
-  void read(XMLReader& r, const string& path, WaveStateType& t);
+  void read(XMLReader& r, const std::string& path, WaveStateType& t);
 
   //! Write an WaveStateType enum
-  void write(XMLWriter& w, const string& path, const WaveStateType& t);
+  void write(XMLWriter& w, const std::string& path, const WaveStateType& t);
 
   /*! @} */   // end of group io
 

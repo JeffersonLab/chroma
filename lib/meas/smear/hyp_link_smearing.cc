@@ -14,14 +14,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, HypLinkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, HypLinkSmearingEnv::Params& param)
   {
     HypLinkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const HypLinkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const HypLinkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -63,7 +63,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -96,7 +96,7 @@ namespace Chroma
 	break;
 
       default :
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -107,7 +107,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -135,7 +135,7 @@ namespace Chroma
       // Now hyp smear
       if (params.num_smear > 0)
       {
-	QDPIO::cout << "Hyp Smear gauge field" << endl;
+	QDPIO::cout << "Hyp Smear gauge field" << std::endl;
 
 	for (int n = 0; n < params.num_smear; n++)
 	{
@@ -153,7 +153,7 @@ namespace Chroma
 	  u = u_hyp;
 	}
 
-	QDPIO::cout << "Gauge field Hyp-smeared!" << endl;
+	QDPIO::cout << "Gauge field Hyp-smeared!" << std::endl;
       }
     }
 

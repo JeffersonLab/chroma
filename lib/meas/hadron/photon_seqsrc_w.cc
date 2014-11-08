@@ -10,14 +10,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, PhotonRhoSeqSourceEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, PhotonRhoSeqSourceEnv::Params& param)
   {
     PhotonRhoSeqSourceEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PhotonRhoSeqSourceEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const PhotonRhoSeqSourceEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -77,7 +77,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -91,7 +91,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -107,7 +107,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -135,24 +135,24 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Photon sequential source " << endl;
+      QDPIO::cout << "Photon sequential source " << std::endl;
       setTSrce(forward_headers);
 
       if (quark_propagators.size() != 1)
       {
-	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
 	QDP_abort(1);
       }
 
       if (params.j_decay < 0 || params.j_decay >= Nd)
       {
-	QDPIO::cerr << __func__ << ": j_decay out of bounds: j_decay = " << params.j_decay << endl;
+	QDPIO::cerr << __func__ << ": j_decay out of bounds: j_decay = " << params.j_decay << std::endl;
 	QDP_abort(1);
       }
 
       if (params.pol_dir < 0 || params.pol_dir >= Nd)
       {
-	QDPIO::cerr << __func__ << ": pol_dir out of bounds: pol_dir = " << params.pol_dir << endl;
+	QDPIO::cerr << __func__ << ": pol_dir out of bounds: pol_dir = " << params.pol_dir << std::endl;
 	QDP_abort(1);
       }
 
@@ -166,7 +166,7 @@ namespace Chroma
 	seq_src_tmp = Gamma(15) * adj(tmp) * Gamma(15);
       }
         
-      // Compute 4-vector correction of sink phase and energy exp
+      // Compute 4-std::vector correction of sink phase and energy exp
       LatticeComplex exp_p_dot_x;
       LatticeBoolean mask;
       {
@@ -201,9 +201,9 @@ namespace Chroma
 
 	  omega = sqrt( Real(c_sq/xi_sq)*norm2_ppf - params.Q_sq );
 	}
-	QDPIO::cout << __func__ << ": omega= " << omega << endl;
+	QDPIO::cout << __func__ << ": omega= " << omega << std::endl;
 
-	// Multiply in exp from time dependence of 4-vector
+	// Multiply in exp from time dependence of 4-std::vector
 	// Note positive sign of omega
 	exp_p_dot_x *= exp(omega * Layout::latticeCoordinate(params.j_decay));
 
@@ -214,7 +214,7 @@ namespace Chroma
       }
       
       
-      // Multiply in by exp(4-vector)
+      // Multiply in by exp(4-std::vector)
       LatticePropagator fin = where(mask, 
 				    exp_p_dot_x * seq_src_tmp, 
 				    LatticePropagator(zero));
@@ -233,24 +233,24 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Point split photon sequential source " << endl;
+      QDPIO::cout << "Point split photon sequential source " << std::endl;
       setTSrce(forward_headers);
 
       if (quark_propagators.size() != 1)
       {
-	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
 	QDP_abort(1);
       }
 
       if (params.j_decay < 0 || params.j_decay >= Nd)
       {
-	QDPIO::cerr << __func__ << ": j_decay out of bounds: j_decay = " << params.j_decay << endl;
+	QDPIO::cerr << __func__ << ": j_decay out of bounds: j_decay = " << params.j_decay << std::endl;
 	QDP_abort(1);
       }
 
       if (params.pol_dir < 0 || params.pol_dir >= Nd)
       {
-	QDPIO::cerr << __func__ << ": pol_dir out of bounds: pol_dir = " << params.pol_dir << endl;
+	QDPIO::cerr << __func__ << ": pol_dir out of bounds: pol_dir = " << params.pol_dir << std::endl;
 	QDP_abort(1);
       }
 
@@ -272,7 +272,7 @@ namespace Chroma
 	seq_src_b = P_plus * shift(adj(u[dir]) * quark_propagators[0], BACKWARD, dir);
       }
         
-      // Compute 4-vector correction of sink phase and energy exp
+      // Compute 4-std::vector correction of sink phase and energy exp
       LatticeComplex exp_p_dot_x_f, exp_p_dot_x_b;
       {
 	LatticeReal p_dot_x = zero;
@@ -306,9 +306,9 @@ namespace Chroma
 
 	  omega = sqrt( Real(c_sq/xi_sq)*norm2_ppf - params.Q_sq );
 	}
-	QDPIO::cout << __func__ << ": omega= " << omega << endl;
+	QDPIO::cout << __func__ << ": omega= " << omega << std::endl;
 
-	// Multiply in exp from time dependence of 4-vector
+	// Multiply in exp from time dependence of 4-std::vector
 	// Note positive sign of omega
 	exp_p_dot_x *= exp(omega * Layout::latticeCoordinate(params.j_decay));
 	
@@ -334,7 +334,7 @@ namespace Chroma
       }
       
       
-      // Multiply in by exp(4-vector)
+      // Multiply in by exp(4-std::vector)
       int G5 = Ns*Ns-1;
       LatticePropagator fin = (exp_p_dot_x_f * seq_src_f  -  exp_p_dot_x_b * seq_src_b) * Gamma(G5);
 
@@ -351,11 +351,11 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-PHOTON"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("PION-PHOTON"), 
 										    mesPionPhotonSeqSrc);
 
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("PION-POINT_SPLIT_PHOTON"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("PION-POINT_SPLIT_PHOTON"), 
 										      mesPionPointSplitPhotonSeqSrc);
 
 	registered = true;

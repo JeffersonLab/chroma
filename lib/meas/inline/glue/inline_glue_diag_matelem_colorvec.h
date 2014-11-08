@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Inline measurement of glueball operators via colorvector matrix elements
+ * \brief Inline measurement of glueball operators via colorstd::vector matrix elements
  */
 
 #ifndef __inline_glue_diag_matelem_colorvec_h__
@@ -50,7 +50,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of glueball operators via colorvector matrix elements
+    //! Inline measurement of glueball operators via colorstd::vector matrix elements
     /*! \ingroup inlineglue */
     class InlineMeas : public AbsInlineMeasurement 
     {

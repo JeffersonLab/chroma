@@ -18,7 +18,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace WilsonGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 

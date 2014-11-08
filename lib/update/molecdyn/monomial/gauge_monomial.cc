@@ -20,9 +20,9 @@ namespace Chroma
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
 		multi1d<LatticeColorMatrix> >*
-      createMonomial(XMLReader& xml, const string& path) 
+      createMonomial(XMLReader& xml, const std::string& path) 
       {
-	QDPIO::cout << "Create monomial: " << name << endl;
+	QDPIO::cout << "Create monomial: " << name << std::endl;
 
 	return new GaugeMonomial(GaugeMonomialParams(xml, path));
       }
@@ -50,7 +50,7 @@ namespace Chroma
 
 
   // Read the parameters
-  GaugeMonomialParams::GaugeMonomialParams(XMLReader& xml_in, const string& path)
+  GaugeMonomialParams::GaugeMonomialParams(XMLReader& xml_in, const std::string& path)
   {
     // Get the top of the parameter XML tree
     XMLReader paramtop(xml_in, path);
@@ -63,12 +63,12 @@ namespace Chroma
       gauge_act = os.str();
    
     }
-    catch(const string& s) {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
+    catch(const std::string& s) {
+      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "GaugeMonomialParams: read \n" << gauge_act << endl;
+    QDPIO::cout << "GaugeMonomialParams: read \n" << gauge_act << std::endl;
   }
 
   //! Read Parameters
@@ -84,7 +84,7 @@ namespace Chroma
 	     const GaugeMonomialParams& params) 
   {
     // Not implemented
-    QDPIO::cerr << GaugeMonomialEnv::name << ": write not implemented" << endl;
+    QDPIO::cerr << GaugeMonomialEnv::name << ": write not implemented" << std::endl;
     QDP_abort(1);
   }
 
@@ -101,7 +101,7 @@ namespace Chroma
       read(gaugeact_reader, "/GaugeAction/Name", gaugeact_string);
     }
     catch( const std::string& e) { 
-      QDPIO::cerr << "Error grepping the gaugeact name: " << e<<  endl;
+      QDPIO::cerr << "Error grepping the gaugeact name: " << e<<  std::endl;
       QDP_abort(1);
     }
 

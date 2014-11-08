@@ -13,7 +13,7 @@ namespace Chroma
     os << "KeyTimeSliceColorVec_t:";
     os << " t_slice= " << param.t_slice;
     os << " colorvec= " << param.colorvec;
-    os << endl;
+    os << std::endl;
 
     return os;
   }

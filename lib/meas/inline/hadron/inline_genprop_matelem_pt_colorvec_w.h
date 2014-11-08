@@ -2,7 +2,7 @@
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
- * Generalized propagator calculation on a colorvector
+ * Generalized propagator calculation on a colorstd::vector
  */
 
 #ifndef __inline_genprop_matelem_pt_colorvec_h__

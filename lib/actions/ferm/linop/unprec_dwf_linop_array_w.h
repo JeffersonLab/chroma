@@ -46,7 +46,7 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;
@@ -58,7 +58,7 @@ namespace Chroma
 		enum PlusMinus isign,
 		int s5) const
     {
-      QDPIO::cerr << "Dminus not implemented" << endl;
+      QDPIO::cerr << "Dminus not implemented" << std::endl;
       QDP_abort(1);
     }
 

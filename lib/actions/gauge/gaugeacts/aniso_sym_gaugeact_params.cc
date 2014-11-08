@@ -34,19 +34,19 @@ namespace Chroma
       }
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
 
-  void read(XMLReader& xml, const string& path, AnisoSymGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, AnisoSymGaugeActParams& p) 
   {
     AnisoSymGaugeActParams tmp(xml, path);
     p=tmp;
   }
 
-  void write(XMLWriter& xml, const string& path, const AnisoSymGaugeActParams& param) 
+  void write(XMLWriter& xml, const std::string& path, const AnisoSymGaugeActParams& param) 
   {
     push(xml, path);
 
@@ -80,19 +80,19 @@ namespace Chroma
       read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
 
-  void read(XMLReader& xml, const string& path, AnisoSymSpatialGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, AnisoSymSpatialGaugeActParams& p) 
   {
     AnisoSymSpatialGaugeActParams tmp(xml, path);
     p=tmp;
   }
 
-  void write(XMLWriter& xml, const string& path, const AnisoSymSpatialGaugeActParams& param) 
+  void write(XMLWriter& xml, const std::string& path, const AnisoSymSpatialGaugeActParams& param) 
   {
     push(xml, path);
 

@@ -27,8 +27,8 @@ namespace Chroma
 		const multi1d<Real>& Mass,
 		const int ichiral,
 		XMLWriter& xml_out,
-		const string& xml_group,
-		const string& FermAct);
+		const std::string& xml_group,
+		const std::string& FermAct);
 
 } // end namespace Chroma
 

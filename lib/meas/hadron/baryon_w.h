@@ -39,7 +39,7 @@ void baryon(const LatticePropagator& quark_propagator,
             const SftMom& phases,
             int t0, int bc_spec, bool time_rev,
             XMLWriter& xml,
-	    const string& xml_group);
+	    const std::string& xml_group);
 
 
 //! Baryon 2-pt functions

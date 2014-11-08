@@ -60,7 +60,7 @@ namespace Chroma
 #if 0
     void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
-      QDPIO::cout << "Foo" << endl;
+      QDPIO::cout << "Foo" << std::endl;
       T   tmp1, tmp2,tmp3; moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
 
       switch (isign)
@@ -83,14 +83,14 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
       getFermBC().modifyF(chi);
 
     }
 #endif
-    //! Apply the the space block onto a source vector
+    //! Apply the the space block onto a source std::vector
     //  cb3d is the 3d (rb3) checkerboard of the target
     void Dslash3D(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const {
       Real mhalf=Real(0.5); // Minus sign explicit in the preconditioner. But factor of 2 

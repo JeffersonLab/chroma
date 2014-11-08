@@ -58,7 +58,7 @@ void InvRelCG1_a(const LinearOperator<T>& A,
   Double zeta = Double(1)/c;
 
   QDPIO::cout << "InvRelCG1: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq 
-<< endl;
+<< std::endl;
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
@@ -89,7 +89,7 @@ void InvRelCG1_a(const LinearOperator<T>& A,
     A(tmp,p,PLUS);
     tmp[s] -= q;
     Double tmpnorm=sqrt(norm2(tmp,s));
-    QDPIO::cout << "Inner tol = " << inner_tol << " || Ap - q ||  = " << tmpnorm << endl;
+    QDPIO::cout << "Inner tol = " << inner_tol << " || Ap - q ||  = " << tmpnorm << std::endl;
 #endif 
 
     //  a[k] := | r[k-1] |**2 / < p[k], Ap[k] > ;
@@ -114,7 +114,7 @@ void InvRelCG1_a(const LinearOperator<T>& A,
       LatticeFermion rcheck;
       A(rcheck, psi, PLUS);
       rcheck[s] -= chi;
-      QDPIO::cout << "InvCG1: inter " << k<< " || b - Ax ||^2 = " << norm2(rcheck,s) << " || r ||^2 = " << c << endl;
+      QDPIO::cout << "InvCG1: inter " << k<< " || b - Ax ||^2 = " << norm2(rcheck,s) << " || r ||^2 = " << c << std::endl;
     }
 #endif
 
@@ -135,7 +135,7 @@ void InvRelCG1_a(const LinearOperator<T>& A,
     }
   }
   n_count = MaxCG;
-  QDPIO::cerr << "Nonconvergence Warning: n_count =" << n_count << endl;
+  QDPIO::cerr << "Nonconvergence Warning: n_count =" << n_count << std::endl;
   END_CODE();
 }
 

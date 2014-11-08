@@ -14,24 +14,24 @@ namespace Chroma {
     bool registerAll(void) 
     {
       bool success; 
-      success = theMDIntegratorTypeMap::Instance().registerPair(string("PQP_LEAPFROG"), MD_PQP_LEAPFROG);
-      success &=theMDIntegratorTypeMap::Instance().registerPair(string("QPQ_LEAPFROG"), MD_QPQ_LEAPFROG);
+      success = theMDIntegratorTypeMap::Instance().registerPair(std::string("PQP_LEAPFROG"), MD_PQP_LEAPFROG);
+      success &=theMDIntegratorTypeMap::Instance().registerPair(std::string("QPQ_LEAPFROG"), MD_QPQ_LEAPFROG);
       
       return success;
     }
 
-    const string typeIDString = "MDIntegratorType";
+    const std::string typeIDString = "MDIntegratorType";
     bool registered = registerAll();
   };
 
   using namespace MDIntegratorTypeEnv;
   //! Read an MDIntegratorType enum
-  void read(XMLReader& xml_in,  const string& path, MDIntegratorType& t) {
+  void read(XMLReader& xml_in,  const std::string& path, MDIntegratorType& t) {
     theMDIntegratorTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an MDIntegratorType enum
-  void write(XMLWriter& xml_out, const string& path, const MDIntegratorType& t) {
+  void write(XMLWriter& xml_out, const std::string& path, const MDIntegratorType& t) {
     theMDIntegratorTypeMap::Instance().write(typeIDString,xml_out, path, t);
   }
 };

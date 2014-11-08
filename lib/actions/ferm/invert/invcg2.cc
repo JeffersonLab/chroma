@@ -32,7 +32,7 @@ namespace Chroma
    *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
    *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
    *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
-   *      Psi[k] += a[k] p[k] ;   	       New solution vector
+   *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
    *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
    *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
    *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -49,8 +49,8 @@ namespace Chroma
    *
    * Local Variables:
    *
-   *  p   	       Direction vector
-   *  r   	       Residual vector
+   *  p   	       Direction std::vector
+   *  r   	       Residual std::vector
    *  cp  	       | r[k] |**2
    *  c   	       | r[k-1] |**2
    *  k   	       CG iteration counter
@@ -61,7 +61,7 @@ namespace Chroma
    *
    * Subroutines:
    *                             +               
-   *  A       Apply matrix M or M  to vector
+   *  A       Apply matrix M or M  to std::vector
    *
    * Operations:
    *
@@ -90,7 +90,7 @@ namespace Chroma
 
     chi_internal[s] = chi;
 
-    QDPIO::cout << "InvCG2: starting" << endl;
+    QDPIO::cout << "InvCG2: starting" << std::endl;
     FlopCounter flopcount;
     flopcount.reset();
     StopWatch swatch;
@@ -102,7 +102,7 @@ namespace Chroma
     flopcount.addSiteFlops(4*Nc*Ns,s);
 
 #if 0
-    QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+    QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << std::endl;
 #endif
 
     Double rsd_sq = (RsdCG * RsdCG) * chi_sq;
@@ -124,7 +124,7 @@ namespace Chroma
 
 
 #if 0
-    QDPIO::cout << "InvCG: k = 0  || r ||= " <<sqrt(cp) << endl;
+    QDPIO::cout << "InvCG: k = 0  || r ||= " <<sqrt(cp) << std::endl;
 #endif
 
     //  p[1]  :=  r[0]
@@ -190,14 +190,14 @@ namespace Chroma
       //  IF |r[k]| <= RsdCG |Chi| THEN RETURN;
 
 
-//    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+//    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 
       if ( toBool(cp  <=  rsd_sq) )
       {
 	res.n_count = k;
 	res.resid   = sqrt(cp);
 	swatch.stop();
-	//	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+	//	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 	flopcount.report("invcg2", swatch.getTimeInSeconds());
 	revertFromFastMemoryHint(psi,true);
 
@@ -223,10 +223,10 @@ namespace Chroma
     res.n_count = MaxCG;
     res.resid   = sqrt(cp);
     swatch.stop();
-    QDPIO::cerr << "Nonconvergence Warning" << endl;
+    QDPIO::cerr << "Nonconvergence Warning" << std::endl;
     flopcount.report("invcg2", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
-    QDPIO::cerr << "too many CG iterations: count =" << res.n_count <<" rsd^2= " << cp << endl <<flush;
+    QDPIO::cerr << "too many CG iterations: count =" << res.n_count <<" rsd^2= " << cp << std::endl <<std::flush;
 
     END_CODE();
     return res;

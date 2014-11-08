@@ -75,7 +75,7 @@ namespace Chroma
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, UnprecNEFFermActArrayParams& param)
+  void read(XMLReader& xml, const std::string& path, UnprecNEFFermActArrayParams& param)
   {
     UnprecNEFFermActArrayParams tmp(xml, path);
     param = tmp;

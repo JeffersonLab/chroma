@@ -76,11 +76,11 @@ namespace Chroma
       X[ lin->subset() ] = zero;
 
       // No predictor used here.
-      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
 
       SystemSolverResults_t res = (*invMdagM)(X, getPhi());
-      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << std::endl;
 
       LatticeDouble site_action=zero;
       site_action[ lin->subset() ] = Double(-12);

@@ -53,11 +53,11 @@ namespace Chroma
    * \param u      gauge field (Read)
    */
   void MesPlq(XMLWriter& xml,
-	      const string& xml_group,
+	      const std::string& xml_group,
 	      const multi1d<LatticeColorMatrixF3>& u);
 
   void MesPlq(XMLWriter& xml,
-	      const string& xml_group,
+	      const std::string& xml_group,
 	      const multi1d<LatticeColorMatrixD3>& u);
 
 }  // end namespace Chroma

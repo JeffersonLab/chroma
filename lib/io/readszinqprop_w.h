@@ -15,7 +15,7 @@ namespace Chroma {
  * \param file       path ( Read )
  */    
 
-void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file);
+void readSzinQprop(XMLReader& xml, LatticePropagator& q, const std::string& file);
 
 //! Read a SZIN propagator file. This is a simple memory dump readr.
 /*!
@@ -26,7 +26,7 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file);
  * \param kappa      kappa value (Read)
  */    
 
-void readSzinQprop(LatticePropagator& q, const string& file,
+void readSzinQprop(LatticePropagator& q, const std::string& file,
 		   const Real& kappa);
 
 }  // end namespace Chroma

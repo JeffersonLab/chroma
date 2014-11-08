@@ -27,9 +27,9 @@ namespace Chroma
     GroupXML_t predictor;   // The Chrono Predictor XML
   };
 
-  void read(XMLReader& xml, const string& path, TwoFlavorWilsonTypeFermMonomialParams& param);
+  void read(XMLReader& xml, const std::string& path, TwoFlavorWilsonTypeFermMonomialParams& param);
 
-  void write(XMLWriter& xml, const string& path, const TwoFlavorWilsonTypeFermMonomialParams& params);
+  void write(XMLWriter& xml, const std::string& path, const TwoFlavorWilsonTypeFermMonomialParams& params);
 
 } //end namespace chroma
 

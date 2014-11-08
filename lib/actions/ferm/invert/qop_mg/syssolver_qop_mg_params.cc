@@ -9,7 +9,7 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SysSolverQOPMGParams& param)
+  void read(XMLReader& xml, const std::string& path, SysSolverQOPMGParams& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -84,7 +84,7 @@ namespace Chroma
   }
 
   // Writer parameters
-  void write(XMLWriter& xml, const string& path, const SysSolverQOPMGParams& param)
+  void write(XMLWriter& xml, const std::string& path, const SysSolverQOPMGParams& param)
   {
     push(xml, path);
 
@@ -134,7 +134,7 @@ namespace Chroma
   //}
 
   //! Read parameters
-  SysSolverQOPMGParams::SysSolverQOPMGParams(XMLReader& xml, const string& path)
+  SysSolverQOPMGParams::SysSolverQOPMGParams(XMLReader& xml, const std::string& path)
   {
     read(xml, path, *this);
   }

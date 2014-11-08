@@ -53,7 +53,7 @@ namespace Chroma
 
 
   //! MakeSource input
-  void read(XMLReader& xml, const string& path, InlineMakeSourceParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineMakeSourceParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -62,7 +62,7 @@ namespace Chroma
   }
 
   //! MakeSource output
-  void write(XMLWriter& xml, const string& path, const InlineMakeSourceParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineMakeSourceParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -101,7 +101,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -131,7 +131,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "make_source");
       write(xml_out, "update_no", update_no);
@@ -155,7 +155,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << InlineMakeSourceEnv::name << ": propagator source constructor" << endl;
+    QDPIO::cout << InlineMakeSourceEnv::name << ": propagator source constructor" << std::endl;
 
     StopWatch snoop;
     snoop.reset();
@@ -173,13 +173,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMakeSourceEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineMakeSourceEnv::name << ": error extracting gauge field: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -213,7 +213,7 @@ namespace Chroma
     {
       std::istringstream  xml_s(params.param.source.xml);
       XMLReader  sourcetop(xml_s);
-      QDPIO::cout << "Source = " << params.param.source.id << endl;
+      QDPIO::cout << "Source = " << params.param.source.id << std::endl;
 
       Handle< QuarkSourceConstruction<LatticePropagator> >
 	sourceConstruction(ThePropSourceConstructionFactory::Instance().createObject(params.param.source.id,
@@ -223,7 +223,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << InlineMakeSourceEnv::name << ": Caught Exception creating source: " << e << endl;
+      QDPIO::cerr << InlineMakeSourceEnv::name << ": Caught Exception creating source: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -246,7 +246,7 @@ namespace Chroma
     // Now write the source
     try
     {
-      QDPIO::cout << "Attempt to update source" << endl;
+      QDPIO::cout << "Attempt to update source" << std::endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "make_source");
@@ -269,17 +269,17 @@ namespace Chroma
       TheNamedObjMap::Instance().get(params.named_obj.source_id).setFileXML(file_xml);
       TheNamedObjMap::Instance().get(params.named_obj.source_id).setRecordXML(record_xml);
 
-      QDPIO::cout << "Source successfully update" << endl;
+      QDPIO::cout << "Source successfully update" << std::endl;
     }
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlineMakeSourceEnv::name << ": dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMakeSourceEnv::name << ": error message: " << e << endl;
+      QDPIO::cerr << InlineMakeSourceEnv::name << ": error message: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -291,9 +291,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineMakeSourceEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineMakeSourceEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineMakeSourceEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

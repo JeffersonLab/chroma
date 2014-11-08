@@ -1,5 +1,5 @@
-// 32 BIT Version. Use vector length of 4 (guaranteed OK for LatticeDirac Fermion)
-// for easy vectorization (with suitably good compiler).
+// 32 BIT Version. Use std::vector length of 4 (guaranteed OK for LatticeDirac Fermion)
+// for easy std::vectorization (with suitably good compiler).
 
 inline
 void ord_ib_rxupdate_kernel_real32(int lo, int hi, int my_id, ib_rxupdate_arg<REAL32>* a)
@@ -35,13 +35,13 @@ void ord_ib_rxupdate_kernel_real32(int lo, int hi, int my_id, ib_rxupdate_arg<RE
     }  
   }
   else { 
-    QDPIO::cout << "ord_ib_rxupdate_kernel_generic.h: len not divisible by 4" << endl;
+    QDPIO::cout << "ord_ib_rxupdate_kernel_generic.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
   }
 }
 
-// 64 BIT Version. Use vector length of 2 (guaranteed OK for Complex Numbers)
-// for easy vectorization (with suitably good compiler). Can do function 
+// 64 BIT Version. Use std::vector length of 2 (guaranteed OK for Complex Numbers)
+// for easy std::vectorization (with suitably good compiler). Can do function 
 // overloading so no need to change kernel name
 
 inline
@@ -72,7 +72,7 @@ void ord_ib_rxupdate_kernel_real64(int lo, int hi, int my_id, ib_rxupdate_arg<RE
     }  
   }
   else { 
-    QDPIO::cout << "ord_ib_rxupdate_kernel_generic.h: len not divisible by 2"<<endl;
+    QDPIO::cout << "ord_ib_rxupdate_kernel_generic.h: len not divisible by 2"<<std::endl;
     QDP_abort(1);
   }
 }

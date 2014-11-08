@@ -34,7 +34,7 @@ namespace Chroma
     apend = upper;
     apwidt = apend - apstrt;
     QDPIO::cout << __func__ << ": approximation bounds are [" 
-		<< (double)apstrt << " , " << (double)apend << "]"<< endl;
+		<< (double)apstrt << " , " << (double)apend << "]"<< std::endl;
 
     n = 0;
     d = 0;
@@ -115,13 +115,13 @@ namespace Chroma
 
       if (iter++%100==0) 
 	QDPIO::cout << __func__ << ": Iteration " << iter-1 
-		    << " spread " << spread << " delta " << delta << endl;
+		    << " spread " << spread << " delta " << delta << std::endl;
 
       equations();
 
       if (delta < tolerance)
       {
-	QDPIO::cerr << __func__ << ":Delta too small, try increasing precision" << endl;;
+	QDPIO::cerr << __func__ << ":Delta too small, try increasing precision" << std::endl;;
 	QDP_abort(1);
       }
 
@@ -131,12 +131,12 @@ namespace Chroma
 
     int sign;
     Real error = (Real)getErr(mm[0],sign);
-    QDPIO::cout << __func__ << " Converged at " << iter << " iterations, error = " << error << endl;
+    QDPIO::cout << __func__ << " Converged at " << iter << " iterations, error = " << error << std::endl;
 
     // Once the approximation has been generated, calculate the roots
     if (!root()) 
     {
-      QDPIO::cerr << __func__ << ": Root finding failed" << endl;
+      QDPIO::cerr << __func__ << ": Root finding failed" << std::endl;
       QDP_abort(1);
     }
   
@@ -153,13 +153,13 @@ namespace Chroma
 
     if (n!=d) 
     {
-      QDPIO::cerr << __func__ << ": Cannot handle case: Numerator degree neq Denominator degree" << endl;
+      QDPIO::cerr << __func__ << ": Cannot handle case: Numerator degree neq Denominator degree" << std::endl;
       QDP_abort(1);
     }
 
     if (!alloc) 
     {
-      QDPIO::cerr << __func__ << ": Approximation not yet generated" << endl;
+      QDPIO::cerr << __func__ << ": Approximation not yet generated" << std::endl;
       QDP_abort(1);
     }
 
@@ -193,7 +193,7 @@ namespace Chroma
 
     if (!alloc) 
     {
-      QDPIO::cerr << __func__ << ": Approximation not yet generated" << endl;
+      QDPIO::cerr << __func__ << ": Approximation not yet generated" << std::endl;
       QDP_abort(1);
     }
 
@@ -379,7 +379,7 @@ namespace Chroma
     for (i = 0; i < neq; i++) {	// set up the equations for solution by simq()
       ip = neq * i;		// offset to 1st element of this row of matrix
       x = xx[i];			// the guess for this row
-      y = func(x);		// right-hand-side vector
+      y = func(x);		// right-hand-side std::vector
 
       z = (bigfloat)1l;
       aa = &AA[ip];
@@ -393,13 +393,13 @@ namespace Chroma
 	*aa++ = -y * z;
 	z *= x;
       }
-      BB[i] = y * z;		// Right hand side vector
+      BB[i] = y * z;		// Right hand side std::vector
     }
 
     // Solve the simultaneous linear equations.
     if (simq(AA, BB, param, neq))
     {
-      QDPIO::cerr << __func__ << ": simq failed" << endl;
+      QDPIO::cerr << __func__ << ": simq failed" << std::endl;
       QDP_abort(1);
     }
 
@@ -407,7 +407,7 @@ namespace Chroma
   }
 
   // Evaluate the rational form P(x)/Q(x) using coefficients
-  // from the solution vector param
+  // from the solution std::vector param
   bigfloat RemezGMP::approx(const bigfloat& x) 
   {
     START_CODE();
@@ -480,7 +480,7 @@ namespace Chroma
     bigfloat em, q, rownrm, big, size, pivot, sum;
     bigfloat *aa;
 
-    multi1d<int> IPS(neq);		// simq() work vector
+    multi1d<int> IPS(neq);		// simq() work std::vector
 
     nm1 = n - 1;
     // Initialize IPS and X
@@ -496,7 +496,7 @@ namespace Chroma
       }
       if (rownrm == (bigfloat)0l) 
       {
-	QDPIO::cout << "simq rownrm=0\n" << endl;
+	QDPIO::cout << "simq rownrm=0\n" << std::endl;
 	return(1);
       }
       X[i] = (bigfloat)1.0 / rownrm;
@@ -518,7 +518,7 @@ namespace Chroma
     
       if (big == (bigfloat)0l) 
       {
-	QDPIO::cout << "simq big=0" << endl;
+	QDPIO::cout << "simq big=0" << std::endl;
 	return(2);
       }
       if (idxpiv != k) {
@@ -547,7 +547,7 @@ namespace Chroma
     kpn = n * IPS[n-1] + n - 1;	// last element of IPS[n] th row
     if (A[kpn] == (bigfloat)0l) 
     {
-      QDPIO::cout << "simq A[kpn]=0" << endl;
+      QDPIO::cout << "simq A[kpn]=0" << std::endl;
       return(3);
     }
 
@@ -603,7 +603,7 @@ namespace Chroma
       roots[i] = rtnewt(poly,i+1,lower,upper,tol);
       if (roots[i] == 0.0) 
       {
-	QDPIO::cerr << __func__ << ": Failure to converge on root" << endl;
+	QDPIO::cerr << __func__ << ": Failure to converge on root" << std::endl;
 	return 0;
       }
       poly[0] = -poly[0]/roots[i];
@@ -616,7 +616,7 @@ namespace Chroma
     for (i=d-1; i>=0; i--) {
       poles[i]=rtnewt(poly,i+1,lower,upper,tol);
       if (poles[i] == 0.0) {
-	QDPIO::cerr << __func__ << ": Failure to converge on root" << endl;
+	QDPIO::cerr << __func__ << ": Failure to converge on root" << std::endl;
 	return 0;
       }
       poly[0] = -poly[0]/poles[i];
@@ -624,11 +624,11 @@ namespace Chroma
     }
 
     norm = param[n];
-    QDPIO::cout << __func__ << ": Normalisation constant is " << (double)norm << endl;
+    QDPIO::cout << __func__ << ": Normalisation constant is " << (double)norm << std::endl;
     for (i=0; i<n; i++) 
-      QDPIO::cout << "root[" << i << "] = " << (double)roots[i] << endl;
+      QDPIO::cout << "root[" << i << "] = " << (double)roots[i] << std::endl;
     for (i=0; i<d; i++) 
-      QDPIO::cout << "pole[" << i << "] = " << (double)poles[i] << endl;
+      QDPIO::cout << "pole[" << i << "] = " << (double)poles[i] << std::endl;
 
     END_CODE();
 
@@ -669,10 +669,10 @@ namespace Chroma
       dx = f/df;
       rtn -= dx;
       if ((x1-rtn)*(rtn-x2) < (bigfloat)0.0)
-	QDPIO::cerr << __func__ << ": Jumped out of brackets in rtnewt" << endl;
+	QDPIO::cerr << __func__ << ": Jumped out of brackets in rtnewt" << std::endl;
       if (abs_bf(dx) < xacc) return rtn;
     }
-    QDPIO::cerr << __func__ << ": Maximum number of iterations exceeded in rtnewt" << endl;
+    QDPIO::cerr << __func__ << ": Maximum number of iterations exceeded in rtnewt" << std::endl;
 
     END_CODE();
     return 0.0;
@@ -685,7 +685,7 @@ namespace Chroma
   {
     START_CODE();
 
-//  QDPIO::cout << __func__ << " : enter" << endl;
+//  QDPIO::cout << __func__ << " : enter" << std::endl;
 
     if (res.size() == 0 || poles.size() == 0)
       QDP_error_exit("%s: res or poles not allocated", __func__);
@@ -750,10 +750,10 @@ namespace Chroma
 	res[small] = res[j];
 	res[j] = temp;
       }
-      QDPIO::cout << __func__ << ": Residue = " << (double)res[j] << " Pole = " << (double)poles[j] << endl;
+      QDPIO::cout << __func__ << ": Residue = " << (double)res[j] << " Pole = " << (double)poles[j] << std::endl;
     }
 
-//  QDPIO::cout << __func__ << " : exit" << endl;
+//  QDPIO::cout << __func__ << " : exit" << std::endl;
 
     END_CODE();
   }
@@ -764,7 +764,7 @@ namespace Chroma
   {
     if ((coeff.res.size() != coeff.pole.size()) || coeff.res.size() == 0)
     {
-      QDPIO::cerr << __func__ << ": invalid res and pole" << endl;
+      QDPIO::cerr << __func__ << ": invalid res and pole" << std::endl;
       QDP_abort(1);
     }
 

@@ -37,7 +37,7 @@ namespace Chroma
     //! Virtual destructor to help with cleanup;
     virtual ~SystemSolver() {}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! 
      * Solves   A*psi = chi  or  psi = A^(-1)*chi up to some accuracy.
      * There is the interesting possibility of generalizing to support PLUS/MINUS
@@ -68,7 +68,7 @@ namespace Chroma
     //! Expected length of array index
     virtual int size() const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! 
      * Solves   A*psi = chi  or  psi = A^(-1)*chi up to some accuracy.
      * There is the interesting possibility of generalizing to support PLUS/MINUS
@@ -96,7 +96,7 @@ namespace Chroma
     //! Virtual destructor to help with cleanup;
     virtual ~MultiSystemSolver() {}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! 
      * Solves   A*psi = chi  or  psi = A^(-1)*chi up to some accuracy.
      * There is the interesting possibility of generalizing to support PLUS/MINUS
@@ -132,7 +132,7 @@ namespace Chroma
     //! Expected length of array index
     virtual int size() const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! 
      * Solves   A*psi = chi  or  psi = A^(-1)*chi up to some accuracy.
      * There is the interesting possibility of generalizing to support PLUS/MINUS
@@ -168,7 +168,7 @@ namespace Chroma
     //! Virtual destructor to help with cleanup;
     virtual ~MultiSystemSolverAccumulate() {}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual SystemSolverResults_t operator() (T& psi, 
 					      const Real& norm,
 					      const multi1d<Real>& residues,
@@ -197,7 +197,7 @@ namespace Chroma
     //! Virtual destructor to help with cleanup;
     virtual ~MultiSystemSolverAccumulateArray() {}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual SystemSolverResults_t operator() (multi1d<T>& psi, 
 					      const Real& norm,
 					      const multi1d<Real>& residues,

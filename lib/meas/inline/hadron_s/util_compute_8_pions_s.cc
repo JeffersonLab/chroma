@@ -74,7 +74,7 @@ namespace Chroma {
 
 
 
-    QDPIO::cout << "Computed 8 basic pseudoscalars"  << endl;
+    QDPIO::cout << "Computed 8 basic pseudoscalars"  << std::endl;
 
 
   }

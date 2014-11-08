@@ -41,7 +41,7 @@ namespace Chroma {
 
   namespace CfgTypeEnv { 
     extern bool registered; 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     bool registerAll(void);   // Forward declaration
   }
 
@@ -49,10 +49,10 @@ namespace Chroma {
   typedef SingletonHolder<EnumTypeMap<CfgType> > theCfgTypeMap;
 
   //! read a configuration type enum
-  void read(XMLReader& xml_in, const string& path, CfgType& t);
+  void read(XMLReader& xml_in, const std::string& path, CfgType& t);
 
   //! write a configuration type enum
-  void write(XMLWriter& xml_out, const string& path, const CfgType& t); 
+  void write(XMLWriter& xml_out, const std::string& path, const CfgType& t); 
 
   /*! @} */   // end of group io
 

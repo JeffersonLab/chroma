@@ -57,7 +57,7 @@ namespace Chroma
 
       if( toBool(k1 != 0) ) {
 
-//       QDPIO::cout << "k1 = " << k1 << endl;
+//       QDPIO::cout << "k1 = " << k1 << std::endl;
 
       /* First "plus-plus" 1x1 */
       tmp_1 = u[mu1] * shift(u[nu1], FORWARD, mu1);
@@ -87,7 +87,7 @@ namespace Chroma
 
       if( toBool(k2!=0) ) {
 
-//       QDPIO::cout << "k2 = " << k2 << endl;
+//       QDPIO::cout << "k2 = " << k2 << std::endl;
 
       /* First "plus-plus" 2x2 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
@@ -133,7 +133,7 @@ namespace Chroma
 
       if( toBool(k3!=0) ) {
 
-//       QDPIO::cout << "k3 = " << k3 << endl;
+//       QDPIO::cout << "k3 = " << k3 << std::endl;
 
       /* First "plus-plus" 2x1 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
@@ -204,7 +204,7 @@ namespace Chroma
 
       if( toBool(k4!=0) ) {
 
-//       QDPIO::cout << "k4 = " << k4 << endl;
+//       QDPIO::cout << "k4 = " << k4 << std::endl;
 
       /* First "plus-plus" 3x1 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
@@ -291,7 +291,7 @@ namespace Chroma
 
       if( toBool(kk5!=0) ) {
 
-//       QDPIO::cout << "k5 = " << kk5 << endl;
+//       QDPIO::cout << "k5 = " << kk5 << std::endl;
 
       /* First "plus-plus" 3x3 */
       tmp_1 = u[mu1] * shift(u[mu1], FORWARD, mu1);
@@ -664,7 +664,7 @@ namespace Chroma
 
     /* Topological charge */
     qtop /= ( 16*16*twopi*twopi );
-    QDPIO::cout << "qtop = " << qtop << endl;
+    QDPIO::cout << "qtop = " << qtop << std::endl;
 
     END_CODE();
   }

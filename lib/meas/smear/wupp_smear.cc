@@ -1,6 +1,6 @@
 // $Id: wupp_smear.cc,v 3.2 2009-07-22 02:44:04 edwards Exp $
 /*! \file
- *  \brief 3d Laplacian solution on color vector
+ *  \brief 3d Laplacian solution on color std::vector
  */
 
 #error "THIS CODE IS NOT YET READY"
@@ -17,7 +17,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param width    width of "shell" wave function ( Read )
    *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
    *  \param j_decay  direction of decay ( Read )
@@ -43,7 +43,7 @@ namespace Chroma
   }
 
 
-  //! Do a covariant Gaussian smearing of a lattice color vector field
+  //! Do a covariant Gaussian smearing of a lattice color std::vector field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear
@@ -51,7 +51,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param width    width of "shell" wave function ( Read )
    *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
    *  \param j_decay  direction of decay ( Read )
@@ -67,9 +67,9 @@ namespace Chroma
 
 
 
-  //! Do a covariant Wuppertal smearing of a color vector field
+  //! Do a covariant Wuppertal smearing of a color std::vector field
   /*  u -- gauge field ( Read ) */
-  /*  chi -- color vector field ( Modify ) */
+  /*  chi -- color std::vector field ( Modify ) */
   /*  mass_sq  -- mass_sq of Wuppertal "shell" wave function ( Read ) */
   /*  ItrMax -- maximal number of iterations to invert ( Read ) */
   /*  j_decay  -- direction of decay ( Read ) */

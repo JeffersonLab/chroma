@@ -20,7 +20,7 @@ namespace Chroma
 
 
   //! Read parameters
-  HisqFermActParams::HisqFermActParams(XMLReader& xml, const string& path)
+  HisqFermActParams::HisqFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -41,14 +41,14 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, HisqFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, HisqFermActParams& param)
   {
     HisqFermActParams tmp(xml, path);
     param = tmp;
   }
 
   //! Writer parameters
-  void write(XMLWriter& xml, const string& path, const HisqFermActParams& param)
+  void write(XMLWriter& xml, const std::string& path, const HisqFermActParams& param)
   {
     push(xml, path);
 

@@ -14,7 +14,7 @@
 namespace Chroma
 {
 
-  void read(XMLReader& xml, const string& path, InlinePsiBarPsiEnv::Params::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlinePsiBarPsiEnv::Params::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 	
@@ -38,12 +38,12 @@ namespace Chroma
 	
 	default:
 	  QDPIO::cerr << "InlinePsiBarPsiParams::Param_t: " << version
-		<< " unsupported." << endl;
+		<< " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
   }
   
-  void write(XMLWriter& xml, const string& path, InlinePsiBarPsiEnv::Params::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, InlinePsiBarPsiEnv::Params::Param_t& param)
   {
     push(xml, path);
 	
@@ -58,14 +58,14 @@ namespace Chroma
 	pop(xml);
   }
   
-  void read(XMLReader& xml, const string& path, InlinePsiBarPsiEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlinePsiBarPsiEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 	
 	read(inputtop, "gauge_id", input.gauge_id);
   }
   
-  void write(XMLWriter& xml, const string& path, const InlinePsiBarPsiEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlinePsiBarPsiEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 	
@@ -126,7 +126,7 @@ namespace Chroma
 	}
 	catch(const std::string& e)
 	{
-	  QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
   }
@@ -158,11 +158,11 @@ namespace Chroma
 		TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
 	} 
 	catch ( std::bad_cast ) {
-		QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+		QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 		QDP_abort(1);
 	}
-	catch (const string& e) {
-		QDPIO::cerr << name << ": map call failed: " << e << endl;
+	catch (const std::string& e) {
+		QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 		QDP_abort(1);
 	}
 	 
@@ -174,14 +174,14 @@ namespace Chroma
 	
 	std::istringstream xml_s(params.param.fermact.xml);
 	XMLReader	fermacttop(xml_s);
-	QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
+	QDPIO::cout << "FermAct = " << params.param.fermact.id << std::endl;
 	
 	
 	try
 	{
   StopWatch swatch;
   swatch.reset();
-  QDPIO::cout << "Try the various factories" << endl;
+  QDPIO::cout << "Try the various factories" << std::endl;
   
   typedef LatticeFermion				T;
   typedef multi1d<LatticeColorMatrix>	P;
@@ -194,7 +194,7 @@ namespace Chroma
 									
   Handle< FermState<T,P,Q> > state(S_f->createState(u));
   
-  QDPIO::cout << "Suitable factory found: do the measurements" << endl;
+  QDPIO::cout << "Suitable factory found: do the measurements" << std::endl;
   Handle< SystemSolver<T> > qprop(S_f->qprop(state, params.param.invParam));
   
   swatch.start();
@@ -204,22 +204,22 @@ namespace Chroma
   swatch.stop();
   QDPIO::cout << "PsiBarPsi computed: time= "
 			  << swatch.getTimeInSeconds()
-			  << " secs" << endl;
+			  << " secs" << std::endl;
 	}
 	catch ( std::bad_cast )
 	{
   QDPIO::cerr << name << ": caught dynamic cast error"
-		<< endl;
+		<< std::endl;
   QDP_abort(1);
     }
 	catch (const std::string& e)
 	{
-  QDPIO::cout << name << ": caught exception with fermion action: " << e << endl;
+  QDPIO::cout << name << ": caught exception with fermion action: " << e << std::endl;
     }
 	
 	pop(xml_out);
 	
-	QDPIO::cout << name << ": ran successfully" << endl;
+	QDPIO::cout << name << ": ran successfully" << std::endl;
 	
 	END_CODE();
   } // end func()

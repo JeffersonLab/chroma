@@ -33,16 +33,16 @@ namespace Chroma
   {
   public:
     //! Default constructor
-    DistillutionNoise(const string& ensemble, const string& sequence_label, int decay_dir);
+    DistillutionNoise(const std::string& ensemble, const std::string& sequence_label, int decay_dir);
 
     //! Destructor
     ~DistillutionNoise() {} 
 
     //! Return the ensemble
-    virtual string getEnsemble() const {return ensemble;}
+    virtual std::string getEnsemble() const {return ensemble;}
 
     //! Return the sequence
-    virtual string getSequence() const {return seqno;}
+    virtual std::string getSequence() const {return seqno;}
 
     //! Return the decay direction
     virtual int getDecayDir() const {return decay_dir;}
@@ -59,8 +59,8 @@ namespace Chroma
     virtual multi2d<Complex> getRNG(const DistQuarkLines_t& info) const;
 
   private:
-    string  ensemble;          /*!< Ensemble used for seed of RNG */
-    string  seqno;             /*!< Sequence label used for seed of RNG */
+    std::string  ensemble;          /*!< Ensemble used for seed of RNG */
+    std::string  seqno;             /*!< Sequence label used for seed of RNG */
     int     decay_dir;         /*!< Decay direction */
     int     t_origin;          /*!< Actual time origin */
   };

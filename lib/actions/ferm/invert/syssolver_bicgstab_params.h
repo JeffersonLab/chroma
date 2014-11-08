@@ -26,10 +26,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverBiCGStabParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverBiCGStabParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path, const SysSolverBiCGStabParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SysSolverBiCGStabParams& param);
 
 } // End namespace
 

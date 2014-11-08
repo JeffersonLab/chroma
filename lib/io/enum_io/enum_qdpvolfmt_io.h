@@ -25,7 +25,7 @@ namespace Chroma {
    */
   //! QDP volfmt type
   namespace QDPVolfmtEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -36,10 +36,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read a QDP volume format type
-  void read(XMLReader& r, const string& path, QDP_volfmt_t& t);
+  void read(XMLReader& r, const std::string& path, QDP_volfmt_t& t);
   
   //! Write a QDP volume format type
-  void write(XMLWriter& w, const string& path, const QDP_volfmt_t& t);
+  void write(XMLWriter& w, const std::string& path, const QDP_volfmt_t& t);
 
   /*! @} */   // end of group io
 

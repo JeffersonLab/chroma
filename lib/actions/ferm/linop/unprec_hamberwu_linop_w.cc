@@ -99,10 +99,10 @@ namespace Chroma
 
   //! Derivative of unpreconditioned Hamber-Wu dM/dU
   /*!
-   * \param chi     left vector on cb                           (Read)
-   * \param psi     right vector on 1-cb                        (Read)
+   * \param chi     left std::vector on cb                           (Read)
+   * \param psi     right std::vector on 1-cb                        (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb	    Checkerboard of chi vector                  (Read)
+   * \param cb	    Checkerboard of chi std::vector                  (Read)
    *
    * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */

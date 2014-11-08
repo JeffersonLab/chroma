@@ -81,12 +81,12 @@ namespace Chroma
     virtual void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     //  This varies a lot amongst the families
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     /*! This by the way defines the essence of the preconditioning ie:
      *    M_unprec = C^{-1}_L  M_prec C^{-1}_R
@@ -125,7 +125,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
 
@@ -203,12 +203,12 @@ namespace Chroma
     virtual void rightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     //  This varies a lot amongst the families
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     /*! This by the way defines the essence of the preconditioning ie:
      *    M_unprec = C^{-1}_L  M_prec C^{-1}_R
@@ -243,7 +243,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
 
@@ -330,7 +330,7 @@ namespace Chroma
     virtual void cRightLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
 
-    //! Apply the the space block onto a source vector
+    //! Apply the the space block onto a source std::vector
     virtual void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
     //! Override operator() for particular preconditioning
@@ -362,7 +362,7 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
       
@@ -508,14 +508,14 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
       getFermBC().modifyF(chi);
 
     }
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const
@@ -541,7 +541,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
 
@@ -624,7 +624,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "Bad Case: Should never get here" << endl;
+	QDPIO::cerr << "Bad Case: Should never get here" << std::endl;
 	QDP_abort(1);
       }
 
@@ -751,7 +751,7 @@ namespace Chroma
 
 
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const
     {
       T   tmp1, tmp2; moveToFastMemoryHint(tmp1); moveToFastMemoryHint(tmp2);
@@ -789,14 +789,14 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
 
       getFermBC().modifyF(chi, rb3[1]);
     }
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const
@@ -874,7 +874,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
 
@@ -1058,14 +1058,14 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
       getFermBC().modifyF(chi);
 
     }
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const
@@ -1090,7 +1090,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
 
@@ -1147,7 +1147,7 @@ namespace Chroma
     //! Apply the d/dt of the preconditioned linop
     virtual void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const 
     {
-      QDPIO::cerr << "Not Yet Implemented " << endl;
+      QDPIO::cerr << "Not Yet Implemented " << std::endl;
       QDP_abort(1);
     }
       
@@ -1155,7 +1155,7 @@ namespace Chroma
     //! Get log det ( T^\dag T )
     virtual Double logDetTDagT(void) const
     {
-      QDPIO::cerr << "Not Yet Implemented " << endl;
+      QDPIO::cerr << "Not Yet Implemented " << std::endl;
       QDP_abort(1);
       Double tmp;  // Make compiler happy
       return tmp;
@@ -1164,7 +1164,7 @@ namespace Chroma
     //! Get the force due to the det T^\dag T bit
     virtual void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const 
     {
-      QDPIO::cerr<< "Not Yet Implemented" << endl;
+      QDPIO::cerr<< "Not Yet Implemented" << std::endl;
       QDP_abort(1);
     }
 

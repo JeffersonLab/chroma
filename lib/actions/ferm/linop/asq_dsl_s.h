@@ -77,7 +77,7 @@ namespace Chroma
      *  \param u_triple  triple links					(Read)
      *  \param psi       Pseudofermion field - Source		        (Read)
      *  \param isign     D' or D'^+  ( +1 | -1 ) respectively		(Read)
-     *  \param cb	       Checkerboard of OUTPUT vector			(Read) 
+     *  \param cb	       Checkerboard of OUTPUT std::vector			(Read) 
      */
     void apply (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		enum PlusMinus isign, int cb) const;

@@ -53,7 +53,7 @@ namespace Chroma
 	read(paramtop, "beta_A", beta_A);
       }
       catch( const std::string& e ) { 
-	QDPIO::cerr << "Error reading XML: " <<  e << endl;
+	QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
 	QDP_abort(1);
       }
     }

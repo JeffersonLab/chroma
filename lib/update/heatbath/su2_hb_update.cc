@@ -67,12 +67,12 @@ namespace Chroma
     lbtmp[sub] = (a_abs >= 0);
     lWarning=where(lbtmp,0,1);
     iWarning=toInt(sum(lWarning));
-    if(iWarning>0) QDPIO::cerr <<"wrong a_0!!!"<<endl;
+    if(iWarning>0) QDPIO::cerr <<"wrong a_0!!!"<<std::endl;
     lbtmp = (1>0);
     lbtmp[sub] = (a_abs > fuzz);
     lWarning=where(lbtmp,0,1);
     iWarning=toInt(sum(lWarning));
-    if(iWarning>0) QDPIO::cerr <<"large a_0!!!"<<endl;
+    if(iWarning>0) QDPIO::cerr <<"large a_0!!!"<<std::endl;
     LatticeReal a_r;
     a_r[sub]=sqrt(a_abs);
     random(CosTheta,sub);
@@ -166,7 +166,7 @@ namespace Chroma
       lAccept[sub] = where(lAccept,(1 > 0),(xr4*xr4) < (1.0l-a_0/2.0l));
       ilbtmp[sub]=where(lAccept,1,0); //convert to 1/0
       vol_accept = toInt(sum(ilbtmp));
-      //QDPIO::cout<<vol_accept<<endl;
+      //QDPIO::cout<<vol_accept<<std::endl;
 
     } while ((vol_accept < vol_cb) && ((NmaxHB <= 0) || (n_runs<NmaxHB)));
     a_0=1.0l-a_0;
@@ -180,11 +180,11 @@ namespace Chroma
     const int nodeNumber = Layout::nodeNumber();
     for(int i=0;i<nodeSites;i++) {
       temp=toDouble(peekSite(a0,Layout::siteCoords(nodeNumber,i)));
-      if(temp > fuzz || temp<-fuzz) cout<<temp<<" ";
-      //if(temp > -0.1 && temp <0.01) cout<<temp<<" ";
+      if(temp > fuzz || temp<-fuzz) std::cout<<temp<<" ";
+      //if(temp > -0.1 && temp <0.01) std::cout<<temp<<" ";
       //cout<<temp<<" ";
     }
-    cout<<endl;
+    std::cout<<std::endl;
 
   }
 

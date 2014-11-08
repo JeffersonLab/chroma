@@ -17,7 +17,7 @@ namespace Chroma {
       read( paramtop, "./Name", measurement_name);
     }
     catch(const std::string& e) { 
-      QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+      QDPIO::cerr << "Caught Exception Reading XML: " << e << std::endl;
       QDP_abort(1);
     }
     

@@ -40,7 +40,7 @@ namespace Chroma
 			const multi1d<int>& src,
 			const SftMom& phases,
 			XMLWriter& xml,
-			const string& xml_group);
+			const std::string& xml_group);
 
 
 }

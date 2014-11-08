@@ -70,7 +70,7 @@ namespace Chroma
   {
     if (param.anisoParam.anisoP)
     {
-      QDPIO::cerr << "UnprecW12FermAct::linOp - currently no aniso support" << endl;
+      QDPIO::cerr << "UnprecW12FermAct::linOp - currently no aniso support" << std::endl;
       QDP_abort(1);
     }
 

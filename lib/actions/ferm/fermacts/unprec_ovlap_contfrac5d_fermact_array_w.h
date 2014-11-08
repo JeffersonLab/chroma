@@ -46,10 +46,10 @@ namespace Chroma
   // Reader/writers
 
   //! Read the Continued Fraction parameters 
-  void read(XMLReader& xml, const string& path, UnprecOvlapContFrac5DFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, UnprecOvlapContFrac5DFermActParams& param);
 
   //! Write the Continued Fraction parameters
-  void write(XMLWriter& xml, const string& path, const UnprecOvlapContFrac5DFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const UnprecOvlapContFrac5DFermActParams& param);
 
 
   //! 5D continued fraction overlap action (Borici,Wenger, Edwards)
@@ -103,7 +103,7 @@ namespace Chroma
 			       const Real& m_q,
 			       const GroupXML_t& invParam) const
     {
-      QDPIO::cerr << "linOp4D not implemented" << endl;
+      QDPIO::cerr << "linOp4D not implemented" << std::endl;
       QDP_abort(1);
       return 0;
     }
@@ -130,7 +130,7 @@ namespace Chroma
     OverlapConnectState* 
     createState(const multi1d<LatticeColorMatrix>& u, 
 		XMLReader& state_info_xml,
-		const string& state_info_path) const;
+		const std::string& state_info_path) const;
     
     //! Given links, create the state needed for the linear operators
     /*! Override the parent */

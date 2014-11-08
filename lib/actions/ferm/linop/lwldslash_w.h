@@ -83,7 +83,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      *
      * \return The output of applying dslash on psi
      */
@@ -194,7 +194,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "QDPWilsonDslash: error: fbc is null" << endl;
+      QDPIO::cerr << "QDPWilsonDslash: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -222,7 +222,7 @@ namespace Chroma
    *  \param chi	      Result				                (Write)
    *  \param psi	      Pseudofermion field				(Read)
    *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
-   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector			(Read) 
    */
   template<typename T, typename P, typename Q>
   void 

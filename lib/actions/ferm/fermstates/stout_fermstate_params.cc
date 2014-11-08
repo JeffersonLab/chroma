@@ -46,12 +46,12 @@ namespace Chroma
 	}
 	else { 
 	  // default value for orthog dir is 3 -- smear in space only
-	  QDPIO::cout << "Using Default value: orthog_dir = 3, spatial only smearing" << endl;
+	  QDPIO::cout << "Using Default value: orthog_dir = 3, spatial only smearing" << std::endl;
 	}
 
 	if (paramtop.count("smear_in_this_dirP") > 0)
 	{
-	  QDPIO::cerr << __func__ << ": found a smear_in_this_dirP in version 1. You need version 2 or higher" << endl;
+	  QDPIO::cerr << __func__ << ": found a smear_in_this_dirP in version 1. You need version 2 or higher" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -73,20 +73,20 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
     }
     catch(const std::string& e) 
     { 
-      QDPIO::cout << "Failed to read stout action XML:" << e << endl;
+      QDPIO::cout << "Failed to read stout action XML:" << e << std::endl;
     }
     
 
     // Sanity check
     if (smear_in_this_dirP.size() != Nd)
     {
-      QDPIO::cerr << __func__ << ": invalid size of smear_in_this_dirP, expecting size=Nd" << endl;
+      QDPIO::cerr << __func__ << ": invalid size of smear_in_this_dirP, expecting size=Nd" << std::endl;
       QDP_abort(1);
     }
 

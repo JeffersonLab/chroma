@@ -31,7 +31,7 @@ namespace Chroma {
 
 void wilslp(const multi1d<LatticeColorMatrix>& u,
 	    int j_decay, int t_dir, int kind,
-	    XMLWriter& xml, const string& xml_group);
+	    XMLWriter& xml, const std::string& xml_group);
 
 }  // end namespace Chroma
 

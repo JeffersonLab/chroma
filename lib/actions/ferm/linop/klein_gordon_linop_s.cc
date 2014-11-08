@@ -34,7 +34,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "KleinGordonLinOp: error - fbc is null" << endl;
+      QDPIO::cerr << "KleinGordonLinOp: error - fbc is null" << std::endl;
       QDP_abort(1);
     }
 

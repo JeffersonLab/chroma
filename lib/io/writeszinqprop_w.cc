@@ -20,7 +20,7 @@ namespace Chroma {
  * \param kappa      kappa value (Read)
  */    
 
-void writeSzinQprop(const LatticePropagator& q, const string& file,
+void writeSzinQprop(const LatticePropagator& q, const std::string& file,
 		    const Real& kappa)
 {
   BinaryFileWriter cfg_out(file);

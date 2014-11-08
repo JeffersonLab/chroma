@@ -32,7 +32,7 @@ void ord_xymz_normx_kernel(int lo, int hi, int my_id, ord_xymz_normx_arg* a)
     a->norm_ptr[my_id] = norm;
   }
   else { 
-    QDPIO::cout << "ord_xmyz_normx_kernel_generic.h: len not divisible by 4" << endl;
+    QDPIO::cout << "ord_xmyz_normx_kernel_generic.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
   }
 }

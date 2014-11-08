@@ -367,7 +367,7 @@ namespace Chroma
 
       
 
-      // Replace this with a vector Dslash in time -- done
+      // Replace this with a std::vector Dslash in time -- done
       D.apply(chi,tmp, isign, cb);
       
     }
@@ -377,7 +377,7 @@ namespace Chroma
     { 
       multi1d<LatticeFermion> tmp(N5) ; moveToFastMemoryHint(tmp);
 
-      // Replace this with a vector Dslash in time -- done
+      // Replace this with a std::vector Dslash in time -- done
       D.apply(tmp,psi,isign,cb);
       
 

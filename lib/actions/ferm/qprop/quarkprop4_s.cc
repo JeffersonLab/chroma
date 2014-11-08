@@ -54,7 +54,7 @@ namespace Chroma
     // This version loops over all color and spin indices
     for(int color_source = 0; color_source < Nc; ++color_source)
     {
-      QDPIO::cout<<"quarkprop_s:: doing color  : "<< color_source<<endl;
+      QDPIO::cout<<"quarkprop_s:: doing color  : "<< color_source<<std::endl;
 
       LatticeStaggeredFermion psi = zero;  // note this is ``zero'' and not 0
       LatticeStaggeredFermion chi;

@@ -46,7 +46,7 @@ namespace Chroma
     void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
     //! Derivative of unpreconditioned W12 dM/dU

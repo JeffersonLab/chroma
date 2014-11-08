@@ -63,7 +63,7 @@ namespace Chroma {
 
     if( Nd != 4 ) { 
       QDPIO::cerr << "The no of dimensions should be 4 for now. It is: " 
-		  << Nd << endl;
+		  << Nd << std::endl;
       QDP_abort(1);
     }
 
@@ -73,7 +73,7 @@ namespace Chroma {
       break;
     
     default:
-      QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << endl;
+      QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << std::endl;
       QDP_abort(1);
     };
 
@@ -103,7 +103,7 @@ namespace Chroma {
     pion_index++;
 
     if( pion_index != no_pions ) { 
-      QDPIO::cerr << "Panic! Panic! Something has gone horribly wrong" << endl;
+      QDPIO::cerr << "Panic! Panic! Something has gone horribly wrong" << std::endl;
       QDP_abort(1);
     }
   }
@@ -127,7 +127,7 @@ namespace Chroma {
 
     if( Nd != 4 ) { 
       QDPIO::cerr << "The no of dimensions should be 4 for now. It is: " 
-		  << Nd << endl;
+		  << Nd << std::endl;
       QDP_abort(1);
     }
 
@@ -137,7 +137,7 @@ namespace Chroma {
       break;
     
     default:
-      QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << endl;
+      QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << std::endl;
       QDP_abort(1);
     };
 

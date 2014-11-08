@@ -68,7 +68,7 @@ namespace Chroma
       A(M_), invParam(invParam_)
 
     {
-      QDPIO::cout << "MdagMMultiSysSolverCGQUDAWilson: " << endl;
+      QDPIO::cout << "MdagMMultiSysSolverCGQUDAWilson: " << std::endl;
       // FOLLOWING INITIALIZATION in test QUDA program
 
       // 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
@@ -101,7 +101,7 @@ namespace Chroma
           
       // 2) pull 'new; GAUGE and Invert params
       // 
-      QDPIO::cout << " Calling new QUDA Invert Param" << endl;
+      QDPIO::cout << " Calling new QUDA Invert Param" << std::endl;
       q_gauge_param = newQudaGaugeParam(); 
       quda_inv_param = newQudaInvertParam(); 
 
@@ -180,7 +180,7 @@ namespace Chroma
 
      // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	QDPIO::cout << "Fixing Temporal Gauge" << std::endl;
 	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
@@ -237,7 +237,7 @@ namespace Chroma
 	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
 	break;
       default:
-	QDPIO::cerr << "Only CG Is currently implemented for multi-shift" << endl;
+	QDPIO::cerr << "Only CG Is currently implemented for multi-shift" << std::endl;
 	QDP_abort(1);
 	
 	break;
@@ -259,12 +259,12 @@ namespace Chroma
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
-	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
 
 	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
-	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
        
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
@@ -294,7 +294,7 @@ namespace Chroma
       // Setting GCR Preconditioner to defaults, as we don't use it..
       // This is kinda yucky.
 
-      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
       quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
       quda_inv_param.tol_precondition = 1.0e-1;
       quda_inv_param.maxiter_precondition = 1000;
@@ -322,7 +322,7 @@ namespace Chroma
 
     //! Destructor is automatic
     ~MdagMMultiSysSolverCGQudaWilson() {
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
     }
     
@@ -349,18 +349,18 @@ namespace Chroma
 	multi1d<T> g_psi(psi.size());
 
 	// Gauge Fix source and initial guess
-	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
         g_chi[ rb[1] ]  = GFixMat * chi;
 	for(int s=0; s < psi.size(); s++) {
 	  g_psi[s][ rb[1] ]  = zero; // All initial guesses are zero
 	}
 
-	QDPIO::cout << "Solving" << endl;
+	QDPIO::cout << "Solving" << std::endl;
 	res = qudaInvertMulti(
 			 g_chi,
 			 g_psi,
 			 shifts);      
-	QDPIO::cout << "Untransforming solution." << endl;
+	QDPIO::cout << "Untransforming solution." << std::endl;
 	for(int s=0; s< psi.size(); s++) { 
 	  psi[s][ rb[1]]  = adj(GFixMat)*g_psi[s];
 	}
@@ -394,11 +394,11 @@ namespace Chroma
 
 	  r[ A->subset() ] = chi - tmp2;
 	  r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
-  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << endl;
+  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
         }
       }
-      QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << endl;
- QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << endl;
+      QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
+ QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << std::endl;
       END_CODE();
       
       return res;

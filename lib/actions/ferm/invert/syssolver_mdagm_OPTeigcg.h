@@ -24,7 +24,7 @@
 namespace Chroma
 {
 
-  //! Eigenvector accelerated CG system solver namespace
+  //! Eigenstd::vector accelerated CG system solver namespace
   namespace MdagMSysSolverOptEigCGEnv
   {
     //! Register the syssolver
@@ -100,7 +100,7 @@ namespace Chroma
       close(to);
       swatch.stop();
       QDPIO::cout<<" QIOWriteOptEvecs: Time to write evecs= "
-		 << swatch.getTimeInSeconds() <<" secs "<<endl ;
+		 << swatch.getTimeInSeconds() <<" secs "<<std::endl ;
     }
 
     //-----------------------------------------------------------------------
@@ -133,13 +133,13 @@ namespace Chroma
       read(file_xml, "/OptEigInfo/ncurEvals", obj.ncurEvals);
       read(file_xml, "/OptEigInfo/restartTol", restartTol);
 
-      QDPIO::cout <<__func__ << " : Reading object with following properties"<<endl ; 
-      QDPIO::cout <<__func__ << " :   lde= " << lde << endl;
-      QDPIO::cout <<__func__ << " :   ldh= " << ldh << endl;
-      QDPIO::cout <<__func__ << " :   N  = " << N   << endl;
+      QDPIO::cout <<__func__ << " : Reading object with following properties"<<std::endl ; 
+      QDPIO::cout <<__func__ << " :   lde= " << lde << std::endl;
+      QDPIO::cout <<__func__ << " :   ldh= " << ldh << std::endl;
+      QDPIO::cout <<__func__ << " :   N  = " << N   << std::endl;
 
-      QDPIO::cout << __func__ << " :   ncurEvals  = " << obj.ncurEvals<< endl;
-      QDPIO::cout << __func__ << " :   restartTol = " << restartTol<< endl;
+      QDPIO::cout << __func__ << " :   ncurEvals  = " << obj.ncurEvals<< std::endl;
+      QDPIO::cout << __func__ << " :   restartTol = " << restartTol<< std::endl;
       
       if(obj.evals.size()< obj.ncurEvals){
 	QDPIO::cerr<<__func__<< " : ldh of the current object is not large enough to hold the vectors" ;
@@ -180,7 +180,7 @@ namespace Chroma
 
     swatch.stop();
     QDPIO::cout<<" QIOReadOptEvecs: Time to read evecs= "
-	       << swatch.getTimeInSeconds() <<" secs "<<endl ;
+	       << swatch.getTimeInSeconds() <<" secs "<<std::endl ;
   }
 
     //! Constructor
@@ -205,7 +205,7 @@ namespace Chroma
 	  EigInfo.init(invParam.Neig_max, N, VectorSpaceSize) ;
 	  EigInfo.restartTol =  invParam.restartTol.elem().elem().elem().elem();
 	  if(invParam.file.read){
-	    QDPIO::cout<<"MdagMSysSolverOptEigCG : reading evecs from disk"<<endl ;
+	    QDPIO::cout<<"MdagMSysSolverOptEigCG : reading evecs from disk"<<std::endl ;
 	    QIOReadOptEvecs() ;
 	  }
 	}
@@ -216,7 +216,7 @@ namespace Chroma
     ~MdagMSysSolverOptEigCG()
       {
 	if(invParam.file.write){
-	  QDPIO::cout<<"MdagMSysSolverOptEigCG : writing evecs to disk"<<endl ;
+	  QDPIO::cout<<"MdagMSysSolverOptEigCG : writing evecs to disk"<<std::endl ;
 	  QIOWriteOptEvecs() ;
 	}
 	if (invParam.cleanUpEvecs)

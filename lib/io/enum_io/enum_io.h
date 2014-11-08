@@ -11,7 +11,7 @@
  * \ingroup io
  *
  * Enums used throughout the code and their initialization
- * via maps. This is used for IO.
+ * via std::maps. This is used for IO.
  */
 
 #ifndef enum_io_h

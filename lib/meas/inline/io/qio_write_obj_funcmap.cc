@@ -1,6 +1,6 @@
 // $Id: qio_write_obj_funcmap.cc,v 3.14 2009-01-30 03:42:40 kostas Exp $
 /*! \file
- *  \brief Write object function map
+ *  \brief Write object function std::map
  */
 
 #include "named_obj.h"
@@ -21,7 +21,7 @@
 namespace Chroma
 {
  
-  //! IO function map environment
+  //! IO function std::map environment
   /*! \ingroup inlineio */
   namespace QIOWriteObjCallMapEnv
   { 
@@ -30,8 +30,8 @@ namespace Chroma
     {
       //------------------------------------------------------------------------
       //! Write a propagator
-      void QIOWriteLatProp(const string& buffer_id,
-			   const string& file, 
+      void QIOWriteLatProp(const std::string& buffer_id,
+			   const std::string& file, 
 			   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticePropagator obj;
@@ -48,8 +48,8 @@ namespace Chroma
 
 
       //! Write a single prec propagator
-      void QIOWriteLatPropF(const string& buffer_id,
-			    const string& file, 
+      void QIOWriteLatPropF(const std::string& buffer_id,
+			    const std::string& file, 
 			    QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticePropagatorF obj;
@@ -66,8 +66,8 @@ namespace Chroma
 
 
       //! Write a double prec propagator
-      void QIOWriteLatPropD(const string& buffer_id,
-			    const string& file, 
+      void QIOWriteLatPropD(const std::string& buffer_id,
+			    const std::string& file, 
 			    QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticePropagatorD obj;
@@ -85,8 +85,8 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write a fermion
-      void QIOWriteLatFerm(const string& buffer_id,
-			   const string& file, 
+      void QIOWriteLatFerm(const std::string& buffer_id,
+			   const std::string& file, 
 			   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticeFermion obj;
@@ -106,8 +106,8 @@ namespace Chroma
       // RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
 
       //! Write a single prec fermion
-      void QIOWriteLatFermF(const string& buffer_id,
-			    const string& file, 
+      void QIOWriteLatFermF(const std::string& buffer_id,
+			    const std::string& file, 
 			    QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticeFermionF obj;
@@ -124,8 +124,8 @@ namespace Chroma
 
 
       //! Write a double prec fermion
-      void QIOWriteLatFermD(const string& buffer_id,
-			    const string& file, 
+      void QIOWriteLatFermD(const std::string& buffer_id,
+			    const std::string& file, 
 			    QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticeFermionD obj;
@@ -144,8 +144,8 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write a propagator
-      void QIOWriteLatStagProp(const string& buffer_id,
-			       const string& file, 
+      void QIOWriteLatStagProp(const std::string& buffer_id,
+			       const std::string& file, 
 			       QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticeStaggeredPropagator obj;
@@ -162,8 +162,8 @@ namespace Chroma
 
 
       //! Write a single prec propagator
-      void QIOWriteLatStagPropF(const string& buffer_id,
-				const string& file, 
+      void QIOWriteLatStagPropF(const std::string& buffer_id,
+				const std::string& file, 
 				QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticeStaggeredPropagatorF obj;
@@ -180,8 +180,8 @@ namespace Chroma
 
 
       //! Write a double prec propagator
-      void QIOWriteLatStagPropD(const string& buffer_id,
-				const string& file, 
+      void QIOWriteLatStagPropD(const std::string& buffer_id,
+				const std::string& file, 
 				QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	LatticeStaggeredPropagatorD obj;
@@ -199,8 +199,8 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write a gauge field in floating precision
-      void QIOWriteArrayLatColMat(const string& buffer_id,
-				  const string& file, 
+      void QIOWriteArrayLatColMat(const std::string& buffer_id,
+				  const std::string& file, 
 				  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	multi1d<LatticeColorMatrix> obj;
@@ -216,8 +216,8 @@ namespace Chroma
       }
 
       //! Write a gauge field in single precision
-      void QIOWriteArrayLatColMatF(const string& buffer_id,
-				   const string& file, 
+      void QIOWriteArrayLatColMatF(const std::string& buffer_id,
+				   const std::string& file, 
 				   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	XMLBufferWriter file_xml, record_xml;
@@ -237,8 +237,8 @@ namespace Chroma
       }
 
       //! Write a gauge field in double precision
-      void QIOWriteArrayLatColMatD(const string& buffer_id,
-				   const string& file, 
+      void QIOWriteArrayLatColMatD(const std::string& buffer_id,
+				   const std::string& file, 
 				   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	XMLBufferWriter file_xml, record_xml;
@@ -260,8 +260,8 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write a QQDiquark object in floating precision
-      void QIOWriteQQDiquarkContract(const string& buffer_id,
-				     const string& file, 
+      void QIOWriteQQDiquarkContract(const std::string& buffer_id,
+				     const std::string& file, 
 				     QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	XMLBufferWriter file_xml, record_xml;
@@ -291,7 +291,7 @@ namespace Chroma
 		    // Sanity check - the size better match
 		    if (cnt >= sz_qq)
 		    {
-		      QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << endl;
+		      QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << std::endl;
 		      QDP_abort(1);
 		    }
 
@@ -308,8 +308,8 @@ namespace Chroma
       //-----------------------------------------------------------------------
       //! Write out an EigenInfo Type
       template<typename T>
-      void QIOWriteEigenInfo(const string& buffer_id,
-			     const string& file,
+      void QIOWriteEigenInfo(const std::string& buffer_id,
+			     const std::string& file,
 			     QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO writing
@@ -382,8 +382,8 @@ namespace Chroma
 
       //------------------------------------------------------------------------
       //! Write out an RitzPairs Type
-      void QIOWriteRitzPairsLatticeFermion(const string& buffer_id,
-					   const string& file,
+      void QIOWriteRitzPairsLatticeFermion(const std::string& buffer_id,
+					   const std::string& file,
 					   QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// A shorthand for the object
@@ -401,11 +401,11 @@ namespace Chroma
 	// Open file
 	QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
 
-	// Write a record for each eigenvalue (in xml) and eigenvector
+	// Write a record for each eigenvalue (in xml) and eigenstd::vector
 	for(int i=0; i < obj.Neig; ++i)
 	{
 	  XMLBufferWriter record_xml;
-	  push(record_xml, "Eigenvector");
+	  push(record_xml, "Eigenstd::vector");
 	  write(record_xml, "eigenNum", i);
 	  write(record_xml, "eigenValue", obj.eval.vec[i]);
 	  pop(record_xml);
@@ -418,8 +418,8 @@ namespace Chroma
       }
 
       //----------------------------------------------------------------------
-      void QIOWriteSubsetVectors(const string& buffer_id,
-				 const string& file,
+      void QIOWriteSubsetVectors(const std::string& buffer_id,
+				 const std::string& file,
 				 QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// A shorthand for the object
@@ -460,8 +460,8 @@ namespace Chroma
       //------------------------------------------------------------------------
       //! Write out a MapObject Type
       template<typename K, typename V>
-      void QIOWriteMapObjMemory(const string& buffer_id,
-				const string& file,
+      void QIOWriteMapObjMemory(const std::string& buffer_id,
+				const std::string& file,
 				QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
       {
 	// This is needed for QIO writing
@@ -509,47 +509,47 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 								      QIOWriteLatProp);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagatorF"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticePropagatorF"), 
 								      QIOWriteLatPropF);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticePropagatorD"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticePropagatorD"), 
 								      QIOWriteLatPropD);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermion"), 
 								      QIOWriteLatFerm);
-//      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionF"), 
+//      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermionF"), 
 //								    QIOWriteLatFermF);
-//      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeFermionD"), 
+//      success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermionD"), 
 //								 QIOWriteLatFermD);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredPropagator"), 
 								      QIOWriteLatStagProp);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorF"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredPropagatorF"), 
 								      QIOWriteLatStagPropF);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagatorD"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredPropagatorD"), 
 								      QIOWriteLatStagPropD);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrix"), 
 								      QIOWriteArrayLatColMat);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixF"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrixF"), 
 								      QIOWriteArrayLatColMatF);
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrixD"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrixD"), 
 								      QIOWriteArrayLatColMatD);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("QQDiquarkContract"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("QQDiquarkContract"), 
 								      QIOWriteQQDiquarkContract);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("EigenInfoLatticeFermion"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("EigenInfoLatticeFermion"), 
 								      QIOWriteEigenInfo<LatticeFermion>);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("RitzPairsLatticeFermion"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("RitzPairsLatticeFermion"), 
 								      QIOWriteRitzPairsLatticeFermion);
 	
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("SubsetVectorsLatticeColorVector"), 
 								      QIOWriteSubsetVectors);
 
-	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
+	success &= TheQIOWriteObjFuncMap::Instance().registerFunction(std::string("MapObjMemoryKeyPropColorVecLatticeFermion"), 
 								      QIOWriteMapObjMemory<KeyPropColorVec_t,LatticeFermion>);
 
 	registered = true;

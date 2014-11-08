@@ -12,7 +12,7 @@ namespace Chroma {
      read(paramtop, "monomial_ids", monomial_ids);
    }
    catch(const std::string& e) {
-     QDPIO::cout << "Caught Exception Reading XML: " << e << endl;
+     QDPIO::cout << "Caught Exception Reading XML: " << e << std::endl;
      QDP_abort(1);
    }
  }
@@ -56,19 +56,19 @@ namespace Chroma {
        }
        catch(const std::string& e) { 
 	 QDPIO::cout << "Lookup of " << monomial_ids[i] 
-		     << " failed with error: " << e << endl;
+		     << " failed with error: " << e << std::endl;
 	 QDP_abort(1);
        }
 
        // Now try to cast it to be an ExactMonomial handle
        try { 
-	 QDPIO::cout << "ExactHamiltonian::create(): Trying to bind monomial with ID " << monomial_ids[i] << endl;
+	 QDPIO::cout << "ExactHamiltonian::create(): Trying to bind monomial with ID " << monomial_ids[i] << std::endl;
 	    
 	    
 	 monomials[i] = handle.cast<ExactMon>();
        }
        catch( std::bad_cast ) {
-	 QDPIO::cout << "Failed to cast monomial with ID: " << monomial_ids[i] << " to an ExactMonomial in ExactHamiltonian::create() " << endl;
+	 QDPIO::cout << "Failed to cast monomial with ID: " << monomial_ids[i] << " to an ExactMonomial in ExactHamiltonian::create() " << std::endl;
 	 QDP_abort(1);
        }
      }
@@ -77,7 +77,7 @@ namespace Chroma {
    else { 
      // Case when there are zero monomials to the Hamiltonian
      QDPIO::cout << "Attempting to construct Hamiltonian with 0 monomials." 
-		 << endl;
+		 << std::endl;
      QDP_abort(1);
    }
  }

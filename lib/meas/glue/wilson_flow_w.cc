@@ -75,7 +75,7 @@ namespace Chroma
 	tr = real(sum(trace(tmp))) ; 
 
 	// Real tt = 2.0 * tr ; 
-	//	  cout << "DEBUG " << mu << " " << nu  << " " << tt << endl ;
+	//	  std::cout << "DEBUG " << mu << " " << nu  << " " << tt << std::endl ;
 
 	if (nu==jomit)
 	{
@@ -201,10 +201,10 @@ namespace Chroma
     gactij_vec[0] = gactij ;
     step_vec[0] = 0.0 ;
 
-    //  QDPIO::cout << "WFLOW " << 0.0 << " " << gact4i << " " << gactij <<  endl ; 
+    //  QDPIO::cout << "WFLOW " << 0.0 << " " << gact4i << " " << gactij <<  std::endl ; 
 
-    QDPIO::cout << "START_ANALYZE_wflow" << endl ; 
-    QDPIO::cout << "WFLOW time gact4i gactij" << endl ; 
+    QDPIO::cout << "START_ANALYZE_wflow" << std::endl ; 
+    QDPIO::cout << "WFLOW time gact4i gactij" << std::endl ; 
 
     for(int i=0 ; i < nstep ; ++i)
     {
@@ -216,12 +216,12 @@ namespace Chroma
 
 
       Real xx = (i + 1) * wflow_eps ;
-      QDPIO::cout << "WFLOW " << xx << " " << gact4i << " " << gactij <<  endl ; 
+      QDPIO::cout << "WFLOW " << xx << " " << gact4i << " " << gactij <<  std::endl ; 
 
       step_vec[i+1] = xx ;
 
     }
-    QDPIO::cout << "END_ANALYZE_wflow" << endl ; 
+    QDPIO::cout << "END_ANALYZE_wflow" << std::endl ; 
 
     push(xml, "wilson_flow_results");
     write(xml,"wflow_step",step_vec) ; 

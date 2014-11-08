@@ -3,7 +3,7 @@
 /*! \file
  * \brief Compute the propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
- * Propagator calculation on a colorvector
+ * Propagator calculation on a colorstd::vector
  */
 
 #ifndef __inline_prop_colorvec_w_h__

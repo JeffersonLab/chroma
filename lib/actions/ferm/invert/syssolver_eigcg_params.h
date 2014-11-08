@@ -20,7 +20,7 @@ namespace Chroma
     SysSolverEigCGParams();
     SysSolverEigCGParams(XMLReader& in, const std::string& path);
 
-    string invType ;       /*!< The type of inverter to use */
+    std::string invType ;       /*!< The type of inverter to use */
     
     Real RsdCG ;           /*!< CG residual */
     int  MaxCG ;           /*!< Maximum CG iterations */
@@ -48,11 +48,11 @@ namespace Chroma
 
     //The next two work only with old version of EigCG where the vPrecCG exists
     int   vPrecCGvecs  ; /*!< number of vectors for preconditioned CG (if <=0 do regular CG) */
-    int   vPrecCGvecStart ; /*!< first vector used inpreconditioned CG  */
+    int   vPrecCGvecStart ; /*!< first std::vector used inpreconditioned CG  */
 
 
     bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver */
-    string eigen_id ; /*!< named buffer holding the eigenvectors */
+    std::string eigen_id ; /*!< named buffer holding the eigenvectors */
    
     struct File_t
     {
@@ -93,10 +93,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverEigCGParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverEigCGParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path, const SysSolverEigCGParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SysSolverEigCGParams& param);
 
 } // End namespace
 

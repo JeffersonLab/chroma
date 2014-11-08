@@ -15,12 +15,12 @@ namespace Chroma {
 	read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
-  void read(XMLReader& xml, const string& path, WilsonGaugeActParams& p) {
+  void read(XMLReader& xml, const std::string& path, WilsonGaugeActParams& p) {
     WilsonGaugeActParams tmp(xml, path);
     p=tmp;
   }

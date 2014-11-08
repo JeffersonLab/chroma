@@ -137,7 +137,7 @@ namespace Chroma
       }
       else {
 	
-	QDPIO::cerr << "MdagMMultiSysSolverCGChronoClover: shifts incompatible" << endl;
+	QDPIO::cerr << "MdagMMultiSysSolverCGChronoClover: shifts incompatible" << std::endl;
 	QDP_abort(1);
       }
 
@@ -213,7 +213,7 @@ namespace Chroma
 	
 	chrono.newXVector(psi_d);
 	psi[i][M->subset()] = psi_d;
-	QDPIO::cout << "n_count = " << res_tmp.n_count << endl;
+	QDPIO::cout << "n_count = " << res_tmp.n_count << std::endl;
 	res.n_count += res_tmp.n_count;
       }
       
@@ -236,7 +236,7 @@ namespace Chroma
 	r[ M->subset() ] = chi - tmp2;
 	r_rel[i] = sqrt(norm2(r, M->subset())/chinorm );
 #if 1
-	QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << endl;
+	QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
 #endif
 
       }
@@ -245,8 +245,8 @@ namespace Chroma
 #endif
       swatch.stop();
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "MULTI_CG_CHRONO_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << endl;
- QDPIO::cout << "MULTI_CG_CHRONO_CLOVER_SOLVER: "<<time<< " sec" << endl;
+      QDPIO::cout << "MULTI_CG_CHRONO_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
+ QDPIO::cout << "MULTI_CG_CHRONO_CLOVER_SOLVER: "<<time<< " sec" << std::endl;
       END_CODE();
       
       return res;

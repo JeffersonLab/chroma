@@ -20,9 +20,9 @@ namespace Chroma
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
 		multi1d<LatticeColorMatrix> >*
-      createMonomial(XMLReader& xml, const string& path) 
+      createMonomial(XMLReader& xml, const std::string& path) 
       {
-	QDPIO::cout << "Create monomial: " << name << endl;
+	QDPIO::cout << "Create monomial: " << name << std::endl;
 
 	return new ConstGaugeMonomial(GaugeMonomialParams(xml, path));
       }

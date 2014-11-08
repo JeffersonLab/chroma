@@ -33,7 +33,7 @@ namespace Chroma
 		      const multi1d<LatticeColorMatrix>& u_) : 
       fbc(fbc_), u(u_)
     {
-      QDPIO::cout << "Calling EigenConnectState constructor with no IDs" << endl;
+      QDPIO::cout << "Calling EigenConnectState constructor with no IDs" << std::endl;
       fbc->modify(u);
       eigen_info_id = "";
       Neig = 0;
@@ -48,7 +48,7 @@ namespace Chroma
     {
       fbc->modify(u);
       eigen_info_id = eigen_info_id_;
-      QDPIO::cout << "Creating EigenConnectState using eigen_info_id :" << eigen_info_id << endl << flush ;
+      QDPIO::cout << "Creating EigenConnectState using eigen_info_id :" << eigen_info_id << std::endl << std::flush ;
 
       Neig = TheNamedObjMap::Instance().getData< EigenInfo<T> >(eigen_info_id).getEvalues().size();
       dummy_evecs.resize(0);
@@ -100,7 +100,7 @@ namespace Chroma
 
     Real& getLargest() {
       if (Neig == 0) { 
-	QDPIO::cerr<< "Attempt to call getEvalues() on state with no e-values" << endl;
+	QDPIO::cerr<< "Attempt to call getEvalues() on state with no e-values" << std::endl;
 	QDP_abort(1);
       }
       
@@ -109,7 +109,7 @@ namespace Chroma
 
     const Real& getLargest() const {
       if (Neig == 0) { 
-	QDPIO::cerr<< "Attempt to call getEvalues() on state with no e-values" << endl;
+	QDPIO::cerr<< "Attempt to call getEvalues() on state with no e-values" << std::endl;
 	QDP_abort(1);
       }
       

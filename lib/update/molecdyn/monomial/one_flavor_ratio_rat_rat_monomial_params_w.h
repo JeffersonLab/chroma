@@ -29,10 +29,10 @@ namespace Chroma
   };
 
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, OneFlavorWilsonTypeFermRatioRatRatMonomialParams& param);
+  void read(XMLReader& xml, const std::string& path, OneFlavorWilsonTypeFermRatioRatRatMonomialParams& param);
 
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const OneFlavorWilsonTypeFermRatioRatRatMonomialParams& params);
+  void write(XMLWriter& xml, const std::string& path, const OneFlavorWilsonTypeFermRatioRatRatMonomialParams& params);
 
 } //end namespace chroma
 

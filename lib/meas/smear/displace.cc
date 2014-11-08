@@ -45,7 +45,7 @@ namespace Chroma
   {
     if (dir < 0 || dir >= Nd)
     {
-      QDPIO::cerr << __func__ << ": invalid direction: dir=" << dir << endl;
+      QDPIO::cerr << __func__ << ": invalid direction: dir=" << dir << std::endl;
       QDP_abort(1);
     }
 
@@ -150,7 +150,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Read )
+   *  \param chi      color std::vector field ( Read )
    *  \param length   displacement length - must be greater than zero ( Read )
    *  \param path     array of direction of displacement paths - pos/neg, or zero ( Read )
    *  \param sub      Subset of sites to act ( Read )
@@ -166,7 +166,7 @@ namespace Chroma
   {
     if (displacement_length < 0)
     {
-      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << endl;
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << std::endl;
       QDP_abort(1);
     }
 
@@ -300,7 +300,7 @@ namespace Chroma
   {
     if (displacement_length < 0)
     {
-      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << endl;
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << std::endl;
       QDP_abort(1);
     }
 
@@ -317,7 +317,7 @@ namespace Chroma
       }
       else if (path[i] <= 0)
       {
-        QDPIO::cerr << __func__ << ": invalid path dir=" << path[i] << endl;
+        QDPIO::cerr << __func__ << ": invalid path dir=" << path[i] << std::endl;
         QDP_abort(1);
       }
     }
@@ -406,7 +406,7 @@ namespace Chroma
   {
     if (displacement_length < 0)
     {
-      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << endl;
+      QDPIO::cerr << __func__ << ": invalid length=" << displacement_length << std::endl;
       QDP_abort(1);
     }
 
@@ -423,7 +423,7 @@ namespace Chroma
       }
       else if (path[i] <= 0)
       {
-        QDPIO::cerr << __func__ << ": invalid path dir=" << path[i] << endl;
+        QDPIO::cerr << __func__ << ": invalid path dir=" << path[i] << std::endl;
         QDP_abort(1);
       }
     }
@@ -540,7 +540,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << __func__ << ": invalid direction for E: mu=" << mu << endl;
+      QDPIO::cerr << __func__ << ": invalid direction for E: mu=" << mu << std::endl;
       QDP_abort(1);
     }
 

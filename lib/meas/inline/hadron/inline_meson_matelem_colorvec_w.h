@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: inline_meson_matelem_colorvec_w.h,v 1.3 2008-08-06 17:58:00 edwards Exp $
 /*! \file
- * \brief Inline measurement of meson operators via colorvector matrix elements
+ * \brief Inline measurement of meson operators via colorstd::vector matrix elements
  */
 
 #ifndef __inline_meson_matelem_colorvec_h__
@@ -56,7 +56,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of meson operators via colorvector matrix elements
+    //! Inline measurement of meson operators via colorstd::vector matrix elements
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {

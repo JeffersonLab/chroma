@@ -111,7 +111,7 @@ static void writeSzinHeader(BinaryWriter& cfg_out, const SzinGauge_t& header)
  */    
 
 void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
-	       const string& cfg_file)
+	       const std::string& cfg_file)
 {
   START_CODE();
 
@@ -170,7 +170,7 @@ void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u,
  * \param cfg_file   path ( Read )
  */    
 
-void writeSzin(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void writeSzin(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -198,7 +198,7 @@ void writeSzin(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const strin
 
 void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix>& u, 
 		    int j_decay, int t_start, int t_end, 
-		    const string& cfg_file)
+		    const std::string& cfg_file)
 {
   START_CODE();
 
@@ -245,7 +245,7 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
   {
     QDPIO::cout << " " << header.nrow[j];
   }
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
 
   multi1d<int> lattsize_cb = header.nrow;
   lattsize_cb[0] /= 2;		// Evaluate the coords on the checkerboard lattice
@@ -300,7 +300,7 @@ void writeSzinTrunc(const SzinGauge_t& header0, const multi1d<LatticeColorMatrix
 
 void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 		      int j_decay, int n_replica, 
-		      const string& cfg_file)
+		      const std::string& cfg_file)
 {
   START_CODE();
 

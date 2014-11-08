@@ -205,7 +205,7 @@ namespace Chroma
    */
   template<typename Q>
   void MesPlq_t(XMLWriter& xml, 
-	        const string& xml_group,
+	        const std::string& xml_group,
 	        const multi1d<Q>& u)
   {
     START_CODE();
@@ -266,14 +266,14 @@ namespace Chroma
   }
 
  void MesPlq(XMLWriter& xml, 
-	     const string& xml_group,
+	     const std::string& xml_group,
 	     const multi1d<LatticeColorMatrixF3>& u)
  {
    MesPlq_t(xml, xml_group, u);
  }
 
  void MesPlq(XMLWriter& xml, 
-	        const string& xml_group,
+	        const std::string& xml_group,
 	        const multi1d<LatticeColorMatrixD3>& u)
  {
    MesPlq_t(xml, xml_group, u);

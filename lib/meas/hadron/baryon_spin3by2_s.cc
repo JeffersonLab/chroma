@@ -81,7 +81,7 @@ namespace Chroma {
     double time_in_sec  = swatch.getTimeInSeconds();
 
     QDPIO::cout << "baryon_class7_s took " << time_in_sec
-                << " secs" << endl;
+                << " secs" << std::endl;
 
   }
 
@@ -149,7 +149,7 @@ namespace Chroma {
     double time_in_sec  = swatch.getTimeInSeconds();
 
     QDPIO::cout << "baryon_class7_s took " << time_in_sec
-                << " secs" << endl;
+                << " secs" << std::endl;
 
   }
 
@@ -250,7 +250,7 @@ namespace Chroma {
 
 
     QDPIO::cout << "baryon_class4_s took " << time_in_sec
-                << " secs" << endl;
+                << " secs" << std::endl;
 
 
 

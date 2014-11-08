@@ -22,7 +22,7 @@ namespace Chroma
       vec[i][sub] /= Real(sqrt(norm2(vec[i],sub)));
     }
     if(!(t<=vec.size())){
-      QDPIO::cerr << __func__ << ": f="<<f<<" t="<<t<<" vec.size()="<<vec.size()<<endl;
+      QDPIO::cerr << __func__ << ": f="<<f<<" t="<<t<<" vec.size()="<<vec.size()<<std::endl;
       QDPIO::cerr << __func__ << ": Out of bound!\n";
       exit(1);
     }
@@ -31,7 +31,7 @@ namespace Chroma
       for(int k(0);k<i;k++){
 	DComplex dcc = innerProduct(vec[k], vec[i], sub);
 	Complex cc = dcc;
-	//QDPIO::cout<<"GramS: "<<i<<" "<<k<<" "<<cc<<" "<<dcc<<endl;
+	//QDPIO::cout<<"GramS: "<<i<<" "<<k<<" "<<cc<<" "<<dcc<<std::endl;
 	vec[i][sub] = vec[i]  - cc*vec[k];
       }
       Double in = 1.0/sqrt(norm2(vec[i],sub));
@@ -55,7 +55,7 @@ namespace Chroma
 	vec[i][s][sub] *= in;
     }
     if(!(t<=vec.size2())){
-      QDPIO::cerr << __func__ << ": f="<<f<<" t="<<t<<" vec.size2()="<<vec.size2()<<endl;
+      QDPIO::cerr << __func__ << ": f="<<f<<" t="<<t<<" vec.size2()="<<vec.size2()<<std::endl;
       QDPIO::cerr << __func__ << ": Out of bound!\n";
       exit(1);
     }
@@ -64,7 +64,7 @@ namespace Chroma
       for(int k(0);k<i;k++){
 	DComplex dcc = innerProduct(vec[k], vec[i], sub);
 	Complex cc = dcc;
-	//QDPIO::cout<<"GramS: "<<i<<" "<<k<<" "<<cc<<" "<<dcc<<endl;
+	//QDPIO::cout<<"GramS: "<<i<<" "<<k<<" "<<cc<<" "<<dcc<<std::endl;
 	for(int s=0; s < vec.size1(); ++s)
 	  vec[i][s][sub] = vec[i][s]  - cc*vec[k][s];
       }

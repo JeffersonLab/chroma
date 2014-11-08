@@ -9,7 +9,6 @@
 #include "actions/ferm/invert/quda_solvers/quda_gcr_params.h"
 #include <string>
 #include "handle.h"
-using namespace std;
 
 namespace Chroma 
 {

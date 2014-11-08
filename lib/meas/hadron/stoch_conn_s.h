@@ -84,9 +84,9 @@ namespace Chroma {
 
    void dump(XMLWriter &xml_out, int &i){
 
-      string   tag;
+      std::string   tag;
       char *cnum;
-      string snum;
+      std::string snum;
 
       cnum=(char*)malloc(10*sizeof(char));
 
@@ -95,7 +95,7 @@ namespace Chroma {
       snum=cnum;
       free(cnum);
 
-      string strzeros(6-snum.size(),'0');
+      std::string strzeros(6-snum.size(),'0');
 
       tag = "Meas"+strzeros+snum;
 
@@ -128,7 +128,7 @@ namespace Chroma {
 
       u.resize(4) ; 
       if( uin.size() != 4 ) { 
-	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << endl;
+	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << std::endl;
 	QDP_abort(1);
       };
 
@@ -153,24 +153,24 @@ namespace Chroma {
       switch (type_of_shift)
 	{
 	case NON_GAUGE_INVAR :
-          cout << "ERROR SHIFT: GI\n"  ; exit(0) ;
+          std::cout << "ERROR SHIFT: GI\n"  ; exit(0) ;
 	  //	  return shiftDeltaProp(delta,src) ;
 	  break ;
 	case GAUGE_INVAR :
-          cout << "ERROR SHIFT: GI\n"  ; exit(0) ;
+          std::cout << "ERROR SHIFT: GI\n"  ; exit(0) ;
 	  //	  return shiftDeltaPropCov(delta,src,u,false) ;
 	  break ;
 	case SYM_GAUGE_INVAR :
 	  return shiftDeltaPropCov(delta,src,u,true) ; // symm shifting
 	  break ;
 	case SYM_NON_GAUGE_INVAR:
-          cout << "ERROR SHIFT: SNGI\n"  ; exit(0) ;
+          std::cout << "ERROR SHIFT: SNGI\n"  ; exit(0) ;
 	  //	  return shiftDeltaProp(delta,src,true) ; // symm shifting
 	  break ;
 	default :
 	  /**************************************************************************/
  
-	  QDPIO::cerr << "Shift type " << type_of_shift << " unsupported." << endl;
+	  QDPIO::cerr << "Shift type " << type_of_shift << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -186,9 +186,9 @@ namespace Chroma {
     multi1d<DComplex> corr1 ;
     multi1d<DComplex> corr2 ;
   
-    string outer_tag ; 
-    string inner_tag1 ; 
-    string inner_tag2 ; 
+    std::string outer_tag ; 
+    std::string inner_tag1 ; 
+    std::string inner_tag2 ; 
     multi1d<LatticeColorMatrix> u ; // this should handle or state
 
   private :

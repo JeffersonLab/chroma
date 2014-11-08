@@ -25,14 +25,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, ShellQuarkSourceSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, ShellQuarkSourceSmearingEnv::Params& param)
   {
     ShellQuarkSourceSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const ShellQuarkSourceSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const ShellQuarkSourceSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -104,7 +104,7 @@ namespace Chroma
     }
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -162,7 +162,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -178,7 +178,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -202,7 +202,7 @@ namespace Chroma
     void
     SourceSmearing<LatticePropagator>::operator()(LatticePropagator& quark_source) const
     {
-//      QDPIO::cout << "Shell source smearing" << endl;
+//      QDPIO::cout << "Shell source smearing" << std::endl;
  
       try
       {
@@ -211,7 +211,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-//	const string smear_path = "/SmearingParam";
+//	const std::string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id,
@@ -223,7 +223,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
+//	const std::string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -254,7 +254,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -267,7 +267,7 @@ namespace Chroma
     void
     SourceSmearing<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_source) const
     {
-//      QDPIO::cout << "Shell source smearing" << endl;
+//      QDPIO::cout << "Shell source smearing" << std::endl;
  
       try
       {
@@ -276,7 +276,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-//	const string smear_path = "/SmearingParam";
+//	const std::string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
 	  quarkSmearing(TheStagPropSmearingFactory::Instance().createObject(params.quark_smearing.id,
@@ -288,7 +288,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
+//	const std::string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -319,7 +319,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -331,7 +331,7 @@ namespace Chroma
     void
     SourceSmearing<LatticeFermion>::operator()(LatticeFermion& quark_source) const
     {
-//      QDPIO::cout << "Shell source smearing" << endl;
+//      QDPIO::cout << "Shell source smearing" << std::endl;
  
       try
       {
@@ -340,7 +340,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-//	const string smear_path = "/SmearingParam";
+//	const std::string smear_path = "/SmearingParam";
 	
 	Handle< QuarkSmearing<LatticeFermion> >
 	  quarkSmearing(TheFermSmearingFactory::Instance().createObject(params.quark_smearing.id,
@@ -352,7 +352,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
+//	const std::string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeFermion> >
 	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -383,7 +383,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }

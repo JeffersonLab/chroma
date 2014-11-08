@@ -56,19 +56,19 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
       read(inputtop, "gauge_id", input.gauge_id);
       read(inputtop, "output_file", input.output_file);
-      QDPIO::cout << "Read contraction list" << endl;
+      QDPIO::cout << "Read contraction list" << std::endl;
       input.correlators = readXMLArrayGroup(inputtop, "Contractions", "ContractionType");
-      QDPIO::cout << "Finished reading correlators" << endl;
+      QDPIO::cout << "Finished reading correlators" << std::endl;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -112,7 +112,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -141,7 +141,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "HadronContract");
 	write(xml_out, "update_no", update_no);
@@ -179,13 +179,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineHadronContractEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineHadronContractEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineHadronContractEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -196,12 +196,12 @@ namespace Chroma
 
       QDPIO::cout << InlineHadronContractEnv::name 
 		  << ": hadron contracts and spectroscopy for any type of fermion" 
-		  << endl;
+		  << std::endl;
       QDPIO::cout << "    Volume: " << Layout::lattSize()[0];
       for (int i=1; i<Nd; ++i) {
 	QDPIO::cout << " x " << Layout::lattSize()[i];
       }
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -242,8 +242,8 @@ namespace Chroma
 	// Factory construction
 	try
 	{
-//	  QDPIO::cout << "xml input = XX" << had_xml.xml << "XX" << endl;
-	  QDPIO::cout << "Contractions for id = " << had_xml.id << endl;
+//	  QDPIO::cout << "xml input = XX" << had_xml.xml << "XX" << std::endl;
+	  QDPIO::cout << "Contractions for id = " << had_xml.id << std::endl;
 
 	  // Create and use the hadron 2pt object
 	  std::istringstream  xml_s(had_xml.xml);
@@ -256,12 +256,12 @@ namespace Chroma
 	      had_xml.path));
 
 	  // Compute possibly several correlators
-	  QDPIO::cout << InlineHadronContractEnv::name << ": start list" << endl;
+	  QDPIO::cout << InlineHadronContractEnv::name << ": start list" << std::endl;
 
 	  std::list< Handle<HadronContractResult_t> > hadron_cont =
 	    (*hadronContract)(u, "HadronContraction", "ContractionType");
 
-	  QDPIO::cout << InlineHadronContractEnv::name << ": finished list" << endl;
+	  QDPIO::cout << InlineHadronContractEnv::name << ": finished list" << std::endl;
 
 	  push(xml_out, "HadronContractions");
 
@@ -294,7 +294,7 @@ namespace Chroma
 	catch(const std::string& e) 
 	{
 	  QDPIO::cerr << InlineHadronContractEnv::name << ": Caught Exception in HadronCorrelator: " 
-		      << e << endl;
+		      << e << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -309,9 +309,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineHadronContractEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineHadronContractEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineHadronContractEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     }  // func

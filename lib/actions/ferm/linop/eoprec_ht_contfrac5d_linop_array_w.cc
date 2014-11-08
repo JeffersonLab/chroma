@@ -60,7 +60,7 @@ namespace Chroma
     // Sanity Check
     if ( Hsign > 0 ) {
       QDPIO::cerr << "Something is wrong. At the end of this loop"
-		  << " Hsign should be -ve" << endl;
+		  << " Hsign should be -ve" << std::endl;
     }
 
     alpha_tilde.resize(N5-1);
@@ -80,9 +80,9 @@ namespace Chroma
       + (beta_tilde[N5-1]*(Nd - OverMass));
 
     /*
-      QDPIO::cout << "Nd - OverMass = " << Nd - OverMass << endl;
+      QDPIO::cout << "Nd - OverMass = " << Nd - OverMass << std::endl;
       for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "a["<<i<<"]= " << a[i] << endl;
+      QDPIO::cout << "a["<<i<<"]= " << a[i] << std::endl;
       }
     */
     // Now the d-s
@@ -98,7 +98,7 @@ namespace Chroma
     
     /*
       for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
+      QDPIO::cout << "d["<<i<<"]=" << d[i] << std::endl;
       }
     */
 
@@ -110,7 +110,7 @@ namespace Chroma
 
     /*
       for(int i=0; i < N5-1; i++) { 
-      QDPIO::cout << "u["<<i<<"] = " << u[i] << endl;
+      QDPIO::cout << "u["<<i<<"] = " << u[i] << std::endl;
       }
     */
     END_CODE();
@@ -433,7 +433,7 @@ namespace Chroma
     break;
     default:
     {
-      QDPIO::cerr << "Should never reach here. Isign is only 2 valued" << endl;
+      QDPIO::cerr << "Should never reach here. Isign is only 2 valued" << std::endl;
       QDP_abort(1);
     }
     break;
@@ -518,7 +518,7 @@ namespace Chroma
     }
 
 #else
-    QDPIO::cerr << "NOt yet implemented " << endl;
+    QDPIO::cerr << "NOt yet implemented " << std::endl;
     QDP_abort(1);
 #endif
 

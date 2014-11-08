@@ -1,9 +1,9 @@
 // -*- C++ -*-
 // $Id: enum_type_map.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
- * \brief Enum map
+ * \brief Enum std::map
  *
- * Enum map
+ * Enum std::map
  */
 
 #ifndef enum_type_map_h
@@ -16,12 +16,12 @@
 namespace Chroma 
 { 
 
-  //! Main enum map holder
+  //! Main enum std::map holder
   /*! 
    * \ingroup io
    *
    * Enums used throughout the code and their initialization
-   * via maps. This is used for IO.
+   * via std::maps. This is used for IO.
    */
   template<typename EnumType>
   class EnumTypeMap 

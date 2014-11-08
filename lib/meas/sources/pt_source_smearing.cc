@@ -19,14 +19,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, PointQuarkSourceSmearingEnv::Params& param)
   {
     PointQuarkSourceSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const PointQuarkSourceSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -96,7 +96,7 @@ namespace Chroma
     }
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -141,7 +141,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -176,7 +176,7 @@ namespace Chroma
     void
     SourceSmear<LatticePropagator>::operator()(LatticePropagator& quark_source) const
     {
-//      QDPIO::cout << "Point source" << endl;
+//      QDPIO::cout << "Point source" << std::endl;
 
       // displace the point source first, then smear
       // displacement has to be taken along negative direction.
@@ -188,7 +188,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
+//	const std::string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -203,7 +203,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -215,7 +215,7 @@ namespace Chroma
     void
     SourceSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_source) const
     {
-//      QDPIO::cout << "Point source" << endl;
+//      QDPIO::cout << "Point source" << std::endl;
 
       // displace the point source first, then smear
       // displacement has to be taken along negative direction.
@@ -227,7 +227,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
+//	const std::string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -242,7 +242,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -254,7 +254,7 @@ namespace Chroma
     void
     SourceSmear<LatticeFermion>::operator()(LatticeFermion& quark_source) const
     {
-//      QDPIO::cout << "Point source" << endl;
+//      QDPIO::cout << "Point source" << std::endl;
 
       // displace the point source first, then smear
       // displacement has to be taken along negative direction.
@@ -266,7 +266,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-//	const string displace_path = "/Displacement";
+//	const std::string displace_path = "/Displacement";
 	
 	Handle< QuarkDisplacement<LatticeFermion> >
 	  quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -281,7 +281,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }

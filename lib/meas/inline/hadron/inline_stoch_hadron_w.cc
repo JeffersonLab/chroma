@@ -62,7 +62,7 @@ namespace Chroma{
     }
   
   // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param){
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param){
       XMLReader paramtop(xml, path);
       
       int version;
@@ -86,7 +86,7 @@ namespace Chroma{
 	default :
 	  /**************************************************************/
 
-	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
       
@@ -95,7 +95,7 @@ namespace Chroma{
 
 
   // Writter for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param){
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param){
       push(xml, path);
       
       int version = 1;
@@ -138,7 +138,7 @@ namespace Chroma{
 
 
     //! Gauge field parameters
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
       
@@ -148,7 +148,7 @@ namespace Chroma{
     }
     
     //! Gauge field parameters
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input){
       push(xml, path);
       write(xml, "gauge_id", input.gauge_id);
       //write(xml, "meson_DB_file", input.meson_db);
@@ -188,7 +188,7 @@ namespace Chroma{
 	}
       catch(const std::string& e) 
 	{
-	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
     }
@@ -214,9 +214,9 @@ namespace Chroma{
       XMLReader xmltop(xml_l);
       XMLReader xml(xmltop,"/elem");
       QDPIO::cout << "Meson state is = " <<grpXML.id ; 
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
       QDPIO::cout << " XML =" <<grpXML.xml ; 
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
       read(xml,"Gamma",m.g);
       read(xml,"File",m.file);
     }
@@ -227,9 +227,9 @@ namespace Chroma{
       XMLReader  xmltop(xml_l);
       XMLReader xml(xmltop,"/elem");
       QDPIO::cout << "Baryon state is = " <<grpXML.id ; 
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
       QDPIO::cout << " XML =" <<grpXML.xml ; 
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
       read(xml,"Gamma",m.g);
       read(xml,"File",m.file);
     }
@@ -390,12 +390,12 @@ namespace Chroma{
       foo.data(Key(1,2,3,s); for baryons where s is the spin index... 
      */
     struct HadronOperator{
-      map<Key,DComplex> data ; // the Key has size 4 for a baryon of 2 for a hadron
+      std::map<Key,DComplex> data ; // the Key has size 4 for a baryon of 2 for a hadron
     } ;
     
      //! HadronKey binary writer
     void write(BinaryWriter& bin, HadronOperator& h){
-      map<Key,DComplex>::iterator it;
+      std::map<Key,DComplex>::iterator it;
       int count(0);
       for(it=h.data.begin();it!=h.data.end();it++){
 	count++;
@@ -521,7 +521,7 @@ namespace Chroma{
     {
       // If xml file not empty, then use alternate
       if (params.xml_file != ""){
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 	
 	push(xml_out, "stoch_hadron");
 	write(xml_out, "update_no", update_no);
@@ -565,13 +565,13 @@ namespace Chroma{
       catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << InlineStochHadronEnv::name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-      catch (const string& e) 
+      catch (const std::string& e) 
 	{
-	  QDPIO::cerr << name << ": map call failed: " << e 
-		      << endl;
+	  QDPIO::cerr << name << ": std::map call failed: " << e 
+		      << std::endl;
 	  QDP_abort(1);
 	}
       const multi1d<LatticeColorMatrix>& u = 
@@ -581,7 +581,7 @@ namespace Chroma{
       write(xml_out, "update_no", update_no);
     
 
-      QDPIO::cout << name << ": Stochastic Hadron Operator" << endl;
+      QDPIO::cout << name << ": Stochastic Hadron Operator" << std::endl;
       
       proginfo(xml_out);    // Print out basic program info
       
@@ -616,21 +616,21 @@ namespace Chroma{
       int NumBarOrd(N_quarks*(N_quarks-1)*(N_quarks-2)) ;
       int NumMesOrd(N_quarks*N_quarks) ; // to allow for flavor singlets
       if(N_quarks<2){
-	QDPIO::cout << name << ": Need at least 2" << endl;
+	QDPIO::cout << name << ": Need at least 2" << std::endl;
 	QDP_abort(1);
       }
       bool BuildMesons(NumMesOrd>0);
       if(BuildMesons){
-	QDPIO::cout << name << ": Can build mesons" << endl;
-	QDPIO::cout<<name<< ": Number of meson orderings: "<<NumMesOrd<<endl;
+	QDPIO::cout << name << ": Can build mesons" << std::endl;
+	QDPIO::cout<<name<< ": Number of meson orderings: "<<NumMesOrd<<std::endl;
       }
       else
 	NumMesOrd=0;
 
       bool BuildBaryons(NumBarOrd>0);
       if(BuildBaryons){
-	QDPIO::cout << name << ": Can build baryons" << endl;
-	QDPIO::cout<<name<< ": Number of baryon orderings: "<<NumBarOrd<<endl;
+	QDPIO::cout << name << ": Can build baryons" << std::endl;
+	QDPIO::cout<<name<< ": Number of baryon orderings: "<<NumBarOrd<<std::endl;
       }
       else
 	NumBarOrd=0;
@@ -643,7 +643,7 @@ namespace Chroma{
 	  const GroupXML_t& dil_xml = params.param.quarks[n];
 	  std::istringstream  xml_d(dil_xml.xml);
 	  XMLReader  diltop(xml_d);
-	  QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
+	  QDPIO::cout << "Dilution type = " << dil_xml.id << std::endl;
 	  quarks[n] = 
 	    TheFermDilutionSchemeFactory::Instance().createObject(dil_xml.id, 
 								  diltop, 
@@ -651,7 +651,7 @@ namespace Chroma{
 	}
       }
       catch(const std::string& e){
-	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << std::endl;
 	QDP_abort(1);
       }
       
@@ -672,7 +672,7 @@ namespace Chroma{
 	if(quarks[n]->getNumTimeSlices() != participating_timeslices.size()){
 	  QDPIO::cerr << name ;
 	  QDPIO::cerr << " : Quarks do not contain the same number";
-	  QDPIO::cerr << "of dilution timeslices: Quark " << n << endl; 
+	  QDPIO::cerr << "of dilution timeslices: Quark " << n << std::endl; 
 	  QDP_abort(1);
 	}
 	
@@ -680,7 +680,7 @@ namespace Chroma{
 	  if(quarks[n]->getT0(t0) != participating_timeslices[t0]){
 	    QDPIO::cerr << name << " : Quarks do not contain the same";
 	    QDPIO::cerr << "participating timeslices: Quark ";
-	    QDPIO::cerr << n << " timeslice "<< t0 << endl;
+	    QDPIO::cerr << n << " timeslice "<< t0 << std::endl;
 	    QDP_abort(1);
 	  }
 	}
@@ -691,7 +691,7 @@ namespace Chroma{
       for (int n = 1 ; n < N_quarks ; ++n){
 	if (quarks[0]->getCfgInfo() != quarks[n]->getCfgInfo()){
 	  QDPIO::cerr << name << " : Quarks do not contain the same cfg info";
-	  QDPIO::cerr << ", quark "<< n << endl;
+	  QDPIO::cerr << ", quark "<< n << std::endl;
 	  QDP_abort(1);
 	}		
       }
@@ -715,7 +715,7 @@ namespace Chroma{
 	  QDPIO::cerr << name << " : Quarks do not contain the same";
 	  QDPIO::cerr << " cfg info as the gauge field." ;
 	  QDPIO::cerr << "gauge: XX"<<cfgInfo<<"XX quarks: XX" ;
-	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  endl;
+	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -732,7 +732,7 @@ namespace Chroma{
 	QDPIO::cerr << name << ": number of time slices not equal to that";
 	QDPIO::cerr << " in the decay direction: " 
 		    << QDP::Layout::lattSize()[decay_dir]
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -749,12 +749,12 @@ namespace Chroma{
       // and thier decay directions must be the same 
       for(int n = 1 ; n < quarks.size(); ++n){
 	if(toBool(quarks[n]->getSeed()==quarks[0]->getSeed())){
-	  QDPIO::cerr << name << ": error, quark seeds are the same" << endl;
+	  QDPIO::cerr << name << ": error, quark seeds are the same" << std::endl;
 	  QDP_abort(1);
 	}
 
 	if(toBool(quarks[n]->getDecayDir()!=quarks[0]->getDecayDir())){
-	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<endl;
+	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -767,7 +767,7 @@ namespace Chroma{
 	std::istringstream  xml_l(params.param.link_smear.xml);
 	XMLReader  linktop(xml_l);
 	QDPIO::cout << "Link smearing type = " << params.param.link_smear.id ; 
-	QDPIO::cout << endl;
+	QDPIO::cout << std::endl;
 	
 	
 	Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.link_smear.id, linktop, params.param.link_smear.path));
@@ -775,25 +775,25 @@ namespace Chroma{
 	(*linkSmearing)(u_smr);
       }
       catch(const std::string& e){
-	QDPIO::cerr<<name<<": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr<<name<<": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
       MesPlq(xml_out, "Smeared_Observables", u_smr);
 
       // Parse the Hadron operators
-      map<string, MesonOp> LocalMesonOps ;
-      map<string, BaryonOp> LocalBaryonOps ;
+      std::map<std::string, MesonOp> LocalMesonOps ;
+      std::map<std::string, BaryonOp> LocalBaryonOps ;
       for(int o(0);o<params.param.ops.size();o++){
-	QDPIO::cout<<"Found Hadron: "<<params.param.ops[o].id<<endl ;
-	map<string, void (*)(MesonOp&,const GroupXML_t& )>::iterator 
+	QDPIO::cout<<"Found Hadron: "<<params.param.ops[o].id<<std::endl ;
+	std::map<std::string, void (*)(MesonOp&,const GroupXML_t& )>::iterator 
 	  iter=mesons.find(params.param.ops[o].id);
 	if(iter != mesons.end()){
 	  iter->second(LocalMesonOps[params.param.ops[o].id],
 		       params.param.ops[o]);
 	}
 	else{// Maybe it's a baryon
-	  map<string, void (*)(BaryonOp&, const GroupXML_t&)>::iterator 
+	  std::map<std::string, void (*)(BaryonOp&, const GroupXML_t&)>::iterator 
 	    it=baryons.find(params.param.ops[o].id);
 	  if(it != baryons.end())
 	    it->second(LocalBaryonOps[params.param.ops[o].id],
@@ -801,7 +801,7 @@ namespace Chroma{
 	  
 	  else{
 	    QDPIO::cout<<" Operator: "<<params.param.ops[o].id ;
-	    QDPIO::cout<<" is unkown " <<endl ;
+	    QDPIO::cout<<" is unkown " <<std::endl ;
 	  }
 	}
       }
@@ -815,16 +815,16 @@ namespace Chroma{
 	std::istringstream  xml_l(params.param.smearing.xml);
 	XMLReader  smrtop(xml_l);
 	QDPIO::cout << "Quark smearing type = " <<params.param.smearing.id ; 
-          QDPIO::cout << endl;
+          QDPIO::cout << std::endl;
           
           Smearing = TheFermSmearingFactory::Instance().createObject(params.param.smearing.id, smrtop, params.param.smearing.path);
       }
       catch(const std::string& e){
-	QDPIO::cerr <<name<< ": Caught Exception creating quark smearing object: " << e << endl;
+	QDPIO::cerr <<name<< ": Caught Exception creating quark smearing object: " << e << std::endl;
 	QDP_abort(1);
       }
       catch(...){
-	QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" << endl;
+	QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" << std::endl;
 	QDP_abort(1);
       }
 
@@ -845,13 +845,13 @@ namespace Chroma{
       }
       // Solution vectors are now smeared
       		  
-      QDPIO::cout<<"   Doing " << phases.numMom()<< "  momenta "<<endl ;
+      QDPIO::cout<<"   Doing " << phases.numMom()<< "  momenta "<<std::endl ;
       pop(UserData_xml);//done with UserData_xml 
       //First do all the mesons
       //Make a loop over meson operators
       //source source creation
       {
-	map<string, MesonOp>::iterator it ;
+	std::map<std::string, MesonOp>::iterator it ;
 	for(it=LocalMesonOps.begin();it!=LocalMesonOps.end();it++){
 	  MesonOp op = it->second ;
 	  // DB storage
@@ -873,7 +873,7 @@ namespace Chroma{
 	      key.key().qn.resize(2);
 	      //first do the sources
 	      key.key().type = MESON_SRC_SRC ;
-	      QDPIO::cout<<"   Doing MESON_SRC_SRC"<<endl ;
+	      QDPIO::cout<<"   Doing MESON_SRC_SRC"<<std::endl ;
 	      for(int q(0);q< quarks.size() ;q++){
 		key.key().qn[0]=q;
 		for(int q1(0);q1< quarks.size() ;q1++)
@@ -882,14 +882,14 @@ namespace Chroma{
 		    SerialDBData<MesonOpData > val ;
 		    val.data().resize(quarks[q]->getDilSize(t0));
 		    //SerialDBData< HadronOperator > val ;
-		    QDPIO::cout<<"   quarks: "<<q<<" "<<q1 <<endl ;
+		    QDPIO::cout<<"   quarks: "<<q<<" "<<q1 <<std::endl ;
 		    for ( int d(0) ; d < quarks[q]->getDilSize(t0); d++){
 		      //LatticeFermion quark_bar = quarks[q]->dilutedSource(t0,d);
 		      LatticeFermion quark_bar = src[q][t0][d];
 		      quark_bar = Gamma(Ns-1)*quark_bar ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
 			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<std::endl ;
 			//LatticeFermion quark = quarks[q1]->dilutedSource(t0,d1);
 			LatticeFermion quark = src[q1][t0][d1];
 			DComplex cc ;
@@ -906,12 +906,12 @@ namespace Chroma{
 	      } // quark 1 
 	      
 	      key.key().type = MESON_SOL_SOL ;
-	      QDPIO::cout<<"   Doing MESON_SOL_SOL"<<endl ;
+	      QDPIO::cout<<"   Doing MESON_SOL_SOL"<<std::endl ;
 	      for(int q(0);q< quarks.size() ;q++){
 		key.key().qn[0]=q;
 		for(int q1(q+1);q1< quarks.size() ;q1++){
 		  key.key().qn[1] = q1 ;
-		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<endl ;
+		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<std::endl ;
 		  SerialDBData<MesonOpData > val ;
 		  val.data().resize(quarks[q]->getDilSize(t0));
 		  //SerialDBData< HadronOperator > val ;
@@ -922,7 +922,7 @@ namespace Chroma{
 		      quark_bar = Gamma(Ns-1)*quark_bar ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
 			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<std::endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
 			meson(val.data().data(d,d1),op.g,phases[mom_num],
 			      quark_bar,quark, phases.getSet()[key.key().t]);
@@ -940,12 +940,12 @@ namespace Chroma{
 	      
 
 	      key.key().type = MESON_SRC_SOL ;
-	      QDPIO::cout<<"   Doing MESON_SRC_SOL"<<endl  ;
+	      QDPIO::cout<<"   Doing MESON_SRC_SOL"<<std::endl  ;
               for(int q(0);q< quarks.size() ;q++){
                 key.key().qn[0]=q;
                 for(int q1(0);q1< quarks.size() ;q1++){
                   key.key().qn[1] = q1 ;
-		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<endl ;
+		  QDPIO::cout<<"   quarks: "<<q<<" "<<q1<<std::endl ;
 		  SerialDBData<MesonOpData > val ;
                   val.data().resize(quarks[q]->getDilSize(t0));
 		  //SerialDBData< HadronOperator > val ;
@@ -957,7 +957,7 @@ namespace Chroma{
 		      LatticeFermion quark_bar = src[q][tt][d] ;
 		      for ( int d1(0) ; d1 < quarks[q1]->getDilSize(t0); d1++){
 			//QDPIO::cout<<" quark: "<<q<<" "<<q1 ;
-			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<endl ;
+			//QDPIO::cout<<" dilution: "<<d<<" "<<d1<<std::endl ;
 			LatticeFermion quark =  smearedSol[q1][t0][d1] ;
 			//DComplex cc ;
 			meson(val.data().data(d,d1),op.g,phases[mom_num],quark_bar,quark,
@@ -978,7 +978,7 @@ namespace Chroma{
 
       //Now the Baryons
       {
-	map<string, BaryonOp>::iterator it ;
+	std::map<std::string, BaryonOp>::iterator it ;
 	for(it=LocalBaryonOps.begin();it!=LocalBaryonOps.end();it++){
 	  BaryonOp op = it->second ;
 	  BinaryStoreDB< SerialDBKey<HadronKey>, SerialDBData<BaryonOpData > > qdp_db;
@@ -998,7 +998,7 @@ namespace Chroma{
 	      key.key().qn.resize(3);
 	      //first do the sources
 	      key.key().type = BARYON_SRC ;
-	      QDPIO::cout<<"   Doing BARYON_SRC "<<endl ;
+	      QDPIO::cout<<"   Doing BARYON_SRC "<<std::endl ;
 	      for(int q0(0);q0< quarks.size() ;q0++){
 		key.key().qn[0]=q0;
 		for(int q1(0);q1< quarks.size() ;q1++)
@@ -1007,7 +1007,7 @@ namespace Chroma{
 		    for(int q2(0);q2< quarks.size() ;q2++)
 		      if((q1!=q2)&&(q0!=q2)){		    
 			key.key().qn[2] = q2 ;
-			QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2<<endl ;
+			QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2<<std::endl ;
 			//SerialDBData< HadronOperator > val ;
 			SerialDBData< BaryonOpData > val ;
 			val.data().resize(quarks[q0]->getDilSize(t0));
@@ -1019,7 +1019,7 @@ namespace Chroma{
 			    LatticeFermion quark1 = src[q1][t0][d1];
 			    for ( int d2(0) ; d2 < quarks[q2]->getDilSize(t0); d2++){
 			      //QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
-			      //QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
+			      //QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<std::endl ;
 			      //LatticeFermion quark2 = quarks[q2]->dilutedSource(t0,d2);
 			      LatticeFermion quark2 = src[q2][t0][d2];
 			      multi1d<DComplex> cc ;
@@ -1040,14 +1040,14 @@ namespace Chroma{
 	      
 	      // Then next block needs work
 	      key.key().type = BARYON_SOL ;
-	      QDPIO::cout<<"   Doing BARYON_SOL "<<endl ;
+	      QDPIO::cout<<"   Doing BARYON_SOL "<<std::endl ;
 	      for(int q0(0);q0< quarks.size() ;q0++){
 		key.key().qn[0]=q0;
 		for(int q1(q0+1);q1< quarks.size() ;q1++){
 		  key.key().qn[1] = q1 ;
 		  for(int q2(q1+1);q2< quarks.size() ;q2++){
 		    key.key().qn[2] = q2 ;
-		    QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2 <<endl ;
+		    QDPIO::cout<<"   quarks: "<<q0<<" "<<q1<<" "<<q2 <<std::endl ;
 		    //SerialDBData< HadronOperator > val ;
 		    SerialDBData< BaryonOpData > val ;
 		    val.data().resize(quarks[q0]->getDilSize(t0));
@@ -1059,7 +1059,7 @@ namespace Chroma{
 			  LatticeFermion quark1 = smearedSol[q1][t0][d1] ;
 			  for ( int d2(0) ; d2 < quarks[q2]->getDilSize(t0); d2++){
 			    //QDPIO::cout<<" quarks: "<<q0<<" "<<q1<<" "<<q2 ;
-			    //QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<endl ;
+			    //QDPIO::cout<<" dilution: "<<d0<<" "<<d1<<" "<<d2<<std::endl ;
 			    LatticeFermion quark2 =  smearedSol[q2][t0][d2] ;
 			    
 			    multi1d<DComplex> cc ;
@@ -1089,7 +1089,7 @@ namespace Chroma{
       
       QDPIO::cout << "Operators written: time= "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       
       // Close the namelist output file XMLDAT
       pop(xml_out);     // StochHadron
@@ -1097,9 +1097,9 @@ namespace Chroma{
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
       
       END_CODE();
     } 

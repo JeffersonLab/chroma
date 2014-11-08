@@ -13,7 +13,6 @@
 #include "actions/gauge/gaugeacts/aniso_sym_shared_functions.h"
 
 #include <cstdio>
-using namespace std;
 
 namespace Chroma
 {

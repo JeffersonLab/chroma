@@ -5,7 +5,7 @@
 //  include.
 //
 //  Revision 3.2  2008/03/29 03:40:20  kostas
-//  added vector mesons
+//  added std::vector mesons
 //
 //  Revision 3.1  2007/02/22 21:11:49  bjoo
 //  Removed Ordered and Unordered Subsets and Sets. Now just have Subsets and Sets -not Unordered or Ordered - passes regressions with suitable QDP where QDP has SSE disabled
@@ -69,7 +69,7 @@ namespace Chroma
      // Length of lattice in decay direction
      Set sft_set(phases.getSet()) ;
      int length(sft_set.numSubsets());
-     QDPIO::cout<<"Time length: "<<length<<endl ;
+     QDPIO::cout<<"Time length: "<<length<<std::endl ;
 
      // Construct the anti-quark propagator from quark_prop_2
      int G5 = Ns*Ns-1;
@@ -108,7 +108,7 @@ namespace Chroma
     // Length of lattice in decay direction
     Set sft_set(phases.getSet()) ;
     int length(sft_set.numSubsets());
-    //QDPIO::cout<<"Time length: "<<length<<endl ;
+    //QDPIO::cout<<"Time length: "<<length<<std::endl ;
 
     // Construct the anti-quark propagator from quark_prop_2
     int G5 = Ns*Ns-1;
@@ -143,7 +143,7 @@ namespace Chroma
 
     for (int mom_num(0); mom_num < phases.numMom(); ++mom_num){
       for(int t = 0; t < length; ++t){
-	// QDPIO::cout<<mom_num<<" "<<t<<" "<<trace(foo[mom_num][t]*Gamma(G5))<<endl;
+	// QDPIO::cout<<mom_num<<" "<<t<<" "<<trace(foo[mom_num][t]*Gamma(G5))<<std::endl;
 	int t_eff = (t - t0 + length) % length;
 	qqbar[mom_num][t_eff]= foo[mom_num][t] ;
       }
@@ -155,7 +155,7 @@ namespace Chroma
   }
 
   /*** bug work around ***/
-  //New code that allows the vector mesons
+  //New code that allows the std::vector mesons
   void compute_qqbar( multi2d<DPropagator>& qqbar,const int gg,
 		      const LatticePropagator& quark_prop_1,
 		      const LatticePropagator& quark_prop_2, 
@@ -169,7 +169,7 @@ namespace Chroma
     // Length of lattice in decay direction
     Set sft_set(phases.getSet()) ;
     int length(sft_set.numSubsets());
-    //QDPIO::cout<<"Time length: "<<length<<endl ;
+    //QDPIO::cout<<"Time length: "<<length<<std::endl ;
 
     // Construct the anti-quark propagator from quark_prop_2
     int G5 = Ns*Ns-1;
@@ -204,7 +204,7 @@ namespace Chroma
 
     for (int mom_num(0); mom_num < phases.numMom(); ++mom_num){
       for(int t = 0; t < length; ++t){
-	// QDPIO::cout<<mom_num<<" "<<t<<" "<<trace(foo[mom_num][t]*Gamma(G5))<<endl;
+	// QDPIO::cout<<mom_num<<" "<<t<<" "<<trace(foo[mom_num][t]*Gamma(G5))<<std::endl;
 	int t_eff = (t - t0 + length) % length;
 	qqbar[mom_num][t_eff]= foo[mom_num][t] ;
       }
@@ -220,8 +220,8 @@ namespace Chroma
   void write_qqbar(QDPFileWriter& to,
 		   multi2d<DPropagator>& qqbar, 
 		   const SftMom& phases,
-		   string type,
-		   string sink){
+		   std::string type,
+		   std::string sink){
   
     for(int p(0) ; p<phases.numMom();p++){
       XMLBufferWriter record_xml;

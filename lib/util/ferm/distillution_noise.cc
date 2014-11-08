@@ -53,8 +53,8 @@ namespace Chroma
 
 
     //---------------------------------------------------------------------
-    //! Convert a string to a rannyu seed
-    multi1d<int> stringToSeed(const string& output)
+    //! Convert a std::string to a rannyu seed
+    multi1d<int> stringToSeed(const std::string& output)
     {
       CRC48::CRC48_t crc;
 
@@ -83,7 +83,7 @@ namespace Chroma
 
   //---------------------------------------------------------------------
   // Lattice origin
-  DistillutionNoise::DistillutionNoise(const string& ensemble_, const string& sequence_label_, int decay_dir_) :
+  DistillutionNoise::DistillutionNoise(const std::string& ensemble_, const std::string& sequence_label_, int decay_dir_) :
     ensemble(ensemble_), seqno(sequence_label_), decay_dir(decay_dir_)
   {
     if (decay_dir != Nd-1)

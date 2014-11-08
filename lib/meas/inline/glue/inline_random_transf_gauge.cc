@@ -13,7 +13,7 @@
 namespace Chroma 
 { 
   // Reader for out gauge file
-  void read(XMLReader& xml, const string& path, InlineRandomTransfGaugeEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineRandomTransfGaugeEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -23,7 +23,7 @@ namespace Chroma
   }
 
   // Reader for out gauge file
-  void write(XMLWriter& xml, const string& path, const InlineRandomTransfGaugeEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineRandomTransfGaugeEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -88,7 +88,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -124,7 +124,7 @@ namespace Chroma
       push(xml_out, "RandomTransfGauge");
       write(xml_out, "update_no", update_no);
     
-      QDPIO::cout << name << ": coulomb gauge fix" << endl;
+      QDPIO::cout << name << ": coulomb gauge fix" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -175,9 +175,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

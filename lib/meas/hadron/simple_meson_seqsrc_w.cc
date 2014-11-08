@@ -12,14 +12,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SimpleMesonSeqSourceEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, SimpleMesonSeqSourceEnv::Params& param)
   {
     SimpleMesonSeqSourceEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const SimpleMesonSeqSourceEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const SimpleMesonSeqSourceEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -66,7 +66,7 @@ namespace Chroma
 	  break;
 
 	default:
-	  QDPIO::cerr << __func__ << ": internal error - number of bits not supported" << endl;
+	  QDPIO::cerr << __func__ << ": internal error - number of bits not supported" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -84,7 +84,7 @@ namespace Chroma
       {
 	START_CODE();
 	
-	QDPIO::cout << "Simple meson sequential source: gamma_sink = " << gamma_sink << endl;
+	QDPIO::cout << "Simple meson sequential source: gamma_sink = " << gamma_sink << std::endl;
 
 	// \f$\gamma_5 * \Gamma_f^dag * \gamma_5 * F\$
 //      LatticePropagator fin = Gamma(G5) * adj(Gamma(gamma_sink)) * Gamma(G5) * quark_prop;
@@ -337,7 +337,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -351,7 +351,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -362,7 +362,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -384,12 +384,12 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Simple meson sequential source: gamma_sink = " << gamma_sink << endl;
+      QDPIO::cout << "Simple meson sequential source: gamma_sink = " << gamma_sink << std::endl;
       setTSrce(forward_headers);
 
       if (quark_propagators.size() != 1)
       {
-	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
 	QDP_abort(1);
       }
 
@@ -418,7 +418,7 @@ namespace Chroma
 
       if (quark_propagators.size() != 2)
       {
-	QDPIO::cerr << __func__ << ": expect 2 props" << endl;
+	QDPIO::cerr << __func__ << ": expect 2 props" << std::endl;
 	QDP_abort(1);
       }
 
@@ -444,12 +444,12 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Pion-Pion meson sequential source" << endl;
+      QDPIO::cout << "Pion-Pion meson sequential source" << std::endl;
       setTSrce(forward_headers);
 
       if (quark_propagators.size() != 1)
       {
-	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
 	QDP_abort(1);
       }
 
@@ -478,13 +478,13 @@ namespace Chroma
 
       if (quark_propagators.size() != 2)
       {
-	QDPIO::cerr << __func__ << ": expect 2 props" << endl;
+	QDPIO::cerr << __func__ << ": expect 2 props" << std::endl;
 	QDP_abort(1);
       }
 
       // Convert gamma_insertion to old convention
       int gamma_i = gamma_insertion ^ unsigned(Ns*Ns-1);
-      QDPIO::cout << __func__ << ": gamma_i=" << gamma_i << endl;
+      QDPIO::cout << __func__ << ": gamma_i=" << gamma_i << std::endl;
 
       // Construct the meson correlation function
       LatticeComplex corr_fn = 
@@ -507,59 +507,59 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0"), 
 										      mesA0A01SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_x_1"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_x_1"), 
 										      mesA0RhoX1SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_y_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_y_1"),
 										      mesA0RhoY1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1_z"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1_z"),
 										      mesA0B1Z1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_z_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_z_1"),
 										      mesA0RhoZ1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1_y"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1_y"),
 										      mesA01B1Y1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1_x"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1_x"),
 										      mesA01B1X1SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pion_2"),
 										      mesA01Pion2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0_2"),
 										      mesA0A02SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_x_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_x_2"),
 										      mesA0RhoX2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_y_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_y_2"),
 										      mesA0RhoY2SeqSrc);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1_z"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1_z"),
 										      mesA0A1Z1SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_z_2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_z_2"),
 										      mesA0RhoZ2SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1_y"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1_y"),
 										      mesA0A1Y1SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1_x"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1_x"),
 										      mesA0A1X1SeqSrc);
        
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pion_1"),
 										      mesA0Pion1SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("pion_1-pion_1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("pion_1-pion_1"),
 										      mesPion1Pion1SeqSrc);
 
 	// keep for historical purposes
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("pion"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("pion"),
 										      mesPion1Pion1SeqSrc);
 
 	registered = true;

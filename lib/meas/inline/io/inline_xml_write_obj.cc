@@ -48,7 +48,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineXMLWriteNamedObjParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineXMLWriteNamedObjParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -59,7 +59,7 @@ namespace Chroma
   }
 
   //! File output
-  void write(XMLWriter& xml, const string& path, const InlineXMLWriteNamedObjParams::File_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineXMLWriteNamedObjParams::File_t& input)
   {
     push(xml, path);
 
@@ -70,7 +70,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineXMLWriteNamedObjParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineXMLWriteNamedObjParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -79,7 +79,7 @@ namespace Chroma
   }
 
   //! File output
-  void read(XMLReader& xml, const string& path, InlineXMLWriteNamedObjParams::File_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineXMLWriteNamedObjParams::File_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -109,7 +109,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -139,13 +139,13 @@ namespace Chroma
     push(xml_out, "xml_write_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineXMLWriteNamedObjEnv::name << ": object writer" << endl;
+    QDPIO::cout << InlineXMLWriteNamedObjEnv::name << ": object writer" << std::endl;
     StopWatch swatch;
 
     // Write the object
     // ONLY XML output format is supported in this task
     // Other tasks could support other formats
-    QDPIO::cout << "Attempt to write object name = " << params.named_obj.object_id << endl;
+    QDPIO::cout << "Attempt to write object name = " << params.named_obj.object_id << std::endl;
     write(xml_out, "object_id", params.named_obj.object_id);
     try
     {
@@ -160,22 +160,22 @@ namespace Chroma
 
       QDPIO::cout << "Object successfully written: time= " 
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
     }
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineXMLWriteNamedObjEnv::name << ": cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineXMLWriteNamedObjEnv::name << ": error message: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
-    QDPIO::cout << InlineXMLWriteNamedObjEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineXMLWriteNamedObjEnv::name << ": ran successfully" << std::endl;
 
     pop(xml_out);  // write_named_obj
 

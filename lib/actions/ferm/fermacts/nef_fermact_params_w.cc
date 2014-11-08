@@ -22,7 +22,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  NEFFermActParams::NEFFermActParams(XMLReader& xml, const string& path)
+  NEFFermActParams::NEFFermActParams(XMLReader& xml, const std::string& path)
   {	  
     XMLReader paramtop(xml, path);
     read(paramtop, "Mass", Mass);
@@ -48,7 +48,7 @@ namespace Chroma
       }
       else { 
 	// Not length=N5 and not length = 1: Bomb
-	QDPIO::cerr << "b5 must have either lenght 1 or N5" << endl;
+	QDPIO::cerr << "b5 must have either lenght 1 or N5" << std::endl;
 	QDP_abort(1);
       }
 
@@ -66,7 +66,7 @@ namespace Chroma
       }
       else { 
 	// Not length=N5 and not length = 1: Bomb
-	QDPIO::cerr << "b5 must have either lenght 1 or N5" << endl;
+	QDPIO::cerr << "b5 must have either lenght 1 or N5" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -74,7 +74,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, NEFFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, NEFFermActParams& param)
   {	  
     NEFFermActParams tmp(xml, path);	
     param = tmp;
@@ -82,7 +82,7 @@ namespace Chroma
 
 
   //! Write parameters
-  void write(XMLWriter& xml, const string& path, const NEFFermActParams& param)
+  void write(XMLWriter& xml, const std::string& path, const NEFFermActParams& param)
   {
     push(xml, path);
 

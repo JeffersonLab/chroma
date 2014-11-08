@@ -70,7 +70,7 @@ namespace Chroma
 	}
 	else
 	{
-	  QDPIO::cerr << "LinOpMultiSysSolverMR: shifts incompatible" << endl;
+	  QDPIO::cerr << "LinOpMultiSysSolverMR: shifts incompatible" << std::endl;
 	  QDP_abort(1);
 	}
 

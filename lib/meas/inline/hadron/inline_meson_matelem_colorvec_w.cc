@@ -1,6 +1,6 @@
 // $Id: inline_meson_matelem_colorvec_w.cc,v 1.26 2009-09-14 20:50:14 edwards Exp $
 /*! \file
- * \brief Inline measurement of meson operators via colorvector matrix elements
+ * \brief Inline measurement of meson operators via colorstd::vector matrix elements
  */
 
 
@@ -35,7 +35,7 @@ namespace Chroma
   namespace InlineMesonMatElemColorVecEnv 
   { 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, InlineMesonMatElemColorVecEnv::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineMesonMatElemColorVecEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -65,7 +65,7 @@ namespace Chroma
       default :
 	/**************************************************************************/
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -81,7 +81,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineMesonMatElemColorVecEnv::Params::Param_t& param)
     {
       push(xml, path);
 
@@ -102,7 +102,7 @@ namespace Chroma
     }
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -112,7 +112,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineMesonMatElemColorVecEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -124,7 +124,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineMesonMatElemColorVecEnv::Params& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineMesonMatElemColorVecEnv::Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -216,7 +216,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -242,7 +242,7 @@ namespace Chroma
     struct KeyMesonElementalOperator_t
     {
       int                t_slice;      /*!< Meson operator time slice */
-      multi1d<int>       displacement; /*!< Displacement dirs of right colorvector */
+      multi1d<int>       displacement; /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
     };
 
@@ -250,7 +250,7 @@ namespace Chroma
     struct ValMesonElementalOperator_t
     {
       int                type_of_data; /*!< Flag indicating type of data (maybe trivial) */
-      multi2d<ComplexD>  op;          /*!< Colorvector source and sink with momentum projection */
+      multi2d<ComplexD>  op;          /*!< Colorstd::vector source and sink with momentum projection */
     };
 
 
@@ -378,7 +378,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "MesonMatElemColorVec");
 	write(xml_out, "update_no", update_no);
@@ -421,12 +421,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -447,7 +447,7 @@ namespace Chroma
       push(xml_out, "MesonMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Meson color-vector matrix element" << endl;
+      QDPIO::cout << name << ": Meson color-std::vector matrix element" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -496,7 +496,7 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.param.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << endl;
+	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
 	
 	
 	Handle< LinkSmearing >
@@ -508,7 +508,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -527,7 +527,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("mesonElemOp"));
+	write(file_xml, "id", std::string("mesonElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 //	write(file_xml, "blockSize", params.param.block_size);
 	write(file_xml, "decay_dir", params.param.decay_dir);
@@ -561,7 +561,7 @@ namespace Chroma
       // The creation and annihilation operators are the same without the
       // spin matrices.
       //
-      QDPIO::cout << "Building meson operators" << endl;
+      QDPIO::cout << "Building meson operators" << std::endl;
 
       push(xml_out, "ElementalOps");
 
@@ -574,12 +574,12 @@ namespace Chroma
       {
 	StopWatch watch;
 
-	QDPIO::cout << "Elemental operator: op = " << l << endl;
+	QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
 	// Make sure displacement is something sensible
 	multi1d<int> disp = normDisp(params.param.displacement_list[l]);
 
-	QDPIO::cout << "displacement = " << disp << endl;
+	QDPIO::cout << "displacement = " << disp << std::endl;
 
 	// Build the operator
 	swiss.reset();
@@ -591,14 +591,14 @@ namespace Chroma
 	  if ( norm2(phases.numToMom(mom_num)) < params.param.mom2_min ) continue;
 
 	  // The keys for the spin and displacements for this particular elemental operator
-	  // No displacement for left colorvector, only displace right colorvector
+	  // No displacement for left colorstd::vector, only displace right colorstd::vector
 	  // Invert the time - make it an independent key
 	  multi1d<KeyValMesonElementalOperator_t> buf(phases.numSubsets());
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
 	    buf[t].key.key().t_slice       = t;
 	    buf[t].key.key().mom           = phases.numToMom(mom_num);
-	    buf[t].key.key().displacement  = disp; // only right colorvector
+	    buf[t].key.key().displacement  = disp; // only right colorstd::vector
 	    buf[t].val.data().op.resize(params.param.num_vecs,params.param.num_vecs);
 
 	    if ( params.param.orthog_basis && 
@@ -615,7 +615,7 @@ namespace Chroma
 
 	  for(int j = 0 ; j < params.param.num_vecs; ++j)
 	  {
-	    // Displace the right vector and multiply by the momentum phase
+	    // Displace the right std::vector and multiply by the momentum phase
 	    EVPair<LatticeColorVector> tmpvec; eigen_source.get(j,tmpvec);
 	    LatticeColorVector shift_vec = phases[mom_num] * displace(u_smr, 
 								      tmpvec.eigenVector, 
@@ -646,7 +646,7 @@ namespace Chroma
 	    } // end for j
 	  } // end for i
 
-	  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
+	  QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << std::endl; 
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
 	    qdp_db.insert(buf[t].key, buf[t].val);
@@ -659,7 +659,7 @@ namespace Chroma
 	QDPIO::cout << "Meson operator= " << l 
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
       } // for l
 
@@ -671,9 +671,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } // func

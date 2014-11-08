@@ -35,7 +35,6 @@
 //#undef BUILD_QUDA_DEVIFACE_CLOVER
 
 //#include <util_quda.h>
-using namespace std;
 
 namespace Chroma
 {
@@ -80,7 +79,7 @@ namespace Chroma
 					 const SysSolverQUDACloverParams& invParam_) : 
       A(A_), state(state_), invParam(invParam_), clov(new CloverTermT<T, U>::Type_t()), invclov(new CloverTermT<T, U>::Type_t())
     {
-      QDPIO::cout << "MdagMSysSolverQUDAClover:" << endl;
+      QDPIO::cout << "MdagMSysSolverQUDAClover:" << std::endl;
 
       // FOLLOWING INITIALIZATION in test QUDA program
 
@@ -147,7 +146,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 #else
-      //QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
+      //QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << std::endl;
       q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
       q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
 #endif
@@ -213,7 +212,7 @@ namespace Chroma
 
      // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	QDPIO::cout << "Fixing Temporal Gauge" << std::endl;
 	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
@@ -311,7 +310,7 @@ namespace Chroma
       }
 
       if( ! invParam.asymmetricP ) { 
-	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << endl;
+	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << std::endl;
 	
       }
       // Only support Asymmetric linop
@@ -330,7 +329,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 #else
-      //QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << endl;
+      //QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << std::endl;
       quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
       quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
@@ -339,12 +338,12 @@ namespace Chroma
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
-	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
 
 	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
-	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
        
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
@@ -370,7 +369,7 @@ namespace Chroma
       quda_inv_param.cl_pad = 0;
 
      if( invParam.innerParamsP ) {
-	QDPIO::cout << "Setting inner solver params" << endl;
+	QDPIO::cout << "Setting inner solver params" << std::endl;
 	// Dereference handle
 	GCRInnerSolverParams ip = *(invParam.innerParams);
 
@@ -455,7 +454,7 @@ namespace Chroma
 	}
       }
       else { 
-	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
 	quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
 	quda_inv_param.tol_precondition = 1.0e-1;
 	quda_inv_param.maxiter_precondition = 1000;
@@ -499,12 +498,12 @@ namespace Chroma
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
       
       // Setup Clover Term
-      QDPIO::cout << "Creating CloverTerm" << endl;
+      QDPIO::cout << "Creating CloverTerm" << std::endl;
       clov->create(fstate, invParam_.CloverParams);
       // Don't recompute, just copy
       invclov->create(fstate, invParam_.CloverParams);
       
-      QDPIO::cout << "Inverting CloverTerm" << endl;
+      QDPIO::cout << "Inverting CloverTerm" << std::endl;
       invclov->choles(0);
       invclov->choles(1);
 
@@ -548,7 +547,7 @@ namespace Chroma
     //! Destructor is automatic
     ~MdagMSysSolverQUDAClover() 
     {
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
       freeCloverQuda();
     }
@@ -618,7 +617,7 @@ namespace Chroma
       if ( ! two_step ) { 
 
 	// Single Step Solve
-	QDPIO::cout << "Single Step Solve" << endl;
+	QDPIO::cout << "Single Step Solve" << std::endl;
 	predictor(psi, (*MdagM), chi);
 	res = qudaInvert(*clov,
 			 *invclov,
@@ -632,7 +631,7 @@ namespace Chroma
 
 	// TWO STEP SOLVE
 	try {
-	  QDPIO::cout << "Two Step Solve" << endl;
+	  QDPIO::cout << "Two Step Solve" << std::endl;
 
 	  T Y;
 	  Y[ A->subset() ] = psi; // Y is initial guess
@@ -715,8 +714,8 @@ namespace Chroma
 
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << std::endl;
 
 
       // Check for failure
@@ -724,7 +723,7 @@ namespace Chroma
 	if ( ! invParam.SilentFailP ) { 
 
 	  // If we are here we are meant to be verbose about it. 
-	  QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
+	  QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl; 
 
 	  // Check if we need to dump...
 	  if ( invParam.dump_on_failP ) { 
@@ -766,11 +765,11 @@ namespace Chroma
 	    QDPFileWriter gauge_writer(gauge_filebuf,gauge_filename.str(), QDPIO_SINGLEFILE, QDPIO_PARALLEL);
 
 	    // DUMP RHS (will anyone ever read it?)
-	    QDPIO::cout << "DUMPING RHS to " << rhs_filename.str() << endl;
+	    QDPIO::cout << "DUMPING RHS to " << rhs_filename.str() << std::endl;
 	    write(rhs_writer, rhs_recbuf, chi);
 
 	    // DUMP Gauge (fill anyone ever read it?)
-	    QDPIO::cout << "DUMPING GAUGE FIELD to " << gauge_filename.str() << endl;
+	    QDPIO::cout << "DUMPING GAUGE FIELD to " << gauge_filename.str() << std::endl;
 	    write(gauge_writer, gauge_recbuf, state->getLinks());
 	    
 	    rhs_writer.close();
@@ -779,7 +778,7 @@ namespace Chroma
 
 	  if( invParam.backup_invP) { 
 	    // Create the Backup Solver...
-	    QDPIO::cout << "CREATING BACKUP SOLVER" << endl;
+	    QDPIO::cout << "CREATING BACKUP SOLVER" << std::endl;
 	    std::istringstream is( invParam.backup_inv_param.xml );
 	    XMLReader backup_solver_reader( is );
 	    
@@ -796,11 +795,11 @@ namespace Chroma
 	    }
 	    catch(const std::string e) {
 	      backup_solver_reader.print(std::cout);
-	      QDPIO::cout << "Caught exception: " << e << endl;
+	      QDPIO::cout << "Caught exception: " << e << std::endl;
 	      QDP_abort(1);
 	    }
 
-	    QDPIO::cout << "PERFORMING BACKUP SOLVE" << endl;
+	    QDPIO::cout << "PERFORMING BACKUP SOLVE" << std::endl;
 
 	    // Backup solver will re-predict
 	    res =  (*backup_solver)(psi, chi, predictor);
@@ -817,19 +816,19 @@ namespace Chroma
 
 	    rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 	    if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-	      QDPIO::cout << "ERROR: BACKUP SOLVE FAILED" << endl;
+	      QDPIO::cout << "ERROR: BACKUP SOLVE FAILED" << std::endl;
 	      QDP_abort(1);
 	    }
 	  }
 	  else { 
 	    // No backup solve 
-	    QDPIO::cout << "SOLVER FAILED: Aborting" << endl;
+	    QDPIO::cout << "SOLVER FAILED: Aborting" << std::endl;
 	    QDP_abort(1);
 	  }
 	}
 	else { 
 	  // (not so)SILENT FAILURE:
-	  QDPIO::cout << "WARNING: Solver failed but SILENT FAILURE is ENABLED. Continuing" << endl;
+	  QDPIO::cout << "WARNING: Solver failed but SILENT FAILURE is ENABLED. Continuing" << std::endl;
 	}
 
       }

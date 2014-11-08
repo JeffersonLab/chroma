@@ -52,7 +52,7 @@ namespace Chroma
     //! The size of the 5D operator
     inline int size() const { return D->size(); }
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {

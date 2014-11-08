@@ -24,7 +24,7 @@ namespace Chroma {
    */
 
   namespace StochSrcEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -36,10 +36,10 @@ namespace Chroma {
 
   //! Read an InvType enum
 
-  void read(XMLReader& r, const string& path, VolSrc& t);
+  void read(XMLReader& r, const std::string& path, VolSrc& t);
 
   //! Write an InvType enum
-  void write(XMLWriter& w, const string& path, const VolSrc& t);
+  void write(XMLWriter& w, const std::string& path, const VolSrc& t);
 
   /*! @} */   // end of group io
 

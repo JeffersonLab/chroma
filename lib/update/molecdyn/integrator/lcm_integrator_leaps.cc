@@ -46,7 +46,7 @@ namespace Chroma
 	swatch.reset(); swatch.start();
 	monomials[0].mon->dsdq(dsdQ,s);
 	swatch.stop();
-	QDPIO::cout << "FORCE TIME: " << monomials[0].id <<  " : " << swatch.getTimeInSeconds() << endl;
+	QDPIO::cout << "FORCE TIME: " << monomials[0].id <<  " : " << swatch.getTimeInSeconds() << std::endl;
 	pop(xml_out); //elem
 	for(int i=1; i < monomials.size(); i++) { 
 	  push(xml_out, "elem");

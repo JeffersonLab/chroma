@@ -35,7 +35,7 @@ namespace Chroma
 				int version;    /*!< included to handle the two momentum options */
 				int                 mom2_max;              /*!< (mom)^2 <= mom2_max */
 	int                 displacement_length;   /*!< Displacement length for creat. and annih. ops */
-	GroupXML_t          quark_smearing; /*!< xml string holding smearing params */
+	GroupXML_t          quark_smearing; /*!< xml std::string holding smearing params */
 	GroupXML_t          link_smearing;         /*!< link smearing xml */
 
 	multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
@@ -52,7 +52,7 @@ namespace Chroma
 	};
 
 	ThreeQuarkOpsFile_t  operators_file; /*!< Files holding 3-quark ops to make*/
-	std::string          quark_ids;      /*!< 3 character string indicating which quarks are degenerate */
+	std::string          quark_ids;      /*!< 3 character std::string indicating which quarks are degenerate */
 	std::string          gauge_id;       /*!< Gauge field */
       };
 

@@ -15,14 +15,14 @@ namespace Chroma
 { 
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, StochCondContEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, StochCondContEnv::Params& param)
   {
     StochCondContEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const StochCondContEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const StochCondContEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -51,7 +51,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -67,7 +67,7 @@ namespace Chroma
       default :
 	/**************************************************************************/
 
-	QDPIO::cerr << "StochCond: Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "StochCond: Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -79,7 +79,7 @@ namespace Chroma
 
 
     // Reader for input parameters
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -124,7 +124,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Stochastic Condensates" << endl;
+      QDPIO::cout << "Stochastic Condensates" << std::endl;
 
       StopWatch snoop;
       snoop.reset();
@@ -145,15 +145,15 @@ namespace Chroma
 
       try
       {
-	QDPIO::cout << "Attempt to read solutions" << endl;
+	QDPIO::cout << "Attempt to read solutions" << std::endl;
 	quark.dilutions.resize(params.soln_files.size());
 
-	QDPIO::cout << "dilutions.size= " << quark.dilutions.size() << endl;
+	QDPIO::cout << "dilutions.size= " << quark.dilutions.size() << std::endl;
 	for(int i=0; i < quark.dilutions.size(); ++i)
 	{
 	  XMLReader file_xml, record_xml;
 
-	  QDPIO::cout << "reading file= " << params.soln_files[i] << endl;
+	  QDPIO::cout << "reading file= " << params.soln_files[i] << std::endl;
 	  QDPFileReader from(file_xml, params.soln_files[i], QDPIO_SERIAL);
 	  read(from, record_xml, quark.dilutions[i].soln);
 	  close(from);
@@ -162,16 +162,16 @@ namespace Chroma
 	  read(record_xml, "/Propagator/ForwardProp", quark.dilutions[i].prop_header);
 	}
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << "Error extracting headers: " << e << endl;
+	QDPIO::cerr << "Error extracting headers: " << e << std::endl;
 	QDP_abort(1);
       }
       swatch.stop();
 
       QDPIO::cout << "Sources and solutions successfully read: time= "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
 
 
@@ -192,15 +192,15 @@ namespace Chroma
 	{
 	  std::istringstream  xml_s(quark.dilutions[i].source_header.source.xml);
 	  XMLReader  sourcetop(xml_s);
-//	QDPIO::cout << "Source = " << quark.dilutions[i].source_header.source.id << endl;
+//	QDPIO::cout << "Source = " << quark.dilutions[i].source_header.source.id << std::endl;
 
 	  if (quark.dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
 	  {
-	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
+	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << std::endl;
 	    QDP_abort(1);
 	  }
 
-	  QDPIO::cout << "Dilution num= " << i << endl;
+	  QDPIO::cout << "Dilution num= " << i << std::endl;
 
 	  // Manually create the params so I can peek into them and use the source constructor
 	  DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
@@ -227,14 +227,14 @@ namespace Chroma
 	  // The seeds must always agree - here the seed is the unique id of the source
 	  if ( toBool(srcParams.ran_seed != quark.seed) )
 	  {
-	    QDPIO::cerr << "dilution=" << i << " seed does not match" << endl;
+	    QDPIO::cerr << "dilution=" << i << " seed does not match" << std::endl;
 	    QDP_abort(1);
 	  }
 
 	  // The N's must always agree
 	  if ( toBool(srcParams.N != N) )
 	  {
-	    QDPIO::cerr << "dilution=" << i << " N does not match" << endl;
+	    QDPIO::cerr << "dilution=" << i << " N does not match" << std::endl;
 	    QDP_abort(1);
 	  }
 
@@ -263,13 +263,13 @@ namespace Chroma
 	Double dcnt = norm2(quark_noise);
 	if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
 	{
-	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
+	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << std::endl;
 	  QDP_abort(1);
 	}
       } // end try
       catch(const std::string& e) 
       {
-	QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
+	QDPIO::cerr << ": Caught Exception creating source: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -277,7 +277,7 @@ namespace Chroma
 
       QDPIO::cout << "Sources saturated: time= "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
       //
       // Condensates
@@ -333,7 +333,7 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheHadronContractFactory::Instance().registerObject(string("stoch_diagonal_gamma_condensates"),
+	success &= Chroma::TheHadronContractFactory::Instance().registerObject(std::string("stoch_diagonal_gamma_condensates"),
 									       mesStochCondCont);
 
 	registered = true;

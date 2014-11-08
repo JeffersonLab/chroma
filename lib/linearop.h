@@ -30,10 +30,10 @@ namespace Chroma
     //! Virtual destructor to help with cleanup;
     virtual ~LinearOperator() {}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign) const = 0;
 
-    //! Apply the operator onto a source vector to some precision
+    //! Apply the operator onto a source std::vector to some precision
     virtual void operator() (T& chi, const T& psi, enum PlusMinus isign, 
 			     Real epsilon) const
     {
@@ -67,11 +67,11 @@ namespace Chroma
     //! Expected length of array index
     virtual int size() const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign) const = 0;
 
-    //! Apply the operator onto a source vector to some precision
+    //! Apply the operator onto a source std::vector to some precision
     virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign, Real epsilon) const
     {
@@ -104,18 +104,18 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
-    //! Apply the derivative of the operator onto a source vector
+    //! Apply the derivative of the operator onto a source std::vector
     /*! Default implementation */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
     {
-      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDPIO::cerr << "deriv: not implemented" << std::endl;
       QDP_abort(1);
     }
 
 
 
-    //! Apply the derivative of the operator onto a source vector to some precision
+    //! Apply the derivative of the operator onto a source std::vector to some precision
     /*! Default implementation */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign, const Real& epsilon) const
@@ -157,16 +157,16 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
-    //! Apply the derivative of the operator onto a source vector
+    //! Apply the derivative of the operator onto a source std::vector
     /*! Default implementation */
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign) const
     {
-      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDPIO::cerr << "deriv: not implemented" << std::endl;
       QDP_abort(1);
     }
 
-    //! Apply the derivative of the operator onto a source vector to some precision
+    //! Apply the derivative of the operator onto a source std::vector to some precision
     /*! Default implementation */
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign, const Real& epsilon) const
@@ -245,8 +245,8 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
      * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
@@ -254,23 +254,23 @@ namespace Chroma
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
     {
-      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDPIO::cerr << "deriv: not implemented" << std::endl;
       QDP_abort(1);
     }
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector on cb                           (Read)
-     * \param psi     right vector on 1-cb                        (Read)
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of chi vector                  (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
      *
      * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
      */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign, int cb) const
     {
-      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDPIO::cerr << "deriv: not implemented" << std::endl;
       QDP_abort(1);
     }
 
@@ -342,8 +342,8 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
      * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
@@ -351,23 +351,23 @@ namespace Chroma
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign) const
     {
-      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDPIO::cerr << "deriv: not implemented" << std::endl;
       QDP_abort(1);
     }
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector on cb                           (Read)
-     * \param psi     right vector on 1-cb                        (Read)
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of chi vector                  (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
      *
      * \return Computes   \f$chi^\dag * \dot(D} * psi\f$
      */
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign, int cb) const
     {
-      QDPIO::cerr << "deriv: not implemented" << endl;
+      QDPIO::cerr << "deriv: not implemented" << std::endl;
       QDP_abort(1);
     }
   };

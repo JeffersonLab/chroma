@@ -20,7 +20,7 @@ namespace Chroma {
  * This includes the "rho_1--rho_2" correlators used for O(a) improvement
 
  * For use with "rotated" propagators we added the possibility of also
- * computing the local vector current, when no_vec_cur = 4. In this
+ * computing the local std::vector current, when no_vec_cur = 4. In this
  * case the 3 local currents come last.
 
  * \param u               gauge field ( Read )
@@ -28,9 +28,9 @@ namespace Chroma {
  * \param quark_prop_2    second (anti-) quark propagator ( Read )
  * \param phases          fourier transform phase factors ( Read )
  * \param t0              timeslice coordinate of the source ( Read )
- * \param no_vec_cur      number of vector current types, 3 or 4 ( Read )
+ * \param no_vec_cur      number of std::vector current types, 3 or 4 ( Read )
  * \param xml             namelist file object ( Read )
- * \param xml_group       string used for writing xml data ( Read )
+ * \param xml_group       std::string used for writing xml data ( Read )
  *
  *         ____
  *         \
@@ -47,7 +47,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
 	     int t0,
 	     int no_vec_cur,
 	     XMLWriter& xml,
-	     const string& xml_group);
+	     const std::string& xml_group);
 
 }  // end namespace Chroma
 

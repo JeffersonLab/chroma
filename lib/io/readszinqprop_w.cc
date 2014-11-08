@@ -24,7 +24,7 @@ namespace Chroma {
  * \param file       path ( Read )
  */    
 
-void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
+void readSzinQprop(XMLReader& xml, LatticePropagator& q, const std::string& file)
 {
   BinaryFileReader cfg_in(file);
 
@@ -79,13 +79,13 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
 #if 0
     xml.open(xml_buf);
 #else
-    const string bufcontent=xml_buf.str() + "\n";
-    istringstream is(bufcontent);
+    const std::string bufcontent=xml_buf.str() + "\n";
+    std::istringstream is(bufcontent);
     xml.open(is);
 #endif
 
   }
-  catch(const string& e)
+  catch(const std::string& e)
   { 
     QDP_error_exit("Error in readszinqprop: %s",e.c_str());
   }
@@ -101,7 +101,7 @@ void readSzinQprop(XMLReader& xml, LatticePropagator& q, const string& file)
  * \param kappa      kappa value (Read)
  */    
 
-void writeSzinQprop(const LatticePropagator& q, const string& file,
+void writeSzinQprop(const LatticePropagator& q, const std::string& file,
 		    const Real kappa)
 {
   BinaryFileWriter cfg_out(file);

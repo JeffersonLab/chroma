@@ -13,7 +13,7 @@
 namespace Chroma 
 {
 
-  // Given a fermion action in string form, return the Mass
+  // Given a fermion action in std::string form, return the Mass
   Real getMass(const GroupXML_t& fermact)
   {
     //
@@ -43,13 +43,13 @@ namespace Chroma
       }
       else
       {
-	QDPIO::cerr << "Neither Mass nor Kappa found" << endl;
+	QDPIO::cerr << "Neither Mass nor Kappa found" << std::endl;
 	throw std::string("Neither Mass nor Kappa found");
       }
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
+      QDPIO::cerr << "Error reading fermact: " << e << std::endl;
       throw e;
     }
 
@@ -57,7 +57,7 @@ namespace Chroma
   }
 
 
-  // Given a fermion action in string form, return the boundary
+  // Given a fermion action in std::string form, return the boundary
   /* HACK - THIS DEFINITELY NEEDS IMPROVEMENT */
   multi1d<int> getFermActBoundary(const GroupXML_t& fermact)
   {
@@ -88,20 +88,20 @@ namespace Chroma
       else
       {
 	std::ostringstream os;
-	os << __func__ << ": Warning: neither FermionBC group nor boundary found - throwing exception. If this is not caught the code will exit" << endl;
+	os << __func__ << ": Warning: neither FermionBC group nor boundary found - throwing exception. If this is not caught the code will exit" << std::endl;
 	QDPIO::cerr << os.str();
 	throw os.str();
       }
     }
 //    catch (const std::string& e) 
 //    {
-//      QDPIO::cerr << "Error reading fermact: " << e << endl;
+//      QDPIO::cerr << "Error reading fermact: " << e << std::endl;
 //      throw e;
 //    }
 
     if (boundary.size() != Nd)
     {
-      QDPIO::cerr << __func__ << ": boundary is not the expected length = Nd" << endl;
+      QDPIO::cerr << __func__ << ": boundary is not the expected length = Nd" << std::endl;
       QDP_abort(1);
     }
 
@@ -117,7 +117,7 @@ namespace Chroma
     t_source  = -1;
   }
 
-  // Given a prop source xml in string form, return the t_srce
+  // Given a prop source xml in std::string form, return the t_srce
   multi1d<int> PropSourceConst_t::getTSrce() const
   {
     //
@@ -149,7 +149,7 @@ namespace Chroma
 	}
       catch (const std::string& e)
 	{
-	  QDPIO::cerr << "Error reading source: " << e << endl;
+	  QDPIO::cerr << "Error reading source: " << e << std::endl;
 	  throw e;
 	}
     }
@@ -157,7 +157,7 @@ namespace Chroma
     return t_srce;
   }
 
-  // Given a prop source xml in string form, return the Momentum
+  // Given a prop source xml in std::string form, return the Momentum
   // works with momentum sources
   multi1d<int> PropSourceConst_t::getMom() const
   {
@@ -177,7 +177,7 @@ namespace Chroma
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error reading source: " << e << endl;
+      QDPIO::cerr << "Error reading source: " << e << std::endl;
       throw e;
     }
 
@@ -244,7 +244,7 @@ namespace Chroma
   {
     //! V5 Source header read 
     /*! This routine is SOLELY for backwards compatibility. It should go. */
-    void readV5(XMLReader& xml, const string& path, PropSourceConst_t& header)
+    void readV5(XMLReader& xml, const std::string& path, PropSourceConst_t& header)
     {
       XMLReader paramtop(xml, path);
 
@@ -337,7 +337,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Source
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -362,7 +362,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Source
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -387,7 +387,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Source
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -412,7 +412,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Source
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "source_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -426,7 +426,7 @@ namespace Chroma
 	os << "Unsupported source type= " << header.source.id 
 	   << "  in file= " << __FILE__ 
 	   << "  at line= " << __LINE__
-	   << endl;
+	   << std::endl;
 	throw os.str();
       }
     }
@@ -434,7 +434,7 @@ namespace Chroma
 
     //! V4 Sink header read 
     /*! This routine is SOLELY for backwards compatibility. It should go. */
-    void readV4(XMLReader& xml, const string& path, PropSinkSmear_t& header)
+    void readV4(XMLReader& xml, const std::string& path, PropSinkSmear_t& header)
     {
       XMLReader paramtop(xml, path);
 
@@ -522,7 +522,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Sink
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -546,7 +546,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Sink
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -568,7 +568,7 @@ namespace Chroma
 	  pop(xml_tmp);  // Sink
 	  pop(xml_tmp);  // Param
 
-	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	  QDPIO::cout << "sink_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	  xml_readback.open(xml_tmp);
 	}
@@ -582,7 +582,7 @@ namespace Chroma
 	os << "Unsupported sink type= " << header.sink.id 
 	   << "  in file= " << __FILE__ 
 	   << "  at line= " << __LINE__
-	   << endl;
+	   << std::endl;
 	throw os.str();
       }
     }
@@ -591,7 +591,7 @@ namespace Chroma
 
 
   // Source header read
-  void read(XMLReader& xml, const string& path, PropSourceConst_t& header)
+  void read(XMLReader& xml, const std::string& path, PropSourceConst_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -622,13 +622,13 @@ namespace Chroma
 	  read(xml_tmp, "t_srce", t_srce);
 	  if (t_srce.size() != Nd)
 	  {
-	    throw string("t_srce not expected size");
+	    throw std::string("t_srce not expected size");
 	  }
 	  header.t_source = t_srce[header.j_decay];
 	}
 	else
 	{
-	  throw string("neither t_source nor t_srce found");
+	  throw std::string("neither t_source nor t_srce found");
 	}
       }
       break;
@@ -636,20 +636,20 @@ namespace Chroma
       default:
 	/**************************************************************************/
 	QDPIO::cerr << "PropSourceConst parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "PropSourceConst: Error reading source: " << e << endl;
+      QDPIO::cerr << "PropSourceConst: Error reading source: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
 
   // Source header read
-  void read(XMLReader& xml, const string& path, PropSourceSmear_t& header)
+  void read(XMLReader& xml, const std::string& path, PropSourceSmear_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -670,14 +670,14 @@ namespace Chroma
     default:
       /**************************************************************************/
       QDPIO::cerr << "PropSourceSmear parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
 
 
   // Source header read
-  void read(XMLReader& xml, const string& path, PropSinkSmear_t& header)
+  void read(XMLReader& xml, const std::string& path, PropSinkSmear_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -704,13 +704,13 @@ namespace Chroma
       default:
 	/**************************************************************************/
 	QDPIO::cerr << "PropSinkSmear parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "PropSinkSmear: Error reading sink: " << e << endl;
+      QDPIO::cerr << "PropSinkSmear: Error reading sink: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -718,7 +718,7 @@ namespace Chroma
 
 
   //! SeqSource header reader
-  void read(XMLReader& xml, const string& path, SeqSource_t& param)
+  void read(XMLReader& xml, const std::string& path, SeqSource_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -751,7 +751,7 @@ namespace Chroma
 	pop(xml_tmp);  // Source
 	pop(xml_tmp);  // Param
 
-	QDPIO::cout << "seqsrc_xml = XX" << xml_tmp.printCurrentContext() << "XX" << endl;
+	QDPIO::cout << "seqsrc_xml = XX" << xml_tmp.printCurrentContext() << "XX" << std::endl;
 
 	xml_readback.open(xml_tmp);
       }
@@ -774,7 +774,7 @@ namespace Chroma
 
     default:
       QDPIO::cerr << "SeqSource parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -782,7 +782,7 @@ namespace Chroma
 
 
   // Forward propagator header read
-  void read(XMLReader& xml, const string& path, ChromaProp_t& param)
+  void read(XMLReader& xml, const std::string& path, ChromaProp_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -877,7 +877,7 @@ namespace Chroma
 
       if (paramtop.count("boundary") != 0)
       {
-	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << std::endl; 
 	QDP_abort(1);
       }
     }
@@ -897,7 +897,7 @@ namespace Chroma
 
       if (paramtop.count("boundary") != 0)
       {
-	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << std::endl; 
 	QDP_abort(1);
       }
     }
@@ -917,7 +917,7 @@ namespace Chroma
 
       if (paramtop.count("boundary") != 0)
       {
-	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << endl; 
+	QDPIO::cerr << "ChromaProp: paranoia check - found a misplaced boundary" << std::endl; 
 	QDP_abort(1);
       }
     }
@@ -926,7 +926,7 @@ namespace Chroma
     default:
       /**************************************************************************/
       QDPIO::cerr << "ChromaProp parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -934,7 +934,7 @@ namespace Chroma
 
 
   // Forward propagator header read
-  void read(XMLReader& xml, const string& path, ChromaMultiProp_t& param)
+  void read(XMLReader& xml, const std::string& path, ChromaMultiProp_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1011,7 +1011,7 @@ namespace Chroma
 
       if (paramtop.count("boundary") != 0)
       {
-	QDPIO::cerr << "ChromaMultiProp: paranoia check - found a misplaced boundary" << endl; 
+	QDPIO::cerr << "ChromaMultiProp: paranoia check - found a misplaced boundary" << std::endl; 
 	QDP_abort(1);
       }
     }
@@ -1048,7 +1048,7 @@ namespace Chroma
     default:
       /**************************************************************************/
       QDPIO::cerr << "ChromaMultiProp parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -1057,7 +1057,7 @@ namespace Chroma
 //      QDPIO::cerr << "Number of Masses in param.MultiMasses (" 
 //		  << param.MultiMasses.size() 
 //		  << ") differs from no of RsdCGs in param.invParam.RsdCG (" 
-//		  << param.invParam.RsdCG.size() << ")" << endl;
+//		  << param.invParam.RsdCG.size() << ")" << std::endl;
 //
 //      QDP_abort(1);
 //    }
@@ -1102,7 +1102,7 @@ namespace Chroma
 
 
   // Propagator reader
-  void read(XMLReader& xml, const string& path, Propagator_t& param)
+  void read(XMLReader& xml, const std::string& path, Propagator_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1113,7 +1113,7 @@ namespace Chroma
 
 
   // ForwardProp reader
-  void read(XMLReader& xml, const string& path, ForwardProp_t& param)
+  void read(XMLReader& xml, const std::string& path, ForwardProp_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1125,7 +1125,7 @@ namespace Chroma
 
 
   // SequentialSource header reader
-  void read(XMLReader& xml, const string& path, SequentialSource_t& param)
+  void read(XMLReader& xml, const std::string& path, SequentialSource_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1137,7 +1137,7 @@ namespace Chroma
 
 
   // SequentialProp header reader
-  void read(XMLReader& xml, const string& path, SequentialProp_t& param)
+  void read(XMLReader& xml, const std::string& path, SequentialProp_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1150,7 +1150,7 @@ namespace Chroma
 
 
   //! Source/sink spin indices
-  void read(XMLReader& xml, const string& path, QQQSpinIndices_t& input)
+  void read(XMLReader& xml, const std::string& path, QQQSpinIndices_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -1168,7 +1168,7 @@ namespace Chroma
 
 
   //! QQDiquark header reader
-  void read(XMLReader& xml, const string& path, QQDiquark_t& param)
+  void read(XMLReader& xml, const std::string& path, QQDiquark_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1182,7 +1182,7 @@ namespace Chroma
 
     default:
       QDPIO::cerr << "QQDiquark parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -1191,14 +1191,14 @@ namespace Chroma
     if (param.forward_props.size() != 2)
     {
       QDPIO::cerr << "QQDiquark: unexpected number of forward_props = " 
-		  << param.forward_props.size() << endl; 
+		  << param.forward_props.size() << std::endl; 
       QDP_abort(1);
     }
   }
 
 
   //! QQQBarcomp header reader
-  void read(XMLReader& xml, const string& path, QQQBarcomp_t& param)
+  void read(XMLReader& xml, const std::string& path, QQQBarcomp_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1232,7 +1232,7 @@ namespace Chroma
     default:
       /**************************************************************************/
       QDPIO::cerr << "QQQBarcomp parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -1244,14 +1244,14 @@ namespace Chroma
     if (param.forward_props.size() != 3)
     {
       QDPIO::cerr << "QQQBarcomp: unexpected number of forward_props = " 
-		  << param.forward_props.size() << endl; 
+		  << param.forward_props.size() << std::endl; 
       QDP_abort(1);
     }
   }
 
 
   //! QQbarMescomp header reader
-  void read(XMLReader& xml, const string& path, QQbarMescomp_t& param)
+  void read(XMLReader& xml, const std::string& path, QQbarMescomp_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -1268,14 +1268,14 @@ namespace Chroma
     default:
       /**************************************************************************/
       QDPIO::cerr << "QQbarMescomp parameter version " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
     if (param.forward_props.size() != 2)
     {
       QDPIO::cerr << "QQbarMescomp: unexpected number of forward_props = " 
-		  << param.forward_props.size() << endl; 
+		  << param.forward_props.size() << std::endl; 
       QDP_abort(1);
     }
   }
@@ -1285,7 +1285,7 @@ namespace Chroma
 
   //---------------------------------------------------------------------------
   // Source header writer
-  void write(XMLWriter& xml, const string& path, const PropSourceConst_t& header)
+  void write(XMLWriter& xml, const std::string& path, const PropSourceConst_t& header)
   {
     push(xml, path);
 
@@ -1300,7 +1300,7 @@ namespace Chroma
 
 
   // Source header writer
-  void write(XMLWriter& xml, const string& path, const PropSourceSmear_t& header)
+  void write(XMLWriter& xml, const std::string& path, const PropSourceSmear_t& header)
   {
     push(xml, path);
 
@@ -1314,7 +1314,7 @@ namespace Chroma
 
 
   // Source header writer
-  void write(XMLWriter& xml, const string& path, const PropSinkSmear_t& header)
+  void write(XMLWriter& xml, const std::string& path, const PropSinkSmear_t& header)
   {
     push(xml, path);
 
@@ -1328,7 +1328,7 @@ namespace Chroma
 
 
   // Write propagator inversion parameters
-  void write(XMLWriter& xml, const string& path, const ChromaProp_t& header)
+  void write(XMLWriter& xml, const std::string& path, const ChromaProp_t& header)
   {
     push(xml, path);
 
@@ -1343,7 +1343,7 @@ namespace Chroma
   }
 
   // Write propagator inversion parameters
-  void write(XMLWriter& xml, const string& path, const ChromaMultiProp_t& header)
+  void write(XMLWriter& xml, const std::string& path, const ChromaMultiProp_t& header)
   {
     push(xml, path);
 
@@ -1359,7 +1359,7 @@ namespace Chroma
 
 
   //! SeqSource header writer
-  void write(XMLWriter& xml, const string& path, const SeqSource_t& param)
+  void write(XMLWriter& xml, const std::string& path, const SeqSource_t& param)
   {
     push(xml, path);
 
@@ -1386,7 +1386,7 @@ namespace Chroma
 
 
   // Propagator writer
-  void write(XMLWriter& xml, const string& path, const Propagator_t& param)
+  void write(XMLWriter& xml, const std::string& path, const Propagator_t& param)
   {
     push(xml, path);
 
@@ -1401,7 +1401,7 @@ namespace Chroma
 
 
   // ForwardProp writer
-  void write(XMLWriter& xml, const string& path, const ForwardProp_t& param)
+  void write(XMLWriter& xml, const std::string& path, const ForwardProp_t& param)
   {
 //    if( path != "." )
     push(xml, path);
@@ -1419,7 +1419,7 @@ namespace Chroma
 
 
   //! SequentialSource header writer
-  void write(XMLWriter& xml, const string& path, const SequentialSource_t& param)
+  void write(XMLWriter& xml, const std::string& path, const SequentialSource_t& param)
   {
 //    if( path != "." )
     push(xml, path);
@@ -1437,7 +1437,7 @@ namespace Chroma
 
 
   //! SequentialProp header writer
-  void write(XMLWriter& xml, const string& path, const SequentialProp_t& param)
+  void write(XMLWriter& xml, const std::string& path, const SequentialProp_t& param)
   {
 //    if( path != "." )
     push(xml, path);
@@ -1456,7 +1456,7 @@ namespace Chroma
 
 
   //! Source/sink spin indices
-  void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input)
+  void write(XMLWriter& xml, const std::string& path, const QQQSpinIndices_t& input)
   {
     push(xml, path);
 
@@ -1468,7 +1468,7 @@ namespace Chroma
 
 
   //! QQDiquark header writer
-  void write(XMLWriter& xml, const string& path, const QQDiquark_t& param)
+  void write(XMLWriter& xml, const std::string& path, const QQDiquark_t& param)
   {
     if( path != "." )
       push(xml, path);
@@ -1484,7 +1484,7 @@ namespace Chroma
 
 
   //! QQQBarcomp header writer
-  void write(XMLWriter& xml, const string& path, const QQQBarcomp_t& param)
+  void write(XMLWriter& xml, const std::string& path, const QQQBarcomp_t& param)
   {
     if( path != "." )
       push(xml, path);
@@ -1505,7 +1505,7 @@ namespace Chroma
 
 
   //! QQbarMescomp header writer
-  void write(XMLWriter& xml, const string& path, const QQbarMescomp_t& param)
+  void write(XMLWriter& xml, const std::string& path, const QQbarMescomp_t& param)
   {
     if( path != "." )
       push(xml, path);
@@ -1532,7 +1532,7 @@ namespace Chroma
    */    
   void writeQprop(XMLBufferWriter& file_xml,
 		  XMLBufferWriter& record_xml, const LatticePropagator& quark_prop,
-		  const string& file, 
+		  const std::string& file, 
 		  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
   {
     QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
@@ -1552,7 +1552,7 @@ namespace Chroma
    */    
   void writeQprop(XMLBufferWriter& file_xml,
 		  const ChromaProp_t& header, const LatticePropagator& quark_prop,
-		  const string& file, 
+		  const std::string& file, 
 		  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
   {
     XMLBufferWriter record_xml;
@@ -1573,7 +1573,7 @@ namespace Chroma
    */    
   void readQprop(XMLReader& file_xml,
 		 XMLReader& record_xml, LatticePropagator& quark_prop,
-		 const string& file, 
+		 const std::string& file, 
 		 QDP_serialparallel_t serpar)
   {
     QDPFileReader to(file_xml,file,serpar);
@@ -1591,7 +1591,7 @@ namespace Chroma
    */    
   void readQprop(XMLReader& file_xml,
 		 ChromaProp_t& header, LatticePropagator& quark_prop,
-		 const string& file, 
+		 const std::string& file, 
 		 QDP_serialparallel_t serpar)
   {
     XMLReader record_xml;
@@ -1613,7 +1613,7 @@ namespace Chroma
    */    
   void writeFermion(XMLBufferWriter& file_xml,
 		    XMLBufferWriter& record_xml, const LatticeFermion& fermion,
-		    const string& file, 
+		    const std::string& file, 
 		    QDP_volfmt_t volfmt, QDP_serialparallel_t serpar)
   {
     QDPFileWriter to(file_xml,file,volfmt,serpar,QDPIO_OPEN);
@@ -1632,7 +1632,7 @@ namespace Chroma
   void readFermion(XMLReader& file_xml,
 		   XMLReader& record_xml, 
 		   LatticeFermion& fermion,
-		   const string& file, 
+		   const std::string& file, 
 		   QDP_serialparallel_t serpar)
   {
     QDPFileReader to(file_xml,file,serpar);

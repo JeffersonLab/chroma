@@ -44,7 +44,7 @@ void ord_xpaypbz_kernel(int lo, int hi, int my_id, ord_xpaypbz_arg* a)
     }
   }
   else { 
-    QDPIO::cout << "ord_xpaypbz_kernel_generic.h: len not divisible by 4" << endl;
+    QDPIO::cout << "ord_xpaypbz_kernel_generic.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
   }
 }

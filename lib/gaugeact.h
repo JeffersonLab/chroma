@@ -56,7 +56,7 @@ namespace Chroma
     /*! Default version. Derived class should override this if needed. */
     virtual void deriv(P& result, const Handle< GaugeState<P,Q> >& state) const 
     {
-      QDPIO::cerr << "GaugeAction::deriv not implemented" << endl;
+      QDPIO::cerr << "GaugeAction::deriv not implemented" << std::endl;
       QDP_abort(1);
     }
 

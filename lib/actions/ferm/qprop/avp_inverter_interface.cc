@@ -24,7 +24,7 @@ namespace Chroma {
 	
 	if (node != Layout::nodeNumber()) {
 	  
-	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -61,7 +61,7 @@ namespace Chroma {
 	
 	if (node != Layout::nodeNumber()) {
 	  
-	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -100,7 +100,7 @@ namespace Chroma {
 	int linear = Layout::linearSiteIndex(coord);
 	
 	if (node != Layout::nodeNumber()) {
-	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -143,7 +143,7 @@ namespace Chroma {
 	int linear = Layout::linearSiteIndex(coord);
 	
 	if (node != Layout::nodeNumber()) {
-	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -186,7 +186,7 @@ namespace Chroma {
 	int linear = Layout::linearSiteIndex(coord);
 	
 	if (node != Layout::nodeNumber()) {
-	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	  QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	  QDP_abort(1);
 	}
 	

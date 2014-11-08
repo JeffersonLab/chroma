@@ -72,11 +72,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, PointQuarkSourceSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, PointQuarkSourceSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const PointQuarkSourceSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const PointQuarkSourceSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

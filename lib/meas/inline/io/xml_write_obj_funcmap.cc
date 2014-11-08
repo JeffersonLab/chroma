@@ -1,6 +1,6 @@
 // $Id: xml_write_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
- *  \brief Write object function map
+ *  \brief Write object function std::map
  */
 
 #include "named_obj.h"
@@ -11,7 +11,7 @@
 namespace Chroma
 {
  
-  //! IO function map environment
+  //! IO function std::map environment
   /*! \ingroup inlineio */
   namespace XMLWriteObjCallMapEnv
   { 
@@ -19,8 +19,8 @@ namespace Chroma
     namespace
     {
       //! Write a propagator
-      void XMLWriteLatProp(const string& buffer_id,
-			   const string& file)
+      void XMLWriteLatProp(const std::string& buffer_id,
+			   const std::string& file)
       {
 	LatticePropagator obj;
 	XMLBufferWriter file_xml, record_xml;
@@ -40,8 +40,8 @@ namespace Chroma
 
 
       //! Write a fermion
-      void XMLWriteLatFerm(const string& buffer_id,
-			   const string& file)
+      void XMLWriteLatFerm(const std::string& buffer_id,
+			   const std::string& file)
       {
 	LatticeFermion obj;
 	XMLBufferWriter file_xml, record_xml;
@@ -61,8 +61,8 @@ namespace Chroma
 
 
       //! Write a propagator
-      void XMLWriteLatStagProp(const string& buffer_id,
-			       const string& file)
+      void XMLWriteLatStagProp(const std::string& buffer_id,
+			       const std::string& file)
       {
 	LatticeStaggeredPropagator obj;
 	XMLBufferWriter file_xml, record_xml;
@@ -82,8 +82,8 @@ namespace Chroma
 
 
       //! Write a gauge field in floating precision
-      void XMLWriteArrayLatColMat(const string& buffer_id,
-				  const string& file)
+      void XMLWriteArrayLatColMat(const std::string& buffer_id,
+				  const std::string& file)
       {
 	multi1d<LatticeColorMatrix> obj;
 	XMLBufferWriter file_xml, record_xml;
@@ -113,13 +113,13 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 								      XMLWriteLatProp);
-	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(std::string("LatticeFermion"), 
 								      XMLWriteLatFerm);
-	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredPropagator"), 
 								      XMLWriteLatStagProp);
-	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+	success &= TheXMLWriteObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrix"), 
 								      XMLWriteArrayLatColMat);
 
 	registered = true;

@@ -47,7 +47,7 @@ namespace Chroma
     // pseudofermion fields change)
     virtual void reset(void) = 0;
 
-    // Present new vector for use in future chronological
+    // Present new std::vector for use in future chronological
     // Predictors
     virtual void newVector(const T& psi) = 0;
   };
@@ -105,7 +105,7 @@ namespace Chroma
       predictX(psi, A, chi);
     }
 
-    // Present new vector for use in future chronological
+    // Present new std::vector for use in future chronological
     // Predictors
     virtual void newVector(const T& psi) 
     {
@@ -144,7 +144,7 @@ namespace Chroma
     // pseudofermion fields change)
     virtual void reset(void) = 0;
     
-    // Present new vector for use in future chronological
+    // Present new std::vector for use in future chronological
     // Predictors
     virtual void newVector(const multi1d<T>& psi) = 0;
   };

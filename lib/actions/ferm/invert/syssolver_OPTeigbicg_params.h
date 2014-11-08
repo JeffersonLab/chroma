@@ -33,7 +33,7 @@ namespace Chroma
 
     Real NormAest ; /* an estimate of the norm2 of the Matrix */
 
-    string sort_option;   /* (IN) option for sorting eigenvalues computed by eigbicg
+    std::string sort_option;   /* (IN) option for sorting eigenvalues computed by eigbicg
 			     'M' for smallest magnitude and 'R' for smallest real part*/
 
     Real epsi;            /* (IN) threshold used to check if two eignvalues are conjugate pairs:
@@ -47,7 +47,7 @@ namespace Chroma
 			      2  means norm(residual) < MAX( tol*norm(b), MACHEPS*(AnormEst*norm(x)+norm(b)))
 			      with MACHEPS=1e-7 for single precision version and 1e-16 for double precision version.*/
     bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver*/
-    string eigen_id ; /*!< named buffer holding the eigenvectors */
+    std::string eigen_id ; /*!< named buffer holding the eigenvectors */
 
     struct File_t
     {
@@ -93,10 +93,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverOptEigBiCGParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverOptEigBiCGParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path, const SysSolverOptEigBiCGParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SysSolverOptEigBiCGParams& param);
 
 } // End namespace
 

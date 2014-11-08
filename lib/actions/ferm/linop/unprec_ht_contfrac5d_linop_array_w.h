@@ -51,7 +51,7 @@ namespace Chroma
       alpha(_alpha), beta(_beta), 
       isLastZeroP(_isLastZeroP) 
     {
-      QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << endl;
+      QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << std::endl;
       init(fs,b5_,c5_);
     }
 
@@ -67,7 +67,7 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;

@@ -69,36 +69,36 @@ namespace Chroma
     //! The time direction
     int tDir() const = 0;
 
-    //! Apply the time block onto a source vector
+    //! Apply the time block onto a source std::vector
     /*! This does not need to be optimized */
     virtual void timeLinOp(T& chi, const T& psi, 
 			   enum PlusMinus isign) const = 0;
   
-    //! Apply the inverse of the time block onto a source vector
+    //! Apply the inverse of the time block onto a source std::vector
     virtual void timeInvLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
   
-    //! Apply the the space block onto a source vector
+    //! Apply the the space block onto a source std::vector
     virtual void spaceLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void derivTimeLinOp(P& ds_u, const T& chi, const T& psi, 
 				enum PlusMinus isign) const
     {
-      QDPIO::cerr << "derivTime: not implemented" << endl;
+      QDPIO::cerr << "derivTime: not implemented" << std::endl;
       QDP_abort(1);
     }
   
-    //! Apply the space block onto a source vector
+    //! Apply the space block onto a source std::vector
     virtual void derivSpaceLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const
     {
-      QDPIO::cerr << "derivSpace: not implemented" << endl;
+      QDPIO::cerr << "derivSpace: not implemented" << std::endl;
       QDP_abort(1);
     }
  
-    //! Apply the derivative of the operator onto a source vector
+    //! Apply the derivative of the operator onto a source std::vector
     /*! User should make sure deriv routines do a resize  */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
@@ -139,12 +139,12 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
     }
 
-    //! Apply the derivative of the UNPRECONDITIONED operator onto a source vector
+    //! Apply the derivative of the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void derivUnprecLinOp(P& ds_u, const T& chi, const T& psi, 
 				  enum PlusMinus isign) const
@@ -164,7 +164,7 @@ namespace Chroma
     //! Get the force from the Time Trace Log
     virtual void derivLogDetTimeLinOp(P& ds_u, enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenOdd: not implemented" << endl;
+      QDPIO::cerr << "EvenOdd: not implemented" << std::endl;
       QDP_abort(1);
     }
 

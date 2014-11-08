@@ -40,7 +40,7 @@ namespace Chroma
   /*! \ingroup io */
   namespace QuarkSpinTypeEnv 
   { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -52,11 +52,11 @@ namespace Chroma
   // Reader and writer
   //! Read a quark spin type enum
   /*! \ingroup io */
-  void read(XMLReader& r, const string& path, QuarkSpinType& t);
+  void read(XMLReader& r, const std::string& path, QuarkSpinType& t);
 
   //! Write a quark spin type enum
   /*! \ingroup io */
-  void write(XMLWriter& w, const string& path, const QuarkSpinType& t);
+  void write(XMLWriter& w, const std::string& path, const QuarkSpinType& t);
 
   /*! @} */   // end of group io
 

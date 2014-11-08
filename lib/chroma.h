@@ -20,7 +20,7 @@
  * single high-level code image to the user, but can generate highly
  * optimized code for many architectural systems including single node
  * workstations, multi-threaded SMP workstations (soon to come),
- * clusters of workstations via QMP, and classic vector computers.
+ * clusters of workstations via QMP, and classic std::vector computers.
  */
 
 #ifndef CHROMA_INCLUDE

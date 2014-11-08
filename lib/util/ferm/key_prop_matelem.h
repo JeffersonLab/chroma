@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Key for propagator colorvector matrix elements
+ * \brief Key for propagator colorstd::vector matrix elements
  */
 
 #ifndef __key_prop_matelem_h__
@@ -30,7 +30,7 @@ namespace Chroma
   //! Prop operator
   struct ValPropElementalOperator_t
   {
-    multi2d<ComplexD>  mat;               /*!< Colorvector source and sink */
+    multi2d<ComplexD>  mat;               /*!< Colorstd::vector source and sink */
   };
 
 

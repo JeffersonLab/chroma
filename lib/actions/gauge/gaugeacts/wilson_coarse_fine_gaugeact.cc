@@ -53,18 +53,18 @@ namespace Chroma
     }
     catch( const std::string& e ) 
     { 
-      QDPIO::cerr << __func__ << ": Error reading XML: " <<  e << endl;
+      QDPIO::cerr << __func__ << ": Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
-  void read(XMLReader& xml, const string& path, WilsonCoarseFineGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, WilsonCoarseFineGaugeActParams& p) 
   {
     WilsonCoarseFineGaugeActParams tmp(xml, path);
     p = tmp;
   }
 
-  void write(XMLWriter& xml, const string& path, const WilsonCoarseFineGaugeActParams& p) 
+  void write(XMLWriter& xml, const std::string& path, const WilsonCoarseFineGaugeActParams& p) 
   {
     push(xml, path);
 
@@ -99,7 +99,7 @@ namespace Chroma
     // Sanity check. Insist there are 2 coarse and 2 fine directions
     if (param.coarse_dirs.size() != 4 || Nd != 4)
     {
-      QDPIO::cerr << WilsonCoarseFineGaugeActEnv::name << ": coarse_dirs and Nd must be size=4" << endl;
+      QDPIO::cerr << WilsonCoarseFineGaugeActEnv::name << ": coarse_dirs and Nd must be size=4" << std::endl;
       QDP_abort(1);
     }
 
@@ -111,7 +111,7 @@ namespace Chroma
 
     if (cnt != 2)
     {
-      QDPIO::cerr << WilsonCoarseFineGaugeActEnv::name << ": not 2 coarse dirs" << endl;
+      QDPIO::cerr << WilsonCoarseFineGaugeActEnv::name << ": not 2 coarse dirs" << std::endl;
       QDP_abort(1);
     }
 

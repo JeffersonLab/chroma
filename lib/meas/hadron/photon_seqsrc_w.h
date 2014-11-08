@@ -63,7 +63,7 @@ namespace Chroma
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion)
 	{
-	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDPIO::cerr << __func__ << ": not implemented" << std::endl;
 	  QDP_abort(1);
 	  Complex tmp; // Make Compiler happy
 	  return tmp;
@@ -114,7 +114,7 @@ namespace Chroma
 			const multi1d<LatticePropagator>& forward_props,
 			int gamma_insertion)
 	{
-	  QDPIO::cerr << __func__ << ": not implemented" << endl;
+	  QDPIO::cerr << __func__ << ": not implemented" << std::endl;
 	  QDP_abort(1);
 	  Complex tmp; // Make Compiler happy
 	  return tmp;
@@ -146,11 +146,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup hadron */
-  void read(XMLReader& xml, const string& path, PhotonRhoSeqSourceEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, PhotonRhoSeqSourceEnv::Params& param);
 
   //! Writer
   /*! @ingroup hadron */
-  void write(XMLWriter& xml, const string& path, const PhotonRhoSeqSourceEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const PhotonRhoSeqSourceEnv::Params& param);
 
 
 }  // end namespace Chroma

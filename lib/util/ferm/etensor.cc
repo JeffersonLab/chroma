@@ -57,7 +57,7 @@ namespace Chroma
     if (alpha < 0 || alpha > 1 || j < 0 || j > 2 || k < 0 || k > 2)
     {
       QDPIO::cerr << __func__ << ": indices out of bounds: alpha,j,k=" 
-		  << alpha << " " << j << " " << k << endl;
+		  << alpha << " " << j << " " << k << std::endl;
       QDP_abort(1);
     }
 

@@ -24,7 +24,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-  void readWupp(multi1d<LatticeColorMatrix>& u, const string& cfg_file) 
+  void readWupp(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file) 
 {
   START_CODE();
 
@@ -44,13 +44,13 @@ namespace Chroma {
 
   bool byterev = false;
   if( nxw != NX ) {
-    QDPIO::cout << "nxw " << nxw <<endl;
-    QDPIO::cout << "readWupp: lattice dimension invalid" << endl;
-    QDPIO::cout << "Trying byte reversal" << endl;
+    QDPIO::cout << "nxw " << nxw <<std::endl;
+    QDPIO::cout << "readWupp: lattice dimension invalid" << std::endl;
+    QDPIO::cout << "Trying byte reversal" << std::endl;
     QDPUtil::byte_swap((void *)&nxw, sizeof(int), 1 );
     byterev = true;
   }
-    QDPIO::cout << "NX: " << nxw << endl;
+    QDPIO::cout << "NX: " << nxw << std::endl;
 
 
   if( nxw != NX){
@@ -63,7 +63,7 @@ namespace Chroma {
       QDPUtil::byte_swap((void *)&nyw, sizeof(int), 1 );
       QDPUtil::byte_swap((void *)&nzw, sizeof(int), 1 );
       QDPUtil::byte_swap((void *)&ntw, sizeof(int), 1 );
-      QDPIO::cout << " Ny Nz Nt " << nyw << " " << nzw << " " <<ntw <<endl;
+      QDPIO::cout << " Ny Nz Nt " << nyw << " " << nzw << " " <<ntw <<std::endl;
     }
 
   if( ntw != NT ) {
@@ -101,11 +101,11 @@ namespace Chroma {
 	uu = uuF;
 	/*
 	if(site < 10 && mu == 0){
-	  QDPIO::cout << "site "<<site<<endl;
+	  QDPIO::cout << "site "<<site<<std::endl;
 	  for(int ic = 0; ic < Nc; ic++){
 	    for(int jc = 0; jc < Nc; jc++){
-	      QDPIO::cout << "ic "<<ic<<" "<< jc<<" "<< peekColor(uuF,ic,jc)<<endl;
-	      QDPIO::cout << "ic "<<ic<<" "<< jc<<" "<< peekColor(uu,ic,jc)<<endl;
+	      QDPIO::cout << "ic "<<ic<<" "<< jc<<" "<< peekColor(uuF,ic,jc)<<std::endl;
+	      QDPIO::cout << "ic "<<ic<<" "<< jc<<" "<< peekColor(uu,ic,jc)<<std::endl;
 	    }
 	  }
 	}
@@ -132,7 +132,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readWupp(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readWupp(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -143,7 +143,7 @@ void readWupp(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   // Now, set up the XML header. Do this by first making a buffer
   // writer that is then used to make the reader
   XMLBufferWriter  xml_buf;
-  const string ss("wupper_config_read") ;
+  const std::string ss("wupper_config_read") ;
   write(xml, ss );
 
 
@@ -153,9 +153,9 @@ void readWupp(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   {
     xml.open(xml_buf);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   { 
-    QDPIO::cerr << __func__ << ": Error in readwupp: " << e.c_str() << endl;
+    QDPIO::cerr << __func__ << ": Error in readwupp: " << e.c_str() << std::endl;
     QDP_abort(1);
   }
 

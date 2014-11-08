@@ -33,8 +33,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, EvenOddPrecOvDWFermActArrayParams& param);
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecOvDWFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecOvDWFermActArrayParams& param);
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecOvDWFermActArrayParams& param);
 
 
   //! 4D style even-odd preconditioned Overlap-DWF (Borici) action
@@ -65,7 +65,7 @@ namespace Chroma
 		    << "  Mass = " << Mass 
 		    << "  N5 = " << N5 
 		    << "  a5 = " << a5 
-		    << endl;
+		    << std::endl;
       }
 
     //! General FermBC

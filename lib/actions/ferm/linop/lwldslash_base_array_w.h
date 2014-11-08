@@ -59,12 +59,12 @@ namespace Chroma
     const Subset& subset() const {return all;}
 
     /**
-     * Apply a vector dslash
+     * Apply a std::vector dslash
      *
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      *
      * \return The output of applying dslash on psi
      */
@@ -78,7 +78,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      *
      * \return The output of applying dslash on psi
      */
@@ -88,8 +88,8 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
@@ -102,10 +102,10 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector on cb                           (Read)
-     * \param psi     right vector on 1-cb                        (Read)
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of chi vector                  (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
@@ -116,10 +116,10 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of chi vector                  (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */

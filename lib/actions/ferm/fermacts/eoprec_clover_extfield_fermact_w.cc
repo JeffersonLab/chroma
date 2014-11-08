@@ -33,16 +33,16 @@ namespace Chroma
       XMLReader top(xml_in, path);
 
       {
-	ostringstream os;
+	std::ostringstream os;
 	top.printCurrentContext(os);
-	cout << __func__ << ": top = XX" << os.str() << "XX" << endl;
+	cout << __func__ << ": top = XX" << os.str() << "XX" << std::endl;
       }
 
       std::string fermstate = "FermState";
       if (top.count(fermstate) == 0)
       {
 	QDPIO::cerr << EvenOddPrecCloverExtFieldFermActEnv::name 
-		    << ": did not find appropriate FermState" << endl;
+		    << ": did not find appropriate FermState" << std::endl;
 	QDP_abort(1);
       }
 
@@ -59,10 +59,10 @@ namespace Chroma
 	  std::ostringstream element_xpath;
 	  element_xpath << "ExternalField/elem[" << (mu+1) << "]";
 
-	  string name;
+	  std::string name;
 	  read(paramtop, element_xpath.str() + "/Name", name);
 
-	  QDPIO::cout << "External field type = " << name << endl;
+	  QDPIO::cout << "External field type = " << name << std::endl;
 	  ext_field[mu] = TheExternalFieldFactory::Instance().createObject(name,
 									   paramtop,
 									   element_xpath.str());
@@ -70,7 +70,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
       

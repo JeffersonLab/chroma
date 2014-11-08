@@ -22,7 +22,7 @@ namespace Chroma
 
     if ( Nc != 2 )
     {
-      QDPIO::cerr << __func__ << ": can only handle SU(2)" << endl;
+      QDPIO::cerr << __func__ << ": can only handle SU(2)" << std::endl;
       QDP_abort(1);
     }
 

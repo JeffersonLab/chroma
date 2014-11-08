@@ -252,8 +252,8 @@ namespace Chroma
 	    (getPhi())[i] = (fm.getPhi())[i];
 	  }
 	}
-	catch(bad_cast) { 
-	  QDPIO::cerr << "Failed to cast input Monomial to OneFlavorRatioRatRatExactWilsonTypeFermMonomial5D" << endl;
+	catch(std::bad_cast) { 
+	  QDPIO::cerr << "Failed to cast input Monomial to OneFlavorRatioRatRatExactWilsonTypeFermMonomial5D" << std::endl;
 	  QDP_abort(1);
 	}
     

@@ -12,7 +12,7 @@ namespace Chroma
   /*!
    * \ingroup ferm
    *
-   * \param a      Source color vector
+   * \param a      Source color std::vector
    * \param b      Destination fermion
    * \param spin_index   Spin index
    */
@@ -26,7 +26,7 @@ namespace Chroma
   /*!
    * \ingroup ferm
    *
-   * \param a      Source color vector
+   * \param a      Source color std::vector
    * \param b      Destination fermion
    * \param spin_index   Spin index
    */
@@ -41,7 +41,7 @@ namespace Chroma
   /*!
    * \ingroup ferm
    *
-   * \param a      Source color vector
+   * \param a      Source color std::vector
    * \param b      Destination fermion
    */
   void CvToFerm(const LatticeColorVectorF& a, LatticeStaggeredFermionF& b)
@@ -53,7 +53,7 @@ namespace Chroma
   /*!
    * \ingroup ferm
    *
-   * \param a      Source color vector
+   * \param a      Source color std::vector
    * \param b      Destination fermion
    */
   void CvToFerm(const LatticeColorVectorD& a, LatticeStaggeredFermionD& b)

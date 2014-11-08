@@ -22,7 +22,6 @@
 #include "actions/ferm/invert/invcg2.h"
 
 #include <string>
-using namespace std;
 
 namespace Chroma
 {
@@ -131,12 +130,12 @@ namespace Chroma
 
       QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER: " << res.n_count 
 		  << " iterations. Rsd = " << res.resid 
-		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
 
       swatch.stop();
 
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "SINGLE_PREC_CLOVER_CG_SOLVER_TIME: "<<time<< " sec" << std::endl;
 
       END_CODE();
       return res;

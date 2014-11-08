@@ -49,7 +49,7 @@ namespace Chroma
    *  Chi	      Pseudofermion field				(Write)
    *		      +
    *  ISign      D' or D'  ( +1 | -1 ) respectively		(Read)
-   *  CB	      Checkerboard of OUTPUT vector			(Read)
+   *  CB	      Checkerboard of OUTPUT std::vector			(Read)
    *
    * NOTE: the coefficient c_3 is included in u_triple! 
    *
@@ -93,7 +93,7 @@ namespace Chroma
     /* Note the KS phase factors are already included in the U's! */
     mu = 0;
     tmp_0 = shift(psi, FORWARD, mu);
-    chi[rb[cb]] = u_fat[mu] * tmp_0; // Color matrix X color vector : 66 flops
+    chi[rb[cb]] = u_fat[mu] * tmp_0; // Color matrix X color std::vector : 66 flops
     //  NEIGHBOUR(tmp_0, tmp_1, FORWARD, mu, 1);
     tmp_1 = shift(tmp_0, FORWARD, mu);
     tmp_2 = shift(tmp_1, FORWARD, mu);

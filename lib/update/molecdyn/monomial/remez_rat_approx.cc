@@ -14,7 +14,7 @@ namespace Chroma
 { 
 
   //! Remez param
-  void read(XMLReader& xml, const string& path, RemezRatApproxEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, RemezRatApproxEnv::Params& param)
   {
     RemezRatApproxEnv::Params tmp(xml, path);
     param = tmp;
@@ -56,7 +56,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -74,7 +74,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -99,25 +99,25 @@ namespace Chroma
       unsigned long power_num = abs(params.numPower);
       unsigned long power_den = abs(params.denPower);
 
-      QDPIO::cout << "GenApprox: Numerator  : " << params.numPower << "  Denominator: " << params.denPower << endl;
-      QDPIO::cout << "           Action Degree " << params.degree << endl; 
+      QDPIO::cout << "GenApprox: Numerator  : " << params.numPower << "  Denominator: " << params.denPower << std::endl;
+      QDPIO::cout << "           Action Degree " << params.degree << std::endl; 
 
       if (params.denPower <= 0)
       {
-	QDPIO::cerr << name << ": invalid params" << endl;
+	QDPIO::cerr << name << ": invalid params" << std::endl;
 	QDP_abort(1);
       }
 
       // Find approx to  x^abs(params.numPower/params.denPower)
-      QDPIO::cout << "Compute partial fraction expansion" << endl;
-      QDPIO::cout << "Numerator Power=" << power_num << " Denominator Power=" << power_den << endl;
+      QDPIO::cout << "Compute partial fraction expansion" << std::endl;
+      QDPIO::cout << "Numerator Power=" << power_num << " Denominator Power=" << power_den << std::endl;
       Remez  remez(params.lowerMin, params.upperMax, prec);
       remez.generateApprox(params.degree, power_num, power_den);
 
       if (params.numPower > 0)
       {
 	// Find approx to  x^(params.numPower/params.denPower)
-	QDPIO::cout << "Sign = +1" << endl;
+	QDPIO::cout << "Sign = +1" << std::endl;
 
 	pfe = remez.getPFE();
 	ipfe = remez.getIPFE();
@@ -125,7 +125,7 @@ namespace Chroma
       else
       {
 	// Find approx to  x^(-params.numPower/params.denPower)
-	QDPIO::cout << "Sign = -1" << endl;
+	QDPIO::cout << "Sign = -1" << std::endl;
 
 	pfe = remez.getIPFE();
 	ipfe = remez.getPFE();

@@ -26,14 +26,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, ShellQuarkSinkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, ShellQuarkSinkSmearingEnv::Params& param)
   {
     ShellQuarkSinkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const ShellQuarkSinkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const ShellQuarkSinkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -106,7 +106,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -165,7 +165,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -179,7 +179,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -203,7 +203,7 @@ namespace Chroma
     void
     SinkSmear<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
     {
-      QDPIO::cout << "Shell sink" << endl;
+      QDPIO::cout << "Shell sink" << std::endl;
 
       try
       {
@@ -212,7 +212,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
+        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << std::endl;
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id,
@@ -224,7 +224,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
+        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << std::endl;
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -259,7 +259,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -272,7 +272,7 @@ namespace Chroma
     void
     SinkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_sink) const
     {
-      QDPIO::cout << "Shell sink" << endl;
+      QDPIO::cout << "Shell sink" << std::endl;
 
       try
       {
@@ -281,7 +281,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
+        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << std::endl;
 	
 	Handle< QuarkSmearing<LatticeStaggeredPropagator> >
 	  quarkSmearing(TheStagPropSmearingFactory::Instance().createObject(params.quark_smearing.id,
@@ -293,7 +293,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
+        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << std::endl;
 	
 	Handle< QuarkDisplacement<LatticeStaggeredPropagator> >
 	  quarkDisplacement(TheStagPropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -328,7 +328,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -340,7 +340,7 @@ namespace Chroma
     void
     SinkSmear<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
     {
-//      QDPIO::cout << "Shell sink" << endl;
+//      QDPIO::cout << "Shell sink" << std::endl;
 
       try
       {
@@ -380,7 +380,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }

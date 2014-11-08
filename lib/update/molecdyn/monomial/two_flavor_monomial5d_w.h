@@ -15,7 +15,6 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
-using namespace std;
 
 namespace Chroma
 {
@@ -89,7 +88,7 @@ namespace Chroma
 	SystemSolverResults_t res = (*invMdagM)(X, getPhi());
 	n_count = res.n_count;
 
-	// Register the new vector
+	// Register the new std::vector
 	(getMDSolutionPredictor()).newVector(X);
       }
 
@@ -152,7 +151,7 @@ namespace Chroma
       (*M)(getPhi(), eta, MINUS);
 
       // Reset the chronological predictor
-      QDPIO::cout << "TwoFlavWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
+      QDPIO::cout << "TwoFlavWilson5DMonomial: resetting Predictor at end of field refresh" << std::endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -174,8 +173,8 @@ namespace Chroma
 	  (getPhi())[i] = (fm.getPhi())[i];
 	}
       }
-      catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial5D" << endl;
+      catch(std::bad_cast) { 
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -245,7 +244,7 @@ namespace Chroma
       X = zero;
 
       // Reset the chrono predictor. 
-      QDPIO::cout << "TwoFlavWilson5DMonomial: energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavWilson5DMonomial: energy calc solve" << std::endl;
       getMDSolutionPredictor().reset();
 
       // Do the inversion
@@ -327,7 +326,7 @@ namespace Chroma
       X = zero;
 
       // Reset the chrono predictor. 
-      QDPIO::cout << "TwoFlavWilson5DMonomial: energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavWilson5DMonomial: energy calc solve" << std::endl;
       getMDSolutionPredictor().reset();
 
       // Do the inversion

@@ -25,7 +25,7 @@ namespace Chroma
   }
 
 
-  // Constructor from smeared map 
+  // Constructor from smeared std::map 
   DispColorVectorMap::DispColorVectorMap(bool use_derivP_,
 					 int disp_length,
 					 const multi1d<LatticeColorMatrix>& u_smr,
@@ -71,8 +71,8 @@ namespace Chroma
 	if (disp_src_map.find(key) == disp_src_map.end())
 	{
 	  QDPIO::cerr << __func__ 
-		      << ": internal error - could not insert empty key in map"
-		      << endl;
+		      << ": internal error - could not insert empty key in std::map"
+		      << std::endl;
 	  QDP_abort(1);
 	}		      
       }
@@ -110,9 +110,9 @@ namespace Chroma
 	}
       }
 
-    } // if find in map
+    } // if find in std::map
 
-    // The key now must exist in the map, so return the vector
+    // The key now must exist in the std::map, so return the std::vector
     ValDispColorVector_t& disp_q = disp_src_map.find(key)->second;
 
     return disp_q.vec;

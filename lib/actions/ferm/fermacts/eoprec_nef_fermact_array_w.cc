@@ -76,7 +76,7 @@ namespace Chroma
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, EvenOddPrecNEFFermActArrayParams& param)
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecNEFFermActArrayParams& param)
   {
     EvenOddPrecNEFFermActArrayParams tmp(xml, path);
     param = tmp;

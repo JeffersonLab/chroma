@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Key for propagator colorvector sources
+ * \brief Key for propagator colorstd::vector sources
  */
 
 #ifndef __key_prop_colorvec_h__
@@ -17,7 +17,7 @@ namespace Chroma
   struct KeyPropColorVec_t
   {
     int        t_source;      /*!< Source time slice */
-    int        colorvec_src;  /*!< Source colorvector index */
+    int        colorvec_src;  /*!< Source colorstd::vector index */
     int        spin_src;      /*!< Source spin index */
   };
 

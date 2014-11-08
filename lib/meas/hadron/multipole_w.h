@@ -38,13 +38,13 @@ namespace Chroma
   /*!
    * \ingroup hadron
    */
-  void read(XMLReader& xml, const string& path, Multipole_t& pole);
+  void read(XMLReader& xml, const std::string& path, Multipole_t& pole);
 
   //! Write a Multipole_t
   /*!
    * \ingroup hadron
    */
-  void write(XMLWriter& xml, const string& path, const Multipole_t& pole);
+  void write(XMLWriter& xml, const std::string& path, const Multipole_t& pole);
 
   
   //! Compute contractions for multipole moments
@@ -58,7 +58,7 @@ namespace Chroma
    * \param j_decay            direction of decay ( Read )
    * \param t0                 cartesian coordinates of the source ( Read )
    * \param xml                xml file object ( Write )
-   * \param xml_group          string used for writing xml data ( Read )
+   * \param xml_group          std::string used for writing xml data ( Read )
    */
 
   void multipole(const LatticePropagator& quark_propagator,
@@ -68,7 +68,7 @@ namespace Chroma
 		 int   j_decay,
 		 int   t0,
 		 XMLWriter& xml,
-		 const string& xml_group);
+		 const std::string& xml_group);
 
 }  // end namespace Chroma
 

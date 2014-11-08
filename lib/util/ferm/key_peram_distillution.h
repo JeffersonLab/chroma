@@ -32,7 +32,7 @@ namespace Chroma
   //! Prop operator
   struct ValPeramDistillution_t
   {
-    multi2d<ComplexD>  mat;               /*!< Distillution source and colorvector sink */
+    multi2d<ComplexD>  mat;               /*!< Distillution source and colorstd::vector sink */
   };
 
 

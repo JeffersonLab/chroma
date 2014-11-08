@@ -37,10 +37,10 @@ namespace Chroma
   typedef SingletonHolder< EnumTypeMap<PropDistType> > thePropDistTypeMap;
 
   //! Reader
-  void read(XMLReader& r, const string& path, PropDistType& t);
+  void read(XMLReader& r, const std::string& path, PropDistType& t);
 
   //! Writer
-  void write(XMLWriter& w, const string& path, const PropDistType& t);
+  void write(XMLWriter& w, const std::string& path, const PropDistType& t);
 
   //! Reader
   void read(BinaryReader& r, PropDistType& t);

@@ -25,7 +25,7 @@
 
 namespace Chroma 
 {
-  //! Eigenvector accelerated CG system solver namespace
+  //! Eigenstd::vector accelerated CG system solver namespace
   namespace LinOpSysSolverEigBiCGEnv
   {
     //! Register the syssolver
@@ -39,7 +39,7 @@ namespace Chroma
 // do nothing... and the thing will fail when somebody calls eigBiCG when it is not compiled in....
 namespace Chroma 
 {
-  //! Eigenvector accelerated CG system solver namespace
+  //! Eigenstd::vector accelerated CG system solver namespace
   namespace LinOpSysSolverEigBiCGEnv
   {
     //! Register the syssolver

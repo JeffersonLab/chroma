@@ -1,6 +1,6 @@
 // $Id: vector_quark_smearing.cc,v 3.3 2008-11-04 18:43:58 edwards Exp $
 /*! \file
- *  \brief Gaussian smearing of color vector
+ *  \brief Gaussian smearing of color std::vector
  */
 
 #include "chromabase.h"
@@ -14,14 +14,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, VectorQuarkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, VectorQuarkSmearingEnv::Params& param)
   {
     VectorQuarkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const VectorQuarkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const VectorQuarkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -88,7 +88,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -99,7 +99,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -138,7 +138,7 @@ namespace Chroma
       vectorSmear(quark, *vecs, params.sigma, params.no_smear_dir);
     }
 
-    //! Smear the color-vector
+    //! Smear the color-std::vector
     template<>
     void
     QuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,

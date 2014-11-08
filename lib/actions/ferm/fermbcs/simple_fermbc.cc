@@ -14,7 +14,7 @@ namespace Chroma
   };
 
   //! Read parameters
-  SimpleFermBCParams::SimpleFermBCParams(XMLReader& xml, const string& path)
+  SimpleFermBCParams::SimpleFermBCParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -22,21 +22,21 @@ namespace Chroma
 
     if (boundary.size() != Nd)
     {
-      QDPIO::cerr << __func__ << ": boundary not the expected length = Nd" << endl;
+      QDPIO::cerr << __func__ << ": boundary not the expected length = Nd" << std::endl;
       QDP_abort(1);
     }
   }
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, SimpleFermBCParams& param)
+  void read(XMLReader& xml, const std::string& path, SimpleFermBCParams& param)
   {
     SimpleFermBCParams tmp(xml, path);
     param = tmp;
   }
 
   //! Write parameters
-  void write(XMLWriter& xml_out, const string& path, const SimpleFermBCParams& param)
+  void write(XMLWriter& xml_out, const std::string& path, const SimpleFermBCParams& param)
   {
     if ( path != "." )
       push(xml_out, path);

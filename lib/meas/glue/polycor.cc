@@ -19,14 +19,14 @@ namespace Chroma
    * and Write them in (pseudo) XML format.
    *
    * \param xml_out      xml file object ( Write )
-   * \param xml_group    string used for writing xml data ( Read )
+   * \param xml_group    std::string used for writing xml data ( Read )
    * \param u            (blocked) gauge field ( Read )
    * \param block_latt    block lattice size ( Read )
    * \param bl_level      blocking level ( Read )
    * \param phases        object holds list of momenta and Fourier phases ( Read )
    */
 
-  void polycor(XMLWriter& xml_out, const string& xml_group,
+  void polycor(XMLWriter& xml_out, const std::string& xml_group,
 	       const multi1d<LatticeColorMatrix>& u,
 	       const SftMom& phases,
 	       int bl_level)

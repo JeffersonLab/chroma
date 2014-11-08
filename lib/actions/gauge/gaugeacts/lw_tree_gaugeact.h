@@ -18,7 +18,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace LWTreeGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -37,7 +37,7 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, LWTreeGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, LWTreeGaugeActParams& param);
   
 
   //! LWTree gauge action

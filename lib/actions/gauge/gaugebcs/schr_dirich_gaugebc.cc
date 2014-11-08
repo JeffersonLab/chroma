@@ -13,7 +13,7 @@ namespace Chroma
   { 
     //! Callback function to register with the factory
     GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
       return new SchrDirichletGaugeBC(SchrGaugeBCParams(xml, path));
     }

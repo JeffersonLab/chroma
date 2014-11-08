@@ -10,7 +10,6 @@
 #include "quda.h"
 
 #include <cstdlib>
-using namespace std;
 
 namespace Chroma
 {
@@ -72,20 +71,20 @@ namespace Chroma
 
     }
     else { 
-      QDPIO::cout << "MATPC Type not allowed." << endl;
+      QDPIO::cout << "MATPC Type not allowed." << std::endl;
       QDP_abort(1);
     }
 
     void** spinorOut;
     spinorOut = (void **)malloc(shifts.size()*sizeof(void *));
     if (spinorOut == NULL) { 
-      QDPIO::cerr << "Couldn't allocate spinorOut" << endl;
+      QDPIO::cerr << "Couldn't allocate spinorOut" << std::endl;
       QDP_abort(1);
     }
 
     if ( shifts.size() > QUDA_MAX_MULTI_SHIFT ) {
-       QDPIO::cerr << "You want more shifts than QUDA_MAX_MULTI_SHIFT" << endl;
-       QDPIO::cerr << "Requested : " << shifts.size() << " QUDA_MAX_MULTI_SHIFT=" << QUDA_MAX_MULTI_SHIFT << endl;
+       QDPIO::cerr << "You want more shifts than QUDA_MAX_MULTI_SHIFT" << std::endl;
+       QDPIO::cerr << "Requested : " << shifts.size() << " QUDA_MAX_MULTI_SHIFT=" << QUDA_MAX_MULTI_SHIFT << std::endl;
        QDP_abort(1);
     }
  
@@ -118,20 +117,20 @@ namespace Chroma
     StopWatch swatch1; 
     swatch1.reset();
     swatch1.start();
-    QDPIO::cout << "CALLING QUDA SOLVER" << endl << flush ; 
+    QDPIO::cout << "CALLING QUDA SOLVER" << std::endl << std::flush ; 
     invertMultiShiftQuda(spinorOut, spinorIn, (QudaInvertParam*)&quda_inv_param);
      swatch1.stop();
 
     // Tidy Up
     delete [] spinorOut;
 
-    QDPIO::cout << "Cuda Space Required" << endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << endl;
+    QDPIO::cout << "Cuda Space Required" << std::endl;
+    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
+    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
+    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
     QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
-    QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
+    QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 
     ret.n_count =quda_inv_param.iter;
 

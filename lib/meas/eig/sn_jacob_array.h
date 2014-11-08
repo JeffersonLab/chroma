@@ -10,7 +10,7 @@ namespace Chroma {
  * \ingroup eig
  *
  * This subroutine contains a "single node" Jacobi routine
- * to be used with the Ritz functional eigenvialue/vector finder.
+ * to be used with the Ritz functional eigenvialue/std::vector finder.
  *
  *
  *  Psi		Eigenvectors			(Modify)

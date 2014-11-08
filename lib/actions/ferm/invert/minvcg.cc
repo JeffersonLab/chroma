@@ -32,14 +32,14 @@ namespace Chroma
    *  z[0]   := 1 / (1 - (shift - shift(0))*b) 
    *  bs[0]  := b[0] * z[0]  
    *  r[1] += b[k] A . p[0] ; 	       	      New residual
-   *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution vector
+   *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution std::vector
    *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;        Converged?
    *  FOR k FROM 1 TO MaxCG DO    	       	       CG iterations
    *      a[k] := |r[k]|**2 / |r[k-1]|**2 ;
    *      p[k] := r[k] + a[k] p[k-1];   	       New direction
    *      b[k+1] := |r[k]|**2 / <p[k],Ap[k]> ;
    *      r[k+1] += b[k+1] A . p[k] ; 	       	       New residual
-   *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution vector
+   *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution std::vector
    *      IF |[k+1]| <= RsdCG |Chi| THEN RETURN;    Converged?
 
    * Arguments:
@@ -53,8 +53,8 @@ namespace Chroma
 
    * Local Variables:
 
-   *  p   	       Direction vector
-   *  r   	       Residual vector
+   *  p   	       Direction std::vector
+   *  r   	       Residual std::vector
    *  cp  	       | r[k] |**2
    *  c   	       | r[k-1] |**2
    *  k   	       CG iteration counter
@@ -66,7 +66,7 @@ namespace Chroma
    *  MaxCG       Maximum number of CG iterations allowed
 
    * Subroutines:
-   *  A	       Apply matrix hermitian A to vector 
+   *  A	       Apply matrix hermitian A to std::vector 
    */
 
   template<typename T>
@@ -84,7 +84,7 @@ namespace Chroma
 
     if (shifts.size() != RsdCG.size()) 
     {
-      QDPIO::cerr << "MInvCG: number of shifts and residuals must match" << endl;
+      QDPIO::cerr << "MInvCG: number of shifts and residuals must match" << std::endl;
       QDP_abort(1);
     }
 
@@ -93,7 +93,7 @@ namespace Chroma
     if (n_shift == 0) 
     {
       QDPIO::cerr << "MInvCG: You must supply at least 1 mass: mass.size() = " 
-		  << n_shift << endl;
+		  << n_shift << std::endl;
       QDP_abort(1);
     }
 
@@ -106,7 +106,7 @@ namespace Chroma
     }
 
 #if 0 
-    QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << endl;
+    QDPIO::cout << "n_shift = " << n_shift << " isz = " << isz << " shift = " << shifts[0] << std::endl;
 #endif
 
     // We need to make sure, that psi is at least as big as the number
@@ -142,7 +142,7 @@ namespace Chroma
 
       n_count = 0;
 
-      QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
+      QDPIO::cout << "MInvCG: " << n_count << " iterations" << std::endl;
       flopcount.report("minvcg", swatch.getTimeInSeconds());
       revertFromFastMemoryHint(psi,true);
 
@@ -226,7 +226,7 @@ namespace Chroma
     bool convP = toBool( c < rsd_sq[isz] );
 
 #if 0 
-    QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << endl;
+    QDPIO::cout << "MInvCG: k = 0  r = " << sqrt(c) << std::endl;
 #endif
 
     //  FOR k FROM 1 TO MaxCG DO
@@ -332,7 +332,7 @@ namespace Chroma
 
 #if 0	
 	  QDPIO::cout << "MInvCG (shift=" << s << ") k = " << k <<"  r =  " 
-		      << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << endl;
+		      << css << " rsd_sq["<<s<<"] = " << rsd_sq[s] << std::endl;
 #endif 
 
 	  convsP[s] = toBool( css < rsd_sq[s] );
@@ -356,7 +356,7 @@ namespace Chroma
 
 #if 0
 	  QDPIO::cout  << "MInvCG (shift=" << s << ") k = " << k << " cs = " 
-		       << cs << " d = " << d << endl;
+		       << cs << " d = " << d << std::endl;
 #endif
 #endif
 
@@ -384,13 +384,13 @@ namespace Chroma
 
       QDPIO::cout << "MInvCG (conv): s = " << s 
 		  << " shift = " << shifts[s]
-		  << " r = " <<  Real(sqrt(c)/chi_norm) << endl;
+		  << " r = " <<  Real(sqrt(c)/chi_norm) << std::endl;
 		
     }
     /* end */
 #endif
 
-    QDPIO::cout << "MInvCG: " << n_count << " iterations" << endl;
+    QDPIO::cout << "MInvCG: " << n_count << " iterations" << std::endl;
     flopcount.report("minvcg", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
 

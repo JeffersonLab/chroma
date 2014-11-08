@@ -52,7 +52,7 @@ void GramSchm_T(multi1d<T>& psi, const int Npsi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Templated version
@@ -87,7 +87,7 @@ void GramSchm_T(T& psi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Templated version
@@ -136,7 +136,7 @@ void GramSchm(multi1d<LatticeFermion>& psi, const int Npsi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Arguments:
@@ -161,7 +161,7 @@ void GramSchm(LatticeFermion& psi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Arguments:
@@ -227,7 +227,7 @@ void GramSchm(multi1d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * all the vectors of vec
  *
  * Arguments:
@@ -248,7 +248,7 @@ void GramSchm(LatticeFermion& psi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Templated version

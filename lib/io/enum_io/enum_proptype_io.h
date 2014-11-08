@@ -31,7 +31,7 @@ namespace Chroma {
 
 
   namespace PropTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -42,10 +42,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read a propagator type enum
-  void read(XMLReader& r, const string& path, PropType& t);
+  void read(XMLReader& r, const std::string& path, PropType& t);
 
   //! Write a propagator type enum
-  void write(XMLWriter& w, const string& path, const PropType& t);
+  void write(XMLWriter& w, const std::string& path, const PropType& t);
 
   /*! @} */   // end of group io
 };

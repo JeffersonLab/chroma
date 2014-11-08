@@ -67,7 +67,7 @@ namespace Chroma
       
       // complex conjugate pairs are at i and N-1-i
       for(int i(0);i<degree;i++){
-	//cout<<"i: "<<i<<endl ;
+	//cout<<"i: "<<i<<std::endl ;
 	Real ii = i+1.0 ;
 	r[i] = UpperBound*cmplx(0.5*(1.0+eps)*(1.0-cos(www*ii)) , -sqrt(eps)*sin(www*ii));
 	ic[i] = 1.0/(UpperBound*0.5*(1.0+eps) - r[i]) ;
@@ -98,7 +98,7 @@ namespace Chroma
 	  QDPIO::cout<<"lpoly: Polynomium degree must be even.\n" ;
 	  degree_++ ;
 	  degree++  ;
-	  QDPIO::cout<<"lpoly: Using degree:" << degree<<endl ;       
+	  QDPIO::cout<<"lpoly: Using degree:" << degree<<std::endl ;       
 	}
 	//UpperBound = upper_bound_ ;
 	root.resize(degree_);
@@ -113,9 +113,9 @@ namespace Chroma
 	int j(0) ;
 	// complex conjugate pairs are at i and N-1-i
 	for(int k(1);k<=ord;k++){
-	  //QDPIO::cout<<"k: "<<k<<endl ;
+	  //QDPIO::cout<<"k: "<<k<<std::endl ;
 	  for(int i(k-1);i<degree/2;i+=ord){
-	    //QDPIO::cout<<"i: "<<i<<endl ;
+	    //QDPIO::cout<<"i: "<<i<<std::endl ;
 	    root[j] = r[i] ;
 	    inv_c[j] = ic[i] ;
 	    root [degree-1-j] = conj(root[j]    ) ;
@@ -136,7 +136,7 @@ namespace Chroma
       // class that allows us to use different types of polynomials
       
       //QDPIO::cout<<"tlpoly constructor\n" ;
-      //QDPIO::cout<<"tlpoly: degree: " << degree<<endl ;  
+      //QDPIO::cout<<"tlpoly: degree: " << degree<<std::endl ;  
 
       int maxBits = 0 ;
       while(degree_%2==0)
@@ -150,7 +150,7 @@ namespace Chroma
 	while(degree_!=1){
 	  degree_ = degree + 1 ;
 	  degree = degree_ ;
-	  QDPIO::cout<<"tlpoly: Using degree: " << degree<<endl ;  
+	  QDPIO::cout<<"tlpoly: Using degree: " << degree<<std::endl ;  
 	  maxBits=0 ;
 	  while(degree_%2==0){
 	    degree_/=2 ;
@@ -158,10 +158,10 @@ namespace Chroma
 	  }
 	}
 	
-	QDPIO::cout<<"tlpoly: Using degree: " << degree<<endl ;        
+	QDPIO::cout<<"tlpoly: Using degree: " << degree<<std::endl ;        
       }
       
-      //QDPIO::cout<<"tlpoly: maxBits: " << maxBits<<endl ;        
+      //QDPIO::cout<<"tlpoly: maxBits: " << maxBits<<std::endl ;        
       //UpperBound = upper_bound_ ;
       root.resize(degree);
       inv_c.resize(degree);
@@ -173,7 +173,7 @@ namespace Chroma
       
       // complex conjugate pairs are at i and N-1-i
       for(int i(0);i<degree;i++){
-	//cout<<"i: "<<i<<endl ;
+	//cout<<"i: "<<i<<std::endl ;
 	int ii = bitrevers(i,maxBits) ;
 	root[i] = r[ii] ;
 	inv_c[i] = ic[ii] ;
@@ -230,7 +230,7 @@ namespace Chroma
 	r = b - QsqX ;
 	T p ;
 	while (m<degree+1){
-	  //QDPIO::cout<<"iter: "<<m<<" 1/sigma: "<<1.0/sigma_m<<endl ;
+	  //QDPIO::cout<<"iter: "<<m<<" 1/sigma: "<<1.0/sigma_m<<std::endl ;
 	  sigma_m_plus_one = 2.0*d*sigma_m - sigma_m_minus_one ;
 	  p = 2.0*sigma_m/sigma_m_plus_one *(d*x+a*r) - 
 	    sigma_m_minus_one/sigma_m_plus_one*y ;
@@ -243,7 +243,7 @@ namespace Chroma
 	  sigma_m_minus_one = sigma_m ;
 	  sigma_m = sigma_m_plus_one ;
 	}
-	QDPIO::cout<<"applyChebInv: 1/sigma("<<m<<"): "<<1.0/sigma_m<<endl ;
+	QDPIO::cout<<"applyChebInv: 1/sigma("<<m<<"): "<<1.0/sigma_m<<std::endl ;
 
       }
 
@@ -272,7 +272,7 @@ namespace Chroma
 	break ;
       }
 
-      //QDPIO::cout<<start<<" "<<end<<endl ;
+      //QDPIO::cout<<start<<" "<<end<<std::endl ;
 
      
       Real c0 = sqrt(c_Zero) ;
@@ -280,7 +280,7 @@ namespace Chroma
       T tt = c0*b ;
 
       for(int i(start);i<end;i++){
-	//QDPIO::cout<<" root, norm: "<<root[i]<<" "<<inv_c[i]<<endl ;
+	//QDPIO::cout<<" root, norm: "<<root[i]<<" "<<inv_c[i]<<std::endl ;
 	//*Qsq(chi, tt, PLUS);
 	Qsq(chi, tt);
 	chi -= root[i] * tt;
@@ -358,10 +358,10 @@ namespace Chroma
 	//Check The force:
 	/**
 	   QDPIO::cout<<"CheckProducts: ";
-	   QDPIO::cout<< innerProduct(psi_products[0],psi_products[degree])<<endl ;
+	   QDPIO::cout<< innerProduct(psi_products[0],psi_products[degree])<<std::endl ;
 	   for(int n(0); n < degree+1; ++n){     
 	   QDPIO::cout<<"CheckProducts: "<<n<< ": " ;
-	   QDPIO::cout<< innerProduct(chi_products[n],psi_products[n])<<endl ;
+	   QDPIO::cout<< innerProduct(chi_products[n],psi_products[n])<<std::endl ;
      
 	   }
 	**/

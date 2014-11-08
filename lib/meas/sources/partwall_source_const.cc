@@ -15,21 +15,21 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, PartialWallQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, PartialWallQuarkSourceConstEnv::Params& param)
   {
     PartialWallQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PartialWallQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const PartialWallQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
 
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, FixedDir_t& param)
+  void read(XMLReader& xml, const std::string& path, FixedDir_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -38,7 +38,7 @@ namespace Chroma
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const FixedDir_t& param)
+  void write(XMLWriter& xml, const std::string& path, const FixedDir_t& param)
   {
     write(xml, "dir", param.dir);
     write(xml, "coord", param.coord);
@@ -89,7 +89,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -103,7 +103,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -114,7 +114,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -133,7 +133,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Partial Wall source" << endl;
+      QDPIO::cout << "Partial Wall source" << std::endl;
 
       // Create a mask of which sites are included
       LatticeBoolean mask = true;
@@ -144,13 +144,13 @@ namespace Chroma
 
 	if (dir < 0 || dir >= Nd)
 	{
-	  QDPIO::cerr << name << ": invalid direction, dir=" << dir << endl;
+	  QDPIO::cerr << name << ": invalid direction, dir=" << dir << std::endl;
 	  QDP_abort(1);
 	}
 	
 	if (coord < 0 || coord >= QDP::Layout::lattSize()[dir])
 	{
-	  QDPIO::cerr << name << ": invalid coordinate, coord=" << coord << endl;
+	  QDPIO::cerr << name << ": invalid coordinate, coord=" << coord << std::endl;
 	  QDP_abort(1);
 	}
 	

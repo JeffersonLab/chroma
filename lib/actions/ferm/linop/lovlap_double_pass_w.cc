@@ -10,11 +10,11 @@
 
 namespace Chroma 
 { 
-//! Apply the GW operator onto a source vector
+//! Apply the GW operator onto a source std::vector
 /*! \ingroup linop
  *
  * This routine applies the 4D GW operator onto a source
- * vector. The coeffiecients for the approximation get 
+ * std::vector. The coeffiecients for the approximation get 
  * wired into the class by the constructor and should
  * come fromt fermion action.
  *
@@ -23,8 +23,8 @@ namespace Chroma
  * or    D^{dag} =    (1/2)[  (1+m) + (1-m) sgn(H_w) gamma_5 psi
  * 
  * 
- * \param chi     result vector                              (Write)  
- * \param psi 	  source vector         	             (Read)
+ * \param chi     result std::vector                              (Write)  
+ * \param psi 	  source std::vector         	             (Read)
  * \param isign   Hermitian Conjugation Flag 
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
@@ -36,11 +36,11 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
 }
 
 
-//! Apply the GW operator onto a source vector
+//! Apply the GW operator onto a source std::vector
 /*! \ingroup linop
  *
  * This routine applies the 4D GW operator onto a source
- * vector. The coeffiecients for the approximation get 
+ * std::vector. The coeffiecients for the approximation get 
  * wired into the class by the constructor and should
  * come fromt fermion action.
  *
@@ -49,8 +49,8 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
  * or    D^{dag} =    (1/2)[  (1+m) + (1-m) sgn(H_w) gamma_5 psi
  * 
  * 
- * \param chi     result vector                              (Write)  
- * \param psi 	  source vector         	             (Read)
+ * \param chi     result std::vector                              (Write)  
+ * \param psi 	  source std::vector         	             (Read)
  * \param isign   Hermitian Conjugation Flag 
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
@@ -371,7 +371,7 @@ void lovlap_double_pass::operator() (LatticeFermion& chi,
   }
 
 
-  QDPIO::cout << "Overlap Inner Solve (lovlap_double_pass): " << k << " iterations " << endl;
+  QDPIO::cout << "Overlap Inner Solve (lovlap_double_pass): " << k << " iterations " << std::endl;
   // End of MULTI SHIFTERY 
 
   // Now fix up the thing. Multiply in gamma5 if needed 

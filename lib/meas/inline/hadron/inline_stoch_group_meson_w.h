@@ -36,7 +36,7 @@ namespace Chroma
 	MesonOpType         annih_op_contract_type; /*<! Contraction type for annihilation op */
 	int                 mom2_max;               /*!< (mom)^2 <= mom2_max */
 	int                 displacement_length;    /*!< Displacement length for creat. and annih. ops */
-	GroupXML_t          quark_smearing;         /*!< xml string holding smearing params */
+	GroupXML_t          quark_smearing;         /*!< xml std::string holding smearing params */
 	GroupXML_t          link_smearing;          /*!< link smearing xml */
 
 	multi1d<GroupXML_t> quark_dils;             /*!< Dilutions for each quark */
@@ -51,7 +51,7 @@ namespace Chroma
 	};
 
 	TwoQuarkOpsFile_t    operators_file; /*!< Files holding 2-quark ops to make*/
-	std::string          quark_ids;      /*!< 2 character string indicating which quarks are degenerate */
+	std::string          quark_ids;      /*!< 2 character std::string indicating which quarks are degenerate */
 	std::string          gauge_id;       /*!< Gauge field */
       };
 

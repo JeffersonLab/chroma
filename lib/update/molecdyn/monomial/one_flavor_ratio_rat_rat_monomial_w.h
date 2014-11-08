@@ -107,7 +107,7 @@ namespace Chroma
 
       // Loop over all the pseudoferms
       multi1d<int> n_count(getNPF());
-      QDPIO::cout << "num_pf = " << getNPF() << endl;
+      QDPIO::cout << "num_pf = " << getNPF() << std::endl;
 
       for(int n=0; n < getNPF(); ++n)
       {
@@ -238,8 +238,8 @@ namespace Chroma
 
 	getPhi() = fm.getPhi();
       }
-      catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to OneFlavorRatioRatRatExactWilsonTypeFermMonomial " << endl;
+      catch(std::bad_cast) { 
+	QDPIO::cerr << "Failed to cast input Monomial to OneFlavorRatioRatRatExactWilsonTypeFermMonomial " << std::endl;
 	QDP_abort(1);
       }
 

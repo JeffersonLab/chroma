@@ -14,14 +14,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, MesonSpec2PtEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, MesonSpec2PtEnv::Params& param)
   {
     MesonSpec2PtEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const MesonSpec2PtEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const MesonSpec2PtEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -75,7 +75,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -89,7 +89,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -102,7 +102,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -153,7 +153,7 @@ namespace Chroma
 
     //! Do some initialization
     void init(MesonSpecData_t& data,
-	      XMLWriter& xml, const string& path, const string& id_tag, 
+	      XMLWriter& xml, const std::string& path, const std::string& id_tag, 
 	      const Params& params)
     {
       MesonSpecData_t data;
@@ -194,7 +194,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Hadron2Pt: diagonal_gamma_mesons" << endl;
+      QDPIO::cout << "Hadron2Pt: diagonal_gamma_mesons" << std::endl;
 
       HadronContractResult_t corr;
       MesonSpecData_t data;
@@ -243,7 +243,7 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheHadronContractFactory::Instance().registerObject(string("meson_spec"),
+	success &= Chroma::TheHadronContractFactory::Instance().registerObject(std::string("meson_spec"),
 									       mesDiagGammaCorrs);
 
 	registered = true;

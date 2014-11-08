@@ -1,4 +1,3 @@
-// $Id: quark_flavor_s.cc,v 1.2 2006-11-21 05:20:13 kostas Exp $
 /*! \file
  *  \brief Derivative displacements
  */
@@ -13,14 +12,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, StaggeredQuarkFlavorOpEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, StaggeredQuarkFlavorOpEnv::Params& param)
   {
     StaggeredQuarkFlavorOpEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const StaggeredQuarkFlavorOpEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const StaggeredQuarkFlavorOpEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -65,7 +64,7 @@ namespace Chroma
 	return new StaggeredScalarOp<LatticeStaggeredPropagator>(Params(xml_in, path));
       }
 
-      QuarkDisplacement<LatticeStaggeredPropagator>* vector(XMLReader& xml_in,const std::string& path){
+      QuarkDisplacement<LatticeStaggeredPropagator>* Vector(XMLReader& xml_in,const std::string& path){
 	return new StaggeredVectorOp<LatticeStaggeredPropagator>(ParamsOneIndex(xml_in, path));
       }
 
@@ -90,7 +89,7 @@ namespace Chroma
     {    }
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -105,16 +104,16 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
-      QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp<<endl;
+      QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp<<std::endl;
 
     }
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -127,8 +126,8 @@ namespace Chroma
     }
 
 
-//! Read parameters
-    ParamsOneIndex::ParamsOneIndex(XMLReader& xml, const string& path)
+    //! Read parameters
+    ParamsOneIndex::ParamsOneIndex(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -145,16 +144,16 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
-      QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp<<"("<<mu<<")"<<endl;
+      QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp<<"("<<mu<<")"<<std::endl;
 
     }
 
     // Writer
-    void ParamsOneIndex::writeXML(XMLWriter& xml, const string& path) const
+    void ParamsOneIndex::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -168,8 +167,8 @@ namespace Chroma
     }
 
 
-//! Read parameters
-    ParamsTwoIndex::ParamsTwoIndex(XMLReader& xml, const string& path)
+    //! Read parameters
+    ParamsTwoIndex::ParamsTwoIndex(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -187,17 +186,17 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
 
 	QDPIO::cout<<"Staggered Flavor Operator= "<<FlavorOp ;
-	QDPIO::cout<<"("<<mu<<","<<nu<<")"<<endl;
+	QDPIO::cout<<"("<<mu<<","<<nu<<")"<<std::endl;
       }
 
     }
 
     // Writer
-    void ParamsTwoIndex::writeXML(XMLWriter& xml, const string& path) const
+    void ParamsTwoIndex::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -216,8 +215,8 @@ namespace Chroma
     template<>
     void
     StaggeredScalarOp<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& tmp,
-								   const multi1d<LatticeColorMatrix>& u,
-								   enum PlusMinus isign) const
+							      const multi1d<LatticeColorMatrix>& u,
+							      enum PlusMinus isign) const
     {
       START_CODE();
 
@@ -232,8 +231,8 @@ namespace Chroma
     template<>
     void
     StaggeredPseudoScalarOp<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& tmp,
-								   const multi1d<LatticeColorMatrix>& u,
-								   enum PlusMinus isign) const
+								    const multi1d<LatticeColorMatrix>& u,
+								    enum PlusMinus isign) const
     {
       START_CODE();
 
@@ -244,7 +243,7 @@ namespace Chroma
       END_CODE();
     }
 
-    // Construct vector source
+    // Construct Vector source
     // See corresponding .h file for doxygen comments
     template<>
     void
@@ -260,13 +259,13 @@ namespace Chroma
       END_CODE();
     }
 
-    // Construct axial vector source
+    // Construct axial Vector source
     // See corresponding .h file for doxygen comments
     template<>
     void
     StaggeredAxialVectorOp<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& tmp,
-							      const multi1d<LatticeColorMatrix>& u,
-							      enum PlusMinus isign) const
+								   const multi1d<LatticeColorMatrix>& u,
+								   enum PlusMinus isign) const
     {
       START_CODE();
 
@@ -278,7 +277,7 @@ namespace Chroma
     }
 
 
-    // Construct vector source
+    // Construct Vector source
     // See corresponding .h file for doxygen comments
     template<>
     void
@@ -305,11 +304,11 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("SCALAR_STAG_FLAV"), scalar);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("VECTOR_STAG_FLAV"), vector);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("AXIAL_VECTOR_STAG_FLAV"), axial_vector);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("TENSOR_STAG_FLAV"), tensor);
-	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(string("PSEUDO_SCALAR_STAG_FLAV"), pseudo_scalar);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(std::string("SCALAR_STAG_FLAV"), scalar);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(std::string("VECTOR_STAG_FLAV"), Vector);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(std::string("AXIAL_VECTOR_STAG_FLAV"), axial_vector);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(std::string("TENSOR_STAG_FLAV"), tensor);
+	success &= Chroma::TheStagPropDisplacementFactory::Instance().registerObject(std::string("PSEUDO_SCALAR_STAG_FLAV"), pseudo_scalar);
 
 	registered = true;
       }

@@ -33,7 +33,7 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-    void read(XMLReader& xml, const string& path, ExternalFieldEnv::ConstantMagneticParams& param){
+    void read(XMLReader& xml, const std::string& path, ExternalFieldEnv::ConstantMagneticParams& param){
       
       XMLReader paramtop(xml, path);
 
@@ -47,7 +47,7 @@ namespace Chroma
 	  
 	default:
 	  QDPIO::cerr << __func__ << ": parameter version " << version 
-		      << " unsupported." << endl;
+		      << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
       read(paramtop, "t_dir",  param.t_dir);
@@ -62,7 +62,7 @@ namespace Chroma
   
   //! Writer
   /*! @ingroup sources */
-    void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::ConstantMagneticParams& param){
+    void write(XMLWriter& xml, const std::string& path, const ExternalFieldEnv::ConstantMagneticParams& param){
  
       push(xml,path);
       int version;
@@ -78,7 +78,7 @@ namespace Chroma
 
     //! Reader
     /*! @ingroup sources */
-    void read(XMLReader& xml, const string& path, ExternalFieldEnv::LinearElectricParams& param){
+    void read(XMLReader& xml, const std::string& path, ExternalFieldEnv::LinearElectricParams& param){
       
       XMLReader paramtop(xml, path);
       
@@ -92,7 +92,7 @@ namespace Chroma
 	  
 	default:
 	  QDPIO::cerr << __func__ << ": parameter version " << version 
-		      << " unsupported." << endl;
+		      << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
       read(paramtop, "t_dir",  param.t_dir);
@@ -107,7 +107,7 @@ namespace Chroma
   
   //! Writer
   /*! @ingroup sources */
-    void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::LinearElectricParams& param){
+    void write(XMLWriter& xml, const std::string& path, const ExternalFieldEnv::LinearElectricParams& param){
  
       push(xml,path);
       int version;
@@ -162,11 +162,11 @@ namespace Chroma
 				   const std::string& path){
       XMLReader paramtop(xml, path);
       
-      string name ;
-      string ext_field_path = "ExternalField";
+      std::string name ;
+      std::string ext_field_path = "ExternalField";
       
       read(paramtop, ext_field_path+"/Name", name);
-      QDPIO::cout<<"Found external field: "<<name<<endl ;
+      QDPIO::cout<<"Found external field: "<<name<<std::endl ;
 
       //Handle< ExternalField > ef ; // just to make the code compile
 
@@ -201,7 +201,7 @@ namespace Chroma
 	if(Nd==4){
 	  if(mu==y_dir){
 	    A = epsilon(x_dir,y_dir,b_dir)*Bfield ;
-	    QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A<<endl ;
+	    QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A<<std::endl ;
 	    LatticeReal B = A*Layout::latticeCoordinate(x_dir) ; 
 	    U = cmplx(cos(B),sin(B));
 	    return U ;
@@ -220,7 +220,7 @@ namespace Chroma
 	  QDPIO::cerr<<"OOOPS! don't know how to set up magnetic field in other than 4 dimenssions\n"; 
       }
       U = 1.0 ;
-      QDPIO::cout<<__func__<<" A_"<<mu<<"= 0"<<endl ;
+      QDPIO::cout<<__func__<<" A_"<<mu<<"= 0"<<std::endl ;
       END_CODE();
       return U;
     }
@@ -236,7 +236,7 @@ namespace Chroma
       Real A0;
       A0 = -(0.5)*Efield;
       if(mu==t_dir){
-	QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A0<<endl ;
+	QDPIO::cout<<__func__<<" A_"<<mu<<"="<<A0<<std::endl ;
 	// This line is -1/2 * Efield * (z-z0) * (z-z0-1) to get the correct E-field
 	LatticeReal E = A0*(Layout::latticeCoordinate(x_dir)-x_src)*(Layout::latticeCoordinate(x_dir)-x_src - 1) ; 
 	U = cmplx(cos(E),sin(E));
@@ -253,7 +253,7 @@ namespace Chroma
       }
 
       U = 1.0 ;
-      QDPIO::cout<<__func__<<" A_"<<mu<<"= 0"<<endl ;
+      QDPIO::cout<<__func__<<" A_"<<mu<<"= 0"<<std::endl ;
       END_CODE();
       return U;
     }
@@ -269,13 +269,13 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("ZERO"), zeroFunc);
+	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(std::string("ZERO"), zeroFunc);
 	//QDPIO::cerr<<"registered ZERO external field\n";
 
-	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("CONSTANT_MAGNETIC"), ConstantMagneticFunc);
+	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(std::string("CONSTANT_MAGNETIC"), ConstantMagneticFunc);
 	//QDPIO::cerr<<"registered CONSTANT_MAGNETIC field\n";
 
-	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(string("LINEAR_ELECTRIC"), LinearElectricFunc);
+	success &= Chroma::TheExternalFieldFactory::Instance().registerObject(std::string("LINEAR_ELECTRIC"), LinearElectricFunc);
 	//QDPIO::cerr<<"registered LINEAR_ELECTRIC field\n";
 
 	registered = true;

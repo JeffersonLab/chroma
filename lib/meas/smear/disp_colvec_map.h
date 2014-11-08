@@ -22,7 +22,7 @@ namespace Chroma
   //! The key for displaced color vectors
   struct KeyDispColorVector_t
   {
-    int  colvec;                  /*!< Colorvector index */
+    int  colvec;                  /*!< Colorstd::vector index */
     multi1d<int> displacement;    /*!< Orig plus/minus 1-based directional displacements */
   };
 
@@ -31,7 +31,7 @@ namespace Chroma
   bool operator<(const KeyDispColorVector_t& a, const KeyDispColorVector_t& b);
 
 
-  //! The value of the map
+  //! The value of the std::map
   struct ValDispColorVector_t
   {
     LatticeColorVector vec;
@@ -43,7 +43,7 @@ namespace Chroma
   class DispColorVectorMap
   {
   public:
-    //! Constructor for displaced map 
+    //! Constructor for displaced std::map 
     DispColorVectorMap(bool use_derivP, 
 		       int disp_length,
 		       const multi1d<LatticeColorMatrix>& u_smr,

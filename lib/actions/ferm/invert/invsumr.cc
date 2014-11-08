@@ -216,7 +216,7 @@ void InvSUMR_a(const LinearOperator<T>& U,
       Real taumod = sqrt(real(conj(tauhat)*tauhat));
       if ( toBool(taumod < epsilon) ) convP = true;
 
-      QDPIO::cout << "Iter " << iter << ":  | tauhat |=" << taumod << endl;
+      QDPIO::cout << "Iter " << iter << ":  | tauhat |=" << taumod << std::endl;
      
     }
     else { 
@@ -231,7 +231,7 @@ void InvSUMR_a(const LinearOperator<T>& U,
 
   // And we are done, either converged or not...
   if( n_count == MaxSUMR && ! convP ) { 
-    QDPIO::cout << "Solver Nonconvergence Warning " << endl;
+    QDPIO::cout << "Solver Nonconvergence Warning " << std::endl;
   }
 
   END_CODE();

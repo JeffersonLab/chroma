@@ -64,11 +64,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sinks */
-  void read(XMLReader& xml, const string& path, WallQuarkSinkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, WallQuarkSinkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup sinks */
-  void write(XMLWriter& xml, const string& path, const WallQuarkSinkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const WallQuarkSinkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

@@ -17,7 +17,7 @@ namespace Chroma
 { 
 
   //! FermState input
-  void read(XMLReader& xml, const string& path, InlineFermStateEnv::Params::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineFermStateEnv::Params::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -32,13 +32,13 @@ namespace Chroma
 
     default:
       QDPIO::cerr << "InlineFermStateEnv::Params::Param_t: " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
 
   //! FermState output
-  void write(XMLWriter& xml, const string& path, const InlineFermStateEnv::Params::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineFermStateEnv::Params::Param_t& param)
   {
     push(xml, path);
 
@@ -51,7 +51,7 @@ namespace Chroma
 
 
   //! FermState input
-  void read(XMLReader& xml, const string& path, InlineFermStateEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineFermStateEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -60,7 +60,7 @@ namespace Chroma
   }
 
   //! FermState output
-  void write(XMLWriter& xml, const string& path, const InlineFermStateEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineFermStateEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -126,7 +126,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -177,13 +177,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineFermStateEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineFermStateEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineFermStateEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -217,13 +217,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineFermStateEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineFermStateEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineFermStateEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -250,9 +250,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineFermStateEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineFermStateEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineFermStateEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

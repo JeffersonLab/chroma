@@ -44,11 +44,11 @@ namespace Chroma
     
     virtual std::string getSourceHeader(int t0, int dil) const = 0; 
 
-    //! Return the diluted source vector
+    //! Return the diluted source std::vector
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? PROBABLY NO */
     virtual T dilutedSource(int t0, int dil ) const = 0;
     
-    //! Return the solution vector corresponding to the diluted source
+    //! Return the solution std::vector corresponding to the diluted source
     /*! MAYBE THIS SHOULD BE A CONST REFERENCE?? POSSIBLY YES */
     virtual T dilutedSolution(int t0, int dil ) const = 0;
 

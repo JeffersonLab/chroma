@@ -32,8 +32,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, EvenOddPrecTwmFermActArrayParams& param);
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecTwmFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecTwmFermActArrayParams& param);
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecTwmFermActArrayParams& param);
 
 
   //! Even-odd preconditioned Wilson fermion action with parity breaking term

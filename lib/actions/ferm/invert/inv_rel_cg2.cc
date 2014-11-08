@@ -25,7 +25,7 @@ namespace Chroma {
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -42,8 +42,8 @@ namespace Chroma {
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -54,7 +54,7 @@ namespace Chroma {
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *
@@ -74,7 +74,7 @@ void InvRelCG2_a(const LinearOperator<T>& M,
   //  Real rsd_sq = (RsdCG * RsdCG) * Real(norm2(chi,s));
   Real chi_sq =  Real(norm2(chi,s));
 
-  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << std::endl;
   Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
   //                                            +
@@ -97,7 +97,7 @@ void InvRelCG2_a(const LinearOperator<T>& M,
 
   Double zeta = Double(1)/c;
 
-  QDPIO::cout << "InvRelCG2: k = 0  c = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  QDPIO::cout << "InvRelCG2: k = 0  c = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(c  <=  rsd_sq) )
@@ -158,7 +158,7 @@ void InvRelCG2_a(const LinearOperator<T>& M,
 
     cp = c;
 
-    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 
     if ( toBool(cp  <=  rsd_sq) )
     {
@@ -167,7 +167,7 @@ void InvRelCG2_a(const LinearOperator<T>& M,
     }
   }
   n_count = MaxCG;
-  QDPIO::cerr << "Nonconvergence Warning n_count = " << n_count << endl;
+  QDPIO::cerr << "Nonconvergence Warning n_count = " << n_count << std::endl;
 }
 
 

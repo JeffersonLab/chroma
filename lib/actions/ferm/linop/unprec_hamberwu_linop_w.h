@@ -44,7 +44,7 @@ namespace Chroma
     //! Creation routine
     void create(Handle< FermState<T,P,Q> > fs, const Real& Mass_, const Real& u0_);
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
     //! Derivative of unpreconditioned HamberWu dM/dU

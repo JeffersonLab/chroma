@@ -31,7 +31,7 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      GroupXML_t       fermbc;               /*!< xml string holding smearing params */
+      GroupXML_t       fermbc;               /*!< xml std::string holding smearing params */
       PlusMinus        direction;            /*!< direction for decay */
 
       int              j_decay;              /*!< decay direction */

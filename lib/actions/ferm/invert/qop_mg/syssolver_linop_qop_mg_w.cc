@@ -36,8 +36,8 @@ namespace Chroma
   static multi1d<LatticeColorMatrix> u;
 // These functions will allow QDP to look into the Chroma gauge field and set
 // the QDP gauge field at each site equal to the one in Chroma. There doesn't
-// seem to be a good way to treat the extra vector index of the gauge field,
-// so we make a vector of functions to carry that index.
+// seem to be a good way to treat the extra std::vector index of the gauge field,
+// so we make a std::vector of functions to carry that index.
 #define index(c) c[0]+nrow[0]/2*(c[1]+nrow[1]*(c[2]+nrow[2]*(c[3]+nrow[3]*((c[0]+c[1]+c[2]+c[3])%2)))) // Hrm, this didn't seem to work; using linearSiteIndex for now...
 #define pepo(d) \
   void peekpoke##d(QLA(ColorMatrix) *dest, int coords[]) {\
@@ -52,7 +52,7 @@ namespace Chroma
       for (int c2=0; c2<3; c2++) {\
         real = U.elem().elem().elem(c1,c2).real();\
         imag = U.elem().elem().elem(c1,c2).imag();\
-        if (0&&c1==0&&c2==0) {fflush(stdout);printf("Chroma: gauge[%d] I am node %d, parsing %d %d %d %d; I see %g + I %g\n",d,Layout::nodeNumber(),x[0],x[1],x[2],x[3],real,imag); fflush(stdout);}\
+        if (0&&c1==0&&c2==0) {fstd::flush(stdout);printf("Chroma: gauge[%d] I am node %d, parsing %d %d %d %d; I see %g + I %g\n",d,Layout::nodeNumber(),x[0],x[1],x[2],x[3],real,imag); fstd::flush(stdout);}\
         QLA(C_eq_R_plus_i_R)(&z, &real, &imag);\
         QLA_elem_M(*dest,c1,c2) = z;\
       }\
@@ -104,7 +104,7 @@ namespace Chroma
       PC(g_param).cres[n]     = toReal(invParam.CoarseResidual[n]);
     }
 
-// The vector of functions will be used by QDP to assign the gauge links
+// The std::vector of functions will be used by QDP to assign the gauge links
 // at each site of the QDP lattice
     if (invParam.Levels>0) {
       /* We're going to pull the gauge field out of Chroma's aether */
@@ -118,11 +118,11 @@ namespace Chroma
       	Double w_plaq, s_plaq, t_plaq, link;
 
       	MesPlq(u, w_plaq, s_plaq, t_plaq, link);
-      	QDPIO::cout << "Plaquette from State: " << endl;
-      	QDPIO::cout << "  w_plaq = " << w_plaq << endl;
-      	QDPIO::cout << "  s_plaq = " << s_plaq << endl;
-      	QDPIO::cout << "  t_plaq = " << t_plaq << endl;
-      	QDPIO::cout << "  link trace =  " << link << endl;
+      	QDPIO::cout << "Plaquette from State: " << std::endl;
+      	QDPIO::cout << "  w_plaq = " << w_plaq << std::endl;
+      	QDPIO::cout << "  s_plaq = " << s_plaq << std::endl;
+      	QDPIO::cout << "  t_plaq = " << t_plaq << std::endl;
+      	QDPIO::cout << "  link trace =  " << link << std::endl;
       }
 
       int machsize[4], latsize[4];
@@ -212,10 +212,10 @@ namespace Chroma
     fermionsrc = (void*)&chi;
     fermionsol = (void*)&psi;
     double bsq = norm2(chi,all).elem().elem().elem().elem();
-    QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << endl;
+    QDPIO::cout << "Chroma:   chi all norm2 = " << bsq << std::endl;
     res.n_count = MGP(solve)(peekpokesrc<T>, peekpokesol<T>);
     bsq = norm2(psi,all).elem().elem().elem().elem();
-    QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << endl;
+    QDPIO::cout << "Chroma:   psi all norm2 = " << bsq << std::endl;
  
     swatch.stop();
     double time = swatch.getTimeInSeconds();
@@ -231,8 +231,8 @@ namespace Chroma
     QDPIO::cout << "QOPMG_SOLVER: " << res.n_count << " iterations."
                 << " Rsd = " << res.resid
                 << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset()))
-                << endl;
-    QDPIO::cout << "QOPMG_SOLVER_TIME: " << time << " secs" << endl;
+                << std::endl;
+    QDPIO::cout << "QOPMG_SOLVER_TIME: " << time << " secs" << std::endl;
 
     END_CODE();
     return res;

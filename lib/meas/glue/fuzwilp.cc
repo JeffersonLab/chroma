@@ -39,7 +39,7 @@ namespace Chroma {
 void fuzwilp( const multi1d<LatticeColorMatrix>& u, 
         int j_decay, int tmax, int n_smear,
 	const Real& sm_fact, const Real& BlkAccu, int BlkMax, 
-	XMLWriter& xml, const string& xml_group)
+	XMLWriter& xml, const std::string& xml_group)
 
 { 
   START_CODE();
@@ -60,7 +60,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   if (tmax < lengtht) 
     {
       lengtht = tmax;
-      QDPIO::cout << " using lengtht = " << lengtht << endl;
+      QDPIO::cout << " using lengtht = " << lengtht << std::endl;
       
     }
   multi1d<LatticeColorMatrix> u_smear(Nd);
@@ -93,7 +93,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   for(mu = 1;mu  < ( Nd); ++mu )
     if( mu != j_decay && nrow[mu] != nrow[0] )
     {
-      QDPIO::cout << " j_decay = " << j_decay << "and lengthr =" << nrow[0] << endl;
+      QDPIO::cout << " j_decay = " << j_decay << "and lengthr =" << nrow[0] << std::endl;
       
       QDP_error_exit("Wrong lattice size for Wilson loops: ", mu, nrow[mu]);
     }
@@ -123,7 +123,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
     link += sum(real(trace(u_smear[mu])));
 
   link /= double(Layout::vol()*Nd*Nc);
-  QDPIO::cout << "Average link after smearing: " << link << endl;
+  QDPIO::cout << "Average link after smearing: " << link << std::endl;
 
   
 /* Construct products of smeared links (for mu != j_decay) */
@@ -175,7 +175,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
   {
 
     /* Compute product of un-fuzzed links in t (j_decay) direction */
-   QDPIO::cout << "t= " << t << endl;
+   QDPIO::cout << "t= " << t << std::endl;
     if( t == 0 )
     {
 	up_t = u[j_decay];
@@ -201,7 +201,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
       if( mu != j_decay )
       {
 	mum = mum + 1;
-//   QDPIO::cout << "mu= " << mu << endl;
+//   QDPIO::cout << "mu= " << mu << std::endl;
 	for(r = 0;r  < ( lengthr); ++r )
 	{
 	    /* Gather 'time-like' link segment from r-direction */
@@ -260,9 +260,9 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
 	    wl_trace = real(trace(tmp_2));
 	    fuz_wlp1[r][t] += sum(wl_trace);
 
-//  QDPIO::cout << "t= " << t << "   r= " << r << endl;
+//  QDPIO::cout << "t= " << t << "   r= " << r << std::endl;
 //  QDPIO::cout << "fuz_wlp1= "  << 2*fuz_wlp1[r][t]/ 
-//		double((Layout::vol())*(Nd-1)*(Nd-2)*Nc) << endl;
+//		double((Layout::vol())*(Nd-1)*(Nd-2)*Nc) << std::endl;
 
 	  /* Now do non-planar loops */
 
@@ -290,7 +290,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
 	    if ( nu != j_decay && nu != mu )
 	    {
 	      nun = nun + 1;
-//   QDPIO::cout << "nu= " << nu << endl;
+//   QDPIO::cout << "nu= " << nu << std::endl;
 	      for(s = 0;s  <= ( r); ++s )
 	      {
 		/* Construct the 'forward' space-like segments */
@@ -571,7 +571,7 @@ void fuzwilp( const multi1d<LatticeColorMatrix>& u,
       }  // end for s
   } // end for r 
   pop(xml);				// XML end tag for fuz_wlp2
-  QDPIO::cout << "fuz_wlp1 and fuz_wlp2 written to .xml file " << endl;
+  QDPIO::cout << "fuz_wlp1 and fuz_wlp2 written to .xml file " << std::endl;
 }
 
 };

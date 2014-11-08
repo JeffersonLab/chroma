@@ -34,7 +34,7 @@ void ord_cxmayf_kernel(int lo, int hi, int my_id, ord_cxmayf_arg* arg)
     }
   }
   else { 
-    QDPIO::cout << "ord_cxmayf_kernel_sse.h: len not divisible by 4 " << endl;
+    QDPIO::cout << "ord_cxmayf_kernel_sse.h: len not divisible by 4 " << std::endl;
     QDP_abort(1);
   }
 

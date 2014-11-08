@@ -21,7 +21,7 @@ namespace Chroma
   namespace InlineWilsonFlowEnv 
   {
     //! read input -- gauge fields
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -30,7 +30,7 @@ namespace Chroma
     }
 
     //! write output -- gauge fields
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -42,7 +42,7 @@ namespace Chroma
 
 
     //! read input
-    void read(XMLReader& xml, const string& path, Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -54,7 +54,7 @@ namespace Chroma
     }
 
     //! write output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& input)
     {
       push(xml, path);
     
@@ -68,14 +68,14 @@ namespace Chroma
 
 
     //! read input
-    void read(XMLReader& xml, const string& path, Params& input)
+    void read(XMLReader& xml, const std::string& path, Params& input)
     {
       InlineWilsonFlowEnv::Params tmp(xml, path);
       input = tmp;
     }
 
     //! write output
-    void write(XMLWriter& xml, const string& path, const Params& input)
+    void write(XMLWriter& xml, const std::string& path, const Params& input)
     {
       push(xml, path);
     
@@ -145,7 +145,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -160,7 +160,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "WilsonFlow");
 	write(xml_out, "update_no", update_no);
@@ -192,7 +192,7 @@ namespace Chroma
       push(xml_out, "WilsonFlow");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Wilson Flowing a configuration" << endl;
+      QDPIO::cout << name << ": Wilson Flowing a configuration" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -216,12 +216,12 @@ namespace Chroma
 	}
       catch( std::bad_cast ) 
 	{
-	  QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	  QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	  QDP_abort(1);
 	}
-      catch (const string& e) 
+      catch (const std::string& e) 
 	{
-	  QDPIO::cerr << name << ": map call failed: " << e << endl;
+	  QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	  QDP_abort(1);
 	}
       // Write out the config header
@@ -266,9 +266,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
       
       END_CODE();
     }

@@ -22,7 +22,6 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 
 #include <string>
-using namespace std;
 
 namespace Chroma
 {
@@ -169,11 +168,11 @@ namespace Chroma
       }
       QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER: " << res.n_count 
 		  << " iterations. Rsd = " << res.resid 
-		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
       
       swatch.stop();
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << std::endl;
       
       
       END_CODE();
@@ -303,11 +302,11 @@ namespace Chroma
       }
       QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER: " << res.n_count 
 		  << " iterations. Rsd = " << res.resid 
-		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+		  << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
       
       swatch.stop();
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << std::endl;
       
       
       END_CODE();

@@ -19,7 +19,7 @@ namespace Chroma
   
 
   //! Read a anisotropy param struct
-  void read(XMLReader& xml, const string& path, AnisoParam_t& param)
+  void read(XMLReader& xml, const std::string& path, AnisoParam_t& param)
   {
 
     XMLReader paramtop(xml, path);
@@ -47,7 +47,7 @@ namespace Chroma
 
 
   //! Write a anisotropy param struct
-  void write(XMLWriter& xml, const string& path, const AnisoParam_t& param)
+  void write(XMLWriter& xml, const std::string& path, const AnisoParam_t& param)
   {
     push(xml, path);
 

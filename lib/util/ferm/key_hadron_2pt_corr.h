@@ -17,18 +17,18 @@ namespace Chroma
   {
     int          num_vecs;    /*!< Number of vectors used in this corr */
 
-    std::string  src_name;    /*!< Some string label for the operator */
-    std::string  src_smear;   /*!< Some string label for the smearing of this operator */
+    std::string  src_name;    /*!< Some std::string label for the operator */
+    std::string  src_smear;   /*!< Some std::string label for the smearing of this operator */
     multi1d<int> src_lorentz; /*!< Source Lorentz indices */
     int          src_spin;    /*!< Source Dirac spin indices */
 
-    std::string  snk_name;    /*!< Some string label for the operator */
-    std::string  snk_smear;   /*!< Some string label for the smearing of this operator */
+    std::string  snk_name;    /*!< Some std::string label for the operator */
+    std::string  snk_smear;   /*!< Some std::string label for the smearing of this operator */
     multi1d<int> snk_lorentz; /*!< Sink Lorentz indices */
     int          snk_spin;    /*!< Sink Dirac spin indices */
 
     multi1d<int> mom;         /*!< D-1 momentum of the sink operator */
-    std::string  mass;        /*!< Some string label for the mass(es) in the corr */
+    std::string  mass;        /*!< Some std::string label for the mass(es) in the corr */
     std::string  ensemble;    /*!< Label for the ensemble */
   };
 

@@ -43,7 +43,7 @@ namespace Chroma
     SpinMatrix rotate_mat(adj(DiracToDRMat()));
 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineStochGroupBaryonEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -55,7 +55,7 @@ namespace Chroma
       {
       case 1:
 					
-	QDPIO::cerr << "version 1 no longer supported. " << endl;
+	QDPIO::cerr << "version 1 no longer supported. " << std::endl;
 	exit(0);
 	/*
 	  read(paramtop, "mom2_max", param.mom2_max);
@@ -87,7 +87,7 @@ namespace Chroma
 				
       default :
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -102,7 +102,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineStochGroupBaryonEnv::Params::Param_t& param)
     {
       push(xml, path);
 
@@ -126,7 +126,7 @@ namespace Chroma
 
 
     //Reader for 3-quark operator file
-    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::ThreeQuarkOpsFile_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t::ThreeQuarkOpsFile_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -136,7 +136,7 @@ namespace Chroma
 
 
     // Writer for 3-quark operator file
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::ThreeQuarkOpsFile_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t::ThreeQuarkOpsFile_t& input)
     {
       push(xml, path);
       write(xml, "ops_file", input.ops_file);
@@ -146,7 +146,7 @@ namespace Chroma
 
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineStochGroupBaryonEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -156,7 +156,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineStochGroupBaryonEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -235,7 +235,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -277,7 +277,7 @@ namespace Chroma
     };
 
     //! Write quark 
-    void write(XMLWriter& xml, const string& path, 
+    void write(XMLWriter& xml, const std::string& path, 
 	       const ThreeQuarkOps_t::ThreeQuarkOp_t::QuarkInfo_t& input)
     {
       push(xml, path);
@@ -289,7 +289,7 @@ namespace Chroma
     }
 
     //! Write three quark op 
-    void write(XMLWriter& xml, const string& path, 
+    void write(XMLWriter& xml, const std::string& path, 
 	       const ThreeQuarkOps_t::ThreeQuarkOp_t& input)
     {
       push(xml, path);
@@ -365,7 +365,7 @@ namespace Chroma
     }
 
 
-    //! The value of the map
+    //! The value of the std::map
     struct SmearedDispColorVector_t
     {
       multi1d<LatticeComplex> vec;
@@ -377,7 +377,7 @@ namespace Chroma
     class SmearedDispObjects
     {
     public:
-      //! Constructor from smeared map 
+      //! Constructor from smeared std::map 
       SmearedDispObjects(int disp_length,
 			 multi1d< Handle< DilutionScheme<LatticeFermion> > > dil_quarks,	
 			 Handle< QuarkSmearing<LatticeFermion> > qsmr,
@@ -408,7 +408,7 @@ namespace Chroma
       
       //! Displace an object
       virtual const multi1d<LatticeComplex>&	displaceObject(
-	map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark_map,
+	std::map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark_map,
 	const KeySmearedDispColorVector_t& key,
 	const LatticeFermion& smrd_q);
 			
@@ -435,13 +435,13 @@ namespace Chroma
 
 			
       //! Maps of smeared color vectors 
-      multi1d< map<KeySmearedQuark_t, SmearedQuark_t> > smeared_src_maps;
-      multi1d< map<KeySmearedQuark_t, SmearedQuark_t> > smeared_soln_maps;
+      multi1d< std::map<KeySmearedQuark_t, SmearedQuark_t> > smeared_src_maps;
+      multi1d< std::map<KeySmearedQuark_t, SmearedQuark_t> > smeared_soln_maps;
 
       
       //!Maps of smeared displaced color vectors 
-      multi1d< map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> > disp_src_maps;
-      multi1d< map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> > disp_soln_maps;
+      multi1d< std::map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> > disp_src_maps;
+      multi1d< std::map<KeySmearedDispColorVector_t, SmearedDispColorVector_t> > disp_soln_maps;
     };
 
 	
@@ -450,9 +450,9 @@ namespace Chroma
 				    const KeySmearedQuark_t & key)
     {
 
-      map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_src_maps[qnum];
+      std::map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_src_maps[qnum];
 
-      //If entry is not in map create it
+      //If entry is not in std::map create it
       if ( qmap.find(key) == qmap.end() )
       {
 
@@ -466,8 +466,8 @@ namespace Chroma
 	  if ( qmap.find(key) == qmap.end() )
 	  {
 	    QDPIO::cerr << __func__ 
-			<< ": internal error - could not insert empty key in map"
-			<< endl;
+			<< ": internal error - could not insert empty key in std::map"
+			<< std::endl;
 	    QDP_abort(1);
 	  }		      
 	}
@@ -492,14 +492,14 @@ namespace Chroma
 	snoop.stop();
 
 	QDPIO::cout << " Smeared Sources: Quark = "<< qnum <<" t0 = "
-		    << key.t0 <<" dil = "<< key.dil << " Time = "<< snoop.getTimeInSeconds() <<" sec"<<endl;
+		    << key.t0 <<" dil = "<< key.dil << " Time = "<< snoop.getTimeInSeconds() <<" sec"<<std::endl;
 
 	// Insert
 	qmap.insert(std::make_pair(key, smrd_q));
       
-      } // if find in map
+      } // if find in std::map
 
-      // The key now must exist in the map, so return the smeared quark field
+      // The key now must exist in the std::map, so return the smeared quark field
 
       return (qmap.find(key)->second).quark ;
     }
@@ -511,10 +511,10 @@ namespace Chroma
 				      const KeySmearedQuark_t & key)
     {
 
-      map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_soln_maps[qnum];
+      std::map<KeySmearedQuark_t, SmearedQuark_t> & qmap = smeared_soln_maps[qnum];
 
 
-      //If entry is not in map create it
+      //If entry is not in std::map create it
       if ( qmap.find(key) == qmap.end() )
       {
 
@@ -528,8 +528,8 @@ namespace Chroma
 	  if ( qmap.find(key) == qmap.end() )
 	  {
 	    QDPIO::cerr << __func__ 
-			<< ": internal error - could not insert empty key in map"
-			<< endl;
+			<< ": internal error - could not insert empty key in std::map"
+			<< std::endl;
 	    QDP_abort(1);
 	  }		      
 	}
@@ -550,14 +550,14 @@ namespace Chroma
 	snoop.stop();
 
 	QDPIO::cout << " Smeared Sinks: Quark = "<< qnum <<" t0 = "
-		    << key.t0 <<" dil = "<< key.dil << " Time = "<< snoop.getTimeInSeconds() <<" sec"<<endl;
+		    << key.t0 <<" dil = "<< key.dil << " Time = "<< snoop.getTimeInSeconds() <<" sec"<<std::endl;
 	
 	// Insert
 	qmap.insert(std::make_pair(key, smrd_q));
       
-      } // if find in map
+      } // if find in std::map
 
-      // The key now must exist in the map, so return the smeared quark field
+      // The key now must exist in the std::map, so return the smeared quark field
 
       return (qmap.find(key)->second).quark ;
     }
@@ -633,7 +633,7 @@ namespace Chroma
     //! Accessor
     const multi1d<LatticeComplex> &
     SmearedDispObjects::displaceObject(
-      map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark_map,
+      std::map<KeySmearedDispColorVector_t, SmearedDispColorVector_t>& disp_quark_map,
       const KeySmearedDispColorVector_t& key,
       const LatticeFermion& smrd_q)
     {
@@ -643,14 +643,14 @@ namespace Chroma
       // If no entry, then create a displaced version of the quark
       if (disp_quark_map.find(key) == disp_quark_map.end())
       {
-	//	      cout << __func__ 
+	//	      std::cout << __func__ 
 	//		   << ": n=" << n
 	//		   << " l=" << l
 	//		   << " i=" << i 
 	//		   << " disp=" << term.quark[i].displacement
 	//		   << " len=" << term.quark[i].disp_len
 	//		   << " dir=" << term.quark[i].disp_dir
-	//		   << endl;
+	//		   << std::endl;
 
 
 
@@ -666,14 +666,14 @@ namespace Chroma
 
 	  snoop.stop();
 
-	  QDPIO::cout<<"Inserted key in map: time = "<< snoop.getTimeInSeconds() << "secs"<<endl;
+	  QDPIO::cout<<"Inserted key in std::map: time = "<< snoop.getTimeInSeconds() << "secs"<<std::endl;
 
 	  // Sanity check - the entry better be there
 	  if (disp_quark_map.find(key) == disp_quark_map.end())
 	  {
 	    QDPIO::cerr << __func__ 
-			<< ": internal error - could not insert empty key in map"
-			<< endl;
+			<< ": internal error - could not insert empty key in std::map"
+			<< std::endl;
 	    QDP_abort(1);
 	  }		      
 	}
@@ -703,7 +703,7 @@ namespace Chroma
 	snoop.stop();
 
 	QDPIO::cout << "Displaced Quarks: Spin = "<<key.spin<<" Disp = "
-		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<endl;
+		    << key.displacement <<" Time = "<<snoop.getTimeInSeconds() <<" sec"<<std::endl;
 
 	disp_q.vec.resize(Nc);
 
@@ -712,17 +712,17 @@ namespace Chroma
 	  disp_q.vec[i] = peekColor(vec, i);
 	}
 
-      } // if find in map
+      } // if find in std::map
 
       snoop.reset();
       snoop.start();
 
-      // The key now must exist in the map, so return the vector
+      // The key now must exist in the std::map, so return the std::vector
       SmearedDispColorVector_t& disp_q = disp_quark_map.find(key)->second;
 
       snoop.stop(); 
 
-      //QDPIO::cout << "Retrieved entry from map : time = "<< snoop.getTimeInSeconds() << "secs "<<endl;
+      //QDPIO::cout << "Retrieved entry from std::map : time = "<< snoop.getTimeInSeconds() << "secs "<<std::endl;
 
       return disp_q.vec;
     }
@@ -813,7 +813,7 @@ namespace Chroma
 
     //----------------------------------------------------------------------------
     //! BaryonOperator header writer
-    void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
+    void write(XMLWriter& xml, const std::string& path, const BaryonOperator_t& param)
     {
       push(xml, path);
 
@@ -940,7 +940,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "stoch_baryon");
 	write(xml_out, "update_no", update_no);
@@ -981,13 +981,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineStochGroupBaryonEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineStochGroupBaryonEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineStochGroupBaryonEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -996,7 +996,7 @@ namespace Chroma
       push(xml_out, "StochGroupBaryon");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineStochGroupBaryonEnv::name << ": Stochastic Baryon Operator" << endl;
+      QDPIO::cout << InlineStochGroupBaryonEnv::name << ": Stochastic Baryon Operator" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -1023,7 +1023,7 @@ namespace Chroma
       // 
       if (params.param.quark_dils.size() != N_quarks)
       {
-	QDPIO::cerr << name << ": expecting 3 quark dilutions" << endl;
+	QDPIO::cerr << name << ": expecting 3 quark dilutions" << std::endl;
 	QDP_abort(1);
       }
 
@@ -1038,7 +1038,7 @@ namespace Chroma
 
 	  std::istringstream  xml_d(dil_xml.xml);
 	  XMLReader  diltop(xml_d);
-	  QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
+	  QDPIO::cout << "Dilution type = " << dil_xml.id << std::endl;
 	
 	  diluted_quarks[n] = TheFermDilutionSchemeFactory::Instance().createObject(
 	    dil_xml.id, diltop, dil_xml.path);
@@ -1046,7 +1046,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << std::endl;
 	QDP_abort(1);
       }
 //------------------------------------------------------------------------
@@ -1067,7 +1067,7 @@ namespace Chroma
 	if ( diluted_quarks[n]->getNumTimeSlices() != participating_timeslices.size() )
 	{
 	  QDPIO::cerr << name << " : Quarks do not contain the same number of dilution timeslices: Quark " 
-		      << n << endl; 
+		      << n << std::endl; 
 
 	  QDP_abort(1);
 	}
@@ -1077,7 +1077,7 @@ namespace Chroma
 	  if  ( diluted_quarks[n]->getT0(t0) != participating_timeslices[t0] )
 	  {
 	    QDPIO::cerr << name << " : Quarks do not contain the same participating timeslices: Quark "<<
-	      n << " timeslice "<< t0 << endl;
+	      n << " timeslice "<< t0 << std::endl;
 
 	    QDP_abort(1);
 	  }
@@ -1091,7 +1091,7 @@ namespace Chroma
 	if (diluted_quarks[0]->getCfgInfo() != diluted_quarks[n]->getCfgInfo())
 	{
 	  QDPIO::cerr << name 
-		      << " : Quarks do not contain the same cfg info, quark "<< n << endl;
+		      << " : Quarks do not contain the same cfg info, quark "<< n << std::endl;
 	
 	  QDP_abort(1);
 	}
@@ -1117,7 +1117,7 @@ namespace Chroma
 	{
 	  QDPIO::cerr << name 
 		      << " : Quarks do not contain the same cfg info as the gauge field."
-		      << "gauge: XX"<<cfgInfo<<"XX quarks: XX"<<diluted_quarks[0]->getCfgInfo()<<"XX"<<  endl;
+		      << "gauge: XX"<<cfgInfo<<"XX quarks: XX"<<diluted_quarks[0]->getCfgInfo()<<"XX"<<  std::endl;
 
 
 	  QDP_abort(1);
@@ -1145,7 +1145,7 @@ namespace Chroma
       {
 	QDPIO::cerr << name << ": number of time slices not equal to that in the decay direction: " 
 		    << QDP::Layout::lattSize()[decay_dir]
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -1156,13 +1156,13 @@ namespace Chroma
       {
 	if ( toBool( diluted_quarks[n]->getSeed() == diluted_quarks[0]->getSeed() ) ) 
 	{
-	  QDPIO::cerr << name << ": error, quark seeds are the same" << endl;
+	  QDPIO::cerr << name << ": error, quark seeds are the same" << std::endl;
 	  QDP_abort(1);
 	}
 
 	if ( toBool( diluted_quarks[n]->getDecayDir() != diluted_quarks[0]->getDecayDir() ) )
 	{
-	  QDPIO::cerr << name << ": error, quark decay dirs do not match" <<endl;
+	  QDPIO::cerr << name << ": error, quark decay dirs do not match" <<std::endl;
 	  QDP_abort(1);
 	}
 
@@ -1177,7 +1177,7 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.param.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << endl;
+	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
 	
 	
 	Handle< LinkSmearing >
@@ -1188,7 +1188,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -1204,7 +1204,7 @@ namespace Chroma
       //
       // Read operator coefficients
       //
-      QDPIO::cout << "Reading 3-quark operators" << endl;
+      QDPIO::cout << "Reading 3-quark operators" << std::endl;
       ThreeQuarkOps_t qqq_oplist; 
 
       readOps(qqq_oplist, params.named_obj.operators_file.ops_file);
@@ -1216,7 +1216,7 @@ namespace Chroma
 
       try
       {
-	QDPIO::cout << "Create quark smearing object" << endl;
+	QDPIO::cout << "Create quark smearing object" << std::endl;
 
 	// Create the quark smearing object
 	std::istringstream  xml_s(params.param.quark_smearing.xml);
@@ -1229,12 +1229,12 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << ": Caught Exception creating quark smearing object: " << e << endl;
+	QDPIO::cerr << ": Caught Exception creating quark smearing object: " << e << std::endl;
 	QDP_abort(1);
       }
       catch(...)
       {
-	QDPIO::cerr << ": Caught generic exception creating smearing object" << endl;
+	QDPIO::cerr << ": Caught generic exception creating smearing object" << std::endl;
 	QDP_abort(1);
       }
 
@@ -1245,27 +1245,27 @@ namespace Chroma
       //
       // Permutations of quarks within an operator
       //
-      const std::string& pstring = params.named_obj.quark_ids; 
+      const std::string& pstr = params.named_obj.quark_ids; 
       int num_orderings = 1; 
 			
       //Should think of a cleverer algorithm for n quarks 
-      if  (pstring.size() != N_quarks)
+      if  (pstr.size() != N_quarks)
       {
-	QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 3 but is " << pstring.size() << endl;
+	QDPIO::cerr << "Invalid size for 'quark_ids'. Must be 3 but is " << pstr.size() << std::endl;
 	QDP_abort(1);
       }
 
       //If 2 identical quarks, different one must be in the fisrt position
-      if (  ( (pstring[0] == pstring[2]) && (pstring[1] != pstring[2]) ) ||
-	    ( (pstring[0] == pstring[1]) && (pstring[1] != pstring[2]) ) )
+      if (  ( (pstr[0] == pstr[2]) && (pstr[1] != pstr[2]) ) ||
+	    ( (pstr[0] == pstr[1]) && (pstr[1] != pstr[2]) ) )
       {
 	QDPIO::cerr << "Invalid format for 'quark_ids'. Identical q's must be last 2 entries.: "
-		    << pstring << endl;
+		    << pstr << std::endl;
 	QDP_abort(1);
       }
 			
       //Check that the kappas of the supposed identical quarks are the same.
-      if ( (pstring[0] != pstring[1]) && (pstring[1] == pstring[2]) )
+      if ( (pstr[0] != pstr[1]) && (pstr[1] == pstr[2]) )
       {
 	num_orderings = 2;
       
@@ -1273,12 +1273,12 @@ namespace Chroma
 	     toBool(diluted_quarks[1]->getKappa() != diluted_quarks[2]->getKappa()) )
 	{
 	  QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
       }
 			
-      if  (pstring[0] == pstring[2]) 
+      if  (pstr[0] == pstr[2]) 
       {
 	num_orderings = 6;
       
@@ -1287,12 +1287,12 @@ namespace Chroma
 	{
 					
 	  QDPIO::cerr << "quark_id's do not correspond to the correct identical quarks"
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
       }
 				
-      QDPIO::cout << "Num Ordering = " << num_orderings << endl;
+      QDPIO::cout << "Num Ordering = " << num_orderings << std::endl;
 
       multi1d< multi1d<int> >  perms(num_orderings);
       {
@@ -1344,7 +1344,7 @@ namespace Chroma
 	//Make the source operators 
 	{
 
-	  // The object holding the smeared and displaced color vector maps  
+	  // The object holding the smeared and displaced color std::vector std::maps  
 	  SmearedDispObjects smrd_disp_srcs(params.param.displacement_length,
 					    diluted_quarks, quarkSmearing, u_smr );
 
@@ -1366,7 +1366,7 @@ namespace Chroma
 	  // Loop over each operator 
 	  for(int l=0; l < qqq_oplist.ops.size(); ++l)
 	  {
-	    QDPIO::cout << "Elemental operator: op = " << l << endl;
+	    QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
 	    push(xml_out, "BaryonOperator");
 
@@ -1393,7 +1393,7 @@ namespace Chroma
 
 	    for(int ord = 0; ord < num_orderings ; ++ord)
 	    {
-	      QDPIO::cout << "Ordering = " << ord << endl;
+	      QDPIO::cout << "Ordering = " << ord << std::endl;
 
 	      creat_oper.time_slices[0].orderings[ord].perm = perms[ord];
 
@@ -1432,10 +1432,10 @@ namespace Chroma
 										   keySmearedDispColorVector[1]);
 
 		  /*QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
-		    << endl; 
+		    << std::endl; 
 
 		    QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
-		    << endl; 
+		    << std::endl; 
 
 		  */
 
@@ -1446,7 +1446,7 @@ namespace Chroma
 		  watch.stop();
 
 		  /*QDPIO::cout<< " Made diquark : time = " << 
-		    watch.getTimeInSeconds() << "secs" << endl;
+		    watch.getTimeInSeconds() << "secs" << std::endl;
 		  */		
 
 		  for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
@@ -1464,7 +1464,7 @@ namespace Chroma
 										     keySmearedDispColorVector[2]);
 
 		    /*QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
-		      << endl; 
+		      << std::endl; 
 		    */
 		    watch.reset();
 		    watch.start();
@@ -1475,10 +1475,10 @@ namespace Chroma
 		    watch.stop();
 
 		    /*QDPIO::cout<< "Made Color singlet : time =  " <<  
-		      watch.getTimeInSeconds() << "secs" << endl;
+		      watch.getTimeInSeconds() << "secs" << std::endl;
 		    */	
 		    /*QDPIO::cout << "testval = " << peekSite(c_oper, orig) 
-		      << endl;
+		      << std::endl;
 		    */	
 		    // Slow fourier-transform
 		    // We can restrict what the FT routine requires to a subset.
@@ -1499,7 +1499,7 @@ namespace Chroma
 		    watch.stop();
 
 		    /*QDPIO::cout << " Spatial sums completed: time = " << 
-		      watch.getTimeInSeconds() << "secs " << endl;
+		      watch.getTimeInSeconds() << "secs " << std::endl;
 		    */
 		    // Unpack into separate momentum and correlator
 
@@ -1527,7 +1527,7 @@ namespace Chroma
 	    QDPIO::cout << "Source operator construction: operator= " << l 
 			<< "  time= "
 			<< swiss.getTimeInSeconds() 
-			<< " secs" << endl;
+			<< " secs" << std::endl;
 
 	    QDPIO::cout << "Source operator testval(t0 = " << 
 	      participating_timeslices[t0] << ") = " << 
@@ -1566,7 +1566,7 @@ namespace Chroma
 		       diluted_quarks[0]->getSourceHeader(t0, dil) );
 
 		//	QDPIO::cout<< "t0 = " << t0 << " dil = "<< dil <<
-		//	" srdhdr = XX"<<diluted_quarks[0]->getSourceHeader(t0,dil) << endl;
+		//	" srdhdr = XX"<<diluted_quarks[0]->getSourceHeader(t0,dil) << std::endl;
 	      }
 	      pop(file_xml); //dilutions 
 	      pop(file_xml); //TimeSlice
@@ -1629,7 +1629,7 @@ namespace Chroma
 	    QDPIO::cout << "Source Operator writing: operator = " << 
 	      l	<< "  time= "
 			<< swiss.getTimeInSeconds() 
-			<< " secs" << endl;
+			<< " secs" << std::endl;
 
 	    pop(xml_out); // BaryonOperator 
 
@@ -1642,7 +1642,7 @@ namespace Chroma
 	//Make Annilation Operator
 	{
 
-	  // The object holding the smeared and displaced color vector maps  
+	  // The object holding the smeared and displaced color std::vector std::maps  
 	  SmearedDispObjects smrd_disp_snks(params.param.displacement_length,
 					    diluted_quarks, quarkSmearing, u_smr );
 
@@ -1662,12 +1662,12 @@ namespace Chroma
 	  annih_oper.time_slices.resize( 1 );
 
 	  // Construct annihilation operator
-	  QDPIO::cout << "Building Sink operators" << endl;
+	  QDPIO::cout << "Building Sink operators" << std::endl;
 
 	  // Loop over each operator 
 	  for(int l=0; l < qqq_oplist.ops.size(); ++l)
 	  {
-	    QDPIO::cout << "Elemental operator: op = " << l << endl;
+	    QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
 	    annih_oper.id = qqq_oplist.ops[l].name;
 
@@ -1692,7 +1692,7 @@ namespace Chroma
 	    int ord = 0;
 	    //for(int ord = 0 ; ord < num_orderings ; ++ord)
 	    {
-	      QDPIO::cout << "Ordering = " << ord << endl;
+	      QDPIO::cout << "Ordering = " << ord << std::endl;
 
 	      annih_oper.time_slices[0].orderings[ord].perm = perms[ord];
 
@@ -1734,10 +1734,10 @@ namespace Chroma
 
 
 		  //QDPIO::cout<<"q0[0] testval= "<< peekSite(q0[0], orig)
-		  //	<< endl; 
+		  //	<< std::endl; 
 
 		  //QDPIO::cout<<"q1[0] testval= "<< peekSite(q1[0], orig)
-		  //	<< endl; 
+		  //	<< std::endl; 
 
 
 		  watch.reset();
@@ -1747,7 +1747,7 @@ namespace Chroma
 
 		  watch.stop();
 		  /*QDPIO::cout << "Made diquark: time = " << 
-		    watch.getTimeInSeconds() << "secs " << endl;
+		    watch.getTimeInSeconds() << "secs " << std::endl;
 		  */
 
 		  for(int k = 0 ; k < diluted_quarks[n2]->getDilSize(t0) ; ++k)	
@@ -1768,7 +1768,7 @@ namespace Chroma
 										       keySmearedDispColorVector[2]);
 
 		    //QDPIO::cout<<"q2[0] testval= "<< peekSite(q2[0], orig)
-		    //<< endl;
+		    //<< std::endl;
 
 		    watch.reset();
 		    watch.start();
@@ -1779,10 +1779,10 @@ namespace Chroma
 
 		    /*
 		      QDPIO::cout <<	"Made Color Singlet: time = " <<
-		      watch.getTimeInSeconds() << "secs" << endl;
+		      watch.getTimeInSeconds() << "secs" << std::endl;
 		    */
 		    /*QDPIO::cout << "testval = " << peekSite(a_oper, orig) 
-		      << endl;
+		      << std::endl;
 		    */
 
 		    watch.reset();
@@ -1799,7 +1799,7 @@ namespace Chroma
 		    watch.stop();
 		    /*
 		      QDPIO::cout << "Spatial Sums completed: time " << 
-		      watch.getTimeInSeconds() << "secs" << endl;
+		      watch.getTimeInSeconds() << "secs" << std::endl;
 		    */		
 		    // Unpack into separate momentum and correlator
 		    aop.dilutions(i,j,k).mom_projs.resize(num_mom);
@@ -1822,12 +1822,12 @@ namespace Chroma
 	    QDPIO::cout << "Sink operator construction: operator= " << l 
 			<< "  time= "
 			<< swiss.getTimeInSeconds() 
-			<< " secs" << endl;
+			<< " secs" << std::endl;
 
 	    QDPIO::cout << "Sink op testval( t0 = " << 
 	      participating_timeslices[t0] << ") = " << 
 	      annih_oper.time_slices[0].orderings[0].dilutions(0,0,0).mom_projs[0].op[0] 
-			<< endl;
+			<< std::endl;
 
 	    //Hard code the elemental op name for now 
 	    std::stringstream cnvrt;
@@ -1917,7 +1917,7 @@ namespace Chroma
 	    swiss.stop();
 
 	    QDPIO::cout << "Sink Operator writing: operator = " << l
-			<< "  time= " << swiss.getTimeInSeconds() << " secs" << endl;
+			<< "  time= " << swiss.getTimeInSeconds() << " secs" << std::endl;
 
 	  } // end for l (operator )
 
@@ -1930,9 +1930,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineStochGroupBaryonEnv::name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineStochGroupBaryonEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineStochGroupBaryonEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } // func

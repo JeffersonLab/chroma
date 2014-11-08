@@ -79,7 +79,7 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
 
     if( toBool( real(rho) == 0 ) && toBool( imag(rho) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: rho = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: rho = 0" << std::endl;
       QDP_abort(1);
     }
 
@@ -108,7 +108,7 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
 
     if( toBool( real(ctmp) == 0 ) && toBool( imag(ctmp) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << std::endl;
       QDP_abort(1);
     }
 
@@ -132,7 +132,7 @@ InvBiCGStab_a(const LinearOperator<T>& A,
 
 
     if( toBool(t_norm == 0) ) { 
-      QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << endl;
+      QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << std::endl;
       QDP_abort(1);
     }
 
@@ -161,7 +161,7 @@ InvBiCGStab_a(const LinearOperator<T>& A,
     Double r_norm = norm2(r,s);
 
 
-    //    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
+    //    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << std::endl;
     if( toBool(r_norm < rsd_sq ) ) {
       convP = true;
       ret.resid = sqrt(r_norm);
@@ -192,11 +192,11 @@ InvBiCGStab_a(const LinearOperator<T>& A,
   
   swatch.stop();
 
-  QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << endl;
+  QDPIO::cout << "InvBiCGStab: k = " << ret.n_count << " resid = " << ret.resid << std::endl;
   flopcount.report("invbicgstab", swatch.getTimeInSeconds());
 
   if ( ret.n_count == MaxBiCGStab ) { 
-    QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
+    QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << std::endl;
   }
 
   return ret;

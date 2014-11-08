@@ -47,7 +47,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -56,7 +56,7 @@ namespace Chroma
     }
 
     //! File output
-    void read(XMLReader& xml, const string& path, Params::File_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::File_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -86,7 +86,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -101,14 +101,14 @@ namespace Chroma
       push(xml_out, "szin_read_named_obj");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object reader" << endl;
+      QDPIO::cout << name << ": object reader" << std::endl;
       StopWatch swatch;
 
       // Read the object
       // ONLY SZIN output format is supported in this task
       // Other tasks could support other disk formats
-      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
-      QDPIO::cout << "Attempt to read file name = " << params.file.file_name << endl;
+      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << std::endl;
+      QDPIO::cout << "Attempt to read file name = " << params.file.file_name << std::endl;
       write(xml_out, "object_id", params.named_obj.object_id);
       try
       {
@@ -126,22 +126,22 @@ namespace Chroma
 
 	QDPIO::cout << "SZIN Object successfully read: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // read_named_obj
 

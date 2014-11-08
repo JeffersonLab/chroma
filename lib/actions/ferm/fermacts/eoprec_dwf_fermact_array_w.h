@@ -35,8 +35,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, EvenOddPrecDWFermActArrayParams& param);
-  void write(XMLReader& xml, const string& path, const EvenOddPrecDWFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecDWFermActArrayParams& param);
+  void write(XMLReader& xml, const std::string& path, const EvenOddPrecDWFermActArrayParams& param);
 
 
   //! 4D style even-odd preconditioned domain-wall fermion action
@@ -71,7 +71,7 @@ namespace Chroma
 		    << "  Mass = " << param.Mass 
 		    << "  N5 = " << param.N5 
 		    << "  a5 = " << param.a5 
-		    << endl;
+		    << std::endl;
       }
 
     //! General FermBC

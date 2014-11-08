@@ -1,5 +1,4 @@
 #include <cstdio>
-using namespace std;
 
 
 inline
@@ -147,7 +146,7 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
     }
   }
   else { 
-    QDPIO::cout << "ord_ib_stubdates_kernel_generic.h: len not divisibe by 4" << endl;
+    QDPIO::cout << "ord_ib_stubdates_kernel_generic.h: len not divisibe by 4" << std::endl;
     QDP_abort(1);
   }
 
@@ -249,7 +248,7 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
     }
   }
   else { 
-    QDPIO::cout << "ord_bi_stubdates_kernel_generic.h: len not divisible by 2" <<endl;
+    QDPIO::cout << "ord_bi_stubdates_kernel_generic.h: len not divisible by 2" <<std::endl;
     QDP_abort(1);
   }
   

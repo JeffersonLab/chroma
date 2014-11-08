@@ -13,7 +13,7 @@ namespace Chroma
   { 
     //! Callback function to register with the factory
     GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
       return new SchrTrivialGaugeBC(SchrGaugeBCParams(xml, path));
     }
@@ -70,7 +70,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << __func__ << ": unsupport number of colors" << endl;
+      QDPIO::cerr << __func__ << ": unsupport number of colors" << std::endl;
       QDP_abort(1);
     }
   }

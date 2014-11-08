@@ -21,7 +21,7 @@ namespace Chroma
     {
       //! Callback
       Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path)
+	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path)
       {
 	return new UnprecOneFlavorWilsonTypeFermRatioRatRatMonomial5D(
 	  OneFlavorWilsonTypeFermRatioRatRatMonomialParams(xml, path));
@@ -54,7 +54,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Constructor: " << __func__ << endl;
+    QDPIO::cout << "Constructor: " << __func__ << std::endl;
 
     num_pf             = param.num_pf;
     actionInvParam_num = param.numer.action.invParam;
@@ -67,7 +67,7 @@ namespace Chroma
     {
       std::istringstream is(param.numer.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct fermion action= " << param.numer.fermact.id << endl;
+      QDPIO::cout << "Construct fermion action= " << param.numer.fermact.id << std::endl;
 
       WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermAct5DFactory::Instance().createObject(param.numer.fermact.id, 
@@ -79,7 +79,7 @@ namespace Chroma
       // Check success of the downcast 
       if( downcast == 0x0 ) 
       {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct5D to UnprecWilsonTypeFermAct5D" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct5D to UnprecWilsonTypeFermAct5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -91,7 +91,7 @@ namespace Chroma
     {
       std::istringstream is(param.numer.action.ratApprox.xml);
       XMLReader approx_reader(is);
-      QDPIO::cout << "Construct action rational approx= " << param.numer.action.ratApprox.id << endl;
+      QDPIO::cout << "Construct action rational approx= " << param.numer.action.ratApprox.id << std::endl;
 
       Handle<RationalApprox> approx(TheRationalApproxFactory::Instance().createObject(
 				      param.numer.action.ratApprox.id, 
@@ -106,7 +106,7 @@ namespace Chroma
     {
       std::istringstream is(param.numer.force.ratApprox.xml);
       XMLReader approx_reader(is);
-      QDPIO::cout << "Construct force rational approx= " << param.numer.force.ratApprox.id << endl;
+      QDPIO::cout << "Construct force rational approx= " << param.numer.force.ratApprox.id << std::endl;
 
       Handle<RationalApprox> approx(TheRationalApproxFactory::Instance().createObject(
 				      param.numer.force.ratApprox.id, 
@@ -123,7 +123,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct fermion action= " << param.denom.fermact.id << endl;
+      QDPIO::cout << "Construct fermion action= " << param.denom.fermact.id << std::endl;
 
       WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermAct5DFactory::Instance().createObject(param.denom.fermact.id, 
@@ -135,7 +135,7 @@ namespace Chroma
       // Check success of the downcast 
       if( downcast == 0x0 ) 
       {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct5D to UnprecWilsonTypeFermAct5D" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct5D to UnprecWilsonTypeFermAct5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -147,7 +147,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.action.ratApprox.xml);
       XMLReader approx_reader(is);
-      QDPIO::cout << "Construct action rational approx= " << param.denom.action.ratApprox.id << endl;
+      QDPIO::cout << "Construct action rational approx= " << param.denom.action.ratApprox.id << std::endl;
 
       Handle<RationalApprox> approx(TheRationalApproxFactory::Instance().createObject(
 				      param.denom.action.ratApprox.id, 
@@ -162,7 +162,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.force.ratApprox.xml);
       XMLReader approx_reader(is);
-      QDPIO::cout << "Construct force rational approx= " << param.denom.force.ratApprox.id << endl;
+      QDPIO::cout << "Construct force rational approx= " << param.denom.force.ratApprox.id << std::endl;
 
       Handle<RationalApprox> approx(TheRationalApproxFactory::Instance().createObject(
 				      param.denom.force.ratApprox.id, 
@@ -174,7 +174,7 @@ namespace Chroma
     }
     //*********************************************************************
 
-    QDPIO::cout << "Finished constructing: " << __func__ << endl;
+    QDPIO::cout << "Finished constructing: " << __func__ << std::endl;
     
     END_CODE();
   }

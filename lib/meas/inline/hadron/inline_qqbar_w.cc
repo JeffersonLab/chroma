@@ -48,7 +48,7 @@ namespace Chroma
 
 
   //! Param input
-  void read(XMLReader& xml, const string& path, InlineQQbarParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineQQbarParams::Param_t& input)
   {
     XMLReader paramtop(xml, path);
 
@@ -62,7 +62,7 @@ namespace Chroma
 
     default:
       /**************************************************************************/
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -70,7 +70,7 @@ namespace Chroma
   }
 
   //! Param output
-  void write(XMLWriter& xml, const string& path, const InlineQQbarParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineQQbarParams::Param_t& input)
   {
     push(xml, path);
 
@@ -82,7 +82,7 @@ namespace Chroma
   }
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineQQbarParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineQQbarParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -92,7 +92,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineQQbarParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineQQbarParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -126,7 +126,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -167,13 +167,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineQQbarEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineQQbarEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineQQbarEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -182,7 +182,7 @@ namespace Chroma
     push(xml_out,"qqbar");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineQQbarEnv::name << ": generalized propagator generation" << endl;
+    QDPIO::cout << InlineQQbarEnv::name << ": generalized propagator generation" << std::endl;
 
     // Write out the input
     params.write(xml_out, "Input");
@@ -206,7 +206,7 @@ namespace Chroma
     const int Nprops = 2;
     if (params.named_obj.prop_ids.size() != Nprops)
     {
-      QDPIO::cerr << InlineQQbarEnv::name << ": Error on input params - expecting 2 filenames" << endl;
+      QDPIO::cerr << InlineQQbarEnv::name << ": Error on input params - expecting 2 filenames" << std::endl;
       QDP_abort(1);
     }
 
@@ -244,13 +244,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineQQbarEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineQQbarEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineQQbarEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
     }
@@ -336,9 +336,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineQQbarEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineQQbarEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineQQbarEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

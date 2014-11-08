@@ -19,7 +19,7 @@
 namespace Chroma 
 { 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSinkSmearEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineSinkSmearEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -29,7 +29,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSinkSmearEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineSinkSmearEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -93,7 +93,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -120,7 +120,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << name << ": Sink smearing for propagators" << endl;
+      QDPIO::cout << name << ": Sink smearing for propagators" << std::endl;
 
       StopWatch snoop;
       snoop.reset();
@@ -136,13 +136,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -168,7 +168,7 @@ namespace Chroma
 
       int j_decay;   // need this for diagnostics
 
-      QDPIO::cout << "Attempt to read forward propagator" << endl;
+      QDPIO::cout << "Attempt to read forward propagator" << std::endl;
       try
       {
 	// Grab a copy of the propagator. Will modify it later.
@@ -189,12 +189,12 @@ namespace Chroma
       catch (std::bad_cast)
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
+	QDPIO::cerr << name << ": error extracting prop_header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -218,11 +218,11 @@ namespace Chroma
       //
       try
       {
-	QDPIO::cout << "Sink_xml = " << params.param.sink.xml << endl;
+	QDPIO::cout << "Sink_xml = " << params.param.sink.xml << std::endl;
 
 	std::istringstream  xml_s(params.param.sink.xml);
 	XMLReader  sinktop(xml_s);
-	QDPIO::cout << "Sink = " << params.param.sink.id << endl;
+	QDPIO::cout << "Sink = " << params.param.sink.id << std::endl;
 
 	Handle< QuarkSourceSink<LatticePropagator> >
 	  sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.param.sink.id,
@@ -233,7 +233,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception creating sink: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception creating sink: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -287,17 +287,17 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.smeared_prop_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.smeared_prop_id).setRecordXML(record_xml);
 
-	QDPIO::cout << "Sink successfully updated" << endl;
+	QDPIO::cout << "Sink successfully updated" << std::endl;
       }
       catch (std::bad_cast)
       {
 	QDPIO::cerr << name << ": dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error message: " << e << endl;
+	QDPIO::cerr << name << ": error message: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -307,9 +307,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

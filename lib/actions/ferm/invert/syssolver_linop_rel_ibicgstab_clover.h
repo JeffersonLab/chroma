@@ -22,7 +22,6 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 
 #include <string>
-using namespace std;
 
 namespace Chroma
 {
@@ -143,8 +142,8 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
-      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
+      QDPIO::cout << "RELIABLE_IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << std::endl;
    
       
       END_CODE();

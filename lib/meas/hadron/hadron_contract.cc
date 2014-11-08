@@ -26,7 +26,7 @@ namespace Chroma
       if (t_srce != t_srce_b)
       {
 	QDPIO::cerr << __func__ << ": the t_srce in the forward props are not all equal"
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     }
@@ -49,7 +49,7 @@ namespace Chroma
       if (j_decay != j_decay_b)
       {
 	QDPIO::cerr << __func__ << ": the decay_dir in the forward props are not all equal"
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     }
@@ -83,13 +83,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << __func__ << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << __func__ << ": caught error = " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 

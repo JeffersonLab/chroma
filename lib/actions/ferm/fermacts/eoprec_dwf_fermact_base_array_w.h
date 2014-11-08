@@ -62,7 +62,7 @@ namespace Chroma
 	// for Moebius with Zolo coeffs where D(1) != D(2) etc.
 	// However the function is at least virtual so it can be 
 	// overridden on an as needed basis
-	QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::hermitianLinOp not implemented" << endl;
+	QDPIO::cerr << "EvenOddPrecDWFermActBaseArray::hermitianLinOp not implemented" << std::endl;
 	QDP_abort(1);
 	return 0;
       }

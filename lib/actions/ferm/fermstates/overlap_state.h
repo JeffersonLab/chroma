@@ -73,7 +73,7 @@ namespace Chroma
     OverlapConnectState(Handle< FermBC<T,P,Q> > fbc_,
 			const multi1d<LatticeColorMatrix> u_,
 			XMLReader& state_info_xml, 
-			const string& state_info_path,
+			const std::string& state_info_path,
 			const LinearOperator<LatticeFermion>& H);
 
     //! Create from OverlapStateInfo Structure

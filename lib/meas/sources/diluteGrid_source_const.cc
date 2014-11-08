@@ -24,14 +24,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, DiluteGridQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, DiluteGridQuarkSourceConstEnv::Params& param)
   {
     DiluteGridQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DiluteGridQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const DiluteGridQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -87,7 +87,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -101,7 +101,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -124,7 +124,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -155,20 +155,20 @@ namespace Chroma
     LatticeFermion
     SourceConst<LatticeFermion>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Diluted grid source" << endl;
+      QDPIO::cout << "Diluted grid source" << std::endl;
 
       //
       // Sanity checks
       //
       if (params.spatial_mask_size.size() != Nd-1)
       {
-	QDPIO::cerr << name << ": spatial mask size incorrect 1" << endl;
+	QDPIO::cerr << name << ": spatial mask size incorrect 1" << std::endl;
 	QDP_abort(1);
       }
 
       if (params.spatial_mask.size() == 0)
       {
-	QDPIO::cerr << name << ": spatial mask incorrect 2" << endl;
+	QDPIO::cerr << name << ": spatial mask incorrect 2" << std::endl;
 	QDP_abort(1);
       }
 
@@ -185,17 +185,17 @@ namespace Chroma
       {
 	if (params.spatial_mask[j].size() != Nd-1)
 	{
-	  QDPIO::cerr << name << ": spatial mask incorrect 3" << endl;
+	  QDPIO::cerr << name << ": spatial mask incorrect 3" << std::endl;
 	  QDP_abort(1);
 	}
       }
 
       if (params.color < 0 || params.color >= Nc){
-	  QDPIO::cerr << name << ": color mask incorrect 6" << endl;
+	  QDPIO::cerr << name << ": color mask incorrect 6" << std::endl;
 	  QDP_abort(1);
       }
       //if (params.spin < 0 || params.spin >= Ns){
-      //QDPIO::cerr << name << ": spin mask incorrect 7" << endl;
+      //QDPIO::cerr << name << ": spin mask incorrect 7" << std::endl;
       //QDP_abort(1);
       //}
 
@@ -213,7 +213,7 @@ namespace Chroma
       else{
 	for(int s(0);s<Ns;s++)
 	  pokeSpin(tt,cc,s);
-	QDPIO::cout << name << ": NO spin mask used!" << endl;
+	QDPIO::cout << name << ": NO spin mask used!" << std::endl;
       }
       LatticeFermion quark_noise = tt ;
   
@@ -236,7 +236,7 @@ namespace Chroma
       if(params.t_source>-1) // single time slice is selected 
 	mask &= Layout::latticeCoordinate(params.j_decay) == params.t_source;
       else
-	QDPIO::cout << name << ": NO time mask used!" << endl;
+	QDPIO::cout << name << ": NO time mask used!" << std::endl;
 
       // Zap the unused sites
       quark_source = where(mask, quark_noise, Fermion(zero));
@@ -248,18 +248,18 @@ namespace Chroma
 	  std::istringstream  xml_l(params.smr.xml);
 	  XMLReader  smrtop(xml_l);
 	  QDPIO::cout << "Quark smearing type = " <<params.smr.id ; 
-	  QDPIO::cout << endl;
+	  QDPIO::cout << std::endl;
 	  
 	  Smearing = 
 	    TheFermSmearingFactory::Instance().createObject(params.smr.id,smrtop, 
 							    params.smr.path);
 	}
 	catch(const std::string& e){
-	  QDPIO::cerr <<name<< ": Caught Exception creating quark smearing object: " << e << endl;
+	  QDPIO::cerr <<name<< ": Caught Exception creating quark smearing object: " << e << std::endl;
 	  QDP_abort(1);
 	}
 	catch(...){
-	  QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" << endl;
+	  QDPIO::cerr <<name<< ": Caught generic exception creating smearing object" << std::endl;
 	  QDP_abort(1);
 	}
 	// Smear the gauge field if needed
@@ -270,7 +270,7 @@ namespace Chroma
 	  std::istringstream  xml_l(params.link_smear.xml);
 	  XMLReader  linktop(xml_l);
 	  QDPIO::cout << "Link smearing type = " << params.link_smear.id ; 
-	  QDPIO::cout << endl;
+	  QDPIO::cout << std::endl;
 	  
 	  
 	  Handle<LinkSmearing> linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smear.id, linktop, params.link_smear.path));
@@ -279,7 +279,7 @@ namespace Chroma
 	  //MesPlq(xml_out, "Smeared_Observables", u_smr);
 	}
 	catch(const std::string& e){
-	  QDPIO::cerr<<name<<": Caught Exception link smearing: " << e << endl;
+	  QDPIO::cerr<<name<<": Caught Exception link smearing: " << e << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -296,14 +296,14 @@ namespace Chroma
 	  Handle< QuarkDisplacement<LatticeFermion> >
 	    quarkDisplacement(TheFermDisplacementFactory::Instance().createObject(params.displace.id, displacetop, params.displace.path));
 	  QDPIO::cout << "Quark displacement type = " << params.displace.id ; 
-	  QDPIO::cout << endl;
+	  QDPIO::cout << std::endl;
 
 	  // displacement has to be taken along negative direction.
 	  // Not sure why MINUS....
 	  (*quarkDisplacement)(quark_source, u_smr, MINUS);
 	}
 	catch(const std::string& e){
-	  QDPIO::cerr<<name<<": Caught Exception quark displacement: "<<e<< endl;
+	  QDPIO::cerr<<name<<": Caught Exception quark displacement: "<<e<< std::endl;
 	  QDP_abort(1);
 	}
       }// if(smear) ends here

@@ -13,7 +13,7 @@
 #include "update/molecdyn/monomial/abs_monomial.h"
 #include "update/molecdyn/monomial/force_monitors.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
-#include <typeinfo> // For bad_cast
+#include <typeinfo> // For std::bad_cast
 namespace Chroma
 {
   //-------------------------------------------------------------------------------------------
@@ -182,7 +182,7 @@ namespace Chroma
       (*M_2)(getPhi(), eta, PLUS);
 
       // Reset the chronological predictor
-      QDPIO::cout << "TwoFlavRatioConvConvWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
+      QDPIO::cout << "TwoFlavRatioConvConvWilson5DMonomial: resetting Predictor at end of field refresh" << std::endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -204,7 +204,7 @@ namespace Chroma
 	}
       }
       catch(std::bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvConvWilsonTypeFermMonomial5D" << endl;
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvConvWilsonTypeFermMonomial5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -272,7 +272,7 @@ namespace Chroma
       // Do the inversion
       SystemSolverResults_t res = (*invMdagM)(X, MPrecDagPhi);
 
-      // Register the new vector
+      // Register the new std::vector
       (getMDSolutionPredictor()).newVector(X);
  
       return res.n_count;
@@ -328,7 +328,7 @@ namespace Chroma
 
       // getX() now always uses Chrono predictor. Best to Nuke it for
       // energy calcs
-      QDPIO::cout << "TwoFlavRatioConvConvWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvConvWilson5DMonomial: resetting Predictor before energy calc solve" << std::endl;
       getMDSolutionPredictor().reset();
       int n_count = this->getX(X,s);
 
@@ -414,7 +414,7 @@ namespace Chroma
       X = zero;
 
       // Get X now always uses predictor. Best to nuke it therefore
-      QDPIO::cout << "TwoFlavRatioConvConvWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvConvWilson5DMonomial: resetting Predictor before energy calc solve" << std::endl;
       getMDSolutionPredictor().reset();
       int n_count = this->getX(X, s);
 

@@ -72,7 +72,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "PABWilsonDslashArray: error: fbc is null" << endl;
+      QDPIO::cerr << "PABWilsonDslashArray: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -107,7 +107,7 @@ namespace Chroma
 			QDP::Allocator::DEFAULT);
       }
       catch( std::bad_alloc ) { 
-	QDPIO::cerr << "Could not allocate packed gauge in lwldslash_array_pab_w.cc line 67" << endl << flush;
+	QDPIO::cerr << "Could not allocate packed gauge in lwldslash_array_pab_w.cc line 67" << std::endl << std::flush;
         QDP_abort(1);
       }
 
@@ -204,7 +204,7 @@ namespace Chroma
    *  \param chi      Result				                (Write)
    *  \param psi      Pseudofermion field				(Read)
    *  \param isign    D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
-   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector			(Read) 
    */
   void 
   PABWilsonDslashArray::apply (multi1d<LatticeFermion>& chi, 
@@ -245,7 +245,7 @@ namespace Chroma
    *  \param chi	      Result                           (Write)
    *  \param psi	      Pseudofermion field              (Read)
    *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.    (Read)
-   *  \param cb	      Checkerboard of OUTPUT vector            (Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector            (Read) 
    */
   void
   PABWilsonDslashArray::apply (LatticeFermion& chi, const LatticeFermion& psi, 

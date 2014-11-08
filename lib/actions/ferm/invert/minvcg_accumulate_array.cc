@@ -34,14 +34,14 @@ namespace Chroma
    *  z[0]   := 1 / (1 - (shift - shift(0))*b) 
    *  bs[0]  := b[0] * z[0]  
    *  r[1] += b[k] A . p[0] ; 	       	      New residual
-   *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution vector
+   *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution std::vector
    *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;        Converged?
    *  FOR k FROM 1 TO MaxCG DO    	       	       CG iterations
    *      a[k] := |r[k]|**2 / |r[k-1]|**2 ;
    *      p[k] := r[k] + a[k] p[k-1];   	       New direction
    *      b[k+1] := |r[k]|**2 / <p[k],Ap[k]> ;
    *      r[k+1] += b[k+1] A . p[k] ; 	       	       New residual
-   *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution vector
+   *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution std::vector
    *      IF |[k+1]| <= RsdCG |Chi| THEN RETURN;    Converged?
 
    * Arguments:
@@ -55,8 +55,8 @@ namespace Chroma
 
    * Local Variables:
 
-   *  p   	       Direction vector
-   *  r   	       Residual vector
+   *  p   	       Direction std::vector
+   *  r   	       Residual std::vector
    *  cp  	       | r[k] |**2
    *  c   	       | r[k-1] |**2
    *  k   	       CG iteration counter
@@ -68,7 +68,7 @@ namespace Chroma
    *  MaxCG       Maximum number of CG iterations allowed
 
    * Subroutines:
-   *  A	       Apply matrix hermitian A to vector 
+   *  A	       Apply matrix hermitian A to std::vector 
    */
 
   template<typename T, typename C>
@@ -94,7 +94,7 @@ namespace Chroma
 
 
     if (n_shift == 0) {
-      QDPIO::cerr << "MinvCG: You must supply at least 1 shift. shift.size() = " << n_shift << endl;
+      QDPIO::cerr << "MinvCG: You must supply at least 1 shift. shift.size() = " << n_shift << std::endl;
       QDP_abort(1);
     }
 
@@ -173,7 +173,7 @@ namespace Chroma
     }
 
     // -------- All memory setup and copies done. Timer starts here
-    QDPIO::cout << "MinvCG starting" << endl;
+    QDPIO::cout << "MinvCG starting" << std::endl;
     flopcount.reset();
     swatch.reset();
     swatch.start();
@@ -187,7 +187,7 @@ namespace Chroma
     if( toBool( chi_norm < fuzz )) { 
       n_count = 0;
       swatch.stop();
-      QDPIO::cout << "MinvCG: Finished. Iters taken = " << n_count << endl;
+      QDPIO::cout << "MinvCG: Finished. Iters taken = " << n_count << std::endl;
       flopcount.report("MinvCGArray", swatch.getTimeInSeconds());
 
 
@@ -440,7 +440,7 @@ namespace Chroma
     }
 
     swatch.stop();
-    QDPIO::cout << "MinvCGAccumArray finished: " << n_count << " iterations " << endl;
+    QDPIO::cout << "MinvCGAccumArray finished: " << n_count << " iterations " << std::endl;
     flopcount.report("MinvCGAccumArray", swatch.getTimeInSeconds());
 
     for(int i=0; i < n_shift; i++) { 
@@ -448,7 +448,7 @@ namespace Chroma
     }
 
     if (n_count == MaxCG) {
-      QDPIO::cout << "too many CG iterationns: " << n_count << endl;
+      QDPIO::cout << "too many CG iterationns: " << n_count << std::endl;
       QDP_abort(1);
 
     }

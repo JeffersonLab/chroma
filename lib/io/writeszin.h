@@ -24,7 +24,7 @@ namespace Chroma
    * \param cfg_file   path ( Read )
    */    
 
-  void writeSzin(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+  void writeSzin(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
   //! Write a SZIN configuration file
   /*!
@@ -40,7 +40,7 @@ namespace Chroma
    * \param cfg_file   path ( Read )
    */    
 
-  void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+  void writeSzin(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 
 
@@ -58,7 +58,7 @@ namespace Chroma
 
   void writeSzinTrunc(const SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 		      int j_decay, int t_start, int t_end, 
-		      const string& cfg_file);
+		      const std::string& cfg_file);
 
 
   //! Write a replicated (in time direction) SZIN configuration file
@@ -74,7 +74,7 @@ namespace Chroma
 
   void writeSzinReplica(SzinGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
 			int j_decay, int n_replica, 
-			const string& cfg_file);
+			const std::string& cfg_file);
 
 }  // end namespace Chroma
 

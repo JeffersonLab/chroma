@@ -31,10 +31,10 @@ namespace Chroma
 #if 0
   // Reader/writers
   /*! \ingroup linop */
-  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param);
+  void read(XMLReader& xml, const std::string& path, PrimitiveClovTriang& param);
 
   /*! \ingroup linop */
-  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& param);
+  void write(XMLWriter& xml, const std::string& path, const PrimitiveClovTriang& param);
 #endif
 
   //! Clover term
@@ -92,7 +92,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      */
     void apply (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, int cb) const;
 

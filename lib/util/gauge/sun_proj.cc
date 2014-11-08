@@ -73,9 +73,9 @@ namespace Chroma
 
       if( wrswitch == 1 )
       {
-	QDPIO::cout << "iter =     " << iter << endl;
-	QDPIO::cout << "  old_tr = " << old_tr << endl;
-	QDPIO::cout << "  new_tr = " << new_tr << endl;
+	QDPIO::cout << "iter =     " << iter << std::endl;
+	QDPIO::cout << "  old_tr = " << old_tr << std::endl;
+	QDPIO::cout << "  new_tr = " << new_tr << std::endl;
       }
 
       // Normalized convergence criterion:
@@ -90,8 +90,8 @@ namespace Chroma
 //    write(nml, "iter", iter);
 //    write(nml, "new_tr", new_tr);
 //    pop(nml);
-      QDPIO::cout << "iter = " << iter << endl;
-      QDPIO::cout << "new_tr = " << new_tr << endl;
+      QDPIO::cout << "iter = " << iter << std::endl;
+      QDPIO::cout << "new_tr = " << new_tr << std::endl;
     }
 #endif
 

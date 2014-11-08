@@ -41,7 +41,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Null Predictor Predict X: Leaving guess unchanged" << endl;
+      QDPIO::cout << "Null Predictor Predict X: Leaving guess unchanged" << std::endl;
 
       END_CODE();
     }
@@ -51,7 +51,7 @@ namespace Chroma
 		  const LatticeFermion& chi) 
     {
       START_CODE();
-      QDPIO::cout << "Null Predictor Predict Y: Leaving guess unchanged" << endl;
+      QDPIO::cout << "Null Predictor Predict Y: Leaving guess unchanged" << std::endl;
 
       END_CODE();
     }
@@ -62,7 +62,7 @@ namespace Chroma
     void reset(void) {
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newXVector(const LatticeFermion& psi) {
       // Nothing
     }
@@ -109,7 +109,7 @@ namespace Chroma
     void reset(void) {
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newVector(const multi1d<LatticeFermion>& psi) {
     }
     

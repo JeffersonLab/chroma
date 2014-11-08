@@ -11,7 +11,7 @@
 
 namespace Chroma 
 { 
-  //! Apply the operator onto a source vector
+  //! Apply the operator onto a source std::vector
   /*!
    * The operator acts on the entire lattice
    *
@@ -236,7 +236,7 @@ namespace Chroma
     // Last Component
     if(  NEig > 0 ) 
     {
-      QDPIO::cerr << "contfrac5d deriv - projection not supported" << endl;
+      QDPIO::cerr << "contfrac5d deriv - projection not supported" << std::endl;
       QDP_abort(1);
     }
 

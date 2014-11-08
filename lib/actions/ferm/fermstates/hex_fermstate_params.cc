@@ -32,7 +32,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     { 
-      QDPIO::cout << "Failed to read hex action XML:" << e << endl;
+      QDPIO::cout << "Failed to read hex action XML:" << e << std::endl;
     }
     
 

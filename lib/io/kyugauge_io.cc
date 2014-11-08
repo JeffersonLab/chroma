@@ -18,13 +18,13 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readKYU(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
   if (Nc != 3)
   {
-    QDPIO::cerr << "readKYU - only supports Nc=3" << endl;
+    QDPIO::cerr << "readKYU - only supports Nc=3" << std::endl;
     QDP_abort(1);
   }
 
@@ -69,13 +69,13 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file)
  * \param cfg_file   path ( Read )
  */    
 
-void writeKYU(const multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void writeKYU(const multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
   if (Nc != 3)
   {
-    QDPIO::cerr << "writeKYU - only supports Nc=3" << endl;
+    QDPIO::cerr << "writeKYU - only supports Nc=3" << std::endl;
     QDP_abort(1);
   }
 

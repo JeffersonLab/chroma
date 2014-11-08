@@ -20,19 +20,19 @@ namespace Chroma
     // Sanity checks
     if (j_decay < 0 || j_decay >= Nd)
     {
-      QDPIO::cerr << __func__ << ": j_decay out of bounds" << endl;
+      QDPIO::cerr << __func__ << ": j_decay out of bounds" << std::endl;
       QDP_abort(1);
     }
 
     if (t_srce.size() != Nd)
     {
-      QDPIO::cerr << __func__ << ": t_srce not of size = " << Nd << endl;
+      QDPIO::cerr << __func__ << ": t_srce not of size = " << Nd << std::endl;
       QDP_abort(1);
     }
 
     if (sink_mom.size() != Nd-1)
     {
-      QDPIO::cerr << __func__ << ": mom not of size = " << Nd-1 << endl;
+      QDPIO::cerr << __func__ << ": mom not of size = " << Nd-1 << std::endl;
       QDP_abort(1);
     }
 

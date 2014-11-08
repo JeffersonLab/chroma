@@ -1,5 +1,5 @@
 /*! \file
- * \brief Key for propagator colorvector sources
+ * \brief Key for propagator colorstd::vector sources
  */
 
 #include "util/ferm/key_prop_colorvec.h"

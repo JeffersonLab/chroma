@@ -41,7 +41,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
+      QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << std::endl;
       X = zero;
 
       END_CODE();
@@ -53,7 +53,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << endl;
+      QDPIO::cout << "ZeroGuessPredictor: zeroing initial guess" << std::endl;
       Y = zero;
 
       END_CODE();
@@ -65,13 +65,13 @@ namespace Chroma
     void reset(void) {
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newXVector(const LatticeFermion& psi) {
-      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << endl;
+      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << std::endl;
     }
 
     void newYVector(const LatticeFermion& psi) {
-      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << endl;
+      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << std::endl;
     }
 
   };
@@ -110,7 +110,7 @@ namespace Chroma
       if (A.size() != N5)
       {
 	QDPIO::cerr << "ZeroGuess5D: mismatched sizes A.size=" << A.size() 
-		    << "  and N5=" << N5 << endl;
+		    << "  and N5=" << N5 << std::endl;
 	QDP_abort(1);
       }
       psi.resize(N5);
@@ -124,9 +124,9 @@ namespace Chroma
     void reset(void) {
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newVector(const multi1d<LatticeFermion>& psi) {
-      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << endl;
+      QDPIO::cout << "ZeroGuessPredictor: registering new solution (not)" << std::endl;
     }
     
   private:

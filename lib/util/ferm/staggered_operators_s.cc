@@ -67,13 +67,13 @@ namespace Chroma
 
       Real eps_sign(int k){
 	if(!Initialized) InitializeTable();
-	//cout<<"EPS_SIGN: "<<eps[k].sign <<endl ;
+	//cout<<"EPS_SIGN: "<<eps[k].sign <<std::endl ;
 
 	return eps[k].sign ;
       } 
       multi1d<int> eps_indx(int k){
 	if(!Initialized) InitializeTable();
-	//cout<<"EPS_INDX: "<<eps[k].d[0]<< eps[k].d[1]<< eps[k].d[2]<<endl ;
+	//cout<<"EPS_INDX: "<<eps[k].d[0]<< eps[k].d[1]<< eps[k].d[2]<<std::endl ;
 	return eps[k].d;
       }
 

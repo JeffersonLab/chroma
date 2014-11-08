@@ -18,7 +18,7 @@ namespace Chroma {
 	read(top, "/SubIntegrator/Name", subint_name);
       }
       catch( const std::string& e ) {
-	QDPIO::cerr << "Failed to extract name of subintegrator in LatColMatSTSLeapfrogRecursiveIntegrator: " << e << endl;
+	QDPIO::cerr << "Failed to extract name of subintegrator in LatColMatSTSLeapfrogRecursiveIntegrator: " << e << std::endl;
 	QDP_abort(1);
       }
       std::string root="/SubIntegrator";
@@ -31,8 +31,8 @@ namespace Chroma {
 
     void bindMonomials(const multi1d<std::string>& monomial_ids,
 		       multi1d< MonomialPair >& monomials ) { 
-      QDPIO::cout << "Binding Monomials" << endl;
-      QDPIO::cout << "There are " << monomial_ids.size() << " IDs to bind " << endl; 
+      QDPIO::cout << "Binding Monomials" << std::endl;
+      QDPIO::cout << "There are " << monomial_ids.size() << " IDs to bind " << std::endl; 
 
       monomials.resize(monomial_ids.size());
       for(int i=0; i < monomial_ids.size(); i++) { 
@@ -43,19 +43,19 @@ namespace Chroma {
 
 	  monomials[i].id = monomial_ids[i];
 
-	  QDPIO::cout << "Monomial with ID = " << monomial_ids[i] << " bound" << endl;
+	  QDPIO::cout << "Monomial with ID = " << monomial_ids[i] << " bound" << std::endl;
 	}
 	catch(const std::string& e) { 
-	  QDPIO::cout << "Caught exception with message : " << e << endl;
+	  QDPIO::cout << "Caught exception with message : " << e << std::endl;
 	  QDP_abort(1);
 	}
 	catch(std::bad_cast) { 
-	  QDPIO::cout << "Failed to cast to return type in bind_monomials" << endl;
+	  QDPIO::cout << "Failed to cast to return type in bind_monomials" << std::endl;
 	  QDP_abort(1);
 	}
 
       } // For loop 
-      QDPIO::cout << "All monomials successfully bound" << endl;
+      QDPIO::cout << "All monomials successfully bound" << std::endl;
     }
 
 

@@ -47,12 +47,12 @@ namespace Chroma
       read(paramtop, "./u0", u0);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
-  void read(XMLReader& xml, const string& path, LW1LoopGaugeActParams& p) {
+  void read(XMLReader& xml, const std::string& path, LW1LoopGaugeActParams& p) {
     LW1LoopGaugeActParams tmp(xml, path);
     p=tmp;
   }

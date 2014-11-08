@@ -101,7 +101,7 @@ namespace Chroma
 		     Complex_C* ework, int esize,float tol,float* restartTol,  
 		     int maxit, char SRT_OPT, float epsi, int ConvTestOpt,
 		     int plvl,int nev, int v_max,FILE* outputFile){
-      QDPIO::cout<<"IncrEigbicg_C will be called"<<endl ;
+      QDPIO::cout<<"IncrEigbicg_C will be called"<<std::endl ;
       return IncrEigbicg_C(n, lde, nrhs, X, B, 
 			   ncurEvals, ldh, 
 			   evecsl, evecsr, evals, H,
@@ -126,7 +126,7 @@ namespace Chroma
 		     int esize, double tol, double* restartTol,  
 		     int maxit, char SRT_OPT, double epsi, int ConvTestOpt,
 		     int plvl, int nev, int v_max,FILE *outputFile){
-      QDPIO::cout<<"IncrEigbicg_Z will be called"<<endl ;
+      QDPIO::cout<<"IncrEigbicg_Z will be called"<<std::endl ;
       return IncrEigbicg_Z(n, lde, nrhs, X, B, 
 			   ncurEvals, ldh, 
 			   evecsl, evecsr, evals, H,
@@ -158,11 +158,11 @@ namespace Chroma
 
       LinAlg::OptEigBiInfo<REAL>& EigBiInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigBiInfo<REAL> >(invParam.eigen_id);
 
-      QDPIO::cout<<"EigBiInfo.N= "<<EigBiInfo.N<<endl ;
-      QDPIO::cout<<"EigBiInfo.lde= "<<EigBiInfo.lde<<endl ;
-      QDPIO::cout<<"EigBiInfo.ldh= "<<EigBiInfo.evals.size()<<endl ;
-      QDPIO::cout<<"EigBiInfo.ncurEvals= "<<EigBiInfo.ncurEvals<<endl ;
-      QDPIO::cout<<"EigBiInfo.restartTol= "<<EigBiInfo.restartTol<<endl ;
+      QDPIO::cout<<"EigBiInfo.N= "<<EigBiInfo.N<<std::endl ;
+      QDPIO::cout<<"EigBiInfo.lde= "<<EigBiInfo.lde<<std::endl ;
+      QDPIO::cout<<"EigBiInfo.ldh= "<<EigBiInfo.evals.size()<<std::endl ;
+      QDPIO::cout<<"EigBiInfo.ncurEvals= "<<EigBiInfo.ncurEvals<<std::endl ;
+      QDPIO::cout<<"EigBiInfo.restartTol= "<<EigBiInfo.restartTol<<std::endl ;
 
       Subset s = A->subset() ;
 
@@ -203,7 +203,7 @@ namespace Chroma
       arg.LinOp = A ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
 
-      QDPIO::cout<<"OPT_EIGBICG_SYSSOLVER= "<<esize<<endl ;
+      QDPIO::cout<<"OPT_EIGBICG_SYSSOLVER= "<<esize<<std::endl ;
       //multi1d<C> ework(esize);
       F resid = (F) invParam.RsdCG.elem().elem().elem().elem();
       F AnormEst = invParam.NormAest.elem().elem().elem().elem();
@@ -243,9 +243,9 @@ namespace Chroma
 
       T tt;
       (*A)(tt,psi,PLUS);
-      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
-      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
-      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
+      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<std::endl ;
+      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<std::endl ;
+      QDPIO::cout<<"OPT_EIGBiCG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<std::endl ;
       
 
 

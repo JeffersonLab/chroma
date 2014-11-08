@@ -15,7 +15,7 @@ namespace Chroma
     int Nvec2 = M.size2();
     
     if( Nvec1 != Nvec2 ) { 
-      QDPIO::cerr << "Barf" << endl;
+      QDPIO::cerr << "Barf" << std::endl;
       QDP_abort(1);
     }
     

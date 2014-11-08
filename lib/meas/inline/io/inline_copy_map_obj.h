@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Inline task to copy map objects
+ * \brief Inline task to copy std::map objects
  */
 
 #ifndef __inline_copy_map_obj_h__
@@ -30,14 +30,14 @@ namespace Chroma
 	std::string   object_type;
 	std::string   input_id;
 	std::string   output_id;
-	GroupXML_t    output_obj;  /*!< Output object map */
+	GroupXML_t    output_obj;  /*!< Output object std::map */
       };
 
       NamedObject_t   named_obj;
     };
 
 
-    //! Inline copying of map objects
+    //! Inline copying of std::map objects
     /*! \ingroup inlineio */
     class InlineMeas : public AbsInlineMeasurement 
     {

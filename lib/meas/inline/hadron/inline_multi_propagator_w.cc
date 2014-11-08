@@ -54,7 +54,7 @@ namespace Chroma
 
 
   //! MultiPropagator input
-  void read(XMLReader& xml, const string& path, InlineMultiPropagatorParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineMultiPropagatorParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -64,7 +64,7 @@ namespace Chroma
   }
 
   //! MultiPropagator output
-  void write(XMLWriter& xml, const string& path, const InlineMultiPropagatorParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineMultiPropagatorParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -118,7 +118,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -132,7 +132,7 @@ namespace Chroma
     Chroma::write(xml_out, "Param", param);
     {
       //QDP::write(xml_out, "StateInfo", stateInfo);
-      istringstream header_is(stateInfo);
+      std::istringstream header_is(stateInfo);
       XMLReader xml_header(header_is);
       xml_out << xml_header;
     }
@@ -150,7 +150,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "multi_propagator");
       write(xml_out, "update_no", update_no);
@@ -188,13 +188,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMultiPropagatorEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMultiPropagatorEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineMultiPropagatorEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -204,7 +204,7 @@ namespace Chroma
 
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << "MULTI_PROPAGATOR: multimass propagator calculation" << endl;
+    QDPIO::cout << "MULTI_PROPAGATOR: multimass propagator calculation" << std::endl;
 
     // Write out the input
     params.write(xml_out, "Input");
@@ -260,19 +260,19 @@ namespace Chroma
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlineMultiPropagatorEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMultiPropagatorEnv::name << ": error message: " << e << endl;
+      QDPIO::cerr << InlineMultiPropagatorEnv::name << ": error message: " << e << std::endl;
       QDP_abort(1);
     }
 
     // Sanity check
     if (seqsourceP) {
-      QDPIO::cerr << "Sequential propagator not supportd under multi-mass " << endl;
-      QDPIO::cerr << "since source is not mass independent " << endl;
+      QDPIO::cerr << "Sequential propagator not supportd under multi-mass " << std::endl;
+      QDPIO::cerr << "since source is not mass independent " << std::endl;
       QDP_abort(1);      
     }
 
@@ -302,27 +302,27 @@ namespace Chroma
     //
     std::istringstream  xml_s(params.param.fermact.xml);
     XMLReader  fermacttop(xml_s);
-    QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
+    QDPIO::cout << "FermAct = " << params.param.fermact.id << std::endl;
 
 
     // Deal with auxiliary (and polymorphic) state information
     // eigenvectors, eigenvalues etc. The XML for this should be
-    // stored as a string called "stateInfo" in the param struct.
+    // stored as a std::string called "stateInfo" in the param struct.
 
     // Make a reader for the stateInfo
-    QDPIO::cout << "State info is " << params.stateInfo << endl;
+    QDPIO::cout << "State info is " << params.stateInfo << std::endl;
     std::istringstream state_info_is(params.stateInfo);
 
 
 
     XMLReader state_info_xml(state_info_is);
-    string state_info_path="/StateInfo";
+    std::string state_info_path="/StateInfo";
 
     //
     // Try the factories
     //
     try {
-      QDPIO::cout << "Try the various factories" << endl;
+      QDPIO::cout << "Try the various factories" << std::endl;
 
       // Typedefs to save typing
       typedef LatticeFermion               T;
@@ -343,7 +343,7 @@ namespace Chroma
 							state_info_xml,
 							state_info_path));  // uses phase-multiplied u-fields
       
-      QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
+      QDPIO::cout << "Suitable factory found: compute the quark prop" << std::endl;
       
       S_ov.multiQuarkProp(quark_propagator, 
 			  xml_out, 
@@ -355,10 +355,10 @@ namespace Chroma
 			  ncg_had);
     }
     catch (const std::string& e) {
-      QDPIO::cout << "4D: " << e << endl;
+      QDPIO::cout << "4D: " << e << std::endl;
     }
-    catch(bad_cast) { 
-      QDPIO::cerr << "Fermion action created cannot be used for multi mass qprop" << endl;
+    catch(std::bad_cast) { 
+      QDPIO::cerr << "Fermion action created cannot be used for multi mass qprop" << std::endl;
       QDP_abort(1);
     }
 
@@ -423,7 +423,7 @@ namespace Chroma
 	  fermact_reader.set<QDP::Real>("/FermionAction/Mass", params.param.MultiMasses[m]);
 	}
 	catch(const std::string& e) {
-	  QDPIO::cerr << "Caught exception processing XML: " << e << endl;
+	  QDPIO::cerr << "Caught exception processing XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -433,7 +433,7 @@ namespace Chroma
 	out_param.fermact = readXMLGroup(xml_read, "FermionAction", "FermAct");
 
 	// print to debug
-	QDPIO::cout << "Modified fermact is: " << out_param.fermact.xml << endl << flush;
+	QDPIO::cout << "Modified fermact is: " << out_param.fermact.xml << std::endl << std::flush;
 
 //	out_param.invParam.invType = params.param.invParam.invType;
 //	out_param.invParam.MROver = params.param.invParam.MROver;
@@ -446,10 +446,10 @@ namespace Chroma
 	record_xml << xml_tmp;
 	pop(record_xml);
       
-	ostringstream outfile;
-	outfile << params.named_obj.prop_id << "_" << setw(3) << setfill('0') << m;
+	std::ostringstream outfile;
+	outfile << params.named_obj.prop_id << "_" << std::setw(3) << std::setfill('0') << m;
 
-	QDPIO::cout << "Attempting to save " << outfile.str() << endl;
+	QDPIO::cout << "Attempting to save " << outfile.str() << std::endl;
       
 	// Create the space
 	TheNamedObjMap::Instance().create<LatticePropagator>(outfile.str());
@@ -463,12 +463,12 @@ namespace Chroma
       catch (std::bad_cast)
       {
 	QDPIO::cerr << InlineMultiPropagatorEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineMultiPropagatorEnv::name << ": error extracting prop_header: " << e << endl;
+	QDPIO::cerr << InlineMultiPropagatorEnv::name << ": error extracting prop_header: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -479,9 +479,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineMultiPropagatorEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineMultiPropagatorEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineMultiPropagatorEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

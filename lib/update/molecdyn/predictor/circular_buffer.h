@@ -295,7 +295,7 @@ namespace Chroma
       START_CODE();
 
       if( e.size() != N5) { 
-	throw SizeMismatchException("Attempting to push vector of wrong size into circular buffer", N5, e.size());
+	throw SizeMismatchException("Attempting to push std::vector of wrong size into circular buffer", N5, e.size());
       }
 
       if( size_internal == 0 ) { 

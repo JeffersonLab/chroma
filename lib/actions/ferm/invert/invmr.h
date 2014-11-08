@@ -28,7 +28,7 @@ namespace Chroma
    *  FOR k FROM 1 TO MaxCG DO                    MR iterations
    *      a[k-1]  := <M.r[k-1],r[k-1]> / <M.r[k-1],M.r[k-1]> ;
    *      ap[k-1] := MRovpar * a[k] ;             Overrelaxtion step
-   *      Psi[k]  += ap[k-1] r[k-1] ;             New solution vector
+   *      Psi[k]  += ap[k-1] r[k-1] ;             New solution std::vector
    *      r[k]    -= ap[k-1] A . r[k-1] ;         New residual
    *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;   Converged?
 
@@ -43,7 +43,7 @@ namespace Chroma
 
    * Local Variables:
 
-   *  r   	Residual vector
+   *  r   	Residual std::vector
    *  cp  	| r[k] |**2
    *  c   	| r[k-1] |**2
    *  k   	MR iteration counter
@@ -59,7 +59,7 @@ namespace Chroma
    *
    * Subroutines:
    *
-   *  M           Apply matrix to vector
+   *  M           Apply matrix to std::vector
    *
    * @{
    */

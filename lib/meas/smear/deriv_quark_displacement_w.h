@@ -910,20 +910,20 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, DerivQuarkDisplacementEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, DerivQuarkDisplacementEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const DerivQuarkDisplacementEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const DerivQuarkDisplacementEnv::Params& param);
 
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, DerivQuarkDisplacementEnv::ParamsDir& param);
+  void read(XMLReader& xml, const std::string& path, DerivQuarkDisplacementEnv::ParamsDir& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const DerivQuarkDisplacementEnv::ParamsDir& param);
+  void write(XMLWriter& xml, const std::string& path, const DerivQuarkDisplacementEnv::ParamsDir& param);
 
 
 }  // end namespace Chroma

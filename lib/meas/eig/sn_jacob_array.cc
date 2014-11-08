@@ -13,7 +13,7 @@ namespace Chroma {
  * \ingroup eig
  *
  * This subroutine contains a "single node" Jacobi routine
- * to be used with the Ritz functional eigenvialue/vector finder.
+ * to be used with the Ritz functional eigenvialue/std::vector finder.
  *
  *
  *  Psi		Eigenvectors			(Modify)
@@ -195,7 +195,7 @@ int SN_Jacob_Array_t(multi2d<T>& psi,
     if( i_rot == 0 ) 
     {
       n_count = k;
-      QDPIO::cout << "Jacobi converged after " << k << " iters" << endl;
+      QDPIO::cout << "Jacobi converged after " << k << " iters" << std::endl;
       
       // Sort the eigenvalues
       // In order of increasing modulus

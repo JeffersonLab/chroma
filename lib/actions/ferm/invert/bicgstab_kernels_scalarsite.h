@@ -54,7 +54,7 @@ namespace Chroma {
 	}
       }
       else { 
-	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	QDP_abort(1);
       }
 
@@ -84,7 +84,7 @@ namespace Chroma {
 		     LatticeDiracFermionF& z, 
 		     const ComplexF& a, const ComplexF& b, const Subset& s)
     {
-      //QDPIO::cout << "Using optimized yxpaymabz" << endl;
+      //QDPIO::cout << "Using optimized yxpaymabz" << std::endl;
 
       if( s.hasOrderedRep() ) { 
 	REAL32* x_ptr = (REAL32*)&(x.elem(s.start()).elem(0).elem(0).real());
@@ -100,7 +100,7 @@ namespace Chroma {
 	dispatch_to_threads(len,arg,ord_yxpaymabz_kernel);
       }
       else {
-	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -143,7 +143,7 @@ namespace Chroma {
 	  }
 	}
 	else { 
-	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -195,7 +195,7 @@ namespace Chroma {
 	dispatch_to_threads(len,arg, ord_xpaypbz_kernel);
       }
       else {
-	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	QDP_abort(1);
       }
       
@@ -253,7 +253,7 @@ namespace Chroma {
 
       }
       else {
-	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	QDP_abort(1);
       }
 
@@ -298,7 +298,7 @@ namespace Chroma {
 	dispatch_to_threads(len,arg, ord_cxmayf_kernel);
       }
       else {
-	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	QDP_abort(1);
       }
       
@@ -384,7 +384,7 @@ namespace Chroma {
 	  dispatch_to_threads(len,arg, ord_ib_zvupdates_kernel_real32);
       }
       else {
-	QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	QDP_abort(1);
       }
       
@@ -439,7 +439,7 @@ namespace Chroma {
 	  dispatch_to_threads(len,arg, ord_ib_zvupdates_kernel_real64);
 	}
 	else {
-	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -490,7 +490,7 @@ namespace Chroma {
 	  dispatch_to_threads(len,arg, ord_ib_rxupdate_kernel_real32);
 	}
 	else {
-	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -525,7 +525,7 @@ namespace Chroma {
 	  dispatch_to_threads(len,arg, ord_ib_rxupdate_kernel_real64);
 	}
 	else {
-	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -634,7 +634,7 @@ namespace Chroma {
 
 	}
 	else {
-	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -724,7 +724,7 @@ namespace Chroma {
 
 	}
 	else {
-	  QDPIO::cerr << "I only work for ordered subsets for now" << endl;
+	  QDPIO::cerr << "I only work for ordered subsets for now" << std::endl;
 	  QDP_abort(1);
 	}
 

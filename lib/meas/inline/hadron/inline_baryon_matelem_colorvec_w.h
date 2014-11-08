@@ -2,7 +2,7 @@
 // $Id: inline_baryon_matelem_colorvec_w.h,v 3.3 2009-09-14 21:06:21 edwards Exp $
 /*! \file
  * \brief Inline measurement of baryon
- operators via colorvector matrix elements
+ operators via colorstd::vector matrix elements
  */
 
 #ifndef __inline_baryon_matelem_colorvec_h__
@@ -63,7 +63,7 @@ namespace Chroma
     };
 
 
-    //! Inline measurement of baryon operators via colorvector matrix elements
+    //! Inline measurement of baryon operators via colorstd::vector matrix elements
     /*! \ingroup inlinehadron */
     class InlineMeas : public AbsInlineMeasurement 
     {

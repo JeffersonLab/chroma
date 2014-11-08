@@ -41,7 +41,7 @@ namespace Chroma
 
     if (r.size() != 4)
     {
-      QDPIO::cerr << "su2Extract: return result invalid size" << endl;
+      QDPIO::cerr << "su2Extract: return result invalid size" << std::endl;
       QDP_abort(1);
     }
 
@@ -69,7 +69,7 @@ namespace Chroma
 
     if ( found == 0 )
     {
-      QDPIO::cerr << __func__ << ": trouble with SU2 subgroup index" << endl;
+      QDPIO::cerr << __func__ << ": trouble with SU2 subgroup index" << std::endl;
       QDP_abort(1);
     }
 

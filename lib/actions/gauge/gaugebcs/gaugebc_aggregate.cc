@@ -62,7 +62,7 @@ namespace Chroma
       }
       else
       {
-	QDPIO::cerr << "Error: GaugeBC group not found" << endl;
+	QDPIO::cerr << "Error: GaugeBC group not found" << std::endl;
 	QDP_abort(1);
       }
 

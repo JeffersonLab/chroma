@@ -139,19 +139,19 @@ namespace Chroma {
                                  LatticeStaggeredFermion & q_source_in) ;
 
 
-  void ks_compute_baryon(string name,
+  void ks_compute_baryon(std::string name,
 			 LatticeStaggeredPropagator & quark_propagator,
 			 XMLWriter & xml_out,
 			 int j_decay, int tlength) ; 
 
-  void ks_compute_baryon(string name,
+  void ks_compute_baryon(std::string name,
 			 LatticeStaggeredPropagator & quark_propagator_a,
 			 LatticeStaggeredPropagator & quark_propagator_b,
 			 LatticeStaggeredPropagator & quark_propagator_c,
 			 XMLWriter & xml_out,
 			 int j_decay, int tlength);
 
-  void ks_compute_baryon(string name,
+  void ks_compute_baryon(std::string name,
                          LatticeStaggeredPropagator & quark_propagator_a,
                          LatticeStaggeredPropagator & quark_propagator_b,
                          LatticeStaggeredPropagator & quark_propagator_c,
@@ -160,7 +160,7 @@ namespace Chroma {
                          bool binary_baryon_dump, std::string binary_name);
 
 
-  void write_smearing_info(string name, stag_src_type type_of_src,
+  void write_smearing_info(std::string name, stag_src_type type_of_src,
 			   XMLWriter &xml_out, int fuzz_width ) ;
 
 
@@ -205,19 +205,19 @@ namespace Chroma {
 			 int j_decay, int t_source, int t_length);
 
   int compute_vary_singlet_ps(LatticeStaggeredFermion & psi,
-       	           LatticeStaggeredPropagator & quark_propagator_Lsink_Lsrc,
-	       	   LatticeStaggeredPropagator & quark_propagator_Fsink_Lsrc,
-		   LatticeStaggeredPropagator & quark_propagator_Lsink_Fsrc,
-		   LatticeStaggeredPropagator & quark_propagator_Fsink_Fsrc,
-		   stag_src_type type_of_src,
-		   bool gauge_shift,
-		   bool sym_shift,
-		   const multi1d<LatticeColorMatrix> & u ,
-		   const multi1d<LatticeColorMatrix> & u_smr ,
-		   Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
-		   XMLWriter & xml_out,
-		   Real RsdCG, Real Mass, 
-		   int j_decay, int t_source, int t_length, 
+			      LatticeStaggeredPropagator & quark_propagator_Lsink_Lsrc,
+			      LatticeStaggeredPropagator & quark_propagator_Fsink_Lsrc,
+			      LatticeStaggeredPropagator & quark_propagator_Lsink_Fsrc,
+			      LatticeStaggeredPropagator & quark_propagator_Fsink_Fsrc,
+			      stag_src_type type_of_src,
+			      bool gauge_shift,
+			      bool sym_shift,
+			      const multi1d<LatticeColorMatrix> & u ,
+			      const multi1d<LatticeColorMatrix> & u_smr ,
+			      Handle< SystemSolver<LatticeStaggeredFermion> > & qprop,
+			      XMLWriter & xml_out,
+			      Real RsdCG, Real Mass, 
+			      int j_decay, int t_source, int t_length, 
 			      int fuzz_width);
 
 }
@@ -228,7 +228,7 @@ namespace Chroma {
 
 namespace Chroma { 
 
-/***************************************************************************/
+  /***************************************************************************/
 
   namespace InlineStaggeredSpectrumEnv 
   { 
@@ -259,11 +259,11 @@ namespace Chroma {
     }
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path,
+  void read(XMLReader& xml, const std::string& path,
 	    InlineStaggeredSpectrumParams::Param_t& param) 
   {
     XMLReader paramtop(xml, path);
@@ -281,15 +281,15 @@ namespace Chroma {
 
     param.Pion_nondegen_noisy_local2 = false ;
     if (paramtop.count("Pion_nondegen_noisy_local2") == 1)
-    read(paramtop, "Pion_nondegen_noisy_local2", param.Pion_nondegen_noisy_local2);
+      read(paramtop, "Pion_nondegen_noisy_local2", param.Pion_nondegen_noisy_local2);
 
     param.Pion_nondegen_noisy_local3 = false ;
     if (paramtop.count("Pion_nondegen_noisy_local3") == 1)
-    read(paramtop, "Pion_nondegen_noisy_local3", param.Pion_nondegen_noisy_local3);
+      read(paramtop, "Pion_nondegen_noisy_local3", param.Pion_nondegen_noisy_local3);
 
     param.Pion_nondegen_noisy_local4 = false ;
     if (paramtop.count("Pion_nondegen_noisy_local4") == 1)
-    read(paramtop, "Pion_nondegen_noisy_local4", param.Pion_nondegen_noisy_local4);
+      read(paramtop, "Pion_nondegen_noisy_local4", param.Pion_nondegen_noisy_local4);
 
 
 
@@ -301,9 +301,9 @@ namespace Chroma {
       read(paramtop, "LocalScalar_vary", param.LocalScalar_vary);
     }
     else
-      {
-	param.LocalScalar_vary = false ; 
-      }
+    {
+      param.LocalScalar_vary = false ; 
+    }
 
     read(paramtop, "disconnected_local", param.disconnected_local);
     read(paramtop, "disconnected_fuzz", param.disconnected_fuzz);
@@ -340,11 +340,11 @@ namespace Chroma {
            param.binary_baryon_dump) ;
     }
 
-      if( param.binary_loop_checkpoint || param.binary_baryon_dump  ||
-      param.binary_meson_dump )
-	{
-	  read(paramtop, "binary_name", param.binary_name) ;
-	}
+    if( param.binary_loop_checkpoint || param.binary_baryon_dump  ||
+	param.binary_meson_dump )
+    {
+      read(paramtop, "binary_name", param.binary_name) ;
+    }
 
 
 
@@ -373,7 +373,7 @@ namespace Chroma {
     }
 
 
-//    if(( param.disconnected_local )||(param.disconnected_fuzz)){
+    //    if(( param.disconnected_local )||(param.disconnected_fuzz)){
 
     if(( param.disconnected_local )||(param.disconnected_fuzz) || param.Meson_charm_noisy_local || param.Pion_nondegen_noisy_local   ){
 
@@ -397,11 +397,11 @@ namespace Chroma {
     }
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const InlineStaggeredSpectrumParams::Param_t& param) {
     push(xml, path);
 
@@ -429,10 +429,10 @@ namespace Chroma {
     pop(xml);
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
   //! Propagator generation params input
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    InlineStaggeredSpectrumParams::Quark_Prop_t& input) {
     XMLReader inputtop(xml, path);
 
@@ -451,34 +451,34 @@ namespace Chroma {
 
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const InlineStaggeredSpectrumParams::Quark_Prop_t& input) {
     push(xml, path);
     write(xml, "Mass", input.Mass);
-//    write(xml,"Inverter",input.invParam.invType);
+    //    write(xml,"Inverter",input.invParam.invType);
     write(xml,"RsdCG", input.invParam.RsdCG);
     write(xml,"MaxCG", input.invParam.MaxCG);
     pop(xml);
   }
 
 
-/***************************************************************************/
+  /***************************************************************************/
   //! Named object input
-  void read(XMLReader& xml, const string& path, InlineStaggeredSpectrumParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStaggeredSpectrumParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
     read(inputtop, "gauge_id", input.gauge_id);
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
   //! Named object output
-  void write(XMLWriter& xml, const string& path, const InlineStaggeredSpectrumParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStaggeredSpectrumParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -487,7 +487,7 @@ namespace Chroma {
     pop(xml);
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
   // Param stuff
   InlineStaggeredSpectrumParams::InlineStaggeredSpectrumParams()
@@ -495,7 +495,7 @@ namespace Chroma {
     frequency = 0; 
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
   InlineStaggeredSpectrumParams::InlineStaggeredSpectrumParams(XMLReader& xml_in, 
 							       const std::string& path) {
@@ -522,12 +522,12 @@ namespace Chroma {
 	read(paramtop, "xml_file", xml_file);
       }
     } catch(const std::string& e) {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
   void
   InlineStaggeredSpectrumParams::write(XMLWriter& xml_out, 
@@ -542,7 +542,7 @@ namespace Chroma {
     pop(xml_out);
   }
 
-/***************************************************************************/
+  /***************************************************************************/
 
 
   int
@@ -595,7 +595,7 @@ namespace Chroma {
     return ncg_had;
 
   }
-/***************************************************************************/
+  /***************************************************************************/
 
   // no fuzzing version
   int
@@ -645,7 +645,7 @@ namespace Chroma {
     return ncg_had;
   }
 
-/***************************************************************************/
+  /***************************************************************************/
   int
   MakeFuzzedCornerProp(LatticeStaggeredFermion & psi,
 		       int fuzz_width,
@@ -663,12 +663,12 @@ namespace Chroma {
 		       LatticeStaggeredPropagator &quark_propagator_Fsink_Lsrc,
 		       LatticeStaggeredPropagator &quark_propagator_Lsink_Fsrc,
 		       LatticeStaggeredPropagator &quark_propagator_Fsink_Fsrc
-    ){
+		       ){
 
     //    stag_src_type type_of_src = LOCAL_SRC ;
     stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE;
 
-    QDPIO::cout << "LOCAL INVERSIONS"  << endl;
+    QDPIO::cout << "LOCAL INVERSIONS"  << std::endl;
     int ncg_had = 0 ;
 
     for(int color_source = 0; color_source < Nc; ++color_source){
@@ -700,7 +700,7 @@ namespace Chroma {
     if( do_fuzzing ){
       type_of_src = FUZZED_SRC ;
 
-      QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << endl;
+      QDPIO::cout << "FUZZED SOURCE INVERSIONS"  << std::endl;
 
       for(int color_source = 0; color_source < Nc; ++color_source) {
 	psi = zero;            // note this is ``zero'' and not 0
@@ -731,8 +731,8 @@ namespace Chroma {
 
     return ncg_had;
   }
-/***************************************************************************/
-   int
+  /***************************************************************************/
+  int
   MakeCornerProp(LatticeStaggeredFermion & psi,
 		 bool gauge_shift, bool sym_shift,
 		 const multi1d<LatticeColorMatrix> & u ,
@@ -746,7 +746,7 @@ namespace Chroma {
     //    stag_src_type type_of_src = LOCAL_SRC ;
     //    stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE;
 
-     //    QDPIO::cout << "LOCAL INVERSIONS"  << endl;
+    //    QDPIO::cout << "LOCAL INVERSIONS"  << std::endl;
     int ncg_had = 0 ;
 
     for(int color_source = 0; color_source < Nc; ++color_source){
@@ -773,7 +773,7 @@ namespace Chroma {
 
 
 
-   int
+  int
   MakeCornerProp(LatticeStaggeredFermion & psi,
 		 bool gauge_shift, bool sym_shift,
 		 const multi1d<LatticeColorMatrix> & u ,
@@ -787,10 +787,10 @@ namespace Chroma {
 
     //    stag_src_type type_of_src = LOCAL_SRC ;
     //    stag_src_type type_of_src = GAUGE_INVAR_LOCAL_SOURCE;
-       LatticeStaggeredFermion q_source ;
+    LatticeStaggeredFermion q_source ;
 
 
-     //    QDPIO::cout << "LOCAL INVERSIONS"  << endl;
+    //    QDPIO::cout << "LOCAL INVERSIONS"  << std::endl;
     int ncg_had = 0 ;
 
     for(int color_source = 0; color_source < Nc; ++color_source){
@@ -824,7 +824,7 @@ namespace Chroma {
 
 
 
-   int
+  int
   MakeCornerProp(LatticeStaggeredFermion & psi_1,
 		 bool gauge_shift, bool sym_shift,
 		 const multi1d<LatticeColorMatrix> & u ,
@@ -837,7 +837,7 @@ namespace Chroma {
 		 LatticeStaggeredPropagator &quark_propagator_Lsink_Lsrc_2,
 		 stag_src_type type_of_src, int t_source = 0  ){
 
-     LatticeStaggeredFermion psi_2 ; 
+    LatticeStaggeredFermion psi_2 ; 
     int ncg_had = 0 ;
 
     for(int color_source = 0; color_source < Nc; ++color_source){
@@ -865,12 +865,12 @@ namespace Chroma {
   }
 
 
-/*  Also store the random source for additional inversions
+  /*  Also store the random source for additional inversions
 
 
-*/
+   */
 
-   int
+  int
   MakeCornerProp(LatticeStaggeredFermion & psi_1,
 		 bool gauge_shift, bool sym_shift,
 		 const multi1d<LatticeColorMatrix> & u ,
@@ -884,8 +884,8 @@ namespace Chroma {
 		 stag_src_type type_of_src, int t_source, 
 		 LatticeStaggeredPropagator &qsource_out  ){
 
-     LatticeStaggeredFermion psi_2 ; 
-     LatticeStaggeredFermion q_source ; 
+    LatticeStaggeredFermion psi_2 ; 
+    LatticeStaggeredFermion q_source ; 
 
 
     int ncg_had = 0 ;
@@ -924,14 +924,14 @@ namespace Chroma {
 
 
 
-/***************************************************************************/
+  /***************************************************************************/
 
   void
   DoFuzzing(const multi1d<LatticeColorMatrix> & u,
 	    multi1d<LatticeColorMatrix> & u_smr,
 	    int j_decay){
 
-    QDPIO::cout << "Starting to APE smear the gauge configuration" << endl;
+    QDPIO::cout << "Starting to APE smear the gauge configuration" << std::endl;
   
     Real sm_fact = 2.5;   // typical parameter
     int sm_numb = 10;     // number of smearing hits
@@ -959,7 +959,7 @@ namespace Chroma {
   }
 
 
-/***************************************************************************/
+  /***************************************************************************/
 
   // Function call
   void 
@@ -967,7 +967,7 @@ namespace Chroma {
 				      XMLWriter& xml_out) {
     // If xml file not empty, then use alternate
     if (params.xml_file != ""){
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "spectrum_s");
       write(xml_out, "update_no", update_no);
@@ -991,43 +991,43 @@ namespace Chroma {
 		   const multi1d<LatticeColorMatrix> & u,
 		   int  t_source, int j_decay, int t_length)
   {
-  push(xml_out, "local_meson_charm_correlators");
+    push(xml_out, "local_meson_charm_correlators");
 
-  // local pseudoscalar pion
-  staggered_local_pion pion(t_length,u) ;
-  pion.compute(quark_prop,quark_prop,j_decay) ;
-  pion.dump(t_source,xml_out) ;
+    // local pseudoscalar pion
+    staggered_local_pion pion(t_length,u) ;
+    pion.compute(quark_prop,quark_prop,j_decay) ;
+    pion.dump(t_source,xml_out) ;
 
-  bool avg_equiv_mom = true ;
-  int mom2_max = 2 ; 
-  // non-zero momentum
-  multi1d<int> tsrc(4) ; 
-  tsrc[0] =  tsrc[1] =  tsrc[2] =  tsrc[3] =  0 ; 
-  tsrc[j_decay] = t_source ;
+    bool avg_equiv_mom = true ;
+    int mom2_max = 2 ; 
+    // non-zero momentum
+    multi1d<int> tsrc(4) ; 
+    tsrc[0] =  tsrc[1] =  tsrc[2] =  tsrc[3] =  0 ; 
+    tsrc[j_decay] = t_source ;
 
-  SftMom phases(mom2_max, tsrc, avg_equiv_mom,j_decay);
+    SftMom phases(mom2_max, tsrc, avg_equiv_mom,j_decay);
 
 
-  pion.compute_and_dump(quark_prop,quark_prop,j_decay,t_source,
-	       phases,xml_out) ;
+    pion.compute_and_dump(quark_prop,quark_prop,j_decay,t_source,
+			  phases,xml_out) ;
 
-  // ( gamma_4 gamma_5 cross gamma_4 gamma_5 ) pion
-  g4g5_x_g4g5_local_meson pion_g4g5(t_length,u)  ;  
-  pion_g4g5.compute(quark_prop,quark_prop,j_decay) ;
-  pion_g4g5.dump(t_source,xml_out) ;
+    // ( gamma_4 gamma_5 cross gamma_4 gamma_5 ) pion
+    g4g5_x_g4g5_local_meson pion_g4g5(t_length,u)  ;  
+    pion_g4g5.compute(quark_prop,quark_prop,j_decay) ;
+    pion_g4g5.dump(t_source,xml_out) ;
 
-  // vector mesons
-  vector_meson vector(t_length,  u) ;
-  vector.compute(quark_prop,j_decay);
-  vector.dump(t_source,xml_out);
+    // Vector mesons
+    vector_meson Vector(t_length,  u) ;
+    Vector.compute(quark_prop,j_decay);
+    Vector.dump(t_source,xml_out);
 
-  pop(xml_out);
+    pop(xml_out);
 
-}
+  }
 
 
   /**
-    Non-degenerate noisy heavy-light pseudoscalars
+     Non-degenerate noisy heavy-light pseudoscalars
 
   **/
 
@@ -1039,43 +1039,43 @@ namespace Chroma {
 			   const multi1d<LatticeColorMatrix> & u,
 			   int  t_source, int j_decay, int t_length)
   {
-  push(xml_out, "non_degenerate_noisy_pseudoscalar_correlators");
+    push(xml_out, "non_degenerate_noisy_pseudoscalar_correlators");
 
-  // local pseudoscalar pion
-  push(xml_out, "meson_11");
-  write(xml_out,"Mass",Mass1); 
-  staggered_local_pion pion_1(t_length,u) ;
-  pion_1.compute(quark_prop_1,quark_prop_1,j_decay) ;
-  pion_1.dump(t_source,xml_out) ;
-  pop(xml_out);
+    // local pseudoscalar pion
+    push(xml_out, "meson_11");
+    write(xml_out,"Mass",Mass1); 
+    staggered_local_pion pion_1(t_length,u) ;
+    pion_1.compute(quark_prop_1,quark_prop_1,j_decay) ;
+    pion_1.dump(t_source,xml_out) ;
+    pop(xml_out);
 
-  push(xml_out, "meson_22");
-  write(xml_out,"Mass",Mass2); 
-  staggered_local_pion pion_2(t_length,u) ;
-  pion_2.compute(quark_prop_2,quark_prop_2,j_decay) ;
-  pion_2.dump(t_source,xml_out) ;
-  pop(xml_out);
+    push(xml_out, "meson_22");
+    write(xml_out,"Mass",Mass2); 
+    staggered_local_pion pion_2(t_length,u) ;
+    pion_2.compute(quark_prop_2,quark_prop_2,j_decay) ;
+    pion_2.dump(t_source,xml_out) ;
+    pop(xml_out);
 
-  push(xml_out, "meson_12");
-  write(xml_out,"Mass1",Mass1); 
-  write(xml_out,"Mass2",Mass2); 
-  staggered_local_pion pion_12(t_length,u) ;
-  pion_12.compute(quark_prop_1,quark_prop_2,j_decay) ;
-  pion_12.dump(t_source,xml_out) ;
-  pop(xml_out);
-
-
-  //-----------------------
-  pop(xml_out);
-
-}
+    push(xml_out, "meson_12");
+    write(xml_out,"Mass1",Mass1); 
+    write(xml_out,"Mass2",Mass2); 
+    staggered_local_pion pion_12(t_length,u) ;
+    pion_12.compute(quark_prop_1,quark_prop_2,j_decay) ;
+    pion_12.dump(t_source,xml_out) ;
+    pop(xml_out);
 
 
+    //-----------------------
+    pop(xml_out);
+
+  }
 
 
 
 
-/***************************************************************************/
+
+
+  /***************************************************************************/
 
   // Real work done here
   void 
@@ -1098,21 +1098,21 @@ namespace Chroma {
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineStaggeredSpectrumEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineStaggeredSpectrumEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineStaggeredSpectrumEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
       TheNamedObjMap::Instance().getData< multi1d<LatticeColorMatrix> >(params.named_obj.gauge_id);
 
     QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": Spectroscopy for Staggered-like fermions" 
-		<< endl;
-    QDPIO::cout << "Gauge group: SU(" << Nc << ")" << endl;
+		<< std::endl;
+    QDPIO::cout << "Gauge group: SU(" << Nc << ")" << std::endl;
 
     push(xml_out, "spectrum_s");
     write(xml_out, "update_no", update_no);
@@ -1220,7 +1220,7 @@ namespace Chroma {
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << params.param.nrow[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -1271,15 +1271,15 @@ namespace Chroma {
       fermact_reader.open(is);
     }
     catch (...)
-      {
-	QDPIO::cerr << "Error reading action name " << endl;
-	throw;
-      }
+    {
+      QDPIO::cerr << "Error reading action name " << std::endl;
+      throw;
+    }
 
     Handle< StaggeredTypeFermAct< T,P,Q> > fermact(
-TheStagTypeFermActFactory::Instance().createObject(params.param.fermact.id, 
-fermact_reader, 
-params.param.fermact.path));
+						   TheStagTypeFermActFactory::Instance().createObject(params.param.fermact.id, 
+												      fermact_reader, 
+												      params.param.fermact.path));
     // Cast of a pointer to a reference?
     StaggeredTypeFermAct<T,P,Q>& S_f= *(fermact);
 
@@ -1313,11 +1313,11 @@ params.param.fermact.path));
 
 
     if( Wilson_loops ) 
-      {
-	//	push(xml_out, "Wilson_loops") ;
-        Wloop(xml_out,"Wilson_loops", u) ;
-	//  pop(xml_out);
-      }
+    {
+      //	push(xml_out, "Wilson_loops") ;
+      Wloop(xml_out,"Wilson_loops", u) ;
+      //  pop(xml_out);
+    }
 
 
 
@@ -1336,7 +1336,7 @@ params.param.fermact.path));
 				    volume_source, src_seperation, j_decay);
       swatch.stop();
       double time_in_sec  = swatch.getTimeInSeconds();
-      QDPIO::cout << "PROF1:ks_local_loops_and_stoch_conn" << time_in_sec << " sec" << endl;
+      QDPIO::cout << "PROF1:ks_local_loops_and_stoch_conn" << time_in_sec << " sec" << std::endl;
 
       pop(xml_out);
 
@@ -1357,7 +1357,7 @@ params.param.fermact.path));
 
       swatch.stop();
       double time_in_sec  = swatch.getTimeInSeconds();
-      QDPIO::cout << "PROF2:ks_local_loops " << time_in_sec << " sec" << endl;
+      QDPIO::cout << "PROF2:ks_local_loops " << time_in_sec << " sec" << std::endl;
 
       done_local_disc_loops = true;
 
@@ -1378,7 +1378,7 @@ params.param.fermact.path));
 				     Mass, j_decay);
       swatch.stop();
       double time_in_sec  = swatch.getTimeInSeconds();
-      QDPIO::cout << "PROF3:build_basic_8_props " << time_in_sec << " sec" << endl;
+      QDPIO::cout << "PROF3:build_basic_8_props " << time_in_sec << " sec" << std::endl;
 
 
       // put the spectrum calls here 
@@ -1394,7 +1394,7 @@ params.param.fermact.path));
 
 	swatch.stop();
 	double time_in_sec  = swatch.getTimeInSeconds();
-	QDPIO::cout << "PROF4:compute_8_pions " << time_in_sec << " sec" << endl;
+	QDPIO::cout << "PROF4:compute_8_pions " << time_in_sec << " sec" << std::endl;
 
       }
       if(do_8_scalars){
@@ -1406,7 +1406,7 @@ params.param.fermact.path));
 	
       }
       if(do_8_rhos){
-	// do vector stuff
+	// do Vector stuff
 	compute_8_vectors( stag_prop, u,  gauge_shift, sym_shift,
 			   xml_out, j_decay, t_length, t_source,
 			   params.param.binary_meson_dump,
@@ -1433,7 +1433,7 @@ params.param.fermact.path));
 	done_ps4_singlet = true;
 	swatch.stop();
 	double time_in_sec  = swatch.getTimeInSeconds();
-	QDPIO::cout << "PROF5:compute_singlet_ps " << time_in_sec << " sec" << endl;
+	QDPIO::cout << "PROF5:compute_singlet_ps " << time_in_sec << " sec" << std::endl;
 
 
       }
@@ -1444,14 +1444,14 @@ params.param.fermact.path));
 	push(xml_out, "baryon_correlators");
 
 	// describe the source
-	string NN ;
+	std::string NN ;
 	write(xml_out, "source_time", t_source);
 	push(xml_out, "smearing_info");
 	NN = "L" ;
 	write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
 	pop(xml_out);
-	string b_tag("srcLLL_sinkLLL_nucleon") ;
-	string b_filename(params.param.binary_name+b_tag);
+	std::string b_tag("srcLLL_sinkLLL_nucleon") ;
+	std::string b_filename(params.param.binary_name+b_tag);
 	ks_compute_baryon(b_tag,stag_prop[0],stag_prop[0],stag_prop[0],
 			  xml_out, j_decay, t_length,
 			  params.param.binary_baryon_dump,b_filename) ;
@@ -1480,7 +1480,7 @@ params.param.fermact.path));
 	DoFuzzing(u, u_smr, j_decay);
 	swatch.stop();
 	double time_in_sec  = swatch.getTimeInSeconds();
-	QDPIO::cout << "PROF6: DoFuzzing " << time_in_sec << " sec" << endl;
+	QDPIO::cout << "PROF6: DoFuzzing " << time_in_sec << " sec" << std::endl;
       }
 
       if ( do_variational_spectra ){
@@ -1496,53 +1496,53 @@ params.param.fermact.path));
 	  swatch.start();
 
 	  ncg_had+=  MakeFuzzedCornerProp(psi, fuzz_width, gauge_shift, 
-					sym_shift, u, u_smr, qprop, 
-					xml_out, RsdCG, Mass, j_decay,
-					do_fuzzing, psi_fuzz,
-					quark_propagator_Lsink_Lsrc,
-					quark_propagator_Fsink_Lsrc,
-					quark_propagator_Lsink_Fsrc,
-					quark_propagator_Fsink_Fsrc );
+					  sym_shift, u, u_smr, qprop, 
+					  xml_out, RsdCG, Mass, j_decay,
+					  do_fuzzing, psi_fuzz,
+					  quark_propagator_Lsink_Lsrc,
+					  quark_propagator_Fsink_Lsrc,
+					  quark_propagator_Lsink_Fsrc,
+					  quark_propagator_Fsink_Fsrc );
 	  swatch.stop();
 	  double time_in_sec  = swatch.getTimeInSeconds();
-	  QDPIO::cout << "PROF7:MakeFuzzedCornerProp " << time_in_sec << " sec" << endl;
+	  QDPIO::cout << "PROF7:MakeFuzzedCornerProp " << time_in_sec << " sec" << std::endl;
 
 	}
 
 
-	  {
+	{
 
-	    //testing crap
-	    DComplex productLL;
-	    DComplex productLF;
-	    DComplex productFL;
-	    DComplex productFF;
+	  //testing crap
+	  DComplex productLL;
+	  DComplex productLF;
+	  DComplex productFL;
+	  DComplex productFF;
 
-	    LatticeComplex test_corr_fnLL;
-	    LatticeComplex test_corr_fnLF;
-	    LatticeComplex test_corr_fnFL;
-	    LatticeComplex test_corr_fnFF;
+	  LatticeComplex test_corr_fnLL;
+	  LatticeComplex test_corr_fnLF;
+	  LatticeComplex test_corr_fnFL;
+	  LatticeComplex test_corr_fnFF;
 
-	    test_corr_fnLL = trace(adj(quark_propagator_Lsink_Lsrc)
+	  test_corr_fnLL = trace(adj(quark_propagator_Lsink_Lsrc)
 				 *quark_propagator_Lsink_Lsrc);
-	    test_corr_fnFL = trace(adj(quark_propagator_Fsink_Lsrc)
+	  test_corr_fnFL = trace(adj(quark_propagator_Fsink_Lsrc)
 				 *quark_propagator_Fsink_Lsrc);
-	    test_corr_fnLF = trace(adj(quark_propagator_Lsink_Fsrc)
+	  test_corr_fnLF = trace(adj(quark_propagator_Lsink_Fsrc)
 				 *quark_propagator_Lsink_Fsrc);
-	    test_corr_fnFF = trace(adj(quark_propagator_Fsink_Fsrc)
+	  test_corr_fnFF = trace(adj(quark_propagator_Fsink_Fsrc)
 				 *quark_propagator_Fsink_Fsrc);
 
-	    productLL = sum(test_corr_fnLL);
-	    productFL = sum(test_corr_fnFL);
-	    productLF = sum(test_corr_fnLF);
-	    productFF = sum(test_corr_fnFF);
+	  productLL = sum(test_corr_fnLL);
+	  productFL = sum(test_corr_fnFL);
+	  productLF = sum(test_corr_fnLF);
+	  productFF = sum(test_corr_fnFF);
 
-	    QDPIO::cout << "product of LL= " << productLL << std::endl; 
-	    QDPIO::cout << "product of FL= " << productFL << std::endl; 
-	    QDPIO::cout << "product of LF= " << productLF << std::endl; 
-	    QDPIO::cout << "product of FF= " << productFF << std::endl; 
-	    // one copy on output
-	  }
+	  QDPIO::cout << "product of LL= " << productLL << std::endl; 
+	  QDPIO::cout << "product of FL= " << productFL << std::endl; 
+	  QDPIO::cout << "product of LF= " << productLF << std::endl; 
+	  QDPIO::cout << "product of FF= " << productFF << std::endl; 
+	  // one copy on output
+	}
 
 
 
@@ -1578,12 +1578,12 @@ params.param.fermact.path));
 
 	if( do_LocalScalar_vary ) {
 	  compute_vary_scalar(quark_propagator_Lsink_Lsrc,
-			  quark_propagator_Fsink_Lsrc,
-			  quark_propagator_Lsink_Fsrc,
-			  quark_propagator_Fsink_Fsrc,
-			  u, gauge_shift, sym_shift,
-			  xml_out,j_decay,
-			  t_length,t_source);
+			      quark_propagator_Fsink_Lsrc,
+			      quark_propagator_Lsink_Fsrc,
+			      quark_propagator_Fsink_Fsrc,
+			      u, gauge_shift, sym_shift,
+			      xml_out,j_decay,
+			      t_length,t_source);
 	}
 
 	if(( do_ps4_singlet_fuzz ) && (!done_ps4_singlet_fuzz)) {
@@ -1625,13 +1625,13 @@ params.param.fermact.path));
 	  push(xml_out, "baryon_correlators");
 
 	  // describe the source
-	  string NN ;
+	  std::string NN ;
 	  write(xml_out, "source_time", t_source);
 	  push(xml_out, "smearing_info");
 	  NN = "L" ;
 	  write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
 	  pop(xml_out);
-	  string b_tag("srcLLL_sinkLLL_nucleon") ;
+	  std::string b_tag("srcLLL_sinkLLL_nucleon") ;
 	  ks_compute_baryon(b_tag,quark_propagator_Lsink_Lsrc,
 			    quark_propagator_Lsink_Lsrc,
 			    quark_propagator_Lsink_Lsrc,
@@ -1664,17 +1664,17 @@ params.param.fermact.path));
 		      params.param.binary_name);
 	swatch.stop();
 	double time_in_sec  = swatch.getTimeInSeconds();
-	QDPIO::cout << "PROF9:ks_fuzz_loops " << time_in_sec << " sec" << endl;
+	QDPIO::cout << "PROF9:ks_fuzz_loops " << time_in_sec << " sec" << std::endl;
 
 
-/* for testing
+	/* for testing
 
-	ks_fuzz_loops_stoch_conn(qprop,q_source,psi ,psi_fuzz ,u,u_smr,
-				      xml_out, gauge_shift, sym_shift,
-				      loop_checkpoint, t_length, Mass, Nsamp,
-				      RsdCG, CFGNO, volume_source, fuzz_width, 
-				      src_seperation, j_decay);
-*/
+	   ks_fuzz_loops_stoch_conn(qprop,q_source,psi ,psi_fuzz ,u,u_smr,
+	   xml_out, gauge_shift, sym_shift,
+	   loop_checkpoint, t_length, Mass, Nsamp,
+	   RsdCG, CFGNO, volume_source, fuzz_width, 
+	   src_seperation, j_decay);
+	*/
 	pop(xml_out);
 	done_local_disc_loops = true;
 	done_fuzzed_disc_loops  = true;
@@ -1693,7 +1693,7 @@ params.param.fermact.path));
        ( Meson_local  && ! done_meson_corr  )  ||
        (  Meson_charm_local && ! done_meson_charm_corr)
        )
-      {
+    {
 
       //still need to compute local corner propagator
       LatticeStaggeredPropagator local_corner_prop;
@@ -1722,13 +1722,13 @@ params.param.fermact.path));
 	push(xml_out, "baryon_correlators");
 
 	// describe the source
-	string NN ;
+	std::string NN ;
 	write(xml_out, "source_time", t_source);
 	push(xml_out, "smearing_info");
 	NN = "L" ;
 	write_smearing_info(NN, LOCAL_SRC,xml_out, fuzz_width) ;
 	pop(xml_out);
-	string b_tag("srcLLL_sinkLLL_nucleon") ;
+	std::string b_tag("srcLLL_sinkLLL_nucleon") ;
 	ks_compute_baryon(b_tag,local_corner_prop, local_corner_prop,
 			  local_corner_prop, xml_out, j_decay, t_length,
 			  params.param.binary_baryon_dump,
@@ -1740,27 +1740,27 @@ params.param.fermact.path));
 
       // local meson correlators 
       if( !done_meson_corr && Meson_local )
-	{
-	  push(xml_out, "local_meson_correlators");
-	  staggered_local_pion pion(t_length,u) ;
-	  pion.compute(local_corner_prop,local_corner_prop,j_decay) ;
-	  pion.dump(t_source,xml_out) ;
-	  pop(xml_out);
-	  done_meson_corr = true ;
-	}
+      {
+	push(xml_out, "local_meson_correlators");
+	staggered_local_pion pion(t_length,u) ;
+	pion.compute(local_corner_prop,local_corner_prop,j_decay) ;
+	pion.dump(t_source,xml_out) ;
+	pop(xml_out);
+	done_meson_corr = true ;
+      }
 
 
       // local meson correlators 
       if( !done_meson_charm_corr && Meson_charm_local )
-	{
-	  meson_charm(local_corner_prop,
-		      xml_out, u,t_source,j_decay,t_length) ;
+      {
+	meson_charm(local_corner_prop,
+		    xml_out, u,t_source,j_decay,t_length) ;
 
-	  done_meson_charm_corr = true ;
-	}
+	done_meson_charm_corr = true ;
+      }
 
 
-      } // end if-then compute quark propagator
+    } // end if-then compute quark propagator
 
 
     if( Meson_charm_noisy_local 
@@ -1770,17 +1770,17 @@ params.param.fermact.path));
 	|| Pion_nondegen_noisy_local4  
 	)
     {
-	int seed = t_source +  t_length * CFGNO  ;
-	RNG::setrn(seed);
-	QDPIO::cout << "Seeded RNG for noisy time slice source " << seed << endl;
-	QDPIO::cout << "Set from t_source " << t_source << " CFG " << CFGNO << "\n" ;
+      int seed = t_source +  t_length * CFGNO  ;
+      RNG::setrn(seed);
+      QDPIO::cout << "Seeded RNG for noisy time slice source " << seed << std::endl;
+      QDPIO::cout << "Set from t_source " << t_source << " CFG " << CFGNO << "\n" ;
     }
 
 
     // compute wall source
     if( Meson_charm_noisy_local  )
-      {
-	  push(xml_out, "noisy_local_meson_correlators");
+    {
+      push(xml_out, "noisy_local_meson_correlators");
 
       LatticeStaggeredPropagator noisy_corner_prop;
 
@@ -1794,104 +1794,104 @@ params.param.fermact.path));
       meson_charm(noisy_corner_prop,xml_out, u,t_source,j_decay,t_length) ;
 
       pop(xml_out); 
-      }
+    }
 
     LatticeStaggeredPropagator quark_source_nondegen ; 
     LatticeStaggeredPropagator noisy_corner_prop_strange;
 
 
     if( Pion_nondegen_noisy_local  )
-      {
-	  push(xml_out, "noisy_local_nondegen_meson_correlators");
+    {
+      push(xml_out, "noisy_local_nondegen_meson_correlators");
       QDPIO::cout << "Setting up second inverter for nondegen\n" ;
 
-	// create second inverter for different mass
-	XMLReader fermact_reader2 ;
-	try{
-	  std::istringstream is(params.param.fermact2.xml);
-	  fermact_reader2.open(is);
-	}
-	catch (...)
-	  {
-	    QDPIO::cerr << "Error reading SECOND action name " << endl;
-	    throw;
-	  }
+      // create second inverter for different mass
+      XMLReader fermact_reader2 ;
+      try{
+	std::istringstream is(params.param.fermact2.xml);
+	fermact_reader2.open(is);
+      }
+      catch (...)
+      {
+	QDPIO::cerr << "Error reading SECOND action name " << std::endl;
+	throw;
+      }
 
-	Handle< StaggeredTypeFermAct< T,P,Q> > fermact2(
-						       TheStagTypeFermActFactory::Instance().createObject(params.param.fermact.id,
-fermact_reader2,params.param.fermact2.path));
+      Handle< StaggeredTypeFermAct< T,P,Q> > fermact2(
+						      TheStagTypeFermActFactory::Instance().createObject(params.param.fermact.id,
+													 fermact_reader2,params.param.fermact2.path));
 
-	StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact2);
-	Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
+      StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact2);
+      Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
 
-	Handle< SystemSolver<LatticeStaggeredFermion> > 
-	  qprop2(S_f2.qprop(state, inv_param));
+      Handle< SystemSolver<LatticeStaggeredFermion> > 
+	qprop2(S_f2.qprop(state, inv_param));
 
-	Real Mass2 = S_f2.getQuarkMass() ;
-	Real Mass1 = S_f.getQuarkMass() ;
+      Real Mass2 = S_f2.getQuarkMass() ;
+      Real Mass1 = S_f.getQuarkMass() ;
 	
 
-	LatticeStaggeredPropagator noisy_corner_prop_2;
+      LatticeStaggeredPropagator noisy_corner_prop_2;
 	
-	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
-//	type_of_src = NOISY_LOCAL_SOURCE ; 
+      type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+      //	type_of_src = NOISY_LOCAL_SOURCE ; 
     
-	QDPIO::cout << "Starting non-degen inversions for local source\n" ;
-    ncg_had += 
-      MakeCornerProp(psi, gauge_shift, sym_shift, u , qprop, qprop2, 
+      QDPIO::cout << "Starting non-degen inversions for local source\n" ;
+      ncg_had += 
+	MakeCornerProp(psi, gauge_shift, sym_shift, u , qprop, qprop2, 
 		       xml_out, RsdCG, 
 		       Mass1, Mass2, j_decay, 
                        noisy_corner_prop_strange, noisy_corner_prop_2, 
 		       type_of_src , t_source,quark_source_nondegen);
 
-    noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
-			noisy_corner_prop_2,Mass2,
-			xml_out, u,t_source,j_decay,t_length) ;
+      noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
+			  noisy_corner_prop_2,Mass2,
+			  xml_out, u,t_source,j_decay,t_length) ;
 
-    pop(xml_out); 
-      }
+      pop(xml_out); 
+    }
 
 
 
 
     if( Pion_nondegen_noisy_local2  )
-      {
-	  push(xml_out, "noisy_local_nondegen_meson_correlators_2");
+    {
+      push(xml_out, "noisy_local_nondegen_meson_correlators_2");
       QDPIO::cout << "Setting up third inverter for nondegen\n" ;
 
-	// create second inverter for different mass
-	XMLReader fermact_reader2 ;
-	try{
-	  std::istringstream is(params.param.fermact3.xml);
-	  fermact_reader2.open(is);
-	}
-	catch (...)
-	  {
-	    QDPIO::cerr << "Error reading THIRD action name " << endl;
-	    throw;
-	  }
+      // create second inverter for different mass
+      XMLReader fermact_reader2 ;
+      try{
+	std::istringstream is(params.param.fermact3.xml);
+	fermact_reader2.open(is);
+      }
+      catch (...)
+      {
+	QDPIO::cerr << "Error reading THIRD action name " << std::endl;
+	throw;
+      }
 
-	Handle< StaggeredTypeFermAct< T,P,Q> > fermact2(
-						       TheStagTypeFermActFactory::Instance().createObject(params.param.fermact3.id,
-fermact_reader2,params.param.fermact3.path));
+      Handle< StaggeredTypeFermAct< T,P,Q> > fermact2(
+						      TheStagTypeFermActFactory::Instance().createObject(params.param.fermact3.id,
+													 fermact_reader2,params.param.fermact3.path));
 
-	StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact2);
-	Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
+      StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact2);
+      Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
 
-	Handle< SystemSolver<LatticeStaggeredFermion> > 
-	  qprop2(S_f2.qprop(state, inv_param));
+      Handle< SystemSolver<LatticeStaggeredFermion> > 
+	qprop2(S_f2.qprop(state, inv_param));
 
-	Real Mass2 = S_f2.getQuarkMass() ;
-	Real Mass1 = S_f.getQuarkMass() ;
+      Real Mass2 = S_f2.getQuarkMass() ;
+      Real Mass1 = S_f.getQuarkMass() ;
 	
-	LatticeStaggeredPropagator noisy_corner_prop_2;
+      LatticeStaggeredPropagator noisy_corner_prop_2;
 	
-	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
-//	type_of_src = LOAD_IN_SOURCE ;
+      type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+      //	type_of_src = LOAD_IN_SOURCE ;
     
-	QDPIO::cout << "Starting 2nd inversions for local source\n" ;
-	ncg_had += 
-      MakeCornerProp(psi, gauge_shift, sym_shift, u ,qprop2, 
+      QDPIO::cout << "Starting 2nd inversions for local source\n" ;
+      ncg_had += 
+	MakeCornerProp(psi, gauge_shift, sym_shift, u ,qprop2, 
 		       xml_out, RsdCG, 
 		       Mass2, j_decay, 
                        noisy_corner_prop_2, 
@@ -1900,12 +1900,12 @@ fermact_reader2,params.param.fermact3.path));
 
 
 
-    noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
-			noisy_corner_prop_2,Mass2,
-			xml_out, u,t_source,j_decay,t_length) ;
+      noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
+			  noisy_corner_prop_2,Mass2,
+			  xml_out, u,t_source,j_decay,t_length) ;
 
-    pop(xml_out); 
-      }
+      pop(xml_out); 
+    }
 
 
 
@@ -1913,109 +1913,109 @@ fermact_reader2,params.param.fermact3.path));
 
 
     if( Pion_nondegen_noisy_local3  )
-      {
-	  push(xml_out, "noisy_local_nondegen_meson_correlators_3");
+    {
+      push(xml_out, "noisy_local_nondegen_meson_correlators_3");
       QDPIO::cout << "Setting up fourth inverter for nondegen\n" ;
 
-	// create second inverter for different mass
-	XMLReader fermact_reader4 ;
-	try{
-	  std::istringstream is(params.param.fermact4.xml);
-	  fermact_reader4.open(is);
-	}
-	catch (...)
-	  {
-	    QDPIO::cerr << "Error reading FOURTH action name " << endl;
-	    throw;
-	  }
+      // create second inverter for different mass
+      XMLReader fermact_reader4 ;
+      try{
+	std::istringstream is(params.param.fermact4.xml);
+	fermact_reader4.open(is);
+      }
+      catch (...)
+      {
+	QDPIO::cerr << "Error reading FOURTH action name " << std::endl;
+	throw;
+      }
 
-	Handle< StaggeredTypeFermAct< T,P,Q> > fermact2(
-						       TheStagTypeFermActFactory::Instance().createObject(params.param.fermact4.id,
-fermact_reader4,params.param.fermact4.path));
+      Handle< StaggeredTypeFermAct< T,P,Q> > fermact2(
+						      TheStagTypeFermActFactory::Instance().createObject(params.param.fermact4.id,
+													 fermact_reader4,params.param.fermact4.path));
 
-	StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact2);
-	Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
+      StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact2);
+      Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
 
-	Handle< SystemSolver<LatticeStaggeredFermion> > 
-	  qprop2(S_f2.qprop(state, inv_param));
+      Handle< SystemSolver<LatticeStaggeredFermion> > 
+	qprop2(S_f2.qprop(state, inv_param));
 
-	Real Mass2 = S_f2.getQuarkMass() ;
-	Real Mass1 = S_f.getQuarkMass() ;
+      Real Mass2 = S_f2.getQuarkMass() ;
+      Real Mass1 = S_f.getQuarkMass() ;
 	
-	LatticeStaggeredPropagator noisy_corner_prop_2;
+      LatticeStaggeredPropagator noisy_corner_prop_2;
 	
-//	type_of_src = LOAD_IN_SOURCE ;
-	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+      //	type_of_src = LOAD_IN_SOURCE ;
+      type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
     
-	QDPIO::cout << "Starting 3rd inversions for local source\n" ;
-	ncg_had += 
-      MakeCornerProp(psi, gauge_shift, sym_shift, u ,qprop2, 
+      QDPIO::cout << "Starting 3rd inversions for local source\n" ;
+      ncg_had += 
+	MakeCornerProp(psi, gauge_shift, sym_shift, u ,qprop2, 
 		       xml_out, RsdCG, 
 		       Mass2, j_decay, 
                        noisy_corner_prop_2, 
 		       type_of_src , t_source,quark_source_nondegen);
 
 
-    noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
-			noisy_corner_prop_2,Mass2,
-			xml_out, u,t_source,j_decay,t_length) ;
+      noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
+			  noisy_corner_prop_2,Mass2,
+			  xml_out, u,t_source,j_decay,t_length) ;
 
-    pop(xml_out); 
-      }
+      pop(xml_out); 
+    }
 
 
 
 
 
     if( Pion_nondegen_noisy_local4  )
-      {
-	  push(xml_out, "noisy_local_nondegen_meson_correlators_4");
+    {
+      push(xml_out, "noisy_local_nondegen_meson_correlators_4");
       QDPIO::cout << "Setting up fifth inverter for nondegen\n" ;
 
-	// create second inverter for different mass
-	XMLReader fermact_reader5 ;
-	try{
-	  std::istringstream is(params.param.fermact5.xml);
-	  fermact_reader5.open(is);
-	}
-	catch (...)
-	  {
-	    QDPIO::cerr << "Error reading FIFTH action name " << endl;
-	    throw;
-	  }
+      // create second inverter for different mass
+      XMLReader fermact_reader5 ;
+      try{
+	std::istringstream is(params.param.fermact5.xml);
+	fermact_reader5.open(is);
+      }
+      catch (...)
+      {
+	QDPIO::cerr << "Error reading FIFTH action name " << std::endl;
+	throw;
+      }
 
-	Handle< StaggeredTypeFermAct< T,P,Q> > fermact5(
-						       TheStagTypeFermActFactory::Instance().createObject(params.param.fermact5.id,
-fermact_reader5,params.param.fermact5.path));
+      Handle< StaggeredTypeFermAct< T,P,Q> > fermact5(
+						      TheStagTypeFermActFactory::Instance().createObject(params.param.fermact5.id,
+													 fermact_reader5,params.param.fermact5.path));
 
-	StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact5);
-	Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
+      StaggeredTypeFermAct<T,P,Q>& S_f2= *(fermact5);
+      Handle< FermState<T,P,Q> > state2(S_f2.createState(u));
 
-	Handle< SystemSolver<LatticeStaggeredFermion> > 
-	  qprop2(S_f2.qprop(state, inv_param));
+      Handle< SystemSolver<LatticeStaggeredFermion> > 
+	qprop2(S_f2.qprop(state, inv_param));
 
-	Real Mass2 = S_f2.getQuarkMass() ;
-	Real Mass1 = S_f.getQuarkMass() ;
+      Real Mass2 = S_f2.getQuarkMass() ;
+      Real Mass1 = S_f.getQuarkMass() ;
 	
-	LatticeStaggeredPropagator noisy_corner_prop_2;
+      LatticeStaggeredPropagator noisy_corner_prop_2;
 	
-//	type_of_src = LOAD_IN_SOURCE ;
-	type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
-	QDPIO::cout << "Starting 4th inversions for local source\n" ;
+      //	type_of_src = LOAD_IN_SOURCE ;
+      type_of_src = GAUGE_INVAR_LOCAL_SOURCE ;
+      QDPIO::cout << "Starting 4th inversions for local source\n" ;
 
-	ncg_had += 
-      MakeCornerProp(psi, gauge_shift, sym_shift, u ,qprop2, 
+      ncg_had += 
+	MakeCornerProp(psi, gauge_shift, sym_shift, u ,qprop2, 
 		       xml_out, RsdCG, 
 		       Mass2, j_decay, 
                        noisy_corner_prop_2, 
 		       type_of_src , t_source,quark_source_nondegen);
 
-    noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
-			noisy_corner_prop_2,Mass2,
-			xml_out, u,t_source,j_decay,t_length) ;
+      noisy_pion_nondegen(noisy_corner_prop_strange,Mass1,
+			  noisy_corner_prop_2,Mass2,
+			  xml_out, u,t_source,j_decay,t_length) ;
 
-    pop(xml_out); 
-      }
+      pop(xml_out); 
+    }
 
 
 
@@ -2026,9 +2026,9 @@ fermact_reader5,params.param.fermact5.path));
     snoop.stop();
     QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineStaggeredSpectrumEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   }  // end of InlineStaggeredSpectrum

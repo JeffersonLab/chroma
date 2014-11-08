@@ -21,7 +21,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineEigenBinColVecReadNamedObjEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineEigenBinColVecReadNamedObjEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -32,7 +32,7 @@ namespace Chroma
   }
 
   //! File output
-  void write(XMLWriter& xml, const string& path, const InlineEigenBinColVecReadNamedObjEnv::Params::File_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineEigenBinColVecReadNamedObjEnv::Params::File_t& input)
   {
     push(xml, path);
 
@@ -43,7 +43,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineEigenBinColVecReadNamedObjEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineEigenBinColVecReadNamedObjEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -54,7 +54,7 @@ namespace Chroma
   }
 
   //! File output
-  void read(XMLReader& xml, const string& path, InlineEigenBinColVecReadNamedObjEnv::Params::File_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineEigenBinColVecReadNamedObjEnv::Params::File_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -112,7 +112,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -141,11 +141,11 @@ namespace Chroma
       push(xml_out, "eigeninfo_bin_colorvec_read_named_obj");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object reader" << endl;
+      QDPIO::cout << name << ": object reader" << std::endl;
       StopWatch swatch;
 
       // Read the object
-      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << std::endl;
       write(xml_out, "object_id", params.named_obj.object_id);
       try
       {
@@ -176,7 +176,7 @@ namespace Chroma
 	  BinaryFileReader bin(params.file.file_names[i]);
 
 	  EVPair<T> read_pair;
-	  // Read the vector
+	  // Read the std::vector
 	  read(bin, read_pair.eigenVector);
 
 	  // Resize the eigenvalue.weights array
@@ -188,11 +188,10 @@ namespace Chroma
 	    read(bin, read_pair.eigenValue.weights[t]);
 	  }
 
-	  // Insert into new map
+	  // Insert into new std::map
 	  eigen->insert(i,read_pair);
 
 	}
-	eigen->flush();
 
 	swatch.stop();
 
@@ -209,20 +208,20 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully read: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": cast error" << endl;
+	QDPIO::cerr << name << ": cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error message: " << e << endl;
+	QDPIO::cerr << name << ": error message: " << e << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // read_named_obj
 

@@ -77,7 +77,7 @@ namespace Chroma
       // Now if the state is smeared recurse down.
       
       for(int level=params.n_smear; level > 0; level--) {
-	QDPIO::cout << "Recursing level " << level << " to level " << level -1 << endl;
+	QDPIO::cout << "Recursing level " << level << " to level " << level -1 << std::endl;
 	Stouting::deriv_recurse(F_thin, params.smear_in_this_dirP, params.rho, smeared_links[level-1]);
 	
 	// gbc->zero(F_thin);
@@ -99,7 +99,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "WARNING: StoutGaugeState::deriv() is never called in current scheme of things -- the gauge monomial doesn't know about it" << endl;
+      QDPIO::cout << "WARNING: StoutGaugeState::deriv() is never called in current scheme of things -- the gauge monomial doesn't know about it" << std::endl;
       
       P F_tmp(Nd);
       

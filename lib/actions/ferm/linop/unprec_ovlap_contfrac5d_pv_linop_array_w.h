@@ -46,7 +46,7 @@ namespace Chroma
       beta(_beta), NEig(_NEig), EigVec(_EigVec), EigValFunc(_EigValFunc),
       isLastZeroP(_isLastZeroP) 
     {
-      QDPIO::cout << "LinOpPV isLastZeroP = " << isLastZeroP << endl;
+      QDPIO::cout << "LinOpPV isLastZeroP = " << isLastZeroP << std::endl;
     }
 
     //! Length of DW flavor index/space
@@ -61,7 +61,7 @@ namespace Chroma
     //! Only defined on the entire lattice
     const Subset& subset() const {return all;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;

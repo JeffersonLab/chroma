@@ -18,7 +18,7 @@ namespace Chroma
   }
 
   // Read parameters
-  KleinGordonFermActParams::KleinGordonFermActParams(XMLReader& xml, const string& path)
+  KleinGordonFermActParams::KleinGordonFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -31,14 +31,14 @@ namespace Chroma
   }
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, KleinGordonFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, KleinGordonFermActParams& param)
   {
     KleinGordonFermActParams tmp(xml, path);
     param = tmp;
   }
 
   // Writer parameters
-  void write(XMLWriter& xml, const string& path, const KleinGordonFermActParams& param)
+  void write(XMLWriter& xml, const std::string& path, const KleinGordonFermActParams& param)
   {
     push(xml, path);
 

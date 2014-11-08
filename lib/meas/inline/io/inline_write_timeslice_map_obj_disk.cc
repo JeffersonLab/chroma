@@ -1,5 +1,5 @@
 /*! \file
- * \brief Inline task to time-sliced map object
+ * \brief Inline task to time-sliced std::map object
  */
 
 #include "chromabase.h"
@@ -29,7 +29,7 @@ namespace Chroma
     { 
       struct DumbDisambiguator {};
 
-      //! Write object function map
+      //! Write object function std::map
       /*! \ingroup inlineio */
       typedef SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
@@ -57,7 +57,7 @@ namespace Chroma
 	  XMLBufferWriter file_xml;
 
 	  push(file_xml, "MODMetaData");
-	  write(file_xml, "id", string("eigenVecsTimeSlice"));
+	  write(file_xml, "id", std::string("eigenVecsTimeSlice"));
 	  write(file_xml, "lattSize", QDP::Layout::lattSize());
 	  write(file_xml, "decay_dir", decay_dir);
 	  write(file_xml, "num_vecs", keys.size());
@@ -109,7 +109,7 @@ namespace Chroma
 	  XMLBufferWriter file_xml;
 
 	  push(file_xml, "MODMetaData");
-	  write(file_xml, "id", string("gaugeFieldTimeSlice"));
+	  write(file_xml, "id", std::string("gaugeFieldTimeSlice"));
 	  write(file_xml, "lattSize", QDP::Layout::lattSize());
 	  write(file_xml, "decay_dir", decay_dir);
 	  proginfo(file_xml);    // Print out basic program info
@@ -158,7 +158,7 @@ namespace Chroma
 	  XMLBufferWriter file_xml;
 
 	  push(file_xml, "MODMetaData");
-	  write(file_xml, "id", string("gaugeFieldTimeSlice"));
+	  write(file_xml, "id", std::string("gaugeFieldTimeSlice"));
 	  write(file_xml, "lattSize", QDP::Layout::lattSize());
 	  write(file_xml, "decay_dir", decay_dir);
 	  proginfo(file_xml);    // Print out basic program info
@@ -243,7 +243,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -271,7 +271,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -287,11 +287,11 @@ namespace Chroma
       push(xml_out, "write_timeslice_map_object_disk");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": map object write to a time-slice format" << endl;
+      QDPIO::cout << name << ": std::map object write to a time-slice format" << std::endl;
       StopWatch swatch;
 
       // Write the object
-      QDPIO::cout << "Attempt to time-slice write the input object name = " << params.named_obj.input_id << endl;
+      QDPIO::cout << "Attempt to time-slice write the input object name = " << params.named_obj.input_id << std::endl;
 
       write(xml_out, "object_type", params.named_obj.object_type);
       write(xml_out, "input_id", params.named_obj.input_id);
@@ -309,28 +309,28 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully copied: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name 
 		    << ": cast error for input_id= " << params.named_obj.input_id 
 		    << " with type= " << params.named_obj.object_type 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error message: " << e << endl;
+	QDPIO::cerr << name << ": error message: " << e << std::endl;
 	QDP_abort(1);
       }
       catch(const char* e) 
       { 
-	QDPIO::cout << name << ": Caught const char * exception: " << e << endl;
+	QDPIO::cout << name << ": Caught const char * exception: " << e << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // read_named_obj
 

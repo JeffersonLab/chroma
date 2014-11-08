@@ -46,7 +46,7 @@ namespace Chroma
 				  int           min_iter,
 				  int           max_iter)  const 
     {
-      QDPIO::cout << "Entering MIT_ssef_DWF_cg_solver" << endl;
+      QDPIO::cout << "Entering MIT_ssef_DWF_cg_solver" << std::endl;
       return MIT_ssef_DWF_cg_solver(psi, out_eps, out_iter, g, M, m_f,
 				    x0, eta, eps, min_iter, max_iter);
     }

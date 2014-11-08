@@ -31,7 +31,7 @@ namespace Chroma
   }
 
 
-  //! Apply the operator onto a source vector
+  //! Apply the operator onto a source std::vector
   /*!
    * The operator acts on the entire lattice
    *

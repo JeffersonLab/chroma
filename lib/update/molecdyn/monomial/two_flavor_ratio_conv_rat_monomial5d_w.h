@@ -15,7 +15,7 @@
 #include "update/molecdyn/monomial/remez_coeff.h"
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
-#include <typeinfo> // For bad_cast
+#include <typeinfo> // For std::bad_cast
 
 namespace Chroma
 {
@@ -185,7 +185,7 @@ namespace Chroma
       (*M_2)(getPhi(), eta, PLUS);
 
       // Reset the chronological predictor
-      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor at end of field refresh" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor at end of field refresh" << std::endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -207,7 +207,7 @@ namespace Chroma
 	}
       }
       catch(std::bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D" << endl;
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvRatWilsonTypeFermMonomial5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -289,7 +289,7 @@ namespace Chroma
       // Do the inversion
       SystemSolverResults_t res = (*invMdagM)(X, MPrecDagPhi);
 
-      // Register the new vector
+      // Register the new std::vector
       (getMDSolutionPredictor()).newVector(X);
  
       return res.n_count;
@@ -345,7 +345,7 @@ namespace Chroma
 
       // getX() now always uses Chrono predictor. Best to Nuke it for
       // energy calcs
-      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << std::endl;
       getMDSolutionPredictor().reset();
       int n_count = this->getX(X,s);
 
@@ -428,7 +428,7 @@ namespace Chroma
       X = zero;
 
       // Get X now always uses predictor. Best to nuke it therefore
-      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvRatWilson5DMonomial: resetting Predictor before energy calc solve" << std::endl;
       getMDSolutionPredictor().reset();
       int n_count = this->getX(X, s);
 

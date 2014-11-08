@@ -32,10 +32,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverCGParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverCGParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path, const SysSolverCGParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SysSolverCGParams& param);
 
 } // End namespace
 

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Key for propagator colorvector matrix elements
+ * \brief Key for propagator colorstd::vector matrix elements
  */
 
 #include "util/ferm/key_prop_matelem.h"

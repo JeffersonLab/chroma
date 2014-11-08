@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Header file for map obj aggregate registrations 
+ * \brief Header file for std::map obj aggregate registrations 
  */
 
 #ifndef __map_obj_memory_w_h__

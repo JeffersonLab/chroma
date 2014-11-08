@@ -104,19 +104,19 @@ namespace Chroma
     swatch2.reset(); swatch2.start();
     Handle< EvenOddPrecLinearOperator<LF,LCM,LCM> > lh( (*this).linOp(state) );
     swatch2.stop();
-    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << endl;
+    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << std::endl;
   
   
     QDPIO::cout << "  ... constructing invLinOp " ;
     swatch2.reset(); swatch2.start();
     Handle< LinOpSystemSolver<LF> > ilh((*this).invLinOp(state,invParam));
     swatch2.stop(); 
-    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << endl;
+    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << std::endl;
   
     QDPIO::cout << "  ... constructing PrecFermActQprop " ;
     swatch2.reset(); swatch2.start();
     PrecFermActQprop<LF,LCM,LCM>* ret_val = new PrecFermActQprop<LF,LCM,LCM>(lh , ilh);
-    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << endl;
+    QDPIO::cout << " ..." << swatch2.getTimeInSeconds() << " sec" << std::endl;
 
     return ret_val;
   

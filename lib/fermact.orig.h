@@ -73,7 +73,7 @@ namespace Chroma
      */
     virtual FermState<T,P,Q>* createState(const Q& q,
 					  XMLReader& reader,
-					  const string& path) const
+					  const std::string& path) const
     {
       return createState(q);
     }

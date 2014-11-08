@@ -47,7 +47,7 @@ namespace Chroma
 
 
     //! Param input
-    void read(XMLReader& xml, const string& path, InlineDiquarkEnv::Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiquarkEnv::Params::Param_t& input)
     {
       XMLReader paramtop(xml, path);
 
@@ -60,7 +60,7 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -68,7 +68,7 @@ namespace Chroma
     }
 
     //! Param output
-    void write(XMLWriter& xml, const string& path, const InlineDiquarkEnv::Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiquarkEnv::Params::Param_t& input)
     {
       push(xml, path);
 
@@ -80,7 +80,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineDiquarkEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineDiquarkEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -90,7 +90,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineDiquarkEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineDiquarkEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -124,7 +124,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -166,13 +166,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineDiquarkEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineDiquarkEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineDiquarkEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -181,7 +181,7 @@ namespace Chroma
       push(xml_out,"diquark");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineDiquarkEnv::name << ": Generalized propagator generation" << endl;
+      QDPIO::cout << InlineDiquarkEnv::name << ": Generalized propagator generation" << std::endl;
       StopWatch swatch;
 
       // Write out the input
@@ -206,7 +206,7 @@ namespace Chroma
       const int Nprops = 2;
       if (params.named_obj.prop_ids.size() != Nprops)
       {
-	QDPIO::cerr << "Error on input params - expecting 3 buffers" << endl;
+	QDPIO::cerr << "Error on input params - expecting 3 buffers" << std::endl;
 	QDP_abort(1);
       }
 
@@ -223,7 +223,7 @@ namespace Chroma
 
       for(int i=0; i < Nprops; ++i)
       {
-	QDPIO::cout << InlineDiquarkEnv::name << ": parse id = " << params.named_obj.prop_ids[i] << endl;
+	QDPIO::cout << InlineDiquarkEnv::name << ": parse id = " << params.named_obj.prop_ids[i] << std::endl;
 	try
 	{
 	  // Snarf the data into a copy
@@ -244,16 +244,16 @@ namespace Chroma
 	catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << InlineDiquarkEnv::name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-	catch (const string& e) 
+	catch (const std::string& e) 
 	{
 	  QDPIO::cerr << InlineDiquarkEnv::name << ": error message: " << e 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-	QDPIO::cout << InlineDiquarkEnv::name << ": object successfully parsed" << endl;
+	QDPIO::cout << InlineDiquarkEnv::name << ": object successfully parsed" << std::endl;
       }
 
 
@@ -309,7 +309,7 @@ namespace Chroma
       // Now save the diquark object
       try
       {
-	QDPIO::cout << "Attempt to update diquark object" << endl;
+	QDPIO::cout << "Attempt to update diquark object" << std::endl;
 
 	XMLBufferWriter file_xml;
 	push(file_xml, "diquark");
@@ -326,17 +326,17 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.diquark_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.diquark_id).setRecordXML(record_xml);
 
-	QDPIO::cout << "Diquark successfully update" << endl;
+	QDPIO::cout << "Diquark successfully update" << std::endl;
       }
       catch (std::bad_cast)
       {
 	QDPIO::cerr << InlineDiquarkEnv::name << ": dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineDiquarkEnv::name << ": error message: " << e << endl;
+	QDPIO::cerr << InlineDiquarkEnv::name << ": error message: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -346,9 +346,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineDiquarkEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineDiquarkEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineDiquarkEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

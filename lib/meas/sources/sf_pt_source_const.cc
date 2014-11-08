@@ -78,7 +78,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -92,7 +92,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -114,14 +114,14 @@ namespace Chroma
       // Sanity check
       if (j_decay < 0 || j_decay >= Nd)
       {
-	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << endl;
+	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << std::endl;
 	QDP_abort(1);
       }
     }
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -145,7 +145,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "SF Point source" << endl;
+      QDPIO::cout << "SF Point source" << std::endl;
       
       // Create the quark source
       LatticePropagator quark_source;
@@ -165,7 +165,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -190,7 +190,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.fermbc.xml);
 	XMLReader  fermbctop(xml_s);
-        QDPIO::cout << "FermBC type = " << params.fermbc.id << endl;
+        QDPIO::cout << "FermBC type = " << params.fermbc.id << std::endl;
 	
 	Handle< FermBC<LatticeFermion,
 	  multi1d<LatticeColorMatrix>,
@@ -209,7 +209,7 @@ namespace Chroma
 	int t0 = (params.direction == MINUS) ? tmax : tmin;	
 	if (t0 != params.t_srce[params.j_decay])
 	{
-	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << endl;
+	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -217,7 +217,7 @@ namespace Chroma
 	// Create the source
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
-	  QDPIO::cout << "color = " << color_source << endl; 
+	  QDPIO::cout << "color = " << color_source << std::endl; 
 
 	  LatticeColorVector src_color_vec = zero;
 
@@ -226,7 +226,7 @@ namespace Chroma
 	  
 	  for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	  {
-	    QDPIO::cout << "spin = " << spin_source << endl; 
+	    QDPIO::cout << "spin = " << spin_source << std::endl; 
 
 	    // Insert a ColorVector into spin index spin_source
 	    // This only overwrites sections, so need to initialize first
@@ -245,7 +245,7 @@ namespace Chroma
 	      break;
 
 	    default:
-	      QDPIO::cerr << name << ": illegal direction" << endl;
+	      QDPIO::cerr << name << ": illegal direction" << std::endl;
 	      QDP_abort(1);
 	    }
   	  
@@ -264,12 +264,12 @@ namespace Chroma
       }
       catch(std::bad_cast) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -283,7 +283,7 @@ namespace Chroma
     LatticeStaggeredPropagator
     SourceConst<LatticeStaggeredPropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Point source" << endl;
+      QDPIO::cout << "Point source" << std::endl;
 
       // Create the quark source
       LatticeStaggeredPropagator quark_source;
@@ -297,7 +297,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -319,7 +319,7 @@ namespace Chroma
 
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
-	  QDPIO::cout << "color = " << color_source << endl; 
+	  QDPIO::cout << "color = " << color_source << std::endl; 
 
 	  LatticeColorVector src_color_vec = zero;
 
@@ -346,7 +346,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << std::endl;
 	QDP_abort(1);
       }
 

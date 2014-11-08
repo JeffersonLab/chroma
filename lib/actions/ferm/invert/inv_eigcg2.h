@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: inv_eigcg2.h,v 1.6 2008-04-10 03:01:13 kostas Exp $
 /*! \file
- *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
+ *  \brief Conjugate-Gradient algorithm with eigenstd::vector acceleration
  */
 
 #ifndef __inv_eig_cg2_h__
@@ -14,7 +14,7 @@
 namespace Chroma 
 {
 
-  //! Conjugate-Gradient (CGNE) with eigenvector acceleration
+  //! Conjugate-Gradient (CGNE) with eigenstd::vector acceleration
   /*! \ingroup invert
    * @{
    */

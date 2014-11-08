@@ -54,8 +54,8 @@ namespace Chroma
 	  std::string   first_id;                /*!< first quark */
 	  std::string   second_id;               /*!< second quark (this one is adjointed) */
 
-	  GroupXML_t    source_spin_insertion;   /*!< xml string holding source spin insertion params */
-	  GroupXML_t    sink_spin_insertion;     /*!< xml string holding sink spin insertion params */
+	  GroupXML_t    source_spin_insertion;   /*!< xml std::string holding source spin insertion params */
+	  GroupXML_t    sink_spin_insertion;     /*!< xml std::string holding sink spin insertion params */
 
 	  Real          factor;
 	};

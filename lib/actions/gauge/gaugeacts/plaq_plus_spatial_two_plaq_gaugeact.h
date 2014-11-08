@@ -17,7 +17,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace PlaqPlusSpatialTwoPlaqGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
     extern  double getTime();
   }
@@ -40,7 +40,7 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, PlaqPlusSpatialTwoPlaqGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, PlaqPlusSpatialTwoPlaqGaugeActParams& param);
   
 
   //! Plaquette gauge action

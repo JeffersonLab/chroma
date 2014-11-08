@@ -27,7 +27,6 @@
 
 #include <quda.h>
 
-using namespace std;
 
 namespace Chroma
 {
@@ -72,7 +71,7 @@ namespace Chroma
 					 const SysSolverQUDAWilsonParams& invParam_) : 
       A(A_), invParam(invParam_)
     {
-      QDPIO::cout << "MdagMSysSolverQUDAWilson:" << endl;
+      QDPIO::cout << "MdagMSysSolverQUDAWilson:" << std::endl;
 
       // FOLLOWING INITIALIZATION in test QUDA program
 
@@ -198,7 +197,7 @@ namespace Chroma
 
      // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	QDPIO::cout << "Fixing Temporal Gauge" << std::endl;
 	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
@@ -306,12 +305,12 @@ namespace Chroma
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
-	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
 
 	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
-	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
        
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
@@ -337,7 +336,7 @@ namespace Chroma
       quda_inv_param.cl_pad = 0;
 
      if( invParam.innerParamsP ) {
-	QDPIO::cout << "Setting inner solver params" << endl;
+	QDPIO::cout << "Setting inner solver params" << std::endl;
 	// Dereference handle
 	GCRInnerSolverParams ip = *(invParam.innerParams);
 
@@ -419,7 +418,7 @@ namespace Chroma
 	}
       }
       else { 
-	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
 	quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
 	quda_inv_param.tol_precondition = 1.0e-1;
 	quda_inv_param.maxiter_precondition = 1000;
@@ -451,7 +450,7 @@ namespace Chroma
     //! Destructor is automatic
     ~MdagMSysSolverQUDAWilson() 
     {
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
     }
 
@@ -481,18 +480,18 @@ namespace Chroma
 	T g_chi,g_psi;
 
 	// Gauge Fix source and initial guess
-	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
         g_chi[ rb[1] ]  = GFixMat * chi;
 	g_psi[ rb[1] ]  = GFixMat * psi;
-	QDPIO::cout << "Solving" << endl;
+	QDPIO::cout << "Solving" << std::endl;
 	res = qudaInvert(g_chi,
 			 g_psi);      
-	QDPIO::cout << "Untransforming solution." << endl;
+	QDPIO::cout << "Untransforming solution." << std::endl;
 	psi[ rb[1]]  = adj(GFixMat)*g_psi;
 
       }
       else { 
-	QDPIO::cout << "Calling QUDA Invert" << endl;
+	QDPIO::cout << "Calling QUDA Invert" << std::endl;
 	res = qudaInvert(chi,
 			 psi);      
       }      
@@ -513,12 +512,12 @@ namespace Chroma
 
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
    
       // Convergence Check/Blow Up
       if ( ! invParam.SilentFailP ) { 
 	      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-        	QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
+        	QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl; 
         	QDP_abort(1);
       	      }
       }
@@ -543,7 +542,7 @@ namespace Chroma
       predictor.newVector(psi);
       swatch.stop();
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: Total time (with prediction)=" << time << std::endl;
       END_CODE();
       return res;
     }

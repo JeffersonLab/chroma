@@ -36,13 +36,13 @@ namespace Chroma
 
     // Check we are in 4D
     if ( Nd != 4 ) { 
-      QDPIO::cout << "This class (ILU2PrecSCprecTCloverLinOp) only works in 4D" << endl;
+      QDPIO::cout << "This class (ILU2PrecSCprecTCloverLinOp) only works in 4D" << std::endl;
       QDP_abort(1);
     }
     
     // Check Aniso Direction -- has to be 3.
     if ( param.anisoParam.anisoP== true && param.anisoParam.t_dir != 3 ) { 
-      QDPIO::cout << "This class (ILU2PrecSCprecTCloverLinOp) is hardwired for t_dir=3"<< endl;
+      QDPIO::cout << "This class (ILU2PrecSCprecTCloverLinOp) is hardwired for t_dir=3"<< std::endl;
       QDP_abort(1);
     }
 
@@ -50,7 +50,7 @@ namespace Chroma
     const multi1d<int>& s_size =  QDP::Layout::subgridLattSize();  // Local Lattice
     const multi1d<int>& t_size =  QDP::Layout::lattSize(); // Total Latt Size
     if( t_size[3] != s_size[3] ) { 
-      QDPIO::cout << "This class (ILU2PrecSCprecTCloverLinOp) needs time to be local" << endl;
+      QDPIO::cout << "This class (ILU2PrecSCprecTCloverLinOp) needs time to be local" << std::endl;
       QDP_abort(1);
     }
 
@@ -60,7 +60,7 @@ namespace Chroma
     // Work out aniso factors
     Real ff = where(param.anisoParam.anisoP, param.anisoParam.nu / param.anisoParam.xi_0, Real(1));
     fact = 1 + (Nd-1)*ff + param.Mass;
-    QDPIO::cout << "Factor=" << fact << "  log10(Factor)="<< log10(fact) << endl;
+    QDPIO::cout << "Factor=" << fact << "  log10(Factor)="<< log10(fact) << std::endl;
 
     invfact = Real(1)/fact;
     u = fs->getLinks();
@@ -147,20 +147,20 @@ namespace Chroma
     }
 
     logDetTSq = zero;
-    QDPIO::cout << "Got here " << endl << flush;
+    QDPIO::cout << "Got here " << std::endl << std::flush;
     if( !schrTP ) { 
       // If we are using the max_norm tric. Compute the t_needed
 
       if( param.max_norm_usedP) {
 	Real tmp1=param.max_norm/sqrt(Real(3));
 	Real t = -( log(tmp1)/log(fact));
-	QDPIO::cout << "Cutoff t is " << t<< endl;
+	QDPIO::cout << "Cutoff t is " << t<< std::endl;
 	t_max=(int)toDouble(ceil(t));
-	QDPIO::cout << "T_max="<<t_max << endl;
+	QDPIO::cout << "T_max="<<t_max << std::endl;
       }
       else {
 	t_max=Nt;
-	QDPIO::cout << "Not using cutoff trick. Setting T_max="<<t_max<<endl;
+	QDPIO::cout << "Not using cutoff trick. Setting T_max="<<t_max<<std::endl;
       }
       // P and P_mat dag are needed for the Woodbury 
       // (P_mat for inverting T, P_mat_dag for inverting T_dag - NB P_mat_dag != (P_mat)^dagger
@@ -234,7 +234,7 @@ namespace Chroma
     Dw3D.create(fs_, param_.anisoParam);
 
 #if 1
-    QDPIO::cout << "schrTP is " << schrTP << endl;
+    QDPIO::cout << "schrTP is " << schrTP << std::endl;
     if(schrTP==false) {
      // Numerical experiments
       for(int i=0; i < Nt; i++) { 
@@ -246,7 +246,7 @@ namespace Chroma
       OScalar<CMat> f2; f2.elem() = P_mat_dag(0,0,i);
       fnorm2=sqrt(norm2(f2));
           
-      QDPIO::cout << "cb=0 x=0 t="<<i<<" normP="<<fnorm<<" normPdag="<<fnorm2 << endl;
+      QDPIO::cout << "cb=0 x=0 t="<<i<<" normP="<<fnorm<<" normPdag="<<fnorm2 << std::endl;
     }
     }
 #endif		 

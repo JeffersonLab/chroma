@@ -15,7 +15,7 @@
 namespace Chroma 
 { 
   // Reader for out gauge file
-  void read(XMLReader& xml, const string& path, InlineLinkSmearEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineLinkSmearEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
     read(inputtop, "gauge_id", input.gauge_id);
@@ -23,7 +23,7 @@ namespace Chroma
   }
 
   // Reader for out gauge file
-  void write(XMLWriter& xml, const string& path, const InlineLinkSmearEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineLinkSmearEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -88,7 +88,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -147,8 +147,8 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-//	const string link_path = "/Param";
-	QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+//	const std::string link_path = "/Param";
+	QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	Handle< LinkSmearing >
 	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -158,7 +158,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << InlineLinkSmearEnv::name << ": error creating link smearing: " << e << endl;
+	QDPIO::cerr << InlineLinkSmearEnv::name << ": error creating link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -189,9 +189,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineLinkSmearEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineLinkSmearEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineLinkSmearEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

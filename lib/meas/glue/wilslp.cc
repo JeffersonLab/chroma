@@ -32,7 +32,7 @@ namespace Chroma
 
   void wilslp(const multi1d<LatticeColorMatrix>& u, 
 	      int j_decay, int t_dir, int kind,
-	      XMLWriter& xml, const string& xml_group)
+	      XMLWriter& xml, const std::string& xml_group)
   {
     START_CODE();
 
@@ -120,14 +120,14 @@ namespace Chroma
 		<< space_dir[0] << " " 
 		<< space_dir[1] << " " 
 		<< space_dir[2] << " " 
-		<< space_dir[3] << endl;
+		<< space_dir[3] << std::endl;
 
     if( nr != (nspace-1) )
     {
       QDPIO::cerr << __func__ 
 		  << ": Trouble with space dimensions for Wilson loops: nr = " << nr
 		  << "  nspace = " << nspace
-		  << "  nu = " << nu << endl;
+		  << "  nu = " << nu << std::endl;
       QDP_abort(1);
     }
 
@@ -230,7 +230,7 @@ namespace Chroma
 
       pop(xml);               // XML end tag for wloop1
       pop(xml);               // XML end tag for wils_wloop1
-      QDPIO::cout << "wils_loop1 data written to .xml file " << endl;        
+      QDPIO::cout << "wils_loop1 data written to .xml file " << std::endl;        
 
     }           /* end of option "space-like planar Wilson loops" */
 
@@ -245,7 +245,7 @@ namespace Chroma
       multi2d<Double> wils_loop2(lengtht, lengthr);
       wils_loop2 = 0;                       /* initialize the Wilson loops */
 
-      QDPIO::cout << "computing time-like Wilson loops" << endl;
+      QDPIO::cout << "computing time-like Wilson loops" << std::endl;
 
       for(i = 0;i  < ( nspace); ++i )
       {
@@ -321,7 +321,7 @@ namespace Chroma
 
       pop(xml);               // XML end tag for loop2
       pop(xml);               // XML end tag for wils_loop2
-      QDPIO::cout << "wils_loop2 data written to .xml file " << endl;  
+      QDPIO::cout << "wils_loop2 data written to .xml file " << std::endl;  
     }          /* end on option "time-like planar Wilson loops" */
 
     /* Compute "time-like" off-axis Wilson loops, if desired */
@@ -343,7 +343,7 @@ namespace Chroma
 
       QDPIO::cout << "wils_loop3: lengtht=" << lengtht << "  length=" << length 
 		  << "  nspace=" << nspace << "   j_decay=" << j_decay
-		  << "  t_dir=" << t_dir << endl;
+		  << "  t_dir=" << t_dir << std::endl;
       multi2d<Double> wils_loop3(lengtht,  length);  
       wils_loop3 = 0;     /* initialize the non-planar Wilson loops */
 
@@ -1181,10 +1181,10 @@ namespace Chroma
 
       pop(xml);        // XML end tag for wloop3
       pop(xml);        // XML end tag for wils_wloop3
-      QDPIO::cout << "wils_loop3 data written to .xml file " << endl;  
+      QDPIO::cout << "wils_loop3 data written to .xml file " << std::endl;  
     }      /* end of option "off-axis Wilson loops" */
 
-    QDPIO::cout << "All wils_loop data written to .xml file " << endl;  
+    QDPIO::cout << "All wils_loop data written to .xml file " << std::endl;  
 
     END_CODE();
   } // end of wilslp

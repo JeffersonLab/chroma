@@ -26,14 +26,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, RandZNWallQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, RandZNWallQuarkSourceConstEnv::Params& param)
   {
     RandZNWallQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const RandZNWallQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const RandZNWallQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -88,7 +88,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -102,7 +102,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -128,7 +128,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -151,7 +151,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Rand Z"<<params.N<<" Wall source" << endl;
+      QDPIO::cout << "Rand Z"<<params.N<<" Wall source" << std::endl;
 
       
       // Save current seed
@@ -173,7 +173,7 @@ namespace Chroma
 	  {
 	    std::istringstream  xml_l(params.link_smearing.xml);
 	    XMLReader  linktop(xml_l);
-	    QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	    QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	    
 	    Handle< LinkSmearing >
 	      linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,  linktop,   params.link_smearing.path));
@@ -185,7 +185,7 @@ namespace Chroma
 	  //
 	  std::istringstream  xml_s(params.quark_smearing.xml);
 	  XMLReader  smeartop(xml_s);
-	  QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
+	  QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << std::endl;
 	  
 	  Handle< QuarkSmearing<LatticePropagator> >
 	    quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id, smeartop, params.quark_smearing.path));
@@ -195,7 +195,7 @@ namespace Chroma
 	  //
 	  std::istringstream  xml_d(params.quark_displacement.xml);
 	  XMLReader  displacetop(xml_d);
-	  QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
+	  QDPIO::cout << "Displacement type = " << params.quark_displacement.id << std::endl;
 	  
 	  Handle< QuarkDisplacement<LatticePropagator> >
 	    quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,	  displacetop,	  params.quark_displacement.path));
@@ -219,23 +219,23 @@ namespace Chroma
 
 	  for(int color_source = 0; color_source < Nc; ++color_source)
 	    {
-	      QDPIO::cout << "color = " << color_source << endl; 
+	      QDPIO::cout << "color = " << color_source << std::endl; 
 	      int mu = params.j_decay;
 	      int slice = params.t_source;
 	      LatticeColorVector src_color_vec ;
 	      if((slice>=Layout::lattSize()[mu])||(slice<0)){
-		QDPIO::cout<<"Doing the full Volume source"<<endl ;
+		QDPIO::cout<<"Doing the full Volume source"<<std::endl ;
 		src_color_vec = tmp_color_vec[color_source] ;
 	      }
 	      else{
-		//QDPIO::cout<<"Doing Wall source on timeslice "<<slice<<endl ;
+		//QDPIO::cout<<"Doing Wall source on timeslice "<<slice<<std::endl ;
 		src_color_vec = where( Layout::latticeCoordinate(mu) == slice,
 				       tmp_color_vec[color_source],
 				       LatticeColorVector(zero));
 	      }
 	      for(int spin_source = 0; spin_source < Ns; ++spin_source)
 		{
-		  QDPIO::cout << "spin = " << spin_source << endl; 
+		  QDPIO::cout << "spin = " << spin_source << std::endl; 
 		  
 		  // Insert a ColorVector into spin index spin_source
 		  // This only overwrites sections, so need to initialize first
@@ -273,7 +273,7 @@ namespace Chroma
 	  }
 	}// try
       catch(const std::string& e){
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 

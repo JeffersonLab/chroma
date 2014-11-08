@@ -100,7 +100,7 @@ namespace Chroma
 	  }
 	  break;
 	default:
-	  QDPIO::cout << "Unknown Sign " << endl;
+	  QDPIO::cout << "Unknown Sign " << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -243,7 +243,7 @@ namespace Chroma
 	  }
 	  break;
 	default:
-	  QDPIO::cout << "Unknown Sign " << endl;
+	  QDPIO::cout << "Unknown Sign " << std::endl;
 	  QDP_abort(1);
 	}       
       }

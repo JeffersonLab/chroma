@@ -14,7 +14,7 @@ namespace Chroma
     //! Callback function to register with the factory
     FermBC<LatticeFermion,
 	   multi1d<LatticeColorMatrix>, 
-	   multi1d<LatticeColorMatrix> >* createFermBC(XMLReader& xml, const string& path)
+	   multi1d<LatticeColorMatrix> >* createFermBC(XMLReader& xml, const std::string& path)
     {
       return new SchrTrivialFermBC(SchrTrivialGaugeBC(SchrGaugeBCParams(xml, path)),
 				   SchrFermBCParams(xml, path));

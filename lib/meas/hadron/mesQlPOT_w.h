@@ -44,7 +44,7 @@ namespace Chroma
 	       const multi1d<int>& src2, 
 	       const SftMom& phases,
 	       XMLWriter& xml,
-	       const string& xml_group);
+	       const std::string& xml_group);
 
   //!  Spin Transpose Function
   /*!

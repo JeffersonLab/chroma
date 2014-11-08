@@ -30,10 +30,10 @@ namespace Chroma
     //! Get number of vectors
     virtual int getNumVecs() const {return num_vecs;}
 
-    //! Get the whole vector
+    //! Get the whole std::vector
     virtual LatticeColorVector& getVec(int colorvec);
 
-    //! Get a vector
+    //! Get a std::vector
     virtual LatticeColorVector& getVec(int t_actual, int colorvec);
 
   private:

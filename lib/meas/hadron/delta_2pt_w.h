@@ -69,11 +69,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup hadron */
-  void read(XMLReader& xml, const string& path, Delta2PtEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, Delta2PtEnv::Params& param);
 
   //! Writer
   /*! @ingroup hadron */
-  void write(XMLWriter& xml, const string& path, const Delta2PtEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const Delta2PtEnv::Params& param);
 
 
 }  // end namespace Chroma

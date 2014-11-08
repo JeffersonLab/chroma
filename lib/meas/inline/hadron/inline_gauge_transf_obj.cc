@@ -1,4 +1,3 @@
-// $Id: inline_gauge_transf_obj.cc,v 3.2 2008-09-13 21:39:53 edwards Exp $
 /*! \file
  * \brief Inline task gauge transform some fermion object
  *
@@ -21,7 +20,7 @@ namespace Chroma
   using namespace QDP;
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineGaugeTransfNamedObjEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineGaugeTransfNamedObjEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -35,7 +34,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineGaugeTransfNamedObjEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineGaugeTransfNamedObjEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -46,7 +45,7 @@ namespace Chroma
   }
 
 
-  //! IO function map environment
+  //! IO function std::map environment
   /*! \ingroup inlinehadron */
   namespace GaugeTransfObjCallMapEnv
   { 
@@ -55,21 +54,21 @@ namespace Chroma
     {
       struct DumbDisambiguator {};
 
-      //! GaugeTransf function map
+      //! GaugeTransf function std::map
       /*! \ingroup inlinehadron */
       typedef SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
 		    void,
 		    std::string,
-		    TYPELIST_3(const string&, const LatticeColorMatrix&, const string&),
-		    void (*)(const string& output_id, const LatticeColorMatrix& g, const string& input_id),
+		    TYPELIST_3(const std::string&, const LatticeColorMatrix&, const std::string&),
+		    void (*)(const std::string& output_id, const LatticeColorMatrix& g, const std::string& input_id),
 		    StringFunctionMapError> >
       TheGaugeTransfObjFuncMap;
 
 
       //! Transform a generic object. This works only for non-array objects.
       template<typename T>
-      void gaugeTransfObj(const string& output_id, const LatticeColorMatrix& g, const string& input_id)
+      void gaugeTransfObj(const std::string& output_id, const LatticeColorMatrix& g, const std::string& input_id)
       {
 	// Grab the source
 	const T& input_obj = 
@@ -90,7 +89,7 @@ namespace Chroma
 
 
       //! Transform a subset_vectors object. This only works for non-array objects
-      void gaugeTransfSubsetVectors(const string& output_id, const LatticeColorMatrix& g, const string& input_id)
+      void gaugeTransfSubsetVectors(const std::string& output_id, const LatticeColorMatrix& g, const std::string& input_id)
       {
 	// A shorthand for the object
 	Handle< MapObject<int,EVPair<LatticeColorVector> > > input_obj =
@@ -117,7 +116,6 @@ namespace Chroma
 	  pair2.eigenVector  = g*pair.eigenVector;
 	  output_obj->insert(n, pair2);
 	}
-	output_obj->flush();
       }
 
 
@@ -132,15 +130,15 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 									 gaugeTransfObj<LatticePropagator>);
-	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("LatticeFermion"), 
 									 gaugeTransfObj<LatticeFermion>);
-	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredPropagator"), 
 									 gaugeTransfObj<LatticeStaggeredPropagator>);
-	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
+	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredFermion"), 
 									 gaugeTransfObj<LatticeStaggeredFermion>);
-	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(string("SubsetVectorsLatticeColorVector"), 
+	success &= TheGaugeTransfObjFuncMap::Instance().registerFunction(std::string("SubsetVectorsLatticeColorVector"), 
 									 gaugeTransfSubsetVectors);
 	registered = true;
       }
@@ -201,7 +199,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -229,7 +227,7 @@ namespace Chroma
       write(xml_out, "update_no", update_no);
 
       QDPIO::cout << name << ": gauge transform an object of type "
-		  << params.named_obj.object_type << endl;
+		  << params.named_obj.object_type << std::endl;
 
       // Grab the input object
       try
@@ -246,17 +244,17 @@ namespace Chroma
       catch (std::bad_cast) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // gaussian_init_named_obj
 

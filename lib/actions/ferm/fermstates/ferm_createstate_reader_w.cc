@@ -35,7 +35,7 @@ namespace Chroma
       }
       else
       {
-//	QDPIO::cerr << "Error: FermState group not found" << endl;
+//	QDPIO::cerr << "Error: FermState group not found" << std::endl;
 //	QDP_abort(1);
 
 	fermstate_path = ".";

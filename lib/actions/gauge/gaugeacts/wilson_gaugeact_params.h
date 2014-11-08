@@ -24,7 +24,7 @@ namespace Chroma {
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, WilsonGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, WilsonGaugeActParams& param);
 }
 
 

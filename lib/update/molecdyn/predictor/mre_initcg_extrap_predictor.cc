@@ -31,7 +31,7 @@ namespace Chroma
 	  read( paramtop, "./opt_eigen_id", opt_eigen_id);
 	}
 	catch( const std::string& e ) { 
-	  QDPIO::cerr << "Caught exception reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
       
@@ -88,7 +88,7 @@ namespace Chroma
 
     int Nchrono = chrono_buf->size();
 
-    QDPIO::cout << "MREInitCG Predictor: Got " << Nchrono << " chrono vecs" << endl;
+    QDPIO::cout << "MREInitCG Predictor: Got " << Nchrono << " chrono vecs" << std::endl;
 
 
     psi = zero;
@@ -97,7 +97,7 @@ namespace Chroma
 
       if( Nchrono == 1 ) { 
 
-	// If only one chrono vector exists, give that.
+	// If only one chrono std::vector exists, give that.
 	LatticeFermion tmpvec;
 	chrono_buf->get(0, tmpvec);
 	psi[s] = tmpvec;
@@ -108,7 +108,7 @@ namespace Chroma
 	
 	// Otherwise do minimum norm extrapolation
 	multi1d<LatticeFermion> v(Nchrono);
-	QDPIO::cout << "MREInitCG Predictor: Orthonormalizing the " << Nchrono << " chrono vecs" << endl;
+	QDPIO::cout << "MREInitCG Predictor: Orthonormalizing the " << Nchrono << " chrono vecs" << std::endl;
 	
 	// Orthogonalize current against the last N....
 	for(int i=0; i < Nchrono; i++) { 
@@ -116,19 +116,19 @@ namespace Chroma
 	  // Zero out the non subsetted part
 	  v[i] = zero;
 	  
-	  // Grab the relevant vector from the chronobuf
+	  // Grab the relevant std::vector from the chronobuf
 	  // The way the circular buffer works is that i=0 is the
 	  // most recent... as i increases vectors become less recent.
 	  LatticeFermion tmpvec;
 	  chrono_buf->get(i, tmpvec);
 	  
 	  if( i == 0 ) { 
-	    // First vector we just take
+	    // First std::vector we just take
 	    v[i][s] = tmpvec;
 	  }
 	  else { 
-	    // i-th vector. Orthogonalise against i-1 previous
-	    // vector, but i is an index running from 0. So I need
+	    // i-th std::vector. Orthogonalise against i-1 previous
+	    // std::vector, but i is an index running from 0. So I need
 	    // to pass i+1-1=i as the number of vectors to orthog against
 	    //
 	    // This is a very dumb GramSchmidt process and possibly
@@ -138,7 +138,7 @@ namespace Chroma
 	    GramSchm(tmpvec, v, i, s);
 	    v[i][s] = tmpvec;
 	  }
-	  // QDPIO::cout << "Norm v[i] = " << norm2(v[i],s) << endl;
+	  // QDPIO::cout << "Norm v[i] = " << norm2(v[i],s) << std::endl;
 	  // Normalise v[i]
 	  Double norm = sqrt(norm2(v[i], s));
 	  v[i][s] /= norm;
@@ -178,13 +178,13 @@ namespace Chroma
       }
     }
 
-    QDPIO::cout << "MRE InitCG predictor: psi prepared " << endl;
+    QDPIO::cout << "MRE InitCG predictor: psi prepared " << std::endl;
 
     // Strategy: Rayleigh Ritz all the EVs, put back Neig of them.
     LinAlg::OptEigInfo& eiginfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(opt_eigen_id);
 
     int Nevec = eiginfo.ncurEvals;
-    QDPIO::cout << "There are " << Nevec << " current EVs" << endl;
+    QDPIO::cout << "There are " << Nevec << " current EVs" << std::endl;
 
     if( Nevec > 0 ) {
       LatticeFermion tmpvec;
@@ -198,7 +198,7 @@ namespace Chroma
 	
       }
     
-      QDPIO::cout << "MREInitCG: Making up little matrix" << endl;
+      QDPIO::cout << "MREInitCG: Making up little matrix" << std::endl;
 
       multi1d<Real> lambda(Nevec);
       for(int i=0; i < Nevec;i++) { 
@@ -217,7 +217,7 @@ namespace Chroma
 	}
       }
       
-      QDPIO::cout << "MREInitCG: Calling Jacobi Diagonalizer " << endl;
+      QDPIO::cout << "MREInitCG: Calling Jacobi Diagonalizer " << std::endl;
       Real rsda=Real(1.0e-5);
       int n_jacob = SN_Jacob(ev, Nevec, lambda, offd,
 			     rsda, 50, s);
@@ -228,14 +228,14 @@ namespace Chroma
 	vecs_to_copy = Neig;  // If we have more vecs than max, only copy Max back
       }
 
-      QDPIO::cout << "MREInitCG: Copying " << vecs_to_copy << " vecs into EigInfo " << endl;
+      QDPIO::cout << "MREInitCG: Copying " << vecs_to_copy << " vecs into EigInfo " << std::endl;
       // EigCG Will Recompute necessary vectors & Matrices...
       // Copy the Nvec chrono vectors into the buffer 
       for(int i=0; i < vecs_to_copy; i++) { 
 	eiginfo.CvToEigCGvec(ev[i],s,i);
       }
 
-      QDPIO::cout << "MREInitCG: Resetting nCurVal" << endl;
+      QDPIO::cout << "MREInitCG: Resetting nCurVal" << std::endl;
       eiginfo.ncurEvals = vecs_to_copy;
       
     }

@@ -62,7 +62,7 @@ namespace Chroma
 
 
   //! Read parameters
-  PolyChebFermActParams::PolyChebFermActParams(XMLReader& xml, const string& path)
+  PolyChebFermActParams::PolyChebFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -90,15 +90,15 @@ namespace Chroma
 	throw std::string("No auxilliary action");
       }
     }
-    catch(const string& e) {
-      QDPIO::cerr << PolyChebFermActEnv::name << ": Caught Exception reading params: " << e << endl;
+    catch(const std::string& e) {
+      QDPIO::cerr << PolyChebFermActEnv::name << ": Caught Exception reading params: " << e << std::endl;
       QDP_abort(1);
     }
 
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, PolyChebFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, PolyChebFermActParams& param)
   {
     PolyChebFermActParams tmp(xml, path);
     param = tmp;
@@ -110,16 +110,16 @@ namespace Chroma
 				   const PolyChebFermActParams& param_) : 
     cfs(cfs_), param(param_)
   {
-    QDPIO::cout << "Constructing PolyChebFermAct from params" << endl;
+    QDPIO::cout << "Constructing PolyChebFermAct from params" << std::endl;
     std::istringstream  xml_s(param.AuxFermAct);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/AuxFermAct";
+    const std::string fermact_path = "/AuxFermAct";
 
     try
     {
-      string auxfermact;
+      std::string auxfermact;
       read(fermacttop, fermact_path + "/FermAct", auxfermact);
-      QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
+      QDPIO::cout << "AuxFermAct: " << auxfermact << std::endl;
 
       // Generic Wilson-Type stuff
       Handle< WilsonTypeFermAct<T,P,Q> >
@@ -132,7 +132,7 @@ namespace Chroma
     catch (const std::string& e) 
     {
       // General breakage Scenario
-      QDPIO::cerr << "Error reading data: " << e << endl;
+      QDPIO::cerr << "Error reading data: " << e << std::endl;
       throw;
     }
 

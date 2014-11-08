@@ -15,13 +15,13 @@ namespace Chroma
 { 
 #if 0
   // Reader/writers
-  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param)
+  void read(XMLReader& xml, const std::string& path, PrimitiveClovTriang& param)
   {
-    QDPIO::cerr << __func__ << ": clover term reader not implemented" << endl;
+    QDPIO::cerr << __func__ << ": clover term reader not implemented" << std::endl;
     QDP_abort(1);
   }
 
-  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& d)
+  void write(XMLWriter& xml, const std::string& path, const PrimitiveClovTriang& d)
   {
     xml.openTag(path);
 

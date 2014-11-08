@@ -23,10 +23,10 @@ namespace Chroma
   };
 
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, TermApprox_t& param);
+  void read(XMLReader& xml, const std::string& path, TermApprox_t& param);
 
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const TermApprox_t& params);
+  void write(XMLWriter& xml, const std::string& path, const TermApprox_t& params);
 
 
   //----------------------------------------------------------------------------
@@ -40,10 +40,10 @@ namespace Chroma
   };
 
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, CompApprox_t& param);
+  void read(XMLReader& xml, const std::string& path, CompApprox_t& param);
 
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const CompApprox_t& params);
+  void write(XMLWriter& xml, const std::string& path, const CompApprox_t& params);
 
 
   //----------------------------------------------------------------------------
@@ -55,10 +55,10 @@ namespace Chroma
   };
 
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, CompAction_t& param);
+  void read(XMLReader& xml, const std::string& path, CompAction_t& param);
 
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const CompAction_t& params);
+  void write(XMLWriter& xml, const std::string& path, const CompAction_t& params);
 
 
   //----------------------------------------------------------------------------
@@ -71,10 +71,10 @@ namespace Chroma
   };
 
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, CompActionInv_t& param);
+  void read(XMLReader& xml, const std::string& path, CompActionInv_t& param);
 
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const CompActionInv_t& params);
+  void write(XMLWriter& xml, const std::string& path, const CompActionInv_t& params);
 
 } //end namespace chroma
 

@@ -29,11 +29,11 @@ namespace Chroma {
 				       bool gauge_shift,
 				       bool sym_shift, func_flag_type fflag){
 
-    string calling_function;
-    string str_source_type;
-    string do_sym;
-    string do_gauge;
-    string more_info;
+    std::string calling_function;
+    std::string str_source_type;
+    std::string do_sym;
+    std::string do_gauge;
+    std::string more_info;
 
     bool problem = false;
 
@@ -68,7 +68,7 @@ namespace Chroma {
       str_source_type="LOAD_IN_SOURCE";
       break;
     default:
-      QDPIO::cerr << "Unknown type of source in" << str_source_type << endl;
+      QDPIO::cerr << "Unknown type of source in" << str_source_type << std::endl;
       exit (1);
     }
 
@@ -113,11 +113,11 @@ namespace Chroma {
     }
 
     if(problem){
-      QDPIO::cerr << "In "<< calling_function <<" you used: "<< endl;
-      QDPIO::cerr << "  "<< str_source_type<< endl;
-      QDPIO::cerr << "  "<< do_gauge << endl;
-      QDPIO::cerr << "  "<< do_sym << endl;
-      QDPIO::cerr << more_info << endl;
+      QDPIO::cerr << "In "<< calling_function <<" you used: "<< std::endl;
+      QDPIO::cerr << "  "<< str_source_type<< std::endl;
+      QDPIO::cerr << "  "<< do_gauge << std::endl;
+      QDPIO::cerr << "  "<< do_sym << std::endl;
+      QDPIO::cerr << more_info << std::endl;
     
       exit(1);
     }
@@ -147,9 +147,9 @@ namespace Chroma {
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
 
-static int flag=1;
+    static int flag=1;
 
-    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
     q_source = zero ;
 
     // safety checks
@@ -253,9 +253,9 @@ static int flag=1;
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
 
-static int flag=1;
+    static int flag=1;
 
-    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
     q_source = zero ;
 
     // safety checks
@@ -306,13 +306,13 @@ static int flag=1;
     }
 
 
-	if( type_of_src == LOAD_IN_SOURCE  ){
-	    q_source = q_source_in ; 
-	}
-	else
-	{
-	    q_source_in = q_source ; 
-	}
+    if( type_of_src == LOAD_IN_SOURCE  ){
+      q_source = q_source_in ; 
+    }
+    else
+    {
+      q_source_in = q_source ; 
+    }
 
 
 
@@ -364,7 +364,7 @@ static int flag=1;
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
 
-    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
     q_source = zero ;
 
     // safety checks
@@ -382,36 +382,36 @@ static int flag=1;
     }
     else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
       
-	q_source = zero ;
-	multi1d<int> coord(Nd);
+      q_source = zero ;
+      multi1d<int> coord(Nd);
 
-	// start with local source 
-	coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-        coord[j_decay] = t_source ;
-	srcfil(q_source, coord,color_source ) ;
+      // start with local source 
+      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+      coord[j_decay] = t_source ;
+      srcfil(q_source, coord,color_source ) ;
 
-	// now do the shift
-	PropIndexTodelta(src_ind, coord) ;
-	q_source_fuzz = q_source  ;
+      // now do the shift
+      PropIndexTodelta(src_ind, coord) ;
+      q_source_fuzz = q_source  ;
 
-	q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
+      q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
 
-	// sym-shift true for symmetric shifting!!!!!!!
+      // sym-shift true for symmetric shifting!!!!!!!
     }
     else if( type_of_src ==  NOISY_LOCAL_SOURCE  ) {
 
       gaussian_color_src_on_slice(q_source, color_source,t_source, j_decay);  
 
-      }
+    }
     else{
 
-	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
-	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
-		    << endl;
-	exit(0);
+      QDPIO::cerr << "Conflicting source and shift types in " <<
+	"util_compute_quark_prop_s.cc" <<std::endl;
+      QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
+		  << std::endl;
+      exit(0);
 
-      }
+    }
   
 
 
@@ -462,7 +462,7 @@ static int flag=1;
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
 
-    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
     q_source = zero ;
 
     // safety checks
@@ -480,46 +480,46 @@ static int flag=1;
     }
     else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
       
-	q_source = zero ;
-	multi1d<int> coord(Nd);
+      q_source = zero ;
+      multi1d<int> coord(Nd);
 
-	// start with local source 
-	coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-        coord[j_decay] = t_source ;
-	srcfil(q_source, coord,color_source ) ;
+      // start with local source 
+      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+      coord[j_decay] = t_source ;
+      srcfil(q_source, coord,color_source ) ;
 
-	// now do the shift
-	PropIndexTodelta(src_ind, coord) ;
-	q_source_fuzz = q_source  ;
+      // now do the shift
+      PropIndexTodelta(src_ind, coord) ;
+      q_source_fuzz = q_source  ;
 
-	q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
+      q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
 
-	// sym-shift true for symmetric shifting!!!!!!!
+      // sym-shift true for symmetric shifting!!!!!!!
     }
     else if( type_of_src ==  NOISY_LOCAL_SOURCE  ) {
 
       gaussian_color_src_on_slice(q_source, color_source,t_source, j_decay);  
 
-      }
+    }
     else if( type_of_src == LOAD_IN_SOURCE  ){
-	    q_source = q_source_in ; 
-	}
+      q_source = q_source_in ; 
+    }
     else{
 
-	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
-	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
-		    << endl;
-	cout << "DEBUG type_of_src = " << type_of_src << endl;
-	exit(0);
+      QDPIO::cerr << "Conflicting source and shift types in " <<
+	"util_compute_quark_prop_s.cc" <<std::endl;
+      QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
+		  << std::endl;
+      QDPIO::cout << "DEBUG type_of_src = " << type_of_src << std::endl;
+      exit(0);
 
-      }
+    }
   
 
     if( type_of_src != LOAD_IN_SOURCE  )
-      {
-	q_source_in = q_source ; 
-      }
+    {
+      q_source_in = q_source ; 
+    }
 
 
 
@@ -556,8 +556,8 @@ static int flag=1;
 
 
   /**
-    For non-generate inversion I need two quark propagators from the same
-    source.
+     For non-generate inversion I need two quark propagators from the same
+     source.
 
   **/
 
@@ -579,9 +579,9 @@ static int flag=1;
     LatticeStaggeredFermion q_source ;
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
-    string src_tag ;
+    std::string src_tag ;
 
-    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
     q_source = zero ;
 
     // safety checks
@@ -599,49 +599,49 @@ static int flag=1;
     }
     else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
       
-	q_source = zero ;
-	multi1d<int> coord(Nd);
+      q_source = zero ;
+      multi1d<int> coord(Nd);
 
-	// start with local source 
-	coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-        coord[j_decay] = t_source ;
-	srcfil(q_source, coord,color_source ) ;
+      // start with local source 
+      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+      coord[j_decay] = t_source ;
+      srcfil(q_source, coord,color_source ) ;
 
-	// now do the shift
-	PropIndexTodelta(src_ind, coord) ;
-	q_source_fuzz = q_source  ;
+      // now do the shift
+      PropIndexTodelta(src_ind, coord) ;
+      q_source_fuzz = q_source  ;
 
-	q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
+      q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
 
-	// sym-shift true for symmetric shifting!!!!!!!
+      // sym-shift true for symmetric shifting!!!!!!!
       src_tag = "GAUGE_INVAR_LOCAL_SOURCE" ;
     }
     else if( type_of_src ==  NOISY_LOCAL_SOURCE  ) {
 
       gaussian_color_src_on_slice(q_source, color_source,t_source, j_decay);  
       src_tag = "NOISY_LOCAL_SOURCE" ;
-      }
+    }
     else if( type_of_src == LOAD_IN_SOURCE  ){
-	    q_source = q_source_in ; 
-	}
+      q_source = q_source_in ; 
+    }
 
     else{
       src_tag = "SOURCE_ERROR" ;
-	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
-	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
-		    << endl;
-	cout << "DEBUG type_of_src = " << type_of_src << endl;
-	exit(0);
+      QDPIO::cerr << "Conflicting source and shift types in " <<
+	"util_compute_quark_prop_s.cc" <<std::endl;
+      QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
+		  << std::endl;
+      QDPIO::cout << "DEBUG type_of_src = " << type_of_src << std::endl;
+      exit(0);
 
-      }
+    }
   
 
     
     if( type_of_src != LOAD_IN_SOURCE  )
-      {
-	q_source_in = q_source ; 
-      }
+    {
+      q_source_in = q_source ; 
+    }
 
 
     // Use the last initial guess as the current guess
@@ -688,8 +688,8 @@ static int flag=1;
 
 
   /**
-    For non-degenerate inversion I need two quark propagators from the same
-    source.
+     For non-degenerate inversion I need two quark propagators from the same
+     source.
 
   **/
 
@@ -710,9 +710,9 @@ static int flag=1;
     LatticeStaggeredFermion q_source ;
     LatticeStaggeredFermion q_source_fuzz ; 
     int ncg_had = 0 ;
-    string src_tag ;
+    std::string src_tag ;
 
-    QDPIO::cout << "Inversion for Color =  " << color_source << endl;
+    QDPIO::cout << "Inversion for Color =  " << color_source << std::endl;
     q_source = zero ;
 
     // safety checks
@@ -730,37 +730,37 @@ static int flag=1;
     }
     else if( type_of_src == GAUGE_INVAR_LOCAL_SOURCE  ) {
       
-	q_source = zero ;
-	multi1d<int> coord(Nd);
+      q_source = zero ;
+      multi1d<int> coord(Nd);
 
-	// start with local source 
-	coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
-        coord[j_decay] = t_source ;
-	srcfil(q_source, coord,color_source ) ;
+      // start with local source 
+      coord[0]=0; coord[1] = 0; coord[2] = 0; coord[3] = 0;
+      coord[j_decay] = t_source ;
+      srcfil(q_source, coord,color_source ) ;
 
-	// now do the shift
-	PropIndexTodelta(src_ind, coord) ;
-	q_source_fuzz = q_source  ;
+      // now do the shift
+      PropIndexTodelta(src_ind, coord) ;
+      q_source_fuzz = q_source  ;
 
-	q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
+      q_source = shiftDeltaPropCov(coord, q_source_fuzz, u, sym_shift);
 
-	// sym-shift true for symmetric shifting!!!!!!!
+      // sym-shift true for symmetric shifting!!!!!!!
       src_tag = "GAUGE_INVAR_LOCAL_SOURCE" ;
     }
     else if( type_of_src ==  NOISY_LOCAL_SOURCE  ) {
 
       gaussian_color_src_on_slice(q_source, color_source,t_source, j_decay);  
       src_tag = "NOISY_LOCAL_SOURCE" ;
-      }
+    }
     else{
       src_tag = "SOURCE_ERROR" ;
-	QDPIO::cerr << "Conflicting source and shift types in " <<
-	  "util_compute_quark_prop_s.cc" <<endl;
-	QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
-		    << endl;
-	exit(0);
+      QDPIO::cerr << "Conflicting source and shift types in " <<
+	"util_compute_quark_prop_s.cc" <<std::endl;
+      QDPIO::cerr << "double-check your source --- no fuzz-smearing here" 
+		  << std::endl;
+      exit(0);
 
-      }
+    }
   
 
 

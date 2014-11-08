@@ -65,11 +65,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, HypLinkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, HypLinkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const HypLinkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const HypLinkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

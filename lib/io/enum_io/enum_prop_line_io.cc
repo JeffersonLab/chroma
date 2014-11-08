@@ -14,23 +14,23 @@ namespace Chroma {
     bool registerAll(void) 
     {
       bool success = true; 
-      success &= thePropLineTypeMap::Instance().registerPair(string("CONN"), PROP_LINE_TYPE_CONN);
-      success &= thePropLineTypeMap::Instance().registerPair(string("DISC"), PROP_LINE_TYPE_DISC);
+      success &= thePropLineTypeMap::Instance().registerPair(std::string("CONN"), PROP_LINE_TYPE_CONN);
+      success &= thePropLineTypeMap::Instance().registerPair(std::string("DISC"), PROP_LINE_TYPE_DISC);
       return success;
     }
 
     bool registered = registerAll();
-    const string typeIDString = "PropLineType";
+    const std::string typeIDString = "PropLineType";
   };
   using namespace PropLineTypeEnv;
 
   //! Reader
-  void read(XMLReader& xml_in, const string& path, PropLineType& t) {
+  void read(XMLReader& xml_in, const std::string& path, PropLineType& t) {
     thePropLineTypeMap::Instance().read(typeIDString, xml_in, path, t);
   }
   
   //! Writer
-  void write(XMLWriter& xml_out, const string& path, const PropLineType& t) {
+  void write(XMLWriter& xml_out, const std::string& path, const PropLineType& t) {
     thePropLineTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 

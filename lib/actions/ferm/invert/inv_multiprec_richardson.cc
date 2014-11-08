@@ -39,12 +39,12 @@ namespace Chroma {
     }
 
     Double rnorm = norm2(r, s);   // || r ||^2
-    QDPIO::cout << "Initial Norm: " << rnorm << endl;
+    QDPIO::cout << "Initial Norm: " << rnorm << std::endl;
 
     if( toBool( rnorm <= rsd_t ) ) { 
 
       // We are done
-      QDPIO::cout << "Iter 0: || r || = "<< rnorm << "  || r_target || = " << rsd_t << endl;
+      QDPIO::cout << "Iter 0: || r || = "<< rnorm << "  || r_target || = " << rsd_t << std::endl;
 
       res.n_count = 0;
       res.resid = Real(sqrt(rnorm));
@@ -95,7 +95,7 @@ namespace Chroma {
 
     }
 
-    QDPIO::cout << "Richardson Multi Prec Solver: NONCONVERGENCE" << endl;
+    QDPIO::cout << "Richardson Multi Prec Solver: NONCONVERGENCE" << std::endl;
     res.n_count = MaxIter;
     res.resid = Real(sqrt(rnorm));
 

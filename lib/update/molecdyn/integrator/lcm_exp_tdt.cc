@@ -52,7 +52,7 @@ namespace Chroma
       read(paramtop, "./n_steps", n_steps);
     }
     catch ( const std::string& e ) { 
-      QDPIO::cout << "Error reading XML in LatColMatExpTdtIntegratorParams " << e << endl;
+      QDPIO::cout << "Error reading XML in LatColMatExpTdtIntegratorParams " << e << std::endl;
       QDP_abort(1);
     }
   }

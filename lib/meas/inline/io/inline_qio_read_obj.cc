@@ -22,7 +22,7 @@ namespace Chroma
 { 
   namespace InlineQIOReadNamedObjEnv 
   { 
-    //! IO function map environment
+    //! IO function std::map environment
     /*! \ingroup inlineio */
     namespace QIOReadObjectEnv
     { 
@@ -176,12 +176,12 @@ namespace Chroma
 	    }
 	    catch (std::bad_cast)
 	    {
-	      QDPIO::cerr << "QIOReadSubsetVectorsLCV: caught dynamic cast error" << endl;
+	      QDPIO::cerr << "QIOReadSubsetVectorsLCV: caught dynamic cast error" << std::endl;
 	      QDP_abort(1);
 	    }
-	    catch (const string& e) 
+	    catch (const std::string& e) 
 	    {
-	      QDPIO::cerr << "QIOReadSubsetVectorsLCV: error creating prop: " << e << endl;
+	      QDPIO::cerr << "QIOReadSubsetVectorsLCV: error creating prop: " << e << std::endl;
 	      QDP_abort(1);
 	    }
 
@@ -206,7 +206,7 @@ namespace Chroma
 	      read(vec_xml, "decay_dir", decay_dir);
 	    }
 	    catch(const std::string& e) { 
-	      QDPIO::cerr<< "Caught Exception while reading XML: " << e << endl;
+	      QDPIO::cerr<< "Caught Exception while reading XML: " << e << std::endl;
 	      QDP_abort(1);
 	    }
 
@@ -224,12 +224,12 @@ namespace Chroma
 	      num_vecs = N;
 	    if(num_vecs > N)
 	      {
-		QDPIO::cerr<< "Error: number of vectors to read, num_vecs= " << num_vecs << ", is greater than number in file, N= " << N << endl;
+		QDPIO::cerr<< "Error: number of vectors to read, num_vecs= " << num_vecs << ", is greater than number in file, N= " << N << std::endl;
 		QDP_abort(1);
 	      }
 
 	    // Loop and read evecs
-	    QDPIO::cout << "About to read " << num_vecs << " out of " << N << " evectors from QIO..."<<endl;
+	    QDPIO::cout << "About to read " << num_vecs << " out of " << N << " evectors from QIO..."<<std::endl;
 	    for(int n=0; n < num_vecs; n++)
 	    {
 	      XMLReader record_xml_dummy;
@@ -239,17 +239,16 @@ namespace Chroma
 	  
 	      read_pair.eigenValue.weights.resize(Lt);
 	      read(record_xml_dummy, "/VectorInfo/weights", read_pair.eigenValue.weights);
-	      QDPIO::cout << "Inserting Pair " << n << " into Map" << endl;
+	      QDPIO::cout << "Inserting Pair " << n << " into Map" << std::endl;
 	      obj->insert(n, read_pair);
 
 	    }
-	    obj->flush();
 
 	    // Set File and Record XML throw away dummy XMLs
 	    // BJOO: Yes that's all very well. but RecordXML has to hold something
 	    XMLBufferWriter dummy;
 	    push(dummy,"DummyRecordXML");
-	    write(dummy, "mapSize", num_vecs);
+	    write(dummy, "std::mapSize", num_vecs);
 	    pop(dummy);
 	    record_xml.open(dummy);
 
@@ -312,8 +311,8 @@ namespace Chroma
 	// RGE: FOR SOME REASON, QDP CANNOT CAST A DOUBLE TO FLOATING HERE. NEED TO FIX.
 
 	//! Read a single prec fermion
-	void QIOReadLatFermF(const string& buffer_id,
-			     const string& file, 
+	void QIOReadLatFermF(const std::string& buffer_id,
+			     const std::string& file, 
 			     QDP_serialparallel_t serpar)
 	{
 	  LatticeFermionF obj;
@@ -331,8 +330,8 @@ namespace Chroma
 
 
 	//! Read a double prec fermion
-	void QIOReadLatFermD(const string& buffer_id,
-			     const string& file, 
+	void QIOReadLatFermD(const std::string& buffer_id,
+			     const std::string& file, 
 			     QDP_serialparallel_t serpar)
 	{
 	  LatticeFermionD obj;
@@ -508,7 +507,7 @@ namespace Chroma
 			// Sanity check - the size better match
 			if (cnt >= sz_qq)
 			{
-			  QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << endl;
+			  QDPIO::cerr << __func__ << ": size mismatch for multi1Nd object" << std::endl;
 			  QDP_abort(1);
 			}
 
@@ -565,7 +564,7 @@ namespace Chroma
 	      read(largest_record_xml, "/NumElem/n_vec", size);
 	    }
 	    catch(const std::string& e) { 
-	      QDPIO::cerr<< "Caught Exception while reading XML: " << e << endl;
+	      QDPIO::cerr<< "Caught Exception while reading XML: " << e << std::endl;
 	      QDP_abort(1);
 	    }
 
@@ -578,9 +577,9 @@ namespace Chroma
 	    // Read evals
 	    read(to, record_xml, evalsD);
 
-	    QDPIO::cout << "Read " << evalsD.size() << "Evals " << endl;
+	    QDPIO::cout << "Read " << evalsD.size() << "Evals " << std::endl;
 	    for(int i=0; i < evalsD.size(); i++) { 
-	      QDPIO::cout << "Eval["<<i<<"] = " << Real(evalsD[i]) << endl;
+	      QDPIO::cout << "Eval["<<i<<"] = " << Real(evalsD[i]) << std::endl;
 	    }
 
 	    // Resize eval array 
@@ -660,17 +659,17 @@ namespace Chroma
 
 	    if (obj.Neig > Nmax)
 	    {
-	      QDPIO::cerr << __func__ << ": error, found Neig > Nmax" << endl;
+	      QDPIO::cerr << __func__ << ": error, found Neig > Nmax" << std::endl;
 	      QDP_abort(1);
 	    }
 
-	    // Read a record for each eigenvalue (in xml) and eigenvector
+	    // Read a record for each eigenvalue (in xml) and eigenstd::vector
 	    for(int i=0; i < obj.Neig; ++i)
 	    {
 	      XMLReader record_xml;
 	      read(to, record_xml, obj.evec.vec[i]);
 
-	      read(record_xml, "/Eigenvector/eigenValue", obj.eval.vec[i]);
+	      read(record_xml, "/Eigenstd::vector/eigenValue", obj.eval.vec[i]);
 	    }
 
 	    // Close
@@ -701,40 +700,40 @@ namespace Chroma
 	bool success = true; 
 	if (! registered)
 	{
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticePropagator"),   
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticePropagator"),   
 									qioReadLatProp);
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticePropagatorF"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticePropagatorF"), 
 									qioReadLatPropF);
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticePropagatorD"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticePropagatorD"), 
 									qioReadLatPropD);
 
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("SubsetVectorsLatticeColorVector"),
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("SubsetVectorsLatticeColorVector"),
 									qioReadSubsetVectorsLCV);
 	  
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticeFermion"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticeFermion"), 
 									qioReadLatFerm);
 
-//      success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticeFermionF"), 
+//      success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticeFermionF"), 
 //								   qioReadLatFermF);
-//      success &= TheQIOReadObjectFactory::Instance().registerObject(string("LatticeFermionD"), 
+//      success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("LatticeFermionD"), 
 //								   qioReadLatFermD);
 
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("Multi1dLatticeColorMatrix"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("Multi1dLatticeColorMatrix"), 
 									qioReadArrayLatColMat);
 
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("Multi1dLatticeColorMatrixF"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("Multi1dLatticeColorMatrixF"), 
 									qioReadArrayLatColMatF);
 
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("Multi1dLatticeColorMatrixD"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("Multi1dLatticeColorMatrixD"), 
 									qioReadArrayLatColMatD);
 
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("QQDiquarkContract"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("QQDiquarkContract"), 
 									qioReadQQDiquarkContract);
 	
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("EigenInfoLatticeFermion"),
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("EigenInfoLatticeFermion"),
 									qioReadEigenInfoLatticeFermion);
 
-	  success &= TheQIOReadObjectFactory::Instance().registerObject(string("RitzPairsLatticeFermion"), 
+	  success &= TheQIOReadObjectFactory::Instance().registerObject(std::string("RitzPairsLatticeFermion"), 
 									qioReadRitzPairsLatticeFermion);
 
 	  registered = true;
@@ -783,7 +782,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -792,7 +791,7 @@ namespace Chroma
     }
 
     //! File output
-    void read(XMLReader& xml, const string& path, Params::File_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::File_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -831,7 +830,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -846,7 +845,7 @@ namespace Chroma
       push(xml_out, "qio_read_named_obj");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object reader" << endl;
+      QDPIO::cout << name << ": object reader" << std::endl;
       StopWatch swatch;
 
       // Read the object
@@ -854,7 +853,7 @@ namespace Chroma
       // Other tasks could support other disk formats
       try
       {	
-	QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+	QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << std::endl;
 	write(xml_out, "object_id", params.named_obj.object_id);
 
 	// Create the object reader
@@ -863,7 +862,7 @@ namespace Chroma
 									     params));
 	QDP_serialparallel_t serpar;
 	if ( params.file.parallel_io ) { 
-	  QDPIO::cout << "Attempting Parallel IO read" << endl;
+	  QDPIO::cout << "Attempting Parallel IO read" << std::endl;
 	  serpar = QDPIO_PARALLEL;
 	}
 	else { 
@@ -879,22 +878,22 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully read: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // qio_read_named_obj
 

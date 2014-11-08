@@ -20,7 +20,7 @@ namespace Chroma {
  */    
 
 void writeMILC(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u, 
-	       const string& cfg_file);
+	       const std::string& cfg_file);
 
 
 //! Write a MILC gauge configuration in the 1997 format
@@ -33,7 +33,7 @@ void writeMILC(XMLBufferWriter& xml, const multi1d<LatticeColorMatrix>& u,
  */    
 
 void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
-	       const string& cfg_file);
+	       const std::string& cfg_file);
 
 }  // end namespace Chroma
 

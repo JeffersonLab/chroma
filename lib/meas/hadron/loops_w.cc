@@ -37,7 +37,7 @@ private:
  * \param psi      -- M^{-1} on source 
  * \param length   -- length of lattice in time direction  
  * \param xml -- namelist file object ( Read )
- * \param xml_tag -- string used for writing xml data ( Read )
+ * \param xml_tag -- std::string used for writing xml data ( Read )
  *
  *        ____
  *        \          dagger
@@ -54,7 +54,7 @@ void loops(const LatticeFermion &q_source,
 	   const LatticeFermion &psi,
 	   int length,
 	   XMLWriter& xml_gamma,
-	   const string& xml_tag)
+	   const std::string& xml_tag)
 {
   push(xml_gamma, xml_tag);
 

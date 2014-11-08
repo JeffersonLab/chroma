@@ -13,14 +13,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, MomWallQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, MomWallQuarkSourceConstEnv::Params& param)
   {
     MomWallQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const MomWallQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const MomWallQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -99,7 +99,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -113,7 +113,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -124,14 +124,14 @@ namespace Chroma
 
       if (mom.size() != Nd)
       {
-	QDPIO::cerr << name << ": wrong size of mom array: expected length=" << Nd << endl;
+	QDPIO::cerr << name << ": wrong size of mom array: expected length=" << Nd << std::endl;
 	QDP_abort(1);
       }
     }
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -152,7 +152,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Volume Momentum Source" << endl;
+      QDPIO::cout << "Volume Momentum Source" << std::endl;
 
       LatticeComplex phase ;
       // Initialize the slow Fourier transform phases
@@ -176,14 +176,14 @@ namespace Chroma
 	phase *= phases[0];
 	multi1d<int> mom = phases.canonicalOrder(phases.numToMom(0));
 	QDPIO::cout<<"Source momentum (averaged over equivalent momenta): " ;
-	QDPIO::cout<<mom[0]<<mom[1]<<mom[2]<<endl;
+	QDPIO::cout<<mom[0]<<mom[1]<<mom[2]<<std::endl;
       }
       else{ // do not use momentum averaged sources
 	SftMom phases(0, params.t_srce, params.mom);
 	phase = phases[0] ;
 	multi1d<int> mom = phases.numToMom(0) ;
 	QDPIO::cout<<"Source momentum: " ;
-	QDPIO::cout<<mom[0]<<mom[1]<<mom[2]<<mom[3]<<endl;
+	QDPIO::cout<<mom[0]<<mom[1]<<mom[2]<<mom[3]<<std::endl;
       }
 
       // Create the quark source

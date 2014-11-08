@@ -58,10 +58,10 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
     v[n][s] = zero;
   }
 
-  // Create a temporary vector for later use
+  // Create a temporary std::vector for later use
   T tmp;
 
-  // Search vector for t = Ms step.
+  // Search std::vector for t = Ms step.
   multi1d<T> t(N);
 
   Complex rho, rho_prev, alpha, omega;
@@ -83,7 +83,7 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
 
     
     if( toBool( real(rho) == 0 ) && toBool( imag(rho) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: rho = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: rho = 0" << std::endl;
       QDP_abort(1);
     }
 
@@ -114,7 +114,7 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
     }
 
     if( toBool( real(ctmp) == 0 ) && toBool( imag(ctmp) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << std::endl;
       QDP_abort(1);
     }
 
@@ -138,7 +138,7 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
     Real t_norm = norm2(t,s);
 
     if( toBool(t_norm == 0) ) { 
-      QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << endl;
+      QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << std::endl;
       QDP_abort(1);
     }
 
@@ -168,7 +168,7 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
     // Check convergence
     Double r_norm = norm2(r, s);
 
-    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << endl;
+    QDPIO::cout << "Iteration " << k << " : r = " << r_norm << std::endl;
     if( toBool(r_norm < rsd_sq ) ) {
       convP = true;
       ret.resid = sqrt(r_norm);
@@ -180,7 +180,7 @@ InvBiCGStab_a(const LinearOperatorArray<T>& A,
   }
 
   if ( ret.n_count == MaxBiCGStab ) { 
-    QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << endl;
+    QDPIO::cerr << "Nonconvergence of BiCGStab. MaxIters reached " << std::endl;
   }
 
   return ret;

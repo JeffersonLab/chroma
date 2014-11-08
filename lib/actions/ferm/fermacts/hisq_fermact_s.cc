@@ -158,7 +158,7 @@ namespace Chroma
 #if 0 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG 
     fat7_param pp ; 
-     QDPIO::cout << "HISQ hacked to do ASQTAD" << endl ; 
+     QDPIO::cout << "HISQ hacked to do ASQTAD" << std::endl ; 
     pp.c_1l = (Real)(5) / (Real)(8);
     pp.c_3l = (Real)(-1) / ((Real)(16));
     pp.c_5l = - pp.c_3l / ((Real)(4));
@@ -197,7 +197,7 @@ namespace Chroma
    Real  JacAccu = 0.00000000001 ;
    int JacMax = 100 ; 
    LatticeColorMatrix  w ;
-   QDPIO::cout << "SU3 polar projection Accuracy " << JacAccu << " max iters = " <<  JacMax << endl;
+   QDPIO::cout << "SU3 polar projection Accuracy " << JacAccu << " max iters = " <<  JacMax << std::endl;
 
    for(int i = 0; i < Nd; i++) 
      {

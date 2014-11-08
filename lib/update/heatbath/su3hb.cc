@@ -16,7 +16,7 @@ namespace Chroma
    * \ingroup heatbath
    *
    * BetaMC * [tr(U*W) + hc] / (2Nc).
-   * Do at most nheat update trials of the Kennedy-Pendleton or Creutz SU(2)
+   * Do at most nheat update trials of the Kennedy-Pstd::endleton or Creutz SU(2)
    * heatbath algorithm.
    *
    * \param u          field to be updated ( Modify )
@@ -74,7 +74,7 @@ namespace Chroma
     Real dummy = TO_REAL(BetaMC) / TO_REAL(Nc);
     if( AnisoP == YES ) dummy /= TO_REAL(xi_0);
 #else
-    QDPIO::cerr << "FIX Beta" << endl;
+    QDPIO::cerr << "FIX Beta" << std::endl;
     Real dummy = 1;   // **WARNING** FIX THIS
 #endif
     r_l[sub] *= dummy;
@@ -94,7 +94,7 @@ namespace Chroma
     case HEATBATH_TYPE_KPHB:
     {
       /*
-       * Kennedy-Pendleton heatbath
+       * Kennedy-Pstd::endleton heatbath
        */
       int n_done = 0;
       int nhb = 0;
@@ -182,7 +182,7 @@ namespace Chroma
     break;
 
     default:
-      QDPIO::cerr << __func__ << ": unknown algorithm type" << endl;
+      QDPIO::cerr << __func__ << ": unknown algorithm type" << std::endl;
       QDP_abort(1);
     }
   

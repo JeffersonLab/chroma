@@ -86,7 +86,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      *
      * \return The output of applying dslash on psi
      */
@@ -100,7 +100,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      *
      * \return The output of applying dslash on psi
      */

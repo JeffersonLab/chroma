@@ -27,8 +27,8 @@ void MesPbp(
 		const multi1d<Real>& Mass,
 		const int ichiral,
 		XMLWriter& xml_out,
-		const string& xml_group,
-		const string& FermAct)
+		const std::string& xml_group,
+		const std::string& FermAct)
 {
 
   START_CODE();
@@ -52,7 +52,7 @@ void MesPbp(
 
   if ((FermAct == "OVERLAP_POLE") || (FermAct == "ZOLOTAREV_4D"))
   {
-	QDPIO::cerr << "mespbp_w.cc: Action " << FermAct << " unsupported." << endl;
+	QDPIO::cerr << "mespbp_w.cc: Action " << FermAct << " unsupported." << std::endl;
 	QDP_abort(1);
 
     /* Use special overlap psi-bar-psi routine */

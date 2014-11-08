@@ -178,7 +178,7 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
 	      copymask(mat1[j][k], l_rot, LatticeComplex(adj(lc2)));
 	    }
 
-	  /* Rotate the eigenvector matrix mat2 */
+	  /* Rotate the eigenstd::vector matrix mat2 */
 	  for(int k = 0; k < Nc; k++)
 	  {
 	    lc1 = mat2[i][k] * v11 + mat2[j][k] * v21;
@@ -229,7 +229,7 @@ void polar_dec(LatticeColorMatrix& c, LatticeColorMatrix& v,
   off_d /= Double(Layout::vol());
   if (numbad > 0)
   {
-    QDPIO::cout << "Warning: " << numbad << " C matrices have zero determiant" << endl;
+    QDPIO::cout << "Warning: " << numbad << " C matrices have zero determiant" << std::endl;
 #if 0
     push(nml_out,"Bad_C_matrices");
     write(nml_out, "numbad", numbad);

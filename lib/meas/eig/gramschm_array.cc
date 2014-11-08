@@ -24,7 +24,7 @@ namespace Chroma {
 // The multi2d is an annoyance.
 // I anticipate that it is called as 
 // multi2d T(Nvec, N5)  -- Nvec is "size2" and N5 is "size1"
-// T[i] is a vector of size N5
+// T[i] is a std::vector of size N5
 template< typename T>
 void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 		     const multi2d<T>& vec, const int Nvec,
@@ -71,7 +71,7 @@ void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Templated version
@@ -85,7 +85,7 @@ void GramSchmArray_T(multi2d<T>& psi, const int Npsi,
 // The multi2d is an annoyance.
 // I anticipate that it is called as 
 // multi2d T(Nvec, N5)  -- Nvec is "size2" and N5 is "size1"
-// T[i] is a vector of size N5
+// T[i] is a std::vector of size N5
 template <typename T>
 void GramSchmArray_T(multi1d<T>& psi, 
 		     const multi2d<T>& vec, 
@@ -124,13 +124,13 @@ void GramSchmArray_T(multi1d<T>& psi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * vec
  *
  * Templated version
  * Arguments:
  *  \param psi         5D Pseudofermion field     	       (Modify)
- *  \param vec         5D vector to orthog. against     	       (Read)
+ *  \param vec         5D std::vector to orthog. against     	       (Read)
  *  \param sub         Subset to use                   (Read) 
  */
 template <typename T>
@@ -185,7 +185,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi, const int Npsi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
+ * Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Arguments:
@@ -251,7 +251,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * all the vectors of vec
  *
  * Arguments:
@@ -272,8 +272,8 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Orthogonalise single vector psi against 
- * a single vector vec
+ * Orthogonalise single std::vector psi against 
+ * a single std::vector vec
  *
  * Templated version
  * Arguments:

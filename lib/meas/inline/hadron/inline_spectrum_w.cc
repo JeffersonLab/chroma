@@ -61,7 +61,7 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, InlineSpectrumParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineSpectrumParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -107,7 +107,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -140,14 +140,14 @@ namespace Chroma
 
     if (param.wvf_param.size() != param.wvfIntPar.size())
     {
-      QDPIO::cerr << "wvf_param size inconsistent with wvfintpar size" << endl;
+      QDPIO::cerr << "wvf_param size inconsistent with wvfintpar size" << std::endl;
       QDP_abort(1);
     }
   }
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, const InlineSpectrumParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineSpectrumParams::Param_t& param)
   {
     push(xml, path);
 
@@ -191,7 +191,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSpectrumParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineSpectrumParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -200,7 +200,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSpectrumParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineSpectrumParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -239,7 +239,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -266,7 +266,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "spectrum_w");
       write(xml_out, "update_no", update_no);
@@ -304,13 +304,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineSpectrumEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineSpectrumEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineSpectrumEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -319,7 +319,7 @@ namespace Chroma
     push(xml_out, "spectrum_w");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineSpectrumEnv::name << ": Spectroscopy for Wilson-like fermions" << endl;
+    QDPIO::cout << InlineSpectrumEnv::name << ": Spectroscopy for Wilson-like fermions" << std::endl;
     StopWatch swatch;
 
     /*
@@ -327,17 +327,17 @@ namespace Chroma
      */
     if (params.param.wvf_param.size() != params.named_obj.prop_ids.size())
     {
-      QDPIO::cerr << "wvf_param size inconsistent with prop_ids size" << endl;
+      QDPIO::cerr << "wvf_param size inconsistent with prop_ids size" << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+    QDPIO::cout << std::endl << "     Gauge group: SU(" << Nc << ")" << std::endl;
 
     QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << Layout::lattSize()[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -366,7 +366,7 @@ namespace Chroma
       // Read the quark propagator and extract headers
       ChromaProp_t prop_header;
       PropSourceConst_t source_header;
-      QDPIO::cout << "Attempt to read propagator info" << endl;
+      QDPIO::cout << "Attempt to read propagator info" << std::endl;
       try
       {
 	// Try the cast to see if this is a valid source
@@ -388,12 +388,12 @@ namespace Chroma
       catch (std::bad_cast)
       {
 	QDPIO::cerr << InlineSpectrumEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineSpectrumEnv::name << ": error extracting prop_header: " << e << endl;
+	QDPIO::cerr << InlineSpectrumEnv::name << ": error extracting prop_header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -401,7 +401,7 @@ namespace Chroma
       const LatticePropagator& quark_propagator = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_ids[loop]);
  
-      QDPIO::cout << "Propagator successfully read and parsed" << endl;
+      QDPIO::cout << "Propagator successfully read and parsed" << std::endl;
 
       // Derived from input prop
       multi1d<int> t_srce   = source_header.getTSrce();
@@ -412,11 +412,11 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      QDPIO::cout << "Try action and mass" << endl;
+      QDPIO::cout << "Try action and mass" << std::endl;
       Real Mass = getMass(prop_header.fermact);
     
-      QDPIO::cout << "FermAct = " << prop_header.fermact.id << endl;
-      QDPIO::cout << "Mass = " << Mass << endl;
+      QDPIO::cout << "FermAct = " << prop_header.fermact.id << std::endl;
+      QDPIO::cout << "Mass = " << Mass << std::endl;
 
       // Flags
       int bc_spec = boundary[j_decay];
@@ -462,7 +462,7 @@ namespace Chroma
 	Wl_src = true;
       else
       {
-	QDPIO::cerr << "Unsupported source type" << endl;
+	QDPIO::cerr << "Unsupported source type" << std::endl;
 	QDP_abort(1);
       }
 
@@ -490,7 +490,7 @@ namespace Chroma
 	  
 	  u_link_smr = u_tmp;
 	}
-	QDPIO::cout << "Gauge field APE-smeared!" << endl;
+	QDPIO::cout << "Gauge field APE-smeared!" << std::endl;
       }
 
 
@@ -566,7 +566,7 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << InlineSpectrumEnv::name << ": mesons computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       } // end if (MesonP)
 
 
@@ -657,7 +657,7 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << InlineSpectrumEnv::name << ": hybrid mesons computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       } // end if (HybMesP)
 
 
@@ -668,7 +668,7 @@ namespace Chroma
 	swatch.reset();
 	swatch.start();
 
-	// Construct the rho vector-current and the pion axial current divergence
+	// Construct the rho std::vector-current and the pion axial current divergence
 	if (Pt_src)
 	  curcor2(u, quark_propagator, quark_propagator, phases, 
 		  t0, 3,
@@ -687,7 +687,7 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << InlineSpectrumEnv::name << ": currents computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       } // end if (CurrentP)
 
 
@@ -769,7 +769,7 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << InlineSpectrumEnv::name << ": baryons computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       } // end if (BaryonP)
 
       pop(xml_array);  // array element
@@ -782,9 +782,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineSpectrumEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineSpectrumEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineSpectrumEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

@@ -36,14 +36,14 @@ namespace Chroma
       int order ;
     } polyParams;
 
-    std::string  AuxFermAct;      /*!< string holding fermact xml */
+    std::string  AuxFermAct;      /*!< std::string holding fermact xml */
   };
 
   // Reader/writers
   /*! \ingroup fermacts */
-  void read(XMLReader& xml, const string& path, PolyChebFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, PolyChebFermActParams& param);
   /*! \ingroup fermacts */
-  void write(XMLWriter& xml, const string& path, const PolyChebFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const PolyChebFermActParams& param);
 
 
   //! Chebyshev Polynomial fermion action

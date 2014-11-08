@@ -13,7 +13,7 @@
 namespace Chroma
 {
 
-  //! Eigenvector accelerated CG system solver namespace
+  //! Eigenstd::vector accelerated CG system solver namespace
   namespace LinOpSysSolverEigCGEnv
   {
     //! Anonymous namespace

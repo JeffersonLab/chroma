@@ -33,7 +33,6 @@
 #include "qphix/invcg.h"
 #include "qphix/invbicgstab.h"
 
-using namespace std;
 using namespace QDP;
 
 namespace Chroma
@@ -121,14 +120,14 @@ namespace Chroma
 			      const SysSolverQPhiXCloverParams& invParam_) : 
       A(A_), invParam(invParam_), clov(new QDPCloverTermT<T, U>()), invclov(new QDPCloverTermT<T, U>())
     {
-      QDPIO::cout << "LinOpSysSolverQPhiXClover:" << endl;
-      QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << endl;
+      QDPIO::cout << "LinOpSysSolverQPhiXClover:" << std::endl;
+      QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << std::endl;
 
 
-      QDPIO::cout << "Veclen is " << VecTraits<REALT>::Vec << endl;
-      QDPIO::cout << "Soalen is " << VecTraits<REALT>::Soa << endl;
+      QDPIO::cout << "Veclen is " << VecTraits<REALT>::Vec << std::endl;
+      QDPIO::cout << "Soalen is " << VecTraits<REALT>::Soa << std::endl;
       if ( VecTraits<REALT>::Soa > VecTraits<REALT>::Vec ) { 
-	QDPIO::cerr << "PROBLEM: Soalen > Veclen. Please set soalen appropriately (<=VECLEN) at compile time" << endl;
+	QDPIO::cerr << "PROBLEM: Soalen > Veclen. Please set soalen appropriately (<=VECLEN) at compile time" << std::endl;
 	QDP_abort(1);
       }
 
@@ -157,7 +156,7 @@ namespace Chroma
   			Real(t_boundary), Real(1));
       }
 
-      QDPIO::cout << "About to grap a Dslash" << endl;
+      QDPIO::cout << "About to grap a Dslash" << std::endl;
       geom = new QPhiX::Geometry<REALT, VecTraits<REALT>::Vec, VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(Layout::subgridLattSize().slice(),
 												      invParam.By, 
 												      invParam.Bz, 
@@ -168,7 +167,7 @@ namespace Chroma
 												      invParam.PadXYZ,
 														   invParam.MinCt);
       
-      QDPIO::cout << " Allocating p and c" << endl << flush ;
+      QDPIO::cout << " Allocating p and c" << std::endl << std::flush ;
       p_even=(QPhiX_Spinor *)geom->allocCBFourSpinor();
       p_odd=(QPhiX_Spinor *)geom->allocCBFourSpinor();
       c_even=(QPhiX_Spinor *)geom->allocCBFourSpinor();
@@ -178,20 +177,20 @@ namespace Chroma
       chi_s[0]=c_even;
       chi_s[1]=c_odd;
 
-      QDPIO::cout << " Allocating Clover" << endl << flush ;
+      QDPIO::cout << " Allocating Clover" << std::endl << std::flush ;
       QPhiX_Clover* A_cb0=(QPhiX_Clover *)geom->allocCBClov();
       QPhiX_Clover* A_cb1=(QPhiX_Clover *)geom->allocCBClov();
       clov_packed[0] = A_cb0;
       clov_packed[1] = A_cb1;
 
-      QDPIO::cout << " Allocating CloverInv " << endl << flush ;
+      QDPIO::cout << " Allocating CloverInv " << std::endl << std::flush ;
       QPhiX_Clover* A_inv_cb0=(QPhiX_Clover *)geom->allocCBClov();
       QPhiX_Clover* A_inv_cb1=(QPhiX_Clover *)geom->allocCBClov();
       invclov_packed[0] = A_inv_cb0;
       invclov_packed[1] = A_inv_cb1;
 
       // Pack the gauge field
-      QDPIO::cout << "Packing gauge field..."  << endl << flush ;
+      QDPIO::cout << "Packing gauge field..."  << std::endl << std::flush ;
       QPhiX_Gauge* packed_gauge_cb0=(QPhiX_Gauge *)geom->allocCBGauge();
       QPhiX_Gauge* packed_gauge_cb1=(QPhiX_Gauge *)geom->allocCBGauge();
 
@@ -200,16 +199,16 @@ namespace Chroma
       u_packed[1] = packed_gauge_cb1;
 
       
-      QDPIO::cout << "Creating Clover Term" << endl;
+      QDPIO::cout << "Creating Clover Term" << std::endl;
       QDPCloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
-      QDPIO::cout << "Inverting Clover Term" << endl;
+      QDPIO::cout << "Inverting Clover Term" << std::endl;
       invclov->create(state_, invParam.CloverParams, (*clov));
       for(int cb=0; cb < 2; cb++) { 
 	invclov->choles(cb);
       }
-      QDPIO::cout << "Done" << endl;
-      QDPIO::cout << "Packing Clover term..." << endl;
+      QDPIO::cout << "Done" << std::endl;
+      QDPIO::cout << "Packing Clover term..." << std::endl;
       
       for(int cb=0; cb < 2; cb++) { 
 	QPhiX::qdp_pack_clover<>((*invclov).getTriBuffer(), invclov_packed[cb], *geom, cb);
@@ -218,9 +217,9 @@ namespace Chroma
       for(int cb=0; cb < 2; cb++) { 
 	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed[cb], *geom, cb);
       }
-      QDPIO::cout << "Done" << endl;
+      QDPIO::cout << "Done" << std::endl;
 
-      QDPIO::cout << "Creating the Even Odd Operator" << endl;
+      QDPIO::cout << "Creating the Even Odd Operator" << std::endl;
       M=new QPhiX::EvenOddCloverOperator<REALT,VecTraits<REALT>::Vec,VecTraits<REALT>::Soa,VecTraits<REALT>::compress12>(u_packed,  
 															 clov_packed[1], 
 															 invclov_packed[0],  
@@ -233,7 +232,7 @@ namespace Chroma
       switch( invParam.SolverType ) { 
       case BICGSTAB:
 	{
-	  QDPIO::cout << "Creating the BiCGStab Solver" << endl;
+	  QDPIO::cout << "Creating the BiCGStab Solver" << std::endl;
 	  bicgstab_solver = new QPhiX::InvBiCGStab<REALT,VecTraits<REALT>::Vec, VecTraits<REALT>::Soa, VecTraits<REALT>::compress12>((*M), invParam.MaxIter,1);
 
 #if 1
@@ -243,7 +242,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "UNKNOWN Solver Type" << endl;
+	QDPIO::cerr << "UNKNOWN Solver Type" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -255,7 +254,7 @@ namespace Chroma
     {
       
       // Need to unalloc all the memory...
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
 
       geom->free(p_even);
       geom->free(p_odd);
@@ -313,7 +312,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cout << "Unknown Solver " << endl;
+	QDPIO::cout << "Unknown Solver " << std::endl;
 	break;
       }
       
@@ -367,7 +366,7 @@ namespace Chroma
       (*A)(mdag_chi, chi, MINUS);
       
       
-      //      QDPIO::cout << "Allocating Spinor fields" << endl;
+      //      QDPIO::cout << "Allocating Spinor fields" << std::endl;
       // Pack Spinors psi and chi
       QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], *geom);
       QPhiX::qdp_pack_spinor<>(mdag_chi, chi_s[0], chi_s[1], *geom);
@@ -380,7 +379,7 @@ namespace Chroma
       (*cg_solver)(psi_s[1],chi_s[1], res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M).getGeometry());
 
       // Chi Should now hold the result spinor 
@@ -394,11 +393,11 @@ namespace Chroma
       Double b2 = norm2(chi, A->subset());
       Double rel_resid = sqrt(r2/b2);
 
-      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << endl;
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: || r || / || b || = " << rel_resid << std::endl;
 
 #if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
-	QDPIO::cout << "SOLVE FAILED" << endl;
+	QDPIO::cout << "SOLVE FAILED" << std::endl;
 	QDP_abort(1);
       }
 #endif
@@ -408,7 +407,7 @@ namespace Chroma
       double gflops = (double)(total_flops)/(1.0e9);
 
       double total_time = end - start;
-      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
+      QDPIO::cout << "QPHIX_CLOVER_CG_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
       END_CODE();
       return res;
@@ -421,20 +420,20 @@ namespace Chroma
       psi=zero;
 
       // Pack Spinors psi and chi
-      QDPIO::cout << "Packing" << endl << flush ;
+      QDPIO::cout << "Packing" << std::endl << std::flush ;
       QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], *geom);
       QPhiX::qdp_pack_spinor<>(chi, chi_s[0], chi_s[1], *geom);
-      QDPIO::cout << "Done" << endl << flush;
+      QDPIO::cout << "Done" << std::endl << std::flush;
       double rsd_final;
       unsigned long site_flops=0;
       unsigned long mv_apps=0;
       
-      QDPIO::cout << "Starting solve" << endl << flush ;
+      QDPIO::cout << "Starting solve" << std::endl << std::flush ;
       double start = omp_get_wtime();
       (*bicgstab_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, *geom);
 
       // Chi Should now hold the result spinor 
@@ -448,11 +447,11 @@ namespace Chroma
       Double b2 = norm2(chi, A->subset());
       Double rel_resid = sqrt(r2/b2);
 
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: || r || / || b || = " << rel_resid << endl;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: || r || / || b || = " << rel_resid << std::endl;
 
 #if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
-	QDPIO::cout << "SOLVE FAILED" << endl;
+	QDPIO::cout << "SOLVE FAILED" << std::endl;
 	QDP_abort(1);
       }
 #endif
@@ -462,7 +461,7 @@ namespace Chroma
       double gflops = (double)(total_flops)/(1.0e9);
 
       double total_time = end - start;
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
       END_CODE();
       return res;

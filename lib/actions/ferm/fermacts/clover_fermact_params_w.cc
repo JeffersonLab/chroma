@@ -25,7 +25,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  CloverFermActParams::CloverFermActParams(XMLReader& xml, const string& path)
+  CloverFermActParams::CloverFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
     
@@ -35,7 +35,7 @@ namespace Chroma
       read(paramtop, "Mass", Mass);
       if (paramtop.count("Kappa") != 0) 
       {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -44,11 +44,11 @@ namespace Chroma
       Real Kappa;
       read(paramtop, "Kappa", Kappa);
       Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
-      QDPIO::cout << "Kappa is " << Kappa << "  Mass is " << Mass << endl << flush;
+      QDPIO::cout << "Kappa is " << Kappa << "  Mass is " << Mass << std::endl << std::flush;
     }
     else
     {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << std::endl;
       QDP_abort(1);
     }
 
@@ -57,7 +57,7 @@ namespace Chroma
       read(paramtop, "u0", u0);
     else {
       u0 = Real(1);
-      QDPIO::cout << "u0 is " << u0 << endl << flush;
+      QDPIO::cout << "u0 is " << u0 << std::endl << std::flush;
     }
     // Read optional anisoParam
     if (paramtop.count("AnisoParam") != 0) 
@@ -79,7 +79,7 @@ namespace Chroma
 
     if( paramtop.count("MaxNorm") != 0 ){
       read(paramtop, "MaxNorm", max_norm);
-      QDPIO::cout << "MaxNorm="<<max_norm<<endl;
+      QDPIO::cout << "MaxNorm="<<max_norm<<std::endl;
       max_norm_usedP=true;
     }
     else { 
@@ -107,7 +107,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, CloverFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, CloverFermActParams& param)
   {
     CloverFermActParams tmp(xml, path);
     param = tmp;
@@ -115,7 +115,7 @@ namespace Chroma
 
 
   //! Write parameters
-  void write(XMLWriter& xml, const string& path, const CloverFermActParams& param)
+  void write(XMLWriter& xml, const std::string& path, const CloverFermActParams& param)
   {
     push(xml, path);
 

@@ -86,7 +86,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   r[sub] = b;
   r0[sub] = b;
 
-  QDPIO::cout << "r0 = " << b_sq << endl;;
+  QDPIO::cout << "r0 = " << b_sq << std::endl;;
 
   flopcount.addFlops(A.nFlops());
   flopcount.addSiteFlops(2*Nc*Ns,sub);
@@ -159,7 +159,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
 
 
     if( toBool( real(rhon) == 0 ) && toBool( imag(rhon) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: rho = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: rho = 0" << std::endl;
       QDP_abort(1);
     }
      
@@ -182,12 +182,12 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
     taun = sigman_1 + beta*(taun_1- omegan_1*pin_1);     // 16 flops 
 
     if( toBool( real(taun) == 0 ) && toBool( imag(taun) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: n="<<n<<" <r_0|v> = 0" << endl;
-      QDPIO::cout << "sigman_1 = " << sigman_1 << endl;
-      QDPIO::cout << "beta= " << beta << endl;
-      QDPIO::cout << "taun_1 = " << taun_1 << endl;
-      QDPIO::cout << "ometan_1 = " << omegan_1 << endl;
-      QDPIO::cout << "pin_1 = " << pin_1 << endl;
+      QDPIO::cout << "BiCGStab breakdown: n="<<n<<" <r_0|v> = 0" << std::endl;
+      QDPIO::cout << "sigman_1 = " << sigman_1 << std::endl;
+      QDPIO::cout << "beta= " << beta << std::endl;
+      QDPIO::cout << "taun_1 = " << taun_1 << std::endl;
+      QDPIO::cout << "ometan_1 = " << omegan_1 << std::endl;
+      QDPIO::cout << "pin_1 = " << pin_1 << std::endl;
 
       QDP_abort(1);
     }
@@ -341,7 +341,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
       rupdates++;
       
       if( updateX ) { 
-	//QDPIO::cout << "Iter " << k << ": updating x " << endl;
+	//QDPIO::cout << "Iter " << k << ": updating x " << std::endl;
 	if( ! updateR ) { x_dble[sub]=x; } // if updateR then this is done already
 	psi[sub] += x_dble; // Add on group accumulated solution in y
 	flopcount.addSiteFlops(2*Nc*Ns,sub);
@@ -362,7 +362,7 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
       // Carry on with this iteration
       // Check kappa for breakdown 
       if( toBool(kappa == 0) ) { 
-	QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << endl;
+	QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << std::endl;
 	QDP_abort(1);
       }
       
@@ -417,12 +417,12 @@ RelInvIBiCGStab_a(const LinearOperator<T>& A,
   
 exit:  swatch.stop();
 
-  QDPIO::cout << "InvIBiCGStabReliable: n = " << ret.n_count << " r-updates: " << rupdates << " xr-updates: " << xupdates << endl;
+  QDPIO::cout << "InvIBiCGStabReliable: n = " << ret.n_count << " r-updates: " << rupdates << " xr-updates: " << xupdates << std::endl;
  
   flopcount.report("reliable_invibicgstab", swatch.getTimeInSeconds());
 
   if ( ret.n_count == MaxBiCGStab ) { 
-    QDPIO::cerr << "Nonconvergence of IBiCGStab. MaxIters reached " << endl;
+    QDPIO::cerr << "Nonconvergence of IBiCGStab. MaxIters reached " << std::endl;
   }
 
 

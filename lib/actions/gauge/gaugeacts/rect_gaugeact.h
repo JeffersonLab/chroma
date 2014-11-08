@@ -17,7 +17,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace RectGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
     
     extern double getTime();
@@ -42,7 +42,7 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, RectGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, RectGaugeActParams& param);
   
 
   //! Rect gauge action

@@ -57,7 +57,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -81,10 +81,10 @@ namespace Chroma
     push(xml_out, "list_named_obj");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineListNamedObjEnv::name << ": object list" << endl;
+    QDPIO::cout << InlineListNamedObjEnv::name << ": object list" << std::endl;
 
     // List the object
-    QDPIO::cout << "Attempt to list all object names" << endl;
+    QDPIO::cout << "Attempt to list all object names" << std::endl;
     try
     {
       TheNamedObjMap::Instance().dump();
@@ -92,17 +92,17 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineListNamedObjEnv::name << ": cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineListNamedObjEnv::name << ": error message: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
-    QDPIO::cout << InlineListNamedObjEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineListNamedObjEnv::name << ": ran successfully" << std::endl;
 
     pop(xml_out);  // list_named_obj
 

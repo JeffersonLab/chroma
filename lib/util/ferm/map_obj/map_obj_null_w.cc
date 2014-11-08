@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- *  \brief Null based map object, factory registration
+ *  \brief Null based std::map object, factory registration
  */
 
 #include "chromabase.h"

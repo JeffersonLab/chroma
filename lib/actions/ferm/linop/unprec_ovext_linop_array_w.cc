@@ -51,7 +51,7 @@ namespace Chroma
   }
 
 
-  //! Apply the operator onto a source vector
+  //! Apply the operator onto a source std::vector
   /*!
    * The operator acts on the entire lattice
    *
@@ -80,7 +80,7 @@ namespace Chroma
 	moveToFastMemoryHint(tmp5);
 
 	
-	// Get a vector of wilson dirac op applications
+	// Get a std::vector of wilson dirac op applications
 	for(int i=0; i < N5; i++) { 
 	  Dw(tmp5[i], psi[i], PLUS);
 	}
@@ -264,7 +264,7 @@ namespace Chroma
       }
       break;
     default: 
-      QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << endl;
+      QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << std::endl;
       QDP_abort(1);
     };
 
@@ -281,7 +281,7 @@ namespace Chroma
 			       enum PlusMinus isign) const
   {
     START_CODE();
-    QDPIO::cout << "Not yet implemented " << endl;
+    QDPIO::cout << "Not yet implemented " << std::endl;
     QDP_abort(1);
 
     getFermBC().zero(ds_u);

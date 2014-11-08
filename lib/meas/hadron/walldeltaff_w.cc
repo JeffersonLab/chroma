@@ -172,7 +172,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   if ( Ns != 4 || Nc != 3 || Nd != 4 )	// Code is specific to Ns=4, Nc=3, Nd=4
     return;
 
-  QDPIO::cout << "Entering wallDeltaFormFac" << endl;
+  QDPIO::cout << "Entering wallDeltaFormFac" << std::endl;
   QDP::StopWatch swatch;
   swatch.reset();
   swatch.start();
@@ -222,16 +222,16 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 
 
   // Quark names
-  multi1d<string> quark_name(2);
+  multi1d<std::string> quark_name(2);
   quark_name[0] = "u";
   quark_name[1] = "d";
 
   // Formfac names
-  multi1d<string> formfac_name(1);
+  multi1d<std::string> formfac_name(1);
   formfac_name[0] = "nucleon->gamma+nucleon";
 
   // Projector names
-  multi1d<string> proj_name(Nd);
+  multi1d<std::string> proj_name(Nd);
   proj_name[0] = "I";
   proj_name[1] = "sigma_1";
   proj_name[2] = "sigma_2";
@@ -264,7 +264,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   }
 
   swatch.stop();
-  QDPIO::cout << "Time(init): " << swatch.getTimeInMicroseconds() << " s" << endl;
+  QDPIO::cout << "Time(init): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
   swatch.start();
 
   // For calculational purpose, loop over insertions first.
@@ -273,7 +273,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   for(int gamma_ctr = 0; gamma_ctr < gamma_list.size(); ++gamma_ctr)
   {
     swatch.stop();
-    QDPIO::cout << "Time(gamma_ctr=" << gamma_ctr << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
+    QDPIO::cout << "Time(gamma_ctr=" << gamma_ctr << "): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
     swatch.start();
 
     int gamma_value = gamma_list[gamma_ctr];
@@ -284,7 +284,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
     for(int ud = 0; ud < form.quark.size(); ++ud)
     {
       swatch.stop();
-      QDPIO::cout << "Time(ud=" << ud << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
+      QDPIO::cout << "Time(ud=" << ud << "): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
       swatch.start();
 
       WallFormFac_quark_t& quark = form.quark[ud];
@@ -333,7 +333,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
       for(int dp = 0; dp < quark.formfac.size(); ++dp)
       {
 	swatch.stop();
-	QDPIO::cout << "Time(dp=" << dp << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
+	QDPIO::cout << "Time(dp=" << dp << "): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
 	swatch.start();
 
 	WallFormFac_formfac_t& formfac = quark.formfac[dp];
@@ -347,7 +347,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	for(int lorz = 0; lorz < formfac.lorentz.size(); ++lorz)
 	{
 	  swatch.stop();
-	  QDPIO::cout << "Time(lorz=" << lorz << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
+	  QDPIO::cout << "Time(lorz=" << lorz << "): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
 	  swatch.start();
 
 	  WallFormFac_lorentz_t& lorentz = formfac.lorentz[lorz];
@@ -413,7 +413,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	  for (int proj = 0; proj < lorentz.projector.size(); ++proj) 
 	  {
 	    swatch.stop();
-	    QDPIO::cout << "Time(proj=" << proj << "): " << swatch.getTimeInMicroseconds() << " s" << endl;
+	    QDPIO::cout << "Time(proj=" << proj << "): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
 	    swatch.start();
 
 	    WallFormFac_projector_t& projector = lorentz.projector[proj];
@@ -426,7 +426,7 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	    insertion.mu          = mu;
 	    insertion.gamma_value = gamma_value;
 
-	    // The local non-conserved vector-current matrix element 
+	    // The local non-conserved std::vector-current matrix element 
 	    LatticeComplex corr_local_fn = traceSpin(S_proj[proj] * local_contract);
 
 	    // The nonlocal (possibly conserved) current matrix element 
@@ -435,12 +435,12 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
 	    multi1d<WallFormFac_momenta_t>& momenta = insertion.momenta;
 
             swatch.stop();
-	    QDPIO::cout << "Time(before sft): " << swatch.getTimeInMicroseconds() << " s" << endl;
+	    QDPIO::cout << "Time(before sft): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
             swatch.start();
 	    wallFormFacSft(momenta, corr_local_fn, corr_nonlocal_fn, phases,
 			   compute_nonlocal, t0);
             swatch.stop();
-	    QDPIO::cout << "Time(after sft): " << swatch.getTimeInMicroseconds() << " s" << endl;
+	    QDPIO::cout << "Time(after sft): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
             swatch.start();
 	  } // end for(proj)
 	}  // end for(dp)
@@ -449,8 +449,8 @@ void wallDeltaFormFac(WallFormFac_formfacs_t& form,
   } // end for(gamma_ctr)
 
   swatch.stop();
-  QDPIO::cout << "Time(wallDeltaFormFac): " << swatch.getTimeInMicroseconds() << " s" << endl;
-  QDPIO::cout << "Exiting wallDeltaFormFac" << endl;
+  QDPIO::cout << "Time(wallDeltaFormFac): " << swatch.getTimeInMicroseconds() << " s" << std::endl;
+  QDPIO::cout << "Exiting wallDeltaFormFac" << std::endl;
 
   END_CODE();
 }

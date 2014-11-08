@@ -17,7 +17,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readWupp(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readWupp(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 //! Read a WUPP configuration file
 /*!

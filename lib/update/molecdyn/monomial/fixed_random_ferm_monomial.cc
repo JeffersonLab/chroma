@@ -17,7 +17,7 @@ namespace Chroma {
   { 
     //! Callback function for the factory
     Monomial< multi1d<LatticeColorMatrix>,
-	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+	      multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
     {
       return new  FixedRandomFermMonomial4D(FixedRandomFermMonomialParams(xml,path));
       
@@ -53,7 +53,7 @@ namespace Chroma {
     }
     
     std::istringstream is( p.fermstate.xml );
-    QDPIO::cout << "FermStateXML is: " << p.fermstate.xml << endl;
+    QDPIO::cout << "FermStateXML is: " << p.fermstate.xml << std::endl;
     
     XMLReader xml_in(is);
     

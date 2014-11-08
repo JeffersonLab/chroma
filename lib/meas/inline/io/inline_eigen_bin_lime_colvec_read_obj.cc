@@ -21,7 +21,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineEigenBinLimeColVecReadNamedObjEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineEigenBinLimeColVecReadNamedObjEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -32,7 +32,7 @@ namespace Chroma
   }
 
   //! File output
-  void read(XMLReader& xml, const string& path, InlineEigenBinLimeColVecReadNamedObjEnv::Params::File_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineEigenBinLimeColVecReadNamedObjEnv::Params::File_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -65,8 +65,8 @@ namespace Chroma
 
       if (vec.size() != vsize) 
       {
-	cerr << "in unserialize: invalid size of serialized vector" 
-	     << endl;
+	QDPIO::cerr << "in unserialize: invalid size of serialized std::vector" 
+	     << std::endl;
 
 	exit(0);
       }
@@ -143,7 +143,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -157,11 +157,11 @@ namespace Chroma
       push(xml_out, "eigeninfo_bin_lime_colorvec_read_named_obj");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object reader" << endl;
+      QDPIO::cout << name << ": object reader" << std::endl;
       StopWatch swatch;
 
       // Read the object
-      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << std::endl;
       write(xml_out, "object_id", params.named_obj.object_id);
       try
       {
@@ -209,7 +209,7 @@ namespace Chroma
 #endif
 	int nev;
 			
-	// Weird storage (time slower than vector number)
+	// Weird storage (time slower than std::vector number)
 	for (int t = 0 ; t < nt ; ++t)
 	{
 
@@ -238,14 +238,14 @@ namespace Chroma
 	    nev = evals_t.size();
 	    evals.resize(nev);
 	    evecs.resize(nev);
-	    QDPIO::cout << "Initializing eigenpairs" << endl;
+	    QDPIO::cout << "Initializing eigenpairs" << std::endl;
 	    for (int v = 0 ; v < nev ; ++v)
 	    {
 	      evecs[v] = zero;
 	      evals[v].weights.resize(nt);
 	    }		
 	  }
-	  QDPIO::cout << "Unserealizing evecs for timeslice " << t << endl;
+	  QDPIO::cout << "Unserealizing evecs for timeslice " << t << std::endl;
 	  for (int n = 0 ; n < nev ; n++)
 	  {
 
@@ -256,7 +256,7 @@ namespace Chroma
 
 	    if (temp.size() != ndim )
 	    {
-	      QDPIO::cerr << "Invalid array size" << endl;
+	      QDPIO::cerr << "Invalid array size" << std::endl;
 	      exit(1);
 	    }
 	    unserialize(evecs[n], temp, t);
@@ -266,13 +266,12 @@ namespace Chroma
 	}//t
 
 	for(int n=0; n < nev; n++) { 
-	  QDPIO::cout << "Inserting eval/evec pair " << n << endl;
+	  QDPIO::cout << "Inserting eval/evec pair " << n << std::endl;
 	  EVPair<LatticeColorVector> pair;
 	  pair.eigenValue = evals[n];
 	  pair.eigenVector = evecs[n];
 	  eigen->insert(n,pair);
 	}
-	eigen->flush();
 
 	pop(final_record_xml);
 	pop(final_record_xml);
@@ -284,20 +283,20 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully read: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": cast error" << endl;
+	QDPIO::cerr << name << ": cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error message: " << e << endl;
+	QDPIO::cerr << name << ": error message: " << e << std::endl;
 	QDP_abort(1);
       }
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // read_named_obj
 

@@ -88,8 +88,8 @@ namespace Chroma {
 
   * Local Variables:
 
- *  psi			New eigenvector
- *  p			Direction vector
+ *  psi			New eigenstd::vector
+ *  p			Direction std::vector
  *  Apsi		Temporary for  A.psi
  *  Ap			Temporary for  A.p, and other
  *  mu			Ritz functional value
@@ -103,7 +103,7 @@ namespace Chroma {
 template < typename T >
 void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    Real& lambda,               // Current E-value
-	    multi1d<T>& psi_all,        // E-vector array
+	    multi1d<T>& psi_all,        // E-std::vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
 	    const Real& Rsd_a,          // Target absolute residue
@@ -180,7 +180,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 #if 0
   // Debugging
   QDPIO::cout << "Starting Ritz: N_eig=" << N_eig << ", mu = " << mu
-	      << ", g2_0 = " << g2_0 << endl;
+	      << ", g2_0 = " << g2_0 << std::endl;
 #endif
 
   // Check whether we have converged
@@ -423,15 +423,15 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 #if 0
       QDPIO::cout << "Converged at iter=" << k << ", lambda = " << lambda
 		  << ",  rsd | mu | = " << rsd << ",  || g || = "
-		  << sqrt(g2) << " || x || - 1 = " << d << endl;
+		  << sqrt(g2) << " || x || - 1 = " << d << std::endl;
       
       if(Kalk_Sim) 
       { 
 	// Extra info for KalkSimma Mode
 	QDPIO::cout << "KS: gamma = "<< gamma_factor << ",  || g ||^2/|| g_0 ||^2="
 		    << g2/g2_0 
-		    << ",  delta_cycle_err=" << delta_cycle_err << endl;
-	QDPIO::cout << "KS: CGConvP = " << CGConvP << ",  KSConvP = " << KSConvP << " deltaCycleConvP = " << deltaCycleConvP << endl;
+		    << ",  delta_cycle_err=" << delta_cycle_err << std::endl;
+	QDPIO::cout << "KS: CGConvP = " << CGConvP << ",  KSConvP = " << KSConvP << " deltaCycleConvP = " << deltaCycleConvP << std::endl;
       }
 #endif
       // Recompute lambda
@@ -441,10 +441,10 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
       mu = innerProductReal(psi, Apsi, s);
       lambda = Real(mu);
 #if 0
-      QDPIO::cout << "Mu-s at convergence: old " << s1 << " vs " << mu << endl;
+      QDPIO::cout << "Mu-s at convergence: old " << s1 << " vs " << mu << std::endl;
 
 #endif
-      // Copy vector back into psi array.
+      // Copy std::vector back into psi array.
       psi_all[N_eig_index][s] = psi;
 
       // Work out final gradient 
@@ -467,7 +467,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
     if( toBool( ct > Double(1)) ) 
     {
       /* Restart: p[k] = g[k] = Ap */
-      QDPIO::cout << "Restart at iter " << k << " since beta = " << b << endl;
+      QDPIO::cout << "Restart at iter " << k << " since beta = " << b << std::endl;
       p[s] = Ap;
     }
     else    {
@@ -549,7 +549,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
   final_grad = sqrt(g2);
   QDPIO::cerr << "too many CG/Ritz iterations: n_count=" << n_count
 	      << ", rsd_r =" << sqrt(rsd_r_sq) <<" rsd_a=" << Rsd_a << ", ||g||=" << sqrt(g2) << ", p2=" << p2
-	      << ", lambda" << lambda << endl;
+	      << ", lambda" << lambda << std::endl;
   QDP_abort(1);
   END_CODE();
 }
@@ -559,7 +559,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
 void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  Real& lambda,                            // Current E-value
-	  multi1d<LatticeFermion>& psi_all,        // E-vector array
+	  multi1d<LatticeFermion>& psi_all,        // E-std::vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
 	  const Real& Rsd_a,          // Absolute target residue

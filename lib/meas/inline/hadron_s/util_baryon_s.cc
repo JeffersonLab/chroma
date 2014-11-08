@@ -15,7 +15,7 @@ namespace Chroma
 { 
 
 
-void ks_compute_baryon(string name,
+void ks_compute_baryon(std::string name,
 		       LatticeStaggeredPropagator & quark_propagator, 
 		       XMLWriter & xml_out, 
 		       int j_decay, int tlength)
@@ -42,7 +42,7 @@ void ks_compute_baryon(string name,
 // wrapper routine for baryon operators
 //
 
-void ks_compute_baryon(string name,
+void ks_compute_baryon(std::string name,
 		       LatticeStaggeredPropagator & quark_propagator_a, 
 		       LatticeStaggeredPropagator & quark_propagator_b, 
 		       LatticeStaggeredPropagator & quark_propagator_c, 
@@ -76,7 +76,7 @@ void ks_compute_baryon(string name,
 
 
 
-void write_smearing_info(string name, stag_src_type type_of_src,
+void write_smearing_info(std::string name, stag_src_type type_of_src,
 			 XMLWriter &xml_out, int fuzz_width )
 {
 
@@ -110,7 +110,7 @@ void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
 {
 
 
-  string filename_base;
+  std::string filename_base;
 
 
       //
@@ -120,7 +120,7 @@ void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
       push(xml_out, "baryon_correlators");
 
       // describe the source
-      string NN ;
+      std::string NN ;
       write(xml_out, "source_time", t_source);
       push(xml_out, "smearing_info");
       NN = "L" ; 
@@ -132,7 +132,7 @@ void compute_vary_baryon_s(XMLWriter &xml_out, int t_source, int fuzz_width,
       pop(xml_out);
 
       // write out the baryon correlators 
-      string b_tag("srcLLL_sinkLLL_nucleon") ;  
+      std::string b_tag("srcLLL_sinkLLL_nucleon") ;  
 
 
       filename_base=binary_name+b_tag;

@@ -29,7 +29,7 @@ namespace Chroma
 
       if (Ns != 4)
       {
-	QDPIO::cerr << __func__ << ": only supports Ns=4 currently" << endl;
+	QDPIO::cerr << __func__ << ": only supports Ns=4 currently" << std::endl;
 	QDP_abort(1);
       }
 

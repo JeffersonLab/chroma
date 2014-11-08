@@ -20,14 +20,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, PointQuarkSinkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, PointQuarkSinkSmearingEnv::Params& param)
   {
     PointQuarkSinkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PointQuarkSinkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const PointQuarkSinkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -96,7 +96,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -142,7 +142,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -154,7 +154,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
       int version = 1;
@@ -172,7 +172,7 @@ namespace Chroma
     void
     SinkSmear<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
     {
-      QDPIO::cout << "Point sink" << endl;
+      QDPIO::cout << "Point sink" << std::endl;
  
       try
       {
@@ -195,7 +195,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -207,7 +207,7 @@ namespace Chroma
     void
     SinkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_sink) const
     {
-      QDPIO::cout << "Point sink" << endl;
+      QDPIO::cout << "Point sink" << std::endl;
  
       try
       {
@@ -230,7 +230,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -242,7 +242,7 @@ namespace Chroma
     void
     SinkSmear<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
     {
-//      QDPIO::cout << "Point sink" << endl;
+//      QDPIO::cout << "Point sink" << std::endl;
  
       try
       {
@@ -265,7 +265,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in displacement: " << e << std::endl;
 	QDP_abort(1);
       }
     }

@@ -47,7 +47,7 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     inline
     void evenEvenLinOp(multi1d<LatticeFermion>& chi, 
 		       const multi1d<LatticeFermion>& psi, 
@@ -56,7 +56,7 @@ namespace Chroma
       applyDiag(chi, psi, isign, 0);
     }
   
-    //! Apply the inverse of the even-even block onto a source vector
+    //! Apply the inverse of the even-even block onto a source std::vector
     inline
     void evenEvenInvLinOp(multi1d<LatticeFermion>& chi, 
 			  const multi1d<LatticeFermion>& psi, 
@@ -65,7 +65,7 @@ namespace Chroma
       applyDiagInv(chi, psi, isign, 0);
     }
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
@@ -73,7 +73,7 @@ namespace Chroma
       applyOffDiag(chi, psi, isign, 0);
     }
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     void oddEvenLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
@@ -81,7 +81,7 @@ namespace Chroma
       applyOffDiag(chi, psi, isign, 1);
     }
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     inline
     void oddOddLinOp(multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
@@ -90,7 +90,7 @@ namespace Chroma
       applyDiag(chi, psi, isign, 1);
     }
 
-    //! Apply the inverse of the odd-odd block onto a source vector
+    //! Apply the inverse of the odd-odd block onto a source std::vector
     inline
     void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
 			const multi1d<LatticeFermion>& psi, 

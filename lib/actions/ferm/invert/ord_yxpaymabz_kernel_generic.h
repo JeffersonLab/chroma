@@ -42,7 +42,7 @@ void ord_yxpaymabz_kernel(int lo, int hi, int my_id, ord_yxpaymabz_arg* a)
     }
   }
   else { 
-    QDPIO::cout << "ord_yxpaymabz_kernel_generic.h: len not divisible by 4" << endl;
+    QDPIO::cout << "ord_yxpaymabz_kernel_generic.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
   }
 }

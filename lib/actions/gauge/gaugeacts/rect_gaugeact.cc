@@ -98,13 +98,13 @@ namespace Chroma
 
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
   // Read params
-  void read(XMLReader& xml, const string& path, RectGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, RectGaugeActParams& p) 
   {
     RectGaugeActParams tmp(xml, path);
     p=tmp;
@@ -124,7 +124,7 @@ namespace Chroma
 		       int mu, int cb) const
   {
     START_CODE();
-    QDPIO::cerr << "RectGaugeAct::staple() - not converted from szin" << endl;
+    QDPIO::cerr << "RectGaugeAct::staple() - not converted from szin" << std::endl;
     QDP_abort(1);
 
     END_CODE();

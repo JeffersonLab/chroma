@@ -26,7 +26,7 @@ namespace Chroma
     DisplacedBlock() : blk(0) {}
   };
 
-  vector<int> block_couplings(const int b,
+  std::vector<int> block_couplings(const int b,
 			      const Set& S,const multi1d<int>& disp,
 			      const int len);
 

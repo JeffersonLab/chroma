@@ -43,8 +43,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, EvenOddPrecOvExtFermActArrayParams& param);
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecOvExtFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecOvExtFermActArrayParams& param);
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecOvExtFermActArrayParams& param);
 
 
   //! EvenOddPreconditioned Extended-Overlap (N&N) linear operator
@@ -84,7 +84,7 @@ namespace Chroma
     //! Produce a Pauli-Villars linear operator for this action
     EvenOddPrecConstDetLinearOperatorArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const
       {
-	QDPIO::cerr << "Ovext::linOpPV not implemented" << endl;
+	QDPIO::cerr << "Ovext::linOpPV not implemented" << std::endl;
 	QDP_abort(1);
 	return 0;
       }
@@ -92,7 +92,7 @@ namespace Chroma
     //! Produce a hermitian version of the linear operator
     LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const
       {
-	QDPIO::cerr << "EvenOddPrecOvExtFermActArray::gamma5HermLinOp not implemented" << endl;
+	QDPIO::cerr << "EvenOddPrecOvExtFermActArray::gamma5HermLinOp not implemented" << std::endl;
 	QDP_abort(1);
 	return 0;
       }
@@ -102,7 +102,7 @@ namespace Chroma
 			       const Real& m_q,
 			       const GroupXML_t& invParam) const
       {
-	QDPIO::cerr << "linOp4D not implemented" << endl;
+	QDPIO::cerr << "linOp4D not implemented" << std::endl;
 	QDP_abort(1);
 	return 0;
       }
@@ -113,7 +113,7 @@ namespace Chroma
 			       const GroupXML_t& invParam) const 
       {
 	Handle< LinearOperator<T> >  lin(linOp4D(state,Real(0),invParam));
-	QDPIO::cout << "NOt yet implemented" << endl;
+	QDPIO::cout << "NOt yet implemented" << std::endl;
 	QDP_abort(1);
 	return 0x0;
       }

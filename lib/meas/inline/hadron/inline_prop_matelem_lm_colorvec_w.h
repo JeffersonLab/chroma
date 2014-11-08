@@ -2,7 +2,7 @@
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
- * Propagator calculation on a colorvector. Low memory version.
+ * Propagator calculation on a colorstd::vector. Low memory version.
  */
 
 #ifndef __inline_prop_matelem_lm_colorvec_w_h__

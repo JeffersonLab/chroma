@@ -51,7 +51,7 @@ namespace Chroma
 
 
   //! Ritz input
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    InlineEigBndsMdagMParams::RitzParams_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -84,7 +84,7 @@ namespace Chroma
   }
 
   //! Ritz output
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     InlineEigBndsMdagMParams::RitzParams_t& param)
   {
     push(xml, path);
@@ -106,7 +106,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineEigBndsMdagMParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineEigBndsMdagMParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -117,7 +117,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineEigBndsMdagMParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineEigBndsMdagMParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -158,7 +158,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -195,8 +195,8 @@ namespace Chroma
 								 fermact_reader,
 								 params.ferm_act.path);
     }
-    catch(const string& s) {
-      QDPIO::cerr << __func__ << ": caught exception constructing fermact: " << s << endl;
+    catch(const std::string& s) {
+      QDPIO::cerr << __func__ << ": caught exception constructing fermact: " << s << std::endl;
       QDP_abort(1);
     }
 
@@ -208,7 +208,7 @@ namespace Chroma
 			   unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
-    QDPIO::cout << "4D eig bnds" << endl;
+    QDPIO::cout << "4D eig bnds" << std::endl;
 
     push(xml_out, "EigBndsMdagM");
     write(xml_out, "update_no", update_no);
@@ -223,7 +223,7 @@ namespace Chroma
     for(int i =0; i < n_eig; i++)
       gaussian(psi[i]);
 
-    QDPIO::cout << "Look for lowest ev" << endl;
+    QDPIO::cout << "Look for lowest ev" << std::endl;
 
     push(xml_out,"LowestEv");
     EigSpecRitzCG(*MM, 
@@ -241,7 +241,7 @@ namespace Chroma
 		  xml_out);
     pop(xml_out); // LowestEv
 
-    QDPIO::cout << "Look for highest ev" << endl;
+    QDPIO::cout << "Look for highest ev" << std::endl;
     Handle< LinearOperator<LatticeFermion> > MinusMM(new lopscl<LatticeFermion, Real>(MM, Real(-1.0)));
   
     // Look for highest ev
@@ -278,7 +278,7 @@ namespace Chroma
 			   unsigned long update_no,
 			   XMLWriter& xml_out) 
   {
-    QDPIO::cout << "5D eig bnds" << endl;
+    QDPIO::cout << "5D eig bnds" << std::endl;
 
     push(xml_out, "EigBndsMdagM");
     write(xml_out, "update_no", update_no);
@@ -295,7 +295,7 @@ namespace Chroma
       for(int n=0; n < N5; n++)
 	gaussian(psi[i][n]);
 
-    QDPIO::cout << "Look for lowest ev" << endl;
+    QDPIO::cout << "Look for lowest ev" << std::endl;
 
     push(xml_out,"LowestEv");
     EigSpecRitzCG(*MM, 
@@ -331,7 +331,7 @@ namespace Chroma
       write(xml_out, "EigenVectorProfileMinus", prof);
     }
 
-    QDPIO::cout << "Look for highest ev" << endl;
+    QDPIO::cout << "Look for highest ev" << std::endl;
     Handle< LinearOperatorArray<LatticeFermion> > MinusMM(new lopsclArray<LatticeFermion, Real>(MM, Real(-1.0)));
   
     // Look for highest ev
@@ -368,7 +368,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "EigBndsMdagM");
       write(xml_out, "update_no", update_no);
@@ -393,7 +393,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": MdagM eigenvalue bounds" << endl;
+    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": MdagM eigenvalue bounds" << std::endl;
 
     StopWatch snoop;
     snoop.reset();
@@ -423,13 +423,13 @@ namespace Chroma
     catch (std::bad_cast) 
     {
       QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": error message: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
@@ -460,16 +460,16 @@ namespace Chroma
     }
     else
     {
-      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": no suitable cast found" << endl;
+      QDPIO::cerr << InlineEigBndsMdagMEnv::name << ": no suitable cast found" << std::endl;
       QDP_abort(1);
     }
 
     snoop.stop();
     QDPIO::cout << InlineEigBndsMdagMEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
     
-    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineEigBndsMdagMEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

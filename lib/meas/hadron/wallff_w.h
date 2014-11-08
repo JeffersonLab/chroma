@@ -33,7 +33,7 @@ struct WallFormFac_insertion_t
 struct WallFormFac_projector_t
 {
   int              proj_ctr;
-  string           proj_name;
+  std::string           proj_name;
   multi1d<WallFormFac_insertion_t>  insertion;
 };
 
@@ -48,20 +48,20 @@ struct WallFormFac_lorentz_t
 struct WallFormFac_formfac_t
 {
   int              formfac_ctr;
-  string           formfac_name;
+  std::string           formfac_name;
   multi1d<WallFormFac_lorentz_t>  lorentz;
 };
 
 struct WallFormFac_quark_t
 {
   int              quark_ctr;
-  string           quark_name;
+  std::string           quark_name;
   multi1d<WallFormFac_formfac_t>  formfac;
 };
 
 struct WallFormFac_formfacs_t
 {
-  string           subroutine;
+  std::string           subroutine;
   multi1d<WallFormFac_quark_t>  quark;
 };
 
@@ -108,25 +108,25 @@ void wallFormFacSft(multi1d<WallFormFac_momenta_t>& momenta,
 // Writers
 
 //! Wallformfac momenta writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_momenta_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_momenta_t& header);
 
 //! Wallformfac insertion writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_insertion_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_insertion_t& header);
 
 //! Wallformfac projector writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_projector_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_projector_t& header);
 
 //! Wallformfac formfac writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_formfac_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_formfac_t& header);
 
 //! Wallformfac lorentz writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_lorentz_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_lorentz_t& header);
 
 //! Wallformfac quark writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_quark_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_quark_t& header);
 
 //! WallFormFac writer
-void write(XMLWriter& xml, const string& path, const WallFormFac_formfacs_t& header);
+void write(XMLWriter& xml, const std::string& path, const WallFormFac_formfacs_t& header);
 
 
 //! Wallformfac momenta writer

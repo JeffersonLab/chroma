@@ -31,7 +31,7 @@ namespace Chroma {
 
 
   namespace SimpleBCTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -42,10 +42,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read an SimpleBCType enum
-  void read(XMLReader& r, const string& path, SimpleBCType& t);
+  void read(XMLReader& r, const std::string& path, SimpleBCType& t);
 
   //! Write an SimpleBCType enum
-  void write(XMLWriter& w, const string& path, const SimpleBCType& t);
+  void write(XMLWriter& w, const std::string& path, const SimpleBCType& t);
 
   /*! @} */   // end of group io
 

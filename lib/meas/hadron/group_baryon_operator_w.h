@@ -264,20 +264,20 @@ namespace Chroma
       	//Handle< QuarkSourceSink<LatticeFermion> > sourceSmearing;
       	//Handle< QuarkSourceSink<LatticeFermion> > sinkSmearing;
 
-        //! Construct array of maps of displacements
-        void displaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
+        //! Construct array of std::maps of displacements
+        void displaceQuarks( multi1d< std::map<int, LatticeFermion> >& disp_quarks,
                              const multi1d<LatticeFermion>& q,
 														 int* qindices
                            ) const;
         //! First smear then displace the quarks
-        void smearDisplaceQuarks( multi1d< map<int, LatticeFermion> >& disp_quarks,
+        void smearDisplaceQuarks( multi1d< std::map<int, LatticeFermion> >& disp_quarks,
                                   const LatticeFermion& q1,
                                   const LatticeFermion& q2,
                                   const LatticeFermion& q3,
 																	int* qindices
                                 ) const;
         //! Manipulate the quark fields
-        void quarkManip( multi1d< map<int, LatticeFermion> >& disp_quarks,
+        void quarkManip( multi1d< std::map<int, LatticeFermion> >& disp_quarks,
                          const LatticeFermion& q1,
                          const LatticeFermion& q2,
                          const LatticeFermion& q3,
@@ -301,18 +301,18 @@ namespace Chroma
   	//! Reader
   	/*! @ingroup hadron */
 
-  	void read( XMLReader& xml, const string& path, 
+  	void read( XMLReader& xml, const std::string& path, 
 		           GroupBaryonOperatorEnv::Params::Qprop_t::Solutions_t& input );
-  	void read( XMLReader& xml, const string& path, 
+  	void read( XMLReader& xml, const std::string& path, 
 		           GroupBaryonOperatorEnv::Params::Qprop_t& input );
-  	void read( XMLReader& xml, const string& path, 
+  	void read( XMLReader& xml, const std::string& path, 
 		           GroupBaryonOperatorEnv::Params& input );
 
   }  // end namespace GroupBaryonOperatorEnv
 
   //! Writer
   /*! @ingroup hadron */
-  void write( XMLWriter& xml, const string& path, 
+  void write( XMLWriter& xml, const std::string& path, 
 	            const GroupBaryonOperatorEnv::Params& param );
 
 }  // end namespace Chroma

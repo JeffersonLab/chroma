@@ -18,7 +18,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace RGGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -36,7 +36,7 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, RGGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, RGGaugeActParams& param);
   
 
   //! RG gauge action

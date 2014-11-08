@@ -103,7 +103,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cout << "Unknown sign " << endl;
+	QDPIO::cout << "Unknown sign " << std::endl;
 	QDP_abort(1);
       }
 
@@ -140,7 +140,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cout << "Unknown sign " << endl;
+	QDPIO::cout << "Unknown sign " << std::endl;
 	QDP_abort(1);
       };
       getFermBC().modifyF(chi);
@@ -201,7 +201,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cout << "Unknown sign " << endl;
+	QDPIO::cout << "Unknown sign " << std::endl;
 	QDP_abort(1);
       };
       getFermBC().modifyF(chi);
@@ -264,7 +264,7 @@ namespace Chroma
       }
 	break;
       default:
-	QDPIO::cout << "Unknown sign " << endl;
+	QDPIO::cout << "Unknown sign " << std::endl;
 	QDP_abort(1);
       };
 
@@ -277,7 +277,7 @@ namespace Chroma
     //! Flopcounter
     virtual unsigned long nFlops() const 
     { 
-      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
+      //      QDPIO::cout << "Flopcount Not Yet Implemented " << std::endl;
       return 0;
     }
 
@@ -476,7 +476,7 @@ namespace Chroma
 	}
 	
 	// Two factors of 0.5 from the projectors.
-	// Most cost efficient to apply them together to the half vector...
+	// Most cost efficient to apply them together to the half std::vector...
 	tmp2 *= Real(0.25);
 	
 	T2  = spinReconstructDir3Minus(tmp2);
@@ -545,7 +545,7 @@ namespace Chroma
 					   schroedingerTP());
 	}
 	// Two factors of 0.5 from the projectors.
-	// Most cost efficient to apply them together to the half vector...
+	// Most cost efficient to apply them together to the half std::vector...
 	tmp2 *= Real(0.25);
 	
 	T2  = spinReconstructDir3Plus(tmp2);
@@ -638,7 +638,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "Bad Case. Should never get here" << endl;
+	QDPIO::cerr << "Bad Case. Should never get here" << std::endl;
 	QDP_abort(1);
       }
       getFermBC().zero(ds_u);
@@ -715,7 +715,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cerr << "Bad Case. Should never get here" << endl;
+	QDPIO::cerr << "Bad Case. Should never get here" << std::endl;
 	QDP_abort(1);
       }
 

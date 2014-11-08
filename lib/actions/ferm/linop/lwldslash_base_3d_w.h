@@ -66,8 +66,8 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
@@ -79,10 +79,10 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector on cb                           (Read)
-     * \param psi     right vector on 1-cb                        (Read)
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      3D Checkerboard of chi vector               (Read)
+     * \param cb      3D Checkerboard of chi std::vector               (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */

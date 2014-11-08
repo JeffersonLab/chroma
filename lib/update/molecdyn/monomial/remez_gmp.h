@@ -114,7 +114,7 @@ namespace Chroma
     void pfe(multi1d<bigfloat>& res, multi1d<bigfloat>& poles, const bigfloat& norm);
 
     // Evaluate the rational form P(x)/Q(x) using coefficients from the
-    // solution vector param
+    // solution std::vector param
     bigfloat approx(const bigfloat& x);
 
     //! Calculate function required for the approximation

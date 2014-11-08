@@ -23,7 +23,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial(
 	  TwoFlavorWilsonTypeFermMonomialParams(xml, path));
@@ -64,7 +64,7 @@ namespace Chroma
       XMLReader fermact_reader(is);
       
       QDPIO::cout << EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomialEnv::name 
-		  << ": construct " << param.fermact.id << endl;
+		  << ": construct " << param.fermact.id << std::endl;
       
       WilsonTypeFermAct<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermActFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
@@ -74,7 +74,7 @@ namespace Chroma
       
       // Check success of the downcast 
       if( downcast == 0x0 ) {
-	QDPIO::cerr << "Unable to downcast FermAct to PolyWilsonTypeFermAct in EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial()" << endl;
+	QDPIO::cerr << "Unable to downcast FermAct to PolyWilsonTypeFermAct in EvenOddPrecConstDetTwoFlavorPolynomialWilsonTypeFermMonomial()" << std::endl;
 	QDP_abort(1);
       }
       

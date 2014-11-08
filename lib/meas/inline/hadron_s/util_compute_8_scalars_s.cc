@@ -72,7 +72,7 @@ namespace Chroma {
   // ------------------------
 
 
-  QDPIO::cout << "Computed 8 basic scalars"  << endl;
+  QDPIO::cout << "Computed 8 basic scalars"  << std::endl;
 
 }
 

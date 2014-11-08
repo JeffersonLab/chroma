@@ -37,7 +37,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 	 const multi1d<int>& src_coord, 
 	 const SftMom& phases,
        	 XMLWriter& xml,
-	 const string& xml_group)
+	 const std::string& xml_group)
 {
   START_CODE();
 
@@ -126,7 +126,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 	 const multi1d<int>& src_coord, 
 	 const SftMom& phases,
        	 XMLWriter& xml,
-	 const string& xml_group){
+	 const std::string& xml_group){
   Qll(u,quark_propagator,quark_propagator,src_coord,phases,xml,xml_group) ;
 }
 
@@ -186,7 +186,7 @@ void HeavyQuarkProp(LatticeColorMatrix& Qprop,
   }
   
   Qprop = conj(transpose(Qprop));
-  cout<<"Norm of fwd prop = "<<norm2(Qprop)<<endl;
+  std::cout<<"Norm of fwd prop = "<<norm2(Qprop)<<std::endl;
 }
   
 
@@ -255,7 +255,7 @@ void HeavyQuarkPropBack(LatticeColorMatrix& Qprop,
   } 
   // Don't think we need to do this....
   //Qprop = conj(transpose(Qprop));
-  cout<<"Norm of bwd prop = "<<norm2(Qprop)<<endl;
+  std::cout<<"Norm of bwd prop = "<<norm2(Qprop)<<std::endl;
 }
 
 

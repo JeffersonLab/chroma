@@ -28,9 +28,9 @@ namespace Chroma
     int             num_pf;        /*!< Use "num_pf" copies of pseudo-fermions for chi^dag*f(M^dag*M)*chi  */
   };
 
-  void read(XMLReader& xml, const string& path, OneFlavorWilsonTypeFermRatioRatConvMonomialParams& param);
+  void read(XMLReader& xml, const std::string& path, OneFlavorWilsonTypeFermRatioRatConvMonomialParams& param);
 
-  void write(XMLWriter& xml, const string& path, const OneFlavorWilsonTypeFermRatioRatConvMonomialParams& params);
+  void write(XMLWriter& xml, const std::string& path, const OneFlavorWilsonTypeFermRatioRatConvMonomialParams& params);
 
 } //end namespace chroma
 

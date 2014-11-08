@@ -79,13 +79,13 @@ void expmat(LatticeColorMatrix& a,
 	break;
 
       default:
-	QDPIO::cerr << __func__ << ": exact exponentation not implemented for this Nc=" << Nc << endl;
+	QDPIO::cerr << __func__ << ": exact exponentation not implemented for this Nc=" << Nc << std::endl;
 	QDP_abort(1);
       }
       break;
 
     default:
-      QDPIO::cerr << __func__ << ": unknown option = " << opt << endl;
+      QDPIO::cerr << __func__ << ": unknown option = " << opt << std::endl;
       QDP_abort(1);
     }
   }

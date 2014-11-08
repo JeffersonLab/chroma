@@ -25,7 +25,7 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    *
    *                                                      ~      ~+
-   * This subroutine applies the unpreconditioned matrix  M  or  M   the vector
+   * This subroutine applies the unpreconditioned matrix  M  or  M   the std::vector
    * Psi,
    *
    *      	       	   {   ~
@@ -80,7 +80,7 @@ namespace Chroma
 		const Real& Mass_,
 		const AnisoParam_t& aniso);
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
     //! Derivative of unpreconditioned Graphene dM/dU

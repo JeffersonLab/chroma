@@ -53,7 +53,7 @@ namespace Chroma
 
 
   // Reader
-  void read(XMLReader& xml, const string& path, InlineMresParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineMresParams::Param_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -63,7 +63,7 @@ namespace Chroma
 
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const InlineMresParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineMresParams::Param_t& input)
   {
     push(xml, path);
 
@@ -77,7 +77,7 @@ namespace Chroma
 
 
   // Reader
-  void read(XMLReader& xml, const string& path, InlineMresParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineMresParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -87,7 +87,7 @@ namespace Chroma
 
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const InlineMresParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineMresParams::NamedObject_t& input)
   {
     push(xml, path);
     write(xml, "gauge_id", input.gauge_id);
@@ -132,9 +132,9 @@ namespace Chroma
 	read(inputtop, "xml_file", xml_file);
       }
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error reading data: " << e << endl;
+      QDPIO::cerr << "Error reading data: " << e << std::endl;
       throw;
     }
   }
@@ -147,7 +147,7 @@ namespace Chroma
     Chroma::write(xml, "Param", param);
     {
       //QDP::write(xml, "StateInfo", stateInfo);
-      istringstream header_is(stateInfo);
+      std::istringstream header_is(stateInfo);
       XMLReader xml_header(header_is);
       xml << xml_header;
     }
@@ -166,7 +166,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "mres");
       write(xml_out, "update_no", update_no);
@@ -204,13 +204,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMresEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMresEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineMresEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -219,7 +219,7 @@ namespace Chroma
     push(xml_out, "mres");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << " MRES" << endl;
+    QDPIO::cout << " MRES" << std::endl;
 
     //
     // Read the prop
@@ -227,7 +227,7 @@ namespace Chroma
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
-    string       stateInfo;
+    std::string       stateInfo;
     XMLReader prop_file_xml, prop_record_xml;
 
     try
@@ -265,13 +265,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMresEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMresEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineMresEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
       
@@ -313,7 +313,7 @@ namespace Chroma
     //
     // Initialize fermion action
     //
-    string ferm_act_str;
+    std::string ferm_act_str;
     if (params.param.fermact.xml == "")
       ferm_act_str = prop_header.fermact.xml;
     else
@@ -321,8 +321,8 @@ namespace Chroma
       
     std::istringstream  xml_s(ferm_act_str);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/FermionAction";
-    string fermact;
+    const std::string fermact_path = "/FermionAction";
+    std::string fermact;
 
     try
     {
@@ -330,16 +330,16 @@ namespace Chroma
     }
     catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error reading fermact: " << e << endl;
+      QDPIO::cerr << "Error reading fermact: " << e << std::endl;
       throw;
     }
 
-    QDPIO::cout << "FermAct = " << fermact << endl;
+    QDPIO::cout << "FermAct = " << fermact << std::endl;
  
     // Make a reader for the stateInfo
     std::istringstream state_info_is(stateInfo);
     XMLReader state_info_xml(state_info_is);
-    string state_info_path="/StateInfo";
+    std::string state_info_path="/StateInfo";
 
 
     // 
@@ -349,7 +349,7 @@ namespace Chroma
 
     try 
     { 
-      QDPIO::cout << "Try generic WilsonTypeFermAct actions" << endl;
+      QDPIO::cout << "Try generic WilsonTypeFermAct actions" << std::endl;
 
       // Typedefs to save typing
       typedef LatticeFermion               T;
@@ -382,7 +382,7 @@ namespace Chroma
       }
       else
       {
-	throw string("No suitable cast found");
+	throw std::string("No suitable cast found");
       }
 	
       for(int col = 0; col < Nc; col++) 
@@ -404,12 +404,12 @@ namespace Chroma
       delete DelLs;
       delete S_f;
     }
-    catch(const string& e) { 
-      QDPIO::cerr << InlineMresEnv::name << ": Error:" << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << InlineMresEnv::name << ": Error:" << e << std::endl;
       QDP_abort(1);
     }
-    catch(bad_cast) { 
-      QDPIO::cout << InlineMresEnv::name << ": Action entered is not suitable to be cast to DWF " << endl;
+    catch(std::bad_cast) { 
+      QDPIO::cout << InlineMresEnv::name << ": Action entered is not suitable to be cast to DWF " << std::endl;
       QDP_abort(1);
     }
 
@@ -453,9 +453,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineMresEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineMresEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineMresEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

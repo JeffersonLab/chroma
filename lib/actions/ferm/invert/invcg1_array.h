@@ -28,7 +28,7 @@ namespace Chroma {
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <A p[k],p[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] A. p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -45,8 +45,8 @@ namespace Chroma {
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter

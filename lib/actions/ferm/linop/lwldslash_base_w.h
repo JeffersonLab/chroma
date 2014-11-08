@@ -54,8 +54,8 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
@@ -66,10 +66,10 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector on cb                           (Read)
-     * \param psi     right vector on 1-cb                        (Read)
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of chi vector                  (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
@@ -103,8 +103,8 @@ namespace Chroma
 
   //! Take deriv of D
   /*!
-   * \param chi     left vector                                 (Read)
-   * \param psi     right vector                                (Read)
+   * \param chi     left std::vector                                 (Read)
+   * \param psi     right std::vector                                (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
    *
    * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
@@ -253,8 +253,8 @@ namespace Chroma
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector                                 (Read)
-     * \param psi     right vector                                (Read)
+     * \param chi     left std::vector                                 (Read)
+     * \param psi     right std::vector                                (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
@@ -262,23 +262,23 @@ namespace Chroma
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign) const {
-      QDPIO::cout << "Not implemented" << endl;
+      QDPIO::cout << "Not implemented" << std::endl;
       QDP_abort(1);
     }
 
     //! Take deriv of D
     /*!
-     * \param chi     left vector on cb                           (Read)
-     * \param psi     right vector on 1-cb                        (Read)
+     * \param chi     left std::vector on cb                           (Read)
+     * \param psi     right std::vector on 1-cb                        (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of chi vector                  (Read)
+     * \param cb      Checkerboard of chi std::vector                  (Read)
      *
      * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
      */
     virtual void deriv(P& ds_u, 
 		       const T& chi, const T& psi, 
 		       enum PlusMinus isign, int cb) const {
-      QDPIO::cout << "Not Implemented" << endl;
+      QDPIO::cout << "Not Implemented" << std::endl;
     }
 
     //! Return flops performed by the operator()

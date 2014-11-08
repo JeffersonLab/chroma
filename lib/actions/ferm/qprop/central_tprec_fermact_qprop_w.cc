@@ -59,7 +59,7 @@ namespace Chroma
       //
       // First compute \chi'
       T chi_prime=zero;
-      QDPIO::cout << "Preparing LinOp" << endl;
+      QDPIO::cout << "Preparing LinOp" << std::endl;
       A->cLeftLinOp(chi_prime, chi, PLUS);
 
 
@@ -67,11 +67,11 @@ namespace Chroma
       T psi_prime = zero;
 
       // Call inverter
-      QDPIO::cout << "Solving" << endl;
+      QDPIO::cout << "Solving" << std::endl;
       SystemSolverResults_t res = (*invA)(psi_prime, chi_prime);
 
 
-      QDPIO::cout <<"Reconstructing" << endl;
+      QDPIO::cout <<"Reconstructing" << std::endl;
       // Reconstruct psi = C_R psi_prime
       A->cRightLinOp(psi, psi_prime, PLUS);
 
@@ -134,7 +134,7 @@ namespace Chroma
       //
       // First compute \chi'
       T chi_prime=zero;
-      QDPIO::cout << "Preparing LinOp" << endl;
+      QDPIO::cout << "Preparing LinOp" << std::endl;
       A->leftLinOp(chi_prime, chi, PLUS);
 
 
@@ -142,11 +142,11 @@ namespace Chroma
       T psi_prime = zero;
 
       // Call inverter
-      QDPIO::cout << "Solving" << endl;
+      QDPIO::cout << "Solving" << std::endl;
       SystemSolverResults_t res = (*invA)(psi_prime, chi_prime);
 
 
-      QDPIO::cout <<"Reconstructing" << endl;
+      QDPIO::cout <<"Reconstructing" << std::endl;
       // Reconstruct psi = C_R psi_prime
       A->rightLinOp(psi, psi_prime, PLUS);
 
@@ -260,11 +260,11 @@ namespace Chroma
 
       T psi_prime = zero;
       // Call inverter
-      QDPIO::cout << "Solving" << endl;
+      QDPIO::cout << "Solving" << std::endl;
       SystemSolverResults_t res = (*invA)(psi_prime, chi_prime);
       A->evenEvenInvLinOp(psi_prime, chi_prime, PLUS);
 
-      QDPIO::cout <<"Reconstructing" << endl;
+      QDPIO::cout <<"Reconstructing" << std::endl;
 
       // ( 1 - M_ee^{-1} M_eo )
       // ( 0          1       )

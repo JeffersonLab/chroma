@@ -25,11 +25,11 @@ void InvGMRESR_CG_a(const LinearOperatorArray<T>& PrecMM,
 
   // Sanity checks
   if( b.size() != N5 ) { 
-    QDPIO::cerr << "b has wrong size in 5th dimension. N5 = " << N5 << " b.size() = " << b.size() << endl;
+    QDPIO::cerr << "b has wrong size in 5th dimension. N5 = " << N5 << " b.size() = " << b.size() << std::endl;
   }
 
   if( x.size() != N5 ) { 
-    QDPIO::cerr << "x has wrong size in 5th dimension. N5 = " << N5 << " x.size() = " << x.size() << endl;
+    QDPIO::cerr << "x has wrong size in 5th dimension. N5 = " << N5 << " x.size() = " << x.size() << std::endl;
   }
 
 
@@ -54,7 +54,7 @@ void InvGMRESR_CG_a(const LinearOperatorArray<T>& PrecMM,
   int prec_count;
   // Do the loop
   while( toBool( norm_r > terminate) && iter < MaxGMRESR ) {
-    // First we have to get a new u vector (in U)
+    // First we have to get a new u std::vector (in U)
     multi1d<T>* u = new multi1d<T>;
     (*u).resize(N5);
      
@@ -126,7 +126,7 @@ void InvGMRESR_CG_a(const LinearOperatorArray<T>& PrecMM,
     }
     iter++;
     norm_r = sqrt(norm2(r,s));
-    QDPIO::cout << "Inv Rel GMRESR: iter "<< iter <<" || r || = " << norm_r << endl;
+    QDPIO::cout << "Inv Rel GMRESR: iter "<< iter <<" || r || = " << norm_r << std::endl;
   }
 
   // Cleanup
@@ -136,7 +136,7 @@ void InvGMRESR_CG_a(const LinearOperatorArray<T>& PrecMM,
   }
 
   if( iter == MaxGMRESR ) { 
-    QDPIO::cout << "Nonconvergence warning " << endl;
+    QDPIO::cout << "Nonconvergence warning " << std::endl;
   }
   
   n_count = iter;

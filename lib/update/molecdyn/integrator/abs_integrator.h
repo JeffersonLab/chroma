@@ -94,7 +94,7 @@ namespace Chroma
 
       // This is a toplevel thing - not embeddable so here is the 
       // place to reset any predictors
-      QDPIO::cout << "MD: Resetting Chrono Predictors at start of trajectory" << endl;
+      QDPIO::cout << "MD: Resetting Chrono Predictors at start of trajectory" << std::endl;
       theIntegrator.resetPredictors();
 
       // This is recursive so no further resets in here.

@@ -32,8 +32,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, UnprecParWilsonFermActParams& param);
-  void write(XMLWriter& xml, const string& path, const UnprecParWilsonFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, UnprecParWilsonFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const UnprecParWilsonFermActParams& param);
 
 
   //! Unpreconditioned Wilson fermion action with parity breaking term

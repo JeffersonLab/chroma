@@ -83,7 +83,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      */
     void apply (LatticeDiracFermionD3& chi, const LatticeDiracFermionD3& psi, enum PlusMinus isign, int cb) const;
 

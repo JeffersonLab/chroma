@@ -20,7 +20,7 @@ namespace Chroma {
  * \param t0            timeslice coordinate of the source ( Read )
  * \param phases        object holds list of momenta and Fourier phases ( Read )
  * \param xml           xml file object ( Write )
- * \param xml_group     string used for writing xml data ( Read )
+ * \param xml_group     std::string used for writing xml data ( Read )
  *
  *        ____
  *        \
@@ -35,7 +35,7 @@ void mesons(const LatticePropagator& quark_prop_1,
             const SftMom& phases,
             int t0,
             XMLWriter& xml,
-            const string& xml_group) ;
+            const std::string& xml_group) ;
 
 }  // end namespace Chroma
 

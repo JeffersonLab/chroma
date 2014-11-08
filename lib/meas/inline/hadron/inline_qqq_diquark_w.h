@@ -40,10 +40,10 @@ namespace Chroma
 
       struct NamedObject_t
       {
-	string           gauge_id;        /*!< Input gauge field */
-	string           diquark_id;      /*!< Diquark id */
-	string           prop_id;         /*!< Input sink smeared propagators - the 3rd quark */
-	string           qqq_file;        /*!< Output qqq file */
+	std::string           gauge_id;        /*!< Input gauge field */
+	std::string           diquark_id;      /*!< Diquark id */
+	std::string           prop_id;         /*!< Input sink smeared propagators - the 3rd quark */
+	std::string           qqq_file;        /*!< Output qqq file */
       } named_obj;
     };
 

@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Key for glueball colorvector matrix elements
+ * \brief Key for glueball colorstd::vector matrix elements
  */
 
 #include "util/gauge/key_glue_matelem.h"

@@ -30,14 +30,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, DiluteZNEigVecQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, DiluteZNEigVecQuarkSourceConstEnv::Params& param)
   {
     DiluteZNEigVecQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DiluteZNEigVecQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const DiluteZNEigVecQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -87,7 +87,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -101,7 +101,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -117,7 +117,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -169,7 +169,7 @@ namespace Chroma
     LatticeFermion
     SourceConst<LatticeFermion>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Eigenvector-Diluted random complex ZN source" << endl;
+      QDPIO::cout << "Eigenstd::vector-Diluted random complex ZN source" << std::endl;
 
       int Nt = QDP::Layout::lattSize()[params.j_decay];
       
@@ -178,25 +178,25 @@ namespace Chroma
       //
       if (params.spin_mask.size() > Ns)
       {
-	QDPIO::cerr << name << ": spin mask size incorrect 1" << endl;
+	QDPIO::cerr << name << ": spin mask size incorrect 1" << std::endl;
 	QDP_abort(1);
       }
 
       if (params.spin_mask.size() == 0)
       {
-	QDPIO::cerr << name << ": spin mask size incorrect 2" << endl;
+	QDPIO::cerr << name << ": spin mask size incorrect 2" << std::endl;
 	QDP_abort(1);
       }
 
       if (params.t_sources.size() > Nt)
       {
-	QDPIO::cerr << name << ": time sources size incorrect 1" << endl;
+	QDPIO::cerr << name << ": time sources size incorrect 1" << std::endl;
 	QDP_abort(1);
       }
 
       if (params.t_sources.size() == 0)
       {
-	QDPIO::cerr << name << ": time sources size incorrect 2" << endl;
+	QDPIO::cerr << name << ": time sources size incorrect 2" << std::endl;
 	QDP_abort(1);
       }
 
@@ -204,21 +204,21 @@ namespace Chroma
       for (int t = 0 ; t < params.t_sources.size() ; ++t) {
 
 	if ( (t > 0) && (params.t_sources[t] == params.t_sources[0]) ) {
-	  QDPIO::cerr << "ERROR: repeat in t_sources" << endl;
+	  QDPIO::cerr << "ERROR: repeat in t_sources" << std::endl;
 	  QDP_abort(1);
 	}
 	
 	if (params.t_sources[t] >= Nt) {
 
 	  QDPIO::cerr << "ERROR: invalid component in t_sources "  
-		      << params.t_sources[t] <<  " >= " << Nt << endl;
+		      << params.t_sources[t] <<  " >= " << Nt << std::endl;
 	  QDP_abort(1);
 	}
       }
 
       XMLBufferWriter eig_vecs_xml;
       
-      //Attempt to get eigenvectors from the named object map
+      //Attempt to get eigenvectors from the named object std::map
       try {
 	
 	TheNamedObjMap::Instance().getData< Handle< MapObject<int,EVPair<LatticeColorVector> > > >(params.eigen_vec_id);	
@@ -227,11 +227,11 @@ namespace Chroma
 	
       }
       catch( std::bad_cast )  {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e)  {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+      catch (const std::string& e)  {
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
       
@@ -240,13 +240,13 @@ namespace Chroma
 
       int n_ev = eigen_vecs.size();
       
-      //Sanity checks on the eigenvector dilutions
+      //Sanity checks on the eigenstd::vector dilutions
       int n_ev_dil = params.eigen_vectors.size();
 			
       //First, ensure there are not more than n_ev elements
       if ( n_ev_dil > n_ev) {
 
-	QDPIO::cerr << "ERROR: n_ev_dil > n_ev" << endl;
+	QDPIO::cerr << "ERROR: n_ev_dil > n_ev" << std::endl;
 	QDP_abort(1);
       }
 
@@ -254,12 +254,12 @@ namespace Chroma
       //element is not larger than n_ev
       for (int v = 0 ; v < n_ev_dil ; ++v) {
 	if ( (v > 0) && (params.eigen_vectors[v] == params.eigen_vectors[0]) ) {
-	  QDPIO::cerr << "ERROR: repeat in eigen_vectors" << endl;
+	  QDPIO::cerr << "ERROR: repeat in eigen_vectors" << std::endl;
 	  QDP_abort(1);
 	}
 
 	if (params.eigen_vectors[v] >= n_ev) {
-	  QDPIO::cerr << "ERROR: invalid component in eigen_vectors" << endl;
+	  QDPIO::cerr << "ERROR: invalid component in eigen_vectors" << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -287,7 +287,7 @@ namespace Chroma
       LatticeLAPHSubSpace_t laph_noise(n_ev, Nt);
       fill_laph_subspace_zN(laph_noise, params.ran_seed, params.N);
 
-      QDPIO::cout << "Created LapH Noise " << endl;
+      QDPIO::cout << "Created LapH Noise " << std::endl;
       
       LatticeFermion dil_source = zero;
       

@@ -109,7 +109,7 @@ void ord_xmay_normx_cdotzx_kernel(int lo, int hi, int my_id, ord_xmay_normx_cdot
     a->norm_space[3*my_id+2]=((double *)&dotprod)[1];
   }
   else { 
-    QDPIO::cout << " ord_xmay_normx_cdotzx_kernel_sse.h: len not divisible by 4" << endl;
+    QDPIO::cout << " ord_xmay_normx_cdotzx_kernel_sse.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
   }
 }

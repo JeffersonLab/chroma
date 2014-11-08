@@ -1,6 +1,6 @@
 // $Id: vector_smear.cc,v 3.2 2008-11-04 17:26:16 edwards Exp $
 /*! \file
- *  \brief vector smearing of color vector
+ *  \brief std::vector smearing of color std::vector
  */
 
 #include "chromabase.h"
@@ -10,11 +10,11 @@
 namespace Chroma 
 {
 
-  //! Do a vector smearing of a lattice colorvector field
+  //! Do a std::vector smearing of a lattice colorstd::vector field
   /*!
    * Arguments:
    *
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param vecs     vectors for the smearing ( Read )
    *  \param sigma    exponential smearing parameter ( Read )
    *  \param j_decay  direction of decay ( Read )
@@ -59,7 +59,7 @@ namespace Chroma
   }
 
 
-  //! Do a vector smearing of a color matrix
+  //! Do a std::vector smearing of a color matrix
   /*!
    * Arguments:
    *
@@ -100,7 +100,7 @@ namespace Chroma
   }
 
 
-  //! Do a vector smearing of a lattice fermion field
+  //! Do a std::vector smearing of a lattice fermion field
   /*!
    * Arguments:
    *
@@ -127,7 +127,7 @@ namespace Chroma
     chi = psi;
   }
 
-  //! Do a vector smearing of a lattice fermion field
+  //! Do a std::vector smearing of a lattice fermion field
   /*!
    * Arguments:
    *
@@ -149,7 +149,7 @@ namespace Chroma
     chi = psi;
   }
 
-  //! Do a vector smearing of a lattice fermion field
+  //! Do a std::vector smearing of a lattice fermion field
   /*!
    * Arguments:
    *

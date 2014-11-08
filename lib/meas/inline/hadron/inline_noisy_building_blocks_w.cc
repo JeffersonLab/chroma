@@ -1,4 +1,3 @@
-// $Id: inline_noisy_building_blocks_w.cc,v 3.8 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  * \brief Inline construction of noisy BuildingBlocks
  *
@@ -51,7 +50,7 @@ namespace Chroma
 
 
   //! Param input
-  void read(XMLReader& xml, const string& path, InlineNoisyBuildingBlocksParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineNoisyBuildingBlocksParams::Param_t& input)
   {
     XMLReader paramtop(xml, path);
 
@@ -96,7 +95,7 @@ namespace Chroma
 
     default :
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": input parameter version " 
-                  << version << " unsupported." << endl;
+                  << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
     
@@ -106,7 +105,7 @@ namespace Chroma
 
 
   //! Param write
-  void write(XMLWriter& xml, const string& path, const InlineNoisyBuildingBlocksParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineNoisyBuildingBlocksParams::Param_t& input)
   {
     push(xml, path);
 
@@ -122,7 +121,7 @@ namespace Chroma
   }
 
   //! Propagator input
-//void read(XMLReader& xml, const string& path, InlineNoisyBuildingBlocksParams::NamedObject_t& input)
+//void read(XMLReader& xml, const std::string& path, InlineNoisyBuildingBlocksParams::NamedObject_t& input)
 //{
 //  XMLReader inputtop(xml, path);
 //
@@ -134,7 +133,7 @@ namespace Chroma
 //}
 
   //! Propagator output
-//void write(XMLWriter& xml, const string& path, const InlineNoisyBuildingBlocksParams::NamedObject_t& input)
+//void write(XMLWriter& xml, const std::string& path, const InlineNoisyBuildingBlocksParams::NamedObject_t& input)
 //{
 //  push(xml, path);
 //
@@ -148,7 +147,7 @@ namespace Chroma
 //}
 
   //! BB parameters
-  void read(XMLReader& xml, const string& path, InlineNoisyBuildingBlocksParams::BB_out_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineNoisyBuildingBlocksParams::BB_out_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -163,7 +162,7 @@ namespace Chroma
   }
 
   //! BB parameters
-  void write(XMLWriter& xml, const string& path, const InlineNoisyBuildingBlocksParams::BB_out_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineNoisyBuildingBlocksParams::BB_out_t& input)
   {
     push(xml, path);
 
@@ -208,7 +207,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -249,7 +248,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "ExampleBuildingBlocks");
       write(xml_out, "update_no", update_no);
@@ -280,12 +279,12 @@ namespace Chroma
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
 
-    QDPIO::cout << " ExampleBuildingBlocks" << endl;
+    QDPIO::cout << " ExampleBuildingBlocks" << std::endl;
     QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
 
     //#################################################################################//
     // Echo Arguments                                                                  //
@@ -384,13 +383,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -428,7 +427,7 @@ namespace Chroma
     LatticePropagator F;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header_check;
-    QDPIO::cout << "Attempt to parse forward propagator" << endl;
+    QDPIO::cout << "Attempt to parse forward propagator" << std::endl;
     Out << "parsing forward propagator " << params.bb.FrwdPropId
       << " ... " << "\n";
     Out.flush();
@@ -469,17 +468,17 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": caught dynamic cast error" 
-                  << endl;
+                  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name << ": forward prop: error message: " << e 
-                  << endl;
+                  << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
     Out << "finished parsing forward propagator " << params.bb.FrwdPropId << "\n";  Out.flush();
 
     //######################################################################//
@@ -488,7 +487,7 @@ namespace Chroma
 
     multi1d<LatticePropagator> S( 1 );
     PropSourceConst_t source_header;
-    QDPIO::cout << "Attempt to parse noisy source" << endl;
+    QDPIO::cout << "Attempt to parse noisy source" << std::endl;
     Out << "parsing noisy source " << params.bb.NoisySrcId << " ... " << "\n";
     Out.flush();
 
@@ -532,17 +531,17 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name
-        << ": caught dynamic cast error" << endl;
+        << ": caught dynamic cast error" << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name
-        << ": noisy source: error message: " << e << endl;
+        << ": noisy source: error message: " << e << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Noisy source successfully parsed" << endl;
+    QDPIO::cout << "Noisy source successfully parsed" << std::endl;
     Out << "finished parsing noisy source " << params.bb.NoisySrcId << "\n";
     Out.flush();
 
@@ -559,7 +558,7 @@ namespace Chroma
     if (GammaInsertions[0] < 0 || GammaInsertions[0] >= Ns*Ns) {
       QDPIO::cerr
         << "InlineNoisyBuildingBlocks: Gamma insertion out of bounds: "
-        << GammaInsertions[0] << endl;
+        << GammaInsertions[0] << std::endl;
       QDP_abort(1);
     }
 
@@ -600,7 +599,7 @@ namespace Chroma
 
     int NumO = PhasesCanonical.numMom();
 
-    multi2d< string > Files( 1, NumO );
+    multi2d< std::string > Files( 1, NumO );
 
     const int BBFileNameLength
       = params.bb.BBFileNamePattern.length() + 3 * 3 + 1;
@@ -640,7 +639,7 @@ namespace Chroma
 
     //
     // Dru puts a Flavor into the BB
-    // Telephone book map of flavor name to a number
+    // Telephone book std::map of flavor name to a number
     //
     if (params.bb.Flavor == "U") {
       Flavors[0] = 0;
@@ -657,7 +656,7 @@ namespace Chroma
     } else {
       QDPIO::cerr << InlineNoisyBuildingBlocksEnv::name
         << ": invalid flavor tag = " << params.bb.Flavor
-        << ", should be one of U,D,S,C,T,B" << endl;
+        << ", should be one of U,D,S,C,T,B" << std::endl;
       QDP_abort(1);
     }
 
@@ -668,7 +667,7 @@ namespace Chroma
     swatch.reset();
     Out << "calculating building blocks" << "\n";
     Out.flush();
-    QDPIO::cout << "calculating building blocks" << endl;
+    QDPIO::cout << "calculating building blocks" << std::endl;
 
     const signed short int T1 = 0;
     const signed short int T2 = QDP::Layout::lattSize()[j_decay] - 1;
@@ -691,7 +690,7 @@ namespace Chroma
     Out << "finished calculating building blocks" << "\n";
     Out.flush();
     QDPIO::cout << "finished calculating building blocks, time= "
-      << swatch.getTimeInSeconds() << " secs" << endl;
+      << swatch.getTimeInSeconds() << " secs" << std::endl;
 
     pop(XmlOut);   // ExampleBuildingBlocks
 
@@ -702,9 +701,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineNoisyBuildingBlocksEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineNoisyBuildingBlocksEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineNoisyBuildingBlocksEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   }

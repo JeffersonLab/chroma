@@ -42,20 +42,20 @@ void MInvSUMR_a(const LinearOperator<T>& U,
   int numroot = x.size();  
   if( zeta.size() != numroot ) { 
     QDPIO::cerr << "zeta size:"<< zeta.size()
-		<<" is different from x.size:"<<numroot << endl;
+		<<" is different from x.size:"<<numroot << std::endl;
 
     QDP_abort(1);
   }
 
   if( rho.size() != numroot) { 
     QDPIO::cerr << "rho size:"<< rho.size()
-		<<" is different from x.size:"<<numroot << endl;
+		<<" is different from x.size:"<<numroot << std::endl;
 
   }
 
   if( epsilon.size() != numroot) {
     QDPIO::cerr << "epsilon size:"<< epsilon.size()
-		<<" is different from x.size:"<<numroot << endl;
+		<<" is different from x.size:"<<numroot << std::endl;
 
   }
 
@@ -74,7 +74,7 @@ void MInvSUMR_a(const LinearOperator<T>& U,
 
   // First things first. We need r_0 = b - A x
   // for all systems.
-  // Restriction here, is that the initial vector x is zero
+  // Restriction here, is that the initial std::vector x is zero
   // and so r_0 = b
   for(int shift = 0; shift < numroot; shift++) {
     x[shift] = zero;
@@ -89,7 +89,7 @@ void MInvSUMR_a(const LinearOperator<T>& U,
   multi1d<Complex> phihat(numroot);
   multi1d<Complex> tauhat(numroot);
 
-  // This vector is part of the Arnoldi process and should
+  // This std::vector is part of the Arnoldi process and should
   // be shift independent. 
   for(int shift = 0; shift < numroot; shift++) { 
     // phi_hat_1 = 1 / delta_0 
@@ -325,7 +325,7 @@ void MInvSUMR_a(const LinearOperator<T>& U,
 	  Real taumod = sqrt(real(conj(tauhat[shift])*tauhat[shift]));
 	  
 	  QDPIO::cout << "Iter " << iter << ":  Shift: " << shift 
-		      <<" | tauhat |=" << taumod << endl;
+		      <<" | tauhat |=" << taumod << std::endl;
 	  
 	  // Check convergence
 	  if ( toBool(taumod < epsilon[shift] ) ) convP[shift] = true;
@@ -349,7 +349,7 @@ void MInvSUMR_a(const LinearOperator<T>& U,
   
   // And we are done, either converged or not...
   if( n_count == MaxSUMR && ! allConvP ) { 
-    QDPIO::cout << "Solver Nonconvergence Warning " << endl;
+    QDPIO::cout << "Solver Nonconvergence Warning " << std::endl;
   }
 
   END_CODE();

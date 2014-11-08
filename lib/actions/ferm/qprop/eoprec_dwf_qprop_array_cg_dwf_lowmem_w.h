@@ -68,7 +68,7 @@ namespace Chroma
     SystemSolverResults_t operator() (multi1d<LatticeFermion>& psi, const multi1d<LatticeFermion>& chi) const
     {
       
-      QDPIO::cout << "entering CGDWFQpropT::operator()" << endl;
+      QDPIO::cout << "entering CGDWFQpropT::operator()" << std::endl;
       
       START_CODE();
       
@@ -100,42 +100,42 @@ namespace Chroma
 	// Init solver
 	std::string dwf_error_str = "single prec.";
 
-	QDPIO::cout << "CGDWFQpropT: Initializing Single Precision Solver " << endl;
+	QDPIO::cout << "CGDWFQpropT: Initializing Single Precision Solver " << std::endl;
 	swatch.reset(); swatch.start();
 	int stat = single_prec_solver.init(lattice_size.slice(), NULL, NULL);
 	if ( stat != 0) {
 	  
-	  QDPIO::cerr << __func__ << ": error in SP solver init: " << dwf_error_str << " error code is " << stat << endl;
+	  QDPIO::cerr << __func__ << ": error in SP solver init: " << dwf_error_str << " error code is " << stat << std::endl;
 	  QDP_abort(1);
 	}
 	swatch.stop();
-	QDPIO::cout << "CGDWFQpropT: Single Prec Solver init took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+	QDPIO::cout << "CGDWFQpropT: Single Prec Solver init took: " << swatch.getTimeInSeconds() << " seconds " << std::endl;
 	
 	// load the gauge
 	swatch.reset(); swatch.start();
 	single_prec_solver.loadGauge(&u, &v);
 	swatch.stop();
-	QDPIO::cout << "CGDWFQpropT: Single Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+	QDPIO::cout << "CGDWFQpropT: Single Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << std::endl;
 
 	
 	// Call the solver
-	QDPIO::cout << "CGDWFQpropT: Beginning Single Precision Solve" << endl;
+	QDPIO::cout << "CGDWFQpropT: Beginning Single Precision Solve" << std::endl;
 	swatch_solver.start();
 	single_prec_solver.cgSolver(psi, M5, m_f, 
 				    chi, psi, rsd_sq, max_iter, out_eps, single_count);
 	swatch_solver.stop();
 	// Delete the gauge
-	QDPIO::cout << "CGDWFQpropT: Deleting Single Precision Solver Gauge Field " << endl;
+	QDPIO::cout << "CGDWFQpropT: Deleting Single Precision Solver Gauge Field " << std::endl;
 	single_prec_solver.deleteGauge();
 	
-	QDPIO::cout << "CGDWFQPropT: Finalizing Single Precision Solver " << endl;
+	QDPIO::cout << "CGDWFQPropT: Finalizing Single Precision Solver " << std::endl;
 	// Destroy the solver
 	single_prec_solver.fini();
 	swatch_total.stop();
 	double tot_time = swatch_total.getTimeInSeconds();
 	double sol_time = swatch_solver.getTimeInSeconds();
 
-	QDPIO::cout << "CGDWFQPropT: Total solution time: " << tot_time << " Time in Single Prec Solver: " << sol_time << " Single Prec Overhead: " << 100.0*(tot_time-sol_time)/sol_time << "%" << endl;
+	QDPIO::cout << "CGDWFQPropT: Total solution time: " << tot_time << " Time in Single Prec Solver: " << sol_time << " Single Prec Overhead: " << 100.0*(tot_time-sol_time)/sol_time << "%" << std::endl;
 
 	res.n_count += single_count;
       }
@@ -153,24 +153,24 @@ namespace Chroma
 	// Init the solver
 	std::string dwf_error_str2 = "double prec.";
 	
-	QDPIO::cout << "CGDWFQpropT: Initializing Double Precision Solver " << endl;
+	QDPIO::cout << "CGDWFQpropT: Initializing Double Precision Solver " << std::endl;
 	swatch.reset(); swatch.start();
 	int stat2 = double_prec_solver.init(lattice_size.slice(), NULL, NULL);
 	if ( stat2 != 0) {
-	  QDPIO::cerr << __func__ << ": error in DP solver init: " << dwf_error_str2 << " error code is " << stat2 << endl;
+	  QDPIO::cerr << __func__ << ": error in DP solver init: " << dwf_error_str2 << " error code is " << stat2 << std::endl;
 	  QDP_abort(1);
 	}
 	swatch.stop();
-	QDPIO::cout << "CGDWFQpropT: Double Prec Solver init took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+	QDPIO::cout << "CGDWFQpropT: Double Prec Solver init took: " << swatch.getTimeInSeconds() << " seconds " << std::endl;
 
 	// Load the gauge field
 	swatch.reset(); swatch.start();
 	double_prec_solver.loadGauge(&u, &v);
 	swatch.stop();
-	QDPIO::cout << "Double Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+	QDPIO::cout << "Double Precision Gauge Field Import took: " << swatch.getTimeInSeconds() << " seconds " << std::endl;
 	
 	// Do the solve
-	QDPIO::cout << "CGDWFQpropT: Beginning Double Precision Solve" << endl;
+	QDPIO::cout << "CGDWFQpropT: Beginning Double Precision Solve" << std::endl;
 	swatch_solver.start();
 	double_prec_solver.cgSolver(psi, M5, m_f, 
 				    chi, psi, rsd_sq, max_iter, out_eps, double_count);
@@ -185,13 +185,13 @@ namespace Chroma
 	double tot_time = swatch_total.getTimeInSeconds();
 	double sol_time = swatch_solver.getTimeInSeconds();
 
-	QDPIO::cout << "CGDWFQPropT: Total solution time: " << tot_time << " Time in Double Prec Solver: " << sol_time << " Double Prec Overhead: " << 100.0*(tot_time-sol_time)/sol_time << "%" << endl;
+	QDPIO::cout << "CGDWFQPropT: Total solution time: " << tot_time << " Time in Double Prec Solver: " << sol_time << " Double Prec Overhead: " << 100.0*(tot_time-sol_time)/sol_time << "%" << std::endl;
       
 	
 	res.n_count += double_count;
       }
 #endif
-      QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << endl;
+      QDPIO::cout << "CGDWFQpropT: Single Prec. Iters = " << single_count << " Double Prec. Iters = " << double_count << " Total Iters = " << res.n_count << std::endl;
       
       {
 	multi1d<LatticeFermion>  r(N5);
@@ -200,7 +200,7 @@ namespace Chroma
 	res.resid = sqrt(norm2(r));
       }
       
-      QDPIO::cout << "exiting CGDWFQpropT::operator()" << endl;
+      QDPIO::cout << "exiting CGDWFQpropT::operator()" << std::endl;
       
       END_CODE();
       
@@ -211,11 +211,11 @@ namespace Chroma
     //! Private internal initializer
     void init(Handle< FermState<T,P,Q> > state, const GroupXML_t& inv)
     {
-      QDPIO::cout << "entering CGDWFQpropT::init" << endl;
+      QDPIO::cout << "entering CGDWFQpropT::init" << std::endl;
       
       if (Nd != 4 || Nc != 3) {
 	
-	QDPIO::cerr << "CGDWFQpropT: only supports Nd=4 and Nc=3" << endl;
+	QDPIO::cerr << "CGDWFQpropT: only supports Nd=4 and Nc=3" << std::endl;
 	QDP_abort(1);
 	
       }
@@ -230,7 +230,7 @@ namespace Chroma
       }
       catch (const std::string& e) {
 	
-	QDPIO::cerr << "CGDWFQpropT: only support a CG inverter" << endl;
+	QDPIO::cerr << "CGDWFQpropT: only support a CG inverter" << std::endl;
 	QDP_abort(1);
       }
 
@@ -242,7 +242,7 @@ namespace Chroma
       
       if (N5 % 4 != 0) {
 	
-	QDPIO::cerr << "SSE qpropT only N5 that is multiple of 2" << endl;
+	QDPIO::cerr << "SSE qpropT only N5 that is multiple of 2" << std::endl;
 	QDP_abort(1);
       }
    
@@ -266,12 +266,12 @@ namespace Chroma
       for (int i = 0; i < Nd; i++)
 	v[i] = shift(u[i], -1, i); // as viewed from the destination
 
-      QDPIO::cout << "exiting CGDWFQpropT::init" << endl;
+      QDPIO::cout << "exiting CGDWFQpropT::init" << std::endl;
     }
 
     //! Private internal destructor
     void fini() {
-      QDPIO::cout << "CGDWFQpropT: calling destructor" << endl;
+      QDPIO::cout << "CGDWFQpropT: calling destructor" << std::endl;
     }
       
   private:

@@ -43,7 +43,7 @@ namespace Chroma
 		 const multi1d<int>& src2, 
 		 const SftMom& phases,
 		 XMLWriter& xml,
-		 const string& xml_group)
+		 const std::string& xml_group)
   {
     START_CODE();
   
@@ -56,9 +56,9 @@ namespace Chroma
     }
 
     QDPIO::cout << "Sources at : " << src1[0] << " " << src1[1] 
-		<< " " << src1[2] << " " << src1[3] << endl
+		<< " " << src1[2] << " " << src1[3] << std::endl
 		<< "       and : " << src2[0] << " " << src2[1] 
-		<< " " << src2[2] << " " << src2[3] << endl; 
+		<< " " << src2[2] << " " << src2[3] << std::endl; 
 
     int length = phases.numSubsets() ;
     int Nt = length;

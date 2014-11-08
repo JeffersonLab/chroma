@@ -338,11 +338,11 @@ namespace Chroma
 				  enum PlusMinus isign,
 				  int s5) const
   {
-    QDPIO::cerr << "Dminus not implemented" << endl;
+    QDPIO::cerr << "Dminus not implemented" << std::endl;
     QDP_abort(1);
   }
 
-  //! Apply the the even-odd block onto a source vector
+  //! Apply the the even-odd block onto a source std::vector
   void 
   EvenOddPrecDWLinOpArray::applyDerivOffDiag(multi1d<LatticeColorMatrix>& ds_u, 
 					     const multi1d<LatticeFermion>& chi, 

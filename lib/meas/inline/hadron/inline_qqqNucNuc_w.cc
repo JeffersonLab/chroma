@@ -50,7 +50,7 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, InlineQQQNucNucParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineQQQNucNucParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -62,7 +62,7 @@ namespace Chroma
     case 2:
       break;
     default:
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
     read(paramtop, "max_p2", param.max_p2);
@@ -77,7 +77,7 @@ namespace Chroma
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, const InlineQQQNucNucParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineQQQNucNucParams::Param_t& param)
   {
     push(xml, path);
 
@@ -90,7 +90,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineQQQNucNucParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineQQQNucNucParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -99,7 +99,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineQQQNucNucParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineQQQNucNucParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -146,7 +146,7 @@ namespace Chroma
 	read(paramtop, "xml_file", xml_file);
     }
     catch(const std::string& e){
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -173,7 +173,7 @@ namespace Chroma
   {
     // If xml file not empty, then use alternate
     if (params.xml_file != ""){
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
       
       push(xml_out, "qqqNucNuc_w");
       write(xml_out, "update_no", update_no);
@@ -208,13 +208,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineQQQNucNucEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineQQQNucNucEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineQQQNucNucEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -222,7 +222,7 @@ namespace Chroma
 
     push(xml_out, "qqqNucNuc_w");
     write(xml_out, "update_no", update_no);
-    QDPIO::cout << " QQQNucNuc: Spectroscopy for Wilson fermions" << endl;
+    QDPIO::cout << " QQQNucNuc: Spectroscopy for Wilson fermions" << std::endl;
     
     // Type of sink smearing
 
@@ -241,18 +241,18 @@ namespace Chroma
       // 3 ---> up down strange charm:  charmed baryons and mesons
       break ;
     default:
-      QDPIO::cerr << "OOOPS!! Don't know what to do with all theses propagators.... " << endl;
+      QDPIO::cerr << "OOOPS!! Don't know what to do with all theses propagators.... " << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+    QDPIO::cout << std::endl << "     Gauge group: SU(" << Nc << ")" << std::endl;
 
 
     QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << Layout::lattSize()[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
     
 
     proginfo(xml_out);    // Print out basic program info
@@ -277,7 +277,7 @@ namespace Chroma
     multi1d<ForwardProp_t> quark_header(params.named_obj.prop_ids.size());
     multi1d<LatticePropagator> qprop(params.named_obj.prop_ids.size());
     multi1d<Real> Mass(params.named_obj.prop_ids.size());
-    multi1d<string> sink_types(params.named_obj.prop_ids.size());
+    multi1d<std::string> sink_types(params.named_obj.prop_ids.size());
     multi2d<int> bc(params.named_obj.prop_ids.size(), 4); 
 
     // Now read the propagators we need
@@ -302,26 +302,26 @@ namespace Chroma
 	read(prop_xml, "/SinkSmear", quark_header[loop]);
 	read(prop_xml, "/SinkSmear/PropSink/Sink/SinkType", sink_types[loop]);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+	QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
 	QDP_abort(1);
       }
 	
       // Hunt around to find the mass and the boundary conditions
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      QDPIO::cout << "Try action and mass" << endl;
+      QDPIO::cout << "Try action and mass" << std::endl;
       Mass[loop] = getMass(quark_header[loop].prop_header.fermact);
       bc[loop]   = getFermActBoundary(quark_header[loop].prop_header.fermact);
 	
-      QDPIO::cout << "FermAct = " << quark_header[loop].prop_header.fermact.path << endl;
-      QDPIO::cout << "Mass = " << Mass[loop] << endl;
+      QDPIO::cout << "FermAct = " << quark_header[loop].prop_header.fermact.path << std::endl;
+      QDPIO::cout << "Mass = " << Mass[loop] << std::endl;
       QDPIO::cout << "boundary = "
 		  << bc[loop][0]<<" "
 		  << bc[loop][1]<<" "
 		  << bc[loop][2]<<" "
-		  << bc[loop][3]<< endl;
+		  << bc[loop][3]<< std::endl;
     }
 
     // Derived from input prop
@@ -334,33 +334,33 @@ namespace Chroma
     for (int loop(0); loop < params.named_obj.prop_ids.size(); ++loop)
     {
       if(sink_types[loop]!=sink_types[0]){
-	QDPIO::cerr << "Error!! sink types must be same for all propagators " << endl;
+	QDPIO::cerr << "Error!! sink types must be same for all propagators " << std::endl;
 	QDP_abort(1);
       }
       if(quark_header[loop].source_header.j_decay!=j_decay){
-	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	QDP_abort(1);
       }
       if(bc[loop][j_decay]!=bc_spec){
-	QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	QDPIO::cerr << "Error!! bc must be the same for all propagators " << std::endl;
 	QDP_abort(1);
       }
       for(int d(0);d<Nd;d++)
 	if(quark_header[loop].source_header.t_source!=t_source){
-	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
     }
   
     // Establish the sink smearing type
-    string sink_type;
+    std::string sink_type;
     if (sink_types[0] == "POINT_SINK")
       sink_type = "POINT";
     else if (sink_types[0] == "SHELL_SINK")
       sink_type = "SHELL";
     else
     {
-      QDPIO::cerr << InlineQQQNucNucEnv::name << ": unknown sink type = " << sink_types[0] << endl;
+      QDPIO::cerr << InlineQQQNucNucEnv::name << ": unknown sink type = " << sink_types[0] << std::endl;
       QDP_abort(1);
     }
 
@@ -436,7 +436,7 @@ namespace Chroma
 	
 	if(params.param.doDecupletBar)
 	  for(int k(1);k<Nd;k++){
-	    ostringstream tag ;
+	    std::ostringstream tag ;
 	    tag<<"Delta_"<<k;
 	    compute_qqq(qqq, k,qprop[0],qprop[0],qprop[0],phases,t0, bc_spec);
 	    write_qqq(qqqto, qqq, phases, tag.str(), sink_type);
@@ -449,7 +449,7 @@ namespace Chroma
 	write_qqbar(qqbarto, qqbar, phases, "pion",sink_type);
 	if(params.param.doVectorMesons)
 	  for(int k(0);k<Nd-1;k++){
-	    ostringstream tag ;
+	    std::ostringstream tag ;
 	    tag<<"rho_"<<k;
 	    compute_qqbar(qqbar, (1<<k),qprop[0],qprop[0],phases,t0 );
 	    write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
@@ -467,7 +467,7 @@ namespace Chroma
 
 	  if(params.param.doDecupletBar)
 	    for(int k(1);k<Nd;k++){
-	      ostringstream tag ;
+	      std::ostringstream tag ;
 	      tag<<"Omega_"<<k;
 	      compute_qqq(qqq,k,qprop[1],qprop[1],qprop[1],phases,t0, bc_spec);
 	      write_qqq(qqqto, qqq, phases, tag.str(), sink_type);
@@ -483,7 +483,7 @@ namespace Chroma
 	  
 	  if(params.param.doVectorMesons)
 	    for(int k(0);k<Nd-1;k++){
-	      ostringstream tag ;
+	      std::ostringstream tag ;
 	      tag<<"kaonst_"<<k;
 	      compute_qqbar(qqbar, (1<<k), qprop[0],qprop[1],phases,t0 );
 	      write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
@@ -524,7 +524,7 @@ namespace Chroma
 	  if(params.param.doVectorMesons)
 	    for(int k(0);k<Nd-1;k++){
 	      {
-		ostringstream tag ;
+		std::ostringstream tag ;
 		tag<<"Dst_"<<k;
 		compute_qqbar(qqbar, (1<<k), qprop[0],qprop[2],phases,t0 );
 		write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
@@ -532,7 +532,7 @@ namespace Chroma
 		write_qqbar(qqbarto, qqbar, phases, "bar"+tag.str(),sink_type);
 	      }
 	      {
-		ostringstream tag ;
+		std::ostringstream tag ;
 		tag<<"Dsst_"<<k;
 		compute_qqbar(qqbar, (1<<k), qprop[1],qprop[2],phases,t0 );
 		write_qqbar(qqbarto, qqbar, phases, tag.str(),sink_type);
@@ -553,9 +553,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineQQQNucNucEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineQQQNucNucEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineQQQNucNucEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

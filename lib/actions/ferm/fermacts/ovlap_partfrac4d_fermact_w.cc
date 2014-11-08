@@ -144,13 +144,13 @@ namespace Chroma
 
       read(in, "IsChiral", isChiralP);
     }
-    catch( const string &e ) {
-      QDPIO::cerr << "Caught Exception reading Zolo4D Fermact params: " << e << endl;
+    catch( const std::string &e ) {
+      QDPIO::cerr << "Caught Exception reading Zolo4D Fermact params: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
-  void write(XMLWriter& xml_out, const string& path, const OvlapPartFrac4DFermActParams& p)
+  void write(XMLWriter& xml_out, const std::string& path, const OvlapPartFrac4DFermActParams& p)
   {
     if ( path != "." ) { 
       push( xml_out, path);
@@ -179,7 +179,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, OvlapPartFrac4DFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, OvlapPartFrac4DFermActParams& param)
   {
     OvlapPartFrac4DFermActParams tmp(xml, path);
     param = tmp;
@@ -192,15 +192,15 @@ namespace Chroma
 						 const OvlapPartFrac4DFermActParams& params_) : 
     fbc(fbc_), params(params_)
   {
-    QDPIO::cout << "Constructing OvlapPartFrac4D FermAct from params" << endl;
+    QDPIO::cout << "Constructing OvlapPartFrac4D FermAct from params" << std::endl;
     std::istringstream  xml_s(params.AuxFermAct);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/AuxFermAct";
+    const std::string fermact_path = "/AuxFermAct";
 
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << ": error: fbc is null" << endl;
+      QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << ": error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -210,17 +210,17 @@ namespace Chroma
 
     struct UnprecCastFailure {
       UnprecCastFailure(std::string e) : auxfermact(e) {};
-      const string auxfermact;
+      const std::string auxfermact;
     };
 
     try
     {
-      string auxfermact;
+      std::string auxfermact;
       read(fermacttop, fermact_path + "/FermAct", auxfermact);
-      QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
+      QDPIO::cout << "AuxFermAct: " << auxfermact << std::endl;
 
       read(fermacttop, fermact_path + "/Mass", params.AuxMass);
-      QDPIO::cout << "AuxFermAct Mass: " << params.AuxMass << endl;
+      QDPIO::cout << "AuxFermAct Mass: " << params.AuxMass << std::endl;
       // Generic Wilson-Type stuff
       FermionAction<T,P,Q>* S_f =
 	TheFermionActionFactory::Instance().createObject(auxfermact,
@@ -244,16 +244,16 @@ namespace Chroma
 
       // Breakage Scenario
       QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
-		  << "UnprecWilsonTypeFermAct " << endl;
+		  << "UnprecWilsonTypeFermAct " << std::endl;
       QDPIO::cerr << OvlapPartFrac4DFermActEnv::name << " does not support even-odd preconditioned "
-		  << "auxiliary FermActs" << endl;
-      QDPIO::cerr << "You passed : " << endl;
-      QDPIO::cerr << e.auxfermact << endl;
+		  << "auxiliary FermActs" << std::endl;
+      QDPIO::cerr << "You passed : " << std::endl;
+      QDPIO::cerr << e.auxfermact << std::endl;
       QDP_abort(1);
     }
     catch (const std::exception& e) {
       // General breakage Scenario
-      QDPIO::cerr << "Error reading data: " << e.what() << endl;
+      QDPIO::cerr << "Error reading data: " << e.what() << std::endl;
       throw;
     }
 
@@ -319,10 +319,10 @@ namespace Chroma
       scale_fac = Real(1) / params.approxMax;
       eps = params.approxMin * scale_fac;
 
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
-      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << std::endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << std::endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << std::endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << std::endl;
       
       /* Below, when we fill in the coefficents for the partial fraction, 
 	 we include this factor, say t, appropriately, i.e.
@@ -345,7 +345,7 @@ namespace Chroma
       type = 0;
       rdata = zolotarev(toFloat(eps), params.RatPolyDeg, type);
       if( rdata == 0x0 ) { 
-	QDPIO::cerr << "Failed to get Zolo Coeffs" << endl;
+	QDPIO::cerr << "Failed to get Zolo Coeffs" << std::endl;
         QDP_abort(1);
       } 
       break;
@@ -354,10 +354,10 @@ namespace Chroma
       scale_fac = Real(1) / params.approxMax;
       eps = params.approxMin * scale_fac;
 
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
-      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << std::endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << std::endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << std::endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << std::endl;
       
       /* Below, when we fill in the coefficents for the partial fraction, 
 	 we include this factor, say t, appropriately, i.e.
@@ -378,10 +378,10 @@ namespace Chroma
       scale_fac = Real(1) ;
       eps = params.approxMin;
 
-      QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << endl;
-      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      QDPIO::cout << "Initing Linop with Unscaled Higham Rep tanh Coefficients" << std::endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << std::endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << std::endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << std::endl;
       
       /* Below, when we fill in the coefficents for the partial fraction, 
 	 we include this factor, say t, appropriately, i.e.
@@ -399,15 +399,15 @@ namespace Chroma
       break;
 
     default:
-      // The map system should ensure that we never get here but 
+      // The std::map system should ensure that we never get here but 
       // just for style
       QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
     maxerr = (Real)(rdata -> Delta);
-    QDPIO::cout << "Maxerr " << maxerr << flush << endl; 
+    QDPIO::cout << "Maxerr " << maxerr << std::flush << std::endl; 
       /*
 	push(my_writer, "ZolotarevApprox");
 	write(my_writer, "eps", eps);
@@ -472,61 +472,61 @@ namespace Chroma
   
     QDPIO::cout << "PartFracApprox 4d n=" << params.RatPolyDeg << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
-		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << endl;
+		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << std::endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
-      endl;
-    QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << endl;
+      std::endl;
+    QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << std::endl;
   
     switch( params.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
-      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+      QDPIO::cout << "Coefficients from Zolotarev" << std::endl;
 
       if(type == 0) {
 	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
-		    << endl;
+		    << std::endl;
       }
       else {
-	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << std::endl;
       }
 
       break;
     case COEFF_TYPE_TANH:
-      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << std::endl;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
-      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << std::endl;
       break;
 
     default:
       QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
-		  << endl;
+		  << std::endl;
       break;
     }
 
 
     switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
-      QDPIO::cout << "Using Single Pass Inner Solver" << endl;
+      QDPIO::cout << "Using Single Pass Inner Solver" << std::endl;
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
-      QDPIO::cout << "Using Neuberger/Chu Double Pass Inner Solver" << endl;
+      QDPIO::cout << "Using Neuberger/Chu Double Pass Inner Solver" << std::endl;
       break;
     default:
-      QDPIO::cerr << "Unknown inner solver type " << endl;
+      QDPIO::cerr << "Unknown inner solver type " << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Number of poles= " << numroot << endl;
-    QDPIO::cout << "Overall Factor=  " << coeffP << endl;
-    QDPIO::cout << "Numerator coefficients:" << endl;
+    QDPIO::cout << "Number of poles= " << numroot << std::endl;
+    QDPIO::cout << "Overall Factor=  " << coeffP << std::endl;
+    QDPIO::cout << "Numerator coefficients:" << std::endl;
     for(int n=0; n < numroot; n++) { 
-      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << endl;
+      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << std::endl;
     }
-    QDPIO::cout << "Denominator roots: " << endl;
+    QDPIO::cout << "Denominator roots: " << std::endl;
     for(int n=0; n < numroot; n++) { 
-      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
+      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << std::endl;
     }
  
     /* We will also compute the 'function' of the eigenvalues */
@@ -606,11 +606,11 @@ namespace Chroma
       scale_fac = Real(1) / params.approxMax;
       eps = params.approxMin * scale_fac;
       
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << endl;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients" << std::endl;
       
-      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << std::endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << std::endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << std::endl;
       
       /* Below, when we fill in the coefficents for the partial fraction, 
 	 we include this factor, say t, appropriately, i.e.
@@ -638,11 +638,11 @@ namespace Chroma
       scale_fac = Real(1) / params.approxMax;
       eps = params.approxMin * scale_fac;
 
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << std::endl;
       
-      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << std::endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << std::endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << std::endl;
       
       /* Below, when we fill in the coefficents for the partial fraction, 
 	 we include this factor, say t, appropriately, i.e.
@@ -663,10 +663,10 @@ namespace Chroma
       scale_fac = Real(1) ;
       eps = params.approxMin;
       
-      QDPIO::cout << "Initing Preconditioning Linop with Unscaled Higham Rep tanh Coefficients" << endl;
-      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << endl;
-      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << endl;
-      QDPIO::cout << "  NEigVal    =  " << NEigVal << endl;
+      QDPIO::cout << "Initing Preconditioning Linop with Unscaled Higham Rep tanh Coefficients" << std::endl;
+      QDPIO::cout << "  MaxCGInner =  " << params.invParamInner.MaxCG << std::endl;
+      QDPIO::cout << "  RsdCGInner =  " << params.invParamInner.RsdCG << std::endl;
+      QDPIO::cout << "  NEigVal    =  " << NEigVal << std::endl;
       
       /* Below, when we fill in the coefficents for the partial fraction, 
 	 we include this factor, say t, appropriately, i.e.
@@ -684,10 +684,10 @@ namespace Chroma
 
 
     default:
-      // The map system should ensure that we never get here but 
+      // The std::map system should ensure that we never get here but 
       // just for style
       QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
   
@@ -748,61 +748,61 @@ namespace Chroma
   
     QDPIO::cout << "PartFrac Preconditioner 4d n=" << params.RatPolyDegPrecond << " scale=" << scale_fac
 		<< " coeff=" << coeffP << " Nwils= " << NEigVal <<" Mass="
-		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << endl;
+		<< params.Mass << " Rsd=" << params.invParamInner.RsdCG << std::endl;
   
     QDPIO::cout << "Approximation on [-1,-eps] U [eps,1] with eps = " << eps <<
-      endl;
-    QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << endl;
+      std::endl;
+    QDPIO::cout << "Maximum error |R(x) - sqn(x)| <= " << maxerr << std::endl;
 
     switch( params.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
-      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+      QDPIO::cout << "Coefficients from Zolotarev" << std::endl;
 
       if(type == 0) {
 	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
-		    << endl;
+		    << std::endl;
       }
       else {
-	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << std::endl;
       }
       break;
     case COEFF_TYPE_TANH:
 
-      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << std::endl;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
 
-      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << std::endl;
       break;
     default:
       QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
-		  << endl;
+		  << std::endl;
       break;
     }
-    QDPIO::cout << flush;  
+    QDPIO::cout << std::flush;  
 
     switch(params.inner_solver_type) { 
     case OVERLAP_INNER_CG_SINGLE_PASS:
-      QDPIO::cout << "Using Single Pass Inner Solver" << endl;
+      QDPIO::cout << "Using Single Pass Inner Solver" << std::endl;
       break;
     case OVERLAP_INNER_CG_DOUBLE_PASS:
-      QDPIO::cout << "Using Neuberger/Chu Double Pass Inner Solver" << endl;
+      QDPIO::cout << "Using Neuberger/Chu Double Pass Inner Solver" << std::endl;
       break;
     default:
-      QDPIO::cerr << "Unknown inner solver type " << endl;
+      QDPIO::cerr << "Unknown inner solver type " << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Number of poles= " << numroot << endl;
-    QDPIO::cout << "Overall Factor=  " << coeffP << endl;
-    QDPIO::cout << "Numerator coefficients:" << endl;
+    QDPIO::cout << "Number of poles= " << numroot << std::endl;
+    QDPIO::cout << "Overall Factor=  " << coeffP << std::endl;
+    QDPIO::cout << "Numerator coefficients:" << std::endl;
     for(int n=0; n < numroot; n++) { 
-      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << endl;
+      QDPIO::cout <<"  resP[" << n << "]= " << resP[n] << std::endl;
     }
-    QDPIO::cout << "Denominator roots: " << endl;
+    QDPIO::cout << "Denominator roots: " << std::endl;
     for(int n=0; n < numroot; n++) { 
-      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << endl;
+      QDPIO::cout <<"  rootQ[" << n<< "]= " << rootQ[n] << std::endl;
     }
   
       
@@ -824,7 +824,7 @@ namespace Chroma
     // Free the arrays allocate by Tony's zolo
     zolotarev_free(rdata);
 
-    QDPIO::cout << "Leaving Init!" << endl << flush;
+    QDPIO::cout << "Leaving Init!" << std::endl << std::flush;
 
   }
 
@@ -892,21 +892,21 @@ namespace Chroma
 				      params.ReorthFreqInner);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << flush << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << std::flush << std::endl;
 	QDP_abort(1);
       }
       
     }
-    catch(bad_cast) { 
+    catch(std::bad_cast) { 
       QDPIO::cerr << "OverlapPartFrac4DFermAct::unprecLinOp: "
 		  << " Failed to downcast ConnectState to OverlapConnectState"
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
     END_CODE();
 
-    QDPIO::cout << "DANGER!!! About to return zero! " << endl;
+    QDPIO::cout << "DANGER!!! About to return zero! " << std::endl;
     return 0;
   }
 
@@ -966,15 +966,15 @@ namespace Chroma
 				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << std::endl;
 	QDP_abort(1);
       }
   
     }
-    catch(bad_cast) { 
+    catch(std::bad_cast) { 
       QDPIO::cerr << "OverlapPartFrac4DFermAct::linOpPrecondition: "
 		  << " Failed to downcast ConnectState to OverlapConnectState"
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -1040,14 +1040,14 @@ namespace Chroma
 				      params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << std::endl;
 	QDP_abort(1);
       }
     }
-    catch(bad_cast) { 
+    catch(std::bad_cast) { 
       QDPIO::cerr << "OverlapPartFrac4DFermAct::lgamma5epsH: "
 		  << " Failed to downcast ConnectState to OverlapConnectState"
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
       
@@ -1112,7 +1112,7 @@ namespace Chroma
 				    params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner);
       break;
     default:
-      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+      QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << std::endl;
       QDP_abort(1);
     }
   
@@ -1202,7 +1202,7 @@ namespace Chroma
 				       params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner, ichiral);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << std::endl;
 	QDP_abort(1);
       }
 
@@ -1273,7 +1273,7 @@ namespace Chroma
 				       params.invParamInner.MaxCG, params.invParamInner.RsdCG, params.ReorthFreqInner, ichiral);
 	break;
       default:
-	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << endl;
+	QDPIO::cerr << "Unknown OverlapInnerSolverType " << params.inner_solver_type << std::endl;
 	QDP_abort(1);
       }
 
@@ -1312,18 +1312,18 @@ namespace Chroma
   EigenConnectState*
   OvlapPartFrac4DFermAct::createState(const multi1d<LatticeColorMatrix>& u_,
 				      XMLReader& state_info_xml,
-				      const string& state_info_path) const
+				      const std::string& state_info_path) const
   {
     XMLFileWriter test("./test");
     test << state_info_xml;
 
-    //QDPIO::cout << "Creating State from XML: " << reader_contents.str() << endl << flush;
+    //QDPIO::cout << "Creating State from XML: " << reader_contents.str() << std::endl << std::flush;
  
     std::string eigen_info_id;
     if( state_info_xml.count("/StateInfo/eigen_info_id") == 1 ) {
      
       read(state_info_xml, "/StateInfo/eigen_info_id", eigen_info_id);
-      QDPIO::cout << "Using eigen_info_id: " << eigen_info_id << endl;
+      QDPIO::cout << "Using eigen_info_id: " << eigen_info_id << std::endl;
 
       EigenConnectState *ret_val = new EigenConnectState(fbc, u_, eigen_info_id);
 
@@ -1345,14 +1345,14 @@ namespace Chroma
 	Double norm_diff = sqrt(norm2(diff));
 	Double norm_diff_rel = norm_diff/fabs(lambda);
 
-	QDPIO::cout << "EV Check["<< vec<<"]: lambda="<< lambda <<" resid="<<norm_diff<<" rel. resid="<< norm_diff_rel << endl;
+	QDPIO::cout << "EV Check["<< vec<<"]: lambda="<< lambda <<" resid="<<norm_diff<<" rel. resid="<< norm_diff_rel << std::endl;
 
       }
       return ret_val;
 
     }
     else {
-      QDPIO::cout << "No StateInfo Found: " << endl;
+      QDPIO::cout << "No StateInfo Found: " << std::endl;
 
       return new EigenConnectState(fbc, u_);
     }

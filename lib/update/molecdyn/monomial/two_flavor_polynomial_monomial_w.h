@@ -14,7 +14,6 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
-using namespace std;
 
 namespace Chroma
 {
@@ -143,8 +142,8 @@ namespace Chroma
 
 	getPhi() = fm.getPhi();
       }
-      catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactPolynomialWilsonTypeFermMonomial " << endl;
+      catch(std::bad_cast) { 
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactPolynomialWilsonTypeFermMonomial " << std::endl;
 	QDP_abort(1);
       }
     

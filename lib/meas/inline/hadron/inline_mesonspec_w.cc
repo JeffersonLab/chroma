@@ -54,7 +54,7 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    InlineMesonSpecParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -68,7 +68,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -78,7 +78,7 @@ namespace Chroma
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const InlineMesonSpecParams::Param_t& param)
   {
     push(xml, path);
@@ -94,7 +94,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t& input)
   {
     XMLReader inputtop(xml, path);
@@ -108,7 +108,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const InlineMesonSpecParams::NamedObject_t::Correlators_t::CorrelatorTerms_t& input)
   {
     push(xml, path);
@@ -124,7 +124,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    InlineMesonSpecParams::NamedObject_t::Correlators_t& input)
   {
     XMLReader inputtop(xml, path);
@@ -137,7 +137,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const InlineMesonSpecParams::NamedObject_t::Correlators_t& input)
   {
     push(xml, path);
@@ -153,7 +153,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    InlineMesonSpecParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
@@ -163,7 +163,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const InlineMesonSpecParams::NamedObject_t& input)
   {
     push(xml, path);
@@ -203,7 +203,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -230,14 +230,14 @@ namespace Chroma
     struct SinkPropContainer_t
     {
       ForwardProp_t prop_header;
-      string quark_propagator_id;
+      std::string quark_propagator_id;
       Real Mass;
     
       // Now loop over the various fermion masses
-      string source_type;
-      string source_disp_type;
-      string sink_type;
-      string sink_disp_type;
+      std::string source_type;
+      std::string source_disp_type;
+      std::string sink_type;
+      std::string sink_disp_type;
     };
 
 
@@ -283,13 +283,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineMesonSpecEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << InlineMesonSpecEnv::name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -298,11 +298,11 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      QDPIO::cout << "Try action and mass" << endl;
+      QDPIO::cout << "Try action and mass" << std::endl;
       s.Mass = getMass(s.prop_header.prop_header.fermact);
     
-      QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
-      QDPIO::cout << "Mass = " << s.Mass << endl;
+      QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << std::endl;
+      QDPIO::cout << "Mass = " << s.Mass << std::endl;
     }
 
 
@@ -314,13 +314,13 @@ namespace Chroma
 
       for(int i=0; i < correlator_terms.size(); ++i)
       {
-	QDPIO::cout << "Attempt to parse forward propagator = " << correlator_terms[i].first_id << endl;
+	QDPIO::cout << "Attempt to parse forward propagator = " << correlator_terms[i].first_id << std::endl;
 	readSinkProp(s[i].sink_prop_1, correlator_terms[i].first_id);
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+	QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
 
-	QDPIO::cout << "Attempt to parse forward propagator = " << correlator_terms[i].second_id << endl;
+	QDPIO::cout << "Attempt to parse forward propagator = " << correlator_terms[i].second_id << std::endl;
 	readSinkProp(s[i].sink_prop_2, correlator_terms[i].second_id);
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+	QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
       }
     }
 
@@ -336,7 +336,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "MesonSpectrum");
       write(xml_out, "update_no", update_no);
@@ -361,7 +361,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << InlineMesonSpecEnv::name << ": meson spectroscopy for Wilson-like fermions" << endl;
+    QDPIO::cout << InlineMesonSpecEnv::name << ": meson spectroscopy for Wilson-like fermions" << std::endl;
 
     StopWatch snoop;
     snoop.reset();
@@ -377,13 +377,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMesonSpecEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMesonSpecEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineMesonSpecEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -394,7 +394,7 @@ namespace Chroma
 
     proginfo(xml_out);    // Print out basic program info
 
-    QDPIO::cout << "xml_file = " << params.xml_file << endl;
+    QDPIO::cout << "xml_file = " << params.xml_file << std::endl;
 
     // Write out the input
     params.write(xml_out, "Input");
@@ -439,13 +439,13 @@ namespace Chroma
       {
 	if (all_sinks[loop].sink_prop_2.prop_header.source_header.j_decay != j_decay)
 	{
-	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
 	if (all_sinks[loop].sink_prop_2.prop_header.source_header.t_source != 
 	    all_sinks[loop].sink_prop_1.prop_header.source_header.t_source)
 	{
-	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -496,10 +496,10 @@ namespace Chroma
       for(int loop=0; loop < all_sinks.size(); ++loop)
       {
 	push(xml_out, "elem");
-	QDPIO::cout << "Source_type_1 = " << all_sinks[loop].sink_prop_1.source_type << endl;
-	QDPIO::cout << "Sink_type_1 = " << all_sinks[loop].sink_prop_1.sink_type << endl;
-	QDPIO::cout << "Source_type_2 = " << all_sinks[loop].sink_prop_2.source_type << endl;
-	QDPIO::cout << "Sink_type_2 = " << all_sinks[loop].sink_prop_2.sink_type << endl;
+	QDPIO::cout << "Source_type_1 = " << all_sinks[loop].sink_prop_1.source_type << std::endl;
+	QDPIO::cout << "Sink_type_1 = " << all_sinks[loop].sink_prop_1.sink_type << std::endl;
+	QDPIO::cout << "Source_type_2 = " << all_sinks[loop].sink_prop_2.source_type << std::endl;
+	QDPIO::cout << "Sink_type_2 = " << all_sinks[loop].sink_prop_2.sink_type << std::endl;
 
 	write(xml_out, "source_type_1", all_sinks[loop].sink_prop_1.source_type);
 	write(xml_out, "source_disp_type_1", all_sinks[loop].sink_prop_1.source_disp_type);
@@ -543,7 +543,7 @@ namespace Chroma
 	    {
 	      std::istringstream  xml_s(named_obj.correlator_terms[loop].source_spin_insertion.xml);
 	      XMLReader  inserttop(xml_s);
-//	      const string insert_path = "/SourceSpinInsertion";
+//	      const std::string insert_path = "/SourceSpinInsertion";
 	
 	      Handle< SpinInsertion<LatticePropagator> > sourceSpinInsertion(
 		ThePropSpinInsertionFactory::Instance().createObject(
@@ -558,7 +558,7 @@ namespace Chroma
 	    {
 	      std::istringstream  xml_s(named_obj.correlator_terms[loop].sink_spin_insertion.xml);
 	      XMLReader  inserttop(xml_s);
-//	      const string insert_path = "/SinkSpinInsertion";
+//	      const std::string insert_path = "/SinkSpinInsertion";
 	
 	      Handle< SpinInsertion<LatticePropagator> > sinkSpinInsertion(
 		ThePropSpinInsertionFactory::Instance().createObject(
@@ -574,7 +574,7 @@ namespace Chroma
 	  catch(const std::string& e) 
 	  {
 	    QDPIO::cerr << InlineMesonSpecEnv::name << ": Caught Exception inserting: " 
-			<< e << endl;
+			<< e << std::endl;
 	    QDP_abort(1);
 	  }
 
@@ -621,9 +621,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineMesonSpecEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineMesonSpecEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineMesonSpecEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

@@ -70,7 +70,7 @@ namespace Chroma
     //! Flopcounter
     virtual unsigned long nFlops() const 
     { 
-      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
+      //      QDPIO::cout << "Flopcount Not Yet Implemented " << std::endl;
       return 0;
     }
 

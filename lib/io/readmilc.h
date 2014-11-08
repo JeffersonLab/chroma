@@ -20,7 +20,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg_file);
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const std::string& cfg_file);
 
 //! Read a MILC gauge configuration written in the 1997 format
 /*!
@@ -31,7 +31,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const string& cfg_file);
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const std::string& cfg_file);
 
 //! Read a MILC gauge configuration written in the 1997 format
 /*!
@@ -42,7 +42,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const string& cfg
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string& cfg_file);
+void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const std::string& cfg_file);
 
 
 }  // end namespace Chroma

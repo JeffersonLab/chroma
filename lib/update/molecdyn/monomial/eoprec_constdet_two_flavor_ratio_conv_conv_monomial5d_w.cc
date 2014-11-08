@@ -25,7 +25,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new EvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomial5D(
 	  TwoFlavorRatioConvConvWilsonTypeFermMonomialParams(xml, path));
@@ -58,7 +58,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Constructor: " << __func__ << endl;
+    QDPIO::cout << "Constructor: " << __func__ << std::endl;
 
     invParam_num = param.numer.invParam;
 
@@ -67,7 +67,7 @@ namespace Chroma
     {
       std::istringstream is(param.numer.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct fermion action= " << param.numer.fermact.id << endl;
+      QDPIO::cout << "Construct fermion action= " << param.numer.fermact.id << std::endl;
 
       WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermAct5DFactory::Instance().createObject(param.numer.fermact.id, fermact_reader, param.numer.fermact.path);
@@ -77,7 +77,7 @@ namespace Chroma
 
       // Check success of the downcast 
       if( downcast == 0x0 ) {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct5D" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -89,7 +89,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct fermion action= " << param.denom.fermact.id << endl;
+      QDPIO::cout << "Construct fermion action= " << param.denom.fermact.id << std::endl;
 
       WilsonTypeFermAct5D<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermAct5DFactory::Instance().createObject(param.denom.fermact.id, fermact_reader, param.denom.fermact.path);
@@ -99,7 +99,7 @@ namespace Chroma
 
       // Check success of the downcast 
       if( downcast == 0x0 ) {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct5D" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct5D" << std::endl;
 	QDP_abort(1);
       }
 
@@ -109,9 +109,9 @@ namespace Chroma
 
     if (fermact_num->size() != fermact_den->size()) 
     {
-      QDPIO::cerr << "Error: numerator action has to have the same length in the 5th dimension as the denominator action." << endl;
-      QDPIO::cerr << "N5 in FermionActionNum " << fermact_num->size() << endl;
-      QDPIO::cerr << "N5 in FermionActionDen " << fermact_den->size() << endl;
+      QDPIO::cerr << "Error: numerator action has to have the same length in the 5th dimension as the denominator action." << std::endl;
+      QDPIO::cerr << "N5 in FermionActionNum " << fermact_num->size() << std::endl;
+      QDPIO::cerr << "N5 in FermionActionDen " << fermact_den->size() << std::endl;
       QDP_abort(1);
     }
       
@@ -136,23 +136,23 @@ namespace Chroma
 									    param.predictor.path);
 	}
 	catch(const std::string& e ) { 
-	  QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught Exception Reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
       }
      
       if( tmp == 0x0 ) { 
-	QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << endl;
+	QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << std::endl;
 	QDP_abort(1);
       }
       chrono_predictor = tmp;
     }
     //*********************************************************************
 
-    QDPIO::cout << "Initing PF field" << endl;
+    QDPIO::cout << "Initing PF field" << std::endl;
     getPhi().resize( fermact_num->size() );
 
-    QDPIO::cout << "Finished constructing: " << __func__ << endl;
+    QDPIO::cout << "Finished constructing: " << __func__ << std::endl;
     
     END_CODE();
   }

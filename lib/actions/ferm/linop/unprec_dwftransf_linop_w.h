@@ -54,7 +54,7 @@ namespace Chroma
 		const Real& c5_,
 		const SysSolverCGParams& invParam_);
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
     //! Return the fermion BC object for this linear operator
@@ -112,7 +112,7 @@ namespace Chroma
 		const Real& c5_,
 		const SysSolverCGParams& invParam_);
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
 
@@ -150,7 +150,7 @@ namespace Chroma
     //! Only defined on the entire lattice
     const Subset& subset() const {return all;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const 
     {
       // Apply chi ( 2 + (b5-c5) D_w ) psi

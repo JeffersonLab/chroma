@@ -2,7 +2,7 @@
 /*! \file
  * \brief Compute a static prop  (1/2)*(1+gamma_4)U*U*...U * multi1d<LatticeColorVector>
  *
- * Static propagator calculation on a colorvector
+ * Static propagator calculation on a colorstd::vector
  */
 
 #ifndef __inline_static_prop_colorvec_w_h__

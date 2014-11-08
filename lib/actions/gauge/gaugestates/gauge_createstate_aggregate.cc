@@ -59,7 +59,7 @@ namespace Chroma
       }
       else
       {
-//	QDPIO::cerr << "Error: GaugeState group not found" << endl;
+//	QDPIO::cerr << "Error: GaugeState group not found" << std::endl;
 //	QDP_abort(1);
 	
 	gaugestate_path = ".";

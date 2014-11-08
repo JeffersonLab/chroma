@@ -52,7 +52,7 @@ namespace Chroma
      * Construct "level 1" smeared links in mu-direction
      * with staples only in one orthogonal direction, nu
      */
-    QDPIO::cout << "HYP-smearing-3D only involving spatial links!" << endl;
+    QDPIO::cout << "HYP-smearing-3D only involving spatial links!" << std::endl;
 
     u_hyp = u;   // only need to make sure j_decay direction is set
 

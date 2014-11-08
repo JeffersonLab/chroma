@@ -38,12 +38,12 @@ namespace Chroma
 		     const multi1d<Real>& resP,
 		     const multi1d<Real>& resQ,
 		     const Real& Mass) const {
-      QDPIO::cout << "Tuning constant is: " << tuningConstant << endl;
+      QDPIO::cout << "Tuning constant is: " << tuningConstant << std::endl;
       int size=resP.size();
       beta.resize(size);
       for(int i=0; i < size; i++) { 
 	beta[i] = tuningConstant;
-	QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
+	QDPIO::cout << "beta["<<i<<"] = " << beta[i] << std::endl;
       }
     }
   private:

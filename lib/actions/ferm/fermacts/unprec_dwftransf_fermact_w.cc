@@ -62,7 +62,7 @@ namespace Chroma
 
 
   //! Read parameters
-  UnprecDWFTransfFermActParams::UnprecDWFTransfFermActParams(XMLReader& xml, const string& path)
+  UnprecDWFTransfFermActParams::UnprecDWFTransfFermActParams(XMLReader& xml, const std::string& path)
   {
     try 
     {
@@ -72,7 +72,7 @@ namespace Chroma
       if (paramtop.count("Mass") != 0) {
 	read(paramtop, "Mass", Mass);
 	if (paramtop.count("Kappa") != 0) {
-	  QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	  QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -82,7 +82,7 @@ namespace Chroma
 	Mass = kappaToMass(Kappa);    // Convert Kappa to Mass
        }
       else {
-	QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+	QDPIO::cerr << "Error: neither Mass or Kappa found" << std::endl;
 	QDP_abort(1);
       }
       
@@ -92,8 +92,8 @@ namespace Chroma
       read(paramtop, "RsdCG", invParam.RsdCG);
       read(paramtop, "MaxCG", invParam.MaxCG);
     }
-    catch( const string& e) { 
-      QDPIO::cerr << "Caught exception reading XML " << e << endl;
+    catch( const std::string& e) { 
+      QDPIO::cerr << "Caught exception reading XML " << e << std::endl;
       QDP_abort(1);
     }
       
@@ -101,7 +101,7 @@ namespace Chroma
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, UnprecDWFTransfFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, UnprecDWFTransfFermActParams& param)
   {
     UnprecDWFTransfFermActParams tmp(xml, path);
     param = tmp;

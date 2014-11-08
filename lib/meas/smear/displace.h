@@ -33,7 +33,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Read )
+   *  \param chi      color std::vector field ( Read )
    *  \param length   displacement length - must be greater than zero ( Read )
    *  \param path     array of direction of displacement paths - pos/neg, or zero ( Read )
    *
@@ -89,7 +89,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Read )
+   *  \param chi      color std::vector field ( Read )
    *  \param length   length of displacement - can be negative ( Read )
    *  \param dir      direction of displacement ( Read )
    *
@@ -145,7 +145,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Read )
+   *  \param chi      color std::vector field ( Read )
    *  \param length   displacement length - must be greater than zero ( Read )
    *  \param path     array of direction of derivative paths - pos or zero ( Read )
    *

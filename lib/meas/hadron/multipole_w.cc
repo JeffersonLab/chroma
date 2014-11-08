@@ -14,7 +14,7 @@ namespace Chroma
 {
 
   // Write a Multipole_t
-  void write(XMLWriter& xml, const string& path, const Multipole_t::ElecMag_t& pole)
+  void write(XMLWriter& xml, const std::string& path, const Multipole_t::ElecMag_t& pole)
   {
     push(xml, path);
 
@@ -28,7 +28,7 @@ namespace Chroma
 
 
   // Write a Multipole_t
-  void write(XMLWriter& xml, const string& path, const Multipole_t& pole)
+  void write(XMLWriter& xml, const std::string& path, const Multipole_t& pole)
   {
     push(xml, path);
 
@@ -320,7 +320,7 @@ namespace Chroma
    * \param j_decay            direction of decay ( Read )
    * \param t0                 cartesian coordinates of the source ( Read )
    * \param xml                xml file object ( Write )
-   * \param xml_group          string used for writing xml data ( Read )
+   * \param xml_group          std::string used for writing xml data ( Read )
    */
 
   void multipole(const LatticePropagator& quark_propagator,
@@ -330,7 +330,7 @@ namespace Chroma
 		 int   j_decay,
 		 int   t0,
 		 XMLWriter& xml,
-		 const string& xml_group)
+		 const std::string& xml_group)
   {
     START_CODE();
 

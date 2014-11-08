@@ -14,7 +14,6 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
-using namespace std;
 
 namespace Chroma
 {
@@ -125,7 +124,7 @@ namespace Chroma
       Phi tmp;
       (*H)(tmp, eta, PLUS);
       Poly->applyA(getPhi(), tmp, PLUS);
-      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor after field refresh" << endl;
+      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor after field refresh" << std::endl;
       getMDSolutionPredictor().reset();
     
       END_CODE();
@@ -141,8 +140,8 @@ namespace Chroma
 
 	getPhi() = fm.getPhi();
       }
-      catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactPolyPrecWilsonTypeFermMonomial " << endl;
+      catch(std::bad_cast) { 
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactPolyPrecWilsonTypeFermMonomial " << std::endl;
 	QDP_abort(1);
       }
 
@@ -233,7 +232,7 @@ namespace Chroma
       
       // Energy calc doesnt use Chrono Predictor
       X = zero;
-      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
       int n_count = this->getX(X,s);
 
@@ -306,7 +305,7 @@ namespace Chroma
       X[ lin->subset() ] = zero;
 
       // getX noe always uses chrono predictor. Best to Nuke it therefore
-      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavPolyWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
       int n_count = this->getX(X, s);
       Double action = innerProductReal(getPhi(), X, lin->subset());

@@ -16,14 +16,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SFGaugeInitEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, SFGaugeInitEnv::Params& param)
   {
     SFGaugeInitEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const SFGaugeInitEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const SFGaugeInitEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -60,7 +60,7 @@ namespace Chroma
 
 
     // Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -69,7 +69,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -87,7 +87,7 @@ namespace Chroma
 			    XMLReader& gauge_xml,
 			    multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Starting up a classical Schroedinger functional config" << endl;
+      QDPIO::cout << "Starting up a classical Schroedinger functional config" << std::endl;
 
       try
       {
@@ -96,7 +96,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.cgs.xml);
 	XMLReader  top(xml_s);
-        QDPIO::cout << "GaugeState type = " << params.cgs.id << endl;
+        QDPIO::cout << "GaugeState type = " << params.cgs.id << std::endl;
 	
 	Handle< CreateGaugeState< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> > > 
 	  cgs(TheCreateGaugeStateFactory::Instance().createObject(params.cgs.id,
@@ -119,12 +119,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in creating GaugeState: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in creating GaugeState: " << e << std::endl;
 	QDP_abort(1);
       }
 

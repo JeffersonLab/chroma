@@ -48,7 +48,7 @@ namespace Chroma
 	QDPIO::cout << "beta["<<i<<"]=" << beta[i]
 	<< "  Hsign=" << Hsign
 	<< "  scale_fac=" << scale_fac 
-	<< "  beta_tilde["<<i<<"]=" << beta_tilde[i] << endl;
+	<< "  beta_tilde["<<i<<"]=" << beta_tilde[i] << std::endl;
 
       */
       Hsign = -Hsign;
@@ -57,7 +57,7 @@ namespace Chroma
     // Sanity Check
     if ( Hsign > 0 ) {
       QDPIO::cerr << "Something is wrong. At the end of this loop"
-		  << " Hsign should be -ve" << endl;
+		  << " Hsign should be -ve" << std::endl;
     }
 
     // Now the a_i's and b_i's
@@ -68,9 +68,9 @@ namespace Chroma
     a[N5-1] = mass + (beta_tilde[N5-1]*(Nd - OverMass));
 
     /*
-      QDPIO::cout << "Nd - OverMass = " << Nd- OverMass << endl;
+      QDPIO::cout << "Nd - OverMass = " << Nd- OverMass << std::endl;
       for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "a["<<i<<"]= " << a[i] << endl;
+      QDPIO::cout << "a["<<i<<"]= " << a[i] << std::endl;
       }
     */
     // Now the d-s
@@ -88,7 +88,7 @@ namespace Chroma
 
     /*
       for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "d["<<i<<"]=" << d[i] << endl;
+      QDPIO::cout << "d["<<i<<"]=" << d[i] << std::endl;
       }
     */
 
@@ -104,7 +104,7 @@ namespace Chroma
     }
     /*
       for(int i=0; i < N5-1; i++) { 
-      QDPIO::cout << "u["<<i<<"] = " << u[i] << endl;
+      QDPIO::cout << "u["<<i<<"] = " << u[i] << std::endl;
       }
     */
     END_CODE();

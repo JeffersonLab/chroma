@@ -41,14 +41,14 @@ namespace Chroma
 
 
     // Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
     }
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -65,7 +65,7 @@ namespace Chroma
 			    XMLReader& gauge_xml,
 			    multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Starting up unit gauge (free) config" << endl;
+      QDPIO::cout << "Starting up unit gauge (free) config" << std::endl;
       u.resize(Nd);
       u = 1;
 

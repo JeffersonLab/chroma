@@ -11,7 +11,7 @@ namespace Chroma
 {
 
   // Configuration input
-  void read(XMLReader& xml, const string& path, Cfg_t& input)
+  void read(XMLReader& xml, const std::string& path, Cfg_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -20,7 +20,7 @@ namespace Chroma
   }
 
   // Write a config struct
-  void write(XMLWriter& xml, const string& path, const Cfg_t& cfg)
+  void write(XMLWriter& xml, const std::string& path, const Cfg_t& cfg)
   {
     push(xml, "Cfg");
     write(xml, "cfg_type", cfg.cfg_type);
