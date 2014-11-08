@@ -10,7 +10,6 @@
 #include "qdp_util.h"    // from QDP
 
 #include <string>
-#include <string.h>
 using std::string;
 
 namespace Chroma {
@@ -25,7 +24,7 @@ namespace Chroma {
  */    
 
 void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u, 
-	       const string& cfg_file)
+	       const std::string& cfg_file)
 {
   START_CODE();
 
@@ -85,7 +84,7 @@ void writeMILC(const MILCGauge_t& header, const multi1d<LatticeColorMatrix>& u,
  * \param cfg_file   path ( Write )
  */    
 
-void writeMILC(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void writeMILC(XMLBufferWriter& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
