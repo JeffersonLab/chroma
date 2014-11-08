@@ -26,12 +26,9 @@ sed 's/include <std::string.h>/include <string.h>/' |\
 sed 's/include <std::map>/include <map>/' |\
 sed 's/include <std::vector>/include <vector>/' |\
 sed 's/error_std::string/error_string/g' |\
-sed 's/_std::map/_map/g' |\
-sed 's/_std::map/_map/g' |\
-sed 's/_objstd::map/_objmap/g' |\
 sed 's/std::vector_/vector_/g' |\
-sed 's/_std::vector/_vector/g' |\
-sed 's/_std::vector/_vector/g' |\
+sed 's/_std::/_/g' |\
+sed 's/_objstd::/_obj/g' |\
 grep -v 'using namespace std;' > ${f}.tmp
 
 mv ${f}.tmp $f
