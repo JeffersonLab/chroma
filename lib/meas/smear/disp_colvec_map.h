@@ -1,5 +1,4 @@
 // -*- C++ -*-
-// $Id: disp_colvec_map.h,v 1.2 2009-09-14 21:05:14 edwards Exp $
 /*! \file
  * \brief Holds displaced color vectors
  */
@@ -74,7 +73,7 @@ namespace Chroma
     int displacement_length;
 			
     //! Maps of displaced color vectors 
-    map<KeyDispColorVector_t, ValDispColorVector_t> disp_src_map;
+    std::map<KeyDispColorVector_t, ValDispColorVector_t> disp_src_map;
   };
 
   /*! @} */  // end of group smear
