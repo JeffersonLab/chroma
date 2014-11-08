@@ -11,7 +11,6 @@
 
 #include "chromabase.h"
 #include <iostream>
-#include <string>
 #include <map>
 
 namespace Chroma 
@@ -30,16 +29,16 @@ namespace Chroma
   public:
     typedef typename std::map<std::string, EnumType> Str2Enum;
     typedef typename std::map<EnumType, std::string> Enum2Str;
-    typedef typename std::map<string, EnumType>::iterator Str2EnumIterator;
-    typedef typename std::map<EnumType, string>::iterator Enum2StrIterator;
+    typedef typename std::map<std::string, EnumType>::iterator Str2EnumIterator;
+    typedef typename std::map<EnumType, std::string>::iterator Enum2StrIterator;
   private:
     Enum2Str enum_map;  // Map one way (Enum->String)
     Str2Enum str_map;   // Map other way (String->Enum)
     EnumTypeMap(const EnumTypeMap<EnumType>& t) {}
 
     struct EnumLookupException {
-      EnumLookupException(const string& s) : val_str(s) {};
-      const string val_str;
+      EnumLookupException(const std::string& s) : val_str(s) {};
+      const std::string val_str;
     };
     
     struct StringLookupException { 
@@ -47,12 +46,12 @@ namespace Chroma
       const EnumType val_enum;
     };
 
-    void dumpMapStrings(const string& typeIDString) {
-      QDPIO::cout << "Allowed enum " << typeIDString << " string-value pairs are: " << endl;
-      QDPIO::cout << "==================== " << endl;
+    void dumpMapStrings(const std::string& typeIDString) {
+      QDPIO::cout << "Allowed enum " << typeIDString << " std::string-value pairs are: " << std::endl;
+      QDPIO::cout << "==================== " << std::endl;
       Enum2StrIterator it; 
       for( it=enum_map.begin(); it!=enum_map.end(); it++) {
-	QDPIO::cout << "  String: " << it->second << ", Int value of enum: " << it->first << endl;
+	QDPIO::cout << "  String: " << it->second << ", Int value of enum: " << it->first << std::endl;
       }
     }
      
@@ -60,7 +59,7 @@ namespace Chroma
 
     EnumTypeMap(){};
 
-    //! Function registers a string/enum pair
+    //! Function registers a std::string/enum pair
     /*!
      * Enum-String pairs are initialised when the relevant
      * env's "registered" boolean is set, and this may well be 
@@ -72,20 +71,20 @@ namespace Chroma
      * a useful check that I haven't left duplicates in the 
      * registerAll() functions.
      */
-    bool registerPair(const string& s, const EnumType t) { 
+    bool registerPair(const std::string& s, const EnumType t) { 
       bool success;
       success = enum_map.insert(make_pair(t,s)).second;
       if( ! success ) { 
-	cerr << "Enum-String Insertion Failure. Enum="<<t<< " String=" << s << endl;
-	cerr << "Most Likely pair already inserted. Check relevant files for duplicates" << endl << flush ;
+	std::cerr << "Enum-String Insertion Failure. Enum="<<t<< " String=" << s << std::endl;
+	std::cerr << "Most Likely pair already inserted. Check relevant files for duplicates" << std::endl << std::flush ;
 	
 	exit(1);
       }
       
       success &= str_map.insert(make_pair(s,t)).second;
       if( ! success ) { 
-	cerr << "String-Enum Insertion Failure. Enum="<<t<< " String=" << s << endl;
-	cerr << "Most Likely pair already inserted. Check relevant files for duplicates" << endl << flush ;
+	std::cerr << "String-Enum Insertion Failure. Enum="<<t<< " String=" << s << std::endl;
+	std::cerr << "Most Likely pair already inserted. Check relevant files for duplicates" << std::endl << std::flush ;
 	
 	exit(1);
       }
@@ -94,8 +93,8 @@ namespace Chroma
     }
    
 
-    //! Look up an enum based on a string 
-    EnumType lookUpEnum(const string& s) {
+    //! Look up an enum based on a std::string 
+    EnumType lookUpEnum(const std::string& s) {
 
       // Do the lookup
       Str2EnumIterator it = str_map.find(s);
@@ -111,11 +110,11 @@ namespace Chroma
     }
    
 
-    //! Look up a string from an enum 
-    string lookUpString(const EnumType& t) {
+    //! Look up a std::string from an enum 
+    std::string lookUpString(const EnumType& t) {
       // Do the lookup
       Enum2StrIterator it = enum_map.find(t);
-      string s;
+      std::string s;
       if( it != enum_map.end() ) { 
 	s= it->second;
       }
@@ -128,26 +127,26 @@ namespace Chroma
  
 
     //! "Reader"
-    void read(const string& typeIDString, 
+    void read(const std::string& typeIDString, 
 	      XMLReader& xml_in, 
-	      const string& path, 
+	      const std::string& path, 
 	      EnumType& t) {
-      // Try to read a string for the enum
-      string string_in;
+      // Try to read a std::string for the enum
+      std::string string_in;
       try { 
 	QDP::read(xml_in, path, string_in);
       }
-      catch( const string& xml_e ) { 
-	QDPIO::cerr << "Caught Exception parsing XML: " << xml_e << endl;
+      catch( const std::string& xml_e ) { 
+	QDPIO::cerr << "Caught Exception parsing XML: " << xml_e << std::endl;
 	QDP_abort(1);
       }
 
-      // Try to look up the enum for the string
+      // Try to look up the enum for the std::string
       try { 
 	t = lookUpEnum(string_in);
       }
       catch( EnumLookupException& e ) {
-	QDPIO::cerr << "No enum " << typeIDString << " registered for string " << e.val_str << " while parsing XML Query " << path << endl;
+	QDPIO::cerr << "No enum " << typeIDString << " registered for std::string " << e.val_str << " while parsing XML Query " << path << std::endl;
 	dumpMapStrings(typeIDString);
 	QDP_abort(1);
       }
@@ -155,51 +154,51 @@ namespace Chroma
    
 
     //! Writer
-    void write(const string& typeIDString,
+    void write(const std::string& typeIDString,
 	       XMLWriter& xml_out, 
-	       const string& path, 
+	       const std::string& path, 
 	       const EnumType& t)  {
-      string string_out;
-      // Try to look up the string for the enum
+      std::string string_out;
+      // Try to look up the std::string for the enum
       try { 
 	string_out = lookUpString(t);
       }
       catch( StringLookupException& e) { 
-	QDPIO::cerr << "No string found for enum " << typeIDString << " with value " << t << " while attempting to write XML " << endl;
+	QDPIO::cerr << "No std::string found for enum " << typeIDString << " with value " << t << " while attempting to write XML " << std::endl;
 	dumpMapStrings(typeIDString);
 	QDP_abort(1);
       }
 
-      // Try writing the string
+      // Try writing the std::string
       try { 
 	QDP::write(xml_out, path, string_out);
       }
-      catch( const string& xml_e ) { 
-	QDPIO::cerr << "Caught Exception writing XML: " << xml_e << endl;
+      catch( const std::string& xml_e ) { 
+	QDPIO::cerr << "Caught Exception writing XML: " << xml_e << std::endl;
 	QDP_abort(1);
       }
     }
     
     //! "Reader"
-    void read(const string& typeIDString, 
+    void read(const std::string& typeIDString, 
 	      BinaryReader& bin_in, 
 	      EnumType& t) {
-      // Try to read a string for the enum
-      string string_in;
+      // Try to read a std::string for the enum
+      std::string string_in;
       try { 
 	QDP::readDesc(bin_in, string_in);
       }
-      catch( const string& bin_e ) { 
-	QDPIO::cerr << "Caught Exception parsing BIN: " << bin_e << endl;
+      catch( const std::string& bin_e ) { 
+	QDPIO::cerr << "Caught Exception parsing BIN: " << bin_e << std::endl;
 	QDP_abort(1);
       }
 
-      // Try to look up the enum for the string
+      // Try to look up the enum for the std::string
       try { 
 	t = lookUpEnum(string_in);
       }
       catch( EnumLookupException& e ) {
-	QDPIO::cerr << "No enum " << typeIDString << " registered for string " << e.val_str << " while parsing Binary lookup" << endl;
+	QDPIO::cerr << "No enum " << typeIDString << " registered for std::string " << e.val_str << " while parsing Binary lookup" << std::endl;
 	dumpMapStrings(typeIDString);
 	QDP_abort(1);
       }
@@ -207,26 +206,26 @@ namespace Chroma
    
 
     //! Writer
-    void write(const string& typeIDString,
+    void write(const std::string& typeIDString,
 	       BinaryWriter& bin_out, 
 	       const EnumType& t)  {
-      string string_out;
-      // Try to look up the string for the enum
+      std::string string_out;
+      // Try to look up the std::string for the enum
       try { 
 	string_out = lookUpString(t);
       }
       catch( StringLookupException& e) { 
-	QDPIO::cerr << "No string found for enum " << typeIDString << " with value " << t << " while attempting to write BIN " << endl;
+	QDPIO::cerr << "No std::string found for enum " << typeIDString << " with value " << t << " while attempting to write BIN " << std::endl;
 	dumpMapStrings(typeIDString);
 	QDP_abort(1);
       }
 
-      // Try writing the string
+      // Try writing the std::string
       try { 
 	QDP::writeDesc(bin_out, string_out);
       }
-      catch( const string& bin_e ) { 
-	QDPIO::cerr << "Caught Exception writing BIN: " << bin_e << endl;
+      catch( const std::string& bin_e ) { 
+	QDPIO::cerr << "Caught Exception writing BIN: " << bin_e << std::endl;
 	QDP_abort(1);
       }
     }
