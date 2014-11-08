@@ -26,14 +26,22 @@ sed 's/include <std::string>/include <string>/' |\
 sed 's/include <std::string.h>/include <string.h>/' |\
 sed 's/include <std::map>/include <map>/' |\
 sed 's/include <std::vector>/include <vector>/' |\
+sed 's/func::/func/g' |\
+sed 's/funcstd::/func/g' |\
+sed 's/std::map_obj/map_obj/g' |\
 sed 's/std::vector_/vector_/g' |\
 sed 's/std::vectors/vectors/g' |\
+sed 's/std::stringT/stringT/g' |\
 sed 's/std::vectorSm/vectorSm/g' |\
+sed 's/qstd::map/qmap/g' |\
+sed 's/pstd::string/pstring/g' |\
+sed 's/\.std::/./g' |\
 sed 's/_std::/_/g' |\
 sed 's/_objstd::/_obj/g' |\
 sed 's/_funcstd::/_func/g' |\
 sed 's/Estd::/E/g' |\
 sed 's/estd::/e/g' |\
+grep -v '^\$Id' |\
 grep -v 'using namespace std;' > ${f}.tmp
 
 /bin/mv ${f}.tmp $f
