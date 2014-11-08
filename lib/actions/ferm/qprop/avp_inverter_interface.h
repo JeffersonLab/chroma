@@ -149,7 +149,7 @@ namespace Chroma
 	  swatch.start();
 	  Fermion *eta = loadFermionRHS(&rhs);
 	  swatch.stop();
-	  QDPIO::cout << "Importing RHS Fermion took: " << swatch.getTimeInSeconds() << " seconds " << endl;
+	  QDPIO::cout << "Importing RHS Fermion took: " << swatch.getTimeInSeconds() << " seconds " << std::endl;
 
 
 	  swatch.reset();
@@ -158,13 +158,13 @@ namespace Chroma
 	  swatch.stop();
 
 	  QDPIO::cout << "Importing Guess took: " << swatch.getTimeInSeconds() 
-		      << " seconds" << endl;
+		      << " seconds" << std::endl;
 	
 	  Fermion *res = allocateFermion();
 	
 	  QDPIO::cout << "Entering CG_DWF solver: rsd = " << rsd
 		      << ", max_iterations = " << max_iter
-		      << endl;
+		      << std::endl;
 	
 	  double M_0 = -2*M5;
 	  out_eps = 0.0;
@@ -184,14 +184,14 @@ namespace Chroma
 	  QDPIO::cout << "CGInternal : status = " << status
 		      << ", iterations = " << out_iter
 		      << ", resulting epsilon = " << out_eps
-		      << endl;
+		      << std::endl;
 	
 	  if (status != 0) {
 	  
 	    QDPIO::cerr << "DWF_solver: status = " << status
 			<< ", iterations = " << out_iter
 			<< ", resulting epsilon = " << out_eps
-			<< endl;
+			<< std::endl;
 	    QDP_abort(1);
 	  }
 
@@ -220,7 +220,7 @@ namespace Chroma
 	  swatch.stop();
 
 	  QDPIO::cout << "Exporting Solution took: " << swatch.getTimeInSeconds()
-		      << " seconds " << endl;
+		      << " seconds " << std::endl;
 
 	  deleteFermion(res);
 	  deleteFermion(X0);

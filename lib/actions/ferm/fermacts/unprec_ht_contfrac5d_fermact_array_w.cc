@@ -105,7 +105,7 @@ namespace Chroma
 
       if( count_b5 == 0 && count_c5 == 0 ) 
       {
-	QDPIO::cout << "b5 and c5 not specified. Using Shamir values: b5=1 c5=0" << endl;
+	QDPIO::cout << "b5 and c5 not specified. Using Shamir values: b5=1 c5=0" << std::endl;
 	b5 = Real(1);
 	c5 = Real(0);
       }
@@ -115,14 +115,14 @@ namespace Chroma
       }
 
     }
-    catch( const string &e ) {
-      QDPIO::cerr << "Caught Exception reading Unprec HT ContFrac Fermact params: " << e << endl;
+    catch( const std::string &e ) {
+      QDPIO::cerr << "Caught Exception reading Unprec HT ContFrac Fermact params: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
 
-  void read(XMLReader& xml_in, const string& path,
+  void read(XMLReader& xml_in, const std::string& path,
 	    UnprecHTContFrac5DFermActParams& param) 
   {
     UnprecHTContFrac5DFermActParams tmp(xml_in, path);
@@ -130,7 +130,7 @@ namespace Chroma
   }
 
   
-  void write(XMLWriter& xml_out, const string& path, const UnprecHTContFrac5DFermActParams& p)
+  void write(XMLWriter& xml_out, const std::string& path, const UnprecHTContFrac5DFermActParams& p)
   {
     if ( path != "." ) { 
       push( xml_out, path);
@@ -194,23 +194,23 @@ namespace Chroma
     {
     case COEFF_TYPE_ZOLOTAREV:
       epsilon = params.ApproxMin / params.ApproxMax;
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << std::endl;
       rdata = zolotarev(toFloat(epsilon), params.RatPolyDeg, type);    
       scale_fac = Real(1) / params.ApproxMax;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
       epsilon = params.ApproxMin;
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << std::endl;
       rdata = higham(toFloat(epsilon), params.RatPolyDeg);
       scale_fac = Real(1);
       break;
 
     default:
-      // The map system should ensure that we never get here but 
+      // The std::map system should ensure that we never get here but 
       // just for style
       QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
@@ -218,8 +218,8 @@ namespace Chroma
 
     // Check N5 is good:
     if( N5 != rdata->db ) { 
-      QDPIO::cerr << "Mismatch between N5 and N5 from Coefficient Code" << endl;
-      QDPIO::cerr << "N5 = " << N5 << " rdata->db=" << rdata->db << endl;
+      QDPIO::cerr << "Mismatch between N5 and N5 from Coefficient Code" << std::endl;
+      QDPIO::cerr << "N5 = " << N5 << " rdata->db=" << rdata->db << std::endl;
       QDP_abort(1);
     }
 
@@ -269,45 +269,45 @@ namespace Chroma
       beta[i] *= scale_fac;
     }
     
-    QDPIO::cout << "UnprecHTContfrac5d:" << endl
+    QDPIO::cout << "UnprecHTContfrac5d:" << std::endl
                 << " Degree=" << params.RatPolyDeg
 		<< " N5=" << N5 << " scale=" << scale_fac
-		<< " Mass=" << params.Mass << endl ;
-    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<endl;
+		<< " Mass=" << params.Mass << std::endl ;
+    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<std::endl;
     
-    QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
+    QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << std::endl;
     /*
       for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
+      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << std::endl;
       }
       for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << endl;
+      QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << std::endl;
       }
     */
 
     switch( params.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
-      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+      QDPIO::cout << "Coefficients from Zolotarev" << std::endl;
       
       if(type == 0) {
 	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
-		    << endl;
+		    << std::endl;
       }
       else {
 	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"
-                    << endl;
+                    << std::endl;
       }
       
       break;
     case COEFF_TYPE_TANH:
-      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << std::endl;
       break;
     case COEFF_TYPE_TANH_UNSCALED:
-      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << std::endl;
       break;
     default:
       QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
       break;
     }
@@ -429,7 +429,7 @@ namespace Chroma
 //      else
 //      {
 //	QDPIO::cerr << UnprecHTContFrac5DFermActArrayEnv::name 
-//		    << "Unsupported inverter type =" << invType << endl;
+//		    << "Unsupported inverter type =" << invType << std::endl;
 //	QDP_abort(1);
 //     }
   

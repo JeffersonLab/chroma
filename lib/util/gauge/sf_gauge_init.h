@@ -62,11 +62,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup gauge */
-  void read(XMLReader& xml, const string& path, SFGaugeInitEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, SFGaugeInitEnv::Params& param);
 
   //! Writer
   /*! @ingroup gauge */
-  void write(XMLWriter& xml, const string& path, const SFGaugeInitEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const SFGaugeInitEnv::Params& param);
 
 }  // end namespace Chroma
 

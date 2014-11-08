@@ -15,7 +15,7 @@ namespace Chroma {
  * \param q          propagator ( Read )
  * \param file       path ( Read )
  */    
-void readKYUQprop(LatticePropagator& q, const string& file);
+void readKYUQprop(LatticePropagator& q, const std::string& file);
 
 }  // end namespace Chroma
 

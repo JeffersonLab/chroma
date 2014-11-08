@@ -33,7 +33,7 @@ namespace Chroma
     
       bool             quark_smear_firstP;   /*!< Flag controlling order of smearing */
 
-      GroupXML_t       quark_smearing;       /*!< xml string holding smearing params */
+      GroupXML_t       quark_smearing;       /*!< xml std::string holding smearing params */
       GroupXML_t       quark_displacement;   /*!< displacement xml */
       GroupXML_t       link_smearing;        /*!< link smearing xml */
     };
@@ -74,11 +74,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sinks */
-  void read(XMLReader& xml, const string& path, ShellQuarkSinkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, ShellQuarkSinkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup sinks */
-  void write(XMLWriter& xml, const string& path, const ShellQuarkSinkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const ShellQuarkSinkSmearingEnv::Params& param);
 
 
 }  // end namespace Chroma

@@ -521,7 +521,7 @@ namespace Chroma {
 
 	  } // end loop over ci_1, ci_2, ci_3
 
-    cout << "Number of Wick contractions " << total << endl ; 
+    std::cout << "Number of Wick contractions " << total << std::endl ; 
 
     // only sum over part of the origin of each hypercube
     LatticeBoolean ltest(true) ;
@@ -553,7 +553,7 @@ namespace Chroma {
     double time_in_sec  = swatch.getTimeInSeconds();
 
     QDPIO::cout << "Baryon_s took " << time_in_sec
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
 

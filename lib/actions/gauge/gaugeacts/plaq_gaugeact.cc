@@ -68,13 +68,13 @@ namespace Chroma
 //      read(paramtop, "coeffs", coeffs);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
 
-  void read(XMLReader& xml, const string& path, PlaqGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, PlaqGaugeActParams& p) 
   {
     PlaqGaugeActParams tmp(xml, path);
     p=tmp;
@@ -82,7 +82,7 @@ namespace Chroma
 
 
 // A multi2d xml write doesn't exist at this moment.
-//  void write(XMLWriter& xml, const string& path, const PlaqGaugeActParams& p) 
+//  void write(XMLWriter& xml, const std::string& path, const PlaqGaugeActParams& p) 
 //  {
 //    push(xml, path);
 //    write(xml, "coeffs", p.coeffs);

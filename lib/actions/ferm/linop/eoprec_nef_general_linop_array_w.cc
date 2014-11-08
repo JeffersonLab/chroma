@@ -36,9 +36,9 @@ namespace Chroma
 
     // Sanity checking:
     if( b5_.size() != N5_ ) { 
-      QDPIO::cerr << "b5 array size and N5 are inconsistent" << endl;
-      QDPIO::cerr << "b5_array.size() = " << b5_.size() << endl;
-      QDPIO::cerr << "N5_ = " << N5_ << endl << flush;
+      QDPIO::cerr << "b5 array size and N5 are inconsistent" << std::endl;
+      QDPIO::cerr << "b5_array.size() = " << b5_.size() << std::endl;
+      QDPIO::cerr << "N5_ = " << N5_ << std::endl << std::flush;
       QDP_abort(1);
     }
     N5  = N5_;
@@ -87,7 +87,7 @@ namespace Chroma
 
     // Sanity checking:
     // QDPIO::cout << "  The following 2 should be equal: ";
-    // QDPIO::cout << tmp1 << " and " << tmp2 << endl;
+    // QDPIO::cout << tmp1 << " and " << tmp2 << std::endl;
 
   
     // Subtrace ONLY ONE of them onto d[N5-1]
@@ -571,7 +571,7 @@ namespace Chroma
 	tmp[s][rb[otherCB]] += fact2*chiralProjectMinus(psi[s+1]);
       }
 
-      // Replace with vector dslash later -- done
+      // Replace with std::vector dslash later -- done
       D.apply(chi, tmp, isign, cb);
       
 
@@ -582,7 +582,7 @@ namespace Chroma
     { 
       multi1d<LatticeFermion> tmp_d(N5) ; moveToFastMemoryHint(tmp_d);
 
-      // Replace with a vector dslash later -- done
+      // Replace with a std::vector dslash later -- done
       D.apply(tmp_d, psi, isign, cb);
       
 

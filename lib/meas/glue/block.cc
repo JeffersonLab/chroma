@@ -133,7 +133,7 @@ namespace Chroma
 	{
 	  QDPIO::cout << "BLOCK: WARNING unitarity violation\n";
 	  QDPIO::cout << "   n_blk= " << n_blk << "  bl_level= " << bl_level << "\n";
-	  QDPIO::cout << "   mu= " << mu << "  numbad= " << numbad << endl;
+	  QDPIO::cout << "   mu= " << mu << "  numbad= " << numbad << std::endl;
 	}
       }
     
@@ -144,7 +144,7 @@ namespace Chroma
       if( wrswitch )
       {
 	QDPIO::cout << "BLOCK: n=" << n_blk 
-		    << " old_tr = " << old_tr << " new_tr = " << new_tr << endl;
+		    << " old_tr = " << old_tr << " new_tr = " << new_tr << std::endl;
       }
 
       /* Normalized convergence criterion: */

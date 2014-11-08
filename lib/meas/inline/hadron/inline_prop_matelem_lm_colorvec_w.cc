@@ -1,7 +1,7 @@
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*LatticeColorVector
  *
- * Propagator calculation on a colorvector
+ * Propagator calculation on a colorstd::vector
  */
 
 #include "fermact.h"
@@ -24,7 +24,7 @@ namespace Chroma
   namespace InlinePropMatElemLowMemoryColorVecEnv 
   {
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -35,7 +35,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -49,7 +49,7 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -60,7 +60,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& input)
     {
       push(xml, path);
 
@@ -74,14 +74,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params& input)
+    void read(XMLReader& xml, const std::string& path, Params& input)
     {
       Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params& input)
+    void write(XMLWriter& xml, const std::string& path, const Params& input)
     {
       push(xml, path);
     
@@ -149,7 +149,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -164,7 +164,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "PropMatElemColorVec");
 	write(xml_out, "update_no", update_no);
@@ -202,19 +202,19 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
       push(xml_out, "PropMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": propagator colorvector matrix element calculation" << endl;
+      QDPIO::cout << name << ": propagator colorstd::vector matrix element calculation" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -236,7 +236,7 @@ namespace Chroma
       // 
       XMLReader source_file_xml, source_record_xml;
 
-      QDPIO::cout << "Snarf the source from a named buffer. Check for the prop map" << endl;
+      QDPIO::cout << "Snarf the source from a named buffer. Check for the prop std::map" << std::endl;
       try
       {	
 	// NB We are just checking this is here.
@@ -253,12 +253,12 @@ namespace Chroma
       }    
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error extracting source_header or prop map: " << e << endl;
+	QDPIO::cerr << name << ": error extracting source_header or prop std::map: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -270,7 +270,7 @@ namespace Chroma
       const QDP::MapObject<KeyPropColorVec_t,LatticeFermion>& prop_obj =
 	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<KeyPropColorVec_t,LatticeFermion> > >(params.named_obj.prop_id));
 
-      QDPIO::cout << "Source and prop map successfully found and parsed" << endl;
+      QDPIO::cout << "Source and prop std::map successfully found and parsed" << std::endl;
 
       // Sanity check - write out the norm2 of the source in the Nd-1 direction
       // Use this for any possible verification
@@ -291,7 +291,7 @@ namespace Chroma
       {
 	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.num_vecs
 		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.size() << endl;
+		    << eigen_source.size() << std::endl;
 	QDP_abort(1);
       }
 
@@ -307,7 +307,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("propElemOp"));
+	write(file_xml, "id", std::string("propElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -359,23 +359,23 @@ namespace Chroma
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt];
-	  QDPIO::cout << "t_source = " << t_source << endl; 
+	  QDPIO::cout << "t_source = " << t_source << std::endl; 
 
 	  //
 	  // All the loops
 	  //
 	  // NOTE: I pull the spin source and sink loops to the outside intentionally.
-	  // The idea is to create a colorvector index (2d) array. These are not
+	  // The idea is to create a colorstd::vector index (2d) array. These are not
 	  // too big, but are big enough to make the IO efficient, and the DB efficient
 	  // on reading. For N=32 and Lt=128, the mats are 2MB.
 	  //
 	  for(int spin_source=0; spin_source < Ns; ++spin_source)
 	  {
-	    QDPIO::cout << "spin_source = " << spin_source << endl; 
+	    QDPIO::cout << "spin_source = " << spin_source << std::endl; 
 
 	    for(int spin_sink=0; spin_sink < Ns; ++spin_sink)
 	    {
-	      QDPIO::cout << "spin_sink = " << spin_sink << endl; 
+	      QDPIO::cout << "spin_sink = " << spin_sink << std::endl; 
 
 	      // Invert the time - make it an independent key
 	      multi1d<KeyValPropElementalOperator_t> buf(phases.numSubsets());
@@ -418,7 +418,7 @@ namespace Chroma
 		} // for colorvec_sink
 	      } // for colorvec_source
 	      
-	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << endl; 
+	      QDPIO::cout << "insert: spin_source= " << spin_source << " spin_sink= " << spin_sink << std::endl; 
 	      for(int t=0; t < phases.numSubsets(); ++t)
 	      {
 		qdp_db.insert(buf[t].key, buf[t].val);
@@ -433,11 +433,11 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << "Propagators computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch (const std::string& e) 
       {
-	QDPIO::cout << name << ": caught exception around qprop: " << e << endl;
+	QDPIO::cout << name << ": caught exception around qprop: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -450,9 +450,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

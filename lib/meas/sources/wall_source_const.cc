@@ -13,14 +13,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, WallQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, WallQuarkSourceConstEnv::Params& param)
   {
     WallQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const WallQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const WallQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -70,7 +70,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -84,7 +84,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -94,7 +94,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -112,7 +112,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Wall source" << endl;
+      QDPIO::cout << "Wall source" << std::endl;
 
       // Create the quark source
       LatticePropagator quark_source;

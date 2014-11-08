@@ -54,7 +54,7 @@ namespace Chroma
 	read(paramtop, "decay_dir", decay_dir);
       }
       catch( const std::string& e ) { 
-	QDPIO::cerr << "Error reading XML: " <<  e << endl;
+	QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
 	QDP_abort(1);
       }
     }

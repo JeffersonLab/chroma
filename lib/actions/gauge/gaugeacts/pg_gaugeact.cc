@@ -49,13 +49,13 @@ namespace Chroma
       read(paramtop, "./coeff", coeff);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
   // Read params
-  void read(XMLReader& xml, const string& path, PgGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, PgGaugeActParams& p) 
   {
     PgGaugeActParams tmp(xml, path);
     p=tmp;
@@ -74,7 +74,7 @@ namespace Chroma
 		     const Handle< GaugeState<P,Q> >& state,
 		     int mu, int cb) const
   {
-    QDPIO::cerr << "PgGaugeAct::staple() - not converted from szin" << endl;
+    QDPIO::cerr << "PgGaugeAct::staple() - not converted from szin" << std::endl;
     QDP_abort(1);
   }
 
@@ -252,7 +252,7 @@ namespace Chroma
     // Parallelogram term
     if (Nd != 4)
     {
-      QDPIO::cerr << "Parallelogram implemented only for Nd==4" << endl;
+      QDPIO::cerr << "Parallelogram implemented only for Nd==4" << std::endl;
       QDP_abort(1);
     }
 

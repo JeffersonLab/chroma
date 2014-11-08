@@ -22,7 +22,7 @@ namespace Chroma
    * density and boundary fields using Schroedinger BC.
    *
    * Also computed, on demand, are correlation functions between both
-   * boundaries with zero, one (vector current) and two (axial current or
+   * boundaries with zero, one (std::vector current) and two (axial current or
    * pseudoscalar density) insertions in the bulk. These currents are
    * controlled by the ZVfactP and ZAfactP boolean flags.
    *
@@ -41,7 +41,7 @@ namespace Chroma
    * \param x0            time slices with axial current insertions ( Read ) 
    * \param y0            time slices with axial current insertions ( Read ) 
    * \param xml           xml file object ( Write )
-   * \param xml_group     string used for writing xml data ( Read )
+   * \param xml_group     std::string used for writing xml data ( Read )
    */
   void SFpcac(Handle< SystemSolver<LatticeFermion> > qprop,
 	      Handle< FermState<LatticeFermion, multi1d<LatticeColorMatrix>,
@@ -50,7 +50,7 @@ namespace Chroma
 	      bool ZVfactP, bool ZAfactP, 
 	      int x0, int y0,
 	      XMLWriter& xml,
-	      const string& xml_group);
+	      const std::string& xml_group);
 
 }
 

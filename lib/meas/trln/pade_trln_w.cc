@@ -9,7 +9,7 @@ include(types.mh)
 /* Parameters:
    
    u             -- The Gauge Field         (Read)
-   chi           -- Z2 noise vector         (Read)
+   chi           -- Z2 noise std::vector         (Read)
    Ncb           -- No of checkerboards     (Read)
    Nkappa        -- The no of kappa values  (Read)
    Npade         -- The order of the Pade approx (Read)

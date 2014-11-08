@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file map_obj_memory_w.cc
- *  \brief Memory based map object, factory registration
+ *  \brief Memory based std::map object, factory registration
  */
 
 #include "chromabase.h"

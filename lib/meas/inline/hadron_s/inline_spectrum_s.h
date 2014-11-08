@@ -57,7 +57,7 @@ namespace Chroma
       bool ps4link_singlet_conn_fuzz ;  
       bool eight_pions;                 // all pseudoscalar meson tastes
       bool eight_scalars;               // all scalar meson tastes
-      bool eight_rhos;                  // all vector meson tastes
+      bool eight_rhos;                  // all std::vector meson tastes
 
       // choose parameters 
       GroupXML_t fermact ;

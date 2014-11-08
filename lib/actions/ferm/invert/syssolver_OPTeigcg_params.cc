@@ -10,7 +10,7 @@ namespace Chroma
 {
 
   //! File output                                                                                        
-  void write(XMLWriter& xml, const string& path, const SysSolverOptEigCGParams::File_t& input){
+  void write(XMLWriter& xml, const std::string& path, const SysSolverOptEigCGParams::File_t& input){
     push(xml, path);
 
     write(xml, "read", input.read);
@@ -23,7 +23,7 @@ namespace Chroma
 
 
   //! File output                                                                                             
-  void read(XMLReader& xml, const string& path, SysSolverOptEigCGParams::File_t& input){
+  void read(XMLReader& xml, const std::string& path, SysSolverOptEigCGParams::File_t& input){
     XMLReader inputtop(xml, path);
 
     read(inputtop, "read", input.read);
@@ -34,7 +34,7 @@ namespace Chroma
 
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SysSolverOptEigCGParams& param)
+  void read(XMLReader& xml, const std::string& path, SysSolverOptEigCGParams& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -80,7 +80,7 @@ namespace Chroma
   }
 
   // Writer parameters
-  void write(XMLWriter& xml, const string& path, const SysSolverOptEigCGParams& param)
+  void write(XMLWriter& xml, const std::string& path, const SysSolverOptEigCGParams& param)
   {
     push(xml, path);
 
@@ -110,7 +110,7 @@ namespace Chroma
   }
 
   //! Read parameters
-  SysSolverOptEigCGParams::SysSolverOptEigCGParams(XMLReader& xml, const string& path)
+  SysSolverOptEigCGParams::SysSolverOptEigCGParams(XMLReader& xml, const std::string& path)
   {
     read(xml, path, *this);
   }

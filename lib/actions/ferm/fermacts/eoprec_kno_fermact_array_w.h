@@ -35,8 +35,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, EvenOddPrecKNOFermActArrayParams& param);
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecKNOFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecKNOFermActArrayParams& param);
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecKNOFermActArrayParams& param);
 
 
   //! EvenOddPreconditioned NEF fermion action

@@ -118,18 +118,18 @@ namespace Chroma
   
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, ExternalFieldEnv::ConstantMagneticParams& param);
+  void read(XMLReader& xml, const std::string& path, ExternalFieldEnv::ConstantMagneticParams& param);
   
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::ConstantMagneticParams& param);
+  void write(XMLWriter& xml, const std::string& path, const ExternalFieldEnv::ConstantMagneticParams& param);
 
 
-  void read(XMLReader& xml, const string& path, ExternalFieldEnv::LinearElectricParams& param);
+  void read(XMLReader& xml, const std::string& path, ExternalFieldEnv::LinearElectricParams& param);
   
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const ExternalFieldEnv::LinearElectricParams& param);
+  void write(XMLWriter& xml, const std::string& path, const ExternalFieldEnv::LinearElectricParams& param);
 
 
 }  // end namespace Chroma

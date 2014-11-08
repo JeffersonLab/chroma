@@ -209,7 +209,7 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
 		  << "  tgfold= " << tgfold 
 		  << "  tgfnew= " << tgfnew
 		  << "  tgf_s= " << tgf_s 
-		  << "  tgf_t= " << tgf_t << endl;
+		  << "  tgf_t= " << tgf_t << std::endl;
 
     /* Normalized convergence criterion: */
     conver = fabs((tgfnew - tgfold) / tgfnew);
@@ -221,7 +221,7 @@ void coulGauge(multi1d<LatticeColorMatrix>& u,
     QDPIO::cout << "COULGAUGE: end: iter= " << n_gf 
 		<< "  tgfold= " << tgfold 
 		<< "  tgf_s= " << tgf_s 
-		<< "  tgf_t= " << tgf_t << endl;
+		<< "  tgf_t= " << tgf_t << std::endl;
 
   // Finally, gauge rotate the original matrices and overwrite them
   for(int mu = 0; mu < Nd; ++mu)

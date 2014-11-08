@@ -29,7 +29,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -49,14 +49,14 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   {
     QDPIO::cerr << __func__ 
 		<< ": apparently wrong SZIN configuration file, date_size=" 
-		<< date_size << endl;
+		<< date_size << std::endl;
     QDP_abort(1);
   }
 
   /*
    * Read in the date & banner. They are written as int's. Use a new
-   * instead of declaring a size in the constructor for the strings 
-   * to avoid extra space. I found that nulls in the strings made xmlreader
+   * instead of declaring a size in the constructor for the std::strings 
+   * to avoid extra space. I found that nulls in the std::strings made xmlreader
    * blow up down below.
    */
   char *date_tmp = new char[date_size+1];
@@ -213,7 +213,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
 
   default:
     QDPIO::cerr << __func__ << ": SZIN configuration file version is invalid: version"
-		<< header.cfg_version << endl;
+		<< header.cfg_version << std::endl;
     QDP_abort(1);
   }
 
@@ -222,7 +222,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   {
     QDPIO::cerr << __func__ 
 		<< ": num dimensions different from SZIN config file: header.Nd=" 
-		<< header.Nd << endl;
+		<< header.Nd << std::endl;
     QDP_abort(1);
   }
 
@@ -230,7 +230,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
   {
     QDPIO::cerr << __func__ 
 		<< ": number of colors specified different from SZIN config file: header.Nc="
-		<< header.Nc << endl;
+		<< header.Nc << std::endl;
     QDP_abort(1);
   }
 
@@ -242,7 +242,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
     {
       QDPIO::cerr << __func__ 
 		  << ": lattice size specified different from configuration file: nrow[" 
-		  << j << "]=" << header.nrow[j] << endl;
+		  << j << "]=" << header.nrow[j] << std::endl;
       QDP_abort(1);
     }
 
@@ -308,7 +308,7 @@ void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string&
  * \param cfg_file   path ( Read )
  */    
 
-void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -326,9 +326,9 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
   {
     xml.open(xml_buf);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   { 
-    QDPIO::cerr << __func__ << ": Error in readszin: " << e.c_str() << endl;
+    QDPIO::cerr << __func__ << ": Error in readszin: " << e.c_str() << std::endl;
     QDP_abort(1);
   }
 

@@ -26,7 +26,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new UnprecTwoFlavorRatioConvRatWilsonTypeFermMonomial(
 	  TwoFlavorRatioConvRatWilsonTypeFermMonomialParams(xml, path));
@@ -59,7 +59,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Constructor: " << __func__ << endl;
+    QDPIO::cout << "Constructor: " << __func__ << std::endl;
 
     invParam_num       = param.numer.invParam;
     actionInvParam_den = param.denom.action.invParam;
@@ -70,7 +70,7 @@ namespace Chroma
     {
       std::istringstream is(param.numer.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct fermion action= " << param.numer.fermact.id << endl;
+      QDPIO::cout << "Construct fermion action= " << param.numer.fermact.id << std::endl;
 
       WilsonTypeFermAct<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermActFactory::Instance().createObject(param.numer.fermact.id, 
@@ -82,7 +82,7 @@ namespace Chroma
       // Check success of the downcast 
       if( downcast == 0x0 ) 
       {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct to UnprecWilsonTypeFermAct" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct to UnprecWilsonTypeFermAct" << std::endl;
 	QDP_abort(1);
       }
 
@@ -95,7 +95,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct fermion action= " << param.denom.fermact.id << endl;
+      QDPIO::cout << "Construct fermion action= " << param.denom.fermact.id << std::endl;
 
       WilsonTypeFermAct<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermActFactory::Instance().createObject(param.denom.fermact.id, 
@@ -107,7 +107,7 @@ namespace Chroma
       // Check success of the downcast 
       if( downcast == 0x0 ) 
       {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct to UnprecWilsonTypeFermAct" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct to UnprecWilsonTypeFermAct" << std::endl;
 	QDP_abort(1);
       }
 
@@ -119,7 +119,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.action.ratApprox.xml);
       XMLReader approx_reader(is);
-      QDPIO::cout << "Construct action rational approx= " << param.denom.action.ratApprox.id << endl;
+      QDPIO::cout << "Construct action rational approx= " << param.denom.action.ratApprox.id << std::endl;
 
       Handle<RationalApprox> approx(TheRationalApproxFactory::Instance().createObject(
 				      param.denom.action.ratApprox.id, 
@@ -134,7 +134,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.force.ratApprox.xml);
       XMLReader approx_reader(is);
-      QDPIO::cout << "Construct force rational approx= " << param.denom.force.ratApprox.id << endl;
+      QDPIO::cout << "Construct force rational approx= " << param.denom.force.ratApprox.id << std::endl;
 
       Handle<RationalApprox> approx(TheRationalApproxFactory::Instance().createObject(
 				      param.denom.force.ratApprox.id, 
@@ -165,13 +165,13 @@ namespace Chroma
 									    param.predictor.path);
 	}
 	catch(const std::string& e ) { 
-	  QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught Exception Reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
       }
      
       if( tmp == 0x0 ) { 
-	QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << endl;
+	QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << std::endl;
 	QDP_abort(1);
       }
 
@@ -179,7 +179,7 @@ namespace Chroma
     }
     //*********************************************************************
 
-    QDPIO::cout << "Finished constructing: " << __func__ << endl;
+    QDPIO::cout << "Finished constructing: " << __func__ << std::endl;
     
     END_CODE();
   }

@@ -30,10 +30,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup fermacts */
-  void read(XMLReader& xml, const string& path, NEFFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, NEFFermActParams& param);
 
   /*! \ingroup fermacts */
-  void write(XMLWriter& xml, const string& path, const NEFFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const NEFFermActParams& param);
 }
 
 #endif

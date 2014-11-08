@@ -2,7 +2,7 @@
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*displace*M^-1**LatticeColorVector
  *
- * Generalized propagator calculation on a colorvector for meson distribution amplitudes and parton dstribution functions
+ * Generalized propagator calculation on a colorstd::vector for meson distribution amplitudes and parton dstribution functions
  */
 
 #include "handle.h"
@@ -32,7 +32,7 @@ namespace Chroma
   { 
     // Reader for input parameters
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -53,7 +53,7 @@ namespace Chroma
 	read(paramtop, "restrict_plateau", param.restrict_plateau);
 	break ;
       default :
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -62,7 +62,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param)
     {
       push(xml, path);
 
@@ -83,7 +83,7 @@ namespace Chroma
     }
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -95,7 +95,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -109,7 +109,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params& param)
+    void write(XMLWriter& xml, const std::string& path, const Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -199,7 +199,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -230,7 +230,7 @@ namespace Chroma
       int                spin_l;        /*!< Source spin index */
       int                spin_r;        /*!< Sink spin index */
       int                gamma;         /*!< The gamma matrix number - [0,Ns^2) */
-      multi1d<int>       displacement;  /*!< Displacement dirs of right colorvector */
+      multi1d<int>       displacement;  /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;           /*!< D-1 momentum of this operator */
       std::string        mass_label;    /*!< A mass label */
     };
@@ -238,7 +238,7 @@ namespace Chroma
     //! Generalized propagator operator
     struct ValGenPropElementalOperator_t
     {
-      multi2d<ComplexD>  op;              /*!< Colorvector source and sink with momentum projection */
+      multi2d<ComplexD>  op;              /*!< Colorstd::vector source and sink with momentum projection */
     };
 
 
@@ -352,7 +352,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "GenPropMatElemDAColorVec");
 	write(xml_out, "update_no", update_no);
@@ -385,7 +385,7 @@ namespace Chroma
       push(xml_out, "GenPropMatElemDAColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Generalized propagator color-vector matrix element" << endl;
+      QDPIO::cout << name << ": Generalized propagator color-std::vector matrix element" << std::endl;
 
       // Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml, sm_gauge_xml;
@@ -413,12 +413,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
       // Cast should be valid now
@@ -480,7 +480,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("genPropElemOp"));
+	write(file_xml, "id", std::string("genPropElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -511,7 +511,7 @@ namespace Chroma
       //
       // Generalized propagatos
       //
-      QDPIO::cout << "Building generalized propagators" << endl;
+      QDPIO::cout << "Building generalized propagators" << std::endl;
 
       push(xml_out, "ElementalOps");
 
@@ -553,20 +553,20 @@ namespace Chroma
 	StopWatch watch;
 	multi1d<int> mom(3); mom=0 ; mom[z_dir]=p;
 	Double phi = (6.28318530717958647696*p)/toDouble(Layout::lattSize()[z_dir]);
-	QDPIO::cout << "Boost Momentum: p = " << p << endl;
+	QDPIO::cout << "Boost Momentum: p = " << p << std::endl;
 
 	swiss.reset();
 	swiss.start();
 
 	// Loop over spins
 	for(int spin_r=0; spin_r < Ns; ++spin_r){
-	  QDPIO::cout << "spin_r = " << spin_r << endl; 
+	  QDPIO::cout << "spin_r = " << spin_r << std::endl; 
 	  for(int spin_l=0; spin_l < Ns; ++spin_l){
-	    QDPIO::cout << "spin_l = " << spin_l << endl; 
+	    QDPIO::cout << "spin_l = " << spin_l << std::endl; 
 	    // The keys for the spin and displacements 
 	    // for this particular elemental operator
-	    // No displacement for left colorvector, 
-	    // only displace right colorvector
+	    // No displacement for left colorstd::vector, 
+	    // only displace right colorstd::vector
 	    
 	    // Invert the time - make it an independent key
 	    multi2d<KeyValGenPropElementalOperator_t> buf(Layout::lattSize()[z_dir],phases.numSubsets());
@@ -593,7 +593,7 @@ namespace Chroma
 	      key_r.colorvec_src = j;
 	      key_r.spin_src     = spin_r;
 	      
-	      // Displace the right vector and multiply by the momentum phase
+	      // Displace the right std::vector and multiply by the momentum phase
 	      
 	      LatticeFermion shift_ferm;
 	      LatticeFermion src_ferm; source_ferm_map.get(key_r, src_ferm);
@@ -635,7 +635,7 @@ namespace Chroma
 		}// loop over left (i)
 	      }// loop over displacements 
 	    }//loop over right (j)
-	    QDPIO::cout << "insert: mom= " << mom << endl ;
+	    QDPIO::cout << "insert: mom= " << mom << std::endl ;
 	    for( int z(0);z<Layout::lattSize()[z_dir];z++){
 	      for(int tt=t_start; tt <= t_end; ++tt){
 		// mod back into a normal interval
@@ -649,7 +649,7 @@ namespace Chroma
 	QDPIO::cout << "GenProp mom= "<<p  
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       } // loop over momenta
       
       
@@ -661,9 +661,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } // func

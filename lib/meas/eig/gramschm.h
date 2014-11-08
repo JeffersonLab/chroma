@@ -69,7 +69,7 @@ void GramSchm(multi1d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Arguments:
@@ -88,7 +88,7 @@ void GramSchm(LatticeFermion& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Arguments:
@@ -107,7 +107,7 @@ void GramSchm(LatticeColorVector& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * all the vectors of vec
  *
  * Arguments:

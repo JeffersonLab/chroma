@@ -27,7 +27,7 @@ namespace Chroma {
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <p[k],Ap[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] A. p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -44,8 +44,8 @@ namespace Chroma {
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -56,7 +56,7 @@ namespace Chroma {
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *
@@ -114,7 +114,7 @@ InvCG1_a(const LinearOperator<T>& A,
 
 #if 0
   QDPIO::cout << "InvCG1: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq 
-<< endl;
+<< std::endl;
 #endif
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
@@ -174,7 +174,7 @@ InvCG1_a(const LinearOperator<T>& A,
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
 #if 0
-    QDPIO::cout << "InvCG1: k = " << k << "  cp = " << cp << endl;
+    QDPIO::cout << "InvCG1: k = " << k << "  cp = " << cp << std::endl;
 #endif
 
     if ( toBool(cp  <=  rsd_sq) && (toBool(MinCG <= 0 ) || toBool( k >= MinCG  )))
@@ -188,7 +188,7 @@ InvCG1_a(const LinearOperator<T>& A,
 	Double actual_res = norm2(chi - ap,s);
 	res.resid = sqrt(actual_res);
 #if 0
-    QDPIO::cout << "InvCG1:  true residual:  " << res.resid << endl;
+    QDPIO::cout << "InvCG1:  true residual:  " << res.resid << std::endl;
 #endif
       }
       revertFromFastMemoryHint(psi,true); // Get back psi, copy contents.

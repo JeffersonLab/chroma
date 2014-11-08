@@ -55,7 +55,7 @@ namespace Chroma
 
 
   //! StagToWils input
-  void read(XMLReader& xml, const string& path, InlineStagToWilsParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStagToWilsParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -64,7 +64,7 @@ namespace Chroma
   }
 
   //! StagToWils output
-  void write(XMLWriter& xml, const string& path, const InlineStagToWilsParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStagToWilsParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -100,7 +100,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -125,7 +125,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "stag_to_wils");
       write(xml_out, "update_no", update_no);
@@ -156,7 +156,7 @@ namespace Chroma
     push(xml_out, "stag_to_wils");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineStagToWilsEnv::name << ": propagator conversion" << endl;
+    QDPIO::cout << InlineStagToWilsEnv::name << ": propagator conversion" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -178,7 +178,7 @@ namespace Chroma
     bool make_sourceP = false;
     bool SmearedSink = false;
 
-    QDPIO::cout << "Snarf the staggered propagator from a named buffer" << endl;
+    QDPIO::cout << "Snarf the staggered propagator from a named buffer" << std::endl;
     try
     {
       // Try the cast to see if this is a valid propagator
@@ -236,12 +236,12 @@ namespace Chroma
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlineStagToWilsEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineStagToWilsEnv::name << ": error extracting source_header: " << e << endl;
+      QDPIO::cerr << InlineStagToWilsEnv::name << ": error extracting source_header: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -249,7 +249,7 @@ namespace Chroma
     const LatticeStaggeredPropagator& stag_prop = 
       TheNamedObjMap::Instance().getData<LatticeStaggeredPropagator>(params.named_obj.stag_id);
  
-    QDPIO::cout << "Staggered propagator successfully read and parsed" << endl;
+    QDPIO::cout << "Staggered propagator successfully read and parsed" << std::endl;
 
     // Sanity check - write out the norm2 of the source in the Nd-1 direction
     // Use this for any possible verification
@@ -275,12 +275,12 @@ namespace Chroma
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlineStagToWilsEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineStagToWilsEnv::name << ": error creating wils_prop: " << e << endl;
+      QDPIO::cerr << InlineStagToWilsEnv::name << ": error creating wils_prop: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -292,7 +292,7 @@ namespace Chroma
     
 
     if (!make_sourceP){
-      QDPIO::cerr<<"Error: Only forward props supported" << endl;
+      QDPIO::cerr<<"Error: Only forward props supported" << std::endl;
       QDP_abort(1);
     }
 	
@@ -307,12 +307,12 @@ namespace Chroma
     QDPIO::cout<<"SOURCE: " ;
     for(int d(0);d<Nd;d++)
       QDPIO::cout<<t_srce[d]<<" ";
-    QDPIO::cout<<endl;
+    QDPIO::cout<<std::endl;
     SpinMatrix Omega = 1.0 ;
     int g(0);
     for(int mu(0);mu<Nd;mu++)
       g = g | ((t_srce[mu]%2)<<mu) ;
-    QDPIO::cout<<"SOURCE gamma: "<<g<<endl ;
+    QDPIO::cout<<"SOURCE gamma: "<<g<<std::endl ;
     Omega = Gamma(g)*Omega ;
     
     //now the sink location
@@ -329,7 +329,7 @@ namespace Chroma
     swatch.stop();
     QDPIO::cout << "Staggered Propagator coverted to Wilson: time= " 
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
  
     // Sanity check - write out the propagator (pion) correlator in the Nd-1 direction
@@ -347,7 +347,7 @@ namespace Chroma
     // Save the propagator info
     try
     {
-      QDPIO::cout << "Start writing propagator info" << endl;
+      QDPIO::cout << "Start writing propagator info" << std::endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "propagator");
@@ -381,17 +381,17 @@ namespace Chroma
       TheNamedObjMap::Instance().get(params.named_obj.wils_id).setFileXML(file_xml);
       TheNamedObjMap::Instance().get(params.named_obj.wils_id).setRecordXML(record_xml);
 
-      QDPIO::cout << "Propagator successfully updated" << endl;
+      QDPIO::cout << "Propagator successfully updated" << std::endl;
     }
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlineStagToWilsEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineStagToWilsEnv::name << ": error extracting prop_header: " << e << endl;
+      QDPIO::cerr << InlineStagToWilsEnv::name << ": error extracting prop_header: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -400,9 +400,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineStagToWilsEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineStagToWilsEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineStagToWilsEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

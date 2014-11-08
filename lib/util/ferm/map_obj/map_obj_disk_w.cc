@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- *  \brief Disk based map object, factory registration
+ *  \brief Disk based std::map object, factory registration
  */
 
 #include "chromabase.h"
@@ -28,7 +28,7 @@ namespace Chroma
       };
 
       // Reader for input parameters
-      Params::Params(XMLReader& xml, const string& path)
+      Params::Params(XMLReader& xml, const std::string& path)
       {
 	XMLReader paramtop(xml, path);
 

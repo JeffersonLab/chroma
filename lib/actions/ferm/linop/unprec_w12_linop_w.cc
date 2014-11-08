@@ -29,7 +29,7 @@ namespace Chroma
 
     if (Nd != 4)
     {
-      QDPIO::cerr << "UnprecW12 only supports Nd=4" << endl;
+      QDPIO::cerr << "UnprecW12 only supports Nd=4" << std::endl;
       QDP_abort(1);
     }
 
@@ -53,7 +53,7 @@ namespace Chroma
 
     if (j_decay != Nd-1)
     {
-      QDPIO::cerr << "W12: implementation restriction: j_decay must be Nd-1" << endl;
+      QDPIO::cerr << "W12: implementation restriction: j_decay must be Nd-1" << std::endl;
       QDP_abort(1);
     }
 
@@ -246,10 +246,10 @@ namespace Chroma
 
   //! Derivative of unpreconditioned W12 dM/dU
   /*!
-   * \param chi     left vector on cb                           (Read)
-   * \param psi     right vector on 1-cb                        (Read)
+   * \param chi     left std::vector on cb                           (Read)
+   * \param psi     right std::vector on 1-cb                        (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb	    Checkerboard of chi vector                  (Read)
+   * \param cb	    Checkerboard of chi std::vector                  (Read)
    *
    * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */

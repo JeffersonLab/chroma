@@ -12,14 +12,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, APELinkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, APELinkSmearingEnv::Params& param)
   {
     APELinkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const APELinkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const APELinkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -62,7 +62,7 @@ namespace Chroma
 
 
     //! Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -84,7 +84,7 @@ namespace Chroma
 	break;
 
       default :
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -94,7 +94,7 @@ namespace Chroma
     }
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -120,7 +120,7 @@ namespace Chroma
 
       if (params.link_smear_num > 0)
       {
-	QDPIO::cout << "APE Smear gauge field" << endl;
+	QDPIO::cout << "APE Smear gauge field" << std::endl;
 
 	for(int i=0; i < params.link_smear_num; ++i)
 	{
@@ -136,7 +136,7 @@ namespace Chroma
 
 	  u_ape = u_tmp;
 	}
-	QDPIO::cout << "Gauge field APE-smeared!" << endl;
+	QDPIO::cout << "Gauge field APE-smeared!" << std::endl;
       }
 
       u = u_ape;

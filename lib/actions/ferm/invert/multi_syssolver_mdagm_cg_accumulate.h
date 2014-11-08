@@ -72,7 +72,7 @@ namespace Chroma
 	}
 	else
 	{
-	  QDPIO::cerr << "MdagMMultiSysSolverCG: shifts incompatible" << endl;
+	  QDPIO::cerr << "MdagMMultiSysSolverCG: shifts incompatible" << std::endl;
 	  QDP_abort(1);
 	}
 

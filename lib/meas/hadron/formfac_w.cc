@@ -26,7 +26,7 @@ namespace Chroma
     read(bin, mom.magic);
     if (mom.magic != 20301)
     {
-      QDPIO::cerr << "read(FormFac_momenta_t): magic number invalid" << endl;
+      QDPIO::cerr << "read(FormFac_momenta_t): magic number invalid" << std::endl;
       QDP_abort(1);
     }
     read(bin, mom.inser_mom);
@@ -119,9 +119,9 @@ namespace Chroma
     for(int gamma_value = 0; gamma_value < Nd*Nd; ++gamma_value)
     {
       //  For the case where the gamma value indicates we are evaluating either
-      //  the vector or axial vector currents, we will also evaluate
-      //  the non-local currents.  The non-local vector current is the conserved
-      //  current.  The non-local axial vector current would be partially
+      //  the std::vector or axial std::vector currents, we will also evaluate
+      //  the non-local currents.  The non-local std::vector current is the conserved
+      //  current.  The non-local axial std::vector current would be partially
       //  conserved but for the Wilson term.  In these cases we will set
       //  mu = corresponding direction.  In all other cases, we will set mu = -1.
 
@@ -154,7 +154,7 @@ namespace Chroma
 	compute_nonlocal = false;
       }
 
-      // The local non-conserved vector-current matrix element 
+      // The local non-conserved std::vector-current matrix element 
       LatticeComplex corr_local_fn =
 	trace(adj(anti_quark_prop) * Gamma(gamma_value) * quark_propagator * Gamma(gamma_insertion));
 

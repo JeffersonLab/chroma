@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: gaus_quark_smearing.h,v 3.2 2008-11-04 18:43:57 edwards Exp $
 /*! \file
- *  \brief Gaussian smearing of color vector and propagator
+ *  \brief Gaussian smearing of color std::vector and propagator
  */
 
 #ifndef __gaus_quark_smearing_h__
@@ -61,11 +61,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, GausQuarkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, GausQuarkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const GausQuarkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const GausQuarkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

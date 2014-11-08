@@ -64,7 +64,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -78,7 +78,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -91,14 +91,14 @@ namespace Chroma
       // Sanity check
       if (j_decay < 0 || j_decay >= Nd)
       {
-	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << endl;
+	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << std::endl;
 	QDP_abort(1);
       }
     }
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -118,7 +118,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "SF Wall source" << endl;
+      QDPIO::cout << "SF Wall source" << std::endl;
 
       // Create the quark source
       LatticePropagator quark_source;
@@ -136,7 +136,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.fermbc.xml);
 	XMLReader  fermbctop(xml_s);
-        QDPIO::cout << "FermBC type = " << params.fermbc.id << endl;
+        QDPIO::cout << "FermBC type = " << params.fermbc.id << std::endl;
 	
 	Handle< FermBC<LatticeFermion,
 	  multi1d<LatticeColorMatrix>,
@@ -155,7 +155,7 @@ namespace Chroma
 	int t0 = (params.direction == MINUS) ? tmax : tmin;
 	if (t0 != params.t_source)
 	{
-	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << endl;
+	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -184,7 +184,7 @@ namespace Chroma
 	      break;
 
 	    default:
-	      QDPIO::cerr << name << ": illegal direction" << endl;
+	      QDPIO::cerr << name << ": illegal direction" << std::endl;
 	      QDP_abort(1);
 	    }
   	  
@@ -194,12 +194,12 @@ namespace Chroma
       }
       catch(std::bad_cast) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in applying source or creating fermbc: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in applying source or creating fermbc: " << e << std::endl;
 	QDP_abort(1);
       }
 

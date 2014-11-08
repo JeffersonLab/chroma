@@ -92,7 +92,7 @@ namespace Chroma {
     else { 
       tuneDslashP = false;
     }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << endl;
+    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
 
     if( paramtop.count("GCRInnerParams") > 0 ) {
@@ -159,7 +159,7 @@ namespace Chroma {
 
     if( p.backup_invP ) { 
       // Need to dump out the XML for the back up solver here...
-      // Turn XML into an istringstream
+      // Turn XML into an std::istringstream
       std::istringstream is( p.backup_inv_param.xml);
       XMLReader tmp_reader(is);
       // I wonder if this method works....

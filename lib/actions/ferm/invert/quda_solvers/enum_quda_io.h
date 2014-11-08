@@ -26,7 +26,7 @@ namespace Chroma
 
   
   namespace QudaSolverTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -37,10 +37,10 @@ namespace Chroma
   // Reader and writer
 
   //! Read an QudaSolverType enum
-  void read(XMLReader& r, const string& path, QudaSolverType& t);
+  void read(XMLReader& r, const std::string& path, QudaSolverType& t);
 
   //! Write an QudaSolverType enum
-  void write(XMLWriter& w, const string& path, const QudaSolverType& t);
+  void write(XMLWriter& w, const std::string& path, const QudaSolverType& t);
 
 
   //! Quda Precision type
@@ -52,7 +52,7 @@ namespace Chroma
   };
   
   namespace QudaPrecisionTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -63,10 +63,10 @@ namespace Chroma
   // Reader and writer
 
   //! Read an QudaSolverType enum
-  void read(XMLReader& r, const string& path, QudaPrecisionType& t);
+  void read(XMLReader& r, const std::string& path, QudaPrecisionType& t);
 
   //! Write an QudaSolverType enum
-  void write(XMLWriter& w, const string& path, const QudaPrecisionType& t);
+  void write(XMLWriter& w, const std::string& path, const QudaPrecisionType& t);
 
 
   //! Quda Gauge Reconstruct type
@@ -77,7 +77,7 @@ namespace Chroma
   };
   
   namespace QudaReconsTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -88,10 +88,10 @@ namespace Chroma
   // Reader and writer
 
   //! Read an QudaReconsType enum
-  void read(XMLReader& r, const string& path, QudaReconsType& t);
+  void read(XMLReader& r, const std::string& path, QudaReconsType& t);
 
   //! Write an QudaReconsType enum
-  void write(XMLWriter& w, const string& path, const QudaReconsType& t);
+  void write(XMLWriter& w, const std::string& path, const QudaReconsType& t);
 
 
   enum QudaSchwarzMethod { 
@@ -100,7 +100,7 @@ namespace Chroma
   };
   
   namespace QudaSchwarzMethodEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -111,10 +111,10 @@ namespace Chroma
   // Reader and writer
 
   //! Read an QudaSchwarzMethod enum
-  void read(XMLReader& r, const string& path, QudaSchwarzMethod& t);
+  void read(XMLReader& r, const std::string& path, QudaSchwarzMethod& t);
 
   //! Write an QudaSchwarzMethod enum
-  void write(XMLWriter& w, const string& path, const QudaSchwarzMethod& t);
+  void write(XMLWriter& w, const std::string& path, const QudaSchwarzMethod& t);
 
 
 

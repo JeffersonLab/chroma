@@ -17,7 +17,7 @@ namespace Chroma
   namespace InlineDistillutionNoiseEnv 
   {
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -25,7 +25,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -36,7 +36,7 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -46,7 +46,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& input)
     {
       push(xml, path);
 
@@ -59,14 +59,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params& input)
+    void read(XMLReader& xml, const std::string& path, Params& input)
     {
       Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params& input)
+    void write(XMLWriter& xml, const std::string& path, const Params& input)
     {
       push(xml, path);
     
@@ -134,7 +134,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -149,7 +149,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "DistillutionNoise");
 	write(xml_out, "update_no", update_no);
@@ -180,7 +180,7 @@ namespace Chroma
       push(xml_out, "DistillutionNoise");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": initialize distillution noise factory" << endl;
+      QDPIO::cout << name << ": initialize distillution noise factory" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -190,7 +190,7 @@ namespace Chroma
       //
       // Read in the source along with relevant information.
       // 
-      QDPIO::cout << "Create a distillution factory" << endl;
+      QDPIO::cout << "Create a distillution factory" << std::endl;
       try
       {	
 	// Build new object
@@ -201,12 +201,12 @@ namespace Chroma
       }    
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error creating distillution_noise object: " << e << endl;
+	QDPIO::cerr << name << ": error creating distillution_noise object: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -215,9 +215,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

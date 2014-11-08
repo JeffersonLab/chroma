@@ -51,21 +51,21 @@ namespace Chroma
       switch( chrono_buf->size() ) { 
       case 0:
       {
-	QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << std::endl;
 	psi = zero;
       }
       break;
 
       case 1:
       { 
-	QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << std::endl;
 	chrono_buf->get(0,psi);
       }
       break;
 
       case 2:
       {
-	QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << std::endl;
 
 	LatticeFermion y0; 
 	chrono_buf->get(0,y0); // Most recent
@@ -78,7 +78,7 @@ namespace Chroma
       }
       break;
       default:
-	QDPIO::cerr << "Unknown case reached in LinearExtrapPredictor " << endl;
+	QDPIO::cerr << "Unknown case reached in LinearExtrapPredictor " << std::endl;
 	QDP_abort(1);
 	break;
       }
@@ -105,26 +105,26 @@ namespace Chroma
       chrono_bufY->reset();
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newXVector(const LatticeFermion& X) 
     {
       START_CODE();
 
       QDPIO::cout << "LinearExtrapolationPredictor: registering new X solution. ";
       chrono_bufX->push(X);
-      QDPIO::cout << " number of vectors stored is = " << chrono_bufX->size() << endl;
+      QDPIO::cout << " number of vectors stored is = " << chrono_bufX->size() << std::endl;
     
       END_CODE();
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newYVector(const LatticeFermion& Y) 
     {
       START_CODE();
 
       QDPIO::cout << "LinearExtrapolationPredictor: registering new Y solution. ";
       chrono_bufY->push(Y);
-      QDPIO::cout << " number of vectors stored is = " << chrono_bufY->size() << endl;
+      QDPIO::cout << " number of vectors stored is = " << chrono_bufY->size() << std::endl;
     
       END_CODE();
     }
@@ -169,14 +169,14 @@ namespace Chroma
       switch( chrono_buf->size() ) { 
       case 0:
       {
-	QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you zero" << std::endl;
 	psi = zero;
       }
       break;
 
       case 1:
       { 
-	QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you last soln" << std::endl;
 	chrono_buf->get(0, psi);
       }
       break;
@@ -184,7 +184,7 @@ namespace Chroma
       case 2:
       {
 	  
-	QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << endl;
+	QDPIO::cout << "LinearExtrapolationPredictor: giving you linear extrapolation" << std::endl;
 
 	multi1d<LatticeFermion> y0(N5);
 	chrono_buf->get(0, y0);
@@ -199,7 +199,7 @@ namespace Chroma
       }
       break;
       default:
-	QDPIO::cerr << "Unknown case reached in LinearExtrapPredictor " << endl;
+	QDPIO::cerr << "Unknown case reached in LinearExtrapPredictor " << std::endl;
 	QDP_abort(1);
 	break;
       }
@@ -213,15 +213,15 @@ namespace Chroma
       chrono_buf->reset();
     }
 
-    // Ignore new vector
-    // Ignore new vector
+    // Ignore new std::vector
+    // Ignore new std::vector
     void newVector(const multi1d<LatticeFermion>& psi) 
     {
       START_CODE();
 
       QDPIO::cout << "LinearExtrapolationPredictor: registering new solution. ";
       chrono_buf->push(psi);
-      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << " number of vectors stored is = " << chrono_buf->size() << std::endl;
 
       END_CODE();
     }

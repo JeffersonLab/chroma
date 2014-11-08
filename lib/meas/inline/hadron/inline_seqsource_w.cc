@@ -21,7 +21,7 @@
 namespace Chroma 
 { 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSeqSourceEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineSeqSourceEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -31,7 +31,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSeqSourceEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineSeqSourceEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -99,7 +99,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -139,13 +139,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -154,7 +154,7 @@ namespace Chroma
       push(xml_out, "seqsource");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": propagator sequential source constructor" << endl;
+      QDPIO::cout << name << ": propagator sequential source constructor" << std::endl;
       StopWatch swatch;
 
       proginfo(xml_out);    // Print out basic program info
@@ -175,7 +175,7 @@ namespace Chroma
       // Sanity check
       if (params.named_obj.prop_ids.size() == 0)
       {
-	QDPIO::cerr << name << ": sanity error: " << endl;
+	QDPIO::cerr << name << ": sanity error: " << std::endl;
 	QDP_abort(1);
       }
 
@@ -215,20 +215,20 @@ namespace Chroma
 	catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-	catch (const string& e) 
+	catch (const std::string& e) 
 	{
-	  QDPIO::cerr << name << ": map call failed: " << e 
-		      << endl;
+	  QDPIO::cerr << name << ": std::map call failed: " << e 
+		      << std::endl;
 	  QDP_abort(1);
 	}
 	pop(xml_out);
       }
       pop(xml_out);
 
-      QDPIO::cout << "Forward propagator successfully read and parsed" << endl;
+      QDPIO::cout << "Forward propagator successfully read and parsed" << std::endl;
 
       // Derived from input prop
       int j_decay  = forward_headers[0].source_header.j_decay;
@@ -253,8 +253,8 @@ namespace Chroma
       // A sanity check
       if (params.param.t_sink < 0 || params.param.t_sink >= QDP::Layout::lattSize()[j_decay]) 
       {
-	QDPIO::cerr << "Sink time coordinate incorrect." << endl;
-	QDPIO::cerr << "t_sink = " << params.param.t_sink << endl;
+	QDPIO::cerr << "Sink time coordinate incorrect." << std::endl;
+	QDPIO::cerr << "t_sink = " << params.param.t_sink << std::endl;
 	QDP_abort(1);
       }
 
@@ -272,7 +272,7 @@ namespace Chroma
 	// In that case, the loop needs to be in inverted.
 	std::istringstream  xml_s(params.sink_header.sink.xml);
 	XMLReader  sinktop(xml_s);
-	QDPIO::cout << "Sink = " << params.sink_header.sink.id << endl;
+	QDPIO::cout << "Sink = " << params.sink_header.sink.id << std::endl;
 	
 	Handle< QuarkSourceSink<LatticePropagator> >
 	  sinkSmearing(ThePropSinkSmearingFactory::Instance().createObject(params.sink_header.sink.id,
@@ -291,11 +291,11 @@ namespace Chroma
 	//
 	// Construct the sequential source
 	//
-	QDPIO::cout << "Sequential source = " << params.param.seqsrc.xml << endl;
+	QDPIO::cout << "Sequential source = " << params.param.seqsrc.xml << std::endl;
 
 	std::istringstream  xml_seq(params.param.seqsrc.xml);
 	XMLReader  seqsrctop(xml_seq);
-	QDPIO::cout << "SeqSource = " << params.param.seqsrc.id << endl;
+	QDPIO::cout << "SeqSource = " << params.param.seqsrc.id << std::endl;
 	
 	Handle< HadronSeqSource<LatticePropagator> >
 	  hadSeqSource(TheWilsonHadronSeqSourceFactory::Instance().createObject(params.param.seqsrc.id,
@@ -310,7 +310,7 @@ namespace Chroma
     
 	QDPIO::cout << "Hadron sequential source computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
 
 	// Do the sink smearing AFTER the interpolating operator
@@ -319,7 +319,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in sink: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in sink: " << e << std::endl;
 	QDP_abort(1);
       }
     
@@ -341,7 +341,7 @@ namespace Chroma
        */
       try
       {
-	QDPIO::cout << "Attempt to store sequential source" << endl;
+	QDPIO::cout << "Attempt to store sequential source" << std::endl;
 
 	XMLBufferWriter file_xml;
 	push(file_xml, "seqsource");
@@ -365,17 +365,17 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.seqsource_id).setFileXML(file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.seqsource_id).setRecordXML(record_xml);
 
-	QDPIO::cout << "Sequential source successfully stored"  << endl;
+	QDPIO::cout << "Sequential source successfully stored"  << std::endl;
       }
       catch (std::bad_cast)
       {
 	QDPIO::cerr << name << ": dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error storing seqsource: " << e << endl;
+	QDPIO::cerr << name << ": error storing seqsource: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -384,9 +384,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

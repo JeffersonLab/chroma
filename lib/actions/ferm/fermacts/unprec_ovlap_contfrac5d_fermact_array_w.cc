@@ -110,13 +110,13 @@ namespace Chroma
 	ApproxMin = ApproxMax = 0.0;
       }
     }
-    catch( const string &e ) {
-      QDPIO::cerr << "Caught Exception reading unprec ContFrac Fermact params: " << e << endl;
+    catch( const std::string &e ) {
+      QDPIO::cerr << "Caught Exception reading unprec ContFrac Fermact params: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
-  void read(XMLReader& xml_in, const string& path,
+  void read(XMLReader& xml_in, const std::string& path,
 	    UnprecOvlapContFrac5DFermActParams& param) 
   {
     
@@ -124,7 +124,7 @@ namespace Chroma
     param = tmp;
   }
   
-  void write(XMLWriter& xml_out, const string& path, const UnprecOvlapContFrac5DFermActParams& p)
+  void write(XMLWriter& xml_out, const std::string& path, const UnprecOvlapContFrac5DFermActParams& p)
   {
     if ( path != "." ) { 
       push( xml_out, path);
@@ -153,12 +153,12 @@ namespace Chroma
     const UnprecOvlapContFrac5DFermActParams& params_) :
     fbc(fbc_), params(params_) 
   {
-    QDPIO::cout << UnprecOvlapContFrac5DFermActArrayEnv::name << ": entering constructor" << endl;
+    QDPIO::cout << UnprecOvlapContFrac5DFermActArrayEnv::name << ": entering constructor" << std::endl;
 
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << UnprecOvlapContFrac5DFermActArrayEnv::name << ": error: fbc is null" << endl;
+      QDPIO::cerr << UnprecOvlapContFrac5DFermActArrayEnv::name << ": error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -187,18 +187,18 @@ namespace Chroma
     // Construct the fermact 
     std::istringstream  xml_s(params.AuxFermAct);
     XMLReader  fermacttop(xml_s);
-    const string fermact_path = "/AuxFermAct";
+    const std::string fermact_path = "/AuxFermAct";
     
     // In case I fail to upcast to the UnprecWilsonType FermAct
     struct UnprecCastFailure {
       UnprecCastFailure(std::string e) : auxfermact(e) {};
-      const string auxfermact;
+      const std::string auxfermact;
     };
     
     try {
-      string auxfermact;
+      std::string auxfermact;
       read(fermacttop, fermact_path + "/FermAct", auxfermact);
-      QDPIO::cout << "AuxFermAct: " << auxfermact << endl;
+      QDPIO::cout << "AuxFermAct: " << auxfermact << std::endl;
             
       // Generic Wilson-Type stuff
       FermionAction<T,P,Q>* S_f =
@@ -222,22 +222,22 @@ namespace Chroma
     {
       // Breakage Scenario
       QDPIO::cerr << "Unable to upcast auxiliary fermion action to "
-		  << "UnprecWilsonTypeFermAct " << endl;
+		  << "UnprecWilsonTypeFermAct " << std::endl;
       QDPIO::cerr << UnprecOvlapContFrac5DFermActArrayEnv::name << " does not support even-odd preconditioned "
-		  << "auxiliary FermActs" << endl;
-      QDPIO::cerr << "You passed : " << endl;
-      QDPIO::cerr << e.auxfermact << endl;
+		  << "auxiliary FermActs" << std::endl;
+      QDPIO::cerr << "You passed : " << std::endl;
+      QDPIO::cerr << e.auxfermact << std::endl;
       QDP_abort(1);
     }
     catch (const std::exception& e) 
     {
       // General breakage Scenario
-      QDPIO::cerr << "Error reading data: " << e.what() << endl;
+      QDPIO::cerr << "Error reading data: " << e.what() << std::endl;
       throw;
     }
     catch( const std::string& e ) 
     { 
-      QDPIO::cerr << "Caught Exception" << e << endl;
+      QDPIO::cerr << "Caught Exception" << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -270,23 +270,23 @@ namespace Chroma
     {
     case COEFF_TYPE_ZOLOTAREV:
       epsilon = approxMin / approxMax;
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << std::endl;
       rdata = zolotarev(toFloat(epsilon), params.RatPolyDeg, type);    
       scale_fac = Real(1) / approxMax;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
       epsilon = approxMin;
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << std::endl;
       rdata = higham(toFloat(epsilon), params.RatPolyDeg);
       scale_fac = Real(1);
       break;
 
     default:
-      // The map system should ensure that we never get here but 
+      // The std::map system should ensure that we never get here but 
       // just for style
       QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
@@ -294,8 +294,8 @@ namespace Chroma
 
     // Check N5 is good:
     if( N5 != rdata->db ) { 
-      QDPIO::cerr << "Mismatch between N5 and N5 from Coefficient Code" << endl;
-      QDPIO::cerr << "N5 = " << N5 << " rdata->db=" << rdata->db << endl;
+      QDPIO::cerr << "Mismatch between N5 and N5 from Coefficient Code" << std::endl;
+      QDPIO::cerr << "N5 = " << N5 << " rdata->db=" << rdata->db << std::endl;
       QDP_abort(1);
     }
 
@@ -340,44 +340,44 @@ namespace Chroma
     alpha[N5-2] *= gamma[N5-2];
 
     
-    QDPIO::cout << "UnprecOvlapContfrac5d: " << endl
+    QDPIO::cout << "UnprecOvlapContfrac5d: " << std::endl
                 << "  Degree=" << params.RatPolyDeg 
 		<< "  N5=" << N5 << " scale=" << scale_fac
-		<< "  Nwils = " << NEigVal << " Mass=" << params.Mass << endl ;
-    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<endl;
+		<< "  Nwils = " << NEigVal << " Mass=" << params.Mass << std::endl ;
+    QDPIO::cout << "Approximation on [-1,eps] U [eps,1] with eps = " << epsilon <<std::endl;
     
-    QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << endl;
+    QDPIO::cout << "Maximum error | R(x) - sgn(x) | <= Delta = " << maxerr << std::endl;
     /*
     for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << endl;
+      QDPIO::cout << "beta["<<i<<"] = " << beta[i] << std::endl;
     }
     for(int i=0; i < N5; i++) { 
-      QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << endl;
+      QDPIO::cout << "alpha["<<i<<"] = " << alpha[i] << std::endl;
     }
     */
 
     switch( params.approximation_type) {
     case COEFF_TYPE_ZOLOTAREV:
-      QDPIO::cout << "Coefficients from Zolotarev" << endl;
+      QDPIO::cout << "Coefficients from Zolotarev" << std::endl;
       
       if(type == 0) {
 	QDPIO::cout << "Approximation type " << type << " with R(0) = 0"
-		    << endl;
+		    << std::endl;
       }
       else {
-	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << endl;
+	QDPIO::cout << "Approximation type " << type << " with R(0) =  infinity"                    << std::endl;
       }
       
       break;
     case COEFF_TYPE_TANH:
-      QDPIO::cout << "Coefficients from Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Higham Tanh representation" << std::endl;
       break;
     case COEFF_TYPE_TANH_UNSCALED:
-      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << endl;
+      QDPIO::cout << "Coefficients from Unscaled Higham Tanh representation" << std::endl;
       break;
     default:
       QDPIO::cerr << "Unknown coefficient type " << params.approximation_type 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
       break;
     }
@@ -427,7 +427,7 @@ namespace Chroma
 	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray: inconsistent sizes of eigenvectors and values" 
 		    << "state.getEigVec.size() = " << state.getEigVec().size() 
 		    << " state.getEigVal.size() = " << state.getEigVal().size()
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
       
@@ -454,11 +454,11 @@ namespace Chroma
 						 isLastZeroP);
       
     }
-    catch( bad_cast ) 
+    catch( std::bad_cast ) 
     {
       QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
       QDPIO::cerr << "Couldnt cast FermState<T,P,Q>  to OverlapFermState<T,P,Q>  " 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
@@ -491,7 +491,7 @@ namespace Chroma
 	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray: inconsistent sizes of eigenvectors and values" 
 		    << "state.getEigVec.size() = " << state.getEigVec().size() 
 		    << " state.getEigVal.size() = " << state.getEigVal().size()
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
       
@@ -518,10 +518,10 @@ namespace Chroma
 						    isLastZeroP);
       
     }
-    catch( bad_cast ) { 
+    catch( std::bad_cast ) { 
       QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::linOp(): ";
       QDPIO::cerr << "Couldnt cast FermState<T,P,Q>  to OverlapFermState<T,P,Q>  " 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
     
@@ -551,7 +551,7 @@ namespace Chroma
 	QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray: inconsistent sizes of eigenvectors and values" 
 		    << "state.getEigVec.size() = " << state.getEigVec().size() 
 		    << " state.getEigVal.size() = " << state.getEigVal().size()
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
       
@@ -577,11 +577,11 @@ namespace Chroma
 						      EigValFunc,
 						      state.getEigVec() );
     }
-    catch( bad_cast ) 
+    catch( std::bad_cast ) 
     {
       QDPIO::cerr << "UnprecOvlapContFrac5DFermActArray::lnonHermLinOp(): ";
       QDPIO::cerr << "Couldnt cast FermState<T,P,Q>  to OverlapConnectState  " 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -679,7 +679,7 @@ namespace Chroma
 //      else
 //      {
 //	QDPIO::cerr << UnprecOvlapContFrac5DFermActArrayEnv::name 
-//		    << "Unsupported inverter type =" << invType << endl;
+//		    << "Unsupported inverter type =" << invType << std::endl;
 //	QDP_abort(1);
 //      }
   
@@ -745,8 +745,8 @@ namespace Chroma
     try { 
       return new OverlapConnectState(fbc, u_);
     } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -762,8 +762,8 @@ namespace Chroma
     try { 
       return new OverlapConnectState(fbc, u_, approxMin_);
     } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -779,8 +779,8 @@ namespace Chroma
     try { 
       return new OverlapConnectState(fbc, u_, approxMin_, approxMax_);
     } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -797,8 +797,8 @@ namespace Chroma
     try { 
       return new OverlapConnectState(fbc, u_, lambda_lo_, evecs_lo_, lambda_hi_);
     } 
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -809,7 +809,7 @@ namespace Chroma
   OverlapConnectState*
   UnprecOvlapContFrac5DFermActArray::createState(const multi1d<LatticeColorMatrix>& u_,
 						 XMLReader& state_info_xml,
-						 const string& state_info_path) const
+						 const std::string& state_info_path) const
   {
     // HACK UP A LINEAR OPERATOR TO CHECK EIGENVALUES/VECTORS WITH
     Handle< FermState<T,P,Q>  > state_aux = new SimpleFermState<T,P,Q> (fbc, u_);
@@ -818,8 +818,8 @@ namespace Chroma
     try {
       return new OverlapConnectState(fbc, u_, state_info_xml, state_info_path, *Maux);
     }
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     
@@ -838,8 +838,8 @@ namespace Chroma
     try {
       return new OverlapConnectState(fbc, u_, state_info, *Maux);
     }
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception: " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception: " << e << std::endl;
       QDP_abort(1);
     }
     

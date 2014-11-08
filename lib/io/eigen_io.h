@@ -40,7 +40,7 @@ namespace Chroma
   struct EigenIO_t 
   {
     EigenVecType eigen_filefmt;
-    string eigen_file;
+    std::string eigen_file;
     QDP_volfmt_t eigen_volfmt;
   };
 
@@ -64,13 +64,13 @@ namespace Chroma
    * \ingroup io
    * @{
    */
-  void read(XMLReader& xml, const string& path, RitzParams_t& header);
-  void read(XMLReader& xml, const string& path, EigenIO_t& header);
-  void read(XMLReader& xml, const string& path, ChromaWilsonRitz_t& header);
+  void read(XMLReader& xml, const std::string& path, RitzParams_t& header);
+  void read(XMLReader& xml, const std::string& path, EigenIO_t& header);
+  void read(XMLReader& xml, const std::string& path, ChromaWilsonRitz_t& header);
 
-  void write(XMLWriter& xml, const string& path, const RitzParams_t& header);
-  void write(XMLWriter& xml, const string& path, const EigenIO_t& header);
-  void write(XMLWriter& xml, const string& path, const ChromaWilsonRitz_t& header);
+  void write(XMLWriter& xml, const std::string& path, const RitzParams_t& header);
+  void write(XMLWriter& xml, const std::string& path, const EigenIO_t& header);
+  void write(XMLWriter& xml, const std::string& path, const ChromaWilsonRitz_t& header);
 
   void writeEigen(const ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 		  multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
@@ -79,20 +79,20 @@ namespace Chroma
 
   void readEigenPair(Real& lambda_lo, int& eig_index,
 		     LatticeFermion& eigv, 
-		     const string& filename,
+		     const std::string& filename,
 		     QDP_serialparallel_t serpar,
 		     XMLReader& file_xml);
 
   void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 		 multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
-		 const string& filename_stem, 
+		 const std::string& filename_stem, 
 		 int Neig,
 		 QDP_serialparallel_t serpar);
 
   void readEigenSzin(multi1d<Real>& lambda_lo,
 		     multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
 		     const int Neig,
-		     const string& filename_stem);
+		     const std::string& filename_stem);
   /*! @} */  // end of group io
 		
 }  // end namespace Chroma

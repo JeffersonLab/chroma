@@ -16,7 +16,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param length   length of displacement ( Read )
    *  \param dir      direction of displacement ( Read )
    *

@@ -1,5 +1,5 @@
 // su2_hb_update.h, 2004/11/16 velytsky
-// one su(2) hb update kennedy-pendleton or creutz
+// one su(2) hb update kennedy-pstd::endleton or creutz
 #ifndef __su2_hb_update__
 #define __su2_hb_update__
 

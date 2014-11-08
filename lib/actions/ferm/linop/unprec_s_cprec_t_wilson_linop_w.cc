@@ -35,14 +35,14 @@ namespace Chroma
 
     // Check we are in 4D
     if ( Nd != 4 ) { 
-      QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) only works in 4D" << endl;
+      QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) only works in 4D" << std::endl;
       QDP_abort(1);
     }
 
     
     // Check Aniso Direction -- has to be 3.
     if ( anisoParam_.t_dir != 3 ) { 
-      QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) is hardwired for t_dir=3"<< endl;
+      QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) is hardwired for t_dir=3"<< std::endl;
       QDP_abort(1);
     }
 
@@ -50,7 +50,7 @@ namespace Chroma
     const multi1d<int>& s_size =  QDP::Layout::subgridLattSize();  // Local Lattice
     const multi1d<int>& t_size =  QDP::Layout::lattSize(); // Total Latt Size
     if( t_size[3] != s_size[3] ) { 
-      QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) needs time to be local" << endl;
+      QDPIO::cout << "This class (UnprecSCprecTWilsonLinOp) needs time to be local" << std::endl;
       QDP_abort(1);
     }
 
@@ -314,9 +314,9 @@ namespace Chroma
     chi += spinReconstructDir3Minus(tmp_T);
 
     // Overall factor of 2 to turn (1 +/- gamma_3) into projector P_{+/-}
-    //  No sense to fold it into the half vector because it 
-    //  would also be needed for the half vector in the P_{+} piece
-    //  so overall cost is still 1 full vector of multiply
+    //  No sense to fold it into the half std::vector because it 
+    //  would also be needed for the half std::vector in the P_{+} piece
+    //  so overall cost is still 1 full std::vector of multiply
     chi *= Real(0.5);
     getFermBC().modifyF(chi);
 
@@ -357,19 +357,19 @@ namespace Chroma
 				     getTMax(),
 				     schroedingerTP());
 
-    // Reconstruct to full vector
+    // Reconstruct to full std::vector
     chi += spinReconstructDir3Plus(tmp_T);
 
     // Overall factor of 2 to turn (1 +/- gamma_3) into projector P_{+/-}
-    //  No sense to fold it into the half vector because it 
-    //  would also be needed for the half vector in the P_{+} piece
-    //  so overall cost is still 1 full vector of multiply
+    //  No sense to fold it into the half std::vector because it 
+    //  would also be needed for the half std::vector in the P_{+} piece
+    //  so overall cost is still 1 full std::vector of multiply
     chi *= Real(0.5);
     getFermBC().modifyF(chi);
 
   }
 
-  //! Apply the the space block onto a source vector
+  //! Apply the the space block onto a source std::vector
   //  Call to 3D Dslash.  - overall factor of -0.5from -(1/2) Dslash
   void 
   UnprecSCprecTWilsonLinOp::spaceLinOp(T& chi, const T& psi, enum PlusMinus isign) const
@@ -442,7 +442,7 @@ namespace Chroma
 				       schroedingerTP());
 
       // Two factors of 0.5 from the projectors.
-      // Most cost efficient to apply them together to the half vector...
+      // Most cost efficient to apply them together to the half std::vector...
       tmp2 *= Real(0.25);
 
       T2  = spinReconstructDir3Minus(tmp2);
@@ -529,7 +529,7 @@ namespace Chroma
 				       schroedingerTP());
 
       // Two factors of 0.5 from the projectors.
-      // Most cost efficient to apply them together to the half vector...
+      // Most cost efficient to apply them together to the half std::vector...
       tmp2 *= Real(0.25);
       
       T2  = spinReconstructDir3Plus(tmp2);

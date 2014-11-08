@@ -1,6 +1,6 @@
 // $Id: szin_write_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
- *  \brief Write object function map
+ *  \brief Write object function std::map
  */
 
 #include "named_obj.h"
@@ -13,7 +13,7 @@
 namespace Chroma
 {
  
-  //! IO function map environment
+  //! IO function std::map environment
   /*! \ingroup inlineio */
   namespace SZINWriteObjCallMapEnv
   { 
@@ -21,8 +21,8 @@ namespace Chroma
     namespace
     {
       //! Write a propagator
-      void SZINWriteLatProp(const string& buffer_id,
-			    const string& file, 
+      void SZINWriteLatProp(const std::string& buffer_id,
+			    const std::string& file, 
 			    int j_decay, int t_start, int t_end)
       {
 	LatticePropagator obj = TheNamedObjMap::Instance().getData<LatticePropagator>(buffer_id);
@@ -32,8 +32,8 @@ namespace Chroma
       }
 
       //! Write a gauge field in floating precision
-      void SZINWriteArrayLatColMat(const string& buffer_id,
-				   const string& file, 
+      void SZINWriteArrayLatColMat(const std::string& buffer_id,
+				   const std::string& file, 
 				   int j_decay, int t_start, int t_end)
       {
 	SzinGauge_t szin_out;   // ignoring XML in named object
@@ -59,9 +59,9 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheSZINWriteObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+	success &= TheSZINWriteObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 								       SZINWriteLatProp);
-	success &= TheSZINWriteObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+	success &= TheSZINWriteObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrix"), 
 								       SZINWriteArrayLatColMat);
 
 	registered = true;

@@ -18,7 +18,7 @@ namespace Chroma
 
 
   //! Read parameters
-  WilsonFermActParams::WilsonFermActParams(XMLReader& xml, const string& path)
+  WilsonFermActParams::WilsonFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -28,7 +28,7 @@ namespace Chroma
       read(paramtop, "Mass", Mass);
       if (paramtop.count("Kappa") != 0) 
       {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -40,7 +40,7 @@ namespace Chroma
     }
     else
     {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << std::endl;
       QDP_abort(1);
     }
 
@@ -50,14 +50,14 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, WilsonFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, WilsonFermActParams& param)
   {
     WilsonFermActParams tmp(xml, path);
     param = tmp;
   }
 
   //! Writer parameters
-  void write(XMLWriter& xml, const string& path, const WilsonFermActParams& param)
+  void write(XMLWriter& xml, const std::string& path, const WilsonFermActParams& param)
   {
     push(xml, path);
 

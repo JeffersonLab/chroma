@@ -62,7 +62,7 @@ RelInvCG_a(const LinearOperator<T>& A,
     flopcount.addSiteFlops(4*Nc*Ns,s);
 
 
-    QDPIO::cout << "Reliable CG: || r0 ||/|| b ||=" << sqrt(r_sq/chi_norm) << endl;
+    QDPIO::cout << "Reliable CG: || r0 ||/|| b ||=" << sqrt(r_sq/chi_norm) << std::endl;
 
 
     Double rNorm = sqrt(r_sq);
@@ -179,7 +179,7 @@ RelInvCG_a(const LinearOperator<T>& A,
 
     // Check for nonconvergence
     if( k >= MaxCG ) { 
-      QDPIO::cout << "Nonconvergence: Reliable CG Failed to converge in " << MaxCG << " iterations " << endl;
+      QDPIO::cout << "Nonconvergence: Reliable CG Failed to converge in " << MaxCG << " iterations " << std::endl;
       QDP_abort(1);
     }
 

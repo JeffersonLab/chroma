@@ -5,7 +5,6 @@
 #include "io/xmllog_io.h"
 
 #include <string>
-using namespace std;
 
 namespace Chroma 
 { 
@@ -99,12 +98,12 @@ namespace Chroma
       
 	subint_reader.print(subintegrator_os);
 	subintegrator_xml = subintegrator_os.str();
-	QDPIO::cout << "Subintegrator XML is: " << endl;
-	QDPIO::cout << subintegrator_xml << endl;
+	QDPIO::cout << "Subintegrator XML is: " << std::endl;
+	QDPIO::cout << subintegrator_xml << std::endl;
       }
     }
     catch ( const std::string& e ) { 
-      QDPIO::cout << "Error reading XML in LatColMat4MN5FVRecursiveIntegratorParams " << e << endl;
+      QDPIO::cout << "Error reading XML in LatColMat4MN5FVRecursiveIntegratorParams " << e << std::endl;
       QDP_abort(1);
     }
   }

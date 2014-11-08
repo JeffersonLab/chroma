@@ -89,7 +89,7 @@ void InvBorici_a( const LinearOperator<T>& D_4,
 		<< " || r || = " << r_norm 
 		<< " || b || = " << b_norm 
 		<< " || r ||/|| b || = " << r_norm / b_norm 
-		<< " target = " << tol << endl;
+		<< " target = " << tol << std::endl;
     
     if( toBool( r_norm < tol*b_norm ) ) {
       convP = true;

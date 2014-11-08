@@ -187,64 +187,64 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("NR"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("NR"), 
 								     createNR);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("NRnegPar"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("NRnegPar"), 
 								     createNRnegPar);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("C"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("C"), 
 								     createC);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("CNR"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("CNR"), 
 								     createCNR);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cg5g4"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cg5g4"), 
 								     createCg5g4);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cgk"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cgk"), 
 								     createCgk);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cg4gk"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cg4gk"), 
 								     createCg4gk);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("CgkNR"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("CgkNR"), 
 								     createCgkNR);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cg5"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cg5"), 
 								     createCg5);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cg5NR"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cg5NR"), 
 								     createCg5NR);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cg5NRnegPar"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cg5NRnegPar"), 
 								     createCg5NRnegPar);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cgm"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cgm"), 
 								     createCgm);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Cg4m"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Cg4m"), 
 								     createCg4m);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("CgmNR"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("CgmNR"), 
 								     createCgmNR);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Tunpol"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Tunpol"), 
 								     createTunpol);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("TunpolNegPar"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("TunpolNegPar"), 
 								     createTunpolNegPar);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Tpol"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Tpol"), 
 								     createTpol);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("TpolNegPar"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("TpolNegPar"), 
 								     createTpolNegPar);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("Tmixed"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("Tmixed"), 
 								     createTmixed);
 
-	success &= TheBarSpinMatFuncMap::Instance().registerFunction(string("TmixedNegPar"), 
+	success &= TheBarSpinMatFuncMap::Instance().registerFunction(std::string("TmixedNegPar"), 
 								     createTmixedNegPar);
 
 	registered = true;

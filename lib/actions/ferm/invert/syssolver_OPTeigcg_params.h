@@ -44,7 +44,7 @@ namespace Chroma
     Real NormAest ; /* an estimate of the norm2 of the Matrix */
     
     bool  cleanUpEvecs ; /*!< clean up evecs upon destruction of SystemSolver*/
-    string eigen_id ; /*!< named buffer holding the eigenvectors */
+    std::string eigen_id ; /*!< named buffer holding the eigenvectors */
 
     struct File_t
     {
@@ -83,10 +83,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverOptEigCGParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverOptEigCGParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path, const SysSolverOptEigCGParams& param);
+  void write(XMLWriter& xml, const std::string& path, const SysSolverOptEigCGParams& param);
 
 } // End namespace
 

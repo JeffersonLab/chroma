@@ -23,7 +23,7 @@ namespace Chroma
 { 
   namespace InlineGaussianInitNamedObjEnv 
   { 
-    //! IO function map environment
+    //! IO function std::map environment
     /*! \ingroup inlineio */
     namespace GaussianInitObjCallMapEnv
     { 
@@ -32,14 +32,14 @@ namespace Chroma
       {
 	struct DumbDisambiguator {};
 
-	//! GaussianInit init function map
+	//! GaussianInit init function std::map
 	/*! \ingroup inlineio */
 	typedef SingletonHolder< 
 	  FunctionMap<DumbDisambiguator,
 		      void,
 		      std::string,
-		      TYPELIST_1(const string&),
-		      void (*)(const string& buffer_id),
+		      TYPELIST_1(const std::string&),
+		      void (*)(const std::string& buffer_id),
 		      StringFunctionMapError> >
 	TheGaussianInitObjFuncMap;
       } 
@@ -49,7 +49,7 @@ namespace Chroma
       {
 	//! Init a propagator
 	template<typename T>
-	void gaussianInitObj(const string& buffer_id)
+	void gaussianInitObj(const std::string& buffer_id)
 	{
 	  TheNamedObjMap::Instance().create<T>(buffer_id);
 	  XMLBufferWriter file_xml, record_xml;
@@ -66,7 +66,7 @@ namespace Chroma
 	}
 
 	//! Init a propagator
-	void gaussianInitMulti1dLatColMat(const string& buffer_id)
+	void gaussianInitMulti1dLatColMat(const std::string& buffer_id)
 	{
 	  multi1d<LatticeColorMatrix> u(Nd);
 	  for(int mu=0; mu < u.size(); ++mu)
@@ -88,7 +88,7 @@ namespace Chroma
 
 
 	//! Init a faky gaussian MapObject Type of struct of keys and vals
-	void gaussianInitMapObjKeyPropColorVecLatFerm(const string& buffer_id)
+	void gaussianInitMapObjKeyPropColorVecLatFerm(const std::string& buffer_id)
 	{
 	  // Create the object
 	  { 
@@ -131,7 +131,7 @@ namespace Chroma
 		LatticeFermion val;
 		gaussian(val);
 
-		// Insert the key and value into the map
+		// Insert the key and value into the std::map
 		obj.insert(key, val);
 	      } // spin_src
 	    } // colorvec_src
@@ -174,15 +174,15 @@ namespace Chroma
 	bool success = true; 
 	if (! registered)
 	{
-	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 									    gaussianInitObj<LatticePropagator>);
-	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeFermion"), 
+	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(std::string("LatticeFermion"), 
 									    gaussianInitObj<LatticeFermion>);
-	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeStaggeredPropagator"), 
+	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredPropagator"), 
 									    gaussianInitObj<LatticeStaggeredPropagator>);
-	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("LatticeStaggeredFermion"), 
+	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(std::string("LatticeStaggeredFermion"), 
 									    gaussianInitObj<LatticeStaggeredFermion>);
-	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(string("MapObjectKeyPropColorVecLatticeFermion"), 
+	  success &= TheGaussianInitObjFuncMap::Instance().registerFunction(std::string("MapObjectKeyPropColorVecLatticeFermion"), 
 									    gaussianInitMapObjKeyPropColorVecLatFerm);
 
 	  registered = true;
@@ -223,7 +223,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -235,7 +235,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -263,7 +263,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -291,10 +291,10 @@ namespace Chroma
       write(xml_out, "update_no", update_no);
 
       QDPIO::cout << name << ": gaussian init an object of type " 
-		  << params.named_obj.object_type << endl;
+		  << params.named_obj.object_type << std::endl;
 
       // Gaussian the object
-      QDPIO::cout << "Attempt to list all object names" << endl;
+      QDPIO::cout << "Attempt to list all object names" << std::endl;
       try
       {
 	// Gaussian init the object
@@ -304,17 +304,17 @@ namespace Chroma
       catch (std::bad_cast) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // gaussian_init_named_obj
 

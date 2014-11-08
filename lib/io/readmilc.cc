@@ -20,7 +20,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string& cfg_file)
+void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -75,7 +75,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string
     QDPUtil::byte_swap((void *)&sum29,sizeof(int),1);
     QDPUtil::byte_swap((void *)&sum31,sizeof(int),1);
   }
-  QDPIO::cout<<"Global sums (sum29, sum31): "<<sum29<<" "<<sum31<<endl; 
+  QDPIO::cout<<"Global sums (sum29, sum31): "<<sum29<<" "<<sum31<<std::endl; 
 
   /*
    * Read away...
@@ -117,7 +117,7 @@ void readMILC(MILCGauge_t& header, multi1d<LatticeColorMatrixF>& u, const string
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg_file)
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -135,7 +135,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg
   {
     xml.open(xml_buf);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   { 
     QDP_error_exit("Error in readMILC: %s",e.c_str());
   }
@@ -152,7 +152,7 @@ void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixF>& u, const string& cfg
  * \param cfg_file   path ( Read )
  */    
 
-void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const string& cfg_file)
+void readMILC(XMLReader& xml, multi1d<LatticeColorMatrixD>& u, const std::string& cfg_file)
 {
   START_CODE();
 

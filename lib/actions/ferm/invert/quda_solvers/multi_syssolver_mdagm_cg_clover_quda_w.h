@@ -69,7 +69,7 @@ namespace Chroma
       A(M_), invParam(invParam_), clov(new CloverTermT<T,U>::Type_t()), invclov(new CloverTermT<T,U>::Type_t())
 
     {
-      QDPIO::cout << "MdagMMultiSysSolverCGQUDAClover: " << endl;
+      QDPIO::cout << "MdagMMultiSysSolverCGQUDAClover: " << std::endl;
       // FOLLOWING INITIALIZATION in test QUDA program
 
       // 1) work out cpu_prec, cuda_prec, cuda_prec_sloppy
@@ -117,7 +117,7 @@ namespace Chroma
           
       // 2) pull 'new; GAUGE and Invert params
       // 
-      QDPIO::cout << " Calling new QUDA Invert Param" << endl;
+      QDPIO::cout << " Calling new QUDA Invert Param" << std::endl;
       q_gauge_param = newQudaGaugeParam(); 
       quda_inv_param = newQudaInvertParam(); 
 
@@ -137,7 +137,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 #else
-      //QDPIO::cout << "MULTI MDAGM Using QDP-JIT gauge order" << endl;
+      //QDPIO::cout << "MULTI MDAGM Using QDP-JIT gauge order" << std::endl;
       q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
       q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
 #endif
@@ -203,7 +203,7 @@ namespace Chroma
 
      // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	QDPIO::cout << "Fixing Temporal Gauge" << std::endl;
 	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
@@ -263,14 +263,14 @@ namespace Chroma
 	quda_inv_param.solve_type = QUDA_NORMOP_PC_SOLVE;
 	break;
       default:
-	QDPIO::cerr << "Only CG Is currently implemented for multi-shift" << endl;
+	QDPIO::cerr << "Only CG Is currently implemented for multi-shift" << std::endl;
 	QDP_abort(1);
 	
 	break;
       }
 
       if( ! invParam.asymmetricP ) { 
-	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << endl;
+	QDPIO::cout << "For MdagM we can only use asymmetric Linop: A_oo - D A^{-1}_ee D, overriding your choice" << std::endl;
 	
       }
       // Only support Asymmetric linop
@@ -289,7 +289,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 #else
-      //QDPIO::cout << "MULTI MDAGM Using QDP-JIT spinor order" << endl;
+      //QDPIO::cout << "MULTI MDAGM Using QDP-JIT spinor order" << std::endl;
       quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
       quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
@@ -298,12 +298,12 @@ namespace Chroma
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
-	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
 
 	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
-	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
        
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
@@ -334,7 +334,7 @@ namespace Chroma
       // Setting GCR Preconditioner to defaults, as we don't use it..
       // This is kinda yucky.
 
-      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
       quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
       quda_inv_param.tol_precondition = 1.0e-1;
       quda_inv_param.maxiter_precondition = 1000;
@@ -377,12 +377,12 @@ namespace Chroma
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
 
       //      Setup the clover term...
-      QDPIO::cout << "Creating CloverTerm" << endl;
+      QDPIO::cout << "Creating CloverTerm" << std::endl;
       clov->create(fstate, invParam_.CloverParams);
       // Don't recompute, just copy
       invclov->create(fstate, invParam_.CloverParams);
       
-      QDPIO::cout << "Inverting CloverTerm" << endl;
+      QDPIO::cout << "Inverting CloverTerm" << std::endl;
       invclov->choles(0);
       invclov->choles(1);
 
@@ -425,7 +425,7 @@ namespace Chroma
 
     //! Destructor is automatic
     ~MdagMMultiSysSolverCGQudaClover() {
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
       freeCloverQuda();
     }
@@ -450,8 +450,8 @@ namespace Chroma
 
       if( invParam.RsdTarget.size() > 1 ) {
 	if( invParam.RsdTarget.size() != shifts.size()) { 
-	  QDPIO::cerr << "There are: " << invParam.RsdTarget.size() << " values for RsdTarget but " << shifts.size() << " shifts" << endl;
-	  QDPIO::cerr << "This doesnt match. Aborting" << endl;
+	  QDPIO::cerr << "There are: " << invParam.RsdTarget.size() << " values for RsdTarget but " << shifts.size() << " shifts" << std::endl;
+	  QDPIO::cerr << "This doesnt match. Aborting" << std::endl;
 	}
       }
       
@@ -460,18 +460,18 @@ namespace Chroma
 	multi1d<T> g_psi(psi.size());
 
 	// Gauge Fix source and initial guess
-	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
         g_chi[ rb[1] ]  = GFixMat * chi;
 	for(int s=0; s < psi.size(); s++) {
 	  g_psi[s][ rb[1] ]  = zero; // All initial guesses are zero
 	}
 
-	QDPIO::cout << "Solving" << endl;
+	QDPIO::cout << "Solving" << std::endl;
 	res = qudaInvertMulti(
 			 g_chi,
 			 g_psi,
 			 shifts);      
-	QDPIO::cout << "Untransforming solution." << endl;
+	QDPIO::cout << "Untransforming solution." << std::endl;
 	for(int s=0; s< psi.size(); s++) { 
 	  psi[s][ rb[1]]  = adj(GFixMat)*g_psi[s];
 	}
@@ -499,12 +499,12 @@ namespace Chroma
 	  r[ A->subset() ] = chi - tmp2;
 	  r_rel[i] = sqrt(norm2(r, A->subset())/chinorm );
 #if 1
-  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << endl;
+  	  QDPIO::cout << "r[" <<i <<"] = " << r_rel[i] << std::endl;
 #endif
         }
       }
-      QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << endl;
- QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << endl;
+      QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << std::endl;
+ QDPIO::cout << "MULTI_CG_QUDA_CLOVER_SOLVER: "<<time<< " sec" << std::endl;
       END_CODE();
       
       return res;

@@ -48,7 +48,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::SeqProp_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParams::SeqProp_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -57,7 +57,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParams::SeqProp_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParams::SeqProp_t& input)
   {
     push(xml, path);
 
@@ -69,7 +69,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -80,7 +80,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -94,7 +94,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineBar3ptfnParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineBar3ptfnParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -115,7 +115,7 @@ namespace Chroma
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -124,7 +124,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineBar3ptfnParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineBar3ptfnParams::Param_t& param)
   {
     push(xml, path);
 
@@ -162,7 +162,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -192,7 +192,7 @@ namespace Chroma
 
   struct FormFac_sequential_source_t
   {
-    string            seqsrc_type;
+    std::string            seqsrc_type;
     int               t_source;
     int               t_sink;
     multi1d<int>      sink_mom;
@@ -279,13 +279,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineBar3ptfnEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineBar3ptfnEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineBar3ptfnEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -294,7 +294,7 @@ namespace Chroma
     push(xml_out, "bar3ptfn");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineBar3ptfnEnv::name << ": Baryon form factors for Wilson fermions" << endl;
+    QDPIO::cout << InlineBar3ptfnEnv::name << ": Baryon form factors for Wilson fermions" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -319,7 +319,7 @@ namespace Chroma
     LatticePropagator quark_propagator;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
-    QDPIO::cout << "Attempt to parse forward propagator" << endl;
+    QDPIO::cout << "Attempt to parse forward propagator" << std::endl;
     try
     {
       // Snarf the forward prop
@@ -344,16 +344,16 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineBar3ptfnEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineBar3ptfnEnv::name << ": error message: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
 
     // Derived from input prop
     multi1d<int> t_srce = source_header.getTSrce() ;
@@ -401,7 +401,7 @@ namespace Chroma
       // Read the quark propagator and extract headers
       LatticePropagator seq_quark_prop;
       SeqSource_t seqsource_header;
-      QDPIO::cout << "Attempt to parse sequential propagator" << endl;
+      QDPIO::cout << "Attempt to parse sequential propagator" << std::endl;
       try
       {
 	std::string seqprop_id = params.named_obj.seqprops[seq_src_ctr].seqprop_id;
@@ -429,16 +429,16 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineBar3ptfnEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineBar3ptfnEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineBar3ptfnEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
-      QDPIO::cout << "Sequential propagator successfully parsed" << endl;
+      QDPIO::cout << "Sequential propagator successfully parsed" << std::endl;
 
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
       // Use this for any possible verification
@@ -459,7 +459,7 @@ namespace Chroma
 
       // Derived from input seqprop
       std::string   seqsrc_type = seqsource_header.seqsrc.id;
-      QDPIO::cout << "Seqsource name = " << seqsrc_type  << endl;
+      QDPIO::cout << "Seqsource name = " << seqsrc_type  << std::endl;
       int           t_sink   = seqsource_header.t_sink;
       multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
@@ -504,9 +504,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineBar3ptfnEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineBar3ptfnEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineBar3ptfnEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

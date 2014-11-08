@@ -12,14 +12,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, NoQuarkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, NoQuarkSmearingEnv::Params& param)
   {
     NoQuarkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const NoQuarkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const NoQuarkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -85,13 +85,13 @@ namespace Chroma
 
 
     //! Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
     }
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -119,7 +119,7 @@ namespace Chroma
     QuarkSmear<LatticeFermion>::operator()(LatticeFermion& quark,
 					   const multi1d<LatticeColorMatrix>& u) const {}
 
-    //! Do not smear the color-vector
+    //! Do not smear the color-std::vector
     template<>
     void
     QuarkSmear<LatticeColorVector>::operator()(LatticeColorVector& quark,

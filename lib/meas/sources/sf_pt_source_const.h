@@ -34,7 +34,7 @@ namespace Chroma
       GroupXML_t       quark_displacement;   /*!< displacement xml */
       GroupXML_t       link_smearing;        /*!< link smearing xml */
 
-      GroupXML_t       fermbc;               /*!< xml string holding smearing params */
+      GroupXML_t       fermbc;               /*!< xml std::string holding smearing params */
       PlusMinus        direction;            /*!< direction for decay */
 
       int              j_decay;              /*!< decay direction */

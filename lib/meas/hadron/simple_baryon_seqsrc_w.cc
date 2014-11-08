@@ -17,14 +17,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SimpleBaryonSeqSourceEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, SimpleBaryonSeqSourceEnv::Params& param)
   {
     SimpleBaryonSeqSourceEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const SimpleBaryonSeqSourceEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const SimpleBaryonSeqSourceEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -42,20 +42,20 @@ namespace Chroma
     };
 
     //! Read a spin matrix from a FunctionMap
-    void read(XMLReader& xml, const string& path, SpinMatrix& p)
+    void read(XMLReader& xml, const std::string& path, SpinMatrix& p)
     {
       XMLReader paramtop(xml, path);
 
-      string name;
+      std::string name;
       read(paramtop, "name", name);
 
-//    QDPIO::cout << __func__ << ": fire up BarSpinMatFuncMap for name=" << name << endl;
+//    QDPIO::cout << __func__ << ": fire up BarSpinMatFuncMap for name=" << name << std::endl;
       p = BaryonSpinMatrixEnv::TheBarSpinMatFuncMap::Instance().callFunction(name, xml, path);
     }
 
     //! Read a T and sp struct
     /*! \ingroup hadron */
-    void read(XMLReader& xml, const string& path, SpinMatTsp_t& param)
+    void read(XMLReader& xml, const std::string& path, SpinMatTsp_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -75,11 +75,11 @@ namespace Chroma
     {
       if (quark_propagators.size() != 1)
       {
-//      QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+//      QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
 //      QDP_abort(1);
 
-	ostringstream s;
-	s << name << ": expecting 1 prop, instead passed = " << quark_propagators.size() << endl;
+	std::ostringstream s;
+	s << name << ": expecting 1 prop, instead passed = " << quark_propagators.size() << std::endl;
 	throw s.str();
       }
     }
@@ -90,11 +90,11 @@ namespace Chroma
     {
       if (quark_propagators.size() != 2)
       {
-//      QDPIO::cerr << __func__ << ": expect only 2 prop" << endl;
+//      QDPIO::cerr << __func__ << ": expect only 2 prop" << std::endl;
 //      QDP_abort(1);
 
-	ostringstream s;
-	s << name << ": expecting 2 props, instead passed = " << quark_propagators.size() << endl;
+	std::ostringstream s;
+	s << name << ": expecting 2 props, instead passed = " << quark_propagators.size() << std::endl;
 	throw s.str();
       }
     }
@@ -117,7 +117,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -131,7 +131,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -142,7 +142,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -824,62 +824,62 @@ namespace Chroma
 	success &= BaryonSpinMatrixEnv::registerAll();
 
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL-NUCL_U"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL-NUCL_U"), 
 										      barNuclNuclU);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL-NUCL_D"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL-NUCL_D"), 
 										      barNuclNuclD);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL"), 
 										      barNuclUUnpol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_UNPOL"), 
 										      barNuclDUnpol);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POL"),
 										      barNuclUPol);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POL"),
 										      barNuclDPol);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_UNPOL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_UNPOL_NONREL"),
 										      barNuclUUnpolNR);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_UNPOL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_UNPOL_NONREL"),
 										      barNuclDUnpolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_POL_NONREL"),
 										      barNuclUPolNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_POL_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_POL_NONREL"),
 										      barNuclDPolNR);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_MIXED_NONREL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_MIXED_NONREL"),
 										      barNuclUMixedNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_MIXED_NONREL"),  
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_MIXED_NONREL"),  
 										      barNuclDMixedNR);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_U_MIXED_NONREL_NEGPAR"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_U_MIXED_NONREL_NEGPAR"),
 										      barNuclUMixedNRnegPar);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("NUCL_D_MIXED_NONREL_NEGPAR"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("NUCL_D_MIXED_NONREL_NEGPAR"),
 										      barNuclDMixedNRnegPar);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("XI_D_MIXED_NONREL"),   
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("XI_D_MIXED_NONREL"),   
 										      barXiDMixedNR);
 
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA-DELTA_U"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA-DELTA_U"), 
 										      barDeltaDeltaU);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA-DELTA_D"), 
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA-DELTA_D"), 
 										      barDeltaDeltaD);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_U_UNPOL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA_U_UNPOL"),
 										      barDeltaUUnpol);
       
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("DELTA_D_UNPOL"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("DELTA_D_UNPOL"),
 										      barDeltaDUnpol);
 
 	registered = true;

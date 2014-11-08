@@ -35,7 +35,7 @@ namespace Chroma
     //! Subset comes from underlying operator
     inline const Subset& subset() const {return A->subset();}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
@@ -83,7 +83,7 @@ namespace Chroma
     //! Subset comes from underlying operator
     inline const Subset& subset() const {return A->subset();}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {
@@ -125,7 +125,7 @@ namespace Chroma
     //! Subset comes from underlying operator
     inline const Subset& subset() const {return A->subset();}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
@@ -135,7 +135,7 @@ namespace Chroma
 	(*A)(chi, tmp, MINUS);
       }
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign, Real epsilon) const
       {
@@ -176,7 +176,7 @@ namespace Chroma
     //! Subset comes from underlying operator
     inline const Subset& subset() const {return A->subset();}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (T& chi, const T& psi, enum PlusMinus isign) const
       {
@@ -266,7 +266,7 @@ namespace Chroma
     //! Subset comes from underlying operator
     inline const Subset& subset() const {return A->subset();}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     inline void operator() (multi1d<T>& chi, const multi1d<T>& psi, enum PlusMinus isign) const
       {

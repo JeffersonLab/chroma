@@ -12,7 +12,7 @@ namespace Chroma
   {
 
        
-    //! copies an EigCG vector to a LatticeFermion (Works only in single prec.
+    //! copies an EigCG std::vector to a LatticeFermion (Works only in single prec.
     // Robert et.al. we might want to generalizes this to work for everything
     // We will make a double prec eigCG at some point
     template <typename T, typename R> inline
@@ -43,7 +43,7 @@ namespace Chroma
       }//else        
     }
 
-    //! copies a LatticeFermion into an EigCG vector 
+    //! copies a LatticeFermion into an EigCG std::vector 
     //! (Works only in single prec.
     // Robert et.al. we might want to generalizes this to work for everything
     template<typename T, typename R> inline 
@@ -79,7 +79,7 @@ namespace Chroma
     //--- OPT eigcg space ---//
     class OptEigInfo{
     public:
-      int N   ; // vector dimension (large)
+      int N   ; // std::vector dimension (large)
       int ncurEvals ;
       int lde ;
       float restartTol ;
@@ -99,10 +99,10 @@ namespace Chroma
       }
       
       void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v) const 
-      {// returnts the vector v as a lattice fermion
+      {// returnts the std::vector v as a lattice fermion
 #ifndef QDP_IS_QDPJIT
 	if(v>=evals.size()){
-	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<endl ;
+	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<std::endl ;
 	  QDP_abort(100);
 	}
 	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
@@ -111,10 +111,10 @@ namespace Chroma
       }
 
       void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v)
-      {// returnts the vector v as a lattice fermion
+      {// returnts the std::vector v as a lattice fermion
 #ifndef QDP_IS_QDPJIT
 	if(v>=evals.size()){
-	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<endl ;
+	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<std::endl ;
 	  QDP_abort(101);
 	}
 	RComplex<float> *px = (RComplex<float> *)&evecs[v*lde];
@@ -189,7 +189,7 @@ namespace Chroma
 	  vec[N][s] = v;
 	  N++;
 	}
-	else{// replace the last vector
+	else{// replace the last std::vector
 	  vec[N-1] = v;
 	}
       }
@@ -212,7 +212,7 @@ namespace Chroma
     template<typename R>
     class OptEigBiInfo{
     public:
-      int N   ; // vector dimension (large)
+      int N   ; // std::vector dimension (large)
       int ncurEvals ;
       int lde ;
       float restartTol ;
@@ -231,10 +231,10 @@ namespace Chroma
 	H.resize(ldh*ldh);
       }
       
-      void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v, const string& LR) const 
-      {// returnts the vector v as a lattice fermion
+      void CvToLatFerm(LatticeFermion& lf, const Subset& s, int v, const std::string& LR) const 
+      {// returnts the std::vector v as a lattice fermion
 	if(v>=evals.size()){
-	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<endl ;
+	  QDPIO::cerr<<"CvToLatFerm: index out of range"<<std::endl ;
 	  QDP_abort(100);
 	}
 	RComplex<R> *px ;
@@ -246,10 +246,10 @@ namespace Chroma
 	CopyToLatFerm<LatticeFermion, R>(lf,px,s);
       }
 
-      void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v, const string& LR)
-      {// returnts the vector v as a lattice fermion
+      void CvToEigCGvec(const LatticeFermion& lf, const Subset& s, int v, const std::string& LR)
+      {// returnts the std::vector v as a lattice fermion
 	if(v>=evals.size()){
-	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<endl ;
+	  QDPIO::cerr<<"CopyFromLatFerm: index out of range"<<std::endl ;
 	  QDP_abort(101);
 	}
 
@@ -288,7 +288,7 @@ namespace Chroma
 	evec.AddVector(v,s);
 	if (eval.N != evec.N)
 	{
-	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	  QDPIO::cerr << __func__ << ": length of value and std::vector arrays are not the same" << std::endl;
 	  QDP_abort(1);
 	}
 	Neig = evec.N;
@@ -302,7 +302,7 @@ namespace Chroma
 	  evec.AddVector(v[i],s);
 	if (eval.N != evec.N)
 	{
-	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	  QDPIO::cerr << __func__ << ": length of value and std::vector arrays are not the same" << std::endl;
 	  QDP_abort(1);
 	}
 	Neig = evec.N;
@@ -360,7 +360,7 @@ namespace Chroma
 	  if (v.size() != Ls)
 	  {
 	    QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
-			<< "  v.size=" << v.size() << endl;
+			<< "  v.size=" << v.size() << std::endl;
 	    QDP_abort(1);
 	  }
 	  for(int k=0; k < Ls; ++k)
@@ -377,7 +377,7 @@ namespace Chroma
 	  if (v.size() != Ls)
 	  {
 	    QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
-			<< "  v.size=" << v.size() << endl;
+			<< "  v.size=" << v.size() << std::endl;
 	    QDP_abort(1);
 	  }
 	  for(int k=0; k < Ls; ++k)
@@ -394,14 +394,14 @@ namespace Chroma
 	  if (v.size() != Ls)
 	  {
 	    QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
-			<< "  v.size=" << v.size() << endl;
+			<< "  v.size=" << v.size() << std::endl;
 	    QDP_abort(1);
 	  }
 	  for(int k=0; k < Ls; ++k)
 	    vec[N][k][s] = v[k];
 	  N++;
 	}
-	else{// replace the last vector
+	else{// replace the last std::vector
 	  for(int k=0; k < Ls; ++k)
 	    vec[N-1][k][s] = v[k];
 	}
@@ -412,7 +412,7 @@ namespace Chroma
 	if (v.size() != Ls)
 	{
 	  QDPIO::cerr << "VectorArrays:" << __func__ << ": size of 5D array inconsistent with stored value: Ls=" << Ls 
-		      << "  v.size=" << v.size() << endl;
+		      << "  v.size=" << v.size() << std::endl;
 	  QDP_abort(1);
 	}
 	for(int i(0);i<v.size2();i++)
@@ -452,7 +452,7 @@ namespace Chroma
 	evec.AddVector(v,s);
 	if (eval.N != evec.N)
 	{
-	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	  QDPIO::cerr << __func__ << ": length of value and std::vector arrays are not the same" << std::endl;
 	  QDP_abort(1);
 	}
 	Neig = evec.N;
@@ -466,7 +466,7 @@ namespace Chroma
 	  evec.AddVector(v[i],s);
 	if (eval.N != evec.N)
 	{
-	  QDPIO::cerr << __func__ << ": length of value and vector arrays are not the same" << endl;
+	  QDPIO::cerr << __func__ << ": length of value and std::vector arrays are not the same" << std::endl;
 	  QDP_abort(1);
 	}
 	Neig = evec.N;

@@ -153,7 +153,7 @@ namespace Chroma
 	}
 	break;
       default:
-	QDPIO::cout << "error: Unknown ISIGN" << endl;
+	QDPIO::cout << "error: Unknown ISIGN" << std::endl;
 	QDP_abort(1);
 	break;
       }
@@ -235,7 +235,7 @@ namespace Chroma
 
     unsigned long nFlops() const 
     { 
-      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
+      //      QDPIO::cout << "Flopcount Not Yet Implemented " << std::endl;
       return 0;
     }
 
@@ -243,14 +243,14 @@ namespace Chroma
     //! Apply the d/dt of the preconditioned linop
     void deriv(P& ds_u, const T& X, const T& Y, enum PlusMinus isign) const {
 
-      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDPIO::cerr << "Not Yet Implemented" << std::endl;
       QDP_abort(1);
 
     }
     
     //! Get log det ( T^\dag T )
     Double logDetTDagT(void) const {
-      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDPIO::cerr << "Not Yet Implemented" << std::endl;
       QDP_abort(1);
       return (double)0;
     }
@@ -259,14 +259,14 @@ namespace Chroma
 
     //! Get the force due to the det T^\dag T bit
     void derivLogDetTDagT(P& ds_u, enum PlusMinus isign) const {
-      QDPIO::cerr << "Not Yet Implemented" << endl;
+      QDPIO::cerr << "Not Yet Implemented" << std::endl;
       QDP_abort(1);
     }
 
     
   private:
     
-    //! Apply the the space block onto a source vector
+    //! Apply the the space block onto a source std::vector
     //  cb3d is the 3d (rb3) checkerboard of the target
     void spaceLinOp(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const {
       Real mhalf=Real(-0.5);

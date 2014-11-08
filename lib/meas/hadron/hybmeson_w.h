@@ -26,7 +26,7 @@ namespace Chroma
    * \param t_source      cartesian coordinates of the source ( Read )
    * \param phases        object holds list of momenta and Fourier phases ( Read )
    * \param xml           xml file object ( Read )
-   * \param xml_group     string used for writing xml data ( Read )
+   * \param xml_group     std::string used for writing xml data ( Read )
    *
    *        ____
    *        \
@@ -43,7 +43,7 @@ namespace Chroma
 		const SftMom& phases,
 		multi1d<int> t_source,
 		XMLWriter& xml,
-		const string& xml_group);
+		const std::string& xml_group);
 
 }  // end namespace Chroma
 

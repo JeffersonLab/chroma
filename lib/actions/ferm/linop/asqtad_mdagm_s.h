@@ -23,7 +23,7 @@ namespace Chroma
    * This routine is specific to Staggered fermions!
    *
    *                                           +
-   * This subroutine applies the matrix  or  (M M)    to the vector
+   * This subroutine applies the matrix  or  (M M)    to the std::vector
    *      					E,E
    * Psi,
    *
@@ -68,7 +68,7 @@ namespace Chroma
 		 multi1d<LatticeColorMatrix>,
 		 multi1d<LatticeColorMatrix> >& getFermBC() const {return D.getFermBC();}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, enum PlusMinus isign) const;
 
   private:

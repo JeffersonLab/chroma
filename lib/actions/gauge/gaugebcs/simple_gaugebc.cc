@@ -13,27 +13,27 @@ namespace Chroma {
   { 
     //! Calllback function to register with the factory
     GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
-      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
+      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << std::endl;
       return new SimpleGaugeBC<
         multi1d<LatticeColorMatrix>, 
 	multi1d<LatticeColorMatrix> >(SimpleGaugeBCParams(xml, path));
     }
 
     GaugeBC< multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> >* createGaugeBCF(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
-      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
+      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << std::endl;
       return new SimpleGaugeBC<
         multi1d<LatticeColorMatrixF>, 
 	multi1d<LatticeColorMatrixF> >(SimpleGaugeBCParams(xml, path));
     }
 
     GaugeBC< multi1d<LatticeColorMatrixD>, multi1d<LatticeColorMatrixD> >* createGaugeBCD(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
-      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << endl;
+      QDPIO::cout << "Factory Callback: Creating SimpleGaugeBC " << std::endl;
       return new SimpleGaugeBC<
         multi1d<LatticeColorMatrixD>, 
 	multi1d<LatticeColorMatrixD> >(SimpleGaugeBCParams(xml, path));
@@ -68,16 +68,16 @@ namespace Chroma {
       read(paramtop, "./boundary", boundary);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " << e << endl;
+      QDPIO::cerr << "Error reading XML: " << e << std::endl;
       QDP_abort(1);
     }
 
     QDPIO::cout << "Creating SimpleGaugeBCParams with boundary: ";
-    QDPIO::cout << "Boundary.size = " << boundary.size() << endl;
+    QDPIO::cout << "Boundary.size = " << boundary.size() << std::endl;
     for(int i = 0; i < boundary.size();i++) { 
-      QDPIO::cout << boundary[i] << endl;
+      QDPIO::cout << boundary[i] << std::endl;
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
   }
 
 

@@ -50,7 +50,7 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
 	  const int& bc, 
 	  const SftMom& phases,
 	  XMLWriter& xml,
-	  const string& xml_group)
+	  const std::string& xml_group)
 {
     START_CODE();
   
@@ -132,7 +132,7 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
 	  const int& bc,
 	  const SftMom& phases,
 	  XMLWriter& xml,
-	  const string& xml_group)
+	  const std::string& xml_group)
 {
     START_CODE();
   
@@ -222,7 +222,7 @@ void QlQl(const multi1d<LatticeColorMatrix>& u,
 	    const multi1d<int>& snk_coord,
 	    const SftMom& phases,
 	    XMLWriter& xml,
-	    const string& xml_group)
+	    const std::string& xml_group)
 {
     START_CODE();
   

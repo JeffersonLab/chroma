@@ -22,7 +22,7 @@ namespace Chroma {
  * \ingroup heatbath
  *
  * BetaMC * [tr(U*W) + hc] / (2Nc).
- * Do at most nheat update trials of the Kennedy-Pendleton or Creutz SU(2)
+ * Do at most nheat update trials of the Kennedy-Pstd::endleton or Creutz SU(2)
  * heatbath algorithm.
  *
  * \param u          field to be updated ( Modify )

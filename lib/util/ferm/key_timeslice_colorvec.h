@@ -20,7 +20,7 @@ namespace Chroma
     KeyTimeSliceColorVec_t(int t_slice_, int colorvec_) : t_slice(t_slice_), colorvec(colorvec_) {}
 
     int        t_slice;       /*!< Source time slice */
-    int        colorvec;      /*!< Colorvector index */
+    int        colorvec;      /*!< Colorstd::vector index */
   };
 
 

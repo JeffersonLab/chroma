@@ -36,10 +36,10 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, AnisoSymGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, AnisoSymGaugeActParams& param);
   
   /*! @ingroup gaugeacts */
-  void write(XMLWriter& xml, const string& path, const AnisoSymGaugeActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const AnisoSymGaugeActParams& param);
 
   //! Parameter structure
   /*! @ingroup gaugeacts */
@@ -59,10 +59,10 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, AnisoSymSpatialGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, AnisoSymSpatialGaugeActParams& param);
   
   /*! @ingroup gaugeacts */
-  void write(XMLWriter& xml, const string& path, const AnisoSymSpatialGaugeActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const AnisoSymSpatialGaugeActParams& param);
   
 
 

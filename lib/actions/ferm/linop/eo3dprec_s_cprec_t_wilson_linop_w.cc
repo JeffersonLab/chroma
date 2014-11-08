@@ -33,13 +33,13 @@ namespace Chroma
 
     // Check we are in 4D
     if ( Nd != 4 ) { 
-      QDPIO::cout << "This class (EO3DPrecSCprecTWilsonLinOp) only works in 4D" << endl;
+      QDPIO::cout << "This class (EO3DPrecSCprecTWilsonLinOp) only works in 4D" << std::endl;
       QDP_abort(1);
     }
     
     // Check Aniso Direction -- has to be 3.
     if ( anisoParam_.t_dir != 3 ) { 
-      QDPIO::cout << "This class (EO3DPrecSCprecTWilsonLinOp) is hardwired for t_dir=3"<< endl;
+      QDPIO::cout << "This class (EO3DPrecSCprecTWilsonLinOp) is hardwired for t_dir=3"<< std::endl;
       QDP_abort(1);
     }
 
@@ -47,7 +47,7 @@ namespace Chroma
     const multi1d<int>& s_size =  QDP::Layout::subgridLattSize();  // Local Lattice
     const multi1d<int>& t_size =  QDP::Layout::lattSize(); // Total Latt Size
     if( t_size[3] != s_size[3] ) { 
-      QDPIO::cout << "This class (EO3DPrecSCprecTWilsonLinOp) needs time to be local" << endl;
+      QDPIO::cout << "This class (EO3DPrecSCprecTWilsonLinOp) needs time to be local" << std::endl;
       QDP_abort(1);
     }
 

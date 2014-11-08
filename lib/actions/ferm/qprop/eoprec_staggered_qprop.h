@@ -110,7 +110,7 @@ namespace Chroma
 	(*M)(r, psi, PLUS);
 	r -= chi;
 	res.resid = sqrt(norm2(r));
-	 QDPIO::cout << "eoprec_staggered_qprop:  true residual:  " << res.resid << endl;
+	 QDPIO::cout << "eoprec_staggered_qprop:  true residual:  " << res.resid << std::endl;
       }
 
       END_CODE();

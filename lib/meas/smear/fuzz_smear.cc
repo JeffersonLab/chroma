@@ -20,8 +20,8 @@ namespace Chroma
    * Arguments:
    *
    *  \param ufuzz    fuzzed gauge field ( Read )
-   *  \param psi      color vector field ( Read )
-   *  \param psifuzz     color vector field ( Modify )
+   *  \param psi      color std::vector field ( Read )
+   *  \param psifuzz     color std::vector field ( Modify )
    *  \param length   length of fuzz_smear ( Read )
    *  \param j_decay      direction of time ( Read )
    *
@@ -85,8 +85,8 @@ namespace Chroma
     // or else an error
     if( Ns == 1 &&  length % 2 == 1)
     {
-      cout << "fuzz_smear::Error fuzzing length =  " << length << endl ; 
-      cout << "Fuzzing length must be even for staggered fermions" << endl ; 
+      std::cout << "fuzz_smear::Error fuzzing length =  " << length << std::endl ; 
+      std::cout << "Fuzzing length must be even for staggered fermions" << std::endl ; 
       QDP_abort(1);
     }
 

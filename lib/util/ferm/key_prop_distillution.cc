@@ -21,7 +21,7 @@ namespace Chroma
     os << " dist_src= " << param.dist_src;
     os << " quark_line= " << param.quark_line;
     os << " mass= " << param.mass;
-    os << endl;
+    os << std::endl;
 
     return os;
   }

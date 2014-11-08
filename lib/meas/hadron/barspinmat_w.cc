@@ -70,7 +70,7 @@ namespace Chroma
 
       default:
 	gt = g_one;  // Make compiler happy
-	QDPIO::cerr << __func__ << ": invalid k=" << k << endl;
+	QDPIO::cerr << __func__ << ": invalid k=" << k << std::endl;
 	QDP_abort(1);
       }
       return gt;
@@ -103,7 +103,7 @@ namespace Chroma
 
       default:
 	gt = g_one;  // Make compiler happy
-	QDPIO::cerr << __func__ << ": invalid k=" << k << endl;
+	QDPIO::cerr << __func__ << ": invalid k=" << k << std::endl;
 	QDP_abort(1);
       }
       return gt;
@@ -115,7 +115,7 @@ namespace Chroma
       k--; //for compatibility with the Cgmu
       SpinMatrix g_one = 1.0;
       SpinMatrix gt;
-      //QDPIO::cout<<"CgmuTrans("<<k<<")"<<endl ;
+      //QDPIO::cout<<"CgmuTrans("<<k<<")"<<std::endl ;
       SpinMatrix gmu = Gamma(1<<k)*g_one ;
       
       //signs have been checked...
@@ -149,7 +149,7 @@ namespace Chroma
 
       default:
 	gt = g_one;  // Make compiler happy
-	QDPIO::cerr << __func__ << ": invalid k=" << k << endl;
+	QDPIO::cerr << __func__ << ": invalid k=" << k << std::endl;
 	QDP_abort(1);
       }
       return gt;

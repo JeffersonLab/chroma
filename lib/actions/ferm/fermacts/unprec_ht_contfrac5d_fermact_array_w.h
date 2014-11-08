@@ -44,10 +44,10 @@ namespace Chroma
   // Reader/writers
 
   //! Read the Continued Fraction parameters 
-  void read(XMLReader& xml, const string& path, UnprecHTContFrac5DFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, UnprecHTContFrac5DFermActParams& param);
 
   //! Write the Continued Fraction parameters
-  void write(XMLWriter& xml, const string& path, const UnprecHTContFrac5DFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const UnprecHTContFrac5DFermActParams& param);
 
 
   //! 5D continued fraction overlap action using H_T kernel
@@ -86,7 +86,7 @@ namespace Chroma
     //! Produce a Pauli-Villars linear operator for this action
     UnprecLinearOperatorArray<T,P,Q>* linOpPV(Handle< FermState<T,P,Q> > state) const
     {
-      QDPIO::cerr << "UnprecHTCFZ::linOpPV not implemented" << endl;
+      QDPIO::cerr << "UnprecHTCFZ::linOpPV not implemented" << std::endl;
       QDP_abort(1);
       return 0;
     }
@@ -103,7 +103,7 @@ namespace Chroma
 			       const Real& m_q,
 			       const GroupXML_t& invParam) const
       {
-	QDPIO::cerr << "linOp4D not implemented" << endl;
+	QDPIO::cerr << "linOp4D not implemented" << std::endl;
 	QDP_abort(1);
 	return 0;
       }
@@ -112,7 +112,7 @@ namespace Chroma
     LinearOperator<T>* DeltaLs(Handle< FermState<T,P,Q> > state,
 			       const GroupXML_t& invParam) const 
       {
-	QDPIO::cerr << "DeltaLs not implemented" << endl;
+	QDPIO::cerr << "DeltaLs not implemented" << std::endl;
 	QDP_abort(1);
 	return 0;
       }

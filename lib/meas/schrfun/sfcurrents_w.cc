@@ -19,7 +19,7 @@ namespace Chroma
   {
     START_CODE();
   
-    QDPIO::cout << __func__ << ": entering" << endl;
+    QDPIO::cout << __func__ << ": entering" << std::endl;
 
     // Decay direction
     int j_decay = phases.getDir();
@@ -41,7 +41,7 @@ namespace Chroma
     // Sum the forward propagator over time slices to get Kprop
     Propagator kprop = sum(P_plus * (adj(u[j_decay]) * quark_prop_f), phases.getSet()[tmax]);
 
-    QDPIO::cout << __func__ << ": exiting" << endl;
+    QDPIO::cout << __func__ << ": exiting" << std::endl;
 
     return kprop;
   }      
@@ -50,7 +50,7 @@ namespace Chroma
   //! Compute Z_V
   /*! @ingroup schrfun */
   void SFCurrentZV(XMLWriter& xml_out, 
-		   const string& xml_group,
+		   const std::string& xml_group,
 		   const LatticePropagator& quark_prop_f,
 		   const LatticePropagator& quark_prop_b,
 		   Handle< SystemSolver<LatticeFermion> > qprop,
@@ -60,7 +60,7 @@ namespace Chroma
   {
     START_CODE();
   
-    QDPIO::cout << __func__ << ": entering" << endl;
+    QDPIO::cout << __func__ << ": entering" << std::endl;
 
     // Length of lattice in decay direction
     int length = phases.numSubsets();
@@ -103,7 +103,7 @@ namespace Chroma
     write(xml_out, "vector_corr", vector_corr);
     pop(xml_out);
 
-    QDPIO::cout << __func__ << ": exiting" << endl;
+    QDPIO::cout << __func__ << ": exiting" << std::endl;
 
     END_CODE();
   }
@@ -116,7 +116,7 @@ namespace Chroma
    * @return number of inverter iterations
    */
   int SFCurrentZA(XMLWriter& xml_out, 
-		  const string& xml_group,
+		  const std::string& xml_group,
 		  const multi1d<Real>& pseudo_prop_f,
 		  const multi1d<Real>& axial_prop_f,
 		  const multi1d<Real>& pseudo_prop_b,
@@ -131,13 +131,13 @@ namespace Chroma
   {
     START_CODE();
        
-    QDPIO::cout << __func__ << ": entering" << endl;
+    QDPIO::cout << __func__ << ": entering" << std::endl;
 
     // Sanity checks
     if ( x0 < y0 )
     {
       QDPIO::cerr << __func__ << ": Z_A computation requires x0 > y0: x0,y0=" 
-		  << x0 << " " << y0 << endl;
+		  << x0 << " " << y0 << std::endl;
       QDP_abort(1);
     }
 
@@ -356,7 +356,7 @@ namespace Chroma
     write(xml_out, "fd_PP", fd_PP);
     pop(xml_out);
 
-    QDPIO::cout << __func__ << ": exiting" << endl;
+    QDPIO::cout << __func__ << ": exiting" << std::endl;
 
     END_CODE();
 

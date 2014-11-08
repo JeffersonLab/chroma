@@ -42,14 +42,14 @@ namespace Chroma
 
 
     // Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
     }
 
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -67,7 +67,7 @@ namespace Chroma
 			    multi1d<LatticeColorMatrix>& u) const
     {
       u.resize(Nd);
-      QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
+      QDPIO::cout << "Starting up disordered (random/hot) config" << std::endl;
       HotSt(u);
 
       XMLBufferWriter file_xml, record_xml;

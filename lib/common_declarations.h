@@ -78,7 +78,7 @@ extern int RatPolyDeg;  /* Degree of polynomials in ratio approx  */
 EXTERN multi1d<Real> NumPolyRoots;  /* z_1,z_2...z_PolyDegHalf */
 EXTERN multi1d<Real> DenPolyRoots;  /* z_1,z_2...z_PolyDegHalf */
  
-/* Eigenvalue/vector used for various overlap or projected algorithms */
+/* Eigenvalue/std::vector used for various overlap or projected algorithms */
 extern int OverAuxAct;   /* Kernel of overlap,dwf */
 extern Real OverMass;   /* Overlap mass */
 extern int NOperEig;       /* Number of eigenvectors kept */

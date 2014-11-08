@@ -25,7 +25,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << __func__ << ": unsupport max extent" << endl;
+      QDPIO::cerr << __func__ << ": unsupport max extent" << std::endl;
       QDP_abort(1);
     }
 
@@ -50,7 +50,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << __func__ << ": unsupport max extent" << endl;
+      QDPIO::cerr << __func__ << ": unsupport max extent" << std::endl;
       QDP_abort(1);
     }
 

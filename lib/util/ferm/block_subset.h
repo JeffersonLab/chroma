@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: block_subset.h,v 1.3 2009-02-01 05:34:54 kostas Exp $
 /*! \file
- * \brief Key for propagator colorvector sources
+ * \brief Key for propagator colorstd::vector sources
  */
 
 #ifndef __FUNC_block_h__
@@ -64,13 +64,13 @@ namespace Chroma
       for(int d(0); d < Nd; d++){
 	QDPIO::cout<<blockNum[d]<<" ";
       }
-      QDPIO::cout<<endl;
+      QDPIO::cout<<std::endl;
 
       QDPIO::cout<<"BlockSize: ";
       for(int d(0); d < Nd; d++){
 	QDPIO::cout<<block[d]<<" ";
       }
-      QDPIO::cout<<endl;
+      QDPIO::cout<<std::endl;
       END DEBUG **/
     }
 

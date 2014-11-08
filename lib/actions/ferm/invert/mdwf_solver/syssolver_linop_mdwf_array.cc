@@ -86,7 +86,7 @@ namespace Chroma
       
       if (node != Layout::nodeNumber()) {
 	
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	QDP_abort(1);
       }
       
@@ -126,7 +126,7 @@ namespace Chroma
       
       if (node != Layout::nodeNumber()) {
 	
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	QDP_abort(1);
       }
       
@@ -170,7 +170,7 @@ namespace Chroma
       int linear = Layout::linearSiteIndex(coord);
       
       if (node != Layout::nodeNumber()) {
-	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << endl;
+	QDPIO::cerr << __func__ << ": wrong coordinates for this node" << std::endl;
 	QDP_abort(1);
       }
       
@@ -256,7 +256,7 @@ namespace Chroma
 				    state,
 				    gaugeReader,
 				    (void *)&u) != 0 ) { 
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -269,7 +269,7 @@ namespace Chroma
 				     state,
 				     fermionReader,
 				     (void *)&chi) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -277,13 +277,13 @@ namespace Chroma
 				     state,
 				     fermionReader,
 				     (void *)&psi) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
       if( QOP_F3_MDWF_allocate_fermion(&sprec_soln, 
 				       state) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -293,7 +293,7 @@ namespace Chroma
       int max_iteration = invParam.MaxIter;
       int status; 
       
-      QDPIO::cout << "LinOpSysSolverMDWFArray: Beginning Single Precision Solve" << endl;
+      QDPIO::cout << "LinOpSysSolverMDWFArray: Beginning Single Precision Solve" << std::endl;
       if( ( status=QOP_F3_MDWF_DDW_CG(sprec_soln,
 				      &out_iters_single,
 				      &out_eps_single,
@@ -304,7 +304,7 @@ namespace Chroma
 				      max_iteration,
 				      target_epsilon, 
 				      QOP_MDWF_LOG_NONE)) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -314,14 +314,14 @@ namespace Chroma
 			       &sent,
 			       &received,
 			       state) != 0 ) { 
-	QDPIO::cerr << "MDWF_Error: "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF_Error: "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
       /* Report status */
       QDPIO::cout << "LinOpSysSolverMDWFArray Single Prec : status=" << status 
 		  << " iterations=" << out_iters_single
-		  << " resulting epsilon=" << sqrt(out_eps_single) << endl;
+		  << " resulting epsilon=" << sqrt(out_eps_single) << std::endl;
       
       /* Report Flops */
       FlopCounter flopcount_single;
@@ -333,7 +333,7 @@ namespace Chroma
       if( QOP_F3_MDWF_export_fermion(fermionWriter, 
 				     &psi,
 				     sprec_soln) != 0 ) { 
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -358,7 +358,7 @@ namespace Chroma
 				    state,
 				    gaugeReader,
 				    (void *)&u) != 0 ) { 
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -371,7 +371,7 @@ namespace Chroma
 				     state,
 				     fermionReader,
 				     (void *)&chi) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -379,13 +379,13 @@ namespace Chroma
 				     state,
 				     fermionReader,
 				     (void *)&psi) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
       if( QOP_D3_MDWF_allocate_fermion(&dprec_soln, 
 				       state) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -395,7 +395,7 @@ namespace Chroma
       int status; 
       
       
-      QDPIO::cout << "LinOpSysSolverMDWFArray: Beginning Double Precision Solve" << endl;
+      QDPIO::cout << "LinOpSysSolverMDWFArray: Beginning Double Precision Solve" << std::endl;
       if( ( status=QOP_D3_MDWF_DDW_CG(dprec_soln,
 				      &out_iters_double,
 				      &out_eps_double,
@@ -406,7 +406,7 @@ namespace Chroma
 				      max_iteration,
 				      target_epsilon, 
 				      QOP_MDWF_LOG_NONE)) != 0 ) {
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -416,13 +416,13 @@ namespace Chroma
 			       &sent,
 			       &received,
 			       state) != 0 ) { 
-	QDPIO::cerr << "MDWF_Error: "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF_Error: "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       /* Reoirt Status */
       QDPIO::cout << "LinOpSysSolverMDWFArray Double Prec: status=" << status 
 		  << " iterations=" << out_iters_double
-		  << " resulting epsilon=" << sqrt(out_eps_double) << endl;
+		  << " resulting epsilon=" << sqrt(out_eps_double) << std::endl;
       
       /* Report Flops */
       FlopCounter flopcount_double;
@@ -434,7 +434,7 @@ namespace Chroma
       if( QOP_D3_MDWF_export_fermion(fermionWriter, 
 				     &psi,
 				     dprec_soln) != 0 ) { 
-	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << endl;
+	QDPIO::cerr << "MDWF Error:  "<< QOP_MDWF_error(state) << std::endl;
 	QDP_abort(1);
       }
       
@@ -455,8 +455,8 @@ namespace Chroma
       r -= chi;
       res.resid = sqrt(norm2(r));
     }
-    QDPIO::cout << "MDWF Final: single_iters=" << out_iters_single << " double_iters=" << out_iters_double << " total_iters=" << res.n_count << endl;
-    QDPIO::cout << "MDWF Final: final absolute unprec residuum="<<res.resid<<endl;
+    QDPIO::cout << "MDWF Final: single_iters=" << out_iters_single << " double_iters=" << out_iters_double << " total_iters=" << res.n_count << std::endl;
+    QDPIO::cout << "MDWF Final: final absolute unprec residuum="<<res.resid<<std::endl;
     
     END_CODE();
     return res;
@@ -469,12 +469,12 @@ namespace Chroma
     START_CODE();
 
     if( Nd != 4 ) {
-      QDPIO::cout << "This will only work for Nd=4" << endl;
+      QDPIO::cout << "This will only work for Nd=4" << std::endl;
       QDP_abort(1);
     }
 
     if( Nc != 3 ) {
-      QDPIO::cout << "This will only work for Nc=3" << endl;
+      QDPIO::cout << "This will only work for Nc=3" << std::endl;
       QDP_abort(1);
     }
     
@@ -508,14 +508,14 @@ namespace Chroma
     }
 
     // Announce a version just to be nice
-    QDPIO::cout << "LinOpSysSolverMDWFArray: Initializing MDWF Library Version " << QOP_MDWF_version() << endl;
+    QDPIO::cout << "LinOpSysSolverMDWFArray: Initializing MDWF Library Version " << QOP_MDWF_version() << std::endl;
 
     // OK. Let's call Andrew's routine
     if(  QOP_MDWF_init(&state, lattice.slice(), network.slice(),
 		       node_coords.slice(), master_p, sublattice_func, 
 		       NULL) != 0 ) { 
       // Nonzero return value => error
-      QDPIO::cerr << "MDWF Error: " << QOP_MDWF_error(state) << endl;
+      QDPIO::cerr << "MDWF Error: " << QOP_MDWF_error(state) << std::endl;
       QDP_abort(1);
     }
     
@@ -549,7 +549,7 @@ namespace Chroma
 				b5_in.slice(),
 				c5_in.slice(),
 				M5 ,m_f) != 0){
-	QDPIO::cerr << "MDWF Error: " << QOP_MDWF_error(state)<< endl;
+	QDPIO::cerr << "MDWF Error: " << QOP_MDWF_error(state)<< std::endl;
 	QDP_abort(1);
       }
       
@@ -564,7 +564,7 @@ namespace Chroma
   void LinOpSysSolverMDWFArray::fini(void)  
   {
     START_CODE();
-    QDPIO::cout << "MDWFQpropT: Finalizing MDWF Library Version " << QOP_MDWF_version() << endl;
+    QDPIO::cout << "MDWFQpropT: Finalizing MDWF Library Version " << QOP_MDWF_version() << std::endl;
 
     if (params != NULL) { 
       QOP_MDWF_free_parameters(&params);

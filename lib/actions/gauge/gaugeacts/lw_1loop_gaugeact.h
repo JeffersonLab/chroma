@@ -19,7 +19,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace LW1LoopGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -37,7 +37,7 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, LW1LoopGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, LW1LoopGaugeActParams& param);
   
 
   //! LW1Loop gauge action

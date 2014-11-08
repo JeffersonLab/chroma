@@ -51,12 +51,12 @@ namespace Chroma
     multi1d< multi1d<int> > Blocking;/*!< Spacetime blocking of each multigrid level */
     multi1d<int>  NumNullVecs;     /*!< Number of null vectors per multigrid level */
   // Null-Vector Setup Parameters
-    multi1d<int>  NullMaxIter;     /*!< Maximum iterations for setup on each vector */
-    multi1d<Real> NullResidual;    /*!< Residual to converge each vector */
+    multi1d<int>  NullMaxIter;     /*!< Maximum iterations for setup on each std::vector */
+    multi1d<Real> NullResidual;    /*!< Residual to converge each std::vector */
     multi1d<Real> NullConvergence; /*!< Convergence criterion
-      This indicates the level at which a vector is considered to have
+      This indicates the level at which a std::vector is considered to have
       converged. That is, if it changes less than this amount during the
-      relaxation, a new random vector will be generated for further nullvecs. */
+      relaxation, a new random std::vector will be generated for further nullvecs. */
     multi1d<int>  NumExtraVecs;    /*!< Number of extra vectors to generate and discard */
   // Multigrid Solver Parameters
     multi1d<Real> Underrelax;      /*!< Underrelaxation for each V-cycle */
@@ -71,10 +71,10 @@ namespace Chroma
 
   // Reader and writer
   /*! \ingroup invert */
-  void read(XMLReader& xml, const string& path, SysSolverQOPMGParams& param);
+  void read(XMLReader& xml, const std::string& path, SysSolverQOPMGParams& param);
 
   /*! \ingroup invert */
-  void write(XMLWriter& xml, const string& path,
+  void write(XMLWriter& xml, const std::string& path,
              const SysSolverQOPMGParams& param);
 
 } // End namespace

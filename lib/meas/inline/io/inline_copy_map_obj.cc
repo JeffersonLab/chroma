@@ -22,7 +22,7 @@ namespace Chroma
     { 
       struct DumbDisambiguator {};
 
-      //! Write object function map
+      //! Write object function std::map
       /*! \ingroup inlineio */
       typedef SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
@@ -68,7 +68,6 @@ namespace Chroma
 	    input_obj->get(keys[i],v);
 	    output_obj->insert(keys[i],v);
 	  }
-	  output_obj->flush();
 	}
 
 
@@ -122,7 +121,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -151,7 +150,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -167,13 +166,13 @@ namespace Chroma
       push(xml_out, "read_map_object_disk");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": map object copy" << endl;
+      QDPIO::cout << name << ": std::map object copy" << std::endl;
       StopWatch swatch;
 
       // Copy the object
       // ONLY named object format is supported in this task
       // Other tasks could support other disk formats
-      QDPIO::cout << "Attempt to copy input object name = " << params.named_obj.input_id << endl;
+      QDPIO::cout << "Attempt to copy input object name = " << params.named_obj.input_id << std::endl;
 
       write(xml_out, "object_type", params.named_obj.object_type);
       write(xml_out, "input_id", params.named_obj.input_id);
@@ -199,28 +198,28 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully copied: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name 
 		    << ": cast error for input_id= " << params.named_obj.input_id 
 		    << " with type= " << params.named_obj.object_type 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error message: " << e << endl;
+	QDPIO::cerr << name << ": error message: " << e << std::endl;
 	QDP_abort(1);
       }
       catch(const char* e) 
       { 
-	QDPIO::cout << name << ": Caught const char * exception: " << e << endl;
+	QDPIO::cout << name << ": Caught const char * exception: " << e << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // read_named_obj
 

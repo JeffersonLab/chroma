@@ -158,7 +158,7 @@ QDP_ColorMatrix ** QDP_create_gauge_from_chroma (
 		QLA_Complex z ; 
 		QLA_C_eq_R_plus_i_R(&z,&zre,&zim) ;
 
-		//		QDPIO::cout << "" << ic << " , " << jc << " = " << zre << " " << zim << endl ;
+		//		QDPIO::cout << "" << ic << " , " << jc << " = " << zre << " " << zim << std::endl ;
 		QLA_M_eq_elem_C(&tmp[site],&z,ic,jc) ; 
 	      }
 
@@ -180,7 +180,7 @@ QDP_ColorMatrix ** QDP_create_gauge_from_chroma (
 }
 
 //
-// Convert the colorvector from chroma/qdp++ format 
+// Convert the colorstd::vector from chroma/qdp++ format 
 // into qdp format.
 //
 void convert_chroma_to_qdp(QDP_ColorVector *out,  
@@ -223,7 +223,7 @@ const LatticeStaggeredFermion & in )
 
 
 //
-// Convert the colorvector in qdp into  chroma/qdp++ format 
+// Convert the colorstd::vector in qdp into  chroma/qdp++ format 
 //
 //
 void convert_qdp_to_chroma(LatticeStaggeredFermion & out,
@@ -501,10 +501,10 @@ static  QDP_ColorVector *in ;
     (*M)(r, psi, PLUS);
     r -= q_source ;
     res.resid = sqrt(norm2(r));
-    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual:  " << res.resid << endl; 
-    QDPIO::cout << "AsqtadCPSWrapperQprop:  || q_source ||:  " << sqrt(norm2(q_source)) << endl; 
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual:  " << res.resid << std::endl; 
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  || q_source ||:  " << sqrt(norm2(q_source)) << std::endl; 
 
-    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual/source:  " << res.resid/ sqrt(norm2(q_source)) << endl; 
+    QDPIO::cout << "AsqtadCPSWrapperQprop:  true residual/source:  " << res.resid/ sqrt(norm2(q_source)) << std::endl; 
 
   }
 

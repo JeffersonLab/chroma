@@ -80,20 +80,20 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, StaggeredDerivQuarkDisplacementEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, StaggeredDerivQuarkDisplacementEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const StaggeredDerivQuarkDisplacementEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const StaggeredDerivQuarkDisplacementEnv::Params& param);
 
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, StaggeredDerivQuarkDisplacementEnv::ParamsDir& param);
+  void read(XMLReader& xml, const std::string& path, StaggeredDerivQuarkDisplacementEnv::ParamsDir& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const StaggeredDerivQuarkDisplacementEnv::ParamsDir& param);
+  void write(XMLWriter& xml, const std::string& path, const StaggeredDerivQuarkDisplacementEnv::ParamsDir& param);
 
 
 }  // end namespace Chroma

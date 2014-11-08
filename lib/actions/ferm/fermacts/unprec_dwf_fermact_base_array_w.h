@@ -53,7 +53,7 @@ namespace Chroma
     virtual LinearOperatorArray<T>* hermitianLinOp(Handle< FermState<T,P,Q> > state) const
     {
       // Have not implemented this yet, but it is generic
-      QDPIO::cerr << "UnprecDWFermActBaseArray::gamma5HermLinOp not implemented" << endl;
+      QDPIO::cerr << "UnprecDWFermActBaseArray::gamma5HermLinOp not implemented" << std::endl;
       QDP_abort(1);
       return 0;
     }

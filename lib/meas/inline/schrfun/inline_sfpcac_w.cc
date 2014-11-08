@@ -20,7 +20,7 @@
 namespace Chroma 
 { 
   //! SFpcac input
-  void read(XMLReader& xml, const string& path, InlineSFpcacEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineSFpcacEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -28,7 +28,7 @@ namespace Chroma
   }
 
   //! SFpcac output
-  void write(XMLWriter& xml, const string& path, const InlineSFpcacEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineSFpcacEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -39,7 +39,7 @@ namespace Chroma
 
 
   //! SFpcac input
-  void read(XMLReader& xml, const string& path, InlineSFpcacEnv::Params::SFpcac_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineSFpcacEnv::Params::SFpcac_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -51,7 +51,7 @@ namespace Chroma
   }
 
   //! SFpcac output
-  void write(XMLWriter& xml, const string& path, const InlineSFpcacEnv::Params::SFpcac_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineSFpcacEnv::Params::SFpcac_t& input)
   {
     push(xml, path);
 
@@ -126,7 +126,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -153,7 +153,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "SFpcac");
 	write(xml_out, "update_no", update_no);
@@ -177,7 +177,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << name << ": Schroedinger functional calculation" << endl;
+      QDPIO::cout << name << ": Schroedinger functional calculation" << std::endl;
 
       StopWatch snoop;
       snoop.reset();
@@ -194,13 +194,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -227,7 +227,7 @@ namespace Chroma
       //
       std::istringstream  xml_s(params.param.fermact.xml);
       XMLReader  fermacttop(xml_s);
-      QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
+      QDPIO::cout << "FermAct = " << params.param.fermact.id << std::endl;
 
  
       // Initialize the slow Fourier transform phases
@@ -240,7 +240,7 @@ namespace Chroma
       {
 	StopWatch swatch;
 	swatch.reset();
-	QDPIO::cout << "Try the various factories" << endl;
+	QDPIO::cout << "Try the various factories" << std::endl;
 
 	// Typedefs to save typing
 	typedef LatticeFermion               T;
@@ -256,7 +256,7 @@ namespace Chroma
 
 	Handle< FermState<T,P,Q> > state(S_f->createState(u));
 
-	QDPIO::cout << "Suitable factory found: do the measurements" << endl;
+	QDPIO::cout << "Suitable factory found: do the measurements" << std::endl;
 	Handle< SystemSolver<T> > qprop(S_f->qprop(state, params.param.invParam));
 
 	swatch.start();
@@ -266,22 +266,22 @@ namespace Chroma
 	       params.sfpcac.ZVfactP,
 	       params.sfpcac.ZAfactP,
 	       params.sfpcac.x0, params.sfpcac.y0,
-	       xml_out, string("sfpcac"));
+	       xml_out, std::string("sfpcac"));
 
 	swatch.stop();	
 QDPIO::cout << "SFpcac computed: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
       catch (const std::string& e) 
       {
-	QDPIO::cout << name << ": caught exception with fermion action: " << e << endl;
+	QDPIO::cout << name << ": caught exception with fermion action: " << e << std::endl;
       }
 
 
@@ -290,9 +290,9 @@ QDPIO::cout << "SFpcac computed: time= "
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

@@ -100,28 +100,28 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     /*! This does not need to be optimized */
     virtual void evenEvenLinOp(T& chi, const T& psi, 
 			       enum PlusMinus isign) const = 0;
   
-    //! Apply the inverse of the even-even block onto a source vector
+    //! Apply the inverse of the even-even block onto a source std::vector
     virtual void evenEvenInvLinOp(T& chi, const T& psi, 
 				  enum PlusMinus isign) const = 0;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void evenOddLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void oddEvenLinOp(T& chi, const T& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void oddOddLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void operator() (T& chi, const T& psi, 
 			     enum PlusMinus isign) const
     {
@@ -142,7 +142,7 @@ namespace Chroma
     }
 
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const
@@ -165,19 +165,19 @@ namespace Chroma
     }
 
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void derivEvenEvenLinOp(P& ds_u, const T& chi, const T& psi, 
 				    enum PlusMinus isign) const = 0;
    
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void derivEvenOddLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
  
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void derivOddEvenLinOp(P& ds_u, const T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void derivOddOddLinOp(P& ds_u, const T& chi, const T& psi, 
 				  enum PlusMinus isign) const = 0;
 
@@ -207,7 +207,7 @@ namespace Chroma
     }
 
 
-    //! Apply the derivative of the operator onto a source vector
+    //! Apply the derivative of the operator onto a source std::vector
     /*! User should make sure deriv routines do a resize.
      *  This function is left pure virtual - as derived 
      *  functions need to override it 
@@ -323,28 +323,28 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     virtual const FermBC<T,P,Q>& getFermBC() const = 0;
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     /*! This does not need to be optimized */
     virtual void evenEvenLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 			       enum PlusMinus isign) const = 0;
   
-    //! Apply the inverse of the even-even block onto a source vector
+    //! Apply the inverse of the even-even block onto a source std::vector
     virtual void evenEvenInvLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 				  enum PlusMinus isign) const = 0;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void evenOddLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void oddEvenLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 			      enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void oddOddLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign) const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void operator() (multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign) const
     {
@@ -367,7 +367,7 @@ namespace Chroma
     }
 
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(multi1d<T>& chi, const multi1d<T>& psi, 
 			     enum PlusMinus isign) const
@@ -393,19 +393,19 @@ namespace Chroma
     }
 
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void derivEvenEvenLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				    enum PlusMinus isign) const = 0;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void derivEvenOddLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				   enum PlusMinus isign) const = 0;
  
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void derivOddEvenLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				   enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void derivOddOddLinOp(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 				  enum PlusMinus isign) const = 0;
 
@@ -437,7 +437,7 @@ namespace Chroma
       getFermBC().zero(ds_u);
     }
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! User should make sure deriv routines do a resize.
      *  This function is left pure virtual - as derived 
      *  functions need to override it 
@@ -445,7 +445,7 @@ namespace Chroma
     virtual void deriv(P& ds_u, const multi1d<T>& chi, const multi1d<T>& psi, 
 		       enum PlusMinus isign) const = 0;
 
-    //! Apply the derivative of the UNPRECONDITIONED operator onto a source vector
+    //! Apply the derivative of the UNPRECONDITIONED operator onto a source std::vector
 
     //! Return flops performed by the evenEvenLinOp
     virtual unsigned long evenEvenNFlops() const { return 0; }

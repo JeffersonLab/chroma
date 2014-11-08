@@ -51,7 +51,7 @@ namespace Chroma
   }
 
 
-  //! Compute the covariant Klein-Gordon operator on a color vector
+  //! Compute the covariant Klein-Gordon operator on a color std::vector
   void klein_gord(const multi1d<LatticeColorMatrix>& u, 
 		  const LatticeColorVector& psi, 
 		  LatticeColorVector& chi, 
@@ -60,7 +60,7 @@ namespace Chroma
     klein_gord<LatticeColorVector>(u, psi, chi, mass_sq, j_decay);
   }
 
-  //! Compute the covariant Klein-Gordon operator on a color vector
+  //! Compute the covariant Klein-Gordon operator on a color std::vector
   void klein_gord(const multi1d<LatticeColorMatrix>& u, 
 		  const LatticeFermion& psi, 
 		  LatticeFermion& chi, 

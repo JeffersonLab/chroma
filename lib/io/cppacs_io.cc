@@ -20,7 +20,7 @@ void CPPACSGaugeInit(CPPACSGauge_t& header)
 
 
 //! Source header read
-void read(XMLReader& xml, const string& path, CPPACSGauge_t& header)
+void read(XMLReader& xml, const std::string& path, CPPACSGauge_t& header)
 {
   XMLReader paramtop(xml, path);
 
@@ -30,7 +30,7 @@ void read(XMLReader& xml, const string& path, CPPACSGauge_t& header)
 
 
 //! Source header writer
-void write(XMLWriter& xml, const string& path, const CPPACSGauge_t& header)
+void write(XMLWriter& xml, const std::string& path, const CPPACSGauge_t& header)
 {
   push(xml, path);
 

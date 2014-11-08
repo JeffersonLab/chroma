@@ -46,7 +46,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineQpropQIOParams::Prop_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineQpropQIOParams::Prop_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -56,7 +56,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineQpropQIOParams::Prop_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineQpropQIOParams::Prop_t& input)
   {
     push(xml, path);
 
@@ -69,7 +69,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineQpropQIOParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineQpropQIOParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -85,14 +85,14 @@ namespace Chroma
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
 
 
   // Reader for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineQpropQIOParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineQpropQIOParams::Param_t& param)
   {
     push(xml, path);
 
@@ -126,7 +126,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -159,7 +159,7 @@ namespace Chroma
     push(xml_out, "qpropqio");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << "QPROPQIO: propagator transformation utility" << endl;
+    QDPIO::cout << "QPROPQIO: propagator transformation utility" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -212,7 +212,7 @@ namespace Chroma
 
     pop(xml_out);   // qpropqio
         
-    QDPIO::cout << "QpropQIO ran successfully" << endl;
+    QDPIO::cout << "QpropQIO ran successfully" << std::endl;
 
     END_CODE();
   } 

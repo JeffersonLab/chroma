@@ -13,7 +13,7 @@ namespace Chroma
   { 
     //! Callback function to register with the factory
     GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
       return new SchrChromoMagGaugeBC(SchrGaugeBCParams(xml, path));
     }
@@ -67,7 +67,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << "SchrSFGaugeBC: unsupported igluetmp = " << igluetmp << endl;
+      QDPIO::cerr << "SchrSFGaugeBC: unsupported igluetmp = " << igluetmp << std::endl;
       QDP_abort(1);
     }
 

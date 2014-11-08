@@ -22,7 +22,7 @@ namespace Chroma
    * density and boundary fields using Schroedinger BC.
    *
    * Also computed, on demand, are correlation functions between both
-   * boundaries with zero, one (vector current) and two (axial current or
+   * boundaries with zero, one (std::vector current) and two (axial current or
    * pseudoscalar density) insertions in the bulk. These currents are
    * controlled by the ZVfactP and ZAfactP boolean flags.
    *
@@ -41,7 +41,7 @@ namespace Chroma
    * \param x0            time slices with axial current insertions ( Read ) 
    * \param y0            time slices with axial current insertions ( Read ) 
    * \param xml           xml file object ( Write )
-   * \param xml_group     string used for writing xml data ( Read )
+   * \param xml_group     std::string used for writing xml data ( Read )
    */
   void SFpcac(Handle< SystemSolver<LatticeFermion> > qprop,
 	      Handle< FermState<LatticeFermion, multi1d<LatticeColorMatrix>,
@@ -50,15 +50,15 @@ namespace Chroma
 	      bool ZVfactP, bool ZAfactP, 
 	      int x0, int y0,
 	      XMLWriter& xml_out,
-	      const string& xml_group)
+	      const std::string& xml_group)
   {
     START_CODE();
   
-    QDPIO::cout << __func__ << ": entering" << endl;
+    QDPIO::cout << __func__ << ": entering" << std::endl;
 
     if ( Ns != 4 )
     {
-      QDPIO::cerr << __func__ << ": only supports 4 spin components" << endl;
+      QDPIO::cerr << __func__ << ": only supports 4 spin components" << std::endl;
       QDP_abort(1);
     }
   
@@ -227,7 +227,7 @@ namespace Chroma
 			     pseudo_prop_f, axial_prop_f, pseudo_prop_b, axial_prop_b,
 			     quark_prop_f, quark_prop_b, qprop, state, phases, x0, y0);
   
-    QDPIO::cout << __func__ << ": print iterations" << endl;
+    QDPIO::cout << __func__ << ": print iterations" << std::endl;
 
     push(xml_out,"Relaxation_Iterations");
     write(xml_out, "ncg_had", ncg_had);
@@ -235,7 +235,7 @@ namespace Chroma
 
     pop(xml_out);   // xml_group
 
-    QDPIO::cout << __func__ << ": exiting" << endl;
+    QDPIO::cout << __func__ << ": exiting" << std::endl;
 
     END_CODE();
   }

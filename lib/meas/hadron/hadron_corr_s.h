@@ -49,7 +49,7 @@ namespace Chroma
       push(xml_out, outer_tag);
       for(int i=0; i < no_channel; i++) {
 	Pi = re_corr_fn[i];
-	//	ostringstream tag;
+	//	std::ostringstream tag;
 	//tag << "re_pion" << i;
 	// push(xml_out, tag.str());
 	push(xml_out, tag_names[i]);
@@ -65,19 +65,19 @@ namespace Chroma
     void binary_dump(int t_source, std::string start_name)
     {
       const int magic_number = 66618 ;
-      string filename ;
-      string resized_tag;
+      std::string filename ;
+      std::string resized_tag;
 
 
       filename = start_name + outer_tag + "."+inner_tag ;
-      QDPIO::cout << "out tag, in tag: " <<outer_tag << inner_tag << endl;
+      QDPIO::cout << "out tag, in tag: " <<outer_tag << inner_tag << std::endl;
       BinaryFileWriter speedy ;
       speedy.open(filename);
       write(speedy,magic_number) ;
       write(speedy,t_length) ;
       write(speedy,no_channel) ;
 
-    QDPIO::cout << "FILENAME: "<< filename << endl;
+    QDPIO::cout << "FILENAME: "<< filename << std::endl;
 
      multi2d<Real> pi_corr(no_channel, t_length);
       multi2d<Real> re_corr_fn(no_channel, t_length);
@@ -126,7 +126,7 @@ namespace Chroma
       u.resize(4) ; 
 
       if( uin.size() != 4 ) { 
-	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << endl;
+	QDPIO::cerr << "staggered_hadron_corr: input guage config has wrong number of dimensions " << uin.size() << std::endl;
 	QDP_abort(1);
       };
 
@@ -144,9 +144,9 @@ namespace Chroma
   protected:
 
     multi2d<DComplex> corr_fn ; 
-    string outer_tag ; 
-    string inner_tag ; 
-    multi1d<string> tag_names ; 
+    std::string outer_tag ; 
+    std::string inner_tag ; 
+    multi1d<std::string> tag_names ; 
     multi1d<LatticeColorMatrix> u ; // this should handle or state
 
     LatticeStaggeredPropagator shift_deltaProp(multi1d<int>& delta, 
@@ -171,7 +171,7 @@ namespace Chroma
 	default :
 	  /**************************************************************************/
  
-	  QDPIO::cerr << "Shift type " << type_of_shift << " unsupported." << endl;
+	  QDPIO::cerr << "Shift type " << type_of_shift << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
 

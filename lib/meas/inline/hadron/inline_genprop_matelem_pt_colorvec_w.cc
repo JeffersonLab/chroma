@@ -1,7 +1,7 @@
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*M^-1**LatticeColorVector
  *
- * Generalized propagator calculation on a colorvector
+ * Generalized propagator calculation on a colorstd::vector
  */
 
 #include "handle.h"
@@ -33,7 +33,7 @@ namespace Chroma
   namespace InlineGenPropMatElemPtColorVecEnv 
   { 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t::DispGamma_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t::DispGamma_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -42,7 +42,7 @@ namespace Chroma
     }
 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -62,7 +62,7 @@ namespace Chroma
 	break;
 
       default :
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -79,7 +79,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t::DispGamma_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t::DispGamma_t& param)
     {
       push(xml, path);
 
@@ -90,7 +90,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param)
     {
       push(xml, path);
 
@@ -113,7 +113,7 @@ namespace Chroma
     }
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -124,7 +124,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -137,7 +137,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params& param)
+    void write(XMLWriter& xml, const std::string& path, const Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -227,7 +227,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -258,7 +258,7 @@ namespace Chroma
       int                spin_l;        /*!< Source spin index */
       int                spin_r;        /*!< Sink spin index */
       int                gamma;         /*!< The gamma matrix number - [0,Ns^2) */
-      multi1d<int>       displacement;  /*!< Displacement dirs of right colorvector */
+      multi1d<int>       displacement;  /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;           /*!< D-1 momentum of this operator */
       std::string        mass_label;    /*!< A mass label */
     };
@@ -266,7 +266,7 @@ namespace Chroma
     //! Generalized propagator operator
     struct ValGenPropElementalOperator_t
     {
-      multi2d<ComplexD>  op;              /*!< Colorvector source and sink with momentum projection */
+      multi2d<ComplexD>  op;              /*!< Colorstd::vector source and sink with momentum projection */
     };
 
 
@@ -380,7 +380,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "GenPropMatElemPtColorVec");
 	write(xml_out, "update_no", update_no);
@@ -413,7 +413,7 @@ namespace Chroma
       push(xml_out, "GenPropMatElemPtColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Generalized propagator color-vector matrix element" << endl;
+      QDPIO::cout << name << ": Generalized propagator color-std::vector matrix element" << std::endl;
 
       // Test and grab a reference to the gauge field
       XMLBufferWriter gauge_xml;
@@ -437,12 +437,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
       // Cast should be valid now
@@ -482,7 +482,7 @@ namespace Chroma
       read(source_prop_record_xml, "/Propagator/PropSource", source_header);
       
       
-      QDPIO::cout << "Point Propagator successfully found and parsed" << endl;
+      QDPIO::cout << "Point Propagator successfully found and parsed" << std::endl;
       
       //multi1d<int> source = prop_header.source_header.getTSrce();
       multi1d<int> source = source_header.getTSrce();
@@ -491,12 +491,12 @@ namespace Chroma
       int t_source = source_header.t_source;
       
       //Real Mass =  getMass(source_header.fermact);
-      //QDPIO::cout << "Mass = " << Mass << endl;
+      //QDPIO::cout << "Mass = " << Mass << std::endl;
       QDPIO::cout << "source = "
                   << source[0]<<" "
                   << source[1]<<" "
                   << source[2]<<" "
-                  << source[3]<< endl;
+                  << source[3]<< std::endl;
 
 
       //
@@ -514,7 +514,7 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.param.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << endl;
+	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
 	
 	
 	Handle< LinkSmearing >
@@ -526,7 +526,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -544,7 +544,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("genPropElemOp"));
+	write(file_xml, "id", std::string("genPropElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -576,7 +576,7 @@ namespace Chroma
       //
       // Generalized propagatos
       //
-      QDPIO::cout << "Building generalized propagators" << endl;
+      QDPIO::cout << "Building generalized propagators" << std::endl;
 
       push(xml_out, "ElementalOps");
 
@@ -612,7 +612,7 @@ namespace Chroma
       {
 	StopWatch watch;
 
-	QDPIO::cout << "Elemental operator: op = " << l << endl;
+	QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
 	// Make sure displacement is something sensible
 	multi1d<int> disp = normDisp(params.param.disp_gamma_list[l].displacement);
@@ -622,7 +622,7 @@ namespace Chroma
 	int gamma = params.param.disp_gamma_list[l].gamma;
 	int gamma_tmp = (Ns*Ns-1) ^ gamma;
 
-	QDPIO::cout << "gamma=" << gamma_tmp << "  displacement= " << disp << endl;
+	QDPIO::cout << "gamma=" << gamma_tmp << "  displacement= " << disp << std::endl;
 
 	// Build the operator
 	swiss.reset();
@@ -634,14 +634,14 @@ namespace Chroma
 	  // Loop over spins
 	  for(int spin_r=0; spin_r < Ns; ++spin_r)
 	  {
-	    QDPIO::cout << "spin_r = " << spin_r << endl; 
+	    QDPIO::cout << "spin_r = " << spin_r << std::endl; 
 
 	    for(int spin_l=0; spin_l < Ns; ++spin_l)
 	    {
-	      QDPIO::cout << "spin_l = " << spin_l << endl; 
+	      QDPIO::cout << "spin_l = " << spin_l << std::endl; 
 
 	      // The keys for the spin and displacements for this particular elemental operator
-	      // No displacement for left colorvector, only displace right colorvector
+	      // No displacement for left colorstd::vector, only displace right colorstd::vector
 	      // Invert the time - make it an independent key
 	      multi1d<KeyValGenPropElementalOperator_t> buf(phases.numSubsets());
 	      for(int tt=t_start; tt <= t_end; ++tt)
@@ -656,7 +656,7 @@ namespace Chroma
 		buf[t].key.key().mass_label    = params.param.mass_label;
 		buf[t].key.key().mom           = phases.numToMom(mom_num);
 		buf[t].key.key().gamma         = gamma;
-		buf[t].key.key().displacement  = disp; // only right colorvector
+		buf[t].key.key().displacement  = disp; // only right colorstd::vector
 
 		buf[t].val.data().op.resize(num_vecs, Nc);
 	      }
@@ -667,7 +667,7 @@ namespace Chroma
 		LatticeFermion q ;
 		PropToFerm(source_prop, q, color_r, spin_r);
 		
-		// Displace the right vector and multiply by the momentum phase
+		// Displace the right std::vector and multiply by the momentum phase
 		LatticeFermion shift_ferm = Gamma(gamma_tmp) * displace(u_smr, q,
 									params.param.displacement_length,
  									disp);
@@ -708,7 +708,7 @@ namespace Chroma
 		} // end for i
 	      } // end for j
 
-	      QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
+	      QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << std::endl; 
 	      for(int tt=t_start; tt <= t_end; ++tt)
 	      {
 		int t = tt % phases.numSubsets(); // mod back into a normal interval
@@ -724,7 +724,7 @@ namespace Chroma
 	QDPIO::cout << "GenProp operator= " << l 
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
       } // for l
 
@@ -736,9 +736,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } // func

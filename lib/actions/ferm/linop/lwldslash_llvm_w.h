@@ -87,7 +87,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      *
      * \return The output of applying dslash on psi
      */
@@ -326,13 +326,13 @@ namespace Chroma
       for( int isign = -1 ; isign <= +1 ; isign += 2 ) {
 	comm_no++;
 
-	const Map& map = shift.getMap(isign,dir);
+	const Map& std::map = shift.getMap(isign,dir);
 
 	//QDPIO::cout << "dir = " << dir << "     isign = " << isign << "   id = " << id <<  "\n";
 
-	if (map.hasOffnode()) 
+	if (std::map.hasOffnode()) 
 	  {
-	    offnode_maps |= map.getId();
+	    offnode_maps |= std::map.getId();
 
 	    int dstnum = shift.getMap(isign,dir).get_destnodes_num()[rb[0].getId()][0]*sizeof(double)*12; // we are sending half-spinors
 	    int srcnum = shift.getMap(isign,dir).get_srcenodes_num()[rb[0].getId()][0]*sizeof(double)*12;
@@ -403,7 +403,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "LLVMWilsonDslash: error: fbc is null" << endl;
+      QDPIO::cerr << "LLVMWilsonDslash: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -435,7 +435,7 @@ namespace Chroma
    *  \param chi	      Result				                (Write)
    *  \param psi	      Pseudofermion field				(Read)
    *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
-   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector			(Read) 
    */
   template<typename T, typename P, typename Q>
   void 
@@ -460,9 +460,9 @@ namespace Chroma
 	  if (comms[0].do_comms)
 	    {
 	      {
-		const Map& map = shift.getMap(-1,3);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,3);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -475,9 +475,9 @@ namespace Chroma
 		comms_send_receive(0);
 
 	      {
-		const Map& map = shift.getMap(+1,3);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,3);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -493,9 +493,9 @@ namespace Chroma
 	  if (comms[2].do_comms) 
 	    {
 	      {
-		const Map& map = shift.getMap(-1,2);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,2);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -508,9 +508,9 @@ namespace Chroma
 		comms_send_receive(2);
 
 	      {
-		const Map& map = shift.getMap(+1,2);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,2);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -526,9 +526,9 @@ namespace Chroma
 	  if (comms[4].do_comms) 
 	    {
 	      {
-		const Map& map = shift.getMap(-1,1);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,1);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -541,9 +541,9 @@ namespace Chroma
 		comms_send_receive(4);
 
 	      {
-		const Map& map = shift.getMap(+1,1);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,1);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -559,9 +559,9 @@ namespace Chroma
 	  if (comms[6].do_comms) 
 	    {
 	      {
-		const Map& map = shift.getMap(-1,0);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,0);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -574,9 +574,9 @@ namespace Chroma
 		comms_send_receive(6);
 
 	      {
-		const Map& map = shift.getMap(+1,0);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,0);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -638,9 +638,9 @@ namespace Chroma
 	  if (comms[0].do_comms)
 	    {
 	      {
-		const Map& map = shift.getMap(-1,3);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,3);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -653,9 +653,9 @@ namespace Chroma
 		comms_send_receive(0);
 
 	      {
-		const Map& map = shift.getMap(+1,3);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,3);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -671,9 +671,9 @@ namespace Chroma
 	  if (comms[2].do_comms) 
 	    {
 	      {
-		const Map& map = shift.getMap(-1,2);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,2);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -686,9 +686,9 @@ namespace Chroma
 		comms_send_receive(2);
 
 	      {
-		const Map& map = shift.getMap(+1,2);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,2);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -704,9 +704,9 @@ namespace Chroma
 	  if (comms[4].do_comms) 
 	    {
 	      {
-		const Map& map = shift.getMap(-1,1);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,1);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -719,9 +719,9 @@ namespace Chroma
 		comms_send_receive(4);
 
 	      {
-		const Map& map = shift.getMap(+1,1);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,1);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -737,9 +737,9 @@ namespace Chroma
 	  if (comms[6].do_comms) 
 	    {
 	      {
-		const Map& map = shift.getMap(-1,0);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(-1,0);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;
@@ -752,9 +752,9 @@ namespace Chroma
 		comms_send_receive(6);
 
 	      {
-		const Map& map = shift.getMap(+1,0);
-		const int* soffset_slice = map.soffset(rb[cb]).slice();
-		int soffset_num = map.soffset(rb[cb]).size();
+		const Map& std::map = shift.getMap(+1,0);
+		const int* soffset_slice = std::map.soffset(rb[cb]).slice();
+		int soffset_num = std::map.soffset(rb[cb]).size();
 
 		int low = soffset_num*myId/threads_num;
 		int high = soffset_num*(myId+1)/threads_num;

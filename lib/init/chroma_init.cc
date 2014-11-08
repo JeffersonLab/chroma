@@ -25,16 +25,16 @@ namespace Chroma
   namespace
   {
     //! The "DATA" filename
-    string input_filename = "DATA";
+    std::string input_filename = "DATA";
 
     //! The "XMLDAT" filename
-    string output_filename = "XMLDAT";
+    std::string output_filename = "XMLDAT";
 
     //! The "XMLLOG" filename
-    string log_filename = "XMLLOG";
+    std::string log_filename = "XMLLOG";
 
     //! The "current working directory" -- prepended to above if set
-    string cwd = ".";
+    std::string cwd = ".";
 
     //! Has the xml output instance been created?
     bool xmlOutputP = false;
@@ -47,9 +47,9 @@ namespace Chroma
 
 
     // Internal
-    string constructFileName(const string& filename)
+    std::string constructFileName(const std::string& filename)
     {
-      string ret_val;
+      std::string ret_val;
       if ( filename[0] == '.' || filename[0]=='/'  ) {
 	// Fully qualified pathname
 	ret_val = filename;
@@ -65,29 +65,29 @@ namespace Chroma
   }; // End anonymous namespace
 
   //! Get input file name
-  string getXMLInputFileName() {return constructFileName(input_filename);}
+  std::string getXMLInputFileName() {return constructFileName(input_filename);}
 
   //! Get output file name
-  string getXMLOutputFileName() {return constructFileName(output_filename);}
+  std::string getXMLOutputFileName() {return constructFileName(output_filename);}
 
   //! Get log file name
-  string getXMLLogFileName() {return constructFileName(log_filename);}
+  std::string getXMLLogFileName() {return constructFileName(log_filename);}
 
   //! Get current working directory
-  string getCWD() {return cwd;}
+  std::string getCWD() {return cwd;}
 
 
   //! Set input file name
-  void setXMLInputFileName(const string& name) {input_filename = name;}
+  void setXMLInputFileName(const std::string& name) {input_filename = name;}
 
   //! Set output file name
-  void setXMLOutputFileName(const string& name) {output_filename = name;}
+  void setXMLOutputFileName(const std::string& name) {output_filename = name;}
 
   //! Set output logfile name
-  void setXMLLogFileName(const string& name) {log_filename = name;}
+  void setXMLLogFileName(const std::string& name) {log_filename = name;}
 
   //! Set current working directory
-  void setCWD(const string& name) {cwd = name;}
+  void setCWD(const std::string& name) {cwd = name;}
 
 
   //! Chroma initialisation routine
@@ -103,13 +103,13 @@ namespace Chroma
 
     for(int i=0; i < *argc; i++) 
     {
-      // Get argv[i] into a string
-      string argv_i = string( (*argv)[i] );
+      // Get argv[i] into a std::string
+      std::string argv_i = std::string( (*argv)[i] );
 
       // Search for -i or --chroma-i
-      if( argv_i == string("-h") || argv_i == string("--help") ) 
+      if( argv_i == std::string("-h") || argv_i == std::string("--help") ) 
       {
-	QDPIO::cerr << "Usage: " << (*argv)[0] << "  <options>" << endl
+	QDPIO::cerr << "Usage: " << (*argv)[0] << "  <options>" << std::endl
 		    << "   -h           help\n"
 		    << "   --help       help\n"
 		    << "   -i           [" << getXMLInputFileName() << "]  xml input file name\n"
@@ -122,68 +122,68 @@ namespace Chroma
 		    << "   --chroma-cwd [" << getCWD() << "]  xml log file name\n"
 
 		    
-		    << endl;
+		    << std::endl;
 	QDP_abort(0);
       }
 
       // Search for -i or --chroma-i
-      if( argv_i == string("-i") || argv_i == string("--chroma-i") ) 
+      if( argv_i == std::string("-i") || argv_i == std::string("--chroma-i") ) 
       {
 	if( i + 1 < *argc ) 
 	{
-	  setXMLInputFileName(string( (*argv)[i+1] ));
+	  setXMLInputFileName(std::string( (*argv)[i+1] ));
 	  // Skip over next
 	  i++;
 	}
 	else 
 	{
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -i specified. " << endl;
+	  QDPIO::cerr << "Error: dangling -i specified. " << std::endl;
 	  QDP_abort(1);
 	}
       }
  
       // Search for -o or --chroma-o
-      if( argv_i == string("-o") || argv_i == string("--chroma-o") ) 
+      if( argv_i == std::string("-o") || argv_i == std::string("--chroma-o") ) 
       {
 	if( i + 1 < *argc ) {
-	  setXMLOutputFileName(string( (*argv)[i+1] ));
+	  setXMLOutputFileName(std::string( (*argv)[i+1] ));
 	  // Skip over next
 	  i++;
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -o specified. " << endl;
+	  QDPIO::cerr << "Error: dangling -o specified. " << std::endl;
 	  QDP_abort(1);
 	}
       }
       
       // Search for -l or --chroma-l
-      if( argv_i == string("-l") || argv_i == string("--chroma-l") ) 
+      if( argv_i == std::string("-l") || argv_i == std::string("--chroma-l") ) 
       {
 	if( i + 1 < *argc ) {
-	  setXMLLogFileName(string( (*argv)[i+1] ));
+	  setXMLLogFileName(std::string( (*argv)[i+1] ));
 	  // Skip over next
 	  i++;
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -l specified. " << endl;
+	  QDPIO::cerr << "Error: dangling -l specified. " << std::endl;
 	  QDP_abort(1);
 	}
       }
       
       // Search for -cwd or --chroma-cwd
-      if( argv_i == string("-cwd") || argv_i == string("--chroma-cwd") ) 
+      if( argv_i == std::string("-cwd") || argv_i == std::string("--chroma-cwd") ) 
       {
 	if( i + 1 < *argc ) {
-	  setCWD(string( (*argv)[i+1] ));
+	  setCWD(std::string( (*argv)[i+1] ));
 	  // Skip over next
 	  i++;
 	}
 	else {
 	  // i + 1 is too big
-	  QDPIO::cerr << "Error: dangling -cwd specified. " << endl;
+	  QDPIO::cerr << "Error: dangling -cwd specified. " << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -193,31 +193,31 @@ namespace Chroma
 
 #if defined QDPJIT_IS_QDPJITPTX || defined QDPJIT_IS_QDPJITNVVM
 #ifdef BUILD_QUDA
-  std::cout << "Setting CUDA device" << endl;
+  std::cout << "Setting CUDA device" << std::endl;
   int cuda_device = QDP_setGPU();
-  //std::cout << "Setting QUDA verbosity to silent" << endl;
+  //std::cout << "Setting QUDA verbosity to silent" << std::endl;
   //setVerbosityQuda(QUDA_SILENT, "", stdout);
-  //std::cout << "Setting QUDA verbosity to summarize" << endl;
+  //std::cout << "Setting QUDA verbosity to summarize" << std::endl;
   //setVerbosityQuda(QUDA_SUMMARIZE, "", stdout);
-  std::cout << "Initializing QMP part" << endl;
+  std::cout << "Initializing QMP part" << std::endl;
   QDP_initialize_QMP(argc, argv);
-  QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << endl;
+  QDPIO::cout << "Initializing QUDA device (using CUDA device no. " << cuda_device << ")" << std::endl;
   initQudaDevice(cuda_device);
-  QDPIO::cout << "Initializing QDP-JIT GPUs" << endl;
+  QDPIO::cout << "Initializing QDP-JIT GPUs" << std::endl;
   QDP_startGPU();
-  QDPIO::cout << "Initializing QUDA memory" << endl;
+  QDPIO::cout << "Initializing QUDA memory" << std::endl;
   initQudaMemory();
 #else
-  std::cout << "Setting device" << endl;
+  std::cout << "Setting device" << std::endl;
   QDP_setGPU();
-  std::cout << "Initializing QMP part" << endl;
+  std::cout << "Initializing QMP part" << std::endl;
   QDP_initialize_QMP(argc, argv);
-  QDPIO::cout << "Initializing start GPUs" << endl;
+  QDPIO::cout << "Initializing start GPUs" << std::endl;
   QDP_startGPU();
 #endif
 #else
 #ifdef BUILD_QUDA
-  std::cout << "Initializing QUDA" << endl;
+  std::cout << "Initializing QUDA" << std::endl;
   initQuda(-1);
 #endif
 #endif
@@ -278,7 +278,7 @@ namespace Chroma
 	TheXMLOutputWriter::Instance().open(getXMLOutputFileName());
       }
       catch(...) { 
-	QDPIO::cerr << "Unable to open " << getXMLOutputFileName() << endl;
+	QDPIO::cerr << "Unable to open " << getXMLOutputFileName() << std::endl;
 	QDP_abort(1);
       }
 
@@ -297,7 +297,7 @@ namespace Chroma
 	TheXMLLogWriter::Instance().open(getXMLLogFileName());
       }
       catch(...) {
-	QDPIO::cerr << "Unable to open " << getXMLLogFileName() << endl;
+	QDPIO::cerr << "Unable to open " << getXMLLogFileName() << std::endl;
 	QDP_abort(1);
       }
 
@@ -316,7 +316,7 @@ namespace Chroma
 	TheXMLInputReader::Instance().open(getXMLInputFileName());
       }
       catch() { 
-	QDPIO::cerr << "Unable to open " << pathname << endl;
+	QDPIO::cerr << "Unable to open " << pathname << std::endl;
 	QDP_abort(1);
       }
       xmlInputP = true;

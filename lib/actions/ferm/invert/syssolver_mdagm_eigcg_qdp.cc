@@ -94,7 +94,7 @@ namespace Chroma
       while((flag==-1)||flag==3){
 	flag=0 ;
 	if(invParam.PrintLevel>0)
-	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
+	  QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<std::endl;
 	if(GoodEvecs.Neig>0){//deflate if there avectors to deflate
 	  if(invParam.PrintLevel>0){
 	          snoop.reset();
@@ -105,7 +105,7 @@ namespace Chroma
 	  if(invParam.PrintLevel>0)
 	    QDPIO::cout << "InitGuess:  time = "
 			<< snoop.getTimeInSeconds() 
-			<< " secs" << endl;
+			<< " secs" << std::endl;
 	}
 	//if there is space for new
 	if((GoodEvecs.Neig)<GoodEvecs.evec.vec.size())
@@ -156,9 +156,9 @@ namespace Chroma
 	    if(invParam.PrintLevel>0){
 	      QDPIO::cout << "Evec_Refinement: time = "
 			  << Time
-			  << " secs" << endl;
+			  << " secs" << std::endl;
 	      
-	      //QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
+	      //QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<std::endl;
 	    }
 	    for(int k(0);k<GoodEvecs.Neig;k++)
 	      GoodEvecs.evec[k][MdagM.subset()]  = evec[k] ;
@@ -175,7 +175,7 @@ namespace Chroma
 		QDPIO::cout<<"--- eval ="<<GoodEvecs.eval[k]<<" ";
 		tt =  sqrt(norm2(GoodEvecs.evec[k],MdagM.subset()));
 		QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-		QDPIO::cout<<"--- norm = "<<tt<<endl  ;
+		QDPIO::cout<<"--- norm = "<<tt<<std::endl  ;
 	      } 
 	    }
 	  }// if there is space
@@ -212,7 +212,7 @@ namespace Chroma
 	    if(toBool(restartTol!=invParam.RsdCG)){
 	      restart++;//count the number of restarts
 	      if(invParam.PrintLevel>0)
-		QDPIO::cout<<"Restart: "<<restart<<endl ;
+		QDPIO::cout<<"Restart: "<<restart<<std::endl ;
 	      flag=3 ; //restart
 	    }
 	    else{

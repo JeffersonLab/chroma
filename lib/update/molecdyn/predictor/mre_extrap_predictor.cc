@@ -25,7 +25,7 @@ namespace Chroma
 	  read( paramtop, "./MaxChrono", max_chrono);
 	}
 	catch( const std::string& e ) { 
-	  QDPIO::cerr << "Caught exception reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
       
@@ -74,7 +74,7 @@ namespace Chroma
 	  read( paramtop, "./MaxChrono", max_chrono);
 	}
 	catch( const std::string& e ) { 
-	  QDPIO::cerr << "Caught exception reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -113,19 +113,19 @@ namespace Chroma
     switch(Nvec) { 
     case 0:
       {
-	QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << endl;
+	QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << std::endl;
 	psi = zero;
       }
       break;
     case 1:
       {
-	QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
+	QDPIO::cout << "MRE Predictor: Only 1 std::vector stored. Giving you last solution " << std::endl;
 	chrono_buf->get(0,psi);
       }
       break;
     default:
       {
-	QDPIO::cout << "MRE Predictor: Finding  extrapolation with "<< Nvec << " vectors" << endl;
+	QDPIO::cout << "MRE Predictor: Finding  extrapolation with "<< Nvec << " vectors" << std::endl;
 	find_extrap_solution(psi, M, chi);
       }
       break;
@@ -159,20 +159,20 @@ namespace Chroma
 	v[i][d5] = zero;
       }
 
-      // Grab the relevant vector from the chronobuf
+      // Grab the relevant std::vector from the chronobuf
       multi1d<LatticeFermion> tmpvec(N5);
       chrono_buf->get(i, tmpvec);
 
       if( i == 0 ) { 
-	// First vector we just take
+	// First std::vector we just take
 	// Loop over 5th dim
 	for(int d5=0; d5 < N5; d5++) { 
 	  v[i][d5][s] = tmpvec[d5];
 	}
       }
       else { 
-	// i-th vector. Orthogonalise against i-1 previous
-	// vector, but i is an index running from 0. So I need
+	// i-th std::vector. Orthogonalise against i-1 previous
+	// std::vector, but i is an index running from 0. So I need
 	// to pass i+1-1=i as the number of vectors to orthog against
 	//
 	// This is a very dumb GramSchmidt process and possibly
@@ -262,9 +262,9 @@ namespace Chroma
       r[i] = b[i]-Ga[i];
     }
 
-    QDPIO::cout << "Constraint Eq Solution Check" << endl;
+    QDPIO::cout << "Constraint Eq Solution Check" << std::endl;
     for(int i=0; i < Nvec; i++) { 
-      QDPIO::cout << "   r[ " << i << "] = " << r[i] << endl;
+      QDPIO::cout << "   r[ " << i << "] = " << r[i] << std::endl;
     }
 #endif
 

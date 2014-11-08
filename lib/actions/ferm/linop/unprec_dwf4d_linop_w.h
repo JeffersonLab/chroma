@@ -44,7 +44,7 @@ namespace Chroma
     //! Operator lives on the entire lattice
     inline const Subset& subset() const {return all;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     /*! For this operator, the sign is ignored */
     void operator() (T& chi, const T& psi, enum PlusMinus isign) const;
 

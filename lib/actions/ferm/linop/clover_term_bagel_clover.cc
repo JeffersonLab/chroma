@@ -63,12 +63,12 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param)
+  void read(XMLReader& xml, const std::string& path, PrimitiveClovTriang& param)
   {
     QDP_error_exit("clover reader not implemented");
   }
 
-  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& param)
+  void write(XMLWriter& xml, const std::string& path, const PrimitiveClovTriang& param)
   {
     push(xml,path);
     xml << param;
@@ -94,7 +94,7 @@ namespace Chroma
 	tri_diag = (PrimitiveClovDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovDiag) , QDP::Allocator::DEFAULT );
       }
       catch( std::bad_alloc ) { 
-	QDPIO::cerr << "Failed to allocate the tri_diag" << endl << flush ;
+	QDPIO::cerr << "Failed to allocate the tri_diag" << std::endl << std::flush ;
 	QDP_abort(1);
       }
     }
@@ -113,7 +113,7 @@ namespace Chroma
 	tri_off_diag = (PrimitiveClovOffDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovOffDiag) , QDP::Allocator::DEFAULT );
       }
       catch( std::bad_alloc ) { 
-	QDPIO::cerr << "Failed to allocate the tri_off_diag" << endl << flush ;
+	QDPIO::cerr << "Failed to allocate the tri_off_diag" << std::endl << std::flush ;
 	QDP_abort(1);
       }
     }
@@ -145,7 +145,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -191,7 +191,7 @@ namespace Chroma
     write(fred, "diff", diff);
     pop(fred);
 
-    QDPIO::cout << "sqrt( norm2( diff))= " << sqrt(norm2(diff)) << endl << flush;
+    QDPIO::cout << "sqrt( norm2( diff))= " << sqrt(norm2(diff)) << std::endl << std::flush;
     QDP_abort(1);
 #endif
 
@@ -212,7 +212,7 @@ namespace Chroma
     
     // Sanity check
     if (fbc.operator->() == 0) {
-      QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "BAGELCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
     
@@ -320,7 +320,7 @@ namespace Chroma
    *  Here are some notes on the origin of this routine. NOTE, ClovCoeff or u0
    *  are not actually used in MAKCLOV.
    *
-   *  The clover mass term is suppose to act on a vector like
+   *  The clover mass term is suppose to act on a std::vector like
    *
    *  chi = (1 - (ClovCoeff/u0^3) * kappa/4 * sum_mu sum_nu F(mu,nu)*sigma(mu,nu)) * psi
 
@@ -406,7 +406,7 @@ namespace Chroma
 
       default:
       QDPIO::cerr << __func__ << ": invalid time direction: t_dir= " 
-      << param.anisoParam.t_dir << endl;
+      << param.anisoParam.t_dir << std::endl;
       QDP_abort(1);
       }
     */
@@ -561,8 +561,8 @@ namespace Chroma
 
     if( choles_done[cb] == false ) 
     {
-      QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << endl;
-      QDPIO::cout << "You sure you shouldn't be asking invclov?" << endl;
+      QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << std::endl;
+      QDPIO::cout << "You sure you shouldn't be asking invclov?" << std::endl;
       QDP_abort(1);
     }
 
@@ -764,7 +764,7 @@ namespace Chroma
       if( site_neg_logdet != 0 ) { 
 	// Report if site had odd number of negative terms. (-ve def)
 	std::cout << "WARNING: Odd number of negative terms in Clover DET (" 
-		  << site_neg_logdet<< ") at site: " << site << endl;
+		  << site_neg_logdet<< ") at site: " << site << std::endl;
       }
     }
     
@@ -824,7 +824,7 @@ namespace Chroma
 	
 	for(int j = 0; j <  n; ++j)
 	{
-	  /*# Multiply clover mass term against basis vector.  */
+	  /*# Multiply clover mass term against basis std::vector.  */
 	  /*# Actually, I need a column of the lower triang matrix clov. */
 	  v1[j] = cmplx(tri_diag[site][s][j],zero);
     
@@ -863,9 +863,9 @@ namespace Chroma
 	  else
           { 
             // Make sure any node can print this message
-	    cerr << "Clover term has negative diagonal element: "
+	    std::cerr << "Clover term has negative diagonal element: "
 	         << "diag_g[" << j << "]= " << diag_g[j] 
-	         << " at site: " << site << endl;
+	         << " at site: " << site << std::endl;
 	    QDP_abort(1);
 	  }
 
@@ -966,7 +966,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
   void BAGELCloverTerm::apply(LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign, int cb) const
@@ -1039,7 +1039,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
   void BAGELCloverTerm::applySite(LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign, int site) const
@@ -1186,7 +1186,7 @@ namespace Chroma
 
     if ( mat < 0  ||  mat > 15 )
     {
-      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
+      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << std::endl;
       QDP_abort(1);
     }
   
@@ -1474,7 +1474,7 @@ namespace Chroma
     default:
     {
       B = zero;
-      QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
+      QDPIO::cout << "BAD DEFAULT CASE HIT" << std::endl;
     }
     }
   

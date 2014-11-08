@@ -23,7 +23,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace AnisoSpectrumGaugeActEnv 
   {
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -45,10 +45,10 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, AnisoSpectrumGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, AnisoSpectrumGaugeActParams& param);
   
   /*! @ingroup gaugeacts */
-  void write(XMLWriter& xml, const string& path, const AnisoSpectrumGaugeActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const AnisoSpectrumGaugeActParams& param);
   
 
   //! MP gauge action

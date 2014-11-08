@@ -31,7 +31,7 @@ namespace Chroma
   }
 
 
-  //! Apply the the even-even block onto a source vector
+  //! Apply the the even-even block onto a source std::vector
   void 
   EvenOddPrecParWilsonLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					   enum PlusMinus isign) const
@@ -57,7 +57,7 @@ namespace Chroma
   }
 
 
-  //! Apply the inverse of the even-even block onto a source vector
+  //! Apply the inverse of the even-even block onto a source std::vector
   void 
   EvenOddPrecParWilsonLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					      enum PlusMinus isign) const
@@ -77,7 +77,7 @@ namespace Chroma
   }
   
 
-  //! Apply the the odd-odd block onto a source vector
+  //! Apply the the odd-odd block onto a source std::vector
   void 
   EvenOddPrecParWilsonLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					 enum PlusMinus isign) const
@@ -264,7 +264,7 @@ namespace Chroma
   {
     START_CODE();
   
-    QDPIO::cerr << "EvenOddPrecParWilsonFermAct::dsdu not implemented" << endl;
+    QDPIO::cerr << "EvenOddPrecParWilsonFermAct::dsdu not implemented" << std::endl;
     QDP_abort(1);
 
     const multi1d<LatticeColorMatrix>& u = state->getLinks();

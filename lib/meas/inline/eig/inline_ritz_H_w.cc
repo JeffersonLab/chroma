@@ -26,7 +26,7 @@
 namespace Chroma 
 { 
   //! Eigeninfo input
-  void read(XMLReader& xml, const string& path, InlineRitzEnv::Params::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineRitzEnv::Params::Param_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -37,7 +37,7 @@ namespace Chroma
   }
 
   //! Eigeninfo output
-  void write(XMLWriter& xml, const string& path, const InlineRitzEnv::Params::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineRitzEnv::Params::Param_t& input)
   {
     push(xml, path);
 
@@ -50,7 +50,7 @@ namespace Chroma
 
 
   //! Eigeninfo input
-  void read(XMLReader& xml, const string& path, InlineRitzEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineRitzEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -59,7 +59,7 @@ namespace Chroma
   }
 
   //! Eigeninfo output
-  void write(XMLWriter& xml, const string& path, const InlineRitzEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineRitzEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -145,7 +145,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -160,7 +160,7 @@ namespace Chroma
       write(xml_out, "Param", param);
       {
 	//QDP::write(xml_out, "StateInfo", stateInfo);
-	istringstream header_is(stateInfo);
+	std::istringstream header_is(stateInfo);
 	XMLReader xml_header(header_is);
 	xml_out << xml_header;
       }
@@ -185,7 +185,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 
 	push(xml_out, "RitzEigenHw");
@@ -223,7 +223,7 @@ namespace Chroma
       push(xml_out, "RitzEigenHw");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineRitzEnv::name << ": RitzEigenHw" << endl;
+      QDPIO::cout << InlineRitzEnv::name << ": RitzEigenHw" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -267,7 +267,7 @@ namespace Chroma
       // Make a reader for the stateInfo
       std::istringstream state_info_is(params.stateInfo);
       XMLReader state_info_xml(state_info_is);
-      string state_info_path="/StateInfo";
+      std::string state_info_path="/StateInfo";
 
       bool success = false;
 
@@ -277,7 +277,7 @@ namespace Chroma
 	try { 
 	  StopWatch swatch;
 	  swatch.reset();
-	  QDPIO::cout << "Try the various factories" << endl;
+	  QDPIO::cout << "Try the various factories" << std::endl;
 
 	  // Typedefs to save typing
 	  typedef LatticeFermion               T;
@@ -301,29 +301,29 @@ namespace Chroma
 	  swatch.stop();
 	  QDPIO::cout << "Eigenvalues/-vectors computed: time= " 
 		      << swatch.getTimeInSeconds() 
-		      << " secs" << endl;
+		      << " secs" << std::endl;
       
 	  success = true;
 	}
 
 	catch (const std::string& e) 
 	{
-	  QDPIO::cout << InlineRitzEnv::name << ": caught exception around quarkprop: " << e << endl;
+	  QDPIO::cout << InlineRitzEnv::name << ": caught exception around quarkprop: " << e << std::endl;
 	}
       }
 
       if (! success)
       {
-	QDPIO::cerr << "Error: no fermact found" << endl;
+	QDPIO::cerr << "Error: no fermact found" << std::endl;
 	QDP_abort(1);
       }
  
       snoop.stop();
       QDPIO::cout << InlineRitzEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineRitzEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineRitzEnv::name << ": ran successfully" << std::endl;
 
       pop(xml_out);
 
@@ -449,15 +449,15 @@ namespace Chroma
 	}
    
 	QDPIO::cout << "lambda_lo[" << i << "] = " << lambda[i] << "  "; 
-	QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << endl;
+	QDPIO::cout << "check_norm["<<i<<"] = " << check_norm[i] << std::endl;
       }
       write(xml_out, "check_norm", check_norm);
   
       for(int i=0; i < params.Neig; i++) { 
 	check_norm[i] /= fabs(lambda[i]);
-	QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << endl;
+	QDPIO::cout << "check_norm_rel["<< i <<"] = " << check_norm[i] << std::endl;
       }
-      QDPIO::cout << flush ;
+      QDPIO::cout << std::flush ;
       write(xml_out, "check_norm_rel", check_norm);
       pop(xml_out);
   
@@ -502,10 +502,10 @@ namespace Chroma
 		     n_cg_high,
 		     high_xml);
 
-      QDPIO::cout << "Got Here" << endl << flush ;
+      QDPIO::cout << "Got Here" << std::endl << std::flush ;
 
       lambda_high_aux[0] = sqrt(fabs(lambda_high_aux[0]));
-      QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << endl;
+      QDPIO::cout << "|| lambda_hi || = " << lambda_high_aux[0]  << " hi_Rsd_r = " << hi_RsdR << std::endl;
   
       pop(high_xml);
       xml_out << high_xml;
@@ -523,7 +523,7 @@ namespace Chroma
 	eigenvec_val.getEvectors()[i]=psi[i];
 
 
-//   QDPIO::cout << "Writing low eigenvalues/vectors" << endl;
+//   QDPIO::cout << "Writing low eigenvalues/vectors" << std::endl;
 //   writeEigen(input, lambda, psi, lambda_high_aux[0], QDPIO_SERIAL);
 
     }

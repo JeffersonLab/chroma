@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: xml_group_reader.h,v 1.3 2007-06-11 03:26:43 edwards Exp $
 /*! \file
- *  \brief Read an XML group as a string
+ *  \brief Read an XML group as a std::string
  */
 
 #ifndef __xml_group_reader_h__
@@ -22,13 +22,13 @@ namespace Chroma
   };
 
 
-  //! Read group and return as a string
+  //! Read group and return as a std::string
   /*! \ingroup io */
   GroupXML_t readXMLGroup(XMLReader& xml, 
 			  const std::string& path, 
 			  const std::string& type_name);
 
-  //! Read group and return as a string
+  //! Read group and return as a std::string
   /*! \ingroup io */
   multi1d<GroupXML_t> readXMLArrayGroup(XMLReader& xml, 
 					const std::string& path, 

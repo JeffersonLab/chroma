@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: jacobi_smear.h,v 3.1 2009-02-20 15:10:24 edwards Exp $
 /*! \file
- *  \brief Jacobi smearing of color vector
+ *  \brief Jacobi smearing of color std::vector
  */
 
 #ifndef __jacobi_smear_h__
@@ -10,7 +10,7 @@
 namespace Chroma 
 {
 
-  //! Do a covariant Jacobi smearing of a lattice color vector field
+  //! Do a covariant Jacobi smearing of a lattice color std::vector field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear
@@ -18,7 +18,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u             gauge field ( Read )
-   *  \param chi           color vector field ( Modify )
+   *  \param chi           color std::vector field ( Modify )
    *  \param kappa         hopping parameter ( Read )
    *  \param iter          number of iterations ( Read )
    *  \param no_smear_dir  no smearing in this direction ( Read )

@@ -15,7 +15,6 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
-using namespace std;
 
 namespace Chroma
 {
@@ -194,7 +193,7 @@ namespace Chroma
       (*M_prec)(getPhi(), phi_tmp, PLUS); // (Now get phi = M_prec (M_prec^{-1}\phi)
 
       // Now invert M_prec^{dagger} on it
-      QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor at end of field refresh" << endl;
+      QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor at end of field refresh" << std::endl;
       getMDSolutionPredictor().reset();
       XMLWriter& xml_out = TheXMLLogWriter::Instance();
 
@@ -216,8 +215,8 @@ namespace Chroma
 
 	getPhi() = fm.getPhi();
       }
-      catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvConvWilsonTypeFermMonomial " << endl;
+      catch(std::bad_cast) { 
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactRatioConvConvWilsonTypeFermMonomial " << std::endl;
 	QDP_abort(1);
       }
 
@@ -305,7 +304,7 @@ namespace Chroma
       //
       // We now need to multiply by M_prec afterwords
       X = zero;
-      QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
 
       // Get system solver
@@ -398,7 +397,7 @@ namespace Chroma
       X[ M->subset() ] = zero;
 
       // Reset chrono predictor
-      QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavRatioConvConvWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
 
       // Get system solver

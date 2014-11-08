@@ -17,7 +17,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param j_decay  direction of decay ( Read )
    *  \param power    number of times to apply laplacian ( Read )
    */

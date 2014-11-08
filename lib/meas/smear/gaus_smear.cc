@@ -1,6 +1,6 @@
 // $Id: gaus_smear.cc,v 3.1 2006-11-17 02:17:32 edwards Exp $
 /*! \file
- *  \brief Gaussian smearing of color vector
+ *  \brief Gaussian smearing of color std::vector
  */
 
 #include "chromabase.h"
@@ -15,7 +15,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param width    width of "shell" wave function ( Read )
    *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
    *  \param j_decay  direction of decay ( Read )
@@ -41,7 +41,7 @@ namespace Chroma
   }
 
 
-  //! Do a covariant Gaussian smearing of a lattice color vector field
+  //! Do a covariant Gaussian smearing of a lattice color std::vector field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear
@@ -49,7 +49,7 @@ namespace Chroma
    * Arguments:
    *
    *  \param u        gauge field ( Read )
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param width    width of "shell" wave function ( Read )
    *  \param ItrGaus  number of iterations to approximate Gaussian ( Read )
    *  \param j_decay  direction of decay ( Read )

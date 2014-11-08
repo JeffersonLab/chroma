@@ -41,7 +41,7 @@ namespace Chroma
 	int max_path_length ; /*! maximum displacement path */
 	int p2_max ; /*! maximum p2  */
 	multi1d<GroupXML_t> chi ;     /*! dilutions */
-	string mass_label ; /*! a string flag maybe used in analysis*/
+	std::string mass_label ; /*! a std::string flag maybe used in analysis*/
 	GroupXML_t action ; /*! need to specify the action whose operator D we are computing the trace. The vectors may require manipulation if they come from an EO action and or if they are vectors that approximate the D^\dagger D invese (as those that EigCG produces are */
       } param;
     

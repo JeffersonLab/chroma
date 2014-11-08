@@ -35,8 +35,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, UnprecOvDWFermActArrayParams& param);
-  void write(XMLWriter& xml, const string& path, const UnprecOvDWFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, UnprecOvDWFermActArrayParams& param);
+  void write(XMLWriter& xml, const std::string& path, const UnprecOvDWFermActArrayParams& param);
 
 
 

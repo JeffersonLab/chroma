@@ -22,7 +22,7 @@ namespace Chroma
   {
     START_CODE();
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
     param = param_;
 
@@ -58,11 +58,11 @@ namespace Chroma
       QDP_abort(1);
     }
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
     END_CODE();
   }
 
-  //! Apply the the odd-odd block onto a source vector
+  //! Apply the the odd-odd block onto a source std::vector
   void 
   EvenOddPrecCloverOrbifoldLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					      enum PlusMinus isign) const
@@ -75,7 +75,7 @@ namespace Chroma
   }
 
 
-  //! Apply the the even-even block onto a source vector
+  //! Apply the the even-even block onto a source std::vector
   void 
   EvenOddPrecCloverOrbifoldLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 						enum PlusMinus isign) const
@@ -88,7 +88,7 @@ namespace Chroma
     END_CODE();
   }
 
-  //! Apply the inverse of the even-even block onto a source vector
+  //! Apply the inverse of the even-even block onto a source std::vector
   void 
   EvenOddPrecCloverOrbifoldLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 						   enum PlusMinus isign) const

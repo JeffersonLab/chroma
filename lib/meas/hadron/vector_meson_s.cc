@@ -37,7 +37,7 @@ private:
 
 /*! StaggeredVectorMesons
  *
- * This routine computes the three local vector mesons.
+ * This routine computes the three local std::vector mesons.
  * 
  * Caveats: i) It assumes that the propagators you give 
  *             have been computed in some spatially fixed gauge
@@ -46,7 +46,7 @@ private:
  *          ii) This means that there is only 
  *             8 propagators corresponding to the 8 corners of the 
  *             spatial cube. The props come in an array whose single
- *             index maps lexicographically to the corners of the cube.
+ *             index std::maps lexicographically to the corners of the cube.
  *             ie:  prop_index = 0,   hypercube_coord (0,0,0,0)
  *                  prop_index = 1,   hypercube_coord (1,0,0,0)
  *                  prop_index = 2,   hypercube_coord (0,1,0,0)
@@ -74,7 +74,7 @@ vector_meson::compute(
 
   if( Nd != 4 ) { 
     QDPIO::cerr << "The no of dimensions should be 4 for now. It is: " 
-		<< Nd << endl;
+		<< Nd << std::endl;
     QDP_abort(1);
   }
 
@@ -85,7 +85,7 @@ vector_meson::compute(
     break;
     
   default:
-    QDPIO::cerr << "staggeredVectors: j_decay must be 3 for just now. It is " << j_decay << endl;
+    QDPIO::cerr << "staggeredVectors: j_decay must be 3 for just now. It is " << j_decay << std::endl;
     QDP_abort(1);
   };
 
@@ -143,7 +143,7 @@ vector_meson::compute(
 
 
 /**
-     Compute the local vector meson correlators using a single
+     Compute the local std::vector meson correlators using a single
      local quark propagator.
 
  * I have checked this routine against the MILC code. 
@@ -161,7 +161,7 @@ vector_meson::compute(
 
   if( Nd != 4 ) { 
     QDPIO::cerr << "The no of dimensions should be 4 for now. It is: " 
-		<< Nd << endl;
+		<< Nd << std::endl;
     QDP_abort(1);
   }
 
@@ -172,7 +172,7 @@ vector_meson::compute(
     break;
     
   default:
-    QDPIO::cerr << "staggeredVectors: j_decay must be 3 for just now. It is " << j_decay << endl;
+    QDPIO::cerr << "staggeredVectors: j_decay must be 3 for just now. It is " << j_decay << std::endl;
     QDP_abort(1);
   };
 

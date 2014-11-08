@@ -34,7 +34,7 @@ namespace Chroma
 			const multi1d<int>& src,
 			const SftMom& phases,
 			XMLWriter& xml,
-			const string& xml_group)
+			const std::string& xml_group)
   {
     START_CODE();
   
@@ -90,7 +90,7 @@ namespace Chroma
     D1=U1;
 
 
-    // Pseudoscalar/vector meson blocks (these are degenerate)
+    // Pseudoscalar/std::vector meson blocks (these are degenerate)
 
     QDPIO::cout<<"Making B^+ meson blocks\n";
     HeavyMesonBlock H_U1_G5_0(Nt,U1,G5,antiQ1,NegEnergyProj);

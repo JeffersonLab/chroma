@@ -92,7 +92,7 @@ namespace Chroma {
     else { 
       tuneDslashP = false;
     }
-    QDPIO::cout << "tuneDslasP = " << tuneDslashP << endl;
+    QDPIO::cout << "tuneDslasP = " << tuneDslashP << std::endl;
 
     if( paramtop.count("GCRInnerParams") > 0 ) {
       innerParams = new GCRInnerSolverParams(paramtop, "./GCRInnerParams");

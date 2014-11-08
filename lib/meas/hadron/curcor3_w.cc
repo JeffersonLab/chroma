@@ -22,7 +22,7 @@ namespace Chroma {
  * This includes the "rho_1--rho_2" correlators used for O(a) improvement
 
  * For use with "rotated" propagators we added the possibility of also
- * computing the local vector current, when no_vec_cur = 4. In this
+ * computing the local std::vector current, when no_vec_cur = 4. In this
  * case the 3 local currents come last.
 
  * \param u               gauge field ( Read )
@@ -30,9 +30,9 @@ namespace Chroma {
  * \param quark_prop_2    second (anti-) quark propagator ( Read )
  * \param phases          fourier transform phase factors ( Read )
  * \param t0              timeslice coordinate of the source ( Read )
- * \param no_vec_cur      number of vector current types, 3 or 4 ( Read )
+ * \param no_vec_cur      number of std::vector current types, 3 or 4 ( Read )
  * \param xml             namelist file object ( Read )
- * \param xml_group       string used for writing xml data ( Read )
+ * \param xml_group       std::string used for writing xml data ( Read )
  *
  *         ____
  *         \
@@ -50,7 +50,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
 	     int t0,
 	     int no_vec_cur,
 	     XMLWriter& xml,
-	     const string& xml_group)
+	     const std::string& xml_group)
 {
   START_CODE();
 
@@ -82,7 +82,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
   {
     multi2d<Real> vector_current(no_vec_cur*(Nd-1), length);
 
-    /* Construct the 2*(Nd-1) non-local vector-current to rho correlators */
+    /* Construct the 2*(Nd-1) non-local std::vector-current to rho correlators */
     int kv = -1;
     int kcv = Nd-2;
 
@@ -113,7 +113,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
 //    Real dummy1 = Real(meson_eta[n]) / Real(2);
 	Real dummy1 = 0.5;
 
-	/* The nonconserved vector current first */
+	/* The nonconserved std::vector current first */
 	hsum = phases.sft(psi_sq);
 
 	push(xml_sink_mom, "momenta");
@@ -130,7 +130,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
 	    vector_current[kv][t_eff] = dummy1 * Real(hsum[t]);
 	  }
 
-	  /* The conserved vector current next */
+	  /* The conserved std::vector current next */
 	  hsum = sumMulti(chi_sq, phases.getSet());
 
 	  for(int t = 0; t < length; ++t)
@@ -143,7 +143,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
     }
 
 
-    /* Construct the O(a) improved vector-current to rho correlators,
+    /* Construct the O(a) improved std::vector-current to rho correlators,
        if desired */
     if ( no_vec_cur >= 3 )
     {
@@ -176,7 +176,7 @@ void curcor3(const multi1d<LatticeColorMatrix>& u,
     }
 
 
-    /* Construct the local vector-current to rho correlators, if desired */
+    /* Construct the local std::vector-current to rho correlators, if desired */
     if ( no_vec_cur >= 4 )
     {
       kv = 3*Nd-4;

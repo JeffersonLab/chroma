@@ -38,7 +38,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 	 const multi1d<int>& src_coord, 
 	 const SftMom& phases,
        	 XMLWriter& xml,
-	 const string& xml_group);
+	 const std::string& xml_group);
 
 void Qll(const multi1d<LatticeColorMatrix>& u, 
 	 const LatticePropagator& quark_prop1,
@@ -46,7 +46,7 @@ void Qll(const multi1d<LatticeColorMatrix>& u,
 	 const multi1d<int>& src_coord, 
 	 const SftMom& phases,
        	 XMLWriter& xml,
-	 const string& xml_group);
+	 const std::string& xml_group);
 
 //! Heavy Quark Propagator
 /*!

@@ -24,7 +24,7 @@ namespace Chroma
 
       if (j_decay < 0 || j_decay >= Nd)
       {
-	QDPIO::cerr << __func__ << ": j_decay out of bounds" << endl;
+	QDPIO::cerr << __func__ << ": j_decay out of bounds" << std::endl;
 	QDP_abort(1);
       }
 
@@ -62,7 +62,7 @@ namespace Chroma
 	if (! same)
 	{
 	  QDPIO::cerr << __func__ << ": the t_srce in the forward props are not all equal"
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
       }

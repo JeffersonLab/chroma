@@ -27,7 +27,7 @@ namespace Chroma
    * This routine is specific to Wilson fermions!
    *
    *                                                      ~      ~+
-   * This subroutine applies the unpreconditioned matrix  M  or  M   the vector
+   * This subroutine applies the unpreconditioned matrix  M  or  M   the std::vector
    * Psi,
    *
    *      	       	   {   ~
@@ -111,7 +111,7 @@ namespace Chroma
     //! Flopcounter
     unsigned long nFlops() const 
     { 
-      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
+      //      QDPIO::cout << "Flopcount Not Yet Implemented " << std::endl;
       return 0;
     }
 

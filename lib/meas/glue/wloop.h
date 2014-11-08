@@ -16,7 +16,7 @@ namespace Chroma
    * \param u      gauge field (Read)
    */
   void Wloop(XMLWriter& xml,
-	      const string& xml_group,
+	      const std::string& xml_group,
 	      const multi1d<LatticeColorMatrix>& u);
 
 }  // end namespace Chroma

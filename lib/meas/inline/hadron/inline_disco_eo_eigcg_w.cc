@@ -3,7 +3,7 @@
 /*! \file
  * \brief Inline measurement 3pt_prop
  *
- * This uses eo-preconditioning on the noise vector side as well as
+ * This uses eo-preconditioning on the noise std::vector side as well as
  * with the eig-cg vectors. NOTE THIS CODE DOES NOT WORK.          
  */
 
@@ -81,7 +81,7 @@ namespace Chroma{
     }
   
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, Params::Param_t& param){
+  void read(XMLReader& xml, const std::string& path, Params::Param_t& param){
       XMLReader paramtop(xml, path);
       
       int version;
@@ -102,13 +102,13 @@ namespace Chroma{
 	default :
 	  /**************************************************************/
 
-	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param){
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param){
       push(xml, path);
       
       int version = 1;
@@ -133,7 +133,7 @@ namespace Chroma{
     }
     
     //! Gauge field parameters
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
       
@@ -148,7 +148,7 @@ namespace Chroma{
     }
     
     //! Gauge field parameters
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input){
       push(xml, path);
       
       write(xml, "gauge_id"   , input.gauge_id   );
@@ -188,7 +188,7 @@ namespace Chroma{
 	}
       catch(const std::string& e) 
 	{
-	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
     }
@@ -254,7 +254,7 @@ namespace Chroma{
     {
       os << "ValOperator_t:\n";
       for (int i=0; i<d.op.size();i++)
-        os <<"     gamma["<<i<<"] = "<< d.op[i] << endl ;
+        os <<"     gamma["<<i<<"] = "<< d.op[i] << std::endl ;
       
       return os;
     }
@@ -316,24 +316,24 @@ namespace Chroma{
       //
       std::istringstream  xml_s(param.action.xml);
       XMLReader  fermacttop(xml_s);
-      QDPIO::cout << "FermAct = " << param.action.id << endl;
+      QDPIO::cout << "FermAct = " << param.action.id << std::endl;
       //
       // Try the factories
       //
       Handle< FermState< T,P,Q> > state ;
       try{
-	  QDPIO::cout << "Try the various Wilson fermion factories" << endl;
+	  QDPIO::cout << "Try the various Wilson fermion factories" << std::endl;
 	  // Generic Wilson-Type stuff
 	  Handle< FermionAction< T,P,Q > >
 	    Sf(TheFermionActionFactory::Instance().createObject(param.action.id,
 								fermacttop,
 								param.action.path));
 	  state = Sf->createState(u);//got the state
-	  QDPIO::cout << "Suitable factory found: compute the trace quark prop"<<endl;
+	  QDPIO::cout << "Suitable factory found: compute the trace quark prop"<<std::endl;
       }
       catch (const std::string& e){
 	QDPIO::cout << name 
-		    << ": caught exception instantiating the action: " << e << endl;
+		    << ": caught exception instantiating the action: " << e << std::endl;
       }
       
       // Now need to construct the operator
@@ -352,7 +352,7 @@ namespace Chroma{
 	return new EvenOddPrecCloverLinOp(state,cp) ;
       }
       else{
-	QDPIO::cout<<name<<" : Tough luck dude! No code for you..."<<endl ;
+	QDPIO::cout<<name<<" : Tough luck dude! No code for you..."<<std::endl ;
 	QDP_abort(1);
       }
       return NULL ;
@@ -366,7 +366,7 @@ namespace Chroma{
       int              Nvec  ;
     } ;
 
-    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+    void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
 		  const LatticeFermion& qbar,
 		  const LatticeFermion& q,
 		  const SftMom& p,
@@ -375,14 +375,14 @@ namespace Chroma{
 		  const multi1d<short int>& path,
 	 	  const int& max_path_length ){
       QDPIO::cout<<" Computing Operator with path length "<<path.size()
-		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+		 <<" on timeslice "<<t<<".   Path: "<<path <<std::endl;
       /**
 	 This do_disco routine should not be called, I don't think it's ever needed...
       
        **/
       ValOperator_t val ;
       KeyOperator_t key ;
-      pair<KeyOperator_t, ValOperator_t> kv ; 
+      std::pair<KeyOperator_t, ValOperator_t> kv ; 
       kv.first.t_slice = t ;
       if(path.size()==0){
 	kv.first.disp.resize(1);
@@ -406,11 +406,11 @@ namespace Chroma{
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
-	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 	
 	itbo = db.insert(kv);
         if( itbo.second ){
-	  QDPIO::cout<<"Inserting new entry in map\n";
+	  QDPIO::cout<<"Inserting new entry in std::map\n";
         }
         else{ // if insert fails, key already exists, so add result
           for(int i(0);i<kv.second.op.size();i++)
@@ -422,7 +422,7 @@ namespace Chroma{
 	QDPIO::cout<<" attempt to add new path. "
 		   <<" current path length is : "<<path.size();
 	multi1d<short int> new_path(path.size()+1);
-	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<std::endl;
 	for(int i(0);i<path.size();i++)
 	  new_path[i] = path[i] ;
 	for(int sign(-1);sign<2;sign+=2)
@@ -434,7 +434,7 @@ namespace Chroma{
 	      if(path[path.size()-1] == -new_path[path.size()])
 		back_track=true;
 	    if(!back_track){
-	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      QDPIO::cout<<" Added path: "<<new_path<<std::endl;
 	      LatticeFermion q_mu ;
 	      if(sign>0)
 		q_mu = shift(q, FORWARD, mu);
@@ -448,7 +448,7 @@ namespace Chroma{
       
     }// do_disco
 
-    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+    void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
 		  const LatticeFermion& qbar,
 		  const LatticeFermion& q,
 		  const Handle<EvenOddPrecLinearOperator<T,P,Q> >& Doo,
@@ -458,7 +458,7 @@ namespace Chroma{
 		  const multi1d<short int>& path,
 	 	  const int& max_path_length ){
       QDPIO::cout<<" Computing Operator with path length "<<path.size()
-		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+		 <<" on timeslice "<<t<<".   Path: "<<path <<std::endl;
       
       /** This version of do_disco is the one we call 
 	  
@@ -470,7 +470,7 @@ namespace Chroma{
       
       ValOperator_t val ;
       KeyOperator_t key ;
-      pair<KeyOperator_t, ValOperator_t> kv ; 
+      std::pair<KeyOperator_t, ValOperator_t> kv ; 
       kv.first.t_slice = t ;
       if(path.size()==0){
 	kv.first.disp.resize(1);
@@ -517,11 +517,11 @@ namespace Chroma{
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
-	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 	
 	itbo = db.insert(kv);
         if( itbo.second ){
-	  QDPIO::cout<<"Inserting new entry in map\n";
+	  QDPIO::cout<<"Inserting new entry in std::map\n";
         }
         else{ // if insert fails, key already exists, so add result
           for(int i(0);i<kv.second.op.size();i++)
@@ -533,7 +533,7 @@ namespace Chroma{
 	QDPIO::cout<<" attempt to add new path. "
 		   <<" current path length is : "<<path.size();
 	multi1d<short int> new_path(path.size()+1);
-	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<std::endl;
 	for(int i(0);i<path.size();i++)
 	  new_path[i] = path[i] ;
 	for(int sign(-1);sign<2;sign+=2)
@@ -545,7 +545,7 @@ namespace Chroma{
 	      if(path[path.size()-1] == -new_path[path.size()])
 		back_track=true;
 	    if(!back_track){
-	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      QDPIO::cout<<" Added path: "<<new_path<<std::endl;
 	      LatticeFermion q_mu ;
 	      if(sign>0)
 		q_mu = shift(q, FORWARD, mu);
@@ -559,7 +559,7 @@ namespace Chroma{
       
     }// do_disco
 
-    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+    void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
                   const Params::Param_t& param,
                   const P& u,
 		  const SftMom& p,
@@ -567,12 +567,12 @@ namespace Chroma{
 		  const Subset& trb,
 		  const multi1d<short int>& path){
       QDPIO::cout<<" Computing Operator with path length "<<path.size()
-		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+		 <<" on timeslice "<<t<<".   Path: "<<path <<std::endl;
       
       int max_path_length = param.max_path_length;
       ValOperator_t val ;
       KeyOperator_t key ;
-      pair<KeyOperator_t, ValOperator_t> kv ; 
+      std::pair<KeyOperator_t, ValOperator_t> kv ; 
       kv.first.t_slice = t ;
       if(path.size()==0){
 	kv.first.disp.resize(1);
@@ -614,11 +614,11 @@ namespace Chroma{
 	  kv.first.mom[i] = p.numToMom(m)[i] ;
 	
 	kv.second.op = foo[m];
-	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 	
 	itbo = db.insert(kv);
         if( itbo.second ){
-	  QDPIO::cout<<"Inserting new entry in map\n";
+	  QDPIO::cout<<"Inserting new entry in std::map\n";
         }
         else{ // if insert fails, key already exists, so add result
           for(int i(0);i<kv.second.op.size();i++)
@@ -628,7 +628,7 @@ namespace Chroma{
       
     }// do_disco
 
-    void do_disco(map< KeyOperator_t, ValOperator_t >& db,
+    void do_disco(std::map< KeyOperator_t, ValOperator_t >& db,
 		  CholeskyFactors Clsk , 
 		  multi1d<LatticeFermion>& vec,
 		  const Params::Param_t& param, 
@@ -640,12 +640,12 @@ namespace Chroma{
                   const multi1d<short int>& path){
 
       QDPIO::cout<<" Computing Operator with path length "<<path.size()
-		 <<" on timeslice "<<t<<".   Path: "<<path <<endl;
+		 <<" on timeslice "<<t<<".   Path: "<<path <<std::endl;
       int max_path_length = param.max_path_length;
       
       ValOperator_t val ;
       KeyOperator_t key ;
-      pair<KeyOperator_t, ValOperator_t> kv ; 
+      std::pair<KeyOperator_t, ValOperator_t> kv ; 
 
       kv.first.t_slice = t ;
       if(path.size()==0){
@@ -666,7 +666,7 @@ namespace Chroma{
 	DDvec[i].resize(Ns*Ns);
 	DDvec[i] = zero;
       }
-      cout<<"We've initialized DDvec!\n";
+      std::cout<<"We've initialized DDvec!\n";
 
       for(int i(0); i<ldb;i++){
 	LatticeFermion qtmp  = zero ;
@@ -710,8 +710,8 @@ namespace Chroma{
 #endif
 	  // and at this point, B is H^-1 Vdag Sdag gamma V, so
 	  // For debugging purposes, both r and info should be zero...
-	  QDPIO::cout<<"do_disco cpotrs r = "<<r<<endl;
-	  QDPIO::cout<<"do_disco cpotrs info = "<<info<<endl;
+	  QDPIO::cout<<"do_disco cpotrs r = "<<r<<std::endl;
+	  QDPIO::cout<<"do_disco cpotrs info = "<<info<<std::endl;
 
 	  //	  foo[m][g] = 0.0;
 	  for (int i(0); i<ldb;i++){
@@ -725,7 +725,7 @@ namespace Chroma{
 	
 	kv.second.op = foo[m];
 
-	pair<map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
+	std::pair<std::map< KeyOperator_t, ValOperator_t >::iterator, bool> itbo;
 	
 	itbo = db.insert(kv);
 	if( !(itbo.second) ){  // if insert fails, key already exists, so add result
@@ -733,14 +733,14 @@ namespace Chroma{
 	    itbo.first->second.op[i] += kv.second.op[i] ;
 	}
 	else
-	  QDPIO::cout<<"Inserting new entry in map\n";
+	  QDPIO::cout<<"Inserting new entry in std::map\n";
       }
 
       if(path.size()<max_path_length){
 	QDPIO::cout<<" attempt to add new path. "
 		   <<" current path length is : "<<path.size();
 	multi1d<short int> new_path(path.size()+1);
-	QDPIO::cout<<" new path length is : "<<new_path.size()<<endl;
+	QDPIO::cout<<" new path length is : "<<new_path.size()<<std::endl;
 	for(int i(0);i<path.size();i++)
 	  new_path[i] = path[i] ;
 	for(int sign(-1);sign<2;sign+=2)
@@ -752,7 +752,7 @@ namespace Chroma{
 	      if(path[path.size()-1] == -new_path[path.size()])
 		back_track=true;
  	    if(!back_track){
-	      QDPIO::cout<<" Added path: "<<new_path<<endl;
+	      QDPIO::cout<<" Added path: "<<new_path<<std::endl;
 	      multi1d<LatticeFermion> vec_mu(vec.size()) ;
 	      for(int j(0);j<vec.size();j++){
 		if(sign>0)
@@ -769,10 +769,10 @@ namespace Chroma{
 
     void ReadOPTEigCGVecs(multi1d<LatticeFermion>& vec,
 			    CholeskyFactors& Clsk, 
-			    const string& evecs_file)
+			    const std::string& evecs_file)
     {
       QDPIO::cout<<name<<" : Reading vecs from "
-		 << evecs_file <<endl ;
+		 << evecs_file <<std::endl ;
       StopWatch swatch;
       swatch.reset();
       swatch.start();
@@ -803,11 +803,11 @@ namespace Chroma{
       read(to, record_xml, Clsk.HU);
       swatch.stop();
       QDPIO::cout<<name<<" : Time to read vecs= "
-		 << swatch.getTimeInSeconds() <<" secs "<<endl ;
+		 << swatch.getTimeInSeconds() <<" secs "<<std::endl ;
     }
 
     // PRchi returns chitilde = (1 - V Hinv Vdag Sdag S)chi given
-    // an input chi vector, and of course the vectors and H. 
+    // an input chi std::vector, and of course the vectors and H. 
     void PRchi(multi1d<multi1d< multi1d<LatticeFermion> > >& quarkstilde,
 	       const multi1d< Handle< DilutionScheme<LatticeFermion> > >& quarks,
 	       Handle<EvenOddPrecLinearOperator<T,P,Q> >& Doo,
@@ -816,7 +816,7 @@ namespace Chroma{
       char U = 'U';
       int info;
 
-      int ldb = vec.size();//This is the offset that will for now be the size of each vector
+      int ldb = vec.size();//This is the offset that will for now be the size of each std::vector
 
       Set timerb;
       timerb.make(TimeSliceRBFunc(3));
@@ -832,7 +832,7 @@ namespace Chroma{
 	      /**
 		 Here, we are calculating 
 		   Sdag S chi
-		 where chi (the solution) is Sinv eta, and eta is the noise vector (the source)
+		 where chi (the solution) is Sinv eta, and eta is the noise std::vector (the source)
 		 Thus, we can save time by using the source, and calculate
 		   Sdag eta,
 		 and that's what is being done here
@@ -853,8 +853,8 @@ namespace Chroma{
 #else
 	  int r = QDPLapack::zpotrs(U, Clsk.Nvec, Nrhs, Clsk.HU, Clsk.ldh, B, ldb, info);
 #endif
-	  QDPIO::cout<<"PRchi cpotrs r = "<<r<<endl;
-	  QDPIO::cout<<"PRchi cpotrs info = "<<info<<endl;
+	  QDPIO::cout<<"PRchi cpotrs r = "<<r<<std::endl;
+	  QDPIO::cout<<"PRchi cpotrs info = "<<info<<std::endl;
 
 	  for(int j = 0 ; j <  Nrhs ; j++){
 	    LatticeFermion vB = zero; //B[j][0]*vec[0];
@@ -862,7 +862,7 @@ namespace Chroma{
 	    for(int i(0); i<ldb;i++)
 	      vB += B[j][i]*vec[i];
 	    quarkstilde[n][it][j] = q - vB;
-	    cout<<"Norm of PRchi: "<<norm2(quarkstilde[n][it][j])<<endl;
+	    std::cout<<"Norm of PRchi: "<<norm2(quarkstilde[n][it][j])<<std::endl;
 	  }
 	}
       }
@@ -893,7 +893,7 @@ namespace Chroma{
     {
       // If xml file not empty, then use alternate
       if (params.xml_file != ""){
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 	
 	push(xml_out, "discoEigCG");
 	write(xml_out, "update_no", update_no);
@@ -933,13 +933,13 @@ namespace Chroma{
       catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << InlineDiscoEoEigCGEnv::name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-      catch (const string& e) 
+      catch (const std::string& e) 
 	{
-	  QDPIO::cerr << name << ": map call failed: " << e 
-		      << endl;
+	  QDPIO::cerr << name << ": std::map call failed: " << e 
+		      << std::endl;
 	  QDP_abort(1);
 	}
       const multi1d<LatticeColorMatrix>& u = 
@@ -948,7 +948,7 @@ namespace Chroma{
       push(xml_out, "discoEigCG");
       write(xml_out, "update_no", update_no);
       
-      QDPIO::cout << name << ": Disconnected diagrams with eigCG vectors" << endl;
+      QDPIO::cout << name << ": Disconnected diagrams with eigCG vectors" << std::endl;
       
       proginfo(xml_out);    // Print out basic program info
       
@@ -987,7 +987,7 @@ namespace Chroma{
 	  const GroupXML_t& dil_xml = params.param.chi[n];
 	  std::istringstream  xml_d(dil_xml.xml);
 	  XMLReader  diltop(xml_d);
-	  QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
+	  QDPIO::cout << "Dilution type = " << dil_xml.id << std::endl;
 	  quarks[n] = 
 	    TheFermDilutionSchemeFactory::Instance().createObject(dil_xml.id, 
 								  diltop, 
@@ -995,7 +995,7 @@ namespace Chroma{
 	}
       }
       catch(const std::string& e){
-	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << std::endl;
 	QDP_abort(1);
       }
       
@@ -1008,7 +1008,7 @@ namespace Chroma{
       for (int n = 1 ; n < N_quarks ; n++){
 	if (quarks[0]->getCfgInfo() != quarks[n]->getCfgInfo()){
 	  QDPIO::cerr << name << " : Quarks do not contain the same cfg info";
-	  QDPIO::cerr << ", quark "<< n << endl;
+	  QDPIO::cerr << ", quark "<< n << std::endl;
 	  QDP_abort(1);
 	}		
       }
@@ -1032,7 +1032,7 @@ namespace Chroma{
 	  QDPIO::cerr << name << " : Quarks do not contain the same";
 	  QDPIO::cerr << " cfg info as the gauge field." ;
 	  QDPIO::cerr << "gauge: XX"<<cfgInfo<<"XX quarks: XX" ;
-	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  endl;
+	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  std::endl;
 	  QDP_abort(1);
 	}
       }      
@@ -1051,12 +1051,12 @@ namespace Chroma{
       // and thier decay directions must be the same 
       for(int n = 1 ; n < quarks.size(); n++){
 	if(toBool(quarks[n]->getSeed()==quarks[0]->getSeed())){
-	  QDPIO::cerr << name << ": error, quark seeds are the same" << endl;
+	  QDPIO::cerr << name << ": error, quark seeds are the same" << std::endl;
 	  QDP_abort(1);
 	}
 	
 	if(toBool(quarks[n]->getDecayDir()!=quarks[0]->getDecayDir())){
-	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<endl;
+	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -1070,7 +1070,7 @@ namespace Chroma{
       if (params.named_obj.evecs_file!="")
 	ReadOPTEigCGVecs(vec,Clsk,params.named_obj.evecs_file);
       
-      map< KeyOperator_t, ValOperator_t > data ;
+      std::map< KeyOperator_t, ValOperator_t > data ;
       
       multi1d<multi1d< multi1d<LatticeFermion> > > quarkstilde(quarks.size());
       for(int n(0);n<quarks.size();n++){
@@ -1092,25 +1092,25 @@ namespace Chroma{
       for(int n(0);n<quarks.size();n++){
 	for (int it(0) ; it < quarks[n]->getNumTimeSlices() ; it++){
 	  int t = quarks[n]->getT0(it) ;
-	  QDPIO::cout<<" Doing quark: "<< n <<endl ;
+	  QDPIO::cout<<" Doing quark: "<< n <<std::endl ;
 	  QDPIO::cout<<"   quark: "<< n <<" has "<<quarks[n]->getDilSize(it);
-	  QDPIO::cout<<" dilutions on time slice "<< t <<endl ;
+	  QDPIO::cout<<" dilutions on time slice "<< t <<std::endl ;
 	  for(int i = 0 ; i <  quarks[n]->getDilSize(it) ; i++){
-	    QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
+	    QDPIO::cout<<"   Doing dilution : "<<i<<std::endl ;
 	    multi1d<short int> d ;
 	    // Now, I want to do the two trace terms that have the chitilde. Thus
 	    // The q chosen should be from quarkstilde = PR*quarks->dilutedSolution()
 	    LatticeFermion qbar  = quarks[n]->dilutedSource(it,i);
 	    LatticeFermion q     = quarkstilde[n][it][i];
-	    QDPIO::cout<<"   Starting recursion "<<endl ;
+	    QDPIO::cout<<"   Starting recursion "<<std::endl ;
 	    // this does both terms with the noise vectors
 	    // the 1 means to do sum over odd sites...
 	    do_disco(data, qbar, q, Doo, phases, t, timerb[2*t+1], d, params.param.max_path_length);
 
 	    QDPIO::cout<<" done with recursion! "
-		       <<"  The length of the path is: "<<d.size()<<endl ;
+		       <<"  The length of the path is: "<<d.size()<<std::endl ;
 	  }
-	  QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
+	  QDPIO::cout<<" Done with dilutions for quark: "<<n <<std::endl ;
 	}
       }
 
@@ -1118,7 +1118,7 @@ namespace Chroma{
       // quarks...
       SerialDBKey <KeyOperator_t> key ;
       SerialDBData<ValOperator_t> val ;
-      map< KeyOperator_t, ValOperator_t >::iterator it;
+      std::map< KeyOperator_t, ValOperator_t >::iterator it;
 
       for(it=data.begin();it!=data.end();it++){
 	key.key()  = it->first  ;
@@ -1143,12 +1143,12 @@ namespace Chroma{
 	for (int it(0) ; it < quarks[0]->getNumTimeSlices() ; it++){
 	  multi1d<short int> d ;
 	  int t = quarks[0]->getT0(it) ;
-	  QDPIO::cout<<"   Starting recursion again"<<endl ;
+	  QDPIO::cout<<"   Starting recursion again"<<std::endl ;
 	  // Part with deflation..
 	  do_disco(data, Clsk, vec, params.param, Doo, u, t, timerb[2*t+1], phases,d);
 	  
 	  QDPIO::cout<<" done with recursion! "
-		     <<"  The length of the path is: "<<d.size()<<endl ;
+		     <<"  The length of the path is: "<<d.size()<<std::endl ;
 	}
       }
             
@@ -1161,7 +1161,7 @@ namespace Chroma{
 	XMLBufferWriter file_xml;
 	
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("discoEigElemOp"));
+	write(file_xml, "id", std::string("discoEigElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", decay_dir);
 	write(file_xml, "Params", params.param);
@@ -1193,9 +1193,9 @@ namespace Chroma{
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
       
       END_CODE();
     } 

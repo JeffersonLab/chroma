@@ -10,7 +10,7 @@
 
 namespace Chroma 
 { 
-//! Apply the GW operator onto a source vector
+//! Apply the GW operator onto a source std::vector
 /*! \ingroup linop
  *
  */
@@ -42,7 +42,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
 }
 
 
-//! Apply the GW operator onto a source vector
+//! Apply the GW operator onto a source std::vector
 /*! \ingroup linop
  *
  */
@@ -127,8 +127,8 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
 	break;
       case CH_NONE:
 	{
-	  ostringstream error_message;
-	  error_message << "Should not use lovddag_double_pass unless the chirality is either CH_PLUS or CH_MINUS" << endl;
+	  std::ostringstream error_message;
+	  error_message << "Should not use lovddag_double_pass unless the chirality is either CH_PLUS or CH_MINUS" << std::endl;
 	  throw error_message.str();
 	}
 	break;
@@ -438,7 +438,7 @@ void lovddag_double_pass::operator() (LatticeFermion& chi,
   /*  chi <-  (1/4)*(1-m_q^2) * chi  */
   ftmp = Real(0.25) * (Real(1) - m_q*m_q);
   chi *= ftmp;	        /* 2 Nc Ns  flops */
-  QDPIO::cout << "Overlap Inner Solve (lovddag_double_pass(" << ichiral << ")) = " << k << " iterations" << endl;
+  QDPIO::cout << "Overlap Inner Solve (lovddag_double_pass(" << ichiral << ")) = " << k << " iterations" << std::endl;
 
   END_CODE();
 }

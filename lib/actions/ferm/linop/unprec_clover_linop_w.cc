@@ -18,14 +18,14 @@ namespace Chroma
   void UnprecCloverLinOp::create(Handle< FermState<T,P,Q> > fs,
 				 const CloverFermActParams& param_)
   {
-    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    //   QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
     param = param_;
 
     A.create(fs, param);
     D.create(fs, param.anisoParam);
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
 
 

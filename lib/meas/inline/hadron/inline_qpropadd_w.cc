@@ -13,7 +13,7 @@
 namespace Chroma 
 { 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineQpropAddEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineQpropAddEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -25,7 +25,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineQpropAddEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineQpropAddEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -88,7 +88,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -118,7 +118,7 @@ namespace Chroma
       push(xml_out, "qpropadd");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << "QPROPADD: propagator transformation utility" << endl;
+      QDPIO::cout << "QPROPADD: propagator transformation utility" << std::endl;
 
       // Write out the input
       params.writeXML(xml_out, "Input");
@@ -131,7 +131,7 @@ namespace Chroma
       LatticePropagator propA ;
       LatticePropagator propB ;
       LatticePropagator propApB ;
-      QDPIO::cout << "Snarf the props from a named buffer" << endl;
+      QDPIO::cout << "Snarf the props from a named buffer" << std::endl;
       try
       {
 	// Try the cast to see if this is a valid source
@@ -145,12 +145,12 @@ namespace Chroma
       catch (std::bad_cast)
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
+	QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -164,7 +164,7 @@ namespace Chroma
        */
       try
       {
-	QDPIO::cout << "Attempt to store sequential source" << endl;
+	QDPIO::cout << "Attempt to store sequential source" << std::endl;
 
 
 	// Store the seqsource
@@ -173,24 +173,24 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.propApB).setFileXML(propA_file_xml);
 	TheNamedObjMap::Instance().get(params.named_obj.propApB).setRecordXML(propA_record_xml);
 
-	QDPIO::cout << "Propagator sum successfully stored"  << endl;
+	QDPIO::cout << "Propagator sum successfully stored"  << std::endl;
       }
       catch (std::bad_cast)
       {
 	QDPIO::cerr << name << ": dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error storing seqsource: " << e << endl;
+	QDPIO::cerr << name << ": error storing seqsource: " << e << std::endl;
 	QDP_abort(1);
       }
 
 
       pop(xml_out);   // qpropadd
         
-      QDPIO::cout << "QpropAdd ran successfully" << endl;
+      QDPIO::cout << "QpropAdd ran successfully" << std::endl;
 
       END_CODE();
     }

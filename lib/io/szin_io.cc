@@ -71,7 +71,7 @@ namespace Chroma
 
 
   // Source header read
-  void read(XMLReader& xml, const string& path, SzinGauge_t& header)
+  void read(XMLReader& xml, const std::string& path, SzinGauge_t& header)
   {
     XMLReader paramtop(xml, path);
 
@@ -114,7 +114,7 @@ namespace Chroma
 
 
   //! Source header writer
-  void write(XMLWriter& xml, const string& path, const SzinGauge_t& header)
+  void write(XMLWriter& xml, const std::string& path, const SzinGauge_t& header)
   {
     push(xml, path);
 

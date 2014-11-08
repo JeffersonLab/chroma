@@ -27,7 +27,7 @@ namespace Chroma {
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -44,8 +44,8 @@ namespace Chroma {
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -56,7 +56,7 @@ namespace Chroma {
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *
@@ -92,7 +92,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
 
   Real chi_sq =  Real(norm2(chi_internal,s));
 
-  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << std::endl;
   Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
   //                                            
@@ -109,7 +109,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
   for(int n=0; n < N; n++) {
     Double norm_r = norm2(r[n],s);
     if( toBool( norm_r > Double(1.0e-20)) ) {
-      QDPIO::cout << "Iteration 0  r[" << n << "] = " << norm_r << endl;
+      QDPIO::cout << "Iteration 0  r[" << n << "] = " << norm_r << std::endl;
     }
   }
 #endif
@@ -123,7 +123,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
   //  Cp = |r[0]|^2
   Double cp = norm2(r, s);   	       	   /* 2 Nc Ns  flops */
 
-  QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+  QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
 
   //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
   if ( toBool(cp  <=  rsd_sq) )
@@ -172,7 +172,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
     for(int n=0; n < N; n++) {
       Double norm_r = norm2(r[n],s);
       if( toBool( norm_r > Double(1.0e-20)) )
-	QDPIO::cout << "Iteration " << k << " r[" << n << "] = " << norm_r << endl;
+	QDPIO::cout << "Iteration " << k << " r[" << n << "] = " << norm_r << std::endl;
     }
 #endif
 
@@ -181,7 +181,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
     //  cp  =  | r[k] |**2
     cp = norm2(r, s);	                /* 2 Nc Ns  flops */
 
-    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 
     if ( toBool(cp  <=  rsd_sq) )
     {
@@ -194,7 +194,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
     //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
     b = Real(cp) / Real(c);
 #if 1
-    QDPIO::cout << "InvCGev: k = " << k << "  alpha = " << a << "  beta = " << b << endl;
+    QDPIO::cout << "InvCGev: k = " << k << "  alpha = " << a << "  beta = " << b << std::endl;
 #endif 
 
     //  p[k+1] := r[k] + b[k+1] p[k]
@@ -202,7 +202,7 @@ void InvCG1_a(const LinearOperatorArray<T>& A,
       p[n][s] = r[n] + b*p[n];	/* Nc Ns  flops */
   }
   n_count = MaxCG;
-  QDPIO::cerr << "Nonconvergence Warning" << endl;
+  QDPIO::cerr << "Nonconvergence Warning" << std::endl;
   revertFromFastMemoryHint(psi,true);
   END_CODE();
   return;

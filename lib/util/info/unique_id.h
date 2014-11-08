@@ -14,7 +14,7 @@ namespace Chroma
   /*!
    * \ingroup info
    *
-   *  The id is return type a string. This gives maximal flexibility allowing
+   *  The id is return type a std::string. This gives maximal flexibility allowing
    *  the way the ID is generated to change in the future.
    */
   std::string uniqueId();

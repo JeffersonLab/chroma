@@ -26,7 +26,6 @@
 #include "util/gauge/reunit.h"
 
 //#include <util_quda.h>
-using namespace std;
 
 namespace Chroma
 {
@@ -73,7 +72,7 @@ namespace Chroma
     {
       START_CODE();
       
-      QDPIO::cout << "LinOpSysSolverQUDANEF:" << endl;
+      QDPIO::cout << "LinOpSysSolverQUDANEF:" << std::endl;
       
       // FOLLOWING INITIALIZATION in test QUDA program
       
@@ -138,7 +137,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 #else
-      QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
+      QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << std::endl;
       q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
       q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
 #endif
@@ -204,7 +203,7 @@ namespace Chroma
 
       // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	QDPIO::cout << "Fixing Temporal Gauge" << std::endl;
 	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
@@ -229,15 +228,15 @@ namespace Chroma
 	solver_string = "CG";
 	break;
       case BICGSTAB:
-	QDPIO::cerr << "Solver BICGSTAB not supported for MDWF" << endl;
+	QDPIO::cerr << "Solver BICGSTAB not supported for MDWF" << std::endl;
 	QDP_abort(1);
 	break;
       case GCR:
-	QDPIO::cerr << "Solver GCR not supported for MDWF" << endl;
+	QDPIO::cerr << "Solver GCR not supported for MDWF" << std::endl;
 	QDP_abort(1);
 	break;
       default:
-	QDPIO::cerr << "Unknown Solver type" << endl;
+	QDPIO::cerr << "Unknown Solver type" << std::endl;
 	QDP_abort(1);
 	break;
       }
@@ -248,18 +247,18 @@ namespace Chroma
       quda_inv_param.Ls=invParam.NEFParams.N5;
       // Mike made these static so no need to alloc them. 
       if ( invParam.NEFParams.N5 >= QUDA_MAX_DWF_LS ) { 
-	QDPIO::cerr << "LS can be at most " << QUDA_MAX_DWF_LS << endl;
+	QDPIO::cerr << "LS can be at most " << QUDA_MAX_DWF_LS << std::endl;
 	QDP_abort(1);
       }
       
       // Copy b5 and c5 into static array
-      QDPIO::cout << "Ls from matrix: " << A->size() << endl;
-      QDPIO::cout << "Ls from params: " << invParam.NEFParams.N5 << endl;
-      QDPIO::cout << "Ls from quda: " << quda_inv_param.Ls << endl;
+      QDPIO::cout << "Ls from matrix: " << A->size() << std::endl;
+      QDPIO::cout << "Ls from params: " << invParam.NEFParams.N5 << std::endl;
+      QDPIO::cout << "Ls from quda: " << quda_inv_param.Ls << std::endl;
       for(unsigned int s = 0; s < quda_inv_param.Ls; s++){
 	quda_inv_param.b_5[s] = toDouble(invParam.NEFParams.b5[s]);
 	quda_inv_param.c_5[s] = toDouble(invParam.NEFParams.c5[s]);
-	QDPIO::cout << " b5[" <<s<<"] = " << quda_inv_param.b_5[s] << "   c5[" << s << "] = " << quda_inv_param.c_5[s] << endl;
+	QDPIO::cout << " b5[" <<s<<"] = " << quda_inv_param.b_5[s] << "   c5[" << s << "] = " << quda_inv_param.c_5[s] << std::endl;
       }
 	  
       quda_inv_param.tol = toDouble(invParam.RsdTarget);
@@ -281,7 +280,7 @@ namespace Chroma
       }
 
       //only symmetric DWF supported at the moment:
-      QDPIO::cout << "Using Symmetric Linop: A_oo - D_oe A^{-1}_ee D_eo" << endl;
+      QDPIO::cout << "Using Symmetric Linop: A_oo - D_oe A^{-1}_ee D_eo" << std::endl;
       quda_inv_param.matpc_type = QUDA_MATPC_EVEN_EVEN;
       quda_inv_param.dagger = QUDA_DAG_NO;
       quda_inv_param.mass_normalization = QUDA_KAPPA_NORMALIZATION;
@@ -294,7 +293,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 #else
-      QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << endl;
+      QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << std::endl;
       quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
       quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
@@ -302,11 +301,11 @@ namespace Chroma
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
-	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
 	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
-	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
 
@@ -330,7 +329,7 @@ namespace Chroma
       quda_inv_param.sp_pad = 0;
       quda_inv_param.cl_pad = 0;
       
-      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+      QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
       quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
       quda_inv_param.tol_precondition = 1.0e-1;
       quda_inv_param.maxiter_precondition = 1000;
@@ -366,7 +365,7 @@ namespace Chroma
     //! Destructor is automatic
     ~LinOpSysSolverQUDANEF() 
     {
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
     }
 
@@ -426,11 +425,11 @@ namespace Chroma
 	  
 	  if ( d==0 ) { 
 	    // Apply A to in2
-	    QDPIO::cout << "DOing Mat" << endl;
+	    QDPIO::cout << "DOing Mat" << std::endl;
 	    (*A)(out2, in2, PLUS);
 	  }
 	  else {
-	    QDPIO::cout << "Doing MatDag" << endl;
+	    QDPIO::cout << "Doing MatDag" << std::endl;
 	    (*A)(out2, in2, MINUS);
 	  }
 	    
@@ -463,7 +462,7 @@ namespace Chroma
 	  for(int s=0; s < this->size();s++) { 
 	    out1[s] *= invTwoKappaB;
 	    
-	    QDPIO::cout << "s=" << s << "  diff=" << norm2(out2[s]-out1[s]) << endl;
+	    QDPIO::cout << "s=" << s << "  diff=" << norm2(out2[s]-out1[s]) << std::endl;
 	  }
 
 
@@ -475,33 +474,33 @@ namespace Chroma
       }
 #endif
 
-      QDPIO::cout << "Norm of chi = " << norm2(chi,rb[1]) << endl;
-      QDPIO::cout << "TwoKappa = " << twoKappaB << "   invTwoKappa_b = " << invTwoKappaB << endl;
+      QDPIO::cout << "Norm of chi = " << norm2(chi,rb[1]) << std::endl;
+      QDPIO::cout << "TwoKappa = " << twoKappaB << "   invTwoKappa_b = " << invTwoKappaB << std::endl;
     
       if ( invParam.axialGaugeP ) { 
 	multi1d<T> g_chi( this->size());
 	multi1d<T> g_psi( this->size());
 
 	// Gauge Fix source and initial guess
-	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
 	for(unsigned int s=0; s<invParam.NEFParams.N5; s++){
 	  g_chi[s][ rb[1] ]  = GFixMat * chi[s];
 	  g_psi[s][ rb[1] ]  = GFixMat * psi[s];
 	}
-	QDPIO::cout << "Solving" << endl;
+	QDPIO::cout << "Solving" << std::endl;
 	res = qudaInvert(g_chi,g_psi);      
 	for(int s=0; s < this->size(); s++) {
 	  g_psi[s][rb[1]] *= twoKappaB;
 	}
 
-	QDPIO::cout << "Untransforming solution." << endl;
+	QDPIO::cout << "Untransforming solution." << std::endl;
 	for(unsigned int s=0; s<invParam.NEFParams.N5; s++){
 	  psi[s][ rb[1] ]  = adj(GFixMat)*g_psi[s];
 	}
 	
       }
       else { 
-	QDPIO::cout << "Calling qudaInvert" << endl;
+	QDPIO::cout << "Calling qudaInvert" << std::endl;
 	res = qudaInvert(chi,psi);      
 	for(int s=0; s < this->size(); s++) {
 	  psi[s][rb[1]] *= twoKappaB;
@@ -533,13 +532,13 @@ namespace Chroma
 	Double rel_resid = sqrt(r_norm/b_norm);
 
 	res.resid = resid;
-	QDPIO::cout << "QUDA_"<< solver_string <<"_NEF_SOLVER: " << res.n_count << " iterations. Max. Rsd = " << res.resid << " Max. Relative Rsd = " << rel_resid << endl;
+	QDPIO::cout << "QUDA_"<< solver_string <<"_NEF_SOLVER: " << res.n_count << " iterations. Max. Rsd = " << res.resid << " Max. Relative Rsd = " << rel_resid << std::endl;
 
 
 	// Convergence Check/Blow Up
 	if ( ! invParam.SilentFailP ) { 
 	  if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-	    QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
+	    QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl; 
 	    QDP_abort(1);
 	  }
 

@@ -53,7 +53,7 @@ namespace Chroma
 
 
   //! Reader for parameters
-  void read(XMLReader& xml, const string& path, InlineHeavyLightContParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineHeavyLightContParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -66,7 +66,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -77,7 +77,7 @@ namespace Chroma
 
 
   //! Writer for parameters
-  void write(XMLWriter& xml, const string& path, const InlineHeavyLightContParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineHeavyLightContParams::Param_t& param)
   {
     push(xml, path);
 
@@ -93,7 +93,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineHeavyLightContParams::NamedObject_t::Props_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineHeavyLightContParams::NamedObject_t::Props_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -115,7 +115,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineHeavyLightContParams::NamedObject_t::Props_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineHeavyLightContParams::NamedObject_t::Props_t& input)
   {
     push(xml, path);
 
@@ -130,7 +130,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineHeavyLightContParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineHeavyLightContParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -139,7 +139,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineHeavyLightContParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineHeavyLightContParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -181,7 +181,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -206,15 +206,15 @@ namespace Chroma
     struct SinkPropContainer_t
     {
       ForwardProp_t prop_header;
-      string quark_propagator_id;
+      std::string quark_propagator_id;
       Real Mass;
     
       multi1d<int> bc; 
     
-      string source_type;
-      string source_disp_type;
-      string sink_type;
-      string sink_disp_type;
+      std::string source_type;
+      std::string source_disp_type;
+      std::string sink_type;
+      std::string sink_disp_type;
     };
 
 
@@ -250,7 +250,7 @@ namespace Chroma
 	// Try to invert this record XML into a ChromaProp struct
 	// Also pull out the id of this source
 	{
-	  string xpath;
+	  std::string xpath;
 	  read(prop_record_xml, "/SinkSmear", s.prop_header);
 	  
 	  read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", s.source_type);
@@ -271,13 +271,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineHeavyLightContEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << InlineHeavyLightContEnv::name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -285,12 +285,12 @@ namespace Chroma
       // Hunt around to find the mass
       // NOTE: this may be problematic in the future if actions are used with no
       // clear def. of a Mass
-      QDPIO::cout << "Try action and mass" << endl;
+      QDPIO::cout << "Try action and mass" << std::endl;
       s.Mass = getMass(s.prop_header.prop_header.fermact);
       s.bc = getFermActBoundary(s.prop_header.prop_header.fermact);
 
-      QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << endl;
-      QDPIO::cout << "Mass = " << s.Mass << endl;
+      QDPIO::cout << "FermAct = " << s.prop_header.prop_header.fermact.id << std::endl;
+      QDPIO::cout << "Mass = " << s.Mass << std::endl;
     }
 
 
@@ -299,33 +299,33 @@ namespace Chroma
 		      InlineHeavyLightContParams::NamedObject_t::Props_t sink_pair, 
 		      InlineHeavyLightContParams::Param_t params)
     {
-      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.first_id << endl;
+      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.first_id << std::endl;
       readSinkProp(s.sink_prop_1, sink_pair.first_id);
-      QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
 
-      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.second_id << endl;
+      QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.second_id << std::endl;
       readSinkProp(s.sink_prop_2, sink_pair.second_id);
-      QDPIO::cout << "Forward propagator successfully parsed" << endl;
+      QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
 
       if (sink_pair.third_id != "None"){
-	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.third_id << endl;
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.third_id << std::endl;
 	readSinkProp(s.sink_prop_3, sink_pair.third_id);
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+	QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
       }
       else{
-	QDPIO::cout << "Using "<<sink_pair.second_id <<" as dummy spectator." << endl;
+	QDPIO::cout << "Using "<<sink_pair.second_id <<" as dummy spectator." << std::endl;
         readSinkProp(s.sink_prop_3, sink_pair.second_id);
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+	QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
       }
       if (sink_pair.heavy_id1 != "Static"){
-	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.heavy_id1 << endl;
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.heavy_id1 << std::endl;
         readSinkProp(s.heavy_prop_1, sink_pair.heavy_id1);
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+	QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
       }
       if (sink_pair.heavy_id2 != "Static"){
-	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.heavy_id2 << endl;
+	QDPIO::cout << "Attempt to parse forward propagator = " << sink_pair.heavy_id2 << std::endl;
         readSinkProp(s.heavy_prop_2, sink_pair.heavy_id2);
-	QDPIO::cout << "Forward propagator successfully parsed" << endl;
+	QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
       }
     }
   } // namespace anonymous
@@ -340,7 +340,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "HeavyLightCont");
       write(xml_out, "update_no", update_no);
@@ -377,13 +377,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineHeavyLightContEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineHeavyLightContEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineHeavyLightContEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -393,13 +393,13 @@ namespace Chroma
     write(xml_out, "update_no", update_no);
 
     QDPIO::cout << " HeavyLightCont: Contractions for Wilson-like fermions" ;
-    QDPIO::cout << endl;
-    QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+    QDPIO::cout << std::endl;
+    QDPIO::cout << std::endl << "     Gauge group: SU(" << Nc << ")" << std::endl;
     QDPIO::cout << "     volume: " << Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << Layout::lattSize()[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -452,7 +452,7 @@ namespace Chroma
       {
 	if (all_sinks.sink_prop_2.prop_header.source_header.j_decay != j_decay)
 	  {
-	    QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	    QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	    QDP_abort(1);
 	  }
 	/**
@@ -460,12 +460,12 @@ namespace Chroma
 	if ((all_sinks.heavy_prop_1.prop_header.source_header.t_source != t01) 
 	|| (all_sinks.heavy_prop_1.prop_header.source_header.t_source != t02))
 	{
-	QDPIO::cerr << "Error!! Heavy quark 1 must have same t_source as one of the light propagators " << endl;
+	QDPIO::cerr << "Error!! Heavy quark 1 must have same t_source as one of the light propagators " << std::endl;
 	QDP_abort(1);
 	}
 	if (all_sinks.heavy_prop_1.prop_header.source_header.j_decay != j_decay)
 	{
-	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	QDP_abort(1);
 	}
 	}
@@ -473,30 +473,30 @@ namespace Chroma
 	if ((all_sinks.heavy_prop_2.prop_header.source_header.t_source != t01) 
 	|| (all_sinks.heavy_prop_2.prop_header.source_header.t_source != t02))
 	{
-	QDPIO::cerr << "Error!! Heavy quark 2 must have same t_source as one of the light propagators " << endl;
+	QDPIO::cerr << "Error!! Heavy quark 2 must have same t_source as one of the light propagators " << std::endl;
 	QDP_abort(1);
 	}
 	  if (all_sinks.heavy_prop_2.prop_header.source_header.j_decay != j_decay)
 	  {
-	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	  }
 	  }
 	
 	if (all_sinks.sink_prop_2.bc[j_decay] != bc_spec)
 	  {
-	    QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	    QDPIO::cerr << "Error!! bc must be the same for all propagators " << std::endl;
 	    QDP_abort(1);
 	  }
 	if (params.param.FourPt){
 	  if (all_sinks.sink_prop_3.prop_header.source_header.j_decay != j_decay)
 	    {
-	      QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	      QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	      QDP_abort(1);
 	    }
 	  if (all_sinks.sink_prop_3.bc[j_decay] != bc_spec)
 	    {
-	      QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	      QDPIO::cerr << "Error!! bc must be the same for all propagators " << std::endl;
 	      QDP_abort(1);
 	    }
 	}
@@ -552,13 +552,13 @@ namespace Chroma
 	
 	push(xml_out, "SourceSinkType");
 	{
-	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << std::endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << std::endl;
 	  if (params.param.FourPt){
-	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << std::endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << std::endl;
 	  }
 	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
 	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
@@ -588,7 +588,7 @@ namespace Chroma
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.sink_prop_3.quark_propagator_id);
 	
 	// Construct group name for output
-	string src_type;
+	std::string src_type;
 	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	  src_type = "Point";
 	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
@@ -597,11 +597,11 @@ namespace Chroma
 	  src_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string snk_type;
+	std::string snk_type;
 	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	  snk_type = "Point";
 	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
@@ -610,13 +610,13 @@ namespace Chroma
 	  snk_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string source_sink_type = src_type + "_" + snk_type;
-	QDPIO::cout << "Source type = " << src_type << endl;
-	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	std::string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << std::endl;
+	QDPIO::cout << "Sink type = "   << snk_type << std::endl;
 	
 	if (params.param.MesonP) 
 	  {
@@ -688,13 +688,13 @@ namespace Chroma
 	
 	push(xml_out, "SourceSinkType");
 	{
-	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << std::endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << std::endl;
 	  if (params.param.FourPt){
-	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << std::endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << std::endl;
 	  }
 	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
 	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
@@ -730,7 +730,7 @@ namespace Chroma
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
 	
 	// Construct group name for output
-	string src_type;
+	std::string src_type;
 	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	  src_type = "Point";
 	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
@@ -739,11 +739,11 @@ namespace Chroma
 	  src_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string snk_type;
+	std::string snk_type;
 	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	  snk_type = "Point";
 	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
@@ -752,13 +752,13 @@ namespace Chroma
 	  snk_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string source_sink_type = src_type + "_" + snk_type;
-	QDPIO::cout << "Source type = " << src_type << endl;
-	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	std::string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << std::endl;
+	QDPIO::cout << "Sink type = "   << snk_type << std::endl;
 	
 	if (params.param.MesonP) 
 	  {
@@ -820,13 +820,13 @@ namespace Chroma
 	    
 	push(xml_out, "SourceSinkType");
 	{
-	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << std::endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << std::endl;
 	  if (params.param.FourPt){
-	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << std::endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << std::endl;
 	  }
 	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
 	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
@@ -862,7 +862,7 @@ namespace Chroma
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_1.quark_propagator_id);
 	
 	// Construct group name for output
-	string src_type;
+	std::string src_type;
 	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	  src_type = "Point";
 	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
@@ -871,11 +871,11 @@ namespace Chroma
 	  src_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string snk_type;
+	std::string snk_type;
 	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	  snk_type = "Point";
 	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
@@ -884,13 +884,13 @@ namespace Chroma
 	  snk_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string source_sink_type = src_type + "_" + snk_type;
-	QDPIO::cout << "Source type = " << src_type << endl;
-	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	std::string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << std::endl;
+	QDPIO::cout << "Sink type = "   << snk_type << std::endl;
 	
 	if (params.param.MesonP) 
 	  {
@@ -957,13 +957,13 @@ namespace Chroma
 	
 	push(xml_out, "SourceSinkType");
 	{
-	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << endl;
-	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << endl;
-	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << endl;
-	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << endl;
+	  QDPIO::cout << "Source_type_1 = " << all_sinks.sink_prop_1.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_1 = " << all_sinks.sink_prop_1.sink_type << std::endl;
+	  QDPIO::cout << "Source_type_2 = " << all_sinks.sink_prop_2.source_type << std::endl;
+	  QDPIO::cout << "Sink_type_2 = " << all_sinks.sink_prop_2.sink_type << std::endl;
 	  if (params.param.FourPt){
-	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << endl;
-	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << endl;
+	    QDPIO::cout << "Source_type_3 = " << all_sinks.sink_prop_3.source_type << std::endl;
+	    QDPIO::cout << "Sink_type_3 = " << all_sinks.sink_prop_3.sink_type << std::endl;
 	  }
 	  write(xml_out, "source_type_1", all_sinks.sink_prop_1.source_type);
 	  write(xml_out, "source_disp_type_1", all_sinks.sink_prop_1.source_disp_type);
@@ -1007,7 +1007,7 @@ namespace Chroma
 	const LatticePropagator& heavy_prop_2 = 
 	  TheNamedObjMap::Instance().getData<LatticePropagator>(all_sinks.heavy_prop_2.quark_propagator_id);
 	// Construct group name for output
-	string src_type;
+	std::string src_type;
 	if (all_sinks.sink_prop_1.source_type == "POINT_SOURCE")
 	  src_type = "Point";
 	else if (all_sinks.sink_prop_1.source_type == "SHELL_SOURCE")
@@ -1016,11 +1016,11 @@ namespace Chroma
 	  src_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << endl;
+	    QDPIO::cerr << "Unsupported source type = " << all_sinks.sink_prop_1.source_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string snk_type;
+	std::string snk_type;
 	if (all_sinks.sink_prop_1.sink_type == "POINT_SINK")
 	  snk_type = "Point";
 	else if (all_sinks.sink_prop_1.sink_type == "SHELL_SINK")
@@ -1029,16 +1029,16 @@ namespace Chroma
 	  snk_type = "Wall";
 	else
 	  {
-	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << endl;
+	    QDPIO::cerr << "Unsupported sink type = " << all_sinks.sink_prop_1.sink_type << std::endl;
 	    QDP_abort(1);
 	  }
 	
-	string source_sink_type = src_type + "_" + snk_type;
-	QDPIO::cout << "Source type = " << src_type << endl;
-	QDPIO::cout << "Sink type = "   << snk_type << endl;
+	std::string source_sink_type = src_type + "_" + snk_type;
+	QDPIO::cout << "Source type = " << src_type << std::endl;
+	QDPIO::cout << "Sink type = "   << snk_type << std::endl;
 	
-	QDPIO::cout << "Note that we are not calculating Heavy-Light Spectrum,"<<endl;
-	QDPIO::cout << "because both heavy quarks are not static."<<endl;
+	QDPIO::cout << "Note that we are not calculating Heavy-Light Spectrum,"<<std::endl;
+	QDPIO::cout << "because both heavy quarks are not static."<<std::endl;
 	
 	//Now we actually will do the contractions...
 	
@@ -1054,9 +1054,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineHeavyLightContEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineHeavyLightContEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineHeavyLightContEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

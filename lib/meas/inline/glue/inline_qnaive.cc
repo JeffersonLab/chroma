@@ -49,7 +49,7 @@ namespace Chroma
   
 
     //! QTop input
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -67,7 +67,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << "Params::Param_t: " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
     
@@ -75,7 +75,7 @@ namespace Chroma
     }
 
     //! QTop output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param)
     {
       push(xml, path);
 
@@ -89,7 +89,7 @@ namespace Chroma
 
 
     //! QTop input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -97,7 +97,7 @@ namespace Chroma
     }
 
     //! QTop output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -133,7 +133,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }

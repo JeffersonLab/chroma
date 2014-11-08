@@ -57,11 +57,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup monomial */
-  void read(XMLReader& xml, const string& path, RemezRatApproxEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, RemezRatApproxEnv::Params& param);
 
   //! Reader
   /*! @ingroup monomial */
-  void write(XMLWriter& xml, const string& path, const RemezRatApproxEnv::Params& params);
+  void write(XMLWriter& xml, const std::string& path, const RemezRatApproxEnv::Params& params);
 
 } //end namespace chroma
 

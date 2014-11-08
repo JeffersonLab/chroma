@@ -48,7 +48,7 @@ namespace Chroma
 
 
   //! Read the input version
-  void read(XMLReader& xml, const string& path, IO_version_t& param)
+  void read(XMLReader& xml, const std::string& path, IO_version_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -61,7 +61,7 @@ namespace Chroma
 // THIS STUFF IS OBSOLETE AND WILL BE REMOVED!!!
 //
 //  //! Read inverter parameters
-//  void read(XMLReader& xml, const string& path, InvertParam_t& param)
+//  void read(XMLReader& xml, const std::string& path, InvertParam_t& param)
 //  {
 //    XMLReader paramtop(xml, path);
 //
@@ -86,15 +86,15 @@ namespace Chroma
 //      }
 //
 //    }
-//    catch( const string& e ) { 
-//      QDPIO::cerr << "Caught exception : " << e << endl;
+//    catch( const std::string& e ) { 
+//      QDPIO::cerr << "Caught exception : " << e << std::endl;
 //      QDP_abort(1);
 //    }
 //
 //  }
 //
 //  //! Read inverter parameters
-//  void read(XMLReader& xml, const string& path, MultiInvertParam_t& param)
+//  void read(XMLReader& xml, const std::string& path, MultiInvertParam_t& param)
 //  {
 //    XMLReader paramtop(xml, path);
 //
@@ -108,7 +108,7 @@ namespace Chroma
 //
 //  //---------------------------- Writers -----------------------------
 //  //! Write inverter parameters
-//  void write(XMLWriter& xml, const string& path, const InvertParam_t& param)
+//  void write(XMLWriter& xml, const std::string& path, const InvertParam_t& param)
 //  {
 //    push(xml, path);
 //
@@ -122,7 +122,7 @@ namespace Chroma
 //  }
 //
 //  //! Write inverter parameters
-//  void write(XMLWriter& xml, const string& path, const MultiInvertParam_t& param)
+//  void write(XMLWriter& xml, const std::string& path, const MultiInvertParam_t& param)
 //  {
 //    push(xml, path);
 //

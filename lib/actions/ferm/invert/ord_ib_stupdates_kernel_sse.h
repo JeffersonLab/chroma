@@ -101,13 +101,13 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
       
       // ** phi=(r0,s)
       
-      /* Left vector = r0  */
+      /* Left std::vector = r0  */
       lvec = _mm_load_ps(&r0[count]);
       
       /* Load dotprod accumulated so far */
       dotprod = _mm_load_pd(&norm_array[0]);
       
-      /* Turn left vector into double precision */
+      /* Turn left std::vector into double precision */
       r0lo = _mm_cvtps_pd(lvec);
       lvec = _mm_shuffle_ps(lvec,lvec,0x4e);
       r0hi = _mm_cvtps_pd(lvec);
@@ -164,13 +164,13 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
       
       // ** phi=(f0,s)
       
-      /* Left vector = f0  */
+      /* Left std::vector = f0  */
       lvec = _mm_load_ps(&f0[count]);
       
       /* Load dotprod accumulated so far */
       dotprod = _mm_load_pd(&norm_array[2]);
       
-      /* Turn left vector into double precision */
+      /* Turn left std::vector into double precision */
       f0lo = _mm_cvtps_pd(lvec);
       lvec = _mm_shuffle_ps(lvec,lvec,0x4e);
       f0hi = _mm_cvtps_pd(lvec);
@@ -389,7 +389,7 @@ void ord_ib_stupdates_kernel_real32(int lo, int hi, int my_id, ib_stupdate_arg<R
     }
   }
   else { 
-    QDPIO::cout << "ord_ib_stupdates_kernel_sse.h: len not divisible by 4" << endl;
+    QDPIO::cout << "ord_ib_stupdates_kernel_sse.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
   }
 }
@@ -624,7 +624,7 @@ void ord_ib_stupdates_kernel_real64(int lo, int hi, int my_id, ib_stupdate_arg<R
     }
   }
   else { 
-    QDPIO::cout << "ord_ib_stubdates_kernel_sse.h: len not divisible by 2" << endl;
+    QDPIO::cout << "ord_ib_stubdates_kernel_sse.h: len not divisible by 2" << std::endl;
     QDP_abort(1);
   }
   

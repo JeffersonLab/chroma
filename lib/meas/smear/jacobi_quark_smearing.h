@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: jacobi_quark_smearing.h,v 3.1 2009-02-20 15:10:24 edwards Exp $
 /*! \file
- *  \brief Jacobi smearing of color vector and propagator
+ *  \brief Jacobi smearing of color std::vector and propagator
  */
 
 #ifndef __jacobi_quark_smearing_h__
@@ -61,11 +61,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, JacobiQuarkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, JacobiQuarkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const JacobiQuarkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const JacobiQuarkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

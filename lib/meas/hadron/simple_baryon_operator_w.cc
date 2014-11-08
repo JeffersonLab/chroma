@@ -16,19 +16,18 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 
-using namespace std;
 namespace Chroma 
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SimpleBaryonOperatorEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, SimpleBaryonOperatorEnv::Params& param)
   {
     SimpleBaryonOperatorEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const SimpleBaryonOperatorEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const SimpleBaryonOperatorEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -46,7 +45,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       try
       {
@@ -62,7 +61,7 @@ namespace Chroma
 	  
 	default:
 	  QDPIO::cerr << name << ": parameter version " << version 
-		      << " unsupported." << endl;
+		      << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -72,14 +71,14 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in params: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in params: " << e << std::endl;
 	QDP_abort(1);
       }
     }
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -106,8 +105,8 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  const string link_path = "/LinkSmearing";
-	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	  const std::string link_path = "/LinkSmearing";
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -120,7 +119,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_s(params.source_quark_smearing.xml);
 	  XMLReader  smeartop(xml_s);
-	  const string smear_path = "/SourceQuarkSmearing";
+	  const std::string smear_path = "/SourceQuarkSmearing";
 	
 	  sourceQuarkSmearing = 
 	    TheFermSmearingFactory::Instance().createObject(params.source_quark_smearing.id,
@@ -132,7 +131,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_s(params.sink_quark_smearing.xml);
 	  XMLReader  smeartop(xml_s);
-	  const string smear_path = "/SinkQuarkSmearing";
+	  const std::string smear_path = "/SinkQuarkSmearing";
 	
 	  sinkQuarkSmearing = 
 	    TheFermSmearingFactory::Instance().createObject(params.sink_quark_smearing.id,
@@ -142,7 +141,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -180,7 +179,7 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << name << ": illegal isign" << endl;
+	QDPIO::cerr << name << ": illegal isign" << std::endl;
 	QDP_abort(1);
       }
   

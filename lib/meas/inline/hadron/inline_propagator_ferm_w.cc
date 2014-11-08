@@ -52,7 +52,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlinePropagatorFermParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlinePropagatorFermParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -62,7 +62,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlinePropagatorFermParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlinePropagatorFermParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -102,21 +102,21 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlinePropagatorFermParams& input)
+  void read(XMLReader& xml, const std::string& path, InlinePropagatorFermParams& input)
   {
     InlinePropagatorFermParams tmp(xml, path);
     input = tmp;
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlinePropagatorFermParams& input)
+  void write(XMLWriter& xml, const std::string& path, const InlinePropagatorFermParams& input)
   {
     push(xml, path);
     
@@ -136,7 +136,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "propagator");
       write(xml_out, "update_no", update_no);
@@ -174,13 +174,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlinePropagatorFermEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlinePropagatorFermEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlinePropagatorFermEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -189,7 +189,7 @@ namespace Chroma
     push(xml_out, "propagator");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlinePropagatorFermEnv::name << ": propagator calculation" << endl;
+    QDPIO::cout << InlinePropagatorFermEnv::name << ": propagator calculation" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -214,7 +214,7 @@ namespace Chroma
 
     bool make_sourceP = false;
     bool seqsourceP = false;
-    QDPIO::cout << "Snarf the source from a named buffer" << endl;
+    QDPIO::cout << "Snarf the source from a named buffer" << std::endl;
     try
     {
       quark_source = 
@@ -245,16 +245,16 @@ namespace Chroma
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlinePropagatorFermEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlinePropagatorFermEnv::name << ": error extracting source_header: " << e << endl;
+      QDPIO::cerr << InlinePropagatorFermEnv::name << ": error extracting source_header: " << e << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Source successfully read and parsed" << endl;
+    QDPIO::cout << "Source successfully read and parsed" << std::endl;
 
     // Sanity check - write out the norm2 of the source in the Nd-1 direction
     // Use this for any possible verification
@@ -284,7 +284,7 @@ namespace Chroma
     //
     std::istringstream  xml_s(params.param.fermact.xml);
     XMLReader  fermacttop(xml_s);
-    QDPIO::cout << "FermAct = " << params.param.fermact.id << endl;
+    QDPIO::cout << "FermAct = " << params.param.fermact.id << std::endl;
 
 
     //
@@ -294,7 +294,7 @@ namespace Chroma
     {
       StopWatch swatch;
       swatch.reset();
-      QDPIO::cout << "Try the various factories" << endl;
+      QDPIO::cout << "Try the various factories" << std::endl;
 
       // Typedefs to save typing
       typedef LatticeFermion               T;
@@ -312,7 +312,7 @@ namespace Chroma
       Handle< SystemSolver<LatticeFermion> > PP = S_f->qprop(state,
 							     params.param.invParam);
       
-      QDPIO::cout << "Suitable factory found: compute the quark prop" << endl;
+      QDPIO::cout << "Suitable factory found: compute the quark prop" << std::endl;
       swatch.start();
 
       SystemSolverResults_t res = (*PP)(quark_soln, quark_source);
@@ -321,12 +321,12 @@ namespace Chroma
       swatch.stop();
       QDPIO::cout << "Propagator computed: time= " 
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
     }
     catch (const std::string& e) 
     {
       QDPIO::cout << InlinePropagatorFermEnv::name 
-		  << ": caught exception around qprop: " << e << endl;
+		  << ": caught exception around qprop: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -352,7 +352,7 @@ namespace Chroma
     // Save the propagator info
     try
     {
-      QDPIO::cout << "Start writing propagator info" << endl;
+      QDPIO::cout << "Start writing propagator info" << std::endl;
 
       XMLBufferWriter file_xml;
       push(file_xml, "propagator");
@@ -385,17 +385,17 @@ namespace Chroma
       TheNamedObjMap::Instance().get(params.named_obj.prop_id).setFileXML(file_xml);
       TheNamedObjMap::Instance().get(params.named_obj.prop_id).setRecordXML(record_xml);
 
-      QDPIO::cout << "Propagator successfully updated" << endl;
+      QDPIO::cout << "Propagator successfully updated" << std::endl;
     }
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlinePropagatorFermEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlinePropagatorFermEnv::name << ": error extracting prop_header: " << e << endl;
+      QDPIO::cerr << InlinePropagatorFermEnv::name << ": error extracting prop_header: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -404,9 +404,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlinePropagatorFermEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlinePropagatorFermEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlinePropagatorFermEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

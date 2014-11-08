@@ -44,11 +44,11 @@ namespace Chroma
 
   //! Reader
   /*! \ingroup inlinehadron */
-  void read(XMLReader& xml, const string& path, InlinePropagatorFermParams& param);
+  void read(XMLReader& xml, const std::string& path, InlinePropagatorFermParams& param);
 
   //! Writer
   /*! \ingroup inlinehadron */
-  void write(XMLWriter& xml, const string& path, const InlinePropagatorFermParams& param);
+  void write(XMLWriter& xml, const std::string& path, const InlinePropagatorFermParams& param);
 
 
   //! Inline task for generating propagators

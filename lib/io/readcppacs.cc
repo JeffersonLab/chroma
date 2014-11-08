@@ -25,7 +25,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 #define NBC 144  /* = 8*2*3*3 = number of bytes to copy */
@@ -64,12 +64,12 @@ typedef unsigned long int   n_uint64_t;
 
   bool byterev = false;
   if( magic_number != 19920410 ) {
-    QDPIO::cout << "readCPPACS: magic number invalid" << endl;
-    QDPIO::cout << "Trying byte reversal" << endl;
+    QDPIO::cout << "readCPPACS: magic number invalid" << std::endl;
+    QDPIO::cout << "Trying byte reversal" << std::endl;
     QDPUtil::byte_swap((void *)&magic_number, sizeof(int), 1 );
     byterev = true;
   }
-    QDPIO::cout << "Magic number: " << magic_number << endl;
+    QDPIO::cout << "Magic number: " << magic_number << std::endl;
 
 
   if( magic_number != 19920410){
@@ -144,7 +144,7 @@ typedef unsigned long int   n_uint64_t;
  * \param cfg_file   path ( Read )
  */    
 
-void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file)
+void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file)
 {
   START_CODE();
 
@@ -163,7 +163,7 @@ void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
  {
     xml.open(xml_buf);
   }
-  catch(const string& e)
+  catch(const std::string& e)
   { 
     QDP_error_exit("Error in readCPPACS: %s",e.c_str());
   }

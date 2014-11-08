@@ -25,7 +25,7 @@ namespace Chroma
   //! PlusMinus type
   namespace PlusMinusEnv 
   { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -36,10 +36,10 @@ namespace Chroma
   // Reader and writer
 
   //! Read an PlusMinus enum
-  void read(XMLReader& r, const string& path, PlusMinus& t);
+  void read(XMLReader& r, const std::string& path, PlusMinus& t);
 
   //! Write an PlusMinus enum
-  void write(XMLWriter& w, const string& path, const PlusMinus& t);
+  void write(XMLWriter& w, const std::string& path, const PlusMinus& t);
 
   /*! @} */   // end of group io
 };

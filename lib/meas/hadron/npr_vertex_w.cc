@@ -38,7 +38,7 @@ namespace Chroma
       push(record_xml, "Vertex");
 
       QDPIO::cout << __func__ << ": LinkDirs = " << LinkDirs 
-		  << "  gamma = " << i << endl;
+		  << "  gamma = " << i << std::endl;
 
       write(record_xml, "linkDirs", LinkDirs);   // link pattern
       write(record_xml, "gamma", i);
@@ -57,7 +57,7 @@ namespace Chroma
 	// The site's worth of data of interest
 	prop = sum(tmp)/Double(Layout::vol()); // and normalize by the volume
 	//QDPIO::cout<<"  The 1/12*trace is: "<<trace(Gamma(i)*prop)/12.0;
-	//QDPIO::cout<<endl ;
+	//QDPIO::cout<<std::endl ;
       }
       
       pop(record_xml);
@@ -66,7 +66,7 @@ namespace Chroma
     }
 
     TotalTime.stop();
-    QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << endl;
+    QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << std::endl;
 
     return;
   }
@@ -174,7 +174,7 @@ namespace Chroma
     }
 
     Timer.stop();
-    QDPIO::cout << __func__ << ": total time = " << Timer.getTimeInSeconds() << " seconds" << endl;
+    QDPIO::cout << __func__ << ": total time = " << Timer.getTimeInSeconds() << " seconds" << std::endl;
 
     return;
   }
@@ -206,7 +206,7 @@ namespace Chroma
     // calculate building blocks                                                       //
     //#################################################################################//
 
-    QDPIO::cout << __func__ << ": start BkwdFrwd" << endl;
+    QDPIO::cout << __func__ << ": start BkwdFrwd" << std::endl;
 
     const int NLinks = 0;
     multi1d< int > LinkDirs( 0 );
@@ -218,12 +218,12 @@ namespace Chroma
     Timer.stop();
     QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdTr call) = "
 		<< Timer.getTimeInSeconds() 
-		<< " seconds" << endl;
+		<< " seconds" << std::endl;
 
     Timer.reset();
     Timer.start();
 
-    QDPIO::cout << __func__ << ": start AddLinks" << endl;
+    QDPIO::cout << __func__ << ": start AddLinks" << std::endl;
 
     AddLinks(B, F, U, 
 	     LinkDirs, MaxNLinks, LinkPattern, 0, -1, 
@@ -232,12 +232,12 @@ namespace Chroma
     Timer.stop();
     QDPIO::cout << __func__ << ": total time for remaining links (outermost AddLinks call) = "
 		<< Timer.getTimeInSeconds() 
-		<< " seconds" << endl;
+		<< " seconds" << std::endl;
 
     TotalTime.stop();
     QDPIO::cout << __func__ << ": total time = "
 		<< TotalTime.getTimeInSeconds() 
-		<< " seconds" << endl;
+		<< " seconds" << std::endl;
 
     return;
   }

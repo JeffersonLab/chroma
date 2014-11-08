@@ -25,7 +25,7 @@ namespace Chroma
 
   //! Writes a ForceCalc_t
   /*! @ingroup monomial */
-  void write(XMLWriter& xml_out, const string& path, const ForceMonitors& param);
+  void write(XMLWriter& xml_out, const std::string& path, const ForceMonitors& param);
 
   //! Helper function for monitoring forces
   /*! @ingroup monomial */
@@ -33,7 +33,7 @@ namespace Chroma
 
   //! Calculate and write out forces
   /*! @ingroup monomial */
-  void monitorForces(XMLWriter& xml_out, const string& path, const multi1d<LatticeColorMatrix>& F);
+  void monitorForces(XMLWriter& xml_out, const std::string& path, const multi1d<LatticeColorMatrix>& F);
 
   void setForceMonitoring(bool monitorP);
 

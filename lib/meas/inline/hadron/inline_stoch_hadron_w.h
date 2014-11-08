@@ -69,12 +69,12 @@ namespace Chroma
 
     struct MesonOp{
       int g ;
-      string file;
+      std::string file;
     } ;
 
     struct BaryonOp{
       int g ;
-      string file;
+      std::string file;
     } ;
   
 
@@ -111,14 +111,14 @@ namespace Chroma
 
       Params params;
       /**
-      map<string, void (*)(DComplex& , 
+      std::map<std::string, void (*)(DComplex& , 
 			   const GroupXML_t& ,  
 			   const LatticeComplex& , 
 			   const LatticeFermion& , 
 			   const LatticeFermion& ,  
 			   const Subset& )> mesons ;
 
-      map<string, void (*)(DComplex& ,
+      std::map<std::string, void (*)(DComplex& ,
 			   const GroupXML_t& ,
 			   const LatticeComplex& ,
 			   const LatticeFermion& ,
@@ -126,9 +126,9 @@ namespace Chroma
 			   const LatticeFermion& ,
 			   const Subset& )> baryons ;
       **/
-      map<string, void (*)(MesonOp&,const GroupXML_t& )> mesons ;
+      std::map<std::string, void (*)(MesonOp&,const GroupXML_t& )> mesons ;
 
-      map<string, void (*)(BaryonOp&, const GroupXML_t&)> baryons ;
+      std::map<std::string, void (*)(BaryonOp&, const GroupXML_t&)> baryons ;
 
       void setUpMaps(){
 	mesons["PION"]  = &ParseMeson  ;

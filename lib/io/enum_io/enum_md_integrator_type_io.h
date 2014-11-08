@@ -30,7 +30,7 @@ namespace Chroma {
 
 
   namespace MDIntegratorTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -41,10 +41,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read an MD Integrator Type enum
-  void read(XMLReader& r, const string& path, MDIntegratorType& t);
+  void read(XMLReader& r, const std::string& path, MDIntegratorType& t);
 
   //! Write an MD Integrator Type enum
-  void write(XMLWriter& w, const string& path, const MDIntegratorType& t);
+  void write(XMLWriter& w, const std::string& path, const MDIntegratorType& t);
 
   /*! @} */   // end of group io
 

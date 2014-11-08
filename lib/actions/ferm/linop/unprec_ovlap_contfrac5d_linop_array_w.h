@@ -49,7 +49,7 @@ namespace Chroma
       beta(_beta), NEig(_NEig), EigVec(_EigVec), EigValFunc(_EigValFunc),
       isLastZeroP(_isLastZeroP) 
     {
-      QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << endl;
+      QDPIO::cout << "LinOp isLastZeroP = " << isLastZeroP << std::endl;
     }
 
     //! Length of DW flavor index/space
@@ -64,7 +64,7 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return *fbc;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
 		     enum PlusMinus isign) const;

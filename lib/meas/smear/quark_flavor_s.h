@@ -97,7 +97,7 @@ namespace Chroma
       Params  params;   /*!< source params */
     };
 
-    //! Construct staggered vector flavored sources
+    //! Construct staggered std::vector flavored sources
     /*!
      * \ingroup sources
      *
@@ -118,7 +118,7 @@ namespace Chroma
       ParamsOneIndex  params;   /*!< source params */
     };
 
-    //! Construct staggered axial vector flavored sources
+    //! Construct staggered axial std::vector flavored sources
     /*!
      * \ingroup sources
      *
@@ -166,29 +166,29 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, StaggeredQuarkFlavorOpEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, StaggeredQuarkFlavorOpEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const StaggeredQuarkFlavorOpEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const StaggeredQuarkFlavorOpEnv::Params& param);
 
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, StaggeredQuarkFlavorOpEnv::ParamsTwoIndex& param);
+  void read(XMLReader& xml, const std::string& path, StaggeredQuarkFlavorOpEnv::ParamsTwoIndex& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const StaggeredQuarkFlavorOpEnv::ParamsTwoIndex& param);
+  void write(XMLWriter& xml, const std::string& path, const StaggeredQuarkFlavorOpEnv::ParamsTwoIndex& param);
 
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, StaggeredQuarkFlavorOpEnv::ParamsOneIndex& param);
+  void read(XMLReader& xml, const std::string& path, StaggeredQuarkFlavorOpEnv::ParamsOneIndex& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const StaggeredQuarkFlavorOpEnv::ParamsOneIndex& param);
+  void write(XMLWriter& xml, const std::string& path, const StaggeredQuarkFlavorOpEnv::ParamsOneIndex& param);
 
 
 

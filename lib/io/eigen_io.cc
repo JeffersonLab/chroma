@@ -6,7 +6,7 @@
 
 namespace Chroma {
 
-void read(XMLReader& xml, const string& path, RitzParams_t& header)
+void read(XMLReader& xml, const std::string& path, RitzParams_t& header)
 {
 
 
@@ -26,13 +26,13 @@ void read(XMLReader& xml, const string& path, RitzParams_t& header)
     read(paramtop, "Nrenorm", header.Nrenorm);
 
   }
-  catch( const string& error ) { 
-    QDPIO::cerr << "Caught Exception " << error << endl;
+  catch( const std::string& error ) { 
+    QDPIO::cerr << "Caught Exception " << error << std::endl;
     QDP_error_exit("Exiting\n");
   }
 }
 
-void write(XMLWriter& xml, const string& path, const RitzParams_t& header)
+void write(XMLWriter& xml, const std::string& path, const RitzParams_t& header)
 {
   push(xml, path);
 
@@ -51,7 +51,7 @@ void write(XMLWriter& xml, const string& path, const RitzParams_t& header)
   pop(xml);
 }
 
-void read(XMLReader& xml, const string& path, EigenIO_t& io_header)
+void read(XMLReader& xml, const std::string& path, EigenIO_t& io_header)
 {
 
   try { 
@@ -68,8 +68,8 @@ void read(XMLReader& xml, const string& path, EigenIO_t& io_header)
       io_header.eigen_filefmt = EVEC_TYPE_SCIDAC;
     }
   }
-  catch( const string& error ) { 
-    QDPIO::cerr << "Caught exception " << error << endl;
+  catch( const std::string& error ) { 
+    QDPIO::cerr << "Caught exception " << error << std::endl;
     QDP_error_exit("Exiting\n");
   }
 
@@ -77,7 +77,7 @@ void read(XMLReader& xml, const string& path, EigenIO_t& io_header)
 
 }
 
-void write(XMLWriter& xml, const string& path, const EigenIO_t& io_header)
+void write(XMLWriter& xml, const std::string& path, const EigenIO_t& io_header)
 {
   push(xml, path);
   write(xml,"eigen_filefmt", io_header.eigen_filefmt);
@@ -87,7 +87,7 @@ void write(XMLWriter& xml, const string& path, const EigenIO_t& io_header)
 
 }
 
-void read(XMLReader &xml, const string& path, ChromaWilsonRitz_t& param)
+void read(XMLReader &xml, const std::string& path, ChromaWilsonRitz_t& param)
 {
   multi1d<int> seed_int(4);
   try { 
@@ -120,13 +120,13 @@ void read(XMLReader &xml, const string& path, ChromaWilsonRitz_t& param)
     }
 
   }
-  catch( const string& error) { 
-    QDPIO::cerr << "Caught exception " << error << endl;
+  catch( const std::string& error) { 
+    QDPIO::cerr << "Caught exception " << error << std::endl;
     QDP_error_exit("Exiting \n");
   }
 }
 
-void write(XMLWriter &xml, const string& path, const ChromaWilsonRitz_t& param)
+void write(XMLWriter &xml, const std::string& path, const ChromaWilsonRitz_t& param)
 {
   push( xml, path );
 
@@ -152,14 +152,14 @@ void write(XMLWriter &xml, const string& path, const ChromaWilsonRitz_t& param)
     XMLReader r2(r1, "/StateInfo");
 
     // Dump the StateInfo tag and descendets into an ostream
-    ostringstream s_i_o;
+    std::ostringstream s_i_o;
     r2.print(s_i_o);
 
     // Dump the XML String without an extra header
     xml << s_i_o.str()  ;
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception : " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught exception : " << e << std::endl;
     QDP_abort(1);
   }
   write(xml, "Eigen",      param.eigen_io_params);
@@ -173,7 +173,7 @@ void writeEigen(const ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 {
 
   if(header.eigen_io_params.eigen_filefmt != EVEC_TYPE_SCIDAC ) { 
-    QDPIO::cerr << "Writing Eigenvectors only supported in SciDAC format" << endl;
+    QDPIO::cerr << "Writing Eigenvectors only supported in SciDAC format" << std::endl;
     QDP_abort(1);
   }
 
@@ -188,8 +188,8 @@ void writeEigen(const ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
   pop(file_xml);
 
   for(int lo=0; lo < header.ritz_params.Neig; lo++) { 
-    ostringstream filename;
-    filename << header.eigen_io_params.eigen_file << "_" << setw(3) << setfill('0') << lo;
+    std::ostringstream filename;
+    filename << header.eigen_io_params.eigen_file << "_" << std::setw(3) << std::setfill('0') << lo;
 
     XMLBufferWriter record_eval_xml;
     push(record_eval_xml, "record_eval");
@@ -201,7 +201,7 @@ void writeEigen(const ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
     write(record_evec_xml, "evec_num", lo);
     pop(record_evec_xml);
 
-    QDPIO::cout << "Opening eigenvector file: "<< filename.str() << endl;
+    QDPIO::cout << "Opening eigenstd::vector file: "<< filename.str() << std::endl;
     QDPFileWriter outfile(file_xml, filename.str(), 
 			  header.eigen_io_params.eigen_volfmt, 
 			  serpar, QDPIO_OPEN);
@@ -216,7 +216,7 @@ void writeEigen(const ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 
 void readEigenPair(Real& lambda_lo, int& eig_index,
 		   LatticeFermion& eigv, 
-		   const string& filename,
+		   const std::string& filename,
 		   QDP_serialparallel_t serpar,
 		   XMLReader& file_xml)
   /* XMLReader& record_xml) */
@@ -225,11 +225,11 @@ void readEigenPair(Real& lambda_lo, int& eig_index,
   XMLReader record_eval_xml;
   XMLReader record_evec_xml;
 
-  QDPIO::cout << "Attempting to read from " << filename << endl;
+  QDPIO::cout << "Attempting to read from " << filename << std::endl;
   QDPFileReader from(file_xml, filename, serpar);
   
 
-  // Now read the first eigenvalue/vector 
+  // Now read the first eigenvalue/std::vector 
   multi1d<Real> lambda_lo_aux(1);
   read(from, record_eval_xml, lambda_lo_aux);
   lambda_lo = lambda_lo_aux[0];
@@ -239,8 +239,8 @@ void readEigenPair(Real& lambda_lo, int& eig_index,
   try {
     read( record_xml, "/record_evalue/lambda", lambda_lo);
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception reading e-value " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught exception reading e-value " << e << std::endl;
     QDP_error_exit("Exiting\n");
   }
   */
@@ -250,16 +250,16 @@ void readEigenPair(Real& lambda_lo, int& eig_index,
   try {
     read( record_eval_xml, "/record_eval/eval_num", eval_num);
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception reading eval_num " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught exception reading eval_num " << e << std::endl;
     QDP_error_exit("Exiting\n");
   }
 
   try {
     read( record_evec_xml, "/record_evec/evec_num", evec_num);
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception reading evec_num " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught exception reading evec_num " << e << std::endl;
     QDP_error_exit("Exiting\n");
   }
 
@@ -275,7 +275,7 @@ void readEigenPair(Real& lambda_lo, int& eig_index,
 	       
 void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 	       multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
-	       const string& filename_stem, 
+	       const std::string& filename_stem, 
 	       int Neig,
 	       QDP_serialparallel_t serpar)	
 {
@@ -290,9 +290,9 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
     Real lambda_lo_tmp;
     LatticeFermion eigv_tmp;
     
-    ostringstream filename;
+    std::ostringstream filename;
     
-    filename << filename_stem << "_" << setw(3) << setfill('0') << lo;
+    filename << filename_stem << "_" << std::setw(3) << std::setfill('0') << lo;
     readEigenPair(lambda_lo_tmp,  eig_index, eigv_tmp,
 		  filename.str(), serpar, 
 		  file_xml);
@@ -304,8 +304,8 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
       try { 
 	read(file_xml, "/WilsonRitzEigen/InputParams", header);
       }
-      catch ( const string& e ) { 
-	QDPIO::cerr << "Caught Exception reading header: " << e << endl;
+      catch ( const std::string& e ) { 
+	QDPIO::cerr << "Caught Exception reading header: " << e << std::endl;
 	QDP_error_exit("Exiting\n");
       }
       
@@ -314,14 +314,14 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
       try { 
 	read(file_xml, "/WilsonRitzEigen/lambda_hi", lambda_hi);
       }
-      catch ( const string& e ) { 
-	QDPIO::cerr << "Caught Exception reading lambda_hi: " << e << endl;
+      catch ( const std::string& e ) { 
+	QDPIO::cerr << "Caught Exception reading lambda_hi: " << e << std::endl;
 	QDP_error_exit("Exiting\n");
       }
       
       // Check how many e-values there are
       if( header.ritz_params.Neig < Neig ) { 
-	QDPIO::cout << "Requested " << Neig << " eigenpairs but only " << header.ritz_params.Neig << " were computed. Will only read " << header.ritz_params.Neig << " pairs" << endl;
+	QDPIO::cout << "Requested " << Neig << " eigenpairs but only " << header.ritz_params.Neig << " were computed. Will only read " << header.ritz_params.Neig << " pairs" << std::endl;
 	neig_to_load = header.ritz_params.Neig;
       }
       else { 
@@ -335,7 +335,7 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
     
     // Check index
     if( eig_index != lo) { 
-      QDPIO::cerr << "Error: index and eig_index dont match lo = " << lo << " eig_index = " << eig_index << endl;
+      QDPIO::cerr << "Error: index and eig_index dont match lo = " << lo << " eig_index = " << eig_index << std::endl;
       QDP_error_exit("Exiting\n");
     }
     
@@ -353,13 +353,13 @@ void readEigen(ChromaWilsonRitz_t& header, multi1d<Real>& lambda_lo,
 void readEigenSzin(multi1d<Real>& lambda_lo,
 		   multi1d<LatticeFermion>& eigv_lo, Real& lambda_hi,
 		   const int Neig, 
-		   const string& filename_stem)
+		   const std::string& filename_stem)
 {
 
-  ostringstream xml_filename;
+  std::ostringstream xml_filename;
   xml_filename << filename_stem << ".xml" ;
 
-  QDPIO::cout << "Attempting to open " << xml_filename.str() << endl;
+  QDPIO::cout << "Attempting to open " << xml_filename.str() << std::endl;
   // Try and get the e-values.
   XMLReader reader(xml_filename.str());
 
@@ -368,14 +368,14 @@ void readEigenSzin(multi1d<Real>& lambda_lo,
     read(paramtop, "lambda_lo", lambda_lo);
     read(paramtop, "lambda_hi", lambda_hi);
   }
-  catch( const string& e) { 
-    QDPIO::cerr << "Caught exception : " << e << endl;
+  catch( const std::string& e) { 
+    QDPIO::cerr << "Caught exception : " << e << std::endl;
     QDP_abort(1);
   }
 
   if ( lambda_lo.size() != Neig ) { 
     QDPIO::cerr << "Mismatch in no of low eigenvalues. Neig = " << Neig << 
-      "but read " << lambda_lo.size() << endl;
+      "but read " << lambda_lo.size() << std::endl;
     QDP_abort(1);
   }
 
@@ -384,16 +384,16 @@ void readEigenSzin(multi1d<Real>& lambda_lo,
   for(int evec = 0; evec < lambda_lo.size(); evec++) { 
 
     // Create filename
-    ostringstream filename;
-    filename << filename_stem << "_" <<  setw(3) << setfill('0') << evec;
-    QDPIO::cout << "Attempting to open " << filename.str() << endl;
+    std::ostringstream filename;
+    filename << filename_stem << "_" <<  std::setw(3) << std::setfill('0') << evec;
+    QDPIO::cout << "Attempting to open " << filename.str() << std::endl;
     // read the evec
     try { 
       
       readSzinFerm(eigv_lo[evec], filename.str());
     }
-    catch (const string& e) { 
-      QDPIO::cerr << "Caught exception " << e << endl;
+    catch (const std::string& e) { 
+      QDPIO::cerr << "Caught exception " << e << std::endl;
       QDP_abort(1);
     }
 

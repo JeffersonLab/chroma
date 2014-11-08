@@ -20,19 +20,19 @@ namespace Chroma {
  * \param file       path ( Read )
  */    
 
-void readKYUQprop(LatticePropagator& q, const string& file)
+void readKYUQprop(LatticePropagator& q, const std::string& file)
 {
   START_CODE();
 
   if (Nc != 3)
   {
-    QDPIO::cerr << "readKYUQprop - only supports Nc=3" << endl;
+    QDPIO::cerr << "readKYUQprop - only supports Nc=3" << std::endl;
     QDP_abort(1);
   }
 
   if (Ns != 4)
   {
-    QDPIO::cerr << "readKYUQprop - only supports Ns=4" << endl;
+    QDPIO::cerr << "readKYUQprop - only supports Ns=4" << std::endl;
     QDP_abort(1);
   }
 
@@ -134,10 +134,10 @@ void readKYUQprop(LatticePropagator& q, const string& file)
 
     LatticeComplex dr_rho = trace(adj(Gamma(15) * q * Gamma(15)) * Gamma(1) * q * Gamma(1));
 
-    QDPIO::cout << "readKYUQprop: norm2(ps_rho) = " << RealD(norm2(ps_rho)) << endl;
-    QDPIO::cout << "readKYUQprop: norm2(dr_rho) = " << RealD(norm2(dr_rho)) << endl;
-    QDPIO::cout << "readKYUQprop: norm2(ps_rho - dr_rho) = " << RealD(norm2(ps_rho-dr_rho)) << endl;
-    QDPIO::cout << "readKYUQprop: norm2(ps_rho + dr_rho) = " << RealD(norm2(ps_rho+dr_rho)) << endl;
+    QDPIO::cout << "readKYUQprop: norm2(ps_rho) = " << RealD(norm2(ps_rho)) << std::endl;
+    QDPIO::cout << "readKYUQprop: norm2(dr_rho) = " << RealD(norm2(dr_rho)) << std::endl;
+    QDPIO::cout << "readKYUQprop: norm2(ps_rho - dr_rho) = " << RealD(norm2(ps_rho-dr_rho)) << std::endl;
+    QDPIO::cout << "readKYUQprop: norm2(ps_rho + dr_rho) = " << RealD(norm2(ps_rho+dr_rho)) << std::endl;
 
 #if 1
     {

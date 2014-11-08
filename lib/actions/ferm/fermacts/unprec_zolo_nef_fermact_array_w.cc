@@ -95,14 +95,14 @@ namespace Chroma
 	ApproxMin = ApproxMax = 0.0;
       }
     }
-    catch(const string& e) { 
-      QDPIO::cerr << "Caught Exception : " << e << endl;
+    catch(const std::string& e) { 
+      QDPIO::cerr << "Caught Exception : " << e << std::endl;
     }
   }
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, UnprecZoloNEFFermActArrayParams& param)
+  void read(XMLReader& xml, const std::string& path, UnprecZoloNEFFermActArrayParams& param)
   {
     UnprecZoloNEFFermActArrayParams tmp(xml, path);
     param = tmp;
@@ -127,28 +127,28 @@ namespace Chroma
     {
     case COEFF_TYPE_ZOLOTAREV:
       epsilon = approxMin / approxMax;
-      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << endl;
+      QDPIO::cout << "Initing Linop with Zolotarev Coefficients: epsilon = " << epsilon << std::endl;
       rdata = zolotarev(toFloat(epsilon), params.N5, 0);
       scale_fac = approxMax;
       break;
 
     case COEFF_TYPE_TANH_UNSCALED:
       epsilon = approxMin;
-      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << endl;
+      QDPIO::cout << "Initing Linop with Higham Rep tanh Coefficients" << std::endl;
       rdata = higham(toFloat(epsilon), params.N5);
       scale_fac = Real(1);
       break;
 
     default:
-      // The map system should ensure that we never get here but 
+      // The std::map system should ensure that we never get here but 
       // just for style
       QDPIO::cerr << "Unknown coefficient type: " << params.approximation_type
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
     if( rdata->n != params.N5 ) { 
-      QDPIO::cerr << "Error:rdata->n != N5" << endl;
+      QDPIO::cerr << "Error:rdata->n != N5" << std::endl;
       QDP_abort(1);
     }
 
@@ -166,10 +166,10 @@ namespace Chroma
 		<<  " b5-c5=" << params.b5-params.c5 
 		<<  " epsilon=" << epsilon
                 <<  " scale=" << approxMax 
-		<<  " Maxerr=" << maxerr << endl;
+		<<  " Maxerr=" << maxerr << std::endl;
 
     for(int i=0; i < params.N5; i++) { 
-      QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << endl;
+      QDPIO::cout << "gamma[" << i << "] = " << gamma[i] << std::endl;
     }
     
     for(int i = 0; i < params.N5; i++) { 
@@ -180,10 +180,10 @@ namespace Chroma
 
       QDPIO::cout << "i=" << i << " omega["<<i<<"]=" << omega
 		  << " b5["<< i << "] ="<< b5_arr[i] 
-		  << " c5["<< i << "] ="<< c5_arr[i] << endl;
+		  << " c5["<< i << "] ="<< c5_arr[i] << std::endl;
       QDPIO::cout << "i=" << i << " b5["<<i<<"]+c5["<<i<<"]/omega["<<i<<"] =" 
 		  << (b5_arr[i]+c5_arr[i])/omega
-		  << " b5["<<i<<"]-c5["<<i<<"]=" << b5_arr[i]-c5_arr[i] << endl;
+		  << " b5["<<i<<"]-c5["<<i<<"]=" << b5_arr[i]-c5_arr[i] << std::endl;
     }
   }
 

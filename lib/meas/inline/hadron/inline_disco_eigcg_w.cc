@@ -3,7 +3,7 @@
 /*! \file
  * \brief Inline measurement 3pt_prop
  * 
- * This version does not use e/o preconditioning on the noise std::vectors,
+ * This version does not use e/o preconditioning on the noise vectors,
  * but it does for the eigcg pieces, as it must.
  *
  */
@@ -139,7 +139,7 @@ namespace Chroma{
       XMLReader inputtop(xml, path);
       
       read(inputtop, "gauge_id"   , input.gauge_id   ) ;
-      // If no file is included, then we will turn off the eig_cg part (ie, use 0 std::vectors)
+      // If no file is included, then we will turn off the eig_cg part (ie, use 0 vectors)
       if ( inputtop.count("evecs_file")!=0 )
 	read(inputtop, "evecs_file" , input.evecs_file ) ;
       else
@@ -479,7 +479,7 @@ namespace Chroma{
       int ldb = vec.size();
       int info;
       char U = 'U';
-      int Nrhs = ldb; // Because we have no dilution std::vectors, but rhs's are made of EigCG vecs...
+      int Nrhs = ldb; // Because we have no dilution vectors, but rhs's are made of EigCG vecs...
       multi2d<Complex> B(Nrhs,ldb);
       /*
       multi1d< multi1d<LatticeFermion> > DDvec(ldb);
@@ -504,7 +504,7 @@ namespace Chroma{
 	  Doo->oddOddLinOp(qtmp2,qtmp,MINUS);
 	  qtmp = zero;
 	  Doo->oddOddLinOp(qtmp,Gamma(g)*vec[i],MINUS);
-	  // I think this could run into memory problems with too many std::vectors
+	  // I think this could run into memory problems with too many vectors
 	  DDvec[i][g] = qtmp + qtmp2;
 	}
       }
@@ -650,7 +650,7 @@ namespace Chroma{
     }
 
     // PRchi returns chitilde = (1 - V Hinv Vdag Sdag S)chi given
-    // an input chi std::vector, and of course the std::vectors and H. 
+    // an input chi std::vector, and of course the vectors and H. 
     void PRchi(multi1d<multi1d< multi1d<LatticeFermion> > >& quarkstilde,
 	       const multi1d< Handle< DilutionScheme<LatticeFermion> > >& quarks,
 	       Handle<EvenOddPrecLinearOperator<T,P,Q> >& Doo,
@@ -712,7 +712,7 @@ namespace Chroma{
     }// End of PRchi call...
     
     /**
-       This version is called if we have no EigCG std::vectors, so PR = 1
+       This version is called if we have no EigCG vectors, so PR = 1
      **/
     void PRchi(multi1d<multi1d< multi1d<LatticeFermion> > >& quarkstilde,
 	       multi1d< Handle< DilutionScheme<LatticeFermion> > >& quarks){
@@ -791,7 +791,7 @@ namespace Chroma{
       push(xml_out, "discoEigCG");
       write(xml_out, "update_no", update_no);
       
-      QDPIO::cout << name << ": Disconnected diagrams with eigCG std::vectors" << std::endl;
+      QDPIO::cout << name << ": Disconnected diagrams with eigCG vectors" << std::endl;
       
       proginfo(xml_out);    // Print out basic program info
       
@@ -908,7 +908,7 @@ namespace Chroma{
       Handle<EvenOddPrecLinearOperator<T,P,Q> > Doo=createOddOdd_Op(params.param,u);
 
       //Now read evecs from disk, if file is specified.
-      multi1d<LatticeFermion> vec; // the std::vectors
+      multi1d<LatticeFermion> vec; // the vectors
       CholeskyFactors Clsk; // the Cholesky Factors 
       if (params.named_obj.evecs_file!="")
 	ReadOPTEigCGVecs(vec,Clsk,params.named_obj.evecs_file);
@@ -973,7 +973,7 @@ namespace Chroma{
       // Note using just timeslices for quarks[0]...may be a problem
       // if quarks dilute on diff timeslices...
       
-      if (params.named_obj.evecs_file!=""){// Only if we have std::vectors...
+      if (params.named_obj.evecs_file!=""){// Only if we have vectors...
 	for (int it(0) ; it < quarks[0]->getNumTimeSlices() ; it++){
 	  multi1d<short int> d ;
 	  int t = quarks[0]->getT0(it) ;

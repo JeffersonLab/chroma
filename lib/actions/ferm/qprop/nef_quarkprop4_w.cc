@@ -140,7 +140,7 @@ namespace Chroma
       for(int spin_source = 0; spin_source < Ns; ++spin_source)
       {
 	QDPIO::cout<<"nef_quarkProp:: doing color  : "<< color_source;
-	QDPIO::cout<<" and spin : "<< spin_source<<endl  ;
+	QDPIO::cout<<" and spin : "<< spin_source<<std::endl  ;
 
 	psi = zero ;  // note this is ``zero'' and not 0
 	LatticeFermion tmp,tt ;
@@ -160,10 +160,10 @@ namespace Chroma
 	// Rescale
 	tmp *= fact;
 
-	QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
+	QDPIO::cout<<"Normalization Factor: "<< fact<<std::endl ;
 
 	int N5(S_f.size());
-	QDPIO::cout << "N5=" << N5 << endl;
+	QDPIO::cout << "N5=" << N5 << std::endl;
 
 	multi1d<LatticeFermion> chi(N5) ;
 	chi = zero ;

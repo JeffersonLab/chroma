@@ -98,7 +98,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -107,7 +107,7 @@ namespace Chroma
     }
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::File& input)
+    void read(XMLReader& xml, const std::string& path, Params::File& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -130,7 +130,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -144,13 +144,13 @@ namespace Chroma
       push(xml_out, "read_map_object_disk");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object reader" << endl;
+      QDPIO::cout << name << ": object reader" << std::endl;
       StopWatch swatch;
 
       // Read the object
       // ONLY MapObject output format is supported in this task
       // Other tasks could support other disk formats
-      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << endl;
+      QDPIO::cout << "Attempt to read object name = " << params.named_obj.object_id << std::endl;
 
       write(xml_out, "object_type", params.named_obj.object_type);
       write(xml_out, "object_id", params.named_obj.object_id);
@@ -169,7 +169,7 @@ namespace Chroma
 	write(file_xml_buf,  "object_type", params.named_obj.object_type);
 	write(file_xml_buf,  "object_id", params.named_obj.object_id);
 	write(file_xml_buf,  "file_name", params.file.file_name);
-	write(file_xml_buf,  "map_size", size);
+	write(file_xml_buf,  "std::map_size", size);
 	pop(file_xml_buf);
 
 	XMLReader file_xml(file_xml_buf);
@@ -183,22 +183,22 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully read: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // read_named_obj
 

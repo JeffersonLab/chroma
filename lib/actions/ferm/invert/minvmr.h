@@ -34,14 +34,14 @@ namespace Chroma
    *  z[0]   := 1 / (1 - (shift - shift(0))*b) 
    *  bs[0]  := b[0] * z[0]  
    *  r[1] += b[k] A . p[0] ; 	       	      New residual
-   *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution vector
+   *  Psi[1] = - b[k] p[k] ;   	       	      Starting solution std::vector
    *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;        Converged?
    *  FOR k FROM 1 TO MaxCG DO    	       	       CG iterations
    *      a[k] := |r[k]|**2 / |r[k-1]|**2 ;
    *      p[k] := r[k] + a[k] p[k-1];   	       New direction
    *      b[k+1] := |r[k]|**2 / <p[k],Ap[k]> ;
    *      r[k+1] += b[k+1] A . p[k] ; 	       	       New residual
-   *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution vector
+   *      Psi[k+1] -= b[k+1] p[k] ;   	       	       New solution std::vector
    *      IF |[k+1]| <= RsdCG |Chi| THEN RETURN;    Converged?
 
    * Arguments:
@@ -55,8 +55,8 @@ namespace Chroma
 
    * Local Variables:
 
-   *  p   	       Direction vector
-   *  r   	       Residual vector
+   *  p   	       Direction std::vector
+   *  r   	       Residual std::vector
    *  cp  	       | r[k] |**2
    *  c   	       | r[k-1] |**2
    *  k   	       CG iteration counter
@@ -68,7 +68,7 @@ namespace Chroma
    *  MaxCG       Maximum number of CG iterations allowed
 
    * Subroutines:
-   *  A	       Apply matrix hermitian A to vector 
+   *  A	       Apply matrix hermitian A to std::vector 
    *
    * @{
    */

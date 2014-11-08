@@ -54,7 +54,7 @@ namespace Chroma
 
 
   // Operator parameters
-  void read(XMLReader& xml, const string& path, InlineStochBaryonParams::Prop_t::Operator_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStochBaryonParams::Prop_t::Operator_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -63,7 +63,7 @@ namespace Chroma
 
 
   // Operator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochBaryonParams::Prop_t::Operator_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochBaryonParams::Prop_t::Operator_t& input)
   {
     push(xml, path);
     write(xml, "soln_files", input.soln_files);
@@ -72,7 +72,7 @@ namespace Chroma
 
 
   // Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineStochBaryonParams::Prop_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStochBaryonParams::Prop_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -82,7 +82,7 @@ namespace Chroma
 
 
   // Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochBaryonParams::Prop_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochBaryonParams::Prop_t& input)
   {
     push(xml, path);
 
@@ -94,7 +94,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineStochBaryonParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineStochBaryonParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -110,7 +110,7 @@ namespace Chroma
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -128,7 +128,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochBaryonParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochBaryonParams::Param_t& param)
   {
     push(xml, path);
 
@@ -142,7 +142,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineStochBaryonParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStochBaryonParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -151,7 +151,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochBaryonParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochBaryonParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -193,7 +193,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -300,7 +300,7 @@ namespace Chroma
   }
   
   //! BaryonOperator header writer
-  void write(XMLWriter& xml, const string& path, const BaryonOperator_t& param)
+  void write(XMLWriter& xml, const std::string& path, const BaryonOperator_t& param)
   {
     if( path != "." )
       push(xml, path);
@@ -329,7 +329,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "stoch_baryon");
       write(xml_out, "update_no", update_no);
@@ -367,13 +367,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineStochBaryonEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineStochBaryonEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineStochBaryonEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -382,7 +382,7 @@ namespace Chroma
     push(xml_out, "stoch_baryon");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineStochBaryonEnv::name << ": Stochastic Baryon Operator" << endl;
+    QDPIO::cout << InlineStochBaryonEnv::name << ": Stochastic Baryon Operator" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -412,22 +412,22 @@ namespace Chroma
     swatch.start();
 
     multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.prop.op.size());
-    QDPIO::cout << "num_quarks= " << params.named_obj.prop.op.size() << endl;
+    QDPIO::cout << "num_quarks= " << params.named_obj.prop.op.size() << std::endl;
 
     try
     {
-      QDPIO::cout << "quarks.size= " << quarks.size() << endl;
+      QDPIO::cout << "quarks.size= " << quarks.size() << std::endl;
       for(int n=0; n < quarks.size(); ++n)
       {
-	QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
+	QDPIO::cout << "Attempt to read solutions for source number=" << n << std::endl;
 	quarks[n].dilutions.resize(params.named_obj.prop.op[n].soln_files.size());
 
-	QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
+	QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << std::endl;
 	for(int i=0; i < quarks[n].dilutions.size(); ++i)
 	{
 	  XMLReader file_xml, record_xml;
 
-	  QDPIO::cout << "reading file= " << params.named_obj.prop.op[n].soln_files[i] << endl;
+	  QDPIO::cout << "reading file= " << params.named_obj.prop.op[n].soln_files[i] << std::endl;
 	  QDPFileReader from(file_xml, params.named_obj.prop.op[n].soln_files[i], QDPIO_SERIAL);
 	  read(from, record_xml, quarks[n].dilutions[i].soln);
 	  close(from);
@@ -437,16 +437,16 @@ namespace Chroma
 	}
       }
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting headers: " << e << endl;
+      QDPIO::cerr << "Error extracting headers: " << e << std::endl;
       QDP_abort(1);
     }
     swatch.stop();
 
     QDPIO::cout << "Sources and solutions successfully read: time= "
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
 
@@ -469,15 +469,15 @@ namespace Chroma
 	{
 	  std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source.xml);
 	  XMLReader  sourcetop(xml_s);
-//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
+//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << std::endl;
 
 	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
 	  {
-	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
+	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << std::endl;
 	    QDP_abort(1);
 	  }
 
-	  QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
+	  QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << std::endl;
 
 	  // Manually create the params so I can peek into them and use the source constructor
 	  DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
@@ -504,14 +504,14 @@ namespace Chroma
 	  // The seeds must always agree - here the seed is the unique id of the source
 	  if ( toBool(srcParams.ran_seed != quarks[n].seed) )
 	  {
-	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << endl;
+	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << std::endl;
 	    QDP_abort(1);
 	  }
 
 	  // The N's must always agree
 	  if ( toBool(srcParams.N != N) )
 	  {
-	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << endl;
+	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << std::endl;
 	    QDP_abort(1);
 	  }
 
@@ -546,7 +546,7 @@ namespace Chroma
 	Double dcnt = norm2(quark_noise);
 	if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
 	{
-	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
+	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -556,7 +556,7 @@ namespace Chroma
     } // end try
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating source: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -564,7 +564,7 @@ namespace Chroma
 
     QDPIO::cout << "Sources saturated: time= "
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     //
@@ -580,7 +580,7 @@ namespace Chroma
 
     if (quarks.size() != 3)
     {
-      QDPIO::cerr << "expecting 3 quarks but have num quarks= " << quarks.size() << endl;
+      QDPIO::cerr << "expecting 3 quarks but have num quarks= " << quarks.size() << std::endl;
       QDP_abort(1);
     }
 
@@ -589,7 +589,7 @@ namespace Chroma
     //
     std::istringstream  xml_op(params.param.baryon_operator);
     XMLReader  optop(xml_op);
-    const string operator_path = "/BaryonOperator";
+    const std::string operator_path = "/BaryonOperator";
 	
     Handle< BaryonOperator<LatticeFermion> >
       baryonOperator(TheWilsonBaryonOperatorFactory::Instance().createObject(params.param.baryon_operator_type,
@@ -658,21 +658,21 @@ namespace Chroma
     // Sanity check
     if ( toBool(baryon_opA.seed_l == baryon_opA.seed_m) )
     {
-      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDPIO::cerr << "baryon op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
     // Sanity check
     if ( toBool(baryon_opA.seed_l == baryon_opA.seed_r) )
     {
-      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDPIO::cerr << "baryon op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
     // Sanity check
     if ( toBool(baryon_opA.seed_m == baryon_opA.seed_r) )
     {
-      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDPIO::cerr << "baryon op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
@@ -682,7 +682,7 @@ namespace Chroma
     {
       for(int ord=0; ord < baryon_opA.orderings.size(); ++ord)
       {
-	QDPIO::cout << "Operator A: ordering = " << ord << endl;
+	QDPIO::cout << "Operator A: ordering = " << ord << std::endl;
 
 	baryon_opA.perms[ord] = perms[ord];
       
@@ -718,12 +718,12 @@ namespace Chroma
     } // end try
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating source operator: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating source operator: " << e << std::endl;
       QDP_abort(1);
     }
     catch(...)
     {
-      QDPIO::cerr << ": Caught generic exception creating source operator" << endl;
+      QDPIO::cerr << ": Caught generic exception creating source operator" << std::endl;
       QDP_abort(1);
     }
 
@@ -733,7 +733,7 @@ namespace Chroma
 
     QDPIO::cout << "Operator A computed: time= "
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     // Operator B
@@ -752,21 +752,21 @@ namespace Chroma
     // Sanity check
     if ( toBool(baryon_opB.seed_l == baryon_opB.seed_m) )
     {
-      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDPIO::cerr << "baryon op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
     // Sanity check
     if ( toBool(baryon_opB.seed_l == baryon_opB.seed_r) )
     {
-      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDPIO::cerr << "baryon op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
     // Sanity check
     if ( toBool(baryon_opB.seed_m == baryon_opB.seed_r) )
     {
-      QDPIO::cerr << "baryon op seeds are the same" << endl;
+      QDPIO::cerr << "baryon op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
@@ -776,7 +776,7 @@ namespace Chroma
     {
       for(int ord=0; ord < baryon_opB.orderings.size(); ++ord)
       {
-	QDPIO::cout << "Operator B: ordering = " << ord << endl;
+	QDPIO::cout << "Operator B: ordering = " << ord << std::endl;
 
 	baryon_opB.perms[ord] = perms[ord];
       
@@ -811,12 +811,12 @@ namespace Chroma
     } // end try
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating sink operator: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating sink operator: " << e << std::endl;
       QDP_abort(1);
     }
     catch(...)
     {
-      QDPIO::cerr << ": Caught generic exception creating sink operator" << endl;
+      QDPIO::cerr << ": Caught generic exception creating sink operator" << std::endl;
       QDP_abort(1);
     }
 
@@ -826,7 +826,7 @@ namespace Chroma
 
     QDPIO::cout << "Operator B computed: time= "
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     // Save the operators
@@ -867,7 +867,7 @@ namespace Chroma
 
     QDPIO::cout << "Operators written: time= "
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
     // Close the namelist output file XMLDAT
     pop(xml_out);     // StochBaryon
@@ -875,9 +875,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineStochBaryonEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineStochBaryonEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineStochBaryonEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

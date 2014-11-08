@@ -40,7 +40,7 @@ namespace Chroma
     //! Vector smearing
     /*! @ingroup smear
      *
-     * vector quark smearing object
+     * std::vector quark smearing object
      */
     template<typename T> 
     class QuarkSmear : public QuarkSmearing<T>
@@ -54,7 +54,7 @@ namespace Chroma
 	  }
 	  catch(std::string & e)
 	  {
-	    QDPIO::cerr << " Caught Exception reading vecs: " << e << endl;
+	    QDPIO::cerr << " Caught Exception reading vecs: " << e << std::endl;
 	    QDP_abort(1);
 	  }
 	}
@@ -76,11 +76,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, VectorQuarkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, VectorQuarkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const VectorQuarkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const VectorQuarkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

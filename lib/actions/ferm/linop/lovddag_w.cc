@@ -13,7 +13,7 @@
 
 namespace Chroma 
 { 
-  //! Apply the GW operator onto a source vector
+  //! Apply the GW operator onto a source std::vector
   /*! \ingroup linop
    *
    */
@@ -23,7 +23,7 @@ namespace Chroma
     operator()(chi, psi, isign, RsdCG );
   }
 
-  //! Apply the GW operator onto a source vector
+  //! Apply the GW operator onto a source std::vector
   //  epsilon specifies desired precision (absolute)
   /*! \ingroup linop
    *
@@ -74,8 +74,8 @@ namespace Chroma
 	      break;
 	    case CH_NONE:
 	      {
-		ostringstream error_message;
-		error_message << "Should not use lovddag unless the chirality is either CH_PLUS or CH_MINUS" << endl;
+		std::ostringstream error_message;
+		error_message << "Should not use lovddag unless the chirality is either CH_PLUS or CH_MINUS" << std::endl;
 		throw error_message.str();
 	      }
 	      break;
@@ -409,7 +409,7 @@ namespace Chroma
 	  tmp_normcheck -= b_vec;
 	  Double norm2check = norm2(tmp_normcheck);
 	  Double check_ztmp = Real(c) * z[iz][isz]*z[iz][isz];
-	  QDPIO::cout << "|| b - (Q_isz + MM)x || = " << norm2check << " accum = " << check_ztmp << endl;
+	  QDPIO::cout << "|| b - (Q_isz + MM)x || = " << norm2check << " accum = " << check_ztmp << std::endl;
 	}
 #endif
 
@@ -456,7 +456,7 @@ namespace Chroma
     /*  chi <-  (1/4)*(1-m_q^2) * chi  */
     ftmp = Real(0.25) * (Real(1) - m_q*m_q);
     chi *= ftmp;	        /* 2 Nc Ns  flops */
-    QDPIO::cout << "Overlap Inner Solve (lovddag(" << ichiral << ")) = " << n_count << " iterations" << endl;
+    QDPIO::cout << "Overlap Inner Solve (lovddag(" << ichiral << ")) = " << n_count << " iterations" << std::endl;
 
     END_CODE();
   }

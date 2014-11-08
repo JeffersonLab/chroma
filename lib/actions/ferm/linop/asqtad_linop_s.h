@@ -50,22 +50,22 @@ namespace Chroma
     //! Return the fermion BC object for this linear operator
     const FermBC<T,P,Q>& getFermBC() const {return D.getFermBC();}
 
-    //! Apply the the even-even block onto a source vector
+    //! Apply the the even-even block onto a source std::vector
     inline void evenEvenLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 			      enum PlusMinus isign) const 
     {
       chi[ rb[0] ] = 2*Mass*psi;
     }
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     void evenOddLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		      enum PlusMinus isign) const;
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     void oddEvenLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 		      enum PlusMinus isign) const;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     inline void oddOddLinOp(LatticeStaggeredFermion& chi, const LatticeStaggeredFermion& psi, 
 			    enum PlusMinus isign) const
     {

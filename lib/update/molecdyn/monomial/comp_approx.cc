@@ -10,7 +10,7 @@ namespace Chroma
 
   //-----------------------------------------------------------------------------
   //! Remez param
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    TermApprox_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -20,7 +20,7 @@ namespace Chroma
   }
 
   //! Remez param
-  void write(XMLWriter& xml, const string& path, 
+  void write(XMLWriter& xml, const std::string& path, 
 	     const TermApprox_t& param)
   {
     push(xml, path);
@@ -34,7 +34,7 @@ namespace Chroma
 
   //-----------------------------------------------------------------------------
   //! Remez param
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    CompApprox_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -61,7 +61,7 @@ namespace Chroma
 
   //-----------------------------------------------------------------------------
   //! Remez param
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    CompAction_t& param)
   {
     XMLReader paramtop(xml, path);
@@ -84,7 +84,7 @@ namespace Chroma
 
   //-----------------------------------------------------------------------------
   //! Remez param
-  void read(XMLReader& xml, const string& path, 
+  void read(XMLReader& xml, const std::string& path, 
 	    CompActionInv_t& param)
   {
     XMLReader paramtop(xml, path);

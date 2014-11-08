@@ -3,7 +3,7 @@
 /*! \file
  * \brief Compute the matrix element of  LatticeColorVector*M^-1*Gamma*displace*M^-1**LatticeColorVector
  *
- * Generalized propagator calculation on a colorvector for meson distribution amplitudes and parton dstribution functions
+ * Generalized propagator calculation on a colorstd::vector for meson distribution amplitudes and parton dstribution functions
  */
 
 #ifndef __inline_genprop_matelem_da_colorvec_h__

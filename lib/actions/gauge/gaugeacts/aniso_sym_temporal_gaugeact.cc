@@ -201,7 +201,7 @@ namespace Chroma
       rect_c_t_2 *= param.aniso.xi_0;
     }
 
-    QDPIO::cout << "Real(Nc)*(u_s_2*u_t_2+u_s_4*u_t_2)="<<Real(Nc)*( Real(3)*u_s_2*u_t_2/Real(4)-Real(12)*u_s_4*u_t_2)/param.beta << endl;
+    QDPIO::cout << "Real(Nc)*(u_s_2*u_t_2+u_s_4*u_t_2)="<<Real(Nc)*( Real(3)*u_s_2*u_t_2/Real(4)-Real(12)*u_s_4*u_t_2)/param.beta << std::endl;
     END_CODE();
   } 
 

@@ -18,7 +18,7 @@ namespace Chroma
 
     // Initialize internal structures for DSLASH
 #if 0
-    QDPIO::cout << "Calling init_sse_su3dslash()... " << endl;
+    QDPIO::cout << "Calling init_sse_su3dslash()... " << std::endl;
 #endif
 
     // Initialize using the total problem size
@@ -92,7 +92,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "SSEWilsonDslashArray: error: fbc is null" << endl;
+      QDPIO::cerr << "SSEWilsonDslashArray: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -109,15 +109,15 @@ namespace Chroma
     packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
 #if 0
-    QDPIO::cout << "Done " << endl << flush;
+    QDPIO::cout << "Done " << std::endl << std::flush;
 
-    QDPIO::cout << "Calling pack_gauge_field..." << flush;
+    QDPIO::cout << "Calling pack_gauge_field..." << std::flush;
 #endif
 
     SSEDslash::qdp_pack_gauge(u, packed_gauge);
   
 #if 0
-    QDPIO::cout << "Done" << endl << flush;
+    QDPIO::cout << "Done" << std::endl << std::flush;
 #endif
     
     END_CODE();
@@ -129,7 +129,7 @@ namespace Chroma
     START_CODE();
 
 #if 0
-    QDPIO::cout << "Calling free_sse_su3dslash()... " << endl;
+    QDPIO::cout << "Calling free_sse_su3dslash()... " << std::endl;
 #endif
 
     free_sse_su3dslash();
@@ -147,7 +147,7 @@ namespace Chroma
    *  \param chi      Result				                (Write)
    *  \param psi      Pseudofermion field				(Read)
    *  \param isign    D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
-   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector			(Read) 
    */
   void 
   SSEWilsonDslashArray::apply (multi1d<LatticeFermion>& chi, 
@@ -174,7 +174,7 @@ namespace Chroma
    *  \param chi	      Result				                (Write)
    *  \param psi	      Pseudofermion field				(Read)
    *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
-   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector			(Read) 
    */
   void
   SSEWilsonDslashArray::apply (LatticeFermion& chi, const LatticeFermion& psi, 

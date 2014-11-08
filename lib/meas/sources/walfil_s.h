@@ -24,7 +24,7 @@ namespace Chroma {
  * \param color_index  Color index
  * \param src_index    Index which defines which corner of a cube on
  *                     the source time slice you want your source to
- *                     be on. The mapping from src_index to site is
+ *                     be on. The std::mapping from src_index to site is
  *                     lexicographic, i.e: 0 is (0,0,0), 1 is (1,0,0),
  *                     2 is (0,1,0), 3 is (1,1,0), 4 is (0,0,1),
  *                     5 is (1,0,1), 6 is (0,1,1) and 7 is (1,1,1).

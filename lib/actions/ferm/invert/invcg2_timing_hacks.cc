@@ -30,7 +30,7 @@ namespace Chroma {
  *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
  *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
  *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
  *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
  *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -47,8 +47,8 @@ namespace Chroma {
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -59,7 +59,7 @@ namespace Chroma {
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *
@@ -88,7 +88,7 @@ InvCG2_timings_a(const LinearOperator<T>& M,
 
     chi_internal[s] = chi;
 
-    QDPIO::cout << "InvCG2: starting" << endl;
+    QDPIO::cout << "InvCG2: starting" << std::endl;
     FlopCounter flopcount;
     flopcount.reset();
     StopWatch swatch;
@@ -171,7 +171,7 @@ InvCG2_timings_a(const LinearOperator<T>& M,
     revertFromFastMemoryHint(psi,true);
     res.n_count = MaxCG;
     res.resid   = 1.0e-30;
-    QDPIO::cout << "InvCG2 Timings: Iteration Count = " << k << endl;
+    QDPIO::cout << "InvCG2 Timings: Iteration Count = " << k << std::endl;
     END_CODE();
     return res;
 

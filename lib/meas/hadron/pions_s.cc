@@ -42,7 +42,7 @@ namespace Chroma {
  *          ii) This means that there is only 
  *             8 propagators corresponding to the 8 corners of the 
  *             spatial cube. The props come in an array whose single
- *             index maps lexicographically to the corners of the cube.
+ *             index std::maps lexicographically to the corners of the cube.
  *             ie:  prop_index = 0,   hypercube_coord (0,0,0,0)
  *                  prop_index = 1,   hypercube_coord (1,0,0,0)
  *                  prop_index = 2,   hypercube_coord (0,1,0,0)
@@ -75,13 +75,13 @@ namespace Chroma {
 
     if( Nd != 4 ) { 
       QDPIO::cerr << "The no of dimensions should be 4 for now. It is: " 
-		  << Nd << endl;
+		  << Nd << std::endl;
       QDP_abort(1);
     }
 
     // Check for 8 props
     if( quark_props.size() != NUM_STAG_PROPS ) { 
-      QDPIO::cerr << "pions_s: input quark props has the wrong number of elements. It should be 8 but is " << quark_props.size() << endl;
+      QDPIO::cerr << "pions_s: input quark props has the wrong number of elements. It should be 8 but is " << quark_props.size() << std::endl;
       QDP_abort(1);
     };
 
@@ -91,7 +91,7 @@ namespace Chroma {
       break;
     
     default:
-      QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << endl;
+      QDPIO::cerr << "pions_s: j_decay must be 3 for just now. It is " << j_decay << std::endl;
       QDP_abort(1);
     };
 
@@ -249,7 +249,7 @@ namespace Chroma {
     pion_index++;
 
     if( pion_index != NUM_STAG_PIONS) { 
-      QDPIO::cerr << "Panic! Panic! Something has gone horribly wrong" << endl;
+      QDPIO::cerr << "Panic! Panic! Something has gone horribly wrong" << std::endl;
       QDP_abort(1);
     }
   }

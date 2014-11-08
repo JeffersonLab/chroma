@@ -163,7 +163,7 @@ namespace Chroma
       }
       break;
           default: 
-      QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << endl;
+      QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << std::endl;
       QDP_abort(1);
     };
 
@@ -245,7 +245,7 @@ namespace Chroma
       }
       break;
           default: 
-      QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << endl;
+      QDPIO::cerr << "Unknown value for PLUS /MINUS: " << isign << std::endl;
       QDP_abort(1);
     };
 
@@ -436,7 +436,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Not yet implemented " << endl;
+    QDPIO::cout << "Not yet implemented " << std::endl;
     QDP_abort(1);    
 
     END_CODE();

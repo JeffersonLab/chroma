@@ -37,7 +37,7 @@ namespace Chroma
 	int max_path_length ; /*! maximum displacement path */
 	int p2_max ; /*! maximum p2  */
 	multi1d<GroupXML_t> chi ;     /*! dilutions */
-	string mass_label ; /*! a string flag maybe used in analysis*/
+	std::string mass_label ; /*! a std::string flag maybe used in analysis*/
       } param;
     
       struct NamedObject_t

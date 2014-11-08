@@ -93,7 +93,7 @@ namespace Chroma
       for(QuarkIndex i3;i3.NotEnd();++i3)
 	for(QuarkIndex i2;i2.NotEnd();++i2)
 	  for(QuarkIndex i1;i1.NotEnd();++i1){
-	    //cout<<"QuarkIndex iterator: "<<i1.s<<" "<<i1.c<<endl;
+	    //cout<<"QuarkIndex iterator: "<<i1.s<<" "<<i1.c<<std::endl;
 	    cc=0.0;
 	    // s is the sink spin index of the 1 and 2 quark
 	    // that participate in the diquark
@@ -111,9 +111,9 @@ namespace Chroma
 		qqq[sink_mom_num][t_eff](i1,i2,i3,s4) = 
 		  (bc_spec < 0 && (t_eff+t0) >= length) ? -foo[sink_mom_num][t] :
 		  foo[sink_mom_num][t] ;
-		//cout<<t<<" "<<qqq[sink_mom_num][t](i1,i2,i3,s4)<<endl ;
+		//cout<<t<<" "<<qqq[sink_mom_num][t](i1,i2,i3,s4)<<std::endl ;
 	      }
-	    //cout<<i1.s<<" "<<qqq[0][0](i1,i2,i3,s4)<<endl ;
+	    //cout<<i1.s<<" "<<qqq[0][0](i1,i2,i3,s4)<<std::endl ;
 	  }
 
     QDPIO::cout<<"Finished the qqq code\n";
@@ -167,7 +167,7 @@ namespace Chroma
       for(QuarkIndex i3;i3.NotEnd();++i3)
 	for(QuarkIndex i2;i2.NotEnd();++i2)
 	  for(QuarkIndex i1;i1.NotEnd();++i1){
-	    //cout<<"QuarkIndex iterator: "<<i1.s<<" "<<i1.c<<endl;
+	    //cout<<"QuarkIndex iterator: "<<i1.s<<" "<<i1.c<<std::endl;
 	    cc=0.0;
 	    // s is the sink spin index of the 1 and 2 quark
 	    // that participate in the diquark
@@ -185,9 +185,9 @@ namespace Chroma
 		qqq[sink_mom_num][t_eff](i1,i2,i3,s4) = 
 		  (bc_spec < 0 && (t_eff+t0) >= length) ? -foo[sink_mom_num][t] :
 		  foo[sink_mom_num][t] ;
-		//cout<<t<<" "<<qqq[sink_mom_num][t](i1,i2,i3,s4)<<endl ;
+		//cout<<t<<" "<<qqq[sink_mom_num][t](i1,i2,i3,s4)<<std::endl ;
 	      }
-	    //cout<<i1.s<<" "<<qqq[0][0](i1,i2,i3,s4)<<endl ;
+	    //cout<<i1.s<<" "<<qqq[0][0](i1,i2,i3,s4)<<std::endl ;
 	  }
 
     QDPIO::cout<<"Finished the qqq code\n";
@@ -200,8 +200,8 @@ namespace Chroma
   void write_qqq(QDPFileWriter& to,
 		 multi2d<ThreeQuarks>& qqq, 
 		 const SftMom& phases,
-		 string type,
-		 string sink){
+		 std::string type,
+		 std::string sink){
     
     for(int p(0) ; p<phases.numMom();p++){
       XMLBufferWriter record_xml;

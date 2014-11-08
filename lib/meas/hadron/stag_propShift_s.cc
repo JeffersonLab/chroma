@@ -12,7 +12,7 @@ int deltaToPropIndex(multi1d<int>& delta)
 {
 
   if( Nd != 4 ) {
-    QDPIO::cerr << "This routine only works for Nd=4, not Nd="<<Nd << endl;
+    QDPIO::cerr << "This routine only works for Nd=4, not Nd="<<Nd << std::endl;
     QDP_abort(1);
   }
 
@@ -25,7 +25,7 @@ int deltaToPropIndex(multi1d<int>& delta)
   /* Paranoia2 -- Delta can contain only 0 (no shift) and 1s (shift) */
   for( int mu = 0; mu < Nd; mu++) {
     if( delta[mu] != 0 && delta[mu] != 1 ) {
-      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << endl;
+      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << std::endl;
       QDP_abort(1);
     }
   }
@@ -42,7 +42,7 @@ void PropIndexTodelta(int src_index, multi1d<int>& delta)
 {
 
   if( Nd != 4 ) {
-    QDPIO::cerr << "This routine only works for Nd=4, not Nd="<<Nd << endl;
+    QDPIO::cerr << "This routine only works for Nd=4, not Nd="<<Nd << std::endl;
     QDP_abort(1);
   }
 
@@ -74,7 +74,7 @@ void PropIndexTodelta(int src_index, multi1d<int>& delta)
   /* Paranoia3 -- Delta can contain only 0 (no shift) and 1s (shift) */
   for( int mu = 0; mu < Nd; mu++) {
     if( delta[mu] != 0 && delta[mu] != 1 ) {
-      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << endl;
+      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << std::endl;
       QDP_abort(1);
     }
   }
@@ -101,7 +101,7 @@ LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta,
 
   for( mu = 0; mu < Nd; mu++) {
     if( delta[mu] != 0 && delta[mu] != 1 ) {
-      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << endl;
+      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << std::endl;
       QDP_abort(1);
     }
   }
@@ -202,7 +202,7 @@ T shiftDeltaPropCov_t(multi1d<int>& delta,
 
   for( mu = 0; mu < Nd; mu++) {
     if( delta[mu] != 0 && delta[mu] != 1 ) {
-      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << endl;
+      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << std::endl;
       QDP_abort(1);
     }
   }
@@ -310,7 +310,7 @@ LatticeStaggeredPropagator shiftDeltaProp(multi1d<int>& delta,
 
   for( mu = 0; mu < Nd; mu++) {
     if( delta[mu] != 0 && delta[mu] != 1 ) {
-      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << endl;
+      QDPIO::cerr << "Delta must be made up of either zeros or ones. Element " << mu << " has value " << delta[mu] << std::endl;
       QDP_abort(1);
     }
   }

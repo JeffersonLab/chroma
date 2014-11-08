@@ -53,13 +53,13 @@ namespace Chroma
 	  catch( std::bad_cast ) 
 	  {
 	    QDPIO::cerr << __func__ << ": cast error" 
-			<< endl;
+			<< std::endl;
 	    QDP_abort(1);
 	  }
-	  catch (const string& e) 
+	  catch (const std::string& e) 
 	  {
 	    QDPIO::cerr << __func__ << ": error message: " << e 
-			<< endl;
+			<< std::endl;
 	    QDP_abort(1);
 	  }
 	}
@@ -82,7 +82,7 @@ namespace Chroma
       // This might be too restrictive - might prefer automatic resetting
       if (initP)
       {
-	QDPIO::cerr << __func__ << ": gauge field already initialized" << endl;
+	QDPIO::cerr << __func__ << ": gauge field already initialized" << std::endl;
 	QDP_abort(1);
       }
 
@@ -106,13 +106,13 @@ namespace Chroma
       catch (std::bad_cast) 
       {
 	QDPIO::cerr << __func__ << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << __func__ << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
@@ -133,7 +133,7 @@ namespace Chroma
 
       if (! initP)
       {
-	QDPIO::cerr << __func__ << ": gauge field not initialized" << endl;
+	QDPIO::cerr << __func__ << ": gauge field not initialized" << std::endl;
 	QDP_abort(1);
       }
 
@@ -147,13 +147,13 @@ namespace Chroma
       catch (std::bad_cast) 
       {
 	QDPIO::cerr << __func__ << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << __func__ << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     

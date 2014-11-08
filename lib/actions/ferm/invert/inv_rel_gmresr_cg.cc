@@ -38,7 +38,7 @@ void InvRelGMRESR_CG_a(const LinearOperator<T>& PrecMM,
 
   // Do the loop
   while( toBool( norm_r > terminate) && iter < MaxGMRESR ) {
-    // First we have to get a new u vector (in U)
+    // First we have to get a new u std::vector (in U)
     T* u = new T;
     (*u)[s] = zero;
 
@@ -85,7 +85,7 @@ void InvRelGMRESR_CG_a(const LinearOperator<T>& PrecMM,
 
     iter++;
     norm_r = sqrt(norm2(r,s));
-    QDPIO::cout << "Inv Rel GMRESR: iter "<< iter <<" || r || = " << norm_r << endl;
+    QDPIO::cout << "Inv Rel GMRESR: iter "<< iter <<" || r || = " << norm_r << std::endl;
   }
 
   // Cleanup
@@ -95,7 +95,7 @@ void InvRelGMRESR_CG_a(const LinearOperator<T>& PrecMM,
   }
 
   if( iter == MaxGMRESR ) { 
-    QDPIO::cout << "Nonconvergence warning " << endl;
+    QDPIO::cout << "Nonconvergence warning " << std::endl;
   }
   
   n_count = iter;

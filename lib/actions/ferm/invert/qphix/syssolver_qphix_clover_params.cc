@@ -14,27 +14,27 @@ namespace Chroma {
     bool registerAll(void) 
     {
       bool success; 
-      success = theQPhiXSolverTypeMap::Instance().registerPair(string("CG"),
+      success = theQPhiXSolverTypeMap::Instance().registerPair(std::string("CG"),
 							   CG);
 
-      success &=theQPhiXSolverTypeMap::Instance().registerPair(string("BICGSTAB" ), 
+      success &=theQPhiXSolverTypeMap::Instance().registerPair(std::string("BICGSTAB" ), 
 							       BICGSTAB);
 
       return success;
     }
 
-    const string typeIDString = "QPhiXSolverType";
+    const std::string typeIDString = "QPhiXSolverType";
     bool registered = registerAll();
   };
   
   using namespace QPhiXSolverTypeEnv;
   //! Read an WaveType enum
-  void read(XMLReader& xml_in,  const string& path, QPhiXSolverType& t) {
+  void read(XMLReader& xml_in,  const std::string& path, QPhiXSolverType& t) {
     theQPhiXSolverTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! Write an WaveType enum
-  void write(XMLWriter& xml_out, const string& path, const QPhiXSolverType& t) {
+  void write(XMLWriter& xml_out, const std::string& path, const QPhiXSolverType& t) {
     theQPhiXSolverTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 

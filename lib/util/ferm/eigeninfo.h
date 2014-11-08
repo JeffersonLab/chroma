@@ -26,7 +26,7 @@ namespace Chroma
     EigenInfo(const multi1d<Real>& eval, const Real& l, const multi1d<T>& evec) 
       : evalues(eval), largest(l), evectors(evec) {
       if (eval.size() != evec.size() ) {
-	QDPIO::cout << "Eval array size not equal to evec array size" << endl;
+	QDPIO::cout << "Eval array size not equal to evec array size" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -37,7 +37,7 @@ namespace Chroma
     //! Copy constructor
     EigenInfo(const EigenInfo& e): evalues(e.evalues), largest(e.largest), evectors(e.evectors) {
       if (e.evalues.size() != e.evectors.size() ) {
-	QDPIO::cout << "Eval array size not equal to evec array size" << endl;
+	QDPIO::cout << "Eval array size not equal to evec array size" << std::endl;
 	QDP_abort(1);
       }
     }

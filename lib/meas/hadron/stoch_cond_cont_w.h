@@ -66,11 +66,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup hadron */
-  void read(XMLReader& xml, const string& path, StochCondContEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, StochCondContEnv::Params& param);
 
   //! Writer
   /*! @ingroup hadron */
-  void write(XMLWriter& xml, const string& path, const StochCondContEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const StochCondContEnv::Params& param);
 
 
 } // namespace Chroma

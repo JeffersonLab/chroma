@@ -23,7 +23,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 //! Read a SZIN configuration file
 /*!
@@ -39,7 +39,7 @@ void readSzin(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_
  * \param cfg_file   path ( Read )
  */    
 
-void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readSzin(SzinGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 }  // end namespace Chroma
 

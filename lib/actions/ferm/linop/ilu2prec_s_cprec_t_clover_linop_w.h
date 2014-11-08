@@ -56,7 +56,7 @@ namespace Chroma
 
   protected:
     
-    //! Apply the the space block onto a source vector
+    //! Apply the the space block onto a source std::vector
     //  cb3d is the 3d (rb3) checkerboard of the target
     void Dslash3D(T& chi, const T& psi, enum PlusMinus isign, int cb3d) const {
       Real mhalf=Real(0.5); // - sign is now in preconditioners
@@ -92,7 +92,7 @@ namespace Chroma
     //! Flopcounter
     unsigned long nFlops() const 
     { 
-      //      QDPIO::cout << "Flopcount Not Yet Implemented " << endl;
+      //      QDPIO::cout << "Flopcount Not Yet Implemented " << std::endl;
       return 0;
     }
     

@@ -57,7 +57,7 @@ namespace Chroma
 
 
   // Operator parameters
-  void read(XMLReader& xml, const string& path, InlineStochMesonParams::Prop_t::Operator_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStochMesonParams::Prop_t::Operator_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -66,7 +66,7 @@ namespace Chroma
 
 
   // Operator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochMesonParams::Prop_t::Operator_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochMesonParams::Prop_t::Operator_t& input)
   {
     push(xml, path);
     write(xml, "soln_files", input.soln_files);
@@ -75,7 +75,7 @@ namespace Chroma
 
 
   // Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineStochMesonParams::Prop_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStochMesonParams::Prop_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -85,7 +85,7 @@ namespace Chroma
 
 
   // Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochMesonParams::Prop_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochMesonParams::Prop_t& input)
   {
     push(xml, path);
 
@@ -97,7 +97,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineStochMesonParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineStochMesonParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -113,7 +113,7 @@ namespace Chroma
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -122,7 +122,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochMesonParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochMesonParams::Param_t& param)
   {
     push(xml, path);
 
@@ -136,7 +136,7 @@ namespace Chroma
 
 
   //! Propagator parameters
-  void read(XMLReader& xml, const string& path, InlineStochMesonParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineStochMesonParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -145,7 +145,7 @@ namespace Chroma
   }
 
   //! Propagator parameters
-  void write(XMLWriter& xml, const string& path, const InlineStochMesonParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineStochMesonParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -193,7 +193,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -259,8 +259,8 @@ namespace Chroma
       multi2d<MesonOperatorElement_t> op;    /*!< hybrid list indices */
     };
 
-    std::string   smearing_l;        /*!< string holding smearing xml */
-    std::string   smearing_r;        /*!< string holding smearing xml */
+    std::string   smearing_l;        /*!< std::string holding smearing xml */
+    std::string   smearing_r;        /*!< std::string holding smearing xml */
 
     int           mom2_max;
     int           j_decay;
@@ -305,7 +305,7 @@ namespace Chroma
 
 
   //! MesonOperator header writer
-  void write(XMLWriter& xml, const string& path, const MesonOperator_t& param)
+  void write(XMLWriter& xml, const std::string& path, const MesonOperator_t& param)
   {
     if( path != "." )
       push(xml, path);
@@ -334,7 +334,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "stoch_meson");
       write(xml_out, "update_no", update_no);
@@ -372,13 +372,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineStochMesonEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineStochMesonEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineStochMesonEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -387,7 +387,7 @@ namespace Chroma
     push(xml_out, "stoch_meson");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineStochMesonEnv::name << ": Stochastic Meson Operator" << endl;
+    QDPIO::cout << InlineStochMesonEnv::name << ": Stochastic Meson Operator" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -414,22 +414,22 @@ namespace Chroma
     //
     snoop.start();
     multi1d<QuarkSourceSolutions_t>  quarks(params.named_obj.prop.op.size());
-    QDPIO::cout << "num_quarks= " << params.named_obj.prop.op.size() << endl;
+    QDPIO::cout << "num_quarks= " << params.named_obj.prop.op.size() << std::endl;
 
     try
     {
-      QDPIO::cout << "quarks.size= " << quarks.size() << endl;
+      QDPIO::cout << "quarks.size= " << quarks.size() << std::endl;
       for(int n=0; n < quarks.size(); ++n)
       {
-	QDPIO::cout << "Attempt to read solutions for source number=" << n << endl;
+	QDPIO::cout << "Attempt to read solutions for source number=" << n << std::endl;
 	quarks[n].dilutions.resize(params.named_obj.prop.op[n].soln_files.size());
 
-	QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << endl;
+	QDPIO::cout << "dilutions.size= " << quarks[n].dilutions.size() << std::endl;
 	for(int i=0; i < quarks[n].dilutions.size(); ++i)
 	{
 	  XMLReader file_xml, record_xml;
 
-	  QDPIO::cout << "reading file= " << params.named_obj.prop.op[n].soln_files[i] << endl;
+	  QDPIO::cout << "reading file= " << params.named_obj.prop.op[n].soln_files[i] << std::endl;
 	  QDPFileReader from(file_xml, params.named_obj.prop.op[n].soln_files[i], QDPIO_SERIAL);
 	  read(from, record_xml, quarks[n].dilutions[i].soln);
 	  close(from);
@@ -439,16 +439,16 @@ namespace Chroma
 	}
       }
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting headers: " << e << endl;
+      QDPIO::cerr << "Error extracting headers: " << e << std::endl;
       QDP_abort(1);
     }
     snoop.stop();
 
     QDPIO::cout << "Sources and solutions successfully read: time= "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
 
@@ -471,15 +471,15 @@ namespace Chroma
 	{
 	  std::istringstream  xml_s(quarks[n].dilutions[i].source_header.source.xml);
 	  XMLReader  sourcetop(xml_s);
-//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << endl;
+//	QDPIO::cout << "Source = " << quarks[n].dilutions[i].source_header.source.id << std::endl;
 
 	  if (quarks[n].dilutions[i].source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
 	  {
-	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
+	    QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << std::endl;
 	    QDP_abort(1);
 	  }
 
-	  QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << endl;
+	  QDPIO::cout << "Quark num= " << n << "  dilution num= " << i << std::endl;
 
 	  // Manually create the params so I can peek into them and use the source constructor
 	  DiluteZNQuarkSourceConstEnv::Params  srcParams(sourcetop, 
@@ -506,14 +506,14 @@ namespace Chroma
 	  // The seeds must always agree - here the seed is the unique id of the source
 	  if ( toBool(srcParams.ran_seed != quarks[n].seed) )
 	  {
-	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << endl;
+	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " seed does not match" << std::endl;
 	    QDP_abort(1);
 	  }
 
 	  // The N's must always agree
 	  if ( toBool(srcParams.N != N) )
 	  {
-	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << endl;
+	    QDPIO::cerr << "quark source=" << n << "  dilution=" << i << " N does not match" << std::endl;
 	    QDP_abort(1);
 	  }
 
@@ -548,7 +548,7 @@ namespace Chroma
 	Double dcnt = norm2(quark_noise, phases );
 	if (toDouble(dcnt) != 0.0)  // problematic - seems to work with unnormalized sources 
 	{
-	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << endl;
+	  QDPIO::cerr << "Noise not saturated by all potential solutions: dcnt=" << dcnt << std::endl;
 	  QDP_abort(1);
 	}
 
@@ -559,7 +559,7 @@ namespace Chroma
     } // end try
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating source: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating source: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -567,7 +567,7 @@ namespace Chroma
 
     QDPIO::cout << "Sources saturated: time= "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     //
@@ -584,7 +584,7 @@ namespace Chroma
 
     if (quarks.size() != 2)
     {
-      QDPIO::cerr << "expecting 2 quarks but have num quarks= " << quarks.size() << endl;
+      QDPIO::cerr << "expecting 2 quarks but have num quarks= " << quarks.size() << std::endl;
       QDP_abort(1);
     }
 
@@ -603,7 +603,7 @@ namespace Chroma
     // Sanity check
     if ( toBool(meson_opA.seed_l == meson_opA.seed_r) )
     {
-      QDPIO::cerr << "meson op seeds are the same" << endl;
+      QDPIO::cerr << "meson op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
@@ -614,7 +614,7 @@ namespace Chroma
 
       std::istringstream  xml_s(params.source_smearing.source.xml);
       XMLReader  sourcetop(xml_s);
-      QDPIO::cout << "Source = " << params.source_smearing.source.id << endl;
+      QDPIO::cout << "Source = " << params.source_smearing.source.id << std::endl;
 
       Handle< QuarkSourceSink<LatticeFermion> >
 	sourceSmearing(TheFermSourceSmearingFactory::Instance().createObject(
@@ -641,7 +641,7 @@ namespace Chroma
 	(*sourceSmearing)(smeared_solns[j]);
       }
 
-      QDPIO::cout << "source smearings done" << endl;
+      QDPIO::cout << "source smearings done" << std::endl;
 
       for(int gamma_value=0; gamma_value < Ns*Ns; ++gamma_value)
       {
@@ -664,12 +664,12 @@ namespace Chroma
     } // opA
     catch(const std::string& e) 
     {
-      QDPIO::cerr << ": Caught Exception creating source smearing: " << e << endl;
+      QDPIO::cerr << ": Caught Exception creating source smearing: " << e << std::endl;
       QDP_abort(1);
     }
     catch(...)
     {
-      QDPIO::cerr << ": Caught generic exception creating source smearing" << endl;
+      QDPIO::cerr << ": Caught generic exception creating source smearing" << std::endl;
       QDP_abort(1);
     }
 
@@ -677,7 +677,7 @@ namespace Chroma
 
     QDPIO::cout << "Operator A computed: time= "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     // Operator B
@@ -694,7 +694,7 @@ namespace Chroma
     // Sanity check
     if ( toBool(meson_opB.seed_l == meson_opB.seed_r) )
     {
-      QDPIO::cerr << "meson op seeds are the same" << endl;
+      QDPIO::cerr << "meson op seeds are the same" << std::endl;
       QDP_abort(1);
     }
 
@@ -704,7 +704,7 @@ namespace Chroma
 
       std::istringstream  xml_s(params.sink_smearing.sink.xml);
       XMLReader  sinktop(xml_s);
-      QDPIO::cout << "Sink = " << params.sink_smearing.sink.id << endl;
+      QDPIO::cout << "Sink = " << params.sink_smearing.sink.id << std::endl;
 
       Handle< QuarkSourceSink<LatticeFermion> >
 	sinkSmearing(TheFermSinkSmearingFactory::Instance().createObject(
@@ -731,7 +731,7 @@ namespace Chroma
 	(*sinkSmearing)(smeared_solns[i]);
       }
 
-      QDPIO::cout << "sink smearings done" << endl;
+      QDPIO::cout << "sink smearings done" << std::endl;
 
       for(int gamma_value=0; gamma_value < Ns*Ns; ++gamma_value)
       {
@@ -757,7 +757,7 @@ namespace Chroma
 
     QDPIO::cout << "Operator B computed: time= "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
 
     // Save the operators
@@ -793,7 +793,7 @@ namespace Chroma
 
     QDPIO::cout << "Operators written: time= "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
     // Close the namelist output file XMLDAT
     pop(xml_out);     // StochMeson
@@ -801,9 +801,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineStochMesonEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineStochMesonEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineStochMesonEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

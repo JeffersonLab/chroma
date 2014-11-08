@@ -23,7 +23,7 @@ namespace Chroma
   void write(XMLWriter& xml, const std::string& path, const SubsetVectorWeight_t& param);
 
 
-  //! Extract eigenvalues from a map, and arrange them in a different format
+  //! Extract eigenvalues from a std::map, and arrange them in a different format
   multi1d<SubsetVectorWeight_t> getEigenValues(const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source, int num_vecs);
   
   

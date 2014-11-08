@@ -1,6 +1,6 @@
 // $Id: xml_group_reader.cc,v 1.3 2007-06-11 03:26:43 edwards Exp $
 /*! \file
- *  \brief Read an XML group as a string
+ *  \brief Read an XML group as a std::string
  */
 
 #include "io/xml_group_reader.h"
@@ -8,7 +8,7 @@
 namespace Chroma 
 {
 
-  // Read group and return as a string
+  // Read group and return as a std::string
   GroupXML_t readXMLGroup(XMLReader& xml_in, 
 			  const std::string& path, const std::string& type_name)
   {
@@ -16,7 +16,7 @@ namespace Chroma
 
 //    QDPIO::cout << __func__ << ": here is the current context XX";
 //    xml_in.printCurrentContext(cout);
-//    QDPIO::cout << "XX" << endl;
+//    QDPIO::cout << "XX" << std::endl;
 
     try
     {
@@ -29,7 +29,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": caught exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": caught exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -37,7 +37,7 @@ namespace Chroma
   }
 
 
-  // Read group and return as a string
+  // Read group and return as a std::string
   multi1d<GroupXML_t> readXMLArrayGroup(XMLReader& xml_in, 
 					const std::string& path, 
 					const std::string& type_name)
@@ -46,7 +46,7 @@ namespace Chroma
 
 //    QDPIO::cout << __func__ << ": here is the current context XX";
 //    xml_in.printCurrentContext(cout);
-//    QDPIO::cout << "XX" << endl;
+//    QDPIO::cout << "XX" << std::endl;
 
     try
     {
@@ -69,7 +69,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": caught exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": caught exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
 

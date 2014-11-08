@@ -60,12 +60,12 @@ namespace Chroma
     SftMom phases(0, t_src, mom);
     multi1d<int> mm = phases.numToMom(0);
     QDPIO::cout<<"Sink momentum: " ;
-    QDPIO::cout<<mm[0]<<mm[1]<<mm[2]<<mm[3]<<endl;
+    QDPIO::cout<<mm[0]<<mm[1]<<mm[2]<<mm[3]<<std::endl;
     return sum(prop*phases[0])/Double(Layout::vol());
   }
 
   //! Param input
-  void read(XMLReader& xml, const string& path, InlineNprVertexParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineNprVertexParams::Param_t& input)
   {
     XMLReader paramtop(xml, path);
 
@@ -84,7 +84,7 @@ namespace Chroma
 
     default :
       QDPIO::cerr << InlineNprVertexEnv::name << ": input parameter version " 
-		  << version << " unsupported." << endl;
+		  << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
     
@@ -94,7 +94,7 @@ namespace Chroma
 
 
   //! Param write
-  void write(XMLWriter& xml, const string& path, const InlineNprVertexParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineNprVertexParams::Param_t& input)
   {
     push(xml, path);
 
@@ -108,7 +108,7 @@ namespace Chroma
   }
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineNprVertexParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineNprVertexParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -117,7 +117,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineNprVertexParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineNprVertexParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -156,7 +156,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -198,7 +198,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "NprVertex");
       write(xml_out, "update_no", update_no);
@@ -229,12 +229,12 @@ namespace Chroma
     push(XmlOut, "NprVertex");
     write(XmlOut, "update_no", update_no);
 
-    QDPIO::cout << " ExampleNprVertex" << endl;
+    QDPIO::cout << " ExampleNprVertex" << std::endl;
     QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
 
     //#################################################################################//
     // XML output
@@ -250,7 +250,7 @@ namespace Chroma
     // Read Gauge Field                                                              //
     //###############################################################################//
 
-    QDPIO::cout << "Attempt to initialize the gauge field" << endl << flush ;
+    QDPIO::cout << "Attempt to initialize the gauge field" << std::endl << std::flush ;
 
     // Grab the gauge field
     multi1d<LatticeColorMatrix> U;
@@ -263,7 +263,7 @@ namespace Chroma
 
       // Set the construct state and modify the fields
       {
-	QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
+	QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << std::endl;
 	std::istringstream  xml_s(params.param.cfs.xml);
 	XMLReader  fermtop(xml_s);
 
@@ -284,19 +284,19 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineNprVertexEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineNprVertexEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineNprVertexEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     catch( ... )
     {
       QDPIO::cerr << InlineNprVertexEnv::name << ": caught generic exception "
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -318,8 +318,8 @@ namespace Chroma
     LatticePropagator F;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
-    QDPIO::cout << "Attempt to parse forward propagator" << endl;
-    QDPIO::cout << "parsing forward propagator " << params.named_obj.prop_id << " ... " << endl << flush;
+    QDPIO::cout << "Attempt to parse forward propagator" << std::endl;
+    QDPIO::cout << "parsing forward propagator " << params.named_obj.prop_id << " ... " << std::endl << std::flush;
 
     try
     {
@@ -343,7 +343,7 @@ namespace Chroma
 	multi1d<Double> PropCheck = 
 	  sumMulti( localNorm2( F ), phases_nomom.getSet() );
 
-	QDPIO::cout << "forward propagator check = " << PropCheck[0] << endl;
+	QDPIO::cout << "forward propagator check = " << PropCheck[0] << std::endl;
 
 	// Write out the forward propagator header
 	push(XmlOut, "ForwardProp");
@@ -356,17 +356,17 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineNprVertexEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineNprVertexEnv::name << ": forward prop: error message: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
 
 
     // Get the momentum from the header
@@ -379,8 +379,8 @@ namespace Chroma
       mom = source_header.getMom() ;
       t_src = source_header.getTSrce() ;
     }
-    catch (const string& e){
-      QDPIO::cerr << InlineNprVertexEnv::name << ": propagator does not have a momentum source or t_src not present: error message: " << e << endl;
+    catch (const std::string& e){
+      QDPIO::cerr << InlineNprVertexEnv::name << ": propagator does not have a momentum source or t_src not present: error message: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -404,7 +404,7 @@ namespace Chroma
 
 
     //Fourier transform the propagator 
-    QDPIO::cout << "Fourier Transforming propagator" << endl;
+    QDPIO::cout << "Fourier Transforming propagator" << std::endl;
     swatch.start();
     multi1d<int> neg_mom(mom.size());
     //need the oposit momentum on the sink
@@ -423,9 +423,9 @@ namespace Chroma
     QDPIO::cout << "finished Fourier Transforming propagator"
                 << "  time= "
                 << swatch.getTimeInSeconds()
-                << " secs" << endl;
+                << " secs" << std::endl;
 
-    QDPIO::cout << "Calculating building blocks" << endl;
+    QDPIO::cout << "Calculating building blocks" << std::endl;
     swatch.reset();
     swatch.start();
     NprVertex(F, U, params.param.links_max, AllLinkPatterns, qio_file);
@@ -436,16 +436,16 @@ namespace Chroma
     QDPIO::cout << "finished calculating NprVertex"
 		<< "  time= "
 		<< swatch.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
     pop(XmlOut);   // NprVertex
 
     snoop.stop();
     QDPIO::cout << InlineNprVertexEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineNprVertexEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineNprVertexEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

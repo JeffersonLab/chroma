@@ -51,7 +51,7 @@ namespace Chroma
 
 
   //! Npr input
-  void read(XMLReader& xml, const string& path, InlineNprParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineNprParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -61,7 +61,7 @@ namespace Chroma
   }
 
   //! Npr output
-  void write(XMLWriter& xml, const string& path, const InlineNprParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineNprParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -106,7 +106,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -132,7 +132,7 @@ namespace Chroma
 			      int mu){
     multi1d<LatticeColorMatrix>& u = state.getLinks() ;
     for(int color_source = 0; color_source < Nc; ++color_source){
-      QDPIO::cout << "color = " << color_source << endl; 
+      QDPIO::cout << "color = " << color_source << std::endl; 
       LatticeColorVector cvec = zero;
       // Make a point source at coordinates t_source
       srcfil(src_color_vec, t_source, color_source);
@@ -141,7 +141,7 @@ namespace Chroma
 	cvec=0.5*(u[mu]*shift(tt,FORWARD,mu) - shift(adj(u[mu])*tt,BACKWARD,mu));
       }
       for(int spin_source = 0; spin_source < Ns; ++spin_source){
-	QDPIO::cout << "spin = " << spin_source << endl; 
+	QDPIO::cout << "spin = " << spin_source << std::endl; 
 	// Insert a ColorVector into spin index spin_source
 	// This only overwrites sections, so need to initialize first
 	LatticeFermion chi = zero;
@@ -160,7 +160,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "npr");
       write(xml_out, "update_no", update_no);
@@ -197,13 +197,13 @@ namespace Chroma
     catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineNprEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-    catch (const string& e) 
+    catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineNprEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineNprEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
     const multi1d<LatticeColorMatrix>& u = 
@@ -224,7 +224,7 @@ namespace Chroma
     proginfo(file_xml);    // Print out basic program info
     params.write(file_xml, "Input");
 
-    QDPIO::cout << InlineNprEnv::name << ": npr calculation" << endl;
+    QDPIO::cout << InlineNprEnv::name << ": npr calculation" << std::endl;
     
     proginfo(xml_out);    // Print out basic program info
     
@@ -298,9 +298,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineNprEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
     
-    QDPIO::cout << InlineNprEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineNprEnv::name << ": ran successfully" << std::endl;
     
     END_CODE();
   } 

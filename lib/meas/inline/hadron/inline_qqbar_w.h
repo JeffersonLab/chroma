@@ -39,9 +39,9 @@ namespace Chroma
 
     struct NamedObject_t
     {
-      string           gauge_id;        /*!< Input gauge field */
-      multi1d<string>  prop_ids;        /*!< Input sink smeared propagators */
-      string           qqbar_file;      /*!< qqbar output file */
+      std::string           gauge_id;        /*!< Input gauge field */
+      multi1d<std::string>  prop_ids;        /*!< Input sink smeared propagators */
+      std::string           qqbar_file;      /*!< qqbar output file */
     } named_obj;
   };
 

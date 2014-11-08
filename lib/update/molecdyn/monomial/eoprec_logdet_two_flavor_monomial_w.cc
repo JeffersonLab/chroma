@@ -25,7 +25,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial(
 	  TwoFlavorWilsonTypeFermMonomialParams(xml, path));
@@ -63,7 +63,7 @@ namespace Chroma
 
     std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
-    QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << param.fermact.id << endl;
+    QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << param.fermact.id << std::endl;
 
 
     WilsonTypeFermAct<T,P,Q>* tmp_act = 
@@ -74,7 +74,7 @@ namespace Chroma
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecLogDetWilsonTypeFermAct in EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial()" << endl;
+      QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecLogDetWilsonTypeFermAct in EvenOddPrecLogDetTwoFlavorWilsonTypeFermMonomial()" << std::endl;
       QDP_abort(1);
     }
 
@@ -97,13 +97,13 @@ namespace Chroma
 									  param.predictor.path);
       }
       catch(const std::string& e ) { 
-	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception Reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
      
     if( tmp == 0x0 ) { 
-      QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << endl;
+      QDPIO::cerr << "Failed to create ZeroGuess4DChronoPredictor" << std::endl;
       QDP_abort(1);
     }
     chrono_predictor = tmp;

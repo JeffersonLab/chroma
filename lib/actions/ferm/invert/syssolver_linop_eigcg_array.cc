@@ -105,7 +105,7 @@ namespace Chroma
 	GoodEvecs.AddVectors(lambda, evec, MdagM.subset());
 	snoop.stop();
 	double Time = snoop.getTimeInSeconds();
-	QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
+	QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<std::endl;
 	  
 	snoop.start();
         normGramSchmidt(GoodEvecs.evec.vec,GoodEvecs.Neig-invParam.Neig,GoodEvecs.Neig,MdagM.subset());
@@ -130,15 +130,15 @@ namespace Chroma
 	    for(int s=0; s < Ls; ++s)
 	      evec[k][s][MdagM.subset()] += conj(Htmp(k,j))*GoodEvecs.evec[j][s];
 	  //QDPIO::cout<<"norm(evec["<<k<<"])=";
-	  //QDPIO::cout<< sqrt(norm2(GoodEvecs.evec[k],MdagM.subset()))<<endl;
+	  //QDPIO::cout<< sqrt(norm2(GoodEvecs.evec[k],MdagM.subset()))<<std::endl;
 	}
 	snoop.stop();
 	Time += snoop.getTimeInSeconds();
 	QDPIO::cout << "Evec_Refinement: time = "
 		    << Time
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 	  
-	QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<endl;
+	QDPIO::cout<<"GoodEvecs.Neig= "<<GoodEvecs.Neig<<std::endl;
 	for(int k(0);k<GoodEvecs.Neig;k++)
 	  for(int s=0; s < Ls; ++s)
 	    GoodEvecs.evec[k][s][MdagM.subset()]  = evec[k][s];
@@ -158,7 +158,7 @@ namespace Chroma
 	    QDPIO::cout<<"--- eval ="<<GoodEvecs.eval[k]<<" ";
 	    tt =  sqrt(norm2(GoodEvecs.evec[k],MdagM.subset()));
 	    QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-	    QDPIO::cout<<"--- norm = "<<tt<<endl;
+	    QDPIO::cout<<"--- norm = "<<tt<<std::endl;
 	  } 
 	}
 #endif
@@ -188,7 +188,7 @@ namespace Chroma
 	    );
 	res.n_count += n_CG;
 	n_CG=0;
-	QDPIO::cout<<"Restart1: "<<endl;
+	QDPIO::cout<<"Restart1: "<<std::endl;
 	InvEigCG2ArrayEnv::InitGuess(MdagM,psi,chi_tmp,GoodEvecs.eval.vec,GoodEvecs.evec.vec,GoodEvecs.Neig, n_CG);
 	res.n_count += n_CG;
 	n_CG = res.n_count;

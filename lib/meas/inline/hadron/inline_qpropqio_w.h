@@ -37,8 +37,8 @@ namespace Chroma
 
     struct Prop_t
     {
-      string           prop_in_file;    // The files is expected to be in SciDAC format!
-      string           prop_out_file;   // The files is expected to be in SciDAC format!
+      std::string           prop_in_file;    // The files is expected to be in SciDAC format!
+      std::string           prop_out_file;   // The files is expected to be in SciDAC format!
       QDP_volfmt_t     prop_out_volfmt; // volume format (SINGLEFILE or MULTIFILE)
     } prop;
 

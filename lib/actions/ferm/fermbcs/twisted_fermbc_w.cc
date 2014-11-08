@@ -11,7 +11,7 @@ namespace Chroma
 
   // Readers and writerss for the params 
   //! Read parameters
-  TwistedFermBCParams::TwistedFermBCParams(XMLReader& xml, const string& path)
+  TwistedFermBCParams::TwistedFermBCParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -21,37 +21,37 @@ namespace Chroma
     read(paramtop, "phases_dir", phases_dir);
 
     if( boundary.size() != Nd ) { 
-      QDPIO::cerr << "TwistedFermBCParams: Invalid size for boundary. Should be " << Nd << "  but is " << boundary.size() << endl;
+      QDPIO::cerr << "TwistedFermBCParams: Invalid size for boundary. Should be " << Nd << "  but is " << boundary.size() << std::endl;
       QDP_abort(1);
     }
 
     if( phases_by_pi.size() != (Nd-1) ) { 
-      QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_by_pi. Should be " << Nd-1 << "  but is " << phases_by_pi.size() << endl;
+      QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_by_pi. Should be " << Nd-1 << "  but is " << phases_by_pi.size() << std::endl;
       QDP_abort(1);
     }
 
     if( phases_dir.size() != (Nd-1) ) { 
-      QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_dir. Should be " << Nd-1 << "  but is " << phases_dir.size() << endl;
+      QDPIO::cerr << "TwistedFermBCParams: Invalid size for phases_dir. Should be " << Nd-1 << "  but is " << phases_dir.size() << std::endl;
       QDP_abort(1);
     }
 
     for(int i=0; i < Nd-1; i++) { 
       if( toBool( phases_dir[i] < 0 || phases_dir[i] > Nd-1 ) ) { 
-	QDPIO::cerr << "Invalid value in phases_dir, direction " << i << " should be between 0 and " << Nd-1 << " but is " << phases_dir[i] << endl;
+	QDPIO::cerr << "Invalid value in phases_dir, direction " << i << " should be between 0 and " << Nd-1 << " but is " << phases_dir[i] << std::endl;
       }
     }
 
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, TwistedFermBCParams& param)
+  void read(XMLReader& xml, const std::string& path, TwistedFermBCParams& param)
   {
     TwistedFermBCParams tmp(xml, path);
     param = tmp;
   }
 
   //! Write parameters
-  void write(XMLWriter& xml_out, const string& path, const TwistedFermBCParams& param)
+  void write(XMLWriter& xml_out, const std::string& path, const TwistedFermBCParams& param)
   {
     if ( path != "." )
       push(xml_out, path);

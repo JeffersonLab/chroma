@@ -132,7 +132,7 @@ void InvMINRES_a(const LinearOperatorArray<T>& A,
 
 
     // Check convergence
-    //  QDPIO::cout << "MINRES: iter " << k << " || r || = " << r_norm << endl;
+    //  QDPIO::cout << "MINRES: iter " << k << " || r || = " << r_norm << std::endl;
     if( toBool( r_norm < RsdCG*b_norm ) ) {
       convP = true;
       END_CODE();

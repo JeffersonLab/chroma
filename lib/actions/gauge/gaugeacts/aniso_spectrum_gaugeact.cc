@@ -57,19 +57,19 @@ namespace Chroma
       read(paramtop, "AnisoParam", aniso);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
 
-  void read(XMLReader& xml, const string& path, AnisoSpectrumGaugeActParams& p) 
+  void read(XMLReader& xml, const std::string& path, AnisoSpectrumGaugeActParams& p) 
   {
     AnisoSpectrumGaugeActParams tmp(xml, path);
     p=tmp;
   }
 
-  void write(XMLWriter& xml, const string& path, const AnisoSpectrumGaugeActParams& param) 
+  void write(XMLWriter& xml, const std::string& path, const AnisoSpectrumGaugeActParams& param) 
   {
     push(xml, path);
 

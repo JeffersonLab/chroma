@@ -90,7 +90,7 @@ namespace Chroma
       // If this is a reverse trajectory
       if( CheckRevP ) { 
 
-	QDPIO::cout << "Reversing trajectory for reversability test" <<endl;
+	QDPIO::cout << "Reversing trajectory for reversability test" <<std::endl;
 
 	// Copy state
 	Handle< AbsFieldState<P,Q> >  s_rev(s.clone());
@@ -127,9 +127,9 @@ namespace Chroma
 	write(xml_log, "DeltaPPerSite", dp);
 	pop(xml_log);
 
-	QDPIO::cout << "Reversibility: DeltaDeltaH = " << fabs(DeltaDeltaH) <<endl;
-	QDPIO::cout << "Reversibility: DeltaQ      = " << dq << endl;
-	QDPIO::cout << "Reversibility: DeltaP      = " << dp << endl;
+	QDPIO::cout << "Reversibility: DeltaDeltaH = " << fabs(DeltaDeltaH) <<std::endl;
+	QDPIO::cout << "Reversibility: DeltaQ      = " << dq << std::endl;
+	QDPIO::cout << "Reversibility: DeltaP      = " << dp << std::endl;
 
 
 	// s_rev goes away... We continue as if nothing happened
@@ -167,8 +167,8 @@ namespace Chroma
       write(xml_out, "AccProb", AccProb);
       write(xml_log, "AccProb", AccProb);
 
-      QDPIO::cout << "Delta H = " << DeltaH << endl;
-      QDPIO::cout << "AccProb = " << AccProb << endl;
+      QDPIO::cout << "Delta H = " << DeltaH << std::endl;
+      QDPIO::cout << "AccProb = " << AccProb << std::endl;
 
       // If we intend to do an accept reject step
       // (ie we are not warming up)
@@ -179,7 +179,7 @@ namespace Chroma
 	write(xml_out, "AcceptP", acceptTestResult);
 	write(xml_log, "AcceptP", acceptTestResult);
 
-	QDPIO::cout << "AcceptP = " << acceptTestResult << endl;
+	QDPIO::cout << "AcceptP = " << acceptTestResult << std::endl;
 
 	// If rejected restore fields
 	// If accepted no need to do anything

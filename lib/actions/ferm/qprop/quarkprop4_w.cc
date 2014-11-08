@@ -39,7 +39,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Entering quarkProp4" << endl;
+    QDPIO::cout << "Entering quarkProp4" << std::endl;
     push(xml_out, "QuarkProp4");
 
     ncg_had = 0;
@@ -183,7 +183,7 @@ namespace Chroma
     }  // end switch(quarkSpinType)
 
     pop(xml_out);
-    QDPIO::cout << "Exiting quarkProp4" << endl;
+    QDPIO::cout << "Exiting quarkProp4" << std::endl;
 
     END_CODE();
   }
@@ -235,13 +235,13 @@ namespace Chroma
     QuarkSpinType quarkSpinType,
     int& ncg_had) const
   {
-    QDPIO::cout << "In quarkProp()" << endl;
+    QDPIO::cout << "In quarkProp()" << std::endl;
     StopWatch swatch;
     swatch.start();
     Handle< SystemSolver<LF> > qprop(this->qprop(state,invParam));
     swatch.stop();
     QDPIO::cout << "Creating qprop took " << swatch.getTimeInSeconds() 
-		<< "sec " << endl;
+		<< "sec " << std::endl;
     quarkProp4_a<LF>(q_sol, xml_out, q_src, qprop, quarkSpinType, ncg_had);
   }
 

@@ -19,17 +19,17 @@ namespace Chroma
     RitzParams_t ritzery;
 
     void notInited(void) const { 
-      QDPIO::cerr << "OverlapStateInfo not inited" << endl;
+      QDPIO::cerr << "OverlapStateInfo not inited" << std::endl;
       QDP_abort(1);
     }
 
     void notLoadEig(void) const { 
-      QDPIO::cerr << "No loadable Eigenvalues. No eigen_io member " << endl;
+      QDPIO::cerr << "No loadable Eigenvalues. No eigen_io member " << std::endl;
       QDP_abort(1);
     }
 
     void notComputeEig(void) const {
-      QDPIO::cerr << "Eigenvalues should not be computed. No Ritz Member" << endl;
+      QDPIO::cerr << "Eigenvalues should not be computed. No Ritz Member" << std::endl;
       QDP_abort(1);
     }
 

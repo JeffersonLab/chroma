@@ -81,10 +81,10 @@ namespace Chroma
     //! Only defined on the entire lattice
     const Subset& subset() const {return all;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     //! but to specified accuracy. In this case epsilon is the accuracy
     //! (RsdCG) for the multi shift solve
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;

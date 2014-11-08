@@ -17,7 +17,7 @@
 namespace Chroma 
 {  
   //! Plaquette input
-  void read(XMLReader& xml, const string& path, InlinePlaquetteEnv::Params::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlinePlaquetteEnv::Params::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -34,13 +34,13 @@ namespace Chroma
 
     default:
       QDPIO::cerr << "InlinePlaquetteEnv::Params::Param_t: " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
 
   //! Plaquette output
-  void write(XMLWriter& xml, const string& path, const InlinePlaquetteEnv::Params::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlinePlaquetteEnv::Params::Param_t& param)
   {
     push(xml, path);
 
@@ -53,7 +53,7 @@ namespace Chroma
 
 
   //! Plaquette input
-  void read(XMLReader& xml, const string& path, InlinePlaquetteEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlinePlaquetteEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -61,7 +61,7 @@ namespace Chroma
   }
 
   //! Plaquette output
-  void write(XMLWriter& xml, const string& path, const InlinePlaquetteEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlinePlaquetteEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -134,7 +134,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -146,7 +146,7 @@ namespace Chroma
     {
       if( params.xml_file != "" ) 
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 	push( xml_out, "Plaquette");
 	write(xml_out, "update_no", update_no);
 	write(xml_out, "xml_file", xml_file);
@@ -198,13 +198,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlinePlaquetteEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlinePlaquetteEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlinePlaquetteEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
 

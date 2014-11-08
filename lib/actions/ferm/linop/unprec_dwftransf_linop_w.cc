@@ -26,7 +26,7 @@ namespace Chroma
     // Need to create a handle for a wilson linop
     QDPIO::cout << "Creating UnprecDWFTransfLinOp with ";
     QDPIO::cout << " b5=" << b5 << " c5=" << c5 << " Mass=" << Mass;
-    QDPIO::cout << " RsdCG=" << invParam.RsdCG << endl;
+    QDPIO::cout << " RsdCG=" << invParam.RsdCG << std::endl;
 
 
     Real b5_minus_c5 = b5 - c5;
@@ -83,14 +83,14 @@ namespace Chroma
     }
     default:
     {
-      QDPIO::cerr << "Bad option " << isign << endl;
+      QDPIO::cerr << "Bad option " << isign << std::endl;
       QDP_abort(1);
       break;
     }
     }
     
     chi *= (b5 + c5);
-    QDPIO::cout << "UnprecDWFTransfLinOp: ncount= " << res.n_count << endl;
+    QDPIO::cout << "UnprecDWFTransfLinOp: ncount= " << res.n_count << std::endl;
     END_CODE();
   }
 
@@ -112,7 +112,7 @@ namespace Chroma
     // Need to create a handle for a wilson linop
     QDPIO::cout << "Creating UnprecDWFTransfMdagMLinOp with ";
     QDPIO::cout << " b5=" << b5 << " c5=" << c5 << " Mass=" << Mass;
-    QDPIO::cout << " RsdCG=" << invParam.RsdCG << endl;
+    QDPIO::cout << " RsdCG=" << invParam.RsdCG << std::endl;
 
     Real b5_minus_c5 = b5 - c5;
     D_w = new UnprecWilsonLinOp(fs, Mass_);
@@ -145,7 +145,7 @@ namespace Chroma
     chi = GammaConst<Ns,Ns*Ns-1>()*tmp;
     chi *= Real((b5 + c5)*(b5 + c5));
 
-    QDPIO::cout << "UnprecDWFTransfMdagMLinOp: ncount= " << n_count << endl;
+    QDPIO::cout << "UnprecDWFTransfMdagMLinOp: ncount= " << n_count << std::endl;
     END_CODE();
   }
 

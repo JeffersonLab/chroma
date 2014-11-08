@@ -18,28 +18,28 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, DerivQuarkDisplacementEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, DerivQuarkDisplacementEnv::Params& param)
   {
     DerivQuarkDisplacementEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DerivQuarkDisplacementEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const DerivQuarkDisplacementEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
 
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, DerivQuarkDisplacementEnv::ParamsDir& param)
+  void read(XMLReader& xml, const std::string& path, DerivQuarkDisplacementEnv::ParamsDir& param)
   {
     DerivQuarkDisplacementEnv::ParamsDir tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DerivQuarkDisplacementEnv::ParamsDir& param)
+  void write(XMLWriter& xml, const std::string& path, const DerivQuarkDisplacementEnv::ParamsDir& param)
   {
     param.writeXML(xml, path);
   }
@@ -333,7 +333,7 @@ namespace Chroma
     }
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -347,7 +347,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -356,7 +356,7 @@ namespace Chroma
     }
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -379,7 +379,7 @@ namespace Chroma
 
 
     //! Read parameters
-    ParamsDir::ParamsDir(XMLReader& xml, const string& path)
+    ParamsDir::ParamsDir(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -393,7 +393,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -405,7 +405,7 @@ namespace Chroma
 
 
     // Writer
-    void ParamsDir::writeXML(XMLWriter& xml, const string& path) const
+    void ParamsDir::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -1266,107 +1266,107 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("NABLA-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("NABLA-DERIV"),
 									     rightNablaDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("D-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("D-DERIV"),
 									     rightDDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("B-DERIV"),
 									     rightBDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("E-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("E-DERIV"),
 									     rightEDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("LAP-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("LAP-DERIV"),
 									     rightLapDisplace);
 
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxNABLA_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("PIONxNABLA_T1-DERIV"),
 									     mesPionxNablaT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0xNABLA_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A0xNABLA_T1-DERIV"),
 									     mesA0xNablaT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xNABLA_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A0_2xNABLA_T1-DERIV"),
 									     mesA02xNablaT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_A1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxNABLA_A1-DERIV"),
 									     mesRhoxNablaA1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxNABLA_T1-DERIV"),
 									     mesRhoxNablaT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxNABLA_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxNABLA_T2-DERIV"),
 									     mesRhoxNablaT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_A1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xNABLA_A1-DERIV"),
 									     mesA1xNablaA1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xNABLA_T2-DERIV"),
 									     mesA1xNablaT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xNABLA_E-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xNABLA_E-DERIV"),
 									     mesA1xNablaEDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xNABLA_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("B1xNABLA_T1-DERIV"),
 									     mesB1xNablaT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A0_2xD_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A0_2xD_T2-DERIV"),
 									     mesA02xDT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_A2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xD_A2-DERIV"),
 									     mesA1xDA2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_E-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xD_E-DERIV"),
 									     mesA1xDEDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xD_T1-DERIV"),
 									     mesA1xDT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xD_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xD_T2-DERIV"),
 									     mesA1xDT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_A2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("B1xD_A2-DERIV"),
 									     mesB1xDA2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_E-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("B1xD_E-DERIV"),
 									     mesB1xDEDisplace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("B1xD_T1-DERIV"),
 									     mesB1xDT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("B1xD_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("B1xD_T2-DERIV"),
 									     mesB1xDT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_A2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxD_A2-DERIV"),
 									     mesRhoxDA2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxD_T1-DERIV"),
 									     mesRhoxDT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxD_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxD_T2-DERIV"),
 									     mesRhoxDT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxD_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("PIONxD_T2-DERIV"),
 									     mesPionxDT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("PIONxB_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("PIONxB_T1-DERIV"),
 									     mesPionxBT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxB_T1-DERIV"),
 									     mesRhoxBT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("RHOxB_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("RHOxB_T2-DERIV"),
 									     mesRhoxBT2Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_A1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xB_A1-DERIV"),
 									     mesA1xBA1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T1-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xB_T1-DERIV"),
 									     mesA1xBT1Displace);
 
-	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(string("A1xB_T2-DERIV"),
+	success &= Chroma::ThePropDisplacementFactory::Instance().registerObject(std::string("A1xB_T2-DERIV"),
 									     mesA1xBT2Displace);
 
 	registered = true;

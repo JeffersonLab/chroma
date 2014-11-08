@@ -73,7 +73,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "PABWilsonDslash: error: fbc is null" << endl;
+      QDPIO::cerr << "PABWilsonDslash: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -108,7 +108,7 @@ namespace Chroma
 			QDP::Allocator::DEFAULT);
       }
       catch(std::bad_alloc ) { 
-	QDPIO::cerr << "Unable to allocate memory for packed array in lwldslash_w_pab.cc line 65" << endl << flush;
+	QDPIO::cerr << "Unable to allocate memory for packed array in lwldslash_w_pab.cc line 65" << std::endl << std::flush;
 	QDP_abort(1);
       }
     }
@@ -193,7 +193,7 @@ namespace Chroma
    *  \param chi	      Result                           (Write)
    *  \param psi	      Pseudofermion field              (Read)
    *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.    (Read)
-   *  \param cb	      Checkerboard of OUTPUT vector            (Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector            (Read) 
    */
   void
   PABWilsonDslash::apply (LatticeFermion& chi, const LatticeFermion& psi, 

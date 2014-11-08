@@ -26,7 +26,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new EvenOddPrecConstDetTwoFlavorRatioConvConvWilsonTypeFermMonomial(
 	  TwoFlavorRatioConvConvWilsonTypeFermMonomialParams(xml, path));
@@ -59,17 +59,17 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "Constructor: " << __func__ << endl;
+    QDPIO::cout << "Constructor: " << __func__ << std::endl;
 
     if ( param.numer.invParam.id == "NULL" ) { 
-      QDPIO::cerr << "Numerator inverter parameter is NULL" << endl;
+      QDPIO::cerr << "Numerator inverter parameter is NULL" << std::endl;
       QDP_abort(1);
     }
     invParam_num = param.numer.invParam;
 
     if( param.denom.invParam.id == "NULL" ) { 
-      QDPIO::cerr << "WARNING: Denominator inverter parameter is NULL." << endl;
-      QDPIO::cerr << "WARNING: Assuming it is same as numerator " << endl;
+      QDPIO::cerr << "WARNING: Denominator inverter parameter is NULL." << std::endl;
+      QDPIO::cerr << "WARNING: Assuming it is same as numerator " << std::endl;
       invParam_den = param.numer.invParam;
     }
     else {
@@ -81,7 +81,7 @@ namespace Chroma
     {
       std::istringstream is(param.numer.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct numer fermion action= " << param.numer.fermact.id << endl;
+      QDPIO::cout << "Construct numer fermion action= " << param.numer.fermact.id << std::endl;
 
       WilsonTypeFermAct<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermActFactory::Instance().createObject(param.numer.fermact.id, 
@@ -93,7 +93,7 @@ namespace Chroma
       // Check success of the downcast 
       if( downcast == 0x0 ) 
       {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct" << std::endl;
 	QDP_abort(1);
       }
 
@@ -105,7 +105,7 @@ namespace Chroma
     {
       std::istringstream is(param.denom.fermact.xml);
       XMLReader fermact_reader(is);
-      QDPIO::cout << "Construct denom fermion action= " << param.denom.fermact.id << endl;
+      QDPIO::cout << "Construct denom fermion action= " << param.denom.fermact.id << std::endl;
 
       WilsonTypeFermAct<T,P,Q>* tmp_act = 
 	TheWilsonTypeFermActFactory::Instance().createObject(param.denom.fermact.id, 
@@ -117,7 +117,7 @@ namespace Chroma
       // Check success of the downcast 
       if( downcast == 0x0 ) 
       {
-	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct" << endl;
+	QDPIO::cerr << __func__ << ": unable to downcast FermAct to EvenOddPrecConstDetWilsonTypeFermAct" << std::endl;
 	QDP_abort(1);
       }
 
@@ -131,7 +131,7 @@ namespace Chroma
       AbsChronologicalPredictor4D<LatticeFermion>* tmp = 0x0;
       if( param.predictor.xml == "" ) {
 	// No predictor specified use: Null guess
-	QDPIO::cout << "No predictor specified. Using NULL Predictor" << endl;
+	QDPIO::cout << "No predictor specified. Using NULL Predictor" << std::endl;
 	tmp = new Null4DChronoPredictor();
       }
       else 
@@ -145,20 +145,20 @@ namespace Chroma
 									    param.predictor.path);
 	}
 	catch(const std::string& e ) { 
-	  QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	  QDPIO::cerr << "Caught Exception Reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
       }
      
       if( tmp == 0x0 ) { 
-	QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << endl;
+	QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << std::endl;
 	QDP_abort(1);
       }
       chrono_predictor = tmp;
     }
     //*********************************************************************
 
-    QDPIO::cout << "Finished constructing: " << __func__ << endl;
+    QDPIO::cout << "Finished constructing: " << __func__ << std::endl;
     
     END_CODE();
   }

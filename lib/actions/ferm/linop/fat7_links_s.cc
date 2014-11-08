@@ -109,7 +109,7 @@ namespace Chroma
     else
     {
       QDPIO::cerr << __func__ 
-		  << ": Fat7_links (generic) not implemented for this dim, Nd=" << Nd << endl;
+		  << ": Fat7_links (generic) not implemented for this dim, Nd=" << Nd << std::endl;
       QDP_abort(1);
     }
   
@@ -199,7 +199,7 @@ namespace Chroma
     else
     {
       QDPIO::cerr << __func__ 
-		  << ": Fat7_links (generic) not implemented for this dim, Nd=" << Nd << endl;
+		  << ": Fat7_links (generic) not implemented for this dim, Nd=" << Nd << std::endl;
       QDP_abort(1);
     }
 

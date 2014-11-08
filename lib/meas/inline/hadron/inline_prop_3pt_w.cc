@@ -57,7 +57,7 @@ namespace Chroma{
       return success;
     }
   
-    void read(XMLReader& xml, const string& path, Params::Operator_t& op){
+    void read(XMLReader& xml, const std::string& path, Params::Operator_t& op){
       XMLReader paramtop(xml, path);
       
       read(paramtop, "gamma", op.gamma);
@@ -70,7 +70,7 @@ namespace Chroma{
     }
     
     // Writter for input parameters                                           
-    void write(XMLWriter& xml, const string& path, const Params::Operator_t& op){
+    void write(XMLWriter& xml, const std::string& path, const Params::Operator_t& op){
     push(xml, path);
 
     write(xml, "p", op.p);
@@ -82,7 +82,7 @@ namespace Chroma{
   }
   
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, Params::Param_t& param){
+  void read(XMLReader& xml, const std::string& path, Params::Param_t& param){
       XMLReader paramtop(xml, path);
       
       int version;
@@ -100,7 +100,7 @@ namespace Chroma{
 	default :
 	  /**************************************************************/
 
-	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	  QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	  QDP_abort(1);
 	}
       
@@ -109,7 +109,7 @@ namespace Chroma{
 
 
     // Writter for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param){
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param){
       push(xml, path);
       
       int version = 1;
@@ -130,7 +130,7 @@ namespace Chroma{
 
 
     //! Gauge field parameters
-  void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
       
@@ -140,7 +140,7 @@ namespace Chroma{
     }
     
     //! Gauge field parameters
-  void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input){
+  void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input){
       push(xml, path);
       
       write(xml, "gauge_id", input.gauge_id);
@@ -182,7 +182,7 @@ namespace Chroma{
 	}
       catch(const std::string& e) 
 	{
-	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	  QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	  QDP_abort(1);
 	}
     }
@@ -213,7 +213,7 @@ namespace Chroma{
     {
       // If xml file not empty, then use alternate
       if (params.xml_file != ""){
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 	
 	push(xml_out, "propagator_3pt");
 	write(xml_out, "update_no", update_no);
@@ -252,13 +252,13 @@ namespace Chroma{
       catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << InlineProp3ptEnv::name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-      catch (const string& e) 
+      catch (const std::string& e) 
 	{
-	  QDPIO::cerr << name << ": map call failed: " << e 
-		      << endl;
+	  QDPIO::cerr << name << ": std::map call failed: " << e 
+		      << std::endl;
 	  QDP_abort(1);
 	}
       const multi1d<LatticeColorMatrix>& u = 
@@ -267,7 +267,7 @@ namespace Chroma{
       push(xml_out, "prop_3pt");
       write(xml_out, "update_no", update_no);
       
-      QDPIO::cout << name << ": Propagator for 3pt functions" << endl;
+      QDPIO::cout << name << ": Propagator for 3pt functions" << std::endl;
       
       proginfo(xml_out);    // Print out basic program info
       
@@ -306,7 +306,7 @@ namespace Chroma{
 	  const GroupXML_t& dil_xml = params.param.chi[n];
 	  std::istringstream  xml_d(dil_xml.xml);
 	  XMLReader  diltop(xml_d);
-	  QDPIO::cout << "Dilution type = " << dil_xml.id << endl;
+	  QDPIO::cout << "Dilution type = " << dil_xml.id << std::endl;
 	  quarks[n] = 
 	    TheFermDilutionSchemeFactory::Instance().createObject(dil_xml.id, 
 								  diltop, 
@@ -314,7 +314,7 @@ namespace Chroma{
 	}
       }
       catch(const std::string& e){
-	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception constructing dilution scheme: " << e << std::endl;
 	QDP_abort(1);
       }
       
@@ -327,7 +327,7 @@ namespace Chroma{
       for (int n = 1 ; n < N_quarks ; ++n){
 	if (quarks[0]->getCfgInfo() != quarks[n]->getCfgInfo()){
 	  QDPIO::cerr << name << " : Quarks do not contain the same cfg info";
-	  QDPIO::cerr << ", quark "<< n << endl;
+	  QDPIO::cerr << ", quark "<< n << std::endl;
 	  QDP_abort(1);
 	}		
       }
@@ -352,7 +352,7 @@ namespace Chroma{
 	  QDPIO::cerr << name << " : Quarks do not contain the same";
 	  QDPIO::cerr << " cfg info as the gauge field." ;
 	  QDPIO::cerr << "gauge: XX"<<cfgInfo<<"XX quarks: XX" ;
-	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  endl;
+	  QDPIO::cerr << quarks[0]->getCfgInfo()<<"XX"<<  std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -373,12 +373,12 @@ namespace Chroma{
       // and thier decay directions must be the same 
       for(int n = 1 ; n < quarks.size(); ++n){
 	if(toBool(quarks[n]->getSeed()==quarks[0]->getSeed())){
-	  QDPIO::cerr << name << ": error, quark seeds are the same" << endl;
+	  QDPIO::cerr << name << ": error, quark seeds are the same" << std::endl;
 	  QDP_abort(1);
 	}
 
 	if(toBool(quarks[n]->getDecayDir()!=quarks[0]->getDecayDir())){
-	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<endl;
+	  QDPIO::cerr<<name<< ": error, quark decay dirs do not match" <<std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -386,7 +386,7 @@ namespace Chroma{
       // Read the quark propagator and extract headers
       ChromaProp_t prop_header;
       PropSourceConst_t source_header;
-      QDPIO::cout << "Attempt to read propagator info" << endl;
+      QDPIO::cout << "Attempt to read propagator info" << std::endl;
       try
 	{
 	  // Try the cast to see if this is a valid source
@@ -407,28 +407,28 @@ namespace Chroma{
 	}    
       catch (std::bad_cast){
 	QDPIO::cerr << name << ": caught dynamic cast error" ;
-	QDPIO::cerr << endl;
+	QDPIO::cerr << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e){
-	QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
+      catch (const std::string& e){
+	QDPIO::cerr << name << ": error extracting prop_header: " << e << std::endl;
 	QDP_abort(1);
       }
       const LatticePropagator& prop = 
 	TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
  
-      QDPIO::cout << "Propagator successfully read and parsed" << endl;
+      QDPIO::cout << "Propagator successfully read and parsed" << std::endl;
 
       //create the 3pt prop
       try{
 	TheNamedObjMap::Instance().create<LatticePropagator>(params.named_obj.prop3pt_id);
       }
       catch (std::bad_cast){
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e){
-	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+      catch (const std::string& e){
+	QDPIO::cerr << name << ": error creating prop: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -451,11 +451,11 @@ namespace Chroma{
 	XMLReader from(top);
 	XMLReader from2(from, "/tt/Operator");
 	std::ostringstream os;
-	QDPIO::cout<<name<<" Operator: "<<endl ;
+	QDPIO::cout<<name<<" Operator: "<<std::endl ;
 	from2.print(os);
-	QDPIO::cout<<os.str()<<endl ;
-	//QDPIO::cout<< " Time slice: "<<t0<<endl ;
-	QDPIO::cout<<name<<" End Operator "<<endl ;
+	QDPIO::cout<<os.str()<<std::endl ;
+	//QDPIO::cout<< " Time slice: "<<t0<<std::endl ;
+	QDPIO::cout<<name<<" End Operator "<<std::endl ;
       }
  
       LatticePropagator tmp_prop = Gamma(params.param.op.gamma)*prop ;
@@ -467,7 +467,7 @@ namespace Chroma{
       int t0 = params.param.op.t;
       for(int s(0);s<Ns;s++)
 	for(int c(0);c<Nc;c++){
-	  QDPIO::cout<<" Doing quark color and spin: "<<c<<" "<<s <<endl ;
+	  QDPIO::cout<<" Doing quark color and spin: "<<c<<" "<<s <<std::endl ;
 	  PropToFerm(tmp_prop,ferm,c,s) ;
 	  ferm_3pt = zero;
 	  int count(0);
@@ -479,26 +479,26 @@ namespace Chroma{
 	    if(i_t0!=-100){ //this quark contains the appropriate t
 	      count++;
 
-	      QDPIO::cout<<" Doing quark: "<<n <<endl ;
+	      QDPIO::cout<<" Doing quark: "<<n <<std::endl ;
 	      QDPIO::cout<<"   quark: "<<n <<" has "<<quarks[n]->getDilSize(i_t0);
-	      QDPIO::cout<<" dilutions on time slice "<<t0<<endl ;
+	      QDPIO::cout<<" dilutions on time slice "<<t0<<std::endl ;
 	      for(int i = 0 ; i <  quarks[n]->getDilSize(i_t0) ; ++i){
-		QDPIO::cout<<"   Doing dilution : "<<i<<endl ;
+		QDPIO::cout<<"   Doing dilution : "<<i<<std::endl ;
 	        LatticeComplex cc = 
 		  phase*localInnerProduct(quarks[n]->dilutedSource(i_t0,i),ferm);
 		ferm_3pt += sum(cc,phases.getSet()[t0])*quarks[n]->dilutedSolution(i_t0,i);
 	      }
-	      QDPIO::cout<<" Done with dilutions for quark: "<<n <<endl ;
+	      QDPIO::cout<<" Done with dilutions for quark: "<<n <<std::endl ;
 	    }
 	  }
 	  if(count==0){
-	    QDPIO::cerr<<name<< ": error, no appropriate time slice found" <<endl;
+	    QDPIO::cerr<<name<< ": error, no appropriate time slice found" <<std::endl;
 	    QDP_abort(1);
 	    
 	  }
 	  ferm_3pt = ferm_3pt/Double(count) ; // compute the mean over noises
 	  FermToProp(ferm_3pt,prop_3pt,c,s);
-	  QDPIO::cout<<" Done with quark color and spin: "<<c<<" "<<s <<endl ;
+	  QDPIO::cout<<" Done with quark color and spin: "<<c<<" "<<s <<std::endl ;
 	}
       
       // Sanity check - 
@@ -518,7 +518,7 @@ namespace Chroma{
       // Save the propagator info
       try
 	{
-	  QDPIO::cout << "Start writing propagator info" << endl;
+	  QDPIO::cout << "Start writing propagator info" << std::endl;
 
 	  XMLBufferWriter file_xml;
 	  push(file_xml, "propagator");
@@ -537,14 +537,14 @@ namespace Chroma{
 	  TheNamedObjMap::Instance().get(params.named_obj.prop3pt_id).setFileXML(file_xml);
 	  TheNamedObjMap::Instance().get(params.named_obj.prop3pt_id).setRecordXML(record_xml);
 
-	  QDPIO::cout << "Propagator successfully updated" << endl;
+	  QDPIO::cout << "Propagator successfully updated" << std::endl;
 	}
       catch (std::bad_cast){
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e){
-	QDPIO::cerr << name << ": error extracting prop_header: " << e << endl;
+      catch (const std::string& e){
+	QDPIO::cerr << name << ": error extracting prop_header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -555,9 +555,9 @@ namespace Chroma{
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
       
       END_CODE();
     } 

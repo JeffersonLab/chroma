@@ -73,11 +73,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, PartialWallQuarkSourceConstEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, PartialWallQuarkSourceConstEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const PartialWallQuarkSourceConstEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const PartialWallQuarkSourceConstEnv::Params& param);
 
 }  // end namespace Chroma
 

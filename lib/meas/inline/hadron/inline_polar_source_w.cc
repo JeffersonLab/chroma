@@ -18,8 +18,8 @@ using namespace Chroma;
 //! Propagators
 struct Prop_t
 {
-  string           prop_file;  // The file is expected to be in SciDAC format!
-  string           seqsource_file;  // The file is expected to be in SciDAC format!
+  std::string           prop_file;  // The file is expected to be in SciDAC format!
+  std::string           seqsource_file;  // The file is expected to be in SciDAC format!
   QDP_volfmt_t     seqsource_volfmt;
 };
 
@@ -34,7 +34,7 @@ struct SeqSource_input_t
 
 
 //! Propagator parameters
-void read(XMLReader& xml, const string& path, Prop_t& input)
+void read(XMLReader& xml, const std::string& path, Prop_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -45,7 +45,7 @@ void read(XMLReader& xml, const string& path, Prop_t& input)
 
 
 // Reader for input parameters
-void read(XMLReader& xml, const string& path, SeqSource_input_t& input)
+void read(XMLReader& xml, const std::string& path, SeqSource_input_t& input)
 {
   XMLReader inputtop(xml, path);
 
@@ -61,9 +61,9 @@ void read(XMLReader& xml, const string& path, SeqSource_input_t& input)
     // Read in the forward_prop/seqsource info
     read(inputtop, "Prop", input.prop);
   }
-  catch (const string& e) 
+  catch (const std::string& e) 
   {
-    QDPIO::cerr << "Error reading data: " << e << endl;
+    QDPIO::cerr << "Error reading data: " << e << std::endl;
     throw;
   }
 }
@@ -99,16 +99,16 @@ int main(int argc, char **argv)
   Layout::create();
 
   // Sanity checks
-  QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+  QDPIO::cout << std::endl << "     Gauge group: SU(" << Nc << ")" << std::endl;
 
   QDPIO::cout << "     Computing sequential source of type "
-	      << input.param.source_type << endl;
+	      << input.param.source_type << std::endl;
   
   QDPIO::cout << "     Volume: " << input.param.nrow[0];
   for (int i=1; i<Nd; ++i) {
     QDPIO::cout << " x " << input.param.nrow[i];
   }
-  QDPIO::cout << endl;
+  QDPIO::cout << std::endl;
 
 
   // Read in the configuration along with relevant information.
@@ -163,11 +163,11 @@ int main(int argc, char **argv)
   {
     XMLReader prop_file_xml, prop_record_xml;
 
-    QDPIO::cout << "Attempt to read forward propagator" << endl;
+    QDPIO::cout << "Attempt to read forward propagator" << std::endl;
     readQprop(prop_file_xml, 
 	      prop_record_xml, quark_propagator,
 	      input.prop.prop_file, QDPIO_SERIAL);
-    QDPIO::cout << "Forward propagator successfully read" << endl;
+    QDPIO::cout << "Forward propagator successfully read" << std::endl;
    
     // Try to invert this record XML into a ChromaProp struct
     // Also pull out the id of this source
@@ -176,9 +176,9 @@ int main(int argc, char **argv)
       read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
       read(prop_record_xml, "/Propagator/PropSource", source_header);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+      QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
       throw;
     }
 
@@ -356,7 +356,7 @@ int main(int argc, char **argv)
 	       input.prop.seqsource_file, 
 	       input.prop.seqsource_volfmt, QDPIO_SERIAL);
 
-    QDPIO::cout << "Sequential source successfully written" << endl;
+    QDPIO::cout << "Sequential source successfully written" << std::endl;
   }
 
   pop(xml_out);    // seqsource

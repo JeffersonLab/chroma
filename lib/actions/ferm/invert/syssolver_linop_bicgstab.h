@@ -82,8 +82,8 @@ namespace Chroma
 	r[A->subset()] -= tmp;
 	res.resid = sqrt(norm2(r, A->subset()));
       }
-      QDPIO::cout << "BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
-      QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "BICGSTAB_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
+      QDPIO::cout << "BICGSTAB_SOLVER_TIME: "<<time<< " sec" << std::endl;
 
 
       END_CODE();

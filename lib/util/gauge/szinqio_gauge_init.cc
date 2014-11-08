@@ -13,14 +13,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SZINQIOGaugeInitEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, SZINQIOGaugeInitEnv::Params& param)
   {
     SZINQIOGaugeInitEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   //! Parameters for running code
-  void write(XMLWriter& xml, const string& path, const SZINQIOGaugeInitEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const SZINQIOGaugeInitEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -58,7 +58,7 @@ namespace Chroma
 
 
     // Parameters for running code
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -76,7 +76,7 @@ namespace Chroma
     }
 
     //! Parameters for running code
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
     
@@ -114,7 +114,7 @@ namespace Chroma
     {
       u.resize(Nd);
       if( params.cfg_pario == QDPIO_PARALLEL ) { 
-	QDPIO::cout << "Parallel IO read" << endl;
+	QDPIO::cout << "Parallel IO read" << std::endl;
       }
       readGauge(gauge_file_xml, gauge_xml, u, params.cfg_file, params.cfg_pario);
     }

@@ -1,6 +1,6 @@
 // $Id: szin_read_obj_funcmap.cc,v 3.1 2006-09-20 20:28:03 edwards Exp $
 /*! \file
- *  \brief Read object function map
+ *  \brief Read object function std::map
  */
 
 #include "named_obj.h"
@@ -13,7 +13,7 @@
 namespace Chroma
 {
  
-  //! IO function map environment
+  //! IO function std::map environment
   /*! \ingroup inlineio */
   namespace SZINReadObjCallMapEnv
   { 
@@ -21,8 +21,8 @@ namespace Chroma
     namespace
     {
       //! Read a propagator
-      void SZINReadLatProp(const string& buffer_id,
-			   const string& file)
+      void SZINReadLatProp(const std::string& buffer_id,
+			   const std::string& file)
       {
 	LatticePropagator obj;
 	XMLReader record_xml;
@@ -40,8 +40,8 @@ namespace Chroma
       }
 
       //! Read a gauge field in floating precision
-      void SZINReadArrayLatColMat(const string& buffer_id,
-				  const string& file)
+      void SZINReadArrayLatColMat(const std::string& buffer_id,
+				  const std::string& file)
       {
 	XMLReader record_xml;
 	multi1d<LatticeColorMatrix> obj(Nd);
@@ -70,9 +70,9 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-	success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+	success &= TheSZINReadObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 								      SZINReadLatProp);
-	success &= TheSZINReadObjFuncMap::Instance().registerFunction(string("Multi1dLatticeColorMatrix"), 
+	success &= TheSZINReadObjFuncMap::Instance().registerFunction(std::string("Multi1dLatticeColorMatrix"), 
 								    SZINReadArrayLatColMat);
 	registered = true;
       }

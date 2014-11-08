@@ -21,7 +21,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace WilsonCoarseFine1LoopGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -44,7 +44,7 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, WilsonCoarseFine1LoopGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, WilsonCoarseFine1LoopGaugeActParams& param);
   
 
   //! WilsonCoarseFine gauge action

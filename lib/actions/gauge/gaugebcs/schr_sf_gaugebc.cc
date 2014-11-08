@@ -40,7 +40,7 @@ namespace Chroma
       break;
 
     default:
-      QDPIO::cerr << "SchrSFGaugeBC: unsupported igluetmp = " << igluetmp << endl;
+      QDPIO::cerr << "SchrSFGaugeBC: unsupported igluetmp = " << igluetmp << std::endl;
       QDP_abort(1);
     }
 

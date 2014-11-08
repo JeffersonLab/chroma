@@ -83,10 +83,10 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << "CG_SOLVER: " << res.n_count 
 		    << " iterations. Rsd = " << res.resid 
-		    << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << endl;
+		    << " Relative Rsd = " << res.resid/sqrt(norm2(chi,A->subset())) << std::endl;
 	
 	double time = swatch.getTimeInSeconds();
-	QDPIO::cout << "CG_SOLVER_TIME: "<<time<< " sec" << endl;
+	QDPIO::cout << "CG_SOLVER_TIME: "<<time<< " sec" << std::endl;
 	
 
 	END_CODE();

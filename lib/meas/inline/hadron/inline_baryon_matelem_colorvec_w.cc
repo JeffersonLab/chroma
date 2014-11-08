@@ -1,6 +1,6 @@
 // $Id: inline_baryon_matelem_colorvec_w.cc,v 3.15 2009-09-14 21:06:20 edwards Exp $
 /*! \file
- * \brief Inline measurement of baryon operators via colorvector matrix elements
+ * \brief Inline measurement of baryon operators via colorstd::vector matrix elements
  */
 
 
@@ -34,7 +34,7 @@ namespace Chroma
   namespace InlineBaryonMatElemColorVecEnv 
   { 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, InlineBaryonMatElemColorVecEnv::Params::Param_t::Displacement_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineBaryonMatElemColorVecEnv::Params::Param_t::Displacement_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -45,7 +45,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineBaryonMatElemColorVecEnv::Params::Param_t::Displacement_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineBaryonMatElemColorVecEnv::Params::Param_t::Displacement_t& param)
     {
       push(xml, path);
 
@@ -58,7 +58,7 @@ namespace Chroma
 
 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, InlineBaryonMatElemColorVecEnv::Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, InlineBaryonMatElemColorVecEnv::Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -76,7 +76,7 @@ namespace Chroma
 	break;
 
       default :
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -92,7 +92,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineBaryonMatElemColorVecEnv::Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineBaryonMatElemColorVecEnv::Params::Param_t& param)
     {
       push(xml, path);
 
@@ -112,7 +112,7 @@ namespace Chroma
     }
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, InlineBaryonMatElemColorVecEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineBaryonMatElemColorVecEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -122,7 +122,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const InlineBaryonMatElemColorVecEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineBaryonMatElemColorVecEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -134,7 +134,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const InlineBaryonMatElemColorVecEnv::Params& param)
+    void write(XMLWriter& xml, const std::string& path, const InlineBaryonMatElemColorVecEnv::Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -233,7 +233,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -259,9 +259,9 @@ namespace Chroma
     struct KeyBaryonElementalOperator_t
     {
       int                t_slice;      /*!< Baryon operator time slice */
-      multi1d<int>       left;         /*!< Displacement dirs of left colorvector */
-      multi1d<int>       middle;       /*!< Displacement dirs of middle colorvector */
-      multi1d<int>       right;        /*!< Displacement dirs of right colorvector */
+      multi1d<int>       left;         /*!< Displacement dirs of left colorstd::vector */
+      multi1d<int>       middle;       /*!< Displacement dirs of middle colorstd::vector */
+      multi1d<int>       right;        /*!< Displacement dirs of right colorstd::vector */
       multi1d<int>       mom;          /*!< D-1 momentum of this operator */
     };
 
@@ -425,7 +425,7 @@ namespace Chroma
 //		    << "  left= " << d.left
 //		    << "  middle= " << d.middle
 //		    << "  right= " << d.right
-//		    << endl;
+//		    << std::endl;
       }
 
       END_CODE();
@@ -443,7 +443,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "BaryonMatElemColorVec");
 	write(xml_out, "update_no", update_no);
@@ -493,12 +493,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -512,7 +512,7 @@ namespace Chroma
       push(xml_out, "BaryonMatElemColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Baryon color-vector matrix element" << endl;
+      QDPIO::cout << name << ": Baryon color-std::vector matrix element" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -544,7 +544,7 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.param.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << endl;
+	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
 	
 	
 	Handle< LinkSmearing >
@@ -556,7 +556,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -565,11 +565,11 @@ namespace Chroma
       //
       // Make sure displacements are something sensible
       //
-      QDPIO::cout << "Normalize displacement lengths" << endl;
+      QDPIO::cout << "Normalize displacement lengths" << std::endl;
       multi1d<Params::Param_t::Displacement_t> displacement_list(normalizeDisplacements(params.param.displacement_list));
 
       //
-      // The object holding the displaced color vector maps  
+      // The object holding the displaced color std::vector std::maps  
       //
       DispColorVectorMap smrd_disp_vecs(params.param.use_derivP,
 					params.param.displacement_length,
@@ -588,7 +588,7 @@ namespace Chroma
 	XMLBufferWriter file_xml;
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("baryonElemOp"));
+	write(file_xml, "id", std::string("baryonElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -617,7 +617,7 @@ namespace Chroma
       // The creation and annihilation operators are the same without the
       // spin matrices.
       //
-      QDPIO::cout << "Building baryon operators" << endl;
+      QDPIO::cout << "Building baryon operators" << std::endl;
 
       push(xml_out, "ElementalOps");
 
@@ -629,9 +629,9 @@ namespace Chroma
       {
 	StopWatch watch;
 
-	QDPIO::cout << "Elemental operator: op = " << l << endl;
+	QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
-	QDPIO::cout << "displacement: " << displacement_list[l] << endl;
+	QDPIO::cout << "displacement: " << displacement_list[l] << std::endl;
 
 	// Build the operator
 	swiss.reset();
@@ -661,7 +661,7 @@ namespace Chroma
 	  // The keys for the spin and displacements for this particular elemental operator
 	  multi1d<KeyDispColorVector_t> keyDispColorVector(3);
 
-	  // Can displace each colorvector
+	  // Can displace each colorstd::vector
 	  keyDispColorVector[0].displacement = displacement_list[l].left;
 	  keyDispColorVector[1].displacement = displacement_list[l].middle;
 	  keyDispColorVector[2].displacement = displacement_list[l].right;
@@ -699,7 +699,7 @@ namespace Chroma
 	    } // end for j
 	  } // end for i
 
-	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << endl; 
+	  QDPIO::cout << "insert: mom_num= " << mom_num << " displacement num= " << l << std::endl; 
 	  for(int t=0; t < phases.numSubsets(); ++t)
 	  {
 	    qdp_db.insert(buf[t].key, buf[t].val);
@@ -711,7 +711,7 @@ namespace Chroma
 	QDPIO::cout << "Baryon operator= " << l 
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
       } // for l
 
@@ -723,9 +723,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
 #endif
 

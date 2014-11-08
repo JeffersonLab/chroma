@@ -138,7 +138,7 @@ namespace Chroma
     //! Only defined on the odd lattice
     const Subset& subset() const {return rb[1];}   // not correct, need space-rb
 
-    //! Apply the derivative of the operator onto a source vector
+    //! Apply the derivative of the operator onto a source std::vector
     /*! User should make sure deriv routines do a resize  */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const
@@ -230,40 +230,40 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
     }
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void derivEvenEvenTimeLinOp(P& ds_u, const T& chi, const T& psi, 
 					enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenEvenTime: not implemented" << endl;
+      QDPIO::cerr << "EvenEvenTime: not implemented" << std::endl;
       QDP_abort(1);
     }
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void derivEvenOddSpaceLinOp(P& ds_u, const T& chi, const T& psi, 
 					enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenOddSpace: not implemented" << endl;
+      QDPIO::cerr << "EvenOddSpace: not implemented" << std::endl;
       QDP_abort(1);
     }
  
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void derivOddEvenSpaceLinOp(P& ds_u, const T& chi, const T& psi, 
 					enum PlusMinus isign) const
     {
-      QDPIO::cerr << "EvenOddSpace: not implemented" << endl;
+      QDPIO::cerr << "EvenOddSpace: not implemented" << std::endl;
       QDP_abort(1);
     }
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void derivOddOddTimeLinOp(P& ds_u, const T& chi, const T& psi, 
 				      enum PlusMinus isign) const
     {
-      QDPIO::cerr << "OddOddTime: not implemented" << endl;
+      QDPIO::cerr << "OddOddTime: not implemented" << std::endl;
       QDP_abort(1);
     }
   };

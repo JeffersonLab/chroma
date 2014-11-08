@@ -33,7 +33,6 @@
 #include "qphix/invbicgstab.h"
 #include "qphix/inv_richardson_multiprec.h"
 
-using namespace std;
 using namespace QDP;
 
 namespace Chroma
@@ -183,28 +182,28 @@ namespace Chroma
     {
 
       
-      QDPIO::cout << "LinOpSysSolverQPhiXCloverIterRefine:" << endl;
+      QDPIO::cout << "LinOpSysSolverQPhiXCloverIterRefine:" << std::endl;
 
       if ( toBool( invParam.Delta < 0 ) ) { 
-	QDPIO::cout << "Error: Delta parameter for solve should be set" << endl;
+	QDPIO::cout << "Error: Delta parameter for solve should be set" << std::endl;
 	QDP_abort(1);
       }
 
-      QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << endl;
+      QDPIO::cout << "AntiPeriodicT is: " << invParam.AntiPeriodicT << std::endl;
 
 
-      QDPIO::cout << "Veclen is " << MixedVecTraits<REALT,InnerReal>::Vec << endl;
-      QDPIO::cout << "Soalen is " << MixedVecTraits<REALT,InnerReal>::Soa << endl;
-      QDPIO::cout << "Inner Veclen is " << MixedVecTraits<REALT,InnerReal>::VecInner << endl;
-      QDPIO::cout << "Inner Soalen is " << MixedVecTraits<REALT,InnerReal>::SoaInner << endl;
+      QDPIO::cout << "Veclen is " << MixedVecTraits<REALT,InnerReal>::Vec << std::endl;
+      QDPIO::cout << "Soalen is " << MixedVecTraits<REALT,InnerReal>::Soa << std::endl;
+      QDPIO::cout << "Inner Veclen is " << MixedVecTraits<REALT,InnerReal>::VecInner << std::endl;
+      QDPIO::cout << "Inner Soalen is " << MixedVecTraits<REALT,InnerReal>::SoaInner << std::endl;
       
       if ( MixedVecTraits<REALT,InnerReal>::Soa > MixedVecTraits<REALT,InnerReal>::Vec ) { 
-	QDPIO::cerr << "PROBLEM: Soalen > Veclen. Please set soalen appropriately (<=VECLEN) at compile time" << endl;
+	QDPIO::cerr << "PROBLEM: Soalen > Veclen. Please set soalen appropriately (<=VECLEN) at compile time" << std::endl;
 	QDP_abort(1);
       }
 
       if ( MixedVecTraits<REALT,InnerReal>::SoaInner > MixedVecTraits<REALT,InnerReal>::VecInner ) { 
-	QDPIO::cerr << "PROBLEM: Inner Soalen > Inner Veclen. Please set soalen appropriately at compile time" << endl;
+	QDPIO::cerr << "PROBLEM: Inner Soalen > Inner Veclen. Please set soalen appropriately at compile time" << std::endl;
 	QDP_abort(1);
       }
 
@@ -294,15 +293,15 @@ namespace Chroma
       u_packed_i[1] = packed_gauge_cb1_inner;
 
       
-      QDPIO::cout << "Creating Clover Term" << endl;
+      QDPIO::cout << "Creating Clover Term" << std::endl;
       QDPCloverTerm clov_qdp;
       clov->create(state_, invParam.CloverParams);
-      QDPIO::cout << "Inverting Clover Term" << endl;
+      QDPIO::cout << "Inverting Clover Term" << std::endl;
       invclov->create(state_, invParam.CloverParams, (*clov));
       for(int cb=0; cb < 2; cb++) { 
 	invclov->choles(cb);
       }
-      QDPIO::cout << "Done" << endl;
+      QDPIO::cout << "Done" << std::endl;
       // Create buffer for outer clover
       QPhiX_Clover* A_cb0=(QPhiX_Clover *)geom_outer->allocCBClov();
       QPhiX_Clover* A_cb1=(QPhiX_Clover *)geom_outer->allocCBClov();
@@ -326,7 +325,7 @@ namespace Chroma
       invclov_packed_i[1] = A_inv_cb1_inner;
 
       // Do the actual packing
-      QDPIO::cout << "Packing Clover term..." << endl;
+      QDPIO::cout << "Packing Clover term..." << std::endl;
       
       // Pack outer clover inverse
       for(int cb=0; cb < 2; cb++) { 
@@ -347,7 +346,7 @@ namespace Chroma
       for(int cb=0; cb < 2; cb++) { 
 	QPhiX::qdp_pack_clover<>((*clov).getTriBuffer(), clov_packed_i[cb], *geom_inner, cb);
       }
-      QDPIO::cout << "Done" << endl;
+      QDPIO::cout << "Done" << std::endl;
 
 
       M_outer=new QPhiX::EvenOddCloverOperator<REALT,
@@ -393,7 +392,7 @@ namespace Chroma
     {
       
       // Need to unalloc all the memory...
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       geom_outer->free(p_even);
       geom_outer->free(p_odd);
       geom_outer->free(c_even);
@@ -459,23 +458,23 @@ namespace Chroma
     {
       /* Factories here later? */
       SystemSolverResults_t res;
-      QDPIO::cout << "Packing Spinors" << endl << flush ;
+      QDPIO::cout << "Packing Spinors" << std::endl << std::flush ;
 
       QPhiX::qdp_pack_spinor<>(psi, psi_s[0], psi_s[1], (*M_outer).getGeometry());
       QPhiX::qdp_pack_spinor<>(chi, chi_s[0], chi_s[1], (*M_outer).getGeometry());
 
-      QDPIO::cout << "Done" << endl << flush;
+      QDPIO::cout << "Done" << std::endl << std::flush;
 
       double rsd_final;
       unsigned long site_flops=0;
       unsigned long mv_apps=0;
       
-      QDPIO::cout << "Starting solve" << endl << flush ;
+      QDPIO::cout << "Starting solve" << std::endl << std::flush ;
       double start = omp_get_wtime();
       (*mixed_solver)(psi_s[1],chi_s[1], toDouble(invParam.RsdTarget), res.n_count, rsd_final, site_flops, mv_apps, invParam.VerboseP);
       double end = omp_get_wtime();
 
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << endl;      
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: " << res.n_count << " iters,  rsd_sq_final=" << rsd_final << std::endl;      
       QPhiX::qdp_unpack_spinor<>(psi_s[0], psi_s[1], psi, (*M_outer).getGeometry());
       
 #if 1
@@ -490,11 +489,11 @@ namespace Chroma
       Double b2 = norm2(chi, A->subset());
       Double rel_resid = sqrt(r2/b2);
 
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: || r || / || b || = " << rel_resid << endl;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: || r || / || b || = " << rel_resid << std::endl;
 #endif
 #if 0
       if ( !toBool (  rel_resid < invParam.RsdTarget*invParam.RsdToleranceFactor ) ) {
-	QDPIO::cout << "SOLVE FAILED" << endl;
+	QDPIO::cout << "SOLVE FAILED" << std::endl;
 	QDP_abort(1);
       }
 #endif
@@ -504,7 +503,7 @@ namespace Chroma
       double gflops = (double)(total_flops)/(1.0e9);
 
       double total_time = end - start;
-      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << endl;
+      QDPIO::cout << "QPHIX_CLOVER_BICGSTAB_ITER_REFINE_SOLVER: Solver Time="<< total_time <<" (sec)  Performance=" << gflops / total_time << " GFLOPS" << std::endl;
 
       END_CODE();
       return res;

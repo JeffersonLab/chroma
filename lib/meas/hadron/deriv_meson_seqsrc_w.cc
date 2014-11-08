@@ -18,28 +18,28 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, DerivMesonSeqSourceEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, DerivMesonSeqSourceEnv::Params& param)
   {
     DerivMesonSeqSourceEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DerivMesonSeqSourceEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const DerivMesonSeqSourceEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
 
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, DerivMesonSeqSourceEnv::ParamsDir& param)
+  void read(XMLReader& xml, const std::string& path, DerivMesonSeqSourceEnv::ParamsDir& param)
   {
     DerivMesonSeqSourceEnv::ParamsDir tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DerivMesonSeqSourceEnv::ParamsDir& param)
+  void write(XMLWriter& xml, const std::string& path, const DerivMesonSeqSourceEnv::ParamsDir& param)
   {
     param.writeXML(xml, path);
   }
@@ -58,7 +58,7 @@ namespace Chroma
     {
       if (quark_propagators.size() != 1)
       {
-	QDPIO::cerr << __func__ << ": expect only 1 prop" << endl;
+	QDPIO::cerr << __func__ << ": expect only 1 prop" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -69,7 +69,7 @@ namespace Chroma
     {
       if (quark_propagators.size() != 2)
       {
-	QDPIO::cerr << __func__ << ": expect only 2 prop" << endl;
+	QDPIO::cerr << __func__ << ": expect only 2 prop" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -522,7 +522,7 @@ namespace Chroma
     }
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -536,7 +536,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -547,7 +547,7 @@ namespace Chroma
     }
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -575,7 +575,7 @@ namespace Chroma
 
 
     //! Read parameters
-    ParamsDir::ParamsDir(XMLReader& xml, const string& path)
+    ParamsDir::ParamsDir(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -589,7 +589,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -602,7 +602,7 @@ namespace Chroma
 
 
     // Writer
-    void ParamsDir::writeXML(XMLWriter& xml, const string& path) const
+    void ParamsDir::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -3693,139 +3693,139 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0xNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0xNABLA_T1"),
 										      mesA0A0xNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pionxNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pionxNABLA_T1"),
 										      mesA0PionxNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_2xNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pion_2xNABLA_T1"),
 										      mesA0Pion2xNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0_2xNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0_2xNABLA_T1"),
 										      mesA0A02xNablaT1SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxNABLA_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxNABLA_A1"),
 										      mesA0RhoxNablaA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxNABLA_T1"),
 										      mesA0RhoxNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxNABLA_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxNABLA_T2"),
 										      mesA0RhoxNablaT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxNABLA_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxNABLA_E"),
 										      mesA0RhoxNablaESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xNABLA_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xNABLA_A1"),
 										      mesA0Rho2xNablaA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xNABLA_T1"),
 										      mesA0Rho2xNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xNABLA_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xNABLA_T2"),
 										      mesA0Rho2xNablaT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xNABLA_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xNABLA_E"),
 										      mesA0Rho2xNablaESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xNABLA_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xNABLA_A1"),
 										      mesA0A1xNablaA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xNABLA_T1"),
 										      mesA0A1xNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xNABLA_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xNABLA_T2"),
 										      mesA0A1xNablaT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xNABLA_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xNABLA_E"),
 										      mesA0A1xNablaESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xNABLA_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xNABLA_A1"),
 										      mesA0B1xNablaA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xNABLA_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xNABLA_T1"),
 										      mesA0B1xNablaT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xNABLA_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xNABLA_T2"),
 										      mesA0B1xNablaT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xNABLA_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xNABLA_E"),
 										      mesA0B1xNablaESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0xD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0xD_T2"),
 										      mesA0A0xDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pionxD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pionxD_T2"),
 										      mesA0PionxDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_2xD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pion_2xD_T2"),
 										      mesA0Pion2xDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0_2xD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0_2xD_T2"),
 										      mesA0A02xDT2SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxD_A2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxD_A2"),
 										      mesA0RhoxDA2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxD_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxD_T1"),
 										      mesA0RhoxDT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxD_T2"),
 										      mesA0RhoxDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxD_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxD_E"),
 										      mesA0RhoxDESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xD_A2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xD_A2"),
 										      mesA0Rho2xDA2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xD_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xD_T1"),
 										      mesA0Rho2xDT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xD_T2"),
 										      mesA0Rho2xDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xD_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xD_E"),
 										      mesA0Rho2xDESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xD_A2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xD_A2"),
 										      mesA0A1xDA2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xD_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xD_T1"),
 										      mesA0A1xDT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xD_T2"),
 										      mesA0A1xDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xD_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xD_E"),
 										      mesA0A1xDESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xD_A2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xD_A2"),
 										      mesA0B1xDA2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xD_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xD_T1"),
 										      mesA0B1xDT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xD_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xD_T2"),
 										      mesA0B1xDT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xD_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xD_E"),
 										      mesA0B1xDESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0xB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0xB_T1"),
 										      mesA0A0xBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pionxB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pionxB_T1"),
 										      mesA0PionxBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-pion_2xB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-pion_2xB_T1"),
 										      mesA0Pion2xBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a0_2xB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a0_2xB_T1"),
 										      mesA0A02xBT1SeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxB_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxB_A1"),
 										      mesA0RhoxBA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxB_T1"),
 										      mesA0RhoxBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxB_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxB_T2"),
 										      mesA0RhoxBT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rhoxB_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rhoxB_E"),
 										      mesA0RhoxBESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xB_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xB_A1"),
 										      mesA0Rho2xBA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xB_T1"),
 										      mesA0Rho2xBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xB_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xB_T2"),
 										      mesA0Rho2xBT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-rho_2xB_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-rho_2xB_E"),
 										      mesA0Rho2xBESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xB_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xB_A1"),
 										      mesA0A1xBA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xB_T1"),
 										      mesA0A1xBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xB_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xB_T2"),
 										      mesA0A1xBT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-a1xB_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-a1xB_E"),
 										      mesA0A1xBESeqSrc);
 
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xB_A1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xB_A1"),
 										      mesA0B1xBA1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xB_T1"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xB_T1"),
 										      mesA0B1xBT1SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xB_T2"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xB_T2"),
 										      mesA0B1xBT2SeqSrc);
-	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(string("a0-b1xB_E"),
+	success &= Chroma::TheWilsonHadronSeqSourceFactory::Instance().registerObject(std::string("a0-b1xB_E"),
 										      mesA0B1xBESeqSrc);
 
 	registered = true;

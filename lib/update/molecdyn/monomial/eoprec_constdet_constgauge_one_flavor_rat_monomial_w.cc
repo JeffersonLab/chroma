@@ -21,7 +21,7 @@ namespace Chroma
     {
       //! Callback
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path)
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path)
       {
 	return new EvenOddPrecConstDetConstGaugeOneFlavorWilsonTypeFermRatMonomial(
 	  OneFlavorWilsonTypeFermRatMonomialParams(xml, path));

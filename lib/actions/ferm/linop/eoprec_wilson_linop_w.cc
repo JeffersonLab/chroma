@@ -57,7 +57,7 @@ namespace Chroma
 
     if (coeffs.size() != Nd)
     {
-      QDPIO::cerr << "EvenOddPrecWilsonLinOp::create : coeffs not size Nd" << endl;
+      QDPIO::cerr << "EvenOddPrecWilsonLinOp::create : coeffs not size Nd" << std::endl;
       QDP_abort(1);
     }
 

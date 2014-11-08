@@ -221,7 +221,7 @@ namespace Chroma
 	  multi1d<LatticeComplex> b_2;
 	  
 	  // Get the fs and bs  -- does internal resize to make them arrays of length 3
-	  //	QDPIO::cout << __func__ << ": mu=" << mu << endl;
+	  //	QDPIO::cout << __func__ << ": mu=" << mu << std::endl;
 	  getFsAndBs(Q,QQ, f, b_1, b_2, true);
 	  
 	  
@@ -255,7 +255,7 @@ namespace Chroma
 		      << "  B_2=" << norm2(B_2) 
 		      << "  Q=" << norm2(Q) 
 		      << "  QQ=" << norm2(QQ) 
-		      << endl;
+		      << std::endl;
 #endif
 	  
 	} // End of if( smear_in_this_dirP[mu] )
@@ -368,7 +368,7 @@ namespace Chroma
 		      << "  staple=" << norm2(staple_sum)
 		      << "  Lambda=" << norm2(Lambda[mu]) 
 		      << "  C=" << norm2(C[mu]) 
-		      << endl;
+		      << std::endl;
 #endif
 	} // End of if(smear_in_this_dirP[mu]
 	// Else nothing needs done to the force
@@ -450,7 +450,7 @@ namespace Chroma
 	  
 	  // In this case what we can do is get the f-s a different way. We go back to basics:
 	  //
-	  // We solve (using maple) the matrix equations using the eigenvalues 
+	  // We solve (using std::maple) the matrix equations using the eigenvalues 
 	  //
 	  //  [ 1, q_1, q_1^2 ] [ f_0 ]       [ exp( iq_1 ) ]
 	  //  [ 1, q_2, q_2^2 ] [ f_1 ]   =   [ exp( iq_2 ) ]
@@ -511,7 +511,7 @@ namespace Chroma
 	  //
 	  //  I checked the expressions below by taking the difference between the Horner forms
 	  //  below from the expanded forms (and their derivatives) above and checking for the
-	  //  differences to be zero. At this point in time maple seems happy.
+	  //  differences to be zero. At this point in time std::maple seems happy.
 	  //  ==================================================================================
 	  
 	  f[0].elem(site).elem().elem().real() = 1.0-c0*c0/720.0;

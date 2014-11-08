@@ -15,7 +15,7 @@ namespace Chroma {
       read(paramtop, "./copyTo", p.dest);
     }
     catch( const std::string& e) { 
-      QDPIO::cout << "Caught exception reading XML: " << e << endl;
+      QDPIO::cout << "Caught exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -50,7 +50,7 @@ namespace Chroma {
 	  read(paramtop, "anisoP", anisoP);
 	  read(paramtop, "t_dir", t_dir);
 	  if( t_dir < 0  || t_dir >= Nd ) { 
-	    QDPIO::cout << "Value of t_dir must be 0 <= t_dir < Nd. t_dir is " << t_dir << endl;
+	    QDPIO::cout << "Value of t_dir must be 0 <= t_dir < Nd. t_dir is " << t_dir << std::endl;
 	    QDP_abort(1);
 	  }
 	  read(paramtop, "xi_mom", xi_mom);
@@ -64,7 +64,7 @@ namespace Chroma {
 
       }
       catch(const std::string& e) { 
-	QDPIO::cout << "Caught Exception Reading XML: " << e << endl;
+	QDPIO::cout << "Caught Exception Reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -108,7 +108,7 @@ namespace Chroma {
 	read(integrator_reader, "/Integrator/Name", integrator_name);
       }
       catch( const std::string& e) {
-	QDPIO::cout << "Caught Exception while processing XML: " << e << endl;
+	QDPIO::cout << "Caught Exception while processing XML: " << e << std::endl;
 	QDP_abort(1);
       }
     
@@ -131,7 +131,7 @@ namespace Chroma {
       typedef Handle< Monomial< multi1d<LatticeColorMatrix>, 
 	multi1d<LatticeColorMatrix> > > MHandle;
 
-      QDPIO::cout << "Working through Copy List of length " << params.copy_list.size() << endl;
+      QDPIO::cout << "Working through Copy List of length " << params.copy_list.size() << std::endl;
       // Loop through all the items in the copy list
       for(int i=0; i < params.copy_list.size(); i++) { 
 	std::string source_id = params.copy_list[i].source;
@@ -142,7 +142,7 @@ namespace Chroma {
 	MHandle dest_mon = 
 	  TheNamedObjMap::Instance().getData<MHandle>(dest_id);
 
-	QDPIO::cout << "Copying monomial: " << source_id << " to " << dest_id<< endl;
+	QDPIO::cout << "Copying monomial: " << source_id << " to " << dest_id<< std::endl;
 	dest_mon->setInternalFields( *src_mon );
       }
     }

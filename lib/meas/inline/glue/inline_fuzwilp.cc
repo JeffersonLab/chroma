@@ -45,7 +45,7 @@ namespace Chroma
 
 
   //! FuzzedWilsonLoop input
-  void read(XMLReader& xml, const string& path, InlineFuzzedWilsonLoopParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineFuzzedWilsonLoopParams::Param_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -58,7 +58,7 @@ namespace Chroma
    }
 
   //! FuzzedWilsonLoop output
-  void write(XMLWriter& xml, const string& path, const InlineFuzzedWilsonLoopParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineFuzzedWilsonLoopParams::Param_t& input)
   {
     push(xml, path);
 
@@ -74,7 +74,7 @@ namespace Chroma
 
 
   //! FuzzedWilsonLoop input
-  void read(XMLReader& xml, const string& path, InlineFuzzedWilsonLoopParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineFuzzedWilsonLoopParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -82,7 +82,7 @@ namespace Chroma
   }
 
   //! FuzzedWilsonLoop output
-  void write(XMLWriter& xml, const string& path, const InlineFuzzedWilsonLoopParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineFuzzedWilsonLoopParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -117,7 +117,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -141,7 +141,7 @@ namespace Chroma
     push(xml_out, "APE_Smeared_Wilsonloop");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << "APE_Smeared_Wilsonloop" << endl;
+    QDPIO::cout << "APE_Smeared_Wilsonloop" << std::endl;
 
     fuzwilp(u, 
 	    params.param.j_decay, 
@@ -158,9 +158,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineFuzzedWilsonLoopEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineFuzzedWilsonLoopEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineFuzzedWilsonLoopEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

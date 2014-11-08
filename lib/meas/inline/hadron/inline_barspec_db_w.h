@@ -47,17 +47,17 @@ namespace Chroma
 
 
       struct Operators_t{
-	string name;
+	std::string name;
 
 	SpinWF_t spinWF ;
       };
 
       struct State_t{
-	string name;
-	multi1d<string> flavor ;
+	std::string name;
+	multi1d<std::string> flavor ;
 	multi1d<Operators_t> ops ;        // holds the operators
 	int spin ;
-	string db ;
+	std::string db ;
       };
       struct Param_t
       {
@@ -72,7 +72,7 @@ namespace Chroma
 
 	multi1d<State_t> states ;        // holds the states
       
-	string ensemble ; // a string describing this ensemble 
+	std::string ensemble ; // a std::string describing this ensemble 
       } param;
 
       struct NamedObject_t
@@ -98,7 +98,7 @@ namespace Chroma
 
     namespace BarSpec
     {
-      vector<int> permutation(int k, const vector<int>& s) ;
+      std::vector<int> permutation(int k, const std::vector<int>& s) ;
       int permutation_sign(int k, int n) ;
 
       class SpinWF_t{
@@ -114,7 +114,7 @@ namespace Chroma
 
       public:
 	double norm ;
-	vector<Params::SpinTerms_t> terms ;
+	std::vector<Params::SpinTerms_t> terms ;
       
 	SpinWF_t(const Params::SpinWF_t& ss):norm(ss.norm){
 	  for(int t(0);t<ss.terms.size();t++)
@@ -126,14 +126,14 @@ namespace Chroma
 	  }
 	}
 
-	void permutations(const multi1d<string>& flavor){
+	void permutations(const multi1d<std::string>& flavor){
 
-	  //map<string,int> f_count;
-	  map<string,vector<int> > f_pos; // positions of active flavors
+	  //std::map<std::string,int> f_count;
+	  std::map<std::string,std::vector<int> > f_pos; // positions of active flavors
 	  //find the common flavors
 	  // f_pos  : list of positions on which each flavor appears 
 	  // labels : holds the list of unique flavors in the operator
-	  vector<string> labels; 
+	  std::vector<std::string> labels; 
 	  for(int f(0);f<flavor.size();f++){
 	    if(f_pos.find(flavor[f]) == f_pos.end()){
 	      labels.push_back(flavor[f]);
@@ -141,30 +141,30 @@ namespace Chroma
 	    f_pos[flavor[f]].push_back(f);
 	  }
 
-	  vector<Params::SpinTerms_t> perm_terms ;
+	  std::vector<Params::SpinTerms_t> perm_terms ;
 	  for(int f(0);f<labels.size();f++){
 	    int Nterms = terms.size();
-	    //vector<SpinTerms_t> tmp_terms = terms ;
+	    //std::vector<SpinTerms_t> tmp_terms = terms ;
 	    // perform up qark permutations of each term	  
 	    int Nperms = factorial(f_pos[labels[f]].size()) ;
 	    QDPIO::cout<<"   SpinWF_t::"<<__func__
 		       <<": Flavor "<<labels[f]<<" needs "<<Nperms
-		       <<": permutations"<<endl ;
+		       <<": permutations"<<std::endl ;
 	    if(Nperms>1){
 	      for(int t(0);t<Nterms;t++){
 		Params::SpinTerms_t foo = terms[t] ;
-		vector<int> spin ;
+		std::vector<int> spin ;
 		for(int i(0);i<f_pos[labels[f]].size();i++)
 		  spin.push_back(terms[t].spin[f_pos[labels[f]][i]]);
 		//QDPIO::cout<<"Original : " ;
 		//for(int m(0);m<spin.size();m++) 
 		//QDPIO::cout<<spin[m]<<" " ;
-		//QDPIO::cout<<endl ;
+		//QDPIO::cout<<std::endl ;
 		for(int k(0);k<Nperms;k++){
-		  vector<int> perm = permutation(k,spin);
+		  std::vector<int> perm = permutation(k,spin);
 		  //for(int m(0);m<perm.size();m++)
 		  //  QDPIO::cout<<perm[m]<<" " ;
-		  //QDPIO::cout<<endl ;
+		  //QDPIO::cout<<std::endl ;
 
 		  for(int i(0);i<f_pos[labels[f]].size();i++)
 		    foo.spin[f_pos[labels[f]][i]] = perm[i] ;
@@ -181,10 +181,10 @@ namespace Chroma
 	    QDPIO::cout<<"spin  : " ;
 	    for(int m(0);m<terms[t].spin.size();m++)
 	      QDPIO::cout<<flavor[m]<<"("<<terms[t].spin[m]<<") " ;
-	    QDPIO::cout<<">"<<endl ;
+	    QDPIO::cout<<">"<<std::endl ;
 
 	  }
-	  //QDPIO::cout<<"Done with permutations"<<endl ;
+	  //QDPIO::cout<<"Done with permutations"<<std::endl ;
 	}
       
       } ;
@@ -204,7 +204,7 @@ namespace Chroma
 	}
       
 	void ConvertProp(const LatticePropagator& prop, int spin_offset){
-	  QDPIO::cout<<__func__<<": Converting to Dirac Basis"<<endl ;
+	  QDPIO::cout<<__func__<<": Converting to Dirac Basis"<<std::endl ;
 	  SpinMatrix U = DiracToDRMat();
 	  LatticePropagator foo = adj(U)*prop*U ;
 	

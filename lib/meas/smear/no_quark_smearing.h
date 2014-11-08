@@ -57,11 +57,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, NoQuarkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, NoQuarkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const NoQuarkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const NoQuarkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

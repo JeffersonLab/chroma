@@ -27,7 +27,7 @@ namespace Chroma
 // class template Type2Type
 // Converts each type into a unique, insipid type
 // Invocation Type2Type<T> where T is a type
-// Defines the type OriginalType which maps back to T
+// Defines the type OriginalType which std::maps back to T
 ////////////////////////////////////////////////////////////////////////////////
 
   template <typename T>

@@ -29,7 +29,7 @@ namespace Chroma {
   };
 
   namespace OverlapInnerSolverTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -40,10 +40,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read a OverlapInnerSolverType enum
-  void read(XMLReader& r, const string& path, OverlapInnerSolverType& t);
+  void read(XMLReader& r, const std::string& path, OverlapInnerSolverType& t);
 
   //! Write an OverlapInnerSolverType enum
-  void write(XMLWriter& w, const string& path, const OverlapInnerSolverType& t);
+  void write(XMLWriter& w, const std::string& path, const OverlapInnerSolverType& t);
 
   /*! @} */   // end of group io
 };

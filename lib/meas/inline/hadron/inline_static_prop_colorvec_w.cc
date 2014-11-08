@@ -1,8 +1,7 @@
-
 /*! \file
  * \brief Compute a static prop  (1/2)*(1+gamma_4)U*U*...U * multi1d<LatticeColorVector>
  *
- * Propagator calculation on a colorvector
+ * Propagator calculation on a colorstd::vector
  */
 
 #include "fermact.h"
@@ -29,7 +28,7 @@ namespace Chroma
   namespace InlineStaticPropColorVecEnv 
   {
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -42,7 +41,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -56,7 +55,7 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::Param_t::Contract_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t::Contract_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -66,7 +65,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t::Contract_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t::Contract_t& input)
     {
       push(xml, path);
 
@@ -79,7 +78,7 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -87,7 +86,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& input)
     {
       push(xml, path);
 
@@ -98,14 +97,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params& input)
+    void read(XMLReader& xml, const std::string& path, Params& input)
     {
       InlineStaticPropColorVecEnv::Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params& input)
+    void write(XMLWriter& xml, const std::string& path, const Params& input)
     {
       push(xml, path);
     
@@ -176,7 +175,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -191,7 +190,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "StaticPropColorVec");
 	write(xml_out, "update_no", update_no);
@@ -229,19 +228,19 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
       push(xml_out, "PropColorVec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": propagator calculation" << endl;
+      QDPIO::cout << name << ": propagator calculation" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -263,7 +262,7 @@ namespace Chroma
       // 
       XMLReader source_file_xml, source_record_xml;
 
-      QDPIO::cout << "Snarf the source from a named buffer" << endl;
+      QDPIO::cout << "Snarf the source from a named buffer" << std::endl;
       try
       {
 	TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id);
@@ -278,12 +277,12 @@ namespace Chroma
       }    
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error extracting source_header: " << e << endl;
+	QDPIO::cerr << name << ": error extracting source_header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -291,7 +290,7 @@ namespace Chroma
       const QDP::MapObject<int,EVPair<LatticeColorVector> >& eigen_source = 
 	*(TheNamedObjMap::Instance().getData< Handle< QDP::MapObject<int,EVPair<LatticeColorVector> > > >(params.named_obj.colorvec_id));
 
-      QDPIO::cout << "Source successfully read and parsed" << endl;
+      QDPIO::cout << "Source successfully read and parsed" << std::endl;
 
       //
       // Create the output files
@@ -310,12 +309,12 @@ namespace Chroma
       }
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+	QDPIO::cerr << name << ": error creating prop: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -342,7 +341,7 @@ namespace Chroma
       {
 	QDPIO::cerr << __func__ << ": num_vecs= " << params.param.contract.num_vecs
 		    << " is greater than the number of available colorvectors= "
-		    << eigen_source.size() << endl;
+		    << eigen_source.size() << std::endl;
 	QDP_abort(1);
       }
 
@@ -376,13 +375,13 @@ namespace Chroma
 	for(int tt=0; tt < t_sources.size(); ++tt)
 	{
 	  int t_source = t_sources[tt];
-	  QDPIO::cout << "t_source = " << t_source << endl; 
+	  QDPIO::cout << "t_source = " << t_source << std::endl; 
 
 	  //
 	  // We now want the static prop, which is the product of each source and U
 	  // fields around the lattice. We do this by the inefficient (but simple) method
 	  // of Nt number of mults and shifts of the gauge field. We can then hold this
-	  // gauge field and use to multiply each colorvector source in succession
+	  // gauge field and use to multiply each colorstd::vector source in succession
 	  //
 	  LatticeColorMatrix u_shift = zero;
 	  u_shift[phases.getSet()[t_source]] = 1.0;  // unit matrix only on t_source
@@ -398,9 +397,9 @@ namespace Chroma
 	  // All the loops
 	  for(int colorvec_source=0; colorvec_source < num_vecs; ++colorvec_source)
 	  {
-	    QDPIO::cout << "colorvec_source = " << colorvec_source << endl; 
+	    QDPIO::cout << "colorvec_source = " << colorvec_source << std::endl; 
 
-	    // Pull out a time-slice of the color vector source
+	    // Pull out a time-slice of the color std::vector source
 	    LatticeColorVector vec_srce = zero;
 	    EVPair<LatticeColorVector> tmpvec ; eigen_source.get(colorvec_source, tmpvec);
 	    vec_srce[phases.getSet()[t_source]] = tmpvec.eigenVector;
@@ -441,7 +440,7 @@ namespace Chroma
       }
       catch (const std::string& e) 
       {
-	QDPIO::cout << name << ": caught exception around static prop: " << e << endl;
+	QDPIO::cout << name << ": caught exception around static prop: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -470,9 +469,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

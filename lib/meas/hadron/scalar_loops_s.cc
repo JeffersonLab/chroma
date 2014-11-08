@@ -42,7 +42,7 @@ namespace Chroma
 
   //!Calculates the \f$1\otimes1\f$ KS loop using the VKVR trick
   /* \param psi \f$\psi=M^{-1}\eta\f$
-     \param isample Which noise vector \f$\psi\f$ was computed on
+     \param isample Which noise std::vector \f$\psi\f$ was computed on
      \param Mass Mass for the Kilcup trick
   */
   void local_scalar_kilcup_loop::compute(LatticeStaggeredFermion& psi,
@@ -143,7 +143,7 @@ namespace Chroma
   /* \brief Calculates the \f$1\otimes1\f$ KS loop using the VKVR trick, with fuzzing
      \param psi_fuzz \f$\psi_\mathrm{fuzz}=(M^{-1}\eta)_\mathrm{fuzz}\f$
      \param psi 
-     \param isample Which noise vector \f$\psi\f$ was computed on
+     \param isample Which noise std::vector \f$\psi\f$ was computed on
      \param Mass Mass for the Kilcup trick
   */
   void local_scalar_kilcup_loop_fuzz::compute(LatticeStaggeredFermion& psi_fuzz,

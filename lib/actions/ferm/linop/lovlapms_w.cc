@@ -18,11 +18,11 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
   operator()(chi, psi, isign, RsdCG);
 }
 
-//! Apply the GW operator onto a source vector
+//! Apply the GW operator onto a source std::vector
 /*! \ingroup linop
  *
  * This routine applies the 4D GW operator onto a source
- * vector. The coeffiecients for the approximation get 
+ * std::vector. The coeffiecients for the approximation get 
  * wired into the class by the constructor and should
  * come fromt fermion action.
  *
@@ -31,8 +31,8 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
  * or    D^{dag} =    (1/2)[  (1+m) + (1-m) sgn(H_w) gamma_5 psi
  * 
  * 
- * \param chi     result vector                              (Write)  
- * \param psi 	  source vector         	             (Read)
+ * \param chi     result std::vector                              (Write)  
+ * \param psi 	  source std::vector         	             (Read)
  * \param isign   Hermitian Conjugation Flag 
  *                ( PLUS = no dagger| MINUS = dagger )       (Read)
  */
@@ -431,7 +431,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       tmp_normcheck -= b_vec;
       Double norm2check = norm2(tmp_normcheck);
       Double check_ztmp = Real(c) * z[iz][isz]*z[iz][isz];
-      QDPIO::cout << "|| b - (Q_isz + MM)x || = " << norm2check << " accum = " << check_ztmp << endl;
+      QDPIO::cout << "|| b - (Q_isz + MM)x || = " << norm2check << " accum = " << check_ztmp << std::endl;
     }
 #endif
 
@@ -459,7 +459,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
       chi_sq_diff = norm2(tmp1);      // the diff of old and new soln
 
 #if 0
-      QDPIO::cout << "Iter " << k << " || delta Sgn() || " << sqrt(chi_sq_diff) << endl;
+      QDPIO::cout << "Iter " << k << " || delta Sgn() || " << sqrt(chi_sq_diff) << std::endl;
 #endif 
       // Check convergence
       bool btmp = toBool(chi_sq_diff < chi_sq_new);
@@ -476,7 +476,7 @@ void lovlapms::operator() (LatticeFermion& chi, const LatticeFermion& psi,
 #endif
   }
 
-  QDPIO::cout << "Overlap Inner Solve (lovlapms): " << k << " iterations " << endl;
+  QDPIO::cout << "Overlap Inner Solve (lovlapms): " << k << " iterations " << std::endl;
   // End of MULTI SHIFTERY 
 
   // Now fix up the thing. Multiply in gamma5 if needed 

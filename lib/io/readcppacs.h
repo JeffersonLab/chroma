@@ -20,7 +20,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 //! Read a CPPACS gauge configuration written in the 1997 format
 /*!
@@ -31,7 +31,7 @@ void readCPPACS(XMLReader& xml, multi1d<LatticeColorMatrix>& u, const string& cf
  * \param cfg_file   path ( Read )
  */    
 
-void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readCPPACS(CPPACSGauge_t& header, multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 }  // end namespace Chroma
 

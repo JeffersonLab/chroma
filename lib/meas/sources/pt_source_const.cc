@@ -20,14 +20,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, PointQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, PointQuarkSourceConstEnv::Params& param)
   {
     PointQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const PointQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const PointQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -88,7 +88,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -134,7 +134,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -149,7 +149,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -171,7 +171,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Point source" << endl;
+      QDPIO::cout << "Point source" << std::endl;
 
       // Create the quark source
       LatticePropagator quark_source;
@@ -185,7 +185,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -207,7 +207,7 @@ namespace Chroma
 
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
-	  QDPIO::cout << "color = " << color_source << endl; 
+	  QDPIO::cout << "color = " << color_source << std::endl; 
 
 	  LatticeColorVector src_color_vec = zero;
 
@@ -216,7 +216,7 @@ namespace Chroma
 	  
 	  for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	  {
-	    QDPIO::cout << "spin = " << spin_source << endl; 
+	    QDPIO::cout << "spin = " << spin_source << std::endl; 
 
 	    // Insert a ColorVector into spin index spin_source
 	    // This only overwrites sections, so need to initialize first
@@ -239,7 +239,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -253,7 +253,7 @@ namespace Chroma
     LatticeStaggeredPropagator
     SourceConst<LatticeStaggeredPropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "Point source" << endl;
+      QDPIO::cout << "Point source" << std::endl;
 
       // Create the quark source
       LatticeStaggeredPropagator quark_source;
@@ -267,7 +267,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -289,7 +289,7 @@ namespace Chroma
 
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
-	  QDPIO::cout << "color = " << color_source << endl; 
+	  QDPIO::cout << "color = " << color_source << std::endl; 
 
 	  LatticeColorVector src_color_vec = zero;
 
@@ -316,7 +316,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in source construction: " << e << std::endl;
 	QDP_abort(1);
       }
 

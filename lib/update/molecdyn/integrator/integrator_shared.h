@@ -11,7 +11,6 @@
 #include "meas/inline/io/named_objmap.h"
 #include "update/molecdyn/integrator/md_integrator_factory.h"
 
-using namespace std;
 using namespace QDP;
  
 namespace Chroma { 

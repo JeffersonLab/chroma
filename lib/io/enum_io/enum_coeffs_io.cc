@@ -15,24 +15,24 @@ namespace Chroma {
     bool registerAll(void) 
     {
       bool success = true; 
-      success &= theCoeffTypeMap::Instance().registerPair(string("ZOLOTAREV"), COEFF_TYPE_ZOLOTAREV );
-      success &= theCoeffTypeMap::Instance().registerPair(string("TANH"), COEFF_TYPE_TANH);
-      success &= theCoeffTypeMap::Instance().registerPair(string("TANH_UNSCALED"), COEFF_TYPE_TANH_UNSCALED);
+      success &= theCoeffTypeMap::Instance().registerPair(std::string("ZOLOTAREV"), COEFF_TYPE_ZOLOTAREV );
+      success &= theCoeffTypeMap::Instance().registerPair(std::string("TANH"), COEFF_TYPE_TANH);
+      success &= theCoeffTypeMap::Instance().registerPair(std::string("TANH_UNSCALED"), COEFF_TYPE_TANH_UNSCALED);
       return success;
     }
 
     bool registered = registerAll();
-    const string typeIDString = "CoeffType";
+    const std::string typeIDString = "CoeffType";
   };
   using namespace CoeffTypeEnv;
 
   //! read an approximation coefficient type enum
-  void read(XMLReader& xml_in,  const string& path, CoeffType& t) {
+  void read(XMLReader& xml_in,  const std::string& path, CoeffType& t) {
     theCoeffTypeMap::Instance().read(typeIDString, xml_in, path,t);
   }
   
   //! write an approximation coefficient type enum
-  void write(XMLWriter& xml_out, const string& path, const CoeffType& t) {
+  void write(XMLWriter& xml_out, const std::string& path, const CoeffType& t) {
     theCoeffTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 };

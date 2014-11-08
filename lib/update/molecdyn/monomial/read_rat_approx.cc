@@ -51,7 +51,7 @@ namespace Chroma {
 	read(ipfe_in, "pole", ipfe.pole);
       }
       catch(const std::string& e) { 
-	QDPIO::cout << "Caught Exception reading XML" << e << endl;
+	QDPIO::cout << "Caught Exception reading XML" << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -75,7 +75,7 @@ namespace Chroma {
     
   }; // Namespace   
 
-  void read(XMLReader &xml, const string& path, ReadRatApproxEnv::Params& param) {
+  void read(XMLReader &xml, const std::string& path, ReadRatApproxEnv::Params& param) {
     ReadRatApproxEnv::Params tmp(xml, path);
     param=tmp;
   }

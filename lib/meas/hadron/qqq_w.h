@@ -106,8 +106,8 @@ namespace Chroma {
   void write_qqq(QDPFileWriter& to,
 		 multi2d<ThreeQuarks>& qqq, 
 		 const SftMom& phases,
-		 string type,
-		 string sink) ;
+		 std::string type,
+		 std::string sink) ;
 
 };
 #endif

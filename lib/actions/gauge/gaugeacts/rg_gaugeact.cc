@@ -51,12 +51,12 @@ namespace Chroma
       read(paramtop, "c1", c1);
     }
     catch( const std::string& e ) { 
-      QDPIO::cerr << "Error reading XML: " <<  e << endl;
+      QDPIO::cerr << "Error reading XML: " <<  e << std::endl;
       QDP_abort(1);
     }
   }
 
-  void read(XMLReader& xml, const string& path, RGGaugeActParams& p) {
+  void read(XMLReader& xml, const std::string& path, RGGaugeActParams& p) {
     RGGaugeActParams tmp(xml, path);
     p=tmp;
   }

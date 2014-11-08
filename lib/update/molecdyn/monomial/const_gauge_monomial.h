@@ -14,7 +14,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace ConstGaugeMonomialEnv 
   {
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 

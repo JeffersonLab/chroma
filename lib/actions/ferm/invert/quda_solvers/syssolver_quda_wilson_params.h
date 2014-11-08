@@ -9,7 +9,6 @@
 
 #include <string>
 #include "handle.h"
-using namespace std;
 
 namespace Chroma 
 {

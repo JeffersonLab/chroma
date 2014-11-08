@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: enum_eigenvectype_io.h,v 3.0 2006-04-03 04:58:56 edwards Exp $
 /*! \file
- * \brief Eigenvector type enum
+ * \brief Eigenstd::vector type enum
  */
 #ifndef enum_eigenvectype_io_h
 #define enum_eigenvectype_io_h
@@ -22,7 +22,7 @@ namespace Chroma {
    *
    * @{
    */
-  //! Eigenvector type
+  //! Eigenstd::vector type
   enum EigenVecType {
     EVEC_TYPE_SCIDAC = 2,
     EVEC_TYPE_SZIN
@@ -30,7 +30,7 @@ namespace Chroma {
 
 
   namespace EigenVecTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -40,11 +40,11 @@ namespace Chroma {
 
   // Reader and writer
 
-  //! Read an eigenvector enum
-  void read(XMLReader& r, const string& path, EigenVecType& t);
+  //! Read an eigenstd::vector enum
+  void read(XMLReader& r, const std::string& path, EigenVecType& t);
 
-  //! Write an eigenvector enum
-  void write(XMLWriter& w, const string& path, const EigenVecType& t);
+  //! Write an eigenstd::vector enum
+  void write(XMLWriter& w, const std::string& path, const EigenVecType& t);
 
   /*! @} */   // end of group io
 };

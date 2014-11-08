@@ -40,7 +40,7 @@ void InvRelGMRESR_SUMR_a(const LinearOperator<T>& PrecU,
 
   // Do the loop
   while( toBool( norm_r > terminate) && iter < MaxGMRESR ) {
-    // First we have to get a new u vector (in U)
+    // First we have to get a new u std::vector (in U)
     T* u = new T;
 
 
@@ -93,7 +93,7 @@ void InvRelGMRESR_SUMR_a(const LinearOperator<T>& PrecU,
 
     iter++;
     norm_r = sqrt(norm2(r,s));
-    QDPIO::cout << "Inv Rel GMRESR: iter "<< iter <<" || r || = " << norm_r << endl;
+    QDPIO::cout << "Inv Rel GMRESR: iter "<< iter <<" || r || = " << norm_r << std::endl;
   }
 
   // Cleanup
@@ -103,7 +103,7 @@ void InvRelGMRESR_SUMR_a(const LinearOperator<T>& PrecU,
   }
 
   if( iter == MaxGMRESR ) { 
-    QDPIO::cout << "Nonconvergence warning " << endl;
+    QDPIO::cout << "Nonconvergence warning " << std::endl;
   }
   
   n_count = iter;

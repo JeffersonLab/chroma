@@ -7,7 +7,6 @@
 #include "actions/ferm/fermacts/clover_fermact_params_w.h"
 #include <string>
 #include "handle.h"
-using namespace std;
 
 namespace Chroma 
 {
@@ -19,7 +18,7 @@ namespace Chroma
   };
 
   namespace QPhiXSolverTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered;
     bool registerAll(void);
   }
@@ -28,10 +27,10 @@ namespace Chroma
   typedef SingletonHolder<EnumTypeMap<QPhiXSolverType> > theQPhiXSolverTypeMap;
 
   //! Read an WaveStateType enum
-  void read(XMLReader& r, const string& path, QPhiXSolverType& t);
+  void read(XMLReader& r, const std::string& path, QPhiXSolverType& t);
 
   //! Write an WaveStateType enum
-  void write(XMLWriter& w, const string& path, const QPhiXSolverType& t);
+  void write(XMLWriter& w, const std::string& path, const QPhiXSolverType& t);
 
 
 

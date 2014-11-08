@@ -99,10 +99,10 @@ namespace Chroma
       swatch.stop();
       QDPIO::cout << "IBICGSTAB_SOLVER: " << res3.n_count 
 		  << " iterations. Rsd = " << res3.resid 
-		  << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
+		  << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << std::endl;
       
       double time = swatch.getTimeInSeconds();
-      QDPIO::cout << "IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+      QDPIO::cout << "IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << std::endl;
 	
       
       END_CODE();
@@ -190,10 +190,10 @@ namespace Chroma
 	swatch.stop();
 	QDPIO::cout << "IBICGSTAB_SOLVER: " << res3.n_count 
 		    << " iterations. Rsd = " << res3.resid 
-		    << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << endl;
+		    << " Relative Rsd = " << res3.resid/sqrt(norm2(chi,A->subset())) << std::endl;
 
 	double time = swatch.getTimeInSeconds();
-	QDPIO::cout << "IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << endl;
+	QDPIO::cout << "IBICGSTAB_SOLVER_TIME: "<<time<< " sec" << std::endl;
 	
 
 	END_CODE();

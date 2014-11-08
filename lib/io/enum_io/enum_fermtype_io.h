@@ -32,7 +32,7 @@ namespace Chroma
 
 
   namespace FermTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -43,10 +43,10 @@ namespace Chroma
   // Reader and writer
 
   //! Read an Fermion Type enum
-  void read(XMLReader& r, const string& path, FermType& t);
+  void read(XMLReader& r, const std::string& path, FermType& t);
 
   //! Write an Fermion Type enum
-  void write(XMLWriter& w, const string& path, const FermType& t);
+  void write(XMLWriter& w, const std::string& path, const FermType& t);
 
   /*! @} */   // end of group io
 

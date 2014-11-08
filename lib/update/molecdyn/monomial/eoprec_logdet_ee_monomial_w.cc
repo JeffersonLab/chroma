@@ -18,7 +18,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new EvenOddPrecLogDetEvenEvenMonomial4D(EvenOddPrecLogDetEvenEvenMonomialParams(xml, path));
       }
@@ -51,7 +51,7 @@ namespace Chroma
     fermact = readXMLGroup(paramtop, "FermionAction", "FermAct");
     read(paramtop,"num_flavors", num_flavors);
 
-    QDPIO::cout << "EvenOddPrecLogDetEvenEvenMonomialParams: read \n" << fermact.id << endl;
+    QDPIO::cout << "EvenOddPrecLogDetEvenEvenMonomialParams: read \n" << fermact.id << std::endl;
   }
 
   void read(XMLReader& r, const std::string& path,  EvenOddPrecLogDetEvenEvenMonomialParams& p) 
@@ -74,7 +74,7 @@ namespace Chroma
     // Grok the fermact out of the XML
     std::istringstream is(p.fermact.xml);
     XMLReader fermact_reader(is);
-    QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << endl;
+    QDPIO::cout << "EvanOddPrecLogDetTwoFlavorWilsonTypeFermMonomial: construct " << p.fermact.id << std::endl;
 
     WilsonTypeFermAct<T,P,Q>* tmp_act = 
       TheWilsonTypeFermActFactory::Instance().createObject(p.fermact.id, fermact_reader, p.fermact.path);
@@ -86,7 +86,7 @@ namespace Chroma
     if( downcast == 0x0 ) 
     {
       QDPIO::cerr << "Unable to downcast FermAct to EvenOddPrecLogDetWilsonTypeFermAct in " 
-		  << __func__ << endl;
+		  << __func__ << std::endl;
       QDP_abort(1);
     }
     

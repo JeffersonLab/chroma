@@ -45,7 +45,7 @@ namespace Chroma
   {
   public:
 
-    //! Construct from a list of string monomial_ids
+    //! Construct from a list of std::string monomial_ids
     ExactHamiltonian(const multi1d<std::string>& monomial_ids_)  {
       create(monomial_ids_);
     }

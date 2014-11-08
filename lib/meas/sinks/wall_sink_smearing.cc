@@ -13,14 +13,14 @@
 namespace Chroma
 {
   // Read parameters
-  void read(XMLReader& xml, const string& path, WallQuarkSinkSmearingEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, WallQuarkSinkSmearingEnv::Params& param)
   {
     WallQuarkSinkSmearingEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const WallQuarkSinkSmearingEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const WallQuarkSinkSmearingEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -87,7 +87,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -101,7 +101,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -110,14 +110,14 @@ namespace Chroma
       // Sanity check
       if (j_decay < 0 || j_decay >= Nd)
       {
-	QDPIO::cerr << name << ": invalid params.j_decay=" << j_decay << endl;
+	QDPIO::cerr << name << ": invalid params.j_decay=" << j_decay << std::endl;
 	QDP_abort(1);
       }
     }
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       int version = 1;
       push(xml, path);
@@ -133,7 +133,7 @@ namespace Chroma
     void
     SinkSmear<LatticePropagator>::operator()(LatticePropagator& quark_sink) const
     {
-      QDPIO::cout << "Wall sink" << endl;
+      QDPIO::cout << "Wall sink" << std::endl;
  
       // Project onto zero mom. at each time slice, the put back into
       // original field
@@ -153,7 +153,7 @@ namespace Chroma
     void
     SinkSmear<LatticeStaggeredPropagator>::operator()(LatticeStaggeredPropagator& quark_sink) const
     {
-      QDPIO::cout << "Wall sink" << endl;
+      QDPIO::cout << "Wall sink" << std::endl;
  
       // Project onto zero mom. at each time slice, the put back into
       // original field
@@ -173,7 +173,7 @@ namespace Chroma
     void
     SinkSmear<LatticeFermion>::operator()(LatticeFermion& quark_sink) const
     {
-      QDPIO::cout << "Wall sink" << endl;
+      QDPIO::cout << "Wall sink" << std::endl;
  
       // Project onto zero mom. at each time slice, the put back into
       // original field

@@ -524,7 +524,7 @@ public:
 	break;
 
       default:
-	QDPIO::cerr << "endOfTrj: unknown algorithm termination" << endl;
+	QDPIO::cerr << "endOfTrj: unknown algorithm termination" << std::endl;
 	QDP_abort(1);
       }
     }

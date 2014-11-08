@@ -154,12 +154,12 @@ namespace Chroma
   class NamedObjectMap 
   {
   public:
-    // Creation: clear the map
+    // Creation: clear the std::map
     NamedObjectMap() {
       the_map.clear();
     };
 
-    // Destruction: erase all elements of the map
+    // Destruction: erase all elements of the std::map
     ~NamedObjectMap() 
     {
       typedef std::map<std::string, NamedObjectBase*>::iterator I;
@@ -183,8 +183,8 @@ namespace Chroma
       I iter = the_map.find(id);
       if( iter != the_map.end()) 
       {
-	ostringstream error_stream;
-        error_stream << "NamedObjectMap::create : duplicate id = " << id << endl;
+	std::ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : duplicate id = " << id << std::endl;
         throw error_stream.str();
       }
 
@@ -195,8 +195,8 @@ namespace Chroma
       the_map[id] = dynamic_cast<NamedObjectBase*>(new NamedObject<T>());
       if (NULL == the_map[id])
       {
-	ostringstream error_stream;
-        error_stream << "NamedObjectMap::create : error creating NamedObject for id= " << id << endl;
+	std::ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : error creating NamedObject for id= " << id << std::endl;
         throw error_stream.str();
       }
     }
@@ -209,8 +209,8 @@ namespace Chroma
       MapType_t::iterator iter = the_map.find(id);
       if(iter != the_map.end()) 
       {
-	ostringstream error_stream;
-        error_stream << "NamedObjectMap::create : duplicate id = " << id << endl;
+	std::ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : duplicate id = " << id << std::endl;
         throw error_stream.str();
       }
 
@@ -221,8 +221,8 @@ namespace Chroma
       the_map[id] = dynamic_cast<NamedObjectBase*>(new NamedObject<T>(p1));
       if (NULL == the_map[id])
       {
-	ostringstream error_stream;
-        error_stream << "NamedObjectMap::create : error creating NamedObject for id= " << id << endl;
+	std::ostringstream error_stream;
+        error_stream << "NamedObjectMap::create : error creating NamedObject for id= " << id << std::endl;
         throw error_stream.str();
       }
     }
@@ -257,8 +257,8 @@ namespace Chroma
       else 
       {
 	// We attempt to erase something non existent
-	ostringstream error_stream;
-        error_stream << "NamedObjectMap::erase : erasing unknown id = " << id << endl;
+	std::ostringstream error_stream;
+        error_stream << "NamedObjectMap::erase : erasing unknown id = " << id << std::endl;
         throw error_stream.str();
       }
     }
@@ -267,9 +267,9 @@ namespace Chroma
     //! Dump out all objects
     void dump() const
     {
-      QDPIO::cout << "Available Keys are : " << endl;
+      QDPIO::cout << "Available Keys are : " << std::endl;
       for(MapType_t::const_iterator j = the_map.begin(); j != the_map.end(); j++) 
-	QDPIO::cout << j->first << endl;
+	QDPIO::cout << j->first << std::endl;
     }
   
   
@@ -281,8 +281,8 @@ namespace Chroma
       if (iter == the_map.end()) 
       {
 	// Not found -- lookup exception
-	ostringstream error_stream;
-        error_stream << "NamedObjectMap::get : unknown id = " << id << endl;
+	std::ostringstream error_stream;
+        error_stream << "NamedObjectMap::get : unknown id = " << id << std::endl;
         throw error_stream.str();
       }
       else 

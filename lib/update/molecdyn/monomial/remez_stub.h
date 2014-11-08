@@ -22,7 +22,7 @@ namespace Chroma
   public:
     RemezStub(const Real& lower, const Real& upper, long prec) 
     {
-      QDPIO::cerr << "RemezStub: Remez algorithm not supported without at least GMP (Gnu Muli-Precision library)" << endl;
+      QDPIO::cerr << "RemezStub: Remez algorithm not supported without at least GMP (Gnu Muli-Precision library)" << std::endl;
       QDP_abort(1);
     }
     ~RemezStub() {}

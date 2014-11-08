@@ -92,7 +92,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -117,7 +117,7 @@ namespace Chroma
       // Sanity check
       if (j_decay < 0 || j_decay >= Nd)
       {
-	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << endl;
+	QDPIO::cerr << name << ": invalid j_decay=" << j_decay << std::endl;
 	QDP_abort(1);
       }
     }
@@ -149,7 +149,7 @@ namespace Chroma
     LatticePropagator
     SourceConst<LatticePropagator>::operator()(const multi1d<LatticeColorMatrix>& u) const
     {
-      QDPIO::cout << "SF Shell source" << endl;
+      QDPIO::cout << "SF Shell source" << std::endl;
 
       // Source
       LatticePropagator quark_source;
@@ -169,7 +169,7 @@ namespace Chroma
 	{
 	  std::istringstream  xml_l(params.link_smearing.xml);
 	  XMLReader  linktop(xml_l);
-	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << endl;
+	  QDPIO::cout << "Link smearing type = " << params.link_smearing.id << std::endl;
 	
 	  Handle< LinkSmearing >
 	    linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.link_smearing.id,
@@ -183,7 +183,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_s(params.quark_smearing.xml);
 	XMLReader  smeartop(xml_s);
-        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << endl;
+        QDPIO::cout << "Quark smearing type = " << params.quark_smearing.id << std::endl;
 	
 	Handle< QuarkSmearing<LatticePropagator> >
 	  quarkSmearing(ThePropSmearingFactory::Instance().createObject(params.quark_smearing.id,
@@ -195,7 +195,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_d(params.quark_displacement.xml);
 	XMLReader  displacetop(xml_d);
-        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << endl;
+        QDPIO::cout << "Displacement type = " << params.quark_displacement.id << std::endl;
 	
 	Handle< QuarkDisplacement<LatticePropagator> >
 	  quarkDisplacement(ThePropDisplacementFactory::Instance().createObject(params.quark_displacement.id,
@@ -207,7 +207,7 @@ namespace Chroma
 	//
 	std::istringstream  xml_f(params.fermbc.xml);
 	XMLReader  fermbctop(xml_f);
-        QDPIO::cout << "FermBC type = " << params.fermbc.id << endl;
+        QDPIO::cout << "FermBC type = " << params.fermbc.id << std::endl;
 	
 	Handle< FermBC<LatticeFermion,
 	  multi1d<LatticeColorMatrix>,
@@ -226,14 +226,14 @@ namespace Chroma
 	int t0 = (params.direction == MINUS) ? tmax : tmin;
 	if (t0 != params.t_srce[params.j_decay])
 	{
-	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << endl;
+	  QDPIO::cerr << name << ": time slice source location does not agree with this FermBC" << std::endl;
 	  QDP_abort(1);
 	}
 
 	// Create the source
 	for(int color_source = 0; color_source < Nc; ++color_source)
 	{
-	  QDPIO::cout << "color = " << color_source << endl; 
+	  QDPIO::cout << "color = " << color_source << std::endl; 
 
 	  LatticeColorVector src_color_vec = zero;
 
@@ -242,7 +242,7 @@ namespace Chroma
 
 	  for(int spin_source = 0; spin_source < Ns; ++spin_source)
 	  {
-	    QDPIO::cout << "spin = " << spin_source << endl; 
+	    QDPIO::cout << "spin = " << spin_source << std::endl; 
 
 	    // Insert a ColorVector into spin index spin_source
 	    // This only overwrites sections, so need to initialize first
@@ -261,7 +261,7 @@ namespace Chroma
 	      break;
 
 	    default:
-	      QDPIO::cerr << name << ": illegal direction" << endl;
+	      QDPIO::cerr << name << ": illegal direction" << std::endl;
 	      QDP_abort(1);
 	    }
   	  
@@ -284,12 +284,12 @@ namespace Chroma
       }
       catch(std::bad_cast) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 

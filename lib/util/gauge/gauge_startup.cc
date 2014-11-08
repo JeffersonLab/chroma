@@ -88,7 +88,7 @@ namespace Chroma
 
     case CFG_TYPE_DISORDERED:
     {
-      QDPIO::cout << "Starting up disordered (random/hot) config" << endl;
+      QDPIO::cout << "Starting up disordered (random/hot) config" << std::endl;
       HotSt(u);
 
       XMLBufferWriter file_xml, record_xml;
@@ -105,7 +105,7 @@ namespace Chroma
 
     case CFG_TYPE_UNIT:
     {
-      QDPIO::cout << "Starting up unit gauge (free) config" << endl;
+      QDPIO::cout << "Starting up unit gauge (free) config" << std::endl;
       u = 1;
 
       XMLBufferWriter file_xml, record_xml;
@@ -122,7 +122,7 @@ namespace Chroma
 
     case CFG_TYPE_WEAK_FIELD:
     {
-      QDPIO::cout << "Starting up a weak field config" << endl;
+      QDPIO::cout << "Starting up a weak field config" << std::endl;
       weakField(u);
 
       XMLBufferWriter file_xml, record_xml;
@@ -139,7 +139,7 @@ namespace Chroma
 
     case CFG_TYPE_CLASSICAL_SF:
     {
-      QDPIO::cout << "Starting up a classical Schroedinger functional config" << endl;
+      QDPIO::cout << "Starting up a classical Schroedinger functional config" << std::endl;
       SchrGaugeBCParams params;
       params.loop_extent = 1;
       params.SchrPhiMult = 1;
@@ -160,7 +160,7 @@ namespace Chroma
     break; 
 
     default:
-      QDPIO::cerr << __func__ << ": Configuration type is unsupported." << endl;
+      QDPIO::cerr << __func__ << ": Configuration type is unsupported." << std::endl;
       QDP_abort(1);
     }
 

@@ -1,4 +1,3 @@
-// $Id: inline_building_blocks_w.cc,v 3.11 2007-06-10 14:40:23 edwards Exp $
 /*! \file
  * \brief Inline construction of BuildingBlocks
  *
@@ -52,7 +51,7 @@ namespace Chroma
 
 
   //! Param input
-  void read(XMLReader& xml, const string& path, InlineBuildingBlocksParams::Param_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineBuildingBlocksParams::Param_t& input)
   {
     XMLReader paramtop(xml, path);
 
@@ -99,7 +98,7 @@ namespace Chroma
 
     default :
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": input parameter version " 
-		  << version << " unsupported." << endl;
+		  << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
     
@@ -109,7 +108,7 @@ namespace Chroma
 
 
   //! Param write
-  void write(XMLWriter& xml, const string& path, const InlineBuildingBlocksParams::Param_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBuildingBlocksParams::Param_t& input)
   {
     push(xml, path);
 
@@ -126,7 +125,7 @@ namespace Chroma
   }
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineBuildingBlocksParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineBuildingBlocksParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -138,7 +137,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineBuildingBlocksParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBuildingBlocksParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -152,7 +151,7 @@ namespace Chroma
   }
 
   //! BB parameters
-  void read(XMLReader& xml, const string& path, InlineBuildingBlocksParams::BB_out_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineBuildingBlocksParams::BB_out_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -163,7 +162,7 @@ namespace Chroma
   }
 
   //! BB parameters
-  void write(XMLWriter& xml, const string& path, const InlineBuildingBlocksParams::BB_out_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineBuildingBlocksParams::BB_out_t& input)
   {
     push(xml, path);
 
@@ -204,7 +203,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -246,7 +245,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "ExampleBuildingBlocks");
       write(xml_out, "update_no", update_no);
@@ -277,12 +276,12 @@ namespace Chroma
     push(XmlOut, "ExampleBuildingBlocks");
     write(XmlOut, "update_no", update_no);
 
-    QDPIO::cout << " ExampleBuildingBlocks" << endl;
+    QDPIO::cout << " ExampleBuildingBlocks" << std::endl;
     QDPIO::cout << "     volume: " << QDP::Layout::lattSize()[0];
     for (int i=1; i<Nd; ++i) {
       QDPIO::cout << " x " << QDP::Layout::lattSize()[i];
     }
-    QDPIO::cout << endl;
+    QDPIO::cout << std::endl;
 
     //#################################################################################//
     // Echo Arguments                                                                  //
@@ -354,7 +353,7 @@ namespace Chroma
 
       // Set the construct state and modify the fields
       {
-QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
+QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << std::endl;
 	std::istringstream  xml_s(params.param.cfs.xml);
 	XMLReader  fermtop(xml_s);
 
@@ -375,19 +374,19 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineBuildingBlocksEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     catch( ... )
     {
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught generic exception "
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -422,7 +421,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     LatticePropagator F;
     ChromaProp_t prop_header;
     PropSourceConst_t source_header;
-    QDPIO::cout << "Attempt to parse forward propagator" << endl;
+    QDPIO::cout << "Attempt to parse forward propagator" << std::endl;
     Out << "parsing forward propagator " << params.bb.FrwdPropId << " ... " << "\n";  Out.flush();
 
     try
@@ -461,17 +460,17 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
       QDPIO::cerr << InlineBuildingBlocksEnv::name << ": forward prop: error message: " << e 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
 
-    QDPIO::cout << "Forward propagator successfully parsed" << endl;
+    QDPIO::cout << "Forward propagator successfully parsed" << std::endl;
     Out << "finished parsing forward propagator " << params.bb.FrwdPropId << "\n";  Out.flush();
 
 
@@ -494,11 +493,11 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       write(XmlOut, "loop_ctr", loop);
 
       Out << "Loop = " << loop << "\n";  Out.flush();
-      QDPIO::cout << "Loop = " << loop << endl;
+      QDPIO::cout << "Loop = " << loop << std::endl;
 
       multi1d< LatticePropagator > B( 1 );
       SeqSource_t seqsource_header;
-      QDPIO::cout << "Attempt to parse backward propagator" << endl;
+      QDPIO::cout << "Attempt to parse backward propagator" << std::endl;
       Out << "parsing backward u propagator " << params.bb.BkwdProps[loop].BkwdPropId << " ... " << "\n";  Out.flush();
       try
       {
@@ -538,17 +537,17 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": forward prop: caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": forward prop: error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
-      QDPIO::cout << "Backward propagator successfully parse" << endl;
+      QDPIO::cout << "Backward propagator successfully parse" << std::endl;
       Out << "finished reading backward u propagator " << params.bb.BkwdProps[loop].BkwdPropId << " ... " << "\n";  Out.flush();
       
       //#################################################################################//
@@ -560,7 +559,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 
       if (GammaInsertions[0] < 0 || GammaInsertions[0] >= Ns*Ns)
       {
-	QDPIO::cerr << "InlineBuildingBlocks: Gamma insertion out of bounds: " << GammaInsertions[0] << endl;
+	QDPIO::cerr << "InlineBuildingBlocks: Gamma insertion out of bounds: " << GammaInsertions[0] << std::endl;
 	QDP_abort(1);
       }
 
@@ -568,9 +567,9 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       // Some output                                                                     //
       //#################################################################################//
     
-      QDPIO::cout << "Seqsource name  = " << seqsource_header.seqsrc.id << endl;
-      QDPIO::cout << "Gamma insertion = " << params.bb.BkwdProps[loop].GammaInsertion << endl;
-      QDPIO::cout << "Flavor          = " << params.bb.BkwdProps[loop].Flavor << endl;
+      QDPIO::cout << "Seqsource name  = " << seqsource_header.seqsrc.id << std::endl;
+      QDPIO::cout << "Gamma insertion = " << params.bb.BkwdProps[loop].GammaInsertion << std::endl;
+      QDPIO::cout << "Flavor          = " << params.bb.BkwdProps[loop].Flavor << std::endl;
 
       write(XmlOut, "seq_src", seqsource_header.seqsrc.id);
       write(XmlOut, "gamma_insertion", GammaInsertions[0]);
@@ -619,7 +618,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 
       int NumO = PhasesCanonical.numMom();
 
-      multi2d< string > Files( 1, NumO );
+      multi2d< std::string > Files( 1, NumO );
 
       const int BBFileNameLength = params.bb.BkwdProps[loop].BBFileNamePattern.length() + 3 * 3 + 1;
 
@@ -660,7 +659,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
 
       //
       // Dru puts a Flavor into the BB
-      // Telephone book map of flavor name to a number
+      // Telephone book std::map of flavor name to a number
       //
       if (params.bb.BkwdProps[loop].Flavor == "U")
 	Flavors[0] = 0;
@@ -678,7 +677,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       {
 	QDPIO::cerr << InlineBuildingBlocksEnv::name << ": invalid flavor tag = " 
 		    << params.bb.BkwdProps[loop].Flavor
-		    << ", should be one of U,D,S,C,T,B" << endl;
+		    << ", should be one of U,D,S,C,T,B" << std::endl;
 	QDP_abort(1);
       }
 
@@ -755,7 +754,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     
       swatch.reset();
       Out << "calculating building blocks" << "\n";  Out.flush();
-      QDPIO::cout << "calculating building blocks" << endl;
+      QDPIO::cout << "calculating building blocks" << std::endl;
 
       const signed short int T1 = 0;
       const signed short int T2 = QDP::Layout::lattSize()[j_decay] - 1;
@@ -779,7 +778,7 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
       QDPIO::cout << "finished calculating building blocks for loop = " << loop 
 		  << "  time= "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
       pop(XmlOut);   // elem
     } // end loop over sequential sources
@@ -794,9 +793,9 @@ QDPIO::cout << "cfs=XX" << params.param.cfs.xml << "XX" << endl;
     snoop.stop();
     QDPIO::cout << InlineBuildingBlocksEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineBuildingBlocksEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineBuildingBlocksEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

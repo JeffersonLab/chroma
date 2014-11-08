@@ -132,7 +132,7 @@ InvIBiCGStab_a(const LinearOperator<T>& A,
 
 
     if( toBool( real(rhon) == 0 ) && toBool( imag(rhon) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: rho = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: rho = 0" << std::endl;
       QDP_abort(1);
     }
      
@@ -155,7 +155,7 @@ InvIBiCGStab_a(const LinearOperator<T>& A,
     taun = sigman_1 + beta*(taun_1- omega*pi_c);     // 16 flops 
 
     if( toBool( real(taun) == 0 ) && toBool( imag(taun) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << std::endl;
       QDP_abort(1);
     }
 
@@ -262,7 +262,7 @@ InvIBiCGStab_a(const LinearOperator<T>& A,
 
       // Check kappa for breakdown 
       if( toBool(kappa == 0) ) { 
-	QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << endl;
+	QDPIO::cerr << "Breakdown || Ms || = || t || = 0 " << std::endl;
 	QDP_abort(1);
       }
       
@@ -312,11 +312,11 @@ InvIBiCGStab_a(const LinearOperator<T>& A,
   
   swatch.stop();
 
-  QDPIO::cout << "InvIBiCGStab: n = " << ret.n_count << " resid = " << ret.resid << endl;
+  QDPIO::cout << "InvIBiCGStab: n = " << ret.n_count << " resid = " << ret.resid << std::endl;
   flopcount.report("invibicgstab", swatch.getTimeInSeconds());
 
   if ( ret.n_count == MaxBiCGStab ) { 
-    QDPIO::cerr << "Nonconvergence of IBiCGStab. MaxIters reached " << endl;
+    QDPIO::cerr << "Nonconvergence of IBiCGStab. MaxIters reached " << std::endl;
   }
 
   finishKernels();

@@ -68,7 +68,7 @@ namespace Chroma
       REAL *Add     = (REAL *) &(psi[0].elem(start).elem(0).elem(0).real());
       REAL *Out     = (REAL *) &(chi[0].elem(start).elem(0).elem(0).real());
 
-      // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (scalep2)*g5*vector)Add)
+      // (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (scalep2)*g5*std::vector)Add)
       //void axpbyz_g5(REAL *Out,REAL *scalep,REAL *InScale, REAL *scalep2, REAL *Add,int n_4vec)
       register int index_x = 0;
       register int index_y = 0;
@@ -368,7 +368,7 @@ namespace Chroma
 	REAL *Add     = (REAL *) &(psi[i].elem(start).elem(0).elem(0).real());
 	REAL *Out     = (REAL *) &(chi[i].elem(start).elem(0).elem(0).real());
 
-	// (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (scalep2)*g5*vector)Add)
+	// (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (scalep2)*g5*std::vector)Add)
 	//void axpbyz_g5(REAL *Out,REAL *scalep,REAL *InScale, REAL *scalep2, REAL *Add,int n_4vec)
 	register int index_x = 0;
 	register int index_y = 0;
@@ -1020,7 +1020,7 @@ namespace Chroma
 	REAL *Add     = (REAL *) &(chi[i+1].elem(site).elem(0).elem(0).real());
 	REAL* Out     = (REAL *) &(chi[i].elem(site).elem(0).elem(0).real());
 
-	// (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (scalep2)*g5*vector)Add)
+	// (Vector) out = (Scalar) (*scalep) * (Vector) InScale + (scalep2)*g5*std::vector)Add)
 	//g5_axmbyz(REAL *Out,REAL *scalep,REAL *InScale, REAL *scalep2, REAL *Add,int n_4vec)
 	register int index_x = 0;
 	register int index_y = 0;

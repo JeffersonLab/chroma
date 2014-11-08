@@ -111,7 +111,7 @@ namespace Chroma
     
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
 		      << sqrt(norm2(Mpsi))/sqrt(norm2(chi)) 
-		      << "  n_count = " << res.n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << std::endl;
 	}
 #if 0
 	else if (invType == "REL_CG_INVERTER")
@@ -145,7 +145,7 @@ namespace Chroma
 	  Mpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = " 
 		      << sqrt(norm2(Mpsi))/sqrt(norm2(chi))
-		      << "  n_count = " << res.n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << std::endl;
 
 	}
 #if 0
@@ -191,7 +191,7 @@ namespace Chroma
 	  Dpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi || = " 
 		      << sqrt(norm2(Dpsi))/sqrt(norm2(chi))
-		      << "  n_count = " << res.n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << std::endl;
 	}
 	else if (invType == "REL_SUMR_INVERTER")
 	{
@@ -227,7 +227,7 @@ namespace Chroma
 	  Dpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi || = " 
 		      << sqrt(norm2(Dpsi)) / sqrt(norm2(chi)) 
-		      << "  n_count = " << res.n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << std::endl;
 	}
 	else if (invType == "REL_GMRESR_SUMR_INVERTER")
 	{
@@ -267,7 +267,7 @@ namespace Chroma
 
 	  QDPIO::cout << "OvQprop || chi - D psi || = " 
 		      << sqrt(norm2(Dpsi))/sqrt(norm2(chi))
-		      << "  n_count = " << res.n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << std::endl;
 	}
 	else if (invType == "REL_GMRESR_GG_INVERTER")
 	{
@@ -306,11 +306,11 @@ namespace Chroma
 	  Mpsi -= chi;
 	  QDPIO::cout << "OvQprop || chi - D psi ||/||chi|| = "
 		      << sqrt(norm2(Mpsi)) / sqrt(norm2(chi))
-		      << "  n_count = " << res.n_count << " iters" << endl;
+		      << "  n_count = " << res.n_count << " iters" << std::endl;
 	}
 	else
 	{
-	  QDPIO::cerr << "Zolotarev4DFermActBj::qprop Solver Type not implemented" << endl;
+	  QDPIO::cerr << "Zolotarev4DFermActBj::qprop Solver Type not implemented" << std::endl;
 	  QDP_abort(1);
 	}
 #endif
@@ -774,7 +774,7 @@ namespace Chroma
 
 	r -= chi;
 	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << endl;
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << std::endl;
 	
       }
 #endif
@@ -843,7 +843,7 @@ namespace Chroma
 
 	r -= chi;
 	Double r_norm = sqrt(norm2(r))/sqrt(norm2(chi));
-	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << endl;
+	QDPIO::cout << "Check: shift="<<s<<" || r ||/||b|| = " << r_norm << " RsdCG = " << RsdCG[s] << std::endl;
 	
       }
 #endif

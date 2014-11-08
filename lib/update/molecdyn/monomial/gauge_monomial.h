@@ -19,7 +19,7 @@ namespace Chroma
   /*! @ingroup monomial */
   namespace GaugeMonomialEnv 
   {
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -33,7 +33,7 @@ namespace Chroma
 
     // Read monomial from some root path
     GaugeMonomialParams(XMLReader& in, const std::string& path);
-    string gauge_act;
+    std::string gauge_act;
   };
 
 

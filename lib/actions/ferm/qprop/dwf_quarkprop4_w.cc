@@ -92,7 +92,7 @@
 // 	Propagator runs with suitable fermacts (I should check DWF etc)
 //
 // Revision 1.18.2.1  2004/09/01 15:13:10  edwards
-// Start of major changes to support maps.
+// Start of major changes to support std::maps.
 //
 // Revision 1.18  2004/07/28 02:38:02  edwards
 // Changed {START,END}_CODE("foo") to {START,END}_CODE().
@@ -170,7 +170,7 @@ namespace Chroma
 			       int j_decay)
   {
     QDPIO::cout<<"check_dwf_ward_identity: Checking the chiral Ward Identity...";
-    QDPIO::cout<<endl ;
+    QDPIO::cout<<std::endl ;
 
     LatticeComplex divA = zero;
     for(int mu(0);mu<Nd;mu++){
@@ -187,20 +187,20 @@ namespace Chroma
     SftMom trick(0,false,j_decay) ;
     multi1d<Double> corr = sumMulti(localNorm2(diff), trick.getSet());
     QDPIO::cout<<"check_dwf_ward_identity: ";
-    QDPIO::cout<<"Ward Identity violation per timeslice: "<<endl;
+    QDPIO::cout<<"Ward Identity violation per timeslice: "<<std::endl;
     for(int t(0);t<corr.size(); t++){
-      QDPIO::cout<<"        "<<t<<"                "<< sqrt(corr[t])<<endl ;
+      QDPIO::cout<<"        "<<t<<"                "<< sqrt(corr[t])<<std::endl ;
     }
 
     QDPIO::cout<<"check_dwf_ward_identity: Ward Identity violation: ";
-    QDPIO::cout<<sqrt(norm2(diff))<<endl ;
+    QDPIO::cout<<sqrt(norm2(diff))<<std::endl ;
 
-    QDPIO::cout<<"check_dwf_ward_identity: |divA|^2    : "<<norm2(divA)<<endl;
-    QDPIO::cout<<"check_dwf_ward_identity: |ps_ps|^2   : "<<norm2(ps_ps)<<endl;
-    QDPIO::cout<<"check_dwf_ward_identity: |mpps_ps|^2 : "<<norm2(mpps_ps)<<endl;
-    QDPIO::cout<<"check_dwf_ward_identity: |q_bar_q|^2 : "<<norm2(q_bar_q)<<endl;
+    QDPIO::cout<<"check_dwf_ward_identity: |divA|^2    : "<<norm2(divA)<<std::endl;
+    QDPIO::cout<<"check_dwf_ward_identity: |ps_ps|^2   : "<<norm2(ps_ps)<<std::endl;
+    QDPIO::cout<<"check_dwf_ward_identity: |mpps_ps|^2 : "<<norm2(mpps_ps)<<std::endl;
+    QDPIO::cout<<"check_dwf_ward_identity: |q_bar_q|^2 : "<<norm2(q_bar_q)<<std::endl;
     Double gmor( sqrt(norm2(sum(m_q*ps_ps + mpps_ps - q_bar_q))) );
-    QDPIO::cout<<"check_dwf_ward_identity: GMOR        : "<<gmor<<endl;
+    QDPIO::cout<<"check_dwf_ward_identity: GMOR        : "<<gmor<<std::endl;
   
   }
 
@@ -229,7 +229,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << "entering DWF_QuarkProp4" << endl;
+    QDPIO::cout << "entering DWF_QuarkProp4" << std::endl;
 
     push(xml_out, "DWF_QuarkProp4");
 
@@ -247,7 +247,7 @@ namespace Chroma
       for(int spin_source = 0; spin_source < Ns; ++spin_source)
       {
 	QDPIO::cout<<"dwf_quarkProp:: doing color  : "<< color_source;
-	QDPIO::cout<<" and spin : "<< spin_source<<endl  ;
+	QDPIO::cout<<" and spin : "<< spin_source<<std::endl  ;
 
 	psi = zero ;  // note this is ``zero'' and not 0
 	LatticeFermion tmp = zero;
@@ -267,7 +267,7 @@ namespace Chroma
 	tmp *= fact;
 	  
 
-	//QDPIO::cout<<"Normalization Factor: "<< fact<<endl ;
+	//QDPIO::cout<<"Normalization Factor: "<< fact<<std::endl ;
 
 	multi1d<LatticeFermion> chi(N5) ;
 	chi = zero ;
@@ -397,7 +397,7 @@ namespace Chroma
 			    j_decay);
 
 
-    QDPIO::cout << "exiting DWF_QuarkProp4" << endl;
+    QDPIO::cout << "exiting DWF_QuarkProp4" << std::endl;
 
     END_CODE();
   }
@@ -420,7 +420,7 @@ namespace Chroma
 				   const multi1d<LatticePropagator>& p5d, 
 				   const int mu)
   {
-    // gamma mapping G_0 --> Gamma(1)
+    // gamma std::mapping G_0 --> Gamma(1)
     //               G_1 --> Gamma(2)
     //               G_2 --> Gamma(4)
     //               G_3 --> Gamma(8)

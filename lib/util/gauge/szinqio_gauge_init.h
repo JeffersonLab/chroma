@@ -27,7 +27,7 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      string cfg_file;		/*!< File name */
+      std::string cfg_file;		/*!< File name */
       QDP_serialparallel_t    cfg_pario;  /*!< QIO Parallel IO flag */
     };
 
@@ -65,11 +65,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup gauge */
-  void read(XMLReader& xml, const string& path, SZINQIOGaugeInitEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, SZINQIOGaugeInitEnv::Params& param);
 
   //! Writer
   /*! @ingroup gauge */
-  void write(XMLWriter& xml, const string& path, const SZINQIOGaugeInitEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const SZINQIOGaugeInitEnv::Params& param);
 
 }  // end namespace Chroma
 

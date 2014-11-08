@@ -15,7 +15,7 @@ namespace Chroma {
  * \param u          gauge configuration ( Modify )
  * \param cfg_file   path ( Read )
  */    
-void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void readKYU(multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 
 //! Write a Kentucky gauge configuration
@@ -26,7 +26,7 @@ void readKYU(multi1d<LatticeColorMatrix>& u, const string& cfg_file);
  * \param cfg_file   path ( Read )
  */    
 
-void writeKYU(const multi1d<LatticeColorMatrix>& u, const string& cfg_file);
+void writeKYU(const multi1d<LatticeColorMatrix>& u, const std::string& cfg_file);
 
 }  // end namespace Chroma
 

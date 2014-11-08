@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Inline task to time-sliced map object
+ * \brief Inline task to time-sliced std::map object
  */
 
 #ifndef __inline_write_timeslice_map_obj_disk_h__
@@ -29,14 +29,14 @@ namespace Chroma
       struct NamedObject_t {
 	std::string   object_type;         /*!< Input object type */
 	std::string   input_id;            /*!< Input object id */
-	std::string   output_file;         /*!< Output map-object-disk */
+	std::string   output_file;         /*!< Output std::map-object-disk */
       };
 
       NamedObject_t   named_obj;
     };
 
 
-    //! Inline task to time-sliced map object
+    //! Inline task to time-sliced std::map object
     /*! \ingroup inlineio */
     class InlineMeas : public AbsInlineMeasurement 
     {

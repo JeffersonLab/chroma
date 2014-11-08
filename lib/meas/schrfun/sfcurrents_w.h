@@ -23,7 +23,7 @@ namespace Chroma
   //! Compute Z_V
   /*! @ingroup schrfun */
   void SFCurrentZV(XMLWriter& xml_out, 
-		   const string& xml_group,
+		   const std::string& xml_group,
 		   const LatticePropagator& quark_prop_f,
 		   const LatticePropagator& quark_prop_b,
 		   Handle< SystemSolver<LatticeFermion> > qprop,
@@ -38,7 +38,7 @@ namespace Chroma
    * @return number of inverter iterations
    */
   int SFCurrentZA(XMLWriter& xml_out, 
-		  const string& xml_group,
+		  const std::string& xml_group,
 		  const multi1d<Real>& pseudo_prop_f,
 		  const multi1d<Real>& axial_prop_f,
 		  const multi1d<Real>& pseudo_prop_b,

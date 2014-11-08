@@ -17,7 +17,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace PlaqGaugeActEnv 
   { 
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -35,10 +35,10 @@ namespace Chroma
   };
   
   /*! @ingroup gaugeacts */
-  void read(XMLReader& xml, const string& path, PlaqGaugeActParams& param);
+  void read(XMLReader& xml, const std::string& path, PlaqGaugeActParams& param);
   
 //  /*! @ingroup gaugeacts */
-//  void write(XMLWriter& xml, const string& path, const PlaqGaugeActParams& param);
+//  void write(XMLWriter& xml, const std::string& path, const PlaqGaugeActParams& param);
   
 
   //! Plaquette gauge action

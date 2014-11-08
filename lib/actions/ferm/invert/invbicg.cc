@@ -24,7 +24,7 @@ namespace Chroma {
 /*      s[k]    := r[k-1] - a[k] mp[k] ; */
 /*      ms[k]      := A.s[k] ; */
 /*      omega[k]:= <ms[k],s[k]> / <ms[k],ms[k]> ; */
-/*      Psi[k]  += omega[k] s[k] + a[k] p[k] ;  New solution vector */
+/*      Psi[k]  += omega[k] s[k] + a[k] p[k] ;  New solution std::vector */
 /*      r[k]    := s[k] - omega[k] ms[k] ;      New residual */
 /*      IF |r[k]| <= RsdBiCG |Chi| THEN RETURN; Converged? */
 /*      b[k+1]  := (<rv,r[k]> / <rv,r[k-1]>) * (a[k]/omega[k]) ; */
@@ -42,9 +42,9 @@ namespace Chroma {
 
 /* Local Variables: */
 
-/*  r          Residual vector */
+/*  r          Residual std::vector */
 /*  rv         For second Krylov space */
-/*  p          Direction vector */
+/*  p          Direction std::vector */
 /*  cp         | r[k] |**2 */
 /*  c          | r[k-1] |**2 */
 /*  rvr        < rv, r[k-1] > */
@@ -63,7 +63,7 @@ namespace Chroma {
 
 /* Subroutines: */
 
-/*  A    Apply matrix linear operator to vector */
+/*  A    Apply matrix linear operator to std::vector */
 
 /* Operations: */
 

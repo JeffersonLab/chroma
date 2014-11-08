@@ -165,7 +165,7 @@ namespace Chroma
 		const CloverFermActParams& param_) {
       START_CODE();
       
-      // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+      // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
       
       param = param_;
       clov.create(fs, param);
@@ -173,7 +173,7 @@ namespace Chroma
       invclov.choles(0);  // invert the cb=0 part
       D.create(fs, param.anisoParam);
       
-      // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+      // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
       END_CODE();
       
     }

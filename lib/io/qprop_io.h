@@ -196,10 +196,10 @@ namespace Chroma
   };
 
 
-  //! Given a fermion action in string form, return the Mass
+  //! Given a fermion action in std::string form, return the Mass
   Real getMass(const GroupXML_t& fermact);
 
-  //! Given a fermion action in string form, return the boundary
+  //! Given a fermion action in std::string form, return the boundary
   multi1d<int> getFermActBoundary(const GroupXML_t& fermact);
 
   //! Propagator source read
@@ -280,10 +280,10 @@ namespace Chroma
 
 
   //! Source/sink spin indices
-  void read(XMLReader& xml, const string& path, QQQSpinIndices_t& input);
+  void read(XMLReader& xml, const std::string& path, QQQSpinIndices_t& input);
 
   //! Source/sink spin indices
-  void write(XMLWriter& xml, const string& path, const QQQSpinIndices_t& input);
+  void write(XMLWriter& xml, const std::string& path, const QQQSpinIndices_t& input);
 
 
   //! QQDiquark reader
@@ -318,7 +318,7 @@ namespace Chroma
    */    
   void writeQprop(XMLBufferWriter& file_xml,
 		  XMLBufferWriter& record_xml, const LatticePropagator& quark_prop,
-		  const string& file, 
+		  const std::string& file, 
 		  QDP_volfmt_t volfmt, QDP_serialparallel_t serpar);
 
 
@@ -332,7 +332,7 @@ namespace Chroma
    */    
   void readQprop(XMLReader& file_xml,
 		 XMLReader& record_xml, LatticePropagator& quark_prop,
-		 const string& file, 
+		 const std::string& file, 
 		 QDP_serialparallel_t serpar);
 
   // Write a Chroma Fermion Field (eg prop_component)
@@ -346,7 +346,7 @@ namespace Chroma
    */    
   void writeFermion(XMLBufferWriter& file_xml,
 		    XMLBufferWriter& record_xml, const LatticeFermion& fermion,
-		    const string& file, 
+		    const std::string& file, 
 		    QDP_volfmt_t volfmt, QDP_serialparallel_t serpar);
 
 
@@ -361,7 +361,7 @@ namespace Chroma
   void readFermion(XMLReader& file_xml,
 		   XMLReader& record_xml, 
 		   LatticeFermion& fermion,
-		   const string& file, 
+		   const std::string& file, 
 		   QDP_serialparallel_t serpar);
 
   /*! @} */  // end of group io

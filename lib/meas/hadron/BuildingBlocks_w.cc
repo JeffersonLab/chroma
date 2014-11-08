@@ -195,7 +195,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
       int o = PhasesCanonical.momToNum( Q );
       if (o == -1)
       {
-	QDPIO::cerr << __func__ << ": internal error: failed to find index of ordered momentum" << endl;
+	QDPIO::cerr << __func__ << ": internal error: failed to find index of ordered momentum" << std::endl;
 	QDP_abort(1);
       }
       
@@ -234,7 +234,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 	  else
 	    t_prime = t_reversed ;
 	  
-	  //QDPIO::cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<",tsh="<<t_shifted<<"]"<<endl ;
+	  //QDPIO::cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<",tsh="<<t_shifted<<"]"<<std::endl ;
 	}
 
 	//when TimeReverse is on shifting is done differently
@@ -242,7 +242,7 @@ void BkwdFrwdTr( const LatticePropagator &             B,
 	  t_prime = (t - Tsrc + NT )%NT ;
 	
 	//if(TimeReverse==false)
-	// QDPIO::cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<"]"<<endl;
+	// QDPIO::cout<<t<<" "<<t_prime<<" [Tsrc="<<Tsrc<<",NT="<<NT<<"]"<<std::endl;
 
         real_part[ t_prime ] = r;
         imag_part[ t_prime ] = i;
@@ -272,12 +272,12 @@ void BkwdFrwdTr( const LatticePropagator &             B,
     IOTime += Timer.getTimeInSeconds();
   }
 
-  QDPIO::cout << __func__ << ":  io time = " << IOTime << " seconds" << endl;
-  QDPIO::cout << __func__ << ": gfg time = " << GFGTime / (double) GFGCalls << " seconds" << endl;
-  QDPIO::cout << __func__ << ":  ip time = " << IPTime / (double) IPCalls << " seconds" << endl;
-  QDPIO::cout << __func__ << ":  ft time = " << FTTime / (double) FTCalls << " seconds" << endl;
+  QDPIO::cout << __func__ << ":  io time = " << IOTime << " seconds" << std::endl;
+  QDPIO::cout << __func__ << ": gfg time = " << GFGTime / (double) GFGCalls << " seconds" << std::endl;
+  QDPIO::cout << __func__ << ":  ip time = " << IPTime / (double) IPCalls << " seconds" << std::endl;
+  QDPIO::cout << __func__ << ":  ft time = " << FTTime / (double) FTCalls << " seconds" << std::endl;
   TotalTime.stop();
-  QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << endl;
+  QDPIO::cout << __func__ << ": total time = " << TotalTime.getTimeInSeconds() << " seconds" << std::endl;
 
   return;
 }
@@ -429,7 +429,7 @@ void AddLinks( const multi1d< LatticePropagator > &  B,
 	      << ShiftTime
 	      << " seconds with shift calls = "
               << ShiftCalls 
-	      << endl;
+	      << std::endl;
 
   return;
 }
@@ -447,7 +447,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
                      const BBLinkPattern                   LinkPattern,
                      const SftMom &                        Phases,
                      const SftMom &                        PhasesCanonical,
-	             const multi2d< string > &             BinaryDataFileNames,
+	             const multi2d< std::string > &             BinaryDataFileNames,
                      const signed short int                T1,
                      const signed short int                T2,
 		     const signed short int                Tsrc,
@@ -474,7 +474,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   if ( BinaryDataFileNames.size1() != PhasesCanonical.numMom() )
   {
     QDPIO::cerr << __func__ << ": number of datafile names incompatible with number of momenta"
-		<< endl;
+		<< std::endl;
     QDP_abort(1);
   }
 
@@ -497,7 +497,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   Timer.stop();
   QDPIO::cout << __func__ << ": time to open files = "
 	      << Timer.getTimeInSeconds() 
-	      << " seconds" << endl;
+	      << " seconds" << std::endl;
 
   //#################################################################################//
   // calculate building blocks                                                       //
@@ -506,7 +506,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   Timer.reset();
   Timer.start();
 
-  QDPIO::cout << __func__ << ": start BkwdFrwdTr" << endl;
+  QDPIO::cout << __func__ << ": start BkwdFrwdTr" << std::endl;
 
   const unsigned short int NLinks = 0;
   multi1d< unsigned short int > LinkDirs( 0 );
@@ -522,12 +522,12 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   Timer.stop();
   QDPIO::cout << __func__ << ": total time for 0 links (single BkwdFrwdTr call) = "
 	      << Timer.getTimeInSeconds() 
-	      << " seconds" << endl;
+	      << " seconds" << std::endl;
 
   Timer.reset();
   Timer.start();
 
-  QDPIO::cout << __func__ << ": start AddLinks" << endl;
+  QDPIO::cout << __func__ << ": start AddLinks" << std::endl;
 
   AddLinks( B, F, U, GammaInsertions, 
 	    Phases, PhasesCanonical,
@@ -538,7 +538,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   Timer.stop();
   QDPIO::cout << __func__ << ": total time for remaining links (outermost AddLinks call) = "
 	      << Timer.getTimeInSeconds() 
-	      << " seconds" << endl;
+	      << " seconds" << std::endl;
 
   //#################################################################################//
   // add footer and close files                                                      //
@@ -558,7 +558,7 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   const signed short int   PY = SnkMom[1];
   const signed short int   PZ = SnkMom[2];
   const signed short int   SeqSourceLen = 64;
-  string SeqSource = SeqSourceType;
+  std::string SeqSource = SeqSourceType;
   SeqSource.resize(SeqSourceLen, 0);
 
   for( int f = 0; f < NumF; f ++ )
@@ -635,12 +635,12 @@ void BuildingBlocks( const multi1d< LatticePropagator > &  B,
   Timer.stop();
   QDPIO::cout << __func__ << ": time to write footer = "
 	      << Timer.getTimeInSeconds() 
-	      << " seconds" << endl;
+	      << " seconds" << std::endl;
 
   TotalTime.stop();
   QDPIO::cout << __func__ << ": total time = "
 	      << TotalTime.getTimeInSeconds() 
-	      << " seconds" << endl;
+	      << " seconds" << std::endl;
 
   return;
 }

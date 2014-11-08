@@ -68,7 +68,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineUSQCDWriteDDPairsPropParams& p)
+  void write(XMLWriter& xml, const std::string& path, const InlineUSQCDWriteDDPairsPropParams& p)
   {
     push(xml, path);
     write(xml, "Frequency", p.frequency);
@@ -122,7 +122,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -160,12 +160,12 @@ namespace Chroma
     push(xml_out, "USQCDWriteDDPairsProp");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ":" << endl;
+    QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ":" << std::endl;
     StopWatch swatch;
     swatch.start();
 
-    QDPIO::cout << "Attempt to write object name = " << params.prop_id << endl;
-    QDPIO::cout << "Output file = " << params.output_file_name << endl;
+    QDPIO::cout << "Attempt to write object name = " << params.prop_id << std::endl;
+    QDPIO::cout << "Output file = " << params.output_file_name << std::endl;
 
     /* ================== Routine to write the prop here =============== */
     
@@ -183,7 +183,7 @@ namespace Chroma
 	TheNamedObjMap::Instance().getData<multi1d<LatticeColorMatrix> >(params.gauge_id);
     }
     catch(...) { 
-      QDPIO::cout << "Could not get the prop from the named ObjectMap. Missing ID"<< params.prop_id << endl;
+      QDPIO::cout << "Could not get the prop from the named ObjectMap. Missing ID"<< params.prop_id << std::endl;
       QDP_abort(1);
     }
 
@@ -220,7 +220,7 @@ namespace Chroma
       std::string source_type;
       read(theSourceHeader, "Source/SourceType", source_type);
 
-      QDPIO::cout << "Source = " << source_type << endl;
+      QDPIO::cout << "Source = " << source_type << std::endl;
 
       // Get the constructor function-object from the factory
       Handle< QuarkSourceConstruction<LatticePropagator> >
@@ -232,7 +232,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << InlineUSQCDWriteDDPairsPropEnv::name << ": Caught Exception creating source: " << e << endl;
+      QDPIO::cerr << InlineUSQCDWriteDDPairsPropEnv::name << ": Caught Exception creating source: " << e << std::endl;
       QDP_abort(1);
     }
 
@@ -251,7 +251,7 @@ namespace Chroma
       // Data bind the header info
       read(thePropHeader, "//PropSource", source_info);
 
-      QDPIO::cout << "Source timeslice is " << source_info.t_source << endl;
+      QDPIO::cout << "Source timeslice is " << source_info.t_source << std::endl;
 
       // Get timeslice and decay direction
       t_slice=source_info.t_source;
@@ -278,7 +278,7 @@ namespace Chroma
     pop(file_xml); // usqcdPropFile
 
     /* Echo back for human checking */
-    QDPIO::cout << "File XML is:" << endl;
+    QDPIO::cout << "File XML is:" << std::endl;
     QDPIO::cout << file_xml.str();
 
     /* --------------------------------------------------------------------
@@ -297,7 +297,7 @@ namespace Chroma
     pop(source_xml);
 
     // Display for the user...
-    QDPIO::cout << "Source XML is:" << endl;
+    QDPIO::cout << "Source XML is:" << std::endl;
     QDPIO::cout << source_xml.str();
 
 
@@ -359,7 +359,7 @@ namespace Chroma
 	  LatticeDiracFermionF3 ferm_out(tmpFerm) ;           // Single Precision cast
 
 	  // Write 
-	  QDPIO::cout << "About to write single prec. source record...." << endl;
+	  QDPIO::cout << "About to write single prec. source record...." << std::endl;
 	  write(qio_out, source_xml, ferm_out, lower, upper);
 
 	}
@@ -383,7 +383,7 @@ namespace Chroma
 	  LatticeDiracFermionF3 ferm_out = tmpFerm ;  // Single precision Cast 
     
 	  /* Write */
-	  QDPIO::cout << "About to write single prec. prop component record...." << endl;
+	  QDPIO::cout << "About to write single prec. prop component record...." << std::endl;
 	  write(qio_out, prop_sink_xml, ferm_out);
 
 	}
@@ -391,7 +391,7 @@ namespace Chroma
 	  LatticeDiracFermionD3 ferm_out(tmpFerm);  // Double precision cast
 
 	  /* Write */
-	  QDPIO::cout << "About to write double prec. prop component record...." << endl;
+	  QDPIO::cout << "About to write double prec. prop component record...." << std::endl;
 	  write(qio_out, prop_sink_xml, ferm_out);
 	}
 
@@ -404,8 +404,8 @@ namespace Chroma
     /* And we are done. */
     swatch.stop();
 
-    QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ": total time = " << swatch.getTimeInSeconds() <<" secs" << endl;
-    QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ": total time = " << swatch.getTimeInSeconds() <<" secs" << std::endl;
+    QDPIO::cout << InlineUSQCDWriteDDPairsPropEnv::name << ": ran successfully" << std::endl;
 
 
     pop(xml_out);  // qio_write_named_obj

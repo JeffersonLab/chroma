@@ -75,7 +75,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   r[s] = b;
   r0[s] = b;
   Double r_sq = b_sq;
-  QDPIO::cout << "r0 = " << b_sq << endl;;
+  QDPIO::cout << "r0 = " << b_sq << std::endl;;
 
   flopcount.addFlops(A.nFlops());
   flopcount.addSiteFlops(2*Nc*Ns,s);
@@ -141,7 +141,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     ctmp = innerProduct(r0,v,s);
 
     if( toBool( real(ctmp) == 0 ) && toBool( imag(ctmp) == 0 ) ) {
-      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << endl;
+      QDPIO::cout << "BiCGStab breakdown: <r_0|v> = 0" << std::endl;
       QDP_abort(1);
     }
     
@@ -215,7 +215,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
     updateR = toBool ( rNorm < Delta*maxrr && r0Norm <= maxrr ) || updateX;
 
     if( updateR ) { 
-      // QDPIO::cout << "Iter " << k << ": updating r " << endl;
+      // QDPIO::cout << "Iter " << k << ": updating r " << std::endl;
       rupdates++;
     
       x_dble[s] = x;
@@ -239,7 +239,7 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
       
       if( updateX ) { 
 	xupdates++;
-	//QDPIO::cout << "Iter " << k << ": updating x " << endl;
+	//QDPIO::cout << "Iter " << k << ": updating x " << std::endl;
 	if( ! updateR ) { x_dble[s]=x; } // if updateR then this is done already
 	psi[s] += x_dble; // Add on group accumulated solution in y
 	flopcount.addSiteFlops(2*Nc*Ns,s);
@@ -275,11 +275,11 @@ RelInvBiCGStab_a(const LinearOperator<T>& A,
   }
   swatch.stop();
   if( k >= MaxBiCGStab ) {
-    QDPIO::cerr << "Nonconvergence of reliable BiCGStab. MaxIters = " << MaxBiCGStab << " exceeded" << endl;
+    QDPIO::cerr << "Nonconvergence of reliable BiCGStab. MaxIters = " << MaxBiCGStab << " exceeded" << std::endl;
     QDP_abort(1);
   }
   else { 
-    QDPIO::cout << "reliable_bicgstab: n_count " << ret.n_count << " r-updates: " << rupdates << " xr-updates: " << xupdates  << endl;
+    QDPIO::cout << "reliable_bicgstab: n_count " << ret.n_count << " r-updates: " << rupdates << " xr-updates: " << xupdates  << std::endl;
     flopcount.report("reliable_bicgstab", swatch.getTimeInSeconds());
   }
 

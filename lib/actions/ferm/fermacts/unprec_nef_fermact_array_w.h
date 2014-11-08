@@ -36,8 +36,8 @@ namespace Chroma
 
 
   // Reader/writers
-  void read(XMLReader& xml, const string& path, UnprecNEFFermActArrayParams& param);
-  void write(XMLWriter& xml, const string& path, const UnprecNEFFermActArrayParams& param);
+  void read(XMLReader& xml, const std::string& path, UnprecNEFFermActArrayParams& param);
+  void write(XMLWriter& xml, const std::string& path, const UnprecNEFFermActArrayParams& param);
 
 
   //! Unpreconditioned NEF fermion action

@@ -50,8 +50,8 @@ namespace Chroma
   void write_qqbar(QDPFileWriter& to,
 		   multi2d<DPropagator>& qqbar, 
 		   const SftMom& phases,
-		   string type,
-		   string sink);
+		   std::string type,
+		   std::string sink);
 
 } //namespace Chroma
 

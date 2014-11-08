@@ -47,7 +47,7 @@ namespace Chroma
 
 
     //! Param input
-    void read(XMLReader& xml, const string& path, InlineQQQEnv::Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineQQQEnv::Params::Param_t& input)
     {
       XMLReader paramtop(xml, path);
 
@@ -66,7 +66,7 @@ namespace Chroma
 
       default:
 	/**************************************************************************/
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -78,7 +78,7 @@ namespace Chroma
     }
 
     //! Param output
-    void write(XMLWriter& xml, const string& path, const InlineQQQEnv::Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineQQQEnv::Params::Param_t& input)
     {
       push(xml, path);
 
@@ -95,7 +95,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineQQQEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineQQQEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -105,7 +105,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineQQQEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineQQQEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -139,7 +139,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -181,13 +181,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineQQQEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineQQQEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineQQQEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -196,7 +196,7 @@ namespace Chroma
       push(xml_out,"qqq");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineQQQEnv::name << ": Generalized propagator generation" << endl;
+      QDPIO::cout << InlineQQQEnv::name << ": Generalized propagator generation" << std::endl;
       StopWatch swatch;
 
       // Write out the input
@@ -221,7 +221,7 @@ namespace Chroma
       const int Nprops = 3;
       if (params.named_obj.prop_ids.size() != Nprops)
       {
-	QDPIO::cerr << "Error on input params - expecting 3 buffers" << endl;
+	QDPIO::cerr << "Error on input params - expecting 3 buffers" << std::endl;
 	QDP_abort(1);
       }
 
@@ -238,7 +238,7 @@ namespace Chroma
 
       for(int i=0; i < Nprops; ++i)
       {
-	QDPIO::cout << InlineQQQEnv::name << ": parse id = " << params.named_obj.prop_ids[i] << endl;
+	QDPIO::cout << InlineQQQEnv::name << ": parse id = " << params.named_obj.prop_ids[i] << std::endl;
 	try
 	{
 	  // Snarf the data into a copy
@@ -259,16 +259,16 @@ namespace Chroma
 	catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << InlineQQQEnv::name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-	catch (const string& e) 
+	catch (const std::string& e) 
 	{
 	  QDPIO::cerr << InlineQQQEnv::name << ": error message: " << e 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-	QDPIO::cout << InlineQQQEnv::name << ": object successfully parsed" << endl;
+	QDPIO::cout << InlineQQQEnv::name << ": object successfully parsed" << std::endl;
       }
 
 
@@ -381,9 +381,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineQQQEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineQQQEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineQQQEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

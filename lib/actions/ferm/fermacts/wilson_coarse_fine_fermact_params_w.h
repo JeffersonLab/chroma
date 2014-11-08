@@ -27,10 +27,10 @@ namespace Chroma
 
   // Reader/writers
   /*! \ingroup fermacts */
-  void read(XMLReader& xml, const string& path, WilsonCoarseFineFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, WilsonCoarseFineFermActParams& param);
 
   /*! \ingroup fermacts */
-  void write(XMLWriter& xml, const string& path, const WilsonCoarseFineFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const WilsonCoarseFineFermActParams& param);
 
 }
 

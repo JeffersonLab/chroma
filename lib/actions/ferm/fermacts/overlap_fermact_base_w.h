@@ -59,7 +59,7 @@ namespace Chroma
 
     //! Robert's way: 
     //! Produce a linear operator M^dag.M for this action to be applied
-    //  to a vector of known chirality. Chirality is passed in
+    //  to a std::vector of known chirality. Chirality is passed in
     virtual DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state) const = 0;
 
     virtual DiffLinearOperator<T,P,Q>* lMdagM(Handle< FermState<T,P,Q> > state, 
@@ -86,7 +86,7 @@ namespace Chroma
 
     //! Robert's way: 
     //! Produce a linear operator M^dag.M for this action to be applied
-    //  to a vector of known chirality. Chirality is passed in
+    //  to a std::vector of known chirality. Chirality is passed in
     virtual LinearOperator<T>* lMdagMPrecondition(Handle< FermState<T,P,Q> > state) const = 0;
 
     virtual LinearOperator<T>* lMdagMPrecondition(Handle< FermState<T,P,Q> > state, 

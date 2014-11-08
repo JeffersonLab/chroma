@@ -172,11 +172,11 @@ namespace Chroma
 
       LinAlg::OptEigInfo& EigInfo = TheNamedObjMap::Instance().getData< LinAlg::OptEigInfo >(invParam.eigen_id);
 
-      QDPIO::cout<<"EigInfo.N= "<<EigInfo.N<<endl ;
-      QDPIO::cout<<"EigInfo.lde= "<<EigInfo.lde<<endl ;
-      QDPIO::cout<<"EigInfo.ldh= "<<EigInfo.evals.size()<<endl ;
-      QDPIO::cout<<"EigInfo.ncurEvals= "<<EigInfo.ncurEvals<<endl ;
-      QDPIO::cout<<"EigInfo.restartTol= "<<EigInfo.restartTol<<endl ;
+      QDPIO::cout<<"EigInfo.N= "<<EigInfo.N<<std::endl ;
+      QDPIO::cout<<"EigInfo.lde= "<<EigInfo.lde<<std::endl ;
+      QDPIO::cout<<"EigInfo.ldh= "<<EigInfo.evals.size()<<std::endl ;
+      QDPIO::cout<<"EigInfo.ncurEvals= "<<EigInfo.ncurEvals<<std::endl ;
+      QDPIO::cout<<"EigInfo.restartTol= "<<EigInfo.restartTol<<std::endl ;
 
       Subset s = A.subset() ;
 
@@ -213,7 +213,7 @@ namespace Chroma
       arg.MdagM = MdagM ;
       int esize = invParam.esize*Layout::sitesOnNode()*Nc*Ns ;
 
-      QDPIO::cout<<"OPT_EIGCG_SYSSOLVER= "<<esize<<endl ;
+      QDPIO::cout<<"OPT_EIGCG_SYSSOLVER= "<<esize<<std::endl ;
       //multi1d<Complex_C> ework(esize);
       float resid = (float) invParam.RsdCG.elem().elem().elem().elem();
       float AnormEst = invParam.NormAest.elem().elem().elem().elem();
@@ -246,9 +246,9 @@ namespace Chroma
 
       T tt;
       (*MdagM)(tt,psi,PLUS);
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<endl ;
-      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: True residual after solution : "<<sqrt(norm2(tt-chi,s))<<std::endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of  solution            : "<<sqrt(norm2(psi,s))<<std::endl ;
+      QDPIO::cout<<"OPT_EICG_SYSSOLVER: norm of rhs                  : "<<sqrt(norm2(chi,s))<<std::endl ;
       
 
 

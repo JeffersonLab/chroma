@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: vector_smear.h,v 3.2 2008-11-04 17:26:16 edwards Exp $
 /*! \file
- *  \brief vector smearing of color vector
+ *  \brief std::vector smearing of color std::vector
  */
 
 #ifndef __vector_smear_h__
@@ -12,14 +12,14 @@
 namespace Chroma 
 {
 
-  //! Do a covariant vector smearing of a lattice color vector field
+  //! Do a covariant std::vector smearing of a lattice color std::vector field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear
    *
    * Arguments:
    *
-   *  \param chi      color vector field ( Modify )
+   *  \param chi      color std::vector field ( Modify )
    *  \param vecs     vectors for the smearing ( Read )
    *  \param sigma    parameter for the exponential smearing weight ( Read ) 
    *  \param j_decay  direction of decay ( Read )
@@ -29,7 +29,7 @@ namespace Chroma
 		   const Real& sigma, const int& j_decay);
 
 
-  //! Do a vector smearing of a color matrix
+  //! Do a std::vector smearing of a color matrix
   /*!
    * Arguments:
    *
@@ -44,7 +44,7 @@ namespace Chroma
 		   const Real& sigma, const int& j_decay);
 
 
-  //! Do a t vector smearing of a lattice Fermion field
+  //! Do a t std::vector smearing of a lattice Fermion field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear
@@ -60,7 +60,7 @@ namespace Chroma
 		   const MapObject<int,EVPair<LatticeColorVector> >& vecs,
 		   const Real& sigma, const int& j_decay);
 
-  //! Do a t vector smearing of a lattice Fermion field
+  //! Do a t std::vector smearing of a lattice Fermion field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear
@@ -77,7 +77,7 @@ namespace Chroma
 		   const Real& sigma, const int& j_decay);
 
 
-  //! Do a t vector smearing of a lattice Fermion field
+  //! Do a t std::vector smearing of a lattice Fermion field
   /*! This is a wrapper over the template definition
    *
    * \ingroup smear

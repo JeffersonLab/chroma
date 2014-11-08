@@ -79,7 +79,7 @@ namespace Chroma
 	applyDiag(chi, psi, isign, 0);
       }
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     inline
     void oddOddLinOp(multi1d<LatticeFermion>& chi, 
 		     const multi1d<LatticeFermion>& psi, 
@@ -88,7 +88,7 @@ namespace Chroma
 	applyDiag(chi, psi, isign, 1);
       }
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     void evenOddLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
@@ -96,7 +96,7 @@ namespace Chroma
 	applyOffDiag(chi, psi, isign, 0);
       }
     
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     void oddEvenLinOp(multi1d<LatticeFermion>& chi, 
 		      const multi1d<LatticeFermion>& psi, 
 		      enum PlusMinus isign) const
@@ -104,7 +104,7 @@ namespace Chroma
 	applyOffDiag(chi, psi, isign, 1);
       }
 
-    //! Apply the inverse of the odd-odd block onto a source vector
+    //! Apply the inverse of the odd-odd block onto a source std::vector
     inline
     void evenEvenInvLinOp(multi1d<LatticeFermion>& chi, 
 			  const multi1d<LatticeFermion>& psi, 
@@ -113,7 +113,7 @@ namespace Chroma
 	applyDiagInv(chi, psi, isign, 0);
       }
 
-    //! Apply the inverse of the odd-odd block onto a source vector
+    //! Apply the inverse of the odd-odd block onto a source std::vector
     inline
     void oddOddInvLinOp(multi1d<LatticeFermion>& chi, 
 			const multi1d<LatticeFermion>& psi, 
@@ -123,7 +123,7 @@ namespace Chroma
       }
 
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			    const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			    enum PlusMinus isign) const
@@ -134,7 +134,7 @@ namespace Chroma
 
 
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			  enum PlusMinus isign) const
@@ -143,7 +143,7 @@ namespace Chroma
 	ds_u = zero;
       }
 
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const
@@ -151,7 +151,7 @@ namespace Chroma
 	applyDerivOffDiag(ds_u, chi, psi, isign, 0);
       }
  
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const multi1d<LatticeFermion>& chi, const multi1d<LatticeFermion>& psi, 
 			   enum PlusMinus isign) const

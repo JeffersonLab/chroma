@@ -20,7 +20,7 @@ namespace Chroma
   void EvenOddPrecCloverExtFieldLinOp::create(Handle< FermState<T,P,Q> > fs, 
 					      const CloverFermActParams& param_)
   {
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": enter" << std::endl;
 
     Handle< ExtFieldFermState<T,P,Q> > efs = fs.cast< ExtFieldFermState<T,P,Q> >();
 
@@ -33,10 +33,10 @@ namespace Chroma
 
     D.create(efs->getU1State(), param.anisoParam);
 
-    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << endl;
+    // QDPIO::cout << __PRETTY_FUNCTION__ << ": exit" << std::endl;
   }
 
-  //! Apply the the odd-odd block onto a source vector
+  //! Apply the the odd-odd block onto a source std::vector
   void 
   EvenOddPrecCloverExtFieldLinOp::oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 					      enum PlusMinus isign) const
@@ -45,7 +45,7 @@ namespace Chroma
   }
 
 
-  //! Apply the the even-even block onto a source vector
+  //! Apply the the even-even block onto a source std::vector
   void 
   EvenOddPrecCloverExtFieldLinOp::evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 						enum PlusMinus isign) const
@@ -54,7 +54,7 @@ namespace Chroma
     clov.apply(chi, psi, isign, 0);
   }
 
-  //! Apply the inverse of the even-even block onto a source vector
+  //! Apply the inverse of the even-even block onto a source std::vector
   void 
   EvenOddPrecCloverExtFieldLinOp::evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 						   enum PlusMinus isign) const

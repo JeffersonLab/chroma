@@ -26,7 +26,7 @@ namespace Chroma
   }
 
 
-  // Extract eigenvalues from a map, and arrange them in a different format
+  // Extract eigenvalues from a std::map, and arrange them in a different format
   multi1d<SubsetVectorWeight_t> getEigenValues(const MapObject<int,EVPair<LatticeColorVector> >& eigen_source, int num_vecs)
   {
     multi1d<SubsetVectorWeight_t> evals(num_vecs);
@@ -34,7 +34,7 @@ namespace Chroma
     // Basic sanity check
     if (num_vecs > eigen_source.size())
     {
-      QDPIO::cerr << __func__ << ": requesting more vectors than are in the eigenvector map\n";
+      QDPIO::cerr << __func__ << ": requesting more vectors than are in the eigenstd::vector std::map\n";
       QDP_abort(1);
     }
 

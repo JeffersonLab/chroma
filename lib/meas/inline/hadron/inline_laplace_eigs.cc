@@ -28,7 +28,7 @@ namespace Chroma
   {
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -40,7 +40,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -52,7 +52,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -64,7 +64,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& out)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& out)
     {
       push(xml, path);
 
@@ -79,14 +79,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params& input)
+    void read(XMLReader& xml, const std::string& path, Params& input)
     {
       Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params& input)
+    void write(XMLWriter& xml, const std::string& path, const Params& input)
     {
       push(xml, path);
     
@@ -157,7 +157,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -172,7 +172,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "LaplaceEigs");
 	write(xml_out, "update_no", update_no);
@@ -263,18 +263,18 @@ namespace Chroma
 	TheNamedObjMap::Instance().get(params.named_obj.gauge_id).getRecordXML(gauge_xml);
       }
       catch( std::bad_cast )  {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+      catch (const std::string& e) {
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
       
       push(xml_out, "LaplaceEigs");
       write(xml_out, "update_no", update_no);
       
-      QDPIO::cout << name << ": Use the IRL method to solve for laplace eigenpairs" << endl;
+      QDPIO::cout << name << ": Use the IRL method to solve for laplace eigenpairs" << std::endl;
       
       proginfo(xml_out);    // Print out basic program info
       
@@ -301,7 +301,7 @@ namespace Chroma
 	XMLReader  linktop(xml_l);
 	QDPIO::cout << "Link smearing type = " 
 		    << params.param.link_smear.id
-		    << endl;
+		    << std::endl;
 	
 	Handle< LinkSmearing >
 	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.link_smear.id, 
@@ -309,7 +309,7 @@ namespace Chroma
 	(*linkSmearing)(u_smr);
       }
       catch(const std::string& e){
-	QDPIO::cerr << name << ": Caught Exception link smearing: "<<e<< endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: "<<e<< std::endl;
 	QDP_abort(1);
       }
       
@@ -332,12 +332,12 @@ namespace Chroma
 								       params.named_obj.colorvec_obj.path);
       }
       catch (std::bad_cast) {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) {
+      catch (const std::string& e) {
 	
-	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+	QDPIO::cerr << name << ": error creating prop: " << e << std::endl;
 	QDP_abort(1);
       }
       
@@ -388,17 +388,17 @@ namespace Chroma
       multi1d<DComplex> vector_norms;
       
       
-      QDPIO::cout << "Normalizing starting vector" << endl;
+      QDPIO::cout << "Normalizing starting std::vector" << std::endl;
       
       // This function gives the norms squared
       partitionedInnerProduct(starting_vectors,starting_vectors,vector_norms,phases.getSet());
       // Apply the square root to get the true norm
       // and normalise the starting vectors
       
-      QDPIO::cout << "Nt = " << nt << endl;
+      QDPIO::cout << "Nt = " << nt << std::endl;
       
       for(int t=0; t<nt; ++t) {
-	//QDPIO::cout << "vector_norms[" << t << "] = " << vector_norms[t] << endl; 
+	//QDPIO::cout << "vector_norms[" << t << "] = " << vector_norms[t] << std::endl; 
 	
 	vector_norms[t]  = Complex(sqrt(Real(real(vector_norms[t]))));
 	starting_vectors[phases.getSet()[t]] /= vector_norms[t];
@@ -409,7 +409,7 @@ namespace Chroma
       int kdim = 3 * params.param.num_vecs;
       int j_decay = params.param.decay_dir;
       
-      QDPIO::cout << "Krylov Dim = " << kdim << endl; 
+      QDPIO::cout << "Krylov Dim = " << kdim << std::endl; 
       
       // beta should really be an array of Reals	
       multi1d< multi1d<DComplex> > beta(kdim-1);	
@@ -445,7 +445,7 @@ namespace Chroma
       // After the last iteration compute alpha[kdim-1]
       for(int k=0; k<kdim-1; ++k) {
 	
-	//QDPIO::cout << "k = " << k << endl; 
+	//QDPIO::cout << "k = " << k << std::endl; 
 	
 	
 	//temporary seems to be defined as a single element but is used as both an array and a single element?
@@ -463,12 +463,12 @@ namespace Chroma
 	partitionedInnerProduct(lanczos_vectors[k],temporary,alpha[k],phases.getSet());
 	
 	for(int t=0; t<nt; ++t){
-	  //QDPIO::cout << "alpha[k][" << t << "] = " << alpha[k][t] << endl;
+	  //QDPIO::cout << "alpha[k][" << t << "] = " << alpha[k][t] << std::endl;
 	  temporary[phases.getSet()[t]] -= alpha[k][t]*lanczos_vectors[k];
 	}
 	    
 	    
-	QDPIO::cout << "Reorthogonalizing" << endl;	
+	QDPIO::cout << "Reorthogonalizing" << std::endl;	
 	multi1d<DComplex> alpha_temp(nt);
 	// Reorthogonalise - this may be unnecessary
 	if(k>0){
@@ -493,7 +493,7 @@ namespace Chroma
 	partitionedInnerProduct(temporary,temporary,beta[k],phases.getSet());
 	    
 	for(int t=0; t<nt; ++t) {
-	  //QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << endl;
+	  //QDPIO::cout << "beta[k][" << t << "] = " << beta[k][t] << std::endl;
 	  beta[k][t] = Complex(sqrt(Real(real(beta[k][t]))));
 	  lanczos_vectors[k+1][phases.getSet()[t]] = temporary/beta[k][t];
 	  //if (k < kdim - 1)
@@ -503,14 +503,14 @@ namespace Chroma
 	  e[t][k] = toDouble(Real(real(beta[k][t])));
 	}
 	/*
-	  QDPIO::cout << "Checking orthogonality of vector " << k+1 << endl;
+	  QDPIO::cout << "Checking orthogonality of std::vector " << k+1 << std::endl;
 	  for(int m = 0; m <= k; m++){
 	  multi1d<DComplex> tmp(nt);
 	  partitionedInnerProduct(lanczos_vectors[k+1],lanczos_vectors[m],tmp,phases.getSet());
 	  
 	  
 	  for(int t = 0; t < nt; t++){
-	  QDPIO::cout << "   t = " << t << ": " << tmp[t] << endl;
+	  QDPIO::cout << "   t = " << t << ": " << tmp[t] << std::endl;
 	  }
 	  }
 	*/
@@ -534,12 +534,12 @@ namespace Chroma
       
       
       /*
-	QDPIO::cout << "Testing AL = LT" << endl;
+	QDPIO::cout << "Testing AL = LT" << std::endl;
 	
 	
 	for (int k = 0 ; k < kdim -1 ; ++k)
 	{
-	QDPIO::cout << "Row " << k << endl;
+	QDPIO::cout << "Row " << k << std::endl;
 	
 	LatticeColorVector al = zero;
 	
@@ -575,7 +575,7 @@ namespace Chroma
 	for (int t = 0 ; t < nt ; t++)
 	
 	if (toDouble(Real(real(ldcnt[t]))) > 1e-5)
-	QDPIO::cout << "   dcnt[" << t << "] = " << ldcnt[t] << endl; 
+	QDPIO::cout << "   dcnt[" << t << "] = " << ldcnt[t] << std::endl; 
 	
 	} //k
 	    
@@ -595,7 +595,7 @@ namespace Chroma
       
       for(int t = 0; t < nt; t++) {
 	
-	//QDPIO::cout << "Starting QR factorization t = " << t << endl;
+	//QDPIO::cout << "Starting QR factorization t = " << t << std::endl;
 	fossil.reset();
 	fossil.start();
 	
@@ -603,9 +603,9 @@ namespace Chroma
 	
 	fossil.stop();
 	
-	QDPIO::cout << "LAPACK routine completed: " << fossil.getTimeInSeconds() << " sec" << endl;
+	QDPIO::cout << "LAPACK routine completed: " << fossil.getTimeInSeconds() << " sec" << std::endl;
 	
-	QDPIO::cout << "info = " << info << endl;
+	QDPIO::cout << "info = " << info << std::endl;
 	
 	
 	evecs[t].resize(kdim);
@@ -614,7 +614,7 @@ namespace Chroma
 	for (int v = 0 ; v < kdim ; ++v) {
 	  evals[t][v] = d[t][v]; 
 	  
-	  //QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << endl;
+	  //QDPIO::cout << "Eval[ " << v << "] = " << evals[t][v] << std::endl;
 	  
 	  evecs[t][v].resize(kdim);
 	  
@@ -622,7 +622,7 @@ namespace Chroma
 	    evecs[t][v][n] = z[t][v * (kdim ) + n ];
 	  }
 	  
-	  //Apply matrix to vector
+	  //Apply matrix to std::vector
 	  multi1d<double> Av(kdim );
 	  
 	  double dcnt = 0;
@@ -648,7 +648,7 @@ namespace Chroma
 	      (Av[n] - evals[t][v]*evecs[t][v][n]);
 	  }//n
 	  
-	  //QDPIO::cout << "Vector " << v << " : dcnt = " << dcnt << endl;
+	  //QDPIO::cout << "Vector " << v << " : dcnt = " << dcnt << std::endl;
 	  
 	}//v
 	    
@@ -657,21 +657,21 @@ namespace Chroma
       
       //Get Eigenvectors
 
-      QDPIO::cout << "Obtaining eigenvectors of the laplacian" << endl;
+      QDPIO::cout << "Obtaining eigenvectors of the laplacian" << std::endl;
       for (int k = 0 ; k < params.param.num_vecs ; ++k) {
 	LatticeColorVector vec_k = zero;
 	
 	//LatticeColorVector lambda_v = zero;
 	    
 	for (int t = 0 ; t < nt ; ++t) {
-	  //QDPIO::cout << "t = " << t << endl;
+	  //QDPIO::cout << "t = " << t << std::endl;
 	  
 	  for (int n = 0 ; n < kdim  ; ++n) {
 	    vec_k[phases.getSet()[t] ] += 
 	      Real(evecs[t][kdim - 1 - k][n]) * lanczos_vectors[n];
 	  }
 	  
-	  //QDPIO::cout << "Made evector" << endl;
+	  //QDPIO::cout << "Made evector" << std::endl;
 	  
 	  //lambda_v[phases.getSet()[t] ] += 
 	  //	Real(evals[t][kdim - 3 - k]) * vec_k; 
@@ -683,7 +683,7 @@ namespace Chroma
 	    
 	ev_pairs[k].eigenVector = vec_k;
 	    
-	//Test if this is an eigenvector
+	//Test if this is an eigenstd::vector
 	//	LatticeColorVector avec = zero;
 	
 	/*
@@ -696,13 +696,13 @@ namespace Chroma
 	partitionedInnerProduct( diffs, diffs, dcnt_arr, phases.getSet());  
 	*/
 	
-	//QDPIO::cout << "Testing Lap. eigvec " << k << endl;
+	//QDPIO::cout << "Testing Lap. eigvec " << k << std::endl;
 	/*
 	  for (int t = 0 ; t < nt ; ++t)
 	  {
 	  if (toDouble(Real(real(dcnt_arr[t]))) > 1e-5) 
 	  QDPIO::cout << "dcnt[" << t << "] = " << dcnt_arr[t] 
-	  << endl;
+	  << std::endl;
 	  }
 	*/
 	    
@@ -723,8 +723,8 @@ namespace Chroma
 	  ev_pairs[k].eigenValue.weights[t] = 
 	    Real(evals[t][k]);
 	  
-	  QDPIO::cout << "t = " << t << endl;
-	  QDPIO::cout << "lap_evals[" << k << "] = " << evals[t][k] << endl;
+	  QDPIO::cout << "t = " << t << std::endl;
+	  QDPIO::cout << "lap_evals[" << k << "] = " << evals[t][k] << std::endl;
 	}
 	
 	LatticeColorVector lambda_v2 = zero;
@@ -741,10 +741,10 @@ namespace Chroma
 	
 	partitionedInnerProduct(diffs2, diffs2, dcnt_arr2, phases.getSet());
 	
-	QDPIO::cout << "Testing Laplace Eigenvalue " << k << endl;
+	QDPIO::cout << "Testing Laplace Eigenvalue " << k << std::endl;
 	for(int t = 0; t < nt; t++){
 	  if(toDouble(Real(real(dcnt_arr2[t]))) > 1e-5)
-	    QDPIO::cout << "dcnt[" << k << "] = " << dcnt_arr2[t] << endl;
+	    QDPIO::cout << "dcnt[" << k << "] = " << dcnt_arr2[t] << std::endl;
 	}
 	
       }//k
@@ -759,7 +759,7 @@ namespace Chroma
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec construction = "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;      
+		  << " secs" << std::endl;      
       
       pop(xml_out);  // CreateColorVecs
       
@@ -794,9 +794,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
       
       END_CODE();
     } 

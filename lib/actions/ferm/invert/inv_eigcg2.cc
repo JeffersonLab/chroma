@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: inv_eigcg2.cc,v 1.17 2008-04-10 03:16:44 kostas Exp $
 /*! \file
- *  \brief Conjugate-Gradient algorithm with eigenvector acceleration
+ *  \brief Conjugate-Gradient algorithm with eigenstd::vector acceleration
  */
 
 #include <qdp-lapack.h>
@@ -133,8 +133,8 @@ namespace Chroma
       r_dot_z = norm2(r,A.subset()) ;
 
 #if 1
-      QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << endl;
-      QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_dot_z << endl;
+      QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << std::endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_dot_z << std::endl;
 #endif
       Matrix<DComplex> H(Nmax) ; // square matrix containing the tridiagonal
       Vectors<T> vec(Nmax) ; // contains the vectors we use...
@@ -166,28 +166,28 @@ namespace Chroma
 	  //p[A.subset()] = z + beta*p ; 
 	  p[A.subset()] = r + beta*p ; 
 	}
-	//-------- Eigenvalue eigenvector finding code ------
+	//-------- Eigenvalue eigenstd::vector finding code ------
 	if((Neig>0)&& (H.N == Nmax)) Ap_prev[A.subset()]=Ap ;
 	//---------------------------------------------------
 	A(Ap,p,PLUS) ;
 	
-	//-------- Eigenvalue eigenvector finding code ------
+	//-------- Eigenvalue eigenstd::vector finding code ------
 	if(Neig>0){
 	  if(k>1)
 	    H(H.N-1,H.N-1) = 1/alpha + betaprev/alphaprev;
 	  if(vec.N==Nmax){
-	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
+	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<std::endl ;
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"H"<<k ;
 	      OctavePrintOut(H.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
 	    {
 	      Matrix<DComplex> tmp(Nmax) ; 
 	      SubSpaceMatrix(tmp,A,vec.vec,vec.N);
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"H"<<k<<"ex" ;
 	      OctavePrintOut(tmp.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -200,12 +200,12 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"Hevecs"<<k ;
 	      OctavePrintOut(Hevecs,Nmax,tag.str(),"Hmatrix.m");
 	    }
 	    for(int i(0);i<Nmax;i++)
-	      QDPIO::cout<<" eignvalue: "<<Heval[i]<<endl ;
+	      QDPIO::cout<<" eignvalue: "<<Heval[i]<<std::endl ;
 #endif
 #endif
 	    multi2d<DComplex> Hevecs_old(H.mat) ;
@@ -235,7 +235,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"Htmp"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -248,7 +248,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"HtmpBeforeZUM"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -258,7 +258,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"HtmpAfeterZUM"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -315,7 +315,7 @@ namespace Chroma
 	}
 
 	pAp = innerProductReal(p,Ap,A.subset());
-      	alphaprev = alpha ;// additional line for Eigenvalue eigenvector code
+      	alphaprev = alpha ;// additional line for Eigenvalue eigenstd::vector code
 	alpha = r_dot_z/pAp ;
 	x[A.subset()] += alpha*p ;
 	r[A.subset()] -= alpha*Ap ;
@@ -331,7 +331,7 @@ namespace Chroma
 	}
 #if 1
 	QDPIO::cout << "InvEigCG2: k = " << k  ;
-	QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
+	QDPIO::cout << "  r_dot_z = " << r_dot_z << std::endl;
 #endif
       }//end CG loop
 
@@ -363,7 +363,7 @@ namespace Chroma
       res.n_count = k ;
       res.resid = sqrt(r_dot_z);
       swatch.stop();
-      QDPIO::cout << "InvEigCG2: k = " << k << endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << std::endl;
       flopcount.report("InvEigCG2", swatch.getTimeInSeconds());
       END_CODE();
       return res;
@@ -410,9 +410,9 @@ namespace Chroma
       Double r_norm2 = norm2(r,A.subset()) ;
 
       if(PrintLevel>0)
-	QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << endl;
+	QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << std::endl;
       if(PrintLevel>1)
-	QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = "<<r_norm2<<endl;
+	QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = "<<r_norm2<<std::endl;
       
       Real inorm(Real(1.0/sqrt(r_norm2)));
       bool FindEvals = (Neig>0);
@@ -420,12 +420,12 @@ namespace Chroma
       bool from_restart;
       Matrix<DComplex> H(Nmax) ; // square matrix containing the tridiagonal
       Vectors<T> vec(Nmax) ; // contains the vectors we use...
-      //-------- Eigenvalue eigenvector finding code ------
+      //-------- Eigenvalue eigenstd::vector finding code ------
       vec.AddVectors(evec,A.subset()) ;
-      //QDPIO::cout<<"vec.N="<<vec.N<<endl ;
+      //QDPIO::cout<<"vec.N="<<vec.N<<std::endl ;
       p[A.subset()] = inorm*r ; // this is not needed GramSchmidt will take care of it
       vec.AddOrReplaceVector(p,A.subset());
-      //QDPIO::cout<<"vec.N="<<vec.N<<endl ;
+      //QDPIO::cout<<"vec.N="<<vec.N<<std::endl ;
       normGramSchmidt(vec.vec,vec.N-1,vec.N,A.subset());
       normGramSchmidt(vec.vec,vec.N-1,vec.N,A.subset()); //call twice: need to improve...
       SubSpaceMatrix(H,A,vec.vec,vec.N);
@@ -445,7 +445,7 @@ namespace Chroma
 	**/
 	r_dot_z = innerProductReal(r,r,A.subset());
 	k++ ;
-	betaprev = beta; // additional line for Eigenvalue eigenvector code
+	betaprev = beta; // additional line for Eigenvalue eigenstd::vector code
 	if(k==1){
 	  //p[A.subset()] = z ;	
 	  p[A.subset()] = r ;	
@@ -455,7 +455,7 @@ namespace Chroma
 	  beta = r_dot_z/r_dot_z_old ;
 	  //p[A.subset()] = z + beta*p ; 
 	  p[A.subset()] = r + beta*p ; 
-	  //-------- Eigenvalue eigenvector finding code ------
+	  //-------- Eigenvalue eigenstd::vector finding code ------
 	  // fist block
 	  if(FindEvals){
 	    if(!((from_restart)&&(H.N == tr+1))){
@@ -473,7 +473,7 @@ namespace Chroma
 	A(Ap,p,PLUS) ;
 	pAp = innerProductReal(p,Ap,A.subset());
       
-	alphaprev = alpha ;// additional line for Eigenvalue eigenvector code
+	alphaprev = alpha ;// additional line for Eigenvalue eigenstd::vector code
 	alpha = r_dot_z/pAp ;
 	x[A.subset()] += alpha*p ;
 	r[A.subset()] -= alpha*Ap ;
@@ -481,13 +481,13 @@ namespace Chroma
 	r_dot_z_old = r_dot_z ;
 
       
-	//-------- Eigenvalue eigenvector finding code ------
+	//-------- Eigenvalue eigenstd::vector finding code ------
 	// second block
 	if(FindEvals){
 	  if (vec.N==Nmax){//we already have stored the maximum number of vectors
 	    // The magic begins here....
 	    if(PrintLevel>0)
-	      QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
+	      QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<std::endl ;
 	    H(Nmax-1,Nmax-1) = 1/alpha + beta/alphaprev;
 
 	    multi2d<DComplex> Hevecs(H.mat) ;
@@ -540,7 +540,7 @@ namespace Chroma
 	    A(Ar,r,PLUS) ;
 	    Ar /= sqrt(r_norm2); 
 	    // this has the oposite convension than the subspace matrix
-	    // this is the reason the vector reconstruction in here does not
+	    // this is the reason the std::vector reconstruction in here does not
 	    // need the conj(H) while in the Rayleigh Ritz refinement 
 	    // it does need it. 
 	    // In here the only complex matrix elements are these computined
@@ -561,10 +561,10 @@ namespace Chroma
 	    vec.N = 2*Neig ; // only keep the lowest Neig. Is this correct???
 
 	  }
-	  // Here we add a vector in the list
+	  // Here we add a std::vector in the list
 	  Double inorm = 1.0/sqrt(r_norm2) ;
 	  vec.NormalizeAndAddVector(r,inorm,A.subset()) ;
-	  // Shouldn't be the z vector when a preconditioner is used?
+	  // Shouldn't be the z std::vector when a preconditioner is used?
 	}
 	//---------------------------------------------------
 
@@ -577,7 +577,7 @@ namespace Chroma
 	}
 	if(PrintLevel>1){
 	  QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_norm2 ;
-	  QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
+	  QDPIO::cout << "  r_dot_z = " << r_dot_z << std::endl;
 	}
       }
       res.n_count = k ;
@@ -586,7 +586,7 @@ namespace Chroma
       {
 	// Evec Code ------ Before we return --------
 	// vs is the current number of vectors stored
-	// Neig is the number of eigenvector we want to compute
+	// Neig is the number of eigenstd::vector we want to compute
 	normGramSchmidt(vec.vec,0,2*Neig,A.subset());
 	normGramSchmidt(vec.vec,0,2*Neig,A.subset());
 	Matrix<DComplex> Htmp(2*Neig) ;
@@ -604,7 +604,7 @@ namespace Chroma
 	    evec[i][A.subset()] += Htmp(i,j)*vec[j] ;
 	}
       
-	// I will do the checking of eigenvector quality outside this routine
+	// I will do the checking of eigenstd::vector quality outside this routine
 	// -------------------------------------------
 	if(PrintLevel>3){
 	  // CHECK IF vec are eigenvectors...                               
@@ -614,10 +614,10 @@ namespace Chroma
 	    DComplex rq = innerProduct(evec[i],Av,A.subset());
 	    Av[A.subset()] -= eval[i]*evec[i] ;
 	    Double tt = sqrt(norm2(Av,A.subset()));
-	    QDPIO::cout<<"FINAL: error eigenvector["<<i<<"] = "<<tt<<" " ;
+	    QDPIO::cout<<"FINAL: error eigenstd::vector["<<i<<"] = "<<tt<<" " ;
 	    tt =  sqrt(norm2(evec[i],A.subset()));
 	    QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-	    QDPIO::cout<<"--- norm = "<<tt<<endl  ;
+	    QDPIO::cout<<"--- norm = "<<tt<<std::endl  ;
 	  }	
 	}
       }
@@ -625,7 +625,7 @@ namespace Chroma
       res.n_count = k;
       res.resid   = sqrt(r_norm2);
       swatch.stop();
-      QDPIO::cout << "InvEigCG2: k = " << k << endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << std::endl;
       flopcount.report("InvEigCG2", swatch.getTimeInSeconds());
       END_CODE();
       return res;
@@ -672,8 +672,8 @@ namespace Chroma
       Double r_norm2 = norm2(r,A.subset()) ;
 
 #if 1
-      QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << endl;
-      QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_norm2 << endl;
+      QDPIO::cout << "InvEigCG2: Nevecs(input) = " << evec.size() << std::endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_norm2 << std::endl;
 #endif
       Real inorm(Real(1.0/sqrt(r_norm2)));
       bool FindEvals = (Neig>0);
@@ -681,12 +681,12 @@ namespace Chroma
       bool from_restart;
       Matrix<DComplex> H(Nmax) ; // square matrix containing the tridiagonal
       Vectors<T> vec(Nmax) ; // contains the vectors we use...
-      //-------- Eigenvalue eigenvector finding code ------
+      //-------- Eigenvalue eigenstd::vector finding code ------
       vec.AddVectors(evec,A.subset()) ;
-      //QDPIO::cout<<"vec.N="<<vec.N<<endl ;
+      //QDPIO::cout<<"vec.N="<<vec.N<<std::endl ;
       p[A.subset()] = inorm*r ; // this is not needed GramSchmidt will take care of it
       vec.AddOrReplaceVector(p,A.subset());
-      //QDPIO::cout<<"vec.N="<<vec.N<<endl ;
+      //QDPIO::cout<<"vec.N="<<vec.N<<std::endl ;
       normGramSchmidt(vec.vec,vec.N-1,vec.N,A.subset());
       normGramSchmidt(vec.vec,vec.N-1,vec.N,A.subset()); //call twice: need to improve...
       SubSpaceMatrix(H,A,vec.vec,vec.N);
@@ -705,7 +705,7 @@ namespace Chroma
 	/**/
 	r_dot_z = innerProductReal(r,z,A.subset());
 	k++ ;
-	betaprev = beta; // additional line for Eigenvalue eigenvector code
+	betaprev = beta; // additional line for Eigenvalue eigenstd::vector code
 	if(k==1){
 	  p[A.subset()] = z ;	
 	  H.N++ ;
@@ -713,7 +713,7 @@ namespace Chroma
 	else{
 	  beta = r_dot_z/r_dot_z_old ;
 	  p[A.subset()] = z + beta*p ; 
-	  //-------- Eigenvalue eigenvector finding code ------
+	  //-------- Eigenvalue eigenstd::vector finding code ------
 	  // fist block
 	  if(FindEvals){
 	    if(!((from_restart)&&(H.N == tr+1))){
@@ -731,7 +731,7 @@ namespace Chroma
 	A(Ap,p,PLUS) ;
 	pAp = innerProductReal(p,Ap,A.subset());
       
-	alphaprev = alpha ;// additional line for Eigenvalue eigenvector code
+	alphaprev = alpha ;// additional line for Eigenvalue eigenstd::vector code
 	alpha = r_dot_z/pAp ;
 	x[A.subset()] += alpha*p ;
 	r[A.subset()] -= alpha*Ap ;
@@ -739,25 +739,25 @@ namespace Chroma
 	r_dot_z_old = r_dot_z ;
 
       
-	//-------- Eigenvalue eigenvector finding code ------
+	//-------- Eigenvalue eigenstd::vector finding code ------
 	// second block
 	if(FindEvals){
 	  if (vec.N==Nmax){//we already have stored the maximum number of vectors
 	    // The magic begins here....
-	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<endl ;
+	    QDPIO::cout<<"MAGIC BEGINS: H.N ="<<H.N<<std::endl ;
 	    H(Nmax-1,Nmax-1) = 1/alpha + beta/alphaprev;
 
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"H"<<k ;
 	      OctavePrintOut(H.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
 	    {
 	      Matrix<DComplex> tmp(Nmax) ; 
 	      SubSpaceMatrix(tmp,A,vec.vec,vec.N);
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"H"<<k<<"ex" ;
 	      OctavePrintOut(tmp.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -786,11 +786,11 @@ namespace Chroma
 		DComplex rq = innerProduct(tt_vec[i],Av,A.subset());
 		Av[A.subset()] -= Heval[i]*tt_vec[i] ;
 		Double tt = sqrt(norm2(Av,A.subset()));
-		QDPIO::cout<<"1 error eigenvector["<<i<<"] = "<<tt<<" " ;
+		QDPIO::cout<<"1 error eigenstd::vector["<<i<<"] = "<<tt<<" " ;
 		tt =  sqrt(norm2(tt_vec[i],A.subset()));
 		QDPIO::cout<<" --- eval = "<<Heval[i]<<" ";
 		QDPIO::cout<<" --- rq = "<<real(rq)<<" ";
-		QDPIO::cout<<"--- norm = "<<tt<<endl  ;
+		QDPIO::cout<<"--- norm = "<<tt<<std::endl  ;
 	      }
 	    }
 #endif
@@ -801,7 +801,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"Hevecs_old"<<k ;
 	      OctavePrintOut(Hevecs_old,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -816,7 +816,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"Hevecs"<<k ;
 	      OctavePrintOut(Hevecs,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -837,7 +837,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"Htmp"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -850,7 +850,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"evecstmp"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -860,7 +860,7 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"Yevecstmp"<<k ;
 	      OctavePrintOut(Htmp,Nmax,tag.str(),"Hmatrix.m");
 	    }
@@ -884,10 +884,10 @@ namespace Chroma
 		DComplex rq = innerProduct(vec[i],Av,A.subset());
 		Av[A.subset()] -= Heval[i]*vec[i] ;
 		Double tt = sqrt(norm2(Av,A.subset()));
-		QDPIO::cout<<"error eigenvector["<<i<<"] = "<<tt<<" " ;
+		QDPIO::cout<<"error eigenstd::vector["<<i<<"] = "<<tt<<" " ;
 		tt =  sqrt(norm2(vec[i],A.subset()));
 		QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-		QDPIO::cout<<"--- norm = "<<tt<<endl  ;
+		QDPIO::cout<<"--- norm = "<<tt<<std::endl  ;
 	      }
 
 	    }
@@ -901,7 +901,7 @@ namespace Chroma
 	    A(Ar,r,PLUS) ;
 	    Ar /= sqrt(r_norm2); 
 	    // this has the oposite convension than the subspace matrix
-	    // this is the reason the vector reconstruction in here does not
+	    // this is the reason the std::vector reconstruction in here does not
 	    // need the conj(H) while in the Rayleigh Ritz refinement 
 	    // it does need it. 
 	    // In here the only complex matrix elements are these computined
@@ -923,17 +923,17 @@ namespace Chroma
 #ifdef DEBUG
 #ifndef QDP_IS_QDPJIT
 	    {
-	      stringstream tag ;
+	      std::stringstream tag ;
 	      tag<<"finalH"<<k ;
 	      OctavePrintOut(H.mat,Nmax,tag.str(),"Hmatrix.m");
 	    }
 #endif
 #endif
 	  }
-	  // Here we add a vector in the list
+	  // Here we add a std::vector in the list
 	  Double inorm = 1.0/sqrt(r_norm2) ;
 	  vec.NormalizeAndAddVector(r,inorm,A.subset()) ;
-	  // Shouldn't be the z vector when a preconditioner is used?
+	  // Shouldn't be the z std::vector when a preconditioner is used?
 	}
 	//---------------------------------------------------
 
@@ -946,7 +946,7 @@ namespace Chroma
 	}
 #if 1
 	QDPIO::cout << "InvEigCG2: k = " << k << "  res^2 = " << r_norm2 ;
-	QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
+	QDPIO::cout << "  r_dot_z = " << r_dot_z << std::endl;
 #endif
       }
       res.n_count = k ;
@@ -955,7 +955,7 @@ namespace Chroma
       {
 	// Evec Code ------ Before we return --------
 	// vs is the current number of vectors stored
-	// Neig is the number of eigenvector we want to compute
+	// Neig is the number of eigenstd::vector we want to compute
 	normGramSchmidt(vec.vec,0,2*Neig,A.subset());
 	normGramSchmidt(vec.vec,0,2*Neig,A.subset());
 	Matrix<DComplex> Htmp(2*Neig) ;
@@ -973,7 +973,7 @@ namespace Chroma
 	    evec[i][A.subset()] += Htmp(i,j)*vec[j] ;
 	}
       
-	// I will do the checking of eigenvector quality outside this routine
+	// I will do the checking of eigenstd::vector quality outside this routine
 	// -------------------------------------------
 #ifdef DEBUG_FINAL
 	// CHECK IF vec are eigenvectors...                                   
@@ -985,10 +985,10 @@ namespace Chroma
 	    DComplex rq = innerProduct(evec[i],Av,A.subset());
 	    Av[A.subset()] -= eval[i]*evec[i] ;
 	    Double tt = sqrt(norm2(Av,A.subset()));
-	    QDPIO::cout<<"FINAL: error eigenvector["<<i<<"] = "<<tt<<" " ;
+	    QDPIO::cout<<"FINAL: error eigenstd::vector["<<i<<"] = "<<tt<<" " ;
 	    tt =  sqrt(norm2(evec[i],A.subset()));
 	    QDPIO::cout<<"--- rq ="<<real(rq)<<" ";
-	    QDPIO::cout<<"--- norm = "<<tt<<endl  ;
+	    QDPIO::cout<<"--- norm = "<<tt<<std::endl  ;
 	  }
 	
 	}
@@ -998,7 +998,7 @@ namespace Chroma
       res.n_count = k;
       res.resid   = sqrt(r_norm2);
       swatch.stop();
-      QDPIO::cout << "InvEigCG2: k = " << k << endl;
+      QDPIO::cout << "InvEigCG2: k = " << k << std::endl;
       flopcount.report("InvEigCG2", swatch.getTimeInSeconds());
       END_CODE();
       return res;
@@ -1047,7 +1047,7 @@ namespace Chroma
       Double r_norm2 = norm2(r,A.subset()) ;
 
 #if 1
-      QDPIO::cout << "vecPrecondCG: k = " << k << "  res^2 = " << r_norm2 << endl;
+      QDPIO::cout << "vecPrecondCG: k = " << k << "  res^2 = " << r_norm2 << std::endl;
 #endif
 
       // Algorithm from page 529 of Golub and Van Loan
@@ -1057,7 +1057,7 @@ namespace Chroma
 	/**/
 	for(int i(startV);i<endV;i++){
 	  DComplex d = innerProduct(evec[i],r,A.subset()) ;
-	  //QDPIO::cout<<"vecPrecondCG: "<< d<<" "<<(1.0/eval[i]-1.0)<<endl;
+	  //QDPIO::cout<<"vecPrecondCG: "<< d<<" "<<(1.0/eval[i]-1.0)<<std::endl;
 	  z[A.subset()] += (1.0/eval[i]-1.0)*d*evec[i];
 	}
 	/**/
@@ -1088,14 +1088,14 @@ namespace Chroma
 	}
 #if 1
 	QDPIO::cout << "vecPrecondCG: k = " << k << "  res^2 = " << r_norm2 ;
-	QDPIO::cout << "  r_dot_z = " << r_dot_z << endl;
+	QDPIO::cout << "  r_dot_z = " << r_dot_z << std::endl;
 #endif
       }
     
       res.n_count = k ;
       res.resid   = sqrt(r_norm2); 
       swatch.stop();
-      QDPIO::cout << "vPreconfCG: k = " << k << endl;
+      QDPIO::cout << "vPreconfCG: k = " << k << std::endl;
       flopcount.report("vPrecondCG", swatch.getTimeInSeconds());
       END_CODE();
       return res ;
@@ -1136,7 +1136,7 @@ namespace Chroma
       for(int i(0);i<N;i++){
 	DComplex d = innerProduct(evec[i],r,A.subset());
 	x[A.subset()] += (d/eval[i])*evec[i];
-	//QDPIO::cout<<"InitCG: "<<d<<" "<<eval[i]<<endl ;
+	//QDPIO::cout<<"InitCG: "<<d<<" "<<eval[i]<<std::endl ;
 
       }
    
@@ -1144,7 +1144,7 @@ namespace Chroma
       /**
       QDPIO::cout << "InitGuess:  time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
       **/
       n_count = 1 ;
     }

@@ -53,7 +53,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineUSQCDReadDDPairsPropParams& p)
+  void write(XMLWriter& xml, const std::string& path, const InlineUSQCDReadDDPairsPropParams& p)
   {
     push(xml, path);
     write(xml, "Frequency", p.frequency);
@@ -94,12 +94,12 @@ namespace Chroma
       if ( paramtop.count("Param/PropXML") == 1 ) { 
 
 	XMLReader prop_header(paramtop, "Param/PropXML");
-	ostringstream dummy;
+	std::ostringstream dummy;
 	prop_header.printCurrentContext(dummy);
 	prop_xml = dummy.str();
       }
       else { 
-	QDPIO::cout << "NO source XML in Parameter file. Will look in Prop Info" << endl;
+	QDPIO::cout << "NO source XML in Parameter file. Will look in Prop Info" << std::endl;
 	prop_xml = "";
       }
 
@@ -116,7 +116,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -148,12 +148,12 @@ namespace Chroma
     push(xml_out, "USQCDReadDDPairsProp");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ":" << endl;
+    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ":" << std::endl;
     StopWatch swatch;
     swatch.reset();
     swatch.start();
 
-    QDPIO::cout << "Attempt to read object name = " << params.input_file_name << endl;
+    QDPIO::cout << "Attempt to read object name = " << params.input_file_name << std::endl;
 
    
 
@@ -164,7 +164,7 @@ namespace Chroma
       TheNamedObjMap::Instance().create<LatticePropagator>(params.prop_id);
     }
     catch(...) { 
-      QDPIO::cerr << "Failed to create the source and prop" <<endl;
+      QDPIO::cerr << "Failed to create the source and prop" <<std::endl;
       QDP_abort(1);
     }
 
@@ -200,8 +200,8 @@ namespace Chroma
       if( prop_info_xml.count("./Propagator") != 0 ) { 
 
 	// It's there
-	QDPIO::cout << "Found header in Prop File <info> record" << endl;
-	QDPIO::cout << "Attempting to bind" << endl;
+	QDPIO::cout << "Found header in Prop File <info> record" << std::endl;
+	QDPIO::cout << "Attempting to bind" << std::endl;
 
 	// Try to bind it
 	read(prop_info_xml, "Propagator", prop_h_info);
@@ -214,35 +214,35 @@ namespace Chroma
 	// Tags...
 
 	// Make a reader out of the prop_xml;
-	istringstream is(params.prop_xml);
+	std::istringstream is(params.prop_xml);
 	XMLReader source_top(is);
       	
-	QDPIO::cout << "Looking for <Propagator> tag in the user supplied XML" << endl;
+	QDPIO::cout << "Looking for <Propagator> tag in the user supplied XML" << std::endl;
 	// Check if the tag is there
 	if( source_top.count("/Propagator") == 0 ) { 
-	  QDPIO::cout << "<Propagator> tag not found!" << endl;
+	  QDPIO::cout << "<Propagator> tag not found!" << std::endl;
 	  QDP_abort(1);
 	}
 
 	// Yes, try to bind it.
-	QDPIO::cout << "Attempting to bind" << endl;
+	QDPIO::cout << "Attempting to bind" << std::endl;
 	read(source_top, "/Propagator", prop_h_info);
 	
       }
 
       // Make a source header. The info is there in the propagato
-      QDPIO::cout << "<Propagator> header XML successfully bound" << endl;
+      QDPIO::cout << "<Propagator> header XML successfully bound" << std::endl;
       make_source_header.source_header = prop_h_info.source_header;
       make_source_header.gauge_header = prop_h_info.gauge_header;
     }
     catch(const std::string& e) { 
       // We've exceptioned so the XML is neither in <info> tag or in the input  params. Barf with message
-      QDPIO::cout << "Caught exception: " << e << endl;
+      QDPIO::cout << "Caught exception: " << e << std::endl;
 
       QDP_abort(1);
     }
     catch(...) { 
-      QDPIO::cout << "Caught generic exception. Most likely I failed to open a reader on th string you provided for  <PropXML>" << endl;
+      QDPIO::cout << "Caught generic exception. Most likely I failed to open a reader on th std::string you provided for  <PropXML>" << std::endl;
 
       QDP_abort(1);
     }
@@ -283,7 +283,7 @@ namespace Chroma
 	    // 
 	    read(rec_prop_xml, "/usqcdPropInfo/spin", spin);
 	    read(rec_prop_xml, "/usqcdPropInfo/color", col);
-	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
+	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << std::endl;
 	    
 	    // If you find it, it is a prop and we can shove it off 
 	  }
@@ -293,19 +293,19 @@ namespace Chroma
 	    //
 	    read(rec_prop_xml, "/usqcdInfo/spin", spin);
 	    read(rec_prop_xml, "/usqcdInfo/color", col);
-	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << endl;
+	    QDPIO::cout << "Record is sink record with spin=" << spin << " color = "<< col << std::endl;
 	  }
 	  else {
 	    // As yet unforseen cases
-	    QDPIO::cout << "Found neither usqcdInfo nor usqcdPropInfo tag in the propagator record XML" << endl;
-	    QDPIO::cout << "Aborting" << endl;
+	    QDPIO::cout << "Found neither usqcdInfo nor usqcdPropInfo tag in the propagator record XML" << std::endl;
+	    QDPIO::cout << "Aborting" << std::endl;
 	    QDP_abort(1);
 	  }
 	}
 	catch(const std::string& e) { 
 	  // We didn't find it so neither a source nor a prop
 	  // and we just quietly barf
-	  QDPIO::cout << "Caught exception reading XML" << e << endl;
+	  QDPIO::cout << "Caught exception reading XML" << e << std::endl;
 	  QDP_abort(1);
 	  
 	}
@@ -361,8 +361,8 @@ namespace Chroma
 
 
     swatch.stop();
-    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": total time = " << swatch.getTimeInSeconds() << " secs"<< endl;
-    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": total time = " << swatch.getTimeInSeconds() << " secs"<< std::endl;
+    QDPIO::cout << InlineUSQCDReadDDPairsPropEnv::name << ": ran successfully" << std::endl;
 
     pop(xml_out);  // qio_read_named_obj
 

@@ -24,7 +24,7 @@ namespace Chroma
 	read(paramtop, "./TuningConstant", tuning_constant);
       }
       catch(const std::string& e) {
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
       

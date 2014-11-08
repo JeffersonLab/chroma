@@ -122,28 +122,28 @@ namespace Chroma
     //! Only defined on the odd lattice
     const Subset& subset() const {return rb[1];}   // not correct, need space-rb
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     /*! This does not need to be optimized */
     virtual void evenEvenTimeLinOp(T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
   
-    //! Apply the inverse of the even-even block onto a source vector
+    //! Apply the inverse of the even-even block onto a source std::vector
     virtual void evenEvenTimeInvLinOp(T& chi, const T& psi, 
 				      enum PlusMinus isign) const = 0;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void evenOddSpaceLinOp(T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void oddEvenSpaceLinOp(T& chi, const T& psi, 
 				   enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void oddOddTimeLinOp(T& chi, const T& psi, 
 				 enum PlusMinus isign) const = 0;
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     virtual void operator() (T& chi, const T& psi, 
 			     enum PlusMinus isign) const
     {
@@ -170,12 +170,12 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "unknown sign" << endl;
+	QDPIO::cerr << "unknown sign" << std::endl;
 	QDP_abort(1);
       }
     }
 
-    //! Apply the UNPRECONDITIONED operator onto a source vector
+    //! Apply the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void unprecLinOp(T& chi, const T& psi, 
 			     enum PlusMinus isign) const
@@ -192,28 +192,28 @@ namespace Chroma
       chi[rb[1]] = tmp1 + tmp2;
     }
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     virtual void derivEvenEvenTimeLinOp(P& ds_u, const T& chi, const T& psi, 
 					enum PlusMinus isign) const = 0;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     virtual void derivEvenOddSpaceLinOp(P& ds_u, const T& chi, const T& psi, 
 					enum PlusMinus isign) const = 0;
  
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     virtual void derivOddEvenSpaceLinOp(P& ds_u, const T& chi, const T& psi, 
 					enum PlusMinus isign) const = 0;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     virtual void derivOddOddTimeLinOp(P& ds_u, const T& chi, const T& psi, 
 				      enum PlusMinus isign) const = 0;
 
-    //! Apply the derivative of the operator onto a source vector
+    //! Apply the derivative of the operator onto a source std::vector
     /*! User should make sure deriv routines do a resize  */
     virtual void deriv(P& ds_u, const T& chi, const T& psi, 
 		       enum PlusMinus isign) const = 0;
 
-    //! Apply the derivative of the UNPRECONDITIONED operator onto a source vector
+    //! Apply the derivative of the UNPRECONDITIONED operator onto a source std::vector
     /*! Mainly intended for debugging */
     virtual void derivUnprecLinOp(P& ds_u, const T& chi, const T& psi, 
 				  enum PlusMinus isign) const

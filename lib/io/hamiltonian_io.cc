@@ -18,14 +18,14 @@ namespace Chroma {
      read(paramtop, "./Monomials", monomial_array);
    }
    catch( const std::string& e ) { 
-     QDPIO::cerr << "Error Reading Monomials " << e << endl;
+     QDPIO::cerr << "Error Reading Monomials " << e << std::endl;
      QDP_abort(1);
    }
 
-   QDPIO::cout << "Read " << monomial_array.size() << " monomials" << endl;
+   QDPIO::cout << "Read " << monomial_array.size() << " monomials" << std::endl;
    ExactLatColMatHamiltonian* tmp = new ExactLatColMatHamiltonian( monomial_array );
    if( tmp == 0 ) { 
-     QDPIO::cerr << "Failed to create Hamiltonian " << endl;
+     QDPIO::cerr << "Failed to create Hamiltonian " << std::endl;
      QDP_abort(1);
    }
 

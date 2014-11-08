@@ -48,14 +48,14 @@ namespace Chroma
     // Sanity checks
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "GrapheneLinOp: error: fbc is null" << endl;
+      QDPIO::cerr << "GrapheneLinOp: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
     // Insist on this for graphene
     if (QDP::Nd != 4 || QDP::Ns != 4)
     {
-      QDPIO::cerr << "GrapheneLinOp: requires Nd=4 and Ns=4" << endl;
+      QDPIO::cerr << "GrapheneLinOp: requires Nd=4 and Ns=4" << std::endl;
       QDP_abort(1);
      
     }
@@ -68,8 +68,8 @@ namespace Chroma
     // this all could stand some more thought, so disable it here.
     if (anisoParam.anisoP) 
     {
-      QDPIO::cerr << "UnprecGraphene: not fully supporting anisotropy at this moment" << endl;
-      QDPIO::cerr << "UnprecGraphene: only this one check is stopping it from functioning; otherwise, the code is in place." << endl;
+      QDPIO::cerr << "UnprecGraphene: not fully supporting anisotropy at this moment" << std::endl;
+      QDPIO::cerr << "UnprecGraphene: only this one check is stopping it from functioning; otherwise, the code is in place." << std::endl;
       QDP_abort(1);
     }
 
@@ -202,10 +202,10 @@ namespace Chroma
 
   //! Derivative of unpreconditioned Graphene dM/dU
   /*!
-   * \param chi     left vector on cb                           (Read)
-   * \param psi     right vector on 1-cb                        (Read)
+   * \param chi     left std::vector on cb                           (Read)
+   * \param psi     right std::vector on 1-cb                        (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb	    Checkerboard of chi vector                  (Read)
+   * \param cb	    Checkerboard of chi std::vector                  (Read)
    *
    * \return Computes   \f$\chi^\dag * \dot(D} * \psi\f$
    */

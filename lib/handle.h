@@ -21,7 +21,6 @@
 #include <iostream>
 
 using namespace QDP;
-using namespace std;
 
 namespace Chroma
 {
@@ -65,8 +64,8 @@ namespace Chroma
 	Handle<Q> q;
 	q.ptr = dynamic_cast<Q*>(ptr);
 	if( q.ptr == 0x0 ) { 
-	  QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<endl;
-	  QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << endl;
+	  QDPIO::cerr << "Dynamic cast failed in Handle::cast()" <<std::endl;
+	  QDPIO::cerr << "You are trying to cast to a class you cannot cast to" << std::endl;
 	  QDP_abort(1);
 	}
 	delete q.count;

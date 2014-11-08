@@ -20,7 +20,7 @@ namespace Chroma
   /*! @ingroup gaugeacts */
   namespace AnisoSymSpatialGaugeActEnv 
   {
-    extern const string name;
+    extern const std::string name;
     bool registerAll();
   }
 
@@ -64,7 +64,7 @@ namespace Chroma
 		const Handle< GaugeState<P,Q> >& state,
 		int mu, int cb) const
     {
-      QDPIO::cerr << "This function is not implemented" << endl;
+      QDPIO::cerr << "This function is not implemented" << std::endl;
       QDP_abort(1);
       
     }

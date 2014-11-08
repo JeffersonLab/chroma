@@ -59,7 +59,7 @@ namespace Chroma
 	r[s] -= tmp;
 	Double norm_r = sqrt(norm2(r,s));
 	Double norm_chi = sqrt(norm2(chi,s));
-	QDPIO::cout << "MRE Predictor: before prediction || r || / || b || =" << norm_r/norm_chi << endl;
+	QDPIO::cout << "MRE Predictor: before prediction || r || / || b || =" << norm_r/norm_chi << std::endl;
       }
 #endif
       
@@ -75,17 +75,17 @@ namespace Chroma
 	// Zero out the non subsetted part
 	v[i] = zero;
 	
-	// Grab the relevant vector from the chronobuf
+	// Grab the relevant std::vector from the chronobuf
 	T tmpvec;
 	chrono_buf->get(i, tmpvec);
 	
 	if( i == 0 ) { 
-	  // First vector we just take
+	  // First std::vector we just take
 	  v[i][s] = tmpvec;
 	}
 	else { 
-	  // i-th vector. Orthogonalise against i-1 previous
-	  // vector, but i is an index running from 0. So I need
+	  // i-th std::vector. Orthogonalise against i-1 previous
+	  // std::vector, but i is an index running from 0. So I need
 	  // to pass i+1-1=i as the number of vectors to orthog against
 	  //
 	  // This is a very dumb GramSchmidt process and possibly
@@ -94,7 +94,7 @@ namespace Chroma
 	  GramSchm(tmpvec, v, i, s);
 	  v[i][s] = tmpvec;
 	}
-	// QDPIO::cout << "Norm v[i] = " << norm2(v[i],s) << endl;
+	// QDPIO::cout << "Norm v[i] = " << norm2(v[i],s) << std::endl;
 	// Normalise v[i]
 	Double norm = sqrt(norm2(v[i], s));
 	v[i][s] /= norm;
@@ -143,9 +143,9 @@ namespace Chroma
       }
       
 #if 0
-      QDPIO::cout << "Constraint Eq Solution Check" << endl;
+      QDPIO::cout << "Constraint Eq Solution Check" << std::endl;
       for(int i=0; i < Nvec; i++) { 
-	QDPIO::cout << "   r[ " << i << "] = " << r[i] << endl;
+	QDPIO::cout << "   r[ " << i << "] = " << r[i] << std::endl;
       }
 #endif
       
@@ -165,7 +165,7 @@ namespace Chroma
 	r[s] -= tmp;
 	Double norm_r = sqrt(norm2(r,s));
 	Double norm_chi = sqrt(norm2(chi,s));
-	QDPIO::cout << "MRE Predictor: after prediction || r || / || b || =" << norm_r/norm_chi << endl;
+	QDPIO::cout << "MRE Predictor: after prediction || r || / || b || =" << norm_r/norm_chi << std::endl;
       }
 #endif
       
@@ -196,19 +196,19 @@ namespace Chroma
       switch(Nvec) { 
       case 0:
 	{
-	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << endl;
+	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << std::endl;
 	  X= zero;
 	}
 	break;
       case 1:
 	{
-	  QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
+	  QDPIO::cout << "MRE Predictor: Only 1 std::vector stored. Giving you last solution " << std::endl;
 	  chrono_bufX->get(0,X);
 	}
 	break;
       default:
 	{
-	  QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << endl;
+	  QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << std::endl;
 	  
 	  // Expect M is either  MdagM if we use chi
 	  // or                   M    if we minimize against Y
@@ -218,7 +218,7 @@ namespace Chroma
       }
       
       swatch.stop();
-      QDPIO::cout << "MRE_PREDICT_X_TIME = " << swatch.getTimeInSeconds() << " s" << endl;
+      QDPIO::cout << "MRE_PREDICT_X_TIME = " << swatch.getTimeInSeconds() << " s" << std::endl;
       
       END_CODE();
     }
@@ -236,19 +236,19 @@ namespace Chroma
       switch(Nvec) { 
       case 0:
 	{
-	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << endl;
+	  QDPIO::cout << "MRE Predictor: Zero vectors stored. Giving you zero guess" << std::endl;
 	  Y = zero;
 	}
 	break;
       case 1:
 	{
-	  QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
+	  QDPIO::cout << "MRE Predictor: Only 1 std::vector stored. Giving you last solution " << std::endl;
 	  chrono_bufY->get(0,Y);
 	}
 	break;
       default:
 	{
-	  QDPIO::cout << "MRE Predictor: Finding Y extrapolation with "<< Nvec << " vectors" << endl;
+	  QDPIO::cout << "MRE Predictor: Finding Y extrapolation with "<< Nvec << " vectors" << std::endl;
 	  // Should have M as just M (not M^\dagger M) here.
 	  find_extrap_solution(Y, M, chi, chrono_bufY, MINUS);
 	}
@@ -256,7 +256,7 @@ namespace Chroma
       }
       
       swatch.stop();
-      QDPIO::cout << "MRE_PREDICT_Y_TIME = " << swatch.getTimeInSeconds() << " s" << endl;
+      QDPIO::cout << "MRE_PREDICT_Y_TIME = " << swatch.getTimeInSeconds() << " s" << std::endl;
       END_CODE();
     }
     
@@ -271,9 +271,9 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "MREPredictor: registering new X solution. " << endl;
+      QDPIO::cout << "MREPredictor: registering new X solution. " << std::endl;
       chrono_bufX->push(X);
-      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_bufX->size() << endl;
+      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_bufX->size() << std::endl;
     
       END_CODE();
     }
@@ -283,9 +283,9 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "MREPredictor: registering new Y solution. " << endl;
+      QDPIO::cout << "MREPredictor: registering new Y solution. " << std::endl;
       chrono_bufY->push(Y);
-      QDPIO::cout << "MREPredictor: number of Y vectors stored is = " << chrono_bufY->size() << endl;
+      QDPIO::cout << "MREPredictor: number of Y vectors stored is = " << chrono_bufY->size() << std::endl;
     
       END_CODE();
     }
@@ -346,15 +346,15 @@ namespace Chroma
 
     }
 
-    // Ignore new vector
-    // Ignore new vector
+    // Ignore new std::vector
+    // Ignore new std::vector
     void newVector(const multi1d<LatticeFermion>& psi) 
     {
       START_CODE();
 
-      QDPIO::cout << "MRE Predictor: registering new solution. " << endl;
+      QDPIO::cout << "MRE Predictor: registering new solution. " << std::endl;
       chrono_buf->push(psi);
-      QDPIO::cout << "MRE Predictor: number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MRE Predictor: number of vectors stored is = " << chrono_buf->size() << std::endl;
     
       END_CODE();
     }

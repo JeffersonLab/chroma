@@ -39,7 +39,7 @@ namespace Chroma
 	     const multi1d<int>& src_coord, 
 	     const SftMom& phases,
 	     XMLWriter& xml,
-	     const string& xml_group,
+	     const std::string& xml_group,
 	     const int bc = 0);
 
   //! Heavy-light meson 2-pt function for backwards propagating static quark
@@ -68,7 +68,7 @@ namespace Chroma
 	     const multi1d<int>& src_coord, 
 	     const SftMom& phases,
 	     XMLWriter& xml,
-	     const string& xml_group,
+	     const std::string& xml_group,
 	     const int bc = 0);
 
 }

@@ -27,7 +27,7 @@ namespace Chroma
       Params(XMLReader& in, const std::string& path);
       void writeXML(XMLWriter& in, const std::string& path) const;
     
-      string cfg_file;		/*!< File name */
+      std::string cfg_file;		/*!< File name */
     };
 
 
@@ -61,11 +61,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup gauge */
-  void read(XMLReader& xml, const string& path, NERSCGaugeInitEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, NERSCGaugeInitEnv::Params& param);
 
   //! Writer
   /*! @ingroup gauge */
-  void write(XMLWriter& xml, const string& path, const NERSCGaugeInitEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const NERSCGaugeInitEnv::Params& param);
 
 }  // end namespace Chroma
 

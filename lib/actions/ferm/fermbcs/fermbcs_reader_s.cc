@@ -40,7 +40,7 @@ namespace Chroma
       }
       else
       {
-	QDPIO::cerr << "Error: neither FermionBC group nor boundary found" << endl;
+	QDPIO::cerr << "Error: neither FermionBC group nor boundary found" << std::endl;
 	QDP_abort(1);
       }
 

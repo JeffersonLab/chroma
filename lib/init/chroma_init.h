@@ -21,29 +21,29 @@ namespace Chroma
   void abort(int i);
 
   //! Get input file name
-  string getXMLInputFileName();
+  std::string getXMLInputFileName();
 
   //! Get output file name
-  string getXMLOutputFileName();
+  std::string getXMLOutputFileName();
 
   //! Get output logfile name
-  string getXMLLogFileName();
+  std::string getXMLLogFileName();
 
   //! Get current working directory
-  string getCWD();
+  std::string getCWD();
 
 
   //! Set input file name
-  void setXMLInputFileName(const string&);
+  void setXMLInputFileName(const std::string&);
 
   //! Set output file name
-  void setXMLOutputFileName(const string&);
+  void setXMLOutputFileName(const std::string&);
 
   //! Set output logfile name
-  void setXMLLogFileName(const string&);
+  void setXMLLogFileName(const std::string&);
 
   //! Set current working directory
-  void setCWD(const string&);
+  void setCWD(const std::string&);
 
 
   //! Get xml output instance

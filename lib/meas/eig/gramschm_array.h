@@ -69,7 +69,7 @@ void GramSchmArray(multi2d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * the first Nvec vectors of vec
  *
  * Arguments:
@@ -88,7 +88,7 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
+ * Convenience function: Orthogonalise single std::vector psi against 
  * all the vectors of vec
  *
  * Arguments:
@@ -104,12 +104,12 @@ void GramSchmArray(multi1d<LatticeFermion>& psi,
 /*!
  * \ingroup eig
  * 
- * Convenience function: Orthogonalise single vector psi against 
- * a single vector vec
+ * Convenience function: Orthogonalise single std::vector psi against 
+ * a single std::vector vec
  *
  * Arguments:
  *  \param psi         5D Pseudofermion field          (Modify)
- *  \param vec         5D vector  wrt orthog           (Read)
+ *  \param vec         5D std::vector  wrt orthog           (Read)
  *  \param s           Subset to use                   (Read) 
  */
 void GramSchmArray(multi1d<LatticeFermion>& psi,

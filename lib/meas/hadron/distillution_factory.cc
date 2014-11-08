@@ -80,7 +80,7 @@ namespace Chroma
 	void writeXML(XMLWriter& xml_out, const std::string& path) const;
 	
 	int               num_vecs;         /*!< Number of vectors */
-	int               num_space_dils;   /*!< Number of eigenvector dilutions to use */
+	int               num_space_dils;   /*!< Number of eigenstd::vector dilutions to use */
 
 	std::vector<int>  t_sources;        /*!< Time sources */ 
 	int               Nt_forward;       /*!< Time-slices in the forward direction */
@@ -89,7 +89,7 @@ namespace Chroma
 
 
       //! Propagator input
-      Params::Params(XMLReader& xml, const string& path)
+      Params::Params(XMLReader& xml, const std::string& path)
       {
 	XMLReader inputtop(xml, path);
 
@@ -101,7 +101,7 @@ namespace Chroma
       }
 
       //! Propagator output
-      void Params::writeXML(XMLWriter& xml, const string& path) const
+      void Params::writeXML(XMLWriter& xml, const std::string& path) const
       {
 	push(xml, path);
 
@@ -115,14 +115,14 @@ namespace Chroma
       }
 
       //! Propagator input
-      void read(XMLReader& xml, const string& path, Params& input)
+      void read(XMLReader& xml, const std::string& path, Params& input)
       {
 	Params tmp(xml, path);
 	input = tmp;
       }
 
       //! Propagator output
-      void write(XMLWriter& xml, const string& path, const Params& input)
+      void write(XMLWriter& xml, const std::string& path, const Params& input)
       {
 	input.writeXML(xml, path);
       }
@@ -131,7 +131,7 @@ namespace Chroma
       //----------------------------------------------------------------------------
       //! Connected quark lines
       /*!< 
-       * Pull out a time-slice of the color vector source, and add it in a crystal fashion
+       * Pull out a time-slice of the color std::vector source, and add it in a crystal fashion
        * with other vectors
        */
       class QuarkLineFact : public AbsQuarkLine
@@ -218,12 +218,12 @@ namespace Chroma
       //! Prepare a distilluted source
       LatticeColorVector QuarkLineFact::getSrc(int t_source, int dist_src) const
       {
-	QDPIO::cout << "CONN: getSrc on t_source= " << t_source << "  dist_src= " << dist_src << endl;
+	QDPIO::cout << "CONN: getSrc on t_source= " << t_source << "  dist_src= " << dist_src << std::endl;
 
 	// Get the actual time slice
 	int t_actual = dist_noise_obj.getTime(t_source);
 
-	// Get the source vector
+	// Get the source std::vector
 	KeyPropDistillution_t src_key = getSrcKey(t_source, dist_src);
 	LatticeColorVectorF vec_srce = zero;
 
@@ -419,13 +419,13 @@ namespace Chroma
 	void writeXML(XMLWriter& xml_out, const std::string& path) const;
 	
 	int               num_vecs;         /*!< Number of vectors */
-	int               num_space_dils;   /*!< Number of eigenvector dilutions to use in space direction */
-	int               num_time_dils;    /*!< Number of eigenvector dilutions to use in time direction */
+	int               num_space_dils;   /*!< Number of eigenstd::vector dilutions to use in space direction */
+	int               num_time_dils;    /*!< Number of eigenstd::vector dilutions to use in time direction */
       };
 
 
       //! Propagator input
-      Params::Params(XMLReader& xml, const string& path)
+      Params::Params(XMLReader& xml, const std::string& path)
       {
 	XMLReader inputtop(xml, path);
 
@@ -435,7 +435,7 @@ namespace Chroma
       }
 
       //! Propagator output
-      void Params::writeXML(XMLWriter& xml, const string& path) const
+      void Params::writeXML(XMLWriter& xml, const std::string& path) const
       {
 	push(xml, path);
 
@@ -447,14 +447,14 @@ namespace Chroma
       }
 
       //! Propagator input
-      void read(XMLReader& xml, const string& path, Params& input)
+      void read(XMLReader& xml, const std::string& path, Params& input)
       {
 	Params tmp(xml, path);
 	input = tmp;
       }
 
       //! Propagator output
-      void write(XMLWriter& xml, const string& path, const Params& input)
+      void write(XMLWriter& xml, const std::string& path, const Params& input)
       {
 	input.writeXML(xml, path);
       }
@@ -463,7 +463,7 @@ namespace Chroma
       //----------------------------------------------------------------------------
       //! Annihilation quark lines
       /*!< 
-       * Pull out a time-slice of the color vector source, and add it in a crystal fashion
+       * Pull out a time-slice of the color std::vector source, and add it in a crystal fashion
        * with other vectors
        */
       class QuarkLineFact : public AbsQuarkLine
@@ -565,7 +565,7 @@ namespace Chroma
       //! Prepare a distilluted source
       LatticeColorVector QuarkLineFact::getSrc(int t_src, int dist_src) const
       {
-	QDPIO::cout << "ANNIH: getSrc on t_source= " << t_src << "  dist_src= " << dist_src << endl;
+	QDPIO::cout << "ANNIH: getSrc on t_source= " << t_src << "  dist_src= " << dist_src << std::endl;
 
 	LatticeColorVector vec_srce = zero;
 
@@ -576,7 +576,7 @@ namespace Chroma
 	  // Get the actual time slice
 	  int t_actual = dist_noise_obj.getTime(time_source);
 
-	  // Get the source vector
+	  // Get the source std::vector
 	  KeyPropDistillution_t src_key = getSrcKey(time_source, dist_src);
 	  LatticeColorVectorF vec_tmp = zero;
 	  

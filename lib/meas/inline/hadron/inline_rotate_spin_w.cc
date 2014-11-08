@@ -17,7 +17,7 @@
 namespace Chroma 
 { 
   //! Object buffer
-  void write(XMLWriter& xml, const string& path, const InlineRotateSpinEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineRotateSpinEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -30,7 +30,7 @@ namespace Chroma
 
 
   //! Object buffer
-  void read(XMLReader& xml, const string& path, InlineRotateSpinEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineRotateSpinEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -40,7 +40,7 @@ namespace Chroma
   }
 
 
-  //! IO function map environment
+  //! IO function std::map environment
   /*! \ingroup inlinehadron */
   namespace RotateSpinObjCallMapEnv
   { 
@@ -49,21 +49,21 @@ namespace Chroma
     {
       struct DumbDisambiguator {};
 
-      //! RotateSpin function map
+      //! RotateSpin function std::map
       /*! \ingroup inlinehadron */
       typedef SingletonHolder< 
 	FunctionMap<DumbDisambiguator,
 		    void,
 		    std::string,
-		    TYPELIST_2(const string&, const string&),
-		    void (*)(const string& output_id, const string& input_id),
+		    TYPELIST_2(const std::string&, const std::string&),
+		    void (*)(const std::string& output_id, const std::string& input_id),
 		    StringFunctionMapError> >
       TheRotateSpinObjFuncMap;
 
 
       //! Transform a wilson-like fermion object. This works only for non-array objects.
       // This only works for a fermion-like object. A propagator needs 2 spin rotations
-      void rotateDRtoDiracFerm(const string& output_id, const string& input_id)
+      void rotateDRtoDiracFerm(const std::string& output_id, const std::string& input_id)
       {
 	// Save some typing
 	typedef LatticeFermion   T;
@@ -90,7 +90,7 @@ namespace Chroma
 
       //! Transform a wilson-like fermion object. This works only for non-array objects.
       // This only works for a fermion-like object. A propagator needs 2 spin rotations
-      void rotateDiractoDRFerm(const string& output_id, const string& input_id)
+      void rotateDiractoDRFerm(const std::string& output_id, const std::string& input_id)
       {
 	// Save some typing
 	typedef LatticeFermion   T;
@@ -127,11 +127,11 @@ namespace Chroma
       bool success = true; 
       if (! registered)
       {
-//	success &= TheRotateSpinObjFuncMap::Instance().registerFunction(string("LatticePropagator"), 
+//	success &= TheRotateSpinObjFuncMap::Instance().registerFunction(std::string("LatticePropagator"), 
 //									 rotateSpinObj<LatticePropagator>);
-	success &= TheRotateSpinObjFuncMap::Instance().registerFunction(string("LatticeFermion:DR-to-Dirac"), 
+	success &= TheRotateSpinObjFuncMap::Instance().registerFunction(std::string("LatticeFermion:DR-to-Dirac"), 
 									rotateDRtoDiracFerm);
-	success &= TheRotateSpinObjFuncMap::Instance().registerFunction(string("LatticeFermion:Dirac-to-DR"), 
+	success &= TheRotateSpinObjFuncMap::Instance().registerFunction(std::string("LatticeFermion:Dirac-to-DR"), 
 									rotateDRtoDiracFerm);
 	registered = true;
       }
@@ -192,7 +192,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -220,7 +220,7 @@ namespace Chroma
       write(xml_out, "update_no", update_no);
 
       QDPIO::cout << name << ": spin rotate an object of type "
-		  << params.named_obj.object_type << endl;
+		  << params.named_obj.object_type << std::endl;
 
       // Grab the input object
       try
@@ -233,17 +233,17 @@ namespace Chroma
       catch (std::bad_cast) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);
 

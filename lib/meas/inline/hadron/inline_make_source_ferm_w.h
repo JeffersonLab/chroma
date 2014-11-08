@@ -44,10 +44,10 @@ namespace Chroma
 
 
   //! Make source input
-  void read(XMLReader& xml, const string& path, InlineMakeSourceFermParams& input);
+  void read(XMLReader& xml, const std::string& path, InlineMakeSourceFermParams& input);
 
   //! Make source output
-  void write(XMLWriter& xml, const string& path, const InlineMakeSourceFermParams& input);
+  void write(XMLWriter& xml, const std::string& path, const InlineMakeSourceFermParams& input);
 
 
   //! Inline task creating sources for quark inversion

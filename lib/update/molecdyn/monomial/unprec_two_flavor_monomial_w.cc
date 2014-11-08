@@ -23,7 +23,7 @@ namespace Chroma
     {
       //! Callback function for the factory
       Monomial< multi1d<LatticeColorMatrix>,
-		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const string& path) 
+		multi1d<LatticeColorMatrix> >* createMonomial(XMLReader& xml, const std::string& path) 
       {
 	return new UnprecTwoFlavorWilsonTypeFermMonomial(
 	  TwoFlavorWilsonTypeFermMonomialParams(xml, path));
@@ -61,7 +61,7 @@ namespace Chroma
 
     std::istringstream is(param.fermact.xml);
     XMLReader fermact_reader(is);
-    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: construct " << param.fermact.id << endl;
+    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: construct " << param.fermact.id << std::endl;
 
     WilsonTypeFermAct<T,P,Q>* downcast
       = TheWilsonTypeFermActFactory::Instance().createObject(param.fermact.id, fermact_reader, param.fermact.path);
@@ -72,7 +72,7 @@ namespace Chroma
 
     // Check success of the downcast 
     if( downcast == 0x0 ) {
-      QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecTwoFlavorWilsonTypeFermMonomial()" << endl;
+      QDPIO::cerr << "Unable to downcast FermAct to UnprecWilsonTypeFermAct in UnprecTwoFlavorWilsonTypeFermMonomial()" << std::endl;
       QDP_abort(1);
     }
 
@@ -96,18 +96,18 @@ namespace Chroma
 									  param.predictor.path);
       }
       catch(const std::string& e ) { 
-	QDPIO::cerr << "Caught Exception Reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception Reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
      
     if( tmp == 0x0 ) { 
-      QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << endl;
+      QDPIO::cerr << "Failed to create the 4D ChronoPredictor" << std::endl;
       QDP_abort(1);
     }
     chrono_predictor = tmp;
 
-    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << param.fermact.id << endl;
+    QDPIO::cout << "UnprecTwoFlavorWilsonTypeFermMonomial: finished " << param.fermact.id << std::endl;
     
     END_CODE();
   }

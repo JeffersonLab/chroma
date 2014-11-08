@@ -46,7 +46,7 @@ namespace Chroma
 
 
   // Reader for input parameters
-  void read(XMLReader& xml, const string& path, InlineMultipoleParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineMultipoleParams::Param_t& param)
   {
     XMLReader inputtop(xml, path);
 
@@ -62,7 +62,7 @@ namespace Chroma
     default :
       /**************************************************************************/
 
-      QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+      QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -71,7 +71,7 @@ namespace Chroma
 
 
   // Writer for input parameters
-  void write(XMLWriter& xml, const string& path, const InlineMultipoleParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineMultipoleParams::Param_t& param)
   {
     push(xml, path);
 
@@ -84,7 +84,7 @@ namespace Chroma
 
 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineMultipoleParams::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineMultipoleParams::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -94,7 +94,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineMultipoleParams::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineMultipoleParams::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -106,7 +106,7 @@ namespace Chroma
   }
 
   //! Multipole parameters
-  void read(XMLReader& xml, const string& path, InlineMultipoleParams::Multipole_out_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineMultipoleParams::Multipole_out_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -115,7 +115,7 @@ namespace Chroma
   }
 
   //! Multipole parameters
-  void write(XMLWriter& xml, const string& path, const InlineMultipoleParams::Multipole_out_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineMultipoleParams::Multipole_out_t& input)
   {
     push(xml, path);
 
@@ -152,7 +152,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -179,7 +179,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "multipole");
       write(xml_out, "update_no", update_no);
@@ -217,13 +217,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMultipoleEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMultipoleEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineMultipoleEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
     const multi1d<LatticeColorMatrix>& u = 
@@ -232,7 +232,7 @@ namespace Chroma
     push(xml_out, "multipole");
     write(xml_out, "update_no", update_no);
 
-    QDPIO::cout << InlineMultipoleEnv::name << ": multipole measurements for Wilson-like fermions" << endl;
+    QDPIO::cout << InlineMultipoleEnv::name << ": multipole measurements for Wilson-like fermions" << std::endl;
 
     proginfo(xml_out);    // Print out basic program info
 
@@ -275,9 +275,9 @@ namespace Chroma
 	read(prop_record_xml, "/Propagator/ForwardProp", prop_header);
 	read(prop_record_xml, "/Propagator/PropSource", source_header);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << "Error extracting forward_prop header: " << e << endl;
+	QDPIO::cerr << "Error extracting forward_prop header: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -288,13 +288,13 @@ namespace Chroma
     catch( std::bad_cast ) 
     {
       QDPIO::cerr << InlineMultipoleEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineMultipoleEnv::name << ": map call failed: " << e 
-		  << endl;
+      QDPIO::cerr << InlineMultipoleEnv::name << ": std::map call failed: " << e 
+		  << std::endl;
       QDP_abort(1);
     }
 
@@ -360,16 +360,16 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineMultipoleEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << InlineMultipoleEnv::name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      QDPIO::cout << "Sequential propagator successfully parsed" << endl;
+      QDPIO::cout << "Sequential propagator successfully parsed" << std::endl;
 
 
       // Sanity check - write out the norm2 of the forward prop in the j_decay direction
@@ -387,8 +387,8 @@ namespace Chroma
       }
 
       // Derived from input seqprop
-      string seq_src = seqsource_header.seq_src;
-      QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << endl;
+      std::string seq_src = seqsource_header.seq_src;
+      QDPIO::cout << "Seqsource name = " << seqsource_header.seq_src << std::endl;
       int           t_sink   = seqsource_header.t_sink;
       multi1d<int>  sink_mom = seqsource_header.sink_mom;
 
@@ -418,9 +418,9 @@ namespace Chroma
     snoop.stop();
     QDPIO::cout << InlineMultipoleEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineMultipoleEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineMultipoleEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

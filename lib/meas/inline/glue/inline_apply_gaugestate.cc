@@ -17,7 +17,7 @@ namespace Chroma
 { 
 
   //! GaugeState input
-  void read(XMLReader& xml, const string& path, InlineGaugeStateEnv::Params::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineGaugeStateEnv::Params::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -32,13 +32,13 @@ namespace Chroma
 
     default:
       QDPIO::cerr << "InlineGaugeStateEnv::Params::Param_t: " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
   }
 
   //! GaugeState output
-  void write(XMLWriter& xml, const string& path, const InlineGaugeStateEnv::Params::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineGaugeStateEnv::Params::Param_t& param)
   {
     push(xml, path);
 
@@ -51,7 +51,7 @@ namespace Chroma
 
 
   //! GaugeState input
-  void read(XMLReader& xml, const string& path, InlineGaugeStateEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineGaugeStateEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -60,7 +60,7 @@ namespace Chroma
   }
 
   //! GaugeState output
-  void write(XMLWriter& xml, const string& path, const InlineGaugeStateEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineGaugeStateEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -125,7 +125,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -176,13 +176,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineGaugeStateEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineGaugeStateEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineGaugeStateEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -216,13 +216,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineGaugeStateEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineGaugeStateEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineGaugeStateEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -249,9 +249,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineGaugeStateEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineGaugeStateEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineGaugeStateEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

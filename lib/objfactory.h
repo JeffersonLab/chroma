@@ -47,7 +47,7 @@ namespace Chroma
     static AbstractProduct* OnUnknownType(const IdentifierType& id)
       {
 	std::ostringstream os;
-	os << "Factory error: unknown identifier: id = " << id << endl;
+	os << "Factory error: unknown identifier: id = " << id << std::endl;
 	throw os.str();
       }
   };
@@ -127,11 +127,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -153,11 +153,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 
 	return this->OnUnknownType(id);
@@ -173,11 +173,11 @@ namespace Chroma
       if (i == associations_.end()) {
 
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -193,11 +193,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -214,11 +214,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -235,11 +235,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -256,11 +256,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -277,11 +277,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);
@@ -298,11 +298,11 @@ namespace Chroma
       if (i == associations_.end()) {
 	
 	typedef typename IdToProductMap::const_iterator CI;
-	QDPIO::cerr << "Couldnt find key " << id << " in the map: " << endl;
-	QDPIO::cerr << "Available Keys are : " << endl;
+	QDPIO::cerr << "Couldnt find key " << id << " in the std::map: " << std::endl;
+	QDPIO::cerr << "Available Keys are : " << std::endl;
 	for( CI j = associations_.begin();
 	     j != associations_.end(); j++) {
-	  QDPIO::cerr << j->first << endl << flush;
+	  QDPIO::cerr << j->first << std::endl << std::flush;
 	}
 	
 	return this->OnUnknownType(id);

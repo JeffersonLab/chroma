@@ -21,7 +21,7 @@ void loops(const LatticeFermion &q_source,
 	   int length,
 	   int t0,
 	   XMLWriter& xml_gamma,
-	   const string& xml_tag) ; 
+	   const std::string& xml_tag) ; 
 
 }  // end namespace Chroma
 

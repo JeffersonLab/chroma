@@ -50,7 +50,7 @@
 #define HALF (ONE/TWO)
 
 /* The following obscenity seems to be the simplest (?) way to coerce the C
- * preprocessor to convert the value of a preprocessor token into a string. */
+ * preprocessor to convert the value of a preprocessor token into a std::string. */
 
 #define PP2(x) #x
 #define PP1(a,b,c) a ## b(c)

@@ -27,7 +27,6 @@
 #include "util/gauge/reunit.h"
 
 //#include <util_quda.h>
-using namespace std;
 
 namespace Chroma
 {
@@ -72,7 +71,7 @@ namespace Chroma
 					 const SysSolverQUDACloverParams& invParam_) : 
       A(A_), invParam(invParam_), clov(new CloverTermT<T, U>::Type_t() ), invclov(new CloverTermT<T, U>::Type_t())
     {
-      QDPIO::cout << "LinOpSysSolverQUDAClover:" << endl;
+      QDPIO::cout << "LinOpSysSolverQUDAClover:" << std::endl;
 
       // FOLLOWING INITIALIZATION in test QUDA program
 
@@ -138,7 +137,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_GAUGE
       q_gauge_param.gauge_order = QUDA_QDP_GAUGE_ORDER; // gauge[mu], p
 #else
-      QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << endl;
+      QDPIO::cout << "MDAGM Using QDP-JIT gauge order" << std::endl;
       q_gauge_param.location    = QUDA_CUDA_FIELD_LOCATION;
       q_gauge_param.gauge_order = QUDA_QDPJIT_GAUGE_ORDER;
 #endif
@@ -204,7 +203,7 @@ namespace Chroma
 
      // GaugeFix
       if( invParam.axialGaugeP ) { 
-	QDPIO::cout << "Fixing Temporal Gauge" << endl;
+	QDPIO::cout << "Fixing Temporal Gauge" << std::endl;
 	temporalGauge(links_single, GFixMat, Nd-1);
 	for(int mu=0; mu < Nd; mu++){ 
 	  links_single[mu] = GFixMat*(state_->getLinks())[mu]*adj(shift(GFixMat, FORWARD, mu));
@@ -256,7 +255,7 @@ namespace Chroma
 	solver_string = "GCR";
 	break;
       default:
-	QDPIO::cerr << "Unknown SOlver type" << endl;
+	QDPIO::cerr << "Unknown SOlver type" << std::endl;
 	QDP_abort(1);
 	break;
       }
@@ -301,11 +300,11 @@ namespace Chroma
       }
 
       if( invParam.asymmetricP ) { 
-	QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << endl;
+	QDPIO::cout << "Using Asymmetric Linop: A_oo - D A^{-1}_ee D" << std::endl;
 	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD_ASYMMETRIC;
       }
       else { 
-	QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << endl;
+	QDPIO::cout << "Using Symmetric Linop: 1 - A^{-1}_oo D A^{-1}_ee D" << std::endl;
 	quda_inv_param.matpc_type = QUDA_MATPC_ODD_ODD;
       }
 
@@ -321,7 +320,7 @@ namespace Chroma
 #ifndef BUILD_QUDA_DEVIFACE_SPINOR
       quda_inv_param.dirac_order = QUDA_DIRAC_ORDER;
 #else
-      QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << endl;
+      QDPIO::cout << "MDAGM Using QDP-JIT spinor order" << std::endl;
       quda_inv_param.dirac_order    = QUDA_QDPJIT_DIRAC_ORDER;
       quda_inv_param.input_location = QUDA_CUDA_FIELD_LOCATION;
       quda_inv_param.output_location = QUDA_CUDA_FIELD_LOCATION;
@@ -329,12 +328,12 @@ namespace Chroma
 
       // Autotuning
       if( invParam.tuneDslashP ) { 
-	QDPIO::cout << "Enabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Enabling Dslash Autotuning" << std::endl;
 
 	quda_inv_param.tune = QUDA_TUNE_YES;
       }
       else { 
-	QDPIO::cout << "Disabling Dslash Autotuning" << endl;
+	QDPIO::cout << "Disabling Dslash Autotuning" << std::endl;
        
 	quda_inv_param.tune = QUDA_TUNE_NO;
       }
@@ -361,7 +360,7 @@ namespace Chroma
       quda_inv_param.cl_pad = 0;
 
      if( invParam.innerParamsP ) {
-	QDPIO::cout << "Setting inner solver params" << endl;
+	QDPIO::cout << "Setting inner solver params" << std::endl;
 	// Dereference handle
 	GCRInnerSolverParams ip = *(invParam.innerParams);
 
@@ -447,7 +446,7 @@ namespace Chroma
 	}
       }
       else { 
-	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << endl;
+	QDPIO::cout << "Setting Precondition stuff to defaults for not using" << std::endl;
 	quda_inv_param.inv_type_precondition= QUDA_INVALID_INVERTER;
 	quda_inv_param.tol_precondition = 1.0e-1;
 	quda_inv_param.maxiter_precondition = 1000;
@@ -493,12 +492,12 @@ namespace Chroma
       loadGaugeQuda((void *)gauge, &q_gauge_param); 
 
       //      Setup the clover term...
-      QDPIO::cout << "Creating CloverTerm" << endl;
+      QDPIO::cout << "Creating CloverTerm" << std::endl;
       clov->create(fstate, invParam_.CloverParams);
       // Don't recompute, just copy
       invclov->create(fstate, invParam_.CloverParams);
       
-      QDPIO::cout << "Inverting CloverTerm" << endl;
+      QDPIO::cout << "Inverting CloverTerm" << std::endl;
       invclov->choles(0);
       invclov->choles(1);
 
@@ -557,7 +556,7 @@ namespace Chroma
     //! Destructor is automatic
     ~LinOpSysSolverQUDAClover() 
     {
-      QDPIO::cout << "Destructing" << endl;
+      QDPIO::cout << "Destructing" << std::endl;
       freeGaugeQuda();
       freeCloverQuda();
     }
@@ -588,15 +587,15 @@ namespace Chroma
 	T g_chi,g_psi;
 
 	// Gauge Fix source and initial guess
-	QDPIO::cout << "Gauge Fixing source and initial guess" << endl;
+	QDPIO::cout << "Gauge Fixing source and initial guess" << std::endl;
         g_chi[ rb[1] ]  = GFixMat * chi;
 	g_psi[ rb[1] ]  = GFixMat * psi;
-	QDPIO::cout << "Solving" << endl;
+	QDPIO::cout << "Solving" << std::endl;
 	res = qudaInvert(*clov,
 			 *invclov,
 			 g_chi,
 			 g_psi);      
-	QDPIO::cout << "Untransforming solution." << endl;
+	QDPIO::cout << "Untransforming solution." << std::endl;
 	psi[ rb[1]]  = adj(GFixMat)*g_psi;
 
       }
@@ -622,12 +621,12 @@ namespace Chroma
 
       Double rel_resid = res.resid/sqrt(norm2(chi,A->subset()));
 
-      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << endl;
+      QDPIO::cout << "QUDA_"<< solver_string <<"_CLOVER_SOLVER: " << res.n_count << " iterations. Rsd = " << res.resid << " Relative Rsd = " << rel_resid << std::endl;
    
       // Convergence Check/Blow Up
       if ( ! invParam.SilentFailP ) { 
 	      if (  toBool( rel_resid >  invParam.RsdToleranceFactor*invParam.RsdTarget) ) { 
-        	QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << endl; 
+        	QDPIO::cerr << "ERROR: QUDA Solver residuum is outside tolerance: QUDA resid="<< rel_resid << " Desired =" << invParam.RsdTarget << " Max Tolerated = " << invParam.RsdToleranceFactor*invParam.RsdTarget << std::endl; 
         	QDP_abort(1);
       	      }
       }

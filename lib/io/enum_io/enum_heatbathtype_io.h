@@ -25,7 +25,7 @@ namespace Chroma {
    */
   //! Heatbath  type
   namespace HeatbathTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -36,10 +36,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read an HeatbathType enum
-  void read(XMLReader& r, const string& path, HeatbathType& t);
+  void read(XMLReader& r, const std::string& path, HeatbathType& t);
 
   //! Write an HeatbathType enum
-  void write(XMLWriter& w, const string& path, const HeatbathType& t);
+  void write(XMLWriter& w, const std::string& path, const HeatbathType& t);
 
   /*! @} */   // end of group io
 };

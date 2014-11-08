@@ -53,7 +53,7 @@ using staggered fermions.
       tag_names.resize(no_pions) ; 
       for(int i = 0 ; i <  no_pions ; ++i ) 
 	{
-	  ostringstream tag;
+	  std::ostringstream tag;
 	  tag << "re_pion" << i;
 	  tag_names[i] = tag.str() ; 
 	}

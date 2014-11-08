@@ -54,23 +54,23 @@ namespace Chroma
     void create(Handle< FermState<T,P,Q> > fs,
 		const CloverFermActParams& param_);
 
-    //! Apply the the even-even block onto a source vector
+    //! Apply the the even-even block onto a source std::vector
     void evenEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		       enum PlusMinus isign) const;
 
-    //! Apply the inverse of the even-even block onto a source vector
+    //! Apply the inverse of the even-even block onto a source std::vector
     void evenEvenInvLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const;
   
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     void evenOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		      enum PlusMinus isign) const;
 
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     void oddEvenLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		      enum PlusMinus isign) const;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     void oddOddLinOp(LatticeFermion& chi, const LatticeFermion& psi, 
 		     enum PlusMinus isign) const;
 
@@ -78,7 +78,7 @@ namespace Chroma
     void operator()(LatticeFermion& chi, const LatticeFermion& psi, 
 		    enum PlusMinus isign) const;
 
-    //! Apply the even-even block onto a source vector
+    //! Apply the even-even block onto a source std::vector
     void derivEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			    const LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign) const;
@@ -86,17 +86,17 @@ namespace Chroma
     void derivLogDetEvenEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 				  enum PlusMinus isign) const;
 
-    //! Apply the the even-odd block onto a source vector
+    //! Apply the the even-odd block onto a source std::vector
     void derivEvenOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const;
  
-    //! Apply the the odd-even block onto a source vector
+    //! Apply the the odd-even block onto a source std::vector
     void derivOddEvenLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			   const LatticeFermion& chi, const LatticeFermion& psi, 
 			   enum PlusMinus isign) const;
 
-    //! Apply the the odd-odd block onto a source vector
+    //! Apply the the odd-odd block onto a source std::vector
     void derivOddOddLinOp(multi1d<LatticeColorMatrix>& ds_u, 
 			  const LatticeFermion& chi, const LatticeFermion& psi, 
 			  enum PlusMinus isign) const;

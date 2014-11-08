@@ -57,7 +57,7 @@ namespace Chroma
       read(paramtop, "RsdTarget", RsdTarget);
     }
     catch(const std::string e ) {
-      QDPIO::cout << "Caught: " << e << endl;
+      QDPIO::cout << "Caught: " << e << std::endl;
       throw;
     }
   }

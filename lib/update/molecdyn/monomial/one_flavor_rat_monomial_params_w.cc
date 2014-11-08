@@ -9,7 +9,7 @@ namespace Chroma
 { 
 
   // Read the parameters
-  OneFlavorWilsonTypeFermRatMonomialParams::OneFlavorWilsonTypeFermRatMonomialParams(XMLReader& xml_in, const string& path)
+  OneFlavorWilsonTypeFermRatMonomialParams::OneFlavorWilsonTypeFermRatMonomialParams(XMLReader& xml_in, const std::string& path)
   {
     // Get the top of the parameter XML tree
     XMLReader paramtop(xml_in, path);
@@ -19,9 +19,9 @@ namespace Chroma
       read(paramtop, "num_pf", num_pf);
       read(paramtop, "Action", numer);
     }
-    catch(const string& s) 
+    catch(const std::string& s) 
     {
-      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<endl;
+      QDPIO::cerr << "Caught Exception while reading parameters: " << s <<std::endl;
       QDP_abort(1);
     }
   }

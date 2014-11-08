@@ -48,7 +48,7 @@ namespace Chroma
 
 
   //! WilsonLoop input
-  void read(XMLReader& xml, const string& path, InlineWilsonLoopParams::Param_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineWilsonLoopParams::Param_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -66,7 +66,7 @@ namespace Chroma
 
     default:
       QDPIO::cerr << "InlineWilsonLoopParams::Param_t: " << version 
-		  << " unsupported." << endl;
+		  << " unsupported." << std::endl;
       QDP_abort(1);
     }
 
@@ -76,7 +76,7 @@ namespace Chroma
   }
 
   //! WilsonLoop output
-  void write(XMLWriter& xml, const string& path, const InlineWilsonLoopParams::Param_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineWilsonLoopParams::Param_t& param)
   {
     push(xml, path);
 
@@ -92,7 +92,7 @@ namespace Chroma
 
 
   //! WilsonLoop input
-  void read(XMLReader& xml, const string& path, InlineWilsonLoopParams::NamedObject_t& param)
+  void read(XMLReader& xml, const std::string& path, InlineWilsonLoopParams::NamedObject_t& param)
   {
     XMLReader paramtop(xml, path);
 
@@ -100,7 +100,7 @@ namespace Chroma
   }
 
   //! WilsonLoop output
-  void write(XMLWriter& xml, const string& path, const InlineWilsonLoopParams::NamedObject_t& param)
+  void write(XMLWriter& xml, const std::string& path, const InlineWilsonLoopParams::NamedObject_t& param)
   {
     push(xml, path);
 
@@ -138,7 +138,7 @@ namespace Chroma
     }
     catch(const std::string& e) 
     {
-      QDPIO::cerr << "Caught Exception reading XML: " << e << endl;
+      QDPIO::cerr << "Caught Exception reading XML: " << e << std::endl;
       QDP_abort(1);
     }
   }
@@ -152,7 +152,7 @@ namespace Chroma
     // If xml file not empty, then use alternate
     if (params.xml_file != "")
     {
-      string xml_file = makeXMLFileName(params.xml_file, update_no);
+      std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
       push(xml_out, "WilsonLoop");
       write(xml_out, "update_no", update_no);
@@ -176,7 +176,7 @@ namespace Chroma
   {
     START_CODE();
 
-    QDPIO::cout << InlineWilsonLoopEnv::name << ": Wilson-loop measurements" << endl;
+    QDPIO::cout << InlineWilsonLoopEnv::name << ": Wilson-loop measurements" << std::endl;
 
     QDP::StopWatch snoop;
     snoop.reset();
@@ -226,21 +226,21 @@ namespace Chroma
     catch (std::bad_cast)
     {
       QDPIO::cerr << InlineWilsonLoopEnv::name << ": caught dynamic cast error" 
-		  << endl;
+		  << std::endl;
       QDP_abort(1);
     }
-    catch (const string& e) 
+    catch (const std::string& e) 
     {
-      QDPIO::cerr << InlineWilsonLoopEnv::name << ": caught error: " << e << endl;
+      QDPIO::cerr << InlineWilsonLoopEnv::name << ": caught error: " << e << std::endl;
       QDP_abort(1);
     }
  
     snoop.stop();
     QDPIO::cout << InlineWilsonLoopEnv::name << ": total time = "
 		<< snoop.getTimeInSeconds() 
-		<< " secs" << endl;
+		<< " secs" << std::endl;
 
-    QDPIO::cout << InlineWilsonLoopEnv::name << ": ran successfully" << endl;
+    QDPIO::cout << InlineWilsonLoopEnv::name << ": ran successfully" << std::endl;
 
     END_CODE();
   } 

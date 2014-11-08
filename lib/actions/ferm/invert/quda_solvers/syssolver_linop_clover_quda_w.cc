@@ -98,8 +98,8 @@ namespace Chroma
 #endif
     }
     else { 
-      QDPIO::cout << "MATPC Type not allowed." << endl;
-      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << endl;
+      QDPIO::cout << "MATPC Type not allowed." << std::endl;
+      QDPIO::cout << " Allowed are: QUDA_MATPC_ODD_ODD_ASYMMETRIC or QUDA_MATPC_ODD_ODD" << std::endl;
       QDP_abort(1);
     }
 
@@ -118,13 +118,13 @@ namespace Chroma
     swatch1.stop();
 
 
-    QDPIO::cout << "Cuda Space Required" << endl;
-    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << endl;
-    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << endl;
-    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << endl;
+    QDPIO::cout << "Cuda Space Required" << std::endl;
+    QDPIO::cout << "\t Spinor:" << quda_inv_param.spinorGiB << " GiB" << std::endl;
+    QDPIO::cout << "\t Gauge :" << q_gauge_param.gaugeGiB << " GiB" << std::endl;
+    QDPIO::cout << "\t InvClover :" << quda_inv_param.cloverGiB << " GiB" << std::endl;
     QDPIO::cout << "QUDA_"<<solver_string<<"_CLOVER_SOLVER: time="<< quda_inv_param.secs <<" s" ;
     QDPIO::cout << "\tPerformance="<<  quda_inv_param.gflops/quda_inv_param.secs<<" GFLOPS" ; 
-    QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<endl;
+    QDPIO::cout << "\tTotal Time (incl. load gauge)=" << swatch1.getTimeInSeconds() <<" s"<<std::endl;
 
     ret.n_count =quda_inv_param.iter;
 
@@ -166,13 +166,13 @@ namespace Chroma
     T r=zero;
     r = psi2 - psi_s;
     
-    QDPIO::cout << "CB=0" << endl;
-    QDPIO::cout << "Dslash Test: || r || = " << sqrt(norm2(r,rb[0])) << endl;
-    //    QDPIO::cout << "Dslash Test: || r ||/|| psi || = " << sqrt(norm2(r,rb[0])/norm2(psi_s, rb[0])) << endl;
+    QDPIO::cout << "CB=0" << std::endl;
+    QDPIO::cout << "Dslash Test: || r || = " << sqrt(norm2(r,rb[0])) << std::endl;
+    //    QDPIO::cout << "Dslash Test: || r ||/|| psi || = " << sqrt(norm2(r,rb[0])/norm2(psi_s, rb[0])) << std::endl;
 
-    QDPIO::cout << "CB=1: Should be zero" << endl;
-    QDPIO::cout << "Dslash Test: || r || = " << sqrt(norm2(r,rb[1])) << endl;
-    //QDPIO::cout << "Dslash Test: || r ||/|| psi || = " << sqrt(norm2(r,rb[1])/norm2(psi_s, rb[1])) << endl;
+    QDPIO::cout << "CB=1: Should be zero" << std::endl;
+    QDPIO::cout << "Dslash Test: || r || = " << sqrt(norm2(r,rb[1])) << std::endl;
+    //QDPIO::cout << "Dslash Test: || r ||/|| psi || = " << sqrt(norm2(r,rb[1])/norm2(psi_s, rb[1])) << std::endl;
     
     const int* tab = rb[0].siteTable().slice();
     for(int i=0; i < rb[0].numSiteTable(); i++) { 
@@ -193,10 +193,10 @@ namespace Chroma
 	  for(int col=0; col < 3; col++) { 
 	    QDPIO::cout << "Site= " << j << " Spin= "<< spin << " Col= " << col << " spinor = ( " 
 			<< psi2.elem(j).elem(spin).elem(col).real()  << " , " 
-			<< psi2.elem(j).elem(spin).elem(col).imag()  << " )" << endl;
+			<< psi2.elem(j).elem(spin).elem(col).imag()  << " )" << std::endl;
 	  }
 	}
-	QDPIO::cout << endl;
+	QDPIO::cout << std::endl;
       }
     }
     QDP_abort(1);

@@ -60,18 +60,18 @@ namespace Chroma
       chrono_buf->reset();
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newVector(const LatticeFermion& psi) 
     {
       START_CODE();
 
-      QDPIO::cout << "MREPredictor: registering new solution. " << endl;
+      QDPIO::cout << "MREPredictor: registering new solution. " << std::endl;
       if( chrono_buf->sizeMax() > 0 ) { 
         chrono_buf->push(psi);
       }
 
       
-      QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MREPredictor: number of vectors stored is = " << chrono_buf->size() << std::endl;
         
       END_CODE();
     }

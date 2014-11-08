@@ -50,7 +50,7 @@ namespace Chroma
       //
       std::istringstream  xml_l(link_smearing.xml);
       XMLReader  linktop(xml_l);
-      const string link_path = "/LinkSmearing";
+      const std::string link_path = "/LinkSmearing";
 	
       Handle< LinkSmearing >
 	linkSmearing(TheLinkSmearingFactory::Instance().createObject(link_smearing.id,

@@ -37,10 +37,10 @@ namespace Chroma
   typedef SingletonHolder< EnumTypeMap<PropLineType> > thePropLineTypeMap;
 
   //! Reader
-  void read(XMLReader& r, const string& path, PropLineType& t);
+  void read(XMLReader& r, const std::string& path, PropLineType& t);
 
   //! Writer
-  void write(XMLWriter& w, const string& path, const PropLineType& t);
+  void write(XMLWriter& w, const std::string& path, const PropLineType& t);
 
   //! Reader
   void read(BinaryReader& r, PropLineType& t);

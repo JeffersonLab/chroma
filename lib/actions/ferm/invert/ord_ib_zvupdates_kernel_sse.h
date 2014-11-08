@@ -1,4 +1,4 @@
-// 32 BIT Version: Use vector length of 4 for easy vectorization.
+// 32 BIT Version: Use std::vector length of 4 for easy std::vectorization.
 // This is guaranteed good for LatticeDiracFermions
 
 inline
@@ -167,14 +167,14 @@ void ord_ib_zvupdates_kernel_real32(int lo, int hi, int my_id, ib_zvupdates_arg<
     }  
   }
   else { 
-    QDPIO::cout << "ord_ib_zvupdates_sse.h: len not divisible by 4" << endl;
+    QDPIO::cout << "ord_ib_zvupdates_sse.h: len not divisible by 4" << std::endl;
     QDP_abort(1);
     
     
   }
 }
 
-// 64 BIT Version: Use vector length of 2 for easy vectorization.
+// 64 BIT Version: Use std::vector length of 2 for easy std::vectorization.
 // This is guaranteed good for LatticeDiracFermions
 
 
@@ -303,7 +303,7 @@ void ord_ib_zvupdates_kernel_real64(int lo, int hi, int my_id, ib_zvupdates_arg<
     }
   }
   else { 
-    QDPIO::cout << "ord_ib_zvupdates_sse.h: len not divisible by 2" << endl;
+    QDPIO::cout << "ord_ib_zvupdates_sse.h: len not divisible by 2" << std::endl;
     QDP_abort(1);
   }
   

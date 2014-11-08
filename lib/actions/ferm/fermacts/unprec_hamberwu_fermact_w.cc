@@ -60,7 +60,7 @@ namespace Chroma
 
 
   //! Read parameters
-  UnprecHamberWuFermActParams::UnprecHamberWuFermActParams(XMLReader& xml, const string& path)
+  UnprecHamberWuFermActParams::UnprecHamberWuFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -70,7 +70,7 @@ namespace Chroma
       read(paramtop, "Mass", Mass);
       if (paramtop.count("Kappa") != 0) 
       {
-	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << endl;
+	QDPIO::cerr << "Error: found both a Kappa and a Mass tag" << std::endl;
 	QDP_abort(1);
       }
     }
@@ -82,7 +82,7 @@ namespace Chroma
     }
     else
     {
-      QDPIO::cerr << "Error: neither Mass or Kappa found" << endl;
+      QDPIO::cerr << "Error: neither Mass or Kappa found" << std::endl;
       QDP_abort(1);
     }
 
@@ -95,7 +95,7 @@ namespace Chroma
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, UnprecHamberWuFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, UnprecHamberWuFermActParams& param)
   {
     UnprecHamberWuFermActParams tmp(xml, path);
     param = tmp;
@@ -116,7 +116,7 @@ namespace Chroma
   {
     if (param.anisoParam.anisoP)
     {
-      QDPIO::cerr << "UnprecHamberWuFermAct::linOp - currently no aniso support" << endl;
+      QDPIO::cerr << "UnprecHamberWuFermAct::linOp - currently no aniso support" << std::endl;
       QDP_abort(1);
     }
 

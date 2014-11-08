@@ -64,11 +64,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup smear */
-  void read(XMLReader& xml, const string& path, StoutLinkSmearingEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, StoutLinkSmearingEnv::Params& param);
 
   //! Writer
   /*! @ingroup smear */
-  void write(XMLWriter& xml, const string& path, const StoutLinkSmearingEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const StoutLinkSmearingEnv::Params& param);
 
 }  // end namespace Chroma
 

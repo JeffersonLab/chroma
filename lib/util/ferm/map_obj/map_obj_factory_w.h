@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! 
- *  \brief Factory for creating various kinds of map objects
+ *  \brief Factory for creating various kinds of std::map objects
  */
 
 #ifndef __map_obj_factory_w_h__

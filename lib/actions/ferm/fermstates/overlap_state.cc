@@ -44,15 +44,15 @@ namespace Chroma
 				 const WordBase_t& approxMin_,          // epsilon
 				 const WordBase_t& approxMax_)          // approx max
   {
-    ostringstream error_str;
+    std::ostringstream error_str;
       
     if ( toBool(approxMin_ < 0 )) { 
-      error_str << "OverlapConnectState::createState: approxMin_ has to be positive" << endl;
+      error_str << "OverlapConnectState::createState: approxMin_ has to be positive" << std::endl;
       throw error_str.str();
     }
       
     if ( toBool(approxMax_ < approxMin_) ) { 
-      error_str << "OverlapConnectState::createState: approxMax_ has to be larger than approxMin_" << endl;
+      error_str << "OverlapConnectState::createState: approxMax_ has to be larger than approxMin_" << std::endl;
       throw error_str.str();
     }
  
@@ -77,15 +77,15 @@ namespace Chroma
 				 const WordBase_t& approxMin_,
 				 const WordBase_t& approxMax_)
   {
-    ostringstream error_str;
+    std::ostringstream error_str;
       
     if ( val_.size() == 0 ) {
-      error_str << "Attempt to createState with 0 e-values and no approxMin" << endl;
+      error_str << "Attempt to createState with 0 e-values and no approxMin" << std::endl;
       throw error_str.str();
     }
       
     if ( val_.size() != vec_.size() ) {
-      error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << endl;
+      error_str << "Attempt to createState with no of low eigenvalues != no of low eigenvectors" << std::endl;
       throw error_str.str();
     }
       
@@ -153,7 +153,7 @@ namespace Chroma
   OverlapConnectState::OverlapConnectState(Handle<FBC> fbc_,
 					   const multi1d<LatticeColorMatrix> u_,
 					   XMLReader& state_info_xml, 
-					   const string& state_info_path,
+					   const std::string& state_info_path,
 					   const LinearOperator<LatticeFermion>& H)
   {
     OverlapStateInfo tmp_info;
@@ -209,16 +209,16 @@ namespace Chroma
 		    QDPIO_SERIAL);
 	}
 	else {
-	  QDPIO::cerr << "Unsupported Eigenvector format for reading " << endl;
+	  QDPIO::cerr << "Unsupported Eigenstd::vector format for reading " << std::endl;
 	  QDP_abort(1);
 	}
 	  
-	QDPIO::cout << "createOverlapState: " << endl;
+	QDPIO::cout << "createOverlapState: " << std::endl;
 	for(int i=0; i < lambda_lo.size(); i++) { 
-	  QDPIO::cout << "lambda_lo["<<i<<"]= " << lambda_lo[i] << endl;
+	  QDPIO::cout << "lambda_lo["<<i<<"]= " << lambda_lo[i] << std::endl;
 	}
 	  
-	QDPIO::cout << "|lambda_high|= " << lambda_hi << endl;
+	QDPIO::cout << "|lambda_high|= " << lambda_hi << std::endl;
 	  
 	// Test the e-values
 	// BEASTLY HACKERY!!!!
@@ -250,7 +250,7 @@ namespace Chroma
 	  check_norm_rel[i] = check_norm[i]/fabs(Double(lambda_lo[i]));
 	    
 	  QDPIO::cout << "Eigenpair " << i << " Resid Norm = " 
-		      << check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << endl;
+		      << check_norm[i] << " Resid Rel Norm = " << check_norm_rel[i] << std::endl;
 	}
 
 	Real approxMax_ = lambda_hi;
@@ -260,12 +260,12 @@ namespace Chroma
       }
       else if( state_info.computeEigVec() ) 
       {
-	QDPIO::cerr << "Recomputation of eigensystem not yet implemented" << endl;
+	QDPIO::cerr << "Recomputation of eigensystem not yet implemented" << std::endl;
 	QDP_abort(1);
       }
       else 
       {
-	QDPIO::cerr << "I have to create a state without min/max, loading/computing eigenvectors/values. How do I do that? "<< endl;
+	QDPIO::cerr << "I have to create a state without min/max, loading/computing eigenvectors/values. How do I do that? "<< std::endl;
 	QDP_abort(1);
       }
     }

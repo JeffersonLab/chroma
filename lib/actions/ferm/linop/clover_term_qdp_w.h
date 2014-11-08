@@ -34,10 +34,10 @@ namespace Chroma
   // Reader/writers
   /*! \ingroup linop */
 #if 0
-  void read(XMLReader& xml, const string& path, PrimitiveClovTriang& param);
+  void read(XMLReader& xml, const std::string& path, PrimitiveClovTriang& param);
 
   /*! \ingroup linop */
-  void write(XMLWriter& xml, const string& path, const PrimitiveClovTriang& param);
+  void write(XMLWriter& xml, const std::string& path, const PrimitiveClovTriang& param);
 #endif
 
   //! Clover term
@@ -97,7 +97,7 @@ namespace Chroma
      * \param chi     result                                      (Write)
      * \param psi     source                                      (Read)
      * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-     * \param cb      Checkerboard of OUTPUT vector               (Read) 
+     * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
      */
     void apply (T& chi, const T& psi, enum PlusMinus isign, int cb) const;
 
@@ -174,7 +174,7 @@ namespace Chroma
     
     // Sanity check
     if (fbc.operator->() == 0) {
-      QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
     
@@ -230,7 +230,7 @@ namespace Chroma
     
     // Sanity check
     if (fbc.operator->() == 0) {
-      QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "QDPCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -323,7 +323,7 @@ namespace Chroma
    *  Here are some notes on the origin of this routine. NOTE, ClovCoeff or u0
    *  are not actually used in MAKCLOV.
    *
-   *  The clover mass term is suppose to act on a vector like
+   *  The clover mass term is suppose to act on a std::vector like
    *
    *  chi = (1 - (ClovCoeff/u0^3) * kappa/4 * sum_mu sum_nu F(mu,nu)*sigma(mu,nu)) * psi
 
@@ -501,12 +501,12 @@ namespace Chroma
     START_CODE();
     
     if ( Nd != 4 ){
-      QDPIO::cerr << __func__ << ": expecting Nd==4" << endl;
+      QDPIO::cerr << __func__ << ": expecting Nd==4" << std::endl;
       QDP_abort(1);
     }
     
     if ( Ns != 4 ){
-      QDPIO::cerr << __func__ << ": expecting Ns==4" << endl;
+      QDPIO::cerr << __func__ << ": expecting Ns==4" << std::endl;
       QDP_abort(1);
     }
   
@@ -561,15 +561,15 @@ namespace Chroma
 
     if( choles_done[cb] == false ) 
     {
-      QDPIO::cout << __func__ << ": Error: you have not done the Cholesky.on this operator on this subset" << endl;
-      QDPIO::cout << "You sure you should not be asking invclov?" << endl;
+      QDPIO::cout << __func__ << ": Error: you have not done the Cholesky.on this operator on this subset" << std::endl;
+      QDPIO::cout << "You sure you should not be asking invclov?" << std::endl;
       QDP_abort(1);
     }
 
     LatticeREAL ff=tr_log_diag_;
 
     if( param.sub_zero_usedP ) { 
- 	QDPIO::cout << "Subtracting "<< param.sub_zero<<endl;
+ 	QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
 	LatticeREAL tmp;
 	tmp[rb[cb]] = param.sub_zero;
 	ff[rb[cb]] -= tmp;
@@ -787,7 +787,7 @@ namespace Chroma
 	if( site_neg_logdet != 0 ) { 
 	  // Report if site has any negative terms. (-ve def)
 	  std::cout << "WARNING: found " << site_neg_logdet
-		    << " negative eigenvalues in Clover DET at site: " << site << endl;
+		    << " negative eigenvalues in Clover DET at site: " << site << std::endl;
 	}
       }/* End Site Loop */
     } /* End Function */
@@ -803,7 +803,7 @@ namespace Chroma
 
     if ( 2*Nc < 3 )
     {
-      QDPIO::cerr << __func__ << ": Matrix is too small" << endl;
+      QDPIO::cerr << __func__ << ": Matrix is too small" << std::endl;
       QDP_abort(1);
     }
 
@@ -871,7 +871,7 @@ namespace Chroma
 	  
 	  for(int j = 0; j <  n; ++j) {
 
-	    /*# Multiply clover mass term against basis vector.  */
+	    /*# Multiply clover mass term against basis std::vector.  */
 	    /*# Actually, I need a column of the lower triang matrix clov. */
 	    v1[j] = cmplx(tri[site].diag[s][j],zero);
     
@@ -909,9 +909,9 @@ namespace Chroma
 	    else {
 
 	      // Make sure any node can print this message
-	      cerr << "Clover term has negative diagonal element: "
+	      std::cerr << "Clover term has negative diagonal element: "
 		   << "diag_g[" << j << "]= " << diag_g[j] 
-		   << " at site: " << site << endl;
+		   << " at site: " << site << std::endl;
 	      QDP_abort(1);
 	    }
 
@@ -996,7 +996,7 @@ namespace Chroma
 
     if ( 2*Nc < 3 )
     {
-      QDPIO::cerr << __func__ << ": Matrix is too small" << endl;
+      QDPIO::cerr << __func__ << ": Matrix is too small" << std::endl;
       QDP_abort(1);
     }
   
@@ -1026,7 +1026,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::applySite(T& chi, const T& psi, 
@@ -1037,7 +1037,7 @@ namespace Chroma
 
     if ( Ns != 4 )
     {
-      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << endl;
+      QDPIO::cerr << __func__ << ": CloverTerm::applySite requires Ns==4" << std::endl;
       QDP_abort(1);
     }
 
@@ -1465,7 +1465,7 @@ namespace Chroma
 	  break;
 	  
 	default:
-	  QDPIO::cout << __func__ << ": invalid Gamma matrix int" << endl;
+	  QDPIO::cout << __func__ << ": invalid Gamma matrix int" << std::endl;
 	  QDP_abort(1);
 	}
 	
@@ -1484,7 +1484,7 @@ namespace Chroma
 
     if ( mat < 0  ||  mat > 15 )
     {
-      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
+      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << std::endl;
       QDP_abort(1);
     }
 
@@ -2086,7 +2086,7 @@ namespace Chroma
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
   template<typename T, typename U>
   void QDPCloverTermT<T,U>::apply(T& chi, const T& psi, 
@@ -2096,7 +2096,7 @@ namespace Chroma
     START_CODE();
     
     if ( Ns != 4 ) {
-      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << endl;
+      QDPIO::cerr << __func__ << ": CloverTerm::apply requires Ns==4" << std::endl;
       QDP_abort(1);
     }
 

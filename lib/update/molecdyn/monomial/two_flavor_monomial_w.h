@@ -16,7 +16,6 @@
 #include "update/molecdyn/predictor/chrono_predictor.h"
 
 #include <typeinfo>
-using namespace std;
 
 namespace Chroma
 {
@@ -85,9 +84,9 @@ namespace Chroma
 
       // Solve MdagM X = eta
       SystemSolverResults_t res = (*invMdagM)(X, getPhi(), getMDSolutionPredictor());
-      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << std::endl;
 
-      // Insert vector --  Now done in the syssolver_mdagm
+      // Insert std::vector --  Now done in the syssolver_mdagm
       //(getMDSolutionPredictor()).newVector(X);
       
       Phi Y;
@@ -146,7 +145,7 @@ namespace Chroma
       // Now HIT IT with the ROCK!!!! (Or in this case M^{dagger})
       (*M)(getPhi(), eta, MINUS);
 
-      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor after field refresh" << endl;
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor after field refresh" << std::endl;
       getMDSolutionPredictor().reset();
 
       END_CODE();
@@ -162,8 +161,8 @@ namespace Chroma
 
 	getPhi() = fm.getPhi();
       }
-      catch(bad_cast) { 
-	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial " << endl;
+      catch(std::bad_cast) { 
+	QDPIO::cerr << "Failed to cast input Monomial to TwoFlavorExactWilsonTypeFermMonomial " << std::endl;
 	QDP_abort(1);
       }
 
@@ -232,12 +231,12 @@ namespace Chroma
       
       // Energy calc doesnt use Chrono Predictor
       X = zero;
-      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
 
       // Solve MdagM X = eta
       SystemSolverResults_t res = (*invMdagM)(X, getPhi());
-      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << std::endl;
 
       // Action on the entire lattice
       Double action = innerProductReal(getPhi(), X);
@@ -311,12 +310,12 @@ namespace Chroma
       X[ M->subset() ] = zero;
 
       // Energy calc doesnt use Chrono Predictor
-      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << endl;
+      QDPIO::cout << "TwoFlavWilson4DMonomial: resetting Predictor before energy calc solve" << std::endl;
       (getMDSolutionPredictor()).reset();
 
       // Solve MdagM X = eta
       SystemSolverResults_t res = (*invMdagM)(X, getPhi());
-      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << std::endl;
 
       // Action
       Double action = innerProductReal(getPhi(), X, M->subset());
@@ -497,9 +496,9 @@ namespace Chroma
 
       // Solve MdagM X = eta
       SystemSolverResults_t res = (*invMdagM)(X, getPhi(),getMDSolutionPredictor());
-      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << endl;
+      QDPIO::cout << "2Flav::invert,  n_count = " << res.n_count << std::endl;
 
-      // Insert vector -- now done in syssolver
+      // Insert std::vector -- now done in syssolver
       //(getMDSolutionPredictor()).newVector(X);
       
       Phi Y;

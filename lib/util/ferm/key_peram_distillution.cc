@@ -19,7 +19,7 @@ namespace Chroma
     os << " spin_snk= " << param.spin_snk;
     os << " spin_src= " << param.spin_src;
     os << " mass= " << param.mass;
-    os << endl;
+    os << std::endl;
 
     return os;
   }

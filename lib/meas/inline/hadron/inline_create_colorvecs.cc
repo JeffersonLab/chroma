@@ -24,7 +24,7 @@ namespace Chroma
   namespace InlineCreateColorVecsEnv 
   {
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -36,7 +36,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -48,7 +48,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -61,7 +61,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& out)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& out)
     {
       push(xml, path);
 
@@ -77,14 +77,14 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params& input)
+    void read(XMLReader& xml, const std::string& path, Params& input)
     {
       Params tmp(xml, path);
       input = tmp;
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params& input)
+    void write(XMLWriter& xml, const std::string& path, const Params& input)
     {
       push(xml, path);
     
@@ -155,7 +155,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -170,7 +170,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "CreateColorVecs");
 	write(xml_out, "update_no", update_no);
@@ -208,19 +208,19 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
       push(xml_out, "CreateColorVecs");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Create color vectors" << endl;
+      QDPIO::cout << name << ": Create color vectors" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -248,7 +248,7 @@ namespace Chroma
 	XMLReader  linktop(xml_l);
 	QDPIO::cout << "Link smearing type = " 
 		    << params.param.link_smear.id
-		    << endl;
+		    << std::endl;
 		
 	Handle< LinkSmearing >
 	  linkSmearing(TheLinkSmearingFactory::Instance().createObject(params.param.link_smear.id, 
@@ -256,7 +256,7 @@ namespace Chroma
 	(*linkSmearing)(u_smr);
       }
       catch(const std::string& e){
-	QDPIO::cerr << name << ": Caught Exception link smearing: "<<e<< endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: "<<e<< std::endl;
 	QDP_abort(1);
       }
 
@@ -281,12 +281,12 @@ namespace Chroma
       }
       catch (std::bad_cast)
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": error creating prop: " << e << endl;
+	QDPIO::cerr << name << ": error creating prop: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -321,7 +321,7 @@ namespace Chroma
       multi1d<LatticeColorVector> evecs(num_vecs);
 
 
-      QDPIO::cout << "Got here" << endl;
+      QDPIO::cout << "Got here" << std::endl;
       for(int i(0);i<num_vecs;i++){
 	evals[i].weights.resize(phases.numSubsets());
       }
@@ -334,7 +334,7 @@ namespace Chroma
       {
 	for(int i=0; i < num_vecs; ++i)
 	{
-	  QDPIO::cout << name << ": Doing colorvec: "<<i << " hit no: "<<hit<<endl;
+	  QDPIO::cout << name << ": Doing colorvec: "<<i << " hit no: "<<hit<<std::endl;
 	  if (hit == 0) {
 	    gaussian(evecs[i]);
 	  }
@@ -408,12 +408,11 @@ namespace Chroma
 	pair.eigenVector=evecs[i];
 	color_vecs.insert(i, pair);
       }
-      color_vecs.flush();
       
       swatch.stop();
       QDPIO::cout << name << ": time for colorvec construction = "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;      
+		  << " secs" << std::endl;      
 
       pop(xml_out);  // CreateColorVecs
 
@@ -447,9 +446,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

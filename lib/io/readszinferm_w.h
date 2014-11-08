@@ -15,7 +15,7 @@ namespace Chroma {
  * \param cfg_file   path ( Read )
  */    
 
-void readSzinFerm(LatticeFermion& q, const string& file);
+void readSzinFerm(LatticeFermion& q, const std::string& file);
 
 }  // end namespace Chroma
 

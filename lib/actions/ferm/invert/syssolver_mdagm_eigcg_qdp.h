@@ -21,7 +21,7 @@
 namespace Chroma
 {
 
-  //! Eigenvector accelerated CG system solver namespace
+  //! Eigenstd::vector accelerated CG system solver namespace
   namespace MdagMSysSolverQDPEigCGEnv
   {
     //! Register the syssolver

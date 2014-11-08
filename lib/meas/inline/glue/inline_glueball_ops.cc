@@ -31,7 +31,7 @@ namespace Chroma
   namespace InlineGlueballOpsEnv 
   { 
     // Reader for input parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
     
@@ -47,7 +47,7 @@ namespace Chroma
       default :
 	/**************************************************************************/
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -61,7 +61,7 @@ namespace Chroma
 
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param)
     {
       push(xml, path);
 
@@ -78,7 +78,7 @@ namespace Chroma
     }
 
     //! Read named objects 
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -87,7 +87,7 @@ namespace Chroma
     }
 
     //! Write named objects
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -98,7 +98,7 @@ namespace Chroma
     }
 
     // Writer for input parameters
-    void write(XMLWriter& xml, const string& path, const Params& param)
+    void write(XMLWriter& xml, const std::string& path, const Params& param)
     {
       param.writeXML(xml, path);
     }
@@ -188,7 +188,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -248,7 +248,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "GlueballOps");
 	write(xml_out, "update_no", update_no);
@@ -288,12 +288,12 @@ namespace Chroma
       }
       catch( std::bad_cast ) 
       {
-	QDPIO::cerr << name << ": caught dynamic cast error" << endl;
+	QDPIO::cerr << name << ": caught dynamic cast error" << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -304,7 +304,7 @@ namespace Chroma
       push(xml_out, "GlueballOps");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": Glueball operators" << endl;
+      QDPIO::cout << name << ": Glueball operators" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -346,7 +346,7 @@ namespace Chroma
       {
 	std::istringstream  xml_l(params.param.link_smearing.xml);
 	XMLReader  linktop(xml_l);
-	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << endl;
+	QDPIO::cout << "Link smearing type = " << params.param.link_smearing.id << std::endl;
 	
 	
 	Handle< LinkSmearing >
@@ -358,7 +358,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception link smearing: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -403,7 +403,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": some exception while producing B fields: " << e << endl;
+	QDPIO::cerr << name << ": some exception while producing B fields: " << e << std::endl;
 	QDP_abort(1);
       }
       
@@ -425,7 +425,7 @@ namespace Chroma
 	evals[0].weights = Real(1);
 
 	push(file_xml, "DBMetaData");
-	write(file_xml, "id", string("glueElemOp"));
+	write(file_xml, "id", std::string("glueElemOp"));
 	write(file_xml, "lattSize", QDP::Layout::lattSize());
 	write(file_xml, "decay_dir", params.param.decay_dir);
 	proginfo(file_xml);    // Print out basic program info
@@ -454,7 +454,7 @@ namespace Chroma
       // The creation and annihilation operators are the same without the
       // spin matrices.
       //
-      QDPIO::cout << "Building glue operators" << endl;
+      QDPIO::cout << "Building glue operators" << std::endl;
 
       push(xml_out, "ElementalOps");
 
@@ -469,17 +469,17 @@ namespace Chroma
 	swiss.start();
 
 	// Build the operator
-	QDPIO::cout << "Elemental operator: op = " << l << endl;
+	QDPIO::cout << "Elemental operator: op = " << l << std::endl;
 
 	// Make sure displacement is something sensible
 	multi1d<int> disp = normDisp(params.param.displacement_list[l]);
 
-	QDPIO::cout << "displacement = " << disp << endl;
+	QDPIO::cout << "displacement = " << disp << std::endl;
 
 	// Right mag field
 	for(int j = 0 ; j < B_mag.size(); ++j)
 	{
-	  // Displace the right vector
+	  // Displace the right std::vector
 	  LatticeColorMatrix shift_vec = rightNabla(u_smr, 
 						    B_mag[j],
 						    params.param.displacement_length, 
@@ -516,7 +516,7 @@ namespace Chroma
 		buf.val.data().op.resize(1);
 		buf.val.data().op(0) = op_sum[t];
 
-//		QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << endl; 
+//		QDPIO::cout << "insert: mom= " << phases.numToMom(mom_num) << " displacement= " << disp << std::endl; 
 		qdp_db.insert(buf.key, buf.val);
 
 	      } // end for t
@@ -530,7 +530,7 @@ namespace Chroma
 	QDPIO::cout << "Glue operator= " << l 
 		    << "  time= "
 		    << swiss.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
       } // for l
 
@@ -542,9 +542,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = " 
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } // func

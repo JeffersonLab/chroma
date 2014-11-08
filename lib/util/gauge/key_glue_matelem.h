@@ -1,6 +1,6 @@
 // -*- C++ -*-
 /*! \file
- * \brief Key for glueball colorvector matrix elements
+ * \brief Key for glueball colorstd::vector matrix elements
  */
 
 #ifndef __key_glue_matelem_h__
@@ -22,7 +22,7 @@ namespace Chroma
     int                t_slice;      /*!< Glue operator time slice */
     int                left;         /*!< Left B field direction */ 
     int                right;        /*!< Right B field direction */ 
-    multi1d<int>       displacement; /*!< Displacement dirs of right colorvector */
+    multi1d<int>       displacement; /*!< Displacement dirs of right colorstd::vector */
     multi1d<int>       mom;          /*!< D-1 momentum of this operator */
   };
 
@@ -30,7 +30,7 @@ namespace Chroma
   //! Glue operator
   struct ValGlueElementalOperator_t
   {
-    multi1d<ComplexD>  op;           /*!< Colorvector source/sink (diagonal) with momentum projection */
+    multi1d<ComplexD>  op;           /*!< Colorstd::vector source/sink (diagonal) with momentum projection */
   };
 
 

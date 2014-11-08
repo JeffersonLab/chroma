@@ -5,7 +5,6 @@
 #include "io/xmllog_io.h"
 
 #include <string>
-using namespace std;
 
 namespace Chroma 
 { 
@@ -58,8 +57,8 @@ namespace Chroma
       else { 
 	lambda = 0.1931833275037836;
 
-	QDPIO::cout << "Warning no lambda param found for minimum norm integrator" << endl;
-	QDPIO::cout << "Using default value lambda_c="<< lambda << endl;
+	QDPIO::cout << "Warning no lambda param found for minimum norm integrator" << std::endl;
+	QDPIO::cout << "Using default value lambda_c="<< lambda << std::endl;
       }
       if( paramtop.count("./SubIntegrator") == 0 ) {
 	// BASE CASE: User does not supply sub-integrator 
@@ -84,12 +83,12 @@ namespace Chroma
 	std::ostringstream subintegrator_os;
 	subint_reader.print(subintegrator_os);
 	subintegrator_xml = subintegrator_os.str();
-	QDPIO::cout << "Subintegrator XML is: " << endl;
-	QDPIO::cout << subintegrator_xml << endl;
+	QDPIO::cout << "Subintegrator XML is: " << std::endl;
+	QDPIO::cout << subintegrator_xml << std::endl;
       }
     }
     catch ( const std::string& e ) { 
-      QDPIO::cout << "Error reading XML in LatColMatSTSMinNorm2DTauRecursiveIntegratorParams " << e << endl;
+      QDPIO::cout << "Error reading XML in LatColMatSTSMinNorm2DTauRecursiveIntegratorParams " << e << std::endl;
       QDP_abort(1);
     }
   }

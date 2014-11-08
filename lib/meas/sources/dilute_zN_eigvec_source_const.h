@@ -1,7 +1,7 @@
 // -*- C++ -*-
 // $Id: dilute_zN_eigvec_source_const.h,v 3.2 2009-07-12 00:45:36 jbulava Exp $
 /*! \file
- *  \brief Random Z(N) source construction using dilution in eigenvector 
+ *  \brief Random Z(N) source construction using dilution in eigenstd::vector 
  *  space
  *
  */
@@ -36,7 +36,7 @@ namespace Chroma
       Seed            ran_seed;             /*!< Set the seed to this value */
       int             N;                    /*!< Z(N) */
       
-      std::string     eigen_vec_id;         /*! The ID of the eigenvectors in the named object map*/
+      std::string     eigen_vec_id;         /*! The ID of the eigenvectors in the named object std::map*/
       multi1d<int>    eigen_vectors;        /*!< Eigenvectors which have support on this dilution projector */
       multi1d<int>    spin_mask;            /*!< Spins which have support on this dilution projector */
       int             j_decay;              /*!< decay direction */
@@ -118,11 +118,11 @@ namespace Chroma
 
   //! Reader
   /*! @ingroup sources */
-  void read(XMLReader& xml, const string& path, DiluteZNEigVecQuarkSourceConstEnv::Params& param);
+  void read(XMLReader& xml, const std::string& path, DiluteZNEigVecQuarkSourceConstEnv::Params& param);
 
   //! Writer
   /*! @ingroup sources */
-  void write(XMLWriter& xml, const string& path, const DiluteZNEigVecQuarkSourceConstEnv::Params& param);
+  void write(XMLWriter& xml, const std::string& path, const DiluteZNEigVecQuarkSourceConstEnv::Params& param);
 
 }  // end namespace Chroma
 

@@ -35,7 +35,7 @@ namespace Chroma
 
     if (cnt != barprop_1d.size())
     {
-      QDPIO::cerr << "Size mismatch in QQQSparse_t serialization" << endl;
+      QDPIO::cerr << "Size mismatch in QQQSparse_t serialization" << std::endl;
       QDP_abort(1);
     }
 

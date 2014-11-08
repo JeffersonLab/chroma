@@ -267,17 +267,17 @@ void wallDeltaPFormFac(WallFormFac_formfacs_t& form,
 
 
   // Quark names
-  multi1d<string> quark_name(2);
+  multi1d<std::string> quark_name(2);
   quark_name[0] = "u";
   quark_name[1] = "d";
 
   // Formfac names
-  multi1d<string> formfac_name(2);
+  multi1d<std::string> formfac_name(2);
   formfac_name[0] = "delta->gamma+p";
   formfac_name[1] = "p+gamma->delta";
 
   // Projector names
-  multi1d<string> proj_name(Nd);
+  multi1d<std::string> proj_name(Nd);
   proj_name[0] = "I";
   proj_name[1] = "sigma_1";
   proj_name[2] = "sigma_2";
@@ -488,7 +488,7 @@ void wallDeltaPFormFac(WallFormFac_formfacs_t& form,
 	    insertion.mu          = mu;
 	    insertion.gamma_value = gamma_value;
 
-	    // The local non-conserved vector-current matrix element 
+	    // The local non-conserved std::vector-current matrix element 
 	    LatticeComplex corr_local_fn = traceSpin(S_proj[proj] * local_contract);
 
 	    // The nonlocal (possibly conserved) current matrix element 

@@ -40,7 +40,7 @@ namespace Chroma {
 void fuzwilp(const multi1d<LatticeColorMatrix>& u, 
 	     int j_decay, int tmax, int n_smear,
         const Real& sm_fact, const Real& BlkAccu, int BlkMax,
-	XMLWriter& xml, const string& xml_group);
+	XMLWriter& xml, const std::string& xml_group);
 
 } // End namespace
 

@@ -57,27 +57,27 @@ namespace Chroma
 
 
 
-    void read(XMLReader& xml, const string& path, Params::SpinTerms_t& ter){
+    void read(XMLReader& xml, const std::string& path, Params::SpinTerms_t& ter){
       XMLReader paramtop(xml, path);    
       read(paramtop, "spin"   ,ter.spin   );
       read(paramtop, "weight" ,ter.weight );
     }
 
-    void write(XMLWriter& xml, const string& path, const Params::SpinTerms_t& ter){
+    void write(XMLWriter& xml, const std::string& path, const Params::SpinTerms_t& ter){
       push(xml, path);    
       write(xml, "spin"   ,ter.spin   );
       write(xml, "weight" ,ter.weight );
       pop(xml);
     }
 
-    void read(XMLReader& xml, const string& path, Params::SpinWF_t& spWF){
+    void read(XMLReader& xml, const std::string& path, Params::SpinWF_t& spWF){
       XMLReader paramtop(xml, path);
       read(paramtop, "norm"     ,spWF.norm   );
       read(paramtop, "terms"    ,spWF.terms  );
     }
 
 
-    void write(XMLWriter& xml,const string& path, const Params::SpinWF_t& spWF){
+    void write(XMLWriter& xml,const std::string& path, const Params::SpinWF_t& spWF){
       push(xml, path);
       write(xml, "norm"     ,spWF.norm   );
       write(xml, "terms"    ,spWF.terms  );
@@ -85,24 +85,24 @@ namespace Chroma
     }
 
   
-    void read(XMLReader& xml, const string& path, Params::Operators_t& op){
+    void read(XMLReader& xml, const std::string& path, Params::Operators_t& op){
       XMLReader paramtop(xml, path);
-      //QDPIO::cout<<"Reading Operators: "<<path<<endl ;
+      //QDPIO::cout<<"Reading Operators: "<<path<<std::endl ;
       //xml.print(std::cout);
       read(paramtop, "name"     ,op.name   );
       read(paramtop, "spinWF"   ,op.spinWF );
     }
 
-    void write(XMLWriter& xml, const string& path, const Params::Operators_t& op){
+    void write(XMLWriter& xml, const std::string& path, const Params::Operators_t& op){
       push(xml, path);
       write(xml, "name"     ,op.name   );
       write(xml, "spinWF"   ,op.spinWF );
       pop(xml);
     }
 
-    void read(XMLReader& xml,const string& path, Params::State_t& s){
+    void read(XMLReader& xml,const std::string& path, Params::State_t& s){
       XMLReader paramtop(xml, path);
-      //QDPIO::cout<<"Reading Operators: "<<path<<endl ;
+      //QDPIO::cout<<"Reading Operators: "<<path<<std::endl ;
       //xml.print(std::cout);
       read(paramtop, "name"      ,s.name   );
       read(paramtop, "flavor"    ,s.flavor );
@@ -111,7 +111,7 @@ namespace Chroma
       read(paramtop, "Operators" ,s.ops    );
     }
 
-    void write(XMLWriter& xml, const string& path, const Params::State_t& s){
+    void write(XMLWriter& xml, const std::string& path, const Params::State_t& s){
       push(xml, path);
       write(xml, "name"      ,s.name   );
       write(xml, "flavor"    ,s.flavor );
@@ -124,7 +124,7 @@ namespace Chroma
 
 
     //! Reader for parameters
-    void read(XMLReader& xml, const string& path, Params::Param_t& param)
+    void read(XMLReader& xml, const std::string& path, Params::Param_t& param)
     {
       XMLReader paramtop(xml, path);
 
@@ -137,7 +137,7 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -154,7 +154,7 @@ namespace Chroma
 
 
     //! Writer for parameters
-    void write(XMLWriter& xml, const string& path, const Params::Param_t& param)
+    void write(XMLWriter& xml, const std::string& path, const Params::Param_t& param)
     {
       push(xml, path);
 
@@ -178,7 +178,7 @@ namespace Chroma
   
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t::Props_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t::Props_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -198,7 +198,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t::Props_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t::Props_t& input)
     {
       push(xml, path);
 
@@ -212,7 +212,7 @@ namespace Chroma
 
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -221,7 +221,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
       write(xml, "gauge_id" , input.gauge_id);
@@ -261,7 +261,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -335,17 +335,17 @@ namespace Chroma
       class SinkPropContainer_t{
       public:
 	ForwardProp_t prop_header;
-	string quark_propagator_id;
+	std::string quark_propagator_id;
 	Real Mass;
 
 	bool exists ;
 
 	multi1d<int> bc; 
     
-	string source_type;
-	string source_disp_type;
-	string sink_type;
-	string sink_disp_type;
+	std::string source_type;
+	std::string source_disp_type;
+	std::string sink_type;
+	std::string sink_disp_type;
 
 	SinkPropContainer_t(){
 	  exists=false ;
@@ -374,7 +374,7 @@ namespace Chroma
 	      // Try to invert this record XML into a ChromaProp struct
 	      // Also pull out the id of this source
 	      {
-		string xpath;
+		std::string xpath;
 		read(prop_record_xml, "/SinkSmear", prop_header);
 	      
 		read(prop_record_xml, "/SinkSmear/PropSource/Source/SourceType", source_type);
@@ -395,13 +395,13 @@ namespace Chroma
 	    catch( std::bad_cast ) 
 	    {
 	      QDPIO::cerr << name << ": caught dynamic cast error" 
-			  << endl;
+			  << std::endl;
 	      QDP_abort(1);
 	    }
-	    catch (const string& e) 
+	    catch (const std::string& e) 
 	    {
 	      QDPIO::cerr << name << ": error message: " << e 
-			  << endl;
+			  << std::endl;
 	      QDP_abort(1);
 	    }
 	
@@ -410,7 +410,7 @@ namespace Chroma
 	    // Hunt around to find the mass
 	    // NOTE: this may be problematic in the future if actions are used with no
 	    // clear def. of a Mass
-	    QDPIO::cout << "Try action and mass" << endl;
+	    QDPIO::cout << "Try action and mass" << std::endl;
 	    Mass = getMass(prop_header.prop_header.fermact);
 	
 	    // Only baryons care about boundaries
@@ -424,15 +424,15 @@ namespace Chroma
 	    {
 	      bc = getFermActBoundary(prop_header.prop_header.fermact);
 	    }
-	    catch (const string& e) 
+	    catch (const std::string& e) 
 	    {
 	      QDPIO::cerr << name 
 			  << ": caught exception. No BC found in these headers. Will assume dirichlet: " << e 
-			  << endl;
+			  << std::endl;
 	    }
 	
-	    QDPIO::cout << "FermAct = " << prop_header.prop_header.fermact.id << endl;
-	    QDPIO::cout << "Mass = " << Mass << endl;
+	    QDPIO::cout << "FermAct = " << prop_header.prop_header.fermact.id << std::endl;
+	    QDPIO::cout << "Mass = " << Mass << std::endl;
 	  }
       
       };
@@ -447,29 +447,29 @@ namespace Chroma
 	int j_decay = p1.prop_header.source_header.j_decay;
 	if (p2.prop_header.source_header.j_decay != 
 	    p1.prop_header.source_header.j_decay){
-	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! j_decay must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
 	if (p2.prop_header.source_header.t_source != 
 	    p1.prop_header.source_header.t_source)
 	{
-	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! t_source must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
 	if (p1.source_type != p2.source_type)
 	{
-	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
+	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << std::endl;
 	  QDP_abort(1);
 	}
 	if (p1.sink_type != p2.sink_type)
 	{
-	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << endl;
+	  QDPIO::cerr << "Error!! source_type must be the same in a pair " << std::endl;
 	  QDP_abort(1);
 	}
       
 	if (p2.bc[j_decay] != p1.bc[j_decay])
 	{
-	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << endl;
+	  QDPIO::cerr << "Error!! bc must be the same for all propagators " << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -484,48 +484,48 @@ namespace Chroma
 	int t0 ; 
 	multi1d<int> t_srce ;
 	int bc_spec ;
-	map<string,SinkPropContainer_t>  prop;
-	map<string,BarSpec::RPropagator> rprop;
+	std::map<std::string,SinkPropContainer_t>  prop;
+	std::map<std::string,BarSpec::RPropagator> rprop;
 
 	//! Read all sinks
 	AllSinkProps_t(const Params::NamedObject_t::Props_t& p){
 
-	  QDPIO::cout<<"Attempt to parse forward propagator= "<<p.up_id<<endl;
+	  QDPIO::cout<<"Attempt to parse forward propagator= "<<p.up_id<<std::endl;
 	  prop["up"].readSinkProp(p.up_id);
 	  rprop[p.up_id].ConvertProp(TheNamedObjMap::Instance().getData<LatticePropagator>(p.up_id));
-	  QDPIO::cout<<"up quark  propagator successfully parsed" << endl;
+	  QDPIO::cout<<"up quark  propagator successfully parsed" << std::endl;
 	  j_decay = prop["up"].prop_header.source_header.j_decay;
 	  t0      = prop["up"].prop_header.source_header.t_source;
 	  t_srce  = prop["up"].prop_header.source_header.getTSrce();
 	  bc_spec = prop["up"].bc[j_decay];
 
-	  QDPIO::cout<<"Attempt to parse forward propagator= " <<p.down_id<<endl;
+	  QDPIO::cout<<"Attempt to parse forward propagator= " <<p.down_id<<std::endl;
 	  //Always need a down quark 
 	  prop["down"].readSinkProp(p.down_id);
-	  QDPIO::cout << "down quark propagator successfully parsed" << endl;
+	  QDPIO::cout << "down quark propagator successfully parsed" << std::endl;
 	  if(rprop.find(p.down_id) == rprop.end()){
 	    QDPIO::cout<<__func__<<": Need to convert prop id: "
-		       <<p.down_id<<endl;
+		       <<p.down_id<<std::endl;
 	    rprop[p.down_id].ConvertProp(TheNamedObjMap::Instance().getData<LatticePropagator>(p.down_id));
 	  }
-	  QDPIO::cout<<"Attempt to parse forward propagator= "<<p.strange_id<<endl;
+	  QDPIO::cout<<"Attempt to parse forward propagator= "<<p.strange_id<<std::endl;
 	  prop["strange"].readSinkProp(p.strange_id);
 	  if(p.strange_id != "NULL"){
-	    QDPIO::cout <<"strange quark propagator successfully parsed" << endl;
+	    QDPIO::cout <<"strange quark propagator successfully parsed" << std::endl;
 	    if(rprop.find(p.strange_id) == rprop.end()){
 	      QDPIO::cout<<__func__<<": Need to convert prop id: "
-			 <<p.strange_id<<endl;
+			 <<p.strange_id<<std::endl;
 	      rprop[p.strange_id].ConvertProp(TheNamedObjMap::Instance().getData<LatticePropagator>(p.strange_id));
 	    }
 	  }
 
-	  QDPIO::cout<<"Attempt to parse forward propagator= "<<p.charm_id<<endl;
+	  QDPIO::cout<<"Attempt to parse forward propagator= "<<p.charm_id<<std::endl;
 	  prop["charm"].readSinkProp(p.charm_id);
 	  if(p.charm_id != "NULL"){
-	    QDPIO::cout << "charm quark propagator successfully parsed" << endl;
+	    QDPIO::cout << "charm quark propagator successfully parsed" << std::endl;
 	    if(rprop.find(p.charm_id) == rprop.end()){
 	      QDPIO::cout<<__func__<<": Need to convert prop id: "
-			 <<p.charm_id<<endl;
+			 <<p.charm_id<<std::endl;
 	      rprop[p.charm_id].ConvertProp(TheNamedObjMap::Instance().getData<LatticePropagator>(p.charm_id));
 	    }
 	  }
@@ -540,15 +540,15 @@ namespace Chroma
 	}
 
 
-	string sink(const string& flavor){
+	std::string sink(const std::string& flavor){
 	  return prop[flavor].sink_type ;
 	}
 
-	string source(const string& flavor){
+	std::string source(const std::string& flavor){
 	  return prop[flavor].source_type ;
 	}
 
-	const BarSpec::RPropagator& prop_ref(const string& flavor){
+	const BarSpec::RPropagator& prop_ref(const std::string& flavor){
 
 	  return  rprop[prop[flavor].quark_propagator_id] ;
       
@@ -572,9 +572,9 @@ namespace Chroma
 	    const LatticePropagator& prop = 
 	      TheNamedObjMap::Instance().getData<LatticePropagator>(p.quark_propagator_id);
 	  
-	    QDPIO::cout << "propagator_id = " << p.quark_propagator_id << endl;
-	    QDPIO::cout << "Source_type   = " << p.source_type << endl;
-	    QDPIO::cout << "Sink_type     = " << p.sink_type << endl;
+	    QDPIO::cout << "propagator_id = " << p.quark_propagator_id << std::endl;
+	    QDPIO::cout << "Source_type   = " << p.source_type << std::endl;
+	    QDPIO::cout << "Sink_type     = " << p.sink_type << std::endl;
 	  
 	    write(xml_out, "correlator",sumMulti(localNorm2(prop),s));
 	    write(xml_out, "source_type", p.source_type);
@@ -594,8 +594,8 @@ namespace Chroma
 
     namespace BarSpec{
     
-      vector<int> permutation(int k, const vector<int>& s){
-	vector<int> p = s ;
+      std::vector<int> permutation(int k, const std::vector<int>& s){
+	std::vector<int> p = s ;
 	int ss ;
 	int jj ;
 	for(int j(2); j<=s.size(); j++){
@@ -647,7 +647,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "barspec");
 	write(xml_out, "update_no", update_no);
@@ -685,13 +685,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -700,13 +700,13 @@ namespace Chroma
       push(xml_out, "barspec");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << " BARSPEC: Spectroscopy for Wilson-like fermions" << endl;
-      QDPIO::cout << endl << "     Gauge group: SU(" << Nc << ")" << endl;
+      QDPIO::cout << " BARSPEC: Spectroscopy for Wilson-like fermions" << std::endl;
+      QDPIO::cout << std::endl << "     Gauge group: SU(" << Nc << ")" << std::endl;
       QDPIO::cout << "     volume: " << Layout::lattSize()[0];
       for (int i=1; i<Nd; ++i) {
 	QDPIO::cout << " x " << Layout::lattSize()[i];
       }
-      QDPIO::cout << endl;
+      QDPIO::cout << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -767,7 +767,7 @@ namespace Chroma
 	pop(xml_out);
 
 	push(xml_out, "Forward_Propagator_Properties"                     );
-	map<string,SinkPropContainer_t>::iterator it;
+	std::map<std::string,SinkPropContainer_t>::iterator it;
 	for(it=all_sinks.prop.begin();it!=all_sinks.prop.end();it++)
 	  xml_print_prop_info(xml_out, it->second      , phases.getSet()  );
       
@@ -780,12 +780,12 @@ namespace Chroma
 	tictoc.reset();
 	tictoc.start();
 	for(int s(0);s<params.param.states.size();s++){
-	  QDPIO::cout<<"Doing state "<<params.param.states[s].name<<endl;
+	  QDPIO::cout<<"Doing state "<<params.param.states[s].name<<std::endl;
 	  QDPIO::cout<<"   Flavor structure: " ;
 	  for(int k(0);k<params.param.states[s].flavor.size();k++)
 	    QDPIO::cout<<"  "<<params.param.states[s].flavor[k] ;
-	  QDPIO::cout<<endl;
-	  multi1d<string> prop_id(params.param.states[s].flavor.size()) ;
+	  QDPIO::cout<<std::endl;
+	  multi1d<std::string> prop_id(params.param.states[s].flavor.size()) ;
 	  for(int k(0);k<params.param.states[s].flavor.size();k++){
 	    prop_id[k] = params.param.states[s].flavor[k] ;
 	  }
@@ -794,7 +794,7 @@ namespace Chroma
 	    XMLBufferWriter file_xml;
 	  
 	    push(file_xml, "DBMetaData");
-	    write(file_xml, "id", string("hadron2Pt"));
+	    write(file_xml, "id", std::string("hadron2Pt"));
 	    write(file_xml, "lattSize", QDP::Layout::lattSize());
 	    write(file_xml, "decay_dir", j_decay);
 	    write(file_xml, "State", params.param.states[s].name);
@@ -821,7 +821,7 @@ namespace Chroma
 
 	  KeyHadron2PtCorr_t key  ;
 
-	  ostringstream os ;
+	  std::ostringstream os ;
 	  os<<all_sinks.prop[prop_id[0]].Mass<<" ";
 	  os<<all_sinks.prop[prop_id[1]].Mass<<" ";
 	  os<<all_sinks.prop[prop_id[2]].Mass ;
@@ -882,7 +882,7 @@ namespace Chroma
 	tictoc.stop();
 	QDPIO::cout << name << ": contraction time = "
 		    << tictoc.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
 
 	pop(xml_out); //elem
       }// loop over propagator groups
@@ -891,9 +891,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

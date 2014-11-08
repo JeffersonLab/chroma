@@ -1,7 +1,7 @@
 // -*- C++ -*-
 /*
  * \file map_obj_aggregate_w.h
- * \brief Header file for map obj aggregate registrations 
+ * \brief Header file for std::map obj aggregate registrations 
  */
 
 #ifndef __map_obj_aggregate_w_h__

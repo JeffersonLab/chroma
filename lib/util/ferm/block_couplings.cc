@@ -46,12 +46,12 @@ namespace Chroma
   }
 
 
-  vector<int> block_couplings(const int b,
+  std::vector<int> block_couplings(const int b,
 			      const Set& S,
 			      const multi1d<int>& disp,
 			      const int len)
   {
-    vector<int> b_list;
+    std::vector<int> b_list;
     LatticeInteger blk = zero;
     LatticeInteger One = 1;
     blk[S[b]] = One;
@@ -60,11 +60,11 @@ namespace Chroma
     {
       LatticeInteger blk2 = zero;
       blk2[S[b2]] = One;
-      //QDPIO::cout<<"Points in block "<<b2<<" "<<sum(blk2)<<endl;
+      //QDPIO::cout<<"Points in block "<<b2<<" "<<sum(blk2)<<std::endl;
       displace(blk2,len,disp);
 
       int flag = toInt(sum(blk2*blk));
-      //QDPIO::cout<<"b2 ="<<b2<<" flag "<<flag << endl;
+      //QDPIO::cout<<"b2 ="<<b2<<" flag "<<flag << std::endl;
       if(flag > 0)
 	b_list.push_back(b2);
     }
@@ -94,7 +94,7 @@ namespace Chroma
       flag *= blk;
     }
 
-    //QDPIO::cout<<" Coupling flag "<<sum(flag)<<endl;
+    //QDPIO::cout<<" Coupling flag "<<sum(flag)<<std::endl;
     if (toBool(sum(flag) > 0))
       return true;
     else

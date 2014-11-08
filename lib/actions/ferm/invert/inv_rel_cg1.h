@@ -35,7 +35,7 @@ namespace Chroma {
  *      q    := A(inner_tol) p
  *
  *      a[k] := |r[k-1]|**2 / <q,p[k]> ;
- *      Psi[k] += a[k] p[k] ;   	       New solution vector
+ *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
  *      r[k] -= a[k] q ;        New residual
  *      c := <r , r>
  *      zeta := zeta + 1/c
@@ -57,8 +57,8 @@ namespace Chroma {
  *
  * Local Variables:
  *
- *  p   	       Direction vector
- *  r   	       Residual vector
+ *  p   	       Direction std::vector
+ *  r   	       Residual std::vector
  *  cp  	       | r[k] |**2
  *  c   	       | r[k-1] |**2
  *  k   	       CG iteration counter
@@ -69,7 +69,7 @@ namespace Chroma {
  *
  * Subroutines:
  *                             +               
- *  A       Apply matrix M or M  to vector
+ *  A       Apply matrix M or M  to std::vector
  *
  * Operations:
  *

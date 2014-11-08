@@ -80,10 +80,10 @@ namespace Chroma
     //! Only defined on the entire lattice
     const Subset& subset() const {return all;}
 
-    //! Apply the operator onto a source vector
+    //! Apply the operator onto a source std::vector
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign) const;
 
-    //! Apply the operator onto a source vector to given epsilon
+    //! Apply the operator onto a source std::vector to given epsilon
     //  Here epsilon is the RsdCG for the inner solve
     //
     void operator() (LatticeFermion& chi, const LatticeFermion& psi, enum PlusMinus isign, Real epsilon) const;

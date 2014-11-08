@@ -44,7 +44,7 @@ namespace Chroma
 	    const int& bc, 
 	    const SftMom& phases,
 	    XMLWriter& xml,
-	    const string& xml_group);
+	    const std::string& xml_group);
 
   void QlQl(const multi1d<LatticeColorMatrix>& u, 
 	    const LatticePropagator& quark_propagator1,
@@ -56,7 +56,7 @@ namespace Chroma
             const int& bc,
 	    const SftMom& phases,
 	    XMLWriter& xml,
-	    const string& xml_group);
+	    const std::string& xml_group);
   
   void QlQl(const multi1d<LatticeColorMatrix>& u, 
 	    const LatticePropagator& quark_propagator1,
@@ -67,7 +67,7 @@ namespace Chroma
 	    const multi1d<int>& snk_coord, 
 	    const SftMom& phases,
 	    XMLWriter& xml,
-	    const string& xml_group);
+	    const std::string& xml_group);
   
 }
 #endif

@@ -31,7 +31,7 @@ OverlapStateInfo::OverlapStateInfo(void)
   
 }
 
-void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
+void read(XMLReader& xml_in, const std::string& path, OverlapStateInfo& info)
 {
   bool initedP;
   Real ApproxMin;
@@ -69,8 +69,8 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
     if( reader.count("NWilsVec") != 0 )
       read(reader, "NWilsVec", NWilsVec);
   }
-  catch(const string& e) { 
-    QDPIO::cerr << "Caught exception : " << e << endl;
+  catch(const std::string& e) { 
+    QDPIO::cerr << "Caught exception : " << e << std::endl;
     QDP_abort(1);
   }
 
@@ -94,8 +94,8 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
       else
 	read(reader, "ApproxMax", ApproxMax);
     }
-    catch( const string& e) {
-      QDPIO::cerr << "Caught exception : " << e << endl;
+    catch( const std::string& e) {
+      QDPIO::cerr << "Caught exception : " << e << std::endl;
     }
   }
   else {
@@ -105,24 +105,24 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
 
     if( reader.count("Eig") == 1 ) {
       if( reader.count("Ritz") == 1 ) {
-	QDPIO::cerr << "Cannot specify both Eig and Ritz " << endl;
+	QDPIO::cerr << "Cannot specify both Eig and Ritz " << std::endl;
 	QDP_abort(1);
       }
 
 
-      // Read in the eigenvector IO params
+      // Read in the eigenstd::vector IO params
       try { 
 	read(reader, "Eig", eigen_io);
       }
-      catch( const string& e ) { 
-	QDPIO::cerr << "Caught exception: " << e << endl;
+      catch( const std::string& e ) { 
+	QDPIO::cerr << "Caught exception: " << e << std::endl;
       }
       load_eigenP = true;
 
     }
     else if ( reader.count("Ritz") == 1 ) {
       if( reader.count("Eig") == 1 ) { 
-	QDPIO::cerr << "Cannot specify both Eig and Ritz " << endl;
+	QDPIO::cerr << "Cannot specify both Eig and Ritz " << std::endl;
 	QDP_abort(1);
       }
       
@@ -141,8 +141,8 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
 	read(ritzreader, "MaxKSIter", ritzery.MaxKSIter);
 	read(ritzreader, "Nrenorm", ritzery.Nrenorm);
       }    
-      catch( const string& e ) { 
-	QDPIO::cerr << "Caught exception: " << e << endl;
+      catch( const std::string& e ) { 
+	QDPIO::cerr << "Caught exception: " << e << std::endl;
 	QDP_abort(1);
       }
 
@@ -151,7 +151,7 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
     }
     else { 
       QDPIO::cerr << "Must specify either Eig for loadable eigenvalues or "
-		  << "Ritz Parameters for compuing eigenvalues" << endl;
+		  << "Ritz Parameters for compuing eigenvalues" << std::endl;
       QDP_abort(1);
     }
 
@@ -166,7 +166,7 @@ void read(XMLReader& xml_in, const string& path, OverlapStateInfo& info)
 
 }
 
-void write(XMLWriter& xml_out, const string& path, const OverlapStateInfo& info)
+void write(XMLWriter& xml_out, const std::string& path, const OverlapStateInfo& info)
 {
 
   if( path != "." ) { 
@@ -204,7 +204,7 @@ void write(XMLWriter& xml_out, const string& path, const OverlapStateInfo& info)
     }
     else { 
       QDPIO::cerr << "Must specify either Eig for loadable eigenvalues or "
-		  << "Ritz Parameters for compuing eigenvalues" << endl;
+		  << "Ritz Parameters for compuing eigenvalues" << std::endl;
     }
 
   }

@@ -16,24 +16,24 @@ namespace Chroma
 
     //! Callback function to register with the factory
     GaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >* createGaugeBC(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
-      QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << endl;
+      QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << std::endl;
       return new PeriodicGaugeBC< multi1d<LatticeColorMatrix>, multi1d<LatticeColorMatrix> >();
     }
 
 
     GaugeBC< multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> >* createGaugeBCF(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
-      QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << endl;
+      QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << std::endl;
       return new PeriodicGaugeBC< multi1d<LatticeColorMatrixF>, multi1d<LatticeColorMatrixF> >();
     }
 
     GaugeBC< multi1d<LatticeColorMatrixD>, multi1d<LatticeColorMatrixD> >* createGaugeBCD(XMLReader& xml, 
-										       const string& path)
+										       const std::string& path)
     {
-      QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << endl;
+      QDPIO::cout << "GaugeBC Callback: Creating PeriodicGaugeBC " << std::endl;
       return new PeriodicGaugeBC< multi1d<LatticeColorMatrixD>, multi1d<LatticeColorMatrixD> >();
     }
 

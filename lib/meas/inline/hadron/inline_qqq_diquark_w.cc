@@ -47,7 +47,7 @@ namespace Chroma
 
 
     //! Param input
-    void read(XMLReader& xml, const string& path, InlineQQQDiquarkEnv::Params::Param_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineQQQDiquarkEnv::Params::Param_t& input)
     {
       XMLReader paramtop(xml, path);
 
@@ -60,7 +60,7 @@ namespace Chroma
 	break;
 
       default:
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -73,7 +73,7 @@ namespace Chroma
     }
 
     //! Param output
-    void write(XMLWriter& xml, const string& path, const InlineQQQDiquarkEnv::Params::Param_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineQQQDiquarkEnv::Params::Param_t& input)
     {
       push(xml, path);
 
@@ -90,7 +90,7 @@ namespace Chroma
     }
 
     //! Propagator input
-    void read(XMLReader& xml, const string& path, InlineQQQDiquarkEnv::Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, InlineQQQDiquarkEnv::Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -101,7 +101,7 @@ namespace Chroma
     }
 
     //! Propagator output
-    void write(XMLWriter& xml, const string& path, const InlineQQQDiquarkEnv::Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const InlineQQQDiquarkEnv::Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -136,7 +136,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -178,13 +178,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineQQQDiquarkEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << InlineQQQDiquarkEnv::name << ": map call failed: " << e 
-		    << endl;
+	QDPIO::cerr << InlineQQQDiquarkEnv::name << ": std::map call failed: " << e 
+		    << std::endl;
 	QDP_abort(1);
       }
       const multi1d<LatticeColorMatrix>& u = 
@@ -193,7 +193,7 @@ namespace Chroma
       push(xml_out,"qqq_diquark");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << InlineQQQDiquarkEnv::name << ": Generalized propagator generation" << endl;
+      QDPIO::cout << InlineQQQDiquarkEnv::name << ": Generalized propagator generation" << std::endl;
       StopWatch swatch;
 
       // Write out the input
@@ -233,7 +233,7 @@ namespace Chroma
       try
       {
 	// Read diquark
-	QDPIO::cout << InlineQQQDiquarkEnv::name << ": parse id = " << params.named_obj.diquark_id << endl;
+	QDPIO::cout << InlineQQQDiquarkEnv::name << ": parse id = " << params.named_obj.diquark_id << std::endl;
 	TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(params.named_obj.diquark_id);
 	{
 	  XMLReader diquark_file_xml, diquark_record_xml;
@@ -242,14 +242,14 @@ namespace Chroma
 	
 	  read(diquark_record_xml, "/Diquark", diquark_header);
 	}
-	QDPIO::cout << InlineQQQDiquarkEnv::name << ": object successfully parsed" << endl;
+	QDPIO::cout << InlineQQQDiquarkEnv::name << ": object successfully parsed" << std::endl;
 
 	// The QQQ object is composed of the diquark headers
 	qqq_header.forward_props[0] = diquark_header.forward_props[0];
 	qqq_header.forward_props[1] = diquark_header.forward_props[1];
 
 	// Read 3rd prop
-	QDPIO::cout << InlineQQQDiquarkEnv::name << ": parse id = " << params.named_obj.prop_id << endl;
+	QDPIO::cout << InlineQQQDiquarkEnv::name << ": parse id = " << params.named_obj.prop_id << std::endl;
 	quark_propagator = TheNamedObjMap::Instance().getData<LatticePropagator>(params.named_obj.prop_id);
 	{
 	  XMLReader prop_file_xml, prop_record_xml;
@@ -258,24 +258,24 @@ namespace Chroma
 	
 	  read(prop_record_xml, "/SinkSmear", qqq_header.forward_props[Nprops-1]);
 	}
-	QDPIO::cout << InlineQQQDiquarkEnv::name << ": object successfully parsed" << endl;
+	QDPIO::cout << InlineQQQDiquarkEnv::name << ": object successfully parsed" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << InlineQQQDiquarkEnv::name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << InlineQQQDiquarkEnv::name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
       const QQDiquarkContract_t& diquark =
 	TheNamedObjMap::Instance().getData<QQDiquarkContract_t>(params.named_obj.diquark_id);
 
-      QDPIO::cout << InlineQQQDiquarkEnv::name << ": finished with gauge, diquark and prop" << endl;
+      QDPIO::cout << InlineQQQDiquarkEnv::name << ": finished with gauge, diquark and prop" << std::endl;
 
       // Save prop input
       write(xml_out, "Propagator_input", qqq_header);
@@ -376,9 +376,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << InlineQQQDiquarkEnv::name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << InlineQQQDiquarkEnv::name << ": ran successfully" << endl;
+      QDPIO::cout << InlineQQQDiquarkEnv::name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

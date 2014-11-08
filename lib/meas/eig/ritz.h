@@ -86,8 +86,8 @@ namespace Chroma {
 
   * Local Variables:
 
- *  psi			New eigenvector
- *  p			Direction vector
+ *  psi			New eigenstd::vector
+ *  p			Direction std::vector
  *  Apsi		Temporary for  A.psi
  *  Ap			Temporary for  A.p, and other
  *  mu			Ritz functional value
@@ -101,7 +101,7 @@ namespace Chroma {
 template < typename T >
 void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 	    Real& lambda,               // Current E-value
-	    multi1d<T>& psi_all,        // E-vector array
+	    multi1d<T>& psi_all,        // E-std::vector array
 	    int N_eig,                  // Current evec index
 	    const Real& Rsd_r,          // Target relative residue
 	    const Real& Rsd_a,          // Target absolute residue
@@ -120,7 +120,7 @@ void Ritz_t(const LinearOperator<T>& A, // Herm Pos Def
 
 void Ritz(const LinearOperator<LatticeFermion>& A,   // Herm Pos Def
 	  Real& lambda,                            // Current E-value
-	  multi1d<LatticeFermion>& psi_all,        // E-vector array
+	  multi1d<LatticeFermion>& psi_all,        // E-std::vector array
 	  int N_eig,                  // Current evec index
 	  const Real& Rsd_r,          // Target relative residue
 	  const Real& Rsd_a,          // Target absolute residue

@@ -51,13 +51,13 @@ namespace Chroma
       push(xml_out, "qio_write_erase_named_obj");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object writer" << endl;
+      QDPIO::cout << name << ": object writer" << std::endl;
       StopWatch swatch;
 
       // Write and erase the object
       // ONLY SciDAC output format is supported in this task
       // Other tasks could support other disk formats
-      QDPIO::cout << "Attempt to write then delete an object name = " << params.named_obj.object_id << endl;
+      QDPIO::cout << "Attempt to write then delete an object name = " << params.named_obj.object_id << std::endl;
       write(xml_out, "object_id", params.named_obj.object_id);
       try
       {
@@ -72,22 +72,22 @@ namespace Chroma
 	// Now erase the object
 	TheNamedObjMap::Instance().erase(params.named_obj.object_id);
 
-	QDPIO::cout << "Object erased" << endl;
+	QDPIO::cout << "Object erased" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // qio_write_erase_named_obj
 

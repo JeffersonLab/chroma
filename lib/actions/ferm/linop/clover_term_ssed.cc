@@ -33,7 +33,7 @@ namespace Chroma
 	tri_diag = (PrimitiveClovDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovDiag) , QDP::Allocator::DEFAULT );
       }
       catch( std::bad_alloc ) { 
-	QDPIO::cerr << "Failed to allocate the tri_diag" << endl << flush ;
+	QDPIO::cerr << "Failed to allocate the tri_diag" << std::endl << std::flush ;
 	QDP_abort(1);
       }
     }
@@ -52,7 +52,7 @@ namespace Chroma
 	tri_off_diag = (PrimitiveClovOffDiag *)QDP::Allocator::theQDPAllocator::Instance().allocate( Layout::sitesOnNode()*sizeof(PrimitiveClovOffDiag) , QDP::Allocator::DEFAULT );
       }
       catch( std::bad_alloc ) { 
-	QDPIO::cerr << "Failed to allocate the tri_off_diag" << endl << flush ;
+	QDPIO::cerr << "Failed to allocate the tri_off_diag" << std::endl << std::flush ;
 	QDP_abort(1);
       }
     }
@@ -83,7 +83,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "SSEDCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "SSEDCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -129,7 +129,7 @@ namespace Chroma
     write(fred, "diff", diff);
     pop(fred);
 
-    QDPIO::cout << "sqrt( norm2( diff))= " << sqrt(norm2(diff)) << endl << flush;
+    QDPIO::cout << "sqrt( norm2( diff))= " << sqrt(norm2(diff)) << std::endl << std::flush;
     QDP_abort(1);
 #endif
 
@@ -150,7 +150,7 @@ namespace Chroma
     
     // Sanity check
     if (fbc.operator->() == 0) {
-      QDPIO::cerr << "SSEDCloverTerm: error: fbc is null" << endl;
+      QDPIO::cerr << "SSEDCloverTerm: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
     
@@ -261,7 +261,7 @@ namespace Chroma
    *  Here are some notes on the origin of this routine. NOTE, ClovCoeff or u0
    *  are not actually used in MAKCLOV.
    *
-   *  The clover mass term is suppose to act on a vector like
+   *  The clover mass term is suppose to act on a std::vector like
    *
    *  chi = (1 - (ClovCoeff/u0^3) * kappa/4 * sum_mu sum_nu F(mu,nu)*sigma(mu,nu)) * psi
 
@@ -485,14 +485,14 @@ namespace Chroma
 
     if( choles_done[cb] == false ) 
     {
-      QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << endl;
-      QDPIO::cout << "You sure you shouldn't be asking invclov?" << endl;
+      QDPIO::cout << "Error: YOu have not done the Cholesky.on this operator on this subset" << std::endl;
+      QDPIO::cout << "You sure you shouldn't be asking invclov?" << std::endl;
       QDP_abort(1);
     }
 LatticeReal ff=tr_log_diag_;
 
     if( param.sub_zero_usedP ) { 
- 	QDPIO::cout << "Subtracting "<< param.sub_zero<<endl;
+ 	QDPIO::cout << "Subtracting "<< param.sub_zero<<std::endl;
 	LatticeReal tmp;
 	tmp[rb[cb]] = param.sub_zero;
 	ff[rb[cb]] -= tmp;
@@ -702,7 +702,7 @@ LatticeReal ff=tr_log_diag_;
 	if( site_neg_logdet != 0 ) { 
 	  // Report if site had odd number of negative terms. (-ve def)
 	  std::cout << "WARNING: Odd number of negative terms in Clover DET (" 
-		    << site_neg_logdet<< ") at site: " << site << endl;
+		    << site_neg_logdet<< ") at site: " << site << std::endl;
 	}
       } // End Site Loop
     } // End Function
@@ -744,7 +744,7 @@ LatticeReal ff=tr_log_diag_;
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
   extern void ssed_clover_apply(REAL64* diag, REAL64* offd, REAL64* psiptr, REAL64* chiptr, int n_sites);
 
@@ -838,7 +838,7 @@ LatticeReal ff=tr_log_diag_;
    * \param chi     result                                      (Write)
    * \param psi     source                                      (Read)
    * \param isign   D'^dag or D'  ( MINUS | PLUS ) resp.        (Read)
-   * \param cb      Checkerboard of OUTPUT vector               (Read) 
+   * \param cb      Checkerboard of OUTPUT std::vector               (Read) 
    */
   void SSEDCloverTerm::applySite(LatticeFermion& chi, const LatticeFermion& psi, 
 			    enum PlusMinus isign, int site) const
@@ -1272,7 +1272,7 @@ LatticeReal ff=tr_log_diag_;
 	default:
 	  {
 	    B = zero;
-	    QDPIO::cout << "BAD DEFAULT CASE HIT" << endl;
+	    QDPIO::cout << "BAD DEFAULT CASE HIT" << std::endl;
 	  }
 	} // End Switch
 	
@@ -1288,7 +1288,7 @@ LatticeReal ff=tr_log_diag_;
 
     if ( mat < 0  ||  mat > 15 )
     {
-      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << endl;
+      QDPIO::cerr << __func__ << ": Gamma out of range: mat = " << mat << std::endl;
       QDP_abort(1);
     }
     

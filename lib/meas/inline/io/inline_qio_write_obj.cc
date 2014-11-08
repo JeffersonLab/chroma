@@ -47,7 +47,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void write(XMLWriter& xml, const string& path, const Params::NamedObject_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::NamedObject_t& input)
     {
       push(xml, path);
 
@@ -58,7 +58,7 @@ namespace Chroma
     }
 
     //! File output
-    void write(XMLWriter& xml, const string& path, const Params::File_t& input)
+    void write(XMLWriter& xml, const std::string& path, const Params::File_t& input)
     {
       push(xml, path);
 
@@ -71,7 +71,7 @@ namespace Chroma
 
 
     //! Object buffer
-    void read(XMLReader& xml, const string& path, Params::NamedObject_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::NamedObject_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -80,7 +80,7 @@ namespace Chroma
     }
 
     //! File output
-    void read(XMLReader& xml, const string& path, Params::File_t& input)
+    void read(XMLReader& xml, const std::string& path, Params::File_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -118,7 +118,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -148,21 +148,21 @@ namespace Chroma
       push(xml_out, "qio_write_named_obj");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": object writer" << endl;
+      QDPIO::cout << name << ": object writer" << std::endl;
       StopWatch swatch;
 
       // Write the object
       // ONLY SciDAC output format is supported in this task
       // Other tasks could support other disk formats
-      QDPIO::cout << "Attempt to write object name = " << params.named_obj.object_id << endl;
+      QDPIO::cout << "Attempt to write object name = " << params.named_obj.object_id << std::endl;
       write(xml_out, "object_id", params.named_obj.object_id);
       QDP_serialparallel_t parallel_io_type = QDPIO_SERIAL;
       if ( params.file.parallel_io ) { 
-	QDPIO::cout << "Attempting to write with Parallel IO" << endl;
+	QDPIO::cout << "Attempting to write with Parallel IO" << std::endl;
 	parallel_io_type = QDPIO_PARALLEL;
       }
       else { 
-	QDPIO::cout << "Attempting to write without parallel IO" << endl;
+	QDPIO::cout << "Attempting to write without parallel IO" << std::endl;
 	parallel_io_type = QDPIO_SERIAL;
       }
 
@@ -180,22 +180,22 @@ namespace Chroma
 
 	QDPIO::cout << "Object successfully written: time= " 
 		    << swatch.getTimeInSeconds() 
-		    << " secs" << endl;
+		    << " secs" << std::endl;
       }
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error message: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
     
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       pop(xml_out);  // write_named_obj
 

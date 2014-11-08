@@ -3,7 +3,7 @@
 /*! \file
  * \brief Compute the annihilation diagram propagator elements    M^-1 * multi1d<LatticeColorVector>
  *
- * Annihilation diagrams version of propagator calculation on a colorvector
+ * Annihilation diagrams version of propagator calculation on a colorstd::vector
  */
 
 #ifndef __inline_annih_prop_matelem_colorvec_w_h__

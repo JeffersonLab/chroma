@@ -59,7 +59,7 @@ namespace Chroma
 	rvec[s] -= tmp;
 	// Double norm_r = sqrt(norm2(rvec,s));
 	// Double norm_chi = sqrt(norm2(chi,s));
-	// QDPIO::cout << "MRE Predictor: before prediction || r || / || b || =" << norm_r/norm_chi << endl;
+	// QDPIO::cout << "MRE Predictor: before prediction || r || / || b || =" << norm_r/norm_chi << std::endl;
       }
 #endif
       
@@ -117,9 +117,9 @@ namespace Chroma
       }
       
 
-      QDPIO::cout << "Constraint Eq Solution Check" << endl;
+      QDPIO::cout << "Constraint Eq Solution Check" << std::endl;
       for(int i=0; i < Nvec; i++) { 
-	QDPIO::cout << "   r[ " << i << "] = " << r[i] << endl;
+	QDPIO::cout << "   r[ " << i << "] = " << r[i] << std::endl;
       }
 #endif
       
@@ -145,7 +145,7 @@ namespace Chroma
 	rvec[s] -= tmp;
 	Double norm_r = sqrt(norm2(rvec,s));
 	Double norm_chi = sqrt(norm2(chi,s));
-	QDPIO::cout << "MRE Predictor: after prediction || r || / || b || =" << norm_r/norm_chi << endl;
+	QDPIO::cout << "MRE Predictor: after prediction || r || / || b || =" << norm_r/norm_chi << std::endl;
       }
 #endif
       
@@ -183,14 +183,14 @@ namespace Chroma
 #if 0
       case 1:
 	{
-	  QDPIO::cout << "MRE Predictor: Only 1 vector stored. Giving you last solution " << endl;
+	  QDPIO::cout << "MRE Predictor: Only 1 std::vector stored. Giving you last solution " << std::endl;
 	  chrono_buf->get(0,X);
 	}
 	break;
 #endif
       default:
 	{
-	  QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << endl;
+	  QDPIO::cout << "MRE Predictor: Finding X extrapolation with "<< Nvec << " vectors" << std::endl;
 	  
 	  // Expect M is either  MdagM if we use chi
 	  // or                   M    if we minimize against Y
@@ -200,7 +200,7 @@ namespace Chroma
       }
       
       swatch.stop();
-      QDPIO::cout << "MRE_PREDICT_X_TIME = " << swatch.getTimeInSeconds() << " s" << endl;
+      QDPIO::cout << "MRE_PREDICT_X_TIME = " << swatch.getTimeInSeconds() << " s" << std::endl;
       
       END_CODE();
     }
@@ -223,7 +223,7 @@ namespace Chroma
       chrono_bufM->push(Mv);
 
 
-      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_buf->size() << std::endl;
 
       END_CODE();
     }
@@ -242,7 +242,7 @@ namespace Chroma
       chrono_bufM->replaceHead(Mv);
 
 
-      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_buf->size() << endl;
+      QDPIO::cout << "MREPredictor: number of X vectors stored is = " << chrono_buf->size() << std::endl;
 
       END_CODE();
     }

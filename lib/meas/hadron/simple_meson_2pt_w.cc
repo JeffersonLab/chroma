@@ -12,14 +12,14 @@ namespace Chroma
 {
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, SimpleMeson2PtEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, SimpleMeson2PtEnv::Params& param)
   {
     SimpleMeson2PtEnv::Params tmp(xml, path);
     param = tmp;
   }
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const SimpleMeson2PtEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const SimpleMeson2PtEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -73,7 +73,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -87,7 +87,7 @@ namespace Chroma
 
       default:
 	QDPIO::cerr << __func__ << ": parameter version " << version 
-		    << " unsupported." << endl;
+		    << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -100,7 +100,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -126,7 +126,7 @@ namespace Chroma
     {
       START_CODE();
 
-      QDPIO::cout << "Hadron2Pt: diagonal_gamma_mesons" << endl;
+      QDPIO::cout << "Hadron2Pt: diagonal_gamma_mesons" << std::endl;
 
       multi1d<ForwardProp_t> forward_headers(2);
       forward_headers[0] = readForwardPropHeader(params.first_id);
@@ -179,7 +179,7 @@ namespace Chroma
       if (! registered)
       {
 	//! Register all the factories
-	success &= Chroma::TheHadronContractFactory::Instance().registerObject(string("diagonal_gamma_mesons"),
+	success &= Chroma::TheHadronContractFactory::Instance().registerObject(std::string("diagonal_gamma_mesons"),
 									       mesDiagGammaCorrs);
 
 	registered = true;

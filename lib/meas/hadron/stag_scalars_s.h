@@ -33,7 +33,7 @@ namespace Chroma {
 	tag_names.resize(no_scalar) ; 
 	for(int i = 0 ; i <  no_scalar ; ++i ) 
 	{
-	  ostringstream tag;
+	  std::ostringstream tag;
 	  tag << "re_sc" << i;
 	  tag_names[i] = tag.str() ; 
 	}

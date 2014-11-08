@@ -21,7 +21,7 @@
 namespace Chroma 
 { 
   //! Propagator input
-  void read(XMLReader& xml, const string& path, InlineSeqPropTestEnv::Params::NamedObject_t& input)
+  void read(XMLReader& xml, const std::string& path, InlineSeqPropTestEnv::Params::NamedObject_t& input)
   {
     XMLReader inputtop(xml, path);
 
@@ -32,7 +32,7 @@ namespace Chroma
   }
 
   //! Propagator output
-  void write(XMLWriter& xml, const string& path, const InlineSeqPropTestEnv::Params::NamedObject_t& input)
+  void write(XMLWriter& xml, const std::string& path, const InlineSeqPropTestEnv::Params::NamedObject_t& input)
   {
     push(xml, path);
 
@@ -105,7 +105,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << endl;
+	QDPIO::cerr << __func__ << ": Caught Exception reading XML: " << e << std::endl;
 	QDP_abort(1);
       }
     }
@@ -131,7 +131,7 @@ namespace Chroma
       // If xml file not empty, then use alternate
       if (params.xml_file != "")
       {
-	string xml_file = makeXMLFileName(params.xml_file, update_no);
+	std::string xml_file = makeXMLFileName(params.xml_file, update_no);
 
 	push(xml_out, "SeqPropTest");
 	write(xml_out, "update_no", update_no);
@@ -162,7 +162,7 @@ namespace Chroma
       push(xml_out, "SeqPropTest");
       write(xml_out, "update_no", update_no);
 
-      QDPIO::cout << name << ": sequential propagator sequential test" << endl;
+      QDPIO::cout << name << ": sequential propagator sequential test" << std::endl;
 
       proginfo(xml_out);    // Print out basic program info
 
@@ -181,13 +181,13 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error extracting gauge field: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
@@ -204,7 +204,7 @@ namespace Chroma
       // Sanity check
       if (params.named_obj.sink_ids.size() == 0)
       {
-	QDPIO::cerr << name << ": sanity error: " << endl;
+	QDPIO::cerr << name << ": sanity error: " << std::endl;
 	QDP_abort(1);
       }
 
@@ -240,20 +240,20 @@ namespace Chroma
 	catch( std::bad_cast ) 
 	{
 	  QDPIO::cerr << name << ": caught dynamic cast error" 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
-	catch (const string& e) 
+	catch (const std::string& e) 
 	{
 	  QDPIO::cerr << name << ": error extracting forward props: " << e 
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
 	pop(xml_out);
       }
       pop(xml_out);
 
-      QDPIO::cout << "Forward propagators successfully read and parsed" << endl;
+      QDPIO::cout << "Forward propagators successfully read and parsed" << std::endl;
 
 
       //
@@ -282,17 +282,17 @@ namespace Chroma
       catch( std::bad_cast ) 
       {
 	QDPIO::cerr << name << ": caught dynamic cast error" 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
 	QDPIO::cerr << name << ": error extracting seqprop: " << e 
-		    << endl;
+		    << std::endl;
 	QDP_abort(1);
       }
 
-      QDPIO::cout << "Sequential propagator successfully read and parsed" << endl;
+      QDPIO::cout << "Sequential propagator successfully read and parsed" << std::endl;
 
       // Derived from input prop
       int j_decay  = seqprop_header.seqsource_header.j_decay;
@@ -332,7 +332,7 @@ namespace Chroma
 	// Source smear the forward propagators
 	std::istringstream  xml_s(params.smear_header.source.xml);
 	XMLReader  sourcetop(xml_s);
-	QDPIO::cout << "Source smearing = " << params.smear_header.source.id << endl;
+	QDPIO::cout << "Source smearing = " << params.smear_header.source.id << std::endl;
 	
 	Handle< QuarkSourceSink<LatticePropagator> >
 	  sourceSmearing(ThePropSourceSmearingFactory::Instance().createObject(params.smear_header.source.id,
@@ -347,11 +347,11 @@ namespace Chroma
 	//
 	// Construct the sequential source constructor
 	//
-	QDPIO::cout << "Sequential source = " << seqprop_header.seqsource_header.seqsrc.xml << endl;
+	QDPIO::cout << "Sequential source = " << seqprop_header.seqsource_header.seqsrc.xml << std::endl;
 
 	std::istringstream  xml_seq(seqprop_header.seqsource_header.seqsrc.xml);
 	XMLReader  seqsrctop(xml_seq);
-	QDPIO::cout << "SeqSource = " << seqprop_header.seqsource_header.seqsrc.id << endl;
+	QDPIO::cout << "SeqSource = " << seqprop_header.seqsource_header.seqsrc.id << std::endl;
 	
 	Handle< HadronSeqSource<LatticePropagator> >
 	  hadSeqSource(TheWilsonHadronSeqSourceFactory::Instance().createObject(seqprop_header.seqsource_header.seqsrc.id,
@@ -386,7 +386,7 @@ namespace Chroma
       }
       catch(const std::string& e) 
       {
-	QDPIO::cerr << name << ": Caught Exception in sink: " << e << endl;
+	QDPIO::cerr << name << ": Caught Exception in sink: " << e << std::endl;
 	QDP_abort(1);
       }
     
@@ -396,9 +396,9 @@ namespace Chroma
       snoop.stop();
       QDPIO::cout << name << ": total time = "
 		  << snoop.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
-      QDPIO::cout << name << ": ran successfully" << endl;
+      QDPIO::cout << name << ": ran successfully" << std::endl;
 
       END_CODE();
     } 

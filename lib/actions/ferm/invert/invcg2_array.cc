@@ -27,7 +27,7 @@ namespace Chroma
    *  IF |r[0]| <= RsdCG |Chi| THEN RETURN;      Converged?
    *  FOR k FROM 1 TO MaxCG DO    	       CG iterations
    *      a[k] := |r[k-1]|**2 / <Mp[k],Mp[k]> ;
-   *      Psi[k] += a[k] p[k] ;   	       New solution vector
+   *      Psi[k] += a[k] p[k] ;   	       New solution std::vector
    *      r[k] -= a[k] M^dag . M . p[k] ;        New residual
    *      IF |r[k]| <= RsdCG |Chi| THEN RETURN;  Converged?
    *      b[k+1] := |r[k]|**2 / |r[k-1]|**2 ;
@@ -44,8 +44,8 @@ namespace Chroma
    *
    * Local Variables:
    *
-   *  p   	       Direction vector
-   *  r   	       Residual vector
+   *  p   	       Direction std::vector
+   *  r   	       Residual std::vector
    *  cp  	       | r[k] |**2
    *  c   	       | r[k-1] |**2
    *  k   	       CG iteration counter
@@ -56,7 +56,7 @@ namespace Chroma
    *
    * Subroutines:
    *                             +               
-   *  A       Apply matrix M or M  to vector
+   *  A       Apply matrix M or M  to std::vector
    *
    * Operations:
    *
@@ -92,7 +92,7 @@ namespace Chroma
     if (M.size() != chi.size())
     {
       QDPIO::cerr << __func__ << ": linop has size=" << M.size()
-		  << "  but chi has size=" << chi.size() << endl;
+		  << "  but chi has size=" << chi.size() << std::endl;
       QDP_abort(1);
     }
 
@@ -100,7 +100,7 @@ namespace Chroma
       chi_internal[i][ M.subset() ] = chi[i];
     }
 
-    QDPIO::cout << "InvCG2: starting" << endl;
+    QDPIO::cout << "InvCG2: starting" << std::endl;
     FlopCounter flopcount;
     flopcount.reset();
     StopWatch swatch;
@@ -111,7 +111,7 @@ namespace Chroma
     flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
 
 
-    //  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << endl;
+    //  QDPIO::cout << "chi_norm = " << sqrt(chi_sq) << std::endl;
     Real rsd_sq = (RsdCG * RsdCG) * chi_sq;
 
     //                                            +
@@ -134,7 +134,7 @@ namespace Chroma
     for(int n=0; n < N; n++) {
       Double norm_r = norm2(r[n],M.subset());
       if( toBool( norm_r > Double(1.0e-20)) ) {
-	QDPIO::cout << "Iteration 0  r[" << n << "] = " << norm_r << endl;
+	QDPIO::cout << "Iteration 0  r[" << n << "] = " << norm_r << std::endl;
       }
     }
 #endif
@@ -149,7 +149,7 @@ namespace Chroma
     Double cp = norm2(r, M.subset());   	       	   /* 4 Nc Ns  flops/cbsite */
     flopcount.addSiteFlops(4*Nc*Ns*N, M.subset());
 
-    //QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+    //QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
 
     //  IF |r[0]| <= RsdCG |Chi| THEN RETURN;
     if ( toBool(cp  <=  rsd_sq) )
@@ -157,7 +157,7 @@ namespace Chroma
       res.n_count = 0;
       res.resid   = sqrt(cp);
       swatch.stop();
-      QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << endl;
+      QDPIO::cout << "InvCG: k = 0  cp = " << cp << "  rsd_sq = " << rsd_sq << std::endl;
       // Try it all at the end.
       flopcount.report("invcg2_array", swatch.getTimeInSeconds());
       revertFromFastMemoryHint(psi,true);
@@ -210,7 +210,7 @@ namespace Chroma
       for(int n=0; n < N; n++) {
 	Double norm_r = norm2(r[n],M.subset());
 	if( toBool( norm_r > Double(1.0e-20)) )
-	  QDPIO::cout << "Iteration " << k << " r[" << n << "] = " << norm_r << endl;
+	  QDPIO::cout << "Iteration " << k << " r[" << n << "] = " << norm_r << std::endl;
       }
 #endif
 
@@ -220,13 +220,13 @@ namespace Chroma
       cp = norm2(r, M.subset());	                /* 2 Nc Ns  flops */
       flopcount.addSiteFlops(4*Nc*Ns*N,M.subset());
 
-      //    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+      //    QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 
       if ( toBool(cp  <=  rsd_sq) )
       {
 	res.n_count = k;
 	swatch.stop();
-	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << endl;
+	QDPIO::cout << "InvCG: k = " << k << "  cp = " << cp << std::endl;
 	flopcount.report("invcg2_array", swatch.getTimeInSeconds());
 	revertFromFastMemoryHint(psi,true);
 
@@ -238,12 +238,12 @@ namespace Chroma
 	  for(int n=0; n < N; ++n)
 	  {
 	    Double norm_r = norm2(chi[n] - mmp[n],M.subset());
-//	    QDPIO::cout<<"True residual "<<" r[" << n << "] = "<< sqrt(norm_r/chi_sq)<<endl;
+//	    QDPIO::cout<<"True residual "<<" r[" << n << "] = "<< sqrt(norm_r/chi_sq)<<std::endl;
 	    actual_res += norm_r ;
 	  }
 	  
 	  res.resid = sqrt(actual_res);
-	  QDPIO::cout << "Actual residual r = " << sqrt(actual_res) << " Actual relative residual="<< sqrt(actual_res/chi_sq) << endl;
+	  QDPIO::cout << "Actual residual r = " << sqrt(actual_res) << " Actual relative residual="<< sqrt(actual_res/chi_sq) << std::endl;
 	}
 
 	END_CODE();
@@ -253,7 +253,7 @@ namespace Chroma
       //  b[k+1] := |r[k]|**2 / |r[k-1]|**2
       b = Real(cp) / Real(c);
 #if 1
-      // QDPIO::cout << "InvCGev: k = " << k << "  alpha = " << a << "  beta = " << b << endl;
+      // QDPIO::cout << "InvCGev: k = " << k << "  alpha = " << a << "  beta = " << b << std::endl;
 #endif 
       //  p[k+1] := r[k] + b[k+1] p[k]
       for(int n=0; n < N; ++n) {
@@ -265,7 +265,7 @@ namespace Chroma
     res.n_count = MaxCG;
     res.resid   = sqrt(cp);
     swatch.stop();
-    QDPIO::cerr << "Nonconvergence Warning" << endl;
+    QDPIO::cerr << "Nonconvergence Warning" << std::endl;
     flopcount.report("invcg2_array", swatch.getTimeInSeconds());
     revertFromFastMemoryHint(psi,true);
 

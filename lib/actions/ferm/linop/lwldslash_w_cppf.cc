@@ -88,7 +88,7 @@ namespace Chroma
     // Sanity check
     if (fbc.operator->() == 0)
     {
-      QDPIO::cerr << "CPPWilsonDslashF: error: fbc is null" << endl;
+      QDPIO::cerr << "CPPWilsonDslashF: error: fbc is null" << std::endl;
       QDP_abort(1);
     }
 
@@ -105,15 +105,15 @@ namespace Chroma
     packed_gauge.resize( Nd * Layout::sitesOnNode() );
 
 #if 0
-    QDPIO::cout << "Done " << endl << flush;
+    QDPIO::cout << "Done " << std::endl << std::flush;
 
-    QDPIO::cout << "Calling pack_gauge_field..." << flush;
+    QDPIO::cout << "Calling pack_gauge_field..." << std::flush;
 #endif
 
     qdp_pack_gauge(u, packed_gauge);
   
 #if 0
-    QDPIO::cout << "Done" << endl << flush;
+    QDPIO::cout << "Done" << std::endl << std::flush;
 #endif
 
     END_CODE();
@@ -138,7 +138,7 @@ namespace Chroma
    *  \param chi	      Result				                (Write)
    *  \param psi	      Pseudofermion field				(Read)
    *  \param isign      D'^dag or D' ( MINUS | PLUS ) resp.		(Read)
-   *  \param cb	      Checkerboard of OUTPUT vector			(Read) 
+   *  \param cb	      Checkerboard of OUTPUT std::vector			(Read) 
    */
   void
   CPPWilsonDslashF::apply (T& chi, const T& psi, 

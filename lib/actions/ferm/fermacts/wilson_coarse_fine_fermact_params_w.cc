@@ -19,7 +19,7 @@ namespace Chroma
 
 
   //! Read parameters
-  WilsonCoarseFineFermActParams::WilsonCoarseFineFermActParams(XMLReader& xml, const string& path)
+  WilsonCoarseFineFermActParams::WilsonCoarseFineFermActParams(XMLReader& xml, const std::string& path)
   {
     XMLReader paramtop(xml, path);
 
@@ -30,14 +30,14 @@ namespace Chroma
   }
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, WilsonCoarseFineFermActParams& param)
+  void read(XMLReader& xml, const std::string& path, WilsonCoarseFineFermActParams& param)
   {
     WilsonCoarseFineFermActParams tmp(xml, path);
     param = tmp;
   }
 
   //! Writer parameters
-  void write(XMLWriter& xml, const string& path, const WilsonCoarseFineFermActParams& param)
+  void write(XMLWriter& xml, const std::string& path, const WilsonCoarseFineFermActParams& param)
   {
     push(xml, path);
 

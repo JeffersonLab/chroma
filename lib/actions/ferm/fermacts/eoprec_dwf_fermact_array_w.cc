@@ -82,10 +82,10 @@ namespace Chroma
     };
 
     //! Read chiral action like parameters
-    void read(XMLReader& xml, const string& path, ChiralParam_t& param);
+    void read(XMLReader& xml, const std::string& path, ChiralParam_t& param);
 
     //! Write chiral action like parameters
-    void write(XMLWriter& xml, const string& path, const ChiralParam_t& param);
+    void write(XMLWriter& xml, const std::string& path, const ChiralParam_t& param);
 
     //! Initialize a chiral param struct
     ChiralParam_t::ChiralParam_t()
@@ -97,14 +97,14 @@ namespace Chroma
     }
 
     //! Read chiral action like parameters
-    void read(XMLReader& xml, const string& path, ChiralParam_t& param)
+    void read(XMLReader& xml, const std::string& path, ChiralParam_t& param)
     {
       XMLReader paramtop(xml, path);
 
       read(paramtop, "OverMass", param.OverMass);
       read(paramtop, "N5", param.N5);
 
-      string xpath;
+      std::string xpath;
       xpath = "a5";
       if (paramtop.count(xpath) != 0)
 	read(paramtop, xpath, param.a5);
@@ -119,7 +119,7 @@ namespace Chroma
     }
 
     //! Write chiral action like parameters
-    void write(XMLWriter& xml, const string& path, const ChiralParam_t& param)
+    void write(XMLWriter& xml, const std::string& path, const ChiralParam_t& param)
     {
       push(xml, path);
 
@@ -170,7 +170,7 @@ namespace Chroma
 
 
   //! Read parameters
-  void read(XMLReader& xml, const string& path, EvenOddPrecDWFermActArrayParams& param)
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecDWFermActArrayParams& param)
   {
     EvenOddPrecDWFermActArrayParams tmp(xml, path);
     param = tmp;

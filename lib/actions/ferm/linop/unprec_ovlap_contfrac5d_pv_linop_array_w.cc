@@ -10,7 +10,7 @@
 
 namespace Chroma 
 { 
-  //! Apply the operator onto a source vector
+  //! Apply the operator onto a source std::vector
   /*!
    * The operator acts on the entire lattice
    *
@@ -73,7 +73,7 @@ namespace Chroma
     // Project out eigenvectors from Source if desired 
     if(  NEig > 0 ) 
     {
-      QDPIO::cerr << "project in contfrac5d PV not supported" << endl;
+      QDPIO::cerr << "project in contfrac5d PV not supported" << std::endl;
       QDP_abort(1);
     }
                             
@@ -168,7 +168,7 @@ namespace Chroma
     // Project out eigenvectors from Source if desired 
     if(  NEig > 0 ) 
     {
-      QDPIO::cerr << "project in contfrac5d PV not supported" << endl;
+      QDPIO::cerr << "project in contfrac5d PV not supported" << std::endl;
       QDP_abort(1);
     }
                             

@@ -34,7 +34,7 @@ namespace Chroma
 	if (! same)
 	{
 	  QDPIO::cerr << __func__ << ": the bc in the forward props are not all equal"
-		      << endl;
+		      << std::endl;
 	  QDP_abort(1);
 	}
       }

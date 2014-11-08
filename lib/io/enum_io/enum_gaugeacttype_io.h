@@ -44,7 +44,7 @@ namespace Chroma {
     //!  The number of different shaped loops in largest action
     extern const int No_fmn;  // Al's own private definition
 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -55,10 +55,10 @@ namespace Chroma {
   // Reader and writer
 
   //! Read a GaugeActType enum
-  void read(XMLReader& r, const string& path, GaugeActType& t);
+  void read(XMLReader& r, const std::string& path, GaugeActType& t);
 
   //! Write an GaugeActType enum
-  void write(XMLWriter& w, const string& path, const GaugeActType& t);
+  void write(XMLWriter& w, const std::string& path, const GaugeActType& t);
 
   /*! @} */   // end of group io
 };

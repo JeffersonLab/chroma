@@ -86,7 +86,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
     n_cg_tot += n_count;
     
     // Check e-value
-    ostringstream s;
+    std::ostringstream s;
     s << "eval" << n;
     push(xml_out, s.str());
     write(xml_out, "n_count", n_count);
@@ -94,7 +94,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
 
     if( toBool( fabs(lambda_H[i]) < zero_cutoff ) ) 
     { 
-      QDPIO::cout << "Evalue["<< n << "] = " << lambda_H[i] << " is considered zero" << endl;
+      QDPIO::cout << "Evalue["<< n << "] = " << lambda_H[i] << " is considered zero" << std::endl;
     }
     else 
     {
@@ -105,7 +105,7 @@ void EigSpecRitzCG(const LinearOperator<LatticeFermion>& M, // Herm pos def oper
       D_e[sub] -= lambda_e;
       Double r_norm = sqrt(norm2(D_e,sub));
       resid_rel[i] = Real(r_norm)/lambda_H[i];
-      QDPIO::cout << "Evalue["<<n<<"]: eigen_norm = " << r_norm << " resid_rel = " << resid_rel[i] << endl << endl;
+      QDPIO::cout << "Evalue["<<n<<"]: eigen_norm = " << r_norm << " resid_rel = " << resid_rel[i] << std::endl << std::endl;
     }
   }
 

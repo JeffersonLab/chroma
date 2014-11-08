@@ -20,7 +20,6 @@
 #include "meas/smear/link_smearing_aggregate.h"
 #include "meas/smear/link_smearing_factory.h"
 
-using namespace std;
 namespace Chroma 
 {
 
@@ -28,15 +27,15 @@ namespace Chroma
   /*! \ingroup hadron */
   namespace SimpleHadronOperatorEnv
   { 
-    map<string, HadronOperator<LatticeFermion>* (*)(const GroupXML_t&)> Ops ;
+    std::map<std::string, HadronOperator<LatticeFermion>* (*)(const GroupXML_t&)> Ops ;
     
     Baryon::Baryon(const GroupXML_t& p):HadronOperator<LatticeFermion>(p){
       
       std::istringstream  xml_l(p.xml);
       XMLReader  xmltop(xml_l);
       QDPIO::cout << "Baryon state is = " <<p.id ; 
-      QDPIO::cout << endl;
-      string DiqGammaStr ;
+      QDPIO::cout << std::endl;
+      std::string DiqGammaStr ;
       read(xmltop,"DiqGamma",DiqGammaStr); 
       if(DiqGammaStr == "CG5"){
 	DiqGamma =  BaryonSpinMats::Cg5();

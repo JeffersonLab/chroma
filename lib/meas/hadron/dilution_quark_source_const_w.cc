@@ -17,7 +17,7 @@ namespace Chroma
 { 
 
   // Read parameters
-  void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params& param)
+  void read(XMLReader& xml, const std::string& path, DilutionQuarkSourceConstEnv::Params& param)
   {
     DilutionQuarkSourceConstEnv::Params tmp(xml, path);
     param = tmp;
@@ -25,7 +25,7 @@ namespace Chroma
 
 
   // Writer
-  void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params& param)
+  void write(XMLWriter& xml, const std::string& path, const DilutionQuarkSourceConstEnv::Params& param)
   {
     param.writeXML(xml, path);
   }
@@ -39,7 +39,7 @@ namespace Chroma
   namespace DilutionQuarkSourceConstEnv
   { 
     //Read Quark dilution files per timeslice
-    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
+    void read(XMLReader& xml, const std::string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
       XMLReader inputtop(xml, path);
       
@@ -47,7 +47,7 @@ namespace Chroma
     }
 
     //Read Quark timeslice files 
-    void read(XMLReader& xml, const string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
+    void read(XMLReader& xml, const std::string& path, DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
     {
       XMLReader inputtop(xml, path);
 
@@ -56,7 +56,7 @@ namespace Chroma
 
 
     //Write Quark dilution files 
-    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
+    void write(XMLWriter& xml, const std::string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t::TimeSliceFiles_t& input)
     {
       push(xml, path);
       write(xml, "dilution_files", input.dilution_files);
@@ -64,7 +64,7 @@ namespace Chroma
     }
 
     //Write Quark time slice files 
-    void write(XMLWriter& xml, const string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
+    void write(XMLWriter& xml, const std::string& path, const DilutionQuarkSourceConstEnv::Params::QuarkFiles_t& input)
     {
       push(xml, path);
       write(xml, "timeslice_files", input.timeslice_files);
@@ -80,7 +80,7 @@ namespace Chroma
 
 
     //! Read parameters
-    Params::Params(XMLReader& xml, const string& path)
+    Params::Params(XMLReader& xml, const std::string& path)
     {
       XMLReader paramtop(xml, path);
 
@@ -96,7 +96,7 @@ namespace Chroma
       default :
 	/**************************************************************************/
 
-	QDPIO::cerr << "Input parameter version " << version << " unsupported." << endl;
+	QDPIO::cerr << "Input parameter version " << version << " unsupported." << std::endl;
 	QDP_abort(1);
       }
 
@@ -109,7 +109,7 @@ namespace Chroma
 
 
     // Writer
-    void Params::writeXML(XMLWriter& xml, const string& path) const
+    void Params::writeXML(XMLWriter& xml, const std::string& path) const
     {
       push(xml, path);
 
@@ -172,7 +172,7 @@ namespace Chroma
       val |= toBool(seedA != seedB);
       if (val) 
       {
-	QDPIO::cerr<< "random seeds are not the same." <<endl;
+	QDPIO::cerr<< "random seeds are not the same." <<std::endl;
       }
 			
       //Check Spatial mask and spatial mask size
@@ -185,7 +185,7 @@ namespace Chroma
       val |= toBool(mask_sizeA != mask_sizeB);
       if (val)
       {
-	QDPIO::cerr<< "spatial mask sizes are not the same." <<endl;
+	QDPIO::cerr<< "spatial mask sizes are not the same." <<std::endl;
       }
 
       read(rdr_a, "/Source/spatial_mask" , maskA);
@@ -193,7 +193,7 @@ namespace Chroma
       val |= toBool(maskA != maskB);
       if (val)
       {
-	QDPIO::cerr<< "spatial masks are not the same." <<endl;
+	QDPIO::cerr<< "spatial masks are not the same." <<std::endl;
       }
 
       read(rdr_a, "/Source/color_mask" , cmaskA);
@@ -201,7 +201,7 @@ namespace Chroma
       val |= toBool(maskA != maskB);
       if (val)
       {
-	QDPIO::cerr<< "color masks are not the same." <<endl;
+	QDPIO::cerr<< "color masks are not the same." <<std::endl;
       }
 
       read(rdr_a, "/Source/spin_mask" , smaskA);
@@ -209,7 +209,7 @@ namespace Chroma
       val |= toBool(maskA != maskB);
       if (val)
       {
-	QDPIO::cerr<< "spin masks are not the same." <<endl;
+	QDPIO::cerr<< "spin masks are not the same." <<std::endl;
       }
 
       return val;
@@ -241,11 +241,11 @@ namespace Chroma
 	bool initq = false;
 	Real kappa; 
 
-	QDPIO::cout << "Attempt to read solutions " << endl;
+	QDPIO::cout << "Attempt to read solutions " << std::endl;
 				
 	quark.time_slices.resize( params.quark_files.timeslice_files.size() );
 				
-	QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << endl;
+	QDPIO::cout<< "time_slices.size = " << quark.time_slices.size() << std::endl;
 
 	for (int t0 = 0 ; t0 < quark.time_slices.size() ; ++t0 )
 	{
@@ -253,7 +253,7 @@ namespace Chroma
 	    params.quark_files.timeslice_files[t0].dilution_files.size() );
 				
 	  QDPIO::cout << "dilutions.size = " << 
-	    quark.time_slices[t0].dilutions.size() << endl;
+	    quark.time_slices[t0].dilutions.size() << std::endl;
 					
 	  int time;
 
@@ -265,7 +265,7 @@ namespace Chroma
 	    XMLReader file_xml, record_xml, record_xml_source;
 
 	    QDPIO::cout << "reading file = " << 
-	      quark.time_slices[t0].dilutions[dil].soln_file << endl;
+	      quark.time_slices[t0].dilutions[dil].soln_file << std::endl;
 
 	    QDPFileReader from(file_xml, 
 			       quark.time_slices[t0].dilutions[dil].soln_file, QDPIO_SERIAL);
@@ -340,7 +340,7 @@ namespace Chroma
 	    if ( toBool(kappa != kappa2) )
 	    {
 	      QDPIO::cerr << "Kappa is not the same for all dilutions: t0=" <<
-		t0 << " dil= "<< dil << " kappa2 = "<< kappa2 << endl;
+		t0 << " dil= "<< dil << " kappa2 = "<< kappa2 << std::endl;
 								
 	      QDP_abort(1);
 	    }
@@ -348,7 +348,7 @@ namespace Chroma
 	    if (currN != N)
 	    {
 	      QDPIO::cerr << "N is not the same for all dilutions: t0 = " <<
-		t0 << " dil = " << dil << endl;
+		t0 << " dil = " << dil << std::endl;
 	    }
 
 	    //Test that t0 is the same for all dilutions on this timeslice
@@ -362,7 +362,7 @@ namespace Chroma
 	    if (time != quark.time_slices[t0].dilutions[dil].source_header.t_source)
 	    {
 	      QDPIO::cerr << "t0's DO NOT MATCH FOR ALL DILUTIONS ON TIME SLICE "
-			  << t0 << endl;
+			  << t0 << std::endl;
 
 	      QDP_abort(1);
 	    }
@@ -373,7 +373,7 @@ namespace Chroma
 		 quark.time_slices[0].dilutions[dil] )
 	    {
 	      QDPIO::cerr << "Dilutions do not match on time slice " << 
-		t0 << " dil = "<< dil<< endl;
+		t0 << " dil = "<< dil<< std::endl;
 
 	      QDP_abort(1);
 	    }
@@ -391,7 +391,7 @@ namespace Chroma
 	    if (cfgInfo != currCfgInfo)
 	    {
 	      QDPIO::cerr << "Cfgs do not match on time slice " << 
-		t0 << " dil = "<< dil<< endl;
+		t0 << " dil = "<< dil<< std::endl;
 
 	      QDP_abort(1);
 	    }
@@ -429,23 +429,23 @@ namespace Chroma
 	if (toDouble(dcnt) != 0.0)
 	{
 	  QDPIO::cerr << "Not a complete dilution scheme per timeslice" <<
-	    endl;
+	    std::endl;
 
 	  QDP_abort(1);
 	}
 #endif
 				
       } //try
-      catch (const string& e) 
+      catch (const std::string& e) 
       {
-	QDPIO::cerr << "Error extracting headers: " << e << endl;
+	QDPIO::cerr << "Error extracting headers: " << e << std::endl;
 	QDP_abort(1);
       }
       swatch.stop();
 
       QDPIO::cout << "Source and solution headers successfully read: time = "
 		  << swatch.getTimeInSeconds() 
-		  << " secs" << endl;
+		  << " secs" << std::endl;
 
 
       END_CODE();
@@ -455,7 +455,7 @@ namespace Chroma
 		
     //Create and return the diluted source
     //For gauge invariance testing reasons, this routine could be changed
-    //to get the source from the named object map
+    //to get the source from the named object std::map
     LatticeFermion ConstDilutionScheme::dilutedSource(int t0, int dil ) const 
     {
       const QuarkSourceSolutions_t::TimeSlices_t::Dilutions_t &qq = 
@@ -474,7 +474,7 @@ std::string source_filename = "zN_source" + filename;
 
 XMLReader file_xml, record_xml;
 
-QDPIO::cout << "reading file = " << source_filename << endl;
+QDPIO::cout << "reading file = " << source_filename << std::endl;
 QDPFileReader from(file_xml, source_filename, QDPIO_SERIAL);
 
 read(from, record_xml, sour);
@@ -486,15 +486,15 @@ read(from, record_xml, sour);
 			
 
       // Build source construction
-      QDPIO::cout << "Source_id = " << qq.source_header.source.id << endl;
-      QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << endl;
+      QDPIO::cout << "Source_id = " << qq.source_header.source.id << std::endl;
+      QDPIO::cout << "Source = XX" << qq.source_header.source.xml << "XX" << std::endl;
 
       std::istringstream  xml_s(qq.source_header.source.xml);
       XMLReader  sourcetop(xml_s);
 
       if (qq.source_header.source.id != DiluteZNQuarkSourceConstEnv::getName())
       {
-	QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << endl;
+	QDPIO::cerr << "Expected source_type = " << DiluteZNQuarkSourceConstEnv::getName() << std::endl;
 	QDP_abort(1);
       }
 
@@ -504,13 +504,13 @@ read(from, record_xml, sour);
 
       if(!params.UseSourceHeaderSmearing){
 	QDPIO::cout<<name
-		   <<": Will NOT use Smearing/displacement options specified in the header\n"<<endl ;
+		   <<": Will NOT use Smearing/displacement options specified in the header\n"<<std::endl ;
 	srcParams.smear = false ; 
       }
       else{
-	QDPIO::cout<<name<<": Smearing/displacement not implemented\n"<<endl ;
+	QDPIO::cout<<name<<": Smearing/displacement not implemented\n"<<std::endl ;
 	QDPIO::cout<<name
-		   <<": Will NOT use Smearing/displacement options specified in the header\n"<<endl ;
+		   <<": Will NOT use Smearing/displacement options specified in the header\n"<<std::endl ;
 	srcParams.smear = false ; 
       }
 
@@ -532,7 +532,7 @@ read(from, record_xml, sour);
 	LatticeColorVector vtr = peekSpin(sour, 2);
 	LatticeComplex comp = peekColor( vtr , 0 );
 	QDPIO::cout<< "Sourceval = "<< 
-	peekSite( comp, orig ) << endl;
+	peekSite( comp, orig ) << std::endl;
       */
 
       return sour;
@@ -549,7 +549,7 @@ read(from, record_xml, sour);
 
       XMLReader file_xml, record_xml;
 
-      QDPIO::cout << "reading file = " << filename << endl;
+      QDPIO::cout << "reading file = " << filename << std::endl;
       QDPFileReader from(file_xml, filename, QDPIO_SERIAL);
 
       read(from, record_xml, soln);
@@ -564,7 +564,7 @@ read(from, record_xml, sour);
   LatticeColorVector vtr = peekSpin(soln, 2);
   LatticeComplex comp = peekColor( vtr , 0 );
   QDPIO::cout<< "Sinkval = "<< 
-  peekSite( comp, orig ) << endl;
+  peekSite( comp, orig ) << std::endl;
 
 */
       return soln;

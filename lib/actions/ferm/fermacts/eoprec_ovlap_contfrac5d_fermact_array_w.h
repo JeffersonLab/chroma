@@ -46,10 +46,10 @@ namespace Chroma
   // Reader/writers
 
   //! Read the Continued Fraction parameters 
-  void read(XMLReader& xml, const string& path, EvenOddPrecOvlapContFrac5DFermActParams& param);
+  void read(XMLReader& xml, const std::string& path, EvenOddPrecOvlapContFrac5DFermActParams& param);
 
   //! Write the Continued Fraction parameters
-  void write(XMLWriter& xml, const string& path, const EvenOddPrecOvlapContFrac5DFermActParams& param);
+  void write(XMLWriter& xml, const std::string& path, const EvenOddPrecOvlapContFrac5DFermActParams& param);
 
 
   //! 5D continued fraction overlap action (Borici,Wenger, Edwards)
@@ -102,7 +102,7 @@ namespace Chroma
 			       const Real& m_q,
 			       const GroupXML_t& invParam) const
       {
-      QDPIO::cerr << "linOp4D not implemented" << endl;
+      QDPIO::cerr << "linOp4D not implemented" << std::endl;
       QDP_abort(1);
       return 0;
     }

@@ -14,23 +14,23 @@ namespace Chroma {
     bool registerAll(void) 
     {
       bool success = true; 
-      success &= thePropDistTypeMap::Instance().registerPair(string("SRC"), PROP_DIST_TYPE_SOURCE);
-      success &= thePropDistTypeMap::Instance().registerPair(string("SNK"), PROP_DIST_TYPE_SOLUTION);
+      success &= thePropDistTypeMap::Instance().registerPair(std::string("SRC"), PROP_DIST_TYPE_SOURCE);
+      success &= thePropDistTypeMap::Instance().registerPair(std::string("SNK"), PROP_DIST_TYPE_SOLUTION);
       return success;
     }
 
     bool registered = registerAll();
-    const string typeIDString = "PropDistType";
+    const std::string typeIDString = "PropDistType";
   };
   using namespace PropDistTypeEnv;
 
   //! Reader
-  void read(XMLReader& xml_in, const string& path, PropDistType& t) {
+  void read(XMLReader& xml_in, const std::string& path, PropDistType& t) {
     thePropDistTypeMap::Instance().read(typeIDString, xml_in, path, t);
   }
   
   //! Writer
-  void write(XMLWriter& xml_out, const string& path, const PropDistType& t) {
+  void write(XMLWriter& xml_out, const std::string& path, const PropDistType& t) {
     thePropDistTypeMap::Instance().write(typeIDString, xml_out, path, t);
   }
 

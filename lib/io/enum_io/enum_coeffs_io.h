@@ -30,7 +30,7 @@ namespace Chroma
 
 
   namespace CoeffTypeEnv { 
-    extern const string typeIDString;
+    extern const std::string typeIDString;
     extern bool registered; 
     bool registerAll(void);   // Forward declaration
   }
@@ -40,10 +40,10 @@ namespace Chroma
 
   // Reader and writer
   //! Read an approximation coefficient type enum
-  void read(XMLReader& r, const string& path, CoeffType& t);
+  void read(XMLReader& r, const std::string& path, CoeffType& t);
 
   //! Write an approximation coefficient type enum
-  void write(XMLWriter& w, const string& path, const CoeffType& t);
+  void write(XMLWriter& w, const std::string& path, const CoeffType& t);
 
   /*! @} */   // end of group io
 

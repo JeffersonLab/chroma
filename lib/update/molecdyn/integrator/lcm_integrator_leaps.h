@@ -29,12 +29,12 @@ namespace Chroma
       
       inline void
       setAnisoStepSize(int t_dir_, const Real& step_factor_) {
-	QDPIO::cout << "Setting dir " << t_dir_ << " to aniso factor " << step_factor_ << " originally " << Real(1)/(step_factor_*step_factor_) << endl;
+	QDPIO::cout << "Setting dir " << t_dir_ << " to aniso factor " << step_factor_ << " originally " << Real(1)/(step_factor_*step_factor_) << std::endl;
 	if( (t_dir_ >= 0) && (t_dir_ < Nd) ) {
 	  step_factors[t_dir_] = step_factor_;
 	}
 	else {
-	  QDPIO::cout << "Error t_dir must be between 0 and " << Nd-1 << ". It is " << t_dir_ << endl;
+	  QDPIO::cout << "Error t_dir must be between 0 and " << Nd-1 << ". It is " << t_dir_ << std::endl;
 	  QDP_abort(1);
 	}
       }
@@ -42,7 +42,7 @@ namespace Chroma
       inline Real 
       getStepSizeFactor(int t_dir) {
 	if( (t_dir < 0) || (t_dir >= Nd) ) {
-	  QDPIO::cout << "Error t_dir must be between 0 and " << Nd-1 << ". It is " << t_dir << endl;
+	  QDPIO::cout << "Error t_dir must be between 0 and " << Nd-1 << ". It is " << t_dir << std::endl;
 	  QDP_abort(1);
 	}
 	return step_factors[t_dir];

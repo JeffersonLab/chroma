@@ -56,11 +56,11 @@ namespace Chroma
 
       QDPIO::cout << "LastSolution4DChronoPredictor: ";
       if( last_solutionX_available ) { 
-	QDPIO::cout << "Giving you the last solution" << endl;
+	QDPIO::cout << "Giving you the last solution" << std::endl;
 	X = last_solutionX;
       }
       else {
-	QDPIO::cout << "No available last guess. Giving you zero" << endl;
+	QDPIO::cout << "No available last guess. Giving you zero" << std::endl;
 	X = zero;
       }
     
@@ -76,11 +76,11 @@ namespace Chroma
 
       QDPIO::cout << "LastSolution4DChronoPredictor: ";
       if( last_solutionY_available ) { 
-	QDPIO::cout << "Giving you the last solution" << endl;
+	QDPIO::cout << "Giving you the last solution" << std::endl;
 	Y = last_solutionY;
       }
       else {
-	QDPIO::cout << "No available last guess. Giving you zero" << endl;
+	QDPIO::cout << "No available last guess. Giving you zero" << std::endl;
 	Y = zero;
       }
     
@@ -97,24 +97,24 @@ namespace Chroma
 
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newXVector(const LatticeFermion& X) 
     {
       START_CODE();
 
-      QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
+      QDPIO::cout << "LastSolutionPredictor: registering new solution" << std::endl;
       last_solutionX = X;
       last_solutionX_available = true;
     
       END_CODE();
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newYVector(const LatticeFermion& Y) 
     {
       START_CODE();
 
-      QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
+      QDPIO::cout << "LastSolutionPredictor: registering new solution" << std::endl;
       last_solutionY = Y;
       last_solutionY_available = true;
     
@@ -165,11 +165,11 @@ namespace Chroma
       QDPIO::cout << "LastSolutionPredictor:";
       psi.resize(N5);
       if( last_solution_available ) { 
-	QDPIO::cout << " last solution is available. Giving you it" << endl;
+	QDPIO::cout << " last solution is available. Giving you it" << std::endl;
 	psi = last_solution;
       }
       else {
-	QDPIO::cout << " last solution is not available. Giving you zero" << endl;
+	QDPIO::cout << " last solution is not available. Giving you zero" << std::endl;
 	psi = zero;
       }
 
@@ -182,15 +182,15 @@ namespace Chroma
       last_solution_available = false;
     }
 
-    // Ignore new vector
+    // Ignore new std::vector
     void newVector(const multi1d<LatticeFermion>& psi) 
     {
       START_CODE();
 
-      QDPIO::cout << "LastSolutionPredictor: registering new solution" << endl;
+      QDPIO::cout << "LastSolutionPredictor: registering new solution" << std::endl;
 
       if ( psi.size() != N5 ) { 
-	QDPIO::cerr << "Vector of incompatible size presented to Chronological Predictor. Vector.size() = " << psi.size() << " predictor.size()=" << N5 << endl;
+	QDPIO::cerr << "Vector of incompatible size presented to Chronological Predictor. Vector.size() = " << psi.size() << " predictor.size()=" << N5 << std::endl;
 	QDP_abort(1);
       }
 
